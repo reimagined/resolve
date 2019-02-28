@@ -46,39 +46,39 @@
 </ul>
 <p>Based on these settings, reSolve generates client code to facilitate client-server communication:</p>
 <ul>
-<li>Redux action are generated for all reSolve aggregate commands.</li>
-<li>Auxiliary reducer and middleware code is generated to handle these actions and send the corresponding commands to the server.</li>
+<li>Redux actions are generated for all reSolve aggregate commands.</li>
+<li>Auxiliary reducers and middleware are generated to handle these actions and send the corresponding commands to the reSolve backend.</li>
 </ul>
-<p>Use the following resolve-redux library's higher order components (HOCs) to connect components to the backend,:</p>
+<p>Use the following resolve-redux library's higher order components (HOCs) to connect components to the backend:</p>
 <ul>
 <li><strong>connectReadModel</strong> - Connects a component to a Read Model.</li>
 <li><strong>connectViewModel</strong> - Connects a component to a View Model.</li>
 </ul>
-<p>A connected component receives additional props providing access to the Read Model data and Redux action creators mapped to reSolve commands.</p>
+<p>A connected component receives additional props. These props provide access to the Read Model data and Redux action creators mapped to reSolve commands.</p>
 <h3><a class="anchor" aria-hidden="true" id="obtain-view-model-data"></a><a href="#obtain-view-model-data" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Obtain View Model Data</h3>
-<p>The code below demonstrates how to obtain data from a reSolve backend in a most basic use-case scenario:</p>
+<p>The code sample below demonstrates how to obtain data from a reSolve backend in the most basic use-case scenario:</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { connectViewModel } <span class="hljs-keyword">from</span> <span class="hljs-string">'resolve-redux'</span>
 
 <span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>
 ...
 const TodoList = <span class="hljs-function">(<span class="hljs-params">{ data }</span>) =&gt;</span> (
-    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span>
-        {data.map(i =&gt; ( Access View Model data via the data prop
-          <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>{i}<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
-        ))}
-    <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span></span>
+  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span>
+    {data.map(i =&gt; ( Access View Model data via the data prop
+      <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>{i}<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+    ))}
+  <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span></span>
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapStateToOptions = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-    <span class="hljs-keyword">return</span> {
-        <span class="hljs-attr">viewModelName</span>: <span class="hljs-string">'TodoList'</span>,
-        <span class="hljs-attr">aggregateIds</span>: [<span class="hljs-string">"root-id"</span>]
-    }
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">viewModelName</span>: <span class="hljs-string">'TodoList'</span>,
+    <span class="hljs-attr">aggregateIds</span>: [<span class="hljs-string">"root-id"</span>]
+  }
 }
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> connectViewModel(mapStateToOptions)(TodoList)
 
 </code></pre>
-<p>In this code, the <strong>connectViewModel</strong> HOC is used to connect a React component to an existing View Model. The <strong>mapStateToOptions</strong> function the connection options. The following options are required:</p>
+<p>In this code, the <strong>connectViewModel</strong> HOC is used to connect a React component to an existing View Model. The <strong>mapStateToOptions</strong> function specifies the connection options. The following options are required:</p>
 <ul>
 <li><strong>viewModelName</strong> - the name of a View Model to bind to</li>
 <li><strong>aggregateIds</strong> - an array of aggregate IDs for which to obtain data</li>
@@ -109,7 +109,7 @@ const TodoList = <span class="hljs-function">(<span class="hljs-params">{ data }
 </code></pre>
 <!-- prettier-ignore-end -->
 <h4><a class="anchor" aria-hidden="true" id="fix-urls"></a><a href="#fix-urls" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Fix URLs</h4>
-<p>Use the following HOCs to automatically fix URLs passed to a component as props. The resulting URLs take into account the backend structure.</p>
+<p>Use the following HOCs to automatically fix URLs passed to a component as props. The resulting URLs take the backend structure into account.</p>
 <ul>
 <li><strong>connectRootBasedUrls</strong> - Fixes server routs:
 <pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> connectRootBasedUrls([<span class="hljs-string">'href'</span>])(Link)
@@ -147,7 +147,7 @@ const TodoList = <span class="hljs-function">(<span class="hljs-params">{ data }
 </code></pre>
 <!-- prettier-ignore-end -->
 <h2><a class="anchor" aria-hidden="true" id="reactive-view-models-event-subscription"></a><a href="#reactive-view-models-event-subscription" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Reactive View Models, Event Subscription</h2>
-<p>A View Model is a special kind of a Read Model. Its projection is declared in a universal format so it can also serve as the reducer code on the client side. Events are automatically sent to the client through a WebSocket connection. Because of these properties, View Models are reactive out of the box. This means that a component connected to a View Model using the <strong>connectViewModel</strong> method automatically reflects the Read Model changes on the server side, without the need to implement any additional logic.</p>
+<p>A View Model is a special kind of a Read Model. Its projection is declared in a universal format so it can also serve as the reducer code on the client side. Events are automatically sent to the client through a WebSocket connection. Because of these properties, View Models are reactive. This means that a component connected to a View Model using the <strong>connectViewModel</strong> method automatically reflects the Read Model changes on the server side, without the need to implement any additional logic.</p>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapStateToOptions = <span class="hljs-function">(<span class="hljs-params">state, ownProps</span>) =&gt;</span> {
   <span class="hljs-keyword">const</span> aggregateId = ownProps.match.params.id
@@ -184,10 +184,10 @@ const TodoList = <span class="hljs-function">(<span class="hljs-params">{ data }
 </code></pre>
 <!-- prettier-ignore-end -->
 <h2><a class="anchor" aria-hidden="true" id="optimistic-commands"></a><a href="#optimistic-commands" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Optimistic Commands</h2>
-<p>If a component is connected to a reSolve ReadModel, you can enhance its responsiveness by providing it with <strong>optimistic UI updating</strong> functionality. With this approach, a component applies model changes on the client side before synchronizing them with the server via an aggregate command.</p>
-<p>Use the following steps to implement optimistic UI updating.</p>
+<p>You can add <strong>optimistic UI updating</strong> functionality to enhance a component's responsiveness if this component is connected to a reSolve ReadModel. With this approach, a component applies model changes on the client side before synchronizing them with the server via an aggregate command.</p>
+<p>Use the following steps to implement optimistic UI updating:</p>
 <ol>
-<li>Create Redux actions that will perform updates:</li>
+<li>Create Redux actions that perform updates:</li>
 </ol>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> OPTIMISTIC_CREATE_SHOPPING_LIST = <span class="hljs-string">'OPTIMISTIC_CREATE_SHOPPING_LIST'</span>

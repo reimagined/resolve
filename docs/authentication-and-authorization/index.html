@@ -36,8 +36,8 @@
               }
             });
         </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Authentication and Authorization</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="setting-up-authentication"></a><a href="#setting-up-authentication" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Setting up Authentication</h2>
-<p>ReSolve comes with a built-in authentication <strong><a href="/resolve/docs/advanced-techniques#modules">module</a></strong> (<strong>resolve-module-auth</strong>) that you can use to enable authentication in your application. The authentication module relies on the <a href="http://www.passportjs.org/">Passport.js</a> library's functionality.</p>
-<p>Initialize authentication the module in the application's <strong>run.js</strong> script:</p>
+<p>You can use reSolve's built-in <strong><a href="/resolve/docs/advanced-techniques#modules">module</a></strong> (<strong>resolve-module-auth</strong>) to enable authentication in your application. The authentication module uses the <a href="http://www.passportjs.org/">Passport.js</a> library.</p>
+<p>Initialize the authentication module in the application's <strong>run.js</strong> script:</p>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js">  <span class="hljs-keyword">const</span> moduleAuth = resolveModuleAuth([
     {
@@ -70,7 +70,7 @@
   )
 </code></pre>
 <!-- prettier-ignore-end -->
-<p>These setting specify the path to a strategy constructor as well as HTTP API handlers to handle authentication-related requests (register, login and logout in this example). You can implement a strategy constructor as shown below:</p>
+<p>These setting specify the path to a strategy constructor and HTTP API handlers to handle authentication-related requests (register, login and logout in this example). You can implement a strategy constructor as shown below:</p>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { Strategy <span class="hljs-keyword">as</span> StrategyFactory } <span class="hljs-keyword">from</span> <span class="hljs-string">'passport-local'</span>
 
@@ -90,20 +90,25 @@
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> createStrategy
 </code></pre>
 <!-- prettier-ignore-end -->
-<p>This code sample demonstrates the implementation of an authentication strategy constructor on the example of a <strong>local</strong> authentication strategy. The <strong>createStrategy</strong> constructor takes a set of options defined at runtime and returns modified options.</p>
-<p>See the <strong>Hacker News</strong> example project the full code.</p>
+<p>This code sample implements a strategy constructor for a <strong>local</strong> authentication strategy. The <strong>createStrategy</strong> constructor takes a set of options defined at runtime and returns modified options.</p>
+<p>See the <strong>Hacker News</strong> example project for the full code.</p>
 <h2><a class="anchor" aria-hidden="true" id="using-3rd-party-auth-services"></a><a href="#using-3rd-party-auth-services" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Using 3rd-Party Auth Services</h2>
-<p>You can implement authentication via 3rd-party services in the same way, in which you implement local authentication. To implement authentication for a particular service, use corresponding Passport modules, e.g., <strong>passport-google</strong> or <strong>passport-facebook</strong>.</p>
-<h2><a class="anchor" aria-hidden="true" id="making-your-own-user-registry"></a><a href="#making-your-own-user-registry" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Making Your Own User Registry</h2>
-<p>If you prefer to store a user registry in your application, or if you use a third-party authentication service but need to store additional information that is not provided by this service (e.g., roles or permissions), then you can just stick to the standard event sourcing approach:</p>
+<p>You can implement authentication via 3rd-party services similarly to how you implement local authentication. To implement authentication for a particular service, use corresponding Passport modules, for example, <strong>passport-google</strong> or <strong>passport-facebook</strong>.</p>
+<h2><a class="anchor" aria-hidden="true" id="storing-a-user-registry-in-the-application"></a><a href="#storing-a-user-registry-in-the-application" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Storing a User Registry in the Application</h2>
+<p>You can use the standard event sourcing approach to implement a user registry. This is useful in the following cases:</p>
 <ul>
-<li>Add a User aggregate to accept commands and generate events related to managing a user registry</li>
-<li>Create a read model and use it to look up a current user's information during logging in and put this information into a JWT (JSON Web Token)</li>
+<li>You prefer to store a user registry in your application without third-party services.</li>
+<li>You use a third-party authentication service but need to store additional information that is not provided by this service (for example, roles or permissions).</li>
 </ul>
-<p>For example, if you want to grant permissions to a user, you can write something like this:</p>
-<p>Write side. &quot;user&quot; aggregate:</p>
-<p><strong>user.commands.js:</strong></p>
-<pre><code class="hljs css language-js">...
+<p>Use the following steps to implement a user registry:</p>
+<ol>
+<li>Add a User aggregate to accept commands and generate events related to managing a user registry</li>
+<li>Create a read model and use it to look up a user's information during logging in and add this information to a JWT (JSON Web Token)</li>
+</ol>
+<p>For example, you can write the following if you want to grant permissions to a user:</p>
+<h4><a class="anchor" aria-hidden="true" id="write-side-the-user-aggregate"></a><a href="#write-side-the-user-aggregate" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Write side - The &quot;user&quot; aggregate</h4>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// user.commands.js</span>
+...
 grantPermission: <span class="hljs-function">(<span class="hljs-params">state, command</span>) =&gt;</span> {
    <span class="hljs-keyword">const</span> {<span class="hljs-attr">payload</span>: {<span class="hljs-attr">permission</span>: permissionToGrant }} = command;
 
@@ -119,17 +124,17 @@ grantPermission: <span class="hljs-function">(<span class="hljs-params">state, c
 }
 ...
 </code></pre>
-<p><strong>user.projection.js:</strong></p>
-<pre><code class="hljs css language-js">...
+<pre><code class="hljs css language-js"><span class="hljs-comment">// user.projection.js</span>
+...
 [PERMISSION_GRANTED]: <span class="hljs-function">(<span class="hljs-params">state, {payload: {permission}}</span>) =&gt;</span> ({
     ...state,
     <span class="hljs-attr">permissions</span>: [...state.permissions, permission]
 })
 ...
 </code></pre>
-<p>Read side. &quot;users&quot; read model:
-users.projection.js:</p>
-<pre><code class="hljs css language-js">...
+<h4><a class="anchor" aria-hidden="true" id="read-side-the-users-read-model"></a><a href="#read-side-the-users-read-model" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Read side - The &quot;users&quot; read model</h4>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// users.projection.js</span>
+...
 [PERMISSION_GRANTED]: <span class="hljs-keyword">async</span> (store, {aggregateId, <span class="hljs-attr">payload</span>:{permission}}) =&gt; {
     <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> store.findOne(<span class="hljs-string">'Users'</span>, { <span class="hljs-attr">id</span>: aggregateId })
     <span class="hljs-keyword">if</span> (user) {
@@ -142,12 +147,12 @@ users.projection.js:</p>
 }
 ...
 </code></pre>
-<p><strong>users.resolvers.js:</strong></p>
-<pre><code class="hljs css language-js">...
+<pre><code class="hljs css language-js"><span class="hljs-comment">// users.resolvers.js</span>
+...
 userById: <span class="hljs-keyword">async</span>(store, {id}) =&gt; store.findOne(<span class="hljs-string">'Users'</span>, {id})
 ...
 </code></pre>
-<p>Now, upon login you can query Users read model and store user record with its permissions in the JWT Token:</p>
+<p>You can now query a user's read model and add the obtained user information to the JWT payload when they log in:</p>
 <pre><code class="hljs css language-js">...
 const user = <span class="hljs-keyword">await</span> resolve.executeQuery({
   <span class="hljs-attr">modelName</span>: <span class="hljs-string">'Users'</span>,
@@ -159,12 +164,12 @@ const user = <span class="hljs-keyword">await</span> resolve.executeQuery({
 ...
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="using-jwt-for-command-and-query-authorization"></a><a href="#using-jwt-for-command-and-query-authorization" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Using JWT for Command and Query Authorization</h2>
-<p>Every command and query handler accepts a JSON Web Token (JWT) obtained during the authentication process. This JWT contains an object that was returned by authentication function, or an empty object <code>{}</code> if current user is not logged in.</p>
-<p>A JWT is signed, so it cannot be forged by an attacker, without knowing a secret that was used for token creation. The token can be decoded and verified using the same secret that was used for its creation:</p>
+<p>Every command and query handler accepts a JSON Web Token (JWT) obtained during the authentication process. This JWT contains an object that the authentication function returned, or an empty object <code>{}</code> if the current user is not logged in.</p>
+<p>A JWT is signed with a secret to prevent forgery. Use the same secret to decode and verify the token.</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> { <span class="hljs-attr">id</span>: userId } = jwt.verify(jwtToken, jwtSecret)
 </code></pre>
-<p>You can store any information in a JWT. For instance, during authentication, you can look up a
-user's permissions and add them to the token. Then, you can check for the user's permissions on a command or query execution as shown below:</p>
+<p>You can store any information in a JWT. For instance, you can look up a user's permissions and add them to the token
+during authentication. Then, you can check the user's permissions during a command or query execution as shown below:</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> { <span class="hljs-attr">id</span>: userId, permissions } = jwt.verify(jwtToken, jwtSecret);
 
 <span class="hljs-keyword">if</span> (permissions &amp;&amp; permissions.includes(<span class="hljs-string">"admin"</span>)) {
@@ -173,7 +178,7 @@ user's permissions and add them to the token. Then, you can check for the user's
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">"Access denied"</span>);
 }
 </code></pre>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/resolve/docs/api-handlers"><span class="arrow-prev">← </span><span>API Handlers</span></a><a class="docs-next button" href="/resolve/docs/preparing-to-production"><span>Preparing to Production</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#setting-up-authentication">Setting up Authentication</a></li><li><a href="#using-3rd-party-auth-services">Using 3rd-Party Auth Services</a></li><li><a href="#making-your-own-user-registry">Making Your Own User Registry</a></li><li><a href="#using-jwt-for-command-and-query-authorization">Using JWT for Command and Query Authorization</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/resolve/" class="nav-home"><img src="/resolve/img/resolve.svg" alt="reSolve" width="66" height="58"/></a><div><h5>Docs</h5><a href="/resolve/docs/">Documentation Index</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/resolvejs" target="_blank" rel="noreferrer noopener">Stack Overflow</a><a href="https://twitter.com/resolvejs" target="_blank" rel="noreferrer noopener">Twitter</a><a href="https://www.facebook.com/resolvejs/" target="_blank" rel="noreferrer noopener">Facebook</a></div><div><h5>More</h5><a href="https://github.com/reimagined/resolve">GitHub</a><a class="github-button" href="https://github.com/reimagined/resolve" data-icon="octicon-star" data-count-href="/reimagined/resolve/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2019 Developer Express, Inc</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/resolve/docs/api-handlers"><span class="arrow-prev">← </span><span>API Handlers</span></a><a class="docs-next button" href="/resolve/docs/preparing-to-production"><span>Preparing to Production</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#setting-up-authentication">Setting up Authentication</a></li><li><a href="#using-3rd-party-auth-services">Using 3rd-Party Auth Services</a></li><li><a href="#storing-a-user-registry-in-the-application">Storing a User Registry in the Application</a></li><li><a href="#using-jwt-for-command-and-query-authorization">Using JWT for Command and Query Authorization</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/resolve/" class="nav-home"><img src="/resolve/img/resolve.svg" alt="reSolve" width="66" height="58"/></a><div><h5>Docs</h5><a href="/resolve/docs/">Documentation Index</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/resolvejs" target="_blank" rel="noreferrer noopener">Stack Overflow</a><a href="https://twitter.com/resolvejs" target="_blank" rel="noreferrer noopener">Twitter</a><a href="https://www.facebook.com/resolvejs/" target="_blank" rel="noreferrer noopener">Facebook</a></div><div><h5>More</h5><a href="https://github.com/reimagined/resolve">GitHub</a><a class="github-button" href="https://github.com/reimagined/resolve" data-icon="octicon-star" data-count-href="/reimagined/resolve/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2019 Developer Express, Inc</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;

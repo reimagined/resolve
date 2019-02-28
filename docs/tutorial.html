@@ -36,8 +36,8 @@
               }
             });
         </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Step-by-Step Tutorial</h1></header><article><div><span><p>This document provides a step-by-step tutorial for the reSolve framework.
-Throughout this tutorial, you will be creating a single application. You will modify your application as you learn new concepts, so with every consequent lesson the application will become more and more sophisticated.</p>
-<p>This tutorial will give you an understanding of the reSolve framework and its fundamental concepts. It is recommended that your familiarize yourself with event sourcing and CQRS before starting this tutorial, however it is not strictly required.</p>
+Throughout this tutorial, you will create a single application. You will modify your application as you learn new concepts, so with every consequent lesson the application will become more and more sophisticated.</p>
+<p>This tutorial will give you an understanding of the reSolve framework and its fundamental concepts. It is recommended that your familiarize yourself with event sourcing and CQRS before you start this tutorial, however it is not strictly required.</p>
 <h2><a class="anchor" aria-hidden="true" id="table-of-contents"></a><a href="#table-of-contents" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table of Contents</h2>
 <ul>
 <li><a href="#lesson-1-create-a-new-resolve-application">Lesson 1 - Create a New reSolve Application</a></li>
@@ -50,10 +50,10 @@ Throughout this tutorial, you will be creating a single application. You will mo
 </ul>
 <hr>
 <h2><a class="anchor" aria-hidden="true" id="lesson-1-create-a-new-resolve-application"></a><a href="#lesson-1-create-a-new-resolve-application" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 1</strong> - Create a New reSolve Application</h2>
-<p>You can create a new reSolve app using the create-resolve-app utility available on <strong>npm</strong>:</p>
+<p>Use the create-resolve-app tool to create a new reSolve app:</p>
 <h5><a class="anchor" aria-hidden="true" id="npm"></a><a href="#npm" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>npm:</h5>
-<pre><code class="hljs css language-sh">npm i -g create-resolve-app
-create-resolve-app shopping-list
+<pre><code class="hljs css language-sh">$ npm i -g create-resolve-app
+$ create-resolve-app shopping-list
 </code></pre>
 <h5><a class="anchor" aria-hidden="true" id="npx"></a><a href="#npx" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>npx:</h5>
 <pre><code class="hljs css language-sh">$ npx create-resolve-app shopping-list
@@ -61,21 +61,22 @@ create-resolve-app shopping-list
 <h5><a class="anchor" aria-hidden="true" id="yarn"></a><a href="#yarn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>yarn:</h5>
 <pre><code class="hljs css language-sh">$ yarn create resolve-app shopping-list
 </code></pre>
-<p>After this a minimal reSolve application is ready. You can run it in development mode by typing:</p>
-<pre><code class="hljs css language-sh">$ yarn run dev
+<p>After this, a minimal reSolve application is ready. To run it in development mode, type:</p>
+<pre><code class="hljs css language-sh">$ <span class="hljs-built_in">cd</span> shopping-list
+$ yarn run dev
 </code></pre>
 <hr>
 <h2><a class="anchor" aria-hidden="true" id="lesson-2-write-side-add-a-list-item"></a><a href="#lesson-2-write-side-add-a-list-item" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 2</strong> - Write side - Add a List Item</h2>
 <p><a href="https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-2">[Get the Code for This Lesson]</a></p>
-<p>This lesson will teach you how to implement a basic write side for your reSolve application. An application's <a href="/resolve/docs/app-structure#write-and-read-sides">write side</a> is responsible for handling commands, performing input validation and emitting <strong>events</strong> based on valid commands. The emitted events are then saved to the <strong>event store</strong>.</p>
-<p>In CQRS and Event Sourcing paradigms, commands are handled by Domain Objects, which are grouped into aggregates. ReSolve implements aggregates as static objects containing sets of functions. These functions can be of one of the following two kinds:</p>
+<p>This lesson will teach you how to implement a basic write side for your reSolve application. An application's <a href="/resolve/docs/app-structure#write-and-read-sides">write side</a> handles commands, performs input validation and emits <strong>events</strong> based on valid commands. The framework then saves the emitted events to the <strong>event store</strong>.</p>
+<p>In the CQRS and Event Sourcing paradigms, commands are handled by Domain Objects grouped into aggregates. ReSolve implements aggregates as static objects that contain sets of functions. These functions can be of one of the following two kinds:</p>
 <ul>
 <li><strong><a href="/resolve/docs/write-side#aggregate-command-handlers">Command Handlers</a></strong> - Handle commands and emit events in response.</li>
 <li><strong><a href="/resolve/docs/write-side#aggregate-projection-function">Projections</a></strong> - Build aggregate state from events so this state can be observed on the write side, for example to perform input validation.</li>
 </ul>
 <h3><a class="anchor" aria-hidden="true" id="creating-an-aggregate"></a><a href="#creating-an-aggregate" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Creating an Aggregate</h3>
 <p>Use the following steps to implement the write side for your shopping list application.</p>
-<p>To add an aggregate to you shopping list application, first define types of events that this aggregate will produce. Create an <strong>eventTypes.js</strong> file in the project's <strong>common</strong> folder and add the following content to it.</p>
+<p>To add an aggregate to you shopping list application, first define types of events that this aggregate can produce. Create an <strong>eventTypes.js</strong> file in the project's <strong>common</strong> folder and add the following content to it.</p>
 <p><strong>common/eventTypes.js:</strong></p>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> SHOPPING_LIST_CREATED = <span class="hljs-string">"SHOPPING_LIST_CREATED"</span>;
@@ -83,10 +84,10 @@ create-resolve-app shopping-list
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> SHOPPING_ITEM_CREATED = <span class="hljs-string">"SHOPPING_ITEM_CREATED"</span>;
 </code></pre>
 <!-- prettier-ignore-end -->
-<p>For now, your application requires only two types of events:</p>
+<p>For now, your application requires only two event types:</p>
 <ul>
-<li>The SHOPPING_LIST_CREATED event signals about creation of a shopping list.</li>
-<li>The SHOPPING_ITEM_CREATED event signals about creation of an item within a shopping list.</li>
+<li>SHOPPING_LIST_CREATED - Signals about creation of a shopping list;</li>
+<li>The SHOPPING_ITEM_CREATED - Signals about creation of an item within a shopping list.</li>
 </ul>
 <p>Next, create a <strong>shopping_list.commands.js</strong> file in the <strong>common/aggregates</strong> folder. This file will contain command handlers for the ShoppingList aggregate. Add the following code to the file:</p>
 <p><strong>common/aggregates/shopping_list.commands.js:</strong></p>
@@ -107,9 +108,14 @@ create-resolve-app shopping-list
   }
 }
 </code></pre>
-<p>As you can see, the file exports an object containing two command handlers. A command handler receives the aggregate state and a command payload. A payload can contain any arbitrary data related to the command. For example, the <strong>createShoppingList</strong> command's payload contains a shopping list name, and the <strong>createShoppingItem</strong> command payload contains an item's ID and text to display.</p>
-<p>As the result of its execution, a command handler returns an event object. This object contains an obligatory <strong>type</strong> field defining the event's type and the <strong>payload</strong> field containing data associated with the event. In the example code, the event payloads contain the same field that were obtained from the command payloads. The reSolve framework saves events returned by command handlers to a persistent <strong><a href="/resolve/docs/write-side#event-store">event store</a></strong>. For now, your application is configured to use a file-based event store, which is sufficient for learning purposes. Later on, you will learn how to use different kinds of stores using <strong><a href="/resolve/docs/advanced-techniques#adapters">storage adapters</a></strong>.</p>
-<p>Your minimal shopping list aggregate is now ready. The last step is to register it in the application's configuration file. Open the <strong>config.app.js</strong> file, locate the <strong>aggregates</strong> section and specify the following settings:</p>
+<p>This file exports an object with two command handlers. A command handler receives the aggregate state and a command payload. A payload can contain any arbitrary data related to the command. For example, the <strong>createShoppingList</strong> command's payload contains a shopping list name, and the <strong>createShoppingItem</strong> command payload contains an item's ID and text to display.</p>
+<p>A command handler returns an event object. This object should contain the following obligatory fields:</p>
+<ul>
+<li><strong>type</strong> - specifies the event's type;</li>
+<li><strong>payload</strong> - specifies data associated with the event.</li>
+</ul>
+<p>In the example code, the event payload contains the same fields that were obtained from the command payloads. The reSolve framework saves events returned by command handlers to a persistent <strong><a href="/resolve/docs/write-side#event-store">event store</a></strong>. For now, your application is configured to use a file-based event store, which is sufficient for learning purposes.</p>
+<p>Your minimal shopping list aggregate is now ready. The last step is to register it in the application's configuration file. Open the <strong>config.app.js</strong> file, locate the <strong>aggregates</strong> configuration section and specify the following settings:</p>
 <p><strong>config.app.js:</strong></p>
 <pre><code class="hljs css language-js">...
 aggregates: [
@@ -120,10 +126,8 @@ aggregates: [
 ],
 ...
 </code></pre>
-<p>Here, you just specify the aggregate name and the path to the file containing the aggregate's command handlers.</p>
 <h3><a class="anchor" aria-hidden="true" id="sending-commands-to-an-aggregate"></a><a href="#sending-commands-to-an-aggregate" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Sending Commands to an Aggregate</h3>
-<p>Now that your application is capable of handling commands, you can try sending such commands to create a shopping list and populate it with items.</p>
-<p>ReSolve framework provides a standard API that allows you to send commands to an application's aggregate using HTTP requests.</p>
+<p>Now that your application can commands, you can use the reSolve framework's standard HTTP API to send such commands to create a shopping list and populate it with items.</p>
 <p>A request body should have the <code>application/json</code> content type and contain a JSON representation of the command:</p>
 <pre><code class="hljs">{
   <span class="hljs-attr">"aggregateName"</span>: <span class="hljs-string">"ShoppingList"</span>,
@@ -199,9 +203,9 @@ Content-Length: 146
 <h3><a class="anchor" aria-hidden="true" id="performing-validation"></a><a href="#performing-validation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Performing Validation</h3>
 <p>Your application's write side currently does not perform any input validation. This results in the following flaws:</p>
 <ul>
-<li>The aggregate allows you to create shopping lists and items without specifying the required fields in the payload.</li>
+<li>The command handlers do not check whether or not all required fields are provided in a command's payload.</li>
 <li>It is possible to create more then one shopping list with the same aggregate ID.</li>
-<li>You can create items for a shopping list that does not exist.</li>
+<li>You can create items in a shopping list that does not exist.</li>
 </ul>
 <p>You can overcome the first flaw by adding simple checks to each command handler:</p>
 <p><strong>common/aggregates/shopping_list.commands.js:</strong></p>
@@ -215,7 +219,7 @@ Content-Length: 146
   ...
 }
 </code></pre>
-<p>To overcome the second and third flaws, you need to somehow store information about previously performed operations. You can achieve this by maintaining an <strong>aggregate state</strong>. This state is assembled on the fly by an aggregate <strong>projection</strong> from previously created events. To add a projection to the ShoppingList aggregate, create a <strong>shopping_list.projection.js</strong> file in the <strong>common/aggregates</strong> folder and add the following code there:</p>
+<p>To overcome the second and third flaws, you you can use the <strong>aggregate state</strong>. This state is assembled on the fly by an aggregate <strong>projection</strong> from previously created events. To add a projection to the ShoppingList aggregate, create a <strong>shopping_list.projection.js</strong> file in the <strong>common/aggregates</strong> folder and add the following code there:</p>
 <p><strong>common/aggregates/shopping_list.projection.js:</strong></p>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { SHOPPING_LIST_CREATED } <span class="hljs-keyword">from</span> <span class="hljs-string">"../eventTypes"</span>;
@@ -333,9 +337,9 @@ Command error: shopping list does not exist
 <hr>
 <h2><a class="anchor" aria-hidden="true" id="lesson-3-read-side-create-a-view-model-to-query-list-items"></a><a href="#lesson-3-read-side-create-a-view-model-to-query-list-items" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 3</strong> - Read side - Create a View Model to Query List Items</h2>
 <p><a href="https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-3">[Get the Code for This Lesson]</a></p>
-<p>Currently, your shopping list application has a fully functional write side allowing you to create shopping lists and items in these lists. However, it does not provide means to query the created data. This lesson will teach you how to provide your application with the capability to answer data queries by implementing the application's <strong><a href="/resolve/docs/app-structure#write-and-read-sides">read side</a></strong>.</p>
+<p>Currently, your shopping list application has a fully functional write side. This allows your application to create shopping lists and items in these lists. However, with only a write side your application does not provide means to query the created data. This lesson will teach you how to implement the application's <strong><a href="/resolve/docs/app-structure#write-and-read-sides">read side</a></strong> to answer data queries.</p>
 <h3><a class="anchor" aria-hidden="true" id="implement-a-view-model"></a><a href="#implement-a-view-model" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Implement a View Model</h3>
-<p>A reSolve applications read side answers queries using <strong><a href="/resolve/docs/read-side#read-models">Read Models</a></strong>. In this lesson, you will implement a <strong><a href="/resolve/docs/read-side#view-model-specifics">View Model</a></strong>, which is a Read Model of a special kind used to build an application's state on the fly, so you can keep the implementation simple. In a <a href="#implement-a-shopping-lists-read-model">later lesson</a>, you will learn how to use regular Read Models to answer queries based on accumulated persistent state.</p>
+<p>A reSolve application's read side uses Read Models toe answer queries. In this lesson, you will implement a <strong><a href="/resolve/docs/read-side#view-model-specifics">View Model</a></strong>. View Models are Read Models used to build an application's state on the fly. This will allow you to keep the implementation simple. In a <a href="#implement-a-shopping-lists-read-model">later lesson</a>, you will learn how to use regular Read Models to answer queries based on an accumulated persistent state.</p>
 <p>Create a <strong>shopping_list.projection.js</strong> file in the <strong>view-models</strong> folder and add the following code to this file:</p>
 <p><strong>common/view-models/shopping_list.projection.js:</strong></p>
 <!-- prettier-ignore-start -->
@@ -375,7 +379,7 @@ viewModels: [
 ...
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="query-a-view-model-via-http-api"></a><a href="#query-a-view-model-via-http-api" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Query a View Model via HTTP API</h3>
-<p>Now you can tests the read side's functionality by sending an HTTP request to query the Shopping List View Model. You can query a View Model by sending an HTTP request to your application as shown below:</p>
+<p>Now you can tests the read side's functionality. Send an HTTP request to query the Shopping List View Model:</p>
 <pre><code class="hljs css language-sh">$  curl -i -g -X GET <span class="hljs-string">"http://localhost:3000/api/query/ShoppingList/shopping-list-1"</span>
 HTTP/1.1 200 OK
 X-Powered-By: Express
@@ -429,11 +433,11 @@ Connection: keep-alive
 <h2><a class="anchor" aria-hidden="true" id="lesson-4-frontend-display-view-model-data-in-the-browser"></a><a href="#lesson-4-frontend-display-view-model-data-in-the-browser" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 4</strong> - Frontend - Display View Model Data in the Browser</h2>
 <p><a href="https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-4">[Get the Code for This Lesson]</a></p>
 <p>In the previous lesson, you modified your application so that it can answer queries. However, at this moment, your application does not provide a <a href="/resolve/docs/frontend">frontent</a> that would present this data to an end-user. In this lesson, you will learn how to create a React frontend to display your reSolve application's data.</p>
-<p>To keep the example code simple, in this lesson you will only display items of a single shopping list. Later on, you will add support for multiple shopping lists and provide the required means of navigation between lists.</p>
+<p>In this lesson you will only display a single shopping list's items to keep the example code simple. Later on, you will add support for multiple shopping lists and provide the required means of navigation between lists.</p>
 <p>This tutorial sticks to React + Redux as the default choice for building a frontend for a reSolve application. Both React and Redux work well in conjunction with reSolve's infrastructure. ReSolve comes with the client <strong>resolve-redux</strong> library that provides HOCs allowing you to easily connect your React components to the backend.</p>
 <p>Note that, if required, you can use the <a href="/resolve/docs/curl">standard HTTP API</a> to communicate with a reSolve backend and implement the frontend using any client-side technology.</p>
 <h3><a class="anchor" aria-hidden="true" id="implement-a-react-frontend"></a><a href="#implement-a-react-frontend" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Implement a React Frontend</h3>
-<p>Create a <strong>ShoppingList.js</strong> file in the client application's containers folder. In this file, implement a component that displays a list of values obtained from the <strong><a href="/resolve/docs/frontend#obtain-view-model-data">data</a></strong> prop:</p>
+<p>Create a <strong>ShoppingList.js</strong> file in the client application's <strong>containers</strong> folder. In this file, implement a component that displays a list of values obtained from the <strong><a href="/resolve/docs/frontend#obtain-view-model-data">data</a></strong> prop:</p>
 <p><strong>client/containers/ShoppingList.js:</strong></p>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js"><span class="hljs-comment">// The example code uses components from the react-bootstrap library to keep the markup compact.</span>
@@ -455,7 +459,7 @@ Connection: keep-alive
 }
 </code></pre>
 <!-- prettier-ignore-end -->
-<p>Now you can use the <strong>resolve-redux</strong> library's <strong>connectViewModel</strong> HOC to bind your component to the <strong>ShoppingList</strong> view model implemented earlier:</p>
+<p>Now you can use the <strong>resolve-redux</strong> library's <strong>connectViewModel</strong> HOC to bind your component to the <strong>ShoppingList</strong> view model that you implemented earlier implemented earlier:</p>
 <p><strong>client/containers/ShoppingList.js:</strong></p>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapStateToOptions = <span class="hljs-function">(<span class="hljs-params">state, ownProps</span>) =&gt;</span> {
@@ -468,7 +472,7 @@ Connection: keep-alive
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> connectViewModel(mapStateToOptions)(ShoppingList)
 </code></pre>
 <!-- prettier-ignore-end -->
-<p>The connectViewModel HOC binds the original component to a reSolve View Model based on options provided by the <strong>mapStateToOptions</strong> function. The <strong>data</strong> prop that you used in your component's implementation is injected by this HOC and contains the View Model's response object. It is the same object that saw when you manually performed a data query using the HTTP API in the lesson 3:</p>
+<p>The connectViewModel HOC binds the original component to a reSolve View Model based on options specified by the <strong>mapStateToOptions</strong> function. The <strong>data</strong> prop that you used in your component's implementation is injected by this HOC and contains the View Model's response object. It is the same object that you saw when you manually performed a data query using the HTTP API in the lesson 3:</p>
 <pre><code class="hljs css language-js">{
   <span class="hljs-string">"id"</span>: <span class="hljs-string">"shopping-list-1"</span>,
   <span class="hljs-string">"name"</span>: <span class="hljs-string">"List 1"</span>,
@@ -576,14 +580,14 @@ Connection: keep-alive
 )
 </code></pre>
 <!-- prettier-ignore-end -->
-<p>In this code, the component is first connected to a <strong>Redux</strong> state using the <strong>connect</strong> HOC from the <strong>react-redux</strong> library. Then, the component is connected to a reSolve View Model as it was in the previous lesson. The <strong>connect</strong> function is called with the specified <strong>mapDispatchToProps</strong> function. This function takes reSolve aggregate actions from the components payload and wraps them into a <strong>dispatch</strong> function call using the the <strong>bindActionCreators</strong> function.</p>
+<p>In this code, the component is first connected to a <strong>Redux</strong> state using the <strong>connect</strong> HOC from the <strong>react-redux</strong> library. Then, the component is connected to a reSolve View Model as in the previous lesson. The <strong>connect</strong> function is called with the specified <strong>mapDispatchToProps</strong> function. This function takes reSolve aggregate actions from the components payload and wraps them into a <strong>dispatch</strong> function call using the the <strong>bindActionCreators</strong> function.</p>
 <p>Now the ShoppingList component's props include the <strong>toggleShoppingItem</strong> function.</p>
 <p><strong>common/view-models/shopping_list.projection.js:</strong></p>
 <pre><code class="hljs css language-js">render() {
   <span class="hljs-keyword">const</span> toggleShoppingItem = <span class="hljs-keyword">this</span>.props.toggleShoppingItem;
   ...
 </code></pre>
-<p>You can use this function to handle item checking on the client and send the <strong>toggleShoppingItem</strong> command to the server along with the required data in the payload.</p>
+<p>You can use this function to handle item selection on the client and send the <strong>toggleShoppingItem</strong> command to the server along with the required data in the payload.</p>
 <p>In the code below, the <strong>toggleShoppingItem</strong> function is used to handle checkbox click events.</p>
 <p><strong>client/containers/ShoppingList.js:</strong></p>
 <!-- prettier-ignore-start -->
@@ -655,7 +659,7 @@ onItemTextPressEnter = <span class="hljs-function"><span class="hljs-params">eve
 <hr>
 <h2><a class="anchor" aria-hidden="true" id="lesson-6-frontend-support-multiple-shopping-lists"></a><a href="#lesson-6-frontend-support-multiple-shopping-lists" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 6</strong> - Frontend - Support Multiple Shopping Lists</h2>
 <p><a href="https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-6">[Get the Code for This Lesson]</a></p>
-<p>In the previous two lessons, you have been implementing the client-side UI for viewing and editing items in a shopping list. However, you may have noticed that your application's functionality is incomplete: it is possible use HTTP API to create multiple shopping lists, but the client UI only allows viewing and editing only one specific list, namely <strong>shopping-list-1</strong>:</p>
+<p>In the previous two lessons, you implemented the client-side UI for viewing and editing items in a shopping list. However, you may have noticed that your application's functionality is incomplete: it is possible use HTTP API to create multiple shopping lists, but the client UI only allows an end uesr to view and edit only one specific list, namely <strong>shopping-list-1</strong>:</p>
 <p><strong>client/containers/ShoppingList.js:</strong></p>
 <pre><code class="hljs css language-jsx"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapStateToOptions = <span class="hljs-function">(<span class="hljs-params">state, ownProps</span>) =&gt;</span> {
   <span class="hljs-keyword">return</span> {
@@ -664,11 +668,11 @@ onItemTextPressEnter = <span class="hljs-function"><span class="hljs-params">eve
   }
 }
 </code></pre>
-<p>In this lesson, you will enhance your application's functionality with the capability to create multiple shopping lists, navigate between these lists and add items to them using the client UI.</p>
+<p>In this lesson, you will enhance your application's functionality with the capability to create multiple shopping lists, navigate between these lists and add items to them from the client UI.</p>
 <h3><a class="anchor" aria-hidden="true" id="implement-a-shopping-lists-read-model"></a><a href="#implement-a-shopping-lists-read-model" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Implement a Shopping Lists Read Model</h3>
-<p>In the <a href="#lesson-3-read-side-create-a-view-model-to-query-list-items">Lesson 3</a>, you have implemented a View Model used to obtain information about shopping lists with the specified aggregate ID's. Although it is possible to use the same approach for obtaining the list of all available shopping lists, there is a strong reason not to do so.</p>
-<p>Consider a situation, in which your application has been running in a production environment for a long time and a large number of shopping lists has been created. If you used a View Model to answer queries, a resulting data sample would be generated on the fly for every requests using events from the beginning of the history, which will result in a huge performance overhead on <em>each request</em>. Note that it is not a problem when you use a View Model to obtain a single list's items as the item count is always considerably small.</p>
-<p>To overcome this issue, implement a ShoppingLists <strong><a href="/resolve/docs/read-side#read-models">Read Model</a></strong>. This Read Model will gradually accumulate its state based on incoming events and store this state in the Read Model Storage. This part of the functionality is implemented by the Read Model <strong><a href="/resolve/docs/read-side">projection</a></strong>:</p>
+<p>In the <a href="#lesson-3-read-side-create-a-view-model-to-query-list-items">Lesson 3</a>, you have implemented a View Model used to obtain information about shopping lists with the specified aggregate ID's. Although it is possible to use the same approach to obtain the list of all available shopping lists, there is a strong reason not to do so.</p>
+<p>Consider a situation, in which your application runs in a production environment for a long time and a large number of shopping lists is created. If you used a View Model to answer queries, a resulting data sample would be generated on the fly for every requests based on events from the beginning of the history. Thish would result in a huge performance overhead on <em>each request</em>. Note that it is not a problem when you use a View Model to obtain a single list's items as the item count is always considerably small.</p>
+<p>To overcome this issue, implement a ShoppingLists <strong><a href="/resolve/docs/read-side#read-models">Read Model</a></strong>. This Read Model will gradually accumulate its state based on the incoming events and store this state in the Read Model Storage. This part of the functionality is implemented by the Read Model <strong><a href="/resolve/docs/read-side">projection</a></strong>:</p>
 <p><strong>common/read-models/shopping_lists.projection.js:</strong></p>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { SHOPPING_LIST_CREATED } <span class="hljs-keyword">from</span> <span class="hljs-string">'../eventTypes'</span>
@@ -698,7 +702,7 @@ onItemTextPressEnter = <span class="hljs-function"><span class="hljs-params">eve
 }
 </code></pre>
 <!-- prettier-ignore-end -->
-<p>You also need to implement <strong><a href="/resolve/docs/read-side#resolvers">resolver functions</a></strong> that will answer queries using the accumulated data.</p>
+<p>You also need to implement <strong><a href="/resolve/docs/read-side#resolvers">resolver functions</a></strong> that use the accumulated data to answer queries.</p>
 <p><strong>common/read-models/shopping_lists.resolvers.js:</strong></p>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
@@ -723,7 +727,7 @@ onItemTextPressEnter = <span class="hljs-function"><span class="hljs-params">eve
 <!-- prettier-ignore-end -->
 <p>Note that regular Read Models are not reactive like View Models are. This results in several side effects, that will be discussed in greater detail later in this lesson.</p>
 <h3><a class="anchor" aria-hidden="true" id="query-a-read-model-through-http-api"></a><a href="#query-a-read-model-through-http-api" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Query a Read Model Through HTTP API</h3>
-<p>You can test the ShoppingLists Read Model's functionality using the standard HTTP API:</p>
+<p>You can use the standard HTTP API to test the ShoppingLists Read Model's functionality:</p>
 <pre><code class="hljs css language-sh">$ curl -X POST \
 -H <span class="hljs-string">"Content-Type: application/json"</span> \
 -d <span class="hljs-string">"{}"</span> \
@@ -864,15 +868,15 @@ export default App
 <p>You will notice that although you application correctly sends commands to the backend, the client UI does not reflect the change made to the application state. A newly created shopping list only appears after you refresh the page. This is an expected behavior because Read Models are not reactive by default. This means that components connected to Read Models do not automatically synchronize their Redux state with the Read Model state on the server.</p>
 <p>You can overcome this limitation by introducing optimistic UI updates as the next section describes.</p>
 <h3><a class="anchor" aria-hidden="true" id="support-optimistic-ui-updates"></a><a href="#support-optimistic-ui-updates" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Support Optimistic UI Updates</h3>
-<p>With the optimistic UI updating approach, a component applies model changes to the client Redux state before sending them to the server using an aggregate command. Follow the steps below to provide such functionality.</p>
-<p>First, define Redux actions that will perform updates:</p>
+<p>With the optimistic UI updating approach, a component applies model changes to the client Redux state before it sends the changes to the server using an aggregate command. Follow the steps below to provide such functionality.</p>
+<p>First, define Redux actions that performs updates:</p>
 <p><strong>client/actions/optimistic_actions.js:</strong></p>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> OPTIMISTIC_CREATE_SHOPPING_LIST = <span class="hljs-string">'OPTIMISTIC_CREATE_SHOPPING_LIST'</span>
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> OPTIMISTIC_SYNC = <span class="hljs-string">'OPTIMISTIC_SYNC'</span>
 </code></pre>
 <!-- prettier-ignore-end -->
-<p>Implement an optimistic reducer function that responds to these commands to update the corresponding slice of the Redux state:</p>
+<p>Implement an optimistic reducer function that responds to these actions to update the corresponding slice of the Redux state:</p>
 <p><strong>client/reducers/optimistic_shopping_lists.js:</strong></p>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { LOCATION_CHANGE } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-redux'</span>
@@ -956,9 +960,9 @@ export default App
 <hr>
 <h2><a class="anchor" aria-hidden="true" id="lesson-7-functionality-enhancements"></a><a href="#lesson-7-functionality-enhancements" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 7</strong> - Functionality Enhancements</h2>
 <p><a href="https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-7">[Get the Code for This Lesson]</a></p>
-<p>In this lesson, you will provide miscellaneous functionality enhancements to your Shopping List application in order to support the full set of data editing operations. These steps are not essential, but they will help you further deepen your understanding of the reSolve framework's fundamentals.</p>
+<p>In this lesson, you will provide miscellaneous functionality enhancements to your Shopping List application to support the full set of data editing operations. These steps are not essential, but they will help you further deepen your understanding of the reSolve framework's fundamentals.</p>
 <h3><a class="anchor" aria-hidden="true" id="modify-the-write-side"></a><a href="#modify-the-write-side" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Modify the Write Side</h3>
-<p>Define additional events to provide the missing functionality.</p>
+<p>Define additional events to implement the missing functionality.</p>
 <p><strong>common/event_types.js:</strong></p>
 <pre><code class="hljs css language-js">...
 export <span class="hljs-keyword">const</span> SHOPPING_LIST_RENAMED = <span class="hljs-string">'SHOPPING_LIST_RENAMED'</span>
@@ -971,7 +975,7 @@ export <span class="hljs-keyword">const</span> SHOPPING_LIST_RENAMED = <span cla
 <p><strong>common/aggregates/shopping_list.projection.js:</strong></p>
 <pre><code class="hljs css language-js">[SHOPPING_LIST_REMOVED]: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> ({})
 </code></pre>
-<p>Define command handlers to provide the data editing functionality.</p>
+<p>Define command handlers to provide the capability to edit data.</p>
 <p><strong>common/aggregates/shopping_list.commands.js:</strong></p>
 <pre><code class="hljs css language-js">...
 
@@ -1034,8 +1038,8 @@ export <span class="hljs-keyword">const</span> SHOPPING_LIST_RENAMED = <span cla
 <p>Add the required static content to the application's <strong>static</strong> folder. The example application uses the following static files:</p>
 <ul>
 <li>The <strong>Styles.css</strong> file - Contains custom styles used by the application's client components.</li>
-<li>The <strong>fontawesome.min.css</strong> file an the <strong>webfonts</strong> folder - The standard Font Awesome distribution.</li>
-<li>The <strong>close-button.png</strong> image - An icon displayed by the button used to remove shopping list items.</li>
+<li>The <strong>fontawesome.min.css</strong> file an the <strong>webfonts</strong> folder - The standard <a href="https://fontawesome.com/">Font Awesome</a> distribution.</li>
+<li>The <strong>close-button.png</strong> image - An icon that the button used to remove shopping list items displays.</li>
 </ul>
 <h4><a class="anchor" aria-hidden="true" id="update-components"></a><a href="#update-components" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Update Components</h4>
 <p>Modify the ShoppingLists component to support shopping list deletion.</p>
@@ -1058,7 +1062,7 @@ export <span class="hljs-keyword">const</span> SHOPPING_LIST_RENAMED = <span cla
 ...
 &lt;ShoppingLists lists={lists} removeShoppingList={removeShoppingList} /&gt;
 </code></pre>
-<p>Modify the ShoppingList component to support shopping list renaming.</p>
+<p>Modify the ShoppingList component to provide the capability to rename shopping lists.</p>
 <p><strong>client/containers/ShoppingList.js:</strong></p>
 <pre><code class="hljs css language-js">state = {
   <span class="hljs-attr">shoppingListName</span>: <span class="hljs-keyword">this</span>.props.data &amp;&amp; <span class="hljs-keyword">this</span>.props.data.name
@@ -1136,7 +1140,7 @@ export <span class="hljs-keyword">default</span> connectStaticBasedUrls([<span c
 /&gt;
 </code></pre>
 <h4><a class="anchor" aria-hidden="true" id="update-the-optimistic-update-code"></a><a href="#update-the-optimistic-update-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Update the Optimistic Update Code</h4>
-<p>Modify the code performing optimistic UI updates to support shopping list deletion.</p>
+<p>Modify the code related to optimistic UI updates to support shopping list deletion.</p>
 <p><strong>client/actions/optimistic_actions.js:</strong></p>
 <pre><code class="hljs css language-js">...
 export <span class="hljs-keyword">const</span> OPTIMISTIC_REMOVE_SHOPPING_LIST = <span class="hljs-string">'OPTIMISTIC_REMOVE_SHOPPING_LIST'</span>

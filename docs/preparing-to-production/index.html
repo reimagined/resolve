@@ -37,7 +37,7 @@
             });
         </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Preparing to Production</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="configuration-options"></a><a href="#configuration-options" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Configuration Options</h2>
 <p>When you move your application to production, you need to perform all required configurations according to your production environment's specifics.</p>
-<p>An application is built for production using the <strong>build</strong> script, and run in the production mode using the <strong>start</strong> script. By default, an application running in the production mode takes into account settings specifies in the <strong>prodConfig</strong> configuration object (the <strong>config.prod.js</strong> file). However, you can use other config structure as long as you properly register it in the <strong>run.js</strong> file.</p>
+<p>An application is built for production using the <strong>build</strong> script, and run in the production mode using the <strong>start</strong> script. By default, an application that runs in the production mode takes into account settings specifies in the <strong>prodConfig</strong> configuration object (the <strong>config.prod.js</strong> file). However, you can use other config structure as long as you properly register it in the <strong>run.js</strong> file.</p>
 <p>An example <strong>config.prod.js</strong> file:</p>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> prodConfig = {
@@ -60,9 +60,9 @@
 </code></pre>
 <!-- prettier-ignore-end -->
 <h2><a class="anchor" aria-hidden="true" id="configuring-adapters"></a><a href="#configuring-adapters" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Configuring Adapters</h2>
-<p>Before moving your app into production, specify all required <a href="/resolve/docs/advanced-techniques#adapters">adapters</a> in the production config.</p>
-<p>Depending on your requirements, you may want to specify storage adapters for events, read model data and view model snapshots.</p>
-<p>The code below demonstrates how to set up a storage adapter on the example of an in-memory read model storage:</p>
+<p>Before you move your app into production, specify all required <a href="/resolve/docs/advanced-techniques#adapters">adapters</a> in the production config.</p>
+<p>Depending on your requirements, you may want to specify storage adapters for events, Read Model data and View Model snapshots.</p>
+<p>The code below demonstrates how to set up a storage adapter on the example of an in-memory Read Model storage:</p>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js">readModelAdapters: {
     <span class="hljs-attr">HackerNews</span>: {
@@ -72,8 +72,9 @@
   },
 </code></pre>
 <!-- prettier-ignore-end -->
-<p>In addition to storage adapters, you can specify adapters that define how your application communicates with underlying APIs. For example, use the API handler adapters, to define how your application handles API requests. You can also provide a bus adapter and subscribe adapter, to define how your application sends events and subscribes to events.</p>
-<p>To get familiar with the available adapters, see the <strong><a href="https://github.com/reimagined/resolve/tree/master/packages/adapters">adapters</a></strong> package documentation.</p>
+<p>In addition to storage adapters, you can specify adapters that define how your application communicates with underlying APIs. For example, use the API handler adapters, to define how your application handles API requests.
+You can also provide a bus adapter and subscribe adapter to define how your application sends events and subscribes to events.</p>
+<p>to familiarize yourself with the available adapters, see the <strong><a href="https://github.com/reimagined/resolve/tree/master/packages/adapters">adapters</a></strong> package documentation.</p>
 <h2><a class="anchor" aria-hidden="true" id="using-environment-variables"></a><a href="#using-environment-variables" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Using Environment Variables</h2>
 <p>Use the <strong>declareRuntimeEnv</strong> function from the <strong>resolve-scripts</strong> library to bind a configuration setting value to an environment variable:</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { declareRuntimeEnv } <span class="hljs-keyword">from</span> <span class="hljs-string">'resolve-scripts'</span>
@@ -101,7 +102,7 @@
   ]
 }
 </code></pre>
-<p>This approach is useful when you need to assign settings that should not be included in application sources (e.g., authentication credentials or secret keys) or settings that should be defined by the current server instance.</p>
+<p>This approach is useful when you need to assign settings that should not be included in application sources (e.g., authentication credentials or secret keys) or settings that should be defined by a server instance.</p>
 </span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/resolve/docs/authentication-and-authorization"><span class="arrow-prev">← </span><span>Authentication and Authorization</span></a><a class="docs-next button" href="/resolve/docs/api-reference"><span>API Reference</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#configuration-options">Configuration Options</a></li><li><a href="#configuring-adapters">Configuring Adapters</a></li><li><a href="#using-environment-variables">Using Environment Variables</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/resolve/" class="nav-home"><img src="/resolve/img/resolve.svg" alt="reSolve" width="66" height="58"/></a><div><h5>Docs</h5><a href="/resolve/docs/">Documentation Index</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/resolvejs" target="_blank" rel="noreferrer noopener">Stack Overflow</a><a href="https://twitter.com/resolvejs" target="_blank" rel="noreferrer noopener">Twitter</a><a href="https://www.facebook.com/resolvejs/" target="_blank" rel="noreferrer noopener">Facebook</a></div><div><h5>More</h5><a href="https://github.com/reimagined/resolve">GitHub</a><a class="github-button" href="https://github.com/reimagined/resolve" data-icon="octicon-star" data-count-href="/reimagined/resolve/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2019 Developer Express, Inc</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
