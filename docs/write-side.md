@@ -78,12 +78,12 @@ The request body should have the `application/json` content type and contain a J
 }
 ```
 
-| Name              | Type   | Description                                                                                   |
-| ----------------- | ------ | --------------------------------------------------------------------------------------------- |
-| **aggregateId**   | string | The ID of an aggregate that should handle the command                                         |
-| **aggregateName** | string | The aggregate's name as defined in [config.app.js](../examples/shopping-list/config.app.js)   |
-| **commandType**   | string | The command type that [the aggregate](../examples/shopping-list/common/aggregates) can handle |
-| **payload**       | object | The parameters that [the command](../examples/shopping-list/common/aggregates) accepts        |
+| Name              | Type   | Description                                           |
+| ----------------- | ------ | ----------------------------------------------------- |
+| **aggregateId**   | string | The ID of an aggregate that should handle the command |
+| **aggregateName** | string | The aggregate's name as defined in **config.app.js**  |
+| **commandType**   | string | The command type that the aggregate can handle        |
+| **payload**       | object | The parameters that the command accepts               |
 
 ##### Example
 
