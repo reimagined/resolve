@@ -16,12 +16,20 @@ const configs = getCompileConfigs()
 for (const { directory, name } of configs) {
   const rollback = patchPackageJson(directory)
 
+  execSync(`yarn cache clean http://0.0.0.0:10080/${safeName(name)}`, {
+    cwd: directory,
+    stdio: 'inherit'
+  })
+
   execSync(
     `yarn pack --filename="${path.join(
       localRegistry.directory,
       safeName(name)
     )}"`,
-    { cwd: directory }
+    {
+      cwd: directory,
+      stdio: 'inherit'
+    }
   )
 
   rollback()

@@ -11,7 +11,8 @@ import createEventStore from 'resolve-es'
 import createQueryExecutor, { constants as queryConstants } from 'resolve-query'
 
 import mainHandler from './handlers/main_handler'
-import handleResolveEvent from './handlers/resolve_event_handler'
+import handleDeployServiceEvent from './handlers/deploy_service_event_handler'
+import handleEventBusEvent from './handlers/event_bus_event_handler'
 
 const invokeLambdaSelf = async event => {
   const lambda = new Lambda({ apiVersion: '2015-03-31' })
@@ -147,11 +148,21 @@ const lambdaWorker = async (
     if (lambdaEvent.resolveSource === 'DeployService') {
       resolveLog(
         'debug',
-        'Lambda handler classified event as reSolve event',
+        'Lambda handler classified event as DeployService event',
         lambdaEvent
       )
 
-      executorResult = await handleResolveEvent(lambdaEvent, resolve)
+      executorResult = await handleDeployServiceEvent(lambdaEvent, resolve)
+    }
+    // Resolve event invoked by event bus
+    else if (lambdaEvent.resolveSource === 'EventBus') {
+      resolveLog(
+        'debug',
+        'Lambda handler classified event as Event Bus event',
+        lambdaEvent
+      )
+
+      executorResult = await handleEventBusEvent(lambdaEvent, resolve)
     }
     // API gateway event
     else if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {

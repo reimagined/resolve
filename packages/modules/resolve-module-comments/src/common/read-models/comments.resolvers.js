@@ -197,7 +197,9 @@ const createCommentsProjection = ({
     )
 
     const paginationDone = linearizedComments.length <= itemsOnPageInt
-    linearizedComments.pop()
+    if (!paginationDone) {
+      linearizedComments.pop()
+    }
 
     return {
       comments: linearizedComments.map(({ childCommentId, ...rest }) => ({

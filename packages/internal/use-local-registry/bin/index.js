@@ -1,14 +1,18 @@
 #!/usr/bin/env node
+const minimist = require('minimist')
+
+const args = minimist(process.argv.slice(2))
+const cwd = args._[0]
 
 const { execSync } = require('child_process')
 
 const { patchPackageJson } = require('@internal/helpers')
 
-const rollback = patchPackageJson(process.cwd())
+const rollback = patchPackageJson(cwd)
 
-execSync('yarn', { cwd: process.cwd(), stdio: 'inherit' })
+execSync('yarn', { cwd, stdio: 'inherit' })
 
-execSync(process.argv.slice(2).join(' '), { stdio: 'inherit' })
+execSync('yarn resolve-cloud deploy', { cwd, stdio: 'inherit' })
 
 rollback()
 

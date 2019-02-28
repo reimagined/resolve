@@ -1,4 +1,4 @@
-import handleResolveEvent from '../src/handlers/resolve_event_handler'
+import handleDeployServiceEvent from '../src/handlers/deploy_service_event_handler'
 
 describe('resolve event handler', () => {
   const executor = {
@@ -27,7 +27,7 @@ describe('resolve event handler', () => {
         operation: 'someUnknownOperation'
       }
 
-      const result = await handleResolveEvent(lambdaEvent, resolve)
+      const result = await handleDeployServiceEvent(lambdaEvent, resolve)
       expect(result).toEqual(null)
 
       expect(resolve.executeQuery.getExecutors).toHaveBeenCalledTimes(0)
@@ -39,7 +39,7 @@ describe('resolve event handler', () => {
         part: 'someUnknownPart'
       }
 
-      const result = await handleResolveEvent(lambdaEvent, resolve)
+      const result = await handleDeployServiceEvent(lambdaEvent, resolve)
       expect(result).toEqual(null)
 
       expect(resolve.executeQuery.getExecutors).toHaveBeenCalledTimes(0)
@@ -56,7 +56,7 @@ describe('resolve event handler', () => {
 
       resolve.executeQuery.getExecutors.mockReturnValueOnce([executor])
 
-      const result = await handleResolveEvent(lambdaEvent, resolve)
+      const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
       expect(result).toEqual('ok')
 
@@ -79,7 +79,7 @@ describe('resolve event handler', () => {
 
       resolve.executeQuery.getExecutor.mockReturnValueOnce(executor)
 
-      const result = await handleResolveEvent(lambdaEvent, resolve)
+      const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
       expect(result).toEqual('ok')
 
@@ -99,7 +99,7 @@ describe('resolve event handler', () => {
         operation: 'list'
       }
 
-      const result = await handleResolveEvent(lambdaEvent, resolve)
+      const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
       expect(result).toEqual(['readModel1', 'readModel2'])
     })
