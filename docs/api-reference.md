@@ -27,9 +27,111 @@ The table below lists functions that should be included into an implementation o
 
 The table below lists functions that you can use to communicate with a Read Model store through a `store` object.
 
-| Function Name | Description |
-| ------------- | ----------- |
-|               |             |
+| Function Name                                                       | Description                                                                       |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| defineTable(tableName, tableDescription)                            | Defines a new table within the store.                                             |
+| find(tableName, searchExpression, fieldList, sort, skip, limit)     | Searches for data items that based on the specified expression.                   |
+| findOne(tableName, searchExpression, fieldList)                     | Searches for a single data item based on the specified expression.                |
+| count(tableName, searchExpression)                                  | Returns the count of items that meet the specified condition.                     |
+| insert(tableName, document)                                         | Inserts an item into the specified table                                          |
+| update(tableName, searchExpression, updateExpression, upsertOption) | Searches for data items and updates them based on the specified update expression |
+| del(tableName, searchExpression)                                    | Deletes data items based on the specified search expression                       |
+
+The code sample below demonstrates how to use this API to communicate with a store from a Read Model projection and resolver.
+
+##### Projection:
+
+```js
+  Init: async store => {
+    await store.defineTable('Stories', {
+      indexes: { id: 'string', type: 'string' },
+      fields: [
+        'title',
+        'text',
+        'link',
+        'commentCount',
+        'votes',
+        'createdAt',
+        'createdBy',
+        'createdByName'
+      ]
+    })
+
+  [STORY_CREATED]: async (
+    store, { aggregateId, timestamp, payload: { title, link, userId, userName, text } }
+  ) => {
+    const isAsk = link == null || link === ''
+    const type = isAsk ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story'
+
+    const story = {
+      id: aggregateId,
+      type,
+      title,
+      text,
+      link: !isAsk ? link : '',
+      commentCount: 0,
+      votes: [],
+      createdAt: timestamp,
+      createdBy: userId,
+      createdByName: userName
+    }
+
+    await store.insert('Stories', story)
+  },
+
+  [STORY_UPVOTED]: async (store, { aggregateId, payload: { userId } }) => {
+    const story = await store.findOne(
+      'Stories',
+      { id: aggregateId },
+      { votes: 1 }
+    )
+    await store.update(
+      'Stories',
+      { id: aggregateId },
+      { $set: { votes: story.votes.concat(userId) } }
+    )
+  },
+
+```
+
+##### Resolver:
+
+```js
+const getStories = async (type, store, { first, offset }) => {
+  await store.waitEventCausalConsistency()
+  const search = type && type.constructor === String ? { type } : {}
+  const skip = first || 0
+  const stories = await store.find(
+    'Stories',
+    search,
+    null,
+    { createdAt: -1 },
+    skip,
+    skip + offset
+  )
+
+  return Array.isArray(stories) ? stories : []
+}
+
+const getStory = async (store, { id }) => {
+  await store.waitEventCausalConsistency()
+  const story = await store.findOne('Stories', { id })
+
+  if (!story) {
+    return null
+  }
+
+  const type = !story.link
+    ? 'ask'
+    : /^(Show HN)/.test(story.title)
+    ? 'show'
+    : 'story'
+
+  Object.assign(story, { type })
+
+  return story
+}
+```
 
 ## Client-Side API
 
