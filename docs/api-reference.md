@@ -239,3 +239,5 @@ $ curl -X POST http://localhost:3000/api/commands/ \
 }
 '
 ```
+
+Refer to the [Standard HTTP API](curl.md) document for more information.
