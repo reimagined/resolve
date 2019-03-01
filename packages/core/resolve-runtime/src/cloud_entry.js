@@ -6,6 +6,7 @@ import STS from 'aws-sdk/clients/sts'
 import Lambda from 'aws-sdk/clients/lambda'
 
 import wrapApiHandler from 'resolve-api-handler-awslambda'
+import { decodeEmptyStrings } from 'resolve-storage-dynamo'
 import createCommandExecutor from 'resolve-command'
 import createEventStore from 'resolve-es'
 import createQueryExecutor, { constants as queryConstants } from 'resolve-query'
@@ -187,7 +188,12 @@ const lambdaWorker = async (
       const applicationPromises = []
       const events = lambdaEvent.Records.map(record =>
         Converter.unmarshall(record.dynamodb.NewImage)
-      )
+      ).map(({ payload, ...metaEvent }) => ({
+        ...metaEvent,
+        ...(payload !== undefined
+          ? { payload: decodeEmptyStrings(payload) }
+          : {})
+      }))
       for (const event of events) {
         const eventDescriptor = {
           topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
