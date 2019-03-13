@@ -41,7 +41,7 @@
   "babelCompile": [
     {
       "moduleType": "cjs",
-      "moduleTarget": "server",
+      "moduleTarget": "client",
       "inputDir": "./src/common",
       "outDir": "./lib/common"
     },
