@@ -13,20 +13,12 @@ export default ({ resolveConfig, isClient }) => {
 
   return {
     code: `
-      require('$resolve.installLogger')
-      const interopRequireDefault = require('@babel/runtime/helpers/interopRequireDefault')
+      import createStorageAdapter from '$resolve.storageAdapter'
+      import eventBrokerConfig from '$resolve.eventBroker'
+      import createLocalBusBroker from 'resolve-local-event-broker'
+      import createEventStore from 'resolve-es'
 
-      const initBroker = (createLocalBusBroker) => {
-        const createStorageAdapter = interopRequireDefault(
-          require('$resolve.storageAdapter')
-        ).default
-        const eventBrokerConfig = interopRequireDefault(
-          require('$resolve.eventBroker')
-        ).default
-        const createEventStore = interopRequireDefault(
-          require('resolve-es')
-        ).default
-
+      Promise.resolve().then(() => {
         const eventStore = createEventStore({ 
           storage: createStorageAdapter()
         })
@@ -37,25 +29,7 @@ export default ({ resolveConfig, isClient }) => {
         })
 
         localBusBroker.run()
-      }
-
-      let createLocalBusBroker = null
-      try {
-        createLocalBusBroker = interopRequireDefault(
-          require('resolve-local-event-broker')
-        ).default
-      } catch(error) {
-        console.log(\`                WARNING
-          Module "resolve-local-event-broker" is not installed for current application.
-          Local bus broker will not run, so read-models and sagas are suspended.
-          To allow event transmission, run "yarn add resolve-local-event-broker" or
-          "npm install resolve-local-event-broker" in your application folder.
-        \`)
-      }
-
-      if (createLocalBusBroker != null) {
-        initBroker(createLocalBusBroker)
-      }
+      })
     `
   }
 }

@@ -1,5 +1,4 @@
 import React from 'react'
-import plur from 'plur'
 import styled from 'styled-components'
 
 const SECOND = 1000
@@ -24,13 +23,13 @@ class TimeAgo extends React.PureComponent {
       return 'less than a minute ago'
     } else if (difference / HOUR < 1) {
       const minutes = Math.floor(difference / MINUTE)
-      return `${minutes} ${plur('minute', minutes)} ago`
+      return `${minutes} minute(s) ago`
     } else if (difference / DAY < 1) {
       const hours = Math.floor(difference / HOUR)
-      return `${hours} ${plur('hour', hours)} ago`
+      return `${hours} hour(s) ago`
     } else {
       const days = Math.floor(difference / DAY)
-      return `${days} ${plur('day', days)} ago`
+      return `${days} day(s) ago`
     }
   }
 

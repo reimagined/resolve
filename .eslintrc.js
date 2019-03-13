@@ -245,7 +245,6 @@ module.exports = {
           'pid',
           'pingreq',
           'pingresp',
-          'plur',
           'png',
           'polyfill',
           'polyfills',
