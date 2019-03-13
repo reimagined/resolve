@@ -27,7 +27,3 @@ export const commentsTableName = 'Comments'
 export const commentsTree = 'commentsTree'
 export const foreignCommentsCount = 'foreignCommentsCount'
 export const allCommentsPaginate = 'allCommentsPaginate'
-
-// Consistency mode
-export const eventuallyConsistencyMode = 'eventuallyConsistencyMode'
-export const causalConsistencyMode = 'causalConsistencyMode'

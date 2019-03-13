@@ -21,7 +21,7 @@ const prodConfig = {
   mode: 'production',
   readModelAdapters: {
     HackerNews: {
-      module: 'resolve-readmodel-memory',
+      module: 'resolve-readmodel-lite',
       options: {}
     }
   },
@@ -50,7 +50,7 @@ The code below demonstrates how to set up a storage adapter on the example of an
 ```js
 readModelAdapters: {
     HackerNews: {
-      module: 'resolve-readmodel-memory',
+      module: 'resolve-readmodel-lite',
       options: {}
     }
   },

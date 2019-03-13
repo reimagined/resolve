@@ -25,7 +25,7 @@
     "resolve-runtime": "0.19.8",
     "resolve-storage-dynamo": "0.19.8",
     "resolve-storage-lite": "0.19.8",
-    "resolve-readmodel-memory": "0.19.8",
+    "resolve-readmodel-lite": "0.19.8",
     "resolve-readmodel-mysql": "0.19.8",
     "resolve-subscribe-mqtt": "0.19.8",
     "resolve-subscribe-socket.io": "0.19.8",

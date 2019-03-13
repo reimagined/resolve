@@ -22,13 +22,11 @@ const queryExecutor = createQueryExecutor({
 Pass the following arguments to the `createReadModel` factory function to create a **Read Model**:
 * `eventStore` - A configured [eventStore](../resolve-es) instance.
 * `projection` - An object with **Projection Functions** used to handle incoming Events and build the Read Model.
-* `adapter` - A Read Model [adapter](../../adapters/readmodel-adapters) instance. A memory [adapter](../../adapters/readmodel-adapters/resolve-readmodel-memory), which supports a simple query & projection API is used by default.
+* `adapter` - A Read Model [adapter](../../adapters/readmodel-adapters) instance. A memory [adapter](../../adapters/readmodel-adapters/resolve-readmodel-lite), which supports a simple query & projection API is used by default.
 * `resolvers` - An object with **Resolver Functions**. Each function should accept two arguments: the first argument is a reference to the target Read Model. The second argument is an object with fields used to extract data from a Read Model Storage.
 
 A **Read Model** supports the following functions to query data:
 * `read` - Performs a query within a Read Model via Resolvers. The first argument is a Resolver name; the second one contains an object with the Resolver function properties. Returns the Resolver execution result.
-* `getLastError` - Returns the last error that occurred while applying events by adapter-bound projection functions.
-* `getReadInterface` - Returns the underlying Read-Side Storage API object after it has been initialized. Can be used for direct read-only interactions with the Read-Model Storage.
 * `dispose` - Removes the Read Model. Invokes the Read Model Adapter's disposal mechanisms and stops listening to the Event Store bus. The default adapters' disposal operation disconnects with the storage and drops stored tables.
 
 

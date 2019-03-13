@@ -22,7 +22,7 @@
     "react-router-redux": "5.0.0-alpha.9",
     "@shopping-list-advanced/ui": "0.19.8",
     "resolve-module-auth": "0.19.8",
-    "resolve-readmodel-memory": "0.19.8",
+    "resolve-readmodel-lite": "0.19.8",
     "resolve-scripts": "0.19.8",
     "resolve-runtime": "0.19.8",
     "resolve-redux": "0.19.8"

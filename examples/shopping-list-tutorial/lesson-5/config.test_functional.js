@@ -11,10 +11,6 @@ const testFunctionalConfig = {
     module: 'resolve-storage-lite',
     options: {}
   },
-  busAdapter: {
-    module: 'resolve-bus-memory',
-    options: {}
-  },
   subscribeAdapter: {
     module: 'resolve-subscribe-socket.io',
     options: {}

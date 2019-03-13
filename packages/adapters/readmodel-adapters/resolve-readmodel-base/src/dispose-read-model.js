@@ -1,15 +1,9 @@
-const disposeReadModel = async (readModel, options = {}) => {
-  if (options == null || options.constructor !== Object) {
-    throw new Error(
-      'Dispose options should be object or not be passed to use default behaviour'
-    )
-  }
-
+const disposeReadModel = async readModel => {
   if (readModel.disposePromise) {
     return await readModel.disposePromise
   }
 
-  const disposePromise = readModel.metaApi.dropReadModel()
+  const disposePromise = readModel.dropReadModel()
 
   for (const key of Object.keys(readModel)) {
     delete readModel[key]

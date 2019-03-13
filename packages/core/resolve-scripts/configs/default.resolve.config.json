@@ -25,10 +25,6 @@
       "pathToFile": "event-storage.db"
     }
   },
-  "busAdapter": {
-    "module": "resolve-bus-memory",
-    "options": {}
-  },
   "subscribeAdapter": {
     "module": "resolve-subscribe-socket.io",
     "options": {}
@@ -38,6 +34,12 @@
     "options": {}
   },
   "readModelAdapters": [],
+  "eventBroker": {
+    "zmqBrokerAddress": "tcp://127.0.0.1:3500",
+    "zmqConsumerAddress": "tcp://127.0.0.1:3501",
+    "databaseFile": "local-bus-broker.db",
+    "batchSize": 100
+  },
   "jwtCookie": {
     "name": "jwt",
     "maxAge": 31536000000

@@ -15,7 +15,7 @@ describe('base config works correctly', () => {
     ],
     readModelAdapters: {
       Todos: {
-        module: 'resolve-readmodel-memory',
+        module: 'resolve-readmodel-lite',
         options: {}
       }
     }
@@ -64,11 +64,11 @@ describe('base(v2) config works correctly', () => {
     ],
     readModelAdapters: {
       Todos: {
-        module: 'resolve-readmodel-memory',
+        module: 'resolve-readmodel-lite',
         options: {}
       },
       Items: {
-        module: 'resolve-readmodel-memory',
+        module: 'resolve-readmodel-lite',
         options: {}
       }
     }

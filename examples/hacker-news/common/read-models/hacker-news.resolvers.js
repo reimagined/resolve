@@ -1,5 +1,4 @@
 const getStories = async (type, store, { first, offset }) => {
-  await store.waitEventCausalConsistency()
   const search = type && type.constructor === String ? { type } : {}
   const skip = first || 0
   const stories = await store.find(
@@ -15,7 +14,6 @@ const getStories = async (type, store, { first, offset }) => {
 }
 
 const getStory = async (store, { id }) => {
-  await store.waitEventCausalConsistency()
   const story = await store.findOne('Stories', { id })
 
   if (!story) {
@@ -34,7 +32,6 @@ const getStory = async (store, { id }) => {
 }
 
 const getUser = async (store, { id, name }) => {
-  await store.waitEventCausalConsistency()
   const user =
     name != null
       ? await store.findOne('Users', { name })

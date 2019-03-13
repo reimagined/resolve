@@ -11,10 +11,6 @@ const testFunctionalConfig = {
     module: 'resolve-storage-lite',
     options: {}
   },
-  busAdapter: {
-    module: 'resolve-bus-memory',
-    options: {}
-  },
   subscribeAdapter: {
     module: 'resolve-subscribe-socket.io',
     options: {}
@@ -26,7 +22,7 @@ const testFunctionalConfig = {
   readModelAdapters: [
     {
       name: 'default',
-      module: 'resolve-readmodel-memory',
+      module: 'resolve-readmodel-lite',
       options: {}
     }
   ]

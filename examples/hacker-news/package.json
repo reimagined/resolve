@@ -42,7 +42,7 @@
     "resolve-cloud": "^0.2.1",
     "resolve-module-auth": "0.19.8",
     "resolve-module-comments": "0.19.8",
-    "resolve-readmodel-memory": "0.19.8",
+    "resolve-readmodel-lite": "0.19.8",
     "resolve-readmodel-mysql": "0.19.8",
     "resolve-redux": "0.19.8",
     "resolve-scripts": "0.19.8",

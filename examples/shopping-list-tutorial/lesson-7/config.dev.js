@@ -13,10 +13,6 @@ const devConfig = {
       pathToFile: 'event-storage.db'
     }
   },
-  busAdapter: {
-    module: 'resolve-bus-memory',
-    options: {}
-  },
   subscribeAdapter: {
     module: 'resolve-subscribe-socket.io',
     options: {}
@@ -28,8 +24,10 @@ const devConfig = {
   readModelAdapters: [
     {
       name: 'default',
-      module: 'resolve-readmodel-memory',
-      options: {}
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'read-models.db'
+      }
     }
   ]
 }

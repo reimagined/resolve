@@ -1,15 +1,6 @@
-const read = async (
-  readModel,
-  { resolverName, resolverArgs, jwtToken, isBulkRead }
-) => {
+const read = async (readModel, { resolverName, resolverArgs, jwtToken }) => {
   if (readModel.disposePromise) {
     throw new Error('Read model is disposed')
-  }
-
-  await readModel.metaApi.reportDemandAccess()
-  // TODO: intoroduce `touch` function instead `isBulkRead` flag
-  if (isBulkRead) {
-    return null
   }
 
   const resolver = readModel.resolvers[resolverName]
@@ -19,23 +10,9 @@ const read = async (
     )
   }
 
-  await readModel.metaApi.beginTransaction(true)
+  const result = await resolver(readModel.readStoreApi, resolverArgs, jwtToken)
 
-  try {
-    const result = await resolver(
-      readModel.readStoreApi,
-      resolverArgs,
-      jwtToken
-    )
-
-    await readModel.metaApi.rollbackTransaction(true)
-
-    return result
-  } catch (error) {
-    await readModel.metaApi.rollbackTransaction(true)
-
-    throw error
-  }
+  return result
 }
 
 export default read

@@ -1,0 +1,50 @@
+{
+  "name": "resolve-local-event-broker",
+  "version": "0.19.8",
+  "description": "This package create server with resolve.",
+  "engines": {
+    "node": ">=8.10"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "author": "reimagined team",
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "scripts": {
+    "test": "jest --config=../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../jest.config.js --watchAll"
+  },
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-local-event-broker#readme",
+  "dependencies": {
+    "@babel/runtime": "^7.0.0",
+    "sqlite": "^3.0.2",
+    "zeromq": "^5.1.0"
+  },
+  "devDependencies": {
+    "sinon": "7.2.2",
+    "jest": "24.1.0"
+  },
+  "babelCompile": [
+    {
+      "moduleType": "es",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "moduleType": "cjs",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ]
+}
