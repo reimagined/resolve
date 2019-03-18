@@ -65,18 +65,6 @@ const disconnect = async pool => {
   await connection.end()
 }
 
-const drop = async ({ runQuery, escapeId }) => {
-  const rows = await runQuery(
-    `SELECT table_name AS \`tableName\` FROM INFORMATION_SCHEMA.TABLES
-    WHERE table_comment LIKE "RESOLVE-%"
-    AND table_schema=DATABASE()`
-  )
-
-  for (const { tableName } of rows) {
-    await runQuery(`DROP TABLE ${escapeId(tableName)}`)
-  }
-}
-
 const STRING_INDEX_TYPE =
   'VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
 const NUMBER_INDEX_TYPE = 'BIGINT'
@@ -591,6 +579,5 @@ export default createAdapter.bind(null, {
   delete: del,
   connect,
   dropReadModel,
-  disconnect,
-  drop
+  disconnect
 })

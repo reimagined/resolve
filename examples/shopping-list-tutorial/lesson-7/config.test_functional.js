@@ -19,13 +19,12 @@ const testFunctionalConfig = {
     name: 'jwt',
     maxAge: 31536000000
   },
-  readModelAdapters: [
-    {
-      name: 'default',
+  readModelConnectors: {
+    default: {
       module: 'resolve-readmodel-lite',
       options: {}
     }
-  ]
+  }
 }
 
 export default testFunctionalConfig

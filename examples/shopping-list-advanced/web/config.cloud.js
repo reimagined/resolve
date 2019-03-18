@@ -15,9 +15,8 @@ const cloudConfig = {
       skipInit: true
     }
   },
-  readModelAdapters: [
-    {
-      name: 'default',
+  readModelConnectors: {
+    default: {
       module: 'resolve-readmodel-mysql',
       options: {
         host: declareRuntimeEnv('SQL_HOST'),
@@ -26,7 +25,7 @@ const cloudConfig = {
         password: declareRuntimeEnv('SQL_PASSWORD')
       }
     }
-  ]
+  }
 }
 
 module.exports = cloudConfig

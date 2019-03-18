@@ -17,22 +17,6 @@
       "required": ["module", "options"],
       "additionalProperties": false
     },
-    "readModelAdapter": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "module": {
-          "type": "string"
-        },
-        "options": {
-          "type": "object"
-        }
-      },
-      "required": ["name", "module", "options"],
-      "additionalProperties": false
-    },
     "resourceInstance": {
       "type": "string"
     },
@@ -159,11 +143,11 @@
             { "$ref": "#/definitions/resourceConstructor" }
           ]
         },
-        "adapterName": {
+        "connectorName": {
           "type": "string"
         }
       },
-      "required": ["name", "projection", "resolvers", "adapterName"],
+      "required": ["name", "projection", "resolvers", "connectorName"],
       "additionalProperties": false
     },
     "saga": {
@@ -364,10 +348,13 @@
             "$ref": "#/definitions/apiHandler"
           }
         },
-        "readModelAdapters": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/readModelAdapter"
+        "readModelConnectors": {
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              { "$ref": "#/definitions/resourceInstance" },
+              { "$ref": "#/definitions/resourceConstructor" }
+            ]
           }
         },
         "storageAdapter": {
@@ -410,7 +397,7 @@
         "aggregates",
         "viewModels",
         "readModels",
-        "readModelAdapters",
+        "readModelConnectors",
         "storageAdapter",
         "snapshotAdapter",
         "subscribeAdapter",

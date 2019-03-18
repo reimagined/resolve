@@ -18,7 +18,7 @@ export const aggregateName = 'Comments'
 export const readModelName = 'Comments'
 
 // Read Model Adapter
-export const readModelAdapterName = 'default'
+export const readModelConnectorName = 'default'
 
 // Comments Table Name
 export const commentsTableName = 'Comments'

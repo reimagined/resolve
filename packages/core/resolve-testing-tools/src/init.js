@@ -15,10 +15,10 @@ const init = async ({ promise, createQuery, transformEvents }) => {
           name: promise[symbol].name,
           projection: promise[symbol].projection,
           resolvers: promise[symbol].resolvers,
-          adapterName: 'ADAPTER_NAME'
+          connectorName: 'ADAPTER_NAME'
         }
       ],
-      readModelAdapters: {
+      readModelConnectors: {
         ADAPTER_NAME: promise[symbol].adapter
       },
       snapshotAdapter: null

@@ -3,15 +3,14 @@ const prodConfig = {
   port: 3000,
   polyfills: ['@babel/polyfill'],
   mode: 'production',
-  readModelAdapters: [
-    {
-      name: 'default',
+  readModelConnectors: {
+    default: {
       module: 'resolve-readmodel-lite',
       options: {
         databaseFile: 'read-models.db'
       }
     }
-  ]
+  }
 }
 
 module.exports = prodConfig

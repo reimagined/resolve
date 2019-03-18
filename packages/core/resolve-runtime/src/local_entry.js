@@ -16,7 +16,6 @@ import zmq from 'zeromq'
 
 import createPubsubManager from './utils/create_pubsub_manager'
 import getRootBasedUrl from './utils/get_root_based_url'
-
 import mainHandler from './handlers/main_handler'
 
 const host = '0.0.0.0'
@@ -264,16 +263,15 @@ const processIncomingEvents = async (resolve, message) => {
 const initDomain = async (
   {
     snapshotAdapter: createSnapshotAdapter,
-    readModelAdapters: readModelAdaptersCreators
+    readModelConnectors: readModelConnectorsCreators
   },
   resolve
 ) => {
   const { eventStore, aggregates, readModels, viewModels } = resolve
   const snapshotAdapter = createSnapshotAdapter()
-
-  const readModelAdapters = {}
-  for (const { name, factory } of readModelAdaptersCreators) {
-    readModelAdapters[name] = factory()
+  const readModelConnectors = {}
+  for (const name of Object.keys(readModelConnectorsCreators)) {
+    readModelConnectors[name] = readModelConnectorsCreators[name]()
   }
 
   const executeCommand = createCommandExecutor({
@@ -282,19 +280,21 @@ const initDomain = async (
     snapshotAdapter
   })
 
-  const executeQuery = createQueryExecutor({
-    doUpdateRequest: (pool, readModelName) => {
-      const topic = `${new Buffer(readModelName).toString(
-        'base64'
-      )}-${new Buffer(resolve.instanceId).toString('base64')}`
+  const doUpdateRequest = readModelName => {
+    const topic = `${new Buffer(readModelName).toString('base64')}-${new Buffer(
+      resolve.instanceId
+    ).toString('base64')}`
 
-      return resolve.subSocket.subscribe(topic)
-    },
+    return resolve.subSocket.subscribe(topic)
+  }
+
+  const executeQuery = createQueryExecutor({
     eventStore,
-    viewModels,
+    readModelConnectors,
+    snapshotAdapter,
+    doUpdateRequest,
     readModels,
-    readModelAdapters,
-    snapshotAdapter
+    viewModels
   })
 
   resolve.subSocket.on('message', processIncomingEvents.bind(null, resolve))
@@ -306,7 +306,7 @@ const initDomain = async (
 
   Object.defineProperties(resolve, {
     lockPromise: { value: null, writable: true },
-    readModelAdapters: { value: readModelAdapters },
+    readModelConnectors: { value: readModelConnectors },
     snapshotAdapter: { value: snapshotAdapter }
   })
 }
