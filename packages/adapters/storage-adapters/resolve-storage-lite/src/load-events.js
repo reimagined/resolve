@@ -1,36 +1,44 @@
-const sortExpression = { timestamp: 1, aggregateVersion: 1 }
-const projectionExpression = { aggregateIdAndVersion: 0, _id: 0 }
-const batchSize = 100
+const loadEvents = async (
+  { database, escapeId, escape, tableName },
+  { eventTypes, aggregateIds, startTime, finishTime },
+  callback
+) => {
+  const injectString = value => `${escape(value)}`
+  const injectNumber = value => `${+value}`
+  const batchSize = 1000
 
-const loadEvents = async ({ database, promiseInvoke }, filter, callback) => {
-  const { eventTypes, aggregateIds, startTime, finishTime } = filter
-
-  const findExpression = {
-    ...(eventTypes != null ? { type: { $in: eventTypes } } : {}),
-    ...(aggregateIds != null ? { aggregateId: { $in: aggregateIds } } : {}),
-    timestamp: {
-      $gt: startTime != null ? startTime : 0,
-      $lt: finishTime != null ? finishTime : Infinity
-    }
+  const queryConditions = []
+  if (eventTypes != null) {
+    queryConditions.push(`${escapeId('type')} IN (${eventTypes.map(injectString)})`)
+  }
+  if (aggregateIds != null) {
+    queryConditions.push(
+      `${escapeId('aggregateId')} IN (${aggregateIds.map(injectString)})`
+    )
+  }
+  if (startTime != null) {
+    queryConditions.push(`${escapeId('timestamp')} > ${injectNumber(startTime)}`)
+  }
+  if (finishTime != null) {
+    queryConditions.push(`${escapeId('timestamp')} < ${injectNumber(finishTime)}`)
   }
 
-  for (let page = 0; true; page++) {
-    const cursor = database
-      .find(findExpression)
-      .sort(sortExpression)
-      .projection(projectionExpression)
-      .skip(page * batchSize)
-      .limit(batchSize + 1)
+  const resultQueryCondition =
+    queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
 
-    const events = await promiseInvoke(cursor.exec.bind(cursor))
+  for(let skipCount = 0; ; skipCount++) {
+    const rows = await database.all(
+      `SELECT * FROM ${escapeId(tableName)} ${resultQueryCondition}
+      ORDER BY ${escapeId('timestamp')} ASC,
+      ${escapeId('aggregateVersion')} ASC
+      LIMIT ${+(skipCount * batchSize)}, ${+batchSize}`
+    )
 
-    const countEvents = Math.min(events.length, batchSize)
-
-    for (let idx = 0; idx < countEvents; idx++) {
-      await callback(events[idx])
+    for(const event of rows) {
+      await callback(event)
     }
 
-    if (events.length < batchSize + 1) {
+    if(rows.length < batchSize) {
       break
     }
   }
