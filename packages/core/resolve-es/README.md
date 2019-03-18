@@ -15,6 +15,9 @@ Use a reSolve framework [adapter](../../adapters/storage-adapters)
 * [resolve-storage-mongo](../../adapters/storage-adapters/resolve-storage-mongo)
 * [resolve-storage-mysql](../../adapters/storage-adapters/resolve-storage-mysql)
 
+#### `publishEvent`
+The hook function after calling "eventStore.saveEvent"
+
 ### Example
 ```js
 // Import and initializtion
