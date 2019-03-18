@@ -3,9 +3,9 @@
 exports[`works correctly 1`] = `
 Object {
   "code": "import aggregateActions from '$resolve.aggregateActions'
-import busAdapter from '$resolve.busAdapter'
 import constants from '$resolve.constants'
 import customConstants from '$resolve.customConstants'
+import eventBroker from '$resolve.eventBroker'
 import installLogger from '$resolve.installLogger'
 import readModelAdapters from '$resolve.readModelAdapters'
 import redux from '$resolve.redux'
@@ -17,9 +17,9 @@ import storageAdapter from '$resolve.storageAdapter'
 
 export default {
  aggregateActions,
-busAdapter,
 constants,
 customConstants,
+eventBroker,
 installLogger,
 readModelAdapters,
 redux,

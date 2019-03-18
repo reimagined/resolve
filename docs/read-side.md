@@ -45,7 +45,7 @@ const devConfig = {
   readModelAdapters: [
     {
       name: 'default',
-      module: 'resolve-readmodel-memory',
+      module: 'resolve-readmodel-lite',
       options: {}
     }
   ],

@@ -36,7 +36,9 @@ const saveOneEvent = async event =>
       aggregateVersion: aggregateVersionsMap
         .set(
           event.aggregateId,
-          ~~aggregateVersionsMap.get(event.aggregateId) + 1
+          aggregateVersionsMap.has(event.aggregateId)
+            ? aggregateVersionsMap.get(event.aggregateId) + 1
+            : 1
         )
         .get(event.aggregateId),
       timestamp: eventTimestamp++

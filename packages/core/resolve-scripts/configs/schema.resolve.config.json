@@ -271,6 +271,30 @@
         "type": "string"
       }
     },
+    "eventBroker": {
+      "type": "object",
+      "properties": {
+        "zmqBrokerAddress": {
+          "type": "string"
+        },
+        "zmqConsumerAddress": {
+          "type": "string"
+        },
+        "databaseFile": {
+          "type": "string"
+        },
+        "batchSize": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "zmqBrokerAddress",
+        "zmqConsumerAddress",
+        "databaseFile",
+        "batchSize"
+      ],
+      "additionalProperties": false
+    },
     "customConstants": {
       "type": "object",
       "additionalProperties": true
@@ -346,9 +370,6 @@
             "$ref": "#/definitions/readModelAdapter"
           }
         },
-        "busAdapter": {
-          "$ref": "#/definitions/adapter"
-        },
         "storageAdapter": {
           "$ref": "#/definitions/adapter"
         },
@@ -363,6 +384,9 @@
         },
         "polyfills": {
           "$ref": "#/definitions/polyfills"
+        },
+        "eventBroker": {
+          "$ref": "#/definitions/eventBroker"
         },
         "registry": {
           "type": "string"
@@ -386,12 +410,12 @@
         "aggregates",
         "viewModels",
         "readModels",
-        "busAdapter",
         "readModelAdapters",
         "storageAdapter",
         "snapshotAdapter",
         "subscribeAdapter",
         "polyfills",
+        "eventBroker",
         "customConstants",
         "target",
         "logLevel"

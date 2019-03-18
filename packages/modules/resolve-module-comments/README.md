@@ -24,7 +24,7 @@ merge(
     aggregateName: 'CustomCommentsAggregateName', // default = 'Comments'
     readModelName: 'CustomCommentsReadModelName', // default = 'Comments'
     readModelAdapter: {
-      module: 'CustomReadModelAdapter', // default = resolve-readmodel-memory'
+      module: 'CustomReadModelAdapter', // default = resolve-readmodel-lite'
       options: {}                       // default = {}
     },
     commentsTableName: 'CustomCommentsTableName', // default = 'Comments'

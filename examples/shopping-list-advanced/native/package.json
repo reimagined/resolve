@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-advanced/native",
-  "version": "0.19.6",
+  "version": "0.19.8",
   "private": true,
   "main": "./index.js",
   "scripts": {
@@ -12,10 +12,10 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@shopping-list-advanced/ui": "0.19.6",
-    "resolve-redux": "0.19.6",
-    "resolve-subscribe-socket.io": "0.19.6",
-    "resolve-runtime": "0.19.6",
+    "@shopping-list-advanced/ui": "0.19.8",
+    "resolve-redux": "0.19.8",
+    "resolve-subscribe-socket.io": "0.19.8",
+    "resolve-runtime": "0.19.8",
     "@expo/react-native-action-sheet": "1.1.2",
     "@expo/vector-icons": "8.0.0",
     "expo": "31.0.5",

@@ -1,6 +1,5 @@
 const createViewModel = (
   init,
-  getLastError,
   read,
   readAndSerialize,
   dispose,
@@ -48,7 +47,6 @@ const createViewModel = (
     updateByEvents: Function('Promise.resolve()'),
     read: read.bind(null, pool),
     readAndSerialize: readAndSerialize.bind(null, pool),
-    getLastError: getLastError.bind(null, pool),
     dispose: dispose.bind(null, pool)
   })
 }

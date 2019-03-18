@@ -74,4 +74,4 @@ const create = resourceCreate.bind(null, pool)
 const dispose = resourceDispose.bind(null, pool)
 const destroy = resourceDestroy.bind(null, pool)
 
-export { create, dispose, destroy }
+export { create, dispose, destroy, decodeEmptyStrings }

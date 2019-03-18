@@ -55,10 +55,10 @@ const SplashContainer = ({ children }) => (
 )
 
 const ProjectTitle = () => (
-  <h2 className="projectTitle">
+  <h1 className="projectTitle">
     {siteConfig.title}
     <small>{siteConfig.tagline}</small>
-  </h2>
+  </h1>
 )
 
 const PromoSection = props => (
@@ -139,7 +139,7 @@ const GetStarted = props => (
         content: `reSolve lets you **focus on code, not build tools**.
 To create a project called \`my-app\`, run this command:
 \`\`\`sh
-npx create-resolve-app my-app
+yarn create resolve-app my-app
 \`\`\`
 `
       },

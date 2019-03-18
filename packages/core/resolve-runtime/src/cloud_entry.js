@@ -1,33 +1,33 @@
 import 'source-map-support/register'
 import IotData from 'aws-sdk/clients/iotdata'
-import { Converter } from 'aws-sdk/clients/dynamodb'
 import v4 from 'aws-signature-v4'
 import STS from 'aws-sdk/clients/sts'
-import Lambda from 'aws-sdk/clients/lambda'
+import StepFunctions from 'aws-sdk/clients/stepfunctions'
 
 import wrapApiHandler from 'resolve-api-handler-awslambda'
 import createCommandExecutor from 'resolve-command'
 import createEventStore from 'resolve-es'
-import createQueryExecutor, { constants as queryConstants } from 'resolve-query'
+import createQueryExecutor from 'resolve-query'
 
 import mainHandler from './handlers/main_handler'
 import handleDeployServiceEvent from './handlers/deploy_service_event_handler'
 import handleEventBusEvent from './handlers/event_bus_event_handler'
 
-const invokeLambdaSelf = async event => {
-  const lambda = new Lambda({ apiVersion: '2015-03-31' })
-  const invokeParams = {
-    FunctionName: process.env.AWS_LAMBDA_FUNCTION_NAME,
-    InvocationType: 'Event',
-    Payload: JSON.stringify(event),
-    LogType: 'None'
-  }
+const stepFunctions = new StepFunctions()
 
-  return await new Promise((resolve, reject) =>
-    lambda.invoke(invokeParams, (err, data) =>
-      !err ? resolve(data) : reject(err)
-    )
-  )
+const invokeUpdateLambda = async readModel => {
+  await stepFunctions
+    .startExecution({
+      stateMachineArn: process.env.EVENT_BUS_STEP_FUNCTION_ARN,
+      input: JSON.stringify({
+        'detail-type': 'LISTEN_EVENT_BUS',
+        listenerId: readModel.name,
+        invariantHash: readModel.invariantHash,
+        inactiveTimeout: 1000 * 60 * 60,
+        eventTypes: Object.keys(readModel.projection)
+      })
+    })
+    .promise()
 }
 
 const initResolve = async (
@@ -54,24 +54,16 @@ const initResolve = async (
     snapshotAdapter
   })
 
-  const doUpdateRequest = async (pool, readModelName) => {
-    const executor = pool.getExecutor(pool, readModelName)
-
-    Promise.resolve()
-      .then(executor.read.bind(null, { isBulkRead: true }))
-      .then(invokeLambdaSelf.bind(null, { Records: [] }))
-      .catch(error => {
-        resolveLog('error', 'Update lambda invocation error', error)
-      })
-  }
-
   const executeQuery = createQueryExecutor({
+    doUpdateRequest: async (pool, readModelName) => {
+      const readModel = readModels.find(({ name }) => name === readModelName)
+      await invokeUpdateLambda(readModel)
+    },
     eventStore,
     viewModels,
     readModels,
     readModelAdapters,
-    snapshotAdapter,
-    doUpdateRequest
+    snapshotAdapter
   })
 
   Object.assign(resolve, {
@@ -176,59 +168,6 @@ const lambdaWorker = async (
       const executor = wrapApiHandler(mainHandler, getCustomParameters)
 
       executorResult = await executor(lambdaEvent, lambdaContext)
-    }
-    // DynamoDB trigger event
-    else if (lambdaEvent.Records != null) {
-      resolveLog(
-        'debug',
-        'Lambda handler classified event as Dynamo stream',
-        lambdaEvent.Records
-      )
-      const applicationPromises = []
-      const events = lambdaEvent.Records.map(record =>
-        Converter.unmarshall(record.dynamodb.NewImage)
-      )
-      for (const event of events) {
-        const eventDescriptor = {
-          topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
-            event.aggregateId
-          }`,
-          payload: JSON.stringify(event),
-          qos: 1
-        }
-
-        applicationPromises.push(
-          resolve.mqtt
-            .publish(eventDescriptor)
-            .promise()
-            .then(() => {
-              resolveLog(
-                'info',
-                'Lambda pushed event into MQTT successfully',
-                eventDescriptor
-              )
-            })
-            .catch(error => {
-              resolveLog(
-                'warn',
-                'Lambda can not publish event into MQTT',
-                eventDescriptor,
-                error
-              )
-            })
-        )
-      }
-
-      const executors = resolve.executeQuery.getExecutors(
-        queryConstants.modelTypes.readModel
-      )
-
-      for (const executor of executors) {
-        applicationPromises.push(executor.updateByEvents(events))
-      }
-
-      await Promise.all(applicationPromises)
-      executorResult = true
     }
   } finally {
     await disposeResolve(resolve)

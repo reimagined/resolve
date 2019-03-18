@@ -1,6 +1,5 @@
 import React from 'react'
 import url from 'url'
-import plur from 'plur'
 import { connect } from 'react-redux'
 import sanitizer from 'sanitizer'
 import styled, { css } from 'styled-components'
@@ -128,7 +127,7 @@ export const StoryInfo = props => {
 
   return (
     <StoryInfoRoot>
-      {votes ? `${votes.length} ${plur('point', votes.length)} ` : null}
+      {votes ? `${votes.length} point(s) ` : null}
       {createdBy
         ? [
             'by ',
@@ -147,9 +146,7 @@ export const StoryInfo = props => {
       )}
       <Splitter />
       <DiscussLink to={`/storyDetails/${id}`}>
-        {commentCount > 0
-          ? `${commentCount} ${plur('comment', commentCount)}`
-          : 'discuss'}
+        {commentCount > 0 ? `${commentCount} comment(s)` : 'discuss'}
       </DiscussLink>{' '}
     </StoryInfoRoot>
   )

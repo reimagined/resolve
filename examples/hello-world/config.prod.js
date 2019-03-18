@@ -10,8 +10,10 @@ const prodConfig = {
   readModelAdapters: [
     {
       name: 'default',
-      module: 'resolve-readmodel-memory',
-      options: {}
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'read-models.db'
+      }
     }
     /*
       {
@@ -81,25 +83,6 @@ const prodConfig = {
         password: 'customPassword',
         database: 'customDatabaseName',
         tableName: 'customTableName'
-      }
-    }
-  */ busAdapter: {
-    module: 'resolve-bus-memory',
-    options: {}
-  },
-  /*
-    {
-      module: 'resolve-bus-rabbitmq',
-      options: {
-        url: 'amqp://localhost'
-      }
-    }
-  */
-  /*
-    {
-      module: 'resolve-bus-zmq',
-      options: {
-        address: '127.0.0.1'
       }
     }
   */ subscribeAdapter: {
