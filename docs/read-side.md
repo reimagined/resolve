@@ -131,7 +131,7 @@ We recommend that you store Read Model data in a denormalized form so that your 
 
 A projection function is used to accumulate the event data in a **Read Model storage**. Each projection function takes the storage object and event information. The event information includes the aggregateID, timestamp and payload.
 
-You can communicate with the store using the standard API. The code sample below demonstrates a typical Read Model projection function implementation:
+You can communicate with the store using the standard API. The code sample below demonstrates a Read Model projection function implementation:
 
 ```js
 [STORY_COMMENTED]: async (
@@ -152,15 +152,15 @@ You can communicate with the store using the standard API. The code sample below
 
 A [resolver](#resolvers) then uses the data from the store to prepare final data samples for data requests.
 
-If you delete the Read Model storage, this will force the framework to re-populate the store based on all events from the beginning of the history. This can be useful in the development environment and when you deploy an updated version of the application.
+Note that you can add additional logic to a projection function. For instance, you can perform SQL queries, update Elastic Search indexes, write arbitrary data to files, etc.
 
-Note that reSolve does not limit you on what logic you can use in a projection function implementation as long as it helps you prepare data required to answer queries. Depending on your requirements, you can perform SQL queries, update Elastic Search indexes, write arbitrary data to files, etc.
+If you delete the Read Model storage, the framework re-populates the store based on all the events. This can be useful in the development environment and when you deploy an updated version of the application.
 
 ## Resolvers
 
-A **resolver** is the part of a Read Model that handles data requests. A resolver function receives the store and request parameters. Based on the parameters, the resolver function pulls the required data from the store and processes it to prepare the response object.
+A **resolver** is the part of a Read Model that handles data requests. A resolver function receives the store and request parameters. Based on the parameters, the resolver function pulls data from the store and processes it to prepare the response object.
 
-The code sample below demonstrates a typical Read Model implementation:
+The code sample below demonstrates a Read Model implementation:
 
 ```js
 comments: async (store, { first, offset }) => {
@@ -190,7 +190,7 @@ Use View Models in the following scenarios:
 
 A View Model's projection function receives a state and an event object, and returns an updated state. A projection function runs for every event with the specified aggregate ID from the beginning of the history on every request so it is important to keep View Models small. You can also store snapshots of the View Model state to optimize system resource consumption.
 
-The code sample below demonstrates a typical View Model projection function:
+The code sample below demonstrates a View Model projection function:
 
 ```js
 [SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
