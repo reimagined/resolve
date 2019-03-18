@@ -2,7 +2,7 @@ import sinon from 'sinon'
 
 import dispose from '../src/dispose'
 
-describe('method "dispose"', async () => {
+describe('method "dispose"', () => {
   test('should call database.deleteTable', async () => {
     const tableName = 'tableName'
     const database = {
