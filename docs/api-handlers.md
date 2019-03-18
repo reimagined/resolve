@@ -3,9 +3,13 @@ id: api-handlers
 title: API Handlers
 ---
 
+Use API Handlers to provide your reSolve server with the capability to handle arbitrary HTTP requests.
+
 ## API Reference
 
 ReSolve API handlers have the following general structure:
+
+##### common/api-handlers/my-api-handler.js:
 
 ```js
 export default async (req, res) => {
@@ -15,9 +19,9 @@ export default async (req, res) => {
 
 The handler function takes two parameters - the [request](#request) and [response](#response).
 
-## Request
+### Request
 
-The `req` object represents the HTTP request. This object exposes properties providing access to the request query string, parameters, body, HTTP headers, and so on.
+The `req` object represents the HTTP request. This object exposes properties that provide access to the request query string, parameters, body, HTTP headers, etc.
 
 The request provides the following interface:
 
@@ -27,15 +31,15 @@ The request provides the following interface:
   method: "GET" | "HEAD" | "POST" | "PUT" | "DELETE" | "CONNECT" | "OPTIONS" | "TRACE" | "PATCH",
   path: String,
   body: String,
-  cookies: Object<key, value>,
+  cookies: Object<key, value>,cd
   headers: Object<key, value>,
   query: Object<key, value>
 }
 ```
 
-## Response
+### Response
 
-The `res` object represents the server response. It is sent by the API handler in response to the HTTP request.
+The `res` object represents the server's response to the HTTP request.
 
 The response object provides the following interface:
 
@@ -54,7 +58,37 @@ The response object provides the following interface:
 }
 ```
 
-## API Handler Implementation Examples
+### Configuration
+
+An API handler should be registered in the `apiHandlers` section of the application's configuration file.
+
+##### config.app.js:
+
+```js
+const appConfig = {
+  ...
+  apiHandlers: [
+    {
+      path: 'my-api-handler',
+      controller: 'common/api-handlers/my-api-handler.js',
+      method: 'GET'
+    }
+  ]
+}
+export default appConfig
+```
+
+The configuration object specifies the following options:
+
+| Option     | Description                                                                     |
+| ---------- | ------------------------------------------------------------------------------- |
+| Path       | The URL path for which the handler is invoked. This path is relative to `/api`. |
+| Controller | The path to the file that contains the handler's definition.                    |
+| Method     | The HTTP method to handle.                                                      |
+
+Refer to the [Schema Resolve Config](https://github.com/reimagined/resolve/blob/master/packages/core/resolve-scripts/configs/schema.resolve.config.json) file for more information.
+
+## Implementation Examples
 
 - Send Text
 
@@ -62,7 +96,7 @@ The response object provides the following interface:
 export default async (req, res) => {
   const { username } = JSON.parse(req.body)
 
-  res.text(`Hello ${username}!')
+  res.text(`Hello ${username}!`)
 }
 ```
 
@@ -122,49 +156,3 @@ export default async (req, res) => {
   res.end('Ok')
 }
 ```
-
-## API Handler Configuration
-
-```js
-// run.js
-
-import {
-  defaultResolveConfig,
-  watch
-} from 'resolve-scripts'
-
-import appConfig from './config.app'
-import devConfig from './config.dev'
-import prodConfig from './config.prod'
-import testFunctionalConfig from './config.test_functional'
-
-const launchMode = process.argv[2]
-
-void (async () => {
-  switch (launchMode) {
-    case 'dev': {
-      await watch({
-        ...defaultResolveConfig,
-        ...appConfig,
-        ...devConfig,
-        {
-          apiHandlers: [
-            {
-              path: 'info',
-              controller: 'api-handlers/info.js',
-              method: 'GET'
-            }
-          ]
-        }
-      })
-      break
-    }
-    // ...
-  }
-})().catch(error => {
-  // eslint-disable-next-line no-console
-  console.log(error)
-})
-```
-
-Refer to the [Schema Resolve Config](https://github.com/reimagined/resolve/blob/master/packages/core/resolve-scripts/configs/schema.resolve.config.json) file for more information.
