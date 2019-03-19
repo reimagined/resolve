@@ -32,19 +32,21 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
     )
   }
 
-  const updateByEvents = async event => {
+  const updateByEvents = async events => {
     if (readModel.projection == null) {
       throw new Error(
         'Updating by events is prohibited when projection is not specified'
       )
     }
 
-    if (
-      event != null &&
-      typeof readModel.projection[event.type] === 'function'
-    ) {
-      const connection = await connectionPromise
-      await readModel.projection[event.type](connection, event)
+    for (const event of events) {
+      if (
+        event != null &&
+        typeof readModel.projection[event.type] === 'function'
+      ) {
+        const connection = await connectionPromise
+        await readModel.projection[event.type](connection, event)
+      }
     }
   }
 

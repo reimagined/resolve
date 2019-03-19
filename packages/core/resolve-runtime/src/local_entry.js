@@ -249,8 +249,7 @@ const processIncomingEvents = async (resolve, message) => {
 
     if (instanceId === resolve.instanceId) {
       const events = JSON.parse(message.slice(payloadIndex))
-      const executor = resolve.executeQuery.getExecutor(readModelName)
-      await executor.updateByEvents(events)
+      await resolve.executeQuery.updateByEvents(readModelName, events)
     }
   } catch (error) {
     resolveLog('error', 'Error while applying events to read-model', error)

@@ -61,7 +61,7 @@ const createQuery = ({
     }
 
     if (optionsMap[flag] == null) {
-      throw new Error('Wrong options for read invokation')
+      throw new Error('Wrong options for read invocation')
     }
 
     return [options[optionsMap[flag][0]], options[optionsMap[flag][1]]]

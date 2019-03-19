@@ -23,7 +23,7 @@ const queryHandler = async (req, res) => {
     await res.setHeader('Content-Type', 'application/json')
     await res.end(result)
   } catch (error) {
-    const errorCode = extractErrorHttpCode(err)
+    const errorCode = extractErrorHttpCode(error)
     await res.status(errorCode)
     await res.setHeader('Content-Type', 'text/plain')
     await res.end(error.message)
