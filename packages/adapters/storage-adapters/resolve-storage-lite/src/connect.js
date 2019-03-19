@@ -1,14 +1,17 @@
-const connect = async (pool, { NeDB, promiseInvoke }) => {
-  const { pathToFile, ...initOptions } = pool.config
+const connect = async (pool, sqlite) => {
+  const { databaseFile, tableName, ...initOptions } = pool.config
+  const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
+  const escape = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
-  const database = new NeDB({
-    ...(pathToFile != null ? { filename: pathToFile } : { inMemoryOnly: true }),
-    ...initOptions
-  })
+  const database = await sqlite.open(databaseFile)
+  await database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
 
   Object.assign(pool, {
-    promiseInvoke,
-    database
+    database,
+    initOptions,
+    tableName,
+    escapeId,
+    escape
   })
 }
 

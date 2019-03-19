@@ -1,8 +1,9 @@
-const dispose = async ({ database, promiseInvoke }, { dropEvents }) => {
+const dispose = async ({ database }, { dropEvents }) => {
   if (dropEvents) {
-    await promiseInvoke(database.remove.bind(database), {}, { multi: true })
-    await database.resetIndexes()
+    await database.exec(`DELETE FROM ${escapeId(tableName)}`)
   }
+
+  await database.close()
 }
 
 export default dispose
