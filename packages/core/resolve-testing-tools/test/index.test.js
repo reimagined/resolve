@@ -1,5 +1,5 @@
 import givenEvents from '../src/index'
-import createreadModelConnector from 'resolve-readmodel-lite'
+import createReadModelConnector from 'resolve-readmodel-lite'
 
 test('resolve-testing-tools index', async () => {
   const result = await givenEvents([
@@ -35,7 +35,7 @@ test('resolve-testing-tools index', async () => {
           }
         }
       },
-      adapter: createreadModelConnector({
+      adapter: createReadModelConnector({
         databaseFile: ':memory:'
       })
     })

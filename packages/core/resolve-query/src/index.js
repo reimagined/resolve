@@ -12,7 +12,7 @@ const createQuery = ({
   const models = {}
   for (const readModel of readModels) {
     if (models[readModel.name] != null) {
-      throw new Error(`Dublicate name for read/view model: ${readModel.name}`)
+      throw new Error(`Duplicate name for read/view model: ${readModel.name}`)
     }
     models[readModel.name] = wrapReadModel(
       readModel,
@@ -23,7 +23,7 @@ const createQuery = ({
 
   for (const viewModel of viewModels) {
     if (models[viewModel.name] != null) {
-      throw new Error(`Dublicate name for read/view model: ${viewModel.name}`)
+      throw new Error(`Duplicate name for read/view model: ${viewModel.name}`)
     }
     models[viewModel.name] = wrapViewModel(
       viewModel,
@@ -42,18 +42,24 @@ const createQuery = ({
 
   const parseOptions = options => {
     const optionsFlags = {
-      modelOptions: 1,
-      modelArgs: 2,
-      resolverName: 4,
-      resolverArgs: 8,
-      aggregateIds: 16,
-      aggregateArgs: 32
+      modelOptions: 1 << 0,
+      modelArgs: 1 << 1,
+      resolverName: 1 << 2,
+      resolverArgs: 1 << 3,
+      aggregateIds: 1 << 4,
+      aggregateArgs: 1 << 5
     }
 
     const optionsMap = []
-    optionsMap[1] = optionsMap[3] = ['modelOptions', 'modelArgs']
-    optionsMap[4] = optionsMap[12] = ['resolverName', 'resolverArgs']
-    optionsMap[16] = optionsMap[48] = ['aggregateIds', 'aggregateArgs']
+    optionsMap[optionsFlags.modelOptions] = optionsMap[
+      optionsFlags.modelOptions + optionsFlags.modelArgs
+    ] = ['modelOptions', 'modelArgs']
+    optionsMap[optionsFlags.resolverName] = optionsMap[
+      optionsFlags.resolverName + optionsFlags.resolverArgs
+    ] = ['resolverName', 'resolverArgs']
+    optionsMap[optionsFlags.aggregateIds] = optionsMap[
+      optionsFlags.aggregateIds + optionsFlags.aggregateArgs
+    ] = ['aggregateIds', 'aggregateArgs']
 
     let flag = 0
     for (const key of Object.keys(options)) {

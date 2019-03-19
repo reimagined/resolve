@@ -2,8 +2,12 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
   const getKey = aggregateIds =>
     Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds
   const workers = new Map()
+  let isDisposed = true
 
   const read = async (modelOptions, aggregateArgs, jwtToken) => {
+    if (isDisposed) {
+      throw new Error('Read model is disposed')
+    }
     const aggregateIds = modelOptions !== '*' ? modelOptions.split(/,/) : '*'
     if (
       aggregateIds !== '*' &&
@@ -33,9 +37,9 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
 
           if (
             !(+lastTimestamp > 0) &&
-            typeof viewmodel.projection.Init === 'function'
+            typeof viewModel.projection.Init === 'function'
           ) {
-            state = viewmodel.projection.Init()
+            state = viewModel.projection.Init()
           }
 
           const handler = async event => {
@@ -46,7 +50,8 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
             state = await viewModel.projection[event.type](
               state,
               event,
-              aggregateArgs
+              aggregateArgs,
+              jwtToken
             )
             lastTimestamp = event.timestamp - 1
 
@@ -65,7 +70,7 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
             {
               aggregateIds: viewModel.aggregateIds,
               startTime: lastTimestamp,
-              eventTypes: Object.kets(viewModel.projection)
+              eventTypes: Object.keys(viewModel.projection)
             },
             handler
           )
@@ -80,20 +85,36 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
   }
 
   const readAndSerialize = async (modelOptions, aggregateArgs, jwtToken) => {
+    if (isDisposed) {
+      throw new Error('Read model is disposed')
+    }
+
     const state = await read(modelOptions, aggregateArgs, jwtToken)
     const result = await viewModel.serializeState(state, jwtToken)
     return result
   }
 
   const updateByEvents = async () => {
+    if (isDisposed) {
+      throw new Error('Read model is disposed')
+    }
+
     throw new Error('View model cannot be updated by events')
   }
 
   const drop = async () => {
+    if (isDisposed) {
+      throw new Error('Read model is disposed')
+    }
+
     throw new Error('Snapshot cleaning for view-models is not implemented')
   }
 
   const dispose = async () => {
+    if (isDisposed) {
+      throw new Error('Read model is disposed')
+    }
+
     workers.clear()
   }
 

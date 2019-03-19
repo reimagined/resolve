@@ -24,8 +24,10 @@ const init = async ({ promise, createQuery, transformEvents }) => {
       snapshotAdapter: null
     })
 
-    const executor = queryExecutor.getExecutor(promise[symbol].name)
-    await executor.updateByEvents(transformEvents(promise[symbol].events))
+    await queryExecutor.updateByEvents(
+      promise[symbol].name,
+      transformEvents(promise[symbol].events)
+    )
 
     const result = await queryExecutor.read({
       modelName: promise[symbol].name,

@@ -19,6 +19,9 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
   })
 
   const read = async (resolverName, resolverArgs, jwtToken) => {
+    if (isDisposed) {
+      throw new Error('Read model is disposed')
+    }
     if (typeof readModel.resolvers[resolverName] !== 'function') {
       throw new Error(`Resolver ${resolverName} does not exist`)
     }
@@ -33,6 +36,9 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
   }
 
   const updateByEvents = async events => {
+    if (isDisposed) {
+      throw new Error('Read model is disposed')
+    }
     if (readModel.projection == null) {
       throw new Error(
         'Updating by events is prohibited when projection is not specified'
@@ -40,6 +46,10 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
     }
 
     for (const event of events) {
+      if (isDisposed) {
+        throw new Error('Read model updating had been interrupted')
+      }
+
       if (
         event != null &&
         typeof readModel.projection[event.type] === 'function'
@@ -51,16 +61,28 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
   }
 
   const readAndSerialize = async (resolverName, resolverArgs, jwtToken) => {
+    if (isDisposed) {
+      throw new Error('Read model is disposed')
+    }
+
     const result = await read(resolverName, resolverArgs, jwtToken)
 
     return JSON.stringify(result, null, 2)
   }
 
   const drop = async () => {
+    if (isDisposed) {
+      throw new Error('Read model is disposed')
+    }
+
     await connector.drop(readModel.name)
   }
 
   const dispose = async () => {
+    if (isDisposed) {
+      throw new Error('Read model is disposed')
+    }
+
     isDisposed = true
   }
 

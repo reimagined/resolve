@@ -17,7 +17,7 @@ const allowedMethods = [
   'ALL'
 ]
 
-export const validatereadModelConnectors = resolveConfig => {
+export const validateReadModelConnectors = resolveConfig => {
   for (const { connectorName } of resolveConfig.readModels) {
     if (resolveConfig.readModelConnectors[connectorName] == null) {
       throw new Error(
@@ -90,7 +90,7 @@ const validateConfig = config => {
   }
 
   validateApiHandlers(config)
-  validatereadModelConnectors(config)
+  validateReadModelConnectors(config)
 
   return true
 }

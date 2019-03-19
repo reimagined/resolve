@@ -1,6 +1,6 @@
-import { validatereadModelConnectors } from '../src/validate_config'
+import { validateReadModelConnectors } from '../src/validate_config'
 
-describe('validatereadModelConnectors', () => {
+describe('validateReadModelConnectors', () => {
   test('should works correctly', () => {
     const resolveConfig = {
       readModels: [
@@ -35,7 +35,7 @@ describe('validatereadModelConnectors', () => {
       }
     }
 
-    expect(() => validatereadModelConnectors(resolveConfig)).not.toThrow()
+    expect(() => validateReadModelConnectors(resolveConfig)).not.toThrow()
   })
 
   // eslint-disable-next-line
@@ -57,7 +57,7 @@ describe('validatereadModelConnectors', () => {
       }
     }
 
-    expect(() => validatereadModelConnectors(resolveConfig)).toThrow(
+    expect(() => validateReadModelConnectors(resolveConfig)).toThrow(
       new Error(
         `The "unknown" read model adapter is required but not specified`
       )
