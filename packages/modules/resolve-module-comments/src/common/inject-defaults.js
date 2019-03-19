@@ -5,7 +5,7 @@ const injectDefaults = callback => (
   {
     aggregateName = defaults.aggregateName,
     readModelName = defaults.readModelName,
-    readModelAdapterName = defaults.readModelAdapterName,
+    readModelConnectorName = defaults.readModelConnectorName,
     commentsTableName = defaults.commentsTableName,
     reducerName = defaults.reducerName,
     eventTypes: {
@@ -32,7 +32,7 @@ const injectDefaults = callback => (
     {
       aggregateName,
       readModelName,
-      readModelAdapterName,
+      readModelConnectorName,
       commentsTableName,
       reducerName,
       eventTypes: {

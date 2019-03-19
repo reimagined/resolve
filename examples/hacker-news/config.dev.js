@@ -6,15 +6,14 @@ const devConfig = {
   redux: {
     enhancers: ['client/enhancers/redux-devtools.js']
   },
-  readModelAdapters: [
-    {
-      name: 'default',
+  readModelConnectors: {
+    default: {
       module: 'resolve-readmodel-lite',
       options: {
         databaseFile: 'read-models.db'
       }
     }
-  ],
+  },
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000

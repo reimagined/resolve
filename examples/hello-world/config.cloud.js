@@ -15,9 +15,8 @@ export default {
       skipInit: true
     }
   },
-  readModelAdapters: [
-    {
-      name: 'default',
+  readModelConnectors: {
+    default: {
       module: 'resolve-readmodel-mysql',
       options: {
         host: declareRuntimeEnv('SQL_HOST'),
@@ -26,5 +25,5 @@ export default {
         password: declareRuntimeEnv('SQL_PASSWORD')
       }
     }
-  ]
+  }
 }

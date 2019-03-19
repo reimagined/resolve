@@ -28,7 +28,7 @@ const appConfig = {
       name: 'default',
       projection: 'common/read-models/default.projection.js',
       resolvers: 'common/read-models/default.resolvers.js',
-      adapterName: 'default'
+      connectorName: 'default'
     }
   ],
   ...
@@ -37,18 +37,17 @@ const appConfig = {
 
 In the configuration object, specify the Read Model's name and the paths to the files containing projections and resolvers. Here, you can also specify the Read Model's storage adapter.
 
-You can define the available adapters in the **readModelAdapters** section:
+You can define the available adapters in the **readModelConnectors** section:
 
 ```js
 const devConfig = {
   ...
-  readModelAdapters: [
-    {
-      name: 'default',
+  readModelConnectors: {
+    default: {
       module: 'resolve-readmodel-lite',
       options: {}
     }
-  ],
+  },
 }
 ```
 
@@ -56,9 +55,8 @@ const devConfig = {
 import { declareRuntimeEnv } from 'resolve-scripts'
 const prodConfig = {
   ...
-  readModelAdapters: [
-    {
-      name: 'default',
+  readModelConnectors: {
+    default: {
       module: 'resolve-readmodel-mysql',
       options: {
         host: declareRuntimeEnv('SQL_HOST'),
@@ -67,7 +65,7 @@ const prodConfig = {
         password: declareRuntimeEnv('SQL_PASSWORD'),
       }
     }
-  ],
+  },
 }
 ```
 

@@ -71,21 +71,6 @@ const disconnect = async ({ connection }) => {
   await connection.close()
 }
 
-const drop = async ({ databasePromise }) => {
-  const database = await databasePromise
-
-  for (const {
-    s: { name }
-  } of await database.collections()) {
-    const collection = await database.collection(name)
-    const root = await collection.findOne({ _id: ROOT_ID })
-
-    if (root != null) {
-      await collection.drop()
-    }
-  }
-}
-
 const getCollection = async (
   { databasePromise, tablePrefix },
   readModelName,
@@ -290,6 +275,5 @@ export default createAdapter.bind(null, {
   delete: del,
   connect,
   dropReadModel,
-  disconnect,
-  drop
+  disconnect
 })

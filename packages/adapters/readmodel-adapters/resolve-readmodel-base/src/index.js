@@ -1,19 +1,52 @@
-import createAdapter from './create-adapter'
-import bindWithConnection from './bind-with-connection'
-import bindReadModel from './bind-read-model'
-import read from './read'
-import readAndSerialize from './read-and-serialize'
-import updateByEvents from './update-by-events'
-import disposeReadModel from './dispose-read-model'
-import dispose from './dispose'
+const createAdapter = (implementation, options) => {
+  const { connect, disconnect, dropReadModel, ...storeApi } = implementation
+  const adapterPool = Object.create(null)
+  let connectionPromise = null
 
-export default createAdapter.bind(
-  null,
-  bindWithConnection,
-  bindReadModel,
-  read,
-  readAndSerialize,
-  updateByEvents,
-  disposeReadModel,
-  dispose
-)
+  const doConnect = async readModelName => {
+    if (connectionPromise == null) {
+      connectionPromise = connect(
+        adapterPool,
+        options
+      )
+    }
+    await connectionPromise
+
+    const api = Object.keys(storeApi).reduce((acc, key) => {
+      acc[key] = storeApi[key].bind(null, adapterPool, readModelName)
+      return acc
+    }, {})
+
+    return Object.freeze(api)
+  }
+
+  const doDisconnect = async () => {
+    if (connectionPromise != null) {
+      await connectionPromise
+
+      await disconnect(adapterPool)
+
+      connectionPromise = null
+    }
+  }
+
+  const doDrop = async readModelName => {
+    if (connectionPromise == null) {
+      connectionPromise = connect(
+        adapterPool,
+        options
+      )
+    }
+    await connectionPromise
+
+    await dropReadModel(adapterPool, readModelName)
+  }
+
+  return Object.freeze({
+    connect: doConnect,
+    disconnect: doDisconnect,
+    drop: doDrop
+  })
+}
+
+export default createAdapter

@@ -3,13 +3,12 @@ const testFunctionalConfig = {
   port: 3000,
   polyfills: ['@babel/polyfill'],
   mode: 'development',
-  readModelAdapters: [
-    {
-      name: 'default',
+  readModelConnectors: {
+    default: {
       module: 'resolve-readmodel-lite',
       options: {}
     }
-  ],
+  },
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000
