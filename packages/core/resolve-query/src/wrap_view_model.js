@@ -2,11 +2,11 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
   const getKey = aggregateIds =>
     Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds
   const workers = new Map()
-  let isDisposed = true
+  let isDisposed = false
 
   const read = async (modelOptions, aggregateArgs, jwtToken) => {
     if (isDisposed) {
-      throw new Error('Read model is disposed')
+      throw new Error('View model is disposed')
     }
     const aggregateIds = modelOptions !== '*' ? modelOptions.split(/,/) : '*'
     if (
@@ -68,12 +68,14 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
 
           await eventStore.loadEvents(
             {
-              aggregateIds: viewModel.aggregateIds,
+              aggregateIds,
               startTime: lastTimestamp,
               eventTypes: Object.keys(viewModel.projection)
             },
             handler
           )
+
+          return state
         })()
       )
     }
@@ -86,17 +88,18 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
 
   const readAndSerialize = async (modelOptions, aggregateArgs, jwtToken) => {
     if (isDisposed) {
-      throw new Error('Read model is disposed')
+      throw new Error('View model is disposed')
     }
-
     const state = await read(modelOptions, aggregateArgs, jwtToken)
+
     const result = await viewModel.serializeState(state, jwtToken)
+
     return result
   }
 
   const updateByEvents = async () => {
     if (isDisposed) {
-      throw new Error('Read model is disposed')
+      throw new Error('View model is disposed')
     }
 
     throw new Error('View model cannot be updated by events')
@@ -104,7 +107,7 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
 
   const drop = async () => {
     if (isDisposed) {
-      throw new Error('Read model is disposed')
+      throw new Error('View model is disposed')
     }
 
     throw new Error('Snapshot cleaning for view-models is not implemented')
@@ -112,8 +115,9 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
 
   const dispose = async () => {
     if (isDisposed) {
-      throw new Error('Read model is disposed')
+      throw new Error('View model is disposed')
     }
+    isDisposed = true
 
     workers.clear()
   }
