@@ -24,7 +24,7 @@ const runQuery = async (pool, querySQL) => {
 }
 
 const coerceEmptyString = obj =>
-  (obj != null && obj.constructor !== String) || obj == null ? '' : obj
+  (obj != null && obj.constructor !== String) || obj == null ? 'default' : obj
 
 const connect = async (pool, options) => {
   let { tablePrefix, databaseFile, ...connectionOptions } = options

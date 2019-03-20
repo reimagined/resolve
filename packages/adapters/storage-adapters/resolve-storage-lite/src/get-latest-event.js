@@ -1,5 +1,5 @@
 const getLatestEvent = async (
-  { database, tableName },
+  { database, tableName, escapeId, escape },
   { eventTypes, aggregateIds, startTime, finishTime }
 ) => {
   const injectString = value => `${escape(value)}`
@@ -7,7 +7,9 @@ const getLatestEvent = async (
 
   const queryConditions = []
   if (eventTypes != null) {
-    queryConditions.push(`${escapeId('type')} IN (${eventTypes.map(injectString)})`)
+    queryConditions.push(
+      `${escapeId('type')} IN (${eventTypes.map(injectString)})`
+    )
   }
   if (aggregateIds != null) {
     queryConditions.push(
@@ -15,10 +17,14 @@ const getLatestEvent = async (
     )
   }
   if (startTime != null) {
-    queryConditions.push(`${escapeId('timestamp')} > ${injectNumber(startTime)}`)
+    queryConditions.push(
+      `${escapeId('timestamp')} > ${injectNumber(startTime)}`
+    )
   }
   if (finishTime != null) {
-    queryConditions.push(`${escapeId('timestamp')} < ${injectNumber(finishTime)}`)
+    queryConditions.push(
+      `${escapeId('timestamp')} < ${injectNumber(finishTime)}`
+    )
   }
 
   const resultQueryCondition =

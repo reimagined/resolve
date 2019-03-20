@@ -1,4 +1,4 @@
-const dispose = async ({ database }, { dropEvents }) => {
+const dispose = async ({ database, tableName, escapeId }, { dropEvents }) => {
   if (dropEvents) {
     await database.exec(`DELETE FROM ${escapeId(tableName)}`)
   }

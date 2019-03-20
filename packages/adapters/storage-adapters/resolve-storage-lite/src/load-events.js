@@ -9,24 +9,32 @@ const loadEvents = async (
 
   const queryConditions = []
   if (eventTypes != null) {
-    queryConditions.push(`${escapeId('type')} IN (${eventTypes.map(injectString)})`)
+    queryConditions.push(
+      `${escapeId('type')} IN (${eventTypes.map(injectString).join(', ')})`
+    )
   }
   if (aggregateIds != null) {
     queryConditions.push(
-      `${escapeId('aggregateId')} IN (${aggregateIds.map(injectString)})`
+      `${escapeId('aggregateId')} IN (${aggregateIds
+        .map(injectString)
+        .join(', ')})`
     )
   }
   if (startTime != null) {
-    queryConditions.push(`${escapeId('timestamp')} > ${injectNumber(startTime)}`)
+    queryConditions.push(
+      `${escapeId('timestamp')} > ${injectNumber(startTime)}`
+    )
   }
   if (finishTime != null) {
-    queryConditions.push(`${escapeId('timestamp')} < ${injectNumber(finishTime)}`)
+    queryConditions.push(
+      `${escapeId('timestamp')} < ${injectNumber(finishTime)}`
+    )
   }
 
   const resultQueryCondition =
     queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
 
-  for(let skipCount = 0; ; skipCount++) {
+  for (let skipCount = 0; ; skipCount++) {
     const rows = await database.all(
       `SELECT * FROM ${escapeId(tableName)} ${resultQueryCondition}
       ORDER BY ${escapeId('timestamp')} ASC,
@@ -34,11 +42,14 @@ const loadEvents = async (
       LIMIT ${+(skipCount * batchSize)}, ${+batchSize}`
     )
 
-    for(const event of rows) {
-      await callback(event)
+    for (const event of rows) {
+      await callback({
+        ...event,
+        payload: JSON.parse(event.payload)
+      })
     }
 
-    if(rows.length < batchSize) {
+    if (rows.length < batchSize) {
       break
     }
   }
