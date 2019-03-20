@@ -68,7 +68,7 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
 
           await eventStore.loadEvents(
             {
-              aggregateIds,
+              aggregateIds: aggregateIds !== '*' ? aggregateIds : null,
               startTime: lastTimestamp,
               eventTypes: Object.keys(viewModel.projection)
             },
