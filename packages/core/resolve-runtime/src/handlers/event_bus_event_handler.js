@@ -30,11 +30,7 @@ const handleGetAppConfigEvent = async (lambdaEvent, resolve) => {
 
 const handleApplyEvents = async (lambdaEvent, resolve) => {
   const { events, listenerId } = lambdaEvent
-
-  const executor = resolve.executeQuery.getExecutor(listenerId)
-
-  await executor.updateByEvents(events)
-
+  await resolve.executeQuery.updateByEvents(listenerId, events)
   return true
 }
 
