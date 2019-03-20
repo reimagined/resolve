@@ -303,8 +303,14 @@ const initDomain = async (
     executeQuery
   })
 
+  const allResolversByReadModel = new Map()
+  for (const { name, resolvers } of readModels) {
+    allResolversByReadModel.set(name, Object.keys(resolvers))
+  }
+
   Object.defineProperties(resolve, {
     lockPromise: { value: null, writable: true },
+    allResolversByReadModel: { value: allResolversByReadModel },
     readModelConnectors: { value: readModelConnectors },
     snapshotAdapter: { value: snapshotAdapter }
   })

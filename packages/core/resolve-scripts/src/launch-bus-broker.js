@@ -140,6 +140,7 @@ export default async resolveConfig => {
   })
 
   process.on('exit', () => {
+    process.kill(server.pid, 'SIGTERM')
     server.stop()
   })
 

@@ -73,7 +73,13 @@ const initResolve = async (
     eventStore
   })
 
+  const allResolversByReadModel = new Map()
+  for (const { name, resolvers } of readModels) {
+    allResolversByReadModel.set(name, Object.keys(resolvers))
+  }
+
   Object.defineProperties(resolve, {
+    allResolversByReadModel: { value: allResolversByReadModel },
     readModelConnectors: { value: readModelConnectors },
     snapshotAdapter: { value: snapshotAdapter },
     storageAdapter: { value: storageAdapter }

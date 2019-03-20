@@ -6,7 +6,9 @@ const testFunctionalConfig = {
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-lite',
-      options: {}
+      options: {
+        databaseFile: 'read-models-test-functional.db'
+      }
     }
   },
   jwtCookie: {
@@ -15,7 +17,9 @@ const testFunctionalConfig = {
   },
   storageAdapter: {
     module: 'resolve-storage-lite',
-    options: {}
+    options: {
+      databaseFile: 'event-store-test-functional.db'
+    }
   }
 }
 

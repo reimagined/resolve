@@ -10,6 +10,8 @@ const registerFirstUser = async t => {
   await t.typeText(await Selector('input[name="username"]'), 'User 1')
   await t.typeText(await Selector('input[name="password"]'), 'User Password 1')
   await t.click(await Selector('.btn-success'))
+
+  await t.wait(1000)
 }
 
 const loginFirstUser = async t => {
@@ -17,6 +19,8 @@ const loginFirstUser = async t => {
   await t.typeText(await Selector('input[name="username"]'), 'User 1')
   await t.typeText(await Selector('input[name="password"]'), 'User Password 1')
   await t.click(await Selector('.btn-primary'))
+
+  await t.wait(1000)
 }
 
 // eslint-disable-next-line no-unused-expressions, no-undef

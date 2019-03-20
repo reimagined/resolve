@@ -74,6 +74,7 @@ const runTestcafe = async ({
   })
 
   process.on('exit', () => {
+    process.kill(server.pid, 'SIGTERM')
     server.stop()
   })
 
