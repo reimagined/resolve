@@ -31,13 +31,14 @@ const appConfig = {
       connectorName: 'default'
     }
   ],
-  ...
 }
 ```
 
 In the configuration object, specify the Read Model's name and the paths to the files containing projections and resolvers. Here, you can also specify the Read Model's storage adapter.
 
 You can define the available adapters in the **readModelConnectors** section:
+
+##### config.dev.js:
 
 ```js
 const devConfig = {
@@ -50,6 +51,8 @@ const devConfig = {
   },
 }
 ```
+
+##### config.prod.js:
 
 ```js
 import { declareRuntimeEnv } from 'resolve-scripts'
@@ -89,8 +92,7 @@ const appConfig = {
         }
       }
     }
-  ],
-  ...
+  ]
 }
 ```
 
@@ -117,8 +119,7 @@ You can use the **defineTable** method to add tables to the storage:
         'createdByName'
       ]
     })
-    ...
-  },
+  }
 ```
 
 ReSolve provides a unified API to manage data in storage (this code works with any supported storage type). **Read Model Adapters** provide the internal logic a Read Model uses to communicate with DBMSs.
@@ -190,19 +191,24 @@ A View Model's projection function receives a state and an event object, and ret
 
 The code sample below demonstrates a View Model projection function:
 
+<!-- prettier-ignore-start -->
+
+[embedmd]:# (../examples/shopping-list/common/view-models/shopping_list.projection.js /^[[:blank:]]+\[SHOPPING_ITEM_CREATED/ /\}\),/)
 ```js
-[SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
-  ...state,
-  list: [
-    ...state.list,
-    {
-      id,
-      text,
-      checked: false
-    }
-  ]
-}),
+  [SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
+    ...state,
+    list: [
+      ...state.list,
+      {
+        id,
+        text,
+        checked: false
+      }
+    ]
+  }),
 ```
+
+<!-- prettier-ignore-end -->
 
 Refer to the [Query a View Model](#query-a-view-model) section, for information on how to query a View Model.
 

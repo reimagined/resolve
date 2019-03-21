@@ -85,8 +85,7 @@ export default {
           host: declareRuntimeEnv('SQL_HOST'),
           database: declareRuntimeEnv('SQL_DATABASE'),
           user: declareRuntimeEnv('SQL_USER'),
-          password: declareRuntimeEnv('SQL_PASSWORD'),
-          metaName: '__deployments_ResolveMeta__'
+          password: declareRuntimeEnv('SQL_PASSWORD')
         }
       }
     }
