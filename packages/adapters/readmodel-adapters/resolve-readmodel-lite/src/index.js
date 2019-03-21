@@ -24,7 +24,7 @@ const runQuery = async (pool, querySQL) => {
 }
 
 const coerceEmptyString = obj =>
-  (obj != null && obj.constructor !== String) || obj == null ? '' : obj
+  (obj != null && obj.constructor !== String) || obj == null ? 'default' : obj
 
 const connect = async (pool, options) => {
   let { tablePrefix, databaseFile, ...connectionOptions } = options
@@ -47,20 +47,6 @@ const connect = async (pool, options) => {
 
 const disconnect = async pool => {
   await pool.connection.close()
-}
-
-const drop = async ({ runQuery, escapeId }) => {
-  const rows = await runQuery(
-    `SELECT name FROM sqlite_master WHERE type=${escape('table')}
-    AND sql LIKE ${escape(
-      `${escapeId('RESOLVE-%')} BOOLEAN NOT NULL DEFAULT(true)`
-    )}
-    AND name NOT LIKE ${escape('sqlite_%')}`
-  )
-
-  for (const { name } of rows) {
-    await runQuery(`DROP TABLE ${escapeId(name)}`)
-  }
 }
 
 const MAX_LIMIT_VALUE = 0x0fffffff | 0
@@ -575,6 +561,5 @@ export default createAdapter.bind(null, {
   delete: del,
   connect,
   dropReadModel,
-  disconnect,
-  drop
+  disconnect
 })

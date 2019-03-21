@@ -34,7 +34,7 @@ const initResolve = async (
   {
     snapshotAdapter: createSnapshotAdapter,
     storageAdapter: createStorageAdapter,
-    readModelAdapters: readModelAdaptersCreators
+    readModelConnectors: readModelConnectorsCreators
   },
   resolve
 ) => {
@@ -42,10 +42,9 @@ const initResolve = async (
   const eventStore = createEventStore({ storage: storageAdapter })
   const { aggregates, readModels, viewModels } = resolve
   const snapshotAdapter = createSnapshotAdapter()
-
-  const readModelAdapters = {}
-  for (const { name, factory } of readModelAdaptersCreators) {
-    readModelAdapters[name] = factory()
+  const readModelConnectors = {}
+  for (const name of Object.keys(readModelConnectorsCreators)) {
+    readModelConnectors[name] = readModelConnectorsCreators[name]()
   }
 
   const executeCommand = createCommandExecutor({
@@ -54,16 +53,18 @@ const initResolve = async (
     snapshotAdapter
   })
 
+  const doUpdateRequest = async readModelName => {
+    const readModel = readModels.find(({ name }) => name === readModelName)
+    await invokeUpdateLambda(readModel)
+  }
+
   const executeQuery = createQueryExecutor({
-    doUpdateRequest: async (pool, readModelName) => {
-      const readModel = readModels.find(({ name }) => name === readModelName)
-      await invokeUpdateLambda(readModel)
-    },
     eventStore,
-    viewModels,
+    readModelConnectors,
+    snapshotAdapter,
+    doUpdateRequest,
     readModels,
-    readModelAdapters,
-    snapshotAdapter
+    viewModels
   })
 
   Object.assign(resolve, {
@@ -72,8 +73,14 @@ const initResolve = async (
     eventStore
   })
 
+  const allResolversByReadModel = new Map()
+  for (const { name, resolvers } of readModels) {
+    allResolversByReadModel.set(name, Object.keys(resolvers))
+  }
+
   Object.defineProperties(resolve, {
-    readModelAdapters: { value: readModelAdapters },
+    allResolversByReadModel: { value: allResolversByReadModel },
+    readModelConnectors: { value: readModelConnectors },
     snapshotAdapter: { value: snapshotAdapter },
     storageAdapter: { value: storageAdapter }
   })
@@ -84,8 +91,8 @@ const disposeResolve = async resolve => {
 
   await resolve.snapshotAdapter.dispose()
 
-  for (const name of Object.keys(resolve.readModelAdapters)) {
-    await resolve.readModelAdapters[name].dispose()
+  for (const name of Object.keys(resolve.readModelConnectors)) {
+    await resolve.readModelConnectors[name].disconnect()
   }
 }
 

@@ -12,7 +12,7 @@ const appConfig = {
       name: 'ShoppingLists',
       projection: 'common/read-models/shopping_lists.projection.js',
       resolvers: 'common/read-models/shopping_lists.resolvers.js',
-      adapterName: 'default'
+      connectorName: 'default'
     }
   ],
   viewModels: [

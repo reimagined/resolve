@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 const {
   defaultResolveConfig,
@@ -207,7 +208,19 @@ void (async () => {
         testFunctionalConfig,
         authModule
       )
-
+      if (
+        fs.existsSync(path.join(__dirname, 'read-models-test-functional.db'))
+      ) {
+        fs.unlinkSync(path.join(__dirname, 'read-models-test-functional.db'))
+      }
+      if (
+        fs.existsSync(path.join(__dirname, 'event-store-test-functional.db'))
+      ) {
+        fs.unlinkSync(path.join(__dirname, 'event-store-test-functional.db'))
+      }
+      if (fs.existsSync(path.join(__dirname, 'local-bus-broker.db'))) {
+        fs.unlinkSync(path.join(__dirname, 'local-bus-broker.db'))
+      }
       await Promise.all([
         runTestcafe({
           resolveConfig,

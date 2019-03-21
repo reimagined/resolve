@@ -22,7 +22,7 @@
   "storageAdapter": {
     "module": "resolve-storage-lite",
     "options": {
-      "pathToFile": "event-storage.db"
+      "databaseFile": "event-store.db"
     }
   },
   "subscribeAdapter": {
@@ -33,7 +33,7 @@
     "module": "resolve-snapshot-lite",
     "options": {}
   },
-  "readModelAdapters": [],
+  "readModelConnectors": {},
   "eventBroker": {
     "zmqBrokerAddress": "tcp://127.0.0.1:3500",
     "zmqConsumerAddress": "tcp://127.0.0.1:3501",

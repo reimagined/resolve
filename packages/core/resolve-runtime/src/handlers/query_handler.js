@@ -1,12 +1,6 @@
-import { constants } from 'resolve-query'
-
+import extractErrorHttpCode from '../utils/extract_error_http_code'
 import getRootBasedUrl from '../utils/get_root_based_url'
-import readModelHandler from './read_model_handler'
-import viewModelHandler from './view_model_handler'
 import extractRequestBody from '../utils/extract_request_body'
-import message from '../message'
-
-const { modelTypes } = constants
 
 const queryHandler = async (req, res) => {
   try {
@@ -18,27 +12,19 @@ const queryHandler = async (req, res) => {
       throw new Error('Invalid "modelName" and/or "modelOptions" parameters')
     }
 
-    req.params = { modelName, modelOptions }
-    req.arguments = extractRequestBody(req)
+    const result = await req.resolve.executeQuery.readAndSerialize({
+      modelName,
+      modelOptions,
+      modelArgs: extractRequestBody(req),
+      jwtToken: req.jwtToken
+    })
 
-    const executeQuery = req.resolve.executeQuery
-    const modelType = executeQuery.getModelType(req.params.modelName)
-
-    switch (modelType) {
-      case modelTypes.viewModel: {
-        return await viewModelHandler(req, res)
-      }
-      case modelTypes.readModel: {
-        return await readModelHandler(req, res)
-      }
-      default: {
-        await res.status(422)
-        await res.setHeader('Content-Type', 'text/plain')
-        await res.end(message.incorrectQuery)
-      }
-    }
+    await res.status(200)
+    await res.setHeader('Content-Type', 'application/json')
+    await res.end(result)
   } catch (error) {
-    await res.status(405)
+    const errorCode = extractErrorHttpCode(error)
+    await res.status(errorCode)
     await res.setHeader('Content-Type', 'text/plain')
     await res.end(error.message)
   }

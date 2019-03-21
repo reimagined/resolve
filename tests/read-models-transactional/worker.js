@@ -42,19 +42,19 @@ void (async () => {
     })
 
     const eventStore = createEventStore({ storage })
-    const adapterName = 'default-adapter'
+    const connectorName = 'default-adapter'
     const readModelName = 'default-read-model'
 
     const query = createQuery({
       eventStore,
       viewModels: [],
-      readModelAdapters: {
-        [adapterName]: adapter
+      readModelConnectors: {
+        [connectorName]: adapter
       },
       readModels: [
         {
           name: readModelName,
-          adapterName,
+          connectorName,
           projection,
           resolvers
         }

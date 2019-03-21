@@ -26,8 +26,8 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-lite#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "nedb": "^1.8.0",
-    "resolve-storage-base": "0.19.8"
+    "resolve-storage-base": "0.19.8",
+    "sqlite": "^3.0.2"
   },
   "devDependencies": {
     "jest": "24.1.0",

@@ -7,18 +7,18 @@ const testFunctionalConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
-
-  readModelAdapters: [
-    {
-      name: 'default',
+  readModelConnectors: {
+    default: {
       module: 'resolve-readmodel-lite',
-      options: {}
+      options: {
+        databaseFile: 'read-models-test-functional.db'
+      }
     }
-  ],
+  },
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {
-      pathToFile: 'event-storage.db'
+      databaseFile: 'event-store-test-functional.db'
     }
   },
   subscribeAdapter: {

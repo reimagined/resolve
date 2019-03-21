@@ -7,7 +7,7 @@ import constants from '$resolve.constants'
 import customConstants from '$resolve.customConstants'
 import eventBroker from '$resolve.eventBroker'
 import installLogger from '$resolve.installLogger'
-import readModelAdapters from '$resolve.readModelAdapters'
+import readModelConnectors from '$resolve.readModelConnectors'
 import redux from '$resolve.redux'
 import routes from '$resolve.routes'
 import seedClientEnvs from '$resolve.seedClientEnvs'
@@ -21,7 +21,7 @@ constants,
 customConstants,
 eventBroker,
 installLogger,
-readModelAdapters,
+readModelConnectors,
 redux,
 routes,
 seedClientEnvs,

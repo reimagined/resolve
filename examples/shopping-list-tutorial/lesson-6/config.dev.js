@@ -21,15 +21,14 @@ const devConfig = {
     name: 'jwt',
     maxAge: 31536000000
   },
-  readModelAdapters: [
-    {
-      name: 'default',
+  readModelConnectors: {
+    default: {
       module: 'resolve-readmodel-lite',
       options: {
         databaseFile: 'read-models.db'
       }
     }
-  ]
+  }
 }
 
 export default devConfig

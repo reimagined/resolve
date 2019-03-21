@@ -7636,7 +7636,7 @@ jest-changed-files@^24.5.0:
     execa "^1.0.0"
     throat "^4.0.0"
 
-jest-cli@^24.0.0, jest-cli@^24.1.0:
+jest-cli@^24.1.0:
   version "24.5.0"
   resolved "https://registry.yarnpkg.com/jest-cli/-/jest-cli-24.5.0.tgz#598139d3446d1942fb7dc93944b9ba766d756d4b"
   integrity sha512-P+Jp0SLO4KWN0cGlNtC7JV0dW1eSFR7eRpoOucP2UM0sqlzp/bVHeo71Omonvigrj9AvCKy7NtQANtqJ7FXz8g==
@@ -7976,14 +7976,6 @@ jest-worker@^24.4.0:
     "@types/node" "*"
     merge-stream "^1.0.1"
     supports-color "^6.1.0"
-
-jest@24.0.0:
-  version "24.0.0"
-  resolved "https://registry.yarnpkg.com/jest/-/jest-24.0.0.tgz#b8e2c8e6274e1092c7f56e57762a1fdc7800201e"
-  integrity sha512-1Z2EblP4BnERbWZGtipGb9zjHDq7nCHgCY7V57F5SYaFRJV4DE1HKoOz+CRC5OrAThN9OVhRlUhTzsTFArg2iQ==
-  dependencies:
-    import-local "^2.0.0"
-    jest-cli "^24.0.0"
 
 jest@24.1.0:
   version "24.1.0"
@@ -9324,7 +9316,7 @@ nearley@^2.7.10:
     randexp "0.4.6"
     semver "^5.4.1"
 
-nedb@1.8.0, nedb@^1.8.0:
+nedb@^1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/nedb/-/nedb-1.8.0.tgz#0e3502cd82c004d5355a43c9e55577bd7bd91d88"
   integrity sha1-DjUCzYLABNU1WkPJ5VV3vXvZHYg=
@@ -11871,6 +11863,13 @@ resolve-url@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
   integrity sha1-LGN/53yJOv0qZj/iGqkIAGjiBSo=
+
+resolve-viewmodel@0.19.8:
+  version "0.19.8"
+  resolved "https://registry.yarnpkg.com/resolve-viewmodel/-/resolve-viewmodel-0.19.8.tgz#296212e3bf3e1f27fdf010cbe09b9ac21a287d3e"
+  integrity sha512-kl6vwoNTp4r0SYmDBhtAkLxPA5h5dK4aE+oswIlQi9hipwsPMzTZicpAfyAt94HPNg8YtNnh5G9uFNc8zDwvdg==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
 
 resolve@1.1.7:
   version "1.1.7"

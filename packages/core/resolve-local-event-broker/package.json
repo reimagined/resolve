@@ -1,7 +1,7 @@
 {
   "name": "resolve-local-event-broker",
   "version": "0.19.8",
-  "description": "This package create server with resolve.",
+  "description": "This package includes event broker for local run.",
   "engines": {
     "node": ">=8.10"
   },

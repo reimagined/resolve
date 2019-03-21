@@ -7,17 +7,15 @@ const prodConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
-  readModelAdapters: [
-    {
-      name: 'default',
+  readModelConnectors: {
+    default: {
       module: 'resolve-readmodel-lite',
       options: {
         databaseFile: 'read-models.db'
       }
     }
     /*
-      {
-        name: 'default',
+      default: {
         module: 'resolve-readmodel-mongo',
         options: {
           url: 'mongodb://127.0.0.1:27017/MyDatabaseName',
@@ -25,8 +23,7 @@ const prodConfig = {
       }
     */
     /*
-      {
-        name: 'default',
+      default: {
         module: 'resolve-readmodel-mysql',
         options: {
           host: 'localhost',
@@ -37,7 +34,7 @@ const prodConfig = {
         }
       }
     */
-  ],
+  },
   snapshotAdapter: {
     module: 'resolve-snapshot-lite',
     options: {

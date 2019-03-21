@@ -15,17 +15,19 @@ const init = async ({ promise, createQuery, transformEvents }) => {
           name: promise[symbol].name,
           projection: promise[symbol].projection,
           resolvers: promise[symbol].resolvers,
-          adapterName: 'ADAPTER_NAME'
+          connectorName: 'ADAPTER_NAME'
         }
       ],
-      readModelAdapters: {
+      readModelConnectors: {
         ADAPTER_NAME: promise[symbol].adapter
       },
       snapshotAdapter: null
     })
 
-    const executor = queryExecutor.getExecutor(promise[symbol].name)
-    await executor.updateByEvents(transformEvents(promise[symbol].events))
+    await queryExecutor.updateByEvents(
+      promise[symbol].name,
+      transformEvents(promise[symbol].events)
+    )
 
     const result = await queryExecutor.read({
       modelName: promise[symbol].name,

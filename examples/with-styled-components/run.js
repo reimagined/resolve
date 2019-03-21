@@ -6,6 +6,7 @@ import {
   runTestcafe,
   merge
 } from 'resolve-scripts'
+import fs from 'fs'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
@@ -38,6 +39,15 @@ void (async () => {
     }
 
     case 'test:functional': {
+      if (fs.existsSync('read-models-test-functional.db')) {
+        fs.unlinkSync('read-models-test-functional.db')
+      }
+      if (fs.existsSync('event-store-test-functional.db')) {
+        fs.unlinkSync('event-store-test-functional.db')
+      }
+      if (fs.existsSync('local-bus-broker.db')) {
+        fs.unlinkSync('local-bus-broker.db')
+      }
       await runTestcafe({
         resolveConfig: merge(
           defaultResolveConfig,
