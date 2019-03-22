@@ -26,6 +26,7 @@ export default {
       fields: ['createdAt']
     })
   },
+
   [STORY_CREATED]: async (
     store,
     { aggregateId, timestamp, payload: { title, link, userId, userName, text } }

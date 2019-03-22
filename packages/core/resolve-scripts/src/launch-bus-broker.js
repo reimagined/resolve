@@ -2,6 +2,7 @@ import path from 'path'
 import webpack from 'webpack'
 import nodeExternals from 'webpack-node-externals'
 import respawn from 'respawn'
+import killProcess from 'tree-kill'
 
 import showBuildInfo from './show_build_info'
 import validateConfig from './validate_config'
@@ -140,7 +141,7 @@ export default async resolveConfig => {
   })
 
   process.on('exit', () => {
-    process.kill(server.pid, 'SIGTERM')
+    killProcess(server.pid, 'SIGTERM')
     server.stop()
   })
 
