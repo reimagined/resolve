@@ -26,11 +26,12 @@ export default {
       fields: ['createdAt']
     })
   },
+
   [STORY_CREATED]: async (
     store,
     { aggregateId, timestamp, payload: { title, link, userId, userName, text } }
   ) => {
-    const isAsk = link == null || link === '' || link === '\u200b'
+    const isAsk = link == null || link === ''
     const type = isAsk ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story'
 
     const story = {

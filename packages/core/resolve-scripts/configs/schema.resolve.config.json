@@ -17,22 +17,6 @@
       "required": ["module", "options"],
       "additionalProperties": false
     },
-    "readModelAdapter": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "module": {
-          "type": "string"
-        },
-        "options": {
-          "type": "object"
-        }
-      },
-      "required": ["name", "module", "options"],
-      "additionalProperties": false
-    },
     "resourceInstance": {
       "type": "string"
     },
@@ -82,7 +66,23 @@
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
+        },
+        "serializeState": {
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
+        },
+        "deserializeState": {
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
         }
+      },
+      "dependencies": {
+        "serializeState": ["deserializeState"],
+        "deserializeState": ["serializeState"]
       },
       "required": ["name", "commands"],
       "additionalProperties": false
@@ -143,11 +143,11 @@
             { "$ref": "#/definitions/resourceConstructor" }
           ]
         },
-        "adapterName": {
+        "connectorName": {
           "type": "string"
         }
       },
-      "required": ["name", "projection", "resolvers", "adapterName"],
+      "required": ["name", "projection", "resolvers", "connectorName"],
       "additionalProperties": false
     },
     "saga": {
@@ -255,6 +255,30 @@
         "type": "string"
       }
     },
+    "eventBroker": {
+      "type": "object",
+      "properties": {
+        "zmqBrokerAddress": {
+          "type": "string"
+        },
+        "zmqConsumerAddress": {
+          "type": "string"
+        },
+        "databaseFile": {
+          "type": "string"
+        },
+        "batchSize": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "zmqBrokerAddress",
+        "zmqConsumerAddress",
+        "databaseFile",
+        "batchSize"
+      ],
+      "additionalProperties": false
+    },
     "customConstants": {
       "type": "object",
       "additionalProperties": true
@@ -324,14 +348,14 @@
             "$ref": "#/definitions/apiHandler"
           }
         },
-        "readModelAdapters": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/readModelAdapter"
+        "readModelConnectors": {
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              { "$ref": "#/definitions/resourceInstance" },
+              { "$ref": "#/definitions/resourceConstructor" }
+            ]
           }
-        },
-        "busAdapter": {
-          "$ref": "#/definitions/adapter"
         },
         "storageAdapter": {
           "$ref": "#/definitions/adapter"
@@ -347,6 +371,9 @@
         },
         "polyfills": {
           "$ref": "#/definitions/polyfills"
+        },
+        "eventBroker": {
+          "$ref": "#/definitions/eventBroker"
         },
         "registry": {
           "type": "string"
@@ -370,12 +397,12 @@
         "aggregates",
         "viewModels",
         "readModels",
-        "busAdapter",
-        "readModelAdapters",
+        "readModelConnectors",
         "storageAdapter",
         "snapshotAdapter",
         "subscribeAdapter",
         "polyfills",
+        "eventBroker",
         "customConstants",
         "target",
         "logLevel"

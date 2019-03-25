@@ -17,25 +17,18 @@ const allowedMethods = [
   'ALL'
 ]
 
-export const validateReadModelAdapters = resolveConfig => {
-  for (const { adapterName } of resolveConfig.readModels) {
-    const filterResult = resolveConfig.readModelAdapters.filter(
-      ({ name }) => adapterName === name
-    )
-    if (filterResult.length === 0) {
+export const validateReadModelConnectors = resolveConfig => {
+  for (const { connectorName } of resolveConfig.readModels) {
+    if (resolveConfig.readModelConnectors[connectorName] == null) {
       throw new Error(
-        `The "${adapterName}" read model adapter is required but not specified`
-      )
-    } else if (filterResult.length > 1) {
-      throw new Error(
-        `Duplicate declaration "${adapterName}" read model adapter`
+        `The "${connectorName}" read model adapter is required but not specified`
       )
     }
   }
 
-  for (const { name } of resolveConfig.readModelAdapters) {
+  for (const name of Object.keys(resolveConfig.readModelConnectors)) {
     const findResult = resolveConfig.readModels.find(
-      ({ adapterName }) => adapterName === name
+      ({ connectorName }) => connectorName === name
     )
     if (!findResult) {
       throw new Error(
@@ -97,7 +90,7 @@ const validateConfig = config => {
   }
 
   validateApiHandlers(config)
-  validateReadModelAdapters(config)
+  validateReadModelConnectors(config)
 
   return true
 }

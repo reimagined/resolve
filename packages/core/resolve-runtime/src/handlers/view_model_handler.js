@@ -30,15 +30,6 @@ const viewModelHandler = async (req, res) => {
       jwtToken
     })
 
-    const lastError = await executeQuery.getLastError({
-      modelName,
-      aggregateIds
-    })
-    if (lastError != null) {
-      resolveLog('warn', 'View model handler caused error', req.path, lastError)
-      throw lastError
-    }
-
     await res.status(200)
     await res.setHeader('Content-Type', 'text/plain')
     await res.end(serializedState)

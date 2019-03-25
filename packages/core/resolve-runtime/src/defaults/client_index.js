@@ -19,7 +19,13 @@ import redux from '$resolve.redux'
 
 var initialState = deserializeInitialState(viewModels, window.__INITIAL_STATE__)
 
-var origin = window.location.origin
+var origin =
+  window.location.origin == null
+    ? window.location.protocol +
+      '//' +
+      window.location.hostname +
+      (window.location.port ? ':' + window.location.port : '')
+    : window.location.origin
 
 var history = createHistory({
   basename: rootPath
@@ -28,16 +34,16 @@ var history = createHistory({
 var isClient = true
 
 var store = createStore({
-  redux,
-  viewModels,
-  readModels,
-  aggregates,
-  subscribeAdapter,
-  initialState,
-  history,
-  origin,
-  rootPath,
-  isClient
+  redux: redux,
+  viewModels: viewModels,
+  readModels: readModels,
+  aggregates: aggregates,
+  subscribeAdapter: subscribeAdapter,
+  initialState: initialState,
+  history: history,
+  origin: origin,
+  rootPath: rootPath,
+  isClient: isClient
 })
 
 render(

@@ -5,6 +5,7 @@ import respawn from 'respawn'
 import fsExtra from 'fs-extra'
 import webpack from 'webpack'
 import { execSync } from 'child_process'
+import killProcess from 'tree-kill'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
@@ -74,6 +75,7 @@ const runTestcafe = async ({
   })
 
   process.on('exit', () => {
+    killProcess(server.pid, 'SIGTERM')
     server.stop()
   })
 

@@ -27,13 +27,15 @@ export default ({ resolveConfig, isClient }) => {
     }
     constants.push(`const name_${index} = ${JSON.stringify(readModel.name)}`)
 
-    if (checkRuntimeEnv(readModel.adapterName)) {
+    if (checkRuntimeEnv(readModel.connectorName)) {
       throw new Error(
-        `${message.clientEnvError}.readModels[${index}].adapterName`
+        `${message.clientEnvError}.readModels[${index}].connectorName`
       )
     }
     constants.push(
-      `const adapterName_${index} = ${JSON.stringify(readModel.adapterName)}`
+      `const connectorName_${index} = ${JSON.stringify(
+        readModel.connectorName
+      )}`
     )
 
     importResource({
@@ -79,7 +81,7 @@ export default ({ resolveConfig, isClient }) => {
     exports.push(`, resolvers: resolvers_${index}`)
 
     if (!isClient) {
-      exports.push(`, adapterName: adapterName_${index}`)
+      exports.push(`, connectorName: connectorName_${index}`)
 
       importResource({
         resourceName: `projection_${index}`,

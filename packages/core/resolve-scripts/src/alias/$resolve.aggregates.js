@@ -67,19 +67,50 @@ export default ({ resolveConfig, isClient }) => {
     exports.push(`  name: name_${index}`)
     exports.push(`, commands: commands_${index}`)
 
-    if (!isClient && aggregate.projection) {
+    if (!isClient) {
       importResource({
-        resourceName: `projection_${index}`,
-        resourceValue: aggregate.projection,
+        resourceName: `serializeState_${index}`,
+        resourceValue: aggregate.serializeState,
         runtimeMode: RUNTIME_ENV_NOWHERE,
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
-        calculateHash: 'resolve-aggregate-projection-hash',
+        instanceFallback:
+          'resolve-runtime/lib/defaults/view_model_serialize_state.js',
         imports,
         constants
       })
-      exports.push(`, projection: projection_${index}`)
-      exports.push(`, invariantHash: projection_${index}_hash`)
+
+      exports.push(`, serializeState: serializeState_${index}`)
+
+      importResource({
+        resourceName: `deserializeState_${index}`,
+        resourceValue: aggregate.deserializeState,
+        runtimeMode: RUNTIME_ENV_NOWHERE,
+        importMode: RESOURCE_ANY,
+        instanceMode: IMPORT_INSTANCE,
+        instanceFallback:
+          'resolve-runtime/lib/defaults/view_model_deserialize_state.js',
+        imports,
+        constants
+      })
+
+      exports.push(`, deserializeState: deserializeState_${index}`)
+
+      if (aggregate.projection != null) {
+        importResource({
+          resourceName: `projection_${index}`,
+          resourceValue: aggregate.projection,
+          runtimeMode: RUNTIME_ENV_NOWHERE,
+          importMode: RESOURCE_ANY,
+          instanceMode: IMPORT_INSTANCE,
+          calculateHash: 'resolve-aggregate-projection-hash',
+          imports,
+          constants
+        })
+
+        exports.push(`, projection: projection_${index}`)
+        exports.push(`, invariantHash: projection_${index}_hash`)
+      }
     }
 
     exports.push(`})`, ``)

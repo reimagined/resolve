@@ -16,6 +16,7 @@ const excludeAlias = [
   'sagas',
   'assemblies',
   'chunkReactNative',
+  'localBusBroker',
   ...excludeConstantAlias
 ]
 

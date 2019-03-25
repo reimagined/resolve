@@ -5,7 +5,8 @@ const getLatestEvent = async (pool, filter) => {
     createAggregateIdExpression,
     createQuery,
     executeSingleQuery,
-    documentClient
+    documentClient,
+    decodeEmptyStrings
   } = pool
 
   const {
@@ -45,7 +46,16 @@ const getLatestEvent = async (pool, filter) => {
   const items =
     result != null && Array.isArray(result.Items) ? result.Items : []
 
-  return items.length > 0 ? items[0] : null
+  if (items.length === 0 || items[0] == null) {
+    return null
+  }
+
+  const { payload, ...metaItem } = items[0]
+
+  return {
+    ...metaItem,
+    ...(payload !== undefined ? { payload: decodeEmptyStrings(payload) } : {})
+  }
 }
 
 export default getLatestEvent

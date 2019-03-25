@@ -1,6 +1,8 @@
+const fs = require('fs')
 const path = require('path')
 const {
   defaultResolveConfig,
+  launchBusBroker,
   build,
   start,
   watch,
@@ -97,13 +99,18 @@ void (async () => {
         devConfig,
         authModule
       )
-      await watch(
-        resolveConfig,
-        adjustWebpackConfigs({
+
+      await Promise.all([
+        watch(
           resolveConfig,
-          commonPackages
-        })
-      )
+          adjustWebpackConfigs({
+            resolveConfig,
+            commonPackages
+          })
+        ),
+        launchBusBroker(resolveConfig)
+      ])
+
       break
     }
     case 'dev:native': {
@@ -113,24 +120,31 @@ void (async () => {
         devConfig,
         authModule
       )
-      await watch(
-        resolveConfig,
-        adjustWebpackConfigs({
+
+      await Promise.all([
+        watch(
           resolveConfig,
-          reactNativeDir,
-          commonPackages
-        })
-      )
+          adjustWebpackConfigs({
+            resolveConfig,
+            reactNativeDir,
+            commonPackages
+          })
+        ),
+        launchBusBroker(resolveConfig)
+      ])
+
       await remotedev({
         hostname: resolveConfig.customConstants.remoteReduxDevTools.hostname,
         port: resolveConfig.customConstants.remoteReduxDevTools.port,
         wsEngine: 'ws'
       })
+
       await opn(
         `http://${resolveConfig.customConstants.remoteReduxDevTools.hostname}:${
           resolveConfig.customConstants.remoteReduxDevTools.port
         }`
       )
+
       break
     }
 
@@ -141,6 +155,7 @@ void (async () => {
         prodConfig,
         authModule
       )
+
       await build(
         resolveConfig,
         adjustWebpackConfigs({
@@ -149,6 +164,7 @@ void (async () => {
           commonPackages
         })
       )
+
       break
     }
 
@@ -159,6 +175,7 @@ void (async () => {
         cloudConfig,
         authModule
       )
+
       await build(
         resolveConfig,
         adjustWebpackConfigs({
@@ -167,6 +184,7 @@ void (async () => {
           commonPackages
         })
       )
+
       break
     }
 
@@ -177,7 +195,9 @@ void (async () => {
         prodConfig,
         authModule
       )
-      await start(resolveConfig)
+
+      await Promise.all([start(resolveConfig), launchBusBroker(resolveConfig)])
+
       break
     }
 
@@ -188,16 +208,33 @@ void (async () => {
         testFunctionalConfig,
         authModule
       )
-      await runTestcafe({
-        resolveConfig,
-        adjustWebpackConfigs: adjustWebpackConfigs({
+      if (
+        fs.existsSync(path.join(__dirname, 'read-models-test-functional.db'))
+      ) {
+        fs.unlinkSync(path.join(__dirname, 'read-models-test-functional.db'))
+      }
+      if (
+        fs.existsSync(path.join(__dirname, 'event-store-test-functional.db'))
+      ) {
+        fs.unlinkSync(path.join(__dirname, 'event-store-test-functional.db'))
+      }
+      if (fs.existsSync(path.join(__dirname, 'local-bus-broker.db'))) {
+        fs.unlinkSync(path.join(__dirname, 'local-bus-broker.db'))
+      }
+      await Promise.all([
+        runTestcafe({
           resolveConfig,
-          commonPackages
+          adjustWebpackConfigs: adjustWebpackConfigs({
+            resolveConfig,
+            commonPackages
+          }),
+          functionalTestsDir: './test/functional',
+          browser: process.argv[3]
+          // customArgs: ['-r', 'json:report.json']
         }),
-        functionalTestsDir: './test/functional',
-        browser: process.argv[3]
-        // customArgs: ['-r', 'json:report.json']
-      })
+        launchBusBroker(resolveConfig)
+      ])
+
       break
     }
 

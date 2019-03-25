@@ -11,9 +11,9 @@ npx create-resolve-app resolve-with-styled-components-example -e with-styled-com
 ## How to Use
 
 ```jsx
-import React from 'react';
+import React from 'react'
 
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 // Create a <Title> react component that renders a <h1> which is
 // centered, colored in palevioletred and sized at 1.5em
@@ -21,17 +21,17 @@ const Title = styled.h1`
   font-size: 1.5em;
   text-align: center;
   color: palevioletred;
-`;
+`
 
 // Create a <Wrapper> react component that renders a <section> with
 // some padding and a papayawhip background
 const Wrapper = styled.section`
   padding: 4em;
   background: papayawhip;
-`;
+`
 
 // Use them like any other React component – except they're styled!
-<Wrapper>
+;<Wrapper>
   <Title>Hello World, this is my first styled component!</Title>
 </Wrapper>
 ```
@@ -46,10 +46,8 @@ const Wrapper = styled.section`
 
 📑 [**Tagged Template Literals**](https://www.styled-components.com/docs/advanced#tagged-template-literals) for styled-components.
 
-📑 Available scripts, project structure overview, configuration files, and more useful information can be found in the [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
+📑 Available scripts, project structure overview, configuration files, and more useful information can be found in the [**API References**](https://reimagined.github.io/resolve/docs/api-reference) topic.
 
-📑 Refer to the [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic to learn more about common architecture building principles.
-
-📑 You can learn how to create simple applications with reSolve in the [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) section.
+📑 You can learn how to create simple applications with reSolve in the [**Step-by-Step Tutorial**](https://reimagined.github.io/resolve/docs/tutorial).
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-with-styled-components-readme?pixel)

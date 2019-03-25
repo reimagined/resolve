@@ -1,11 +1,13 @@
 import {
   defaultResolveConfig,
+  launchBusBroker,
   build,
   start,
   watch,
   runTestcafe,
   merge
 } from 'resolve-scripts'
+import fs from 'fs'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
@@ -18,7 +20,11 @@ const launchMode = process.argv[2]
 void (async () => {
   switch (launchMode) {
     case 'dev': {
-      await watch(merge(defaultResolveConfig, appConfig, devConfig))
+      const mergedDevConfig = merge(defaultResolveConfig, appConfig, devConfig)
+      await Promise.all([
+        watch(mergedDevConfig),
+        launchBusBroker(mergedDevConfig)
+      ])
       break
     }
 
@@ -33,20 +39,41 @@ void (async () => {
     }
 
     case 'start': {
-      await start(merge(defaultResolveConfig, appConfig, prodConfig))
+      const mergedProdConfig = merge(
+        defaultResolveConfig,
+        appConfig,
+        prodConfig
+      )
+      await Promise.all([
+        start(mergedProdConfig),
+        launchBusBroker(mergedProdConfig)
+      ])
       break
     }
 
     case 'test:functional': {
-      await runTestcafe({
-        resolveConfig: merge(
-          defaultResolveConfig,
-          appConfig,
-          testFunctionalConfig
-        ),
-        functionalTestsDir: 'test/functional',
-        browser: process.argv[3]
-      })
+      const mergedTestFunctionalConfig = merge(
+        defaultResolveConfig,
+        appConfig,
+        testFunctionalConfig
+      )
+      if (fs.existsSync('read-models-test-functional.db')) {
+        fs.unlinkSync('read-models-test-functional.db')
+      }
+      if (fs.existsSync('event-store-test-functional.db')) {
+        fs.unlinkSync('event-store-test-functional.db')
+      }
+      if (fs.existsSync('local-bus-broker.db')) {
+        fs.unlinkSync('local-bus-broker.db')
+      }
+      await Promise.all([
+        runTestcafe({
+          resolveConfig: mergedTestFunctionalConfig,
+          functionalTestsDir: 'test/functional',
+          browser: process.argv[3]
+        }),
+        launchBusBroker(mergedTestFunctionalConfig)
+      ])
       break
     }
 

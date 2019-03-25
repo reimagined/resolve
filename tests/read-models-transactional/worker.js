@@ -3,7 +3,7 @@ const path = require('path')
 const createQuery = require('resolve-query').default
 const createEventStore = require('resolve-es').default
 const createStorage = require('resolve-storage-lite').default
-const createMemoryAdapter = require('resolve-readmodel-memory').default
+const createMemoryAdapter = require('resolve-readmodel-lite').default
 const createMySQLAdapter = require('resolve-readmodel-mysql').default
 const createMongoDBAdapter = require('resolve-readmodel-mongo').default
 
@@ -42,19 +42,19 @@ void (async () => {
     })
 
     const eventStore = createEventStore({ storage })
-    const adapterName = 'default-adapter'
+    const connectorName = 'default-adapter'
     const readModelName = 'default-read-model'
 
     const query = createQuery({
       eventStore,
       viewModels: [],
-      readModelAdapters: {
-        [adapterName]: adapter
+      readModelConnectors: {
+        [connectorName]: adapter
       },
       readModels: [
         {
           name: readModelName,
-          adapterName,
+          connectorName,
           projection,
           resolvers
         }

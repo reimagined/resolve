@@ -1,11 +1,13 @@
 import {
   defaultResolveConfig,
+  launchBusBroker,
   build,
   start,
   watch,
   runTestcafe,
   merge
 } from 'resolve-scripts'
+import fs from 'fs'
 import resolveModuleComments from 'resolve-module-comments'
 import resolveModuleAuth from 'resolve-module-auth'
 
@@ -54,7 +56,11 @@ void (async () => {
 
   switch (launchMode) {
     case 'dev': {
-      await watch(merge(baseConfig, devConfig))
+      const mergedDevConfig = merge(baseConfig, devConfig)
+      await Promise.all([
+        watch(mergedDevConfig),
+        launchBusBroker(mergedDevConfig)
+      ])
       break
     }
 
@@ -69,16 +75,33 @@ void (async () => {
     }
 
     case 'start': {
-      await start(merge(baseConfig, prodConfig))
+      const mergedProdConfig = merge(baseConfig, prodConfig)
+      await Promise.all([
+        start(mergedProdConfig),
+        launchBusBroker(mergedProdConfig)
+      ])
       break
     }
 
     case 'test:functional': {
-      await runTestcafe({
-        resolveConfig: merge(baseConfig, testFunctionalConfig),
-        functionalTestsDir: 'test/functional',
-        browser: process.argv[3]
-      })
+      const mergedTestFunctionalConfig = merge(baseConfig, testFunctionalConfig)
+      if (fs.existsSync('read-models-test-functional.db')) {
+        fs.unlinkSync('read-models-test-functional.db')
+      }
+      if (fs.existsSync('event-store-test-functional.db')) {
+        fs.unlinkSync('event-store-test-functional.db')
+      }
+      if (fs.existsSync('local-bus-broker.db')) {
+        fs.unlinkSync('local-bus-broker.db')
+      }
+      await Promise.all([
+        runTestcafe({
+          resolveConfig: mergedTestFunctionalConfig,
+          functionalTestsDir: 'test/functional',
+          browser: process.argv[3]
+        }),
+        launchBusBroker(mergedTestFunctionalConfig)
+      ])
       break
     }
 

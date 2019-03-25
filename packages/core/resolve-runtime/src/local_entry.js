@@ -6,30 +6,26 @@ import path from 'path'
 import wrapApiHandler from 'resolve-api-handler-express'
 import createCommandExecutor from 'resolve-command'
 import createEventStore from 'resolve-es'
-import createQueryExecutor, { constants as queryConstants } from 'resolve-query'
+import createQueryExecutor from 'resolve-query'
 import createSocketServer from 'socket.io'
 import uuid from 'uuid/v4'
 import Url from 'url'
 import getWebSocketStream from 'websocket-stream'
 import { Server as WebSocketServer } from 'ws'
+import zmq from 'zeromq'
 
 import createPubsubManager from './utils/create_pubsub_manager'
 import getRootBasedUrl from './utils/get_root_based_url'
-
-import startExpressServer from './utils/start_express_server'
-import sagaRunnerExpress from './utils/saga_runner_express'
-
 import mainHandler from './handlers/main_handler'
 
-const initEventStore = async (
-  { storageAdapter: createStorageAdapter, busAdapter: createBusAdapter },
-  resolve
-) => {
-  Object.assign(resolve, {
-    eventStore: createEventStore({
-      storage: createStorageAdapter(),
-      bus: createBusAdapter()
-    })
+const host = '0.0.0.0'
+const startExpressServer = async ({ port, server }) => {
+  await new Promise((resolve, reject) =>
+    server.listen(port, host, error => (error ? reject(error) : resolve()))
+  )
+
+  server.on('error', err => {
+    throw err
   })
 }
 
@@ -210,19 +206,71 @@ const emptyWorker = async () => {
   )
 }
 
+const initEventStore = async (
+  { storageAdapter: createStorageAdapter, eventBroker: eventBrokerConfig },
+  resolve
+) => {
+  const { zmqBrokerAddress, zmqConsumerAddress } = eventBrokerConfig
+
+  const subSocket = zmq.socket('sub')
+  await subSocket.connect(zmqBrokerAddress)
+
+  const pubSocket = zmq.socket('pub')
+  await pubSocket.connect(zmqConsumerAddress)
+
+  Object.assign(resolve, {
+    eventStore: createEventStore({
+      storage: createStorageAdapter(),
+      publishEvent: async event => {
+        await pubSocket.send(`EVENT-TOPIC ${JSON.stringify(event)}`)
+      }
+    })
+  })
+
+  Object.defineProperties(resolve, {
+    subSocket: { value: subSocket },
+    pubSocket: { value: pubSocket }
+  })
+}
+
+const processIncomingEvents = async (resolve, message) => {
+  let unlock = null
+  try {
+    while (Promise.resolve(resolve.lockPromise) === resolve.lockPromise) {
+      await resolve.lockPromise
+    }
+    resolve.lockPromise = new Promise(resolve => (unlock = resolve))
+
+    const payloadIndex = message.indexOf(' ') + 1
+    const [readModelName, instanceId] = message
+      .toString('utf8', 0, payloadIndex - 1)
+      .split('-')
+      .map(str => new Buffer(str, 'base64').toString('utf8'))
+
+    if (instanceId === resolve.instanceId) {
+      const events = JSON.parse(message.slice(payloadIndex))
+      await resolve.executeQuery.updateByEvents(readModelName, events)
+    }
+  } catch (error) {
+    resolveLog('error', 'Error while applying events to read-model', error)
+  } finally {
+    resolve.lockPromise = null
+    unlock()
+  }
+}
+
 const initDomain = async (
   {
     snapshotAdapter: createSnapshotAdapter,
-    readModelAdapters: readModelAdaptersCreators
+    readModelConnectors: readModelConnectorsCreators
   },
   resolve
 ) => {
   const { eventStore, aggregates, readModels, viewModels } = resolve
   const snapshotAdapter = createSnapshotAdapter()
-
-  const readModelAdapters = {}
-  for (const { name, factory } of readModelAdaptersCreators) {
-    readModelAdapters[name] = factory()
+  const readModelConnectors = {}
+  for (const name of Object.keys(readModelConnectorsCreators)) {
+    readModelConnectors[name] = readModelConnectorsCreators[name]()
   }
 
   const executeCommand = createCommandExecutor({
@@ -231,50 +279,40 @@ const initDomain = async (
     snapshotAdapter
   })
 
+  const doUpdateRequest = readModelName => {
+    const topic = `${new Buffer(readModelName).toString('base64')}-${new Buffer(
+      resolve.instanceId
+    ).toString('base64')}`
+
+    return resolve.subSocket.subscribe(topic)
+  }
+
   const executeQuery = createQueryExecutor({
     eventStore,
-    viewModels,
+    readModelConnectors,
+    snapshotAdapter,
+    doUpdateRequest,
     readModels,
-    readModelAdapters,
-    snapshotAdapter
+    viewModels
   })
+
+  resolve.subSocket.on('message', processIncomingEvents.bind(null, resolve))
 
   Object.assign(resolve, {
     executeCommand,
     executeQuery
   })
 
+  const allResolversByReadModel = new Map()
+  for (const { name, resolvers } of readModels) {
+    allResolversByReadModel.set(name, Object.keys(resolvers))
+  }
+
   Object.defineProperties(resolve, {
-    readModelAdapters: { value: readModelAdapters },
+    lockPromise: { value: null, writable: true },
+    allResolversByReadModel: { value: allResolversByReadModel },
+    readModelConnectors: { value: readModelConnectors },
     snapshotAdapter: { value: snapshotAdapter }
-  })
-}
-
-const initEventLoop = async resolve => {
-  const executors = resolve.executeQuery.getExecutors(
-    queryConstants.modelTypes.readModel
-  )
-
-  const unsubscribe = await resolve.eventStore.loadEvents(
-    { skipStorage: true },
-    async event => {
-      resolve.pubsubManager.dispatch({
-        topicName: event.type,
-        topicId: event.aggregateId,
-        event
-      })
-
-      const applicationPromises = []
-      for (const executor of executors) {
-        applicationPromises.push(executor.updateByEvents([event]))
-      }
-
-      await Promise.all(applicationPromises)
-    }
-  )
-
-  Object.defineProperty(resolve, 'unsubscribe', {
-    value: unsubscribe
   })
 }
 
@@ -304,6 +342,7 @@ const getSubscribeAdapterOptions = async (resolve, origin, adapterName) => {
 const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
   try {
     const resolve = {
+      instanceId: `${process.pid}${Math.floor(Math.random() * 100000)}`,
       aggregateActions: assemblies.aggregateActions,
       seedClientEnvs: assemblies.seedClientEnvs,
       ...constants,
@@ -322,7 +361,6 @@ const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
     await initSubscribeAdapter(resolve)
     await initHMR(resolve)
     await initDomain(assemblies, resolve)
-    await initEventLoop(resolve)
 
     const getCustomParameters = async () => ({ resolve })
     const executor = wrapApiHandler(mainHandler, getCustomParameters)
@@ -334,7 +372,6 @@ const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
 
     resolve.app.use(executor)
 
-    await sagaRunnerExpress(resolve, assemblies.sagas)
     await startExpressServer(resolve)
 
     resolveLog('debug', 'Local entry point cold start success', resolve)

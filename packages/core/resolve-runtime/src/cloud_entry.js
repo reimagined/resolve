@@ -1,39 +1,40 @@
 import 'source-map-support/register'
 import IotData from 'aws-sdk/clients/iotdata'
-import { Converter } from 'aws-sdk/clients/dynamodb'
 import v4 from 'aws-signature-v4'
 import STS from 'aws-sdk/clients/sts'
-import Lambda from 'aws-sdk/clients/lambda'
+import StepFunctions from 'aws-sdk/clients/stepfunctions'
 
 import wrapApiHandler from 'resolve-api-handler-awslambda'
 import createCommandExecutor from 'resolve-command'
 import createEventStore from 'resolve-es'
-import createQueryExecutor, { constants as queryConstants } from 'resolve-query'
+import createQueryExecutor from 'resolve-query'
 
 import mainHandler from './handlers/main_handler'
-import handleResolveEvent from './handlers/resolve_event_handler'
+import handleDeployServiceEvent from './handlers/deploy_service_event_handler'
+import handleEventBusEvent from './handlers/event_bus_event_handler'
 
-const invokeLambdaSelf = async event => {
-  const lambda = new Lambda({ apiVersion: '2015-03-31' })
-  const invokeParams = {
-    FunctionName: process.env.AWS_LAMBDA_FUNCTION_NAME,
-    InvocationType: 'Event',
-    Payload: JSON.stringify(event),
-    LogType: 'None'
-  }
+const stepFunctions = new StepFunctions()
 
-  return await new Promise((resolve, reject) =>
-    lambda.invoke(invokeParams, (err, data) =>
-      !err ? resolve(data) : reject(err)
-    )
-  )
+const invokeUpdateLambda = async readModel => {
+  await stepFunctions
+    .startExecution({
+      stateMachineArn: process.env.EVENT_BUS_STEP_FUNCTION_ARN,
+      input: JSON.stringify({
+        'detail-type': 'LISTEN_EVENT_BUS',
+        listenerId: readModel.name,
+        invariantHash: readModel.invariantHash,
+        inactiveTimeout: 1000 * 60 * 60,
+        eventTypes: Object.keys(readModel.projection)
+      })
+    })
+    .promise()
 }
 
 const initResolve = async (
   {
     snapshotAdapter: createSnapshotAdapter,
     storageAdapter: createStorageAdapter,
-    readModelAdapters: readModelAdaptersCreators
+    readModelConnectors: readModelConnectorsCreators
   },
   resolve
 ) => {
@@ -41,10 +42,9 @@ const initResolve = async (
   const eventStore = createEventStore({ storage: storageAdapter })
   const { aggregates, readModels, viewModels } = resolve
   const snapshotAdapter = createSnapshotAdapter()
-
-  const readModelAdapters = {}
-  for (const { name, factory } of readModelAdaptersCreators) {
-    readModelAdapters[name] = factory()
+  const readModelConnectors = {}
+  for (const name of Object.keys(readModelConnectorsCreators)) {
+    readModelConnectors[name] = readModelConnectorsCreators[name]()
   }
 
   const executeCommand = createCommandExecutor({
@@ -53,24 +53,18 @@ const initResolve = async (
     snapshotAdapter
   })
 
-  const doUpdateRequest = async (pool, readModelName) => {
-    const executor = pool.getExecutor(pool, readModelName)
-
-    Promise.resolve()
-      .then(executor.read.bind(null, { isBulkRead: true }))
-      .then(invokeLambdaSelf.bind(null, { Records: [] }))
-      .catch(error => {
-        resolveLog('error', 'Update lambda invocation error', error)
-      })
+  const doUpdateRequest = async readModelName => {
+    const readModel = readModels.find(({ name }) => name === readModelName)
+    await invokeUpdateLambda(readModel)
   }
 
   const executeQuery = createQueryExecutor({
     eventStore,
-    viewModels,
-    readModels,
-    readModelAdapters,
+    readModelConnectors,
     snapshotAdapter,
-    doUpdateRequest
+    doUpdateRequest,
+    readModels,
+    viewModels
   })
 
   Object.assign(resolve, {
@@ -79,8 +73,14 @@ const initResolve = async (
     eventStore
   })
 
+  const allResolversByReadModel = new Map()
+  for (const { name, resolvers } of readModels) {
+    allResolversByReadModel.set(name, Object.keys(resolvers))
+  }
+
   Object.defineProperties(resolve, {
-    readModelAdapters: { value: readModelAdapters },
+    allResolversByReadModel: { value: allResolversByReadModel },
+    readModelConnectors: { value: readModelConnectors },
     snapshotAdapter: { value: snapshotAdapter },
     storageAdapter: { value: storageAdapter }
   })
@@ -91,8 +91,8 @@ const disposeResolve = async resolve => {
 
   await resolve.snapshotAdapter.dispose()
 
-  for (const name of Object.keys(resolve.readModelAdapters)) {
-    await resolve.readModelAdapters[name].dispose()
+  for (const name of Object.keys(resolve.readModelConnectors)) {
+    await resolve.readModelConnectors[name].disconnect()
   }
 }
 
@@ -141,21 +141,27 @@ const lambdaWorker = async (
   const resolve = Object.create(resolveBase)
   try {
     await initResolve(assemblies, resolve)
-    resolveLog(
-      'debug',
-      'Lambda handler has initialized resolve instance',
-      resolve
-    )
+    resolveLog('debug', 'Lambda handler has initialized resolve instance')
 
     // Resolve event invoked by deploy service
     if (lambdaEvent.resolveSource === 'DeployService') {
       resolveLog(
         'debug',
-        'Lambda handler classified event as reSolve event',
+        'Lambda handler classified event as DeployService event',
         lambdaEvent
       )
 
-      executorResult = await handleResolveEvent(lambdaEvent, resolve)
+      executorResult = await handleDeployServiceEvent(lambdaEvent, resolve)
+    }
+    // Resolve event invoked by event bus
+    else if (lambdaEvent.resolveSource === 'EventBus') {
+      resolveLog(
+        'debug',
+        'Lambda handler classified event as Event Bus event',
+        lambdaEvent
+      )
+
+      executorResult = await handleEventBusEvent(lambdaEvent, resolve)
     }
     // API gateway event
     else if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
@@ -169,63 +175,6 @@ const lambdaWorker = async (
       const executor = wrapApiHandler(mainHandler, getCustomParameters)
 
       executorResult = await executor(lambdaEvent, lambdaContext)
-    }
-    // DynamoDB trigger event
-    // AWS DynamoDB streams guarantees that changesets from one table partition will
-    // be delivered strictly into one lambda instance, i.e. following code works in
-    // single-thread mode for one event storage - see https://amzn.to/2LkKXAV
-    else if (lambdaEvent.Records != null) {
-      resolveLog(
-        'debug',
-        'Lambda handler classified event as Dynamo stream',
-        lambdaEvent.Records
-      )
-      const applicationPromises = []
-      const events = lambdaEvent.Records.map(record =>
-        Converter.unmarshall(record.dynamodb.NewImage)
-      )
-      // TODO. Refactoring MQTT publish event
-      for (const event of events) {
-        const eventDescriptor = {
-          topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
-            event.aggregateId
-          }`,
-          payload: JSON.stringify(event),
-          qos: 1
-        }
-
-        applicationPromises.push(
-          resolve.mqtt
-            .publish(eventDescriptor)
-            .promise()
-            .then(() => {
-              resolveLog(
-                'info',
-                'Lambda pushed event into MQTT successfully',
-                eventDescriptor
-              )
-            })
-            .catch(error => {
-              resolveLog(
-                'warn',
-                'Lambda can not publish event into MQTT',
-                eventDescriptor,
-                error
-              )
-            })
-        )
-      }
-
-      const executors = resolve.executeQuery.getExecutors(
-        queryConstants.modelTypes.readModel
-      )
-
-      for (const executor of executors) {
-        applicationPromises.push(executor.updateByEvents(events))
-      }
-
-      await Promise.all(applicationPromises)
-      executorResult = true
     }
   } finally {
     await disposeResolve(resolve)

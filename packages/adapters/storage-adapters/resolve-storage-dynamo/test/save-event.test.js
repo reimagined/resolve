@@ -10,6 +10,7 @@ import {
 
 describe('method "saveEvent"', () => {
   test('should save event', async () => {
+    const encodeEmptyStrings = sinon.stub().callsFake(event => event)
     const documentClient = {
       put: sinon.stub().returns({
         promise: sinon.stub().returns(Promise.resolve())
@@ -20,6 +21,7 @@ describe('method "saveEvent"', () => {
 
     await saveEvent(
       {
+        encodeEmptyStrings,
         documentClient,
         tableName
       },
@@ -38,6 +40,7 @@ describe('method "saveEvent"', () => {
   })
 
   test('should throw temporaryError, ConcurrentError and error', async () => {
+    const encodeEmptyStrings = sinon.stub().callsFake(event => event)
     const temporaryError = new Error()
     temporaryError.code = temporaryErrors[0]
     const concurrentError = new Error()
@@ -60,6 +63,7 @@ describe('method "saveEvent"', () => {
     try {
       await saveEvent(
         {
+          encodeEmptyStrings,
           documentClient,
           tableName
         },
@@ -81,6 +85,7 @@ describe('method "saveEvent"', () => {
     try {
       await saveEvent(
         {
+          encodeEmptyStrings,
           documentClient,
           tableName
         },

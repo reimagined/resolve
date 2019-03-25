@@ -28,11 +28,8 @@ export default App
 
 ## What's next?
 
-📑 Available scripts, project structure overview, configuration files, and more useful information can be found in the [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
+📑 Available scripts, project structure overview, configuration files, and more useful information can be found in the [**API References**](https://reimagined.github.io/resolve/docs/api-reference) topic.
 
-📑 Refer to the [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic to learn more about common architecture building principles.
-
-📑 You can learn how to create simple applications with reSolve in the [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) section.
+📑 You can learn how to create simple applications with reSolve in the [**Step-by-Step Tutorial**](https://reimagined.github.io/resolve/docs/tutorial).
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-with-postcss-modules-readme?pixel)
-

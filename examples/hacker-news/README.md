@@ -37,14 +37,10 @@ Press `Control-C` to stop importing or wait until it is finished.
 
 ## What's next?
 
-📑 The app's creation process is detailed in the [**Hacker News Tutorial**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/Hacker%20News%20Tutorial.md).
+📑 You can learn more about read-models in a [**Read Models**](https://reimagined.github.io/resolve/docs/read-side#read-models) topic.
 
-📑 You can learn more about read-models in a [**Read Model**](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md) topic.
+📑 Available scripts, project structure overview, configuration files, and more useful information can be found in the [**API References**](https://reimagined.github.io/resolve/docs/api-reference) topic.
 
-📑 Available scripts, project structure overview, configuration files, and more useful information can be found in the [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
-
-📑 Refer to the [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic to learn more about common architecture building principles.
-
-📑 You can learn how to create simple applications with reSolve in the [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) section.
+📑 You can learn how to create simple applications with reSolve in the [**Step-by-Step Tutorial**](https://reimagined.github.io/resolve/docs/tutorial).
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-hacker-news-readme?pixel)

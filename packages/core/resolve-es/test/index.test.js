@@ -4,7 +4,7 @@ import createEventStore from '../src/index'
 
 describe('resolve-es', () => {
   describe('loadEvents', () => {
-    it('should perform events loading and transmitting from storage and bus', async () => {
+    it('should perform events loading and transmitting from storage', async () => {
       const handler = sinon.stub().callsFake(async () => {})
       const event = { type: 'EVENT_TYPE' }
       const storage = {
@@ -12,20 +12,13 @@ describe('resolve-es', () => {
           await callback(event)
         })
       }
-      const bus = {
-        subscribe: sinon.stub().callsFake(async (_, callback) => {
-          await callback(event)
-        })
-      }
 
-      const eventStore = createEventStore({ storage, bus })
+      const eventStore = createEventStore({ storage })
       const eventTypes = ['EVENT_TYPE']
       const aggregateIds = ['AGGREGATE_ID']
       const startTime = 100
       const finishTime = 200
       const filter = {
-        skipStorage: false,
-        skipBus: false,
         startTime,
         finishTime,
         eventTypes,
@@ -43,16 +36,8 @@ describe('resolve-es', () => {
       })
       expect(storage.loadEvents.firstCall.args[1]).toEqual(handler)
 
-      expect(bus.subscribe.callCount).toEqual(1)
-      expect(bus.subscribe.firstCall.args[0]).toEqual({
-        eventTypes,
-        aggregateIds
-      })
-      expect(bus.subscribe.firstCall.args[1]).toEqual(handler)
-
-      expect(handler.callCount).toEqual(2)
+      expect(handler.callCount).toEqual(1)
       expect(handler.firstCall.args[0]).toEqual(event)
-      expect(handler.secondCall.args[0]).toEqual(event)
     })
 
     it('should perform events loading and transmitting from storage only', async () => {
@@ -63,20 +48,13 @@ describe('resolve-es', () => {
           await callback(event)
         })
       }
-      const bus = {
-        subscribe: sinon.stub().callsFake(async (_, callback) => {
-          await callback(event)
-        })
-      }
 
-      const eventStore = createEventStore({ storage, bus })
+      const eventStore = createEventStore({ storage })
       const eventTypes = ['EVENT_TYPE']
       const aggregateIds = ['AGGREGATE_ID']
       const startTime = 100
       const finishTime = 200
       const filter = {
-        skipStorage: false,
-        skipBus: true,
         startTime,
         finishTime,
         eventTypes,
@@ -93,51 +71,6 @@ describe('resolve-es', () => {
         aggregateIds
       })
       expect(storage.loadEvents.firstCall.args[1]).toEqual(handler)
-
-      expect(bus.subscribe.callCount).toEqual(0)
-
-      expect(handler.callCount).toEqual(1)
-      expect(handler.firstCall.args[0]).toEqual(event)
-    })
-
-    it('should perform events loading and transmitting from bus only', async () => {
-      const handler = sinon.stub().callsFake(async () => {})
-      const event = { type: 'EVENT_TYPE' }
-      const storage = {
-        loadEvents: sinon.stub().callsFake(async (_, callback) => {
-          await callback(event)
-        })
-      }
-      const bus = {
-        subscribe: sinon.stub().callsFake(async (_, callback) => {
-          await callback(event)
-        })
-      }
-
-      const eventStore = createEventStore({ storage, bus })
-      const eventTypes = ['EVENT_TYPE']
-      const aggregateIds = ['AGGREGATE_ID']
-      const startTime = 100
-      const finishTime = 200
-      const filter = {
-        skipStorage: true,
-        skipBus: false,
-        startTime,
-        finishTime,
-        eventTypes,
-        aggregateIds
-      }
-
-      await eventStore.loadEvents(filter, handler)
-
-      expect(storage.loadEvents.callCount).toEqual(0)
-
-      expect(bus.subscribe.callCount).toEqual(1)
-      expect(bus.subscribe.firstCall.args[0]).toEqual({
-        eventTypes,
-        aggregateIds
-      })
-      expect(bus.subscribe.firstCall.args[1]).toEqual(handler)
 
       expect(handler.callCount).toEqual(1)
       expect(handler.firstCall.args[0]).toEqual(event)
@@ -149,12 +82,8 @@ describe('resolve-es', () => {
       const storage = {
         saveEvent: sinon.stub().returns(Promise.resolve())
       }
-      const bus = {
-        subscribe: sinon.stub().returns(Promise.resolve()),
-        publish: sinon.stub().returns(Promise.resolve())
-      }
 
-      const eventStore = createEventStore({ storage, bus })
+      const eventStore = createEventStore({ storage })
       const event = {
         type: 'EVENT',
         aggregateId: 'ID',
@@ -164,19 +93,14 @@ describe('resolve-es', () => {
       await eventStore.saveEvent(event)
 
       expect(storage.saveEvent.calledWith(event)).toBeTruthy()
-      expect(bus.publish.calledWith(event)).toBeTruthy()
     })
 
     it('should reject events without type', async () => {
       const storage = {
         saveEvent: sinon.stub().returns(Promise.resolve())
       }
-      const bus = {
-        subscribe: sinon.stub().returns(Promise.resolve()),
-        publish: sinon.stub().returns(Promise.resolve())
-      }
 
-      const eventStore = createEventStore({ storage, bus })
+      const eventStore = createEventStore({ storage })
       const event = { aggregateId: 'ID' }
 
       try {
@@ -191,12 +115,8 @@ describe('resolve-es', () => {
       const storage = {
         saveEvent: sinon.stub().returns(Promise.resolve())
       }
-      const bus = {
-        subscribe: sinon.stub().returns(Promise.resolve()),
-        publish: sinon.stub().returns(Promise.resolve())
-      }
 
-      const eventStore = createEventStore({ storage, bus })
+      const eventStore = createEventStore({ storage })
       const event = { type: 'EVENT_TYPE', timestamp: 1 }
 
       try {
@@ -211,12 +131,8 @@ describe('resolve-es', () => {
       const storage = {
         saveEvent: sinon.stub().returns(Promise.resolve())
       }
-      const bus = {
-        subscribe: sinon.stub().returns(Promise.resolve()),
-        publish: sinon.stub().returns(Promise.resolve())
-      }
 
-      const eventStore = createEventStore({ storage, bus })
+      const eventStore = createEventStore({ storage })
       const event = { type: 'EVENT_TYPE', aggregateId: 'ID', timestamp: 1 }
 
       try {
@@ -231,12 +147,8 @@ describe('resolve-es', () => {
       const storage = {
         saveEvent: sinon.stub().returns(Promise.resolve())
       }
-      const bus = {
-        subscribe: sinon.stub().returns(Promise.resolve()),
-        publish: sinon.stub().returns(Promise.resolve())
-      }
 
-      const eventStore = createEventStore({ storage, bus })
+      const eventStore = createEventStore({ storage })
       const event = {
         type: 'EVENT_TYPE',
         aggregateId: 'ID',
@@ -266,11 +178,9 @@ describe('resolve-es', () => {
     }
 
     const errorHandler = sinon.stub()
-    const eventStore = createEventStore({ storage, bus: null }, errorHandler)
+    const eventStore = createEventStore({ storage }, errorHandler)
 
     await eventStore.loadEvents({
-      skipStorage: false,
-      skipBus: true,
       startTime: 100,
       finishTime: 200,
       eventTypes: ['EVENT_TYPE'],

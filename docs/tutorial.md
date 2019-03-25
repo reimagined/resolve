@@ -22,7 +22,7 @@ This tutorial will give you an understanding of the reSolve framework and its fu
 
 ## **Lesson 1** - Create a New reSolve Application
 
-Use the create-resolve-app utility available on **npm** to create a new reSolve app:
+Use the create-resolve-app tool to create a new reSolve app:
 
 ##### npm:
 
@@ -43,7 +43,7 @@ $ npx create-resolve-app shopping-list
 $ yarn create resolve-app shopping-list
 ```
 
-After this, a minimal reSolve application is ready. You can run it in development mode by typing:
+After this, a minimal reSolve application is ready. To run it in development mode, type:
 
 ```sh
 $ cd shopping-list
@@ -58,7 +58,7 @@ $ yarn run dev
 
 This lesson will teach you how to implement a basic write side for your reSolve application. An application's [write side](resolve-app-structure.md#write-and-read-sides) handles commands, performs input validation and emits **events** based on valid commands. The framework then saves the emitted events to the **event store**.
 
-In the CQRS and Event Sourcing paradigms, commands are handled by Domain Objects grouped into aggregates. ReSolve implements aggregates as static objects containing sets of functions. These functions can be of one of the following two kinds:
+In the CQRS and Event Sourcing paradigms, commands are handled by Domain Objects grouped into aggregates. ReSolve implements aggregates as static objects that contain sets of functions. These functions can be of one of the following two kinds:
 
 - **[Command Handlers](write-side.md#aggregate-command-handlers)** - Handle commands and emit events in response.
 - **[Projections](write-side.md#aggregate-projection-function)** - Build aggregate state from events so this state can be observed on the write side, for example to perform input validation.
@@ -84,8 +84,8 @@ export const SHOPPING_ITEM_CREATED = "SHOPPING_ITEM_CREATED";
 
 For now, your application requires only two event types:
 
-- The SHOPPING_LIST_CREATED event signals about creation of a shopping list.
-- The SHOPPING_ITEM_CREATED event signals about creation of an item within a shopping list.
+- SHOPPING_LIST_CREATED - Signals about creation of a shopping list;
+- The SHOPPING_ITEM_CREATED - Signals about creation of an item within a shopping list.
 
 Next, create a **shopping_list.commands.js** file in the **common/aggregates** folder. This file will contain command handlers for the ShoppingList aggregate. Add the following code to the file:
 
@@ -110,14 +110,14 @@ export default {
 }
 ```
 
-As you can see, the file exports an object containing two command handlers. A command handler receives the aggregate state and a command payload. A payload can contain any arbitrary data related to the command. For example, the **createShoppingList** command's payload contains a shopping list name, and the **createShoppingItem** command payload contains an item's ID and text to display.
+This file exports an object with two command handlers. A command handler receives the aggregate state and a command payload. A payload can contain any arbitrary data related to the command. For example, the **createShoppingList** command's payload contains a shopping list name, and the **createShoppingItem** command payload contains an item's ID and text to display.
 
 A command handler returns an event object. This object should contain the following obligatory fields:
 
 - **type** - specifies the event's type;
 - **payload** - specifies data associated with the event.
 
-In the example code, the event payload contains the same fields that were obtained from the command payloads. The reSolve framework saves events returned by command handlers to a persistent **[event store](write-side.md#event-store)**. For now, your application is configured to use a file-based event store, which is sufficient for learning purposes. Later on, you will learn how to use different kinds of stores using **[storage adapters](advanced-techniques.md#adapters)**.
+In the example code, the event payload contains the same fields that were obtained from the command payloads. The reSolve framework saves events returned by command handlers to a persistent **[event store](write-side.md#event-store)**. For now, your application is configured to use a file-based event store, which is sufficient for learning purposes.
 
 Your minimal shopping list aggregate is now ready. The last step is to register it in the application's configuration file. Open the **config.app.js** file, locate the **aggregates** configuration section and specify the following settings:
 
@@ -136,9 +136,7 @@ aggregates: [
 
 ### Sending Commands to an Aggregate
 
-Now that your application is capable of handling commands, you can try sending such commands to create a shopping list and populate it with items.
-
-ReSolve framework provides a standard API that allows you to send commands to an application's aggregate using HTTP requests.
+Now that your application can commands, you can use the reSolve framework's standard HTTP API to send such commands to create a shopping list and populate it with items.
 
 A request body should have the `application/json` content type and contain a JSON representation of the command:
 
@@ -235,9 +233,9 @@ Now, you can check the event store file to see the newly created event. Open the
 
 Your application's write side currently does not perform any input validation. This results in the following flaws:
 
-- The aggregate allows you to create shopping lists and items without specifying the required fields in the payload.
+- The command handlers do not check whether or not all required fields are provided in a command's payload.
 - It is possible to create more then one shopping list with the same aggregate ID.
-- You can create items for a shopping list that does not exist.
+- You can create items in a shopping list that does not exist.
 
 You can overcome the first flaw by adding simple checks to each command handler:
 
@@ -255,7 +253,7 @@ createShoppingItem: (state, { payload: { id, text } }) => {
 }
 ```
 
-To overcome the second and third flaws, you need to somehow store information about previously performed operations. You can achieve this by maintaining an **aggregate state**. This state is assembled on the fly by an aggregate **projection** from previously created events. To add a projection to the ShoppingList aggregate, create a **shopping_list.projection.js** file in the **common/aggregates** folder and add the following code there:
+To overcome the second and third flaws, you you can use the **aggregate state**. This state is assembled on the fly by an aggregate **projection** from previously created events. To add a projection to the ShoppingList aggregate, create a **shopping_list.projection.js** file in the **common/aggregates** folder and add the following code there:
 
 **common/aggregates/shopping_list.projection.js:**
 
@@ -401,7 +399,7 @@ Currently, your shopping list application has a fully functional write side. Thi
 
 ### Implement a View Model
 
-A reSolve applications read side answers queries using **[Read Models](read-side.md#read-models)**. In this lesson, you will implement a **[View Model](read-side.md#view-model-specifics)**. View Models are Read Models used to build an application's state on the fly. This will allow you to keep the implementation simple. In a [later lesson](#implement-a-shopping-lists-read-model), you will learn how to use regular Read Models to answer queries based on accumulated persistent state.
+A reSolve application's read side uses Read Models toe answer queries. In this lesson, you will implement a **[View Model](read-side.md#view-model-specifics)**. View Models are Read Models used to build an application's state on the fly. This will allow you to keep the implementation simple. In a [later lesson](#implement-a-shopping-lists-read-model), you will learn how to use regular Read Models to answer queries based on an accumulated persistent state.
 
 Create a **shopping_list.projection.js** file in the **view-models** folder and add the following code to this file:
 
@@ -1106,9 +1104,9 @@ You can overcome this limitation by introducing optimistic UI updates as the nex
 
 ### Support Optimistic UI Updates
 
-With the optimistic UI updating approach, a component applies model changes to the client Redux state before sending them to the server using an aggregate command. Follow the steps below to provide such functionality.
+With the optimistic UI updating approach, a component applies model changes to the client Redux state before it sends the changes to the server using an aggregate command. Follow the steps below to provide such functionality.
 
-First, define Redux actions that will perform updates:
+First, define Redux actions that performs updates:
 
 **client/actions/optimistic_actions.js:**
 
@@ -1122,7 +1120,7 @@ export const OPTIMISTIC_SYNC = 'OPTIMISTIC_SYNC'
 
 <!-- prettier-ignore-end -->
 
-Implement an optimistic reducer function that responds to these commands to update the corresponding slice of the Redux state:
+Implement an optimistic reducer function that responds to these actions to update the corresponding slice of the Redux state:
 
 **client/reducers/optimistic_shopping_lists.js:**
 
@@ -1227,7 +1225,7 @@ Now, if you run your application and create a new shopping list, the created sho
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-7)
 
-In this lesson, you will provide miscellaneous functionality enhancements to your Shopping List application in order to support the full set of data editing operations. These steps are not essential, but they will help you further deepen your understanding of the reSolve framework's fundamentals.
+In this lesson, you will provide miscellaneous functionality enhancements to your Shopping List application to support the full set of data editing operations. These steps are not essential, but they will help you further deepen your understanding of the reSolve framework's fundamentals.
 
 ### Modify the Write Side
 
@@ -1252,7 +1250,7 @@ Modify the aggregate projection to account for shopping list deletion.
 [SHOPPING_LIST_REMOVED]: () => ({})
 ```
 
-Define command handlers to provide the data editing functionality.
+Define command handlers to provide the capability to edit data.
 
 **common/aggregates/shopping_list.commands.js:**
 
@@ -1330,8 +1328,8 @@ Modify the ShoppingLists Read Model projection.
 Add the required static content to the application's **static** folder. The example application uses the following static files:
 
 - The **Styles.css** file - Contains custom styles used by the application's client components.
-- The **fontawesome.min.css** file an the **webfonts** folder - The standard Font Awesome distribution.
-- The **close-button.png** image - An icon displayed by the button used to remove shopping list items.
+- The **fontawesome.min.css** file an the **webfonts** folder - The standard [Font Awesome](https://fontawesome.com/) distribution.
+- The **close-button.png** image - An icon that the button used to remove shopping list items displays.
 
 #### Update Components
 
@@ -1361,7 +1359,7 @@ const { lists, createShoppingList, removeShoppingList } = this.props
 <ShoppingLists lists={lists} removeShoppingList={removeShoppingList} />
 ```
 
-Modify the ShoppingList component to support shopping list renaming.
+Modify the ShoppingList component to provide the capability to rename shopping lists.
 
 **client/containers/ShoppingList.js:**
 

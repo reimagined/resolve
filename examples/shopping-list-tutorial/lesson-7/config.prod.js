@@ -13,10 +13,6 @@ const prodConfig = {
       pathToFile: 'event-storage.db'
     }
   },
-  busAdapter: {
-    module: 'resolve-bus-memory',
-    options: {}
-  },
   subscribeAdapter: {
     module: 'resolve-subscribe-socket.io',
     options: {}
@@ -25,13 +21,14 @@ const prodConfig = {
     name: 'jwt',
     maxAge: 31536000000
   },
-  readModelAdapters: [
-    {
-      name: 'default',
-      module: 'resolve-readmodel-memory',
-      options: {}
+  readModelConnectors: {
+    default: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'read-models.db'
+      }
     }
-  ]
+  }
 }
 
 export default prodConfig

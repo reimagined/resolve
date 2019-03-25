@@ -64,6 +64,70 @@ Object {
 }
 `;
 
+exports[`API handler wrapper for express.js should work with empty end 1`] = `
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with empty end 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "200",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with empty end 3`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{}",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with empty end 4`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"type\\":\\"Buffer\\",\\"data\\":[]}",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with empty end 5`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;
+
 exports[`API handler wrapper for express.js should work with error throwing handler 1`] = `
 Object {
   "callCount": 0,
@@ -98,7 +162,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "\\"Error: Custom error\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\"",
+        "\\"\\"",
       ],
       "returnValue": "{}",
     },
@@ -347,7 +411,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "\\"Error: Response already sent\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\"",
+        "\\"\\"",
       ],
       "returnValue": "{}",
     },

@@ -5,7 +5,10 @@ import {
   duplicateError
 } from './constants'
 
-const saveEvent = async ({ documentClient, tableName }, event) => {
+const saveEvent = async (
+  { documentClient, tableName, encodeEmptyStrings },
+  { payload, ...metaEvent }
+) => {
   while (true) {
     try {
       await documentClient
@@ -13,7 +16,10 @@ const saveEvent = async ({ documentClient, tableName }, event) => {
           TableName: tableName,
           Item: {
             globalPartitionKey: globalPartitionKey,
-            ...event
+            ...metaEvent,
+            ...(payload !== undefined
+              ? { payload: encodeEmptyStrings(payload) }
+              : {})
           },
           ConditionExpression:
             'attribute_not_exists(aggregateId) AND attribute_not_exists(aggregateVersion)'
@@ -24,7 +30,7 @@ const saveEvent = async ({ documentClient, tableName }, event) => {
       if (error.code === duplicateError) {
         throw new ConcurrentError(
           `Can not save the event because aggregate '${
-            event.aggregateId
+            metaEvent.aggregateId
           }' is not actual at the moment. Please retry later.`
         )
       }
