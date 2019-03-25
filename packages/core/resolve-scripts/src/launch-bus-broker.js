@@ -1,13 +1,12 @@
 import path from 'path'
 import webpack from 'webpack'
 import nodeExternals from 'webpack-node-externals'
-import respawn from 'respawn'
-import killProcess from 'tree-kill'
 
 import showBuildInfo from './show_build_info'
 import validateConfig from './validate_config'
 import getModulesDirs from './get_modules_dirs'
 import getWebpackAlias from './get_webpack_alias'
+import { processRegister } from './process_manager'
 
 export default async resolveConfig => {
   validateConfig(resolveConfig)
@@ -133,16 +132,11 @@ export default async resolveConfig => {
     path.join(resolveConfig.distDir, './common/local-entry/local-bus-broker.js')
   )
 
-  const server = respawn(['node', busBrokerPath], {
+  const server = processRegister(['node', busBrokerPath], {
     cwd: process.cwd(),
     maxRestarts: 0,
     kill: 5000,
     stdio: 'inherit'
-  })
-
-  process.on('exit', () => {
-    killProcess(server.pid, 'SIGTERM')
-    server.stop()
   })
 
   server.start()
