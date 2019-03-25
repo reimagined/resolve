@@ -14,7 +14,7 @@ export default {
       tableName: declareRuntimeEnv('DYNAMODB_TABLE_NAME'),
       skipInit: true
     }
-  },
+  } /*,
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-mysql',
@@ -25,5 +25,5 @@ export default {
         password: declareRuntimeEnv('SQL_PASSWORD')
       }
     }
-  }
+  }*/
 }

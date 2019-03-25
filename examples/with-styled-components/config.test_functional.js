@@ -2,7 +2,8 @@ const testFunctionalConfig = {
   target: 'local',
   port: 3000,
   polyfills: ['@babel/polyfill'],
-  mode: 'development',
+  mode:
+    'development' /*,
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-lite',
@@ -10,7 +11,7 @@ const testFunctionalConfig = {
         databaseFile: 'read-models-test-functional.db'
       }
     }
-  },
+  }*/,
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {
