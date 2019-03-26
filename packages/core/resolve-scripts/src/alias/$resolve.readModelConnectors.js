@@ -42,6 +42,11 @@ export default ({ resolveConfig, isClient }) => {
       `const name_${index} = ${JSON.stringify(readModelConnectorsNames[index])}`
     )
 
+    if (readModelConnector.module == null) {
+      readModelConnector.module =
+        'resolve-runtime/lib/defaults/read_model_connector.js'
+    }
+
     importResource({
       resourceName: `factory_${index}`,
       resourceValue: readModelConnector,
