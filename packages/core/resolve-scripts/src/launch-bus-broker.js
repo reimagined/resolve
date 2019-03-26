@@ -1,116 +1,16 @@
 import path from 'path'
 import webpack from 'webpack'
-import nodeExternals from 'webpack-node-externals'
 
 import showBuildInfo from './show_build_info'
 import validateConfig from './validate_config'
-import getModulesDirs from './get_modules_dirs'
-import getWebpackAlias from './get_webpack_alias'
+
+import getWebpackLocalBrokerConfig from './get_webpack_local_broker_config'
 import { processRegister } from './process_manager'
 
 export default async resolveConfig => {
   validateConfig(resolveConfig)
-  const alias = getWebpackAlias()
 
-  const distDir = path.resolve(process.cwd(), resolveConfig.distDir)
-
-  if (resolveConfig.target !== 'local') {
-    throw new Error('Bus broker is available only for local launch')
-  }
-
-  const webpackConfig = {
-    name: 'Bus broker local entry point',
-    entry: {
-      'common/local-entry/local-bus-broker.js': path.resolve(
-        __dirname,
-        './alias/$resolve.localBusBroker.js'
-      )
-    },
-    context: path.resolve(process.cwd()),
-    mode: resolveConfig.mode,
-    performance: false,
-    devtool: 'source-map',
-    target: 'node',
-    node: {
-      __dirname: true,
-      __filename: true
-    },
-    resolve: {
-      modules: getModulesDirs(),
-      alias
-    },
-    output: {
-      path: distDir,
-      filename: '[name]',
-      libraryTarget: 'commonjs-module',
-      devtoolModuleFilenameTemplate: '[namespace][resource-path]',
-      devtoolFallbackModuleFilenameTemplate: '[namespace][resource-path]?[hash]'
-    },
-    module: {
-      rules: [
-        {
-          test: Object.values(alias),
-          use: [
-            {
-              loader: require.resolve('babel-loader'),
-              options: {
-                cacheDirectory: true,
-                babelrc: false,
-                presets: [
-                  [
-                    '@babel/preset-env',
-                    {
-                      targets: { node: '8.10.0' }
-                    }
-                  ],
-                  '@babel/preset-react'
-                ],
-                plugins: [
-                  '@babel/plugin-proposal-class-properties',
-                  '@babel/plugin-proposal-export-default-from',
-                  '@babel/plugin-proposal-export-namespace-from',
-                  [
-                    '@babel/plugin-transform-runtime',
-                    {
-                      corejs: false,
-                      helpers: false,
-                      regenerator: false,
-                      useESModules: false
-                    }
-                  ]
-                ]
-              }
-            },
-            {
-              loader: require.resolve('val-loader'),
-              options: {
-                resolveConfig,
-                isClient: false
-              }
-            }
-          ]
-        },
-        {
-          test: /\.js$/,
-          use: {
-            loader: require.resolve('babel-loader'),
-            options: {
-              cacheDirectory: true
-            }
-          },
-          exclude: [
-            /node_modules/,
-            ...getModulesDirs({ isAbsolutePath: true }),
-            path.resolve(__dirname, '../lib'),
-            path.resolve(__dirname, '../es')
-          ]
-        }
-      ]
-    },
-    externals: [
-      ...getModulesDirs().map(modulesDir => nodeExternals({ modulesDir }))
-    ]
-  }
+  const webpackConfig = getWebpackLocalBrokerConfig(resolveConfig)
 
   const compiler = webpack([webpackConfig])
 

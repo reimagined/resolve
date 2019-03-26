@@ -5,28 +5,20 @@ const eventCompare = (a, b) =>
     ? 1
     : 0
 
-const invokeByTimestampFrame = async (
-  timestampFrame,
-  callback,
-  decodeEmptyStrings
-) => {
+const invokeByTimestampFrame = async (pool, timestampFrame, callback) => {
+  const { decodeEvent } = pool
+
   timestampFrame.sort(eventCompare)
 
-  for (const { payload, ...metaEvent } of timestampFrame) {
-    await callback({
-      ...metaEvent,
-      ...(payload !== undefined ? { payload: decodeEmptyStrings(payload) } : {})
-    })
+  for (const event of timestampFrame) {
+    await callback(decodeEvent(pool, event))
   }
 
   timestampFrame.length = 0
 }
 
-const executePaginationQuery = async (
-  { documentClient, executeSingleQuery, decodeEmptyStrings },
-  query,
-  callback
-) => {
+const executePaginationQuery = async (pool, query, callback) => {
+  const { documentClient, executeSingleQuery } = pool
   let res
   const timestampFrame = []
 
@@ -40,17 +32,13 @@ const executePaginationQuery = async (
         timestampFrame.length !== 0 &&
         event.timestamp !== timestampFrame[0].timestamp
       ) {
-        await invokeByTimestampFrame(
-          timestampFrame,
-          callback,
-          decodeEmptyStrings
-        )
+        await invokeByTimestampFrame(pool, timestampFrame, callback)
       }
       timestampFrame.push(event)
     }
   } while (res.LastEvaluatedKey != null)
 
-  await invokeByTimestampFrame(timestampFrame, callback, decodeEmptyStrings)
+  await invokeByTimestampFrame(pool, timestampFrame, callback)
 }
 
 export default executePaginationQuery

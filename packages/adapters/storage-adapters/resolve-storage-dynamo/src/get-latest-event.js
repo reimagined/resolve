@@ -6,7 +6,7 @@ const getLatestEvent = async (pool, filter) => {
     createQuery,
     executeSingleQuery,
     documentClient,
-    decodeEmptyStrings
+    decodeEvent
   } = pool
 
   const {
@@ -50,12 +50,7 @@ const getLatestEvent = async (pool, filter) => {
     return null
   }
 
-  const { payload, ...metaItem } = items[0]
-
-  return {
-    ...metaItem,
-    ...(payload !== undefined ? { payload: decodeEmptyStrings(payload) } : {})
-  }
+  return decodeEvent(pool, items[0])
 }
 
 export default getLatestEvent

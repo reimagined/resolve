@@ -4,7 +4,7 @@ exports[`base config works correctly [client] 1`] = `
 "
 
 const name_0 = \\"Todos\\"
-const adapterName_0 = undefined
+const connectorName_0 = undefined
 const resolvers_0 = {
   todos() {},
   items() {}
@@ -39,7 +39,7 @@ const constructorBindFunction =
 const idempotentFunction = value => value
 
 const name_0 = \\"Todos\\"
-const adapterName_0 = undefined
+const connectorName_0 = undefined
 const resolvers_0 = resolvers_0_instance
 const projection_0_hash = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const projection_0 = projection_0_instance
@@ -49,7 +49,7 @@ const readModels = []
 readModels.push({
   name: name_0
 , resolvers: resolvers_0
-, adapterName: adapterName_0
+, connectorName: connectorName_0
 , projection: projection_0
 , invariantHash: projection_0_hash
 })
@@ -62,13 +62,13 @@ exports[`base(v2) config works correctly [client] 1`] = `
 "
 
 const name_0 = \\"Todos\\"
-const adapterName_0 = undefined
+const connectorName_0 = undefined
 const resolvers_0 = {
   todos() {},
   items() {}
 }
 const name_1 = \\"Items\\"
-const adapterName_1 = undefined
+const connectorName_1 = undefined
 const resolvers_1 = {
   todos() {},
   items() {}
@@ -110,12 +110,12 @@ const constructorBindFunction =
 const idempotentFunction = value => value
 
 const name_0 = \\"Todos\\"
-const adapterName_0 = undefined
+const connectorName_0 = undefined
 const resolvers_0 = resolvers_0_instance
 const projection_0_hash = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const projection_0 = projection_0_instance
 const name_1 = \\"Items\\"
-const adapterName_1 = undefined
+const connectorName_1 = undefined
 const resolvers_1 = resolvers_1_instance
 const projection_1_hash = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const projection_1 = projection_1_instance
@@ -125,7 +125,7 @@ const readModels = []
 readModels.push({
   name: name_0
 , resolvers: resolvers_0
-, adapterName: adapterName_0
+, connectorName: connectorName_0
 , projection: projection_0
 , invariantHash: projection_0_hash
 })
@@ -133,7 +133,7 @@ readModels.push({
 readModels.push({
   name: name_1
 , resolvers: resolvers_1
-, adapterName: adapterName_1
+, connectorName: connectorName_1
 , projection: projection_1
 , invariantHash: projection_1_hash
 })
@@ -146,7 +146,7 @@ exports[`config + process.env works correctly [client] 1`] = `
 "
 
 const name_0 = \\"Todos\\"
-const adapterName_0 = undefined
+const connectorName_0 = undefined
 const resolvers_0 = {
   todos() {},
   items() {}
@@ -181,7 +181,7 @@ const constructorBindFunction =
 const idempotentFunction = value => value
 
 const name_0 = \\"Todos\\"
-const adapterName_0 = undefined
+const connectorName_0 = undefined
 const resolvers_0 = resolvers_0_instance
 const projection_0_hash = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const projection_0 = projection_0_instance
@@ -191,7 +191,7 @@ const readModels = []
 readModels.push({
   name: name_0
 , resolvers: resolvers_0
-, adapterName: adapterName_0
+, connectorName: connectorName_0
 , projection: projection_0
 , invariantHash: projection_0_hash
 })

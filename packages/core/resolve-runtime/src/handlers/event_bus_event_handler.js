@@ -1,3 +1,5 @@
+import { decodeEvent } from 'resolve-storage-dynamo'
+
 const handleGetAppConfigEvent = async (lambdaEvent, resolve) => {
   return {
     applicationName: resolve.applicationName,
@@ -30,7 +32,7 @@ const handleGetAppConfigEvent = async (lambdaEvent, resolve) => {
 
 const handleApplyEvents = async (lambdaEvent, resolve) => {
   const { events, listenerId } = lambdaEvent
-  await resolve.executeQuery.updateByEvents(listenerId, events)
+  await resolve.executeQuery.updateByEvents(listenerId, events.map(decodeEvent))
   return true
 }
 
