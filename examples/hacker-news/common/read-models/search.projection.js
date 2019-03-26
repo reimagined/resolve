@@ -9,11 +9,11 @@ export default {
     { aggregateId, payload: { title, text } }
   ) => es.create({
     index: "primary",
-    type: "doc",
+    type: "story",
     id: aggregateId,
     body: {
-      aggregate: "Story",
-      criteria: `${title} ${text}`
+      aggregateId,
+      text: `${title} ${text}`
     }
   }),
 
@@ -22,10 +22,10 @@ export default {
     { aggregateId, payload: { name } }
   ) => es.create({
     index: "primary",
-    type: "doc",
+    type: "user",
     id: aggregateId,
     body: {
-      aggregate: "User",
+      aggregateId,
       text: name
     }
   }),
@@ -33,24 +33,23 @@ export default {
   /* from module "resolve-module-comments" */
   COMMENT_CREATED: async (
     es,
-    { aggregateId, payload: { content: { text, parentId } } }
+    { aggregateId, payload: { commentId, content: { text } } }
   ) => es.create({
     index: "primary",
-    type: "doc",
-    id: aggregateId,
+    type: "comment",
+    id: commentId,
     body: {
-      aggregate: "Comment",
-      text,
-      parentId
+      aggregateId,
+      text
     }
   }),
 
   COMMENT_REMOVED: async (
     es,
-    { aggregateId }
+    { payload: { commentId } }
   ) => es.delete({
     index: "primary",
-    type: "doc",
-    id: aggregateId
+    type: "comment",
+    id: commentId
   })
 };

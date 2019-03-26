@@ -29,7 +29,7 @@ const appConfig = {
       connectorName: 'default'
     },
     {
-      name: 'ElasticSearch',
+      name: 'Search',
       projection: 'common/read-models/search.projection.js',
       resolvers: 'common/read-models/search.resolvers.js',
       connectorName: 'elasticSearch'

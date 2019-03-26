@@ -1,17 +1,17 @@
-import es from './es'
-
-const find = async (store, { q }) => {
+const search = async (es, { q }) => {
   const result = await es.search({
+    index: 'primary',
     q
   })
+
   return result.hits.hits.map(hit => ({
-    index: hit._index,
-    aggregateId: hit._id,
-    aggregate: hit._source.object,
+    id: hit._id,
+    type: hit._type,
+    aggregateId: hit._source.aggregateId,
     text: hit._source.text
   }))
 }
 
 export default {
-  find
+  search
 }
