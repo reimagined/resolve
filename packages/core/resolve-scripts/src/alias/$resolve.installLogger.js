@@ -15,7 +15,7 @@ export default ({ resolveConfig, isClient }) => {
   if (resolveConfig.logLevel !== 'off') {
     exports.push(`const logLevel = ${JSON.stringify(resolveConfig.logLevel)}`)
     exports.push(`const logLevelsMap = new Map([
-      ['error', 0], ['warn', 1], ['debug', 2], ['debug', 3], ['trace', 4]
+      ['error', 0], ['warn', 1], ['info', 2], ['debug', 3], ['trace', 4]
     ])`)
     exports.push(`const logLevelNumber = logLevelsMap.get(logLevel)`)
 

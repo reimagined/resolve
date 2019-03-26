@@ -1,12 +1,13 @@
-import serverSideRendering from './server_side_rendering'
-import commandHandler from './command_handler'
-import queryHandler from './query_handler'
-import statusHandler from './status_handler'
-import subscribeHandler from './subscribe_handler'
-import getRootBasedUrl from '../utils/get_root_based_url'
+import markupHandler from './markup-handler'
+import commandHandler from './command-handler'
+import queryHandler from './query-handler'
+import statusHandler from './status-handler'
+import subscribeHandler from './subscribe-handler'
+import getRootBasedUrl from '../utils/get-root-based-url'
 
 const mainHandler = async (originalReq, res) => {
   const { rootPath, jwtCookie, apiHandlers } = originalReq.resolve
+
   const checkPath = value => {
     const baseUrl = getRootBasedUrl(rootPath, value).toLowerCase()
     return originalReq.path.toLowerCase().startsWith(baseUrl)
@@ -60,7 +61,7 @@ const mainHandler = async (originalReq, res) => {
     }
 
     case checkPath(`/`) && req.method === 'GET': {
-      return await serverSideRendering(req, res)
+      return await markupHandler(req, res)
     }
 
     default: {

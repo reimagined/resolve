@@ -1,5 +1,5 @@
 import Ajv from 'ajv'
-import validatePath from 'resolve-runtime/lib/utils/validate_path'
+import validatePath from 'resolve-runtime/lib/common/utils/validate-path.js'
 
 import { schemaResolveConfig, message } from './constants'
 import { checkRuntimeEnv } from './declare_runtime_env'

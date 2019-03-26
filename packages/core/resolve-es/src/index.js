@@ -121,6 +121,9 @@ export default (
   return Object.freeze({
     loadEvents: wrapMethod(errorHandler, loadEvents, storage),
     getLatestEvent: wrapMethod(errorHandler, getLatestEvent, storage),
-    saveEvent: wrapMethod(errorHandler, saveEvent, storage, publishEvent)
+    saveEvent: wrapMethod(errorHandler, saveEvent, storage, publishEvent),
+    dispose: async () => {
+      // TODO
+    }
   })
 }

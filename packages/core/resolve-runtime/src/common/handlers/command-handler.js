@@ -1,8 +1,8 @@
 import { ConcurrentError } from 'resolve-storage-base'
 import { CommandError } from 'resolve-command'
 
-import extractErrorHttpCode from '../utils/extract_error_http_code'
-import extractRequestBody from '../utils/extract_request_body'
+import extractErrorHttpCode from '../utils/extract-error-http-code'
+import extractRequestBody from '../utils/extract-request-body'
 import message from '../message'
 
 const CONCURRENT_RETRY_COUNT = 3

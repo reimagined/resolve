@@ -15,6 +15,15 @@ export default {
       skipInit: true
     }
   },
+  schedulers: {
+    scheduler: {
+      adapter: {
+        module: 'resolve-scheduler-cloud',
+        options: {}
+      },
+      connectorName: 'default'
+    }
+  },
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-mysql',

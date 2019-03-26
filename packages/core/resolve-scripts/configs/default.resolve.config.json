@@ -34,6 +34,7 @@
     "options": {}
   },
   "readModelConnectors": {},
+  "schedulers": {},
   "eventBroker": {
     "zmqBrokerAddress": "tcp://127.0.0.1:3500",
     "zmqConsumerAddress": "tcp://127.0.0.1:3501",

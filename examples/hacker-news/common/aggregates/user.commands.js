@@ -10,5 +10,14 @@ export default {
     validate.fieldRequired(command.payload, 'name')
 
     return { type: USER_CREATED, payload: { name } }
+  },
+  confirmUser: () => {
+    return { type: 'USER_CONFIRMED' }
+  },
+  activateUser: () => {
+    return { type: 'USER_ACTIVATED' }
+  },
+  rejectUser: () => {
+    return { type: 'USER_REJECTED' }
   }
 }

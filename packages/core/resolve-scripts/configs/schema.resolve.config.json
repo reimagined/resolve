@@ -166,21 +166,43 @@
         "name": {
           "type": "string"
         },
-        "cronHandlers": {
+        "source": {
           "oneOf": [
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
         },
-        "eventHandlers": {
+        "sideEffects": {
           "oneOf": [
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
+        },
+        "connectorName": {
+          "type": "string"
+        },
+        "schedulerName": {
+          "type": "string"
         }
       },
-      "required": ["name"],
+      "required": ["name", "source", "connectorName"],
       "additionalProperties": false
+    },
+    "schedulerAdapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
+        },
+        "connectorName": {
+          "type": "string"
+        }
+      },
+      "required": ["adapter", "connectorName"]
     },
     "apiHandler": {
       "type": "object",
@@ -240,10 +262,7 @@
         "sagas": {
           "type": "array",
           "items": {
-            "oneOf": [
-              { "$ref": "#/definitions/resourceInstance" },
-              { "$ref": "#/definitions/resourceConstructor" }
-            ]
+            "$ref": "#/definitions/saga"
           }
         },
         "enhancers": {
@@ -368,6 +387,12 @@
             ]
           }
         },
+        "schedulers": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/schedulerAdapter"
+          }
+        },
         "storageAdapter": {
           "$ref": "#/definitions/adapter"
         },
@@ -409,6 +434,7 @@
         "viewModels",
         "readModels",
         "readModelConnectors",
+        "schedulers",
         "storageAdapter",
         "snapshotAdapter",
         "subscribeAdapter",
@@ -416,7 +442,8 @@
         "eventBroker",
         "customConstants",
         "target",
-        "logLevel"
+        "logLevel",
+        "sagas"
       ],
       "additionalProperties": false
     }

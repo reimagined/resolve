@@ -3,8 +3,7 @@
 exports[`base config works correctly [server] 1`] = `
 "
 
-import eventHandlers_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagaEventHandlers.js\\"
-import cronHandlers_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagaCronHandlers.js\\"
+import source_0_original_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagaCronHandlers.js\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -19,15 +18,24 @@ const constructorBindFunction =
 const idempotentFunction = value => value
 
 const name_0 = \\"Saga\\"
-const eventHandlers_0 = eventHandlers_0_instance
-const cronHandlers_0 = cronHandlers_0_instance
+const connectorName_0 = undefined
+const schedulerName_0 = undefined
+const source_0_original = source_0_original_instance
+const sideEffects_0_original = null
+const source_0 = sideEffects_0_original == null
+      ? source_0_original : {
+        handlers: source_0_original,
+        sideEffects: sideEffects_0_original
+      }
+    
 
 const sagas = []
 
 sagas.push({
   name: name_0
-, cronHandlers: cronHandlers_0
-, eventHandlers: eventHandlers_0
+, connectorName: connectorName_0
+, schedulerName: schedulerName_0
+, source: source_0
 })
 
 export default sagas
