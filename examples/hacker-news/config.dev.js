@@ -16,8 +16,7 @@ const devConfig = {
     elasticSearch: {
       module: 'common/read-models/elastic-search-connector.js',
       options: {
-        host: 'localhost:9200',
-        log: 'error'
+        // host: 'localhost:9200'
       }
     }
   },

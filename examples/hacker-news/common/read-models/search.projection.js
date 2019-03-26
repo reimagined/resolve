@@ -3,11 +3,16 @@ import {
   USER_CREATED
 } from "../event-types";
 
+const ifExist = async (es, fn) => {
+  if (es)
+    return fn(es);
+};
+
 export default {
   [ STORY_CREATED ]: async (
     es,
     { aggregateId, payload: { title, text } }
-  ) => es.create({
+  ) => ifExist(es, es => es.create({
     index: "primary",
     type: "story",
     id: aggregateId,
@@ -15,12 +20,12 @@ export default {
       aggregateId,
       text: `${title} ${text}`
     }
-  }),
+  })),
 
   [ USER_CREATED ]: async (
     es,
     { aggregateId, payload: { name } }
-  ) => es.create({
+  ) => ifExist(es, es => es.create({
     index: "primary",
     type: "user",
     id: aggregateId,
@@ -28,13 +33,13 @@ export default {
       aggregateId,
       text: name
     }
-  }),
+  })),
 
   /* from module "resolve-module-comments" */
   COMMENT_CREATED: async (
     es,
     { aggregateId, payload: { commentId, content: { text } } }
-  ) => es.create({
+  ) => ifExist(es, es => es.create({
     index: "primary",
     type: "comment",
     id: commentId,
@@ -42,14 +47,14 @@ export default {
       aggregateId,
       text
     }
-  }),
+  })),
 
   COMMENT_REMOVED: async (
     es,
     { payload: { commentId } }
-  ) => es.delete({
+  ) => ifExist(es, es => es.delete({
     index: "primary",
     type: "comment",
     id: commentId
-  })
+  }))
 };

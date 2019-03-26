@@ -1,4 +1,7 @@
-const search = async (es, { q }) => {
+const find = async (es, { q }) => {
+  if (!es)
+    throw new Error('Please, configure Elastic Search options, to make this service available')
+
   const result = await es.search({
     index: 'primary',
     q
@@ -12,6 +15,9 @@ const search = async (es, { q }) => {
   }))
 }
 
+const enabled = async (es) => (es !== null)
+
 export default {
-  search
+  find,
+  enabled
 }
