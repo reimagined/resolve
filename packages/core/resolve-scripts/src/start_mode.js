@@ -1,6 +1,7 @@
 import path from 'path'
-import respawn from 'respawn'
+
 import openBrowser from './open_browser'
+import { processRegister } from './process_manager'
 
 export default async resolveConfig => {
   const serverPath = path.resolve(
@@ -8,15 +9,11 @@ export default async resolveConfig => {
     path.join(resolveConfig.distDir, './common/local-entry/local-entry.js')
   )
 
-  const server = respawn(['node', serverPath], {
+  const server = processRegister(['node', serverPath], {
     cwd: process.cwd(),
     maxRestarts: 0,
     kill: 5000,
     stdio: 'inherit'
-  })
-
-  process.on('exit', () => {
-    server.stop()
   })
 
   server.start()

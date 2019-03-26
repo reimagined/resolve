@@ -1,11 +1,9 @@
 import { getInstallations } from 'testcafe-browser-tools'
 import fetch from 'isomorphic-fetch'
 import path from 'path'
-import respawn from 'respawn'
 import fsExtra from 'fs-extra'
 import webpack from 'webpack'
 import { execSync } from 'child_process'
-import killProcess from 'tree-kill'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
@@ -13,6 +11,7 @@ import getPeerDependencies from './get_peer_dependencies'
 import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
+import { processRegister, processFail, processStopAll } from './process_manager'
 
 const runTestcafe = async ({
   resolveConfig,
@@ -67,16 +66,11 @@ const runTestcafe = async ({
     path.join(resolveConfig.distDir, './common/local-entry/local-entry.js')
   )
 
-  const server = respawn(['node', serverPath], {
+  const server = processRegister(['node', serverPath], {
     cwd: process.cwd(),
     maxRestarts: 0,
     kill: 5000,
     stdio: 'inherit'
-  })
-
-  process.on('exit', () => {
-    killProcess(server.pid, 'SIGTERM')
-    server.stop()
   })
 
   server.start()
@@ -95,7 +89,6 @@ const runTestcafe = async ({
     browser == null ? Object.keys(await getInstallations())[0] : browser
   const targetTimeout = timeout == null ? 20000 : timeout
 
-  let status = 0
   try {
     execSync(
       [
@@ -111,13 +104,9 @@ const runTestcafe = async ({
       { stdio: 'inherit' }
     )
   } catch (error) {
-    status = 1
-    // eslint-disable-next-line no-console
-    console.error(error.message)
+    processFail(error)
   } finally {
-    server.stop(() => {
-      process.exit(status)
-    })
+    await processStopAll()
   }
 }
 

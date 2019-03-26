@@ -166,27 +166,26 @@ const wrapSearchExpression = expression => {
   const searchKeys = Object.keys(expression)
   const operatorKeys = searchKeys.filter(key => key.indexOf('$') > -1)
 
-  if (operatorKeys.length === 0) {
-    return searchKeys.reduce((acc, key) => {
-      acc[key] = transformCompareOperator(
-        !isOperatorValue(expression[key])
-          ? { $eq: expression[key] }
-          : expression[key]
-      )
+  const result =
+    operatorKeys.length === 0
+      ? searchKeys.reduce((acc, key) => {
+          acc[key] = transformCompareOperator(
+            !isOperatorValue(expression[key])
+              ? { $eq: expression[key] }
+              : expression[key]
+          )
 
-      return acc
-    }, {})
-  }
+          return acc
+        }, {})
+      : operatorKeys.reduce((acc, key) => {
+          if (Array.isArray(expression[key])) {
+            acc[key] = expression[key].map(wrapSearchExpression)
+          } else {
+            acc[key] = wrapSearchExpression(expression[key])
+          }
 
-  const result = operatorKeys.reduce((acc, key) => {
-    if (Array.isArray(expression[key])) {
-      acc[key] = expression[key].map(wrapSearchExpression)
-    } else {
-      acc[key] = wrapSearchExpression(expression[key])
-    }
-
-    return acc
-  }, {})
+          return acc
+        }, {})
 
   return { $and: [{ _id: { $ne: ROOT_ID } }, result] }
 }
