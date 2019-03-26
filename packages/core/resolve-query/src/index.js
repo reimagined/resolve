@@ -119,7 +119,7 @@ const createQuery = ({
       await models[modelName].dispose()
     }
 
-    for(const connector of Object.values(readModelConnectors)) {
+    for (const connector of Object.values(readModelConnectors)) {
       await connector.disconnect()
     }
   }
