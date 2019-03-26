@@ -12,6 +12,13 @@ const devConfig = {
       options: {
         databaseFile: 'read-models.db'
       }
+    },
+    elasticSearch: {
+      module: 'common/read-models/elastic-search-connector',
+      options: {
+        host: 'localhost:9200',
+        log: 'error'
+      }
     }
   },
   jwtCookie: {
