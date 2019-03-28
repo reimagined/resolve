@@ -36,6 +36,16 @@
       "required": ["module", "options"],
       "additionalProperties": false
     },
+    "resourceBypass": {
+      "type": "object",
+      "properties": {
+        "options": {
+          "type": "object"
+        }
+      },
+      "required": ["options"],
+      "additionalProperties": false
+    },
     "subscribeAdapter": {
       "type": "object",
       "properties": {
@@ -353,7 +363,8 @@
           "additionalProperties": {
             "oneOf": [
               { "$ref": "#/definitions/resourceInstance" },
-              { "$ref": "#/definitions/resourceConstructor" }
+              { "$ref": "#/definitions/resourceConstructor" },
+              { "$ref": "#/definitions/resourceBypass" }
             ]
           }
         },
