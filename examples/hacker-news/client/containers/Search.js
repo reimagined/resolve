@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { connectReadModel } from 'resolve-redux'
 import { connect } from 'react-redux'
 import SearchResults from './SearchResults'
+import Splitter from '../components/Splitter'
 
 const SearchField = styled.input`
   width: 100px !important;
@@ -14,16 +15,18 @@ const SearchResultsTitle = styled.div`
 const SearchResultsWrapper = styled.div`
   position: relative;
   display: inline-block;
+  float: right;
 `
 const SearchResultsContainer = styled.div`
   position: absolute;
   top: 100%;
-  left: 0;
+  left: -194px;
   right: 0;
   color: black;
   background: white;
   width: 300px;
-  max-height: 300px;
+  max-height: 500px;
+  overflow-y: scroll;
 `
 
 export class Search extends React.PureComponent {
@@ -65,6 +68,7 @@ export class Search extends React.PureComponent {
             />
           </SearchResultsContainer>
         ) : null}
+        <Splitter color="white" />
       </SearchResultsWrapper>
     )
   }

@@ -95,9 +95,8 @@ const App = ({ children }) => (
         <Link to="/ask">ask</Link>
         <Splitter color="white" />
         <NormalLink to="/submit">submit</NormalLink>
-        <Splitter color="white" />
-        <Search />
         <LoginInfo />
+        <Search />
       </PageHeader>
       <Content>{children}</Content>
 

@@ -5,7 +5,12 @@ import { NavLink } from 'react-router-dom'
 
 const Link = styled(NavLink)`
   display: block;
-  padding: 0 6px 6px 6px;
+  padding: 6px;
+
+  &:hover {
+    background-color: silver;
+    color: black;
+  }
 
   &.active {
     font-weight: bold;
