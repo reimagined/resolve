@@ -74,6 +74,9 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
     if (isDisposed) {
       throw new Error('Read model is disposed')
     }
+    if (typeof connector.drop !== 'function') {
+      return
+    }
 
     const connection = await connectionPromise
     await connector.drop(connection, readModel.name)
@@ -82,6 +85,9 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
   const dispose = async () => {
     if (isDisposed) {
       throw new Error('Read model is disposed')
+    }
+    if (typeof connector.disconnect !== 'function') {
+      return
     }
 
     const connection = await connectionPromise

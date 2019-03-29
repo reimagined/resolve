@@ -60,10 +60,20 @@ const createAdapter = (implementation, options) => {
     }
   }
 
+  const doDispose = async () => {
+    if (connectionPromise == null) {
+      return
+    }
+    await connectionPromise
+    await disconnect(adapterPool)
+    connectionPromise = null
+  }
+
   return Object.freeze({
     connect: doConnect,
     disconnect: doDisconnect,
-    drop: doDrop
+    drop: doDrop,
+    dispose: doDispose
   })
 }
 
