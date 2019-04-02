@@ -29,7 +29,7 @@ export default {
       module: 'common/read-models/elastic-search-connector.js',
       options: {
         /*
-        host: 'your-cloud-elastic-search-host'
+        host: '<your-cloud-elastic-search-host>'
          */
       }
     }
