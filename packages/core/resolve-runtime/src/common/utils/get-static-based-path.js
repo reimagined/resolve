@@ -1,5 +1,5 @@
 import Url from 'url'
-import getRootBasedUrl from './get_root_based_url'
+import getRootBasedUrl from './get-root-based-url'
 
 export const isString = value => value != null && value.constructor === String
 

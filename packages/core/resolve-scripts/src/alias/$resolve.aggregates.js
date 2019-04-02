@@ -2,7 +2,9 @@ import {
   message,
   RESOURCE_ANY,
   RUNTIME_ENV_NOWHERE,
-  IMPORT_INSTANCE
+  IMPORT_INSTANCE,
+  RUNTIME_ENV_ANYWHERE,
+  IMPORT_CONSTRUCTOR
 } from '../constants'
 import importBabel from '../import_babel'
 import { checkRuntimeEnv } from '../declare_runtime_env'
@@ -13,6 +15,13 @@ import resolveFile from '../resolve_file'
 export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.aggregates) {
     throw new Error(`${message.configNotContainSectionError}.aggregates`)
+  }
+  if (!resolveConfig.schedulers) {
+    throw new Error(`${message.configNotContainSectionError}.schedulers`)
+  }
+
+  if (checkRuntimeEnv(resolveConfig.schedulers)) {
+    throw new Error(`${message.clientEnvError}.schedulers`)
   }
 
   const imports = []
@@ -75,7 +84,7 @@ export default ({ resolveConfig, isClient }) => {
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
         instanceFallback:
-          'resolve-runtime/lib/defaults/view_model_serialize_state.js',
+          'resolve-runtime/lib/common/defaults/json-serialize-state.js',
         imports,
         constants
       })
@@ -89,7 +98,7 @@ export default ({ resolveConfig, isClient }) => {
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
         instanceFallback:
-          'resolve-runtime/lib/defaults/view_model_deserialize_state.js',
+          'resolve-runtime/lib/common/defaults/json-deserialize-state.js',
         imports,
         constants
       })
@@ -114,6 +123,90 @@ export default ({ resolveConfig, isClient }) => {
     }
 
     exports.push(`})`, ``)
+  }
+
+  if (!isClient) {
+    const schedulersNames = Object.keys(resolveConfig.schedulers)
+
+    for (let index = 0; index < schedulersNames.length; index++) {
+      if (checkRuntimeEnv(schedulersNames[index])) {
+        throw new Error(
+          `${message.clientEnvError}.schedulers[${schedulersNames[index]}]`
+        )
+      }
+
+      constants.push(
+        `const name_s_${index} = ${JSON.stringify(
+          `_RESOLVE_SCHEDULER_AGGREGATE_${schedulersNames[index]}`
+        )}`
+      )
+
+      importResource({
+        resourceName: `commands_s_${index}`,
+        resourceValue: {
+          module:
+            'resolve-runtime/lib/common/sagas/scheduler-aggregate-commands.js',
+          options: {}
+        },
+        runtimeMode: RUNTIME_ENV_ANYWHERE,
+        importMode: RESOURCE_ANY,
+        instanceMode: IMPORT_CONSTRUCTOR,
+        imports,
+        constants
+      })
+
+      importResource({
+        resourceName: `projection_s_${index}`,
+        resourceValue: {
+          module:
+            'resolve-runtime/lib/common/sagas/scheduler-aggregate-projection.js',
+          options: {}
+        },
+        runtimeMode: RUNTIME_ENV_ANYWHERE,
+        importMode: RESOURCE_ANY,
+        instanceMode: IMPORT_CONSTRUCTOR,
+        imports,
+        constants
+      })
+
+      importResource({
+        resourceName: `serializeState_s_${index}`,
+        resourceValue: ':',
+        runtimeMode: RUNTIME_ENV_NOWHERE,
+        importMode: RESOURCE_ANY,
+        instanceMode: IMPORT_INSTANCE,
+        instanceFallback:
+          'resolve-runtime/lib/common/defaults/json-serialize-state.js',
+        imports,
+        constants
+      })
+
+      importResource({
+        resourceName: `deserializeState_s_${index}`,
+        resourceValue: ':',
+        runtimeMode: RUNTIME_ENV_NOWHERE,
+        importMode: RESOURCE_ANY,
+        instanceMode: IMPORT_INSTANCE,
+        instanceFallback:
+          'resolve-runtime/lib/common/defaults/json-deserialize-state.js',
+        imports,
+        constants
+      })
+
+      const invariantHash = `${Date.now()}${Math.floor(
+        Math.random() * 1000000000
+      )}`
+
+      exports.push(`aggregates.push({`, `  name: name_s_${index}`)
+      exports.push(`, commands: commands_s_${index}`)
+      exports.push(`, projection: projection_s_${index}`)
+      exports.push(`, serializeState: serializeState_s_${index}`)
+      exports.push(`, deserializeState: deserializeState_s_${index}`)
+      exports.push(`, invariantHash: ${JSON.stringify(invariantHash)}`)
+      exports.push(`, schedulerName: ${JSON.stringify(schedulersNames[index])}`)
+      exports.push(`, isSystemAggregate: true`)
+      exports.push(`})`, ``)
+    }
   }
 
   exports.push(`export default aggregates`)

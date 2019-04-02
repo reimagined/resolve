@@ -1,4 +1,4 @@
-import handleDeployServiceEvent from '../src/handlers/deploy_service_event_handler'
+import handleDeployServiceEvent from '../src/common/handlers/deploy-service-event-handler'
 
 describe('resolve event handler', () => {
   const executor = {

@@ -4,7 +4,7 @@ import {
   RUNTIME_ENV_ANYWHERE,
   IMPORT_CONSTRUCTOR
 } from '../constants'
-import { checkRuntimeEnv } from '../declare_runtime_env'
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
 
 export default ({ resolveConfig, isClient }) => {
@@ -44,11 +44,11 @@ export default ({ resolveConfig, isClient }) => {
 
     if (readModelConnector.module == null) {
       readModelConnector.module =
-        'resolve-runtime/lib/defaults/read_model_connector.js'
+        'resolve-runtime/lib/common/defaults/read-model-connector.js'
     }
 
     importResource({
-      resourceName: `factory_${index}`,
+      resourceName: `factory_s_${index}`,
       resourceValue: readModelConnector,
       runtimeMode: RUNTIME_ENV_ANYWHERE,
       importMode: RESOURCE_ANY,
@@ -56,6 +56,42 @@ export default ({ resolveConfig, isClient }) => {
       imports,
       constants
     })
+
+    if (
+      readModelConnector.constructor === Object &&
+      readModelConnector.options != null
+    ) {
+      constants.push(
+        `const options_s_${index} = ${injectRuntimeEnv(
+          readModelConnector.options
+        )}`
+      )
+    } else {
+      constants.push(`const options_s_${index} = null`)
+    }
+
+    constants.push(`
+      const factory_${index} = (...args) => {
+        const connector = Object.create(factory_s_${index}(...args))
+
+        if(typeof connector.connect !== 'function') {
+          connector.connect = async () => {
+            return options_s_${index}
+          }
+        }
+        if(typeof connector.disconnect !== 'function') {
+          connector.disconnect = async () => {}
+        }
+        if(typeof connector.drop !== 'function') {
+          connector.drop = async () => {}
+        }
+        if(typeof connector.dispose !== 'function') {
+          connector.dispose = async () => {}
+        }
+        
+        return connector
+      }
+    `)
 
     exports.push(`readModelConnectors[name_${index}] = factory_${index}`)
   }
