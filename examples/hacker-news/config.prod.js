@@ -9,6 +9,14 @@ const prodConfig = {
       options: {
         databaseFile: 'read-models.db'
       }
+    },
+    elasticSearch: {
+      module: 'common/read-models/elastic-search-connector.js',
+      options: {
+        /*
+        host: '<your-production-elastic-search-host>'
+        */
+      }
     }
   },
   jwtCookie: {

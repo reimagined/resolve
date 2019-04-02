@@ -24,6 +24,14 @@ export default {
         user: declareRuntimeEnv('SQL_USER'),
         password: declareRuntimeEnv('SQL_PASSWORD')
       }
+    },
+    elasticSearch: {
+      module: 'common/read-models/elastic-search-connector.js',
+      options: {
+        /*
+        host: '<your-cloud-elastic-search-host>'
+         */
+      }
     }
   }
 }
