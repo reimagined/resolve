@@ -79,7 +79,7 @@ export default ({ resolveConfig, isClient }) => {
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
         instanceFallback:
-          'resolve-runtime/lib/defaults/view-model-validator.js',
+          'resolve-runtime/lib/common/defaults/view-model-validator.js',
         imports,
         constants
       })
