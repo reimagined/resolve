@@ -27,6 +27,12 @@ const appConfig = {
       projection: 'common/read-models/hacker-news.projection.js',
       resolvers: 'common/read-models/hacker-news.resolvers.js',
       connectorName: 'default'
+    },
+    {
+      name: 'Search',
+      projection: 'common/read-models/search.projection.js',
+      resolvers: 'common/read-models/search.resolvers.js',
+      connectorName: 'elasticSearch'
     }
   ]
 }

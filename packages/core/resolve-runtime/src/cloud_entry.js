@@ -91,8 +91,12 @@ const disposeResolve = async resolve => {
 
   await resolve.snapshotAdapter.dispose()
 
+  await resolve.executeQuery.dispose()
+
   for (const name of Object.keys(resolve.readModelConnectors)) {
-    await resolve.readModelConnectors[name].disconnect()
+    if (typeof resolve.readModelConnectors[name].dispose === 'function') {
+      await resolve.readModelConnectors[name].dispose()
+    }
   }
 }
 
