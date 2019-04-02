@@ -34,6 +34,14 @@ const appConfig = {
       resolvers: 'common/read-models/search.resolvers.js',
       connectorName: 'elasticSearch'
     }
+  ],
+  sagas: [
+    {
+      name: 'UserConfirmation',
+      source: 'common/sagas/user-confirmation.saga.js',
+      connectorName: 'default',
+      schedulerName: 'scheduler'
+    }
   ]
 }
 

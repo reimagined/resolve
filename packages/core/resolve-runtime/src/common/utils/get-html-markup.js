@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet'
 
-import jsonUtfStringify from '../utils/json_utf_stringify'
+import jsonUtfStringify from './json-utf-stringify'
 
 export default ({
   reducers,

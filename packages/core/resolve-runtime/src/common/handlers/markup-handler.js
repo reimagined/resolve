@@ -4,9 +4,9 @@ import createHistory from 'history/createMemoryHistory'
 import jsonwebtoken from 'jsonwebtoken'
 import { createStore, AppContainer } from 'resolve-redux'
 
-import getHtmlMarkup from './get_html_markup'
-import getStaticBasedPath from '../utils/get_static_based_path'
-import getRootBasedUrl from '../utils/get_root_based_url'
+import getHtmlMarkup from '../utils/get-html-markup'
+import getStaticBasedPath from '../utils/get-static-based-path'
+import getRootBasedUrl from '../utils/get-root-based-url'
 
 let ServerStyleSheet, StyleSheetManager
 try {
@@ -15,7 +15,7 @@ try {
   StyleSheetManager = styledComponents.StyleSheetManager
 } catch (err) {}
 
-const serverSideRendering = async (req, res) => {
+const markupHandler = async (req, res) => {
   const {
     seedClientEnvs,
     aggregateActions,
@@ -109,4 +109,4 @@ const serverSideRendering = async (req, res) => {
   )
 }
 
-export default serverSideRendering
+export default markupHandler

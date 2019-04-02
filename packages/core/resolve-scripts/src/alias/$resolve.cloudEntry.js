@@ -10,7 +10,7 @@ export default () => ({
             require('$resolve.serverAssemblies')
           ).default
           global.cloudEntry = interopRequireDefault(
-            require('resolve-runtime/lib/cloud_entry')
+            require('resolve-runtime/lib/cloud')
           ).default
 
           global.initPromise = cloudEntry(serverAssemblies)

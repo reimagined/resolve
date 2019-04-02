@@ -169,14 +169,24 @@ export default ({ eventStore, aggregates, snapshotAdapter }) => {
     return result
   }, {})
 
-  return async ({ jwtToken, ...command }) => {
-    await verifyCommand(command)
-    const aggregateName = command.aggregateName
+  const api = {
+    executeCommand: async ({ jwtToken, ...command }) => {
+      await verifyCommand(command)
+      const aggregateName = command.aggregateName
 
-    if (!executors.hasOwnProperty(aggregateName)) {
-      throw new Error(`Aggregate ${aggregateName} does not exist`)
+      if (!executors.hasOwnProperty(aggregateName)) {
+        throw new Error(`Aggregate ${aggregateName} does not exist`)
+      }
+
+      return executors[aggregateName](command, jwtToken)
+    },
+    dispose: async () => {
+      // TODO
     }
-
-    return executors[aggregateName](command, jwtToken)
   }
+
+  const executeCommand = (...args) => api.executeCommand(...args)
+  Object.assign(executeCommand, api)
+
+  return executeCommand
 }

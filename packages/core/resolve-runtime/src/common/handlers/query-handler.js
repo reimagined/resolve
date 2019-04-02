@@ -1,6 +1,6 @@
-import extractErrorHttpCode from '../utils/extract_error_http_code'
-import getRootBasedUrl from '../utils/get_root_based_url'
-import extractRequestBody from '../utils/extract_request_body'
+import extractErrorHttpCode from '../utils/extract-error-http-code'
+import getRootBasedUrl from '../utils/get-root-based-url'
+import extractRequestBody from '../utils/extract-request-body'
 
 const queryHandler = async (req, res) => {
   try {

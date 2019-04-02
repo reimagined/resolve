@@ -1,0 +1,10 @@
+// Scheduled command
+
+const createEventTypes = ({ schedulerName }) => ({
+  SCHEDULED_COMMAND_CREATED: `_RESOLVE_SYS_SCHEDULED_COMMAND_CREATED_${schedulerName}`,
+  SCHEDULED_COMMAND_EXECUTED: `_RESOLVE_SYS_SCHEDULED_COMMAND_EXECUTED_${schedulerName}`,
+  SCHEDULED_COMMAND_SUCCEEDED: `_RESOLVE_SYS_SCHEDULED_COMMAND_SUCCEEDED_${schedulerName}`,
+  SCHEDULED_COMMAND_FAILED: `_RESOLVE_SYS_SCHEDULED_COMMAND_FAILED_${schedulerName}`
+})
+
+export default createEventTypes

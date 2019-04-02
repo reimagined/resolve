@@ -5,13 +5,13 @@ import STS from 'aws-sdk/clients/sts'
 import StepFunctions from 'aws-sdk/clients/stepfunctions'
 
 import wrapApiHandler from 'resolve-api-handler-awslambda'
-import createCommandExecutor from 'resolve-command'
-import createEventStore from 'resolve-es'
-import createQueryExecutor from 'resolve-query'
 
-import mainHandler from './handlers/main_handler'
-import handleDeployServiceEvent from './handlers/deploy_service_event_handler'
-import handleEventBusEvent from './handlers/event_bus_event_handler'
+import mainHandler from '../common/handlers/main-handler'
+import handleDeployServiceEvent from '../common/handlers/deploy-service-event-handler'
+import handleEventBusEvent from '../common/handlers/event-bus-event-handler'
+import initResolve from '../common/init-resolve'
+import disposeResolve from '../common/dispose-resolve'
+import prepareDomain from '../common/prepare-domain'
 
 const stepFunctions = new StepFunctions()
 
@@ -28,76 +28,6 @@ const invokeUpdateLambda = async readModel => {
       })
     })
     .promise()
-}
-
-const initResolve = async (
-  {
-    snapshotAdapter: createSnapshotAdapter,
-    storageAdapter: createStorageAdapter,
-    readModelConnectors: readModelConnectorsCreators
-  },
-  resolve
-) => {
-  const storageAdapter = createStorageAdapter()
-  const eventStore = createEventStore({ storage: storageAdapter })
-  const { aggregates, readModels, viewModels } = resolve
-  const snapshotAdapter = createSnapshotAdapter()
-  const readModelConnectors = {}
-  for (const name of Object.keys(readModelConnectorsCreators)) {
-    readModelConnectors[name] = readModelConnectorsCreators[name]()
-  }
-
-  const executeCommand = createCommandExecutor({
-    eventStore,
-    aggregates,
-    snapshotAdapter
-  })
-
-  const doUpdateRequest = async readModelName => {
-    const readModel = readModels.find(({ name }) => name === readModelName)
-    await invokeUpdateLambda(readModel)
-  }
-
-  const executeQuery = createQueryExecutor({
-    eventStore,
-    readModelConnectors,
-    snapshotAdapter,
-    doUpdateRequest,
-    readModels,
-    viewModels
-  })
-
-  Object.assign(resolve, {
-    executeCommand,
-    executeQuery,
-    eventStore
-  })
-
-  const allResolversByReadModel = new Map()
-  for (const { name, resolvers } of readModels) {
-    allResolversByReadModel.set(name, Object.keys(resolvers))
-  }
-
-  Object.defineProperties(resolve, {
-    allResolversByReadModel: { value: allResolversByReadModel },
-    readModelConnectors: { value: readModelConnectors },
-    snapshotAdapter: { value: snapshotAdapter },
-    storageAdapter: { value: storageAdapter }
-  })
-}
-
-const disposeResolve = async resolve => {
-  await resolve.storageAdapter.dispose()
-
-  await resolve.snapshotAdapter.dispose()
-
-  await resolve.executeQuery.dispose()
-
-  for (const name of Object.keys(resolve.readModelConnectors)) {
-    if (typeof resolve.readModelConnectors[name].dispose === 'function') {
-      await resolve.readModelConnectors[name].dispose()
-    }
-  }
 }
 
 const getSubscribeAdapterOptions = async ({ sts }) => {
@@ -192,7 +122,7 @@ const lambdaWorker = async (
   return executorResult
 }
 
-const cloudEntry = async ({ assemblies, constants, domain, redux, routes }) => {
+const index = async ({ assemblies, constants, domain, redux, routes }) => {
   try {
     const resolve = {
       aggregateActions: assemblies.aggregateActions,
@@ -201,16 +131,29 @@ const cloudEntry = async ({ assemblies, constants, domain, redux, routes }) => {
       mqtt: new IotData({
         endpoint: process.env.IOT_ENDPOINT_HOST
       }),
+      publishEvent: async () => {},
+      assemblies,
       ...constants,
       ...domain,
       redux,
       routes
     }
 
-    resolve.getSubscribeAdapterOptions = getSubscribeAdapterOptions.bind(
-      null,
-      resolve
-    )
+    await prepareDomain(resolve)
+
+    Object.defineProperties(resolve, {
+      getSubscribeAdapterOptions: {
+        value: getSubscribeAdapterOptions.bind(null, resolve)
+      },
+      doUpdateRequest: {
+        value: async readModelName => {
+          const readModel = domain.readModels.find(
+            ({ name }) => name === readModelName
+          )
+          await invokeUpdateLambda(readModel)
+        }
+      }
+    })
 
     resolveLog('debug', 'Cloud entry point cold start success', resolve)
 
@@ -220,4 +163,4 @@ const cloudEntry = async ({ assemblies, constants, domain, redux, routes }) => {
   }
 }
 
-export default cloudEntry
+export default index
