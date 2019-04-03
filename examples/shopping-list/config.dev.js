@@ -15,7 +15,7 @@ const devConfig = {
     }
   },
   eventBroker: {
-    databaseFile: "local-bus-broker.db"
+    databaseFile: 'local-bus-broker.db'
   }
 }
 

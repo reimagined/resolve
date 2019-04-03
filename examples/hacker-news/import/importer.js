@@ -12,16 +12,9 @@ import api from './api'
 
 const aggregateVersionsMap = new Map()
 let eventTimestamp = Date.now()
-let flowPromise = Promise.resolve()
 const users = {}
 
 const invokeImportApi = async body => {
-  await flowPromise
-  let doResolve = null
-  flowPromise = flowPromise.then(new Promise(resolve => {
-    doResolve = resolve
-  }))
-
   const response = await fetch(
     `http://localhost:${process.env.PORT}${
       process.env.ROOT_PATH
@@ -33,11 +26,8 @@ const invokeImportApi = async body => {
       body: JSON.stringify(body)
     }
   )
-  const result = await response.text()
-  doResolve()
 
-  return result
-
+  return await response.text()
 }
 
 const saveOneEvent = async event =>

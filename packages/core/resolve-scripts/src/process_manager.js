@@ -17,13 +17,13 @@ export const processRegister = (command, opts) => {
 
 export const processStopAll = error => {
   if (error != null) {
-    processes.push(error)
+    errors.push(error)
   }
   const promises = []
   for (const process of processes) {
     promises.push(
       new Promise(resolve => {
-        if(process.stop) {
+        if (process.stop) {
           process.stop(resolve)
         } else {
           resolve()
@@ -38,7 +38,7 @@ export const processStopAll = error => {
     for (const error of errors) {
       code = 1
       // eslint-disable-next-line no-console
-      console.error(error.message || error)
+      console.error(error)
     }
     process.exit(code)
   })

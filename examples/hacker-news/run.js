@@ -77,7 +77,7 @@ void (async () => {
       }
 
       case 'test:functional': {
-        [
+        ;[
           'read-models-test-functional.db',
           'event-store-test-functional.db',
           'local-bus-broker-test-functional.db'
@@ -92,8 +92,10 @@ void (async () => {
       }
 
       case 'import': {
-        const config = merge(baseConfig, devConfig)
-        const importConfig = merge(config, {
+        const importConfig = merge(baseConfig, devConfig, {
+          eventBroker: { launchBroker: false }
+        })
+        Object.assign(importConfig, {
           apiHandlers: [
             {
               method: 'POST',
@@ -101,20 +103,27 @@ void (async () => {
               controller: {
                 module: 'import/import_api_handler.js',
                 options: {
-                  storageAdapterOptions: config.storageAdapter.options
+                  storageAdapterOptions: importConfig.storageAdapter.options,
+                  isImporter: true
                 },
                 imports: {
-                  storageAdapterModule: config.storageAdapter.module
+                  storageAdapterModule: importConfig.storageAdapter.module
                 }
               }
             }
-          ]
+          ],
+          aggregates: [],
+          readModels: [],
+          viewModels: [],
+          sagas: [],
+          readModelConnectors: {},
+          schedulers: {}
         })
 
         Object.assign(process.env, {
           RESOLVE_SERVER_OPEN_BROWSER: 'false',
-          PORT: config.port,
-          ROOT_PATH: config.rootPath
+          PORT: importConfig.port,
+          ROOT_PATH: importConfig.rootPath
         })
 
         await build(importConfig)

@@ -74,7 +74,7 @@ const lambdaWorker = async (
 
   const resolve = Object.create(resolveBase)
   try {
-    await initResolve(assemblies, resolve)
+    await initResolve(resolve)
     resolveLog('debug', 'Lambda handler has initialized resolve instance')
 
     // Resolve event invoked by deploy service

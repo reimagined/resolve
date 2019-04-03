@@ -6,11 +6,26 @@ const devConfig = {
   redux: {
     enhancers: ['client/enhancers/redux-devtools.js']
   },
+  storageAdapter: {
+    module: 'resolve-storage-mysql',
+    options: {
+      tableName: '__TABLE_NAME__',
+      host: 'localhost',
+      port: 3306,
+      user: 'qqq',
+      password: 'qqq',
+      database: 'qqq'
+    }
+  },
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: 'resolve-readmodel-mysql',
       options: {
-        databaseFile: 'read-models.db'
+        host: 'localhost',
+        port: 3306,
+        user: 'qqq',
+        password: 'qqq',
+        database: 'qqq'
       }
     },
     elasticSearch: {
@@ -36,7 +51,7 @@ const devConfig = {
     maxAge: 31536000000
   },
   eventBroker: {
-    databaseFile: "local-bus-broker.db"
+    databaseFile: 'local-bus-broker.db'
   }
 }
 

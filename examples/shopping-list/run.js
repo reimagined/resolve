@@ -21,11 +21,7 @@ void (async () => {
   try {
     switch (launchMode) {
       case 'dev': {
-        await watch(merge(
-          defaultResolveConfig,
-          appConfig,
-          devConfig
-        ))
+        await watch(merge(defaultResolveConfig, appConfig, devConfig))
         break
       }
 
@@ -40,16 +36,12 @@ void (async () => {
       }
 
       case 'start': {
-        await start(merge(
-          defaultResolveConfig,
-          appConfig,
-          prodConfig
-        ))
+        await start(merge(defaultResolveConfig, appConfig, prodConfig))
         break
       }
 
       case 'test:functional': {
-        [
+        ;[
           'read-models-test-functional.db',
           'event-store-test-functional.db',
           'local-bus-broker-test-functional.db'

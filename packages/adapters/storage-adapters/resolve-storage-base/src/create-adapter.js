@@ -33,7 +33,7 @@ const createAdapter = (
     loadEvents: wrapMethod(pool, wrapEventFilter(loadEvents)),
     getLatestEvent: wrapMethod(pool, getLatestEvent),
     saveEvent: wrapMethod(pool, saveEvent),
-    dispose: wrapMethod(pool, wrapDispose(dispose))
+    dispose: wrapDispose(pool, dispose)
   })
 }
 

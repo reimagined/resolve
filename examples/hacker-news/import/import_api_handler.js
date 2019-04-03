@@ -1,7 +1,7 @@
 const importAdapterSymbol = Symbol('IMPORT_ADAPTER_SYMBOL')
 
 const importApiHandler = (
-  { storageAdapterOptions },
+  { storageAdapterOptions, isImporter },
   { storageAdapterModule }
 ) => async (req, res) => {
   if (process.env.NODE_ENV === 'production') {
@@ -11,7 +11,10 @@ const importApiHandler = (
 
   try {
     if (resolveBase[importAdapterSymbol] == null) {
-      resolveBase[importAdapterSymbol] = storageAdapterModule(storageAdapterOptions)
+      resolveBase[importAdapterSymbol] = storageAdapterModule({
+        ...storageAdapterOptions,
+        isImporter
+      })
     }
     const args = JSON.parse(req.body)
 
