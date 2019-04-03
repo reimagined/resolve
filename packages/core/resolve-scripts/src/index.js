@@ -4,7 +4,6 @@ import defaultResolveConfig from '../configs/default.resolve.config.json'
 import declareRuntimeEnv from './declare_runtime_env'
 import getModulesDirs from './get_modules_dirs'
 
-import launchBusBroker from './launch-bus-broker'
 import start from './start_mode'
 import build from './build_mode'
 import watch from './watch_mode'
@@ -18,7 +17,6 @@ export {
   defaultResolveConfig,
   declareRuntimeEnv,
   getModulesDirs,
-  launchBusBroker,
   build,
   start,
   watch,

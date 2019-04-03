@@ -8,7 +8,7 @@ export default ({ resolveConfig, isClient }) => {
   }
 
   if (resolveConfig.target !== 'local') {
-    throw new Error('Event broker can be launched only in "local" mode')
+    throw new Error('Event broker can be build only in "local" mode')
   }
 
   return {

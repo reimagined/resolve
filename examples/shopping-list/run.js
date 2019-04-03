@@ -1,6 +1,5 @@
 import {
   defaultResolveConfig,
-  launchBusBroker,
   build,
   start,
   watch,
@@ -22,15 +21,11 @@ void (async () => {
   try {
     switch (launchMode) {
       case 'dev': {
-        const mergedDevConfig = merge(
+        await watch(merge(
           defaultResolveConfig,
           appConfig,
           devConfig
-        )
-        await Promise.race([
-          watch(mergedDevConfig),
-          launchBusBroker(mergedDevConfig)
-        ])
+        ))
         break
       }
 
@@ -45,41 +40,30 @@ void (async () => {
       }
 
       case 'start': {
-        const mergedProdConfig = merge(
+        await start(merge(
           defaultResolveConfig,
           appConfig,
           prodConfig
-        )
-        await Promise.race([
-          start(mergedProdConfig),
-          launchBusBroker(mergedProdConfig)
-        ])
+        ))
         break
       }
 
       case 'test:functional': {
-        const mergedTestFunctionalConfig = merge(
-          defaultResolveConfig,
-          appConfig,
-          testFunctionalConfig
-        )
-        if (fs.existsSync('read-models-test-functional.db')) {
-          fs.unlinkSync('read-models-test-functional.db')
-        }
-        if (fs.existsSync('event-store-test-functional.db')) {
-          fs.unlinkSync('event-store-test-functional.db')
-        }
-        if (fs.existsSync('local-bus-broker.db')) {
-          fs.unlinkSync('local-bus-broker.db')
-        }
-        await Promise.race([
-          runTestcafe({
-            resolveConfig: mergedTestFunctionalConfig,
-            functionalTestsDir: 'test/functional',
-            browser: process.argv[3]
-          }),
-          launchBusBroker(mergedTestFunctionalConfig)
-        ])
+        [
+          'read-models-test-functional.db',
+          'event-store-test-functional.db',
+          'local-bus-broker-test-functional.db'
+        ].forEach(file => fs.existsSync(file) && fs.unlinkSync(file))
+
+        await runTestcafe({
+          resolveConfig: merge(
+            defaultResolveConfig,
+            appConfig,
+            testFunctionalConfig
+          ),
+          functionalTestsDir: 'test/functional',
+          browser: process.argv[3]
+        })
         break
       }
 

@@ -28,6 +28,15 @@ const getWebpackCommonConfigs = ({
       },
       packageJson: 'common/local-entry/package.json'
     })
+
+    assemblies.push({
+      name: 'Local event broker entry point',
+      entry: {
+        'common/local-entry/local-bus-broker.js': [
+          path.resolve(__dirname, './alias/$resolve.localBusBroker.js')
+        ]
+      }
+    })
   } else if (resolveConfig.target === 'cloud') {
     assemblies.push({
       name: 'Server cloud entry point',

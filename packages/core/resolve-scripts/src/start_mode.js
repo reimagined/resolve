@@ -17,7 +17,25 @@ export default resolveConfig =>
     })
 
     server.on('crash', reject)
-    server.on('stop', resolve)
 
     server.start()
+
+    const brokerPath = path.resolve(
+      process.cwd(),
+      path.join(
+        resolveConfig.distDir,
+        './common/local-entry/local-bus-broker.js'
+      )
+    )
+
+    const broker = processRegister(['node', brokerPath], {
+      cwd: process.cwd(),
+      maxRestarts: 0,
+      kill: 5000,
+      stdio: 'inherit'
+    })
+
+    broker.on('crash', reject)
+
+    broker.start()
   })

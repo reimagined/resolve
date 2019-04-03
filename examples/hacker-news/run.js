@@ -1,6 +1,5 @@
 import {
   defaultResolveConfig,
-  launchBusBroker,
   build,
   start,
   watch,
@@ -58,11 +57,7 @@ void (async () => {
 
     switch (launchMode) {
       case 'dev': {
-        const mergedDevConfig = merge(baseConfig, devConfig)
-        await Promise.all([
-          watch(mergedDevConfig),
-          launchBusBroker(mergedDevConfig)
-        ])
+        await watch(merge(baseConfig, devConfig))
         break
       }
 
@@ -77,36 +72,22 @@ void (async () => {
       }
 
       case 'start': {
-        const mergedProdConfig = merge(baseConfig, prodConfig)
-        await Promise.all([
-          start(mergedProdConfig),
-          launchBusBroker(mergedProdConfig)
-        ])
+        await start(merge(baseConfig, prodConfig))
         break
       }
 
       case 'test:functional': {
-        const mergedTestFunctionalConfig = merge(
-          baseConfig,
-          testFunctionalConfig
-        )
-        if (fs.existsSync('read-models-test-functional.db')) {
-          fs.unlinkSync('read-models-test-functional.db')
-        }
-        if (fs.existsSync('event-store-test-functional.db')) {
-          fs.unlinkSync('event-store-test-functional.db')
-        }
-        if (fs.existsSync('local-bus-broker.db')) {
-          fs.unlinkSync('local-bus-broker.db')
-        }
-        await Promise.all([
-          runTestcafe({
-            resolveConfig: mergedTestFunctionalConfig,
-            functionalTestsDir: 'test/functional',
-            browser: process.argv[3]
-          }),
-          launchBusBroker(mergedTestFunctionalConfig)
-        ])
+        [
+          'read-models-test-functional.db',
+          'event-store-test-functional.db',
+          'local-bus-broker-test-functional.db'
+        ].forEach(file => fs.existsSync(file) && fs.unlinkSync(file))
+
+        await runTestcafe({
+          resolveConfig: merge(baseConfig, testFunctionalConfig),
+          functionalTestsDir: 'test/functional',
+          browser: process.argv[3]
+        })
         break
       }
 
@@ -151,3 +132,5 @@ void (async () => {
     await stop(error)
   }
 })()
+
+process.on('SIGINT', stop)

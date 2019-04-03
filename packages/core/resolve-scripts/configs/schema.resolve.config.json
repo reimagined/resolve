@@ -287,6 +287,9 @@
     "eventBroker": {
       "type": "object",
       "properties": {
+        "launchBroker": {
+          "type": "boolean"
+        },
         "zmqBrokerAddress": {
           "type": "string"
         },
@@ -301,6 +304,7 @@
         }
       },
       "required": [
+        "launchBroker",
         "zmqBrokerAddress",
         "zmqConsumerAddress",
         "databaseFile",
