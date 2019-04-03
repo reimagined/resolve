@@ -23,7 +23,11 @@ export const processStopAll = error => {
   for (const process of processes) {
     promises.push(
       new Promise(resolve => {
-        process.stop(resolve)
+        if(process.stop) {
+          process.stop(resolve)
+        } else {
+          resolve()
+        }
       })
     )
   }
@@ -39,3 +43,5 @@ export const processStopAll = error => {
     process.exit(code)
   })
 }
+
+process.on('SIGINT', processStopAll)
