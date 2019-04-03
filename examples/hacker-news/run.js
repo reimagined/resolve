@@ -132,5 +132,3 @@ void (async () => {
     await stop(error)
   }
 })()
-
-process.on('SIGINT', stop)
