@@ -54,7 +54,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     }
   })
 
-  return await new Promise((resolve, reject) =>
+  return await new Promise(() => {
     compiler.watch(
       {
         aggregateTimeout: 1000,
@@ -78,7 +78,6 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
 
         if (hasErrors) {
           server.stop()
-          reject('')
         } else {
           if (server.status === 'running') {
             process.env.RESOLVE_SERVER_FIRST_START = 'false'
@@ -95,11 +94,9 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
                 () => {}
               )
             }
-
-            resolve()
           }
         }
       }
     )
-  )
+  })
 }

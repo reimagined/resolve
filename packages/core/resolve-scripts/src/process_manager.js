@@ -15,7 +15,10 @@ export const processRegister = (command, opts) => {
   return process
 }
 
-export const processStopAll = () => {
+export const processStopAll = error => {
+  if (error != null) {
+    processes.push(error)
+  }
   const promises = []
   for (const process of processes) {
     promises.push(
@@ -36,5 +39,3 @@ export const processStopAll = () => {
     process.exit(code)
   })
 }
-
-process.on('SIGINT', processStopAll)

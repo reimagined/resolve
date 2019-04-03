@@ -10,6 +10,7 @@ import build from './build_mode'
 import watch from './watch_mode'
 import runTestcafe from './run_testcafe'
 import merge from './merge'
+import { processStopAll as stop } from './process_manager'
 
 export {
   adjustWebpackReactNative,
@@ -22,5 +23,6 @@ export {
   start,
   watch,
   runTestcafe,
-  merge
+  merge,
+  stop
 }
