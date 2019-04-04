@@ -3,21 +3,25 @@ const lambda = new Lambda()
 
 const handleResolveReadModelEvent = async (lambdaEvent, resolve) => {
   switch (lambdaEvent.operation) {
-    case 'reset': {
+    case 'reset':
+    case 'pause':
+    case 'resume': {
+      const names = lambdaEvent.name 
+        ? [ lambdaEvent.name ]
+        : resolve.readModels.map(readmodel => readmodel.name)
       const { DEPLOYMENT_ID } = process.env
-      for (const { name } of resolve.readModels) {
+      for (const name of names) {
         await lambda
           .invoke({
-          FunctionName: `${DEPLOYMENT_ID}-meta-lock`,
-          Payload: JSON.stringify({
-            listenerId: name,
-            command: 'reset'
+            FunctionName: `${DEPLOYMENT_ID}-meta-lock`,
+            Payload: JSON.stringify({
+              listenerId: name,
+              operation: lambdaEvent.operation
+            })
           })
-        })
-        .promise()
+          .promise()
         await resolve.executeQuery.drop(name)
       }
-
       return 'ok'
     }
     case 'list': {
