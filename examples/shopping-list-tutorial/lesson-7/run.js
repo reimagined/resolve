@@ -1,11 +1,11 @@
 import {
   defaultResolveConfig,
-  launchBusBroker,
   build,
   start,
   watch,
   runTestcafe,
-  merge
+  merge,
+  stop
 } from 'resolve-scripts'
 import fs from 'fs'
 
@@ -17,66 +17,48 @@ import testFunctionalConfig from './config.test_functional'
 const launchMode = process.argv[2]
 
 void (async () => {
-  switch (launchMode) {
-    case 'dev': {
-      const mergedDevConfig = merge(defaultResolveConfig, appConfig, devConfig)
-      await Promise.all([
-        watch(mergedDevConfig),
-        launchBusBroker(mergedDevConfig)
-      ])
-      break
-    }
-
-    case 'build': {
-      await build(merge(defaultResolveConfig, appConfig, prodConfig))
-      break
-    }
-
-    case 'start': {
-      const mergedProdConfig = merge(
-        defaultResolveConfig,
-        appConfig,
-        prodConfig
-      )
-      await Promise.all([
-        start(mergedProdConfig),
-        launchBusBroker(mergedProdConfig)
-      ])
-      break
-    }
-
-    case 'test:functional': {
-      const mergedTestFunctionalConfig = merge(
-        defaultResolveConfig,
-        appConfig,
-        testFunctionalConfig
-      )
-      if (fs.existsSync('read-models-test-functional.db')) {
-        fs.unlinkSync('read-models-test-functional.db')
+  try {
+    switch (launchMode) {
+      case 'dev': {
+        await watch(merge(defaultResolveConfig, appConfig, devConfig))
+        break
       }
-      if (fs.existsSync('event-store-test-functional.db')) {
-        fs.unlinkSync('event-store-test-functional.db')
+
+      case 'build': {
+        await build(merge(defaultResolveConfig, appConfig, prodConfig))
+        break
       }
-      if (fs.existsSync('local-bus-broker.db')) {
-        fs.unlinkSync('local-bus-broker.db')
+
+      case 'start': {
+        await start(merge(defaultResolveConfig, appConfig, prodConfig))
+        break
       }
-      await Promise.all([
-        runTestcafe({
-          resolveConfig: mergedTestFunctionalConfig,
+
+      case 'test:functional': {
+        void [
+          'read-models-test-functional.db',
+          'event-store-test-functional.db',
+          'local-bus-broker-test-functional.db'
+        ].forEach(file => fs.existsSync(file) && fs.unlinkSync(file))
+
+        await runTestcafe({
+          resolveConfig: merge(
+            defaultResolveConfig,
+            appConfig,
+            testFunctionalConfig
+          ),
           functionalTestsDir: 'test/functional',
           browser: process.argv[3]
-        }),
-        launchBusBroker(mergedTestFunctionalConfig)
-      ])
-      break
-    }
+        })
+        break
+      }
 
-    default: {
-      throw new Error('Unknown option')
+      default: {
+        throw new Error('Unknown option')
+      }
     }
+    await stop()
+  } catch (error) {
+    await stop(error)
   }
-})().catch(error => {
-  // eslint-disable-next-line no-console
-  console.log(error)
-  process.exit(1)
-})
+})()

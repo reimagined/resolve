@@ -11,7 +11,11 @@ const prodConfig = {
         databaseFile: 'read-models.db'
       }
     }
-  }*/
+  }*/,
+  eventBroker: {
+    launchBroker: false,
+    databaseFile: 'local-bus-broker.db'
+  }
 }
 
 export default prodConfig
