@@ -268,6 +268,7 @@ module.exports = {
           'readdir',
           'readmodel',
           'readpolicy',
+          'resetter',
           'realtime',
           'redux',
           'referer',

@@ -13,7 +13,8 @@ const registerFirstUser = async t => {
 
   await t.wait(5000)
 
-  await t.eval(() => location.reload(true));
+  // eslint-disable-next-line no-restricted-globals
+  await t.eval(() => location.reload(true))
 }
 
 const loginFirstUser = async t => {

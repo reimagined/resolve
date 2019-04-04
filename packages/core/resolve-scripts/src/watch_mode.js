@@ -10,9 +10,11 @@ import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
 import openBrowser from './open_browser'
 import { processRegister } from './process_manager'
+import inject_resetter from './inject_resetter'
 
 export default async (resolveConfig, adjustWebpackConfigs) => {
   validateConfig(resolveConfig)
+  inject_resetter(resolveConfig)
 
   const nodeModulesByAssembly = new Map()
 

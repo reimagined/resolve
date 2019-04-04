@@ -107,17 +107,39 @@ const followTopic = async (pool, listenerId) => {
   }
 }
 
-const onSubMessage = (pool, message) => {
-  // TODO: maybe broadcase message ifself in future
-  void message
+const rewindListener = async ({ meta }, listenerId) => {
+  try {
+    await meta.rewindListener(listenerId)
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Rewind listener', error)
+  }
+}
 
-  for (const listenerId of pool.followTopicPromises.keys()) {
-    pool.followTopicPromises.set(
-      listenerId,
-      pool.followTopicPromises
-        .get(listenerId)
-        .then(followTopic.bind(null, pool, listenerId))
-    )
+const onSubMessage = (pool, message) => {
+  const payloadIndex = message.indexOf(' ') + 1
+  const topicName = message.toString('utf8', 0, payloadIndex - 1)
+  const content = message.toString('utf8', payloadIndex)
+
+  switch (topicName) {
+    case 'EVENT-TOPIC': {
+      for (const listenerId of pool.followTopicPromises.keys()) {
+        pool.followTopicPromises.set(
+          listenerId,
+          pool.followTopicPromises
+            .get(listenerId)
+            .then(followTopic.bind(null, pool, listenerId))
+        )
+      }
+      break
+    }
+    case 'DROP-MODEL-TOPIC': {
+      pool.dropPromise = pool.dropPromise.then(
+        rewindListener.bind(null, pool, content)
+      )
+      break
+    }
+    default:
   }
 }
 
@@ -178,12 +200,14 @@ const init = async pool => {
 
   const subSocket = zmq.socket('sub')
   subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('EVENT-TOPIC'))
+  subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('DROP-MODEL-TOPIC'))
   subSocket.bindSync(pool.config.zmqConsumerAddress)
 
   subSocket.on('message', onSubMessage.bind(null, pool))
 
   Object.assign(pool, {
     followTopicPromises: new Map(),
+    dropPromise: Promise.resolve(),
     eventStore: pool.config.eventStore,
     workers: new Map(),
     xpubSocket,
@@ -203,10 +227,6 @@ const bindWithInit = (pool, func) => async (...args) => {
   await pool.initialPromise
 
   return await func(pool, ...args)
-}
-
-const rewindListener = async ({ meta }, listenerId) => {
-  await meta.rewindListener(listenerId)
 }
 
 const dispose = async (pool, options = {}) => {
