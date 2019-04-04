@@ -43,6 +43,7 @@ const connect = async (pool, options) => {
   })
 
   await pool.connection.exec(`PRAGMA encoding=${escape('UTF-8')}`)
+  await pool.connection.configure('busyTimeout', 1000000)
 }
 
 const disconnect = async pool => {
