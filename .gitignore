@@ -56,4 +56,6 @@ es
 /website/i18n
 
 *.db
+*.db-journal
+
 bus.json
