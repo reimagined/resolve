@@ -83,7 +83,7 @@ const resetDomainHandler = (
 
     await pubSocket.disconnect(eventBroker.zmqConsumerAddress)
 
-    res.end('OK')
+    res.end('ok')
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error)
