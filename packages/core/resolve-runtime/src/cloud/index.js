@@ -74,7 +74,7 @@ const lambdaWorker = async (
 
   const resolve = Object.create(resolveBase)
   try {
-    await initResolve(assemblies, resolve)
+    await initResolve(resolve)
     resolveLog('debug', 'Lambda handler has initialized resolve instance')
 
     // Resolve event invoked by deploy service
@@ -147,7 +147,7 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
       },
       doUpdateRequest: {
         value: async readModelName => {
-          const readModel = domain.readModels.find(
+          const readModel = resolve.readModels.find(
             ({ name }) => name === readModelName
           )
           await invokeUpdateLambda(readModel)
