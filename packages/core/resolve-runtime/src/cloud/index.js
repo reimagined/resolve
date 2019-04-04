@@ -15,16 +15,20 @@ import prepareDomain from '../common/prepare-domain'
 
 const stepFunctions = new StepFunctions()
 
-const invokeUpdateLambda = async readModel => {
+const invokeUpdateLambda = async ({ name, invariantHash, projection }) => {
+  resolveLog('debug', `requesting step function execution to update read-model/saga [${name}]`)
+  resolveLog('trace', `invariantHash: ${invariantHash}`)
+  resolveLog('trace', `event types: ${Object.keys(projection).join(',')}`)
+
   await stepFunctions
     .startExecution({
       stateMachineArn: process.env.EVENT_BUS_STEP_FUNCTION_ARN,
       input: JSON.stringify({
         'detail-type': 'LISTEN_EVENT_BUS',
-        listenerId: readModel.name,
-        invariantHash: readModel.invariantHash,
+        listenerId: name,
+        invariantHash,
         inactiveTimeout: 1000 * 60 * 60,
-        eventTypes: Object.keys(readModel.projection)
+        eventTypes: Object.keys(projection)
       })
     })
     .promise()
@@ -67,65 +71,58 @@ const lambdaWorker = async (
   lambdaEvent,
   lambdaContext
 ) => {
-  resolveLog('debug', 'Lambda handler has received event', lambdaEvent)
+  resolveLog('debug', 'executing application lambda')
+  resolveLog('trace', 'incoming event', lambdaEvent)
 
   lambdaContext.callbackWaitsForEmptyEventLoop = false
   let executorResult = null
 
   const resolve = Object.create(resolveBase)
   try {
+    resolveLog('debug', 'initializing reSolve framework')
     await initResolve(resolve)
-    resolveLog('debug', 'Lambda handler has initialized resolve instance')
+    resolveLog('debug', 'reSolve framework initialized')
 
-    // Resolve event invoked by deploy service
     if (lambdaEvent.resolveSource === 'DeployService') {
-      resolveLog(
-        'debug',
-        'Lambda handler classified event as DeployService event',
-        lambdaEvent
-      )
+      resolveLog('debug', 'identified event source: deployment service')
+      resolveLog('trace', lambdaEvent)
 
       executorResult = await handleDeployServiceEvent(lambdaEvent, resolve)
     }
-    // Resolve event invoked by event bus
     else if (lambdaEvent.resolveSource === 'EventBus') {
-      resolveLog(
-        'debug',
-        'Lambda handler classified event as Event Bus event',
-        lambdaEvent
-      )
+      resolveLog('debug', 'identified event source: invoked by a step function')
+      resolveLog('trace', lambdaEvent)
 
       executorResult = await handleEventBusEvent(lambdaEvent, resolve)
     }
-    // API gateway event
     else if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
-      resolveLog(
-        'debug',
-        'Lambda handler classified event as API gateway',
-        lambdaEvent.httpMethod,
-        lambdaEvent.headers
-      )
+      resolveLog('debug', 'identified event source: API gateway')
+      resolveLog('trace', lambdaEvent.httpMethod, lambdaEvent.headers)
+
       const getCustomParameters = async () => ({ resolve })
       const executor = wrapApiHandler(mainHandler, getCustomParameters)
 
       executorResult = await executor(lambdaEvent, lambdaContext)
     }
   } catch (e) {
+    resolveLog('error', 'top-level event handler execution error!')
     resolveLog('error', e.stack)
   } finally {
     await disposeResolve(resolve)
-    resolveLog('debug', 'Lambda handler has disposed resolve instance')
+    resolveLog('debug', 'reSolve framework was disposed')
   }
 
   if (executorResult == null) {
-    throw new Error(`Lambda cannot be invoked with event: ${lambdaEvent}`)
+    throw new Error(`abnormal lambda execution on event ${lambdaEvent}`)
   }
 
   return executorResult
 }
 
 const index = async ({ assemblies, constants, domain, redux, routes }) => {
+  resolveLog('debug', `starting lambda 'cold start'`)
   try {
+    resolveLog('debug', 'configuring reSolve framework')
     const resolve = {
       aggregateActions: assemblies.aggregateActions,
       seedClientEnvs: assemblies.seedClientEnvs,
@@ -141,8 +138,10 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
       routes
     }
 
+    resolveLog('debug', 'preparing domain')
     await prepareDomain(resolve)
 
+    resolveLog('debug', 'patching reSolve framework')
     Object.defineProperties(resolve, {
       getSubscribeAdapterOptions: {
         value: getSubscribeAdapterOptions.bind(null, resolve)
@@ -157,11 +156,11 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
       }
     })
 
-    resolveLog('debug', 'Cloud entry point cold start success', resolve)
+    resolveLog('debug', `lambda 'cold start' succeeded`)
 
     return lambdaWorker.bind(null, assemblies, resolve)
   } catch (error) {
-    resolveLog('error', 'Cloud entry point cold start failure', error)
+    resolveLog('error', `lambda 'cold start' failure`, error)
   }
 }
 
