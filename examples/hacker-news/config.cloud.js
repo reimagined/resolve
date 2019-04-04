@@ -2,6 +2,7 @@ import { declareRuntimeEnv } from 'resolve-scripts'
 
 export default {
   target: 'cloud',
+  logLevel: 'debug',
   mode: 'production',
   staticPath: declareRuntimeEnv('CLOUD_STATIC_URL'),
   subscribeAdapter: {
@@ -18,7 +19,7 @@ export default {
   schedulers: {
     scheduler: {
       adapter: {
-        module: 'resolve-scheduler-cloud',
+        module: './resolve-scheduler-cloud',
         options: {}
       },
       connectorName: 'default'

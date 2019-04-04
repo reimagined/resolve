@@ -1,5 +1,5 @@
 import validate from './validation'
-import { USER_CREATED } from '../event-types'
+import { USER_CREATED, USER_CONFIRMED, USER_ACTIVATED, USER_REJECTED } from '../event-types'
 
 export default {
   createUser: (state, command) => {
@@ -11,13 +11,12 @@ export default {
 
     return { type: USER_CREATED, payload: { name } }
   },
-  confirmUser: () => {
-    return { type: 'USER_CONFIRMED' }
+  confirmUser: ({ confirmed, rejected }) => {
+    if (!confirmed && !rejected)
+      return { type: USER_CONFIRMED }
   },
-  activateUser: () => {
-    return { type: 'USER_ACTIVATED' }
-  },
-  rejectUser: () => {
-    return { type: 'USER_REJECTED' }
+  rejectUser: ({ confirmed, rejected }, { payload: { reason } }) => {
+    if (!confirmed && !rejected)
+      return { type: USER_REJECTED, payload: { reason } }
   }
 }
