@@ -41,7 +41,7 @@ void (async () => {
       }
 
       case 'test:functional': {
-        ;[
+        void [
           'read-models-test-functional.db',
           'event-store-test-functional.db',
           'local-bus-broker-test-functional.db'

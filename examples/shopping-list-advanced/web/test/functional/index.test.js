@@ -11,7 +11,9 @@ const registerFirstUser = async t => {
   await t.typeText(await Selector('input[name="password"]'), 'User Password 1')
   await t.click(await Selector('.btn-success'))
 
-  await t.wait(1000)
+  await t.wait(5000)
+
+  await t.eval(() => location.reload(true));
 }
 
 const loginFirstUser = async t => {
