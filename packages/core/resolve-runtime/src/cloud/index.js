@@ -9,6 +9,7 @@ import wrapApiHandler from 'resolve-api-handler-awslambda'
 import mainHandler from '../common/handlers/main-handler'
 import handleDeployServiceEvent from '../common/handlers/deploy-service-event-handler'
 import handleEventBusEvent from '../common/handlers/event-bus-event-handler'
+import handleSchedulerEvent from '../common/handlers/scheduler-event-handler'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 import prepareDomain from '../common/prepare-domain'
@@ -85,15 +86,15 @@ const lambdaWorker = async (
 
     if (lambdaEvent.resolveSource === 'DeployService') {
       resolveLog('debug', 'identified event source: deployment service')
-      resolveLog('trace', lambdaEvent)
-
       executorResult = await handleDeployServiceEvent(lambdaEvent, resolve)
     }
     else if (lambdaEvent.resolveSource === 'EventBus') {
       resolveLog('debug', 'identified event source: invoked by a step function')
-      resolveLog('trace', lambdaEvent)
-
       executorResult = await handleEventBusEvent(lambdaEvent, resolve)
+    }
+    else if (lambdaEvent.resolveSource === 'Scheduler') {
+      resolveLog('debug', 'identified event source: cloud scheduler')
+      executorResult = await handleSchedulerEvent(lambdaEvent, resolve)
     }
     else if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
       resolveLog('debug', 'identified event source: API gateway')

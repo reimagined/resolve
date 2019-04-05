@@ -1,8 +1,8 @@
-import uuid from 'uuid/v4'
+import uuid from "uuid/v4";
 
-import createSchedulerEventTypes from './scheduler-event-types'
-import initResolve from '../init-resolve'
-import disposeResolve from '../dispose-resolve'
+import createSchedulerEventTypes from "./scheduler-event-types";
+import initResolve from "../init-resolve";
+import disposeResolve from "../dispose-resolve";
 
 const execute = async (
   resolve,
@@ -11,22 +11,22 @@ const execute = async (
   date,
   command
 ) => {
-  const currentResolve = Object.create(resolve)
+  const currentResolve = Object.create(resolve);
   try {
-    await initResolve(currentResolve)
+    await initResolve(currentResolve);
     return await currentResolve.executeCommand({
       aggregateName: schedulerAggregateName,
       aggregateId: taskId,
-      type: 'execute',
+      type: "execute",
       payload: { date, command }
-    })
+    });
   } finally {
-    await disposeResolve(currentResolve)
+    await disposeResolve(currentResolve);
   }
-}
+};
 
 const wrapSagas = (sagas, resolve) => {
-  const sagaReadModels = []
+  const sagaReadModels = [];
 
   for (const {
     name,
@@ -35,45 +35,48 @@ const wrapSagas = (sagas, resolve) => {
     connectorName,
     isSystemScheduler
   } of sagas) {
-    if (!isSystemScheduler) continue
+    if (!isSystemScheduler) continue;
     const sagaReadModel = {
       name: `_RESOLVE_SCHEDULER_SAGA_${name}`,
       resolvers: {
-        RUN_BROKER: async () => {}
+        RUN_BROKER: async () => {
+        }
       },
       connectorName
-    }
+    };
 
-    const schedulerAggregateName = `_RESOLVE_SCHEDULER_AGGREGATE_${name}`
-    const commandsTableName = `_RESOLVE_SCHEDULER_AGGREGATE_TABLE_${name}`
+    const schedulerAggregateName = `_RESOLVE_SCHEDULER_AGGREGATE_${name}`;
+    const commandsTableName = `_RESOLVE_SCHEDULER_AGGREGATE_TABLE_${name}`;
 
     const handlers = handlersCreator({
       schedulerAggregateName,
       commandsTableName,
       eventTypes: createSchedulerEventTypes({ schedulerName: name })
-    })
+    });
     const sideEffects = sideEffectsCreator({
       execute: execute.bind(null, resolve, schedulerAggregateName)
-    })
+    });
 
-    const eventTypes = Object.keys(handlers)
+    sagaReadModel['schedulerAdapter'] = sideEffects
+
+    const eventTypes = Object.keys(handlers);
 
     const wrappedSideEffects = Object.keys(sideEffects).reduce((acc, key) => {
-      acc[key] = async (...args) => {
-        const result = await sideEffects[key](...args)
+      acc[ key ] = async (...args) => {
+        const result = await sideEffects[ key ](...args);
         if (result !== undefined) {
-          throw new Error('Side effect should not return any values')
+          throw new Error("Side effect should not return any values");
         }
-      }
-      return acc
-    }, {})
+      };
+      return acc;
+    }, {});
 
-    Object.defineProperty(sagaReadModel, 'projection', {
+    Object.defineProperty(sagaReadModel, "projection", {
       get: function() {
-        const currentReadModel = this
+        const currentReadModel = this;
         return eventTypes.reduce((acc, eventType) => {
-          acc[eventType] = async (store, event) => {
-            await handlers[eventType](
+          acc[ eventType ] = async (store, event) => {
+            await handlers[ eventType ](
               {
                 scheduleCommand: null,
                 sideEffects: wrappedSideEffects,
@@ -82,15 +85,15 @@ const wrapSagas = (sagas, resolve) => {
                 store: store
               },
               event
-            )
-          }
+            );
+          };
 
-          return acc
-        }, {})
+          return acc;
+        }, {});
       }
-    })
+    });
 
-    sagaReadModels.push(sagaReadModel)
+    sagaReadModels.push(sagaReadModel);
   }
 
   //////
@@ -102,43 +105,45 @@ const wrapSagas = (sagas, resolve) => {
     schedulerName,
     isSystemScheduler
   } of sagas) {
-    if (isSystemScheduler) continue
+    if (isSystemScheduler) continue;
     const sagaReadModel = {
       name: `_RESOLVE_SAGA_${name}`,
+      isSaga: true,
       resolvers: {
-        RUN_BROKER: async () => {}
+        RUN_BROKER: async () => {
+        }
       },
       connectorName
-    }
+    };
 
-    const eventTypes = Object.keys(handlers)
+    const eventTypes = Object.keys(handlers);
 
-    let doSideEffects = true
+    let doSideEffects = true;
     const wrappedSideEffects = Object.keys(sideEffects).reduce((acc, key) => {
-      acc[key] = async (...args) => {
-        if (!doSideEffects) return
-        const result = await sideEffects[key](...args)
+      acc[ key ] = async (...args) => {
+        if (!doSideEffects) return;
+        const result = await sideEffects[ key ](...args);
         if (result !== undefined) {
-          throw new Error('Side effect should not return any values')
+          throw new Error("Side effect should not return any values");
         }
-      }
-      return acc
-    }, {})
+      };
+      return acc;
+    }, {});
 
-    Object.defineProperty(sagaReadModel, 'projection', {
+    Object.defineProperty(sagaReadModel, "projection", {
       get: function() {
-        const currentReadModel = this
+        const currentReadModel = this;
         return eventTypes.reduce((acc, eventType) => {
-          acc[eventType] = async (store, event) => {
-            doSideEffects = true // TODO Extract from store
+          acc[ eventType ] = async (store, event) => {
+            doSideEffects = true; // TODO Extract from store
 
-            await handlers[eventType](
+            await handlers[ eventType ](
               {
                 scheduleCommand: async (date, command) =>
                   currentReadModel.executeCommand({
                     aggregateName: `_RESOLVE_SCHEDULER_AGGREGATE_${schedulerName}`,
                     aggregateId: uuid(),
-                    type: 'create',
+                    type: "create",
                     payload: { date, command }
                   }),
                 sideEffects: wrappedSideEffects,
@@ -147,18 +152,18 @@ const wrapSagas = (sagas, resolve) => {
                 store
               },
               event
-            )
-          }
+            );
+          };
 
-          return acc
-        }, {})
+          return acc;
+        }, {});
       }
-    })
+    });
 
-    sagaReadModels.push(sagaReadModel)
+    sagaReadModels.push(sagaReadModel);
   }
 
-  return sagaReadModels
-}
+  return sagaReadModels;
+};
 
-export default wrapSagas
+export default wrapSagas;
