@@ -20,7 +20,10 @@ const handleResolveReadModelEvent = async (lambdaEvent, resolve) => {
             })
           })
           .promise()
-        await resolve.executeQuery.drop(name)
+
+        if (lambdaEvent.operation === 'reset') { 
+          await resolve.executeQuery.drop(name)
+        }
       }
       return 'ok'
     }
