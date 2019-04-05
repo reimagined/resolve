@@ -89,47 +89,43 @@ const defineTable = async (
   await runQuery(
     `CREATE TABLE ${escapeId(`${tablePrefix}${tableName}`)} (` +
       [
-        tableDescription.fields
-          .map(columnName => `${escapeId(columnName)} JSON`)
-          .join(',\n'),
-        Object.keys(tableDescription.indexes)
-          .map((indexName, idx) => {
-            let declaration = `${escapeId(indexName)} JSON, ${escapeId(
+        tableDescription.fields.map(
+          columnName => `${escapeId(columnName)} JSON`
+        ),
+        Object.keys(tableDescription.indexes).map((indexName, idx) => {
+          let declaration = `${escapeId(indexName)} JSON, ${escapeId(
+            `${indexName}\u0004`
+          )} `
+          switch (tableDescription.indexes[indexName]) {
+            case 'string':
+              declaration += STRING_INDEX_TYPE
+              break
+            case 'number':
+              declaration += NUMBER_INDEX_TYPE
+              break
+            default:
+              throw new Error(
+                `Wrong index "${indexName}" type "${
+                  tableDescription.indexes[indexName]
+                }"`
+              )
+          }
+          declaration += ` GENERATED ALWAYS AS (${escapeId(
+            indexName
+          )}->"$") STORED `
+          if (idx === 0) {
+            declaration += ' NOT NULL PRIMARY KEY'
+          } else {
+            declaration += ' NULL'
+          }
+          return declaration
+        }),
+        Object.keys(tableDescription.indexes).map(
+          indexName =>
+            `INDEX ${escapeId(`${indexName}\u0004\u0004`)} (${escapeId(
               `${indexName}\u0004`
-            )} `
-            switch (tableDescription.indexes[indexName]) {
-              case 'string':
-                declaration += STRING_INDEX_TYPE
-                break
-              case 'number':
-                declaration += NUMBER_INDEX_TYPE
-                break
-              default:
-                throw new Error(
-                  `Wrong index "${indexName}" type "${
-                    tableDescription.indexes[indexName]
-                  }"`
-                )
-            }
-            declaration += ` GENERATED ALWAYS AS (${escapeId(
-              indexName
-            )}->"$") STORED `
-            if (idx === 0) {
-              declaration += ' NOT NULL PRIMARY KEY'
-            } else {
-              declaration += ' NULL'
-            }
-            return declaration
-          })
-          .join(',\n'),
-        Object.keys(tableDescription.indexes)
-          .map(
-            indexName =>
-              `INDEX ${escapeId(`${indexName}\u0004\u0004`)} (${escapeId(
-                `${indexName}\u0004`
-              )})`
-          )
-          .join(',\n')
+            )})`
+        )
       ].join(',\n') +
       `)
       COMMENT = "RESOLVE-${readModelName}"

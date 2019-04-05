@@ -147,7 +147,7 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
       },
       doUpdateRequest: {
         value: async readModelName => {
-          const readModel = domain.readModels.find(
+          const readModel = resolve.readModels.find(
             ({ name }) => name === readModelName
           )
           await invokeUpdateLambda(readModel)
