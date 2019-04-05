@@ -57,19 +57,6 @@ const initResolve = async resolve => {
     snapshotAdapter: { value: snapshotAdapter },
     storageAdapter: { value: storageAdapter }
   })
-
-  const applicationPromises = []
-  for (const name of resolve.systemReadModelsNames) {
-    applicationPromises.push(
-      resolve.executeQuery({
-        modelName: name,
-        resolverName: 'RUN_BROKER',
-        resolverArgs: {}
-      })
-    )
-  }
-
-  await Promise.all(applicationPromises)
 }
 
 export default initResolve
