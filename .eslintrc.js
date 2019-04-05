@@ -131,6 +131,7 @@ module.exports = {
           'dup',
           'dynamodb',
           'ecma',
+          'elasticsearch',
           'envs',
           'eqeqeq',
           'eql',
