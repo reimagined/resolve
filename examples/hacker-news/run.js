@@ -58,15 +58,13 @@ void (async () => {
     switch (launchMode) {
       case 'dev': {
         const resolveConfig = merge(baseConfig, devConfig)
-        await Promise.all([
-          reset(resolveConfig, {
-            dropEventStore: false,
-            dropSnapshots: true,
-            dropReadModels: true,
-            dropSagas: true
-          }),
-          watch(resolveConfig)
-        ])
+        // await reset(resolveConfig, {
+        //   dropEventStore: false,
+        //   dropSnapshots: true,
+        //   dropReadModels: true,
+        //   dropSagas: true
+        // })
+        await watch(resolveConfig)
         break
       }
 

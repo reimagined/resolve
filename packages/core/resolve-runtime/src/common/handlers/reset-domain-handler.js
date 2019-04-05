@@ -38,6 +38,28 @@ const resetDomainHandler = (
           readModelConnectorsOptions[name]
         )
       }
+
+      readModelConnectors[name] = Object.create(readModelConnectors[name])
+      const connector = readModelConnectors[name]
+
+      if (typeof connector.connect !== 'function') {
+        Object.defineProperty(connector, 'connect', {
+          value: async () => {
+            return readModelConnectorsOptions[name]
+          }
+        })
+      }
+      if (typeof connector.disconnect !== 'function') {
+        Object.defineProperty(connector, 'disconnect', {
+          value: async () => {}
+        })
+      }
+      if (typeof connector.drop !== 'function') {
+        Object.defineProperty(connector, 'drop', { value: async () => {} })
+      }
+      if (typeof connector.dispose !== 'function') {
+        Object.defineProperty(connector, 'dispose', { value: async () => {} })
+      }
     }
 
     if (dropEventStore) {
@@ -60,6 +82,9 @@ const resetDomainHandler = (
     if (dropReadModels) {
       for (const { name, connectorName } of readModels) {
         const connector = readModelConnectors[connectorName]
+
+        console.log({ connector, name, connectorName })
+
         const connection = await connector.connect(name)
 
         await connector.drop(connection, name)

@@ -1,4 +1,3 @@
-const fs = require('fs')
 const path = require('path')
 const {
   defaultResolveConfig,
@@ -8,6 +7,7 @@ const {
   runTestcafe,
   merge: rawMerge,
   stop,
+  reset,
   adjustWebpackReactNative,
   adjustWebpackCommonPackages
 } = require('resolve-scripts')
@@ -101,14 +101,21 @@ void (async () => {
           authModule
         )
 
-        await watch(
-          resolveConfig,
-          adjustWebpackConfigs({
+        await Promise.all([
+          reset(resolveConfig, {
+            dropEventStore: false,
+            dropSnapshots: true,
+            dropReadModels: true,
+            dropSagas: true
+          }),
+          watch(
             resolveConfig,
-            commonPackages
-          })
-        )
-
+            adjustWebpackConfigs({
+              resolveConfig,
+              commonPackages
+            })
+          )
+        ])
         break
       }
       case 'dev:native': {
@@ -130,14 +137,23 @@ void (async () => {
             resolveConfig.customConstants.remoteReduxDevTools.hostname
           }:${resolveConfig.customConstants.remoteReduxDevTools.port}`
         )
-        await watch(
-          resolveConfig,
-          adjustWebpackConfigs({
+
+        await Promise.all([
+          reset(resolveConfig, {
+            dropEventStore: false,
+            dropSnapshots: true,
+            dropReadModels: true,
+            dropSagas: true
+          }),
+          watch(
             resolveConfig,
-            reactNativeDir,
-            commonPackages
-          })
-        )
+            adjustWebpackConfigs({
+              resolveConfig,
+              reactNativeDir,
+              commonPackages
+            })
+          )
+        ])
         break
       }
 
@@ -201,23 +217,25 @@ void (async () => {
           testFunctionalConfig,
           authModule
         )
-        void [
-          'read-models-test-functional.db',
-          'event-store-test-functional.db',
-          'local-bus-broker-test-functional.db'
-        ].forEach(file => fs.existsSync(file) && fs.unlinkSync(file))
 
-        await runTestcafe({
-          resolveConfig,
-          adjustWebpackConfigs: adjustWebpackConfigs({
-            resolveConfig,
-            commonPackages
+        await Promise.all([
+          reset(resolveConfig, {
+            dropEventStore: true,
+            dropSnapshots: true,
+            dropReadModels: true,
+            dropSagas: true
           }),
-          functionalTestsDir: './test/functional',
-          browser: process.argv[3]
-          // customArgs: ['-r', 'json:report.json']
-        })
-
+          runTestcafe({
+            resolveConfig,
+            adjustWebpackConfigs: adjustWebpackConfigs({
+              resolveConfig,
+              commonPackages
+            }),
+            functionalTestsDir: './test/functional',
+            browser: process.argv[3]
+            // customArgs: ['-r', 'json:report.json']
+          })
+        ])
         break
       }
 

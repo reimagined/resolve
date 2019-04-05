@@ -5,9 +5,9 @@ import {
   watch,
   runTestcafe,
   merge,
-  stop
+  stop,
+  reset
 } from 'resolve-scripts'
-import fs from 'fs'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
@@ -21,7 +21,16 @@ void (async () => {
   try {
     switch (launchMode) {
       case 'dev': {
-        await watch(merge(defaultResolveConfig, appConfig, devConfig))
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+        await Promise.all([
+          reset(resolveConfig, {
+            dropEventStore: false,
+            dropSnapshots: true,
+            dropReadModels: true,
+            dropSagas: true
+          }),
+          watch(resolveConfig)
+        ])
         break
       }
 
@@ -41,21 +50,25 @@ void (async () => {
       }
 
       case 'test:functional': {
-        void [
-          'read-models-test-functional.db',
-          'event-store-test-functional.db',
-          'local-bus-broker-test-functional.db'
-        ].forEach(file => fs.existsSync(file) && fs.unlinkSync(file))
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          testFunctionalConfig
+        )
 
-        await runTestcafe({
-          resolveConfig: merge(
-            defaultResolveConfig,
-            appConfig,
-            testFunctionalConfig
-          ),
-          functionalTestsDir: 'test/functional',
-          browser: process.argv[3]
-        })
+        await Promise.all([
+          reset(resolveConfig, {
+            dropEventStore: true,
+            dropSnapshots: true,
+            dropReadModels: true,
+            dropSagas: true
+          }),
+          runTestcafe({
+            resolveConfig,
+            functionalTestsDir: 'test/functional',
+            browser: process.argv[3]
+          })
+        ])
         break
       }
 
