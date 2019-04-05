@@ -1,4 +1,4 @@
-const handleSchedulerEvent = async (lambdaEvent, resolve) => {
+const handleSchedulerEvent = async ({ entry }, resolve) => {
   resolveLog('debug', `dispatching lambda event to all available schedulers`)
   if (resolve && resolve.readModels) {
     return Promise.all(
@@ -8,10 +8,10 @@ const handleSchedulerEvent = async (lambdaEvent, resolve) => {
           readModel['schedulerAdapter'] !== null
         )
         .map(readModel => readModel['schedulerAdapter'])
-        .map(adapter => typeof adapter['handleExternalEvent'] === "function" ?
-          adapter['handleExternalEvent'] : null)
+        .map(adapter => typeof adapter['executeEntries'] === "function" ?
+          adapter['executeEntries'] : null)
         .filter(handler => handler !== null)
-        .map(async (handler) => handler(lambdaEvent))
+        .map(async (handler) => handler(entry))
     )
   }
   resolveLog('warn', `no reSolve framework or no readModels property defined`)
