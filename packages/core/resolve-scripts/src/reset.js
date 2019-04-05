@@ -39,7 +39,6 @@ const reset = async (resolveConfig, options) => {
     try {
       const response = await fetch(url)
       const text = await response.text()
-      console.log('@@@', text)
       if (text === 'ok') break
     } catch (e) {}
     await new Promise(resolve => setTimeout(resolve, 500))

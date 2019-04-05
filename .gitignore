@@ -57,5 +57,7 @@ es
 
 *.db
 *.db-journal
+*.db-shm
+*.db-wal
 
 bus.json

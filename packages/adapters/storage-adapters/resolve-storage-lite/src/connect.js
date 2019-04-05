@@ -11,6 +11,7 @@ const connect = async (pool, sqlite) => {
 
   const database = await sqlite.open(databaseFile)
   await database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
+  await database.exec(`PRAGMA synchronous = NORMAL`)
   await database.configure('busyTimeout', 1000000)
 
   Object.assign(pool, {

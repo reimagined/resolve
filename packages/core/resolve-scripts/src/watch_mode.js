@@ -13,6 +13,7 @@ import { processRegister } from './process_manager'
 
 export default async (resolveConfig, adjustWebpackConfigs) => {
   await new Promise(resolve => process.nextTick(resolve))
+
   validateConfig(resolveConfig)
 
   const nodeModulesByAssembly = new Map()

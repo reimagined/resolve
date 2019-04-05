@@ -11,6 +11,7 @@ import validateConfig from './validate_config'
 
 export default async (resolveConfig, adjustWebpackConfigs) => {
   await new Promise(resolve => process.nextTick(resolve))
+
   validateConfig(resolveConfig)
 
   const nodeModulesByAssembly = new Map()
