@@ -65,7 +65,7 @@ export default staticPath
 
 exports[`$resolve.staticPath should support runtime envs: [server - runtime] 1`] = `
 "
-import validatePath from 'resolve-runtime/lib/utils/validate_path'
+import validatePath from 'resolve-runtime/lib/common/utils/validate-path'
 let staticPath = process.env[\\"STATIC_PATH\\"]
 if (!validatePath(staticPath, { allowAbsolutePath: true })) {
           throw new Error(

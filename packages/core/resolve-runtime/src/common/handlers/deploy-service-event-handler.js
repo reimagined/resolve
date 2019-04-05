@@ -1,14 +1,16 @@
-const Lambda = require('aws-sdk/clients/lambda')
-const lambda = new Lambda()
+import bootstrap from '../bootstrap'
 
-const handleResolveReadModelEvent = async (lambdaEvent, resolve) => {
+const handleResolveReadModelEvent = async (
+  lambdaEvent,
+  { lambda, executeQuery, readModels }
+) => {
   switch (lambdaEvent.operation) {
     case 'reset':
     case 'pause':
     case 'resume': {
       const names = lambdaEvent.name
         ? [lambdaEvent.name]
-        : resolve.readModels.map(readmodel => readmodel.name)
+        : readModels.map(readmodel => readmodel.name)
       const { DEPLOYMENT_ID } = process.env
       for (const name of names) {
         await lambda
@@ -22,13 +24,13 @@ const handleResolveReadModelEvent = async (lambdaEvent, resolve) => {
           .promise()
 
         if (lambdaEvent.operation === 'reset') {
-          await resolve.executeQuery.drop(name)
+          await executeQuery.drop(name)
         }
       }
       return 'ok'
     }
     case 'list': {
-      return resolve.readModels.map(readModel => readModel.name)
+      return readModels.map(readModel => readModel.name)
     }
     default: {
       return null
@@ -38,6 +40,9 @@ const handleResolveReadModelEvent = async (lambdaEvent, resolve) => {
 
 const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
   switch (lambdaEvent.part) {
+    case 'bootstrap': {
+      return await bootstrap(resolve)
+    }
     case 'readModel': {
       return await handleResolveReadModelEvent(lambdaEvent, resolve)
     }

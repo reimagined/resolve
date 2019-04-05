@@ -8,7 +8,12 @@ describe('resolve event handler', () => {
 
   const resolve = {
     readModels: [{ name: 'readModel1' }, { name: 'readModel2' }],
-    executeQuery: { drop: jest.fn() }
+    executeQuery: { drop: jest.fn() },
+    lambda: {
+      invoke: jest.fn().mockReturnValue({
+        promise: jest.fn().mockReturnValue(Promise.resolve())
+      })
+    }
   }
 
   afterEach(() => {
@@ -66,7 +71,7 @@ describe('resolve event handler', () => {
 
       expect(result).toEqual('ok')
 
-      expect(resolve.executeQuery.drop).toHaveBeenCalledTimes(2)
+      expect(resolve.executeQuery.drop).toHaveBeenCalledTimes(1)
     })
 
     it('handles getting of list', async () => {
