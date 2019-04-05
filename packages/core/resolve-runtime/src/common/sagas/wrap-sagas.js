@@ -54,7 +54,11 @@ const wrapSagas = (sagas, resolve) => {
       eventTypes: createSchedulerEventTypes({ schedulerName: name })
     });
     const sideEffects = sideEffectsCreator({
-      execute: execute.bind(null, resolve, schedulerAggregateName)
+      execute: execute.bind(null, resolve, schedulerAggregateName),
+      errorHandler: async (e) => {
+        resolveLog('error', `scheduler adapter failure: ${e.stack}`)
+        throw e
+      }
     });
 
     sagaReadModel['schedulerAdapter'] = sideEffects
@@ -75,6 +79,10 @@ const wrapSagas = (sagas, resolve) => {
       get: function() {
         const currentReadModel = this;
         return eventTypes.reduce((acc, eventType) => {
+          resolveLog(
+            'debug',
+            `[wrap-sagas] registering system scheduler saga event handler ${eventType}`
+          )
           acc[ eventType ] = async (store, event) => {
             await handlers[ eventType ](
               {
@@ -139,13 +147,20 @@ const wrapSagas = (sagas, resolve) => {
 
             await handlers[ eventType ](
               {
-                scheduleCommand: async (date, command) =>
-                  currentReadModel.executeCommand({
-                    aggregateName: `_RESOLVE_SCHEDULER_AGGREGATE_${schedulerName}`,
-                    aggregateId: uuid(),
+                scheduleCommand: async (date, command) => {
+                  const aggregateName = `_RESOLVE_SCHEDULER_AGGREGATE_${schedulerName}`
+                  const aggregateId = uuid()
+                  resolveLog(
+                    'debug',
+                    `creating scheduled command aggregate ${aggregateName} with id ${aggregateId}`
+                  )
+                  return currentReadModel.executeCommand({
+                    aggregateName,
+                    aggregateId,
                     type: "create",
                     payload: { date, command }
-                  }),
+                  })
+                },
                 sideEffects: wrappedSideEffects,
                 executeCommand: currentReadModel.executeCommand,
                 executeQuery: currentReadModel.executeQuery,

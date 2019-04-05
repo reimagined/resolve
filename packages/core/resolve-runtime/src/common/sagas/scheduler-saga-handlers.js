@@ -16,6 +16,7 @@ export default ({
   },
   Bootstrap: async ({ store, sideEffects }) => {
     await sideEffects.clearEntries()
+    // BUGFIX: add ALL entries here
     await sideEffects.addEntries(store.find({ date: { $lte: Date.now() } }))
   },
   [SCHEDULED_COMMAND_CREATED]: async (
@@ -28,7 +29,10 @@ export default ({
       command
     }
 
+    resolveLog('debug', `[scheduler-saga:scheduled-command-created] adding entry to store`)
     await store.insert(commandsTableName, entry)
+
+    resolveLog('debug', `[scheduler-saga:scheduled-command-created] calling adapter's addEntries`)
     await sideEffects.addEntries([entry])
   },
   [SCHEDULED_COMMAND_EXECUTED]: async (
