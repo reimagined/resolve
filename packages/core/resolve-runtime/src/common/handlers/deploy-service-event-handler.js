@@ -10,7 +10,7 @@ const handleResolveReadModelEvent = async (
     case 'resume': {
       const names = lambdaEvent.name
         ? [lambdaEvent.name]
-        : readModels.map(readmodel => readmodel.name)
+        : readModels.map(readModel => readModel.name)
       const { DEPLOYMENT_ID } = process.env
       for (const name of names) {
         await lambda
@@ -30,7 +30,26 @@ const handleResolveReadModelEvent = async (
       return 'ok'
     }
     case 'list': {
-      return readModels.map(readModel => readModel.name)
+      const { DEPLOYMENT_ID } = process.env
+
+      return Promise.all(
+        readModels.map(async readModel => {
+          const state = await lambda
+            .invoke({
+              FunctionName: `${DEPLOYMENT_ID}-meta-lock`,
+              Payload: JSON.stringify({
+                listenerId: lambda.name,
+                operation: lambdaEvent.operation
+              })
+            })
+            .promise()
+
+          return {
+            ...state,
+            name: readModel.name
+          }
+        })
+      )
     }
     default: {
       return null
