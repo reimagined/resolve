@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import prepareUrls from './prepare_urls'
+import injectResetter from './inject_resetter'
 
 const validOptions = [
   'dropEventStore',
@@ -9,6 +10,7 @@ const validOptions = [
 ]
 
 const reset = async (resolveConfig, options) => {
+  injectResetter(resolveConfig)
   if (options == null || options.constructor !== Object) {
     throw new Error('Invalid reset options')
   }
@@ -36,9 +38,11 @@ const reset = async (resolveConfig, options) => {
   while (true) {
     try {
       const response = await fetch(url)
-      if ((await response.text()) === 'ok') break
-      await new Promise(resolve => setTimeout(resolve, 500))
+      const text = await response.text()
+      console.log('@@@', text)
+      if (text === 'ok') break
     } catch (e) {}
+    await new Promise(resolve => setTimeout(resolve, 500))
   }
 }
 

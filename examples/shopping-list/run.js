@@ -8,7 +8,6 @@ import {
   stop,
   reset
 } from 'resolve-scripts'
-import fs from 'fs'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'

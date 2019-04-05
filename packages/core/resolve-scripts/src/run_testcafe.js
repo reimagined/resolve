@@ -12,7 +12,6 @@ import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
 import { processRegister } from './process_manager'
-import inject_resetter from './inject_resetter'
 
 const runTestcafe = ({
   resolveConfig,
@@ -23,8 +22,8 @@ const runTestcafe = ({
   timeout
 }) =>
   new Promise(async (resolve, reject) => {
+    await new Promise(resolve => process.nextTick(resolve))
     validateConfig(resolveConfig)
-    inject_resetter(resolveConfig)
 
     const nodeModulesByAssembly = new Map()
 

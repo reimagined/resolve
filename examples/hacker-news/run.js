@@ -5,9 +5,9 @@ import {
   watch,
   runTestcafe,
   merge,
-  stop
+  stop,
+  reset
 } from 'resolve-scripts'
-import fs from 'fs'
 import resolveModuleComments from 'resolve-module-comments'
 import resolveModuleAuth from 'resolve-module-auth'
 
@@ -57,7 +57,16 @@ void (async () => {
 
     switch (launchMode) {
       case 'dev': {
-        await watch(merge(baseConfig, devConfig))
+        const resolveConfig = merge(baseConfig, devConfig)
+        await Promise.all([
+          reset(resolveConfig, {
+            dropEventStore: false,
+            dropSnapshots: true,
+            dropReadModels: true,
+            dropSagas: true
+          }),
+          watch(resolveConfig)
+        ])
         break
       }
 
@@ -77,17 +86,21 @@ void (async () => {
       }
 
       case 'test:functional': {
-        void [
-          'read-models-test-functional.db',
-          'event-store-test-functional.db',
-          'local-bus-broker-test-functional.db'
-        ].forEach(file => fs.existsSync(file) && fs.unlinkSync(file))
+        const resolveConfig = merge(baseConfig, testFunctionalConfig)
 
-        await runTestcafe({
-          resolveConfig: merge(baseConfig, testFunctionalConfig),
-          functionalTestsDir: 'test/functional',
-          browser: process.argv[3]
-        })
+        await Promise.all([
+          reset(resolveConfig, {
+            dropEventStore: true,
+            dropSnapshots: true,
+            dropReadModels: true,
+            dropSagas: true
+          }),
+          runTestcafe({
+            resolveConfig,
+            functionalTestsDir: 'test/functional',
+            browser: process.argv[3]
+          })
+        ])
         break
       }
 
@@ -126,9 +139,15 @@ void (async () => {
           ROOT_PATH: importConfig.rootPath
         })
 
-        await build(importConfig)
-        await Promise.all([start(importConfig), runImport()])
-
+        await Promise.all([
+          build(importConfig).then(() => start(importConfig)),
+          reset(importConfig, {
+            dropEventStore: true,
+            dropSnapshots: true,
+            dropReadModels: true,
+            dropSagas: true
+          }).then(runImport)
+        ])
         break
       }
 

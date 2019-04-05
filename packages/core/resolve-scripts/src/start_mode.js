@@ -3,7 +3,8 @@ import path from 'path'
 import { processRegister } from './process_manager'
 
 export default resolveConfig =>
-  new Promise((resolve, reject) => {
+  new Promise(async (resolve, reject) => {
+    await new Promise(resolve => process.nextTick(resolve))
     const serverPath = path.resolve(
       process.cwd(),
       path.join(resolveConfig.distDir, './common/local-entry/local-entry.js')

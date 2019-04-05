@@ -1,6 +1,6 @@
 import merge from './merge'
 
-const inject_resetter = resolveConfig => {
+const injectResetter = resolveConfig => {
   Object.assign(
     resolveConfig,
     merge(resolveConfig, {
@@ -61,4 +61,4 @@ const inject_resetter = resolveConfig => {
   )
 }
 
-export default inject_resetter
+export default injectResetter
