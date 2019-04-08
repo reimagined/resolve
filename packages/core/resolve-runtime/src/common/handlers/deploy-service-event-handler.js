@@ -39,7 +39,7 @@ const handleResolveReadModelEvent = async (
               FunctionName: `${DEPLOYMENT_ID}-meta-lock`,
               Payload: JSON.stringify({
                 listenerId: lambda.name,
-                operation: lambdaEvent.operation
+                operation: 'status'
               })
             })
             .promise()
