@@ -38,7 +38,7 @@ const handleResolveReadModelEvent = async (
             .invoke({
               FunctionName: `${DEPLOYMENT_ID}-meta-lock`,
               Payload: JSON.stringify({
-                listenerId: lambda.name,
+                listenerId: readModel.name,
                 operation: 'status'
               })
             })
