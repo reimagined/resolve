@@ -1,11 +1,12 @@
 import sqlite from 'sqlite'
 
-const escapeString = str => str.replace(/(["\\])/gi, '\\$1')
+const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
+const escape = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
 const dispose = async ({ database }, dropInfo) => {
   if (dropInfo) {
     await database.exec(`
-			DROP TABLE \`Listeners\`;
+			DROP TABLE ${escapeId('Listeners')};
 			COMMIT;
 		`)
   }
@@ -14,9 +15,9 @@ const dispose = async ({ database }, dropInfo) => {
 
 const rewindListener = async ({ database }, listenerId) => {
   await database.exec(`
-	  DELETE FROM \`Listeners\` WHERE \`ListenerId\` = "${escapeString(
-      listenerId
-    )}";
+	  DELETE FROM ${escapeId('Listeners')} WHERE ${escapeId(
+    'ListenerId'
+  )} = ${escape(listenerId)};
 	  COMMIT;
 	  BEGIN IMMEDIATE;
   `)
@@ -24,8 +25,9 @@ const rewindListener = async ({ database }, listenerId) => {
 
 const getListenerInfo = async ({ database }, listenerId) => {
   return await database.get(`
-    SELECT \`AbutTimestamp\`,\`SkipCount\` FROM \`Listeners\`
-    WHERE \`ListenerId\` = "${escapeString(listenerId)}"
+    SELECT ${escapeId('AbutTimestamp')}, ${escapeId('SkipCount')}
+    FROM ${escapeId('Listeners')}
+    WHERE ${escapeId('ListenerId')} = ${escape(listenerId)}
   `)
 }
 
@@ -35,10 +37,12 @@ const updateListenerInfo = async (
   { AbutTimestamp, SkipCount }
 ) => {
   await database.exec(`
-    INSERT OR REPLACE INTO \`Listeners\`(
-      \`ListenerId\`, \`AbutTimestamp\`, \`SkipCount\`
+    INSERT OR REPLACE INTO ${escapeId('Listeners')}(
+      ${escapeId('ListenerId')}, ${escapeId('AbutTimestamp')}, ${escapeId(
+    'SkipCount'
+  )}
     ) VALUES(
-      "${escapeString(listenerId)}",
+      ${escape(listenerId)},
       ${Number(AbutTimestamp)},
       ${Number(SkipCount)}
     );
@@ -61,11 +65,11 @@ const init = async ({ databaseFile }) => {
   }
 
   await database.exec(`
-	  CREATE TABLE IF NOT EXISTS \`Listeners\` (
-			\`ListenerId\` VARCHAR(128) NOT NULL,
-		  \`AbutTimestamp\` BIGINT NOT NULL DEFAULT 0,
-			\`SkipCount\` BIGINT NOT NULL DEFAULT 0,
-		  PRIMARY KEY(\`ListenerId\`)
+	  CREATE TABLE IF NOT EXISTS ${escapeId('Listeners')} (
+			${escapeId('ListenerId')} VARCHAR(128) NOT NULL,
+		  ${escapeId('AbutTimestamp')} BIGINT NOT NULL DEFAULT 0,
+			${escapeId('SkipCount')} BIGINT NOT NULL DEFAULT 0,
+		  PRIMARY KEY(${escapeId('ListenerId')})
 		);
 		COMMIT;
 		BEGIN IMMEDIATE;

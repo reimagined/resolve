@@ -10,12 +10,18 @@ const checkOptionShape = (option, types, nullable = false) =>
     !types.reduce((acc, type) => acc || option.constructor === type, false)
   )
 
+const RESERVED_SYSTEM_TOPICS = ['ACKNOWLEDGE-TOPIC']
+
 const parseMessage = message => {
   if (!(message instanceof Buffer)) {
     throw new Error('Message should be instance of Buffer')
   }
   const topic = message.toString('utf8', 1)
   const isConnection = message[0] === 1
+
+  if (RESERVED_SYSTEM_TOPICS.includes(topic)) {
+    return null
+  }
 
   const [listenerId, clientId] = topic
     .split('-')
@@ -150,7 +156,12 @@ const onSubMessage = (pool, message) => {
 
 const onXpubMessage = (pool, message) => {
   try {
-    const { listenerId, clientId, isConnection } = parseMessage(message)
+    const parsedMessage = parseMessage(message)
+    if (parsedMessage === null) {
+      return
+    }
+
+    const { listenerId, clientId, isConnection } = parsedMessage
     if (!pool.clientMap.has(listenerId)) {
       pool.clientMap.set(listenerId, new Set())
       pool.followTopicPromises.set(listenerId, followTopic(pool, listenerId))
