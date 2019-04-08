@@ -43,7 +43,8 @@ const connect = async (pool, options) => {
   })
 
   await pool.connection.exec(`PRAGMA encoding=${escape('UTF-8')}`)
-  await pool.connection.exec(`PRAGMA synchronous = NORMAL`)
+  await pool.connection.exec(`PRAGMA synchronous=EXTRA`)
+  await pool.connection.exec(`PRAGMA journal_mode=WAL`)
   await pool.connection.configure('busyTimeout', 1000000)
 }
 

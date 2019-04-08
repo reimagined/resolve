@@ -7,10 +7,11 @@ const devConfig = {
     enhancers: ['client/enhancers/redux-devtools.js']
   },
   storageAdapter: {
+    //module: 'resolve-storage-mysql',
     module: 'resolve-storage-lite',
     options: {
       databaseFile: 'event-store.db'
-      // tableName: '__TABLE_NAME__',
+      // tableName: 'events',
       // host: 'localhost',
       // port: 3306,
       // user: 'qqq',
@@ -20,6 +21,7 @@ const devConfig = {
   },
   readModelConnectors: {
     default: {
+      //module: 'resolve-readmodel-mysql',
       module: 'resolve-readmodel-lite',
       options: {
         databaseFile: 'read-model.db'

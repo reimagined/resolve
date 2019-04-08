@@ -17,13 +17,12 @@ const resetDomainHandler = (
       req.query.dropEventStore !== 'false'
     const dropSnapshots =
       req.query.hasOwnProperty('dropSnapshots') &&
-      req.query.dropEventStore !== 'false'
+      req.query.dropSnapshots !== 'false'
     const dropReadModels =
       req.query.hasOwnProperty('dropReadModels') &&
-      req.query.dropEventStore !== 'false'
+      req.query.dropReadModels !== 'false'
     const dropSagas =
-      req.query.hasOwnProperty('dropSagas') &&
-      req.query.dropEventStore !== 'false'
+      req.query.hasOwnProperty('dropSagas') && req.query.dropSagas !== 'false'
 
     const storageAdapter = imports.storageAdapterModule(storageAdapterOptions)
     const snapshotAdapter = imports.snapshotAdapterModule(
@@ -76,21 +75,44 @@ const resetDomainHandler = (
       await snapshotAdapter.dispose({ dropSnapshots: true })
     }
 
+    const subSocket = zmq.socket('sub')
+    await subSocket.connect(eventBroker.zmqBrokerAddress)
+
+    const acknowledgeMessages = new Map()
+
+    const takeAcknowledge = topic =>
+      new Promise(resolve => acknowledgeMessages.set(topic, resolve))
+
+    subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('ACKNOWLEDGE-TOPIC'))
+    subSocket.on('message', message => {
+      const payloadIndex = message.indexOf(' ') + 1
+      const topicName = message.toString('utf8', 0, payloadIndex - 1)
+      const content = message.toString('utf8', payloadIndex)
+
+      if (topicName !== 'ACKNOWLEDGE-TOPIC') {
+        return
+      }
+
+      const resolver = acknowledgeMessages.get(content)
+      acknowledgeMessages.delete(content)
+      if (typeof resolver === 'function') {
+        resolver()
+      }
+    })
+
     const pubSocket = zmq.socket('pub')
     await pubSocket.connect(eventBroker.zmqConsumerAddress)
 
     if (dropReadModels) {
       for (const { name, connectorName } of readModels) {
         const connector = readModelConnectors[connectorName]
-
-        console.log({ connector, name, connectorName })
-
         const connection = await connector.connect(name)
 
         await connector.drop(connection, name)
         await connector.disconnect(connection, name)
 
         await pubSocket.send(`DROP-MODEL-TOPIC ${name}`)
+        await takeAcknowledge(`DROP-MODEL-TOPIC ${name}`)
       }
     }
 
@@ -103,6 +125,7 @@ const resetDomainHandler = (
         await connector.disconnect(connection, name)
 
         await pubSocket.send(`DROP-MODEL-TOPIC ${name}`)
+        await takeAcknowledge(`DROP-MODEL-TOPIC ${name}`)
       }
     }
 

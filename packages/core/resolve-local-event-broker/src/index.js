@@ -134,9 +134,14 @@ const onSubMessage = (pool, message) => {
       break
     }
     case 'DROP-MODEL-TOPIC': {
-      pool.dropPromise = pool.dropPromise.then(
-        rewindListener.bind(null, pool, content)
-      )
+      pool.dropPromise = pool.dropPromise
+        .then(rewindListener.bind(null, pool, content))
+        .then(
+          pool.xpubSocket.send.bind(
+            pool.xpubSocket,
+            `ACKNOWLEDGE-TOPIC ${message}`
+          )
+        )
       break
     }
     default:

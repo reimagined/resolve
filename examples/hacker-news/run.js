@@ -58,12 +58,12 @@ void (async () => {
     switch (launchMode) {
       case 'dev': {
         const resolveConfig = merge(baseConfig, devConfig)
-        // await reset(resolveConfig, {
-        //   dropEventStore: false,
-        //   dropSnapshots: true,
-        //   dropReadModels: true,
-        //   dropSagas: true
-        // })
+        await reset(resolveConfig, {
+          dropEventStore: false,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
         await watch(resolveConfig)
         break
       }
@@ -103,7 +103,9 @@ void (async () => {
       }
 
       case 'import': {
-        const importConfig = merge(baseConfig, devConfig, {
+        const config = merge(baseConfig, devConfig)
+
+        const importConfig = merge(config, {
           eventBroker: { launchBroker: false }
         })
         Object.assign(importConfig, {
@@ -137,15 +139,17 @@ void (async () => {
           ROOT_PATH: importConfig.rootPath
         })
 
-        await Promise.all([
-          build(importConfig).then(() => start(importConfig)),
-          reset(importConfig, {
-            dropEventStore: true,
-            dropSnapshots: true,
-            dropReadModels: true,
-            dropSagas: true
-          }).then(runImport)
-        ])
+        await reset(config, {
+          dropEventStore: true,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+
+        await build(importConfig)
+
+        await Promise.all([start(importConfig), runImport()])
+
         break
       }
 

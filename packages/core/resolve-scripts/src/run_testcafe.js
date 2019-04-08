@@ -22,8 +22,6 @@ const runTestcafe = ({
   timeout
 }) =>
   new Promise(async (resolve, reject) => {
-    await new Promise(resolve => process.nextTick(resolve))
-
     validateConfig(resolveConfig)
 
     const nodeModulesByAssembly = new Map()

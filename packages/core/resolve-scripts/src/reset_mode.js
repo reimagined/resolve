@@ -41,63 +41,71 @@ const reset = (resolveConfig, options, adjustWebpackConfigs) =>
 
       validateConfig(resolveConfig)
 
-      const config = merge(resolveConfig, {
-        apiHandlers: [
-          {
-            method: 'GET',
-            path: 'reset-domain',
-            controller: {
-              module:
-                'resolve-runtime/lib/common/handlers/reset-domain-handler.js',
-              options: {
-                storageAdapterOptions: resolveConfig.storageAdapter.options,
-                snapshotAdapterOptions: resolveConfig.snapshotAdapter.options,
-                readModelConnectorsOptions: Object.keys(
-                  resolveConfig.readModelConnectors
-                ).reduce((acc, name) => {
-                  if (
-                    resolveConfig.readModelConnectors[name].constructor !==
-                    String
-                  ) {
-                    acc[name] =
-                      resolveConfig.readModelConnectors[name].options
-                  } else {
-                    acc[name] = null
-                  }
-                  return acc
-                }, {}),
-                readModels: resolveConfig.readModels.map(
-                  ({ name, connectorName }) => ({ name, connectorName })
-                ),
-                sagas: resolveConfig.sagas.map(({ name, connectorName }) => ({
-                  name,
-                  connectorName
-                })),
-                eventBroker: resolveConfig.eventBroker
-              },
-              imports: {
-                storageAdapterModule: resolveConfig.storageAdapter.module,
-                snapshotAdapterModule: resolveConfig.snapshotAdapter.module,
-                ...Object.keys(resolveConfig.readModelConnectors).reduce(
-                  (acc, name) => {
-                    const connector = resolveConfig.readModelConnectors[name]
-                    if (connector.constructor === String) {
-                      acc[`readModelConnector_${name}`] = connector
-                    } else if (connector.module == null) {
-                      acc[`readModelConnector_${name}`] =
-                        'resolve-runtime/lib/common/defaults/read-model-connector.js'
-                    } else {
-                      acc[`readModelConnector_${name}`] = connector.module
-                    }
-                    return acc
+      const config = JSON.parse(
+        JSON.stringify(
+          merge(resolveConfig, {
+            apiHandlers: [
+              {
+                method: 'GET',
+                path: 'reset-domain',
+                controller: {
+                  module:
+                    'resolve-runtime/lib/common/handlers/reset-domain-handler.js',
+                  options: {
+                    storageAdapterOptions: resolveConfig.storageAdapter.options,
+                    snapshotAdapterOptions:
+                      resolveConfig.snapshotAdapter.options,
+                    readModelConnectorsOptions: Object.keys(
+                      resolveConfig.readModelConnectors
+                    ).reduce((acc, name) => {
+                      if (
+                        resolveConfig.readModelConnectors[name].constructor !==
+                        String
+                      ) {
+                        acc[name] =
+                          resolveConfig.readModelConnectors[name].options
+                      } else {
+                        acc[name] = null
+                      }
+                      return acc
+                    }, {}),
+                    readModels: resolveConfig.readModels.map(
+                      ({ name, connectorName }) => ({ name, connectorName })
+                    ),
+                    sagas: resolveConfig.sagas.map(
+                      ({ name, connectorName }) => ({
+                        name,
+                        connectorName
+                      })
+                    ),
+                    eventBroker: resolveConfig.eventBroker
                   },
-                  {}
-                )
+                  imports: {
+                    storageAdapterModule: resolveConfig.storageAdapter.module,
+                    snapshotAdapterModule: resolveConfig.snapshotAdapter.module,
+                    ...Object.keys(resolveConfig.readModelConnectors).reduce(
+                      (acc, name) => {
+                        const connector =
+                          resolveConfig.readModelConnectors[name]
+                        if (connector.constructor === String) {
+                          acc[`readModelConnector_${name}`] = connector
+                        } else if (connector.module == null) {
+                          acc[`readModelConnector_${name}`] =
+                            'resolve-runtime/lib/common/defaults/read-model-connector.js'
+                        } else {
+                          acc[`readModelConnector_${name}`] = connector.module
+                        }
+                        return acc
+                      },
+                      {}
+                    )
+                  }
+                }
               }
-            }
-          }
-        ]
-      })
+            ]
+          })
+        )
+      )
 
       Object.assign(config, {
         readModelConnectors: {},
@@ -164,10 +172,7 @@ const reset = (resolveConfig, options, adjustWebpackConfigs) =>
       if (config.eventBroker.launchBroker) {
         const brokerPath = path.resolve(
           process.cwd(),
-          path.join(
-            config.distDir,
-            './common/local-entry/local-bus-broker.js'
-          )
+          path.join(config.distDir, './common/local-entry/local-bus-broker.js')
         )
 
         broker = processRegister(['node', brokerPath], {
@@ -178,15 +183,10 @@ const reset = (resolveConfig, options, adjustWebpackConfigs) =>
         })
 
         broker.on('crash', reject)
-        broker.start()
+        broker.start(resolve)
       }
 
-      const urls = prepareUrls(
-        'http',
-        '0.0.0.0',
-        config.port,
-        config.rootPath
-      )
+      const urls = prepareUrls('http', '0.0.0.0', config.port, config.rootPath)
       const baseUrl = urls.localUrlForBrowser
       const url = `${baseUrl}api/reset-domain?${currentOptions.join('&')}`
 
@@ -200,8 +200,8 @@ const reset = (resolveConfig, options, adjustWebpackConfigs) =>
       }
 
       await Promise.all([
-        new Promise(resolve=>server.stop(resolve)),
-        new Promise(resolve=>broker.stop(resolve))
+        new Promise(resolve => server.stop(resolve)),
+        new Promise(resolve => broker.stop(resolve))
       ])
 
       resolve()
