@@ -29,6 +29,7 @@ const loadEvents = async (
 
   let lastError = null
 
+  let initialTimestamp = null
   let countEvents = 0
   for (
     let event = await cursorStream.next();
@@ -36,10 +37,15 @@ const loadEvents = async (
     event = await cursorStream.next()
   ) {
     try {
-      if (++countEvents > maxEvents) {
+      await callback(event)
+
+      if (initialTimestamp == null) {
+        initialTimestamp = event.timestamp
+      }
+
+      if (countEvents++ > maxEvents && event.timestamp !== initialTimestamp) {
         break
       }
-      await callback(event)
     } catch (error) {
       lastError = error
       break

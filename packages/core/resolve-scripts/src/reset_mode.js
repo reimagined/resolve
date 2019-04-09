@@ -78,6 +78,13 @@ const reset = (resolveConfig, options, adjustWebpackConfigs) =>
                         connectorName
                       })
                     ),
+                    schedulers: Object.keys(resolveConfig.schedulers).map(
+                      name => ({
+                        name,
+                        connectorName:
+                          resolveConfig.schedulers[name].connectorName
+                      })
+                    ),
                     eventBroker: resolveConfig.eventBroker
                   },
                   imports: {

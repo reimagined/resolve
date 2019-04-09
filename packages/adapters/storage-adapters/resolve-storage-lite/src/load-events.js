@@ -41,6 +41,7 @@ const loadEvents = async (
   const resultQueryCondition =
     queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
 
+  let initialTimestamp = null
   let countEvents = 0
   loop: for (let skipCount = 0; ; skipCount++) {
     const rows = await database.all(
@@ -51,13 +52,18 @@ const loadEvents = async (
     )
 
     for (const event of rows) {
-      if (++countEvents > maxEvents) {
-        break loop
-      }
       await callback({
         ...event,
         payload: JSON.parse(event.payload)
       })
+
+      if (initialTimestamp == null) {
+        initialTimestamp = event.timestamp
+      }
+
+      if (countEvents++ > maxEvents && event.timestamp !== initialTimestamp) {
+        break loop
+      }
     }
 
     if (rows.length < batchSize) {

@@ -7,6 +7,7 @@ const resetDomainHandler = (
     readModelConnectorsOptions,
     readModels,
     sagas,
+    schedulers,
     eventBroker
   },
   imports
@@ -119,13 +120,26 @@ const resetDomainHandler = (
     if (dropSagas) {
       for (const { name, connectorName } of sagas) {
         const connector = readModelConnectors[connectorName]
-        const connection = await connector.connect(name)
+        const sagaName = `_RESOLVE_SAGA_${name}`
+        const connection = await connector.connect(sagaName)
 
-        await connector.drop(connection, name)
-        await connector.disconnect(connection, name)
+        await connector.drop(connection, sagaName)
+        await connector.disconnect(connection, sagaName)
 
-        await pubSocket.send(`DROP-MODEL-TOPIC ${name}`)
-        await takeAcknowledge(`DROP-MODEL-TOPIC ${name}`)
+        await pubSocket.send(`DROP-MODEL-TOPIC ${sagaName}`)
+        await takeAcknowledge(`DROP-MODEL-TOPIC ${sagaName}`)
+      }
+
+      for (const { name, connectorName } of schedulers) {
+        const connector = readModelConnectors[connectorName]
+        const sagaName = `_RESOLVE_SCHEDULER_SAGA_${name}`
+        const connection = await connector.connect(sagaName)
+
+        await connector.drop(connection, sagaName)
+        await connector.disconnect(connection, sagaName)
+
+        await pubSocket.send(`DROP-MODEL-TOPIC ${sagaName}`)
+        await takeAcknowledge(`DROP-MODEL-TOPIC ${sagaName}`)
       }
     }
 
