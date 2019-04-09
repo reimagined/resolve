@@ -19,7 +19,7 @@ export default {
   schedulers: {
     scheduler: {
       adapter: {
-        module: './resolve-scheduler-cloud',
+        module: 'resolve-scheduler-cloud',
         options: {}
       },
       connectorName: 'default'
