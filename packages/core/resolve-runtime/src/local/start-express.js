@@ -9,7 +9,7 @@ const startExpress = async resolve => {
   const currentResolve = Object.create(resolve)
   try {
     await initResolve(currentResolve)
-    await bootstrap(currentResolve)
+    // await bootstrap(currentResolve)
   } finally {
     await disposeResolve(currentResolve)
   }

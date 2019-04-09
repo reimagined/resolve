@@ -17,12 +17,18 @@ const invokeByTimestampFrame = async (pool, timestampFrame, callback) => {
   timestampFrame.length = 0
 }
 
-const executePaginationQuery = async (pool, query, callback) => {
+const executePaginationQuery = async (
+  pool,
+  query,
+  maxEvents = Number.POSITIVE_INFINITY,
+  callback
+) => {
   const { documentClient, executeSingleQuery } = pool
   let res
   const timestampFrame = []
 
-  do {
+  let countEvents = 0
+  loop: do {
     res = await executeSingleQuery(documentClient, query)
 
     query.ExclusiveStartKey = res.LastEvaluatedKey
@@ -32,6 +38,9 @@ const executePaginationQuery = async (pool, query, callback) => {
         timestampFrame.length !== 0 &&
         event.timestamp !== timestampFrame[0].timestamp
       ) {
+        if (++countEvents > maxEvents) {
+          break loop
+        }
         await invokeByTimestampFrame(pool, timestampFrame, callback)
       }
       timestampFrame.push(event)

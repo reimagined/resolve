@@ -1,10 +1,17 @@
 const loadEvents = async (
   { database, escapeId, escape, tableName },
-  { eventTypes, aggregateIds, startTime, finishTime },
+  {
+    eventTypes,
+    aggregateIds,
+    startTime,
+    finishTime,
+    maxEvents = Number.POSITIVE_INFINITY
+  },
   callback
 ) => {
   const injectString = value => `${escape(value)}`
   const injectNumber = value => `${+value}`
+  // TODO
   const batchSize = 1000
 
   const queryConditions = []
@@ -34,7 +41,8 @@ const loadEvents = async (
   const resultQueryCondition =
     queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
 
-  for (let skipCount = 0; ; skipCount++) {
+  let countEvents = 0
+  loop: for (let skipCount = 0; ; skipCount++) {
     const rows = await database.all(
       `SELECT * FROM ${escapeId(tableName)} ${resultQueryCondition}
       ORDER BY ${escapeId('timestamp')} ASC,
@@ -43,6 +51,9 @@ const loadEvents = async (
     )
 
     for (const event of rows) {
+      if (++countEvents > maxEvents) {
+        break loop
+      }
       await callback({
         ...event,
         payload: JSON.parse(event.payload)

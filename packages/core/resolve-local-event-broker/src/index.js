@@ -1,8 +1,6 @@
 import zmq from 'zeromq'
 import initMeta from './meta'
 
-const stopBatchFlag = new Error('Stop batch flag')
-
 const checkOptionShape = (option, types, nullable = false) =>
   (nullable && option === null) ||
   !(
@@ -56,39 +54,27 @@ const followTopic = async (pool, listenerId) => {
     SkipCount = Number(listenerInfo.SkipCount)
   } else {
     AbutTimestamp = SkipCount = 0
-    events.push({ type: 'Init' })
+    await anycastEvents(pool, listenerId, [{ type: 'Init' }])
   }
 
-  try {
-    await pool.eventStore.loadEvents(
-      { skipBus: true, startTime: AbutTimestamp },
-      async event => {
-        if (event.timestamp === AbutTimestamp && currentSkipCount < SkipCount) {
-          currentSkipCount++
-          return
-        }
-        SkipCount = 0
-        if (event.timestamp === AbutTimestamp) {
-          currentSkipCount++
-        } else {
-          AbutTimestamp = event.timestamp
-          currentSkipCount = 0
-        }
-
-        events.push(event)
-
-        if (events.length >= pool.config.batchSize) {
-          throw stopBatchFlag
-        }
+  await pool.eventStore.loadEvents(
+    { startTime: AbutTimestamp, maxEvents: pool.config.batchSize },
+    async event => {
+      if (event.timestamp === AbutTimestamp && currentSkipCount < SkipCount) {
+        currentSkipCount++
+        return
       }
-    )
-  } catch (error) {
-    if (error !== stopBatchFlag) {
-      // eslint-disable-next-line no-console
-      console.warn('Error while loading events for listener', error)
-      return
+      SkipCount = 0
+      if (event.timestamp === AbutTimestamp) {
+        currentSkipCount++
+      } else {
+        AbutTimestamp = event.timestamp
+        currentSkipCount = 0
+      }
+
+      events.push(event)
     }
-  }
+  )
 
   SkipCount = currentSkipCount
 

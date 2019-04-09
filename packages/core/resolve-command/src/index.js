@@ -90,8 +90,7 @@ const getAggregateState = async (
   await eventStore.loadEvents(
     {
       aggregateIds: [aggregateId],
-      startTime: lastTimestamp - 1,
-      skipBus: true
+      startTime: lastTimestamp - 1
     },
     snapshotAdapter != null && snapshotKey != null
       ? snapshotHandler
