@@ -21,15 +21,15 @@ void (async () => {
     switch (launchMode) {
       case 'dev': {
         const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
-        await Promise.all([
-          reset(resolveConfig, {
-            dropEventStore: false,
-            dropSnapshots: true,
-            dropReadModels: true,
-            dropSagas: true
-          }),
-          watch(resolveConfig)
-        ])
+
+        await reset(resolveConfig, {
+          dropEventStore: false,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+
+        await watch(resolveConfig)
         break
       }
 
@@ -50,19 +50,18 @@ void (async () => {
           testFunctionalConfig
         )
 
-        await Promise.all([
-          reset(resolveConfig, {
-            dropEventStore: true,
-            dropSnapshots: true,
-            dropReadModels: true,
-            dropSagas: true
-          }),
-          runTestcafe({
-            resolveConfig,
-            functionalTestsDir: 'test/functional',
-            browser: process.argv[3]
-          })
-        ])
+        await reset(resolveConfig, {
+          dropEventStore: true,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+
+        await runTestcafe({
+          resolveConfig,
+          functionalTestsDir: 'test/functional',
+          browser: process.argv[3]
+        })
         break
       }
 

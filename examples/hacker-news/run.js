@@ -86,19 +86,18 @@ void (async () => {
       case 'test:functional': {
         const resolveConfig = merge(baseConfig, testFunctionalConfig)
 
-        await Promise.all([
-          reset(resolveConfig, {
-            dropEventStore: true,
-            dropSnapshots: true,
-            dropReadModels: true,
-            dropSagas: true
-          }),
-          runTestcafe({
-            resolveConfig,
-            functionalTestsDir: 'test/functional',
-            browser: process.argv[3]
-          })
-        ])
+        await reset(resolveConfig, {
+          dropEventStore: true,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+
+        await runTestcafe({
+          resolveConfig,
+          functionalTestsDir: 'test/functional',
+          browser: process.argv[3]
+        })
         break
       }
 

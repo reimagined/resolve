@@ -37,8 +37,6 @@ const reset = (resolveConfig, options, adjustWebpackConfigs) =>
         currentOptions.push(`${key}=${options[key]}`)
       }
 
-      ///
-
       validateConfig(resolveConfig)
 
       const config = JSON.parse(

@@ -13,6 +13,7 @@ import appConfig from './config.app'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
+import adjustWebpackConfigs from './config.adjust_webpack'
 
 const launchMode = process.argv[2]
 
@@ -21,20 +22,27 @@ void (async () => {
     switch (launchMode) {
       case 'dev': {
         const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
-        await Promise.all([
-          reset(resolveConfig, {
+
+        await reset(
+          resolveConfig,
+          {
             dropEventStore: false,
             dropSnapshots: true,
             dropReadModels: true,
             dropSagas: true
-          }),
-          watch(resolveConfig)
-        ])
+          },
+          adjustWebpackConfigs
+        )
+
+        await watch(resolveConfig, adjustWebpackConfigs)
         break
       }
 
       case 'build': {
-        await build(merge(defaultResolveConfig, appConfig, prodConfig))
+        await build(
+          merge(defaultResolveConfig, appConfig, prodConfig),
+          adjustWebpackConfigs
+        )
         break
       }
 
@@ -50,19 +58,23 @@ void (async () => {
           testFunctionalConfig
         )
 
-        await Promise.all([
-          reset(resolveConfig, {
+        await reset(
+          resolveConfig,
+          {
             dropEventStore: true,
             dropSnapshots: true,
             dropReadModels: true,
             dropSagas: true
-          }),
-          runTestcafe({
-            resolveConfig,
-            functionalTestsDir: 'test/functional',
-            browser: process.argv[3]
-          })
-        ])
+          },
+          adjustWebpackConfigs
+        )
+
+        await runTestcafe({
+          resolveConfig,
+          adjustWebpackConfigs,
+          functionalTestsDir: 'test/functional',
+          browser: process.argv[3]
+        })
         break
       }
 

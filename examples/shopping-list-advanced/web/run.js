@@ -101,21 +101,20 @@ void (async () => {
           authModule
         )
 
-        await Promise.all([
-          reset(resolveConfig, {
-            dropEventStore: false,
-            dropSnapshots: true,
-            dropReadModels: true,
-            dropSagas: true
-          }),
-          watch(
+        await reset(resolveConfig, {
+          dropEventStore: false,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+
+        await watch(
+          resolveConfig,
+          adjustWebpackConfigs({
             resolveConfig,
-            adjustWebpackConfigs({
-              resolveConfig,
-              commonPackages
-            })
-          )
-        ])
+            commonPackages
+          })
+        )
         break
       }
       case 'dev:native': {
@@ -138,22 +137,21 @@ void (async () => {
           }:${resolveConfig.customConstants.remoteReduxDevTools.port}`
         )
 
-        await Promise.all([
-          reset(resolveConfig, {
-            dropEventStore: false,
-            dropSnapshots: true,
-            dropReadModels: true,
-            dropSagas: true
-          }),
-          watch(
+        await reset(resolveConfig, {
+          dropEventStore: false,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+
+        await watch(
+          resolveConfig,
+          adjustWebpackConfigs({
             resolveConfig,
-            adjustWebpackConfigs({
-              resolveConfig,
-              reactNativeDir,
-              commonPackages
-            })
-          )
-        ])
+            reactNativeDir,
+            commonPackages
+          })
+        )
         break
       }
 
@@ -218,24 +216,23 @@ void (async () => {
           authModule
         )
 
-        await Promise.all([
-          reset(resolveConfig, {
-            dropEventStore: true,
-            dropSnapshots: true,
-            dropReadModels: true,
-            dropSagas: true
-          }),
-          runTestcafe({
+        await reset(resolveConfig, {
+          dropEventStore: true,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+
+        await runTestcafe({
+          resolveConfig,
+          adjustWebpackConfigs: adjustWebpackConfigs({
             resolveConfig,
-            adjustWebpackConfigs: adjustWebpackConfigs({
-              resolveConfig,
-              commonPackages
-            }),
-            functionalTestsDir: './test/functional',
-            browser: process.argv[3]
-            // customArgs: ['-r', 'json:report.json']
-          })
-        ])
+            commonPackages
+          }),
+          functionalTestsDir: './test/functional',
+          browser: process.argv[3]
+          // customArgs: ['-r', 'json:report.json']
+        })
         break
       }
 
