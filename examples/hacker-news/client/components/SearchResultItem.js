@@ -18,7 +18,10 @@ const Link = styled(NavLink)`
   }
 `
 
-const SearchResultItem = ({ data: { type, aggregateId, text }, onNavigate }) => {
+const SearchResultItem = ({
+  data: { type, aggregateId, text },
+  onNavigate
+}) => {
   return (
     <Link
       onClick={onNavigate}

@@ -3,6 +3,7 @@ const wrapMethod = (pool, method, ...wrappedArgs) => async (...args) => {
     throw new Error('Adapter has been already disposed')
   }
 
+  pool.isInitialized = true
   pool.connectPromiseResolve()
   await pool.connectPromise
 

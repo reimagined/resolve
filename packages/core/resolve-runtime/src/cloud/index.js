@@ -3,7 +3,7 @@ import IotData from 'aws-sdk/clients/iotdata'
 import v4 from 'aws-signature-v4'
 import STS from 'aws-sdk/clients/sts'
 import StepFunctions from 'aws-sdk/clients/stepfunctions'
-
+import Lambda from 'aws-sdk/clients/lambda'
 import wrapApiHandler from 'resolve-api-handler-awslambda'
 
 import mainHandler from '../common/handlers/main-handler'
@@ -14,13 +14,8 @@ import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 import prepareDomain from '../common/prepare-domain'
 
-const stepFunctions = new StepFunctions()
-
-const invokeUpdateLambda = async ({ name, invariantHash, projection }) => {
-  resolveLog('debug', `requesting step function execution to update read-model/saga [${name}]`)
-  resolveLog('trace', `invariantHash: ${invariantHash}`)
-  resolveLog('trace', `event types: ${Object.keys(projection).join(',')}`)
-
+const invokeUpdateLambda = async ({ stepFunctions }, readModel) => {
+  resolveLog('debug', `requesting step function execution to update read-model/saga [${readModel}]`)
   await stepFunctions
     .startExecution({
       stateMachineArn: process.env.EVENT_BUS_STEP_FUNCTION_ARN,
@@ -131,6 +126,8 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
       mqtt: new IotData({
         endpoint: process.env.IOT_ENDPOINT_HOST
       }),
+      lambda: new Lambda(),
+      stepFunctions: new StepFunctions(),
       publishEvent: async () => {},
       assemblies,
       ...constants,
@@ -152,7 +149,7 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
           const readModel = resolve.readModels.find(
             ({ name }) => name === readModelName
           )
-          await invokeUpdateLambda(readModel)
+          await invokeUpdateLambda(resolve, readModel)
         }
       }
     })

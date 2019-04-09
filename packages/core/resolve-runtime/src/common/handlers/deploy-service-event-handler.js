@@ -1,14 +1,55 @@
-const handleResolveReadModelEvent = async (lambdaEvent, resolve) => {
-  switch (lambdaEvent.operation) {
-    case 'reset': {
-      for (const { name } of resolve.readModels) {
-        await resolve.executeQuery.drop(name)
-      }
+import bootstrap from '../bootstrap'
 
+const handleResolveReadModelEvent = async (
+  lambdaEvent,
+  { lambda, executeQuery, readModels }
+) => {
+  switch (lambdaEvent.operation) {
+    case 'reset':
+    case 'pause':
+    case 'resume': {
+      const names = lambdaEvent.name
+        ? [lambdaEvent.name]
+        : readModels.map(readModel => readModel.name)
+      const { DEPLOYMENT_ID } = process.env
+      for (const name of names) {
+        await lambda
+          .invoke({
+            FunctionName: `${DEPLOYMENT_ID}-meta-lock`,
+            Payload: JSON.stringify({
+              listenerId: name,
+              operation: lambdaEvent.operation
+            })
+          })
+          .promise()
+
+        if (lambdaEvent.operation === 'reset') {
+          await executeQuery.drop(name)
+        }
+      }
       return 'ok'
     }
     case 'list': {
-      return resolve.readModels.map(readModel => readModel.name)
+      const { DEPLOYMENT_ID } = process.env
+
+      return Promise.all(
+        readModels.map(async readModel => {
+          const state = await lambda
+            .invoke({
+              FunctionName: `${DEPLOYMENT_ID}-meta-lock`,
+              Payload: JSON.stringify({
+                listenerId: readModel.name,
+                operation: 'status'
+              })
+            })
+            .promise()
+
+          return {
+            ...state,
+            name: readModel.name
+          }
+        })
+      )
     }
     default: {
       return null
@@ -18,6 +59,9 @@ const handleResolveReadModelEvent = async (lambdaEvent, resolve) => {
 
 const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
   switch (lambdaEvent.part) {
+    case 'bootstrap': {
+      return await bootstrap(resolve)
+    }
     case 'readModel': {
       return await handleResolveReadModelEvent(lambdaEvent, resolve)
     }

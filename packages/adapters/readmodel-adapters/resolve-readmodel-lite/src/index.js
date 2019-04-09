@@ -8,7 +8,7 @@ const dropReadModel = async ({ runQuery, escapeId }, readModelName) => {
   const rows = await runQuery(
     `SELECT name FROM sqlite_master WHERE type=${escape('table')}
     AND sql LIKE ${escape(
-      `${escapeId(`RESOLVE-${readModelName}`)} BOOLEAN NOT NULL DEFAULT(true)`
+      `%${escapeId(`RESOLVE-${readModelName}`)} BOOLEAN NOT NULL DEFAULT(true)%`
     )}
     AND name NOT LIKE ${escape('sqlite_%')}`
   )
@@ -43,6 +43,8 @@ const connect = async (pool, options) => {
   })
 
   await pool.connection.exec(`PRAGMA encoding=${escape('UTF-8')}`)
+  await pool.connection.exec(`PRAGMA synchronous = NORMAL`)
+  await pool.connection.configure('busyTimeout', 1000000)
 }
 
 const disconnect = async pool => {

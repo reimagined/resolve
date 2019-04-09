@@ -51,7 +51,10 @@ const loadEvents = async (
     })
   } catch (error) {
     lastError = error
-    stream.destroy()
+
+    if (typeof stream.destroy === 'function') {
+      stream.destroy()
+    }
   }
 
   if (lastError != null) {

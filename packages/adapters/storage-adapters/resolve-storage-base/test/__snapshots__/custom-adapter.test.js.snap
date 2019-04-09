@@ -7,6 +7,7 @@ exports[`createCustomAdapter should work correctly with skipInit = false: skipIn
   \\"disposed\\": false,
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
+  \\"isInitialized\\": true,
   \\"testField1\\": 1,
   \\"testField2\\": 2
 }
@@ -23,6 +24,7 @@ init
   \\"disposed\\": false,
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
+  \\"isInitialized\\": true,
   \\"testField1\\": 1,
   \\"testField2\\": 2
 }
@@ -33,6 +35,7 @@ loadEvents
   \\"disposed\\": false,
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
+  \\"isInitialized\\": true,
   \\"testField1\\": 1,
   \\"testField2\\": 2
 }
@@ -80,7 +83,8 @@ loadEvents
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
   \\"testField1\\": 1,
-  \\"testField2\\": 2
+  \\"testField2\\": 2,
+  \\"isInitialized\\": true
 }
 [
   {
