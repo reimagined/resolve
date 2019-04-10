@@ -13,6 +13,7 @@ import appConfig from './config.app'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
+import cloudConfig from './config.cloud'
 
 const launchMode = process.argv[2]
 
@@ -35,6 +36,11 @@ void (async () => {
 
       case 'build': {
         await build(merge(defaultResolveConfig, appConfig, prodConfig))
+        break
+      }
+
+      case 'cloud': {
+        await build(merge(defaultResolveConfig, appConfig, cloudConfig))
         break
       }
 

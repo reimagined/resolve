@@ -173,7 +173,7 @@ const reset = (resolveConfig, options, adjustWebpackConfigs) =>
       server.on('crash', reject)
       server.start()
 
-      let broker = { stop: () => {} }
+      let broker = { stop: callback => callback() }
       if (config.eventBroker.launchBroker) {
         const brokerPath = path.resolve(
           process.cwd(),
