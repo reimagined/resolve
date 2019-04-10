@@ -55,6 +55,11 @@ const followTopic = async (pool, listenerId) => {
   } else {
     AbutTimestamp = SkipCount = 0
     await anycastEvents(pool, listenerId, [{ type: 'Init' }])
+
+    await meta.updateListenerInfo(listenerId, {
+      SkipCount,
+      AbutTimestamp
+    })
   }
 
   await pool.eventStore.loadEvents(
