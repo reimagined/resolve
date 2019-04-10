@@ -1,0 +1,214 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`resolve-readmodel-mysql method "drop" 1`] = `
+Array [
+  Array [
+    "query",
+    "CREATE TABLE escapeId(table1) (escapeId(test) JSON,
+escapeId(id) JSON, escapeId(id) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (escapeId(id)->\\"$\\") STORED  NOT NULL PRIMARY KEY,
+INDEX escapeId(id) (escapeId(id)))
+      COMMENT = \\"RESOLVE-readModelName1\\"
+      ENGINE = \\"InnoDB\\"
+      ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO escapeId(table1)(escapeId(id), escapeId(test))
+      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(true) AS JSON))
+    ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO escapeId(table1)(escapeId(id), escapeId(test))
+      VALUES(CAST(escape(\\"id-2\\") AS JSON), CAST(escape(true) AS JSON))
+    ",
+  ],
+  Array [
+    "query",
+    "CREATE TABLE escapeId(table2) (escapeId(test) JSON,
+escapeId(id) JSON, escapeId(id) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (escapeId(id)->\\"$\\") STORED  NOT NULL PRIMARY KEY,
+INDEX escapeId(id) (escapeId(id)))
+      COMMENT = \\"RESOLVE-readModelName2\\"
+      ENGINE = \\"InnoDB\\"
+      ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO escapeId(table2)(escapeId(id), escapeId(test))
+      VALUES(CAST(escape(\\"id-3\\") AS JSON), CAST(escape(true) AS JSON))
+    ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO escapeId(table2)(escapeId(id), escapeId(test))
+      VALUES(CAST(escape(\\"id-4\\") AS JSON), CAST(escape(true) AS JSON))
+    ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO escapeId(table2)(escapeId(id), escapeId(test))
+      VALUES(CAST(escape(\\"id-5\\") AS JSON), CAST(escape(true) AS JSON))
+    ",
+  ],
+  Array [
+    "query",
+    "SELECT Count(*) AS Count FROM escapeId(table1)
+    ",
+  ],
+  Array [
+    "query",
+    "SELECT Count(*) AS Count FROM escapeId(table2)
+    ",
+  ],
+  Array [
+    "query",
+    "SELECT table_name AS \`tableName\` FROM INFORMATION_SCHEMA.TABLES
+    WHERE table_comment LIKE \\"RESOLVE-readModelName1\\"
+    AND table_schema=DATABASE()",
+  ],
+  Array [
+    "query",
+    "SELECT table_name AS \`tableName\` FROM INFORMATION_SCHEMA.TABLES
+    WHERE table_comment LIKE \\"RESOLVE-readModelName2\\"
+    AND table_schema=DATABASE()",
+  ],
+  Array [
+    "end",
+  ],
+]
+`;
+
+exports[`resolve-readmodel-mysql methods "defineTable", "insert", "find", "findOne" 1`] = `
+Array [
+  Array [
+    "query",
+    "CREATE TABLE escapeId(Entries) (escapeId(name) JSON,
+escapeId(id) JSON, escapeId(id) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (escapeId(id)->\\"$\\") STORED  NOT NULL PRIMARY KEY,
+INDEX escapeId(id) (escapeId(id)))
+      COMMENT = \\"RESOLVE-readModelName\\"
+      ENGINE = \\"InnoDB\\"
+      ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO escapeId(Entries)(escapeId(id), escapeId(name))
+      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(\\"First entry\\") AS JSON))
+    ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO escapeId(Entries)(escapeId(id), escapeId(name))
+      VALUES(CAST(escape(\\"id-2\\") AS JSON), CAST(escape(\\"Second entry\\") AS JSON))
+    ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO escapeId(Entries)(escapeId(id), escapeId(name))
+      VALUES(CAST(escape(\\"id-3\\") AS JSON), CAST(escape(\\"Second entry\\") AS JSON))
+    ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO escapeId(Entries)(escapeId(id), escapeId(name))
+      VALUES(CAST(escape(\\"id-4\\") AS JSON), CAST(escape(\\"First entry\\") AS JSON))
+    ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO escapeId(Entries)(escapeId(id), escapeId(name))
+      VALUES(CAST(escape(\\"id-5\\") AS JSON), CAST(escape(\\"Second entry\\") AS JSON))
+    ",
+  ],
+  Array [
+    "query",
+    "SELECT * FROM escapeId(Entries)
+    
+    ORDER BY escapeId(id) ASC
+    LIMIT 0,268435455",
+  ],
+  Array [
+    "query",
+    "SELECT * FROM escapeId(Entries)
+    
+    ORDER BY escapeId(id) DESC
+    LIMIT 0,268435455",
+  ],
+  Array [
+    "query",
+    "SELECT * FROM escapeId(Entries)
+    WHERE escapeId(id) = CAST(escape(\\"id-3\\") AS JSON) 
+    LIMIT 0, 1",
+  ],
+  Array [
+    "query",
+    "SELECT * FROM escapeId(Entries)
+    WHERE (escapeId(name) = CAST(escape(\\"Second entry\\") AS JSON) AND escapeId(id) = CAST(escape(\\"id-2\\") AS JSON)) OR (NOT (escapeId(id) >= CAST(escape(\\"id-1\\") AS JSON))) 
+    
+    LIMIT 0,268435455",
+  ],
+]
+`;
+
+exports[`resolve-readmodel-mysql methods "defineTable", "insert", "update", "count", "delete" 1`] = `
+Array [
+  Array [
+    "query",
+    "CREATE TABLE escapeId(ShoppingLists) (escapeId(createdAt) JSON,
+escapeId(name) JSON,
+escapeId(id) JSON, escapeId(id) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (escapeId(id)->\\"$\\") STORED  NOT NULL PRIMARY KEY,
+INDEX escapeId(id) (escapeId(id)))
+      COMMENT = \\"RESOLVE-readModelName\\"
+      ENGINE = \\"InnoDB\\"
+      ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO escapeId(ShoppingLists)(escapeId(id), escapeId(name), escapeId(createdAt))
+      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(\\"Products\\") AS JSON), CAST(escape(1) AS JSON))
+    ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO escapeId(ShoppingLists)(escapeId(id), escapeId(name), escapeId(createdAt))
+      VALUES(CAST(escape(\\"id-2\\") AS JSON), CAST(escape(\\"Medicines\\") AS JSON), CAST(escape(2) AS JSON))
+    ",
+  ],
+  Array [
+    "query",
+    "UPDATE escapeId(ShoppingLists)
+    SET escapeId(name) = CAST(escape(\\"Products-NEW\\") AS JSON)  WHERE escapeId(id) = CAST(escape(\\"id-1\\") AS JSON) ",
+  ],
+  Array [
+    "query",
+    "SELECT Count(*) AS Count FROM escapeId(ShoppingLists)
+    WHERE escapeId(id) = CAST(escape(\\"id-1\\") AS JSON) ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO escapeId(ShoppingLists)(escapeId(id), escapeId(name))
+      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(\\"Products-NEW\\") AS JSON))
+    ",
+  ],
+  Array [
+    "query",
+    "DELETE FROM escapeId(ShoppingLists)
+    WHERE escapeId(id) = CAST(escape(\\"id-2\\") AS JSON) ",
+  ],
+  Array [
+    "query",
+    "SELECT Count(*) AS Count FROM escapeId(ShoppingLists)
+    WHERE escapeId(id) = CAST(escape(\\"id-3\\") AS JSON) ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO escapeId(ShoppingLists)(escapeId(id), escapeId(name))
+      VALUES(CAST(escape(\\"id-3\\") AS JSON), CAST(escape(\\"Entries\\") AS JSON))
+    ",
+  ],
+  Array [
+    "query",
+    "SELECT Count(*) AS Count FROM escapeId(ShoppingLists)
+    ",
+  ],
+]
+`;
