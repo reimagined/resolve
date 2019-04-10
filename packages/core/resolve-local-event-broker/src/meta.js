@@ -53,8 +53,8 @@ const updateListenerInfo = async (
 
 const init = async ({ databaseFile }) => {
   const database = await sqlite.open(databaseFile)
-  // https://github.com/mapbox/node-sqlite3/wiki/API#databaseconfigureoption-value
-  await database.configure('busyTimeout', 0)
+  await database.exec(`PRAGMA busy_timeout=0`)
+  await database.exec(`PRAGMA locking_mode=EXCLUSIVE`)
 
   try {
     // Exclusive lock via https://stackoverflow.com/a/34480741/7878274

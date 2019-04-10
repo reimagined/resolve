@@ -10,10 +10,10 @@ const connect = async (pool, sqlite) => {
   tableName = coerceEmptyString(tableName)
 
   const database = await sqlite.open(databaseFile)
+  await database.exec(`PRAGMA busy_timeout=1000000`)
   await database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
   await database.exec(`PRAGMA synchronous=EXTRA`)
   await database.exec(`PRAGMA journal_mode=WAL`)
-  await database.configure('busyTimeout', 1000000)
 
   Object.assign(pool, {
     database,
