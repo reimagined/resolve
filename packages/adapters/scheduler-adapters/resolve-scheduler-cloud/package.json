@@ -26,13 +26,14 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/api-handler-adapters/resolve-scheduler-cloud#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
+    "aws-sdk": "^2.436.0",
     "binary-case": "1.1.4",
     "content-disposition": "0.5.2",
     "cookie": "0.3.1"
   },
   "devDependencies": {
-    "lodash.escaperegexp": "^4.1.2",
     "jest": "24.1.0",
+    "lodash.escaperegexp": "^4.1.2",
     "sinon": "7.2.2"
   },
   "babelCompile": [
