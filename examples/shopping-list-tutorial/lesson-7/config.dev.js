@@ -10,7 +10,7 @@ const devConfig = {
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {
-      pathToFile: 'event-storage.db'
+      databaseFile: 'event-storage.db'
     }
   },
   subscribeAdapter: {
