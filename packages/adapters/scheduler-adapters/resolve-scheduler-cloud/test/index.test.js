@@ -1,7 +1,7 @@
-import stepFunction from '../step-function'
-import create from '../index'
+import stepFunction from '../src/step-function'
+import create from '../src/index'
 
-jest.mock('../step-function', () => ({
+jest.mock('../src/step-function', () => ({
   start: jest.fn(),
   stopAll: jest.fn()
 }))

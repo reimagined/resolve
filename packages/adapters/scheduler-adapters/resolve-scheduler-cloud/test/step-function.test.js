@@ -1,4 +1,4 @@
-import { start, stopAll } from '../step-function'
+import { start, stopAll } from '../src/step-function'
 import StepFunctions from 'aws-sdk/clients/stepfunctions'
 
 const {

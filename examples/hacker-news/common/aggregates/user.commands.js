@@ -1,10 +1,5 @@
 import validate from './validation'
-import {
-  USER_CREATED,
-  USER_CONFIRMED,
-  USER_ACTIVATED,
-  USER_REJECTED
-} from '../event-types'
+import { USER_CREATED, USER_CONFIRMED, USER_REJECTED } from '../event-types'
 
 export default {
   createUser: (state, command) => {

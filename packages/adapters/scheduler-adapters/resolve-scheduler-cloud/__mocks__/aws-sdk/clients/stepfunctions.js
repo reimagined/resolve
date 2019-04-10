@@ -7,4 +7,4 @@ StepFunctions.prototype.startExecution = wrap()
 StepFunctions.prototype.stopExecution = wrap()
 StepFunctions.prototype.listExecutions = wrap()
 
-module.exports = StepFunctions
+export default StepFunctions
