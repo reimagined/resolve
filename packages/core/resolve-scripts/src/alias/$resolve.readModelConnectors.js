@@ -75,18 +75,18 @@ export default ({ resolveConfig, isClient }) => {
         const connector = Object.create(factory_s_${index}(...args))
 
         if(typeof connector.connect !== 'function') {
-          connector.connect = async () => {
+          Object.defineProperty(connector, 'connect', { value: async () => {
             return options_s_${index}
-          }
+          } })
         }
         if(typeof connector.disconnect !== 'function') {
-          connector.disconnect = async () => {}
+          Object.defineProperty(connector, 'disconnect', { value: async () => {} })
         }
         if(typeof connector.drop !== 'function') {
-          connector.drop = async () => {}
+          Object.defineProperty(connector, 'drop', { value: async () => {} })
         }
         if(typeof connector.dispose !== 'function') {
-          connector.dispose = async () => {}
+          Object.defineProperty(connector, 'dispose', { value: async () => {} })
         }
         
         return connector

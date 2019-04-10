@@ -6,11 +6,17 @@ const devConfig = {
   redux: {
     enhancers: ['client/enhancers/redux-devtools.js']
   },
+  storageAdapter: {
+    module: 'resolve-storage-lite',
+    options: {
+      databaseFile: 'event-store.db'
+    }
+  },
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'read-models.db'
+        databaseFile: 'read-model.db'
       }
     },
     elasticSearch: {
@@ -34,6 +40,9 @@ const devConfig = {
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000
+  },
+  eventBroker: {
+    databaseFile: 'local-bus-broker.db'
   }
 }
 

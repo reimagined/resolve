@@ -9,6 +9,14 @@ const testFunctionalConfig = {
       options: {
         databaseFile: 'read-models-test-functional.db'
       }
+    },
+    elasticSearch: {
+      module: 'common/read-models/elastic-search-connector.js',
+      options: {
+        /*
+        host: 'localhost:9200'
+        */
+      }
     }
   },
   schedulers: {
@@ -29,6 +37,9 @@ const testFunctionalConfig = {
     options: {
       databaseFile: 'event-store-test-functional.db'
     }
+  },
+  eventBroker: {
+    databaseFile: 'local-bus-broker-test-functional.db'
   }
 }
 

@@ -50,6 +50,42 @@ const fetchWithRetry = url => {
   ])
 }
 
+const invokeImportApi = async body => {
+  let loop = true
+  return Promise.race([
+    new Promise(async (resolve, reject) => {
+      let error
+
+      while (loop) {
+        try {
+          const response = await fetch(
+            `http://localhost:${process.env.PORT}${
+              process.env.ROOT_PATH
+            }/api/import_events`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'same-origin',
+              body: JSON.stringify(body)
+            }
+          )
+          resolve(await response.text())
+          loop = false
+          break
+        } catch (err) {
+          error = err
+          await wait(100)
+        }
+      }
+
+      reject(error)
+    }),
+    wait(timeout).then(() => {
+      loop = false
+    })
+  ])
+}
+
 const fetchStoryIds = path => fetchWithRetry(`${path}.json`)
 
 const fetchItem = id => fetchWithRetry(`item/${id}.json`)
@@ -60,5 +96,6 @@ const fetchItems = ids => {
 
 export default {
   fetchStoryIds,
-  fetchItems
+  fetchItems,
+  invokeImportApi
 }

@@ -23,7 +23,7 @@ describe('method "executePaginationQuery"', () => {
     )
 
     await executePaginationQuery(
-      { documentClient, executeSingleQuery, decodeEvent },
+      { documentClient, executeSingleQuery, maxEvents: 1000, decodeEvent },
       query,
       callback
     )
