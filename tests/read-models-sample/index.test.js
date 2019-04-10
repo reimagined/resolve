@@ -1,33 +1,42 @@
-import { createReadModel } from 'resolve-testing-tools'
+import givenEvents from 'resolve-testing-tools'
+import createReadModelAdapter from 'resolve-readmodel-lite'
 
 import projection from './projection'
 import resolvers from './resolvers'
 
 describe('Read-model generic adapter API', () => {
+  let adapter = null
+  beforeEach(() => {
+    adapter = createReadModelAdapter({
+      databaseFile: ':memory:'
+    })
+  })
+  afterEach(() => {
+    adapter = null
+  })
+
   it('Insert and non-parameterized resolver invocation', async () => {
-    const events = [
+    const result = await givenEvents([
       {
         aggregateId: 'ID',
         type: 'INSERT_TEST',
         timestamp: 100,
         payload: 'test'
       }
-    ]
+    ])
+      .readModel({
+        name: 'ReadModelName',
+        projection,
+        resolvers,
+        adapter
+      })
+      .NON_PARAMETERIZED_RESOLVER_TEST({})
 
-    const readModel = createReadModel({
-      name: 'something',
-      projection,
-      resolvers
-    })
-
-    await readModel.applyEvents(events)
-
-    const result = await readModel.resolvers.NON_PARAMETERIZED_RESOLVER_TEST({})
     expect(result).toMatchSnapshot()
   })
 
   it('Update and non-parameterized resolver invocation', async () => {
-    const events = [
+    const result = await givenEvents([
       {
         aggregateId: 'ID',
         type: 'INSERT_TEST',
@@ -40,22 +49,20 @@ describe('Read-model generic adapter API', () => {
         timestamp: 101,
         payload: 'test'
       }
-    ]
+    ])
+      .readModel({
+        name: 'ReadModelName',
+        projection,
+        resolvers,
+        adapter
+      })
+      .NON_PARAMETERIZED_RESOLVER_TEST({})
 
-    const readModel = createReadModel({
-      name: 'something',
-      projection,
-      resolvers
-    })
-
-    await readModel.applyEvents(events)
-
-    const result = await readModel.resolvers.NON_PARAMETERIZED_RESOLVER_TEST({})
     expect(result).toMatchSnapshot()
   })
 
   it('Upsert and non-parameterized resolver invocation', async () => {
-    const events = [
+    const result = await givenEvents([
       {
         aggregateId: 'ID',
         type: 'INSERT_TEST',
@@ -68,22 +75,20 @@ describe('Read-model generic adapter API', () => {
         timestamp: 101,
         payload: 'test'
       }
-    ]
+    ])
+      .readModel({
+        name: 'ReadModelName',
+        projection,
+        resolvers,
+        adapter
+      })
+      .NON_PARAMETERIZED_RESOLVER_TEST({})
 
-    const readModel = createReadModel({
-      name: 'something',
-      projection,
-      resolvers
-    })
-
-    await readModel.applyEvents(events)
-
-    const result = await readModel.resolvers.NON_PARAMETERIZED_RESOLVER_TEST({})
     expect(result).toMatchSnapshot()
   })
 
   it('Delete and non-parameterized resolver invocation', async () => {
-    const events = [
+    const result = await givenEvents([
       {
         aggregateId: 'ID',
         type: 'INSERT_TEST',
@@ -96,21 +101,20 @@ describe('Read-model generic adapter API', () => {
         timestamp: 101,
         payload: 'test'
       }
-    ]
-    const readModel = createReadModel({
-      name: 'something',
-      projection,
-      resolvers
-    })
+    ])
+      .readModel({
+        name: 'ReadModelName',
+        projection,
+        resolvers,
+        adapter
+      })
+      .NON_PARAMETERIZED_RESOLVER_TEST({})
 
-    await readModel.applyEvents(events)
-
-    const result = await readModel.resolvers.NON_PARAMETERIZED_RESOLVER_TEST({})
     expect(result).toMatchSnapshot()
   })
 
   it('Update and parameterized resolver invocation', async () => {
-    const events = [
+    const result = await givenEvents([
       {
         aggregateId: 'ID',
         type: 'INSERT_TEST',
@@ -123,21 +127,21 @@ describe('Read-model generic adapter API', () => {
         timestamp: 101,
         payload: 'test'
       }
-    ]
-    const readModel = createReadModel({
-      name: 'something',
-      projection,
-      resolvers
-    })
+    ])
+      .readModel({
+        name: 'ReadModelName',
+        projection,
+        resolvers,
+        adapter
+      })
 
-    await readModel.applyEvents(events)
+      .PARAMETRIZED_RESOLVER_TEST({
+        firstFieldCondition: 10,
+        secondFieldCondition: 2,
+        pageNumber: 2,
+        pageLength: 5
+      })
 
-    const result = await readModel.resolvers.PARAMETRIZED_RESOLVER_TEST({
-      firstFieldCondition: 10,
-      secondFieldCondition: 2,
-      pageNumber: 2,
-      pageLength: 5
-    })
     expect(result).toMatchSnapshot()
   })
 })

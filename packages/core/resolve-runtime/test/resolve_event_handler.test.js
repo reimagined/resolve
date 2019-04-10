@@ -82,7 +82,7 @@ describe('resolve event handler', () => {
 
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
-      expect(result).toEqual(['readModel1', 'readModel2'])
+      expect(result).toEqual([{ name: 'readModel1' }, { name: 'readModel2' }])
     })
   })
 })

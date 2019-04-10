@@ -23,8 +23,9 @@ describe('method "executePaginationQuery"', () => {
     )
 
     await executePaginationQuery(
-      { documentClient, executeSingleQuery, maxEvents: 1000, decodeEvent },
+      { documentClient, executeSingleQuery, decodeEvent },
       query,
+      1000,
       callback
     )
 
@@ -48,6 +49,7 @@ describe('method "executePaginationQuery"', () => {
       await executePaginationQuery(
         { documentClient, executeSingleQuery, decodeEvent },
         query,
+        1000,
         callback
       )
       throw new Error('failure')
