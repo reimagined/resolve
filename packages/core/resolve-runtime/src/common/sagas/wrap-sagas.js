@@ -115,7 +115,6 @@ const wrapSagas = (sagas, resolve) => {
     if (isSystemScheduler) continue
     const sagaReadModel = {
       name: `_RESOLVE_SAGA_${name}`,
-      isSaga: true,
       resolvers: {
         RUN_BROKER: async () => {}
       },

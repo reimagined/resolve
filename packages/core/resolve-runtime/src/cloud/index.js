@@ -100,9 +100,9 @@ const lambdaWorker = async (
 
       executorResult = await executor(lambdaEvent, lambdaContext)
     }
-  } catch (e) {
+  } catch (error) {
     resolveLog('error', 'top-level event handler execution error!')
-    resolveLog('error', e.stack)
+    resolveLog('error', error.stack)
   } finally {
     await disposeResolve(resolve)
     resolveLog('debug', 'reSolve framework was disposed')
