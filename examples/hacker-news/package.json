@@ -36,7 +36,6 @@
     "redux": "4.0.1",
     "redux-devtools-extension": "2.13.7",
     "redux-saga": "0.16.0",
-    "resolve-bus-memory": "0.19.8",
     "resolve-cloud": "^0.2.1",
     "resolve-module-auth": "0.19.8",
     "resolve-module-comments": "0.19.8",
