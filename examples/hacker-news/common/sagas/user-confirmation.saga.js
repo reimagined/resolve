@@ -10,8 +10,6 @@ export default {
       { executeCommand, scheduleCommand, store, sideEffects },
       { aggregateId, payload: { name }, timestamp }
     ) => {
-      console.log('saga', 'UserCreated')
-
       await sideEffects.sendEmail('example@example.com')
 
       const user = await store.findOne('SagaUsers', { name })
@@ -28,17 +26,17 @@ export default {
           name
         })
 
-        // await executeCommand({
-        //   type: 'confirmUser',
-        //   aggregateName: 'User',
-        //   aggregateId
-        // })
+        await executeCommand({
+          type: 'confirmUser',
+          aggregateName: 'User',
+          aggregateId
+        })
 
-        // await scheduleCommand(timestamp + 3000, {
-        //   type: 'activateUser',
-        //   aggregateName: 'User',
-        //   aggregateId
-        // })
+        await scheduleCommand(timestamp + 3000, {
+          type: 'activateUser',
+          aggregateName: 'User',
+          aggregateId
+        })
       }
     }
   },
