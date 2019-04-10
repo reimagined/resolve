@@ -1,15 +1,12 @@
-import {
-  USER_CREATED,
-  USER_CONFIRMED
-} from '../event-types'
+import { USER_CREATED, USER_CONFIRMED } from '../event-types'
 
 export default {
   handlers: {
     Init: async ({ store }) => {
       await store.defineTable('SagaUsers', {
-          indexes: { id: 'string', name: 'string' },
-          fields: [ 'registrationDate' ]
-        })
+        indexes: { id: 'string', name: 'string' },
+        fields: ['registrationDate']
+      })
     },
     [USER_CREATED]: async (
       { executeCommand, scheduleCommand, store, sideEffects },

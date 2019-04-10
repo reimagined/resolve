@@ -1,6 +1,7 @@
 function StepFunctions() {}
 
-const wrap = () => jest.fn().mockReturnValue({ promise: () => Promise.resolve() })
+const wrap = () =>
+  jest.fn().mockReturnValue({ promise: () => Promise.resolve() })
 
 StepFunctions.prototype.startExecution = wrap()
 StepFunctions.prototype.stopExecution = wrap()

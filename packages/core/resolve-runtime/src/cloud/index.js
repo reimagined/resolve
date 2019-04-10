@@ -15,7 +15,10 @@ import disposeResolve from '../common/dispose-resolve'
 import prepareDomain from '../common/prepare-domain'
 
 const invokeUpdateLambda = async ({ stepFunctions }, readModel) => {
-  resolveLog('debug', `requesting step function execution to update read-model/saga [${readModel}]`)
+  resolveLog(
+    'debug',
+    `requesting step function execution to update read-model/saga [${readModel}]`
+  )
   await stepFunctions
     .startExecution({
       stateMachineArn: process.env.EVENT_BUS_STEP_FUNCTION_ARN,
@@ -82,16 +85,13 @@ const lambdaWorker = async (
     if (lambdaEvent.resolveSource === 'DeployService') {
       resolveLog('debug', 'identified event source: deployment service')
       executorResult = await handleDeployServiceEvent(lambdaEvent, resolve)
-    }
-    else if (lambdaEvent.resolveSource === 'EventBus') {
+    } else if (lambdaEvent.resolveSource === 'EventBus') {
       resolveLog('debug', 'identified event source: invoked by a step function')
       executorResult = await handleEventBusEvent(lambdaEvent, resolve)
-    }
-    else if (lambdaEvent.resolveSource === 'Scheduler') {
+    } else if (lambdaEvent.resolveSource === 'Scheduler') {
       resolveLog('debug', 'identified event source: cloud scheduler')
       executorResult = await handleSchedulerEvent(lambdaEvent, resolve)
-    }
-    else if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
+    } else if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
       resolveLog('debug', 'identified event source: API gateway')
       resolveLog('trace', lambdaEvent.httpMethod, lambdaEvent.headers)
 

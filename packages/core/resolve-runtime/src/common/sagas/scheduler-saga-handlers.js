@@ -29,10 +29,16 @@ export default ({
       command
     }
 
-    resolveLog('debug', `[scheduler-saga:scheduled-command-created] adding entry to store`)
+    resolveLog(
+      'debug',
+      `[scheduler-saga:scheduled-command-created] adding entry to store`
+    )
     await store.insert(commandsTableName, entry)
 
-    resolveLog('debug', `[scheduler-saga:scheduled-command-created] calling adapter's addEntries`)
+    resolveLog(
+      'debug',
+      `[scheduler-saga:scheduled-command-created] calling adapter's addEntries`
+    )
     await sideEffects.addEntries([entry])
   },
   [SCHEDULED_COMMAND_EXECUTED]: async (

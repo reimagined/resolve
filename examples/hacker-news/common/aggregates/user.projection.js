@@ -1,8 +1,4 @@
-import {
-  USER_CREATED,
-  USER_CONFIRMED,
-  USER_REJECTED
-} from '../event-types'
+import { USER_CREATED, USER_CONFIRMED, USER_REJECTED } from '../event-types'
 
 export default {
   Init: () => ({}),
@@ -12,11 +8,11 @@ export default {
     confirmed: false,
     rejected: false
   }),
-  [USER_CONFIRMED]: (state) => ({
+  [USER_CONFIRMED]: state => ({
     ...state,
     confirmed: true
   }),
-  [USER_REJECTED]: (state) => ({
+  [USER_REJECTED]: state => ({
     ...state,
     rejected: true
   })

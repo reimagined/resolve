@@ -1,23 +1,23 @@
-import stepFunction from '../step-function';
-import create from '../index';
+import stepFunction from '../step-function'
+import create from '../index'
 
 jest.mock('../step-function', () => ({
   start: jest.fn(),
   stopAll: jest.fn()
-}));
+}))
 
 const context = {
   execute: jest.fn(),
   errorHandler: jest.fn()
-};
+}
 
-let createEntry = (salt) => ({
+let createEntry = salt => ({
   date: Date.now(),
   taskId: `taskId_${salt}`,
   command: { salt }
 })
 
-let adapter;
+let adapter
 
 beforeEach(() => {
   adapter = create(context)
@@ -33,7 +33,7 @@ afterEach(() => {
 describe('addEntries', function() {
   test('execute state machine on entry', async () => {
     const entry = createEntry('a')
-    await adapter.addEntries([ entry ])
+    await adapter.addEntries([entry])
     expect(stepFunction.start).toHaveBeenCalledWith(entry)
     expect(context.errorHandler).not.toHaveBeenCalled()
   })
@@ -47,7 +47,7 @@ describe('addEntries', function() {
   test('multiple entries', async () => {
     const entryA = createEntry('a')
     const entryB = createEntry('b')
-    await adapter.addEntries([ entryA, entryB ])
+    await adapter.addEntries([entryA, entryB])
     expect(stepFunction.start).toHaveBeenCalledWith(entryA)
     expect(stepFunction.start).toHaveBeenCalledWith(entryB)
   })
@@ -58,7 +58,7 @@ describe('addEntries', function() {
     await adapter.addEntries(entry)
     expect(stepFunction.start).not.toHaveBeenCalled()
     expect(context.errorHandler).toHaveBeenCalled()
-  });
+  })
 
   test('no date', async () => {
     const entry = createEntry('a')
@@ -88,7 +88,7 @@ describe('addEntries', function() {
     const entryA = createEntry('a')
     const entryB = createEntry('b')
     entryB.command = {}
-    await adapter.addEntries([ entryA, entryB ])
+    await adapter.addEntries([entryA, entryB])
     expect(stepFunction.start).toHaveBeenCalledWith(entryA)
     expect(stepFunction.start).not.toHaveBeenCalledWith(entryB)
     expect(context.errorHandler).toHaveBeenCalled()
@@ -121,14 +121,22 @@ describe('executeEntries', () => {
   test('execute a command', async () => {
     const entry = createEntry('a')
     await adapter.executeEntries([entry])
-    expect(context.execute).toHaveBeenCalledWith(entry.taskId, entry.date, entry.command)
+    expect(context.execute).toHaveBeenCalledWith(
+      entry.taskId,
+      entry.date,
+      entry.command
+    )
     expect(context.errorHandler).not.toHaveBeenCalled()
   })
 
   test('non-array argument tolerance', async () => {
     const entry = createEntry('a')
     await adapter.executeEntries(entry)
-    expect(context.execute).toHaveBeenCalledWith(entry.taskId, entry.date, entry.command)
+    expect(context.execute).toHaveBeenCalledWith(
+      entry.taskId,
+      entry.date,
+      entry.command
+    )
     expect(context.errorHandler).not.toHaveBeenCalled()
   })
 
@@ -136,8 +144,16 @@ describe('executeEntries', () => {
     const entryA = createEntry('a')
     const entryB = createEntry('b')
     await adapter.executeEntries([entryA, entryB])
-    expect(context.execute).toHaveBeenCalledWith(entryA.taskId, entryA.date, entryA.command)
-    expect(context.execute).toHaveBeenCalledWith(entryB.taskId, entryB.date, entryB.command)
+    expect(context.execute).toHaveBeenCalledWith(
+      entryA.taskId,
+      entryA.date,
+      entryA.command
+    )
+    expect(context.execute).toHaveBeenCalledWith(
+      entryB.taskId,
+      entryB.date,
+      entryB.command
+    )
   })
 
   test('command execution failed', async () => {
