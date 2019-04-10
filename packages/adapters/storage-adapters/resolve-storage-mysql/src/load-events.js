@@ -1,13 +1,17 @@
 const loadEvents = async (
   { connection, escapeId, escape, tableName },
-  { eventTypes, aggregateIds, startTime, finishTime },
+  {
+    eventTypes,
+    aggregateIds,
+    startTime,
+    finishTime,
+    maxEvents = Number.POSITIVE_INFINITY
+  },
   callback
 ) => {
   const injectString = value => `${escape(value)}`
   const injectNumber = value => `${+value}`
-
-  // https://github.com/sidorares/node-mysql2/issues/677
-  const streamConnection = connection.connection
+  const batchSize = 50
 
   const queryConditions = []
   if (eventTypes != null) {
@@ -28,37 +32,33 @@ const loadEvents = async (
   const resultQueryCondition =
     queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
 
-  const stream = streamConnection.query(
-    `SELECT * FROM ${escapeId(tableName)} ${resultQueryCondition}
-    ORDER BY \`timestamp\` ASC, \`aggregateVersion\` ASC`
-  )
+  let initialTimestamp = null
+  let countEvents = 0
 
-  let lastError = null
+  loop: for (let skipCount = 0; ; skipCount++) {
+    const [rows] = await connection.query(
+      `SELECT * FROM ${escapeId(tableName)} ${resultQueryCondition}
+      ORDER BY ${escapeId('timestamp')} ASC,
+      ${escapeId('aggregateVersion')} ASC
+      LIMIT ${+(skipCount * batchSize)}, ${+batchSize}`
+    )
 
-  try {
-    await new Promise((resolve, reject) => {
-      stream.on('error', reject)
-      stream.on('end', resolve)
-      stream.on('result', async row => {
-        try {
-          streamConnection.pause()
-          await callback(Object.setPrototypeOf(row, Object.prototype))
-          streamConnection.resume()
-        } catch (e) {
-          reject(e)
-        }
-      })
-    })
-  } catch (error) {
-    lastError = error
+    for (const event of rows) {
+      Object.setPrototypeOf(event, Object.prototype)
+      await callback(event)
 
-    if (typeof stream.destroy === 'function') {
-      stream.destroy()
+      if (initialTimestamp == null) {
+        initialTimestamp = event.timestamp
+      }
+
+      if (countEvents++ > maxEvents && event.timestamp !== initialTimestamp) {
+        break loop
+      }
     }
-  }
 
-  if (lastError != null) {
-    throw lastError
+    if (rows.length < batchSize) {
+      break
+    }
   }
 }
 

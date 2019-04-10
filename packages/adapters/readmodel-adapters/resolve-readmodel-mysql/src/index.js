@@ -89,10 +89,10 @@ const defineTable = async (
   await runQuery(
     `CREATE TABLE ${escapeId(`${tablePrefix}${tableName}`)} (` +
       [
-        tableDescription.fields.map(
+        ...tableDescription.fields.map(
           columnName => `${escapeId(columnName)} JSON`
         ),
-        Object.keys(tableDescription.indexes).map((indexName, idx) => {
+        ...Object.keys(tableDescription.indexes).map((indexName, idx) => {
           let declaration = `${escapeId(indexName)} JSON, ${escapeId(
             `${indexName}\u0004`
           )} `
@@ -120,7 +120,7 @@ const defineTable = async (
           }
           return declaration
         }),
-        Object.keys(tableDescription.indexes).map(
+        ...Object.keys(tableDescription.indexes).map(
           indexName =>
             `INDEX ${escapeId(`${indexName}\u0004\u0004`)} (${escapeId(
               `${indexName}\u0004`

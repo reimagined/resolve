@@ -37,7 +37,7 @@ const loadEvents = async (pool, filter, callback) => {
     timestampConditionExpression
   })
 
-  await executePaginationQuery(pool, query, callback)
+  await executePaginationQuery(pool, query, filter.maxEvents, callback)
 }
 
 export default loadEvents

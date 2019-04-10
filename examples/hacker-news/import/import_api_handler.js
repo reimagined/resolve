@@ -1,22 +1,28 @@
+const importAdapterSymbol = Symbol('IMPORT_ADAPTER_SYMBOL')
+
 const importApiHandler = (
-  { storageAdapterOptions },
+  { storageAdapterOptions, isImporter },
   { storageAdapterModule }
 ) => async (req, res) => {
   if (process.env.NODE_ENV === 'production') {
     throw new Error('Import API handler should not be used in production mode')
   }
+  const resolveBase = Object.getPrototypeOf(req.resolve)
 
   try {
-    if (req.resolve.storageAdapter == null) {
-      req.resolve.storageAdapter = storageAdapterModule(storageAdapterOptions)
+    if (resolveBase[importAdapterSymbol] == null) {
+      resolveBase[importAdapterSymbol] = storageAdapterModule({
+        ...storageAdapterOptions,
+        isImporter
+      })
     }
     const args = JSON.parse(req.body)
 
     if (args.dropEvents != null) {
-      await req.resolve.storageAdapter.dispose({ dropEvents: true })
-      req.resolve.storageAdapter = null
+      await resolveBase[importAdapterSymbol].dispose({ dropEvents: true })
+      resolveBase[importAdapterSymbol] = null
     } else if (args.saveEvent != null) {
-      await req.resolve.storageAdapter.saveEvent(args.saveEvent)
+      await resolveBase[importAdapterSymbol].saveEvent(args.saveEvent)
     } else {
       throw new Error(`Wrong arguments: ${args}`)
     }

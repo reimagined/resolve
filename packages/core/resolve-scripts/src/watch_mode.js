@@ -38,6 +38,24 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     stdio: 'inherit'
   })
 
+  let broker = null
+  if (resolveConfig.eventBroker.launchBroker) {
+    const brokerPath = path.resolve(
+      process.cwd(),
+      path.join(
+        resolveConfig.distDir,
+        './common/local-entry/local-bus-broker.js'
+      )
+    )
+
+    broker = processRegister(['node', brokerPath], {
+      cwd: process.cwd(),
+      maxRestarts: 0,
+      kill: 5000,
+      stdio: 'inherit'
+    })
+  }
+
   process.env.RESOLVE_SERVER_FIRST_START = 'true'
   process.env.RESOLVE_SERVER_OPEN_BROWSER = 'true'
 
@@ -54,7 +72,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     }
   })
 
-  return await new Promise((resolve, reject) =>
+  return await new Promise(() => {
     compiler.watch(
       {
         aggregateTimeout: 1000,
@@ -78,12 +96,14 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
 
         if (hasErrors) {
           server.stop()
-          reject('')
         } else {
           if (server.status === 'running') {
             process.env.RESOLVE_SERVER_FIRST_START = 'false'
             server.stop(() => server.start())
           } else {
+            if (resolveConfig.eventBroker.launchBroker) {
+              broker.start()
+            }
             server.start()
 
             const isOpenBrowser =
@@ -95,11 +115,9 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
                 () => {}
               )
             }
-
-            resolve()
           }
         }
       }
     )
-  )
+  })
 }

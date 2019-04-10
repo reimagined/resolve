@@ -6,11 +6,30 @@ const devConfig = {
   redux: {
     enhancers: ['client/enhancers/redux-devtools.js']
   },
+  storageAdapter: {
+    // module: 'resolve-storage-lite',
+    module: 'resolve-storage-mysql',
+    options: {
+      // databaseFile: 'event-store.db'
+      tableName: 'events',
+      host: 'localhost',
+      port: 3306,
+      user: 'qqq',
+      password: 'qqq',
+      database: 'qqq'
+    }
+  },
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      //module: 'resolve-readmodel-lite',
+      module: 'resolve-readmodel-mysql',
       options: {
-        databaseFile: 'read-models.db'
+        //databaseFile: 'read-model.db'
+        host: 'localhost',
+        port: 3306,
+        user: 'qqq',
+        password: 'qqq',
+        database: 'qqq'
       }
     },
     elasticSearch: {
@@ -34,6 +53,9 @@ const devConfig = {
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000
+  },
+  eventBroker: {
+    databaseFile: 'local-bus-broker.db'
   }
 }
 

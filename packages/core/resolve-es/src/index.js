@@ -4,14 +4,8 @@ const validateEventFilter = filter => {
   }
 
   const stringArrayFields = ['eventTypes', 'aggregateIds']
-  const booleanFields = ['skipStorage', 'skipBus']
-  const numericFields = ['startTime', 'finishTime']
-  const allowedFields = [
-    ...stringArrayFields,
-    ...booleanFields,
-    ...numericFields
-  ]
-  const deprecatedFields = ['skipStorage', 'skipBus']
+  const numericFields = ['startTime', 'finishTime', 'maxEvents']
+  const allowedFields = [...stringArrayFields, ...numericFields]
 
   for (const key of Object.keys(filter)) {
     if (allowedFields.indexOf(key) < 0) {
@@ -33,40 +27,16 @@ const validateEventFilter = filter => {
     }
   }
 
-  for (const key of booleanFields) {
-    if (filter[key] != null && filter[key].constructor !== Boolean) {
-      throw new Error(`Event filter field ${key} should be boolean`)
-    }
-  }
-
   for (const key of numericFields) {
     if (filter[key] != null && filter[key].constructor !== Number) {
       throw new Error(`Event filter field ${key} should be number`)
-    }
-  }
-
-  for (const key of deprecatedFields) {
-    if (filter.hasOwnProperty(key)) {
-      // TODO: how to notify about deprecated fields?
-      // console.log(`'${key}' filter parameter is deprecated`)
     }
   }
 }
 
 const loadEvents = async (storage, filter, handler) => {
   validateEventFilter(filter)
-
-  const { startTime, finishTime, eventTypes, aggregateIds } = filter
-
-  await storage.loadEvents(
-    {
-      eventTypes,
-      aggregateIds,
-      startTime,
-      finishTime
-    },
-    handler
-  )
+  await storage.loadEvents(filter, handler)
 }
 
 const isInteger = val =>

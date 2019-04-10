@@ -1,8 +1,6 @@
 import zmq from 'zeromq'
 import initMeta from './meta'
 
-const stopBatchFlag = new Error('Stop batch flag')
-
 const checkOptionShape = (option, types, nullable = false) =>
   (nullable && option === null) ||
   !(
@@ -10,12 +8,18 @@ const checkOptionShape = (option, types, nullable = false) =>
     !types.reduce((acc, type) => acc || option.constructor === type, false)
   )
 
+const RESERVED_SYSTEM_TOPICS = ['ACKNOWLEDGE-TOPIC']
+
 const parseMessage = message => {
   if (!(message instanceof Buffer)) {
     throw new Error('Message should be instance of Buffer')
   }
   const topic = message.toString('utf8', 1)
   const isConnection = message[0] === 1
+
+  if (RESERVED_SYSTEM_TOPICS.includes(topic)) {
+    return null
+  }
 
   const [listenerId, clientId] = topic
     .split('-')
@@ -50,39 +54,27 @@ const followTopic = async (pool, listenerId) => {
     SkipCount = Number(listenerInfo.SkipCount)
   } else {
     AbutTimestamp = SkipCount = 0
-    events.push({ type: 'Init' })
+    await anycastEvents(pool, listenerId, [{ type: 'Init' }])
   }
 
-  try {
-    await pool.eventStore.loadEvents(
-      { skipBus: true, startTime: AbutTimestamp },
-      async event => {
-        if (event.timestamp === AbutTimestamp && currentSkipCount < SkipCount) {
-          currentSkipCount++
-          return
-        }
-        SkipCount = 0
-        if (event.timestamp === AbutTimestamp) {
-          currentSkipCount++
-        } else {
-          AbutTimestamp = event.timestamp
-          currentSkipCount = 0
-        }
-
-        events.push(event)
-
-        if (events.length >= pool.config.batchSize) {
-          throw stopBatchFlag
-        }
+  await pool.eventStore.loadEvents(
+    { startTime: AbutTimestamp, maxEvents: pool.config.batchSize },
+    async event => {
+      if (event.timestamp === AbutTimestamp && currentSkipCount < SkipCount) {
+        currentSkipCount++
+        return
       }
-    )
-  } catch (error) {
-    if (error !== stopBatchFlag) {
-      // eslint-disable-next-line no-console
-      console.warn('Error while loading events for listener', error)
-      return
+      SkipCount = 0
+      if (event.timestamp === AbutTimestamp) {
+        currentSkipCount++
+      } else {
+        AbutTimestamp = event.timestamp
+        currentSkipCount = 0
+      }
+
+      events.push(event)
     }
-  }
+  )
 
   SkipCount = currentSkipCount
 
@@ -107,23 +99,55 @@ const followTopic = async (pool, listenerId) => {
   }
 }
 
-const onSubMessage = (pool, message) => {
-  // TODO: maybe broadcase message ifself in future
-  void message
+const rewindListener = async ({ meta }, listenerId) => {
+  try {
+    await meta.rewindListener(listenerId)
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Rewind listener', error)
+  }
+}
 
-  for (const listenerId of pool.followTopicPromises.keys()) {
-    pool.followTopicPromises.set(
-      listenerId,
-      pool.followTopicPromises
-        .get(listenerId)
-        .then(followTopic.bind(null, pool, listenerId))
-    )
+const onSubMessage = (pool, message) => {
+  const payloadIndex = message.indexOf(' ') + 1
+  const topicName = message.toString('utf8', 0, payloadIndex - 1)
+  const content = message.toString('utf8', payloadIndex)
+
+  switch (topicName) {
+    case 'EVENT-TOPIC': {
+      for (const listenerId of pool.followTopicPromises.keys()) {
+        pool.followTopicPromises.set(
+          listenerId,
+          pool.followTopicPromises
+            .get(listenerId)
+            .then(followTopic.bind(null, pool, listenerId))
+        )
+      }
+      break
+    }
+    case 'DROP-MODEL-TOPIC': {
+      pool.dropPromise = pool.dropPromise
+        .then(rewindListener.bind(null, pool, content))
+        .then(
+          pool.xpubSocket.send.bind(
+            pool.xpubSocket,
+            `ACKNOWLEDGE-TOPIC ${message}`
+          )
+        )
+      break
+    }
+    default:
   }
 }
 
 const onXpubMessage = (pool, message) => {
   try {
-    const { listenerId, clientId, isConnection } = parseMessage(message)
+    const parsedMessage = parseMessage(message)
+    if (parsedMessage === null) {
+      return
+    }
+
+    const { listenerId, clientId, isConnection } = parsedMessage
     if (!pool.clientMap.has(listenerId)) {
       pool.clientMap.set(listenerId, new Set())
       pool.followTopicPromises.set(listenerId, followTopic(pool, listenerId))
@@ -178,12 +202,14 @@ const init = async pool => {
 
   const subSocket = zmq.socket('sub')
   subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('EVENT-TOPIC'))
+  subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('DROP-MODEL-TOPIC'))
   subSocket.bindSync(pool.config.zmqConsumerAddress)
 
   subSocket.on('message', onSubMessage.bind(null, pool))
 
   Object.assign(pool, {
     followTopicPromises: new Map(),
+    dropPromise: Promise.resolve(),
     eventStore: pool.config.eventStore,
     workers: new Map(),
     xpubSocket,
@@ -203,10 +229,6 @@ const bindWithInit = (pool, func) => async (...args) => {
   await pool.initialPromise
 
   return await func(pool, ...args)
-}
-
-const rewindListener = async ({ meta }, listenerId) => {
-  await meta.rewindListener(listenerId)
 }
 
 const dispose = async (pool, options = {}) => {

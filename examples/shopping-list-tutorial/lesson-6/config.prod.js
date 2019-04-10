@@ -28,6 +28,9 @@ const prodConfig = {
         databaseFile: 'read-models.db'
       }
     }
+  },
+  eventBroker: {
+    databaseFile: 'local-bus-broker.db'
   }
 }
 

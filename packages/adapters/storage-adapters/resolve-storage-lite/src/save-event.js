@@ -1,8 +1,5 @@
 import { ConcurrentError } from 'resolve-storage-base'
 
-// https://www.sqlite.org/rescode.html#constraint_unique
-const SQLITE_CONSTRAINT_UNIQUE = 2067
-
 const saveEvent = async ({ tableName, database, escapeId, escape }, event) => {
   try {
     await database.exec(
@@ -25,7 +22,7 @@ const saveEvent = async ({ tableName, database, escapeId, escape }, event) => {
       )`
     )
   } catch (error) {
-    if (error.errno !== SQLITE_CONSTRAINT_UNIQUE) {
+    if (error.code !== 'SQLITE_CONSTRAINT') {
       throw error
     }
 

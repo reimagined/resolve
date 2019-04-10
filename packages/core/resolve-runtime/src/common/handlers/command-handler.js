@@ -21,7 +21,7 @@ const commandHandler = async (req, res) => {
         break
       } catch (error) {
         lastError = error
-        if (!error instanceof ConcurrentError) {
+        if (!(error instanceof ConcurrentError)) {
           break
         }
       }

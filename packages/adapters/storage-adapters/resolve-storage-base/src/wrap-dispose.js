@@ -7,7 +7,6 @@ const wrapDispose = (pool, dispose) => async (options = {}) => {
       'Dispose options should be object or not be passed to use default behaviour'
     )
   }
-
   pool.disposed = true
   if (!pool.isInitialized) {
     return

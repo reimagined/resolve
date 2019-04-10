@@ -16,6 +16,9 @@ const testFunctionalConfig = {
     options: {
       databaseFile: 'event-store-test-functional.db'
     }
+  },
+  eventBroker: {
+    databaseFile: 'local-bus-broker-test-functional.db'
   }
 }
 

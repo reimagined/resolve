@@ -36,6 +36,7 @@
   "readModelConnectors": {},
   "schedulers": {},
   "eventBroker": {
+    "launchBroker": true,
     "zmqBrokerAddress": "tcp://127.0.0.1:3500",
     "zmqConsumerAddress": "tcp://127.0.0.1:3501",
     "databaseFile": "local-bus-broker.db",
