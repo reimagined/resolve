@@ -2083,6 +2083,21 @@ aws-sdk@^2.369.0:
     uuid "3.3.2"
     xml2js "0.4.19"
 
+aws-sdk@^2.436.0:
+  version "2.437.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.437.0.tgz#94e41a2ff112aa020ddbe4950dd5f73187889b8b"
+  integrity sha512-sDZb5QBOO6FOMvuKDEdO16YQRk0WUhnQd38EaSt0yUCi4Gev8uypODyYONgODZcXe8Cr1GMwC8scUKr00S/I5w==
+  dependencies:
+    buffer "4.9.1"
+    events "1.1.1"
+    ieee754 "1.1.8"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.3.2"
+    xml2js "0.4.19"
+
 aws-sign2@~0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/aws-sign2/-/aws-sign2-0.7.0.tgz#b46e890934a9591f2d2f6f86d7e6a9f1b3fe76a8"
@@ -11803,21 +11818,6 @@ reserved-words@^0.1.2:
   resolved "https://registry.yarnpkg.com/reserved-words/-/reserved-words-0.1.2.tgz#00a0940f98cd501aeaaac316411d9adc52b31ab1"
   integrity sha1-AKCUD5jNUBrqqsMWQR2a3FKzGrE=
 
-resolve-bus-base@0.19.8:
-  version "0.19.8"
-  resolved "https://registry.yarnpkg.com/resolve-bus-base/-/resolve-bus-base-0.19.8.tgz#17abb8d152fa23e7bb5ac1da028e6b174131735d"
-  integrity sha512-kSftAp94ST9GNERGA79I2Yn5mGDS+2TNXve8HhwWF/MM4pzLug4AbbE/HJ+6mh48KAS0TBULODQ5/1wAmgOE+A==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-
-resolve-bus-memory@0.19.8:
-  version "0.19.8"
-  resolved "https://registry.yarnpkg.com/resolve-bus-memory/-/resolve-bus-memory-0.19.8.tgz#d0787b220f3d46dcbb5e9376f95f1e8052a284d9"
-  integrity sha512-rj2T4NGXX0QKvYKwkmEN0pYN91B6cTW+PC1wgSwpwzjUtWB50OAADghTxwVmtd6EhAWY3a7VnzyrWcKKaU766A==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    resolve-bus-base "0.19.8"
-
 resolve-cloud@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/resolve-cloud/-/resolve-cloud-0.2.1.tgz#abfe76097a2e5893dee07e5a69a1e98948ab21b3"
@@ -11886,13 +11886,6 @@ resolve-url@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
   integrity sha1-LGN/53yJOv0qZj/iGqkIAGjiBSo=
-
-resolve-viewmodel@0.19.8:
-  version "0.19.8"
-  resolved "https://registry.yarnpkg.com/resolve-viewmodel/-/resolve-viewmodel-0.19.8.tgz#296212e3bf3e1f27fdf010cbe09b9ac21a287d3e"
-  integrity sha512-kl6vwoNTp4r0SYmDBhtAkLxPA5h5dK4aE+oswIlQi9hipwsPMzTZicpAfyAt94HPNg8YtNnh5G9uFNc8zDwvdg==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
 
 resolve@1.1.7:
   version "1.1.7"

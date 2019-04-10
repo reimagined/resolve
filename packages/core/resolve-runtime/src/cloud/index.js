@@ -24,10 +24,10 @@ const invokeUpdateLambda = async ({ stepFunctions }, readModel) => {
       stateMachineArn: process.env.EVENT_BUS_STEP_FUNCTION_ARN,
       input: JSON.stringify({
         'detail-type': 'LISTEN_EVENT_BUS',
-        listenerId: name,
-        invariantHash,
+        listenerId: readModel.name,
+        invariantHash: readModel.invariantHash,
         inactiveTimeout: 1000 * 60 * 60,
-        eventTypes: Object.keys(projection)
+        eventTypes: Object.keys(readModel.projection)
       })
     })
     .promise()
