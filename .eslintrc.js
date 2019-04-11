@@ -159,6 +159,7 @@ module.exports = {
           'func',
           'github',
           'gte',
+          'guid',
           'gzip',
           'hmac',
           'hmr',
