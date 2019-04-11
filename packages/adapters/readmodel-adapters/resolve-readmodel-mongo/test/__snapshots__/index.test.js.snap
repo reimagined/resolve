@@ -1,0 +1,590 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`resolve-readmodel-mongo method "drop" 1`] = `
+Array [
+  Array [
+    "connect",
+    "mongodb://127.0.0.1:27017/MyDatabaseName",
+    Object {
+      "autoReconnect": false,
+      "useNewUrlParser": true,
+    },
+  ],
+  Array [
+    "createCollection",
+    "table1",
+  ],
+  Array [
+    "createIndex",
+    Object {
+      "id": 1,
+    },
+    Object {
+      "unique": true,
+    },
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+      "id": "5265736f6c7665526f6f7400",
+      "readModelName": "readModelName1",
+    },
+  ],
+  Array [
+    "collection",
+    "table1",
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "id": "id-1",
+      "test": true,
+    },
+  ],
+  Array [
+    "collection",
+    "table1",
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "id": "id-2",
+      "test": true,
+    },
+  ],
+  Array [
+    "createCollection",
+    "table2",
+  ],
+  Array [
+    "createIndex",
+    Object {
+      "id": 1,
+    },
+    Object {
+      "unique": true,
+    },
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+      "id": "5265736f6c7665526f6f7400",
+      "readModelName": "readModelName2",
+    },
+  ],
+  Array [
+    "collection",
+    "table2",
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "id": "id-3",
+      "test": true,
+    },
+  ],
+  Array [
+    "collection",
+    "table2",
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "id": "id-4",
+      "test": true,
+    },
+  ],
+  Array [
+    "collection",
+    "table2",
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "id": "id-5",
+      "test": true,
+    },
+  ],
+  Array [
+    "collection",
+    "table1",
+  ],
+  Array [
+    "countDocuments",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {},
+      ],
+    },
+  ],
+  Array [
+    "collection",
+    "table2",
+  ],
+  Array [
+    "countDocuments",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {},
+      ],
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "disconnect",
+  ],
+]
+`;
+
+exports[`resolve-readmodel-mongo methods "defineTable", "insert", "find", "findOne" 1`] = `
+Array [
+  Array [
+    "connect",
+    "mongodb://127.0.0.1:27017/MyDatabaseName",
+    Object {
+      "autoReconnect": false,
+      "useNewUrlParser": true,
+    },
+  ],
+  Array [
+    "createCollection",
+    "Entries",
+  ],
+  Array [
+    "createIndex",
+    Object {
+      "id": 1,
+    },
+    Object {
+      "unique": true,
+    },
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+      "id": "5265736f6c7665526f6f7400",
+      "readModelName": "readModelName",
+    },
+  ],
+  Array [
+    "collection",
+    "Entries",
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "id": "id-1",
+      "name": "First entry",
+    },
+  ],
+  Array [
+    "collection",
+    "Entries",
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "id": "id-2",
+      "name": "Second entry",
+    },
+  ],
+  Array [
+    "collection",
+    "Entries",
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "id": "id-3",
+      "name": "Second entry",
+    },
+  ],
+  Array [
+    "collection",
+    "Entries",
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "id": "id-4",
+      "name": "First entry",
+    },
+  ],
+  Array [
+    "collection",
+    "Entries",
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "id": "id-5",
+      "name": "Second entry",
+    },
+  ],
+  Array [
+    "collection",
+    "Entries",
+  ],
+  Array [
+    "find",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {},
+      ],
+    },
+    Object {
+      "projection": Object {
+        "_id": 0,
+      },
+      "sort": Object {
+        "id": 1,
+      },
+    },
+  ],
+  Array [
+    "collection",
+    "Entries",
+  ],
+  Array [
+    "find",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {},
+      ],
+    },
+    Object {
+      "projection": Object {
+        "_id": 0,
+      },
+      "sort": Object {
+        "id": -1,
+      },
+    },
+  ],
+  Array [
+    "collection",
+    "Entries",
+  ],
+  Array [
+    "findOne",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-3",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+    Object {
+      "projection": Object {
+        "_id": 0,
+      },
+    },
+  ],
+  Array [
+    "collection",
+    "Entries",
+  ],
+  Array [
+    "find",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {
+          "$or": Array [
+            Object {
+              "$and": Array [
+                Object {
+                  "_id": Object {
+                    "$ne": 0,
+                  },
+                },
+                Object {
+                  "$and": Array [
+                    Object {
+                      "$and": Array [
+                        Object {
+                          "_id": Object {
+                            "$ne": 0,
+                          },
+                        },
+                        Object {
+                          "id": Object {
+                            "$eq": "id-2",
+                            "$type": "string",
+                          },
+                          "name": Object {
+                            "$eq": "Second entry",
+                            "$type": "string",
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+            Object {
+              "$and": Array [
+                Object {
+                  "_id": Object {
+                    "$ne": 1,
+                  },
+                },
+                Object {
+                  "$not": Object {
+                    "$and": Array [
+                      Object {
+                        "_id": Object {
+                          "$ne": undefined,
+                        },
+                      },
+                      Object {
+                        "id": Object {
+                          "$gte": "id-1",
+                          "$type": "string",
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    Object {
+      "projection": Object {
+        "_id": 0,
+      },
+    },
+  ],
+]
+`;
+
+exports[`resolve-readmodel-mongo methods "defineTable", "insert", "update", "count", "delete" 1`] = `
+Array [
+  Array [
+    "connect",
+    "mongodb://127.0.0.1:27017/MyDatabaseName",
+    Object {
+      "autoReconnect": false,
+      "useNewUrlParser": true,
+    },
+  ],
+  Array [
+    "createCollection",
+    "ShoppingLists",
+  ],
+  Array [
+    "createIndex",
+    Object {
+      "id": 1,
+    },
+    Object {
+      "unique": true,
+    },
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+      "id": "5265736f6c7665526f6f7400",
+      "readModelName": "readModelName",
+    },
+  ],
+  Array [
+    "collection",
+    "ShoppingLists",
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "createdAt": 1,
+      "id": "id-1",
+      "name": "Products",
+    },
+  ],
+  Array [
+    "collection",
+    "ShoppingLists",
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "createdAt": 2,
+      "id": "id-2",
+      "name": "Medicines",
+    },
+  ],
+  Array [
+    "collection",
+    "ShoppingLists",
+  ],
+  Array [
+    "updateMany",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+    Object {
+      "$set": Object {
+        "name": "Products-NEW",
+      },
+    },
+    Object {
+      "upsert": false,
+    },
+  ],
+  Array [
+    "collection",
+    "ShoppingLists",
+  ],
+  Array [
+    "updateMany",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+    Object {
+      "$set": Object {
+        "name": "Products-NEW",
+      },
+    },
+    Object {
+      "upsert": true,
+    },
+  ],
+  Array [
+    "collection",
+    "ShoppingLists",
+  ],
+  Array [
+    "deleteMany",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-2",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+  ],
+  Array [
+    "collection",
+    "ShoppingLists",
+  ],
+  Array [
+    "updateMany",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-3",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+    Object {
+      "$set": Object {
+        "name": "Entries",
+      },
+    },
+    Object {
+      "upsert": true,
+    },
+  ],
+  Array [
+    "collection",
+    "ShoppingLists",
+  ],
+  Array [
+    "countDocuments",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {},
+      ],
+    },
+  ],
+]
+`;
