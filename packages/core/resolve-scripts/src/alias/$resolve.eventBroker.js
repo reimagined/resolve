@@ -8,10 +8,6 @@ export default ({ resolveConfig, isClient }) => {
     )
   }
 
-  if (resolveConfig.target !== 'local') {
-    throw new Error('Event broker can be build only in "local" mode')
-  }
-
   if (resolveConfig.eventBroker == null) {
     throw new Error(`${message.configNotContainSectionError}.eventBroker`)
   }
