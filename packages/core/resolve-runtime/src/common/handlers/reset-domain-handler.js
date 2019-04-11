@@ -1,5 +1,7 @@
 import zmq from 'zeromq'
 
+import wrapReadmodelConnector from '../wrap-readmodel-connector'
+
 const resetDomainHandler = (
   {
     storageAdapterOptions,
@@ -39,27 +41,10 @@ const resetDomainHandler = (
         )
       }
 
-      readModelConnectors[name] = Object.create(readModelConnectors[name])
-      const connector = readModelConnectors[name]
-
-      if (typeof connector.connect !== 'function') {
-        Object.defineProperty(connector, 'connect', {
-          value: async () => {
-            return readModelConnectorsOptions[name]
-          }
-        })
-      }
-      if (typeof connector.disconnect !== 'function') {
-        Object.defineProperty(connector, 'disconnect', {
-          value: async () => {}
-        })
-      }
-      if (typeof connector.drop !== 'function') {
-        Object.defineProperty(connector, 'drop', { value: async () => {} })
-      }
-      if (typeof connector.dispose !== 'function') {
-        Object.defineProperty(connector, 'dispose', { value: async () => {} })
-      }
+      readModelConnectors[name] = wrapReadmodelConnector(
+        readModelConnectors[name],
+        readModelConnectorsOptions[name]
+      )
     }
 
     if (dropEventStore) {

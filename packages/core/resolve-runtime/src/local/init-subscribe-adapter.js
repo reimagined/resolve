@@ -3,7 +3,7 @@ import MqttConnection from 'mqtt-connection'
 import createSocketServer from 'socket.io'
 import { Server as WebSocketServer } from 'ws'
 
-import createPubsubManager from './create_pubsub_manager'
+import createPubsubManager from './create-pubsub-manager'
 import getRootBasedUrl from '../common/utils/get-root-based-url'
 import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 
