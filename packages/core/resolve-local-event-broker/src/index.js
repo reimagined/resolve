@@ -38,7 +38,15 @@ const anycastEvents = async (pool, listenerId, events) => {
     clientId
   ).toString('base64')}`
 
-  await pool.xpubSocket.send(`${topic} ${JSON.stringify(events)}`)
+  const batchGuid = `${Date.now()}${Math.floor(Math.random() * 100000000000)}`
+
+  const promise = new Promise(resolve =>
+    pool.acknowledgeMessages.set(batchGuid, resolve)
+  )
+
+  await pool.xpubSocket.send(`${topic} ${batchGuid} ${JSON.stringify(events)}`)
+
+  await promise
 }
 
 const followTopic = async (pool, listenerId) => {
@@ -141,6 +149,14 @@ const onSubMessage = (pool, message) => {
         )
       break
     }
+    case 'ACKNOWLEDGE-BATCH-TOPIC': {
+      const resolver = pool.acknowledgeMessages.get(content)
+      pool.acknowledgeMessages.delete(content)
+      if (typeof resolver === 'function') {
+        resolver()
+      }
+      break
+    }
     default:
   }
 }
@@ -208,12 +224,14 @@ const init = async pool => {
   const subSocket = zmq.socket('sub')
   subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('EVENT-TOPIC'))
   subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('DROP-MODEL-TOPIC'))
+  subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('ACKNOWLEDGE-BATCH-TOPIC'))
   subSocket.bindSync(pool.config.zmqConsumerAddress)
 
   subSocket.on('message', onSubMessage.bind(null, pool))
 
   Object.assign(pool, {
     followTopicPromises: new Map(),
+    acknowledgeMessages: new Map(),
     dropPromise: Promise.resolve(),
     eventStore: pool.config.eventStore,
     workers: new Map(),

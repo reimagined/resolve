@@ -9,7 +9,10 @@ const processIncomingEvents = async (resolve, message) => {
   let unlock = null
   const currentResolve = Object.create(resolve)
   try {
-    const payloadIndex = message.indexOf(' ') + 1
+    const batchGuidIndex = message.indexOf(' ') + 1
+    const payloadIndex = message.indexOf(' ', batchGuidIndex) + 1
+    const batchGuid = message.toString('utf8', batchGuidIndex, payloadIndex - 1)
+
     const [listenerId, instanceId] = message
       .toString('utf8', 0, payloadIndex - 1)
       .split('-')
@@ -35,6 +38,8 @@ const processIncomingEvents = async (resolve, message) => {
       const events = JSON.parse(message.slice(payloadIndex))
       await currentResolve.executeQuery.updateByEvents(readModelName, events)
     }
+
+    resolve.pubSocket.send(`ACKNOWLEDGE-BATCH-TOPIC ${batchGuid}`)
   } catch (error) {
     resolveLog('error', 'Error while applying events to read-model', error)
   } finally {
