@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resolve-readmodel-lite method "drop" 1`] = `
+exports[`resolve-readmodel-mongo method "drop" 1`] = `
 Array [
   Array [
     "connect",
@@ -153,7 +153,7 @@ Array [
 ]
 `;
 
-exports[`resolve-readmodel-lite methods "defineTable", "insert", "find", "findOne" 1`] = `
+exports[`resolve-readmodel-mongo methods "defineTable", "insert", "find", "findOne" 1`] = `
 Array [
   Array [
     "connect",
@@ -402,7 +402,7 @@ Array [
 ]
 `;
 
-exports[`resolve-readmodel-lite methods "defineTable", "insert", "update", "count", "delete" 1`] = `
+exports[`resolve-readmodel-mongo methods "defineTable", "insert", "update", "count", "delete" 1`] = `
 Array [
   Array [
     "connect",
