@@ -42,7 +42,8 @@
     "prettier-eslint-cli": "^4.7.1",
     "rimraf": "^2.6.3",
     "glob": "^7.1.3",
-    "@internal/helpers": "0.19.8"
+    "@internal/helpers": "0.19.8",
+    "mdis": "^0.0.3"
   },
   "workspaces": {
     "packages": [
@@ -67,6 +68,7 @@
     "clean:babel": "npx oao all \"npx rimraf dist lib es\" --parallel",
     "clean:packages": "npx rimraf .packages",
     "lint": "eslint .",
+    "mdis": "mdis",
     "prepare": "babel-compile",
     "build-packages": "build-packages",
     "local-registry": "local-registry",
