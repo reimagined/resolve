@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/server'
-import createHistory from 'history/createMemoryHistory'
+import { createMemoryHistory } from 'history'
 import jsonwebtoken from 'jsonwebtoken'
 import { createStore, AppContainer } from 'resolve-redux'
 
@@ -33,7 +33,7 @@ const markupHandler = async (req, res) => {
   const baseQueryUrl = getRootBasedUrl(req.resolve.rootPath, '/')
   const url = req.path.substring(baseQueryUrl.length)
 
-  const history = createHistory()
+  const history = createMemoryHistory()
   history.push(url)
 
   const jwt = {}

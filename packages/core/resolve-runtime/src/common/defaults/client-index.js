@@ -5,7 +5,7 @@ import {
   createStore,
   deserializeInitialState
 } from 'resolve-redux'
-import createHistory from 'history/createBrowserHistory'
+import { createBrowserHistory } from 'history'
 
 import routes from '$resolve.routes'
 import rootPath from '$resolve.rootPath'
@@ -27,7 +27,7 @@ var origin =
       (window.location.port ? ':' + window.location.port : '')
     : window.location.origin
 
-var history = createHistory({
+var history = createBrowserHistory({
   basename: rootPath
 })
 
