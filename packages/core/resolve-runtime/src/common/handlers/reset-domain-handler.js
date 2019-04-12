@@ -1,5 +1,11 @@
 import zmq from 'zeromq'
 
+import {
+  RESOLVE_SAGA_PREFIX,
+  RESOLVE_SCHEDULER_SAGA_PREFIX
+} from '../sagas/constants'
+import wrapReadmodelConnector from '../wrap-readmodel-connector'
+
 const resetDomainHandler = (
   {
     storageAdapterOptions,
@@ -39,27 +45,10 @@ const resetDomainHandler = (
         )
       }
 
-      readModelConnectors[name] = Object.create(readModelConnectors[name])
-      const connector = readModelConnectors[name]
-
-      if (typeof connector.connect !== 'function') {
-        Object.defineProperty(connector, 'connect', {
-          value: async () => {
-            return readModelConnectorsOptions[name]
-          }
-        })
-      }
-      if (typeof connector.disconnect !== 'function') {
-        Object.defineProperty(connector, 'disconnect', {
-          value: async () => {}
-        })
-      }
-      if (typeof connector.drop !== 'function') {
-        Object.defineProperty(connector, 'drop', { value: async () => {} })
-      }
-      if (typeof connector.dispose !== 'function') {
-        Object.defineProperty(connector, 'dispose', { value: async () => {} })
-      }
+      readModelConnectors[name] = wrapReadmodelConnector(
+        readModelConnectors[name],
+        readModelConnectorsOptions[name]
+      )
     }
 
     if (dropEventStore) {
@@ -120,7 +109,7 @@ const resetDomainHandler = (
     if (dropSagas) {
       for (const { name, connectorName } of sagas) {
         const connector = readModelConnectors[connectorName]
-        const sagaName = `_RESOLVE_SAGA_${name}`
+        const sagaName = `${RESOLVE_SAGA_PREFIX}${name}`
         const connection = await connector.connect(sagaName)
 
         await connector.drop(connection, sagaName)
@@ -132,7 +121,7 @@ const resetDomainHandler = (
 
       for (const { name, connectorName } of schedulers) {
         const connector = readModelConnectors[connectorName]
-        const sagaName = `_RESOLVE_SCHEDULER_SAGA_${name}`
+        const sagaName = `${RESOLVE_SCHEDULER_SAGA_PREFIX}${name}`
         const connection = await connector.connect(sagaName)
 
         await connector.drop(connection, sagaName)

@@ -2,6 +2,7 @@
 
 exports[`base config works correctly [client] 1`] = `
 "
+import { RESOLVE_SCHEDULER_AGGREGATE_PREFIX } from 'resolve-runtime/lib/common/sagas/constants'
 const name_0 = \\"Todo\\"
 const commands_0 = {
   [\`create\`]: () => {},
@@ -22,6 +23,7 @@ export default aggregates
 
 exports[`base config works correctly [server] 1`] = `
 "
+import { RESOLVE_SCHEDULER_AGGREGATE_PREFIX } from 'resolve-runtime/lib/common/sagas/constants'
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
 import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
@@ -57,6 +59,7 @@ export default aggregates
 
 exports[`base(v2) config works correctly [client] 1`] = `
 "
+import { RESOLVE_SCHEDULER_AGGREGATE_PREFIX } from 'resolve-runtime/lib/common/sagas/constants'
 const name_0 = \\"Todo\\"
 const commands_0 = {
   [\`create\`]: () => {},
@@ -88,6 +91,7 @@ export default aggregates
 
 exports[`base(v2) config works correctly [server] 1`] = `
 "
+import { RESOLVE_SCHEDULER_AGGREGATE_PREFIX } from 'resolve-runtime/lib/common/sagas/constants'
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
 import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
@@ -137,6 +141,7 @@ export default aggregates
 
 exports[`config with projection works correctly [client] 1`] = `
 "
+import { RESOLVE_SCHEDULER_AGGREGATE_PREFIX } from 'resolve-runtime/lib/common/sagas/constants'
 const name_0 = \\"Todo\\"
 const commands_0 = {
   [\`create\`]: () => {},
@@ -157,6 +162,7 @@ export default aggregates
 
 exports[`config with projection works correctly [server] 1`] = `
 "
+import { RESOLVE_SCHEDULER_AGGREGATE_PREFIX } from 'resolve-runtime/lib/common/sagas/constants'
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
 import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"

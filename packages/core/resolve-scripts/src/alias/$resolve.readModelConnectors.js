@@ -19,7 +19,9 @@ export default ({ resolveConfig, isClient }) => {
     )
   }
 
-  const imports = []
+  const imports = [
+    `import wrapReadModelConnector from 'resolve-runtime/lib/common/wrap-readmodel-connector'`
+  ]
   const constants = [``]
   const exports = [`const readModelConnectors = {}`]
 
@@ -72,24 +74,7 @@ export default ({ resolveConfig, isClient }) => {
 
     constants.push(`
       const factory_${index} = (...args) => {
-        const connector = Object.create(factory_s_${index}(...args))
-
-        if(typeof connector.connect !== 'function') {
-          Object.defineProperty(connector, 'connect', { value: async () => {
-            return options_s_${index}
-          } })
-        }
-        if(typeof connector.disconnect !== 'function') {
-          Object.defineProperty(connector, 'disconnect', { value: async () => {} })
-        }
-        if(typeof connector.drop !== 'function') {
-          Object.defineProperty(connector, 'drop', { value: async () => {} })
-        }
-        if(typeof connector.dispose !== 'function') {
-          Object.defineProperty(connector, 'dispose', { value: async () => {} })
-        }
-        
-        return connector
+        return wrapReadModelConnector(factory_s_${index}(...args), options_s_${index}) 
       }
     `)
 
