@@ -34,13 +34,7 @@ module.exports = {
     'no-mixed-operators': 'off',
     'object-curly-spacing': ['error', 'always'],
     'no-unused-vars': ['error', { args: 'after-used' }],
-    'max-len': [
-      'warn',
-      {
-        code: 100,
-        comments: 10000
-      }
-    ],
+    'max-len': 'off',
     'eol-last': ['error', 'always'],
     'no-console': ['error'],
     'spellcheck/spell-checker': [

@@ -1,5 +1,9 @@
 import zmq from 'zeromq'
 
+import {
+  RESOLVE_SAGA_PREFIX,
+  RESOLVE_SCHEDULER_SAGA_PREFIX
+} from '../sagas/constants'
 import wrapReadmodelConnector from '../wrap-readmodel-connector'
 
 const resetDomainHandler = (
@@ -105,7 +109,7 @@ const resetDomainHandler = (
     if (dropSagas) {
       for (const { name, connectorName } of sagas) {
         const connector = readModelConnectors[connectorName]
-        const sagaName = `_RESOLVE_SAGA_${name}`
+        const sagaName = `${RESOLVE_SAGA_PREFIX}${name}`
         const connection = await connector.connect(sagaName)
 
         await connector.drop(connection, sagaName)
@@ -117,7 +121,7 @@ const resetDomainHandler = (
 
       for (const { name, connectorName } of schedulers) {
         const connector = readModelConnectors[connectorName]
-        const sagaName = `_RESOLVE_SCHEDULER_SAGA_${name}`
+        const sagaName = `${RESOLVE_SCHEDULER_SAGA_PREFIX}${name}`
         const connection = await connector.connect(sagaName)
 
         await connector.drop(connection, sagaName)
