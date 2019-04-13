@@ -42,6 +42,7 @@ const loadEvents = async readModel => {
       {
         eventTypes: readModel.eventTypes,
         startTime: lastTimestamp,
+        finishTime: Date.now() - 1,
         skipBus: true
       },
       readModel.boundProjectionInvoker
