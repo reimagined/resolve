@@ -87,16 +87,29 @@ const getAggregateState = async (
     })
   }
 
-  await eventStore.loadEvents(
-    {
-      aggregateIds: [aggregateId],
-      startTime: lastTimestamp - 1,
-      skipBus: true
-    },
-    snapshotAdapter != null && snapshotKey != null
-      ? snapshotHandler
-      : regularHandler
-  )
+  const handler = snapshotAdapter != null && snapshotKey != null
+    ? snapshotHandler
+    : regularHandler;
+
+  if (projection != null) {
+    await eventStore.loadEvents(
+      {
+        aggregateIds: [aggregateId],
+        startTime: lastTimestamp - 1,
+        skipBus: true
+      },
+      handler
+    )
+  } else {
+    const event = await eventStore.getLatestEvent(
+      {
+        aggregateIds: [aggregateId],
+        startTime: lastTimestamp - 1,
+      },
+    );
+
+    if (event) await handler(event);
+  }
 
   return { aggregateState, aggregateVersion, lastTimestamp }
 }
