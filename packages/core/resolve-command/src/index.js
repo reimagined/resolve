@@ -108,7 +108,9 @@ const getAggregateState = async (
       },
     );
 
-    if (event) await handler(event);
+    if (event) {
+      await handler(event);
+    }
   }
 
   return { aggregateState, aggregateVersion, lastTimestamp }
