@@ -485,3 +485,4 @@ failure:
     policy: pull
   script:
     - node ci-cd/create-github-status/index.js --state failure --context "1. Pipeline" --description "Build ♯$CI_PIPELINE_IID failed" --targetUrl $CI_PIPELINE_URL
+
