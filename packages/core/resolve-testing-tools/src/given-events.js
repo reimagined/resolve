@@ -1,7 +1,7 @@
 import { Phases, symbol } from './constants'
 
 const givenEvents = (dependencies, events) => {
-  const { readModel, as, init, getInitPromise } = dependencies
+  const { readModel, as, init, saga, getInitPromise } = dependencies
 
   let promiseResolve = null,
     promiseReject = null
@@ -20,6 +20,7 @@ const givenEvents = (dependencies, events) => {
 
   promise.readModel = readModel.bind(null, pool)
   promise.as = as.bind(null, pool)
+  promise.saga = saga.bind(null, pool)
 
   promise[symbol].initPromise.then(init.bind(null, pool))
 
