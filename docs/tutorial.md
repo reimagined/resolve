@@ -712,7 +712,7 @@ In this code, the component is first connected to a **Redux** state using the **
 
 Use the **createShoppingItem** action creator to add new shopping list items. The UI markup is shown below.
 
-**common/view-models/shopping_list.projection.js:**
+**client/containers/ShoppingList.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -745,7 +745,7 @@ Use the **createShoppingItem** action creator to add new shopping list items. Th
 
 This markup uses the following methods to handle UI interactions:
 
-**common/view-models/shopping_list.projection.js:**
+**client/containers/ShoppingList.js:**
 
 ```js
 createShoppingItem = () => {
