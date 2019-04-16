@@ -90,13 +90,6 @@ Array [
     "firstJsonName": null,
   },
   Object {
-    "firstJsonName": Object {
-      "a": 1,
-      "b": 2,
-      "e": 10,
-    },
-  },
-  Object {
     "firstJsonName": null,
   },
 ]
