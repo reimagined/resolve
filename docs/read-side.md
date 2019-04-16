@@ -34,9 +34,9 @@ const appConfig = {
 }
 ```
 
-In the configuration object, specify the Read Model's name and the paths to the files containing projections and resolvers. Here, you can also specify the Read Model's storage adapter.
+In the configuration object, specify the Read Model's name and the paths to the files containing projections and resolvers as well as the Read Model connector's name.
 
-You can define the available adapters in the **readModelConnectors** section:
+A Red Model connector defines how a Read Model's data should be stored. You can define the available connectors in the **readModelConnectors** section:
 
 ##### config.dev.js:
 
@@ -109,7 +109,7 @@ To create a custom Read Model, you need to manually implement a Read Model conne
 
 The code sample below demostrates how to implement a connector that provides a file-based storage for Read Models.
 
-##### common/read-models/custom-read-model-connector.js
+##### common/read-models/custom-read-model-connector.js:
 
 <!-- prettier-ignore-start -->
 
