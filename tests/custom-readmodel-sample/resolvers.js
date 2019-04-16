@@ -1,3 +1,4 @@
+// mdis-start
 const resolvers = {
   read: async store => {
     return await store.get()
@@ -5,3 +6,4 @@ const resolvers = {
 }
 
 export default resolvers
+// mdis-stop
