@@ -81,12 +81,37 @@ To create a custom Read Model, you need to manually implement a Read Model conne
 - **drop** - Removes the Read Model's data from the storage.
 - **dispose** - Forcefully disposes all unmanaged resources used by Read Models served by this connector.
 
-##### common/read-models/my-custom-read-model-connector.js
+##### common/read-models/custom-read-model-connector.js
 
+<!-- prettier-ignore-start -->
+
+
+[mdis]:# (../tests/custom-readmodel-sample/connector.js)
 ```js
+
 ```
 
-A connector object should define the following functions:
+<!-- prettier-ignore-end -->
+
+Register the connector in the application's config.
+
+#####
+
+```js
+const devConfig = {
+  ...
+  readModelConnectors: {
+    elasticSearch: {
+      module: 'common/read-models/custom-read-model-connector.js',
+      options: {
+        prefix: path.join(__dirname, 'data') + path.sep // Path to store files for the custom Read Model
+      }
+    }
+  }
+}
+
+export default devConfig
+```
 
 Specify a path to the custom connector's deffinition in the application's config:
 
