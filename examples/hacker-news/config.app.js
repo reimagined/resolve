@@ -26,14 +26,21 @@ const appConfig = {
       name: 'HackerNews',
       projection: 'common/read-models/hacker-news.projection.js',
       resolvers: 'common/read-models/hacker-news.resolvers.js',
-      adapterName: 'default'
+      connectorName: 'default'
+    },
+    {
+      name: 'Search',
+      projection: 'common/read-models/search.projection.js',
+      resolvers: 'common/read-models/search.resolvers.js',
+      connectorName: 'elasticSearch'
     }
   ],
-  customReadModels: [
+  sagas: [
     {
-      name: 'CustomReadModel',
-      updateByEvents: 'common/custom-read-models/custom.update-by-events.js',
-      read: 'common/custom-read-models/custom.read.js'
+      name: 'UserConfirmation',
+      source: 'common/sagas/user-confirmation.saga.js',
+      connectorName: 'default',
+      schedulerName: 'scheduler'
     }
   ]
 }

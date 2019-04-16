@@ -1,6 +1,5 @@
 import fsExtra from 'fs-extra'
 import path from 'path'
-import respawn from 'respawn'
 import webpack from 'webpack'
 
 import getWebpackConfigs from './get_webpack_configs'
@@ -9,8 +8,8 @@ import getPeerDependencies from './get_peer_dependencies'
 import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
-
 import openBrowser from './open_browser'
+import { processRegister } from './process_manager'
 
 export default async (resolveConfig, adjustWebpackConfigs) => {
   validateConfig(resolveConfig)
@@ -32,16 +31,30 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     path.join(resolveConfig.distDir, './common/local-entry/local-entry.js')
   )
 
-  const server = respawn(['node', serverPath], {
+  const server = processRegister(['node', serverPath], {
     cwd: process.cwd(),
     maxRestarts: 0,
     kill: 5000,
     stdio: 'inherit'
   })
 
-  process.on('exit', () => {
-    server.stop()
-  })
+  let broker = null
+  if (resolveConfig.eventBroker.launchBroker) {
+    const brokerPath = path.resolve(
+      process.cwd(),
+      path.join(
+        resolveConfig.distDir,
+        './common/local-entry/local-bus-broker.js'
+      )
+    )
+
+    broker = processRegister(['node', brokerPath], {
+      cwd: process.cwd(),
+      maxRestarts: 0,
+      kill: 5000,
+      stdio: 'inherit'
+    })
+  }
 
   process.env.RESOLVE_SERVER_FIRST_START = 'true'
   process.env.RESOLVE_SERVER_OPEN_BROWSER = 'true'
@@ -59,7 +72,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     }
   })
 
-  return await new Promise((resolve, reject) =>
+  return await new Promise(() => {
     compiler.watch(
       {
         aggregateTimeout: 1000,
@@ -83,12 +96,14 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
 
         if (hasErrors) {
           server.stop()
-          reject('')
         } else {
           if (server.status === 'running') {
             process.env.RESOLVE_SERVER_FIRST_START = 'false'
             server.stop(() => server.start())
           } else {
+            if (resolveConfig.eventBroker.launchBroker) {
+              broker.start()
+            }
             server.start()
 
             const isOpenBrowser =
@@ -100,11 +115,9 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
                 () => {}
               )
             }
-
-            resolve()
           }
         }
       }
     )
-  )
+  })
 }

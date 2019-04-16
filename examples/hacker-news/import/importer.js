@@ -1,5 +1,4 @@
 import { COMMENT_CREATED } from 'resolve-module-comments/lib/common/defaults'
-import fetch from 'isomorphic-fetch'
 import uuid from 'uuid'
 import { EOL } from 'os'
 
@@ -14,36 +13,23 @@ const aggregateVersionsMap = new Map()
 let eventTimestamp = Date.now()
 const users = {}
 
-const invokeImportApi = async body => {
-  const response = await fetch(
-    `http://localhost:${process.env.PORT}${
-      process.env.ROOT_PATH
-    }/api/import_events`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'same-origin',
-      body: JSON.stringify(body)
-    }
-  )
-  return await response.text()
-}
-
 const saveOneEvent = async event =>
-  await invokeImportApi({
+  await api.invokeImportApi({
     saveEvent: {
       ...event,
       aggregateVersion: aggregateVersionsMap
         .set(
           event.aggregateId,
-          ~~aggregateVersionsMap.get(event.aggregateId) + 1
+          aggregateVersionsMap.has(event.aggregateId)
+            ? aggregateVersionsMap.get(event.aggregateId) + 1
+            : 1
         )
         .get(event.aggregateId),
       timestamp: eventTimestamp++
     }
   })
 
-const dropStore = async () => await invokeImportApi({ dropEvents: true })
+const dropStore = async () => await api.invokeImportApi({ dropEvents: true })
 
 const generateUserEvents = async name => {
   const aggregateId = uuid.v4()

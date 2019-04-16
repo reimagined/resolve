@@ -7,6 +7,7 @@ describe('method "executePaginationQuery"', () => {
     const documentClient = {}
     const query = {}
     const executeSingleQuery = sinon.stub()
+    const decodeEvent = sinon.stub().callsFake((pool, event) => event)
     const callback = sinon.stub().returns(Promise.resolve())
 
     executeSingleQuery.onCall(0).returns(
@@ -22,8 +23,9 @@ describe('method "executePaginationQuery"', () => {
     )
 
     await executePaginationQuery(
-      { documentClient, executeSingleQuery },
+      { documentClient, executeSingleQuery, decodeEvent },
       query,
+      1000,
       callback
     )
 
@@ -37,6 +39,7 @@ describe('method "executePaginationQuery"', () => {
     const documentClient = {}
     const query = {}
     const executeSingleQuery = sinon.stub()
+    const decodeEvent = sinon.stub().callsFake((pool, event) => event)
     const callback = sinon.stub()
     const error = 'error'
 
@@ -44,8 +47,9 @@ describe('method "executePaginationQuery"', () => {
 
     try {
       await executePaginationQuery(
-        { documentClient, executeSingleQuery },
+        { documentClient, executeSingleQuery, decodeEvent },
         query,
+        1000,
         callback
       )
       throw new Error('failure')

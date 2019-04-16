@@ -63,3 +63,5 @@ package-lock.json
 
 event-storage.db
 snapshot.db
+code.zip
+static.zip

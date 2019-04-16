@@ -1,14 +1,36 @@
-import mysql from 'mysql2/promise'
+import MySQL from 'mysql2/promise'
 import { escapeId, escape } from 'mysql2'
 import createAdapter from 'resolve-readmodel-base'
 
-import metaApi from './meta-api'
-import storeApi from './store-api'
+import buildUpsertDocument from './build-upsert-document'
+import connect from './connect'
+import convertBinaryRow from './convert-binary-row'
+import count from './count'
+import defineTable from './define-table'
+import del from './delete'
+import disconnect from './disconnect'
+import dropReadModel from './drop-read-model'
+import findOne from './find-one'
+import find from './find'
+import insert from './insert'
+import searchToWhereExpression from './search-to-where-expression'
+import updateToSetExpression from './update-to-set-expression'
+import update from './update'
+
+const store = { defineTable, find, findOne, count, insert, update, delete: del }
 
 export default createAdapter.bind(null, {
-  metaApi: {
-    ...metaApi,
-    connect: metaApi.connect.bind(null, { mysql, escapeId, escape })
-  },
-  storeApi
+  ...store,
+  connect: connect.bind(null, {
+    MySQL,
+    escapeId,
+    escape,
+    buildUpsertDocument,
+    convertBinaryRow,
+    searchToWhereExpression,
+    updateToSetExpression,
+    ...store
+  }),
+  dropReadModel,
+  disconnect
 })

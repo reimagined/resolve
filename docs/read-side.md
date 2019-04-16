@@ -5,14 +5,14 @@ title: Read Side
 
 ## Read Models
 
-The reSolve framework's read side listens to events that the write side produces. Based on the events, the read side updates **Read Models**. The Read Models then provide data to answer queries.
+The reSolve framework's read side listens to events that the write side produces. Based on **these** events, the read side updates the **Read Models**, and these models provide data to the queries.
 
 A Read Model is defined by a set of projection functions and query resolver functions.
 
 - **[Projection functions](#updating-a-read-model-via-projection-functions)** build a Read Models state based on incoming events.
 - **[Query resolvers](#resolvers)** use data from the accumulated state to answer queries.
 
-ReSolve also provides a special kind of Read Models that can be calculated on the fly, sent to the client and kept there up-to-date. Such Read Models are called **View Models**. Refer to the [View Model Specifics](view-model-specifics) section for more information.
+ReSolve also supports **View Models**. A View Model is a Read Model that can be built on the fly, sent to the client and kept there up-to-date. Refer to the [View Model Specifics](view-model-specifics) section for more information.
 
 ## Configuring Read Models and View Models
 
@@ -28,37 +28,38 @@ const appConfig = {
       name: 'default',
       projection: 'common/read-models/default.projection.js',
       resolvers: 'common/read-models/default.resolvers.js',
-      adapterName: 'default'
+      connectorName: 'default'
     }
   ],
-  ...
 }
 ```
 
 In the configuration object, specify the Read Model's name and the paths to the files containing projections and resolvers. Here, you can also specify the Read Model's storage adapter.
 
-You can define the available adapters in the **readModelAdapters** section:
+You can define the available adapters in the **readModelConnectors** section:
+
+##### config.dev.js:
 
 ```js
 const devConfig = {
   ...
-  readModelAdapters: [
-    {
-      name: 'default',
-      module: 'resolve-readmodel-memory',
+  readModelConnectors: {
+    default: {
+      module: 'resolve-readmodel-lite',
       options: {}
     }
-  ],
+  },
 }
 ```
+
+##### config.prod.js:
 
 ```js
 import { declareRuntimeEnv } from 'resolve-scripts'
 const prodConfig = {
   ...
-  readModelAdapters: [
-    {
-      name: 'default',
+  readModelConnectors: {
+    default: {
       module: 'resolve-readmodel-mysql',
       options: {
         host: declareRuntimeEnv('SQL_HOST'),
@@ -67,7 +68,7 @@ const prodConfig = {
         password: declareRuntimeEnv('SQL_PASSWORD'),
       }
     }
-  ],
+  },
 }
 ```
 
@@ -94,7 +95,7 @@ Specify a path to the custom connector's deffinition in the application's config
 
 ### Configuring View Models
 
-In the same way, you should register your View Models in the **viewModels** section:
+You should register your View Models in the **viewModels** section in the same way:
 
 ```js
 const appConfig = {
@@ -112,8 +113,7 @@ const appConfig = {
         }
       }
     }
-  ],
-  ...
+  ]
 }
 ```
 
@@ -140,19 +140,18 @@ You can use the **defineTable** method to add tables to the storage:
         'createdByName'
       ]
     })
-    ...
-  },
+  }
 ```
 
-ReSolve provides a unified API to manage data in a storage, so this code will work with any supported storage type. The internal logic used to communicate with various DBMSs is provided by **Read Model Adapters**.
+ReSolve provides a unified API to manage data in storage (this code works with any supported storage type). **Read Model Adapters** provide the internal logic a Read Model uses to communicate with DBMSs.
 
-Do not hesitate to store Read Model data in a denormalized form so that your Read Models are optimized for query speed.
+We recommend that you store Read Model data in a denormalized form so that your Read Models are optimized for query performance.
 
 ## Updating a Read Model via Projection Functions
 
 A projection function is used to accumulate the event data in a **Read Model storage**. Each projection function takes the storage object and event information. The event information includes the aggregateID, timestamp and payload.
 
-You can communicate with the store using the standard API. The code sample below demonstrates a typical Read Model projection function implementation:
+You can communicate with the store using the standard API. The code sample below demonstrates a Read Model projection function implementation:
 
 ```js
 [STORY_COMMENTED]: async (
@@ -171,17 +170,17 @@ You can communicate with the store using the standard API. The code sample below
 ...
 ```
 
-A [resolver](#resolvers) then uses the data from the store to prepare final data samples in response to data requests.
+A [resolver](#resolvers) then uses the data from the store to prepare final data samples for data requests.
 
-If you delete the Read Model storage, this will force the framework to re-populate the store based on all events from the beginning of the history. This can be useful in the development environment and when you deploy an updated version of the application.
+Note that you can add additional logic to a projection function. For instance, you can perform SQL queries, update Elastic Search indexes, write arbitrary data to files, etc.
 
-Note that reSolve does not limit you on what logic you can use in a projection function implementation as long as it helps you prepare data required to answer queries. Depending on your requirements, you can perform SQL queries, update Elastic Search indexes, write arbitrary data to files, etc.
+If you delete the Read Model storage, the framework re-populates the store based on all the events. This can be useful in the development environment and when you deploy an updated version of the application.
 
 ## Resolvers
 
-A **resolver** is the part of a Read Model that handles data requests. A resolver function receives the store and request parameters. Based on the parameters, the resolver function pulls the required data from the store and processes it to prepare the response object.
+A **resolver** is the part of a Read Model that handles data requests. A resolver function receives the store and request parameters. Based on the parameters, the resolver function pulls data from the store and processes it to prepare the response object.
 
-The code sample below demonstrate a typical Read Model implementation:
+The code sample below demonstrates a Read Model implementation:
 
 ```js
 comments: async (store, { first, offset }) => {
@@ -198,7 +197,7 @@ comments: async (store, { first, offset }) => {
 }
 ```
 
-Refer to the [Query a Read Model](#query-a-read-model) section to learn how to send a request to a Read Model resolver.
+Refer to the [Query a Read Model](#query-a-read-model) section for information on how to send a request to a Read Model resolver.
 
 ## Custom Read Model Specifics
 
@@ -217,23 +216,28 @@ Use View Models in the following scenarios:
 
 A View Model's projection function receives a state and an event object, and returns an updated state. A projection function runs for every event with the specified aggregate ID from the beginning of the history on every request so it is important to keep View Models small. You can also store snapshots of the View Model state to optimize system resource consumption.
 
-The code sample below demonstrate a typical View Model projection function:
+The code sample below demonstrates a View Model projection function:
 
+<!-- prettier-ignore-start -->
+
+[embedmd]:# (../examples/shopping-list/common/view-models/shopping_list.projection.js /^[[:blank:]]+\[SHOPPING_ITEM_CREATED/ /\}\),/)
 ```js
-[SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
-  ...state,
-  list: [
-    ...state.list,
-    {
-      id,
-      text,
-      checked: false
-    }
-  ]
-}),
+  [SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
+    ...state,
+    list: [
+      ...state.list,
+      {
+        id,
+        text,
+        checked: false
+      }
+    ]
+  }),
 ```
 
-Refer to the [Query a View Model](#query-a-view-model) section, to learn how to query a View Model.
+<!-- prettier-ignore-end -->
+
+Refer to the [Query a View Model](#query-a-view-model) section, for information on how to query a View Model.
 
 Note that a View Model does not use the Read Model store.
 

@@ -12,11 +12,7 @@ Object {
   },
   "findResult": Array [
     Object {
-      "firstJsonName": Object {
-        "a": 1,
-        "b": 2,
-        "e": 10,
-      },
+      "firstJsonName": null,
     },
     Object {
       "firstJsonName": null,
@@ -38,17 +34,13 @@ Object {
   "findResult": Array [
     Object {
       "firstJsonName": Object {
-        "a": 1,
-        "b": 2,
-        "e": 10,
-      },
-    },
-    Object {
-      "firstJsonName": Object {
         "c": 3,
         "d": 4,
         "e": 20,
       },
+    },
+    Object {
+      "firstJsonName": null,
     },
     Object {
       "firstJsonName": null,
@@ -70,17 +62,13 @@ Object {
   "findResult": Array [
     Object {
       "firstJsonName": Object {
-        "a": 1,
-        "b": 2,
-        "e": 10,
+        "c": 3,
+        "d": 4,
+        "e": 25,
       },
     },
     Object {
-      "firstJsonName": Object {
-        "c": 3,
-        "e": 25,
-        "f": "inner-field",
-      },
+      "firstJsonName": null,
     },
     Object {
       "firstJsonName": null,
@@ -94,8 +82,18 @@ Array [
   Object {
     "firstJsonName": Object {
       "c": 3,
+      "d": 4,
       "e": 25,
-      "f": "inner-field",
+    },
+  },
+  Object {
+    "firstJsonName": null,
+  },
+  Object {
+    "firstJsonName": Object {
+      "a": 1,
+      "b": 2,
+      "e": 10,
     },
   },
   Object {
@@ -116,9 +114,6 @@ Object {
   },
   "findResult": Array [
     Object {
-      "firstJsonName": null,
-    },
-    Object {
       "firstJsonName": Object {
         "a": 1,
         "b": 2,
@@ -131,6 +126,9 @@ Object {
         "d": 4,
         "e": 20,
       },
+    },
+    Object {
+      "firstJsonName": null,
     },
     Object {
       "firstJsonName": null,

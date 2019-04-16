@@ -1,31 +1,37 @@
 export default () => ({
   code: `
-      import assemblies from '$resolve.assemblies'
-      import constants from '$resolve.constants'
-      import apiHandlers from '$resolve.apiHandlers'
-      import aggregates from '$resolve.aggregates'
-      import customReadModels from '$resolve.customReadModels'
-      import readModels from '$resolve.readModels'
-      import viewModels from '$resolve.viewModels'
-      import sagas from '$resolve.sagas'
-  
-      const { routes, redux, ...restAssemblies } = assemblies
+  import aggregateActions from '$resolve.aggregateActions'
+  import seedClientEnvs from '$resolve.seedClientEnvs'
+  import storageAdapter from '$resolve.storageAdapter'
+  import snapshotAdapter from '$resolve.snapshotAdapter'
+  import readModelConnectors from '$resolve.readModelConnectors'
+  import constants from '$resolve.constants'
+  import apiHandlers from '$resolve.apiHandlers'
+  import aggregates from '$resolve.aggregates'
+  import readModels from '$resolve.readModels'
+  import viewModels from '$resolve.viewModels'
+  import sagas from '$resolve.sagas'
+  import routes from '$resolve.routes'
+  import redux from '$resolve.redux'
 
-      const serverAssemblies = {
-        assemblies: restAssemblies,
-        constants,
-        domain: {
-          apiHandlers,
-          aggregates,
-          customReadModels,
-          readModels,
-          viewModels,
-          sagas
-        },
-        routes,
-        redux
-      }
-  
-      export default serverAssemblies
-    `
+  export default {
+    assemblies: {
+      aggregateActions,
+      seedClientEnvs,
+      storageAdapter,
+      snapshotAdapter,
+      readModelConnectors
+    },
+    constants,
+    domain: {
+      apiHandlers,
+      aggregates,
+      readModels,
+      viewModels,
+      sagas
+    },
+    routes,
+    redux
+  }
+`
 })

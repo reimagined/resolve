@@ -6,19 +6,21 @@ const {
   watch,
   runTestcafe,
   merge: rawMerge,
+  stop,
+  reset,
   adjustWebpackReactNative,
   adjustWebpackCommonPackages
 } = require('resolve-scripts')
+const createAuthModule = require('resolve-module-auth').default
+const getLocalIp = require('my-local-ip')
+const remotedev = require('remotedev-server')
+const opn = require('opn')
 
 const devConfig = require('./config.dev')
 const prodConfig = require('./config.prod')
 const cloudConfig = require('./config.cloud')
 const testFunctionalConfig = require('./config.test-functional')
 const appConfig = require('./config.app')
-const createAuthModule = require('resolve-module-auth').default
-const getLocalIp = require('my-local-ip')
-const remotedev = require('remotedev-server')
-const opn = require('opn')
 
 const launchMode = process.argv[2]
 
@@ -66,147 +68,180 @@ const commonPackages = {
 }
 
 void (async () => {
-  const authModule = createAuthModule([
-    {
-      name: 'local-strategy',
-      createStrategy: 'common/auth/create-strategy.js',
-      routes: [
-        {
-          path: 'auth/local/register',
-          method: 'POST',
-          callback: 'common/auth/route-register-callback.js'
-        },
-        {
-          path: 'auth/local/login',
-          method: 'POST',
-          callback: 'common/auth/route-login-callback.js'
+  try {
+    const authModule = createAuthModule([
+      {
+        name: 'local-strategy',
+        createStrategy: 'common/auth/create-strategy.js',
+        routes: [
+          {
+            path: 'auth/local/register',
+            method: 'POST',
+            callback: 'common/auth/route-register-callback.js'
+          },
+          {
+            path: 'auth/local/login',
+            method: 'POST',
+            callback: 'common/auth/route-login-callback.js'
+          }
+        ],
+        logoutRoute: {
+          path: 'auth/local/logout',
+          method: 'GET'
         }
-      ],
-      logoutRoute: {
-        path: 'auth/local/logout',
-        method: 'GET'
+      }
+    ])
+
+    switch (launchMode) {
+      case 'dev': {
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          devConfig,
+          authModule
+        )
+
+        await reset(resolveConfig, {
+          dropEventStore: false,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+
+        await watch(
+          resolveConfig,
+          adjustWebpackConfigs({
+            resolveConfig,
+            commonPackages
+          })
+        )
+        break
+      }
+      case 'dev:native': {
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          devConfig,
+          authModule
+        )
+
+        await remotedev({
+          hostname: resolveConfig.customConstants.remoteReduxDevTools.hostname,
+          port: resolveConfig.customConstants.remoteReduxDevTools.port,
+          wsEngine: 'ws'
+        })
+
+        await opn(
+          `http://${
+            resolveConfig.customConstants.remoteReduxDevTools.hostname
+          }:${resolveConfig.customConstants.remoteReduxDevTools.port}`
+        )
+
+        await reset(resolveConfig, {
+          dropEventStore: false,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+
+        await watch(
+          resolveConfig,
+          adjustWebpackConfigs({
+            resolveConfig,
+            reactNativeDir,
+            commonPackages
+          })
+        )
+        break
+      }
+
+      case 'build': {
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          prodConfig,
+          authModule
+        )
+
+        await build(
+          resolveConfig,
+          adjustWebpackConfigs({
+            resolveConfig,
+            reactNativeDir,
+            commonPackages
+          })
+        )
+
+        break
+      }
+
+      case 'cloud': {
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          cloudConfig,
+          authModule
+        )
+
+        await build(
+          resolveConfig,
+          adjustWebpackConfigs({
+            resolveConfig,
+            reactNativeDir,
+            commonPackages
+          })
+        )
+
+        break
+      }
+
+      case 'start': {
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          prodConfig,
+          authModule
+        )
+
+        await start(resolveConfig)
+
+        break
+      }
+
+      case 'test:functional': {
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          testFunctionalConfig,
+          authModule
+        )
+
+        await reset(resolveConfig, {
+          dropEventStore: true,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+
+        await runTestcafe({
+          resolveConfig,
+          adjustWebpackConfigs: adjustWebpackConfigs({
+            resolveConfig,
+            commonPackages
+          }),
+          functionalTestsDir: './test/functional',
+          browser: process.argv[3]
+          // customArgs: ['-r', 'json:report.json']
+        })
+        break
+      }
+
+      default: {
+        throw new Error('Unknown option')
       }
     }
-  ])
-
-  switch (launchMode) {
-    case 'dev': {
-      const resolveConfig = merge(
-        defaultResolveConfig,
-        appConfig,
-        devConfig,
-        authModule
-      )
-      await watch(
-        resolveConfig,
-        adjustWebpackConfigs({
-          resolveConfig,
-          commonPackages
-        })
-      )
-      break
-    }
-    case 'dev:native': {
-      const resolveConfig = merge(
-        defaultResolveConfig,
-        appConfig,
-        devConfig,
-        authModule
-      )
-      await watch(
-        resolveConfig,
-        adjustWebpackConfigs({
-          resolveConfig,
-          reactNativeDir,
-          commonPackages
-        })
-      )
-      await remotedev({
-        hostname: resolveConfig.customConstants.remoteReduxDevTools.hostname,
-        port: resolveConfig.customConstants.remoteReduxDevTools.port,
-        wsEngine: 'ws'
-      })
-      await opn(
-        `http://${resolveConfig.customConstants.remoteReduxDevTools.hostname}:${
-          resolveConfig.customConstants.remoteReduxDevTools.port
-        }`
-      )
-      break
-    }
-
-    case 'build': {
-      const resolveConfig = merge(
-        defaultResolveConfig,
-        appConfig,
-        prodConfig,
-        authModule
-      )
-      await build(
-        resolveConfig,
-        adjustWebpackConfigs({
-          resolveConfig,
-          reactNativeDir,
-          commonPackages
-        })
-      )
-      break
-    }
-
-    case 'cloud': {
-      const resolveConfig = merge(
-        defaultResolveConfig,
-        appConfig,
-        cloudConfig,
-        authModule
-      )
-      await build(
-        resolveConfig,
-        adjustWebpackConfigs({
-          resolveConfig,
-          reactNativeDir,
-          commonPackages
-        })
-      )
-      break
-    }
-
-    case 'start': {
-      const resolveConfig = merge(
-        defaultResolveConfig,
-        appConfig,
-        prodConfig,
-        authModule
-      )
-      await start(resolveConfig)
-      break
-    }
-
-    case 'test:functional': {
-      const resolveConfig = merge(
-        defaultResolveConfig,
-        appConfig,
-        testFunctionalConfig,
-        authModule
-      )
-      await runTestcafe({
-        resolveConfig,
-        adjustWebpackConfigs: adjustWebpackConfigs({
-          resolveConfig,
-          commonPackages
-        }),
-        functionalTestsDir: './test/functional',
-        browser: process.argv[3]
-        // customArgs: ['-r', 'json:report.json']
-      })
-      break
-    }
-
-    default: {
-      throw new Error('Unknown option')
-    }
+    await stop()
+  } catch (error) {
+    await stop(error)
   }
-})().catch(error => {
-  // eslint-disable-next-line no-console
-  console.log(error)
-  process.exit(1)
-})
+})()

@@ -5,7 +5,8 @@ import {
   duplicateError
 } from './constants'
 
-const saveEvent = async ({ documentClient, tableName }, event) => {
+const saveEvent = async (pool, event) => {
+  const { documentClient, tableName, encodeEvent } = pool
   while (true) {
     try {
       await documentClient
@@ -13,7 +14,7 @@ const saveEvent = async ({ documentClient, tableName }, event) => {
           TableName: tableName,
           Item: {
             globalPartitionKey: globalPartitionKey,
-            ...event
+            ...encodeEvent(pool, event)
           },
           ConditionExpression:
             'attribute_not_exists(aggregateId) AND attribute_not_exists(aggregateVersion)'

@@ -4,58 +4,79 @@ import {
   start,
   watch,
   runTestcafe,
-  merge
+  merge,
+  stop,
+  reset
 } from 'resolve-scripts'
 
 import appConfig from './config.app'
-import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
+import cloudConfig from './config.cloud'
 
 const launchMode = process.argv[2]
 
 void (async () => {
-  switch (launchMode) {
-    case 'dev': {
-      await watch(merge(defaultResolveConfig, appConfig, devConfig))
-      break
-    }
+  try {
+    switch (launchMode) {
+      case 'dev': {
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
 
-    case 'build': {
-      await build(merge(defaultResolveConfig, appConfig, prodConfig))
-      break
-    }
+        await reset(resolveConfig, {
+          dropEventStore: false,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
 
-    case 'cloud': {
-      await build(merge(defaultResolveConfig, appConfig, cloudConfig))
-      break
-    }
+        await watch(resolveConfig)
+        break
+      }
 
-    case 'start': {
-      await start(merge(defaultResolveConfig, appConfig, prodConfig))
-      break
-    }
+      case 'build': {
+        await build(merge(defaultResolveConfig, appConfig, prodConfig))
+        break
+      }
 
-    case 'test:functional': {
-      await runTestcafe({
-        resolveConfig: merge(
+      case 'cloud': {
+        await build(merge(defaultResolveConfig, appConfig, cloudConfig))
+        break
+      }
+
+      case 'start': {
+        await start(merge(defaultResolveConfig, appConfig, prodConfig))
+        break
+      }
+
+      case 'test:functional': {
+        const resolveConfig = merge(
           defaultResolveConfig,
           appConfig,
           testFunctionalConfig
-        ),
-        functionalTestsDir: 'test/functional',
-        browser: process.argv[3]
-      })
-      break
-    }
+        )
 
-    default: {
-      throw new Error('Unknown option')
+        await reset(resolveConfig, {
+          dropEventStore: true,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+
+        await runTestcafe({
+          resolveConfig,
+          functionalTestsDir: 'test/functional',
+          browser: process.argv[3]
+        })
+        break
+      }
+
+      default: {
+        throw new Error('Unknown option')
+      }
     }
+    await stop()
+  } catch (error) {
+    await stop(error)
   }
-})().catch(error => {
-  // eslint-disable-next-line no-console
-  console.log(error)
-  process.exit(1)
-})
+})()

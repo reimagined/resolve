@@ -1,3 +1,17 @@
+export function CommandError(message = 'Command error') {
+  Error.call(this)
+  this.name = 'CommandError'
+  this.message = message
+
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, CommandError)
+  } else {
+    this.stack = new Error().stack
+  }
+}
+
+CommandError.prototype = Object.create(Error.prototype)
+
 const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
   if (!aggregateId) throw new Error('The "aggregateId" argument is required')
   if (aggregateId.constructor !== String)
@@ -8,7 +22,7 @@ const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
 }
 
 const getAggregateState = async (
-  { projection, invariantHash = null },
+  { projection, serializeState, deserializeState, invariantHash = null },
   aggregateId,
   eventStore,
   snapshotAdapter = null
@@ -35,8 +49,8 @@ const getAggregateState = async (
   try {
     if (snapshotKey == null) throw new Error()
     const snapshot = await snapshotAdapter.loadSnapshot(snapshotKey)
+    aggregateState = deserializeState(snapshot.state)
     aggregateVersion = snapshot.version
-    aggregateState = snapshot.state
     lastTimestamp = snapshot.timestamp
   } catch (err) {}
 
@@ -67,7 +81,7 @@ const getAggregateState = async (
     await regularHandler(event)
 
     await snapshotAdapter.saveSnapshot(snapshotKey, {
-      state: aggregateState,
+      state: serializeState(aggregateState),
       version: aggregateVersion,
       timestamp: lastTimestamp - 1
     })
@@ -76,8 +90,7 @@ const getAggregateState = async (
   await eventStore.loadEvents(
     {
       aggregateIds: [aggregateId],
-      startTime: lastTimestamp - 1,
-      skipBus: true
+      startTime: lastTimestamp - 1
     },
     snapshotAdapter != null && snapshotKey != null
       ? snapshotHandler
@@ -105,6 +118,10 @@ const executeCommand = async (
     eventStore,
     snapshotAdapter
   )
+
+  if (!aggregate.commands.hasOwnProperty(type)) {
+    throw new CommandError(`command type ${type} does not exist`)
+  }
 
   const handler = aggregate.commands[type]
   const event = await handler(
@@ -151,14 +168,24 @@ export default ({ eventStore, aggregates, snapshotAdapter }) => {
     return result
   }, {})
 
-  return async ({ jwtToken, ...command }) => {
-    await verifyCommand(command)
-    const aggregateName = command.aggregateName
+  const api = {
+    executeCommand: async ({ jwtToken, ...command }) => {
+      await verifyCommand(command)
+      const aggregateName = command.aggregateName
 
-    if (!executors.hasOwnProperty(aggregateName)) {
-      throw new Error(`Aggregate ${aggregateName} does not exist`)
+      if (!executors.hasOwnProperty(aggregateName)) {
+        throw new Error(`Aggregate ${aggregateName} does not exist`)
+      }
+
+      return executors[aggregateName](command, jwtToken)
+    },
+    dispose: async () => {
+      // TODO
     }
-
-    return executors[aggregateName](command, jwtToken)
   }
+
+  const executeCommand = (...args) => api.executeCommand(...args)
+  Object.assign(executeCommand, api)
+
+  return executeCommand
 }

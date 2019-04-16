@@ -4,7 +4,7 @@ const convertCodepage = (content, fromEncoding, toEncoding) =>
   iconv.decode(iconv.encode(content, fromEncoding), toEncoding)
 
 const wrapAuthRequest = req => {
-  if (req.body == null && req.headers['content-type'] == null) {
+  if (req.body == null || req.headers['content-type'] == null) {
     return req
   }
 

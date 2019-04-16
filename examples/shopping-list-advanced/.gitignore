@@ -69,3 +69,6 @@ event-storage.db
 package-lock.json
 native/resolve
 yarn.lock
+code.zip
+static.zip
+

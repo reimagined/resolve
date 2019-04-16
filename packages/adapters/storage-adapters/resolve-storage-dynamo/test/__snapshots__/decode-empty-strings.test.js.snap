@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`method "decodeEmptyStrings" should decode empty strings 1`] = `
+Object {
+  "key1": "text-value",
+  "key2": 100500,
+  "key3": Array [
+    "text",
+    10,
+    20,
+    null,
+    Object {
+      "key1": "text-value",
+      "key2": 100500,
+      "key3": Array [
+        "text",
+        10,
+        20,
+        null,
+      ],
+      "key4": Object {
+        "key1": 500100,
+        "key2": "text-value",
+        "key3": Array [
+          "text",
+          10,
+          20,
+          null,
+        ],
+      },
+    },
+  ],
+  "key4": Object {
+    "key1": 500100,
+    "key2": "text-value",
+    "key3": Array [
+      "text",
+      10,
+      20,
+      null,
+    ],
+    "key4": Object {
+      "key1": 500100,
+      "key2": "text-value",
+      "key3": Array [
+        "text",
+        10,
+        20,
+        null,
+      ],
+    },
+  },
+  "key5": null,
+}
+`;

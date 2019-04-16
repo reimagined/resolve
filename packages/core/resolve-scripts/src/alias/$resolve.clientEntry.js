@@ -3,7 +3,7 @@ import resolveFile from '../resolve_file'
 export default ({ resolveConfig }) => {
   const clientIndexPath = resolveFile(
     resolveConfig.index,
-    'resolve-runtime/lib/defaults/client_index.js'
+    'resolve-runtime/lib/common/defaults/client-index.js'
   )
 
   const exports = [

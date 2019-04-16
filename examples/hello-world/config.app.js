@@ -12,7 +12,7 @@ const appConfig = {
       name: 'read-model-name',
       projection: 'common/read-models/read-model-name.projection.js',
       resolvers: 'common/read-models/read-model-name.resolvers.js',
-      adapterName: 'default'
+      connectorName: 'default'
     }
   ],
   viewModels: [
@@ -22,13 +22,6 @@ const appConfig = {
       serializeState: 'common/view-models/view-model-name.serialize_state.js',
       deserializeState:
         'common/view-models/view-model-name.deserialize_state.js'
-    }
-  ],
-  sagas: [
-    {
-      name: 'saga-name',
-      cronHandlers: 'common/sagas/saga-name.cron.js',
-      eventHandlers: 'common/sagas/saga-name.event.js'
     }
   ],
   redux: {

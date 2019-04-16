@@ -6,6 +6,7 @@ import Splitter from '../components/Splitter'
 import Header from './Header'
 import LoginInfo from './LoginInfo'
 import Image from './Image'
+import Search from './Search'
 
 const ContentRoot = styled.div`
   width: 90%;
@@ -95,8 +96,10 @@ const App = ({ children }) => (
         <Splitter color="white" />
         <NormalLink to="/submit">submit</NormalLink>
         <LoginInfo />
+        <Search />
       </PageHeader>
       <Content>{children}</Content>
+
       <Footer>
         <FooterLink href="https://github.com/reimagined/resolve">
           reimagined/resolve

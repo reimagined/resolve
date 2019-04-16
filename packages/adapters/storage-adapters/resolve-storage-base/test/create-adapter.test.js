@@ -23,7 +23,7 @@ test('createAdapter should return the correct interface', async () => {
     .callsFake(func => async (...args) => await func(...args))
   const wrapDispose = sinon
     .stub()
-    .callsFake(func => async (...args) => await func(...args))
+    .callsFake((pool, func) => async (...args) => await func(...args))
 
   const prepare = sinon.stub()
   const options = {}
@@ -53,5 +53,5 @@ test('createAdapter should return the correct interface', async () => {
   expect(saveEvent.callCount).toEqual(1)
   expect(dispose.callCount).toEqual(1)
 
-  expect(wrapMethod.callCount).toEqual(5)
+  expect(wrapMethod.callCount).toEqual(4)
 })

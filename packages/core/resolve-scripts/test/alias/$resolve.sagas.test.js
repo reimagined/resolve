@@ -7,10 +7,10 @@ describe('base config works correctly', () => {
     sagas: [
       {
         name: 'Saga',
-        cronHandlers: path.resolve(__dirname, 'files/testSagaCronHandlers.js'),
-        eventHandlers: path.resolve(__dirname, 'files/testSagaEventHandlers.js')
+        source: path.resolve(__dirname, 'files/testSagaCronHandlers.js')
       }
-    ]
+    ],
+    schedulers: {}
   }
 
   test('[client]', () => {

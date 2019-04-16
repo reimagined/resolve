@@ -1,31 +1,80 @@
-import createAdapter from './create-adapter'
-import checkStoreApi from './check-store-api'
-import checkTableSchema from './check-table-schema'
-import bindWithConnection from './bind-with-connection'
-import bindReadModel from './bind-read-model'
-import getLastError from './get-last-error'
-import loadEvents from './load-events'
-import projectionInvoker from './projection-invoker'
-import read from './read'
-import readAndSerialize from './read-and-serialize'
-import updateByEvents from './update-by-events'
-import waitEventCausalConsistency from './wait-event-causal-consistency'
-import disposeReadModel from './dispose-read-model'
-import dispose from './dispose'
+const createAdapter = (implementation, options) => {
+  const { connect, disconnect, dropReadModel, ...storeApi } = implementation
+  const adapterPool = Object.create(null)
+  let connectionPromise = null
+  const connectedReadModels = new Set()
 
-export default createAdapter.bind(
-  null,
-  checkStoreApi,
-  checkTableSchema,
-  bindWithConnection,
-  bindReadModel,
-  getLastError,
-  loadEvents,
-  projectionInvoker,
-  read,
-  readAndSerialize,
-  updateByEvents,
-  waitEventCausalConsistency,
-  disposeReadModel,
-  dispose
-)
+  const doConnect = async readModelName => {
+    if (connectionPromise == null) {
+      connectionPromise = connect(
+        adapterPool,
+        options
+      )
+    }
+    await connectionPromise
+    connectedReadModels.add(readModelName)
+
+    const store = Object.keys(storeApi).reduce((acc, key) => {
+      acc[key] = storeApi[key].bind(null, adapterPool, readModelName)
+      return acc
+    }, {})
+
+    return Object.freeze(Object.create(store))
+  }
+
+  const doDisconnect = async (store, readModelName) => {
+    if (connectionPromise == null) {
+      return
+    }
+    await connectionPromise
+
+    for (const key of Object.keys(Object.getPrototypeOf(store))) {
+      delete Object.getPrototypeOf(store)[key]
+    }
+
+    connectedReadModels.delete(readModelName)
+
+    if (connectedReadModels.size === 0) {
+      await disconnect(adapterPool)
+      connectionPromise = null
+    }
+  }
+
+  const doDrop = async (store, readModelName) => {
+    if (connectionPromise == null) {
+      connectionPromise = connect(
+        adapterPool,
+        options
+      )
+    }
+    connectedReadModels.add(readModelName)
+    await connectionPromise
+
+    await dropReadModel(adapterPool, readModelName)
+
+    connectedReadModels.delete(readModelName)
+
+    if (connectedReadModels.size === 0) {
+      await disconnect(adapterPool)
+      connectionPromise = null
+    }
+  }
+
+  const doDispose = async () => {
+    if (connectionPromise == null) {
+      return
+    }
+    await connectionPromise
+    await disconnect(adapterPool)
+    connectionPromise = null
+  }
+
+  return Object.freeze({
+    connect: doConnect,
+    disconnect: doDisconnect,
+    drop: doDrop,
+    dispose: doDispose
+  })
+}
+
+export default createAdapter
