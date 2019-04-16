@@ -9,6 +9,7 @@ import disconnect from './disconnect'
 import dropReadModel from './drop-read-model'
 import findOne from './find-one'
 import find from './find'
+import getTemplateDocument from './get-template-document'
 import insert from './insert'
 import update from './update'
 import wrapSearchExpression from './wrap-search-expression'
@@ -21,6 +22,7 @@ export default createAdapter.bind(null, {
     MongoClient,
     ObjectID,
     wrapSearchExpression,
+    getTemplateDocument,
     ...store
   }),
   dropReadModel,
