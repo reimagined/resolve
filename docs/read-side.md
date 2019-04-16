@@ -71,6 +71,29 @@ const prodConfig = {
 }
 ```
 
+### Custom Read Models
+
+A custom read model recieves a custom store object that allows you to use custom logic to prepare and store the read model's data.
+
+To create a custom read model, you need to implement a Read Model connector:
+
+##### common/read-models/my-custom-read-model-connector.js
+
+```js
+```
+
+A connector object should define the following functions:
+
+- connect - Initialises a connection to a storage
+- disconnect - Closes the storage connection
+- drop - Removes the read model's data from the storage
+- dispose - Forcefully disposes all unmanaged resources used by read models served by this connector
+
+Specify a path to the custom connector's deffinition in the application's config:
+
+```js
+```
+
 ### Configuring View Models
 
 In the same way, you should register your View Models in the **viewModels** section:
@@ -97,31 +120,6 @@ const appConfig = {
 ```
 
 In the configuration object, specify the View Model's name and the path to the file containing projection definition. You can also specify the View Model snapshot storage adapter. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions.
-
-### Configuring Custom Read Models
-
-All of the application's custom Read Models should be registered in the **config.app.js** file's **customReadModels** section:
-
-```js
-const appConfig = {
-  ...
-  customReadModels: [
-    {
-      name: 'custom',
-      updateByEvents: 'common/custom-read-models/custom.update-by-events.js',
-      getLastError: 'common/custom-read-models/custom.get-last-error.js',
-      readAndSerialize: 'common/custom-read-models/custom.read-and-serialize.js',
-      read: 'common/custom-read-models/custom.read.js',
-      dispose: 'common/custom-read-models/custom.dispose.js'
-    }
-  ],
-  ...
-}
-```
-
-In the configuration object, specify the custom Read Model's name and the paths to the files that define the Read Model's required elements. Custom Read Models do not use any adapter and rely on manually-defined logic to handle events and user requests.
-
-Only the `updateByEvents` and `read` configuration settings are mandatory. If the `getLastError` or `dispose` settings are not specified, such functions do nothing. If the `readAndSerialize` is not specified, it invokes `read` with automatic serialization.
 
 ## Initialize a Read Model
 
@@ -204,6 +202,12 @@ comments: async (store, { first, offset }) => {
 
 Refer to the [Query a Read Model](#query-a-read-model) section to learn how to send a request to a Read Model resolver.
 
+## Custom Read Model Specifics
+
+A custom Read Model is a Read Model that does not use a predefined connector to access a database storage. You need to provide a connector manually The connector can prepare a storage of any type and with any interface. The created storage object is passed to Read Model projection and resolver functions as the first parameter. In all other aspects a custom read model is exactly the same as a regular Read Models.
+
+Use custom read models to apply event data to a custom event type or perfom custom actions on incoming events.
+
 ## View Model Specifics
 
 **View Models** are a special kind of Read Models. They are queried based on aggregate ID and and can automatically provide updates to Redux state on the client. View Models are defined in a special isomorphic format so their code can also be used on the client side to provide reducer logic.
@@ -234,20 +238,6 @@ The code sample below demonstrate a typical View Model projection function:
 Refer to the [Query a View Model](#query-a-view-model) section, to learn how to query a View Model.
 
 Note that a View Model does not use the Read Model store.
-
-## Custom Read Models Specifics
-
-You can implement **custom Read Models** that handle events and answers queries based on custom logic. Custom Read Models do not use adapters and do not involve any internal mechanisms used by regular Read Models. For example, custom Read Models do not use meta tables to filter duplicate and out-of-order events, they do not provide transaction and table locking mechanisms to control data integrity, and so on.
-
-Custom Read Models are defined based on the following handlers:
-
-- `updateByEvents` (mandatory) - Invoked when new events arrive from the event store.
-- `read` (mandatory) - Invoked when a user performs query to the custom Read Model. Internally, this handler can perform any actions, for instance interact with the event store or send requests to external resources.
-- `getLastError` - Allows a custom Read Model to signal that a fatal error has occurred during event processing. If there is no error, the `null` value should be returned. If any other value has been returned, the Read Model's status is set to _failed_ and the `read` handler invocation stops.
-- `readAndSerialize` - Used when the `read` handler's result is not a regular entity, and can not be copied via the [structured copy algorithm](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm). In this case, `readAndSerialize` can return custom serialized value as a query result.
-- `dispose` - Used to free unmanaged resources (for example, like database connections) which maybe have been allocated by the custom Read Model.
-
-Note that custom Read Models do not define an `init` function. If you want to perform initialization, you need to define custom logic to catch the first call of any of the handlers listed above.
 
 ## Performing Queries Using HTTP API
 
@@ -312,7 +302,3 @@ Use the following command to get the current [shopping-list](https://github.com/
 ```sh
 curl -g -X GET "http://localhost:3000/api/query/Default/shoppingLists"
 ```
-
-### Query a Custom Read Model
-
-Querying a Custom Read Model is similar to querying regular a Read Model, but the structure of resolvers and their arguments is not determinate. A custom Read Models receive the `resolveName` and `resolveArgs` as parts of the request object and can use custom logic to process them.
