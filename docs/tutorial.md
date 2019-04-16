@@ -693,7 +693,7 @@ The event payload contains the toggled item's identifier.
 
 In the previous lesson, you connected your ShoppingList to a reSolve View Model. Because of this, the connected component's props already include an array of Redux action creators used to dispatch Redux actions on the client and send the corresponding commands to the reSolve application on the server. To make use of these action creators to implement editing in your application, update the ShoppingList component's View Model binding code as shown below:
 
-**common/view-models/shopping_list.projection.js:**
+**client/containers/ShoppingList.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -721,7 +721,7 @@ In this code, the component is first connected to a **Redux** state using the **
 
 Now the ShoppingList component's props include the **toggleShoppingItem** function.
 
-**common/view-models/shopping_list.projection.js:**
+**client/containers/ShoppingList.js:**
 
 ```js
 render() {
@@ -754,7 +754,7 @@ In the code below, the **toggleShoppingItem** function is used to handle checkbo
 
 In the same way, you can use the **createShoppingItem** function to add new shopping list items. The UI markup is shown below:
 
-**common/view-models/shopping_list.projection.js:**
+**client/containers/ShoppingList.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -787,7 +787,7 @@ In the same way, you can use the **createShoppingItem** function to add new shop
 
 This markup uses the following methods to handle UI interaction.
 
-**common/view-models/shopping_list.projection.js:**
+**client/containers/ShoppingList.js:**
 
 ```js
 createShoppingItem = () => {
