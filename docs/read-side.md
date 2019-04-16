@@ -73,9 +73,12 @@ const prodConfig = {
 
 ### Custom Read Models
 
-A custom read model recieves a custom store object that allows you to use custom logic to prepare and store the read model's data.
+To create a custom Read Model, you need to manually implement a Read Model connector. A connector defines functions that manage a custom Read Model's store. The following functions can be defined:
 
-To create a custom read model, you need to implement a Read Model connector:
+- **connect** - Initialises a connection to a storage.
+- **disconnect** - Closes the storage connection.
+- **drop** - Removes the Read Model's data from the storage.
+- **dispose** - Forcefully disposes all unmanaged resources used by Read Models served by this connector.
 
 ##### common/read-models/my-custom-read-model-connector.js
 
@@ -83,11 +86,6 @@ To create a custom read model, you need to implement a Read Model connector:
 ```
 
 A connector object should define the following functions:
-
-- connect - Initialises a connection to a storage
-- disconnect - Closes the storage connection
-- drop - Removes the read model's data from the storage
-- dispose - Forcefully disposes all unmanaged resources used by read models served by this connector
 
 Specify a path to the custom connector's deffinition in the application's config:
 
