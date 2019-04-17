@@ -1,3 +1,4 @@
+// mdis-start
 const projection = {
   Init: async store => {
     // mdis-start read-store-api
@@ -145,3 +146,4 @@ const projection = {
 }
 
 export default projection
+// mdis-stop

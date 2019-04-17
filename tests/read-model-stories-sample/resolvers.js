@@ -1,3 +1,4 @@
+// mdis-start
 const resolvers = {
   getStoryById: async (store, { id }) => {
     return await store.findOne('Stories', { id })
@@ -43,3 +44,4 @@ const resolvers = {
 }
 
 export default resolvers
+// mdis-stop
