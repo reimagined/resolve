@@ -95,7 +95,7 @@ const updateToSetExpression = (
     }
   }
 
-  return updateExprArray.join(', ')
+  return updateExprArray
 }
 
 export default updateToSetExpression

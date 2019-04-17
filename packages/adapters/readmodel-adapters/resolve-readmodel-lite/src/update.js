@@ -41,7 +41,7 @@ const update = async (
     escape,
     makeNestedPath
   )
-  const updateExpr = updateToSetExpression(
+  const updateExprArray = updateToSetExpression(
     updateExpression,
     escapeId,
     escape,
@@ -51,10 +51,12 @@ const update = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  await runQuery(
-    `UPDATE ${escapeId(`${tablePrefix}${tableName}`)}
-    SET ${updateExpr} ${inlineSearchExpr}`
-  )
+  for (const updateExpr of updateExprArray) {
+    await runQuery(
+      `UPDATE ${escapeId(`${tablePrefix}${tableName}`)}
+      SET ${updateExpr} ${inlineSearchExpr}`
+    )
+  }
 }
 
 export default update
