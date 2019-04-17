@@ -72,88 +72,6 @@ const prodConfig = {
 }
 ```
 
-### Custom Read Models
-
-To create a custom Read Model, you need to manually implement a Read Model connector. A connector defines functions that manage a custom Read Model's store. The following functions can be defined:
-
-- **connect** - Initialises a connection to a storage.
-- **disconnect** - Closes the storage connection.
-- **drop** - Removes the Read Model's data from the storage.
-- **dispose** - Forcefully disposes all unmanaged resources used by Read Models served by this connector.
-
-##### common/read-models/custom-read-model-connector.js
-
-<!-- prettier-ignore-start -->
-
-
-[mdis]:# (../tests/custom-readmodel-sample/connector.js)
-```js
-export default options => {
-  const prefix = String(options.prefix)
-  const readModels = new Set()
-  const connect = async readModelName => {
-    fs.writeFileSync(`${prefix}${readModelName}.lock`, true, { flag: 'wx' })
-    readModels.add(readModelName)
-    const store = {
-      get() {
-        return JSON.parse(String(fs.readFileSync(`${prefix}${readModelName}`)))
-      },
-      set(value) {
-        fs.writeFileSync(`${prefix}${readModelName}`, JSON.stringify(value))
-      }
-    }
-    return store
-  }
-  const disconnect = async (store, readModelName) => {
-    fs.unlinkSync(`${prefix}${readModelName}.lock`)
-    readModels.delete(readModelName)
-  }
-  const drop = async (store, readModelName) => {
-    fs.unlinkSync(`${prefix}${readModelName}.lock`)
-    fs.unlinkSync(`${prefix}${readModelName}`)
-  }
-  const dispose = async () => {
-    for (const readModelName of readModels) {
-      fs.unlinkSync(`${prefix}${readModelName}.lock`)
-    }
-    readModels.clear()
-  }
-  return {
-    connect,
-    disconnect,
-    drop,
-    dispose
-  }
-}
-```
-
-<!-- prettier-ignore-end -->
-
-Register the connector in the application's config.
-
-#####
-
-```js
-const devConfig = {
-  ...
-  readModelConnectors: {
-    elasticSearch: {
-      module: 'common/read-models/custom-read-model-connector.js',
-      options: {
-        prefix: path.join(__dirname, 'data') + path.sep // Path to store files for the custom Read Model
-      }
-    }
-  }
-}
-
-export default devConfig
-```
-
-Specify a path to the custom connector's deffinition in the application's config:
-
-```js
-```
-
 ### Configuring View Models
 
 You should register your View Models in the **viewModels** section in the same way:
@@ -259,12 +177,6 @@ comments: async (store, { first, offset }) => {
 ```
 
 Refer to the [Query a Read Model](#query-a-read-model) section for information on how to send a request to a Read Model resolver.
-
-## Custom Read Model Specifics
-
-A custom Read Model is a Read Model that does not use a predefined connector to access a database storage. You need to provide a connector manually The connector can prepare a storage of any type and with any interface. The created storage object is passed to Read Model projection and resolver functions as the first parameter. In all other aspects a custom read model is exactly the same as a regular Read Models.
-
-Use custom read models to apply event data to a custom event type or perfom custom actions on incoming events.
 
 ## View Model Specifics
 
