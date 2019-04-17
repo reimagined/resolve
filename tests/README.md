@@ -4,7 +4,7 @@ This directory contains API and integration tests for the reSolve framework.
 
 ## Read model store API example
 
-[mdis]:# (./read-models-sample/projection.js#read-store-api)
+[mdis]:# (./read-model-advanced-sample/projection.js#read-store-api)
 ```js
 await store.defineTable('TestTable', {
   indexes: {
