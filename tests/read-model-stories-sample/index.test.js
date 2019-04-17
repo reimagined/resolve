@@ -190,4 +190,138 @@ describe('Read-model sample', () => {
         .getCountStories()
     ).toMatchSnapshot(`getCountStories()`)
   })
+
+  test(`resolve "getStoriesByIds" ({ ids: ['story-id-1', 'story-id-2', 'story-id-3', 'story-id-4', 'story-id-5'] })`, async () => {
+    expect(
+      await givenEvents(events)
+        .readModel({
+          name: 'Stories',
+          projection,
+          resolvers,
+          adapter
+        })
+        .getStoriesByIds({
+          ids: [
+            'story-id-1',
+            'story-id-2',
+            'story-id-3',
+            'story-id-4',
+            'story-id-5'
+          ]
+        })
+    ).toMatchSnapshot(
+      `.getStoriesByIds({ ids: ['story-id-1', 'story-id-2', 'story-id-3', 'story-id-4', 'story-id-5'] })`
+    )
+  })
+
+  test(`resolve "getStoriesByPage" ({ skip: 0, limit: 2, ascending: true })`, async () => {
+    expect(
+      await givenEvents(events)
+        .readModel({
+          name: 'Stories',
+          projection,
+          resolvers,
+          adapter
+        })
+        .getStoriesByPage({ skip: 0, limit: 2, ascending: true })
+    ).toMatchSnapshot(
+      `.getStoriesByPage({ skip: 0, limit: 2, ascending: true })`
+    )
+  })
+
+  test(`resolve "getStoriesByPage" ({ skip: 2, limit: 2, ascending: true })`, async () => {
+    expect(
+      await givenEvents(events)
+        .readModel({
+          name: 'Stories',
+          projection,
+          resolvers,
+          adapter
+        })
+        .getStoriesByPage({ skip: 2, limit: 2, ascending: true })
+    ).toMatchSnapshot(
+      `.getStoriesByPage({ skip: 2, limit: 2, ascending: true })`
+    )
+  })
+
+  test(`resolve "getStoriesByPage" ({ skip: 0, limit: 2, ascending: false })`, async () => {
+    expect(
+      await givenEvents(events)
+        .readModel({
+          name: 'Stories',
+          projection,
+          resolvers,
+          adapter
+        })
+        .getStoriesByPage({ skip: 0, limit: 2, ascending: false })
+    ).toMatchSnapshot(
+      `.getStoriesByPage({ skip: 0, limit: 2, ascending: false })`
+    )
+  })
+
+  test(`resolve "getStoriesByPage" ({ skip: 2, limit: 2, ascending: false })`, async () => {
+    expect(
+      await givenEvents(events)
+        .readModel({
+          name: 'Stories',
+          projection,
+          resolvers,
+          adapter
+        })
+        .getStoriesByPage({ skip: 2, limit: 2, ascending: false })
+    ).toMatchSnapshot(
+      `.getStoriesByPage({ skip: 2, limit: 2, ascending: false })`
+    )
+  })
+
+  test(`resolve "getStoriesWithRangedVersion" ({ minVersion: 1, maxVersion: 3, openRange: false })`, async () => {
+    expect(
+      await givenEvents(events)
+        .readModel({
+          name: 'Stories',
+          projection,
+          resolvers,
+          adapter
+        })
+        .getStoriesWithRangedVersion({
+          minVersion: 1,
+          maxVersion: 3,
+          openRange: false
+        })
+    ).toMatchSnapshot(
+      `.getStoriesWithRangedVersion({ minVersion: 1, maxVersion: 3, openRange: false })`
+    )
+  })
+
+  test(`resolve "getStoriesWithRangedVersion" ({ minVersion: 1, maxVersion: 3, openRange: true })`, async () => {
+    expect(
+      await givenEvents(events)
+        .readModel({
+          name: 'Stories',
+          projection,
+          resolvers,
+          adapter
+        })
+        .getStoriesWithRangedVersion({
+          minVersion: 1,
+          maxVersion: 3,
+          openRange: true
+        })
+    ).toMatchSnapshot(
+      `.getStoriesWithRangedVersion({ minVersion: 1, maxVersion: 3, openRange: true })`
+    )
+  })
+
+  test(`resolve "getStoryVersionById" ({ id: 'story-id-1' })`, async () => {
+    expect(
+      await givenEvents(events)
+        .readModel({
+          name: 'Stories',
+          projection,
+          resolvers,
+          adapter
+        })
+        .getStoryVersionById({ id: 'story-id-1' })
+    ).toMatchSnapshot(`.getStoryVersionById({ id: 'story-id-1' })`)
+  })
 })

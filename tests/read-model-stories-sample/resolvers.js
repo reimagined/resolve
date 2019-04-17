@@ -12,7 +12,7 @@ const resolvers = {
   getStoriesByPage: async (store, { skip, limit, ascending = true }) => {
     return await store.find(
       'Stories',
-      null,
+      {},
       null,
       { id: ascending ? 1 : -1 },
       skip,
@@ -33,7 +33,8 @@ const resolvers = {
   },
 
   getStoryVersionById: async (store, { id }) => {
-    return await store.findOne('Stories', { id }, { version: 1 })
+    const { version } = await store.findOne('Stories', { id }, { version: 1 })
+    return version
   },
 
   getCountStories: async store => {

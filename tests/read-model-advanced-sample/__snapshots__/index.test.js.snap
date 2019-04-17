@@ -63,8 +63,8 @@ Object {
     Object {
       "firstJsonName": Object {
         "c": 3,
-        "d": 4,
         "e": 25,
+        "f": "inner-field",
       },
     },
     Object {
@@ -82,8 +82,8 @@ Array [
   Object {
     "firstJsonName": Object {
       "c": 3,
-      "d": 4,
       "e": 25,
+      "f": "inner-field",
     },
   },
   Object {

@@ -15,8 +15,8 @@ describe('Read-model Comments sample', () => {
     // adapter = createReadModelMYSQLAdapter({
     //   host: 'localhost',
     //   port: 3306,
-    //   user: 'qqq',
-    //   password: 'qqq',
+    //   user: 'root',
+    //   password: '',
     //   database: `Comments`
     // })
     // adapter = createReadModelMongoAdapter({

@@ -15,12 +15,12 @@ describe('Read-model generic adapter API', () => {
     // adapter = createReadModelMYSQLAdapter({
     //   host: 'localhost',
     //   port: 3306,
-    //   user: 'qqq',
-    //   password: 'qqq',
-    //   database: `SimpleSample`
+    //   user: 'root',
+    //   password: '',
+    //   database: `Advanced`
     // })
     // adapter = createReadModelMongoAdapter({
-    //   url: 'mongodb://127.0.0.1:27017/SimpleSample'
+    //   url: 'mongodb://127.0.0.1:27017/Advanced'
     // })
     try {
       await adapter.drop(null, 'ReadModelName')
