@@ -2,8 +2,6 @@
 
 This directory contains API and integration tests for the reSolve framework.
 
-## Read model custom connector API example
-
 ## Read model "Stories"
 
 #### Projection
@@ -257,6 +255,7 @@ const resolvers = {
 }
 export default resolvers
 ```
+## Read model custom connector API example
 
 [mdis]:# (./custom-readmodel-sample/connector.js)
 ```js
