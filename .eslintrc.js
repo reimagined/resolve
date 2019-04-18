@@ -35,6 +35,7 @@ module.exports = {
     'object-curly-spacing': ['error', 'always'],
     'no-unused-vars': ['error', { args: 'after-used' }],
     'max-len': 'off',
+    'no-control-regex': 'off',
     'eol-last': ['error', 'always'],
     'no-console': ['error'],
     'spellcheck/spell-checker': [

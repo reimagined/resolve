@@ -64,6 +64,7 @@ const connect = async (imports, pool, options) => {
 
   Object.assign(pool, {
     getCollection: getCollection.bind(null, pool),
+    templateDocuments: new Map(),
     connectionOptions,
     url,
     tablePrefix,

@@ -8,7 +8,12 @@ const convertBinaryRow = (row, readModelName, fieldList) => {
   Object.setPrototypeOf(row, Object.prototype)
   delete row[`RESOLVE-${readModelName}`]
   for (const key of Object.keys(row)) {
-    row[key] = JSON.parse(row[key])
+    row[key] = JSON.parse(
+      String(row[key])
+        .replace(/\u001a2/g, '.')
+        .replace(/\u001a1/g, '"')
+        .replace(/\u001a0/g, '\u001a')
+    )
   }
 
   if (fieldList == null) {

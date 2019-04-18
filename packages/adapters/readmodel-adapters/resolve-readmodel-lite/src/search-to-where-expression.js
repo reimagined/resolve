@@ -1,10 +1,45 @@
 const compareOperatorsMap = new Map([
-  ['$eq', '='],
-  ['$ne', '<>'],
-  ['$lte', '<='],
-  ['$gte', '>='],
-  ['$lt', '<'],
-  ['$gt', '>']
+  [
+    '$eq',
+    (a, b) => `
+    (((${a} = ${b}) and (not (${a} is null)) and (not (${b} is null))) or      
+    ((${a} is null) and (${b} is null)))
+  `
+  ],
+  [
+    '$ne',
+    (a, b) => `
+    (((${a} <> ${b}) and (not (${a} is null)) and (not (${b} is null))) or      
+    ((${a} is null) and (not (${b} is null)) ) or                           
+    ((${b} is null) and (not (${a} is null)) ))
+  `
+  ],
+  [
+    '$lte',
+    (a, b) => `
+    (((${a} <= ${b}) and (not (${a} is null)) and (not (${b} is null))) or
+    ((${a} is null) and (${b} is null)))
+  `
+  ],
+  [
+    '$gte',
+    (a, b) => `
+    (((${a} >= ${b}) and (not (${a} is null)) and (not (${b} is null))) or
+    ((${a} is null) and (${b} is null)))
+  `
+  ],
+  [
+    '$lt',
+    (a, b) => `
+    (((${a} < ${b}) and (not (${a} is null)) and (not (${b} is null))))
+  `
+  ],
+  [
+    '$gt',
+    (a, b) => `
+    (((${a} > ${b}) and (not (${a} is null)) and (not (${b} is null))))
+  `
+  ]
 ])
 
 const searchToWhereExpression = (
@@ -40,11 +75,12 @@ const searchToWhereExpression = (
           ? `json(CAST(${escape(JSON.stringify(fieldValue))} AS BLOB))`
           : `json(CAST(${escape('null')} AS BLOB))`
 
-      const resultOperator = compareOperatorsMap.get(fieldOperator)
-
-      searchExprArray.push(
-        `${resultFieldName} ${resultOperator} ${compareInlinedValue}`
+      const resultExpression = compareOperatorsMap.get(fieldOperator)(
+        resultFieldName,
+        compareInlinedValue
       )
+
+      searchExprArray.push(resultExpression)
     }
 
     return searchExprArray.join(' AND ')

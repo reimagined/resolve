@@ -8,8 +8,25 @@ const runQuery = async (pool, querySQL) => {
   return rows
 }
 
-const makeNestedPath = nestedPath =>
-  `$.${nestedPath.map(JSON.stringify).join('.')}`
+const makeNestedPath = nestedPath => {
+  let result = '$'
+  for (const part of nestedPath) {
+    if (part == null || part.constructor !== String) {
+      throw new Error('Invalid JSON path')
+    }
+    const invariant = Number(part)
+    if (!isNaN(invariant)) {
+      result += `[${invariant}]`
+    } else {
+      result += `.${part
+        .replace(/\u001a/g, '\u001a0')
+        .replace(/"/g, '\u001a1')
+        .replace(/\./g, '\u001a2')}`
+    }
+  }
+
+  return result
+}
 
 const connect = async (imports, pool, options) => {
   let { tablePrefix, databaseFile, ...connectionOptions } = options

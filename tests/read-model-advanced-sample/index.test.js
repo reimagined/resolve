@@ -1,17 +1,35 @@
 import givenEvents from 'resolve-testing-tools'
-import createReadModelAdapter from 'resolve-readmodel-lite'
+import createReadModelLiteAdapter from 'resolve-readmodel-lite'
+// import createReadModelMYSQLAdapter from 'resolve-readmodel-mysql'
+// import createReadModelMongoAdapter from 'resolve-readmodel-mongo'
 
 import projection from './projection'
 import resolvers from './resolvers'
 
 describe('Read-model generic adapter API', () => {
   let adapter = null
-  beforeEach(() => {
-    adapter = createReadModelAdapter({
+  beforeEach(async () => {
+    adapter = createReadModelLiteAdapter({
       databaseFile: ':memory:'
     })
+    // adapter = createReadModelMYSQLAdapter({
+    //   host: 'localhost',
+    //   port: 3306,
+    //   user: 'root',
+    //   password: '',
+    //   database: `Advanced`
+    // })
+    // adapter = createReadModelMongoAdapter({
+    //   url: 'mongodb://127.0.0.1:27017/Advanced'
+    // })
+    try {
+      await adapter.drop(null, 'ReadModelName')
+    } catch (e) {}
   })
-  afterEach(() => {
+  afterEach(async () => {
+    try {
+      await adapter.drop(null, 'ReadModelName')
+    } catch (e) {}
     adapter = null
   })
 
