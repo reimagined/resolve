@@ -17,6 +17,11 @@ const initSaga = async ({ promise, transformEvents }) => {
 
     for (const event of transformEvents(events)) {
       const handler = handlers[event.type]
+
+      if (handler === undefined) {
+        continue
+      }
+
       if (typeof handler !== 'function') {
         throw new TypeError()
       }
