@@ -14,6 +14,7 @@ const projection = {
       fields: ['text', 'version', 'active']
     })
   },
+
   STORY_CREATED: async (store, event) => {
     await store.insert('Stories', {
       id: event.aggregateId,
@@ -22,6 +23,7 @@ const projection = {
       version: 0
     })
   },
+
   STORY_UPDATED: async (store, event) => {
     await store.update(
       'Stories',
@@ -38,6 +40,7 @@ const projection = {
       }
     )
   },
+
   STORY_FLAGGED_FOR_DELETION: async (store, event) => {
     await store.update(
       'Stories',
@@ -51,6 +54,7 @@ const projection = {
       }
     )
   },
+
   STORY_DELETED: async (store, event) => {
     await store.delete('Stories', {
       id: event.aggregateId,
@@ -58,6 +62,7 @@ const projection = {
     })
   }
 }
+
 export default projection
 ```
 
@@ -68,11 +73,13 @@ const resolvers = {
   getStoryById: async (store, { id }) => {
     return await store.findOne('Stories', { id })
   },
+
   getStoriesByIds: async (store, { ids }) => {
     return await store.find('Stories', {
       $or: ids.map(storyId => ({ id: { $eq: storyId } }))
     })
   },
+
   getStoriesByPage: async (store, { skip, limit, ascending = true }) => {
     return await store.find(
       'Stories',
@@ -83,6 +90,7 @@ const resolvers = {
       skip + limit
     )
   },
+
   getStoriesWithRangedVersion: async (
     store,
     { minVersion, maxVersion, openRange = false }
@@ -94,14 +102,17 @@ const resolvers = {
       ]
     })
   },
+
   getStoryVersionById: async (store, { id }) => {
     const { version } = await store.findOne('Stories', { id }, { version: 1 })
     return version
   },
+
   getCountStories: async store => {
     return await store.count('Stories', {})
   }
 }
+
 export default resolvers
 ```
 
@@ -111,31 +122,37 @@ export default resolvers
 [mdis]:# (./read-model-comments-sample/projection.js)
 ```js
 const treeId = 'tree-id'
+
 const projection = {
   Init: async store => {
     await store.defineTable('CommentsAsMap', {
       indexes: { treeId: 'string' },
       fields: ['comments']
     })
+
     await store.defineTable('CommentsAsList', {
       indexes: { treeId: 'string' },
       fields: ['comments', 'commentsCount']
     })
+
     await store.insert('CommentsAsMap', {
       treeId,
       comments: {}
     })
+
     await store.insert('CommentsAsList', {
       treeId,
       comments: [],
       commentsCount: 0
     })
   },
+
   COMMENT_CREATED: async (store, event) => {
     const {
       aggregateId,
       payload: { parentId, content }
     } = event
+
     await store.update(
       'CommentsAsMap',
       {
@@ -153,6 +170,7 @@ const projection = {
         }
       }
     )
+
     if (parentId != null) {
       await store.update(
         'CommentsAsMap',
@@ -169,6 +187,7 @@ const projection = {
         }
       )
     }
+
     const { commentsCount } = await store.findOne(
       'CommentsAsList',
       {
@@ -178,6 +197,7 @@ const projection = {
         commentsCount: 1
       }
     )
+
     if (parentId != null) {
       const comments = (await store.findOne(
         'CommentsAsList',
@@ -188,9 +208,11 @@ const projection = {
           comments: 1
         }
       )).comments
+
       const parentIndex = comments.findIndex(
         ({ aggregateId }) => aggregateId === parentId
       )
+
       await store.update(
         'CommentsAsList',
         {
@@ -206,6 +228,7 @@ const projection = {
         }
       )
     }
+
     await store.update(
       'CommentsAsList',
       {
@@ -228,6 +251,7 @@ const projection = {
     )
   }
 }
+
 export default projection
 ```
 
@@ -235,17 +259,20 @@ export default projection
 [mdis]:# (./read-model-comments-sample/resolvers.js)
 ```js
 const treeId = 'tree-id'
+
 const resolvers = {
   getComments: async store => {
     const { comments: commentsMap } = await store.findOne('CommentsAsMap', {
       treeId
     })
+
     const {
       comments: commentsList,
       commentsCount: commentsListLength
     } = await store.findOne('CommentsAsList', {
       treeId
     })
+
     return {
       commentsMap,
       commentsListLength,
@@ -253,6 +280,7 @@ const resolvers = {
     }
   }
 }
+
 export default resolvers
 ```
 ## Read model custom connector API example

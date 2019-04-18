@@ -1,4 +1,3 @@
-// mdis-start
 const projection = {
   Init: async store => {
     await store.defineTable('Stories', {
@@ -56,4 +55,3 @@ const projection = {
 }
 
 export default projection
-// mdis-stop
