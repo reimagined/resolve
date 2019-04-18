@@ -334,14 +334,13 @@ export default {
     Init: async ({ store }) => {
       await store.defineTable('users', {
         indexes: { id: 'string' },
-        fields: ['mail', 'confirmed']
+        fields: ['mail']
       })
     },
     USER_CREATED: async ({ store, executeCommand }, event) => {
       await store.insert('users', {
         id: event.aggregateId,
-        mail: event.payload.mail,
-        confirmed: false
+        mail: event.payload.mail
       })
       await executeCommand({
         aggregateName: 'User',
@@ -358,17 +357,6 @@ export default {
         type: 'forgetUser',
         payload: {}
       })
-    },
-    USER_CONFIRMED: async ({ store }, event) => {
-      await store.update(
-        'users',
-        {
-          id: event.aggregateId
-        },
-        {
-          $set: { confirmed: true }
-        }
-      )
     },
     USER_FORGOTTEN: async ({ store }, event) => {
       await store.delete('users', {
