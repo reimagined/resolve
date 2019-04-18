@@ -1,4 +1,3 @@
-// mdis-start
 const treeId = 'tree-id'
 
 const projection = {
@@ -131,4 +130,3 @@ const projection = {
 }
 
 export default projection
-// mdis-stop

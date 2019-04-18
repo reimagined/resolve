@@ -1,4 +1,3 @@
-// mdis-start
 const resolvers = {
   NON_PARAMETERIZED_RESOLVER_TEST: async store => {
     const searchExpression = { firstIndexName: { $gte: 1 } }
@@ -68,4 +67,3 @@ const resolvers = {
 }
 
 export default resolvers
-// mdis-stop
