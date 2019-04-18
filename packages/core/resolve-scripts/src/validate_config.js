@@ -18,21 +18,25 @@ const allowedMethods = [
 ]
 
 export const validateReadModelConnectors = resolveConfig => {
-  for (const { connectorName } of resolveConfig.readModels) {
+  for (const { connectorName } of [
+    ...resolveConfig.readModels,
+    ...resolveConfig.sagas
+  ]) {
     if (resolveConfig.readModelConnectors[connectorName] == null) {
       throw new Error(
-        `The "${connectorName}" read model adapter is required but not specified`
+        `The "${connectorName}" read model connector is required but not specified`
       )
     }
   }
 
   for (const name of Object.keys(resolveConfig.readModelConnectors)) {
-    const findResult = resolveConfig.readModels.find(
-      ({ connectorName }) => connectorName === name
-    )
+    const findResult = [
+      ...resolveConfig.readModels,
+      ...resolveConfig.sagas
+    ].find(({ connectorName }) => connectorName === name)
     if (!findResult) {
       throw new Error(
-        `The "${name}" read model adapter is specified but no read model uses it`
+        `The "${name}" read model connector is specified but no read model/saga uses it`
       )
     }
   }
