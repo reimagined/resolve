@@ -28,6 +28,10 @@ const defineTable = async (
     root[indexName] = rootId
   }
 
+  for (const fieldName of tableDescription.fields) {
+    root[fieldName] = 0
+  }
+
   await collection.insertOne(root)
 }
 

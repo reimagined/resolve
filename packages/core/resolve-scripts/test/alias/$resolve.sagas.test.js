@@ -4,6 +4,7 @@ import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
   const resolveConfig = {
+    readModels: [],
     sagas: [
       {
         name: 'Saga',

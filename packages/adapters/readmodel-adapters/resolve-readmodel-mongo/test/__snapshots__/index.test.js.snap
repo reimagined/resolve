@@ -29,11 +29,22 @@ Array [
       "_id": "5265736f6c7665526f6f7400",
       "id": "5265736f6c7665526f6f7400",
       "readModelName": "readModelName1",
+      "test": 0,
     },
   ],
   Array [
     "collection",
     "table1",
+  ],
+  Array [
+    "collection",
+    "table1",
+  ],
+  Array [
+    "findOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
   ],
   Array [
     "insertOne",
@@ -72,11 +83,22 @@ Array [
       "_id": "5265736f6c7665526f6f7400",
       "id": "5265736f6c7665526f6f7400",
       "readModelName": "readModelName2",
+      "test": 0,
     },
   ],
   Array [
     "collection",
     "table2",
+  ],
+  Array [
+    "collection",
+    "table2",
+  ],
+  Array [
+    "findOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
   ],
   Array [
     "insertOne",
@@ -181,12 +203,23 @@ Array [
     Object {
       "_id": "5265736f6c7665526f6f7400",
       "id": "5265736f6c7665526f6f7400",
+      "name": 0,
       "readModelName": "readModelName",
     },
   ],
   Array [
     "collection",
     "Entries",
+  ],
+  Array [
+    "collection",
+    "Entries",
+  ],
+  Array [
+    "findOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
   ],
   Array [
     "insertOne",
@@ -429,13 +462,25 @@ Array [
     "insertOne",
     Object {
       "_id": "5265736f6c7665526f6f7400",
+      "createdAt": 0,
       "id": "5265736f6c7665526f6f7400",
+      "name": 0,
       "readModelName": "readModelName",
     },
   ],
   Array [
     "collection",
     "ShoppingLists",
+  ],
+  Array [
+    "collection",
+    "ShoppingLists",
+  ],
+  Array [
+    "findOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
   ],
   Array [
     "insertOne",

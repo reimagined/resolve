@@ -23,17 +23,21 @@ const wrapRegularSagas = sagas => {
 
     const eventTypes = Object.keys(handlers)
 
+    let wrappedSideEffects = {}
     let doSideEffects = true
-    const wrappedSideEffects = Object.keys(sideEffects).reduce((acc, key) => {
-      acc[key] = async (...args) => {
-        if (!doSideEffects) return
-        const result = await sideEffects[key](...args)
-        if (result !== undefined) {
-          throw new Error('Side effect should not return any values')
+
+    if (sideEffects != null && sideEffects.constructor === Object) {
+      wrappedSideEffects = Object.keys(sideEffects).reduce((acc, key) => {
+        acc[key] = async (...args) => {
+          if (!doSideEffects) return
+          const result = await sideEffects[key](...args)
+          if (result !== undefined) {
+            throw new Error('Side effect should not return any values')
+          }
         }
-      }
-      return acc
-    }, {})
+        return acc
+      }, {})
+    }
 
     Object.defineProperty(sagaReadModel, 'projection', {
       get: function() {

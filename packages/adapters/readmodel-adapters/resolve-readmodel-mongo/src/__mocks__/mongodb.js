@@ -21,6 +21,7 @@ const collection = {
   },
   findOne: (...args) => {
     result.push(['findOne', ...args])
+    return {}
   },
   find: (...args) => {
     result.push(['find', ...args])

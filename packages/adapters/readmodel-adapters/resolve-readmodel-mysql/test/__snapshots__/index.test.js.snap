@@ -136,13 +136,25 @@ INDEX escapeId(id) (escapeId(id)))
   Array [
     "query",
     "SELECT * FROM escapeId(Entries)
-    WHERE escapeId(id) = CAST(escape(\\"id-3\\") AS JSON) 
+    WHERE 
+    (((escapeId(id) = CAST(escape(\\"id-3\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-3\\") AS JSON) is null))) or      
+    ((escapeId(id) is null) and (CAST(escape(\\"id-3\\") AS JSON) is null)))
+   
     LIMIT 0, 1",
   ],
   Array [
     "query",
     "SELECT * FROM escapeId(Entries)
-    WHERE (escapeId(name) = CAST(escape(\\"Second entry\\") AS JSON) AND escapeId(id) = CAST(escape(\\"id-2\\") AS JSON)) OR (NOT (escapeId(id) >= CAST(escape(\\"id-1\\") AS JSON))) 
+    WHERE (
+    (((escapeId(name) = CAST(escape(\\"Second entry\\") AS JSON)) and (not (escapeId(name) is null)) and (not (CAST(escape(\\"Second entry\\") AS JSON) is null))) or      
+    ((escapeId(name) is null) and (CAST(escape(\\"Second entry\\") AS JSON) is null)))
+   AND 
+    (((escapeId(id) = CAST(escape(\\"id-2\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-2\\") AS JSON) is null))) or      
+    ((escapeId(id) is null) and (CAST(escape(\\"id-2\\") AS JSON) is null)))
+  ) OR (NOT (
+    (((escapeId(id) >= CAST(escape(\\"id-1\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-1\\") AS JSON) is null))) or
+    ((escapeId(id) is null) and (CAST(escape(\\"id-1\\") AS JSON) is null)))
+  )) 
     
     LIMIT 0,268435455",
   ],
@@ -176,12 +188,18 @@ INDEX escapeId(id) (escapeId(id)))
   Array [
     "query",
     "UPDATE escapeId(ShoppingLists)
-    SET escapeId(name) = CAST(escape(\\"Products-NEW\\") AS JSON)  WHERE escapeId(id) = CAST(escape(\\"id-1\\") AS JSON) ",
+    SET escapeId(name) = CAST(escape(\\"Products-NEW\\") AS JSON)  WHERE 
+    (((escapeId(id) = CAST(escape(\\"id-1\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-1\\") AS JSON) is null))) or      
+    ((escapeId(id) is null) and (CAST(escape(\\"id-1\\") AS JSON) is null)))
+   ",
   ],
   Array [
     "query",
     "SELECT Count(*) AS Count FROM escapeId(ShoppingLists)
-    WHERE escapeId(id) = CAST(escape(\\"id-1\\") AS JSON) ",
+    WHERE 
+    (((escapeId(id) = CAST(escape(\\"id-1\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-1\\") AS JSON) is null))) or      
+    ((escapeId(id) is null) and (CAST(escape(\\"id-1\\") AS JSON) is null)))
+   ",
   ],
   Array [
     "query",
@@ -192,12 +210,18 @@ INDEX escapeId(id) (escapeId(id)))
   Array [
     "query",
     "DELETE FROM escapeId(ShoppingLists)
-    WHERE escapeId(id) = CAST(escape(\\"id-2\\") AS JSON) ",
+    WHERE 
+    (((escapeId(id) = CAST(escape(\\"id-2\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-2\\") AS JSON) is null))) or      
+    ((escapeId(id) is null) and (CAST(escape(\\"id-2\\") AS JSON) is null)))
+   ",
   ],
   Array [
     "query",
     "SELECT Count(*) AS Count FROM escapeId(ShoppingLists)
-    WHERE escapeId(id) = CAST(escape(\\"id-3\\") AS JSON) ",
+    WHERE 
+    (((escapeId(id) = CAST(escape(\\"id-3\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-3\\") AS JSON) is null))) or      
+    ((escapeId(id) is null) and (CAST(escape(\\"id-3\\") AS JSON) is null)))
+   ",
   ],
   Array [
     "query",

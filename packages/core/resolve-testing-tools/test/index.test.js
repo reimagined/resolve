@@ -39,12 +39,12 @@ test('resolve-testing-tools index', async () => {
         databaseFile: ':memory:'
       })
     })
-    .all(1, 2, 3)
+    .all({ a: 10, b: 20 })
     .as('JWT_TOKEN')
 
   expect(result).toEqual({
     items: [{ id: 1 }, { id: 2 }, { id: 3 }],
-    args: [1, 2, 3],
+    args: { a: 10, b: 20 },
     jwtToken: 'JWT_TOKEN'
   })
 })
