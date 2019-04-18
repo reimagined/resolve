@@ -32,14 +32,15 @@ describe('validateReadModelConnectors', () => {
           module: 'resolve-readmodel-mysql',
           options: {}
         }
-      }
+      },
+      sagas: []
     }
 
     expect(() => validateReadModelConnectors(resolveConfig)).not.toThrow()
   })
 
   // eslint-disable-next-line
-  test('should throw error `The "${adapterName}" read model adapter is required but not specified`', () => {
+  test('should throw error `The "${adapterName}" read model connector is required but not specified`', () => {
     const resolveConfig = {
       readModels: [
         {
@@ -54,12 +55,13 @@ describe('validateReadModelConnectors', () => {
           module: 'resolve-readmodel-lite',
           options: {}
         }
-      }
+      },
+      sagas: []
     }
 
     expect(() => validateReadModelConnectors(resolveConfig)).toThrow(
       new Error(
-        `The "unknown" read model adapter is required but not specified`
+        `The "unknown" read model connector is required but not specified`
       )
     )
   })
