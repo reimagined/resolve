@@ -13,6 +13,7 @@ describe('base config works correctly', () => {
         resolvers: path.resolve(__dirname, 'files/testResolvers.js')
       }
     ],
+    sagas: [],
     readModelConnectors: {
       Todos: {
         module: 'resolve-readmodel-lite',
@@ -62,6 +63,7 @@ describe('base(v2) config works correctly', () => {
         resolvers: path.resolve(__dirname, 'files/testResolvers.js')
       }
     ],
+    sagas: [],
     readModelConnectors: {
       Todos: {
         module: 'resolve-readmodel-lite',
@@ -110,6 +112,7 @@ describe('config + process.env works correctly', () => {
         resolvers: path.resolve(__dirname, 'files/testResolvers.js')
       }
     ],
+    sagas: [],
     readModelConnectors: {
       Todos: {
         module: declareRuntimeEnv('READ_MODEL_TODOS_ADAPTER'),
