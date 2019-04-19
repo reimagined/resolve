@@ -3,16 +3,73 @@ id: sagas
 title: Sagas
 ---
 
-A saga describes a long running process as a sequence of events. You can define a saga as a set of event handler functions. Each such function runs in response to a specific event and can perform one of the following actions:
+A saga describes a long running process as a sequence of events.
+
+## Sagas Overview
+
+You can define a saga as a set of event handler functions. Each such function runs in response to a specific event and can perform one of the following actions:
 
 - Send a command to an aggregate
 - Schedule a command with the specified time offset
 - Store intermediate data in a persistent storage
 - Trigger a side effect
 
-# Define a Saga
+With sagas, you can organize branching chains of events to describe processes of any complexity. For example, the code below demonstrates a saga that organizes a web site's user registration process:
 
-## Add a Saga to the Application
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/saga-sample/saga.js)
+```js
+export default {
+  handlers: {
+    Init: async ({ store }) => {
+      await store.defineTable('users', {
+        indexes: { id: 'string' },
+        fields: ['mail']
+      })
+    },
+    USER_CREATED: async ({ store, executeCommand }, event) => {
+      await store.insert('users', {
+        id: event.aggregateId,
+        mail: event.payload.mail
+      })
+      await executeCommand({
+        aggregateName: 'User',
+        aggregateId: event.aggregateId,
+        type: 'requestConfirmUser',
+        payload: event.payload
+      })
+    },
+    USER_CONFIRM_REQUESTED: async ({ sideEffects, scheduleCommand }, event) => {
+      await sideEffects.sendEmail(event.payload.mail, 'Confirm mail')
+      await scheduleCommand(event.timestamp + 1000 * 60 * 60 * 24 * 7, {
+        aggregateName: 'User',
+        aggregateId: event.aggregateId,
+        type: 'forgetUser',
+        payload: {}
+      })
+    },
+    USER_FORGOTTEN: async ({ store }, event) => {
+      await store.delete('users', {
+        id: event.aggregateId
+      })
+    }
+  },
+  sideEffects: {
+    sendEmail: async (mail, content) => {
+      ...
+    }
+  }
+}
+```
+
+<!-- prettier-ignore-end -->
+
+This saga requires a new user to confirm their email address. If a user does not confirm the address in a week, the saga cancels the registration.
+
+## Define a Saga
+
+### Add a Saga to the Application
 
 You can define a saga in one of the following two ways:
 
@@ -49,7 +106,22 @@ You can define a saga in one of the following two ways:
   }
   ```
 
-## Handle Events
+### Initialize the Storage
+
+Every saga should define an `Init` function that initializes the saga's persistent storage:
+
+[mdis]: # '../tests/saga-sample/saga.js#init'
+
+```js
+Init: async ({ store }) => {
+  await store.defineTable('users', {
+    indexes: { id: 'string' },
+    fields: ['mail']
+  })
+},
+```
+
+### Handle Events
 
 An event handler function runs for every occurrence of a specific event. It has the following general structure:
 
@@ -69,7 +141,7 @@ As a first argument, an event handler receives an object that provides access to
 `store` - Provides access to the saga's persistent store (similar to the Read Model store).
 `sideEffects` - Provides access to the saga's side effect functions.
 
-## Send Aggregate Commands
+### Send Aggregate Commands
 
 Use the `executeCommand` function to send aggregate commands as shown below:
 
@@ -84,7 +156,7 @@ await executeCommand({
 })
 ```
 
-## Schedule Aggregate Commands
+### Schedule Aggregate Commands
 
 The code sample below demonstrates how the command execution on a moment in time.
 
@@ -99,9 +171,19 @@ await scheduleCommand(timestamp + 3600000, {
 })
 ```
 
-## Use Side Effects
+### Use Side Effects
 
-You should define all functions that have side effects in the `sideEffects` object. You can trigger a side effect from an event handler as shown below:
+You should define all functions that have side effects in the `sideEffects` object.
+
+```js
+sideEffects: {
+  sendEmail: async (mail, content) => {
+    ...
+  }
+}
+```
+
+You can trigger the defined side effects from an event handler as shown below:
 
 ```js
 await sideEffects.sendEmail(
@@ -111,68 +193,7 @@ await sideEffects.sendEmail(
 )
 ```
 
-## Example
-
-The code sample below demonstrates a saga that organizes a web site's user registration process.
-
-<!-- prettier-ignore-start -->
-
-[mdis]:# (../tests/custom-readmodel-sample/connector.js)
-
-
-<!-- prettier-ignore-end -->
-
-```js
-export default {
-  handlers: {
-    Init: async ({ store }) => {
-      await store.defineTable('users', {
-        indexes: { id: 'string' },
-        fields: ['mail']
-      })
-    },
-    USER_CREATED: async ({ store, executeCommand }, event) => {
-      await store.insert('users', {
-        id: event.aggregateId,
-        mail: event.payload.mail
-      })
-      await executeCommand({
-        aggregateName: 'User',
-        aggregateId: event.aggregateId,
-        type: 'requestConfirmUser',
-        payload: event.payload
-      })
-    },
-    USER_CONFIRM_REQUESTED: async ({ sideEffects, scheduleCommand }, event) => {
-      await sideEffects.sendEmail(event.payload.mail, 'Confirm mail')
-
-      await scheduleCommand(event.timestamp + 1000 * 60 * 60 * 24 * 7, {
-        aggregateName: 'User',
-        aggregateId: event.aggregateId,
-        type: 'forgetUser',
-        payload: {}
-      })
-    },
-    USER_FORGOTTEN: async ({ store }, event) => {
-      await store.delete('users', {
-        id: event.aggregateId
-      })
-    }
-  },
-  sideEffects: {
-    sendEmail: async (mail, content) => {
-      // mdis-stop
-      // eslint-disable-next-line no-console
-      console.log(mail, content)
-      // mdis-start
-    }
-  }
-}
-```
-
-This saga requires a new user to confirm their email address. If a user does not confirm the address in a week, the saga cancels the registration.
-
-# Register a Saga
+## Register a Saga
 
 To use a saga in your application, you need to register it in the application's configuration file. If a saga is defined in a single file, you can register it as shown below:
 
