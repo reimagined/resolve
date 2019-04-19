@@ -85,7 +85,7 @@ const subscribeSaga = function*({
     const {
       addedConnections,
       removedConnections
-    } = connectionManager.addConnection({
+    } = connectionManager.removeConnection({
       connectionName: topicName,
       connectionId: topicId
     })

@@ -72,6 +72,12 @@ const initBroker = async resolve => {
 
   const publishEvent = async event => {
     await resolve.pubSocket.send(`EVENT-TOPIC ${JSON.stringify(event)}`)
+
+    await resolve.pubsubManager.dispatch({
+      topicName: event.type,
+      topicId: event.aggregateId,
+      event
+    })
   }
 
   Object.defineProperties(resolve, {
