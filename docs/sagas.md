@@ -222,4 +222,18 @@ sagas: [
 ]
 ```
 
-The `connectorName` option defines a Read Model storage used to store the saga's persistent data. The `schedulerName` option specifies the scheduler that should be used to schedule command execution.
+The `connectorName` option defines a Read Model storage used to store the saga's persistent data.
+
+The `schedulerName` option specifies the scheduler that should be used to schedule command execution. Define a scheduler in the `schedulers` configuration section:
+
+```js
+schedulers: {
+  scheduler: {
+    adapter: {
+      module: 'resolve-scheduler-local',
+      options: {}
+    },
+    connectorName: 'default'
+  }
+},
+```
