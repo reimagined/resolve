@@ -3,6 +3,7 @@ import adjustWebpackCommonPackages from './adjust_webpack_common_packages'
 import defaultResolveConfig from '../configs/default.resolve.config.json'
 import declareRuntimeEnv from './declare_runtime_env'
 import getModulesDirs from './get_modules_dirs'
+import validateConfig from './validate_config'
 
 import start from './start_mode'
 import build from './build_mode'
@@ -13,6 +14,7 @@ import merge from './merge'
 import { processStopAll as stop } from './process_manager'
 
 export {
+  validateConfig,
   adjustWebpackReactNative,
   adjustWebpackCommonPackages,
   defaultResolveConfig,

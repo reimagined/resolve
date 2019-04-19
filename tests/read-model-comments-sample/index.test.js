@@ -1,34 +1,38 @@
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import givenEvents from 'resolve-testing-tools'
-import createReadModelLiteAdapter from 'resolve-readmodel-lite'
-// import createReadModelMYSQLAdapter from 'resolve-readmodel-mysql'
-// import createReadModelMongoAdapter from 'resolve-readmodel-mongo'
 
-import projection from './projection'
-import resolvers from './resolvers'
+import config from './config'
 
 describe('Read-model Comments sample', () => {
+  const {
+    name,
+    resolvers: resolversModule,
+    projection: projectionModule,
+    connectorName
+  } = config.readModels.find(({ name }) => name === 'Comments')
+  const {
+    module: connectorModule,
+    options: connectorOptions
+  } = config.readModelConnectors[connectorName]
+
+  const createConnector = interopRequireDefault(require(connectorModule))
+    .default
+
+  const projection = interopRequireDefault(require(`./${projectionModule}`))
+    .default
+  const resolvers = interopRequireDefault(require(`./${resolversModule}`))
+    .default
+
   let adapter = null
   beforeEach(async () => {
-    adapter = createReadModelLiteAdapter({
-      databaseFile: ':memory:'
-    })
-    // adapter = createReadModelMYSQLAdapter({
-    //   host: 'localhost',
-    //   port: 3306,
-    //   user: 'root',
-    //   password: '',
-    //   database: `Comments`
-    // })
-    // adapter = createReadModelMongoAdapter({
-    //   url: 'mongodb://127.0.0.1:27017/Comments'
-    // })
+    adapter = createConnector(connectorOptions)
     try {
-      await adapter.drop(null, 'Comments')
+      await adapter.drop(null, name)
     } catch (e) {}
   })
   afterEach(async () => {
     try {
-      await adapter.drop(null, 'Comments')
+      await adapter.drop(null, name)
     } catch (e) {}
     adapter = null
   })
@@ -96,7 +100,7 @@ describe('Read-model Comments sample', () => {
     expect(
       await givenEvents(events)
         .readModel({
-          name: 'Comments',
+          name,
           projection,
           resolvers,
           adapter
