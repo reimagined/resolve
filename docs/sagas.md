@@ -7,14 +7,14 @@ A saga describes a long running process as a sequence of events.
 
 ## Sagas Overview
 
-You can define a saga as a set of event handler functions. Each such function runs in response to a specific event and can perform one of the following actions:
+You can define a saga as a set of event handler functions. Each such function runs in response to a specific event and can do the following:
 
 - Send a command to an aggregate
 - Schedule a command with the specified time offset
 - Store intermediate data in a persistent storage
 - Trigger a side effect
 
-With sagas, you can organize branching chains of events to describe processes of any complexity. For example, the code below demonstrates a saga that organizes a web site's user registration process:
+This allows you to organize branching chains of events and side effects to describe processes of any complexity. For example, the code below demonstrates a saga that organizes a web site's user registration process:
 
 <!-- prettier-ignore-start -->
 
@@ -136,10 +136,10 @@ EVENT_NAME: async (
 
 As a first argument, an event handler receives an object that provides access to the saga-related API. This API includes the following functions:
 
-`executeCommand` - Sends a command with the specified payload to an aggregate.
-`scheduleCommand` - Similar to `executeCommand` but delays the command execution until the specified moment in time.
-`store` - Provides access to the saga's persistent store (similar to the Read Model store).
-`sideEffects` - Provides access to the saga's side effect functions.
+- `executeCommand` - Sends a command with the specified payload to an aggregate.
+- `scheduleCommand` - Similar to `executeCommand` but delays the command execution until the specified moment in time.
+- `store` - Provides access to the saga's persistent store (similar to the Read Model store).
+- `sideEffects` - Provides access to the saga's side effect functions.
 
 ### Send Aggregate Commands
 
