@@ -13,7 +13,6 @@ const connect = async (pool, sqlite) => {
   await database.exec(`PRAGMA busy_timeout=1000000`)
   await database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
   await database.exec(`PRAGMA synchronous=EXTRA`)
-  await database.exec(`PRAGMA journal_mode=WAL`)
 
   Object.assign(pool, {
     database,
