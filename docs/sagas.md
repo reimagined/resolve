@@ -10,7 +10,7 @@ A saga describes a long running process as a sequence of events.
 You can define a saga as a set of event handler functions. Each such function runs in response to a specific event and can do the following:
 
 - Send a command to an aggregate
-- Schedule a command with the specified time offset
+- Schedule a command on the specified moment in time
 - Store intermediate data in a persistent storage
 - Trigger a side effect
 
