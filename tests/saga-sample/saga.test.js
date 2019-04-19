@@ -1,22 +1,42 @@
-import createReadModelConnector from 'resolve-readmodel-lite'
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import givenEvents from 'resolve-testing-tools'
 
-import saga from './saga'
+import config from './config'
 
 describe('Saga', () => {
-  let sagaWithAdapter = null
+  const { name, source: sourceModule, connectorName } = config.sagas.find(
+    ({ name }) => name === 'UserConfirmation'
+  )
+  const {
+    module: connectorModule,
+    options: connectorOptions
+  } = config.readModelConnectors[connectorName]
 
-  beforeEach(() => {
-    sagaWithAdapter = Object.create(saga, {
-      adapter: {
-        value: createReadModelConnector({
-          databaseFile: ':memory:'
-        })
-      }
-    })
+  const createConnector = interopRequireDefault(require(connectorModule))
+    .default
+  const source = interopRequireDefault(require(`./${sourceModule}`)).default
+
+  let sagaWithAdapter = null
+  let adapter = null
+
+  beforeEach(async () => {
+    adapter = createConnector(connectorOptions)
+    try {
+      await adapter.drop(null, name)
+    } catch (e) {}
+
+    sagaWithAdapter = {
+      handlers: source.handlers,
+      sideEffects: source.sideEffects,
+      adapter
+    }
   })
 
-  afterEach(() => {
+  afterEach(async () => {
+    try {
+      await adapter.drop(null, name)
+    } catch (e) {}
+    adapter = null
     sagaWithAdapter = null
   })
 

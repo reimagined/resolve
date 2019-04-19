@@ -1,34 +1,38 @@
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import givenEvents from 'resolve-testing-tools'
-import createReadModelLiteAdapter from 'resolve-readmodel-lite'
-// import createReadModelMYSQLAdapter from 'resolve-readmodel-mysql'
-// import createReadModelMongoAdapter from 'resolve-readmodel-mongo'
 
-import projection from './projection'
-import resolvers from './resolvers'
+import config from './config'
 
 describe('Read-model generic adapter API', () => {
+  const {
+    name,
+    resolvers: resolversModule,
+    projection: projectionModule,
+    connectorName
+  } = config.readModels.find(({ name }) => name === 'Advanced')
+  const {
+    module: connectorModule,
+    options: connectorOptions
+  } = config.readModelConnectors[connectorName]
+
+  const createConnector = interopRequireDefault(require(connectorModule))
+    .default
+
+  const projection = interopRequireDefault(require(`./${projectionModule}`))
+    .default
+  const resolvers = interopRequireDefault(require(`./${resolversModule}`))
+    .default
+
   let adapter = null
   beforeEach(async () => {
-    adapter = createReadModelLiteAdapter({
-      databaseFile: ':memory:'
-    })
-    // adapter = createReadModelMYSQLAdapter({
-    //   host: 'localhost',
-    //   port: 3306,
-    //   user: 'root',
-    //   password: '',
-    //   database: `Advanced`
-    // })
-    // adapter = createReadModelMongoAdapter({
-    //   url: 'mongodb://127.0.0.1:27017/Advanced'
-    // })
+    adapter = createConnector(connectorOptions)
     try {
-      await adapter.drop(null, 'ReadModelName')
+      await adapter.drop(null, name)
     } catch (e) {}
   })
   afterEach(async () => {
     try {
-      await adapter.drop(null, 'ReadModelName')
+      await adapter.drop(null, name)
     } catch (e) {}
     adapter = null
   })
@@ -43,7 +47,7 @@ describe('Read-model generic adapter API', () => {
       }
     ])
       .readModel({
-        name: 'ReadModelName',
+        name,
         projection,
         resolvers,
         adapter
@@ -69,7 +73,7 @@ describe('Read-model generic adapter API', () => {
       }
     ])
       .readModel({
-        name: 'ReadModelName',
+        name,
         projection,
         resolvers,
         adapter
@@ -95,7 +99,7 @@ describe('Read-model generic adapter API', () => {
       }
     ])
       .readModel({
-        name: 'ReadModelName',
+        name,
         projection,
         resolvers,
         adapter
@@ -121,7 +125,7 @@ describe('Read-model generic adapter API', () => {
       }
     ])
       .readModel({
-        name: 'ReadModelName',
+        name,
         projection,
         resolvers,
         adapter
@@ -147,7 +151,7 @@ describe('Read-model generic adapter API', () => {
       }
     ])
       .readModel({
-        name: 'ReadModelName',
+        name,
         projection,
         resolvers,
         adapter

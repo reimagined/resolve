@@ -18,6 +18,8 @@
     "resolve-readmodel-lite": "0.19.8",
     "resolve-readmodel-mysql": "0.19.8",
     "resolve-readmodel-mongo": "0.19.8",
+    "resolve-scripts": "0.19.8",
+    "@babel/runtime": "^7.4.3",
     "mysql2": "1.6.4"
   }
 }
