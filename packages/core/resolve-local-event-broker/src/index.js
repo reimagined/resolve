@@ -92,6 +92,7 @@ const followTopic = async (pool, listenerId) => {
   SkipCount = currentSkipCount
 
   if (events.length === 0) {
+    await anycastEvents(pool, listenerId, [])
     return
   }
 
@@ -121,10 +122,11 @@ const rewindListener = async ({ meta }, listenerId) => {
   }
 }
 
-const onSubMessage = (pool, message) => {
+const onSubMessage = (pool, byteMessage) => {
+  const message = byteMessage.toString('utf8')
   const payloadIndex = message.indexOf(' ') + 1
-  const topicName = message.toString('utf8', 0, payloadIndex - 1)
-  const content = message.toString('utf8', payloadIndex)
+  const topicName = message.substring(0, payloadIndex - 1)
+  const content = message.substring(payloadIndex)
 
   switch (topicName) {
     case 'EVENT-TOPIC': {

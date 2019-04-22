@@ -33,8 +33,6 @@ const bootstrap = async resolve => {
 
   resolveLog('info', 'Bootstrap successful')
 
-  await new Promise(resolve => setTimeout(resolve, 2000))
-
   return null
 }
 
