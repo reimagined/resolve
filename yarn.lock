@@ -1020,13 +1020,6 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
-"@babel/runtime@^7.4.3":
-  version "7.4.3"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.4.3.tgz#79888e452034223ad9609187a0ad1fe0d2ad4bdc"
-  integrity sha512-9lsJwJLxDh/T3Q3SZszfWOTkk3pHbkmH+3KY+zwIDmsNlxsumuhS2TH3NIpktU4kNvfzy+k3eLT7aTJSPTo0OA==
-  dependencies:
-    regenerator-runtime "^0.13.2"
-
 "@babel/template@^7.0.0", "@babel/template@^7.1.0", "@babel/template@^7.1.2", "@babel/template@^7.2.2":
   version "7.2.2"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.2.2.tgz#005b3fdf0ed96e88041330379e0da9a708eb2907"
@@ -2092,7 +2085,7 @@ aws-sdk@^2.369.0:
 
 aws-sdk@^2.436.0:
   version "2.437.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.437.0.tgz#94e41a2ff112aa020ddbe4950dd5f73187889b8b"
+  resolved "http://npm.resolve.sh:10080/aws-sdk/-/aws-sdk-2.437.0.tgz#94e41a2ff112aa020ddbe4950dd5f73187889b8b"
   integrity sha512-sDZb5QBOO6FOMvuKDEdO16YQRk0WUhnQd38EaSt0yUCi4Gev8uypODyYONgODZcXe8Cr1GMwC8scUKr00S/I5w==
   dependencies:
     buffer "4.9.1"
@@ -8895,14 +8888,6 @@ md5.js@^1.3.4:
     inherits "^2.0.1"
     safe-buffer "^5.1.2"
 
-mdis@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/mdis/-/mdis-0.0.4.tgz#9cbb18fb6cae7e5b59bcb33633f228f7249635fa"
-  integrity sha512-eWtY99d1wDLYS7bL+8x0R3Fd1Aqr810uRppcl0OPZHbL9eC2dNcJt5LWV4UGMHlgB+IAvosYgiqtk4KvxCv3mg==
-  dependencies:
-    glob "7.1.3"
-    minimist "1.2.0"
-
 mdn-data@~1.1.0:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-1.1.4.tgz#50b5d4ffc4575276573c4eedb8780812a8419f01"
@@ -11595,11 +11580,6 @@ regenerator-runtime@^0.12.0:
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.12.1.tgz#fa1a71544764c036f8c49b13a08b2594c9f8a0de"
   integrity sha512-odxIc1/vDlo4iZcfXqRYFj0vpXFNoGdKMAUieAlFYO6m/nl5e9KR/beGf41z4a1FI+aQgtjhuaSlDxQ0hmkrHg==
 
-regenerator-runtime@^0.13.2:
-  version "0.13.2"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.2.tgz#32e59c9a6fb9b1a4aff09b4930ca2d4477343447"
-  integrity sha512-S/TQAZJO+D3m9xeN1WTI8dLKBBiRgXBlTJvbWjCThHWZj9EvHK70Ff50/tYj2J/fvBY6JtFVwRuazHN2E7M9BA==
-
 regenerator-transform@^0.10.0:
   version "0.10.1"
   resolved "https://registry.yarnpkg.com/regenerator-transform/-/regenerator-transform-0.10.1.tgz#1e4996837231da8b7f3cf4114d71b5691a0680dd"
@@ -11838,6 +11818,21 @@ reserved-words@^0.1.2:
   resolved "https://registry.yarnpkg.com/reserved-words/-/reserved-words-0.1.2.tgz#00a0940f98cd501aeaaac316411d9adc52b31ab1"
   integrity sha1-AKCUD5jNUBrqqsMWQR2a3FKzGrE=
 
+resolve-bus-base@0.19.8:
+  version "0.19.8"
+  resolved "https://registry.yarnpkg.com/resolve-bus-base/-/resolve-bus-base-0.19.8.tgz#17abb8d152fa23e7bb5ac1da028e6b174131735d"
+  integrity sha512-kSftAp94ST9GNERGA79I2Yn5mGDS+2TNXve8HhwWF/MM4pzLug4AbbE/HJ+6mh48KAS0TBULODQ5/1wAmgOE+A==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+
+resolve-bus-memory@0.19.8:
+  version "0.19.8"
+  resolved "https://registry.yarnpkg.com/resolve-bus-memory/-/resolve-bus-memory-0.19.8.tgz#d0787b220f3d46dcbb5e9376f95f1e8052a284d9"
+  integrity sha512-rj2T4NGXX0QKvYKwkmEN0pYN91B6cTW+PC1wgSwpwzjUtWB50OAADghTxwVmtd6EhAWY3a7VnzyrWcKKaU766A==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    resolve-bus-base "0.19.8"
+
 resolve-cloud@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/resolve-cloud/-/resolve-cloud-0.2.1.tgz#abfe76097a2e5893dee07e5a69a1e98948ab21b3"
@@ -11906,6 +11901,13 @@ resolve-url@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
   integrity sha1-LGN/53yJOv0qZj/iGqkIAGjiBSo=
+
+resolve-viewmodel@0.19.8:
+  version "0.19.8"
+  resolved "https://registry.yarnpkg.com/resolve-viewmodel/-/resolve-viewmodel-0.19.8.tgz#296212e3bf3e1f27fdf010cbe09b9ac21a287d3e"
+  integrity sha512-kl6vwoNTp4r0SYmDBhtAkLxPA5h5dK4aE+oswIlQi9hipwsPMzTZicpAfyAt94HPNg8YtNnh5G9uFNc8zDwvdg==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
 
 resolve@1.1.7:
   version "1.1.7"
