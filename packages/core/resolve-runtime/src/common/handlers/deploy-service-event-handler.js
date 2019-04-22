@@ -1,30 +1,56 @@
 import bootstrap from '../bootstrap'
+import { RESOLVE_SAGA_PREFIX } from '../sagas/constants'
+
+const getReadModelNames = resolve => {
+  return resolve.readModels
+    .map(({ name }) => name)
+    .filter(name => !(name.indexOf(RESOLVE_SAGA_PREFIX) === 0))
+}
+
+const getSagaNames = resolve => {
+  return resolve.readModels
+    .map(({ name }) => name)
+    .filter(name => name.indexOf(RESOLVE_SAGA_PREFIX) === 0)
+}
+
+const reset = async ({ executeQuery }, listenerId) => {
+  await executeQuery.drop(listenerId)
+}
+
+const invokeMetaLock = async (resolve, listenerId, operation) => {
+  const { DEPLOYMENT_ID } = process.env
+
+  await resolve.lambda
+    .invoke({
+      FunctionName: `${DEPLOYMENT_ID}-meta-lock`,
+      Payload: JSON.stringify({
+        listenerId,
+        operation
+      })
+    })
+    .promise()
+
+  if (operation === 'reset') {
+    await reset(resolve, listenerId)
+  }
+}
 
 const handleResolveReadModelEvent = async (
   lambdaEvent,
-  { lambda, executeQuery, readModels }
+  resolve,
+  getListenerIds
 ) => {
+  const { lambda } = resolve
+
   switch (lambdaEvent.operation) {
     case 'reset':
     case 'pause':
     case 'resume': {
-      const names = lambdaEvent.name
-        ? [lambdaEvent.name]
-        : readModels.map(readModel => readModel.name)
-      const { DEPLOYMENT_ID } = process.env
-      for (const name of names) {
-        await lambda
-          .invoke({
-            FunctionName: `${DEPLOYMENT_ID}-meta-lock`,
-            Payload: JSON.stringify({
-              listenerId: name,
-              operation: lambdaEvent.operation
-            })
-          })
-          .promise()
-
-        if (lambdaEvent.operation === 'reset') {
-          await executeQuery.drop(name)
+      if (lambdaEvent.name) {
+        await invokeMetaLock(resolve, lambdaEvent.name, lambdaEvent.operation)
+      } else {
+        for (const listenerId of getListenerIds(resolve)) {
+          await invokeMetaLock(resolve, listenerId, lambdaEvent.operation)
         }
       }
       return 'ok'
@@ -33,12 +59,12 @@ const handleResolveReadModelEvent = async (
       const { DEPLOYMENT_ID } = process.env
 
       return Promise.all(
-        readModels.map(async readModel => {
+        getListenerIds(resolve).map(async listenerId => {
           const state = await lambda
             .invoke({
               FunctionName: `${DEPLOYMENT_ID}-meta-lock`,
               Payload: JSON.stringify({
-                listenerId: readModel.name,
+                listenerId,
                 operation: 'status'
               })
             })
@@ -46,7 +72,7 @@ const handleResolveReadModelEvent = async (
 
           return {
             ...state,
-            name: readModel.name
+            name: listenerId
           }
         })
       )
@@ -63,7 +89,18 @@ const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
       return await bootstrap(resolve)
     }
     case 'readModel': {
-      return await handleResolveReadModelEvent(lambdaEvent, resolve)
+      return await handleResolveReadModelEvent(
+        lambdaEvent,
+        resolve,
+        getReadModelNames
+      )
+    }
+    case 'saga': {
+      return await handleResolveReadModelEvent(
+        lambdaEvent,
+        resolve,
+        getSagaNames
+      )
     }
     default: {
       return null
