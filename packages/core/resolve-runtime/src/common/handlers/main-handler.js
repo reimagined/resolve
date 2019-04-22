@@ -1,7 +1,6 @@
 import markupHandler from './markup-handler'
 import commandHandler from './command-handler'
 import queryHandler from './query-handler'
-import statusHandler from './status-handler'
 import subscribeHandler from './subscribe-handler'
 import getRootBasedUrl from '../utils/get-root-based-url'
 
@@ -46,10 +45,6 @@ const mainHandler = async (originalReq, res) => {
   switch (true) {
     case checkPath('/api/query') && ['GET', 'POST'].includes(req.method): {
       return await queryHandler(req, res)
-    }
-
-    case checkPath('/api/status') && req.method === 'GET': {
-      return await statusHandler(req, res)
     }
 
     case checkPath('/api/commands') && req.method === 'POST': {
