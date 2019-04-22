@@ -262,7 +262,10 @@
         "sagas": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/saga"
+            "oneOf": [
+              { "$ref": "#/definitions/resourceInstance" },
+              { "$ref": "#/definitions/resourceConstructor" }
+            ]
           }
         },
         "enhancers": {
