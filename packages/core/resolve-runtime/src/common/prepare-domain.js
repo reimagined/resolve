@@ -11,6 +11,8 @@ const prepareDomain = async resolve => {
     [[], []]
   )
 
+  resolve.bootstrapSymbol = Symbol('BOOTSTRAP')
+
   for (const aggregate of systemAggregates) {
     const eventTypes = createSchedulerEventTypes({
       schedulerName: aggregate.schedulerName
@@ -23,19 +25,18 @@ const prepareDomain = async resolve => {
 
   resolve.aggregates = [...systemAggregates, ...customerAggregates]
 
-  const allResolversByReadModel = new Map()
-  for (const { name, resolvers } of resolve.readModels) {
-    allResolversByReadModel.set(name, Object.keys(resolvers))
-  }
-
-  resolve.allResolversByReadModel = allResolversByReadModel
-
   const customerReadModels = resolve.readModels
   const systemReadModels = wrapSagas(resolve.sagas, resolve)
 
   resolve.readModels = [...customerReadModels, ...systemReadModels]
 
   resolve.systemReadModelsNames = systemReadModels.map(({ name }) => name)
+
+  for (const readModel of resolve.readModels) {
+    Object.defineProperty(readModel.resolvers, resolve.bootstrapSymbol, {
+      value: async () => {}
+    })
+  }
 }
 
 export default prepareDomain

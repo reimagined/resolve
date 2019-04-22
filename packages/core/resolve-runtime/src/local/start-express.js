@@ -10,6 +10,7 @@ const startExpress = async resolve => {
   try {
     await initResolve(currentResolve)
     await bootstrap(currentResolve)
+    await Promise.all(Array.from(resolve.readModelsInitPromises.values()))
   } finally {
     await disposeResolve(currentResolve)
   }

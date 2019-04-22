@@ -4,17 +4,18 @@ import disposeResolve from '../common/dispose-resolve'
 
 const isPromise = promise => Promise.resolve(promise) === promise
 
-const processIncomingEvents = async (resolve, message) => {
+const processIncomingEvents = async (resolve, byteMessage) => {
   let readModelName = null
   let unlock = null
   const currentResolve = Object.create(resolve)
   try {
+    const message = byteMessage.toString('utf8')
     const batchGuidIndex = message.indexOf(' ') + 1
     const payloadIndex = message.indexOf(' ', batchGuidIndex) + 1
-    const batchGuid = message.toString('utf8', batchGuidIndex, payloadIndex - 1)
+    const batchGuid = message.substring(batchGuidIndex, payloadIndex - 1)
 
     const [listenerId, instanceId] = message
-      .toString('utf8', 0, payloadIndex - 1)
+      .substring(0, batchGuidIndex - 1)
       .split('-')
       .map(str => new Buffer(str, 'base64').toString('utf8'))
 
@@ -40,6 +41,8 @@ const processIncomingEvents = async (resolve, message) => {
     }
 
     resolve.pubSocket.send(`ACKNOWLEDGE-BATCH-TOPIC ${batchGuid}`)
+
+    resolve.readModelsInitPromises.get(readModelName).resolvePromise()
   } catch (error) {
     resolveLog('error', 'Error while applying events to read-model', error)
   } finally {
@@ -50,7 +53,17 @@ const processIncomingEvents = async (resolve, message) => {
 }
 
 const initBroker = async resolve => {
-  const { eventBroker: eventBrokerConfig } = resolve.assemblies
+  const {
+    assemblies: { eventBroker: eventBrokerConfig },
+    readModels
+  } = resolve
+  resolve.readModelsInitPromises = new Map()
+  for (const { name } of readModels) {
+    let resolvePromise = null
+    const promise = new Promise(resolve => (resolvePromise = resolve))
+    promise.resolvePromise = resolvePromise
+    resolve.readModelsInitPromises.set(name, promise)
+  }
 
   const { zmqBrokerAddress, zmqConsumerAddress } = eventBrokerConfig
 
