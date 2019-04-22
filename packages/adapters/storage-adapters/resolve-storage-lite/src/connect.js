@@ -1,3 +1,5 @@
+import os from 'os'
+
 const coerceEmptyString = obj =>
   (obj != null && obj.constructor !== String) || obj == null ? 'default' : obj
 
@@ -13,6 +15,9 @@ const connect = async (pool, sqlite) => {
   await database.exec(`PRAGMA busy_timeout=1000000`)
   await database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
   await database.exec(`PRAGMA synchronous=EXTRA`)
+  if (os.platform() !== 'win32') {
+    await database.exec(`PRAGMA journal_mode=WAL`)
+  }
 
   Object.assign(pool, {
     database,
