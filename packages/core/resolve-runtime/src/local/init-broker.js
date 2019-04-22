@@ -4,17 +4,18 @@ import disposeResolve from '../common/dispose-resolve'
 
 const isPromise = promise => Promise.resolve(promise) === promise
 
-const processIncomingEvents = async (resolve, message) => {
+const processIncomingEvents = async (resolve, byteMessage) => {
   let readModelName = null
   let unlock = null
   const currentResolve = Object.create(resolve)
   try {
+    const message = byteMessage.toString('utf8')
     const batchGuidIndex = message.indexOf(' ') + 1
     const payloadIndex = message.indexOf(' ', batchGuidIndex) + 1
-    const batchGuid = message.toString('utf8', batchGuidIndex, payloadIndex - 1)
+    const batchGuid = message.substring(batchGuidIndex, payloadIndex - 1)
 
     const [listenerId, instanceId] = message
-      .toString('utf8', 0, payloadIndex - 1)
+      .substring(0, payloadIndex - 1)
       .split('-')
       .map(str => new Buffer(str, 'base64').toString('utf8'))
 
