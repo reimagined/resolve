@@ -309,12 +309,6 @@ comments: async (store, { first, offset }) => {
 
 Refer to the [Query a Read Model](#query-a-read-model) section for information on how to send a request to a Read Model resolver.
 
-## Custom Read Model Specifics
-
-A custom Read Model is a Read Model that does not use a predefined connector to access a database storage. You need to provide a connector manually The connector can prepare a storage of any type and with any interface. The created storage object is passed to Read Model projection and resolver functions as the first parameter. In all other aspects a custom read model is exactly the same as a regular Read Models.
-
-Use custom read models to apply event data to a custom event type or perfom custom actions on incoming events.
-
 ## View Model Specifics
 
 **View Models** are a special kind of Read Models. They are queried based on aggregate ID and and can automatically provide updates to Redux state on the client. View Models are defined in a special isomorphic format so their code can also be used on the client side to provide reducer logic.
