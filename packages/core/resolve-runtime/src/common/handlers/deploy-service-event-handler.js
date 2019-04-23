@@ -1,16 +1,21 @@
 import bootstrap from '../bootstrap'
-import { RESOLVE_SAGA_PREFIX } from '../sagas/constants'
+import {
+  RESOLVE_SAGA_PREFIX,
+  RESOLVE_SCHEDULER_SAGA_PREFIX
+} from '../sagas/constants'
+
+const isSagaName = name =>
+  name.indexOf(RESOLVE_SAGA_PREFIX) === 0 ||
+  name.indexOf(RESOLVE_SCHEDULER_SAGA_PREFIX) === 0
+
+const isReadModelName = name => !isSagaName(name)
 
 const getReadModelNames = resolve => {
-  return resolve.readModels
-    .map(({ name }) => name)
-    .filter(name => !(name.indexOf(RESOLVE_SAGA_PREFIX) === 0))
+  return resolve.readModels.map(({ name }) => name).filter(isReadModelName)
 }
 
 const getSagaNames = resolve => {
-  return resolve.readModels
-    .map(({ name }) => name)
-    .filter(name => name.indexOf(RESOLVE_SAGA_PREFIX) === 0)
+  return resolve.readModels.map(({ name }) => name).filter(isSagaName)
 }
 
 const reset = async ({ executeQuery }, listenerId) => {
