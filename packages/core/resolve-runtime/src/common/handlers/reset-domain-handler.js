@@ -6,6 +6,8 @@ import {
 } from '../sagas/constants'
 import wrapReadmodelConnector from '../wrap-readmodel-connector'
 
+const RESOLVE_ACKNOWLEDGE_TOPIC = '__RESOLVE_ACKNOWLEDGE_TOPIC__'
+
 const resetDomainHandler = (
   {
     storageAdapterOptions,
@@ -19,6 +21,8 @@ const resetDomainHandler = (
   imports
 ) => async (req, res) => {
   try {
+    const instanceId = `${process.pid}${Math.floor(Math.random() * 100000)}`
+
     const dropEventStore =
       req.query.hasOwnProperty('dropEventStore') &&
       req.query.dropEventStore !== 'false'
@@ -73,13 +77,22 @@ const resetDomainHandler = (
     const takeAcknowledge = topic =>
       new Promise(resolve => acknowledgeMessages.set(topic, resolve))
 
-    subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('ACKNOWLEDGE-TOPIC'))
-    subSocket.on('message', message => {
-      const payloadIndex = message.indexOf(' ') + 1
-      const topicName = message.toString('utf8', 0, payloadIndex - 1)
-      const content = message.toString('utf8', payloadIndex)
+    const acknowledgeTopic = `${new Buffer(RESOLVE_ACKNOWLEDGE_TOPIC).toString(
+      'base64'
+    )}-${new Buffer(instanceId).toString('base64')}`
 
-      if (topicName !== 'ACKNOWLEDGE-TOPIC') {
+    subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer(acknowledgeTopic))
+    subSocket.on('message', byteMessage => {
+      const message = byteMessage.toString('utf8')
+      const payloadIndex = message.indexOf(' ') + 1
+      const topicName = message.substring(0, payloadIndex - 1)
+      const content = message.substring(payloadIndex)
+
+      const [listenerId, clientId] = topicName
+        .split('-')
+        .map(str => new Buffer(str, 'base64').toString('utf8'))
+
+      if (listenerId !== RESOLVE_ACKNOWLEDGE_TOPIC || clientId !== instanceId) {
         return
       }
 
@@ -94,15 +107,19 @@ const resetDomainHandler = (
     await pubSocket.connect(eventBroker.zmqConsumerAddress)
 
     if (dropReadModels) {
-      for (const { name, connectorName } of readModels) {
+      for (const { name: readModelName, connectorName } of readModels) {
         const connector = readModelConnectors[connectorName]
-        const connection = await connector.connect(name)
+        const connection = await connector.connect(readModelName)
 
-        await connector.drop(connection, name)
-        await connector.disconnect(connection, name)
+        await connector.drop(connection, readModelName)
+        await connector.disconnect(connection, readModelName)
 
-        await pubSocket.send(`DROP-MODEL-TOPIC ${name}`)
-        await takeAcknowledge(`DROP-MODEL-TOPIC ${name}`)
+        const topicName = `${new Buffer(RESOLVE_ACKNOWLEDGE_TOPIC).toString(
+          'base64'
+        )}-${new Buffer(instanceId).toString('base64')}`
+
+        await pubSocket.send(`DROP-MODEL-TOPIC ${topicName} ${readModelName}`)
+        await takeAcknowledge(readModelName)
       }
     }
 
@@ -115,8 +132,12 @@ const resetDomainHandler = (
         await connector.drop(connection, sagaName)
         await connector.disconnect(connection, sagaName)
 
-        await pubSocket.send(`DROP-MODEL-TOPIC ${sagaName}`)
-        await takeAcknowledge(`DROP-MODEL-TOPIC ${sagaName}`)
+        const topicName = `${new Buffer(RESOLVE_ACKNOWLEDGE_TOPIC).toString(
+          'base64'
+        )}-${new Buffer(instanceId).toString('base64')}`
+
+        await pubSocket.send(`DROP-MODEL-TOPIC ${topicName} ${sagaName}`)
+        await takeAcknowledge(sagaName)
       }
 
       for (const { name, connectorName } of schedulers) {
@@ -127,8 +148,12 @@ const resetDomainHandler = (
         await connector.drop(connection, sagaName)
         await connector.disconnect(connection, sagaName)
 
-        await pubSocket.send(`DROP-MODEL-TOPIC ${sagaName}`)
-        await takeAcknowledge(`DROP-MODEL-TOPIC ${sagaName}`)
+        const topicName = `${new Buffer(RESOLVE_ACKNOWLEDGE_TOPIC).toString(
+          'base64'
+        )}-${new Buffer(instanceId).toString('base64')}`
+
+        await pubSocket.send(`DROP-MODEL-TOPIC ${topicName} ${sagaName}`)
+        await takeAcknowledge(sagaName)
       }
     }
 

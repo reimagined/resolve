@@ -103,11 +103,10 @@ const init = async ({ databaseFile }) => {
   const pool = { database }
 
   return Object.freeze({
-    dispose: () => dispose(pool),
-    rewindListener: listenerId => rewindListener(pool, listenerId),
-    getListenerInfo: listenerId => getListenerInfo(pool, listenerId),
-    updateListenerInfo: (listenerId, info) =>
-      updateListenerInfo(pool, listenerId, info)
+    dispose: dispose.bind(null, pool),
+    rewindListener: rewindListener.bind(null, pool),
+    getListenerInfo: getListenerInfo.bind(null, pool),
+    updateListenerInfo: updateListenerInfo.bind(null, pool)
   })
 }
 

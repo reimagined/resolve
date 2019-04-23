@@ -105,7 +105,7 @@ const createQuery = ({
       throw new Error('Updating by events should supply events array')
     }
 
-    await models[modelName].updateByEvents(events)
+    return await models[modelName].updateByEvents(events)
   }
 
   const drop = async modelName => {

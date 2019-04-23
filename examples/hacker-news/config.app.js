@@ -42,6 +42,13 @@ const appConfig = {
       connectorName: 'default',
       schedulerName: 'scheduler'
     }
+  ],
+  apiHandlers: [
+    {
+      path: 'status-broker',
+      controller: 'common/api-handlers/status.js',
+      method: 'GET'
+    }
   ]
 }
 
