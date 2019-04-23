@@ -57,9 +57,10 @@ const anycastEvents = async (pool, listenerId, events) => {
   await promise
 }
 
+const ALLOWED_READ_MODEL_STATUS = ['running', 'paused', 'pausedOnError']
+
 const followTopic = async (pool, listenerId) => {
   const { meta } = pool
-
   const listenerInfo = await meta.getListenerInfo(listenerId)
   let AbutTimestamp, SkipCount
   let currentSkipCount = 0
@@ -68,8 +69,13 @@ const followTopic = async (pool, listenerId) => {
   if (listenerInfo != null) {
     AbutTimestamp = Number(listenerInfo.AbutTimestamp)
     SkipCount = Number(listenerInfo.SkipCount)
+    const status = listenerInfo.Status
 
-    if (listenerInfo.status !== 'running') {
+    if (!ALLOWED_READ_MODEL_STATUS.includes(status)) {
+      throw new Error(`Read model invalid status: ${status}`)
+    }
+
+    if (status !== 'running') {
       return
     }
   } else {
@@ -180,7 +186,7 @@ const onSubMessage = async (pool, byteMessage) => {
         resolver()
       }
 
-      const status = lastError == null ? 'running' : 'paused'
+      const status = lastError == null ? 'running' : 'pausedOnError'
 
       try {
         await pool.meta.updateListenerInfo(listenerId, {

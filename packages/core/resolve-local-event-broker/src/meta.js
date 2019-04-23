@@ -33,40 +33,40 @@ const getListenerInfo = async ({ database }, listenerId) => {
   `)
 }
 
-const updateListenerInfo = async ({ database }, listenerId, values) => {
-  const fieldNames = [escapeId('ListenerId')]
-  const fieldValues = [escape(listenerId)]
+const fields = {
+  AbutTimestamp: value => Number(value),
+  SkipCount: value => Number(value),
+  LastError: value => escape(JSON.stringify(value)),
+  LastEvent: value => escape(JSON.stringify(value)),
+  Status: value => escape(value)
+}
 
-  if (values.hasOwnProperty('AbutTimestamp')) {
-    fieldNames.push(escapeId('AbutTimestamp'))
-    fieldValues.push(Number(values.AbutTimestamp))
-  }
+const updateListenerInfo = async ({ database }, listenerId, nextValues) => {
+  const prevValues = await database.get(`
+    SELECT ${Object.keys(fields)
+      .map(escapeId)
+      .join(', ')} 
+    FROM ${escapeId('Listeners')}
+    WHERE ${escapeId('ListenerId')} = ${escape(listenerId)}
+  `)
 
-  if (values.hasOwnProperty('SkipCount')) {
-    fieldNames.push(escapeId('SkipCount'))
-    fieldValues.push(Number(values.SkipCount))
-  }
-
-  if (values.hasOwnProperty('LastError')) {
-    fieldNames.push(escapeId('LastError'))
-    fieldValues.push(escape(values.LastError))
-  }
-
-  if (values.hasOwnProperty('LastEvent')) {
-    fieldNames.push(escapeId('LastEvent'))
-    fieldValues.push(escape(values.LastEvent))
-  }
-
-  if (values.hasOwnProperty('Status')) {
-    fieldNames.push(escapeId('Status'))
-    fieldValues.push(escape(values.Status))
-  }
+  const values =
+    prevValues != null
+      ? {
+          ...prevValues,
+          ...nextValues
+        }
+      : nextValues
 
   await database.exec(`
     INSERT OR REPLACE INTO ${escapeId('Listeners')}(
-      ${fieldNames.join(', ')}
+      ${escapeId('ListenerId')}, ${Object.keys(values)
+    .map(escapeId)
+    .join(', ')}
     ) VALUES(
-      ${fieldValues.join(', ')}
+      ${escape(listenerId)}, ${Object.keys(values)
+    .map(key => fields[key](values[key]))
+    .join(', ')}
     );
     COMMIT;
     BEGIN IMMEDIATE;
