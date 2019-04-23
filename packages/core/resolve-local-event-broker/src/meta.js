@@ -23,26 +23,22 @@ const rewindListener = async ({ database }, listenerId) => {
   `)
 }
 
-const getListenerInfo = async ({ database }, listenerId) => {
-  return await database.get(`
-    SELECT ${escapeId('AbutTimestamp')}, ${escapeId('SkipCount')}, ${escapeId(
-    'LastEvent'
-  )}, ${escapeId('LastError')}, ${escapeId('Status')}
-    FROM ${escapeId('Listeners')}
-    WHERE ${escapeId('ListenerId')} = ${escape(listenerId)}
-  `)
-}
-
 const fields = {
-  AbutTimestamp: value => Number(value),
-  SkipCount: value => Number(value),
-  LastError: value => escape(JSON.stringify(value)),
-  LastEvent: value => escape(JSON.stringify(value)),
-  Status: value => escape(value)
+  AbutTimestamp: { stringify: value => Number(value), parse: value => value },
+  SkipCount: { stringify: value => Number(value), parse: value => value },
+  LastError: {
+    stringify: value => escape(JSON.stringify(value)),
+    parse: value => JSON.parse(value)
+  },
+  LastEvent: {
+    stringify: value => escape(JSON.stringify(value)),
+    parse: value => JSON.parse(value)
+  },
+  Status: { stringify: value => escape(value), parse: value => value }
 }
 
-const updateListenerInfo = async ({ database }, listenerId, nextValues) => {
-  const prevValues = await database.get(`
+const getListenerInfo = async ({ database }, listenerId) => {
+  const result = await database.get(`
     SELECT ${Object.keys(fields)
       .map(escapeId)
       .join(', ')} 
@@ -50,27 +46,60 @@ const updateListenerInfo = async ({ database }, listenerId, nextValues) => {
     WHERE ${escapeId('ListenerId')} = ${escape(listenerId)}
   `)
 
+  if (result == null) {
+    return null
+  }
+
+  for (const fieldName of Object.keys(fields)) {
+    result[fieldName] = fields[fieldName].parse(result[fieldName])
+  }
+
+  return result
+}
+
+const updateListenerInfo = async ({ database }, listenerId, nextValues) => {
+  const prevValues = await getListenerInfo({ database }, listenerId)
+  for (const key of Object.keys(nextValues)) {
+    if (nextValues[key] == null) {
+      delete nextValues[key]
+    }
+  }
+
   const values =
-    prevValues != null
-      ? {
-          ...prevValues,
-          ...nextValues
-        }
-      : nextValues
+    prevValues != null ? { ...prevValues, ...nextValues } : nextValues
 
   await database.exec(`
-    INSERT OR REPLACE INTO ${escapeId('Listeners')}(
+    REPLACE INTO ${escapeId('Listeners')}(
       ${escapeId('ListenerId')}, ${Object.keys(values)
     .map(escapeId)
     .join(', ')}
     ) VALUES(
       ${escape(listenerId)}, ${Object.keys(values)
-    .map(key => fields[key](values[key]))
+    .map(key => fields[key].stringify(values[key]))
     .join(', ')}
     );
     COMMIT;
     BEGIN IMMEDIATE;
   `)
+}
+
+const wrapWithQueue = (pool, method) => async (...args) => {
+  while (Promise.resolve(pool.lockPromise) === pool.lockPromise) {
+    await pool.lockPromise
+  }
+
+  pool.lockPromise = new Promise(resolve => {
+    pool.unlockConnection = () => {
+      pool.lockPromise = null
+      resolve()
+    }
+  })
+
+  try {
+    return await method(pool, ...args)
+  } finally {
+    pool.unlockConnection()
+  }
 }
 
 const init = async ({ databaseFile }) => {
@@ -100,13 +129,13 @@ const init = async ({ databaseFile }) => {
 		BEGIN IMMEDIATE;
 	`)
 
-  const pool = { database }
+  const pool = { database, lockPromise: null }
 
   return Object.freeze({
     dispose: dispose.bind(null, pool),
-    rewindListener: rewindListener.bind(null, pool),
-    getListenerInfo: getListenerInfo.bind(null, pool),
-    updateListenerInfo: updateListenerInfo.bind(null, pool)
+    rewindListener: wrapWithQueue(pool, rewindListener),
+    getListenerInfo: wrapWithQueue(pool, getListenerInfo),
+    updateListenerInfo: wrapWithQueue(pool, updateListenerInfo)
   })
 }
 
