@@ -60,6 +60,10 @@ const followTopic = async (pool, listenerId) => {
   if (listenerInfo != null) {
     AbutTimestamp = Number(listenerInfo.AbutTimestamp)
     SkipCount = Number(listenerInfo.SkipCount)
+
+    if (listenerInfo.status !== 'running') {
+      return
+    }
   } else {
     AbutTimestamp = SkipCount = 0
     await anycastEvents(pool, listenerId, [{ type: 'Init' }])
@@ -122,7 +126,7 @@ const rewindListener = async ({ meta }, listenerId) => {
   }
 }
 
-const onSubMessage = (pool, byteMessage) => {
+const onSubMessage = async (pool, byteMessage) => {
   const message = byteMessage.toString('utf8')
   const payloadIndex = message.indexOf(' ') + 1
   const topicName = message.substring(0, payloadIndex - 1)
@@ -152,11 +156,30 @@ const onSubMessage = (pool, byteMessage) => {
       break
     }
     case 'ACKNOWLEDGE-BATCH-TOPIC': {
-      const resolver = pool.acknowledgeMessages.get(content)
-      pool.acknowledgeMessages.delete(content)
+      const [topicGuid, ...acknowledgeResult] = content.split(' ')
+      const { listenerId, lastError, lastEvent } = JSON.parse(
+        acknowledgeResult.join(' ')
+      )
+
+      const resolver = pool.acknowledgeMessages.get(topicGuid)
+      pool.acknowledgeMessages.delete(topicGuid)
       if (typeof resolver === 'function') {
         resolver()
       }
+
+      const status = lastError == null ? 'running' : 'paused'
+
+      try {
+        await pool.updateListenerInfo(listenerId, {
+          LastError: lastError,
+          LastEvent: lastEvent,
+          Status: status
+        })
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed write to bus database', error)
+      }
+
       break
     }
     default:

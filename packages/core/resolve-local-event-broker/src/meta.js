@@ -25,26 +25,48 @@ const rewindListener = async ({ database }, listenerId) => {
 
 const getListenerInfo = async ({ database }, listenerId) => {
   return await database.get(`
-    SELECT ${escapeId('AbutTimestamp')}, ${escapeId('SkipCount')}
+    SELECT ${escapeId('AbutTimestamp')}, ${escapeId('SkipCount')}, ${escapeId(
+    'LastEvent'
+  )}, ${escapeId('LastError')}, ${escapeId('Status')}
     FROM ${escapeId('Listeners')}
     WHERE ${escapeId('ListenerId')} = ${escape(listenerId)}
   `)
 }
 
-const updateListenerInfo = async (
-  { database },
-  listenerId,
-  { AbutTimestamp, SkipCount }
-) => {
+const updateListenerInfo = async ({ database }, listenerId, values) => {
+  const fieldNames = [escapeId('ListenerId')]
+  const fieldValues = [escape(listenerId)]
+
+  if (values.hasOwnProperty('AbutTimestamp')) {
+    fieldNames.push(escapeId('AbutTimestamp'))
+    fieldValues.push(Number(values.AbutTimestamp))
+  }
+
+  if (values.hasOwnProperty('SkipCount')) {
+    fieldNames.push(escapeId('SkipCount'))
+    fieldValues.push(Number(values.SkipCount))
+  }
+
+  if (values.hasOwnProperty('LastError')) {
+    fieldNames.push(escapeId('LastError'))
+    fieldValues.push(escape(values.LastError))
+  }
+
+  if (values.hasOwnProperty('LastEvent')) {
+    fieldNames.push(escapeId('LastEvent'))
+    fieldValues.push(escape(values.LastEvent))
+  }
+
+  if (values.hasOwnProperty('Status')) {
+    fieldNames.push(escapeId('Status'))
+    fieldValues.push(escape(values.Status))
+  }
+
   await database.exec(`
     INSERT OR REPLACE INTO ${escapeId('Listeners')}(
-      ${escapeId('ListenerId')}, ${escapeId('AbutTimestamp')}, ${escapeId(
-    'SkipCount'
-  )}
+      ${fieldNames.join(', ')}
     ) VALUES(
-      ${escape(listenerId)},
-      ${Number(AbutTimestamp)},
-      ${Number(SkipCount)}
+      ${fieldValues.join(', ')}
     );
     COMMIT;
     BEGIN IMMEDIATE;
@@ -67,8 +89,11 @@ const init = async ({ databaseFile }) => {
   await database.exec(`
 	  CREATE TABLE IF NOT EXISTS ${escapeId('Listeners')} (
 			${escapeId('ListenerId')} VARCHAR(128) NOT NULL,
+      ${escapeId('Status')} VARCHAR(128) NOT NULL DEFAULT ${escape('running')},
 		  ${escapeId('AbutTimestamp')} BIGINT NOT NULL DEFAULT 0,
 			${escapeId('SkipCount')} BIGINT NOT NULL DEFAULT 0,
+			${escapeId('LastEvent')} CLOB,
+      ${escapeId('LastError')} CLOB,
 		  PRIMARY KEY(${escapeId('ListenerId')})
 		);
 		COMMIT;
