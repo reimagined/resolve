@@ -7,14 +7,14 @@ A saga describes a long running process as a sequence of events.
 
 ## Sagas Overview
 
-You can define a saga as a set of event handler functions. Each such function runs in response to a specific event and can do the following:
+You can define a saga as a set of event handler functions. Each function runs in response to a specific event and can do the following:
 
 - Send a command to an aggregate
-- Schedule a command on the specified moment in time
+- Schedule a command at the specified moment in time
 - Store intermediate data in a persistent storage
 - Trigger a side effect
 
-This allows you to organize branching chains of events and side effects to describe processes of any complexity. For example, the code below demonstrates a saga that organizes a web site's user registration process:
+This allows you to organize branched chains of events and side effects to describe processes of any complexity. For example, the code below demonstrates a saga that structures a web site's user registration process:
 
 <!-- prettier-ignore-start -->
 
@@ -65,13 +65,13 @@ export default {
 
 <!-- prettier-ignore-end -->
 
-This saga requires a new user to confirm their email address. If a user does not confirm the address in a week, the saga cancels the registration.
+This saga requires a new user to confirm their email address. If the user does not confirm the address within one week, the saga cancels the registration.
 
 ## Define a Saga
 
 ### Add a Saga to the Application
 
-You can define a saga in one of the following two ways:
+You can define a saga in one of the following ways:
 
 - In one source file as an object that contains the `handlers` and `sideEffects` objects.
 
@@ -123,7 +123,7 @@ Init: async ({ store }) => {
 
 ### Handle Events
 
-An event handler function runs for every occurrence of a specific event. It has the following general structure:
+An event handler function runs for each occurrence of a specific event. It has the following general structure:
 
 ```js
 EVENT_NAME: async (
@@ -137,7 +137,7 @@ EVENT_NAME: async (
 As a first argument, an event handler receives an object that provides access to the saga-related API. This API includes the following functions:
 
 - `executeCommand` - Sends a command with the specified payload to an aggregate.
-- `scheduleCommand` - Similar to `executeCommand` but delays the command execution until the specified moment in time.
+- `scheduleCommand` - Similar to `executeCommand`, but delays command execution until a specified moment in time.
 - `store` - Provides access to the saga's persistent store (similar to the Read Model store).
 - `sideEffects` - Provides access to the saga's side effect functions.
 
@@ -158,7 +158,7 @@ await executeCommand({
 
 ### Schedule Aggregate Commands
 
-The code sample below demonstrates how the command execution on a moment in time.
+The code sample below demonstrates how the command executes at a specified point in time.
 
 ```js
 await scheduleCommand(timestamp + 3600000, {
@@ -208,7 +208,7 @@ sagas: [
 ]
 ```
 
-If a saga is split between two files, you can register it as follows:
+If a saga is split between two files, register it as follows:
 
 ```js
 sagas: [
