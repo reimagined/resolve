@@ -128,7 +128,6 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
       }),
       lambda: new Lambda(),
       stepFunctions: new StepFunctions(),
-      publishEvent: async () => {},
       assemblies,
       ...constants,
       ...domain,
@@ -141,6 +140,32 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
 
     resolveLog('debug', 'patching reSolve framework')
     Object.defineProperties(resolve, {
+      publishEvent: async event => {
+        const eventDescriptor = {
+          topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
+            event.aggregateId
+          }`,
+          payload: JSON.stringify(event),
+          qos: 1
+        }
+
+        try {
+          await resolve.mqtt.publish(eventDescriptor).promise()
+
+          resolveLog(
+            'info',
+            'Lambda pushed event into MQTT successfully',
+            eventDescriptor
+          )
+        } catch (error) {
+          resolveLog(
+            'warn',
+            'Lambda can not publish event into MQTT',
+            eventDescriptor,
+            error
+          )
+        }
+      },
       getSubscribeAdapterOptions: {
         value: getSubscribeAdapterOptions.bind(null, resolve)
       },

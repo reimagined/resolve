@@ -1,3 +1,5 @@
+import os from 'os'
+
 const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
 const escape = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 const coerceEmptyString = obj =>
@@ -48,7 +50,9 @@ const connect = async (imports, pool, options) => {
   await pool.connection.exec(`PRAGMA busy_timeout=1000000`)
   await pool.connection.exec(`PRAGMA encoding=${escape('UTF-8')}`)
   await pool.connection.exec(`PRAGMA synchronous=EXTRA`)
-  await pool.connection.exec(`PRAGMA journal_mode=WAL`)
+  if (os.platform() !== 'win32') {
+    await pool.connection.exec(`PRAGMA journal_mode=WAL`)
+  }
 }
 
 export default connect

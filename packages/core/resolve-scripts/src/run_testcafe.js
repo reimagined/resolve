@@ -96,12 +96,12 @@ const runTestcafe = ({
     broker.start()
 
     while (true) {
-      const statusUrl = `http://localhost:${resolveConfig.port}${
+      const applicationUrl = `http://localhost:${resolveConfig.port}${
         resolveConfig.rootPath ? `/${resolveConfig.rootPath}` : ''
-      }/api/status`
+      }`
       try {
-        const response = await fetch(statusUrl)
-        if ((await response.text()) === 'ok') break
+        await fetch(applicationUrl)
+        break
       } catch (e) {}
     }
 

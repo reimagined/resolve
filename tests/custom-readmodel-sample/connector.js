@@ -1,6 +1,6 @@
+// mdis-start
 import fs from 'fs'
 
-// mdis-start
 export default options => {
   const prefix = String(options.prefix)
   const readModels = new Set()

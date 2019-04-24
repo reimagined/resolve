@@ -4,6 +4,56 @@ This directory contains API and integration tests for the reSolve framework.
 
 ## Read model "Stories"
 
+#### App Config
+[mdis]:# (./read-model-stories-sample/config.js#app-config)
+```js
+const appConfig = {
+  readModels: [
+    {
+      name: 'Stories',
+      projection: 'projection.js',
+      resolvers: 'resolvers.js',
+      connectorName: 'default'
+    }
+  ]
+}
+```
+
+#### Dev Config
+[mdis]:# (./read-model-stories-sample/config.js#dev-config)
+```js
+const devConfig = {
+  readModelConnectors: {
+    default: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: ':memory:'
+      }
+    }
+    /*
+    default: {
+      module: 'resolve-readmodel-mysql',
+      options: {
+        host: 'localhost',
+        port: 3306,
+        user: 'root',
+        password: '',
+        database: `Stories`
+      }
+    }
+    */
+    /*
+    default: {
+      module: 'resolve-readmodel-mongo',
+      options: {
+        url: 'mongodb://127.0.0.1:27017/Stories'
+      }
+    }
+    */
+  }
+}
+```
+
 #### Projection
 [mdis]:# (./read-model-stories-sample/projection.js)
 ```js
@@ -117,6 +167,56 @@ export default resolvers
 ```
 
 ## Read model "Comments"
+
+#### App Config
+[mdis]:# (./read-model-comments-sample/config.js#app-config)
+```js
+const appConfig = {
+  readModels: [
+    {
+      name: 'Comments',
+      projection: 'projection.js',
+      resolvers: 'resolvers.js',
+      connectorName: 'default'
+    }
+  ]
+}
+```
+
+#### Dev Config 
+[mdis]:# (./read-model-comments-sample/config.js#dev-config)
+```js
+const devConfig = {
+  readModelConnectors: {
+    default: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: ':memory:'
+      }
+    }
+    /*
+    default: {
+      module: 'resolve-readmodel-mysql',
+      options: {
+        host: 'localhost',
+        port: 3306,
+        user: 'root',
+        password: '',
+        database: `Comments`
+      }
+    }
+    */
+    /*
+    default: {
+      module: 'resolve-readmodel-mongo',
+      options: {
+        url: 'mongodb://127.0.0.1:27017/Comments'
+      }
+    }
+    */
+  }
+}
+```
 
 #### Projection
 [mdis]:# (./read-model-comments-sample/projection.js)
@@ -285,8 +385,41 @@ export default resolvers
 ```
 ## Read model custom connector API example
 
+#### App Config
+[mdis]:# (./custom-readmodel-sample/config.js#app-config)
+```js
+const appConfig = {
+  readModels: [
+    {
+      name: 'Counter',
+      projection: 'projection.js',
+      resolvers: 'resolvers.js',
+      connectorName: 'default'
+    }
+  ]
+}
+```
+
+#### Dev Config
+[mdis]:# (./custom-readmodel-sample/config.js#dev-config)
+```js
+const devConfig = {
+  readModelConnectors: {
+    default: {
+      module: 'connector.js',
+      options: {
+        prefix: 'read-model-database'
+      }
+    }
+  }
+}
+```
+
+#### Connector
+
 [mdis]:# (./custom-readmodel-sample/connector.js)
 ```js
+import fs from 'fs'
 export default options => {
   const prefix = String(options.prefix)
   const readModels = new Set()
@@ -326,7 +459,98 @@ export default options => {
 }
 ```
 
+#### Projection
+[mdis]:# (./custom-readmodel-sample/projection.js)
+```js
+const projection = {
+  Init: async store => {
+    await store.set(0)
+  },
+  INCREMENT: async (store, event) => {
+    await store.set((await store.get()) + event.payload)
+  },
+  DECREMENT: async (store, event) => {
+    await store.set((await store.get()) - event.payload)
+  }
+}
+
+export default projection
+```
+
+#### Resolvers
+[mdis]:# (./custom-readmodel-sample/resolvers.js)
+```js
+const resolvers = {
+  read: async store => {
+    return await store.get()
+  }
+}
+
+export default resolvers
+```
+
 ## Saga
+
+#### App Config
+[mdis]:# (./saga-sample/config.js#app-config)
+```js
+const appConfig = {
+  sagas: [
+    {
+      name: 'UserConfirmation',
+      source: 'saga.js',
+      connectorName: 'default',
+      schedulerName: 'scheduler'
+    }
+  ]
+}
+```
+
+#### Dev Config
+[mdis]:# (./saga-sample/config.js#dev-config)
+```js
+const devConfig = {
+  schedulers: {
+    scheduler: {
+      adapter: {
+        module: 'resolve-scheduler-local',
+        options: {}
+      },
+      connectorName: 'default'
+    }
+  },
+  readModelConnectors: {
+    default: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: ':memory:'
+      }
+    }
+    /*
+    default: {
+      module: 'resolve-readmodel-mysql',
+      options: {
+        host: 'localhost',
+        port: 3306,
+        user: 'root',
+        password: '',
+        database: `Stories`
+      }
+    }
+    */
+    /*
+    default: {
+      module: 'resolve-readmodel-mongo',
+      options: {
+        url: 'mongodb://127.0.0.1:27017/Stories'
+      }
+    }
+    */
+  }
+}
+```
+
+#### Handlers and Side Effects
 [mdis]:# (./saga-sample/saga.js)
 ```js
 export default {
@@ -334,14 +558,13 @@ export default {
     Init: async ({ store }) => {
       await store.defineTable('users', {
         indexes: { id: 'string' },
-        fields: ['mail', 'confirmed']
+        fields: ['mail']
       })
     },
     USER_CREATED: async ({ store, executeCommand }, event) => {
       await store.insert('users', {
         id: event.aggregateId,
-        mail: event.payload.mail,
-        confirmed: false
+        mail: event.payload.mail
       })
       await executeCommand({
         aggregateName: 'User',
@@ -358,17 +581,6 @@ export default {
         type: 'forgetUser',
         payload: {}
       })
-    },
-    USER_CONFIRMED: async ({ store }, event) => {
-      await store.update(
-        'users',
-        {
-          id: event.aggregateId
-        },
-        {
-          $set: { confirmed: true }
-        }
-      )
     },
     USER_FORGOTTEN: async ({ store }, event) => {
       await store.delete('users', {
