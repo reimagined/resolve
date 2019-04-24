@@ -1,13 +1,8 @@
-import zmq from 'zeromq'
-
 import {
   RESOLVE_SAGA_PREFIX,
   RESOLVE_SCHEDULER_SAGA_PREFIX
 } from '../sagas/constants'
 import wrapReadmodelConnector from '../wrap-readmodel-connector'
-
-const RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC =
-  '__RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC__'
 
 const resetDomainHandler = (
   {
@@ -16,14 +11,11 @@ const resetDomainHandler = (
     readModelConnectorsOptions,
     readModels,
     sagas,
-    schedulers,
-    eventBroker
+    schedulers
   },
   imports
 ) => async (req, res) => {
   try {
-    const instanceId = `${process.pid}${Math.floor(Math.random() * 100000)}`
-
     const dropEventStore =
       req.query.hasOwnProperty('dropEventStore') &&
       req.query.dropEventStore !== 'false'
@@ -70,45 +62,7 @@ const resetDomainHandler = (
       await snapshotAdapter.dispose({ dropSnapshots: true })
     }
 
-    const subSocket = zmq.socket('sub')
-    await subSocket.connect(eventBroker.zmqBrokerAddress)
-
-    const acknowledgeMessages = new Map()
-
-    const takeAcknowledge = topic =>
-      new Promise(resolve => acknowledgeMessages.set(topic, resolve))
-
-    const acknowledgeTopic = `${new Buffer(
-      RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC
-    ).toString('base64')}-${new Buffer(instanceId).toString('base64')}`
-
-    subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer(acknowledgeTopic))
-    subSocket.on('message', byteMessage => {
-      const message = byteMessage.toString('utf8')
-      const payloadIndex = message.indexOf(' ') + 1
-      const topicName = message.substring(0, payloadIndex - 1)
-      const content = message.substring(payloadIndex)
-
-      const [listenerId, clientId] = topicName
-        .split('-')
-        .map(str => new Buffer(str, 'base64').toString('utf8'))
-
-      if (
-        listenerId !== RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC ||
-        clientId !== instanceId
-      ) {
-        return
-      }
-
-      const resolver = acknowledgeMessages.get(content)
-      acknowledgeMessages.delete(content)
-      if (typeof resolver === 'function') {
-        resolver()
-      }
-    })
-
-    const pubSocket = zmq.socket('pub')
-    await pubSocket.connect(eventBroker.zmqConsumerAddress)
+    const { reset: resetListener } = req.resolve.eventBroker
 
     if (dropReadModels) {
       for (const { name: readModelName, connectorName } of readModels) {
@@ -118,14 +72,7 @@ const resetDomainHandler = (
         await connector.drop(connection, readModelName)
         await connector.disconnect(connection, readModelName)
 
-        const topicName = `${new Buffer(
-          RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC
-        ).toString('base64')}-${new Buffer(instanceId).toString('base64')}`
-
-        await pubSocket.send(
-          `RESET-LISTENER-TOPIC ${topicName} ${readModelName}`
-        )
-        await takeAcknowledge(readModelName)
+        await resetListener(readModelName)
       }
     }
 
@@ -138,12 +85,7 @@ const resetDomainHandler = (
         await connector.drop(connection, sagaName)
         await connector.disconnect(connection, sagaName)
 
-        const topicName = `${new Buffer(
-          RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC
-        ).toString('base64')}-${new Buffer(instanceId).toString('base64')}`
-
-        await pubSocket.send(`RESET-LISTENER-TOPIC ${topicName} ${sagaName}`)
-        await takeAcknowledge(sagaName)
+        await resetListener(sagaName)
       }
 
       for (const { name, connectorName } of schedulers) {
@@ -154,16 +96,9 @@ const resetDomainHandler = (
         await connector.drop(connection, sagaName)
         await connector.disconnect(connection, sagaName)
 
-        const topicName = `${new Buffer(
-          RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC
-        ).toString('base64')}-${new Buffer(instanceId).toString('base64')}`
-
-        await pubSocket.send(`RESET-LISTENER-TOPIC ${topicName} ${sagaName}`)
-        await takeAcknowledge(sagaName)
+        await resetListener(sagaName)
       }
     }
-
-    await pubSocket.disconnect(eventBroker.zmqConsumerAddress)
 
     res.end('ok')
   } catch (error) {

@@ -3,6 +3,9 @@ import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 
 const RESOLVE_INFORMATION_TOPIC = '__RESOLVE_INFORMATION_TOPIC__'
+const RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC =
+  '__RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC__'
+
 const isPromise = promise => Promise.resolve(promise) === promise
 
 const processEvents = async (resolve, listenerId, messageGuid, content) => {
@@ -55,6 +58,14 @@ const processInformation = async (resolve, messageGuid, content) => {
   await resolve.informationTopicsPromises.get(messageGuid)(JSON.parse(content))
 }
 
+const processResetListenerAcknowledge = async (
+  resolve,
+  messageGuid,
+  content
+) => {
+  await resolve.resetListenersPromises.get(messageGuid)(JSON.parse(content))
+}
+
 const processIncomingMessages = async (resolve, byteMessage) => {
   const message = byteMessage.toString('utf8')
   const messageGuidIndex = message.indexOf(' ') + 1
@@ -76,6 +87,12 @@ const processIncomingMessages = async (resolve, byteMessage) => {
   }
 
   switch (topicName) {
+    case RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC:
+      return await processResetListenerAcknowledge(
+        resolve,
+        messageGuid,
+        content
+      )
     case RESOLVE_INFORMATION_TOPIC:
       return await processInformation(resolve, messageGuid, content)
     default:
@@ -96,6 +113,29 @@ const requestListenerInformation = async (resolve, listenerId) => {
   )
 
   return await promise
+}
+
+const requestListenerReset = async (resolve, listenerId) => {
+  const requestGuid = `${Date.now()}${Math.floor(Math.random() * 100000000000)}`
+  const promise = new Promise(resolvePromise => {
+    resolve.resetListenersPromises.set(requestGuid, resolvePromise)
+  })
+
+  await resolve.pubSocket.send(
+    `RESET-LISTENER-TOPIC ${requestGuid} ${new Buffer(listenerId).toString(
+      'base64'
+    )}-${new Buffer(resolve.instanceId).toString('base64')}`
+  )
+
+  return await promise
+}
+
+const requestListenerPause = async (resolve, listenerId) => {
+  await resolve.pubSocket.send(`PAUSE-LISTENER-TOPIC ${listenerId}`)
+}
+
+const requestListenerResume = async (resolve, listenerId) => {
+  await resolve.pubSocket.send(`RESUME-LISTENER-TOPIC ${listenerId}`)
 }
 
 const initBroker = async resolve => {
@@ -137,14 +177,18 @@ const initBroker = async resolve => {
 
   subSocket.subscribe(informationTopic)
 
+  const resetAcknowledgeTopic = `${new Buffer(
+    RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC
+  ).toString('base64')}-${new Buffer(resolve.instanceId).toString('base64')}`
+
+  subSocket.subscribe(resetAcknowledgeTopic)
+
   Object.defineProperties(resolve, {
-    requestListenerInformation: {
-      value: requestListenerInformation.bind(null, resolve),
-      enumerable: true
-    },
     lockPromises: {
-      value: new Map(),
-      writable: true
+      value: new Map()
+    },
+    resetListenersPromises: {
+      value: new Map()
     },
     listenersInitPromises: {
       value: new Map()
@@ -172,6 +216,13 @@ const initBroker = async resolve => {
     promise.resolvePromise = resolvePromise
     resolve.listenersInitPromises.set(name, promise)
   }
+
+  Object.assign(resolve.eventBroker, {
+    reset: requestListenerReset.bind(null, resolve),
+    status: requestListenerInformation.bind(null, resolve),
+    pause: requestListenerPause.bind(null, resolve),
+    resume: requestListenerResume.bind(null, resolve)
+  })
 }
 
 export default initBroker

@@ -160,14 +160,21 @@ const onSubMessage = async (pool, byteMessage) => {
       break
     }
     case 'RESET-LISTENER-TOPIC': {
-      const [answerTopic, listenerId] = content.split(' ')
+      const [messageGuid, topicName] = content.split(' ')
+      const [listenerId, clientId] = topicName
+        .split('-')
+        .map(str => new Buffer(str, 'base64').toString('utf8'))
+
+      const topic = `${new Buffer(
+        RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC
+      ).toString('base64')}-${new Buffer(clientId).toString('base64')}`
 
       pool.dropPromise = pool.dropPromise
         .then(rewindListener.bind(null, pool, listenerId))
         .then(
           pool.xpubSocket.send.bind(
             pool.xpubSocket,
-            `${answerTopic} ${listenerId}`
+            `${topic} ${messageGuid} ${JSON.stringify('ok')}`
           )
         )
       break
