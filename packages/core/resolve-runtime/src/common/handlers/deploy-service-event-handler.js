@@ -23,9 +23,9 @@ const reset = async ({ executeQuery }, listenerId) => {
 }
 
 const invokeMetaLock = async (resolve, listenerId, operation) => {
-  await resolve.lambda
+  const result = await resolve.lambda
     .invoke({
-      FunctionName: process.env.META_LOCK_LAMBDA_ARN,
+      FunctionName: process.env.RESOLVE_META_LOCK_LAMBDA_ARN,
       Payload: JSON.stringify({
         listenerId,
         operation
@@ -36,6 +36,8 @@ const invokeMetaLock = async (resolve, listenerId, operation) => {
   if (operation === 'reset') {
     await reset(resolve, listenerId)
   }
+
+  return result
 }
 
 const handleResolveReadModelEvent = async (
@@ -43,8 +45,6 @@ const handleResolveReadModelEvent = async (
   resolve,
   getListenerIds
 ) => {
-  const { lambda } = resolve
-
   switch (lambdaEvent.operation) {
     case 'reset':
     case 'pause':
@@ -59,20 +59,9 @@ const handleResolveReadModelEvent = async (
       return 'ok'
     }
     case 'list': {
-      const { DEPLOYMENT_ID } = process.env
-
       return Promise.all(
         getListenerIds(resolve).map(async listenerId => {
-          const state = await lambda
-            .invoke({
-              FunctionName: `${DEPLOYMENT_ID}-meta-lock`,
-              Payload: JSON.stringify({
-                listenerId,
-                operation: 'status'
-              })
-            })
-            .promise()
-
+          const state = await invokeMetaLock(resolve, listenerId, 'status')
           return {
             ...state,
             name: listenerId
