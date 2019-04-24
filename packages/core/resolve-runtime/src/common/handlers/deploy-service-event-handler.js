@@ -18,52 +18,42 @@ const getSagaNames = resolve => {
   return resolve.readModels.map(({ name }) => name).filter(isSagaName)
 }
 
-const reset = async ({ executeQuery }, listenerId) => {
-  await executeQuery.drop(listenerId)
-}
-
-const invokeMetaLock = async (resolve, listenerId, operation) => {
-  const result = await resolve.lambda
-    .invoke({
-      FunctionName: process.env.RESOLVE_META_LOCK_LAMBDA_ARN,
-      Payload: JSON.stringify({
-        listenerId,
-        operation
-      })
-    })
-    .promise()
-
-  if (operation === 'reset') {
-    await reset(resolve, listenerId)
-  }
-
-  return result
-}
-
 const handleResolveReadModelEvent = async (
   lambdaEvent,
   resolve,
   getListenerIds
 ) => {
+  const listenerIds = lambdaEvent.hasOwnProperty('name')
+    ? [lambdaEvent.name]
+    : getListenerIds(resolve)
+
   switch (lambdaEvent.operation) {
-    case 'reset':
-    case 'pause':
+    case 'reset': {
+      await Promise.all(
+        listenerIds.map(
+          async listenerId =>
+            await Promise.all([
+              resolve.eventBroker.reset(listenerId),
+              resolve.executeQuery.drop(listenerId)
+            ])
+        )
+      )
+      return 'ok'
+    }
+    case 'pause': {
+      await Promise.all(listenerIds.map(resolve.eventBroker.pause))
+      return 'ok'
+    }
     case 'resume': {
-      if (lambdaEvent.name) {
-        await invokeMetaLock(resolve, lambdaEvent.name, lambdaEvent.operation)
-      } else {
-        for (const listenerId of getListenerIds(resolve)) {
-          await invokeMetaLock(resolve, listenerId, lambdaEvent.operation)
-        }
-      }
+      await Promise.all(listenerIds.map(resolve.eventBroker.resume))
       return 'ok'
     }
     case 'list': {
-      return Promise.all(
-        getListenerIds(resolve).map(async listenerId => {
-          const state = await invokeMetaLock(resolve, listenerId, 'status')
+      return await Promise.all(
+        listenerIds.map(async listenerId => {
+          const status = await resolve.eventBroker.status(listenerId)
           return {
-            ...state,
+            ...status,
             name: listenerId
           }
         })

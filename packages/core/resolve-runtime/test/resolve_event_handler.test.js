@@ -1,24 +1,26 @@
 import handleDeployServiceEvent from '../src/common/handlers/deploy-service-event-handler'
+import initBroker from '../src/cloud/init-broker'
 
 describe('resolve event handler', () => {
-  const executor = {
-    read: jest.fn(),
-    dispose: jest.fn()
-  }
+  let resolve = null
 
-  const resolve = {
-    readModels: [{ name: 'readModel1' }, { name: 'readModel2' }],
-    executeQuery: { drop: jest.fn() },
-    lambda: {
-      invoke: jest.fn().mockReturnValue({
-        promise: jest.fn().mockReturnValue(Promise.resolve())
-      })
+  beforeEach(() => {
+    resolve = {
+      readModels: [{ name: 'readModel1' }, { name: 'readModel2' }],
+      executeQuery: { drop: jest.fn() },
+      lambda: {
+        invoke: jest.fn().mockReturnValue({
+          promise: jest.fn().mockReturnValue(Promise.resolve())
+        })
+      },
+      eventBroker: {}
     }
-  }
+
+    initBroker(resolve)
+  })
 
   afterEach(() => {
-    executor.dispose.mockClear()
-    resolve.executeQuery.drop.mockClear()
+    resolve = null
   })
 
   describe('common', () => {

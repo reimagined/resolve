@@ -13,6 +13,7 @@ import handleSchedulerEvent from '../common/handlers/scheduler-event-handler'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 import prepareDomain from '../common/prepare-domain'
+import initBroker from './init-broker'
 
 const invokeUpdateLambda = async ({ stepFunctions }, readModel) => {
   resolveLog(
@@ -182,6 +183,8 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
         }
       }
     })
+
+    await initBroker(resolve)
 
     resolveLog('debug', `lambda 'cold start' succeeded`)
 
