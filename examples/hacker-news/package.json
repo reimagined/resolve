@@ -9,6 +9,7 @@
     "start": "babel-node ./run.js start",
     "dev": "babel-node ./run.js dev",
     "import": "babel-node ./run.js import",
+    "reset": "babel-node ./run.js reset",
     "test": "jest",
     "test:update": "jest -u",
     "test:coverage": "jest --coverage",

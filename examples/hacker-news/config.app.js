@@ -45,8 +45,23 @@ const appConfig = {
   ],
   apiHandlers: [
     {
-      path: 'status',
-      controller: 'common/api-handlers/status.js',
+      path: 'event-broker/status-all',
+      controller: 'common/api-handlers/event-broker-status-all.js',
+      method: 'GET'
+    },
+    {
+      path: 'event-broker/status',
+      controller: 'common/api-handlers/event-broker-status.js',
+      method: 'GET'
+    },
+    {
+      path: 'event-broker/pause',
+      controller: 'common/api-handlers/event-broker-pause.js',
+      method: 'GET'
+    },
+    {
+      path: 'event-broker/resume',
+      controller: 'common/api-handlers/event-broker-resume.js',
       method: 'GET'
     }
   ]
