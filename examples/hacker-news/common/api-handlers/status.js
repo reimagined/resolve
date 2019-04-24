@@ -1,6 +1,7 @@
 export default async (req, res) => {
-  const status = await req.resolve.requestListenerInformation(
-    req.query.listenerId
+  const listenerIds = req.resolve.readModels.map(({ name }) => name)
+  const statuses = await Promise.all(
+    listenerIds.map(req.resolve.eventBroker.status)
   )
-  res.json(status)
+  res.json(statuses)
 }

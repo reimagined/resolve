@@ -45,7 +45,7 @@ const appConfig = {
   ],
   apiHandlers: [
     {
-      path: 'status-broker',
+      path: 'status',
       controller: 'common/api-handlers/status.js',
       method: 'GET'
     }

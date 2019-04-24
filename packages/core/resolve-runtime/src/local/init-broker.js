@@ -8,6 +8,19 @@ const RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC =
 
 const isPromise = promise => Promise.resolve(promise) === promise
 
+const stringifyListenerStatus = ({ lastError, ...rest }) =>
+  JSON.stringify({
+    lastError:
+      lastError != null
+        ? {
+            code: Number(lastError.code),
+            message: String(lastError.message),
+            stack: String(lastError.stack)
+          }
+        : null,
+    ...rest
+  })
+
 const processEvents = async (resolve, listenerId, messageGuid, content) => {
   let unlock = null
   const currentResolve = Object.create(resolve)
@@ -34,7 +47,7 @@ const processEvents = async (resolve, listenerId, messageGuid, content) => {
 
     resolve.pubSocket.send(
       `ACKNOWLEDGE-BATCH-TOPIC ${messageGuid} ${new Buffer(
-        JSON.stringify(result)
+        stringifyListenerStatus(result)
       ).toString('base64')}`
     )
 
@@ -44,7 +57,7 @@ const processEvents = async (resolve, listenerId, messageGuid, content) => {
 
     resolve.pubSocket.send(
       `ACKNOWLEDGE-BATCH-TOPIC ${messageGuid} ${new Buffer(
-        JSON.stringify(result)
+        stringifyListenerStatus(result)
       ).toString('base64')}`
     )
   } finally {
@@ -112,7 +125,14 @@ const requestListenerInformation = async (resolve, listenerId) => {
     )}-${new Buffer(resolve.instanceId).toString('base64')}`
   )
 
-  return await promise
+  const result = await promise
+
+  return {
+    listenerId,
+    status: result.Status,
+    lastEvent: result.LastEvent,
+    lastError: result.LastError
+  }
 }
 
 const requestListenerReset = async (resolve, listenerId) => {
