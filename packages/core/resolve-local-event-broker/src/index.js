@@ -2,7 +2,8 @@ import zmq from 'zeromq'
 import initMeta from './meta'
 
 const RESOLVE_INFORMATION_TOPIC = '__RESOLVE_INFORMATION_TOPIC__'
-const RESOLVE_ACKNOWLEDGE_TOPIC = '__RESOLVE_ACKNOWLEDGE_TOPIC__'
+const RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC =
+  '__RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC__'
 
 const checkOptionShape = (option, types, nullable = false) =>
   (nullable && option === null) ||
@@ -13,7 +14,7 @@ const checkOptionShape = (option, types, nullable = false) =>
 
 const RESERVED_TOPIC_NAMES = [
   RESOLVE_INFORMATION_TOPIC,
-  RESOLVE_ACKNOWLEDGE_TOPIC
+  RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC
 ]
 
 const parseMessage = message => {
@@ -158,7 +159,7 @@ const onSubMessage = async (pool, byteMessage) => {
       }
       break
     }
-    case 'DROP-MODEL-TOPIC': {
+    case 'RESET-LISTENER-TOPIC': {
       const [answerTopic, listenerId] = content.split(' ')
 
       pool.dropPromise = pool.dropPromise
@@ -203,11 +204,11 @@ const onSubMessage = async (pool, byteMessage) => {
     }
     case 'INFORMATION-TOPIC': {
       const [messageGuid, topicName] = content.split(' ')
-      const [readModelName, clientId] = topicName
+      const [listenerId, clientId] = topicName
         .split('-')
         .map(str => new Buffer(str, 'base64').toString('utf8'))
 
-      const information = await pool.meta.getListenerInfo(readModelName)
+      const information = await pool.meta.getListenerInfo(listenerId)
 
       const topic = `${new Buffer(RESOLVE_INFORMATION_TOPIC).toString(
         'base64'
@@ -285,7 +286,7 @@ const init = async pool => {
 
   const subSocket = zmq.socket('sub')
   subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('EVENT-TOPIC'))
-  subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('DROP-MODEL-TOPIC'))
+  subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('RESET-LISTENER-TOPIC'))
   subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('ACKNOWLEDGE-BATCH-TOPIC'))
   subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('INFORMATION-TOPIC'))
 

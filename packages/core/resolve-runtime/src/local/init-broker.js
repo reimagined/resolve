@@ -5,19 +5,19 @@ import disposeResolve from '../common/dispose-resolve'
 const RESOLVE_INFORMATION_TOPIC = '__RESOLVE_INFORMATION_TOPIC__'
 const isPromise = promise => Promise.resolve(promise) === promise
 
-const processEvents = async (resolve, readModelName, messageGuid, content) => {
+const processEvents = async (resolve, listenerId, messageGuid, content) => {
   let unlock = null
   const currentResolve = Object.create(resolve)
   try {
-    if (!resolve.lockPromises.has(readModelName)) {
-      resolve.lockPromises.set(readModelName, null)
+    if (!resolve.lockPromises.has(listenerId)) {
+      resolve.lockPromises.set(listenerId, null)
     }
 
-    while (isPromise(resolve.lockPromises.get(readModelName))) {
-      await resolve.lockPromises.get(readModelName)
+    while (isPromise(resolve.lockPromises.get(listenerId))) {
+      await resolve.lockPromises.get(listenerId)
     }
     resolve.lockPromises.set(
-      readModelName,
+      listenerId,
       new Promise(resolve => (unlock = resolve))
     )
 
@@ -25,7 +25,7 @@ const processEvents = async (resolve, readModelName, messageGuid, content) => {
 
     const events = JSON.parse(content)
     const result = await currentResolve.executeQuery.updateByEvents(
-      readModelName,
+      listenerId,
       events
     )
 
@@ -35,7 +35,7 @@ const processEvents = async (resolve, readModelName, messageGuid, content) => {
       ).toString('base64')}`
     )
 
-    resolve.readModelsInitPromises.get(readModelName).resolvePromise()
+    resolve.listenersInitPromises.get(listenerId).resolvePromise()
   } catch (result) {
     resolveLog('error', 'Error while applying events to read-model', result)
 
@@ -45,7 +45,7 @@ const processEvents = async (resolve, readModelName, messageGuid, content) => {
       ).toString('base64')}`
     )
   } finally {
-    resolve.lockPromises.set(readModelName, null)
+    resolve.lockPromises.set(listenerId, null)
     unlock()
     await disposeResolve(currentResolve)
   }
@@ -83,14 +83,14 @@ const processIncomingMessages = async (resolve, byteMessage) => {
   }
 }
 
-const requestReadModelInformation = async (resolve, readModelName) => {
+const requestListenerInformation = async (resolve, listenerId) => {
   const requestGuid = `${Date.now()}${Math.floor(Math.random() * 100000000000)}`
   const promise = new Promise(resolvePromise => {
     resolve.informationTopicsPromises.set(requestGuid, resolvePromise)
   })
 
   resolve.pubSocket.send(
-    `INFORMATION-TOPIC ${requestGuid} ${new Buffer(readModelName).toString(
+    `INFORMATION-TOPIC ${requestGuid} ${new Buffer(listenerId).toString(
       'base64'
     )}-${new Buffer(resolve.instanceId).toString('base64')}`
   )
@@ -101,7 +101,7 @@ const requestReadModelInformation = async (resolve, readModelName) => {
 const initBroker = async resolve => {
   const {
     assemblies: { eventBroker: eventBrokerConfig },
-    readModels
+    readModels: listeners
   } = resolve
 
   const { zmqBrokerAddress, zmqConsumerAddress } = eventBrokerConfig
@@ -113,8 +113,8 @@ const initBroker = async resolve => {
 
   subSocket.on('message', processIncomingMessages.bind(null, resolve))
 
-  const doUpdateRequest = readModelName => {
-    const topic = `${new Buffer(readModelName).toString('base64')}-${new Buffer(
+  const doUpdateRequest = listenerId => {
+    const topic = `${new Buffer(listenerId).toString('base64')}-${new Buffer(
       resolve.instanceId
     ).toString('base64')}`
 
@@ -138,15 +138,15 @@ const initBroker = async resolve => {
   subSocket.subscribe(informationTopic)
 
   Object.defineProperties(resolve, {
-    requestReadModelInformation: {
-      value: requestReadModelInformation.bind(null, resolve),
+    requestListenerInformation: {
+      value: requestListenerInformation.bind(null, resolve),
       enumerable: true
     },
     lockPromises: {
       value: new Map(),
       writable: true
     },
-    readModelsInitPromises: {
+    listenersInitPromises: {
       value: new Map()
     },
     informationTopicsPromises: {
@@ -166,11 +166,11 @@ const initBroker = async resolve => {
     }
   })
 
-  for (const { name } of readModels) {
+  for (const { name } of listeners) {
     let resolvePromise = null
     const promise = new Promise(resolve => (resolvePromise = resolve))
     promise.resolvePromise = resolvePromise
-    resolve.readModelsInitPromises.set(name, promise)
+    resolve.listenersInitPromises.set(name, promise)
   }
 }
 

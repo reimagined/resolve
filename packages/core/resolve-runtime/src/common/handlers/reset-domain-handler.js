@@ -6,7 +6,8 @@ import {
 } from '../sagas/constants'
 import wrapReadmodelConnector from '../wrap-readmodel-connector'
 
-const RESOLVE_ACKNOWLEDGE_TOPIC = '__RESOLVE_ACKNOWLEDGE_TOPIC__'
+const RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC =
+  '__RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC__'
 
 const resetDomainHandler = (
   {
@@ -77,9 +78,9 @@ const resetDomainHandler = (
     const takeAcknowledge = topic =>
       new Promise(resolve => acknowledgeMessages.set(topic, resolve))
 
-    const acknowledgeTopic = `${new Buffer(RESOLVE_ACKNOWLEDGE_TOPIC).toString(
-      'base64'
-    )}-${new Buffer(instanceId).toString('base64')}`
+    const acknowledgeTopic = `${new Buffer(
+      RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC
+    ).toString('base64')}-${new Buffer(instanceId).toString('base64')}`
 
     subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer(acknowledgeTopic))
     subSocket.on('message', byteMessage => {
@@ -92,7 +93,10 @@ const resetDomainHandler = (
         .split('-')
         .map(str => new Buffer(str, 'base64').toString('utf8'))
 
-      if (listenerId !== RESOLVE_ACKNOWLEDGE_TOPIC || clientId !== instanceId) {
+      if (
+        listenerId !== RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC ||
+        clientId !== instanceId
+      ) {
         return
       }
 
@@ -114,11 +118,13 @@ const resetDomainHandler = (
         await connector.drop(connection, readModelName)
         await connector.disconnect(connection, readModelName)
 
-        const topicName = `${new Buffer(RESOLVE_ACKNOWLEDGE_TOPIC).toString(
-          'base64'
-        )}-${new Buffer(instanceId).toString('base64')}`
+        const topicName = `${new Buffer(
+          RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC
+        ).toString('base64')}-${new Buffer(instanceId).toString('base64')}`
 
-        await pubSocket.send(`DROP-MODEL-TOPIC ${topicName} ${readModelName}`)
+        await pubSocket.send(
+          `RESET-LISTENER-TOPIC ${topicName} ${readModelName}`
+        )
         await takeAcknowledge(readModelName)
       }
     }
@@ -132,11 +138,11 @@ const resetDomainHandler = (
         await connector.drop(connection, sagaName)
         await connector.disconnect(connection, sagaName)
 
-        const topicName = `${new Buffer(RESOLVE_ACKNOWLEDGE_TOPIC).toString(
-          'base64'
-        )}-${new Buffer(instanceId).toString('base64')}`
+        const topicName = `${new Buffer(
+          RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC
+        ).toString('base64')}-${new Buffer(instanceId).toString('base64')}`
 
-        await pubSocket.send(`DROP-MODEL-TOPIC ${topicName} ${sagaName}`)
+        await pubSocket.send(`RESET-LISTENER-TOPIC ${topicName} ${sagaName}`)
         await takeAcknowledge(sagaName)
       }
 
@@ -148,11 +154,11 @@ const resetDomainHandler = (
         await connector.drop(connection, sagaName)
         await connector.disconnect(connection, sagaName)
 
-        const topicName = `${new Buffer(RESOLVE_ACKNOWLEDGE_TOPIC).toString(
-          'base64'
-        )}-${new Buffer(instanceId).toString('base64')}`
+        const topicName = `${new Buffer(
+          RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC
+        ).toString('base64')}-${new Buffer(instanceId).toString('base64')}`
 
-        await pubSocket.send(`DROP-MODEL-TOPIC ${topicName} ${sagaName}`)
+        await pubSocket.send(`RESET-LISTENER-TOPIC ${topicName} ${sagaName}`)
         await takeAcknowledge(sagaName)
       }
     }
