@@ -172,6 +172,24 @@ const onSubMessage = async (pool, byteMessage) => {
         )
       break
     }
+    case 'PAUSE-LISTENER-TOPIC': {
+      const listenerId = content
+      await pool.meta.updateListenerInfo(listenerId, { Status: 'paused' })
+      break
+    }
+    case 'RESUME-LISTENER-TOPIC': {
+      const listenerId = content
+      await pool.meta.updateListenerInfo(listenerId, { Status: 'running' })
+      if (pool.followTopicPromises.has(listenerId)) {
+        pool.followTopicPromises.set(
+          listenerId,
+          pool.followTopicPromises
+            .get(listenerId)
+            .then(followTopic.bind(null, pool, listenerId))
+        )
+      }
+      break
+    }
     case 'ACKNOWLEDGE-BATCH-TOPIC': {
       const [topicGuid, encodedAcknowledgeResult] = content.split(' ')
       const acknowledgeResult = new Buffer(
@@ -287,6 +305,8 @@ const init = async pool => {
   const subSocket = zmq.socket('sub')
   subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('EVENT-TOPIC'))
   subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('RESET-LISTENER-TOPIC'))
+  subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('PAUSE-LISTENER-TOPIC'))
+  subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('RESUME-LISTENER-TOPIC'))
   subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('ACKNOWLEDGE-BATCH-TOPIC'))
   subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('INFORMATION-TOPIC'))
 
