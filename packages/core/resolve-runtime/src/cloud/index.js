@@ -21,7 +21,7 @@ const invokeUpdateLambda = async ({ stepFunctions }, readModel) => {
   )
   await stepFunctions
     .startExecution({
-      stateMachineArn: process.env.EVENT_BUS_STEP_FUNCTION_ARN,
+      stateMachineArn: process.env.RESOLVE_EVENT_BUS_STEP_FUNCTION_ARN,
       input: JSON.stringify({
         'detail-type': 'LISTEN_EVENT_BUS',
         listenerId: readModel.name,
@@ -34,19 +34,23 @@ const invokeUpdateLambda = async ({ stepFunctions }, readModel) => {
 }
 
 const getSubscribeAdapterOptions = async ({ sts }) => {
-  const { DEPLOYMENT_ID, IOT_ENDPOINT_HOST, IOT_ROLE_ARN } = process.env
+  const {
+    RESOLVE_DEPLOYMENT_ID,
+    RESOLVE_WS_ENDPOINT,
+    RESOLVE_IOT_ROLE_ARN
+  } = process.env
 
   const data = await sts
     .assumeRole({
-      RoleArn: IOT_ROLE_ARN,
-      RoleSessionName: `role-session-${DEPLOYMENT_ID}`,
+      RoleArn: RESOLVE_IOT_ROLE_ARN,
+      RoleSessionName: `role-session-${RESOLVE_DEPLOYMENT_ID}`,
       DurationSeconds: 3600
     })
     .promise()
 
   const url = v4.createPresignedURL(
     'GET',
-    IOT_ENDPOINT_HOST,
+    RESOLVE_WS_ENDPOINT,
     '/mqtt',
     'iotdevicegateway',
     '',
@@ -59,7 +63,7 @@ const getSubscribeAdapterOptions = async ({ sts }) => {
   )
 
   return {
-    appId: DEPLOYMENT_ID,
+    appId: RESOLVE_DEPLOYMENT_ID,
     url
   }
 }
@@ -124,7 +128,7 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
       seedClientEnvs: assemblies.seedClientEnvs,
       sts: new STS(),
       mqtt: new IotData({
-        endpoint: process.env.IOT_ENDPOINT_HOST
+        endpoint: process.env.RESOLVE_WS_ENDPOINT
       }),
       lambda: new Lambda(),
       stepFunctions: new StepFunctions(),
@@ -142,7 +146,7 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
     Object.defineProperties(resolve, {
       publishEvent: async event => {
         const eventDescriptor = {
-          topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
+          topic: `${process.env.RESOLVE_DEPLOYMENT_ID}/${event.type}/${
             event.aggregateId
           }`,
           payload: JSON.stringify(event),
