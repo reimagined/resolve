@@ -83,6 +83,17 @@ void (async () => {
         break
       }
 
+      case 'reset': {
+        const resolveConfig = merge(baseConfig, devConfig)
+        await reset(resolveConfig, {
+          dropEventStore: true,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+        break
+      }
+
       case 'test:functional': {
         const resolveConfig = merge(baseConfig, testFunctionalConfig)
 

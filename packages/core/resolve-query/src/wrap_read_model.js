@@ -45,18 +45,38 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
       )
     }
 
-    for (const event of events) {
-      if (isDisposed) {
-        throw new Error('Read model updating had been interrupted')
-      }
+    let lastError = null
+    let lastEvent = null
 
-      if (
-        event != null &&
-        typeof readModel.projection[event.type] === 'function'
-      ) {
-        const connection = await connectionPromise
-        await readModel.projection[event.type](connection, event)
+    try {
+      for (const event of events) {
+        lastEvent = event
+        if (isDisposed) {
+          throw new Error('Read model updating had been interrupted')
+        }
+
+        if (
+          event != null &&
+          typeof readModel.projection[event.type] === 'function'
+        ) {
+          const connection = await connectionPromise
+          await readModel.projection[event.type](connection, event)
+        }
       }
+    } catch (error) {
+      lastError = error
+    }
+
+    const result = {
+      listenerId: readModel.name,
+      lastError,
+      lastEvent
+    }
+
+    if (lastError != null) {
+      throw result
+    } else {
+      return result
     }
   }
 

@@ -1,5 +1,3 @@
-import zmq from 'zeromq'
-
 import {
   RESOLVE_SAGA_PREFIX,
   RESOLVE_SCHEDULER_SAGA_PREFIX
@@ -13,8 +11,7 @@ const resetDomainHandler = (
     readModelConnectorsOptions,
     readModels,
     sagas,
-    schedulers,
-    eventBroker
+    schedulers
   },
   imports
 ) => async (req, res) => {
@@ -65,44 +62,17 @@ const resetDomainHandler = (
       await snapshotAdapter.dispose({ dropSnapshots: true })
     }
 
-    const subSocket = zmq.socket('sub')
-    await subSocket.connect(eventBroker.zmqBrokerAddress)
-
-    const acknowledgeMessages = new Map()
-
-    const takeAcknowledge = topic =>
-      new Promise(resolve => acknowledgeMessages.set(topic, resolve))
-
-    subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('ACKNOWLEDGE-TOPIC'))
-    subSocket.on('message', message => {
-      const payloadIndex = message.indexOf(' ') + 1
-      const topicName = message.toString('utf8', 0, payloadIndex - 1)
-      const content = message.toString('utf8', payloadIndex)
-
-      if (topicName !== 'ACKNOWLEDGE-TOPIC') {
-        return
-      }
-
-      const resolver = acknowledgeMessages.get(content)
-      acknowledgeMessages.delete(content)
-      if (typeof resolver === 'function') {
-        resolver()
-      }
-    })
-
-    const pubSocket = zmq.socket('pub')
-    await pubSocket.connect(eventBroker.zmqConsumerAddress)
+    const { reset: resetListener } = req.resolve.eventBroker
 
     if (dropReadModels) {
-      for (const { name, connectorName } of readModels) {
+      for (const { name: readModelName, connectorName } of readModels) {
         const connector = readModelConnectors[connectorName]
-        const connection = await connector.connect(name)
+        const connection = await connector.connect(readModelName)
 
-        await connector.drop(connection, name)
-        await connector.disconnect(connection, name)
+        await connector.drop(connection, readModelName)
+        await connector.disconnect(connection, readModelName)
 
-        await pubSocket.send(`DROP-MODEL-TOPIC ${name}`)
-        await takeAcknowledge(`DROP-MODEL-TOPIC ${name}`)
+        await resetListener(readModelName)
       }
     }
 
@@ -115,8 +85,7 @@ const resetDomainHandler = (
         await connector.drop(connection, sagaName)
         await connector.disconnect(connection, sagaName)
 
-        await pubSocket.send(`DROP-MODEL-TOPIC ${sagaName}`)
-        await takeAcknowledge(`DROP-MODEL-TOPIC ${sagaName}`)
+        await resetListener(sagaName)
       }
 
       for (const { name, connectorName } of schedulers) {
@@ -127,12 +96,9 @@ const resetDomainHandler = (
         await connector.drop(connection, sagaName)
         await connector.disconnect(connection, sagaName)
 
-        await pubSocket.send(`DROP-MODEL-TOPIC ${sagaName}`)
-        await takeAcknowledge(`DROP-MODEL-TOPIC ${sagaName}`)
+        await resetListener(sagaName)
       }
     }
-
-    await pubSocket.disconnect(eventBroker.zmqConsumerAddress)
 
     res.end('ok')
   } catch (error) {

@@ -1,6 +1,10 @@
 import zmq from 'zeromq'
 import initMeta from './meta'
 
+const RESOLVE_INFORMATION_TOPIC = '__RESOLVE_INFORMATION_TOPIC__'
+const RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC =
+  '__RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC__'
+
 const checkOptionShape = (option, types, nullable = false) =>
   (nullable && option === null) ||
   !(
@@ -8,7 +12,10 @@ const checkOptionShape = (option, types, nullable = false) =>
     !types.reduce((acc, type) => acc || option.constructor === type, false)
   )
 
-const RESERVED_SYSTEM_TOPICS = ['ACKNOWLEDGE-TOPIC']
+const RESERVED_TOPIC_NAMES = [
+  RESOLVE_INFORMATION_TOPIC,
+  RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC
+]
 
 const parseMessage = message => {
   if (!(message instanceof Buffer)) {
@@ -17,13 +24,13 @@ const parseMessage = message => {
   const topic = message.toString('utf8', 1)
   const isConnection = message[0] === 1
 
-  if (RESERVED_SYSTEM_TOPICS.includes(topic)) {
-    return null
-  }
-
   const [listenerId, clientId] = topic
     .split('-')
     .map(str => new Buffer(str, 'base64').toString('utf8'))
+
+  if (RESERVED_TOPIC_NAMES.includes(listenerId)) {
+    return null
+  }
 
   return { listenerId, clientId, isConnection }
 }
@@ -38,20 +45,23 @@ const anycastEvents = async (pool, listenerId, events) => {
     clientId
   ).toString('base64')}`
 
-  const batchGuid = `${Date.now()}${Math.floor(Math.random() * 100000000000)}`
+  const messageGuid = `${Date.now()}${Math.floor(Math.random() * 100000000000)}`
 
   const promise = new Promise(resolve =>
-    pool.acknowledgeMessages.set(batchGuid, resolve)
+    pool.acknowledgeMessages.set(messageGuid, resolve)
   )
 
-  await pool.xpubSocket.send(`${topic} ${batchGuid} ${JSON.stringify(events)}`)
+  await pool.xpubSocket.send(
+    `${topic} ${messageGuid} ${JSON.stringify(events)}`
+  )
 
   await promise
 }
 
+const ALLOWED_READ_MODEL_STATUS = ['running', 'paused', 'pausedOnError']
+
 const followTopic = async (pool, listenerId) => {
   const { meta } = pool
-
   const listenerInfo = await meta.getListenerInfo(listenerId)
   let AbutTimestamp, SkipCount
   let currentSkipCount = 0
@@ -60,6 +70,15 @@ const followTopic = async (pool, listenerId) => {
   if (listenerInfo != null) {
     AbutTimestamp = Number(listenerInfo.AbutTimestamp)
     SkipCount = Number(listenerInfo.SkipCount)
+    const status = listenerInfo.Status
+
+    if (!ALLOWED_READ_MODEL_STATUS.includes(status)) {
+      throw new Error(`Read model invalid status: ${status}`)
+    }
+
+    if (status !== 'running') {
+      return
+    }
   } else {
     AbutTimestamp = SkipCount = 0
     await anycastEvents(pool, listenerId, [{ type: 'Init' }])
@@ -122,7 +141,7 @@ const rewindListener = async ({ meta }, listenerId) => {
   }
 }
 
-const onSubMessage = (pool, byteMessage) => {
+const onSubMessage = async (pool, byteMessage) => {
   const message = byteMessage.toString('utf8')
   const payloadIndex = message.indexOf(' ') + 1
   const topicName = message.substring(0, payloadIndex - 1)
@@ -140,23 +159,90 @@ const onSubMessage = (pool, byteMessage) => {
       }
       break
     }
-    case 'DROP-MODEL-TOPIC': {
+    case 'RESET-LISTENER-TOPIC': {
+      const [messageGuid, topicName] = content.split(' ')
+      const [listenerId, clientId] = topicName
+        .split('-')
+        .map(str => new Buffer(str, 'base64').toString('utf8'))
+
+      const topic = `${new Buffer(
+        RESOLVE_RESET_LISTENER_ACKNOWLEDGE_TOPIC
+      ).toString('base64')}-${new Buffer(clientId).toString('base64')}`
+
       pool.dropPromise = pool.dropPromise
-        .then(rewindListener.bind(null, pool, content))
+        .then(rewindListener.bind(null, pool, listenerId))
         .then(
           pool.xpubSocket.send.bind(
             pool.xpubSocket,
-            `ACKNOWLEDGE-TOPIC ${message}`
+            `${topic} ${messageGuid} ${JSON.stringify('ok')}`
           )
         )
       break
     }
+    case 'PAUSE-LISTENER-TOPIC': {
+      const listenerId = content
+      await pool.meta.updateListenerInfo(listenerId, { Status: 'paused' })
+      break
+    }
+    case 'RESUME-LISTENER-TOPIC': {
+      const listenerId = content
+      await pool.meta.updateListenerInfo(listenerId, { Status: 'running' })
+      if (pool.followTopicPromises.has(listenerId)) {
+        pool.followTopicPromises.set(
+          listenerId,
+          pool.followTopicPromises
+            .get(listenerId)
+            .then(followTopic.bind(null, pool, listenerId))
+        )
+      }
+      break
+    }
     case 'ACKNOWLEDGE-BATCH-TOPIC': {
-      const resolver = pool.acknowledgeMessages.get(content)
-      pool.acknowledgeMessages.delete(content)
+      const [topicGuid, encodedAcknowledgeResult] = content.split(' ')
+      const acknowledgeResult = new Buffer(
+        encodedAcknowledgeResult,
+        'base64'
+      ).toString('utf8')
+
+      const { listenerId, lastError, lastEvent } = JSON.parse(acknowledgeResult)
+
+      const resolver = pool.acknowledgeMessages.get(topicGuid)
+      pool.acknowledgeMessages.delete(topicGuid)
       if (typeof resolver === 'function') {
         resolver()
       }
+
+      const status = lastError == null ? 'running' : 'pausedOnError'
+
+      try {
+        await pool.meta.updateListenerInfo(listenerId, {
+          LastError: lastError,
+          LastEvent: lastEvent,
+          Status: status
+        })
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed write to bus database', error)
+      }
+
+      break
+    }
+    case 'INFORMATION-TOPIC': {
+      const [messageGuid, topicName] = content.split(' ')
+      const [listenerId, clientId] = topicName
+        .split('-')
+        .map(str => new Buffer(str, 'base64').toString('utf8'))
+
+      const information = await pool.meta.getListenerInfo(listenerId)
+
+      const topic = `${new Buffer(RESOLVE_INFORMATION_TOPIC).toString(
+        'base64'
+      )}-${new Buffer(clientId).toString('base64')}`
+
+      await pool.xpubSocket.send(
+        `${topic} ${messageGuid} ${JSON.stringify(information)}`
+      )
+
       break
     }
     default:
@@ -225,8 +311,12 @@ const init = async pool => {
 
   const subSocket = zmq.socket('sub')
   subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('EVENT-TOPIC'))
-  subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('DROP-MODEL-TOPIC'))
+  subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('RESET-LISTENER-TOPIC'))
+  subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('PAUSE-LISTENER-TOPIC'))
+  subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('RESUME-LISTENER-TOPIC'))
   subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('ACKNOWLEDGE-BATCH-TOPIC'))
+  subSocket.setsockopt(zmq.ZMQ_SUBSCRIBE, new Buffer('INFORMATION-TOPIC'))
+
   subSocket.bindSync(pool.config.zmqConsumerAddress)
 
   subSocket.on('message', onSubMessage.bind(null, pool))

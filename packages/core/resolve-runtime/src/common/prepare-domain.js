@@ -37,6 +37,19 @@ const prepareDomain = async resolve => {
       value: async () => {}
     })
   }
+
+  const notImplemented = async methodName => {
+    throw new Error(
+      `Fatal error: event broker method "${methodName}" is not implemented`
+    )
+  }
+
+  resolve.eventBroker = {
+    pause: notImplemented.bind(null, 'pause'),
+    resume: notImplemented.bind(null, 'resume'),
+    reset: notImplemented.bind(null, 'reset'),
+    status: notImplemented.bind(null, 'status')
+  }
 }
 
 export default prepareDomain
