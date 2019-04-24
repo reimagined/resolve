@@ -23,11 +23,9 @@ const reset = async ({ executeQuery }, listenerId) => {
 }
 
 const invokeMetaLock = async (resolve, listenerId, operation) => {
-  const { DEPLOYMENT_ID } = process.env
-
   await resolve.lambda
     .invoke({
-      FunctionName: `${DEPLOYMENT_ID}-meta-lock`,
+      FunctionName: process.env.META_LOCK_LAMBDA_ARN,
       Payload: JSON.stringify({
         listenerId,
         operation
