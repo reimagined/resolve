@@ -147,12 +147,10 @@ Use the `executeCommand` function to send aggregate commands as shown below:
 
 ```js
 await executeCommand({
-  type: 'rejectUser',
   aggregateName: 'User',
-  aggregateId,
-  payload: {
-    reason: 'user with same name already registered and confirmed'
-  }
+  aggregateId: event.aggregateId,
+  type: 'requestConfirmUser',
+  payload: event.payload
 })
 ```
 
@@ -161,13 +159,11 @@ await executeCommand({
 The code sample below demonstrates how the command executes at a specified point in time.
 
 ```js
-await scheduleCommand(timestamp + 3600000, {
-  type: 'rejectUser',
+await scheduleCommand(event.timestamp + 1000 * 60 * 60 * 24 * 7, {
   aggregateName: 'User',
-  aggregateId,
-  payload: {
-    reason: 'user registration was not confirmed within allowed period'
-  }
+  aggregateId: event.aggregateId,
+  type: 'forgetUser',
+  payload: {}
 })
 ```
 
@@ -186,11 +182,7 @@ sideEffects: {
 You can trigger the defined side effects from an event handler as shown below:
 
 ```js
-await sideEffects.sendEmail(
-  'admin@resolve.sh',
-  `${name} registration request`,
-  `Please confirm registration or the user will be deleted during 1 hour`
-)
+await sideEffects.sendEmail(event.payload.mail, 'Confirm mail')
 ```
 
 ## Register a Saga
