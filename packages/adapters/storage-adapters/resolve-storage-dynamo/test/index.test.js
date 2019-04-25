@@ -7,6 +7,7 @@ test('resolve-storage-dynamo index', () => {
   const loadEvents = require('../src/load-events')
   const getLatestEvent = require('../src/get-latest-event')
   const saveEvent = require('../src/save-event')
+  const drop = require('../src/drop')
   const dispose = require('../src/dispose')
 
   sinon.stub(connect, 'default').callsFake(() => () => {})
@@ -14,6 +15,7 @@ test('resolve-storage-dynamo index', () => {
   sinon.stub(loadEvents, 'default').callsFake(() => () => {})
   sinon.stub(getLatestEvent, 'default').callsFake(() => () => {})
   sinon.stub(saveEvent, 'default').callsFake(() => () => {})
+  sinon.stub(drop, 'default').callsFake(() => () => {})
   sinon.stub(dispose, 'default').callsFake(() => () => {})
 
   sinon.stub(createAdapter, 'default').callsFake((...args) => {
@@ -31,6 +33,7 @@ test('resolve-storage-dynamo index', () => {
   expect(loadEvents.default.callCount).toEqual(0)
   expect(getLatestEvent.default.callCount).toEqual(0)
   expect(saveEvent.default.callCount).toEqual(0)
+  expect(drop.default.callCount).toEqual(0)
   expect(dispose.default.callCount).toEqual(0)
 
   index.default()
@@ -40,6 +43,7 @@ test('resolve-storage-dynamo index', () => {
   expect(loadEvents.default.callCount).toEqual(1)
   expect(getLatestEvent.default.callCount).toEqual(1)
   expect(saveEvent.default.callCount).toEqual(1)
+  expect(drop.default.callCount).toEqual(1)
   expect(dispose.default.callCount).toEqual(1)
 
   const adapterCallArgs = createAdapter.default.firstCall.args
@@ -48,5 +52,6 @@ test('resolve-storage-dynamo index', () => {
   expect(adapterCallArgs[2]).toEqual(loadEvents.default)
   expect(adapterCallArgs[3]).toEqual(getLatestEvent.default)
   expect(adapterCallArgs[4]).toEqual(saveEvent.default)
-  expect(adapterCallArgs[5]).toEqual(dispose.default)
+  expect(adapterCallArgs[5]).toEqual(drop.default)
+  expect(adapterCallArgs[6]).toEqual(dispose.default)
 })

@@ -129,7 +129,7 @@ describe('as resource', () => {
 
   test('method "destroy" works correctly', async () => {
     const adapter = {
-      dispose: sinon.stub()
+      drop: sinon.stub()
     }
     const createAdapter = sinon.stub().returns(adapter)
     const pool = { createAdapter, destroy }
@@ -153,6 +153,6 @@ describe('as resource', () => {
       writeCapacityUnits,
       skipInit: true
     })
-    sinon.assert.calledWith(adapter.dispose, { dropEvents: true })
+    sinon.assert.calledWith(adapter.drop)
   })
 })
