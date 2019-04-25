@@ -14,7 +14,7 @@ You can define a saga as a set of event handler functions. Each function runs in
 - Store intermediate data in a persistent storage
 - Trigger a side effect
 
-This allows you to organize branched chains of events and side effects to describe processes of any complexity. For example, the code below demonstrates a saga that structures a web site's user registration process:
+This functionality allows you to organize branched chains of events and side effects to describe processes of any complexity. For example, the code below demonstrates a saga that structures a web site's user registration process:
 
 <!-- prettier-ignore-start -->
 
@@ -65,7 +65,7 @@ export default {
 
 <!-- prettier-ignore-end -->
 
-This saga requires a new user to confirm their email address. If the user does not confirm the address within one week, the saga cancels the registration.
+The saga requests that a new user confirms his/her email address. If the user does not confirm the address within one week, the saga cancels the registration.
 
 ## Define a Saga
 
