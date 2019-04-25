@@ -115,6 +115,13 @@ void (async () => {
       case 'import': {
         const config = merge(baseConfig, devConfig)
 
+        await reset(config, {
+          dropEventStore: true,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+
         const importConfig = merge(config, {
           eventBroker: { launchBroker: false }
         })
@@ -125,13 +132,7 @@ void (async () => {
               path: 'import_events',
               controller: {
                 module: 'import/import_api_handler.js',
-                options: {
-                  storageAdapterOptions: importConfig.storageAdapter.options,
-                  isImporter: true
-                },
-                imports: {
-                  storageAdapterModule: importConfig.storageAdapter.module
-                }
+                options: {}
               }
             }
           ],
@@ -147,13 +148,6 @@ void (async () => {
           RESOLVE_SERVER_OPEN_BROWSER: 'false',
           PORT: importConfig.port,
           ROOT_PATH: importConfig.rootPath
-        })
-
-        await reset(config, {
-          dropEventStore: true,
-          dropSnapshots: true,
-          dropReadModels: true,
-          dropSagas: true
         })
 
         await build(importConfig)

@@ -15,21 +15,17 @@ const users = {}
 
 const saveOneEvent = async event =>
   await api.invokeImportApi({
-    saveEvent: {
-      ...event,
-      aggregateVersion: aggregateVersionsMap
-        .set(
-          event.aggregateId,
-          aggregateVersionsMap.has(event.aggregateId)
-            ? aggregateVersionsMap.get(event.aggregateId) + 1
-            : 1
-        )
-        .get(event.aggregateId),
-      timestamp: eventTimestamp++
-    }
+    ...event,
+    aggregateVersion: aggregateVersionsMap
+      .set(
+        event.aggregateId,
+        aggregateVersionsMap.has(event.aggregateId)
+          ? aggregateVersionsMap.get(event.aggregateId) + 1
+          : 1
+      )
+      .get(event.aggregateId),
+    timestamp: eventTimestamp++
   })
-
-const dropStore = async () => await api.invokeImportApi({ dropEvents: true })
 
 const generateUserEvents = async name => {
   const aggregateId = uuid.v4()
@@ -213,7 +209,6 @@ export const start = async (countCallback, tickCallback) => {
   try {
     const storyIds = await fetchStoryIds()
     countCallback(storyIds.length)
-    await dropStore()
     await fetchStories(storyIds, tickCallback)
   } catch (error) {
     // eslint-disable-next-line no-console

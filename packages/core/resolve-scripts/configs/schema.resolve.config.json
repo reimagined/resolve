@@ -304,6 +304,9 @@
         },
         "batchSize": {
           "type": "number"
+        },
+        "upstream": {
+          "type": "boolean"
         }
       },
       "required": [

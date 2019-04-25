@@ -52,34 +52,13 @@ const reset = (resolveConfig, options, adjustWebpackConfigs) =>
                   options: {}
                 }
               }
-            ]
+            ],
+            eventBroker: {
+              upstream: false
+            }
           })
         )
       )
-
-      for (const name of Object.keys(config.schedulers)) {
-        config.schedulers[name].adapter = {
-          module: 'resolve-runtime/lib/common/defaults/empty-scheduler.js',
-          options: {}
-        }
-      }
-
-      for (const readModel of config.readModels) {
-        readModel.projection = {
-          module: 'resolve-runtime/lib/common/defaults/empty-projection.js',
-          options: {}
-        }
-      }
-
-      for (const saga of config.sagas) {
-        saga.source = {
-          module: 'resolve-runtime/lib/common/defaults/empty-saga.js',
-          options: {}
-        }
-
-        delete saga.sideEffects
-        delete saga.handlers
-      }
 
       const nodeModulesByAssembly = new Map()
       const webpackConfigs = await getWebpackConfigs({
