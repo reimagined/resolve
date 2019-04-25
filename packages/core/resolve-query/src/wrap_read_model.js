@@ -20,7 +20,7 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
 
   const read = async (resolverName, resolverArgs, jwtToken) => {
     if (isDisposed) {
-      throw new Error('Read model is disposed')
+      throw new Error(`Read model "${readModel.name}" is disposed`)
     }
     if (typeof readModel.resolvers[resolverName] !== 'function') {
       throw new Error(`Resolver ${resolverName} does not exist`)
@@ -37,11 +37,13 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
 
   const updateByEvents = async events => {
     if (isDisposed) {
-      throw new Error('Read model is disposed')
+      throw new Error(`Read model "${readModel.name}" is disposed`)
     }
     if (readModel.projection == null) {
       throw new Error(
-        'Updating by events is prohibited when projection is not specified'
+        `Updating by events is prohibited when "${
+          readModel.name
+        }" projection is not specified`
       )
     }
 
@@ -52,7 +54,9 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
       for (const event of events) {
         lastEvent = event
         if (isDisposed) {
-          throw new Error('Read model updating had been interrupted')
+          throw new Error(
+            `Read model "${readModel.name}" updating had been interrupted`
+          )
         }
 
         if (
@@ -82,7 +86,7 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
 
   const readAndSerialize = async (resolverName, resolverArgs, jwtToken) => {
     if (isDisposed) {
-      throw new Error('Read model is disposed')
+      throw new Error(`Read model "${readModel.name}" is disposed`)
     }
 
     const result = await read(resolverName, resolverArgs, jwtToken)
@@ -92,7 +96,7 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
 
   const drop = async () => {
     if (isDisposed) {
-      throw new Error('Read model is disposed')
+      throw new Error(`Read model "${readModel.name}" is disposed`)
     }
     if (typeof connector.drop !== 'function') {
       return
@@ -104,7 +108,7 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
 
   const dispose = async () => {
     if (isDisposed) {
-      throw new Error('Read model is disposed')
+      throw new Error(`Read model "${readModel.name}" is disposed`)
     }
     if (typeof connector.disconnect !== 'function') {
       return

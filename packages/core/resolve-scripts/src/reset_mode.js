@@ -49,62 +49,7 @@ const reset = (resolveConfig, options, adjustWebpackConfigs) =>
                 controller: {
                   module:
                     'resolve-runtime/lib/common/handlers/reset-domain-handler.js',
-                  options: {
-                    storageAdapterOptions: resolveConfig.storageAdapter.options,
-                    snapshotAdapterOptions:
-                      resolveConfig.snapshotAdapter.options,
-                    readModelConnectorsOptions: Object.keys(
-                      resolveConfig.readModelConnectors
-                    ).reduce((acc, name) => {
-                      if (
-                        resolveConfig.readModelConnectors[name].constructor !==
-                        String
-                      ) {
-                        acc[name] =
-                          resolveConfig.readModelConnectors[name].options
-                      } else {
-                        acc[name] = null
-                      }
-                      return acc
-                    }, {}),
-                    readModels: resolveConfig.readModels.map(
-                      ({ name, connectorName }) => ({ name, connectorName })
-                    ),
-                    sagas: resolveConfig.sagas.map(
-                      ({ name, connectorName }) => ({
-                        name,
-                        connectorName
-                      })
-                    ),
-                    schedulers: Object.keys(resolveConfig.schedulers).map(
-                      name => ({
-                        name,
-                        connectorName:
-                          resolveConfig.schedulers[name].connectorName
-                      })
-                    ),
-                    eventBroker: resolveConfig.eventBroker
-                  },
-                  imports: {
-                    storageAdapterModule: resolveConfig.storageAdapter.module,
-                    snapshotAdapterModule: resolveConfig.snapshotAdapter.module,
-                    ...Object.keys(resolveConfig.readModelConnectors).reduce(
-                      (acc, name) => {
-                        const connector =
-                          resolveConfig.readModelConnectors[name]
-                        if (connector.constructor === String) {
-                          acc[`readModelConnector_${name}`] = connector
-                        } else if (connector.module == null) {
-                          acc[`readModelConnector_${name}`] =
-                            'resolve-runtime/lib/common/defaults/read-model-connector.js'
-                        } else {
-                          acc[`readModelConnector_${name}`] = connector.module
-                        }
-                        return acc
-                      },
-                      {}
-                    )
-                  }
+                  options: {}
                 }
               }
             ]
@@ -112,14 +57,29 @@ const reset = (resolveConfig, options, adjustWebpackConfigs) =>
         )
       )
 
-      Object.assign(config, {
-        readModelConnectors: {},
-        schedulers: {},
-        readModels: [],
-        viewModels: [],
-        aggregates: [],
-        sagas: []
-      })
+      for (const name of Object.keys(config.schedulers)) {
+        config.schedulers[name].adapter = {
+          module: 'resolve-runtime/lib/common/defaults/empty-scheduler.js',
+          options: {}
+        }
+      }
+
+      for (const readModel of config.readModels) {
+        readModel.projection = {
+          module: 'resolve-runtime/lib/common/defaults/empty-projection.js',
+          options: {}
+        }
+      }
+
+      for (const saga of config.sagas) {
+        saga.source = {
+          module: 'resolve-runtime/lib/common/defaults/empty-saga.js',
+          options: {}
+        }
+
+        delete saga.sideEffects
+        delete saga.handlers
+      }
 
       const nodeModulesByAssembly = new Map()
       const webpackConfigs = await getWebpackConfigs({

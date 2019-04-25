@@ -1,5 +1,5 @@
 import MySQL from 'mysql2/promise'
-import { escapeId } from 'mysql2'
+import { escapeId, escape } from 'mysql2'
 
 const DEFAULT_BUCKET_SIZE = 100
 const DEFAULT_TABLE_NAME = '__ResolveSnapshots__'
@@ -24,9 +24,9 @@ const init = async pool => {
     await pool.connection.execute(`CREATE TABLE IF NOT EXISTS ${escapeId(
       pool.tableName
     )} (
-      \`SnapshotKey\` MEDIUMBLOB NOT NULL,
-      \`SnapshotContent\` LONGBLOB,
-      PRIMARY KEY(\`SnapshotKey\`(255))
+      ${escapeId('SnapshotKey')} MEDIUMBLOB NOT NULL,
+      ${escapeId('SnapshotContent')} LONGBLOB,
+      PRIMARY KEY(${escapeId('SnapshotKey')}(255))
     )`)
 
     pool.counters = new Map()
@@ -42,9 +42,8 @@ const loadSnapshot = async (pool, snapshotKey) => {
   }
 
   const [rows] = await pool.connection.execute(
-    `SELECT \`SnapshotContent\` FROM ${escapeId(pool.tableName)}
-   WHERE \`SnapshotKey\`=?`,
-    [snapshotKey]
+    `SELECT ${escapeId('SnapshotContent')} FROM ${escapeId(pool.tableName)}
+   WHERE ${escapeId('SnapshotKey')}= ${escape(snapshotKey)} `
   )
 
   const content = rows.length > 0 ? rows[0].SnapshotContent.toString() : null
@@ -70,17 +69,16 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   const stringContent = JSON.stringify(content)
 
   await pool.connection.execute(
-    `INSERT INTO ${escapeId(
-      pool.tableName
-    )}(\`SnapshotKey\`, \`SnapshotContent\`)
-    VALUES(?, ?)
+    `INSERT INTO ${escapeId(pool.tableName)}(${escapeId(
+      'SnapshotKey'
+    )}, ${escapeId('SnapshotContent')})
+    VALUES(${escape(snapshotKey)}, ${escape(stringContent)})
     ON DUPLICATE KEY UPDATE
-    \`SnapshotContent\` = ?`,
-    [snapshotKey, stringContent, stringContent]
+    ${escapeId('SnapshotContent')} = ${escape(stringContent)}`
   )
 }
 
-const dispose = async (pool, options) => {
+const dispose = async pool => {
   await init(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
@@ -89,11 +87,20 @@ const dispose = async (pool, options) => {
 
   pool.counters.clear()
 
-  if (options && options.dropSnapshots) {
-    await pool.connection.execute(`DELETE FROM ${escapeId(pool.tableName)}`)
+  await pool.connection.end()
+}
+
+const drop = async (pool, snapshotKey) => {
+  await init(pool)
+  if (pool.disposed) {
+    throw new Error('Adapter is disposed')
   }
 
-  await pool.connection.end()
+  await pool.connection.execute(
+    `DELETE FROM ${escapeId(pool.tableName)}
+    WHERE ${escapeId('SnapshotKey')} LIKE ${escape(`${snapshotKey}%`)}`,
+    [snapshotKey]
+  )
 }
 
 const createAdapter = config => {
@@ -102,7 +109,8 @@ const createAdapter = config => {
   return Object.freeze({
     loadSnapshot: loadSnapshot.bind(null, pool),
     saveSnapshot: saveSnapshot.bind(null, pool),
-    dispose: dispose.bind(null, pool)
+    dispose: dispose.bind(null, pool),
+    drop: drop.bind(null, pool)
   })
 }
 
