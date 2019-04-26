@@ -34,7 +34,7 @@ const appConfig = {
 }
 ```
 
-In the configuration object, specify the Read Model's name and the paths to the files containing projections and resolvers as well as the Read Model connector's name.
+In the configuration object, specify the Read Model's name and the paths to the files containing projections, resolvers, and the Read Model connector's name.
 
 A Red Model connector defines how a Read Model's data should be stored. You can define the available connectors in the **readModelConnectors** section:
 
@@ -74,7 +74,7 @@ const prodConfig = {
 
 ### Configuring View Models
 
-You should register your View Models in the **viewModels** configuration section:
+Register your View Models in the **viewModels** configuration section:
 
 ```js
 const appConfig = {
@@ -104,7 +104,7 @@ To create a custom Read Model, you need to manually implement a Read Model conne
 
 - **connect** - Initialises a connection to a storage.
 - **disconnect** - Closes the storage connection.
-- **drop** - Removes the Read Model's data from the storage.
+- **drop** - Removes the Read Model's data from storage.
 - **dispose** - Forcefully disposes all unmanaged resources used by Read Models served by this connector.
 
 The code sample below demostrates how to implement a connector that provides a file-based storage for Read Models.
