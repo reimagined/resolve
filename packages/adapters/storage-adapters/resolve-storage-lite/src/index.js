@@ -6,6 +6,7 @@ import init from './init'
 import loadEvents from './load-events'
 import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
+import drop from './drop'
 import dispose from './dispose'
 
 export default createAdapter.bind(
@@ -15,6 +16,7 @@ export default createAdapter.bind(
   loadEvents,
   getLatestEvent,
   saveEvent,
+  drop,
   dispose,
   sqlite
 )

@@ -78,7 +78,7 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   )
 }
 
-const dispose = async (pool, options) => {
+const dispose = async pool => {
   await init(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
@@ -86,14 +86,27 @@ const dispose = async (pool, options) => {
   pool.disposed = true
 
   pool.counters.clear()
+}
 
-  if (options && options.dropSnapshots) {
-    await new Promise((resolve, reject) =>
-      pool.db.remove({}, { multi: true }, err =>
-        err ? reject(err) : resolve()
-      )
-    )
+const drop = async (pool, snapshotKey) => {
+  await init(pool)
+  if (pool.disposed) {
+    throw new Error('Adapter is disposed')
   }
+
+  await new Promise((resolve, reject) =>
+    pool.db.remove(
+      {
+        $where: function() {
+          return this.snapshotKey != null
+            ? this.snapshotKey.indexOf(snapshotKey) === 0
+            : false
+        }
+      },
+      { multi: true },
+      err => (err ? reject(err) : resolve())
+    )
+  )
 }
 
 const createAdapter = config => {
@@ -102,7 +115,8 @@ const createAdapter = config => {
   return Object.freeze({
     loadSnapshot: loadSnapshot.bind(null, pool),
     saveSnapshot: saveSnapshot.bind(null, pool),
-    dispose: dispose.bind(null, pool)
+    dispose: dispose.bind(null, pool),
+    drop: drop.bind(null, pool)
   })
 }
 

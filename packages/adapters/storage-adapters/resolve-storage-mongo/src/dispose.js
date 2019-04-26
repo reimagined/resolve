@@ -1,9 +1,4 @@
-const dispose = async ({ collection, client }, { dropEvents }) => {
-  if (dropEvents) {
-    await collection.deleteMany({})
-    await collection.dropIndexes()
-  }
-
+const dispose = async ({ client }) => {
   await client.close()
 }
 

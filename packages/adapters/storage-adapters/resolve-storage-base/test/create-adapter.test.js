@@ -8,6 +8,7 @@ test('createAdapter should return the correct interface', async () => {
   const loadEvents = sinon.stub()
   const getLatestEvent = sinon.stub()
   const saveEvent = sinon.stub()
+  const drop = sinon.stub()
   const dispose = sinon.stub()
 
   const wrapMethod = sinon
@@ -38,6 +39,7 @@ test('createAdapter should return the correct interface', async () => {
     loadEvents,
     getLatestEvent,
     saveEvent,
+    drop,
     dispose,
     db,
     options
@@ -46,12 +48,14 @@ test('createAdapter should return the correct interface', async () => {
   await adapter.loadEvents()
   await adapter.getLatestEvent()
   await adapter.saveEvent()
+  await adapter.drop()
   await adapter.dispose()
 
   expect(loadEvents.callCount).toEqual(1)
   expect(getLatestEvent.callCount).toEqual(1)
   expect(saveEvent.callCount).toEqual(1)
   expect(dispose.callCount).toEqual(1)
+  expect(drop.callCount).toEqual(1)
 
-  expect(wrapMethod.callCount).toEqual(4)
+  expect(wrapMethod.callCount).toEqual(5)
 })

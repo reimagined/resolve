@@ -51,7 +51,10 @@ const getListenerInfo = async ({ database }, listenerId) => {
   }
 
   for (const fieldName of Object.keys(fields)) {
-    result[fieldName] = fields[fieldName].parse(result[fieldName])
+    result[fieldName] =
+      result[fieldName] != null
+        ? fields[fieldName].parse(result[fieldName])
+        : null
   }
 
   return result
@@ -106,6 +109,7 @@ const init = async ({ databaseFile }) => {
   const database = await sqlite.open(databaseFile)
   await database.exec(`PRAGMA busy_timeout=0`)
   await database.exec(`PRAGMA locking_mode=EXCLUSIVE`)
+  await database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
 
   try {
     // Exclusive lock via https://stackoverflow.com/a/34480741/7878274

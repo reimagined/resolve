@@ -2,19 +2,22 @@ import {
   RESOLVE_SAGA_PREFIX,
   RESOLVE_SCHEDULER_SAGA_PREFIX
 } from '../sagas/constants'
-import wrapReadmodelConnector from '../wrap-readmodel-connector'
 
-const resetDomainHandler = (
-  {
-    storageAdapterOptions,
-    snapshotAdapterOptions,
-    readModelConnectorsOptions,
+const isSagaName = name =>
+  name.indexOf(RESOLVE_SAGA_PREFIX) === 0 ||
+  name.indexOf(RESOLVE_SCHEDULER_SAGA_PREFIX) === 0
+
+const resetDomainHandler = () => async (req, res) => {
+  const {
+    readModelConnectors,
+    snapshotAdapter,
+    storageAdapter,
+    eventBroker: { reset: resetListener },
     readModels,
-    sagas,
-    schedulers
-  },
-  imports
-) => async (req, res) => {
+    viewModels,
+    aggregates
+  } = req.resolve
+
   try {
     const dropEventStore =
       req.query.hasOwnProperty('dropEventStore') &&
@@ -28,75 +31,41 @@ const resetDomainHandler = (
     const dropSagas =
       req.query.hasOwnProperty('dropSagas') && req.query.dropSagas !== 'false'
 
-    const storageAdapter = imports.storageAdapterModule(storageAdapterOptions)
-    const snapshotAdapter = imports.snapshotAdapterModule(
-      snapshotAdapterOptions
-    )
-    const readModelConnectors = {}
-    for (const name of Object.keys(readModelConnectorsOptions)) {
-      if (readModelConnectorsOptions[name] === null) {
-        readModelConnectors[name] = imports[`readModelConnector_${name}`]
-      } else {
-        readModelConnectors[name] = imports[`readModelConnector_${name}`](
-          readModelConnectorsOptions[name]
-        )
-      }
-
-      readModelConnectors[name] = wrapReadmodelConnector(
-        readModelConnectors[name],
-        readModelConnectorsOptions[name]
-      )
-    }
-
     if (dropEventStore) {
-      try {
-        await storageAdapter.loadEvents(
-          { startTime: -1, finishTime: -1 },
-          async () => {}
-        )
-      } catch (err) {}
-      await storageAdapter.dispose({ dropEvents: true })
+      await storageAdapter.drop()
     }
 
     if (dropSnapshots) {
-      await snapshotAdapter.dispose({ dropSnapshots: true })
+      for (const { invariantHash } of [...viewModels, ...aggregates]) {
+        if (invariantHash != null) {
+          await snapshotAdapter.drop(invariantHash)
+        }
+      }
     }
 
-    const { reset: resetListener } = req.resolve.eventBroker
-
     if (dropReadModels) {
-      for (const { name: readModelName, connectorName } of readModels) {
+      for (const { name, connectorName } of readModels) {
+        if (isSagaName(name)) continue
         const connector = readModelConnectors[connectorName]
-        const connection = await connector.connect(readModelName)
+        const connection = await connector.connect(name)
 
-        await connector.drop(connection, readModelName)
-        await connector.disconnect(connection, readModelName)
+        await connector.drop(connection, name)
+        await connector.disconnect(connection, name)
 
-        await resetListener(readModelName)
+        await resetListener(name)
       }
     }
 
     if (dropSagas) {
-      for (const { name, connectorName } of sagas) {
+      for (const { name, connectorName } of readModels) {
+        if (!isSagaName(name)) continue
         const connector = readModelConnectors[connectorName]
-        const sagaName = `${RESOLVE_SAGA_PREFIX}${name}`
-        const connection = await connector.connect(sagaName)
+        const connection = await connector.connect(name)
 
-        await connector.drop(connection, sagaName)
-        await connector.disconnect(connection, sagaName)
+        await connector.drop(connection, name)
+        await connector.disconnect(connection, name)
 
-        await resetListener(sagaName)
-      }
-
-      for (const { name, connectorName } of schedulers) {
-        const connector = readModelConnectors[connectorName]
-        const sagaName = `${RESOLVE_SCHEDULER_SAGA_PREFIX}${name}`
-        const connection = await connector.connect(sagaName)
-
-        await connector.drop(connection, sagaName)
-        await connector.disconnect(connection, sagaName)
-
-        await resetListener(sagaName)
+        await resetListener(name)
       }
     }
 

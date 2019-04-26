@@ -7,6 +7,7 @@ import init from './init'
 import loadEvents from './load-events'
 import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
+import drop from './drop'
 import _dispose from './dispose'
 import createQuery from './create-query'
 import createTypeExpression from './create-type-expression'
@@ -40,6 +41,7 @@ const createAdapter = _createAdapter.bind(
   loadEvents,
   getLatestEvent,
   saveEvent,
+  drop,
   _dispose,
   {
     DynamoDB,

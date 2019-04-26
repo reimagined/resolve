@@ -4,15 +4,23 @@ import bootstrap from '../common/bootstrap'
 
 const host = '0.0.0.0'
 const startExpress = async resolve => {
-  const { port, server } = resolve
+  const {
+    port,
+    server,
+    assemblies: {
+      eventBroker: { upstream }
+    }
+  } = resolve
 
-  const currentResolve = Object.create(resolve)
-  try {
-    await initResolve(currentResolve)
-    await bootstrap(currentResolve)
-    await Promise.all(Array.from(resolve.listenersInitPromises.values()))
-  } finally {
-    await disposeResolve(currentResolve)
+  if (upstream) {
+    const currentResolve = Object.create(resolve)
+    try {
+      await initResolve(currentResolve)
+      await bootstrap(currentResolve)
+      await Promise.all(Array.from(resolve.listenersInitPromises.values()))
+    } finally {
+      await disposeResolve(currentResolve)
+    }
   }
 
   await new Promise((resolve, reject) =>

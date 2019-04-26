@@ -40,7 +40,8 @@
     "zmqBrokerAddress": "tcp://127.0.0.1:3500",
     "zmqConsumerAddress": "tcp://127.0.0.1:3501",
     "databaseFile": "local-bus-broker.db",
-    "batchSize": 100
+    "batchSize": 100,
+    "upstream": true
   },
   "jwtCookie": {
     "name": "jwt",
