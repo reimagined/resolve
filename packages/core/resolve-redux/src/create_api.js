@@ -3,9 +3,31 @@ import unfetch from 'unfetch'
 import getRootBasedUrl from './get_root_based_url'
 import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
 
-export class FetchError extends Error {}
+export class ApiError extends Error {
+  constructor(error) {
+    super()
+    for (let key in error) {
+      if (!error.hasOwnProperty(key)) {
+        continue
+      }
+      this[key] = error[key]
+    }
+  }
+}
 
-export class HttpError extends Error {}
+export class FetchError extends ApiError {
+  constructor(error) {
+    super(error)
+    this.name = 'FetchError'
+  }
+}
+
+export class HttpError extends ApiError {
+  constructor(error) {
+    super(error)
+    this.name = 'HttpError'
+  }
+}
 
 export const temporaryErrorHttpCodes = [
   408, // Request Timeout
@@ -29,10 +51,13 @@ const doFetch = (...args) => {
   }
 }
 
-const validateStatus = status => {
+const validateStatus = async response => {
   // eslint-disable-next-line eqeqeq
-  if (temporaryErrorHttpCodes.find(code => code == status)) {
-    throw new FetchError(status)
+  if (temporaryErrorHttpCodes.find(code => code == response.status)) {
+    throw new FetchError({
+      code: response.status,
+      message: await response.text()
+    })
   }
 }
 
@@ -80,19 +105,22 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
           }
         )
       } catch (error) {
-        throw new FetchError(error.message)
+        throw new FetchError(error)
       }
 
-      validateStatus(response.status)
+      await validateStatus(response)
 
       if (!response.ok) {
-        throw new HttpError(await response.text())
+        throw new HttpError({
+          code: response.status,
+          message: await response.text()
+        })
       }
 
       try {
         result = await response.text()
       } catch (error) {
-        throw new HttpError(error.message)
+        throw new HttpError(error)
       }
 
       return {
@@ -109,19 +137,22 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
           resolverArgs
         )
       } catch (error) {
-        throw new FetchError(error.message)
+        throw new FetchError(error)
       }
 
-      validateStatus(response.status)
+      await validateStatus(response)
 
       if (!response.ok) {
-        throw new HttpError(await response.text())
+        throw new HttpError({
+          code: response.status,
+          message: await response.text()
+        })
       }
 
       try {
         result = await response.text()
       } catch (error) {
-        throw new HttpError(error.message)
+        throw new HttpError(error)
       }
 
       return {
@@ -140,19 +171,22 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
           payload
         })
       } catch (error) {
-        throw new FetchError(error.message)
+        throw new FetchError(error)
       }
 
-      validateStatus(response.status)
+      await validateStatus(response)
 
       if (!response.ok) {
-        throw new HttpError(await response.text())
+        throw new HttpError({
+          code: response.status,
+          message: await response.text()
+        })
       }
 
       try {
         result = await response.json()
       } catch (error) {
-        throw new HttpError(error.message)
+        throw new HttpError(error)
       }
 
       return result
@@ -167,19 +201,22 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
           adapterName
         })
       } catch (error) {
-        throw new FetchError(error.message)
+        throw new FetchError(error)
       }
 
-      validateStatus(response.status)
+      await validateStatus(response)
 
       if (!response.ok) {
-        throw new HttpError(await response.text())
+        throw new HttpError({
+          code: response.status,
+          message: await response.text()
+        })
       }
 
       try {
         result = await response.json()
       } catch (error) {
-        throw new HttpError(error.message)
+        throw new HttpError(error)
       }
 
       return result
