@@ -115,6 +115,7 @@ The code sample below demostrates how to implement a connector that provides a f
 
 [mdis]:# (../tests/custom-readmodel-sample/connector.js)
 ```js
+import fs from 'fs'
 export default options => {
   const prefix = String(options.prefix)
   const readModels = new Set()

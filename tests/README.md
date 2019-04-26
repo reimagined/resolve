@@ -473,7 +473,6 @@ const projection = {
     await store.set((await store.get()) - event.payload)
   }
 }
-
 export default projection
 ```
 
@@ -485,7 +484,6 @@ const resolvers = {
     return await store.get()
   }
 }
-
 export default resolvers
 ```
 
