@@ -34,9 +34,9 @@ const appConfig = {
 }
 ```
 
-In the configuration object, specify the Read Model's name and the paths to the files containing projections and resolvers. Here, you can also specify the Read Model's storage adapter.
+In the configuration object, specify the Read Model's name and the paths to the files containing projections, resolvers, and the Read Model connector's name.
 
-You can define the available adapters in the **readModelConnectors** section:
+A Red Model connector defines how a Read Model's data should be stored. You can define the available connectors in the **readModelConnectors** section:
 
 ##### config.dev.js:
 
@@ -74,7 +74,7 @@ const prodConfig = {
 
 ### Configuring View Models
 
-You should register your View Models in the **viewModels** section in the same way:
+Register your View Models in the **viewModels** configuration section:
 
 ```js
 const appConfig = {
@@ -97,6 +97,137 @@ const appConfig = {
 ```
 
 In the configuration object, specify the View Model's name and the path to the file containing projection definition. You can also specify the View Model snapshot storage adapter. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions.
+
+### Custom Read Models
+
+To create a custom Read Model, you need to manually implement a Read Model connector. A connector defines functions that manage a custom Read Model's store. The following functions can be defined:
+
+- **connect** - Initialises a connection to a storage.
+- **disconnect** - Closes the storage connection.
+- **drop** - Removes the Read Model's data from storage.
+- **dispose** - Forcefully disposes all unmanaged resources used by Read Models served by this connector.
+
+The code sample below demostrates how to implement a connector that provides a file-based storage for Read Models.
+
+##### common/read-models/custom-read-model-connector.js:
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/custom-readmodel-sample/connector.js)
+```js
+export default options => {
+  const prefix = String(options.prefix)
+  const readModels = new Set()
+  const connect = async readModelName => {
+    fs.writeFileSync(`${prefix}${readModelName}.lock`, true, { flag: 'wx' })
+    readModels.add(readModelName)
+    const store = {
+      get() {
+        return JSON.parse(String(fs.readFileSync(`${prefix}${readModelName}`)))
+      },
+      set(value) {
+        fs.writeFileSync(`${prefix}${readModelName}`, JSON.stringify(value))
+      }
+    }
+    return store
+  }
+  const disconnect = async (store, readModelName) => {
+    fs.unlinkSync(`${prefix}${readModelName}.lock`)
+    readModels.delete(readModelName)
+  }
+  const drop = async (store, readModelName) => {
+    fs.unlinkSync(`${prefix}${readModelName}.lock`)
+    fs.unlinkSync(`${prefix}${readModelName}`)
+  }
+  const dispose = async () => {
+    for (const readModelName of readModels) {
+      fs.unlinkSync(`${prefix}${readModelName}.lock`)
+    }
+    readModels.clear()
+  }
+  return {
+    connect,
+    disconnect,
+    drop,
+    dispose
+  }
+}
+```
+
+<!-- prettier-ignore-end -->
+
+A connector is defined as a function that receives an `options` argument. This argument contains a custom set of options that you can specify in the connector's configuration.
+
+Register the connector in the application's configuration file.
+
+##### config.app.js:
+
+```js
+readModelConnectors: {
+  customReadModelConnector: {
+    module: 'common/read-models/custom-read-model-connector.js',
+    options: {
+      prefix: path.join(__dirname, 'data') + path.sep // Path to a folder that contains custom Read Model store files
+    }
+  }
+}
+```
+
+Now you can assign the custom connector to a Read Model by name as shown below.
+
+##### config.app.js:
+
+```js
+  readModels: [
+    {
+      name: 'CustomReadModel',
+      projection: 'common/read-models/custom-read-model.projection.js',
+      resolvers: 'common/read-models/custom-read-model.resolvers.js',
+      connectorName: 'customReadModelConnector'
+    }
+    ...
+  ]
+```
+
+The code sample below demostrates how you can use the custom store's API in the Read Model's code.
+
+##### common/read-models/custom-read-model.projection.js:
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/custom-readmodel-sample/projection.js)
+```js
+const projection = {
+  Init: async store => {
+    await store.set(0)
+  },
+  INCREMENT: async (store, event) => {
+    await store.set((await store.get()) + event.payload)
+  },
+  DECREMENT: async (store, event) => {
+    await store.set((await store.get()) - event.payload)
+  }
+}
+export default projection
+```
+
+<!-- prettier-ignore-end -->
+
+##### common/read-models/custom-read-model.resolvers.js:
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/custom-readmodel-sample/resolvers.js)
+```js
+const resolvers = {
+  read: async store => {
+    return await store.get()
+  }
+}
+export default resolvers
+```
+
+<!-- prettier-ignore-end -->
 
 ## Initialize a Read Model
 
