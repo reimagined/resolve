@@ -8,6 +8,7 @@ const createAdapter = (
   loadEvents,
   getLatestEvent,
   saveEvent,
+  drop,
   dispose,
   adapterSpecificArguments,
   options
@@ -33,7 +34,8 @@ const createAdapter = (
     loadEvents: wrapMethod(pool, wrapEventFilter(loadEvents)),
     getLatestEvent: wrapMethod(pool, getLatestEvent),
     saveEvent: wrapMethod(pool, saveEvent),
-    dispose: wrapMethod(pool, wrapDispose(dispose))
+    drop: wrapMethod(pool, drop),
+    dispose: wrapDispose(pool, dispose)
   })
 }
 

@@ -12,7 +12,7 @@ fixture`Story`.beforeEach(async (t /*: TestController */) => {
 test('create', async (t /*: TestController */) => {
   await t.navigateTo(`${ROOT_URL}/submit`)
 
-  await t.typeText(Selector('input[type=text]').nth(0), 'my ask')
+  await t.typeText(Selector('input[type=text]').nth(1), 'my ask')
   await t.typeText('textarea', 'my text')
   await t.click('button')
 

@@ -2,7 +2,7 @@
 
 ![shopping-list](https://user-images.githubusercontent.com/19663260/44575926-f3613580-a795-11e8-825f-670c36b843dd.png)
 
-This example demonstrates how to work with [read-models](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md) and [view-models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md).
+This example demonstrates how to work with [read-models](https://reimagined.github.io/resolve/docs/read-side#read-models) and [view-models](https://reimagined.github.io/resolve/docs/read-side#view-model-specifics).
 
 ```sh
 npx create-resolve-app resolve-shopping-list -e shopping-list

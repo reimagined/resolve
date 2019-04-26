@@ -19,9 +19,9 @@ const prodConfig = {
   port: 3000,
   polyfills: ['@babel/polyfill'],
   mode: 'production',
-  readModelAdapters: {
+  readModelConnectors: {
     HackerNews: {
-      module: 'resolve-readmodel-memory',
+      module: 'resolve-readmodel-lite',
       options: {}
     }
   },
@@ -46,11 +46,11 @@ The code below demonstrates how to set up a storage adapter on the example of an
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../examples/hacker-news/config.prod.js /readModelAdapters/ /\},/)
+[embedmd]:# (../examples/hacker-news/config.prod.js /readModelConnectors/ /\},/)
 ```js
-readModelAdapters: {
+readModelConnectors: {
     HackerNews: {
-      module: 'resolve-readmodel-memory',
+      module: 'resolve-readmodel-lite',
       options: {}
     }
   },
@@ -82,11 +82,10 @@ export default {
       adapter: {
         module: 'resolve-readmodel-mysql',
         options: {
-          host: declareRuntimeEnv('SQL_HOST'),
-          database: declareRuntimeEnv('SQL_DATABASE'),
-          user: declareRuntimeEnv('SQL_USER'),
-          password: declareRuntimeEnv('SQL_PASSWORD'),
-          metaName: '__deployments_ResolveMeta__'
+          host: declareRuntimeEnv('RESOLVE_READMODEL_SQL_HOST'),
+          database: declareRuntimeEnv('RESOLVE_READMODEL_SQL_DATABASE'),
+          user: declareRuntimeEnv('RESOLVE_READMODEL_SQL_USER'),
+          password: declareRuntimeEnv('RESOLVE_READMODEL_SQL_PASSWORD')
         }
       }
     }

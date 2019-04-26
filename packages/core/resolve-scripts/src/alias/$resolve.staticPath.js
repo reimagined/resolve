@@ -1,4 +1,4 @@
-import validatePath from 'resolve-runtime/lib/utils/validate_path'
+import validatePath from 'resolve-runtime/lib/common/utils/validate-path'
 
 import { message } from '../constants'
 import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
@@ -14,10 +14,7 @@ export default ({ resolveConfig, isClient }) => {
   if (!checkRuntimeEnv(staticPath)) {
     if (!validatePath(staticPath, { allowAbsolutePath: true })) {
       throw new Error(
-        `Incorrect options.staticPath = "${
-          staticPath
-          // eslint-disable-next-line max-len
-        }"\nValue must be part of the URL or the absolute URL, which is the application's static subdirectory`
+        `Incorrect options.staticPath = "${staticPath}"\nValue must be part of the URL or the absolute URL, which is the application's static subdirectory`
       )
     }
     staticPath = encodeURI(staticPath)
@@ -30,7 +27,7 @@ export default ({ resolveConfig, isClient }) => {
   } else {
     if (!isClient) {
       exports.push(
-        `import validatePath from 'resolve-runtime/lib/utils/validate_path'`
+        `import validatePath from 'resolve-runtime/lib/common/utils/validate-path'`
       )
     }
 
@@ -38,7 +35,6 @@ export default ({ resolveConfig, isClient }) => {
 
     if (!isClient) {
       exports.push(
-        /* eslint-disable max-len */
         `if (!validatePath(staticPath, { allowAbsolutePath: true })) {
           throw new Error(
             \`Incorrect options.staticPath = "\${
@@ -46,7 +42,6 @@ export default ({ resolveConfig, isClient }) => {
             }"\\nValue must be part of the URL or the absolute URL, which is the application's static subdirectory\`
           )
         }`,
-        /* eslint-enable max-len */
         `staticPath = encodeURI(staticPath)`,
         ``
       )

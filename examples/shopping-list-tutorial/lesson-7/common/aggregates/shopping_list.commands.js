@@ -9,7 +9,7 @@ import {
 
 export default {
   createShoppingList: (state, { payload: { name } }) => {
-    if (state.createdAt) throw new Error('shopping list already exists')
+    if (state.createdAt) throw new Error('the shopping list already exists')
     if (!name) throw new Error('name is required')
     return {
       type: SHOPPING_LIST_CREATED,
@@ -20,7 +20,7 @@ export default {
   renameShoppingList: (state, { payload: { name } }) => {
     if (!name) throw new Error('name is required')
     if (!state || !state.createdAt) {
-      throw new Error(`shopping list does not exist`)
+      throw new Error(`the shopping list does not exist`)
     }
     return {
       type: SHOPPING_LIST_RENAMED,
@@ -30,7 +30,7 @@ export default {
 
   removeShoppingList: state => {
     if (!state || !state.createdAt) {
-      throw new Error(`shopping list does not exist`)
+      throw new Error(`the shopping list does not exist`)
     }
     return {
       type: SHOPPING_LIST_REMOVED
@@ -41,7 +41,7 @@ export default {
     if (!id) throw new Error('id is required')
     if (!text) throw new Error('text is required')
     if (!state || !state.createdAt) {
-      throw new Error(`shopping list does not exist`)
+      throw new Error(`the shopping list does not exist`)
     }
     return {
       type: SHOPPING_ITEM_CREATED,
@@ -51,7 +51,7 @@ export default {
 
   toggleShoppingItem: (state, { payload: { id } }) => {
     if (!state || !state.createdAt) {
-      throw new Error(`shopping list does not exist`)
+      throw new Error(`the shopping list does not exist`)
     }
     if (!id) throw new Error('id is required')
     return {
@@ -62,7 +62,7 @@ export default {
 
   removeShoppingItem: (state, { payload: { id } }) => {
     if (!state || !state.createdAt) {
-      throw new Error(`shopping list does not exist`)
+      throw new Error(`the shopping list does not exist`)
     }
     if (!id) throw new Error('id is required')
     return {

@@ -3,20 +3,43 @@ const testFunctionalConfig = {
   port: 3000,
   polyfills: ['@babel/polyfill'],
   mode: 'development',
-  readModelAdapters: [
-    {
-      name: 'default',
-      module: 'resolve-readmodel-memory',
-      options: {}
+  readModelConnectors: {
+    default: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'read-models-test-functional.db'
+      }
+    },
+    elasticSearch: {
+      module: 'common/read-models/elastic-search-connector.js',
+      options: {
+        /*
+        host: 'localhost:9200'
+        */
+      }
     }
-  ],
+  },
+  schedulers: {
+    scheduler: {
+      adapter: {
+        module: 'resolve-scheduler-local',
+        options: {}
+      },
+      connectorName: 'default'
+    }
+  },
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000
   },
   storageAdapter: {
     module: 'resolve-storage-lite',
-    options: {}
+    options: {
+      databaseFile: 'event-store-test-functional.db'
+    }
+  },
+  eventBroker: {
+    databaseFile: 'local-bus-broker-test-functional.db'
   }
 }
 

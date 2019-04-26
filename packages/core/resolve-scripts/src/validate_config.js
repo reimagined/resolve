@@ -1,5 +1,5 @@
 import Ajv from 'ajv'
-import validatePath from 'resolve-runtime/lib/utils/validate_path'
+import validatePath from 'resolve-runtime/lib/common/utils/validate-path.js'
 
 import { schemaResolveConfig, message } from './constants'
 import { checkRuntimeEnv } from './declare_runtime_env'
@@ -17,29 +17,26 @@ const allowedMethods = [
   'ALL'
 ]
 
-export const validateReadModelAdapters = resolveConfig => {
-  for (const { adapterName } of resolveConfig.readModels) {
-    const filterResult = resolveConfig.readModelAdapters.filter(
-      ({ name }) => adapterName === name
-    )
-    if (filterResult.length === 0) {
+export const validateReadModelConnectors = resolveConfig => {
+  for (const { connectorName } of [
+    ...resolveConfig.readModels,
+    ...resolveConfig.sagas
+  ]) {
+    if (resolveConfig.readModelConnectors[connectorName] == null) {
       throw new Error(
-        `The "${adapterName}" read model adapter is required but not specified`
-      )
-    } else if (filterResult.length > 1) {
-      throw new Error(
-        `Duplicate declaration "${adapterName}" read model adapter`
+        `The "${connectorName}" read model connector is required but not specified`
       )
     }
   }
 
-  for (const { name } of resolveConfig.readModelAdapters) {
-    const findResult = resolveConfig.readModels.find(
-      ({ adapterName }) => adapterName === name
-    )
+  for (const name of Object.keys(resolveConfig.readModelConnectors)) {
+    const findResult = [
+      ...resolveConfig.readModels,
+      ...resolveConfig.sagas
+    ].find(({ connectorName }) => connectorName === name)
     if (!findResult) {
       throw new Error(
-        `The "${name}" read model adapter is specified but no read model uses it`
+        `The "${name}" read model connector is specified but no read model/saga uses it`
       )
     }
   }
@@ -97,7 +94,7 @@ const validateConfig = config => {
   }
 
   validateApiHandlers(config)
-  validateReadModelAdapters(config)
+  validateReadModelConnectors(config)
 
   return true
 }

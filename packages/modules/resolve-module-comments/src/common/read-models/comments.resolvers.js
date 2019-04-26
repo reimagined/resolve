@@ -3,14 +3,9 @@ import injectDefaults from '../inject-defaults'
 const createCommentsProjection = ({
   commentsTableName,
   resolverNames: { commentsTree, foreignCommentsCount, allCommentsPaginate },
-  maxNestedLevel,
-  consistencyMode
+  maxNestedLevel
 }) => ({
   [commentsTree]: async (store, args) => {
-    if (consistencyMode === 'causalConsistencyMode') {
-      await store.waitEventCausalConsistency()
-    }
-
     const { treeId, parentCommentId, maxLevel } = args
     const parentId = parentCommentId != null ? parentCommentId : null
 
@@ -94,10 +89,6 @@ const createCommentsProjection = ({
   },
 
   [foreignCommentsCount]: async (store, args) => {
-    if (consistencyMode === 'causalConsistencyMode') {
-      await store.waitEventCausalConsistency()
-    }
-
     const { treeId, parentCommentId, authorId, maxLevel } = args
     const parentId = parentCommentId != null ? parentCommentId : null
 
@@ -152,10 +143,6 @@ const createCommentsProjection = ({
   },
 
   [allCommentsPaginate]: async (store, args) => {
-    if (consistencyMode === 'causalConsistencyMode') {
-      await store.waitEventCausalConsistency()
-    }
-
     const { itemsOnPage, pageNumber } = args
 
     const itemsOnPageInt = +itemsOnPage

@@ -1,9 +1,3 @@
-const dispose = async ({ database, tableName }, { dropEvents }) => {
-  if (dropEvents) {
-    await database.deleteTable({
-      TableName: tableName
-    })
-  }
-}
+const dispose = async () => {}
 
 export default dispose

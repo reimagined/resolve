@@ -10,7 +10,7 @@ const routeRegisterCallback = async ({ resolve }, username) => {
   })
 
   if (existingUser) {
-    throw new Error('User can not be created')
+    throw new Error('User cannot be created')
   }
 
   const user = {

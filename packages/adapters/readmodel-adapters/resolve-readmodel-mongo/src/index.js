@@ -1,13 +1,30 @@
-import { MongoClient } from 'mongodb'
+import { MongoClient, ObjectID } from 'mongodb'
 import createAdapter from 'resolve-readmodel-base'
 
-import metaApi from './meta-api'
-import storeApi from './store-api'
+import connect from './connect'
+import count from './count'
+import defineTable from './define-table'
+import del from './delete'
+import disconnect from './disconnect'
+import dropReadModel from './drop-read-model'
+import findOne from './find-one'
+import find from './find'
+import getTemplateDocument from './get-template-document'
+import insert from './insert'
+import update from './update'
+import wrapSearchExpression from './wrap-search-expression'
+
+const store = { defineTable, find, findOne, count, insert, update, delete: del }
 
 export default createAdapter.bind(null, {
-  metaApi: {
-    ...metaApi,
-    connect: metaApi.connect.bind(null, MongoClient)
-  },
-  storeApi
+  ...store,
+  connect: connect.bind(null, {
+    MongoClient,
+    ObjectID,
+    wrapSearchExpression,
+    getTemplateDocument,
+    ...store
+  }),
+  dropReadModel,
+  disconnect
 })

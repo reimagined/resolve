@@ -22,12 +22,8 @@
   "storageAdapter": {
     "module": "resolve-storage-lite",
     "options": {
-      "pathToFile": "event-storage.db"
+      "databaseFile": "event-store.db"
     }
-  },
-  "busAdapter": {
-    "module": "resolve-bus-memory",
-    "options": {}
   },
   "subscribeAdapter": {
     "module": "resolve-subscribe-socket.io",
@@ -37,7 +33,16 @@
     "module": "resolve-snapshot-lite",
     "options": {}
   },
-  "readModelAdapters": [],
+  "readModelConnectors": {},
+  "schedulers": {},
+  "eventBroker": {
+    "launchBroker": true,
+    "zmqBrokerAddress": "tcp://127.0.0.1:3500",
+    "zmqConsumerAddress": "tcp://127.0.0.1:3501",
+    "databaseFile": "local-bus-broker.db",
+    "batchSize": 100,
+    "upstream": true
+  },
   "jwtCookie": {
     "name": "jwt",
     "maxAge": 31536000000

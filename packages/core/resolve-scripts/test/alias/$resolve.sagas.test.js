@@ -4,13 +4,14 @@ import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
   const resolveConfig = {
+    readModels: [],
     sagas: [
       {
         name: 'Saga',
-        cronHandlers: path.resolve(__dirname, 'files/testSagaCronHandlers.js'),
-        eventHandlers: path.resolve(__dirname, 'files/testSagaEventHandlers.js')
+        source: path.resolve(__dirname, 'files/testSagaCronHandlers.js')
       }
-    ]
+    ],
+    schedulers: {}
   }
 
   test('[client]', () => {

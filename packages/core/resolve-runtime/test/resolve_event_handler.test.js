@@ -1,23 +1,26 @@
-import handleDeployServiceEvent from '../src/handlers/deploy_service_event_handler'
+import handleDeployServiceEvent from '../src/common/handlers/deploy-service-event-handler'
+import initBroker from '../src/cloud/init-broker'
 
 describe('resolve event handler', () => {
-  const executor = {
-    read: jest.fn(),
-    dispose: jest.fn()
-  }
+  let resolve = null
 
-  const resolve = {
-    readModels: [{ name: 'readModel1' }, { name: 'readModel2' }],
-    executeQuery: {
-      getExecutor: jest.fn(),
-      getExecutors: jest.fn()
+  beforeEach(() => {
+    resolve = {
+      readModels: [{ name: 'readModel1' }, { name: 'readModel2' }],
+      executeQuery: { drop: jest.fn() },
+      lambda: {
+        invoke: jest.fn().mockReturnValue({
+          promise: jest.fn().mockReturnValue(Promise.resolve())
+        })
+      },
+      eventBroker: {}
     }
-  }
+
+    initBroker(resolve)
+  })
 
   afterEach(() => {
-    executor.dispose.mockClear()
-    resolve.executeQuery.getExecutors.mockClear()
-    resolve.executeQuery.getExecutor.mockClear()
+    resolve = null
   })
 
   describe('common', () => {
@@ -30,8 +33,7 @@ describe('resolve event handler', () => {
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
       expect(result).toEqual(null)
 
-      expect(resolve.executeQuery.getExecutors).toHaveBeenCalledTimes(0)
-      expect(resolve.executeQuery.getExecutor).toHaveBeenCalledTimes(0)
+      expect(resolve.executeQuery.drop).toHaveBeenCalledTimes(0)
     })
 
     it('returns null for unknown part', async () => {
@@ -42,8 +44,7 @@ describe('resolve event handler', () => {
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
       expect(result).toEqual(null)
 
-      expect(resolve.executeQuery.getExecutors).toHaveBeenCalledTimes(0)
-      expect(resolve.executeQuery.getExecutor).toHaveBeenCalledTimes(0)
+      expect(resolve.executeQuery.drop).toHaveBeenCalledTimes(0)
     })
   })
 
@@ -54,20 +55,11 @@ describe('resolve event handler', () => {
         operation: 'reset'
       }
 
-      resolve.executeQuery.getExecutors.mockReturnValueOnce([executor])
-
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
       expect(result).toEqual('ok')
 
-      expect(resolve.executeQuery.getExecutors).toHaveBeenCalledTimes(1)
-      expect(resolve.executeQuery.getExecutor).toHaveBeenCalledTimes(0)
-
-      expect(executor.read).toHaveBeenCalledWith({
-        isBulkRead: true
-      })
-
-      expect(executor.dispose).toHaveBeenCalledTimes(1)
+      expect(resolve.executeQuery.drop).toHaveBeenCalledTimes(2)
     })
 
     it('handles specific read model reset correctly', async () => {
@@ -77,20 +69,11 @@ describe('resolve event handler', () => {
         name: 'default'
       }
 
-      resolve.executeQuery.getExecutor.mockReturnValueOnce(executor)
-
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
       expect(result).toEqual('ok')
 
-      expect(resolve.executeQuery.getExecutor).toHaveBeenCalledWith('default')
-      expect(resolve.executeQuery.getExecutors).toHaveBeenCalledTimes(0)
-
-      expect(executor.read).toHaveBeenCalledWith({
-        isBulkRead: true
-      })
-
-      expect(executor.dispose).toHaveBeenCalledTimes(1)
+      expect(resolve.executeQuery.drop).toHaveBeenCalledTimes(1)
     })
 
     it('handles getting of list', async () => {
@@ -101,7 +84,7 @@ describe('resolve event handler', () => {
 
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
-      expect(result).toEqual(['readModel1', 'readModel2'])
+      expect(result).toEqual([{ name: 'readModel1' }, { name: 'readModel2' }])
     })
   })
 })

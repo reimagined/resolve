@@ -35,6 +35,13 @@ describe('createCustomAdapter', () => {
         JSON.stringify(args, null, 2)
       )
     }
+    const drop = async (pool, ...args) => {
+      result.push(
+        'drop',
+        JSON.stringify(pool, null, 2),
+        JSON.stringify(args, null, 2)
+      )
+    }
     const dispose = async (pool, ...args) => {
       result.push(
         'dispose',
@@ -49,6 +56,7 @@ describe('createCustomAdapter', () => {
       init,
       loadEvents,
       saveEvent,
+      drop,
       dispose,
       {}
     )
@@ -97,6 +105,13 @@ describe('createCustomAdapter', () => {
         JSON.stringify(args, null, 2)
       )
     }
+    const drop = async (pool, ...args) => {
+      result.push(
+        'drop',
+        JSON.stringify(pool, null, 2),
+        JSON.stringify(args, null, 2)
+      )
+    }
     const dispose = async (pool, ...args) => {
       result.push(
         'dispose',
@@ -111,6 +126,7 @@ describe('createCustomAdapter', () => {
       init,
       loadEvents,
       saveEvent,
+      drop,
       dispose,
       {}
     )

@@ -9,11 +9,9 @@ const testFunctionalConfig = {
   distDir: 'dist',
   storageAdapter: {
     module: 'resolve-storage-lite',
-    options: {}
-  },
-  busAdapter: {
-    module: 'resolve-bus-memory',
-    options: {}
+    options: {
+      databaseFile: 'event-store-test-functional.db'
+    }
   },
   subscribeAdapter: {
     module: 'resolve-subscribe-socket.io',
@@ -22,6 +20,9 @@ const testFunctionalConfig = {
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000
+  },
+  eventBroker: {
+    databaseFile: 'local-bus-broker-test-functional.db'
   }
 }
 

@@ -42,19 +42,20 @@
     "prettier-eslint-cli": "^4.7.1",
     "rimraf": "^2.6.3",
     "glob": "^7.1.3",
-    "@internal/helpers": "0.19.8"
+    "@internal/helpers": "0.19.8",
+    "mdis": "^0.0.4"
   },
   "workspaces": {
     "packages": [
       "packages/core/*",
       "packages/modules/*",
       "packages/internal/*",
-      "packages/adapters/bus-adapters/*",
       "packages/adapters/storage-adapters/*",
       "packages/adapters/readmodel-adapters/*",
       "packages/adapters/snapshot-adapters/*",
       "packages/adapters/subscribe-adapters/*",
       "packages/adapters/api-handler-adapters/*",
+      "packages/adapters/scheduler-adapters/*",
       "examples/*",
       "examples/shopping-list-tutorial/*",
       "packages/modules/*",
@@ -67,6 +68,7 @@
     "clean:babel": "npx oao all \"npx rimraf dist lib es\" --parallel",
     "clean:packages": "npx rimraf .packages",
     "lint": "eslint .",
+    "mdis": "mdis",
     "prepare": "babel-compile",
     "build-packages": "build-packages",
     "local-registry": "local-registry",
@@ -74,7 +76,7 @@
     "publish": "npx oao publish -i \"examples/*\" --no-git-commit --no-changelog",
     "test": "npx oao all -i \"examples/shopping-list-advanced\" \"yarn test --color 2>&1\"",
     "test:functional": "npx oao run-script -i \"{examples/shopping-list-advanced,examples/shopping-list-tutorial/*}\" test:functional",
-    "test:integrational": "npx oao run-script test:integrational",
+    "test:integrational": "npx oao all -i \"{examples/**,packages/**,website}\" \"yarn test:integrational --color 2>&1\"",
     "tutorial-test:functional": "npx oao run-script -i \"examples/*\" test:functional",
     "test:clean-snapshots": "npx oao all -i \"examples/shopping-list-advanced\"  \"yarn test -u --color 2>&1\""
   }

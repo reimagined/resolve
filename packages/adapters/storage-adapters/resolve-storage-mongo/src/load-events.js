@@ -3,7 +3,13 @@ const projectionExpression = { _id: 0 }
 
 const loadEvents = async (
   { collection },
-  { eventTypes, aggregateIds, startTime, finishTime },
+  {
+    eventTypes,
+    aggregateIds,
+    startTime,
+    finishTime,
+    maxEvents = Number.POSITIVE_INFINITY
+  },
   callback
 ) => {
   const findExpression = {
@@ -23,6 +29,8 @@ const loadEvents = async (
 
   let lastError = null
 
+  let initialTimestamp = null
+  let countEvents = 0
   for (
     let event = await cursorStream.next();
     event != null;
@@ -30,6 +38,14 @@ const loadEvents = async (
   ) {
     try {
       await callback(event)
+
+      if (initialTimestamp == null) {
+        initialTimestamp = event.timestamp
+      }
+
+      if (countEvents++ > maxEvents && event.timestamp !== initialTimestamp) {
+        break
+      }
     } catch (error) {
       lastError = error
       break

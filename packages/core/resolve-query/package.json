@@ -25,8 +25,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-query#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
-    "resolve-viewmodel": "0.19.8"
+    "@babel/runtime": "^7.0.0"
   },
   "devDependencies": {
     "jest": "24.1.0",

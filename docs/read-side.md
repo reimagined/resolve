@@ -28,52 +28,53 @@ const appConfig = {
       name: 'default',
       projection: 'common/read-models/default.projection.js',
       resolvers: 'common/read-models/default.resolvers.js',
-      adapterName: 'default'
+      connectorName: 'default'
     }
   ],
-  ...
 }
 ```
 
-In the configuration object, specify the Read Model's name and the paths to the files containing projections and resolvers. Here, you can also specify the Read Model's storage adapter.
+In the configuration object, specify the Read Model's name and the paths to the files containing projections, resolvers, and the Read Model connector's name.
 
-You can define the available adapters in the **readModelAdapters** section:
+A Red Model connector defines how a Read Model's data should be stored. You can define the available connectors in the **readModelConnectors** section:
+
+##### config.dev.js:
 
 ```js
 const devConfig = {
   ...
-  readModelAdapters: [
-    {
-      name: 'default',
-      module: 'resolve-readmodel-memory',
+  readModelConnectors: {
+    default: {
+      module: 'resolve-readmodel-lite',
       options: {}
     }
-  ],
+  },
 }
 ```
+
+##### config.prod.js:
 
 ```js
 import { declareRuntimeEnv } from 'resolve-scripts'
 const prodConfig = {
   ...
-  readModelAdapters: [
-    {
-      name: 'default',
+  readModelConnectors: {
+    default: {
       module: 'resolve-readmodel-mysql',
       options: {
-        host: declareRuntimeEnv('SQL_HOST'),
-        database: declareRuntimeEnv('SQL_DATABASE'),
-        user: declareRuntimeEnv('SQL_USER'),
-        password: declareRuntimeEnv('SQL_PASSWORD'),
+        host: declareRuntimeEnv('RESOLVE_READMODEL_SQL_HOST'),
+        database: declareRuntimeEnv('RESOLVE_READMODEL_SQL_DATABASE'),
+        user: declareRuntimeEnv('RESOLVE_READMODEL_SQL_USER'),
+        password: declareRuntimeEnv('RESOLVE_READMODEL_SQL_PASSWORD'),
       }
     }
-  ],
+  },
 }
 ```
 
 ### Configuring View Models
 
-You should register your View Models in the **viewModels** section in the same way:
+Register your View Models in the **viewModels** configuration section:
 
 ```js
 const appConfig = {
@@ -91,12 +92,143 @@ const appConfig = {
         }
       }
     }
-  ],
-  ...
+  ]
 }
 ```
 
 In the configuration object, specify the View Model's name and the path to the file containing projection definition. You can also specify the View Model snapshot storage adapter. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions.
+
+### Custom Read Models
+
+To create a custom Read Model, you need to manually implement a Read Model connector. A connector defines functions that manage a custom Read Model's store. The following functions can be defined:
+
+- **connect** - Initialises a connection to a storage.
+- **disconnect** - Closes the storage connection.
+- **drop** - Removes the Read Model's data from storage.
+- **dispose** - Forcefully disposes all unmanaged resources used by Read Models served by this connector.
+
+The code sample below demostrates how to implement a connector that provides a file-based storage for Read Models.
+
+##### common/read-models/custom-read-model-connector.js:
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/custom-readmodel-sample/connector.js)
+```js
+import fs from 'fs'
+export default options => {
+  const prefix = String(options.prefix)
+  const readModels = new Set()
+  const connect = async readModelName => {
+    fs.writeFileSync(`${prefix}${readModelName}.lock`, true, { flag: 'wx' })
+    readModels.add(readModelName)
+    const store = {
+      get() {
+        return JSON.parse(String(fs.readFileSync(`${prefix}${readModelName}`)))
+      },
+      set(value) {
+        fs.writeFileSync(`${prefix}${readModelName}`, JSON.stringify(value))
+      }
+    }
+    return store
+  }
+  const disconnect = async (store, readModelName) => {
+    fs.unlinkSync(`${prefix}${readModelName}.lock`)
+    readModels.delete(readModelName)
+  }
+  const drop = async (store, readModelName) => {
+    fs.unlinkSync(`${prefix}${readModelName}.lock`)
+    fs.unlinkSync(`${prefix}${readModelName}`)
+  }
+  const dispose = async () => {
+    for (const readModelName of readModels) {
+      fs.unlinkSync(`${prefix}${readModelName}.lock`)
+    }
+    readModels.clear()
+  }
+  return {
+    connect,
+    disconnect,
+    drop,
+    dispose
+  }
+}
+```
+
+<!-- prettier-ignore-end -->
+
+A connector is defined as a function that receives an `options` argument. This argument contains a custom set of options that you can specify in the connector's configuration.
+
+Register the connector in the application's configuration file.
+
+##### config.app.js:
+
+```js
+readModelConnectors: {
+  customReadModelConnector: {
+    module: 'common/read-models/custom-read-model-connector.js',
+    options: {
+      prefix: path.join(__dirname, 'data') + path.sep // Path to a folder that contains custom Read Model store files
+    }
+  }
+}
+```
+
+Now you can assign the custom connector to a Read Model by name as shown below.
+
+##### config.app.js:
+
+```js
+  readModels: [
+    {
+      name: 'CustomReadModel',
+      projection: 'common/read-models/custom-read-model.projection.js',
+      resolvers: 'common/read-models/custom-read-model.resolvers.js',
+      connectorName: 'customReadModelConnector'
+    }
+    ...
+  ]
+```
+
+The code sample below demostrates how you can use the custom store's API in the Read Model's code.
+
+##### common/read-models/custom-read-model.projection.js:
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/custom-readmodel-sample/projection.js)
+```js
+const projection = {
+  Init: async store => {
+    await store.set(0)
+  },
+  INCREMENT: async (store, event) => {
+    await store.set((await store.get()) + event.payload)
+  },
+  DECREMENT: async (store, event) => {
+    await store.set((await store.get()) - event.payload)
+  }
+}
+export default projection
+```
+
+<!-- prettier-ignore-end -->
+
+##### common/read-models/custom-read-model.resolvers.js:
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/custom-readmodel-sample/resolvers.js)
+```js
+const resolvers = {
+  read: async store => {
+    return await store.get()
+  }
+}
+export default resolvers
+```
+
+<!-- prettier-ignore-end -->
 
 ## Initialize a Read Model
 
@@ -119,8 +251,7 @@ You can use the **defineTable** method to add tables to the storage:
         'createdByName'
       ]
     })
-    ...
-  },
+  }
 ```
 
 ReSolve provides a unified API to manage data in storage (this code works with any supported storage type). **Read Model Adapters** provide the internal logic a Read Model uses to communicate with DBMSs.
@@ -131,7 +262,7 @@ We recommend that you store Read Model data in a denormalized form so that your 
 
 A projection function is used to accumulate the event data in a **Read Model storage**. Each projection function takes the storage object and event information. The event information includes the aggregateID, timestamp and payload.
 
-You can communicate with the store using the standard API. The code sample below demonstrates a typical Read Model projection function implementation:
+You can communicate with the store using the standard API. The code sample below demonstrates a Read Model projection function implementation:
 
 ```js
 [STORY_COMMENTED]: async (
@@ -152,15 +283,15 @@ You can communicate with the store using the standard API. The code sample below
 
 A [resolver](#resolvers) then uses the data from the store to prepare final data samples for data requests.
 
-If you delete the Read Model storage, this will force the framework to re-populate the store based on all events from the beginning of the history. This can be useful in the development environment and when you deploy an updated version of the application.
+Note that you can add additional logic to a projection function. For instance, you can perform SQL queries, update Elastic Search indexes, write arbitrary data to files, etc.
 
-Note that reSolve does not limit you on what logic you can use in a projection function implementation as long as it helps you prepare data required to answer queries. Depending on your requirements, you can perform SQL queries, update Elastic Search indexes, write arbitrary data to files, etc.
+If you delete the Read Model storage, the framework re-populates the store based on all the events. This can be useful in the development environment and when you deploy an updated version of the application.
 
 ## Resolvers
 
-A **resolver** is the part of a Read Model that handles data requests. A resolver function receives the store and request parameters. Based on the parameters, the resolver function pulls the required data from the store and processes it to prepare the response object.
+A **resolver** is the part of a Read Model that handles data requests. A resolver function receives the store and request parameters. Based on the parameters, the resolver function pulls data from the store and processes it to prepare the response object.
 
-The code sample below demonstrates a typical Read Model implementation:
+The code sample below demonstrates a Read Model implementation:
 
 ```js
 comments: async (store, { first, offset }) => {
@@ -190,21 +321,26 @@ Use View Models in the following scenarios:
 
 A View Model's projection function receives a state and an event object, and returns an updated state. A projection function runs for every event with the specified aggregate ID from the beginning of the history on every request so it is important to keep View Models small. You can also store snapshots of the View Model state to optimize system resource consumption.
 
-The code sample below demonstrates a typical View Model projection function:
+The code sample below demonstrates a View Model projection function:
 
+<!-- prettier-ignore-start -->
+
+[embedmd]:# (../examples/shopping-list/common/view-models/shopping_list.projection.js /^[[:blank:]]+\[SHOPPING_ITEM_CREATED/ /\}\),/)
 ```js
-[SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
-  ...state,
-  list: [
-    ...state.list,
-    {
-      id,
-      text,
-      checked: false
-    }
-  ]
-}),
+  [SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
+    ...state,
+    list: [
+      ...state.list,
+      {
+        id,
+        text,
+        checked: false
+      }
+    ]
+  }),
 ```
+
+<!-- prettier-ignore-end -->
 
 Refer to the [Query a View Model](#query-a-view-model) section, for information on how to query a View Model.
 
