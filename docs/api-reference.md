@@ -3,25 +3,18 @@ id: api-reference
 title: API Reference
 ---
 
-## Event Storage
-
-### Adapter Interface
-
-The table below lists functions that should be included into an implementation of a event storage adapter.
-
-| Function Name | Description |
-| ------------- | ----------- |
-|               |             |
-
 ## Read Model Storage
 
-### Adapter Interface
+### Connector Interface
 
-The table below lists functions that should be included into an implementation of a Read Model storage adapter.
+The table below list functions that a custom Read Model's connector should implement.
 
-| Function Name | Description |
-| ------------- | ----------- |
-|               |             |
+| Function Name | Description                                                                               |
+| ------------- | ----------------------------------------------------------------------------------------- |
+| connect       | Initialises a connection to a storage.                                                    |
+| disconnect    | Closes the storage connection.                                                            |
+| drop          | Removes the Read Model's data from storage.                                               |
+| dispose       | Forcefully disposes all unmanaged resources used by Read Models served by this connector. |
 
 ### Store Interface
 
@@ -132,6 +125,8 @@ const getStory = async (store, { id }) => {
   return story
 }
 ```
+
+## Saga API
 
 ## Client-Side API
 
