@@ -38,7 +38,7 @@ import React from 'react'
 ...
 const TodoList = ({ data }) => (
   <ul>
-    {data.map(i => ( Access View Model data via the data prop
+    {data.map(i => ( // Access View Model data via the data prop
       <li>{i}</li>
     ))}
   </ul>

@@ -1,6 +1,6 @@
 {
   "name": "resolve-module-comments",
-  "version": "0.19.6",
+  "version": "0.19.8",
   "description": "TODO",
   "engines": {
     "node": ">=8.10"
@@ -26,7 +26,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-comments#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "resolve-readmodel-memory": "0.19.6"
+    "resolve-readmodel-lite": "0.19.8"
   },
   "devDependencies": {
     "jest": "24.1.0",
@@ -41,7 +41,7 @@
   "babelCompile": [
     {
       "moduleType": "cjs",
-      "moduleTarget": "server",
+      "moduleTarget": "client",
       "inputDir": "./src/common",
       "outDir": "./lib/common"
     },

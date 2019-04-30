@@ -5,7 +5,7 @@ const injectDefaults = callback => (
   {
     aggregateName = defaults.aggregateName,
     readModelName = defaults.readModelName,
-    readModelAdapterName = defaults.readModelAdapterName,
+    readModelConnectorName = defaults.readModelConnectorName,
     commentsTableName = defaults.commentsTableName,
     reducerName = defaults.reducerName,
     eventTypes: {
@@ -23,7 +23,6 @@ const injectDefaults = callback => (
       foreignCommentsCount = defaults.foreignCommentsCount,
       allCommentsPaginate = defaults.allCommentsPaginate
     } = {},
-    consistencyMode = defaults.causalConsistencyMode,
     ...options
   } = {},
   { verifyCommand = defaultVerifyCommand } = {},
@@ -33,7 +32,7 @@ const injectDefaults = callback => (
     {
       aggregateName,
       readModelName,
-      readModelAdapterName,
+      readModelConnectorName,
       commentsTableName,
       reducerName,
       eventTypes: {
@@ -51,7 +50,6 @@ const injectDefaults = callback => (
         foreignCommentsCount,
         allCommentsPaginate
       },
-      consistencyMode,
       ...options
     },
     { verifyCommand },

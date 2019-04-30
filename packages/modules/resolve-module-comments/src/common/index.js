@@ -27,7 +27,7 @@ export {
 export default ({
   aggregateName,
   readModelName,
-  readModelAdapter,
+  readModelConnector,
   commentsTableName,
   reducerName,
   eventTypes,
@@ -39,7 +39,7 @@ export default ({
   const options = {
     aggregateName,
     readModelName,
-    readModelAdapter,
+    readModelConnector,
     commentsTableName,
     reducerName,
     eventTypes,
@@ -68,7 +68,7 @@ export default ({
     readModels: [
       {
         name: options.readModelName,
-        adapterName: options.readModelAdapterName,
+        connectorName: options.readModelConnectorName,
         projection: {
           module:
             'resolve-module-comments/lib/common/read-models/comments.projection.js',

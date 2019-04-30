@@ -4,13 +4,8 @@ const validateEventFilter = filter => {
   }
 
   const stringArrayFields = ['eventTypes', 'aggregateIds']
-  const booleanFields = ['skipStorage', 'skipBus']
-  const numericFields = ['startTime', 'finishTime']
-  const allowedFields = [
-    ...stringArrayFields,
-    ...booleanFields,
-    ...numericFields
-  ]
+  const numericFields = ['startTime', 'finishTime', 'maxEvents']
+  const allowedFields = [...stringArrayFields, ...numericFields]
 
   for (const key of Object.keys(filter)) {
     if (allowedFields.indexOf(key) < 0) {
@@ -32,12 +27,6 @@ const validateEventFilter = filter => {
     }
   }
 
-  for (const key of booleanFields) {
-    if (filter[key] != null && filter[key].constructor !== Boolean) {
-      throw new Error(`Event filter field ${key} should be boolean`)
-    }
-  }
-
   for (const key of numericFields) {
     if (filter[key] != null && filter[key].constructor !== Number) {
       throw new Error(`Event filter field ${key} should be number`)
@@ -45,54 +34,16 @@ const validateEventFilter = filter => {
   }
 }
 
-const loadEvents = async (storage, bus, filter, handler) => {
+const loadEvents = async (storage, filter, handler) => {
   validateEventFilter(filter)
-
-  if (filter.skipStorage && filter.skipBus) {
-    throw new Error(
-      'Cannot load events when storage and the bus are skipped at the same time'
-    )
-  }
-
-  const {
-    skipStorage,
-    skipBus,
-    startTime,
-    finishTime,
-    eventTypes,
-    aggregateIds
-  } = filter
-
-  if (!skipStorage) {
-    await storage.loadEvents(
-      {
-        eventTypes,
-        aggregateIds,
-        startTime,
-        finishTime
-      },
-      handler
-    )
-  }
-
-  if (bus == null || skipBus) {
-    return null
-  }
-
-  return await bus.subscribe(
-    {
-      eventTypes,
-      aggregateIds
-    },
-    handler
-  )
+  await storage.loadEvents(filter, handler)
 }
 
 const isInteger = val =>
   val != null && val.constructor === Number && parseInt(val) === val
 const isString = val => val != null && val.constructor === String
 
-const saveEvent = async (storage, bus, event) => {
+const saveEvent = async (storage, publishEvent, event) => {
   if (!isString(event.type)) {
     throw new Error('The `type` field is invalid')
   }
@@ -109,41 +60,40 @@ const saveEvent = async (storage, bus, event) => {
   event.aggregateId = String(event.aggregateId)
 
   await storage.saveEvent(event)
-  if (bus != null) {
-    await bus.publish(event)
+  if (typeof publishEvent === 'function') {
+    await publishEvent(event)
   }
   return event
 }
 
-const getLatestEvent = async (storage, bus, filter) => {
+const getLatestEvent = async (storage, filter) => {
   validateEventFilter(filter)
-
-  if (filter.skipStorage || filter.skipBus) {
-    throw new Error('Cannot get last eventstore event with skip-* parameters')
-  }
-
-  void bus // Bus is not used intentionally - last event fetched from storage
 
   return await storage.getLatestEvent(filter)
 }
 
-const wrapMethod = (method, storage, bus, errorHandler) => async (...args) => {
+const wrapMethod = (errorHandler, method, ...partialArgs) => async (
+  ...args
+) => {
   try {
-    return await method(storage, bus, ...args)
+    return await method(...partialArgs.concat(args))
   } catch (error) {
     await errorHandler(error)
   }
 }
 
 export default (
-  { storage, bus },
+  { storage, publishEvent },
   errorHandler = err => {
     throw err
   }
 ) => {
   return Object.freeze({
-    loadEvents: wrapMethod(loadEvents, storage, bus, errorHandler),
-    getLatestEvent: wrapMethod(getLatestEvent, storage, bus, errorHandler),
-    saveEvent: wrapMethod(saveEvent, storage, bus, errorHandler)
+    loadEvents: wrapMethod(errorHandler, loadEvents, storage),
+    getLatestEvent: wrapMethod(errorHandler, getLatestEvent, storage),
+    saveEvent: wrapMethod(errorHandler, saveEvent, storage, publishEvent),
+    dispose: async () => {
+      // TODO
+    }
   })
 }

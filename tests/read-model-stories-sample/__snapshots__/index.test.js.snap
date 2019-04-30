@@ -1,0 +1,180 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Read-model sample resolve "getCountStories" (): getCountStories() 1`] = `4`;
+
+exports[`Read-model sample resolve "getStoriesByIds" ({ ids: ['story-id-1', 'story-id-2', 'story-id-3', 'story-id-4', 'story-id-5'] }): .getStoriesByIds({ ids: ['story-id-1', 'story-id-2', 'story-id-3', 'story-id-4', 'story-id-5'] }) 1`] = `
+Array [
+  Object {
+    "active": true,
+    "id": "story-id-1",
+    "text": "Text 1.1",
+    "version": 1,
+  },
+  Object {
+    "active": null,
+    "id": "story-id-2",
+    "text": "Text 2.2",
+    "version": 2,
+  },
+  Object {
+    "active": true,
+    "id": "story-id-4",
+    "text": "Text 4.0",
+    "version": 0,
+  },
+  Object {
+    "active": true,
+    "id": "story-id-5",
+    "text": "Text 5.2",
+    "version": 2,
+  },
+]
+`;
+
+exports[`Read-model sample resolve "getStoriesByPage" ({ skip: 0, limit: 2, ascending: false }): .getStoriesByPage({ skip: 0, limit: 2, ascending: false }) 1`] = `
+Array [
+  Object {
+    "active": true,
+    "id": "story-id-5",
+    "text": "Text 5.2",
+    "version": 2,
+  },
+  Object {
+    "active": true,
+    "id": "story-id-4",
+    "text": "Text 4.0",
+    "version": 0,
+  },
+]
+`;
+
+exports[`Read-model sample resolve "getStoriesByPage" ({ skip: 0, limit: 2, ascending: true }): .getStoriesByPage({ skip: 0, limit: 2, ascending: true }) 1`] = `
+Array [
+  Object {
+    "active": true,
+    "id": "story-id-1",
+    "text": "Text 1.1",
+    "version": 1,
+  },
+  Object {
+    "active": null,
+    "id": "story-id-2",
+    "text": "Text 2.2",
+    "version": 2,
+  },
+]
+`;
+
+exports[`Read-model sample resolve "getStoriesByPage" ({ skip: 2, limit: 2, ascending: false }): .getStoriesByPage({ skip: 2, limit: 2, ascending: false }) 1`] = `
+Array [
+  Object {
+    "active": null,
+    "id": "story-id-2",
+    "text": "Text 2.2",
+    "version": 2,
+  },
+  Object {
+    "active": true,
+    "id": "story-id-1",
+    "text": "Text 1.1",
+    "version": 1,
+  },
+]
+`;
+
+exports[`Read-model sample resolve "getStoriesByPage" ({ skip: 2, limit: 2, ascending: true }): .getStoriesByPage({ skip: 2, limit: 2, ascending: true }) 1`] = `
+Array [
+  Object {
+    "active": true,
+    "id": "story-id-4",
+    "text": "Text 4.0",
+    "version": 0,
+  },
+  Object {
+    "active": true,
+    "id": "story-id-5",
+    "text": "Text 5.2",
+    "version": 2,
+  },
+]
+`;
+
+exports[`Read-model sample resolve "getStoriesWithRangedVersion" ({ minVersion: 1, maxVersion: 3, openRange: false }): .getStoriesWithRangedVersion({ minVersion: 1, maxVersion: 3, openRange: false }) 1`] = `
+Array [
+  Object {
+    "active": null,
+    "id": "story-id-2",
+    "text": "Text 2.2",
+    "version": 2,
+  },
+  Object {
+    "active": true,
+    "id": "story-id-5",
+    "text": "Text 5.2",
+    "version": 2,
+  },
+]
+`;
+
+exports[`Read-model sample resolve "getStoriesWithRangedVersion" ({ minVersion: 1, maxVersion: 3, openRange: true }): .getStoriesWithRangedVersion({ minVersion: 1, maxVersion: 3, openRange: true }) 1`] = `
+Array [
+  Object {
+    "active": true,
+    "id": "story-id-1",
+    "text": "Text 1.1",
+    "version": 1,
+  },
+  Object {
+    "active": null,
+    "id": "story-id-2",
+    "text": "Text 2.2",
+    "version": 2,
+  },
+  Object {
+    "active": true,
+    "id": "story-id-5",
+    "text": "Text 5.2",
+    "version": 2,
+  },
+]
+`;
+
+exports[`Read-model sample resolve "getStoryById" ({ id: 'story-id-1' }): getStoryById({ id: 'story-id-1' }) 1`] = `
+Object {
+  "active": true,
+  "id": "story-id-1",
+  "text": "Text 1.1",
+  "version": 1,
+}
+`;
+
+exports[`Read-model sample resolve "getStoryById" ({ id: 'story-id-2' }): getStoryById({ id: 'story-id-2' }) 1`] = `
+Object {
+  "active": null,
+  "id": "story-id-2",
+  "text": "Text 2.2",
+  "version": 2,
+}
+`;
+
+exports[`Read-model sample resolve "getStoryById" ({ id: 'story-id-3' }): getStoryById({ id: 'story-id-3' }) 1`] = `null`;
+
+exports[`Read-model sample resolve "getStoryById" ({ id: 'story-id-4' }): getStoryById({ id: 'story-id-4' }) 1`] = `
+Object {
+  "active": true,
+  "id": "story-id-4",
+  "text": "Text 4.0",
+  "version": 0,
+}
+`;
+
+exports[`Read-model sample resolve "getStoryById" ({ id: 'story-id-5' }): getStoryById({ id: 'story-id-5' }) 1`] = `
+Object {
+  "active": true,
+  "id": "story-id-5",
+  "text": "Text 5.2",
+  "version": 2,
+}
+`;
+
+exports[`Read-model sample resolve "getStoryVersionById" ({ id: 'story-id-1' }): .getStoryVersionById({ id: 'story-id-1' }) 1`] = `1`;

@@ -10,12 +10,8 @@ const prodConfig = {
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {
-      pathToFile: 'event-storage.db'
+      databaseFile: 'event-storage.db'
     }
-  },
-  busAdapter: {
-    module: 'resolve-bus-memory',
-    options: {}
   },
   subscribeAdapter: {
     module: 'resolve-subscribe-socket.io',
@@ -24,6 +20,9 @@ const prodConfig = {
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000
+  },
+  eventBroker: {
+    databaseFile: 'local-bus-broker.db'
   }
 }
 

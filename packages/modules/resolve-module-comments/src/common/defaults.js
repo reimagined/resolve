@@ -18,7 +18,7 @@ export const aggregateName = 'Comments'
 export const readModelName = 'Comments'
 
 // Read Model Adapter
-export const readModelAdapterName = 'default'
+export const readModelConnectorName = 'default'
 
 // Comments Table Name
 export const commentsTableName = 'Comments'
@@ -27,7 +27,3 @@ export const commentsTableName = 'Comments'
 export const commentsTree = 'commentsTree'
 export const foreignCommentsCount = 'foreignCommentsCount'
 export const allCommentsPaginate = 'allCommentsPaginate'
-
-// Consistency mode
-export const eventuallyConsistencyMode = 'eventuallyConsistencyMode'
-export const causalConsistencyMode = 'causalConsistencyMode'

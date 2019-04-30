@@ -17,6 +17,10 @@ import expressionString from './expression-string'
 import checkTableExists from './check-table-exists'
 import executePaginationQuery from './execute-pagination-query'
 import executeSingleQuery from './execute-single-query'
+import encodeEmptyStrings from './encode-empty-strings'
+import decodeEmptyStrings from './decode-empty-strings'
+import _encodeEvent from './encode-event'
+import _decodeEvent from './decode-event'
 import { globalPartitionKey, rangedIndex, apiVersion } from './constants'
 
 // as resource
@@ -27,9 +31,6 @@ import setupAutoScalingItem from './resource/setup-auto-scaling-item'
 import resourceCreate from './resource/create'
 import resourceDispose from './resource/dispose'
 import resourceDestroy from './resource/destroy'
-
-import encodeEmptyStrings from './encode-empty-strings'
-import decodeEmptyStrings from './decode-empty-strings'
 
 // as adapter
 const createAdapter = _createAdapter.bind(
@@ -52,7 +53,9 @@ const createAdapter = _createAdapter.bind(
     executePaginationQuery,
     executeSingleQuery,
     encodeEmptyStrings,
-    decodeEmptyStrings
+    decodeEmptyStrings,
+    encodeEvent: _encodeEvent,
+    decodeEvent: _decodeEvent
   }
 )
 export { globalPartitionKey, rangedIndex, apiVersion }
@@ -67,11 +70,18 @@ const pool = {
   create: resourceCreate,
   dispose: resourceDispose,
   destroy: resourceDestroy,
-  ApplicationAutoScaling
+  ApplicationAutoScaling,
+  encodeEmptyStrings,
+  decodeEmptyStrings
 }
 
 const create = resourceCreate.bind(null, pool)
 const dispose = resourceDispose.bind(null, pool)
 const destroy = resourceDestroy.bind(null, pool)
 
-export { create, dispose, destroy }
+export { create, dispose, destroy, decodeEmptyStrings }
+
+const encodeEvent = _encodeEvent.bind(null, pool)
+const decodeEvent = _decodeEvent.bind(null, pool)
+
+export { encodeEvent, decodeEvent }

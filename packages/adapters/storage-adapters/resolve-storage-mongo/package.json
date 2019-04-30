@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-mongo",
-  "version": "0.19.6",
+  "version": "0.19.8",
   "description": "This package serves as an adapter for resolve-storage to store events using MongoDB.",
   "engines": {
     "node": ">=8.10"
@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "mongodb": "^3.1.4",
-    "resolve-storage-base": "0.19.6"
+    "resolve-storage-base": "0.19.8"
   },
   "devDependencies": {
     "jest": "24.1.0",

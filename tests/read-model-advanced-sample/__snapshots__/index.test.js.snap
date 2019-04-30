@@ -1,0 +1,131 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Read-model generic adapter API Delete and non-parameterized resolver invocation 1`] = `
+Object {
+  "countResult": 3,
+  "findOneResult": Object {
+    "firstJsonName": Object {
+      "a": 1,
+      "b": 2,
+      "e": 10,
+    },
+  },
+  "findResult": Array [
+    Object {
+      "firstJsonName": null,
+    },
+    Object {
+      "firstJsonName": null,
+    },
+  ],
+}
+`;
+
+exports[`Read-model generic adapter API Insert and non-parameterized resolver invocation 1`] = `
+Object {
+  "countResult": 4,
+  "findOneResult": Object {
+    "firstJsonName": Object {
+      "a": 1,
+      "b": 2,
+      "e": 10,
+    },
+  },
+  "findResult": Array [
+    Object {
+      "firstJsonName": Object {
+        "c": 3,
+        "d": 4,
+        "e": 20,
+      },
+    },
+    Object {
+      "firstJsonName": null,
+    },
+    Object {
+      "firstJsonName": null,
+    },
+  ],
+}
+`;
+
+exports[`Read-model generic adapter API Update and non-parameterized resolver invocation 1`] = `
+Object {
+  "countResult": 4,
+  "findOneResult": Object {
+    "firstJsonName": Object {
+      "a": 1,
+      "b": 2,
+      "e": 10,
+    },
+  },
+  "findResult": Array [
+    Object {
+      "firstJsonName": Object {
+        "c": 3,
+        "e": 25,
+        "f": "inner-field",
+      },
+    },
+    Object {
+      "firstJsonName": null,
+    },
+    Object {
+      "firstJsonName": null,
+    },
+  ],
+}
+`;
+
+exports[`Read-model generic adapter API Update and parameterized resolver invocation 1`] = `
+Array [
+  Object {
+    "firstJsonName": Object {
+      "c": 3,
+      "e": 25,
+      "f": "inner-field",
+    },
+  },
+  Object {
+    "firstJsonName": null,
+  },
+  Object {
+    "firstJsonName": null,
+  },
+]
+`;
+
+exports[`Read-model generic adapter API Upsert and non-parameterized resolver invocation 1`] = `
+Object {
+  "countResult": 5,
+  "findOneResult": Object {
+    "firstJsonName": Object {
+      "a": 1,
+      "b": 2,
+      "e": 10,
+    },
+  },
+  "findResult": Array [
+    Object {
+      "firstJsonName": Object {
+        "a": 1,
+        "b": 2,
+        "e": 10,
+      },
+    },
+    Object {
+      "firstJsonName": Object {
+        "c": 3,
+        "d": 4,
+        "e": 20,
+      },
+    },
+    Object {
+      "firstJsonName": null,
+    },
+    Object {
+      "firstJsonName": null,
+    },
+  ],
+}
+`;

@@ -6,13 +6,17 @@ const devConfig = {
   redux: {
     enhancers: ['client/redux/enhancers/redux-devtools.js']
   },
-  readModelAdapters: [
-    {
-      name: 'default',
-      module: 'resolve-readmodel-memory',
-      options: {}
+  readModelConnectors: {
+    default: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'read-models.db'
+      }
     }
-  ]
+  },
+  eventBroker: {
+    databaseFile: 'local-bus-broker.db'
+  }
 }
 
 module.exports = devConfig

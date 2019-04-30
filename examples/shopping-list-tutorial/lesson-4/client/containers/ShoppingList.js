@@ -1,7 +1,7 @@
 import React from 'react'
 import { connectViewModel } from 'resolve-redux'
 
-// The example code uses components from the react-bootstrap library to keep the markup compact.
+// The example code uses components from the react-bootstrap library to reduce the markup.
 import { ListGroup, ListGroupItem, Checkbox } from 'react-bootstrap'
 
 export class ShoppingList extends React.PureComponent {

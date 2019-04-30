@@ -11,7 +11,7 @@ fixture`User`.beforeEach(async (t /*: TestController */) => {
 test('create', async (t /*: TestController */) => {
   await t.expect(await Selector('a').withText('login').exists).eql(true)
 
-  await t.typeText(await Selector('input[type=text]').nth(1), '123')
+  await t.typeText(await Selector('input[type=text]').nth(2), '123')
   await t.click(await Selector('input[type=submit]').nth(1))
 
   await t.expect(await Selector('a').withText('123').exists).eql(true)
@@ -31,8 +31,8 @@ test('login', async (t /*: TestController */) => {
   await t.expect(await Selector('a').withText('login').exists).eql(false)
 })
 
-test('create: User can not be created', async (t /*: TestController */) => {
-  await t.typeText(await Selector('input[type=text]').nth(1), '123')
+test('create: User cannot be created', async (t /*: TestController */) => {
+  await t.typeText(await Selector('input[type=text]').nth(2), '123')
   await t.click(await Selector('input[type=submit]').nth(1))
 
   await t.expect(await Selector('a').withText('logout').exists).eql(false)
@@ -42,6 +42,6 @@ test('create: User can not be created', async (t /*: TestController */) => {
   await t.expect(await Selector('div').withText('Error').exists).eql(true)
 
   await t
-    .expect(await Selector('div').withText('User can not be created').exists)
+    .expect(await Selector('div').withText('User cannot be created').exists)
     .eql(true)
 })

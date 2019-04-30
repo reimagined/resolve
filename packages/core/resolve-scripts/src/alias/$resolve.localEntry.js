@@ -2,7 +2,10 @@ export default () => ({
   code: `
     import '$resolve.installLogger'
     import serverAssemblies from '$resolve.serverAssemblies'
-    import localEntry from 'resolve-runtime/lib/local_entry'
+    import eventBroker from '$resolve.eventBroker'
+    import localEntry from 'resolve-runtime/lib/local'
+    
+    Object.assign(serverAssemblies.assemblies, { eventBroker })
 
     const initPromise = localEntry(serverAssemblies)
 

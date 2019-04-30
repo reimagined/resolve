@@ -1,20 +1,27 @@
 const decodeEmptyString = str =>
-  str[str.length - 1] === '\u0004' ? str.substr(0, str.length - 1) : str
+  str[str.length - 1] === '\u0004'
+    ? str.substr(0, str.length - 1)
+    : str.substr(0)
 
 const decodeEmptyStrings = payload => {
   if (payload == null) {
-    return payload
+    return null
   } else if (payload.constructor === String) {
     return decodeEmptyString(payload)
+  } else if (payload.constructor === Number) {
+    return +payload
+  } else if (payload.constructor === Boolean) {
+    return !!payload
   } else if ([Object, Array].includes(payload.constructor)) {
+    const nextPayload = Array.isArray(payload) ? [] : {}
     for (const key in payload) {
       if (payload.hasOwnProperty(key)) {
-        payload[key] = decodeEmptyStrings(payload[key])
+        nextPayload[key] = decodeEmptyStrings(payload[key])
       }
     }
-    return payload
+    return nextPayload
   } else {
-    return payload
+    throw new Error('Non-serializable payload')
   }
 }
 

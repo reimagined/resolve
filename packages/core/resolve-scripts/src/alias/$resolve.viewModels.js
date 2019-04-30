@@ -43,7 +43,7 @@ export default ({ resolveConfig, isClient }) => {
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
       instanceFallback:
-        'resolve-runtime/lib/defaults/view_model_deserialize_state.js',
+        'resolve-runtime/lib/common/defaults/json-deserialize-state.js',
       imports,
       constants
     })
@@ -65,7 +65,7 @@ export default ({ resolveConfig, isClient }) => {
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
         instanceFallback:
-          'resolve-runtime/lib/defaults/view_model_serialize_state.js',
+          'resolve-runtime/lib/common/defaults/json-serialize-state.js',
         imports,
         constants
       })
@@ -79,7 +79,7 @@ export default ({ resolveConfig, isClient }) => {
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
         instanceFallback:
-          'resolve-runtime/lib/defaults/view_model_validator.js',
+          'resolve-runtime/lib/common/defaults/view-model-validator.js',
         imports,
         constants
       })

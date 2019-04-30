@@ -34,7 +34,7 @@ describe('method "loadEvents"', () => {
       createQuery: sinon.stub().returns(query),
       executePaginationQuery: sinon.stub()
     }
-    const filter = { aggregateIds: [], eventTypes: [] }
+    const filter = { aggregateIds: [], eventTypes: [], maxEvents: 1000 }
     const callback = sinon.stub()
 
     await loadEvents(pool, filter, callback)
@@ -53,6 +53,12 @@ describe('method "loadEvents"', () => {
       timestampAttributeValues,
       timestampConditionExpression
     })
-    sinon.assert.calledWith(pool.executePaginationQuery, pool, query, callback)
+    sinon.assert.calledWith(
+      pool.executePaginationQuery,
+      pool,
+      query,
+      filter.maxEvents,
+      callback
+    )
   })
 })

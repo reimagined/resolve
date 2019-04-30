@@ -84,89 +84,6 @@ class Application extends React.Component {
 
 This way, the document head is specified in an isomorphic format so it can be rendered on the server and dynamically modified on the client. Use this approach to make your reSolve applications SEO-friendly.
 
-## Process Managers (Sagas)
-
-Process Managers (or Sagas) are used to run arbitrary service code in response to events or on schedule. Generally, this is where you define logic that deal with side effects: you can emit new events and communicate with the outside world in any way (e.g., query databases, send emails, etc.). You can view a Saga as a scripted virtual user.
-
-The code below demonstrates a Saga that handles events:
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/with-saga/common/sagas/user-creation.event.js /^/ /\n$/)
-```js
-const eventHandlers = {
-  UserCreationRequested: async (event, { resolve }) => {
-    const { aggregateId } = event
-    const createdUser = await resolve.executeQuery({
-      modelName: 'default',
-      resolverName: 'createdUser',
-      resolverArgs: { id: aggregateId }
-    })
-
-    if (!createdUser) {
-      return
-    }
-
-    const users = await resolve.executeQuery({
-      modelName: 'default',
-      resolverName: 'users',
-      resolverArgs: { id: aggregateId }
-    })
-
-    const userWithSameEmail = users.find(
-      user => user.email === createdUser.email
-    )
-
-    await resolve.executeCommand({
-      type: userWithSameEmail ? 'rejectUserCreation' : 'confirmUserCreation',
-      aggregateName: 'user',
-      payload: { createdUser },
-      aggregateId
-    })
-  }
-}
-
-export default eventHandlers
-```
-
-<!-- prettier-ignore-end -->
-
-For a scheduled Saga, tasks are specified in the cron format. The code below demonstrates a Saga that emits commands on schedule:
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/with-saga/common/sagas/user-creation.cron.js /^/ /\n$/)
-```js
-const outdatedPeriod = 1000 * 60 * 10
-
-const cronHandlers = {
-  '0 */10 * * * *': async ({ resolve }) => {
-    const users = await resolve.executeQuery({
-      modelName: 'default',
-      resolverName: 'users'
-    })
-
-    const now = Date.now()
-
-    users.forEach(user => {
-      if (user.timestamp + outdatedPeriod < now) {
-        resolve.executeCommand({
-          type: 'deleteOutdatedUser',
-          aggregateName: 'user',
-          aggregateId: user.id
-        })
-      }
-    })
-  }
-}
-
-export default cronHandlers
-```
-
-<!-- prettier-ignore-end -->
-
-For the full code, refer to the **With Saga** example project.
-
 ## Adapters
 
 ReSolve uses the **adapter** mechanism to provide an abstraction layer above APIs used by its subsystems. For instance, adapters are used to define how a reSolve application stores its data. They abstract away all direct interactions with the underlying storage, allowing reSolve to provide a unified data management API.
@@ -189,39 +106,44 @@ In reSolve, a module encapsulates a fragment of functionality that can be includ
 
 A module is a standalone configuration object that can reference client code, read-side and write-side code, sagas and HTTP handlers. To include a module into your application, you need to initialize this object with any required additional settings and merge it into your application's centralized config:
 
-```js
-...
-const moduleAuth = resolveModuleAuth([
-  {
-    name: 'local-strategy',
-    createStrategy: 'auth/create_strategy.js',
-    routes: [
-      {
-        path: 'register',
-        method: 'POST',
-        callback: 'auth/route_register_callback.js'
-      },
-      {
-        path: 'login',
-        method: 'POST',
-        callback: 'auth/route_login_callback.js'
-      },
-      {
-        path: 'logout',
-        method: 'POST',
-        callback: 'auth/route_logout_callback.js'
-      }
-    ]
-  }
-])
+##### run.js:
 
-const baseConfig = merge(
-  defaultResolveConfig,
-  appConfig,
-  moduleAuth,
-  ...
-)
+<!-- prettier-ignore-start -->
+
+[embedmd]:# (../examples/hacker-news/run.js /^[[:blank:]]+const moduleAuth/ /^[[:blank:]]+\)/)
+```js
+  const moduleAuth = resolveModuleAuth([
+    {
+      name: 'local-strategy',
+      createStrategy: 'auth/create_strategy.js',
+      logoutRoute: {
+        path: 'logout',
+        method: 'POST'
+      },
+      routes: [
+        {
+          path: 'register',
+          method: 'POST',
+          callback: 'auth/route_register_callback.js'
+        },
+        {
+          path: 'login',
+          method: 'POST',
+          callback: 'auth/route_login_callback.js'
+        }
+      ]
+    }
+  ])
+
+  const baseConfig = merge(
+    defaultResolveConfig,
+    appConfig,
+    moduleComments,
+    moduleAuth
+  )
 ```
+
+<!-- prettier-ignore-end -->
 
 A merged module's code is treated the same as the application's code. The resulting application's bundles include the module code and configurations as if they were always a part of the application.
 

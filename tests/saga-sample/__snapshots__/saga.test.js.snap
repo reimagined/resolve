@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Saga forgotten registration 1`] = `
+Object {
+  "commands": Array [
+    Array [
+      Object {
+        "aggregateId": "userId",
+        "aggregateName": "User",
+        "payload": Object {
+          "mail": "user@example.com",
+        },
+        "type": "requestConfirmUser",
+      },
+    ],
+  ],
+  "scheduleCommands": Array [
+    Array [
+      604800002,
+      Object {
+        "aggregateId": "userId",
+        "aggregateName": "User",
+        "payload": Object {},
+        "type": "forgetUser",
+      },
+    ],
+  ],
+  "sideEffects": Array [
+    Array [
+      "sendEmail",
+      "user@example.com",
+      "Confirm mail",
+    ],
+  ],
+}
+`;
+
+exports[`Saga success registration 1`] = `
+Object {
+  "commands": Array [
+    Array [
+      Object {
+        "aggregateId": "userId",
+        "aggregateName": "User",
+        "payload": Object {
+          "mail": "user@example.com",
+        },
+        "type": "requestConfirmUser",
+      },
+    ],
+  ],
+  "scheduleCommands": Array [
+    Array [
+      604800002,
+      Object {
+        "aggregateId": "userId",
+        "aggregateName": "User",
+        "payload": Object {},
+        "type": "forgetUser",
+      },
+    ],
+  ],
+  "sideEffects": Array [
+    Array [
+      "sendEmail",
+      "user@example.com",
+      "Confirm mail",
+    ],
+  ],
+}
+`;

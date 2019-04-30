@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-
 const optionsInfo = examples => [
   `Options:`,
   ``,
@@ -58,7 +56,5 @@ const message = {
         `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`
     ].join(EOL)
 }
-
-/* eslint-enable max-len */
 
 export default message

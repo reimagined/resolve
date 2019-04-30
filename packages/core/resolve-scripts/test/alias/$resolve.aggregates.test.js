@@ -10,7 +10,8 @@ describe('base config works correctly', () => {
         name: 'Todo',
         commands: path.resolve(__dirname, 'files/testCommands.js')
       }
-    ]
+    ],
+    schedulers: {}
   }
 
   test('[client]', () => {
@@ -51,7 +52,8 @@ describe('base(v2) config works correctly', () => {
         name: 'Item',
         commands: path.resolve(__dirname, 'files/testCommands.js')
       }
-    ]
+    ],
+    schedulers: {}
   }
 
   test('[client]', () => {
@@ -89,7 +91,8 @@ describe('config with projection works correctly', () => {
         commands: path.resolve(__dirname, 'files/testCommands.js'),
         projection: path.resolve(__dirname, 'files/testProjection.js')
       }
-    ]
+    ],
+    schedulers: {}
   }
 
   test('[client]', () => {

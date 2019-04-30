@@ -59,7 +59,9 @@ describe('aggregates', () => {
         timestamp: createdAt
       }
       const nextState = {
-        createdAt
+        createdAt,
+        confirmed: false,
+        rejected: false
       }
 
       expect(projection[USER_CREATED](state, event)).toEqual(nextState)

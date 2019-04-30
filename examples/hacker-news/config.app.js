@@ -26,7 +26,43 @@ const appConfig = {
       name: 'HackerNews',
       projection: 'common/read-models/hacker-news.projection.js',
       resolvers: 'common/read-models/hacker-news.resolvers.js',
-      adapterName: 'default'
+      connectorName: 'default'
+    },
+    {
+      name: 'Search',
+      projection: 'common/read-models/search.projection.js',
+      resolvers: 'common/read-models/search.resolvers.js',
+      connectorName: 'elasticSearch'
+    }
+  ],
+  sagas: [
+    {
+      name: 'UserConfirmation',
+      source: 'common/sagas/user-confirmation.saga.js',
+      connectorName: 'default',
+      schedulerName: 'scheduler'
+    }
+  ],
+  apiHandlers: [
+    {
+      path: 'event-broker/status-all',
+      controller: 'common/api-handlers/event-broker-status-all.js',
+      method: 'GET'
+    },
+    {
+      path: 'event-broker/status',
+      controller: 'common/api-handlers/event-broker-status.js',
+      method: 'GET'
+    },
+    {
+      path: 'event-broker/pause',
+      controller: 'common/api-handlers/event-broker-pause.js',
+      method: 'GET'
+    },
+    {
+      path: 'event-broker/resume',
+      controller: 'common/api-handlers/event-broker-resume.js',
+      method: 'GET'
     }
   ]
 }

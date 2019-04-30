@@ -65,7 +65,7 @@ export default rootPath
 
 exports[`$resolve.rootPath should support runtime envs: [server - runtime] 1`] = `
 "
-import validatePath from 'resolve-runtime/lib/utils/validate_path'
+import validatePath from 'resolve-runtime/lib/common/utils/validate-path'
 let rootPath = process.env[\\"ROOT_PATH\\"]
 if (!validatePath(rootPath, { allowEmptyPath: true })) {
           throw new Error(
