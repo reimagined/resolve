@@ -1,10 +1,11 @@
 import { decodeEvent } from 'resolve-storage-dynamo'
 
 const handleApplyEvents = async (lambdaEvent, resolve) => {
-  const { events, listenerId } = lambdaEvent
+  const { events, properties, listenerId } = lambdaEvent
   const result = await resolve.executeQuery.updateByEvents(
     listenerId,
-    events.map(decodeEvent)
+    events.map(decodeEvent),
+    properties
   )
   return result
 }

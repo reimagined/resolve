@@ -63,6 +63,26 @@ const appConfig = {
       path: 'event-broker/resume',
       controller: 'common/api-handlers/event-broker-resume.js',
       method: 'GET'
+    },
+    {
+      path: 'event-broker/list-properties',
+      controller: 'common/api-handlers/event-broker-list-properties.js',
+      method: 'GET'
+    },
+    {
+      path: 'event-broker/get-property',
+      controller: 'common/api-handlers/event-broker-get-property.js',
+      method: 'GET'
+    },
+    {
+      path: 'event-broker/set-property',
+      controller: 'common/api-handlers/event-broker-set-property.js',
+      method: 'GET'
+    },
+    {
+      path: 'event-broker/delete-property',
+      controller: 'common/api-handlers/event-broker-delete-property.js',
+      method: 'GET'
     }
   ]
 }

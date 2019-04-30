@@ -101,6 +101,7 @@ module.exports = {
           'cron',
           'cpus',
           'cqrs',
+          'cuid',
           'cwd',
           'darwin',
           'dddddd',
