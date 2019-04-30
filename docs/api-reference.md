@@ -128,6 +128,15 @@ const getStory = async (store, { id }) => {
 
 ## Saga API
 
+A saga's event handler receives an object that provides access to the saga-related API. This API includes the following functions:
+
+| Function Name   | Description                                                                                 |
+| --------------- | ------------------------------------------------------------------------------------------- |
+| executeCommand  | Sends a command with the specified payload to an aggregate.                                 |
+| scheduleCommand | Similar to `executeCommand`, but delays command execution until a specified moment in time. |
+| store           | Provides access to the saga's persistent store (similar to the Read Model store).           |
+| sideEffects     | Provides access to the saga's side effect functions.                                        |
+
 ## Client-Side API
 
 The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library provides the following HOCs:
