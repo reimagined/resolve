@@ -10,7 +10,7 @@ const devConfig = {
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {
-      databaseFile: 'event-storage.db'
+      databaseFile: 'data/event-store.db'
     }
   },
   subscribeAdapter: {
@@ -22,7 +22,7 @@ const devConfig = {
     maxAge: 31536000000
   },
   eventBroker: {
-    databaseFile: 'local-bus-broker.db'
+    databaseFile: 'data/local-bus-broker.db'
   }
 }
 

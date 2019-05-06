@@ -7,18 +7,18 @@ const testFunctionalConfig = {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'read-models-test-functional.db'
+        databaseFile: 'data/read-models-test-functional.db'
       }
     }
   },
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {
-      databaseFile: 'event-store-test-functional.db'
+      databaseFile: 'data/event-store-test-functional.db'
     }
   },
   eventBroker: {
-    databaseFile: 'local-bus-broker-test-functional.db'
+    databaseFile: 'data/local-bus-broker-test-functional.db'
   }
 }
 

@@ -14,7 +14,7 @@ const devConfig = {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'read-models.db'
+        databaseFile: 'data/read-models.db'
       }
     }
     /*
@@ -41,7 +41,7 @@ const devConfig = {
   snapshotAdapter: {
     module: 'resolve-snapshot-lite',
     options: {
-      // pathToFile: 'path/to/file',
+      // databaseFile: 'path/to/file',
       bucketSize: 100
     }
   },
@@ -61,7 +61,7 @@ const devConfig = {
   */ storageAdapter: {
     module: 'resolve-storage-lite',
     options: {
-      pathToFile: 'event-storage.db'
+      databaseFile: 'data/event-store.db'
     }
   },
   /*
