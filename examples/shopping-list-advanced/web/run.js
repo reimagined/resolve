@@ -101,12 +101,19 @@ void (async () => {
           authModule
         )
 
-        await reset(resolveConfig, {
-          dropEventStore: false,
-          dropSnapshots: true,
-          dropReadModels: true,
-          dropSagas: true
-        })
+        await reset(
+          resolveConfig,
+          {
+            dropEventStore: false,
+            dropSnapshots: true,
+            dropReadModels: true,
+            dropSagas: true
+          },
+          adjustWebpackConfigs({
+            resolveConfig,
+            commonPackages
+          })
+        )
 
         await watch(
           resolveConfig,
@@ -137,12 +144,19 @@ void (async () => {
           }:${resolveConfig.customConstants.remoteReduxDevTools.port}`
         )
 
-        await reset(resolveConfig, {
-          dropEventStore: false,
-          dropSnapshots: true,
-          dropReadModels: true,
-          dropSagas: true
-        })
+        await reset(
+          resolveConfig,
+          {
+            dropEventStore: false,
+            dropSnapshots: true,
+            dropReadModels: true,
+            dropSagas: true
+          },
+          adjustWebpackConfigs({
+            resolveConfig,
+            commonPackages
+          })
+        )
 
         await watch(
           resolveConfig,
@@ -216,12 +230,19 @@ void (async () => {
           authModule
         )
 
-        await reset(resolveConfig, {
-          dropEventStore: true,
-          dropSnapshots: true,
-          dropReadModels: true,
-          dropSagas: true
-        })
+        await reset(
+          resolveConfig,
+          {
+            dropEventStore: true,
+            dropSnapshots: true,
+            dropReadModels: true,
+            dropSagas: true
+          },
+          adjustWebpackConfigs({
+            resolveConfig,
+            commonPackages
+          })
+        )
 
         await runTestcafe({
           resolveConfig,
