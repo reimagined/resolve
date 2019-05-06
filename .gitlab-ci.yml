@@ -235,8 +235,8 @@ eslint + prettier:
     - node ci-cd/create-github-status/index.js --state pending --context "2. ESLint + Prettier" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID/
-#    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
-#    - yarn lint
+    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
+    - yarn lint
     - cd ..
     - node ci-cd/job-status/index.js --end
   after_script:
@@ -260,7 +260,7 @@ unit-tests:
     - node ci-cd/create-github-status/index.js --state pending --context "3. Unit-tests" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID/
-#    - yarn test
+    - yarn test
     - cd ..
     - node ci-cd/job-status/index.js --end
   after_script:
@@ -286,7 +286,7 @@ integrational-tests:
     - node ci-cd/create-github-status/index.js --state pending --context "4. Integrational tests" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID/
-#    - yarn test:integrational
+    - yarn test:integrational
     - cd ..
     - node ci-cd/job-status/index.js --end
   after_script:
@@ -312,7 +312,7 @@ tutorial-tests:
     - node ci-cd/create-github-status/index.js --state pending --context "5. Tutorial. Functional tests" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID/
-#    - yarn tutorial-test:functional safari
+    - yarn tutorial-test:functional safari
     - cd ..
     - node ci-cd/job-status/index.js --end
   after_script:
