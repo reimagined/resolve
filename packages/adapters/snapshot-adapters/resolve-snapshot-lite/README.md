@@ -6,14 +6,14 @@ This package is an adapter for storing snapshots using a file or memory. It does
 ## Available Parameters
 
 * `bucketSize` - the bucket size.
-* `pathToFile` - the path to a file where snapshots are stored. Notice, if that argument is not passed the adapter uses memory to store snapshots. In this case, all data is lost when an application instance is restarted.
+* `databaseFile` - the path to a file where snapshots are stored. Notice, if that argument is not passed the adapter uses memory to store snapshots. In this case, all data is lost when an application instance is restarted.
 
 ## Usage
 ```
 import createSnapshotAdapter from 'resolve-snapshot-lite'
 
 const snapshotAdapter = createSnapshotAdapter({
-  pathToFile: 'path/to/file',
+  databaseFile: 'path/to/file',
   bucketSize: 100
 })
 

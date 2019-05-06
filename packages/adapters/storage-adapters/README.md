@@ -25,7 +25,7 @@ Available adapters:
 import createInFileStorageAdapter from 'resolve-storage-lite'
 
 const eventStorage = createInFileStorageAdapter({
-  databaseFile: './event-store.db'
+  databaseFile: './data/event-store.db'
 })
 
 // Load events
