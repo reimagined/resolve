@@ -86,6 +86,10 @@ const wrapSchedulerSagas = (sagas, resolve) => {
           acc[eventType] = async (store, event) => {
             await handlers[eventType](
               {
+                properties: currentReadModel.executeQuery.getEventProperties(
+                  sagaReadModel.name,
+                  event
+                ),
                 scheduleCommand: null,
                 sideEffects: wrappedSideEffects,
                 executeCommand: currentReadModel.executeCommand,

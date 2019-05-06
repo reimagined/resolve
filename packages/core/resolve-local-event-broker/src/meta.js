@@ -1,15 +1,7 @@
-import sqlite from 'sqlite'
-
 const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
 const escape = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
-const dispose = async ({ database }, dropInfo) => {
-  if (dropInfo) {
-    await database.exec(`
-			DROP TABLE ${escapeId('Listeners')};
-			COMMIT;
-		`)
-  }
+const dispose = async ({ database }) => {
   await database.close()
 }
 
@@ -34,7 +26,11 @@ const fields = {
     stringify: value => escape(JSON.stringify(value)),
     parse: value => JSON.parse(value)
   },
-  Status: { stringify: value => escape(value), parse: value => value }
+  Status: { stringify: value => escape(value), parse: value => value },
+  Properties: {
+    stringify: value => escape(JSON.stringify(value)),
+    parse: value => JSON.parse(value)
+  }
 }
 
 const getListenerInfo = async ({ database }, listenerId) => {
@@ -105,8 +101,9 @@ const wrapWithQueue = (pool, method) => async (...args) => {
   }
 }
 
-const init = async ({ databaseFile }) => {
-  const database = await sqlite.open(databaseFile)
+const init = async brokerPool => {
+  const databaseFile = brokerPool.config.databaseFile
+  const database = await brokerPool.sqlite.open(databaseFile)
   await database.exec(`PRAGMA busy_timeout=0`)
   await database.exec(`PRAGMA locking_mode=EXCLUSIVE`)
   await database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
@@ -124,7 +121,8 @@ const init = async ({ databaseFile }) => {
 			${escapeId('ListenerId')} VARCHAR(128) NOT NULL,
       ${escapeId('Status')} VARCHAR(128) NOT NULL DEFAULT ${escape('running')},
 		  ${escapeId('AbutTimestamp')} BIGINT NOT NULL DEFAULT 0,
-			${escapeId('SkipCount')} BIGINT NOT NULL DEFAULT 0,
+      ${escapeId('SkipCount')} BIGINT NOT NULL DEFAULT 0,
+      ${escapeId('Properties')} CLOB,
 			${escapeId('LastEvent')} CLOB,
       ${escapeId('LastError')} CLOB,
 		  PRIMARY KEY(${escapeId('ListenerId')})
@@ -135,7 +133,7 @@ const init = async ({ databaseFile }) => {
 
   const pool = { database, lockPromise: null }
 
-  return Object.freeze({
+  brokerPool.meta = Object.freeze({
     dispose: dispose.bind(null, pool),
     rewindListener: wrapWithQueue(pool, rewindListener),
     getListenerInfo: wrapWithQueue(pool, getListenerInfo),
