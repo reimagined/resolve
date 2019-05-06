@@ -88,7 +88,7 @@ const appConfig = {
       snapshotAdapter: {
         module: 'common/view-models/snapshot_adapter.module.js',
         options: {
-          pathToFile: 'snapshot.db',
+          databaseFile: 'snapshot.db',
         }
       }
     }

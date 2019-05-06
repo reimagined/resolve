@@ -17,7 +17,7 @@ const startExpress = async resolve => {
     try {
       await initResolve(currentResolve)
       await bootstrap(currentResolve)
-      await Promise.all(Array.from(resolve.listenersInitPromises.values()))
+      await Promise.all(Array.from(resolve.initListenersPromises.values()))
     } finally {
       await disposeResolve(currentResolve)
     }

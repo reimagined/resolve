@@ -8,13 +8,13 @@ const devConfig = {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'read-models.db'
+        databaseFile: 'data/read-models.db'
       }
     }
   }*/,
   eventBroker: {
     launchBroker: false,
-    databaseFile: 'local-bus-broker.db'
+    databaseFile: 'data/local-bus-broker.db'
   }
 }
 

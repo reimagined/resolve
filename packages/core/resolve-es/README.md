@@ -24,7 +24,7 @@ The hook function after calling "eventStore.saveEvent"
 import createEventStore from 'resolve-es'
 import createInFileStorageAdapter from 'resolve-storage-lite'
 
-const storage = createInFileStorageAdapter({ pathToFile: './event-store.db' })
+const storage = createInFileStorageAdapter({ databaseFile: './data/event-store.db' })
 
 const publishEvent = async (event) => {
   console.log(event) // Send event to subscribers

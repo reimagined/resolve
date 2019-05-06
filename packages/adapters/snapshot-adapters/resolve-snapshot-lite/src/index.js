@@ -9,8 +9,8 @@ const init = async pool => {
 
   pool.initPromise = (async () => {
     pool.db = new NeDB(
-      pool.config && pool.config.hasOwnProperty('pathToFile')
-        ? { filename: pool.config.pathToFile }
+      pool.config && pool.config.hasOwnProperty('databaseFile')
+        ? { filename: pool.config.databaseFile }
         : { inMemoryOnly: true }
     )
 

@@ -7,7 +7,7 @@ const prodConfig = {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'read-models.db'
+        databaseFile: 'data/read-models.db'
       }
     },
     elasticSearch: {
@@ -33,7 +33,7 @@ const prodConfig = {
     maxAge: 31536000000
   },
   eventBroker: {
-    databaseFile: 'local-bus-broker.db'
+    databaseFile: 'data/local-bus-broker.db'
   }
 }
 

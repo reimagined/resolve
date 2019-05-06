@@ -26,6 +26,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-local-event-broker#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
+    "cuid": "^2.1.6",
     "sqlite": "^3.0.2",
     "zeromq": "^5.1.0"
   },

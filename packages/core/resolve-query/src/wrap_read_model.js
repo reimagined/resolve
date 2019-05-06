@@ -18,6 +18,8 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
     return null
   })
 
+  const eventProperties = new WeakMap()
+
   const read = async (resolverName, resolverArgs, jwtToken) => {
     if (isDisposed) {
       throw new Error(`Read model "${readModel.name}" is disposed`)
@@ -35,7 +37,7 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
     )
   }
 
-  const updateByEvents = async events => {
+  const updateByEvents = async (events, properties) => {
     if (isDisposed) {
       throw new Error(`Read model "${readModel.name}" is disposed`)
     }
@@ -64,7 +66,9 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
           typeof readModel.projection[event.type] === 'function'
         ) {
           const connection = await connectionPromise
-          await readModel.projection[event.type](connection, event)
+          const executor = readModel.projection[event.type]
+          eventProperties.set(event, properties)
+          await executor(connection, event)
         }
       }
     } catch (error) {
@@ -120,9 +124,12 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
     isDisposed = true
   }
 
+  const getEventProperties = event => eventProperties.get(event)
+
   return Object.freeze({
     read,
     readAndSerialize,
+    getEventProperties,
     updateByEvents,
     drop,
     dispose

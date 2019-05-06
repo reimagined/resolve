@@ -205,7 +205,7 @@ Content-Length: 146
 
 ```
 
-You can now check the event store file to see the newly created event. Open the **event-storage.db** file and locate the created event objects:
+You can now check the event store file to see the newly created event. Open the **data/event-store.db** file and locate the created event objects:
 
 <!-- prettier-ignore-start -->
 
