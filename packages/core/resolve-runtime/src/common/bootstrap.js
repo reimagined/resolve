@@ -30,7 +30,7 @@ const bootstrap = async resolve => {
 
   debug.info('Bootstrap successful')
 
-  return null
+  return 'ok'
 }
 
 export default bootstrap
