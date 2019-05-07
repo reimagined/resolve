@@ -10,7 +10,11 @@ describe('resolve event handler', () => {
       executeQuery: { drop: jest.fn() },
       lambda: {
         invoke: jest.fn().mockReturnValue({
-          promise: jest.fn().mockReturnValue(Promise.resolve())
+          promise: jest.fn().mockReturnValue(
+            Promise.resolve({
+              Payload: JSON.stringify({})
+            })
+          )
         })
       },
       eventBroker: {}

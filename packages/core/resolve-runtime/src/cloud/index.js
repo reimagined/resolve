@@ -116,7 +116,9 @@ const lambdaWorker = async (
   }
 
   if (executorResult == null) {
-    throw new Error(`abnormal lambda execution on event ${lambdaEvent}`)
+    throw new Error(
+      `abnormal lambda execution on event ${JSON.stringify(lambdaEvent)}`
+    )
   }
 
   return executorResult
