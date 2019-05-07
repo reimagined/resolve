@@ -78,7 +78,7 @@ const lambdaWorker = async (
   lambdaContext
 ) => {
   debug.debug('executing application lambda')
-  debug.trace('incoming event', lambdaEvent)
+  debug.verbose('incoming event', lambdaEvent)
 
   lambdaContext.callbackWaitsForEmptyEventLoop = false
   let executorResult = null
@@ -100,7 +100,7 @@ const lambdaWorker = async (
       executorResult = await handleSchedulerEvent(lambdaEvent, resolve)
     } else if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
       debug.debug('identified event source: API gateway')
-      debug.trace(lambdaEvent.httpMethod, lambdaEvent.headers)
+      debug.verbose(lambdaEvent.httpMethod, lambdaEvent.headers)
 
       const getCustomParameters = async () => ({ resolve })
       const executor = wrapApiHandler(mainHandler, getCustomParameters)
