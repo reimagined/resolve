@@ -124,16 +124,9 @@ const createQuery = ({
     }
   }
 
-  const getEventProperties = async (modelName, event) => {
-    checkModelExists(modelName)
-
-    return await models[modelName].getEventProperties(event)
-  }
-
   const api = {
     read,
     readAndSerialize,
-    getEventProperties,
     updateByEvents,
     drop,
     dispose

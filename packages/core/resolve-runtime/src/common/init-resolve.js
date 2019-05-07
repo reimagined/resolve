@@ -19,7 +19,8 @@ const initResolve = async resolve => {
   for (let index = 0; index < resolve.readModels.length; index++) {
     resolve.readModels[index] = Object.create(resolve.readModels[index], {
       executeCommand: { get: () => resolve.executeCommand, enumerable: true },
-      executeQuery: { get: () => resolve.executeQuery, enumerable: true }
+      executeQuery: { get: () => resolve.executeQuery, enumerable: true },
+      eventProperties: { get: () => resolve.eventProperties, enumerable: true }
     })
   }
 
