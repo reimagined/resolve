@@ -3,7 +3,6 @@ export default () => ({
     const handler = async (...args) => {
       try {
         if(!global.initPromise) {
-          require('$resolve.installLogger')
           const interopRequireDefault = require('@babel/runtime/helpers/interopRequireDefault')
 
           global.serverAssemblies = interopRequireDefault(

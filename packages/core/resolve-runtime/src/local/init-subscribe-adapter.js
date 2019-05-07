@@ -1,3 +1,4 @@
+import debugLevels from 'debug-levels'
 import getWebSocketStream from 'websocket-stream'
 import MqttConnection from 'mqtt-connection'
 import createSocketServer from 'socket.io'
@@ -6,6 +7,8 @@ import { Server as WebSocketServer } from 'ws'
 import createPubsubManager from './create-pubsub-manager'
 import getRootBasedUrl from '../common/utils/get-root-based-url'
 import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
+
+const debug = debugLevels('resolve-runtime:local-subscribe-adapter')
 
 const getMqttTopic = (appId, { topicName, topicId }) => {
   return `${appId}/${topicName === '*' ? '+' : topicName}/${
@@ -46,7 +49,7 @@ const createServerMqttHandler = (pubsubManager, appId, qos) => ws => {
       }
       client.suback({ granted: [packet.qos], messageId: packet.messageId })
     } catch (error) {
-      resolveLog('warn', 'MQTT subscription failed', packet, error)
+      debug.warn('MQTT subscription failed', packet, error)
     }
   })
 
@@ -60,7 +63,7 @@ const createServerMqttHandler = (pubsubManager, appId, qos) => ws => {
       }
       client.unsuback({ granted: [packet.qos], messageId: packet.messageId })
     } catch (error) {
-      resolveLog('warn', 'MQTT unsubscription failed', packet, error)
+      debug.warn('MQTT unsubscription failed', packet, error)
     }
   })
 
@@ -134,7 +137,7 @@ const initSubscribeAdapter = async resolve => {
     })
     socketIOServer.on('connection', handler)
   } catch (error) {
-    resolveLog('warn', 'Cannot init Socket.IO server socket: ', error)
+    debug.warn('Cannot init Socket.IO server socket: ', error)
   }
 
   try {
@@ -145,7 +148,7 @@ const initSubscribeAdapter = async resolve => {
     const handler = createServerMqttHandler(pubsubManager, appId, qos)
     socketMqttServer.on('connection', handler)
   } catch (error) {
-    resolveLog('warn', 'Cannot init MQTT server socket: ', error)
+    debug.warn('Cannot init MQTT server socket: ', error)
   }
 
   Object.defineProperties(resolve, {

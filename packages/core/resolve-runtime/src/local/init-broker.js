@@ -1,7 +1,10 @@
 import cuid from 'cuid'
+import debugLevels from 'debug-levels'
 import zmq from 'zeromq'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
+
+const debug = debugLevels('resolve-runtime:local-event-broker')
 
 const INCOMING_TOPICS = {
   INFORMATION_TOPIC: '__RESOLVE_INFORMATION_TOPIC__',
@@ -70,7 +73,7 @@ const processEvents = async (resolve, listenerId, content) => {
       events
     )
   } catch (error) {
-    resolveLog('error', 'Error while applying events to read-model', error)
+    debug.error('Error while applying events to read-model', error)
 
     result = error
   }

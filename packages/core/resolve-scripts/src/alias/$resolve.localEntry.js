@@ -1,6 +1,5 @@
 export default () => ({
   code: `
-    import '$resolve.installLogger'
     import serverAssemblies from '$resolve.serverAssemblies'
     import eventBroker from '$resolve.eventBroker'
     import localEntry from 'resolve-runtime/lib/local'
