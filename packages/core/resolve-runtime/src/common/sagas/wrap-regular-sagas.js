@@ -62,10 +62,7 @@ const wrapRegularSagas = sagas => {
                     payload: { date, command }
                   })
                 },
-                properties: currentReadModel.executeQuery.getEventProperties(
-                  sagaReadModel.name,
-                  event
-                ),
+                properties: currentReadModel.eventProperties,
                 sideEffects: wrappedSideEffects,
                 executeCommand: currentReadModel.executeCommand,
                 executeQuery: currentReadModel.executeQuery,

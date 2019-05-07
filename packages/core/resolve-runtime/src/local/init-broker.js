@@ -64,10 +64,10 @@ const processEvents = async (resolve, listenerId, content) => {
 
   try {
     await initResolve(currentResolve)
+    currentResolve.eventProperties = properties
     result = await currentResolve.executeQuery.updateByEvents(
       listenerId,
-      events,
-      properties
+      events
     )
   } catch (error) {
     resolveLog('error', 'Error while applying events to read-model', error)

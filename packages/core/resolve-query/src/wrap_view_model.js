@@ -4,8 +4,6 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
   const workers = new Map()
   let isDisposed = false
 
-  const eventProperties = new WeakMap()
-
   const read = async (modelOptions, aggregateArgs, jwtToken) => {
     if (isDisposed) {
       throw new Error('View model is disposed')
@@ -44,7 +42,7 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
             state = viewModel.projection.Init()
           }
 
-          const handler = async (event, properties) => {
+          const handler = async event => {
             if (!workers.has(key)) {
               throw new Error('View model build has been interrupted')
             }
@@ -58,7 +56,6 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
             lastTimestamp = event.timestamp - 1
 
             aggregatesVersionsMap.set(event.aggregateId, event.aggregateVersion)
-            eventProperties.set(event, properties)
 
             if (snapshotAdapter != null) {
               await snapshotAdapter.saveSnapshot(snapshotKey, {
@@ -125,12 +122,9 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
     workers.clear()
   }
 
-  const getEventProperties = event => eventProperties.get(event)
-
   const api = {
     read,
     readAndSerialize,
-    getEventProperties,
     updateByEvents,
     drop,
     dispose
