@@ -1,9 +1,9 @@
 import debugLevels from 'debug-levels'
 
-const debug = debugLevels('resolve-runtime:scheduler-event-handler')
+const log = debugLevels('resolve:resolve-runtime:scheduler-event-handler')
 
 const handleSchedulerEvent = async ({ entry }, resolve) => {
-  debug.debug(`dispatching lambda event to all available schedulers`)
+  log.debug(`dispatching lambda event to all available schedulers`)
   if (resolve && resolve.readModels) {
     return Promise.all(
       resolve.readModels
@@ -23,7 +23,7 @@ const handleSchedulerEvent = async ({ entry }, resolve) => {
     )
   }
 
-  debug.warn(`no reSolve framework or no readModels property defined`)
+  log.warn(`no reSolve framework or no readModels property defined`)
 
   return { message: 'no registered sagas' }
 }

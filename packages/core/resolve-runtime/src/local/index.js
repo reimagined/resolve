@@ -9,7 +9,7 @@ import prepareDomain from '../common/prepare-domain'
 import startExpress from './start-express'
 import emptyWorker from './empty-worker'
 
-const debug = debugLevels('resolve-runtime:local-entry')
+const log = debugLevels('resolve:resolve-runtime:local-entry')
 
 const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
   try {
@@ -31,11 +31,11 @@ const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
     await initHMR(resolve)
     await startExpress(resolve)
 
-    debug.debug('Local entry point cold start success', resolve)
+    log.debug('Local entry point cold start success', resolve)
 
     return emptyWorker
   } catch (error) {
-    debug.error('Local entry point cold start failure', error)
+    log.error('Local entry point cold start failure', error)
   }
 }
 

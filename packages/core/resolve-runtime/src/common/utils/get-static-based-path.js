@@ -1,14 +1,15 @@
 import debugLevels from 'debug-levels'
 import Url from 'url'
+
 import getRootBasedUrl from './get-root-based-url'
 
-const debug = debugLevels('resolve-runtime:get-static-based-path')
+const log = debugLevels('resolve:resolve-runtime:get-static-based-path')
 
 export const isString = value => value != null && value.constructor === String
 
 export const string = (value, name) => {
   if (!isString(value)) {
-    debug.warn('Value is not a string', value)
+    log.warn('Value is not a string', value)
     throw new Error(`${name} must be a string`)
   }
 }
@@ -17,7 +18,7 @@ export const nonEmptyString = (value, name) => {
   string(value, name)
 
   if (value === '') {
-    debug.warn('Value is not empty string', value)
+    log.warn('Value is not empty string', value)
     throw new Error(`${name} must be a non-empty string`)
   }
 }

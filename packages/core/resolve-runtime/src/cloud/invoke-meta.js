@@ -1,6 +1,6 @@
 import debugLevels from 'debug-levels'
 
-const log = debugLevels('resolve-runtime:cloud-entry')
+const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
 const invokeMeta = async (resolve, listenerId, operation, options) => {
   const invokeFunctionName = process.env.RESOLVE_META_LAMBDA_ARN
