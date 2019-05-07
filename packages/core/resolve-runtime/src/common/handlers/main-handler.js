@@ -6,7 +6,7 @@ import queryHandler from './query-handler'
 import subscribeHandler from './subscribe-handler'
 import getRootBasedUrl from '../utils/get-root-based-url'
 
-const debug = debugLevels('resolve-runtime:main-handler')
+const log = debugLevels('resolve:resolve-runtime:main-handler')
 
 const mainHandler = async (originalReq, res) => {
   const { rootPath, jwtCookie, apiHandlers } = originalReq.resolve
@@ -71,7 +71,7 @@ const mainHandler = async (originalReq, res) => {
         }" is not addressable by current executor`
       )
 
-      debug.warn('Path is not addressable by current executor', req.path, req)
+      log.warn('Path is not addressable by current executor', req.path, req)
       return
     }
   }

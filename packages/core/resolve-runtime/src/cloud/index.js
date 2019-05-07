@@ -16,10 +16,10 @@ import disposeResolve from '../common/dispose-resolve'
 import prepareDomain from '../common/prepare-domain'
 import initBroker from './init-broker'
 
-const debug = debugLevels('resolve-runtime:cloud-entry')
+const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
 const invokeUpdateLambda = async ({ stepFunctions }, readModel) => {
-  debug.debug(
+  log.debug(
     `requesting step function execution to update read-model/saga [${readModel}]`
   )
   await stepFunctions
@@ -77,30 +77,30 @@ const lambdaWorker = async (
   lambdaEvent,
   lambdaContext
 ) => {
-  debug.debug('executing application lambda')
-  debug.verbose('incoming event', lambdaEvent)
+  log.debug('executing application lambda')
+  log.verbose('incoming event', lambdaEvent)
 
   lambdaContext.callbackWaitsForEmptyEventLoop = false
   let executorResult = null
 
   const resolve = Object.create(resolveBase)
   try {
-    debug.debug('initializing reSolve framework')
+    log.debug('initializing reSolve framework')
     await initResolve(resolve)
-    debug.debug('reSolve framework initialized')
+    log.debug('reSolve framework initialized')
 
     if (lambdaEvent.resolveSource === 'DeployService') {
-      debug.debug('identified event source: deployment service')
+      log.debug('identified event source: deployment service')
       executorResult = await handleDeployServiceEvent(lambdaEvent, resolve)
     } else if (lambdaEvent.resolveSource === 'EventBus') {
-      debug.debug('identified event source: invoked by a step function')
+      log.debug('identified event source: invoked by a step function')
       executorResult = await handleEventBusEvent(lambdaEvent, resolve)
     } else if (lambdaEvent.resolveSource === 'Scheduler') {
-      debug.debug('identified event source: cloud scheduler')
+      log.debug('identified event source: cloud scheduler')
       executorResult = await handleSchedulerEvent(lambdaEvent, resolve)
     } else if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
-      debug.debug('identified event source: API gateway')
-      debug.verbose(lambdaEvent.httpMethod, lambdaEvent.headers)
+      log.debug('identified event source: API gateway')
+      log.verbose(lambdaEvent.httpMethod, lambdaEvent.headers)
 
       const getCustomParameters = async () => ({ resolve })
       const executor = wrapApiHandler(mainHandler, getCustomParameters)
@@ -108,11 +108,11 @@ const lambdaWorker = async (
       executorResult = await executor(lambdaEvent, lambdaContext)
     }
   } catch (error) {
-    debug.error('top-level event handler execution error!')
-    debug.error('error', error.stack)
+    log.error('top-level event handler execution error!')
+    log.error('error', error.stack)
   } finally {
     await disposeResolve(resolve)
-    debug.debug('reSolve framework was disposed')
+    log.debug('reSolve framework was disposed')
   }
 
   if (executorResult == null) {
@@ -125,9 +125,9 @@ const lambdaWorker = async (
 }
 
 const index = async ({ assemblies, constants, domain, redux, routes }) => {
-  debug.debug(`starting lambda 'cold start'`)
+  log.debug(`starting lambda 'cold start'`)
   try {
-    debug.debug('configuring reSolve framework')
+    log.debug('configuring reSolve framework')
     const resolve = {
       aggregateActions: assemblies.aggregateActions,
       seedClientEnvs: assemblies.seedClientEnvs,
@@ -144,10 +144,10 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
       routes
     }
 
-    debug.debug('preparing domain')
+    log.debug('preparing domain')
     await prepareDomain(resolve)
 
-    debug.debug('patching reSolve framework')
+    log.debug('patching reSolve framework')
     Object.defineProperties(resolve, {
       publishEvent: async event => {
         const eventDescriptor = {
@@ -161,12 +161,12 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
         try {
           await resolve.mqtt.publish(eventDescriptor).promise()
 
-          debug.info(
+          log.info(
             'Lambda pushed event into MQTT successfully',
             eventDescriptor
           )
         } catch (error) {
-          debug.warn(
+          log.warn(
             'Lambda can not publish event into MQTT',
             eventDescriptor,
             error
@@ -188,11 +188,11 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
 
     await initBroker(resolve)
 
-    debug.debug(`lambda 'cold start' succeeded`)
+    log.debug(`lambda 'cold start' succeeded`)
 
     return lambdaWorker.bind(null, assemblies, resolve)
   } catch (error) {
-    debug.error(`lambda 'cold start' failure`, error)
+    log.error(`lambda 'cold start' failure`, error)
   }
 }
 

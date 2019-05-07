@@ -9,7 +9,7 @@ import initResolve from '../init-resolve'
 import disposeResolve from '../dispose-resolve'
 import createSchedulerEventTypes from './scheduler-event-types'
 
-const debug = debugLevels('resolve-runtime:wrap-scheduler-sagas')
+const log = debugLevels('resolve:resolve-runtime:wrap-scheduler-sagas')
 
 const execute = async (
   resolve,
@@ -60,7 +60,7 @@ const wrapSchedulerSagas = (sagas, resolve) => {
     const sideEffects = sideEffectsCreator({
       execute: execute.bind(null, resolve, schedulerAggregateName),
       errorHandler: async e => {
-        debug.error(`scheduler adapter failure: ${e.stack}`)
+        log.error(`scheduler adapter failure: ${e.stack}`)
         throw e
       }
     })
@@ -83,7 +83,7 @@ const wrapSchedulerSagas = (sagas, resolve) => {
       get: function() {
         const currentReadModel = this
         return eventTypes.reduce((acc, eventType) => {
-          debug.debug(
+          log.debug(
             `[wrap-sagas] registering system scheduler saga event handler ${eventType}`
           )
           acc[eventType] = async (store, event) => {

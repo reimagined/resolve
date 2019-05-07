@@ -1,6 +1,6 @@
 import debugLevels from 'debug-levels'
 
-const debug = debugLevels('resolve-runtime:scheduler-saga-handlers')
+const log = debugLevels('resolve:resolve-runtime:scheduler-saga-handlers')
 
 export default ({
   schedulerAggregateName,
@@ -33,12 +33,12 @@ export default ({
       command
     }
 
-    debug.debug(
+    log.debug(
       `[scheduler-saga:scheduled-command-created] adding entry to store`
     )
     await store.insert(commandsTableName, entry)
 
-    debug.debug(
+    log.debug(
       `[scheduler-saga:scheduled-command-created] calling adapter's addEntries`
     )
     await sideEffects.addEntries([entry])

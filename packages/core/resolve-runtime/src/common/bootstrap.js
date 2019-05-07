@@ -1,6 +1,6 @@
 import debugLevels from 'debug-levels'
 
-const debug = debugLevels('resolve-runtime:bootstrap')
+const log = debugLevels('resolve:resolve-runtime:bootstrap')
 
 const bootstrap = async resolve => {
   const applicationPromises = []
@@ -28,9 +28,9 @@ const bootstrap = async resolve => {
 
   await Promise.all(applicationPromises)
 
-  debug.info('Bootstrap successful')
+  log.info('Bootstrap successful')
 
-  return null
+  return 'ok'
 }
 
 export default bootstrap

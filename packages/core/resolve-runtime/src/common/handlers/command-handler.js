@@ -6,7 +6,7 @@ import extractErrorHttpCode from '../utils/extract-error-http-code'
 import extractRequestBody from '../utils/extract-request-body'
 import message from '../message'
 
-const debug = debugLevels('resolve-runtime:command-handler')
+const log = debugLevels('resolve:resolve-runtime:command-handler')
 
 const CONCURRENT_RETRY_COUNT = 3
 
@@ -42,14 +42,14 @@ const commandHandler = async (req, res) => {
     await res.setHeader('Content-Type', 'text/plain')
     await res.end(JSON.stringify(event, null, 2))
 
-    debug.debug('Command handler executed successfully', req.path, commandArgs)
+    log.debug('Command handler executed successfully', req.path, commandArgs)
   } catch (err) {
     const errorCode = extractErrorHttpCode(err)
     await res.status(errorCode)
     await res.setHeader('Content-Type', 'text/plain')
     await res.end(`${message.commandFail}${err.message}`)
 
-    debug.error('Command handler failed', req.path, err)
+    log.error('Command handler failed', req.path, err)
   }
 }
 

@@ -1,6 +1,6 @@
 import debugLevels from 'debug-levels'
 
-const debug = debugLevels('resolve-runtime:subscribe-handler')
+const log = debugLevels('resolve:resolve-runtime:subscribe-handler')
 
 const subscribeHandler = async (req, res) => {
   try {
@@ -11,7 +11,7 @@ const subscribeHandler = async (req, res) => {
       await req.resolve.getSubscribeAdapterOptions(origin, adapterName)
     )
   } catch (err) {
-    debug.warn('Subscribe handler error', err)
+    log.warn('Subscribe handler error', err)
     await res.status(500)
     await res.setHeader('Content-Type', 'text/plain')
     await res.end(err.toString())
