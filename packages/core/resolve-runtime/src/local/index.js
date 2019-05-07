@@ -1,4 +1,5 @@
 import 'source-map-support/register'
+import debugLevels from 'debug-levels'
 
 import initBroker from './init-broker'
 import initExpress from './init-express'
@@ -7,6 +8,8 @@ import initHMR from './init-hmr'
 import prepareDomain from '../common/prepare-domain'
 import startExpress from './start-express'
 import emptyWorker from './empty-worker'
+
+const debug = debugLevels('resolve-runtime:local-entry')
 
 const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
   try {
@@ -28,11 +31,11 @@ const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
     await initHMR(resolve)
     await startExpress(resolve)
 
-    resolveLog('debug', 'Local entry point cold start success', resolve)
+    debug.debug('Local entry point cold start success', resolve)
 
     return emptyWorker
   } catch (error) {
-    resolveLog('error', 'Local entry point cold start failure', error)
+    debug.error('Local entry point cold start failure', error)
   }
 }
 
