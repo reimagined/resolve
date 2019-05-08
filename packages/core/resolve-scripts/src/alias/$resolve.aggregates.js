@@ -24,9 +24,7 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.clientEnvError}.schedulers`)
   }
 
-  const imports = [
-    `import { RESOLVE_SCHEDULER_AGGREGATE_PREFIX } from 'resolve-runtime/lib/common/sagas/constants'`
-  ]
+  const imports = []
   const constants = []
   const exports = [``, `const aggregates = []`, ``]
 
@@ -138,9 +136,7 @@ export default ({ resolveConfig, isClient }) => {
       }
 
       constants.push(
-        `const name_s_${index} = RESOLVE_SCHEDULER_AGGREGATE_PREFIX + ${JSON.stringify(
-          `${schedulersNames[index]}`
-        )}`
+        `const name_s_${index} = ${JSON.stringify(`${schedulersNames[index]}`)}`
       )
 
       importResource({

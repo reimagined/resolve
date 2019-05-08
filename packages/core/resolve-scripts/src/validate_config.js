@@ -83,6 +83,39 @@ export const validateApiHandlers = resolveConfig => {
   }
 }
 
+const validateUniqueNames = resolveConfig => {
+  const uniqueNames = new Set()
+  const tag = (key, section) => {
+    // eslint-disable-next-line no-new-wrappers
+    const result = new String(key)
+    result.section = section
+    return result
+  }
+
+  const sourceNames = [
+    ...resolveConfig.aggregates.map(({ name }) => tag(name, 'aggregates')),
+    ...resolveConfig.readModels.map(({ name }) => tag(name, 'readModels')),
+    ...resolveConfig.viewModels.map(({ name }) => tag(name, 'viewModels')),
+    ...resolveConfig.sagas.map(({ name }) => tag(name, 'sagas')),
+    ...Object.keys(resolveConfig.schedulers).map(({ name }) =>
+      tag(name, 'schedulers')
+    )
+  ]
+
+  for (const taggedName of sourceNames) {
+    const name = String(taggedName)
+    if (uniqueNames.has(name)) {
+      const sections = sourceNames
+        .filter(taggedName => String(taggedName) === name)
+        .map(taggedName => taggedName.section)
+
+      throw new Error(`Duplicate name ${name} between sections: ${sections}`)
+    }
+
+    uniqueNames.add(name)
+  }
+}
+
 const validateConfig = config => {
   const linearizedConfig = JSON.parse(JSON.stringify(config))
   const valid = ajv.validate(schemaResolveConfig, linearizedConfig)
@@ -93,6 +126,7 @@ const validateConfig = config => {
     )
   }
 
+  validateUniqueNames(config)
   validateApiHandlers(config)
   validateReadModelConnectors(config)
 

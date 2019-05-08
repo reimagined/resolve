@@ -5,6 +5,7 @@ import fsExtra from 'fs-extra'
 import webpack from 'webpack'
 import { execSync } from 'child_process'
 
+import { checkRuntimeEnv, injectRuntimeEnv } from './declare_runtime_env'
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
 import getPeerDependencies from './get_peer_dependencies'
@@ -95,8 +96,15 @@ const runTestcafe = ({
     server.start()
     broker.start()
 
+    const port = Number(
+      checkRuntimeEnv(resolveConfig.port)
+        ? // eslint-disable-next-line no-new-func
+          new Function(`return ${injectRuntimeEnv(resolveConfig.port)}`)()
+        : resolveConfig.port
+    )
+
     while (true) {
-      const applicationUrl = `http://localhost:${resolveConfig.port}${
+      const applicationUrl = `http://localhost:${port}${
         resolveConfig.rootPath ? `/${resolveConfig.rootPath}` : ''
       }`
       try {

@@ -1,24 +1,22 @@
-import bootstrap from '../bootstrap'
-import {
-  RESOLVE_SAGA_PREFIX,
-  RESOLVE_SCHEDULER_SAGA_PREFIX
-} from '../sagas/constants'
 import debugLevels from 'debug-levels'
+
+import bootstrap from '../bootstrap'
+import isSagaName from '../utils/is-saga-name'
 
 const log = debugLevels('resolve:resolve-runtime:deploy-service-event-handler')
 
-const isSagaName = name =>
-  name.indexOf(RESOLVE_SAGA_PREFIX) === 0 ||
-  name.indexOf(RESOLVE_SCHEDULER_SAGA_PREFIX) === 0
-
-const isReadModelName = name => !isSagaName(name)
+const isReadModelName = (resolve, name) => !isSagaName(resolve, name)
 
 const getReadModelNames = resolve => {
-  return resolve.readModels.map(({ name }) => name).filter(isReadModelName)
+  return resolve.readModels
+    .map(({ name }) => name)
+    .filter(isReadModelName.bind(null, resolve))
 }
 
 const getSagaNames = resolve => {
-  return resolve.readModels.map(({ name }) => name).filter(isSagaName)
+  return resolve.readModels
+    .map(({ name }) => name)
+    .filter(isSagaName.bind(null, resolve))
 }
 
 const handleResolveReadModelEvent = async (

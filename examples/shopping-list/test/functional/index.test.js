@@ -1,7 +1,8 @@
 import { Selector, ClientFunction } from 'testcafe'
 
 const host = process.env.HOST || 'localhost'
-const MAIN_PAGE = `http://${host}:3000`
+const port = process.env.PORT || '3000'
+const MAIN_PAGE = `http://${host}:${port}`
 
 const getPageBody = ClientFunction(function() {
   return window.document.body.innerText

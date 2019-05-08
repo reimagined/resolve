@@ -1,6 +1,8 @@
+import { declareRuntimeEnv } from 'resolve-scripts'
+
 const prodConfig = {
   target: 'local',
-  port: 3000,
+  port: declareRuntimeEnv('PORT', '3000'),
   polyfills: ['@babel/polyfill'],
   mode: 'production',
   rootPath: '',

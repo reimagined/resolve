@@ -1,10 +1,5 @@
 import debugLevels from 'debug-levels'
 
-import {
-  RESOLVE_SCHEDULER_SAGA_PREFIX,
-  RESOLVE_SCHEDULER_TABLE_PREFIX,
-  RESOLVE_SCHEDULER_AGGREGATE_PREFIX
-} from './constants'
 import initResolve from '../init-resolve'
 import disposeResolve from '../dispose-resolve'
 import createSchedulerEventTypes from './scheduler-event-types'
@@ -42,15 +37,15 @@ const wrapSchedulerSagas = (sagas, resolve) => {
     connectorName
   } of sagas) {
     const sagaReadModel = {
-      name: `${RESOLVE_SCHEDULER_SAGA_PREFIX}${name}`,
+      name,
       resolvers: {
         RUN_BROKER: async () => {}
       },
       connectorName
     }
 
-    const schedulerAggregateName = `${RESOLVE_SCHEDULER_AGGREGATE_PREFIX}${name}`
-    const commandsTableName = `${RESOLVE_SCHEDULER_TABLE_PREFIX}${name}`
+    const schedulerAggregateName = name
+    const commandsTableName = name
 
     const handlers = handlersCreator({
       schedulerAggregateName,
