@@ -63,13 +63,6 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
     module: {
       rules: [
         {
-          test: /resolve-runtime[\\/](?!node_modules).*?\.js$/,
-          use: {
-            loader: require.resolve('babel-loader'),
-            options: clientTransformBabelOptions
-          }
-        },
-        {
           test: Object.values(alias),
           use: [
             {
@@ -99,6 +92,13 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
             path.resolve(__dirname, '../lib'),
             path.resolve(__dirname, '../es')
           ]
+        },
+        {
+          test: /resolve-runtime[\\/](?!node_modules).*?\.js$/,
+          use: {
+            loader: require.resolve('babel-loader'),
+            options: clientTransformBabelOptions
+          }
         }
       ]
     }
