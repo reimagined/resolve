@@ -367,6 +367,7 @@ module.exports = {
           'viewmodel',
           'viewport',
           'webpack',
+          'websockets',
           'wikipedia',
           'wildcard',
           'workspaces',

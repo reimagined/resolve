@@ -1,8 +1,11 @@
 import debugLevels from 'debug-levels'
-import getWebSocketStream from 'websocket-stream'
+import EventEmitter from 'events'
+import http from 'http'
 import MqttConnection from 'mqtt-connection'
 import createSocketServer from 'socket.io'
+import getWebSocketStream from 'websocket-stream'
 import { Server as WebSocketServer } from 'ws'
+import uuid from 'uuid/v4'
 
 import createPubsubManager from './create-pubsub-manager'
 import getRootBasedUrl from '../common/utils/get-root-based-url'
@@ -123,40 +126,123 @@ const createServerSocketIOHandler = pubsubManager => socket => {
   socket.on('disconnect', dispose)
 }
 
-const initSubscribeAdapter = async resolve => {
-  const pubsubManager = createPubsubManager()
-  const appId = resolve.applicationName
-  const qos = 1
+const initInterceptingHttpServer = resolve => {
+  const {
+    server: baseServer,
+    socketIOHttpServer,
+    mqttHttpServer,
+    hmrHttpServer
+  } = resolve
 
+  const socketIoBaseUrl = getRootBasedUrl(resolve.rootPath, '/api/socket-io/')
+  const mqttBaseUrl = getRootBasedUrl(resolve.rootPath, '/api/mqtt')
+  const hmrBaseUrl = getRootBasedUrl(resolve.rootPath, '/api/hmr/')
+
+  const interceptingEvents = [
+    'close',
+    'listening',
+    'request',
+    'upgrade',
+    'error'
+  ]
+
+  const interceptingEventListener = (eventName, listeners, ...args) => {
+    const requestUrl =
+      args[0] != null && args[0].url != null ? String(args[0].url) : ''
+
+    if (requestUrl.startsWith(socketIoBaseUrl)) {
+      socketIOHttpServer.emit(eventName, ...args)
+    } else if (requestUrl.startsWith(mqttBaseUrl)) {
+      mqttHttpServer.emit(eventName, ...args)
+    } else if (requestUrl.startsWith(hmrBaseUrl)) {
+      hmrHttpServer.emit(eventName, ...args)
+    } else {
+      for (const listener of listeners) {
+        listener.apply(baseServer, args)
+      }
+    }
+  }
+
+  for (const eventName of interceptingEvents) {
+    const listeners = baseServer.listeners(eventName).slice(0)
+    baseServer.removeAllListeners(eventName)
+    const listener = interceptingEventListener.bind(null, eventName, listeners)
+    baseServer.on(eventName, listener)
+  }
+}
+
+const initSocketIOServer = async resolve => {
   try {
-    const handler = createServerSocketIOHandler(pubsubManager)
-    const socketIOServer = createSocketServer(resolve.server, {
+    const handler = createServerSocketIOHandler(resolve.pubsubManager)
+    const socketIOServer = createSocketServer(resolve.socketIOHttpServer, {
       path: getRootBasedUrl(resolve.rootPath, '/api/socket-io/'),
       serveClient: false,
-      transports: ['polling']
+      transports: ['polling', 'websocket']
     })
     socketIOServer.on('connection', handler)
   } catch (error) {
     log.warn('Cannot init Socket.IO server socket: ', error)
   }
+}
 
+const initMqttServer = async resolve => {
+  const appId = resolve.applicationName
+  const qos = 1
   try {
     const socketMqttServer = new WebSocketServer({
-      server: resolve.server,
-      path: getRootBasedUrl(resolve.rootPath, '/api/mqtt')
+      path: getRootBasedUrl(resolve.rootPath, '/api/mqtt'),
+      server: resolve.mqttHttpServer
     })
-    const handler = createServerMqttHandler(pubsubManager, appId, qos)
+    const handler = createServerMqttHandler(resolve.pubsubManager, appId, qos)
     socketMqttServer.on('connection', handler)
   } catch (error) {
     log.warn('Cannot init MQTT server socket: ', error)
   }
+}
+
+const initHMRServer = async resolve => {
+  const HMR_ID = uuid()
+
+  const HMRSocketHandler = socket => {
+    socket.emit('hotModuleReload', HMR_ID)
+  }
+
+  const HMRSocketServer = createSocketServer(resolve.hmrHttpServer, {
+    path: getRootBasedUrl(resolve.rootPath, '/api/hmr/'),
+    serveClient: false
+  })
+
+  HMRSocketServer.on('connection', HMRSocketHandler)
+}
+
+const createSocketHttpServer = () => {
+  const socketServer = new EventEmitter()
+  Object.setPrototypeOf(socketServer, http.Server.prototype)
+  Object.defineProperty(socketServer, 'listen', { value: () => {} })
+  return socketServer
+}
+
+const initWebsockets = async resolve => {
+  const pubsubManager = createPubsubManager()
+  const socketIOHttpServer = createSocketHttpServer()
+  const mqttHttpServer = createSocketHttpServer()
+  const hmrHttpServer = createSocketHttpServer()
 
   Object.defineProperties(resolve, {
     getSubscribeAdapterOptions: {
       value: getSubscribeAdapterOptions.bind(null, resolve)
     },
-    pubsubManager: { value: pubsubManager }
+    pubsubManager: { value: pubsubManager },
+    socketIOHttpServer: { value: socketIOHttpServer },
+    mqttHttpServer: { value: mqttHttpServer },
+    hmrHttpServer: { value: hmrHttpServer }
   })
+
+  await initSocketIOServer(resolve)
+  await initMqttServer(resolve)
+  await initHMRServer(resolve)
+
+  await initInterceptingHttpServer(resolve)
 }
 
-export default initSubscribeAdapter
+export default initWebsockets

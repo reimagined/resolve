@@ -14,6 +14,26 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
     ? resolveConfig.polyfills
     : []
 
+  const clientTransformBabelOptions = {
+    cacheDirectory: true,
+    babelrc: false,
+    presets: ['@babel/preset-env', '@babel/preset-react'],
+    plugins: [
+      '@babel/plugin-proposal-class-properties',
+      '@babel/plugin-proposal-export-default-from',
+      '@babel/plugin-proposal-export-namespace-from',
+      [
+        '@babel/plugin-transform-runtime',
+        {
+          corejs: false,
+          helpers: true,
+          regenerator: true,
+          useESModules: false
+        }
+      ]
+    ]
+  }
+
   return {
     name: 'Client',
     entry: {
@@ -43,29 +63,18 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
     module: {
       rules: [
         {
+          test: /resolve-runtime[\\/](?!node_modules).*?\.js$/,
+          use: {
+            loader: require.resolve('babel-loader'),
+            options: clientTransformBabelOptions
+          }
+        },
+        {
           test: Object.values(alias),
           use: [
             {
               loader: require.resolve('babel-loader'),
-              options: {
-                cacheDirectory: true,
-                babelrc: false,
-                presets: ['@babel/preset-env', '@babel/preset-react'],
-                plugins: [
-                  '@babel/plugin-proposal-class-properties',
-                  '@babel/plugin-proposal-export-default-from',
-                  '@babel/plugin-proposal-export-namespace-from',
-                  [
-                    '@babel/plugin-transform-runtime',
-                    {
-                      corejs: false,
-                      helpers: true,
-                      regenerator: true,
-                      useESModules: false
-                    }
-                  ]
-                ]
-              }
+              options: clientTransformBabelOptions
             },
             {
               loader: require.resolve('val-loader'),
