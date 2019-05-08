@@ -52,7 +52,6 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
 
     try {
       for (const event of events) {
-        lastEvent = event
         if (isDisposed) {
           throw new Error(
             `Read model "${readModel.name}" updating had been interrupted`
@@ -66,6 +65,7 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
           const connection = await connectionPromise
           const executor = readModel.projection[event.type]
           await executor(connection, event)
+          lastEvent = event
         }
       }
     } catch (error) {

@@ -7,7 +7,6 @@ export default ({ resolveConfig }) => {
   )
 
   const exports = [
-    `import '$resolve.installLogger'`,
     `import clientIndex from ${JSON.stringify(clientIndexPath)}`,
     `export default clientIndex`
   ]

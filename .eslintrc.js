@@ -11,9 +11,6 @@ module.exports = {
     }
   },
   plugins: ['react', 'jsx-a11y', 'import', 'spellcheck'],
-  globals: {
-    resolveLog: true
-  },
   settings: {
     react: {
       version: '16.5'
@@ -370,6 +367,7 @@ module.exports = {
           'viewmodel',
           'viewport',
           'webpack',
+          'websockets',
           'wikipedia',
           'wildcard',
           'workspaces',

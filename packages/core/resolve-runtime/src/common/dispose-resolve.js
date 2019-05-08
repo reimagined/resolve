@@ -1,3 +1,7 @@
+import debugLevels from 'debug-levels'
+
+const log = debugLevels('resolve:resolve-runtime:dispose-resolve')
+
 const disposeResolve = async resolve => {
   try {
     await resolve.eventStore.dispose()
@@ -11,10 +15,10 @@ const disposeResolve = async resolve => {
       await resolve.readModelConnectors[name].dispose()
     }
 
-    resolveLog('info', 'Dispose resolve entries successfully')
+    log.info('Dispose resolve entries successfully')
   } catch (error) {
-    resolveLog('error', 'Dispose resolve entries failed with error:')
-    resolveLog('error', error)
+    log.error('Dispose resolve entries failed with error:')
+    log.error(error)
   }
 }
 

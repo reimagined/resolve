@@ -1,33 +1,33 @@
-import invokeMetaLock from './invoke-meta-lock'
+import invokeMeta from './invoke-meta'
 
 const initBroker = resolve => {
   Object.assign(resolve.eventBroker, {
     pause: async listenerId => {
-      return await invokeMetaLock(resolve, listenerId, 'pause')
+      return await invokeMeta(resolve, listenerId, 'pause')
     },
     resume: async listenerId => {
-      return await invokeMetaLock(resolve, listenerId, 'resume')
+      return await invokeMeta(resolve, listenerId, 'resume')
     },
     status: async listenerId => {
-      return await invokeMetaLock(resolve, listenerId, 'status')
+      return await invokeMeta(resolve, listenerId, 'status')
     },
     reset: async listenerId => {
-      return await invokeMetaLock(resolve, listenerId, 'reset')
+      return await invokeMeta(resolve, listenerId, 'reset')
     },
     listProperties: async listenerId => {
-      return await invokeMetaLock(resolve, listenerId, 'listProperties')
+      return await invokeMeta(resolve, listenerId, 'listProperties')
     },
     getProperty: async (listenerId, key) => {
-      return await invokeMetaLock(resolve, listenerId, 'getProperty', { key })
+      return await invokeMeta(resolve, listenerId, 'getProperty', { key })
     },
     setProperty: async (listenerId, key, value) => {
-      return await invokeMetaLock(resolve, listenerId, 'setProperty', {
+      return await invokeMeta(resolve, listenerId, 'setProperty', {
         key,
         value
       })
     },
     deleteProperty: async (listenerId, key) => {
-      return await invokeMetaLock(resolve, listenerId, 'deleteProperty', {
+      return await invokeMeta(resolve, listenerId, 'deleteProperty', {
         key
       })
     }
