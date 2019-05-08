@@ -109,6 +109,7 @@ const lambdaWorker = async (
     }
   } catch (error) {
     log.error('top-level event handler execution error!')
+    log.error('error', error.message)
     log.error('error', error.stack)
   } finally {
     await disposeResolve(resolve)
