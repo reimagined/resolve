@@ -18,8 +18,8 @@ const adjustWebpackCommonPackages = ({ commonPackages }) => webpackConfigs => {
       path.join(process.cwd(), 'node_modules'), // TODO. Hot-fix
       'node_modules'
     ]
-    webpackConfig.module.rules[1].use.options.plugins = [
-      ...(webpackConfig.module.rules[1].use.options.plugins || []),
+    webpackConfig.module.rules[2].use.options.plugins = [
+      ...(webpackConfig.module.rules[2].use.options.plugins || []),
       [
         require.resolve('babel-plugin-module-resolver'),
         {
