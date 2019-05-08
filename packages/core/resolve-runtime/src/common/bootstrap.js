@@ -3,6 +3,8 @@ import debugLevels from 'debug-levels'
 const log = debugLevels('resolve:resolve-runtime:bootstrap')
 
 const bootstrap = async resolve => {
+  log.debug('bootstrap started')
+
   const applicationPromises = []
   for (const name of resolve.systemReadModelsNames) {
     applicationPromises.push(
@@ -28,7 +30,7 @@ const bootstrap = async resolve => {
 
   await Promise.all(applicationPromises)
 
-  log.info('Bootstrap successful')
+  log.debug('bootstrap successful')
 
   return 'ok'
 }

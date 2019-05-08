@@ -28,25 +28,33 @@ describe('resolve event handler', () => {
   })
 
   describe('common', () => {
-    it('returns null for unknown operation', async () => {
+    it('throw error for unknown operation', async () => {
       const lambdaEvent = {
         part: 'readModel',
         operation: 'someUnknownOperation'
       }
 
-      const result = await handleDeployServiceEvent(lambdaEvent, resolve)
-      expect(result).toEqual(null)
+      try {
+        await handleDeployServiceEvent(lambdaEvent, resolve)
+        return Promise.reject('Test failed')
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error)
+      }
 
       expect(resolve.executeQuery.drop).toHaveBeenCalledTimes(0)
     })
 
-    it('returns null for unknown part', async () => {
+    it('throw error for unknown part', async () => {
       const lambdaEvent = {
         part: 'someUnknownPart'
       }
 
-      const result = await handleDeployServiceEvent(lambdaEvent, resolve)
-      expect(result).toEqual(null)
+      try {
+        await handleDeployServiceEvent(lambdaEvent, resolve)
+        return Promise.reject('Test failed')
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error)
+      }
 
       expect(resolve.executeQuery.drop).toHaveBeenCalledTimes(0)
     })
