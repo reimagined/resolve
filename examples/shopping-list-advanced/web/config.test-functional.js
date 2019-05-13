@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+const { declareRuntimeEnv } = require('resolve-scripts')
 
 const testFunctionalConfig = {
   target: 'local',
