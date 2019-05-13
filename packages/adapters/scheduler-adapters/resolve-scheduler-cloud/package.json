@@ -1,6 +1,6 @@
 {
   "name": "resolve-scheduler-cloud",
-  "version": "0.20.4",
+  "version": "0.20.5",
   "description": "This package is an adapter for api handler to AWS Lambda.",
   "engines": {
     "node": ">=8.10"
