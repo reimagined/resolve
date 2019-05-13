@@ -27,7 +27,7 @@ const appConfig = {
   ],
   viewModels: [
     {
-      name: 'ShoppingList',
+      name: 'shoppingList',
       projection: 'common/view-models/shopping-list.projection.js'
     }
   ],

@@ -1,6 +1,8 @@
+const { declareRuntimeEnv } = require('resolve-scripts')
+
 const testFunctionalConfig = {
   target: 'local',
-  port: 3000,
+  port: declareRuntimeEnv('PORT', '3000'),
   polyfills: ['@babel/polyfill'],
   mode: 'development',
   readModelConnectors: {

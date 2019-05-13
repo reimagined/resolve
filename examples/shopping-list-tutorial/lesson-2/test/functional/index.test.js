@@ -3,7 +3,8 @@ import fetch from 'isomorphic-fetch'
 import { expect } from 'chai'
 
 const host = process.env.HOST || 'localhost'
-const MAIN_PAGE = `http://${host}:3000`
+const port = process.env.PORT || '3000'
+const MAIN_PAGE = `http://${host}:${port}`
 
 // eslint-disable-next-line no-unused-expressions, no-undef
 fixture`Shopping List`.beforeEach(async t => {

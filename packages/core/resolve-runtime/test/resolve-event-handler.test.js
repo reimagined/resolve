@@ -8,6 +8,7 @@ describe('resolve event handler', () => {
     resolve = {
       readModels: [{ name: 'readModel1' }, { name: 'readModel2' }],
       executeQuery: { drop: jest.fn() },
+      sagaNames: new Set(),
       lambda: {
         invoke: jest.fn().mockReturnValue({
           promise: jest.fn().mockReturnValue(
@@ -71,7 +72,7 @@ describe('resolve event handler', () => {
 
       expect(result).toEqual('ok')
 
-      expect(resolve.executeQuery.drop).toHaveBeenCalledTimes(2)
+      expect(resolve.executeQuery.drop).toHaveBeenCalledTimes(1)
     })
 
     it('handles specific read model reset correctly', async () => {

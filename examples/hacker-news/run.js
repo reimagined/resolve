@@ -23,7 +23,10 @@ const launchMode = process.argv[2]
 
 void (async () => {
   try {
-    const moduleComments = resolveModuleComments()
+    const moduleComments = resolveModuleComments({
+      aggregateName: 'Comment',
+      readModelName: 'Comments'
+    })
 
     const moduleAuth = resolveModuleAuth([
       {

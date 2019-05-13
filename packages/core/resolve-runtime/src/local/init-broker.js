@@ -211,6 +211,11 @@ const requestListenerResume = async (resolve, listenerId) => {
   await resolve.pubSocket.send(
     `${OUTCOMING_TOPICS.RESUME_LISTENER_TOPIC} ${encodedMessage}`
   )
+  await resolve.executeQuery({
+    modelName: listenerId,
+    resolverName: resolve.bootstrapSymbol,
+    resolverArgs: {}
+  })
 }
 
 const doUpdateRequest = async (resolve, listenerId) => {
