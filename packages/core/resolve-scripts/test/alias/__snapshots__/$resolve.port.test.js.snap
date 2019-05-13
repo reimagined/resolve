@@ -10,7 +10,7 @@ export default port
 
 exports[`config with process.env works correctly [server] 1`] = `
 "
-const port = process.env[\\"PORT\\"]
+const port = (((first, second) => (first != null ? first : second))(process.env[\\"PORT\\"], null))
 
 export default port
 "

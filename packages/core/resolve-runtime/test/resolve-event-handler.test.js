@@ -8,6 +8,7 @@ describe('resolve event handler', () => {
     resolve = {
       readModels: [{ name: 'readModel1' }, { name: 'readModel2' }],
       executeQuery: { drop: jest.fn() },
+      sagaNames: new Set(),
       lambda: {
         invoke: jest.fn().mockReturnValue({
           promise: jest.fn().mockReturnValue(

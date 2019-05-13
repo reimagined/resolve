@@ -433,7 +433,7 @@ Register the View Model in the application's configuration file as shown below.
 ...
 viewModels: [
   {
-    name: 'ShoppingList',
+    name: 'shoppingList',
     projection: 'common/view-models/shopping_list.projection.js'
   }
 ],
@@ -546,7 +546,7 @@ Use the **resolve-redux** library's **connectViewModel** HOC to bind your compon
 ```js
 export const mapStateToOptions = (state, ownProps) => {
   return {
-    viewModelName: 'ShoppingList',
+    viewModelName: 'shoppingList',
     aggregateIds: ['shopping-list-1']
   }
 }
@@ -1054,7 +1054,7 @@ export const mapStateToOptions = (state, ownProps) => {
   const aggregateId = ownProps.match.params.id
 
   return {
-    viewModelName: 'ShoppingList',
+    viewModelName: 'shoppingList',
     aggregateIds: [aggregateId]
   }
 }

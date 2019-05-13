@@ -1,11 +1,4 @@
-import {
-  RESOLVE_SAGA_PREFIX,
-  RESOLVE_SCHEDULER_SAGA_PREFIX
-} from '../sagas/constants'
-
-const isSagaName = name =>
-  name.indexOf(RESOLVE_SAGA_PREFIX) === 0 ||
-  name.indexOf(RESOLVE_SCHEDULER_SAGA_PREFIX) === 0
+import isSagaName from '../utils/is-saga-name'
 
 const resetDomainHandler = () => async (req, res) => {
   const {
@@ -45,7 +38,7 @@ const resetDomainHandler = () => async (req, res) => {
 
     if (dropReadModels) {
       for (const { name, connectorName } of readModels) {
-        if (isSagaName(name)) continue
+        if (isSagaName(req.resolve, name)) continue
         const connector = readModelConnectors[connectorName]
         const connection = await connector.connect(name)
 
@@ -58,7 +51,7 @@ const resetDomainHandler = () => async (req, res) => {
 
     if (dropSagas) {
       for (const { name, connectorName } of readModels) {
-        if (!isSagaName(name)) continue
+        if (!isSagaName(req.resolve, name)) continue
         const connector = readModelConnectors[connectorName]
         const connection = await connector.connect(name)
 

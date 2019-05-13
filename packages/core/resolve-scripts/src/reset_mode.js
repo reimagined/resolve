@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch'
 import prepareUrls from './prepare_urls'
 import path from 'path'
+import { checkRuntimeEnv, injectRuntimeEnv } from './declare_runtime_env'
 import { processRegister } from './process_manager'
 import validateConfig from './validate_config'
 import getWebpackConfigs from './get_webpack_configs'
@@ -39,26 +40,22 @@ const reset = (resolveConfig, options, adjustWebpackConfigs) =>
 
       validateConfig(resolveConfig)
 
-      const config = JSON.parse(
-        JSON.stringify(
-          merge(resolveConfig, {
-            apiHandlers: [
-              {
-                method: 'GET',
-                path: 'reset-domain',
-                controller: {
-                  module:
-                    'resolve-runtime/lib/common/handlers/reset-domain-handler.js',
-                  options: {}
-                }
-              }
-            ],
-            eventBroker: {
-              upstream: false
+      const config = merge(resolveConfig, {
+        apiHandlers: [
+          {
+            method: 'GET',
+            path: 'reset-domain',
+            controller: {
+              module:
+                'resolve-runtime/lib/common/handlers/reset-domain-handler.js',
+              options: {}
             }
-          })
-        )
-      )
+          }
+        ],
+        eventBroker: {
+          upstream: false
+        }
+      })
 
       const nodeModulesByAssembly = new Map()
       const webpackConfigs = await getWebpackConfigs({
@@ -130,7 +127,14 @@ const reset = (resolveConfig, options, adjustWebpackConfigs) =>
         broker.start(resolve)
       }
 
-      const urls = prepareUrls('http', '0.0.0.0', config.port, config.rootPath)
+      const port = Number(
+        checkRuntimeEnv(config.port)
+          ? // eslint-disable-next-line no-new-func
+            new Function(`return ${injectRuntimeEnv(config.port)}`)()
+          : config.port
+      )
+
+      const urls = prepareUrls('http', '0.0.0.0', port, config.rootPath)
       const baseUrl = urls.localUrlForBrowser
       const url = `${baseUrl}api/reset-domain?${currentOptions.join('&')}`
 

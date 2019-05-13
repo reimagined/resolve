@@ -1,9 +1,5 @@
 import debugLevels from 'debug-levels'
 import uuid from 'uuid/v4'
-import {
-  RESOLVE_SAGA_PREFIX,
-  RESOLVE_SCHEDULER_AGGREGATE_PREFIX
-} from './constants'
 
 const log = debugLevels('resolve:resolve-runtime:wrap-regular-sagas')
 
@@ -17,7 +13,7 @@ const wrapRegularSagas = sagas => {
     schedulerName
   } of sagas) {
     const sagaReadModel = {
-      name: `${RESOLVE_SAGA_PREFIX}${name}`,
+      name,
       resolvers: {
         RUN_BROKER: async () => {}
       },
@@ -52,7 +48,7 @@ const wrapRegularSagas = sagas => {
             await handlers[eventType](
               {
                 scheduleCommand: async (date, command) => {
-                  const aggregateName = `${RESOLVE_SCHEDULER_AGGREGATE_PREFIX}${schedulerName}`
+                  const aggregateName = schedulerName
                   const aggregateId = uuid()
                   log.debug(
                     `creating scheduled command aggregate ${aggregateName} with id ${aggregateId}`

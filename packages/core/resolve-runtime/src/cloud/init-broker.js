@@ -6,7 +6,13 @@ const initBroker = resolve => {
       return await invokeMeta(resolve, listenerId, 'pause')
     },
     resume: async listenerId => {
-      return await invokeMeta(resolve, listenerId, 'resume')
+      const result = await invokeMeta(resolve, listenerId, 'resume')
+      await resolve.executeQuery({
+        modelName: listenerId,
+        resolverName: resolve.bootstrapSymbol,
+        resolverArgs: {}
+      })
+      return result
     },
     status: async listenerId => {
       return await invokeMeta(resolve, listenerId, 'status')

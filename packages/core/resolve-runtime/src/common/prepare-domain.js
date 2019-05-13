@@ -32,6 +32,8 @@ const prepareDomain = async resolve => {
 
   resolve.systemReadModelsNames = systemReadModels.map(({ name }) => name)
 
+  resolve.sagaNames = new Set(resolve.sagas.map(({ name }) => name))
+
   for (const readModel of resolve.readModels) {
     Object.defineProperty(readModel.resolvers, resolve.bootstrapSymbol, {
       value: async () => {}

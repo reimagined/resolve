@@ -34,7 +34,7 @@ export default staticPath
 
 exports[`$resolve.staticPath should support runtime envs: [client - runtime] 1`] = `
 "
-let staticPath = ((() => {
+let staticPath = (((first, second) => (first != null ? first : second))(((() => {
     const globalObject = [() => window, () => global, () => self].reduce(
       (acc, recognizer) => {
         try {
@@ -58,7 +58,7 @@ let staticPath = ((() => {
     }
   
     return globalObject[key]
-  })())[\\"STATIC_PATH\\"]
+  })())[\\"STATIC_PATH\\"], null))
 export default staticPath
 "
 `;
@@ -66,7 +66,7 @@ export default staticPath
 exports[`$resolve.staticPath should support runtime envs: [server - runtime] 1`] = `
 "
 import validatePath from 'resolve-runtime/lib/common/utils/validate-path'
-let staticPath = process.env[\\"STATIC_PATH\\"]
+let staticPath = (((first, second) => (first != null ? first : second))(process.env[\\"STATIC_PATH\\"], null))
 if (!validatePath(staticPath, { allowAbsolutePath: true })) {
           throw new Error(
             \`Incorrect options.staticPath = \\"\${

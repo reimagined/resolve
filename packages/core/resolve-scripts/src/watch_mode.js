@@ -4,6 +4,7 @@ import webpack from 'webpack'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
+import { checkRuntimeEnv, injectRuntimeEnv } from './declare_runtime_env'
 import getPeerDependencies from './get_peer_dependencies'
 import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
@@ -94,6 +95,13 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
           false
         )
 
+        const port = Number(
+          checkRuntimeEnv(resolveConfig.port)
+            ? // eslint-disable-next-line no-new-func
+              new Function(`return ${injectRuntimeEnv(resolveConfig.port)}`)()
+            : resolveConfig.port
+        )
+
         if (hasErrors) {
           server.stop()
         } else {
@@ -111,9 +119,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
             const serverFirstStart =
               process.env.RESOLVE_SERVER_FIRST_START === 'true'
             if (isOpenBrowser && serverFirstStart) {
-              openBrowser(resolveConfig.port, resolveConfig.rootPath).catch(
-                () => {}
-              )
+              openBrowser(port, resolveConfig.rootPath).catch(() => {})
             }
           }
         }
