@@ -71,7 +71,7 @@ describe('resolve event handler', () => {
 
       expect(result).toEqual('ok')
 
-      expect(resolve.executeQuery.drop).toHaveBeenCalledTimes(2)
+      expect(resolve.executeQuery.drop).toHaveBeenCalledTimes(1)
     })
 
     it('handles specific read model reset correctly', async () => {
