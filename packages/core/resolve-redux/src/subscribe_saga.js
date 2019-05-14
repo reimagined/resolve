@@ -1,4 +1,5 @@
-import { put, takeEvery } from 'redux-saga/effects'
+import { put, takeEvery, fork } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
 
 import createConnectionManager from './create_connection_manager'
 
@@ -14,34 +15,82 @@ import {
   dispatchTopicMessage
 } from './actions'
 
-const subscribeSaga = function*({
+const SUBSCRIBE_ADAPTER_POLL_INTERVAL = 5000
+
+const initSubscribeAdapter = async ({
   api,
   origin,
   rootPath,
   store,
   subscribeAdapter: createSubscribeAdapter
-}) {
+}) => {
+  const { appId, url } = await api.getSubscribeAdapterOptions(
+    createSubscribeAdapter.adapterName
+  )
+
+  const onEvent = event => store.dispatch(dispatchTopicMessage(event))
+
+  const subscribeAdapter = createSubscribeAdapter({
+    appId,
+    origin,
+    rootPath,
+    url,
+    onEvent
+  })
+
+  await subscribeAdapter.init()
+
+  return subscribeAdapter
+}
+
+const subscribeSaga = function*(subscribeSagaOptions) {
   const connectionManager = createConnectionManager()
+  let subscribeAdapterPromise = initSubscribeAdapter(subscribeSagaOptions)
 
-  const subscribeAdapterPromise = (async () => {
-    const { appId, url } = await api.getSubscribeAdapterOptions(
-      createSubscribeAdapter.adapterName
-    )
+  yield fork(function*() {
+    while (true) {
+      yield delay(SUBSCRIBE_ADAPTER_POLL_INTERVAL)
+      let subscribeAdapter = null
 
-    const onEvent = event => store.dispatch(dispatchTopicMessage(event))
+      try {
+        subscribeAdapter = yield subscribeAdapterPromise
+        if (subscribeAdapter.isConnected()) {
+          continue
+        }
+      } catch (error) {}
 
-    const subscribeAdapter = createSubscribeAdapter({
-      appId,
-      origin,
-      rootPath,
-      url,
-      onEvent
-    })
+      const activeConnections = connectionManager.getConnections()
+      let refreshSubscribeAdapter = null
 
-    await subscribeAdapter.init()
+      subscribeAdapterPromise = new Promise(
+        (resolve, reject) =>
+          (refreshSubscribeAdapter = value =>
+            value != null && value instanceof Error
+              ? reject(value)
+              : resolve(value))
+      )
+      subscribeAdapterPromise.catch(() => {})
 
-    return subscribeAdapter
-  })()
+      try {
+        if (subscribeAdapter != null) {
+          yield subscribeAdapter.close()
+        }
+
+        subscribeAdapter = yield initSubscribeAdapter(subscribeSagaOptions)
+
+        yield subscribeAdapter.subscribeToTopics(
+          activeConnections.map(({ connectionName, connectionId }) => ({
+            topicName: connectionName,
+            topicId: connectionId
+          }))
+        )
+
+        refreshSubscribeAdapter(subscribeAdapter)
+      } catch (error) {
+        refreshSubscribeAdapter(error)
+      }
+    }
+  })
 
   yield takeEvery(SUBSCRIBE_TOPIC_REQUEST, function*({ topicName, topicId }) {
     const subscribeAdapter = yield subscribeAdapterPromise
