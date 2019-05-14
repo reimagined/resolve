@@ -24,9 +24,7 @@ const handleResolveReadModelEvent = async (
   resolve,
   getListenerIds
 ) => {
-  const { key, value } = lambdaEvent
-  // TODO use lambdaEvent.listenerId
-  const listenerId = lambdaEvent.listenerId || lambdaEvent.name
+  const { listenerId, key, value } = lambdaEvent
   switch (lambdaEvent.operation) {
     case 'reset': {
       log.debug('operation "reset" started')
@@ -51,14 +49,16 @@ const handleResolveReadModelEvent = async (
     }
     case 'listProperties': {
       log.debug('operation "listProperties" started')
-      const result = await await resolve.eventBroker.listProperties(listenerId)
+      const result = await resolve.eventBroker.listProperties(listenerId)
       log.debug('operation "listProperties" completed')
+      log.verbose(JSON.stringify(result, null, 2))
       return result
     }
     case 'getProperty': {
       log.debug('operation "getProperty" started')
       const result = await resolve.eventBroker.getProperty(listenerId, key)
       log.debug('operation "getProperty" completed')
+      log.verbose(JSON.stringify(result, null, 2))
       return result
     }
     case 'setProperty': {
