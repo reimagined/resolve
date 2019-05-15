@@ -1,6 +1,7 @@
 import debugLevels from 'debug-levels'
 
-const getLog = handler => debugLevels(`resolve:resolve-runtime:scheduler-saga-handlers:${handler}`)
+const getLog = handler =>
+  debugLevels(`resolve:resolve-runtime:scheduler-saga-handlers:${handler}`)
 
 export default ({
   schedulerAggregateName,

@@ -61,10 +61,7 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
           )
         }
 
-        if (
-          event != null &&
-          typeof projection[event.type] === 'function'
-        ) {
+        if (event != null && typeof projection[event.type] === 'function') {
           const connection = await connectionPromise
           const executor = projection[event.type]
           await executor(connection, event)

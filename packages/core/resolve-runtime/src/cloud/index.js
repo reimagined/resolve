@@ -19,7 +19,10 @@ import initBroker from './init-broker'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
-const invokeUpdateLambda = async ({ stepFunctions }, { name: listenerId, invariantHash, projection }) => {
+const invokeUpdateLambda = async (
+  { stepFunctions },
+  { name: listenerId, invariantHash, projection }
+) => {
   log.debug(
     `requesting step function execution to update read-model/saga "${listenerId}"`
   )

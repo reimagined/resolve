@@ -25,7 +25,9 @@ export default ({
       type == null ||
       type.constructor !== String
     ) {
-      throw Error(`scheduler.create: cannot create a scheduled command - bad parameters`)
+      throw Error(
+        `scheduler.create: cannot create a scheduled command - bad parameters`
+      )
     }
 
     return {
