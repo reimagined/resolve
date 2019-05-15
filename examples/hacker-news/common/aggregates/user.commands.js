@@ -11,11 +11,18 @@ export default {
 
     return { type: USER_CREATED, payload: { name } }
   },
-  confirmUser: ({ confirmed, rejected }) => {
-    if (!confirmed && !rejected) return { type: USER_CONFIRMED }
+  confirmUser: ({ confirmed, rejected }, { payload: { name } }) => {
+    validate.keyIsNotInObject(state, 'confirmed', 'Already confirmed')
+
+    validate.keyIsNotInObject(state, 'rejected', 'Already rejected')
+
+    return { type: USER_CONFIRMED, payload: { name } }
   },
   rejectUser: ({ confirmed, rejected }, { payload: { reason } }) => {
-    if (!confirmed && !rejected)
-      return { type: USER_REJECTED, payload: { reason } }
+    validate.keyIsNotInObject(state, 'confirmed', 'Already confirmed')
+
+    validate.keyIsNotInObject(state, 'rejected', 'Already rejected')
+
+    return { type: USER_REJECTED, payload: { reason } }
   }
 }

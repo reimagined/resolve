@@ -9,7 +9,10 @@ export default {
       })
     },
     [USER_CREATED]: async (
-      { executeCommand, scheduleCommand, store, sideEffects },
+      {
+        store,
+        sideEffects: { executeCommand, scheduleCommand, ...sideEffects }
+      },
       { aggregateId, payload: { name }, timestamp }
     ) => {
       const user = await store.findOne('SagaUsers', { name })
