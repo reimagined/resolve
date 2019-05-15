@@ -44,7 +44,7 @@ export default ({
     await sideEffects.addEntries([entry])
   },
   [SCHEDULED_COMMAND_EXECUTED]: async (
-    { executeCommand },
+    { sideEffects: { executeCommand } },
     { aggregateId, payload: { command } }
   ) => {
     try {

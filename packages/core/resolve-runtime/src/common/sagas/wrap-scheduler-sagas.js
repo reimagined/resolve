@@ -4,6 +4,8 @@ import initResolve from '../init-resolve'
 import disposeResolve from '../dispose-resolve'
 import createSchedulerEventTypes from './scheduler-event-types'
 
+import sagaEventHandler from './saga-event-handler'
+
 const log = debugLevels('resolve:resolve-runtime:wrap-scheduler-sagas')
 
 const execute = async (
@@ -38,9 +40,7 @@ const wrapSchedulerSagas = (sagas, resolve) => {
   } of sagas) {
     const sagaReadModel = {
       name,
-      resolvers: {
-        RUN_BROKER: async () => {}
-      },
+      resolvers: {},
       connectorName
     }
 
@@ -61,39 +61,24 @@ const wrapSchedulerSagas = (sagas, resolve) => {
     })
 
     sagaReadModel['schedulerAdapter'] = sideEffects
-
     const eventTypes = Object.keys(handlers)
-
-    const wrappedSideEffects = Object.keys(sideEffects).reduce((acc, key) => {
-      acc[key] = async (...args) => {
-        const result = await sideEffects[key](...args)
-        if (result !== undefined) {
-          throw new Error('Side effect should not return any values')
-        }
-      }
-      return acc
-    }, {})
 
     Object.defineProperty(sagaReadModel, 'projection', {
       get: function() {
         const currentReadModel = this
+
         return eventTypes.reduce((acc, eventType) => {
           log.debug(
             `[wrap-sagas] registering system scheduler saga event handler ${eventType}`
           )
-          acc[eventType] = async (store, event) => {
-            await handlers[eventType](
-              {
-                properties: currentReadModel.eventProperties,
-                scheduleCommand: null,
-                sideEffects: wrappedSideEffects,
-                executeCommand: currentReadModel.executeCommand,
-                executeQuery: currentReadModel.executeQuery,
-                store: store
-              },
-              event
-            )
-          }
+          acc[eventType] = sagaEventHandler.bind(
+            null,
+            currentReadModel,
+            handlers,
+            sideEffects,
+            eventType,
+            null
+          )
 
           return acc
         }, {})

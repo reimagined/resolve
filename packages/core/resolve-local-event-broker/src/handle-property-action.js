@@ -16,6 +16,10 @@ const handlePropertyAction = async (
       ? information.Properties
       : {}
 
+  if (!properties.hasOwnProperty('RESOLVE_SIDE_EFFECTS_START_TIMESTAMP')) {
+    properties['RESOLVE_SIDE_EFFECTS_START_TIMESTAMP'] = 0
+  }
+
   switch (action) {
     case 'listProperties':
       return properties
