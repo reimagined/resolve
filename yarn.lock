@@ -8976,10 +8976,10 @@ md5.js@^1.3.4:
     inherits "^2.0.1"
     safe-buffer "^5.1.2"
 
-mdis@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/mdis/-/mdis-0.0.4.tgz#9cbb18fb6cae7e5b59bcb33633f228f7249635fa"
-  integrity sha512-eWtY99d1wDLYS7bL+8x0R3Fd1Aqr810uRppcl0OPZHbL9eC2dNcJt5LWV4UGMHlgB+IAvosYgiqtk4KvxCv3mg==
+mdis@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/mdis/-/mdis-0.0.5.tgz#4a2938568dbc45fb3cf370f4675ee69370e91c05"
+  integrity sha512-KbBRC18Zbtr5MhQq2/96xTm+sEmO6wujknnUDJ6Hh9FfhEAZ5/YilAHXT/ntC7nvoB6wPvHq7OVDfehjsE1piA==
   dependencies:
     glob "7.1.3"
     minimist "1.2.0"

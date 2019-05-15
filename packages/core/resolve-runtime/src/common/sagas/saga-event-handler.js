@@ -16,7 +16,7 @@ const sagaEventHandler = async (
         executeCommand: currentReadModel.executeCommand,
         executeQuery: currentReadModel.executeQuery,
         isEnabled:
-          +eventProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP >=
+          +eventProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP <=
           +event.timestamp,
         ...wrapSideEffects(eventProperties, sideEffects),
         scheduleCommand
