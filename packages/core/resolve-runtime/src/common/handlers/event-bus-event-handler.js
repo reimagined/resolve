@@ -12,10 +12,17 @@ const handleApplyEvents = async (lambdaEvent, resolve) => {
   resolve.eventProperties = properties
 
   const startTime = Date.now()
-  const result = await resolve.executeQuery.updateByEvents(
-    listenerId,
-    events.map(decodeEvent)
-  )
+  let result = null
+  try {
+    result = await resolve.executeQuery.updateByEvents(
+      listenerId,
+      events.map(decodeEvent)
+    )
+  } catch (error) {
+    log.error('Error while applying events to read-model', error)
+
+    result = error
+  }
   const endTime = Date.now()
   log.debug('applying events successfully')
   log.verbose(

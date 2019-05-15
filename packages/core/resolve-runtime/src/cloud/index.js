@@ -109,8 +109,12 @@ const lambdaWorker = async (
     }
   } catch (error) {
     log.error('top-level event handler execution error!')
-    log.error('error', error.message)
-    log.error('error', error.stack)
+    if (error instanceof Error) {
+      log.error('error', error.message)
+      log.error('error', error.stack)
+    } else {
+      log.error(JSON.stringify(error))
+    }
   } finally {
     await disposeResolve(resolve)
     log.debug('reSolve framework was disposed')
