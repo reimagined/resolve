@@ -124,12 +124,8 @@ describe('deploy-service-event-handler.test', () => {
 
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
-      expect(resolve.eventBroker.reset).toHaveBeenCalledWith(
-        'readModelName'
-      )
-      expect(resolve.executeQuery.drop).toHaveBeenCalledWith(
-        'readModelName'
-      )
+      expect(resolve.eventBroker.reset).toHaveBeenCalledWith('readModelName')
+      expect(resolve.executeQuery.drop).toHaveBeenCalledWith('readModelName')
       expect(result).toEqual('ok')
     })
 
@@ -142,7 +138,10 @@ describe('deploy-service-event-handler.test', () => {
         lastEvent: { type: 'TEST2' },
         lastError: null
       })
-      resolve.readModels.push({ name: 'readModelName1' }, { name: 'readModelName2' })
+      resolve.readModels.push(
+        { name: 'readModelName1' },
+        { name: 'readModelName2' }
+      )
 
       const lambdaEvent = {
         part: 'readModel',
@@ -151,21 +150,20 @@ describe('deploy-service-event-handler.test', () => {
 
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
-      expect(resolve.eventBroker.status).toHaveBeenCalledWith(
-        'readModelName1'
-      )
-      expect(resolve.eventBroker.status).toHaveBeenCalledWith(
-        'readModelName2'
-      )
-      expect(result).toEqual([{
-        name: 'readModelName1',
-        lastEvent: { type: 'TEST1' },
-        lastError: null
-      }, {
-        name: 'readModelName2',
-        lastEvent: { type: 'TEST2' },
-        lastError: null
-      }])
+      expect(resolve.eventBroker.status).toHaveBeenCalledWith('readModelName1')
+      expect(resolve.eventBroker.status).toHaveBeenCalledWith('readModelName2')
+      expect(result).toEqual([
+        {
+          name: 'readModelName1',
+          lastEvent: { type: 'TEST1' },
+          lastError: null
+        },
+        {
+          name: 'readModelName2',
+          lastEvent: { type: 'TEST2' },
+          lastError: null
+        }
+      ])
     })
 
     test('handles specific read model getting of list', async () => {
@@ -182,18 +180,17 @@ describe('deploy-service-event-handler.test', () => {
 
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
-      expect(resolve.eventBroker.status).toHaveBeenCalledWith(
-        'readModelName1'
-      )
+      expect(resolve.eventBroker.status).toHaveBeenCalledWith('readModelName1')
 
-      expect(result).toEqual([{
-        name: 'readModelName1',
-        lastEvent: { type: 'TEST1' },
-        lastError: null
-      }])
+      expect(result).toEqual([
+        {
+          name: 'readModelName1',
+          lastEvent: { type: 'TEST1' },
+          lastError: null
+        }
+      ])
     })
   })
-
 
   describe('common', () => {
     test('throw error for unknown operation', async () => {
@@ -224,4 +221,3 @@ describe('deploy-service-event-handler.test', () => {
     })
   })
 })
-
