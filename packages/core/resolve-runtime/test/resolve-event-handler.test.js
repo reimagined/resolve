@@ -79,7 +79,7 @@ describe('resolve event handler', () => {
       const lambdaEvent = {
         part: 'readModel',
         operation: 'reset',
-        name: 'default'
+        listenerId: 'default'
       }
 
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
