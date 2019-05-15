@@ -116,6 +116,7 @@ The code sample below demostrates how to implement a connector that provides a f
 [mdis]:# (../tests/custom-readmodel-sample/connector.js)
 ```js
 import fs from 'fs'
+
 export default options => {
   const prefix = String(options.prefix)
   const readModels = new Set()
@@ -146,6 +147,7 @@ export default options => {
     }
     readModels.clear()
   }
+
   return {
     connect,
     disconnect,
@@ -209,6 +211,7 @@ const projection = {
     await store.set((await store.get()) - event.payload)
   }
 }
+
 export default projection
 ```
 
@@ -225,6 +228,7 @@ const resolvers = {
     return await store.get()
   }
 }
+
 export default resolvers
 ```
 

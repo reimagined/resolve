@@ -7,6 +7,9 @@ const followTopicBatchStep = async (pool, listenerId) => {
 
   const listenerInfo = await pool.getListenerInfo(pool, listenerId)
   const properties = listenerInfo.properties
+  if (!properties.hasOwnProperty('RESOLVE_SIDE_EFFECTS_START_TIMESTAMP')) {
+    properties['RESOLVE_SIDE_EFFECTS_START_TIMESTAMP'] = 0
+  }
 
   if (listenerInfo.isFirstRun) {
     await pool.anycastEvents(pool, listenerId, [{ type: 'Init' }], properties)

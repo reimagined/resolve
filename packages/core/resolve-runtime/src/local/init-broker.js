@@ -72,6 +72,9 @@ const processEvents = async (resolve, listenerId, content) => {
       listenerId,
       events
     )
+    if (result.lastError != null) {
+      log.error('Error while applying events to read-model', result.lastError)
+    }
   } catch (error) {
     log.error('Error while applying events to read-model', error)
 

@@ -9,9 +9,12 @@ const initSaga = async ({ promise, transformEvents }) => {
     const result = {
       commands: [],
       scheduleCommands: [],
-      sideEffects: []
+      sideEffects: [],
+      queries: []
     }
-    const { adapter, events, handlers, sideEffects } = promise[symbol]
+    const { adapter, events, handlers, sideEffects, properties } = promise[
+      symbol
+    ]
 
     const store = await adapter.connect('TEST-SAGA-READ-MODEL')
 
@@ -28,18 +31,28 @@ const initSaga = async ({ promise, transformEvents }) => {
 
       await handler(
         {
-          executeCommand: async (...args) => {
-            result.commands.push(args)
-          },
-          scheduleCommand: async (...args) => {
-            result.scheduleCommands.push(args)
-          },
-          sideEffects: Object.keys(sideEffects).reduce((acc, key) => {
-            acc[key] = async (...args) => {
-              result.sideEffects.push([key, ...args])
+          sideEffects: Object.keys(sideEffects).reduce(
+            (acc, key) => {
+              acc[key] = async (...args) => {
+                result.sideEffects.push([key, ...args, properties])
+              }
+              return acc
+            },
+            {
+              executeCommand: async (...args) => {
+                result.commands.push(args)
+              },
+              scheduleCommand: async (...args) => {
+                result.scheduleCommands.push(args)
+              },
+              executeQuery: async (...args) => {
+                result.queries.push(args)
+              },
+              isEnabled:
+                +properties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP <=
+                +event.timestamp
             }
-            return acc
-          }, {}),
+          ),
           store
         },
         event
