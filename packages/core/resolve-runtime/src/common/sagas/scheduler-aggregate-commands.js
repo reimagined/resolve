@@ -25,7 +25,7 @@ export default ({
       type == null ||
       type.constructor !== String
     ) {
-      throw Error(`cannot create a scheduled command: bad parameters`)
+      throw Error(`scheduler.create: cannot create a scheduled command - bad parameters`)
     }
 
     return {
@@ -43,7 +43,7 @@ export default ({
   },
   execute: async ({ state, date, command }) => {
     if (state !== 'scheduled')
-      throw Error(`cannot execute the task due to invalid task state`)
+      throw Error(`scheduler.execute: unexpected task state "${state}"`)
 
     return {
       type: SCHEDULED_COMMAND_EXECUTED,
@@ -55,16 +55,16 @@ export default ({
   },
   success: async ({ state }) => {
     if (state !== 'executed')
-      throw Error(`cannot accept the task execution due to invalid task state`)
+      throw Error(`scheduler.success: unexpected task state "${state}"`)
 
     return {
       type: SCHEDULED_COMMAND_SUCCEEDED,
       payload: {}
     }
   },
-  failure: async (state, { payload: { reason } }) => {
+  failure: async ({ state }, { payload: { reason } }) => {
     if (state !== 'executed')
-      throw Error(`cannot accept the task failure due to invalid task state`)
+      throw Error(`scheduler.failure: unexpected task state "${state}"`)
 
     return {
       type: SCHEDULED_COMMAND_FAILED,

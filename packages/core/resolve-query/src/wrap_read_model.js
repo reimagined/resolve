@@ -39,7 +39,10 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
     if (isDisposed) {
       throw new Error(`Read model "${readModel.name}" is disposed`)
     }
-    if (readModel.projection == null) {
+
+    const projection = readModel.projection
+
+    if (projection == null) {
       throw new Error(
         `Updating by events is prohibited when "${
           readModel.name
@@ -60,16 +63,19 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
 
         if (
           event != null &&
-          typeof readModel.projection[event.type] === 'function'
+          typeof projection[event.type] === 'function'
         ) {
           const connection = await connectionPromise
-          const executor = readModel.projection[event.type]
+          const executor = projection[event.type]
           await executor(connection, event)
           lastEvent = event
         }
       }
     } catch (error) {
-      lastError = error
+      lastError = {
+        message: error.message,
+        stack: error.stack
+      }
     }
 
     const result = {
