@@ -1,5 +1,5 @@
-import wrapReadModel from './wrap_read_model'
-import wrapViewModel from './wrap_view_model'
+import wrapReadModel from './wrap-read-model'
+import wrapViewModel from './wrap-view-model'
 
 const createQuery = ({
   readModelConnectors,

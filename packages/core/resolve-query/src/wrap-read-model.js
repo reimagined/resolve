@@ -1,4 +1,4 @@
-import makeAutoPromise from './make_auto_promise'
+import makeAutoPromise from './make-auto-promise'
 
 const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
   let isDisposed = false
