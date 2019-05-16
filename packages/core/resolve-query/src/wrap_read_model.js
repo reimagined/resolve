@@ -69,10 +69,10 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
         }
       }
     } catch (error) {
-      lastError = {
-        message: error.message,
-        stack: error.stack
-      }
+      lastError = Object.create(Error.prototype, {
+        message: { value: error.message, enumerable: true },
+        stack: { value: error.stack, enumerable: true }
+      })
     }
 
     const result = {
