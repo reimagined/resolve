@@ -23,6 +23,7 @@ describe('main broker tests', () => {
       zmqConsumerAddress: 'tcp://127.0.0.1:3501',
       databaseFile: ':memory:',
       batchSize: 1,
+      initialTimestamp: 0,
       eventStore
     }
 
@@ -273,4 +274,16 @@ describe('main broker tests', () => {
 
     expect(result).toMatchSnapshot()
   })
+})
+
+describe('failure broker tests', () => {
+  test('wrong config', async () => {
+    try {
+      await createAndInitBroker({})
+      return Promise.reject('Test failed')
+    } catch(error) {
+      expect(error).toBeInstanceOf(Error)
+    }
+  })
+
 })
