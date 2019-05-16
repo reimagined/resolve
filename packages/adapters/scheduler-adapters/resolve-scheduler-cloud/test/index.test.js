@@ -103,17 +103,10 @@ describe('addEntries', function() {
 })
 
 describe('clearEntries', () => {
-  test('stop all running tasks', async () => {
+  test('do not stop tasks', async () => {
     await adapter.clearEntries()
-    expect(stepFunction.stopAll).toHaveBeenCalledWith()
+    expect(stepFunction.stopAll).not.toHaveBeenCalled()
     expect(context.errorHandler).not.toHaveBeenCalled()
-  })
-
-  test('handle failures', async () => {
-    const error = Error('error')
-    stepFunction.stopAll.mockRejectedValueOnce(error)
-    await adapter.clearEntries()
-    expect(context.errorHandler).toHaveBeenCalledWith(error)
   })
 })
 
