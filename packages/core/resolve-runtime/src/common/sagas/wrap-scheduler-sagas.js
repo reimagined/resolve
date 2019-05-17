@@ -77,7 +77,7 @@ const wrapSchedulerSagas = (sagas, resolve) => {
             handlers,
             sideEffects,
             eventType,
-            null
+            Function() // eslint-disable-line no-new-func
           )
 
           return acc

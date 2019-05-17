@@ -1,5 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Saga with sideEffects.isEnabled = false forgotten registration 1`] = `
+Object {
+  "commands": Array [],
+  "queries": Array [],
+  "scheduleCommands": Array [],
+  "sideEffects": Array [],
+}
+`;
+
+exports[`Saga with sideEffects.isEnabled = false success registration 1`] = `
+Object {
+  "commands": Array [],
+  "queries": Array [],
+  "scheduleCommands": Array [],
+  "sideEffects": Array [],
+}
+`;
+
 exports[`Saga with sideEffects.isEnabled = true forgotten registration 1`] = `
 Object {
   "commands": Array [
