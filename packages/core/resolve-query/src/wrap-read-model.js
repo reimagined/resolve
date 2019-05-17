@@ -107,14 +107,14 @@ const dispose = async pool => {
   if (pool.isDisposed) {
     throw new Error(`Read model "${pool.readModel.name}" is disposed`)
   }
+  pool.isDisposed = true
+
   if (typeof pool.connector.disconnect !== 'function') {
     return
   }
 
   const connection = await maybeConnect(pool)
   await pool.connector.disconnect(connection, pool.readModel.name)
-
-  pool.isDisposed = true
 }
 
 const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {

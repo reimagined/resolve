@@ -1077,6 +1077,7 @@ describe('view models', () => {
 
 describe('read models', () => {
   query = null
+  const remoteReadModelStore = {}
   beforeEach(() => {
     readModels = [
       {
@@ -1125,6 +1126,22 @@ describe('read models', () => {
         resolvers: {},
         connectorName: 'empty',
         invariantHash: 'brokenReadModelName-invariantHash'
+      },
+      {
+        name: 'remoteReadModelName',
+        projection: {
+          SET: async (_, event) => {
+            await new Promise(resolve => setImmediate(resolve))
+            remoteReadModelStore[event.payload.key] = event.payload.value
+          }
+        },
+        resolvers: {
+          getValue: async store => {
+            return await store.get('value')
+          }
+        },
+        connectorName: 'empty',
+        invariantHash: 'remoteReadModelName-invariantHash'
       }
     ]
 
@@ -1341,45 +1358,28 @@ describe('read models', () => {
   test('"updateByEvents" should raise error when updating had been interrupted', async () => {
     events = [
       {
-        type: 'Init'
-      },
-      {
-        aggregateId: 'id1',
+        aggregateId: 'id',
         aggregateVersion: 1,
         timestamp: 1,
-        type: 'ADD',
+        type: 'SET',
         payload: {
-          value: 10
+          key: 1,
+          value: 2
         }
       },
       {
-        aggregateId: 'id1',
+        aggregateId: 'id',
         aggregateVersion: 2,
         timestamp: 2,
-        type: 'ADD',
+        type: 'SET',
         payload: {
-          value: 5
+          key: 3,
+          value: 4
         }
-      },
-      {
-        aggregateId: 'id1',
-        aggregateVersion: 3,
-        timestamp: 3,
-        type: 'SUB',
-        payload: {
-          value: 8
-        }
-      },
-      {
-        aggregateId: 'id1',
-        aggregateVersion: 4,
-        timestamp: 4,
-        type: 'OTHER_EVENT',
-        payload: {}
       }
     ]
 
-    const result = query.updateByEvents('readModelName', events)
+    const result = query.updateByEvents('remoteReadModelName', events)
 
     await query.dispose()
 
@@ -1389,7 +1389,7 @@ describe('read models', () => {
     } catch (error) {
       expect(error.lastError).toBeInstanceOf(Error)
       expect(error.lastError.message).toEqual(
-        'Read model "readModelName" updating had been interrupted'
+        'Read model "remoteReadModelName" updating had been interrupted'
       )
     }
   })
