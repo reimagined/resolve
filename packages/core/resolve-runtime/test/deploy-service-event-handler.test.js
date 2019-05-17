@@ -1,101 +1,223 @@
-import initBroker from '../src/cloud/init-broker'
 import handleDeployServiceEvent from '../src/common/handlers/deploy-service-event-handler'
 
-describe('properties', () => {
+describe('deploy-service-event-handler.test', () => {
   let resolve = null
-  let lambdaResponse = null
 
   beforeEach(() => {
-    lambdaResponse = JSON.stringify({})
     resolve = {
-      readModels: [{ name: 'readModel' }],
-      executeQuery: { drop: jest.fn() },
-      lambda: {
-        invoke: jest.fn().mockReturnValue({
-          promise: jest.fn().mockReturnValue(
-            Promise.resolve(
-              Object.create(null, {
-                Payload: {
-                  get() {
-                    return JSON.stringify(lambdaResponse)
-                  }
-                }
-              })
-            )
-          )
-        })
+      sagaNames: new Map(),
+      readModels: [],
+      eventBroker: {
+        reset: jest.fn(),
+        pause: jest.fn(),
+        resume: jest.fn(),
+        status: jest.fn(),
+        listProperties: jest.fn(),
+        getProperty: jest.fn(),
+        setProperty: jest.fn(),
+        deleteProperty: jest.fn()
       },
-      eventBroker: {}
+      executeQuery: {
+        drop: jest.fn()
+      }
     }
-
-    initBroker(resolve)
   })
 
   afterEach(() => {
     resolve = null
   })
 
-  test('listProperties should return list properties', async () => {
-    lambdaResponse = {
-      START_TIMESTAMP: 42
-    }
+  describe('properties', () => {
+    test('listProperties should return list properties', async () => {
+      resolve.eventBroker.listProperties.mockResolvedValueOnce({
+        property: 'property'
+      })
 
-    const lambdaEvent = {
-      part: 'readModel',
-      operation: 'listProperties',
-      listenerId: 'readModel'
-    }
+      const result = await handleDeployServiceEvent(
+        {
+          part: 'readModel',
+          operation: 'listProperties',
+          listenerId: 'readModelName'
+        },
+        resolve
+      )
 
-    const result = await handleDeployServiceEvent(lambdaEvent, resolve)
+      expect(resolve.eventBroker.listProperties).toHaveBeenCalledWith(
+        'readModelName'
+      )
+      expect(result).toEqual({
+        property: 'property'
+      })
+    })
 
-    expect(result).toEqual({
-      START_TIMESTAMP: 42
+    test('getProperty should return property', async () => {
+      resolve.eventBroker.getProperty.mockResolvedValueOnce('value')
+
+      const result = await handleDeployServiceEvent(
+        {
+          part: 'readModel',
+          operation: 'getProperty',
+          listenerId: 'readModelName',
+          key: 'key'
+        },
+        resolve
+      )
+
+      expect(resolve.eventBroker.getProperty).toHaveBeenCalledWith(
+        'readModelName',
+        'key'
+      )
+      expect(result).toEqual('value')
+    })
+
+    test('setProperty should set property', async () => {
+      resolve.eventBroker.setProperty.mockResolvedValueOnce('value')
+
+      const result = await handleDeployServiceEvent(
+        {
+          part: 'readModel',
+          operation: 'setProperty',
+          listenerId: 'readModelName',
+          key: 'key',
+          value: 'value'
+        },
+        resolve
+      )
+
+      expect(resolve.eventBroker.setProperty).toHaveBeenCalledWith(
+        'readModelName',
+        'key',
+        'value'
+      )
+      expect(result).toEqual('ok')
+    })
+
+    test('deleteProperty should delete property', async () => {
+      resolve.eventBroker.setProperty.mockResolvedValueOnce('value')
+
+      const lambdaEvent = {
+        part: 'readModel',
+        operation: 'deleteProperty',
+        listenerId: 'readModelName',
+        key: 'key'
+      }
+
+      const result = await handleDeployServiceEvent(lambdaEvent, resolve)
+
+      expect(resolve.eventBroker.deleteProperty).toHaveBeenCalledWith(
+        'readModelName',
+        'key'
+      )
+      expect(result).toEqual('ok')
     })
   })
 
-  test('getProperty should return property', async () => {
-    lambdaResponse = 'value'
+  describe('read model', () => {
+    test('handles specific read model reset correctly', async () => {
+      resolve.eventBroker.reset.mockResolvedValueOnce({})
 
-    const lambdaEvent = {
-      part: 'readModel',
-      operation: 'getProperty',
-      listenerId: 'readModel',
-      key: 'key'
-    }
+      const lambdaEvent = {
+        part: 'readModel',
+        operation: 'reset',
+        listenerId: 'readModelName'
+      }
 
-    const result = await handleDeployServiceEvent(lambdaEvent, resolve)
+      const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
-    expect(result).toEqual('value')
+      expect(resolve.eventBroker.reset).toHaveBeenCalledWith('readModelName')
+      expect(resolve.executeQuery.drop).toHaveBeenCalledWith('readModelName')
+      expect(result).toEqual('ok')
+    })
+
+    test('handles getting of list', async () => {
+      resolve.eventBroker.status.mockResolvedValueOnce({
+        lastEvent: { type: 'TEST1' },
+        lastError: null
+      })
+      resolve.eventBroker.status.mockResolvedValueOnce({
+        lastEvent: { type: 'TEST2' },
+        lastError: null
+      })
+      resolve.readModels.push(
+        { name: 'readModelName1' },
+        { name: 'readModelName2' }
+      )
+
+      const lambdaEvent = {
+        part: 'readModel',
+        operation: 'list'
+      }
+
+      const result = await handleDeployServiceEvent(lambdaEvent, resolve)
+
+      expect(resolve.eventBroker.status).toHaveBeenCalledWith('readModelName1')
+      expect(resolve.eventBroker.status).toHaveBeenCalledWith('readModelName2')
+      expect(result).toEqual([
+        {
+          name: 'readModelName1',
+          lastEvent: { type: 'TEST1' },
+          lastError: null
+        },
+        {
+          name: 'readModelName2',
+          lastEvent: { type: 'TEST2' },
+          lastError: null
+        }
+      ])
+    })
+
+    test('handles specific read model getting of list', async () => {
+      resolve.eventBroker.status.mockResolvedValueOnce({
+        lastEvent: { type: 'TEST1' },
+        lastError: null
+      })
+
+      const lambdaEvent = {
+        part: 'readModel',
+        operation: 'list',
+        listenerId: 'readModelName1'
+      }
+
+      const result = await handleDeployServiceEvent(lambdaEvent, resolve)
+
+      expect(resolve.eventBroker.status).toHaveBeenCalledWith('readModelName1')
+
+      expect(result).toEqual([
+        {
+          name: 'readModelName1',
+          lastEvent: { type: 'TEST1' },
+          lastError: null
+        }
+      ])
+    })
   })
 
-  test('setProperty should set property', async () => {
-    lambdaResponse = 'value'
+  describe('common', () => {
+    test('throw error for unknown operation', async () => {
+      const lambdaEvent = {
+        part: 'readModel',
+        operation: 'someUnknownOperation'
+      }
 
-    const lambdaEvent = {
-      part: 'readModel',
-      operation: 'setProperty',
-      listenerId: 'readModel',
-      key: 'key',
-      value: 'value'
-    }
+      try {
+        await handleDeployServiceEvent(lambdaEvent, resolve)
+        return Promise.reject('Test failed')
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error)
+      }
+    })
 
-    const result = await handleDeployServiceEvent(lambdaEvent, resolve)
+    test('throw error for unknown part', async () => {
+      const lambdaEvent = {
+        part: 'someUnknownPart'
+      }
 
-    expect(result).toEqual('ok')
-  })
-
-  test('deleteProperty should delete property', async () => {
-    lambdaResponse = 'value'
-
-    const lambdaEvent = {
-      part: 'readModel',
-      operation: 'deleteProperty',
-      listenerId: 'readModel',
-      key: 'key'
-    }
-
-    const result = await handleDeployServiceEvent(lambdaEvent, resolve)
-
-    expect(result).toEqual('ok')
+      try {
+        await handleDeployServiceEvent(lambdaEvent, resolve)
+        return Promise.reject('Test failed')
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error)
+      }
+    })
   })
 })

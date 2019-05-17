@@ -420,6 +420,7 @@ const devConfig = {
 [mdis]:# (./custom-readmodel-sample/connector.js)
 ```js
 import fs from 'fs'
+
 export default options => {
   const prefix = String(options.prefix)
   const readModels = new Set()
@@ -450,6 +451,7 @@ export default options => {
     }
     readModels.clear()
   }
+
   return {
     connect,
     disconnect,
@@ -473,6 +475,7 @@ const projection = {
     await store.set((await store.get()) - event.payload)
   }
 }
+
 export default projection
 ```
 
@@ -484,6 +487,7 @@ const resolvers = {
     return await store.get()
   }
 }
+
 export default resolvers
 ```
 
@@ -559,26 +563,30 @@ export default {
         fields: ['mail']
       })
     },
-    USER_CREATED: async ({ store, executeCommand }, event) => {
+    USER_CREATED: async ({ store, sideEffects }, event) => {
       await store.insert('users', {
         id: event.aggregateId,
         mail: event.payload.mail
       })
-      await executeCommand({
+      await sideEffects.executeCommand({
         aggregateName: 'User',
         aggregateId: event.aggregateId,
         type: 'requestConfirmUser',
         payload: event.payload
       })
     },
-    USER_CONFIRM_REQUESTED: async ({ sideEffects, scheduleCommand }, event) => {
+    USER_CONFIRM_REQUESTED: async ({ sideEffects }, event) => {
       await sideEffects.sendEmail(event.payload.mail, 'Confirm mail')
-      await scheduleCommand(event.timestamp + 1000 * 60 * 60 * 24 * 7, {
-        aggregateName: 'User',
-        aggregateId: event.aggregateId,
-        type: 'forgetUser',
-        payload: {}
-      })
+
+      await sideEffects.scheduleCommand(
+        event.timestamp + 1000 * 60 * 60 * 24 * 7,
+        {
+          aggregateName: 'User',
+          aggregateId: event.aggregateId,
+          type: 'forgetUser',
+          payload: {}
+        }
+      )
     },
     USER_FORGOTTEN: async ({ store }, event) => {
       await store.delete('users', {

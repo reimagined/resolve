@@ -1,5 +1,3 @@
-import { INCOMING_TOPICS } from './constants'
-
 const createAndInitBroker = async (imports, config) => {
   const pool = { ...imports, config, eventStore: config.eventStore }
 
@@ -9,6 +7,7 @@ const createAndInitBroker = async (imports, config) => {
     !pool.checkOptionShape(pool.config.zmqConsumerAddress, [String]) ||
     !pool.checkOptionShape(pool.config.databaseFile, [String]) ||
     !pool.checkOptionShape(pool.config.batchSize, [Number]) ||
+    !pool.checkOptionShape(pool.config.initialTimestamp, [Number], true) ||
     !pool.checkOptionShape(pool.config.eventStore, [Object])
   ) {
     throw new Error(`
@@ -22,31 +21,13 @@ const createAndInitBroker = async (imports, config) => {
     `)
   }
 
-  const xpubSocket = pool.zmq.socket('xpub')
-  // ZMQ parameters described here http://api.zeromq.org/3-3:zmq-setsockopt
-  xpubSocket.setsockopt(pool.zmq.ZMQ_SNDHWM, 1000)
-  xpubSocket.setsockopt(pool.zmq.ZMQ_XPUB_VERBOSE, 0)
-  xpubSocket.bindSync(pool.config.zmqBrokerAddress)
+  pool.initialTimestamp =
+    pool.config.initialTimestamp != null
+      ? pool.config.initialTimestamp
+      : Date.now()
 
-  xpubSocket.on('message', pool.onXpubMessage.bind(null, pool))
-
-  const subSocket = pool.zmq.socket('sub')
-  for (const topicName of Object.values(INCOMING_TOPICS)) {
-    subSocket.setsockopt(pool.zmq.ZMQ_SUBSCRIBE, new Buffer(topicName))
-  }
-
-  subSocket.bindSync(pool.config.zmqConsumerAddress)
-
-  subSocket.on('message', pool.onSubMessage.bind(null, pool))
-
-  Object.assign(pool, {
-    waitMessagePromises: new Map(),
-    clientMap: new Map(),
-    xpubSocket,
-    subSocket
-  })
-
-  await pool.initMeta(pool)
+  await pool.initDatabase(pool)
+  await pool.initSockets(pool)
 
   return pool.dispose.bind(null, pool)
 }

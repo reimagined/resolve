@@ -9,6 +9,7 @@ import transformEvents from './transform-events'
 import initReadModel from './init-read-model'
 import initSaga from './init-saga'
 import saga from './saga'
+import properties from './properties'
 
 export default givenEvents.bind(null, {
   createQuery,
@@ -19,5 +20,9 @@ export default givenEvents.bind(null, {
   initReadModel,
   readModel,
   transformEvents,
-  saga
+  saga,
+  properties
 })
+
+export const RESOLVE_SIDE_EFFECTS_START_TIMESTAMP =
+  'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP'

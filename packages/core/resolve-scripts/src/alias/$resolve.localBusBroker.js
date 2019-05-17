@@ -19,18 +19,25 @@ export default ({ resolveConfig, isClient }) => {
       import createEventStore from 'resolve-es'
 
       if(module.parent != null) {
+        setImmediate(() => process.exit(1))
         throw new Error('Event broker should be launched as independent process')
       }
 
       (async () => {
-        const stopBroker = await createAndRunLocalBusBroker({
-          ...eventBrokerConfig,
-          eventStore: createEventStore({ 
-            storage: createStorageAdapter()
+        try {
+          const stopBroker = await createAndRunLocalBusBroker({
+            ...eventBrokerConfig,
+            eventStore: createEventStore({ 
+              storage: createStorageAdapter()
+            })
           })
-        })
 
-        process.on('exit', stopBroker)
+          process.on('exit', stopBroker)
+        } catch(error) {
+          console.error('Event broker has run into an error:', error)
+
+          process.exit(1)
+        }
       })()
     `
   }

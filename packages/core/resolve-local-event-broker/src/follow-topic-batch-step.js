@@ -5,13 +5,16 @@ const followTopicBatchStep = async (pool, listenerId) => {
     return BATCH_STEP_RESULT.STOP
   }
 
-  const listenerInfo = await pool.getListenerInfo(pool, listenerId)
+  const listenerInfo = await pool.getListenerInfo(listenerId)
   const properties = listenerInfo.properties
+  if (!properties.hasOwnProperty('RESOLVE_SIDE_EFFECTS_START_TIMESTAMP')) {
+    properties['RESOLVE_SIDE_EFFECTS_START_TIMESTAMP'] = pool.initialTimestamp
+  }
 
   if (listenerInfo.isFirstRun) {
     await pool.anycastEvents(pool, listenerId, [{ type: 'Init' }], properties)
 
-    await pool.meta.updateListenerInfo(listenerId, {
+    await pool.updateListenerInfo(listenerId, {
       SkipCount: 0,
       AbutTimestamp: 0
     })
@@ -37,7 +40,7 @@ const followTopicBatchStep = async (pool, listenerId) => {
     return BATCH_STEP_RESULT.STOP
   }
 
-  await pool.meta.updateListenerInfo(listenerId, {
+  await pool.updateListenerInfo(listenerId, {
     SkipCount: listenerInfo.skipCount,
     AbutTimestamp: listenerInfo.abutTimestamp
   })

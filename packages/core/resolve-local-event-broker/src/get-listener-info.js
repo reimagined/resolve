@@ -2,8 +2,34 @@ import { READ_MODEL_STATUS } from './constants'
 
 const ALLOWED_READ_MODEL_STATUS = Object.values(READ_MODEL_STATUS)
 
-const getListenerInfo = async (pool, listenerId) => {
-  const metaListenerInfo = await pool.meta.getListenerInfo(listenerId)
+const getListenerInfo = async (
+  { database, escapeId, escape, serializedFields },
+  listenerId,
+  rawResult = false
+) => {
+  let metaListenerInfo = await database.get(`
+    SELECT ${Object.keys(serializedFields)
+      .map(escapeId)
+      .join(', ')} 
+    FROM ${escapeId('Listeners')}
+    WHERE ${escapeId('ListenerId')} = ${escape(listenerId)}
+  `)
+
+  if (metaListenerInfo != null) {
+    for (const fieldName of Object.keys(serializedFields)) {
+      metaListenerInfo[fieldName] =
+        metaListenerInfo[fieldName] != null
+          ? serializedFields[fieldName].parse(metaListenerInfo[fieldName])
+          : null
+    }
+  } else {
+    metaListenerInfo = null
+  }
+
+  if (rawResult) {
+    return metaListenerInfo
+  }
+
   const actualInfo = {
     currentSkipCount: 0,
     abutTimestamp: 0,

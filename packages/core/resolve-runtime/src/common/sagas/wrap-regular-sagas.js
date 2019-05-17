@@ -1,7 +1,28 @@
 import debugLevels from 'debug-levels'
 import uuid from 'uuid/v4'
 
+import sagaEventHandler from './saga-event-handler'
+
 const log = debugLevels('resolve:resolve-runtime:wrap-regular-sagas')
+
+const scheduleCommand = async (
+  currentReadModel,
+  schedulerName,
+  date,
+  command
+) => {
+  const aggregateName = schedulerName
+  const aggregateId = uuid()
+  log.debug(
+    `creating scheduled command aggregate ${aggregateName} with id ${aggregateId}`
+  )
+  return currentReadModel.executeCommand({
+    aggregateName,
+    aggregateId,
+    type: 'create',
+    payload: { date, command }
+  })
+}
 
 const wrapRegularSagas = sagas => {
   const sagaReadModels = []
@@ -14,62 +35,29 @@ const wrapRegularSagas = sagas => {
   } of sagas) {
     const sagaReadModel = {
       name,
-      resolvers: {
-        RUN_BROKER: async () => {}
-      },
+      resolvers: {},
       connectorName
     }
-
     const eventTypes = Object.keys(handlers)
-
-    let wrappedSideEffects = {}
-    let doSideEffects = true
-
-    if (sideEffects != null && sideEffects.constructor === Object) {
-      wrappedSideEffects = Object.keys(sideEffects).reduce((acc, key) => {
-        acc[key] = async (...args) => {
-          if (!doSideEffects) return
-          const result = await sideEffects[key](...args)
-          if (result !== undefined) {
-            throw new Error('Side effect should not return any values')
-          }
-        }
-        return acc
-      }, {})
-    }
 
     Object.defineProperty(sagaReadModel, 'projection', {
       get: function() {
         const currentReadModel = this
+        const boundScheduleCommand = scheduleCommand.bind(
+          null,
+          currentReadModel,
+          schedulerName
+        )
+
         return eventTypes.reduce((acc, eventType) => {
-          acc[eventType] = async (store, event) => {
-            doSideEffects = true // TODO Extract from store
-
-            await handlers[eventType](
-              {
-                scheduleCommand: async (date, command) => {
-                  const aggregateName = schedulerName
-                  const aggregateId = uuid()
-                  log.debug(
-                    `creating scheduled command aggregate ${aggregateName} with id ${aggregateId}`
-                  )
-                  return currentReadModel.executeCommand({
-                    aggregateName,
-                    aggregateId,
-                    type: 'create',
-                    payload: { date, command }
-                  })
-                },
-                properties: currentReadModel.eventProperties,
-                sideEffects: wrappedSideEffects,
-                executeCommand: currentReadModel.executeCommand,
-                executeQuery: currentReadModel.executeQuery,
-                store
-              },
-              event
-            )
-          }
-
+          acc[eventType] = sagaEventHandler.bind(
+            null,
+            currentReadModel,
+            handlers,
+            sideEffects,
+            eventType,
+            boundScheduleCommand
+          )
           return acc
         }, {})
       }

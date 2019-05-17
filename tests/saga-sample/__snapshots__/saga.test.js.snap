@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Saga forgotten registration 1`] = `
+exports[`Saga with sideEffects.isEnabled = true forgotten registration 1`] = `
 Object {
   "commands": Array [
     Array [
@@ -14,6 +14,7 @@ Object {
       },
     ],
   ],
+  "queries": Array [],
   "scheduleCommands": Array [
     Array [
       604800002,
@@ -30,12 +31,15 @@ Object {
       "sendEmail",
       "user@example.com",
       "Confirm mail",
+      Object {
+        "RESOLVE_SIDE_EFFECTS_START_TIMESTAMP": 0,
+      },
     ],
   ],
 }
 `;
 
-exports[`Saga success registration 1`] = `
+exports[`Saga with sideEffects.isEnabled = true success registration 1`] = `
 Object {
   "commands": Array [
     Array [
@@ -49,6 +53,7 @@ Object {
       },
     ],
   ],
+  "queries": Array [],
   "scheduleCommands": Array [
     Array [
       604800002,
@@ -65,6 +70,9 @@ Object {
       "sendEmail",
       "user@example.com",
       "Confirm mail",
+      Object {
+        "RESOLVE_SIDE_EFFECTS_START_TIMESTAMP": 0,
+      },
     ],
   ],
 }

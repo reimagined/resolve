@@ -29,7 +29,7 @@ const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
     await initWebsockets(resolve)
     await startExpress(resolve)
 
-    log.debug('Local entry point cold start success', resolve)
+    log.debug('Local entry point cold start success')
 
     return emptyWorker
   } catch (error) {
