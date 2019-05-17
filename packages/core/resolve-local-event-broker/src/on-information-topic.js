@@ -7,7 +7,7 @@ const onInformationTopic = async (pool, content) => {
     clientId
   })
 
-  const information = await pool.meta.getListenerInfo(listenerId)
+  const information = await pool.getListenerInfo(listenerId, true)
 
   const encodedContent = pool.encodePubContent(
     JSON.stringify({

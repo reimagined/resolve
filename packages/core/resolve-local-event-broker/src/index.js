@@ -15,7 +15,8 @@ import followTopic from './follow-topic'
 import getListenerInfo from './get-listener-info'
 import handlePropertyAction from './handle-property-action'
 import interlockPromise from './interlock-promise'
-import initMeta from './meta'
+import initDatabase from './init-database'
+import initSockets from './init-sockets'
 import onAcknowledgeBatchTopic from './on-acknowledge-batch-topic'
 import onEventTopic from './on-event-topic'
 import onInformationTopic from './on-information-topic'
@@ -26,6 +27,8 @@ import onResumeListenerTopic from './on-resume-listener-topic'
 import onSubMessage from './on-sub-message'
 import onXpubMessage from './on-xpub-message'
 import rewindListener from './rewind-listener'
+import updateListenerInfo from './update-listener-info'
+import wrapWithQueue from './wrap-with-queue'
 
 const boundAdapter = createAndInitBroker.bind(null, {
   adjustEventBatch,
@@ -40,7 +43,8 @@ const boundAdapter = createAndInitBroker.bind(null, {
   followTopic,
   getListenerInfo,
   handlePropertyAction,
-  initMeta,
+  initDatabase,
+  initSockets,
   interlockPromise,
   onAcknowledgeBatchTopic,
   onEventTopic,
@@ -52,6 +56,8 @@ const boundAdapter = createAndInitBroker.bind(null, {
   onSubMessage,
   onXpubMessage,
   rewindListener,
+  updateListenerInfo,
+  wrapWithQueue,
   cuid,
   sqlite,
   zmq

@@ -8,7 +8,7 @@ const onAcknowledgeBatchTopic = async (pool, content) => {
   }
 
   try {
-    await pool.meta.updateListenerInfo(listenerId, {
+    await pool.updateListenerInfo(listenerId, {
       LastError: lastError,
       LastEvent: lastEvent,
       Status: status
