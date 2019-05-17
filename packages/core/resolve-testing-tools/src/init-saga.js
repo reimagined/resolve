@@ -29,28 +29,33 @@ const initSaga = async ({ promise, transformEvents }) => {
         throw new TypeError()
       }
 
+      const isEnabled =
+        +properties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP <= +event.timestamp
+
       await handler(
         {
           sideEffects: Object.keys(sideEffects).reduce(
             (acc, key) => {
               acc[key] = async (...args) => {
+                if (!isEnabled) return
                 result.sideEffects.push([key, ...args, properties])
               }
               return acc
             },
             {
               executeCommand: async (...args) => {
+                if (!isEnabled) return
                 result.commands.push(args)
               },
               scheduleCommand: async (...args) => {
+                if (!isEnabled) return
                 result.scheduleCommands.push(args)
               },
               executeQuery: async (...args) => {
+                if (!isEnabled) return
                 result.queries.push(args)
               },
-              isEnabled:
-                +properties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP <=
-                +event.timestamp
+              isEnabled
             }
           ),
           store
