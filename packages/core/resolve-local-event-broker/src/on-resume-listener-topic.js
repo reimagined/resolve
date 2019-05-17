@@ -1,6 +1,6 @@
 const onResumeListenerTopic = async (pool, content) => {
   const { listenerId } = JSON.parse(content)
-  await pool.meta.updateListenerInfo(listenerId, { Status: 'running' })
+  await pool.updateListenerInfo(listenerId, { Status: 'running' })
   await pool.followTopic(pool, listenerId)
 }
 

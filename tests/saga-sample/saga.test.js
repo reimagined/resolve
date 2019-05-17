@@ -1,7 +1,5 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents, {
-  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP
-} from 'resolve-testing-tools'
+import givenEvents from 'resolve-testing-tools'
 
 import config from './config'
 
@@ -75,52 +73,6 @@ describe('Saga', () => {
         },
         { aggregateId: 'userId', type: 'USER_FORGOTTEN', payload: {} }
       ]).saga(sagaWithAdapter)
-
-      expect(result).toMatchSnapshot()
-    })
-  })
-
-  describe('with sideEffects.isEnabled = false', () => {
-    test('success registration', async () => {
-      const result = await givenEvents([
-        {
-          aggregateId: 'userId',
-          type: 'USER_CREATED',
-          payload: { mail: 'user@example.com' }
-        },
-        {
-          aggregateId: 'userId',
-          type: 'USER_CONFIRM_REQUESTED',
-          payload: { mail: 'user@example.com' }
-        },
-        { aggregateId: 'userId', type: 'USER_CONFIRMED', payload: {} }
-      ])
-        .saga(sagaWithAdapter)
-        .properties({
-          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE
-        })
-
-      expect(result).toMatchSnapshot()
-    })
-
-    test('forgotten registration', async () => {
-      const result = await givenEvents([
-        {
-          aggregateId: 'userId',
-          type: 'USER_CREATED',
-          payload: { mail: 'user@example.com' }
-        },
-        {
-          aggregateId: 'userId',
-          type: 'USER_CONFIRM_REQUESTED',
-          payload: { mail: 'user@example.com' }
-        },
-        { aggregateId: 'userId', type: 'USER_FORGOTTEN', payload: {} }
-      ])
-        .saga(sagaWithAdapter)
-        .properties({
-          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE
-        })
 
       expect(result).toMatchSnapshot()
     })

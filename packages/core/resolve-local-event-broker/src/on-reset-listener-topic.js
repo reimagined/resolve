@@ -11,7 +11,7 @@ const onResetListenerTopic = async (pool, content) => {
       clientId
     })
 
-    await pool.rewindListener(pool, listenerId)
+    await pool.rewindListener(listenerId)
 
     const encodedContent = pool.encodePubContent(
       JSON.stringify({
