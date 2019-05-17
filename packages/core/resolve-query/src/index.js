@@ -120,7 +120,9 @@ const createQuery = ({
     }
 
     for (const connector of Object.values(readModelConnectors)) {
-      await connector.disconnect()
+      if (typeof connector.disconnect === 'function') {
+        await connector.disconnect()
+      }
     }
   }
 
