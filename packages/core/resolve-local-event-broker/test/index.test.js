@@ -281,9 +281,8 @@ describe('failure broker tests', () => {
     try {
       await createAndInitBroker({})
       return Promise.reject('Test failed')
-    } catch(error) {
+    } catch (error) {
       expect(error).toBeInstanceOf(Error)
     }
   })
-
 })
