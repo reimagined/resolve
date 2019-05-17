@@ -146,18 +146,13 @@ const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
     isDisposed: false
   }
 
-  const api = {
+  return Object.freeze({
     read: read.bind(null, pool),
     readAndSerialize: readAndSerialize.bind(null, pool),
     updateByEvents: updateByEvents.bind(null, pool),
     drop: drop.bind(null, pool),
     dispose: dispose.bind(null, pool)
-  }
-
-  const executeQuery = read.bind(null, pool)
-  Object.assign(executeQuery, api)
-
-  return executeQuery
+  })
 }
 
 export default wrapViewModel

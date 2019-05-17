@@ -121,9 +121,9 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
   const connector = readModelConnectors[readModel.connectorName]
   if (connector == null) {
     throw new Error(
-      `Connector ${readModel.connectorName} for read-model ${
+      `Connector "${readModel.connectorName}" for read-model "${
         readModel.name
-      } does not exist`
+      }" does not exist`
     )
   }
 

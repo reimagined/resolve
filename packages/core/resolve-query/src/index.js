@@ -12,7 +12,7 @@ const createQuery = ({
   const models = {}
   for (const readModel of readModels) {
     if (models[readModel.name] != null) {
-      throw new Error(`Duplicate name for read/view model: ${readModel.name}`)
+      throw new Error(`Duplicate name for read model: "${readModel.name}"`)
     }
     models[readModel.name] = wrapReadModel(
       readModel,
@@ -23,7 +23,7 @@ const createQuery = ({
 
   for (const viewModel of viewModels) {
     if (models[viewModel.name] != null) {
-      throw new Error(`Duplicate name for read/view model: ${viewModel.name}`)
+      throw new Error(`Duplicate name for view model: "${viewModel.name}"`)
     }
     models[viewModel.name] = wrapViewModel(
       viewModel,
@@ -34,7 +34,7 @@ const createQuery = ({
 
   const checkModelExists = modelName => {
     if (models[modelName] == null) {
-      const error = new Error(`Read/view model ${modelName} does not exist`)
+      const error = new Error(`Read/view model "${modelName}" does not exist`)
       error.code = 422
       throw error
     }
@@ -134,7 +134,7 @@ const createQuery = ({
     dispose
   }
 
-  const executeQuery = (...args) => read(...args)
+  const executeQuery = read.bind(null)
   Object.assign(executeQuery, api)
 
   return executeQuery

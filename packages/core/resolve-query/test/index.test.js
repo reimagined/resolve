@@ -7,7 +7,8 @@ let events,
   viewModels,
   readModels,
   readModelConnectors,
-  doUpdateRequest
+  doUpdateRequest,
+  query
 
 beforeEach(() => {
   events = []
@@ -30,6 +31,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  query = null
   events = null
   eventStore = null
   snapshots = null
@@ -76,7 +78,7 @@ describe('view models', () => {
   })
 
   describe('with snapshot adapter', () => {
-    let query = null
+    query = null
 
     beforeEach(() => {
       snapshotAdapter = {
@@ -404,6 +406,20 @@ describe('view models', () => {
       }
     })
 
+    test('"read" should raise error when a view model does not exist', async () => {
+      try {
+        await query.read({
+          modelName: 'notFound',
+          aggregateIds: 'id1',
+          aggregateArgs: {}
+        })
+
+        return Promise.reject(new Error('Test failed'))
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error)
+      }
+    })
+
     test('"read" should raise error when query is disposed', async () => {
       await query.dispose()
       try {
@@ -660,7 +676,7 @@ describe('view models', () => {
   })
 
   describe('without snapshot adapter', () => {
-    let query = null
+    query = null
 
     beforeEach(() => {
       query = createQuery({
@@ -1060,7 +1076,7 @@ describe('view models', () => {
 })
 
 describe('read models', () => {
-  let query = null
+  query = null
   beforeEach(() => {
     readModels = [
       {
@@ -1168,20 +1184,6 @@ describe('read models', () => {
     query = null
   })
 
-  test('"createQuery" should raise error when a read model is declared without a connector', async () => {
-    expect(
-      () =>
-        (query = createQuery({
-          readModelConnectors: {},
-          snapshotAdapter,
-          doUpdateRequest,
-          readModels,
-          viewModels,
-          eventStore
-        }))
-    ).toThrow()
-  })
-
   test('"read" should return the resolver result', async () => {
     const value = await query.read({
       modelName: 'readOnlyReadModelName',
@@ -1190,6 +1192,20 @@ describe('read models', () => {
     })
 
     expect(value).toEqual(42)
+  })
+
+  test('"read" should raise error when a read model does not exist', async () => {
+    try {
+      await query.read({
+        modelName: 'notFound',
+        resolverName: 'notFound',
+        resolverArgs: {}
+      })
+
+      return Promise.reject(new Error('Test failed'))
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+    }
   })
 
   test('"read" should return { lastError, ... } when a read model is broken', async () => {
@@ -1307,6 +1323,15 @@ describe('read models', () => {
   test('"updateByEvents" should raise error when a projection is not found', async () => {
     try {
       await query.updateByEvents('readOnlyReadModelName', events)
+      return Promise.reject(new Error('Test failed'))
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+    }
+  })
+
+  test('"updateByEvents" should raise error when events is not array', async () => {
+    try {
+      await query.updateByEvents('readOnlyReadModelName', null)
       return Promise.reject(new Error('Test failed'))
     } catch (error) {
       expect(error).toBeInstanceOf(Error)
@@ -1448,6 +1473,116 @@ describe('read models', () => {
       return Promise.reject(new Error('Test failed'))
     } catch (error) {
       expect(error).toBeInstanceOf(Error)
+    }
+  })
+})
+
+describe('common', () => {
+  test('"createQuery" should raise error when a read model is declared without a connector', async () => {
+    expect(
+      () =>
+        (query = createQuery({
+          readModelConnectors: {},
+          snapshotAdapter,
+          doUpdateRequest,
+          readModels: [
+            {
+              name: 'readModelName',
+              projection: {},
+              resolvers: {},
+              connectorName: 'default',
+              invariantHash: 'readModelName-invariantHash'
+            }
+          ],
+          viewModels,
+          eventStore
+        }))
+    ).toThrow(
+      'Connector "default" for read-model "readModelName" does not exist'
+    )
+  })
+
+  test('"createQuery" should raise error when a read model is declared twice', async () => {
+    expect(
+      () =>
+        (query = createQuery({
+          readModelConnectors: {
+            empty: {}
+          },
+          snapshotAdapter,
+          doUpdateRequest,
+          readModels: [
+            {
+              name: 'readModelName',
+              projection: {},
+              resolvers: {},
+              connectorName: 'empty',
+              invariantHash: 'readModelName-invariantHash'
+            },
+            {
+              name: 'readModelName',
+              projection: {},
+              resolvers: {},
+              connectorName: 'empty',
+              invariantHash: 'readModelName-invariantHash'
+            }
+          ],
+          viewModels,
+          eventStore
+        }))
+    ).toThrow('Duplicate name for read model: "readModelName"')
+  })
+
+  test('"createQuery" should raise error when a view model is declared twice', async () => {
+    expect(
+      () =>
+        (query = createQuery({
+          readModelConnectors,
+          snapshotAdapter,
+          doUpdateRequest,
+          readModels,
+          viewModels: [
+            {
+              name: 'viewModelName',
+              projection: {},
+              invariantHash: 'viewModelName-invariantHash'
+            },
+            {
+              name: 'viewModelName',
+              projection: {},
+              invariantHash: 'viewModelName-invariantHash'
+            }
+          ],
+          eventStore
+        }))
+    ).toThrow('Duplicate name for view model: "viewModelName"')
+  })
+
+  test('"read" should raise error when wrong options for read invocation', async () => {
+    query = createQuery({
+      readModelConnectors,
+      snapshotAdapter,
+      doUpdateRequest,
+      readModels,
+      viewModels: [
+        {
+          name: 'viewModelName',
+          projection: {},
+          invariantHash: 'viewModelName-invariantHash'
+        }
+      ],
+      eventStore
+    })
+
+    try {
+      await query.read({
+        modelName: 'viewModelName',
+        wrongArg1: '1',
+        wrongArg2: '2'
+      })
+      return Promise.reject(new Error('Test failed'))
+    } catch (error) {
+      expect(error.message).toEqual('Wrong options for read invocation')
     }
   })
 })
