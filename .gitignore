@@ -61,3 +61,4 @@ es
 *.db-wal
 
 bus.json
+lcov.info
