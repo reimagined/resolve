@@ -138,16 +138,38 @@ EVENT_NAME: async (
 }
 ```
 
-As a first argument, an event handler receives an object that provides access to the saga-related API. This API includes the following functions:
+As a first argument, an event handler receives an object that provides access to the following API:
 
-- `executeCommand` - Sends a command with the specified payload to an aggregate.
-- `scheduleCommand` - Similar to `executeCommand`, but delays command execution until a specified moment in time.
 - `store` - Provides access to the saga's persistent store (similar to the Read Model store).
 - `sideEffects` - Provides access to the saga's side effect functions.
 
+
+### Use Side Effects
+
+You should define all functions that have side effects in the `sideEffects` object.
+
+```js
+sideEffects: {
+  sendEmail: async (mail, content) => {
+    ...
+  }
+}
+```
+
+You can trigger the defined side effects from an event handler as shown below:
+
+```js
+await sideEffects.sendEmail(event.payload.mail, 'Confirm mail')
+```
+
+The following side effect functions are available by default:
+
+- `executeCommand` - Sends a command with the specified payload to an aggregate.
+- `scheduleCommand` - Similar to `executeCommand`, but delays command execution until a specified moment in time.
+
 ### Send Aggregate Commands
 
-Use the `executeCommand` function to send aggregate commands as shown below:
+Use the `executeCommand` side effect function to send aggregate commands as shown below:
 
 ```js
 await executeCommand({
@@ -171,23 +193,6 @@ await scheduleCommand(event.timestamp + 1000 * 60 * 60 * 24 * 7, {
 })
 ```
 
-### Use Side Effects
-
-You should define all functions that have side effects in the `sideEffects` object.
-
-```js
-sideEffects: {
-  sendEmail: async (mail, content) => {
-    ...
-  }
-}
-```
-
-You can trigger the defined side effects from an event handler as shown below:
-
-```js
-await sideEffects.sendEmail(event.payload.mail, 'Confirm mail')
-```
 
 ## Register a Saga
 
