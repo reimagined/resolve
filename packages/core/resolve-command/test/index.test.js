@@ -302,4 +302,23 @@ describe('resolve-command', () => {
       expect(error).toBeInstanceOf(CommandError)
     }
   })
+
+  it('"executeCommand" should throw error when aggregateId is not a string', async () => {
+    const executeCommand = createCommandExecutor({ eventStore, aggregates })
+    eventList = []
+
+    const jwtToken = 'JWT-TOKEN'
+    try {
+      await executeCommand({
+        aggregateName: AGGREGATE_NAME,
+        aggregateId: 42,
+        type: 'emptyCommand',
+        jwtToken
+      })
+
+      return Promise.reject('Test failed')
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+    }
+  })
 })
