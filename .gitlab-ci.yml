@@ -128,7 +128,7 @@ checks:
     - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
     - yarn lint
     - yarn test:coverage
-    - export COVERALLS_GIT_COMMIT=${MERGE_COMMIT_SHA}
+    - export COVERALLS_GIT_COMMIT=${SOURCE_BRANCH_SHA}
     - export COVERALLS_GIT_BRANCH=${SOURCE_BRANCH_NAME}
     - export GITLAB_CI=
     - cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js
@@ -265,7 +265,7 @@ unit-tests:
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - yarn test:coverage
-    - export COVERALLS_GIT_COMMIT=${MERGE_COMMIT_SHA}
+    - export COVERALLS_GIT_COMMIT=${SOURCE_BRANCH_SHA}
     - export COVERALLS_GIT_BRANCH=${SOURCE_BRANCH_NAME}
     - export GITLAB_CI=
     - cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js
