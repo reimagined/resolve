@@ -1,3 +1,1 @@
-test('add tests', () => {
-  return 'test'
-})
+test('add tests', () => {})
