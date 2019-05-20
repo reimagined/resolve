@@ -77,9 +77,7 @@ async function main({ gitlab, github, refreshTime }) {
                 SOURCE_BRANCH_NAME: `${pullRequest.head.ref}`,
                 SOURCE_BRANCH_SHA: `${pullRequest.head.sha}`,
                 TARGET_BRANCH_NAME: `${pullRequest.base.ref}`,
-                TARGET_BRANCH_SHA: `${pullRequest.base.sha}`,
-                COVERALLS_GIT_COMMIT: `${pullRequest.merge_commit_sha}`,
-                COVERALLS_GIT_BRANCH: `${pullRequest.head.ref}`
+                TARGET_BRANCH_SHA: `${pullRequest.base.sha}`
               }
             },
             json: true
