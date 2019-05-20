@@ -129,7 +129,7 @@ checks:
     - yarn lint
     - yarn test:coverage
     - export COVERALLS_GIT_COMMIT=${SOURCE_BRANCH_SHA}
-    - export COVERALLS_GIT_BRANCH=${SOURCE_BRANCH_NAME}
+    - export COVERALLS_GIT_BRANCH=${TARGET_BRANCH_NAME}
     - export GITLAB_CI=
     - cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js
     - yarn test:integrational
@@ -266,7 +266,7 @@ unit-tests:
     - cd resolve-$CI_PIPELINE_ID/
     - yarn test:coverage
     - export COVERALLS_GIT_COMMIT=${SOURCE_BRANCH_SHA}
-    - export COVERALLS_GIT_BRANCH=${SOURCE_BRANCH_NAME}
+    - export COVERALLS_GIT_BRANCH=${TARGET_BRANCH_NAME}
     - export GITLAB_CI=
     - cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js
     - cd ..
