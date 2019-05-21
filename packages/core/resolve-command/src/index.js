@@ -1,191 +1,220 @@
-export function CommandError(message = 'Command error') {
-  Error.call(this)
-  this.name = 'CommandError'
-  this.message = message
+// eslint-disable-next-line no-new-func
+const CommandError = Function()
+Object.setPrototypeOf(CommandError.prototype, Error.prototype)
+export { CommandError }
 
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(this, CommandError)
-  } else {
-    this.stack = new Error().stack
+const generateCommandError = message => {
+  const error = new Error(message)
+  Object.setPrototypeOf(error, CommandError.prototype)
+  Object.defineProperties(error, {
+    message: { value: error.message, enumerable: true },
+    stack: { value: error.stack, enumerable: true }
+  })
+  return error
+}
+
+const checkOptionShape = (option, types) =>
+  !(
+    option == null ||
+    !types.reduce((acc, type) => acc || option.constructor === type, false)
+  )
+
+const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
+  if (!checkOptionShape(aggregateId, [String])) {
+    throw generateCommandError('The "aggregateId" argument must be a string')
+  }
+  if (!checkOptionShape(aggregateName, [String])) {
+    throw generateCommandError('The "aggregateName" argument must be a string')
+  }
+  if (!checkOptionShape(type, [String])) {
+    throw generateCommandError('The "type" argument must be a string')
   }
 }
 
-CommandError.prototype = Object.create(Error.prototype)
+const regularHandler = async (pool, aggregateInfo, event) => {
+  if (pool.isDisposed) {
+    throw generateCommandError('Command handler is disposed')
+  }
 
-const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
-  if (!aggregateId) throw new Error('The "aggregateId" argument is required')
-  if (aggregateId.constructor !== String)
-    throw new Error('The "aggregateId" argument must be a string')
-  if (!aggregateName)
-    throw new Error('The "aggregateName" argument is required')
-  if (!type) throw new Error('The "type" argument is required')
-}
-
-const getAggregateState = async (
-  { projection, serializeState, deserializeState, invariantHash = null },
-  aggregateId,
-  eventStore,
-  snapshotAdapter = null
-) => {
-  const snapshotKey =
-    projection != null && projection.constructor === Object
-      ? `${invariantHash};${aggregateId}`
-      : null
-
+  if (aggregateInfo.aggregateVersion >= event.aggregateVersion) {
+    throw generateCommandError(
+      `Incorrect order of events by aggregateId = "${
+        aggregateInfo.aggregateId
+      }"`
+    )
+  }
+  aggregateInfo.aggregateVersion = event.aggregateVersion
   if (
-    (invariantHash == null || invariantHash.constructor !== String) &&
-    snapshotAdapter != null &&
-    snapshotKey != null
+    aggregateInfo.projection != null &&
+    typeof aggregateInfo.projection[event.type] === 'function'
   ) {
-    throw new Error(
-      `Field 'invariantHash' is mandatory when using aggregate snapshots`
+    aggregateInfo.aggregateState = await aggregateInfo.projection[event.type](
+      aggregateInfo.aggregateState,
+      event
     )
   }
 
-  let aggregateState = null
-  let aggregateVersion = 0
-  let lastTimestamp = -1
+  aggregateInfo.lastTimestamp = event.timestamp
+}
+
+const snapshotHandler = async (pool, aggregateInfo, event) => {
+  if (pool.isDisposed) {
+    throw generateCommandError('Command handler is disposed')
+  }
+
+  if (event.aggregateVersion <= aggregateInfo.aggregateVersion) {
+    return
+  }
+
+  await regularHandler(pool, aggregateInfo, event)
+
+  await pool.snapshotAdapter.saveSnapshot(aggregateInfo.snapshotKey, {
+    state: aggregateInfo.serializeState(aggregateInfo.aggregateState),
+    version: aggregateInfo.aggregateVersion,
+    timestamp: aggregateInfo.lastTimestamp - 1
+  })
+}
+
+const getAggregateState = async (
+  pool,
+  { projection, serializeState, deserializeState, invariantHash = null },
+  aggregateId
+) => {
+  const snapshotKey = checkOptionShape(projection, [Object])
+    ? `${invariantHash};${aggregateId}`
+    : null
+
+  if (
+    !checkOptionShape(invariantHash, [String]) &&
+    pool.snapshotAdapter != null &&
+    snapshotKey != null
+  ) {
+    throw generateCommandError(
+      `Field "invariantHash" is required and must be a string when using aggregate snapshots`
+    )
+  }
+
+  const aggregateInfo = {
+    aggregateState: null,
+    aggregateVersion: 0,
+    lastTimestamp: -1,
+    aggregateId,
+    projection,
+    serializeState,
+    deserializeState,
+    snapshotKey
+  }
 
   try {
-    if (snapshotKey == null) throw new Error()
-    const snapshot = await snapshotAdapter.loadSnapshot(snapshotKey)
-    aggregateState = deserializeState(snapshot.state)
-    aggregateVersion = snapshot.version
-    lastTimestamp = snapshot.timestamp
+    if (snapshotKey == null) throw generateCommandError()
+    const snapshot = await pool.snapshotAdapter.loadSnapshot(snapshotKey)
+
+    Object.assign(aggregateInfo, {
+      aggregateState: deserializeState(snapshot.state),
+      aggregateVersion: snapshot.version,
+      lastTimestamp: snapshot.timestamp
+    })
   } catch (err) {}
 
-  if (!(+lastTimestamp > 0) && projection != null) {
-    aggregateState =
+  if (!(+aggregateInfo.lastTimestamp > 0) && projection != null) {
+    aggregateInfo.aggregateState =
       typeof projection.Init === 'function' ? await projection.Init() : null
   }
 
-  const regularHandler = async event => {
-    if (aggregateVersion >= event.aggregateVersion) {
-      throw new Error(
-        `Invalid aggregate version in event storage by aggregateId = ${aggregateId}`
-      )
-    }
-    aggregateVersion = event.aggregateVersion
-    if (projection != null && typeof projection[event.type] === 'function') {
-      aggregateState = await projection[event.type](aggregateState, event)
-    }
+  const eventHandler = (pool.snapshotAdapter != null && snapshotKey != null
+    ? snapshotHandler
+    : regularHandler
+  ).bind(null, pool, aggregateInfo)
 
-    lastTimestamp = event.timestamp
-  }
-
-  const snapshotHandler = async event => {
-    if (event.aggregateVersion <= aggregateVersion) {
-      return
-    }
-
-    await regularHandler(event)
-
-    await snapshotAdapter.saveSnapshot(snapshotKey, {
-      state: serializeState(aggregateState),
-      version: aggregateVersion,
-      timestamp: lastTimestamp - 1
-    })
-  }
-
-  await eventStore.loadEvents(
+  await pool.eventStore.loadEvents(
     {
       aggregateIds: [aggregateId],
-      startTime: lastTimestamp - 1
+      startTime: aggregateInfo.lastTimestamp - 1
     },
-    snapshotAdapter != null && snapshotKey != null
-      ? snapshotHandler
-      : regularHandler
+    eventHandler
   )
 
-  return { aggregateState, aggregateVersion, lastTimestamp }
+  return aggregateInfo
 }
 
-const executeCommand = async (
-  command,
-  aggregate,
-  eventStore,
-  jwtToken,
-  snapshotAdapter
-) => {
+const executeCommand = async (pool, { jwtToken, ...command }) => {
+  await verifyCommand(command)
+  const aggregateName = command.aggregateName
+  const aggregate = pool.aggregates.find(({ name }) => aggregateName === name)
+
+  if (aggregate == null) {
+    throw generateCommandError(`Aggregate "${aggregateName}" does not exist`)
+  }
+
   const { aggregateId, type } = command
   let {
     aggregateState,
     aggregateVersion,
     lastTimestamp
-  } = await getAggregateState(
-    aggregate,
-    aggregateId,
-    eventStore,
-    snapshotAdapter
-  )
+  } = await getAggregateState(pool, aggregate, aggregateId)
 
   if (!aggregate.commands.hasOwnProperty(type)) {
-    throw new CommandError(`command type ${type} does not exist`)
+    throw generateCommandError(`Command type "${type}" does not exist`)
   }
 
-  const handler = aggregate.commands[type]
-  const event = await handler(
+  const commandHandler = aggregate.commands[type]
+  const event = await commandHandler(
     aggregateState,
     command,
     jwtToken,
     aggregateVersion
   )
 
-  if (!event.type) {
-    throw new Error('event type is required')
+  if (!checkOptionShape(event.type, [String])) {
+    throw generateCommandError('Event "type" is required')
   }
 
-  event.aggregateId = aggregateId
-  event.aggregateVersion = aggregateVersion + 1
-  event.timestamp = Math.max(Date.now(), lastTimestamp)
+  if (
+    event.aggregateId != null ||
+    event.aggregateVersion != null ||
+    event.timestamp != null
+  ) {
+    throw generateCommandError(
+      'Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields'
+    )
+  }
 
-  return event
+  const processedEvent = {
+    aggregateId,
+    aggregateVersion: aggregateVersion + 1,
+    timestamp: Math.max(Date.now(), lastTimestamp),
+    type: event.type,
+    payload: event.payload
+  }
+
+  await pool.eventStore.saveEvent(processedEvent)
+
+  return processedEvent
 }
 
-function createExecutor({ eventStore, aggregate, snapshotAdapter }) {
-  return async (command, jwtToken) => {
-    const event = await executeCommand(
-      command,
-      aggregate,
-      eventStore,
-      jwtToken,
-      snapshotAdapter
-    )
-
-    await eventStore.saveEvent(event)
-
-    return event
+const dispose = async pool => {
+  if (pool.isDisposed) {
+    throw generateCommandError('Command handler is disposed')
   }
+
+  pool.isDisposed = true
 }
 
 export default ({ eventStore, aggregates, snapshotAdapter }) => {
-  const executors = aggregates.reduce((result, aggregate) => {
-    result[aggregate.name] = createExecutor({
-      eventStore,
-      aggregate,
-      snapshotAdapter
-    })
-    return result
-  }, {})
-
-  const api = {
-    executeCommand: async ({ jwtToken, ...command }) => {
-      await verifyCommand(command)
-      const aggregateName = command.aggregateName
-
-      if (!executors.hasOwnProperty(aggregateName)) {
-        throw new Error(`Aggregate ${aggregateName} does not exist`)
-      }
-
-      return executors[aggregateName](command, jwtToken)
-    },
-    dispose: async () => {
-      // TODO
-    }
+  const pool = {
+    eventStore,
+    aggregates,
+    snapshotAdapter,
+    isDisposed: false
   }
 
-  const executeCommand = (...args) => api.executeCommand(...args)
-  Object.assign(executeCommand, api)
+  const api = {
+    executeCommand: executeCommand.bind(null, pool),
+    dispose: dispose.bind(null, pool)
+  }
 
-  return executeCommand
+  const commandExecutor = executeCommand.bind(null, pool)
+  Object.assign(commandExecutor, api)
+
+  return commandExecutor
 }
