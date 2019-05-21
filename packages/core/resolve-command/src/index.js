@@ -1,4 +1,5 @@
-const CommandError = function() {}
+// eslint-disable-next-line no-new-func
+const CommandError = Function()
 Object.setPrototypeOf(CommandError.prototype, Error.prototype)
 export { CommandError }
 
@@ -12,8 +13,7 @@ const generateCommandError = message => {
   return error
 }
 
-const checkOptionShape = (option, types, nullable = false) =>
-  (nullable && option == null) ||
+const checkOptionShape = (option, types) =>
   !(
     option == null ||
     !types.reduce((acc, type) => acc || option.constructor === type, false)
@@ -38,9 +38,9 @@ const regularHandler = async (pool, aggregateInfo, event) => {
 
   if (aggregateInfo.aggregateVersion >= event.aggregateVersion) {
     throw generateCommandError(
-      `Invalid aggregate version in event storage by aggregateId = ${
+      `Incorrect order of events by aggregateId = "${
         aggregateInfo.aggregateId
-      }`
+      }"`
     )
   }
   aggregateInfo.aggregateVersion = event.aggregateVersion
@@ -85,12 +85,12 @@ const getAggregateState = async (
     : null
 
   if (
-    !checkOptionShape(invariantHash, [String], true) &&
+    !checkOptionShape(invariantHash, [String]) &&
     pool.snapshotAdapter != null &&
     snapshotKey != null
   ) {
     throw generateCommandError(
-      `Field 'invariantHash' is mandatory when using aggregate snapshots`
+      `Field "invariantHash" is required and must be a string when using aggregate snapshots`
     )
   }
 
@@ -143,7 +143,7 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
   const aggregate = pool.aggregates.find(({ name }) => aggregateName === name)
 
   if (aggregate == null) {
-    throw generateCommandError(`Aggregate ${aggregateName} does not exist`)
+    throw generateCommandError(`Aggregate "${aggregateName}" does not exist`)
   }
 
   const { aggregateId, type } = command
@@ -154,7 +154,7 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
   } = await getAggregateState(pool, aggregate, aggregateId)
 
   if (!aggregate.commands.hasOwnProperty(type)) {
-    throw generateCommandError(`command type ${type} does not exist`)
+    throw generateCommandError(`Command type "${type}" does not exist`)
   }
 
   const commandHandler = aggregate.commands[type]
@@ -166,7 +166,7 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
   )
 
   if (!checkOptionShape(event.type, [String])) {
-    throw generateCommandError('event type is required')
+    throw generateCommandError('Event "type" is required')
   }
 
   if (
@@ -175,7 +175,7 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
     event.timestamp != null
   ) {
     throw generateCommandError(
-      'event should not contain "aggregateId", "aggregateVersion", "timestamp" fields'
+      'Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields'
     )
   }
 
