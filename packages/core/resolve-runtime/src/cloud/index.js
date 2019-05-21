@@ -29,7 +29,7 @@ const invokeUpdateLambda = async (
   await stepFunctions
     .startExecution({
       stateMachineArn: process.env.RESOLVE_EVENT_BUS_STEP_FUNCTION_ARN,
-      name: `${listenerId}-${uuid()}`,
+      name: `FEED-${listenerId}-${uuid()}`,
       input: JSON.stringify({
         'detail-type': 'LISTEN_EVENT_BUS',
         listenerId,
