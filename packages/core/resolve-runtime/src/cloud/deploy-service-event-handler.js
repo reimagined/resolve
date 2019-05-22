@@ -1,7 +1,7 @@
 import debugLevels from 'debug-levels'
 
-import bootstrap from '../bootstrap'
-import isSagaName from '../utils/is-saga-name'
+import bootstrap from '../common/bootstrap'
+import isSagaName from '../common/utils/is-saga-name'
 
 const log = debugLevels('resolve:resolve-runtime:deploy-service-event-handler')
 

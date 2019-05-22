@@ -46,8 +46,7 @@ const reset = (resolveConfig, options, adjustWebpackConfigs) =>
             method: 'GET',
             path: 'reset-domain',
             controller: {
-              module:
-                'resolve-runtime/lib/common/handlers/reset-domain-handler.js',
+              module: 'resolve-runtime/lib/local/reset-domain-handler.js',
               options: {}
             }
           }

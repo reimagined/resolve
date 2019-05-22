@@ -1,4 +1,4 @@
-import isSagaName from '../utils/is-saga-name'
+import isSagaName from '../common/utils/is-saga-name'
 
 const resetDomainHandler = () => async (req, res) => {
   const {
