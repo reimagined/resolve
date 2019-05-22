@@ -329,10 +329,6 @@
           "type": "string",
           "enum": ["local", "cloud"]
         },
-        "logLevel": {
-          "type": "string",
-          "enum": ["error", "warn", "info", "debug", "trace", "off"]
-        },
         "port": {
           "type": ["integer", "string"]
         },
@@ -452,7 +448,6 @@
         "eventBroker",
         "customConstants",
         "target",
-        "logLevel",
         "sagas"
       ],
       "additionalProperties": false
