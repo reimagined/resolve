@@ -11,8 +11,8 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "test": "echo Test || exit 0",
-    "testw": "echo Test || exit 0"
+    "test": "jest --config=../../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../../jest.config.js --watchAll"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
