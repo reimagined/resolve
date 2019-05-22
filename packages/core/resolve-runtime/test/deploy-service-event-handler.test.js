@@ -1,4 +1,4 @@
-import handleDeployServiceEvent from '../src/common/handlers/deploy-service-event-handler'
+import handleDeployServiceEvent from '../src/cloud/deploy-service-event-handler'
 
 describe('deploy-service-event-handler.test', () => {
   let resolve = null
@@ -17,10 +17,10 @@ describe('deploy-service-event-handler.test', () => {
         setProperty: jest.fn(),
         deleteProperty: jest.fn()
       },
-      executeQuery: {
-        drop: jest.fn()
-      }
+      executeQuery: jest.fn(),
+      bootstrapSymbol: 'bootstrap-symbol'
     }
+    resolve.executeQuery.drop = jest.fn()
   })
 
   afterEach(() => {
@@ -126,6 +126,11 @@ describe('deploy-service-event-handler.test', () => {
 
       expect(resolve.eventBroker.reset).toHaveBeenCalledWith('readModelName')
       expect(resolve.executeQuery.drop).toHaveBeenCalledWith('readModelName')
+      expect(resolve.executeQuery).toHaveBeenCalledWith({
+        modelName: 'readModelName',
+        resolverName: 'bootstrap-symbol',
+        resolverArgs: {}
+      })
       expect(result).toEqual('ok')
     })
 

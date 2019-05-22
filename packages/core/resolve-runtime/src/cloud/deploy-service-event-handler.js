@@ -1,7 +1,7 @@
 import debugLevels from 'debug-levels'
 
-import bootstrap from '../bootstrap'
-import isSagaName from '../utils/is-saga-name'
+import bootstrap from '../common/bootstrap'
+import isSagaName from '../common/utils/is-saga-name'
 
 const log = debugLevels('resolve:resolve-runtime:deploy-service-event-handler')
 
@@ -28,10 +28,16 @@ const handleResolveReadModelEvent = async (
   switch (lambdaEvent.operation) {
     case 'reset': {
       log.debug('operation "reset" started')
-      await Promise.all([
-        resolve.eventBroker.reset(listenerId),
-        resolve.executeQuery.drop(listenerId)
-      ])
+      log.debug('resetting event broker')
+      await resolve.eventBroker.reset(listenerId)
+      log.debug('dropping read model data')
+      await resolve.executeQuery.drop(listenerId)
+      log.debug('bootstrapping read-model/saga')
+      await resolve.executeQuery({
+        modelName: listenerId,
+        resolverName: resolve.bootstrapSymbol,
+        resolverArgs: {}
+      })
       log.debug('operation "reset" completed')
       return 'ok'
     }
