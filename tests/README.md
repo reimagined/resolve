@@ -577,7 +577,6 @@ export default {
     },
     USER_CONFIRM_REQUESTED: async ({ sideEffects }, event) => {
       await sideEffects.sendEmail(event.payload.mail, 'Confirm mail')
-
       await sideEffects.scheduleCommand(
         event.timestamp + 1000 * 60 * 60 * 24 * 7,
         {
