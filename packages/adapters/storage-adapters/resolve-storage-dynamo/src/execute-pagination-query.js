@@ -20,7 +20,7 @@ const invokeByTimestampFrame = async (pool, timestampFrame, callback) => {
 const executePaginationQuery = async (
   pool,
   query,
-  maxEvents = Number.POSITIVE_INFINITY,
+  maxEventsByTimeframe = Number.POSITIVE_INFINITY,
   callback
 ) => {
   const { documentClient, executeSingleQuery } = pool
@@ -38,7 +38,7 @@ const executePaginationQuery = async (
         timestampFrame.length !== 0 &&
         event.timestamp !== timestampFrame[0].timestamp
       ) {
-        if (++countEvents > maxEvents) {
+        if (++countEvents > maxEventsByTimeframe) {
           break loop
         }
         await invokeByTimestampFrame(pool, timestampFrame, callback)

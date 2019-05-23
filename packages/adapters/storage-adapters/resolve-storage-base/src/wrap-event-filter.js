@@ -4,7 +4,7 @@ const validateEventFilter = filter => {
   }
 
   const stringArrayFields = ['eventTypes', 'aggregateIds']
-  const numericFields = ['startTime', 'finishTime', 'maxEvents']
+  const numericFields = ['startTime', 'finishTime', 'maxEventsByTimeframe']
   const allowedFields = [...stringArrayFields, ...numericFields]
 
   for (const key of Object.keys(filter)) {

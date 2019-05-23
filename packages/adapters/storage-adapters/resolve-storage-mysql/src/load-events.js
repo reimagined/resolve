@@ -5,7 +5,7 @@ const loadEvents = async (
     aggregateIds,
     startTime,
     finishTime,
-    maxEvents = Number.POSITIVE_INFINITY
+    maxEventsByTimeframe = Number.POSITIVE_INFINITY
   },
   callback
 ) => {
@@ -45,15 +45,19 @@ const loadEvents = async (
 
     for (const event of rows) {
       Object.setPrototypeOf(event, Object.prototype)
-      await callback(event)
 
       if (initialTimestamp == null) {
         initialTimestamp = event.timestamp
       }
 
-      if (countEvents++ > maxEvents && event.timestamp !== initialTimestamp) {
+      if (
+        countEvents++ > maxEventsByTimeframe &&
+        event.timestamp !== initialTimestamp
+      ) {
         break loop
       }
+
+      await callback(event)
     }
 
     if (rows.length < batchSize) {
