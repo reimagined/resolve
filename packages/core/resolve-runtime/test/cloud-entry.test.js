@@ -1,15 +1,14 @@
 import React from 'react'
-//import STS from 'aws-sdk/clients/sts'
+import STS from 'aws-sdk/clients/sts'
 import { ConcurrentError } from 'resolve-storage-base'
 
 import initCloudEntry from '../src/cloud/index'
-
-// TODO. Refactor
 
 describe('Cloud entry', () => {
   let assemblies, constants, domain, redux, routes
   let getCloudEntryWorker, lambdaContext
   let originalMathRandom, originalDateNow, storageAdapter, snapshotAdapter
+  let originalProcessEnv
 
   const defaultRequestHttpHeaders = {
     Accept: '*/*',
@@ -30,8 +29,15 @@ describe('Cloud entry', () => {
     let nowTickCounter = 0
     originalMathRandom = Math.random.bind(Math)
     originalDateNow = Date.now.bind(Date)
+    originalProcessEnv = process.env
+
     Math.random = () => 0.123456789
     Date.now = () => nowTickCounter++
+    process.env = {
+      RESOLVE_DEPLOYMENT_ID: 'RESOLVE_DEPLOYMENT_ID',
+      RESOLVE_WS_ENDPOINT: 'RESOLVE_WS_ENDPOINT',
+      RESOLVE_IOT_ROLE_ARN: 'RESOLVE_IOT_ROLE_ARN'
+    }
 
     storageAdapter = {
       loadEvents: jest.fn(),
@@ -110,6 +116,7 @@ describe('Cloud entry', () => {
   afterEach(async () => {
     Math.random = originalMathRandom
     Date.now = originalDateNow
+    process.env = originalProcessEnv
 
     getCloudEntryWorker = null
     assemblies = null
@@ -121,6 +128,8 @@ describe('Cloud entry', () => {
     snapshotAdapter = null
 
     lambdaContext = null
+
+    STS.assumeRole.mockReset()
   })
 
   describe('API gateway event', () => {
@@ -535,174 +544,214 @@ describe('Cloud entry', () => {
       expect(result.body).toEqual('Command error: Event "type" is required')
     })
 
-    // test('should fail command via POST /"rootPath"/api/commands/ with CustomerError', async () => {
-    //   storageAdapter.saveEvent = jest.fn().mockImplementation(async () => {
-    //     throw new ConcurrentError()
-    //   })
-    //
-    //   const aggregate = {
-    //     name: 'BadAggregate',
-    //     commands: {
-    //       fail: () => {
-    //         const error = new Error('I’m a teapot')
-    //         error.code = 418
-    //         throw error
-    //       }
-    //     }
-    //   }
-    //
-    //   domain.aggregates.push(aggregate)
-    //
-    //   const apiGatewayEvent = {
-    //     path: '/root-path/api/commands',
-    //     httpMethod: 'POST',
-    //     headers: {
-    //       ...defaultRequestHttpHeaders,
-    //       'Content-Type': 'application/json; charset=utf-8'
-    //     },
-    //     queryStringParameters: {},
-    //     body: JSON.stringify({
-    //       aggregateName: 'BadAggregate',
-    //       aggregateId: 'aggregateId',
-    //       type: 'fail'
-    //     })
-    //   }
-    //
-    //   const cloudEntryWorker = await getCloudEntryWorker()
-    //
-    //   const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
-    //
-    //   expect(result.statusCode).toEqual(418)
-    //   expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
-    //   expect(result.body).toEqual('Command error: I’m a teapot')
-    // })
-    //
-    //
-    // test('should get subscribe options via GET /"rootPath"/api/subscribe/', async () => {
-    //   console.log(STS.assumeRole)
-    //   STS.assumeRole.mockReturnValue({
-    //     promise: jest.fn().mockReturnValue({
-    //       Credentials: {
-    //         AccessKeyId: 'AccessKeyId',
-    //         SecretAccessKey: 'SecretAccessKey',
-    //         SessionToken: 'SessionToken'
-    //       }
-    //     })
-    //   })
-    //
-    //   const apiGatewayEvent = {
-    //     path: '/root-path/api/subscribe',
-    //     httpMethod: 'GET',
-    //     headers: { ...defaultRequestHttpHeaders },
-    //     queryStringParameters: {
-    //       origin: 'origin',
-    //       adapterName: 'adapterName'
-    //     },
-    //     body: null
-    //   }
-    //
-    //   const cloudEntryWorker = await getCloudEntryWorker()
-    //
-    //   const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
-    // })
-    //
-    //   test('should get subscribe options via POST /"rootPath"/api/subscribe/', async () => {
-    //     const apiGatewayEvent = {
-    //       path: '/root-path/api/subscribe',
-    //       httpMethod: 'POST',
-    //       headers: {
-    //         ...defaultRequestHttpHeaders,
-    //         'Content-Type': 'application/json; charset=utf-8'
-    //       },
-    //       queryStringParameters: '',
-    //       body: JSON.stringify({})
-    //     }
-    //
-    //     const cloudEntryWorker = await getCloudEntryWorker()
-    //
-    //     const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
-    //
-    //     expect(IotDataResult).toMatchSnapshot()
-    //     expect(LambdaResult).toMatchSnapshot()
-    //     expect(StepFunctionsResult).toMatchSnapshot()
-    //     expect(STSResult).toMatchSnapshot()
-    //
-    //     expect(resolveResult).toMatchSnapshot()
-    //     expect(result).toMatchSnapshot()
-    //   })
-    //
-    //   test('should get subscribe options via POST /"rootPath"/api/my-api-handler-1/', async () => {
-    //     const apiGatewayEvent = {
-    //       path: '/root-path/api/my-api-handler-2',
-    //       httpMethod: 'POST',
-    //       headers: {
-    //         ...defaultRequestHttpHeaders,
-    //         'Content-Type': 'application/json; charset=utf-8'
-    //       },
-    //       queryStringParameters: '',
-    //       body: null
-    //     }
-    //
-    //     const cloudEntryWorker = await getCloudEntryWorker()
-    //
-    //     const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
-    //
-    //     expect(IotDataResult).toMatchSnapshot()
-    //     expect(LambdaResult).toMatchSnapshot()
-    //     expect(StepFunctionsResult).toMatchSnapshot()
-    //     expect(STSResult).toMatchSnapshot()
-    //
-    //     expect(resolveResult).toMatchSnapshot()
-    //     expect(result).toMatchSnapshot()
-    //   })
-    //
-    //   test('should redirect from /"rootPath" to /"rootPath"/', async () => {
-    //     const apiGatewayEvent = {
-    //       path: '/root-path',
-    //       httpMethod: 'POST',
-    //       headers: {
-    //         ...defaultRequestHttpHeaders
-    //       },
-    //       queryStringParameters: '',
-    //       body: null
-    //     }
-    //
-    //     const cloudEntryWorker = await getCloudEntryWorker()
-    //
-    //     const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
-    //
-    //     expect(IotDataResult).toMatchSnapshot()
-    //     expect(LambdaResult).toMatchSnapshot()
-    //     expect(StepFunctionsResult).toMatchSnapshot()
-    //     expect(STSResult).toMatchSnapshot()
-    //
-    //     expect(resolveResult).toMatchSnapshot()
-    //     expect(result).toMatchSnapshot()
-    //   })
-    //
-    //   test('should set header Bearer when jwt provided', async () => {
-    //     const apiGatewayEvent = {
-    //       path: '/root-path',
-    //       httpMethod: 'POST',
-    //       headers: {
-    //         ...defaultRequestHttpHeaders,
-    //         authorization: 'Bearer JWT'
-    //       },
-    //       queryStringParameters: '',
-    //       body: null
-    //     }
-    //
-    //     const cloudEntryWorker = await getCloudEntryWorker()
-    //
-    //     const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
-    //
-    //     expect(IotDataResult).toMatchSnapshot()
-    //     expect(LambdaResult).toMatchSnapshot()
-    //     expect(StepFunctionsResult).toMatchSnapshot()
-    //     expect(STSResult).toMatchSnapshot()
-    //
-    //     expect(resolveResult).toMatchSnapshot()
-    //     expect(result).toMatchSnapshot()
-    //   })
+    test('should fail command via POST /"rootPath"/api/commands/ with CustomerError', async () => {
+      storageAdapter.saveEvent = jest.fn().mockImplementation(async () => {
+        throw new ConcurrentError()
+      })
+
+      const aggregate = {
+        name: 'BadAggregate',
+        commands: {
+          fail: () => {
+            const error = new Error('I’m a teapot')
+            error.code = 418
+            throw error
+          }
+        }
+      }
+
+      domain.aggregates.push(aggregate)
+
+      const apiGatewayEvent = {
+        path: '/root-path/api/commands',
+        httpMethod: 'POST',
+        headers: {
+          ...defaultRequestHttpHeaders,
+          'Content-Type': 'application/json; charset=utf-8'
+        },
+        queryStringParameters: {},
+        body: JSON.stringify({
+          aggregateName: 'BadAggregate',
+          aggregateId: 'aggregateId',
+          type: 'fail'
+        })
+      }
+
+      const cloudEntryWorker = await getCloudEntryWorker()
+
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+
+      expect(result.statusCode).toEqual(418)
+      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
+      expect(result.body).toEqual('Command error: I’m a teapot')
+    })
+
+    test('should get subscribe options via GET /"rootPath"/api/subscribe/', async () => {
+      STS.assumeRole.mockReturnValue({
+        promise: jest.fn().mockReturnValue({
+          Credentials: {
+            AccessKeyId: 'AccessKeyId',
+            SecretAccessKey: 'SecretAccessKey',
+            SessionToken: 'SessionToken'
+          }
+        })
+      })
+
+      const apiGatewayEvent = {
+        path: '/root-path/api/subscribe',
+        httpMethod: 'GET',
+        headers: { ...defaultRequestHttpHeaders },
+        queryStringParameters: {
+          origin: 'origin',
+          adapterName: 'adapterName'
+        },
+        body: null
+      }
+
+      const cloudEntryWorker = await getCloudEntryWorker()
+
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+
+      expect(result.statusCode).toEqual(200)
+      expect(result.headers).toEqual({ 'Content-Type': 'application/json' })
+      expect(JSON.parse(result.body).appId).toEqual(
+        process.env.RESOLVE_DEPLOYMENT_ID
+      )
+      expect(JSON.parse(result.body).url).toMatch(
+        `wss://${process.env.RESOLVE_WS_ENDPOINT}/mqtt`
+      )
+
+      expect(STS.assumeRole).toBeCalledWith({
+        RoleArn: process.env.RESOLVE_IOT_ROLE_ARN,
+        RoleSessionName: `role-session-${process.env.RESOLVE_DEPLOYMENT_ID}`,
+        DurationSeconds: 3600
+      })
+    })
+
+    test('should get subscribe options via POST /"rootPath"/api/subscribe/', async () => {
+      STS.assumeRole.mockReturnValue({
+        promise: jest.fn().mockReturnValue({
+          Credentials: {
+            AccessKeyId: 'AccessKeyId',
+            SecretAccessKey: 'SecretAccessKey',
+            SessionToken: 'SessionToken'
+          }
+        })
+      })
+
+      const apiGatewayEvent = {
+        path: '/root-path/api/subscribe',
+        httpMethod: 'POST',
+        headers: {
+          ...defaultRequestHttpHeaders,
+          'Content-Type': 'application/json; charset=utf-8'
+        },
+        queryStringParameters: '',
+        body: JSON.stringify({})
+      }
+
+      const cloudEntryWorker = await getCloudEntryWorker()
+
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+
+      expect(result.statusCode).toEqual(200)
+      expect(result.headers).toEqual({ 'Content-Type': 'application/json' })
+      expect(JSON.parse(result.body).appId).toEqual(
+        process.env.RESOLVE_DEPLOYMENT_ID
+      )
+      expect(JSON.parse(result.body).url).toMatch(
+        `wss://${process.env.RESOLVE_WS_ENDPOINT}/mqtt`
+      )
+
+      expect(STS.assumeRole).toBeCalledWith({
+        RoleArn: process.env.RESOLVE_IOT_ROLE_ARN,
+        RoleSessionName: `role-session-${process.env.RESOLVE_DEPLOYMENT_ID}`,
+        DurationSeconds: 3600
+      })
+    })
+
+    test('should get subscribe options via POST /"rootPath"/api/my-api-handler-1/', async () => {
+      domain.apiHandlers.push(
+        {
+          method: 'POST',
+          path: 'my-api-handler-1',
+          controller: async (req, res) => {
+            res.setHeader('Content-type', 'application/octet-stream')
+            res.end('Custom octet stream')
+          }
+        },
+        {
+          method: 'POST',
+          path: 'my-api-handler-2',
+          controller: async (req, res) => {
+            res.setHeader('Content-type', 'text/plain')
+            res.end('ok')
+          }
+        }
+      )
+
+      const apiGatewayEvent = {
+        path: '/root-path/api/my-api-handler-2',
+        httpMethod: 'POST',
+        headers: {
+          ...defaultRequestHttpHeaders,
+          'Content-Type': 'application/json; charset=utf-8'
+        },
+        queryStringParameters: '',
+        body: null
+      }
+
+      const cloudEntryWorker = await getCloudEntryWorker()
+
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+
+      expect(result.statusCode).toEqual(200)
+      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
+      expect(result.body).toEqual('ok')
+    })
+
+    test('should redirect from /"rootPath" to /"rootPath"/', async () => {
+      const apiGatewayEvent = {
+        path: '/root-path',
+        httpMethod: 'POST',
+        headers: {
+          ...defaultRequestHttpHeaders
+        },
+        queryStringParameters: '',
+        body: null
+      }
+
+      const cloudEntryWorker = await getCloudEntryWorker()
+
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+
+      expect(result.statusCode).toEqual(302)
+      expect(result.headers).toEqual({ Location: '/root-path/' })
+      expect(result.body).toEqual('')
+    })
+
+    test('should set header Bearer when jwt provided', async () => {
+      const apiGatewayEvent = {
+        path: '/root-path',
+        httpMethod: 'POST',
+        headers: {
+          ...defaultRequestHttpHeaders,
+          authorization: 'Bearer JWT'
+        },
+        queryStringParameters: '',
+        body: null
+      }
+
+      const cloudEntryWorker = await getCloudEntryWorker()
+
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+
+      expect(result.statusCode).toEqual(302)
+      expect(result.headers).toEqual({
+        Authorization: 'Bearer JWT',
+        Location: '/root-path/'
+      })
+      expect(result.body).toEqual('')
+    })
   })
 })
