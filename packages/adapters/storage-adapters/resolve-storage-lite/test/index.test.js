@@ -189,7 +189,7 @@ describe('resolve-storage-lite', () => {
     ])
 
     events = []
-    await storageAdapter.loadEvents({ maxEvents: 1 }, event => {
+    await storageAdapter.loadEvents({ maxEventsByTimeframe: 1 }, event => {
       events.push(event)
     })
 
@@ -207,13 +207,6 @@ describe('resolve-storage-lite', () => {
         aggregateVersion: 1,
         timestamp: 1,
         payload: { index: 2 }
-      },
-      {
-        type: 'BBB',
-        aggregateId: 'id2',
-        aggregateVersion: 1,
-        timestamp: 2,
-        payload: { index: 3 }
       }
     ])
 

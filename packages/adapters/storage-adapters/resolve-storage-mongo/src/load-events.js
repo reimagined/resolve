@@ -8,7 +8,7 @@ const loadEvents = async (
     aggregateIds,
     startTime,
     finishTime,
-    maxEvents = Number.POSITIVE_INFINITY
+    maxEventsByTimeframe = Number.POSITIVE_INFINITY
   },
   callback
 ) => {
@@ -43,7 +43,10 @@ const loadEvents = async (
         initialTimestamp = event.timestamp
       }
 
-      if (countEvents++ > maxEvents && event.timestamp !== initialTimestamp) {
+      if (
+        countEvents++ > maxEventsByTimeframe &&
+        event.timestamp !== initialTimestamp
+      ) {
         break
       }
     } catch (error) {

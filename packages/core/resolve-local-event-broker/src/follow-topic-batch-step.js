@@ -28,7 +28,7 @@ const followTopicBatchStep = async (pool, listenerId) => {
   await pool.eventStore.loadEvents(
     {
       startTime: listenerInfo.abutTimestamp,
-      maxEvents: pool.config.batchSize
+      maxEventsByTimeframe: pool.config.batchSize
     },
     pool.adjustEventBatch.bind(null, listenerInfo, events)
   )
