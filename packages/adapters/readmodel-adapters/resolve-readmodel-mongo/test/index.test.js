@@ -175,4 +175,160 @@ describe('resolve-readmodel-mongo', () => {
 
     expect(result).toMatchSnapshot()
   })
+
+  test('operator "$inc"', async () => {
+    const readModelName = 'readModelName'
+
+    const store = await adapter.connect(readModelName)
+
+    await store.defineTable('values', {
+      indexes: {
+        id: 'string'
+      },
+      fields: ['value', 'arr', 'obj']
+    })
+
+    await store.insert('values', {
+      id: 'id-1',
+      value: 1,
+      obj: {
+        value: 1
+      },
+      arr: [
+        {
+          value: 1
+        }
+      ]
+    })
+
+    await store.update(
+      'values',
+      {
+        id: 'id-1'
+      },
+      {
+        $inc: {
+          value: 1,
+          'obj.value': 1,
+          'arr.0.value': 1
+        }
+      }
+    )
+
+    await store.update(
+      'values',
+      {
+        id: 'id-1'
+      },
+      {
+        $inc: {
+          value: -1,
+          'obj.value': -1,
+          'arr.0.value': -1
+        }
+      }
+    )
+
+    await store.update(
+      'values',
+      {
+        id: 'id-1'
+      },
+      {
+        $inc: {
+          value: 0.42,
+          'obj.value': 0.42,
+          'arr.0.value': 0.42
+        }
+      }
+    )
+
+    await store.update(
+      'values',
+      {
+        id: 'id-1'
+      },
+      {
+        $inc: {
+          value: -0.42,
+          'obj.value': -0.42,
+          'arr.0.value': -0.42
+        }
+      }
+    )
+
+    expect(result).toMatchSnapshot()
+  })
+
+  test('operator "$set"', async () => {
+    const readModelName = 'readModelName'
+
+    const store = await adapter.connect(readModelName)
+
+    await store.defineTable('values', {
+      indexes: {
+        id: 'string'
+      },
+      fields: ['value', 'arr', 'obj']
+    })
+
+    await store.insert('values', {
+      id: 'id-1',
+      value: 1,
+      arr: [{ value: 1 }],
+      obj: { value: 1 }
+    })
+
+    await store.update(
+      'values',
+      {
+        id: 'id-1'
+      },
+      {
+        $set: {
+          value: 2,
+          'obj.value': 2,
+          'arr.0.value': 2
+        }
+      }
+    )
+
+    expect(result).toMatchSnapshot()
+  })
+
+  test('operator "$unset"', async () => {
+    const readModelName = 'readModelName'
+
+    const store = await adapter.connect(readModelName)
+
+    await store.defineTable('values', {
+      indexes: {
+        id: 'string'
+      },
+      fields: ['value', 'arr', 'obj']
+    })
+
+    await store.insert('values', {
+      id: 'id-1',
+      value: 1,
+      arr: [{ value: 1 }],
+      obj: { value: 1 }
+    })
+
+    await store.update(
+      'values',
+      {
+        id: 'id-1'
+      },
+      {
+        $unset: {
+          value: '',
+          'obj.value': '',
+          'arr.0.value': ''
+        }
+      }
+    )
+
+    expect(result).toMatchSnapshot()
+  })
 })

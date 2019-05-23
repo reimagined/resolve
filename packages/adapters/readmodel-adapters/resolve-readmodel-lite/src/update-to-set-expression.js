@@ -65,17 +65,34 @@ const updateToSetExpression = (
 
           let updatingInlinedValue = `json(CAST(CASE
             WHEN json_type(${sourceInlinedValue}) = 'text' THEN (
-              CAST(${sourceInlinedValue} AS TEXT) +
+              CAST(${sourceInlinedValue} AS TEXT) ||
               CAST(${escape(fieldValue)} AS TEXT)
             )
-            WHEN json_type(${sourceInlinedValue}) = 'integer' THEN (
+            WHEN (json_type(${sourceInlinedValue}) || ${
+            Number.isInteger(+fieldValue) ? `'-integer'` : `'-real'`
+          }) = 'integer-integer' THEN (
               CAST(${sourceInlinedValue} AS INTEGER) +
               CAST(${+fieldValue} AS INTEGER)
             )
-            WHEN json_type(${sourceInlinedValue}) = 'real' THEN (
+            WHEN (json_type(${sourceInlinedValue}) || ${
+            Number.isInteger(+fieldValue) ? `'-integer'` : `'-real'`
+          }) = 'integer-real' THEN (
               CAST(${sourceInlinedValue} AS REAL) +
               CAST(${+fieldValue} AS REAL)
             )
+            WHEN (json_type(${sourceInlinedValue}) || ${
+            Number.isInteger(+fieldValue) ? `'-integer'` : `'-real'`
+          }) = 'real-integer' THEN (
+              CAST(${sourceInlinedValue} AS REAL) +
+              CAST(${+fieldValue} AS REAL)
+            )
+            WHEN (json_type(${sourceInlinedValue}) || ${
+            Number.isInteger(+fieldValue) ? `'-integer'` : `'-real'`
+          }) = 'real-real' THEN (
+              CAST(${sourceInlinedValue} AS REAL) +
+              CAST(${+fieldValue} AS REAL)
+            )
+
             ELSE (
               SELECT 'Invalid JSON type for $inc operation' 
               FROM sqlite_master

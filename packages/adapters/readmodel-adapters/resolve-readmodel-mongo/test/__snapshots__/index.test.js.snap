@@ -633,3 +633,397 @@ Array [
   ],
 ]
 `;
+
+exports[`resolve-readmodel-mongo operator "$inc" 1`] = `
+Array [
+  Array [
+    "connect",
+    "mongodb://127.0.0.1:27017/MyDatabaseName",
+    Object {
+      "autoReconnect": false,
+      "useNewUrlParser": true,
+    },
+  ],
+  Array [
+    "createCollection",
+    "values",
+  ],
+  Array [
+    "createIndex",
+    Object {
+      "id": 1,
+    },
+    Object {
+      "unique": true,
+    },
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+      "arr": 0,
+      "id": "5265736f6c7665526f6f7400",
+      "obj": 0,
+      "readModelName": "readModelName",
+      "value": 0,
+    },
+  ],
+  Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "findOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "arr": Array [
+        Object {
+          "value": 1,
+        },
+      ],
+      "id": "id-1",
+      "obj": Object {
+        "value": 1,
+      },
+      "value": 1,
+    },
+  ],
+  Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "updateMany",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+    Object {
+      "$inc": Object {
+        "arr.0.value": 1,
+        "obj.value": 1,
+        "value": 1,
+      },
+      "$set": Object {},
+    },
+    Object {
+      "upsert": false,
+    },
+  ],
+  Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "updateMany",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+    Object {
+      "$inc": Object {
+        "arr.0.value": -1,
+        "obj.value": -1,
+        "value": -1,
+      },
+      "$set": Object {},
+    },
+    Object {
+      "upsert": false,
+    },
+  ],
+  Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "updateMany",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+    Object {
+      "$inc": Object {
+        "arr.0.value": 0.42,
+        "obj.value": 0.42,
+        "value": 0.42,
+      },
+      "$set": Object {},
+    },
+    Object {
+      "upsert": false,
+    },
+  ],
+  Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "updateMany",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+    Object {
+      "$inc": Object {
+        "arr.0.value": -0.42,
+        "obj.value": -0.42,
+        "value": -0.42,
+      },
+      "$set": Object {},
+    },
+    Object {
+      "upsert": false,
+    },
+  ],
+]
+`;
+
+exports[`resolve-readmodel-mongo operator "$set" 1`] = `
+Array [
+  Array [
+    "connect",
+    "mongodb://127.0.0.1:27017/MyDatabaseName",
+    Object {
+      "autoReconnect": false,
+      "useNewUrlParser": true,
+    },
+  ],
+  Array [
+    "createCollection",
+    "values",
+  ],
+  Array [
+    "createIndex",
+    Object {
+      "id": 1,
+    },
+    Object {
+      "unique": true,
+    },
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+      "arr": 0,
+      "id": "5265736f6c7665526f6f7400",
+      "obj": 0,
+      "readModelName": "readModelName",
+      "value": 0,
+    },
+  ],
+  Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "findOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "arr": Array [
+        Object {
+          "value": 1,
+        },
+      ],
+      "id": "id-1",
+      "obj": Object {
+        "value": 1,
+      },
+      "value": 1,
+    },
+  ],
+  Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "updateMany",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+    Object {
+      "$set": Object {
+        "arr.0.value": 2,
+        "obj.value": 2,
+        "value": 2,
+      },
+    },
+    Object {
+      "upsert": false,
+    },
+  ],
+]
+`;
+
+exports[`resolve-readmodel-mongo operator "$unset" 1`] = `
+Array [
+  Array [
+    "connect",
+    "mongodb://127.0.0.1:27017/MyDatabaseName",
+    Object {
+      "autoReconnect": false,
+      "useNewUrlParser": true,
+    },
+  ],
+  Array [
+    "createCollection",
+    "values",
+  ],
+  Array [
+    "createIndex",
+    Object {
+      "id": 1,
+    },
+    Object {
+      "unique": true,
+    },
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+      "arr": 0,
+      "id": "5265736f6c7665526f6f7400",
+      "obj": 0,
+      "readModelName": "readModelName",
+      "value": 0,
+    },
+  ],
+  Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "findOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+  ],
+  Array [
+    "insertOne",
+    Object {
+      "arr": Array [
+        Object {
+          "value": 1,
+        },
+      ],
+      "id": "id-1",
+      "obj": Object {
+        "value": 1,
+      },
+      "value": 1,
+    },
+  ],
+  Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "updateMany",
+    Object {
+      "$and": Array [
+        Object {
+          "_id": Object {
+            "$ne": "5265736f6c7665526f6f7400",
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+    Object {
+      "$set": Object {
+        "arr.0.value": null,
+        "obj.value": null,
+        "value": null,
+      },
+    },
+    Object {
+      "upsert": false,
+    },
+  ],
+]
+`;
