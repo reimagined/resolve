@@ -9,7 +9,11 @@ const queryHandler = async (req, res) => {
     const [modelName, modelOptions] = paramsPath.split('/')
 
     if (modelName == null || modelOptions == null) {
-      throw new Error('Invalid "modelName" and/or "modelOptions" parameters')
+      const error = new Error(
+        'Invalid "modelName" and/or "modelOptions" parameters'
+      )
+      error.code = 400
+      throw error
     }
 
     const result = await req.resolve.executeQuery.readAndSerialize({
