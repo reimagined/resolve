@@ -69,10 +69,14 @@ const updateToSetExpression = (
               CAST(${escape(fieldValue)} AS CHAR)
             ))
             WHEN JSON_TYPE(${sourceInlinedValue}) = 'INTEGER' THEN (
-              CAST(${sourceInlinedValue} AS UNSIGNED) +
-              CAST(${+fieldValue} AS UNSIGNED)
+              CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +
+              CAST(${+fieldValue} AS DECIMAL(48, 16))
             )
             WHEN JSON_TYPE(${sourceInlinedValue}) = 'DOUBLE' THEN (
+              CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +
+              CAST(${+fieldValue} AS DECIMAL(48, 16))
+            )
+            WHEN JSON_TYPE(${sourceInlinedValue}) = 'DECIMAL' THEN (
               CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +
               CAST(${+fieldValue} AS DECIMAL(48, 16))
             )

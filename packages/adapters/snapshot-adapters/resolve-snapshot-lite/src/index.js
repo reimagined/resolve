@@ -1,4 +1,5 @@
 import NeDB from 'nedb'
+import { promisify } from 'util'
 
 const DEFAULT_BUCKET_SIZE = 100
 
@@ -8,21 +9,23 @@ const init = async pool => {
   }
 
   pool.initPromise = (async () => {
-    pool.db = new NeDB(
+    const database = new NeDB(
       pool.config && pool.config.hasOwnProperty('databaseFile')
         ? { filename: pool.config.databaseFile }
         : { inMemoryOnly: true }
     )
 
-    await new Promise((resolve, reject) =>
-      pool.db.loadDatabase(err => (err ? reject(err) : resolve()))
-    )
+    pool.db = {
+      loadDatabase: promisify(database.loadDatabase.bind(database)),
+      ensureIndex: promisify(database.ensureIndex.bind(database)),
+      findOne: promisify(database.findOne.bind(database)),
+      update: promisify(database.update.bind(database)),
+      remove: promisify(database.remove.bind(database))
+    }
 
-    await new Promise((resolve, reject) =>
-      pool.db.ensureIndex({ fieldName: 'snapshotKey', unique: true }, err =>
-        err ? reject(err) : resolve()
-      )
-    )
+    await pool.db.loadDatabase()
+
+    await pool.db.ensureIndex({ fieldName: 'snapshotKey', unique: true })
 
     if (pool.config && pool.config.hasOwnProperty('bucketSize')) {
       pool.bucketSize = Number(pool.config.bucketSize)
@@ -44,11 +47,7 @@ const loadSnapshot = async (pool, snapshotKey) => {
     throw new Error('Adapter is disposed')
   }
 
-  const result = await new Promise((resolve, reject) =>
-    pool.db.findOne({ snapshotKey }, (err, doc) =>
-      err ? reject(err) : resolve(doc)
-    )
-  )
+  const result = await pool.db.findOne({ snapshotKey })
 
   return result != null ? result.content : null
 }
@@ -68,13 +67,10 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   }
   pool.counters.set(snapshotKey, 0)
 
-  await new Promise((resolve, reject) =>
-    pool.db.update(
-      { snapshotKey },
-      { snapshotKey, content },
-      { upsert: true },
-      err => (err ? reject(err) : resolve())
-    )
+  await pool.db.update(
+    { snapshotKey },
+    { snapshotKey, content },
+    { upsert: true }
   )
 }
 
@@ -94,18 +90,13 @@ const drop = async (pool, snapshotKey) => {
     throw new Error('Adapter is disposed')
   }
 
-  await new Promise((resolve, reject) =>
-    pool.db.remove(
-      {
-        $where: function() {
-          return this.snapshotKey != null
-            ? this.snapshotKey.indexOf(snapshotKey) === 0
-            : false
-        }
-      },
-      { multi: true },
-      err => (err ? reject(err) : resolve())
-    )
+  await pool.db.remove(
+    {
+      $where: function() {
+        return this.snapshotKey.indexOf(snapshotKey) === 0
+      }
+    },
+    { multi: true }
   )
 }
 
