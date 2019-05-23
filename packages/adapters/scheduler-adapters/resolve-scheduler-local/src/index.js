@@ -1,7 +1,6 @@
-const createAdapter = ({ execute, errorHandler = async () => {} }) => {
+const createAdapter = ({ execute, errorHandler }) => {
   const timeouts = new Set()
   let flowPromise = Promise.resolve()
-  let isCrashed = false
 
   return {
     async addEntries(array) {
@@ -14,11 +13,11 @@ const createAdapter = ({ execute, errorHandler = async () => {} }) => {
               timeouts.delete(timeout)
             })
             .catch(async error => {
-              if (!isCrashed) {
+              if (errorHandler) {
                 await errorHandler(error)
-                isCrashed = true
+              } else {
+                throw error
               }
-              throw error
             })
         }, new Date(entry.date).getTime() - Date.now())
 
