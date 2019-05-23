@@ -45,7 +45,6 @@ const loadEvents = async (
 
     for (const event of rows) {
       Object.setPrototypeOf(event, Object.prototype)
-      await callback(event)
 
       if (initialTimestamp == null) {
         initialTimestamp = event.timestamp
@@ -57,6 +56,8 @@ const loadEvents = async (
       ) {
         break loop
       }
+
+      await callback(event)
     }
 
     if (rows.length < batchSize) {

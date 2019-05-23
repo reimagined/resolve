@@ -37,8 +37,6 @@ const loadEvents = async (
     event = await cursorStream.next()
   ) {
     try {
-      await callback(event)
-
       if (initialTimestamp == null) {
         initialTimestamp = event.timestamp
       }
@@ -49,6 +47,8 @@ const loadEvents = async (
       ) {
         break
       }
+
+      await callback(event)
     } catch (error) {
       lastError = error
       break
