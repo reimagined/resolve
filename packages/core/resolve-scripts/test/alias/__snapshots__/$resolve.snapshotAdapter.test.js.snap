@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works correctly 1`] = `
+"
+import snapshotAdapter_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
+const snapshotAdapter_imports = {  }
+const snapshotAdapter_options = {}
+const snapshotAdapter = constructorBindFunction.bind(null,
+      snapshotAdapter_constructor,
+      snapshotAdapter_options,
+      snapshotAdapter_imports
+    )
+    Object.assign(snapshotAdapter, snapshotAdapter_constructor)
+    
+export default snapshotAdapter
+"
+`;
