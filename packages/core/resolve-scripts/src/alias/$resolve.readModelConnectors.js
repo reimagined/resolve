@@ -4,7 +4,7 @@ import {
   RUNTIME_ENV_ANYWHERE,
   IMPORT_CONSTRUCTOR
 } from '../constants'
-import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
+import { injectRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
 
 export default ({ resolveConfig, isClient }) => {
@@ -28,13 +28,6 @@ export default ({ resolveConfig, isClient }) => {
     const readModelConnector =
       resolveConfig.readModelConnectors[readModelConnectorsNames[index]]
 
-    if (checkRuntimeEnv(readModelConnectorsNames[index])) {
-      throw new Error(
-        `${message.clientEnvError}.readModelConnectors[${
-          readModelConnectorsNames[index]
-        }]`
-      )
-    }
     constants.push(
       `const name_${index} = ${JSON.stringify(readModelConnectorsNames[index])}`
     )

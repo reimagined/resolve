@@ -2,6 +2,7 @@ import path from 'path'
 
 import alias from '../../src/alias/$resolve.aggregates'
 import normalizePaths from './normalize_paths'
+import declareRuntimeEnv from '../../src/declare_runtime_env'
 
 let DateNow
 
@@ -50,6 +51,29 @@ describe('base config works correctly', () => {
       )
     ).toMatchSnapshot()
   })
+})
+
+test('when aggregate name is process.env', () => {
+  const resolveConfig = {
+    aggregates: [
+      {
+        name: declareRuntimeEnv('name'),
+        commands: path.resolve(__dirname, 'files/testCommands.js')
+      }
+    ],
+    schedulers: {}
+  }
+
+  expect(() =>
+    normalizePaths(
+      '\r\n' +
+        alias({
+          resolveConfig,
+          isClient: false
+        }).code +
+        '\r\n'
+    )
+  ).toThrow()
 })
 
 describe('base(v2) config works correctly', () => {

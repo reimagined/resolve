@@ -118,12 +118,6 @@ export default ({ resolveConfig, isClient }) => {
     const schedulersNames = Object.keys(resolveConfig.schedulers)
 
     for (let index = 0; index < schedulersNames.length; index++) {
-      if (checkRuntimeEnv(schedulersNames[index])) {
-        throw new Error(
-          `${message.clientEnvError}.schedulers[${schedulersNames[index]}]`
-        )
-      }
-
       constants.push(
         `const name_s_${index} = ${JSON.stringify(`${schedulersNames[index]}`)}`
       )
