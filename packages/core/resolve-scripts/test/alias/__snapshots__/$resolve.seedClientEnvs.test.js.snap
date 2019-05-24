@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works correctly 1`] = `
+"
+const seedClientEnvs = {}
+
+Object.defineProperty(
+      seedClientEnvs,
+      \\"customConstants\\",
+      {
+        enumerable: true,
+        get: () => {
+          return (((first, second) => (first != null ? first : second))(process.env[\\"customConstants\\"], null))
+        }
+      }
+    )
+Object.defineProperty(
+      seedClientEnvs,
+      \\"staticPath\\",
+      {
+        enumerable: true,
+        get: () => {
+          return (((first, second) => (first != null ? first : second))(process.env[\\"staticPath\\"], null))
+        }
+      }
+    )
+Object.defineProperty(
+      seedClientEnvs,
+      \\"rootPath\\",
+      {
+        enumerable: true,
+        get: () => {
+          return (((first, second) => (first != null ? first : second))(process.env[\\"rootPath\\"], null))
+        }
+      }
+    )
+Object.freeze(seedClientEnvs)
+
+export default seedClientEnvs
+"
+`;
