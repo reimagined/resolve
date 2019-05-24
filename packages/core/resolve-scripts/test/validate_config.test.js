@@ -3,6 +3,7 @@ import { validateReadModelConnectors } from '../src/validate_config'
 describe('validateReadModelConnectors', () => {
   test('should works correctly', () => {
     const resolveConfig = {
+      mode: 'development',
       readModels: [
         {
           name: 'first-read-model',
@@ -42,6 +43,7 @@ describe('validateReadModelConnectors', () => {
   // eslint-disable-next-line
   test('should throw error `The "${adapterName}" read model connector is required but not specified`', () => {
     const resolveConfig = {
+      mode: 'development',
       readModels: [
         {
           name: 'read-model',

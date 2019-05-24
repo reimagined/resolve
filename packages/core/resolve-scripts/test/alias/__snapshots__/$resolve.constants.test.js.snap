@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works correctly 1`] = `
+"
+import applicationName from '$resolve.applicationName'
+import distDir from '$resolve.distDir'
+import jwtCookie from '$resolve.jwtCookie'
+import port from '$resolve.port'
+import rootPath from '$resolve.rootPath'
+import staticDir from '$resolve.staticDir'
+import staticPath from '$resolve.staticPath'
+
+export default {
+ applicationName,
+distDir,
+jwtCookie,
+port,
+rootPath,
+staticDir,
+staticPath
+}
+"
+`;

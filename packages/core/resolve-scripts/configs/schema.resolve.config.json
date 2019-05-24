@@ -417,9 +417,6 @@
         "eventBroker": {
           "$ref": "#/definitions/eventBroker"
         },
-        "registry": {
-          "type": "string"
-        },
         "mode": {
           "type": "string"
         },
@@ -428,6 +425,7 @@
         }
       },
       "required": [
+        "apiHandlers",
         "port",
         "index",
         "routes",
@@ -448,7 +446,9 @@
         "eventBroker",
         "customConstants",
         "target",
-        "sagas"
+        "jwtCookie",
+        "sagas",
+        "mode"
       ],
       "additionalProperties": false
     }

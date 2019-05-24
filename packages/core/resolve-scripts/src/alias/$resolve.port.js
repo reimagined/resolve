@@ -6,10 +6,6 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.serverAliasInClientCodeError}$resolve.port`)
   }
 
-  if (!resolveConfig.port) {
-    throw new Error(`${message.configNotContainSectionError}.port`)
-  }
-
   const exports = []
 
   if (checkRuntimeEnv(resolveConfig.port)) {

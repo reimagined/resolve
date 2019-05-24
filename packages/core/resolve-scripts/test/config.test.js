@@ -6,7 +6,11 @@ jest.setTimeout(30000)
 describe('validate schema', () => {
   it('empty', () => {
     expect(
-      validateConfig({ ...resolveConfigOrigin, target: 'local' })
+      validateConfig({
+        ...resolveConfigOrigin,
+        mode: 'development',
+        target: 'local'
+      })
     ).toBeTruthy()
   })
 
@@ -14,6 +18,7 @@ describe('validate schema', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         storageAdapter: {
           module: 'resolve-storage-mongo',
@@ -29,6 +34,7 @@ describe('validate schema', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         storageAdapter: {
           module: 'resolve-bus-rabbitmq',
@@ -42,6 +48,7 @@ describe('validate schema', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         subscribeAdapter: {
           module: 'resolve-subscribe-mqtt',
@@ -55,6 +62,7 @@ describe('validate schema', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         rootPath: 'my-app'
       })
@@ -65,6 +73,7 @@ describe('validate schema', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         staticPath: 'my-cdn'
       })
@@ -75,6 +84,7 @@ describe('validate schema', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         routes: 'src/client/entryPoint.js'
       })
@@ -85,6 +95,7 @@ describe('validate schema', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         index: 'src/client/index.js'
       })
@@ -95,6 +106,7 @@ describe('validate schema', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         aggregates: []
       })
@@ -105,6 +117,7 @@ describe('validate schema', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         viewModels: []
       })
@@ -115,6 +128,7 @@ describe('validate schema', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         readModels: []
       })
@@ -125,6 +139,7 @@ describe('validate schema', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         staticDir: 'my-static-dir'
       })
@@ -135,6 +150,7 @@ describe('validate schema', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         jwtCookie: {
           name: 'authToken',
@@ -150,6 +166,7 @@ describe('validate schema (fail)', () => {
     expect(() =>
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         storageAdapter: {
           module: 123,
@@ -165,6 +182,7 @@ describe('validate schema (fail)', () => {
     expect(() =>
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         storageAdapter: {
           module: 123,
@@ -178,6 +196,7 @@ describe('validate schema (fail)', () => {
     expect(() =>
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         subscribeAdapter: {
           module: 123,
@@ -191,6 +210,7 @@ describe('validate schema (fail)', () => {
     expect(() =>
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         rootPath: 123
       })
@@ -201,6 +221,7 @@ describe('validate schema (fail)', () => {
     expect(() =>
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         staticPath: 123
       })
@@ -211,6 +232,7 @@ describe('validate schema (fail)', () => {
     expect(() =>
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         routes: 123
       })
@@ -221,6 +243,7 @@ describe('validate schema (fail)', () => {
     expect(() =>
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         aggregates: 123
       })
@@ -231,6 +254,7 @@ describe('validate schema (fail)', () => {
     expect(() =>
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         viewModels: 123
       })
@@ -241,6 +265,7 @@ describe('validate schema (fail)', () => {
     expect(() =>
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         readModels: 123
       })
@@ -251,6 +276,7 @@ describe('validate schema (fail)', () => {
     expect(() =>
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         staticDir: 123
       })
@@ -261,6 +287,7 @@ describe('validate schema (fail)', () => {
     expect(() =>
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         auth: 123
       })
@@ -271,6 +298,7 @@ describe('validate schema (fail)', () => {
     expect(() =>
       validateConfig({
         ...resolveConfigOrigin,
+        mode: 'development',
         target: 'local',
         jwtCookie: {
           name: 123,

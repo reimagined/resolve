@@ -8,10 +8,6 @@ export default ({ resolveConfig, isClient }) => {
     )
   }
 
-  if (resolveConfig.eventBroker == null) {
-    throw new Error(`${message.configNotContainSectionError}.eventBroker`)
-  }
-
   const exports = []
 
   if (checkRuntimeEnv(resolveConfig.eventBroker)) {

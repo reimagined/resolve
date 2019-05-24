@@ -14,14 +14,6 @@ export default ({ resolveConfig, isClient }) => {
     )
   }
 
-  if (!resolveConfig.apiHandlers) {
-    throw new Error(`${message.configNotContainSectionError}.apiHandlers`)
-  }
-
-  if (checkRuntimeEnv(resolveConfig.apiHandlers)) {
-    throw new Error(`${message.clientEnvError}.apiHandlers`)
-  }
-
   const imports = [``]
   const constants = [``]
   const exports = [``, `const apiHandlers = []`, ``]

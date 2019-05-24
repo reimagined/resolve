@@ -8,11 +8,6 @@ import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
 
 export default ({ resolveConfig, isClient }) => {
-  if (!resolveConfig.readModelConnectors) {
-    throw new Error(
-      `${message.configNotContainSectionError}.readModelConnectors`
-    )
-  }
   if (isClient) {
     throw new Error(
       `${message.serverAliasInClientCodeError}.readModelConnectors`

@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`$resolve.staticPath should support absolute paths: [client - compile-time] 1`] = `
+"
+const staticPath = \\"http://resolve.dev\\"
+
+export default staticPath
+"
+`;
+
+exports[`$resolve.staticPath should support absolute paths: [server - compile-time] 1`] = `
+"
+const staticPath = \\"http://resolve.dev\\"
+
+export default staticPath
+"
+`;
+
+exports[`$resolve.staticPath should support part of URL: [client - compile-time] 1`] = `
+"
+const staticPath = \\"static\\"
+
+export default staticPath
+"
+`;
+
+exports[`$resolve.staticPath should support part of URL: [server - compile-time] 1`] = `
+"
+const staticPath = \\"static\\"
+
+export default staticPath
+"
+`;
+
+exports[`$resolve.staticPath should support runtime envs: [client - runtime] 1`] = `
+"
+let staticPath = (((first, second) => (first != null ? first : second))(((() => {
+    const globalObject = [() => window, () => global, () => self].reduce(
+      (acc, recognizer) => {
+        try {
+          return acc != null ? acc : recognizer()
+        } catch(e) {}
+      },
+      null
+    )
+    
+    if (globalObject == null) {
+      throw new Error('Client global object recognition failed')
+    }
+
+    if(false) {
+      return globalObject
+    }
+
+    const key = \\"__RESOLVE_RUNTIME_ENV__\\"
+    if(globalObject[key] == null) {
+      throw new Error(\`Client global key \${key} object recognition failed\`)
+    }
+  
+    return globalObject[key]
+  })())[\\"STATIC_PATH\\"], null))
+export default staticPath
+"
+`;
+
+exports[`$resolve.staticPath should support runtime envs: [server - runtime] 1`] = `
+"
+import validatePath from 'resolve-runtime/lib/common/utils/validate-path'
+let staticPath = (((first, second) => (first != null ? first : second))(process.env[\\"STATIC_PATH\\"], null))
+if (!validatePath(staticPath, { allowAbsolutePath: true })) {
+          throw new Error(
+            \`Incorrect options.staticPath = \\"\${
+              staticPath
+            }\\"\\\\nValue must be part of the URL or the absolute URL, which is the application's static subdirectory\`
+          )
+        }
+staticPath = encodeURI(staticPath)
+
+export default staticPath
+"
+`;
