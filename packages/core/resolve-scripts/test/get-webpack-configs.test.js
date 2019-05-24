@@ -1,5 +1,5 @@
 import getWebpackConfigs from '../src/get_webpack_configs'
-import normalizePaths from './alias/normalize_paths'
+import normalizePaths from './normalize_paths'
 
 const resolveConfig = {
   port: 3000,
@@ -63,11 +63,10 @@ test('should throw on wrong target', async () => {
     })
 
     return Promise.reject('Test failed')
-  } catch(error) {
+  } catch (error) {
     expect(error).toBeInstanceOf(Error)
   }
 })
-  
 
 test('should make webpack configs for local mode', async () => {
   const nodeModulesByAssembly = new Map()
