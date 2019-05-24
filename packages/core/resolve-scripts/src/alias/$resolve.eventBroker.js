@@ -8,21 +8,27 @@ export default ({ resolveConfig, isClient }) => {
     )
   }
 
-  const exports = []
+  const exports = [`const eventBroker = {}`, '']
+  for (const key of Object.keys(resolveConfig.eventBroker)) {
+    const value = resolveConfig.eventBroker[key]
+    if (key === 'launchBroker' && checkRuntimeEnv(value)) {
+      throw new Error(
+        'Forbidden runtime injection: $resolve.eventBroker.launchBroker'
+      )
+    }
 
-  if (checkRuntimeEnv(resolveConfig.eventBroker)) {
-    exports.push(
-      `const eventBroker = ${injectRuntimeEnv(resolveConfig.eventBroker)}`,
-      ``,
-      `export default eventBroker`
-    )
-  } else {
-    exports.push(
-      `const eventBroker = ${JSON.stringify(resolveConfig.eventBroker)}`,
-      ``,
-      `export default eventBroker`
-    )
+    if (checkRuntimeEnv(value)) {
+      exports.push(
+        `eventBroker[${JSON.stringify(key)}] = ${injectRuntimeEnv(value)}`
+      )
+    } else {
+      exports.push(
+        `eventBroker[${JSON.stringify(key)}] = ${JSON.stringify(value)}`
+      )
+    }
   }
+
+  exports.push('export default eventBroker')
 
   return {
     code: exports.join('\r\n')
