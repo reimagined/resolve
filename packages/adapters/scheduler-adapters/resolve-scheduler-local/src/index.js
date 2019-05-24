@@ -9,11 +9,11 @@ const createAdapter = ({ execute, errorHandler }) => {
         const timeout = setTimeout(() => {
           flowPromise = flowPromise
             .then(async () => {
-              await execute(entry.taskId, entry.date, entry.command)
               timeouts.delete(timeout)
+              await execute(entry.taskId, entry.date, entry.command)
             })
             .catch(async error => {
-              if (errorHandler) {
+              if (typeof errorHandler === 'function') {
                 await errorHandler(error)
               } else {
                 throw error
