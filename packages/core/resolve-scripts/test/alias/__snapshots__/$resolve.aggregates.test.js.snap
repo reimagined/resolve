@@ -135,6 +135,67 @@ export default aggregates
 "
 `;
 
+exports[`config with commands as module works correctly [client] 1`] = `
+"
+const name_0 = \\"Todo\\"
+const commands_0 = {
+  [\`create\`]: () => {},
+  [\`update\`]: () => {},
+  [\`remove\`]: () => {}
+}
+
+const aggregates = []
+
+aggregates.push({
+  name: name_0
+, commands: commands_0
+})
+
+export default aggregates
+"
+`;
+
+exports[`config with commands as module works correctly [server] 1`] = `
+"
+import commands_0_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommandsAsModule.js\\"
+import commands_0_import_testCommandsAsModule from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommandsAsModule.js\\"
+import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
+import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
+const name_0 = \\"Todo\\"
+const commands_0_imports = { [\\"testCommandsAsModule\\"]: commands_0_import_testCommandsAsModule }
+const commands_0_options = {}
+const commands_0 = commands_0_constructor(
+      commands_0_options,
+      commands_0_imports
+    )
+const serializeState_0 = serializeState_0_instance
+const deserializeState_0 = deserializeState_0_instance
+
+const aggregates = []
+
+aggregates.push({
+  name: name_0
+, commands: commands_0
+, serializeState: serializeState_0
+, deserializeState: deserializeState_0
+})
+
+export default aggregates
+"
+`;
+
 exports[`config with projection works correctly [client] 1`] = `
 "
 const name_0 = \\"Todo\\"
@@ -189,6 +250,97 @@ aggregates.push({
 , deserializeState: deserializeState_0
 , projection: projection_0
 , invariantHash: projection_0_hash
+})
+
+export default aggregates
+"
+`;
+
+exports[`config with schedulers works correctly [client] 1`] = `
+"
+const name_0 = \\"Todo\\"
+const commands_0 = {
+  [\`create\`]: () => {},
+  [\`update\`]: () => {},
+  [\`remove\`]: () => {}
+}
+
+const aggregates = []
+
+aggregates.push({
+  name: name_0
+, commands: commands_0
+})
+
+export default aggregates
+"
+`;
+
+exports[`config with schedulers works correctly [server] 1`] = `
+"
+import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
+import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
+import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
+import commands_s_0_constructor from \\"resolve-runtime/lib/common/sagas/scheduler-aggregate-commands.js\\"
+import projection_s_0_constructor from \\"resolve-runtime/lib/common/sagas/scheduler-aggregate-projection.js\\"
+import serializeState_s_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
+import deserializeState_s_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
+const name_0 = \\"Todo\\"
+const commands_0 = commands_0_instance
+const serializeState_0 = serializeState_0_instance
+const deserializeState_0 = deserializeState_0_instance
+const name_s_0 = \\"scheduler\\"
+const commands_s_0_imports = {  }
+const commands_s_0_options = {}
+const commands_s_0 = constructorBindFunction.bind(null,
+      commands_s_0_constructor,
+      commands_s_0_options,
+      commands_s_0_imports
+    )
+    Object.assign(commands_s_0, commands_s_0_constructor)
+    
+const projection_s_0_imports = {  }
+const projection_s_0_options = {}
+const projection_s_0 = constructorBindFunction.bind(null,
+      projection_s_0_constructor,
+      projection_s_0_options,
+      projection_s_0_imports
+    )
+    Object.assign(projection_s_0, projection_s_0_constructor)
+    
+const serializeState_s_0 = serializeState_s_0_instance
+const deserializeState_s_0 = deserializeState_s_0_instance
+
+const aggregates = []
+
+aggregates.push({
+  name: name_0
+, commands: commands_0
+, serializeState: serializeState_0
+, deserializeState: deserializeState_0
+})
+
+aggregates.push({
+  name: name_s_0
+, commands: commands_s_0
+, projection: projection_s_0
+, serializeState: serializeState_s_0
+, deserializeState: deserializeState_s_0
+, invariantHash: \\"1.5586922347581163e+21\\"
+, schedulerName: \\"scheduler\\"
+, isSystemAggregate: true
 })
 
 export default aggregates

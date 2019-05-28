@@ -1,6 +1,8 @@
 import 'source-map-support/register'
 
 import debugLevels from 'debug-levels'
+import { createActions } from 'resolve-redux'
+
 import initAwsClients from './init-aws-clients'
 import prepareDomain from '../common/prepare-domain'
 import initBroker from './init-broker'
@@ -13,13 +15,17 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
   try {
     log.debug('configuring reSolve framework')
     const resolve = {
-      aggregateActions: assemblies.aggregateActions,
       seedClientEnvs: assemblies.seedClientEnvs,
       assemblies,
       ...constants,
       ...domain,
       redux,
       routes
+    }
+
+    resolve.aggregateActions = {}
+    for (const aggregate of domain.aggregates) {
+      Object.assign(resolve.aggregateActions, createActions(aggregate))
     }
 
     log.debug('preparing aws clients')

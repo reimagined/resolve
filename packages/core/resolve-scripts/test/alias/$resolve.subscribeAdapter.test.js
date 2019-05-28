@@ -41,6 +41,28 @@ describe('base config works correctly', () => {
   })
 })
 
+test('config with module/options and empty module failed', () => {
+  const resolveConfig = {
+    subscribeAdapter: {
+      module: null,
+      options: {
+        url: declareRuntimeEnv('SUBSCRIBE_OPTIONS_URL')
+      }
+    }
+  }
+
+  expect(() =>
+    normalizePaths(
+      '\r\n' +
+        alias({
+          resolveConfig,
+          isClient: true
+        }).code +
+        '\r\n'
+    )
+  ).toThrow()
+})
+
 test('config with process.env failed', () => {
   const resolveConfig = {
     subscribeAdapter: {
@@ -56,7 +78,7 @@ test('config with process.env failed', () => {
       '\r\n' +
         alias({
           resolveConfig,
-          isClient: false
+          isClient: true
         }).code +
         '\r\n'
     )
@@ -78,7 +100,7 @@ test('config with process.env (v2) failed', () => {
       '\r\n' +
         alias({
           resolveConfig,
-          isClient: false
+          isClient: true
         }).code +
         '\r\n'
     )

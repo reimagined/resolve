@@ -4,7 +4,7 @@ exports[`base config works correctly [client] 1`] = `
 "
 
 const name_0 = \\"Todos\\"
-const connectorName_0 = undefined
+const connectorName_0 = \\"Todos\\"
 const resolvers_0 = {
   todos() {},
   items() {}
@@ -39,7 +39,7 @@ const constructorBindFunction =
 const idempotentFunction = value => value
 
 const name_0 = \\"Todos\\"
-const connectorName_0 = undefined
+const connectorName_0 = \\"Todos\\"
 const resolvers_0 = resolvers_0_instance
 const projection_0_hash = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const projection_0 = projection_0_instance
@@ -62,16 +62,15 @@ exports[`base(v2) config works correctly [client] 1`] = `
 "
 
 const name_0 = \\"Todos\\"
-const connectorName_0 = undefined
+const connectorName_0 = \\"Todos\\"
 const resolvers_0 = {
   todos() {},
   items() {}
 }
 const name_1 = \\"Items\\"
-const connectorName_1 = undefined
+const connectorName_1 = \\"Items\\"
 const resolvers_1 = {
-  todos() {},
-  items() {}
+
 }
 
 const readModels = []
@@ -94,8 +93,10 @@ exports[`base(v2) config works correctly [server] 1`] = `
 "
 import resolvers_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 import projection_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
-import resolvers_1_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
-import projection_1_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
+import resolvers_1_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolversAsModule.js\\"
+import resolvers_1_import_testCommandsAsModule from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommandsAsModule.js\\"
+import projection_1_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjectionAsModule.js\\"
+import projection_1_import_testCommandsAsModule from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommandsAsModule.js\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -110,15 +111,49 @@ const constructorBindFunction =
 const idempotentFunction = value => value
 
 const name_0 = \\"Todos\\"
-const connectorName_0 = undefined
+const connectorName_0 = \\"Todos\\"
 const resolvers_0 = resolvers_0_instance
 const projection_0_hash = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const projection_0 = projection_0_instance
 const name_1 = \\"Items\\"
-const connectorName_1 = undefined
-const resolvers_1 = resolvers_1_instance
-const projection_1_hash = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
-const projection_1 = projection_1_instance
+const connectorName_1 = \\"Items\\"
+const resolvers_1_imports = { [\\"testCommandsAsModule\\"]: resolvers_1_import_testCommandsAsModule }
+const resolvers_1_options = {}
+const resolvers_1 = resolvers_1_constructor(
+      resolvers_1_options,
+      resolvers_1_imports
+    )
+const projection_1_constructor_hash = \\"9bce5552d25e8b6b6c1e9dbe925dd9c7a3104fe5524ce37685d48c4e9f53389a9751a5626503c425539b0c0cf3674aee0e1e23f3392239a68107ae385954d2e1\\"
+const projection_1_import_testCommandsAsModule_hash = \\"cd73ff35f8c6e499fb76f87f1aafe172270c88e347f560f6b38f490974ceeaaea8d496d11f447a9b6583de11b0867cf182663e58cfebde2982d5f6e57a859cc5\\"
+const projection_1_imports = { [\\"testCommandsAsModule\\"]: projection_1_import_testCommandsAsModule }
+const projection_1_imports_hash = ((content) => {
+  const hmac = __non_webpack_require__('crypto')
+    .createHmac('sha512', \\"resolve-read-model-projection-hash\\")
+  hmac.update(content)
+  return hmac.digest('hex')
+})(JSON.stringify([projection_1_import_testCommandsAsModule_hash
+        ]))
+const projection_1_options = {}
+const projection_1_options_hash = ((content) => {
+  const hmac = __non_webpack_require__('crypto')
+    .createHmac('sha512', \\"resolve-read-model-projection-hash\\")
+  hmac.update(content)
+  return hmac.digest('hex')
+})(JSON.stringify(projection_1_options))
+const projection_1 = projection_1_constructor(
+      projection_1_options,
+      projection_1_imports
+    )
+const projection_1_hash = ((content) => {
+  const hmac = __non_webpack_require__('crypto')
+    .createHmac('sha512', \\"resolve-read-model-projection-hash\\")
+  hmac.update(content)
+  return hmac.digest('hex')
+})(JSON.stringify([
+          projection_1_constructor_hash,
+          projection_1_options_hash,
+          projection_1_imports_hash
+        ]))
 
 const readModels = []
 

@@ -11,10 +11,6 @@ import resolveFileOrModule from '../resolve_file_or_module'
 import importResource from '../import_resource'
 
 export default ({ resolveConfig, isClient }) => {
-  if (!resolveConfig.readModels) {
-    throw new Error(`${message.configNotContainSectionError}.readModels`)
-  }
-
   const imports = []
   const constants = [``]
   const exports = [``, `const readModels = []`, ``]

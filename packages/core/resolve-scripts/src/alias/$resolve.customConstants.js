@@ -2,10 +2,6 @@ import { message } from '../constants'
 import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
-  if (resolveConfig.customConstants == null) {
-    throw new Error(`${message.configNotContainSectionError}.customConstants`)
-  }
-
   void JSON.stringify(resolveConfig.customConstants, (key, value) => {
     if (
       value != null &&

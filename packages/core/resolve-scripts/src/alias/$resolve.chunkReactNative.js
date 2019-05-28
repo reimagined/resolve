@@ -10,6 +10,8 @@ export default ({ resolveConfig }) => {
     `clientGlobalObject.__RESOLVE_RUNTIME_ENV__ = { }`
   )
 
+  exports.push(`import { createActions } from 'resolve-redux'`)
+
   const clientEnvs = []
   void JSON.stringify(resolveConfig, (key, value) => {
     if (checkRuntimeEnv(value)) {
@@ -42,7 +44,6 @@ export default ({ resolveConfig }) => {
 
   exports.push(
     `export const aggregates = interopRequireDefault(require('$resolve.aggregates')).default`,
-    `export const aggregateActions = interopRequireDefault(require('$resolve.aggregateActions')).default`,
     `export const viewModels = interopRequireDefault(require('$resolve.viewModels')).default`,
     `export const readModels = interopRequireDefault(require('$resolve.readModels')).default`,
     `export const rootPath = interopRequireDefault(require('$resolve.rootPath')).default`,
@@ -51,6 +52,13 @@ export default ({ resolveConfig }) => {
     `export const applicationName = interopRequireDefault(require('$resolve.applicationName')).default`,
     `export const subscribeAdapter = interopRequireDefault(require('$resolve.subscribeAdapter')).default`,
     `export const customConstants = interopRequireDefault(require('$resolve.customConstants')).default`
+  )
+
+  exports.push(
+    `export const aggregateActions = {}`,
+    `for (var index = 0; index < aggregates.length; index++) {`,
+    `  Object.assign(aggregateActions, createActions(aggregates[index]))`,
+    `}`
   )
 
   return {

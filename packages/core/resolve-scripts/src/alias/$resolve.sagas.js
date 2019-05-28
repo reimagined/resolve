@@ -13,20 +13,6 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.serverAliasInClientCodeError}$resolve.sagas`)
   }
 
-  if (!resolveConfig.sagas) {
-    throw new Error(`${message.configNotContainSectionError}.sagas`)
-  }
-  if (!resolveConfig.schedulers) {
-    throw new Error(`${message.configNotContainSectionError}.schedulers`)
-  }
-
-  if (checkRuntimeEnv(resolveConfig.sagas)) {
-    throw new Error(`${message.clientEnvError}.sagas`)
-  }
-  if (checkRuntimeEnv(resolveConfig.schedulers)) {
-    throw new Error(`${message.clientEnvError}.schedulers`)
-  }
-
   const imports = [``]
   const constants = [``]
   const exports = [``, `const sagas = []`, ``]

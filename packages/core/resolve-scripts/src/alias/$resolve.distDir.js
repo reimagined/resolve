@@ -6,10 +6,6 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.serverAliasInClientCodeError}$resolve.distDir`)
   }
 
-  if (!resolveConfig.distDir) {
-    throw new Error(`${message.configNotContainSectionError}.distDir`)
-  }
-
   if (checkRuntimeEnv(resolveConfig.distDir)) {
     throw new Error(`${message.clientEnvError}.distDir`)
   }

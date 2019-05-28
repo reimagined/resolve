@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works correctly 1`] = `
+"
+const eventBroker = {}
+
+eventBroker[\\"launchBroker\\"] = true
+eventBroker[\\"zmqBrokerAddress\\"] = (((first, second) => (first != null ? first : second))(process.env[\\"zmqBrokerAddress\\"], null))
+eventBroker[\\"zmqConsumerAddress\\"] = (((first, second) => (first != null ? first : second))(process.env[\\"zmqConsumerAddress\\"], null))
+eventBroker[\\"databaseFile\\"] = (((first, second) => (first != null ? first : second))(process.env[\\"databaseFile\\"], null))
+eventBroker[\\"batchSize\\"] = 100
+eventBroker[\\"upstream\\"] = true
+export default eventBroker
+"
+`;

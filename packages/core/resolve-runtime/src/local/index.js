@@ -1,5 +1,6 @@
 import 'source-map-support/register'
 import debugLevels from 'debug-levels'
+import { createActions } from 'resolve-redux'
 
 import initBroker from './init-broker'
 import initExpress from './init-express'
@@ -14,13 +15,17 @@ const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
   try {
     const resolve = {
       instanceId: `${process.pid}${Math.floor(Math.random() * 100000)}`,
-      aggregateActions: assemblies.aggregateActions,
       seedClientEnvs: assemblies.seedClientEnvs,
       assemblies,
       ...constants,
       ...domain,
       redux,
       routes
+    }
+
+    resolve.aggregateActions = {}
+    for (const aggregate of domain.aggregates) {
+      Object.assign(resolve.aggregateActions, createActions(aggregate))
     }
 
     await prepareDomain(resolve)

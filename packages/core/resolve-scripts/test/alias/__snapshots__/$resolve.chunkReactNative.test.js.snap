@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works correctly 1`] = `
+"
+import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
+const clientGlobalObject = ((() => {
+    const globalObject = [() => window, () => global, () => self].reduce(
+      (acc, recognizer) => {
+        try {
+          return acc != null ? acc : recognizer()
+        } catch(e) {}
+      },
+      null
+    )
+    
+    if (globalObject == null) {
+      throw new Error('Client global object recognition failed')
+    }
+
+    if(true) {
+      return globalObject
+    }
+
+    const key = undefined
+    if(globalObject[key] == null) {
+      throw new Error(\`Client global key \${key} object recognition failed\`)
+    }
+  
+    return globalObject[key]
+  })())
+clientGlobalObject.__RESOLVE_RUNTIME_ENV__ = { }
+import { createActions } from 'resolve-redux'
+export const aggregates = interopRequireDefault(require('$resolve.aggregates')).default
+export const viewModels = interopRequireDefault(require('$resolve.viewModels')).default
+export const readModels = interopRequireDefault(require('$resolve.readModels')).default
+export const rootPath = interopRequireDefault(require('$resolve.rootPath')).default
+export const staticPath = interopRequireDefault(require('$resolve.staticPath')).default
+export const jwtCookie = interopRequireDefault(require('$resolve.jwtCookie')).default
+export const applicationName = interopRequireDefault(require('$resolve.applicationName')).default
+export const subscribeAdapter = interopRequireDefault(require('$resolve.subscribeAdapter')).default
+export const customConstants = interopRequireDefault(require('$resolve.customConstants')).default
+export const aggregateActions = {}
+for (var index = 0; index < aggregates.length; index++) {
+  Object.assign(aggregateActions, createActions(aggregates[index]))
+}
+"
+`;

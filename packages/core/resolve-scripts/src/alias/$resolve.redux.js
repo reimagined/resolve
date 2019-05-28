@@ -4,14 +4,9 @@ import {
   RESOURCE_ANY,
   IMPORT_INSTANCE
 } from '../constants'
-import { checkRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
 
 export default ({ resolveConfig }) => {
-  if (!resolveConfig.redux) {
-    throw new Error(`${message.configNotContainSectionError}.redux`)
-  }
-
   const imports = []
   const constants = [``]
   const exports = [
@@ -25,9 +20,6 @@ export default ({ resolveConfig }) => {
 
   if (resolveConfig.redux.hasOwnProperty('reducers')) {
     const reducersSection = resolveConfig.redux.reducers
-    if (checkRuntimeEnv(reducersSection)) {
-      throw new Error(`${message.clientEnvError}.redux.reducers`)
-    }
 
     if (reducersSection == null || reducersSection.constructor !== Object) {
       throw new Error(`${message.configNotContainSectionError}.redux.reducers`)
@@ -36,12 +28,6 @@ export default ({ resolveConfig }) => {
     for (const [index, reducerName] of Object.entries(
       Object.keys(reducersSection)
     )) {
-      if (checkRuntimeEnv(reducerName)) {
-        throw new Error(
-          `${message.clientEnvError}.redux.reducers[${reducerName}] (key)`
-        )
-      }
-
       constants.push(
         `const reducer_${index}_name = ${JSON.stringify(reducerName)}`
       )
@@ -62,10 +48,6 @@ export default ({ resolveConfig }) => {
 
   if (resolveConfig.redux.hasOwnProperty('middlewares')) {
     const middlewaresSection = resolveConfig.redux.middlewares
-    if (checkRuntimeEnv(middlewaresSection)) {
-      throw new Error(`${message.clientEnvError}.redux.middlewares`)
-    }
-
     if (!Array.isArray(middlewaresSection)) {
       throw new Error(
         `${message.configNotContainSectionError}.redux.middlewares`
@@ -89,10 +71,6 @@ export default ({ resolveConfig }) => {
 
   if (resolveConfig.redux.hasOwnProperty('sagas')) {
     const sagasSection = resolveConfig.redux.sagas
-    if (checkRuntimeEnv(sagasSection)) {
-      throw new Error(`${message.clientEnvError}.redux.sagas`)
-    }
-
     if (!Array.isArray(sagasSection)) {
       throw new Error(`${message.configNotContainSectionError}.redux.sagas`)
     }
@@ -114,10 +92,6 @@ export default ({ resolveConfig }) => {
 
   if (resolveConfig.redux.hasOwnProperty('enhancers')) {
     const enhancersSection = resolveConfig.redux.enhancers
-    if (checkRuntimeEnv(enhancersSection)) {
-      throw new Error(`${message.clientEnvError}.redux.enhancers`)
-    }
-
     if (!Array.isArray(enhancersSection)) {
       throw new Error(`${message.configNotContainSectionError}.redux.enhancers`)
     }
