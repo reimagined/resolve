@@ -34,7 +34,11 @@ describe('method "loadEvents"', () => {
       createQuery: sinon.stub().returns(query),
       executePaginationQuery: sinon.stub()
     }
-    const filter = { aggregateIds: [], eventTypes: [], maxEvents: 1000 }
+    const filter = {
+      aggregateIds: [],
+      eventTypes: [],
+      maxEventsByTimeframe: 1000
+    }
     const callback = sinon.stub()
 
     await loadEvents(pool, filter, callback)
@@ -57,7 +61,7 @@ describe('method "loadEvents"', () => {
       pool.executePaginationQuery,
       pool,
       query,
-      filter.maxEvents,
+      filter.maxEventsByTimeframe,
       callback
     )
   })

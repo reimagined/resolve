@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`$resolve.staticDir should works correctly with base config: [server - runtime] 1`] = `
+"
+const staticDir = \\"staticDir\\"
+
+export default staticDir
+"
+`;

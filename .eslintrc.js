@@ -320,6 +320,7 @@ module.exports = {
           'testcafe',
           'textarea',
           'tgz',
+          'Timeframe',
           'timestamp',
           'tmp',
           'todo',

@@ -13,17 +13,6 @@ import resolveFileOrModule from '../resolve_file_or_module'
 import resolveFile from '../resolve_file'
 
 export default ({ resolveConfig, isClient }) => {
-  if (!resolveConfig.aggregates) {
-    throw new Error(`${message.configNotContainSectionError}.aggregates`)
-  }
-  if (!resolveConfig.schedulers) {
-    throw new Error(`${message.configNotContainSectionError}.schedulers`)
-  }
-
-  if (checkRuntimeEnv(resolveConfig.schedulers)) {
-    throw new Error(`${message.clientEnvError}.schedulers`)
-  }
-
   const imports = []
   const constants = []
   const exports = [``, `const aggregates = []`, ``]
@@ -129,12 +118,6 @@ export default ({ resolveConfig, isClient }) => {
     const schedulersNames = Object.keys(resolveConfig.schedulers)
 
     for (let index = 0; index < schedulersNames.length; index++) {
-      if (checkRuntimeEnv(schedulersNames[index])) {
-        throw new Error(
-          `${message.clientEnvError}.schedulers[${schedulersNames[index]}]`
-        )
-      }
-
       constants.push(
         `const name_s_${index} = ${JSON.stringify(`${schedulersNames[index]}`)}`
       )
@@ -191,16 +174,12 @@ export default ({ resolveConfig, isClient }) => {
         constants
       })
 
-      const invariantHash = `${Date.now()}${Math.floor(
-        Math.random() * 1000000000
-      )}`
-
       exports.push(`aggregates.push({`, `  name: name_s_${index}`)
       exports.push(`, commands: commands_s_${index}`)
       exports.push(`, projection: projection_s_${index}`)
       exports.push(`, serializeState: serializeState_s_${index}`)
       exports.push(`, deserializeState: deserializeState_s_${index}`)
-      exports.push(`, invariantHash: ${JSON.stringify(invariantHash)}`)
+      exports.push(`, invariantHash: ${JSON.stringify(`${Date.now()}`)}`)
       exports.push(`, schedulerName: ${JSON.stringify(schedulersNames[index])}`)
       exports.push(`, isSystemAggregate: true`)
       exports.push(`})`, ``)

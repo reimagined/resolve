@@ -9,6 +9,7 @@ describe('base config works correctly', () => {
     readModels: [
       {
         name: 'Todos',
+        connectorName: 'Todos',
         projection: path.resolve(__dirname, 'files/testProjection.js'),
         resolvers: path.resolve(__dirname, 'files/testResolvers.js')
       }
@@ -49,18 +50,82 @@ describe('base config works correctly', () => {
   })
 })
 
+test('should throw when read-model name is process.env', () => {
+  expect(() =>
+    normalizePaths(
+      '\r\n' +
+        alias({
+          resolveConfig: {
+            readModels: [
+              {
+                name: declareRuntimeEnv('Todos'),
+                connectorName: 'Todos',
+                projection: path.resolve(__dirname, 'files/testProjection.js'),
+                resolvers: path.resolve(__dirname, 'files/testResolvers.js')
+              }
+            ]
+          },
+          isClient: true
+        }).code +
+        '\r\n'
+    )
+  ).toThrow()
+})
+
+test('should throw when read-model connectorName is process.env', () => {
+  expect(() =>
+    normalizePaths(
+      '\r\n' +
+        alias({
+          resolveConfig: {
+            readModels: [
+              {
+                name: 'Todos',
+                connectorName: declareRuntimeEnv('Todos'),
+                projection: path.resolve(__dirname, 'files/testProjection.js'),
+                resolvers: path.resolve(__dirname, 'files/testResolvers.js')
+              }
+            ]
+          },
+          isClient: true
+        }).code +
+        '\r\n'
+    )
+  ).toThrow()
+})
+
 describe('base(v2) config works correctly', () => {
   const resolveConfig = {
     readModels: [
       {
         name: 'Todos',
+        connectorName: 'Todos',
         projection: path.resolve(__dirname, 'files/testProjection.js'),
         resolvers: path.resolve(__dirname, 'files/testResolvers.js')
       },
       {
         name: 'Items',
-        projection: path.resolve(__dirname, 'files/testProjection.js'),
-        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
+        connectorName: 'Items',
+        projection: {
+          module: path.resolve(__dirname, 'files/testProjectionAsModule.js'),
+          options: {},
+          imports: {
+            testCommandsAsModule: path.resolve(
+              __dirname,
+              'files/testCommandsAsModule.js'
+            )
+          }
+        },
+        resolvers: {
+          module: path.resolve(__dirname, 'files/testResolversAsModule.js'),
+          options: {},
+          imports: {
+            testCommandsAsModule: path.resolve(
+              __dirname,
+              'files/testCommandsAsModule.js'
+            )
+          }
+        }
       }
     ],
     sagas: [],

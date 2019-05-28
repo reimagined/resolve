@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base config works correctly [server] 1`] = `
+"
+
+import controller_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testApiHandler.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
+
+const path_0 = \\"api-handler\\"
+const method_0 = \\"get\\"
+const controller_0 = controller_0_instance
+
+const apiHandlers = []
+
+apiHandlers.push({
+  path: path_0
+, controller: controller_0
+, method: method_0
+})
+
+export default apiHandlers
+"
+`;

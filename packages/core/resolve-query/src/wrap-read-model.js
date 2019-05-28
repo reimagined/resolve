@@ -16,7 +16,9 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
     throw new Error(`Read model "${pool.readModel.name}" is disposed`)
   }
   if (typeof pool.readModel.resolvers[resolverName] !== 'function') {
-    throw new Error(`Resolver ${resolverName} does not exist`)
+    const error = new Error(`Resolver "${resolverName}" does not exist`)
+    error.code = 422
+    throw error
   }
   await pool.doUpdateRequest(pool.readModel.name)
   const connection = await maybeConnect(pool)

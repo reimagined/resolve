@@ -24,7 +24,7 @@ test('load events should scan eventstore within criteria', async () => {
     aggregateIds: ['AGGREGATE_ID'],
     startTime: 100,
     finishTime: 200,
-    maxEvents: 1000
+    maxEventsByTimeframe: 1000
   }
 
   await loadEvents(pool, filter, callback)

@@ -9,7 +9,7 @@ import saveEvent from './save-event'
 import drop from './drop'
 import dispose from './dispose'
 
-export default createAdapter.bind(
+const wrappedCreateAdapter = createAdapter.bind(
   null,
   connect,
   init,
@@ -20,3 +20,5 @@ export default createAdapter.bind(
   dispose,
   sqlite
 )
+
+export default wrappedCreateAdapter

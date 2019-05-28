@@ -13,10 +13,6 @@ export default ({ resolveConfig, isClient }) => {
     )
   }
 
-  if (!resolveConfig.storageAdapter) {
-    throw new Error(`${message.configNotContainSectionError}.storageAdapter`)
-  }
-
   const imports = []
   const constants = []
   const exports = []
