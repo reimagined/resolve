@@ -81,7 +81,9 @@ class ShoppingListPanel extends React.PureComponent {
             value={this.state.name}
             onChangeText={this.updateName}
             onSubmitEditing={this.renameShoppingList}
-            onBlur={this.renameShoppingList}
+            onEndEditing={this.renameShoppingList}
+            returnKeyType="done"
+            returnKeyLabel="done"
           />
           <Icon
             style={styles.icon}

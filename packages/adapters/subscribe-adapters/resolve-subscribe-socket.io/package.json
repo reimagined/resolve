@@ -25,7 +25,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "socket.io-client": "^2.1.1"
+    "socket.io-client": "2.1.1"
   },
   "devDependencies": {
     "jest": "24.1.0"

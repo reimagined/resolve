@@ -63,6 +63,7 @@ class ShoppingListCreator extends React.PureComponent {
                 value={this.state.text}
                 onChangeText={this.updateText}
                 onSubmitEditing={this.createShoppingList}
+                onEndEditing={this.createShoppingList}
                 returnKeyType="done"
                 returnKeyLabel="done"
               />
