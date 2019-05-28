@@ -66,6 +66,7 @@ class ShoppingItemCreator extends React.PureComponent {
                 value={this.state.text}
                 onChangeText={this.updateText}
                 onSubmitEditing={this.createShoppingItem}
+                onEndEditing={this.createShoppingItem}
                 returnKeyType="done"
                 returnKeyLabel="done"
               />
