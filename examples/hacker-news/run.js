@@ -147,9 +147,19 @@ void (async () => {
           schedulers: {}
         })
 
+        if (process.env.hasOwnProperty(String(importConfig.port))) {
+          process.env.PORT = +String(process.env.PORT)
+        } else if (
+          process.env.PORT != null &&
+          process.env.PORT.defaultValue != null
+        ) {
+          process.env.PORT = +process.env.PORT.defaultValue
+        } else {
+          process.env.PORT = 3000
+        }
+
         Object.assign(process.env, {
           RESOLVE_SERVER_OPEN_BROWSER: 'false',
-          PORT: importConfig.port,
           ROOT_PATH: importConfig.rootPath
         })
 
