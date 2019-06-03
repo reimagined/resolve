@@ -20,6 +20,7 @@ const appConfig = {
 
 // mdis-start dev-config
 const devConfig = {
+  // mdis-start schedulers-config
   schedulers: {
     scheduler: {
       adapter: {
@@ -29,6 +30,7 @@ const devConfig = {
       connectorName: 'default'
     }
   },
+  // mdis-stop schedulers-config
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-lite',
