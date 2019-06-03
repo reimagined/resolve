@@ -56,7 +56,8 @@
     "uuid": "^3.3.2",
     "ws": "^5.2.1",
     "websocket-stream": "^5.1.2",
-    "zeromq": "^5.1.0"
+    "zeromq": "^5.1.0",
+    "aws-xray-sdk-core": "^2.3.3"
   },
   "peerDependencies": {
     "react": "^16.5.0",
