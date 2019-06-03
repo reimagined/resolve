@@ -1,3 +1,5 @@
+// TODO
+
 const initPerformanceTracer = resolve => {
   Object.defineProperty(resolve, 'performanceTracer', {
     value: {
@@ -6,6 +8,7 @@ const initPerformanceTracer = resolve => {
           addNewSubsegment: subsegmentName => {
             return {
               addAnnotation: (annotationName, data) => {
+                // eslint-disable-next-line no-console
                 console.log(
                   'subsegmentName=',
                   subsegmentName,
@@ -15,6 +18,7 @@ const initPerformanceTracer = resolve => {
                 )
               },
               addError: error => {
+                // eslint-disable-next-line no-console
                 console.log(
                   'subsegmentName=',
                   subsegmentName,
@@ -23,6 +27,7 @@ const initPerformanceTracer = resolve => {
                 )
               },
               close: () => {
+                // eslint-disable-next-line no-console
                 console.log('subsegmentName=', subsegmentName, 'close')
               }
             }
