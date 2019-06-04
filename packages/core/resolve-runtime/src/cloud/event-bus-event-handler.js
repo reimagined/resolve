@@ -21,7 +21,7 @@ const handleApplyEvents = async (lambdaEvent, resolve) => {
       listenerId,
       events.map(decodeEvent)
     )
-    subSegment.addAnnotation('eventsCount', events.length)
+    subSegment.addAnnotation('eventCount', events.length)
   } catch (error) {
     log.error('Error while applying events to read-model', error)
     subSegment.addError(error)
