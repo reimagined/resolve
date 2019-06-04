@@ -218,7 +218,7 @@ const drop = async pool => {
     }
 
     throw new Error(
-      `Snapshot cleaning for view-model ${viewModelName} is not implemented`
+      `Snapshot cleaning for view-model "${viewModelName}" is not implemented`
     )
   } catch (error) {
     if (subSegment != null) {

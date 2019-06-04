@@ -956,7 +956,7 @@ Array [
 exports[`view models with performance tracer "drop" should raise error on view-model: addError 1`] = `
 Array [
   Array [
-    [Error: Snapshot cleaning for view-model testViewModelName is not implemented],
+    [Error: Snapshot cleaning for view-model "testViewModelName" is not implemented],
   ],
 ]
 `;
