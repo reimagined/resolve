@@ -32,10 +32,13 @@ const initResolve = async resolve => {
     readModelConnectors[name] = readModelConnectorsCreators[name]()
   }
 
+  const performanceTracer = resolve.performanceTracer
+
   const executeCommand = createCommandExecutor({
     eventStore,
     aggregates,
-    snapshotAdapter
+    snapshotAdapter,
+    performanceTracer
   })
 
   const executeQuery = createQueryExecutor({
@@ -44,7 +47,8 @@ const initResolve = async resolve => {
     snapshotAdapter,
     doUpdateRequest: resolve.doUpdateRequest,
     readModels,
-    viewModels
+    viewModels,
+    performanceTracer
   })
 
   Object.assign(resolve, {
