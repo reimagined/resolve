@@ -79,12 +79,22 @@ const updateByEvents = async (pool, events) => {
     let lastError = null
     let lastEvent = null
 
-    try {
-      for (const event of events) {
+    const handler = async event => {
+      const segment = pool.performanceTracer
+        ? pool.performanceTracer.getSegment()
+        : null
+      const subSegment = segment ? segment.addNewSubsegment('applyEvent') : null
+
+      try {
         if (pool.isDisposed) {
           throw new Error(
             `Read model "${readModelName}" updating had been interrupted`
           )
+        }
+
+        if (subSegment != null) {
+          subSegment.addAnnotation('readModelName', readModelName)
+          subSegment.addAnnotation('eventType', event.type)
         }
 
         if (event != null && typeof projection[event.type] === 'function') {
@@ -93,6 +103,21 @@ const updateByEvents = async (pool, events) => {
           await executor(connection, event)
           lastEvent = event
         }
+      } catch (error) {
+        if (subSegment != null) {
+          subSegment.addError(error)
+        }
+        throw error
+      } finally {
+        if (subSegment != null) {
+          subSegment.close()
+        }
+      }
+    }
+
+    try {
+      for (const event of events) {
+        await handler(event)
       }
     } catch (error) {
       lastError = Object.create(Error.prototype, {

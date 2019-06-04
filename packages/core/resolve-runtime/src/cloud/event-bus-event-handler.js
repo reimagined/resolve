@@ -31,9 +31,7 @@ const handleApplyEvents = async (lambdaEvent, resolve) => {
   }
   const endTime = Date.now()
   log.debug('applying events successfully')
-  log.verbose(
-    `events count = ${events.length}, time = ${endTime - startTime}ms`
-  )
+  log.verbose(`event count = ${events.length}, time = ${endTime - startTime}ms`)
 
   return result
 }

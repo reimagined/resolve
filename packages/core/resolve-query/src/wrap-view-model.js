@@ -31,29 +31,54 @@ const buildViewModel = async (
     state = pool.viewModel.projection.Init()
   }
 
+  let eventCount = 0
+
   const handler = async event => {
-    if (!pool.workers.has(key)) {
-      throw new Error(
-        `View model "${viewModelName}" build has been interrupted`
+    const segment = pool.performanceTracer
+      ? pool.performanceTracer.getSegment()
+      : null
+    const subSegment = segment ? segment.addNewSubsegment('applyEvent') : null
+
+    try {
+      if (!pool.workers.has(key)) {
+        throw new Error(
+          `View model "${viewModelName}" build has been interrupted`
+        )
+      }
+
+      eventCount++
+
+      if (subSegment != null) {
+        subSegment.addAnnotation('viewModelName', viewModelName)
+        subSegment.addAnnotation('eventType', event.type)
+      }
+
+      state = await pool.viewModel.projection[event.type](
+        state,
+        event,
+        aggregateArgs,
+        jwtToken
       )
-    }
+      lastTimestamp = event.timestamp - 1
 
-    state = await pool.viewModel.projection[event.type](
-      state,
-      event,
-      aggregateArgs,
-      jwtToken
-    )
-    lastTimestamp = event.timestamp - 1
+      aggregatesVersionsMap.set(event.aggregateId, event.aggregateVersion)
 
-    aggregatesVersionsMap.set(event.aggregateId, event.aggregateVersion)
-
-    if (pool.snapshotAdapter != null) {
-      await pool.snapshotAdapter.saveSnapshot(snapshotKey, {
-        aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
-        state: await pool.viewModel.serializeState(state),
-        lastTimestamp
-      })
+      if (pool.snapshotAdapter != null) {
+        await pool.snapshotAdapter.saveSnapshot(snapshotKey, {
+          aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
+          state: await pool.viewModel.serializeState(state),
+          lastTimestamp
+        })
+      }
+    } catch (error) {
+      if (subSegment != null) {
+        subSegment.addError(error)
+      }
+      throw error
+    } finally {
+      if (subSegment != null) {
+        subSegment.close()
+      }
     }
   }
 
@@ -66,7 +91,7 @@ const buildViewModel = async (
     handler
   )
 
-  return state
+  return { state, eventCount }
 }
 
 const read = async (pool, modelOptions, aggregateArgs, jwtToken) => {
@@ -106,10 +131,15 @@ const read = async (pool, modelOptions, aggregateArgs, jwtToken) => {
       )
     }
 
-    const result = await pool.workers.get(key)
+    const { state, eventCount } = await pool.workers.get(key)
+
+    if (subSegment != null) {
+      subSegment.addAnnotation('eventCount', eventCount)
+    }
+
     pool.workers.delete(key)
 
-    return result
+    return state
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)

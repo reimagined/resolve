@@ -367,11 +367,22 @@ Array [
     "eventCount",
     1,
   ],
+  Array [
+    "readModelName",
+    "brokenReadModelName",
+  ],
+  Array [
+    "eventType",
+    "BROKEN",
+  ],
 ]
 `;
 
 exports[`read models with performance tracer "read" should return { lastError, ... } when a read model is broken: addError 1`] = `
 Array [
+  Array [
+    [Error: BROKEN],
+  ],
   Array [
     Object {
       "lastError": [Error: BROKEN],
@@ -387,17 +398,22 @@ Array [
   Array [
     "updateByEvents",
   ],
+  Array [
+    "applyEvent",
+  ],
 ]
 `;
 
 exports[`read models with performance tracer "read" should return { lastError, ... } when a read model is broken: close 1`] = `
 Array [
   Array [],
+  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "read" should return { lastError, ... } when a read model is broken: getSegment 1`] = `
 Array [
+  Array [],
   Array [],
 ]
 `;
@@ -545,6 +561,46 @@ Array [
     "readModelName",
   ],
   Array [
+    "eventType",
+    "Init",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "eventType",
+    "OTHER_EVENT",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
     "resolverName",
     "getValue",
   ],
@@ -559,6 +615,21 @@ Array [
     "updateByEvents",
   ],
   Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
     "read",
   ],
 ]
@@ -568,11 +639,21 @@ exports[`read models with performance tracer "updateByEvents" should apply event
 Array [
   Array [],
   Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "updateByEvents" should apply events to the read model, "read" should return the resolver result: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
   Array [],
   Array [],
 ]
@@ -718,6 +799,14 @@ Array [
   ],
   Array [
     "readModelName",
+    "remoteReadModelName",
+  ],
+  Array [
+    "eventType",
+    "SET",
+  ],
+  Array [
+    "readModelName",
     "readModelName",
   ],
   Array [
@@ -737,6 +826,9 @@ Array [
 
 exports[`read models with performance tracer "updateByEvents" should raise error when updating had been interrupted: addError 1`] = `
 Array [
+  Array [
+    [Error: Read model "remoteReadModelName" updating had been interrupted],
+  ],
   Array [
     Object {
       "lastError": [Error: Read model "remoteReadModelName" updating had been interrupted],
@@ -762,7 +854,7 @@ Array [
     "updateByEvents",
   ],
   Array [
-    "dispose",
+    "applyEvent",
   ],
   Array [
     "dispose",
@@ -772,6 +864,12 @@ Array [
   ],
   Array [
     "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "applyEvent",
   ],
 ]
 `;
@@ -783,11 +881,15 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "updateByEvents" should raise error when updating had been interrupted: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -980,6 +1082,9 @@ Array [
   Array [
     [Error: View model "testViewModelName" build has been interrupted],
   ],
+  Array [
+    [Error: View model "testViewModelName" build has been interrupted],
+  ],
 ]
 `;
 
@@ -991,6 +1096,9 @@ Array [
   Array [
     "dispose",
   ],
+  Array [
+    "applyEvent",
+  ],
 ]
 `;
 
@@ -998,11 +1106,13 @@ exports[`view models with performance tracer "read" should raise error when inte
 Array [
   Array [],
   Array [],
+  Array [],
 ]
 `;
 
 exports[`view models with performance tracer "read" should raise error when interrupted: getSegment 1`] = `
 Array [
+  Array [],
   Array [],
   Array [],
 ]
@@ -1064,6 +1174,62 @@ Array [
     "viewModelName",
     "testViewModelName",
   ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
 ]
 `;
 
@@ -1075,7 +1241,25 @@ Array [
     "read",
   ],
   Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
     "read",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
   ],
 ]
 `;
@@ -1084,11 +1268,23 @@ exports[`view models with performance tracer "read" should return state: close 1
 Array [
   Array [],
   Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`view models with performance tracer "read" should return state: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
   Array [],
   Array [],
 ]
@@ -1104,6 +1300,38 @@ Array [
     "viewModelName",
     "testViewModelName",
   ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
 ]
 `;
 
@@ -1117,6 +1345,15 @@ Array [
   Array [
     "read",
   ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
 ]
 `;
 
@@ -1124,11 +1361,17 @@ exports[`view models with performance tracer "read" should reuse working build p
 Array [
   Array [],
   Array [],
+  Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`view models with performance tracer "read" should reuse working build process: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
+  Array [],
   Array [],
   Array [],
 ]
@@ -1212,6 +1455,62 @@ Array [
     "viewModelName",
     "testViewModelName",
   ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
 ]
 `;
 
@@ -1223,7 +1522,25 @@ Array [
     "read",
   ],
   Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
     "read",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
   ],
 ]
 `;
@@ -1232,11 +1549,23 @@ exports[`view models with performance tracer "readAndSerialize" should return se
 Array [
   Array [],
   Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`view models with performance tracer "readAndSerialize" should return serialized state: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
   Array [],
   Array [],
 ]
