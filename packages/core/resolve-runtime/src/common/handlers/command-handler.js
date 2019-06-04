@@ -45,7 +45,7 @@ const commandHandler = async (req, res) => {
 
     subSegment.addAnnotation('aggregateName', commandArgs.aggregateName)
     subSegment.addAnnotation('aggregateId', commandArgs.aggregateId)
-    subSegment.addAnnotation('type', commandArgs.type)    
+    subSegment.addAnnotation('type', commandArgs.type)
 
     await res.status(200)
     await res.setHeader('Content-Type', 'text/plain')
@@ -58,7 +58,7 @@ const commandHandler = async (req, res) => {
     await res.setHeader('Content-Type', 'text/plain')
     await res.end(`${message.commandFail}${err.message}`)
 
-    subSegment.addError(error)
+    subSegment.addError(err)
 
     log.error('Command handler failed', req.path, err)
   } finally {

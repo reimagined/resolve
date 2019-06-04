@@ -117,7 +117,7 @@ const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
     case 'bootstrap': {
       try {
         return await bootstrap(resolve)
-      } catch(error) {
+      } catch (error) {
         subSegment.addError(error)
       } finally {
         subSegment.close()
@@ -131,7 +131,7 @@ const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
           resolve,
           getReadModelNames
         )
-      } catch(error) {
+      } catch (error) {
         subSegment.addError(error)
       } finally {
         subSegment.close()
@@ -145,7 +145,7 @@ const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
           resolve,
           getSagaNames
         )
-      } catch(error) {
+      } catch (error) {
         subSegment.addError(error)
       } finally {
         subSegment.close()

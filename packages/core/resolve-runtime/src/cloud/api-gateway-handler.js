@@ -15,7 +15,7 @@ const apiGatewayHandler = async (lambdaEvent, lambdaContext, resolve) => {
 
   try {
     return await executor(lambdaEvent, lambdaContext)
-  } catch(error) {
+  } catch (error) {
     subSegment.addError(error)
   } finally {
     subSegment.close()
