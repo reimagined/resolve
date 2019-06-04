@@ -4,6 +4,9 @@ import debugLevels from 'debug-levels'
 const log = debugLevels('resolve:resolve-runtime:event-bus-event-handler')
 
 const handleApplyEvents = async (lambdaEvent, resolve) => {
+  const segment = resolve.performanceTracer.getSegment()
+  const subSegment = segment.addNewSubsegment('applyEventsFromBus')
+
   const { events, properties, listenerId } = lambdaEvent
 
   log.debug('applying events started')
@@ -18,10 +21,13 @@ const handleApplyEvents = async (lambdaEvent, resolve) => {
       listenerId,
       events.map(decodeEvent)
     )
+    subSegment.addAnnotation('eventsCount', events.length)
   } catch (error) {
     log.error('Error while applying events to read-model', error)
-
+    subSegment.addError(error)
     result = error
+  } finally {
+    subSegment.close()
   }
   const endTime = Date.now()
   log.debug('applying events successfully')

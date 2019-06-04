@@ -30,7 +30,7 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
     await initPerformanceTracer(resolve)
 
     const segment = resolve.performanceTracer.getSegment()
-    subSegment = segment.addNewSubsegment('init resolve')
+    subSegment = segment.addNewSubsegment('initResolve')
 
     resolve.aggregateActions = {}
     for (const aggregate of domain.aggregates) {

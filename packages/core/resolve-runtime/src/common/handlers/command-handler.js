@@ -11,6 +11,9 @@ const log = debugLevels('resolve:resolve-runtime:command-handler')
 const CONCURRENT_RETRY_COUNT = 3
 
 const commandHandler = async (req, res) => {
+  const segment = req.resolve.performanceTracer.getSegment()
+  const subSegment = segment.addNewSubsegment('command')
+
   try {
     const executeCommand = req.resolve.executeCommand
     const commandArgs = extractRequestBody(req)
@@ -40,6 +43,10 @@ const commandHandler = async (req, res) => {
       throw lastError
     }
 
+    subSegment.addAnnotation('aggregateName', commandArgs.aggregateName)
+    subSegment.addAnnotation('aggregateId', commandArgs.aggregateId)
+    subSegment.addAnnotation('type', commandArgs.type)    
+
     await res.status(200)
     await res.setHeader('Content-Type', 'text/plain')
     await res.end(JSON.stringify(event, null, 2))
@@ -51,7 +58,11 @@ const commandHandler = async (req, res) => {
     await res.setHeader('Content-Type', 'text/plain')
     await res.end(`${message.commandFail}${err.message}`)
 
+    subSegment.addError(error)
+
     log.error('Command handler failed', req.path, err)
+  } finally {
+    subSegment.close()
   }
 }
 
