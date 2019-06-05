@@ -207,9 +207,14 @@ const getAggregateState = async (
         typeof projection.Init === 'function' ? await projection.Init() : null
     }
 
+    let eventCount = 0
+    const withIncrementEventCount = callback => async (...args) => {
+      eventCount++
+      return await callback(...args)
+    }
     const eventHandler = (pool.snapshotAdapter != null && snapshotKey != null
-      ? snapshotHandler
-      : regularHandler
+      ? withIncrementEventCount(snapshotHandler)
+      : withIncrementEventCount(regularHandler)
     ).bind(null, pool, aggregateInfo)
 
     await (async () => {
@@ -223,13 +228,19 @@ const getAggregateState = async (
           throw generateCommandError('Command handler is disposed')
         }
 
-        return await pool.eventStore.loadEvents(
+        eventCount = 0
+        const result = await pool.eventStore.loadEvents(
           {
             aggregateIds: [aggregateId],
             startTime: aggregateInfo.lastTimestamp - 1
           },
           eventHandler
         )
+        if (subSegment != null) {
+          subSegment.addAnnotation('eventCount', eventCount)
+        }
+
+        return result
       } catch (error) {
         if (subSegment != null) {
           subSegment.addError(error)
@@ -268,6 +279,7 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
 
     if (subSegment != null) {
       subSegment.addAnnotation('aggregateName', aggregateName)
+      subSegment.addAnnotation('commandType', command.type)
     }
 
     pool.aggregateName = aggregateName
@@ -295,6 +307,11 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
         ? segment.addNewSubsegment('processCommand')
         : null
       try {
+        if (subSegment != null) {
+          subSegment.addAnnotation('aggregateName', aggregateName)
+          subSegment.addAnnotation('commandType', command.type)
+        }
+
         return await aggregate.commands[type](...args)
       } catch (error) {
         if (subSegment != null) {

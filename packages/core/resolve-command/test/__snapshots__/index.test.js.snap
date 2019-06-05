@@ -42,12 +42,32 @@ Array [
     "Map",
   ],
   Array [
-    "aggregateName",
-    "Map",
+    "commandType",
+    "set",
   ],
   Array [
     "aggregateName",
     "Map",
+  ],
+  Array [
+    "eventCount",
+    0,
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "commandType",
+    "set",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "commandType",
+    "set",
   ],
   Array [
     "aggregateName",
@@ -137,12 +157,32 @@ Array [
     "Map",
   ],
   Array [
-    "aggregateName",
-    "Map",
+    "commandType",
+    "set",
   ],
   Array [
     "aggregateName",
     "Map",
+  ],
+  Array [
+    "eventCount",
+    0,
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "commandType",
+    "set",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "commandType",
+    "set",
   ],
   Array [
     "aggregateName",
@@ -245,12 +285,32 @@ Array [
     "User",
   ],
   Array [
-    "aggregateName",
-    "User",
+    "commandType",
+    "createUser",
   ],
   Array [
     "aggregateName",
     "User",
+  ],
+  Array [
+    "eventCount",
+    0,
+  ],
+  Array [
+    "aggregateName",
+    "User",
+  ],
+  Array [
+    "commandType",
+    "createUser",
+  ],
+  Array [
+    "aggregateName",
+    "User",
+  ],
+  Array [
+    "commandType",
+    "createUser",
   ],
   Array [
     "aggregateName",
@@ -263,6 +323,18 @@ Array [
   Array [
     "eventType",
     "USER_CREATED",
+  ],
+  Array [
+    "eventCount",
+    1,
+  ],
+  Array [
+    "aggregateName",
+    "User",
+  ],
+  Array [
+    "commandType",
+    "createUser",
   ],
 ]
 `;
@@ -350,12 +422,32 @@ Array [
     "Entity",
   ],
   Array [
-    "aggregateName",
-    "Entity",
+    "commandType",
+    "create",
   ],
   Array [
     "aggregateName",
     "Entity",
+  ],
+  Array [
+    "eventCount",
+    0,
+  ],
+  Array [
+    "aggregateName",
+    "Entity",
+  ],
+  Array [
+    "commandType",
+    "create",
+  ],
+  Array [
+    "aggregateName",
+    "Entity",
+  ],
+  Array [
+    "commandType",
+    "create",
   ],
   Array [
     "aggregateName",
@@ -368,6 +460,18 @@ Array [
   Array [
     "eventType",
     "CREATED",
+  ],
+  Array [
+    "eventCount",
+    1,
+  ],
+  Array [
+    "aggregateName",
+    "Entity",
+  ],
+  Array [
+    "commandType",
+    "create",
   ],
 ]
 `;
@@ -455,8 +559,24 @@ Array [
     "empty",
   ],
   Array [
+    "commandType",
+    "emptyCommand",
+  ],
+  Array [
     "aggregateName",
     "empty",
+  ],
+  Array [
+    "eventCount",
+    0,
+  ],
+  Array [
+    "aggregateName",
+    "empty",
+  ],
+  Array [
+    "commandType",
+    "emptyCommand",
   ],
 ]
 `;
@@ -509,6 +629,10 @@ Array [
     "aggregateName",
     "empty",
   ],
+  Array [
+    "commandType",
+    "emptyCommand",
+  ],
 ]
 `;
 
@@ -547,8 +671,24 @@ Array [
     "empty",
   ],
   Array [
+    "commandType",
+    "emptyCommand",
+  ],
+  Array [
     "aggregateName",
     "empty",
+  ],
+  Array [
+    "eventCount",
+    0,
+  ],
+  Array [
+    "aggregateName",
+    "empty",
+  ],
+  Array [
+    "commandType",
+    "emptyCommand",
   ],
 ]
 `;
@@ -603,8 +743,24 @@ Array [
     "empty",
   ],
   Array [
+    "commandType",
+    "emptyCommand",
+  ],
+  Array [
     "aggregateName",
     "empty",
+  ],
+  Array [
+    "eventCount",
+    0,
+  ],
+  Array [
+    "aggregateName",
+    "empty",
+  ],
+  Array [
+    "commandType",
+    "emptyCommand",
   ],
 ]
 `;
@@ -717,6 +873,10 @@ Array [
   Array [
     "aggregateName",
     "Map",
+  ],
+  Array [
+    "commandType",
+    "set",
   ],
   Array [
     "aggregateName",
@@ -845,6 +1005,10 @@ Array [
     "Map",
   ],
   Array [
+    "commandType",
+    "set",
+  ],
+  Array [
     "aggregateName",
     "Map",
   ],
@@ -892,6 +1056,10 @@ Array [
   Array [
     "aggregateName",
     "Map",
+  ],
+  Array [
+    "commandType",
+    "set",
   ],
   Array [
     "aggregateName",
@@ -943,8 +1111,68 @@ Array [
     "Map",
   ],
   Array [
+    "commandType",
+    "set",
+  ],
+  Array [
     "aggregateName",
     "Map",
+  ],
+  Array [
+    "eventCount",
+    0,
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "commandType",
+    "set",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "commandType",
+    "set",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "eventType",
+    "SET",
+  ],
+  Array [
+    "eventCount",
+    1,
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "commandType",
+    "set",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "commandType",
+    "set",
   ],
   Array [
     "aggregateName",
@@ -967,28 +1195,16 @@ Array [
     "SET",
   ],
   Array [
-    "aggregateName",
-    "Map",
+    "eventCount",
+    2,
   ],
   Array [
     "aggregateName",
     "Map",
   ],
   Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
-    "eventType",
-    "SET",
+    "commandType",
+    "set",
   ],
 ]
 `;
