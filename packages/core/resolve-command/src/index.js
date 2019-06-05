@@ -165,20 +165,41 @@ const getAggregateState = async (
     }
 
     try {
-      if (snapshotKey == null) {
+      if (snapshotKey == null || pool.snapshotAdapter == null) {
         throw generateCommandError()
       }
-      const snapshot = await pool.snapshotAdapter.loadSnapshot(snapshotKey)
+
+      const snapshot = await (async () => {
+        const segment = pool.performanceTracer
+          ? pool.performanceTracer.getSegment()
+          : null
+        const subSegment = segment
+          ? segment.addNewSubsegment('loadSnapshot')
+          : null
+
+        try {
+          if (pool.isDisposed) {
+            throw generateCommandError('Command handler is disposed')
+          }
+
+          return await pool.snapshotAdapter.loadSnapshot(snapshotKey)
+        } catch (error) {
+          if (subSegment != null) {
+            subSegment.addError(error)
+          }
+          throw error
+        } finally {
+          if (subSegment != null) {
+            subSegment.close()
+          }
+        }
+      })()
 
       Object.assign(aggregateInfo, {
         aggregateState: deserializeState(snapshot.state),
         aggregateVersion: snapshot.version,
         lastTimestamp: snapshot.timestamp
       })
-
-      if (subSegment != null) {
-        subSegment.addAnnotation('snapshot', true)
-      }
     } catch (err) {}
 
     if (!(+aggregateInfo.lastTimestamp > 0) && projection != null) {
@@ -191,13 +212,35 @@ const getAggregateState = async (
       : regularHandler
     ).bind(null, pool, aggregateInfo)
 
-    await pool.eventStore.loadEvents(
-      {
-        aggregateIds: [aggregateId],
-        startTime: aggregateInfo.lastTimestamp - 1
-      },
-      eventHandler
-    )
+    await (async () => {
+      const segment = pool.performanceTracer
+        ? pool.performanceTracer.getSegment()
+        : null
+      const subSegment = segment ? segment.addNewSubsegment('loadEvents') : null
+
+      try {
+        if (pool.isDisposed) {
+          throw generateCommandError('Command handler is disposed')
+        }
+
+        return await pool.eventStore.loadEvents(
+          {
+            aggregateIds: [aggregateId],
+            startTime: aggregateInfo.lastTimestamp - 1
+          },
+          eventHandler
+        )
+      } catch (error) {
+        if (subSegment != null) {
+          subSegment.addError(error)
+        }
+        throw error
+      } finally {
+        if (subSegment != null) {
+          subSegment.close()
+        }
+      }
+    })()
 
     return aggregateInfo
   } catch (error) {
@@ -244,7 +287,27 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
       throw generateCommandError(`Command type "${type}" does not exist`)
     }
 
-    const commandHandler = aggregate.commands[type]
+    const commandHandler = async (...args) => {
+      const segment = pool.performanceTracer
+        ? pool.performanceTracer.getSegment()
+        : null
+      const subSegment = segment
+        ? segment.addNewSubsegment('processCommand')
+        : null
+      try {
+        return await aggregate.commands[type](...args)
+      } catch (error) {
+        if (subSegment != null) {
+          subSegment.addError(error)
+        }
+        throw error
+      } finally {
+        if (subSegment != null) {
+          subSegment.close()
+        }
+      }
+    }
+
     const event = await commandHandler(
       aggregateState,
       command,
@@ -274,7 +337,25 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
       payload: event.payload
     }
 
-    await pool.eventStore.saveEvent(processedEvent)
+    await (async () => {
+      const segment = pool.performanceTracer
+        ? pool.performanceTracer.getSegment()
+        : null
+      const subSegment = segment ? segment.addNewSubsegment('saveEvent') : null
+
+      try {
+        return await pool.eventStore.saveEvent(processedEvent)
+      } catch (error) {
+        if (subSegment != null) {
+          subSegment.addError(error)
+        }
+        throw error
+      } finally {
+        if (subSegment != null) {
+          subSegment.close()
+        }
+      }
+    })()
 
     return processedEvent
   } catch (error) {

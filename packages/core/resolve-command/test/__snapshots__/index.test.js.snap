@@ -53,14 +53,6 @@ Array [
     "aggregateName",
     "Map",
   ],
-  Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
-    "eventType",
-    "SET",
-  ],
 ]
 `;
 
@@ -87,6 +79,15 @@ Array [
     "getAggregateState",
   ],
   Array [
+    "loadEvents",
+  ],
+  Array [
+    "processCommand",
+  ],
+  Array [
+    "saveEvent",
+  ],
+  Array [
     "dispose",
   ],
   Array [
@@ -96,13 +97,16 @@ Array [
     "getAggregateState",
   ],
   Array [
-    "applyEvent",
+    "loadEvents",
   ],
 ]
 `;
 
 exports[`dispose with performance tracer should dispose the regular handler: close 1`] = `
 Array [
+  Array [],
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -120,15 +124,14 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`dispose with performance tracer should dispose the snapshot handler: addAnnotation 1`] = `
 Array [
-  Array [
-    "aggregateName",
-    "Map",
-  ],
   Array [
     "aggregateName",
     "Map",
@@ -159,6 +162,9 @@ Array [
   Array [
     [Error: Command handler is disposed],
   ],
+  Array [
+    [Error: Command handler is disposed],
+  ],
 ]
 `;
 
@@ -171,6 +177,18 @@ Array [
     "getAggregateState",
   ],
   Array [
+    "loadSnapshot",
+  ],
+  Array [
+    "loadEvents",
+  ],
+  Array [
+    "processCommand",
+  ],
+  Array [
+    "saveEvent",
+  ],
+  Array [
     "dispose",
   ],
   Array [
@@ -180,7 +198,10 @@ Array [
     "getAggregateState",
   ],
   Array [
-    "applySnapshot",
+    "loadSnapshot",
+  ],
+  Array [
+    "loadEvents",
   ],
 ]
 `;
@@ -193,11 +214,21 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`dispose with performance tracer should dispose the snapshot handler: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -241,6 +272,9 @@ Array [
   Array [
     [Error: Access denied],
   ],
+  Array [
+    [Error: Access denied],
+  ],
 ]
 `;
 
@@ -253,13 +287,28 @@ Array [
     "getAggregateState",
   ],
   Array [
+    "loadEvents",
+  ],
+  Array [
+    "processCommand",
+  ],
+  Array [
+    "saveEvent",
+  ],
+  Array [
     "executeCommand",
   ],
   Array [
     "getAggregateState",
   ],
   Array [
+    "loadEvents",
+  ],
+  Array [
     "applyEvent",
+  ],
+  Array [
+    "processCommand",
   ],
 ]
 `;
@@ -271,11 +320,21 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`executeCommand with performance tracer should pass security context to command handler: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -318,6 +377,9 @@ Array [
   Array [
     [Error: Entity already created],
   ],
+  Array [
+    [Error: Entity already created],
+  ],
 ]
 `;
 
@@ -330,13 +392,28 @@ Array [
     "getAggregateState",
   ],
   Array [
+    "loadEvents",
+  ],
+  Array [
+    "processCommand",
+  ],
+  Array [
+    "saveEvent",
+  ],
+  Array [
     "executeCommand",
   ],
   Array [
     "getAggregateState",
   ],
   Array [
+    "loadEvents",
+  ],
+  Array [
     "applyEvent",
+  ],
+  Array [
+    "processCommand",
   ],
 ]
 `;
@@ -348,11 +425,21 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`executeCommand with performance tracer should success build aggregate state and execute command: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -384,6 +471,15 @@ Array [
   Array [
     "getAggregateState",
   ],
+  Array [
+    "loadEvents",
+  ],
+  Array [
+    "processCommand",
+  ],
+  Array [
+    "saveEvent",
+  ],
 ]
 `;
 
@@ -391,11 +487,17 @@ exports[`executeCommand with performance tracer should success build aggregate s
 Array [
   Array [],
   Array [],
+  Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`executeCommand with performance tracer should success build aggregate state from empty event list and execute cmd: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
+  Array [],
   Array [],
   Array [],
 ]
@@ -467,6 +569,12 @@ Array [
   Array [
     "getAggregateState",
   ],
+  Array [
+    "loadEvents",
+  ],
+  Array [
+    "processCommand",
+  ],
 ]
 `;
 
@@ -474,11 +582,15 @@ exports[`executeCommand with performance tracer should throw error when an event
 Array [
   Array [],
   Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`executeCommand with performance tracer should throw error when an event contains "aggregateId", "aggregateVersion", "timestamp" fields: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
   Array [],
   Array [],
 ]
@@ -513,6 +625,12 @@ Array [
   Array [
     "getAggregateState",
   ],
+  Array [
+    "loadEvents",
+  ],
+  Array [
+    "processCommand",
+  ],
 ]
 `;
 
@@ -520,11 +638,15 @@ exports[`executeCommand with performance tracer should throw error when an event
 Array [
   Array [],
   Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`executeCommand with performance tracer should throw error when an event does not contain "type" field: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
   Array [],
   Array [],
 ]
@@ -630,6 +752,9 @@ Array [
   Array [
     [Error: Incorrect order of events by aggregateId = "aggregateId"],
   ],
+  Array [
+    [Error: Incorrect order of events by aggregateId = "aggregateId"],
+  ],
 ]
 `;
 
@@ -640,6 +765,9 @@ Array [
   ],
   Array [
     "getAggregateState",
+  ],
+  Array [
+    "loadEvents",
   ],
   Array [
     "applyEvent",
@@ -656,11 +784,13 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
 ]
 `;
 
 exports[`executeCommand with performance tracer should throw error when the incorrect order of events: getSegment 1`] = `
 Array [
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -845,10 +975,6 @@ Array [
     "Map",
   ],
   Array [
-    "snapshot",
-    true,
-  ],
-  Array [
     "aggregateName",
     "Map",
   ],
@@ -878,10 +1004,28 @@ Array [
     "getAggregateState",
   ],
   Array [
+    "loadSnapshot",
+  ],
+  Array [
+    "loadEvents",
+  ],
+  Array [
+    "processCommand",
+  ],
+  Array [
+    "saveEvent",
+  ],
+  Array [
     "executeCommand",
   ],
   Array [
     "getAggregateState",
+  ],
+  Array [
+    "loadSnapshot",
+  ],
+  Array [
+    "loadEvents",
   ],
   Array [
     "applySnapshot",
@@ -890,10 +1034,22 @@ Array [
     "applyEvent",
   ],
   Array [
+    "processCommand",
+  ],
+  Array [
+    "saveEvent",
+  ],
+  Array [
     "executeCommand",
   ],
   Array [
     "getAggregateState",
+  ],
+  Array [
+    "loadSnapshot",
+  ],
+  Array [
+    "loadEvents",
   ],
   Array [
     "applySnapshot",
@@ -903,6 +1059,12 @@ Array [
   ],
   Array [
     "applyEvent",
+  ],
+  Array [
+    "processCommand",
+  ],
+  Array [
+    "saveEvent",
   ],
 ]
 `;
@@ -920,11 +1082,35 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`executeCommand with performance tracer should use snapshotAdapter for building state: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
