@@ -4,13 +4,15 @@ const initPerformanceTracer = resolve => {
   Object.defineProperty(resolve, 'performanceTracer', {
     value: {
       getSegment: () => {
-        const segment = process.env.TRACE ? AWSXray.getSegment() : null
+        let segment = process.env.TRACE ? AWSXray.getSegment() : null
 
         return {
           addNewSubsegment: subsegmentName => {
             const subsegment = process.env.TRACE
               ? segment.addNewSubsegment(subsegmentName)
               : null
+            const prevSegment = segment
+            segment = subsegment
 
             return {
               addAnnotation: (annotationName, data) => {
@@ -26,6 +28,7 @@ const initPerformanceTracer = resolve => {
               close: () => {
                 if (process.env.TRACE) {
                   subsegment.close()
+                  segment = prevSegment
                 }
               }
             }
