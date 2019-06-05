@@ -1,10 +1,16 @@
 import AWSXray from 'aws-xray-sdk-core'
 
 const initPerformanceTracer = resolve => {
+  let segment = process.env.TRACE ? AWSXray.getSegment() : null
+  let traceId = process.env._X_AMZN_TRACE_ID
+
   Object.defineProperty(resolve, 'performanceTracer', {
     value: {
       getSegment: () => {
-        let segment = process.env.TRACE ? AWSXray.getSegment() : null
+        if (traceId !== process.env._X_AMZN_TRACE_ID) {
+          traceId = process.env._X_AMZN_TRACE_ID
+          segment = process.env.TRACE ? AWSXray.getSegment() : null
+        }
 
         return {
           addNewSubsegment: subsegmentName => {
