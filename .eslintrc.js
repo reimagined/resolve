@@ -314,6 +314,7 @@ module.exports = {
           'suback',
           'subdirectory',
           'subsegment',
+          'subsegments',
           'svg',
           'symlink',
           'tagline',

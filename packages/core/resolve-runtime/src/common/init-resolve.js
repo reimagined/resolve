@@ -1,6 +1,7 @@
 import createEventStore from 'resolve-es'
 import createCommandExecutor from 'resolve-command'
 import createQueryExecutor from 'resolve-query'
+import crypto from 'crypto'
 
 const initResolve = async resolve => {
   const {
@@ -62,6 +63,11 @@ const initResolve = async resolve => {
     snapshotAdapter: { value: snapshotAdapter },
     storageAdapter: { value: storageAdapter }
   })
+
+  process.env.RESOLVE_LOCAL_TRACE_ID = crypto
+    .randomBytes(Math.ceil(32 / 2))
+    .toString('hex')
+    .slice(0, 32)
 }
 
 export default initResolve
