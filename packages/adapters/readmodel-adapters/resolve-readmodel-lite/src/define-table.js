@@ -28,9 +28,7 @@ const defineTable = async (
     const indexType = tableDescription.indexes[indexName]
     if (indexType !== 'string' && indexType !== 'number') {
       throw new Error(
-        `Wrong index "${indexName}" type "${
-          tableDescription.indexes[indexName]
-        }"`
+        `Wrong index "${indexName}" type "${tableDescription.indexes[indexName]}"`
       )
     }
 

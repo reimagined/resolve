@@ -27,9 +27,7 @@ const saveEvent = async ({ tableName, database, escapeId, escape }, event) => {
     }
 
     throw new ConcurrentError(
-      `Can not save the event because aggregate '${
-        event.aggregateId
-      }' is not actual at the moment. Please retry later.`
+      `Can not save the event because aggregate '${event.aggregateId}' is not actual at the moment. Please retry later.`
     )
   }
 }

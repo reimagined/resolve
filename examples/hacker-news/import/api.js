@@ -59,9 +59,7 @@ const invokeImportApi = async body => {
       while (loop) {
         try {
           const response = await fetch(
-            `http://localhost:${process.env.PORT}${
-              process.env.ROOT_PATH
-            }/api/import_events`,
+            `http://localhost:${process.env.PORT}${process.env.ROOT_PATH}/api/import_events`,
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },

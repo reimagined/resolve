@@ -37,9 +37,7 @@ export default ({ resolveConfig, isClient }) => {
       resolveConfig.schedulers[saga.schedulerName] == null
     ) {
       throw new Error(
-        `${message.configNotContainSectionError}.schedulers[${
-          saga.schedulerName
-        }]`
+        `${message.configNotContainSectionError}.schedulers[${saga.schedulerName}]`
       )
     }
 

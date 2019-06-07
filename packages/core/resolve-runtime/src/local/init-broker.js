@@ -135,9 +135,7 @@ const processIncomingMessages = async (resolve, byteMessage) => {
 
   if (clientId !== resolve.instanceId) {
     throw new Error(
-      `Instance ${
-        resolve.instanceId
-      } has received message addressed to ${clientId}`
+      `Instance ${resolve.instanceId} has received message addressed to ${clientId}`
     )
   }
 

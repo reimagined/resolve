@@ -4,16 +4,19 @@ const log = debugLevels('resolve:resolve-runtime:dispose-resolve')
 
 const disposeResolve = async resolve => {
   try {
-    await resolve.eventStore.dispose()
-    await resolve.executeCommand.dispose()
-    await resolve.executeQuery.dispose()
-
-    await resolve.storageAdapter.dispose()
-    await resolve.snapshotAdapter.dispose()
+    const disposePromises = [
+      resolve.eventStore.dispose(),
+      resolve.executeCommand.dispose(),
+      resolve.executeQuery.dispose(),
+      resolve.storageAdapter.dispose(),
+      resolve.snapshotAdapter.dispose()
+    ]
 
     for (const name of Object.keys(resolve.readModelConnectors)) {
-      await resolve.readModelConnectors[name].dispose()
+      disposePromises.push(resolve.readModelConnectors[name].dispose())
     }
+
+    await Promise.all(disposePromises)
 
     log.info('Dispose resolve entries successfully')
   } catch (error) {
