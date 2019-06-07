@@ -4,9 +4,7 @@ const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
 const publishEvent = async (resolve, event) => {
   const eventDescriptor = {
-    topic: `${process.env.RESOLVE_DEPLOYMENT_ID}/${event.type}/${
-      event.aggregateId
-    }`,
+    topic: `${process.env.RESOLVE_DEPLOYMENT_ID}/${event.type}/${event.aggregateId}`,
     payload: JSON.stringify(event),
     qos: 1
   }

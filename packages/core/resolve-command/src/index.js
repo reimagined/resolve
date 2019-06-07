@@ -38,9 +38,7 @@ const regularHandler = async (pool, aggregateInfo, event) => {
 
   if (aggregateInfo.aggregateVersion >= event.aggregateVersion) {
     throw generateCommandError(
-      `Incorrect order of events by aggregateId = "${
-        aggregateInfo.aggregateId
-      }"`
+      `Incorrect order of events by aggregateId = "${aggregateInfo.aggregateId}"`
     )
   }
   aggregateInfo.aggregateVersion = event.aggregateVersion

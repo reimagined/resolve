@@ -66,9 +66,7 @@ const mainHandler = async (originalReq, res) => {
     default: {
       await res.status(405)
       await res.end(
-        `Access error: path "${
-          req.path
-        }" is not addressable by current executor`
+        `Access error: path "${req.path}" is not addressable by current executor`
       )
 
       log.warn('Path is not addressable by current executor', req.path, req)

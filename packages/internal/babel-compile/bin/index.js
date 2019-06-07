@@ -24,9 +24,7 @@ for (const config of configs) {
     .then(() => {
       // eslint-disable-next-line no-console
       console.log(
-        `↑ [${config.name}] { moduleType: "${
-          config.moduleType
-        }", moduleType: "${config.moduleTarget}" }`
+        `↑ [${config.name}] { moduleType: "${config.moduleType}", moduleType: "${config.moduleTarget}" }`
       )
     })
     .catch(error => {

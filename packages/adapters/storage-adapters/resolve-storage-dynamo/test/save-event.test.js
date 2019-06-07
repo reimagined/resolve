@@ -73,9 +73,7 @@ describe('method "saveEvent"', () => {
     } catch (err) {
       expect(err).toEqual(
         new ConcurrentError(
-          `Can not save the event because aggregate '${
-            event.aggregateId
-          }' is not actual at the moment. Please retry later.`
+          `Can not save the event because aggregate '${event.aggregateId}' is not actual at the moment. Please retry later.`
         )
       )
     }

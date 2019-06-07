@@ -139,9 +139,7 @@ void (async () => {
         })
 
         await opn(
-          `http://${
-            resolveConfig.customConstants.remoteReduxDevTools.hostname
-          }:${resolveConfig.customConstants.remoteReduxDevTools.port}`
+          `http://${resolveConfig.customConstants.remoteReduxDevTools.hostname}:${resolveConfig.customConstants.remoteReduxDevTools.port}`
         )
 
         await reset(

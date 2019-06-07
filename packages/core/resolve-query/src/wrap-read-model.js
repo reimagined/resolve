@@ -39,9 +39,7 @@ const updateByEvents = async (pool, events) => {
 
   if (projection == null) {
     throw new Error(
-      `Updating by events is prohibited when "${
-        pool.readModel.name
-      }" projection is not specified`
+      `Updating by events is prohibited when "${pool.readModel.name}" projection is not specified`
     )
   }
 
@@ -123,9 +121,7 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
   const connector = readModelConnectors[readModel.connectorName]
   if (connector == null) {
     throw new Error(
-      `Connector "${readModel.connectorName}" for read-model "${
-        readModel.name
-      }" does not exist`
+      `Connector "${readModel.connectorName}" for read-model "${readModel.name}" does not exist`
     )
   }
 

@@ -46,9 +46,7 @@ test('save event should throw ConcurrentError on duplicate aggregateVersion', as
     expect(error).toBeInstanceOf(ConcurrentError)
 
     expect(error.message).toEqual(
-      `Can not save the event because aggregate '${
-        event.aggregateId
-      }' is not actual at the moment. Please retry later.`
+      `Can not save the event because aggregate '${event.aggregateId}' is not actual at the moment. Please retry later.`
     )
   }
 })
