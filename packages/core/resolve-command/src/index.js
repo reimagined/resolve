@@ -43,6 +43,7 @@ const regularHandler = async (pool, aggregateInfo, event) => {
     if (subSegment != null) {
       subSegment.addAnnotation('aggregateName', aggregateName)
       subSegment.addAnnotation('eventType', event.type)
+      subSegment.addAnnotation('origin', 'resolve:applyEvent')
     }
 
     if (pool.isDisposed) {
@@ -91,6 +92,7 @@ const snapshotHandler = async (pool, aggregateInfo, event) => {
 
     if (subSegment != null) {
       subSegment.addAnnotation('aggregateName', aggregateName)
+      subSegment.addAnnotation('origin', 'resolve:applySnapshot')
     }
 
     if (pool.isDisposed) {
@@ -137,6 +139,7 @@ const getAggregateState = async (
 
     if (subSegment != null) {
       subSegment.addAnnotation('aggregateName', aggregateName)
+      subSegment.addAnnotation('origin', 'resolve:getAggregateState')
     }
 
     const snapshotKey = checkOptionShape(projection, [Object])
@@ -238,6 +241,7 @@ const getAggregateState = async (
         )
         if (subSegment != null) {
           subSegment.addAnnotation('eventCount', eventCount)
+          subSegment.addAnnotation('origin', 'resolve:loadEvents')
         }
 
         return result
@@ -280,6 +284,7 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
     if (subSegment != null) {
       subSegment.addAnnotation('aggregateName', aggregateName)
       subSegment.addAnnotation('commandType', command.type)
+      subSegment.addAnnotation('origin', 'resolve:executeCommand')
     }
 
     pool.aggregateName = aggregateName
@@ -310,6 +315,7 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
         if (subSegment != null) {
           subSegment.addAnnotation('aggregateName', aggregateName)
           subSegment.addAnnotation('commandType', command.type)
+          subSegment.addAnnotation('origin', 'resolve:processCommand')
         }
 
         return await aggregate.commands[type](...args)

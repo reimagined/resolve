@@ -46,6 +46,7 @@ const commandHandler = async (req, res) => {
     subSegment.addAnnotation('aggregateName', commandArgs.aggregateName)
     subSegment.addAnnotation('aggregateId', commandArgs.aggregateId)
     subSegment.addAnnotation('type', commandArgs.type)
+    subSegment.addAnnotation('origin', 'resolve:command')
 
     await res.status(200)
     await res.setHeader('Content-Type', 'text/plain')

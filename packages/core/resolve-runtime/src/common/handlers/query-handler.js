@@ -27,6 +27,7 @@ const queryHandler = async (req, res) => {
     })
 
     subSegment.addAnnotation('modelName', modelName)
+    subSegment.addAnnotation('origin', 'resolve:query')
 
     await res.status(200)
     await res.setHeader('Content-Type', 'application/json')

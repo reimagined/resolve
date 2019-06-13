@@ -47,28 +47,56 @@ Array [
     "readModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
     "readOnlyReadModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
     "brokenReadModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "remoteReadModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:dispose",
   ],
 ]
 `;
@@ -137,6 +165,10 @@ Array [
     "readModelName",
     "brokenReadModelName",
   ],
+  Array [
+    "origin",
+    "resolve:drop",
+  ],
 ]
 `;
 
@@ -169,8 +201,16 @@ Array [
     "readModelName",
   ],
   Array [
+    "origin",
+    "resolve:drop",
+  ],
+  Array [
     "readModelName",
     "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
 ]
 `;
@@ -209,28 +249,56 @@ Array [
     "readModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
     "readOnlyReadModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
     "brokenReadModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "remoteReadModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:drop",
   ],
 ]
 `;
@@ -340,24 +408,48 @@ Array [
     "readModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
     "readOnlyReadModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
     "brokenReadModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "remoteReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:dispose",
   ],
 ]
 `;
@@ -431,6 +523,10 @@ Array [
     1,
   ],
   Array [
+    "origin",
+    "resolve:updateByEvents",
+  ],
+  Array [
     "readModelName",
     "brokenReadModelName",
   ],
@@ -439,8 +535,16 @@ Array [
     "BROKEN",
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "readModelName",
     "brokenReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
 ]
 `;
@@ -501,8 +605,16 @@ Array [
     "readFromDatabase",
   ],
   Array [
+    "origin",
+    "resolve:read",
+  ],
+  Array [
     "readModelName",
     "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
@@ -511,6 +623,10 @@ Array [
   Array [
     "resolverName",
     "readFromDatabase",
+  ],
+  Array [
+    "origin",
+    "resolve:resolver",
   ],
 ]
 `;
@@ -554,24 +670,48 @@ Array [
     "readModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
     "readOnlyReadModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
     "brokenReadModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "remoteReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:dispose",
   ],
 ]
 `;
@@ -634,8 +774,16 @@ Array [
     "readFromDatabase",
   ],
   Array [
+    "origin",
+    "resolve:read",
+  ],
+  Array [
     "readModelName",
     "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
@@ -644,6 +792,10 @@ Array [
   Array [
     "resolverName",
     "readFromDatabase",
+  ],
+  Array [
+    "origin",
+    "resolve:resolver",
   ],
 ]
 `;
@@ -691,6 +843,10 @@ Array [
     5,
   ],
   Array [
+    "origin",
+    "resolve:updateByEvents",
+  ],
+  Array [
     "readModelName",
     "readModelName",
   ],
@@ -699,8 +855,16 @@ Array [
     "Init",
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "readModelName",
     "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
@@ -711,12 +875,20 @@ Array [
     "ADD",
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "readModelName",
     "readModelName",
   ],
   Array [
     "eventType",
     "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:applyEvent",
   ],
   Array [
     "readModelName",
@@ -727,6 +899,10 @@ Array [
     "SUB",
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "readModelName",
     "readModelName",
   ],
@@ -735,12 +911,8 @@ Array [
     "OTHER_EVENT",
   ],
   Array [
-    "readModelName",
-    "readModelName",
-  ],
-  Array [
-    "resolverName",
-    "getValue",
+    "origin",
+    "resolve:applyEvent",
   ],
   Array [
     "readModelName",
@@ -749,6 +921,22 @@ Array [
   Array [
     "resolverName",
     "getValue",
+  ],
+  Array [
+    "origin",
+    "resolve:read",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "resolverName",
+    "getValue",
+  ],
+  Array [
+    "origin",
+    "resolve:resolver",
   ],
 ]
 `;
@@ -825,6 +1013,10 @@ Array [
     "eventCount",
     0,
   ],
+  Array [
+    "origin",
+    "resolve:updateByEvents",
+  ],
 ]
 `;
 
@@ -873,24 +1065,48 @@ Array [
     "readModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
     "readOnlyReadModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
     "brokenReadModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "remoteReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:dispose",
   ],
   Array [
     "readModelName",
@@ -899,6 +1115,10 @@ Array [
   Array [
     "eventCount",
     1,
+  ],
+  Array [
+    "origin",
+    "resolve:updateByEvents",
   ],
 ]
 `;
@@ -972,6 +1192,10 @@ Array [
     2,
   ],
   Array [
+    "origin",
+    "resolve:updateByEvents",
+  ],
+  Array [
     "readModelName",
     "remoteReadModelName",
   ],
@@ -980,32 +1204,64 @@ Array [
     "SET",
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "readModelName",
     "remoteReadModelName",
   ],
   Array [
-    "readModelName",
-    "readModelName",
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
     "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
     "readOnlyReadModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:connect",
   ],
   Array [
     "readModelName",
     "brokenReadModelName",
   ],
   Array [
+    "origin",
+    "resolve:dispose",
+  ],
+  Array [
     "readModelName",
     "remoteReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:dispose",
   ],
 ]
 `;
@@ -1151,6 +1407,10 @@ Array [
     "viewModelName",
     "testViewModelName",
   ],
+  Array [
+    "origin",
+    "resolve:drop",
+  ],
 ]
 `;
 
@@ -1191,6 +1451,10 @@ Array [
   Array [
     "viewModelName",
     "testViewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:drop",
   ],
 ]
 `;
@@ -1234,6 +1498,10 @@ Array [
     "viewModelName",
     "testViewModelName",
   ],
+  Array [
+    "origin",
+    "resolve:read",
+  ],
 ]
 `;
 
@@ -1270,6 +1538,10 @@ Array [
   Array [
     "viewModelName",
     "testViewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:read",
   ],
   Array [
     "viewModelName",
@@ -1329,6 +1601,10 @@ Array [
     "viewModelName",
     "testViewModelName",
   ],
+  Array [
+    "origin",
+    "resolve:read",
+  ],
 ]
 `;
 
@@ -1372,12 +1648,8 @@ Array [
     "testViewModelName",
   ],
   Array [
-    "viewModelName",
-    "testViewModelName",
-  ],
-  Array [
-    "eventType",
-    "ADD",
+    "origin",
+    "resolve:read",
   ],
   Array [
     "viewModelName",
@@ -1386,6 +1658,22 @@ Array [
   Array [
     "eventType",
     "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:applyEvent",
   ],
   Array [
     "viewModelName",
@@ -1396,12 +1684,24 @@ Array [
     "SUB",
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "eventCount",
     3,
   ],
   Array [
+    "origin",
+    "resolve:read",
+  ],
+  Array [
     "viewModelName",
     "testViewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:read",
   ],
   Array [
     "viewModelName",
@@ -1412,12 +1712,20 @@ Array [
     "ADD",
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "viewModelName",
     "testViewModelName",
   ],
   Array [
     "eventType",
     "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:applyEvent",
   ],
   Array [
     "viewModelName",
@@ -1428,8 +1736,16 @@ Array [
     "SUB",
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "eventCount",
     3,
+  ],
+  Array [
+    "origin",
+    "resolve:read",
   ],
 ]
 `;
@@ -1498,8 +1814,16 @@ Array [
     "testViewModelName",
   ],
   Array [
+    "origin",
+    "resolve:read",
+  ],
+  Array [
     "viewModelName",
     "testViewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:read",
   ],
   Array [
     "viewModelName",
@@ -1510,12 +1834,20 @@ Array [
     "ADD",
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "viewModelName",
     "testViewModelName",
   ],
   Array [
     "eventType",
     "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:applyEvent",
   ],
   Array [
     "viewModelName",
@@ -1526,12 +1858,24 @@ Array [
     "SUB",
   ],
   Array [
-    "eventCount",
-    3,
+    "origin",
+    "resolve:applyEvent",
   ],
   Array [
     "eventCount",
     3,
+  ],
+  Array [
+    "origin",
+    "resolve:read",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
+  Array [
+    "origin",
+    "resolve:read",
   ],
 ]
 `;
@@ -1583,6 +1927,10 @@ Array [
   Array [
     "viewModelName",
     "testViewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:read",
   ],
 ]
 `;
@@ -1653,12 +2001,8 @@ Array [
     "testViewModelName",
   ],
   Array [
-    "viewModelName",
-    "testViewModelName",
-  ],
-  Array [
-    "eventType",
-    "ADD",
+    "origin",
+    "resolve:read",
   ],
   Array [
     "viewModelName",
@@ -1667,6 +2011,22 @@ Array [
   Array [
     "eventType",
     "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:applyEvent",
   ],
   Array [
     "viewModelName",
@@ -1677,12 +2037,24 @@ Array [
     "SUB",
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "eventCount",
     3,
   ],
   Array [
+    "origin",
+    "resolve:read",
+  ],
+  Array [
     "viewModelName",
     "testViewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:read",
   ],
   Array [
     "viewModelName",
@@ -1693,12 +2065,20 @@ Array [
     "ADD",
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "viewModelName",
     "testViewModelName",
   ],
   Array [
     "eventType",
     "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:applyEvent",
   ],
   Array [
     "viewModelName",
@@ -1709,8 +2089,16 @@ Array [
     "SUB",
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "eventCount",
     3,
+  ],
+  Array [
+    "origin",
+    "resolve:read",
   ],
 ]
 `;
@@ -1778,6 +2166,10 @@ Array [
     "viewModelName",
     "testViewModelName",
   ],
+  Array [
+    "origin",
+    "resolve:updateByEvents",
+  ],
 ]
 `;
 
@@ -1818,6 +2210,10 @@ Array [
   Array [
     "viewModelName",
     "testViewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:updateByEvents",
   ],
 ]
 `;

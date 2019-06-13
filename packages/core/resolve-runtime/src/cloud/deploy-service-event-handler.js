@@ -112,6 +112,7 @@ const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
   const subSegment = segment.addNewSubsegment('apiEvent')
   subSegment.addAnnotation('operation', lambdaEvent.operation)
   subSegment.addAnnotation('part', lambdaEvent.part)
+  subSegment.addAnnotation('origin', 'resolve:apiEvent')
 
   switch (lambdaEvent.part) {
     case 'bootstrap': {

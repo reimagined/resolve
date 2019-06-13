@@ -3,35 +3,12 @@ const maybeConnect = pool => {
     return pool.connectionPromise
   }
 
-  const readModelName = pool.readModel.name
-
-  const segment = pool.performanceTracer
-    ? pool.performanceTracer.getSegment()
-    : null
-
-  const subSegment = segment ? segment.addNewSubsegment('connect') : null
-
-  if (subSegment != null) {
-    subSegment.addAnnotation('readModelName', readModelName)
+  pool.connectionPromise = Promise.resolve(null)
+  if (typeof pool.connector.connect === 'function') {
+    pool.connectionPromise = pool.connector.connect(pool.readModel.name)
   }
 
-  try {
-    pool.connectionPromise = Promise.resolve(null)
-    if (typeof pool.connector.connect === 'function') {
-      pool.connectionPromise = pool.connector.connect(pool.readModel.name)
-    }
-
-    return pool.connectionPromise
-  } catch (error) {
-    if (subSegment != null) {
-      subSegment.addError(error)
-    }
-    throw error
-  } finally {
-    if (subSegment != null) {
-      subSegment.close()
-    }
-  }
+  return pool.connectionPromise
 }
 
 const read = async (pool, resolverName, resolverArgs, jwtToken) => {
@@ -52,6 +29,7 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
     if (subSegment != null) {
       subSegment.addAnnotation('readModelName', readModelName)
       subSegment.addAnnotation('resolverName', resolverName)
+      subSegment.addAnnotation('origin', 'resolve:read')
     }
     await pool.doUpdateRequest(readModelName)
     const connection = await maybeConnect(pool)
@@ -65,6 +43,7 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
       if (subSegment != null) {
         subSegment.addAnnotation('readModelName', readModelName)
         subSegment.addAnnotation('resolverName', resolverName)
+        subSegment.addAnnotation('origin', 'resolve:resolver')
       }
 
       try {
@@ -108,6 +87,7 @@ const updateByEvents = async (pool, events) => {
     if (subSegment != null) {
       subSegment.addAnnotation('readModelName', readModelName)
       subSegment.addAnnotation('eventCount', events.length)
+      subSegment.addAnnotation('origin', 'resolve:updateByEvents')
     }
 
     if (pool.isDisposed) {
@@ -141,6 +121,7 @@ const updateByEvents = async (pool, events) => {
         if (subSegment != null) {
           subSegment.addAnnotation('readModelName', readModelName)
           subSegment.addAnnotation('eventType', event.type)
+          subSegment.addAnnotation('origin', 'resolve:applyEvent')
         }
 
         if (event != null && typeof projection[event.type] === 'function') {
@@ -218,6 +199,7 @@ const drop = async pool => {
 
     if (subSegment != null) {
       subSegment.addAnnotation('readModelName', readModelName)
+      subSegment.addAnnotation('origin', 'resolve:drop')
     }
 
     if (pool.isDisposed) {
@@ -252,6 +234,7 @@ const dispose = async pool => {
 
     if (subSegment != null) {
       subSegment.addAnnotation('readModelName', readModelName)
+      subSegment.addAnnotation('origin', 'resolve:dispose')
     }
 
     if (pool.isDisposed) {

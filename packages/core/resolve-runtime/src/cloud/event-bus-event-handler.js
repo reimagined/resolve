@@ -22,6 +22,7 @@ const handleApplyEvents = async (lambdaEvent, resolve) => {
       events.map(decodeEvent)
     )
     subSegment.addAnnotation('eventCount', events.length)
+    subSegment.addAnnotation('origin', 'resolve:applyEventsFromBus')
   } catch (error) {
     log.error('Error while applying events to read-model', error)
     subSegment.addError(error)

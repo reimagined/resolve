@@ -51,6 +51,7 @@ const buildViewModel = async (
       if (subSegment != null) {
         subSegment.addAnnotation('viewModelName', viewModelName)
         subSegment.addAnnotation('eventType', event.type)
+        subSegment.addAnnotation('origin', 'resolve:applyEvent')
       }
 
       state = await pool.viewModel.projection[event.type](
@@ -105,6 +106,7 @@ const read = async (pool, modelOptions, aggregateArgs, jwtToken) => {
 
     if (subSegment != null) {
       subSegment.addAnnotation('viewModelName', viewModelName)
+      subSegment.addAnnotation('origin', 'resolve:read')
     }
 
     if (pool.isDisposed) {
@@ -135,6 +137,7 @@ const read = async (pool, modelOptions, aggregateArgs, jwtToken) => {
 
     if (subSegment != null) {
       subSegment.addAnnotation('eventCount', eventCount)
+      subSegment.addAnnotation('origin', 'resolve:read')
     }
 
     pool.workers.delete(key)
@@ -181,6 +184,7 @@ const updateByEvents = async pool => {
 
     if (subSegment != null) {
       subSegment.addAnnotation('viewModelName', viewModelName)
+      subSegment.addAnnotation('origin', 'resolve:updateByEvents')
     }
 
     if (pool.isDisposed) {
@@ -211,6 +215,7 @@ const drop = async pool => {
 
     if (subSegment != null) {
       subSegment.addAnnotation('viewModelName', viewModelName)
+      subSegment.addAnnotation('origin', 'resolve:drop')
     }
 
     if (pool.isDisposed) {
