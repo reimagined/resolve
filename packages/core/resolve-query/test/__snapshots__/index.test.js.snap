@@ -48,6 +48,14 @@ Array [
   ],
   Array [
     "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "readModelName",
     "readOnlyReadModelName",
   ],
   Array [
@@ -79,7 +87,13 @@ Array [
     "dispose",
   ],
   Array [
+    "connect",
+  ],
+  Array [
     "dispose",
+  ],
+  Array [
+    "connect",
   ],
   Array [
     "dispose",
@@ -100,11 +114,15 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "dispose" should dispose only one time: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -150,6 +168,10 @@ Array [
     "readModelName",
     "readModelName",
   ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
 ]
 `;
 
@@ -160,17 +182,22 @@ Array [
   Array [
     "drop",
   ],
+  Array [
+    "connect",
+  ],
 ]
 `;
 
 exports[`read models with performance tracer "drop" should drop read model: close 1`] = `
 Array [
   Array [],
+  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "drop" should drop read model: getSegment 1`] = `
 Array [
+  Array [],
   Array [],
 ]
 `;
@@ -180,6 +207,14 @@ Array [
   Array [
     "readModelName",
     "readModelName",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
   ],
   Array [
     "readModelName",
@@ -214,7 +249,13 @@ Array [
     "dispose",
   ],
   Array [
+    "connect",
+  ],
+  Array [
     "dispose",
+  ],
+  Array [
+    "connect",
   ],
   Array [
     "dispose",
@@ -235,11 +276,15 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "drop" should raise error when query is disposed: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -296,6 +341,14 @@ Array [
   ],
   Array [
     "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "readModelName",
     "readOnlyReadModelName",
   ],
   Array [
@@ -323,7 +376,13 @@ Array [
     "dispose",
   ],
   Array [
+    "connect",
+  ],
+  Array [
     "dispose",
+  ],
+  Array [
+    "connect",
   ],
   Array [
     "dispose",
@@ -344,11 +403,15 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "read" should raise error when query is disposed: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -374,6 +437,10 @@ Array [
   Array [
     "eventType",
     "BROKEN",
+  ],
+  Array [
+    "readModelName",
+    "brokenReadModelName",
   ],
 ]
 `;
@@ -401,11 +468,15 @@ Array [
   Array [
     "applyEvent",
   ],
+  Array [
+    "connect",
+  ],
 ]
 `;
 
 exports[`read models with performance tracer "read" should return { lastError, ... } when a read model is broken: close 1`] = `
 Array [
+  Array [],
   Array [],
   Array [],
 ]
@@ -415,11 +486,24 @@ exports[`read models with performance tracer "read" should return { lastError, .
 Array [
   Array [],
   Array [],
+  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "read" should return the resolver result: addAnnotation 1`] = `
 Array [
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "resolverName",
+    "readFromDatabase",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
   Array [
     "readModelName",
     "readOnlyReadModelName",
@@ -438,17 +522,27 @@ Array [
   Array [
     "read",
   ],
+  Array [
+    "connect",
+  ],
+  Array [
+    "resolver",
+  ],
 ]
 `;
 
 exports[`read models with performance tracer "read" should return the resolver result: close 1`] = `
 Array [
   Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "read" should return the resolver result: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
   Array [],
 ]
 `;
@@ -458,6 +552,14 @@ Array [
   Array [
     "readModelName",
     "readModelName",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
   ],
   Array [
     "readModelName",
@@ -482,7 +584,13 @@ Array [
     "dispose",
   ],
   Array [
+    "connect",
+  ],
+  Array [
     "dispose",
+  ],
+  Array [
+    "connect",
   ],
   Array [
     "dispose",
@@ -499,6 +607,8 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
 ]
 `;
 
@@ -508,11 +618,25 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "readAndSerialize" should return the resolver result: addAnnotation 1`] = `
 Array [
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "resolverName",
+    "readFromDatabase",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
   Array [
     "readModelName",
     "readOnlyReadModelName",
@@ -531,17 +655,27 @@ Array [
   Array [
     "read",
   ],
+  Array [
+    "connect",
+  ],
+  Array [
+    "resolver",
+  ],
 ]
 `;
 
 exports[`read models with performance tracer "readAndSerialize" should return the resolver result: close 1`] = `
 Array [
   Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "readAndSerialize" should return the resolver result: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
   Array [],
 ]
 `;
@@ -563,6 +697,10 @@ Array [
   Array [
     "eventType",
     "Init",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
   ],
   Array [
     "readModelName",
@@ -604,6 +742,14 @@ Array [
     "resolverName",
     "getValue",
   ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "resolverName",
+    "getValue",
+  ],
 ]
 `;
 
@@ -616,6 +762,9 @@ Array [
   ],
   Array [
     "applyEvent",
+  ],
+  Array [
+    "connect",
   ],
   Array [
     "applyEvent",
@@ -632,6 +781,9 @@ Array [
   Array [
     "read",
   ],
+  Array [
+    "resolver",
+  ],
 ]
 `;
 
@@ -644,11 +796,15 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "updateByEvents" should apply events to the read model, "read" should return the resolver result: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -718,6 +874,14 @@ Array [
   ],
   Array [
     "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "readModelName",
     "readOnlyReadModelName",
   ],
   Array [
@@ -753,7 +917,13 @@ Array [
     "dispose",
   ],
   Array [
+    "connect",
+  ],
+  Array [
     "dispose",
+  ],
+  Array [
+    "connect",
   ],
   Array [
     "dispose",
@@ -774,11 +944,15 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "updateByEvents" should raise error when query is disposed: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -807,7 +981,19 @@ Array [
   ],
   Array [
     "readModelName",
+    "remoteReadModelName",
+  ],
+  Array [
     "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
   ],
   Array [
     "readModelName",
@@ -857,10 +1043,19 @@ Array [
     "applyEvent",
   ],
   Array [
-    "dispose",
+    "connect",
   ],
   Array [
     "dispose",
+  ],
+  Array [
+    "connect",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "connect",
   ],
   Array [
     "dispose",
@@ -883,11 +1078,17 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "updateByEvents" should raise error when updating had been interrupted: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],

@@ -3,12 +3,35 @@ const maybeConnect = pool => {
     return pool.connectionPromise
   }
 
-  pool.connectionPromise = Promise.resolve(null)
-  if (typeof pool.connector.connect === 'function') {
-    pool.connectionPromise = pool.connector.connect(pool.readModel.name)
+  const readModelName = pool.readModel.name
+
+  const segment = pool.performanceTracer
+    ? pool.performanceTracer.getSegment()
+    : null
+
+  const subSegment = segment ? segment.addNewSubsegment('connect') : null
+
+  if (subSegment != null) {
+    subSegment.addAnnotation('readModelName', readModelName)
   }
 
-  return pool.connectionPromise
+  try {
+    pool.connectionPromise = Promise.resolve(null)
+    if (typeof pool.connector.connect === 'function') {
+      pool.connectionPromise = pool.connector.connect(pool.readModel.name)
+    }
+
+    return pool.connectionPromise
+  } catch (error) {
+    if (subSegment != null) {
+      subSegment.addError(error)
+    }
+    throw error
+  } finally {
+    if (subSegment != null) {
+      subSegment.close()
+    }
+  }
 }
 
 const read = async (pool, resolverName, resolverArgs, jwtToken) => {
@@ -33,11 +56,34 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
     await pool.doUpdateRequest(readModelName)
     const connection = await maybeConnect(pool)
 
-    return await pool.readModel.resolvers[resolverName](
-      connection,
-      resolverArgs,
-      jwtToken
-    )
+    return await (async () => {
+      const segment = pool.performanceTracer
+        ? pool.performanceTracer.getSegment()
+        : null
+      const subSegment = segment ? segment.addNewSubsegment('resolver') : null
+
+      if (subSegment != null) {
+        subSegment.addAnnotation('readModelName', readModelName)
+        subSegment.addAnnotation('resolverName', resolverName)
+      }
+
+      try {
+        return await pool.readModel.resolvers[resolverName](
+          connection,
+          resolverArgs,
+          jwtToken
+        )
+      } catch (error) {
+        if (subSegment != null) {
+          subSegment.addError(error)
+        }
+        throw error
+      } finally {
+        if (subSegment != null) {
+          subSegment.close()
+        }
+      }
+    })()
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)
