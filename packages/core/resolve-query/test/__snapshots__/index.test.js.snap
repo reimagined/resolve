@@ -48,15 +48,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
-  ],
-  Array [
-    "readModelName",
-    "readModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -64,15 +56,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
-  ],
-  Array [
-    "readModelName",
-    "readOnlyReadModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -80,7 +64,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -88,7 +72,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -96,7 +80,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
+    "resolve:query:dispose",
   ],
 ]
 `;
@@ -115,13 +99,7 @@ Array [
     "dispose",
   ],
   Array [
-    "connect",
-  ],
-  Array [
     "dispose",
-  ],
-  Array [
-    "connect",
   ],
   Array [
     "dispose",
@@ -142,15 +120,11 @@ Array [
   Array [],
   Array [],
   Array [],
-  Array [],
-  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "dispose" should dispose only one time: getSegment 1`] = `
 Array [
-  Array [],
-  Array [],
   Array [],
   Array [],
   Array [],
@@ -167,7 +141,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:drop",
+    "resolve:query:drop",
   ],
 ]
 `;
@@ -202,15 +176,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:drop",
-  ],
-  Array [
-    "readModelName",
-    "readModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:drop",
   ],
 ]
 `;
@@ -222,22 +188,17 @@ Array [
   Array [
     "drop",
   ],
-  Array [
-    "connect",
-  ],
 ]
 `;
 
 exports[`read models with performance tracer "drop" should drop read model: close 1`] = `
 Array [
   Array [],
-  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "drop" should drop read model: getSegment 1`] = `
 Array [
-  Array [],
   Array [],
 ]
 `;
@@ -250,15 +211,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
-  ],
-  Array [
-    "readModelName",
-    "readModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -266,15 +219,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
-  ],
-  Array [
-    "readModelName",
-    "readOnlyReadModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -282,7 +227,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -290,7 +235,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -298,7 +243,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:drop",
+    "resolve:query:drop",
   ],
 ]
 `;
@@ -317,13 +262,7 @@ Array [
     "dispose",
   ],
   Array [
-    "connect",
-  ],
-  Array [
     "dispose",
-  ],
-  Array [
-    "connect",
   ],
   Array [
     "dispose",
@@ -344,15 +283,11 @@ Array [
   Array [],
   Array [],
   Array [],
-  Array [],
-  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "drop" should raise error when query is disposed: getSegment 1`] = `
 Array [
-  Array [],
-  Array [],
   Array [],
   Array [],
   Array [],
@@ -409,15 +344,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
-  ],
-  Array [
-    "readModelName",
-    "readModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -425,15 +352,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
-  ],
-  Array [
-    "readModelName",
-    "readOnlyReadModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -441,7 +360,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -449,7 +368,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
+    "resolve:query:dispose",
   ],
 ]
 `;
@@ -468,13 +387,7 @@ Array [
     "dispose",
   ],
   Array [
-    "connect",
-  ],
-  Array [
     "dispose",
-  ],
-  Array [
-    "connect",
   ],
   Array [
     "dispose",
@@ -495,15 +408,11 @@ Array [
   Array [],
   Array [],
   Array [],
-  Array [],
-  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "read" should raise error when query is disposed: getSegment 1`] = `
 Array [
-  Array [],
-  Array [],
   Array [],
   Array [],
   Array [],
@@ -524,7 +433,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:updateByEvents",
+    "resolve:query:updateByEvents",
   ],
   Array [
     "readModelName",
@@ -536,15 +445,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
-  ],
-  Array [
-    "readModelName",
-    "brokenReadModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:applyEvent",
   ],
 ]
 `;
@@ -572,9 +473,6 @@ Array [
   Array [
     "applyEvent",
   ],
-  Array [
-    "connect",
-  ],
 ]
 `;
 
@@ -582,13 +480,11 @@ exports[`read models with performance tracer "read" should return { lastError, .
 Array [
   Array [],
   Array [],
-  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "read" should return { lastError, ... } when a read model is broken: getSegment 1`] = `
 Array [
-  Array [],
   Array [],
   Array [],
 ]
@@ -606,15 +502,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
-  ],
-  Array [
-    "readModelName",
-    "readOnlyReadModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:read",
   ],
   Array [
     "readModelName",
@@ -626,7 +514,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:resolver",
+    "resolve:query:resolver",
   ],
 ]
 `;
@@ -639,9 +527,6 @@ Array [
     "read",
   ],
   Array [
-    "connect",
-  ],
-  Array [
     "resolver",
   ],
 ]
@@ -651,13 +536,11 @@ exports[`read models with performance tracer "read" should return the resolver r
 Array [
   Array [],
   Array [],
-  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "read" should return the resolver result: getSegment 1`] = `
 Array [
-  Array [],
   Array [],
   Array [],
 ]
@@ -671,15 +554,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
-  ],
-  Array [
-    "readModelName",
-    "readModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -687,15 +562,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
-  ],
-  Array [
-    "readModelName",
-    "readOnlyReadModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -703,7 +570,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -711,7 +578,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
+    "resolve:query:dispose",
   ],
 ]
 `;
@@ -724,13 +591,7 @@ Array [
     "dispose",
   ],
   Array [
-    "connect",
-  ],
-  Array [
     "dispose",
-  ],
-  Array [
-    "connect",
   ],
   Array [
     "dispose",
@@ -747,15 +608,11 @@ Array [
   Array [],
   Array [],
   Array [],
-  Array [],
-  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "readAndSerialize" should raise error when query is disposed: getSegment 1`] = `
 Array [
-  Array [],
-  Array [],
   Array [],
   Array [],
   Array [],
@@ -775,15 +632,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
-  ],
-  Array [
-    "readModelName",
-    "readOnlyReadModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:read",
   ],
   Array [
     "readModelName",
@@ -795,7 +644,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:resolver",
+    "resolve:query:resolver",
   ],
 ]
 `;
@@ -808,9 +657,6 @@ Array [
     "read",
   ],
   Array [
-    "connect",
-  ],
-  Array [
     "resolver",
   ],
 ]
@@ -820,13 +666,11 @@ exports[`read models with performance tracer "readAndSerialize" should return th
 Array [
   Array [],
   Array [],
-  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "readAndSerialize" should return the resolver result: getSegment 1`] = `
 Array [
-  Array [],
   Array [],
   Array [],
 ]
@@ -844,7 +688,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:updateByEvents",
+    "resolve:query:updateByEvents",
   ],
   Array [
     "readModelName",
@@ -856,15 +700,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
-  ],
-  Array [
-    "readModelName",
-    "readModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:applyEvent",
   ],
   Array [
     "readModelName",
@@ -876,7 +712,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
   ],
   Array [
     "readModelName",
@@ -888,7 +724,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
   ],
   Array [
     "readModelName",
@@ -900,7 +736,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
   ],
   Array [
     "readModelName",
@@ -912,7 +748,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
   ],
   Array [
     "readModelName",
@@ -924,7 +760,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
+    "resolve:query:read",
   ],
   Array [
     "readModelName",
@@ -936,7 +772,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:resolver",
+    "resolve:query:resolver",
   ],
 ]
 `;
@@ -950,9 +786,6 @@ Array [
   ],
   Array [
     "applyEvent",
-  ],
-  Array [
-    "connect",
   ],
   Array [
     "applyEvent",
@@ -985,13 +818,11 @@ Array [
   Array [],
   Array [],
   Array [],
-  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "updateByEvents" should apply events to the read model, "read" should return the resolver result: getSegment 1`] = `
 Array [
-  Array [],
   Array [],
   Array [],
   Array [],
@@ -1015,7 +846,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:updateByEvents",
+    "resolve:query:updateByEvents",
   ],
 ]
 `;
@@ -1066,15 +897,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
-  ],
-  Array [
-    "readModelName",
-    "readModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -1082,15 +905,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
-  ],
-  Array [
-    "readModelName",
-    "readOnlyReadModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -1098,7 +913,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -1106,7 +921,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -1118,7 +933,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:updateByEvents",
+    "resolve:query:updateByEvents",
   ],
 ]
 `;
@@ -1137,13 +952,7 @@ Array [
     "dispose",
   ],
   Array [
-    "connect",
-  ],
-  Array [
     "dispose",
-  ],
-  Array [
-    "connect",
   ],
   Array [
     "dispose",
@@ -1164,15 +973,11 @@ Array [
   Array [],
   Array [],
   Array [],
-  Array [],
-  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "updateByEvents" should raise error when query is disposed: getSegment 1`] = `
 Array [
-  Array [],
-  Array [],
   Array [],
   Array [],
   Array [],
@@ -1193,7 +998,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:updateByEvents",
+    "resolve:query:updateByEvents",
   ],
   Array [
     "readModelName",
@@ -1205,15 +1010,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
-  ],
-  Array [
-    "readModelName",
-    "remoteReadModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:applyEvent",
   ],
   Array [
     "readModelName",
@@ -1221,15 +1018,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
-  ],
-  Array [
-    "readModelName",
-    "readModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -1237,15 +1026,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
-  ],
-  Array [
-    "readModelName",
-    "readOnlyReadModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:connect",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -1253,7 +1034,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
+    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -1261,7 +1042,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:dispose",
+    "resolve:query:dispose",
   ],
 ]
 `;
@@ -1299,19 +1080,10 @@ Array [
     "applyEvent",
   ],
   Array [
-    "connect",
-  ],
-  Array [
     "dispose",
   ],
   Array [
-    "connect",
-  ],
-  Array [
     "dispose",
-  ],
-  Array [
-    "connect",
   ],
   Array [
     "dispose",
@@ -1334,17 +1106,11 @@ Array [
   Array [],
   Array [],
   Array [],
-  Array [],
-  Array [],
-  Array [],
 ]
 `;
 
 exports[`read models with performance tracer "updateByEvents" should raise error when updating had been interrupted: getSegment 1`] = `
 Array [
-  Array [],
-  Array [],
-  Array [],
   Array [],
   Array [],
   Array [],
@@ -1409,7 +1175,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:drop",
+    "resolve:query:drop",
   ],
 ]
 `;
@@ -1454,7 +1220,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:drop",
+    "resolve:query:drop",
   ],
 ]
 `;
@@ -1500,7 +1266,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
+    "resolve:query:read",
   ],
 ]
 `;
@@ -1541,7 +1307,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
+    "resolve:query:read",
   ],
   Array [
     "viewModelName",
@@ -1603,7 +1369,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
+    "resolve:query:read",
   ],
 ]
 `;
@@ -1649,7 +1415,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
+    "resolve:query:read",
   ],
   Array [
     "viewModelName",
@@ -1661,7 +1427,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
   ],
   Array [
     "viewModelName",
@@ -1673,7 +1439,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
   ],
   Array [
     "viewModelName",
@@ -1685,7 +1451,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
   ],
   Array [
     "eventCount",
@@ -1693,7 +1459,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
+    "resolve:query:read",
   ],
   Array [
     "viewModelName",
@@ -1701,19 +1467,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
-  ],
-  Array [
-    "viewModelName",
-    "testViewModelName",
-  ],
-  Array [
-    "eventType",
-    "ADD",
-  ],
-  Array [
-    "origin",
-    "resolve:applyEvent",
+    "resolve:query:read",
   ],
   Array [
     "viewModelName",
@@ -1725,7 +1479,19 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
   ],
   Array [
     "viewModelName",
@@ -1737,7 +1503,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
   ],
   Array [
     "eventCount",
@@ -1745,7 +1511,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
+    "resolve:query:read",
   ],
 ]
 `;
@@ -1815,7 +1581,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
+    "resolve:query:read",
   ],
   Array [
     "viewModelName",
@@ -1823,19 +1589,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
-  ],
-  Array [
-    "viewModelName",
-    "testViewModelName",
-  ],
-  Array [
-    "eventType",
-    "ADD",
-  ],
-  Array [
-    "origin",
-    "resolve:applyEvent",
+    "resolve:query:read",
   ],
   Array [
     "viewModelName",
@@ -1847,7 +1601,19 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
   ],
   Array [
     "viewModelName",
@@ -1859,7 +1625,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
   ],
   Array [
     "eventCount",
@@ -1867,7 +1633,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
+    "resolve:query:read",
   ],
   Array [
     "eventCount",
@@ -1875,7 +1641,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
+    "resolve:query:read",
   ],
 ]
 `;
@@ -1930,7 +1696,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
+    "resolve:query:read",
   ],
 ]
 `;
@@ -2002,7 +1768,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
+    "resolve:query:read",
   ],
   Array [
     "viewModelName",
@@ -2014,7 +1780,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
   ],
   Array [
     "viewModelName",
@@ -2026,7 +1792,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
   ],
   Array [
     "viewModelName",
@@ -2038,7 +1804,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
   ],
   Array [
     "eventCount",
@@ -2046,7 +1812,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
+    "resolve:query:read",
   ],
   Array [
     "viewModelName",
@@ -2054,19 +1820,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
-  ],
-  Array [
-    "viewModelName",
-    "testViewModelName",
-  ],
-  Array [
-    "eventType",
-    "ADD",
-  ],
-  Array [
-    "origin",
-    "resolve:applyEvent",
+    "resolve:query:read",
   ],
   Array [
     "viewModelName",
@@ -2078,7 +1832,19 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "testViewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
   ],
   Array [
     "viewModelName",
@@ -2090,7 +1856,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:applyEvent",
+    "resolve:query:applyEvent",
   ],
   Array [
     "eventCount",
@@ -2098,7 +1864,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:read",
+    "resolve:query:read",
   ],
 ]
 `;
@@ -2168,7 +1934,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:updateByEvents",
+    "resolve:query:updateByEvents",
   ],
 ]
 `;
@@ -2213,7 +1979,7 @@ Array [
   ],
   Array [
     "origin",
-    "resolve:updateByEvents",
+    "resolve:query:updateByEvents",
   ],
 ]
 `;

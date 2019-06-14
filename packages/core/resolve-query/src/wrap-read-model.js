@@ -29,7 +29,7 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
     if (subSegment != null) {
       subSegment.addAnnotation('readModelName', readModelName)
       subSegment.addAnnotation('resolverName', resolverName)
-      subSegment.addAnnotation('origin', 'resolve:read')
+      subSegment.addAnnotation('origin', 'resolve:query:read')
     }
     await pool.doUpdateRequest(readModelName)
     const connection = await maybeConnect(pool)
@@ -43,7 +43,7 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
       if (subSegment != null) {
         subSegment.addAnnotation('readModelName', readModelName)
         subSegment.addAnnotation('resolverName', resolverName)
-        subSegment.addAnnotation('origin', 'resolve:resolver')
+        subSegment.addAnnotation('origin', 'resolve:query:resolver')
       }
 
       try {
@@ -87,7 +87,7 @@ const updateByEvents = async (pool, events) => {
     if (subSegment != null) {
       subSegment.addAnnotation('readModelName', readModelName)
       subSegment.addAnnotation('eventCount', events.length)
-      subSegment.addAnnotation('origin', 'resolve:updateByEvents')
+      subSegment.addAnnotation('origin', 'resolve:query:updateByEvents')
     }
 
     if (pool.isDisposed) {
@@ -121,7 +121,7 @@ const updateByEvents = async (pool, events) => {
         if (subSegment != null) {
           subSegment.addAnnotation('readModelName', readModelName)
           subSegment.addAnnotation('eventType', event.type)
-          subSegment.addAnnotation('origin', 'resolve:applyEvent')
+          subSegment.addAnnotation('origin', 'resolve:query:applyEvent')
         }
 
         if (event != null && typeof projection[event.type] === 'function') {
@@ -199,7 +199,7 @@ const drop = async pool => {
 
     if (subSegment != null) {
       subSegment.addAnnotation('readModelName', readModelName)
-      subSegment.addAnnotation('origin', 'resolve:drop')
+      subSegment.addAnnotation('origin', 'resolve:query:drop')
     }
 
     if (pool.isDisposed) {
@@ -234,7 +234,7 @@ const dispose = async pool => {
 
     if (subSegment != null) {
       subSegment.addAnnotation('readModelName', readModelName)
-      subSegment.addAnnotation('origin', 'resolve:dispose')
+      subSegment.addAnnotation('origin', 'resolve:query:dispose')
     }
 
     if (pool.isDisposed) {

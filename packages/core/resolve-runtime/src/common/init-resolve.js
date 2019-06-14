@@ -4,6 +4,8 @@ import createQueryExecutor from 'resolve-query'
 import crypto from 'crypto'
 
 const initResolve = async resolve => {
+  const performanceTracer = resolve.performanceTracer
+
   const {
     storageAdapter: createStorageAdapter,
     snapshotAdapter: createSnapshotAdapter,
@@ -30,10 +32,10 @@ const initResolve = async resolve => {
 
   const readModelConnectors = {}
   for (const name of Object.keys(readModelConnectorsCreators)) {
-    readModelConnectors[name] = readModelConnectorsCreators[name]()
+    readModelConnectors[name] = readModelConnectorsCreators[name]({
+      performanceTracer
+    })
   }
-
-  const performanceTracer = resolve.performanceTracer
 
   const executeCommand = createCommandExecutor({
     eventStore,
