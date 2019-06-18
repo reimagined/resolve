@@ -31,12 +31,16 @@ describe('Read-model generic adapter API', () => {
     connector = createConnector({ prefix })
 
     try {
+      const connection = await connector.connect(name)
       await connector.drop(null, name)
+      await connector.disconnect(connection, name)
     } catch (e) {}
   })
   afterEach(async () => {
     try {
+      const connection = await connector.connect(name)
       await connector.drop(null, name)
+      await connector.disconnect(connection, name)
     } catch (e) {}
 
     connector = null

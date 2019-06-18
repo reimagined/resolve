@@ -72,9 +72,6 @@ INDEX escapeId(id) (escapeId(id)))
     WHERE table_comment LIKE \\"RESOLVE-readModelName2\\"
     AND table_schema=DATABASE()",
   ],
-  Array [
-    "end",
-  ],
 ]
 `;
 

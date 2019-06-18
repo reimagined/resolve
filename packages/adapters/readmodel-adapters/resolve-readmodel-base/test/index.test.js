@@ -1,20 +1,16 @@
 import createReadModelConnector from '../src/index'
 
 describe('resolve-readmodel-base', () => {
-  let connector, isConnected, dropSet, readModels
+  let connector, dropSet, readModels
 
   beforeEach(() => {
-    isConnected = false
     dropSet = new Set()
 
     const connect = jest.fn().mockImplementation(async () => {
-      isConnected = true
       readModels = new Map()
     })
 
-    const disconnect = jest.fn().mockImplementation(async () => {
-      isConnected = false
-    })
+    const disconnect = jest.fn()
 
     const dropReadModel = jest
       .fn()
@@ -53,7 +49,6 @@ describe('resolve-readmodel-base', () => {
     await connector.dispose()
     connector = null
     readModels = null
-    isConnected = null
     dropSet = null
   })
 
@@ -70,7 +65,6 @@ describe('resolve-readmodel-base', () => {
 
     expect(storeAnimals).toEqual(storeProducts)
 
-    expect(isConnected).toEqual(true)
     expect(dropSet.size).toEqual(0)
 
     expect(storeAnimals.get).toBeInstanceOf(Function)
@@ -93,26 +87,22 @@ describe('resolve-readmodel-base', () => {
 
     expect(storeAnimals).toEqual(storeProducts)
 
-    expect(isConnected).toEqual(true)
     expect(dropSet.size).toEqual(0)
 
     await connector.disconnect(storeAnimals, 'animals')
 
-    expect(isConnected).toEqual(true)
     expect(dropSet.size).toEqual(0)
 
     expect(readModels.size).toEqual(2)
 
     await connector.disconnect(storeProducts, 'products')
 
-    expect(isConnected).toEqual(false)
     expect(dropSet.size).toEqual(0)
 
     expect(readModels.size).toEqual(2)
 
     await connector.disconnect(storeProducts, 'products')
 
-    expect(isConnected).toEqual(false)
     expect(dropSet.size).toEqual(0)
 
     expect(readModels.size).toEqual(2)
@@ -131,26 +121,22 @@ describe('resolve-readmodel-base', () => {
 
     expect(storeAnimals).toEqual(storeProducts)
 
-    expect(isConnected).toEqual(true)
     expect(dropSet.size).toEqual(0)
 
     await connector.drop(storeAnimals, 'animals')
 
-    expect(isConnected).toEqual(true)
     expect(dropSet.size).toEqual(1)
 
     expect(readModels.size).toEqual(1)
 
     await connector.drop(storeProducts, 'products')
 
-    expect(isConnected).toEqual(false)
     expect(dropSet.size).toEqual(2)
 
     expect(readModels.size).toEqual(0)
 
     await connector.drop(storeProducts, 'products')
 
-    expect(isConnected).toEqual(false)
     expect(dropSet.size).toEqual(2)
 
     expect(readModels.size).toEqual(0)

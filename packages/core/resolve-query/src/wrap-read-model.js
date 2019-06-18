@@ -1,16 +1,3 @@
-const maybeConnect = pool => {
-  if (pool.hasOwnProperty('connectionPromise')) {
-    return pool.connectionPromise
-  }
-
-  pool.connectionPromise = Promise.resolve(null)
-  if (typeof pool.connector.connect === 'function') {
-    pool.connectionPromise = pool.connector.connect(pool.readModel.name)
-  }
-
-  return pool.connectionPromise
-}
-
 const read = async (pool, resolverName, resolverArgs, jwtToken) => {
   if (pool.isDisposed) {
     throw new Error(`Read model "${pool.readModel.name}" is disposed`)
@@ -21,13 +8,21 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
     throw error
   }
   await pool.doUpdateRequest(pool.readModel.name)
-  const connection = await maybeConnect(pool)
 
-  return await pool.readModel.resolvers[resolverName](
-    connection,
-    resolverArgs,
-    jwtToken
-  )
+  const connection = await pool.connector.connect(pool.readModel.name)
+  pool.connections.add(connection)
+
+  try {
+    return await pool.readModel.resolvers[resolverName](
+      connection,
+      resolverArgs,
+      jwtToken
+    )
+  } finally {
+    await pool.connector.disconnect(connection, pool.readModel.name)
+
+    pool.connections.delete(connection)
+  }
 }
 
 const updateByEvents = async (pool, events) => {
@@ -43,6 +38,9 @@ const updateByEvents = async (pool, events) => {
     )
   }
 
+  const connection = await pool.connector.connect(pool.readModel.name)
+  pool.connections.add(connection)
+
   let lastError = null
   let lastEvent = null
 
@@ -55,7 +53,6 @@ const updateByEvents = async (pool, events) => {
       }
 
       if (event != null && typeof projection[event.type] === 'function') {
-        const connection = await maybeConnect(pool)
         const executor = projection[event.type]
         await executor(connection, event)
         lastEvent = event
@@ -66,6 +63,10 @@ const updateByEvents = async (pool, events) => {
       message: { value: error.message, enumerable: true },
       stack: { value: error.stack, enumerable: true }
     })
+  } finally {
+    await pool.connector.disconnect(connection, pool.readModel.name)
+
+    pool.connections.delete(connection)
   }
 
   const result = {
@@ -95,12 +96,17 @@ const drop = async pool => {
   if (pool.isDisposed) {
     throw new Error(`Read model "${pool.readModel.name}" is disposed`)
   }
-  if (typeof pool.connector.drop !== 'function') {
-    return
-  }
 
-  const connection = await maybeConnect(pool)
-  await pool.connector.drop(connection, pool.readModel.name)
+  const connection = await pool.connector.connect(pool.readModel.name)
+  pool.connections.add(connection)
+
+  try {
+    await pool.connector.drop(connection, pool.readModel.name)
+  } finally {
+    await pool.connector.disconnect(connection, pool.readModel.name)
+
+    pool.connections.delete(connection)
+  }
 }
 
 const dispose = async pool => {
@@ -109,27 +115,26 @@ const dispose = async pool => {
   }
   pool.isDisposed = true
 
-  if (typeof pool.connector.disconnect !== 'function') {
-    return
+  for (const connection of pool.connections) {
+    await pool.connector.dispose(connection)
   }
-
-  const connection = await maybeConnect(pool)
-  await pool.connector.disconnect(connection, pool.readModel.name)
 }
 
 const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
-  const connector = readModelConnectors[readModel.connectorName]
-  if (connector == null) {
+  const connectorFactory = readModelConnectors[readModel.connectorName]
+  if (connectorFactory == null) {
     throw new Error(
       `Connector "${readModel.connectorName}" for read-model "${readModel.name}" does not exist`
     )
   }
+  const connector = connectorFactory()
 
   const pool = {
+    connections: new Set(),
     readModel,
     doUpdateRequest,
-    isDisposed: false,
-    connector
+    connector,
+    isDisposed: false
   }
 
   return Object.freeze({
