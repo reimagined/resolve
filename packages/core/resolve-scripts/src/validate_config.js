@@ -63,9 +63,7 @@ export const validateApiHandlers = resolveConfig => {
 
     if (!validatePath(apiHandler.path)) {
       throw new Error(
-        `Incorrect options.apiHandlers[${idx}].path = "${
-          apiHandler.path
-        }"\nValue must be part of the URL, which is HTTP API handler URL path`
+        `Incorrect options.apiHandlers[${idx}].path = "${apiHandler.path}"\nValue must be part of the URL, which is HTTP API handler URL path`
       )
     }
 
@@ -75,9 +73,7 @@ export const validateApiHandlers = resolveConfig => {
 
     if (allowedMethods.indexOf(apiHandler.method) < 0) {
       throw new Error(
-        `Incorrect options.apiHandlers[${idx}].method = "${
-          apiHandler.path
-        }"\nAPI handler method should be one from following list ${allowedMethods}`
+        `Incorrect options.apiHandlers[${idx}].method = "${apiHandler.path}"\nAPI handler method should be one from following list ${allowedMethods}`
       )
     }
   }

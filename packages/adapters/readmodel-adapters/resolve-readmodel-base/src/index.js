@@ -41,23 +41,7 @@ const createAdapter = (implementation, options) => {
   }
 
   const doDrop = async (store, readModelName) => {
-    if (connectionPromise == null) {
-      connectionPromise = connect(
-        adapterPool,
-        options
-      )
-    }
-    connectedReadModels.add(readModelName)
-    await connectionPromise
-
     await dropReadModel(adapterPool, readModelName)
-
-    connectedReadModels.delete(readModelName)
-
-    if (connectedReadModels.size === 0) {
-      await disconnect(adapterPool)
-      connectionPromise = null
-    }
   }
 
   const doDispose = async () => {

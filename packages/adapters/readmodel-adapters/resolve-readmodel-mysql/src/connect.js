@@ -5,6 +5,10 @@ const runQuery = async (pool, querySQL) => {
 }
 
 const setupConnection = async pool => {
+  if (pool.isDisconnected) {
+    pool.connectionPromise = null
+    return
+  }
   pool.connectionPromise = pool.MySQL.createConnection({
     ...pool.connectionOptions,
     multipleStatements: false

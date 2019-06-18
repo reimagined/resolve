@@ -1146,10 +1146,12 @@ describe('read models', () => {
     ]
 
     readModelConnectors = {
-      default: (() => {
+      default: jest.fn().mockImplementation(() => {
         const readModels = new Map()
         const connect = jest.fn().mockImplementation(async readModelName => {
-          readModels.set(readModelName, new Map())
+          if (!readModels.has(readModelName)) {
+            readModels.set(readModelName, new Map())
+          }
           return {
             get(key) {
               return readModels.get(readModelName).get(key)
@@ -1159,11 +1161,7 @@ describe('read models', () => {
             }
           }
         })
-        const disconnect = jest
-          .fn()
-          .mockImplementation(async (store, readModelName) => {
-            readModels.delete(readModelName)
-          })
+        const disconnect = jest.fn()
         const drop = jest
           .fn()
           .mockImplementation(async (store, readModelName) => {
@@ -1179,8 +1177,13 @@ describe('read models', () => {
           drop,
           dispose
         }
-      })(),
-      empty: {}
+      }),
+      empty: () => ({
+        connect: jest.fn(),
+        disconnect: jest.fn(),
+        drop: jest.fn(),
+        dispose: jest.fn()
+      })
     }
 
     query = createQuery({
@@ -1440,17 +1443,9 @@ describe('read models', () => {
   test('"drop" should drop read model', async () => {
     await query.drop('readModelName')
 
-    expect(readModelConnectors['default'].drop.mock.calls[0][1]).toEqual(
-      'readModelName'
-    )
-  })
+    const connector = readModelConnectors['default'].mock.results[0].value
 
-  test('"drop" should do nothing on empty connector', async () => {
-    await query.drop('brokenReadModelName')
-
-    expect(
-      (readModelConnectors['empty'].drop || jest.fn()).mock.calls.length
-    ).toEqual(0)
+    expect(connector.drop.mock.calls[0][1]).toEqual('readModelName')
   })
 
   test('"drop" should raise error when query is disposed', async () => {
@@ -1507,7 +1502,12 @@ describe('common', () => {
       () =>
         (query = createQuery({
           readModelConnectors: {
-            empty: {}
+            empty: () => ({
+              connect: jest.fn(),
+              disconnect: jest.fn(),
+              drop: jest.fn(),
+              dispose: jest.fn()
+            })
           },
           snapshotAdapter,
           doUpdateRequest,
