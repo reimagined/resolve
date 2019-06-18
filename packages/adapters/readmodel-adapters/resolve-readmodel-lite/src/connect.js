@@ -35,8 +35,21 @@ const connect = async (imports, pool, options) => {
   tablePrefix = coerceEmptyString(tablePrefix)
   databaseFile = coerceEmptyString(databaseFile)
 
+  if (databaseFile === ':memory:') {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `Internal mode "memory" can be used ONLY test purposes${os.EOL}Application WILL NOT work with "memory" mode`
+    )
+
+    if (pool.memoryConnection == null) {
+      pool.memoryConnection = await imports.SQLite.open(':memory:')
+    }
+    pool.connection = pool.memoryConnection
+  } else {
+    pool.connection = await imports.SQLite.open(databaseFile)
+  }
+
   Object.assign(pool, {
-    connection: await imports.SQLite.open(databaseFile),
     runQuery: runQuery.bind(null, pool),
     connectionOptions,
     tablePrefix,

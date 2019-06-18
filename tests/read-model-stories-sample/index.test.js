@@ -27,13 +27,18 @@ describe('Read-model sample', () => {
   beforeEach(async () => {
     adapter = createConnector(connectorOptions)
     try {
+      const connection = await adapter.connect(name)
       await adapter.drop(null, name)
+      await adapter.disconnect(connection, name)
     } catch (e) {}
   })
   afterEach(async () => {
     try {
+      const connection = await adapter.connect(name)
       await adapter.drop(null, name)
+      await adapter.disconnect(connection, name)
     } catch (e) {}
+
     adapter = null
   })
 

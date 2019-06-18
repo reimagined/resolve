@@ -118,12 +118,6 @@ const createQuery = ({
     for (const modelName of Object.keys(models)) {
       await models[modelName].dispose()
     }
-
-    for (const connector of Object.values(readModelConnectors)) {
-      if (typeof connector.disconnect === 'function') {
-        await connector.disconnect()
-      }
-    }
   }
 
   const api = {

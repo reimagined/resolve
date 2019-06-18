@@ -7,7 +7,7 @@ const readModel = ({ promise }, { name, projection, resolvers, adapter }) => {
   promise[symbol].name = name
   promise[symbol].projection = projection != null ? projection : {}
   promise[symbol].resolvers = resolvers != null ? resolvers : {}
-  promise[symbol].adapter = adapter
+  promise[symbol].adapter = () => adapter
 
   for (const resolverName of Object.keys(promise[symbol].resolvers)) {
     promise[resolverName] = resolverArgs => {

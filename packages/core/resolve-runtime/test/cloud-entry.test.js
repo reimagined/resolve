@@ -267,7 +267,7 @@ describe('Cloud entry', () => {
       )
       expect(readModelConnector.disconnect.mock.calls[0].length).toEqual(2)
       expect(readModelConnector.drop.mock.calls.length).toEqual(0)
-      expect(readModelConnector.dispose.mock.calls.length).toEqual(1)
+      expect(readModelConnector.dispose.mock.calls.length).toEqual(0)
     })
 
     test('should invoke existing read-model with non-existing resolver via GET /"rootPath"/api/query/"readModelName"/"resolverName"?"resolverArgs"', async () => {
@@ -312,15 +312,10 @@ describe('Cloud entry', () => {
         'Resolver "non-existing-resolver-name" does not exist'
       )
 
-      expect(readModelConnector.connect.mock.calls[0][0]).toEqual(
-        'read-model-name'
-      )
-      expect(readModelConnector.disconnect.mock.calls[0][1]).toEqual(
-        'read-model-name'
-      )
-      expect(readModelConnector.disconnect.mock.calls[0].length).toEqual(2)
+      expect(readModelConnector.connect.mock.calls.length).toEqual(0)
+      expect(readModelConnector.disconnect.mock.calls.length).toEqual(0)
       expect(readModelConnector.drop.mock.calls.length).toEqual(0)
-      expect(readModelConnector.dispose.mock.calls.length).toEqual(1)
+      expect(readModelConnector.dispose.mock.calls.length).toEqual(0)
     })
 
     test('should invoke non-existing read-model via GET /"rootPath"/api/query/"readModelName"/"resolverName"?"resolverArgs"', async () => {

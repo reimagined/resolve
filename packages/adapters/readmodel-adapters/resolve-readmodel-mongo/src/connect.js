@@ -1,4 +1,9 @@
 const setupConnection = async pool => {
+  if (pool.isDisconnected) {
+    pool.databasePromise = null
+    return
+  }
+
   pool.databasePromise = new Promise((resolve, reject) => {
     pool.MongoClient.connect(
       pool.url,
