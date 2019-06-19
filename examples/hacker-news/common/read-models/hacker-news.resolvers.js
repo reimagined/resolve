@@ -3,7 +3,7 @@ const getStories = async (type, store, { first, offset }) => {
   const subSegment = segment.addNewSubsegment('resolver')
 
   subSegment.addAnnotation('type', type)
-  subSegment.addAnnotation('origin', 'custom:getStories')
+  subSegment.addAnnotation('origin', 'hacker-news:getStories')
 
   try {
     const search = type && type.constructor === String ? { type } : {}

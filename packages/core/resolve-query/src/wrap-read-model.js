@@ -1,37 +1,37 @@
 const wrapConnection = async (pool, callback) => {
   const readModelName = pool.readModel.name
 
-  const connection = await(async()=>{
-      const segment = pool.performanceTracer
-        ? pool.performanceTracer.getSegment()
-        : null
-      const subSegment = segment ? segment.addNewSubsegment('connect') : null
+  const connection = await (async () => {
+    const segment = pool.performanceTracer
+      ? pool.performanceTracer.getSegment()
+      : null
+    const subSegment = segment ? segment.addNewSubsegment('connect') : null
 
+    if (subSegment != null) {
+      subSegment.addAnnotation('readModelName', readModelName)
+      subSegment.addAnnotation('origin', 'resolve:query:connect')
+    }
+
+    try {
+      return await pool.connector.connect(pool.readModel.name)
+    } catch (error) {
       if (subSegment != null) {
-        subSegment.addAnnotation('readModelName', readModelName)
-        subSegment.addAnnotation('origin', 'resolve:query:connect')
+        subSegment.addError(error)
       }
-
-      try {
-        return await pool.connector.connect(pool.readModel.name)
-      } catch (error) {
-        if (subSegment != null) {
-          subSegment.addError(error)
-        }
-        throw error
-      } finally {
-        if (subSegment != null) {
-          subSegment.close()
-        }
+      throw error
+    } finally {
+      if (subSegment != null) {
+        subSegment.close()
       }
-    })()
+    }
+  })()
 
   pool.connections.add(connection)
 
   try {
     return await callback(connection)
   } finally {
-  	await (async()=>{
+    await (async () => {
       const segment = pool.performanceTracer
         ? pool.performanceTracer.getSegment()
         : null
@@ -85,7 +85,7 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
     }
     await pool.doUpdateRequest(pool.readModel.name)
 
-    return await wrapConnection(pool, async (connection) => {
+    return await wrapConnection(pool, async connection => {
       const segment = pool.performanceTracer
         ? pool.performanceTracer.getSegment()
         : null
@@ -156,7 +156,7 @@ const updateByEvents = async (pool, events) => {
     let lastError = null
     let lastEvent = null
 
-    const handler = async event => {
+    const handler = async (connection, event) => {
       const segment = pool.performanceTracer
         ? pool.performanceTracer.getSegment()
         : null
@@ -176,7 +176,6 @@ const updateByEvents = async (pool, events) => {
         }
 
         if (event != null && typeof projection[event.type] === 'function') {
-          const connection = await maybeConnect(pool)
           const executor = projection[event.type]
           await executor(connection, event)
           lastEvent = event
@@ -193,10 +192,10 @@ const updateByEvents = async (pool, events) => {
       }
     }
 
-    await wrapConnection(pool, async(connection) => {
+    await wrapConnection(pool, async connection => {
       try {
         for (const event of events) {
-          await handler(event)
+          await handler(connection, event)
         }
       } catch (error) {
         lastError = Object.create(Error.prototype, {
@@ -259,7 +258,7 @@ const drop = async pool => {
       throw new Error(`Read model "${readModelName}" is disposed`)
     }
 
-    await wrapConnection(pool, async (connection) => {
+    await wrapConnection(pool, async connection => {
       await pool.connector.drop(connection, pool.readModel.name)
     })
   } catch (error) {
@@ -310,7 +309,12 @@ const dispose = async pool => {
   }
 }
 
-const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
+const wrapReadModel = (
+  readModel,
+  readModelConnectors,
+  doUpdateRequest,
+  performanceTracer
+) => {
   const connectorFactory = readModelConnectors[readModel.connectorName]
   if (connectorFactory == null) {
     throw new Error(
