@@ -32,10 +32,11 @@ const initResolve = async resolve => {
 
   const readModelConnectors = {}
   for (const name of Object.keys(readModelConnectorsCreators)) {
-    readModelConnectors[name] = (options) => readModelConnectorsCreators[name]({
-      ...options,
-      performanceTracer
-    })
+    readModelConnectors[name] = options =>
+      readModelConnectorsCreators[name]({
+        ...options,
+        performanceTracer
+      })
   }
 
   const executeCommand = createCommandExecutor({
