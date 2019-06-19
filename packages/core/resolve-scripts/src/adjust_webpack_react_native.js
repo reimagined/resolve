@@ -87,9 +87,7 @@ const adjustWebpackReactNative = ({ resolveConfig, reactNativeDir }) => (
         }
       ]
     },
-    externals: getModulesDirs().map(modulesDir =>
-      nodeExternals({ modulesDir, whitelist: [/resolve-runtime/] })
-    )
+    externals: getModulesDirs().map(modulesDir => nodeExternals({ modulesDir }))
   }
 
   webpackConfigs.push(webpackNativeConfig)
