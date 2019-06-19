@@ -1,56 +1,137 @@
 const createAdapter = (implementation, options) => {
+  const { performanceTracer } = options
+
   const { connect, disconnect, dropReadModel, ...storeApi } = implementation
   const adapterPool = Object.create(null)
+  Object.assign(adapterPool, { performanceTracer })
   let connectionPromise = null
   const connectedReadModels = new Set()
 
   const doConnect = async readModelName => {
-    if (connectionPromise == null) {
-      connectionPromise = connect(
-        adapterPool,
-        options
-      )
+    const segment = performanceTracer ? performanceTracer.getSegment() : null
+    const subSegment = segment ? segment.addNewSubsegment('connect') : null
+
+    if (subSegment != null) {
+      subSegment.addAnnotation('readModelName', readModelName)
+      subSegment.addAnnotation('origin', 'resolve:readmodel:connect')
     }
-    await connectionPromise
-    connectedReadModels.add(readModelName)
 
-    const store = Object.keys(storeApi).reduce((acc, key) => {
-      acc[key] = storeApi[key].bind(null, adapterPool, readModelName)
-      return acc
-    }, {})
+    try {
+      if (connectionPromise == null) {
+        connectionPromise = connect(
+          adapterPool,
+          options
+        )
+      }
+      await connectionPromise
+      connectedReadModels.add(readModelName)
 
-    return Object.freeze(Object.create(store))
+      const store = Object.keys(storeApi).reduce((acc, key) => {
+        acc[key] = storeApi[key].bind(null, adapterPool, readModelName)
+        return acc
+      }, {})
+      store.performanceTracer = performanceTracer
+
+      return Object.freeze(Object.create(store))
+    } catch (error) {
+      if (subSegment != null) {
+        subSegment.addError(error)
+      }
+      throw error
+    } finally {
+      if (subSegment != null) {
+        subSegment.close()
+      }
+    }
   }
 
   const doDisconnect = async (store, readModelName) => {
     if (connectionPromise == null) {
       return
     }
-    await connectionPromise
 
-    for (const key of Object.keys(Object.getPrototypeOf(store))) {
-      delete Object.getPrototypeOf(store)[key]
+    const segment = performanceTracer ? performanceTracer.getSegment() : null
+    const subSegment = segment ? segment.addNewSubsegment('disconnect') : null
+
+    if (subSegment != null) {
+      subSegment.addAnnotation('readModelName', readModelName)
+      subSegment.addAnnotation('origin', 'resolve:readmodel:disconnect')
     }
 
-    connectedReadModels.delete(readModelName)
+    try {
+      await connectionPromise
 
-    if (connectedReadModels.size === 0) {
-      await disconnect(adapterPool)
-      connectionPromise = null
+      for (const key of Object.keys(Object.getPrototypeOf(store))) {
+        delete Object.getPrototypeOf(store)[key]
+      }
+
+      connectedReadModels.delete(readModelName)
+
+      if (connectedReadModels.size === 0) {
+        await disconnect(adapterPool)
+        connectionPromise = null
+      }
+    } catch (error) {
+      if (subSegment != null) {
+        subSegment.addError(error)
+      }
+      throw error
+    } finally {
+      if (subSegment != null) {
+        subSegment.close()
+      }
     }
   }
 
   const doDrop = async (store, readModelName) => {
-    await dropReadModel(adapterPool, readModelName)
+    const segment = performanceTracer ? performanceTracer.getSegment() : null
+    const subSegment = segment ? segment.addNewSubsegment('drop') : null
+
+    if (subSegment != null) {
+      subSegment.addAnnotation('readModelName', readModelName)
+      subSegment.addAnnotation('origin', 'resolve:readmodel:drop')
+    }
+
+    try {
+      await dropReadModel(adapterPool, readModelName)
+    } catch (error) {
+      if (subSegment != null) {
+        subSegment.addError(error)
+      }
+      throw error
+    } finally {
+      if (subSegment != null) {
+        subSegment.close()
+      }
+    }
   }
 
   const doDispose = async () => {
     if (connectionPromise == null) {
       return
     }
-    await connectionPromise
-    await disconnect(adapterPool)
-    connectionPromise = null
+
+    const segment = performanceTracer ? performanceTracer.getSegment() : null
+    const subSegment = segment ? segment.addNewSubsegment('dispose') : null
+
+    if (subSegment != null) {
+      subSegment.addAnnotation('origin', 'resolve:readmodel:dispose')
+    }
+
+    try {
+      await connectionPromise
+      await disconnect(adapterPool)
+      connectionPromise = null
+    } catch (error) {
+      if (subSegment != null) {
+        subSegment.addError(error)
+      }
+      throw error
+    } finally {
+      if (subSegment != null) {
+        subSegment.close()
+      }
+    }
   }
 
   return Object.freeze({

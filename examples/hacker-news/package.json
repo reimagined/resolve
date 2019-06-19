@@ -37,14 +37,12 @@
     "redux": "4.0.1",
     "redux-devtools-extension": "2.13.7",
     "redux-saga": "0.16.0",
-    "resolve-cloud": "^0.2.1",
     "resolve-module-auth": "0.20.12",
     "resolve-module-comments": "0.20.12",
     "resolve-readmodel-lite": "0.20.12",
     "resolve-readmodel-mysql": "0.20.12",
     "resolve-redux": "0.20.12",
     "resolve-scripts": "0.20.12",
-    "resolve-runtime": "0.20.12",
     "resolve-storage-dynamo": "0.20.12",
     "resolve-storage-lite": "0.20.12",
     "resolve-subscribe-mqtt": "0.20.12",
@@ -68,6 +66,7 @@
     "enzyme-adapter-react-16": "1.1.1",
     "jest": "24.1.0",
     "sinon": "7.2.2",
-    "testcafe": "0.23.3"
+    "testcafe": "0.23.3",
+    "resolve-cloud": "*"
   }
 }

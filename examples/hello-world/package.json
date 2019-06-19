@@ -21,7 +21,6 @@
     "redux": "4.0.1",
     "resolve-redux": "0.20.12",
     "resolve-scripts": "0.20.12",
-    "resolve-runtime": "0.20.12",
     "resolve-storage-dynamo": "0.20.12",
     "resolve-storage-lite": "0.20.12",
     "resolve-readmodel-lite": "0.20.12",
@@ -41,6 +40,7 @@
     "babel-jest": "24.1.0",
     "jest": "24.1.0",
     "react-test-renderer": "16.7.0",
-    "testcafe": "0.23.3"
+    "testcafe": "0.23.3",
+    "resolve-cloud": "*"
   }
 }

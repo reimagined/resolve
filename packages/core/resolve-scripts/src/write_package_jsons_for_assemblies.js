@@ -10,6 +10,8 @@ const writePackageJsonsForAssemblies = (
     fs.readFileSync(path.resolve(process.cwd(), 'package.json'))
   )
 
+  const resolveRuntimePackageJson = require('resolve-runtime/package.json')
+
   for (const [
     packageJsonPath,
     nodeModules
@@ -35,15 +37,17 @@ const writePackageJsonsForAssemblies = (
       version: applicationPackageJson.version,
       main: './index.js',
       dependencies: Array.from(resultNodeModules).reduce((acc, val) => {
-        acc[val] = applicationPackageJson.dependencies[val]
+        if (applicationPackageJson.dependencies.hasOwnProperty(val)) {
+          acc[val] = applicationPackageJson.dependencies[val]
+        } else if (
+          resolveRuntimePackageJson.dependencies.hasOwnProperty(val) &&
+          nodeModules.has(val)
+        ) {
+          acc[val] = resolveRuntimePackageJson.dependencies[val]
+        }
+
         return acc
       }, {})
-    }
-
-    if (assemblyPackageJson.dependencies['resolve-runtime'] == null) {
-      throw new Error(
-        'Error in package.json. Incorrect "resolve-runtime" version'
-      )
     }
 
     fs.writeFileSync(

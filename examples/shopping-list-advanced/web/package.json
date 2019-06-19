@@ -24,7 +24,6 @@
     "resolve-module-auth": "0.20.12",
     "resolve-readmodel-lite": "0.20.12",
     "resolve-scripts": "0.20.12",
-    "resolve-runtime": "0.20.12",
     "resolve-redux": "0.20.12"
   },
   "devDependencies": {
@@ -48,6 +47,7 @@
     "glob": "7.1.3",
     "opn": "5.4.0",
     "remotedev-server": "0.2.7",
-    "redux-devtools-extension": "2.13.7"
+    "redux-devtools-extension": "2.13.7",
+    "resolve-cloud": "*"
   }
 }
