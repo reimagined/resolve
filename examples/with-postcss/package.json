@@ -21,7 +21,6 @@
     "redux": "4.0.1",
     "resolve-redux": "0.20.12",
     "resolve-scripts": "0.20.12",
-    "resolve-runtime": "0.20.12",
     "resolve-storage-dynamo": "0.20.12",
     "resolve-storage-lite": "0.20.12",
     "resolve-readmodel-lite": "0.20.12",

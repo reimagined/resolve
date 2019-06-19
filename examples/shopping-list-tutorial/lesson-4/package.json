@@ -18,8 +18,7 @@
     "react-helmet": "5.2.0",
     "redux": "4.0.1",
     "resolve-redux": "0.20.12",
-    "resolve-scripts": "0.20.12",
-    "resolve-runtime": "0.20.12"
+    "resolve-scripts": "0.20.12"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",

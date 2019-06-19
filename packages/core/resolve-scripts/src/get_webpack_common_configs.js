@@ -152,12 +152,15 @@ const getWebpackCommonConfigs = ({
                 .split('/')
                 .slice(0, request[0] === '@' ? 2 : 1)
                 .join('/')
+
               nodeModulesByAssembly.get(assembly.packageJson).add(packageName)
             }
           }
           callback()
         },
-        ...getModulesDirs().map(modulesDir => nodeExternals({ modulesDir }))
+        ...getModulesDirs().map(modulesDir =>
+          nodeExternals({ modulesDir, whitelist: [/resolve-runtime/] })
+        )
       ]
     })
   }

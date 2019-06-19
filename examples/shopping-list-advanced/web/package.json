@@ -24,7 +24,6 @@
     "resolve-module-auth": "0.20.12",
     "resolve-readmodel-lite": "0.20.12",
     "resolve-scripts": "0.20.12",
-    "resolve-runtime": "0.20.12",
     "resolve-redux": "0.20.12"
   },
   "devDependencies": {
