@@ -373,6 +373,7 @@ module.exports = {
           'wal',
           'webpack',
           'websockets',
+          'whitelist',
           'wikipedia',
           'wildcard',
           'workspaces',

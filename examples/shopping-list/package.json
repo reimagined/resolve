@@ -29,7 +29,6 @@
     "resolve-readmodel-mysql": "0.20.12",
     "resolve-redux": "0.20.12",
     "resolve-scripts": "0.20.12",
-    "resolve-runtime": "0.20.12",
     "resolve-storage-dynamo": "0.20.12",
     "resolve-storage-lite": "0.20.12",
     "resolve-subscribe-mqtt": "0.20.12",
