@@ -108,25 +108,53 @@ const handleResolveReadModelEvent = async (
 }
 
 const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
+  const segment = resolve.performanceTracer.getSegment()
+  const subSegment = segment.addNewSubsegment('apiEvent')
+  subSegment.addAnnotation('operation', lambdaEvent.operation)
+  subSegment.addAnnotation('part', lambdaEvent.part)
+  subSegment.addAnnotation('origin', 'resolve:apiEvent')
+
   switch (lambdaEvent.part) {
     case 'bootstrap': {
-      return await bootstrap(resolve)
+      try {
+        return await bootstrap(resolve)
+      } catch (error) {
+        subSegment.addError(error)
+        throw error
+      } finally {
+        subSegment.close()
+      }
     }
     case 'readModel': {
-      return await handleResolveReadModelEvent(
-        lambdaEvent,
-        resolve,
-        getReadModelNames
-      )
+      try {
+        return await handleResolveReadModelEvent(
+          lambdaEvent,
+          resolve,
+          getReadModelNames
+        )
+      } catch (error) {
+        subSegment.addError(error)
+        throw error
+      } finally {
+        subSegment.close()
+      }
     }
     case 'saga': {
-      return await handleResolveReadModelEvent(
-        lambdaEvent,
-        resolve,
-        getSagaNames
-      )
+      try {
+        return await handleResolveReadModelEvent(
+          lambdaEvent,
+          resolve,
+          getSagaNames
+        )
+      } catch (error) {
+        subSegment.addError(error)
+        throw error
+      } finally {
+        subSegment.close()
+      }
     }
     default: {
+      subSegment.close()
       throw new Error(
         `Unknown part from the deploy service { "part": ${JSON.stringify(
           lambdaEvent.part

@@ -21,6 +21,26 @@ describe('deploy-service-event-handler.test', () => {
       bootstrapSymbol: 'bootstrap-symbol'
     }
     resolve.executeQuery.drop = jest.fn()
+
+    const addAnnotation = jest.fn()
+    const addError = jest.fn()
+    const close = jest.fn()
+    const addNewSubsegment = jest.fn().mockReturnValue({
+      addAnnotation,
+      addError,
+      close
+    })
+    const getSegment = jest.fn().mockReturnValue({
+      addNewSubsegment
+    })
+
+    resolve.performanceTracer = {
+      getSegment,
+      addNewSubsegment,
+      addAnnotation,
+      addError,
+      close
+    }
   })
 
   afterEach(() => {

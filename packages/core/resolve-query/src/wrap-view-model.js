@@ -8,6 +8,8 @@ const buildViewModel = async (
   jwtToken,
   key
 ) => {
+  const viewModelName = pool.viewModel.name
+
   await Promise.resolve()
   const snapshotKey = `${pool.viewModel.invariantHash};${key}`
   let aggregatesVersionsMap = new Map()
@@ -29,27 +31,55 @@ const buildViewModel = async (
     state = pool.viewModel.projection.Init()
   }
 
+  let eventCount = 0
+
   const handler = async event => {
-    if (!pool.workers.has(key)) {
-      throw new Error('View model build has been interrupted')
-    }
+    const segment = pool.performanceTracer
+      ? pool.performanceTracer.getSegment()
+      : null
+    const subSegment = segment ? segment.addNewSubsegment('applyEvent') : null
 
-    state = await pool.viewModel.projection[event.type](
-      state,
-      event,
-      aggregateArgs,
-      jwtToken
-    )
-    lastTimestamp = event.timestamp - 1
+    try {
+      if (!pool.workers.has(key)) {
+        throw new Error(
+          `View model "${viewModelName}" build has been interrupted`
+        )
+      }
 
-    aggregatesVersionsMap.set(event.aggregateId, event.aggregateVersion)
+      eventCount++
 
-    if (pool.snapshotAdapter != null) {
-      await pool.snapshotAdapter.saveSnapshot(snapshotKey, {
-        aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
-        state: await pool.viewModel.serializeState(state),
-        lastTimestamp
-      })
+      if (subSegment != null) {
+        subSegment.addAnnotation('viewModelName', viewModelName)
+        subSegment.addAnnotation('eventType', event.type)
+        subSegment.addAnnotation('origin', 'resolve:query:applyEvent')
+      }
+
+      state = await pool.viewModel.projection[event.type](
+        state,
+        event,
+        aggregateArgs,
+        jwtToken
+      )
+      lastTimestamp = event.timestamp - 1
+
+      aggregatesVersionsMap.set(event.aggregateId, event.aggregateVersion)
+
+      if (pool.snapshotAdapter != null) {
+        await pool.snapshotAdapter.saveSnapshot(snapshotKey, {
+          aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
+          state: await pool.viewModel.serializeState(state),
+          lastTimestamp
+        })
+      }
+    } catch (error) {
+      if (subSegment != null) {
+        subSegment.addError(error)
+      }
+      throw error
+    } finally {
+      if (subSegment != null) {
+        subSegment.close()
+      }
     }
   }
 
@@ -62,38 +92,67 @@ const buildViewModel = async (
     handler
   )
 
-  return state
+  return { state, eventCount }
 }
 
 const read = async (pool, modelOptions, aggregateArgs, jwtToken) => {
-  if (pool.isDisposed) {
-    throw new Error('View model is disposed')
-  }
-  let aggregateIds = null
+  const segment = pool.performanceTracer
+    ? pool.performanceTracer.getSegment()
+    : null
+  const subSegment = segment ? segment.addNewSubsegment('read') : null
+
   try {
-    if (modelOptions !== '*') {
-      aggregateIds = modelOptions.split(/,/)
-    } else {
-      aggregateIds = '*'
+    const viewModelName = pool.viewModel.name
+
+    if (subSegment != null) {
+      subSegment.addAnnotation('viewModelName', viewModelName)
+      subSegment.addAnnotation('origin', 'resolve:query:read')
     }
+
+    if (pool.isDisposed) {
+      throw new Error(`View model "${viewModelName}" is disposed`)
+    }
+    let aggregateIds = null
+    try {
+      if (modelOptions !== '*') {
+        aggregateIds = modelOptions.split(/,/)
+      } else {
+        aggregateIds = '*'
+      }
+    } catch (error) {
+      throw new Error(
+        `View model "${viewModelName}" requires aggregates identifier list`
+      )
+    }
+    const key = getKey(aggregateIds)
+
+    if (!pool.workers.has(key)) {
+      pool.workers.set(
+        key,
+        buildViewModel(pool, aggregateIds, aggregateArgs, jwtToken, key)
+      )
+    }
+
+    const { state, eventCount } = await pool.workers.get(key)
+
+    if (subSegment != null) {
+      subSegment.addAnnotation('eventCount', eventCount)
+      subSegment.addAnnotation('origin', 'resolve:query:read')
+    }
+
+    pool.workers.delete(key)
+
+    return state
   } catch (error) {
-    throw new Error(
-      `View model ${pool.viewModel.name} requires aggregates identifier list`
-    )
+    if (subSegment != null) {
+      subSegment.addError(error)
+    }
+    throw error
+  } finally {
+    if (subSegment != null) {
+      subSegment.close()
+    }
   }
-  const key = getKey(aggregateIds)
-
-  if (!pool.workers.has(key)) {
-    pool.workers.set(
-      key,
-      buildViewModel(pool, aggregateIds, aggregateArgs, jwtToken, key)
-    )
-  }
-
-  const result = await pool.workers.get(key)
-  pool.workers.delete(key)
-
-  return result
 }
 
 const readAndSerialize = async (
@@ -102,8 +161,10 @@ const readAndSerialize = async (
   aggregateArgs,
   jwtToken
 ) => {
+  const viewModelName = pool.viewModel.name
+
   if (pool.isDisposed) {
-    throw new Error('View model is disposed')
+    throw new Error(`View model "${viewModelName}" is disposed`)
   }
   const state = await read(pool, modelOptions, aggregateArgs, jwtToken)
 
@@ -113,37 +174,113 @@ const readAndSerialize = async (
 }
 
 const updateByEvents = async pool => {
-  if (pool.isDisposed) {
-    throw new Error('View model is disposed')
-  }
+  const segment = pool.performanceTracer
+    ? pool.performanceTracer.getSegment()
+    : null
+  const subSegment = segment ? segment.addNewSubsegment('updateByEvents') : null
 
-  throw new Error('View model cannot be updated by events')
+  try {
+    const viewModelName = pool.viewModel.name
+
+    if (subSegment != null) {
+      subSegment.addAnnotation('viewModelName', viewModelName)
+      subSegment.addAnnotation('origin', 'resolve:query:updateByEvents')
+    }
+
+    if (pool.isDisposed) {
+      throw new Error(`View model "${viewModelName}" is disposed`)
+    }
+
+    throw new Error(`View model "${viewModelName}" cannot be updated by events`)
+  } catch (error) {
+    if (subSegment != null) {
+      subSegment.addError(error)
+    }
+    throw error
+  } finally {
+    if (subSegment != null) {
+      subSegment.close()
+    }
+  }
 }
 
 const drop = async pool => {
-  if (pool.isDisposed) {
-    throw new Error('View model is disposed')
-  }
+  const segment = pool.performanceTracer
+    ? pool.performanceTracer.getSegment()
+    : null
+  const subSegment = segment ? segment.addNewSubsegment('drop') : null
 
-  throw new Error('Snapshot cleaning for view-models is not implemented')
+  try {
+    const viewModelName = pool.viewModel.name
+
+    if (subSegment != null) {
+      subSegment.addAnnotation('viewModelName', viewModelName)
+      subSegment.addAnnotation('origin', 'resolve:query:drop')
+    }
+
+    if (pool.isDisposed) {
+      throw new Error(`View model "${viewModelName}" is disposed`)
+    }
+
+    throw new Error(
+      `Snapshot cleaning for view-model "${viewModelName}" is not implemented`
+    )
+  } catch (error) {
+    if (subSegment != null) {
+      subSegment.addError(error)
+    }
+    throw error
+  } finally {
+    if (subSegment != null) {
+      subSegment.close()
+    }
+  }
 }
 
 const dispose = async pool => {
-  if (pool.isDisposed) {
-    throw new Error('View model is disposed')
-  }
-  pool.isDisposed = true
+  const segment = pool.performanceTracer
+    ? pool.performanceTracer.getSegment()
+    : null
+  const subSegment = segment ? segment.addNewSubsegment('dispose') : null
 
-  pool.workers.clear()
+  try {
+    const viewModelName = pool.viewModel.name
+
+    if (subSegment != null) {
+      subSegment.addAnnotation('viewModelName', viewModelName)
+    }
+
+    if (pool.isDisposed) {
+      throw new Error(`View model "${viewModelName}" is disposed`)
+    }
+    pool.isDisposed = true
+
+    pool.workers.clear()
+  } catch (error) {
+    if (subSegment != null) {
+      subSegment.addError(error)
+    }
+    throw error
+  } finally {
+    if (subSegment != null) {
+      subSegment.close()
+    }
+  }
 }
 
-const wrapViewModel = (viewModel, snapshotAdapter, eventStore) => {
+const wrapViewModel = (
+  viewModel,
+  snapshotAdapter,
+  eventStore,
+  performanceTracer
+) => {
   const pool = {
     viewModel,
     snapshotAdapter,
     eventStore,
     workers: new Map(),
-    isDisposed: false
+    isDisposed: false,
+    performanceTracer
   }
 
   return Object.freeze({
