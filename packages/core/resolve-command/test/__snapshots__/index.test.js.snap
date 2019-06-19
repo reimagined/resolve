@@ -46,20 +46,24 @@ Array [
     "set",
   ],
   Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
     "aggregateName",
     "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:getAggregateState",
   ],
   Array [
     "eventCount",
     0,
   ],
   Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
-    "commandType",
-    "set",
+    "origin",
+    "resolve:loadEvents",
   ],
   Array [
     "aggregateName",
@@ -70,8 +74,28 @@ Array [
     "set",
   ],
   Array [
+    "origin",
+    "resolve:processCommand",
+  ],
+  Array [
     "aggregateName",
     "Map",
+  ],
+  Array [
+    "commandType",
+    "set",
+  ],
+  Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:getAggregateState",
   ],
 ]
 `;
@@ -161,20 +185,24 @@ Array [
     "set",
   ],
   Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
     "aggregateName",
     "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:getAggregateState",
   ],
   Array [
     "eventCount",
     0,
   ],
   Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
-    "commandType",
-    "set",
+    "origin",
+    "resolve:loadEvents",
   ],
   Array [
     "aggregateName",
@@ -185,8 +213,28 @@ Array [
     "set",
   ],
   Array [
+    "origin",
+    "resolve:processCommand",
+  ],
+  Array [
     "aggregateName",
     "Map",
+  ],
+  Array [
+    "commandType",
+    "set",
+  ],
+  Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:getAggregateState",
   ],
 ]
 `;
@@ -289,20 +337,24 @@ Array [
     "createUser",
   ],
   Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
     "aggregateName",
     "User",
+  ],
+  Array [
+    "origin",
+    "resolve:getAggregateState",
   ],
   Array [
     "eventCount",
     0,
   ],
   Array [
-    "aggregateName",
-    "User",
-  ],
-  Array [
-    "commandType",
-    "createUser",
+    "origin",
+    "resolve:loadEvents",
   ],
   Array [
     "aggregateName",
@@ -313,8 +365,28 @@ Array [
     "createUser",
   ],
   Array [
+    "origin",
+    "resolve:processCommand",
+  ],
+  Array [
     "aggregateName",
     "User",
+  ],
+  Array [
+    "commandType",
+    "createUser",
+  ],
+  Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
+    "aggregateName",
+    "User",
+  ],
+  Array [
+    "origin",
+    "resolve:getAggregateState",
   ],
   Array [
     "aggregateName",
@@ -325,8 +397,16 @@ Array [
     "USER_CREATED",
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "eventCount",
     1,
+  ],
+  Array [
+    "origin",
+    "resolve:loadEvents",
   ],
   Array [
     "aggregateName",
@@ -335,6 +415,10 @@ Array [
   Array [
     "commandType",
     "createUser",
+  ],
+  Array [
+    "origin",
+    "resolve:processCommand",
   ],
 ]
 `;
@@ -426,20 +510,24 @@ Array [
     "create",
   ],
   Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
     "aggregateName",
     "Entity",
+  ],
+  Array [
+    "origin",
+    "resolve:getAggregateState",
   ],
   Array [
     "eventCount",
     0,
   ],
   Array [
-    "aggregateName",
-    "Entity",
-  ],
-  Array [
-    "commandType",
-    "create",
+    "origin",
+    "resolve:loadEvents",
   ],
   Array [
     "aggregateName",
@@ -450,8 +538,28 @@ Array [
     "create",
   ],
   Array [
+    "origin",
+    "resolve:processCommand",
+  ],
+  Array [
     "aggregateName",
     "Entity",
+  ],
+  Array [
+    "commandType",
+    "create",
+  ],
+  Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
+    "aggregateName",
+    "Entity",
+  ],
+  Array [
+    "origin",
+    "resolve:getAggregateState",
   ],
   Array [
     "aggregateName",
@@ -462,8 +570,16 @@ Array [
     "CREATED",
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "eventCount",
     1,
+  ],
+  Array [
+    "origin",
+    "resolve:loadEvents",
   ],
   Array [
     "aggregateName",
@@ -472,6 +588,10 @@ Array [
   Array [
     "commandType",
     "create",
+  ],
+  Array [
+    "origin",
+    "resolve:processCommand",
   ],
 ]
 `;
@@ -563,12 +683,24 @@ Array [
     "emptyCommand",
   ],
   Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
     "aggregateName",
     "empty",
   ],
   Array [
+    "origin",
+    "resolve:getAggregateState",
+  ],
+  Array [
     "eventCount",
     0,
+  ],
+  Array [
+    "origin",
+    "resolve:loadEvents",
   ],
   Array [
     "aggregateName",
@@ -577,6 +709,10 @@ Array [
   Array [
     "commandType",
     "emptyCommand",
+  ],
+  Array [
+    "origin",
+    "resolve:processCommand",
   ],
 ]
 `;
@@ -633,6 +769,10 @@ Array [
     "commandType",
     "emptyCommand",
   ],
+  Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
 ]
 `;
 
@@ -675,12 +815,24 @@ Array [
     "emptyCommand",
   ],
   Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
     "aggregateName",
     "empty",
   ],
   Array [
+    "origin",
+    "resolve:getAggregateState",
+  ],
+  Array [
     "eventCount",
     0,
+  ],
+  Array [
+    "origin",
+    "resolve:loadEvents",
   ],
   Array [
     "aggregateName",
@@ -689,6 +841,10 @@ Array [
   Array [
     "commandType",
     "emptyCommand",
+  ],
+  Array [
+    "origin",
+    "resolve:processCommand",
   ],
 ]
 `;
@@ -747,12 +903,24 @@ Array [
     "emptyCommand",
   ],
   Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
     "aggregateName",
     "empty",
   ],
   Array [
+    "origin",
+    "resolve:getAggregateState",
+  ],
+  Array [
     "eventCount",
     0,
+  ],
+  Array [
+    "origin",
+    "resolve:loadEvents",
   ],
   Array [
     "aggregateName",
@@ -761,6 +929,10 @@ Array [
   Array [
     "commandType",
     "emptyCommand",
+  ],
+  Array [
+    "origin",
+    "resolve:processCommand",
   ],
 ]
 `;
@@ -879,8 +1051,16 @@ Array [
     "set",
   ],
   Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
     "aggregateName",
     "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:getAggregateState",
   ],
   Array [
     "aggregateName",
@@ -891,12 +1071,20 @@ Array [
     undefined,
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "aggregateName",
     "Map",
   ],
   Array [
     "eventType",
     undefined,
+  ],
+  Array [
+    "origin",
+    "resolve:applyEvent",
   ],
 ]
 `;
@@ -1009,8 +1197,16 @@ Array [
     "set",
   ],
   Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
     "aggregateName",
     "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:getAggregateState",
   ],
 ]
 `;
@@ -1062,8 +1258,16 @@ Array [
     "set",
   ],
   Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
     "aggregateName",
     "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:getAggregateState",
   ],
 ]
 `;
@@ -1115,20 +1319,24 @@ Array [
     "set",
   ],
   Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
     "aggregateName",
     "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:getAggregateState",
   ],
   Array [
     "eventCount",
     0,
   ],
   Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
-    "commandType",
-    "set",
+    "origin",
+    "resolve:loadEvents",
   ],
   Array [
     "aggregateName",
@@ -1139,12 +1347,36 @@ Array [
     "set",
   ],
   Array [
-    "aggregateName",
-    "Map",
+    "origin",
+    "resolve:processCommand",
   ],
   Array [
     "aggregateName",
     "Map",
+  ],
+  Array [
+    "commandType",
+    "set",
+  ],
+  Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:getAggregateState",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:applySnapshot",
   ],
   Array [
     "aggregateName",
@@ -1153,18 +1385,18 @@ Array [
   Array [
     "eventType",
     "SET",
+  ],
+  Array [
+    "origin",
+    "resolve:applyEvent",
   ],
   Array [
     "eventCount",
     1,
   ],
   Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
-    "commandType",
-    "set",
+    "origin",
+    "resolve:loadEvents",
   ],
   Array [
     "aggregateName",
@@ -1175,16 +1407,44 @@ Array [
     "set",
   ],
   Array [
-    "aggregateName",
-    "Map",
+    "origin",
+    "resolve:processCommand",
   ],
   Array [
     "aggregateName",
     "Map",
   ],
   Array [
+    "commandType",
+    "set",
+  ],
+  Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
     "aggregateName",
     "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:getAggregateState",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:applySnapshot",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:applySnapshot",
   ],
   Array [
     "aggregateName",
@@ -1195,8 +1455,16 @@ Array [
     "SET",
   ],
   Array [
+    "origin",
+    "resolve:applyEvent",
+  ],
+  Array [
     "eventCount",
     2,
+  ],
+  Array [
+    "origin",
+    "resolve:loadEvents",
   ],
   Array [
     "aggregateName",
@@ -1205,6 +1473,10 @@ Array [
   Array [
     "commandType",
     "set",
+  ],
+  Array [
+    "origin",
+    "resolve:processCommand",
   ],
 ]
 `;
