@@ -3,6 +3,7 @@ import debugLevels from 'debug-levels'
 import { createActions } from 'resolve-redux'
 
 import initBroker from './init-broker'
+import initPerformanceTracer from './init-performance-tracer'
 import initExpress from './init-express'
 import initWebsockets from './init-websockets'
 import prepareDomain from '../common/prepare-domain'
@@ -22,6 +23,8 @@ const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
       redux,
       routes
     }
+
+    await initPerformanceTracer(resolve)
 
     resolve.aggregateActions = {}
     for (const aggregate of domain.aggregates) {

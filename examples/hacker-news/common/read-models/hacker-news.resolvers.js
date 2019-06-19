@@ -1,16 +1,33 @@
 const getStories = async (type, store, { first, offset }) => {
-  const search = type && type.constructor === String ? { type } : {}
-  const skip = first || 0
-  const stories = await store.find(
-    'Stories',
-    search,
-    null,
-    { createdAt: -1 },
-    skip,
-    skip + offset
-  )
+  const segment = store.performanceTracer.getSegment()
+  const subSegment = segment.addNewSubsegment('resolver')
 
-  return Array.isArray(stories) ? stories : []
+  subSegment.addAnnotation('type', type)
+  subSegment.addAnnotation('origin', 'custom:getStories')
+
+  try {
+    const search = type && type.constructor === String ? { type } : {}
+    const skip = first || 0
+    const stories = await store.find(
+      'Stories',
+      search,
+      null,
+      { createdAt: -1 },
+      skip,
+      skip + offset
+    )
+
+    return Array.isArray(stories) ? stories : []
+  } catch (error) {
+    if (subSegment != null) {
+      subSegment.addError(error)
+    }
+    throw error
+  } finally {
+    if (subSegment != null) {
+      subSegment.close()
+    }
+  }
 }
 
 const getStory = async (store, { id }) => {

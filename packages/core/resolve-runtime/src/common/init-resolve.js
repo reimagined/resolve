@@ -1,8 +1,11 @@
 import createEventStore from 'resolve-es'
 import createCommandExecutor from 'resolve-command'
 import createQueryExecutor from 'resolve-query'
+import crypto from 'crypto'
 
 const initResolve = async resolve => {
+  const performanceTracer = resolve.performanceTracer
+
   const {
     storageAdapter: createStorageAdapter,
     snapshotAdapter: createSnapshotAdapter,
@@ -29,13 +32,17 @@ const initResolve = async resolve => {
 
   const readModelConnectors = {}
   for (const name of Object.keys(readModelConnectorsCreators)) {
-    readModelConnectors[name] = readModelConnectorsCreators[name]
+    readModelConnectors[name] = (options) => readModelConnectorsCreators[name]({
+      ...options,
+      performanceTracer
+    })
   }
 
   const executeCommand = createCommandExecutor({
     eventStore,
     aggregates,
-    snapshotAdapter
+    snapshotAdapter,
+    performanceTracer
   })
 
   const executeQuery = createQueryExecutor({
@@ -44,7 +51,8 @@ const initResolve = async resolve => {
     snapshotAdapter,
     doUpdateRequest: resolve.doUpdateRequest,
     readModels,
-    viewModels
+    viewModels,
+    performanceTracer
   })
 
   Object.assign(resolve, {
@@ -58,6 +66,11 @@ const initResolve = async resolve => {
     snapshotAdapter: { value: snapshotAdapter },
     storageAdapter: { value: storageAdapter }
   })
+
+  process.env.RESOLVE_LOCAL_TRACE_ID = crypto
+    .randomBytes(Math.ceil(32 / 2))
+    .toString('hex')
+    .slice(0, 32)
 }
 
 export default initResolve

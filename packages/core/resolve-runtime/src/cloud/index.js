@@ -6,11 +6,14 @@ import { createActions } from 'resolve-redux'
 import initAwsClients from './init-aws-clients'
 import prepareDomain from '../common/prepare-domain'
 import initBroker from './init-broker'
+import initPerformanceTracer from './init-performance-tracer'
 import lambdaWorker from './lambda-worker'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
 const index = async ({ assemblies, constants, domain, redux, routes }) => {
+  let subSegment = null
+
   log.debug(`starting lambda 'cold start'`)
   try {
     log.debug('configuring reSolve framework')
@@ -22,6 +25,12 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
       redux,
       routes
     }
+
+    log.debug('preparing performance tracer')
+    await initPerformanceTracer(resolve)
+
+    const segment = resolve.performanceTracer.getSegment()
+    subSegment = segment.addNewSubsegment('initResolve')
 
     resolve.aggregateActions = {}
     for (const aggregate of domain.aggregates) {
@@ -42,6 +51,11 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
     return lambdaWorker.bind(null, resolve)
   } catch (error) {
     log.error(`lambda 'cold start' failure`, error)
+    subSegment.addError(error)
+  } finally {
+    if (subSegment != null) {
+      subSegment.close()
+    }
   }
 }
 

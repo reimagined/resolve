@@ -1,90 +1,239 @@
-const read = async (pool, resolverName, resolverArgs, jwtToken) => {
-  if (pool.isDisposed) {
-    throw new Error(`Read model "${pool.readModel.name}" is disposed`)
-  }
-  if (typeof pool.readModel.resolvers[resolverName] !== 'function') {
-    const error = new Error(`Resolver "${resolverName}" does not exist`)
-    error.code = 422
-    throw error
-  }
-  await pool.doUpdateRequest(pool.readModel.name)
+const wrapConnection = async (pool, callback) => {
+  const readModelName = pool.readModel.name
 
-  const connection = await pool.connector.connect(pool.readModel.name)
+  const connection = await(async()=>{
+      const segment = pool.performanceTracer
+        ? pool.performanceTracer.getSegment()
+        : null
+      const subSegment = segment ? segment.addNewSubsegment('connect') : null
+
+      if (subSegment != null) {
+        subSegment.addAnnotation('readModelName', readModelName)
+        subSegment.addAnnotation('origin', 'resolve:query:connect')
+      }
+
+      try {
+        return await pool.connector.connect(pool.readModel.name)
+      } catch (error) {
+        if (subSegment != null) {
+          subSegment.addError(error)
+        }
+        throw error
+      } finally {
+        if (subSegment != null) {
+          subSegment.close()
+        }
+      }
+    })()
+
   pool.connections.add(connection)
 
   try {
-    return await pool.readModel.resolvers[resolverName](
-      connection,
-      resolverArgs,
-      jwtToken
-    )
+    return await callback(connection)
   } finally {
-    await pool.connector.disconnect(connection, pool.readModel.name)
+  	await (async()=>{
+      const segment = pool.performanceTracer
+        ? pool.performanceTracer.getSegment()
+        : null
+      const subSegment = segment ? segment.addNewSubsegment('disconnect') : null
 
-    pool.connections.delete(connection)
+      if (subSegment != null) {
+        subSegment.addAnnotation('readModelName', readModelName)
+        subSegment.addAnnotation('origin', 'resolve:query:disconnect')
+      }
+
+      try {
+        await pool.connector.disconnect(connection, pool.readModel.name)
+
+        pool.connections.delete(connection)
+      } catch (error) {
+        if (subSegment != null) {
+          subSegment.addError(error)
+        }
+        throw error
+      } finally {
+        if (subSegment != null) {
+          subSegment.close()
+        }
+      }
+    })()
+  }
+}
+
+const read = async (pool, resolverName, resolverArgs, jwtToken) => {
+  const segment = pool.performanceTracer
+    ? pool.performanceTracer.getSegment()
+    : null
+  const subSegment = segment ? segment.addNewSubsegment('read') : null
+
+  const readModelName = pool.readModel.name
+
+  if (subSegment != null) {
+    subSegment.addAnnotation('readModelName', readModelName)
+    subSegment.addAnnotation('resolverName', resolverName)
+    subSegment.addAnnotation('origin', 'resolve:query:read')
+  }
+
+  try {
+    if (pool.isDisposed) {
+      throw new Error(`Read model "${pool.readModel.name}" is disposed`)
+    }
+    if (typeof pool.readModel.resolvers[resolverName] !== 'function') {
+      const error = new Error(`Resolver "${resolverName}" does not exist`)
+      error.code = 422
+      throw error
+    }
+    await pool.doUpdateRequest(pool.readModel.name)
+
+    return await wrapConnection(pool, async (connection) => {
+      const segment = pool.performanceTracer
+        ? pool.performanceTracer.getSegment()
+        : null
+      const subSegment = segment ? segment.addNewSubsegment('resolver') : null
+
+      if (subSegment != null) {
+        subSegment.addAnnotation('readModelName', readModelName)
+        subSegment.addAnnotation('resolverName', resolverName)
+        subSegment.addAnnotation('origin', 'resolve:query:resolver')
+      }
+
+      try {
+        return await pool.readModel.resolvers[resolverName](
+          connection,
+          resolverArgs,
+          jwtToken
+        )
+      } catch (error) {
+        if (subSegment != null) {
+          subSegment.addError(error)
+        }
+        throw error
+      } finally {
+        if (subSegment != null) {
+          subSegment.close()
+        }
+      }
+    })
+  } catch (error) {
+    if (subSegment != null) {
+      subSegment.addError(error)
+    }
+    throw error
+  } finally {
+    if (subSegment != null) {
+      subSegment.close()
+    }
   }
 }
 
 const updateByEvents = async (pool, events) => {
-  if (pool.isDisposed) {
-    throw new Error(`Read model "${pool.readModel.name}" is disposed`)
-  }
-
-  const projection = pool.readModel.projection
-
-  if (projection == null) {
-    throw new Error(
-      `Updating by events is prohibited when "${pool.readModel.name}" projection is not specified`
-    )
-  }
-
-  const connection = await pool.connector.connect(pool.readModel.name)
-  pool.connections.add(connection)
-
-  let lastError = null
-  let lastEvent = null
+  const segment = pool.performanceTracer
+    ? pool.performanceTracer.getSegment()
+    : null
+  const subSegment = segment ? segment.addNewSubsegment('updateByEvents') : null
 
   try {
-    for (const event of events) {
-      if (pool.isDisposed) {
-        throw new Error(
-          `Read model "${pool.readModel.name}" updating had been interrupted`
-        )
-      }
+    const readModelName = pool.readModel.name
 
-      if (event != null && typeof projection[event.type] === 'function') {
-        const executor = projection[event.type]
-        await executor(connection, event)
-        lastEvent = event
+    if (subSegment != null) {
+      subSegment.addAnnotation('readModelName', readModelName)
+      subSegment.addAnnotation('eventCount', events.length)
+      subSegment.addAnnotation('origin', 'resolve:query:updateByEvents')
+    }
+
+    if (pool.isDisposed) {
+      throw new Error(`Read model "${pool.readModel.name}" is disposed`)
+    }
+
+    const projection = pool.readModel.projection
+
+    if (projection == null) {
+      throw new Error(
+        `Updating by events is prohibited when "${pool.readModel.name}" projection is not specified`
+      )
+    }
+
+    let lastError = null
+    let lastEvent = null
+
+    const handler = async event => {
+      const segment = pool.performanceTracer
+        ? pool.performanceTracer.getSegment()
+        : null
+      const subSegment = segment ? segment.addNewSubsegment('applyEvent') : null
+
+      try {
+        if (pool.isDisposed) {
+          throw new Error(
+            `Read model "${readModelName}" updating had been interrupted`
+          )
+        }
+
+        if (subSegment != null) {
+          subSegment.addAnnotation('readModelName', readModelName)
+          subSegment.addAnnotation('eventType', event.type)
+          subSegment.addAnnotation('origin', 'resolve:query:applyEvent')
+        }
+
+        if (event != null && typeof projection[event.type] === 'function') {
+          const connection = await maybeConnect(pool)
+          const executor = projection[event.type]
+          await executor(connection, event)
+          lastEvent = event
+        }
+      } catch (error) {
+        if (subSegment != null) {
+          subSegment.addError(error)
+        }
+        throw error
+      } finally {
+        if (subSegment != null) {
+          subSegment.close()
+        }
       }
     }
-  } catch (error) {
-    lastError = Object.create(Error.prototype, {
-      message: { value: error.message, enumerable: true },
-      stack: { value: error.stack, enumerable: true }
+
+    await wrapConnection(pool, async(connection) => {
+      try {
+        for (const event of events) {
+          await handler(event)
+        }
+      } catch (error) {
+        lastError = Object.create(Error.prototype, {
+          message: { value: error.message, enumerable: true },
+          stack: { value: error.stack, enumerable: true }
+        })
+      }
     })
+
+    const result = {
+      listenerId: pool.readModel.name,
+      lastError,
+      lastEvent
+    }
+
+    if (lastError != null) {
+      throw result
+    } else {
+      return result
+    }
+  } catch (error) {
+    if (subSegment != null) {
+      subSegment.addError(error)
+    }
+    throw error
   } finally {
-    await pool.connector.disconnect(connection, pool.readModel.name)
-
-    pool.connections.delete(connection)
-  }
-
-  const result = {
-    listenerId: pool.readModel.name,
-    lastError,
-    lastEvent
-  }
-
-  if (lastError != null) {
-    throw result
-  } else {
-    return result
+    if (subSegment != null) {
+      subSegment.close()
+    }
   }
 }
 
 const readAndSerialize = async (pool, resolverName, resolverArgs, jwtToken) => {
+  const readModelName = pool.readModel.name
+
   if (pool.isDisposed) {
-    throw new Error(`Read model "${pool.readModel.name}" is disposed`)
+    throw new Error(`Read model "${readModelName}" is disposed`)
   }
 
   const result = await read(pool, resolverName, resolverArgs, jwtToken)
@@ -93,30 +242,71 @@ const readAndSerialize = async (pool, resolverName, resolverArgs, jwtToken) => {
 }
 
 const drop = async pool => {
-  if (pool.isDisposed) {
-    throw new Error(`Read model "${pool.readModel.name}" is disposed`)
+  const segment = pool.performanceTracer
+    ? pool.performanceTracer.getSegment()
+    : null
+  const subSegment = segment ? segment.addNewSubsegment('drop') : null
+
+  const readModelName = pool.readModel.name
+
+  if (subSegment != null) {
+    subSegment.addAnnotation('readModelName', readModelName)
+    subSegment.addAnnotation('origin', 'resolve:query:drop')
   }
 
-  const connection = await pool.connector.connect(pool.readModel.name)
-  pool.connections.add(connection)
-
   try {
-    await pool.connector.drop(connection, pool.readModel.name)
-  } finally {
-    await pool.connector.disconnect(connection, pool.readModel.name)
+    if (pool.isDisposed) {
+      throw new Error(`Read model "${readModelName}" is disposed`)
+    }
 
-    pool.connections.delete(connection)
+    await wrapConnection(pool, async (connection) => {
+      await pool.connector.drop(connection, pool.readModel.name)
+    })
+  } catch (error) {
+    if (subSegment != null) {
+      subSegment.addError(error)
+    }
+    throw error
+  } finally {
+    if (subSegment != null) {
+      subSegment.close()
+    }
   }
 }
 
 const dispose = async pool => {
-  if (pool.isDisposed) {
-    throw new Error(`Read model "${pool.readModel.name}" is disposed`)
-  }
-  pool.isDisposed = true
+  const segment = pool.performanceTracer
+    ? pool.performanceTracer.getSegment()
+    : null
+  const subSegment = segment ? segment.addNewSubsegment('dispose') : null
 
-  for (const connection of pool.connections) {
-    await pool.connector.dispose(connection)
+  const readModelName = pool.readModel.name
+
+  if (subSegment != null) {
+    subSegment.addAnnotation('readModelName', readModelName)
+    subSegment.addAnnotation('origin', 'resolve:query:dispose')
+  }
+
+  try {
+    if (pool.isDisposed) {
+      throw new Error(`Read model "${pool.readModel.name}" is disposed`)
+    }
+    pool.isDisposed = true
+
+    const promises = []
+    for (const connection of pool.connections) {
+      promises.push(pool.connector.dispose(connection))
+    }
+    await Promise.all(promises)
+  } catch (error) {
+    if (subSegment != null) {
+      subSegment.addError(error)
+    }
+    throw error
+  } finally {
+    if (subSegment != null) {
+      subSegment.close()
+    }
   }
 }
 
@@ -134,7 +324,8 @@ const wrapReadModel = (readModel, readModelConnectors, doUpdateRequest) => {
     readModel,
     doUpdateRequest,
     connector,
-    isDisposed: false
+    isDisposed: false,
+    performanceTracer
   }
 
   return Object.freeze({

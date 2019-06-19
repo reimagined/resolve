@@ -12,7 +12,7 @@ const rollback = patchPackageJson(cwd)
 
 execSync('yarn', { cwd, stdio: 'inherit' })
 
-execSync('yarn resolve-cloud deploy', { cwd, stdio: 'inherit' })
+execSync('npx resolve-cloud deploy', { cwd, stdio: 'inherit' })
 
 rollback()
 
