@@ -9,6 +9,8 @@ const onSubMessage = async (pool, byteMessage) => {
 
   try {
     switch (topicName) {
+      case INCOMING_TOPICS.DECLARE_EVENT_TYPES_TOPIC:
+        return await pool.onDeclareEventTypesTopic(pool, content)
       case INCOMING_TOPICS.EVENT_TOPIC:
         return await pool.onEventTopic(pool, content)
       case INCOMING_TOPICS.RESET_LISTENER_TOPIC:
