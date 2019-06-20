@@ -103,6 +103,7 @@ module.exports = {
           'darwin',
           'dddddd',
           'ddd',
+          'decrement',
           'deepmerge',
           'del',
           'desc',

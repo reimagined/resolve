@@ -1,5 +1,7 @@
 import { Phases, symbol } from './constants'
 
+const defaultMockError = `Using default mock result: override "executeCommand", "executeQuery" and "scheduleCommand" in "sideEffects" section with custom mocks`
+
 const initSaga = async ({ promise, transformEvents }) => {
   if (promise[symbol].phase < Phases.SAGA) {
     throw new TypeError()
@@ -37,23 +39,34 @@ const initSaga = async ({ promise, transformEvents }) => {
           sideEffects: Object.keys(sideEffects).reduce(
             (acc, key) => {
               acc[key] = async (...args) => {
-                if (!isEnabled) return
-                result.sideEffects.push([key, ...args, properties])
+                if (isEnabled) {
+                  result.sideEffects.push([key, ...args, properties])
+                  return await sideEffects[key](...args)
+                }
               }
               return acc
             },
             {
               executeCommand: async (...args) => {
-                if (!isEnabled) return
-                result.commands.push(args)
+                if (isEnabled) {
+                  result.commands.push(args)
+                  // eslint-disable-next-line no-console
+                  console.warn(defaultMockError)
+                }
               },
               scheduleCommand: async (...args) => {
-                if (!isEnabled) return
-                result.scheduleCommands.push(args)
+                if (isEnabled) {
+                  result.scheduleCommands.push(args)
+                  // eslint-disable-next-line no-console
+                  console.warn(defaultMockError)
+                }
               },
               executeQuery: async (...args) => {
-                if (!isEnabled) return
-                result.queries.push(args)
+                if (isEnabled) {
+                  result.queries.push(args)
+                  // eslint-disable-next-line no-console
+                  console.warn(defaultMockError)
+                }
               },
               isEnabled
             }
