@@ -1,6 +1,6 @@
 {
   "name": "shopping-list",
-  "version": "0.20.13",
+  "version": "0.20.14",
   "description": "shows how to work with read-models and view-models",
   "private": true,
   "scripts": {
@@ -25,14 +25,14 @@
     "react-router-redux": "5.0.0-alpha.9",
     "redux": "4.0.1",
     "redux-devtools-extension": "2.13.7",
-    "resolve-readmodel-lite": "0.20.13",
-    "resolve-readmodel-mysql": "0.20.13",
-    "resolve-redux": "0.20.13",
-    "resolve-scripts": "0.20.13",
-    "resolve-storage-dynamo": "0.20.13",
-    "resolve-storage-lite": "0.20.13",
-    "resolve-subscribe-mqtt": "0.20.13",
-    "resolve-subscribe-socket.io": "0.20.13",
+    "resolve-readmodel-lite": "0.20.14",
+    "resolve-readmodel-mysql": "0.20.14",
+    "resolve-redux": "0.20.14",
+    "resolve-scripts": "0.20.14",
+    "resolve-storage-dynamo": "0.20.14",
+    "resolve-storage-lite": "0.20.14",
+    "resolve-subscribe-mqtt": "0.20.14",
+    "resolve-subscribe-socket.io": "0.20.14",
     "uuid": "3.3.2"
   },
   "devDependencies": {
@@ -47,7 +47,7 @@
     "enzyme": "3.6.0",
     "jest": "24.1.0",
     "react-test-renderer": "16.7.0",
-    "resolve-testing-tools": "0.20.13",
+    "resolve-testing-tools": "0.20.14",
     "testcafe": "0.23.3",
     "resolve-cloud": "*"
   }
