@@ -19,6 +19,7 @@ const initSockets = async pool => {
   subSocket.on('message', pool.onSubMessage.bind(null, pool))
 
   Object.assign(pool, {
+    localEventTypesMap: new Map(),
     waitMessagePromises: new Map(),
     clientMap: new Map(),
     xpubSocket,

@@ -18,6 +18,7 @@ import interlockPromise from './interlock-promise'
 import initDatabase from './init-database'
 import initSockets from './init-sockets'
 import onAcknowledgeBatchTopic from './on-acknowledge-batch-topic'
+import onDeclareEventTypesTopic from './on-declare-event-types-topic'
 import onEventTopic from './on-event-topic'
 import onInformationTopic from './on-information-topic'
 import onPauseListenerTopic from './on-pause-listener-topic'
@@ -47,6 +48,7 @@ const boundAdapter = createAndInitBroker.bind(null, {
   initSockets,
   interlockPromise,
   onAcknowledgeBatchTopic,
+  onDeclareEventTypesTopic,
   onEventTopic,
   onInformationTopic,
   onPauseListenerTopic,
