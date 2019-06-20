@@ -52,7 +52,7 @@ describe('Saga', () => {
 
     beforeEach(() => {
       originalGetRandom = source.sideEffects.getRandom
-      source.sideEffects.getRandom = jest.fn().mockReturnValue(1)
+      source.sideEffects.getRandom = jest.fn()
     })
 
     afterEach(() => {
@@ -61,7 +61,7 @@ describe('Saga', () => {
     })
 
     test('success increment', async () => {
-      source.sideEffects.getRandom = jest.fn().mockReturnValue(1)
+      source.sideEffects.getRandom.mockReturnValue(1)
 
       const result = await givenEvents([
         {
@@ -75,7 +75,7 @@ describe('Saga', () => {
     })
 
     test('success decrement', async () => {
-      source.sideEffects.getRandom = jest.fn().mockReturnValue(0)
+      source.sideEffects.getRandom.mockReturnValue(0)
 
       const result = await givenEvents([
         {
