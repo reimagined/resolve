@@ -11,35 +11,35 @@ pipeline:
       - npx oao all "/scripts/package_json patch-dependencies resolve $VERSION && /scripts/npm_publish $VERSION nightly"
     secrets: [ npm_registry, npm_token ]
 
-  register-build:
-    when:
-      event: push
-    image: reimagined/drone-downstream-registry
-    pull: true
-    registry_path: /data/registry
-    action: package-build
-    server: http://ci.resolve.sh
-    params: .downstream
-    secrets: [ secret_server_token ]
-    volumes:
-      - /srv/ecs/downstream-registry:/data/registry
-    repositories:
-      - DevExpress/okrserver
-      - DevExpress/orgstruct
+#  register-build:
+#    when:
+#      event: push
+#    image: reimagined/drone-downstream-registry
+#    pull: true
+#    registry_path: /data/registry
+#    action: package-build
+#    server: http://ci.resolve.sh
+#    params: .downstream
+#    secrets: [ secret_server_token ]
+#    volumes:
+#      - /srv/ecs/downstream-registry:/data/registry
+#    repositories:
+#      - DevExpress/okrserver
+#      - DevExpress/orgstruct
 
-  trigger:
-    when:
-      event: push
-    image: plugins/downstream
-    server: http://ci.resolve.sh
-    fork: true
-    wait: true
-    secrets: [ downstream_token ]
-    params:
-      - .downstream
-    repositories:
-      - DevExpress/okrserver@build
-      - DevExpress/orgstruct@build
+#  trigger:
+#    when:
+#      event: push
+#    image: plugins/downstream
+#    server: http://ci.resolve.sh
+#    fork: true
+#    wait: true
+#    secrets: [ downstream_token ]
+#    params:
+#      - .downstream
+#    repositories:
+#      - DevExpress/okrserver@build
+#      - DevExpress/orgstruct@build
 
   npm-tag:
     when:

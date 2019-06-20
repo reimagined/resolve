@@ -14,6 +14,7 @@ const INCOMING_TOPICS = {
 }
 
 const OUTCOMING_TOPICS = {
+  DECLARE_EVENT_TYPES_TOPIC: 'DECLARE_EVENT_TYPES_TOPIC',
   EVENT_TOPIC: 'EVENT-TOPIC',
   RESET_LISTENER_TOPIC: 'RESET-LISTENER-TOPIC',
   PAUSE_LISTENER_TOPIC: 'PAUSE-LISTENER-TOPIC',
@@ -151,6 +152,25 @@ const processIncomingMessages = async (resolve, byteMessage) => {
   }
 }
 
+const declareListenerEventTypes = async (resolve, listenerId) => {
+  try {
+    const readModel = resolve.readModels.find(({ name }) => name === listenerId)
+    const eventTypes = Object.keys(readModel.projection)
+    const encodedMessage = encodePubContent(
+      JSON.stringify({
+        listenerId,
+        eventTypes
+      })
+    )
+
+    await resolve.pubSocket.send(
+      `${OUTCOMING_TOPICS.DECLARE_EVENT_TYPES_TOPIC} ${encodedMessage}`
+    )
+  } catch (error) {
+    log.error('Declaring event types for listenerId on bus failed', error)
+  }
+}
+
 const requestListenerInformation = async (resolve, listenerId) => {
   const messageGuid = resolve.cuid()
   const promise = new Promise(resolvePromise => {
@@ -180,6 +200,7 @@ const requestListenerInformation = async (resolve, listenerId) => {
 }
 
 const requestListenerReset = async (resolve, listenerId) => {
+  declareListenerEventTypes(resolve, listenerId)
   const messageGuid = resolve.cuid()
   const promise = new Promise(resolvePromise => {
     resolve.resetListenersPromises.set(messageGuid, resolvePromise)
@@ -201,6 +222,7 @@ const requestListenerReset = async (resolve, listenerId) => {
 }
 
 const requestListenerPause = async (resolve, listenerId) => {
+  declareListenerEventTypes(resolve, listenerId)
   const encodedMessage = encodePubContent(JSON.stringify({ listenerId }))
   await resolve.pubSocket.send(
     `${OUTCOMING_TOPICS.PAUSE_LISTENER_TOPIC} ${encodedMessage}`
@@ -208,6 +230,7 @@ const requestListenerPause = async (resolve, listenerId) => {
 }
 
 const requestListenerResume = async (resolve, listenerId) => {
+  declareListenerEventTypes(resolve, listenerId)
   const encodedMessage = encodePubContent(JSON.stringify({ listenerId }))
   await resolve.pubSocket.send(
     `${OUTCOMING_TOPICS.RESUME_LISTENER_TOPIC} ${encodedMessage}`
@@ -220,6 +243,7 @@ const requestListenerResume = async (resolve, listenerId) => {
 }
 
 const doUpdateRequest = async (resolve, listenerId) => {
+  declareListenerEventTypes(resolve, listenerId)
   const encodedTopic = encodeXsubTopic({
     clientId: resolve.instanceId,
     listenerId
