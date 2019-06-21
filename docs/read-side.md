@@ -36,7 +36,7 @@ const appConfig = {
 
 In the configuration object, specify the Read Model's name and the paths to the files containing projections, resolvers, and the Read Model connector's name.
 
-A Red Model connector defines how a Read Model's data should be stored. You can define the available connectors in the **readModelConnectors** section:
+A Read Model connector defines how a Read Model's data should be stored. You can define the available connectors in the **readModelConnectors** section:
 
 ##### config.dev.js:
 
