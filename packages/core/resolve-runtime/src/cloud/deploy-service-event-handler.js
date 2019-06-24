@@ -33,11 +33,7 @@ const handleResolveReadModelEvent = async (
       log.debug('dropping read model data')
       await resolve.executeQuery.drop(listenerId)
       log.debug('bootstrapping read-model/saga')
-      await resolve.executeQuery({
-        modelName: listenerId,
-        resolverName: resolve.bootstrapSymbol,
-        resolverArgs: {}
-      })
+      await resolve.doUpdateRequest(listenerId)
       log.debug('operation "reset" completed')
       return 'ok'
     }

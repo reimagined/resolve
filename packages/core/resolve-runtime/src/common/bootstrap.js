@@ -7,13 +7,7 @@ const bootstrap = async resolve => {
 
   const applicationPromises = []
   for (const { name: readModelName } of resolve.readModels) {
-    applicationPromises.push(
-      resolve.executeQuery({
-        modelName: readModelName,
-        resolverName: resolve.bootstrapSymbol,
-        resolverArgs: {}
-      })
-    )
+    applicationPromises.push(resolve.doUpdateRequest(readModelName))
   }
 
   await Promise.all(applicationPromises)
