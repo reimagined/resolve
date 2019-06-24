@@ -39,9 +39,14 @@ const followTopicBatchStep = async (pool, listenerId) => {
   )
 
   listenerInfo.skipCount = listenerInfo.currentSkipCount
-  await pool.anycastEvents(pool, listenerId, events, properties)
+  const anycastResult = await pool.anycastEvents(
+    pool,
+    listenerId,
+    events,
+    properties
+  )
 
-  if (events.length === 0) {
+  if (events.length === 0 || !anycastResult) {
     return BATCH_STEP_RESULT.STOP
   }
 
