@@ -175,7 +175,7 @@ You can specify the storage adapter in the **storageAdapter** config section:
 storageAdapter: {
   module: 'resolve-storage-lite',
   options: {
-    databaseFile = '../data/event-store.db'
+    databaseFile: '../data/event-store.db'
   }
 }
 ```

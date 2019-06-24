@@ -5,6 +5,8 @@ const followTopicBatchStep = async (pool, listenerId) => {
     return BATCH_STEP_RESULT.STOP
   }
 
+  const initialEvent = { type: 'Init' }
+
   const listenerInfo = await pool.getListenerInfo(listenerId)
   const properties = listenerInfo.properties
   if (!properties.hasOwnProperty('RESOLVE_SIDE_EFFECTS_START_TIMESTAMP')) {
@@ -12,11 +14,20 @@ const followTopicBatchStep = async (pool, listenerId) => {
   }
 
   if (listenerInfo.isFirstRun) {
-    await pool.anycastEvents(pool, listenerId, [{ type: 'Init' }], properties)
+    const anycastResult = await pool.anycastEvents(
+      pool,
+      listenerId,
+      [initialEvent],
+      properties
+    )
+    if (!anycastResult) {
+      return BATCH_STEP_RESULT.STOP
+    }
 
     await pool.updateListenerInfo(listenerId, {
       SkipCount: 0,
-      AbutTimestamp: 0
+      AbutTimestamp: 0,
+      LastEvent: initialEvent
     })
   }
 
@@ -39,9 +50,14 @@ const followTopicBatchStep = async (pool, listenerId) => {
   )
 
   listenerInfo.skipCount = listenerInfo.currentSkipCount
-  await pool.anycastEvents(pool, listenerId, events, properties)
+  const anycastResult = await pool.anycastEvents(
+    pool,
+    listenerId,
+    events,
+    properties
+  )
 
-  if (events.length === 0) {
+  if (events.length === 0 || !anycastResult) {
     return BATCH_STEP_RESULT.STOP
   }
 

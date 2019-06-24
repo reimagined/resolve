@@ -83,7 +83,6 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
       error.code = 422
       throw error
     }
-    await pool.doUpdateRequest(pool.readModel.name)
 
     return await wrapConnection(pool, async connection => {
       const segment = pool.performanceTracer
@@ -309,12 +308,7 @@ const dispose = async pool => {
   }
 }
 
-const wrapReadModel = (
-  readModel,
-  readModelConnectors,
-  doUpdateRequest,
-  performanceTracer
-) => {
+const wrapReadModel = (readModel, readModelConnectors, performanceTracer) => {
   const connectorFactory = readModelConnectors[readModel.connectorName]
   if (connectorFactory == null) {
     throw new Error(
@@ -326,7 +320,6 @@ const wrapReadModel = (
   const pool = {
     connections: new Set(),
     readModel,
-    doUpdateRequest,
     connector,
     isDisposed: false,
     performanceTracer

@@ -4,7 +4,6 @@ import wrapViewModel from './wrap-view-model'
 const createQuery = ({
   readModelConnectors,
   snapshotAdapter,
-  doUpdateRequest,
   readModels,
   viewModels,
   eventStore,
@@ -18,7 +17,6 @@ const createQuery = ({
     models[readModel.name] = wrapReadModel(
       readModel,
       readModelConnectors,
-      doUpdateRequest,
       performanceTracer
     )
   }

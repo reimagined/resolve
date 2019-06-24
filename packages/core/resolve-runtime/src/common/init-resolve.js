@@ -50,7 +50,6 @@ const initResolve = async resolve => {
     eventStore,
     readModelConnectors,
     snapshotAdapter,
-    doUpdateRequest: resolve.doUpdateRequest,
     readModels,
     viewModels,
     performanceTracer

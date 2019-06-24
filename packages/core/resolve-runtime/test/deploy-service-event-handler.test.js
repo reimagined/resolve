@@ -18,7 +18,7 @@ describe('deploy-service-event-handler.test', () => {
         deleteProperty: jest.fn()
       },
       executeQuery: jest.fn(),
-      bootstrapSymbol: 'bootstrap-symbol'
+      doUpdateRequest: jest.fn()
     }
     resolve.executeQuery.drop = jest.fn()
 
@@ -144,13 +144,9 @@ describe('deploy-service-event-handler.test', () => {
 
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
+      expect(resolve.doUpdateRequest).toHaveBeenCalledWith('readModelName')
       expect(resolve.eventBroker.reset).toHaveBeenCalledWith('readModelName')
       expect(resolve.executeQuery.drop).toHaveBeenCalledWith('readModelName')
-      expect(resolve.executeQuery).toHaveBeenCalledWith({
-        modelName: 'readModelName',
-        resolverName: 'bootstrap-symbol',
-        resolverArgs: {}
-      })
       expect(result).toEqual('ok')
     })
 

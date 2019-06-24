@@ -82,8 +82,6 @@ const processEvents = async (resolve, listenerId, content) => {
     result = error
   }
 
-  resolve.initListenersPromises.get(listenerId).resolvePromise()
-
   const encodedMessage = encodePubContent(
     JSON.stringify({
       messageGuid,
@@ -190,12 +188,14 @@ const requestListenerInformation = async (resolve, listenerId) => {
   )
 
   const result = await promise
+  const information =
+    result != null && result.information != null ? result.information : {}
 
   return {
     listenerId,
-    status: result.Status,
-    lastEvent: result.LastEvent,
-    lastError: result.LastError
+    status: information.Status,
+    lastEvent: information.LastEvent,
+    lastError: information.LastError
   }
 }
 
@@ -235,11 +235,8 @@ const requestListenerResume = async (resolve, listenerId) => {
   await resolve.pubSocket.send(
     `${OUTCOMING_TOPICS.RESUME_LISTENER_TOPIC} ${encodedMessage}`
   )
-  await resolve.executeQuery({
-    modelName: listenerId,
-    resolverName: resolve.bootstrapSymbol,
-    resolverArgs: {}
-  })
+
+  await resolve.doUpdateRequest(listenerId)
 }
 
 const doUpdateRequest = async (resolve, listenerId) => {
@@ -299,8 +296,7 @@ const emptyUpstreamFunc = async () => {}
 
 const initBroker = async resolve => {
   const {
-    assemblies: { eventBroker: eventBrokerConfig },
-    readModels: listeners
+    assemblies: { eventBroker: eventBrokerConfig }
   } = resolve
 
   const { zmqBrokerAddress, zmqConsumerAddress, upstream } = eventBrokerConfig
@@ -324,7 +320,6 @@ const initBroker = async resolve => {
   Object.defineProperties(resolve, {
     processEventsPromises: { value: new Map() },
     resetListenersPromises: { value: new Map() },
-    initListenersPromises: { value: new Map() },
     informationTopicsPromises: { value: new Map() },
     propertiesTopicsPromises: { value: new Map() },
     subSocket: { value: subSocket },
@@ -349,15 +344,6 @@ const initBroker = async resolve => {
     },
     cuid: { value: cuid }
   })
-
-  if (upstream) {
-    for (const { name } of listeners) {
-      let resolvePromise = null
-      const promise = new Promise(resolve => (resolvePromise = resolve))
-      promise.resolvePromise = resolvePromise
-      resolve.initListenersPromises.set(name, promise)
-    }
-  }
 
   Object.assign(resolve.eventBroker, {
     reset: requestListenerReset.bind(null, resolve),
