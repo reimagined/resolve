@@ -21,7 +21,35 @@ const anycastEvents = async (pool, listenerId, events, properties) => {
 
   await pool.xpubSocket.send(`${encodedTopic} ${encodedContent}`)
 
-  await promise
+  let isDone = false
+
+  const result = await Promise.race([
+    (async () => {
+      try {
+        await promise
+      } catch (err) {}
+
+      isDone = true
+
+      return true
+    })(),
+
+    (async () => {
+      while (!isDone) {
+        await new Promise(resolve => setTimeout(resolve, 100))
+        const listenerSet = pool.clientMap.get(listenerId)
+
+        if (listenerSet == null || !listenerSet.has(clientId)) {
+          pool.waitMessagePromises.delete(messageGuid)
+          return false
+        }
+      }
+
+      return true
+    })()
+  ])
+
+  return result
 }
 
 export default anycastEvents
