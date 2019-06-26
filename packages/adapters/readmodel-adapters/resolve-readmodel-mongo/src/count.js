@@ -1,5 +1,5 @@
 const count = async (
-  { getCollection, wrapSearchExpression, rootId },
+  { getCollection, wrapSearchExpression, rootIndex },
   readModelName,
   tableName,
   searchExpression
@@ -7,7 +7,7 @@ const count = async (
   const collection = await getCollection(readModelName, tableName)
 
   return await collection.countDocuments(
-    wrapSearchExpression(searchExpression, rootId)
+    wrapSearchExpression(searchExpression, rootIndex)
   )
 }
 

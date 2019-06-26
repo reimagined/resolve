@@ -100,13 +100,25 @@ const createQuery = ({
     return result
   }
 
-  const updateByEvents = async (modelName, events) => {
+  const updateByEvents = async (
+    modelName,
+    events,
+    getRemainingTimeInMillisRaw
+  ) => {
     checkModelExists(modelName)
     if (!Array.isArray(events)) {
       throw new Error('Updating by events should supply events array')
     }
 
-    return await models[modelName].updateByEvents(events)
+    let getRemainingTimeInMillis = getRemainingTimeInMillisRaw
+    if (typeof getRemainingTimeInMillis !== 'function') {
+      getRemainingTimeInMillis = () => 0x7fffffff
+    }
+
+    return await models[modelName].updateByEvents(
+      events,
+      getRemainingTimeInMillis
+    )
   }
 
   const drop = async modelName => {

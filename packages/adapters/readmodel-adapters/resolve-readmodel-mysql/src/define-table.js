@@ -59,7 +59,7 @@ const defineTable = async (
       ].join(',\n') +
       `)
       COMMENT = "RESOLVE-${readModelName}"
-      ENGINE = "InnoDB"
+      ENGINE = "InnoDB";
       `
   )
 }

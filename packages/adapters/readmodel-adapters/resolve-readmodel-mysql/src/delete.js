@@ -23,7 +23,7 @@ const del = async (
 
   await runQuery(
     `DELETE FROM ${escapeId(`${tablePrefix}${tableName}`)}
-    ${inlineSearchExpr}`
+    ${inlineSearchExpr};`
   )
 }
 

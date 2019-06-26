@@ -19,7 +19,8 @@ const handleApplyEvents = async (lambdaEvent, resolve) => {
   try {
     result = await resolve.executeQuery.updateByEvents(
       listenerId,
-      events.map(decodeEvent)
+      events.map(decodeEvent),
+      resolve.getRemainingTimeInMillis
     )
     subSegment.addAnnotation('eventCount', events.length)
     subSegment.addAnnotation('origin', 'resolve:applyEventsFromBus')

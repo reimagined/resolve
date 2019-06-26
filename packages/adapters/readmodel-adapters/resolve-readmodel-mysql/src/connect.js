@@ -1,6 +1,12 @@
-const runQuery = async (pool, querySQL) => {
+const runRawQuery = async (pool, querySQL) => {
   const connection = await pool.connectionPromise
-  const [rows] = await connection.query(querySQL)
+
+  const result = await connection.query(querySQL)
+  return result
+}
+
+const runQuery = async (pool, querySQL) => {
+  const [rows] = await runRawQuery(pool, querySQL)
   return rows
 }
 
@@ -11,7 +17,7 @@ const setupConnection = async pool => {
   }
   pool.connectionPromise = pool.MySQL.createConnection({
     ...pool.connectionOptions,
-    multipleStatements: false
+    multipleStatements: true
   })
   const connection = await pool.connectionPromise
 
@@ -43,7 +49,7 @@ const makeNestedPath = nestedPath => {
 }
 
 const connect = async (imports, pool, options) => {
-  let { tablePrefix, ...connectionOptions } = options
+  let { tablePrefix, performanceTracer, ...connectionOptions } = options
 
   if (
     tablePrefix == null ||
@@ -53,8 +59,10 @@ const connect = async (imports, pool, options) => {
   }
 
   Object.assign(pool, {
+    runRawQuery: runRawQuery.bind(null, pool),
     runQuery: runQuery.bind(null, pool),
     connectionOptions,
+    performanceTracer,
     tablePrefix,
     makeNestedPath,
     ...imports

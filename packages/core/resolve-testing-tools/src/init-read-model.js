@@ -5,8 +5,9 @@ const init = async ({ promise, createQuery, transformEvents }) => {
     throw new TypeError()
   }
 
+  let queryExecutor = null
   try {
-    const queryExecutor = createQuery({
+    queryExecutor = createQuery({
       doUpdateRequest: Promise.resolve.bind(Promise),
       eventStore: null,
       viewModels: [],
@@ -24,10 +25,19 @@ const init = async ({ promise, createQuery, transformEvents }) => {
       snapshotAdapter: null
     })
 
-    await queryExecutor.updateByEvents(
-      promise[symbol].name,
-      transformEvents(promise[symbol].events)
-    )
+    let updateResult = null
+    try {
+      updateResult = await queryExecutor.updateByEvents(
+        promise[symbol].name,
+        transformEvents(promise[symbol].events)
+      )
+    } catch (error) {
+      updateResult = error
+    }
+
+    if (updateResult != null && updateResult.lastError != null) {
+      throw updateResult.lastError
+    }
 
     const result = await queryExecutor.read({
       modelName: promise[symbol].name,
@@ -39,6 +49,8 @@ const init = async ({ promise, createQuery, transformEvents }) => {
     promise[symbol].resolve(result)
   } catch (error) {
     promise[symbol].reject(error)
+  } finally {
+    await queryExecutor.dispose()
   }
 }
 

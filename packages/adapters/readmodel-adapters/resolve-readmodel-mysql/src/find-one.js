@@ -26,7 +26,7 @@ const findOne = async (
   const rows = await runQuery(
     `SELECT * FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr}
-    LIMIT 0, 1`
+    LIMIT 0, 1;`
   )
 
   if (Array.isArray(rows) && rows.length > 0) {

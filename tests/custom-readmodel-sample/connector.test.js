@@ -4,6 +4,7 @@ import fs from 'fs'
 import path from 'path'
 
 import config from './config'
+import resetReadModel from '../reset-read-model'
 
 describe('Read-model generic adapter API', () => {
   const {
@@ -26,24 +27,14 @@ describe('Read-model generic adapter API', () => {
   const resolvers = interopRequireDefault(require(`./${resolversModule}`))
     .default
 
-  let connector = null
+  let adapter = null
   beforeEach(async () => {
-    connector = createConnector({ prefix })
-
-    try {
-      const connection = await connector.connect(name)
-      await connector.drop(null, name)
-      await connector.disconnect(connection, name)
-    } catch (e) {}
+    await resetReadModel(createConnector, connectorOptions, name)
+    adapter = createConnector({ prefix })
   })
   afterEach(async () => {
-    try {
-      const connection = await connector.connect(name)
-      await connector.drop(null, name)
-      await connector.disconnect(connection, name)
-    } catch (e) {}
-
-    connector = null
+    await resetReadModel(createConnector, connectorOptions, name)
+    adapter = null
   })
 
   beforeAll(() => fs.mkdirSync(prefix))
@@ -74,7 +65,7 @@ describe('Read-model generic adapter API', () => {
         name,
         projection,
         resolvers,
-        adapter: connector
+        adapter: adapter
       })
       .read({})
 

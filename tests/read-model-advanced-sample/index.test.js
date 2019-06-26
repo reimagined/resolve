@@ -1,5 +1,6 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import givenEvents from 'resolve-testing-tools'
+import resetReadModel from '../reset-read-model'
 
 import config from './config'
 
@@ -25,23 +26,15 @@ describe('Read-model generic adapter API', () => {
 
   let adapter = null
   beforeEach(async () => {
+    await resetReadModel(createConnector, connectorOptions, name)
     adapter = createConnector(connectorOptions)
-    try {
-      const connection = await adapter.connect(name)
-      await adapter.drop(null, name)
-      await adapter.disconnect(connection, name)
-    } catch (e) {}
   })
   afterEach(async () => {
-    try {
-      const connection = await adapter.connect(name)
-      await adapter.drop(null, name)
-      await adapter.disconnect(connection, name)
-    } catch (e) {}
+    await resetReadModel(createConnector, connectorOptions, name)
     adapter = null
   })
 
-  it('Insert and non-parameterized resolver invocation', async () => {
+  test('Insert and non-parameterized resolver invocation', async () => {
     const result = await givenEvents([
       {
         aggregateId: 'ID',
@@ -61,7 +54,7 @@ describe('Read-model generic adapter API', () => {
     expect(result).toMatchSnapshot()
   })
 
-  it('Update and non-parameterized resolver invocation', async () => {
+  test('Update and non-parameterized resolver invocation', async () => {
     const result = await givenEvents([
       {
         aggregateId: 'ID',
@@ -87,7 +80,7 @@ describe('Read-model generic adapter API', () => {
     expect(result).toMatchSnapshot()
   })
 
-  it('Upsert and non-parameterized resolver invocation', async () => {
+  test('Upsert and non-parameterized resolver invocation', async () => {
     const result = await givenEvents([
       {
         aggregateId: 'ID',
@@ -113,7 +106,7 @@ describe('Read-model generic adapter API', () => {
     expect(result).toMatchSnapshot()
   })
 
-  it('Delete and non-parameterized resolver invocation', async () => {
+  test('Delete and non-parameterized resolver invocation', async () => {
     const result = await givenEvents([
       {
         aggregateId: 'ID',
@@ -139,7 +132,7 @@ describe('Read-model generic adapter API', () => {
     expect(result).toMatchSnapshot()
   })
 
-  it('Update and parameterized resolver invocation', async () => {
+  test('Update and parameterized resolver invocation', async () => {
     const result = await givenEvents([
       {
         aggregateId: 'ID',

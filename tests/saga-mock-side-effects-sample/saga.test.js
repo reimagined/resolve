@@ -4,6 +4,7 @@ import givenEvents, {
 } from 'resolve-testing-tools'
 
 import config from './config'
+import resetReadModel from '../reset-read-model'
 
 describe('Saga', () => {
   const { name, source: sourceModule, connectorName } = config.sagas.find(
@@ -22,13 +23,8 @@ describe('Saga', () => {
   let adapter = null
 
   beforeEach(async () => {
+    await resetReadModel(createConnector, connectorOptions, name)
     adapter = createConnector(connectorOptions)
-    try {
-      const connection = await adapter.connect(name)
-      await adapter.drop(null, name)
-      await adapter.disconnect(connection, name)
-    } catch (e) {}
-
     sagaWithAdapter = {
       handlers: source.handlers,
       sideEffects: source.sideEffects,
@@ -37,12 +33,7 @@ describe('Saga', () => {
   })
 
   afterEach(async () => {
-    try {
-      const connection = await adapter.connect(name)
-      await adapter.drop(null, name)
-      await adapter.disconnect(connection, name)
-    } catch (e) {}
-
+    await resetReadModel(createConnector, connectorOptions, name)
     adapter = null
     sagaWithAdapter = null
   })

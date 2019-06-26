@@ -5,13 +5,20 @@ const getTemplateDocument = async (pool, readModelName, tableName) => {
 
   if (!pool.templateDocuments.get(readModelName).has(tableName)) {
     const collection = await pool.getCollection(readModelName, tableName)
-    const root = await collection.findOne({ _id: pool.rootId })
-    const templateDocument = {}
-    for (const key of Object.keys(root)) {
-      if (root[key] === 1 || root[key] === 0) {
-        templateDocument[key] = null
+    const { indexNames, fieldNames } = await collection.findOne(
+      { _id: pool.rootId },
+      {
+        projection: { indexNames: 1, fieldNames: 1 }
       }
+    )
+    const templateDocument = {}
+    for (const indexName of indexNames) {
+      templateDocument[indexName] = pool.ObjectID()
     }
+    for (const fieldName of fieldNames) {
+      templateDocument[fieldName] = null
+    }
+
     Object.freeze(templateDocument)
 
     pool.templateDocuments.get(readModelName).set(tableName, templateDocument)

@@ -203,6 +203,7 @@ module.exports = {
           'Mergeable',
           'middleware',
           'middlewares',
+          'millis',
           'minimist',
           'mongo',
           'mongodb',

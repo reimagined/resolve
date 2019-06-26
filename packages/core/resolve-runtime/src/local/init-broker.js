@@ -71,7 +71,8 @@ const processEvents = async (resolve, listenerId, content) => {
     currentResolve.eventProperties = properties
     result = await currentResolve.executeQuery.updateByEvents(
       listenerId,
-      events
+      events,
+      currentResolve.getRemainingTimeInMillis
     )
     if (result.lastError != null) {
       log.error('Error while applying events to read-model', result.lastError)

@@ -12,6 +12,10 @@ const disposeResolve = async resolve => {
       resolve.snapshotAdapter.dispose()
     ]
 
+    for (const name of Object.keys(resolve.readModelConnectors)) {
+      disposePromises.push(resolve.readModelConnectors[name].dispose())
+    }
+
     await Promise.all(disposePromises)
 
     log.info('Dispose resolve entries successfully')
