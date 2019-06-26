@@ -1,8 +1,11 @@
+// TODO remove sinon. Use jest.fn()
+
 import sinon from 'sinon'
 
 import create from '../src/resource/create'
 import dispose from '../src/resource/dispose'
 import destroy from '../src/resource/destroy'
+import waitForCreate from '../src/resource/wait-for-create'
 import setupAutoScalingItem from '../src/resource/setup-auto-scaling-item'
 import setupAutoScaling from '../src/resource/setup-auto-scaling'
 
@@ -24,8 +27,9 @@ describe('as resource', () => {
       }
     }
 
+    const checkTableExists = jest.fn()
     const adapter = {
-      init: sinon.stub()
+      init: sinon.stub().returns(checkTableExists)
     }
     const createAdapter = sinon.stub().returns(adapter)
     const pool = {
@@ -33,7 +37,8 @@ describe('as resource', () => {
       setupAutoScalingItem,
       setupAutoScaling,
       createAdapter,
-      billingMode: 'PROVISIONED'
+      billingMode: 'PROVISIONED',
+      resourceMap: new WeakMap()
     }
 
     const region = 'region-test'
@@ -41,7 +46,7 @@ describe('as resource', () => {
     const readCapacityUnits = 23
     const writeCapacityUnits = 43
 
-    await create(pool, {
+    const lazyResource = await create(pool, {
       region,
       tableName,
       readCapacityUnits,
@@ -53,15 +58,22 @@ describe('as resource', () => {
       tableName,
       readCapacityUnits,
       writeCapacityUnits,
-      skipInit: true
+      skipInit: true,
+      lazyWaitForCreate: true
     })
     sinon.assert.calledWith(adapter.init)
+
     expect(autoScalingResult.join(EOL)).toMatchSnapshot()
+
+    await waitForCreate(pool, lazyResource)
+
+    expect(checkTableExists).toBeCalled()
   })
 
   test('method "create" works correctly [PAY_PER_REQUEST]', async () => {
+    const checkTableExists = jest.fn()
     const adapter = {
-      init: sinon.stub()
+      init: sinon.stub().returns(checkTableExists)
     }
     const setupAutoScalingMock = jest.fn()
     const createAdapter = sinon.stub().returns(adapter)
@@ -69,13 +81,14 @@ describe('as resource', () => {
       setupAutoScalingItem,
       setupAutoScaling: setupAutoScalingMock,
       createAdapter,
-      billingMode: 'PAY_PER_REQUEST'
+      billingMode: 'PAY_PER_REQUEST',
+      resourceMap: new WeakMap()
     }
 
     const region = 'region-test'
     const tableName = 'tableName'
 
-    await create(pool, {
+    const lazyResource = await create(pool, {
       region,
       tableName
     })
@@ -83,10 +96,15 @@ describe('as resource', () => {
     sinon.assert.calledWith(createAdapter, {
       region,
       tableName,
-      skipInit: true
+      skipInit: true,
+      lazyWaitForCreate: true
     })
     sinon.assert.calledWith(adapter.init)
     expect(setupAutoScalingMock).not.toBeCalled()
+
+    await waitForCreate(pool, lazyResource)
+
+    expect(checkTableExists).toBeCalled()
   })
 
   test('method "dispose" works correctly', async () => {
