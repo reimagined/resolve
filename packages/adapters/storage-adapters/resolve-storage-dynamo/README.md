@@ -51,14 +51,16 @@ const adapter = createAdapter({
 
 #### As Resource
 ```js
-import { create, dispose, destroy } from 'resolve-storage-dynamo'
+import { create, dispose, destroy, waitForCreate } from 'resolve-storage-dynamo'
 
-await create({ 
+const lazyResource = await create({ 
   region,
   tableName, 
   readCapacityUnits, 
   writeCapacityUnits 
 })
+
+await waitForCreate(lazyResource)
 
 await dispose({ 
   region,

@@ -6,7 +6,8 @@ const init = async ({
   readCapacityUnits,
   writeCapacityUnits,
   database,
-  checkTableExists
+  checkTableExists,
+  lazyWaitForCreate = false
 }) => {
   if (await checkTableExists(database, tableName)) {
     return
@@ -86,7 +87,15 @@ const init = async ({
     })
     .promise()
 
-  while (!(await checkTableExists(database, tableName))) {}
+  const waitForCreate = async () => {
+    while (!(await checkTableExists(database, tableName))) {}
+  }
+
+  if (lazyWaitForCreate) {
+    return waitForCreate
+  } else {
+    await waitForCreate()
+  }
 }
 
 export default init
