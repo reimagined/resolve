@@ -668,5 +668,153 @@ await store.delete('TestTable', {
 })
 ```
 
+## Saga. How mock side-effects
+
+#### Saga with side-effects
+[mdis]:# (./saga-mock-side-effects-sample/saga.js)
+```js
+export default {
+  handlers: {
+    UPDATE: async ({ sideEffects }, event) => {
+      if (sideEffects.isEnabled) {
+        const randomCommandType =
+          (await sideEffects.getRandom()) > 0.5 ? 'increment' : 'decrement'
+
+        await sideEffects.executeCommand({
+          aggregateName: 'Counter',
+          aggregateId: event.aggregateId,
+          type: randomCommandType,
+          payload: 1
+        })
+      }
+    }
+  },
+
+  sideEffects: {
+    getRandom: async () => {
+      return Math.random()
+    }
+  }
+}
+```
+
+#### Tests
+[mdis]:# (./saga-mock-side-effects-sample/saga.test.js)
+```js
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
+import givenEvents, {
+  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP
+} from 'resolve-testing-tools'
+
+import config from './config'
+
+describe('Saga', () => {
+  const { name, source: sourceModule, connectorName } = config.sagas.find(
+    ({ name }) => name === 'UpdaterSaga'
+  )
+  const {
+    module: connectorModule,
+    options: connectorOptions
+  } = config.readModelConnectors[connectorName]
+
+  const createConnector = interopRequireDefault(require(connectorModule))
+    .default
+  const source = interopRequireDefault(require(`./${sourceModule}`)).default
+
+  let sagaWithAdapter = null
+  let adapter = null
+
+  beforeEach(async () => {
+    adapter = createConnector(connectorOptions)
+    try {
+      const connection = await adapter.connect(name)
+      await adapter.drop(null, name)
+      await adapter.disconnect(connection, name)
+    } catch (e) {}
+
+    sagaWithAdapter = {
+      handlers: source.handlers,
+      sideEffects: source.sideEffects,
+      adapter
+    }
+  })
+
+  afterEach(async () => {
+    try {
+      const connection = await adapter.connect(name)
+      await adapter.drop(null, name)
+      await adapter.disconnect(connection, name)
+    } catch (e) {}
+
+    adapter = null
+    sagaWithAdapter = null
+  })
+
+  describe('with sideEffects.isEnabled = true', () => {
+    let originalGetRandom = null
+
+    beforeEach(() => {
+      originalGetRandom = source.sideEffects.getRandom
+      source.sideEffects.getRandom = jest.fn()
+    })
+
+    afterEach(() => {
+      source.sideEffects.getRandom = originalGetRandom
+      originalGetRandom = null
+    })
+
+    test('success increment', async () => {
+      source.sideEffects.getRandom.mockReturnValue(1)
+
+      const result = await givenEvents([
+        {
+          aggregateId: 'counterId',
+          type: 'UPDATE',
+          payload: {}
+        }
+      ]).saga(sagaWithAdapter)
+
+      expect(result.commands[0][0].type).toEqual('increment')
+    })
+
+    test('success decrement', async () => {
+      source.sideEffects.getRandom.mockReturnValue(0)
+
+      const result = await givenEvents([
+        {
+          aggregateId: 'counterId',
+          type: 'UPDATE',
+          payload: {}
+        }
+      ]).saga(sagaWithAdapter)
+
+      expect(result.commands[0][0].type).toEqual('decrement')
+    })
+  })
+
+  describe('with sideEffects.isEnabled = false', () => {
+    test('do nothing', async () => {
+      const result = await givenEvents([
+        {
+          aggregateId: 'counterId',
+          type: 'UPDATE',
+          payload: {}
+        }
+      ])
+        .saga(sagaWithAdapter)
+        .properties({
+          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE
+        })
+
+      expect(result).toEqual({
+        commands: [],
+        scheduleCommands: [],
+        sideEffects: [],
+        queries: []
+      })
+    })
+  })
+})
+```
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/tests-readme?pixel)

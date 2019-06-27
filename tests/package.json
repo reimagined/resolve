@@ -20,6 +20,7 @@
     "resolve-readmodel-mongo": "0.20.16",
     "resolve-scripts": "0.20.16",
     "@babel/runtime": "^7.4.3",
-    "mysql2": "1.6.4"
+    "mysql2": "1.6.4",
+    "jsonwebtoken":"8.5.1
   }
 }
