@@ -23,7 +23,8 @@ describe('method "connect"', () => {
         secretAccessKey: 'secretAccessKey',
         tableName: 'tableName',
         readCapacityUnits: 1,
-        writeCapacityUnits: 1
+        writeCapacityUnits: 1,
+        lazyWaitForCreate: true
       }
     }
     const helpers = { helper1: () => {}, helper2: () => {} }
@@ -54,5 +55,6 @@ describe('method "connect"', () => {
     })
     expect(pool.helper1).toEqual(helpers.helper1)
     expect(pool.helper2).toEqual(helpers.helper2)
+    expect(pool.lazyWaitForCreate).toEqual(true)
   })
 })
