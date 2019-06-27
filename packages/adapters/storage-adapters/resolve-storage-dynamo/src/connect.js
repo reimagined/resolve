@@ -6,6 +6,7 @@ const connect = async (pool, { DynamoDB, checkTableExists, ...helpers }) => {
     billingMode = 'PAY_PER_REQUEST',
     readCapacityUnits = 5,
     writeCapacityUnits = 5,
+    lazyWaitForCreate,
     ...connectionOptions
   } = pool.config
 
@@ -24,7 +25,8 @@ const connect = async (pool, { DynamoDB, checkTableExists, ...helpers }) => {
     tableName,
     billingMode,
     readCapacityUnits,
-    writeCapacityUnits
+    writeCapacityUnits,
+    lazyWaitForCreate
   })
 }
 

@@ -194,4 +194,52 @@ describe('method "init"', () => {
 
     sinon.assert.callCount(database.createTable, 0)
   })
+
+  test('should return lazyResource when create table with { lazyWaitForCreate: true }', async () => {
+    const database = {
+      name: 'database',
+      createTable: sinon
+        .stub()
+        .returns({ promise: sinon.stub().returns(Promise.resolve()) })
+    }
+
+    const checkTableExists = sinon.stub()
+    checkTableExists.returns(Promise.resolve(false))
+
+    const pool = {
+      tableName: 'tableName',
+      database,
+      checkTableExists,
+      lazyWaitForCreate: true
+    }
+
+    const waitForCreate = await init(pool)
+
+    expect(typeof waitForCreate).toEqual('function')
+  })
+
+  test('should return undefined when create table with { lazyWaitForCreate: false }', async () => {
+    const database = {
+      name: 'database',
+      createTable: sinon
+        .stub()
+        .returns({ promise: sinon.stub().returns(Promise.resolve()) })
+    }
+
+    const checkTableExists = sinon.stub()
+    checkTableExists.onCall(0).returns(Promise.resolve(false))
+    checkTableExists.onCall(1).returns(Promise.resolve(false))
+    checkTableExists.returns(Promise.resolve(true))
+
+    const pool = {
+      tableName: 'tableName',
+      database,
+      checkTableExists,
+      lazyWaitForCreate: false
+    }
+
+    const waitForCreate = await init(pool)
+
+    expect(typeof waitForCreate).toEqual('undefined')
+  })
 })
