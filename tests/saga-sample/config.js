@@ -46,7 +46,7 @@ const devConfig = {
         port: 3306,
         user: 'root',
         password: '',
-        database: `Stories`
+        database: 'SagaSample'
       }
     }
     */
@@ -54,7 +54,7 @@ const devConfig = {
     default: {
       module: 'resolve-readmodel-mongo',
       options: {
-        url: 'mongodb://127.0.0.1:27017/Stories'
+        url: 'mongodb://127.0.0.1:27017/SagaSample'
       }
     }
     */

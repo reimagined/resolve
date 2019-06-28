@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Saga success registration 1`] = `
+Object {
+  "commands": Array [
+    Array [
+      Object {
+        "aggregateId": "id1",
+        "aggregateName": "Process",
+        "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwZXJtaXNzaW9ucyI6eyJwcm9jZXNzZXMiOnsia2lsbCI6dHJ1ZX19fQ.S6z8Dml89H9DsrFH-6H37EmDn0e7r6caPUQHr2b3vow",
+        "type": "PROCESS_KILLED",
+      },
+    ],
+    Array [
+      Object {
+        "aggregateId": "id2",
+        "aggregateName": "Process",
+        "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwZXJtaXNzaW9ucyI6eyJwcm9jZXNzZXMiOnsia2lsbCI6dHJ1ZX19fQ.S6z8Dml89H9DsrFH-6H37EmDn0e7r6caPUQHr2b3vow",
+        "type": "PROCESS_KILLED",
+      },
+    ],
+    Array [
+      Object {
+        "aggregateId": "id3",
+        "aggregateName": "Process",
+        "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwZXJtaXNzaW9ucyI6eyJwcm9jZXNzZXMiOnsia2lsbCI6dHJ1ZX19fQ.S6z8Dml89H9DsrFH-6H37EmDn0e7r6caPUQHr2b3vow",
+        "type": "PROCESS_KILLED",
+      },
+    ],
+  ],
+  "queries": Array [],
+  "scheduleCommands": Array [],
+  "sideEffects": Array [],
+}
+`;
