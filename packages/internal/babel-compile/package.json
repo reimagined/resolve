@@ -1,11 +1,11 @@
 {
   "name": "@internal/babel-compile",
   "private": true,
-  "version": "0.20.16",
+  "version": "0.20.17",
   "bin": "./bin/index.js",
   "dependencies": {
     "@babel/cli": "^7.0.0",
-    "@internal/helpers": "0.20.16"
+    "@internal/helpers": "0.20.17"
   },
   "scripts": {
     "start": "node ./bin/index.js",
