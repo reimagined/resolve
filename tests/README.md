@@ -38,7 +38,7 @@ const devConfig = {
         port: 3306,
         user: 'root',
         password: '',
-        database: `Stories`
+        database: 'ReadModelStoriesSample'
       }
     }
     */
@@ -46,7 +46,7 @@ const devConfig = {
     default: {
       module: 'resolve-readmodel-mongo',
       options: {
-        url: 'mongodb://127.0.0.1:27017/Stories'
+        url: 'mongodb://127.0.0.1:27017/ReadModelStoriesSample'
       }
     }
     */
@@ -202,7 +202,7 @@ const devConfig = {
         port: 3306,
         user: 'root',
         password: '',
-        database: `Comments`
+        database: `ReadModelCommentsSample`
       }
     }
     */
@@ -210,7 +210,7 @@ const devConfig = {
     default: {
       module: 'resolve-readmodel-mongo',
       options: {
-        url: 'mongodb://127.0.0.1:27017/Comments'
+        url: 'mongodb://127.0.0.1:27017/ReadModelCommentsSample'
       }
     }
     */
@@ -536,7 +536,7 @@ const devConfig = {
         port: 3306,
         user: 'root',
         password: '',
-        database: `Stories`
+        database: 'SagaSample'
       }
     }
     */
@@ -544,7 +544,7 @@ const devConfig = {
     default: {
       module: 'resolve-readmodel-mongo',
       options: {
-        url: 'mongodb://127.0.0.1:27017/Stories'
+        url: 'mongodb://127.0.0.1:27017/SagaSample'
       }
     }
     */
@@ -596,6 +596,163 @@ export default {
   sideEffects: {
     sendEmail: async (mail, content) => {
       ...
+    }
+  }
+}
+```
+
+## Saga with authorization
+
+#### App Config
+[mdis]:# (./saga-with-authorization-sample/config.js#app-config)
+```js
+const appConfig = {
+  aggregates: [
+    {
+      name: 'Process',
+      commands: 'process.commands.js'
+    }
+  ],
+  sagas: [
+    {
+      name: 'ProcessKiller',
+      source: 'saga.js',
+      connectorName: 'default',
+      schedulerName: 'scheduler'
+    }
+  ]
+}
+```
+
+#### Dev Config
+[mdis]:# (./saga-with-authorization-sample/config.js#dev-config)
+```js
+const devConfig = {
+  schedulers: {
+    scheduler: {
+      adapter: {
+        module: 'resolve-scheduler-local',
+        options: {}
+      },
+      connectorName: 'default'
+    }
+  },
+  readModelConnectors: {
+    default: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: ':memory:'
+      }
+    }
+    /*
+    default: {
+      module: 'resolve-readmodel-mysql',
+      options: {
+        host: 'localhost',
+        port: 3306,
+        user: 'root',
+        password: '',
+        database: 'SagaWithAuthorizationSample'
+      }
+    }
+    */
+    /*
+    default: {
+      module: 'resolve-readmodel-mongo',
+      options: {
+        url: 'mongodb://127.0.0.1:27017/SagaWithAuthorizationSample'
+      }
+    }
+    */
+  }
+}
+```
+
+#### Aggregate Commands
+[mdis]:# (./saga-with-authorization-sample/process.commands.js)
+```js
+import jsonwebtoken from 'jsonwebtoken'
+
+import jwtSecret from './jwt-secret'
+
+export default {
+  createProcess: () => {
+    return {
+      type: 'PROCESS_CREATED'
+    }
+  },
+
+  killAllProcesses: () => {
+    return {
+      type: 'ALL_PROCESS_KILLED'
+    }
+  },
+
+  killProcess: (state, command, jwtToken) => {
+    const jwt = jsonwebtoken.verify(jwtToken, jwtSecret)
+
+    if (!jwt.permissions.processes.kill) {
+      throw new Error('Access denied')
+    }
+
+    return {
+      type: 'PROCESS_KILLED'
+    }
+  }
+}
+```
+
+#### Saga
+[mdis]:# (./saga-with-authorization-sample/saga.js)
+```js
+import jsonwebtoken from 'jsonwebtoken'
+
+import jwtSecret from './jwt-secret'
+
+export const jwtToken = jsonwebtoken.sign(
+  {
+    permissions: {
+      processes: {
+        kill: true
+      }
+    }
+  },
+  jwtSecret,
+  {
+    noTimestamp: true
+  }
+)
+
+export default {
+  handlers: {
+    Init: async ({ store }) => {
+      await store.defineTable('Processes', {
+        indexes: { id: 'string' },
+        fields: []
+      })
+    },
+
+    PROCESS_CREATED: async ({ store }, event) => {
+      await store.insert('Processes', {
+        id: event.aggregateId
+      })
+    },
+
+    ALL_PROCESS_KILLED: async ({ store, sideEffects }) => {
+      const processes = await store.find('Processes', {})
+
+      for (const process of processes) {
+        await sideEffects.executeCommand({
+          aggregateName: 'Process',
+          aggregateId: process.id,
+          type: 'PROCESS_KILLED',
+          jwtToken
+        })
+
+        await store.delete('Processes', {
+          id: process.id
+        })
+      }
     }
   }
 }
@@ -668,5 +825,153 @@ await store.delete('TestTable', {
 })
 ```
 
+## Saga. How mock side-effects
+
+#### Saga with side-effects
+[mdis]:# (./saga-mock-side-effects-sample/saga.js)
+```js
+export default {
+  handlers: {
+    UPDATE: async ({ sideEffects }, event) => {
+      if (sideEffects.isEnabled) {
+        const randomCommandType =
+          (await sideEffects.getRandom()) > 0.5 ? 'increment' : 'decrement'
+
+        await sideEffects.executeCommand({
+          aggregateName: 'Counter',
+          aggregateId: event.aggregateId,
+          type: randomCommandType,
+          payload: 1
+        })
+      }
+    }
+  },
+
+  sideEffects: {
+    getRandom: async () => {
+      return Math.random()
+    }
+  }
+}
+```
+
+#### Tests
+[mdis]:# (./saga-mock-side-effects-sample/saga.test.js)
+```js
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
+import givenEvents, {
+  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP
+} from 'resolve-testing-tools'
+
+import config from './config'
+
+describe('Saga', () => {
+  const { name, source: sourceModule, connectorName } = config.sagas.find(
+    ({ name }) => name === 'UpdaterSaga'
+  )
+  const {
+    module: connectorModule,
+    options: connectorOptions
+  } = config.readModelConnectors[connectorName]
+
+  const createConnector = interopRequireDefault(require(connectorModule))
+    .default
+  const source = interopRequireDefault(require(`./${sourceModule}`)).default
+
+  let sagaWithAdapter = null
+  let adapter = null
+
+  beforeEach(async () => {
+    adapter = createConnector(connectorOptions)
+    try {
+      const connection = await adapter.connect(name)
+      await adapter.drop(null, name)
+      await adapter.disconnect(connection, name)
+    } catch (e) {}
+
+    sagaWithAdapter = {
+      handlers: source.handlers,
+      sideEffects: source.sideEffects,
+      adapter
+    }
+  })
+
+  afterEach(async () => {
+    try {
+      const connection = await adapter.connect(name)
+      await adapter.drop(null, name)
+      await adapter.disconnect(connection, name)
+    } catch (e) {}
+
+    adapter = null
+    sagaWithAdapter = null
+  })
+
+  describe('with sideEffects.isEnabled = true', () => {
+    let originalGetRandom = null
+
+    beforeEach(() => {
+      originalGetRandom = source.sideEffects.getRandom
+      source.sideEffects.getRandom = jest.fn()
+    })
+
+    afterEach(() => {
+      source.sideEffects.getRandom = originalGetRandom
+      originalGetRandom = null
+    })
+
+    test('success increment', async () => {
+      source.sideEffects.getRandom.mockReturnValue(1)
+
+      const result = await givenEvents([
+        {
+          aggregateId: 'counterId',
+          type: 'UPDATE',
+          payload: {}
+        }
+      ]).saga(sagaWithAdapter)
+
+      expect(result.commands[0][0].type).toEqual('increment')
+    })
+
+    test('success decrement', async () => {
+      source.sideEffects.getRandom.mockReturnValue(0)
+
+      const result = await givenEvents([
+        {
+          aggregateId: 'counterId',
+          type: 'UPDATE',
+          payload: {}
+        }
+      ]).saga(sagaWithAdapter)
+
+      expect(result.commands[0][0].type).toEqual('decrement')
+    })
+  })
+
+  describe('with sideEffects.isEnabled = false', () => {
+    test('do nothing', async () => {
+      const result = await givenEvents([
+        {
+          aggregateId: 'counterId',
+          type: 'UPDATE',
+          payload: {}
+        }
+      ])
+        .saga(sagaWithAdapter)
+        .properties({
+          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE
+        })
+
+      expect(result).toEqual({
+        commands: [],
+        scheduleCommands: [],
+        sideEffects: [],
+        queries: []
+      })
+    })
+  })
+})
+```
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/tests-readme?pixel)
