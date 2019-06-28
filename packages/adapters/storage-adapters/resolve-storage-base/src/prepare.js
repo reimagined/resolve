@@ -1,4 +1,11 @@
 const prepare = (pool, connect, init, adapterSpecificArguments) => {
+  let initResultPromiseResolve
+  let initResultPromiseReject
+  pool.initialPromiseResult = new Promise((resolve, reject) => {
+    initResultPromiseResolve = resolve
+    initResultPromiseReject = reject
+  })
+
   let connectPromiseResolve
   const connectPromise = new Promise(resolve => {
     connectPromiseResolve = resolve
@@ -13,7 +20,11 @@ const prepare = (pool, connect, init, adapterSpecificArguments) => {
   const initialPromise = new Promise(resolve => {
     initialPromiseResolve = resolve
   }).then(async () => {
-    await init(pool)
+    try {
+      initResultPromiseResolve(await init(pool))
+    } catch (error) {
+      initResultPromiseReject(error)
+    }
   })
 
   Object.assign(pool, {

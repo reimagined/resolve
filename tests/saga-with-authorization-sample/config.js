@@ -7,9 +7,15 @@ const localConfig = {
 
 // mdis-start app-config
 const appConfig = {
+  aggregates: [
+    {
+      name: 'Process',
+      commands: 'process.commands.js'
+    }
+  ],
   sagas: [
     {
-      name: 'UserConfirmation',
+      name: 'ProcessKiller',
       source: 'saga.js',
       connectorName: 'default',
       schedulerName: 'scheduler'
@@ -46,7 +52,7 @@ const devConfig = {
         port: 3306,
         user: 'root',
         password: '',
-        database: 'SagaSample'
+        database: 'SagaWithAuthorizationSample'
       }
     }
     */
@@ -54,7 +60,7 @@ const devConfig = {
     default: {
       module: 'resolve-readmodel-mongo',
       options: {
-        url: 'mongodb://127.0.0.1:27017/SagaSample'
+        url: 'mongodb://127.0.0.1:27017/SagaWithAuthorizationSample'
       }
     }
     */
