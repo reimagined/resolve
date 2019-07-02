@@ -61,9 +61,7 @@ describe('event-broker', () => {
       operation: 'resume'
     })
 
-    expect(
-      JSON.parse(lambda.invoke.mock.calls[1][0].Payload)
-    ).toEqual({
+    expect(JSON.parse(lambda.invoke.mock.calls[1][0].Payload)).toEqual({
       listenerId: 'listenerId',
       inactiveTimeout: 3600000,
       eventTypes: []
