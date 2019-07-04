@@ -4,7 +4,7 @@ const onAcknowledgeBatchTopic = async (pool, content) => {
   const resolver = pool.waitMessagePromises.get(messageGuid)
   pool.waitMessagePromises.delete(messageGuid)
   if (typeof resolver === 'function') {
-    resolver()
+    resolver({ listenerId, lastError, lastEvent })
   }
 
   try {

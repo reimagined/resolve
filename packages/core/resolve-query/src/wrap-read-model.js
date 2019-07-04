@@ -202,6 +202,11 @@ const updateByEvents = async (pool, events, getRemainingTimeInMillis) => {
             break
           }
 
+          if (event.type === 'Init') {
+            await handler(connection, event)
+            continue
+          }
+
           let timer = null
           try {
             if (typeof pool.connector.beginTransaction === 'function') {
