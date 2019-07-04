@@ -9,6 +9,8 @@ const resetReadModel = async (
     await adapter.drop(connection, readModelName)
     await adapter.disconnect(connection, readModelName)
   } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn(error)
   } finally {
     await adapter.dispose()
   }

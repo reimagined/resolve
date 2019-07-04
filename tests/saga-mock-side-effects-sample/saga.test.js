@@ -7,9 +7,12 @@ import config from './config'
 import resetReadModel from '../reset-read-model'
 
 describe('Saga', () => {
-  const { name, source: sourceModule, connectorName } = config.sagas.find(
-    ({ name }) => name === 'UpdaterSaga'
-  )
+  const {
+    name: sagaName,
+    source: sourceModule,
+    connectorName,
+    schedulerName
+  } = config.sagas.find(({ name }) => name === 'UpdaterSaga')
   const {
     module: connectorModule,
     options: connectorOptions
@@ -22,33 +25,34 @@ describe('Saga', () => {
   let sagaWithAdapter = null
   let adapter = null
 
-  beforeEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
-    adapter = createConnector(connectorOptions)
-    sagaWithAdapter = {
-      handlers: source.handlers,
-      sideEffects: source.sideEffects,
-      adapter
-    }
-  })
-
-  afterEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
-    adapter = null
-    sagaWithAdapter = null
-  })
-
   describe('with sideEffects.isEnabled = true', () => {
     let originalGetRandom = null
 
-    beforeEach(() => {
+    beforeEach(async () => {
+      await resetReadModel(createConnector, connectorOptions, schedulerName)
+      await resetReadModel(createConnector, connectorOptions, sagaName)
+
       originalGetRandom = source.sideEffects.getRandom
       source.sideEffects.getRandom = jest.fn()
+
+      adapter = createConnector(connectorOptions)
+      sagaWithAdapter = {
+        handlers: source.handlers,
+        sideEffects: source.sideEffects,
+        adapter,
+        name: sagaName
+      }
     })
 
-    afterEach(() => {
+    afterEach(async () => {
+      await resetReadModel(createConnector, connectorOptions, schedulerName)
+      await resetReadModel(createConnector, connectorOptions, sagaName)
+
       source.sideEffects.getRandom = originalGetRandom
       originalGetRandom = null
+
+      adapter = null
+      sagaWithAdapter = null
     })
 
     test('success increment', async () => {
@@ -81,6 +85,25 @@ describe('Saga', () => {
   })
 
   describe('with sideEffects.isEnabled = false', () => {
+    beforeEach(async () => {
+      await resetReadModel(createConnector, connectorOptions, schedulerName)
+      await resetReadModel(createConnector, connectorOptions, sagaName)
+      adapter = createConnector(connectorOptions)
+      sagaWithAdapter = {
+        handlers: source.handlers,
+        sideEffects: source.sideEffects,
+        adapter,
+        name: sagaName
+      }
+    })
+
+    afterEach(async () => {
+      await resetReadModel(createConnector, connectorOptions, schedulerName)
+      await resetReadModel(createConnector, connectorOptions, sagaName)
+      adapter = null
+      sagaWithAdapter = null
+    })
+
     test('do nothing', async () => {
       const result = await givenEvents([
         {

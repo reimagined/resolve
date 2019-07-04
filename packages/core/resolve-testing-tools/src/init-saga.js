@@ -14,11 +14,16 @@ const initSaga = async ({ promise, transformEvents }) => {
       sideEffects: [],
       queries: []
     }
-    const { adapter, events, handlers, sideEffects, properties } = promise[
-      symbol
-    ]
+    const {
+      name,
+      adapter,
+      events,
+      handlers,
+      sideEffects,
+      properties
+    } = promise[symbol]
 
-    const store = await adapter.connect('TEST-SAGA-READ-MODEL')
+    const store = await adapter.connect(name)
 
     for (const event of transformEvents(events)) {
       const handler = handlers[event.type]
@@ -77,7 +82,7 @@ const initSaga = async ({ promise, transformEvents }) => {
       )
     }
 
-    await adapter.disconnect(store, 'TEST-SAGA-READ-MODEL')
+    await adapter.disconnect(store, name)
 
     promise[symbol].resolve(result)
   } catch (error) {

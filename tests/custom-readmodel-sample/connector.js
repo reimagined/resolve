@@ -18,16 +18,24 @@ export default options => {
     return store
   }
   const disconnect = async (store, readModelName) => {
-    fs.unlinkSync(`${prefix}${readModelName}.lock`)
+    if (fs.existsSync(`${prefix}${readModelName}.lock`)) {
+      fs.unlinkSync(`${prefix}${readModelName}.lock`)
+    }
     readModels.delete(readModelName)
   }
   const drop = async (store, readModelName) => {
-    fs.unlinkSync(`${prefix}${readModelName}.lock`)
-    fs.unlinkSync(`${prefix}${readModelName}`)
+    if (fs.existsSync(`${prefix}${readModelName}.lock`)) {
+      fs.unlinkSync(`${prefix}${readModelName}.lock`)
+    }
+    if (fs.existsSync(`${prefix}${readModelName}`)) {
+      fs.unlinkSync(`${prefix}${readModelName}`)
+    }
   }
   const dispose = async () => {
     for (const readModelName of readModels) {
-      fs.unlinkSync(`${prefix}${readModelName}.lock`)
+      if (fs.existsSync(`${prefix}${readModelName}.lock`)) {
+        fs.unlinkSync(`${prefix}${readModelName}.lock`)
+      }
     }
     readModels.clear()
   }

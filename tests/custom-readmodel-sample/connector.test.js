@@ -20,7 +20,12 @@ describe('Read-model generic adapter API', () => {
 
   const createConnector = interopRequireDefault(require(`./${connectorModule}`))
     .default
-  const prefix = path.join(__dirname, connectorOptions.prefix, path.sep)
+
+  connectorOptions.prefix = path.join(
+    __dirname,
+    connectorOptions.prefix,
+    path.sep
+  )
 
   const projection = interopRequireDefault(require(`./${projectionModule}`))
     .default
@@ -30,15 +35,15 @@ describe('Read-model generic adapter API', () => {
   let adapter = null
   beforeEach(async () => {
     await resetReadModel(createConnector, connectorOptions, name)
-    adapter = createConnector({ prefix })
+    adapter = createConnector(connectorOptions)
   })
   afterEach(async () => {
     await resetReadModel(createConnector, connectorOptions, name)
     adapter = null
   })
 
-  beforeAll(() => fs.mkdirSync(prefix))
-  afterAll(() => fs.rmdirSync(prefix))
+  beforeAll(() => fs.mkdirSync(connectorOptions.prefix))
+  afterAll(() => fs.rmdirSync(connectorOptions.prefix))
 
   it('Insert and non-parameterized resolver invocation', async () => {
     const result = await givenEvents([
