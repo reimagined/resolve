@@ -11,6 +11,14 @@ Array [
     },
   ],
   Array [
+    "connect",
+    "mongodb://127.0.0.1:27017/MyDatabaseName",
+    Object {
+      "autoReconnect": false,
+      "useNewUrlParser": true,
+    },
+  ],
+  Array [
     "createCollection",
     "table1",
   ],
@@ -20,16 +28,34 @@ Array [
       "id": 1,
     },
     Object {
+      "name": "id",
       "unique": true,
+    },
+  ],
+  Array [
+    "createIndex",
+    Object {
+      "5265736f6c7665526f6f7401": 1,
+    },
+    Object {
+      "name": "5265736f6c7665526f6f7401",
+      "unique": false,
     },
   ],
   Array [
     "insertOne",
     Object {
+      "5265736f6c7665526f6f7401": true,
       "_id": "5265736f6c7665526f6f7400",
-      "id": "5265736f6c7665526f6f7400",
+      "fieldNames": Array [
+        "test",
+      ],
+      "id": "id12",
+      "indexNames": Array [
+        "id",
+      ],
       "readModelName": "readModelName1",
-      "test": 0,
+      "transactionList": Array [],
     },
   ],
   Array [
@@ -45,10 +71,39 @@ Array [
     Object {
       "_id": "5265736f6c7665526f6f7400",
     },
+    Object {
+      "projection": Object {
+        "fieldNames": 1,
+        "indexNames": 1,
+      },
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "collectionName": "table1",
+          "currentId": "id14",
+          "snapshotId": null,
+        },
+      },
+    },
   ],
   Array [
     "insertOne",
     Object {
+      "_id": "id14",
       "id": "id-1",
       "test": true,
     },
@@ -58,8 +113,31 @@ Array [
     "table1",
   ],
   Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "collectionName": "table1",
+          "currentId": "id15",
+          "snapshotId": null,
+        },
+      },
+    },
+  ],
+  Array [
     "insertOne",
     Object {
+      "_id": "id15",
       "id": "id-2",
       "test": true,
     },
@@ -74,16 +152,34 @@ Array [
       "id": 1,
     },
     Object {
+      "name": "id",
       "unique": true,
+    },
+  ],
+  Array [
+    "createIndex",
+    Object {
+      "5265736f6c7665526f6f7401": 1,
+    },
+    Object {
+      "name": "5265736f6c7665526f6f7401",
+      "unique": false,
     },
   ],
   Array [
     "insertOne",
     Object {
+      "5265736f6c7665526f6f7401": true,
       "_id": "5265736f6c7665526f6f7400",
-      "id": "5265736f6c7665526f6f7400",
+      "fieldNames": Array [
+        "test",
+      ],
+      "id": "id16",
+      "indexNames": Array [
+        "id",
+      ],
       "readModelName": "readModelName2",
-      "test": 0,
+      "transactionList": Array [],
     },
   ],
   Array [
@@ -99,10 +195,39 @@ Array [
     Object {
       "_id": "5265736f6c7665526f6f7400",
     },
+    Object {
+      "projection": Object {
+        "fieldNames": 1,
+        "indexNames": 1,
+      },
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "collectionName": "table2",
+          "currentId": "id18",
+          "snapshotId": null,
+        },
+      },
+    },
   ],
   Array [
     "insertOne",
     Object {
+      "_id": "id18",
       "id": "id-3",
       "test": true,
     },
@@ -112,8 +237,31 @@ Array [
     "table2",
   ],
   Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "collectionName": "table2",
+          "currentId": "id19",
+          "snapshotId": null,
+        },
+      },
+    },
+  ],
+  Array [
     "insertOne",
     Object {
+      "_id": "id19",
       "id": "id-4",
       "test": true,
     },
@@ -123,8 +271,31 @@ Array [
     "table2",
   ],
   Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "collectionName": "table2",
+          "currentId": "id20",
+          "snapshotId": null,
+        },
+      },
+    },
+  ],
+  Array [
     "insertOne",
     Object {
+      "_id": "id20",
       "id": "id-5",
       "test": true,
     },
@@ -138,8 +309,8 @@ Array [
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {},
@@ -155,8 +326,8 @@ Array [
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {},
@@ -192,16 +363,34 @@ Array [
       "id": 1,
     },
     Object {
+      "name": "id",
       "unique": true,
+    },
+  ],
+  Array [
+    "createIndex",
+    Object {
+      "5265736f6c7665526f6f7401": 1,
+    },
+    Object {
+      "name": "5265736f6c7665526f6f7401",
+      "unique": false,
     },
   ],
   Array [
     "insertOne",
     Object {
+      "5265736f6c7665526f6f7401": true,
       "_id": "5265736f6c7665526f6f7400",
-      "id": "5265736f6c7665526f6f7400",
-      "name": 0,
+      "fieldNames": Array [
+        "name",
+      ],
+      "id": "id5",
+      "indexNames": Array [
+        "id",
+      ],
       "readModelName": "readModelName",
+      "transactionList": Array [],
     },
   ],
   Array [
@@ -217,10 +406,39 @@ Array [
     Object {
       "_id": "5265736f6c7665526f6f7400",
     },
+    Object {
+      "projection": Object {
+        "fieldNames": 1,
+        "indexNames": 1,
+      },
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "collectionName": "Entries",
+          "currentId": "id7",
+          "snapshotId": null,
+        },
+      },
+    },
   ],
   Array [
     "insertOne",
     Object {
+      "_id": "id7",
       "id": "id-1",
       "name": "First entry",
     },
@@ -230,8 +448,31 @@ Array [
     "Entries",
   ],
   Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "collectionName": "Entries",
+          "currentId": "id8",
+          "snapshotId": null,
+        },
+      },
+    },
+  ],
+  Array [
     "insertOne",
     Object {
+      "_id": "id8",
       "id": "id-2",
       "name": "Second entry",
     },
@@ -241,8 +482,31 @@ Array [
     "Entries",
   ],
   Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "collectionName": "Entries",
+          "currentId": "id9",
+          "snapshotId": null,
+        },
+      },
+    },
+  ],
+  Array [
     "insertOne",
     Object {
+      "_id": "id9",
       "id": "id-3",
       "name": "Second entry",
     },
@@ -252,8 +516,31 @@ Array [
     "Entries",
   ],
   Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "collectionName": "Entries",
+          "currentId": "id10",
+          "snapshotId": null,
+        },
+      },
+    },
+  ],
+  Array [
     "insertOne",
     Object {
+      "_id": "id10",
       "id": "id-4",
       "name": "First entry",
     },
@@ -263,8 +550,31 @@ Array [
     "Entries",
   ],
   Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "collectionName": "Entries",
+          "currentId": "id11",
+          "snapshotId": null,
+        },
+      },
+    },
+  ],
+  Array [
     "insertOne",
     Object {
+      "_id": "id11",
       "id": "id-5",
       "name": "Second entry",
     },
@@ -278,8 +588,8 @@ Array [
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {},
@@ -303,8 +613,8 @@ Array [
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {},
@@ -328,8 +638,8 @@ Array [
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {
@@ -355,8 +665,8 @@ Array [
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {
@@ -364,8 +674,8 @@ Array [
             Object {
               "$and": Array [
                 Object {
-                  "_id": Object {
-                    "$ne": 0,
+                  "0": Object {
+                    "$exists": false,
                   },
                 },
                 Object {
@@ -373,8 +683,8 @@ Array [
                     Object {
                       "$and": Array [
                         Object {
-                          "_id": Object {
-                            "$ne": 0,
+                          "0": Object {
+                            "$exists": false,
                           },
                         },
                         Object {
@@ -396,25 +706,16 @@ Array [
             Object {
               "$and": Array [
                 Object {
-                  "_id": Object {
-                    "$ne": 1,
+                  "1": Object {
+                    "$exists": false,
                   },
                 },
                 Object {
                   "$not": Object {
-                    "$and": Array [
-                      Object {
-                        "_id": Object {
-                          "$ne": undefined,
-                        },
-                      },
-                      Object {
-                        "id": Object {
-                          "$gte": "id-1",
-                          "$type": "string",
-                        },
-                      },
-                    ],
+                    "id": Object {
+                      "$gte": "id-1",
+                      "$type": "string",
+                    },
                   },
                 },
               ],
@@ -452,17 +753,35 @@ Array [
       "id": 1,
     },
     Object {
+      "name": "id",
       "unique": true,
+    },
+  ],
+  Array [
+    "createIndex",
+    Object {
+      "5265736f6c7665526f6f7401": 1,
+    },
+    Object {
+      "name": "5265736f6c7665526f6f7401",
+      "unique": false,
     },
   ],
   Array [
     "insertOne",
     Object {
+      "5265736f6c7665526f6f7401": true,
       "_id": "5265736f6c7665526f6f7400",
-      "createdAt": 0,
-      "id": "5265736f6c7665526f6f7400",
-      "name": 0,
+      "fieldNames": Array [
+        "createdAt",
+        "name",
+      ],
+      "id": "id1",
+      "indexNames": Array [
+        "id",
+      ],
       "readModelName": "readModelName",
+      "transactionList": Array [],
     },
   ],
   Array [
@@ -478,10 +797,39 @@ Array [
     Object {
       "_id": "5265736f6c7665526f6f7400",
     },
+    Object {
+      "projection": Object {
+        "fieldNames": 1,
+        "indexNames": 1,
+      },
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "collectionName": "ShoppingLists",
+          "currentId": "id3",
+          "snapshotId": null,
+        },
+      },
+    },
   ],
   Array [
     "insertOne",
     Object {
+      "_id": "id3",
       "createdAt": 1,
       "id": "id-1",
       "name": "Products",
@@ -492,8 +840,31 @@ Array [
     "ShoppingLists",
   ],
   Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "collectionName": "ShoppingLists",
+          "currentId": "id4",
+          "snapshotId": null,
+        },
+      },
+    },
+  ],
+  Array [
     "insertOne",
     Object {
+      "_id": "id4",
       "createdAt": 2,
       "id": "id-2",
       "name": "Medicines",
@@ -504,12 +875,54 @@ Array [
     "ShoppingLists",
   ],
   Array [
+    "collection",
+    "ShoppingLists",
+  ],
+  Array [
+    "find",
+    Object {
+      "$and": Array [
+        Object {
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "$each": Array [],
+        },
+      },
+    },
+  ],
+  Array [
     "updateMany",
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {
@@ -534,12 +947,54 @@ Array [
     "ShoppingLists",
   ],
   Array [
+    "collection",
+    "ShoppingLists",
+  ],
+  Array [
+    "find",
+    Object {
+      "$and": Array [
+        Object {
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "$each": Array [],
+        },
+      },
+    },
+  ],
+  Array [
     "updateMany",
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {
@@ -564,12 +1019,54 @@ Array [
     "ShoppingLists",
   ],
   Array [
+    "collection",
+    "ShoppingLists",
+  ],
+  Array [
+    "find",
+    Object {
+      "$and": Array [
+        Object {
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-2",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "$each": Array [],
+        },
+      },
+    },
+  ],
+  Array [
     "deleteMany",
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {
@@ -586,12 +1083,54 @@ Array [
     "ShoppingLists",
   ],
   Array [
+    "collection",
+    "ShoppingLists",
+  ],
+  Array [
+    "find",
+    Object {
+      "$and": Array [
+        Object {
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-3",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "$each": Array [],
+        },
+      },
+    },
+  ],
+  Array [
     "updateMany",
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {
@@ -620,8 +1159,8 @@ Array [
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {},
@@ -651,18 +1190,36 @@ Array [
       "id": 1,
     },
     Object {
+      "name": "id",
       "unique": true,
+    },
+  ],
+  Array [
+    "createIndex",
+    Object {
+      "5265736f6c7665526f6f7401": 1,
+    },
+    Object {
+      "name": "5265736f6c7665526f6f7401",
+      "unique": false,
     },
   ],
   Array [
     "insertOne",
     Object {
+      "5265736f6c7665526f6f7401": true,
       "_id": "5265736f6c7665526f6f7400",
-      "arr": 0,
-      "id": "5265736f6c7665526f6f7400",
-      "obj": 0,
+      "fieldNames": Array [
+        "value",
+        "arr",
+        "obj",
+      ],
+      "id": "id21",
+      "indexNames": Array [
+        "id",
+      ],
       "readModelName": "readModelName",
-      "value": 0,
+      "transactionList": Array [],
     },
   ],
   Array [
@@ -678,10 +1235,39 @@ Array [
     Object {
       "_id": "5265736f6c7665526f6f7400",
     },
+    Object {
+      "projection": Object {
+        "fieldNames": 1,
+        "indexNames": 1,
+      },
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "collectionName": "values",
+          "currentId": "id23",
+          "snapshotId": null,
+        },
+      },
+    },
   ],
   Array [
     "insertOne",
     Object {
+      "_id": "id23",
       "arr": Array [
         Object {
           "value": 1,
@@ -699,12 +1285,54 @@ Array [
     "values",
   ],
   Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "find",
+    Object {
+      "$and": Array [
+        Object {
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "$each": Array [],
+        },
+      },
+    },
+  ],
+  Array [
     "updateMany",
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {
@@ -721,7 +1349,6 @@ Array [
         "obj.value": 1,
         "value": 1,
       },
-      "$set": Object {},
     },
     Object {
       "upsert": false,
@@ -732,12 +1359,54 @@ Array [
     "values",
   ],
   Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "find",
+    Object {
+      "$and": Array [
+        Object {
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "$each": Array [],
+        },
+      },
+    },
+  ],
+  Array [
     "updateMany",
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {
@@ -754,7 +1423,6 @@ Array [
         "obj.value": -1,
         "value": -1,
       },
-      "$set": Object {},
     },
     Object {
       "upsert": false,
@@ -765,12 +1433,54 @@ Array [
     "values",
   ],
   Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "find",
+    Object {
+      "$and": Array [
+        Object {
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "$each": Array [],
+        },
+      },
+    },
+  ],
+  Array [
     "updateMany",
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {
@@ -787,7 +1497,6 @@ Array [
         "obj.value": 0.42,
         "value": 0.42,
       },
-      "$set": Object {},
     },
     Object {
       "upsert": false,
@@ -798,12 +1507,54 @@ Array [
     "values",
   ],
   Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "find",
+    Object {
+      "$and": Array [
+        Object {
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "$each": Array [],
+        },
+      },
+    },
+  ],
+  Array [
     "updateMany",
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {
@@ -820,7 +1571,6 @@ Array [
         "obj.value": -0.42,
         "value": -0.42,
       },
-      "$set": Object {},
     },
     Object {
       "upsert": false,
@@ -849,18 +1599,36 @@ Array [
       "id": 1,
     },
     Object {
+      "name": "id",
       "unique": true,
+    },
+  ],
+  Array [
+    "createIndex",
+    Object {
+      "5265736f6c7665526f6f7401": 1,
+    },
+    Object {
+      "name": "5265736f6c7665526f6f7401",
+      "unique": false,
     },
   ],
   Array [
     "insertOne",
     Object {
+      "5265736f6c7665526f6f7401": true,
       "_id": "5265736f6c7665526f6f7400",
-      "arr": 0,
-      "id": "5265736f6c7665526f6f7400",
-      "obj": 0,
+      "fieldNames": Array [
+        "value",
+        "arr",
+        "obj",
+      ],
+      "id": "id24",
+      "indexNames": Array [
+        "id",
+      ],
       "readModelName": "readModelName",
-      "value": 0,
+      "transactionList": Array [],
     },
   ],
   Array [
@@ -876,10 +1644,39 @@ Array [
     Object {
       "_id": "5265736f6c7665526f6f7400",
     },
+    Object {
+      "projection": Object {
+        "fieldNames": 1,
+        "indexNames": 1,
+      },
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "collectionName": "values",
+          "currentId": "id26",
+          "snapshotId": null,
+        },
+      },
+    },
   ],
   Array [
     "insertOne",
     Object {
+      "_id": "id26",
       "arr": Array [
         Object {
           "value": 1,
@@ -897,12 +1694,54 @@ Array [
     "values",
   ],
   Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "find",
+    Object {
+      "$and": Array [
+        Object {
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "$each": Array [],
+        },
+      },
+    },
+  ],
+  Array [
     "updateMany",
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {
@@ -947,18 +1786,36 @@ Array [
       "id": 1,
     },
     Object {
+      "name": "id",
       "unique": true,
+    },
+  ],
+  Array [
+    "createIndex",
+    Object {
+      "5265736f6c7665526f6f7401": 1,
+    },
+    Object {
+      "name": "5265736f6c7665526f6f7401",
+      "unique": false,
     },
   ],
   Array [
     "insertOne",
     Object {
+      "5265736f6c7665526f6f7401": true,
       "_id": "5265736f6c7665526f6f7400",
-      "arr": 0,
-      "id": "5265736f6c7665526f6f7400",
-      "obj": 0,
+      "fieldNames": Array [
+        "value",
+        "arr",
+        "obj",
+      ],
+      "id": "id27",
+      "indexNames": Array [
+        "id",
+      ],
       "readModelName": "readModelName",
-      "value": 0,
+      "transactionList": Array [],
     },
   ],
   Array [
@@ -974,10 +1831,39 @@ Array [
     Object {
       "_id": "5265736f6c7665526f6f7400",
     },
+    Object {
+      "projection": Object {
+        "fieldNames": 1,
+        "indexNames": 1,
+      },
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "collectionName": "values",
+          "currentId": "id29",
+          "snapshotId": null,
+        },
+      },
+    },
   ],
   Array [
     "insertOne",
     Object {
+      "_id": "id29",
       "arr": Array [
         Object {
           "value": 1,
@@ -995,12 +1881,54 @@ Array [
     "values",
   ],
   Array [
+    "collection",
+    "values",
+  ],
+  Array [
+    "find",
+    Object {
+      "$and": Array [
+        Object {
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
+          },
+        },
+        Object {
+          "id": Object {
+            "$eq": "id-1",
+            "$type": "string",
+          },
+        },
+      ],
+    },
+  ],
+  Array [
+    "collections",
+  ],
+  Array [
+    "collection",
+    "undefined",
+  ],
+  Array [
+    "updateOne",
+    Object {
+      "_id": "5265736f6c7665526f6f7400",
+    },
+    Object {
+      "$push": Object {
+        "transactionList": Object {
+          "$each": Array [],
+        },
+      },
+    },
+  ],
+  Array [
     "updateMany",
     Object {
       "$and": Array [
         Object {
-          "_id": Object {
-            "$ne": "5265736f6c7665526f6f7400",
+          "5265736f6c7665526f6f7401": Object {
+            "$exists": false,
           },
         },
         Object {
@@ -1013,9 +1941,12 @@ Array [
     },
     Object {
       "$set": Object {
-        "arr.0.value": null,
-        "obj.value": null,
         "value": null,
+      },
+      "$unset": Object {
+        "arr.0.value": true,
+        "obj.value": true,
+        "value": "",
       },
     },
     Object {
