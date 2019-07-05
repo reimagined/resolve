@@ -15,6 +15,9 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   lambdaContext.callbackWaitsForEmptyEventLoop = false
 
   const resolve = Object.create(resolveBase)
+  resolve.getRemainingTimeInMillis = lambdaContext.getRemainingTimeInMillis.bind(
+    lambdaContext
+  )
   try {
     log.debug('initializing reSolve framework')
     await initResolve(resolve)

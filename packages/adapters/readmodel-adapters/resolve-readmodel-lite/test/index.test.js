@@ -480,14 +480,14 @@ describe('resolve-readmodel-lite', () => {
 
         const store = await adapter.connect(readModelName)
 
-        await store.defineTable('values', {
+        await store.defineTable('SetValues', {
           indexes: {
             id: 'string'
           },
           fields: ['value', 'arr', 'obj']
         })
 
-        await store.insert('values', {
+        await store.insert('SetValues', {
           id: 'id-1',
           value: 1,
           arr: [{ value: 1 }],
@@ -495,7 +495,7 @@ describe('resolve-readmodel-lite', () => {
         })
 
         expect(
-          await store.findOne('values', {
+          await store.findOne('SetValues', {
             id: 'id-1'
           })
         ).toMatchObject({
@@ -505,7 +505,7 @@ describe('resolve-readmodel-lite', () => {
         })
 
         await store.update(
-          'values',
+          'SetValues',
           {
             id: 'id-1'
           },
@@ -519,7 +519,7 @@ describe('resolve-readmodel-lite', () => {
         )
 
         expect(
-          await store.findOne('values', {
+          await store.findOne('SetValues', {
             id: 'id-1'
           })
         ).toMatchObject({
@@ -536,14 +536,14 @@ describe('resolve-readmodel-lite', () => {
 
         const store = await adapter.connect(readModelName)
 
-        await store.defineTable('values', {
+        await store.defineTable('UnsetValues', {
           indexes: {
             id: 'string'
           },
           fields: ['value', 'arr', 'obj']
         })
 
-        await store.insert('values', {
+        await store.insert('UnsetValues', {
           id: 'id-1',
           value: 1,
           arr: [{ value: 1 }],
@@ -551,7 +551,7 @@ describe('resolve-readmodel-lite', () => {
         })
 
         expect(
-          await store.findOne('values', {
+          await store.findOne('UnsetValues', {
             id: 'id-1'
           })
         ).toMatchObject({
@@ -561,7 +561,7 @@ describe('resolve-readmodel-lite', () => {
         })
 
         await store.update(
-          'values',
+          'UnsetValues',
           {
             id: 'id-1'
           },
@@ -575,7 +575,7 @@ describe('resolve-readmodel-lite', () => {
         )
 
         expect(
-          await store.findOne('values', {
+          await store.findOne('UnsetValues', {
             id: 'id-1'
           })
         ).toMatchObject({

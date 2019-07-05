@@ -1,7 +1,7 @@
 import initBroker from '../src/cloud/init-broker'
 
 describe('event-broker', () => {
-  let broker, lambda, lambdaResult, stepFunctionResult, stepFunctions
+  let broker, lambda, lambdaResult
 
   const readModels = [
     {
@@ -20,18 +20,10 @@ describe('event-broker', () => {
       })
     }
 
-    stepFunctionResult = null
-    stepFunctions = {
-      startExecution: jest.fn().mockReturnValue({
-        promise: jest.fn().mockImplementation(async () => stepFunctionResult)
-      })
-    }
-
     broker = {}
     await initBroker({
       eventBroker: broker,
       lambda,
-      stepFunctions,
       readModels
     })
   })
@@ -61,7 +53,6 @@ describe('event-broker', () => {
     lambdaResult = {
       Payload: JSON.stringify('ok')
     }
-    stepFunctionResult = 'ok'
 
     const result = await broker.resume('listenerId')
 
@@ -70,10 +61,7 @@ describe('event-broker', () => {
       operation: 'resume'
     })
 
-    expect(
-      JSON.parse(stepFunctions.startExecution.mock.calls[0][0].input)
-    ).toEqual({
-      'detail-type': 'LISTEN_EVENT_BUS',
+    expect(JSON.parse(lambda.invoke.mock.calls[1][0].Payload)).toEqual({
       listenerId: 'listenerId',
       inactiveTimeout: 3600000,
       eventTypes: []

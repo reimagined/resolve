@@ -25,6 +25,7 @@ const initExpress = async resolve => {
 
   resolve.app.use(async (req, res) => {
     const currentResolve = Object.create(resolve)
+
     try {
       await initResolve(currentResolve)
 

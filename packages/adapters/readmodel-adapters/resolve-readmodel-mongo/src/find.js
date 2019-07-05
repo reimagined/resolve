@@ -1,5 +1,5 @@
 const find = async (
-  { getCollection, wrapSearchExpression, rootId },
+  { getCollection, wrapSearchExpression, rootIndex },
   readModelName,
   tableName,
   searchExpression,
@@ -11,7 +11,7 @@ const find = async (
   const collection = await getCollection(readModelName, tableName)
 
   const findCursor = await collection.find(
-    wrapSearchExpression(searchExpression, rootId),
+    wrapSearchExpression(searchExpression, rootIndex),
     {
       projection: fieldList ? { _id: 0, ...fieldList } : { _id: 0 },
       ...(Number.isFinite(skip) ? { skip } : {}),
@@ -20,7 +20,9 @@ const find = async (
     }
   )
 
-  return await findCursor.toArray()
+  const result = await findCursor.toArray()
+
+  return result
 }
 
 export default find
