@@ -4,33 +4,46 @@ describe('resolve-readmodel-base', () => {
   let connector, dropSet, readModels
 
   beforeEach(() => {
+    readModels = new Map()
     dropSet = new Set()
 
-    const connect = jest.fn().mockImplementation(async () => {
-      readModels = new Map()
+    const connect = jest.fn().mockImplementation(async pool => {
+      Object.defineProperty(pool, 'readModels', {
+        get: () => readModels,
+        configurable: true
+      })
+      Object.defineProperty(pool, 'dropSet', {
+        get: () => dropSet,
+        configurable: true
+      })
     })
 
-    const disconnect = jest.fn()
+    const disconnect = jest.fn().mockImplementation(async pool => {
+      if (pool != null) {
+        delete pool.readModels
+        delete pool.dropSet
+      }
+    })
 
     const dropReadModel = jest
       .fn()
-      .mockImplementation(async (_, readModelName) => {
-        dropSet.add(readModelName)
-        readModels.delete(readModelName)
+      .mockImplementation(async (pool, readModelName) => {
+        pool.dropSet.add(readModelName)
+        pool.readModels.delete(readModelName)
       })
 
     const storeApi = {
       get(pool, readModelName, key) {
-        if (!readModels.has(readModelName)) {
-          readModels.set(readModelName, new Map())
+        if (!pool.readModels.has(readModelName)) {
+          pool.readModels.set(readModelName, new Map())
         }
-        return readModels.get(readModelName).get(key)
+        return pool.readModels.get(readModelName).get(key)
       },
       set(pool, readModelName, key, value) {
-        if (!readModels.has(readModelName)) {
-          readModels.set(readModelName, new Map())
+        if (!pool.readModels.has(readModelName)) {
+          pool.readModels.set(readModelName, new Map())
         }
-        readModels.get(readModelName).set(key, value)
+        pool.readModels.get(readModelName).set(key, value)
       }
     }
 
@@ -54,6 +67,7 @@ describe('resolve-readmodel-base', () => {
 
   test('"connect" should return a store', async () => {
     const storeAnimals = await connector.connect('animals')
+
     storeAnimals.set('cat', 42)
     storeAnimals.set('dog', 31)
 

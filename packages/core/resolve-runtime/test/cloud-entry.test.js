@@ -101,7 +101,7 @@ describe('Cloud entry', () => {
     routes = []
 
     lambdaContext = {
-      getRemainingTimeInMillis: () => 0x7FFFFFFF
+      getRemainingTimeInMillis: () => 0x7fffffff
     }
 
     getCloudEntryWorker = async () => {
