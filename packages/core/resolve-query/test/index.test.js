@@ -1617,7 +1617,7 @@ for (const { describeName, prepare } of [
         ]
 
         readModelConnectors = {
-          default: jest.fn().mockImplementation(() => {
+          default: (() => {
             const readModels = new Map()
             const connect = jest
               .fn()
@@ -1650,13 +1650,13 @@ for (const { describeName, prepare } of [
               drop,
               dispose
             }
-          }),
-          empty: () => ({
+          })(),
+          empty: {
             connect: jest.fn(),
             disconnect: jest.fn(),
             drop: jest.fn(),
             dispose: jest.fn()
-          })
+          }
         }
 
         query = createQuery({
@@ -2109,7 +2109,7 @@ for (const { describeName, prepare } of [
       test('"drop" should drop read model', async () => {
         await query.drop('readModelName')
 
-        const connector = readModelConnectors['default'].mock.results[0].value
+        const connector = readModelConnectors['default']
 
         expect(connector.drop.mock.calls[0][1]).toEqual('readModelName')
 
@@ -2217,12 +2217,12 @@ for (const { describeName, prepare } of [
           () =>
             (query = createQuery({
               readModelConnectors: {
-                empty: () => ({
+                empty: {
                   connect: jest.fn(),
                   disconnect: jest.fn(),
                   drop: jest.fn(),
                   dispose: jest.fn()
-                })
+                }
               },
               snapshotAdapter,
               doUpdateRequest,
