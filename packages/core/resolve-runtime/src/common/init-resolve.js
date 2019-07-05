@@ -3,6 +3,8 @@ import createCommandExecutor from 'resolve-command'
 import createQueryExecutor from 'resolve-query'
 import crypto from 'crypto'
 
+const DEFAULT_WORKER_LIFETIME = 15 * 60 * 1000
+
 const initResolve = async resolve => {
   const performanceTracer = resolve.performanceTracer
 
@@ -32,11 +34,9 @@ const initResolve = async resolve => {
 
   const readModelConnectors = {}
   for (const name of Object.keys(readModelConnectorsCreators)) {
-    readModelConnectors[name] = options =>
-      readModelConnectorsCreators[name]({
-        ...options,
-        performanceTracer
-      })
+    readModelConnectors[name] = readModelConnectorsCreators[name]({
+      performanceTracer
+    })
   }
 
   const executeCommand = createCommandExecutor({
@@ -66,6 +66,11 @@ const initResolve = async resolve => {
     snapshotAdapter: { value: snapshotAdapter },
     storageAdapter: { value: storageAdapter }
   })
+
+  if (!resolve.hasOwnProperty('getRemainingTimeInMillis')) {
+    const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
+    resolve.getRemainingTimeInMillis = () => endTime - Date.now()
+  }
 
   process.env.RESOLVE_LOCAL_TRACE_ID = crypto
     .randomBytes(Math.ceil(32 / 2))

@@ -54,7 +54,7 @@ const update = async (
 
   await runQuery(
     `UPDATE ${escapeId(`${tablePrefix}${tableName}`)}
-    SET ${updateExpr} ${inlineSearchExpr}`
+    SET ${updateExpr} ${inlineSearchExpr};`
   )
 }
 

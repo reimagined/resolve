@@ -8,19 +8,19 @@ Array [
 escapeId(id) JSON, escapeId(id) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (escapeId(id)->\\"$\\") STORED  NOT NULL PRIMARY KEY,
 INDEX escapeId(id) (escapeId(id)))
       COMMENT = \\"RESOLVE-readModelName1\\"
-      ENGINE = \\"InnoDB\\"
+      ENGINE = \\"InnoDB\\";
       ",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(table1)(escapeId(id), escapeId(test))
-      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(true) AS JSON))
+      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(true) AS JSON));
     ",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(table1)(escapeId(id), escapeId(test))
-      VALUES(CAST(escape(\\"id-2\\") AS JSON), CAST(escape(true) AS JSON))
+      VALUES(CAST(escape(\\"id-2\\") AS JSON), CAST(escape(true) AS JSON));
     ",
   ],
   Array [
@@ -29,48 +29,48 @@ INDEX escapeId(id) (escapeId(id)))
 escapeId(id) JSON, escapeId(id) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (escapeId(id)->\\"$\\") STORED  NOT NULL PRIMARY KEY,
 INDEX escapeId(id) (escapeId(id)))
       COMMENT = \\"RESOLVE-readModelName2\\"
-      ENGINE = \\"InnoDB\\"
+      ENGINE = \\"InnoDB\\";
       ",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(table2)(escapeId(id), escapeId(test))
-      VALUES(CAST(escape(\\"id-3\\") AS JSON), CAST(escape(true) AS JSON))
+      VALUES(CAST(escape(\\"id-3\\") AS JSON), CAST(escape(true) AS JSON));
     ",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(table2)(escapeId(id), escapeId(test))
-      VALUES(CAST(escape(\\"id-4\\") AS JSON), CAST(escape(true) AS JSON))
+      VALUES(CAST(escape(\\"id-4\\") AS JSON), CAST(escape(true) AS JSON));
     ",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(table2)(escapeId(id), escapeId(test))
-      VALUES(CAST(escape(\\"id-5\\") AS JSON), CAST(escape(true) AS JSON))
+      VALUES(CAST(escape(\\"id-5\\") AS JSON), CAST(escape(true) AS JSON));
     ",
   ],
   Array [
     "query",
     "SELECT Count(*) AS Count FROM escapeId(table1)
-    ",
+    ;",
   ],
   Array [
     "query",
     "SELECT Count(*) AS Count FROM escapeId(table2)
-    ",
+    ;",
   ],
   Array [
     "query",
     "SELECT table_name AS \`tableName\` FROM INFORMATION_SCHEMA.TABLES
     WHERE table_comment LIKE \\"RESOLVE-readModelName1\\"
-    AND table_schema=DATABASE()",
+    AND table_schema=DATABASE();",
   ],
   Array [
     "query",
     "SELECT table_name AS \`tableName\` FROM INFORMATION_SCHEMA.TABLES
     WHERE table_comment LIKE \\"RESOLVE-readModelName2\\"
-    AND table_schema=DATABASE()",
+    AND table_schema=DATABASE();",
   ],
 ]
 `;
@@ -83,37 +83,37 @@ Array [
 escapeId(id) JSON, escapeId(id) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (escapeId(id)->\\"$\\") STORED  NOT NULL PRIMARY KEY,
 INDEX escapeId(id) (escapeId(id)))
       COMMENT = \\"RESOLVE-readModelName\\"
-      ENGINE = \\"InnoDB\\"
+      ENGINE = \\"InnoDB\\";
       ",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(Entries)(escapeId(id), escapeId(name))
-      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(\\"First entry\\") AS JSON))
+      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(\\"First entry\\") AS JSON));
     ",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(Entries)(escapeId(id), escapeId(name))
-      VALUES(CAST(escape(\\"id-2\\") AS JSON), CAST(escape(\\"Second entry\\") AS JSON))
+      VALUES(CAST(escape(\\"id-2\\") AS JSON), CAST(escape(\\"Second entry\\") AS JSON));
     ",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(Entries)(escapeId(id), escapeId(name))
-      VALUES(CAST(escape(\\"id-3\\") AS JSON), CAST(escape(\\"Second entry\\") AS JSON))
+      VALUES(CAST(escape(\\"id-3\\") AS JSON), CAST(escape(\\"Second entry\\") AS JSON));
     ",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(Entries)(escapeId(id), escapeId(name))
-      VALUES(CAST(escape(\\"id-4\\") AS JSON), CAST(escape(\\"First entry\\") AS JSON))
+      VALUES(CAST(escape(\\"id-4\\") AS JSON), CAST(escape(\\"First entry\\") AS JSON));
     ",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(Entries)(escapeId(id), escapeId(name))
-      VALUES(CAST(escape(\\"id-5\\") AS JSON), CAST(escape(\\"Second entry\\") AS JSON))
+      VALUES(CAST(escape(\\"id-5\\") AS JSON), CAST(escape(\\"Second entry\\") AS JSON));
     ",
   ],
   Array [
@@ -121,14 +121,14 @@ INDEX escapeId(id) (escapeId(id)))
     "SELECT * FROM escapeId(Entries)
     
     ORDER BY escapeId(id) ASC
-    LIMIT 0,268435455",
+    LIMIT 0,268435455;",
   ],
   Array [
     "query",
     "SELECT * FROM escapeId(Entries)
     
     ORDER BY escapeId(id) DESC
-    LIMIT 0,268435455",
+    LIMIT 0,268435455;",
   ],
   Array [
     "query",
@@ -137,7 +137,7 @@ INDEX escapeId(id) (escapeId(id)))
     (((escapeId(id) = CAST(escape(\\"id-3\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-3\\") AS JSON) is null))) or      
     ((escapeId(id) is null) and (CAST(escape(\\"id-3\\") AS JSON) is null)))
    
-    LIMIT 0, 1",
+    LIMIT 0, 1;",
   ],
   Array [
     "query",
@@ -153,7 +153,7 @@ INDEX escapeId(id) (escapeId(id)))
     ((escapeId(id) is null) and (CAST(escape(\\"id-1\\") AS JSON) is null)))
   )) 
     
-    LIMIT 0,268435455",
+    LIMIT 0,268435455;",
   ],
 ]
 `;
@@ -167,19 +167,19 @@ escapeId(name) JSON,
 escapeId(id) JSON, escapeId(id) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (escapeId(id)->\\"$\\") STORED  NOT NULL PRIMARY KEY,
 INDEX escapeId(id) (escapeId(id)))
       COMMENT = \\"RESOLVE-readModelName\\"
-      ENGINE = \\"InnoDB\\"
+      ENGINE = \\"InnoDB\\";
       ",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(ShoppingLists)(escapeId(id), escapeId(name), escapeId(createdAt))
-      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(\\"Products\\") AS JSON), CAST(escape(1) AS JSON))
+      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(\\"Products\\") AS JSON), CAST(escape(1) AS JSON));
     ",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(ShoppingLists)(escapeId(id), escapeId(name), escapeId(createdAt))
-      VALUES(CAST(escape(\\"id-2\\") AS JSON), CAST(escape(\\"Medicines\\") AS JSON), CAST(escape(2) AS JSON))
+      VALUES(CAST(escape(\\"id-2\\") AS JSON), CAST(escape(\\"Medicines\\") AS JSON), CAST(escape(2) AS JSON));
     ",
   ],
   Array [
@@ -188,7 +188,7 @@ INDEX escapeId(id) (escapeId(id)))
     SET escapeId(name) = CAST(escape(\\"Products-NEW\\") AS JSON)  WHERE 
     (((escapeId(id) = CAST(escape(\\"id-1\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-1\\") AS JSON) is null))) or      
     ((escapeId(id) is null) and (CAST(escape(\\"id-1\\") AS JSON) is null)))
-   ",
+   ;",
   ],
   Array [
     "query",
@@ -196,12 +196,12 @@ INDEX escapeId(id) (escapeId(id)))
     WHERE 
     (((escapeId(id) = CAST(escape(\\"id-1\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-1\\") AS JSON) is null))) or      
     ((escapeId(id) is null) and (CAST(escape(\\"id-1\\") AS JSON) is null)))
-   ",
+   ;",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(ShoppingLists)(escapeId(id), escapeId(name))
-      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(\\"Products-NEW\\") AS JSON))
+      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(\\"Products-NEW\\") AS JSON));
     ",
   ],
   Array [
@@ -210,7 +210,7 @@ INDEX escapeId(id) (escapeId(id)))
     WHERE 
     (((escapeId(id) = CAST(escape(\\"id-2\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-2\\") AS JSON) is null))) or      
     ((escapeId(id) is null) and (CAST(escape(\\"id-2\\") AS JSON) is null)))
-   ",
+   ;",
   ],
   Array [
     "query",
@@ -218,18 +218,18 @@ INDEX escapeId(id) (escapeId(id)))
     WHERE 
     (((escapeId(id) = CAST(escape(\\"id-3\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-3\\") AS JSON) is null))) or      
     ((escapeId(id) is null) and (CAST(escape(\\"id-3\\") AS JSON) is null)))
-   ",
+   ;",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(ShoppingLists)(escapeId(id), escapeId(name))
-      VALUES(CAST(escape(\\"id-3\\") AS JSON), CAST(escape(\\"Entries\\") AS JSON))
+      VALUES(CAST(escape(\\"id-3\\") AS JSON), CAST(escape(\\"Entries\\") AS JSON));
     ",
   ],
   Array [
     "query",
     "SELECT Count(*) AS Count FROM escapeId(ShoppingLists)
-    ",
+    ;",
   ],
 ]
 `;
@@ -244,13 +244,13 @@ escapeId(obj) JSON,
 escapeId(id) JSON, escapeId(id) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (escapeId(id)->\\"$\\") STORED  NOT NULL PRIMARY KEY,
 INDEX escapeId(id) (escapeId(id)))
       COMMENT = \\"RESOLVE-readModelName\\"
-      ENGINE = \\"InnoDB\\"
+      ENGINE = \\"InnoDB\\";
       ",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(values)(escapeId(id), escapeId(value), escapeId(obj), escapeId(arr))
-      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(1) AS JSON), CAST(escape({\\"value\\":1}) AS JSON), CAST(escape([{\\"value\\":1}]) AS JSON))
+      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(1) AS JSON), CAST(escape({\\"value\\":1}) AS JSON), CAST(escape([{\\"value\\":1}]) AS JSON));
     ",
   ],
   Array [
@@ -322,7 +322,7 @@ INDEX escapeId(id) (escapeId(id)))
           END AS JSON) ) WHERE 
     (((escapeId(id) = CAST(escape(\\"id-1\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-1\\") AS JSON) is null))) or      
     ((escapeId(id) is null) and (CAST(escape(\\"id-1\\") AS JSON) is null)))
-   ",
+   ;",
   ],
   Array [
     "query",
@@ -393,7 +393,7 @@ INDEX escapeId(id) (escapeId(id)))
           END AS JSON) ) WHERE 
     (((escapeId(id) = CAST(escape(\\"id-1\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-1\\") AS JSON) is null))) or      
     ((escapeId(id) is null) and (CAST(escape(\\"id-1\\") AS JSON) is null)))
-   ",
+   ;",
   ],
   Array [
     "query",
@@ -464,7 +464,7 @@ INDEX escapeId(id) (escapeId(id)))
           END AS JSON) ) WHERE 
     (((escapeId(id) = CAST(escape(\\"id-1\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-1\\") AS JSON) is null))) or      
     ((escapeId(id) is null) and (CAST(escape(\\"id-1\\") AS JSON) is null)))
-   ",
+   ;",
   ],
   Array [
     "query",
@@ -535,7 +535,7 @@ INDEX escapeId(id) (escapeId(id)))
           END AS JSON) ) WHERE 
     (((escapeId(id) = CAST(escape(\\"id-1\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-1\\") AS JSON) is null))) or      
     ((escapeId(id) is null) and (CAST(escape(\\"id-1\\") AS JSON) is null)))
-   ",
+   ;",
   ],
 ]
 `;
@@ -550,13 +550,13 @@ escapeId(obj) JSON,
 escapeId(id) JSON, escapeId(id) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (escapeId(id)->\\"$\\") STORED  NOT NULL PRIMARY KEY,
 INDEX escapeId(id) (escapeId(id)))
       COMMENT = \\"RESOLVE-readModelName\\"
-      ENGINE = \\"InnoDB\\"
+      ENGINE = \\"InnoDB\\";
       ",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(values)(escapeId(id), escapeId(value), escapeId(arr), escapeId(obj))
-      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(1) AS JSON), CAST(escape([{\\"value\\":1}]) AS JSON), CAST(escape({\\"value\\":1}) AS JSON))
+      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(1) AS JSON), CAST(escape([{\\"value\\":1}]) AS JSON), CAST(escape({\\"value\\":1}) AS JSON));
     ",
   ],
   Array [
@@ -565,7 +565,7 @@ INDEX escapeId(id) (escapeId(id)))
     SET escapeId(value) = CAST(escape(2) AS JSON) , escapeId(obj) = JSON_SET(escapeId(obj), '$.\\"value\\"', CAST(escape(2) AS JSON)) , escapeId(arr) = JSON_SET(escapeId(arr), '$[0].\\"value\\"', CAST(escape(2) AS JSON))  WHERE 
     (((escapeId(id) = CAST(escape(\\"id-1\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-1\\") AS JSON) is null))) or      
     ((escapeId(id) is null) and (CAST(escape(\\"id-1\\") AS JSON) is null)))
-   ",
+   ;",
   ],
 ]
 `;
@@ -580,13 +580,13 @@ escapeId(obj) JSON,
 escapeId(id) JSON, escapeId(id) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (escapeId(id)->\\"$\\") STORED  NOT NULL PRIMARY KEY,
 INDEX escapeId(id) (escapeId(id)))
       COMMENT = \\"RESOLVE-readModelName\\"
-      ENGINE = \\"InnoDB\\"
+      ENGINE = \\"InnoDB\\";
       ",
   ],
   Array [
     "query",
     "INSERT INTO escapeId(values)(escapeId(id), escapeId(value), escapeId(arr), escapeId(obj))
-      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(1) AS JSON), CAST(escape([{\\"value\\":1}]) AS JSON), CAST(escape({\\"value\\":1}) AS JSON))
+      VALUES(CAST(escape(\\"id-1\\") AS JSON), CAST(escape(1) AS JSON), CAST(escape([{\\"value\\":1}]) AS JSON), CAST(escape({\\"value\\":1}) AS JSON));
     ",
   ],
   Array [
@@ -595,7 +595,7 @@ INDEX escapeId(id) (escapeId(id)))
     SET escapeId(value) = NULL , escapeId(obj) = JSON_REMOVE(escapeId(obj), '$.\\"value\\"') , escapeId(arr) = JSON_REMOVE(escapeId(arr), '$[0].\\"value\\"')  WHERE 
     (((escapeId(id) = CAST(escape(\\"id-1\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escape(\\"id-1\\") AS JSON) is null))) or      
     ((escapeId(id) is null) and (CAST(escape(\\"id-1\\") AS JSON) is null)))
-   ",
+   ;",
   ],
 ]
 `;

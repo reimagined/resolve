@@ -2,12 +2,14 @@ import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import givenEvents from 'resolve-testing-tools'
 
 import config from './config'
+import resetReadModel from '../reset-read-model'
 
 describe('Saga', () => {
   const {
     name: sagaName,
     source: sourceModule,
-    connectorName
+    connectorName,
+    schedulerName
   } = config.sagas.find(({ name }) => name === 'ProcessKiller')
   const {
     module: connectorModule,
@@ -38,26 +40,21 @@ describe('Saga', () => {
   let adapter = null
 
   beforeEach(async () => {
-    adapter = createConnector(connectorOptions)
-    try {
-      const connection = await adapter.connect(sagaName)
-      await adapter.drop(null, sagaName)
-      await adapter.disconnect(connection, sagaName)
-    } catch (e) {}
+    await resetReadModel(createConnector, connectorOptions, schedulerName)
+    await resetReadModel(createConnector, connectorOptions, sagaName)
 
+    adapter = createConnector(connectorOptions)
     sagaWithAdapter = {
       handlers: source.handlers,
       sideEffects: source.sideEffects,
-      adapter
+      adapter,
+      name: sagaName
     }
   })
 
   afterEach(async () => {
-    try {
-      const connection = await adapter.connect(sagaName)
-      await adapter.drop(null, sagaName)
-      await adapter.disconnect(connection, sagaName)
-    } catch (e) {}
+    await resetReadModel(createConnector, connectorOptions, schedulerName)
+    await resetReadModel(createConnector, connectorOptions, sagaName)
 
     adapter = null
     sagaWithAdapter = null

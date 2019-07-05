@@ -39,7 +39,7 @@ const resetDomainHandler = () => async (req, res) => {
     if (dropReadModels) {
       for (const { name, connectorName } of readModels) {
         if (isSagaName(req.resolve, name)) continue
-        const connector = readModelConnectors[connectorName]()
+        const connector = readModelConnectors[connectorName]
         const connection = await connector.connect(name)
 
         await connector.drop(connection, name)
@@ -52,7 +52,7 @@ const resetDomainHandler = () => async (req, res) => {
     if (dropSagas) {
       for (const { name, connectorName } of readModels) {
         if (!isSagaName(req.resolve, name)) continue
-        const connector = readModelConnectors[connectorName]()
+        const connector = readModelConnectors[connectorName]
         const connection = await connector.connect(name)
 
         await connector.drop(connection, name)

@@ -4,11 +4,15 @@ import givenEvents, {
 } from 'resolve-testing-tools'
 
 import config from './config'
+import resetReadModel from '../reset-read-model'
 
 describe('Saga', () => {
-  const { name, source: sourceModule, connectorName } = config.sagas.find(
-    ({ name }) => name === 'UserConfirmation'
-  )
+  const {
+    name: sagaName,
+    source: sourceModule,
+    connectorName,
+    schedulerName
+  } = config.sagas.find(({ name }) => name === 'UserConfirmation')
   const {
     module: connectorModule,
     options: connectorOptions
@@ -21,33 +25,26 @@ describe('Saga', () => {
   let sagaWithAdapter = null
   let adapter = null
 
-  beforeEach(async () => {
-    adapter = createConnector(connectorOptions)
-    try {
-      const connection = await adapter.connect(name)
-      await adapter.drop(null, name)
-      await adapter.disconnect(connection, name)
-    } catch (e) {}
-
-    sagaWithAdapter = {
-      handlers: source.handlers,
-      sideEffects: source.sideEffects,
-      adapter
-    }
-  })
-
-  afterEach(async () => {
-    try {
-      const connection = await adapter.connect(name)
-      await adapter.drop(null, name)
-      await adapter.disconnect(connection, name)
-    } catch (e) {}
-
-    adapter = null
-    sagaWithAdapter = null
-  })
-
   describe('with sideEffects.isEnabled = true', () => {
+    beforeEach(async () => {
+      await resetReadModel(createConnector, connectorOptions, schedulerName)
+      await resetReadModel(createConnector, connectorOptions, sagaName)
+      adapter = createConnector(connectorOptions)
+      sagaWithAdapter = {
+        handlers: source.handlers,
+        sideEffects: source.sideEffects,
+        adapter,
+        name: sagaName
+      }
+    })
+
+    afterEach(async () => {
+      await resetReadModel(createConnector, connectorOptions, schedulerName)
+      await resetReadModel(createConnector, connectorOptions, sagaName)
+      adapter = null
+      sagaWithAdapter = null
+    })
+
     test('success registration', async () => {
       const result = await givenEvents([
         {
@@ -86,6 +83,25 @@ describe('Saga', () => {
   })
 
   describe('with sideEffects.isEnabled = false', () => {
+    beforeEach(async () => {
+      await resetReadModel(createConnector, connectorOptions, schedulerName)
+      await resetReadModel(createConnector, connectorOptions, sagaName)
+      adapter = createConnector(connectorOptions)
+      sagaWithAdapter = {
+        handlers: source.handlers,
+        sideEffects: source.sideEffects,
+        adapter,
+        name: sagaName
+      }
+    })
+
+    afterEach(async () => {
+      await resetReadModel(createConnector, connectorOptions, schedulerName)
+      await resetReadModel(createConnector, connectorOptions, sagaName)
+      adapter = null
+      sagaWithAdapter = null
+    })
+
     test('success registration', async () => {
       const result = await givenEvents([
         {

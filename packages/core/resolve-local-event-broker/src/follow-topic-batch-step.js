@@ -20,7 +20,7 @@ const followTopicBatchStep = async (pool, listenerId) => {
       [initialEvent],
       properties
     )
-    if (!anycastResult) {
+    if (anycastResult == null) {
       return BATCH_STEP_RESULT.STOP
     }
 
@@ -57,13 +57,37 @@ const followTopicBatchStep = async (pool, listenerId) => {
     properties
   )
 
-  if (events.length === 0 || !anycastResult) {
+  if (events.length === 0 || anycastResult == null) {
     return BATCH_STEP_RESULT.STOP
   }
 
+  if (anycastResult.lastEvent == null) {
+    return BATCH_STEP_RESULT.CONTINUE
+  }
+
+  let abutTimestamp = 0,
+    skipCount = 0
+
+  for (let index = 0; index < events.length; index++) {
+    if (events[index].timestamp !== abutTimestamp) {
+      abutTimestamp = events[index].timestamp
+      skipCount = 0
+    } else {
+      skipCount++
+    }
+
+    if (
+      anycastResult.lastEvent.aggregateId === events[index].aggregateId &&
+      anycastResult.lastEvent.aggregateVersion ===
+        events[index].aggregateVersion
+    ) {
+      break
+    }
+  }
+
   await pool.updateListenerInfo(listenerId, {
-    SkipCount: listenerInfo.skipCount,
-    AbutTimestamp: listenerInfo.abutTimestamp
+    SkipCount: skipCount,
+    AbutTimestamp: abutTimestamp
   })
 
   return BATCH_STEP_RESULT.CONTINUE

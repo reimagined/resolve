@@ -25,13 +25,14 @@ const anycastEvents = async (pool, listenerId, events, properties) => {
 
   const result = await Promise.race([
     (async () => {
+      let promiseResult
       try {
-        await promise
+        promiseResult = await promise
       } catch (err) {}
 
       isDone = true
 
-      return true
+      return promiseResult
     })(),
 
     (async () => {
@@ -41,11 +42,11 @@ const anycastEvents = async (pool, listenerId, events, properties) => {
 
         if (listenerSet == null || !listenerSet.has(clientId)) {
           pool.waitMessagePromises.delete(messageGuid)
-          return false
+          return null
         }
       }
 
-      return true
+      throw new Error('Abnormal termination')
     })()
   ])
 
