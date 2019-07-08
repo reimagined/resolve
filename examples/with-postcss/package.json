@@ -1,6 +1,6 @@
 {
   "name": "with-postcss",
-  "version": "0.20.13",
+  "version": "0.20.18",
   "description": "shows how to work with postCSS",
   "private": true,
   "scripts": {
@@ -19,14 +19,14 @@
     "react-bootstrap": "0.32.1",
     "react-helmet": "5.2.0",
     "redux": "4.0.1",
-    "resolve-redux": "0.20.13",
-    "resolve-scripts": "0.20.13",
-    "resolve-storage-dynamo": "0.20.13",
-    "resolve-storage-lite": "0.20.13",
-    "resolve-readmodel-lite": "0.20.13",
-    "resolve-readmodel-mysql": "0.20.13",
-    "resolve-subscribe-mqtt": "0.20.13",
-    "resolve-subscribe-socket.io": "0.20.13",
+    "resolve-redux": "0.20.18",
+    "resolve-scripts": "0.20.18",
+    "resolve-storage-dynamo": "0.20.18",
+    "resolve-storage-lite": "0.20.18",
+    "resolve-readmodel-lite": "0.20.18",
+    "resolve-readmodel-mysql": "0.20.18",
+    "resolve-subscribe-mqtt": "0.20.18",
+    "resolve-subscribe-socket.io": "0.20.18",
     "redux-devtools-extension": "2.13.7"
   },
   "devDependencies": {

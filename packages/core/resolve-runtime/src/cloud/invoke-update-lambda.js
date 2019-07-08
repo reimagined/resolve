@@ -1,28 +1,35 @@
 import debugLevels from 'debug-levels'
-import uuid from 'uuid/v4'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
 const invokeUpdateLambda = async (
-  { stepFunctions },
+  { lambda },
   { name: listenerId, invariantHash, projection }
 ) => {
-  log.debug(
-    `requesting step function execution to update read-model/saga "${listenerId}"`
-  )
-  await stepFunctions
-    .startExecution({
-      stateMachineArn: process.env.RESOLVE_EVENT_BUS_STEP_FUNCTION_ARN,
-      name: `FEED-${listenerId}-${uuid()}`,
-      input: JSON.stringify({
-        'detail-type': 'LISTEN_EVENT_BUS',
-        listenerId,
-        invariantHash,
-        inactiveTimeout: 1000 * 60 * 60,
-        eventTypes: Object.keys(projection)
-      })
+  const invokeFunctionName = process.env.RESOLVE_META_LOCK_LAMBDA_ARN
+
+  const invokePayload = JSON.stringify({
+    listenerId,
+    invariantHash,
+    inactiveTimeout: 1000 * 60 * 60,
+    eventTypes: Object.keys(projection)
+  })
+
+  log.debug(`invoking lambda ${invokeFunctionName} ${invokePayload}`)
+
+  const { Payload, FunctionError } = await lambda
+    .invoke({
+      FunctionName: invokeFunctionName,
+      Payload: invokePayload
     })
     .promise()
+
+  if (FunctionError != null) {
+    const { errorMessage } = JSON.parse(Payload.toString())
+    throw new Error(errorMessage)
+  }
+
+  return JSON.parse(Payload.toString())
 }
 
 export default invokeUpdateLambda

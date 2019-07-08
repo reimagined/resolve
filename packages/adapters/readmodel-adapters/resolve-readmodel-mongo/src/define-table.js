@@ -1,11 +1,18 @@
 const defineTable = async (
-  { getCollection, rootId },
+  pool,
   readModelName,
   tableName,
   tableDescription
 ) => {
+  const { getCollection, rootId, rootIndex } = pool
   const collection = await getCollection(readModelName, tableName, true)
-  const root = { _id: rootId, readModelName }
+  const root = {
+    _id: rootId,
+    readModelName,
+    transactionList: [],
+    indexNames: [],
+    fieldNames: []
+  }
   if (
     tableDescription == null ||
     tableDescription.constructor !== Object ||
@@ -19,18 +26,31 @@ const defineTable = async (
   for (const [idx, indexName] of Object.keys(
     tableDescription.indexes
   ).entries()) {
-    const indexArgs = [{ [indexName]: 1 }]
+    const indexKeys = { [indexName]: 1 }
+    const indexOptions = { name: indexName }
     if (idx === 0) {
-      indexArgs.push({ unique: true })
+      indexOptions.unique = true
     }
-    await collection.createIndex(...indexArgs)
 
-    root[indexName] = rootId
+    await collection.createIndex(indexKeys, indexOptions)
+
+    root.indexNames.push(indexName)
+    root[indexName] = pool.ObjectID()
   }
 
-  for (const fieldName of tableDescription.fields) {
-    root[fieldName] = 0
-  }
+  root.fieldNames = [...tableDescription.fields]
+
+  await collection.createIndex(
+    {
+      [rootIndex]: 1
+    },
+    {
+      name: rootIndex,
+      unique: false
+    }
+  )
+
+  root[rootIndex] = true
 
   await collection.insertOne(root)
 }

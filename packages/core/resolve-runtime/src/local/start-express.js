@@ -17,7 +17,16 @@ const startExpress = async resolve => {
     try {
       await initResolve(currentResolve)
       await bootstrap(currentResolve)
-      await Promise.all(Array.from(resolve.initListenersPromises.values()))
+      readyLoop: while (true) {
+        for (const { name: readModelName } of resolve.readModels) {
+          const status = await resolve.eventBroker.status(readModelName)
+          if (status.lastEvent == null && status.lastError == null) {
+            continue readyLoop
+          }
+        }
+        // eslint-disable-next-line no-extra-label
+        break readyLoop
+      }
     } finally {
       await disposeResolve(currentResolve)
     }

@@ -23,7 +23,7 @@ const count = async (
 
   const rows = await runQuery(
     `SELECT Count(*) AS Count FROM ${escapeId(`${tablePrefix}${tableName}`)}
-    ${inlineSearchExpr}`
+    ${inlineSearchExpr};`
   )
 
   if (

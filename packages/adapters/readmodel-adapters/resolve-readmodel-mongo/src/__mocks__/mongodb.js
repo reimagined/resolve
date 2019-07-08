@@ -1,4 +1,9 @@
+const documents = new Map()
+let documentIndex = 1
+
 export const result = []
+
+export const ObjectID = id => (id != null ? String(id) : `id${documentIndex++}`)
 
 const collection = {
   createIndex: (...args) => {
@@ -8,7 +13,15 @@ const collection = {
     result.push(['insert', ...args])
   },
   insertOne: (...args) => {
-    result.push(['insertOne', ...args])
+    const document = { ...args[0] }
+    if (document._id == null) {
+      document._id = ObjectID()
+    }
+    documents.set(document._id, document)
+    result.push(['insertOne', document, ...args.slice(1)])
+  },
+  updateOne: (...args) => {
+    result.push(['updateOne', ...args])
   },
   updateMany: (...args) => {
     result.push(['updateMany', ...args])
@@ -21,6 +34,9 @@ const collection = {
   },
   findOne: (...args) => {
     result.push(['findOne', ...args])
+    if (args[0] != null && documents.has(args[0]._id)) {
+      return documents.get(args[0]._id)
+    }
     return {}
   },
   find: (...args) => {
@@ -58,7 +74,5 @@ const connect = (url, options, callback) => {
 }
 
 export const MongoClient = { connect }
-
-export const ObjectID = id => String(id)
 
 ObjectID.createFromHexString = ObjectID

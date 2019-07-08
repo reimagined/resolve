@@ -5,6 +5,8 @@ const followTopicBatchStep = async (pool, listenerId) => {
     return BATCH_STEP_RESULT.STOP
   }
 
+  const initialEvent = { type: 'Init' }
+
   const listenerInfo = await pool.getListenerInfo(listenerId)
   const properties = listenerInfo.properties
   if (!properties.hasOwnProperty('RESOLVE_SIDE_EFFECTS_START_TIMESTAMP')) {
@@ -12,11 +14,20 @@ const followTopicBatchStep = async (pool, listenerId) => {
   }
 
   if (listenerInfo.isFirstRun) {
-    await pool.anycastEvents(pool, listenerId, [{ type: 'Init' }], properties)
+    const anycastResult = await pool.anycastEvents(
+      pool,
+      listenerId,
+      [initialEvent],
+      properties
+    )
+    if (anycastResult == null) {
+      return BATCH_STEP_RESULT.STOP
+    }
 
     await pool.updateListenerInfo(listenerId, {
       SkipCount: 0,
-      AbutTimestamp: 0
+      AbutTimestamp: 0,
+      LastEvent: initialEvent
     })
   }
 
@@ -39,15 +50,44 @@ const followTopicBatchStep = async (pool, listenerId) => {
   )
 
   listenerInfo.skipCount = listenerInfo.currentSkipCount
-  await pool.anycastEvents(pool, listenerId, events, properties)
+  const anycastResult = await pool.anycastEvents(
+    pool,
+    listenerId,
+    events,
+    properties
+  )
 
-  if (events.length === 0) {
+  if (events.length === 0 || anycastResult == null) {
     return BATCH_STEP_RESULT.STOP
   }
 
+  if (anycastResult.lastEvent == null) {
+    return BATCH_STEP_RESULT.CONTINUE
+  }
+
+  let abutTimestamp = 0,
+    skipCount = 0
+
+  for (let index = 0; index < events.length; index++) {
+    if (events[index].timestamp !== abutTimestamp) {
+      abutTimestamp = events[index].timestamp
+      skipCount = 0
+    } else {
+      skipCount++
+    }
+
+    if (
+      anycastResult.lastEvent.aggregateId === events[index].aggregateId &&
+      anycastResult.lastEvent.aggregateVersion ===
+        events[index].aggregateVersion
+    ) {
+      break
+    }
+  }
+
   await pool.updateListenerInfo(listenerId, {
-    SkipCount: listenerInfo.skipCount,
-    AbutTimestamp: listenerInfo.abutTimestamp
+    SkipCount: skipCount,
+    AbutTimestamp: abutTimestamp
   })
 
   return BATCH_STEP_RESULT.CONTINUE

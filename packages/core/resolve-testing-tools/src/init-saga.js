@@ -1,5 +1,7 @@
 import { Phases, symbol } from './constants'
 
+const defaultMockError = `Using default mock result: override "executeCommand", "executeQuery" and "scheduleCommand" in "sideEffects" section with custom mocks`
+
 const initSaga = async ({ promise, transformEvents }) => {
   if (promise[symbol].phase < Phases.SAGA) {
     throw new TypeError()
@@ -12,11 +14,16 @@ const initSaga = async ({ promise, transformEvents }) => {
       sideEffects: [],
       queries: []
     }
-    const { adapter, events, handlers, sideEffects, properties } = promise[
-      symbol
-    ]
+    const {
+      name,
+      adapter,
+      events,
+      handlers,
+      sideEffects,
+      properties
+    } = promise[symbol]
 
-    const store = await adapter.connect('TEST-SAGA-READ-MODEL')
+    const store = await adapter.connect(name)
 
     for (const event of transformEvents(events)) {
       const handler = handlers[event.type]
@@ -37,23 +44,34 @@ const initSaga = async ({ promise, transformEvents }) => {
           sideEffects: Object.keys(sideEffects).reduce(
             (acc, key) => {
               acc[key] = async (...args) => {
-                if (!isEnabled) return
-                result.sideEffects.push([key, ...args, properties])
+                if (isEnabled) {
+                  result.sideEffects.push([key, ...args, properties])
+                  return await sideEffects[key](...args)
+                }
               }
               return acc
             },
             {
               executeCommand: async (...args) => {
-                if (!isEnabled) return
-                result.commands.push(args)
+                if (isEnabled) {
+                  result.commands.push(args)
+                  // eslint-disable-next-line no-console
+                  console.warn(defaultMockError)
+                }
               },
               scheduleCommand: async (...args) => {
-                if (!isEnabled) return
-                result.scheduleCommands.push(args)
+                if (isEnabled) {
+                  result.scheduleCommands.push(args)
+                  // eslint-disable-next-line no-console
+                  console.warn(defaultMockError)
+                }
               },
               executeQuery: async (...args) => {
-                if (!isEnabled) return
-                result.queries.push(args)
+                if (isEnabled) {
+                  result.queries.push(args)
+                  // eslint-disable-next-line no-console
+                  console.warn(defaultMockError)
+                }
               },
               isEnabled
             }
@@ -64,7 +82,7 @@ const initSaga = async ({ promise, transformEvents }) => {
       )
     }
 
-    await adapter.disconnect(store, 'TEST-SAGA-READ-MODEL')
+    await adapter.disconnect(store, name)
 
     promise[symbol].resolve(result)
   } catch (error) {

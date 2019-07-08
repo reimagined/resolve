@@ -1,3 +1,6 @@
+const RESERVED_TIME = 30 * 1000
+const TIMEOUT_SYMBOL = Symbol('TIMEOUT_SYMBOL')
+
 const wrapConnection = async (pool, callback) => {
   const readModelName = pool.readModel.name
 
@@ -83,7 +86,6 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
       error.code = 422
       throw error
     }
-    await pool.doUpdateRequest(pool.readModel.name)
 
     return await wrapConnection(pool, async connection => {
       const segment = pool.performanceTracer
@@ -126,7 +128,7 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
   }
 }
 
-const updateByEvents = async (pool, events) => {
+const updateByEvents = async (pool, events, getRemainingTimeInMillis) => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -195,7 +197,57 @@ const updateByEvents = async (pool, events) => {
     await wrapConnection(pool, async connection => {
       try {
         for (const event of events) {
-          await handler(connection, event)
+          const remainingTime = getRemainingTimeInMillis() - RESERVED_TIME
+          if (remainingTime < 0) {
+            break
+          }
+
+          if (event.type === 'Init') {
+            await handler(connection, event)
+            continue
+          }
+
+          let timer = null
+          try {
+            if (typeof pool.connector.beginTransaction === 'function') {
+              await pool.connector.beginTransaction(
+                connection,
+                pool.readModel.name
+              )
+            }
+
+            await Promise.race([
+              new Promise((_, reject) => {
+                timer = setTimeout(
+                  reject.bind(null, TIMEOUT_SYMBOL),
+                  remainingTime
+                )
+              }),
+              handler(connection, event)
+            ])
+
+            if (typeof pool.connector.commitTransaction === 'function') {
+              await pool.connector.commitTransaction(
+                connection,
+                pool.readModel.name
+              )
+            }
+          } catch (error) {
+            if (typeof pool.connector.rollbackTransaction === 'function') {
+              await pool.connector.rollbackTransaction(
+                connection,
+                pool.readModel.name
+              )
+            }
+
+            if (error !== TIMEOUT_SYMBOL) {
+              throw error
+            } else {
+              break
+            }
+          } finally {
+            clearTimeout(timer)
+          }
         }
       } catch (error) {
         lastError = Object.create(Error.prototype, {
@@ -294,7 +346,7 @@ const dispose = async pool => {
 
     const promises = []
     for (const connection of pool.connections) {
-      promises.push(pool.connector.dispose(connection))
+      promises.push(pool.connector.disconnect(connection, pool.readModel.name))
     }
     await Promise.all(promises)
   } catch (error) {
@@ -309,24 +361,17 @@ const dispose = async pool => {
   }
 }
 
-const wrapReadModel = (
-  readModel,
-  readModelConnectors,
-  doUpdateRequest,
-  performanceTracer
-) => {
-  const connectorFactory = readModelConnectors[readModel.connectorName]
-  if (connectorFactory == null) {
+const wrapReadModel = (readModel, readModelConnectors, performanceTracer) => {
+  const connector = readModelConnectors[readModel.connectorName]
+  if (connector == null) {
     throw new Error(
       `Connector "${readModel.connectorName}" for read-model "${readModel.name}" does not exist`
     )
   }
-  const connector = connectorFactory()
 
   const pool = {
     connections: new Set(),
     readModel,
-    doUpdateRequest,
     connector,
     isDisposed: false,
     performanceTracer

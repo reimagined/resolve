@@ -90,6 +90,7 @@ describe('createCustomAdapter', () => {
         JSON.stringify(pool, null, 2),
         JSON.stringify(args, null, 2)
       )
+      return { id: 'test-id' }
     }
     const loadEvents = async (pool, ...args) => {
       result.push(
@@ -137,7 +138,9 @@ describe('createCustomAdapter', () => {
       b: 'b'
     })
 
-    await customAdapter.init()
+    const initResult = await customAdapter.init()
+
+    expect(initResult).toEqual({ id: 'test-id' })
 
     await customAdapter.loadEvents({ aggregateIds: ['id1'] }, () => {})
 

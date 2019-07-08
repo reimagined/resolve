@@ -1,15 +1,9 @@
-const dropReadModel = async ({ databasePromise, rootId }, readModelName) => {
+const dropReadModel = async (pool, readModelName) => {
+  const { databasePromise, listReadModelTables } = pool
   const database = await databasePromise
 
-  for (const {
-    s: { name }
-  } of await database.collections()) {
-    const collection = await database.collection(name)
-    const root = await collection.findOne({ _id: rootId })
-
-    if (root != null && root.readModelName === readModelName) {
-      await collection.drop()
-    }
+  for (const tableName of await listReadModelTables(pool, readModelName)) {
+    await database.dropCollection(tableName)
   }
 }
 

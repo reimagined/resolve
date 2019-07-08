@@ -36,7 +36,7 @@ const appConfig = {
 
 In the configuration object, specify the Read Model's name and the paths to the files containing projections, resolvers, and the Read Model connector's name.
 
-A Red Model connector defines how a Read Model's data should be stored. You can define the available connectors in the **readModelConnectors** section:
+A Read Model connector defines how a Read Model's data should be stored. You can define the available connectors in the **readModelConnectors** section:
 
 ##### config.dev.js:
 
@@ -117,6 +117,12 @@ The code sample below demostrates how to implement a connector that provides a f
 ```js
 import fs from 'fs'
 
+const safeUnlinkSync = filename => {
+  if (fs.existsSync(filename)) {
+    fs.unlinkSync(filename)
+  }
+}
+
 export default options => {
   const prefix = String(options.prefix)
   const readModels = new Set()
@@ -134,16 +140,16 @@ export default options => {
     return store
   }
   const disconnect = async (store, readModelName) => {
-    fs.unlinkSync(`${prefix}${readModelName}.lock`)
+    safeUnlinkSync(`${prefix}${readModelName}.lock`)
     readModels.delete(readModelName)
   }
   const drop = async (store, readModelName) => {
-    fs.unlinkSync(`${prefix}${readModelName}.lock`)
-    fs.unlinkSync(`${prefix}${readModelName}`)
+    safeUnlinkSync(`${prefix}${readModelName}.lock`)
+    safeUnlinkSync(`${prefix}${readModelName}`)
   }
   const dispose = async () => {
     for (const readModelName of readModels) {
-      fs.unlinkSync(`${prefix}${readModelName}.lock`)
+      safeUnlinkSync(`${prefix}${readModelName}.lock`)
     }
     readModels.clear()
   }

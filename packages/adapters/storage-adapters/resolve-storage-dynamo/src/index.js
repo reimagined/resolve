@@ -32,6 +32,9 @@ import setupAutoScalingItem from './resource/setup-auto-scaling-item'
 import resourceCreate from './resource/create'
 import resourceDispose from './resource/dispose'
 import resourceDestroy from './resource/destroy'
+import resourceWaitForCreate from './resource/wait-for-create'
+
+const resourceMap = new WeakMap()
 
 // as adapter
 const createAdapter = _createAdapter.bind(
@@ -57,7 +60,8 @@ const createAdapter = _createAdapter.bind(
     encodeEmptyStrings,
     decodeEmptyStrings,
     encodeEvent: _encodeEvent,
-    decodeEvent: _decodeEvent
+    decodeEvent: _decodeEvent,
+    resourceMap
   }
 )
 export { globalPartitionKey, rangedIndex, apiVersion }
@@ -74,14 +78,16 @@ const pool = {
   destroy: resourceDestroy,
   ApplicationAutoScaling,
   encodeEmptyStrings,
-  decodeEmptyStrings
+  decodeEmptyStrings,
+  resourceMap
 }
 
 const create = resourceCreate.bind(null, pool)
 const dispose = resourceDispose.bind(null, pool)
 const destroy = resourceDestroy.bind(null, pool)
+const waitForCreate = resourceWaitForCreate.bind(null, pool)
 
-export { create, dispose, destroy, decodeEmptyStrings }
+export { create, waitForCreate, dispose, destroy, decodeEmptyStrings }
 
 const encodeEvent = _encodeEvent.bind(null, pool)
 const decodeEvent = _decodeEvent.bind(null, pool)

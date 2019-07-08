@@ -1,4 +1,7 @@
+import debugLevels from 'debug-levels'
 import { globalPartitionKey, rangedIndex } from './constants'
+
+const log = debugLevels('resolve:resolve-storage-dynamo:init')
 
 const init = async ({
   tableName,
@@ -6,8 +9,11 @@ const init = async ({
   readCapacityUnits,
   writeCapacityUnits,
   database,
-  checkTableExists
+  checkTableExists,
+  lazyWaitForCreate = false
 }) => {
+  log.debug(`init started${lazyWaitForCreate ? ' (mode:"lazy")' : ''}`)
+
   if (await checkTableExists(database, tableName)) {
     return
   }
@@ -86,7 +92,19 @@ const init = async ({
     })
     .promise()
 
-  while (!(await checkTableExists(database, tableName))) {}
+  const waitForCreate = async () => {
+    log.debug('wait for create started')
+    while (!(await checkTableExists(database, tableName))) {}
+    log.debug('wait for create successful')
+  }
+
+  if (lazyWaitForCreate) {
+    log.debug('init successful (mode:"lazy")')
+    return waitForCreate
+  } else {
+    await waitForCreate()
+    log.debug('init successful')
+  }
 }
 
 export default init

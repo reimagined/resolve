@@ -53,7 +53,7 @@ const find = async (
     `SELECT * FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr}
     ${orderExpression}
-    ${skipLimit}`
+    ${skipLimit};`
   )
 
   for (let idx = 0; idx < rows.length; idx++) {
