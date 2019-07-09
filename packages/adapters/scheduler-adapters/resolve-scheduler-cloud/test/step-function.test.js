@@ -12,6 +12,11 @@ const mockReturnPromiseOnce = (fn, value) =>
     promise: () => Promise.resolve(value)
   })
 
+const mockRejectedPromiseOnce = (fn, value) =>
+  fn.mockReturnValueOnce({
+    promise: () => Promise.reject(value)
+  })
+
 beforeEach(() => {
   process.env['RESOLVE_CLOUD_SCHEDULER_STEP_FUNCTION_ARN'] = 'step-function-arn'
 })
@@ -32,7 +37,7 @@ describe('start', () => {
   test('start execution for an entry', async () => {
     const entry = createEntry('a')
 
-    await start(createEntry('a'))
+    await start(entry)
 
     expect(awsStartExecution).toHaveBeenCalledWith({
       stateMachineArn: 'step-function-arn',
@@ -45,6 +50,14 @@ describe('start', () => {
         }
       })
     })
+  })
+
+  test('catch duplicate execution errors', async () => {
+    mockRejectedPromiseOnce(awsStartExecution, {
+      code: 'ExecutionAlreadyExists'
+    })
+
+    await start(createEntry('a'))
   })
 })
 

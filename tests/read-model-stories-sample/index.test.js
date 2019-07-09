@@ -2,6 +2,7 @@ import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import givenEvents from 'resolve-testing-tools'
 
 import config from './config'
+import resetReadModel from '../reset-read-model'
 
 describe('Read-model sample', () => {
   const {
@@ -25,15 +26,11 @@ describe('Read-model sample', () => {
 
   let adapter = null
   beforeEach(async () => {
+    await resetReadModel(createConnector, connectorOptions, name)
     adapter = createConnector(connectorOptions)
-    try {
-      await adapter.drop(null, name)
-    } catch (e) {}
   })
   afterEach(async () => {
-    try {
-      await adapter.drop(null, name)
-    } catch (e) {}
+    await resetReadModel(createConnector, connectorOptions, name)
     adapter = null
   })
 

@@ -1,6 +1,8 @@
+import { declareRuntimeEnv } from 'resolve-scripts'
+
 const devConfig = {
   target: 'local',
-  port: 3000,
+  port: declareRuntimeEnv('PORT', '3000'),
   polyfills: ['@babel/polyfill'],
   mode: 'development',
   redux: {
@@ -9,14 +11,14 @@ const devConfig = {
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {
-      databaseFile: 'event-store.db'
+      databaseFile: 'data/event-store.db'
     }
   },
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'read-model.db'
+        databaseFile: 'data/read-models.db'
       }
     },
     elasticSearch: {
@@ -42,7 +44,7 @@ const devConfig = {
     maxAge: 31536000000
   },
   eventBroker: {
-    databaseFile: 'local-bus-broker.db'
+    databaseFile: 'data/local-bus-broker.db'
   }
 }
 

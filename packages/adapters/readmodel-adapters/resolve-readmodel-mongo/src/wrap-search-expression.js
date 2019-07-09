@@ -42,7 +42,7 @@ const isOperatorValue = value =>
   Object.keys(value)[0] != null &&
   Object.keys(value)[0][0] === '$'
 
-const wrapSearchExpression = (expression, rootId) => {
+const wrapSearchExpression = (expression, rootIndex) => {
   const searchKeys = Object.keys(expression)
   const operatorKeys = searchKeys.filter(key => key.indexOf('$') > -1)
 
@@ -67,7 +67,11 @@ const wrapSearchExpression = (expression, rootId) => {
           return acc
         }, {})
 
-  return { $and: [{ _id: { $ne: rootId } }, result] }
+  if (rootIndex != null) {
+    return { $and: [{ [rootIndex]: { $exists: false } }, result] }
+  } else {
+    return result
+  }
 }
 
 export default wrapSearchExpression

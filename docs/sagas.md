@@ -28,26 +28,29 @@ export default {
         fields: ['mail']
       })
     },
-    USER_CREATED: async ({ store, executeCommand }, event) => {
+    USER_CREATED: async ({ store, sideEffects }, event) => {
       await store.insert('users', {
         id: event.aggregateId,
         mail: event.payload.mail
       })
-      await executeCommand({
+      await sideEffects.executeCommand({
         aggregateName: 'User',
         aggregateId: event.aggregateId,
         type: 'requestConfirmUser',
         payload: event.payload
       })
     },
-    USER_CONFIRM_REQUESTED: async ({ sideEffects, scheduleCommand }, event) => {
+    USER_CONFIRM_REQUESTED: async ({ sideEffects }, event) => {
       await sideEffects.sendEmail(event.payload.mail, 'Confirm mail')
-      await scheduleCommand(event.timestamp + 1000 * 60 * 60 * 24 * 7, {
-        aggregateName: 'User',
-        aggregateId: event.aggregateId,
-        type: 'forgetUser',
-        payload: {}
-      })
+      await sideEffects.scheduleCommand(
+        event.timestamp + 1000 * 60 * 60 * 24 * 7,
+        {
+          aggregateName: 'User',
+          aggregateId: event.aggregateId,
+          type: 'forgetUser',
+          payload: {}
+        }
+      )
     },
     USER_FORGOTTEN: async ({ store }, event) => {
       await store.delete('users', {
@@ -110,8 +113,9 @@ You can define a saga in one of the following ways:
 
 Every saga should define an `Init` function that initializes the saga's persistent storage:
 
-[mdis]: # '../tests/saga-sample/saga.js#init'
+<!-- prettier-ignore-start -->
 
+[mdis]:# (../tests/saga-sample/saga.js#init)
 ```js
 Init: async ({ store }) => {
   await store.defineTable('users', {
@@ -120,6 +124,8 @@ Init: async ({ store }) => {
   })
 },
 ```
+
+<!-- prettier-ignore-end -->
 
 ### Handle Events
 
@@ -134,43 +140,18 @@ EVENT_NAME: async (
 }
 ```
 
-As a first argument, an event handler receives an object that provides access to the saga-related API. This API includes the following functions:
+As a first argument, an event handler receives an object that provides access to the following API:
 
-- `executeCommand` - Sends a command with the specified payload to an aggregate.
-- `scheduleCommand` - Similar to `executeCommand`, but delays command execution until a specified moment in time.
 - `store` - Provides access to the saga's persistent store (similar to the Read Model store).
 - `sideEffects` - Provides access to the saga's side effect functions.
-
-### Send Aggregate Commands
-
-Use the `executeCommand` function to send aggregate commands as shown below:
-
-```js
-await executeCommand({
-  aggregateName: 'User',
-  aggregateId: event.aggregateId,
-  type: 'requestConfirmUser',
-  payload: event.payload
-})
-```
-
-### Schedule Aggregate Commands
-
-The code sample below demonstrates how the command executes at a specified point in time.
-
-```js
-await scheduleCommand(event.timestamp + 1000 * 60 * 60 * 24 * 7, {
-  aggregateName: 'User',
-  aggregateId: event.aggregateId,
-  type: 'forgetUser',
-  payload: {}
-})
-```
 
 ### Use Side Effects
 
 You should define all functions that have side effects in the `sideEffects` object.
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/saga-sample/saga.js#define-side-effect)
 ```js
 sideEffects: {
   sendEmail: async (mail, content) => {
@@ -179,11 +160,62 @@ sideEffects: {
 }
 ```
 
+<!-- prettier-ignore-end -->
+
 You can trigger the defined side effects from an event handler as shown below:
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/saga-sample/saga.js#trigger-side-effect)
 ```js
 await sideEffects.sendEmail(event.payload.mail, 'Confirm mail')
 ```
+
+<!-- prettier-ignore-end -->
+
+The following side effect functions are available by default:
+
+- `executeCommand` - Sends a command with the specified payload to an aggregate.
+- `scheduleCommand` - Similar to `executeCommand`, but delays command execution until a specified moment in time.
+
+### Send Aggregate Commands
+
+Use the `executeCommand` side effect function to send aggregate commands as shown below:
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/saga-sample/saga.js#execute)
+```js
+await sideEffects.executeCommand({
+  aggregateName: 'User',
+  aggregateId: event.aggregateId,
+  type: 'requestConfirmUser',
+  payload: event.payload
+})
+```
+
+<!-- prettier-ignore-end -->
+
+### Schedule Aggregate Commands
+
+The code sample below demonstrates how the command executes at a specified point in time.
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/saga-sample/saga.js#schedule)
+```js
+await sideEffects.scheduleCommand(
+  event.timestamp + 1000 * 60 * 60 * 24 * 7,
+  {
+    aggregateName: 'User',
+    aggregateId: event.aggregateId,
+    type: 'forgetUser',
+    payload: {}
+  }
+)
+```
+
+<!-- prettier-ignore-end -->
 
 ## Register a Saga
 
@@ -218,6 +250,9 @@ The `connectorName` option defines a Read Model storage used to store the saga's
 
 The `schedulerName` option specifies the scheduler that should be used to schedule command execution. Define a scheduler in the `schedulers` configuration section:
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/saga-sample/config.js#schedulers-config)
 ```js
 schedulers: {
   scheduler: {
@@ -229,3 +264,5 @@ schedulers: {
   }
 },
 ```
+
+<!-- prettier-ignore-end -->

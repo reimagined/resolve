@@ -1,6 +1,8 @@
+import { declareRuntimeEnv } from 'resolve-scripts'
+
 const prodConfig = {
   target: 'local',
-  port: 3000,
+  port: declareRuntimeEnv('PORT', '3000'),
   polyfills: ['@babel/polyfill'],
   mode:
     'production' /*,
@@ -8,13 +10,13 @@ const prodConfig = {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'read-models.db'
+        databaseFile: 'data/read-models.db'
       }
     }
   }*/,
   eventBroker: {
     launchBroker: false,
-    databaseFile: 'local-bus-broker.db'
+    databaseFile: 'data/local-bus-broker.db'
   }
 }
 

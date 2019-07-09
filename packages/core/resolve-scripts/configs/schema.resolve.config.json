@@ -304,6 +304,9 @@
         },
         "batchSize": {
           "type": "number"
+        },
+        "upstream": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -325,10 +328,6 @@
         "target": {
           "type": "string",
           "enum": ["local", "cloud"]
-        },
-        "logLevel": {
-          "type": "string",
-          "enum": ["error", "warn", "info", "debug", "trace", "off"]
         },
         "port": {
           "type": ["integer", "string"]
@@ -418,9 +417,6 @@
         "eventBroker": {
           "$ref": "#/definitions/eventBroker"
         },
-        "registry": {
-          "type": "string"
-        },
         "mode": {
           "type": "string"
         },
@@ -429,6 +425,7 @@
         }
       },
       "required": [
+        "apiHandlers",
         "port",
         "index",
         "routes",
@@ -449,8 +446,9 @@
         "eventBroker",
         "customConstants",
         "target",
-        "logLevel",
-        "sagas"
+        "jwtCookie",
+        "sagas",
+        "mode"
       ],
       "additionalProperties": false
     }

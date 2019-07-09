@@ -1,14 +1,9 @@
 import validatePath from 'resolve-runtime/lib/common/utils/validate-path'
 
-import { message } from '../constants'
 import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   let staticPath = resolveConfig.staticPath
-  if (staticPath == null) {
-    throw new Error(`${message.configNotContainSectionError}.staticPath`)
-  }
-
   const exports = []
 
   if (!checkRuntimeEnv(staticPath)) {

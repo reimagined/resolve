@@ -1,4 +1,9 @@
 const setupConnection = async pool => {
+  if (pool.isDisconnected) {
+    pool.databasePromise = null
+    return
+  }
+
   pool.databasePromise = new Promise((resolve, reject) => {
     pool.MongoClient.connect(
       pool.url,
@@ -50,7 +55,7 @@ const getCollection = async (
 }
 
 const connect = async (imports, pool, options) => {
-  let { url, tablePrefix, ...connectionOptions } = options
+  let { url, tablePrefix, performanceTracer, ...connectionOptions } = options
   if (
     tablePrefix == null ||
     (tablePrefix != null && tablePrefix.constructor !== String)
@@ -61,14 +66,19 @@ const connect = async (imports, pool, options) => {
   const rootId = imports.ObjectID.createFromHexString(
     '5265736f6c7665526f6f7400'
   )
+  const rootIndex = `5265736f6c7665526f6f7401`
+  const contentField = '5265736f6c7665526f6f7402'
 
   Object.assign(pool, {
     getCollection: getCollection.bind(null, pool),
     templateDocuments: new Map(),
     connectionOptions,
+    performanceTracer,
     url,
     tablePrefix,
     rootId,
+    rootIndex,
+    contentField,
     ...imports
   })
 

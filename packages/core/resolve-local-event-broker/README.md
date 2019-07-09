@@ -9,7 +9,7 @@ When initializing an event broker, pass the following arguments:
 
 * `eventStore` - the configured [eventStore](../resolve-es) instance.
 * `bucketSize` - the bucket size.
-* `pathToFile` - the path to a file where state of the bus are stored.
+* `databaseFile` - the path to a file where state of the bus are stored.
 * `zmqBrokerAddress` - the ZMQ broker address.
 * `zmqConsumerAddress` - the ZMQ consumer address.
 

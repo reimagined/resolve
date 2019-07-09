@@ -1,8 +1,12 @@
+import debugLevels from 'debug-levels'
+
 import markupHandler from './markup-handler'
 import commandHandler from './command-handler'
 import queryHandler from './query-handler'
 import subscribeHandler from './subscribe-handler'
 import getRootBasedUrl from '../utils/get-root-based-url'
+
+const log = debugLevels('resolve:resolve-runtime:main-handler')
 
 const mainHandler = async (originalReq, res) => {
   const { rootPath, jwtCookie, apiHandlers } = originalReq.resolve
@@ -62,17 +66,10 @@ const mainHandler = async (originalReq, res) => {
     default: {
       await res.status(405)
       await res.end(
-        `Access error: path "${
-          req.path
-        }" is not addressable by current executor`
+        `Access error: path "${req.path}" is not addressable by current executor`
       )
 
-      resolveLog(
-        'warn',
-        'Path is not addressable by current executor',
-        req.path,
-        req
-      )
+      log.warn('Path is not addressable by current executor', req.path, req)
       return
     }
   }

@@ -1,40 +1,41 @@
-import wrapReadModel from './wrap_read_model'
-import wrapViewModel from './wrap_view_model'
+import wrapReadModel from './wrap-read-model'
+import wrapViewModel from './wrap-view-model'
 
 const createQuery = ({
   readModelConnectors,
   snapshotAdapter,
-  doUpdateRequest,
   readModels,
   viewModels,
-  eventStore
+  eventStore,
+  performanceTracer
 }) => {
   const models = {}
   for (const readModel of readModels) {
     if (models[readModel.name] != null) {
-      throw new Error(`Duplicate name for read/view model: ${readModel.name}`)
+      throw new Error(`Duplicate name for read model: "${readModel.name}"`)
     }
     models[readModel.name] = wrapReadModel(
       readModel,
       readModelConnectors,
-      doUpdateRequest
+      performanceTracer
     )
   }
 
   for (const viewModel of viewModels) {
     if (models[viewModel.name] != null) {
-      throw new Error(`Duplicate name for read/view model: ${viewModel.name}`)
+      throw new Error(`Duplicate name for view model: "${viewModel.name}"`)
     }
     models[viewModel.name] = wrapViewModel(
       viewModel,
       snapshotAdapter,
-      eventStore
+      eventStore,
+      performanceTracer
     )
   }
 
   const checkModelExists = modelName => {
     if (models[modelName] == null) {
-      const error = new Error(`Read/view model ${modelName} does not exist`)
+      const error = new Error(`Read/view model "${modelName}" does not exist`)
       error.code = 422
       throw error
     }
@@ -99,13 +100,25 @@ const createQuery = ({
     return result
   }
 
-  const updateByEvents = async (modelName, events) => {
+  const updateByEvents = async (
+    modelName,
+    events,
+    getRemainingTimeInMillisRaw
+  ) => {
     checkModelExists(modelName)
     if (!Array.isArray(events)) {
       throw new Error('Updating by events should supply events array')
     }
 
-    return await models[modelName].updateByEvents(events)
+    let getRemainingTimeInMillis = getRemainingTimeInMillisRaw
+    if (typeof getRemainingTimeInMillis !== 'function') {
+      getRemainingTimeInMillis = () => 0x7fffffff
+    }
+
+    return await models[modelName].updateByEvents(
+      events,
+      getRemainingTimeInMillis
+    )
   }
 
   const drop = async modelName => {
@@ -118,10 +131,6 @@ const createQuery = ({
     for (const modelName of Object.keys(models)) {
       await models[modelName].dispose()
     }
-
-    for (const connector of Object.values(readModelConnectors)) {
-      await connector.disconnect()
-    }
   }
 
   const api = {
@@ -132,7 +141,7 @@ const createQuery = ({
     dispose
   }
 
-  const executeQuery = (...args) => read(...args)
+  const executeQuery = read.bind(null)
   Object.assign(executeQuery, api)
 
   return executeQuery

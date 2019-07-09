@@ -8,8 +8,10 @@ import { checkRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
 
 export default ({ resolveConfig, isClient }) => {
-  if (!resolveConfig.subscribeAdapter) {
-    throw new Error(`${message.configNotContainSectionError}.subscribeAdapter`)
+  if (!isClient) {
+    throw new Error(
+      `${message.clientAliasInServerCodeError}.subscribeAdapter.module`
+    )
   }
 
   if (
@@ -28,12 +30,6 @@ export default ({ resolveConfig, isClient }) => {
   const imports = []
   const constants = []
   const exports = []
-
-  if (!isClient) {
-    throw new Error(
-      `${message.clientAliasInServerCodeError}.subscribeAdapter.module`
-    )
-  }
 
   importResource({
     resourceName: `subscribe_adapter`,

@@ -1,0 +1,3304 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`with performanceTracer common "createQuery" should raise error when a read model is declared twice: addAnnotation 1`] = `Array []`;
+
+exports[`with performanceTracer common "createQuery" should raise error when a read model is declared twice: addError 1`] = `Array []`;
+
+exports[`with performanceTracer common "createQuery" should raise error when a read model is declared twice: addNewSubsegment 1`] = `Array []`;
+
+exports[`with performanceTracer common "createQuery" should raise error when a read model is declared twice: close 1`] = `Array []`;
+
+exports[`with performanceTracer common "createQuery" should raise error when a read model is declared twice: getSegment 1`] = `Array []`;
+
+exports[`with performanceTracer common "createQuery" should raise error when a view model is declared twice: addAnnotation 1`] = `Array []`;
+
+exports[`with performanceTracer common "createQuery" should raise error when a view model is declared twice: addError 1`] = `Array []`;
+
+exports[`with performanceTracer common "createQuery" should raise error when a view model is declared twice: addNewSubsegment 1`] = `Array []`;
+
+exports[`with performanceTracer common "createQuery" should raise error when a view model is declared twice: close 1`] = `Array []`;
+
+exports[`with performanceTracer common "createQuery" should raise error when a view model is declared twice: getSegment 1`] = `Array []`;
+
+exports[`with performanceTracer common "read" should raise error when wrong options for read invocation: addAnnotation 1`] = `Array []`;
+
+exports[`with performanceTracer common "read" should raise error when wrong options for read invocation: addError 1`] = `Array []`;
+
+exports[`with performanceTracer common "read" should raise error when wrong options for read invocation: addNewSubsegment 1`] = `Array []`;
+
+exports[`with performanceTracer common "read" should raise error when wrong options for read invocation: close 1`] = `Array []`;
+
+exports[`with performanceTracer common "read" should raise error when wrong options for read invocation: getSegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "dispose" should dispose only one time: addAnnotation 1`] = `
+Array [
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "brokenReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "remoteReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "dispose" should dispose only one time: addError 1`] = `
+Array [
+  Array [
+    [Error: Read model "readModelName" is disposed],
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "dispose" should dispose only one time: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "dispose" should dispose only one time: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "dispose" should dispose only one time: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "drop" should drop read model: addAnnotation 1`] = `
+Array [
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:drop",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:connect",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:disconnect",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "drop" should drop read model: addError 1`] = `Array []`;
+
+exports[`with performanceTracer read models "drop" should drop read model: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "drop",
+  ],
+  Array [
+    "connect",
+  ],
+  Array [
+    "disconnect",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "drop" should drop read model: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "drop" should drop read model: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "drop" should raise error when query is disposed: addAnnotation 1`] = `
+Array [
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "brokenReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "remoteReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:drop",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "drop" should raise error when query is disposed: addError 1`] = `
+Array [
+  Array [
+    [Error: Read model "readModelName" is disposed],
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "drop" should raise error when query is disposed: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "drop",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "drop" should raise error when query is disposed: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "drop" should raise error when query is disposed: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "read" should raise error when a read model does not exist: addAnnotation 1`] = `Array []`;
+
+exports[`with performanceTracer read models "read" should raise error when a read model does not exist: addError 1`] = `Array []`;
+
+exports[`with performanceTracer read models "read" should raise error when a read model does not exist: addNewSubsegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "read" should raise error when a read model does not exist: close 1`] = `Array []`;
+
+exports[`with performanceTracer read models "read" should raise error when a read model does not exist: getSegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "read" should raise error when a resolver is not found: addAnnotation 1`] = `
+Array [
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "resolverName",
+    "notFound",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "read" should raise error when a resolver is not found: addError 1`] = `
+Array [
+  Array [
+    [Error: Resolver "notFound" does not exist],
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "read" should raise error when a resolver is not found: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "read",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "read" should raise error when a resolver is not found: close 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "read" should raise error when a resolver is not found: getSegment 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "read" should raise error when query is disposed: addAnnotation 1`] = `
+Array [
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "brokenReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "remoteReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "resolverName",
+    "readFromDatabase",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "read" should raise error when query is disposed: addError 1`] = `
+Array [
+  Array [
+    [Error: Read model "readOnlyReadModelName" is disposed],
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "read" should raise error when query is disposed: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "read",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "read" should raise error when query is disposed: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "read" should raise error when query is disposed: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "read" should return { lastError, ... } when a read model is broken: addAnnotation 1`] = `
+Array [
+  Array [
+    "readModelName",
+    "brokenReadModelName",
+  ],
+  Array [
+    "eventCount",
+    1,
+  ],
+  Array [
+    "origin",
+    "resolve:query:updateByEvents",
+  ],
+  Array [
+    "readModelName",
+    "brokenReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:connect",
+  ],
+  Array [
+    "readModelName",
+    "brokenReadModelName",
+  ],
+  Array [
+    "eventType",
+    "BROKEN",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "readModelName",
+    "brokenReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:disconnect",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "read" should return { lastError, ... } when a read model is broken: addError 1`] = `
+Array [
+  Array [
+    [Error: BROKEN],
+  ],
+  Array [
+    Object {
+      "lastError": [Error: BROKEN],
+      "lastEvent": null,
+      "listenerId": "brokenReadModelName",
+    },
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "read" should return { lastError, ... } when a read model is broken: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "updateByEvents",
+  ],
+  Array [
+    "connect",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "disconnect",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "read" should return { lastError, ... } when a read model is broken: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "read" should return { lastError, ... } when a read model is broken: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "read" should return the resolver result: addAnnotation 1`] = `
+Array [
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "resolverName",
+    "readFromDatabase",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:connect",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "resolverName",
+    "readFromDatabase",
+  ],
+  Array [
+    "origin",
+    "resolve:query:resolver",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:disconnect",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "read" should return the resolver result: addError 1`] = `Array []`;
+
+exports[`with performanceTracer read models "read" should return the resolver result: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "read",
+  ],
+  Array [
+    "connect",
+  ],
+  Array [
+    "resolver",
+  ],
+  Array [
+    "disconnect",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "read" should return the resolver result: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "read" should return the resolver result: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "readAndSerialize" should raise error when query is disposed: addAnnotation 1`] = `
+Array [
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "brokenReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "remoteReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "readAndSerialize" should raise error when query is disposed: addError 1`] = `Array []`;
+
+exports[`with performanceTracer read models "readAndSerialize" should raise error when query is disposed: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "readAndSerialize" should raise error when query is disposed: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "readAndSerialize" should raise error when query is disposed: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "readAndSerialize" should return the resolver result: addAnnotation 1`] = `
+Array [
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "resolverName",
+    "readFromDatabase",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:connect",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "resolverName",
+    "readFromDatabase",
+  ],
+  Array [
+    "origin",
+    "resolve:query:resolver",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:disconnect",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "readAndSerialize" should return the resolver result: addError 1`] = `Array []`;
+
+exports[`with performanceTracer read models "readAndSerialize" should return the resolver result: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "read",
+  ],
+  Array [
+    "connect",
+  ],
+  Array [
+    "resolver",
+  ],
+  Array [
+    "disconnect",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "readAndSerialize" should return the resolver result: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "readAndSerialize" should return the resolver result: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should apply events to the read model, "read" should return the resolver result: addAnnotation 1`] = `
+Array [
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "eventCount",
+    5,
+  ],
+  Array [
+    "origin",
+    "resolve:query:updateByEvents",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:connect",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "eventType",
+    "Init",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "eventType",
+    "OTHER_EVENT",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:disconnect",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "resolverName",
+    "getValue",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:connect",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "resolverName",
+    "getValue",
+  ],
+  Array [
+    "origin",
+    "resolve:query:resolver",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:disconnect",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should apply events to the read model, "read" should return the resolver result: addError 1`] = `Array []`;
+
+exports[`with performanceTracer read models "updateByEvents" should apply events to the read model, "read" should return the resolver result: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "updateByEvents",
+  ],
+  Array [
+    "connect",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "disconnect",
+  ],
+  Array [
+    "read",
+  ],
+  Array [
+    "connect",
+  ],
+  Array [
+    "resolver",
+  ],
+  Array [
+    "disconnect",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should apply events to the read model, "read" should return the resolver result: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should apply events to the read model, "read" should return the resolver result: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when a projection is not found: addAnnotation 1`] = `
+Array [
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "eventCount",
+    0,
+  ],
+  Array [
+    "origin",
+    "resolve:query:updateByEvents",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when a projection is not found: addError 1`] = `
+Array [
+  Array [
+    [Error: Updating by events is prohibited when "readOnlyReadModelName" projection is not specified],
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when a projection is not found: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "updateByEvents",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when a projection is not found: close 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when a projection is not found: getSegment 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when events is not array: addAnnotation 1`] = `Array []`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when events is not array: addError 1`] = `Array []`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when events is not array: addNewSubsegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when events is not array: close 1`] = `Array []`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when events is not array: getSegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when query is disposed: addAnnotation 1`] = `
+Array [
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "brokenReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "remoteReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "eventCount",
+    1,
+  ],
+  Array [
+    "origin",
+    "resolve:query:updateByEvents",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when query is disposed: addError 1`] = `
+Array [
+  Array [
+    [Error: Read model "readModelName" is disposed],
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when query is disposed: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "updateByEvents",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when query is disposed: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when query is disposed: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when updating had been interrupted: addAnnotation 1`] = `
+Array [
+  Array [
+    "readModelName",
+    "remoteReadModelName",
+  ],
+  Array [
+    "eventCount",
+    2,
+  ],
+  Array [
+    "origin",
+    "resolve:query:updateByEvents",
+  ],
+  Array [
+    "readModelName",
+    "remoteReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:connect",
+  ],
+  Array [
+    "readModelName",
+    "readModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "remoteReadModelName",
+  ],
+  Array [
+    "eventType",
+    "SET",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "brokenReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "remoteReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
+    "remoteReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:disconnect",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when updating had been interrupted: addError 1`] = `
+Array [
+  Array [
+    [Error: Read model "remoteReadModelName" updating had been interrupted],
+  ],
+  Array [
+    Object {
+      "lastError": [Error: Read model "remoteReadModelName" updating had been interrupted],
+      "lastEvent": Object {
+        "aggregateId": "id",
+        "aggregateVersion": 1,
+        "payload": Object {
+          "key": 1,
+          "value": 2,
+        },
+        "timestamp": 1,
+        "type": "SET",
+      },
+      "listenerId": "remoteReadModelName",
+    },
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when updating had been interrupted: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "updateByEvents",
+  ],
+  Array [
+    "connect",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "disconnect",
+  ],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when updating had been interrupted: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer read models "updateByEvents" should raise error when updating had been interrupted: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "dispose" should dispose only one time: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "dispose" should dispose only one time: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" is disposed],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "dispose" should dispose only one time: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "dispose" should dispose only one time: close 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "dispose" should dispose only one time: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "drop" should raise error on view models: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:drop",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "drop" should raise error on view models: addError 1`] = `
+Array [
+  Array [
+    [Error: Snapshot cleaning for view-model "viewModelName" is not implemented],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "drop" should raise error on view models: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "drop",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "drop" should raise error on view models: close 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "drop" should raise error on view models: getSegment 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "drop" should raise error when query is disposed: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:updateByEvents",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "drop" should raise error when query is disposed: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" is disposed],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "drop" should raise error when query is disposed: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "dispose",
+  ],
+  Array [
+    "updateByEvents",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "drop" should raise error when query is disposed: close 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "drop" should raise error when query is disposed: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when a view model does not exist: addAnnotation 1`] = `Array []`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when a view model does not exist: addError 1`] = `Array []`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when a view model does not exist: addNewSubsegment 1`] = `Array []`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when a view model does not exist: close 1`] = `Array []`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when a view model does not exist: getSegment 1`] = `Array []`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when aggregateIds is a bad value: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when aggregateIds is a bad value: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" requires aggregates identifier list],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when aggregateIds is a bad value: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when aggregateIds is a bad value: close 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when aggregateIds is a bad value: getSegment 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when interrupted: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when interrupted: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" build has been interrupted],
+  ],
+  Array [
+    [Error: View model "viewModelName" build has been interrupted],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when interrupted: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "read",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "applyEvent",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when interrupted: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when interrupted: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when query is disposed: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when query is disposed: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" is disposed],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when query is disposed: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "dispose",
+  ],
+  Array [
+    "read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when query is disposed: close 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should raise error when query is disposed: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should return state: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "eventCount",
+    0,
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "eventCount",
+    6,
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "eventCount",
+    6,
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should return state: addError 1`] = `Array []`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should return state: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "read",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "read",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "read",
+  ],
+  Array [
+    "read",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "read",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should return state: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should return state: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should reuse working build process: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "eventCount",
+    0,
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "eventCount",
+    0,
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should reuse working build process: addError 1`] = `Array []`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should reuse working build process: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "read",
+  ],
+  Array [
+    "read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should reuse working build process: close 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "read" should reuse working build process: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" requires aggregates identifier list],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: close 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: getSegment 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when query is disposed: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when query is disposed: addError 1`] = `Array []`;
+
+exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when query is disposed: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "dispose",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when query is disposed: close 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when query is disposed: getSegment 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should return serialized state: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should return serialized state: addError 1`] = `Array []`;
+
+exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should return serialized state: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "read",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "read",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should return serialized state: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should return serialized state: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error on view models: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:updateByEvents",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error on view models: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" cannot be updated by events],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error on view models: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "updateByEvents",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error on view models: close 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error on view models: getSegment 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error when query is disposed: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:updateByEvents",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error when query is disposed: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" is disposed],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error when query is disposed: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "dispose",
+  ],
+  Array [
+    "updateByEvents",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error when query is disposed: close 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error when query is disposed: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "dispose" should dispose only one time: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "dispose" should dispose only one time: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" is disposed],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "dispose" should dispose only one time: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "dispose",
+  ],
+  Array [
+    "dispose",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "dispose" should dispose only one time: close 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "dispose" should dispose only one time: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "drop" should raise error on view-model: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:drop",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "drop" should raise error on view-model: addError 1`] = `
+Array [
+  Array [
+    [Error: Snapshot cleaning for view-model "viewModelName" is not implemented],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "drop" should raise error on view-model: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "drop",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "drop" should raise error on view-model: close 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "drop" should raise error on view-model: getSegment 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "drop" should raise error when disposed: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:drop",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "drop" should raise error when disposed: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" is disposed],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "drop" should raise error when disposed: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "dispose",
+  ],
+  Array [
+    "drop",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "drop" should raise error when disposed: close 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "drop" should raise error when disposed: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should raise error when aggregateIds is a bad value: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should raise error when aggregateIds is a bad value: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" requires aggregates identifier list],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should raise error when aggregateIds is a bad value: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should raise error when aggregateIds is a bad value: close 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should raise error when aggregateIds is a bad value: getSegment 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should raise error when interrupted: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should raise error when interrupted: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" build has been interrupted],
+  ],
+  Array [
+    [Error: View model "viewModelName" build has been interrupted],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should raise error when interrupted: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "read",
+  ],
+  Array [
+    "dispose",
+  ],
+  Array [
+    "applyEvent",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should raise error when interrupted: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should raise error when interrupted: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should raise error when query is disposed: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should raise error when query is disposed: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" is disposed],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should raise error when query is disposed: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "dispose",
+  ],
+  Array [
+    "read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should raise error when query is disposed: close 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should raise error when query is disposed: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should return state: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should return state: addError 1`] = `Array []`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should return state: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "read",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "read",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should return state: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should return state: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should reuse working build process: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should reuse working build process: addError 1`] = `Array []`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should reuse working build process: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "read",
+  ],
+  Array [
+    "read",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should reuse working build process: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "read" should reuse working build process: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" requires aggregates identifier list],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: close 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: getSegment 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when query is disposed: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when query is disposed: addError 1`] = `Array []`;
+
+exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when query is disposed: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "dispose",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when query is disposed: close 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when query is disposed: getSegment 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should return serialized state: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "ADD",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "eventType",
+    "SUB",
+  ],
+  Array [
+    "origin",
+    "resolve:query:applyEvent",
+  ],
+  Array [
+    "eventCount",
+    3,
+  ],
+  Array [
+    "origin",
+    "resolve:query:read",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should return serialized state: addError 1`] = `Array []`;
+
+exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should return serialized state: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "read",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "read",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+  Array [
+    "applyEvent",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should return serialized state: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should return serialized state: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error on view models: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:updateByEvents",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error on view models: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" cannot be updated by events],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error on view models: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "updateByEvents",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error on view models: close 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error on view models: getSegment 1`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error when disposed: addAnnotation 1`] = `
+Array [
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "viewModelName",
+    "viewModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:updateByEvents",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error when disposed: addError 1`] = `
+Array [
+  Array [
+    [Error: View model "viewModelName" is disposed],
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error when disposed: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "dispose",
+  ],
+  Array [
+    "updateByEvents",
+  ],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error when disposed: close 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;
+
+exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error when disposed: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+]
+`;

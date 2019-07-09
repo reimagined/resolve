@@ -4,6 +4,7 @@ import fs from 'fs'
 import path from 'path'
 
 import config from './config'
+import resetReadModel from '../reset-read-model'
 
 describe('Read-model generic adapter API', () => {
   const {
@@ -19,31 +20,30 @@ describe('Read-model generic adapter API', () => {
 
   const createConnector = interopRequireDefault(require(`./${connectorModule}`))
     .default
-  const prefix = path.join(__dirname, connectorOptions.prefix, path.sep)
+
+  connectorOptions.prefix = path.join(
+    __dirname,
+    connectorOptions.prefix,
+    path.sep
+  )
 
   const projection = interopRequireDefault(require(`./${projectionModule}`))
     .default
   const resolvers = interopRequireDefault(require(`./${resolversModule}`))
     .default
 
-  let connector = null
+  let adapter = null
   beforeEach(async () => {
-    connector = createConnector({ prefix })
-
-    try {
-      await connector.drop(null, name)
-    } catch (e) {}
+    await resetReadModel(createConnector, connectorOptions, name)
+    adapter = createConnector(connectorOptions)
   })
   afterEach(async () => {
-    try {
-      await connector.drop(null, name)
-    } catch (e) {}
-
-    connector = null
+    await resetReadModel(createConnector, connectorOptions, name)
+    adapter = null
   })
 
-  beforeAll(() => fs.mkdirSync(prefix))
-  afterAll(() => fs.rmdirSync(prefix))
+  beforeAll(() => fs.mkdirSync(connectorOptions.prefix))
+  afterAll(() => fs.rmdirSync(connectorOptions.prefix))
 
   it('Insert and non-parameterized resolver invocation', async () => {
     const result = await givenEvents([
@@ -70,7 +70,7 @@ describe('Read-model generic adapter API', () => {
         name,
         projection,
         resolvers,
-        adapter: connector
+        adapter: adapter
       })
       .read({})
 

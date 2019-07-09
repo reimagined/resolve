@@ -47,10 +47,10 @@ const constructorBindFunction =
 const idempotentFunction = value => value
 const storageAdapter_constructor = ((moduleOrFile) => {
   return interopRequireDefault(__non_webpack_require__(moduleOrFile)).default
-})(process.env[\\"STORAGE_ADAPTER\\"])
+})((((first, second) => (first != null ? first : second))(process.env[\\"STORAGE_ADAPTER\\"], null)))
 const storageAdapter_imports = {  }
 const storageAdapter_options = {
-  \\"url\\": process.env[\\"STORAGE_OPTIONS_URL\\"]
+  \\"url\\": (((first, second) => (first != null ? first : second))(process.env[\\"STORAGE_OPTIONS_URL\\"], null))
 }
 const storageAdapter = constructorBindFunction.bind(null,
       storageAdapter_constructor,

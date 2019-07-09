@@ -98,7 +98,7 @@ export const mapStateToOptions = (state, ownProps) => {
   const aggregateId = ownProps.navigation.state.params.id
 
   return {
-    viewModelName: 'ShoppingList',
+    viewModelName: 'shoppingList',
     aggregateIds: [aggregateId]
   }
 }

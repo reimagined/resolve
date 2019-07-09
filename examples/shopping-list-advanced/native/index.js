@@ -3,9 +3,8 @@ import React from 'react'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 
 import { Providers } from 'resolve-redux'
-
-import origin from './constants/origin'
 import { rootPath, staticPath, aggregateActions } from './resolve'
+import origin from './constants/origin'
 
 import store from './redux/store'
 

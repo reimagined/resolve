@@ -1,5 +1,10 @@
-// mdis-start
 import fs from 'fs'
+
+const safeUnlinkSync = filename => {
+  if (fs.existsSync(filename)) {
+    fs.unlinkSync(filename)
+  }
+}
 
 export default options => {
   const prefix = String(options.prefix)
@@ -18,16 +23,16 @@ export default options => {
     return store
   }
   const disconnect = async (store, readModelName) => {
-    fs.unlinkSync(`${prefix}${readModelName}.lock`)
+    safeUnlinkSync(`${prefix}${readModelName}.lock`)
     readModels.delete(readModelName)
   }
   const drop = async (store, readModelName) => {
-    fs.unlinkSync(`${prefix}${readModelName}.lock`)
-    fs.unlinkSync(`${prefix}${readModelName}`)
+    safeUnlinkSync(`${prefix}${readModelName}.lock`)
+    safeUnlinkSync(`${prefix}${readModelName}`)
   }
   const dispose = async () => {
     for (const readModelName of readModels) {
-      fs.unlinkSync(`${prefix}${readModelName}.lock`)
+      safeUnlinkSync(`${prefix}${readModelName}.lock`)
     }
     readModels.clear()
   }
@@ -39,4 +44,3 @@ export default options => {
     dispose
   }
 }
-// mdis-stop

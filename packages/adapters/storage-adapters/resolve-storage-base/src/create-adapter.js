@@ -8,6 +8,7 @@ const createAdapter = (
   loadEvents,
   getLatestEvent,
   saveEvent,
+  drop,
   dispose,
   adapterSpecificArguments,
   options
@@ -28,11 +29,12 @@ const createAdapter = (
           })
         }
       }),
-      Function() // eslint-disable-line no-new-func
+      () => pool.initialPromiseResult
     ),
     loadEvents: wrapMethod(pool, wrapEventFilter(loadEvents)),
     getLatestEvent: wrapMethod(pool, getLatestEvent),
     saveEvent: wrapMethod(pool, saveEvent),
+    drop: wrapMethod(pool, drop),
     dispose: wrapDispose(pool, dispose)
   })
 }

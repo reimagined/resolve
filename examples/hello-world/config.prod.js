@@ -1,6 +1,8 @@
+import { declareRuntimeEnv } from 'resolve-scripts'
+
 const prodConfig = {
   target: 'local',
-  port: 3000,
+  port: declareRuntimeEnv('PORT', '3000'),
   polyfills: ['@babel/polyfill'],
   mode: 'production',
   rootPath: '',
@@ -11,7 +13,7 @@ const prodConfig = {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'read-models.db'
+        databaseFile: 'data/read-models.db'
       }
     }
     /*
@@ -38,7 +40,7 @@ const prodConfig = {
   snapshotAdapter: {
     module: 'resolve-snapshot-lite',
     options: {
-      // pathToFile: 'path/to/file',
+      // databaseFile: 'path/to/file',
       bucketSize: 100
     }
   },
@@ -58,7 +60,7 @@ const prodConfig = {
   */ storageAdapter: {
     module: 'resolve-storage-lite',
     options: {
-      pathToFile: 'event-storage.db'
+      databaseFile: 'data/event-store.db'
     }
   },
   /*

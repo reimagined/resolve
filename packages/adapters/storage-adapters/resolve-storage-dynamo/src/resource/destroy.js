@@ -3,7 +3,7 @@ const destroy = async ({ createAdapter }, options) => {
     ...options,
     skipInit: true
   })
-  await dynamoAdapter.dispose({ dropEvents: true }) // delete table
+  await dynamoAdapter.drop() // delete table
 }
 
 export default destroy

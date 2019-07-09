@@ -1,5 +1,7 @@
 import { Phases, symbol } from './constants'
 
+const defaultMockError = `Using default mock result: override "executeCommand", "executeQuery" and "scheduleCommand" in "sideEffects" section with custom mocks`
+
 const initSaga = async ({ promise, transformEvents }) => {
   if (promise[symbol].phase < Phases.SAGA) {
     throw new TypeError()
@@ -9,11 +11,19 @@ const initSaga = async ({ promise, transformEvents }) => {
     const result = {
       commands: [],
       scheduleCommands: [],
-      sideEffects: []
+      sideEffects: [],
+      queries: []
     }
-    const { adapter, events, handlers, sideEffects } = promise[symbol]
+    const {
+      name,
+      adapter,
+      events,
+      handlers,
+      sideEffects,
+      properties
+    } = promise[symbol]
 
-    const store = await adapter.connect('TEST-SAGA-READ-MODEL')
+    const store = await adapter.connect(name)
 
     for (const event of transformEvents(events)) {
       const handler = handlers[event.type]
@@ -26,27 +36,53 @@ const initSaga = async ({ promise, transformEvents }) => {
         throw new TypeError()
       }
 
+      const isEnabled =
+        +properties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP <= +event.timestamp
+
       await handler(
         {
-          executeCommand: async (...args) => {
-            result.commands.push(args)
-          },
-          scheduleCommand: async (...args) => {
-            result.scheduleCommands.push(args)
-          },
-          sideEffects: Object.keys(sideEffects).reduce((acc, key) => {
-            acc[key] = async (...args) => {
-              result.sideEffects.push([key, ...args])
+          sideEffects: Object.keys(sideEffects).reduce(
+            (acc, key) => {
+              acc[key] = async (...args) => {
+                if (isEnabled) {
+                  result.sideEffects.push([key, ...args, properties])
+                  return await sideEffects[key](...args)
+                }
+              }
+              return acc
+            },
+            {
+              executeCommand: async (...args) => {
+                if (isEnabled) {
+                  result.commands.push(args)
+                  // eslint-disable-next-line no-console
+                  console.warn(defaultMockError)
+                }
+              },
+              scheduleCommand: async (...args) => {
+                if (isEnabled) {
+                  result.scheduleCommands.push(args)
+                  // eslint-disable-next-line no-console
+                  console.warn(defaultMockError)
+                }
+              },
+              executeQuery: async (...args) => {
+                if (isEnabled) {
+                  result.queries.push(args)
+                  // eslint-disable-next-line no-console
+                  console.warn(defaultMockError)
+                }
+              },
+              isEnabled
             }
-            return acc
-          }, {}),
+          ),
           store
         },
         event
       )
     }
 
-    await adapter.disconnect(store, 'TEST-SAGA-READ-MODEL')
+    await adapter.disconnect(store, name)
 
     promise[symbol].resolve(result)
   } catch (error) {

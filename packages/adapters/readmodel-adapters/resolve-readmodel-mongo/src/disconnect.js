@@ -1,5 +1,5 @@
-const disconnect = async ({ connection }) => {
-  await connection.close()
+const disconnect = async pool => {
+  await pool.connection.close()
 }
 
 export default disconnect

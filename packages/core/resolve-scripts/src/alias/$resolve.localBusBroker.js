@@ -15,21 +15,30 @@ export default ({ resolveConfig, isClient }) => {
     code: `
       import createStorageAdapter from '$resolve.storageAdapter'
       import eventBrokerConfig from '$resolve.eventBroker'
-      import createLocalBusBroker from 'resolve-local-event-broker'
+      import createAndRunLocalBusBroker from 'resolve-local-event-broker'
       import createEventStore from 'resolve-es'
 
-      Promise.resolve().then(() => {
-        const eventStore = createEventStore({ 
-          storage: createStorageAdapter()
-        })
+      if(module.parent != null) {
+        setImmediate(() => process.exit(1))
+        throw new Error('Event broker should be launched as independent process')
+      }
 
-        const localBusBroker = createLocalBusBroker({
-          ...eventBrokerConfig,
-          eventStore
-        })
+      (async () => {
+        try {
+          const stopBroker = await createAndRunLocalBusBroker({
+            ...eventBrokerConfig,
+            eventStore: createEventStore({ 
+              storage: createStorageAdapter()
+            })
+          })
 
-        localBusBroker.run()
-      })
+          process.on('exit', stopBroker)
+        } catch(error) {
+          console.error('Event broker has run into an error:', error)
+
+          process.exit(1)
+        }
+      })()
     `
   }
 }

@@ -35,6 +35,13 @@ describe('createCustomAdapter', () => {
         JSON.stringify(args, null, 2)
       )
     }
+    const drop = async (pool, ...args) => {
+      result.push(
+        'drop',
+        JSON.stringify(pool, null, 2),
+        JSON.stringify(args, null, 2)
+      )
+    }
     const dispose = async (pool, ...args) => {
       result.push(
         'dispose',
@@ -49,6 +56,7 @@ describe('createCustomAdapter', () => {
       init,
       loadEvents,
       saveEvent,
+      drop,
       dispose,
       {}
     )
@@ -82,6 +90,7 @@ describe('createCustomAdapter', () => {
         JSON.stringify(pool, null, 2),
         JSON.stringify(args, null, 2)
       )
+      return { id: 'test-id' }
     }
     const loadEvents = async (pool, ...args) => {
       result.push(
@@ -93,6 +102,13 @@ describe('createCustomAdapter', () => {
     const saveEvent = async (pool, ...args) => {
       result.push(
         'saveEvent',
+        JSON.stringify(pool, null, 2),
+        JSON.stringify(args, null, 2)
+      )
+    }
+    const drop = async (pool, ...args) => {
+      result.push(
+        'drop',
         JSON.stringify(pool, null, 2),
         JSON.stringify(args, null, 2)
       )
@@ -111,6 +127,7 @@ describe('createCustomAdapter', () => {
       init,
       loadEvents,
       saveEvent,
+      drop,
       dispose,
       {}
     )
@@ -121,7 +138,9 @@ describe('createCustomAdapter', () => {
       b: 'b'
     })
 
-    await customAdapter.init()
+    const initResult = await customAdapter.init()
+
+    expect(initResult).toEqual({ id: 'test-id' })
 
     await customAdapter.loadEvents({ aggregateIds: ['id1'] }, () => {})
 

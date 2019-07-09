@@ -1,0 +1,118 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base config works correctly with default module and options 1`] = `
+"
+import wrapReadModelConnector from 'resolve-runtime/lib/common/wrap-readmodel-connector'
+import factory_s_0_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testReadmodelConnector.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
+
+const name_0 = \\"default\\"
+const factory_s_0_imports = {  }
+const factory_s_0_options = {}
+const factory_s_0 = constructorBindFunction.bind(null,
+      factory_s_0_constructor,
+      factory_s_0_options,
+      factory_s_0_imports
+    )
+    Object.assign(factory_s_0, factory_s_0_constructor)
+    
+const options_s_0 = null
+
+      const factory_0 = (...args) => {
+        return wrapReadModelConnector(factory_s_0(...args), options_s_0) 
+      }
+    
+const readModelConnectors = {}
+readModelConnectors[name_0] = factory_0
+export default readModelConnectors
+"
+`;
+
+exports[`base config works correctly with module and options 1`] = `
+"
+import wrapReadModelConnector from 'resolve-runtime/lib/common/wrap-readmodel-connector'
+import factory_s_0_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testReadmodelConnector.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
+
+const name_0 = \\"default\\"
+const factory_s_0_imports = {  }
+const factory_s_0_options = {}
+const factory_s_0 = constructorBindFunction.bind(null,
+      factory_s_0_constructor,
+      factory_s_0_options,
+      factory_s_0_imports
+    )
+    Object.assign(factory_s_0, factory_s_0_constructor)
+    
+const options_s_0 = {}
+
+      const factory_0 = (...args) => {
+        return wrapReadModelConnector(factory_s_0(...args), options_s_0) 
+      }
+    
+const readModelConnectors = {}
+readModelConnectors[name_0] = factory_0
+export default readModelConnectors
+"
+`;
+
+exports[`base config works correctly with options and default module 1`] = `
+"
+import wrapReadModelConnector from 'resolve-runtime/lib/common/wrap-readmodel-connector'
+import factory_s_0_constructor from \\"resolve-runtime/lib/common/defaults/read-model-connector.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
+
+const name_0 = \\"default\\"
+const factory_s_0_imports = {  }
+const factory_s_0_options = {}
+const factory_s_0 = constructorBindFunction.bind(null,
+      factory_s_0_constructor,
+      factory_s_0_options,
+      factory_s_0_imports
+    )
+    Object.assign(factory_s_0, factory_s_0_constructor)
+    
+const options_s_0 = {}
+
+      const factory_0 = (...args) => {
+        return wrapReadModelConnector(factory_s_0(...args), options_s_0) 
+      }
+    
+const readModelConnectors = {}
+readModelConnectors[name_0] = factory_0
+export default readModelConnectors
+"
+`;

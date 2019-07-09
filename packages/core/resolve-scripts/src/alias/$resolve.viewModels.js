@@ -9,10 +9,6 @@ import { checkRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
 
 export default ({ resolveConfig, isClient }) => {
-  if (!resolveConfig.viewModels) {
-    throw new Error(`${message.configNotContainSectionError}.viewModels`)
-  }
-
   const imports = []
   const constants = []
   const exports = [`const viewModels = []`, ``]

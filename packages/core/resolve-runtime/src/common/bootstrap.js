@@ -1,32 +1,20 @@
-const bootstrap = async resolve => {
-  const applicationPromises = []
-  for (const name of resolve.systemReadModelsNames) {
-    applicationPromises.push(
-      resolve
-        .executeQuery({
-          modelName: name,
-          resolverName: 'RUN_BROKER',
-          resolverArgs: {}
-        })
-        .catch(() => {})
-    )
-  }
+import debugLevels from 'debug-levels'
 
+const log = debugLevels('resolve:resolve-runtime:bootstrap')
+
+const bootstrap = async resolve => {
+  log.debug('bootstrap started')
+
+  const applicationPromises = []
   for (const { name: readModelName } of resolve.readModels) {
-    applicationPromises.push(
-      resolve.executeQuery({
-        modelName: readModelName,
-        resolverName: resolve.bootstrapSymbol,
-        resolverArgs: {}
-      })
-    )
+    applicationPromises.push(resolve.doUpdateRequest(readModelName))
   }
 
   await Promise.all(applicationPromises)
 
-  resolveLog('info', 'Bootstrap successful')
+  log.debug('bootstrap successful')
 
-  return null
+  return 'ok'
 }
 
 export default bootstrap

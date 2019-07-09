@@ -1,3 +1,7 @@
+import debugLevels from 'debug-levels'
+
+const log = debugLevels('resolve:resolve-runtime:pubsub-manager')
+
 const createPubsubManager = () => {
   const map = new Map()
 
@@ -73,11 +77,7 @@ const createPubsubManager = () => {
 
       clients.forEach(client =>
         client(topicName, topicId, event).catch(warning => {
-          resolveLog(
-            'warn',
-            'PubSub manager caused warning from client',
-            warning
-          )
+          log.warn('PubSub manager caused warning from client', warning)
         })
       )
     }

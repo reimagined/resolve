@@ -1,6 +1,8 @@
+import { declareRuntimeEnv } from 'resolve-scripts'
+
 const testFunctionalConfig = {
   target: 'local',
-  port: 3000,
+  port: declareRuntimeEnv('PORT', '3000'),
   polyfills: ['@babel/polyfill'],
   mode: 'development',
   rootPath: '',
@@ -10,7 +12,7 @@ const testFunctionalConfig = {
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {
-      databaseFile: 'event-store-test-functional.db'
+      databaseFile: 'data/event-store-test-functional.db'
     }
   },
   subscribeAdapter: {
@@ -22,7 +24,7 @@ const testFunctionalConfig = {
     maxAge: 31536000000
   },
   eventBroker: {
-    databaseFile: 'local-bus-broker-test-functional.db'
+    databaseFile: 'data/local-bus-broker-test-functional.db'
   }
 }
 

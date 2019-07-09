@@ -12,7 +12,7 @@ const insert = async (
       .join(', ')})
       VALUES(${Object.keys(document)
         .map(key => `CAST(${escape(JSON.stringify(document[key]))} AS JSON)`)
-        .join(', ')})
+        .join(', ')});
     `
   )
 }

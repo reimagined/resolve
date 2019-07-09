@@ -24,21 +24,23 @@ const defineTable = async (
     )`
   )
 
-  for (const indexName of Object.keys(tableDescription.indexes)) {
+  for (const [idx, indexName] of Object.entries(
+    Object.keys(tableDescription.indexes)
+  )) {
     const indexType = tableDescription.indexes[indexName]
     if (indexType !== 'string' && indexType !== 'number') {
       throw new Error(
-        `Wrong index "${indexName}" type "${
-          tableDescription.indexes[indexName]
-        }"`
+        `Wrong index "${indexName}" type "${tableDescription.indexes[indexName]}"`
       )
     }
 
     const baseIndexName = postfix =>
       escapeId(`${tablePrefix}${tableName}-${indexName}-${postfix}`)
 
+    const indexCategory = +idx === 0 ? 'UNIQUE' : ''
+
     await runQuery(
-      `CREATE INDEX ${baseIndexName('type-validation')}
+      `CREATE ${indexCategory} INDEX ${baseIndexName('type-validation')}
         ON ${escapeId(`${tablePrefix}${tableName}`)}(
           CAST(json_extract(${escapeId(indexName)}, '$') AS ${
         indexType === 'number' ? 'NUMERIC' : 'TEXT'
@@ -47,14 +49,14 @@ const defineTable = async (
     )
 
     await runQuery(
-      `CREATE INDEX ${baseIndexName('extracted-field')}
+      `CREATE ${indexCategory} INDEX ${baseIndexName('extracted-field')}
         ON ${escapeId(`${tablePrefix}${tableName}`)}(
           json_extract(${escapeId(indexName)}, '$')
         )`
     )
 
     await runQuery(
-      `CREATE INDEX ${baseIndexName('full-field')}
+      `CREATE ${indexCategory} INDEX ${baseIndexName('full-field')}
         ON ${escapeId(`${tablePrefix}${tableName}`)}(
           ${escapeId(indexName)}
         )`

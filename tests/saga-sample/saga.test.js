@@ -1,12 +1,18 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents from 'resolve-testing-tools'
+import givenEvents, {
+  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP
+} from 'resolve-testing-tools'
 
 import config from './config'
+import resetReadModel from '../reset-read-model'
 
 describe('Saga', () => {
-  const { name, source: sourceModule, connectorName } = config.sagas.find(
-    ({ name }) => name === 'UserConfirmation'
-  )
+  const {
+    name: sagaName,
+    source: sourceModule,
+    connectorName,
+    schedulerName
+  } = config.sagas.find(({ name }) => name === 'UserConfirmation')
   const {
     module: connectorModule,
     options: connectorOptions
@@ -19,60 +25,125 @@ describe('Saga', () => {
   let sagaWithAdapter = null
   let adapter = null
 
-  beforeEach(async () => {
-    adapter = createConnector(connectorOptions)
-    try {
-      await adapter.drop(null, name)
-    } catch (e) {}
+  describe('with sideEffects.isEnabled = true', () => {
+    beforeEach(async () => {
+      await resetReadModel(createConnector, connectorOptions, schedulerName)
+      await resetReadModel(createConnector, connectorOptions, sagaName)
+      adapter = createConnector(connectorOptions)
+      sagaWithAdapter = {
+        handlers: source.handlers,
+        sideEffects: source.sideEffects,
+        adapter,
+        name: sagaName
+      }
+    })
 
-    sagaWithAdapter = {
-      handlers: source.handlers,
-      sideEffects: source.sideEffects,
-      adapter
-    }
+    afterEach(async () => {
+      await resetReadModel(createConnector, connectorOptions, schedulerName)
+      await resetReadModel(createConnector, connectorOptions, sagaName)
+      adapter = null
+      sagaWithAdapter = null
+    })
+
+    test('success registration', async () => {
+      const result = await givenEvents([
+        {
+          aggregateId: 'userId',
+          type: 'USER_CREATED',
+          payload: { mail: 'user@example.com' }
+        },
+        {
+          aggregateId: 'userId',
+          type: 'USER_CONFIRM_REQUESTED',
+          payload: { mail: 'user@example.com' }
+        },
+        { aggregateId: 'userId', type: 'USER_CONFIRMED', payload: {} }
+      ]).saga(sagaWithAdapter)
+
+      expect(result).toMatchSnapshot()
+    })
+
+    test('forgotten registration', async () => {
+      const result = await givenEvents([
+        {
+          aggregateId: 'userId',
+          type: 'USER_CREATED',
+          payload: { mail: 'user@example.com' }
+        },
+        {
+          aggregateId: 'userId',
+          type: 'USER_CONFIRM_REQUESTED',
+          payload: { mail: 'user@example.com' }
+        },
+        { aggregateId: 'userId', type: 'USER_FORGOTTEN', payload: {} }
+      ]).saga(sagaWithAdapter)
+
+      expect(result).toMatchSnapshot()
+    })
   })
 
-  afterEach(async () => {
-    try {
-      await adapter.drop(null, name)
-    } catch (e) {}
-    adapter = null
-    sagaWithAdapter = null
-  })
+  describe('with sideEffects.isEnabled = false', () => {
+    beforeEach(async () => {
+      await resetReadModel(createConnector, connectorOptions, schedulerName)
+      await resetReadModel(createConnector, connectorOptions, sagaName)
+      adapter = createConnector(connectorOptions)
+      sagaWithAdapter = {
+        handlers: source.handlers,
+        sideEffects: source.sideEffects,
+        adapter,
+        name: sagaName
+      }
+    })
 
-  test('success registration', async () => {
-    const result = await givenEvents([
-      {
-        aggregateId: 'userId',
-        type: 'USER_CREATED',
-        payload: { mail: 'user@example.com' }
-      },
-      {
-        aggregateId: 'userId',
-        type: 'USER_CONFIRM_REQUESTED',
-        payload: { mail: 'user@example.com' }
-      },
-      { aggregateId: 'userId', type: 'USER_CONFIRMED', payload: {} }
-    ]).saga(sagaWithAdapter)
+    afterEach(async () => {
+      await resetReadModel(createConnector, connectorOptions, schedulerName)
+      await resetReadModel(createConnector, connectorOptions, sagaName)
+      adapter = null
+      sagaWithAdapter = null
+    })
 
-    expect(result).toMatchSnapshot()
-  })
+    test('success registration', async () => {
+      const result = await givenEvents([
+        {
+          aggregateId: 'userId',
+          type: 'USER_CREATED',
+          payload: { mail: 'user@example.com' }
+        },
+        {
+          aggregateId: 'userId',
+          type: 'USER_CONFIRM_REQUESTED',
+          payload: { mail: 'user@example.com' }
+        },
+        { aggregateId: 'userId', type: 'USER_CONFIRMED', payload: {} }
+      ])
+        .saga(sagaWithAdapter)
+        .properties({
+          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE
+        })
 
-  test('forgotten registration', async () => {
-    const result = await givenEvents([
-      {
-        aggregateId: 'userId',
-        type: 'USER_CREATED',
-        payload: { mail: 'user@example.com' }
-      },
-      {
-        aggregateId: 'userId',
-        type: 'USER_CONFIRM_REQUESTED',
-        payload: { mail: 'user@example.com' }
-      },
-      { aggregateId: 'userId', type: 'USER_FORGOTTEN', payload: {} }
-    ]).saga(sagaWithAdapter)
+      expect(result).toMatchSnapshot()
+    })
 
-    expect(result).toMatchSnapshot()
+    test('forgotten registration', async () => {
+      const result = await givenEvents([
+        {
+          aggregateId: 'userId',
+          type: 'USER_CREATED',
+          payload: { mail: 'user@example.com' }
+        },
+        {
+          aggregateId: 'userId',
+          type: 'USER_CONFIRM_REQUESTED',
+          payload: { mail: 'user@example.com' }
+        },
+        { aggregateId: 'userId', type: 'USER_FORGOTTEN', payload: {} }
+      ])
+        .saga(sagaWithAdapter)
+        .properties({
+          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE
+        })
+
+      expect(result).toMatchSnapshot()
+    })
   })
 })

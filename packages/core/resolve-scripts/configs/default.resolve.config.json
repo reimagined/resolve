@@ -1,5 +1,4 @@
 {
-  "logLevel": "warn",
   "port": 3000,
   "polyfills": [],
   "rootPath": "",
@@ -22,7 +21,7 @@
   "storageAdapter": {
     "module": "resolve-storage-lite",
     "options": {
-      "databaseFile": "event-store.db"
+      "databaseFile": "data/event-store.db"
     }
   },
   "subscribeAdapter": {
@@ -39,8 +38,9 @@
     "launchBroker": true,
     "zmqBrokerAddress": "tcp://127.0.0.1:3500",
     "zmqConsumerAddress": "tcp://127.0.0.1:3501",
-    "databaseFile": "local-bus-broker.db",
-    "batchSize": 100
+    "databaseFile": "data/local-bus-broker.db",
+    "batchSize": 100,
+    "upstream": true
   },
   "jwtCookie": {
     "name": "jwt",

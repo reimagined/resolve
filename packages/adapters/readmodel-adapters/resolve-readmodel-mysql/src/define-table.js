@@ -37,9 +37,7 @@ const defineTable = async (
               break
             default:
               throw new Error(
-                `Wrong index "${indexName}" type "${
-                  tableDescription.indexes[indexName]
-                }"`
+                `Wrong index "${indexName}" type "${tableDescription.indexes[indexName]}"`
               )
           }
           declaration += ` GENERATED ALWAYS AS (${escapeId(
@@ -61,7 +59,7 @@ const defineTable = async (
       ].join(',\n') +
       `)
       COMMENT = "RESOLVE-${readModelName}"
-      ENGINE = "InnoDB"
+      ENGINE = "InnoDB";
       `
   )
 }

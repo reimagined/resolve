@@ -13,10 +13,6 @@ export default ({ resolveConfig, isClient }) => {
     )
   }
 
-  if (!resolveConfig.snapshotAdapter) {
-    throw new Error(`${message.configNotContainSectionError}.snapshotAdapter`)
-  }
-
   const imports = []
   const constants = []
   const exports = []

@@ -1,6 +1,6 @@
 {
   "name": "resolve-local-event-broker",
-  "version": "0.19.8",
+  "version": "0.20.18",
   "description": "This package includes event broker for local run.",
   "engines": {
     "node": ">=8.10"
@@ -26,6 +26,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-local-event-broker#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
+    "cuid": "^2.1.6",
     "sqlite": "^3.0.2",
     "zeromq": "^5.1.0"
   },

@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch'
 import prepareUrls from './prepare_urls'
 import path from 'path'
+import { checkRuntimeEnv, injectRuntimeEnv } from './declare_runtime_env'
 import { processRegister } from './process_manager'
 import validateConfig from './validate_config'
 import getWebpackConfigs from './get_webpack_configs'
@@ -39,86 +40,20 @@ const reset = (resolveConfig, options, adjustWebpackConfigs) =>
 
       validateConfig(resolveConfig)
 
-      const config = JSON.parse(
-        JSON.stringify(
-          merge(resolveConfig, {
-            apiHandlers: [
-              {
-                method: 'GET',
-                path: 'reset-domain',
-                controller: {
-                  module:
-                    'resolve-runtime/lib/common/handlers/reset-domain-handler.js',
-                  options: {
-                    storageAdapterOptions: resolveConfig.storageAdapter.options,
-                    snapshotAdapterOptions:
-                      resolveConfig.snapshotAdapter.options,
-                    readModelConnectorsOptions: Object.keys(
-                      resolveConfig.readModelConnectors
-                    ).reduce((acc, name) => {
-                      if (
-                        resolveConfig.readModelConnectors[name].constructor !==
-                        String
-                      ) {
-                        acc[name] =
-                          resolveConfig.readModelConnectors[name].options
-                      } else {
-                        acc[name] = null
-                      }
-                      return acc
-                    }, {}),
-                    readModels: resolveConfig.readModels.map(
-                      ({ name, connectorName }) => ({ name, connectorName })
-                    ),
-                    sagas: resolveConfig.sagas.map(
-                      ({ name, connectorName }) => ({
-                        name,
-                        connectorName
-                      })
-                    ),
-                    schedulers: Object.keys(resolveConfig.schedulers).map(
-                      name => ({
-                        name,
-                        connectorName:
-                          resolveConfig.schedulers[name].connectorName
-                      })
-                    ),
-                    eventBroker: resolveConfig.eventBroker
-                  },
-                  imports: {
-                    storageAdapterModule: resolveConfig.storageAdapter.module,
-                    snapshotAdapterModule: resolveConfig.snapshotAdapter.module,
-                    ...Object.keys(resolveConfig.readModelConnectors).reduce(
-                      (acc, name) => {
-                        const connector =
-                          resolveConfig.readModelConnectors[name]
-                        if (connector.constructor === String) {
-                          acc[`readModelConnector_${name}`] = connector
-                        } else if (connector.module == null) {
-                          acc[`readModelConnector_${name}`] =
-                            'resolve-runtime/lib/common/defaults/read-model-connector.js'
-                        } else {
-                          acc[`readModelConnector_${name}`] = connector.module
-                        }
-                        return acc
-                      },
-                      {}
-                    )
-                  }
-                }
-              }
-            ]
-          })
-        )
-      )
-
-      Object.assign(config, {
-        readModelConnectors: {},
-        schedulers: {},
-        readModels: [],
-        viewModels: [],
-        aggregates: [],
-        sagas: []
+      const config = merge(resolveConfig, {
+        apiHandlers: [
+          {
+            method: 'GET',
+            path: 'reset-domain',
+            controller: {
+              module: 'resolve-runtime/lib/local/reset-domain-handler.js',
+              options: {}
+            }
+          }
+        ],
+        eventBroker: {
+          upstream: false
+        }
       })
 
       const nodeModulesByAssembly = new Map()
@@ -191,7 +126,14 @@ const reset = (resolveConfig, options, adjustWebpackConfigs) =>
         broker.start(resolve)
       }
 
-      const urls = prepareUrls('http', '0.0.0.0', config.port, config.rootPath)
+      const port = Number(
+        checkRuntimeEnv(config.port)
+          ? // eslint-disable-next-line no-new-func
+            new Function(`return ${injectRuntimeEnv(config.port)}`)()
+          : config.port
+      )
+
+      const urls = prepareUrls('http', '0.0.0.0', port, config.rootPath)
       const baseUrl = urls.localUrlForBrowser
       const url = `${baseUrl}api/reset-domain?${currentOptions.join('&')}`
 

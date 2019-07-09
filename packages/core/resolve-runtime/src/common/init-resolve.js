@@ -1,8 +1,13 @@
 import createEventStore from 'resolve-es'
 import createCommandExecutor from 'resolve-command'
 import createQueryExecutor from 'resolve-query'
+import crypto from 'crypto'
+
+const DEFAULT_WORKER_LIFETIME = 15 * 60 * 1000
 
 const initResolve = async resolve => {
+  const performanceTracer = resolve.performanceTracer
+
   const {
     storageAdapter: createStorageAdapter,
     snapshotAdapter: createSnapshotAdapter,
@@ -19,7 +24,8 @@ const initResolve = async resolve => {
   for (let index = 0; index < resolve.readModels.length; index++) {
     resolve.readModels[index] = Object.create(resolve.readModels[index], {
       executeCommand: { get: () => resolve.executeCommand, enumerable: true },
-      executeQuery: { get: () => resolve.executeQuery, enumerable: true }
+      executeQuery: { get: () => resolve.executeQuery, enumerable: true },
+      eventProperties: { get: () => resolve.eventProperties, enumerable: true }
     })
   }
 
@@ -28,22 +34,25 @@ const initResolve = async resolve => {
 
   const readModelConnectors = {}
   for (const name of Object.keys(readModelConnectorsCreators)) {
-    readModelConnectors[name] = readModelConnectorsCreators[name]()
+    readModelConnectors[name] = readModelConnectorsCreators[name]({
+      performanceTracer
+    })
   }
 
   const executeCommand = createCommandExecutor({
     eventStore,
     aggregates,
-    snapshotAdapter
+    snapshotAdapter,
+    performanceTracer
   })
 
   const executeQuery = createQueryExecutor({
     eventStore,
     readModelConnectors,
     snapshotAdapter,
-    doUpdateRequest: resolve.doUpdateRequest,
     readModels,
-    viewModels
+    viewModels,
+    performanceTracer
   })
 
   Object.assign(resolve, {
@@ -57,6 +66,16 @@ const initResolve = async resolve => {
     snapshotAdapter: { value: snapshotAdapter },
     storageAdapter: { value: storageAdapter }
   })
+
+  if (!resolve.hasOwnProperty('getRemainingTimeInMillis')) {
+    const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
+    resolve.getRemainingTimeInMillis = () => endTime - Date.now()
+  }
+
+  process.env.RESOLVE_LOCAL_TRACE_ID = crypto
+    .randomBytes(Math.ceil(32 / 2))
+    .toString('hex')
+    .slice(0, 32)
 }
 
 export default initResolve

@@ -1,6 +1,7 @@
 import { merge, defaultResolveConfig, validateConfig } from 'resolve-scripts'
 
 const localConfig = {
+  mode: 'development',
   target: 'local'
 }
 
@@ -34,7 +35,7 @@ const devConfig = {
         port: 3306,
         user: 'root',
         password: '',
-        database: `Advanced`
+        database: `ReadModelAdvancedSample`
       }
     }
     */
@@ -42,7 +43,7 @@ const devConfig = {
     default: {
       module: 'resolve-readmodel-mongo',
       options: {
-        url: 'mongodb://127.0.0.1:27017/Advanced'
+        url: 'mongodb://127.0.0.1:27017/ReadModelAdvancedSample'
       }
     }
     */

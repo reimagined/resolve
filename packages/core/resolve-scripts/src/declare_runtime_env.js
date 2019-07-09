@@ -9,14 +9,18 @@ const createDigestHash = (prefix, content) => {
   return hmac.digest('hex')
 }
 
-const declareRuntimeEnv = envName => {
+const declareRuntimeEnv = (envName, defaultValue) => {
   if (envName == null || envName.constructor !== String) {
     throw new Error('Runtime environment variable should be an string')
+  }
+  if (defaultValue != null && defaultValue.constructor !== String) {
+    throw new Error('Default value should be an string or be absent')
   }
 
   // eslint-disable-next-line no-new-wrappers
   const envContainer = new String(envName)
   envContainer.type = runtimeEnvSymbol
+  envContainer.defaultValue = defaultValue != null ? defaultValue : null
 
   return envContainer
 }
@@ -37,7 +41,10 @@ export const injectRuntimeEnv = (json, isClient = false) => {
     json,
     (key, value) => {
       if (checkRuntimeEnv(value)) {
-        return `${runtimeDigestBegin}${value}${runtimeDigestEnd}`
+        return `${runtimeDigestBegin}${JSON.stringify({
+          envName: String(value),
+          defaultValue: value.defaultValue
+        })}${runtimeDigestEnd}`
       }
 
       return value
@@ -51,7 +58,13 @@ export const injectRuntimeEnv = (json, isClient = false) => {
   )
 
   const result = rawResult.replace(runtimeEnvRegex, (match, group) => {
-    return `${envObj}[${JSON.stringify(group)}]`
+    const { envName, defaultValue } = JSON.parse(JSON.parse(`"${group}"`))
+
+    const first = `${envObj}[${JSON.stringify(envName)}]`
+    const second = JSON.stringify(defaultValue)
+    const choice = `(first, second) => (first != null ? first : second)`
+
+    return `((${choice})(${first}, ${second}))`
   })
 
   return result

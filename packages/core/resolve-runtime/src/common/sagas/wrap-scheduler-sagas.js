@@ -1,11 +1,12 @@
-import {
-  RESOLVE_SCHEDULER_SAGA_PREFIX,
-  RESOLVE_SCHEDULER_TABLE_PREFIX,
-  RESOLVE_SCHEDULER_AGGREGATE_PREFIX
-} from './constants'
+import debugLevels from 'debug-levels'
+
 import initResolve from '../init-resolve'
 import disposeResolve from '../dispose-resolve'
 import createSchedulerEventTypes from './scheduler-event-types'
+
+import sagaEventHandler from './saga-event-handler'
+
+const log = debugLevels('resolve:resolve-runtime:wrap-scheduler-sagas')
 
 const execute = async (
   resolve,
@@ -38,15 +39,13 @@ const wrapSchedulerSagas = (sagas, resolve) => {
     connectorName
   } of sagas) {
     const sagaReadModel = {
-      name: `${RESOLVE_SCHEDULER_SAGA_PREFIX}${name}`,
-      resolvers: {
-        RUN_BROKER: async () => {}
-      },
+      name,
+      resolvers: {},
       connectorName
     }
 
-    const schedulerAggregateName = `${RESOLVE_SCHEDULER_AGGREGATE_PREFIX}${name}`
-    const commandsTableName = `${RESOLVE_SCHEDULER_TABLE_PREFIX}${name}`
+    const schedulerAggregateName = name
+    const commandsTableName = name
 
     const handlers = handlersCreator({
       schedulerAggregateName,
@@ -56,45 +55,30 @@ const wrapSchedulerSagas = (sagas, resolve) => {
     const sideEffects = sideEffectsCreator({
       execute: execute.bind(null, resolve, schedulerAggregateName),
       errorHandler: async e => {
-        resolveLog('error', `scheduler adapter failure: ${e.stack}`)
+        log.error(`scheduler adapter failure: ${e.stack}`)
         throw e
       }
     })
 
     sagaReadModel['schedulerAdapter'] = sideEffects
-
     const eventTypes = Object.keys(handlers)
-
-    const wrappedSideEffects = Object.keys(sideEffects).reduce((acc, key) => {
-      acc[key] = async (...args) => {
-        const result = await sideEffects[key](...args)
-        if (result !== undefined) {
-          throw new Error('Side effect should not return any values')
-        }
-      }
-      return acc
-    }, {})
 
     Object.defineProperty(sagaReadModel, 'projection', {
       get: function() {
         const currentReadModel = this
+
         return eventTypes.reduce((acc, eventType) => {
-          resolveLog(
-            'debug',
+          log.debug(
             `[wrap-sagas] registering system scheduler saga event handler ${eventType}`
           )
-          acc[eventType] = async (store, event) => {
-            await handlers[eventType](
-              {
-                scheduleCommand: null,
-                sideEffects: wrappedSideEffects,
-                executeCommand: currentReadModel.executeCommand,
-                executeQuery: currentReadModel.executeQuery,
-                store: store
-              },
-              event
-            )
-          }
+          acc[eventType] = sagaEventHandler.bind(
+            null,
+            currentReadModel,
+            handlers,
+            sideEffects,
+            eventType,
+            Function() // eslint-disable-line no-new-func
+          )
 
           return acc
         }, {})

@@ -51,8 +51,6 @@ http
     }
     // eslint-disable-next-line no-console
     console.log(
-      `Local registry listening on http://${localRegistry.host}:${
-        localRegistry.port
-      }`
+      `Local registry listening on http://${localRegistry.host}:${localRegistry.port}`
     )
   })
