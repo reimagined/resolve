@@ -139,6 +139,37 @@ A saga's event handler receives an object that provides access to the saga-relat
 
 ## Client-Side API
 
+### HTTP API
+
+#### Read Model API
+
+#### View Model API
+
+#### Command API
+
+A command can be sent using HTTP API.
+
+For instance, to create a new list in the shopping list app:
+
+```sh
+$ curl -X POST http://localhost:3000/api/commands/ \
+--header "Content-Type: application/json" \
+--data '
+{
+    "aggregateName": "ShoppingList",
+    "aggregateId": "12345-new-shopping-list",
+    "type": "createShoppingList",
+    "payload": {
+        "name": "List 1"
+    }
+}
+'
+```
+
+Refer to the [Standard HTTP API](curl.md) document for more information.
+
+### Resolve-Redux Library
+
 The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library provides the following HOCs:
 
 | Function Name                                     | Description                                                                                                      |
@@ -220,28 +251,3 @@ export default connectRootBasedUrls(['href'])(Link)
 ```js
 export default connectStaticBasedUrls(['css', 'favicon'])(Header)
 ```
-
-## Commands
-
-### Command HTTP API
-
-A command can be sent using HTTP API.
-
-For instance, to create a new list in the shopping list app:
-
-```sh
-$ curl -X POST http://localhost:3000/api/commands/ \
---header "Content-Type: application/json" \
---data '
-{
-    "aggregateName": "ShoppingList",
-    "aggregateId": "12345-new-shopping-list",
-    "type": "createShoppingList",
-    "payload": {
-        "name": "List 1"
-    }
-}
-'
-```
-
-Refer to the [Standard HTTP API](curl.md) document for more information.
