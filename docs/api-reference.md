@@ -128,45 +128,138 @@ const getStory = async (store, { id }) => {
 
 ## Saga API
 
-A saga's event handler receives an object that provides access to the saga-related API. This API includes the following functions:
+A saga's event handler receives an object that provides access to the saga-related API. This API includes the following objects:
+
+| Object Name | Description                                                                       |
+| ----------- | --------------------------------------------------------------------------------- |
+| store       | Provides access to the saga's persistent store (similar to the Read Model store). |
+| sideEffects | Provides access to the saga's side effect functions.                              |
+
+In addition to user-defined side effect functions, the SideEffects object contains the following default side effects:
 
 | Function Name   | Description                                                                                 |
 | --------------- | ------------------------------------------------------------------------------------------- |
 | executeCommand  | Sends a command with the specified payload to an aggregate.                                 |
 | scheduleCommand | Similar to `executeCommand`, but delays command execution until a specified moment in time. |
-| store           | Provides access to the saga's persistent store (similar to the Read Model store).           |
-| sideEffects     | Provides access to the saga's side effect functions.                                        |
 
 ## Client-Side API
 
 ### HTTP API
 
+Resolve provides a standard HTTP API that allows you to send aggregate commands and query Read Models and View Models. Refer to the [Standard HTTP API](curl.md) document for more information.
+
 #### Read Model API
+
+You can query a Read Model from the client side by sending a POST request to the following URL:
+
+```
+http://{host}:{port}/api/query/{readModel}/{resolver}
+```
+
+##### URL Parameters:
+
+| Name          | Description                                                                                                                           |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **readModel** | The Read Model name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/with-saga/config.app.js) |
+| **resolver**  | The name of a [resolver defined in the Read Model](#resolvers)                                                                        |
+
+The request body should have the `application/json` content type and the following structure:
+
+```js
+{
+  param1: value1,
+  param2: value2,
+  // ...
+  paramN: valueN
+}
+```
+
+The object contains the parameters that the resolver accepts.
+
+##### Example
+
+Use the following command to get 3 users from the [with-saga](https://github.com/reimagined/resolve/tree/master/examples/with-saga) example.
+
+```sh
+curl -X POST \
+-H "Content-Type: application/json" \
+-d "{\"page\":0, \"limit\":3}" \
+"http://localhost:3000/api/query/default/users"
+```
 
 #### View Model API
 
-#### Command API
+You can query a View Model from the client side by sending a POST request to the following URL:
 
-A command can be sent using HTTP API.
+```
+http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
+```
 
-For instance, to create a new list in the shopping list app:
+##### URL Parameters
+
+| Name         | Description                                                                                                                               |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| viewModel    | The View Model name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/shopping-list/config.app.js) |
+| aggregateIds | The comma-separated list of Aggregate IDs to include in the View Model. Use `*` to include all Aggregates                                 |
+
+##### Example
+
+Use the following command to get the current [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example application's state.
 
 ```sh
-$ curl -X POST http://localhost:3000/api/commands/ \
+curl -g -X GET "http://localhost:3000/api/query/Default/shoppingLists"
+```
+
+#### Command API
+
+You can send a command from the client side as a POST request to the following URL:
+
+```
+http://{host}:{port}/api/commands
+```
+
+The request body should have the `application/json` content type and contain a JSON representation of the command:
+
+```
+{
+  "aggregateName": aggregateName,
+  "type": commandType,
+  "aggregateId": aggregateID,
+  "payload": {
+    "param1": value1,
+    "param2": value2,
+    ...
+    "paramN": valueN
+  }
+}
+```
+
+| Name              | Type   | Description                                           |
+| ----------------- | ------ | ----------------------------------------------------- |
+| **aggregateId**   | string | The ID of an aggregate that should handle the command |
+| **aggregateName** | string | The aggregate's name as defined in **config.app.js**  |
+| **commandType**   | string | The command type that the aggregate can handle        |
+| **payload**       | object | The parameters that the command accepts               |
+
+##### Example
+
+Use the following command to add an item to the **shopping-list** example:
+
+```sh
+$ curl -X POST "http://localhost:3000/api/commands"
 --header "Content-Type: application/json" \
 --data '
 {
-    "aggregateName": "ShoppingList",
-    "aggregateId": "12345-new-shopping-list",
-    "type": "createShoppingList",
-    "payload": {
-        "name": "List 1"
-    }
+  "aggregateName":"Todo",
+  "type":"createItem",
+  "aggregateId":"root-id",
+  "payload": {
+    "id":`date +%s`,
+    "text":"Learn reSolve API"
+  }
 }
 '
 ```
-
-Refer to the [Standard HTTP API](curl.md) document for more information.
 
 ### Resolve-Redux Library
 
@@ -179,7 +272,7 @@ The reSolve framework includes the client **resolve-redux** library used to conn
 | [connectRootBasedUrls](#connectrootbasedurls)     | Fixes URLs passed to the specified props so that they take into respect the correct root folder path.            |
 | [connectStaticBasedUrls](#connectstaticbasedurls) | Fixes URLs passed to the specified props so that they take into respect the correct static resource folder path. |
 
-### connectViewModel
+##### connectViewModel
 
 ```js
 export const mapStateToOptions = (state, ownProps) => {
@@ -216,7 +309,7 @@ export default connectViewModel(mapStateToOptions)(
 )
 ```
 
-### connectReadModel
+##### connectReadModel
 
 ```js
 export const mapStateToOptions = () => ({
@@ -240,13 +333,13 @@ export default connectReadModel(mapStateToOptions)(
 )
 ```
 
-### connectRootBasedUrls
+##### connectRootBasedUrls
 
 ```js
 export default connectRootBasedUrls(['href'])(Link)
 ```
 
-### connectStaticBasedUrls
+##### connectStaticBasedUrls
 
 ```js
 export default connectStaticBasedUrls(['css', 'favicon'])(Header)
