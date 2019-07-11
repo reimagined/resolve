@@ -1,8 +1,5 @@
 import { ConcurrentError } from 'resolve-storage-base'
 
-// https://dev.mysql.com/doc/refman/5.5/en/error-messages-server.html#error_er_dup_entry
-const ER_DUP_ENTRY = 1062
-
 const saveEvent = async (
   { tableName, executeSql, escapeId, escape },
   event
@@ -24,7 +21,7 @@ const saveEvent = async (
       )`
     )
   } catch (error) {
-    if (error.errno !== ER_DUP_ENTRY) {
+    if (error.message == null || !error.message.startsWith('Duplicate entry')) {
       throw error
     }
 
