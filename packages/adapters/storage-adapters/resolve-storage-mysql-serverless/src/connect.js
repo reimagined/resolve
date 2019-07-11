@@ -1,8 +1,10 @@
-const coercer = ({ intValue, stringValue, ...rest }) => {
+const coercer = ({ intValue, stringValue, bigIntValue, ...rest }) => {
   if (intValue != null) {
-    return intValue
+    return Number(intValue)
+  } else if (bigIntValue != null) {
+    return Number(bigIntValue)
   } else if (stringValue != null) {
-    return stringValue
+    return String(stringValue)
   } else {
     throw new Error(`Unknown type ${JSON.stringify(rest)}`)
   }
@@ -22,16 +24,20 @@ const executeSql = async (pool, sql) => {
     !Array.isArray(result.sqlStatementResults) ||
     result.sqlStatementResults.length !== 1
   ) {
-    console.log('<temp>', sql)
+    return null
+  }
+
+  const firstResult = result.sqlStatementResults[0]
+
+  if (firstResult == null || firstResult.resultFrame == null) {
     return null
   }
 
   const {
     resultFrame: { records, resultSetMetadata }
-  } = result.sqlStatementResults[0]
+  } = firstResult
 
   if (!Array.isArray(records) || resultSetMetadata == null) {
-    console.log('<temp>', sql)
     return null
   }
 
