@@ -28,7 +28,7 @@ const adapter = createAdapter({
 
 #### As Resource
 ```js
-import { create, dispose, destroy } from 'resolve-storage-dynamo'
+import { create, dispose, destroy } from 'resolve-storage-mysql-serverless'
 
 await create({ 
   awsSecretStoreArn: 'awsSecretStoreArn',
