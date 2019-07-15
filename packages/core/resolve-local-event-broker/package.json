@@ -1,6 +1,6 @@
 {
   "name": "resolve-local-event-broker",
-  "version": "0.20.18",
+  "version": "0.20.19",
   "description": "This package includes event broker for local run.",
   "engines": {
     "node": ">=8.10"
