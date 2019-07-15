@@ -9,6 +9,7 @@ This package is a `resolve-es` adapter for storing events using AWS Aurora Serve
 * `tableName` - a name of a table storing events.
 * `awsSecretStoreArn` - an AWS Secret store ARN.
 * `dbClusterOrInstanceArn` - a database cluster or instance ARN.
+* `region` - an AWS region.
 
 ## Usage
 
@@ -16,6 +17,7 @@ This package is a `resolve-es` adapter for storing events using AWS Aurora Serve
 import createAdapter from 'resolve-storage-mysql-serverless'
 
 const adapter = createAdapter({
+  region: 'us-east-1',
   databaseName: 'databaseName',
   tableName: 'tableName',
   awsSecretStoreArn: 'awsSecretStoreArn',
