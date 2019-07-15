@@ -15,7 +15,7 @@ const executeSql = async (pool, sql) => {
     .executeSql({
       awsSecretStoreArn: pool.config.awsSecretStoreArn,
       dbClusterOrInstanceArn: pool.config.dbClusterOrInstanceArn,
-      database: pool.config.database,
+      database: pool.config.databaseName,
       sqlStatements: sql
     })
     .promise()
@@ -63,7 +63,8 @@ const connect = async (pool, { RDSDataService, escapeId, escape }) => {
     rdsDataService,
     executeSql: executeSql.bind(null, pool),
     escapeId,
-    escape
+    escape,
+    resourceOptions: pool.config.resourceOptions
   })
 }
 

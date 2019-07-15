@@ -11,8 +11,8 @@ const publishEvent = async (resolve, event) => {
 
   try {
     const promises = []
-    for(const { name: modelName, projection } of resolve.readModels) {
-      if(projection.hasOwnProperty(event.type)) {
+    for (const { name: modelName, projection } of resolve.readModels) {
+      if (projection.hasOwnProperty(event.type)) {
         promises.push(resolve.doUpdateRequest(modelName))
       }
     }
@@ -30,7 +30,6 @@ const publishEvent = async (resolve, event) => {
   } catch (error) {
     log.warn('Lambda can not publish event into MQTT', eventDescriptor, error)
   }
-
 }
 
 export default publishEvent

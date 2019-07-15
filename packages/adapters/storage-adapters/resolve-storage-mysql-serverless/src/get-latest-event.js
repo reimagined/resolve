@@ -32,7 +32,7 @@ const getLatestEvent = async (
 
   const rows = await executeSql(
     `SELECT * FROM ${escapeId(tableName)} ${resultQueryCondition}
-    ORDER BY ${escapeId('eventId')} DESC LIMIT 1`
+    ORDER BY ${escapeId('eventId')} DESC LIMIT 0, 1`
   )
 
   if (rows.length === 0) {

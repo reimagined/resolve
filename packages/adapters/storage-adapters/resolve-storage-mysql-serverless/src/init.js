@@ -4,9 +4,26 @@ const longNumberSqlType = 'BIGINT NOT NULL'
 const longTextSqlType =
   'LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL'
 
-const init = async ({ tableName, executeSql, escapeId }) => {
+const init = async ({
+  resourceOptions: { databaseName, tableName, userLogin, userPassword },
+  executeSql,
+  escapeId,
+  escape
+}) => {
+  await executeSql(`CREATE DATABASE ${escapeId(databaseName)}`)
+
   await executeSql(
-    `CREATE TABLE IF NOT EXISTS ${escapeId(tableName)}(
+    `CREATE USER ${escape(userLogin)} IDENTIFIED BY ${escape(userPassword)}`
+  )
+
+  await executeSql(
+    `GRANT ALL ON ${escapeId(databaseName)}.* TO ${escape(userLogin)}@'%'`
+  )
+
+  await executeSql(
+    `CREATE TABLE IF NOT EXISTS ${escapeId(databaseName)}.${escapeId(
+      tableName
+    )}(
       ${escapeId('eventId')} ${longNumberSqlType} AUTO_INCREMENT,
       ${escapeId('timestamp')} ${longNumberSqlType},
       ${escapeId('aggregateId')} ${longStringSqlType},
@@ -22,8 +39,7 @@ const init = async ({ tableName, executeSql, escapeId }) => {
       INDEX USING BTREE(${escapeId('type')}),
       INDEX USING BTREE(${escapeId('timestamp')}),
       UNIQUE(${escapeId('aggregateId')}, ${escapeId('aggregateVersion')})
-    )`,
-    []
+    )`
   )
 }
 
