@@ -10,7 +10,9 @@ const init = async ({
   escapeId,
   escape
 }) => {
-  await executeSql(`CREATE DATABASE ${escapeId(databaseName)}`)
+  await executeSql(`CREATE DATABASE ${escapeId(databaseName)}
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+  `)
 
   await executeSql(
     `CREATE USER ${escape(userLogin)} IDENTIFIED BY ${escape(userPassword)}`
@@ -39,7 +41,9 @@ const init = async ({
       INDEX USING BTREE(${escapeId('type')}),
       INDEX USING BTREE(${escapeId('timestamp')}),
       UNIQUE(${escapeId('aggregateId')}, ${escapeId('aggregateVersion')})
-    )`
+    )
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+    `
   )
 }
 

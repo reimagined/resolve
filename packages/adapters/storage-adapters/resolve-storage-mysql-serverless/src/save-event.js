@@ -1,7 +1,7 @@
 import { ConcurrentError } from 'resolve-storage-base'
 
 const saveEvent = async (
-  { tableName, executeSql, escapeId, escape },
+  { tableName, executeSql, escapeId, escapeUnicode },
   event
 ) => {
   try {
@@ -14,10 +14,12 @@ const saveEvent = async (
         ${escapeId('payload')}
       ) VALUES (
         CAST(UNIX_TIMESTAMP(NOW(3)) * 1000 AS SIGNED),
-        ${escape(event.aggregateId)},
+        ${escapeUnicode(event.aggregateId)},
         ${+event.aggregateVersion},
-        ${escape(event.type)},
-        ${escape(JSON.stringify(event.payload != null ? event.payload : null))}
+        ${escapeUnicode(event.type)},
+        ${escapeUnicode(
+          JSON.stringify(event.payload != null ? event.payload : null)
+        )}
       )`
     )
   } catch (error) {

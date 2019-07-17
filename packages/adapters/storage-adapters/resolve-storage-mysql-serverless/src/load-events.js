@@ -1,5 +1,5 @@
 const loadEvents = async (
-  { executeSql, escapeId, escape, tableName },
+  { executeSql, escapeId, escapeUnicode, tableName },
   {
     eventTypes,
     aggregateIds,
@@ -9,7 +9,7 @@ const loadEvents = async (
   },
   callback
 ) => {
-  const injectString = value => `${escape(value)}`
+  const injectString = value => `${escapeUnicode(value)}`
   const injectNumber = value => `${+value}`
   const batchSize = 50
 

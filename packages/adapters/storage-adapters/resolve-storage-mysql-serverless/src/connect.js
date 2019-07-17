@@ -55,13 +55,17 @@ const executeSql = async (pool, sql) => {
   return rows
 }
 
-const connect = async (pool, { RDSDataService, escapeId, escape }) => {
+const connect = async (
+  pool,
+  { RDSDataService, escapeId, escapeUnicode, escape }
+) => {
   const rdsDataService = new RDSDataService({ region: pool.config.region })
 
   Object.assign(pool, {
     tableName: pool.config.tableName,
     rdsDataService,
     executeSql: executeSql.bind(null, pool),
+    escapeUnicode,
     escapeId,
     escape,
     resourceOptions: pool.config.resourceOptions
