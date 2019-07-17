@@ -31,7 +31,8 @@ const adapter = createAdapter({
 import { create, dispose, destroy } from 'resolve-storage-mysql-serverless'
 
 await create({ 
-  awsSecretStoreArn: 'awsSecretStoreArn',
+  region: 'us-east-1',
+  awsSecretStoreAdminArn: 'awsSecretStoreAdminArn',
   dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
   databaseName: 'creatingDatabaseName',
   tableName: 'creatingTableName',
@@ -40,7 +41,8 @@ await create({
 })
 
 await dispose({ 
-  awsSecretStoreArn: 'awsSecretStoreArn',
+  region: 'us-east-1',
+  awsSecretStoreAdminArn: 'awsSecretStoreAdminArn',
   dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
   databaseName: 'disposingDatabaseName',
   tableName: 'disposingTableName',
@@ -49,7 +51,8 @@ await dispose({
 })
 
 await destroy({ 
-  awsSecretStoreArn: 'awsSecretStoreArn',
+  region: 'us-east-1',
+  awsSecretStoreAdminArn: 'awsSecretStoreAdminArn',
   dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
   databaseName: 'destroyingDatabaseName',
   userLogin: 'destroyingUserLogin'
