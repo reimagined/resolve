@@ -5,6 +5,7 @@ const prepare = (pool, connect, init, adapterSpecificArguments) => {
     initResultPromiseResolve = resolve
     initResultPromiseReject = reject
   })
+  pool.initialPromiseResult.catch(() => {})
 
   let connectPromiseResolve
   const connectPromise = new Promise(resolve => {
@@ -24,6 +25,7 @@ const prepare = (pool, connect, init, adapterSpecificArguments) => {
       initResultPromiseResolve(await init(pool))
     } catch (error) {
       initResultPromiseReject(error)
+      throw error
     }
   })
 

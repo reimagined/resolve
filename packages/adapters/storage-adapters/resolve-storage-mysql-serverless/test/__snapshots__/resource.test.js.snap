@@ -1,0 +1,128 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`resource method "create" should create resource 1`] = `
+Array [
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "CREATE DATABASE \`databaseName\`",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "CREATE USER \\"userLogin\\" IDENTIFIED BY \\"userPassword\\"",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "GRANT ALL ON \`databaseName\`.* TO \\"userLogin\\"@'%'",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "CREATE TABLE IF NOT EXISTS \`databaseName\`.\`tableName\`(
+      \`eventId\` BIGINT NOT NULL AUTO_INCREMENT,
+      \`timestamp\` BIGINT NOT NULL,
+      \`aggregateId\` VARCHAR(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+      \`aggregateVersion\` BIGINT NOT NULL,
+      \`type\` VARCHAR(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+      \`payload\` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+      PRIMARY KEY(\`eventId\`),
+      INDEX USING BTREE(\`aggregateId\`, \`aggregateVersion\`),
+      INDEX USING BTREE(\`aggregateId\`),
+      INDEX USING BTREE(\`aggregateVersion\`),
+      INDEX USING BTREE(\`type\`),
+      INDEX USING BTREE(\`timestamp\`),
+      UNIQUE(\`aggregateId\`, \`aggregateVersion\`)
+    )",
+  },
+]
+`;
+
+exports[`resource method "destroy" should destroy resource 1`] = `
+Array [
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "DROP DATABASE \`databaseName\`",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "DROP USER \\"userLogin\\"",
+  },
+]
+`;
+
+exports[`resource method "dispose" should dispose resource 1`] = `
+Array [
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "DROP DATABASE \`databaseName\`",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "DROP USER \\"userLogin\\"",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "CREATE DATABASE \`databaseName\`",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "CREATE USER \\"userLogin\\" IDENTIFIED BY \\"userPassword\\"",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "GRANT ALL ON \`databaseName\`.* TO \\"userLogin\\"@'%'",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "CREATE TABLE IF NOT EXISTS \`databaseName\`.\`tableName\`(
+      \`eventId\` BIGINT NOT NULL AUTO_INCREMENT,
+      \`timestamp\` BIGINT NOT NULL,
+      \`aggregateId\` VARCHAR(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+      \`aggregateVersion\` BIGINT NOT NULL,
+      \`type\` VARCHAR(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+      \`payload\` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+      PRIMARY KEY(\`eventId\`),
+      INDEX USING BTREE(\`aggregateId\`, \`aggregateVersion\`),
+      INDEX USING BTREE(\`aggregateId\`),
+      INDEX USING BTREE(\`aggregateVersion\`),
+      INDEX USING BTREE(\`type\`),
+      INDEX USING BTREE(\`timestamp\`),
+      UNIQUE(\`aggregateId\`, \`aggregateVersion\`)
+    )",
+  },
+]
+`;

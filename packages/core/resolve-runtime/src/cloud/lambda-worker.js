@@ -11,7 +11,7 @@ const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
 const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   log.debug('executing application lambda')
-  log.verbose('incoming event', lambdaEvent)
+  log.verbose('incoming event', JSON.stringify(lambdaEvent, null, 2))
   lambdaContext.callbackWaitsForEmptyEventLoop = false
 
   const resolve = Object.create(resolveBase)
@@ -52,7 +52,10 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       return executorResult
     } else if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
       log.debug('identified event source: API gateway')
-      log.verbose(lambdaEvent.httpMethod, lambdaEvent.headers)
+      log.verbose(
+        JSON.stringify(lambdaEvent.httpMethod, null, 2),
+        JSON.stringify(lambdaEvent.headers, null, 2)
+      )
 
       const executorResult = await handleApiGatewayEvent(
         lambdaEvent,
