@@ -29,7 +29,7 @@ Array [
     "database": "mysql",
     "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
     "sqlStatements": "CREATE TABLE IF NOT EXISTS \`databaseName\`.\`tableName\`(
-      \`eventId\` BIGINT NOT NULL AUTO_INCREMENT,
+      \`eventId\` BIGINT NOT NULL,
       \`timestamp\` BIGINT NOT NULL,
       \`aggregateId\` VARCHAR(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
       \`aggregateVersion\` BIGINT NOT NULL,
@@ -42,6 +42,33 @@ Array [
       INDEX USING BTREE(\`type\`),
       INDEX USING BTREE(\`timestamp\`),
       UNIQUE(\`aggregateId\`, \`aggregateVersion\`)
+    )",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "CREATE TABLE IF NOT EXISTS \`databaseName\`.\`tableName-sequence\`(
+      \`key\` BIGINT NOT NULL,
+      \`eventId\` BIGINT NOT NULL,
+      \`timestamp\` BIGINT NOT NULL,
+      \`transactionId\` BIGINT NOT NULL,
+      PRIMARY KEY(\`key\`)
+    )",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "INSERT INTO \`databaseName\`.\`tableName-sequence\`(
+      \`key\`,
+      \`eventId\`,
+      \`timestamp\`,
+      \`transactionId\`
+    ) VALUES (
+      0, 0, 0, 0
     )",
   },
 ]
@@ -109,7 +136,7 @@ Array [
     "database": "mysql",
     "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
     "sqlStatements": "CREATE TABLE IF NOT EXISTS \`databaseName\`.\`tableName\`(
-      \`eventId\` BIGINT NOT NULL AUTO_INCREMENT,
+      \`eventId\` BIGINT NOT NULL,
       \`timestamp\` BIGINT NOT NULL,
       \`aggregateId\` VARCHAR(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
       \`aggregateVersion\` BIGINT NOT NULL,
@@ -122,6 +149,33 @@ Array [
       INDEX USING BTREE(\`type\`),
       INDEX USING BTREE(\`timestamp\`),
       UNIQUE(\`aggregateId\`, \`aggregateVersion\`)
+    )",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "CREATE TABLE IF NOT EXISTS \`databaseName\`.\`tableName-sequence\`(
+      \`key\` BIGINT NOT NULL,
+      \`eventId\` BIGINT NOT NULL,
+      \`timestamp\` BIGINT NOT NULL,
+      \`transactionId\` BIGINT NOT NULL,
+      PRIMARY KEY(\`key\`)
+    )",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "database": "mysql",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "INSERT INTO \`databaseName\`.\`tableName-sequence\`(
+      \`key\`,
+      \`eventId\`,
+      \`timestamp\`,
+      \`transactionId\`
+    ) VALUES (
+      0, 0, 0, 0
     )",
   },
 ]
