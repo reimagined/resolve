@@ -24,7 +24,7 @@ const init = async ({
     `CREATE TABLE IF NOT EXISTS ${escapeId(databaseName)}.${escapeId(
       tableName
     )}(
-      ${escapeId('eventId')} ${longNumberSqlType} AUTO_INCREMENT,
+      ${escapeId('eventId')} ${longNumberSqlType},
       ${escapeId('timestamp')} ${longNumberSqlType},
       ${escapeId('aggregateId')} ${longStringSqlType},
       ${escapeId('aggregateVersion')} ${longNumberSqlType},
@@ -39,6 +39,29 @@ const init = async ({
       INDEX USING BTREE(${escapeId('type')}),
       INDEX USING BTREE(${escapeId('timestamp')}),
       UNIQUE(${escapeId('aggregateId')}, ${escapeId('aggregateVersion')})
+    )`
+  )
+
+  await executeSql(
+    `CREATE TABLE IF NOT EXISTS ${escapeId(databaseName)}.${escapeId(
+      `${tableName}-sequence`
+    )}(
+      ${escapeId('key')} ${longNumberSqlType},
+      ${escapeId('eventId')} ${longNumberSqlType},
+      ${escapeId('timestamp')} ${longNumberSqlType},
+      ${escapeId('transactionId')} ${longNumberSqlType},
+      PRIMARY KEY(${escapeId('key')})
+    )`
+  )
+
+  await executeSql(
+    `INSERT INTO ${escapeId(databaseName)}.${escapeId(`${tableName}-sequence`)}(
+      ${escapeId('key')},
+      ${escapeId('eventId')},
+      ${escapeId('timestamp')},
+      ${escapeId('transactionId')}
+    ) VALUES (
+      0, 0, 0, 0
     )`
   )
 }
