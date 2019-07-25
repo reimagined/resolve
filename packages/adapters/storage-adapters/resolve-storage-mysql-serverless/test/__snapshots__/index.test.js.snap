@@ -1,0 +1,206 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`resolve-storage-mysql-serverless "getLatestEvent" should get the latest event 1`] = `
+Array [
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreArn",
+    "database": "event-store",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "SELECT * FROM \`events\` 
+    ORDER BY \`eventId\` DESC LIMIT 0, 1",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreArn",
+    "database": "event-store",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "SELECT * FROM \`events\` WHERE \`type\` IN (\\"AAA\\")
+    ORDER BY \`eventId\` DESC LIMIT 0, 1",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreArn",
+    "database": "event-store",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "SELECT * FROM \`events\` WHERE \`aggregateId\` IN (\\"id1\\")
+    ORDER BY \`eventId\` DESC LIMIT 0, 1",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreArn",
+    "database": "event-store",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "SELECT * FROM \`events\` WHERE \`timestamp\` > 1 AND \`timestamp\` < 3
+    ORDER BY \`eventId\` DESC LIMIT 0, 1",
+  },
+]
+`;
+
+exports[`resolve-storage-mysql-serverless "loadEvents" should load events 1`] = `
+Array [
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreArn",
+    "database": "event-store",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "SELECT * FROM \`events\` 
+      ORDER BY \`eventId\` ASC
+      LIMIT 0, 50",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreArn",
+    "database": "event-store",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "SELECT * FROM \`events\` 
+      ORDER BY \`eventId\` ASC
+      LIMIT 0, 50",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreArn",
+    "database": "event-store",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "SELECT * FROM \`events\` WHERE \`type\` IN (\\"AAA\\")
+      ORDER BY \`eventId\` ASC
+      LIMIT 0, 50",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreArn",
+    "database": "event-store",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "SELECT * FROM \`events\` WHERE \`aggregateId\` IN (\\"id1\\")
+      ORDER BY \`eventId\` ASC
+      LIMIT 0, 50",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreArn",
+    "database": "event-store",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "SELECT * FROM \`events\` WHERE \`timestamp\` > 1 AND \`timestamp\` < 3
+      ORDER BY \`eventId\` ASC
+      LIMIT 0, 50",
+  },
+]
+`;
+
+exports[`resolve-storage-mysql-serverless "saveEvent" should save an event 1`] = `
+Array [
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreArn",
+    "database": "event-store",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "
+        START TRANSACTION;
+        SET @lastEventId = 0;
+        SET @lastTimestamp = 0;
+        SET @transactionId = 0;
+
+        SELECT @transactionid := CONNECTION_ID(),
+        @lastEventId := \`eventId\` + 1,
+        @lastTimestamp := GREATEST(
+          CAST(UNIX_TIMESTAMP(NOW(3)) * 1000 AS SIGNED),
+          \`timestamp\`
+        )
+        FROM \`events-sequence\`
+        WHERE \`key\` = 0;
+        
+        UPDATE \`events-sequence\`
+        SET \`eventId\` = @lastEventId,
+        \`transactionId\` = @transactionId,
+        \`timestamp\` = @lastTimestamp
+        WHERE \`key\` = 0;
+
+        INSERT INTO \`events\`(
+          \`eventId\`,
+          \`timestamp\`,
+          \`aggregateId\`,
+          \`aggregateVersion\`,
+          \`type\`,
+          \`payload\`
+        ) VALUES (
+          @lastEventId,
+          @lastTimestamp,
+          \\"id1\\",
+          1,
+          \\"AAA\\",
+          \\"{\\"\\"index\\"\\":1}\\"
+        );
+        
+        COMMIT;
+        ",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreArn",
+    "database": "event-store",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "SELECT * FROM \`events\` 
+      ORDER BY \`eventId\` ASC
+      LIMIT 0, 50",
+  },
+]
+`;
+
+exports[`resolve-storage-mysql-serverless "saveEvent" should save an event with empty payload 1`] = `
+Array [
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreArn",
+    "database": "event-store",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "
+        START TRANSACTION;
+        SET @lastEventId = 0;
+        SET @lastTimestamp = 0;
+        SET @transactionId = 0;
+
+        SELECT @transactionid := CONNECTION_ID(),
+        @lastEventId := \`eventId\` + 1,
+        @lastTimestamp := GREATEST(
+          CAST(UNIX_TIMESTAMP(NOW(3)) * 1000 AS SIGNED),
+          \`timestamp\`
+        )
+        FROM \`events-sequence\`
+        WHERE \`key\` = 0;
+        
+        UPDATE \`events-sequence\`
+        SET \`eventId\` = @lastEventId,
+        \`transactionId\` = @transactionId,
+        \`timestamp\` = @lastTimestamp
+        WHERE \`key\` = 0;
+
+        INSERT INTO \`events\`(
+          \`eventId\`,
+          \`timestamp\`,
+          \`aggregateId\`,
+          \`aggregateVersion\`,
+          \`type\`,
+          \`payload\`
+        ) VALUES (
+          @lastEventId,
+          @lastTimestamp,
+          \\"id1\\",
+          1,
+          \\"AAA\\",
+          \\"null\\"
+        );
+        
+        COMMIT;
+        ",
+  },
+  "executeSql",
+  Object {
+    "awsSecretStoreArn": "awsSecretStoreArn",
+    "database": "event-store",
+    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
+    "sqlStatements": "SELECT * FROM \`events\` 
+      ORDER BY \`eventId\` ASC
+      LIMIT 0, 50",
+  },
+]
+`;
