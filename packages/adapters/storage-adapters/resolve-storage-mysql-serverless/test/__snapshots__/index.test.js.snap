@@ -94,19 +94,45 @@ Array [
     "awsSecretStoreArn": "awsSecretStoreArn",
     "database": "event-store",
     "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "INSERT INTO \`events\`(
-        \`timestamp\`,
-        \`aggregateId\`,
-        \`aggregateVersion\`,
-        \`type\`,
-        \`payload\`
-      ) VALUES (
-        CAST(UNIX_TIMESTAMP(NOW(3)) * 1000 AS SIGNED),
-        \\"id1\\",
-        1,
-        \\"AAA\\",
-        \\"{\\"\\"index\\"\\":1}\\"
-      )",
+    "sqlStatements": "
+        START TRANSACTION;
+        SET @lastEventId = 0;
+        SET @lastTimestamp = 0;
+        SET @transactionId = 0;
+
+        SELECT @transactionid := CONNECTION_ID(),
+        @lastEventId := \`eventId\` + 1,
+        @lastTimestamp := GREATEST(
+          CAST(UNIX_TIMESTAMP(NOW(3)) * 1000 AS SIGNED),
+          \`timestamp\`
+        )
+        FROM \`events-sequence\`
+        WHERE \`key\` = 0;
+        
+        UPDATE \`events-sequence\`
+        SET \`eventId\` = @lastEventId,
+        \`transactionId\` = @transactionId,
+        \`timestamp\` = @lastTimestamp
+        WHERE \`key\` = 0;
+
+        INSERT INTO \`events\`(
+          \`eventId\`,
+          \`timestamp\`,
+          \`aggregateId\`,
+          \`aggregateVersion\`,
+          \`type\`,
+          \`payload\`
+        ) VALUES (
+          @lastEventId,
+          @lastTimestamp,
+          \\"id1\\",
+          1,
+          \\"AAA\\",
+          \\"{\\"\\"index\\"\\":1}\\"
+        );
+        
+        COMMIT;
+        ",
   },
   "executeSql",
   Object {
@@ -127,19 +153,45 @@ Array [
     "awsSecretStoreArn": "awsSecretStoreArn",
     "database": "event-store",
     "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "INSERT INTO \`events\`(
-        \`timestamp\`,
-        \`aggregateId\`,
-        \`aggregateVersion\`,
-        \`type\`,
-        \`payload\`
-      ) VALUES (
-        CAST(UNIX_TIMESTAMP(NOW(3)) * 1000 AS SIGNED),
-        \\"id1\\",
-        1,
-        \\"AAA\\",
-        \\"null\\"
-      )",
+    "sqlStatements": "
+        START TRANSACTION;
+        SET @lastEventId = 0;
+        SET @lastTimestamp = 0;
+        SET @transactionId = 0;
+
+        SELECT @transactionid := CONNECTION_ID(),
+        @lastEventId := \`eventId\` + 1,
+        @lastTimestamp := GREATEST(
+          CAST(UNIX_TIMESTAMP(NOW(3)) * 1000 AS SIGNED),
+          \`timestamp\`
+        )
+        FROM \`events-sequence\`
+        WHERE \`key\` = 0;
+        
+        UPDATE \`events-sequence\`
+        SET \`eventId\` = @lastEventId,
+        \`transactionId\` = @transactionId,
+        \`timestamp\` = @lastTimestamp
+        WHERE \`key\` = 0;
+
+        INSERT INTO \`events\`(
+          \`eventId\`,
+          \`timestamp\`,
+          \`aggregateId\`,
+          \`aggregateVersion\`,
+          \`type\`,
+          \`payload\`
+        ) VALUES (
+          @lastEventId,
+          @lastTimestamp,
+          \\"id1\\",
+          1,
+          \\"AAA\\",
+          \\"null\\"
+        );
+        
+        COMMIT;
+        ",
   },
   "executeSql",
   Object {
