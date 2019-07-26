@@ -44,13 +44,35 @@ const wrapHeadersCaseInsensitive = headersMap =>
   )
 
 const createRequest = async (lambdaEvent, customParameters) => {
-  const {
+  let {
     path,
     httpMethod,
-    headers: originalHeaders,
+    headers: { 'x-proxy-headers': proxyHeadersString, ...originalHeaders },
     queryStringParameters,
     body
   } = lambdaEvent
+
+  if (proxyHeadersString != null) {
+    for (const [headerName, headerValue] of Object.entries(
+      JSON.parse(proxyHeadersString)
+    )) {
+      const normalizedHeaderName = normalizeKey(headerName, 'upper-dash-case')
+      if (headerName.toLowerCase() === 'x-uri') {
+        path = headerValue
+      } else {
+        for (const originalHeaderName of Object.keys(originalHeaders)) {
+          if (
+            normalizeKey(originalHeaderName, 'upper-dash-case') ===
+            normalizedHeaderName
+          ) {
+            delete originalHeaders[originalHeaderName]
+          }
+        }
+
+        originalHeaders[normalizedHeaderName] = headerValue
+      }
+    }
+  }
 
   const headers = wrapHeadersCaseInsensitive(originalHeaders)
   const cookies =
