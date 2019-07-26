@@ -365,6 +365,7 @@ module.exports = {
           'upsert',
           'upvote',
           'upvoted',
+          'uri',
           'url',
           'urlencoded',
           'urls',
