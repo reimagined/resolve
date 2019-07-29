@@ -26,9 +26,9 @@ export default ({ resolveConfig, isClient }) => {
 
   /* eslint-disable no-console */
   if (clientEnvs.length > 0) {
-    console.warn('Following environment variables will be sent into browser:')
-    clientEnvs.forEach(env => console.warn(` * ${env}`))
-    console.warn('')
+    console.log('Following environment variables will be sent into browser:')
+    clientEnvs.forEach(env => console.log(` * ${env}`))
+    console.log('')
   }
   /* eslint-enable no-console */
 

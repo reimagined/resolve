@@ -94,19 +94,45 @@ Array [
     "awsSecretStoreArn": "awsSecretStoreArn",
     "database": "event-store",
     "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "INSERT INTO \`events\`(
-        \`timestamp\`,
-        \`aggregateId\`,
-        \`aggregateVersion\`,
-        \`type\`,
-        \`payload\`
-      ) VALUES (
-        CAST(UNIX_TIMESTAMP(NOW(3)) * 1000 AS SIGNED),
-        FROM_BASE64(\\"aWQx\\"),
-        1,
-        FROM_BASE64(\\"QUFB\\"),
-        FROM_BASE64(\\"eyJpbmRleCI6MX0=\\")
-      )",
+    "sqlStatements": "
+        START TRANSACTION;
+        SET @lastEventId = 0;
+        SET @lastTimestamp = 0;
+        SET @transactionId = 0;
+
+        SELECT @transactionid := CONNECTION_ID(),
+        @lastEventId := \`eventId\` + 1,
+        @lastTimestamp := GREATEST(
+          CAST(UNIX_TIMESTAMP(NOW(3)) * 1000 AS SIGNED),
+          \`timestamp\`
+        )
+        FROM \`events-sequence\`
+        WHERE \`key\` = 0;
+        
+        UPDATE \`events-sequence\`
+        SET \`eventId\` = @lastEventId,
+        \`transactionId\` = @transactionId,
+        \`timestamp\` = @lastTimestamp
+        WHERE \`key\` = 0;
+
+        INSERT INTO \`events\`(
+          \`eventId\`,
+          \`timestamp\`,
+          \`aggregateId\`,
+          \`aggregateVersion\`,
+          \`type\`,
+          \`payload\`
+        ) VALUES (
+          @lastEventId,
+          @lastTimestamp,
+          FROM_BASE64(\\"aWQx\\"),
+          1,
+          FROM_BASE64(\\"QUFB\\"),
+          FROM_BASE64(\\"eyJpbmRleCI6MX0=\\")
+        );
+        
+        COMMIT;
+        ",
   },
   "executeSql",
   Object {
@@ -127,19 +153,45 @@ Array [
     "awsSecretStoreArn": "awsSecretStoreArn",
     "database": "event-store",
     "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "INSERT INTO \`events\`(
-        \`timestamp\`,
-        \`aggregateId\`,
-        \`aggregateVersion\`,
-        \`type\`,
-        \`payload\`
-      ) VALUES (
-        CAST(UNIX_TIMESTAMP(NOW(3)) * 1000 AS SIGNED),
-        FROM_BASE64(\\"aWQx\\"),
-        1,
-        FROM_BASE64(\\"QUFB\\"),
-        FROM_BASE64(\\"bnVsbA==\\")
-      )",
+    "sqlStatements": "
+        START TRANSACTION;
+        SET @lastEventId = 0;
+        SET @lastTimestamp = 0;
+        SET @transactionId = 0;
+
+        SELECT @transactionid := CONNECTION_ID(),
+        @lastEventId := \`eventId\` + 1,
+        @lastTimestamp := GREATEST(
+          CAST(UNIX_TIMESTAMP(NOW(3)) * 1000 AS SIGNED),
+          \`timestamp\`
+        )
+        FROM \`events-sequence\`
+        WHERE \`key\` = 0;
+        
+        UPDATE \`events-sequence\`
+        SET \`eventId\` = @lastEventId,
+        \`transactionId\` = @transactionId,
+        \`timestamp\` = @lastTimestamp
+        WHERE \`key\` = 0;
+
+        INSERT INTO \`events\`(
+          \`eventId\`,
+          \`timestamp\`,
+          \`aggregateId\`,
+          \`aggregateVersion\`,
+          \`type\`,
+          \`payload\`
+        ) VALUES (
+          @lastEventId,
+          @lastTimestamp,
+          FROM_BASE64(\\"aWQx\\"),
+          1,
+          FROM_BASE64(\\"QUFB\\"),
+          FROM_BASE64(\\"bnVsbA==\\")
+        );
+        
+        COMMIT;
+        ",
   },
   "executeSql",
   Object {
