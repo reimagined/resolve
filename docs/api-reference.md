@@ -7,14 +7,61 @@ title: API Reference
 
 ### Connector Interface
 
-The table below list functions that a custom Read Model's connector should implement.
+The table below lists functions that a custom Read Model's connector should implement.
 
-| Function Name | Description                                                                               |
-| ------------- | ----------------------------------------------------------------------------------------- |
-| connect       | Initialises a connection to a storage.                                                    |
-| disconnect    | Closes the storage connection.                                                            |
-| drop          | Removes the Read Model's data from storage.                                               |
-| dispose       | Forcefully disposes all unmanaged resources used by Read Models served by this connector. |
+| Function Name             | Description                                                                               |
+| ------------------------- | ----------------------------------------------------------------------------------------- |
+| [connect](#connect)       | Initialises a connection to a storage.                                                    |
+| [disconnect](#disconnect) | Closes the storage connection.                                                            |
+| [drop](#drop)             | Removes the Read Model's data from storage.                                               |
+| [dispose](#dispose)       | Forcefully disposes all unmanaged resources used by Read Models served by this connector. |
+
+##### connect
+
+```js
+const connect = async readModelName => {
+  fs.writeFileSync(`${prefix}${readModelName}.lock`, true, { flag: 'wx' })
+  readModels.add(readModelName)
+  const store = {
+    get() {
+      return JSON.parse(String(fs.readFileSync(`${prefix}${readModelName}`)))
+    },
+    set(value) {
+      fs.writeFileSync(`${prefix}${readModelName}`, JSON.stringify(value))
+    }
+  }
+  return store
+}
+```
+
+##### disconnect
+
+```js
+const disconnect = async (store, readModelName) => {
+  safeUnlinkSync(`${prefix}${readModelName}.lock`)
+  readModels.delete(readModelName)
+}
+```
+
+##### drop
+
+```js
+const drop = async (store, readModelName) => {
+  safeUnlinkSync(`${prefix}${readModelName}.lock`)
+  safeUnlinkSync(`${prefix}${readModelName}`)
+}
+```
+
+##### dispose
+
+```js
+const dispose = async () => {
+  for (const readModelName of readModels) {
+    safeUnlinkSync(`${prefix}${readModelName}.lock`)
+  }
+  readModels.clear()
+}
+```
 
 ### Store Interface
 
