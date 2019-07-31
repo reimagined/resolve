@@ -130,17 +130,56 @@ const getStory = async (store, { id }) => {
 
 A saga's event handler receives an object that provides access to the saga-related API. This API includes the following objects:
 
-| Object Name | Description                                                                       |
-| ----------- | --------------------------------------------------------------------------------- |
-| store       | Provides access to the saga's persistent store (similar to the Read Model store). |
-| sideEffects | Provides access to the saga's side effect functions.                              |
+| Object Name                 | Description                                                                       |
+| --------------------------- | --------------------------------------------------------------------------------- |
+| [store](#store)             | Provides access to the saga's persistent store (similar to the Read Model store). |
+| [sideEffects](#sideeffects) | Provides access to the saga's side effect functions.                              |
 
 In addition to user-defined side effect functions, the SideEffects object contains the following default side effects:
 
-| Function Name   | Description                                                                                 |
-| --------------- | ------------------------------------------------------------------------------------------- |
-| executeCommand  | Sends a command with the specified payload to an aggregate.                                 |
-| scheduleCommand | Similar to `executeCommand`, but delays command execution until a specified moment in time. |
+| Function Name                       | Description                                                                                 |
+| ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| [executeCommand](#executecommand)   | Sends a command with the specified payload to an aggregate.                                 |
+| [scheduleCommand](#schedulecommand) | Similar to `executeCommand`, but delays command execution until a specified moment in time. |
+
+##### store
+
+```js
+Init: async ({ store }) => {
+  await store.defineTable('users', {
+    indexes: { id: 'string' },
+    fields: ['mail']
+  })
+},
+```
+
+##### sideEffects
+
+```js
+await sideEffects.sendEmail(event.payload.mail, 'Confirm mail')
+```
+
+##### executeCommand
+
+```js
+await sideEffects.executeCommand({
+  aggregateName: 'User',
+  aggregateId: event.aggregateId,
+  type: 'requestConfirmUser',
+  payload: event.payload
+})
+```
+
+##### scheduleCommand
+
+```js
+await sideEffects.scheduleCommand(event.timestamp + 1000 * 60 * 60 * 24 * 7, {
+  aggregateName: 'User',
+  aggregateId: event.aggregateId,
+  type: 'forgetUser',
+  payload: {}
+})
+```
 
 ## Client-Side API
 
