@@ -15,34 +15,29 @@ export default {
       const user = await store.findOne('SagaUsers', { name })
 
       if (user && user.id !== aggregateId) {
-        if (sideEffects.isEnabled) {
-          await sideEffects.executeCommand({
-            type: 'rejectUser',
-            aggregateName: 'User',
-            aggregateId,
-            payload: {
-              reason: 'user with same name already registered and confirmed'
-            }
-          })
-        }
+        await sideEffects.executeCommand({
+          type: 'rejectUser',
+          aggregateName: 'User',
+          aggregateId,
+          payload: {
+            reason: 'user with same name already registered and confirmed'
+          }
+        })
       } else {
-        if (sideEffects.isEnabled) {
-          await sideEffects.sendEmail(
-            'admin@resolve.sh',
-            `${name} registration request`,
-            `Please confirm registration or the user will be deleted during 1 hour`
-          )
+        await sideEffects.sendEmail(
+          'admin@resolve.sh',
+          `${name} registration request`,
+          `Please confirm registration or the user will be deleted during 1 hour`
+        )
 
-          await sideEffects.scheduleCommand(timestamp + 3600000, {
-            type: 'rejectUser',
-            aggregateName: 'User',
-            aggregateId,
-            payload: {
-              reason:
-                'user registration was not confirmed within allowed period'
-            }
-          })
-        }
+        await sideEffects.scheduleCommand(timestamp + 3600000, {
+          type: 'rejectUser',
+          aggregateName: 'User',
+          aggregateId,
+          payload: {
+            reason: 'user registration was not confirmed within allowed period'
+          }
+        })
       }
     },
     [USER_CONFIRMED]: async (
