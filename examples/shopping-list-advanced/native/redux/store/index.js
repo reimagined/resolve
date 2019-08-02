@@ -19,8 +19,8 @@ import optimisticShoppingLists from '../reducers/optimistic-shopping-lists'
 import optimisticSharings from '../reducers/optimistic-sharings'
 import refresh from '../reducers/refresh'
 
-import optimisticSharingsMiddleware from '../middlewares/optimistic-sharings-middleware'
-import optimisticShoppingListsMiddleware from '../middlewares/optimistic-shopping-lists-middleware'
+import optimisticSharingsSaga from '../sagas/optimistic-sharings-saga'
+import optimisticShoppingListsSaga from '../sagas/optimistic-shopping-lists-saga'
 
 const initialState = {}
 
@@ -36,11 +36,8 @@ const redux = {
     optimisticSharings,
     refresh
   },
-  middlewares: [
-    optimisticShoppingListsMiddleware,
-    optimisticSharingsMiddleware
-  ],
-  sagas: [],
+  middlewares: [],
+  sagas: [optimisticSharingsSaga, optimisticShoppingListsSaga],
   enhancers: [
     devToolsEnhancer({
       realtime: true,

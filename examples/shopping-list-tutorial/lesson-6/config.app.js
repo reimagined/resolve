@@ -25,7 +25,7 @@ const appConfig = {
     reducers: {
       optimisticShoppingLists: 'client/reducers/optimistic_shopping_lists.js'
     },
-    middlewares: ['client/middlewares/optimistic_shopping_lists_middleware.js']
+    sagas: ['client/sagas/optimistic_shopping_lists_saga.js']
   }
 }
 
