@@ -26,13 +26,16 @@ export class Submit extends React.PureComponent {
   state = {
     title: '',
     link: '',
-    text: ''
+    text: '',
+    disabled: false
   }
 
   handleChange = (event, name) => this.setState({ [name]: event.target.value })
 
   handleSubmit = () => {
     const { title, link, text } = this.state
+
+    this.setState({ disabled: !this.state.disabled })
 
     return this.props.createStory({
       id: uuid.v4(),
@@ -55,6 +58,7 @@ export class Submit extends React.PureComponent {
             type="text"
             value={this.state.title}
             onChange={e => this.handleChange(e, 'title')}
+            disabled={this.state.disabled}
           />
         </div>
         <div>
@@ -63,6 +67,7 @@ export class Submit extends React.PureComponent {
             type="text"
             value={this.state.link}
             onChange={e => this.handleChange(e, 'link')}
+            disabled={this.state.disabled}
           />
         </div>
         <div>
@@ -72,10 +77,16 @@ export class Submit extends React.PureComponent {
             rows="4"
             value={this.state.text}
             onChange={e => this.handleChange(e, 'text')}
+            disabled={this.state.disabled}
           />
         </div>
         <div>
-          <SubmitButton onClick={this.handleSubmit}>submit</SubmitButton>
+          <SubmitButton
+            disabled={this.state.disabled}
+            onClick={this.handleSubmit}
+          >
+            {this.state.disabled ? 'Please wait...' : 'submit'}
+          </SubmitButton>
         </div>
         <div>
           Leave url blank to submit a question for discussion. If there is no
