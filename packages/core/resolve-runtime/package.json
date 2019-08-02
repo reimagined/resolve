@@ -31,7 +31,7 @@
     "aws-xray-sdk-core": "^2.3.3",
     "cron": "^1.5.0",
     "cuid": "^2.1.6",
-    "debug-levels": "^0.2.0",
+    "resolve-debug-levels": "0.20.21",
     "express": "^4.16.4",
     "history": "^4.7.2",
     "jsonwebtoken": "^8.3.0",

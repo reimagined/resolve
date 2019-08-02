@@ -1,4 +1,4 @@
-import debugLevels from 'debug-levels'
+import debugLevels from 'resolve-debug-levels'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 

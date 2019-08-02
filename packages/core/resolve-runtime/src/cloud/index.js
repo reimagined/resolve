@@ -1,6 +1,6 @@
 import 'source-map-support/register'
 
-import debugLevels from 'debug-levels'
+import debugLevels from 'resolve-debug-levels'
 import { createActions } from 'resolve-redux'
 
 import initAwsClients from './init-aws-clients'
