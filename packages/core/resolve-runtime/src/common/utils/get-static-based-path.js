@@ -1,4 +1,4 @@
-import debugLevels from 'debug-levels'
+import debugLevels from 'resolve-debug-levels'
 import Url from 'url'
 
 import getRootBasedUrl from './get-root-based-url'

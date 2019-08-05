@@ -1,4 +1,4 @@
-import debugLevels from 'debug-levels'
+import debugLevels from 'resolve-debug-levels'
 import { globalPartitionKey, rangedIndex } from './constants'
 
 const log = debugLevels('resolve:resolve-storage-dynamo:init')
