@@ -5,7 +5,7 @@ const onSubMessage = async (pool, byteMessage) => {
   const payloadIndex = message.indexOf(' ') + 1
   const topicName = message.substring(0, payloadIndex - 1)
   const encodedContent = message.substring(payloadIndex)
-  const content = new Buffer(encodedContent, 'base64').toString('utf8')
+  const content = Buffer.from(encodedContent, 'base64').toString('utf8')
 
   try {
     switch (topicName) {

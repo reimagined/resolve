@@ -1,3 +1,3 @@
-const encodePubContent = content => new Buffer(content).toString('base64')
+const encodePubContent = content => Buffer.from(content).toString('base64')
 
 export default encodePubContent
