@@ -1,4 +1,4 @@
-import debugLevels from 'debug-levels'
+import debugLevels from 'resolve-debug-levels'
 
 const getLog = handler =>
   debugLevels(`resolve:resolve-runtime:scheduler-saga-handlers:${handler}`)
