@@ -1,5 +1,5 @@
 import cuid from 'cuid'
-import debugLevels from 'debug-levels'
+import debugLevels from 'resolve-debug-levels'
 import zmq from 'zeromq'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'

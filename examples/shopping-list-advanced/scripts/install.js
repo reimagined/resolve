@@ -3,6 +3,8 @@ const path = require('path')
 const http = require('http')
 const { spawn } = require('child_process')
 
+const yarnExecutablePath = process.platform === 'win32' ? 'yarn.cmd' : 'yarn'
+
 const spawnAsync = (command, args, options) =>
   new Promise((resolve, reject) => {
     const childProcess = spawn(command, args, options)
@@ -191,7 +193,7 @@ const main = async () => {
   for (const { name, directory } of [...resolvePackages, ...localPackages]) {
     promises.push(
       spawnAsync(
-        'yarn',
+        yarnExecutablePath,
         [
           'pack',
           '--filename',
@@ -206,7 +208,10 @@ const main = async () => {
 
   // 8. Install packages
   for (const { directory } of localPackages) {
-    await spawnAsync('yarn', ['install'], { cwd: directory, stdio: 'inherit' })
+    await spawnAsync(yarnExecutablePath, ['install'], {
+      cwd: directory,
+      stdio: 'inherit'
+    })
   }
 
   // 9. Remove tar.gz-s

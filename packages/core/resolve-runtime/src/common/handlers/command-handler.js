@@ -1,4 +1,4 @@
-import debugLevels from 'debug-levels'
+import debugLevels from 'resolve-debug-levels'
 import { ConcurrentError } from 'resolve-storage-base'
 import { CommandError } from 'resolve-command'
 

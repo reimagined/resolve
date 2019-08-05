@@ -1132,14 +1132,15 @@ export default optimistic_shopping_lists
 
 <!-- prettier-ignore-end -->
 
-Provide a middleware that intercepts the service actions used for communication between Redux and reSolve.
+Provide a saga that intercepts the service actions used for communication between Redux and reSolve.
 
-**client/reducers/optimistic_shopping_lists_middleware.js:**
+**client/sagas/optimistic_shopping_lists_saga.js:**
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/middlewares/optimistic_shopping_lists_middleware.js /^/ /\n$/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/sagas/optimistic_shopping_lists_saga.js /^/ /\n$/)
 ```js
+import { takeEvery, put } from 'redux-saga/effects'
 import { actionTypes } from 'resolve-redux'
 
 import {
@@ -1149,32 +1150,35 @@ import {
 
 const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
 
-const optimistic_shopping_lists_middleware = store => next => action => {
-  if (
-    action.type === SEND_COMMAND_SUCCESS &&
-    action.commandType === 'createShoppingList'
-  ) {
-    store.dispatch({
-      type: OPTIMISTIC_CREATE_SHOPPING_LIST,
-      payload: {
-        id: action.aggregateId,
-        name: action.payload.name
-      }
-    })
-  }
-  if (action.type === LOAD_READMODEL_STATE_SUCCESS) {
-    store.dispatch({
-      type: OPTIMISTIC_SYNC,
-      payload: {
-        originalLists: action.result
-      }
-    })
-  }
+export default function* () {
+  yield takeEvery(
+    action =>
+      action.type === SEND_COMMAND_SUCCESS &&
+      action.commandType === 'createShoppingList',
+    function* (action) {
+      yield put({
+        type: OPTIMISTIC_CREATE_SHOPPING_LIST,
+        payload: {
+          id: action.aggregateId,
+          name: action.payload.name
+        }
+      })
+    }
+  )
 
-  next(action)
+  yield takeEvery(
+    action =>
+      action.type === LOAD_READMODEL_STATE_SUCCESS,
+    function* (action) {
+      yield put({
+        type: OPTIMISTIC_SYNC,
+        payload: {
+          originalLists: action.result
+        }
+      })
+    }
+  )
 }
-
-export default optimistic_shopping_lists_middleware
 ```
 
 <!-- prettier-ignore-end -->
@@ -1464,22 +1468,61 @@ import { LOCATION_CHANGE } from 'react-router-redux'
   }
 ```
 
-**client/middlewares/optimistic_shopping_lists_middleware.js:**
+**client/sagas/optimistic_shopping_lists_saga.js:**
 
 ```js
-const optimistic_shopping_lists_middleware = store => next => action => {
-  if (
-    action.type === SEND_COMMAND_SUCCESS &&
-    action.commandType === 'removeShoppingList'
-  ) {
-    store.dispatch({
-      type: OPTIMISTIC_REMOVE_SHOPPING_LIST,
-      payload: {
-        id: action.aggregateId
-      }
-    })
-  }
+import { takeEvery, put } from 'redux-saga/effects'
+import { actionTypes } from 'resolve-redux'
 
-  next(action)
+import {
+  OPTIMISTIC_CREATE_SHOPPING_LIST,
+  OPTIMISTIC_REMOVE_SHOPPING_LIST,
+  OPTIMISTIC_SYNC
+} from '../actions/optimistic_actions'
+
+const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
+
+export default function* () {
+  yield takeEvery(
+    action =>
+      action.type === SEND_COMMAND_SUCCESS &&
+      action.commandType === 'createShoppingList',
+    function* (action) {
+      yield put({
+        type: OPTIMISTIC_CREATE_SHOPPING_LIST,
+        payload: {
+          id: action.aggregateId,
+          name: action.payload.name
+        }
+      })
+    }
+  )
+
+  yield takeEvery(
+    action =>
+      action.type === SEND_COMMAND_SUCCESS &&
+      action.commandType === 'removeShoppingList',
+    function* (action) {
+      yield put({
+        type: OPTIMISTIC_REMOVE_SHOPPING_LIST,
+        payload: {
+          id: action.aggregateId
+        }
+      })
+    }
+  )
+
+  yield takeEvery(
+    action =>
+      action.type === LOAD_READMODEL_STATE_SUCCESS,
+    function* (action) {
+      yield put({
+        type: OPTIMISTIC_SYNC,
+        payload: {
+          originalLists: action.result
+        }
+      })
+    }
+  )
 }
 ```

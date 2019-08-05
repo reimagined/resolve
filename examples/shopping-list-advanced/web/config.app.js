@@ -8,9 +8,9 @@ const appConfig = {
       optimisticShoppingLists:
         'client/redux/reducers/optimistic-shopping-lists.js'
     },
-    middlewares: [
-      'client/redux/middlewares/optimistic-sharings-middleware.js',
-      'client/redux/middlewares/optimistic-shopping-lists-middleware.js'
+    sagas: [
+      'client/redux/sagas/optimistic-sharings-saga.js',
+      'client/redux/sagas/optimistic-shopping-lists-saga.js'
     ]
   },
   aggregates: [

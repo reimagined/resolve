@@ -15,7 +15,7 @@ Array [
     "awsSecretStoreArn": "awsSecretStoreArn",
     "database": "event-store",
     "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "SELECT * FROM \`events\` WHERE \`type\` IN (\\"AAA\\")
+    "sqlStatements": "SELECT * FROM \`events\` WHERE \`type\` IN (FROM_BASE64(\\"QUFB\\"))
     ORDER BY \`eventId\` DESC LIMIT 0, 1",
   },
   "executeSql",
@@ -23,7 +23,7 @@ Array [
     "awsSecretStoreArn": "awsSecretStoreArn",
     "database": "event-store",
     "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "SELECT * FROM \`events\` WHERE \`aggregateId\` IN (\\"id1\\")
+    "sqlStatements": "SELECT * FROM \`events\` WHERE \`aggregateId\` IN (FROM_BASE64(\\"aWQx\\"))
     ORDER BY \`eventId\` DESC LIMIT 0, 1",
   },
   "executeSql",
@@ -62,7 +62,7 @@ Array [
     "awsSecretStoreArn": "awsSecretStoreArn",
     "database": "event-store",
     "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "SELECT * FROM \`events\` WHERE \`type\` IN (\\"AAA\\")
+    "sqlStatements": "SELECT * FROM \`events\` WHERE \`type\` IN (FROM_BASE64(\\"QUFB\\"))
       ORDER BY \`eventId\` ASC
       LIMIT 0, 50",
   },
@@ -71,7 +71,7 @@ Array [
     "awsSecretStoreArn": "awsSecretStoreArn",
     "database": "event-store",
     "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "SELECT * FROM \`events\` WHERE \`aggregateId\` IN (\\"id1\\")
+    "sqlStatements": "SELECT * FROM \`events\` WHERE \`aggregateId\` IN (FROM_BASE64(\\"aWQx\\"))
       ORDER BY \`eventId\` ASC
       LIMIT 0, 50",
   },
@@ -125,10 +125,10 @@ Array [
         ) VALUES (
           @lastEventId,
           @lastTimestamp,
-          \\"id1\\",
+          FROM_BASE64(\\"aWQx\\"),
           1,
-          \\"AAA\\",
-          \\"{\\"\\"index\\"\\":1}\\"
+          FROM_BASE64(\\"QUFB\\"),
+          FROM_BASE64(\\"eyJpbmRleCI6MX0=\\")
         );
         
         COMMIT;
@@ -184,10 +184,10 @@ Array [
         ) VALUES (
           @lastEventId,
           @lastTimestamp,
-          \\"id1\\",
+          FROM_BASE64(\\"aWQx\\"),
           1,
-          \\"AAA\\",
-          \\"null\\"
+          FROM_BASE64(\\"QUFB\\"),
+          FROM_BASE64(\\"bnVsbA==\\")
         );
         
         COMMIT;
