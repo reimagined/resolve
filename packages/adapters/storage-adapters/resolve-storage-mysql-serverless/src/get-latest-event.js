@@ -1,8 +1,8 @@
 const getLatestEvent = async (
-  { executeSql, escapeId, escape, tableName },
+  { executeSql, escapeId, escapeUnicode, tableName },
   { eventTypes, aggregateIds, startTime, finishTime }
 ) => {
-  const injectString = value => `${escape(value)}`
+  const injectString = value => `${escapeUnicode(value)}`
   const injectNumber = value => `${+value}`
 
   const queryConditions = []

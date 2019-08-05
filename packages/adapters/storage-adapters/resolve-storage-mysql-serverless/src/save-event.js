@@ -5,7 +5,7 @@ const randRange = (min, max) =>
 const fullJitter = retries => randRange(0, Math.min(100, 2 * 2 ** retries))
 
 const saveEvent = async (
-  { tableName, executeSql, escapeId, escape },
+  { tableName, executeSql, escapeId, escapeUnicode },
   event
 ) => {
   for (let retry = 0; ; retry++) {
@@ -41,10 +41,10 @@ const saveEvent = async (
         ) VALUES (
           @lastEventId,
           @lastTimestamp,
-          ${escape(event.aggregateId)},
+          ${escapeUnicode(event.aggregateId)},
           ${+event.aggregateVersion},
-          ${escape(event.type)},
-          ${escape(
+          ${escapeUnicode(event.type)},
+          ${escapeUnicode(
             JSON.stringify(event.payload != null ? event.payload : null)
           )}
         );
