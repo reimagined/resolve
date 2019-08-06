@@ -1,5 +1,4 @@
-import { put, takeEvery, fork } from 'redux-saga/effects'
-import { delay } from 'redux-saga'
+import { put, takeEvery, fork, delay } from 'redux-saga/effects'
 
 import createConnectionManager from './create_connection_manager'
 

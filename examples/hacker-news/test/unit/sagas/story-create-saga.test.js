@@ -1,6 +1,6 @@
 import { actionTypes } from 'resolve-redux'
 import { routerActions } from 'react-router-redux'
-import { delay } from 'redux-saga'
+import { delay } from 'redux-saga/effects'
 import storyCreateSagaFactory from '../../../client/sagas/story-create-saga'
 
 const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = actionTypes
@@ -12,7 +12,7 @@ test('Create story saga - register takeAll sagas', () => {
 
   step = storyCreateSaga.next()
   expect(step.done).toEqual(false)
-  const successCommandFilter = step.value['FORK'].args[0]
+  const successCommandFilter = step.value.payload.args[0]
 
   expect(
     successCommandFilter({
@@ -30,7 +30,7 @@ test('Create story saga - register takeAll sagas', () => {
 
   step = storyCreateSaga.next()
   expect(step.done).toEqual(false)
-  const failureCommandFilter = step.value['FORK'].args[0]
+  const failureCommandFilter = step.value.payload.args[0]
 
   expect(
     failureCommandFilter({
@@ -57,7 +57,7 @@ test('Create story saga - success story create and success fetch', () => {
   }
   const storyCreateSaga = storyCreateSagaFactory({ api })
   let step = storyCreateSaga.next()
-  const successCommandSagaFactory = step.value['FORK'].args[1]
+  const successCommandSagaFactory = step.value.payload.args[1]
 
   const successCommandSaga = successCommandSagaFactory({
     aggregateId: 'aggregateId'
@@ -89,7 +89,7 @@ test('Create story saga - success story create and success fetch', () => {
 
   step = successCommandSaga.next({ result: '{}' })
   expect(step.done).toEqual(false)
-  expect(step.value['PUT'].action).toEqual(
+  expect(step.value.payload.action).toEqual(
     routerActions.push(`/storyDetails/aggregateId`)
   )
 
@@ -104,7 +104,7 @@ test('Create story saga - success story create and failed fetch', () => {
   }
   const storyCreateSaga = storyCreateSagaFactory({ api })
   let step = storyCreateSaga.next()
-  const successCommandSagaFactory = step.value['FORK'].args[1]
+  const successCommandSagaFactory = step.value.payload.args[1]
 
   const successCommandSaga = successCommandSagaFactory({
     aggregateId: 'aggregateId'
@@ -128,7 +128,7 @@ test('Create story saga - fail story create', () => {
   const storyCreateSaga = storyCreateSagaFactory({ api })
   let step = storyCreateSaga.next()
   step = storyCreateSaga.next()
-  const failureCommandSagaFactory = step.value['FORK'].args[1]
+  const failureCommandSagaFactory = step.value.payload.args[1]
 
   const failureCommandSaga = failureCommandSagaFactory({
     aggregateId: 'aggregateId'
@@ -136,7 +136,7 @@ test('Create story saga - fail story create', () => {
 
   step = failureCommandSaga.next()
   expect(step.done).toEqual(false)
-  expect(step.value['PUT'].action).toEqual(
+  expect(step.value.payload.action).toEqual(
     routerActions.push(`/error?text=Failed to create a story`)
   )
 

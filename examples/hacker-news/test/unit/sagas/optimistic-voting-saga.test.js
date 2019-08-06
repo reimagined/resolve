@@ -13,7 +13,7 @@ test('Optimistic voting saga - register takeAll sagas', () => {
 
   step = optimisticVotingSaga.next()
   expect(step.done).toEqual(false)
-  const upvoteActionFilter = step.value['FORK'].args[0]
+  const upvoteActionFilter = step.value.payload.args[0]
 
   expect(
     upvoteActionFilter({
@@ -31,7 +31,7 @@ test('Optimistic voting saga - register takeAll sagas', () => {
 
   step = optimisticVotingSaga.next()
   expect(step.done).toEqual(false)
-  const unvoteActionFilter = step.value['FORK'].args[0]
+  const unvoteActionFilter = step.value.payload.args[0]
 
   expect(
     unvoteActionFilter({
@@ -54,12 +54,14 @@ test('Optimistic voting saga - register takeAll sagas', () => {
 test('Optimistic voting saga - upvote success', () => {
   const optimisticVotingSaga = optimisticVotingSagaFactory()
   let step = optimisticVotingSaga.next()
-  const upvoteSagaFactory = step.value['FORK'].args[1]
+  const upvoteSagaFactory = step.value.payload.args[1]
   const upvoteSaga = upvoteSagaFactory({ aggregateId: 'aggregateId' })
 
   step = upvoteSaga.next()
   expect(step.done).toEqual(false)
-  expect(step.value['PUT'].action).toEqual(optimisticUpvoteStory('aggregateId'))
+  expect(step.value.payload.action).toEqual(
+    optimisticUpvoteStory('aggregateId')
+  )
 
   step = upvoteSaga.next()
   expect(step.done).toEqual(true)
@@ -69,13 +71,15 @@ test('Optimistic voting saga - unvote success', () => {
   const optimisticVotingSaga = optimisticVotingSagaFactory()
   let step = optimisticVotingSaga.next()
   step = optimisticVotingSaga.next()
-  const unvoteSagaFactory = step.value['FORK'].args[1]
+  const unvoteSagaFactory = step.value.payload.args[1]
 
   const unvoteSaga = unvoteSagaFactory({ aggregateId: 'aggregateId' })
 
   step = unvoteSaga.next()
   expect(step.done).toEqual(false)
-  expect(step.value['PUT'].action).toEqual(optimisticUnvoteStory('aggregateId'))
+  expect(step.value.payload.action).toEqual(
+    optimisticUnvoteStory('aggregateId')
+  )
 
   step = unvoteSaga.next()
   expect(step.done).toEqual(true)
