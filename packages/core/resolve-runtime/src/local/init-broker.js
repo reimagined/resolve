@@ -26,15 +26,15 @@ const OUTCOMING_TOPICS = {
 
 const isPromise = promise => Promise.resolve(promise) === promise
 
-const encodePubContent = content => new Buffer(content).toString('base64')
+const encodePubContent = content => Buffer.from(content).toString('base64')
 
 const decodeXsubContent = encodedContent => {
-  return new Buffer(encodedContent, 'base64').toString('utf8')
+  return Buffer.from(encodedContent, 'base64').toString('utf8')
 }
 
 const encodeXsubTopic = ({ listenerId, clientId }) => {
-  const encodedListenerId = new Buffer(listenerId).toString('base64')
-  const encodedClientId = new Buffer(clientId).toString('base64')
+  const encodedListenerId = Buffer.from(listenerId).toString('base64')
+  const encodedClientId = Buffer.from(clientId).toString('base64')
   const encodedTopic = `${encodedListenerId}-${encodedClientId}`
   return encodedTopic
 }
@@ -42,8 +42,8 @@ const encodeXsubTopic = ({ listenerId, clientId }) => {
 const decodeXsubTopic = encodedTopic => {
   const [encodedListenerId, encodedClientId] = encodedTopic.split('-')
   return {
-    listenerId: new Buffer(encodedListenerId, 'base64').toString('utf8'),
-    clientId: new Buffer(encodedClientId, 'base64').toString('utf8')
+    listenerId: Buffer.from(encodedListenerId, 'base64').toString('utf8'),
+    clientId: Buffer.from(encodedClientId, 'base64').toString('utf8')
   }
 }
 
