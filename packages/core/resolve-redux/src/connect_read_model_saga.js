@@ -1,5 +1,4 @@
-import { take, put } from 'redux-saga/effects'
-import { delay } from 'redux-saga'
+import { take, put, delay } from 'redux-saga/effects'
 import hash from 'uuid'
 
 import getHash from './get_hash'

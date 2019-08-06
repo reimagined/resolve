@@ -32,7 +32,7 @@
     "react-router": "^4.3.1",
     "react-router-redux": "^5.0.0-alpha.9",
     "hoist-non-react-statics": "^3.2.1",
-    "redux-saga": "^0.16.0",
+    "redux-saga": "^1.0.0",
     "unfetch": "^4.0.1",
     "uuid": "^3.3.2"
   },
