@@ -49,7 +49,7 @@ describe('Regression test. eventListenerSaga', () => {
           [key]: 0
         }
       }
-    }).value.PUT.action
+    }).value.payload.action
 
     expect(result).toEqual(event)
   })
