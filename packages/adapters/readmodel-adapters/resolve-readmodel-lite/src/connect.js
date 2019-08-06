@@ -72,9 +72,7 @@ const connect = async (imports, pool, options) => {
   await pool.connection.exec(`PRAGMA busy_timeout=1000000`)
   await pool.connection.exec(`PRAGMA encoding=${escape('UTF-8')}`)
   await pool.connection.exec(`PRAGMA synchronous=EXTRA`)
-  if (imports.os.platform() !== 'win32') {
-    await pool.connection.exec(`PRAGMA journal_mode=WAL`)
-  }
+  await pool.connection.exec(`PRAGMA journal_mode=DELETE`)
 }
 
 export default connect
