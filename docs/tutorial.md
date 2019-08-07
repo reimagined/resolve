@@ -445,7 +445,7 @@ viewModels: [
 You can now test the read side's functionality. Send an HTTP request to query the ShoppingList View Model:
 
 ```sh
-$  curl -i -g -X GET "http://localhost:3000/api/query/ShoppingList/shopping-list-1"
+$  curl -i -g -X GET "http://localhost:3000/api/query/shoppingList/shopping-list-1"
 HTTP/1.1 200 OK
 X-Powered-By: Express
 Content-Type: text/html; charset=utf-8
@@ -653,7 +653,7 @@ export const SHOPPING_ITEM_TOGGLED = "SHOPPING_ITEM_TOGGLED";
 
 The event payload contains the toggled item's ID.
 
-4. Modify the **ShoppingList** View Model projection to take **SHOPPING_ITEM_TOGGLED** events into account.
+3. Modify the **shoppingList** View Model projection to take **SHOPPING_ITEM_TOGGLED** events into account.
 
 **common/view-models/shopping_list.projection.js:**
 
