@@ -1,5 +1,5 @@
 const getLatestEvent = async (
-  { executeSql, escapeId, escapeUnicode, tableName },
+  { executeStatement, escapeId, escapeUnicode, tableName },
   { eventTypes, aggregateIds, startTime, finishTime }
 ) => {
   const injectString = value => `${escapeUnicode(value)}`
@@ -30,7 +30,7 @@ const getLatestEvent = async (
   const resultQueryCondition =
     queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
 
-  const rows = await executeSql(
+  const rows = await executeStatement(
     `SELECT * FROM ${escapeId(tableName)} ${resultQueryCondition}
     ORDER BY ${escapeId('eventId')} DESC LIMIT 0, 1`
   )

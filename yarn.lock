@@ -2220,7 +2220,7 @@ autoprefixer@^9.6.0:
     postcss "^7.0.17"
     postcss-value-parser "^4.0.0"
 
-aws-sdk@^2.304.0, aws-sdk@^2.369.0, aws-sdk@^2.436.0, aws-sdk@^2.490.0:
+aws-sdk@^2.304.0, aws-sdk@^2.369.0, aws-sdk@^2.436.0, aws-sdk@^2.504.0:
   version "2.504.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.504.0.tgz#d7111b3f5117548935d68c717d72bbf57a9362f9"
   integrity sha512-azOX54oovJv0zWzO23fBgIprwsvx8KUuMR+cAUAOx23D8LJ5S+sl3UYS9Q1X4qF/blBTa4+ZNawZDV0N1HiQmw==
