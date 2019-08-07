@@ -3,20 +3,28 @@ id: api-reference
 title: API Reference
 ---
 
-## Read Model Storage
-
-### Connector Interface
+## Read Model Connector Interface
 
 The table below lists functions that a custom Read Model's connector should implement.
 
-| Function Name             | Description                                                                               |
-| ------------------------- | ----------------------------------------------------------------------------------------- |
-| [connect](#connect)       | Initialises a connection to a storage.                                                    |
-| [disconnect](#disconnect) | Closes the storage connection.                                                            |
-| [drop](#drop)             | Removes the Read Model's data from storage.                                               |
-| [dispose](#dispose)       | Forcefully disposes all unmanaged resources used by Read Models served by this connector. |
+| Function Name             | Description                                                                                |
+| ------------------------- | ------------------------------------------------------------------------------------------ |
+| [connect](#connect)       | Initialises a connection to a storage.                                                     |
+| [disconnect](#disconnect) | Closes the storage connection.                                                             |
+| [drop](#drop)             | Removes the Read Model's data from storage.                                                |
+| [dispose](#dispose)       | Forcefully disposes all unmanaged resources that Read Models served by this connector use. |
 
-##### connect
+### connect
+
+Initialises a connection to a storage. An implementation should return a store object.
+
+#### Arguments
+
+| Argument Name | Description                                       |
+| ------------- | ------------------------------------------------- |
+| readModelName | A read model for which to establish a connection. |
+
+#### Example
 
 ```js
 const connect = async readModelName => {
@@ -34,7 +42,18 @@ const connect = async readModelName => {
 }
 ```
 
-##### disconnect
+### disconnect
+
+Closes the storage connection.
+
+#### Arguments
+
+| Argument Name | Description                 |
+| ------------- | --------------------------- |
+| store         | A store object.             |
+| readModelName | A read model to disconnect. |
+
+#### Example
 
 ```js
 const disconnect = async (store, readModelName) => {
@@ -43,7 +62,18 @@ const disconnect = async (store, readModelName) => {
 }
 ```
 
-##### drop
+### drop
+
+Removes the Read Model's data from storage.
+
+#### Arguments
+
+| Argument Name | Description                        |
+| ------------- | ---------------------------------- |
+| store         | A store object.                    |
+| readModelName | A Read Model whose data to remove. |
+
+#### Example
 
 ```js
 const drop = async (store, readModelName) => {
@@ -52,7 +82,11 @@ const drop = async (store, readModelName) => {
 }
 ```
 
-##### dispose
+### dispose
+
+Forcefully disposes all unmanaged resources that Read Models served by this connector use.
+
+#### Example
 
 ```js
 const dispose = async () => {
@@ -63,41 +97,143 @@ const dispose = async () => {
 }
 ```
 
-### Store Interface
+## Read Model Store Interface
 
 The table below lists functions that you can use to communicate with a Read Model store through a `store` object.
 
-| Function Name                                                       | Description                                                                       |
-| ------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| defineTable(tableName, tableDescription)                            | Defines a new table within the store.                                             |
-| find(tableName, searchExpression, fieldList, sort, skip, limit)     | Searches for data items that based on the specified expression.                   |
-| findOne(tableName, searchExpression, fieldList)                     | Searches for a single data item based on the specified expression.                |
-| count(tableName, searchExpression)                                  | Returns the count of items that meet the specified condition.                     |
-| insert(tableName, document)                                         | Inserts an item into the specified table                                          |
-| update(tableName, searchExpression, updateExpression, upsertOption) | Searches for data items and updates them based on the specified update expression |
-| del(tableName, searchExpression)                                    | Deletes data items based on the specified search expression                       |
+| Function Name               | Description                                                                        |
+| --------------------------- | ---------------------------------------------------------------------------------- |
+| [defineTable](#definetable) | Defines a new table within the store.                                              |
+| [find](#find)               | Searches for data items that based on the specified expression.                    |
+| [findOne](#findone)         | Searches for a single data item based on the specified expression.                 |
+| [count](#count)             | Returns the count of items that meet the specified condition.                      |
+| [insert](#insert)           | Inserts an item into the specified table.                                          |
+| [update](#update)           | Searches for data items and updates them based on the specified update expression. |
+| [del](#del)                 | Deletes data items based on the specified search expression.                       |
 
-The code sample below demonstrates how to use this API to communicate with a store from a Read Model projection and resolver.
+### defineTable
 
-##### Projection:
+Defines a new table within the store.
+
+#### Arguments
+
+| Argument Name    | Description                                         |
+| ---------------- | --------------------------------------------------- |
+| tableName        | The new table's name.                               |
+| tableDescription | An object that describes the new table's structure. |
+
+#### Example
 
 ```js
-  Init: async store => {
-    await store.defineTable('Stories', {
-      indexes: { id: 'string', type: 'string' },
-      fields: [
-        'title',
-        'text',
-        'link',
-        'commentCount',
-        'votes',
-        'createdAt',
-        'createdBy',
-        'createdByName'
-      ]
-    })
+Init: async store => {
+  await store.defineTable('Stories', {
+    indexes: { id: 'string', type: 'string' },
+    fields: [
+      'title',
+      'text',
+      'link',
+      'commentCount',
+      'votes',
+      'createdAt',
+      'createdBy',
+      'createdByName'
+    ]
+  })
+```
 
-  [STORY_CREATED]: async (
+### find
+
+Searches for data items that based on the specified expression.
+
+#### Arguments
+
+| Argument Name    | Description                                 |
+| ---------------- | ------------------------------------------- |
+| tableName        | A table name.                               |
+| searchExpression | An object that defines a search expression. |
+| fieldList        | A list of fields to fetch.                  |
+| sort             | The sort order.                             |
+| skip             | A number of data items to skip.             |
+| limit            | The maximum number of data items to fetch.  |
+
+#### Example
+
+```js
+const getStories = async (type, store, { first, offset }) => {
+  await store.waitEventCausalConsistency()
+  const search = type && type.constructor === String ? { type } : {}
+  const skip = first || 0
+  const stories = await store.find(
+    'Stories',
+    search,
+    null,
+    { createdAt: -1 },
+    skip,
+    skip + offset
+  )
+```
+
+### findOne
+
+Searches for a single data item based on the specified expression.
+
+#### Arguments
+
+| Argument Name    | Description                                 |
+| ---------------- | ------------------------------------------- |
+| tableName        | A table name.                               |
+| searchExpression | An object that defines a search expression. |
+| fieldList        | A list of fields to fetch.                  |
+
+#### Example
+
+```js
+[STORY_UPVOTED]: async (store, { aggregateId, payload: { userId } }) => {
+  const story = await store.findOne(
+    'Stories',
+    { id: aggregateId },
+    { votes: 1 }
+  )
+  await store.update(
+    'Stories',
+    { id: aggregateId },
+    { $set: { votes: story.votes.concat(userId) } }
+  )
+},
+```
+
+### count
+
+Returns the count of items that meet the specified condition.
+
+#### Arguments
+
+| Argument Name    | Description                                 |
+| ---------------- | ------------------------------------------- |
+| tableName        | A table name.                               |
+| searchExpression | An object that defines a search expression. |
+
+#### Example
+
+```js
+//
+```
+
+### insert
+
+Inserts an item into the specified table.
+
+#### Arguments
+
+| Argument Name | Description                          |
+| ------------- | ------------------------------------ |
+| tableName     | A table name.                        |
+| document      | An object that is an item to insert. |
+
+#### Example
+
+```js
+[STORY_CREATED]: async (
     store, { aggregateId, timestamp, payload: { title, link, userId, userName, text } }
   ) => {
     const isAsk = link == null || link === ''
@@ -118,69 +254,65 @@ The code sample below demonstrates how to use this API to communicate with a sto
 
     await store.insert('Stories', story)
   },
-
-  [STORY_UPVOTED]: async (store, { aggregateId, payload: { userId } }) => {
-    const story = await store.findOne(
-      'Stories',
-      { id: aggregateId },
-      { votes: 1 }
-    )
-    await store.update(
-      'Stories',
-      { id: aggregateId },
-      { $set: { votes: story.votes.concat(userId) } }
-    )
-  },
-
 ```
 
-##### Resolver:
+### update
+
+Searches for data items and updates them based on the specified update expression.
+
+#### Arguments
+
+| Argument Name    | Description                                                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| tableName        | A table name.                                                                                                               |
+| searchExpression | An object that defines a search expression.                                                                                 |
+| updateExpression | An object that defines an update expression.                                                                                |
+| upsertOption     | A boolean value that defines whether to create a new item if an existing item meeting the specified criteria was not found. |
+
+#### Example
 
 ```js
-const getStories = async (type, store, { first, offset }) => {
-  await store.waitEventCausalConsistency()
-  const search = type && type.constructor === String ? { type } : {}
-  const skip = first || 0
-  const stories = await store.find(
+[STORY_UPVOTED]: async (store, { aggregateId, payload: { userId } }) => {
+  const story = await store.findOne(
     'Stories',
-    search,
-    null,
-    { createdAt: -1 },
-    skip,
-    skip + offset
+    { id: aggregateId },
+    { votes: 1 }
   )
-
-  return Array.isArray(stories) ? stories : []
-}
-
-const getStory = async (store, { id }) => {
-  await store.waitEventCausalConsistency()
-  const story = await store.findOne('Stories', { id })
-
-  if (!story) {
-    return null
-  }
-
-  const type = !story.link
-    ? 'ask'
-    : /^(Show HN)/.test(story.title)
-    ? 'show'
-    : 'story'
-
-  Object.assign(story, { type })
-
-  return story
-}
+  await store.update(
+    'Stories',
+    { id: aggregateId },
+    { $set: { votes: story.votes.concat(userId) } }
+  )
+},
 ```
+
+### del
+
+Deletes data items based on the specified search expression.
+
+#### Arguments
+
+| Argument Name    | Description                                 |
+| ---------------- | ------------------------------------------- |
+| tableName        | A table name.                               |
+| searchExpression | An object that defines a search expression. |
+
+#### Example
+
+```js
+//
+```
+
+The code sample below demonstrates how to use this API to communicate with a store from a Read Model projection and resolver.
 
 ## Saga API
 
 A saga's event handler receives an object that provides access to the saga-related API. This API includes the following objects:
 
-| Object Name                 | Description                                                                       |
-| --------------------------- | --------------------------------------------------------------------------------- |
-| [store](#store)             | Provides access to the saga's persistent store (similar to the Read Model store). |
-| [sideEffects](#sideeffects) | Provides access to the saga's side effect functions.                              |
+| Object Name | Description                                                                       |
+| ----------- | --------------------------------------------------------------------------------- |
+| store       | Provides access to the saga's persistent store (similar to the Read Model store). |
+| sideEffects | Provides access to the saga's side effect functions.                              |
 
 In addition to user-defined side effect functions, the SideEffects object contains the following default side effects:
 
@@ -189,24 +321,17 @@ In addition to user-defined side effect functions, the SideEffects object contai
 | [executeCommand](#executecommand)   | Sends a command with the specified payload to an aggregate.                                 |
 | [scheduleCommand](#schedulecommand) | Similar to `executeCommand`, but delays command execution until a specified moment in time. |
 
-##### store
+### executeCommand
 
-```js
-Init: async ({ store }) => {
-  await store.defineTable('users', {
-    indexes: { id: 'string' },
-    fields: ['mail']
-  })
-},
-```
+Sends a command with the specified payload to an aggregate.
 
-##### sideEffects
+#### Arguments
 
-```js
-await sideEffects.sendEmail(event.payload.mail, 'Confirm mail')
-```
+| Argument Name | Description                                                                                                        |
+| ------------- | ------------------------------------------------------------------------------------------------------------------ |
+| command       | Specifies a command object. Refer to the [Write Side](write-side#sending-a-command) document for more information. |
 
-##### executeCommand
+#### Example
 
 ```js
 await sideEffects.executeCommand({
@@ -217,7 +342,17 @@ await sideEffects.executeCommand({
 })
 ```
 
-##### scheduleCommand
+### scheduleCommand
+
+Similar to `executeCommand`, but delays command execution until a specified moment in time.
+
+#### Arguments
+
+| Argument Name | Description                                                                                                        |
+| ------------- | ------------------------------------------------------------------------------------------------------------------ |
+| command       | Specifies a command object. Refer to the [Write Side](write-side#sending-a-command) document for more information. |
+
+#### Example
 
 ```js
 await sideEffects.scheduleCommand(event.timestamp + 1000 * 60 * 60 * 24 * 7, {
