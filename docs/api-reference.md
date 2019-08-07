@@ -109,7 +109,7 @@ The table below lists functions that you can use to communicate with a Read Mode
 | [count](#count)             | Returns the count of items that meet the specified condition.                      |
 | [insert](#insert)           | Inserts an item into the specified table.                                          |
 | [update](#update)           | Searches for data items and updates them based on the specified update expression. |
-| [del](#del)                 | Deletes data items based on the specified search expression.                       |
+| [delete](#delete)           | Deletes data items based on the specified search expression.                       |
 
 ### defineTable
 
@@ -171,6 +171,8 @@ const getStories = async (type, store, { first, offset }) => {
     skip,
     skip + offset
   )
+  return Array.isArray(stories) ? stories : []
+}
 ```
 
 ### findOne
@@ -216,7 +218,10 @@ Returns the count of items that meet the specified condition.
 #### Example
 
 ```js
-//
+const getStoryCount = async (type, store) =>
+  const count = await store.count('Stories', {})
+  return count
+}
 ```
 
 ### insert
@@ -286,7 +291,7 @@ Searches for data items and updates them based on the specified update expressio
 },
 ```
 
-### del
+### delete
 
 Deletes data items based on the specified search expression.
 
@@ -300,7 +305,9 @@ Deletes data items based on the specified search expression.
 #### Example
 
 ```js
-//
+[SHOPPING_LIST_REMOVED]: async (store, { aggregateId }) => {
+  await store.delete('ShoppingLists', { id: aggregateId })
+}
 ```
 
 The code sample below demonstrates how to use this API to communicate with a store from a Read Model projection and resolver.
