@@ -7,7 +7,9 @@ Array [
     "awsSecretStoreArn": "awsSecretStoreAdminArn",
     "database": "mysql",
     "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "CREATE DATABASE \`databaseName\`",
+    "sqlStatements": "CREATE DATABASE \`databaseName\`
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+  ",
   },
   "executeSql",
   Object {
@@ -42,7 +44,9 @@ Array [
       INDEX USING BTREE(\`type\`),
       INDEX USING BTREE(\`timestamp\`),
       UNIQUE(\`aggregateId\`, \`aggregateVersion\`)
-    )",
+    )
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+    ",
   },
   "executeSql",
   Object {
@@ -114,7 +118,9 @@ Array [
     "awsSecretStoreArn": "awsSecretStoreAdminArn",
     "database": "mysql",
     "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "CREATE DATABASE \`databaseName\`",
+    "sqlStatements": "CREATE DATABASE \`databaseName\`
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+  ",
   },
   "executeSql",
   Object {
@@ -149,7 +155,9 @@ Array [
       INDEX USING BTREE(\`type\`),
       INDEX USING BTREE(\`timestamp\`),
       UNIQUE(\`aggregateId\`, \`aggregateVersion\`)
-    )",
+    )
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+    ",
   },
   "executeSql",
   Object {

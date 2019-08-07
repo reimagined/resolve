@@ -1,4 +1,4 @@
-import debugLevels from 'debug-levels'
+import debugLevels from 'resolve-debug-levels'
 import uuid from 'uuid/v4'
 
 import sagaEventHandler from './saga-event-handler'

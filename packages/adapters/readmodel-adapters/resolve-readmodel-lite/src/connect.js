@@ -2,15 +2,34 @@ const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
 const escape = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 const coerceEmptyString = obj =>
   (obj != null && obj.constructor !== String) || obj == null ? 'default' : obj
+const emptyTransformer = Function('') // eslint-disable-line no-new-func
+const SQLITE_BUSY = 'SQLITE_BUSY'
 
-const runQuery = async (pool, querySQL) => {
-  const rows = Array.from(await pool.connection.all(querySQL))
-  return rows
-}
+const randRange = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1)) + min
+const fullJitter = retries => randRange(0, Math.min(100, 2 * 2 ** retries))
 
-const runRawQuery = async (pool, querySQL) => {
-  const result = await pool.connection.exec(querySQL)
-  return result
+const runCommonQuery = async (pool, isRegular, querySQL) => {
+  const executor = isRegular
+    ? pool.connection.all.bind(pool.connection)
+    : pool.connection.exec.bind(pool.connection)
+  const transformer = isRegular ? Array.from.bind(Array) : emptyTransformer
+  let result = null
+
+  for (let retry = 0; ; retry++) {
+    try {
+      result = await executor(querySQL)
+      break
+    } catch (error) {
+      if (error != null && error.code === SQLITE_BUSY) {
+        await new Promise(resolve => setTimeout(resolve, fullJitter(retry)))
+      } else {
+        throw error
+      }
+    }
+  }
+
+  return transformer(result)
 }
 
 const makeNestedPath = nestedPath => {
@@ -44,8 +63,8 @@ const connect = async (imports, pool, options) => {
   databaseFile = coerceEmptyString(databaseFile)
 
   Object.assign(pool, {
-    runRawQuery: runRawQuery.bind(null, pool),
-    runQuery: runQuery.bind(null, pool),
+    runRawQuery: runCommonQuery.bind(null, pool, false),
+    runQuery: runCommonQuery.bind(null, pool, true),
     connectionOptions,
     performanceTracer,
     tablePrefix,
@@ -56,6 +75,7 @@ const connect = async (imports, pool, options) => {
     ...imports
   })
 
+  let connector = null
   if (databaseFile === ':memory:') {
     if (Object.keys(pool.memoryStore).length === 0) {
       const temporaryFile = imports.tmp.fileSync()
@@ -64,16 +84,32 @@ const connect = async (imports, pool, options) => {
         drop: temporaryFile.removeCallback.bind(temporaryFile)
       })
     }
-    pool.connection = await imports.SQLite.open(pool.memoryStore.name)
+    connector = imports.SQLite.open.bind(imports.SQLite, pool.memoryStore.name)
   } else {
-    pool.connection = await imports.SQLite.open(databaseFile)
+    connector = imports.SQLite.open.bind(imports.SQLite, databaseFile)
   }
 
-  await pool.connection.exec(`PRAGMA busy_timeout=1000000`)
-  await pool.connection.exec(`PRAGMA encoding=${escape('UTF-8')}`)
-  await pool.connection.exec(`PRAGMA synchronous=EXTRA`)
-  if (imports.os.platform() !== 'win32') {
-    await pool.connection.exec(`PRAGMA journal_mode=WAL`)
+  for (let retry = 0; ; retry++) {
+    try {
+      pool.connection = await connector()
+      break
+    } catch (error) {
+      if (error != null && error.code === SQLITE_BUSY) {
+        await new Promise(resolve => setTimeout(resolve, fullJitter(retry)))
+      } else {
+        throw error
+      }
+    }
+  }
+
+  await pool.runRawQuery(`PRAGMA busy_timeout=0`)
+  await pool.runRawQuery(`PRAGMA encoding=${escape('UTF-8')}`)
+  await pool.runRawQuery(`PRAGMA synchronous=EXTRA`)
+
+  if (databaseFile === ':memory:') {
+    await pool.runRawQuery(`PRAGMA journal_mode=MEMORY`)
+  } else {
+    await pool.runRawQuery(`PRAGMA journal_mode=DELETE`)
   }
 }
 

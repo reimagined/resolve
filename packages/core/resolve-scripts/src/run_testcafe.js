@@ -122,6 +122,7 @@ const runTestcafe = ({
         [
           `npx testcafe ${targetBrowser}`,
           `${functionalTestsDir}`,
+          `--stop-on-first-fail`,
           `--app-init-delay ${targetTimeout}`,
           `--selector-timeout ${targetTimeout}`,
           `--assertion-timeout ${targetTimeout}`,
@@ -131,10 +132,9 @@ const runTestcafe = ({
         ].join(' '),
         { stdio: 'inherit' }
       )
-
       resolve()
     } catch (e) {
-      reject()
+      reject('')
     }
   })
 

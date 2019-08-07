@@ -33,7 +33,7 @@ export class MyLists extends React.PureComponent {
         <Header>
           <Left>
             <Button transparent onPress={navigation.openDrawer}>
-              <Icon name="menu" />
+              <Icon name="menu" ios="ios-menu" />
             </Button>
           </Left>
           <Body>

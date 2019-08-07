@@ -1,4 +1,4 @@
-import debugLevels from 'debug-levels'
+import debugLevels from 'resolve-debug-levels'
 import EventEmitter from 'events'
 import http from 'http'
 import MqttConnection from 'mqtt-connection'
