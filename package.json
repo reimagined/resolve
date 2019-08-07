@@ -1,6 +1,6 @@
 {
   "name": "resolve",
-  "version": "0.20.22",
+  "version": "0.20.23",
   "repository": "https://github.com/reimagined/resolve.git",
   "license": "MIT",
   "private": true,
@@ -41,7 +41,7 @@
     "prettier": "^1.18.0",
     "rimraf": "^2.6.3",
     "glob": "^7.1.3",
-    "@internal/helpers": "0.20.22",
+    "@internal/helpers": "0.20.23",
     "mdis": "^0.0.5",
     "lcov-result-merger": "^3.1.0",
     "coveralls": "^3.0.3"
