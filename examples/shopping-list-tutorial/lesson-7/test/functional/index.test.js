@@ -192,7 +192,7 @@ test('validation should works correctly', async () => {
 
 test('query should works correctly', async () => {
   const response = await fetch(
-    `${MAIN_PAGE}/api/query/ShoppingList/shopping-list-1`,
+    `${MAIN_PAGE}/api/query/shoppingList/shopping-list-1`,
     {
       headers: {
         'Content-Type': 'application/json'
