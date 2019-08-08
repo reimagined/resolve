@@ -6,23 +6,23 @@ const longTextSqlType =
 
 const init = async ({
   resourceOptions: { databaseName, tableName, userLogin, userPassword },
-  executeSql,
+  executeStatement,
   escapeId,
   escape
 }) => {
-  await executeSql(`CREATE DATABASE ${escapeId(databaseName)}
+  await executeStatement(`CREATE DATABASE ${escapeId(databaseName)}
     CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
   `)
 
-  await executeSql(
+  await executeStatement(
     `CREATE USER ${escape(userLogin)} IDENTIFIED BY ${escape(userPassword)}`
   )
 
-  await executeSql(
+  await executeStatement(
     `GRANT ALL ON ${escapeId(databaseName)}.* TO ${escape(userLogin)}@'%'`
   )
 
-  await executeSql(
+  await executeStatement(
     `CREATE TABLE IF NOT EXISTS ${escapeId(databaseName)}.${escapeId(
       tableName
     )}(
@@ -46,26 +46,26 @@ const init = async ({
     `
   )
 
-  await executeSql(
+  await executeStatement(
     `CREATE TABLE IF NOT EXISTS ${escapeId(databaseName)}.${escapeId(
       `${tableName}-sequence`
     )}(
       ${escapeId('key')} ${longNumberSqlType},
       ${escapeId('eventId')} ${longNumberSqlType},
       ${escapeId('timestamp')} ${longNumberSqlType},
-      ${escapeId('transactionId')} ${longNumberSqlType},
+      ${escapeId('transactionId')} ${longStringSqlType},
       PRIMARY KEY(${escapeId('key')})
     )`
   )
 
-  await executeSql(
+  await executeStatement(
     `INSERT INTO ${escapeId(databaseName)}.${escapeId(`${tableName}-sequence`)}(
       ${escapeId('key')},
       ${escapeId('eventId')},
       ${escapeId('timestamp')},
       ${escapeId('transactionId')}
     ) VALUES (
-      0, 0, 0, 0
+      0, 0, 0, ${escape('0')}
     )`
   )
 }

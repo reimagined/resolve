@@ -1,8 +1,16 @@
-const coercer = ({ intValue, stringValue, bigIntValue, ...rest }) => {
+const coercer = ({
+  intValue,
+  stringValue,
+  bigIntValue,
+  longValue,
+  ...rest
+}) => {
   if (intValue != null) {
     return Number(intValue)
   } else if (bigIntValue != null) {
     return Number(bigIntValue)
+  } else if (longValue != null) {
+    return Number(longValue)
   } else if (stringValue != null) {
     return String(stringValue)
   } else {
@@ -10,49 +18,71 @@ const coercer = ({ intValue, stringValue, bigIntValue, ...rest }) => {
   }
 }
 
-const executeSql = async (pool, sql) => {
+const executeStatement = async (pool, sql, transactionId = null) => {
   const result = await pool.rdsDataService
-    .executeSql({
-      awsSecretStoreArn: pool.config.awsSecretStoreArn,
-      dbClusterOrInstanceArn: pool.config.dbClusterOrInstanceArn,
+    .executeStatement({
+      ...(transactionId != null ? { transactionId } : {}),
+      resourceArn: pool.config.dbClusterOrInstanceArn,
+      secretArn: pool.config.awsSecretStoreArn,
       database: pool.config.databaseName,
-      sqlStatements: sql
+      continueAfterTimeout: false,
+      includeResultMetadata: true,
+      sql
     })
     .promise()
 
-  if (
-    !Array.isArray(result.sqlStatementResults) ||
-    result.sqlStatementResults.length !== 1
-  ) {
+  const { columnMetadata, records } = result
+
+  if (!Array.isArray(records) || columnMetadata == null) {
     return null
   }
-
-  const firstResult = result.sqlStatementResults[0]
-
-  if (firstResult == null || firstResult.resultFrame == null) {
-    return null
-  }
-
-  const {
-    resultFrame: { records, resultSetMetadata }
-  } = firstResult
-
-  if (!Array.isArray(records) || resultSetMetadata == null) {
-    return null
-  }
-
-  const { columnCount, columnMetadata } = resultSetMetadata
 
   const rows = []
-  for (const { values } of records) {
+  for (const record of records) {
     const row = {}
-    for (let i = 0; i < columnCount; i++) {
-      row[columnMetadata[i].name] = coercer(values[i])
+    for (let i = 0; i < columnMetadata.length; i++) {
+      row[columnMetadata[i].name] = coercer(record[i])
     }
     rows.push(row)
   }
 
   return rows
+}
+
+const beginTransaction = async pool => {
+  const { transactionId } = await pool.rdsDataService
+    .beginTransaction({
+      resourceArn: pool.config.dbClusterOrInstanceArn,
+      secretArn: pool.config.awsSecretStoreArn,
+      database: pool.config.databaseName
+    })
+    .promise()
+
+  return transactionId
+}
+
+const commitTransaction = async (pool, transactionId) => {
+  const { transactionStatus } = await pool.rdsDataService
+    .commitTransaction({
+      resourceArn: pool.config.dbClusterOrInstanceArn,
+      secretArn: pool.config.awsSecretStoreArn,
+      transactionId
+    })
+    .promise()
+
+  return transactionStatus
+}
+
+const rollbackTransaction = async (pool, transactionId) => {
+  const { transactionStatus } = await pool.rdsDataService
+    .rollbackTransaction({
+      resourceArn: pool.config.dbClusterOrInstanceArn,
+      secretArn: pool.config.awsSecretStoreArn,
+      transactionId
+    })
+    .promise()
+
+  return transactionStatus
 }
 
 const connect = async (
@@ -64,7 +94,10 @@ const connect = async (
   Object.assign(pool, {
     tableName: pool.config.tableName,
     rdsDataService,
-    executeSql: executeSql.bind(null, pool),
+    executeStatement: executeStatement.bind(null, pool),
+    beginTransaction: beginTransaction.bind(null, pool),
+    commitTransaction: commitTransaction.bind(null, pool),
+    rollbackTransaction: rollbackTransaction.bind(null, pool),
     escapeUnicode,
     escapeId,
     escape,
