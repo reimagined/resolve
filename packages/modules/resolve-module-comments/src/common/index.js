@@ -27,7 +27,7 @@ export {
 export default ({
   aggregateName,
   readModelName,
-  readModelConnector,
+  readModelConnectorName,
   commentsTableName,
   reducerName,
   eventTypes,
@@ -39,7 +39,7 @@ export default ({
   const options = {
     aggregateName,
     readModelName,
-    readModelConnector,
+    readModelConnectorName,
     commentsTableName,
     reducerName,
     eventTypes,

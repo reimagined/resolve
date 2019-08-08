@@ -25,7 +25,8 @@ void (async () => {
   try {
     const moduleComments = resolveModuleComments({
       aggregateName: 'Comment',
-      readModelName: 'Comments'
+      readModelName: 'Comments',
+      readModelConnectorName: 'comments'
     })
 
     const moduleAuth = resolveModuleAuth([

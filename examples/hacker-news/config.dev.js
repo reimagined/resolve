@@ -18,7 +18,19 @@ const devConfig = {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'data/read-models.db'
+        databaseFile: 'data/read-model-default.db'
+      }
+    },
+    hackerNews: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'data/read-model-hackerNews.db'
+      }
+    },
+    comments: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'data/read-model-comments.db'
       }
     },
     elasticSearch: {
@@ -44,7 +56,8 @@ const devConfig = {
     maxAge: 31536000000
   },
   eventBroker: {
-    databaseFile: 'data/local-bus-broker.db'
+    databaseFile: 'data/local-bus-broker.db',
+    batchSize: 50000
   }
 }
 
