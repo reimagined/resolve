@@ -56,8 +56,7 @@ const devConfig = {
     maxAge: 31536000000
   },
   eventBroker: {
-    databaseFile: 'data/local-bus-broker.db',
-    batchSize: 50000
+    databaseFile: 'data/local-bus-broker.db'
   }
 }
 
