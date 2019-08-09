@@ -1,6 +1,6 @@
 {
   "name": "resolve-es",
-  "version": "0.20.23",
+  "version": "0.20.24",
   "description": "This package serves as an event-store.",
   "engines": {
     "node": ">=8.10"
