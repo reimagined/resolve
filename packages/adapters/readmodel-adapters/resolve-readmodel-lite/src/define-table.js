@@ -16,7 +16,7 @@ const defineTable = async (
 
   await runQuery(
     `CREATE TABLE ${escapeId(`${tablePrefix}${tableName}`)} (
-      ${escapeId(`RESOLVE-${readModelName}`)} BOOLEAN NOT NULL DEFAULT(true), 
+    -- RESOLVE READ-MODEL ${escapeId(`${readModelName}`)} OWNED TABLE
       ${tableDescription.fields
         .concat(Object.keys(tableDescription.indexes))
         .map(columnName => `${escapeId(columnName)} JSON`)
