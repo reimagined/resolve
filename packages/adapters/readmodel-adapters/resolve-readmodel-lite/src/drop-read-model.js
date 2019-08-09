@@ -5,7 +5,7 @@ const dropReadModel = async (
   const rows = await runQuery(
     `SELECT name FROM sqlite_master WHERE type=${escape('table')}
     AND sql LIKE ${escape(
-      `%${escapeId(`RESOLVE-${readModelName}`)} BOOLEAN NOT NULL DEFAULT(true)%`
+      `%-- RESOLVE READ-MODEL ${escapeId(`${readModelName}`)} OWNED TABLE%`
     )}
     AND name NOT LIKE ${escape('sqlite_%')}`
   )
