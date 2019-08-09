@@ -19,7 +19,7 @@ const onResetListenerTopic = async (pool, content) => {
       })
     )
 
-    pool.xpubSocket.send(`${encodedTopic} ${encodedContent}`)
+    await pool.xpubSocket.send(`${encodedTopic} ${encodedContent}`)
   } catch (error) {
     // eslint-disable-next-line no-console
     console.warn('Error while resetting listener', error)

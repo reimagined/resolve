@@ -398,7 +398,8 @@ module.exports = {
           'ycombinator',
           'zeromq',
           'zmq',
-          'zlib'
+          'zlib',
+          'compat'
         ],
         minLength: 3
       }
