@@ -18,7 +18,19 @@ const devConfig = {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'data/read-models.db'
+        databaseFile: 'data/read-model-default.db'
+      }
+    },
+    hackerNews: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'data/read-model-hackerNews.db'
+      }
+    },
+    comments: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'data/read-model-comments.db'
       }
     },
     elasticSearch: {

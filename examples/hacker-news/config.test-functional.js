@@ -9,7 +9,19 @@ const testFunctionalConfig = {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'data/read-models-test-functional.db'
+        databaseFile: 'data/read-model-default-test-functional.db'
+      }
+    },
+    hackerNews: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'data/read-model-hackerNews-test-functional.db'
+      }
+    },
+    comments: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'data/read-model-comments-test-functional.db'
       }
     },
     elasticSearch: {

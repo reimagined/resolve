@@ -1,5 +1,5 @@
 const loadEvents = async (
-  { executeSql, escapeId, escapeUnicode, tableName },
+  { executeStatement, escapeId, escapeUnicode, tableName },
   {
     eventTypes,
     aggregateIds,
@@ -42,7 +42,7 @@ const loadEvents = async (
   let countEvents = 0
 
   loop: for (let skipCount = 0; ; skipCount++) {
-    const rows = await executeSql(
+    const rows = await executeStatement(
       `SELECT * FROM ${escapeId(tableName)} ${resultQueryCondition}
       ORDER BY ${escapeId('eventId')} ASC
       LIMIT ${+(skipCount * batchSize)}, ${+batchSize}`
