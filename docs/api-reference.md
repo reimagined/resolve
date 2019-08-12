@@ -26,6 +26,9 @@ Initialises a connection to a storage. An implementation should return a store o
 
 #### Example
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/custom-readmodel-sample/connector.js#connect)
 ```js
 const connect = async readModelName => {
   fs.writeFileSync(`${prefix}${readModelName}.lock`, true, { flag: 'wx' })
@@ -42,6 +45,8 @@ const connect = async readModelName => {
 }
 ```
 
+<!-- prettier-ignore-end -->
+
 ### disconnect
 
 Closes the storage connection.
@@ -55,12 +60,17 @@ Closes the storage connection.
 
 #### Example
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/custom-readmodel-sample/connector.js#disconnect)
 ```js
 const disconnect = async (store, readModelName) => {
   safeUnlinkSync(`${prefix}${readModelName}.lock`)
   readModels.delete(readModelName)
 }
 ```
+
+<!-- prettier-ignore-end -->
 
 ### drop
 
@@ -75,6 +85,9 @@ Removes the Read Model's data from storage.
 
 #### Example
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/custom-readmodel-sample/connector.js#drop)
 ```js
 const drop = async (store, readModelName) => {
   safeUnlinkSync(`${prefix}${readModelName}.lock`)
@@ -82,12 +95,17 @@ const drop = async (store, readModelName) => {
 }
 ```
 
+<!-- prettier-ignore-end -->
+
 ### dispose
 
 Forcefully disposes all unmanaged resources that Read Models served by this connector use.
 
 #### Example
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/custom-readmodel-sample/connector.js#dispose)
 ```js
 const dispose = async () => {
   for (const readModelName of readModels) {
@@ -96,6 +114,8 @@ const dispose = async () => {
   readModels.clear()
 }
 ```
+
+<!-- prettier-ignore-end -->
 
 ## Read Model Store Interface
 
