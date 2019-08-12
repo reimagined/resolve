@@ -6,7 +6,7 @@ const { getLocalRegistryConfig } = require('./get-local-registry-config')
 const { safeName } = require('./safe-name')
 
 const patchPackageJson = directory => {
-  const resolvePackages = getResolvePackages()
+  const resolvePackages = getResolvePackages().map(({name}) => name)
   const localRegistry = getLocalRegistryConfig()
 
   fs.copyFileSync(

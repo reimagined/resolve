@@ -26,10 +26,10 @@ function getResolvePackages() {
 
     const { name } = require(filePath)
 
-    resolvePackages.push(name)
+    resolvePackages.push({name, filePath})
   }
 
-  resolvePackages.sort((a, b) => (a > b ? 1 : a < b ? -1 : 0))
+  resolvePackages.sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0))
 
   _resolvePackages = resolvePackages
 
