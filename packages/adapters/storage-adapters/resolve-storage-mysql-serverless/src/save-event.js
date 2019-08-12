@@ -5,32 +5,50 @@ const randRange = (min, max) =>
 const fullJitter = retries => randRange(0, Math.min(100, 2 * 2 ** retries))
 
 const saveEvent = async (
-  { tableName, executeSql, escapeId, escape },
+  {
+    tableName,
+    executeStatement,
+    beginTransaction,
+    commitTransaction,
+    rollbackTransaction,
+    escapeId,
+    escapeUnicode
+  },
   event
 ) => {
   for (let retry = 0; ; retry++) {
+    let transactionId = null
     try {
-      await executeSql(`
-        START TRANSACTION;
-        SET @lastEventId = 0;
-        SET @lastTimestamp = 0;
-        SET @transactionId = 0;
+      transactionId = await beginTransaction()
 
-        SELECT @transactionid := CONNECTION_ID(),
-        @lastEventId := ${escapeId('eventId')} + 1,
-        @lastTimestamp := GREATEST(
+      const [
+        { lastEventId, lastTimestamp } = { lastEventId: 0, lastTimestamp: 0 }
+      ] = await executeStatement(
+        `
+        SELECT ${escapeId('eventId')} + 1  AS ${escapeId('lastEventId')},
+        GREATEST(
           CAST(UNIX_TIMESTAMP(NOW(3)) * 1000 AS SIGNED),
           ${escapeId('timestamp')}
-        )
+        ) AS ${escapeId('lastTimestamp')}
         FROM ${escapeId(`${tableName}-sequence`)}
         WHERE ${escapeId('key')} = 0;
-        
-        UPDATE ${escapeId(`${tableName}-sequence`)}
-        SET ${escapeId('eventId')} = @lastEventId,
-        ${escapeId('transactionId')} = @transactionId,
-        ${escapeId('timestamp')} = @lastTimestamp
-        WHERE ${escapeId('key')} = 0;
+      `,
+        transactionId
+      )
 
+      await executeStatement(
+        `
+        UPDATE ${escapeId(`${tableName}-sequence`)}
+        SET ${escapeId('eventId')} = ${+lastEventId},
+        ${escapeId('transactionId')} = ${escapeUnicode(transactionId)},
+        ${escapeId('timestamp')} = ${+lastTimestamp}
+        WHERE ${escapeId('key')} = 0;
+      `,
+        transactionId
+      )
+
+      await executeStatement(
+        `
         INSERT INTO ${escapeId(tableName)}(
           ${escapeId('eventId')},
           ${escapeId('timestamp')},
@@ -39,20 +57,25 @@ const saveEvent = async (
           ${escapeId('type')},
           ${escapeId('payload')}
         ) VALUES (
-          @lastEventId,
-          @lastTimestamp,
-          ${escape(event.aggregateId)},
+          ${+lastEventId},
+          ${+lastTimestamp},
+          ${escapeUnicode(event.aggregateId)},
           ${+event.aggregateVersion},
-          ${escape(event.type)},
-          ${escape(
+          ${escapeUnicode(event.type)},
+          ${escapeUnicode(
             JSON.stringify(event.payload != null ? event.payload : null)
           )}
         );
-        
-        COMMIT;
-        `)
+      `,
+        transactionId
+      )
+
+      await commitTransaction(transactionId)
+
       break
     } catch (error) {
+      await rollbackTransaction(transactionId)
+
       if (
         error.message == null ||
         !error.message.startsWith('Duplicate entry')

@@ -1,4 +1,4 @@
-import debugLevels from 'debug-levels'
+import debugLevels from 'resolve-debug-levels'
 
 import markupHandler from './markup-handler'
 import commandHandler from './command-handler'

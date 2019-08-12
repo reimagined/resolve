@@ -13,6 +13,8 @@ import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
 import _destroyResource from './resource/destroy'
 
+const escapeUnicode = str =>
+  `FROM_BASE64("${Buffer.from(String(str), 'utf8').toString('base64')}")`
 const escapeId = str => `\`${String(str).replace(/([`])/gi, '$1$1')}\``
 const escape = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
 
@@ -27,6 +29,7 @@ const createAdapter = _createAdapter.bind(
   dispose,
   {
     RDSDataService,
+    escapeUnicode,
     escapeId,
     escape
   }

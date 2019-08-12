@@ -1,4 +1,4 @@
-import debugLevels from 'debug-levels'
+import debugLevels from 'resolve-debug-levels'
 
 import initResolve from '../init-resolve'
 import disposeResolve from '../dispose-resolve'

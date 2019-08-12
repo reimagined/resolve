@@ -1,4 +1,4 @@
-import debugLevels from 'debug-levels'
+import debugLevels from 'resolve-debug-levels'
 
 import bootstrap from '../common/bootstrap'
 import isSagaName from '../common/utils/is-saga-name'

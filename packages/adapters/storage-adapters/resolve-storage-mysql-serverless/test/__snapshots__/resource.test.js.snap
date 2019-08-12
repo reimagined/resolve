@@ -2,33 +2,43 @@
 
 exports[`resource method "create" should create resource 1`] = `
 Array [
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "CREATE DATABASE \`databaseName\`",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "CREATE DATABASE \`databaseName\`
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+  ",
   },
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "CREATE USER \\"userLogin\\" IDENTIFIED BY \\"userPassword\\"",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "CREATE USER \\"userLogin\\" IDENTIFIED BY \\"userPassword\\"",
   },
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "GRANT ALL ON \`databaseName\`.* TO \\"userLogin\\"@'%'",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "GRANT ALL ON \`databaseName\`.* TO \\"userLogin\\"@'%'",
   },
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "CREATE TABLE IF NOT EXISTS \`databaseName\`.\`tableName\`(
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "CREATE TABLE IF NOT EXISTS \`databaseName\`.\`tableName\`(
       \`eventId\` BIGINT NOT NULL,
       \`timestamp\` BIGINT NOT NULL,
       \`aggregateId\` VARCHAR(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -42,33 +52,39 @@ Array [
       INDEX USING BTREE(\`type\`),
       INDEX USING BTREE(\`timestamp\`),
       UNIQUE(\`aggregateId\`, \`aggregateVersion\`)
-    )",
+    )
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+    ",
   },
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "CREATE TABLE IF NOT EXISTS \`databaseName\`.\`tableName-sequence\`(
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "CREATE TABLE IF NOT EXISTS \`databaseName\`.\`tableName-sequence\`(
       \`key\` BIGINT NOT NULL,
       \`eventId\` BIGINT NOT NULL,
       \`timestamp\` BIGINT NOT NULL,
-      \`transactionId\` BIGINT NOT NULL,
+      \`transactionId\` VARCHAR(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
       PRIMARY KEY(\`key\`)
     )",
   },
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "INSERT INTO \`databaseName\`.\`tableName-sequence\`(
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "INSERT INTO \`databaseName\`.\`tableName-sequence\`(
       \`key\`,
       \`eventId\`,
       \`timestamp\`,
       \`transactionId\`
     ) VALUES (
-      0, 0, 0, 0
+      0, 0, 0, \\"0\\"
     )",
   },
 ]
@@ -76,66 +92,84 @@ Array [
 
 exports[`resource method "destroy" should destroy resource 1`] = `
 Array [
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "DROP DATABASE \`databaseName\`",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "DROP DATABASE \`databaseName\`",
   },
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "DROP USER \\"userLogin\\"",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "DROP USER \\"userLogin\\"",
   },
 ]
 `;
 
 exports[`resource method "dispose" should dispose resource 1`] = `
 Array [
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "DROP DATABASE \`databaseName\`",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "DROP DATABASE \`databaseName\`",
   },
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "DROP USER \\"userLogin\\"",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "DROP USER \\"userLogin\\"",
   },
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "CREATE DATABASE \`databaseName\`",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "CREATE DATABASE \`databaseName\`
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+  ",
   },
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "CREATE USER \\"userLogin\\" IDENTIFIED BY \\"userPassword\\"",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "CREATE USER \\"userLogin\\" IDENTIFIED BY \\"userPassword\\"",
   },
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "GRANT ALL ON \`databaseName\`.* TO \\"userLogin\\"@'%'",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "GRANT ALL ON \`databaseName\`.* TO \\"userLogin\\"@'%'",
   },
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "CREATE TABLE IF NOT EXISTS \`databaseName\`.\`tableName\`(
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "CREATE TABLE IF NOT EXISTS \`databaseName\`.\`tableName\`(
       \`eventId\` BIGINT NOT NULL,
       \`timestamp\` BIGINT NOT NULL,
       \`aggregateId\` VARCHAR(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -149,33 +183,39 @@ Array [
       INDEX USING BTREE(\`type\`),
       INDEX USING BTREE(\`timestamp\`),
       UNIQUE(\`aggregateId\`, \`aggregateVersion\`)
-    )",
+    )
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+    ",
   },
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "CREATE TABLE IF NOT EXISTS \`databaseName\`.\`tableName-sequence\`(
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "CREATE TABLE IF NOT EXISTS \`databaseName\`.\`tableName-sequence\`(
       \`key\` BIGINT NOT NULL,
       \`eventId\` BIGINT NOT NULL,
       \`timestamp\` BIGINT NOT NULL,
-      \`transactionId\` BIGINT NOT NULL,
+      \`transactionId\` VARCHAR(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
       PRIMARY KEY(\`key\`)
     )",
   },
-  "executeSql",
+  "executeStatement",
   Object {
-    "awsSecretStoreArn": "awsSecretStoreAdminArn",
+    "continueAfterTimeout": false,
     "database": "mysql",
-    "dbClusterOrInstanceArn": "dbClusterOrInstanceArn",
-    "sqlStatements": "INSERT INTO \`databaseName\`.\`tableName-sequence\`(
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "INSERT INTO \`databaseName\`.\`tableName-sequence\`(
       \`key\`,
       \`eventId\`,
       \`timestamp\`,
       \`transactionId\`
     ) VALUES (
-      0, 0, 0, 0
+      0, 0, 0, \\"0\\"
     )",
   },
 ]

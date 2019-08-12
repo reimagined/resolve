@@ -1,12 +1,12 @@
 const drop = async ({
   resourceOptions: { databaseName, userLogin },
-  executeSql,
+  executeStatement,
   escapeId,
   escape
 }) => {
-  await executeSql(`DROP DATABASE ${escapeId(databaseName)}`)
+  await executeStatement(`DROP DATABASE ${escapeId(databaseName)}`)
 
-  await executeSql(`DROP USER ${escape(userLogin)}`)
+  await executeStatement(`DROP USER ${escape(userLogin)}`)
 }
 
 export default drop

@@ -4,9 +4,9 @@ const appConfig = {
     reducers: {
       optimistic: 'client/reducers/optimistic.js'
     },
-    middlewares: [
-      'client/middlewares/story-create-middleware.js',
-      'client/middlewares/optimistic-voting-middleware.js'
+    sagas: [
+      'client/sagas/story-create-saga.js',
+      'client/sagas/optimistic-voting-saga.js'
     ]
   },
   aggregates: [
@@ -26,7 +26,7 @@ const appConfig = {
       name: 'HackerNews',
       projection: 'common/read-models/hacker-news.projection.js',
       resolvers: 'common/read-models/hacker-news.resolvers.js',
-      connectorName: 'default'
+      connectorName: 'hackerNews'
     },
     {
       name: 'Search',

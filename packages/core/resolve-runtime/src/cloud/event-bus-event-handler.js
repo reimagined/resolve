@@ -1,5 +1,5 @@
 import { decodeEvent } from 'resolve-storage-dynamo'
-import debugLevels from 'debug-levels'
+import debugLevels from 'resolve-debug-levels'
 
 const log = debugLevels('resolve:resolve-runtime:event-bus-event-handler')
 

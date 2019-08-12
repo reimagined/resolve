@@ -5,7 +5,7 @@ import { INCOMING_TOPICS } from '../src/constants'
 describe('main broker tests', () => {
   let broker = null
   const encodeContent = content =>
-    new Buffer(JSON.stringify(content), 'utf8').toString('base64')
+    Buffer.from(JSON.stringify(content), 'utf8').toString('base64')
 
   beforeEach(async () => {
     const events = [{ type: 'Test' }]
@@ -220,9 +220,9 @@ describe('main broker tests', () => {
     const listenerId = 'listenerId'
     const clientId = 'clientId'
 
-    const encodedTopic = `${new Buffer(listenerId).toString(
+    const encodedTopic = `${Buffer.from(listenerId).toString(
       'base64'
-    )}-${new Buffer(clientId).toString('base64')}`
+    )}-${Buffer.from(clientId).toString('base64')}`
 
     const subscribe = xpub.onMessage(Buffer.from(`\u0001${encodedTopic}`))
 
@@ -266,9 +266,9 @@ describe('main broker tests', () => {
     const listenerId = 'listenerId'
     const clientId = 'clientId'
 
-    const encodedTopic = `${new Buffer(listenerId).toString(
+    const encodedTopic = `${Buffer.from(listenerId).toString(
       'base64'
-    )}-${new Buffer(clientId).toString('base64')}`
+    )}-${Buffer.from(clientId).toString('base64')}`
 
     await xpub.onMessage(Buffer.from(`\u0000${encodedTopic}`))
 

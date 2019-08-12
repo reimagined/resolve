@@ -1,4 +1,4 @@
-import debugLevels from 'debug-levels'
+import debugLevels from 'resolve-debug-levels'
 
 import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
