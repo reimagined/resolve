@@ -153,7 +153,6 @@ export default options => {
     }
     readModels.clear()
   }
-
   return {
     connect,
     disconnect,
