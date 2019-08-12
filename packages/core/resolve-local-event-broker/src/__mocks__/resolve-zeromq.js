@@ -8,11 +8,11 @@ Object.assign(xpub, {
   setsockopt: (...args) => {
     result.push('xpub.setsockopt', ...args)
   },
-  bindSync: (...args) => {
-    result.push('xpub.bindSync', ...args)
+  bind: (...args) => {
+    result.push('xpub.bind', ...args)
   },
-  unbindSync: (...args) => {
-    result.push('xpub.unbindSync', ...args)
+  unbind: (...args) => {
+    result.push('xpub.unbind', ...args)
   },
   on: (topic, callback) => {
     xpub.onMessage = callback
@@ -25,11 +25,11 @@ Object.assign(sub, {
   setsockopt: (...args) => {
     result.push('sub.setsockopt', ...args)
   },
-  bindSync: (...args) => {
-    result.push('sub.bindSync', ...args)
+  bind: (...args) => {
+    result.push('sub.bind', ...args)
   },
-  unbindSync: (...args) => {
-    result.push('sub.unbindSync', ...args)
+  unbind: (...args) => {
+    result.push('sub.unbind', ...args)
   },
   on: (topic, callback) => {
     sub.onMessage = callback

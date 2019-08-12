@@ -1,6 +1,6 @@
 import cuid from 'cuid'
 import sqlite from 'sqlite'
-import zmq from 'zeromq'
+import zmq from 'resolve-zeromq'
 
 import adjustEventBatch from './adjust-event-batch'
 import anycastEvents from './anycast-events'

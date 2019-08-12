@@ -1,4 +1,4 @@
-import { result, xpub, sub, reset } from 'zeromq'
+import { result, xpub, sub, reset } from 'resolve-zeromq'
 import createAndInitBroker from '../src/index'
 import { INCOMING_TOPICS } from '../src/constants'
 
