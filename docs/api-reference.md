@@ -360,6 +360,9 @@ Sends a command with the specified payload to an aggregate.
 
 #### Example
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/saga-sample/saga.js#execute)
 ```js
 await sideEffects.executeCommand({
   aggregateName: 'User',
@@ -368,6 +371,8 @@ await sideEffects.executeCommand({
   payload: event.payload
 })
 ```
+
+<!-- prettier-ignore-end -->
 
 ### scheduleCommand
 
@@ -381,14 +386,22 @@ Similar to `executeCommand`, but delays command execution until a specified mome
 
 #### Example
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/saga-sample/saga.js#schedule)
 ```js
-await sideEffects.scheduleCommand(event.timestamp + 1000 * 60 * 60 * 24 * 7, {
-  aggregateName: 'User',
-  aggregateId: event.aggregateId,
-  type: 'forgetUser',
-  payload: {}
-})
+await sideEffects.scheduleCommand(
+  event.timestamp + 1000 * 60 * 60 * 24 * 7,
+  {
+    aggregateName: 'User',
+    aggregateId: event.aggregateId,
+    type: 'forgetUser',
+    payload: {}
+  }
+)
 ```
+
+<!-- prettier-ignore-end -->
 
 ## Client-Side API
 
