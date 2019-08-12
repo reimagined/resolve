@@ -9,7 +9,7 @@ The table below lists functions that a custom Read Model's connector should impl
 
 | Function Name             | Description                                                                                |
 | ------------------------- | ------------------------------------------------------------------------------------------ |
-| [connect](#connect)       | Initialises a connection to a storage.                                                     |
+| [connect](#connect)       | Initializes a connection to a storage.                                                     |
 | [disconnect](#disconnect) | Closes the storage connection.                                                             |
 | [drop](#drop)             | Removes the Read Model's data from storage.                                                |
 | [dispose](#dispose)       | Forcefully disposes all unmanaged resources that Read Models served by this connector use. |
