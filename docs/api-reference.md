@@ -16,7 +16,7 @@ The table below lists functions that a custom Read Model's connector should impl
 
 ### connect
 
-Initialises a connection to a storage. An implementation should return a store object.
+Initializes a connection to a storage. An implementation should return a store object.
 
 #### Arguments
 
