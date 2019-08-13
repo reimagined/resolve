@@ -2,7 +2,7 @@ const { getResolvePackages } = require('./get-resolve-packages')
 const { getResolveExamples } = require('./get-resolve-examples')
 
 const getBabelConfig = ({ moduleType, moduleTarget }) => {
-  const resolvePackages = getResolvePackages().map(({name}) => name)
+  const resolvePackages = getResolvePackages()
   const resolveExamples = getResolveExamples()
 
   process.env.__RESOLVE_PACKAGES__ = JSON.stringify(resolvePackages)

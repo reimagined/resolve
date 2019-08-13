@@ -1,12 +1,14 @@
 const fs = require('fs')
 
+const { getResolveAllPackageJson } = require('./get-resolve-all-package-json')
 const { getResolvePackages } = require('./get-resolve-packages')
-const { getResolveExamples } = require('./get-resolve-examples')
 
-const resolvePackages = getResolvePackages()
+const resolvePackages = getResolvePackages(true)
 
-const putVersion = (list, version) => {
-  for (const item of list) {
+const patch = version => {
+  const resolveAllPackageJson = getResolveAllPackageJson()
+
+  for (const item of resolveAllPackageJson) {
     const packageJson = JSON.parse(fs.readFileSync(item.filePath))
     packageJson.version = version
 
@@ -18,6 +20,9 @@ const putVersion = (list, version) => {
     ]) {
       if (!packageJson[namespace]) {
         continue
+      }
+      if (packageJson[namespace]['@shopping-list-advanced/ui']) {
+        packageJson[namespace]['@shopping-list-advanced/ui'] = version
       }
       for (const package of resolvePackages) {
         if (packageJson[namespace][package.name]) {
@@ -31,13 +36,6 @@ const putVersion = (list, version) => {
 
     fs.writeFileSync(item.filePath, JSON.stringify(packageJson, null, 2))
   }
-}
-
-const patch = version => {
-  const resolveExamples = getResolveExamples({ isSupportMonorepo: true, isIncludeDescription: false })
-
-  putVersion(resolveExamples, version)
-  putVersion(resolvePackages, version)
 }
 
 module.exports = { patch }

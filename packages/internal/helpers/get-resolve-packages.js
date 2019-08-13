@@ -3,7 +3,7 @@ const find = require('glob').sync
 const { getResolveDir } = require('./get-resolve-dir')
 
 let _resolvePackages
-function getResolvePackages() {
+function getResolvePackages(isIncludeInternal) {
   if (_resolvePackages) {
     return _resolvePackages
   }
@@ -17,16 +17,18 @@ function getResolvePackages() {
     if (filePath.includes('node_modules')) {
       continue
     }
-    if (
-      filePath.includes('packages\\internal') ||
-      filePath.includes('packages/internal')
-    ) {
-      continue
+    if (!isIncludeInternal) {
+      if (
+        filePath.includes('packages\\internal') ||
+        filePath.includes('packages/internal')
+      ) {
+        continue
+      }
     }
 
     const { name } = require(filePath)
 
-    resolvePackages.push({name, filePath})
+    resolvePackages.push(name)
   }
 
   resolvePackages.sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0))
