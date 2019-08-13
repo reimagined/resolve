@@ -1,5 +1,5 @@
-const { getResolveExamples, getResolvePackages } = require('@internal/helpers')
+const { patch } = require('@internal/helpers')
 
-console.log(getResolveExamples({isSupportMonorepo: true, isIncludeDescription: false}))
+const version = process.argv.slice(2)[0]
 
-console.log(getResolvePackages())
+patch(version)
