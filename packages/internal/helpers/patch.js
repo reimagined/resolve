@@ -3,12 +3,12 @@ const fs = require('fs')
 const { getResolvePackages } = require('./get-resolve-packages')
 const { getResolveExamples } = require('./get-resolve-examples')
 
-const patchPackageJson = version => {
-  const resolvePackages = getResolvePackages()
-  const resolveExamples = getResolveExamples({ isSupportMonorepo: true, isIncludeDescription: false })
+const resolvePackages = getResolvePackages()
 
-  for (const example of resolveExamples) {
-    const packageJson = JSON.parse(fs.readFileSync(example.filePath))
+const putVersion = (list, version) => {
+  for (const item of list) {
+    const packageJson = JSON.parse(fs.readFileSync(item.filePath))
+    packageJson.version = version
 
     for (const namespace of [
       'dependencies',
@@ -24,13 +24,20 @@ const patchPackageJson = version => {
           packageJson[namespace][package.name] =
             namespace === 'peerDependencies'
               ? '*'
-              : `"${version}"`
+              : version
         }
       }
     }
 
-    fs.writeFileSync(example.filePath, JSON.stringify(packageJson, null, 2))
+    fs.writeFileSync(item.filePath, JSON.stringify(packageJson, null, 2))
   }
 }
 
-module.exports = { patchPackageJson }
+const patch = version => {
+  const resolveExamples = getResolveExamples({ isSupportMonorepo: true, isIncludeDescription: false })
+
+  putVersion(resolveExamples, version)
+  putVersion(resolvePackages, version)
+}
+
+module.exports = { patch }
