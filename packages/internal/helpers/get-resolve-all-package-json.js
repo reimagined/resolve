@@ -14,17 +14,23 @@ function getResolveAllPackageJson() {
     cwd: getResolveDir(),
     absolute: true
   })) {
-    if (filePath.includes('node_modules') || filePath.includes('website') 
-    || filePath.includes('/dist/') || filePath.includes('\\dist\\')) {
+    if (
+      filePath.includes('node_modules') ||
+      filePath.includes('website') ||
+      filePath.includes('/dist/') ||
+      filePath.includes('\\dist\\')
+    ) {
       continue
     }
-    
+
     const { name } = require(filePath)
 
     resolveAllPackageJson.push({ name, filePath })
   }
 
-  resolveAllPackageJson.sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0))
+  resolveAllPackageJson.sort((a, b) =>
+    a.name > b.name ? 1 : a.name < b.name ? -1 : 0
+  )
 
   _resolveAllPackageJson = resolveAllPackageJson
 

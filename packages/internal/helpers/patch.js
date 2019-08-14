@@ -24,12 +24,10 @@ const patch = version => {
       if (packageJson[namespace]['@shopping-list-advanced/ui']) {
         packageJson[namespace]['@shopping-list-advanced/ui'] = version
       }
-      for (const package of resolvePackages) {
-        if (packageJson[namespace][package.name]) {
-          packageJson[namespace][package.name] =
-            namespace === 'peerDependencies'
-              ? '*'
-              : version
+      for (const value of resolvePackages) {
+        if (packageJson[namespace][value.name]) {
+          packageJson[namespace][value.name] =
+            namespace === 'peerDependencies' ? '*' : version
         }
       }
     }

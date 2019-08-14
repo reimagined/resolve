@@ -31,7 +31,9 @@ function getResolvePackages(isIncludeInternal) {
     resolvePackages.push(name)
   }
 
-  resolvePackages.sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0))
+  resolvePackages.sort((a, b) =>
+    a.name > b.name ? 1 : a.name < b.name ? -1 : 0
+  )
 
   _resolvePackages = resolvePackages
 

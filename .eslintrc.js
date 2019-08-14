@@ -399,7 +399,8 @@ module.exports = {
           'zeromq',
           'zmq',
           'zlib',
-          'compat'
+          'compat',
+          'ist'
         ],
         minLength: 3
       }
