@@ -1,7 +1,7 @@
-# **resolve-storage-mysql-serverless**
-[![npm version](https://badge.fury.io/js/resolve-storage-mysql-serverless.svg)](https://badge.fury.io/js/resolve-storage-mysql-serverless)
+# **resolve-storage-postgresql-serverless**
+[![npm version](https://badge.fury.io/js/resolve-storage-postgresql-serverless.svg)](https://badge.fury.io/js/resolve-storage-postgresql-serverless)
 
-This package is a `resolve-es` adapter for storing events using AWS Aurora Serverless MySQL 5.6.
+This package is a `resolve-es` adapter for storing events using AWS Aurora Serverless PostgreSQL 10.7.
 
 ## Available Parameters
 
@@ -14,7 +14,7 @@ This package is a `resolve-es` adapter for storing events using AWS Aurora Serve
 ## Usage
 
 ```js
-import createAdapter from 'resolve-storage-mysql-serverless'
+import createAdapter from 'resolve-storage-postgresql-serverless'
 
 const adapter = createAdapter({
   region: 'us-east-1',
@@ -28,7 +28,7 @@ const adapter = createAdapter({
 
 #### As Resource
 ```js
-import { create, dispose, destroy } from 'resolve-storage-mysql-serverless'
+import { create, dispose, destroy } from 'resolve-storage-postgresql-serverless'
 
 await create({ 
   region: 'us-east-1',
@@ -59,5 +59,5 @@ await destroy({
 })
 ```
 
-![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-storage-mysql-serverless-readme?pixel)
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-storage-postgresql-serverless-readme?pixel)
 

@@ -1,7 +1,7 @@
 const create = async (pool, options) => {
   const { createAdapter } = pool
 
-  const dynamoAdapter = createAdapter({
+  const adapter = createAdapter({
     awsSecretStoreArn: options.awsSecretStoreAdminArn,
     dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
     databaseName: 'mysql',
@@ -15,7 +15,7 @@ const create = async (pool, options) => {
     skipInit: true
   })
 
-  await dynamoAdapter.init(options)
+  await adapter.init(options)
 }
 
 export default create
