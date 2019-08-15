@@ -1,37 +1,35 @@
 {
-  "name": "resolve-local-event-broker",
+  "name": "resolve-zeromq",
   "version": "0.20.24",
-  "description": "This package includes event broker for local run.",
+  "description": "This package creates a function to execute a zeromq.",
   "engines": {
     "node": ">=8.10"
+  },
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "scripts": {
+    "postinstall": "node scripts/install.js",
+    "test": "jest --config=../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../jest.config.js --watchAll"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "main": "./lib/index.js",
-  "module": "./es/index.js",
   "keywords": [
     "cqrs",
     "eventsourcing",
     "es",
     "ddd"
   ],
-  "scripts": {
-    "test": "jest --config=../../../jest.config.js --verbose",
-    "testw": "jest --config=../../../jest.config.js --watchAll"
-  },
-  "bugs": {
-    "url": "https://github.com/reimagined/resolve/issues"
-  },
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-local-event-broker#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-zeromq#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "cuid": "^2.1.6",
-    "sqlite": "^3.0.2",
-    "resolve-zeromq": "0.20.24"
+    "npm": "6.10.3"
   },
   "devDependencies": {
-    "sinon": "7.2.2",
     "jest": "24.1.0"
   },
   "babelCompile": [

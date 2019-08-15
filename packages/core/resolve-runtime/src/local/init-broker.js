@@ -1,6 +1,7 @@
 import cuid from 'cuid'
 import debugLevels from 'resolve-debug-levels'
-import zmq from 'zeromq'
+import zmq from 'resolve-zeromq'
+
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 
@@ -98,7 +99,7 @@ const processEvents = async (resolve, listenerId, content) => {
     })
   )
 
-  resolve.pubSocket.send(
+  await resolve.pubSocket.send(
     `${OUTCOMING_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodedMessage}`
   )
 
@@ -184,7 +185,7 @@ const requestListenerInformation = async (resolve, listenerId) => {
     })
   )
 
-  resolve.pubSocket.send(
+  await resolve.pubSocket.send(
     `${OUTCOMING_TOPICS.INFORMATION_TOPIC} ${encodedMessage}`
   )
 
@@ -247,7 +248,7 @@ const doUpdateRequest = async (resolve, listenerId) => {
     listenerId
   })
 
-  return resolve.subSocket.subscribe(encodedTopic)
+  return await resolve.subSocket.subscribe(encodedTopic)
 }
 
 const publishEvent = async (resolve, event) => {
@@ -307,10 +308,10 @@ const initBroker = async resolve => {
   const pubSocket = zmq.socket('pub')
   await pubSocket.connect(zmqConsumerAddress)
 
-  subSocket.on('message', processIncomingMessages.bind(null, resolve))
+  await subSocket.on('message', processIncomingMessages.bind(null, resolve))
 
   for (const incomingTopicName of Object.values(INCOMING_TOPICS)) {
-    subSocket.subscribe(
+    await subSocket.subscribe(
       encodeXsubTopic({
         listenerId: incomingTopicName,
         clientId: resolve.instanceId

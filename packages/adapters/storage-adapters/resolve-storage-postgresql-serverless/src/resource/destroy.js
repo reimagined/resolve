@@ -4,7 +4,7 @@ const destroy = async (pool, options) => {
   const adapter = createAdapter({
     awsSecretStoreArn: options.awsSecretStoreAdminArn,
     dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
-    databaseName: 'mysql',
+    databaseName: 'postgres',
     region: options.region,
     resourceOptions: {
       databaseName: options.databaseName,
