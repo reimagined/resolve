@@ -1,0 +1,497 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`resolve-storage-mysql-serverless "getLatestEvent" should get the latest event 1`] = `
+Array [
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "SELECT * FROM \\"event-store\\".\\"events\\" 
+    ORDER BY \\"eventId\\" DESC
+    OFFSET 0
+    LIMIT 1",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"type\\" IN ('AAA')
+    ORDER BY \\"eventId\\" DESC
+    OFFSET 0
+    LIMIT 1",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"aggregateId\\" IN ('id1')
+    ORDER BY \\"eventId\\" DESC
+    OFFSET 0
+    LIMIT 1",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"timestamp\\" > 1 AND \\"timestamp\\" < 3
+    ORDER BY \\"eventId\\" DESC
+    OFFSET 0
+    LIMIT 1",
+  },
+]
+`;
+
+exports[`resolve-storage-mysql-serverless "loadEvents" should load events 1`] = `
+Array [
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "WITH \\"cte\\" AS (
+        SELECT \\"filteredEvents\\".*,
+        SUM(\\"filteredEvents\\".\\"eventSize\\")
+        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
+        FROM (
+          SELECT * FROM \\"event-store\\".\\"events\\" 
+          ORDER BY \\"eventId\\" ASC
+          OFFSET 0
+          LIMIT 50
+        ) \\"filteredEvents\\"
+      )
+      SELECT * FROM \\"cte\\"
+      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+      ORDER BY \\"cte\\".\\"eventId\\" ASC
+      ",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "WITH \\"cte\\" AS (
+        SELECT \\"filteredEvents\\".*,
+        SUM(\\"filteredEvents\\".\\"eventSize\\")
+        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
+        FROM (
+          SELECT * FROM \\"event-store\\".\\"events\\" 
+          ORDER BY \\"eventId\\" ASC
+          OFFSET 1
+          LIMIT 50
+        ) \\"filteredEvents\\"
+      )
+      SELECT * FROM \\"cte\\"
+      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+      ORDER BY \\"cte\\".\\"eventId\\" ASC
+      ",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "WITH \\"cte\\" AS (
+        SELECT \\"filteredEvents\\".*,
+        SUM(\\"filteredEvents\\".\\"eventSize\\")
+        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
+        FROM (
+          SELECT * FROM \\"event-store\\".\\"events\\" 
+          ORDER BY \\"eventId\\" ASC
+          OFFSET 0
+          LIMIT 50
+        ) \\"filteredEvents\\"
+      )
+      SELECT * FROM \\"cte\\"
+      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+      ORDER BY \\"cte\\".\\"eventId\\" ASC
+      ",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "WITH \\"cte\\" AS (
+        SELECT \\"filteredEvents\\".*,
+        SUM(\\"filteredEvents\\".\\"eventSize\\")
+        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
+        FROM (
+          SELECT * FROM \\"event-store\\".\\"events\\" 
+          ORDER BY \\"eventId\\" ASC
+          OFFSET 1
+          LIMIT 50
+        ) \\"filteredEvents\\"
+      )
+      SELECT * FROM \\"cte\\"
+      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+      ORDER BY \\"cte\\".\\"eventId\\" ASC
+      ",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "WITH \\"cte\\" AS (
+        SELECT \\"filteredEvents\\".*,
+        SUM(\\"filteredEvents\\".\\"eventSize\\")
+        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
+        FROM (
+          SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"type\\" IN ('AAA')
+          ORDER BY \\"eventId\\" ASC
+          OFFSET 0
+          LIMIT 50
+        ) \\"filteredEvents\\"
+      )
+      SELECT * FROM \\"cte\\"
+      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+      ORDER BY \\"cte\\".\\"eventId\\" ASC
+      ",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "WITH \\"cte\\" AS (
+        SELECT \\"filteredEvents\\".*,
+        SUM(\\"filteredEvents\\".\\"eventSize\\")
+        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
+        FROM (
+          SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"type\\" IN ('AAA')
+          ORDER BY \\"eventId\\" ASC
+          OFFSET 1
+          LIMIT 50
+        ) \\"filteredEvents\\"
+      )
+      SELECT * FROM \\"cte\\"
+      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+      ORDER BY \\"cte\\".\\"eventId\\" ASC
+      ",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "WITH \\"cte\\" AS (
+        SELECT \\"filteredEvents\\".*,
+        SUM(\\"filteredEvents\\".\\"eventSize\\")
+        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
+        FROM (
+          SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"aggregateId\\" IN ('id1')
+          ORDER BY \\"eventId\\" ASC
+          OFFSET 0
+          LIMIT 50
+        ) \\"filteredEvents\\"
+      )
+      SELECT * FROM \\"cte\\"
+      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+      ORDER BY \\"cte\\".\\"eventId\\" ASC
+      ",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "WITH \\"cte\\" AS (
+        SELECT \\"filteredEvents\\".*,
+        SUM(\\"filteredEvents\\".\\"eventSize\\")
+        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
+        FROM (
+          SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"aggregateId\\" IN ('id1')
+          ORDER BY \\"eventId\\" ASC
+          OFFSET 1
+          LIMIT 50
+        ) \\"filteredEvents\\"
+      )
+      SELECT * FROM \\"cte\\"
+      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+      ORDER BY \\"cte\\".\\"eventId\\" ASC
+      ",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "WITH \\"cte\\" AS (
+        SELECT \\"filteredEvents\\".*,
+        SUM(\\"filteredEvents\\".\\"eventSize\\")
+        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
+        FROM (
+          SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"timestamp\\" > 1 AND \\"timestamp\\" < 3
+          ORDER BY \\"eventId\\" ASC
+          OFFSET 0
+          LIMIT 50
+        ) \\"filteredEvents\\"
+      )
+      SELECT * FROM \\"cte\\"
+      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+      ORDER BY \\"cte\\".\\"eventId\\" ASC
+      ",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "WITH \\"cte\\" AS (
+        SELECT \\"filteredEvents\\".*,
+        SUM(\\"filteredEvents\\".\\"eventSize\\")
+        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
+        FROM (
+          SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"timestamp\\" > 1 AND \\"timestamp\\" < 3
+          ORDER BY \\"eventId\\" ASC
+          OFFSET 1
+          LIMIT 50
+        ) \\"filteredEvents\\"
+      )
+      SELECT * FROM \\"cte\\"
+      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+      ORDER BY \\"cte\\".\\"eventId\\" ASC
+      ",
+  },
+]
+`;
+
+exports[`resolve-storage-mysql-serverless "saveEvent" should save an event 1`] = `
+Array [
+  "beginTransaction",
+  Object {
+    "database": "postgres",
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "
+        SELECT \\"eventId\\" + 1  AS \\"lastEventId\\",
+        GREATEST(
+          CAST(extract(epoch from now()) * 1000 AS BIGINT),
+          \\"timestamp\\"
+        ) AS \\"lastTimestamp\\"
+        FROM \\"event-store\\".\\"events-sequence\\"
+        WHERE \\"key\\" = 0;
+      ",
+    "transactionId": "transactionId",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "
+        UPDATE \\"event-store\\".\\"events-sequence\\"
+        SET \\"eventId\\" = NaN,
+        \\"transactionId\\" = 'transactionId',
+        \\"timestamp\\" = NaN
+        WHERE \\"key\\" = 0;
+      ",
+    "transactionId": "transactionId",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "
+        INSERT INTO \\"event-store\\".\\"events\\"(
+          \\"eventId\\",
+          \\"timestamp\\",
+          \\"aggregateId\\",
+          \\"aggregateVersion\\",
+          \\"type\\",
+          \\"payload\\",
+          \\"eventSize\\"
+        ) VALUES (
+          
+        NaN,
+        NaN,
+        'id1',
+        1,
+        'AAA',
+        '{\\"index\\":1}'
+      ,
+          96
+        );
+      ",
+    "transactionId": "transactionId",
+  },
+  "commitTransaction",
+  Object {
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "transactionId": "transactionId",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "WITH \\"cte\\" AS (
+        SELECT \\"filteredEvents\\".*,
+        SUM(\\"filteredEvents\\".\\"eventSize\\")
+        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
+        FROM (
+          SELECT * FROM \\"event-store\\".\\"events\\" 
+          ORDER BY \\"eventId\\" ASC
+          OFFSET 0
+          LIMIT 50
+        ) \\"filteredEvents\\"
+      )
+      SELECT * FROM \\"cte\\"
+      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+      ORDER BY \\"cte\\".\\"eventId\\" ASC
+      ",
+  },
+]
+`;
+
+exports[`resolve-storage-mysql-serverless "saveEvent" should save an event with empty payload 1`] = `
+Array [
+  "beginTransaction",
+  Object {
+    "database": "postgres",
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "
+        SELECT \\"eventId\\" + 1  AS \\"lastEventId\\",
+        GREATEST(
+          CAST(extract(epoch from now()) * 1000 AS BIGINT),
+          \\"timestamp\\"
+        ) AS \\"lastTimestamp\\"
+        FROM \\"event-store\\".\\"events-sequence\\"
+        WHERE \\"key\\" = 0;
+      ",
+    "transactionId": "transactionId",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "
+        UPDATE \\"event-store\\".\\"events-sequence\\"
+        SET \\"eventId\\" = NaN,
+        \\"transactionId\\" = 'transactionId',
+        \\"timestamp\\" = NaN
+        WHERE \\"key\\" = 0;
+      ",
+    "transactionId": "transactionId",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "
+        INSERT INTO \\"event-store\\".\\"events\\"(
+          \\"eventId\\",
+          \\"timestamp\\",
+          \\"aggregateId\\",
+          \\"aggregateVersion\\",
+          \\"type\\",
+          \\"payload\\",
+          \\"eventSize\\"
+        ) VALUES (
+          
+        NaN,
+        NaN,
+        'id1',
+        1,
+        'AAA',
+        'null'
+      ,
+          89
+        );
+      ",
+    "transactionId": "transactionId",
+  },
+  "commitTransaction",
+  Object {
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "transactionId": "transactionId",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "WITH \\"cte\\" AS (
+        SELECT \\"filteredEvents\\".*,
+        SUM(\\"filteredEvents\\".\\"eventSize\\")
+        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
+        FROM (
+          SELECT * FROM \\"event-store\\".\\"events\\" 
+          ORDER BY \\"eventId\\" ASC
+          OFFSET 0
+          LIMIT 50
+        ) \\"filteredEvents\\"
+      )
+      SELECT * FROM \\"cte\\"
+      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+      ORDER BY \\"cte\\".\\"eventId\\" ASC
+      ",
+  },
+]
+`;
