@@ -4,7 +4,8 @@
   "version": "0.20.24",
   "bin": "./bin/index.js",
   "dependencies": {
-    "@internal/helpers": "0.20.24"
+    "@internal/helpers": "0.20.24",
+    "minimist": "1.2.0"
   },
   "scripts": {
     "start": "node ./bin/index.js",

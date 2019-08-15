@@ -6,7 +6,6 @@ const { getResolveExamples } = require('./get-resolve-examples')
 const { getResolvePackages } = require('./get-resolve-packages')
 const { patchPackageJson } = require('./patch-package-json')
 const { safeName } = require('./safe-name')
-const { patch } = require('./patch')
 const { getResolveAllPackageJson } = require('./get-resolve-all-package-json')
 
 module.exports = {
@@ -18,6 +17,5 @@ module.exports = {
   getResolvePackages,
   patchPackageJson,
   safeName,
-  patch,
   getResolveAllPackageJson
 }
