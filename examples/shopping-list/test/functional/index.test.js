@@ -1,13 +1,9 @@
-import { Selector, ClientFunction } from 'testcafe'
+import { Selector } from 'testcafe'
 import fetch from 'isomorphic-fetch'
 
 const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || '3000'
 const MAIN_PAGE = `http://${host}:${port}`
-
-const getPageBody = ClientFunction(function() {
-  return window.document.body.innerText
-})
 
 // eslint-disable-next-line no-unused-expressions, no-undef
 fixture`Todo`.beforeEach(async t => {
