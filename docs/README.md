@@ -9,7 +9,6 @@ title: reSolve Documentation
     - [Prerequisites](introduction.md#prerequisites)
     - [Getting Started](introduction.md#getting-started)
   - [Examples](introduction.md#examples)
-  - [Learning Resouces](introduction.md#learning-resouces)
 
 - [Step-by-Step Tutorial](tutorial.md)
 
@@ -47,18 +46,20 @@ title: reSolve Documentation
 - [Advanced Techniques](advanced-techniques.md)
 
   - [Splitting Code Into Chunks](advanced-techniques.md#splitting-code-into-chunks)
-  - [Running Serverless](advanced-techniques.md#running-serverless)
   - [Server-Side Rendering](advanced-techniques.md#server-side-rendering)
-  - [Process Managers (Sagas)](advanced-techniques.md#process-managers-sagas)
   - [Adapters](advanced-techniques.md#adapters)
+  - [Modules](advanced-techniques.md#modules)
 
 - [API Handlers](api-handlers.md)
 
   - [API Reference](api-handlers.md#api-reference)
-  - [Request](api-handlers.md#request)
-  - [Response](api-handlers.md#response)
-  - [How to Write an API Handler](api-handlers.md#how-to-write-an-api-handler)
-  - [How to Write a Resolve Config](api-handlers.md#how-to-write-a-resolve-config)
+  - [Implementation Examples](api-handlers.md#implementation-examples)
+
+- [Sagas](sagas.md)
+
+  - [Sagas Overview](sagas.md#sagas-overview)
+  - [Define a Saga](sagas.md#define-a-saga)
+  - [Register a Saga](sagas.md#register-a-saga)
 
 - [Authentication and Authorization](authentication-and-authorization.md)
 
