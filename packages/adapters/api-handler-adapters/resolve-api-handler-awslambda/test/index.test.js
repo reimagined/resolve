@@ -39,7 +39,7 @@ const extractInvocationInfo = sinonStub => {
   return result
 }
 
-describe('API handler wrapper for express.js', () => {
+describe('API handler wrapper for AWS Lambda', () => {
   let lambdaEvent, lambdaContext, lambdaCallback, getCustomParams
 
   beforeEach(() => {
@@ -171,6 +171,10 @@ describe('API handler wrapper for express.js', () => {
     res.end()
   }
 
+  const apiEmptyEndChainingHandler = async (req, res) => {
+    res.status(200).end()
+  }
+
   it('should work with primitive JSON handler with GET client request', async () => {
     const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
@@ -236,6 +240,18 @@ describe('API handler wrapper for express.js', () => {
 
   it('should work with empty end', async () => {
     const wrappedHandler = wrapApiHandler(apiEmptyEndHandler, getCustomParams)
+    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
+
+    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+  })
+
+  it('should work with empty end using chaining', async () => {
+    const wrappedHandler = wrapApiHandler(
+      apiEmptyEndChainingHandler,
+      getCustomParams
+    )
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
     expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()

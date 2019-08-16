@@ -134,6 +134,7 @@ const createResponse = () => {
     const serializedCookie = cookie.serialize(name, value, options)
 
     internalRes.cookies.push(serializedCookie)
+    return res
   })
 
   defineResponseMethod('clearCookie', (name, options) => {
@@ -144,12 +145,14 @@ const createResponse = () => {
     })
 
     internalRes.cookies.push(serializedCookie)
+    return res
   })
 
   defineResponseMethod('status', code => {
     validateResponseOpened()
     validateOptionShape('Status code', code, [Number])
     internalRes.status = code
+    return res
   })
 
   defineResponseMethod('redirect', (path, code) => {
@@ -160,6 +163,7 @@ const createResponse = () => {
     internalRes.status = code != null ? code : 302
 
     internalRes.closed = true
+    return res
   })
 
   defineResponseMethod('getHeader', searchKey => {
@@ -174,6 +178,7 @@ const createResponse = () => {
     validateOptionShape('Header value', value, [String])
 
     internalRes.headers[normalizeKey(key, 'upper-dash-case')] = value
+    return res
   })
 
   defineResponseMethod('text', (content, encoding) => {
@@ -182,12 +187,16 @@ const createResponse = () => {
     validateOptionShape('Encoding', encoding, [String], true)
     internalRes.body = Buffer.from(content, encoding)
     internalRes.closed = true
+    return res
   })
 
   defineResponseMethod('json', content => {
     validateResponseOpened()
+    internalRes.headers[normalizeKey('Content-Type', 'upper-dash-case')] =
+      'application/json'
     internalRes.body = JSON.stringify(content)
     internalRes.closed = true
+    return res
   })
 
   defineResponseMethod('end', (content = '', encoding) => {
@@ -198,6 +207,7 @@ const createResponse = () => {
       content.constructor === String ? Buffer.from(content, encoding) : content
 
     internalRes.closed = true
+    return res
   })
 
   defineResponseMethod('file', (content, filename, encoding) => {
@@ -210,6 +220,7 @@ const createResponse = () => {
     internalRes.headers['Content-Disposition'] = contentDisposition(filename)
 
     internalRes.closed = true
+    return res
   })
 
   return Object.freeze(res)
