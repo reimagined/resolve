@@ -1,4 +1,5 @@
 import { Selector, ClientFunction } from 'testcafe'
+import fetch from 'isomorphic-fetch'
 
 const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || '3000'
@@ -33,10 +34,11 @@ test('create second shopping list', async t => {
 })
 
 test('get list json from /api/shopping-lists.json', async t => {
-  await t.navigateTo('/api/shopping-lists.json')
+  const response = await fetch(`${MAIN_PAGE}/api/shopping-lists.json`)
+  const result = await response.text()
 
-  await t.expect(getPageBody()).contains('First Shopping List')
-  await t.expect(getPageBody()).contains('Second Shopping List')
+  await t.expect(result).contains('First Shopping List')
+  await t.expect(result).contains('Second Shopping List')
 })
 
 test('create items in first shopping list', async t => {
@@ -149,8 +151,9 @@ test('remove shopping lists', async t => {
 })
 
 test('get list json from /api/shopping-lists.json', async t => {
-  await t.navigateTo('/api/shopping-lists.json')
+  const response = await fetch(`${MAIN_PAGE}/api/shopping-lists.json`)
+  const result = await response.text()
 
-  await t.expect(getPageBody()).notContains('First Shopping List')
-  await t.expect(getPageBody()).notContains('Second Shopping List')
+  await t.expect(result).notContains('First Shopping List')
+  await t.expect(result).notContains('Second Shopping List')
 })
