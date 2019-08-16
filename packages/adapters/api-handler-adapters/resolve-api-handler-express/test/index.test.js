@@ -325,7 +325,10 @@ describe('API handler wrapper for express.js', () => {
   })
 
   it('should work with empty end using chaining', async () => {
-    const wrappedHandler = wrapApiHandler(apiEmptyEndChainingHandler, getCustomParams)
+    const wrappedHandler = wrapApiHandler(
+      apiEmptyEndChainingHandler,
+      getCustomParams
+    )
     resolveHttpBody(null)
     await wrappedHandler(expressReq, expressRes)
 
