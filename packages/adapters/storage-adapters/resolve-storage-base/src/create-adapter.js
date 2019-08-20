@@ -1,15 +1,15 @@
 const createAdapter = (
-  prepare,
-  wrapMethod,
-  wrapEventFilter,
-  wrapDispose,
-  connect,
-  init,
-  loadEvents,
-  getLatestEvent,
-  saveEvent,
-  drop,
-  dispose,
+  { prepare, wrapMethod, wrapEventFilter, wrapDispose },
+  {
+    connect,
+    init,
+    loadEvents,
+    getReadStream,
+    getLatestEvent,
+    saveEvent,
+    drop,
+    dispose
+  },
   adapterSpecificArguments,
   options
 ) => {
@@ -17,6 +17,8 @@ const createAdapter = (
   const pool = { config, disposed: false }
 
   prepare(pool, connect, init, adapterSpecificArguments)
+
+  pool.waitConnectAndInit = wrapMethod(pool, Function())
 
   return Object.freeze({
     init: wrapMethod(
@@ -32,6 +34,7 @@ const createAdapter = (
       () => pool.initialPromiseResult
     ),
     loadEvents: wrapMethod(pool, wrapEventFilter(loadEvents)),
+    getReadStream: getReadStream.bind(null, pool),
     getLatestEvent: wrapMethod(pool, getLatestEvent),
     saveEvent: wrapMethod(pool, saveEvent),
     drop: wrapMethod(pool, drop),

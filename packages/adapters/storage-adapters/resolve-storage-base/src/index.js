@@ -6,12 +6,11 @@ import wrapDispose from './wrap-dispose'
 
 export ConcurrentError from './concurrent-error'
 
-const wrappedCreateAdapter = createAdapter.bind(
-  null,
+const wrappedCreateAdapter = createAdapter.bind(null, {
   prepare,
   wrapMethod,
   wrapEventFilter,
   wrapDispose
-)
+})
 
 export default wrappedCreateAdapter

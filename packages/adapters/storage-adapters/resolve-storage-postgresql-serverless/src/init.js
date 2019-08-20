@@ -39,6 +39,7 @@ const init = async ({
       `CREATE INDEX ${escapeId('timestamp')}
      ON ${escapeId(databaseName)}.${escapeId(tableName)}
      USING BTREE(${escapeId('timestamp')})`,
+
       `CREATE TABLE ${escapeId(databaseName)}.${escapeId(
         `${tableName}-sequence`
       )}(
@@ -48,6 +49,19 @@ const init = async ({
       ${escapeId('transactionId')} ${longStringSqlType},
       PRIMARY KEY(${escapeId('key')})
     )`,
+
+      // streamId expireTime
+
+      `CREATE TABLE ${escapeId(databaseName)}.${escapeId(
+        `${tableName}-sequence`
+      )}(
+      ${escapeId('key')} ${longNumberSqlType},
+      ${escapeId('eventId')} ${longNumberSqlType},
+      ${escapeId('timestamp')} ${longNumberSqlType},
+      ${escapeId('transactionId')} ${longStringSqlType},
+      PRIMARY KEY(${escapeId('key')})
+    )`,
+
       `INSERT INTO ${escapeId(databaseName)}.${escapeId(
         `${tableName}-sequence`
       )}(
@@ -58,6 +72,7 @@ const init = async ({
     ) VALUES (
       0, 0, 0, ${escape('0')}
     )`,
+
       `GRANT USAGE ON SCHEMA ${escapeId(databaseName)} TO ${escapeId(
         userLogin
       )}`,
