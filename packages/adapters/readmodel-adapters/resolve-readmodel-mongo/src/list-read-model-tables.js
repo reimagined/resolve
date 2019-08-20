@@ -1,13 +1,15 @@
 const listReadModelTables = async (
-  { databasePromise, rootId },
+  { databasePromise, rootId, collections },
   readModelName
 ) => {
+  if (collections.has(readModelName)) {
+    return Array.from(collections.get(readModelName))
+  }
+
   const database = await databasePromise
   const tablesNames = []
 
-  for (const {
-    s: { name }
-  } of await database.collections()) {
+  for (const { name } of await database.listCollections().toArray()) {
     const collection = await database.collection(name)
     const root = await collection.findOne({ _id: rootId })
 
@@ -15,6 +17,8 @@ const listReadModelTables = async (
       tablesNames.push(name)
     }
   }
+
+  collections.set(readModelName, new Set(tablesNames))
 
   return tablesNames
 }

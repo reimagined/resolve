@@ -10,7 +10,8 @@ const setupConnection = async pool => {
       {
         ...pool.connectionOptions,
         useNewUrlParser: true,
-        autoReconnect: false
+        autoReconnect: false,
+        useUnifiedTopology: true
       },
       (error, client) => {
         if (error != null) {
@@ -72,6 +73,7 @@ const connect = async (imports, pool, options) => {
   Object.assign(pool, {
     getCollection: getCollection.bind(null, pool),
     templateDocuments: new Map(),
+    collections: new Map(),
     connectionOptions,
     performanceTracer,
     url,
