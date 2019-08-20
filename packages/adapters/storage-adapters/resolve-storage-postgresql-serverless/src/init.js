@@ -50,18 +50,6 @@ const init = async ({
       PRIMARY KEY(${escapeId('key')})
     )`,
 
-      // streamId expireTime
-
-      `CREATE TABLE ${escapeId(databaseName)}.${escapeId(
-        `${tableName}-sequence`
-      )}(
-      ${escapeId('key')} ${longNumberSqlType},
-      ${escapeId('eventId')} ${longNumberSqlType},
-      ${escapeId('timestamp')} ${longNumberSqlType},
-      ${escapeId('transactionId')} ${longStringSqlType},
-      PRIMARY KEY(${escapeId('key')})
-    )`,
-
       `INSERT INTO ${escapeId(databaseName)}.${escapeId(
         `${tableName}-sequence`
       )}(

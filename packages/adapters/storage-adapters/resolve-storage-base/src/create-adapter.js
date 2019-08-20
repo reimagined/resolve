@@ -1,24 +1,24 @@
 const createAdapter = (
-  { prepare, wrapMethod, wrapEventFilter, wrapDispose },
+  { prepare, wrapMethod, wrapEventFilter, wrapDispose, validateEventFilter },
   {
     connect,
     init,
     loadEvents,
-    getReadStream,
+    getEventStream,
     getLatestEvent,
     saveEvent,
     drop,
-    dispose
+    dispose,
+    ...adapterSpecificArguments
   },
-  adapterSpecificArguments,
   options
 ) => {
   const config = { ...options }
-  const pool = { config, disposed: false }
+  const pool = { config, disposed: false, validateEventFilter }
+  // eslint-disable-next-line no-new-func
+  pool.waitConnectAndInit = wrapMethod(pool, Function())
 
   prepare(pool, connect, init, adapterSpecificArguments)
-
-  pool.waitConnectAndInit = wrapMethod(pool, Function())
 
   return Object.freeze({
     init: wrapMethod(
@@ -34,7 +34,7 @@ const createAdapter = (
       () => pool.initialPromiseResult
     ),
     loadEvents: wrapMethod(pool, wrapEventFilter(loadEvents)),
-    getReadStream: getReadStream.bind(null, pool),
+    getEventStream: getEventStream.bind(null, pool),
     getLatestEvent: wrapMethod(pool, getLatestEvent),
     saveEvent: wrapMethod(pool, saveEvent),
     drop: wrapMethod(pool, drop),

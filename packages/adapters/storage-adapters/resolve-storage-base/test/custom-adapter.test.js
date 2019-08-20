@@ -28,6 +28,13 @@ describe('createCustomAdapter', () => {
         JSON.stringify(args, null, 2)
       )
     }
+    const getEventStream = async (pool, ...args) => {
+      result.push(
+        'getEventStream',
+        JSON.stringify(pool, null, 2),
+        JSON.stringify(args, null, 2)
+      )
+    }
     const saveEvent = async (pool, ...args) => {
       result.push(
         'saveEvent',
@@ -50,16 +57,15 @@ describe('createCustomAdapter', () => {
       )
     }
 
-    const createCustomAdapter = createAdapter.bind(
-      null,
+    const createCustomAdapter = createAdapter.bind(null, {
       connect,
       init,
       loadEvents,
+      getEventStream,
       saveEvent,
       drop,
-      dispose,
-      {}
-    )
+      dispose
+    })
 
     const customAdapter = createCustomAdapter({
       skipInit: false,
@@ -99,6 +105,13 @@ describe('createCustomAdapter', () => {
         JSON.stringify(args, null, 2)
       )
     }
+    const getEventStream = async (pool, ...args) => {
+      result.push(
+        'getEventStream',
+        JSON.stringify(pool, null, 2),
+        JSON.stringify(args, null, 2)
+      )
+    }
     const saveEvent = async (pool, ...args) => {
       result.push(
         'saveEvent',
@@ -121,16 +134,15 @@ describe('createCustomAdapter', () => {
       )
     }
 
-    const createCustomAdapter = createAdapter.bind(
-      null,
+    const createCustomAdapter = createAdapter.bind(null, {
       connect,
       init,
       loadEvents,
+      getEventStream,
       saveEvent,
       drop,
-      dispose,
-      {}
-    )
+      dispose
+    })
 
     const customAdapter = createCustomAdapter({
       skipInit: true,

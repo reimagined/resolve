@@ -5,6 +5,7 @@ import _createAdapter from 'resolve-storage-base'
 import connect from './connect'
 import init from './init'
 import loadEvents from './load-events'
+import getEventStream from './get-event-stream'
 import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
 import drop from './drop'
@@ -37,33 +38,31 @@ import resourceWaitForCreate from './resource/wait-for-create'
 const resourceMap = new WeakMap()
 
 // as adapter
-const createAdapter = _createAdapter.bind(
-  null,
+const createAdapter = _createAdapter.bind(null, {
   connect,
   init,
   loadEvents,
+  getEventStream,
   getLatestEvent,
   saveEvent,
   drop,
-  _dispose,
-  {
-    DynamoDB,
-    createTypeExpression,
-    createTimestampExpression,
-    createAggregateIdExpression,
-    createQuery,
-    expressionObject,
-    expressionString,
-    checkTableExists,
-    executePaginationQuery,
-    executeSingleQuery,
-    encodeEmptyStrings,
-    decodeEmptyStrings,
-    encodeEvent: _encodeEvent,
-    decodeEvent: _decodeEvent,
-    resourceMap
-  }
-)
+  dispose: _dispose,
+  DynamoDB,
+  createTypeExpression,
+  createTimestampExpression,
+  createAggregateIdExpression,
+  createQuery,
+  expressionObject,
+  expressionString,
+  checkTableExists,
+  executePaginationQuery,
+  executeSingleQuery,
+  encodeEmptyStrings,
+  decodeEmptyStrings,
+  encodeEvent: _encodeEvent,
+  decodeEvent: _decodeEvent,
+  resourceMap
+})
 export { globalPartitionKey, rangedIndex, apiVersion }
 
 export default createAdapter
