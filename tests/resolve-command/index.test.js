@@ -1,7 +1,7 @@
 // mdis-start
 import createStorageLiteAdapter from 'resolve-storage-lite'
 import createCommandExecutor from 'resolve-command'
-import createES from 'resolve-es'
+import createEventStore from 'resolve-es'
 import newsAggregate from './news-aggregate'
 // mdis-stop
 
@@ -9,7 +9,7 @@ test('resolve-command', async () => {
   // mdis-start
   const aggregates = [newsAggregate]
   const memoryStorage = createStorageLiteAdapter({ databaseFile: ':memory:' })
-  const eventStore = createES({ storage: memoryStorage })
+  const eventStore = createEventStore({ storage: memoryStorage })
 
   const executeCommand = createCommandExecutor({
     eventStore,

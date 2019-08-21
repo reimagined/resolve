@@ -27,13 +27,77 @@ After the command is initialized, you get a function that is used to send an eve
 ### Example
 Define a news handling aggregate (see the  `news-aggregate.js` file), use the `resolve-command` library to execute the `createNews` command and send the corresponding event to the specified event store. To see a read model handling events which this aggregate produces, refer to the [resolve-query](../resolve-query#example) package documentation.
 
-[mdis]:# (../../tests/resolve-command/index.test.js) 
+[mdis]:# (../../../tests/resolve-command/index.test.js)
 ```js
+import createStorageLiteAdapter from 'resolve-storage-lite'
+import createCommandExecutor from 'resolve-command'
+import createEventStore from 'resolve-es'
+import newsAggregate from './news-aggregate'
+...
+  const aggregates = [newsAggregate]
+  const memoryStorage = createStorageLiteAdapter({ databaseFile: ':memory:' })
+  const eventStore = createEventStore({ storage: memoryStorage })
+
+  const executeCommand = createCommandExecutor({
+    eventStore,
+    aggregates
+  })
+
+  const event = await executeCommand({
+    aggregateId: 'aggregate-id',
+    aggregateName: 'news',
+    type: 'createNews',
+    payload: {
+      title: 'News',
+      userId: 'user-id',
+      text: 'News content'
+    }
+  })
 ```
 
 ##### news-aggregate.js
-[mdis]:# (../../tests/resolve-command/news-aggregate.js)
+[mdis]:# (../../../tests/resolve-command/news-aggregate.js)
 ```js
+import Immutable from 'seamless-immutable'
+
+export default {
+  name: 'news',
+  projection: {
+    Init: () => Immutable({}),
+    NEWS_CREATED: (state, { payload: { userId } }) =>
+      state.merge({
+        createdAt: Date.now(),
+        createdBy: userId,
+        voted: [],
+        comments: {}
+      })
+  },
+  commands: {
+    createNews: (state, { payload: { title, link, userId, text } }) => {
+      if (state.createdAt) {
+        throw new Error('Aggregate already exists')
+      }
+
+      if (!title) {
+        throw new Error('Title is required')
+      }
+
+      if (!userId) {
+        throw new Error('UserId is required')
+      }
+
+      return {
+        type: 'NEWS_CREATED',
+        payload: {
+          title,
+          text,
+          link,
+          userId
+        }
+      }
+    }
+  }
+}
 ```
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-command-readme?pixel)
