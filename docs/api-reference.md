@@ -341,12 +341,14 @@ A saga's event handler receives an object that provides access to the saga-relat
 | store       | Provides access to the saga's persistent store (similar to the Read Model store). |
 | sideEffects | Provides access to the saga's side effect functions.                              |
 
-In addition to user-defined side effect functions, the SideEffects object contains the following default side effects:
+In addition to user-defined side effect functions, the `SideEffects` object contains the following default side effects:
 
 | Function Name                       | Description                                                                                 |
 | ----------------------------------- | ------------------------------------------------------------------------------------------- |
 | [executeCommand](#executecommand)   | Sends a command with the specified payload to an aggregate.                                 |
 | [scheduleCommand](#schedulecommand) | Similar to `executeCommand`, but delays command execution until a specified moment in time. |
+
+The `sideEffects` object's `isEnabled` field indicates whether or not side effects are enabled for the saga.
 
 ### executeCommand
 
@@ -533,7 +535,11 @@ The reSolve framework includes the client **resolve-redux** library used to conn
 | [connectRootBasedUrls](#connectrootbasedurls)     | Fixes URLs passed to the specified props so that they take into respect the correct root folder path.            |
 | [connectStaticBasedUrls](#connectstaticbasedurls) | Fixes URLs passed to the specified props so that they take into respect the correct static resource folder path. |
 
-##### connectViewModel
+#### connectViewModel
+
+Connects a React component to a reSolve View Model.
+
+##### Example
 
 ```js
 export const mapStateToOptions = (state, ownProps) => {
@@ -570,7 +576,11 @@ export default connectViewModel(mapStateToOptions)(
 )
 ```
 
-##### connectReadModel
+#### connectReadModel
+
+Connects a React component to a reSolve Read Model.
+
+##### Example
 
 ```js
 export const mapStateToOptions = () => ({
@@ -594,13 +604,21 @@ export default connectReadModel(mapStateToOptions)(
 )
 ```
 
-##### connectRootBasedUrls
+#### connectRootBasedUrls
+
+Fixes URLs passed to the specified props so that they take into respect the correct root folder path.
+
+##### Example
 
 ```js
 export default connectRootBasedUrls(['href'])(Link)
 ```
 
-##### connectStaticBasedUrls
+#### connectStaticBasedUrls
+
+Fixes URLs passed to the specified props so that they take into respect the correct static resource folder path.
+
+##### Example
 
 ```js
 export default connectStaticBasedUrls(['css', 'favicon'])(Header)
