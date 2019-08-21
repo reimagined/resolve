@@ -6,6 +6,7 @@ test('createAdapter should return the correct interface', async () => {
   const connect = sinon.stub()
   const init = sinon.stub()
   const loadEvents = sinon.stub()
+  const getEventStream = sinon.stub()
   const getLatestEvent = sinon.stub()
   const saveEvent = sinon.stub()
   const drop = sinon.stub()
@@ -26,36 +27,46 @@ test('createAdapter should return the correct interface', async () => {
     .stub()
     .callsFake((pool, func) => async (...args) => await func(...args))
 
+  const validateEventFilter = jest.fn()
+
   const prepare = sinon.stub()
   const options = {}
 
   const adapter = createAdapter(
-    prepare,
-    wrapMethod,
-    wrapEventFilter,
-    wrapDispose,
-    connect,
-    init,
-    loadEvents,
-    getLatestEvent,
-    saveEvent,
-    drop,
-    dispose,
-    db,
+    {
+      prepare,
+      wrapMethod,
+      wrapEventFilter,
+      wrapDispose,
+      validateEventFilter
+    },
+    {
+      connect,
+      init,
+      loadEvents,
+      getEventStream,
+      getLatestEvent,
+      saveEvent,
+      drop,
+      dispose,
+      db
+    },
     options
   )
 
   await adapter.loadEvents()
+  await adapter.getEventStream()
   await adapter.getLatestEvent()
   await adapter.saveEvent()
   await adapter.drop()
   await adapter.dispose()
 
   expect(loadEvents.callCount).toEqual(1)
+  expect(getEventStream.callCount).toEqual(1)
   expect(getLatestEvent.callCount).toEqual(1)
   expect(saveEvent.callCount).toEqual(1)
   expect(dispose.callCount).toEqual(1)
   expect(drop.callCount).toEqual(1)
 
-  expect(wrapMethod.callCount).toEqual(5)
+  expect(wrapMethod.callCount).toEqual(6)
 })

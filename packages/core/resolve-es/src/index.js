@@ -39,6 +39,10 @@ const loadEvents = async (storage, filter, handler) => {
   await storage.loadEvents(filter, handler)
 }
 
+const getEventStream = (storage, cursor) => {
+  return storage.getEventStream(cursor)
+}
+
 const isInteger = val =>
   val != null && val.constructor === Number && parseInt(val) === val
 const isString = val => val != null && val.constructor === String
@@ -82,6 +86,14 @@ const wrapMethod = (errorHandler, method, ...partialArgs) => async (
   }
 }
 
+const wrapMethodSync = (errorHandler, method, ...partialArgs) => (...args) => {
+  try {
+    return method(...partialArgs.concat(args))
+  } catch (error) {
+    return errorHandler(error)
+  }
+}
+
 export default (
   { storage, publishEvent },
   errorHandler = err => {
@@ -90,6 +102,7 @@ export default (
 ) => {
   return Object.freeze({
     loadEvents: wrapMethod(errorHandler, loadEvents, storage),
+    getEventStream: wrapMethodSync(errorHandler, getEventStream, storage),
     getLatestEvent: wrapMethod(errorHandler, getLatestEvent, storage),
     saveEvent: wrapMethod(errorHandler, saveEvent, storage, publishEvent),
     dispose: async () => {
