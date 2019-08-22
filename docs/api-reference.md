@@ -7,12 +7,12 @@ title: API Reference
 
 The table below lists functions that a custom Read Model's connector should implement.
 
-| Function Name             | Description                                                                                |
-| ------------------------- | ------------------------------------------------------------------------------------------ |
-| [connect](#connect)       | Initializes a connection to a storage.                                                     |
-| [disconnect](#disconnect) | Closes the storage connection.                                                             |
-| [drop](#drop)             | Removes the Read Model's data from storage.                                                |
-| [dispose](#dispose)       | Forcefully disposes all unmanaged resources that Read Models served by this connector use. |
+| Function Name             | Description                                                             |
+| ------------------------- | ----------------------------------------------------------------------- |
+| [connect](#connect)       | Initializes a connection to a storage.                                  |
+| [disconnect](#disconnect) | Closes the storage connection.                                          |
+| [drop](#drop)             | Removes the Read Model's data from storage.                             |
+| [dispose](#dispose)       | Forcefully disposes all unmanaged resources provided by this connector. |
 
 ### connect
 
@@ -53,10 +53,10 @@ Closes the storage connection.
 
 #### Arguments
 
-| Argument Name | Description                 |
-| ------------- | --------------------------- |
-| store         | A store object.             |
-| readModelName | A read model to disconnect. |
+| Argument Name | Description                   |
+| ------------- | ----------------------------- |
+| store         | A store object.               |
+| readModelName | The read model to disconnect. |
 
 #### Example
 
@@ -99,7 +99,7 @@ const drop = async (store, readModelName) => {
 
 ### dispose
 
-Forcefully disposes all unmanaged resources that Read Models served by this connector use.
+Forcefully disposes all unmanaged resources provided by this connector.
 
 #### Example
 
@@ -121,15 +121,15 @@ const dispose = async () => {
 
 The table below lists functions that you can use to communicate with a Read Model store through a `store` object.
 
-| Function Name               | Description                                                                        |
-| --------------------------- | ---------------------------------------------------------------------------------- |
-| [defineTable](#definetable) | Defines a new table within the store.                                              |
-| [find](#find)               | Searches for data items that based on the specified expression.                    |
-| [findOne](#findone)         | Searches for a single data item based on the specified expression.                 |
-| [count](#count)             | Returns the count of items that meet the specified condition.                      |
-| [insert](#insert)           | Inserts an item into the specified table.                                          |
-| [update](#update)           | Searches for data items and updates them based on the specified update expression. |
-| [delete](#delete)           | Deletes data items based on the specified search expression.                       |
+| Function Name               | Description                                       |
+| --------------------------- | ------------------------------------------------- |
+| [defineTable](#definetable) | Defines a new table within the store.             |
+| [find](#find)               | Searches for data items.                          |
+| [findOne](#findone)         | Searches for a single data item.                  |
+| [count](#count)             | Returns the count of items that meet a condition. |
+| [insert](#insert)           | Inserts an item into a table.                     |
+| [update](#update)           | Searches for data items and updates them.         |
+| [delete](#delete)           | Deletes data items.                               |
 
 ### defineTable
 
@@ -532,8 +532,8 @@ The reSolve framework includes the client **resolve-redux** library used to conn
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | [connectViewModel](#connectviewmodel)             | Connects a React component to a reSolve View Model.                                                              |
 | [connectReadModel](#connectreadmodel)             | Connects a React component to a reSolve Read Model.                                                              |
-| [connectRootBasedUrls](#connectrootbasedurls)     | Fixes URLs passed to the specified props so that they take into respect the correct root folder path.            |
-| [connectStaticBasedUrls](#connectstaticbasedurls) | Fixes URLs passed to the specified props so that they take into respect the correct static resource folder path. |
+| [connectRootBasedUrls](#connectrootbasedurls)     | Fixes URLs passed to the specified props so that they take into account the correct root folder path.            |
+| [connectStaticBasedUrls](#connectstaticbasedurls) | Fixes URLs passed to the specified props so that they take into account the correct static resource folder path. |
 
 #### connectViewModel
 
