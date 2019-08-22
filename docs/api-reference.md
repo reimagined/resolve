@@ -126,7 +126,7 @@ The table below lists functions that you can use to communicate with a Read Mode
 | [defineTable](#definetable) | Defines a new table within the store.                                              |
 | [find](#find)               | Searches for data items that based on the specified expression.                    |
 | [findOne](#findone)         | Searches for a single data item based on the specified expression.                 |
-| [count](#count)             | Returns the count of items that meet the specified condition.                      |
+| [count](#count)             | Returns the number of items that meet the specified condition.                      |
 | [insert](#insert)           | Inserts an item into the specified table.                                          |
 | [update](#update)           | Searches for data items and updates them based on the specified update expression. |
 | [delete](#delete)           | Deletes data items based on the specified search expression.                       |
