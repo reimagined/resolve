@@ -128,7 +128,7 @@ The table below lists functions that you can use to communicate with a Read Mode
 | [findOne](#findone)         | Searches for a single data item.                  |
 | [count](#count)             | Returns the count of items that meet a condition. |
 | [insert](#insert)           | Inserts an item into a table.                     |
-| [update](#update)           | Searches for data items and updates them.         |
+| [update](#update)           | Updates data items.         |
 | [delete](#delete)           | Deletes data items.                               |
 
 ### defineTable
