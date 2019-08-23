@@ -5,7 +5,7 @@ title: API Reference
 
 ## Read Model Connector Interface
 
-The table below lists functions that a custom Read Model's connector should implement.
+The table below lists functions a custom Read Model's connector should implement.
 
 | Function Name             | Description                                                    |
 | ------------------------- | -------------------------------------------------------------- |
@@ -121,15 +121,15 @@ const dispose = async () => {
 
 The table below lists functions that you can use to communicate with a Read Model store through a `store` object.
 
-| Function Name               | Description                                       |
-| --------------------------- | ------------------------------------------------- |
-| [defineTable](#definetable) | Defines a new table within the store.             |
-| [find](#find)               | Searches for data items.                          |
-| [findOne](#findone)         | Searches for a single data item.                  |
-| [count](#count)             | Returns the count of items that meet a condition. |
-| [insert](#insert)           | Inserts an item into a table.                     |
-| [update](#update)           | Searches for data items and updates them.         |
-| [delete](#delete)           | Deletes data items.                               |
+| Function Name               | Description                                        |
+| --------------------------- | -------------------------------------------------- |
+| [defineTable](#definetable) | Defines a new table within the store.              |
+| [find](#find)               | Searches for data items.                           |
+| [findOne](#findone)         | Searches for a single data item.                   |
+| [count](#count)             | Returns the number of items that meet a condition. |
+| [insert](#insert)           | Inserts an item into a table.                      |
+| [update](#update)           | Updates data items.                                |
+| [delete](#delete)           | Deletes data items.                                |
 
 ### defineTable
 
@@ -197,7 +197,7 @@ const getStories = async (type, store, { first, offset }) => {
 
 ### findOne
 
-Searches for a single data item based on the specified expression.
+Searches for a data item based on the specified expression.
 
 #### Arguments
 
@@ -226,7 +226,7 @@ Searches for a single data item based on the specified expression.
 
 ### count
 
-Returns the count of items that meet the specified condition.
+Returns the number of items that meet the specified condition.
 
 #### Arguments
 
@@ -378,7 +378,7 @@ await sideEffects.executeCommand({
 
 ### scheduleCommand
 
-Similar to `executeCommand`, but delays command execution until a specified moment in time.
+Similar to `executeCommand` but delays the command's execution until a specified moment in time.
 
 #### Arguments
 
@@ -409,7 +409,7 @@ await sideEffects.scheduleCommand(
 
 ### HTTP API
 
-Resolve provides a standard HTTP API that allows you to send aggregate commands and query Read Models and View Models. Refer to the [Standard HTTP API](curl.md) article for more information.
+Resolve provides a standard HTTP API that allows you to send aggregate commands and query Read and View Models. Refer to the [Standard HTTP API](curl.md) topic for more information.
 
 #### Read Model API
 
@@ -441,7 +441,7 @@ The object contains the parameters that the resolver accepts.
 
 ##### Example
 
-Use the following command to get 3 users from the [with-saga](https://github.com/reimagined/resolve/tree/master/examples/with-saga) example.
+Use the following command to get 3 users from the [with-saga](https://github.com/reimagined/resolve/tree/master/examples/with-saga) example:
 
 ```sh
 curl -X POST \
@@ -467,7 +467,7 @@ http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
 
 ##### Example
 
-Use the following command to get the current [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example application's state.
+Use the following command to get the [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example application's state:
 
 ```sh
 curl -g -X GET "http://localhost:3000/api/query/Default/shoppingLists"
@@ -481,7 +481,7 @@ You can send a command from the client side as a POST request to the following U
 http://{host}:{port}/api/commands
 ```
 
-The request body should have the `application/json` content type and contain a JSON representation of the command:
+The request body should have the `application/json` content type and contain the command's JSON representation.
 
 ```
 {

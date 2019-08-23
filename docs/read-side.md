@@ -269,7 +269,7 @@ We recommend that you store Read Model data in a denormalized form so that your 
 
 ## Updating a Read Model via Projection Functions
 
-A projection function is used to accumulate the event data in a **Read Model storage**. Each projection function receives the storage object and event information. The event information includes the aggregateID, timestamp and payload.
+A projection function is used to accumulate the event data in a **Read Model storage**. Each projection function receives the storage object and event information. The event information includes the aggregateID, timestamp, and payload.
 
 You can use the [standard API](api-reference#read-model-store-interface) to communicate with the store. The code sample below demonstrates a Read Model projection function implementation:
 
