@@ -7,12 +7,12 @@ title: API Reference
 
 The table below lists functions that a custom Read Model's connector should implement.
 
-| Function Name             | Description                                                             |
-| ------------------------- | ----------------------------------------------------------------------- |
-| [connect](#connect)       | Initializes a connection to a storage.                                  |
-| [disconnect](#disconnect) | Closes the storage connection.                                          |
-| [drop](#drop)             | Removes the Read Model's data from storage.                             |
-| [dispose](#dispose)       | Forcefully disposes all unmanaged resources provided by this connector. |
+| Function Name             | Description                                                    |
+| ------------------------- | -------------------------------------------------------------- |
+| [connect](#connect)       | Initializes a connection to a storage.                         |
+| [disconnect](#disconnect) | Closes the storage connection.                                 |
+| [drop](#drop)             | Removes the Read Model's data from storage.                    |
+| [dispose](#dispose)       | Dispose of all unmanaged resources provided by this connector. |
 
 ### connect
 
@@ -99,7 +99,7 @@ const drop = async (store, readModelName) => {
 
 ### dispose
 
-Forcefully disposes all unmanaged resources provided by this connector.
+Dispose of all unmanaged resources provided by this connector.
 
 #### Example
 
@@ -163,7 +163,7 @@ Init: async store => {
 
 ### find
 
-Searches for data items that based on the specified expression.
+Searches for data items based on the specified expression.
 
 #### Arguments
 
@@ -172,7 +172,7 @@ Searches for data items that based on the specified expression.
 | tableName        | A table name.                               |
 | searchExpression | An object that defines a search expression. |
 | fieldList        | A list of fields to fetch.                  |
-| sort             | The sort order.                             |
+| sort             | A sort order.                               |
 | skip             | A number of data items to skip.             |
 | limit            | The maximum number of data items to fetch.  |
 
@@ -356,9 +356,9 @@ Sends a command with the specified payload to an aggregate.
 
 #### Arguments
 
-| Argument Name | Description                                                                                                        |
-| ------------- | ------------------------------------------------------------------------------------------------------------------ |
-| command       | Specifies a command object. Refer to the [Write Side](write-side#sending-a-command) document for more information. |
+| Argument Name | Description                                                                                                       |
+| ------------- | ----------------------------------------------------------------------------------------------------------------- |
+| command       | Specifies a command object. Refer to the [Write Side](write-side#sending-a-command) article for more information. |
 
 #### Example
 
@@ -382,9 +382,9 @@ Similar to `executeCommand`, but delays command execution until a specified mome
 
 #### Arguments
 
-| Argument Name | Description                                                                                                        |
-| ------------- | ------------------------------------------------------------------------------------------------------------------ |
-| command       | Specifies a command object. Refer to the [Write Side](write-side#sending-a-command) document for more information. |
+| Argument Name | Description                                                                                                       |
+| ------------- | ----------------------------------------------------------------------------------------------------------------- |
+| command       | Specifies a command object. Refer to the [Write Side](write-side#sending-a-command) article for more information. |
 
 #### Example
 
@@ -409,7 +409,7 @@ await sideEffects.scheduleCommand(
 
 ### HTTP API
 
-Resolve provides a standard HTTP API that allows you to send aggregate commands and query Read Models and View Models. Refer to the [Standard HTTP API](curl.md) document for more information.
+Resolve provides a standard HTTP API that allows you to send aggregate commands and query Read Models and View Models. Refer to the [Standard HTTP API](curl.md) article for more information.
 
 #### Read Model API
 
@@ -606,7 +606,7 @@ export default connectReadModel(mapStateToOptions)(
 
 #### connectRootBasedUrls
 
-Fixes URLs passed to the specified props so that they take into respect the correct root folder path.
+Fixes URLs passed to the specified props so that they take into account the correct root folder path.
 
 ##### Example
 
@@ -616,7 +616,7 @@ export default connectRootBasedUrls(['href'])(Link)
 
 #### connectStaticBasedUrls
 
-Fixes URLs passed to the specified props so that they take into respect the correct static resource folder path.
+Fixes URLs passed to the specified props so that they take into account the correct static resource folder path.
 
 ##### Example
 

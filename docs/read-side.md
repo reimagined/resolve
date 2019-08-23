@@ -271,7 +271,7 @@ We recommend that you store Read Model data in a denormalized form so that your 
 
 A projection function is used to accumulate the event data in a **Read Model storage**. Each projection function receives the storage object and event information. The event information includes the aggregateID, timestamp and payload.
 
-You can use the [standard API](api-reference#read-model-store-interface) to communicate with store. The code sample below demonstrates a Read Model projection function implementation:
+You can use the [standard API](api-reference#read-model-store-interface) to communicate with the store. The code sample below demonstrates a Read Model projection function implementation:
 
 ```js
 [STORY_COMMENTED]: async (
@@ -359,7 +359,7 @@ Note that a View Model does not use the Read Model store.
 
 ### Query a Read Model
 
-You can query a Read Model from the client side by sending a POST request to the following URL:
+To query a Read Model from the client side, send a POST request to the following URL:
 
 ```
 http://{host}:{port}/api/query/{readModel}/{resolver}
@@ -398,7 +398,7 @@ curl -X POST \
 
 ### Query a View Model
 
-You can query a View Model from the client side by sending a POST request to the following URL:
+To query a View Model from the client side, send a GET request to the following URL:
 
 ```
 http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
