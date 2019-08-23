@@ -129,6 +129,6 @@ EventStream.prototype._read = function() {
   }
 }
 
-const getEventStream = (pool, cursor) => new EventStream(pool, cursor)
+const exportStream = (pool, cursor) => new EventStream(pool, cursor)
 
-export default getEventStream
+export default exportStream

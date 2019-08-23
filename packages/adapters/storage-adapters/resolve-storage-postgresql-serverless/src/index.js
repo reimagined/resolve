@@ -4,7 +4,7 @@ import _createAdapter from 'resolve-storage-base'
 import connect from './connect'
 import init from './init'
 import loadEvents from './load-events'
-import getEventStream from './get-event-stream'
+import exportStream from './export'
 import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
 import drop from './drop'
@@ -21,7 +21,7 @@ const createAdapter = _createAdapter.bind(null, {
   connect,
   init,
   loadEvents,
-  getEventStream,
+  export: exportStream,
   getLatestEvent,
   saveEvent,
   drop,

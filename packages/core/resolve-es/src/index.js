@@ -39,8 +39,11 @@ const loadEvents = async (storage, filter, handler) => {
   await storage.loadEvents(filter, handler)
 }
 
-const getEventStream = (storage, cursor) => {
-  return storage.getEventStream(cursor)
+const importStream = (storage, ...args) => {
+  return storage.import(...args)
+}
+const exportStream = (storage, ...args) => {
+  return storage.export(...args)
 }
 
 const isInteger = val =>
@@ -80,18 +83,18 @@ const wrapMethod = (errorHandler, method, ...partialArgs) => async (
   ...args
 ) => {
   try {
-    return await method(...partialArgs.concat(args))
+    return await method(...partialArgs, ...args)
   } catch (error) {
     await errorHandler(error)
   }
 }
 
-const wrapMethodSync = (errorHandler, method, ...partialArgs) => (...args) => {
-  try {
-    return method(...partialArgs.concat(args))
-  } catch (error) {
-    return errorHandler(error)
-  }
+const wrapStreamFactory = (errorHandler, method, ...partialArgs) => (
+  ...args
+) => {
+  const stream = method(...partialArgs, ...args)
+  stream.on(error, errorHandler)
+  return stream
 }
 
 export default (
@@ -102,7 +105,8 @@ export default (
 ) => {
   return Object.freeze({
     loadEvents: wrapMethod(errorHandler, loadEvents, storage),
-    getEventStream: wrapMethodSync(errorHandler, getEventStream, storage),
+    import: wrapStreamFactory(errorHandler, importStream, storage),
+    export: wrapStreamFactory(errorHandler, exportStream, storage),
     getLatestEvent: wrapMethod(errorHandler, getLatestEvent, storage),
     saveEvent: wrapMethod(errorHandler, saveEvent, storage, publishEvent),
     dispose: async () => {
