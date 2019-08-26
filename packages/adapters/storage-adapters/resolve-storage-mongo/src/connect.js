@@ -9,6 +9,7 @@ const connect = async (pool, { MongoClient }) => {
   const collection = await database.collection(collectionName)
 
   Object.assign(pool, {
+    collectionName,
     client,
     database,
     collection

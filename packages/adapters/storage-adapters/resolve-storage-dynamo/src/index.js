@@ -37,11 +37,16 @@ import resourceWaitForCreate from './resource/wait-for-create'
 
 const resourceMap = new WeakMap()
 
+const trueFunc = Function('return true') // eslint-disable-line no-new-func
+
 // as adapter
 const createAdapter = _createAdapter.bind(null, {
   connect,
   init,
   loadEvents,
+  checkEventStoreActive: trueFunc,
+  activateEventStore: trueFunc,
+  deactivateEventStore: trueFunc,
   getEventStream,
   getLatestEvent,
   saveEvent,
