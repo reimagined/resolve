@@ -9,14 +9,14 @@ The table below lists functions a custom Read Model's connector should implement
 
 | Function Name             | Description                                                    |
 | ------------------------- | -------------------------------------------------------------- |
-| [connect](#connect)       | Initializes a connection to a storage.                         |
+| [connect](#connect)       | Initializes a connection to storage.                         |
 | [disconnect](#disconnect) | Closes the storage connection.                                 |
 | [drop](#drop)             | Removes the Read Model's data from storage.                    |
-| [dispose](#dispose)       | Dispose of all unmanaged resources provided by this connector. |
+| [dispose](#dispose)       | Dispose of this connector's unmanaged resources. |
 
 ### connect
 
-Initializes a connection to a storage. An implementation should return a store object.
+Initializes a connection to storage. An implementation should return a store object.
 
 #### Arguments
 
@@ -606,7 +606,7 @@ export default connectReadModel(mapStateToOptions)(
 
 #### connectRootBasedUrls
 
-Fixes URLs passed to the specified props so that they take into account the correct root folder path.
+Fixes URLs passed to the specified props and ensures they use the correct root folder path.
 
 ##### Example
 
