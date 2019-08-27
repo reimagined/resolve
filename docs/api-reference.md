@@ -7,11 +7,11 @@ title: API Reference
 
 The table below lists functions a custom Read Model's connector should implement.
 
-| Function Name             | Description                                                    |
-| ------------------------- | -------------------------------------------------------------- |
-| [connect](#connect)       | Initializes a connection to storage.                         |
-| [disconnect](#disconnect) | Closes the storage connection.                                 |
-| [drop](#drop)             | Removes the Read Model's data from storage.                    |
+| Function Name             | Description                                      |
+| ------------------------- | ------------------------------------------------ |
+| [connect](#connect)       | Initializes a connection to storage.             |
+| [disconnect](#disconnect) | Closes the storage connection.                   |
+| [drop](#drop)             | Removes the Read Model's data from storage.      |
 | [dispose](#dispose)       | Dispose of this connector's unmanaged resources. |
 
 ### connect
@@ -413,7 +413,7 @@ Resolve provides a standard HTTP API that allows you to send aggregate commands 
 
 #### Read Model API
 
-You can query a Read Model from the client side by sending a POST request to the following URL:
+To query a Read Model from the client side, send a POST request to the following URL:
 
 ```
 http://{host}:{port}/api/query/{readModel}/{resolver}
@@ -452,7 +452,7 @@ curl -X POST \
 
 #### View Model API
 
-You can query a View Model from the client side by sending a POST request to the following URL:
+To query a View Model from the client side, send a GET request to the following URL:
 
 ```
 http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
@@ -528,12 +528,12 @@ $ curl -X POST "http://localhost:3000/api/commands"
 
 The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library provides the following HOCs:
 
-| Function Name                                     | Description                                                                                                      |
-| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| [connectViewModel](#connectviewmodel)             | Connects a React component to a reSolve View Model.                                                              |
-| [connectReadModel](#connectreadmodel)             | Connects a React component to a reSolve Read Model.                                                              |
-| [connectRootBasedUrls](#connectrootbasedurls)     | Fixes URLs passed to the specified props so that they take into account the correct root folder path.            |
-| [connectStaticBasedUrls](#connectstaticbasedurls) | Fixes URLs passed to the specified props so that they take into account the correct static resource folder path. |
+| Function Name                                     | Description                                                                                        |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| [connectViewModel](#connectviewmodel)             | Connects a React component to a reSolve View Model.                                                |
+| [connectReadModel](#connectreadmodel)             | Connects a React component to a reSolve Read Model.                                                |
+| [connectRootBasedUrls](#connectrootbasedurls)     | Fixes URLs passed to the specified props so that they use the correct root folder path.            |
+| [connectStaticBasedUrls](#connectstaticbasedurls) | Fixes URLs passed to the specified props so that they use the correct static resource folder path. |
 
 #### connectViewModel
 
