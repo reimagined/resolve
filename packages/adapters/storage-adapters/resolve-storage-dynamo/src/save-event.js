@@ -23,9 +23,7 @@ const saveEvent = async (pool, event) => {
       break
     } catch (error) {
       if (error.code === duplicateError) {
-        throw new ConcurrentError(
-          `Can not save the event because aggregate '${event.aggregateId}' is not actual at the moment. Please retry later.`
-        )
+        throw new ConcurrentError(event.aggregateId)
       }
       if (!temporaryErrors.includes(error.code)) {
         throw error

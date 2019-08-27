@@ -25,53 +25,52 @@ const saveEvent = async (
       const [
         { lastEventId, lastTimestamp } = { lastEventId: 0, lastTimestamp: 0 }
       ] = await executeStatement(
-        `
-        SELECT ${escapeId('eventId')} + 1  AS ${escapeId('lastEventId')},
-        GREATEST(
-          CAST(extract(epoch from now()) * 1000 AS BIGINT),
-          ${escapeId('timestamp')}
-        ) AS ${escapeId('lastTimestamp')}
-        FROM ${escapeId(databaseName)}.${escapeId(`${tableName}-sequence`)}
-        WHERE ${escapeId('key')} = 0;
-      `,
+        [
+          `SELECT ${escapeId('eventId')} + 1  AS ${escapeId('lastEventId')},`,
+          `GREATEST(`,
+          `CAST(extract(epoch from now()) * 1000 AS BIGINT),`,
+          `${escapeId('timestamp')}`,
+          `) AS ${escapeId('lastTimestamp')}`,
+          `FROM ${escapeId(databaseName)}.${escapeId(`${tableName}-sequence`)}`,
+          `WHERE ${escapeId('key')} = 0;`
+        ].join(''),
         transactionId
       )
 
-      await executeStatement(
-        `
-        UPDATE ${escapeId(databaseName)}.${escapeId(`${tableName}-sequence`)}
-        SET ${escapeId('eventId')} = ${+lastEventId},
-        ${escapeId('transactionId')} = ${escape(transactionId)},
-        ${escapeId('timestamp')} = ${+lastTimestamp}
-        WHERE ${escapeId('key')} = 0;
-      `,
-        transactionId
-      )
+      const serializedEvent = [
+        `${+lastEventId},`,
+        `${+lastTimestamp},`,
+        `${escape(event.aggregateId)},`,
+        `${+event.aggregateVersion},`,
+        `${escape(event.type)},`,
+        escape(JSON.stringify(event.payload != null ? event.payload : null))
+      ].join('')
 
-      const serializedEvent = `
-        ${+lastEventId},
-        ${+lastTimestamp},
-        ${escape(event.aggregateId)},
-        ${+event.aggregateVersion},
-        ${escape(event.type)},
-        ${escape(JSON.stringify(event.payload != null ? event.payload : null))}
-      `
+      const byteLength = Buffer.byteLength(serializedEvent)
 
       await executeStatement(
-        `
-        INSERT INTO ${escapeId(databaseName)}.${escapeId(tableName)}(
-          ${escapeId('eventId')},
-          ${escapeId('timestamp')},
-          ${escapeId('aggregateId')},
-          ${escapeId('aggregateVersion')},
-          ${escapeId('type')},
-          ${escapeId('payload')},
-          ${escapeId('eventSize')}
-        ) VALUES (
-          ${serializedEvent},
-          ${Buffer.byteLength(serializedEvent)}
-        );
-      `,
+        [
+          `UPDATE ${escapeId(databaseName)}.${escapeId(
+            `${tableName}-sequence`
+          )} `,
+          `SET ${escapeId('eventId')} = ${+lastEventId},`,
+          `${escapeId('transactionId')} = ${escape(transactionId)},`,
+          `${escapeId('timestamp')} = ${+lastTimestamp} `,
+          `WHERE ${escapeId('key')} = 0;`,
+          `INSERT INTO ${escapeId(databaseName)}.${escapeId(tableName)}(`,
+          `${escapeId('eventId')},`,
+          `${escapeId('timestamp')},`,
+          `${escapeId('aggregateId')},`,
+          `${escapeId('aggregateVersion')},`,
+          `${escapeId('type')},`,
+          `${escapeId('payload')},`,
+          `${escapeId('eventSize')}`,
+          `) VALUES (`,
+          `${serializedEvent},`,
+          `${serializedPayload},`,
+          `${byteLength}`,
+          `);`
+        ].join(''),
         transactionId
       )
 
@@ -89,9 +88,7 @@ const saveEvent = async (
         continue
       }
 
-      throw new ConcurrentError(
-        `Can not save the event because aggregate '${event.aggregateId}' is not actual at the moment. Please retry later.`
-      )
+      throw new ConcurrentError(event.aggregateId)
     }
   }
 }
