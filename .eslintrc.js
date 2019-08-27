@@ -220,6 +220,7 @@ module.exports = {
           'namespaces',
           'nav',
           'navbar',
+          'ndjson',
           'nedb',
           'newstories',
           'noop',

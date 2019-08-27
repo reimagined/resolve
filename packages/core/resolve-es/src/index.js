@@ -93,7 +93,7 @@ const wrapStreamFactory = (errorHandler, method, ...partialArgs) => (
   ...args
 ) => {
   const stream = method(...partialArgs, ...args)
-  stream.on(error, errorHandler)
+  stream.on('error', errorHandler)
   return stream
 }
 
