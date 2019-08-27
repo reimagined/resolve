@@ -1,4 +1,5 @@
 import { ConcurrentError } from 'resolve-storage-base'
+import { aggregateName } from 'resolve-module-comments/src/common/defaults'
 
 const randRange = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min
@@ -33,28 +34,26 @@ const saveEvent = async (
 
       await executeStatement(
         [
-          `START TRANSACTION;
-          WITH cte (${escapeId('lastEventId')}, ${escapeId(
-            'lastTimestamp'
-          )}) AS (VALUES (
-            (
-              SELECT ${escapeId('eventId')} + 1 AS ${escapeId('lastEventId')}
-              FROM ${escapeId(databaseName)}.${escapeId(
+          `START TRANSACTION;`,
+          `WITH cte (`,
+          `${escapeId('lastEventId')},${escapeId('lastTimestamp')}`,
+          `) AS (VALUES ((`,
+          `SELECT ${escapeId('eventId')} + 1 AS ${escapeId('lastEventId')} `,
+          `FROM ${escapeId(databaseName)}.${escapeId(
             `${tableName}-sequence`
-          )}
-              WHERE ${escapeId('key')} = 0
-            ),
-            (
-              SELECT GREATEST(
-                CAST(extract(epoch from now()) * 1000 AS BIGINT),
-                ${escapeId('timestamp')}
-              ) AS ${escapeId('lastTimestamp')}
-              FROM ${escapeId(databaseName)}.${escapeId(
+          )} `,
+          `WHERE ${escapeId('key')} = 0`,
+          `),(`,
+          `SELECT GREATEST(`,
+          `CAST(extract(epoch from now()) * 1000 AS BIGINT),${escapeId(
+            'timestamp'
+          )})`,
+          `AS ${escapeId('lastTimestamp')}`,
+          `FROM ${escapeId(databaseName)}.${escapeId(
             `${tableName}-sequence`
-          )}
-              WHERE ${escapeId('key')} = 0
-            )
-          )) `,
+          )} `,
+          `WHERE ${escapeId('key')} = 0`,
+          `)))`,
           `UPDATE ${escapeId(databaseName)}.${escapeId(
             `${tableName}-sequence`
           )} `,
@@ -73,27 +72,26 @@ const saveEvent = async (
           `${escapeId('type')},`,
           `${escapeId('payload')},`,
           `${escapeId('eventSize')}`,
-          `) VALUES (`,
-          `(
-            SELECT ${escapeId('eventId')}
-            FROM ${escapeId(databaseName)}.${escapeId(`${tableName}-sequence`)}
-            WHERE ${escapeId('key')} = 0
-            AND ${escapeId(
-              'transactionId'
-            )} = CAST(txid_current() AS VARCHAR(190))
-           ),`,
-          `(
-            SELECT ${escapeId('timestamp')}
-            FROM ${escapeId(databaseName)}.${escapeId(`${tableName}-sequence`)}
-            WHERE ${escapeId('key')} = 0
-            AND ${escapeId(
-              'transactionId'
-            )} = CAST(txid_current() AS VARCHAR(190))
-          ),`,
-          `${serializedEvent},`,
-          `${byteLength}`,
-          `);
-          COMMIT;`
+          `) VALUES ((`,
+          `SELECT ${escapeId('eventId')} `,
+          `FROM ${escapeId(databaseName)}.${escapeId(
+            `${tableName}-sequence`
+          )} `,
+          `WHERE ${escapeId('key')} = 0 `,
+          `AND ${escapeId(
+            'transactionId'
+          )} = CAST(txid_current() AS VARCHAR(190))`,
+          `),(`,
+          `SELECT ${escapeId('timestamp')} `,
+          `FROM ${escapeId(databaseName)}.${escapeId(
+            `${tableName}-sequence`
+          )} `,
+          `WHERE ${escapeId('key')} = 0 `,
+          `AND ${escapeId(
+            'transactionId'
+          )} = CAST(txid_current() AS VARCHAR(190))`,
+          `),${serializedEvent},${byteLength});`,
+          `COMMIT;`
         ].join('')
       )
 
