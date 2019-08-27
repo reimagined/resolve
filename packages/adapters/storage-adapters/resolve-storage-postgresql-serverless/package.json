@@ -28,8 +28,7 @@
     "@babel/runtime": "^7.0.0",
     "resolve-storage-base": "0.20.25",
     "aws-sdk": "^2.509.0",
-    "ndjson": "1.5.0",
-    "through2": "^2.0.3"
+    "through2": "^3.0.1"
   },
   "devDependencies": {
     "jest": "24.1.0",

@@ -1,5 +1,4 @@
 import stream from 'stream'
-import ndjson from 'ndjson'
 import through from 'through2'
 
 const injectString = ({ escape }, value) => `${escape(value)}`
@@ -55,8 +54,7 @@ EventStream.prototype._read = function() {
       await this.pool.waitConnectAndInit()
 
       const { executeStatement, escapeId, tableName, databaseName } = this.pool
-
-      const batchSize = 10
+      const batchSize = 100
 
       while (true) {
         if (this.reader !== nextReader) {
@@ -114,20 +112,28 @@ const exportStream = (
   pool,
   { cursor, bufferSize = Number.POSITIVE_INFINITY } = {}
 ) => {
-  const jsonStream = ndjson.serialize()
-
   const eventStream = new EventStream(pool, cursor)
 
   let size = 0
+  let lastEventOffset = 0
+  let isDestroyed = false
 
-  let lastChunk = null
   const resultStream = through.obj(
-    (chunk, encoding, callback) => {
-      lastChunk = chunk
+    (event, encoding, callback) => {
+      lastEventOffset = event.eventOffset
+      delete event.eventOffset
+      delete event.totalEventSize
+      delete event.eventSize
+      delete event.eventId
+
+      const chunk = JSON.stringify(event) + '\n'
       const byteLength = Buffer.byteLength(chunk)
       if (size + byteLength > bufferSize) {
         eventStream.destroy()
-        resultStream.cursor = JSON.parse(chunk).eventOffset
+        if (!isDestroyed) {
+          resultStream.cursor = lastEventOffset
+          isDestroyed = true
+        }
         callback(false, null)
       } else {
         size += byteLength
@@ -136,18 +142,16 @@ const exportStream = (
     },
     callback => {
       eventStream.destroy()
-      jsonStream.destroy()
 
       if (resultStream.cursor == null) {
-        resultStream.cursor = JSON.parse(lastChunk).eventOffset + 1
+        resultStream.cursor = lastEventOffset + 1
       }
 
       callback()
     }
   )
 
-  eventStream.pipe(jsonStream)
-  jsonStream.pipe(resultStream)
+  eventStream.pipe(resultStream)
 
   return resultStream
 }
