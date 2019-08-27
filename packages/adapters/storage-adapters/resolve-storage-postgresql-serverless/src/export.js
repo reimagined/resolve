@@ -6,15 +6,9 @@ const injectString = ({ escape }, value) => `${escape(value)}`
 const injectNumber = (pool, value) => `${+value}`
 
 function EventStream(pool, cursor = 0) {
-  const filter = {}
-
-  pool.validateEventFilter(filter)
-
   stream.Readable.call(this, { objectMode: true })
 
   this.pool = pool
-  this.filter = filter
-
   this.cursor = cursor
   this.offset = cursor
 
@@ -43,7 +37,7 @@ EventStream.prototype.processEvents = function() {
           ...event,
           payload: JSON.parse(event.payload)
         }) === false
-      this.cursor = event.eventId
+      this.cursor = event.eventOffset
 
       if (isPaused) {
         this.reader = null
@@ -62,38 +56,7 @@ EventStream.prototype._read = function() {
 
       const { executeStatement, escapeId, tableName, databaseName } = this.pool
 
-      const { eventTypes, aggregateIds, startTime, finishTime } = this.filter
-
       const batchSize = 10
-
-      const queryConditions = []
-      if (eventTypes != null) {
-        queryConditions.push(
-          `${escapeId('type')} IN (${eventTypes.map(this.injectString)})`
-        )
-      }
-      if (aggregateIds != null) {
-        queryConditions.push(
-          `${escapeId('aggregateId')} IN (${aggregateIds.map(
-            this.injectString
-          )})`
-        )
-      }
-      if (startTime != null) {
-        queryConditions.push(
-          `${escapeId('timestamp')} > ${this.injectNumber(startTime)}`
-        )
-      }
-      if (finishTime != null) {
-        queryConditions.push(
-          `${escapeId('timestamp')} < ${this.injectNumber(finishTime)}`
-        )
-      }
-
-      const resultQueryCondition =
-        queryConditions.length > 0
-          ? `WHERE ${queryConditions.join(' AND ')}`
-          : ''
 
       while (true) {
         if (this.reader !== nextReader) {
@@ -108,9 +71,7 @@ EventStream.prototype._read = function() {
             'eventId'
           )}) AS ${escapeId('totalEventSize')}`,
           `  FROM (`,
-          `    SELECT * FROM ${escapeId(databaseName)}.${escapeId(
-            tableName
-          )} ${resultQueryCondition}`,
+          `    SELECT * FROM ${escapeId(databaseName)}.${escapeId(tableName)}`,
           `    ORDER BY ${escapeId('eventId')} ASC`,
           `    OFFSET ${this.offset}`,
           `    LIMIT ${+batchSize}`,
@@ -127,10 +88,12 @@ EventStream.prototype._read = function() {
           return
         }
 
-        if (nextRows.length > 0) {
-          this.offset = nextRows[nextRows.length - 1].eventId
+        for (let index = 0; index < nextRows.length; index++) {
+          const event = nextRows[index]
+          event.eventOffset = this.offset + index
+          this.rows.push(event)
         }
-        this.rows.push(...nextRows)
+        this.offset += nextRows.length
 
         this.processEvents()
 
@@ -164,7 +127,7 @@ const exportStream = (
       const byteLength = Buffer.byteLength(chunk)
       if (size + byteLength > bufferSize) {
         eventStream.destroy()
-        resultStream.cursor = JSON.parse(chunk).eventId
+        resultStream.cursor = JSON.parse(chunk).eventOffset
         callback(false, null)
       } else {
         size += byteLength
@@ -176,7 +139,7 @@ const exportStream = (
       jsonStream.destroy()
 
       if (resultStream.cursor == null) {
-        resultStream.cursor = JSON.parse(lastChunk).eventId + 1
+        resultStream.cursor = JSON.parse(lastChunk).eventOffset + 1
       }
 
       callback()
