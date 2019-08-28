@@ -4,6 +4,7 @@ import _createAdapter from 'resolve-storage-base'
 import connect from './connect'
 import init from './init'
 import loadEvents from './load-events'
+import getEventStream from './get-event-stream'
 import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
 import drop from './drop'
@@ -16,21 +17,19 @@ import _destroyResource from './resource/destroy'
 const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
 const escape = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
-const createAdapter = _createAdapter.bind(
-  null,
+const createAdapter = _createAdapter.bind(null, {
   connect,
   init,
   loadEvents,
+  getEventStream,
   getLatestEvent,
   saveEvent,
   drop,
   dispose,
-  {
-    RDSDataService,
-    escapeId,
-    escape
-  }
-)
+  RDSDataService,
+  escapeId,
+  escape
+})
 
 export default createAdapter
 

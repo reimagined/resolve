@@ -88,4 +88,17 @@ describe('resolve-storage-mysql-serverless', () => {
 
     expect(mockResult).toMatchSnapshot()
   })
+
+  test('"getEventStream" should return eventStream', done => {
+    const eventStream = storageAdapter.getEventStream()
+
+    eventStream.on('data', event => {
+      expect(event).toHaveProperty('eventId')
+      expect(event).toHaveProperty('aggregateVersion')
+    })
+
+    eventStream.on('end', () => {
+      done()
+    })
+  })
 })

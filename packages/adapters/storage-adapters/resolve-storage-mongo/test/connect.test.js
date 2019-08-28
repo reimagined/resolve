@@ -25,7 +25,7 @@ test('connect should connect to mongodb database', async () => {
 
   await connect(
     pool,
-    MongoClient
+    { MongoClient }
   )
 
   expect(pool.collection).toEqual(collection)

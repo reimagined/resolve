@@ -3,7 +3,11 @@
 exports[`createCustomAdapter should work correctly with skipInit = false: skipInit: false 1`] = `
 "connect
 {
-  \\"config\\": {},
+  \\"config\\": {
+    \\"skipInit\\": false,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
   \\"disposed\\": false,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
@@ -13,15 +17,15 @@ exports[`createCustomAdapter should work correctly with skipInit = false: skipIn
   \\"testField2\\": 2
 }
 [
-  {
-    \\"skipInit\\": false,
-    \\"a\\": \\"a\\",
-    \\"b\\": \\"b\\"
-  }
+  {}
 ]
 init
 {
-  \\"config\\": {},
+  \\"config\\": {
+    \\"skipInit\\": false,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
   \\"disposed\\": false,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
@@ -33,7 +37,11 @@ init
 []
 loadEvents
 {
-  \\"config\\": {},
+  \\"config\\": {
+    \\"skipInit\\": false,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
   \\"disposed\\": false,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
@@ -55,7 +63,11 @@ loadEvents
 exports[`createCustomAdapter should work correctly with skipInit = true: skipInit: true 1`] = `
 "connect
 {
-  \\"config\\": {},
+  \\"config\\": {
+    \\"skipInit\\": true,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
   \\"disposed\\": false,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
@@ -64,15 +76,15 @@ exports[`createCustomAdapter should work correctly with skipInit = true: skipIni
   \\"testField2\\": 2
 }
 [
-  {
-    \\"skipInit\\": true,
-    \\"a\\": \\"a\\",
-    \\"b\\": \\"b\\"
-  }
+  {}
 ]
 init
 {
-  \\"config\\": {},
+  \\"config\\": {
+    \\"skipInit\\": true,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
   \\"disposed\\": false,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
@@ -83,7 +95,11 @@ init
 []
 loadEvents
 {
-  \\"config\\": {},
+  \\"config\\": {
+    \\"skipInit\\": true,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
   \\"disposed\\": false,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},

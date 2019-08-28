@@ -1,4 +1,4 @@
-const connect = async (pool, MongoClient) => {
+const connect = async (pool, { MongoClient }) => {
   const { url, collectionName, ...connectionOptions } = pool.config
 
   const client = await MongoClient.connect(url, {
