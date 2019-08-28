@@ -1,23 +1,13 @@
 import { ConcurrentError } from 'resolve-storage-base'
-import { aggregateName } from 'resolve-module-comments/src/common/defaults'
 
-const randRange = (min, max) =>
-  Math.floor(Math.random() * (max - min + 1)) + min
-const fullJitter = retries => randRange(0, Math.min(100, 2 * 2 ** retries))
-
-const RESERVED_EVENT_SIZE = 2 << (5 + 2) // For reserved BIGINT fields
+import {
+  RESERVED_EVENT_SIZE,
+  LONG_NUMBER_SQL_TYPE,
+  LONG_STRING_SQL_TYPE
+} from './constants'
 
 const saveEvent = async (
-  {
-    databaseName,
-    tableName,
-    executeStatement,
-    beginTransaction,
-    commitTransaction,
-    rollbackTransaction,
-    escapeId,
-    escape
-  },
+  { databaseName, tableName, executeStatement, fullJitter, escapeId, escape },
   event
 ) => {
   for (let retry = 0; ; retry++) {
@@ -45,7 +35,7 @@ const saveEvent = async (
           `WHERE ${escapeId('key')} = 0`,
           `),(`,
           `SELECT GREATEST(`,
-          `CAST(extract(epoch from now()) * 1000 AS BIGINT),${escapeId(
+          `CAST(extract(epoch from now()) * 1000 AS ${LONG_NUMBER_SQL_TYPE}),${escapeId(
             'timestamp'
           )})`,
           `AS ${escapeId('lastTimestamp')}`,
@@ -60,7 +50,7 @@ const saveEvent = async (
           `SET ${escapeId('eventId')} = cte.${escapeId('lastEventId')},`,
           `${escapeId(
             'transactionId'
-          )} = CAST(txid_current() AS VARCHAR(190)),`,
+          )} = CAST(txid_current() AS ${LONG_STRING_SQL_TYPE}),`,
           `${escapeId('timestamp')} = cte.${escapeId('lastTimestamp')} `,
           `FROM cte `,
           `WHERE ${escapeId('key')} = 0;`,
@@ -80,7 +70,7 @@ const saveEvent = async (
           `WHERE ${escapeId('key')} = 0 `,
           `AND ${escapeId(
             'transactionId'
-          )} = CAST(txid_current() AS VARCHAR(190))`,
+          )} = CAST(txid_current() AS ${LONG_STRING_SQL_TYPE})`,
           `),(`,
           `SELECT ${escapeId('timestamp')} `,
           `FROM ${escapeId(databaseName)}.${escapeId(
@@ -89,7 +79,7 @@ const saveEvent = async (
           `WHERE ${escapeId('key')} = 0 `,
           `AND ${escapeId(
             'transactionId'
-          )} = CAST(txid_current() AS VARCHAR(190))`,
+          )} = CAST(txid_current() AS ${LONG_STRING_SQL_TYPE})`,
           `),${serializedEvent},${byteLength});`,
           `COMMIT;`
         ].join('')

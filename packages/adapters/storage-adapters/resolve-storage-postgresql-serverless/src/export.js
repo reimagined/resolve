@@ -1,6 +1,8 @@
 import stream from 'stream'
 import through from 'through2'
 
+import { BATCH_SIZE } from './constants'
+
 const injectString = ({ escape }, value) => `${escape(value)}`
 const injectNumber = (pool, value) => `${+value}`
 
@@ -54,7 +56,6 @@ EventStream.prototype._read = function() {
       await this.pool.waitConnectAndInit()
 
       const { executeStatement, escapeId, tableName, databaseName } = this.pool
-      const batchSize = 100
 
       while (true) {
         if (this.reader !== nextReader) {
@@ -72,7 +73,7 @@ EventStream.prototype._read = function() {
           `    SELECT * FROM ${escapeId(databaseName)}.${escapeId(tableName)}`,
           `    ORDER BY ${escapeId('eventId')} ASC`,
           `    OFFSET ${this.offset}`,
-          `    LIMIT ${+batchSize}`,
+          `    LIMIT ${+BATCH_SIZE}`,
           `  ) ${escapeId('filteredEvents')}`,
           `)`,
           `SELECT * FROM ${escapeId('cte')}`,
@@ -126,8 +127,8 @@ const exportStream = (
       delete event.eventSize
       delete event.eventId
 
-      const chunk = JSON.stringify(event) + '\n'
-      const byteLength = Buffer.byteLength(chunk)
+      const chunk = Buffer.from(JSON.stringify(event) + '\n', encoding)
+      const byteLength = chunk.byteLength
       if (size + byteLength > bufferSize) {
         eventStream.destroy()
         if (!isDestroyed) {

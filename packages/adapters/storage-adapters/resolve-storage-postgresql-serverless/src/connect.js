@@ -21,10 +21,9 @@ const coercer = ({
   }
 }
 
-const executeStatement = async (pool, sql, transactionId = null) => {
+const executeStatement = async (pool, sql) => {
   const result = await pool.rdsDataService
     .executeStatement({
-      ...(transactionId != null ? { transactionId } : {}),
       resourceArn: pool.config.dbClusterOrInstanceArn,
       secretArn: pool.config.awsSecretStoreArn,
       database: 'postgres',
@@ -52,41 +51,9 @@ const executeStatement = async (pool, sql, transactionId = null) => {
   return rows
 }
 
-const beginTransaction = async pool => {
-  const { transactionId } = await pool.rdsDataService
-    .beginTransaction({
-      resourceArn: pool.config.dbClusterOrInstanceArn,
-      secretArn: pool.config.awsSecretStoreArn,
-      database: 'postgres'
-    })
-    .promise()
-
-  return transactionId
-}
-
-const commitTransaction = async (pool, transactionId) => {
-  const { transactionStatus } = await pool.rdsDataService
-    .commitTransaction({
-      resourceArn: pool.config.dbClusterOrInstanceArn,
-      secretArn: pool.config.awsSecretStoreArn,
-      transactionId
-    })
-    .promise()
-
-  return transactionStatus
-}
-
-const rollbackTransaction = async (pool, transactionId) => {
-  const { transactionStatus } = await pool.rdsDataService
-    .rollbackTransaction({
-      resourceArn: pool.config.dbClusterOrInstanceArn,
-      secretArn: pool.config.awsSecretStoreArn,
-      transactionId
-    })
-    .promise()
-
-  return transactionStatus
-}
+const randRange = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1)) + min
+const fullJitter = retries => randRange(0, Math.min(100, 2 * 2 ** retries))
 
 const connect = async (pool, { RDSDataService, escapeId, escape }) => {
   const rdsDataService = new RDSDataService({ region: pool.config.region })
@@ -95,11 +62,9 @@ const connect = async (pool, { RDSDataService, escapeId, escape }) => {
     tableName: pool.config.tableName,
     rdsDataService,
     executeStatement: executeStatement.bind(null, pool),
-    beginTransaction: beginTransaction.bind(null, pool),
-    commitTransaction: commitTransaction.bind(null, pool),
-    rollbackTransaction: rollbackTransaction.bind(null, pool),
     resourceOptions: pool.config.resourceOptions,
     databaseName: pool.config.databaseName,
+    fullJitter,
     escapeId,
     escape
   })
