@@ -292,14 +292,20 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
     }
 
     const { aggregateId, type } = command
-    let {
-      aggregateState,
-      aggregateVersion,
-      lastTimestamp
-    } = await getAggregateState(pool, aggregate, aggregateId)
+    const [
+      { aggregateState, aggregateVersion, lastTimestamp },
+      isEventStoreActive
+    ] = await Promise.all([
+      getAggregateState(pool, aggregate, aggregateId),
+      pool.eventStore.checkEventStoreActive()
+    ])
 
     if (!aggregate.commands.hasOwnProperty(type)) {
       throw generateCommandError(`Command type "${type}" does not exist`)
+    }
+
+    if (!isEventStoreActive) {
+      throw generateCommandError(`Event store is suspended`)
     }
 
     const commandHandler = async (...args) => {

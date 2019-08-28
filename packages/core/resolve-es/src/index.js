@@ -46,6 +46,10 @@ const exportStream = (storage, ...args) => {
   return storage.export(...args)
 }
 
+const checkEventStoreActive = async storage => {
+  return await storage.checkEventStoreActive()
+}
+
 const isInteger = val =>
   val != null && val.constructor === Number && parseInt(val) === val
 const isString = val => val != null && val.constructor === String
@@ -104,6 +108,11 @@ export default (
   }
 ) => {
   return Object.freeze({
+    checkEventStoreActive: wrapMethod(
+      errorHandler,
+      checkEventStoreActive,
+      storage
+    ),
     loadEvents: wrapMethod(errorHandler, loadEvents, storage),
     import: wrapStreamFactory(errorHandler, importStream, storage),
     export: wrapStreamFactory(errorHandler, exportStream, storage),
