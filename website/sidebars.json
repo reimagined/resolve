@@ -18,6 +18,7 @@
           "sagas",
           "authentication-and-authorization",
           "preparing-to-production",
+          "debugging",
           "api-reference",
           "contributing"
         ]
