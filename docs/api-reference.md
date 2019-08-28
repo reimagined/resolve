@@ -437,7 +437,7 @@ The request body should have the `application/json` content type and the followi
 }
 ```
 
-The object contains the parameters that the resolver accepts.
+The object contains parameters that the resolver accepts.
 
 ##### Example
 
@@ -502,7 +502,7 @@ The request body should have the `application/json` content type and contain the
 | **aggregateId**   | string | The ID of an aggregate that should handle the command |
 | **aggregateName** | string | The aggregate's name as defined in **config.app.js**  |
 | **commandType**   | string | The command type that the aggregate can handle        |
-| **payload**       | object | The parameters that the command accepts               |
+| **payload**       | object | Parameters the command accepts               |
 
 ##### Example
 
@@ -616,7 +616,7 @@ export default connectRootBasedUrls(['href'])(Link)
 
 #### connectStaticBasedUrls
 
-Fixes URLs passed to the specified props so that they take into account the correct static resource folder path.
+Fixes URLs passed to the specified props to correct the static resource folder path.
 
 ##### Example
 
