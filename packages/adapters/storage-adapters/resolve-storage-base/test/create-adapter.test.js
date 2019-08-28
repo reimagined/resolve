@@ -6,7 +6,8 @@ test('createAdapter should return the correct interface', async () => {
   const connect = sinon.stub()
   const init = sinon.stub()
   const loadEvents = sinon.stub()
-  const getEventStream = sinon.stub()
+  const importStream = sinon.stub()
+  const exportStream = sinon.stub()
   const getLatestEvent = sinon.stub()
   const saveEvent = sinon.stub()
   const drop = sinon.stub()
@@ -44,29 +45,32 @@ test('createAdapter should return the correct interface', async () => {
       connect,
       init,
       loadEvents,
-      getEventStream,
       getLatestEvent,
       saveEvent,
       drop,
       dispose,
+      import: importStream,
+      export: exportStream,
       db
     },
     options
   )
 
   await adapter.loadEvents()
-  await adapter.getEventStream()
   await adapter.getLatestEvent()
   await adapter.saveEvent()
   await adapter.drop()
   await adapter.dispose()
+  await adapter.import()
+  await adapter.export()
 
   expect(loadEvents.callCount).toEqual(1)
-  expect(getEventStream.callCount).toEqual(1)
   expect(getLatestEvent.callCount).toEqual(1)
   expect(saveEvent.callCount).toEqual(1)
   expect(dispose.callCount).toEqual(1)
   expect(drop.callCount).toEqual(1)
+  expect(importStream.callCount).toEqual(1)
+  expect(exportStream.callCount).toEqual(1)
 
   expect(wrapMethod.callCount).toEqual(6)
 })

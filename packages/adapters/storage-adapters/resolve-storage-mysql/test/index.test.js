@@ -9,7 +9,8 @@ test('resolve-storage-mysql index', () => {
   const saveEvent = require('../src/save-event')
   const drop = require('../src/drop')
   const dispose = require('../src/dispose')
-  const getEventStream = require('../src/get-event-stream')
+  const importStream = require('../src/import')
+  const exportStream = require('../src/export')
 
   sinon.stub(init, 'default').callsFake(() => () => {})
   sinon.stub(connect, 'default').callsFake(() => () => {})
@@ -18,7 +19,8 @@ test('resolve-storage-mysql index', () => {
   sinon.stub(saveEvent, 'default').callsFake(() => () => {})
   sinon.stub(drop, 'default').callsFake(() => () => {})
   sinon.stub(dispose, 'default').callsFake(() => () => {})
-  sinon.stub(getEventStream, 'default').callsFake(() => () => {})
+  sinon.stub(importStream, 'default').callsFake(() => () => {})
+  sinon.stub(exportStream, 'default').callsFake(() => () => {})
 
   sinon.stub(createAdapter, 'default').callsFake(args => {
     for (const func of Object.values(args)) {
@@ -37,7 +39,8 @@ test('resolve-storage-mysql index', () => {
   expect(saveEvent.default.callCount).toEqual(0)
   expect(drop.default.callCount).toEqual(0)
   expect(dispose.default.callCount).toEqual(0)
-  expect(getEventStream.default.callCount).toEqual(0)
+  expect(importStream.default.callCount).toEqual(0)
+  expect(exportStream.default.callCount).toEqual(0)
 
   index.default()
 
@@ -48,5 +51,6 @@ test('resolve-storage-mysql index', () => {
   expect(saveEvent.default.callCount).toEqual(1)
   expect(drop.default.callCount).toEqual(1)
   expect(dispose.default.callCount).toEqual(1)
-  expect(getEventStream.default.callCount).toEqual(1)
+  expect(importStream.default.callCount).toEqual(1)
+  expect(exportStream.default.callCount).toEqual(1)
 })
