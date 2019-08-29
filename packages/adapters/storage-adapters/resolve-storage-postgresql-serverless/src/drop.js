@@ -10,7 +10,7 @@ const drop = async ({
       `DROP TABLE ${escapeId(databaseName)}.${escapeId(
         `${tableName}-sequence`
       )}; `,
-      `DROP TABLE ${escapeId(databaseName)}.${escapeId(
+      `DROP TABLE IF EXISTS ${escapeId(databaseName)}.${escapeId(
         `${tableName}-freeze`
       )}; `
     ].join('')
