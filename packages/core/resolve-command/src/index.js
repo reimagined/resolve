@@ -296,7 +296,7 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
       aggregateState,
       aggregateVersion,
       lastTimestamp
-    } = getAggregateState(pool, aggregate, aggregateId)
+    } = await getAggregateState(pool, aggregate, aggregateId)
 
     if (!aggregate.commands.hasOwnProperty(type)) {
       throw generateCommandError(`Command type "${type}" does not exist`)

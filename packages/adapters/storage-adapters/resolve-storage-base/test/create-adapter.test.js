@@ -18,6 +18,11 @@ test('createAdapter should return the correct interface', async () => {
     .callsFake((pool, method) => async (...args) => {
       await method(pool, ...args)
     })
+  const wrapSaveEvent = sinon
+    .stub()
+    .callsFake(method => async (pool, ...args) => {
+      await method(pool, ...args)
+    })
   const db = {
     /* mock */
   }
@@ -38,6 +43,7 @@ test('createAdapter should return the correct interface', async () => {
       prepare,
       wrapMethod,
       wrapEventFilter,
+      wrapSaveEvent,
       wrapDispose,
       validateEventFilter
     },
@@ -71,6 +77,8 @@ test('createAdapter should return the correct interface', async () => {
   expect(drop.callCount).toEqual(1)
   expect(importStream.callCount).toEqual(1)
   expect(exportStream.callCount).toEqual(1)
+  expect(exportStream.callCount).toEqual(1)
+  expect(wrapSaveEvent.callCount).toEqual(1)
 
-  expect(wrapMethod.callCount).toEqual(6)
+  expect(wrapMethod.callCount).toEqual(8)
 })

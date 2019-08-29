@@ -92,29 +92,6 @@ Array [
         FROM (
           SELECT * FROM \\"event-store\\".\\"events\\" 
           ORDER BY \\"eventId\\" ASC
-          OFFSET 1
-          LIMIT 50
-        ) \\"filteredEvents\\"
-      )
-      SELECT * FROM \\"cte\\"
-      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
-      ORDER BY \\"cte\\".\\"eventId\\" ASC
-      ",
-  },
-  "executeStatement",
-  Object {
-    "continueAfterTimeout": false,
-    "database": "postgres",
-    "includeResultMetadata": true,
-    "resourceArn": "dbClusterOrInstanceArn",
-    "secretArn": "awsSecretStoreArn",
-    "sql": "WITH \\"cte\\" AS (
-        SELECT \\"filteredEvents\\".*,
-        SUM(\\"filteredEvents\\".\\"eventSize\\")
-        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
-        FROM (
-          SELECT * FROM \\"event-store\\".\\"events\\" 
-          ORDER BY \\"eventId\\" ASC
           OFFSET 0
           LIMIT 50
         ) \\"filteredEvents\\"
@@ -297,7 +274,7 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
-    "sql": "START TRANSACTION;WITH cte (\\"lastEventId\\",\\"lastTimestamp\\") AS (VALUES ((SELECT \\"eventId\\" + 1 AS \\"lastEventId\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0),(SELECT GREATEST(CAST(extract(epoch from now()) * 1000 AS BIGINT),\\"timestamp\\")AS \\"lastTimestamp\\"FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0)))UPDATE \\"event-store\\".\\"events-sequence\\" SET \\"eventId\\" = cte.\\"lastEventId\\",\\"transactionId\\" = CAST(txid_current() AS VARCHAR(190)),\\"timestamp\\" = cte.\\"lastTimestamp\\" FROM cte WHERE \\"key\\" = 0;INSERT INTO \\"event-store\\".\\"events\\"(\\"eventId\\",\\"timestamp\\",\\"aggregateId\\",\\"aggregateVersion\\",\\"type\\",\\"payload\\",\\"eventSize\\") VALUES ((SELECT \\"eventId\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0 AND \\"transactionId\\" = CAST(txid_current() AS VARCHAR(190))),(SELECT \\"timestamp\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0 AND \\"transactionId\\" = CAST(txid_current() AS VARCHAR(190))),'id1',1,'AAA','{\\"index\\":1}',93);COMMIT;",
+    "sql": "START TRANSACTION;SELECT 'OK' WHERE (  (SELECT 'Event store is frozen' AS \\"EventStoreIsFrozen\\")UNION ALL (  SELECT 'Event store is frozen' AS \\"EventStoreIsFrozen\\"  FROM \\"information_schema\\".\\"tables\\"  WHERE \\"table_schema\\" = 'event-store'  AND \\"table_name\\" = 'events-freeze')) = 'OK';WITH cte (\\"lastEventId\\",\\"lastTimestamp\\") AS (VALUES ((SELECT \\"eventId\\" + 1 AS \\"lastEventId\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0),(SELECT GREATEST(CAST(extract(epoch from now()) * 1000 AS BIGINT),\\"timestamp\\")AS \\"lastTimestamp\\"FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0)))UPDATE \\"event-store\\".\\"events-sequence\\" SET \\"eventId\\" = cte.\\"lastEventId\\",\\"transactionId\\" = CAST(txid_current() AS VARCHAR(190)),\\"timestamp\\" = cte.\\"lastTimestamp\\" FROM cte WHERE \\"key\\" = 0;INSERT INTO \\"event-store\\".\\"events\\"(\\"eventId\\",\\"timestamp\\",\\"aggregateId\\",\\"aggregateVersion\\",\\"type\\",\\"payload\\",\\"eventSize\\") VALUES ((SELECT \\"eventId\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0 AND \\"transactionId\\" = CAST(txid_current() AS VARCHAR(190))),(SELECT \\"timestamp\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0 AND \\"transactionId\\" = CAST(txid_current() AS VARCHAR(190))),'id1',1,'AAA','{\\"index\\":1}',93);COMMIT;",
   },
   "executeStatement",
   Object {
@@ -322,6 +299,29 @@ Array [
       ORDER BY \\"cte\\".\\"eventId\\" ASC
       ",
   },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
+    "sql": "WITH \\"cte\\" AS (
+        SELECT \\"filteredEvents\\".*,
+        SUM(\\"filteredEvents\\".\\"eventSize\\")
+        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
+        FROM (
+          SELECT * FROM \\"event-store\\".\\"events\\" 
+          ORDER BY \\"eventId\\" ASC
+          OFFSET 1
+          LIMIT 50
+        ) \\"filteredEvents\\"
+      )
+      SELECT * FROM \\"cte\\"
+      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+      ORDER BY \\"cte\\".\\"eventId\\" ASC
+      ",
+  },
 ]
 `;
 
@@ -334,7 +334,7 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
-    "sql": "START TRANSACTION;WITH cte (\\"lastEventId\\",\\"lastTimestamp\\") AS (VALUES ((SELECT \\"eventId\\" + 1 AS \\"lastEventId\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0),(SELECT GREATEST(CAST(extract(epoch from now()) * 1000 AS BIGINT),\\"timestamp\\")AS \\"lastTimestamp\\"FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0)))UPDATE \\"event-store\\".\\"events-sequence\\" SET \\"eventId\\" = cte.\\"lastEventId\\",\\"transactionId\\" = CAST(txid_current() AS VARCHAR(190)),\\"timestamp\\" = cte.\\"lastTimestamp\\" FROM cte WHERE \\"key\\" = 0;INSERT INTO \\"event-store\\".\\"events\\"(\\"eventId\\",\\"timestamp\\",\\"aggregateId\\",\\"aggregateVersion\\",\\"type\\",\\"payload\\",\\"eventSize\\") VALUES ((SELECT \\"eventId\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0 AND \\"transactionId\\" = CAST(txid_current() AS VARCHAR(190))),(SELECT \\"timestamp\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0 AND \\"transactionId\\" = CAST(txid_current() AS VARCHAR(190))),'id1',1,'AAA','null',86);COMMIT;",
+    "sql": "START TRANSACTION;SELECT 'OK' WHERE (  (SELECT 'Event store is frozen' AS \\"EventStoreIsFrozen\\")UNION ALL (  SELECT 'Event store is frozen' AS \\"EventStoreIsFrozen\\"  FROM \\"information_schema\\".\\"tables\\"  WHERE \\"table_schema\\" = 'event-store'  AND \\"table_name\\" = 'events-freeze')) = 'OK';WITH cte (\\"lastEventId\\",\\"lastTimestamp\\") AS (VALUES ((SELECT \\"eventId\\" + 1 AS \\"lastEventId\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0),(SELECT GREATEST(CAST(extract(epoch from now()) * 1000 AS BIGINT),\\"timestamp\\")AS \\"lastTimestamp\\"FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0)))UPDATE \\"event-store\\".\\"events-sequence\\" SET \\"eventId\\" = cte.\\"lastEventId\\",\\"transactionId\\" = CAST(txid_current() AS VARCHAR(190)),\\"timestamp\\" = cte.\\"lastTimestamp\\" FROM cte WHERE \\"key\\" = 0;INSERT INTO \\"event-store\\".\\"events\\"(\\"eventId\\",\\"timestamp\\",\\"aggregateId\\",\\"aggregateVersion\\",\\"type\\",\\"payload\\",\\"eventSize\\") VALUES ((SELECT \\"eventId\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0 AND \\"transactionId\\" = CAST(txid_current() AS VARCHAR(190))),(SELECT \\"timestamp\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0 AND \\"transactionId\\" = CAST(txid_current() AS VARCHAR(190))),'id1',1,'AAA','null',86);COMMIT;",
   },
   "executeStatement",
   Object {

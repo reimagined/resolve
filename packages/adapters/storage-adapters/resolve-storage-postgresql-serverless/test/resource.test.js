@@ -1,5 +1,15 @@
 import { result as mockResult } from 'aws-sdk/clients/rdsdataservice'
-import _createAdapter from '../src/index'
+import RDSDataService from 'aws-sdk/clients/rdsdataservice'
+
+import connect from '../src/connect'
+import init from '../src/init'
+import dispose from '../src/dispose'
+import fullJitter from '../src/full-jitter'
+import executeStatement from '../src/execute-statement'
+import coercer from '../src/coercer'
+import escapeId from '../src/escape-id'
+import escape from '../src/escape'
+
 import createResource from '../src/resource/create'
 import disposeResource from '../src/resource/dispose'
 import destroyResource from '../src/resource/destroy'
@@ -10,11 +20,16 @@ describe('resource', () => {
   })
 
   test('method "create" should create resource', async () => {
-    const createAdapter = jest
-      .fn()
-      .mockImplementation((...args) => _createAdapter(...args))
     const pool = {
-      createAdapter
+      executeStatement,
+      connect,
+      init,
+      RDSDataService,
+      escapeId,
+      escape,
+      fullJitter,
+      coercer,
+      dispose
     }
 
     const options = {
@@ -28,28 +43,19 @@ describe('resource', () => {
 
     await createResource(pool, options)
 
-    expect(createAdapter).toHaveBeenCalledWith({
-      awsSecretStoreArn: options.awsSecretStoreAdminArn,
-      dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
-      databaseName: 'postgres',
-      resourceOptions: {
-        databaseName: options.databaseName,
-        tableName: options.tableName,
-        userLogin: options.userLogin,
-        userPassword: options.userPassword
-      },
-      skipInit: true
-    })
-
     expect(mockResult).toMatchSnapshot()
   })
 
   test('method "destroy" should destroy resource', async () => {
-    const createAdapter = jest
-      .fn()
-      .mockImplementation((...args) => _createAdapter(...args))
     const pool = {
-      createAdapter
+      executeStatement,
+      connect,
+      RDSDataService,
+      escapeId,
+      escape,
+      fullJitter,
+      coercer,
+      dispose
     }
 
     const options = {
@@ -61,26 +67,20 @@ describe('resource', () => {
 
     await destroyResource(pool, options)
 
-    expect(createAdapter).toHaveBeenCalledWith({
-      awsSecretStoreArn: options.awsSecretStoreAdminArn,
-      dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
-      databaseName: 'postgres',
-      resourceOptions: {
-        databaseName: options.databaseName,
-        userLogin: options.userLogin
-      },
-      skipInit: true
-    })
-
     expect(mockResult).toMatchSnapshot()
   })
 
   test('method "dispose" should dispose resource', async () => {
-    const createAdapter = jest
-      .fn()
-      .mockImplementation((...args) => _createAdapter(...args))
     const pool = {
-      createAdapter
+      executeStatement,
+      connect,
+      init,
+      RDSDataService,
+      escapeId,
+      escape,
+      fullJitter,
+      coercer,
+      dispose
     }
 
     Object.assign(pool, {
@@ -98,30 +98,6 @@ describe('resource', () => {
     }
 
     await disposeResource(pool, options)
-
-    expect(createAdapter).toHaveBeenCalledWith({
-      awsSecretStoreArn: options.awsSecretStoreAdminArn,
-      dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
-      databaseName: 'postgres',
-      resourceOptions: {
-        databaseName: options.databaseName,
-        tableName: options.tableName,
-        userLogin: options.userLogin,
-        userPassword: options.userPassword
-      },
-      skipInit: true
-    })
-
-    expect(createAdapter).toHaveBeenCalledWith({
-      awsSecretStoreArn: options.awsSecretStoreAdminArn,
-      dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
-      databaseName: 'postgres',
-      resourceOptions: {
-        databaseName: options.databaseName,
-        userLogin: options.userLogin
-      },
-      skipInit: true
-    })
 
     expect(mockResult).toMatchSnapshot()
   })
