@@ -3,40 +3,55 @@ id: debugging
 title: Debugging
 ---
 
-Resolve uses the [resolve-debug-levels](https://www.npmjs.com/package/resolve-debug-levels) package to log debug information. This package extends the [debug](https://www.npmjs.com/package/debug) module's functionality with multiple logging levels. The package provides the following debug levels:
+Resolve uses the [resolve-debug-levels](https://www.npmjs.com/package/resolve-debug-levels) package to log debug information. This package extends the [debug](https://www.npmjs.com/package/debug) library's functionality with logging levels. The package provides the following logging levels:
 
-| Level   | Description                                                              |
-| ------- | ------------------------------------------------------------------------ |
-| log     | Information that should always be displayed                              |
-| error   | Messages related to errors that can hinder normal program execution      |
-| warn    | Information about potential problems in the application's implementation |
-| debug   | Information displayed for debugging purposes                             |
-| info    | Information about the current operation                                  |
-| verbose | Extended descriptions to the previous message                            |
+| Level   | Description                                            |
+| ------- | ------------------------------------------------------ |
+| log     | Messages that should always be displayed               |
+| error   | Errors that can hinder normal program execution        |
+| warn    | Potential problems in the application's implementation |
+| debug   | Information displayed for debugging purposes           |
+| info    | Messages that describe the current operation           |
+| verbose | Extended descriptions to the previous message          |
+
+Use the `DEBUG_LEVEL` environment variable to specify the logging level.
 
 ## Debug Resolve
 
-To view debug messages produced by the reSolve framework use the assign the `resolve*` prefix to the DEBUG environment variable.
+The reSolve framework uses the `resolve` prefix for all its debugging namespaces. To enable the framework's debug output, assign `resolve*` to the `DEBUG` environment variable as shown below:
 
 ```
-DEBUG=resolve* DEBUG-LEVEL=warnings yarn dev
+DEBUG=resolve* DEBUG-LEVEL=errors yarn dev
 ```
 
-## Debug Resolve Application
+## Debug a Resolve Application
 
-Add the [resolve-debug-levels](https://www.npmjs.com/package/resolve-debug-levels) package to your project. You generate a debug message as shown below:
+You can use [resolve-debug-levels](https://www.npmjs.com/package/resolve-debug-levels) to debug your reSolve application. To do this, add the `resolve-debug-levels` package to your application's dependencies:
+
+```
+yarn add resolve-debug-levels
+```
+
+To create a logger, pass your module's debugging namespace to the function exposed by `resolve-debug-levels`:
 
 ```js
 import debugLevels from 'resolve-debug-levels'
 const log = debugLevels('myapp:api-handlers')
 ...
+```
+
+The logger object exposes methods that correspond to the available debug levels:
+
+```js
+...
 log.debug('processing an API request')
 log.verbose(`request body: ${JSON.stringify(req.body)}`)
-log.verbose(`cookies: ${JSON.stringify(cookies)}`)
+log.verbose(`cookies: ${JSON.stringify(req.cookies)}`)
+...
 ```
 
-You can run your app with the all the specified debug messages as shown below:
+Use the `DEBUG` and `DEBUG-LEVEL` environment variables to enable debug messages:
 
 ```
-DEBUG=myapp* DEBUG-LEVEL=verbose yarn dev
+DEBUG=myapp:api-handlers DEBUG-LEVEL=verbose yarn dev
 ```
