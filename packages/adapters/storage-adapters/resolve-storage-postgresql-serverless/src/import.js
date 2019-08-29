@@ -4,7 +4,8 @@ import { EOL } from 'os'
 import {
   RESERVED_EVENT_SIZE,
   BUFFER_SIZE,
-  LONG_STRING_SQL_TYPE
+  LONG_STRING_SQL_TYPE,
+  PARTIAL_EVENT_FLAG
 } from './constants'
 
 function EventStream(pool, byteOffset = 0, eventId = 1) {
@@ -117,11 +118,14 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
       (BUFFER_SIZE + this.endPosition - chunk.byteLength + eolPosition) %
       BUFFER_SIZE
     let stringifiedEvent = null
+    let eventByteLength = 0
+
     if (this.beginPosition < endEventPosition) {
       stringifiedEvent = this.buffer
         .slice(this.beginPosition, endEventPosition)
         .toString(this.encoding)
-      this.vacantSize += endEventPosition - this.beginPosition
+
+      eventByteLength += endEventPosition - this.beginPosition
     } else {
       stringifiedEvent = this.buffer
         .slice(this.beginPosition, BUFFER_SIZE)
@@ -129,11 +133,13 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
       stringifiedEvent += this.buffer
         .slice(0, endEventPosition)
         .toString(this.encoding)
-      this.vacantSize += BUFFER_SIZE - this.beginPosition
-      this.vacantSize += endEventPosition
+
+      eventByteLength += BUFFER_SIZE - this.beginPosition + endEventPosition
     }
 
+    this.vacantSize += eventByteLength
     this.beginPosition = endEventPosition
+    this.byteOffset += eventByteLength
 
     const event = JSON.parse(stringifiedEvent)
     event.eventId = this.eventId++
@@ -159,10 +165,14 @@ EventStream.prototype._final = async function(callback) {
 
   if (this.vacantSize !== BUFFER_SIZE) {
     let stringifiedEvent = null
+    let eventByteLength = 0
+
     if (this.beginPosition < this.endPosition) {
       stringifiedEvent = this.buffer
         .slice(this.beginPosition, this.endPosition)
         .toString(this.encoding)
+
+      eventByteLength += this.endPosition - this.beginPosition
     } else {
       stringifiedEvent = this.buffer
         .slice(this.beginPosition, BUFFER_SIZE)
@@ -170,22 +180,32 @@ EventStream.prototype._final = async function(callback) {
       stringifiedEvent += this.buffer
         .slice(0, this.endPosition)
         .toString(this.encoding)
+
+      eventByteLength += BUFFER_SIZE - this.beginPosition + this.endPosition
     }
 
-    const event = JSON.parse(stringifiedEvent)
-    event.eventId = this.eventId++
-    this.timestamp = Math.max(this.timestamp, event.timestamp)
+    let event = PARTIAL_EVENT_FLAG
+    try {
+      event = JSON.parse(stringifiedEvent)
+    } catch {}
 
-    const saveEventPromise = this.saveEvent(event).catch(
-      this.saveEventErrors.push.bind(this.saveEventErrors)
-    )
-    void saveEventPromise.then(
-      this.saveEventPromiseSet.delete.bind(
-        this.saveEventPromiseSet,
-        saveEventPromise
+    if (event !== PARTIAL_EVENT_FLAG) {
+      event.eventId = this.eventId++
+      this.timestamp = Math.max(this.timestamp, event.timestamp)
+
+      this.byteOffset += eventByteLength
+
+      const saveEventPromise = this.saveEvent(event).catch(
+        this.saveEventErrors.push.bind(this.saveEventErrors)
       )
-    )
-    this.saveEventPromiseSet.add(saveEventPromise)
+      void saveEventPromise.then(
+        this.saveEventPromiseSet.delete.bind(
+          this.saveEventPromiseSet,
+          saveEventPromise
+        )
+      )
+      this.saveEventPromiseSet.add(saveEventPromise)
+    }
   }
 
   await Promise.all([
