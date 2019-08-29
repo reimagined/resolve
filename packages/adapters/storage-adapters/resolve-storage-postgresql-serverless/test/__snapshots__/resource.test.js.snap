@@ -127,7 +127,7 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreAdminArn",
-    "sql": "DELETE FROM \\"databaseName\\".\\"undefined\\"",
+    "sql": "DELETE FROM \\"databaseName\\".\\"tableName\\"",
   },
   "executeStatement",
   Object {
@@ -136,7 +136,7 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreAdminArn",
-    "sql": "DELETE FROM \\"databaseName\\".\\"undefined-sequence\\"",
+    "sql": "DELETE FROM \\"databaseName\\".\\"tableName-sequence\\"",
   },
   "executeStatement",
   Object {
@@ -145,7 +145,7 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreAdminArn",
-    "sql": "INSERT INTO \\"databaseName\\".\\"undefined-sequence\\" VALUES(0,0,0, '0' )",
+    "sql": "INSERT INTO \\"databaseName\\".\\"tableName-sequence\\" VALUES(0,0,0, '0' )",
   },
 ]
 `;
