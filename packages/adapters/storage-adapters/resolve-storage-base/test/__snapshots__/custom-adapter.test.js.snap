@@ -9,6 +9,7 @@ exports[`createCustomAdapter should work correctly with skipInit = false: skipIn
     \\"b\\": \\"b\\"
   },
   \\"disposed\\": false,
+  \\"isFrozen\\": null,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
@@ -27,6 +28,7 @@ init
     \\"b\\": \\"b\\"
   },
   \\"disposed\\": false,
+  \\"isFrozen\\": null,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
@@ -43,6 +45,7 @@ loadEvents
     \\"b\\": \\"b\\"
   },
   \\"disposed\\": false,
+  \\"isFrozen\\": null,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
@@ -69,6 +72,7 @@ exports[`createCustomAdapter should work correctly with skipInit = true: skipIni
     \\"b\\": \\"b\\"
   },
   \\"disposed\\": false,
+  \\"isFrozen\\": null,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
@@ -86,6 +90,7 @@ init
     \\"b\\": \\"b\\"
   },
   \\"disposed\\": false,
+  \\"isFrozen\\": null,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
@@ -101,6 +106,7 @@ loadEvents
     \\"b\\": \\"b\\"
   },
   \\"disposed\\": false,
+  \\"isFrozen\\": null,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},

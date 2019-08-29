@@ -26,12 +26,16 @@ const createAdapter = (
 ) => {
   const config = { ...options }
   const pool = { config, disposed: false, validateEventFilter }
+
+  const wrappedFreeze = wrapMethod(pool, freeze)
+  const wrappedUnfreeze = wrapMethod(pool, unfreeze)
+  const wrappedIsFrozen =
+    typeof isFrozen === 'function' ? wrapMethod(pool, isFrozen) : null
+
   Object.assign(pool, {
-    ...(typeof isFrozen === 'function'
-      ? { isFrozen: wrapMethod(pool, isFrozen) }
-      : {}),
-    freeze: wrapMethod(pool, freeze),
-    unfreeze: wrapMethod(pool, unfreeze),
+    isFrozen: wrappedIsFrozen,
+    freeze: wrappedFreeze,
+    unfreeze: wrappedUnfreeze,
     wrapMethod
   })
 
@@ -59,7 +63,10 @@ const createAdapter = (
     getLatestEvent: wrapMethod(pool, getLatestEvent),
     saveEvent: wrapMethod(pool, wrapSaveEvent(saveEvent)),
     drop: wrapMethod(pool, drop),
-    dispose: wrapDispose(pool, dispose)
+    dispose: wrapDispose(pool, dispose),
+    isFrozen: wrappedIsFrozen,
+    freeze: wrappedFreeze,
+    unfreeze: wrappedUnfreeze
   })
 }
 
