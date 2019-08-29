@@ -1,5 +1,6 @@
 import stream from 'stream'
 import { EOL } from 'os'
+import { FREEZE_MODE_AUTO, FREEZE_MODE_MANUAL } from 'resolve-storage-base'
 
 import {
   RESERVED_EVENT_SIZE,
@@ -8,7 +9,7 @@ import {
   PARTIAL_EVENT_FLAG
 } from './constants'
 
-function EventStream(pool, byteOffset = 0, eventId = 1) {
+function EventStream(pool, freezeMode, byteOffset = 0, eventId = 1) {
   stream.Writable.call(this, { objectMode: true })
 
   this.pool = pool
@@ -21,6 +22,8 @@ function EventStream(pool, byteOffset = 0, eventId = 1) {
   this.saveEventPromiseSet = new Set()
   this.saveEventErrors = []
   this.timestamp = 0
+  this.freezeMode = freezeMode
+  this.isFrozen = false
 }
 
 EventStream.prototype = Object.create(stream.Writable.prototype)
@@ -80,7 +83,14 @@ EventStream.prototype.saveSequence = async function() {
 }
 
 EventStream.prototype._write = async function(chunk, encoding, callback) {
-  await this.pool.waitConnectAndInit()
+  const { freeze, waitConnectAndInit } = this.pool
+
+  await waitConnectAndInit()
+
+  if (this.freezeMode === FREEZE_MODE_AUTO && this.isFrozen === false) {
+    await freeze()
+    this.isFrozen = true
+  }
 
   if (this.encoding == null) {
     this.encoding = encoding
@@ -161,7 +171,9 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
 }
 
 EventStream.prototype._final = async function(callback) {
-  await this.pool.waitConnectAndInit()
+  const { unfreeze, waitConnectAndInit } = this.pool
+
+  await waitConnectAndInit()
 
   if (this.vacantSize !== BUFFER_SIZE) {
     let stringifiedEvent = null
@@ -215,6 +227,11 @@ EventStream.prototype._final = async function(callback) {
     )
   ])
 
+  if (this.freezeMode === FREEZE_MODE_AUTO && this.isFrozen === true) {
+    await unfreeze()
+    this.isFrozen = false
+  }
+
   const error =
     this.saveEventErrors.length > 0 ? this.saveEventErrors.join(EOL) : null
 
@@ -223,7 +240,17 @@ EventStream.prototype._final = async function(callback) {
   callback(error)
 }
 
-const importStream = (pool, { byteOffset, eventId } = {}) =>
-  new EventStream(pool, byteOffset, eventId)
+const importStream = (
+  pool,
+  { byteOffset, eventId, freezeMode = FREEZE_MODE_AUTO } = {}
+) => {
+  switch (freezeMode) {
+    case FREEZE_MODE_AUTO:
+    case FREEZE_MODE_MANUAL:
+      return new EventStream(pool, freezeMode, byteOffset, eventId)
+    default:
+      throw new Error(`Wrong freeze mode ${freezeMode}`)
+  }
+}
 
 export default importStream

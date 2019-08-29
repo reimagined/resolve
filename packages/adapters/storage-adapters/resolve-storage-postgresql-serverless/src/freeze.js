@@ -5,9 +5,9 @@ const freeze = async ({
   escapeId
 }) => {
   await executeStatement(
-    `CREATE TABLE ${escapeId(databaseName)}.${escapeId(`${tableName}-freeze`)}(
+    `CREATE TABLE ${escapeId(databaseName)}.${escapeId(`${tableName}-freeze`)} (
       ${escapeId('surrogate')} BIGINT NOT NULL,
-      PRIMARY KEY(${escapeId('surrogate')}
+      PRIMARY KEY(${escapeId('surrogate')})
     );
     COMMENT ON TABLE ${escapeId(databaseName)}.${escapeId(
       `${tableName}-freeze`
