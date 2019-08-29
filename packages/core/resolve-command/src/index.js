@@ -292,7 +292,7 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
     }
 
     const { aggregateId, type } = command
-    let {
+    const {
       aggregateState,
       aggregateVersion,
       lastTimestamp

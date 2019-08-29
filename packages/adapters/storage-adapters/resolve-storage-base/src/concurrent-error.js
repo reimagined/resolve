@@ -1,8 +1,8 @@
-function ConcurrentError(message = 'Concurrency error') {
+function ConcurrentError(aggregateId) {
   Error.call(this)
   this.name = 'ConcurrentError'
 
-  this.message = message
+  this.message = `Can not save the event because aggregate '${aggregateId}' is not actual at the moment. Please retry later.`
 
   if (Error.captureStackTrace) {
     Error.captureStackTrace(this, ConcurrentError)
