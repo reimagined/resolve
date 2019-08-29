@@ -5,17 +5,14 @@ import {
 } from './constants'
 
 const init = async ({
-  resourceOptions: { databaseName, tableName, userLogin, userPassword },
+  databaseName,
+  tableName,
   executeStatement,
   escapeId,
   escape
 }) => {
   await executeStatement(
     [
-      `CREATE USER ${escapeId(userLogin)}`,
-      `ALTER USER ${escapeId(userLogin)} PASSWORD ${escape(userPassword)}`,
-      `CREATE SCHEMA ${escapeId(databaseName)}`,
-
       `CREATE TABLE ${escapeId(databaseName)}.${escapeId(tableName)}(
       ${escapeId('eventId')} ${LONG_NUMBER_SQL_TYPE} NOT NULL,
       ${escapeId('timestamp')} ${LONG_NUMBER_SQL_TYPE} NOT NULL,
@@ -51,7 +48,6 @@ const init = async ({
       ${escapeId('transactionId')} ${LONG_STRING_SQL_TYPE} NOT NULL,
       PRIMARY KEY(${escapeId('key')})
     )`,
-
       `INSERT INTO ${escapeId(databaseName)}.${escapeId(
         `${tableName}-sequence`
       )}(
@@ -61,27 +57,7 @@ const init = async ({
       ${escapeId('transactionId')}
     ) VALUES (
       0, 0, 0, ${escape('0')}
-    )`,
-
-      `GRANT USAGE ON SCHEMA ${escapeId(databaseName)} TO ${escapeId(
-        userLogin
-      )}`,
-
-      `GRANT ALL ON SCHEMA ${escapeId(databaseName)} TO ${escapeId(userLogin)}`,
-
-      `GRANT ALL ON ALL TABLES IN SCHEMA ${escapeId(
-        databaseName
-      )} TO ${escapeId(userLogin)}`,
-
-      `GRANT ALL ON ALL SEQUENCES IN SCHEMA ${escapeId(
-        databaseName
-      )} TO ${escapeId(userLogin)}`,
-
-      `GRANT ALL ON ALL FUNCTIONS IN SCHEMA ${escapeId(
-        databaseName
-      )} TO ${escapeId(userLogin)}`,
-
-      `ALTER SCHEMA ${escapeId(databaseName)} OWNER TO ${escapeId(userLogin)}`
+    )`
     ].join('; ')
   )
 }

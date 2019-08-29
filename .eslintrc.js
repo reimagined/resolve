@@ -335,6 +335,7 @@ module.exports = {
           'subdirectory',
           'subsegment',
           'subsegments',
+          'subquery',
           'svg',
           'symlink',
           'tagline',

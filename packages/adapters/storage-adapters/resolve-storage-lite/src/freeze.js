@@ -1,4 +1,4 @@
-const deactivateEventStore = async ({ database, tableName, escapeId }) => {
+const freeze = async ({ database, tableName, escapeId }) => {
   await database.exec(
     `CREATE TABLE ${escapeId(`${tableName}-freeze`)}(
       -- RESOLVE EVENT STORE ${escapeId(tableName)} FREEZE MARKER
@@ -8,4 +8,4 @@ const deactivateEventStore = async ({ database, tableName, escapeId }) => {
   )
 }
 
-export default deactivateEventStore
+export default freeze

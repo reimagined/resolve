@@ -1,4 +1,5 @@
 import stream from 'stream'
+import { EOL } from 'os'
 
 import {
   RESERVED_EVENT_SIZE,
@@ -17,6 +18,7 @@ function EventStream(pool, byteOffset = 0, eventId = 1) {
   this.endPosition = 0
   this.vacantSize = BUFFER_SIZE
   this.saveEventPromiseSet = new Set()
+  this.saveEventErrors = []
   this.timestamp = 0
 }
 
@@ -137,7 +139,9 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
     event.eventId = this.eventId++
     this.timestamp = Math.max(this.timestamp, event.timestamp)
 
-    const saveEventPromise = this.saveEvent(event)
+    const saveEventPromise = this.saveEvent(event).catch(
+      this.saveEventErrors.push.bind(this.saveEventErrors)
+    )
     void saveEventPromise.then(
       this.saveEventPromiseSet.delete.bind(
         this.saveEventPromiseSet,
@@ -172,7 +176,9 @@ EventStream.prototype._final = async function(callback) {
     event.eventId = this.eventId++
     this.timestamp = Math.max(this.timestamp, event.timestamp)
 
-    const saveEventPromise = this.saveEvent(event)
+    const saveEventPromise = this.saveEvent(event).catch(
+      this.saveEventErrors.push.bind(this.saveEventErrors)
+    )
     void saveEventPromise.then(
       this.saveEventPromiseSet.delete.bind(
         this.saveEventPromiseSet,
@@ -182,11 +188,19 @@ EventStream.prototype._final = async function(callback) {
     this.saveEventPromiseSet.add(saveEventPromise)
   }
 
-  await Promise.all([...this.saveEventPromiseSet, this.saveSequence()])
+  await Promise.all([
+    ...this.saveEventPromiseSet,
+    this.saveSequence().catch(
+      this.saveEventErrors.push.bind(this.saveEventErrors)
+    )
+  ])
+
+  const error =
+    this.saveEventErrors.length > 0 ? this.saveEventErrors.join(EOL) : null
 
   this.buffer = null
 
-  callback()
+  callback(error)
 }
 
 const importStream = (pool, { byteOffset, eventId } = {}) =>

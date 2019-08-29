@@ -25,6 +25,18 @@ const saveEvent = async (
       await executeStatement(
         [
           `START TRANSACTION;`,
+          `SELECT ${escape('OK')} WHERE (`,
+          `  (SELECT ${escape('Event store is frozen')} AS ${escapeId(
+            'EventStoreIsFrozen'
+          )})`,
+          `UNION ALL (`,
+          `  SELECT ${escape('Event store is frozen')} AS ${escapeId(
+            'EventStoreIsFrozen'
+          )}`,
+          `  FROM ${escapeId('information_schema')}.${escapeId('tables')}`,
+          `  WHERE ${escapeId('table_schema')} = ${escape(databaseName)}`,
+          `  AND ${escapeId('table_name')} = ${escape(`${tableName}-freeze`)}`,
+          `)) = ${escape('OK')};`,
           `WITH cte (`,
           `${escapeId('lastEventId')},${escapeId('lastTimestamp')}`,
           `) AS (VALUES ((`,
@@ -90,10 +102,16 @@ const saveEvent = async (
       try {
         await executeStatement(`ROLLBACK;`)
       } catch (e) {}
-
-      if (error.message == null || error.message.indexOf('duplicate key') < 0) {
+      if (error.message == null) {
         throw error
       }
+      if (error.message.indexOf('subquery used as an expression') > -1) {
+        throw new Error('Event store is frozen')
+      }
+      if (error.message.indexOf('duplicate key') < 0) {
+        throw error
+      }
+
       if (error.message.indexOf('aggregateIdAndVersion') < 0) {
         await new Promise(resolve => setTimeout(resolve, fullJitter(retry)))
         continue

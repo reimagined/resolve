@@ -1,4 +1,4 @@
-const deactivateEventStore = async ({ connection, tableName, escapeId }) => {
+const deactivate = async ({ connection, tableName, escapeId }) => {
   await connection.execute(
     `CREATE TABLE ${escapeId(`${tableName}-freeze`)}(
       ${escapeId('surrogate')} BIGINT NOT NULL,
@@ -9,4 +9,4 @@ const deactivateEventStore = async ({ connection, tableName, escapeId }) => {
   )
 }
 
-export default deactivateEventStore
+export default deactivate

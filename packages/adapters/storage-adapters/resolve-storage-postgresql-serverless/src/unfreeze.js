@@ -1,4 +1,4 @@
-const activateEventStore = async ({
+const unfreeze = async ({
   executeStatement,
   databaseName,
   tableName,
@@ -9,4 +9,4 @@ const activateEventStore = async ({
   )
 }
 
-export default activateEventStore
+export default unfreeze
