@@ -16,7 +16,7 @@ Resolve uses the [resolve-debug-levels](https://www.npmjs.com/package/resolve-de
 
 Use the `DEBUG_LEVEL` environment variable to specify the logging level.
 
-## Debug Resolve
+## Debug ReSolve
 
 The reSolve framework uses the `resolve` prefix for all its debugging namespaces. To enable the framework's debug output, assign `resolve*` to the `DEBUG` environment variable as shown below:
 
@@ -24,7 +24,7 @@ The reSolve framework uses the `resolve` prefix for all its debugging namespaces
 DEBUG=resolve* DEBUG-LEVEL=errors yarn dev
 ```
 
-## Debug a Resolve Application
+## Debug a ReSolve Application
 
 You can use [resolve-debug-levels](https://www.npmjs.com/package/resolve-debug-levels) to debug your reSolve application. To do this, add the `resolve-debug-levels` package to your application's dependencies:
 
