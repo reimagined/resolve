@@ -1,24 +1,40 @@
 const createAdapter = (
-  { prepare, wrapMethod, wrapEventFilter, wrapDispose, validateEventFilter },
+  {
+    prepare,
+    wrapMethod,
+    wrapEventFilter,
+    wrapSaveEvent,
+    wrapDispose,
+    validateEventFilter
+  },
   {
     connect,
     init,
     loadEvents,
-    import: importStream,
-    export: exportStream,
     getLatestEvent,
-    checkEventStoreActive,
-    activateEventStore,
-    deactivateEventStore,
     saveEvent,
     drop,
     dispose,
+    import: importStream,
+    export: exportStream,
+    isFrozen,
+    freeze,
+    unfreeze,
     ...adapterSpecificArguments
   },
   options
 ) => {
   const config = { ...options }
   const pool = { config, disposed: false, validateEventFilter }
+  Object.assign(pool, {
+    ...(typeof isFrozen === 'function'
+      ? { isFrozen: wrapMethod(pool, isFrozen) }
+      : {}),
+    freeze: wrapMethod(pool, freeze),
+    unfreeze: wrapMethod(pool, unfreeze),
+    wrapMethod
+  })
+
   // eslint-disable-next-line no-new-func
   pool.waitConnectAndInit = wrapMethod(pool, Function())
 
@@ -37,14 +53,11 @@ const createAdapter = (
       }),
       () => pool.initialPromiseResult
     ),
-    checkEventStoreActive: wrapMethod(pool, checkEventStoreActive),
-    activateEventStore: wrapMethod(pool, activateEventStore),
-    deactivateEventStore: wrapMethod(pool, deactivateEventStore),
     loadEvents: wrapMethod(pool, wrapEventFilter(loadEvents)),
     import: importStream.bind(null, pool),
     export: exportStream.bind(null, pool),
     getLatestEvent: wrapMethod(pool, getLatestEvent),
-    saveEvent: wrapMethod(pool, saveEvent),
+    saveEvent: wrapMethod(pool, wrapSaveEvent(saveEvent)),
     drop: wrapMethod(pool, drop),
     dispose: wrapDispose(pool, dispose)
   })
