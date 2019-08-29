@@ -62,6 +62,7 @@ describe('resource', () => {
       awsSecretStoreAdminArn: 'awsSecretStoreAdminArn',
       dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
       databaseName: 'databaseName',
+      tableName: 'tableName',
       userLogin: 'userLogin'
     }
 
