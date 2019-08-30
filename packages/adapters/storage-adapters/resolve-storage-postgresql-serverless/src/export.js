@@ -130,6 +130,7 @@ const exportStream = (
       const chunk = Buffer.from(JSON.stringify(event) + '\n', encoding)
       const byteLength = chunk.byteLength
       if (size + byteLength > bufferSize) {
+        resultStream.isBufferOverflow = true
         eventStream.destroy()
         if (!isDestroyed) {
           resultStream.cursor = lastEventOffset
@@ -151,6 +152,8 @@ const exportStream = (
       callback()
     }
   )
+
+  resultStream.isBufferOverflow = false
 
   eventStream.pipe(resultStream)
 
