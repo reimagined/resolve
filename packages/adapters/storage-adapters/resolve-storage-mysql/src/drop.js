@@ -1,6 +1,10 @@
 const drop = async ({ tableName, connection, escapeId }) => {
   await connection.execute(`
-    DELETE FROM ${escapeId(tableName)}
+    DROP TABLE IF EXISTS ${escapeId(`${tableName}-freeze`)}
+  `)
+
+  await connection.execute(`
+    DROP TABLE ${escapeId(tableName)}
   `)
 }
 

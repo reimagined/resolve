@@ -41,17 +41,31 @@ describe('resolve-es', () => {
       expect(handler.firstCall.args[0]).toEqual(event)
     })
 
-    it('should return event stream', async () => {
+    it('should return export stream', async () => {
       const stream = new Readable()
       const storage = {
-        getEventStream: jest.fn().mockReturnValue(stream)
+        export: jest.fn().mockReturnValue(stream)
       }
 
       const eventStore = createEventStore({ storage })
 
-      const result = eventStore.getEventStream()
+      const result = eventStore.export()
 
-      expect(storage.getEventStream).toHaveBeenCalled()
+      expect(storage.export).toHaveBeenCalled()
+      expect(result).toEqual(stream)
+    })
+
+    it('should return import stream', async () => {
+      const stream = new Readable()
+      const storage = {
+        import: jest.fn().mockReturnValue(stream)
+      }
+
+      const eventStore = createEventStore({ storage })
+
+      const result = eventStore.import()
+
+      expect(storage.import).toHaveBeenCalled()
       expect(result).toEqual(stream)
     })
 

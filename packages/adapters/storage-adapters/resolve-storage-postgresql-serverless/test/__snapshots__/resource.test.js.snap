@@ -9,7 +9,16 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreAdminArn",
-    "sql": "CREATE USER \\"userLogin\\"; ALTER USER \\"userLogin\\" PASSWORD 'userPassword'; CREATE SCHEMA \\"databaseName\\"; CREATE TABLE \\"databaseName\\".\\"tableName\\"(
+    "sql": "CREATE USER \\"userLogin\\"; ALTER USER \\"userLogin\\" PASSWORD 'userPassword'; CREATE SCHEMA \\"databaseName\\"",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "CREATE TABLE \\"databaseName\\".\\"tableName\\"(
       \\"eventId\\" BIGINT NOT NULL,
       \\"timestamp\\" BIGINT NOT NULL,
       \\"aggregateId\\" VARCHAR(190) NOT NULL,
@@ -41,7 +50,16 @@ Array [
       \\"transactionId\\"
     ) VALUES (
       0, 0, 0, '0'
-    ); GRANT USAGE ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL TABLES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL SEQUENCES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL FUNCTIONS IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; ALTER SCHEMA \\"databaseName\\" OWNER TO \\"userLogin\\"",
+    )",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "GRANT USAGE ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL TABLES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL SEQUENCES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL FUNCTIONS IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; ALTER SCHEMA \\"databaseName\\" OWNER TO \\"userLogin\\"",
   },
 ]
 `;
@@ -73,10 +91,7 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreAdminArn",
-    "sql": "
-      SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE usename='userLogin';
-      DROP USER \\"userLogin\\"
-    ",
+    "sql": "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE usename='userLogin';DROP USER \\"userLogin\\"",
   },
 ]
 `;
@@ -108,10 +123,7 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreAdminArn",
-    "sql": "
-      SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE usename='userLogin';
-      DROP USER \\"userLogin\\"
-    ",
+    "sql": "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE usename='userLogin';DROP USER \\"userLogin\\"",
   },
   "executeStatement",
   Object {
@@ -120,7 +132,16 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreAdminArn",
-    "sql": "CREATE USER \\"userLogin\\"; ALTER USER \\"userLogin\\" PASSWORD 'userPassword'; CREATE SCHEMA \\"databaseName\\"; CREATE TABLE \\"databaseName\\".\\"tableName\\"(
+    "sql": "CREATE USER \\"userLogin\\"; ALTER USER \\"userLogin\\" PASSWORD 'userPassword'; CREATE SCHEMA \\"databaseName\\"",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "CREATE TABLE \\"databaseName\\".\\"tableName\\"(
       \\"eventId\\" BIGINT NOT NULL,
       \\"timestamp\\" BIGINT NOT NULL,
       \\"aggregateId\\" VARCHAR(190) NOT NULL,
@@ -152,7 +173,16 @@ Array [
       \\"transactionId\\"
     ) VALUES (
       0, 0, 0, '0'
-    ); GRANT USAGE ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL TABLES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL SEQUENCES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL FUNCTIONS IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; ALTER SCHEMA \\"databaseName\\" OWNER TO \\"userLogin\\"",
+    )",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "GRANT USAGE ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL TABLES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL SEQUENCES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL FUNCTIONS IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; ALTER SCHEMA \\"databaseName\\" OWNER TO \\"userLogin\\"",
   },
 ]
 `;

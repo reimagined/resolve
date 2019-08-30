@@ -1,21 +1,80 @@
 const create = async (pool, options) => {
-  const { createAdapter } = pool
+  const {
+    executeStatement,
+    connect,
+    init,
+    RDSDataService,
+    escapeId,
+    escape,
+    fullJitter,
+    coercer,
+    dispose
+  } = pool
 
-  const adapter = createAdapter({
-    awsSecretStoreArn: options.awsSecretStoreAdminArn,
-    dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
-    databaseName: 'postgres',
-    region: options.region,
-    resourceOptions: {
+  const admin = {
+    config: {
+      awsSecretStoreArn: options.awsSecretStoreAdminArn,
+      dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
       databaseName: options.databaseName,
       tableName: options.tableName,
-      userLogin: options.userLogin,
-      userPassword: options.userPassword
-    },
-    skipInit: true
-  })
+      region: options.region
+    }
+  }
+  await connect(
+    admin,
+    {
+      RDSDataService,
+      escapeId,
+      escape,
+      fullJitter,
+      executeStatement,
+      coercer
+    }
+  )
 
-  await adapter.init(options)
+  await executeStatement(
+    admin,
+    [
+      `CREATE USER ${escapeId(options.userLogin)}`,
+      `ALTER USER ${escapeId(options.userLogin)} PASSWORD ${escape(
+        options.userPassword
+      )}`,
+      `CREATE SCHEMA ${escapeId(options.databaseName)}`
+    ].join('; ')
+  )
+
+  await init(admin)
+
+  await executeStatement(
+    admin,
+    [
+      `GRANT USAGE ON SCHEMA ${escapeId(options.databaseName)} TO ${escapeId(
+        options.userLogin
+      )}`,
+
+      `GRANT ALL ON SCHEMA ${escapeId(options.databaseName)} TO ${escapeId(
+        options.userLogin
+      )}`,
+
+      `GRANT ALL ON ALL TABLES IN SCHEMA ${escapeId(
+        options.databaseName
+      )} TO ${escapeId(options.userLogin)}`,
+
+      `GRANT ALL ON ALL SEQUENCES IN SCHEMA ${escapeId(
+        options.databaseName
+      )} TO ${escapeId(options.userLogin)}`,
+
+      `GRANT ALL ON ALL FUNCTIONS IN SCHEMA ${escapeId(
+        options.databaseName
+      )} TO ${escapeId(options.userLogin)}`,
+
+      `ALTER SCHEMA ${escapeId(options.databaseName)} OWNER TO ${escapeId(
+        options.userLogin
+      )}`
+    ].join('; ')
+  )
+
+  await dispose(admin)
 }
 
 export default create

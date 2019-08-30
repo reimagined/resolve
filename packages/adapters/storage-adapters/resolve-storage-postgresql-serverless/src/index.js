@@ -4,37 +4,56 @@ import _createAdapter from 'resolve-storage-base'
 import connect from './connect'
 import init from './init'
 import loadEvents from './load-events'
-import getEventStream from './get-event-stream'
+import freeze from './freeze'
+import unfreeze from './unfreeze'
 import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
 import drop from './drop'
 import dispose from './dispose'
+import exportStream from './export'
+import importStream from './import'
+import fullJitter from './full-jitter'
+import executeStatement from './execute-statement'
+import coercer from './coercer'
+import escapeId from './escape-id'
+import escape from './escape'
 
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
 import _destroyResource from './resource/destroy'
 
-const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
-const escape = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
-
 const createAdapter = _createAdapter.bind(null, {
   connect,
   init,
   loadEvents,
-  getEventStream,
   getLatestEvent,
   saveEvent,
   drop,
   dispose,
+  freeze,
+  unfreeze,
+  import: importStream,
+  export: exportStream,
   RDSDataService,
   escapeId,
-  escape
+  escape,
+  fullJitter,
+  executeStatement,
+  coercer
 })
 
 export default createAdapter
 
 const pool = {
-  createAdapter
+  executeStatement,
+  connect,
+  init,
+  RDSDataService,
+  escapeId,
+  escape,
+  fullJitter,
+  coercer,
+  dispose
 }
 
 const createResource = _createResource.bind(null, pool)
