@@ -1,7 +1,7 @@
 import stream from 'stream'
 import through from 'through2'
 
-import { BATCH_SIZE } from './constants'
+import { BATCH_SIZE, DATA_API_ERROR_FLAG } from './constants'
 
 const injectString = ({ escape }, value) => `${escape(value)}`
 const injectNumber = (pool, value) => `${+value}`
@@ -12,11 +12,14 @@ function EventStream(pool, cursor = 0) {
   this.pool = pool
   this.cursor = cursor
   this.offset = cursor
+  this.readerId = null
+  this.initPromise = this.pool
+    .waitConnectAndInit()
+    .catch(error => (this.initError = error))
 
   this.injectString = injectString.bind(this, pool)
   this.injectNumber = injectNumber.bind(this, pool)
 
-  this.reader = null
   this.rows = []
 }
 
@@ -41,9 +44,73 @@ EventStream.prototype.processEvents = function() {
       this.cursor = event.eventOffset
 
       if (isPaused) {
-        this.reader = null
+        this.readerId = null
         return
       }
+    }
+  }
+}
+
+EventStream.prototype.executeStatement = async function(query) {
+  try {
+    if (this.hasOwnProperty('initError')) {
+      throw this.initError
+    }
+    const rows = await this.pool.executeStatement(query)
+    return rows
+  } catch (error) {
+    this.emit('error', error)
+    this.push(null)
+    this.readerId = null
+    return DATA_API_ERROR_FLAG
+  }
+}
+
+EventStream.prototype.eventReader = async function(currentReaderId) {
+  await this.initPromise
+  const { escapeId, tableName, databaseName } = this.pool
+
+  while (this.readerId === currentReaderId) {
+    const query = [
+      `WITH ${escapeId('cte')} AS (`,
+      `  SELECT ${escapeId('filteredEvents')}.*,`,
+      `  SUM(${escapeId('filteredEvents')}.${escapeId('eventSize')})`,
+      `  OVER (ORDER BY ${escapeId('filteredEvents')}.${escapeId(
+        'eventId'
+      )}) AS ${escapeId('totalEventSize')}`,
+      `  FROM (`,
+      `    SELECT * FROM ${escapeId(databaseName)}.${escapeId(tableName)}`,
+      `    ORDER BY ${escapeId('eventId')} ASC`,
+      `    OFFSET ${this.offset}`,
+      `    LIMIT ${+BATCH_SIZE}`,
+      `  ) ${escapeId('filteredEvents')}`,
+      `)`,
+      `SELECT * FROM ${escapeId('cte')}`,
+      `WHERE ${escapeId('cte')}.${escapeId('totalEventSize')} < 512000`,
+      `ORDER BY ${escapeId('cte')}.${escapeId('eventId')} ASC`
+    ].join(' ')
+
+    const nextRows = await this.executeStatement(query)
+    if (nextRows === DATA_API_ERROR_FLAG || this.readerId !== currentReaderId) {
+      return
+    }
+
+    for (let index = 0; index < nextRows.length; index++) {
+      const event = nextRows[index]
+      event.eventOffset = this.offset + index
+      this.rows.push(event)
+    }
+    this.offset += nextRows.length
+
+    this.processEvents()
+
+    if (nextRows.length === 0) {
+      if (!this.destroyed) {
+        this.push(null)
+      }
+
+      this.readerId = null
+      return
     }
   }
 }
@@ -51,61 +118,9 @@ EventStream.prototype.processEvents = function() {
 EventStream.prototype._read = function() {
   this.processEvents()
 
-  if (this.reader == null) {
-    const nextReader = (async () => {
-      await this.pool.waitConnectAndInit()
-
-      const { executeStatement, escapeId, tableName, databaseName } = this.pool
-
-      while (true) {
-        if (this.reader !== nextReader) {
-          return
-        }
-
-        const query = [
-          `WITH ${escapeId('cte')} AS (`,
-          `  SELECT ${escapeId('filteredEvents')}.*,`,
-          `  SUM(${escapeId('filteredEvents')}.${escapeId('eventSize')})`,
-          `  OVER (ORDER BY ${escapeId('filteredEvents')}.${escapeId(
-            'eventId'
-          )}) AS ${escapeId('totalEventSize')}`,
-          `  FROM (`,
-          `    SELECT * FROM ${escapeId(databaseName)}.${escapeId(tableName)}`,
-          `    ORDER BY ${escapeId('eventId')} ASC`,
-          `    OFFSET ${this.offset}`,
-          `    LIMIT ${+BATCH_SIZE}`,
-          `  ) ${escapeId('filteredEvents')}`,
-          `)`,
-          `SELECT * FROM ${escapeId('cte')}`,
-          `WHERE ${escapeId('cte')}.${escapeId('totalEventSize')} < 512000`,
-          `ORDER BY ${escapeId('cte')}.${escapeId('eventId')} ASC`
-        ].join(' ')
-
-        const nextRows = await executeStatement(query)
-
-        if (this.reader !== nextReader) {
-          return
-        }
-
-        for (let index = 0; index < nextRows.length; index++) {
-          const event = nextRows[index]
-          event.eventOffset = this.offset + index
-          this.rows.push(event)
-        }
-        this.offset += nextRows.length
-
-        this.processEvents()
-
-        if (nextRows.length === 0) {
-          if (!this.destroyed) {
-            this.push(null)
-          }
-          return
-        }
-      }
-    })()
-
-    this.reader = nextReader
+  if (this.readerId == null) {
+    this.readerId = Symbol()
+    void this.eventReader(this.readerId)
   }
 }
 
@@ -154,6 +169,8 @@ const exportStream = (
   )
 
   resultStream.isBufferOverflow = false
+
+  eventStream.on('error', resultStream.emit.bind(resultStream, 'error'))
 
   eventStream.pipe(resultStream)
 
