@@ -3,7 +3,9 @@
   "version": "0.20.25",
   "private": true,
   "scripts": {
-    "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose"
+    "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose",
+    "import-event-store": "babel-node ./run.js import-event-store",
+    "export-event-store": "babel-node ./run.js export-event-store"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",

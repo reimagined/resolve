@@ -6,7 +6,9 @@ import {
   runTestcafe,
   merge,
   stop,
-  reset
+  reset,
+  importEventStore,
+  exportEventStore
 } from 'resolve-scripts'
 
 import appConfig from './config.app'
@@ -46,6 +48,14 @@ void (async () => {
 
       case 'start': {
         await start(merge(defaultResolveConfig, appConfig, prodConfig))
+        break
+      }
+
+      case 'import-event-store': {
+        break
+      }
+
+      case 'export-event-store': {
         break
       }
 

@@ -9,9 +9,13 @@ const cloudConfig = {
     options: {}
   },
   storageAdapter: {
-    module: 'resolve-storage-dynamo',
+    module: 'resolve-storage-postgresql-serverless',
     options: {
-      tableName: declareRuntimeEnv('RESOLVE_EVENT_STORE_TABLE'),
+      awsSecretStoreArn: declareRuntimeEnv('RESOLVE_ES_SECRET_STORE_ARN'),
+      dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_ES_CLUSTER_ARN'),
+      databaseName: declareRuntimeEnv('RESOLVE_ES_DATABASE'),
+      tableName: declareRuntimeEnv('RESOLVE_ES_TABLE'),
+      region: declareRuntimeEnv('AWS_REGION'),
       skipInit: true
     }
   },
