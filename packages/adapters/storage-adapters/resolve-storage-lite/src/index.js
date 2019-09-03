@@ -8,8 +8,8 @@ import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
 import drop from './drop'
 import dispose from './dispose'
-import importStream from './import'
-import exportStream from './export'
+import paginateEvents from './paginate-events'
+import saveEventOnly from './save-event-only'
 import freeze from './freeze'
 import unfreeze from './unfreeze'
 
@@ -21,8 +21,8 @@ const wrappedCreateAdapter = createAdapter.bind(null, {
   saveEvent,
   drop,
   dispose,
-  export: exportStream,
-  import: importStream,
+  paginateEvents,
+  saveEventOnly,
   freeze,
   unfreeze,
   sqlite
