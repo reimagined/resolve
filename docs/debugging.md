@@ -21,8 +21,10 @@ Use the `DEBUG_LEVEL` environment variable to specify the logging level.
 The reSolve framework uses the `resolve` prefix for all its debugging namespaces. To enable the framework's debug output, assign `resolve*` to the `DEBUG` environment variable as shown below:
 
 ```
-DEBUG=resolve* DEBUG-LEVEL=errors yarn dev
+DEBUG=resolve:* DEBUG_LEVEL=error yarn dev
 ```
+
+The reSolve framework displays messages of the **log**, **even** and **warn** levels by default.
 
 ## Debug a ReSolve Application
 
@@ -50,8 +52,8 @@ log.verbose(`cookies: ${JSON.stringify(req.cookies)}`)
 ...
 ```
 
-Use the `DEBUG` and `DEBUG-LEVEL` environment variables to enable debug messages:
+Use the `DEBUG` and `DEBUG_LEVEL` environment variables to enable debug messages:
 
 ```
-DEBUG=myapp:api-handlers DEBUG-LEVEL=verbose yarn dev
+DEBUG=myapp:api-handlers DEBUG_LEVEL=verbose yarn dev
 ```
