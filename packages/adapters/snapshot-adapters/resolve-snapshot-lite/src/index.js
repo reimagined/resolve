@@ -17,7 +17,9 @@ const init = async pool => {
         ? pool.config.databaseFile
         : ':memory:'
     )
-    await pool.database.exec(`CREATE TABLE IF NOT EXISTS ${escapeId(tableName)} (
+    await pool.database.exec(`CREATE TABLE IF NOT EXISTS ${escapeId(
+      tableName
+    )} (
       ${escapeId('snapshotKey')} TEXT,
       ${escapeId('content')} TEXT
     )`)
