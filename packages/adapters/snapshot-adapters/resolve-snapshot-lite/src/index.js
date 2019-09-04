@@ -15,7 +15,7 @@ const init = async pool => {
     pool.database = await sqlite.open(
       pool.config && pool.config.hasOwnProperty('databaseFile')
         ? pool.config.databaseFile
-        : pool.config.databaseFile = ':memory:'
+        : (pool.config.databaseFile = ':memory:')
     )
 
     await pool.database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
