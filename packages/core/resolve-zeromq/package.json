@@ -1,7 +1,7 @@
 {
   "name": "resolve-zeromq",
   "version": "0.20.25",
-  "description": "This package creates a function to execute a zeromq.",
+  "description": "Provides the ZeroMQ API to reSolve packages.",
   "engines": {
     "node": ">=8.10"
   },

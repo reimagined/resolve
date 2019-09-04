@@ -1,7 +1,7 @@
 {
   "name": "resolve-local-event-broker",
   "version": "0.20.25",
-  "description": "This package includes event broker for local run.",
+  "description": "The reSolve framework's event broker for applications that run on a local machine.",
   "engines": {
     "node": ">=8.10"
   },

@@ -1,7 +1,7 @@
 {
   "name": "resolve-storage-mysql",
   "version": "0.20.25",
-  "description": "This package serves as an adapter for resolve-storage to store events using mysql.",
+  "description": "An adapter that reSolve uses to store events in MySQL.",
   "engines": {
     "node": ">=8.10"
   },

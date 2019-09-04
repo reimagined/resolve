@@ -1,7 +1,7 @@
 {
   "name": "resolve-testing-tools",
   "version": "0.20.25",
-  "description": "This package for testing read-model, view-model, aggregate, saga, API handler, bus, storage and event-store.",
+  "description": "Tools used to test reSolve applications.",
   "engines": {
     "node": ">=8.10"
   },
