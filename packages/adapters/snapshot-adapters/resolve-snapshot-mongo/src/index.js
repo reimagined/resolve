@@ -32,7 +32,7 @@ const loadSnapshot = async (pool, snapshotKey) => {
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
-
+  
   const result = await pool.collection.findOne({ snapshotKey })
   return result != null ? result.content : null
 }
@@ -66,7 +66,6 @@ const dispose = async pool => {
   pool.disposed = true
 
   pool.counters.clear()
-  await pool.collection.drop()
   await pool.client.close()
 }
 
