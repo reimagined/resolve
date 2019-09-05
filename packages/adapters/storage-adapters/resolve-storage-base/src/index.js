@@ -1,5 +1,7 @@
 import createAdapter from './create-adapter'
 import prepare from './prepare'
+import importStream from './import'
+import exportStream from './export'
 import wrapMethod from './wrap-method'
 import wrapEventFilter from './wrap-event-filter'
 import wrapSaveEvent from './wrap-save-event'
@@ -10,6 +12,8 @@ import ConcurrentError from './concurrent-error'
 
 const wrappedCreateAdapter = createAdapter.bind(null, {
   prepare,
+  importStream,
+  exportStream,
   wrapMethod,
   wrapEventFilter,
   wrapSaveEvent,

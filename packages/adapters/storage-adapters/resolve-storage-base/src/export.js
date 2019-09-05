@@ -51,46 +51,24 @@ EventStream.prototype.processEvents = function() {
   }
 }
 
-EventStream.prototype.executeStatement = async function(query) {
-  try {
-    if (this.hasOwnProperty('initError')) {
-      throw this.initError
-    }
-    const rows = await this.pool.executeStatement(query)
-    return rows
-  } catch (error) {
-    this.emit('error', error)
-    this.push(null)
-    this.readerId = null
-    return DATA_API_ERROR_FLAG
-  }
-}
-
 EventStream.prototype.eventReader = async function(currentReaderId) {
   await this.initPromise
-  const { escapeId, tableName, databaseName } = this.pool
 
   while (this.readerId === currentReaderId) {
-    const query = [
-      `WITH ${escapeId('cte')} AS (`,
-      `  SELECT ${escapeId('filteredEvents')}.*,`,
-      `  SUM(${escapeId('filteredEvents')}.${escapeId('eventSize')})`,
-      `  OVER (ORDER BY ${escapeId('filteredEvents')}.${escapeId(
-        'eventId'
-      )}) AS ${escapeId('totalEventSize')}`,
-      `  FROM (`,
-      `    SELECT * FROM ${escapeId(databaseName)}.${escapeId(tableName)}`,
-      `    ORDER BY ${escapeId('eventId')} ASC`,
-      `    OFFSET ${this.offset}`,
-      `    LIMIT ${+BATCH_SIZE}`,
-      `  ) ${escapeId('filteredEvents')}`,
-      `)`,
-      `SELECT * FROM ${escapeId('cte')}`,
-      `WHERE ${escapeId('cte')}.${escapeId('totalEventSize')} < 512000`,
-      `ORDER BY ${escapeId('cte')}.${escapeId('eventId')} ASC`
-    ].join(' ')
+    let nextRows = null
 
-    const nextRows = await this.executeStatement(query)
+    try {
+      if (this.hasOwnProperty('initError')) {
+        throw this.initError
+      }
+      nextRows = await this.pool.paginateEvents(this.offset, BATCH_SIZE)
+    } catch (error) {
+      this.emit('error', error)
+      this.push(null)
+      this.readerId = null
+      nextRows = DATA_API_ERROR_FLAG
+    }
+
     if (nextRows === DATA_API_ERROR_FLAG || this.readerId !== currentReaderId) {
       return
     }
@@ -138,8 +116,6 @@ const exportStream = (
     (event, encoding, callback) => {
       lastEventOffset = event.eventOffset
       delete event.eventOffset
-      delete event.totalEventSize
-      delete event.eventSize
       delete event.eventId
 
       const chunk = Buffer.from(JSON.stringify(event) + '\n', encoding)

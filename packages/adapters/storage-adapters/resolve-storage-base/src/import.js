@@ -1,12 +1,11 @@
 import stream from 'stream'
 import { EOL } from 'os'
-import { FREEZE_MODE_AUTO, FREEZE_MODE_MANUAL } from 'resolve-storage-base'
 
 import {
-  RESERVED_EVENT_SIZE,
   BUFFER_SIZE,
-  LONG_STRING_SQL_TYPE,
-  PARTIAL_EVENT_FLAG
+  PARTIAL_EVENT_FLAG,
+  FREEZE_MODE_AUTO,
+  FREEZE_MODE_MANUAL
 } from './constants'
 
 function EventStream(pool, freezeMode, byteOffset = 0, eventId = 1) {
@@ -28,62 +27,9 @@ function EventStream(pool, freezeMode, byteOffset = 0, eventId = 1) {
 
 EventStream.prototype = Object.create(stream.Writable.prototype)
 EventStream.prototype.constructor = stream.Writable
-EventStream.prototype.saveEvent = async function(event) {
-  const {
-    databaseName,
-    tableName,
-    executeStatement,
-    escapeId,
-    escape
-  } = this.pool
-
-  const serializedEvent = [
-    `${escape(event.aggregateId)},`,
-    `${+event.aggregateVersion},`,
-    `${escape(event.type)},`,
-    escape(JSON.stringify(event.payload != null ? event.payload : null))
-  ].join('')
-
-  const byteLength = Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
-
-  await executeStatement(
-    [
-      `INSERT INTO ${escapeId(databaseName)}.${escapeId(tableName)}(`,
-      `${escapeId('eventId')},`,
-      `${escapeId('timestamp')},`,
-      `${escapeId('aggregateId')},`,
-      `${escapeId('aggregateVersion')},`,
-      `${escapeId('type')},`,
-      `${escapeId('payload')},`,
-      `${escapeId('eventSize')}`,
-      `) VALUES (`,
-      `  ${+event.eventId},`,
-      `  ${+event.timestamp},`,
-      `  ${serializedEvent},`,
-      `  ${byteLength}`,
-      `)`
-    ].join('')
-  )
-}
-
-EventStream.prototype.saveSequence = async function() {
-  const { databaseName, tableName, executeStatement, escapeId } = this.pool
-
-  await executeStatement(
-    [
-      `UPDATE ${escapeId(databaseName)}.${escapeId(`${tableName}-sequence`)} `,
-      `SET ${escapeId('eventId')} = ${+this.eventId},`,
-      `${escapeId(
-        'transactionId'
-      )} = CAST(txid_current() AS ${LONG_STRING_SQL_TYPE}),`,
-      `${escapeId('timestamp')} = ${+this.timestamp}`,
-      `WHERE ${escapeId('key')} = 0;`
-    ].join('')
-  )
-}
 
 EventStream.prototype._write = async function(chunk, encoding, callback) {
-  const { freeze, waitConnectAndInit } = this.pool
+  const { freeze, waitConnectAndInit, saveEventOnly } = this.pool
 
   await waitConnectAndInit()
 
@@ -155,7 +101,7 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
     event.eventId = this.eventId++
     this.timestamp = Math.max(this.timestamp, event.timestamp)
 
-    const saveEventPromise = this.saveEvent(event).catch(
+    const saveEventPromise = saveEventOnly(event).catch(
       this.saveEventErrors.push.bind(this.saveEventErrors)
     )
     void saveEventPromise.then(
@@ -171,7 +117,12 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
 }
 
 EventStream.prototype._final = async function(callback) {
-  const { unfreeze, waitConnectAndInit } = this.pool
+  const {
+    unfreeze,
+    waitConnectAndInit,
+    saveEventOnly,
+    saveSequenceOnly
+  } = this.pool
 
   await waitConnectAndInit()
 
@@ -207,7 +158,7 @@ EventStream.prototype._final = async function(callback) {
 
       this.byteOffset += eventByteLength
 
-      const saveEventPromise = this.saveEvent(event).catch(
+      const saveEventPromise = saveEventOnly(event).catch(
         this.saveEventErrors.push.bind(this.saveEventErrors)
       )
       void saveEventPromise.then(
@@ -220,12 +171,14 @@ EventStream.prototype._final = async function(callback) {
     }
   }
 
-  await Promise.all([
-    ...this.saveEventPromiseSet,
-    this.saveSequence().catch(
-      this.saveEventErrors.push.bind(this.saveEventErrors)
-    )
-  ])
+  const saveSequenceOnlyPromise =
+    typeof saveSequenceOnly === 'function'
+      ? saveSequenceOnly(this.eventId, this.timestamp).catch(
+          this.saveEventErrors.push.bind(this.saveEventErrors)
+        )
+      : Promise.resolve()
+
+  await Promise.all([...this.saveEventPromiseSet, saveSequenceOnlyPromise])
 
   if (this.freezeMode === FREEZE_MODE_AUTO && this.isFrozen === true) {
     await unfreeze()
