@@ -7,7 +7,7 @@ const init = async pool => {
   pool.initPromise = (async () => {
     const {
       url,
-      collectionName,
+      tableName,
       bucketSize = 100,
       ...connectionOptions
     } = pool.config
@@ -17,7 +17,7 @@ const init = async pool => {
       useNewUrlParser: true
     })
     pool.database = await pool.client.db()
-    pool.collection = await pool.database.collection(collectionName)
+    pool.collection = await pool.database.collection(tableName)
 
     pool.counters = new Map()
 

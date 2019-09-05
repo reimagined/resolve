@@ -6,7 +6,7 @@ describe('resolve-snapshot-mongo', () => {
 
     const snapshotAdapter = createSnapshotAdapter({
       url: 'mongodb://127.0.0.1:27017/TestDB',
-      collectionName: 'Snapshots',
+      tableName: 'Snapshots',
       bucketSize
     })
 
@@ -28,7 +28,7 @@ describe('resolve-snapshot-mongo', () => {
   test(`"saveSnapshot" should throw error when the snapshotAdapter is disposed`, async () => {
     const snapshotAdapter = createSnapshotAdapter({
       url: 'mongodb://127.0.0.1:27017/TestDB',
-      collectionName: 'Snapshots'
+      tableName: 'Snapshots'
     })
 
     await snapshotAdapter.saveSnapshot('key', `value`)
@@ -47,7 +47,7 @@ describe('resolve-snapshot-mongo', () => {
   test(`"loadSnapshot" should throw error when the snapshotAdapter is disposed`, async () => {
     const snapshotAdapter = createSnapshotAdapter({
       url: 'mongodb://127.0.0.1:27017/TestDB',
-      collectionName: 'Snapshots'
+      tableName: 'Snapshots'
     })
 
     await snapshotAdapter.loadSnapshot('key')
@@ -66,7 +66,7 @@ describe('resolve-snapshot-mongo', () => {
   test(`"dispose" should dispose the snapshotAdapter`, async () => {
     const snapshotAdapter = createSnapshotAdapter({
       url: 'mongodb://127.0.0.1:27017/TestDB',
-      collectionName: 'Snapshots'
+      tableName: 'Snapshots'
     })
 
     await snapshotAdapter.dispose()
@@ -85,7 +85,7 @@ describe('resolve-snapshot-mongo', () => {
 
     const snapshotAdapter = createSnapshotAdapter({
       url: 'mongodb://127.0.0.1:27017/TestDB',
-      collectionName: 'Snapshots',
+      tableName: 'Snapshots',
       bucketSize
     })
 
@@ -111,7 +111,7 @@ describe('resolve-snapshot-mongo', () => {
   test(`"drop" should throw error when the snapshotAdapter is disposed`, async () => {
     const snapshotAdapter = createSnapshotAdapter({
       url: 'mongodb://127.0.0.1:27017/TestDB',
-      collectionName: 'Snapshots'
+      tableName: 'Snapshots'
     })
 
     await snapshotAdapter.drop('key')
