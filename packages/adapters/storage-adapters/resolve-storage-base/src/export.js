@@ -37,10 +37,7 @@ EventStream.prototype.processEvents = function() {
       return
     } else {
       const isPaused =
-        this.push({
-          ...event,
-          payload: JSON.parse(event.payload)
-        }) === false
+        this.push(event) === false
       this.cursor = event.eventOffset
 
       if (isPaused) {
