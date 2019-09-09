@@ -1,6 +1,5 @@
 import merge from './merge'
 import generateCustomMode from './generate_custom_mode'
-import fs from 'fs'
 
 const getConfig = async (resolveConfig, options) => {
   if (options == null || options.constructor !== Object) {
@@ -9,9 +8,6 @@ const getConfig = async (resolveConfig, options) => {
   const { exportFile } = options
   if (exportFile == null || exportFile.constructor !== String) {
     throw new Error('Options field "exportFile" must be string')
-  }
-  if (!fs.existsSync(exportFile)) {
-    throw new Error(`File ${exportFile} does not exist`)
   }
 
   const config = merge(resolveConfig, {

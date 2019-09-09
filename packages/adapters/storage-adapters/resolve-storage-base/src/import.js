@@ -30,9 +30,9 @@ EventStream.prototype.constructor = stream.Writable
 
 EventStream.prototype._write = async function(chunk, encoding, callback) {
   try {
-    const { freeze, waitConnectAndInit, saveEventOnly } = this.pool
+    await this.pool.waitConnectAndInit()
 
-    await waitConnectAndInit()
+    const { freeze, saveEventOnly } = this.pool
 
     if (this.freezeMode === FREEZE_MODE_AUTO && this.isFrozen === false) {
       await freeze()
@@ -132,14 +132,9 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
 
 EventStream.prototype._final = async function(callback) {
   try {
-    const {
-      unfreeze,
-      waitConnectAndInit,
-      saveEventOnly,
-      saveSequenceOnly
-    } = this.pool
+    await this.pool.waitConnectAndInit()
 
-    await waitConnectAndInit()
+    const { unfreeze, saveEventOnly, saveSequenceOnly } = this.pool
 
     if (this.vacantSize !== BUFFER_SIZE) {
       let stringifiedEvent = null

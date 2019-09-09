@@ -1,6 +1,5 @@
 import merge from './merge'
 import generateCustomMode from './generate_custom_mode'
-import fs from 'fs'
 
 const getConfig = async (resolveConfig, options) => {
   if (options == null || options.constructor !== Object) {
@@ -9,9 +8,6 @@ const getConfig = async (resolveConfig, options) => {
   const { importFile } = options
   if (importFile == null || importFile.constructor !== String) {
     throw new Error('Options field "importFile" must be string')
-  }
-  if (!fs.existsSync(importFile)) {
-    throw new Error(`File ${importFile} does not exist`)
   }
 
   const config = merge(resolveConfig, {
