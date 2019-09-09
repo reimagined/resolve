@@ -10,8 +10,8 @@ import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
 import drop from './drop'
 import dispose from './dispose'
-import exportStream from './export'
-import importStream from './import'
+import paginateEvents from './paginate-events'
+import saveEventOnly from './save-event-only'
 import freeze from './freeze'
 import unfreeze from './unfreeze'
 
@@ -23,8 +23,8 @@ export default createAdapter.bind(null, {
   saveEvent,
   drop,
   dispose,
-  export: exportStream,
-  import: importStream,
+  paginateEvents,
+  saveEventOnly,
   freeze,
   unfreeze,
   MySQL,

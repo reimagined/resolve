@@ -1,7 +1,10 @@
-import NeDB from 'nedb'
-import { promisify } from 'util'
+import sqlite from 'sqlite'
 
 const DEFAULT_BUCKET_SIZE = 100
+const tableName = 'resolveSnapshotAdapter'
+
+const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
+const escape = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
 const init = async pool => {
   if (pool.initPromise != null) {
@@ -9,23 +12,27 @@ const init = async pool => {
   }
 
   pool.initPromise = (async () => {
-    const database = new NeDB(
+    pool.database = await sqlite.open(
       pool.config && pool.config.hasOwnProperty('databaseFile')
-        ? { filename: pool.config.databaseFile }
-        : { inMemoryOnly: true }
+        ? pool.config.databaseFile
+        : (pool.config.databaseFile = ':memory:')
     )
 
-    pool.db = {
-      loadDatabase: promisify(database.loadDatabase.bind(database)),
-      ensureIndex: promisify(database.ensureIndex.bind(database)),
-      findOne: promisify(database.findOne.bind(database)),
-      update: promisify(database.update.bind(database)),
-      remove: promisify(database.remove.bind(database))
+    await pool.database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
+    await pool.database.exec(`PRAGMA synchronous=EXTRA`)
+
+    if (pool.config.databaseFile === ':memory:') {
+      await pool.database.exec(`PRAGMA journal_mode=MEMORY`)
+    } else {
+      await pool.database.exec(`PRAGMA journal_mode=DELETE`)
     }
 
-    await pool.db.loadDatabase()
-
-    await pool.db.ensureIndex({ fieldName: 'snapshotKey', unique: true })
+    await pool.database.exec(`CREATE TABLE IF NOT EXISTS ${escapeId(
+      tableName
+    )} (
+      ${escapeId('snapshotKey')} TEXT,
+      ${escapeId('content')} TEXT
+    )`)
 
     if (pool.config && pool.config.hasOwnProperty('bucketSize')) {
       pool.bucketSize = Number(pool.config.bucketSize)
@@ -47,8 +54,11 @@ const loadSnapshot = async (pool, snapshotKey) => {
     throw new Error('Adapter is disposed')
   }
 
-  const result = await pool.db.findOne({ snapshotKey })
-
+  const result = await pool.database.get(
+    `SELECT ${escapeId('content')} 
+    FROM ${escapeId(tableName)} 
+    WHERE ${escapeId('snapshotKey')}=${escape(snapshotKey)}`
+  )
   return result != null ? result.content : null
 }
 
@@ -67,10 +77,9 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   }
   pool.counters.set(snapshotKey, 0)
 
-  await pool.db.update(
-    { snapshotKey },
-    { snapshotKey, content },
-    { upsert: true }
+  await pool.database.exec(
+    `INSERT INTO ${escapeId(tableName)} 
+    VALUES (${escape(snapshotKey)}, ${escape(content)})`
   )
 }
 
@@ -82,6 +91,7 @@ const dispose = async pool => {
   pool.disposed = true
 
   pool.counters.clear()
+  await pool.database.close()
 }
 
 const drop = async (pool, snapshotKey) => {
@@ -90,13 +100,9 @@ const drop = async (pool, snapshotKey) => {
     throw new Error('Adapter is disposed')
   }
 
-  await pool.db.remove(
-    {
-      $where: function() {
-        return this.snapshotKey.indexOf(snapshotKey) === 0
-      }
-    },
-    { multi: true }
+  await pool.database.exec(
+    `DELETE FROM ${escapeId(tableName)} 
+    WHERE ${escapeId('snapshotKey')}=${escape(snapshotKey)}`
   )
 }
 
