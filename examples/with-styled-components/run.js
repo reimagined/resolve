@@ -52,10 +52,20 @@ void (async () => {
       }
 
       case 'import-event-store': {
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+
+        const importFile = process.argv[3]
+
+        await importEventStore(resolveConfig, { importFile })
         break
       }
 
       case 'export-event-store': {
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+
+        const exportFile = process.argv[3]
+
+        await exportEventStore(resolveConfig, { exportFile })
         break
       }
 
