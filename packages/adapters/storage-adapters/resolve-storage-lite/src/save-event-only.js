@@ -1,4 +1,7 @@
-const saveEventOnly = async function({ tableName, database, escapeId, escape }, event) {
+const saveEventOnly = async function(
+  { tableName, database, escapeId, escape },
+  event
+) {
   await database.exec(
     `INSERT INTO ${escapeId(tableName)}(
       ${escapeId('timestamp')},

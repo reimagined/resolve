@@ -102,12 +102,16 @@ const generateCustomMode = (getConfig, apiHandlerUrl) => (
       const urls = prepareUrls('http', '0.0.0.0', port, config.rootPath)
       const baseUrl = urls.localUrlForBrowser
       const url = `${baseUrl}api/${apiHandlerUrl}`
+      let lastError = null
 
       while (true) {
         try {
           const response = await fetch(url)
           const text = await response.text()
-          if (text === 'ok') break
+          if (text !== 'ok') {
+            lastError = text
+          }
+          break
         } catch (e) {}
         await new Promise(resolve => setTimeout(resolve, 500))
       }
@@ -116,6 +120,10 @@ const generateCustomMode = (getConfig, apiHandlerUrl) => (
         new Promise(resolve => server.stop(resolve)),
         new Promise(resolve => broker.stop(resolve))
       ])
+
+      if (lastError != null) {
+        throw lastError
+      }
 
       resolve()
     } catch (error) {
