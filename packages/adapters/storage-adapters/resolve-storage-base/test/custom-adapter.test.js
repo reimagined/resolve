@@ -49,17 +49,31 @@ describe('createCustomAdapter', () => {
         JSON.stringify(args, null, 2)
       )
     }
+    const importStream = async (pool, ...args) => {
+      result.push(
+        'import',
+        JSON.stringify(pool, null, 2),
+        JSON.stringify(args, null, 2)
+      )
+    }
+    const exportStream = async (pool, ...args) => {
+      result.push(
+        'export',
+        JSON.stringify(pool, null, 2),
+        JSON.stringify(args, null, 2)
+      )
+    }
 
-    const createCustomAdapter = createAdapter.bind(
-      null,
+    const createCustomAdapter = createAdapter.bind(null, {
       connect,
       init,
       loadEvents,
       saveEvent,
       drop,
       dispose,
-      {}
-    )
+      import: importStream,
+      export: exportStream
+    })
 
     const customAdapter = createCustomAdapter({
       skipInit: false,
@@ -120,17 +134,31 @@ describe('createCustomAdapter', () => {
         JSON.stringify(args, null, 2)
       )
     }
+    const importStream = async (pool, ...args) => {
+      result.push(
+        'import',
+        JSON.stringify(pool, null, 2),
+        JSON.stringify(args, null, 2)
+      )
+    }
+    const exportStream = async (pool, ...args) => {
+      result.push(
+        'export',
+        JSON.stringify(pool, null, 2),
+        JSON.stringify(args, null, 2)
+      )
+    }
 
-    const createCustomAdapter = createAdapter.bind(
-      null,
+    const createCustomAdapter = createAdapter.bind(null, {
       connect,
       init,
       loadEvents,
       saveEvent,
       drop,
       dispose,
-      {}
-    )
+      import: importStream,
+      export: exportStream
+    })
 
     const customAdapter = createCustomAdapter({
       skipInit: true,

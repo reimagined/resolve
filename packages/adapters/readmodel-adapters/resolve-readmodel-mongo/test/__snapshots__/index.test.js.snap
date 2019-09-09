@@ -8,6 +8,7 @@ Array [
     Object {
       "autoReconnect": false,
       "useNewUrlParser": true,
+      "useUnifiedTopology": true,
     },
   ],
   Array [
@@ -16,6 +17,7 @@ Array [
     Object {
       "autoReconnect": false,
       "useNewUrlParser": true,
+      "useUnifiedTopology": true,
     },
   ],
   Array [
@@ -79,7 +81,7 @@ Array [
     },
   ],
   Array [
-    "collections",
+    "listCollections",
   ],
   Array [
     "collection",
@@ -111,9 +113,6 @@ Array [
   Array [
     "collection",
     "table1",
-  ],
-  Array [
-    "collections",
   ],
   Array [
     "collection",
@@ -203,7 +202,7 @@ Array [
     },
   ],
   Array [
-    "collections",
+    "listCollections",
   ],
   Array [
     "collection",
@@ -237,9 +236,6 @@ Array [
     "table2",
   ],
   Array [
-    "collections",
-  ],
-  Array [
     "collection",
     "undefined",
   ],
@@ -269,9 +265,6 @@ Array [
   Array [
     "collection",
     "table2",
-  ],
-  Array [
-    "collections",
   ],
   Array [
     "collection",
@@ -334,12 +327,6 @@ Array [
       ],
     },
   ],
-  Array [
-    "collections",
-  ],
-  Array [
-    "collections",
-  ],
 ]
 `;
 
@@ -351,6 +338,7 @@ Array [
     Object {
       "autoReconnect": false,
       "useNewUrlParser": true,
+      "useUnifiedTopology": true,
     },
   ],
   Array [
@@ -414,7 +402,7 @@ Array [
     },
   ],
   Array [
-    "collections",
+    "listCollections",
   ],
   Array [
     "collection",
@@ -448,9 +436,6 @@ Array [
     "Entries",
   ],
   Array [
-    "collections",
-  ],
-  Array [
     "collection",
     "undefined",
   ],
@@ -480,9 +465,6 @@ Array [
   Array [
     "collection",
     "Entries",
-  ],
-  Array [
-    "collections",
   ],
   Array [
     "collection",
@@ -516,9 +498,6 @@ Array [
     "Entries",
   ],
   Array [
-    "collections",
-  ],
-  Array [
     "collection",
     "undefined",
   ],
@@ -548,9 +527,6 @@ Array [
   Array [
     "collection",
     "Entries",
-  ],
-  Array [
-    "collections",
   ],
   Array [
     "collection",
@@ -741,6 +717,7 @@ Array [
     Object {
       "autoReconnect": false,
       "useNewUrlParser": true,
+      "useUnifiedTopology": true,
     },
   ],
   Array [
@@ -805,7 +782,7 @@ Array [
     },
   ],
   Array [
-    "collections",
+    "listCollections",
   ],
   Array [
     "collection",
@@ -838,9 +815,6 @@ Array [
   Array [
     "collection",
     "ShoppingLists",
-  ],
-  Array [
-    "collections",
   ],
   Array [
     "collection",
@@ -895,9 +869,6 @@ Array [
         },
       ],
     },
-  ],
-  Array [
-    "collections",
   ],
   Array [
     "collection",
@@ -969,9 +940,6 @@ Array [
     },
   ],
   Array [
-    "collections",
-  ],
-  Array [
     "collection",
     "undefined",
   ],
@@ -1041,9 +1009,6 @@ Array [
     },
   ],
   Array [
-    "collections",
-  ],
-  Array [
     "collection",
     "undefined",
   ],
@@ -1103,9 +1068,6 @@ Array [
         },
       ],
     },
-  ],
-  Array [
-    "collections",
   ],
   Array [
     "collection",
@@ -1178,6 +1140,7 @@ Array [
     Object {
       "autoReconnect": false,
       "useNewUrlParser": true,
+      "useUnifiedTopology": true,
     },
   ],
   Array [
@@ -1243,7 +1206,7 @@ Array [
     },
   ],
   Array [
-    "collections",
+    "listCollections",
   ],
   Array [
     "collection",
@@ -1305,9 +1268,6 @@ Array [
         },
       ],
     },
-  ],
-  Array [
-    "collections",
   ],
   Array [
     "collection",
@@ -1381,9 +1341,6 @@ Array [
     },
   ],
   Array [
-    "collections",
-  ],
-  Array [
     "collection",
     "undefined",
   ],
@@ -1453,9 +1410,6 @@ Array [
         },
       ],
     },
-  ],
-  Array [
-    "collections",
   ],
   Array [
     "collection",
@@ -1529,9 +1483,6 @@ Array [
     },
   ],
   Array [
-    "collections",
-  ],
-  Array [
     "collection",
     "undefined",
   ],
@@ -1587,6 +1538,7 @@ Array [
     Object {
       "autoReconnect": false,
       "useNewUrlParser": true,
+      "useUnifiedTopology": true,
     },
   ],
   Array [
@@ -1652,7 +1604,7 @@ Array [
     },
   ],
   Array [
-    "collections",
+    "listCollections",
   ],
   Array [
     "collection",
@@ -1716,9 +1668,6 @@ Array [
     },
   ],
   Array [
-    "collections",
-  ],
-  Array [
     "collection",
     "undefined",
   ],
@@ -1774,6 +1723,7 @@ Array [
     Object {
       "autoReconnect": false,
       "useNewUrlParser": true,
+      "useUnifiedTopology": true,
     },
   ],
   Array [
@@ -1839,7 +1789,7 @@ Array [
     },
   ],
   Array [
-    "collections",
+    "listCollections",
   ],
   Array [
     "collection",
@@ -1901,9 +1851,6 @@ Array [
         },
       ],
     },
-  ],
-  Array [
-    "collections",
   ],
   Array [
     "collection",

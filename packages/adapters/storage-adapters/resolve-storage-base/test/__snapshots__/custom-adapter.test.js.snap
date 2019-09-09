@@ -3,29 +3,47 @@
 exports[`createCustomAdapter should work correctly with skipInit = false: skipInit: false 1`] = `
 "connect
 {
-  \\"config\\": {},
+  \\"config\\": {
+    \\"skipInit\\": false,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
   \\"disposed\\": false,
+  \\"saveEventOnly\\": null,
+  \\"saveSequenceOnly\\": null,
+  \\"paginateEvents\\": null,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
+  \\"getLatestEvent\\": null,
+  \\"isFrozen\\": null,
+  \\"freeze\\": null,
+  \\"unfreeze\\": null,
   \\"isInitialized\\": true,
   \\"testField1\\": 1,
   \\"testField2\\": 2
 }
 [
-  {
-    \\"skipInit\\": false,
-    \\"a\\": \\"a\\",
-    \\"b\\": \\"b\\"
-  }
+  {}
 ]
 init
 {
-  \\"config\\": {},
+  \\"config\\": {
+    \\"skipInit\\": false,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
   \\"disposed\\": false,
+  \\"saveEventOnly\\": null,
+  \\"saveSequenceOnly\\": null,
+  \\"paginateEvents\\": null,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
+  \\"getLatestEvent\\": null,
+  \\"isFrozen\\": null,
+  \\"freeze\\": null,
+  \\"unfreeze\\": null,
   \\"isInitialized\\": true,
   \\"testField1\\": 1,
   \\"testField2\\": 2
@@ -33,11 +51,22 @@ init
 []
 loadEvents
 {
-  \\"config\\": {},
+  \\"config\\": {
+    \\"skipInit\\": false,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
   \\"disposed\\": false,
+  \\"saveEventOnly\\": null,
+  \\"saveSequenceOnly\\": null,
+  \\"paginateEvents\\": null,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
+  \\"getLatestEvent\\": null,
+  \\"isFrozen\\": null,
+  \\"freeze\\": null,
+  \\"unfreeze\\": null,
   \\"isInitialized\\": true,
   \\"testField1\\": 1,
   \\"testField2\\": 2
@@ -55,39 +84,68 @@ loadEvents
 exports[`createCustomAdapter should work correctly with skipInit = true: skipInit: true 1`] = `
 "connect
 {
-  \\"config\\": {},
+  \\"config\\": {
+    \\"skipInit\\": true,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
   \\"disposed\\": false,
+  \\"saveEventOnly\\": null,
+  \\"saveSequenceOnly\\": null,
+  \\"paginateEvents\\": null,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
+  \\"getLatestEvent\\": null,
+  \\"isFrozen\\": null,
+  \\"freeze\\": null,
+  \\"unfreeze\\": null,
   \\"testField1\\": 1,
   \\"testField2\\": 2
 }
 [
-  {
-    \\"skipInit\\": true,
-    \\"a\\": \\"a\\",
-    \\"b\\": \\"b\\"
-  }
+  {}
 ]
 init
 {
-  \\"config\\": {},
+  \\"config\\": {
+    \\"skipInit\\": true,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
   \\"disposed\\": false,
+  \\"saveEventOnly\\": null,
+  \\"saveSequenceOnly\\": null,
+  \\"paginateEvents\\": null,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
+  \\"getLatestEvent\\": null,
+  \\"isFrozen\\": null,
+  \\"freeze\\": null,
+  \\"unfreeze\\": null,
   \\"testField1\\": 1,
   \\"testField2\\": 2
 }
 []
 loadEvents
 {
-  \\"config\\": {},
+  \\"config\\": {
+    \\"skipInit\\": true,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
   \\"disposed\\": false,
+  \\"saveEventOnly\\": null,
+  \\"saveSequenceOnly\\": null,
+  \\"paginateEvents\\": null,
   \\"initialPromiseResult\\": {},
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
+  \\"getLatestEvent\\": null,
+  \\"isFrozen\\": null,
+  \\"freeze\\": null,
+  \\"unfreeze\\": null,
   \\"testField1\\": 1,
   \\"testField2\\": 2,
   \\"isInitialized\\": true

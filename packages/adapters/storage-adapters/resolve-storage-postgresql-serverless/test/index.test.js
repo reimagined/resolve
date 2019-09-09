@@ -88,4 +88,17 @@ describe('resolve-storage-mysql-serverless', () => {
 
     expect(mockResult).toMatchSnapshot()
   })
+
+  test('"export" should return eventStream', done => {
+    const eventStream = storageAdapter.export()
+
+    eventStream.on('data', event => {
+      expect(JSON.parse(event)).toHaveProperty('payload')
+      expect(JSON.parse(event)).toHaveProperty('aggregateVersion')
+    })
+
+    eventStream.on('end', () => {
+      done()
+    })
+  })
 })

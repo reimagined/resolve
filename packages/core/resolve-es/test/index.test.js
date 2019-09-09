@@ -1,6 +1,7 @@
 /* eslint no-unused-expressions: 0 */
 import sinon from 'sinon'
 import createEventStore from '../src/index'
+import { Readable } from 'stream'
 
 describe('resolve-es', () => {
   describe('loadEvents', () => {
@@ -38,6 +39,34 @@ describe('resolve-es', () => {
 
       expect(handler.callCount).toEqual(1)
       expect(handler.firstCall.args[0]).toEqual(event)
+    })
+
+    it('should return export stream', async () => {
+      const stream = new Readable()
+      const storage = {
+        export: jest.fn().mockReturnValue(stream)
+      }
+
+      const eventStore = createEventStore({ storage })
+
+      const result = eventStore.export()
+
+      expect(storage.export).toHaveBeenCalled()
+      expect(result).toEqual(stream)
+    })
+
+    it('should return import stream', async () => {
+      const stream = new Readable()
+      const storage = {
+        import: jest.fn().mockReturnValue(stream)
+      }
+
+      const eventStore = createEventStore({ storage })
+
+      const result = eventStore.import()
+
+      expect(storage.import).toHaveBeenCalled()
+      expect(result).toEqual(stream)
     })
 
     it('should perform events loading and transmitting from storage only', async () => {

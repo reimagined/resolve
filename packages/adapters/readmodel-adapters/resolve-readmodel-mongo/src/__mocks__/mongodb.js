@@ -59,6 +59,12 @@ const db = () => ({
   collections: (...args) => {
     result.push(['collections', ...args])
     return []
+  },
+  listCollections: (...args) => {
+    result.push(['listCollections', ...args])
+    return {
+      toArray: () => []
+    }
   }
 })
 

@@ -496,7 +496,7 @@ describe('Cloud entry', () => {
 
       expect(result.statusCode).toEqual(408)
       expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
-      expect(result.body).toEqual('Command error: Concurrency error')
+      expect(result.body).toContain('is not actual at the moment')
     })
 
     test('should fail command via POST /"rootPath"/api/commands/ with CommandError', async () => {

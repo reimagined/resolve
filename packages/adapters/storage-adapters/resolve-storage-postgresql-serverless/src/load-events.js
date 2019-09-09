@@ -76,10 +76,11 @@ const loadEvents = async (
         break loop
       }
 
-      await callback({
-        ...event,
-        payload: JSON.parse(event.payload)
-      })
+      event.payload = JSON.parse(event.payload)
+      delete event.totalEventSize
+      delete event.eventSize
+
+      await callback(event)
     }
 
     if (rows.length === 0) {

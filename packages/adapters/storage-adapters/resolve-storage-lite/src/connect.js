@@ -1,7 +1,7 @@
 const coerceEmptyString = obj =>
   (obj != null && obj.constructor !== String) || obj == null ? 'default' : obj
 
-const connect = async (pool, sqlite) => {
+const connect = async (pool, { sqlite }) => {
   let { databaseFile, tableName, ...initOptions } = pool.config
   const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
   const escape = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`

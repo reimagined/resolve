@@ -1,5 +1,4 @@
 import { MongoClient } from 'mongodb'
-
 import createAdapter from 'resolve-storage-base'
 
 import connect from './connect'
@@ -9,9 +8,13 @@ import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
 import drop from './drop'
 import dispose from './dispose'
+import paginateEvents from './paginate-events'
+import saveEventOnly from './save-event-only'
+import isFrozen from './is-frozen'
+import freeze from './freeze'
+import unfreeze from './unfreeze'
 
-export default createAdapter.bind(
-  null,
+export default createAdapter.bind(null, {
   connect,
   init,
   loadEvents,
@@ -19,5 +22,10 @@ export default createAdapter.bind(
   saveEvent,
   drop,
   dispose,
+  paginateEvents,
+  saveEventOnly,
+  isFrozen,
+  freeze,
+  unfreeze,
   MongoClient
-)
+})

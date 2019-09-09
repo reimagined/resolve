@@ -52,6 +52,7 @@
     "react-test-renderer": "16.7.0",
     "resolve-testing-tools": "0.20.25",
     "testcafe": "0.23.3",
-    "resolve-cloud": "*"
+    "resolve-cloud": "*",
+    "isomorphic-fetch": "2.2.1"
   }
 }
