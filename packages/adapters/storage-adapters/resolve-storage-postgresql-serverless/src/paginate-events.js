@@ -22,6 +22,8 @@ const paginateEvents = async (pool, offset, batchSize) => {
 
   const rows = await executeStatement(query)
   for (const event of rows) {
+    event.payload = JSON.parse(event.payload)
+
     delete event.totalEventSize
     delete event.eventSize
   }

@@ -1,12 +1,17 @@
 import stream from 'stream'
 import through from 'through2'
 
-import { BATCH_SIZE, DATA_API_ERROR_FLAG } from './constants'
+import {
+  BATCH_SIZE,
+  DATA_API_ERROR_FLAG,
+  MAINTENANCE_MODE_AUTO,
+  MAINTENANCE_MODE_MANUAL
+} from './constants'
 
 const injectString = ({ escape }, value) => `${escape(value)}`
 const injectNumber = (pool, value) => `${+value}`
 
-function EventStream(pool, cursor = 0) {
+function EventStream(pool, maintenanceMode, cursor = 0) {
   stream.Readable.call(this, { objectMode: true })
 
   this.pool = pool
@@ -19,6 +24,8 @@ function EventStream(pool, cursor = 0) {
 
   this.injectString = injectString.bind(this, pool)
   this.injectNumber = injectNumber.bind(this, pool)
+  this.maintenanceMode = maintenanceMode
+  this.isMaintenanceInProgress = false
 
   this.rows = []
 }
@@ -36,8 +43,7 @@ EventStream.prototype.processEvents = function() {
       this.rows.length = 0
       return
     } else {
-      const isPaused =
-        this.push(event) === false
+      const isPaused = this.push(event) === false
       this.cursor = event.eventOffset
 
       if (isPaused) {
@@ -101,43 +107,77 @@ EventStream.prototype._read = function() {
 
 const exportStream = (
   pool,
-  { cursor, bufferSize = Number.POSITIVE_INFINITY } = {}
+  {
+    cursor,
+    maintenanceMode = MAINTENANCE_MODE_AUTO,
+    bufferSize = Number.POSITIVE_INFINITY
+  } = {}
 ) => {
-  const eventStream = new EventStream(pool, cursor)
+  if (
+    ![MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL].includes(maintenanceMode)
+  ) {
+    throw new Error(`Wrong maintenance mode ${maintenanceMode}`)
+  }
+
+  const eventStream = new EventStream(pool, maintenanceMode, cursor)
 
   let size = 0
   let lastEventOffset = 0
   let isDestroyed = false
 
   const resultStream = through.obj(
-    (event, encoding, callback) => {
-      lastEventOffset = event.eventOffset
-      delete event.eventOffset
-      delete event.eventId
-
-      const chunk = Buffer.from(JSON.stringify(event) + '\n', encoding)
-      const byteLength = chunk.byteLength
-      if (size + byteLength > bufferSize) {
-        resultStream.isBufferOverflow = true
-        eventStream.destroy()
-        if (!isDestroyed) {
-          resultStream.cursor = lastEventOffset
-          isDestroyed = true
+    async (event, encoding, callback) => {
+      try {
+        if (
+          eventStream.maintenanceMode === MAINTENANCE_MODE_AUTO &&
+          eventStream.isMaintenanceInProgress === false
+        ) {
+          eventStream.isMaintenanceInProgress = true
+          await pool.freeze()
         }
-        callback(false, null)
-      } else {
-        size += byteLength
-        callback(false, chunk)
+
+        lastEventOffset = event.eventOffset
+        delete event.eventOffset
+        delete event.eventId
+
+        const chunk = Buffer.from(JSON.stringify(event) + '\n', encoding)
+        const byteLength = chunk.byteLength
+        if (size + byteLength > bufferSize) {
+          resultStream.isBufferOverflow = true
+          eventStream.destroy()
+          if (!isDestroyed) {
+            resultStream.cursor = lastEventOffset
+            isDestroyed = true
+          }
+          callback(false, null)
+        } else {
+          size += byteLength
+          callback(false, chunk)
+        }
+      } catch (error) {
+        callback(error)
       }
     },
-    callback => {
-      eventStream.destroy()
+    async callback => {
+      try {
+        eventStream.destroy()
 
-      if (resultStream.cursor == null) {
-        resultStream.cursor = lastEventOffset + 1
+        if (
+          eventStream.maintenanceMode === MAINTENANCE_MODE_AUTO &&
+          eventStream.isMaintenanceInProgress === true
+        ) {
+          eventStream.isMaintenanceInProgress = false
+          await pool.unfreeze()
+        }
+
+        if (resultStream.cursor == null) {
+          resultStream.cursor = lastEventOffset + 1
+        }
+
+        callback()
+      } catch (error) {
+        callback(error)
       }
-
-      callback()
     }
   )
 
