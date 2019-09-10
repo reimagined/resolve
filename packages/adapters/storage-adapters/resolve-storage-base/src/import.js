@@ -4,11 +4,11 @@ import { EOL } from 'os'
 import {
   BUFFER_SIZE,
   PARTIAL_EVENT_FLAG,
-  FREEZE_MODE_AUTO,
-  FREEZE_MODE_MANUAL
+  MAINTENANCE_MODE_AUTO,
+  MAINTENANCE_MODE_MANUAL
 } from './constants'
 
-function EventStream(pool, freezeMode, byteOffset = 0, eventId = 1) {
+function EventStream(pool, maintenanceMode, byteOffset = 0, eventId = 1) {
   stream.Writable.call(this, { objectMode: true })
 
   this.pool = pool
@@ -21,8 +21,8 @@ function EventStream(pool, freezeMode, byteOffset = 0, eventId = 1) {
   this.saveEventPromiseSet = new Set()
   this.saveEventErrors = []
   this.timestamp = 0
-  this.freezeMode = freezeMode
-  this.isFrozen = false
+  this.maintenanceMode = maintenanceMode
+  this.isMaintenanceInProgress = false
 }
 
 EventStream.prototype = Object.create(stream.Writable.prototype)
@@ -30,13 +30,18 @@ EventStream.prototype.constructor = stream.Writable
 
 EventStream.prototype._write = async function(chunk, encoding, callback) {
   try {
-    const { freeze, waitConnectAndInit, saveEventOnly } = this.pool
+    await this.pool.waitConnectAndInit()
 
-    await waitConnectAndInit()
+    const { drop, initOnly, freeze, saveEventOnly } = this.pool
 
-    if (this.freezeMode === FREEZE_MODE_AUTO && this.isFrozen === false) {
+    if (
+      this.maintenanceMode === MAINTENANCE_MODE_AUTO &&
+      this.isMaintenanceInProgress === false
+    ) {
+      this.isMaintenanceInProgress = true
+      await drop()
+      await initOnly()
       await freeze()
-      this.isFrozen = true
     }
 
     if (this.encoding == null) {
@@ -132,14 +137,9 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
 
 EventStream.prototype._final = async function(callback) {
   try {
-    const {
-      unfreeze,
-      waitConnectAndInit,
-      saveEventOnly,
-      saveSequenceOnly
-    } = this.pool
+    await this.pool.waitConnectAndInit()
 
-    await waitConnectAndInit()
+    const { unfreeze, saveEventOnly, saveSequenceOnly } = this.pool
 
     if (this.vacantSize !== BUFFER_SIZE) {
       let stringifiedEvent = null
@@ -195,9 +195,12 @@ EventStream.prototype._final = async function(callback) {
 
     await Promise.all([...this.saveEventPromiseSet, saveSequenceOnlyPromise])
 
-    if (this.freezeMode === FREEZE_MODE_AUTO && this.isFrozen === true) {
+    if (
+      this.maintenanceMode === MAINTENANCE_MODE_AUTO &&
+      this.isMaintenanceInProgress === true
+    ) {
+      this.isMaintenanceInProgress = false
       await unfreeze()
-      this.isFrozen = false
     }
 
     if (this.saveEventErrors.length > 0) {
@@ -214,14 +217,14 @@ EventStream.prototype._final = async function(callback) {
 
 const importStream = (
   pool,
-  { byteOffset, eventId, freezeMode = FREEZE_MODE_AUTO } = {}
+  { byteOffset, eventId, maintenanceMode = MAINTENANCE_MODE_AUTO } = {}
 ) => {
-  switch (freezeMode) {
-    case FREEZE_MODE_AUTO:
-    case FREEZE_MODE_MANUAL:
-      return new EventStream(pool, freezeMode, byteOffset, eventId)
+  switch (maintenanceMode) {
+    case MAINTENANCE_MODE_AUTO:
+    case MAINTENANCE_MODE_MANUAL:
+      return new EventStream(pool, maintenanceMode, byteOffset, eventId)
     default:
-      throw new Error(`Wrong freeze mode ${freezeMode}`)
+      throw new Error(`Wrong maintenance mode ${maintenanceMode}`)
   }
 }
 

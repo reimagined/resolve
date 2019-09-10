@@ -36,6 +36,7 @@ const createAdapter = (
     paginateEvents: wrapMethod(pool, paginateEvents),
     // eslint-disable-next-line no-new-func
     waitConnectAndInit: wrapMethod(pool, Function()),
+    initOnly: wrapMethod(pool, init),
     wrapMethod
   })
 

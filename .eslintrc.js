@@ -257,6 +257,7 @@ module.exports = {
           'polyfills',
           'postcss',
           'postgres',
+          'postgresql',
           'prefetch',
           'Postfix',
           'preloader',

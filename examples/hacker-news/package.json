@@ -14,7 +14,9 @@
     "test:update": "jest -u",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watchAll",
-    "test:functional": "babel-node ./run.js test:functional"
+    "test:functional": "babel-node ./run.js test:functional",
+    "import-event-store": "babel-node ./run.js import-event-store",
+    "export-event-store": "babel-node ./run.js export-event-store"
   },
   "dependencies": {
     "@babel/node": "7.0.0",
@@ -43,7 +45,7 @@
     "resolve-readmodel-mysql": "0.20.25",
     "resolve-redux": "0.20.25",
     "resolve-scripts": "0.20.25",
-    "resolve-storage-dynamo": "0.20.25",
+    "resolve-storage-postgresql-serverless": "0.20.25",
     "resolve-storage-lite": "0.20.25",
     "resolve-subscribe-mqtt": "0.20.25",
     "resolve-subscribe-socket.io": "0.20.25",
