@@ -38,7 +38,7 @@ const saveEvent = async ({ tableName, connection, database, escapeId, escape }, 
     ].join('\n'))
   } catch (error) {
     if (error.message === 'Subquery returns more than 1 row') {
-      throw 'The table was frozen'
+      throw new Error('Event store is frozen')
     }
     if (error.errno !== ER_DUP_ENTRY) {
       throw error
