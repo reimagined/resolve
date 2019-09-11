@@ -36,6 +36,9 @@ const saveEvent = async ({ tableName, database, escapeId, escape }, event) => {
       ].join('\n')
     )
   } catch (error) {
+    if (error.message === 'SQLITE_ERROR: integer overflow') {
+      throw new Error('Event store is frozen')
+    }
     if (error.code !== 'SQLITE_CONSTRAINT') {
       throw error
     }
