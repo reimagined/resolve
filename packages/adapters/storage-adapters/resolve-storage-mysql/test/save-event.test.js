@@ -11,17 +11,18 @@ test('save event should store event in eventstore if success', async () => {
 
   const pool = {
     connection: {
-      execute: sinon.stub().callsFake(async () => null)
+      query: sinon.stub().callsFake(async () => null)
     },
     escapeId: value => `@ESCAPED[${value}]`,
+    escape: value => `@ESCAPED[${value}]`,
     tableName: 'tableName'
   }
 
   await saveEvent(pool, event)
 
-  expect(pool.connection.execute.callCount).toEqual(1)
+  expect(pool.connection.query.callCount).toEqual(1)
 
-  expect(pool.connection.execute.firstCall.args).toMatchSnapshot()
+  expect(pool.connection.query.firstCall.args).toMatchSnapshot()
 })
 
 test('save event should throw ConcurrentError on duplicate aggregateVersion', async () => {
@@ -33,13 +34,14 @@ test('save event should throw ConcurrentError on duplicate aggregateVersion', as
 
   const pool = {
     connection: {
-      execute: sinon.stub().callsFake(async () => {
+      query: sinon.stub().callsFake(async () => {
         const error = new Error('Test error')
         error.errno = 1062
         throw error
       })
     },
     escapeId: value => `@ESCAPED[${value}]`,
+    escape: value => `@ESCAPED[${value}]`,
     tableName: 'tableName'
   }
 
@@ -66,11 +68,12 @@ test('save event should re-throw custom db error', async () => {
   const customDbError = new Error()
   const pool = {
     connection: {
-      execute: sinon.stub().callsFake(async () => {
+      query: sinon.stub().callsFake(async () => {
         throw customDbError
       })
     },
     escapeId: value => `@ESCAPED[${value}]`,
+    escape: value => `@ESCAPED[${value}]`,
     tableName: 'tableName'
   }
 
