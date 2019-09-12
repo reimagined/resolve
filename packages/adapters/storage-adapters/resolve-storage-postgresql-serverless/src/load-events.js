@@ -11,7 +11,7 @@ const loadEvents = async (
 ) => {
   const injectString = value => `${escape(value)}`
   const injectNumber = value => `${+value}`
-  const batchSize = 50
+  const batchSize = 200
 
   const queryConditions = []
   if (eventTypes != null) {
