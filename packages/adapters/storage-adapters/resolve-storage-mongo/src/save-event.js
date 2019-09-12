@@ -2,7 +2,8 @@ import { ConcurrentError } from 'resolve-storage-base'
 
 const DUPLICATE_KEY_ERROR = 11000
 
-const saveEvent = async ({ collection }, event) => {
+const saveEvent = async ({ collection, isFrozen }, event) => {
+  await isFrozen()
   try {
     await collection.insertOne(event)
   } catch (error) {

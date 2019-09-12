@@ -37,7 +37,8 @@ const createAdapter = (
     // eslint-disable-next-line no-new-func
     waitConnectAndInit: wrapMethod(pool, Function()),
     initOnly: wrapMethod(pool, init),
-    wrapMethod
+    wrapMethod,
+    isFrozen: wrapMethod(pool, isFrozen)
   })
 
   prepare(pool, connect, init, adapterSpecificArguments)

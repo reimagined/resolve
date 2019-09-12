@@ -1,5 +1,11 @@
 const drop = async ({ database, collectionName }) => {
-  await database.dropCollection(`${collectionName}-freeze`)
+  try {
+    await database.dropCollection(`${collectionName}-freeze`)
+  } catch (error) {
+    if (+error.code !== 26) {
+      throw error
+    }
+  }
   await database.dropCollection(collectionName)
 }
 
