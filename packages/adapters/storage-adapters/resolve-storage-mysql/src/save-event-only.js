@@ -1,4 +1,7 @@
-const saveEventOnly = async function({ tableName, connection, escapeId, escape }, event) {
+const saveEventOnly = async function(
+  { tableName, connection, escapeId, escape },
+  event
+) {
   await connection.query(
     `INSERT INTO ${escapeId(tableName)}(
       ${escapeId('timestamp')},
@@ -15,7 +18,7 @@ const saveEventOnly = async function({ tableName, connection, escapeId, escape }
         event.payload != null
           ? escape(JSON.stringify(event.payload))
           : escape('null')
-        } AS JSON)),
+      } AS JSON)),
     )`
   )
 }

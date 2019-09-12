@@ -1,4 +1,4 @@
-const saveEventOnly = async function ({ collection }, event) {
+const saveEventOnly = async function({ collection }, event) {
   await collection.insertOne(event)
 }
 
