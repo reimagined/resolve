@@ -18,7 +18,7 @@ const saveEventOnly = async function(
         event.payload != null
           ? escape(JSON.stringify(event.payload))
           : escape('null')
-      } AS JSON)),
+      } AS JSON))
     )`
   )
 }
