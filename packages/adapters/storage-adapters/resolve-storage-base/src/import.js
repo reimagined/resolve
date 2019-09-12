@@ -5,7 +5,8 @@ import {
   BUFFER_SIZE,
   PARTIAL_EVENT_FLAG,
   MAINTENANCE_MODE_AUTO,
-  MAINTENANCE_MODE_MANUAL
+  MAINTENANCE_MODE_MANUAL,
+  BATCH_SIZE
 } from './constants'
 
 function EventStream(pool, maintenanceMode, byteOffset = 0, eventId = 1) {
@@ -23,12 +24,24 @@ function EventStream(pool, maintenanceMode, byteOffset = 0, eventId = 1) {
   this.timestamp = 0
   this.maintenanceMode = maintenanceMode
   this.isMaintenanceInProgress = false
+  this.parsedEventsCount = 0
+  this.bypassMode = false
+
+  this.on('timeout', () => {
+    this.externalTimeout = true
+  })
 }
 
 EventStream.prototype = Object.create(stream.Writable.prototype)
 EventStream.prototype.constructor = stream.Writable
 
 EventStream.prototype._write = async function(chunk, encoding, callback) {
+  if (this.bypassMode) {
+    await new Promise(resolve => setImmediate(resolve))
+    callback()
+    return
+  }
+
   try {
     await this.pool.waitConnectAndInit()
 
@@ -127,6 +140,14 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
         )
       )
       this.saveEventPromiseSet.add(saveEventPromise)
+
+      if (this.parsedEventsCount++ >= BATCH_SIZE) {
+        await Promise.all([...this.saveEventPromiseSet])
+        if (this.externalTimeout === true) {
+          this.bypassMode = true
+        }
+        this.parsedEventsCount = 0
+      }
     }
 
     callback()
@@ -136,6 +157,13 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
 }
 
 EventStream.prototype._final = async function(callback) {
+  if (this.bypassMode) {
+    await new Promise(resolve => setImmediate(resolve))
+    this.buffer = null
+    callback()
+    return
+  }
+
   try {
     await this.pool.waitConnectAndInit()
 
