@@ -3,7 +3,6 @@ import through from 'through2'
 
 import {
   BATCH_SIZE,
-  DATA_API_ERROR_FLAG,
   MAINTENANCE_MODE_AUTO,
   MAINTENANCE_MODE_MANUAL
 } from './constants'
@@ -55,44 +54,49 @@ EventStream.prototype.processEvents = function() {
 }
 
 EventStream.prototype.eventReader = async function(currentReaderId) {
-  await this.initPromise
+  try {
+    await this.initPromise
 
-  while (this.readerId === currentReaderId) {
-    let nextRows = null
+    while (true) {
+      if (this.readerId !== currentReaderId) {
+        throw new Error('Reader thread changed before done')
+      }
+      let nextRows = null
 
-    try {
       if (this.hasOwnProperty('initError')) {
         throw this.initError
       }
+
       nextRows = await this.pool.paginateEvents(this.offset, BATCH_SIZE)
-    } catch (error) {
-      this.emit('error', error)
-      this.push(null)
-      this.readerId = null
-      nextRows = DATA_API_ERROR_FLAG
-    }
 
-    if (nextRows === DATA_API_ERROR_FLAG || this.readerId !== currentReaderId) {
-      return
-    }
-
-    for (let index = 0; index < nextRows.length; index++) {
-      const event = nextRows[index]
-      event.eventOffset = this.offset + index
-      this.rows.push(event)
-    }
-    this.offset += nextRows.length
-
-    this.processEvents()
-
-    if (nextRows.length === 0) {
-      if (!this.destroyed) {
-        this.push(null)
+      if (this.readerId !== currentReaderId) {
+        throw new Error('Reader thread changed before done')
       }
 
-      this.readerId = null
-      return
+      for (let index = 0; index < nextRows.length; index++) {
+        const event = nextRows[index]
+        event.eventOffset = this.offset + index
+        this.rows.push(event)
+      }
+      this.offset += nextRows.length
+
+      this.processEvents()
+
+      if (nextRows.length === 0) {
+        if (!this.destroyed) {
+          this.push(null)
+        }
+
+        this.readerId = null
+        return
+      }
     }
+  } catch (error) {
+    this.emit('error', error)
+    if (!this.destroyed) {
+      this.push(null)
+    }
+    this.readerId = Symbol()
   }
 }
 
@@ -144,24 +148,21 @@ const exportStream = (
         const byteLength = chunk.byteLength
         if (size + byteLength > bufferSize) {
           resultStream.isBufferOverflow = true
-          eventStream.destroy()
           if (!isDestroyed) {
             resultStream.cursor = lastEventOffset
             isDestroyed = true
           }
           callback(false, null)
         } else {
-          size += byteLength
           callback(false, chunk)
         }
+        size += byteLength
       } catch (error) {
         callback(error)
       }
     },
     async callback => {
       try {
-        eventStream.destroy()
-
         if (
           eventStream.maintenanceMode === MAINTENANCE_MODE_AUTO &&
           eventStream.isMaintenanceInProgress === true
@@ -178,14 +179,19 @@ const exportStream = (
       } catch (error) {
         callback(error)
       }
+      setImmediate(() => eventStream.destroy())
     }
   )
 
   resultStream.isBufferOverflow = false
 
-  eventStream.on('error', resultStream.emit.bind(resultStream, 'error'))
-  eventStream.on('finish', resultStream.emit.bind(resultStream, 'finish'))
+  eventStream.on('complete', resultStream.emit.bind(resultStream, 'complete'))
+  eventStream.on('abort', resultStream.emit.bind(resultStream, 'abort'))
+  eventStream.on('request', resultStream.emit.bind(resultStream, 'request'))
   eventStream.on('end', resultStream.emit.bind(resultStream, 'end'))
+  eventStream.on('close', resultStream.emit.bind(resultStream, 'close'))
+  eventStream.on('finish', resultStream.emit.bind(resultStream, 'finish'))
+  eventStream.on('error', resultStream.emit.bind(resultStream, 'error'))
 
   eventStream.pipe(resultStream)
 
