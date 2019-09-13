@@ -301,12 +301,12 @@ describe('resolve-storage-lite', () => {
 
     await storageAdapter.drop()
 
-    events = []
-    await storageAdapter.loadEvents({}, event => {
-      events.push(event)
-    })
-
-    expect(events.length).toEqual(0)
+    try {
+      await storageAdapter.loadEvents({}, () => {})
+      return Promise.reject(new Error('Test failed'))
+    } catch (error) {
+      expect(error.message).toContain('no such table')
+    }
   })
 
   test('"getLatestEvent" should get the latest event', async () => {

@@ -9,7 +9,9 @@
     "dev": "babel-node ./run.js dev",
     "start": "babel-node ./run.js start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
-    "test:functional": "babel-node ./run.js test:functional"
+    "test:functional": "babel-node ./run.js test:functional",
+    "import-event-store": "babel-node ./run.js import-event-store",
+    "export-event-store": "babel-node ./run.js export-event-store"
   },
   "dependencies": {
     "@babel/node": "7.0.0",
@@ -30,7 +32,7 @@
     "resolve-readmodel-mysql": "0.20.25",
     "resolve-redux": "0.20.25",
     "resolve-scripts": "0.20.25",
-    "resolve-storage-dynamo": "0.20.25",
+    "resolve-storage-postgresql-serverless": "0.20.25",
     "resolve-storage-lite": "0.20.25",
     "resolve-subscribe-mqtt": "0.20.25",
     "resolve-subscribe-socket.io": "0.20.25",
@@ -50,6 +52,7 @@
     "react-test-renderer": "16.7.0",
     "resolve-testing-tools": "0.20.25",
     "testcafe": "0.23.3",
-    "resolve-cloud": "*"
+    "resolve-cloud": "*",
+    "isomorphic-fetch": "2.2.1"
   }
 }

@@ -2,15 +2,30 @@
 
 exports[`save event should store event in eventstore if success 1`] = `
 Array [
-  "INSERT INTO @ESCAPED[tableName]
-      (\`timestamp\`, \`aggregateId\`, \`aggregateVersion\`, \`type\`, \`payload\`)
-      VALUES (?, ?, ?, ?, ?)",
-  Array [
-    undefined,
-    "aggregate_id",
-    123,
-    "event_type",
-    null,
-  ],
+  "START TRANSACTION;
+SELECT @ESCAPED[OK]
+FROM @ESCAPED[information_schema].@ESCAPED[tables]
+WHERE (
+    SELECT @ESCAPED[Event store is frozen] AS @ESCAPED[EventStoreIsFrozen]
+  UNION ALL
+    SELECT @ESCAPED[Event store is frozen] AS @ESCAPED[EventStoreIsFrozen]
+    FROM @ESCAPED[information_schema].@ESCAPED[tables] @ESCAPED[IS]
+    WHERE @ESCAPED[IS].@ESCAPED[table_schema] = @ESCAPED[undefined]
+    AND @ESCAPED[IS].@ESCAPED[table_name] = @ESCAPED[tableName-freeze]
+) = @ESCAPED[OK];
+INSERT INTO @ESCAPED[tableName](
+  @ESCAPED[timestamp],
+  @ESCAPED[aggregateId],
+  @ESCAPED[aggregateVersion],
+  @ESCAPED[type],
+  @ESCAPED[payload]
+) VALUES(
+ NaN,
+ @ESCAPED[aggregate_id],
+ 123,
+ @ESCAPED[event_type],
+  (CAST(@ESCAPED[null] AS JSON))
+);
+COMMIT;",
 ]
 `;

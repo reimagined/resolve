@@ -1,6 +1,6 @@
 import isSagaName from '../common/utils/is-saga-name'
 
-const resetDomainHandler = () => async (req, res) => {
+const resetDomainHandler = options => async (req, res) => {
   const {
     readModelConnectors,
     snapshotAdapter,
@@ -12,17 +12,7 @@ const resetDomainHandler = () => async (req, res) => {
   } = req.resolve
 
   try {
-    const dropEventStore =
-      req.query.hasOwnProperty('dropEventStore') &&
-      req.query.dropEventStore !== 'false'
-    const dropSnapshots =
-      req.query.hasOwnProperty('dropSnapshots') &&
-      req.query.dropSnapshots !== 'false'
-    const dropReadModels =
-      req.query.hasOwnProperty('dropReadModels') &&
-      req.query.dropReadModels !== 'false'
-    const dropSagas =
-      req.query.hasOwnProperty('dropSagas') && req.query.dropSagas !== 'false'
+    const { dropEventStore, dropSnapshots, dropReadModels, dropSagas } = options
 
     if (dropEventStore) {
       await storageAdapter.drop()

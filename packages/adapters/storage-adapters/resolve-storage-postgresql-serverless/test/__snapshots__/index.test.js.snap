@@ -70,7 +70,7 @@ Array [
           SELECT * FROM \\"event-store\\".\\"events\\" 
           ORDER BY \\"eventId\\" ASC
           OFFSET 0
-          LIMIT 50
+          LIMIT 200
         ) \\"filteredEvents\\"
       )
       SELECT * FROM \\"cte\\"
@@ -93,7 +93,7 @@ Array [
           SELECT * FROM \\"event-store\\".\\"events\\" 
           ORDER BY \\"eventId\\" ASC
           OFFSET 1
-          LIMIT 50
+          LIMIT 200
         ) \\"filteredEvents\\"
       )
       SELECT * FROM \\"cte\\"
@@ -116,7 +116,7 @@ Array [
           SELECT * FROM \\"event-store\\".\\"events\\" 
           ORDER BY \\"eventId\\" ASC
           OFFSET 0
-          LIMIT 50
+          LIMIT 200
         ) \\"filteredEvents\\"
       )
       SELECT * FROM \\"cte\\"
@@ -139,7 +139,7 @@ Array [
           SELECT * FROM \\"event-store\\".\\"events\\" 
           ORDER BY \\"eventId\\" ASC
           OFFSET 1
-          LIMIT 50
+          LIMIT 200
         ) \\"filteredEvents\\"
       )
       SELECT * FROM \\"cte\\"
@@ -162,7 +162,7 @@ Array [
           SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"type\\" IN ('AAA')
           ORDER BY \\"eventId\\" ASC
           OFFSET 0
-          LIMIT 50
+          LIMIT 200
         ) \\"filteredEvents\\"
       )
       SELECT * FROM \\"cte\\"
@@ -185,7 +185,7 @@ Array [
           SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"type\\" IN ('AAA')
           ORDER BY \\"eventId\\" ASC
           OFFSET 1
-          LIMIT 50
+          LIMIT 200
         ) \\"filteredEvents\\"
       )
       SELECT * FROM \\"cte\\"
@@ -208,7 +208,7 @@ Array [
           SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"aggregateId\\" IN ('id1')
           ORDER BY \\"eventId\\" ASC
           OFFSET 0
-          LIMIT 50
+          LIMIT 200
         ) \\"filteredEvents\\"
       )
       SELECT * FROM \\"cte\\"
@@ -231,7 +231,7 @@ Array [
           SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"aggregateId\\" IN ('id1')
           ORDER BY \\"eventId\\" ASC
           OFFSET 1
-          LIMIT 50
+          LIMIT 200
         ) \\"filteredEvents\\"
       )
       SELECT * FROM \\"cte\\"
@@ -254,7 +254,7 @@ Array [
           SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"timestamp\\" > 1 AND \\"timestamp\\" < 3
           ORDER BY \\"eventId\\" ASC
           OFFSET 0
-          LIMIT 50
+          LIMIT 200
         ) \\"filteredEvents\\"
       )
       SELECT * FROM \\"cte\\"
@@ -277,7 +277,7 @@ Array [
           SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"timestamp\\" > 1 AND \\"timestamp\\" < 3
           ORDER BY \\"eventId\\" ASC
           OFFSET 1
-          LIMIT 50
+          LIMIT 200
         ) \\"filteredEvents\\"
       )
       SELECT * FROM \\"cte\\"
@@ -290,12 +290,6 @@ Array [
 
 exports[`resolve-storage-mysql-serverless "saveEvent" should save an event 1`] = `
 Array [
-  "beginTransaction",
-  Object {
-    "database": "postgres",
-    "resourceArn": "dbClusterOrInstanceArn",
-    "secretArn": "awsSecretStoreArn",
-  },
   "executeStatement",
   Object {
     "continueAfterTimeout": false,
@@ -303,68 +297,7 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
-    "sql": "
-        SELECT \\"eventId\\" + 1  AS \\"lastEventId\\",
-        GREATEST(
-          CAST(extract(epoch from now()) * 1000 AS BIGINT),
-          \\"timestamp\\"
-        ) AS \\"lastTimestamp\\"
-        FROM \\"event-store\\".\\"events-sequence\\"
-        WHERE \\"key\\" = 0;
-      ",
-    "transactionId": "transactionId",
-  },
-  "executeStatement",
-  Object {
-    "continueAfterTimeout": false,
-    "database": "postgres",
-    "includeResultMetadata": true,
-    "resourceArn": "dbClusterOrInstanceArn",
-    "secretArn": "awsSecretStoreArn",
-    "sql": "
-        UPDATE \\"event-store\\".\\"events-sequence\\"
-        SET \\"eventId\\" = NaN,
-        \\"transactionId\\" = 'transactionId',
-        \\"timestamp\\" = NaN
-        WHERE \\"key\\" = 0;
-      ",
-    "transactionId": "transactionId",
-  },
-  "executeStatement",
-  Object {
-    "continueAfterTimeout": false,
-    "database": "postgres",
-    "includeResultMetadata": true,
-    "resourceArn": "dbClusterOrInstanceArn",
-    "secretArn": "awsSecretStoreArn",
-    "sql": "
-        INSERT INTO \\"event-store\\".\\"events\\"(
-          \\"eventId\\",
-          \\"timestamp\\",
-          \\"aggregateId\\",
-          \\"aggregateVersion\\",
-          \\"type\\",
-          \\"payload\\",
-          \\"eventSize\\"
-        ) VALUES (
-          
-        NaN,
-        NaN,
-        'id1',
-        1,
-        'AAA',
-        '{\\"index\\":1}'
-      ,
-          96
-        );
-      ",
-    "transactionId": "transactionId",
-  },
-  "commitTransaction",
-  Object {
-    "resourceArn": "dbClusterOrInstanceArn",
-    "secretArn": "awsSecretStoreArn",
-    "transactionId": "transactionId",
+    "sql": "START TRANSACTION;SELECT 'OK' WHERE (  (SELECT 'Event store is frozen' AS \\"EventStoreIsFrozen\\")UNION ALL (  SELECT 'Event store is frozen' AS \\"EventStoreIsFrozen\\"  FROM \\"information_schema\\".\\"tables\\"  WHERE \\"table_schema\\" = 'event-store'  AND \\"table_name\\" = 'events-freeze')) = 'OK';WITH cte (\\"lastEventId\\",\\"lastTimestamp\\") AS (VALUES ((SELECT \\"eventId\\" + 1 AS \\"lastEventId\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0),(SELECT GREATEST(CAST(extract(epoch from now()) * 1000 AS BIGINT),\\"timestamp\\")AS \\"lastTimestamp\\"FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0)))UPDATE \\"event-store\\".\\"events-sequence\\" SET \\"eventId\\" = cte.\\"lastEventId\\",\\"transactionId\\" = CAST(txid_current() AS VARCHAR(190)),\\"timestamp\\" = cte.\\"lastTimestamp\\" FROM cte WHERE \\"key\\" = 0;INSERT INTO \\"event-store\\".\\"events\\"(\\"eventId\\",\\"timestamp\\",\\"aggregateId\\",\\"aggregateVersion\\",\\"type\\",\\"payload\\",\\"eventSize\\") VALUES ((SELECT \\"eventId\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0 AND \\"transactionId\\" = CAST(txid_current() AS VARCHAR(190))),(SELECT \\"timestamp\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0 AND \\"transactionId\\" = CAST(txid_current() AS VARCHAR(190))),'id1',1,'AAA','{\\"index\\":1}',93);COMMIT;",
   },
   "executeStatement",
   Object {
@@ -381,7 +314,7 @@ Array [
           SELECT * FROM \\"event-store\\".\\"events\\" 
           ORDER BY \\"eventId\\" ASC
           OFFSET 0
-          LIMIT 50
+          LIMIT 200
         ) \\"filteredEvents\\"
       )
       SELECT * FROM \\"cte\\"
@@ -394,12 +327,6 @@ Array [
 
 exports[`resolve-storage-mysql-serverless "saveEvent" should save an event with empty payload 1`] = `
 Array [
-  "beginTransaction",
-  Object {
-    "database": "postgres",
-    "resourceArn": "dbClusterOrInstanceArn",
-    "secretArn": "awsSecretStoreArn",
-  },
   "executeStatement",
   Object {
     "continueAfterTimeout": false,
@@ -407,68 +334,7 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
-    "sql": "
-        SELECT \\"eventId\\" + 1  AS \\"lastEventId\\",
-        GREATEST(
-          CAST(extract(epoch from now()) * 1000 AS BIGINT),
-          \\"timestamp\\"
-        ) AS \\"lastTimestamp\\"
-        FROM \\"event-store\\".\\"events-sequence\\"
-        WHERE \\"key\\" = 0;
-      ",
-    "transactionId": "transactionId",
-  },
-  "executeStatement",
-  Object {
-    "continueAfterTimeout": false,
-    "database": "postgres",
-    "includeResultMetadata": true,
-    "resourceArn": "dbClusterOrInstanceArn",
-    "secretArn": "awsSecretStoreArn",
-    "sql": "
-        UPDATE \\"event-store\\".\\"events-sequence\\"
-        SET \\"eventId\\" = NaN,
-        \\"transactionId\\" = 'transactionId',
-        \\"timestamp\\" = NaN
-        WHERE \\"key\\" = 0;
-      ",
-    "transactionId": "transactionId",
-  },
-  "executeStatement",
-  Object {
-    "continueAfterTimeout": false,
-    "database": "postgres",
-    "includeResultMetadata": true,
-    "resourceArn": "dbClusterOrInstanceArn",
-    "secretArn": "awsSecretStoreArn",
-    "sql": "
-        INSERT INTO \\"event-store\\".\\"events\\"(
-          \\"eventId\\",
-          \\"timestamp\\",
-          \\"aggregateId\\",
-          \\"aggregateVersion\\",
-          \\"type\\",
-          \\"payload\\",
-          \\"eventSize\\"
-        ) VALUES (
-          
-        NaN,
-        NaN,
-        'id1',
-        1,
-        'AAA',
-        'null'
-      ,
-          89
-        );
-      ",
-    "transactionId": "transactionId",
-  },
-  "commitTransaction",
-  Object {
-    "resourceArn": "dbClusterOrInstanceArn",
-    "secretArn": "awsSecretStoreArn",
-    "transactionId": "transactionId",
+    "sql": "START TRANSACTION;SELECT 'OK' WHERE (  (SELECT 'Event store is frozen' AS \\"EventStoreIsFrozen\\")UNION ALL (  SELECT 'Event store is frozen' AS \\"EventStoreIsFrozen\\"  FROM \\"information_schema\\".\\"tables\\"  WHERE \\"table_schema\\" = 'event-store'  AND \\"table_name\\" = 'events-freeze')) = 'OK';WITH cte (\\"lastEventId\\",\\"lastTimestamp\\") AS (VALUES ((SELECT \\"eventId\\" + 1 AS \\"lastEventId\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0),(SELECT GREATEST(CAST(extract(epoch from now()) * 1000 AS BIGINT),\\"timestamp\\")AS \\"lastTimestamp\\"FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0)))UPDATE \\"event-store\\".\\"events-sequence\\" SET \\"eventId\\" = cte.\\"lastEventId\\",\\"transactionId\\" = CAST(txid_current() AS VARCHAR(190)),\\"timestamp\\" = cte.\\"lastTimestamp\\" FROM cte WHERE \\"key\\" = 0;INSERT INTO \\"event-store\\".\\"events\\"(\\"eventId\\",\\"timestamp\\",\\"aggregateId\\",\\"aggregateVersion\\",\\"type\\",\\"payload\\",\\"eventSize\\") VALUES ((SELECT \\"eventId\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0 AND \\"transactionId\\" = CAST(txid_current() AS VARCHAR(190))),(SELECT \\"timestamp\\" FROM \\"event-store\\".\\"events-sequence\\" WHERE \\"key\\" = 0 AND \\"transactionId\\" = CAST(txid_current() AS VARCHAR(190))),'id1',1,'AAA','null',86);COMMIT;",
   },
   "executeStatement",
   Object {
@@ -485,7 +351,7 @@ Array [
           SELECT * FROM \\"event-store\\".\\"events\\" 
           ORDER BY \\"eventId\\" ASC
           OFFSET 0
-          LIMIT 50
+          LIMIT 200
         ) \\"filteredEvents\\"
       )
       SELECT * FROM \\"cte\\"

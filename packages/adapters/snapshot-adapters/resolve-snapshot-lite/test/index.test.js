@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import createSnapshotAdapter from '../src'
 
-const snapshotStoragePath = path.join(__dirname, 'snapshotStorage.txt')
+const snapshotStoragePath = path.join(__dirname, 'snapshotStorage.sqlite')
 
 afterAll(() => {
   fs.unlinkSync(snapshotStoragePath)
@@ -25,6 +25,8 @@ describe('resolve-snapshot-lite', () => {
     expect(await snapshotAdapter.loadSnapshot('key')).toEqual(
       `value = ${bucketSize}`
     )
+
+    await snapshotAdapter.dispose()
   })
 
   test(`"saveSnapshot" should save the snapshot every 5 times ( mode: "file" )`, async () => {
@@ -46,6 +48,8 @@ describe('resolve-snapshot-lite', () => {
     expect(await snapshotAdapter.loadSnapshot('key')).toEqual(
       `value = ${bucketSize}`
     )
+
+    await snapshotAdapter.dispose()
   })
 
   test(`"saveSnapshot" should throw error when the snapshotAdapter is disposed`, async () => {

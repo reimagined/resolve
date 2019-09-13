@@ -2,7 +2,10 @@ import { ConcurrentError } from 'resolve-storage-base'
 
 const DUPLICATE_KEY_ERROR = 11000
 
-const saveEvent = async ({ collection }, event) => {
+const saveEvent = async ({ collection, isFrozen }, event) => {
+  if (await isFrozen()) {
+    throw new Error('Event store is frozen')
+  }
   try {
     await collection.insertOne(event)
   } catch (error) {
@@ -10,9 +13,7 @@ const saveEvent = async ({ collection }, event) => {
       throw error
     }
 
-    throw new ConcurrentError(
-      `Can not save the event because aggregate '${event.aggregateId}' is not actual at the moment. Please retry later.`
-    )
+    throw new ConcurrentError(event.aggregateId)
   }
 }
 

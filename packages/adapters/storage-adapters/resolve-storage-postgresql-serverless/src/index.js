@@ -4,20 +4,26 @@ import _createAdapter from 'resolve-storage-base'
 import connect from './connect'
 import init from './init'
 import loadEvents from './load-events'
+import freeze from './freeze'
+import unfreeze from './unfreeze'
 import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
 import drop from './drop'
 import dispose from './dispose'
+import fullJitter from './full-jitter'
+import executeStatement from './execute-statement'
+import saveEventOnly from './save-event-only'
+import saveSequenceOnly from './save-sequence-only'
+import paginateEvents from './paginate-events'
+import coercer from './coercer'
+import escapeId from './escape-id'
+import escape from './escape'
 
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
 import _destroyResource from './resource/destroy'
 
-const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
-const escape = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
-
-const createAdapter = _createAdapter.bind(
-  null,
+const createAdapter = _createAdapter.bind(null, {
   connect,
   init,
   loadEvents,
@@ -25,17 +31,31 @@ const createAdapter = _createAdapter.bind(
   saveEvent,
   drop,
   dispose,
-  {
-    RDSDataService,
-    escapeId,
-    escape
-  }
-)
+  freeze,
+  unfreeze,
+  RDSDataService,
+  escapeId,
+  escape,
+  fullJitter,
+  executeStatement,
+  saveEventOnly,
+  saveSequenceOnly,
+  paginateEvents,
+  coercer
+})
 
 export default createAdapter
 
 const pool = {
-  createAdapter
+  executeStatement,
+  connect,
+  init,
+  RDSDataService,
+  escapeId,
+  escape,
+  fullJitter,
+  coercer,
+  dispose
 }
 
 const createResource = _createResource.bind(null, pool)

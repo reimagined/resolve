@@ -9,6 +9,11 @@ test('resolve-storage-lite index', () => {
   const saveEvent = require('../src/save-event')
   const drop = require('../src/drop')
   const dispose = require('../src/dispose')
+  const paginateEvents = require('../src/paginate-events')
+  const saveEventOnly = require('../src/save-event-only')
+  const freeze = require('../src/freeze')
+  const unfreeze = require('../src/unfreeze')
+  const isFrozen = require('../src/is-frozen')
 
   sinon.stub(init, 'default').callsFake(() => () => {})
   sinon.stub(connect, 'default').callsFake(() => () => {})
@@ -17,9 +22,14 @@ test('resolve-storage-lite index', () => {
   sinon.stub(saveEvent, 'default').callsFake(() => () => {})
   sinon.stub(drop, 'default').callsFake(() => () => {})
   sinon.stub(dispose, 'default').callsFake(() => () => {})
+  sinon.stub(paginateEvents, 'default').callsFake(() => () => {})
+  sinon.stub(saveEventOnly, 'default').callsFake(() => () => {})
+  sinon.stub(freeze, 'default').callsFake(() => () => {})
+  sinon.stub(unfreeze, 'default').callsFake(() => () => {})
+  sinon.stub(isFrozen, 'default').callsFake(() => () => {})
 
-  sinon.stub(createAdapter, 'default').callsFake((...args) => {
-    for (const func of args) {
+  sinon.stub(createAdapter, 'default').callsFake(args => {
+    for (const func of Object.values(args)) {
       if (typeof func === 'function') {
         func()
       }
@@ -35,6 +45,11 @@ test('resolve-storage-lite index', () => {
   expect(saveEvent.default.callCount).toEqual(0)
   expect(drop.default.callCount).toEqual(0)
   expect(dispose.default.callCount).toEqual(0)
+  expect(paginateEvents.default.callCount).toEqual(0)
+  expect(saveEventOnly.default.callCount).toEqual(0)
+  expect(freeze.default.callCount).toEqual(0)
+  expect(unfreeze.default.callCount).toEqual(0)
+  expect(isFrozen.default.callCount).toEqual(0)
 
   index.default()
 
@@ -45,13 +60,9 @@ test('resolve-storage-lite index', () => {
   expect(saveEvent.default.callCount).toEqual(1)
   expect(drop.default.callCount).toEqual(1)
   expect(dispose.default.callCount).toEqual(1)
-
-  const adapterCallArgs = createAdapter.default.firstCall.args
-  expect(adapterCallArgs[0]).toEqual(connect.default)
-  expect(adapterCallArgs[1]).toEqual(init.default)
-  expect(adapterCallArgs[2]).toEqual(loadEvents.default)
-  expect(adapterCallArgs[3]).toEqual(getLatestEvent.default)
-  expect(adapterCallArgs[4]).toEqual(saveEvent.default)
-  expect(adapterCallArgs[5]).toEqual(drop.default)
-  expect(adapterCallArgs[6]).toEqual(dispose.default)
+  expect(paginateEvents.default.callCount).toEqual(1)
+  expect(saveEventOnly.default.callCount).toEqual(1)
+  expect(freeze.default.callCount).toEqual(1)
+  expect(unfreeze.default.callCount).toEqual(1)
+  expect(isFrozen.default.callCount).toEqual(1)
 })

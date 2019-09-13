@@ -189,6 +189,10 @@ describe('API handler wrapper for express.js', () => {
     res.end()
   }
 
+  const apiEmptyEndChainingHandler = async (req, res) => {
+    res.status(200).end()
+  }
+
   it('should work with primitive JSON handler with GET client request', async () => {
     const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
     resolveHttpBody(null)
@@ -306,6 +310,25 @@ describe('API handler wrapper for express.js', () => {
 
   it('should work with empty end', async () => {
     const wrappedHandler = wrapApiHandler(apiEmptyEndHandler, getCustomParams)
+    resolveHttpBody(null)
+    await wrappedHandler(expressReq, expressRes)
+
+    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+  })
+
+  it('should work with empty end using chaining', async () => {
+    const wrappedHandler = wrapApiHandler(
+      apiEmptyEndChainingHandler,
+      getCustomParams
+    )
     resolveHttpBody(null)
     await wrappedHandler(expressReq, expressRes)
 

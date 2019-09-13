@@ -6,6 +6,9 @@ const defineTable = async (
 ) => {
   const { getCollection, rootId, rootIndex } = pool
   const collection = await getCollection(readModelName, tableName, true)
+  if (pool.collections.has(readModelName)) {
+    pool.collections.get(readModelName).add(tableName)
+  }
   const root = {
     _id: rootId,
     readModelName,

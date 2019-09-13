@@ -6,7 +6,9 @@ import {
   runTestcafe,
   merge,
   stop,
-  reset
+  reset,
+  importEventStore,
+  exportEventStore
 } from 'resolve-scripts'
 import resolveModuleComments from 'resolve-module-comments'
 import resolveModuleAuth from 'resolve-module-auth'
@@ -95,6 +97,24 @@ void (async () => {
           dropReadModels: true,
           dropSagas: true
         })
+        break
+      }
+
+      case 'import-event-store': {
+        const resolveConfig = merge(baseConfig, devConfig)
+
+        const importFile = process.argv[3]
+
+        await importEventStore(resolveConfig, { importFile })
+        break
+      }
+
+      case 'export-event-store': {
+        const resolveConfig = merge(baseConfig, devConfig)
+
+        const exportFile = process.argv[3]
+
+        await exportEventStore(resolveConfig, { exportFile })
         break
       }
 

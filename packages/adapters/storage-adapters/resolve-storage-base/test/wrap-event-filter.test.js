@@ -1,11 +1,12 @@
 import sinon from 'sinon'
 
 import wrapEventFilter from '../src/wrap-event-filter'
+import validateEventFilter from '../src/validate-event-filter'
 
 test('wrap load events should bypass on correct filter arguments', async () => {
   const rawLoadEvents = sinon.stub().callsFake(async () => null)
   const callback = sinon.stub()
-  const pool = {}
+  const pool = { validateEventFilter: jest.fn() }
   const filter = {
     eventTypes: ['EVENT_TYPE'],
     aggregateIds: ['AGGREGATE_ID'],
@@ -25,7 +26,7 @@ test('wrap load events should bypass on correct filter arguments', async () => {
 test('wrap load events should fail on wrong filter argument', async () => {
   const rawLoadEvents = sinon.stub().callsFake(async () => null)
   const callback = sinon.stub()
-  const pool = {}
+  const pool = { validateEventFilter }
   const filter = null
 
   try {
