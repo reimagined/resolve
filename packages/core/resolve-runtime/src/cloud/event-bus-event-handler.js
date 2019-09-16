@@ -1,4 +1,3 @@
-import { decodeEvent } from 'resolve-storage-dynamo'
 import debugLevels from 'resolve-debug-levels'
 
 const log = debugLevels('resolve:resolve-runtime:event-bus-event-handler')
@@ -19,7 +18,7 @@ const handleApplyEvents = async (lambdaEvent, resolve) => {
   try {
     result = await resolve.executeQuery.updateByEvents(
       listenerId,
-      events.map(decodeEvent),
+      events,
       resolve.getRemainingTimeInMillis
     )
     subSegment.addAnnotation('eventCount', events.length)

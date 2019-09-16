@@ -48,7 +48,6 @@
     "resolve-scheduler-local": "0.20.25",
     "resolve-storage-base": "0.20.25",
     "resolve-storage-lite": "0.20.25",
-    "resolve-storage-dynamo": "0.20.25",
     "resolve-subscribe-socket.io": "0.20.25",
     "resolve-snapshot-lite": "0.20.25",
     "socket.io": "^2.1.1",
