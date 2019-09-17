@@ -1,5 +1,5 @@
 {
-  "name": "resolve-snapshot-postgres-serverless",
+  "name": "resolve-snapshot-postgresql-serverless",
   "version": "0.20.25",
   "description": "This package serves as an adapter for snapshots using postgres serverless.",
   "engines": {
