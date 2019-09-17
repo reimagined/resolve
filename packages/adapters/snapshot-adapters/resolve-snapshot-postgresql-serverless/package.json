@@ -1,0 +1,45 @@
+{
+  "name": "resolve-snapshot-postgresql-serverless",
+  "version": "0.20.25",
+  "description": "This package serves as an adapter for snapshots using postgres serverless.",
+  "engines": {
+    "node": ">=8.10"
+  },
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "scripts": {
+    "test": "jest --config=../../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../../jest.config.js --watchAll"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "author": "reimagined team",
+  "license": "MIT",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/snapshot-adapters/resolve-snapshot-postgres-serverless#readme",
+  "dependencies": {
+    "@babel/runtime": "^7.0.0",
+    "aws-sdk": "2.507.0"
+  },
+  "babelCompile": [
+    {
+      "moduleType": "es",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "moduleType": "cjs",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ]
+}
