@@ -23,6 +23,12 @@ function getResolvePackages() {
     ) {
       continue
     }
+    if (
+      filePath.includes(`optional\\${'dependencies'}`) ||
+      filePath.includes(`optional/${'dependencies'}`)
+    ) {
+      continue
+    }
 
     const { name } = require(filePath)
 

@@ -1,11 +1,14 @@
 const npm = require('npm')
+const { renameSync } = require('fs')
+const path = require('path')
 
 const npmInstall = name =>
   new Promise((resolve, reject) => {
     npm.load(
       {
         loaded: false,
-        save: false
+        save: false,
+        prefix: 'optional'
       },
       loadErr => {
         if (loadErr) return reject(loadErr)
@@ -13,6 +16,11 @@ const npmInstall = name =>
           installErr ? reject(installErr) : resolve(data)
         })
       }
+    )
+  }).then(() => {
+    renameSync(
+      path.join(__dirname, '..', 'optional', 'node_modules'),
+      path.join(__dirname, '..', 'optional', 'dependencies')
     )
   })
 
