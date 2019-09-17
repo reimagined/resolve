@@ -2,11 +2,11 @@ let resolveZmq
 
 try {
   // eslint-disable-next-line import/no-extraneous-dependencies
-  resolveZmq = require('zeromq')
+  resolveZmq = require('../optional/dependencies/zeromq')
 } catch (error) {
   try {
     // eslint-disable-next-line import/no-extraneous-dependencies
-    resolveZmq = require('zeromq-ng/compat')
+    resolveZmq = require('../optional/dependencies/zeromq-ng/compat')
   } catch (error) {
     resolveZmq = {
       socket() {
