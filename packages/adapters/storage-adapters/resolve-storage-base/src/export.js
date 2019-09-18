@@ -46,10 +46,14 @@ EventStream.prototype.processEvents = function() {
       this.cursor = event.eventOffset
 
       if (isPaused) {
-        this.readerId = null
+        this.isStreamPaused = true
         return
       }
     }
+  }
+
+  if (this.isLastBatch) {
+    this.push(null)
   }
 }
 
@@ -69,6 +73,10 @@ EventStream.prototype.eventReader = async function(currentReaderId) {
 
       nextRows = await this.pool.paginateEvents(this.offset, BATCH_SIZE)
 
+      if (nextRows.length === 0) {
+        this.isLastBatch = true
+      }
+
       if (this.readerId !== currentReaderId) {
         throw new Error('Reader thread changed before done')
       }
@@ -81,12 +89,7 @@ EventStream.prototype.eventReader = async function(currentReaderId) {
       this.offset += nextRows.length
 
       this.processEvents()
-
-      if (nextRows.length === 0) {
-        if (!this.destroyed) {
-          this.push(null)
-        }
-
+      if (this.isStreamPaused || nextRows.length === 0) {
         this.readerId = null
         return
       }
