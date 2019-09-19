@@ -1,13 +1,15 @@
 {
   "name": "@shopping-list-tutorial/lesson-2",
-  "version": "0.20.25",
+  "version": "0.20.27",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
     "dev": "babel-node ./run.js dev",
     "start": "babel-node ./run.js start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
-    "test:functional": "babel-node ./run.js test:functional"
+    "test:functional": "babel-node ./run.js test:functional",
+    "import-event-store": "babel-node ./run.js import-event-store",
+    "export-event-store": "babel-node ./run.js export-event-store"
   },
   "dependencies": {
     "@babel/node": "7.0.0",
@@ -17,8 +19,8 @@
     "react-bootstrap": "0.32.1",
     "react-helmet": "5.2.0",
     "redux": "4.0.1",
-    "resolve-redux": "0.20.25",
-    "resolve-scripts": "0.20.25"
+    "resolve-redux": "0.20.27",
+    "resolve-scripts": "0.20.27"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",

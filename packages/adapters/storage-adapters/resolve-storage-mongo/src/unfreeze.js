@@ -1,5 +1,11 @@
 const unfreeze = async ({ database, collectionName }) => {
-  await database.dropCollection(`${collectionName}-freeze`)
+  try {
+    await database.dropCollection(`${collectionName}-freeze`)
+  } catch (error) {
+    if (+error.code !== 26) {
+      throw error
+    }
+  }
 }
 
 export default unfreeze

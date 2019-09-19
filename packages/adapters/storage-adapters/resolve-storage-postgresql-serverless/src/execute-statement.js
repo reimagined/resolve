@@ -3,8 +3,8 @@ const executeStatement = async (pool, sql) => {
 
   const result = await pool.rdsDataService
     .executeStatement({
-      resourceArn: pool.config.dbClusterOrInstanceArn,
-      secretArn: pool.config.awsSecretStoreArn,
+      resourceArn: pool.dbClusterOrInstanceArn,
+      secretArn: pool.awsSecretStoreArn,
       database: 'postgres',
       continueAfterTimeout: false,
       includeResultMetadata: true,

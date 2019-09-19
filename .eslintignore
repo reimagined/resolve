@@ -5,3 +5,4 @@ es
 coverage
 examples/shopping-list-advanced/native/resolve
 website
+packages/core/resolve-zeromq/optional

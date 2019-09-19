@@ -10,10 +10,11 @@ import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
 import drop from './drop'
 import dispose from './dispose'
-import exportStream from './export'
-import importStream from './import'
 import fullJitter from './full-jitter'
 import executeStatement from './execute-statement'
+import saveEventOnly from './save-event-only'
+import saveSequenceOnly from './save-sequence-only'
+import paginateEvents from './paginate-events'
 import coercer from './coercer'
 import escapeId from './escape-id'
 import escape from './escape'
@@ -32,13 +33,14 @@ const createAdapter = _createAdapter.bind(null, {
   dispose,
   freeze,
   unfreeze,
-  import: importStream,
-  export: exportStream,
   RDSDataService,
   escapeId,
   escape,
   fullJitter,
   executeStatement,
+  saveEventOnly,
+  saveSequenceOnly,
+  paginateEvents,
   coercer
 })
 

@@ -5,7 +5,9 @@ const createAdapter = (
     wrapEventFilter,
     wrapSaveEvent,
     wrapDispose,
-    validateEventFilter
+    validateEventFilter,
+    importStream,
+    exportStream
   },
   {
     connect,
@@ -15,8 +17,9 @@ const createAdapter = (
     saveEvent,
     drop,
     dispose,
-    import: importStream,
-    export: exportStream,
+    saveEventOnly,
+    saveSequenceOnly,
+    paginateEvents,
     isFrozen,
     freeze,
     unfreeze,
@@ -27,24 +30,20 @@ const createAdapter = (
   const config = { ...options }
   const pool = { config, disposed: false, validateEventFilter }
 
-  const wrappedFreeze = wrapMethod(pool, freeze)
-  const wrappedUnfreeze = wrapMethod(pool, unfreeze)
-  const wrappedIsFrozen =
-    typeof isFrozen === 'function' ? wrapMethod(pool, isFrozen) : null
-
   Object.assign(pool, {
-    isFrozen: wrappedIsFrozen,
-    freeze: wrappedFreeze,
-    unfreeze: wrappedUnfreeze,
-    wrapMethod
+    saveEventOnly: wrapMethod(pool, saveEventOnly),
+    saveSequenceOnly: wrapMethod(pool, saveSequenceOnly),
+    paginateEvents: wrapMethod(pool, paginateEvents),
+    // eslint-disable-next-line no-new-func
+    waitConnectAndInit: wrapMethod(pool, Function()),
+    initOnly: wrapMethod(pool, init),
+    wrapMethod,
+    isFrozen: wrapMethod(pool, isFrozen)
   })
-
-  // eslint-disable-next-line no-new-func
-  pool.waitConnectAndInit = wrapMethod(pool, Function())
 
   prepare(pool, connect, init, adapterSpecificArguments)
 
-  return Object.freeze({
+  const adapter = {
     init: wrapMethod(
       Object.create(pool, {
         config: {
@@ -64,10 +63,14 @@ const createAdapter = (
     saveEvent: wrapMethod(pool, wrapSaveEvent(saveEvent)),
     drop: wrapMethod(pool, drop),
     dispose: wrapDispose(pool, dispose),
-    isFrozen: wrappedIsFrozen,
-    freeze: wrappedFreeze,
-    unfreeze: wrappedUnfreeze
-  })
+    isFrozen: wrapMethod(pool, isFrozen),
+    freeze: wrapMethod(pool, freeze),
+    unfreeze: wrapMethod(pool, unfreeze)
+  }
+
+  Object.assign(pool, adapter)
+
+  return Object.freeze(adapter)
 }
 
 export default createAdapter

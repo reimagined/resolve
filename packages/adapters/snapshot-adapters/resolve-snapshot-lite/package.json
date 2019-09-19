@@ -1,6 +1,6 @@
 {
   "name": "resolve-snapshot-lite",
-  "version": "0.20.25",
+  "version": "0.20.27",
   "description": "An adapter used to save snapshots to a file or in memory.",
   "engines": {
     "node": ">=8.10"
@@ -26,7 +26,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/snapshot-adapters/resolve-snapshot-lite#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "nedb": "^1.8.0"
+    "sqlite": "^3.0.3"
   },
   "babelCompile": [
     {
