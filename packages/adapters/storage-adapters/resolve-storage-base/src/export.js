@@ -188,13 +188,7 @@ const exportStream = (
 
   resultStream.isBufferOverflow = false
 
-  eventStream.on('complete', resultStream.emit.bind(resultStream, 'complete'))
-  eventStream.on('abort', resultStream.emit.bind(resultStream, 'abort'))
-  eventStream.on('request', resultStream.emit.bind(resultStream, 'request'))
-  eventStream.on('end', resultStream.emit.bind(resultStream, 'end'))
-  eventStream.on('close', resultStream.emit.bind(resultStream, 'close'))
-  eventStream.on('finish', resultStream.emit.bind(resultStream, 'finish'))
-  eventStream.on('error', resultStream.emit.bind(resultStream, 'error'))
+  eventStream.on('error', error => resultStream.emit('error', error))
 
   eventStream.pipe(resultStream)
 
