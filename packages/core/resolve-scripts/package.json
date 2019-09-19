@@ -1,7 +1,7 @@
 {
   "name": "resolve-scripts",
   "version": "0.20.27",
-  "description": "This package create server with resolve.",
+  "description": "Contains scripts used to initialize a reSolve server.",
   "engines": {
     "node": ">=8.10"
   },

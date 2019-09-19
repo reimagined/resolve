@@ -1,7 +1,7 @@
 {
   "name": "resolve-storage-postgresql-serverless",
   "version": "0.20.27",
-  "description": "This package serves as an adapter for resolve-storage to store events using postgresql serverless.",
+  "description": "An adapter reSolve uses to store events in PostgreSQL Serverless.",
   "engines": {
     "node": ">=8.10"
   },

@@ -1,7 +1,7 @@
 {
   "name": "resolve-runtime",
   "version": "0.20.27",
-  "description": "This package create server with resolve.",
+  "description": "The reSolve framework's backend server.",
   "engines": {
     "node": ">=8.10"
   },

@@ -1,7 +1,7 @@
 {
   "name": "resolve-storage-mongo",
   "version": "0.20.27",
-  "description": "This package serves as an adapter for resolve-storage to store events using MongoDB.",
+  "description": "An adapter reSolve uses to store events in MongoDB.",
   "engines": {
     "node": ">=8.10"
   },
