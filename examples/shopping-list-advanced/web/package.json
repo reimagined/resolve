@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-advanced/web",
-  "version": "0.20.26",
+  "version": "0.20.27",
   "private": true,
   "scripts": {
     "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose",
@@ -23,12 +23,12 @@
     "react-router": "4.3.1",
     "react-router-dom": "4.3.1",
     "react-router-redux": "5.0.0-alpha.9",
-    "@shopping-list-advanced/ui": "0.20.26",
-    "resolve-module-auth": "0.20.26",
-    "resolve-readmodel-lite": "0.20.26",
-    "resolve-storage-postgresql-serverless": "0.20.26",
-    "resolve-scripts": "0.20.26",
-    "resolve-redux": "0.20.26"
+    "@shopping-list-advanced/ui": "0.20.27",
+    "resolve-module-auth": "0.20.27",
+    "resolve-readmodel-lite": "0.20.27",
+    "resolve-storage-postgresql-serverless": "0.20.27",
+    "resolve-scripts": "0.20.27",
+    "resolve-redux": "0.20.27"
   },
   "devDependencies": {
     "babel-jest": "24.1.0",
