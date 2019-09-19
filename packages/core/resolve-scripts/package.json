@@ -1,7 +1,7 @@
 {
   "name": "resolve-scripts",
   "version": "0.20.25",
-  "description": "Contains scripts usend to initialize a reSolve server.",
+  "description": "Contains scripts used to initialize a reSolve server.",
   "engines": {
     "node": ">=8.10"
   },
