@@ -24,6 +24,12 @@ const getCompileConfigs = () => {
     ) {
       continue
     }
+    if (
+      filePath.includes(`optional\\${'dependencies'}`) ||
+      filePath.includes(`optional/${'dependencies'}`)
+    ) {
+      continue
+    }
 
     const { version, name, babelCompile } = require(filePath)
 
