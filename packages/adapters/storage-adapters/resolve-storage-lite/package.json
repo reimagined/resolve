@@ -1,7 +1,7 @@
 {
   "name": "resolve-storage-lite",
   "version": "0.20.25",
-  "description": "An adapter that reSolve uses to store events in a file or in memory.",
+  "description": "An adapter reSolve uses to store events in a file or memory.",
   "engines": {
     "node": ">=8.10"
   },
