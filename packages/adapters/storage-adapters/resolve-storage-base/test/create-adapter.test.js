@@ -84,6 +84,4 @@ test('createAdapter should return the correct interface', async () => {
   expect(importStream.callCount).toEqual(1)
   expect(exportStream.callCount).toEqual(1)
   expect(wrapSaveEvent.callCount).toEqual(1)
-
-  expect(wrapMethod.callCount).toEqual(12)
 })

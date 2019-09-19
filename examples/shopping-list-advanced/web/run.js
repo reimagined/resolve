@@ -9,7 +9,9 @@ const {
   stop,
   reset,
   adjustWebpackReactNative,
-  adjustWebpackCommonPackages
+  adjustWebpackCommonPackages,
+  importEventStore,
+  exportEventStore
 } = require('resolve-scripts')
 const createAuthModule = require('resolve-module-auth').default
 const getLocalIp = require('my-local-ip')
@@ -217,6 +219,48 @@ void (async () => {
 
         await start(resolveConfig)
 
+        break
+      }
+
+      case 'import-event-store': {
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          testFunctionalConfig,
+          authModule
+        )
+
+        const importFile = process.argv[3]
+
+        await importEventStore(
+          resolveConfig,
+          { importFile },
+          adjustWebpackConfigs({
+            resolveConfig,
+            commonPackages
+          })
+        )
+        break
+      }
+
+      case 'export-event-store': {
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          testFunctionalConfig,
+          authModule
+        )
+
+        const exportFile = process.argv[3]
+
+        await exportEventStore(
+          resolveConfig,
+          { exportFile },
+          adjustWebpackConfigs({
+            resolveConfig,
+            commonPackages
+          })
+        )
         break
       }
 

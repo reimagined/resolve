@@ -10,16 +10,28 @@ const connect = async (
     coercer
   }
 ) => {
-  const rdsDataService = new RDSDataService({ region: pool.config.region })
+  const {
+    dbClusterOrInstanceArn,
+    awsSecretStoreArn,
+    tableName,
+    databaseName,
+    // eslint-disable-next-line no-unused-vars
+    skipInit,
+    ...config
+  } = pool.config
+
+  const rdsDataService = new RDSDataService(config)
 
   Object.assign(pool, {
-    tableName: pool.config.tableName,
     rdsDataService,
+    dbClusterOrInstanceArn,
+    awsSecretStoreArn,
+    tableName,
+    databaseName,
     fullJitter,
     randRange,
     coercer,
     executeStatement: executeStatement.bind(null, pool),
-    databaseName: pool.config.databaseName,
     escapeId,
     escape
   })

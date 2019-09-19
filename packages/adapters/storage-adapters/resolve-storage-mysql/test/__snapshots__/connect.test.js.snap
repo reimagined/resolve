@@ -5,6 +5,7 @@ Array [
   Object {
     "database": "database",
     "host": "host",
+    "multipleStatements": true,
     "password": "password",
     "port": "port",
     "user": "user",

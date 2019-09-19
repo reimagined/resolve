@@ -1,6 +1,6 @@
 {
   "name": "hello-world",
-  "version": "0.20.25",
+  "version": "0.20.27",
   "description": "used as a template for new reSolve applications",
   "private": true,
   "scripts": {
@@ -9,7 +9,9 @@
     "dev": "babel-node ./run.js dev",
     "start": "babel-node ./run.js start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
-    "test:functional": "babel-node ./run.js test:functional"
+    "test:functional": "babel-node ./run.js test:functional",
+    "import-event-store": "babel-node ./run.js import-event-store",
+    "export-event-store": "babel-node ./run.js export-event-store"
   },
   "dependencies": {
     "@babel/node": "7.0.0",
@@ -19,14 +21,14 @@
     "react-bootstrap": "0.32.1",
     "react-helmet": "5.2.0",
     "redux": "4.0.1",
-    "resolve-redux": "0.20.25",
-    "resolve-scripts": "0.20.25",
-    "resolve-storage-dynamo": "0.20.25",
-    "resolve-storage-lite": "0.20.25",
-    "resolve-readmodel-lite": "0.20.25",
-    "resolve-readmodel-mysql": "0.20.25",
-    "resolve-subscribe-mqtt": "0.20.25",
-    "resolve-subscribe-socket.io": "0.20.25",
+    "resolve-redux": "0.20.27",
+    "resolve-scripts": "0.20.27",
+    "resolve-storage-postgresql-serverless": "0.20.27",
+    "resolve-storage-lite": "0.20.27",
+    "resolve-readmodel-lite": "0.20.27",
+    "resolve-readmodel-mysql": "0.20.27",
+    "resolve-subscribe-mqtt": "0.20.27",
+    "resolve-subscribe-socket.io": "0.20.27",
     "redux-devtools-extension": "2.13.7"
   },
   "devDependencies": {

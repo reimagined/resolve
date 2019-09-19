@@ -7,7 +7,7 @@ import wrapEventFilter from './wrap-event-filter'
 import wrapSaveEvent from './wrap-save-event'
 import wrapDispose from './wrap-dispose'
 import validateEventFilter from './validate-event-filter'
-import { FREEZE_MODE_AUTO, FREEZE_MODE_MANUAL } from './constants'
+import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
 import ConcurrentError from './concurrent-error'
 
 const wrappedCreateAdapter = createAdapter.bind(null, {
@@ -23,4 +23,4 @@ const wrappedCreateAdapter = createAdapter.bind(null, {
 
 export default wrappedCreateAdapter
 
-export { ConcurrentError, FREEZE_MODE_AUTO, FREEZE_MODE_MANUAL }
+export { ConcurrentError, MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL }

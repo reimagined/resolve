@@ -1,13 +1,18 @@
 const connect = async (pool, { MySQL, escapeId, escape }) => {
-  const { tableName, ...connectionOptions } = pool.config
+  const { tableName, database, ...connectionOptions } = pool.config
 
-  const connection = await MySQL.createConnection(connectionOptions)
+  const connection = await MySQL.createConnection({
+    ...connectionOptions,
+    database,
+    multipleStatements: true
+  })
 
   Object.assign(pool, {
     connection,
     tableName,
     escapeId,
-    escape
+    escape,
+    database
   })
 }
 

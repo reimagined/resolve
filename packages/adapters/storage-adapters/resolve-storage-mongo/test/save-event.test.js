@@ -10,9 +10,11 @@ test('save event should store event in eventstore if success', async () => {
   }
 
   const insertOne = sinon.stub().callsFake(async () => null)
+  const isFrozen = sinon.stub().callsFake(async () => null)
 
   const pool = {
-    collection: { insertOne }
+    collection: { insertOne },
+    isFrozen
   }
 
   await saveEvent(pool, event)
@@ -33,9 +35,11 @@ test('save event should throw ConcurrentError on duplicate aggregateVersion', as
     error.code = 11000
     throw error
   })
+  const isFrozen = sinon.stub().callsFake(async () => null)
 
   const pool = {
-    collection: { insertOne }
+    collection: { insertOne },
+    isFrozen
   }
 
   try {
@@ -62,9 +66,11 @@ test('save event should re-throw custom db error', async () => {
   const insertOne = sinon.stub().callsFake(async () => {
     throw customDbError
   })
+  const isFrozen = sinon.stub().callsFake(async () => null)
 
   const pool = {
-    collection: { insertOne }
+    collection: { insertOne },
+    isFrozen
   }
 
   try {

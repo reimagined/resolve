@@ -3,7 +3,8 @@ const connect = async (pool, { MongoClient }) => {
 
   const client = await MongoClient.connect(url, {
     ...connectionOptions,
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
   })
   const database = await client.db()
   const collection = await database.collection(collectionName)

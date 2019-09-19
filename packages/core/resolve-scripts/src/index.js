@@ -12,6 +12,8 @@ import runTestcafe from './run_testcafe'
 import reset from './reset_mode'
 import merge from './merge'
 import { processStopAll as stop } from './process_manager'
+import importEventStore from './import_event_store_mode'
+import exportEventStore from './export_event_store_mode'
 
 export {
   validateConfig,
@@ -26,5 +28,7 @@ export {
   runTestcafe,
   merge,
   stop,
-  reset
+  reset,
+  importEventStore,
+  exportEventStore
 }
