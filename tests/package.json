@@ -14,6 +14,7 @@
     "resolve-testing-tools": "0.20.27",
     "resolve-query": "0.20.27",
     "resolve-es": "0.20.27",
+    "resolve-storage-base": "0.20.27",
     "resolve-storage-lite": "0.20.27",
     "resolve-readmodel-lite": "0.20.27",
     "resolve-readmodel-mysql": "0.20.27",
