@@ -14,6 +14,7 @@ function EventStream({ pool, maintenanceMode, cursor, bufferSize }) {
 
   this.eventsByteSize = 0
   this.pool = pool
+  this.initialCursor = cursor
   this.offset = cursor
   this.readerId = null
   this.bufferSize = bufferSize
@@ -72,9 +73,9 @@ EventStream.prototype.processEvents = function() {
       if (this.eventsByteSize + byteLength > this.bufferSize) {
         this.isBufferOverflow = true
         chunk = null
-        if (this.cursor == null) {
-          this.cursor = eventOffset
-        }
+        this.cursor = eventOffset
+      } else {
+        this.lastEventOffset = eventOffset
       }
       this.eventsByteSize += byteLength
 
@@ -152,10 +153,14 @@ EventStream.prototype._read = function() {
 }
 
 EventStream.prototype.end = function() {
-  const message = 'ERR_STREAM_PREMATURE_CLOSE'
-  const error = new Error(message)
-  error.code = message
-  this.emit('error', error)
+  this.readerId = Symbol()
+  this.rows.length = 0
+  if (this.lastEventOffset == null) {
+    this.cursor = this.initialCursor
+  } else {
+    this.cursor = this.lastEventOffset + 1
+  }
+  this.push(null)
 }
 
 const exportStream = (

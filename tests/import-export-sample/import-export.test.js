@@ -129,4 +129,66 @@ describe('import-export', () => {
 
     expect(outputCountEvents).toEqual(inputCountEvents)
   })
+
+  test('should works correctly when stopped by timeout ', async () => {
+    const inputStorageAdapter = createStorageAdapter({
+      databaseFile: ':memory:'
+    })
+
+    const inputCountEvents = 1000
+
+    for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
+      await inputStorageAdapter.saveEvent({
+        aggregateId: 'aggregateId',
+        aggregateVersion: eventIndex + 1,
+        type: 'EVENT',
+        payload: { eventIndex },
+        timestamp: eventIndex + 1
+      })
+    }
+
+    let cursor = 0
+
+    let isJsonStreamTimedOutOnce = false
+
+    const exportBuffers = []
+    while (cursor !== inputCountEvents) {
+      const exportStream = inputStorageAdapter.export({ cursor })
+      const tempStream = createStreamBuffer()
+      const pipelinePromise = pipeline(exportStream, tempStream).then(
+        () => false
+      )
+
+      const timeoutPromise = new Promise(resolve =>
+        setTimeout(() => {
+          resolve(true)
+        }, 1)
+      )
+
+      const isJsonStreamTimedOut = await Promise.race([
+        timeoutPromise,
+        pipelinePromise
+      ])
+      isJsonStreamTimedOutOnce =
+        isJsonStreamTimedOutOnce || isJsonStreamTimedOut
+
+      exportStream.end()
+
+      exportStream.destroy()
+
+      cursor = exportStream.cursor
+
+      exportBuffers.push(tempStream.getBuffer().toString('utf8'))
+    }
+
+    const outputEvents = exportBuffers
+      .join('')
+      .trim()
+      .split('\n')
+      .map(eventAsString => JSON.parse(eventAsString.trim()))
+    const outputCountEvents = outputEvents.length
+
+    expect(isJsonStreamTimedOutOnce).toEqual(true)
+    expect(inputCountEvents).toEqual(outputCountEvents)
+  })
 })
