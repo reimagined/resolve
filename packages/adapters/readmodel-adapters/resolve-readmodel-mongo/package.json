@@ -1,7 +1,7 @@
 {
   "name": "resolve-readmodel-mongo",
   "version": "0.20.27",
-  "description": "This package serves as a resolve-query adapter for storing a read model in mongo",
+  "description": "An adapter the resolve-query uses to store the read model state in MongoDB",
   "engines": {
     "node": ">=8.10"
   },

@@ -1,7 +1,7 @@
 {
   "name": "resolve-module-comments",
   "version": "0.20.27",
-  "description": "TODO",
+  "description": "A reSolve module that allows an application's users to post comments.",
   "engines": {
     "node": ">=8.10"
   },

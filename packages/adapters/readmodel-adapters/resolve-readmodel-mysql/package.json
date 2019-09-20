@@ -1,7 +1,7 @@
 {
   "name": "resolve-readmodel-mysql",
   "version": "0.20.27",
-  "description": "This package serves as a resolve-query adapter for storing a read model in mysql",
+  "description": "An adapter the resolve-query uses to store the read model state in MySQL",
   "engines": {
     "node": ">=8.10"
   },

@@ -9,6 +9,7 @@ import wrapDispose from './wrap-dispose'
 import validateEventFilter from './validate-event-filter'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
 import ConcurrentError from './concurrent-error'
+import pipeline from './pipeline'
 
 const wrappedCreateAdapter = createAdapter.bind(null, {
   prepare,
@@ -23,4 +24,9 @@ const wrappedCreateAdapter = createAdapter.bind(null, {
 
 export default wrappedCreateAdapter
 
-export { ConcurrentError, MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL }
+export {
+  ConcurrentError,
+  MAINTENANCE_MODE_AUTO,
+  MAINTENANCE_MODE_MANUAL,
+  pipeline
+}
