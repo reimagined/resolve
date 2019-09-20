@@ -1,6 +1,6 @@
 {
   "name": "resolve-snapshot-mongo",
-  "version": "0.20.27",
+  "version": "0.20.28",
   "description": "This package serves as an adapter for snapshots using MongoDB.",
   "engines": {
     "node": ">=8.10"

@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-base",
-  "version": "0.20.27",
+  "version": "0.20.28",
   "description": "A base for reSolve storage adapters",
   "engines": {
     "node": ">=8.10"

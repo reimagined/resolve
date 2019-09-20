@@ -1,6 +1,6 @@
 {
   "name": "resolve-local-event-broker",
-  "version": "0.20.27",
+  "version": "0.20.28",
   "description": "The reSolve framework's event broker for applications on a local machine.",
   "engines": {
     "node": ">=8.10"
@@ -28,7 +28,7 @@
     "@babel/runtime": "^7.0.0",
     "cuid": "^2.1.6",
     "sqlite": "^3.0.2",
-    "resolve-zeromq": "0.20.27"
+    "resolve-zeromq": "0.20.28"
   },
   "devDependencies": {
     "sinon": "7.2.2",
