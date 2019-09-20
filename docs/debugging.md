@@ -24,7 +24,7 @@ The reSolve framework uses the `resolve` prefix for all its debugging namespaces
 DEBUG=resolve:* DEBUG_LEVEL=error yarn dev
 ```
 
-The reSolve framework displays messages of the **log**, **even** and **warn** levels by default.
+The reSolve framework displays messages of the **log**, **error** and **warn** levels by default.
 
 ## Debug a ReSolve Application
 
@@ -34,7 +34,7 @@ You can use [resolve-debug-levels](https://www.npmjs.com/package/resolve-debug-l
 yarn add resolve-debug-levels
 ```
 
-To create a logger, pass your module's debugging namespace to the function exposed by `resolve-debug-levels`:
+To create a logger, pass your module's debugging namespace to the function exposed by the `resolve-debug-levels` module:
 
 ```js
 import debugLevels from 'resolve-debug-levels'
