@@ -3,12 +3,12 @@ id: debugging
 title: Debugging
 ---
 
-Resolve uses the [resolve-debug-levels](https://www.npmjs.com/package/resolve-debug-levels) package to log debug information. This package extends the [debug](https://www.npmjs.com/package/debug) library's functionality with logging levels. The package provides the following logging levels:
+Resolve uses the [resolve-debug-levels](https://www.npmjs.com/package/resolve-debug-levels) package to log debug information. This package extends the [debug](https://www.npmjs.com/package/debug) library's functionality with the following logging levels:
 
 | Level   | Description                                            |
 | ------- | ------------------------------------------------------ |
 | log     | Messages that should always be displayed               |
-| error   | Errors that can hinder normal program execution        |
+| error   | Errors that can prevent normal program execution        |
 | warn    | Potential problems in the application's implementation |
 | debug   | Information displayed for debugging purposes           |
 | info    | Messages that describe the current operation           |
@@ -24,17 +24,17 @@ The reSolve framework uses the `resolve` prefix for all its debugging namespaces
 DEBUG=resolve:* DEBUG_LEVEL=error yarn dev
 ```
 
-The reSolve framework displays messages of the **log**, **error** and **warn** levels by default.
+The reSolve framework displays **log**, **error**, and **warn** level messages.
 
 ## Debug a ReSolve Application
 
-You can use [resolve-debug-levels](https://www.npmjs.com/package/resolve-debug-levels) to debug your reSolve application. To do this, add the `resolve-debug-levels` package to your application's dependencies:
+You can add the `resolve-debug-levels` package to your application's dependencies to use [resolve-debug-levels](https://www.npmjs.com/package/resolve-debug-levels) to debug your reSolve application.
 
 ```
 yarn add resolve-debug-levels
 ```
 
-To create a logger, pass your module's debugging namespace to the function exposed by the `resolve-debug-levels` module:
+To create a logger, pass your module's debugging namespace to the function the `resolve-debug-levels` module exposes:
 
 ```js
 import debugLevels from 'resolve-debug-levels'
