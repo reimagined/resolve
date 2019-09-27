@@ -127,11 +127,7 @@ checks:
     - cd resolve-$CI_PIPELINE_ID/
     - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
     - yarn lint
-    - yarn test:coverage
-    - export COVERALLS_GIT_COMMIT=${SOURCE_BRANCH_SHA}
-    - export COVERALLS_GIT_BRANCH=${TARGET_BRANCH_NAME}
-    - export GITLAB_CI=
-    - cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js
+    - yarn test
     - yarn test:integrational
     - cd ..
     - node ci-cd/job-status/index.js --end
