@@ -9,12 +9,6 @@ const createModule = options => {
         method: 'GET'
       },
       {
-        path: 'event-broker/status',
-        controller:
-          'resolve-module-admin/lib/api-handlers/event-broker-status.js',
-        method: 'GET'
-      },
-      {
         path: 'event-broker/pause',
         controller:
           'resolve-module-admin/lib/api-handlers/event-broker-pause.js',
