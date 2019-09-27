@@ -1,7 +1,7 @@
 {
   "name": "resolve-module-admin",
   "version": "0.20.28",
-  "description": "A reSolve module that adds authentication to an application.",
+  "description": "A reSolve module that adds admin commands to an application.",
   "engines": {
     "node": ">=8.10"
   },
