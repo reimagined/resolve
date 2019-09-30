@@ -1,11 +1,13 @@
-const init = async ({ collection }) => {
-  await collection.createIndex('timestamp')
+const init = async pool => {
+  pool.collection = await pool.database.collection(pool.collectionName)
 
-  await collection.createIndex('aggregateId')
+  pool.collection.createIndex('timestamp')
 
-  await collection.createIndex({ timestamp: 1, aggregateVersion: 1 })
+  pool.collection.createIndex('aggregateId')
 
-  await collection.createIndex(
+  pool.collection.createIndex({ timestamp: 1, aggregateVersion: 1 })
+
+  pool.collection.createIndex(
     { aggregateId: 1, aggregateVersion: 1 },
     { unique: true }
   )

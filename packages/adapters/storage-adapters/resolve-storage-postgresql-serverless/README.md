@@ -21,8 +21,7 @@ const adapter = createAdapter({
   databaseName: 'databaseName',
   tableName: 'tableName',
   awsSecretStoreArn: 'awsSecretStoreArn',
-  dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
-  skipInit: true
+  dbClusterOrInstanceArn: 'dbClusterOrInstanceArn'
 })
 ```
 

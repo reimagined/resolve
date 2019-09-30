@@ -8,7 +8,7 @@ This base package is a `resolve-es` adapter for storing events.
 ```js
 import createAdapter from 'resolve-storage-xxx';
 
-const adapter = createAdapter({ skipInit: true /*, options */});
+const adapter = createAdapter({/* options */});
 
 await adapter.init()
 

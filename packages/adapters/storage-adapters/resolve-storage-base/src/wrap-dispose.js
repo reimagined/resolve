@@ -13,10 +13,6 @@ const wrapDispose = (pool, dispose) => async (options = {}) => {
   }
 
   await pool.connectPromise
-  if (pool.config.skipInit !== true) {
-    pool.initialPromiseResolve()
-    await pool.initialPromise
-  }
 
   await dispose(pool, options)
 }

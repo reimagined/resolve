@@ -1,7 +1,7 @@
 import { result as mockResult } from 'aws-sdk/clients/rdsdataservice'
 import createStorageAdapter from '../src/index'
 
-describe('resolve-storage-mysql-serverless', () => {
+describe('resolve-storage-postgres-serverless index', () => {
   let storageAdapter = null
 
   beforeEach(() => {
@@ -10,13 +10,11 @@ describe('resolve-storage-mysql-serverless', () => {
       dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
       databaseName: 'event-store',
       tableName: 'events',
-      region: 'us-east-1',
-      skipInit: true
+      region: 'us-east-1'
     })
   })
 
   afterEach(async () => {
-    //await storageAdapter.drop()
     await storageAdapter.dispose()
     mockResult.length = 0
   })

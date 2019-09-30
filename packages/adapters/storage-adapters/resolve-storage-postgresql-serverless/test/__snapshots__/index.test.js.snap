@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resolve-storage-mysql-serverless "getLatestEvent" should get the latest event 1`] = `
+exports[`resolve-storage-postgres-serverless index "getLatestEvent" should get the latest event 1`] = `
 Array [
   "executeStatement",
   Object {
@@ -53,7 +53,7 @@ Array [
 ]
 `;
 
-exports[`resolve-storage-mysql-serverless "loadEvents" should load events 1`] = `
+exports[`resolve-storage-postgres-serverless index "loadEvents" should load events 1`] = `
 Array [
   "executeStatement",
   Object {
@@ -288,7 +288,7 @@ Array [
 ]
 `;
 
-exports[`resolve-storage-mysql-serverless "saveEvent" should save an event 1`] = `
+exports[`resolve-storage-postgres-serverless index "saveEvent" should save an event 1`] = `
 Array [
   "executeStatement",
   Object {
@@ -325,7 +325,7 @@ Array [
 ]
 `;
 
-exports[`resolve-storage-mysql-serverless "saveEvent" should save an event with empty payload 1`] = `
+exports[`resolve-storage-postgres-serverless index "saveEvent" should save an event with empty payload 1`] = `
 Array [
   "executeStatement",
   Object {

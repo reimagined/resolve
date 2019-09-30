@@ -16,7 +16,6 @@ const connect = async (
     tableName,
     databaseName,
     // eslint-disable-next-line no-unused-vars
-    skipInit,
     ...config
   } = pool.config
 

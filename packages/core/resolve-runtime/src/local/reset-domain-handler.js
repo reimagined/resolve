@@ -12,6 +12,11 @@ const resetDomainHandler = options => async (req, res) => {
   } = req.resolve
 
   try {
+    try {
+      // TODO: invoke "init" only during first run
+      await storageAdapter.init()
+    } catch (e) {}
+
     const { dropEventStore, dropSnapshots, dropReadModels, dropSagas } = options
 
     if (dropEventStore) {

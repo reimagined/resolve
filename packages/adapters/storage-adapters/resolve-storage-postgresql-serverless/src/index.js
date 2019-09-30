@@ -2,12 +2,12 @@ import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 import _createAdapter from 'resolve-storage-base'
 
 import connect from './connect'
-import init from './init'
 import loadEvents from './load-events'
 import freeze from './freeze'
 import unfreeze from './unfreeze'
 import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
+import init from './init'
 import drop from './drop'
 import dispose from './dispose'
 import fullJitter from './full-jitter'
@@ -25,10 +25,10 @@ import _destroyResource from './resource/destroy'
 
 const createAdapter = _createAdapter.bind(null, {
   connect,
-  init,
   loadEvents,
   getLatestEvent,
   saveEvent,
+  init,
   drop,
   dispose,
   freeze,
@@ -49,7 +49,6 @@ export default createAdapter
 const pool = {
   executeStatement,
   connect,
-  init,
   RDSDataService,
   escapeId,
   escape,
