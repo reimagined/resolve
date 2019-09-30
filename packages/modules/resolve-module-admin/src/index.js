@@ -1,4 +1,3 @@
-
 const createModule = () => {
   const config = {
     apiHandlers: [
@@ -52,7 +51,6 @@ const createModule = () => {
       }
     ]
   }
-
 
   return config
 }

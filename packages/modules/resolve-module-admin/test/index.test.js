@@ -8,6 +8,7 @@ import { handler as propsListHandler } from '../src/commands/sagas/properties/li
 import { handler as propsRemoveHandler } from '../src/commands/sagas/properties/remove'
 import { handler as propsSetHandler } from '../src/commands/sagas/properties/set'
 
+/* eslint-disable no-console */
 describe('resolve-module-admin', () => {
   let originalConsole = null
 
@@ -134,3 +135,4 @@ describe('resolve-module-admin', () => {
     })
   })
 })
+/* eslint-enable no-console */
