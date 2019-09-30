@@ -24,7 +24,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/api-handler-adapters/resolve-module-auth#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "yargs": "^14.0.0",
