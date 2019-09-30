@@ -1,13 +1,10 @@
 import fetch from 'isomorphic-fetch'
 
-export const handler = async args => {
-  try {
-    const response = await fetch(
-      `${args.url}/event-broker/resume?listenerId=${args.saga}`
-    )
-    const result = await response.text()
-    console.log(result)
-  } catch (e) {}
+export const handler = async ({ url, saga }) => {
+  const response = await fetch(`${url}/event-broker/resume?listenerId=${saga}`)
+  const result = await response.text()
+  //eslint-disable-next-line no-console
+  console.log(result)
 }
 
 export const command = 'resume <saga>'

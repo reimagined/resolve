@@ -1,21 +1,18 @@
 import fetch from 'isomorphic-fetch'
 import columnify from 'columnify'
 
-export const handler = async args => {
-  try {
-    const response = await fetch(
-      `${args.url}/event-broker/list-properties?listenerId=${args.saga}`
-    )
-    const result = await response.json()
-    console.log(
-      columnify(result, {
-        minWidth: 20,
-        columns: ['name', 'value']
-      })
-    )
-  } catch (e) {
-    console.log(e)
-  }
+export const handler = async ({ url, saga }) => {
+  const response = await fetch(
+    `${url}/event-broker/list-properties?listenerId=${saga}`
+  )
+  const result = await response.json()
+  //eslint-disable-next-line no-console
+  console.log(
+    columnify(result, {
+      minWidth: 20,
+      columns: ['name', 'value']
+    })
+  )
 }
 
 export const command = 'list <saga>'

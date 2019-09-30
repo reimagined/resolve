@@ -1,5 +1,5 @@
 
-const createModule = options => {
+const createModule = () => {
   const config = {
     apiHandlers: [
       {

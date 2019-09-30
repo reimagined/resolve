@@ -1,18 +1,15 @@
 import fetch from 'isomorphic-fetch'
 
-export const handler = async args => {
-  try {
-    const response = await fetch(
-      `${args.url}/event-broker/delete-property?listenerId=${args.saga}&key=${args.name}`
-    )
-    const result = await response.text()
-    console.log(result)
-  } catch (e) {
-    console.log(e)
-  }
+export const handler = async ({ url, saga, key }) => {
+  const response = await fetch(
+    `${url}/event-broker/delete-property?listenerId=${saga}&key=${key}`
+  )
+  const result = await response.text()
+  //eslint-disable-next-line no-console
+  console.log(result)
 }
 
-export const command = 'remove <saga> <name>'
+export const command = 'remove <saga> <key>'
 export const aliases = ['rm']
 export const describe = 'remove a saga property'
 export const builder = yargs =>
@@ -21,7 +18,7 @@ export const builder = yargs =>
       describe: "an existing saga's name",
       type: 'string'
     })
-    .positional('name', {
+    .positional('key', {
       describe: 'property name',
       type: 'string'
     })

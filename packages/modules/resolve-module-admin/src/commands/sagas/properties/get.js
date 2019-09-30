@@ -1,15 +1,12 @@
 import fetch from 'isomorphic-fetch'
 
-export const handler = async args => {
-  try {
-    const response = await fetch(
-      `${args.url}/event-broker/get-property?listenerId=${args.saga}&key=${args.key}`
-    )
-    const result = await response.text()
-    console.log(result)
-  } catch (e) {
-    console.log(e)
-  }
+export const handler = async ({ url, saga, key }) => {
+  const response = await fetch(
+    `${url}/event-broker/get-property?listenerId=${saga}&key=${key}`
+  )
+  const result = await response.text()
+  //eslint-disable-next-line no-console
+  console.log(result)
 }
 
 export const command = 'get <saga> <key>'

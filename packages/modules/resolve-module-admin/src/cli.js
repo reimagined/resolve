@@ -15,10 +15,12 @@ yargs
   .showHelpOnFail(true)
   .fail((msg, err) => {
     if (msg) {
-      log.error(msg)
+      //eslint-disable-next-line no-console
+      console.error(msg)
     }
     if (err) {
-      log.error(err.message)
+      //eslint-disable-next-line no-console
+      console.error(err.message)
     }
     process.exit(1)
   })
