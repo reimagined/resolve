@@ -2,9 +2,15 @@ const createModule = () => {
   const config = {
     apiHandlers: [
       {
-        path: 'event-broker/status-all',
+        path: 'event-broker/sagas-list',
         controller:
-          'resolve-module-admin/lib/api-handlers/event-broker-status-all.js',
+          'resolve-module-admin/lib/api-handlers/event-broker-sagas-list.js',
+        method: 'GET'
+      },
+      {
+        path: 'event-broker/read-models-list',
+        controller:
+          'resolve-module-admin/lib/api-handlers/event-broker-read-models-list.js',
         method: 'GET'
       },
       {

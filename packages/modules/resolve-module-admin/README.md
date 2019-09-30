@@ -60,6 +60,12 @@ Use the `sagas properties` command to manage a saga's properties.
 yarn resolve-cloud sagas properties set <sagaName> <propertyName> <value>
 ```
 
+##### Get a property:
+
+```
+yarn resolve-cloud sagas properties get <sagaName> <propertyName>
+```
+
 ##### View all saga's properties:
 
 ```

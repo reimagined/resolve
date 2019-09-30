@@ -3,7 +3,7 @@ import columnify from 'columnify'
 import dateFormat from 'dateformat'
 
 export const handler = async ({ url }) => {
-  const response = await fetch(`${url}/event-broker/status-all`)
+  const response = await fetch(`${url}/event-broker/sagas-list`)
   const result = await response.json()
   const columns = []
   for (const { listenerId, status, lastEvent, lastError } of result) {

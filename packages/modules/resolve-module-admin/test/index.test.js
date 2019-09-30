@@ -3,6 +3,10 @@ import { handler as readModelPauseHandler } from '../src/commands/read-models/pa
 import { handler as readModelListHandler } from '../src/commands/read-models/list'
 import { handler as readModelResumeHandler } from '../src/commands/read-models/resume'
 import { handler as readModelResetHandler } from '../src/commands/read-models/reset'
+import { handler as sagaPauseHandler } from '../src/commands/sagas/pause'
+import { handler as sagaListHandler } from '../src/commands/sagas/list'
+import { handler as sagaResumeHandler } from '../src/commands/sagas/resume'
+import { handler as sagaResetHandler } from '../src/commands/sagas/reset'
 import { handler as propsGetHandler } from '../src/commands/sagas/properties/get'
 import { handler as propsListHandler } from '../src/commands/sagas/properties/list'
 import { handler as propsRemoveHandler } from '../src/commands/sagas/properties/remove'
@@ -24,7 +28,8 @@ describe('resolve-module-admin', () => {
     originalConsole = null
     jest.clearAllMocks()
   })
-  describe('read-model', () => {
+
+  describe('read-models', () => {
     test('pause', async () => {
       fetch().text.mockReturnValue('ListenerId = "readModel" paused')
       await readModelPauseHandler({
@@ -58,7 +63,7 @@ describe('resolve-module-admin', () => {
     test('list', async () => {
       fetch().json.mockReturnValue([
         {
-          listenerId: 'listenerId',
+          listenerId: 'read-model',
           status: 'status',
           lastEvent: {
             timestamp: 1111111111111,
@@ -80,40 +85,32 @@ describe('resolve-module-admin', () => {
     })
   })
 
-  describe('properties', () => {
-    test('get', async () => {
-      fetch().text.mockReturnValue(
-        'ListenerId = "saga", Key = "key", Value = "value"'
-      )
-      await propsGetHandler({
+  describe('sagas', () => {
+    test('pause', async () => {
+      fetch().text.mockReturnValue('ListenerId = "saga" paused')
+      await sagaPauseHandler({
         url: 'url',
-        saga: 'saga',
-        key: 'key'
+        saga: 'saga'
       })
 
       expect(console.log.mock.calls).toMatchSnapshot()
     })
 
-    test('set', async () => {
-      fetch().text.mockReturnValue(
-        'ListenerId = "saga", Key = "key", Value = "value"'
-      )
-      await propsSetHandler({
+    test('reset', async () => {
+      fetch().text.mockReturnValue('ListenerId = "saga" reset')
+      await sagaResetHandler({
         url: 'url',
-        saga: 'saga',
-        key: 'key',
-        value: 'value'
+        saga: 'saga'
       })
 
       expect(console.log.mock.calls).toMatchSnapshot()
     })
 
-    test('remove', async () => {
-      fetch().text.mockReturnValue('ListenerId = "saga", Key = "key" deleted')
-      await propsRemoveHandler({
+    test('resume', async () => {
+      fetch().text.mockReturnValue('ListenerId = "saga" running')
+      await sagaResumeHandler({
         url: 'url',
-        saga: 'saga',
-        key: 'key'
+        saga: 'saga'
       })
 
       expect(console.log.mock.calls).toMatchSnapshot()
@@ -122,16 +119,80 @@ describe('resolve-module-admin', () => {
     test('list', async () => {
       fetch().json.mockReturnValue([
         {
-          name: 'key',
-          value: 'value'
+          listenerId: 'saga',
+          status: 'status',
+          lastEvent: {
+            timestamp: 1111111111111,
+            aggregateId: 'aggregateId',
+            aggregateVersion: 1,
+            type: 'type',
+            payload: {
+              index: 1
+            }
+          },
+          lastError: null
         }
       ])
-      await propsListHandler({
-        url: 'url',
-        saga: 'saga'
+      await sagaListHandler({
+        url: 'url'
       })
 
       expect(console.log.mock.calls).toMatchSnapshot()
+    })
+
+    describe('properties', () => {
+      test('get', async () => {
+        fetch().text.mockReturnValue(
+          'ListenerId = "saga", Key = "key", Value = "value"'
+        )
+        await propsGetHandler({
+          url: 'url',
+          saga: 'saga',
+          key: 'key'
+        })
+
+        expect(console.log.mock.calls).toMatchSnapshot()
+      })
+
+      test('set', async () => {
+        fetch().text.mockReturnValue(
+          'ListenerId = "saga", Key = "key", Value = "value"'
+        )
+        await propsSetHandler({
+          url: 'url',
+          saga: 'saga',
+          key: 'key',
+          value: 'value'
+        })
+
+        expect(console.log.mock.calls).toMatchSnapshot()
+      })
+
+      test('remove', async () => {
+        fetch().text.mockReturnValue('ListenerId = "saga", Key = "key" deleted')
+        await propsRemoveHandler({
+          url: 'url',
+          saga: 'saga',
+          key: 'key'
+        })
+
+        expect(console.log.mock.calls).toMatchSnapshot()
+      })
+
+      test('list', async () => {
+        fetch().json.mockReturnValue([
+          {
+            name: 'key',
+            value: 'value'
+          }
+        ])
+        await propsListHandler({
+          url: 'url',
+          saga: 'saga'
+        })
+
+        expect(console.log.mock.calls).toMatchSnapshot()
+      })
     })
   })
 })
