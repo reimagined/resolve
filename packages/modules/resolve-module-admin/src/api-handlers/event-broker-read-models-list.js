@@ -1,4 +1,4 @@
-export default async (req, res) => {
+const readModelList = async (req, res) => {
   const listenerIds = req.resolve.readModels
     .map(({ name }) => name)
     .filter(name => !req.resolve.sagaNames.has(name))
@@ -7,3 +7,5 @@ export default async (req, res) => {
   )
   res.json(statuses)
 }
+
+export default readModelList
