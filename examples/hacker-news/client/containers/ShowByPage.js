@@ -6,8 +6,9 @@ import { connect } from 'react-redux'
 import Stories from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
 
-const ShowByPage = ({ page, stories, me, upvoteStory, unvoteStory }) => (
+const ShowByPage = ({ isLoading, page, stories, me, upvoteStory, unvoteStory }) => (
   <Stories
+    isLoading={isLoading}
     items={stories}
     page={page}
     type="show"
@@ -39,9 +40,11 @@ export const mapStateToProps = (
     match: {
       params: { page }
     },
-    data
+    data,
+    isLoading
   }
 ) => ({
+  isLoading,
   stories: data,
   page,
   me: state.jwt

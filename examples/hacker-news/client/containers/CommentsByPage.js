@@ -24,7 +24,7 @@ class CommentsByPage extends React.PureComponent {
       >
         {({ comments, paginationDone }) => (
           <div>
-            {comments.map(comment => (
+            {comments && comments.map(comment => (
               <Comment
                 key={comment.commentId}
                 id={comment.commentId}
