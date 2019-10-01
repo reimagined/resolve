@@ -2,10 +2,10 @@ import createAdapter from 'resolve-storage-base'
 import sqlite from 'sqlite'
 
 import connect from './connect'
-import init from './init'
 import loadEvents from './load-events'
 import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
+import init from './init'
 import drop from './drop'
 import dispose from './dispose'
 import paginateEvents from './paginate-events'
@@ -15,10 +15,10 @@ import unfreeze from './unfreeze'
 
 const wrappedCreateAdapter = createAdapter.bind(null, {
   connect,
-  init,
   loadEvents,
   getLatestEvent,
   saveEvent,
+  init,
   drop,
   dispose,
   paginateEvents,

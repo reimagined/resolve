@@ -1,0 +1,212 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`resolve-storage-mysql "export" should return eventStream 1`] = `
+Array [
+  Array [
+    "SELECT * FROM [[[ESCAPEID(tableName)]]]
+    ORDER BY [[[ESCAPEID(timestamp)]]] ASC,
+    [[[ESCAPEID(aggregateVersion)]]] ASC
+    LIMIT 0, 200",
+  ],
+]
+`;
+
+exports[`resolve-storage-mysql "export" should return eventStream 2`] = `
+Array [
+  "createConnection",
+  Array [
+    Object {
+      "database": "database",
+      "host": "host",
+      "multipleStatements": true,
+      "password": "password",
+      "port": "port",
+      "user": "user",
+    },
+  ],
+]
+`;
+
+exports[`resolve-storage-mysql "getLatestEvent" should get the latest event 1`] = `
+Array [
+  Array [
+    "SELECT * FROM [[[ESCAPEID(tableName)]]] 
+    ORDER BY \`timestamp\` DESC, \`aggregateVersion\` DESC",
+  ],
+  Array [
+    "SELECT * FROM [[[ESCAPEID(tableName)]]] WHERE \`type\` IN ([[[ESCAPE(eventType)]]])
+    ORDER BY \`timestamp\` DESC, \`aggregateVersion\` DESC",
+  ],
+  Array [
+    "SELECT * FROM [[[ESCAPEID(tableName)]]] WHERE \`aggregateId\` IN ([[[ESCAPE(aggregateId)]]])
+    ORDER BY \`timestamp\` DESC, \`aggregateVersion\` DESC",
+  ],
+  Array [
+    "SELECT * FROM [[[ESCAPEID(tableName)]]] WHERE \`timestamp\` > 1 AND \`timestamp\` < 3
+    ORDER BY \`timestamp\` DESC, \`aggregateVersion\` DESC",
+  ],
+]
+`;
+
+exports[`resolve-storage-mysql "getLatestEvent" should get the latest event 2`] = `
+Array [
+  "createConnection",
+  Array [
+    Object {
+      "database": "database",
+      "host": "host",
+      "multipleStatements": true,
+      "password": "password",
+      "port": "port",
+      "user": "user",
+    },
+  ],
+]
+`;
+
+exports[`resolve-storage-mysql "loadEvents" should load events 1`] = `
+Array [
+  Array [
+    "SELECT * FROM [[[ESCAPEID(tableName)]]] 
+      ORDER BY [[[ESCAPEID(timestamp)]]] ASC,
+      [[[ESCAPEID(aggregateVersion)]]] ASC
+      LIMIT 0, 50",
+  ],
+  Array [
+    "SELECT * FROM [[[ESCAPEID(tableName)]]] 
+      ORDER BY [[[ESCAPEID(timestamp)]]] ASC,
+      [[[ESCAPEID(aggregateVersion)]]] ASC
+      LIMIT 0, 50",
+  ],
+  Array [
+    "SELECT * FROM [[[ESCAPEID(tableName)]]] WHERE \`type\` IN ([[[ESCAPE(eventType)]]])
+      ORDER BY [[[ESCAPEID(timestamp)]]] ASC,
+      [[[ESCAPEID(aggregateVersion)]]] ASC
+      LIMIT 0, 50",
+  ],
+  Array [
+    "SELECT * FROM [[[ESCAPEID(tableName)]]] WHERE \`aggregateId\` IN ([[[ESCAPE(aggregateId)]]])
+      ORDER BY [[[ESCAPEID(timestamp)]]] ASC,
+      [[[ESCAPEID(aggregateVersion)]]] ASC
+      LIMIT 0, 50",
+  ],
+  Array [
+    "SELECT * FROM [[[ESCAPEID(tableName)]]] WHERE \`timestamp\` > 1 AND \`timestamp\` < 3
+      ORDER BY [[[ESCAPEID(timestamp)]]] ASC,
+      [[[ESCAPEID(aggregateVersion)]]] ASC
+      LIMIT 0, 50",
+  ],
+]
+`;
+
+exports[`resolve-storage-mysql "loadEvents" should load events 2`] = `
+Array [
+  "createConnection",
+  Array [
+    Object {
+      "database": "database",
+      "host": "host",
+      "multipleStatements": true,
+      "password": "password",
+      "port": "port",
+      "user": "user",
+    },
+  ],
+]
+`;
+
+exports[`resolve-storage-mysql "saveEvent" should save an event 1`] = `
+Array [
+  Array [
+    "START TRANSACTION;
+SELECT [[[ESCAPE(OK)]]]
+FROM [[[ESCAPEID(information_schema)]]].[[[ESCAPEID(tables)]]]
+WHERE (
+    SELECT [[[ESCAPE(Event store is frozen)]]] AS [[[ESCAPEID(EventStoreIsFrozen)]]]
+  UNION ALL
+    SELECT [[[ESCAPE(Event store is frozen)]]] AS [[[ESCAPEID(EventStoreIsFrozen)]]]
+    FROM [[[ESCAPEID(information_schema)]]].[[[ESCAPEID(tables)]]] [[[ESCAPEID(IS)]]]
+    WHERE [[[ESCAPEID(IS)]]].[[[ESCAPEID(table_schema)]]] = [[[ESCAPE(database)]]]
+    AND [[[ESCAPEID(IS)]]].[[[ESCAPEID(table_name)]]] = [[[ESCAPE(tableName-freeze)]]]
+) = [[[ESCAPE(OK)]]];
+INSERT INTO [[[ESCAPEID(tableName)]]](
+  [[[ESCAPEID(timestamp)]]],
+  [[[ESCAPEID(aggregateId)]]],
+  [[[ESCAPEID(aggregateVersion)]]],
+  [[[ESCAPEID(type)]]],
+  [[[ESCAPEID(payload)]]]
+) VALUES(
+ 1,
+ [[[ESCAPE(aggregateId)]]],
+ 1,
+ [[[ESCAPE(eventType)]]],
+  (CAST([[[ESCAPE({\\"index\\":1})]]] AS JSON))
+);
+COMMIT;",
+  ],
+]
+`;
+
+exports[`resolve-storage-mysql "saveEvent" should save an event 2`] = `
+Array [
+  "createConnection",
+  Array [
+    Object {
+      "database": "database",
+      "host": "host",
+      "multipleStatements": true,
+      "password": "password",
+      "port": "port",
+      "user": "user",
+    },
+  ],
+]
+`;
+
+exports[`resolve-storage-mysql "saveEvent" should save an event with empty payload 1`] = `
+Array [
+  Array [
+    "START TRANSACTION;
+SELECT [[[ESCAPE(OK)]]]
+FROM [[[ESCAPEID(information_schema)]]].[[[ESCAPEID(tables)]]]
+WHERE (
+    SELECT [[[ESCAPE(Event store is frozen)]]] AS [[[ESCAPEID(EventStoreIsFrozen)]]]
+  UNION ALL
+    SELECT [[[ESCAPE(Event store is frozen)]]] AS [[[ESCAPEID(EventStoreIsFrozen)]]]
+    FROM [[[ESCAPEID(information_schema)]]].[[[ESCAPEID(tables)]]] [[[ESCAPEID(IS)]]]
+    WHERE [[[ESCAPEID(IS)]]].[[[ESCAPEID(table_schema)]]] = [[[ESCAPE(database)]]]
+    AND [[[ESCAPEID(IS)]]].[[[ESCAPEID(table_name)]]] = [[[ESCAPE(tableName-freeze)]]]
+) = [[[ESCAPE(OK)]]];
+INSERT INTO [[[ESCAPEID(tableName)]]](
+  [[[ESCAPEID(timestamp)]]],
+  [[[ESCAPEID(aggregateId)]]],
+  [[[ESCAPEID(aggregateVersion)]]],
+  [[[ESCAPEID(type)]]],
+  [[[ESCAPEID(payload)]]]
+) VALUES(
+ 1,
+ [[[ESCAPE(aggregateId)]]],
+ 1,
+ [[[ESCAPE(eventType)]]],
+  (CAST([[[ESCAPE(null)]]] AS JSON))
+);
+COMMIT;",
+  ],
+]
+`;
+
+exports[`resolve-storage-mysql "saveEvent" should save an event with empty payload 2`] = `
+Array [
+  "createConnection",
+  Array [
+    Object {
+      "database": "database",
+      "host": "host",
+      "multipleStatements": true,
+      "password": "password",
+      "port": "port",
+      "user": "user",
+    },
+  ],
+]
+`;

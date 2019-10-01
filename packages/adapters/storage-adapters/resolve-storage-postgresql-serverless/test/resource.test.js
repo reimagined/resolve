@@ -14,7 +14,7 @@ import createResource from '../src/resource/create'
 import disposeResource from '../src/resource/dispose'
 import destroyResource from '../src/resource/destroy'
 
-describe('resource', () => {
+describe('resolve-storage-postgres-serverless resource', () => {
   afterEach(() => {
     mockResult.length = 0
   })
