@@ -1,5 +1,6 @@
 import createSchedulerEventTypes from './sagas/scheduler-event-types'
 import wrapSagas from './sagas/wrap-sagas'
+import wrapTrie from './utils/wrap-trie'
 
 const prepareDomain = async resolve => {
   const [systemAggregates, customerAggregates] = resolve.aggregates.reduce(
@@ -31,6 +32,8 @@ const prepareDomain = async resolve => {
   resolve.systemReadModelsNames = systemReadModels.map(({ name }) => name)
 
   resolve.sagaNames = new Set(resolve.sagas.map(({ name }) => name))
+
+  resolve.routesTrie = wrapTrie(resolve.apiHandlers)
 
   const notImplemented = async methodName => {
     throw new Error(

@@ -12,6 +12,7 @@ import {
 } from 'resolve-scripts'
 import resolveModuleComments from 'resolve-module-comments'
 import resolveModuleAuth from 'resolve-module-auth'
+import resolveModuleReactRouter from 'resolve-module-react-router'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
@@ -28,7 +29,8 @@ void (async () => {
     const moduleComments = resolveModuleComments({
       aggregateName: 'Comment',
       readModelName: 'Comments',
-      readModelConnectorName: 'comments'
+      readModelConnectorName: 'comments',
+      reducerName: 'comments'
     })
 
     const moduleAuth = resolveModuleAuth([
@@ -54,9 +56,25 @@ void (async () => {
       }
     ])
 
+    const moduleReactRouter = resolveModuleReactRouter({
+      routes: 'client/routes.js',
+      redux: {
+        reducers: {
+          optimistic: 'client/reducers/optimistic.js',
+          // TODO: Disambiguate resource file paths and client/server import keys
+          comments: 'comments'
+        },
+        sagas: [
+          'client/sagas/story-create-saga.js',
+          'client/sagas/optimistic-voting-saga.js'
+        ]
+      }
+    })
+
     const baseConfig = merge(
       defaultResolveConfig,
       appConfig,
+      moduleReactRouter,
       moduleComments,
       moduleAuth
     )
@@ -153,7 +171,7 @@ void (async () => {
           apiHandlers: [
             {
               method: 'POST',
-              path: 'import_events',
+              path: '/api/import_events',
               controller: {
                 module: 'import/import_api_handler.js',
                 options: {}

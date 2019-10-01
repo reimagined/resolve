@@ -21,6 +21,7 @@
   "dependencies": {
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
+    "history": "^4.7.2",
     "isomorphic-fetch": "2.2.1",
     "js-cookie": "2.2.0",
     "jsonwebtoken": "8.3.0",
@@ -39,8 +40,10 @@
     "redux": "4.0.1",
     "redux-devtools-extension": "2.13.7",
     "redux-saga": "1.0.5",
+    "resolve-debug-levels": "0.20.28",
     "resolve-module-auth": "0.20.28",
     "resolve-module-comments": "0.20.28",
+    "resolve-module-react-router": "0.20.28",
     "resolve-readmodel-lite": "0.20.28",
     "resolve-readmodel-mysql": "0.20.28",
     "resolve-redux": "0.20.28",

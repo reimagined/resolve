@@ -1,7 +1,6 @@
 import 'source-map-support/register'
 
 import debugLevels from 'resolve-debug-levels'
-import { createActions } from 'resolve-redux'
 
 import initAwsClients from './init-aws-clients'
 import prepareDomain from '../common/prepare-domain'
@@ -31,11 +30,6 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
 
     const segment = resolve.performanceTracer.getSegment()
     subSegment = segment.addNewSubsegment('initResolve')
-
-    resolve.aggregateActions = {}
-    for (const aggregate of domain.aggregates) {
-      Object.assign(resolve.aggregateActions, createActions(aggregate))
-    }
 
     log.debug('preparing aws clients')
     await initAwsClients(resolve)

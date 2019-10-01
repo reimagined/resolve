@@ -1,5 +1,5 @@
 import Ajv from 'ajv'
-import validatePath from 'resolve-runtime/lib/common/utils/validate-path.js'
+import Trie from 'route-trie'
 
 import { schemaResolveConfig, message } from './constants'
 import { checkRuntimeEnv } from './declare_runtime_env'
@@ -46,6 +46,7 @@ export const validateApiHandlers = resolveConfig => {
   if (!resolveConfig.hasOwnProperty('apiHandlers')) {
     return
   }
+  const trie = new Trie()
 
   for (const [idx, apiHandler] of resolveConfig.apiHandlers.entries()) {
     if (checkRuntimeEnv(apiHandler.path)) {
@@ -61,13 +62,13 @@ export const validateApiHandlers = resolveConfig => {
       )
     }
 
-    if (!validatePath(apiHandler.path)) {
+    try {
+      trie.define(apiHandler.path)
+    } catch (error) {
       throw new Error(
-        `Incorrect options.apiHandlers[${idx}].path = "${apiHandler.path}"\nValue must be part of the URL, which is HTTP API handler URL path`
+        `Incorrect options.apiHandlers[${idx}].path = "${apiHandler.path}"\nTrie error: ${error}`
       )
     }
-
-    apiHandler.path = encodeURI(apiHandler.path)
 
     apiHandler.method = apiHandler.method.toUpperCase()
 

@@ -83,13 +83,18 @@ export default ({
         }
       }
     ],
-    redux: {
-      reducers: {
-        [options.reducerName]: {
-          module: 'resolve-module-comments/lib/client/reducers/comments.js',
-          options,
-          imports
-        }
+    clientImports: {
+      [options.reducerName]: {
+        module: 'resolve-module-comments/lib/client/reducers/comments.js',
+        options,
+        imports
+      }
+    },
+    serverImports: {
+      [options.reducerName]: {
+        module: 'resolve-module-comments/lib/client/reducers/comments.js',
+        options,
+        imports
       }
     }
   }))(options, imports)

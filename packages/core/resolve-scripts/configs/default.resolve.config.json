@@ -5,19 +5,12 @@
   "staticPath": "static",
   "staticDir": "static",
   "distDir": "dist",
-  "routes": "client/routes.js",
   "aggregates": [],
   "readModels": [],
   "viewModels": [],
   "sagas": [],
   "apiHandlers": [],
   "index": "client/index.js",
-  "redux": {
-    "reducers": {},
-    "middlewares": [],
-    "sagas": [],
-    "enhancers": []
-  },
   "storageAdapter": {
     "module": "resolve-storage-lite",
     "options": {
@@ -46,5 +39,7 @@
     "name": "jwt",
     "maxAge": 31536000000
   },
-  "customConstants": {}
+  "customConstants": {},
+  "clientImports": {},
+  "serverImports": {}
 }

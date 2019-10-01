@@ -10,8 +10,6 @@ export default () => ({
   import readModels from '$resolve.readModels'
   import viewModels from '$resolve.viewModels'
   import sagas from '$resolve.sagas'
-  import routes from '$resolve.routes'
-  import redux from '$resolve.redux'
 
   export default {
     assemblies: {
@@ -27,9 +25,7 @@ export default () => ({
       readModels,
       viewModels,
       sagas
-    },
-    routes,
-    redux
+    }
   }
 `
 })

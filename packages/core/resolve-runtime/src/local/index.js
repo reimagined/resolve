@@ -1,6 +1,5 @@
 import 'source-map-support/register'
 import debugLevels from 'resolve-debug-levels'
-import { createActions } from 'resolve-redux'
 
 import initBroker from './init-broker'
 import initPerformanceTracer from './init-performance-tracer'
@@ -25,12 +24,6 @@ const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
     }
 
     await initPerformanceTracer(resolve)
-
-    resolve.aggregateActions = {}
-    for (const aggregate of domain.aggregates) {
-      Object.assign(resolve.aggregateActions, createActions(aggregate))
-    }
-
     await prepareDomain(resolve)
     await initBroker(resolve)
     await initExpress(resolve)
