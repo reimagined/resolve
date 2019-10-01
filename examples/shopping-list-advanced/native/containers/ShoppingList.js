@@ -39,6 +39,7 @@ export class ShoppingList extends React.PureComponent {
 
   render() {
     const {
+      isLoading,
       aggregateId,
       data,
       navigation,
@@ -48,6 +49,10 @@ export class ShoppingList extends React.PureComponent {
       toggleShoppingItem,
       removeShoppingItem
     } = this.props
+    
+    if (isLoading !== false) {
+      return null
+    }
 
     if (data === null) {
       return <NotFound />

@@ -46,6 +46,11 @@ export class ShoppingList extends React.PureComponent {
 
   render() {
     const { data, aggregateId, toggleShoppingItem } = this.props
+
+    if (data == null) {
+      return null
+    }
+
     const { list } = data
 
     return (

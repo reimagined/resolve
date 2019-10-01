@@ -9,7 +9,12 @@ import ShoppingListCreator from '../components/ShoppingListCreator'
 
 class MyLists extends React.PureComponent {
   render() {
-    const { lists, createShoppingList } = this.props
+    const { isLoading, lists, createShoppingList } = this.props
+    
+    if (isLoading !== false) {
+      return null
+    }
+    
     return (
       <div style={{ maxWidth: '500px', margin: 'auto' }}>
         <ShoppingLists lists={lists} />
