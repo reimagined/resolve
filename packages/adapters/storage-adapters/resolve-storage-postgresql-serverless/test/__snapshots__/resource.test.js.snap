@@ -49,7 +49,7 @@ Array [
       \\"timestamp\\",
       \\"transactionId\\"
     ) VALUES (
-      0, 0, 0, 0
+      0, 0, 0, '0'
     )",
   },
   "executeStatement",
@@ -172,7 +172,7 @@ Array [
       \\"timestamp\\",
       \\"transactionId\\"
     ) VALUES (
-      0, 0, 0, 0
+      0, 0, 0, '0'
     )",
   },
   "executeStatement",

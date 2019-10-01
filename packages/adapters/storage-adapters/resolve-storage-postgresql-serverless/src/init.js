@@ -8,7 +8,8 @@ const init = async ({
   databaseName,
   tableName,
   executeStatement,
-  escapeId
+  escapeId,
+  escape
 }) => {
   await executeStatement(
     [
