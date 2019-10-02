@@ -5,7 +5,19 @@ import Story from '../containers/Story'
 import Pagination from './Pagination'
 import { ITEMS_PER_PAGE } from '../constants'
 
-const Stories = ({ items, page, type, userId, upvoteStory, unvoteStory }) => {
+const Stories = ({
+  isLoading,
+  items,
+  page,
+  type,
+  userId,
+  upvoteStory,
+  unvoteStory
+}) => {
+  if (isLoading !== false) {
+    return null
+  }
+
   if (items === null || (page && !Number.isInteger(Number(page)))) {
     return <Redirect push to="/error?text=No such page" />
   }

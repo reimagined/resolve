@@ -20,7 +20,6 @@ export class CommentsPaginateRenderless extends React.PureComponent {
 
   render() {
     const { children: Component, comments, ...props } = this.props
-
     return <Component {...props} comments={comments} />
   }
 }
@@ -42,9 +41,9 @@ export const mapStateToOptions = (
   }
 })
 
-const mapStateToProps = (state, { data: { comments, paginationDone } }) => ({
-  comments,
-  paginationDone
+const mapStateToProps = (state, { data }) => ({
+  comments: data ? data.comments : undefined,
+  paginationDone: data ? data.paginationDone : undefined
 })
 
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>

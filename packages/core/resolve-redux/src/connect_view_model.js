@@ -129,11 +129,6 @@ const connectViewModel = mapStateToOptions => Component => {
 
     render() {
       const { ownProps, isLoading, data } = this.props
-
-      if (isLoading !== false) {
-        return null
-      }
-
       return <Component {...ownProps} isLoading={isLoading} data={data} />
     }
   }
