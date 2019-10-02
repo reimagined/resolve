@@ -45,6 +45,7 @@ describe('resolve-snapshot-mysql-serverless', () => {
   })
 
   test(`"saveSnapshot" should save the snapshot every 5 times`, async () => {
+    await snapshotAdapter.init()
     for (let index = 0; index < bucketSize; index++) {
       await snapshotAdapter.saveSnapshot('key', `value = ${index}`)
     }
@@ -66,23 +67,7 @@ describe('resolve-snapshot-mysql-serverless', () => {
   })
 
   test(`"loadSnapshot" should load the snapshot`, async () => {
-    RDSDataService.prototype.executeStatement.mockReset()
-
-    RDSDataService.prototype.executeStatement.mockReturnValueOnce({
-      promise: () =>
-        Promise.resolve({
-          records: [
-            [
-              {
-                stringValue: Buffer.allocUnsafe(514000)
-                  .fill('.')
-                  .toString('utf8')
-              }
-            ]
-          ],
-          columnMetadata: [{ name: 'SnapshotContentChunk' }]
-        })
-    })
+    await snapshotAdapter.init()
 
     RDSDataService.prototype.executeStatement.mockReturnValueOnce({
       promise: () =>
@@ -111,7 +96,8 @@ describe('resolve-snapshot-mysql-serverless', () => {
   })
 
   test(`"drop" should drop the snapshotAdapter`, async () => {
-    await snapshotAdapter.drop('key')
+    await snapshotAdapter.init()
+    await snapshotAdapter.dropSnapshot('key')
 
     expect(
       RDSDataService.prototype.beginTransaction.mock.calls
@@ -128,6 +114,7 @@ describe('resolve-snapshot-mysql-serverless', () => {
   })
 
   test(`"dispose" should dispose the snapshotAdapter`, async () => {
+    await snapshotAdapter.init()
     await snapshotAdapter.dispose()
 
     try {

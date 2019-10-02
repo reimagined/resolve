@@ -95,16 +95,12 @@ const rollbackTransaction = async (pool, transactionId) => {
     .promise()
 }
 
-const init = async pool => {
-  if (pool.disposed) {
-    throw new Error('Adapter is disposed')
+const connect = async pool => {
+  if (pool.connectPromise != null) {
+    return await pool.connectPromise
   }
 
-  if (pool.initPromise != null) {
-    return pool.initPromise
-  }
-
-  pool.initPromise = (async () => {
+  pool.connectPromise = (async () => {
     const {
       dbClusterOrInstanceArn,
       awsSecretStoreArn,
@@ -138,22 +134,29 @@ const init = async pool => {
       pool.tableName = DEFAULT_TABLE_NAME
     }
 
-    await pool.executeStatement(`CREATE TABLE IF NOT EXISTS ${pool.escapeId(
-      pool.databaseName
-    )}.${pool.escapeId(pool.tableName)} (
+    pool.counters = new Map()
+  })()
+
+  return await pool.connectPromise
+}
+
+const init = async pool => {
+  await connect(pool)
+  if (pool.disposed) {
+    throw new Error('Adapter is disposed')
+  }
+
+  await pool.executeStatement(`CREATE TABLE IF NOT EXISTS ${pool.escapeId(
+    pool.databaseName
+  )}.${pool.escapeId(pool.tableName)} (
       ${pool.escapeId('SnapshotKey')} text NOT NULL,
       ${pool.escapeId('SnapshotContent')} text,
       PRIMARY KEY(${escapeId('SnapshotKey')})
     )`)
-
-    pool.counters = new Map()
-  })()
-
-  return pool.initPromise
 }
 
 const loadSnapshot = async (pool, snapshotKey) => {
-  await init(pool)
+  await connect(pool)
 
   let result = null
 
@@ -186,7 +189,7 @@ const loadSnapshot = async (pool, snapshotKey) => {
 }
 
 const saveSnapshot = async (pool, snapshotKey, snapshotValue) => {
-  await init(pool)
+  await connect(pool)
 
   if (!pool.counters.has(snapshotKey)) {
     pool.counters.set(snapshotKey, 0)
@@ -261,21 +264,29 @@ const saveSnapshot = async (pool, snapshotKey, snapshotValue) => {
 }
 
 const dispose = async pool => {
-  await init(pool)
+  if (pool.disposed) {
+    throw new Error('Adapter is disposed')
+  }
 
   pool.disposed = true
 
   pool.counters.clear()
 }
 
-const drop = async (pool, snapshotKey) => {
-  await init(pool)
+const dropSnapshot = async (pool, snapshotKey) => {
+  await connect(pool)
 
   await pool.executeStatement(
     `DELETE FROM ${pool.escapeId(pool.databaseName)}.${escapeId(pool.tableName)}
     WHERE ${escapeId('SnapshotKey')}
     LIKE ${escape(`${snapshotKey}%`)}`
   )
+}
+
+const drop = async pool => {
+  await connect(pool)
+
+  await pool.executeStatement(`DROP TABLE ${escapeId(pool.tableName)}`)
 }
 
 const createAdapter = config => {
@@ -285,6 +296,8 @@ const createAdapter = config => {
     loadSnapshot: loadSnapshot.bind(null, pool),
     saveSnapshot: saveSnapshot.bind(null, pool),
     dispose: dispose.bind(null, pool),
+    init: init.bind(null, pool),
+    dropSnapshot: dropSnapshot.bind(null, pool),
     drop: drop.bind(null, pool)
   })
 }

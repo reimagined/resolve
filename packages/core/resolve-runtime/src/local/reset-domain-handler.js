@@ -26,7 +26,7 @@ const resetDomainHandler = options => async (req, res) => {
     if (dropSnapshots) {
       for (const { invariantHash } of [...viewModels, ...aggregates]) {
         if (invariantHash != null) {
-          await snapshotAdapter.drop(invariantHash)
+          await snapshotAdapter.dropSnapshot(invariantHash)
         }
       }
     }
