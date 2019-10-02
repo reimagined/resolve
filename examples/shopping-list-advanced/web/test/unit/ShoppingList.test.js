@@ -25,6 +25,7 @@ test('renders correctly', () => {
 
   const tree = shallow(
     <ShoppingList
+      isLoading={false}
       data={data}
       jwt={jwt}
       aggregateId={aggregateId}
