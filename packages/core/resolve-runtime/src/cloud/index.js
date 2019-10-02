@@ -10,7 +10,7 @@ import lambdaWorker from './lambda-worker'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
-const index = async ({ assemblies, constants, domain, redux, routes }) => {
+const index = async ({ assemblies, constants, domain }) => {
   let subSegment = null
 
   log.debug(`starting lambda 'cold start'`)
@@ -18,11 +18,10 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
     log.debug('configuring reSolve framework')
     const resolve = {
       seedClientEnvs: assemblies.seedClientEnvs,
+      serverImports: assemblies.serverImports,
       assemblies,
       ...constants,
-      ...domain,
-      redux,
-      routes
+      ...domain
     }
 
     log.debug('preparing performance tracer')

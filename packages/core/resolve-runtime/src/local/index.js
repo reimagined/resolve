@@ -11,16 +11,15 @@ import emptyWorker from './empty-worker'
 
 const log = debugLevels('resolve:resolve-runtime:local-entry')
 
-const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
+const localEntry = async ({ assemblies, constants, domain }) => {
   try {
     const resolve = {
       instanceId: `${process.pid}${Math.floor(Math.random() * 100000)}`,
       seedClientEnvs: assemblies.seedClientEnvs,
+      serverImports: assemblies.serverImports,
       assemblies,
       ...constants,
-      ...domain,
-      redux,
-      routes
+      ...domain
     }
 
     await initPerformanceTracer(resolve)

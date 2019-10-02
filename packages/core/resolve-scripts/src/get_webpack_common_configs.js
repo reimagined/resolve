@@ -159,11 +159,7 @@ const getWebpackCommonConfigs = ({
           callback()
         },
         ...getModulesDirs().map(modulesDir =>
-          nodeExternals({
-            modulesDir,
-            // TODO: Resolve aliases in resolve-modules by general mechanism
-            whitelist: [/(?:resolve-runtime)|(?:resolve-module.*?)/]
-          })
+          nodeExternals({ modulesDir, whitelist: [/resolve-runtime/] })
         )
       ]
     })

@@ -1,5 +1,6 @@
 export default () => ({
   code: `
+  import serverImports from '$resolve.serverImports'
   import seedClientEnvs from '$resolve.seedClientEnvs'
   import storageAdapter from '$resolve.storageAdapter'
   import snapshotAdapter from '$resolve.snapshotAdapter'
@@ -16,7 +17,8 @@ export default () => ({
       seedClientEnvs,
       storageAdapter,
       snapshotAdapter,
-      readModelConnectors
+      readModelConnectors,
+      serverImports
     },
     constants,
     domain: {

@@ -7,15 +7,6 @@ import { Helmet } from 'react-helmet'
 import debugLevels from 'resolve-debug-levels'
 import Url from 'url'
 
-import seedClientEnvs from '$resolve.seedClientEnvs'
-import viewModels from '$resolve.viewModels'
-import readModels from '$resolve.readModels'
-import aggregates from '$resolve.aggregates'
-import staticPath from '$resolve.staticPath'
-import jwtCookie from '$resolve.jwtCookie'
-import rootPath from '$resolve.rootPath'
-import serverImports from '$resolve.serverImports'
-
 const log = debugLevels('resolve:markup-handler')
 
 let ServerStyleSheet, StyleSheetManager
@@ -268,6 +259,17 @@ const markupHandler = async (
 }
 
 const apiHandlerConstructor = ({ routes, redux }) => async (req, res) => {
+  const {
+    seedClientEnvs,
+    viewModels,
+    readModels,
+    aggregates,
+    staticPath,
+    jwtCookie,
+    rootPath,
+    serverImports
+  } = req.resolve
+
   const reactRouter = {
     routes: serverImports[routes](),
     redux: {
