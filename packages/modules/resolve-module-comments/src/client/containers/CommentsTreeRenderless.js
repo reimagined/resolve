@@ -44,7 +44,7 @@ export const mapStateToProps = (
   { treeId, parentCommentId, reducerName = defaults.reducerName }
 ) => ({
   comments: [reducerName, treeId, parentCommentId].reduce(
-    (result, partName) => result ? result[partName] : result,
+    (result, partName) => (result ? result[partName] : result),
     state
   )
 })

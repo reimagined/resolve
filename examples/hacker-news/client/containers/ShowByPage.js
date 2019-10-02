@@ -6,7 +6,14 @@ import { connect } from 'react-redux'
 import Stories from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
 
-const ShowByPage = ({ isLoading, page, stories, me, upvoteStory, unvoteStory }) => (
+const ShowByPage = ({
+  isLoading,
+  page,
+  stories,
+  me,
+  upvoteStory,
+  unvoteStory
+}) => (
   <Stories
     isLoading={isLoading}
     items={stories}

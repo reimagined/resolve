@@ -5,7 +5,15 @@ import Story from '../containers/Story'
 import Pagination from './Pagination'
 import { ITEMS_PER_PAGE } from '../constants'
 
-const Stories = ({ isLoading, items, page, type, userId, upvoteStory, unvoteStory }) => {
+const Stories = ({
+  isLoading,
+  items,
+  page,
+  type,
+  userId,
+  upvoteStory,
+  unvoteStory
+}) => {
   if (isLoading !== false) {
     return null
   }

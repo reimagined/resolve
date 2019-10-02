@@ -9,7 +9,12 @@ import ShoppingListCreator from '../components/ShoppingListCreator'
 
 class MyLists extends React.PureComponent {
   render() {
-    const { isLoading, lists, createShoppingList, removeShoppingList } = this.props
+    const {
+      isLoading,
+      lists,
+      createShoppingList,
+      removeShoppingList
+    } = this.props
 
     if (isLoading !== false) {
       return null

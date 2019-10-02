@@ -6,7 +6,14 @@ import { connectReadModel } from 'resolve-redux'
 import Stories from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
 
-const NewestByPage = ({ isLoading, page, stories, me, upvoteStory, unvoteStory }) => (
+const NewestByPage = ({
+  isLoading,
+  page,
+  stories,
+  me,
+  upvoteStory,
+  unvoteStory
+}) => (
   <Stories
     isLoading={isLoading}
     items={stories}
