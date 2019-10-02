@@ -98,7 +98,7 @@ viewModels.push({
         }
         return true
       }
-
+    
       for(const { projection } of viewModels) {
         for(const key of Object.keys(projection)) {
           if(!checkValidProjectionFunction(projection[key])) {
@@ -108,7 +108,7 @@ viewModels.push({
           }
         }
       }
-
+    
 export default viewModels
 "
 `;
@@ -241,7 +241,7 @@ viewModels.push({
         }
         return true
       }
-
+    
       for(const { projection } of viewModels) {
         for(const key of Object.keys(projection)) {
           if(!checkValidProjectionFunction(projection[key])) {
@@ -251,7 +251,7 @@ viewModels.push({
           }
         }
       }
-
+    
 export default viewModels
 "
 `;
@@ -354,7 +354,7 @@ viewModels.push({
         }
         return true
       }
-
+    
       for(const { projection } of viewModels) {
         for(const key of Object.keys(projection)) {
           if(!checkValidProjectionFunction(projection[key])) {
@@ -364,7 +364,7 @@ viewModels.push({
           }
         }
       }
-
+    
 export default viewModels
 "
 `;
