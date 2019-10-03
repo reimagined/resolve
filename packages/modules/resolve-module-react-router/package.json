@@ -26,7 +26,8 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-react-router#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "resolve-debug-levels": "0.20.28"
+    "resolve-debug-levels": "0.20.28",
+    "resolve-scripts": "0.20.28"
   },
   "devDependencies": {
     "jest": "24.1.0",

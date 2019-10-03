@@ -8,7 +8,8 @@ import {
   stop,
   reset,
   importEventStore,
-  exportEventStore
+  exportEventStore,
+  declareImportKey
 } from 'resolve-scripts'
 import resolveModuleComments from 'resolve-module-comments'
 import resolveModuleAuth from 'resolve-module-auth'
@@ -61,8 +62,7 @@ void (async () => {
       redux: {
         reducers: {
           optimistic: 'client/reducers/optimistic.js',
-          // TODO: Disambiguate resource file paths and client/server import keys
-          comments: 'comments'
+          comments: declareImportKey('comments')
         },
         sagas: [
           'client/sagas/story-create-saga.js',

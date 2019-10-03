@@ -1,3 +1,5 @@
+import { checkImportKey } from 'resolve-scripts'
+
 const createReactModule = ({ routes, redux }) => {
   if (routes == null || routes.constructor !== String) {
     throw new Error(
@@ -33,13 +35,7 @@ const createReactModule = ({ routes, redux }) => {
   }
 
   for (const key of Object.keys(imports)) {
-    // TODO: Disambiguate resource file paths and client/server import keys
-    if (
-      imports[key] != null &&
-      imports[key].constructor === String &&
-      imports[key].indexOf('/') < 0 &&
-      imports[key].indexOf('.') < 0
-    ) {
+    if (checkImportKey(key)) {
       delete imports[key]
     }
   }
