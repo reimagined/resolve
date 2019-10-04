@@ -11,7 +11,7 @@ import { createBrowserHistory } from 'history'
 import createCommentReducer from 'resolve-module-comments/lib/client/reducers/comments'
 import * as commentsDefaults from 'resolve-module-comments/lib/common/defaults'
 
-import '../dist/common/client/client-chunk'
+import resolveChunk from '../dist/common/client/client-chunk'
 
 import optimisticReducer from './reducers/optimistic'
 import optimisticVotingSaga from './sagas/optimistic-voting-saga'
@@ -19,12 +19,7 @@ import storyCreateSaga from './sagas/story-create-saga'
 
 import routes from './routes'
 
-const {
-  rootPath,
-  staticPath,
-  viewModels,
-  subscribeAdapter
-} = window._RESOLVE_CLIENT_CHUNK
+const { rootPath, staticPath, viewModels, subscribeAdapter } = resolveChunk
 
 const redux = {
   reducers: {

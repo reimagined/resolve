@@ -1,4 +1,5 @@
 import path from 'path'
+import ReplaceInFileWebpackPlugin from 'replace-in-file-webpack-plugin'
 
 import getModulesDirs from './get_modules_dirs'
 
@@ -44,8 +45,7 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
       devtoolModuleFilenameTemplate: '[namespace][resource-path]',
       devtoolFallbackModuleFilenameTemplate:
         '[namespace][resource-path]?[hash]',
-      library: '_RESOLVE_CLIENT_CHUNK',
-      libraryTarget: 'window'
+      libraryTarget: 'commonjs-module'
     },
     resolve: {
       modules: getModulesDirs(),
@@ -92,7 +92,25 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
           }
         }
       ]
-    }
+    },
+    plugins: [
+      new ReplaceInFileWebpackPlugin([
+        {
+          dir: path.join(distDir, 'common', 'client'),
+          files: ['client-chunk.js'],
+          rules: [
+            {
+              search: /^module.exports =/,
+              replace: 'const mainExport ='
+            },
+            {
+              search: /$/,
+              replace: '\n\nexport default mainExport'
+            }
+          ]
+        }
+      ])
+    ]
   }
 }
 
