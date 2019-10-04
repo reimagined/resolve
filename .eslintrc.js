@@ -330,6 +330,7 @@ module.exports = {
           'sqlite',
           'squaremobius',
           'src',
+          'ssr',
           'stackoverflow',
           'stderr',
           'stdin',

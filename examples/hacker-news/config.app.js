@@ -35,6 +35,11 @@ const appConfig = {
   ],
   apiHandlers: [
     {
+      path: '/:markup*',
+      controller: 'common/api-handlers/markup.js',
+      method: 'GET'
+    },
+    {
       path: '/api/event-broker/status-all',
       controller: 'common/api-handlers/event-broker-status-all.js',
       method: 'GET'

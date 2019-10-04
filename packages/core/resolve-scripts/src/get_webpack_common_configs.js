@@ -9,7 +9,6 @@ const getWebpackCommonConfigs = ({
   nodeModulesByAssembly
 }) => {
   const distDir = path.resolve(process.cwd(), resolveConfig.distDir)
-
   const isClient = false
 
   const polyfills = Array.isArray(resolveConfig.polyfills)

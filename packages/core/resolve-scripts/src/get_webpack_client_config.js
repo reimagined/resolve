@@ -3,16 +3,8 @@ import path from 'path'
 import getModulesDirs from './get_modules_dirs'
 
 const getClientWebpackConfig = ({ resolveConfig, alias }) => {
-  const clientDistDir = path.resolve(
-    process.cwd(),
-    resolveConfig.distDir,
-    'client'
-  )
-
+  const distDir = path.resolve(process.cwd(), resolveConfig.distDir)
   const isClient = true
-  const polyfills = Array.isArray(resolveConfig.polyfills)
-    ? resolveConfig.polyfills
-    : []
 
   const clientTransformBabelOptions = {
     cacheDirectory: true,
@@ -37,12 +29,8 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
   return {
     name: 'Client',
     entry: {
-      'bundle.js': [
-        ...polyfills,
-        path.resolve(__dirname, './alias/$resolve.clientEntry.js')
-      ],
-      'hmr.js': [
-        path.resolve(__dirname, './alias/$resolve.hotModuleReplacement.js')
+      'common/client/client-chunk.js': [
+        path.resolve(__dirname, './alias/$resolve.clientChunk.js')
       ]
     },
     context: path.resolve(process.cwd()),
@@ -51,10 +39,13 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
     devtool: 'source-map',
     target: 'web',
     output: {
-      path: clientDistDir,
+      path: distDir,
       filename: '[name]',
       devtoolModuleFilenameTemplate: '[namespace][resource-path]',
-      devtoolFallbackModuleFilenameTemplate: '[namespace][resource-path]?[hash]'
+      devtoolFallbackModuleFilenameTemplate:
+        '[namespace][resource-path]?[hash]',
+      library: '_RESOLVE_CLIENT_CHUNK',
+      libraryTarget: 'window'
     },
     resolve: {
       modules: getModulesDirs(),

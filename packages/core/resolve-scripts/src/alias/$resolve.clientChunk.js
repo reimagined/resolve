@@ -1,16 +1,18 @@
 import getClientGlobalEnvObject from '../client_global_object'
 import { checkRuntimeEnv } from '../declare_runtime_env'
+import { message } from '../constants'
 
-export default ({ resolveConfig }) => {
+export default ({ resolveConfig, isClient }) => {
+  if (!isClient) {
+    throw new Error(`${message.clientAliasInServerCodeError}.clientAssemblies`)
+  }
   const exports = []
 
   exports.push(
     `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
     `const clientGlobalObject = ${getClientGlobalEnvObject()}`,
-    `clientGlobalObject.__RESOLVE_RUNTIME_ENV__ = { }`
+    `const defaultRuntimeEnv = {}`
   )
-
-  exports.push(`import { createActions } from 'resolve-redux'`)
 
   const clientEnvs = []
   void JSON.stringify(resolveConfig, (key, value) => {
@@ -23,7 +25,7 @@ export default ({ resolveConfig }) => {
   for (const clientEnv of clientEnvs) {
     if (process.env[String(clientEnv)] != null) {
       exports.push(`Object.defineProperty(
-        clientGlobalObject.__RESOLVE_RUNTIME_ENV__,
+        defaultRuntimeEnv,
         ${JSON.stringify(String(clientEnv))},
         {
           enumerable: true,
@@ -32,7 +34,7 @@ export default ({ resolveConfig }) => {
       )`)
     } else {
       exports.push(`Object.defineProperty(
-        clientGlobalObject.__RESOLVE_RUNTIME_ENV__,
+        defaultRuntimeEnv,
         ${JSON.stringify(String(clientEnv))},
         {
           enumerable: true,
@@ -42,7 +44,17 @@ export default ({ resolveConfig }) => {
     }
   }
 
+  exports.push(`
+    if(clientGlobalObject.__RESOLVE_RUNTIME_ENV__ == null) {
+      clientGlobalObject.__RESOLVE_RUNTIME_ENV__ = defaultRuntimeEnv
+      console.warn(\`
+        Client-runtime variables have been set to default values since __RESOLVE_RUNTIME_ENV__ is not defined
+      \`)
+    }
+  `)
+
   exports.push(
+    `export const clientImports = interopRequireDefault(require('$resolve.clientImports')).default`,
     `export const viewModels = interopRequireDefault(require('$resolve.viewModels')).default`,
     `export const rootPath = interopRequireDefault(require('$resolve.rootPath')).default`,
     `export const staticPath = interopRequireDefault(require('$resolve.staticPath')).default`,

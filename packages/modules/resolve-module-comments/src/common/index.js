@@ -29,7 +29,6 @@ export default ({
   readModelName,
   readModelConnectorName,
   commentsTableName,
-  reducerName,
   eventTypes,
   commandTypes,
   resolverNames,
@@ -41,7 +40,6 @@ export default ({
     readModelName,
     readModelConnectorName,
     commentsTableName,
-    reducerName,
     eventTypes,
     commandTypes,
     resolverNames,
@@ -82,20 +80,6 @@ export default ({
           imports
         }
       }
-    ],
-    clientImports: {
-      [options.reducerName]: {
-        module: 'resolve-module-comments/lib/client/reducers/comments.js',
-        options,
-        imports
-      }
-    },
-    serverImports: {
-      [options.reducerName]: {
-        module: 'resolve-module-comments/lib/client/reducers/comments.js',
-        options,
-        imports
-      }
-    }
+    ]
   }))(options, imports)
 }

@@ -1,4 +1,5 @@
 import {
+  showBuildInfo,
   defaultResolveConfig,
   build,
   start,
@@ -8,12 +9,13 @@ import {
   stop,
   reset,
   importEventStore,
-  exportEventStore,
-  declareImportKey
+  exportEventStore
 } from 'resolve-scripts'
 import resolveModuleComments from 'resolve-module-comments'
 import resolveModuleAuth from 'resolve-module-auth'
-import resolveModuleReactRouter from 'resolve-module-react-router'
+
+import webpack from 'webpack'
+import getWebpackConfigs from './webpack.config'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
@@ -57,24 +59,9 @@ void (async () => {
       }
     ])
 
-    const moduleReactRouter = resolveModuleReactRouter({
-      routes: 'client/routes.js',
-      redux: {
-        reducers: {
-          optimistic: 'client/reducers/optimistic.js',
-          comments: declareImportKey('comments')
-        },
-        sagas: [
-          'client/sagas/story-create-saga.js',
-          'client/sagas/optimistic-voting-saga.js'
-        ]
-      }
-    })
-
     const baseConfig = merge(
       defaultResolveConfig,
       appConfig,
-      moduleReactRouter,
       moduleComments,
       moduleAuth
     )
@@ -88,7 +75,26 @@ void (async () => {
           dropReadModels: true,
           dropSagas: true
         })
-        await watch(resolveConfig)
+
+        const clientCompiler = webpack(
+          getWebpackConfigs({
+            mode: 'development',
+            distDir: resolveConfig.distDir
+          })
+        )
+
+        const clientCompiling = new Promise((resolve, reject) => {
+          clientCompiler.run((err, { stats }) => {
+            stats.forEach(showBuildInfo.bind(null, err))
+            const hasNoErrors = stats.reduce(
+              (acc, val) => acc && (val != null && !val.hasErrors()),
+              true
+            )
+            void (hasNoErrors ? resolve() : reject(stats.toString('')))
+          })
+        })
+
+        await Promise.all([watch(resolveConfig), clientCompiling])
         break
       }
 

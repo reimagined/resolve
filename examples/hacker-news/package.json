@@ -43,10 +43,10 @@
     "resolve-debug-levels": "0.20.28",
     "resolve-module-auth": "0.20.28",
     "resolve-module-comments": "0.20.28",
-    "resolve-module-react-router": "0.20.28",
     "resolve-readmodel-lite": "0.20.28",
     "resolve-readmodel-mysql": "0.20.28",
     "resolve-redux": "0.20.28",
+    "resolve-runtime": "0.20.28",
     "resolve-scripts": "0.20.28",
     "resolve-storage-postgresql-serverless": "0.20.28",
     "resolve-storage-lite": "0.20.28",
@@ -56,7 +56,8 @@
     "seamless-immutable": "7.1.3",
     "styled-components": "4.1.1",
     "uuid": "3.3.2",
-    "elasticsearch": "15.4.1"
+    "elasticsearch": "15.4.1",
+    "webpack": "4.41.0"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",

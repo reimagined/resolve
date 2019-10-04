@@ -7,6 +7,7 @@ export const COMMENT_REMOVED = 'COMMENT_REMOVED'
 export const createComment = 'createComment'
 export const updateComment = 'updateComment'
 export const removeComment = 'removeComment'
+export const commentCommandTypes = [createComment, updateComment, removeComment]
 
 // Reducer Name
 export const reducerName = 'comments'
