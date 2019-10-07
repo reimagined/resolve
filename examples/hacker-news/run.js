@@ -90,7 +90,7 @@ void (async () => {
               (acc, val) => acc || (val != null && val.hasErrors()),
               false
             )
-            void (hasNoErrors ? resolve() : reject(stats.toString('')))
+            void (!hasErrors ? resolve() : reject(stats.toString('')))
           })
         })
 
