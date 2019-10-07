@@ -4,12 +4,12 @@ import { escapeId, escape } from 'mysql2'
 const DEFAULT_BUCKET_SIZE = 100
 const DEFAULT_TABLE_NAME = '__ResolveSnapshots__'
 
-const init = async pool => {
-  if (pool.initPromise != null) {
-    return pool.initPromise
+const connect = async pool => {
+  if (pool.connectPromise != null) {
+    return await pool.connectPromise
   }
 
-  pool.initPromise = (async () => {
+  pool.connectPromise = (async () => {
     const { bucketSize, tableName, ...connectionOptions } = pool.config
     pool.connection = await MySQL.createConnection(connectionOptions)
     pool.bucketSize = bucketSize
@@ -21,22 +21,29 @@ const init = async pool => {
       pool.tableName = DEFAULT_TABLE_NAME
     }
 
-    await pool.connection.execute(`CREATE TABLE IF NOT EXISTS ${escapeId(
-      pool.tableName
-    )} (
+    pool.counters = new Map()
+  })()
+
+  return await pool.connectPromise
+}
+
+const init = async pool => {
+  await connect(pool)
+  if (pool.disposed) {
+    throw new Error('Adapter is disposed')
+  }
+
+  await pool.connection.execute(`CREATE TABLE IF NOT EXISTS ${escapeId(
+    pool.tableName
+  )} (
       ${escapeId('SnapshotKey')} MEDIUMBLOB NOT NULL,
       ${escapeId('SnapshotContent')} LONGBLOB,
       PRIMARY KEY(${escapeId('SnapshotKey')}(255))
     )`)
-
-    pool.counters = new Map()
-  })()
-
-  return pool.initPromise
 }
 
 const loadSnapshot = async (pool, snapshotKey) => {
-  await init(pool)
+  await connect(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
@@ -45,14 +52,12 @@ const loadSnapshot = async (pool, snapshotKey) => {
     `SELECT ${escapeId('SnapshotContent')} FROM ${escapeId(pool.tableName)}
    WHERE ${escapeId('SnapshotKey')}= ${escape(snapshotKey)} `
   )
-
   const content = rows.length > 0 ? rows[0].SnapshotContent.toString() : null
-
   return content != null ? JSON.parse(content) : null
 }
 
 const saveSnapshot = async (pool, snapshotKey, content) => {
-  await init(pool)
+  await connect(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
@@ -79,7 +84,6 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
 }
 
 const dispose = async pool => {
-  await init(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
@@ -90,8 +94,17 @@ const dispose = async pool => {
   await pool.connection.end()
 }
 
-const drop = async (pool, snapshotKey) => {
-  await init(pool)
+const drop = async pool => {
+  await connect(pool)
+  if (pool.disposed) {
+    throw new Error('Adapter is disposed')
+  }
+
+  await pool.connection.execute(`DROP TABLE ${escapeId(pool.tableName)}`)
+}
+
+const dropSnapshot = async (pool, snapshotKey) => {
+  await connect(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
@@ -110,7 +123,9 @@ const createAdapter = config => {
     loadSnapshot: loadSnapshot.bind(null, pool),
     saveSnapshot: saveSnapshot.bind(null, pool),
     dispose: dispose.bind(null, pool),
-    drop: drop.bind(null, pool)
+    drop: drop.bind(null, pool),
+    dropSnapshot: dropSnapshot.bind(null, pool),
+    init: init.bind(null, pool)
   })
 }
 

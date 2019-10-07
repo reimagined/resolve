@@ -17,6 +17,10 @@ const resetDomainHandler = options => async (req, res) => {
       await storageAdapter.init()
     } catch (e) {}
 
+    try {
+      await snapshotAdapter.init()
+    } catch (e) {}
+
     const { dropEventStore, dropSnapshots, dropReadModels, dropSagas } = options
 
     if (dropEventStore) {
@@ -26,7 +30,7 @@ const resetDomainHandler = options => async (req, res) => {
     if (dropSnapshots) {
       for (const { invariantHash } of [...viewModels, ...aggregates]) {
         if (invariantHash != null) {
-          await snapshotAdapter.drop(invariantHash)
+          await snapshotAdapter.dropSnapshot(invariantHash)
         }
       }
     }

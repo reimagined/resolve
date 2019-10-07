@@ -10,6 +10,10 @@ const bootstrap = async resolve => {
     await resolve.storageAdapter.init()
   } catch (e) {}
 
+  try {
+    await resolve.snapshotAdapter.init()
+  } catch (e) {}
+
   const applicationPromises = []
   for (const { name: readModelName } of resolve.readModels) {
     applicationPromises.push(resolve.doUpdateRequest(readModelName))
