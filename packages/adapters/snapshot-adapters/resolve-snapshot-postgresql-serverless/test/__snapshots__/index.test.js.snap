@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resolve-snapshot-mysql-serverless "drop" should drop the snapshotAdapter 1`] = `Array []`;
+exports[`resolve-snapshot-postgres-serverless "drop" should drop the snapshotAdapter 1`] = `Array []`;
 
-exports[`resolve-snapshot-mysql-serverless "drop" should drop the snapshotAdapter 2`] = `Array []`;
+exports[`resolve-snapshot-postgres-serverless "drop" should drop the snapshotAdapter 2`] = `Array []`;
 
-exports[`resolve-snapshot-mysql-serverless "drop" should drop the snapshotAdapter 3`] = `Array []`;
+exports[`resolve-snapshot-postgres-serverless "drop" should drop the snapshotAdapter 3`] = `Array []`;
 
-exports[`resolve-snapshot-mysql-serverless "drop" should drop the snapshotAdapter 4`] = `
+exports[`resolve-snapshot-postgres-serverless "drop" should drop the snapshotAdapter 4`] = `
 Array [
   Array [
     Object {
@@ -37,13 +37,13 @@ Array [
 ]
 `;
 
-exports[`resolve-snapshot-mysql-serverless "loadSnapshot" should load the snapshot 1`] = `Array []`;
+exports[`resolve-snapshot-postgres-serverless "loadSnapshot" should load the snapshot 1`] = `Array []`;
 
-exports[`resolve-snapshot-mysql-serverless "loadSnapshot" should load the snapshot 2`] = `Array []`;
+exports[`resolve-snapshot-postgres-serverless "loadSnapshot" should load the snapshot 2`] = `Array []`;
 
-exports[`resolve-snapshot-mysql-serverless "loadSnapshot" should load the snapshot 3`] = `Array []`;
+exports[`resolve-snapshot-postgres-serverless "loadSnapshot" should load the snapshot 3`] = `Array []`;
 
-exports[`resolve-snapshot-mysql-serverless "loadSnapshot" should load the snapshot 4`] = `
+exports[`resolve-snapshot-postgres-serverless "loadSnapshot" should load the snapshot 4`] = `
 Array [
   Array [
     Object {
@@ -76,15 +76,15 @@ Array [
 ]
 `;
 
-exports[`resolve-snapshot-mysql-serverless "loadSnapshot" should load the snapshot 5`] = `""`;
+exports[`resolve-snapshot-postgres-serverless "loadSnapshot" should load the snapshot 5`] = `""`;
 
-exports[`resolve-snapshot-mysql-serverless "saveSnapshot" should save the snapshot every 5 times 1`] = `Array []`;
+exports[`resolve-snapshot-postgres-serverless "saveSnapshot" should save the snapshot every 5 times 1`] = `Array []`;
 
-exports[`resolve-snapshot-mysql-serverless "saveSnapshot" should save the snapshot every 5 times 2`] = `Array []`;
+exports[`resolve-snapshot-postgres-serverless "saveSnapshot" should save the snapshot every 5 times 2`] = `Array []`;
 
-exports[`resolve-snapshot-mysql-serverless "saveSnapshot" should save the snapshot every 5 times 3`] = `Array []`;
+exports[`resolve-snapshot-postgres-serverless "saveSnapshot" should save the snapshot every 5 times 3`] = `Array []`;
 
-exports[`resolve-snapshot-mysql-serverless "saveSnapshot" should save the snapshot every 5 times 4`] = `
+exports[`resolve-snapshot-postgres-serverless "saveSnapshot" should save the snapshot every 5 times 4`] = `
 Array [
   Array [
     Object {
@@ -114,6 +114,149 @@ Array [
       VALUES('key', 'value = 5')
       ON CONFLICT (\\"SnapshotKey\\") DO UPDATE
       SET \\"SnapshotContent\\" = 'value = 5'",
+    },
+  ],
+]
+`;
+
+exports[`resolve-snapshot-postgres-serverless as resource method "create" should create resource 1`] = `
+Array [
+  Array [
+    Object {
+      "continueAfterTimeout": false,
+      "database": "postgres",
+      "includeResultMetadata": true,
+      "resourceArn": "dbClusterOrInstanceArn",
+      "secretArn": "awsSecretStoreAdminArn",
+      "sql": "CREATE USER \\"userLogin\\"; ALTER USER \\"userLogin\\" PASSWORD 'userPassword'; CREATE SCHEMA \\"databaseName\\"",
+    },
+  ],
+  Array [
+    Object {
+      "continueAfterTimeout": false,
+      "database": "postgres",
+      "includeResultMetadata": true,
+      "resourceArn": "dbClusterOrInstanceArn",
+      "secretArn": "awsSecretStoreAdminArn",
+      "sql": "CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tableName\\" (
+      \\"SnapshotKey\\" text NOT NULL,
+      \\"SnapshotContent\\" text,
+      PRIMARY KEY(\\"SnapshotKey\\")
+    )",
+    },
+  ],
+  Array [
+    Object {
+      "continueAfterTimeout": false,
+      "database": "postgres",
+      "includeResultMetadata": true,
+      "resourceArn": "dbClusterOrInstanceArn",
+      "secretArn": "awsSecretStoreAdminArn",
+      "sql": "GRANT USAGE ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL TABLES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL SEQUENCES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL FUNCTIONS IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; ALTER SCHEMA \\"databaseName\\" OWNER TO \\"userLogin\\"",
+    },
+  ],
+]
+`;
+
+exports[`resolve-snapshot-postgres-serverless as resource method "destroy" should destroy resource 1`] = `
+Array [
+  Array [
+    Object {
+      "continueAfterTimeout": false,
+      "database": "postgres",
+      "includeResultMetadata": true,
+      "resourceArn": "dbClusterOrInstanceArn",
+      "secretArn": "awsSecretStoreAdminArn",
+      "sql": "ALTER SCHEMA \\"databaseName\\" OWNER TO SESSION_USER",
+    },
+  ],
+  Array [
+    Object {
+      "continueAfterTimeout": false,
+      "database": "postgres",
+      "includeResultMetadata": true,
+      "resourceArn": "dbClusterOrInstanceArn",
+      "secretArn": "awsSecretStoreAdminArn",
+      "sql": "DROP SCHEMA \\"databaseName\\" CASCADE",
+    },
+  ],
+  Array [
+    Object {
+      "continueAfterTimeout": false,
+      "database": "postgres",
+      "includeResultMetadata": true,
+      "resourceArn": "dbClusterOrInstanceArn",
+      "secretArn": "awsSecretStoreAdminArn",
+      "sql": "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE usename='userLogin';DROP USER \\"userLogin\\"",
+    },
+  ],
+]
+`;
+
+exports[`resolve-snapshot-postgres-serverless as resource method "dispose" should dispose resource 1`] = `
+Array [
+  Array [
+    Object {
+      "continueAfterTimeout": false,
+      "database": "postgres",
+      "includeResultMetadata": true,
+      "resourceArn": "dbClusterOrInstanceArn",
+      "secretArn": "awsSecretStoreAdminArn",
+      "sql": "ALTER SCHEMA \\"databaseName\\" OWNER TO SESSION_USER",
+    },
+  ],
+  Array [
+    Object {
+      "continueAfterTimeout": false,
+      "database": "postgres",
+      "includeResultMetadata": true,
+      "resourceArn": "dbClusterOrInstanceArn",
+      "secretArn": "awsSecretStoreAdminArn",
+      "sql": "DROP SCHEMA \\"databaseName\\" CASCADE",
+    },
+  ],
+  Array [
+    Object {
+      "continueAfterTimeout": false,
+      "database": "postgres",
+      "includeResultMetadata": true,
+      "resourceArn": "dbClusterOrInstanceArn",
+      "secretArn": "awsSecretStoreAdminArn",
+      "sql": "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE usename='userLogin';DROP USER \\"userLogin\\"",
+    },
+  ],
+  Array [
+    Object {
+      "continueAfterTimeout": false,
+      "database": "postgres",
+      "includeResultMetadata": true,
+      "resourceArn": "dbClusterOrInstanceArn",
+      "secretArn": "awsSecretStoreAdminArn",
+      "sql": "CREATE USER \\"userLogin\\"; ALTER USER \\"userLogin\\" PASSWORD 'userPassword'; CREATE SCHEMA \\"databaseName\\"",
+    },
+  ],
+  Array [
+    Object {
+      "continueAfterTimeout": false,
+      "database": "postgres",
+      "includeResultMetadata": true,
+      "resourceArn": "dbClusterOrInstanceArn",
+      "secretArn": "awsSecretStoreAdminArn",
+      "sql": "CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tableName\\" (
+      \\"SnapshotKey\\" text NOT NULL,
+      \\"SnapshotContent\\" text,
+      PRIMARY KEY(\\"SnapshotKey\\")
+    )",
+    },
+  ],
+  Array [
+    Object {
+      "continueAfterTimeout": false,
+      "database": "postgres",
+      "includeResultMetadata": true,
+      "resourceArn": "dbClusterOrInstanceArn",
+      "secretArn": "awsSecretStoreAdminArn",
+      "sql": "GRANT USAGE ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL TABLES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL SEQUENCES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL FUNCTIONS IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; ALTER SCHEMA \\"databaseName\\" OWNER TO \\"userLogin\\"",
     },
   ],
 ]
