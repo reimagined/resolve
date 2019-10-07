@@ -84,16 +84,19 @@ void (async () => {
         )
 
         const clientCompiling = new Promise((resolve, reject) => {
-          clientCompiler.watch({ aggregateTimeout: 1000, poll: 1000 }, (err, { stats }) => {
-            stats.forEach(showBuildInfo.bind(null, err))
+          clientCompiler.watch(
+            { aggregateTimeout: 1000, poll: 1000 },
+            (err, { stats }) => {
+              stats.forEach(showBuildInfo.bind(null, err))
 
-            const hasErrors = stats.reduce(
-              (acc, val) => acc || (val != null && val.hasErrors()),
-              false
-            )
+              const hasErrors = stats.reduce(
+                (acc, val) => acc || (val != null && val.hasErrors()),
+                false
+              )
 
-            void (!hasErrors ? resolve() : reject(stats.toString('')))
-          })
+              void (!hasErrors ? resolve() : reject(stats.toString('')))
+            }
+          )
         })
 
         await Promise.all([watch(resolveConfig), clientCompiling])

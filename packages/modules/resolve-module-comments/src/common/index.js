@@ -33,7 +33,8 @@ export default ({
   commandTypes,
   resolverNames,
   maxNestedLevel,
-  verifyCommand
+  verifyCommand,
+  commentsInstanceName
 } = {}) => {
   const options = {
     aggregateName,
@@ -43,7 +44,8 @@ export default ({
     eventTypes,
     commandTypes,
     resolverNames,
-    maxNestedLevel
+    maxNestedLevel,
+    commentsInstanceName
   }
   const imports = {
     verifyCommand:
@@ -80,6 +82,18 @@ export default ({
           imports
         }
       }
-    ]
+    ],
+    clientImports: {
+      [options.commentsInstanceName]: {
+        module: 'resolve-runtime/lib/common/utils/interop-options.js',
+        options
+      }
+    },
+    serverImports: {
+      [options.commentsInstanceName]: {
+        module: 'resolve-runtime/lib/common/utils/interop-options.js',
+        options
+      }
+    }
   }))(options, imports)
 }

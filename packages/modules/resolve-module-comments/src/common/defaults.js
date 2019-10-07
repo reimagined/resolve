@@ -7,7 +7,6 @@ export const COMMENT_REMOVED = 'COMMENT_REMOVED'
 export const createComment = 'createComment'
 export const updateComment = 'updateComment'
 export const removeComment = 'removeComment'
-export const commentCommandTypes = [createComment, updateComment, removeComment]
 
 // Reducer Name
 export const reducerName = 'comments'
@@ -28,3 +27,6 @@ export const commentsTableName = 'Comments'
 export const commentsTree = 'commentsTree'
 export const foreignCommentsCount = 'foreignCommentsCount'
 export const allCommentsPaginate = 'allCommentsPaginate'
+
+// Module Instance Name
+export const commentsInstanceName = 'comments'

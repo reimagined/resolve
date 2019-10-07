@@ -2,37 +2,43 @@ import React from 'react'
 import { render } from 'react-dom'
 import {
   AppContainer,
-  createActions,
   createStore,
   deserializeInitialState
 } from 'resolve-redux'
 import { createBrowserHistory } from 'history'
 
 import createCommentReducer from 'resolve-module-comments/lib/client/reducers/comments'
-import * as commentsDefaults from 'resolve-module-comments/lib/common/defaults'
-
 import resolveChunk from '../dist/common/client/client-chunk'
 
+import createAggregateActions from './create-aggregate-actions'
 import optimisticReducer from './reducers/optimistic'
 import optimisticVotingSaga from './sagas/optimistic-voting-saga'
 import storyCreateSaga from './sagas/story-create-saga'
+import getCommentsOptions from './get-comments-options'
 
 import routes from './routes'
 
-const { rootPath, staticPath, viewModels, subscribeAdapter } = resolveChunk
+const {
+  rootPath,
+  staticPath,
+  viewModels,
+  subscribeAdapter,
+  clientImports
+} = resolveChunk
+const commentsOptions = getCommentsOptions(clientImports, 'comments')
 
 const redux = {
   reducers: {
     comments: createCommentReducer({
-      aggregateName: commentsDefaults.aggregateName,
-      readModelName: commentsDefaults.readModelName,
+      aggregateName: commentsOptions.aggregateName,
+      readModelName: commentsOptions.readModelName,
       resolverNames: {
-        commentsTree: commentsDefaults.commentsTree
+        commentsTree: commentsOptions.commentsTree
       },
       commandTypes: {
-        createComment: commentsDefaults.createComment,
-        updateComment: commentsDefaults.updateComment,
-        removeComment: commentsDefaults.removeComment
+        createComment: commentsOptions.createComment,
+        updateComment: commentsOptions.updateComment,
+        removeComment: commentsOptions.removeComment
       }
     }),
     optimistic: optimisticReducer
@@ -42,32 +48,11 @@ const redux = {
   enhancers: []
 }
 
+const aggregateActions = createAggregateActions(commentsOptions)
+
 const initialState = deserializeInitialState(
   viewModels,
   window.__INITIAL_STATE__
-)
-
-const aggregates = [
-  {
-    name: 'Story',
-    commands: { createStory() {}, upvoteStory() {}, unvoteStory() {} }
-  },
-  {
-    name: 'User',
-    commands: { createUser() {}, confirmUser() {}, rejectUser() {} }
-  },
-  {
-    name: commentsDefaults.aggregateName,
-    commands: commentsDefaults.commentCommandTypes.reduce((acc, key) => {
-      acc[key] = () => {}
-      return acc
-    }, {})
-  }
-]
-
-const aggregateActions = aggregates.reduce(
-  (acc, aggregate) => Object.assign(acc, createActions(aggregate)),
-  {}
 )
 
 const origin =
