@@ -1,12 +1,5 @@
 const create = async (pool, options) => {
-  const {
-    executeStatement,
-    connect,
-    init,
-    escapeId,
-    escape,
-    dispose
-  } = pool
+  const { executeStatement, connect, init, escapeId, escape, dispose } = pool
 
   const admin = {
     config: {

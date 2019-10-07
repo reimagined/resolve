@@ -1,13 +1,7 @@
 import { EOL } from 'os'
 
 const destroy = async (pool, options) => {
-  const {
-    executeStatement,
-    connect,
-    escapeId,
-    escape,
-    dispose
-  } = pool
+  const { executeStatement, connect, escapeId, escape, dispose } = pool
 
   const admin = {
     config: {

@@ -1,7 +1,6 @@
 import { DEFAULT_BUCKET_SIZE, DEFAULT_TABLE_NAME } from './constants'
 
 const connect = async pool => {
-
   const {
     RDSDataService,
     executeStatement,
