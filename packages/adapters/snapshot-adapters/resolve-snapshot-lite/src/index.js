@@ -41,10 +41,10 @@ const connect = async pool => {
 }
 
 const init = async pool => {
-  await connect(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
+  await connect(pool)
 
   await pool.database.exec(
     `CREATE TABLE ${escapeId(tableName)} (
@@ -55,10 +55,10 @@ const init = async pool => {
 }
 
 const loadSnapshot = async (pool, snapshotKey) => {
-  await connect(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
+  await connect(pool)
 
   const result = await pool.database.get(
     `SELECT ${escapeId('content')} 
@@ -69,10 +69,10 @@ const loadSnapshot = async (pool, snapshotKey) => {
 }
 
 const saveSnapshot = async (pool, snapshotKey, content) => {
-  await connect(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
+  await connect(pool)
   if (!pool.counters.has(snapshotKey)) {
     pool.counters.set(snapshotKey, 0)
   }
@@ -98,15 +98,20 @@ const dispose = async pool => {
     await pool.connectPromise
   }
 
-  pool.counters.clear()
-  await pool.database.close()
+  if (pool.counters != null) {
+    pool.counters.clear()
+  }
+
+  if (pool.database != null) {
+    await pool.database.close()
+  }
 }
 
 const dropSnapshot = async (pool, snapshotKey) => {
-  await connect(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
+  await connect(pool)
 
   await pool.database.exec(
     `DELETE FROM ${escapeId(tableName)} 
@@ -115,10 +120,10 @@ const dropSnapshot = async (pool, snapshotKey) => {
 }
 
 const drop = async pool => {
-  await connect(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
+  await connect(pool)
 
   await pool.database.exec(`DROP TABLE ${escapeId(tableName)}`)
 }
