@@ -100,8 +100,8 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
           files: ['client-chunk.js'],
           rules: [
             {
-              search: /^module.exports =/,
-              replace: 'const mainExport ='
+              search: /^module.exports/,
+              replace: 'const mainExport'
             },
             {
               search: /$/,
