@@ -10,13 +10,7 @@ import getRootBasedUrl from 'resolve-runtime/lib/common/utils/get-root-based-url
 import getStaticBasedPath from 'resolve-runtime/lib/common/utils/get-static-based-path'
 import jsonUtfStringify from 'resolve-runtime/lib/common/utils/json-utf-stringify'
 
-import createCommentReducer from 'resolve-module-comments/lib/client/reducers/comments'
-import createAggregateActions from './create-aggregate-actions'
-import optimisticReducer from './reducers/optimistic'
-import optimisticVotingSaga from './sagas/optimistic-voting-saga'
-import storyCreateSaga from './sagas/story-create-saga'
-import getCommentsOptions from './get-comments-options'
-
+import getRedux from './get-redux'
 import routes from './routes'
 
 const markupHandler = async (req, res) => {
@@ -28,30 +22,7 @@ const markupHandler = async (req, res) => {
     jwtCookie,
     serverImports
   } = req.resolve
-  const commentsOptions = getCommentsOptions(serverImports, 'comments')
-
-  const redux = {
-    reducers: {
-      comments: createCommentReducer({
-        aggregateName: commentsOptions.aggregateName,
-        readModelName: commentsOptions.readModelName,
-        resolverNames: {
-          commentsTree: commentsOptions.commentsTree
-        },
-        commandTypes: {
-          createComment: commentsOptions.createComment,
-          updateComment: commentsOptions.updateComment,
-          removeComment: commentsOptions.removeComment
-        }
-      }),
-      optimistic: optimisticReducer
-    },
-    sagas: [optimisticVotingSaga, storyCreateSaga],
-    middlewares: [],
-    enhancers: []
-  }
-
-  const aggregateActions = createAggregateActions(commentsOptions)
+  const { aggregateActions, ...redux } = getRedux(serverImports, 'comments')
   const baseQueryUrl = getRootBasedUrl(req.resolve.rootPath, '/')
   const url = req.path.substring(baseQueryUrl.length)
 

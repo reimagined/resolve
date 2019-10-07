@@ -7,15 +7,8 @@ import {
 } from 'resolve-redux'
 import { createBrowserHistory } from 'history'
 
-import createCommentReducer from 'resolve-module-comments/lib/client/reducers/comments'
 import resolveChunk from '../dist/common/client/client-chunk'
-
-import createAggregateActions from './create-aggregate-actions'
-import optimisticReducer from './reducers/optimistic'
-import optimisticVotingSaga from './sagas/optimistic-voting-saga'
-import storyCreateSaga from './sagas/story-create-saga'
-import getCommentsOptions from './get-comments-options'
-
+import getRedux from './get-redux'
 import routes from './routes'
 
 const {
@@ -25,30 +18,7 @@ const {
   subscribeAdapter,
   clientImports
 } = resolveChunk
-const commentsOptions = getCommentsOptions(clientImports, 'comments')
-
-const redux = {
-  reducers: {
-    comments: createCommentReducer({
-      aggregateName: commentsOptions.aggregateName,
-      readModelName: commentsOptions.readModelName,
-      resolverNames: {
-        commentsTree: commentsOptions.commentsTree
-      },
-      commandTypes: {
-        createComment: commentsOptions.createComment,
-        updateComment: commentsOptions.updateComment,
-        removeComment: commentsOptions.removeComment
-      }
-    }),
-    optimistic: optimisticReducer
-  },
-  sagas: [optimisticVotingSaga, storyCreateSaga],
-  middlewares: [],
-  enhancers: []
-}
-
-const aggregateActions = createAggregateActions(commentsOptions)
+const { aggregateActions, ...redux } = getRedux(clientImports, 'comments')
 
 const initialState = deserializeInitialState(
   viewModels,
