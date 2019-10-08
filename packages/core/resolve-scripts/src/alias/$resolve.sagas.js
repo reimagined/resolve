@@ -2,7 +2,6 @@ import {
   message,
   RESOURCE_ANY,
   RUNTIME_ENV_ANYWHERE,
-  IMPORT_CONSTRUCTOR,
   IMPORT_INSTANCE
 } from '../constants'
 import importResource from '../import_resource'
@@ -47,6 +46,7 @@ export default ({ resolveConfig, isClient }) => {
       runtimeMode: RUNTIME_ENV_ANYWHERE,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
+      calculateHash: 'resolve-saga-source-hash',
       imports,
       constants
     })
@@ -58,6 +58,7 @@ export default ({ resolveConfig, isClient }) => {
         runtimeMode: RUNTIME_ENV_ANYWHERE,
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
+        calculateHash: 'resolve-saga-side-effects-hash',
         imports,
         constants
       })
@@ -65,68 +66,27 @@ export default ({ resolveConfig, isClient }) => {
       constants.push(`const sideEffects_${index}_original = null`)
     }
 
-    constants.push(`const source_${index} = sideEffects_${index}_original == null
-      ? source_${index}_original : {
-        handlers: source_${index}_original,
-        sideEffects: sideEffects_${index}_original
-      }
+    constants.push(`const handlers_${index} = sideEffects_${index}_original == null
+      ? source_${index}_original.handlers
+      : source_${index}_original
+    `)
+
+    constants.push(`const sideEffects_${index} = sideEffects_${index}_original == null
+      ? source_${index}_original.sideEffects
+      : sideEffects_${index}_original
+    `)
+
+    constants.push(`const invariantHash_${index} = sideEffects_${index}_original != null
+      ? source_${index}_original_hash + sideEffects_${index}_original_hash
+      : source_${index}_original_hash
     `)
 
     exports.push(`sagas.push({`, `  name: name_${index}`)
     exports.push(`, connectorName: connectorName_${index}`)
     exports.push(`, schedulerName: schedulerName_${index}`)
-    exports.push(`, source: source_${index}`)
-    exports.push(`})`, ``)
-  }
-
-  const schedulersNames = Object.keys(resolveConfig.schedulers)
-
-  for (let index = 0; index < schedulersNames.length; index++) {
-    const scheduler = resolveConfig.schedulers[schedulersNames[index]]
-    if (checkRuntimeEnv(schedulersNames[index])) {
-      throw new Error(
-        `${message.clientEnvError}.schedulers[${schedulersNames[index]}]`
-      )
-    }
-
-    constants.push(
-      `const name_s_${index} = ${JSON.stringify(`${schedulersNames[index]}`)}`
-    )
-
-    constants.push(
-      `const connectorName_s_${index} = ${JSON.stringify(
-        scheduler.connectorName
-      )}`
-    )
-
-    importResource({
-      resourceName: `source_s_${index}`,
-      resourceValue: {
-        module: 'resolve-runtime/lib/common/sagas/scheduler-saga-handlers.js',
-        options: {}
-      },
-      runtimeMode: RUNTIME_ENV_ANYWHERE,
-      importMode: RESOURCE_ANY,
-      instanceMode: IMPORT_CONSTRUCTOR,
-      imports,
-      constants
-    })
-
-    importResource({
-      resourceName: `sideEffects_s_${index}`,
-      resourceValue: scheduler.adapter,
-      runtimeMode: RUNTIME_ENV_ANYWHERE,
-      importMode: RESOURCE_ANY,
-      instanceMode: IMPORT_CONSTRUCTOR,
-      imports,
-      constants
-    })
-
-    exports.push(`sagas.push({`, `  name: name_s_${index}`)
-    exports.push(`, connectorName: connectorName_s_${index}`)
-    exports.push(`, source: source_s_${index}`)
-    exports.push(`, sideEffects: sideEffects_s_${index}`)
-    exports.push(`, isSystemScheduler: true`)
+    exports.push(`, handlers: handlers_${index}`)
+    exports.push(`, sideEffects: sideEffects_${index}`)
+    exports.push(`, invariantHash: invariantHash_${index}`)
     exports.push(`})`, ``)
   }
 

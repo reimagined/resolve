@@ -4,7 +4,6 @@ import debugLevels from 'resolve-debug-levels'
 import { createActions } from 'resolve-redux'
 
 import initAwsClients from './init-aws-clients'
-import prepareDomain from '../common/prepare-domain'
 import initBroker from './init-broker'
 import initPerformanceTracer from './init-performance-tracer'
 import lambdaWorker from './lambda-worker'
@@ -19,11 +18,17 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
     log.debug('configuring reSolve framework')
     const resolve = {
       seedClientEnvs: assemblies.seedClientEnvs,
-      assemblies,
-      ...constants,
       ...domain,
+      ...constants,
+      eventBroker: {},
+      assemblies,
       redux,
       routes
+    }
+
+    resolve.aggregateActions = {}
+    for (const aggregate of domain.aggregates) {
+      Object.assign(resolve.aggregateActions, createActions(aggregate))
     }
 
     log.debug('preparing performance tracer')
@@ -39,9 +44,6 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
 
     log.debug('preparing aws clients')
     await initAwsClients(resolve)
-
-    log.debug('preparing domain')
-    await prepareDomain(resolve)
 
     log.debug('preparing event broker')
     await initBroker(resolve)

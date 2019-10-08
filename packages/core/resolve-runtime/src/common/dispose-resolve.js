@@ -8,6 +8,7 @@ const disposeResolve = async resolve => {
       resolve.eventStore.dispose(),
       resolve.executeCommand.dispose(),
       resolve.executeQuery.dispose(),
+      resolve.executeSaga.dispose(),
       resolve.storageAdapter.dispose(),
       resolve.snapshotAdapter.dispose()
     ]
