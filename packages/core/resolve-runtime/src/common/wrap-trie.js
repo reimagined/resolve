@@ -1,8 +1,8 @@
 import Trie from 'route-trie'
 
-import commandHandler from '../handlers/command-handler'
-import queryHandler from '../handlers/query-handler'
-import subscribeHandler from '../handlers/subscribe-handler'
+import commandHandler from './handlers/command-handler'
+import queryHandler from './handlers/query-handler'
+import subscribeHandler from './handlers/subscribe-handler'
 
 const wrapTrie = apiHandlers => {
   const trie = new Trie({

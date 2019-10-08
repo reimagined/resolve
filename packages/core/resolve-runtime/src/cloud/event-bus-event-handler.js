@@ -11,16 +11,20 @@ const handleApplyEvents = async (lambdaEvent, resolve) => {
   log.debug('applying events started')
   log.verbose(JSON.stringify({ listenerId, properties }, null, 2))
 
-  resolve.eventProperties = properties
-
   const startTime = Date.now()
   let result = null
   try {
-    result = await resolve.executeQuery.updateByEvents(
+    const updateByEvents = resolve.eventListeners.get(listenerId).isSaga
+      ? resolve.executeSaga.updateByEvents
+      : resolve.executeQuery.updateByEvents
+
+    result = await updateByEvents(
       listenerId,
       events,
-      resolve.getRemainingTimeInMillis
+      resolve.getRemainingTimeInMillis,
+      properties
     )
+
     subSegment.addAnnotation('eventCount', events.length)
     subSegment.addAnnotation('origin', 'resolve:applyEventsFromBus')
   } catch (error) {

@@ -51,11 +51,9 @@ const initBroker = resolve => {
       value: publishEvent.bind(null, resolve)
     },
     doUpdateRequest: {
-      value: async readModelName => {
-        const readModel = resolve.readModels.find(
-          ({ name }) => name === readModelName
-        )
-        await invokeUpdateLambda(resolve, readModel)
+      value: async listenerName => {
+        const listener = resolve.eventListeners.get(listenerName)
+        await invokeUpdateLambda(resolve, listener)
       }
     }
   })

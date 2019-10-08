@@ -5,9 +5,9 @@ import initBroker from './init-broker'
 import initPerformanceTracer from './init-performance-tracer'
 import initExpress from './init-express'
 import initWebsockets from './init-websockets'
-import prepareDomain from '../common/prepare-domain'
 import startExpress from './start-express'
 import emptyWorker from './empty-worker'
+import wrapTrie from '../common/wrap-trie'
 
 const log = debugLevels('resolve:resolve-runtime:local-entry')
 
@@ -17,13 +17,14 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       instanceId: `${process.pid}${Math.floor(Math.random() * 100000)}`,
       seedClientEnvs: assemblies.seedClientEnvs,
       serverImports: assemblies.serverImports,
-      assemblies,
+      ...domain,
       ...constants,
-      ...domain
+      routesTrie: wrapTrie(domain.apiHandlers),
+      eventBroker: {},
+      assemblies
     }
 
     await initPerformanceTracer(resolve)
-    await prepareDomain(resolve)
     await initBroker(resolve)
     await initExpress(resolve)
     await initWebsockets(resolve)

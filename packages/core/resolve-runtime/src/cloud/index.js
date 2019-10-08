@@ -3,10 +3,10 @@ import 'source-map-support/register'
 import debugLevels from 'resolve-debug-levels'
 
 import initAwsClients from './init-aws-clients'
-import prepareDomain from '../common/prepare-domain'
 import initBroker from './init-broker'
 import initPerformanceTracer from './init-performance-tracer'
 import lambdaWorker from './lambda-worker'
+import wrapTrie from '../common/wrap-trie'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
@@ -19,9 +19,11 @@ const index = async ({ assemblies, constants, domain }) => {
     const resolve = {
       seedClientEnvs: assemblies.seedClientEnvs,
       serverImports: assemblies.serverImports,
-      assemblies,
+      ...domain,
       ...constants,
-      ...domain
+      routesTrie: wrapTrie(domain.apiHandlers),
+      eventBroker: {},
+      assemblies
     }
 
     log.debug('preparing performance tracer')
@@ -32,9 +34,6 @@ const index = async ({ assemblies, constants, domain }) => {
 
     log.debug('preparing aws clients')
     await initAwsClients(resolve)
-
-    log.debug('preparing domain')
-    await prepareDomain(resolve)
 
     log.debug('preparing event broker')
     await initBroker(resolve)

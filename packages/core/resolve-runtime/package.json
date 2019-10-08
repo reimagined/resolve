@@ -42,6 +42,7 @@
     "resolve-es": "0.20.28",
     "resolve-local-event-broker": "0.20.28",
     "resolve-query": "0.20.28",
+    "resolve-saga": "0.20.28",
     "resolve-scheduler-cloud": "0.20.28",
     "resolve-scheduler-local": "0.20.28",
     "resolve-storage-base": "0.20.28",

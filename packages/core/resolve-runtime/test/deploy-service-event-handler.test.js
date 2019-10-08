@@ -5,7 +5,6 @@ describe('deploy-service-event-handler.test', () => {
 
   beforeEach(() => {
     resolve = {
-      sagaNames: new Map(),
       readModels: [],
       eventBroker: {
         reset: jest.fn(),

@@ -1,7 +1,7 @@
 import wrapSideEffects from './wrap-side-effects'
 
 const sagaEventHandler = async (
-  currentReadModel,
+  sagaProvider,
   handlers,
   sideEffects,
   eventType,
@@ -9,7 +9,7 @@ const sagaEventHandler = async (
   store,
   event
 ) => {
-  const eventProperties = currentReadModel.eventProperties
+  const eventProperties = sagaProvider.eventProperties
   const isEnabled =
     +eventProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP <= +event.timestamp
 
@@ -23,8 +23,8 @@ const sagaEventHandler = async (
           eventProperties,
           {
             ...applicationSideEffects,
-            executeCommand: currentReadModel.executeCommand,
-            executeQuery: currentReadModel.executeQuery,
+            executeCommand: sagaProvider.executeCommand,
+            executeQuery: sagaProvider.executeQuery,
             scheduleCommand
           },
           isEnabled

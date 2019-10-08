@@ -7,10 +7,12 @@ export default () => ({
   import readModelConnectors from '$resolve.readModelConnectors'
   import constants from '$resolve.constants'
   import apiHandlers from '$resolve.apiHandlers'
+  import eventListeners from '$resolve.eventListeners'
   import aggregates from '$resolve.aggregates'
   import readModels from '$resolve.readModels'
   import viewModels from '$resolve.viewModels'
   import sagas from '$resolve.sagas'
+  import schedulers from '$resolve.schedulers'
 
   export default {
     assemblies: {
@@ -23,9 +25,11 @@ export default () => ({
     constants,
     domain: {
       apiHandlers,
+      eventListeners,
       aggregates,
       readModels,
       viewModels,
+      schedulers,
       sagas
     }
   }
