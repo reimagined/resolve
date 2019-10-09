@@ -4,7 +4,7 @@ const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
 const invokeUpdateLambda = async (
   { lambda },
-  { name: listenerId, invariantHash, projection }
+  { name: listenerId, invariantHash, eventTypes }
 ) => {
   const invokeFunctionName = process.env.RESOLVE_META_LOCK_LAMBDA_ARN
 
@@ -12,7 +12,7 @@ const invokeUpdateLambda = async (
     listenerId,
     invariantHash,
     inactiveTimeout: 1000 * 60 * 60,
-    eventTypes: Object.keys(projection)
+    eventTypes
   })
 
   log.debug(`invoking lambda ${invokeFunctionName} ${invokePayload}`)
