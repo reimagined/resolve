@@ -5,7 +5,10 @@ import bootstrap from '../common/bootstrap'
 const log = debugLevels('resolve:resolve-runtime:deploy-service-event-handler')
 
 const getReadModelNames = resolve => resolve.readModels.map(({ name }) => name)
-const getSagaNames = resolve => resolve.sagas.map(({ name }) => name)
+const getSagaNames = resolve => [
+  ...resolve.schedulers.map(({ name }) => name),
+  ...resolve.sagas.map(({ name }) => name)
+]
 
 const handleResolveReadModelEvent = async (
   lambdaEvent,

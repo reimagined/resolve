@@ -7,6 +7,7 @@ const resetDomainHandler = options => async (req, res) => {
     readModels,
     viewModels,
     aggregates,
+    schedulers,
     sagas
   } = req.resolve
 
@@ -47,7 +48,7 @@ const resetDomainHandler = options => async (req, res) => {
     }
 
     if (dropSagas) {
-      for (const { name, connectorName } of sagas) {
+      for (const { name, connectorName } of [...sagas, ...schedulers]) {
         const connector = readModelConnectors[connectorName]
         const connection = await connector.connect(name)
 
