@@ -14,6 +14,7 @@ const {
   exportEventStore
 } = require('resolve-scripts')
 const createAuthModule = require('resolve-module-auth').default
+const resolveModuleAdmin = require('resolve-module-admin').default
 const getLocalIp = require('my-local-ip')
 const remotedev = require('remotedev-server')
 const opn = require('opn')
@@ -96,11 +97,13 @@ void (async () => {
 
     switch (launchMode) {
       case 'dev': {
+        const moduleAdmin = resolveModuleAdmin()
         const resolveConfig = merge(
           defaultResolveConfig,
           appConfig,
           devConfig,
-          authModule
+          authModule,
+          moduleAdmin
         )
 
         await reset(

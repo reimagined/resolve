@@ -12,6 +12,7 @@ import {
 } from 'resolve-scripts'
 import resolveModuleComments from 'resolve-module-comments'
 import resolveModuleAuth from 'resolve-module-auth'
+import resolveModuleAdmin from 'resolve-module-admin'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
@@ -63,7 +64,8 @@ void (async () => {
 
     switch (launchMode) {
       case 'dev': {
-        const resolveConfig = merge(baseConfig, devConfig)
+        const moduleAdmin = resolveModuleAdmin()
+        const resolveConfig = merge(baseConfig, devConfig, moduleAdmin)
         await reset(resolveConfig, {
           dropEventStore: false,
           dropSnapshots: true,

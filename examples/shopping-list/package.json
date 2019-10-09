@@ -11,7 +11,8 @@
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
     "test:functional": "babel-node ./run.js test:functional",
     "import-event-store": "babel-node ./run.js import-event-store",
-    "export-event-store": "babel-node ./run.js export-event-store"
+    "export-event-store": "babel-node ./run.js export-event-store",
+    "resolve-module-admin": "resolve-module-admin"
   },
   "dependencies": {
     "@babel/node": "7.0.0",
@@ -36,6 +37,7 @@
     "resolve-storage-lite": "0.20.28",
     "resolve-subscribe-mqtt": "0.20.28",
     "resolve-subscribe-socket.io": "0.20.28",
+    "resolve-module-admin": "0.20.28",
     "uuid": "3.3.2"
   },
   "devDependencies": {
