@@ -2,7 +2,6 @@ import createCommand from 'resolve-command'
 import createQuery from 'resolve-query'
 
 import schedulerEventTypes from './scheduler-event-types'
-
 import createSchedulersAggregates from './create-schedulers-aggregates'
 import createSchedulerSagas from './create-scheduler-sagas'
 import wrapRegularSagas from './wrap-regular-sagas'

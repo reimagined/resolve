@@ -11,6 +11,7 @@ const bootstrap = async resolve => {
   } catch (e) {}
 
   try {
+    // TODO: invoke "init" only during first run
     await resolve.snapshotAdapter.init()
   } catch (e) {}
 

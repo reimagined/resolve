@@ -78,6 +78,7 @@ describe('Cloud entry', () => {
     }
 
     domain = {
+      eventListeners: new Map(),
       apiHandlers: [
         /*apiHandler1, apiHandler2*/
       ],
