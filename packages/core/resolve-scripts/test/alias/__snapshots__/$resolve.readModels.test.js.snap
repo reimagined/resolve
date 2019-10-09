@@ -41,7 +41,7 @@ const idempotentFunction = value => value
 const name_0 = \\"Todos\\"
 const connectorName_0 = \\"Todos\\"
 const resolvers_0 = resolvers_0_instance
-const projection_0_hash = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
+const projection_0_hash = \\"<INVARIANT_HASH>\\"
 const projection_0 = projection_0_instance
 
 const readModels = []
@@ -113,7 +113,7 @@ const idempotentFunction = value => value
 const name_0 = \\"Todos\\"
 const connectorName_0 = \\"Todos\\"
 const resolvers_0 = resolvers_0_instance
-const projection_0_hash = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
+const projection_0_hash = \\"<INVARIANT_HASH>\\"
 const projection_0 = projection_0_instance
 const name_1 = \\"Items\\"
 const connectorName_1 = \\"Items\\"
@@ -123,8 +123,8 @@ const resolvers_1 = resolvers_1_constructor(
       resolvers_1_options,
       resolvers_1_imports
     )
-const projection_1_constructor_hash = \\"9bce5552d25e8b6b6c1e9dbe925dd9c7a3104fe5524ce37685d48c4e9f53389a9751a5626503c425539b0c0cf3674aee0e1e23f3392239a68107ae385954d2e1\\"
-const projection_1_import_testCommandsAsModule_hash = \\"cd73ff35f8c6e499fb76f87f1aafe172270c88e347f560f6b38f490974ceeaaea8d496d11f447a9b6583de11b0867cf182663e58cfebde2982d5f6e57a859cc5\\"
+const projection_1_constructor_hash = \\"<INVARIANT_HASH>\\"
+const projection_1_import_testCommandsAsModule_hash = \\"<INVARIANT_HASH>\\"
 const projection_1_imports = { [\\"testCommandsAsModule\\"]: projection_1_import_testCommandsAsModule }
 const projection_1_imports_hash = ((content) => {
   const hmac = __non_webpack_require__('crypto')
@@ -218,7 +218,7 @@ const idempotentFunction = value => value
 const name_0 = \\"Todos\\"
 const connectorName_0 = undefined
 const resolvers_0 = resolvers_0_instance
-const projection_0_hash = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
+const projection_0_hash = \\"<INVARIANT_HASH>\\"
 const projection_0 = projection_0_instance
 
 const readModels = []

@@ -88,7 +88,8 @@ describe('Cloud entry', () => {
         /*readModel*/
       ],
       viewModels: [],
-      sagas: []
+      sagas: [],
+      schedulers: []
     }
 
     redux = {
