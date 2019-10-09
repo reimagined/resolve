@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`resolve-snapshot-mysql "drop" should drop the snapshotAdapter 1`] = `
+Array [
+  Array [
+    "DELETE FROM \`__ResolveSnapshots__\`
+    WHERE \`SnapshotKey\` LIKE 'key%'",
+    Array [
+      "key",
+    ],
+  ],
+]
+`;
+
+exports[`resolve-snapshot-mysql "loadSnapshot" should load the snapshot 1`] = `
+Array [
+  Array [
+    "SELECT \`SnapshotContent\` FROM \`__ResolveSnapshots__\`
+   WHERE \`SnapshotKey\`= 'key' ",
+  ],
+]
+`;
+
+exports[`resolve-snapshot-mysql "loadSnapshot" should load the snapshot 2`] = `"value"`;
+
+exports[`resolve-snapshot-mysql "saveSnapshot" should save the snapshot every 5 times 1`] = `
+Array [
+  Array [
+    "CREATE TABLE IF NOT EXISTS \`__ResolveSnapshots__\` (
+      \`SnapshotKey\` MEDIUMBLOB NOT NULL,
+      \`SnapshotContent\` LONGBLOB,
+      PRIMARY KEY(\`SnapshotKey\`(255))
+    )",
+  ],
+  Array [
+    "INSERT INTO \`__ResolveSnapshots__\`(\`SnapshotKey\`, \`SnapshotContent\`)
+    VALUES('key', '\\\\\\"value = 5\\\\\\"')
+    ON DUPLICATE KEY UPDATE
+    \`SnapshotContent\` = '\\\\\\"value = 5\\\\\\"'",
+  ],
+]
+`;

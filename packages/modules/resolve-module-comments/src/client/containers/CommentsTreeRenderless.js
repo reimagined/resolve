@@ -16,7 +16,6 @@ export class CommentsTreeRenderless extends React.PureComponent {
 
   render() {
     const { children: Component, comments, ...props } = this.props
-
     return <Component {...props} comments={comments} />
   }
 }
@@ -44,7 +43,10 @@ export const mapStateToProps = (
   state,
   { treeId, parentCommentId, reducerName = defaults.reducerName }
 ) => ({
-  comments: state[reducerName][treeId][parentCommentId]
+  comments: [reducerName, treeId, parentCommentId].reduce(
+    (result, partName) => (result ? result[partName] : result),
+    state
+  )
 })
 
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>

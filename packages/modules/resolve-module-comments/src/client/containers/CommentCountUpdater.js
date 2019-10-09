@@ -3,8 +3,10 @@ import { connect } from 'react-redux'
 import { connectReadModel } from 'resolve-redux'
 
 export class CommentCountUpdater extends React.PureComponent {
-  componentDidMount() {
-    this.props.updateCommentCount(this.props.commentCount)
+  componentDidUpdate(prevProps) {
+    if (this.props.commentCount != null && prevProps.commentCount == null) {
+      this.props.updateCommentCount(this.props.commentCount)
+    }
   }
 
   render() {

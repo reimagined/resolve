@@ -66,13 +66,13 @@ class ConnectedComments extends React.PureComponent {
               ) : null}
               <ChildrenComments
                 storyId={treeId}
-                comments={comments.children}
+                comments={comments ? comments.children : null}
                 loggedIn={loggedIn}
               />
             </div>
           )
 
-          if (comments.commentId) {
+          if (comments && comments.commentId) {
             return (
               <Comment
                 storyId={treeId}

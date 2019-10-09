@@ -7,6 +7,7 @@ const resetDomainHandler = options => async (req, res) => {
     readModels,
     viewModels,
     aggregates,
+    schedulers,
     sagas
   } = req.resolve
 
@@ -14,6 +15,10 @@ const resetDomainHandler = options => async (req, res) => {
     try {
       // TODO: invoke "init" only during first run
       await storageAdapter.init()
+    } catch (e) {}
+
+    try {
+      await snapshotAdapter.init()
     } catch (e) {}
 
     const { dropEventStore, dropSnapshots, dropReadModels, dropSagas } = options
@@ -25,7 +30,7 @@ const resetDomainHandler = options => async (req, res) => {
     if (dropSnapshots) {
       for (const { invariantHash } of [...viewModels, ...aggregates]) {
         if (invariantHash != null) {
-          await snapshotAdapter.drop(invariantHash)
+          await snapshotAdapter.dropSnapshot(invariantHash)
         }
       }
     }
@@ -43,7 +48,7 @@ const resetDomainHandler = options => async (req, res) => {
     }
 
     if (dropSagas) {
-      for (const { name, connectorName } of sagas) {
+      for (const { name, connectorName } of [...sagas, ...schedulers]) {
         const connector = readModelConnectors[connectorName]
         const connection = await connector.connect(name)
 
