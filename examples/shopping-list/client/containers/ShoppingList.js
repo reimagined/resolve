@@ -22,7 +22,7 @@ import NotFound from '../components/NotFound'
 
 export class ShoppingList extends React.PureComponent {
   state = {
-    shoppingListName: this.props.data && this.props.data.name,
+    shoppingListName: null,
     itemText: ''
   }
 
@@ -107,7 +107,11 @@ export class ShoppingList extends React.PureComponent {
             </InputGroup.Button>
             <FormControl
               type="text"
-              value={this.state.shoppingListName}
+              value={
+                this.state.shoppingListName == null
+                  ? this.props.data.name
+                  : this.state.shoppingListName
+              }
               onChange={this.updateShoppingListName}
               onKeyPress={this.onShoppingListNamePressEnter}
               onBlur={this.renameShoppingList}
