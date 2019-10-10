@@ -1,9 +1,9 @@
-import { OUTCOMING_TOPICS } from './constants'
+import { SERVER_TO_CLIENT_TOPICS } from '../constants'
 
 const onInformationTopic = async (pool, content) => {
   const { messageGuid, listenerId, clientId } = JSON.parse(content)
   const encodedTopic = pool.encodeXpubTopic({
-    listenerId: OUTCOMING_TOPICS.INFORMATION_TOPIC,
+    listenerId: SERVER_TO_CLIENT_TOPICS.INFORMATION_TOPIC,
     clientId
   })
 

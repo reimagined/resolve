@@ -1,6 +1,6 @@
-import { OUTCOMING_TOPICS } from './constants'
+import { SERVER_TO_CLIENT_TOPICS } from '../constants'
 
-const RESERVED_TOPIC_NAMES = Object.values(OUTCOMING_TOPICS)
+const RESERVED_TOPIC_NAMES = Object.values(SERVER_TO_CLIENT_TOPICS)
 
 const onXpubMessage = async (pool, message) => {
   let followTopicPromise = Promise.resolve()

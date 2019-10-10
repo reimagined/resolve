@@ -11,9 +11,10 @@ const publishEvent = async (resolve, event) => {
 
   try {
     const promises = []
-    for (const { name: modelName, projection } of resolve.readModels) {
-      if (projection.hasOwnProperty(event.type)) {
-        promises.push(resolve.doUpdateRequest(modelName))
+    for (const listener of resolve.eventListeners.values()) {
+      const { name: listenerId, eventTypes } = listener
+      if (eventTypes.includes(event.type)) {
+        promises.push(resolve.doUpdateRequest(listenerId))
       }
     }
     await Promise.all(promises)

@@ -28,6 +28,7 @@
     "@babel/runtime": "^7.0.0",
     "cuid": "^2.1.6",
     "sqlite": "^3.0.2",
+    "resolve-debug-levels": "0.20.28",
     "resolve-zeromq": "0.20.28"
   },
   "devDependencies": {

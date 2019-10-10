@@ -1,6 +1,6 @@
 import { result, xpub, sub, reset } from 'resolve-zeromq'
-import createAndInitBroker from '../src/index'
-import { INCOMING_TOPICS } from '../src/constants'
+import createAndInitBroker from '../src/server/index'
+import { CLIENT_TO_SERVER_TOPICS } from '../src/constants'
 
 describe('main broker tests', () => {
   let broker = null
@@ -37,17 +37,17 @@ describe('main broker tests', () => {
     reset()
   })
 
-  test('sub <- INCOMING_TOPICS.EVENT_TOPIC', async () => {
+  test('sub <- CLIENT_TO_SERVER_TOPICS.EVENT_TOPIC', async () => {
     const content = {}
 
     await sub.onMessage(
-      Buffer.from(`${INCOMING_TOPICS.EVENT_TOPIC} ${encodeContent(content)}`)
+      Buffer.from(`${CLIENT_TO_SERVER_TOPICS.EVENT_TOPIC} ${encodeContent(content)}`)
     )
 
     expect(result).toMatchSnapshot()
   })
 
-  test('sub <- INCOMING_TOPICS.RESET_LISTENER_TOPIC', async () => {
+  test('sub <- CLIENT_TO_SERVER_TOPICS.RESET_LISTENER_TOPIC', async () => {
     const content = {
       messageGuid: 'messageGuid',
       listenerId: 'listenerId',
@@ -56,42 +56,42 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${INCOMING_TOPICS.RESET_LISTENER_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.RESET_LISTENER_TOPIC} ${encodeContent(content)}`
       )
     )
 
     expect(result).toMatchSnapshot()
   })
 
-  test('sub <- INCOMING_TOPICS.PAUSE_LISTENER_TOPIC', async () => {
+  test('sub <- CLIENT_TO_SERVER_TOPICS.PAUSE_LISTENER_TOPIC', async () => {
     const content = {
       listenerId: 'listenerId'
     }
 
     await sub.onMessage(
       Buffer.from(
-        `${INCOMING_TOPICS.PAUSE_LISTENER_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.PAUSE_LISTENER_TOPIC} ${encodeContent(content)}`
       )
     )
 
     expect(result).toMatchSnapshot()
   })
 
-  test('sub <- INCOMING_TOPICS.RESUME_LISTENER_TOPIC', async () => {
+  test('sub <- CLIENT_TO_SERVER_TOPICS.RESUME_LISTENER_TOPIC', async () => {
     const content = {
       listenerId: 'listenerId'
     }
 
     await sub.onMessage(
       Buffer.from(
-        `${INCOMING_TOPICS.RESUME_LISTENER_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.RESUME_LISTENER_TOPIC} ${encodeContent(content)}`
       )
     )
 
     expect(result).toMatchSnapshot()
   })
 
-  test('sub <- INCOMING_TOPICS.ACKNOWLEDGE_BATCH_TOPIC', async () => {
+  test('sub <- CLIENT_TO_SERVER_TOPICS.ACKNOWLEDGE_BATCH_TOPIC', async () => {
     const content = {
       listenerId: 'listenerId',
       lastError: { code: '400', message: 'Test' },
@@ -101,14 +101,14 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${INCOMING_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(content)}`
       )
     )
 
     expect(result).toMatchSnapshot()
   })
 
-  test('sub <- INCOMING_TOPICS.INFORMATION_TOPIC', async () => {
+  test('sub <- CLIENT_TO_SERVER_TOPICS.INFORMATION_TOPIC', async () => {
     const content = {
       messageGuid: 'messageGuid',
       listenerId: 'listenerId',
@@ -117,14 +117,14 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${INCOMING_TOPICS.INFORMATION_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.INFORMATION_TOPIC} ${encodeContent(content)}`
       )
     )
 
     expect(result).toMatchSnapshot()
   })
 
-  test('sub <- INCOMING_TOPICS.PROPERTIES_TOPIC "listProperties"', async () => {
+  test('sub <- CLIENT_TO_SERVER_TOPICS.PROPERTIES_TOPIC "listProperties"', async () => {
     const propertyAction = {
       listenerId: 'listenerId',
       key: 'key',
@@ -140,14 +140,14 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${INCOMING_TOPICS.PROPERTIES_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.PROPERTIES_TOPIC} ${encodeContent(content)}`
       )
     )
 
     expect(result).toMatchSnapshot()
   })
 
-  test('sub <- INCOMING_TOPICS.PROPERTIES_TOPIC "getProperty"', async () => {
+  test('sub <- CLIENT_TO_SERVER_TOPICS.PROPERTIES_TOPIC "getProperty"', async () => {
     const propertyAction = {
       listenerId: 'listenerId',
       key: 'key',
@@ -163,14 +163,14 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${INCOMING_TOPICS.PROPERTIES_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.PROPERTIES_TOPIC} ${encodeContent(content)}`
       )
     )
 
     expect(result).toMatchSnapshot()
   })
 
-  test('sub <- INCOMING_TOPICS.PROPERTIES_TOPIC "setProperty"', async () => {
+  test('sub <- CLIENT_TO_SERVER_TOPICS.PROPERTIES_TOPIC "setProperty"', async () => {
     const propertyAction = {
       listenerId: 'listenerId',
       key: 'key',
@@ -186,14 +186,14 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${INCOMING_TOPICS.PROPERTIES_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.PROPERTIES_TOPIC} ${encodeContent(content)}`
       )
     )
 
     expect(result).toMatchSnapshot()
   })
 
-  test('sub <- INCOMING_TOPICS.PROPERTIES_TOPIC "deleteProperty"', async () => {
+  test('sub <- CLIENT_TO_SERVER_TOPICS.PROPERTIES_TOPIC "deleteProperty"', async () => {
     const propertyAction = {
       listenerId: 'listenerId',
       key: 'key',
@@ -209,7 +209,7 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${INCOMING_TOPICS.PROPERTIES_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.PROPERTIES_TOPIC} ${encodeContent(content)}`
       )
     )
 
@@ -237,7 +237,7 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${INCOMING_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(content)}`
       )
     )
 
@@ -245,7 +245,7 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${INCOMING_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(content)}`
       )
     )
 
@@ -253,7 +253,7 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${INCOMING_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(content)}`
       )
     )
 

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`main broker tests sub <- INCOMING_TOPICS.ACKNOWLEDGE_BATCH_TOPIC 1`] = `
+exports[`main broker tests sub <- CLIENT_TO_SERVER_TOPICS.ACKNOWLEDGE_BATCH_TOPIC 1`] = `
 Array [
   "zmq.socket",
   "xpub",
@@ -232,7 +232,7 @@ Array [
 ]
 `;
 
-exports[`main broker tests sub <- INCOMING_TOPICS.EVENT_TOPIC 1`] = `
+exports[`main broker tests sub <- CLIENT_TO_SERVER_TOPICS.EVENT_TOPIC 1`] = `
 Array [
   "zmq.socket",
   "xpub",
@@ -464,7 +464,7 @@ Array [
 ]
 `;
 
-exports[`main broker tests sub <- INCOMING_TOPICS.INFORMATION_TOPIC 1`] = `
+exports[`main broker tests sub <- CLIENT_TO_SERVER_TOPICS.INFORMATION_TOPIC 1`] = `
 Array [
   "zmq.socket",
   "xpub",
@@ -698,7 +698,7 @@ Array [
 ]
 `;
 
-exports[`main broker tests sub <- INCOMING_TOPICS.PAUSE_LISTENER_TOPIC 1`] = `
+exports[`main broker tests sub <- CLIENT_TO_SERVER_TOPICS.PAUSE_LISTENER_TOPIC 1`] = `
 Array [
   "zmq.socket",
   "xpub",
@@ -930,7 +930,7 @@ Array [
 ]
 `;
 
-exports[`main broker tests sub <- INCOMING_TOPICS.PROPERTIES_TOPIC "deleteProperty" 1`] = `
+exports[`main broker tests sub <- CLIENT_TO_SERVER_TOPICS.PROPERTIES_TOPIC "deleteProperty" 1`] = `
 Array [
   "zmq.socket",
   "xpub",
@@ -1164,7 +1164,7 @@ Array [
 ]
 `;
 
-exports[`main broker tests sub <- INCOMING_TOPICS.PROPERTIES_TOPIC "getProperty" 1`] = `
+exports[`main broker tests sub <- CLIENT_TO_SERVER_TOPICS.PROPERTIES_TOPIC "getProperty" 1`] = `
 Array [
   "zmq.socket",
   "xpub",
@@ -1398,7 +1398,7 @@ Array [
 ]
 `;
 
-exports[`main broker tests sub <- INCOMING_TOPICS.PROPERTIES_TOPIC "listProperties" 1`] = `
+exports[`main broker tests sub <- CLIENT_TO_SERVER_TOPICS.PROPERTIES_TOPIC "listProperties" 1`] = `
 Array [
   "zmq.socket",
   "xpub",
@@ -1632,7 +1632,7 @@ Array [
 ]
 `;
 
-exports[`main broker tests sub <- INCOMING_TOPICS.PROPERTIES_TOPIC "setProperty" 1`] = `
+exports[`main broker tests sub <- CLIENT_TO_SERVER_TOPICS.PROPERTIES_TOPIC "setProperty" 1`] = `
 Array [
   "zmq.socket",
   "xpub",
@@ -1866,7 +1866,7 @@ Array [
 ]
 `;
 
-exports[`main broker tests sub <- INCOMING_TOPICS.RESET_LISTENER_TOPIC 1`] = `
+exports[`main broker tests sub <- CLIENT_TO_SERVER_TOPICS.RESET_LISTENER_TOPIC 1`] = `
 Array [
   "zmq.socket",
   "xpub",
@@ -2100,7 +2100,7 @@ Array [
 ]
 `;
 
-exports[`main broker tests sub <- INCOMING_TOPICS.RESUME_LISTENER_TOPIC 1`] = `
+exports[`main broker tests sub <- CLIENT_TO_SERVER_TOPICS.RESUME_LISTENER_TOPIC 1`] = `
 Array [
   "zmq.socket",
   "xpub",
