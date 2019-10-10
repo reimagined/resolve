@@ -90,7 +90,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     return error
   } finally {
     await disposeResolve(resolve)
-    if(process.env.RESOLVE_PERFORMANCE_MONITORING) {
+    if (process.env.RESOLVE_PERFORMANCE_MONITORING) {
       await putMetrics(
         lambdaEvent,
         lambdaContext,
