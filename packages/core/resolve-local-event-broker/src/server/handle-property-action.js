@@ -1,3 +1,5 @@
+import { RESOLVE_SIDE_EFFECTS_START_TIMESTAMP } from '../constants'
+
 const handlePropertyAction = async (
   pool,
   { listenerId, key, value, action }
@@ -16,8 +18,8 @@ const handlePropertyAction = async (
       ? information.Properties
       : {}
 
-  if (!properties.hasOwnProperty('RESOLVE_SIDE_EFFECTS_START_TIMESTAMP')) {
-    properties['RESOLVE_SIDE_EFFECTS_START_TIMESTAMP'] = pool.initialTimestamp
+  if (!properties.hasOwnProperty(RESOLVE_SIDE_EFFECTS_START_TIMESTAMP)) {
+    properties[RESOLVE_SIDE_EFFECTS_START_TIMESTAMP] = pool.initialTimestamp
   }
 
   switch (action) {

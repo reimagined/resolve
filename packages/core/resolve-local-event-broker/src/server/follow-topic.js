@@ -1,4 +1,4 @@
-import { BATCH_STEP_RESULT, LOCK_PROMISE_BASE_NAME } from './constants'
+import { BATCH_STEP_RESULT, LOCK_PROMISE_BASE_NAME } from '../constants'
 
 const followTopic = async (pool, listenerId) => {
   const lockName = `${LOCK_PROMISE_BASE_NAME}${listenerId}`

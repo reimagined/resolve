@@ -14,7 +14,12 @@ const handleApplyEvents = async (lambdaEvent, resolve) => {
   const startTime = Date.now()
   let result = null
   try {
-    const updateByEvents = resolve.eventListeners.get(listenerId).isSaga
+    const listenerInfo = resolve.eventListeners.get(listenerId)
+    if (listenerInfo == null) {
+      throw new Error(`Listener ${listenerId} does not exist`)
+    }
+
+    const updateByEvents = listenerInfo.isSaga
       ? resolve.executeSaga.updateByEvents
       : resolve.executeQuery.updateByEvents
 

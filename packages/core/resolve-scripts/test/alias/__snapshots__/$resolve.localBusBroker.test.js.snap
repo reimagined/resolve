@@ -5,7 +5,7 @@ exports[`local config works correctly [server] 1`] = `
 
       import createStorageAdapter from '$resolve.storageAdapter'
       import eventBrokerConfig from '$resolve.eventBroker'
-      import createAndRunLocalBusBroker from 'resolve-local-event-broker'
+      import { createAndRunLocalBusBroker } from 'resolve-local-event-broker'
       import createEventStore from 'resolve-es'
 
       if(module.parent != null) {

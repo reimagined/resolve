@@ -1,4 +1,4 @@
-import { READ_MODEL_STATUS } from './constants'
+import { READ_MODEL_STATUS } from '../constants'
 
 const ALLOWED_READ_MODEL_STATUS = Object.values(READ_MODEL_STATUS)
 
