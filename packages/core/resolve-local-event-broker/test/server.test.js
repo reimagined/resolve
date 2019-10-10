@@ -41,7 +41,9 @@ describe('main broker tests', () => {
     const content = {}
 
     await sub.onMessage(
-      Buffer.from(`${CLIENT_TO_SERVER_TOPICS.EVENT_TOPIC} ${encodeContent(content)}`)
+      Buffer.from(
+        `${CLIENT_TO_SERVER_TOPICS.EVENT_TOPIC} ${encodeContent(content)}`
+      )
     )
 
     expect(result).toMatchSnapshot()
@@ -56,7 +58,9 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${CLIENT_TO_SERVER_TOPICS.RESET_LISTENER_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.RESET_LISTENER_TOPIC} ${encodeContent(
+          content
+        )}`
       )
     )
 
@@ -70,7 +74,9 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${CLIENT_TO_SERVER_TOPICS.PAUSE_LISTENER_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.PAUSE_LISTENER_TOPIC} ${encodeContent(
+          content
+        )}`
       )
     )
 
@@ -84,7 +90,9 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${CLIENT_TO_SERVER_TOPICS.RESUME_LISTENER_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.RESUME_LISTENER_TOPIC} ${encodeContent(
+          content
+        )}`
       )
     )
 
@@ -101,7 +109,9 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${CLIENT_TO_SERVER_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(
+          content
+        )}`
       )
     )
 
@@ -237,7 +247,9 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${CLIENT_TO_SERVER_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(
+          content
+        )}`
       )
     )
 
@@ -245,7 +257,9 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${CLIENT_TO_SERVER_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(
+          content
+        )}`
       )
     )
 
@@ -253,7 +267,9 @@ describe('main broker tests', () => {
 
     await sub.onMessage(
       Buffer.from(
-        `${CLIENT_TO_SERVER_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(content)}`
+        `${CLIENT_TO_SERVER_TOPICS.ACKNOWLEDGE_BATCH_TOPIC} ${encodeContent(
+          content
+        )}`
       )
     )
 
