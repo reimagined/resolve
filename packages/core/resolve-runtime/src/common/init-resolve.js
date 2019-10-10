@@ -1,6 +1,7 @@
 import createEventStore from 'resolve-es'
 import createCommandExecutor from 'resolve-command'
 import createQueryExecutor from 'resolve-query'
+import createSagaExecutor from 'resolve-saga'
 import crypto from 'crypto'
 
 const DEFAULT_WORKER_LIFETIME = 15 * 60 * 1000
@@ -20,16 +21,7 @@ const initResolve = async resolve => {
     publishEvent: resolve.publishEvent
   })
 
-  resolve.readModels = resolve.readModels.slice(0)
-  for (let index = 0; index < resolve.readModels.length; index++) {
-    resolve.readModels[index] = Object.create(resolve.readModels[index], {
-      executeCommand: { get: () => resolve.executeCommand, enumerable: true },
-      executeQuery: { get: () => resolve.executeQuery, enumerable: true },
-      eventProperties: { get: () => resolve.eventProperties, enumerable: true }
-    })
-  }
-
-  const { aggregates, readModels, viewModels } = resolve
+  const { aggregates, readModels, schedulers, sagas, viewModels } = resolve
   const snapshotAdapter = createSnapshotAdapter()
 
   const readModelConnectors = {}
@@ -55,9 +47,21 @@ const initResolve = async resolve => {
     performanceTracer
   })
 
+  const executeSaga = createSagaExecutor({
+    executeCommand,
+    executeQuery,
+    eventStore,
+    readModelConnectors,
+    snapshotAdapter,
+    schedulers,
+    sagas,
+    performanceTracer
+  })
+
   Object.assign(resolve, {
     executeCommand,
     executeQuery,
+    executeSaga,
     eventStore
   })
 

@@ -1,23 +1,14 @@
 import debugLevels from 'resolve-debug-levels'
 
 import bootstrap from '../common/bootstrap'
-import isSagaName from '../common/utils/is-saga-name'
 
 const log = debugLevels('resolve:resolve-runtime:deploy-service-event-handler')
 
-const isReadModelName = (resolve, name) => !isSagaName(resolve, name)
-
-const getReadModelNames = resolve => {
-  return resolve.readModels
-    .map(({ name }) => name)
-    .filter(isReadModelName.bind(null, resolve))
-}
-
-const getSagaNames = resolve => {
-  return resolve.readModels
-    .map(({ name }) => name)
-    .filter(isSagaName.bind(null, resolve))
-}
+const getReadModelNames = resolve => resolve.readModels.map(({ name }) => name)
+const getSagaNames = resolve => [
+  ...resolve.schedulers.map(({ name }) => name),
+  ...resolve.sagas.map(({ name }) => name)
+]
 
 const handleResolveReadModelEvent = async (
   lambdaEvent,

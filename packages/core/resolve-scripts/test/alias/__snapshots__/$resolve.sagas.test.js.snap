@@ -20,13 +20,20 @@ const idempotentFunction = value => value
 const name_0 = \\"Saga\\"
 const connectorName_0 = undefined
 const schedulerName_0 = undefined
+const source_0_original_hash = \\"<INVARIANT_HASH>\\"
 const source_0_original = source_0_original_instance
 const sideEffects_0_original = null
-const source_0 = sideEffects_0_original == null
-      ? source_0_original : {
-        handlers: source_0_original,
-        sideEffects: sideEffects_0_original
-      }
+const handlers_0 = sideEffects_0_original == null
+      ? source_0_original.handlers
+      : source_0_original
+    
+const sideEffects_0 = sideEffects_0_original == null
+      ? source_0_original.sideEffects
+      : sideEffects_0_original
+    
+const invariantHash_0 = sideEffects_0_original != null
+      ? source_0_original_hash + sideEffects_0_original_hash
+      : source_0_original_hash
     
 
 const sagas = []
@@ -35,7 +42,9 @@ sagas.push({
   name: name_0
 , connectorName: connectorName_0
 , schedulerName: schedulerName_0
-, source: source_0
+, handlers: handlers_0
+, sideEffects: sideEffects_0
+, invariantHash: invariantHash_0
 })
 
 export default sagas
@@ -46,8 +55,6 @@ exports[`config with schedulers works correctly [server] 1`] = `
 "
 
 import source_0_original_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagaCronHandlers.js\\"
-import source_s_0_constructor from \\"resolve-runtime/lib/common/sagas/scheduler-saga-handlers.js\\"
-import sideEffects_s_0_constructor from \\"resolve-scheduler-local\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -64,33 +71,20 @@ const idempotentFunction = value => value
 const name_0 = \\"Saga\\"
 const connectorName_0 = undefined
 const schedulerName_0 = undefined
+const source_0_original_hash = \\"<INVARIANT_HASH>\\"
 const source_0_original = source_0_original_instance
 const sideEffects_0_original = null
-const source_0 = sideEffects_0_original == null
-      ? source_0_original : {
-        handlers: source_0_original,
-        sideEffects: sideEffects_0_original
-      }
+const handlers_0 = sideEffects_0_original == null
+      ? source_0_original.handlers
+      : source_0_original
     
-const name_s_0 = \\"scheduler\\"
-const connectorName_s_0 = \\"default\\"
-const source_s_0_imports = {  }
-const source_s_0_options = {}
-const source_s_0 = constructorBindFunction.bind(null,
-      source_s_0_constructor,
-      source_s_0_options,
-      source_s_0_imports
-    )
-    Object.assign(source_s_0, source_s_0_constructor)
+const sideEffects_0 = sideEffects_0_original == null
+      ? source_0_original.sideEffects
+      : sideEffects_0_original
     
-const sideEffects_s_0_imports = {  }
-const sideEffects_s_0_options = {}
-const sideEffects_s_0 = constructorBindFunction.bind(null,
-      sideEffects_s_0_constructor,
-      sideEffects_s_0_options,
-      sideEffects_s_0_imports
-    )
-    Object.assign(sideEffects_s_0, sideEffects_s_0_constructor)
+const invariantHash_0 = sideEffects_0_original != null
+      ? source_0_original_hash + sideEffects_0_original_hash
+      : source_0_original_hash
     
 
 const sagas = []
@@ -99,15 +93,9 @@ sagas.push({
   name: name_0
 , connectorName: connectorName_0
 , schedulerName: schedulerName_0
-, source: source_0
-})
-
-sagas.push({
-  name: name_s_0
-, connectorName: connectorName_s_0
-, source: source_s_0
-, sideEffects: sideEffects_s_0
-, isSystemScheduler: true
+, handlers: handlers_0
+, sideEffects: sideEffects_0
+, invariantHash: invariantHash_0
 })
 
 export default sagas

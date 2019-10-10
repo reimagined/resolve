@@ -69,12 +69,18 @@ const processEvents = async (resolve, listenerId, content) => {
 
   try {
     await initResolve(currentResolve)
-    currentResolve.eventProperties = properties
-    result = await currentResolve.executeQuery.updateByEvents(
+
+    const updateByEvents = currentResolve.eventListeners.get(listenerId).isSaga
+      ? currentResolve.executeSaga.updateByEvents
+      : currentResolve.executeQuery.updateByEvents
+
+    result = await updateByEvents(
       listenerId,
       events,
-      currentResolve.getRemainingTimeInMillis
+      currentResolve.getRemainingTimeInMillis,
+      properties
     )
+
     if (result.lastError != null) {
       log.error('Error while applying events to read-model', result.lastError)
     }
@@ -154,8 +160,8 @@ const processIncomingMessages = async (resolve, byteMessage) => {
 
 const declareListenerEventTypes = async (resolve, listenerId) => {
   try {
-    const readModel = resolve.readModels.find(({ name }) => name === listenerId)
-    const eventTypes = Object.keys(readModel.projection)
+    const listener = resolve.eventListeners.get(listenerId)
+    const eventTypes = listener.eventTypes
     const encodedMessage = encodePubContent(
       JSON.stringify({
         listenerId,

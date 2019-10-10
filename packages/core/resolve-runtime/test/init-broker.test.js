@@ -12,6 +12,17 @@ describe('event-broker', () => {
     }
   ]
 
+  const eventListeners = new Map([
+    [
+      'listenerId',
+      {
+        name: 'listenerId',
+        eventTypes: [],
+        invariantHash: 'invariantHash'
+      }
+    ]
+  ])
+
   beforeEach(async () => {
     lambdaResult = null
     lambda = {
@@ -22,6 +33,7 @@ describe('event-broker', () => {
 
     broker = {}
     await initBroker({
+      eventListeners,
       eventBroker: broker,
       lambda,
       readModels
@@ -64,6 +76,7 @@ describe('event-broker', () => {
     expect(JSON.parse(lambda.invoke.mock.calls[1][0].Payload)).toEqual({
       listenerId: 'listenerId',
       inactiveTimeout: 3600000,
+      invariantHash: 'invariantHash',
       eventTypes: []
     })
 
