@@ -11,6 +11,8 @@ import {
   exportEventStore
 } from 'resolve-scripts'
 
+import resolveModuleAdmin from 'resolve-module-admin'
+
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
@@ -23,7 +25,13 @@ void (async () => {
   try {
     switch (launchMode) {
       case 'dev': {
-        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+        const moduleAdmin = resolveModuleAdmin()
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          devConfig,
+          moduleAdmin
+        )
 
         await reset(resolveConfig, {
           dropEventStore: false,
