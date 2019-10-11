@@ -8,8 +8,7 @@ const init = async ({
   databaseName,
   tableName,
   executeStatement,
-  escapeId,
-  escape
+  escapeId
 }) => {
   await executeStatement(
     [
@@ -37,27 +36,7 @@ const init = async ({
      USING BTREE(${escapeId('type')})`,
       `CREATE INDEX ${escapeId('timestamp')}
      ON ${escapeId(databaseName)}.${escapeId(tableName)}
-     USING BTREE(${escapeId('timestamp')})`,
-
-      `CREATE TABLE ${escapeId(databaseName)}.${escapeId(
-        `${tableName}-sequence`
-      )}(
-      ${escapeId('key')} ${LONG_NUMBER_SQL_TYPE} NOT NULL,
-      ${escapeId('eventId')} ${LONG_NUMBER_SQL_TYPE} NOT NULL,
-      ${escapeId('timestamp')} ${LONG_NUMBER_SQL_TYPE} NOT NULL,
-      ${escapeId('transactionId')} ${LONG_STRING_SQL_TYPE} NOT NULL,
-      PRIMARY KEY(${escapeId('key')})
-    )`,
-      `INSERT INTO ${escapeId(databaseName)}.${escapeId(
-        `${tableName}-sequence`
-      )}(
-      ${escapeId('key')},
-      ${escapeId('eventId')},
-      ${escapeId('timestamp')},
-      ${escapeId('transactionId')}
-    ) VALUES (
-      0, 0, 0, ${escape('0')}
-    )`
+     USING BTREE(${escapeId('timestamp')})`
     ].join('; ')
   )
 }
