@@ -1,10 +1,6 @@
 import { ConcurrentError } from 'resolve-storage-base'
 
-import {
-  RESERVED_EVENT_SIZE,
-  LONG_NUMBER_SQL_TYPE,
-  LONG_STRING_SQL_TYPE
-} from './constants'
+import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants'
 
 const saveEvent = async (
   { databaseName, tableName, executeStatement, fullJitter, escapeId, escape },
@@ -23,101 +19,63 @@ const saveEvent = async (
         Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
 
       await executeStatement(
-        [
-          `START TRANSACTION;`,
-          `SELECT ${escape('OK')} WHERE (`,
-          `  (SELECT ${escape('Event store is frozen')} AS ${escapeId(
-            'EventStoreIsFrozen'
-          )})`,
-          `UNION ALL (`,
-          `  SELECT ${escape('Event store is frozen')} AS ${escapeId(
-            'EventStoreIsFrozen'
-          )}`,
-          `  FROM ${escapeId('information_schema')}.${escapeId('tables')}`,
-          `  WHERE ${escapeId('table_schema')} = ${escape(databaseName)}`,
-          `  AND ${escapeId('table_name')} = ${escape(`${tableName}-freeze`)}`,
-          `)) = ${escape('OK')};`,
-          `WITH cte (`,
-          `${escapeId('lastEventId')},${escapeId('lastTimestamp')}`,
-          `) AS (VALUES ((`,
-          `SELECT ${escapeId('eventId')} + 1 AS ${escapeId('lastEventId')} `,
-          `FROM ${escapeId(databaseName)}.${escapeId(
-            `${tableName}-sequence`
-          )} `,
-          `WHERE ${escapeId('key')} = 0`,
-          `),(`,
-          `SELECT GREATEST(`,
-          `CAST(extract(epoch from now()) * 1000 AS ${LONG_NUMBER_SQL_TYPE}),${escapeId(
-            'timestamp'
-          )})`,
-          `AS ${escapeId('lastTimestamp')}`,
-          `FROM ${escapeId(databaseName)}.${escapeId(
-            `${tableName}-sequence`
-          )} `,
-          `WHERE ${escapeId('key')} = 0`,
-          `)))`,
-          `UPDATE ${escapeId(databaseName)}.${escapeId(
-            `${tableName}-sequence`
-          )} `,
-          `SET ${escapeId('eventId')} = cte.${escapeId('lastEventId')},`,
-          `${escapeId(
-            'transactionId'
-          )} = CAST(txid_current() AS ${LONG_STRING_SQL_TYPE}),`,
-          `${escapeId('timestamp')} = cte.${escapeId('lastTimestamp')} `,
-          `FROM cte `,
-          `WHERE ${escapeId('key')} = 0;`,
-          `INSERT INTO ${escapeId(databaseName)}.${escapeId(tableName)}(`,
-          `${escapeId('eventId')},`,
-          `${escapeId('timestamp')},`,
-          `${escapeId('aggregateId')},`,
-          `${escapeId('aggregateVersion')},`,
-          `${escapeId('type')},`,
-          `${escapeId('payload')},`,
-          `${escapeId('eventSize')}`,
-          `) VALUES ((`,
-          `SELECT ${escapeId('eventId')} `,
-          `FROM ${escapeId(databaseName)}.${escapeId(
-            `${tableName}-sequence`
-          )} `,
-          `WHERE ${escapeId('key')} = 0 `,
-          `AND ${escapeId(
-            'transactionId'
-          )} = CAST(txid_current() AS ${LONG_STRING_SQL_TYPE})`,
-          `),(`,
-          `SELECT ${escapeId('timestamp')} `,
-          `FROM ${escapeId(databaseName)}.${escapeId(
-            `${tableName}-sequence`
-          )} `,
-          `WHERE ${escapeId('key')} = 0 `,
-          `AND ${escapeId(
-            'transactionId'
-          )} = CAST(txid_current() AS ${LONG_STRING_SQL_TYPE})`,
-          `),${serializedEvent},${byteLength});`,
-          `COMMIT;`
-        ].join('')
+        `WITH ${escapeId('freeze_check')} AS (
+        SELECT 0 AS ${escapeId('lastEventId')},
+        0 AS ${escapeId('lastTimestamp')} WHERE (
+          (SELECT ${escape('Event store is frozen')} AS ${escapeId(
+          'EventStoreIsFrozen'
+        )})
+        UNION ALL
+          (SELECT ${escape('Event store is frozen')} AS ${escapeId(
+          'EventStoreIsFrozen'
+        )}
+          FROM ${escapeId('information_schema')}.${escapeId('tables')}
+          WHERE ${escapeId('table_schema')} = ${escape(databaseName)}
+          AND ${escapeId('table_name')} = ${escape(`${tableName}-freeze`)})
+        ) = ${escape('OK')}
+      ), ${escapeId('last_event')} AS (
+          (SELECT ${escapeId('eventId')} AS ${escapeId('lastEventId')},
+          ${escapeId('timestamp')} AS ${escapeId('lastTimestamp')}
+          FROM ${escapeId(databaseName)}.${escapeId(tableName)}
+          ORDER BY ${escapeId('eventId')} DESC
+          LIMIT 1)
+        UNION ALL
+          (SELECT ${escapeId('lastEventId')}, ${escapeId('lastTimestamp')}
+          FROM ${escapeId('freeze_check')})
+      ) INSERT INTO ${escapeId(databaseName)}.${escapeId(tableName)}(
+        ${escapeId('eventId')},
+        ${escapeId('timestamp')},
+        ${escapeId('aggregateId')},
+        ${escapeId('aggregateVersion')},
+        ${escapeId('type')},
+        ${escapeId('payload')},
+        ${escapeId('eventSize')}
+      ) VALUES (
+        (SELECT MAX(${escapeId('lastEventId')}) + 1
+        FROM ${escapeId('last_event')}),
+        (SELECT GREATEST(
+          CAST(extract(epoch from now()) * 1000 AS ${LONG_NUMBER_SQL_TYPE}),
+          MAX(${escapeId('lastTimestamp')})
+        ) FROM ${escapeId('last_event')}), 
+        ${serializedEvent},
+        ${byteLength}
+      )`
       )
 
       break
     } catch (error) {
-      try {
-        await executeStatement(`ROLLBACK;`)
-      } catch (e) {}
-      if (error.message == null) {
-        throw error
-      }
-      if (error.message.indexOf('subquery used as an expression') > -1) {
+      const errorMessage =
+        error != null && error.message == null ? error.message : ''
+
+      if (errorMessage.indexOf('subquery used as an expression') > -1) {
         throw new Error('Event store is frozen')
-      }
-      if (error.message.indexOf('duplicate key') < 0) {
+      } else if (errorMessage.indexOf('duplicate key') < 0) {
         throw error
+      } else if (errorMessage.indexOf('aggregateIdAndVersion') > -1) {
+        throw new ConcurrentError(event.aggregateId)
       }
 
-      if (error.message.indexOf('aggregateIdAndVersion') < 0) {
-        await new Promise(resolve => setTimeout(resolve, fullJitter(retry)))
-        continue
-      }
-
-      throw new ConcurrentError(event.aggregateId)
+      await new Promise(resolve => setTimeout(resolve, fullJitter(retry)))
     }
   }
 }

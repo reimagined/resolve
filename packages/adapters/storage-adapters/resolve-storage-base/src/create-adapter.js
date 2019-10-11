@@ -17,7 +17,6 @@ const createAdapter = (
     drop,
     dispose,
     saveEventOnly,
-    saveSequenceOnly,
     paginateEvents,
     isFrozen,
     freeze,
@@ -36,7 +35,6 @@ const createAdapter = (
 
   Object.assign(pool, {
     saveEventOnly: wrapMethod(pool, saveEventOnly),
-    saveSequenceOnly: wrapMethod(pool, saveSequenceOnly),
     paginateEvents: wrapMethod(pool, paginateEvents),
     // eslint-disable-next-line no-new-func
     waitConnect: wrapMethod(pool, Function()),

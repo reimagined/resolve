@@ -166,8 +166,7 @@ EventStream.prototype._final = async function(callback) {
 
   try {
     await this.pool.waitConnect()
-
-    const { unfreeze, saveEventOnly, saveSequenceOnly } = this.pool
+    const { unfreeze, saveEventOnly } = this.pool
 
     if (this.vacantSize !== BUFFER_SIZE) {
       let stringifiedEvent = null
@@ -214,14 +213,7 @@ EventStream.prototype._final = async function(callback) {
       }
     }
 
-    const saveSequenceOnlyPromise =
-      typeof saveSequenceOnly === 'function'
-        ? saveSequenceOnly(this.eventId, this.timestamp).catch(
-            this.saveEventErrors.push.bind(this.saveEventErrors)
-          )
-        : Promise.resolve()
-
-    await Promise.all([...this.saveEventPromiseSet, saveSequenceOnlyPromise])
+    await Promise.all([...this.saveEventPromiseSet])
 
     if (
       this.maintenanceMode === MAINTENANCE_MODE_AUTO &&
