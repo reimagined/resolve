@@ -1,12 +1,13 @@
-const drop = async ({ database, collectionName }) => {
+const drop = async pool => {
   try {
-    await database.dropCollection(`${collectionName}-freeze`)
+    await pool.database.dropCollection(`${pool.collectionName}-freeze`)
   } catch (error) {
     if (+error.code !== 26) {
       throw error
     }
   }
-  await database.dropCollection(collectionName)
+
+  await pool.database.dropCollection(pool.collectionName)
 }
 
 export default drop

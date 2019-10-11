@@ -9,7 +9,17 @@ import ShoppingListCreator from '../components/ShoppingListCreator'
 
 class MyLists extends React.PureComponent {
   render() {
-    const { lists, createShoppingList, removeShoppingList } = this.props
+    const {
+      isLoading,
+      lists,
+      createShoppingList,
+      removeShoppingList
+    } = this.props
+
+    if (isLoading !== false) {
+      return null
+    }
+
     return (
       <div style={{ maxWidth: '500px', margin: 'auto' }}>
         <ShoppingLists lists={lists} removeShoppingList={removeShoppingList} />

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resource method "create" should create resource 1`] = `
+exports[`resolve-storage-postgres-serverless resource method "create" should create resource 1`] = `
 Array [
   "executeStatement",
   Object {
@@ -64,7 +64,7 @@ Array [
 ]
 `;
 
-exports[`resource method "destroy" should destroy resource 1`] = `
+exports[`resolve-storage-postgres-serverless resource method "destroy" should destroy resource 1`] = `
 Array [
   "executeStatement",
   Object {
@@ -96,7 +96,7 @@ Array [
 ]
 `;
 
-exports[`resource method "dispose" should dispose resource 1`] = `
+exports[`resolve-storage-postgres-serverless resource method "dispose" should dispose resource 1`] = `
 Array [
   "executeStatement",
   Object {

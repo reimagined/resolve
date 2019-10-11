@@ -78,6 +78,7 @@ describe('Cloud entry', () => {
     }
 
     domain = {
+      eventListeners: new Map(),
       apiHandlers: [
         /*apiHandler1, apiHandler2*/
       ],
@@ -88,7 +89,8 @@ describe('Cloud entry', () => {
         /*readModel*/
       ],
       viewModels: [],
-      sagas: []
+      sagas: [],
+      schedulers: []
     }
 
     redux = {

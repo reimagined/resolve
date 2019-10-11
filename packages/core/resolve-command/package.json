@@ -1,7 +1,7 @@
 {
   "name": "resolve-command",
-  "version": "0.20.27",
-  "description": "This package creates a function to execute a command.",
+  "version": "0.20.28",
+  "description": "Creates a function that handles commands in a reSolve application.",
   "engines": {
     "node": ">=8.10"
   },

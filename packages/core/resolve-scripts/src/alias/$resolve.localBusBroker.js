@@ -15,7 +15,7 @@ export default ({ resolveConfig, isClient }) => {
     code: `
       import createStorageAdapter from '$resolve.storageAdapter'
       import eventBrokerConfig from '$resolve.eventBroker'
-      import createAndRunLocalBusBroker from 'resolve-local-event-broker'
+      import { createAndRunLocalBusBroker } from 'resolve-local-event-broker'
       import createEventStore from 'resolve-es'
 
       if(module.parent != null) {

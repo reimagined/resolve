@@ -9,7 +9,7 @@ import {
   BATCH_SIZE
 } from './constants'
 
-function EventStream(pool, maintenanceMode, byteOffset = 0, eventId = 1) {
+function EventStream({ pool, maintenanceMode, byteOffset, eventId }) {
   stream.Writable.call(this, { objectMode: true })
 
   this.pool = pool
@@ -43,9 +43,9 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
   }
 
   try {
-    await this.pool.waitConnectAndInit()
+    await this.pool.waitConnect()
 
-    const { drop, initOnly, freeze, saveEventOnly } = this.pool
+    const { drop, init, freeze, saveEventOnly } = this.pool
 
     if (
       this.maintenanceMode === MAINTENANCE_MODE_AUTO &&
@@ -53,7 +53,7 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
     ) {
       this.isMaintenanceInProgress = true
       await drop()
-      await initOnly()
+      await init()
       await freeze()
     }
 
@@ -165,7 +165,7 @@ EventStream.prototype._final = async function(callback) {
   }
 
   try {
-    await this.pool.waitConnectAndInit()
+    await this.pool.waitConnect()
 
     const { unfreeze, saveEventOnly, saveSequenceOnly } = this.pool
 
@@ -245,12 +245,17 @@ EventStream.prototype._final = async function(callback) {
 
 const importStream = (
   pool,
-  { byteOffset, eventId, maintenanceMode = MAINTENANCE_MODE_AUTO } = {}
+  { byteOffset = 0, eventId = 1, maintenanceMode = MAINTENANCE_MODE_AUTO } = {}
 ) => {
   switch (maintenanceMode) {
     case MAINTENANCE_MODE_AUTO:
     case MAINTENANCE_MODE_MANUAL:
-      return new EventStream(pool, maintenanceMode, byteOffset, eventId)
+      return new EventStream({
+        pool,
+        maintenanceMode,
+        byteOffset,
+        eventId
+      })
     default:
       throw new Error(`Wrong maintenance mode ${maintenanceMode}`)
   }

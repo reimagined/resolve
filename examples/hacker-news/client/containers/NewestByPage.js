@@ -6,8 +6,16 @@ import { connectReadModel } from 'resolve-redux'
 import Stories from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
 
-const NewestByPage = ({ page, stories, me, upvoteStory, unvoteStory }) => (
+const NewestByPage = ({
+  isLoading,
+  page,
+  stories,
+  me,
+  upvoteStory,
+  unvoteStory
+}) => (
   <Stories
+    isLoading={isLoading}
     items={stories}
     page={page || '1'}
     type="newest"
@@ -39,10 +47,12 @@ export const mapStateToProps = (
     match: {
       params: { page }
     },
-    data
+    data,
+    isLoading
   }
 ) => ({
   stories: data,
+  isLoading,
   page,
   me: state.jwt
 })

@@ -4,11 +4,12 @@ import createStorageAdapter from '../src/index'
 describe('resolve-storage-lite', () => {
   let storageAdapter = null
 
-  beforeEach(() => {
+  beforeEach(async () => {
     storageAdapter = createStorageAdapter({
       databaseFile: ':memory:',
       tableName: 'tableName'
     })
+    await storageAdapter.init()
   })
 
   afterEach(async () => {

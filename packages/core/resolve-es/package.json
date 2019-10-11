@@ -1,7 +1,7 @@
 {
   "name": "resolve-es",
-  "version": "0.20.27",
-  "description": "This package serves as an event-store.",
+  "version": "0.20.28",
+  "description": "The reSolve framework's event store.",
   "engines": {
     "node": ">=8.10"
   },

@@ -10,6 +10,7 @@ test('resolve-command', async () => {
   const aggregates = [newsAggregate]
   const memoryStorage = createStorageLiteAdapter({ databaseFile: ':memory:' })
   const eventStore = createEventStore({ storage: memoryStorage })
+  await memoryStorage.init()
 
   const executeCommand = createCommandExecutor({
     eventStore,

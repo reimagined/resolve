@@ -1,7 +1,7 @@
 {
   "name": "resolve-storage-base",
-  "version": "0.20.27",
-  "description": "This package contains the basic components for storage adapters",
+  "version": "0.20.28",
+  "description": "A base for reSolve storage adapters",
   "engines": {
     "node": ">=8.10"
   },
@@ -25,8 +25,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-base#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
-    "through2": "^3.0.1"
+    "@babel/runtime": "^7.0.0"
   },
   "devDependencies": {
     "jest": "24.1.0",

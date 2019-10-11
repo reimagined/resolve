@@ -4,10 +4,13 @@ import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
 import handleEventBusEvent from './event-bus-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
+import putMetrics from './metrics'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
+
+let coldStart = true
 
 const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   log.debug('executing application lambda')
@@ -18,6 +21,9 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   resolve.getRemainingTimeInMillis = lambdaContext.getRemainingTimeInMillis.bind(
     lambdaContext
   )
+
+  const lambdaRemainingTimeStart = lambdaContext.getRemainingTimeInMillis()
+
   try {
     log.debug('initializing reSolve framework')
     await initResolve(resolve)
@@ -84,6 +90,15 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     return error
   } finally {
     await disposeResolve(resolve)
+    if (process.env.RESOLVE_PERFORMANCE_MONITORING) {
+      await putMetrics(
+        lambdaEvent,
+        lambdaContext,
+        coldStart,
+        lambdaRemainingTimeStart
+      )
+    }
+    coldStart = false
     log.debug('reSolve framework was disposed')
   }
 }

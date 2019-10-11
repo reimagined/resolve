@@ -1,7 +1,7 @@
 {
   "name": "resolve-api-handler-express",
-  "version": "0.20.27",
-  "description": "This package is an adapter for api handler to Express.js.",
+  "version": "0.20.28",
+  "description": "An Express.js adapter for reSolve API handlers.",
   "engines": {
     "node": ">=8.10"
   },

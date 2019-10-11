@@ -1,5 +1,3 @@
-import isSagaName from '../common/utils/is-saga-name'
-
 const resetDomainHandler = options => async (req, res) => {
   const {
     readModelConnectors,
@@ -8,10 +6,21 @@ const resetDomainHandler = options => async (req, res) => {
     eventBroker: { reset: resetListener },
     readModels,
     viewModels,
-    aggregates
+    aggregates,
+    schedulers,
+    sagas
   } = req.resolve
 
   try {
+    try {
+      // TODO: invoke "init" only during first run
+      await storageAdapter.init()
+    } catch (e) {}
+
+    try {
+      await snapshotAdapter.init()
+    } catch (e) {}
+
     const { dropEventStore, dropSnapshots, dropReadModels, dropSagas } = options
 
     if (dropEventStore) {
@@ -21,14 +30,13 @@ const resetDomainHandler = options => async (req, res) => {
     if (dropSnapshots) {
       for (const { invariantHash } of [...viewModels, ...aggregates]) {
         if (invariantHash != null) {
-          await snapshotAdapter.drop(invariantHash)
+          await snapshotAdapter.dropSnapshot(invariantHash)
         }
       }
     }
 
     if (dropReadModels) {
       for (const { name, connectorName } of readModels) {
-        if (isSagaName(req.resolve, name)) continue
         const connector = readModelConnectors[connectorName]
         const connection = await connector.connect(name)
 
@@ -40,8 +48,7 @@ const resetDomainHandler = options => async (req, res) => {
     }
 
     if (dropSagas) {
-      for (const { name, connectorName } of readModels) {
-        if (!isSagaName(req.resolve, name)) continue
+      for (const { name, connectorName } of [...sagas, ...schedulers]) {
         const connector = readModelConnectors[connectorName]
         const connection = await connector.connect(name)
 

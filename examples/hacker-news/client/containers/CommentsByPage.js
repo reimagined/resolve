@@ -24,18 +24,19 @@ class CommentsByPage extends React.PureComponent {
       >
         {({ comments, paginationDone }) => (
           <div>
-            {comments.map(comment => (
-              <Comment
-                key={comment.commentId}
-                id={comment.commentId}
-                storyId={comment.treeId}
-                text={comment.content.text}
-                createdBy={comment.content.createdBy}
-                createdByName={comment.content.createdByName}
-                createdAt={comment.content.createdAt}
-                parentId={comment.content.parentId}
-              />
-            ))}
+            {comments &&
+              comments.map(comment => (
+                <Comment
+                  key={comment.commentId}
+                  id={comment.commentId}
+                  storyId={comment.treeId}
+                  text={comment.content.text}
+                  createdBy={comment.content.createdBy}
+                  createdByName={comment.content.createdByName}
+                  createdAt={comment.content.createdAt}
+                  parentId={comment.content.parentId}
+                />
+              ))}
             <Pagination
               page={page}
               hasNext={!paginationDone}

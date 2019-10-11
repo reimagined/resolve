@@ -1,0 +1,513 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`resolve-storage-mongo "export" should return eventStream 1`] = `
+Array [
+  Array [
+    "collectionName",
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "export" should return eventStream 2`] = `
+Array [
+  Array [
+    Object {
+      "aggregateVersion": 1,
+      "timestamp": 1,
+    },
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "export" should return eventStream 3`] = `Array []`;
+
+exports[`resolve-storage-mongo "export" should return eventStream 4`] = `
+Array [
+  Array [
+    0,
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "export" should return eventStream 5`] = `
+Array [
+  Array [
+    200,
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "export" should return eventStream 6`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`resolve-storage-mongo "export" should return eventStream 7`] = `
+Array [
+  Array [],
+]
+`;
+
+exports[`resolve-storage-mongo "export" should return eventStream 8`] = `
+Array [
+  "connect",
+  Array [
+    "url",
+    Object {
+      "useNewUrlParser": true,
+      "useUnifiedTopology": true,
+    },
+  ],
+  "db",
+  Array [],
+]
+`;
+
+exports[`resolve-storage-mongo "getLatestEvent" should get the latest event 1`] = `
+Array [
+  Array [
+    "collectionName",
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "getLatestEvent" should get the latest event 2`] = `
+Array [
+  Array [
+    Object {
+      "aggregateVersion": -1,
+      "timestamp": -1,
+    },
+  ],
+  Array [
+    Object {
+      "aggregateVersion": -1,
+      "timestamp": -1,
+    },
+  ],
+  Array [
+    Object {
+      "aggregateVersion": -1,
+      "timestamp": -1,
+    },
+  ],
+  Array [
+    Object {
+      "aggregateVersion": -1,
+      "timestamp": -1,
+    },
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "getLatestEvent" should get the latest event 3`] = `
+Array [
+  Array [
+    Object {
+      "_id": 0,
+    },
+  ],
+  Array [
+    Object {
+      "_id": 0,
+    },
+  ],
+  Array [
+    Object {
+      "_id": 0,
+    },
+  ],
+  Array [
+    Object {
+      "_id": 0,
+    },
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "getLatestEvent" should get the latest event 4`] = `
+Array [
+  Array [
+    0,
+  ],
+  Array [
+    0,
+  ],
+  Array [
+    0,
+  ],
+  Array [
+    0,
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "getLatestEvent" should get the latest event 5`] = `
+Array [
+  Array [
+    1,
+  ],
+  Array [
+    1,
+  ],
+  Array [
+    1,
+  ],
+  Array [
+    1,
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "getLatestEvent" should get the latest event 6`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`resolve-storage-mongo "getLatestEvent" should get the latest event 7`] = `
+Array [
+  Array [
+    Object {
+      "timestamp": Object {
+        "$gt": 0,
+        "$lt": Infinity,
+      },
+    },
+  ],
+  Array [
+    Object {
+      "timestamp": Object {
+        "$gt": 0,
+        "$lt": Infinity,
+      },
+      "type": Object {
+        "$in": Array [
+          "eventType",
+        ],
+      },
+    },
+  ],
+  Array [
+    Object {
+      "aggregateId": Object {
+        "$in": Array [
+          "aggregateId",
+        ],
+      },
+      "timestamp": Object {
+        "$gt": 0,
+        "$lt": Infinity,
+      },
+    },
+  ],
+  Array [
+    Object {
+      "timestamp": Object {
+        "$gt": 1,
+        "$lt": 3,
+      },
+    },
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "getLatestEvent" should get the latest event 8`] = `
+Array [
+  "connect",
+  Array [
+    "url",
+    Object {
+      "useNewUrlParser": true,
+      "useUnifiedTopology": true,
+    },
+  ],
+  "db",
+  Array [],
+]
+`;
+
+exports[`resolve-storage-mongo "loadEvents" should load events 1`] = `
+Array [
+  Array [
+    "collectionName",
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "loadEvents" should load events 2`] = `
+Array [
+  Array [
+    Object {
+      "aggregateVersion": 1,
+      "timestamp": 1,
+    },
+  ],
+  Array [
+    Object {
+      "aggregateVersion": 1,
+      "timestamp": 1,
+    },
+  ],
+  Array [
+    Object {
+      "aggregateVersion": 1,
+      "timestamp": 1,
+    },
+  ],
+  Array [
+    Object {
+      "aggregateVersion": 1,
+      "timestamp": 1,
+    },
+  ],
+  Array [
+    Object {
+      "aggregateVersion": 1,
+      "timestamp": 1,
+    },
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "loadEvents" should load events 3`] = `
+Array [
+  Array [
+    Object {
+      "_id": 0,
+    },
+  ],
+  Array [
+    Object {
+      "_id": 0,
+    },
+  ],
+  Array [
+    Object {
+      "_id": 0,
+    },
+  ],
+  Array [
+    Object {
+      "_id": 0,
+    },
+  ],
+  Array [
+    Object {
+      "_id": 0,
+    },
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "loadEvents" should load events 4`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`resolve-storage-mongo "loadEvents" should load events 5`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`resolve-storage-mongo "loadEvents" should load events 6`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
+
+exports[`resolve-storage-mongo "loadEvents" should load events 7`] = `
+Array [
+  Array [
+    Object {
+      "timestamp": Object {
+        "$gt": 0,
+        "$lt": Infinity,
+      },
+    },
+  ],
+  Array [
+    Object {
+      "timestamp": Object {
+        "$gt": 0,
+        "$lt": Infinity,
+      },
+    },
+  ],
+  Array [
+    Object {
+      "timestamp": Object {
+        "$gt": 0,
+        "$lt": Infinity,
+      },
+      "type": Object {
+        "$in": Array [
+          "eventType",
+        ],
+      },
+    },
+  ],
+  Array [
+    Object {
+      "aggregateId": Object {
+        "$in": Array [
+          "aggregateId",
+        ],
+      },
+      "timestamp": Object {
+        "$gt": 0,
+        "$lt": Infinity,
+      },
+    },
+  ],
+  Array [
+    Object {
+      "timestamp": Object {
+        "$gt": 1,
+        "$lt": 3,
+      },
+    },
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "loadEvents" should load events 8`] = `
+Array [
+  "connect",
+  Array [
+    "url",
+    Object {
+      "useNewUrlParser": true,
+      "useUnifiedTopology": true,
+    },
+  ],
+  "db",
+  Array [],
+]
+`;
+
+exports[`resolve-storage-mongo "saveEvent" should save an event 1`] = `
+Array [
+  Array [
+    "collectionName",
+  ],
+  Array [
+    "collectionName-freeze",
+    Object {
+      "strict": true,
+    },
+    [Function],
+  ],
+  Array [
+    "collectionName-freeze",
+    Object {
+      "strict": true,
+    },
+    [Function],
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "saveEvent" should save an event 2`] = `
+Array [
+  Array [
+    Object {
+      "aggregateId": "aggregateId",
+      "aggregateVersion": 1,
+      "payload": Object {
+        "index": 1,
+      },
+      "timestamp": 1,
+      "type": "eventType",
+    },
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "saveEvent" should save an event 3`] = `
+Array [
+  "connect",
+  Array [
+    "url",
+    Object {
+      "useNewUrlParser": true,
+      "useUnifiedTopology": true,
+    },
+  ],
+  "db",
+  Array [],
+]
+`;
+
+exports[`resolve-storage-mongo "saveEvent" should save an event with empty payload 1`] = `
+Array [
+  Array [
+    "collectionName",
+  ],
+  Array [
+    "collectionName-freeze",
+    Object {
+      "strict": true,
+    },
+    [Function],
+  ],
+  Array [
+    "collectionName-freeze",
+    Object {
+      "strict": true,
+    },
+    [Function],
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "saveEvent" should save an event with empty payload 2`] = `
+Array [
+  Array [
+    Object {
+      "aggregateId": "aggregateId",
+      "aggregateVersion": 1,
+      "timestamp": 1,
+      "type": "eventType",
+    },
+  ],
+]
+`;
+
+exports[`resolve-storage-mongo "saveEvent" should save an event with empty payload 3`] = `
+Array [
+  "connect",
+  Array [
+    "url",
+    Object {
+      "useNewUrlParser": true,
+      "useUnifiedTopology": true,
+    },
+  ],
+  "db",
+  Array [],
+]
+`;

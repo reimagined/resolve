@@ -13,6 +13,7 @@ describe('resolve-snapshot-lite', () => {
     const bucketSize = 5
 
     const snapshotAdapter = createSnapshotAdapter({ bucketSize })
+    await snapshotAdapter.init()
 
     for (let index = 0; index < bucketSize; index++) {
       await snapshotAdapter.saveSnapshot('key', `value = ${index}`)
@@ -36,6 +37,7 @@ describe('resolve-snapshot-lite', () => {
       bucketSize,
       databaseFile: snapshotStoragePath
     })
+    await snapshotAdapter.init()
 
     for (let index = 0; index < bucketSize; index++) {
       await snapshotAdapter.saveSnapshot('key', `value = ${index}`)
@@ -54,6 +56,7 @@ describe('resolve-snapshot-lite', () => {
 
   test(`"saveSnapshot" should throw error when the snapshotAdapter is disposed`, async () => {
     const snapshotAdapter = createSnapshotAdapter({})
+    await snapshotAdapter.init()
 
     await snapshotAdapter.saveSnapshot('key', `value`)
 
@@ -70,6 +73,7 @@ describe('resolve-snapshot-lite', () => {
 
   test(`"loadSnapshot" should throw error when the snapshotAdapter is disposed`, async () => {
     const snapshotAdapter = createSnapshotAdapter({})
+    await snapshotAdapter.init()
 
     await snapshotAdapter.loadSnapshot('key')
 
@@ -86,6 +90,7 @@ describe('resolve-snapshot-lite', () => {
 
   test(`"dispose" should dispose the snapshotAdapter`, async () => {
     const snapshotAdapter = createSnapshotAdapter({})
+    await snapshotAdapter.init()
 
     await snapshotAdapter.dispose()
 
@@ -102,6 +107,7 @@ describe('resolve-snapshot-lite', () => {
     const bucketSize = 1
 
     const snapshotAdapter = createSnapshotAdapter({ bucketSize })
+    await snapshotAdapter.init()
 
     for (let index = 0; index < 2; index++) {
       await snapshotAdapter.saveSnapshot('key1', 'value1')
@@ -112,9 +118,9 @@ describe('resolve-snapshot-lite', () => {
     expect(await snapshotAdapter.loadSnapshot('key2')).toEqual(null)
     expect(await snapshotAdapter.loadSnapshot('key3')).toEqual(`value3`)
 
-    await snapshotAdapter.drop('key1')
-    await snapshotAdapter.drop('key2')
-    await snapshotAdapter.drop('key3')
+    await snapshotAdapter.dropSnapshot('key1')
+    await snapshotAdapter.dropSnapshot('key2')
+    await snapshotAdapter.dropSnapshot('key3')
 
     expect(await snapshotAdapter.loadSnapshot('key1')).toEqual(null)
     expect(await snapshotAdapter.loadSnapshot('key2')).toEqual(null)
@@ -123,13 +129,14 @@ describe('resolve-snapshot-lite', () => {
 
   test(`"drop" should throw error when the snapshotAdapter is disposed`, async () => {
     const snapshotAdapter = createSnapshotAdapter({})
+    await snapshotAdapter.init()
 
-    await snapshotAdapter.drop('key')
+    await snapshotAdapter.dropSnapshot('key')
 
     await snapshotAdapter.dispose()
 
     try {
-      await snapshotAdapter.drop('key')
+      await snapshotAdapter.dropSnapshot('key')
       return Promise.reject(new Error('Test failed'))
     } catch (error) {
       expect(error).toBeInstanceOf(Error)

@@ -1,5 +1,4 @@
 import stream from 'stream'
-import through from 'through2'
 
 import {
   BATCH_SIZE,
@@ -10,27 +9,50 @@ import {
 const injectString = ({ escape }, value) => `${escape(value)}`
 const injectNumber = (pool, value) => `${+value}`
 
-function EventStream(pool, maintenanceMode, cursor = 0) {
+function EventStream({ pool, maintenanceMode, cursor, bufferSize }) {
   stream.Readable.call(this, { objectMode: true })
 
+  this.eventsByteSize = 0
   this.pool = pool
-  this.cursor = cursor
+  this.initialCursor = cursor
   this.offset = cursor
   this.readerId = null
+  this.bufferSize = bufferSize
   this.initPromise = this.pool
-    .waitConnectAndInit()
+    .waitConnect()
+    .then(this.startProcessEvents.bind(this))
     .catch(error => (this.initError = error))
 
   this.injectString = injectString.bind(this, pool)
   this.injectNumber = injectNumber.bind(this, pool)
   this.maintenanceMode = maintenanceMode
-  this.isMaintenanceInProgress = false
+  this.isBufferOverflow = false
 
   this.rows = []
 }
 
 EventStream.prototype = Object.create(stream.Readable.prototype)
 EventStream.prototype.constructor = stream.Readable
+
+EventStream.prototype.startProcessEvents = async function() {
+  try {
+    if (this.maintenanceMode === MAINTENANCE_MODE_AUTO) {
+      await this.pool.freeze()
+    }
+  } catch (error) {
+    this.emit('error', error)
+  }
+}
+
+EventStream.prototype.endProcessEvents = async function() {
+  try {
+    if (this.maintenanceMode === MAINTENANCE_MODE_AUTO) {
+      await this.pool.unfreeze()
+    }
+  } catch (error) {
+    this.emit('error', error)
+  }
+}
 
 EventStream.prototype.processEvents = function() {
   for (
@@ -42,8 +64,22 @@ EventStream.prototype.processEvents = function() {
       this.rows.length = 0
       return
     } else {
-      const isPaused = this.push(event) === false
-      this.cursor = event.eventOffset
+      const eventOffset = event.eventOffset
+      delete event.eventOffset
+      delete event.eventId
+
+      let chunk = Buffer.from(JSON.stringify(event) + '\n', 'utf8')
+      const byteLength = chunk.byteLength
+      if (this.eventsByteSize + byteLength > this.bufferSize) {
+        this.isBufferOverflow = true
+        chunk = null
+        this.cursor = eventOffset
+      } else {
+        this.lastEventOffset = eventOffset
+      }
+      this.eventsByteSize += byteLength
+
+      const isPaused = this.push(chunk) === false
 
       if (isPaused) {
         this.isStreamPaused = true
@@ -53,6 +89,9 @@ EventStream.prototype.processEvents = function() {
   }
 
   if (this.isLastBatch) {
+    if (this.cursor == null) {
+      this.cursor = this.offset
+    }
     this.push(null)
   }
 }
@@ -73,8 +112,9 @@ EventStream.prototype.eventReader = async function(currentReaderId) {
 
       nextRows = await this.pool.paginateEvents(this.offset, BATCH_SIZE)
 
-      if (nextRows.length === 0) {
+      if (nextRows.length === 0 && !this.isLastBatch) {
         this.isLastBatch = true
+        await this.endProcessEvents()
       }
 
       if (this.readerId !== currentReaderId) {
@@ -112,10 +152,21 @@ EventStream.prototype._read = function() {
   }
 }
 
+EventStream.prototype.end = function() {
+  this.readerId = Symbol()
+  this.rows.length = 0
+  if (this.lastEventOffset == null) {
+    this.cursor = this.initialCursor
+  } else {
+    this.cursor = this.lastEventOffset + 1
+  }
+  this.push(null)
+}
+
 const exportStream = (
   pool,
   {
-    cursor,
+    cursor = 0,
     maintenanceMode = MAINTENANCE_MODE_AUTO,
     bufferSize = Number.POSITIVE_INFINITY
   } = {}
@@ -126,79 +177,12 @@ const exportStream = (
     throw new Error(`Wrong maintenance mode ${maintenanceMode}`)
   }
 
-  const eventStream = new EventStream(pool, maintenanceMode, cursor)
-
-  let size = 0
-  let lastEventOffset = 0
-  let isDestroyed = false
-
-  const resultStream = through.obj(
-    async (event, encoding, callback) => {
-      try {
-        if (
-          eventStream.maintenanceMode === MAINTENANCE_MODE_AUTO &&
-          eventStream.isMaintenanceInProgress === false
-        ) {
-          eventStream.isMaintenanceInProgress = true
-          await pool.freeze()
-        }
-
-        lastEventOffset = event.eventOffset
-        delete event.eventOffset
-        delete event.eventId
-
-        const chunk = Buffer.from(JSON.stringify(event) + '\n', encoding)
-        const byteLength = chunk.byteLength
-        if (size + byteLength > bufferSize) {
-          resultStream.isBufferOverflow = true
-          if (!isDestroyed) {
-            resultStream.cursor = lastEventOffset
-            isDestroyed = true
-          }
-          callback(false, null)
-        } else {
-          callback(false, chunk)
-        }
-        size += byteLength
-      } catch (error) {
-        callback(error)
-      }
-    },
-    async callback => {
-      try {
-        if (
-          eventStream.maintenanceMode === MAINTENANCE_MODE_AUTO &&
-          eventStream.isMaintenanceInProgress === true
-        ) {
-          eventStream.isMaintenanceInProgress = false
-          await pool.unfreeze()
-        }
-
-        if (resultStream.cursor == null) {
-          resultStream.cursor = lastEventOffset + 1
-        }
-
-        callback()
-      } catch (error) {
-        callback(error)
-      }
-      setImmediate(() => eventStream.destroy())
-    }
-  )
-
-  resultStream.isBufferOverflow = false
-
-  eventStream.on('complete', resultStream.emit.bind(resultStream, 'complete'))
-  eventStream.on('abort', resultStream.emit.bind(resultStream, 'abort'))
-  eventStream.on('request', resultStream.emit.bind(resultStream, 'request'))
-  eventStream.on('end', resultStream.emit.bind(resultStream, 'end'))
-  eventStream.on('close', resultStream.emit.bind(resultStream, 'close'))
-  eventStream.on('finish', resultStream.emit.bind(resultStream, 'finish'))
-  eventStream.on('error', resultStream.emit.bind(resultStream, 'error'))
-
-  eventStream.pipe(resultStream)
-
-  return resultStream
+  return new EventStream({
+    pool,
+    maintenanceMode,
+    cursor,
+    bufferSize
+  })
 }
 
 export default exportStream
