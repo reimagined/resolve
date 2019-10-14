@@ -13,6 +13,7 @@ import {
 } from 'resolve-scripts'
 import resolveModuleComments from 'resolve-module-comments'
 import resolveModuleAuth from 'resolve-module-auth'
+import resolveModuleAdmin from 'resolve-module-admin'
 
 import webpack from 'webpack'
 import getWebpackConfigs from './webpack.config'
@@ -68,7 +69,8 @@ void (async () => {
 
     switch (launchMode) {
       case 'dev': {
-        const resolveConfig = merge(baseConfig, devConfig)
+        const moduleAdmin = resolveModuleAdmin()
+        const resolveConfig = merge(baseConfig, devConfig, moduleAdmin)
         await reset(resolveConfig, {
           dropEventStore: false,
           dropSnapshots: true,

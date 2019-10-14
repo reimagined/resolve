@@ -86,6 +86,7 @@ module.exports = {
           'checkbox',
           'cjs',
           'cli',
+          'cloudwatch',
           'columnify',
           'cmd',
           'codeload',

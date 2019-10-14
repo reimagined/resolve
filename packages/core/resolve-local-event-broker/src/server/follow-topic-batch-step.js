@@ -1,4 +1,4 @@
-import { READ_MODEL_STATUS, BATCH_STEP_RESULT } from './constants'
+import { READ_MODEL_STATUS, BATCH_STEP_RESULT } from '../constants'
 
 const followTopicBatchStep = async (pool, listenerId) => {
   if (!pool.clientMap.has(listenerId)) {
@@ -65,8 +65,8 @@ const followTopicBatchStep = async (pool, listenerId) => {
     return BATCH_STEP_RESULT.CONTINUE
   }
 
-  let abutTimestamp = 0,
-    skipCount = 0
+  let abutTimestamp = 0
+  let skipCount = 0
 
   for (let index = 0; index < events.length; index++) {
     if (events[index].timestamp !== abutTimestamp) {

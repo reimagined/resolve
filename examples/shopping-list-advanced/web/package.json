@@ -5,7 +5,8 @@
   "scripts": {
     "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose",
     "import-event-store": "babel-node ./run.js import-event-store",
-    "export-event-store": "babel-node ./run.js export-event-store"
+    "export-event-store": "babel-node ./run.js export-event-store",
+    "resolve-module-admin": "resolve-module-admin"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
@@ -52,6 +53,7 @@
     "opn": "5.4.0",
     "remotedev-server": "0.2.7",
     "redux-devtools-extension": "2.13.7",
-    "resolve-cloud": "*"
+    "resolve-cloud": "*",
+    "resolve-module-admin": "0.20.28"
   }
 }

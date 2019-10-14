@@ -37,20 +37,7 @@ Array [
      ON \\"databaseName\\".\\"tableName\\"
      USING BTREE(\\"type\\"); CREATE INDEX \\"timestamp\\"
      ON \\"databaseName\\".\\"tableName\\"
-     USING BTREE(\\"timestamp\\"); CREATE TABLE \\"databaseName\\".\\"tableName-sequence\\"(
-      \\"key\\" BIGINT NOT NULL,
-      \\"eventId\\" BIGINT NOT NULL,
-      \\"timestamp\\" BIGINT NOT NULL,
-      \\"transactionId\\" VARCHAR(190) NOT NULL,
-      PRIMARY KEY(\\"key\\")
-    ); INSERT INTO \\"databaseName\\".\\"tableName-sequence\\"(
-      \\"key\\",
-      \\"eventId\\",
-      \\"timestamp\\",
-      \\"transactionId\\"
-    ) VALUES (
-      0, 0, 0, '0'
-    )",
+     USING BTREE(\\"timestamp\\")",
   },
   "executeStatement",
   Object {
@@ -160,20 +147,7 @@ Array [
      ON \\"databaseName\\".\\"tableName\\"
      USING BTREE(\\"type\\"); CREATE INDEX \\"timestamp\\"
      ON \\"databaseName\\".\\"tableName\\"
-     USING BTREE(\\"timestamp\\"); CREATE TABLE \\"databaseName\\".\\"tableName-sequence\\"(
-      \\"key\\" BIGINT NOT NULL,
-      \\"eventId\\" BIGINT NOT NULL,
-      \\"timestamp\\" BIGINT NOT NULL,
-      \\"transactionId\\" VARCHAR(190) NOT NULL,
-      PRIMARY KEY(\\"key\\")
-    ); INSERT INTO \\"databaseName\\".\\"tableName-sequence\\"(
-      \\"key\\",
-      \\"eventId\\",
-      \\"timestamp\\",
-      \\"transactionId\\"
-    ) VALUES (
-      0, 0, 0, '0'
-    )",
+     USING BTREE(\\"timestamp\\")",
   },
   "executeStatement",
   Object {

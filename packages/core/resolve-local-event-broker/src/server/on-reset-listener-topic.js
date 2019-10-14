@@ -1,4 +1,4 @@
-import { OUTCOMING_TOPICS, LOCK_PROMISE_BASE_NAME } from './constants'
+import { SERVER_TO_CLIENT_TOPICS, LOCK_PROMISE_BASE_NAME } from '../constants'
 
 const onResetListenerTopic = async (pool, content) => {
   const { messageGuid, listenerId, clientId } = JSON.parse(content)
@@ -7,7 +7,7 @@ const onResetListenerTopic = async (pool, content) => {
 
   try {
     const encodedTopic = pool.encodeXpubTopic({
-      listenerId: OUTCOMING_TOPICS.RESET_LISTENER_ACKNOWLEDGE_TOPIC,
+      listenerId: SERVER_TO_CLIENT_TOPICS.RESET_LISTENER_ACKNOWLEDGE_TOPIC,
       clientId
     })
 

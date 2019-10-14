@@ -16,7 +16,8 @@
     "test:watch": "jest --watchAll",
     "test:functional": "babel-node ./run.js test:functional",
     "import-event-store": "babel-node ./run.js import-event-store",
-    "export-event-store": "babel-node ./run.js export-event-store"
+    "export-event-store": "babel-node ./run.js export-event-store",
+    "resolve-module-admin": "resolve-module-admin"
   },
   "dependencies": {
     "@babel/node": "7.0.0",
@@ -43,6 +44,7 @@
     "resolve-debug-levels": "0.20.28",
     "resolve-module-auth": "0.20.28",
     "resolve-module-comments": "0.20.28",
+    "resolve-module-admin": "0.20.28",
     "resolve-readmodel-lite": "0.20.28",
     "resolve-readmodel-mysql": "0.20.28",
     "resolve-redux": "0.20.28",

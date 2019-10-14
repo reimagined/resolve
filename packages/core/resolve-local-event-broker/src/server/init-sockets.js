@@ -1,4 +1,4 @@
-import { INCOMING_TOPICS } from './constants'
+import { CLIENT_TO_SERVER_TOPICS } from '../constants'
 
 const initSockets = async pool => {
   const xpubSocket = pool.zmq.socket('xpub')
@@ -10,7 +10,7 @@ const initSockets = async pool => {
   await xpubSocket.on('message', pool.onXpubMessage.bind(null, pool))
 
   const subSocket = pool.zmq.socket('sub')
-  for (const topicName of Object.values(INCOMING_TOPICS)) {
+  for (const topicName of Object.values(CLIENT_TO_SERVER_TOPICS)) {
     await subSocket.setsockopt(pool.zmq.ZMQ_SUBSCRIBE, Buffer.from(topicName))
   }
 
