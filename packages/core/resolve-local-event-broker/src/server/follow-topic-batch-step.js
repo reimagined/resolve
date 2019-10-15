@@ -5,30 +5,10 @@ const followTopicBatchStep = async (pool, listenerId) => {
     return BATCH_STEP_RESULT.STOP
   }
 
-  const initialEvent = { type: 'Init' }
-
   const listenerInfo = await pool.getListenerInfo(listenerId)
   const properties = listenerInfo.properties
   if (!properties.hasOwnProperty('RESOLVE_SIDE_EFFECTS_START_TIMESTAMP')) {
     properties['RESOLVE_SIDE_EFFECTS_START_TIMESTAMP'] = pool.initialTimestamp
-  }
-
-  if (listenerInfo.isFirstRun) {
-    const anycastResult = await pool.anycastEvents(
-      pool,
-      listenerId,
-      [initialEvent],
-      properties
-    )
-    if (anycastResult == null) {
-      return BATCH_STEP_RESULT.STOP
-    }
-
-    await pool.updateListenerInfo(listenerId, {
-      SkipCount: 0,
-      AbutTimestamp: 0,
-      LastEvent: initialEvent
-    })
   }
 
   const events = []
@@ -48,6 +28,29 @@ const followTopicBatchStep = async (pool, listenerId) => {
     },
     pool.adjustEventBatch.bind(null, listenerInfo, events)
   )
+
+  if (listenerInfo.isFirstRun) {
+    const initialEvent = {
+      type: 'Init',
+      timestamp: events.length === 0 ? 0 : events[0].timestamp
+    }
+    const anycastResult = await pool.anycastEvents(
+      pool,
+      listenerId,
+      [initialEvent],
+      properties
+    )
+
+    if (anycastResult == null) {
+      return BATCH_STEP_RESULT.STOP
+    }
+
+    await pool.updateListenerInfo(listenerId, {
+      SkipCount: 0,
+      AbutTimestamp: 0,
+      LastEvent: initialEvent
+    })
+  }
 
   listenerInfo.skipCount = listenerInfo.currentSkipCount
   const anycastResult = await pool.anycastEvents(
