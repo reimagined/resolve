@@ -35,10 +35,7 @@ const styles = StyleSheet.create({
 })
 
 export class Settings extends React.PureComponent {
-  state = {
-    text: this.props.username
-  }
-
+  state = {}
   updateText = text => {
     this.setState({
       text
@@ -52,8 +49,18 @@ export class Settings extends React.PureComponent {
   }
 
   render() {
-    const { id } = this.props
-    const { text } = this.state
+    const { isLoading, data } = this.props
+    if (isLoading || data == null) {
+      return null
+    }
+
+    const { id, username } = data
+    let { text } = this.state
+
+    if (text == null) {
+      this.updateText(username)
+      text = username
+    }
 
     return (
       <Container>
@@ -91,11 +98,6 @@ export const mapStateToOptions = state => ({
   resolverArgs: {
     id: state.jwt.id
   }
-})
-
-export const mapStateToProps = (state, { data }) => ({
-  id: data.id,
-  username: data.username
 })
 
 export const mapDispatchToProps = dispatch =>
@@ -138,7 +140,7 @@ export const mapDispatchToProps = dispatch =>
 export default requiredAuth(
   connectReadModel(mapStateToOptions)(
     connect(
-      mapStateToProps,
+      null,
       mapDispatchToProps
     )(Settings)
   )

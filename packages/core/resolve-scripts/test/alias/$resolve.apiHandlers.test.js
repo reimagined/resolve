@@ -113,6 +113,6 @@ describe('config throw error when method is process.env', () => {
           }).code +
           '\r\n'
       )
-    ).toThrow()
+    ).not.toThrow()
   })
 })

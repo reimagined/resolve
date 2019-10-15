@@ -80,24 +80,14 @@ describe('validate schema', () => {
     ).toBeTruthy()
   })
 
-  it('custom routes path', () => {
+  it('custom routes path and redux', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        routes: 'src/client/entryPoint.js'
-      })
-    ).toBeTruthy()
-  })
-
-  it('custom index path', () => {
-    expect(
-      validateConfig({
-        ...resolveConfigOrigin,
-        mode: 'development',
-        target: 'local',
-        index: 'src/client/index.js'
+        routes: 'src/client/entryPoint.js',
+        redux: {}
       })
     ).toBeTruthy()
   })

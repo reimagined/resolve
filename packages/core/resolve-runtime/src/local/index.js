@@ -19,7 +19,7 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       serverImports: assemblies.serverImports,
       ...domain,
       ...constants,
-      routesTrie: wrapTrie(domain.apiHandlers),
+      routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
       eventBroker: {},
       assemblies
     }

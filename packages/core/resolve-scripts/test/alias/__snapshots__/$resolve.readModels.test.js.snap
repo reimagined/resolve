@@ -1,26 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`base config works correctly [client] 1`] = `
-"
-
-const name_0 = \\"Todos\\"
-const connectorName_0 = \\"Todos\\"
-const resolvers_0 = {
-  todos() {},
-  items() {}
-}
-
-const readModels = []
-
-readModels.push({
-  name: name_0
-, resolvers: resolvers_0
-})
-
-export default readModels
-"
-`;
-
 exports[`base config works correctly [server] 1`] = `
 "
 import resolvers_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
@@ -52,37 +31,6 @@ readModels.push({
 , connectorName: connectorName_0
 , projection: projection_0
 , invariantHash: projection_0_hash
-})
-
-export default readModels
-"
-`;
-
-exports[`base(v2) config works correctly [client] 1`] = `
-"
-
-const name_0 = \\"Todos\\"
-const connectorName_0 = \\"Todos\\"
-const resolvers_0 = {
-  todos() {},
-  items() {}
-}
-const name_1 = \\"Items\\"
-const connectorName_1 = \\"Items\\"
-const resolvers_1 = {
-
-}
-
-const readModels = []
-
-readModels.push({
-  name: name_0
-, resolvers: resolvers_0
-})
-
-readModels.push({
-  name: name_1
-, resolvers: resolvers_1
 })
 
 export default readModels
@@ -171,27 +119,6 @@ readModels.push({
 , connectorName: connectorName_1
 , projection: projection_1
 , invariantHash: projection_1_hash
-})
-
-export default readModels
-"
-`;
-
-exports[`config + process.env works correctly [client] 1`] = `
-"
-
-const name_0 = \\"Todos\\"
-const connectorName_0 = undefined
-const resolvers_0 = {
-  todos() {},
-  items() {}
-}
-
-const readModels = []
-
-readModels.push({
-  name: name_0
-, resolvers: resolvers_0
 })
 
 export default readModels

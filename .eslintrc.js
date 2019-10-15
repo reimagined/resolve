@@ -196,6 +196,7 @@ module.exports = {
           'Jitter',
           'jpg',
           'jpeg',
+          'js',
           'jsdom',
           'jsonb',
           'jsons',

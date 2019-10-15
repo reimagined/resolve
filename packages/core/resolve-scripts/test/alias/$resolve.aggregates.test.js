@@ -27,7 +27,7 @@ describe('base config works correctly', () => {
   }
 
   test('[client]', () => {
-    expect(
+    expect(() =>
       normalizePaths(
         '\r\n' +
           alias({
@@ -36,7 +36,7 @@ describe('base config works correctly', () => {
           }).code +
           '\r\n'
       )
-    ).toMatchSnapshot()
+    ).toThrow()
   })
 
   test('[server]', () => {
@@ -92,7 +92,7 @@ describe('base(v2) config works correctly', () => {
   }
 
   test('[client]', () => {
-    expect(
+    expect(() =>
       normalizePaths(
         '\r\n' +
           alias({
@@ -101,7 +101,7 @@ describe('base(v2) config works correctly', () => {
           }).code +
           '\r\n'
       )
-    ).toMatchSnapshot()
+    ).toThrow()
   })
 
   test('[server]', () => {
@@ -131,7 +131,7 @@ describe('config with projection works correctly', () => {
   }
 
   test('[client]', () => {
-    expect(
+    expect(() =>
       normalizePaths(
         '\r\n' +
           alias({
@@ -140,7 +140,7 @@ describe('config with projection works correctly', () => {
           }).code +
           '\r\n'
       )
-    ).toMatchSnapshot()
+    ).toThrow()
   })
 
   test('[server]', () => {
@@ -178,7 +178,7 @@ describe('config with commands as module works correctly', () => {
   }
 
   test('[client]', () => {
-    expect(
+    expect(() =>
       normalizePaths(
         '\r\n' +
           alias({
@@ -187,7 +187,7 @@ describe('config with commands as module works correctly', () => {
           }).code +
           '\r\n'
       )
-    ).toMatchSnapshot()
+    ).toThrow()
   })
 
   test('[server]', () => {
@@ -224,7 +224,7 @@ describe('config with schedulers works correctly', () => {
   }
 
   test('[client]', () => {
-    expect(
+    expect(() =>
       normalizePaths(
         '\r\n' +
           alias({
@@ -233,7 +233,7 @@ describe('config with schedulers works correctly', () => {
           }).code +
           '\r\n'
       )
-    ).toMatchSnapshot()
+    ).toThrow()
   })
 
   test('[server]', () => {

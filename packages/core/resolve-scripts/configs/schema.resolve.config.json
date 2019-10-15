@@ -320,7 +320,6 @@
           }
         }
       },
-      "required": ["reducers"],
       "additionalProperties": false
     },
     "config": {
