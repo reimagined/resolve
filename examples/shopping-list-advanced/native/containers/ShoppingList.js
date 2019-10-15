@@ -13,12 +13,14 @@ import {
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import { connectViewModel, sendAggregateAction } from 'resolve-redux'
+import { connectViewModel } from 'resolve-redux'
 import requiredAuth from '../decorators/required-auth'
 import ShoppingItemCreator from '../components/ShoppingItemCreator'
 import ShoppingListPanel from '../components/ShoppingListPanel'
 import ShoppingListItems from '../components/ShoppingListItems'
 import NotFound from '../components/NotFound'
+
+import * as aggregateActions from '../redux/actions/aggregate-actions'
 
 export class ShoppingList extends React.PureComponent {
   componentDidMount() {
@@ -118,41 +120,7 @@ export const mapStateToProps = (state, ownProps) => {
 }
 
 export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      createShoppingList: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'createShoppingList'
-      ),
-      renameShoppingList: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'renameShoppingList'
-      ),
-      removeShoppingList: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'removeShoppingList'
-      ),
-      createShoppingItem: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'createShoppingItem'
-      ),
-      toggleShoppingItem: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'toggleShoppingItem'
-      ),
-      removeShoppingItem: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'removeShoppingItem'
-      )
-    },
-    dispatch
-  )
+  bindActionCreators(aggregateActions, dispatch)
 
 export default requiredAuth(
   connectViewModel(mapStateToOptions)(

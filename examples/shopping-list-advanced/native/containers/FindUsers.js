@@ -4,8 +4,9 @@ import { bindActionCreators } from 'redux'
 import { View, StyleSheet } from 'react-native'
 import { Label } from 'native-base'
 
-import { connectReadModel, sendAggregateAction } from 'resolve-redux'
+import { connectReadModel } from 'resolve-redux'
 
+import * as aggregateActions from '../redux/actions/aggregate-actions'
 import UserList from '../components/UserList'
 
 const styles = StyleSheet.create({
@@ -67,41 +68,7 @@ export const mapStateToProps = state => ({
 })
 
 export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      createShoppingList: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'createShoppingList'
-      ),
-      renameShoppingList: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'renameShoppingList'
-      ),
-      removeShoppingList: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'removeShoppingList'
-      ),
-      createShoppingItem: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'createShoppingItem'
-      ),
-      toggleShoppingItem: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'toggleShoppingItem'
-      ),
-      removeShoppingItem: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'removeShoppingItem'
-      )
-    },
-    dispatch
-  )
+  bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
   connect(

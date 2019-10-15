@@ -1,13 +1,21 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { connectReadModel, sendAggregateAction } from 'resolve-redux'
+import { connectReadModel } from 'resolve-redux'
 import { ControlLabel, FormControl } from 'react-bootstrap'
 
 import requiredAuth from '../decorators/required-auth'
+import * as aggregateActions from '../redux/aggregate-actions'
 
 class Settings extends React.PureComponent {
   state = {}
+
+  getText = () => (
+    this.state.text != null
+     ? this.state.text
+     : this.props.data.username
+  )
+
   updateInputText = event => {
     this.setState({
       text: event.target.value
@@ -16,7 +24,7 @@ class Settings extends React.PureComponent {
 
   updateUserName = () => {
     this.props.updateUserName(this.props.data.id, {
-      username: this.state.text
+      username: this.getText()
     })
   }
 
@@ -33,13 +41,8 @@ class Settings extends React.PureComponent {
       return null
     }
 
-    const { id, username } = data
-    let { text } = this.state
-
-    if (text == null) {
-      this.updateInputText({ target: { value: username } })
-      text = username
-    }
+    const { id } = data
+    const text = this.getText()
 
     return (
       <div className="example-wrapper">
@@ -68,12 +71,7 @@ export const mapStateToOptions = state => ({
 })
 
 export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      updateUserName: sendAggregateAction.bind(null, 'User', 'updateUserName')
-    },
-    dispatch
-  )
+  bindActionCreators(aggregateActions, dispatch)
 
 export default requiredAuth(
   connectReadModel(mapStateToOptions)(

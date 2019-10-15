@@ -1,8 +1,9 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { connectReadModel, sendAggregateAction } from 'resolve-redux'
+import { connectReadModel } from 'resolve-redux'
 
+import * as aggregateActions from '../actions/aggregate-actions'
 import Stories from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
 
@@ -58,13 +59,7 @@ export const mapStateToProps = (
 })
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      upvoteStory: sendAggregateAction.bind(null, 'Story', 'upvoteStory'),
-      unvoteStory: sendAggregateAction.bind(null, 'Story', 'unvoteStory')
-    },
-    dispatch
-  )
+  bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
   connect(

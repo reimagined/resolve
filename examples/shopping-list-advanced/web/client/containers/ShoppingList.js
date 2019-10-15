@@ -1,10 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import {
-  connectViewModel,
-  connectRootBasedUrls,
-  sendAggregateAction
-} from 'resolve-redux'
+import { connectViewModel, connectRootBasedUrls } from 'resolve-redux'
 import { routerActions } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
 import { Redirect } from 'react-router-dom'
@@ -25,6 +21,7 @@ import Image from './Image'
 import NotFound from '../components/NotFound'
 
 import requiredAuth from '../decorators/required-auth'
+import * as aggregateActions from '../redux/aggregate-actions'
 
 const ButtonLink = connectRootBasedUrls(['href'])(Button)
 
@@ -200,36 +197,7 @@ export const mapStateToProps = (state, ownProps) => {
 export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      createShoppingList: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'createShoppingList'
-      ),
-      renameShoppingList: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'renameShoppingList'
-      ),
-      removeShoppingList: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'removeShoppingList'
-      ),
-      createShoppingItem: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'createShoppingItem'
-      ),
-      toggleShoppingItem: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'toggleShoppingItem'
-      ),
-      removeShoppingItem: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'removeShoppingItem'
-      ),
+      ...aggregateActions,
       replaceUrl: routerActions.replace
     },
     dispatch

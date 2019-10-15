@@ -1,12 +1,13 @@
 import React from 'react'
 
 import { bindActionCreators } from 'redux'
-import { connectReadModel, sendAggregateAction } from 'resolve-redux'
+import { connectReadModel } from 'resolve-redux'
 import { connect } from 'react-redux'
 
 import requiredAuth from '../decorators/required-auth'
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
+import * as aggregateActions from '../redux/aggregate-actions'
 
 class MyLists extends React.PureComponent {
   render() {
@@ -35,41 +36,7 @@ export const mapStateToProps = state => ({
 })
 
 export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      createShoppingList: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'createShoppingList'
-      ),
-      renameShoppingList: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'renameShoppingList'
-      ),
-      removeShoppingList: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'removeShoppingList'
-      ),
-      createShoppingItem: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'createShoppingItem'
-      ),
-      toggleShoppingItem: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'toggleShoppingItem'
-      ),
-      removeShoppingItem: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'removeShoppingItem'
-      )
-    },
-    dispatch
-  )
+  bindActionCreators(aggregateActions, dispatch)
 
 export default requiredAuth(
   connectReadModel(mapStateToOptions)(
