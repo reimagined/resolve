@@ -38,11 +38,8 @@ const styles = StyleSheet.create({
 export class Settings extends React.PureComponent {
   state = {}
 
-  getText = () => (
-     this.state.text != null
-      ? this.state.text
-      : this.props.data.username
-  )
+  getText = () =>
+    this.state.text != null ? this.state.text : this.props.data.username
 
   updateText = text => {
     this.setState({

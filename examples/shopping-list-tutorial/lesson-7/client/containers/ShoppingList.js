@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
-import { connectViewModel, sendAggregateAction } from 'resolve-redux'
+import { connectViewModel } from 'resolve-redux'
 import { routerActions } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
 
@@ -20,6 +20,7 @@ import {
 
 import Image from './Image'
 import NotFound from '../components/NotFound'
+import * as aggregateActions from '../actions/aggregate_actions'
 
 export class ShoppingList extends React.PureComponent {
   state = {
@@ -188,36 +189,7 @@ export const mapStateToProps = (state, ownProps) => {
 export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      createShoppingList: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'createShoppingList'
-      ),
-      renameShoppingList: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'renameShoppingList'
-      ),
-      removeShoppingList: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'removeShoppingList'
-      ),
-      createShoppingItem: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'createShoppingItem'
-      ),
-      toggleShoppingItem: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'toggleShoppingItem'
-      ),
-      removeShoppingItem: sendAggregateAction.bind(
-        null,
-        'ShoppingList',
-        'removeShoppingItem'
-      ),
+      ...aggregateActions,
       replaceUrl: routerActions.replace
     },
     dispatch
