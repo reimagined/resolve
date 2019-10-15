@@ -559,10 +559,9 @@ export const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      ...aggregateActions,
       replaceUrl: routerActions.replace
     },
     dispatch
@@ -593,14 +592,9 @@ export const mapStateToProps = (state, ownProps) => ({
   lists: ownProps.data
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MyLists)
+  connect(mapStateToProps)(MyLists)
 )
 ```
 

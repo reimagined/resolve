@@ -110,7 +110,7 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) =>
-  bindActionCreators(aggregateActions, dispatch)
+  bindActionCreators({}, dispatch)
 
 export default connectViewModel(mapStateToOptions)(
   connect(
@@ -145,7 +145,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) =>
-  bindActionCreators(aggregateActions, dispatch)
+  bindActionCreators({}, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
   connect(

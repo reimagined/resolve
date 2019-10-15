@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { View, StyleSheet } from 'react-native'
 import { Label } from 'native-base'
 
-import { connectReadModel } from 'resolve-redux'
+import { connectReadModel, sendAggregateAction } from 'resolve-redux'
 
 import UserList from '../components/UserList'
 
@@ -66,8 +66,42 @@ export const mapStateToProps = state => ({
   users: state.optimisticSharings.users
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
+export const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      createShoppingList: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'createShoppingList'
+      ),
+      renameShoppingList: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'renameShoppingList'
+      ),
+      removeShoppingList: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'removeShoppingList'
+      ),
+      createShoppingItem: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'createShoppingItem'
+      ),
+      toggleShoppingItem: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'toggleShoppingItem'
+      ),
+      removeShoppingItem: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'removeShoppingItem'
+      )
+    },
+    dispatch
+  )
 
 export default connectReadModel(mapStateToOptions)(
   connect(

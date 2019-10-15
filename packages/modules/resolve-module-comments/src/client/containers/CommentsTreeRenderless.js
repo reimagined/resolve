@@ -1,7 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
+import { connectReadModel, sendAggregateAction } from 'resolve-redux'
 import { connect } from 'react-redux'
-import { connectReadModel } from 'resolve-redux'
 
 import * as defaults from '../../common/defaults'
 
@@ -49,8 +49,35 @@ export const mapStateToProps = (
   )
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
+export const mapDispatchToProps = (
+  dispatch,
+  {
+    aggregateName = defaults.aggregateName,
+    createComment = defaults.createComment,
+    updateComment = defaults.updateComment,
+    removeComment = defaults.removeComment
+  }
+) =>
+  bindActionCreators(
+    {
+      [createComment]: sendAggregateAction.bind(
+        null,
+        aggregateName,
+        createComment
+      ),
+      [updateComment]: sendAggregateAction.bind(
+        null,
+        aggregateName,
+        updateComment
+      ),
+      [removeComment]: sendAggregateAction.bind(
+        null,
+        aggregateName,
+        removeComment
+      )
+    },
+    dispatch
+  )
 
 export default connectReadModel(mapStateToOptions)(
   connect(

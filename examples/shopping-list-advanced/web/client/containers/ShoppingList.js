@@ -1,6 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { connectViewModel, connectRootBasedUrls } from 'resolve-redux'
+import {
+  connectViewModel,
+  connectRootBasedUrls,
+  sendAggregateAction
+} from 'resolve-redux'
 import { routerActions } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
 import { Redirect } from 'react-router-dom'
@@ -193,10 +197,39 @@ export const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      ...aggregateActions,
+      createShoppingList: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'createShoppingList'
+      ),
+      renameShoppingList: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'renameShoppingList'
+      ),
+      removeShoppingList: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'removeShoppingList'
+      ),
+      createShoppingItem: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'createShoppingItem'
+      ),
+      toggleShoppingItem: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'toggleShoppingItem'
+      ),
+      removeShoppingItem: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'removeShoppingItem'
+      ),
       replaceUrl: routerActions.replace
     },
     dispatch

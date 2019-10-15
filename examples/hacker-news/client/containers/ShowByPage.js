@@ -1,6 +1,6 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
-import { connectReadModel } from 'resolve-redux'
+import { connectReadModel, sendAggregateAction } from 'resolve-redux'
 import { connect } from 'react-redux'
 
 import Stories from '../components/Stories'
@@ -57,11 +57,11 @@ export const mapStateToProps = (
   me: state.jwt
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      upvoteStory: aggregateActions.upvoteStory,
-      unvoteStory: aggregateActions.unvoteStory
+      upvoteStory: sendAggregateAction.bind(null, 'Story', 'upvoteStory'),
+      unvoteStory: sendAggregateAction.bind(null, 'Story', 'unvoteStory')
     },
     dispatch
   )

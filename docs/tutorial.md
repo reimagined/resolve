@@ -684,21 +684,9 @@ A component connected to a reSolve View Model receives an array of aggregate act
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /export const mapDispatchToProps/   /\n$/)
 ```js
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(
-    {
-      ...aggregateActions
-    },
-    dispatch
-  )
-
 export default connectViewModel(mapStateToOptions)(
-  connect(
-    null,
-    mapDispatchToProps
-  )(ShoppingList)
+  connect(null)(ShoppingList)
 )
 ```
 
@@ -967,14 +955,8 @@ export const mapStateToProps = (state, ownProps) => ({
   lists: ownProps.data
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
-
 export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MyLists)
+  connect(mapStateToProps)(MyLists)
 )
 ```
 

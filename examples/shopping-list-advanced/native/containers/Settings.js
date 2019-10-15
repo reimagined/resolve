@@ -16,7 +16,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { StyleSheet } from 'react-native'
 
-import { connectReadModel } from 'resolve-redux'
+import { connectReadModel, sendAggregateAction } from 'resolve-redux'
 import requiredAuth from '../decorators/required-auth'
 
 const styles = StyleSheet.create({
@@ -98,8 +98,42 @@ export const mapStateToProps = (state, { data }) => ({
   username: data.username
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
+export const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      createShoppingList: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'createShoppingList'
+      ),
+      renameShoppingList: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'renameShoppingList'
+      ),
+      removeShoppingList: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'removeShoppingList'
+      ),
+      createShoppingItem: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'createShoppingItem'
+      ),
+      toggleShoppingItem: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'toggleShoppingItem'
+      ),
+      removeShoppingItem: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'removeShoppingItem'
+      )
+    },
+    dispatch
+  )
 
 export default requiredAuth(
   connectReadModel(mapStateToOptions)(

@@ -74,7 +74,9 @@ export const validateApiHandlers = resolveConfig => {
 
     if (allowedMethods.indexOf(apiHandler.method) < 0) {
       throw new Error(
-        `Incorrect options.apiHandlers[${idx}].method = "${apiHandler.path}"\nAPI handler method should be one from following list ${allowedMethods}`
+        [
+          `Incorrect options.apiHandlers[${idx}].method = "${apiHandler.path}"``API handler method should be one from following list ${allowedMethods}`
+        ].join('\n')
       )
     }
   }

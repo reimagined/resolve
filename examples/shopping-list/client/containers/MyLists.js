@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { bindActionCreators } from 'redux'
-import { connectReadModel } from 'resolve-redux'
+import { connectReadModel, sendAggregateAction } from 'resolve-redux'
 import { connect } from 'react-redux'
 
 import ShoppingLists from '../components/ShoppingLists'
@@ -33,8 +33,42 @@ export const mapStateToProps = state => ({
   lists: state.optimisticShoppingLists || []
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
+export const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      createShoppingList: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'createShoppingList'
+      ),
+      renameShoppingList: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'renameShoppingList'
+      ),
+      removeShoppingList: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'removeShoppingList'
+      ),
+      createShoppingItem: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'createShoppingItem'
+      ),
+      toggleShoppingItem: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'toggleShoppingItem'
+      ),
+      removeShoppingItem: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'removeShoppingItem'
+      )
+    },
+    dispatch
+  )
 
 export default connectReadModel(mapStateToOptions)(
   connect(

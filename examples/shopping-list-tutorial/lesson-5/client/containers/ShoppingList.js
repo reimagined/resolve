@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { connectViewModel } from 'resolve-redux'
+import { connectViewModel, sendAggregateAction } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 
 import {
@@ -98,10 +98,39 @@ export const mapStateToOptions = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      ...aggregateActions
+      createShoppingList: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'createShoppingList'
+      ),
+      renameShoppingList: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'renameShoppingList'
+      ),
+      removeShoppingList: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'removeShoppingList'
+      ),
+      createShoppingItem: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'createShoppingItem'
+      ),
+      toggleShoppingItem: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'toggleShoppingItem'
+      ),
+      removeShoppingItem: sendAggregateAction.bind(
+        null,
+        'ShoppingList',
+        'removeShoppingItem'
+      )
     },
     dispatch
   )

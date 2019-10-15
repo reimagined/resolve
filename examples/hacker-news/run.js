@@ -1,5 +1,4 @@
 import {
-  showBuildInfo,
   defaultResolveConfig,
   build,
   start,
@@ -14,9 +13,6 @@ import {
 import resolveModuleComments from 'resolve-module-comments'
 import resolveModuleAuth from 'resolve-module-auth'
 import resolveModuleAdmin from 'resolve-module-admin'
-
-import webpack from 'webpack'
-import getWebpackConfigs from './webpack.config'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
@@ -78,85 +74,19 @@ void (async () => {
           dropSagas: true
         })
 
-        const clientCompiler = webpack(
-          getWebpackConfigs({
-            mode: resolveConfig.mode,
-            distDir: resolveConfig.distDir
-          })
-        )
-
-        const clientCompiling = new Promise((resolve, reject) => {
-          clientCompiler.watch(
-            { aggregateTimeout: 1000, poll: 1000 },
-            (err, { stats }) => {
-              stats.forEach(showBuildInfo.bind(null, err))
-
-              const hasErrors = stats.reduce(
-                (acc, val) => acc || (val != null && val.hasErrors()),
-                false
-              )
-
-              void (!hasErrors ? resolve() : reject(stats.toString('')))
-            }
-          )
-        })
-
-        await Promise.all([watch(resolveConfig), clientCompiling])
-
+        await watch(resolveConfig)
         break
       }
 
       case 'build': {
         const resolveConfig = merge(baseConfig, prodConfig)
-        const clientCompiler = webpack(
-          getWebpackConfigs({
-            mode: resolveConfig.mode,
-            distDir: resolveConfig.distDir
-          })
-        )
-
         await build(resolveConfig)
-
-        await new Promise((resolve, reject) => {
-          clientCompiler.run((err, { stats }) => {
-            stats.forEach(showBuildInfo.bind(null, err))
-
-            const hasNoErrors = stats.reduce(
-              (acc, val) => acc && (val != null && !val.hasErrors()),
-              true
-            )
-
-            void (hasNoErrors ? resolve() : reject(stats.toString('')))
-          })
-        })
-
         break
       }
 
       case 'cloud': {
         const resolveConfig = merge(baseConfig, cloudConfig)
-        const clientCompiler = webpack(
-          getWebpackConfigs({
-            mode: resolveConfig.mode,
-            distDir: resolveConfig.distDir
-          })
-        )
-
         await build(resolveConfig)
-
-        await new Promise((resolve, reject) => {
-          clientCompiler.run((err, { stats }) => {
-            stats.forEach(showBuildInfo.bind(null, err))
-
-            const hasNoErrors = stats.reduce(
-              (acc, val) => acc && (val != null && !val.hasErrors()),
-              true
-            )
-
-            void (hasNoErrors ? resolve() : reject(stats.toString('')))
-          })
-        })
-
         break
       }
 
@@ -197,32 +127,11 @@ void (async () => {
 
       case 'test:functional': {
         const resolveConfig = merge(baseConfig, testFunctionalConfig)
-
         await reset(resolveConfig, {
           dropEventStore: true,
           dropSnapshots: true,
           dropReadModels: true,
           dropSagas: true
-        })
-
-        const clientCompiler = webpack(
-          getWebpackConfigs({
-            mode: resolveConfig.mode,
-            distDir: resolveConfig.distDir
-          })
-        )
-
-        await new Promise((resolve, reject) => {
-          clientCompiler.run((err, { stats }) => {
-            stats.forEach(showBuildInfo.bind(null, err))
-
-            const hasNoErrors = stats.reduce(
-              (acc, val) => acc && (val != null && !val.hasErrors()),
-              true
-            )
-
-            void (hasNoErrors ? resolve() : reject(stats.toString('')))
-          })
         })
 
         await runTestcafe({
@@ -243,11 +152,8 @@ void (async () => {
           dropSagas: true
         })
 
-        const importConfig = merge(config, {
-          eventBroker: { launchBroker: false }
-        })
-
-        Object.assign(importConfig, {
+        const importConfig = merge(defaultResolveConfig, devConfig, {
+          eventBroker: { launchBroker: false },
           apiHandlers: [
             {
               method: 'POST',
@@ -257,34 +163,12 @@ void (async () => {
                 options: {}
               }
             }
-          ],
-          aggregates: [],
-          readModels: [],
-          viewModels: [],
-          sagas: [],
-          readModelConnectors: {},
-          schedulers: {}
-        })
-
-        if (process.env.hasOwnProperty(String(importConfig.port))) {
-          process.env.PORT = +String(process.env.PORT)
-        } else if (
-          process.env.PORT != null &&
-          process.env.PORT.defaultValue != null
-        ) {
-          process.env.PORT = +process.env.PORT.defaultValue
-        } else {
-          process.env.PORT = 3000
-        }
-
-        Object.assign(process.env, {
-          RESOLVE_SERVER_OPEN_BROWSER: 'false',
-          ROOT_PATH: importConfig.rootPath
+          ]
         })
 
         await build(importConfig)
 
-        await Promise.all([start(importConfig), runImport()])
+        await Promise.all([start(importConfig), runImport(importConfig)])
 
         break
       }

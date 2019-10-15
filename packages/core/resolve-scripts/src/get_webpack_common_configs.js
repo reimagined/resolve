@@ -8,6 +8,15 @@ const getWebpackCommonConfigs = ({
   alias,
   nodeModulesByAssembly
 }) => {
+  // TODO: extract in compile-time abstract module
+  if (resolveConfig.redux != null && resolveConfig.routes != null) {
+    resolveConfig.apiHandlers.push({
+      controller: path.resolve(__dirname, './alias/$resolve.reactSsrEntry.js'),
+      path: '/:markup*',
+      method: 'GET'
+    })
+  }
+
   const distDir = path.resolve(process.cwd(), resolveConfig.distDir)
   const isClient = false
 
@@ -54,7 +63,10 @@ const getWebpackCommonConfigs = ({
   const configs = []
 
   for (const assembly of assemblies) {
-    if (assembly.hasOwnProperty('packageJson')) {
+    if (
+      assembly.hasOwnProperty('packageJson') &&
+      !nodeModulesByAssembly.has(assembly.packageJson)
+    ) {
       nodeModulesByAssembly.set(assembly.packageJson, new Set())
     }
 

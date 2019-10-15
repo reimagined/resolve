@@ -79,14 +79,8 @@ export const mapStateToProps = state => ({
   lists: state.optimisticShoppingLists || []
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
-
 export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MyLists)
+  connect(mapStateToProps)(MyLists)
 )
 ```
 
@@ -108,17 +102,7 @@ Use the following HOCs to automatically fix URLs passed to a component as props.
 
 ## Sending Commands as Redux Actions
 
-A component connected to a Read Model receives an object containing available command names. You can use the **redux.bindActionCreators** function to automatically wrap all these commands into **dispatch** function calls. This allows for a compact implementation of the **mapDispatchToProps** function:
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (..\..\examples\shopping-list\client\containers\MyLists.js /export const mapDispatchToProps/ /bindActionCreators\(aggregateActions, dispatch\)/)
-```js
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
-```
-
-<!-- prettier-ignore-end -->
+A component connected to a Read Model receives an object containing available command names. You can use the **redux.bindActionCreators** function to automatically wrap all these commands into **dispatch** function calls. This allows for a compact implementation of the **mapDispatchToProps** function.
 
 After this, you can dispatch aggregate commands using the corresponding props:
 
@@ -170,10 +154,9 @@ export const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      ...aggregateActions,
       replaceUrl: routerActions.replace
     },
     dispatch

@@ -1,7 +1,7 @@
 import React from 'react'
 import uuid from 'uuid'
 import { connect } from 'react-redux'
-import { connectResolveAdvanced } from 'resolve-redux'
+import { connectResolveAdvanced, sendAggregateAction } from 'resolve-redux'
 import { Redirect } from 'react-router'
 import { bindActionCreators } from 'redux'
 import styled from 'styled-components'
@@ -101,11 +101,11 @@ export const mapStateToProps = state => ({
   me: state.jwt
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       createStory: ({ id, title, text, link }) =>
-        aggregateActions.createStory(id, {
+        sendAggregateAction('Story', 'createStory', id, {
           title,
           text,
           link

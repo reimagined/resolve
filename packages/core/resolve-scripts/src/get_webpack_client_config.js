@@ -27,10 +27,15 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
     ]
   }
 
-  return {
+  const polyfills = Array.isArray(resolveConfig.polyfills)
+    ? resolveConfig.polyfills
+    : []
+
+  const clientConfig = {
     name: 'Client',
     entry: {
       'common/client/client-chunk.js': [
+        ...polyfills,
         path.resolve(__dirname, './alias/$resolve.clientChunk.js')
       ]
     },
@@ -112,6 +117,31 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
       ])
     ]
   }
+
+  // TODO: extract in compile-time abstract module
+  if (resolveConfig.redux != null && resolveConfig.routes != null) {
+    clientConfig.entry['client/react-entry.js'] = [
+      ...polyfills,
+      path.resolve(__dirname, './alias/$resolve.reactClientEntry.js')
+    ]
+
+    clientConfig.plugins.push(
+      new ReplaceInFileWebpackPlugin([
+        {
+          dir: path.join(distDir, 'client'),
+          files: ['react-entry.js'],
+          rules: [
+            {
+              search: /^module.exports/,
+              replace: 'var mainReactEntry'
+            }
+          ]
+        }
+      ])
+    )
+  }
+
+  return clientConfig
 }
 
 export default getClientWebpackConfig

@@ -24,36 +24,8 @@ export {
   createCommentsResolvers
 }
 
-export default ({
-  aggregateName,
-  readModelName,
-  readModelConnectorName,
-  commentsTableName,
-  eventTypes,
-  commandTypes,
-  resolverNames,
-  maxNestedLevel,
-  verifyCommand,
-  commentsInstanceName
-} = {}) => {
-  const options = {
-    aggregateName,
-    readModelName,
-    readModelConnectorName,
-    commentsTableName,
-    eventTypes,
-    commandTypes,
-    resolverNames,
-    maxNestedLevel,
-    commentsInstanceName
-  }
-  const imports = {
-    verifyCommand:
-      verifyCommand ||
-      'resolve-module-comments/lib/common/aggregates/verify-command.js'
-  }
-
-  return injectDefaults((options, imports) => ({
+const makeConfig = (options, imports) => {
+  const config = {
     aggregates: [
       {
         name: options.aggregateName,
@@ -95,5 +67,56 @@ export default ({
         options
       }
     }
-  }))(options, imports)
+  }
+
+  if (options.reducerName != null) {
+    Object.assign(config, {
+      redux: {
+        reducers: {
+          [options.reducerName]: {
+            module: 'resolve-module-comments/lib/client/reducers/comments.js',
+            options,
+            imports
+          }
+        }
+      }
+    })
+  }
+
+  return config
+}
+
+export default ({
+  aggregateName,
+  readModelName,
+  readModelConnectorName,
+  commentsTableName,
+  eventTypes,
+  commandTypes,
+  resolverNames,
+  maxNestedLevel,
+  verifyCommand,
+  commentsInstanceName,
+  reducerName
+} = {}) => {
+  const options = {
+    aggregateName,
+    readModelName,
+    readModelConnectorName,
+    commentsTableName,
+    eventTypes,
+    commandTypes,
+    resolverNames,
+    maxNestedLevel,
+    commentsInstanceName,
+    reducerName
+  }
+  const imports = {
+    verifyCommand:
+      verifyCommand == null
+        ? 'resolve-module-comments/lib/common/aggregates/verify-command.js'
+        : verifyCommand
+  }
+
+  return injectDefaults(makeConfig)(options, imports)
 }

@@ -1,4 +1,14 @@
 const appConfig = {
+  routes: 'client/routes.js',
+  redux: {
+    reducers: {
+      optimistic: 'client/reducers/optimistic.js'
+    },
+    sagas: [
+      'client/sagas/optimistic-voting-saga.js',
+      'client/sagas/story-create-saga.js'
+    ]
+  },
   aggregates: [
     {
       name: 'Story',
@@ -31,13 +41,6 @@ const appConfig = {
       source: 'common/sagas/user-confirmation.saga.js',
       connectorName: 'default',
       schedulerName: 'scheduler'
-    }
-  ],
-  apiHandlers: [
-    {
-      path: '/:markup*',
-      controller: 'common/api-handlers/markup.js',
-      method: 'GET'
     }
   ]
 }

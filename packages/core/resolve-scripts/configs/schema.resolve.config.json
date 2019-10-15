@@ -276,6 +276,53 @@
       "type": "object",
       "additionalProperties": true
     },
+
+    "reduxReducersMap": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          { "$ref": "#/definitions/resourceInstance" },
+          { "$ref": "#/definitions/resourceConstructor" }
+        ]
+      }
+    },
+    "redux": {
+      "type": "object",
+      "properties": {
+        "reducers": {
+          "$ref": "#/definitions/reduxReducersMap"
+        },
+        "middlewares": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/resourceInstance" },
+              { "$ref": "#/definitions/resourceConstructor" }
+            ]
+          }
+        },
+        "sagas": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/resourceInstance" },
+              { "$ref": "#/definitions/resourceConstructor" }
+            ]
+          }
+        },
+        "enhancers": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/resourceInstance" },
+              { "$ref": "#/definitions/resourceConstructor" }
+            ]
+          }
+        }
+      },
+      "required": ["reducers"],
+      "additionalProperties": false
+    },
     "config": {
       "type": "object",
       "properties": {
@@ -285,12 +332,6 @@
         },
         "port": {
           "type": ["integer", "string"]
-        },
-        "index": {
-          "oneOf": [
-            { "$ref": "#/definitions/resourceInstance" },
-            { "$ref": "#/definitions/resourceConstructor" }
-          ]
         },
         "rootPath": {
           "type": "string"
@@ -391,6 +432,13 @@
         },
         "customConstants": {
           "$ref": "#/definitions/customConstants"
+        },
+
+        "routes": {
+          "type": "string"
+        },
+        "redux": {
+          "$ref": "#/definitions/redux"
         }
       },
       "required": [
@@ -398,7 +446,6 @@
         "serverImports",
         "apiHandlers",
         "port",
-        "index",
         "rootPath",
         "distDir",
         "staticDir",
@@ -419,6 +466,11 @@
         "sagas",
         "mode"
       ],
+      "dependencies": {
+        "routes": ["redux"],
+        "redux": ["routes"]
+      },
+
       "additionalProperties": false
     }
   },

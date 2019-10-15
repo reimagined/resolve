@@ -39,9 +39,5 @@ export const jwtCookie = interopRequireDefault(require('$resolve.jwtCookie')).de
 export const applicationName = interopRequireDefault(require('$resolve.applicationName')).default
 export const subscribeAdapter = interopRequireDefault(require('$resolve.subscribeAdapter')).default
 export const customConstants = interopRequireDefault(require('$resolve.customConstants')).default
-export const aggregateActions = {}
-for (var index = 0; index < aggregates.length; index++) {
-  Object.assign(aggregateActions, createActions(aggregates[index]))
-}
 "
 `;

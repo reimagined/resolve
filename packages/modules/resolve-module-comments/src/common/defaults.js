@@ -12,7 +12,7 @@ export const removeComment = 'removeComment'
 export const reducerName = 'comments'
 
 // Aggregate Name
-export const aggregateName = 'Comments'
+export const aggregateName = 'Comment'
 
 // Read Model Name
 export const readModelName = 'Comments'

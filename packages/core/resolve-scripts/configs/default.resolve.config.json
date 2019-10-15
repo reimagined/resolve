@@ -10,7 +10,6 @@
   "viewModels": [],
   "sagas": [],
   "apiHandlers": [],
-  "index": "client/index.js",
   "storageAdapter": {
     "module": "resolve-storage-lite",
     "options": {
