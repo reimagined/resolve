@@ -1,5 +1,6 @@
 const appConfig = {
   routes: 'client/routes.js',
+  redux: {},
   aggregates: [
     {
       name: 'ShoppingList',
