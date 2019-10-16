@@ -69,6 +69,9 @@ You can chain the **connectReadModel** or **connectViewModel** function call wit
 
 [embedmd]:# (..\..\examples\shopping-list\client\containers\MyLists.js /export const mapStateToOptions/ /^\)/)
 ```js
+import { sendAggregateAction } from 'resolve-redux'
+import { bindActionCreators } from 'redux'
+
 export const mapStateToOptions = () => ({
   readModelName: 'ShoppingLists',
   resolverName: 'all',
@@ -79,8 +82,10 @@ export const mapStateToProps = state => ({
   lists: state.optimisticShoppingLists || []
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
+export const mapDispatchToProps = dispatch =>
+  bindActionCreators({
+    createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
+  }, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
   connect(
@@ -108,17 +113,7 @@ Use the following HOCs to automatically fix URLs passed to a component as props.
 
 ## Sending Commands as Redux Actions
 
-A component connected to a Read Model receives an object containing available command names. You can use the **redux.bindActionCreators** function to automatically wrap all these commands into **dispatch** function calls. This allows for a compact implementation of the **mapDispatchToProps** function:
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (..\..\examples\shopping-list\client\containers\MyLists.js /export const mapDispatchToProps/ /bindActionCreators\(aggregateActions, dispatch\)/)
-```js
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
-```
-
-<!-- prettier-ignore-end -->
+A component connected to a Read Model receives an object containing available command names. You can use the **redux.bindActionCreators** function to automatically wrap all these commands into **dispatch** function calls. This allows for a compact implementation of the **mapDispatchToProps** function.
 
 After this, you can dispatch aggregate commands using the corresponding props:
 
@@ -153,6 +148,9 @@ A View Model is a special kind of a Read Model. Its projection is declared in a 
 
 [embedmd]:# (..\..\examples\shopping-list\client\containers\ShoppingList.js /export const mapStateToOptions/ /^\)/)
 ```js
+import { sendAggregateAction } from 'resolve-redux'
+import { bindActionCreators } from 'redux'
+
 export const mapStateToOptions = (state, ownProps) => {
   const aggregateId = ownProps.match.params.id
 
@@ -170,10 +168,10 @@ export const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      ...aggregateActions,
+      createStory: sendAggregateAction.bind(null, 'Story', 'createStory'),
       replaceUrl: routerActions.replace
     },
     dispatch

@@ -3,7 +3,23 @@ import { EOL } from 'os'
 
 import { start } from './importer'
 
-const runImport = () => {
+const runImport = importConfig => {
+  if (process.env.hasOwnProperty(String(importConfig.port))) {
+    process.env.PORT = +String(process.env.PORT)
+  } else if (
+    process.env.PORT != null &&
+    process.env.PORT.defaultValue != null
+  ) {
+    process.env.PORT = +process.env.PORT.defaultValue
+  } else {
+    process.env.PORT = 3000
+  }
+
+  Object.assign(process.env, {
+    RESOLVE_SERVER_OPEN_BROWSER: 'false',
+    ROOT_PATH: importConfig.rootPath
+  })
+
   let bar
   // eslint-disable-next-line no-console
   console.log('Import has been started. Press Control+C to stop import')

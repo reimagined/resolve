@@ -1,7 +1,6 @@
 export const viewModels = []
 export const readModels = []
 export const aggregates = []
-export const aggregateActions = {}
 
 export const rootPath = ''
 export const staticPath = ''

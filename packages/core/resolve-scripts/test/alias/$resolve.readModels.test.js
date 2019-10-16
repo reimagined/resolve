@@ -24,7 +24,7 @@ describe('base config works correctly', () => {
   }
 
   test('[client]', () => {
-    expect(
+    expect(() =>
       normalizePaths(
         '\r\n' +
           alias({
@@ -33,7 +33,7 @@ describe('base config works correctly', () => {
           }).code +
           '\r\n'
       )
-    ).toMatchSnapshot()
+    ).toThrow()
   })
 
   test('[server]', () => {
@@ -142,7 +142,7 @@ describe('base(v2) config works correctly', () => {
   }
 
   test('[client]', () => {
-    expect(
+    expect(() =>
       normalizePaths(
         '\r\n' +
           alias({
@@ -151,7 +151,7 @@ describe('base(v2) config works correctly', () => {
           }).code +
           '\r\n'
       )
-    ).toMatchSnapshot()
+    ).toThrow()
   })
 
   test('[server]', () => {
@@ -189,7 +189,7 @@ describe('config + process.env works correctly', () => {
   }
 
   test('[client]', () => {
-    expect(
+    expect(() =>
       normalizePaths(
         '\r\n' +
           alias({
@@ -198,7 +198,7 @@ describe('config + process.env works correctly', () => {
           }).code +
           '\r\n'
       )
-    ).toMatchSnapshot()
+    ).toThrow()
   })
 
   test('[server]', () => {

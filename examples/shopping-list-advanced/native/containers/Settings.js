@@ -18,6 +18,7 @@ import { StyleSheet } from 'react-native'
 
 import { connectReadModel } from 'resolve-redux'
 import requiredAuth from '../decorators/required-auth'
+import * as aggregateActions from '../redux/actions/aggregate-actions'
 
 const styles = StyleSheet.create({
   label: {
@@ -35,9 +36,10 @@ const styles = StyleSheet.create({
 })
 
 export class Settings extends React.PureComponent {
-  state = {
-    text: this.props.username
-  }
+  state = {}
+
+  getText = () =>
+    this.state.text != null ? this.state.text : this.props.data.username
 
   updateText = text => {
     this.setState({
@@ -46,14 +48,19 @@ export class Settings extends React.PureComponent {
   }
 
   updateUserName = () => {
-    this.props.updateUserName(this.props.id, {
-      username: this.state.text
+    this.props.updateUserName(this.props.data.id, {
+      username: this.getText()
     })
   }
 
   render() {
-    const { id } = this.props
-    const { text } = this.state
+    const { isLoading, data } = this.props
+    if (isLoading || data == null) {
+      return null
+    }
+
+    const { id } = data
+    const text = this.getText()
 
     return (
       <Container>
@@ -93,18 +100,13 @@ export const mapStateToOptions = state => ({
   }
 })
 
-export const mapStateToProps = (state, { data }) => ({
-  id: data.id,
-  username: data.username
-})
-
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default requiredAuth(
   connectReadModel(mapStateToOptions)(
     connect(
-      mapStateToProps,
+      null,
       mapDispatchToProps
     )(Settings)
   )

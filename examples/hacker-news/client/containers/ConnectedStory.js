@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { connectReadModel } from 'resolve-redux'
 
+import * as aggregateActions from '../actions/aggregate-actions'
 import Story from './Story'
 
 class ConnectedStory extends React.PureComponent {
@@ -35,7 +36,7 @@ const mapStateToProps = (state, { data }) => ({
   me: state.jwt
 })
 
-const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+const mapDispatchToProps = dispatch =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(

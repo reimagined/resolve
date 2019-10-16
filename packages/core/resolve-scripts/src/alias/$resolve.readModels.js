@@ -4,13 +4,16 @@ import {
   RESOURCE_ANY,
   IMPORT_INSTANCE
 } from '../constants'
-import importBabel from '../import_babel'
 import { checkRuntimeEnv } from '../declare_runtime_env'
-import resolveFile from '../resolve_file'
-import resolveFileOrModule from '../resolve_file_or_module'
 import importResource from '../import_resource'
 
 export default ({ resolveConfig, isClient }) => {
+  if (isClient) {
+    throw new Error(
+      `${message.serverAliasInClientCodeError}$resolve.readModels`
+    )
+  }
+
   const imports = []
   const constants = [``]
   const exports = [``, `const readModels = []`, ``]
@@ -40,58 +43,27 @@ export default ({ resolveConfig, isClient }) => {
       runtimeMode: RUNTIME_ENV_NOWHERE,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
-      imports: !isClient ? imports : [],
-      constants: !isClient ? constants : []
+      imports,
+      constants
     })
-
-    if (isClient) {
-      const clientResolvers = Object.keys(
-        readModel.resolvers.constructor === String
-          ? importBabel(resolveFile(readModel.resolvers))
-          : importBabel(resolveFileOrModule(readModel.resolvers.module))(
-              readModel.resolvers.options,
-              readModel.resolvers.imports != null
-                ? Object.keys(readModel.resolvers.imports).reduce(
-                    (acc, key) => {
-                      acc[key] = importBabel(
-                        resolveFile(readModel.resolvers.imports[key])
-                      )
-                      return acc
-                    },
-                    {}
-                  )
-                : null
-            )
-      )
-
-      constants.push(
-        `const resolvers_${index} = {`,
-        clientResolvers
-          .map(commandName => `  ${commandName}() {}`)
-          .join(',\r\n'),
-        `}`
-      )
-    }
 
     exports.push(`readModels.push({`, `  name: name_${index}`)
     exports.push(`, resolvers: resolvers_${index}`)
+    exports.push(`, connectorName: connectorName_${index}`)
 
-    if (!isClient) {
-      exports.push(`, connectorName: connectorName_${index}`)
+    importResource({
+      resourceName: `projection_${index}`,
+      resourceValue: readModel.projection,
+      runtimeMode: RUNTIME_ENV_NOWHERE,
+      importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
+      calculateHash: 'resolve-read-model-projection-hash',
+      imports,
+      constants
+    })
+    exports.push(`, projection: projection_${index}`)
+    exports.push(`, invariantHash: projection_${index}_hash`)
 
-      importResource({
-        resourceName: `projection_${index}`,
-        resourceValue: readModel.projection,
-        runtimeMode: RUNTIME_ENV_NOWHERE,
-        importMode: RESOURCE_ANY,
-        instanceMode: IMPORT_INSTANCE,
-        calculateHash: 'resolve-read-model-projection-hash',
-        imports,
-        constants
-      })
-      exports.push(`, projection: projection_${index}`)
-      exports.push(`, invariantHash: projection_${index}_hash`)
-    }
     exports.push(`})`, ``)
   }
 

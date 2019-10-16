@@ -1,18 +1,11 @@
 import path from 'path'
+import ReplaceInFileWebpackPlugin from 'replace-in-file-webpack-plugin'
 
 import getModulesDirs from './get_modules_dirs'
 
 const getClientWebpackConfig = ({ resolveConfig, alias }) => {
-  const clientDistDir = path.resolve(
-    process.cwd(),
-    resolveConfig.distDir,
-    'client'
-  )
-
+  const distDir = path.resolve(process.cwd(), resolveConfig.distDir)
   const isClient = true
-  const polyfills = Array.isArray(resolveConfig.polyfills)
-    ? resolveConfig.polyfills
-    : []
 
   const clientTransformBabelOptions = {
     cacheDirectory: true,
@@ -34,15 +27,16 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
     ]
   }
 
-  return {
+  const polyfills = Array.isArray(resolveConfig.polyfills)
+    ? resolveConfig.polyfills
+    : []
+
+  const clientConfig = {
     name: 'Client',
     entry: {
-      'bundle.js': [
+      'common/client/client-chunk.js': [
         ...polyfills,
-        path.resolve(__dirname, './alias/$resolve.clientEntry.js')
-      ],
-      'hmr.js': [
-        path.resolve(__dirname, './alias/$resolve.hotModuleReplacement.js')
+        path.resolve(__dirname, './alias/$resolve.clientChunk.js')
       ]
     },
     context: path.resolve(process.cwd()),
@@ -51,10 +45,12 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
     devtool: 'source-map',
     target: 'web',
     output: {
-      path: clientDistDir,
+      path: distDir,
       filename: '[name]',
       devtoolModuleFilenameTemplate: '[namespace][resource-path]',
-      devtoolFallbackModuleFilenameTemplate: '[namespace][resource-path]?[hash]'
+      devtoolFallbackModuleFilenameTemplate:
+        '[namespace][resource-path]?[hash]',
+      libraryTarget: 'commonjs-module'
     },
     resolve: {
       modules: getModulesDirs(),
@@ -101,8 +97,51 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
           }
         }
       ]
-    }
+    },
+    plugins: [
+      new ReplaceInFileWebpackPlugin([
+        {
+          dir: path.join(distDir, 'common', 'client'),
+          files: ['client-chunk.js'],
+          rules: [
+            {
+              search: /^module.exports/,
+              replace: 'const mainExport'
+            },
+            {
+              search: /$/,
+              replace: '\n\nexport default mainExport'
+            }
+          ]
+        }
+      ])
+    ]
   }
+
+  // TODO: extract in compile-time abstract module
+  if (resolveConfig.redux != null && resolveConfig.routes != null) {
+    clientConfig.entry['client/react-entry.js'] = [
+      ...polyfills,
+      path.resolve(__dirname, './alias/$resolve.reactClientEntry.js')
+    ]
+
+    clientConfig.plugins.push(
+      new ReplaceInFileWebpackPlugin([
+        {
+          dir: path.join(distDir, 'client'),
+          files: ['react-entry.js'],
+          rules: [
+            {
+              search: /^module.exports/,
+              replace: 'var mainReactEntry'
+            }
+          ]
+        }
+      ])
+    )
+  }
+
+  return clientConfig
 }
 
 export default getClientWebpackConfig

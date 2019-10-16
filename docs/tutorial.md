@@ -684,12 +684,14 @@ A component connected to a reSolve View Model receives an array of aggregate act
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /export const mapDispatchToProps/   /\n$/)
 ```js
+import { sendAggregateAction } from 'resolve-redux'
+import { bindActionCreators } from 'redux'
+
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(
     {
-      ...aggregateActions
+      createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
     },
     dispatch
   )
@@ -697,7 +699,7 @@ export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
 export default connectViewModel(mapStateToOptions)(
   connect(
     null,
-    mapDispatchToProps
+    mapDispatchToProps 
   )(ShoppingList)
 )
 ```
@@ -957,6 +959,9 @@ Connect the MyLists container component to the ShoppingLists Read Model as shown
 **client/containers/MyLists.js:**
 
 ```js
+import { sendAggregateAction } from 'resolve-redux'
+import { bindActionCreators } from 'redux'
+
 export const mapStateToOptions = () => ({
   readModelName: 'ShoppingLists',
   resolverName: 'all',
@@ -967,13 +972,18 @@ export const mapStateToProps = (state, ownProps) => ({
   lists: ownProps.data
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
+export const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
+    },
+    dispatch
+  )
 
 export default connectReadModel(mapStateToOptions)(
   connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps 
   )(MyLists)
 )
 ```

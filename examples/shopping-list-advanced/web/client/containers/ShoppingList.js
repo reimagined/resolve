@@ -21,6 +21,7 @@ import Image from './Image'
 import NotFound from '../components/NotFound'
 
 import requiredAuth from '../decorators/required-auth'
+import * as aggregateActions from '../redux/aggregate-actions'
 
 const ButtonLink = connectRootBasedUrls(['href'])(Button)
 
@@ -193,7 +194,7 @@ export const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       ...aggregateActions,

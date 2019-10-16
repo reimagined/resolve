@@ -16,7 +16,7 @@ const createUserModule = strategies => {
     for (const { method, path: routePath, callback } of routes) {
       apiHandlers.push({
         method,
-        path: routePath,
+        path: `/api/${routePath}`,
         controller: {
           module: 'resolve-module-auth/lib/api_handler_constructor',
           options: {
@@ -34,7 +34,7 @@ const createUserModule = strategies => {
     if (logoutRoute) {
       apiHandlers.push({
         method: logoutRoute.method,
-        path: logoutRoute.path,
+        path: `/api/${logoutRoute.path}`,
         controller: 'resolve-module-auth/lib/logout_api_handler'
       })
     }

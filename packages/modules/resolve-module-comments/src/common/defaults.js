@@ -12,7 +12,7 @@ export const removeComment = 'removeComment'
 export const reducerName = 'comments'
 
 // Aggregate Name
-export const aggregateName = 'Comments'
+export const aggregateName = 'Comment'
 
 // Read Model Name
 export const readModelName = 'Comments'
@@ -27,3 +27,6 @@ export const commentsTableName = 'Comments'
 export const commentsTree = 'commentsTree'
 export const foreignCommentsCount = 'foreignCommentsCount'
 export const allCommentsPaginate = 'allCommentsPaginate'
+
+// Module Instance Name
+export const commentsInstanceName = 'comments'

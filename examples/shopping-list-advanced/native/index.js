@@ -3,7 +3,7 @@ import React from 'react'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 
 import { Providers } from 'resolve-redux'
-import { rootPath, staticPath, aggregateActions } from './resolve'
+import { rootPath, staticPath } from './resolve'
 import origin from './constants/origin'
 
 import store from './redux/store'
@@ -42,7 +42,6 @@ class AppContainer extends React.PureComponent {
           origin={origin}
           rootPath={rootPath}
           staticPath={staticPath}
-          aggregateActions={aggregateActions}
           store={store}
         >
           <Routes />

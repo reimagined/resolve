@@ -6,6 +6,8 @@ import { Redirect } from 'react-router'
 import { bindActionCreators } from 'redux'
 import styled from 'styled-components'
 
+import * as aggregateActions from '../actions/aggregate-actions'
+
 const FormLabel = styled.div`
   margin-bottom: 0.1em;
 `
@@ -37,8 +39,7 @@ export class Submit extends React.PureComponent {
 
     this.setState({ disabled: !this.state.disabled })
 
-    return this.props.createStory({
-      id: uuid.v4(),
+    return this.props.createStory(uuid.v4(), {
       title,
       text,
       link
@@ -101,18 +102,8 @@ export const mapStateToProps = state => ({
   me: state.jwt
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(
-    {
-      createStory: ({ id, title, text, link }) =>
-        aggregateActions.createStory(id, {
-          title,
-          text,
-          link
-        })
-    },
-    dispatch
-  )
+export const mapDispatchToProps = dispatch =>
+  bindActionCreators(aggregateActions, dispatch)
 
 export default connectResolveAdvanced(
   connect(

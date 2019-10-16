@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import requiredAuth from '../decorators/required-auth'
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
+import * as aggregateActions from '../redux/aggregate-actions'
 
 class MyLists extends React.PureComponent {
   render() {
@@ -34,7 +35,7 @@ export const mapStateToProps = state => ({
   lists: state.optimisticShoppingLists
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default requiredAuth(

@@ -5,18 +5,37 @@ import {
   IMPORT_INSTANCE
 } from '../constants'
 import importResource from '../import_resource'
+import { checkRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig }) => {
+  if (resolveConfig.redux == null || resolveConfig.routes == null) {
+    throw new Error(`${message.configNotContainSectionError}.redux, routes`)
+  }
+
   const imports = []
-  const constants = [``]
-  const exports = [
-    `const redux = {
-      reducers: {},
-      middlewares: [],
-      sagas: [],
-      enhancers: []
-    }`
-  ]
+  const constants = []
+  const exports = []
+
+  if (checkRuntimeEnv(resolveConfig.routes)) {
+    throw new Error(`${message.clientEnvError}.routes`)
+  }
+
+  importResource({
+    resourceName: `routes`,
+    resourceValue: resolveConfig.routes,
+    runtimeMode: RUNTIME_ENV_NOWHERE,
+    importMode: RESOURCE_ANY,
+    instanceMode: IMPORT_INSTANCE,
+    imports,
+    constants
+  })
+
+  exports.push(`const redux = {
+    reducers: {},
+    middlewares: [],
+    sagas: [],
+    enhancers: []
+  }`)
 
   if (resolveConfig.redux.hasOwnProperty('reducers')) {
     const reducersSection = resolveConfig.redux.reducers
@@ -111,7 +130,9 @@ export default ({ resolveConfig }) => {
     }
   }
 
-  exports.push('export default redux')
+  exports.push(`const reactIsomorphic = { redux, routes }`)
+
+  exports.push('export default reactIsomorphic')
 
   return {
     code: [...imports, ...constants, ...exports].join('\r\n')

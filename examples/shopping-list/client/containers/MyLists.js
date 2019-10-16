@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
+import * as aggregateActions from '../actions/aggregate_actions'
 
 class MyLists extends React.PureComponent {
   render() {
@@ -33,7 +34,7 @@ export const mapStateToProps = state => ({
   lists: state.optimisticShoppingLists || []
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(

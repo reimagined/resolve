@@ -1,25 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`base config works correctly [client] 1`] = `
-"
-const name_0 = \\"Todo\\"
-const commands_0 = {
-  [\`create\`]: () => {},
-  [\`update\`]: () => {},
-  [\`remove\`]: () => {}
-}
-
-const aggregates = []
-
-aggregates.push({
-  name: name_0
-, commands: commands_0
-})
-
-export default aggregates
-"
-`;
-
 exports[`base config works correctly [server] 1`] = `
 "
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
@@ -49,37 +29,6 @@ aggregates.push({
 , commands: commands_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
-})
-
-export default aggregates
-"
-`;
-
-exports[`base(v2) config works correctly [client] 1`] = `
-"
-const name_0 = \\"Todo\\"
-const commands_0 = {
-  [\`create\`]: () => {},
-  [\`update\`]: () => {},
-  [\`remove\`]: () => {}
-}
-const name_1 = \\"Item\\"
-const commands_1 = {
-  [\`create\`]: () => {},
-  [\`update\`]: () => {},
-  [\`remove\`]: () => {}
-}
-
-const aggregates = []
-
-aggregates.push({
-  name: name_0
-, commands: commands_0
-})
-
-aggregates.push({
-  name: name_1
-, commands: commands_1
 })
 
 export default aggregates
@@ -135,26 +84,6 @@ export default aggregates
 "
 `;
 
-exports[`config with commands as module works correctly [client] 1`] = `
-"
-const name_0 = \\"Todo\\"
-const commands_0 = {
-  [\`create\`]: () => {},
-  [\`update\`]: () => {},
-  [\`remove\`]: () => {}
-}
-
-const aggregates = []
-
-aggregates.push({
-  name: name_0
-, commands: commands_0
-})
-
-export default aggregates
-"
-`;
-
 exports[`config with commands as module works correctly [server] 1`] = `
 "
 import commands_0_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommandsAsModule.js\\"
@@ -196,26 +125,6 @@ export default aggregates
 "
 `;
 
-exports[`config with projection works correctly [client] 1`] = `
-"
-const name_0 = \\"Todo\\"
-const commands_0 = {
-  [\`create\`]: () => {},
-  [\`update\`]: () => {},
-  [\`remove\`]: () => {}
-}
-
-const aggregates = []
-
-aggregates.push({
-  name: name_0
-, commands: commands_0
-})
-
-export default aggregates
-"
-`;
-
 exports[`config with projection works correctly [server] 1`] = `
 "
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
@@ -250,26 +159,6 @@ aggregates.push({
 , deserializeState: deserializeState_0
 , projection: projection_0
 , invariantHash: projection_0_hash
-})
-
-export default aggregates
-"
-`;
-
-exports[`config with schedulers works correctly [client] 1`] = `
-"
-const name_0 = \\"Todo\\"
-const commands_0 = {
-  [\`create\`]: () => {},
-  [\`update\`]: () => {},
-  [\`remove\`]: () => {}
-}
-
-const aggregates = []
-
-aggregates.push({
-  name: name_0
-, commands: commands_0
 })
 
 export default aggregates

@@ -19,6 +19,7 @@ import {
 
 import Image from './Image'
 import NotFound from '../components/NotFound'
+import * as aggregateActions from '../actions/aggregate_actions'
 
 export class ShoppingList extends React.PureComponent {
   state = {
@@ -183,7 +184,7 @@ export const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       ...aggregateActions,
