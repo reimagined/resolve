@@ -6,6 +6,7 @@ import { Label } from 'native-base'
 
 import { connectReadModel } from 'resolve-redux'
 
+import * as aggregateActions from '../redux/actions/aggregate-actions'
 import UserList from '../components/UserList'
 
 const styles = StyleSheet.create({
@@ -66,7 +67,7 @@ export const mapStateToProps = state => ({
   users: state.optimisticSharings.users
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(

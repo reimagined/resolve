@@ -23,6 +23,7 @@ const injectDefaults = callback => (
       foreignCommentsCount = defaults.foreignCommentsCount,
       allCommentsPaginate = defaults.allCommentsPaginate
     } = {},
+    commentsInstanceName = defaults.commentsInstanceName,
     ...options
   } = {},
   { verifyCommand = defaultVerifyCommand } = {},
@@ -50,6 +51,7 @@ const injectDefaults = callback => (
         foreignCommentsCount,
         allCommentsPaginate
       },
+      commentsInstanceName,
       ...options
     },
     { verifyCommand },

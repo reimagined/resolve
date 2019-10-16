@@ -9,7 +9,6 @@ class AppContainer extends React.PureComponent {
       origin,
       rootPath,
       staticPath,
-      aggregateActions,
       store,
       history,
       routes,
@@ -21,7 +20,6 @@ class AppContainer extends React.PureComponent {
         origin={origin}
         rootPath={rootPath}
         staticPath={staticPath}
-        aggregateActions={aggregateActions}
         store={store}
       >
         <ConnectedRouter history={history} isSSR={isSSR}>

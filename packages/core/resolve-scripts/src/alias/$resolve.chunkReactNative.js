@@ -43,22 +43,13 @@ export default ({ resolveConfig }) => {
   }
 
   exports.push(
-    `export const aggregates = interopRequireDefault(require('$resolve.aggregates')).default`,
     `export const viewModels = interopRequireDefault(require('$resolve.viewModels')).default`,
-    `export const readModels = interopRequireDefault(require('$resolve.readModels')).default`,
     `export const rootPath = interopRequireDefault(require('$resolve.rootPath')).default`,
     `export const staticPath = interopRequireDefault(require('$resolve.staticPath')).default`,
     `export const jwtCookie = interopRequireDefault(require('$resolve.jwtCookie')).default`,
     `export const applicationName = interopRequireDefault(require('$resolve.applicationName')).default`,
     `export const subscribeAdapter = interopRequireDefault(require('$resolve.subscribeAdapter')).default`,
     `export const customConstants = interopRequireDefault(require('$resolve.customConstants')).default`
-  )
-
-  exports.push(
-    `export const aggregateActions = {}`,
-    `for (var index = 0; index < aggregates.length; index++) {`,
-    `  Object.assign(aggregateActions, createActions(aggregates[index]))`,
-    `}`
   )
 
   return {

@@ -20,6 +20,8 @@ import ShoppingListPanel from '../components/ShoppingListPanel'
 import ShoppingListItems from '../components/ShoppingListItems'
 import NotFound from '../components/NotFound'
 
+import * as aggregateActions from '../redux/actions/aggregate-actions'
+
 export class ShoppingList extends React.PureComponent {
   componentDidMount() {
     this.optionalRedirect()
@@ -117,7 +119,7 @@ export const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default requiredAuth(

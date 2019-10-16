@@ -31,7 +31,7 @@ const appConfig = {
   ],
   apiHandlers: [
     {
-      path: 'shopping-lists.json',
+      path: '/api/shopping-lists.json',
       controller: 'common/api-handlers/shopping_lists.js',
       method: 'GET'
     }

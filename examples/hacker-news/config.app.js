@@ -5,8 +5,8 @@ const appConfig = {
       optimistic: 'client/reducers/optimistic.js'
     },
     sagas: [
-      'client/sagas/story-create-saga.js',
-      'client/sagas/optimistic-voting-saga.js'
+      'client/sagas/optimistic-voting-saga.js',
+      'client/sagas/story-create-saga.js'
     ]
   },
   aggregates: [

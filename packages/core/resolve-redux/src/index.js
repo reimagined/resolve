@@ -4,7 +4,6 @@ import createResolveMiddleware from './create_resolve_middleware'
 import createViewModelsReducer from './create_view_models_reducer'
 import createReadModelsReducer from './create_read_models_reducer'
 import createJwtReducer from './create_jwt_reducer'
-import createActions from './create_actions'
 import connectReadModel from './connect_read_model'
 import connectViewModel from './connect_view_model'
 import connectResolveAdvanced from './connect_resolve_advanced'
@@ -24,6 +23,14 @@ import Routes from './routes'
 import deserializeInitialState from './deserialize_initial_state'
 import createStore from './create_store'
 
+const sendAggregateAction = (
+  aggregateName,
+  commandType,
+  aggregateId,
+  payload
+) =>
+  actions.sendCommandRequest(commandType, aggregateId, aggregateName, payload)
+
 export {
   actions,
   actionTypes,
@@ -31,7 +38,7 @@ export {
   createReadModelsReducer,
   createJwtReducer,
   createResolveMiddleware,
-  createActions,
+  sendAggregateAction,
   connectViewModel,
   connectReadModel,
   connectResolveAdvanced,

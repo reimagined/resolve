@@ -1,5 +1,6 @@
 export default () => ({
   code: `
+  import serverImports from '$resolve.serverImports'
   import seedClientEnvs from '$resolve.seedClientEnvs'
   import storageAdapter from '$resolve.storageAdapter'
   import snapshotAdapter from '$resolve.snapshotAdapter'
@@ -12,15 +13,14 @@ export default () => ({
   import viewModels from '$resolve.viewModels'
   import sagas from '$resolve.sagas'
   import schedulers from '$resolve.schedulers'
-  import routes from '$resolve.routes'
-  import redux from '$resolve.redux'
 
   export default {
     assemblies: {
       seedClientEnvs,
       storageAdapter,
       snapshotAdapter,
-      readModelConnectors
+      readModelConnectors,
+      serverImports
     },
     constants,
     domain: {
@@ -31,9 +31,7 @@ export default () => ({
       viewModels,
       schedulers,
       sagas
-    },
-    routes,
-    redux
+    }
   }
 `
 })

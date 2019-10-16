@@ -16,8 +16,6 @@ import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
 const createStore = ({
   redux: { reducers, middlewares, enhancers, sagas: customSagas },
   viewModels,
-  readModels,
-  aggregates,
   subscribeAdapter,
   initialState,
   history,
@@ -34,7 +32,7 @@ const createStore = ({
     ...reducers,
     router: routerReducer,
     viewModels: createViewModelsReducer(viewModels),
-    readModels: createReadModelsReducer(readModels),
+    readModels: createReadModelsReducer(),
     jwt: createJwtReducer()
   })
 
@@ -58,8 +56,6 @@ const createStore = ({
   resolveMiddleware.run({
     store,
     viewModels,
-    readModels,
-    aggregates,
     origin,
     rootPath,
     subscribeAdapter,

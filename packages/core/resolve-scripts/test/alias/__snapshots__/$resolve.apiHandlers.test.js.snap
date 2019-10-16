@@ -17,7 +17,7 @@ const constructorBindFunction =
     )
 const idempotentFunction = value => value
 
-const path_0 = \\"api-handler\\"
+const path_0 = \\"/api/api-handler\\"
 const method_0 = \\"get\\"
 const controller_0 = controller_0_instance
 

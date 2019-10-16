@@ -26,12 +26,14 @@ const adjustWebpackConfigs = webpackConfigs => {
       })
     })
 
-    webpackConfig.plugins = [
-      new ExtractTextPlugin({
-        filename: 'style.css',
-        allChunks: true
-      })
-    ]
+    const extractTextPlugin = new ExtractTextPlugin({
+      filename: 'style.css',
+      allChunks: true
+    })
+
+    webpackConfig.plugins = Array.isArray(webpackConfig.plugins)
+      ? webpackConfig.plugins.concat([extractTextPlugin])
+      : [extractTextPlugin]
   }
 }
 
