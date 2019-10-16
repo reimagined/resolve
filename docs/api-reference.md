@@ -582,6 +582,9 @@ Connects a React component to a reSolve Read Model.
 ##### Example
 
 ```js
+import { sendAggregateAction } from 'resolve-redux'
+import { bindActionCreators } from 'redux'
+
 export const mapStateToOptions = () => ({
   readModelName: 'ShoppingLists',
   resolverName: 'all',
@@ -592,9 +595,16 @@ export const mapStateToProps = (state, ownProps) => ({
   lists: ownProps.data
 })
 
+export const mapDispatchToProps = dispatch =>
+  bindActionCreators({
+    createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
+  }, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
-  connect(mapStateToProps)(MyLists)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MyLists)
 )
 ```
 

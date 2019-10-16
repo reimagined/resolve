@@ -5,6 +5,9 @@ const devConfig = {
   port: declareRuntimeEnv('PORT', '3000'),
   polyfills: ['@babel/polyfill'],
   mode: 'development',
+  redux: {
+    enhancers: ['client/enhancers/redux-devtools.js']
+  },
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {

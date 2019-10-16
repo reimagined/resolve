@@ -69,6 +69,9 @@ You can chain the **connectReadModel** or **connectViewModel** function call wit
 
 [embedmd]:# (..\..\examples\shopping-list\client\containers\MyLists.js /export const mapStateToOptions/ /^\)/)
 ```js
+import { sendAggregateAction } from 'resolve-redux'
+import { bindActionCreators } from 'redux'
+
 export const mapStateToOptions = () => ({
   readModelName: 'ShoppingLists',
   resolverName: 'all',
@@ -79,8 +82,16 @@ export const mapStateToProps = state => ({
   lists: state.optimisticShoppingLists || []
 })
 
+export const mapDispatchToProps = dispatch =>
+  bindActionCreators({
+    createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
+  }, dispatch)
+
 export default connectReadModel(mapStateToOptions)(
-  connect(mapStateToProps)(MyLists)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MyLists)
 )
 ```
 
@@ -137,6 +148,9 @@ A View Model is a special kind of a Read Model. Its projection is declared in a 
 
 [embedmd]:# (..\..\examples\shopping-list\client\containers\ShoppingList.js /export const mapStateToOptions/ /^\)/)
 ```js
+import { sendAggregateAction } from 'resolve-redux'
+import { bindActionCreators } from 'redux'
+
 export const mapStateToOptions = (state, ownProps) => {
   const aggregateId = ownProps.match.params.id
 
@@ -157,6 +171,7 @@ export const mapStateToProps = (state, ownProps) => {
 export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
+      createStory: sendAggregateAction.bind(null, 'Story', 'createStory'),
       replaceUrl: routerActions.replace
     },
     dispatch

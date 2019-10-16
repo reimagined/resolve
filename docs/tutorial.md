@@ -685,8 +685,22 @@ A component connected to a reSolve View Model receives an array of aggregate act
 <!-- prettier-ignore-start -->
 
 ```js
+import { sendAggregateAction } from 'resolve-redux'
+import { bindActionCreators } from 'redux'
+
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+  bindActionCreators(
+    {
+      createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
+    },
+    dispatch
+  )
+
 export default connectViewModel(mapStateToOptions)(
-  connect(null)(ShoppingList)
+  connect(
+    null,
+    mapDispatchToProps 
+  )(ShoppingList)
 )
 ```
 
@@ -945,6 +959,9 @@ Connect the MyLists container component to the ShoppingLists Read Model as shown
 **client/containers/MyLists.js:**
 
 ```js
+import { sendAggregateAction } from 'resolve-redux'
+import { bindActionCreators } from 'redux'
+
 export const mapStateToOptions = () => ({
   readModelName: 'ShoppingLists',
   resolverName: 'all',
@@ -955,8 +972,19 @@ export const mapStateToProps = (state, ownProps) => ({
   lists: ownProps.data
 })
 
+export const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
+    },
+    dispatch
+  )
+
 export default connectReadModel(mapStateToOptions)(
-  connect(mapStateToProps)(MyLists)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps 
+  )(MyLists)
 )
 ```
 
