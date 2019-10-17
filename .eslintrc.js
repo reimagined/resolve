@@ -125,6 +125,7 @@ module.exports = {
           'doctype',
           'docusaurus',
           'dom',
+          'domready',
           'dotenv',
           'downvote',
           'dup',

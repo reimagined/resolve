@@ -1,0 +1,45 @@
+{
+  "name": "with-vanillajs",
+  "version": "0.20.28",
+  "description": "used as a template for new reSolve applications",
+  "private": true,
+  "scripts": {
+    "cloud": "babel-node ./run.js cloud",
+    "dev": "babel-node ./run.js dev",
+    "build": "echo || exit 0",
+    "start": "echo || exit 0",
+    "test": "echo || exit 0",
+    "test:functional": "echo || exit 0",
+    "import-event-store": "echo || exit 0",
+    "export-event-store": "echo || exit 0"
+  },
+  "dependencies": {
+    "@babel/node": "7.0.0",
+    "@babel/polyfill": "7.0.0",
+    "domready": "1.0.8",
+    "resolve-scripts": "0.20.28",
+    "resolve-storage-postgresql-serverless": "0.20.28",
+    "resolve-storage-lite": "0.20.28",
+    "resolve-readmodel-lite": "0.20.28",
+    "resolve-readmodel-mysql": "0.20.28",
+    "resolve-runtime": "0.20.28",
+    "resolve-subscribe-mqtt": "0.20.28",
+    "resolve-subscribe-socket.io": "0.20.28",
+    "unfetch": "4.1.0",
+    "webpack": "4.41.2"
+  },
+  "devDependencies": {
+    "@babel/core": "7.0.0",
+    "@babel/plugin-proposal-class-properties": "7.0.0",
+    "@babel/plugin-proposal-export-default-from": "7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "7.0.0",
+    "@babel/plugin-transform-runtime": "7.0.0",
+    "@babel/preset-env": "7.0.0",
+    "@babel/preset-react": "7.0.0",
+    "babel-jest": "24.1.0",
+    "jest": "24.1.0",
+    "react-test-renderer": "16.7.0",
+    "testcafe": "0.23.3",
+    "resolve-cloud": "*"
+  }
+}
