@@ -1,5 +1,5 @@
 {
-  "name": "resolve-readmodel-postgres-serverless",
+  "name": "resolve-readmodel-postgresql-serverless",
   "version": "0.20.28",
   "description": "This package serves as a resolve-query adapter for storing a read model in postgres",
   "engines": {
@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "resolve-readmodel-base": "0.20.28",
-    "aws-sdk": "2.526.0"
+    "aws-sdk": "2.552.0"
   },
   "devDependencies": {
     "jest": "24.1.0",

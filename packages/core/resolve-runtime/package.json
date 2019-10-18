@@ -26,7 +26,6 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-runtime#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "aws-sdk": "^2.369.0",
     "aws-signature-v4": "^1.3.0",
     "aws-xray-sdk-core": "^2.3.3",
     "cron": "^1.5.0",
@@ -59,7 +58,8 @@
     "resolve-zeromq": "0.20.28"
   },
   "peerDependencies": {
-    "resolve-local-event-broker": "*"
+    "resolve-local-event-broker": "*",
+    "aws-sdk": "*"
   },
   "devDependencies": {
     "sinon": "7.2.2",

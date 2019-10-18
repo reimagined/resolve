@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resolve-readmodel-postgres-serverless method "drop" 1`] = `
+exports[`resolve-readmodel-postgresql-serverless method "drop" 1`] = `
 Array [
   "executeStatement",
   Object {
@@ -180,7 +180,7 @@ Array [
 ]
 `;
 
-exports[`resolve-readmodel-postgres-serverless methods "defineTable", "insert", "find", "findOne" 1`] = `
+exports[`resolve-readmodel-postgresql-serverless methods "defineTable", "insert", "find", "findOne" 1`] = `
 Array [
   "executeStatement",
   Object {
@@ -340,7 +340,7 @@ Array [
 ]
 `;
 
-exports[`resolve-readmodel-postgres-serverless methods "defineTable", "insert", "update", "count", "delete" 1`] = `
+exports[`resolve-readmodel-postgresql-serverless methods "defineTable", "insert", "update", "count", "delete" 1`] = `
 Array [
   "executeStatement",
   Object {
@@ -485,7 +485,7 @@ Array [
 ]
 `;
 
-exports[`resolve-readmodel-postgres-serverless operator "$inc" 1`] = `
+exports[`resolve-readmodel-postgresql-serverless operator "$inc" 1`] = `
 Array [
   "executeStatement",
   Object {
@@ -740,7 +740,7 @@ Array [
 ]
 `;
 
-exports[`resolve-readmodel-postgres-serverless operator "$set" 1`] = `
+exports[`resolve-readmodel-postgresql-serverless operator "$set" 1`] = `
 Array [
   "executeStatement",
   Object {
@@ -808,7 +808,7 @@ Array [
 ]
 `;
 
-exports[`resolve-readmodel-postgres-serverless operator "$unset" 1`] = `
+exports[`resolve-readmodel-postgresql-serverless operator "$unset" 1`] = `
 Array [
   "executeStatement",
   Object {

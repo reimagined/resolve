@@ -1,7 +1,7 @@
 import { result } from 'aws-sdk/clients/rdsdataservice'
 import createReadModelAdapter from '../src'
 
-describe('resolve-readmodel-postgres-serverless', () => {
+describe('resolve-readmodel-postgresql-serverless', () => {
   let adapter = null
 
   beforeEach(() => {

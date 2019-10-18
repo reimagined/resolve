@@ -19,7 +19,7 @@
     "resolve-readmodel-lite": "0.20.28",
     "resolve-readmodel-mysql": "0.20.28",
     "resolve-readmodel-mongo": "0.20.28",
-    "resolve-readmodel-postgres-serverless": "0.20.28",
+    "resolve-readmodel-postgresql-serverless": "0.20.28",
     "resolve-scripts": "0.20.28",
     "resolve-command": "0.20.28",
     "seamless-immutable": "7.1.4",
