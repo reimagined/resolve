@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "resolve-storage-base": "0.20.28",
-    "aws-sdk": "^2.509.0"
+    "aws-sdk": "2.552.0"
   },
   "devDependencies": {
     "jest": "24.1.0",
