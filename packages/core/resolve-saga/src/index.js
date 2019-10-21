@@ -66,6 +66,17 @@ const createSaga = ({
     return result
   }
 
+  const runScheduler = async entry => {
+    const schedulerPromises = []
+    for (const { schedulerAdapter } of schedulerSagas) {
+      if (typeof schedulerAdapter.executeEntries === 'function') {
+        schedulerPromises.push(schedulerAdapter.executeEntries(entry))
+      }
+    }
+
+    return await Promise.all(schedulerPromises)
+  }
+
   const dispose = async () =>
     await Promise.all([
       executeScheduleCommand.dispose(),
@@ -75,7 +86,7 @@ const createSaga = ({
   const executeSaga = Object.assign(
     executeListener.bind(executeListener),
     executeListener,
-    { updateByEvents, dispose }
+    { updateByEvents, runScheduler, dispose }
   )
 
   return executeSaga

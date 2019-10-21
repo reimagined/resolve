@@ -18,8 +18,8 @@ const startExpress = async resolve => {
       await initResolve(currentResolve)
       await bootstrap(currentResolve)
       readyLoop: while (true) {
-        for (const { name: readModelName } of resolve.readModels) {
-          const status = await resolve.eventBroker.status(readModelName)
+        for (const listenerId of resolve.eventListeners.keys()) {
+          const status = await resolve.eventBroker.status(listenerId)
           if (status.lastEvent == null && status.lastError == null) {
             continue readyLoop
           }
