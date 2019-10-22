@@ -2,7 +2,6 @@ const create = async (pool, options) => {
   const {
     executeStatement,
     connect,
-    init,
     RDSDataService,
     escapeId,
     escape,
@@ -35,19 +34,8 @@ const create = async (pool, options) => {
   await executeStatement(
     admin,
     [
-      `CREATE USER ${escapeId(options.userLogin)}`,
-      `ALTER USER ${escapeId(options.userLogin)} PASSWORD ${escape(
-        options.userPassword
-      )}`,
-      `CREATE SCHEMA ${escapeId(options.databaseName)}`
-    ].join('; ')
-  )
+      `CREATE SCHEMA ${escapeId(options.databaseName)}`,
 
-  await init(admin)
-
-  await executeStatement(
-    admin,
-    [
       `GRANT USAGE ON SCHEMA ${escapeId(options.databaseName)} TO ${escapeId(
         options.userLogin
       )}`,

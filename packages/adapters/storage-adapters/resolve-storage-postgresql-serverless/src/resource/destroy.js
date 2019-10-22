@@ -35,7 +35,6 @@ const destroy = async (pool, options) => {
 
   let alterSchemaError = null
   let dropSchemaError = null
-  let dropUserError = null
 
   try {
     await executeStatement(
@@ -55,27 +54,11 @@ const destroy = async (pool, options) => {
     dropSchemaError = error
   }
 
-  try {
-    await executeStatement(
-      admin,
-      [
-        `SELECT pg_terminate_backend(pid) `,
-        `FROM pg_stat_activity `,
-        `WHERE usename=${escape(options.userLogin)};`,
-        `DROP USER ${escapeId(options.userLogin)}`
-      ].join('')
-    )
-  } catch (error) {
-    dropUserError = error
-  }
-
-  if (dropSchemaError != null || dropUserError != null) {
+  if (alterSchemaError != null || dropSchemaError != null) {
     const error = new Error()
     error.message = `${
       alterSchemaError != null ? `${alterSchemaError.message}${EOL}` : ''
-    }${dropSchemaError != null ? `${dropSchemaError.message}${EOL}` : ''}${
-      dropUserError != null ? `${dropUserError.message}${EOL}` : ''
-    }`
+    }${dropSchemaError != null ? `${dropSchemaError.message}${EOL}` : ''}`
 
     throw error
   }
