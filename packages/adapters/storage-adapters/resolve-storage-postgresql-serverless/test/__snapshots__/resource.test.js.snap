@@ -9,44 +9,7 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreAdminArn",
-    "sql": "CREATE USER \\"userLogin\\"; ALTER USER \\"userLogin\\" PASSWORD 'userPassword'; CREATE SCHEMA \\"databaseName\\"",
-  },
-  "executeStatement",
-  Object {
-    "continueAfterTimeout": false,
-    "database": "postgres",
-    "includeResultMetadata": true,
-    "resourceArn": "dbClusterOrInstanceArn",
-    "secretArn": "awsSecretStoreAdminArn",
-    "sql": "CREATE TABLE \\"databaseName\\".\\"tableName\\"(
-      \\"eventId\\" BIGINT NOT NULL,
-      \\"timestamp\\" BIGINT NOT NULL,
-      \\"aggregateId\\" VARCHAR(190) NOT NULL,
-      \\"aggregateVersion\\" BIGINT NOT NULL,
-      \\"type\\" VARCHAR(190) NOT NULL,
-      \\"payload\\" jsonb,
-      \\"eventSize\\" BIGINT NOT NULL,
-      PRIMARY KEY(\\"eventId\\")
-    ); CREATE UNIQUE INDEX \\"aggregateIdAndVersion\\"
-     ON \\"databaseName\\".\\"tableName\\"
-     USING BTREE(\\"aggregateId\\", \\"aggregateVersion\\"); CREATE INDEX \\"aggregateId\\"
-     ON \\"databaseName\\".\\"tableName\\"
-     USING BTREE(\\"aggregateId\\"); CREATE INDEX \\"aggregateVersion\\"
-     ON \\"databaseName\\".\\"tableName\\"
-     USING BTREE(\\"aggregateVersion\\"); CREATE INDEX \\"type\\"
-     ON \\"databaseName\\".\\"tableName\\"
-     USING BTREE(\\"type\\"); CREATE INDEX \\"timestamp\\"
-     ON \\"databaseName\\".\\"tableName\\"
-     USING BTREE(\\"timestamp\\")",
-  },
-  "executeStatement",
-  Object {
-    "continueAfterTimeout": false,
-    "database": "postgres",
-    "includeResultMetadata": true,
-    "resourceArn": "dbClusterOrInstanceArn",
-    "secretArn": "awsSecretStoreAdminArn",
-    "sql": "GRANT USAGE ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL TABLES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL SEQUENCES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL FUNCTIONS IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; ALTER SCHEMA \\"databaseName\\" OWNER TO \\"userLogin\\"",
+    "sql": "CREATE SCHEMA \\"databaseName\\"; GRANT USAGE ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL TABLES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL SEQUENCES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL FUNCTIONS IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; ALTER SCHEMA \\"databaseName\\" OWNER TO \\"userLogin\\"",
   },
 ]
 `;
@@ -70,15 +33,6 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreAdminArn",
     "sql": "DROP SCHEMA \\"databaseName\\" CASCADE",
-  },
-  "executeStatement",
-  Object {
-    "continueAfterTimeout": false,
-    "database": "postgres",
-    "includeResultMetadata": true,
-    "resourceArn": "dbClusterOrInstanceArn",
-    "secretArn": "awsSecretStoreAdminArn",
-    "sql": "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE usename='userLogin';DROP USER \\"userLogin\\"",
   },
 ]
 `;
@@ -110,53 +64,7 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreAdminArn",
-    "sql": "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE usename='userLogin';DROP USER \\"userLogin\\"",
-  },
-  "executeStatement",
-  Object {
-    "continueAfterTimeout": false,
-    "database": "postgres",
-    "includeResultMetadata": true,
-    "resourceArn": "dbClusterOrInstanceArn",
-    "secretArn": "awsSecretStoreAdminArn",
-    "sql": "CREATE USER \\"userLogin\\"; ALTER USER \\"userLogin\\" PASSWORD 'userPassword'; CREATE SCHEMA \\"databaseName\\"",
-  },
-  "executeStatement",
-  Object {
-    "continueAfterTimeout": false,
-    "database": "postgres",
-    "includeResultMetadata": true,
-    "resourceArn": "dbClusterOrInstanceArn",
-    "secretArn": "awsSecretStoreAdminArn",
-    "sql": "CREATE TABLE \\"databaseName\\".\\"tableName\\"(
-      \\"eventId\\" BIGINT NOT NULL,
-      \\"timestamp\\" BIGINT NOT NULL,
-      \\"aggregateId\\" VARCHAR(190) NOT NULL,
-      \\"aggregateVersion\\" BIGINT NOT NULL,
-      \\"type\\" VARCHAR(190) NOT NULL,
-      \\"payload\\" jsonb,
-      \\"eventSize\\" BIGINT NOT NULL,
-      PRIMARY KEY(\\"eventId\\")
-    ); CREATE UNIQUE INDEX \\"aggregateIdAndVersion\\"
-     ON \\"databaseName\\".\\"tableName\\"
-     USING BTREE(\\"aggregateId\\", \\"aggregateVersion\\"); CREATE INDEX \\"aggregateId\\"
-     ON \\"databaseName\\".\\"tableName\\"
-     USING BTREE(\\"aggregateId\\"); CREATE INDEX \\"aggregateVersion\\"
-     ON \\"databaseName\\".\\"tableName\\"
-     USING BTREE(\\"aggregateVersion\\"); CREATE INDEX \\"type\\"
-     ON \\"databaseName\\".\\"tableName\\"
-     USING BTREE(\\"type\\"); CREATE INDEX \\"timestamp\\"
-     ON \\"databaseName\\".\\"tableName\\"
-     USING BTREE(\\"timestamp\\")",
-  },
-  "executeStatement",
-  Object {
-    "continueAfterTimeout": false,
-    "database": "postgres",
-    "includeResultMetadata": true,
-    "resourceArn": "dbClusterOrInstanceArn",
-    "secretArn": "awsSecretStoreAdminArn",
-    "sql": "GRANT USAGE ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL TABLES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL SEQUENCES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL FUNCTIONS IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; ALTER SCHEMA \\"databaseName\\" OWNER TO \\"userLogin\\"",
+    "sql": "CREATE SCHEMA \\"databaseName\\"; GRANT USAGE ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL TABLES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL SEQUENCES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL FUNCTIONS IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; ALTER SCHEMA \\"databaseName\\" OWNER TO \\"userLogin\\"",
   },
 ]
 `;
