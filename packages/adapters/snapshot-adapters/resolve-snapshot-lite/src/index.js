@@ -1,4 +1,5 @@
 import sqlite from 'sqlite'
+import tmp from 'tmp'
 
 const DEFAULT_BUCKET_SIZE = 100
 const tableName = 'resolveSnapshotAdapter'
@@ -12,11 +13,19 @@ const connect = async pool => {
   }
 
   pool.connectPromise = (async () => {
-    pool.database = await sqlite.open(
-      pool.config && pool.config.hasOwnProperty('databaseFile')
-        ? pool.config.databaseFile
-        : (pool.config.databaseFile = ':memory:')
-    )
+    let connector = null
+    if (pool.config && !pool.config.hasOwnProperty('databaseFile')) {
+      pool.config.databaseFile = ':memory:'
+      const temporaryFile = tmp.fileSync()
+      pool.memoryStore = {
+        ...temporaryFile,
+        drop: temporaryFile.removeCallback.bind(temporaryFile)
+      }
+      connector = sqlite.open.bind(sqlite, pool.memoryStore.name)
+    } else {
+      connector = sqlite.open.bind(sqlite, pool.config.databaseFile)
+    }
+    pool.database = await connector()
 
     await pool.database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
     await pool.database.exec(`PRAGMA synchronous=EXTRA`)
@@ -126,6 +135,12 @@ const drop = async pool => {
   await connect(pool)
 
   await pool.database.exec(`DROP TABLE ${escapeId(tableName)}`)
+
+  if (pool.memoryStore != null) {
+    try {
+      await pool.memoryStore.drop()
+    } catch (e) {}
+  }
 }
 
 const createAdapter = config => {
