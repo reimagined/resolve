@@ -18,7 +18,7 @@ const startExpress = async resolve => {
     await bootstrap(currentResolve)
 
     let readyListeners = 0
-    while (upstream && readyListeners >= resolve.eventListeners.size) {
+    while (upstream && readyListeners < resolve.eventListeners.size) {
       readyListeners = await Promise.all(
         Array.from(currentResolve.eventListeners.keys()).map(
           currentResolve.eventBroker.status
@@ -30,6 +30,8 @@ const startExpress = async resolve => {
           0
         )
       )
+
+      await new Promise(resolve => setTimeout(resolve, 1000))
     }
   } finally {
     await disposeResolve(currentResolve)
