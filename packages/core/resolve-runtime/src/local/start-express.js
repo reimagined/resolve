@@ -20,9 +20,9 @@ const startExpress = async resolve => {
     let readyListeners = 0
     while (upstream && readyListeners >= resolve.eventListeners.size) {
       readyListeners = await Promise.all(
-        currentResolve.eventListeners
-          .keys()
-          .map(currentResolve.eventBroker.status)
+        Array.from(currentResolve.eventListeners.keys()).map(
+          currentResolve.eventBroker.status
+        )
       ).then(statuses =>
         statuses.reduce(
           ({ lastEvent, lastError }, acc) =>
