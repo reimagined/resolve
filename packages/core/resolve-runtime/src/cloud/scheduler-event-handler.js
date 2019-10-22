@@ -4,26 +4,15 @@ const log = debugLevels('resolve:resolve-runtime:scheduler-event-handler')
 
 const handleSchedulerEvent = async ({ entry }, resolve) => {
   log.debug(`dispatching lambda event to all available schedulers`)
-  if (resolve && resolve.readModels) {
-    return Promise.all(
-      resolve.readModels
-        .filter(
-          readModel =>
-            typeof readModel['schedulerAdapter'] === 'object' &&
-            readModel['schedulerAdapter'] !== null
-        )
-        .map(readModel => readModel['schedulerAdapter'])
-        .map(adapter =>
-          typeof adapter['executeEntries'] === 'function'
-            ? adapter['executeEntries']
-            : null
-        )
-        .filter(handler => handler !== null)
-        .map(async handler => handler(entry))
-    )
+  if (
+    resolve != null &&
+    resolve.executeSaga != null &&
+    typeof resolve.executeSaga.runScheduler === 'function'
+  ) {
+    return resolve.executeSaga.runScheduler(entry)
   }
 
-  log.warn(`no reSolve framework or no readModels property defined`)
+  log.warn(`no resolve.executeSaga.runScheduler property defined`)
 
   return { message: 'no registered sagas' }
 }

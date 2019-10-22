@@ -10,7 +10,7 @@ import importResource from '../import_resource'
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
-      `${message.serverAliasInClientCodeError}$resolve.readModels`
+      `${message.serverAliasInClientCodeError}$resolve.aggregates`
     )
   }
 
