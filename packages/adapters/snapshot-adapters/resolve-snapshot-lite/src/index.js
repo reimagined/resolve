@@ -6,23 +6,41 @@ const tableName = 'resolveSnapshotAdapter'
 const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
 const escape = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
+const init = async (pool, skipConnect = false) => {
+  if (pool.disposed) {
+    throw new Error('Adapter is disposed')
+  }
+  if (!skipConnect) {
+    await connect(pool)
+  }
+
+  await pool.database.exec(
+    `CREATE TABLE ${escapeId(tableName)} (
+      ${escapeId('snapshotKey')} TEXT,
+      ${escapeId('content')} TEXT
+    )`
+  )
+}
+
 const connect = async pool => {
   if (pool.connectPromise != null) {
     return await pool.connectPromise
   }
 
   pool.connectPromise = (async () => {
-    pool.database = await sqlite.open(
+    pool.databaseFile =
       pool.config && pool.config.hasOwnProperty('databaseFile')
         ? pool.config.databaseFile
-        : (pool.config.databaseFile = ':memory:')
-    )
+        : ':memory:'
+
+    pool.database = await sqlite.open(pool.databaseFile)
 
     await pool.database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
     await pool.database.exec(`PRAGMA synchronous=EXTRA`)
 
-    if (pool.config.databaseFile === ':memory:') {
+    if (pool.databaseFile === ':memory:') {
       await pool.database.exec(`PRAGMA journal_mode=MEMORY`)
+      await init(pool, true)
     } else {
       await pool.database.exec(`PRAGMA journal_mode=DELETE`)
     }
@@ -38,20 +56,6 @@ const connect = async pool => {
   })()
 
   return await pool.connectPromise
-}
-
-const init = async pool => {
-  if (pool.disposed) {
-    throw new Error('Adapter is disposed')
-  }
-  await connect(pool)
-
-  await pool.database.exec(
-    `CREATE TABLE ${escapeId(tableName)} (
-      ${escapeId('snapshotKey')} TEXT,
-      ${escapeId('content')} TEXT
-    )`
-  )
 }
 
 const loadSnapshot = async (pool, snapshotKey) => {
