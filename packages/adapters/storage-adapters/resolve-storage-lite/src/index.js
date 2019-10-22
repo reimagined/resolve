@@ -1,5 +1,6 @@
 import createAdapter from 'resolve-storage-base'
 import sqlite from 'sqlite'
+import tmp from 'tmp'
 
 import connect from './connect'
 import loadEvents from './load-events'
@@ -25,7 +26,8 @@ const wrappedCreateAdapter = createAdapter.bind(null, {
   saveEventOnly,
   freeze,
   unfreeze,
-  sqlite
+  sqlite,
+  tmp
 })
 
 export default wrappedCreateAdapter

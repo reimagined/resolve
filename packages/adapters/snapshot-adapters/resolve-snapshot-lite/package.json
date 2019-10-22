@@ -26,7 +26,8 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/snapshot-adapters/resolve-snapshot-lite#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "sqlite": "^3.0.3"
+    "sqlite": "^3.0.3",
+    "tmp": "^0.1.0"
   },
   "babelCompile": [
     {
