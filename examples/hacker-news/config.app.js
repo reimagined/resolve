@@ -1,14 +1,4 @@
 const appConfig = {
-  routes: 'client/routes.js',
-  redux: {
-    reducers: {
-      optimistic: 'client/reducers/optimistic.js'
-    },
-    sagas: [
-      'client/sagas/optimistic-voting-saga.js',
-      'client/sagas/story-create-saga.js'
-    ]
-  },
   aggregates: [
     {
       name: 'Story',
@@ -42,6 +32,30 @@ const appConfig = {
       connectorName: 'default',
       schedulerName: 'scheduler'
     }
+  ],
+  apiHandlers: [
+    {
+      controller: {
+        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+        options: {
+          modulePath: './ssr.js',
+          moduleFactoryImport: false
+        }
+      },
+      path: '/:markup*',
+      method: 'GET'
+    }
+  ],
+  clientEntries: [
+    'client/index.js',
+    [
+      'client/ssr.js',
+      {
+        outputFile: 'common/local-entry/ssr.js',
+        moduleType: 'commonjs',
+        target: 'node'
+      }
+    ]
   ]
 }
 

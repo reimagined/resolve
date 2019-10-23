@@ -17,7 +17,6 @@ An example **config.prod.js** file:
 ```js
 const prodConfig = {
   port: 3000,
-  polyfills: ['@babel/polyfill'],
   mode: 'production',
   readModelConnectors: {
     HackerNews: {

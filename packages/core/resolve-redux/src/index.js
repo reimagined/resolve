@@ -22,14 +22,8 @@ import AppContainer from './app_container'
 import Routes from './routes'
 import deserializeInitialState from './deserialize_initial_state'
 import createStore from './create_store'
-
-const sendAggregateAction = (
-  aggregateName,
-  commandType,
-  aggregateId,
-  payload
-) =>
-  actions.sendCommandRequest(commandType, aggregateId, aggregateName, payload)
+import sendAggregateAction from './send_aggregate_action'
+import getOrigin from './get_origin'
 
 export {
   actions,
@@ -38,7 +32,6 @@ export {
   createReadModelsReducer,
   createJwtReducer,
   createResolveMiddleware,
-  sendAggregateAction,
   connectViewModel,
   connectReadModel,
   connectResolveAdvanced,
@@ -58,5 +51,7 @@ export {
   Routes,
   Providers,
   createStore,
-  deserializeInitialState
+  deserializeInitialState,
+  sendAggregateAction,
+  getOrigin
 }

@@ -3,7 +3,7 @@
   "version": "0.20.28",
   "description": "A reSolve module that adds admin commands to an application.",
   "engines": {
-    "node": ">=8.10"
+    "node": ">=10.9"
   },
   "main": "./lib/index.js",
   "bin": "./lib/cli.js",

@@ -43,7 +43,5 @@ export default ({ resolveConfig, isClient }) => {
 
   exports.push(`export default subscribe_adapter`)
 
-  return {
-    code: [...imports, ...constants, ...exports].join('\r\n')
-  }
+  return [...imports, ...constants, ...exports].join('\r\n')
 }

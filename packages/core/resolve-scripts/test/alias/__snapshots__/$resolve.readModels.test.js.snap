@@ -2,6 +2,7 @@
 
 exports[`base config works correctly [server] 1`] = `
 "
+import '$resolve.guardOnlyServer'
 import resolvers_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 import projection_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 const constructorBindFunction =
@@ -39,6 +40,7 @@ export default readModels
 
 exports[`base(v2) config works correctly [server] 1`] = `
 "
+import '$resolve.guardOnlyServer'
 import resolvers_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 import projection_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 import resolvers_1_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolversAsModule.js\\"
@@ -127,6 +129,7 @@ export default readModels
 
 exports[`config + process.env works correctly [server] 1`] = `
 "
+import '$resolve.guardOnlyServer'
 import resolvers_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 import projection_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 const constructorBindFunction =

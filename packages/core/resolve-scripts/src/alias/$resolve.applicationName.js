@@ -10,7 +10,5 @@ export default () => {
     `export default applicationName`
   )
 
-  return {
-    code: exports.join('\r\n')
-  }
+  return exports.join('\r\n')
 }

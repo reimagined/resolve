@@ -12,7 +12,7 @@ describe('$resolve.staticDir', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
 
@@ -26,7 +26,7 @@ describe('$resolve.staticDir', () => {
             alias({
               resolveConfig,
               isClient: true
-            }).code +
+            }) +
             '\r\n'
         )
       ).toThrow()
@@ -42,7 +42,7 @@ describe('$resolve.staticDir', () => {
             alias({
               resolveConfig,
               isClient: false
-            }).code +
+            }) +
             '\r\n'
         )
       ).toThrow()
@@ -55,7 +55,7 @@ describe('$resolve.staticDir', () => {
             alias({
               resolveConfig,
               isClient: true
-            }).code +
+            }) +
             '\r\n'
         )
       ).toThrow()

@@ -33,7 +33,7 @@ describe('base config works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toThrow()
@@ -46,7 +46,7 @@ describe('base config works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -70,7 +70,7 @@ test('when aggregate name is process.env', () => {
         alias({
           resolveConfig,
           isClient: false
-        }).code +
+        }) +
         '\r\n'
     )
   ).toThrow()
@@ -98,7 +98,7 @@ describe('base(v2) config works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toThrow()
@@ -111,7 +111,7 @@ describe('base(v2) config works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -137,7 +137,7 @@ describe('config with projection works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toThrow()
@@ -150,7 +150,7 @@ describe('config with projection works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -184,7 +184,7 @@ describe('config with commands as module works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toThrow()
@@ -197,7 +197,7 @@ describe('config with commands as module works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -230,7 +230,7 @@ describe('config with schedulers works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toThrow()
@@ -243,7 +243,7 @@ describe('config with schedulers works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()

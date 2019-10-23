@@ -134,7 +134,5 @@ export default ({ resolveConfig, isClient }) => {
 
   exports.push(`export default viewModels`)
 
-  return {
-    code: [...imports, ...constants, ...exports].join('\r\n')
-  }
+  return [...imports, ...constants, ...exports].join('\r\n')
 }

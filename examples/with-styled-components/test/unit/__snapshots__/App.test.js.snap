@@ -9,5 +9,10 @@ exports[`renders correctly 1`] = `
   >
     Hello World, this is my first styled component!
   </h1>
+  <h1
+    className="sc-bdVaJa bzmvhR"
+  >
+    SSR works too!
+  </h1>
 </section>
 `;

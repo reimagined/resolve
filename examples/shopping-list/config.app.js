@@ -1,13 +1,6 @@
 const appConfig = {
-  routes: 'client/routes.js',
   staticDir: 'static',
   distDir: 'dist',
-  redux: {
-    reducers: {
-      optimisticShoppingLists: 'client/reducers/optimistic_shopping_lists.js'
-    },
-    sagas: ['client/sagas/optimistic_shopping_lists_saga.js']
-  },
   aggregates: [
     {
       name: 'ShoppingList',
@@ -35,7 +28,8 @@ const appConfig = {
       controller: 'common/api-handlers/shopping_lists.js',
       method: 'GET'
     }
-  ]
+  ],
+  clientEntries: ['client/index.js']
 }
 
 export default appConfig

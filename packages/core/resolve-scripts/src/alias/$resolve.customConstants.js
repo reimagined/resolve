@@ -29,7 +29,5 @@ export default ({ resolveConfig, isClient }) => {
     `module.exports = customConstants`
   )
 
-  return {
-    code: exports.join('\r\n')
-  }
+  return exports.join('\r\n')
 }

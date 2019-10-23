@@ -1,5 +1,5 @@
-export default () => ({
-  code: `
+export default () => `
+  import '$resolve.guardOnlyServer'
   import { schedulerEventTypes } from 'resolve-saga'
   import readModels from '$resolve.readModels'
   import sagas from '$resolve.sagas'
@@ -36,4 +36,3 @@ export default () => ({
 
   export default eventListeners
 `
-})

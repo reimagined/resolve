@@ -1,5 +1,6 @@
-export default () => ({
-  code: `
+export default () => `
+    import '$resolve.guardOnlyServer'
+
     const handler = async (...args) => {
       try {
         if(!global.initPromise) {
@@ -23,4 +24,3 @@ export default () => ({
     }
     export default handler
   `
-})

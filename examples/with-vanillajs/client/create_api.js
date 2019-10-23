@@ -1,7 +1,5 @@
 import unfetch from 'unfetch'
 
-import resolveChunk from '../dist/common/client/client-chunk'
-
 import getOrigin from './get_origin'
 
 const validate = {
@@ -92,8 +90,7 @@ const validateStatus = async response => {
   }
 }
 
-const createApi = () => {
-  const rootPath = resolveChunk.rootPath
+const createApi = rootPath => {
   const origin = getOrigin()
 
   const request = async (url, body) => {

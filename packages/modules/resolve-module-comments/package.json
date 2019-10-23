@@ -3,7 +3,7 @@
   "version": "0.20.28",
   "description": "A reSolve module that allows an application's users to post comments.",
   "engines": {
-    "node": ">=8.10"
+    "node": ">=10.9"
   },
   "main": "./lib/common/index.js",
   "browser": "./lib/client/index.js",

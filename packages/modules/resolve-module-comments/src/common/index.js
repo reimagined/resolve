@@ -69,20 +69,6 @@ const makeConfig = (options, imports) => {
     }
   }
 
-  if (options.reducerName != null) {
-    Object.assign(config, {
-      redux: {
-        reducers: {
-          [options.reducerName]: {
-            module: 'resolve-module-comments/lib/client/reducers/comments.js',
-            options,
-            imports
-          }
-        }
-      }
-    })
-  }
-
   return config
 }
 
