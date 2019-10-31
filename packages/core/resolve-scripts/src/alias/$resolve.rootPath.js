@@ -46,7 +46,5 @@ export default ({ resolveConfig, isClient }) => {
     exports.push(`export default rootPath`)
   }
 
-  return {
-    code: exports.join('\r\n')
-  }
+  return exports.join('\r\n')
 }

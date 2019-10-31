@@ -52,7 +52,5 @@ export default ({ resolveConfig }) => {
     `export const customConstants = interopRequireDefault(require('$resolve.customConstants')).default`
   )
 
-  return {
-    code: exports.join('\r\n')
-  }
+  return exports.join('\r\n')
 }

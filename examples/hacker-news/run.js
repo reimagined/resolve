@@ -27,6 +27,7 @@ const launchMode = process.argv[2]
 void (async () => {
   try {
     const moduleComments = resolveModuleComments({
+      commentsInstanceName: 'comments-hn',
       aggregateName: 'Comment',
       readModelName: 'Comments',
       readModelConnectorName: 'comments',

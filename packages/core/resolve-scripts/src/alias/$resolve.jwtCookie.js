@@ -16,7 +16,5 @@ export default ({ resolveConfig }) => {
     `export default jwtCookie`
   )
 
-  return {
-    code: exports.join('\r\n')
-  }
+  return exports.join('\r\n')
 }

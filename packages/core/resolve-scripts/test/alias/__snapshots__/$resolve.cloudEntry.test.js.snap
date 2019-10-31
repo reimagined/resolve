@@ -3,6 +3,8 @@
 exports[`works correctly 1`] = `
 "
 
+    import '$resolve.guardOnlyServer'
+
     const handler = async (...args) => {
       try {
         if(!global.initPromise) {

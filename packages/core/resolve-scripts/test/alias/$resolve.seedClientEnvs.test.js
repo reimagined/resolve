@@ -9,7 +9,7 @@ test('should fail when imported from client', () => {
         alias({
           resolveConfig: {},
           isClient: true
-        }).code +
+        }) +
         '\r\n'
     )
   ).toThrow()
@@ -25,7 +25,7 @@ test('works correctly', () => {
             staticPath: declareRuntimeEnv('staticPath'),
             rootPath: declareRuntimeEnv('rootPath')
           }
-        }).code +
+        }) +
         '\r\n'
     )
   ).toMatchSnapshot()

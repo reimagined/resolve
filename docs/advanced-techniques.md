@@ -24,66 +24,6 @@ In a cloud/serverless environment, chunks like read model projections & resolver
 
 When an application runs locally, the `resolve-scripts` utility loads all necessary chunks and combines them with the runtime code.
 
-## Server-Side Rendering
-
-ReSolve provides the Server-Side rendering (SSR) functionality for React code without any additional configurations. This means that reSolve application pages are always pre-rendered before they are sent to the client browser. Note that server-side rendering is currently performed only for static content, without pre-fetching data.
-
-#### Managing Routes
-
-ReSolve uses the [react-router](https://github.com/ReactTraining/react-router) library to perform routing. The [react-router-config](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config) library is also used to provide a centralized route config that can be used both on the server and client sides. You can define routes as shown below:
-
-```js
-const routes = [
-  {
-    component: Root,
-    routes: [
-      { path: '/', exact: true, component: Home },
-      {
-        path: '/child/:id',
-        component: Child,
-        routes: [{ path: '/child/:id/grand-child', component: GrandChild }]
-      }
-    ]
-  }
-]
-```
-
-In this code sample, each route is specified by an object whose fields correspond to the [\<Route\>](https://reacttraining.com/react-router/web/api/Route) component's props.
-
-To register routes within a reSolve app, specify the path to the file containing routs definition in the **routes** config section:
-
-```js
-routes: 'client/routes.js'
-```
-
-After this, app routing is configured for server-side rendering. On the client, routing is also performed as expected: when you render a [\<Redirect\>](https://reacttraining.com/react-router/web/api/Redirect), the browser switches to the new location, and this location is appended to the browser's history stack.
-
-#### Providing the Document Head
-
-The code below utilizes the [React Helmet](https://github.com/nfl/react-helmet#reference-guide) library to specify the document's **head** section:
-
-```js
-import React from 'react'
-import { Helmet } from 'react-helmet'
-
-class Application extends React.Component {
-  render() {
-    return (
-      <div className="application">
-        <Helmet>
-          <meta charSet="utf-8" />
-          <title>My Title</title>
-          <link rel="canonical" href="http://mysite.com/example" />
-        </Helmet>
-        ...
-      </div>
-    )
-  }
-}
-```
-
-This way, the document head is specified in an isomorphic format so it can be rendered on the server and dynamically modified on the client. Use this approach to make your reSolve applications SEO-friendly.
-
 ## Adapters
 
 ReSolve uses the **adapter** mechanism to provide an abstraction layer above APIs used by its subsystems. For instance, adapters are used to define how a reSolve application stores its data. They abstract away all direct interactions with the underlying storage, allowing reSolve to provide a unified data management API.

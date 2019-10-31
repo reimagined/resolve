@@ -2,6 +2,7 @@
 
 exports[`works correctly 1`] = `
 "
+import '$resolve.guardOnlyServer'
 import applicationName from '$resolve.applicationName'
 import distDir from '$resolve.distDir'
 import jwtCookie from '$resolve.jwtCookie'

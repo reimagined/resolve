@@ -39,7 +39,5 @@ export default ({ resolveConfig, isClient }) => {
 
   exports.push(`export default imports`)
 
-  return {
-    code: [...imports, ...constants, ...exports].join('\r\n')
-  }
+  return [...imports, ...constants, ...exports].join('\r\n')
 }

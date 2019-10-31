@@ -1,10 +1,6 @@
-import resolveChunk from '../dist/common/client/client-chunk'
-
 import getOrigin from './get_origin'
 
-const { subscribeAdapter: createSubscribeAdapter, rootPath } = resolveChunk
-
-const initApplication = async api => {
+const initSubscription = async (createSubscribeAdapter, rootPath, api) => {
   const subscribers = new Set()
   const attachSubscriber = fn => subscribers.add(fn)
   const detachSubscriber = fn => subscribers.delete(fn)
@@ -38,4 +34,4 @@ const initApplication = async api => {
   }
 }
 
-export default initApplication
+export default initSubscription

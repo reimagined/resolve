@@ -1,5 +1,5 @@
-export default () => ({
-  code: `
+export default () => `
+  import '$resolve.guardOnlyServer'
   import serverImports from '$resolve.serverImports'
   import seedClientEnvs from '$resolve.seedClientEnvs'
   import storageAdapter from '$resolve.storageAdapter'
@@ -34,4 +34,3 @@ export default () => ({
     }
   }
 `
-})

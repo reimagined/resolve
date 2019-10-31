@@ -80,18 +80,6 @@ describe('validate schema', () => {
     ).toBeTruthy()
   })
 
-  it('custom routes path and redux', () => {
-    expect(
-      validateConfig({
-        ...resolveConfigOrigin,
-        mode: 'development',
-        target: 'local',
-        routes: 'src/client/entryPoint.js',
-        redux: {}
-      })
-    ).toBeTruthy()
-  })
-
   it('custom aggregates dir', () => {
     expect(
       validateConfig({
@@ -214,17 +202,6 @@ describe('validate schema (fail)', () => {
         mode: 'development',
         target: 'local',
         staticPath: 123
-      })
-    ).toThrow()
-  })
-
-  it('incorrect routes path', () => {
-    expect(() =>
-      validateConfig({
-        ...resolveConfigOrigin,
-        mode: 'development',
-        target: 'local',
-        routes: 123
       })
     ).toThrow()
   })

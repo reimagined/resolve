@@ -21,7 +21,7 @@ describe('base config works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toThrow()
@@ -34,7 +34,7 @@ describe('base config works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -59,7 +59,7 @@ describe('config throw error when method is process.env', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toThrow()
@@ -72,7 +72,7 @@ describe('config throw error when method is process.env', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toThrow()
@@ -97,7 +97,7 @@ describe('config throw error when method is process.env', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toThrow()
@@ -110,7 +110,7 @@ describe('config throw error when method is process.env', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).not.toThrow()

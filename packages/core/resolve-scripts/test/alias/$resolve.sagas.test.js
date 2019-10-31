@@ -21,7 +21,7 @@ describe('base config works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toThrow()
@@ -34,7 +34,7 @@ describe('base config works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -68,7 +68,7 @@ describe('config with schedulers works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toThrow()
@@ -81,7 +81,7 @@ describe('config with schedulers works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()

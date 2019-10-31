@@ -15,7 +15,7 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.configNotContainSectionError}.serverImports`)
   }
 
-  const imports = [``]
+  const imports = [`import '$resolve.guardOnlyServer'`]
   const constants = [``]
   const exports = [``, `const imports = {}`, ``]
 
@@ -39,7 +39,5 @@ export default ({ resolveConfig, isClient }) => {
 
   exports.push(`export default imports`)
 
-  return {
-    code: [...imports, ...constants, ...exports].join('\r\n')
-  }
+  return [...imports, ...constants, ...exports].join('\r\n')
 }

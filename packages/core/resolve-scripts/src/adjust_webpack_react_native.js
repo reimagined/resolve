@@ -62,7 +62,7 @@ const adjustWebpackReactNative = ({ resolveConfig, reactNativeDir }) => (
               }
             },
             {
-              loader: require.resolve('val-loader'),
+              loader: require.resolve('./val_query_loader'),
               options: {
                 resolveConfig,
                 isClient

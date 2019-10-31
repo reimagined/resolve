@@ -2,8 +2,8 @@
 
 exports[`works correctly 1`] = `
 "
+import '$resolve.guardOnlyServer'
 const eventBroker = {}
-
 eventBroker[\\"launchBroker\\"] = true
 eventBroker[\\"zmqBrokerAddress\\"] = (((first, second) => (first != null ? first : second))(process.env[\\"zmqBrokerAddress\\"], null))
 eventBroker[\\"zmqConsumerAddress\\"] = (((first, second) => (first != null ? first : second))(process.env[\\"zmqConsumerAddress\\"], null))

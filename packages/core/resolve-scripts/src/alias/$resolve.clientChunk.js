@@ -54,17 +54,19 @@ export default ({ resolveConfig, isClient }) => {
   `)
 
   exports.push(
-    `export const clientImports = interopRequireDefault(require('$resolve.clientImports')).default`,
-    `export const viewModels = interopRequireDefault(require('$resolve.viewModels')).default`,
-    `export const rootPath = interopRequireDefault(require('$resolve.rootPath')).default`,
-    `export const staticPath = interopRequireDefault(require('$resolve.staticPath')).default`,
-    `export const jwtCookie = interopRequireDefault(require('$resolve.jwtCookie')).default`,
-    `export const applicationName = interopRequireDefault(require('$resolve.applicationName')).default`,
-    `export const subscribeAdapter = interopRequireDefault(require('$resolve.subscribeAdapter')).default`,
-    `export const customConstants = interopRequireDefault(require('$resolve.customConstants')).default`
+    `const clientChunk = {`,
+    `  clientImports: interopRequireDefault(require('$resolve.clientImports')).default,`,
+    `  viewModels: interopRequireDefault(require('$resolve.viewModels')).default,`,
+    `  rootPath: interopRequireDefault(require('$resolve.rootPath')).default,`,
+    `  staticPath: interopRequireDefault(require('$resolve.staticPath')).default,`,
+    `  jwtCookie: interopRequireDefault(require('$resolve.jwtCookie')).default,`,
+    `  applicationName: interopRequireDefault(require('$resolve.applicationName')).default,`,
+    `  subscribeAdapter: interopRequireDefault(require('$resolve.subscribeAdapter')).default,`,
+    `  customConstants: interopRequireDefault(require('$resolve.customConstants')).default`,
+    `}`
   )
 
-  return {
-    code: exports.join('\r\n')
-  }
+  exports.push(`export default clientChunk`)
+
+  return exports.join('\r\n')
 }

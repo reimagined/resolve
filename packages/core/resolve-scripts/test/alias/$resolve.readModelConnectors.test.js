@@ -9,7 +9,7 @@ test('should fail when imported from client', () => {
         alias({
           resolveConfig: {},
           isClient: true
-        }).code +
+        }) +
         '\r\n'
     )
   ).toThrow()
@@ -31,7 +31,7 @@ test('base config works correctly with module and options', () => {
         alias({
           resolveConfig,
           isClient: false
-        }).code +
+        }) +
         '\r\n'
     )
   ).toMatchSnapshot()
@@ -52,7 +52,7 @@ test('base config works correctly with options and default module', () => {
         alias({
           resolveConfig,
           isClient: false
-        }).code +
+        }) +
         '\r\n'
     )
   ).toMatchSnapshot()
@@ -73,7 +73,7 @@ test('base config works correctly with default module and options', () => {
         alias({
           resolveConfig,
           isClient: false
-        }).code +
+        }) +
         '\r\n'
     )
   ).toMatchSnapshot()

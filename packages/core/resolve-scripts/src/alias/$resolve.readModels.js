@@ -14,7 +14,7 @@ export default ({ resolveConfig, isClient }) => {
     )
   }
 
-  const imports = []
+  const imports = [`import '$resolve.guardOnlyServer'`]
   const constants = [``]
   const exports = [``, `const readModels = []`, ``]
 
@@ -69,7 +69,5 @@ export default ({ resolveConfig, isClient }) => {
 
   exports.push(`export default readModels`)
 
-  return {
-    code: [...imports, ...constants, ...exports].join('\r\n')
-  }
+  return [...imports, ...constants, ...exports].join('\r\n')
 }

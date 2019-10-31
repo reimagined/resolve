@@ -2,6 +2,7 @@
 
 exports[`works correctly 1`] = `
 "
+import '$resolve.guardOnlyServer'
 import snapshotAdapter_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
 const constructorBindFunction =
     (
