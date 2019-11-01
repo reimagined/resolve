@@ -1,4 +1,7 @@
-import { sendAggregateAction } from 'resolve-redux'
+import getNativeChunk from '../../native-chunk'
+const {
+  resolveRedux: { sendAggregateAction }
+} = getNativeChunk()
 
 export const createShoppingList = sendAggregateAction.bind(
   null,

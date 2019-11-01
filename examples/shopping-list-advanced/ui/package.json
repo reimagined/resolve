@@ -13,14 +13,13 @@
     "react-bootstrap": "0.32.4"
   },
   "devDependencies": {
-    "react": "16.5.0",
-    "react-dom": "16.5.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.1.tar.gz",
+    "react": "16.8.3",
+    "react-dom": "16.8.3",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.1.tar.gz",
     "redux": "4.0.1",
-    "resolve-redux": "0.20.28",
     "jest": "24.1.0",
     "jest-expo": "31.0.0",
-    "expo": "31.0.5",
+    "expo": "33.0.0",
     "enzyme": "3.7.0",
     "enzyme-adapter-react-16": "1.7.0",
     "enzyme-to-json": "3.3.5",
@@ -40,7 +39,12 @@
   "peerDependencies": {
     "react": "*",
     "react-dom": "*",
-    "react-native": "*",
-    "resolve-redux": "*"
+    "react-native": "*"
+  },
+  "workspaces": {
+    "nohoist": [
+      "**/",
+      "**/**"
+    ]
   }
 }
