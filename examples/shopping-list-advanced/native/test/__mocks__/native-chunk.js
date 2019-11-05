@@ -55,4 +55,6 @@ const nativeChunk = {
   resolveRedux
 }
 
-export default nativeChunk
+const getNativeChunk = () => nativeChunk
+
+export default getNativeChunk
