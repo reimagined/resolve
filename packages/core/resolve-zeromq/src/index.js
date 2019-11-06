@@ -1,19 +1,5 @@
-let resolveZmq
-
-try {
-  // eslint-disable-next-line import/no-extraneous-dependencies
-  resolveZmq = require('../optional/dependencies/zeromq')
-} catch (error) {
-  try {
-    // eslint-disable-next-line import/no-extraneous-dependencies
-    resolveZmq = require('../optional/dependencies/zeromq-ng/compat')
-  } catch (error) {
-    resolveZmq = {
-      socket() {
-        throw new Error('Zeromq is not installed')
-      }
-    }
-  }
+import zeromqDefault, * as zeromqWildcard from 'zeromq/v5-compat'
+export default {
+  default: zeromqDefault,
+  ...zeromqWildcard
 }
-
-module.exports = resolveZmq
