@@ -1,4 +1,3 @@
-import binaryCase from 'binary-case'
 import contentDisposition from 'content-disposition'
 import cookie from 'cookie'
 import getRawBody from 'raw-body'
@@ -243,13 +242,8 @@ const wrapApiHandler = (handler, getCustomParameters) => async (
 
     const { status, headers, cookies, body } = res[INTERNAL]
     expressRes.status(status)
-
-    for (let idx = 0; idx < cookies.length; idx++) {
-      headers[binaryCase('Set-cookie', idx)] = cookies[idx]
-    }
-
+    headers['Set-Cookie'] = cookies
     expressRes.set(headers)
-
     expressRes.end(body)
   } catch (error) {
     const outError =

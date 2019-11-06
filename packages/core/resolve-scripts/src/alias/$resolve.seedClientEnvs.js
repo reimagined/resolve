@@ -14,7 +14,8 @@ export default ({ resolveConfig, isClient }) => {
     [
       resolveConfig.customConstants,
       resolveConfig.staticPath,
-      resolveConfig.rootPath
+      resolveConfig.rootPath,
+      resolveConfig.jwtCookie
     ],
     (key, value) => {
       if (checkRuntimeEnv(value)) {
