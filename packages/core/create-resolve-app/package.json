@@ -3,7 +3,7 @@
   "version": "0.20.28",
   "description": "A tool that generates boilerplate web applications based on the reSolve framework",
   "engines": {
-    "node": ">=8.10"
+    "node": ">=10.9"
   },
   "bin": {
     "create-resolve-app": "./bin/index.js"

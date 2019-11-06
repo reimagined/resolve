@@ -30,7 +30,7 @@ describe('base config works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toThrow()
@@ -43,7 +43,7 @@ describe('base config works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -66,7 +66,7 @@ test('should throw when read-model name is process.env', () => {
             ]
           },
           isClient: true
-        }).code +
+        }) +
         '\r\n'
     )
   ).toThrow()
@@ -88,7 +88,7 @@ test('should throw when read-model connectorName is process.env', () => {
             ]
           },
           isClient: true
-        }).code +
+        }) +
         '\r\n'
     )
   ).toThrow()
@@ -148,7 +148,7 @@ describe('base(v2) config works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toThrow()
@@ -161,7 +161,7 @@ describe('base(v2) config works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -195,7 +195,7 @@ describe('config + process.env works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toThrow()
@@ -208,7 +208,7 @@ describe('config + process.env works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()

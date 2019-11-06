@@ -3,7 +3,7 @@
   "version": "0.20.28",
   "description": "Provides an interface used to create and querry read models and view models in a reSolve application.",
   "engines": {
-    "node": ">=8.10"
+    "node": ">=10.9"
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",

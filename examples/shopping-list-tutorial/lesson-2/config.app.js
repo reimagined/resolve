@@ -1,6 +1,4 @@
 const appConfig = {
-  routes: 'client/routes.js',
-  redux: {},
   aggregates: [
     {
       name: 'ShoppingList',
@@ -9,7 +7,8 @@ const appConfig = {
     }
   ],
   readModels: [],
-  viewModels: []
+  viewModels: [],
+  clientEntries: ['client/index.js']
 }
 
 export default appConfig

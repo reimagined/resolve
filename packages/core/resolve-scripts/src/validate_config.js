@@ -115,6 +115,51 @@ const validateUniqueNames = resolveConfig => {
   }
 }
 
+const validateClientEntries = config => {
+  for (const [idx, clientEntry] of config.clientEntries.entries()) {
+    const [inputFile, options] = !Array.isArray(clientEntry)
+      ? [
+          clientEntry,
+          {
+            moduleType: 'iife',
+            target: 'web'
+          }
+        ]
+      : clientEntry
+    const { outputFile, moduleType, target } = options
+
+    if (checkRuntimeEnv(inputFile)) {
+      throw new Error(
+        `${message.clientEnvError}.clientEntries[${idx}].inputFile`
+      )
+    }
+    if (checkRuntimeEnv(outputFile)) {
+      throw new Error(
+        `${message.clientEnvError}.clientEntries[${idx}].outputFile`
+      )
+    }
+    if (checkRuntimeEnv(moduleType)) {
+      throw new Error(
+        `${message.clientEnvError}.clientEntries[${idx}].moduleType`
+      )
+    }
+    if (checkRuntimeEnv(target)) {
+      throw new Error(`${message.clientEnvError}.clientEntries[${idx}].target`)
+    }
+
+    if (!/^(?:iife|commonjs|esm)$/.test(moduleType)) {
+      throw new Error(
+        `Option clientEntries[${idx}].moduleType must be on of "iife", "commonjs", "esm"`
+      )
+    }
+    if (!/^(?:web|node)$/.test(target)) {
+      throw new Error(
+        `Option clientEntries[${idx}].target must be on of "web", "node"`
+      )
+    }
+  }
+}
+
 const validateConfig = config => {
   const linearizedConfig = JSON.parse(JSON.stringify(config))
   const valid = ajv.validate(schemaResolveConfig, linearizedConfig)
@@ -128,6 +173,7 @@ const validateConfig = config => {
   validateUniqueNames(config)
   validateApiHandlers(config)
   validateReadModelConnectors(config)
+  validateClientEntries(config)
 
   return true
 }

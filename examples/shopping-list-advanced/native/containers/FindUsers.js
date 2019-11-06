@@ -4,10 +4,13 @@ import { bindActionCreators } from 'redux'
 import { View, StyleSheet } from 'react-native'
 import { Label } from 'native-base'
 
-import { connectReadModel } from 'resolve-redux'
-
 import * as aggregateActions from '../redux/actions/aggregate-actions'
 import UserList from '../components/UserList'
+
+import getNativeChunk from '../native-chunk'
+const {
+  resolveRedux: { connectReadModel }
+} = getNativeChunk()
 
 const styles = StyleSheet.create({
   label: {

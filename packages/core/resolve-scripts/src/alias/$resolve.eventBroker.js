@@ -8,7 +8,10 @@ export default ({ resolveConfig, isClient }) => {
     )
   }
 
-  const exports = [`const eventBroker = {}`, '']
+  const exports = [
+    `import '$resolve.guardOnlyServer'`,
+    `const eventBroker = {}`
+  ]
   for (const key of Object.keys(resolveConfig.eventBroker)) {
     const value = resolveConfig.eventBroker[key]
     if (key === 'launchBroker' && checkRuntimeEnv(value)) {
@@ -30,7 +33,5 @@ export default ({ resolveConfig, isClient }) => {
 
   exports.push('export default eventBroker')
 
-  return {
-    code: exports.join('\r\n')
-  }
+  return exports.join('\r\n')
 }

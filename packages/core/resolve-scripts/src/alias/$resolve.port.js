@@ -22,7 +22,5 @@ export default ({ resolveConfig, isClient }) => {
     )
   }
 
-  return {
-    code: exports.join('\r\n')
-  }
+  return exports.join('\r\n')
 }

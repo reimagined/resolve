@@ -45,7 +45,5 @@ export default ({ resolveConfig, isClient }) => {
     exports.push(`export default staticPath`)
   }
 
-  return {
-    code: exports.join('\r\n')
-  }
+  return exports.join('\r\n')
 }

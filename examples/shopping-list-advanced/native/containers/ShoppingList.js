@@ -13,7 +13,6 @@ import {
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import { connectViewModel } from 'resolve-redux'
 import requiredAuth from '../decorators/required-auth'
 import ShoppingItemCreator from '../components/ShoppingItemCreator'
 import ShoppingListPanel from '../components/ShoppingListPanel'
@@ -21,6 +20,11 @@ import ShoppingListItems from '../components/ShoppingListItems'
 import NotFound from '../components/NotFound'
 
 import * as aggregateActions from '../redux/actions/aggregate-actions'
+
+import getNativeChunk from '../native-chunk'
+const {
+  resolveRedux: { connectViewModel }
+} = getNativeChunk()
 
 export class ShoppingList extends React.PureComponent {
   componentDidMount() {

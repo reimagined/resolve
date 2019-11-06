@@ -2,6 +2,7 @@
 
 exports[`base config works correctly with default module and options 1`] = `
 "
+import '$resolve.guardOnlyServer'
 import wrapReadModelConnector from 'resolve-runtime/lib/common/wrap-readmodel-connector'
 import factory_s_0_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testReadmodelConnector.js\\"
 const constructorBindFunction =
@@ -41,6 +42,7 @@ export default readModelConnectors
 
 exports[`base config works correctly with module and options 1`] = `
 "
+import '$resolve.guardOnlyServer'
 import wrapReadModelConnector from 'resolve-runtime/lib/common/wrap-readmodel-connector'
 import factory_s_0_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testReadmodelConnector.js\\"
 const constructorBindFunction =
@@ -80,6 +82,7 @@ export default readModelConnectors
 
 exports[`base config works correctly with options and default module 1`] = `
 "
+import '$resolve.guardOnlyServer'
 import wrapReadModelConnector from 'resolve-runtime/lib/common/wrap-readmodel-connector'
 import factory_s_0_constructor from \\"resolve-runtime/lib/common/defaults/read-model-connector.js\\"
 const constructorBindFunction =

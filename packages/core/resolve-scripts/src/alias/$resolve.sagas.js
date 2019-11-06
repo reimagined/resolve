@@ -12,7 +12,7 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.serverAliasInClientCodeError}$resolve.sagas`)
   }
 
-  const imports = [``]
+  const imports = [`import '$resolve.guardOnlyServer'`]
   const constants = [``]
   const exports = [``, `const sagas = []`, ``]
 
@@ -92,7 +92,5 @@ export default ({ resolveConfig, isClient }) => {
 
   exports.push(`export default sagas`)
 
-  return {
-    code: [...imports, ...constants, ...exports].join('\r\n')
-  }
+  return [...imports, ...constants, ...exports].join('\r\n')
 }

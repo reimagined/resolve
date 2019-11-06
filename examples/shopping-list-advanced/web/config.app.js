@@ -1,18 +1,6 @@
 const appConfig = {
-  routes: 'client/routes.js',
   staticDir: 'static',
   distDir: 'dist',
-  redux: {
-    reducers: {
-      optimisticSharings: 'client/redux/reducers/optimistic-sharings.js',
-      optimisticShoppingLists:
-        'client/redux/reducers/optimistic-shopping-lists.js'
-    },
-    sagas: [
-      'client/redux/sagas/optimistic-sharings-saga.js',
-      'client/redux/sagas/optimistic-shopping-lists-saga.js'
-    ]
-  },
   aggregates: [
     {
       name: 'ShoppingList',
@@ -46,7 +34,39 @@ const appConfig = {
   subscribeAdapter: {
     module: 'resolve-subscribe-socket.io',
     options: {}
-  }
+  },
+  apiHandlers: [
+    {
+      controller: {
+        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+        options: {
+          modulePath: './ssr.js',
+          moduleFactoryImport: false
+        }
+      },
+      path: '/:markup*',
+      method: 'GET'
+    }
+  ],
+  clientEntries: [
+    'client/index.js',
+    [
+      'client/ssr.js',
+      {
+        outputFile: 'common/local-entry/ssr.js',
+        moduleType: 'commonjs',
+        target: 'node'
+      }
+    ],
+    [
+      'client/native-chunk.js',
+      {
+        outputFile: '../../native/native-chunk.js',
+        moduleType: 'esm',
+        target: 'web'
+      }
+    ]
+  ]
 }
 
 module.exports = appConfig

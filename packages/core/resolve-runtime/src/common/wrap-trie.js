@@ -3,6 +3,7 @@ import Trie from 'route-trie'
 import commandHandler from './handlers/command-handler'
 import queryHandler from './handlers/query-handler'
 import subscribeHandler from './handlers/subscribe-handler'
+import markupHandler from './handlers/markup-handler'
 import failHandler from './handlers/fail-handler'
 
 import getRootBasedUrl from './utils/get-root-based-url'
@@ -57,6 +58,12 @@ const wrapTrie = (apiHandlers, rootPath) => {
   if (!isRootPathEmpty) {
     trie.define('/:root*').handle('GET', failHandler)
   }
+
+  try {
+    trie
+      .define(getRootBasedUrl(rootPath, '/:markup'))
+      .handle('GET', markupHandler)
+  } catch (e) {}
 
   return trie
 }

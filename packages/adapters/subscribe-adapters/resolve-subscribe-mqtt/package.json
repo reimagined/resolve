@@ -3,7 +3,7 @@
   "version": "0.20.28",
   "description": "An adapter resolve-redux uses to subscribe to events via the MQTT protocol.",
   "engines": {
-    "node": ">=8.10"
+    "node": ">=10.9"
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",

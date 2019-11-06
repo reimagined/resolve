@@ -37,7 +37,8 @@ void (async () => {
       }
 
       case 'build': {
-        await build(merge(defaultResolveConfig, appConfig, prodConfig))
+        const resolveConfig = merge(defaultResolveConfig, appConfig, prodConfig)
+        await build(resolveConfig)
         break
       }
 
@@ -48,6 +49,18 @@ void (async () => {
 
       case 'start': {
         await start(merge(defaultResolveConfig, appConfig, prodConfig))
+        break
+      }
+
+      case 'reset': {
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+        await reset(resolveConfig, {
+          dropEventStore: false,
+          dropSnapshots: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+
         break
       }
 

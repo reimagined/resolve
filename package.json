@@ -58,6 +58,7 @@
       "packages/adapters/api-handler-adapters/*",
       "packages/adapters/scheduler-adapters/*",
       "examples/*",
+      "examples/shopping-list-advanced/*",
       "examples/shopping-list-tutorial/*",
       "packages/modules/*",
       "tests",

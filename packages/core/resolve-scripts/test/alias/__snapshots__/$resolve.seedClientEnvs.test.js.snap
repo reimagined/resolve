@@ -2,8 +2,8 @@
 
 exports[`works correctly 1`] = `
 "
+import '$resolve.guardOnlyServer'
 const seedClientEnvs = {}
-
 Object.defineProperty(
       seedClientEnvs,
       \\"customConstants\\",

@@ -3,7 +3,6 @@ const { declareRuntimeEnv } = require('resolve-scripts')
 const prodConfig = {
   target: 'local',
   port: declareRuntimeEnv('PORT', '3000'),
-  polyfills: ['@babel/polyfill'],
   mode: 'production',
   readModelConnectors: {
     default: {

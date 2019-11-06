@@ -5,57 +5,62 @@ const resetDomainHandler = options => async (req, res) => {
     storageAdapter,
     eventBroker: { reset: resetListener },
     readModels,
-    viewModels,
-    aggregates,
     schedulers,
     sagas
   } = req.resolve
 
   try {
-    try {
-      // TODO: invoke "init" only during first run
-      await storageAdapter.init()
-    } catch (e) {}
-
-    try {
-      await snapshotAdapter.init()
-    } catch (e) {}
-
     const { dropEventStore, dropSnapshots, dropReadModels, dropSagas } = options
 
     if (dropEventStore) {
-      await storageAdapter.drop()
+      try {
+        await storageAdapter.drop()
+      } catch (e) {}
+
+      try {
+        await storageAdapter.init()
+      } catch (e) {}
     }
 
     if (dropSnapshots) {
-      for (const { invariantHash } of [...viewModels, ...aggregates]) {
-        if (invariantHash != null) {
-          await snapshotAdapter.dropSnapshot(invariantHash)
-        }
-      }
+      try {
+        await snapshotAdapter.drop()
+      } catch (e) {}
+
+      try {
+        await snapshotAdapter.init()
+      } catch (e) {}
     }
 
     if (dropReadModels) {
       for (const { name, connectorName } of readModels) {
         const connector = readModelConnectors[connectorName]
-        const connection = await connector.connect(name)
 
-        await connector.drop(connection, name)
-        await connector.disconnect(connection, name)
+        try {
+          const connection = await connector.connect(name)
+          await connector.drop(connection, name)
+          await connector.disconnect(connection, name)
+        } catch (e) {}
 
-        await resetListener(name)
+        try {
+          await resetListener(name)
+        } catch (e) {}
       }
     }
 
     if (dropSagas) {
       for (const { name, connectorName } of [...sagas, ...schedulers]) {
         const connector = readModelConnectors[connectorName]
-        const connection = await connector.connect(name)
 
-        await connector.drop(connection, name)
-        await connector.disconnect(connection, name)
+        try {
+          const connection = await connector.connect(name)
+          await connector.drop(connection, name)
+          await connector.disconnect(connection, name)
+        } catch (e) {}
 
-        await resetListener(name)
+        try {
+          await resetListener(name)
+        } catch (e) {}
       }
     }
 

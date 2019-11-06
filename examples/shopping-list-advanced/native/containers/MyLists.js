@@ -14,11 +14,15 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 import requiredAuth from '../decorators/required-auth'
-import { connectReadModel } from 'resolve-redux'
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
 import * as refreshActions from '../redux/actions/refresh-actions'
 import * as aggregateActions from '../redux/actions/aggregate-actions'
+
+import getNativeChunk from '../native-chunk'
+const {
+  resolveRedux: { connectReadModel }
+} = getNativeChunk()
 
 export class MyLists extends React.PureComponent {
   render() {

@@ -235,12 +235,6 @@
       },
       "required": ["name", "maxAge"]
     },
-    "polyfills": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
     "eventBroker": {
       "type": "object",
       "properties": {
@@ -276,55 +270,35 @@
       "type": "object",
       "additionalProperties": true
     },
-
-    "reduxReducersMap": {
-      "type": "object",
-      "additionalProperties": {
-        "oneOf": [
-          { "$ref": "#/definitions/resourceInstance" },
-          { "$ref": "#/definitions/resourceConstructor" }
-        ]
-      }
-    },
-    "redux": {
+    "clientFullEntryProperties": {
       "type": "object",
       "properties": {
-        "reducers": {
-          "$ref": "#/definitions/reduxReducersMap"
-        },
-        "middlewares": {
-          "type": "array",
-          "items": {
-            "oneOf": [
-              { "$ref": "#/definitions/resourceInstance" },
-              { "$ref": "#/definitions/resourceConstructor" }
-            ]
-          }
-        },
-        "sagas": {
-          "type": "array",
-          "items": {
-            "oneOf": [
-              { "$ref": "#/definitions/resourceInstance" },
-              { "$ref": "#/definitions/resourceConstructor" }
-            ]
-          }
-        },
-        "enhancers": {
-          "type": "array",
-          "items": {
-            "oneOf": [
-              { "$ref": "#/definitions/resourceInstance" },
-              { "$ref": "#/definitions/resourceConstructor" }
-            ]
-          }
-        }
+        "moduleType": { "type": "string" },
+        "outputFile": { "type": "string" },
+        "target": { "type": "string" }
       },
       "additionalProperties": false
+    },
+    "clientFullEntry": {
+      "type": "array",
+      "items": [
+        { "type": "string" },
+        { "$ref": "#/definitions/clientFullEntryProperties" }
+      ],
+      "additionalItems": false
     },
     "config": {
       "type": "object",
       "properties": {
+        "clientEntries": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/clientFullEntry" },
+              { "type": "string" }
+            ]
+          }
+        },
         "target": {
           "type": "string",
           "enum": ["local", "cloud"]
@@ -420,9 +394,6 @@
         "jwtCookie": {
           "$ref": "#/definitions/jwtCookie"
         },
-        "polyfills": {
-          "$ref": "#/definitions/polyfills"
-        },
         "eventBroker": {
           "$ref": "#/definitions/eventBroker"
         },
@@ -431,16 +402,10 @@
         },
         "customConstants": {
           "$ref": "#/definitions/customConstants"
-        },
-
-        "routes": {
-          "type": "string"
-        },
-        "redux": {
-          "$ref": "#/definitions/redux"
         }
       },
       "required": [
+        "clientEntries",
         "clientImports",
         "serverImports",
         "apiHandlers",
@@ -457,7 +422,6 @@
         "storageAdapter",
         "snapshotAdapter",
         "subscribeAdapter",
-        "polyfills",
         "eventBroker",
         "customConstants",
         "target",
@@ -465,11 +429,6 @@
         "sagas",
         "mode"
       ],
-      "dependencies": {
-        "routes": ["redux"],
-        "redux": ["routes"]
-      },
-
       "additionalProperties": false
     }
   },

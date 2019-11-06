@@ -12,7 +12,7 @@ export const includeAlias = [
 ]
 
 export default () => {
-  const exports = []
+  const exports = [`import '$resolve.guardOnlyServer'`]
 
   const alias = fs
     .readdirSync(__dirname)
@@ -26,7 +26,5 @@ export default () => {
 
   exports.push(``, `export default {`, ` ${alias.join(',\r\n')}`, `}`)
 
-  return {
-    code: exports.join('\r\n')
-  }
+  return exports.join('\r\n')
 }
