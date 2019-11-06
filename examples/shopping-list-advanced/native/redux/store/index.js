@@ -2,18 +2,8 @@ import devToolsEnhancer from 'remote-redux-devtools'
 import createMemoryHistory from 'history/createMemoryHistory'
 import { AsyncStorage } from 'react-native'
 
-import { createStore } from 'resolve-redux'
-
+import getNativeChunk from '../../native-chunk'
 import origin from '../../constants/origin'
-import {
-  viewModels,
-  readModels,
-  aggregates,
-  rootPath,
-  customConstants,
-  subscribeAdapter,
-  jwtCookie
-} from '../../resolve'
 
 import optimisticShoppingLists from '../reducers/optimistic-shopping-lists'
 import optimisticSharings from '../reducers/optimistic-sharings'
@@ -21,6 +11,15 @@ import refresh from '../reducers/refresh'
 
 import optimisticSharingsSaga from '../sagas/optimistic-sharings-saga'
 import optimisticShoppingListsSaga from '../sagas/optimistic-shopping-lists-saga'
+
+const {
+  resolveRedux: { createStore },
+  viewModels,
+  rootPath,
+  customConstants,
+  subscribeAdapter,
+  jwtCookie
+} = getNativeChunk()
 
 const initialState = {}
 
@@ -64,8 +63,6 @@ const jwtProvider = {
 const store = createStore({
   redux,
   viewModels,
-  readModels,
-  aggregates,
   subscribeAdapter,
   initialState,
   history,

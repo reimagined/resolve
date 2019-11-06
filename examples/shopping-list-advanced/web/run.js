@@ -1,4 +1,3 @@
-const path = require('path')
 const {
   defaultResolveConfig,
   build,
@@ -8,8 +7,6 @@ const {
   merge: rawMerge,
   stop,
   reset,
-  adjustWebpackReactNative,
-  adjustWebpackCommonPackages,
   importEventStore,
   exportEventStore
 } = require('resolve-scripts')
@@ -19,6 +16,7 @@ const getLocalIp = require('my-local-ip')
 const remotedev = require('remotedev-server')
 const opn = require('opn')
 
+const adjustWebpackConfigs = require('./config.adjust-webpack')
 const devConfig = require('./config.dev')
 const prodConfig = require('./config.prod')
 const cloudConfig = require('./config.cloud')
@@ -44,30 +42,6 @@ const merge = (...configs) => {
       }
     }
   }
-}
-
-const adjustWebpackConfigs = ({
-  resolveConfig,
-  commonPackages,
-  reactNativeDir
-}) => (...args) => {
-  if (commonPackages) {
-    adjustWebpackCommonPackages({
-      resolveConfig,
-      commonPackages
-    })(...args)
-  }
-  if (reactNativeDir) {
-    adjustWebpackReactNative({
-      resolveConfig,
-      reactNativeDir
-    })(...args)
-  }
-}
-
-const reactNativeDir = path.resolve(__dirname, '../native')
-const commonPackages = {
-  '@shopping-list-advanced/ui': path.resolve(__dirname, '../ui')
 }
 
 void (async () => {
@@ -114,19 +88,10 @@ void (async () => {
             dropReadModels: true,
             dropSagas: true
           },
-          adjustWebpackConfigs({
-            resolveConfig,
-            commonPackages
-          })
+          adjustWebpackConfigs
         )
 
-        await watch(
-          resolveConfig,
-          adjustWebpackConfigs({
-            resolveConfig,
-            commonPackages
-          })
-        )
+        await watch(resolveConfig, adjustWebpackConfigs)
         break
       }
       case 'dev:native': {
@@ -155,20 +120,10 @@ void (async () => {
             dropReadModels: true,
             dropSagas: true
           },
-          adjustWebpackConfigs({
-            resolveConfig,
-            commonPackages
-          })
+          adjustWebpackConfigs
         )
 
-        await watch(
-          resolveConfig,
-          adjustWebpackConfigs({
-            resolveConfig,
-            reactNativeDir,
-            commonPackages
-          })
-        )
+        await watch(resolveConfig, adjustWebpackConfigs)
         break
       }
 
@@ -180,14 +135,7 @@ void (async () => {
           authModule
         )
 
-        await build(
-          resolveConfig,
-          adjustWebpackConfigs({
-            resolveConfig,
-            reactNativeDir,
-            commonPackages
-          })
-        )
+        await build(resolveConfig, adjustWebpackConfigs)
 
         break
       }
@@ -200,14 +148,7 @@ void (async () => {
           authModule
         )
 
-        await build(
-          resolveConfig,
-          adjustWebpackConfigs({
-            resolveConfig,
-            reactNativeDir,
-            commonPackages
-          })
-        )
+        await build(resolveConfig, adjustWebpackConfigs)
 
         break
       }
@@ -238,10 +179,7 @@ void (async () => {
         await importEventStore(
           resolveConfig,
           { importFile },
-          adjustWebpackConfigs({
-            resolveConfig,
-            commonPackages
-          })
+          adjustWebpackConfigs
         )
         break
       }
@@ -259,10 +197,7 @@ void (async () => {
         await exportEventStore(
           resolveConfig,
           { exportFile },
-          adjustWebpackConfigs({
-            resolveConfig,
-            commonPackages
-          })
+          adjustWebpackConfigs
         )
         break
       }
@@ -283,18 +218,12 @@ void (async () => {
             dropReadModels: true,
             dropSagas: true
           },
-          adjustWebpackConfigs({
-            resolveConfig,
-            commonPackages
-          })
+          adjustWebpackConfigs
         )
 
         await runTestcafe({
           resolveConfig,
-          adjustWebpackConfigs: adjustWebpackConfigs({
-            resolveConfig,
-            commonPackages
-          }),
+          adjustWebpackConfigs,
           functionalTestsDir: './test/functional',
           browser: process.argv[3]
           // customArgs: ['-r', 'json:report.json']
