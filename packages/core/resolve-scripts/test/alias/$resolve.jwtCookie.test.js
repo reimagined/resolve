@@ -1,5 +1,4 @@
 import alias from '../../src/alias/$resolve.jwtCookie'
-import declareRuntimeEnv from '../../src/declare_runtime_env'
 import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
@@ -34,22 +33,5 @@ describe('base config works correctly', () => {
           '\r\n'
       )
     ).toMatchSnapshot()
-  })
-
-  test('[server]', () => {
-    expect(() =>
-      normalizePaths(
-        '\r\n' +
-          alias({
-            resolveConfig: {
-              jwtCookie: {
-                name: declareRuntimeEnv('name')
-              }
-            },
-            isClient: false
-          }) +
-          '\r\n'
-      )
-    ).toThrow()
   })
 })
