@@ -12,18 +12,17 @@ const getDistributionId = arn => {
 const getCloudFrontOriginAccessIdentity = async ({
   accessKeyId,
   secretAccessKey,
-  endpoint,
   region,
   Comment,
   Marker,
   MaxItems = '200'
 }) => {
+  console.log('getCloudFrontOriginAccessIdentity')
   const cloudFront = new CloudFront({
     credentials: {
       accessKeyId,
       secretAccessKey
     },
-    endpoint,
     region
   })
 
@@ -49,7 +48,6 @@ const getCloudFrontOriginAccessIdentity = async ({
     return getCloudFrontOriginAccessIdentity({
       accessKeyId,
       secretAccessKey,
-      endpoint,
       region,
       Comment,
       Marker: NextMarker
@@ -62,22 +60,24 @@ const getCloudFrontOriginAccessIdentity = async ({
 const ensureOriginAccessIdentity = async ({
   accessKeyId,
   secretAccessKey,
-  endpoint,
   region,
   stage
 }) => {
+  console.log('ensureOriginAccessIdentity')
+
   const cloudFront = new CloudFront({
     credentials: {
       accessKeyId,
       secretAccessKey
     },
-    endpoint,
     region
   })
-  const comment = `resolve-media-${stage}`
+  const comment = `resolve-uploader-${stage}`
 
   let identity = await getCloudFrontOriginAccessIdentity({
-    Region: region,
+    accessKeyId,
+    secretAccessKey,
+    region,
     Comment: comment
   })
 
@@ -103,6 +103,8 @@ const getCloudFrontDistributionArnByTags = async (
   tagFilter,
   marker = null
 ) => {
+  console.log('getCloudFrontDistributionArnByTags')
+
   const {
     DistributionList: { NextMarker, Items, IsTruncated }
   } = await cf.listDistributions(marker ? { Marker: marker } : {}).promise()
@@ -135,24 +137,46 @@ const getCloudFrontDistributionArnByTags = async (
 const ensureDistribution = async ({
   accessKeyId,
   secretAccessKey,
-  endpoint,
   region,
   bucketName,
   domainName,
   domainCertificateArn,
   callerReference,
   originAccessIdentity,
+  functionVersionArn,
   tags
 }) => {
+  console.log('ensureDistribution')
+
   const originId = `s3-${bucketName}`
   const originDomain = `${bucketName}.s3.amazonaws.com`
+
+  const lambdaAssociations = [
+    {
+      LambdaFunctionARN: functionVersionArn,
+      EventType: 'origin-request',
+      IncludeBody: true
+    }
+  ]
+
+  const forwardHeaders = [
+    'Access-Control-Request-Method',
+    'Access-Control-Request-Headers',
+    'Accept-Encoding',
+    'Accept-Language',
+    'Accept',
+    'Authorization',
+    'Content-Type',
+    'Host',
+    'Origin',
+    'User-Agent'
+  ]
 
   const cloudFront = new CloudFront({
     credentials: {
       accessKeyId,
       secretAccessKey
     },
-    endpoint,
     region
   })
 
@@ -162,7 +186,7 @@ const ensureDistribution = async ({
     Enabled: true,
     Aliases: {
       Quantity: 1,
-      Items: [`static.${domainName}`]
+      Items: [`uploader.${domainName}`]
     },
     Origins: {
       Quantity: 1,
@@ -228,13 +252,13 @@ const ensureDistribution = async ({
           Forward: 'none'
         },
         Headers: {
-          Quantity: 0,
-          Items: []
+          Quantity: forwardHeaders.length,
+          Items: forwardHeaders
         }
       },
       LambdaFunctionAssociations: {
-        Quantity: 0,
-        Items: []
+        Quantity: lambdaAssociations.length,
+        Items: lambdaAssociations
       }
     }
   }
@@ -295,15 +319,16 @@ const ensureDistribution = async ({
 const createCloudFrontDistribution = async ({
   accessKeyId,
   secretAccessKey,
-  endpoint,
   region,
   bucketName,
   domainName,
   domainCertificateArn,
   callerReference,
   stageTagName,
-  stage
+  stage,
+  functionVersionArn
 }) => {
+  console.log('createCloudFrontDistribution')
   const tags = [
     {
       Key: stageTagName,
@@ -318,7 +343,6 @@ const createCloudFrontDistribution = async ({
   const originAccessIdentity = await ensureOriginAccessIdentity({
     accessKeyId,
     secretAccessKey,
-    endpoint,
     region,
     stage
   })
@@ -326,7 +350,6 @@ const createCloudFrontDistribution = async ({
   await createS3Bucket({
     accessKeyId,
     secretAccessKey,
-    endpoint,
     region,
     Bucket: bucketName,
     ACL: 'private',
@@ -336,13 +359,13 @@ const createCloudFrontDistribution = async ({
   return await ensureDistribution({
     accessKeyId,
     secretAccessKey,
-    endpoint,
     region,
     bucketName,
     domainName,
     domainCertificateArn,
     callerReference,
     originAccessIdentity,
+    functionVersionArn,
     tags
   })
 }

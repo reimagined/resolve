@@ -1,6 +1,21 @@
 import S3 from 'aws-sdk/clients/s3'
 
-const existS3Bucket = async (s3, Bucket) => {
+const existS3Bucket = async ({
+  accessKeyId,
+  secretAccessKey,
+  region,
+  Bucket
+}) => {
+  console.log('existS3Bucket')
+
+  const s3 = new S3({
+    credentials: {
+      accessKeyId,
+      secretAccessKey
+    },
+    region
+  })
+
   try {
     await s3
       .headBucket({
@@ -19,30 +34,38 @@ const existS3Bucket = async (s3, Bucket) => {
 const createS3Bucket = async ({
   accessKeyId,
   secretAccessKey,
-  endpoint,
   region,
   Bucket,
   ACL,
   originAccessIdentity
 }) => {
+  console.log('createS3Bucket')
+
   const s3 = new S3({
     credentials: {
       accessKeyId,
       secretAccessKey
     },
-    endpoint,
     region
   })
 
-  const bucketExists = await existS3Bucket(s3, Bucket)
+  const bucketExists = await existS3Bucket({
+    accessKeyId,
+    secretAccessKey,
+    region,
+    Bucket
+  })
 
   if (!bucketExists) {
+    console.log('createBucket')
+
     await s3
       .createBucket({
         Bucket,
         ACL
       })
       .promise()
+    console.log('putBucketCors')
 
     await s3
       .putBucketCors({
@@ -59,6 +82,7 @@ const createS3Bucket = async ({
         }
       })
       .promise()
+    console.log('putBucketAccelerateConfiguration')
 
     await s3
       .putBucketAccelerateConfiguration({
@@ -69,6 +93,7 @@ const createS3Bucket = async ({
       })
       .promise()
   }
+  console.log('putBucketPolicy')
 
   await s3
     .putBucketPolicy({
@@ -89,6 +114,7 @@ const createS3Bucket = async ({
       })
     })
     .promise()
+  console.log('putPublicAccessBlock')
 
   await s3
     .putPublicAccessBlock({

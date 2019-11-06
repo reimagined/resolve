@@ -9,7 +9,7 @@ const start = () => {
     hostname: 'localhost',
     silent: false,
     directory: './base',
-    // configureBuckets: [{ name: 'bucket' }],
+    configureBuckets: [{ name: 'files' }],
     allowMismatchedSignatures: true
   }).run(error => {
     error ? console.log(error) : console.log('Server started')

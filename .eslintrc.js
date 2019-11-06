@@ -281,6 +281,7 @@ module.exports = {
           'proto',
           'pubsub',
           'qos',
+          'querystring',
           'rabbitmq',
           'raf',
           'react',

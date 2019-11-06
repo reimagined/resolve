@@ -14,7 +14,7 @@ import uuid from 'uuid/v4'
 const createUploader = async ({ s3, bucket }, uploadId = uuid()) => {
   const uploadUrl = await s3.getSignedUrlPromise('putObject', {
     Bucket: bucket,
-    Key: uploadId
+    Key: `test/${uploadId}`
   })
 
   return {
@@ -24,7 +24,7 @@ const createUploader = async ({ s3, bucket }, uploadId = uuid()) => {
 }
 
 const upload = (pool, uploadUrl) => {
-  const filePath = path.join(__dirname, 'test.jpg')
+  const filePath = path.join(__dirname, 'test2.jpg')
   const fileSizeInBytes = fs.statSync(filePath).size
   const fileStream = fs.createReadStream(filePath)
   return new Promise((resolve, reject) =>
