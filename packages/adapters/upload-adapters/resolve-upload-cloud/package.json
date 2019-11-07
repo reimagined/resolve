@@ -1,9 +1,9 @@
 {
-  "name": "resolve-upload-adapter",
+  "name": "resolve-upload-cloud",
   "version": "0.20.28",
   "description": "",
   "engines": {
-    "node": ">=8.10"
+    "node": ">=10.9"
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",
@@ -12,9 +12,7 @@
   },
   "scripts": {
     "test": "jest --config=../../../../jest.config.js --verbose",
-    "testw": "jest --config=../../../../jest.config.js --watchAll",
-    "start": "babel-node ./src/server.js start",
-    "stop": "babel-node ./src/server.js stop"
+    "testw": "jest --config=../../../../jest.config.js --watchAll"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
@@ -25,7 +23,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/upload-adapter#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/upload-adapters/resolve-upload-cloud#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "@babel/node": "^7.0.0",

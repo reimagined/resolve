@@ -3,6 +3,7 @@ import fs from 'fs'
 import request from 'request'
 import path from 'path'
 import uuid from 'uuid/v4'
+import crypto from "crypto"
 
 // const createMultipartUpload = async ({ s3, bucket }, uploadId = uuid()) => {
 //   const result = await s3
@@ -11,10 +12,10 @@ import uuid from 'uuid/v4'
 //   console.log(result)
 // }
 
-const createUploader = async ({ s3, bucket }, uploadId = uuid()) => {
+const createPresignedPut = async ({ s3, bucket }, uploadId = uuid()) => {
   const uploadUrl = await s3.getSignedUrlPromise('putObject', {
     Bucket: bucket,
-    Key: `test/${uploadId}`
+    Key: `deID/test/${uploadId}`
   })
 
   return {
@@ -87,6 +88,23 @@ const uploadFormData = (pool, form) => {
   )
 }
 
+const createToken = ({ deploymentId, dir, expireTime }) => {
+  const payload = Buffer.from(
+    JSON.stringify({
+      deploymentId,
+      dir,
+      expireTime: Date.now() + expireTime
+    })
+  ).toString('base64').replace(/=/g, '')
+
+  const signature = crypto
+    .createHmac('md5', 'key')
+    .update(payload)
+    .digest('hex')
+
+  return `${payload}*${signature}`
+}
+
 const createUploadAdapter = config => {
   const {
     accessKeyId,
@@ -94,27 +112,32 @@ const createUploadAdapter = config => {
     endpoint,
     bucket,
     region,
+    deploymentId,
+    CDN,
     ...additionalParams
   } = config
 
-  const s3 = new S3({
-    credentials: {
-      accessKeyId,
-      secretAccessKey
-    },
-    endpoint,
-    region,
-    signatureVersion: 'v4',
-    ...additionalParams
-  })
-
-  const pool = { config, s3, bucket }
+  // const s3 = new S3({
+  //   credentials: {
+  //     accessKeyId,
+  //     secretAccessKey
+  //   },
+  //   endpoint,
+  //   region,
+  //   signatureVersion: 'v4',
+  //   ...additionalParams
+  // })
+  //
+  // const pool = { config, s3, bucket }
 
   return Object.freeze({
-    createUploader: createUploader.bind(null, pool),
-    createPresignedPost: createPresignedPost.bind(null, pool),
-    upload: upload.bind(null, pool),
-    uploadFormData: uploadFormData.bind(null, pool)
+    // createPresignedPut: createPresignedPut.bind(null, pool),
+    // upload: upload.bind(null, pool),
+    // createPresignedPost: createPresignedPost.bind(null, pool),
+    // uploadFormData: uploadFormData.bind(null, pool),
+    deploymentId,
+    CDN,
+    createToken
   })
 }
 
