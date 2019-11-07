@@ -7,6 +7,7 @@ import initBroker from './init-broker'
 import initPerformanceTracer from './init-performance-tracer'
 import lambdaWorker from './lambda-worker'
 import wrapTrie from '../common/wrap-trie'
+import initUploader from './init-uploader'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
@@ -37,6 +38,9 @@ const index = async ({ assemblies, constants, domain }) => {
 
     log.debug('preparing event broker')
     await initBroker(resolve)
+
+    log.debug('preparing uploader')
+    await initUploader(resolve)
 
     log.debug(`lambda 'cold start' succeeded`)
 

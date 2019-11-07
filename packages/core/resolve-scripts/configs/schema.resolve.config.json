@@ -402,6 +402,9 @@
         },
         "customConstants": {
           "$ref": "#/definitions/customConstants"
+        },
+        "uploadAdapter": {
+          "$ref": "#/definitions/adapter"
         }
       },
       "required": [
