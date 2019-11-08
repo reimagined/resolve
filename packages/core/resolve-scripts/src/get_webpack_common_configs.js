@@ -17,6 +17,23 @@ const getWebpackCommonConfigs = ({
   const distDir = path.resolve(process.cwd(), resolveConfig.distDir)
   const isClient = false
 
+  const packageJson = `common/${targetMode}-entry/package.json`
+  if (!nodeModulesByAssembly.has(packageJson)) {
+    nodeModulesByAssembly.set(packageJson, new Set())
+  }
+
+  const packageJsonWriter = (context, request, callback) => {
+    if (request[0] !== '/' && request[0] !== '.') {
+      const packageName = request
+        .split('/')
+        .slice(0, request[0] === '@' ? 2 : 1)
+        .join('/')
+
+      nodeModulesByAssembly.get(packageJson).add(packageName)
+    }
+    callback()
+  }
+
   const baseCommonConfig = {
     context: path.resolve(process.cwd()),
     mode: resolveConfig.mode,
@@ -99,28 +116,12 @@ const getWebpackCommonConfigs = ({
       ]
     },
     externals: [
+      packageJsonWriter,
       ...getModulesDirs().map(modulesDir =>
         nodeExternals({ modulesDir, whitelist: [/resolve-runtime/] })
       )
     ],
     plugins: []
-  }
-
-  const packageJson = `common/${targetMode}-entry/package.json`
-  if (!nodeModulesByAssembly.has(packageJson)) {
-    nodeModulesByAssembly.set(packageJson, new Set())
-  }
-
-  const packageJsonWriter = (context, request, callback) => {
-    if (request[0] !== '/' && request[0] !== '.') {
-      const packageName = request
-        .split('/')
-        .slice(0, request[0] === '@' ? 2 : 1)
-        .join('/')
-
-      nodeModulesByAssembly.get(packageJson).add(packageName)
-    }
-    callback()
   }
 
   const commonConfigs = [
@@ -146,8 +147,7 @@ const getWebpackCommonConfigs = ({
       output: {
         ...baseCommonConfig.output,
         libraryTarget: 'commonjs-module'
-      },
-      externals: [packageJsonWriter, ...baseCommonConfig.externals]
+      }
     },
     {
       ...baseCommonConfig,
