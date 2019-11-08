@@ -143,14 +143,10 @@ const getWebpackCommonConfigs = ({
             }
           : {})
       },
-      ...(targetMode === 'cloud'
-        ? {
-            output: {
-              ...baseCommonConfig.output,
-              libraryTarget: 'commonjs-module'
-            }
-          }
-        : {}),
+      output: {
+        ...baseCommonConfig.output,
+        libraryTarget: 'commonjs-module'
+      },
       externals: [packageJsonWriter, ...baseCommonConfig.externals]
     },
     {
