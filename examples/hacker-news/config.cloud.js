@@ -29,30 +29,33 @@ export default {
   },
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-mysql',
+      module: 'resolve-readmodel-postgresql-serverless',
       options: {
-        host: declareRuntimeEnv('RESOLVE_READMODEL_SQL_HOST'),
-        database: declareRuntimeEnv('RESOLVE_READMODEL_SQL_DATABASE'),
-        user: declareRuntimeEnv('RESOLVE_READMODEL_SQL_USER'),
-        password: declareRuntimeEnv('RESOLVE_READMODEL_SQL_PASSWORD')
+        awsSecretStoreArn: declareRuntimeEnv('RESOLVE_ES_SECRET_STORE_ARN'),
+        dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_ES_CLUSTER_ARN'),
+        databaseName: declareRuntimeEnv('RESOLVE_ES_DATABASE'),
+        region: declareRuntimeEnv('AWS_REGION'),
+        tablePrefix: 'DEFAULT_'
       }
     },
     hackerNews: {
-      module: 'resolve-readmodel-mysql',
+      module: 'resolve-readmodel-postgresql-serverless',
       options: {
-        host: declareRuntimeEnv('RESOLVE_READMODEL_SQL_HOST'),
-        database: declareRuntimeEnv('RESOLVE_READMODEL_SQL_DATABASE'),
-        user: declareRuntimeEnv('RESOLVE_READMODEL_SQL_USER'),
-        password: declareRuntimeEnv('RESOLVE_READMODEL_SQL_PASSWORD')
+        awsSecretStoreArn: declareRuntimeEnv('RESOLVE_ES_SECRET_STORE_ARN'),
+        dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_ES_CLUSTER_ARN'),
+        databaseName: declareRuntimeEnv('RESOLVE_ES_DATABASE'),
+        region: declareRuntimeEnv('AWS_REGION'),
+        tablePrefix: 'HACKERNEWS_'
       }
     },
     comments: {
-      module: 'resolve-readmodel-mysql',
+      module: 'resolve-readmodel-postgresql-serverless',
       options: {
-        host: declareRuntimeEnv('RESOLVE_READMODEL_SQL_HOST'),
-        database: declareRuntimeEnv('RESOLVE_READMODEL_SQL_DATABASE'),
-        user: declareRuntimeEnv('RESOLVE_READMODEL_SQL_USER'),
-        password: declareRuntimeEnv('RESOLVE_READMODEL_SQL_PASSWORD')
+        awsSecretStoreArn: declareRuntimeEnv('RESOLVE_ES_SECRET_STORE_ARN'),
+        dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_ES_CLUSTER_ARN'),
+        databaseName: declareRuntimeEnv('RESOLVE_ES_DATABASE'),
+        region: declareRuntimeEnv('AWS_REGION'),
+        tablePrefix: 'COMMENTS_'
       }
     },
     elasticSearch: {
