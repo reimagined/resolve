@@ -316,18 +316,17 @@ const ensureDistribution = async ({
   return cfDomainName
 }
 
-const createCloudFrontDistribution = async ({
-  accessKeyId,
-  secretAccessKey,
-  region,
-  bucketName,
-  domainName,
-  domainCertificateArn,
-  callerReference,
-  stageTagName,
-  stage,
-  functionVersionArn
-}) => {
+const createCloudFrontDistribution = async (
+  { accessKeyId, secretAccessKey, region, bucketName },
+  {
+    domainName,
+    domainCertificateArn,
+    callerReference,
+    stageTagName,
+    stage,
+    functionVersionArn
+  }
+) => {
   console.log('createCloudFrontDistribution')
   const tags = [
     {

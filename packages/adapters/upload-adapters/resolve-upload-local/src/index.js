@@ -2,17 +2,9 @@ import S3 from 'aws-sdk/clients/s3'
 import fs from 'fs'
 import request from 'request'
 import uuid from 'uuid/v4'
-import crypto from 'crypto'
 
-const createPresignedPut = async (
-  { s3, bucket, config: { deploymentId } },
-  dir,
-  uploadId = uuid()
-) => {
-  const key =
-    dir !== ''
-      ? `${deploymentId}/${dir}/${uploadId}`
-      : `${deploymentId}/${uploadId}`
+const createPresignedPut = async ({ s3, bucket }, dir, uploadId = uuid()) => {
+  const key = dir !== '' ? `${dir}/${uploadId}` : `${uploadId}`
   const uploadUrl = await s3.getSignedUrlPromise('putObject', {
     Bucket: bucket,
     Key: key
@@ -43,15 +35,8 @@ export const upload = (pool, uploadUrl, filePath) => {
   )
 }
 
-const createPresignedPost = async (
-  { s3, bucket, config: { deploymentId } },
-  dir,
-  uploadId = uuid()
-) => {
-  const key =
-    dir !== ''
-      ? `${deploymentId}/${dir}/${uploadId}`
-      : `${deploymentId}/${uploadId}`
+const createPresignedPost = async ({ s3, bucket }, dir, uploadId = uuid()) => {
+  const key = dir !== '' ? `${dir}/${uploadId}` : `${uploadId}`
   const form = await new Promise((resolve, reject) => {
     s3.createPresignedPost(
       {
@@ -92,46 +77,18 @@ export const uploadFormData = (pool, form, filePath) => {
   )
 }
 
-const createToken = ({ config: { deploymentId } }, { dir, expireTime }) => {
-  const payload = Buffer.from(
-    JSON.stringify({
-      deploymentId,
-      dir,
-      expireTime: Date.now() + expireTime
-    })
-  )
-    .toString('base64')
-    .replace(/=/g, '')
-
-  const signature = crypto
-    .createHmac('md5', 'key')
-    .update(payload)
-    .digest('hex')
-
-  return `${payload}*${signature}`
-}
-
 const createUploadAdapter = config => {
-  const {
-    accessKeyId,
-    secretAccessKey,
-    endpoint,
-    bucket,
-    region,
-    deploymentId,
-    CDN,
-    ...additionalParams
-  } = config
+  const { bucket, host, port, protocol } = config
 
   const s3 = new S3({
     credentials: {
-      accessKeyId,
-      secretAccessKey
+      accessKeyId: 'S3RVER',
+      secretAccessKey: 'S3RVER'
     },
-    endpoint,
-    region,
+    endpoint: `${protocol}://${host}:${port}`,
     signatureVersion: 'v4',
-    ...additionalParams
+    sslEnabled: false,
+    s3ForcePathStyle: true
   })
 
   const pool = { config, s3, bucket }
@@ -140,10 +97,7 @@ const createUploadAdapter = config => {
     createPresignedPut: createPresignedPut.bind(null, pool),
     upload: upload.bind(null, pool),
     createPresignedPost: createPresignedPost.bind(null, pool),
-    uploadFormData: uploadFormData.bind(null, pool),
-    deploymentId,
-    CDN,
-    createToken
+    uploadFormData: uploadFormData.bind(null, pool)
   })
 }
 

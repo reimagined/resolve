@@ -1,21 +1,22 @@
 import S3 from 'aws-sdk/clients/s3'
 import fs from 'fs'
 import request from 'request'
-import path from 'path'
 import uuid from 'uuid/v4'
-import crypto from "crypto"
+import crypto from 'crypto'
+import createCloudFrontDistribution from './resource/createCloudFrontDistribution'
 
-// const createMultipartUpload = async ({ s3, bucket }, uploadId = uuid()) => {
-//   const result = await s3
-//     .createMultipartUpload({ Bucket: bucket, Key: uploadId })
-//     .promise()
-//   console.log(result)
-// }
-
-const createPresignedPut = async ({ s3, bucket }, uploadId = uuid()) => {
+const createPresignedPut = async (
+  { s3, bucket, config: { deploymentId } },
+  dir,
+  uploadId = uuid()
+) => {
+  const key =
+    dir !== ''
+      ? `${deploymentId}/${dir}/${uploadId}`
+      : `${deploymentId}/${uploadId}`
   const uploadUrl = await s3.getSignedUrlPromise('putObject', {
     Bucket: bucket,
-    Key: `deID/test/${uploadId}`
+    Key: key
   })
 
   return {
@@ -24,8 +25,7 @@ const createPresignedPut = async ({ s3, bucket }, uploadId = uuid()) => {
   }
 }
 
-const upload = (pool, uploadUrl) => {
-  const filePath = path.join(__dirname, 'test2.jpg')
+export const upload = (pool, uploadUrl, filePath) => {
   const fileSizeInBytes = fs.statSync(filePath).size
   const fileStream = fs.createReadStream(filePath)
   return new Promise((resolve, reject) =>
@@ -44,15 +44,21 @@ const upload = (pool, uploadUrl) => {
   )
 }
 
-const createPresignedPost = async ({ s3, bucket }) => {
-  const uploadId = uuid()
+const createPresignedPost = async (
+  { s3, bucket, config: { deploymentId } },
+  dir,
+  uploadId = uuid()
+) => {
+  const key =
+    dir !== ''
+      ? `${deploymentId}/${dir}/${uploadId}`
+      : `${deploymentId}/${uploadId}`
   const form = await new Promise((resolve, reject) => {
     s3.createPresignedPost(
       {
         Bucket: bucket,
-        Key: uploadId,
         Fields: {
-          Key: uploadId
+          Key: key
         }
       },
       (error, data) => {
@@ -67,8 +73,7 @@ const createPresignedPost = async ({ s3, bucket }) => {
   }
 }
 
-const uploadFormData = (pool, form) => {
-  const filePath = path.join(__dirname, 'test.jpg')
+export const uploadFormData = (pool, form, filePath) => {
   const fileStream = fs.createReadStream(filePath)
   form.fields.key = form.fields.Key
   delete form.fields.Key
@@ -88,14 +93,19 @@ const uploadFormData = (pool, form) => {
   )
 }
 
-const createToken = ({ deploymentId, dir, expireTime }) => {
+export const createToken = (
+  { config: { deploymentId } },
+  { dir, expireTime }
+) => {
   const payload = Buffer.from(
     JSON.stringify({
       deploymentId,
       dir,
       expireTime: Date.now() + expireTime
     })
-  ).toString('base64').replace(/=/g, '')
+  )
+    .toString('base64')
+    .replace(/=/g, '')
 
   const signature = crypto
     .createHmac('md5', 'key')
@@ -117,27 +127,35 @@ const createUploadAdapter = config => {
     ...additionalParams
   } = config
 
-  // const s3 = new S3({
-  //   credentials: {
-  //     accessKeyId,
-  //     secretAccessKey
-  //   },
-  //   endpoint,
-  //   region,
-  //   signatureVersion: 'v4',
-  //   ...additionalParams
-  // })
-  //
-  // const pool = { config, s3, bucket }
+  const s3 = new S3({
+    credentials: {
+      accessKeyId,
+      secretAccessKey
+    },
+    endpoint,
+    region,
+    signatureVersion: 'v4',
+    ...additionalParams
+  })
+
+  const pool = { config, s3, bucket }
 
   return Object.freeze({
-    // createPresignedPut: createPresignedPut.bind(null, pool),
-    // upload: upload.bind(null, pool),
-    // createPresignedPost: createPresignedPost.bind(null, pool),
-    // uploadFormData: uploadFormData.bind(null, pool),
+    createPresignedPut: createPresignedPut.bind(null, pool),
+    upload: upload.bind(null, pool),
+    createPresignedPost: createPresignedPost.bind(null, pool),
+    uploadFormData: uploadFormData.bind(null, pool),
     deploymentId,
     CDN,
-    createToken
+    createToken,
+    resource: {
+      create: createCloudFrontDistribution.bind(null, {
+        accessKeyId,
+        secretAccessKey,
+        bucketName: bucket,
+        region
+      })
+    }
   })
 }
 
