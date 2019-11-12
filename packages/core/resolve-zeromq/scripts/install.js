@@ -26,10 +26,10 @@ const npmInstall = name =>
 
 void (async () => {
   try {
-    await npmInstall('zeromq')
+    await npmInstall('zeromq@5.1.1')
   } catch (error) {
     try {
-      await npmInstall('zeromq-ng')
+      await npmInstall('zeromq-ng@5.0.0-beta.28')
     } catch (error) {
       // eslint-disable-next-line no-console
       console.warn('Zeromq is not installed')
