@@ -17,7 +17,8 @@ const appConfig = {
       controller: 'common/api-handlers/markup.js',
       method: 'GET'
     }
-  ]
+  ],
+  clientEntries: ['client/index.js']
 }
 
 export default appConfig
