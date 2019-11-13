@@ -5,6 +5,8 @@ exports[`works correctly 1`] = `
 
     import '$resolve.guardOnlyServer'
 
+    export { default as entryPointMarker } from 'resolve-runtime/lib/common/utils/entry-point-marker'
+
     const handler = async (...args) => {
       try {
         if(!global.initPromise) {
@@ -26,6 +28,7 @@ exports[`works correctly 1`] = `
         throw error
       }
     }
+
     export default handler
   
 "
