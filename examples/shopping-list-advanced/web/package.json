@@ -12,6 +12,7 @@
     "@babel/runtime": "7.0.0",
     "@babel/polyfill": "7.0.0",
     "jsonwebtoken": "8.3.0",
+    "express": "4.17.1",
     "history": "4.10.1",
     "passport-local": "1.0.0",
     "uuid": "3.3.2",
