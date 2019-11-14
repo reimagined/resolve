@@ -1,14 +1,12 @@
-import S3 from 'aws-sdk/clients/s3'
 import fs from 'fs'
+import path from 'path'
 import request from 'request'
 import uuid from 'uuid/v4'
+import crypto from 'crypto'
 
-const createPresignedPut = async ({ s3, bucket }, dir, uploadId = uuid()) => {
-  const key = dir !== '' ? `${dir}/${uploadId}` : `${uploadId}`
-  const uploadUrl = await s3.getSignedUrlPromise('putObject', {
-    Bucket: bucket,
-    Key: key
-  })
+const createPresignedPut = async ({ host, port, protocol }, dir) => {
+  const uploadId = uuid()
+  const uploadUrl = `${protocol}://${host}:${port}/upload?dir=${dir}&uploadId=${uploadId}`
 
   return {
     uploadUrl,
@@ -16,7 +14,7 @@ const createPresignedPut = async ({ s3, bucket }, dir, uploadId = uuid()) => {
   }
 }
 
-export const upload = (pool, uploadUrl, filePath) => {
+export const upload = (uploadUrl, filePath) => {
   const fileSizeInBytes = fs.statSync(filePath).size
   const fileStream = fs.createReadStream(filePath)
   return new Promise((resolve, reject) =>
@@ -25,7 +23,7 @@ export const upload = (pool, uploadUrl, filePath) => {
         headers: {
           'Content-Length': fileSizeInBytes
         },
-        uri: uploadUrl,
+        uri: uploadUrl.concat(path.extname(filePath)),
         body: fileStream
       },
       (error, _, body) => {
@@ -35,21 +33,11 @@ export const upload = (pool, uploadUrl, filePath) => {
   )
 }
 
-const createPresignedPost = async ({ s3, bucket }, dir, uploadId = uuid()) => {
-  const key = dir !== '' ? `${dir}/${uploadId}` : `${uploadId}`
-  const form = await new Promise((resolve, reject) => {
-    s3.createPresignedPost(
-      {
-        Bucket: bucket,
-        Fields: {
-          Key: key
-        }
-      },
-      (error, data) => {
-        error ? reject(error) : resolve(data)
-      }
-    )
-  })
+const createPresignedPost = async ({ host, port, protocol }, dir) => {
+  const uploadId = uuid()
+  const form = {
+    url: `${protocol}://${host}:${port}/upload?dir=${dir}&uploadId=${uploadId}`
+  }
 
   return {
     form,
@@ -57,16 +45,14 @@ const createPresignedPost = async ({ s3, bucket }, dir, uploadId = uuid()) => {
   }
 }
 
-export const uploadFormData = (pool, form, filePath) => {
+export const uploadFormData = (form, filePath) => {
   const fileStream = fs.createReadStream(filePath)
-  form.fields.key = form.fields.Key
-  delete form.fields.Key
+
   return new Promise((resolve, reject) =>
     request.post(
       {
-        url: form.url,
+        url: form.url.concat(path.extname(filePath)),
         formData: {
-          ...form.fields,
           file: fileStream
         }
       },
@@ -77,27 +63,31 @@ export const uploadFormData = (pool, form, filePath) => {
   )
 }
 
-const createUploadAdapter = config => {
-  const { bucket, host, port, protocol } = config
+const createToken = ({ secretKey }, { dir, expireTime }) => {
+  const payload = Buffer.from(
+    JSON.stringify({
+      dir,
+      expireTime: Date.now() + expireTime * 1000
+    })
+  )
+    .toString('base64')
+    .replace(/=/g, '')
 
-  const s3 = new S3({
-    credentials: {
-      accessKeyId: 'S3RVER',
-      secretAccessKey: 'S3RVER'
-    },
-    endpoint: `${protocol}://${host}:${port}`,
-    signatureVersion: 'v4',
-    sslEnabled: false,
-    s3ForcePathStyle: true
-  })
+  const signature = crypto
+    .createHmac('md5', secretKey)
+    .update(payload)
+    .digest('hex')
 
-  const pool = { config, s3, bucket }
+  return `${payload}*${signature}`
+}
 
+const createUploadAdapter = pool => {
   return Object.freeze({
     createPresignedPut: createPresignedPut.bind(null, pool),
-    upload: upload.bind(null, pool),
     createPresignedPost: createPresignedPost.bind(null, pool),
-    uploadFormData: uploadFormData.bind(null, pool)
+    createToken: createToken.bind(null, pool),
+    upload: upload,
+    uploadFormData: uploadFormData
   })
 }
 

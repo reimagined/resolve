@@ -3,7 +3,7 @@ import path from 'path'
 const upload = async (req, res) => {
   const adapter = req.resolve.uploader
   try {
-    const { uploadUrl, uploadId } = await adapter.getSignedPut({ dir: '' })
+    const { uploadUrl, uploadId } = await adapter.getSignedPut('logo')
 
     const filePath = path.join(__dirname, 'test.png')
 

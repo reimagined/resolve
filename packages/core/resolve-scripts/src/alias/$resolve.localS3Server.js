@@ -9,29 +9,25 @@ export default ({ resolveConfig, isClient }) => {
 
   return `
     import '$resolve.guardOnlyServer'
-    import s3Server from 's3rver'
+    import startS3Server from 'resolve-runtime/lib/local/start-s3-server.js'
 
     if(module.parent != null) {
       setImmediate(() => process.exit(1))
-      throw new Error('Event broker should be launched as independent process')
+      throw new Error('S3 server should be launched as independent process')
     }
 
     (async () => {
       try {
-        new s3Server({
+        const options = {
+          directory: '${resolveConfig.uploadAdapter.options.directory}',
+          bucket: '${resolveConfig.uploadAdapter.options.bucket}',
           port: ${resolveConfig.uploadAdapter.options.port},
-          hostname: '${resolveConfig.uploadAdapter.options.host}',
-          silent: true,
-          directory: './${resolveConfig.uploadAdapter.options.directory}',
-          configureBuckets: [{ name: '${resolveConfig.uploadAdapter.options.bucket}' }],
-          allowMismatchedSignatures: true
-        }).run(error => {
-          if (error) {
-            throw error
-          }
-        })
+          secretKey: '${resolveConfig.uploadAdapter.options.secretKey}'
+        }
+        
+        startS3Server(options)
       } catch(error) {
-        console.error('Event broker has run into an error:', error)
+        console.error('S3 server has run into an error:', error)
 
         process.exit(1)
       }

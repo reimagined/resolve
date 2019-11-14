@@ -6,13 +6,18 @@ import UploaderContext from '../context'
 
 class App extends React.Component {
   state = {
-    text: ''
+    text: '',
+    token: ''
   }
 
   handleButton = () => {
     fetch('http://localhost:3000/api/upload', { mode: 'no-cors' })
       .then(response => response.text())
       .then(result => this.setState({ text: result }))
+
+    fetch('http://localhost:3000/api/createToken', { mode: 'no-cors' })
+      .then(response => response.text())
+      .then(result => this.setState({ token: result }))
   }
 
   render() {
@@ -68,10 +73,10 @@ class App extends React.Component {
         </div>
         <h2 align="center">
           <UploaderContext.Consumer>
-            {({ port, host, protocol, bucket }) =>
+            {({ port, host, protocol }) =>
               this.state.text !== '' ? (
                 <a
-                  href={`${protocol}://${host}:${port}/${bucket}/${this.state.text}`}
+                  href={`${protocol}://${host}:${port}/logo/${this.state.text}.png?token=${this.state.token}`}
                 >
                   {this.state.text}
                 </a>

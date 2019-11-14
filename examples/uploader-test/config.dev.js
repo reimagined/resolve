@@ -16,7 +16,8 @@ const devConfig = {
       host: 'localhost',
       port: 3001,
       directory: 'data',
-      bucket: 'files'
+      bucket: 'files',
+      secretKey: 'key'
     }
   }
 }

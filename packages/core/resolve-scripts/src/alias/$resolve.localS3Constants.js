@@ -2,13 +2,12 @@ export default ({ resolveConfig }) => {
   const exports = []
 
   if (resolveConfig.hasOwnProperty('uploadAdapter')) {
-    const { protocol, host, port, bucket } = resolveConfig.uploadAdapter.options
+    const { protocol, host, port } = resolveConfig.uploadAdapter.options
     exports.push(
       `const localS3Constants = {
         protocol: '${protocol}',
         host: '${host}',
-        port: ${port},
-        bucket: '${bucket}'
+        port: ${port}
       }`,
       ``,
       `export default localS3Constants`
