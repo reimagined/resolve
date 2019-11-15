@@ -51,7 +51,7 @@ const saveEvent = async (
         ${escapeId('payload')},
         ${escapeId('eventSize')}
       ) VALUES (
-        (SELECT MAX(${escapeId('lastEventId')}) + 1
+        (SELECT MAX(COALESCE(${escapeId('lastEventId')}, 0)) + 1
         FROM ${escapeId('last_event')}),
         (SELECT GREATEST(
           CAST(extract(epoch from now()) * 1000 AS ${LONG_NUMBER_SQL_TYPE}),
