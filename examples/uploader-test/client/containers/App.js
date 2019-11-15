@@ -68,7 +68,7 @@ class App extends React.Component {
             </Navbar.Collapse>
           </Navbar>
         </div>
-        <div style={{ 'textAlign': 'center' }}>
+        <div style={{ textAlign: 'center' }}>
           <Button onClick={this.handleButton}>Upload</Button>
         </div>
         <h2 align="center">

@@ -219,6 +219,7 @@ module.exports = {
           'lockfile',
           'lstat',
           'lte',
+          'md5',
           'Mergeable',
           'metadata',
           'middleware',
