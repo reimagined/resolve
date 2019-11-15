@@ -40,7 +40,7 @@ class App extends React.Component {
     return (
       <div>
         <div>
-          <Helmet title="reSolve Hello World" link={links} meta={[meta]} />
+          <Helmet title="reSolve uploader test" link={links} meta={[meta]} />
           <Navbar>
             <Navbar.Text>
               <Image src={`${this.props.staticPath}/resolve-logo.png`} />{' '}
@@ -68,7 +68,7 @@ class App extends React.Component {
             </Navbar.Collapse>
           </Navbar>
         </div>
-        <div style={{ 'text-align': 'center' }}>
+        <div style={{ 'textAlign': 'center' }}>
           <Button onClick={this.handleButton}>Upload</Button>
         </div>
         <h2 align="center">
