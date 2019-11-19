@@ -1,6 +1,6 @@
 {
   "name": "resolve-upload-cloud",
-  "version": "0.20.28",
+  "version": "0.20.29",
   "description": "",
   "engines": {
     "node": ">=10.9"
@@ -26,8 +26,6 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/upload-adapters/resolve-upload-cloud#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@babel/node": "^7.0.0",
-    "s3rver": "^3.5.0",
     "aws-sdk": "^2.554.0",
     "request": "^2.88.0",
     "uuid": "^3.3.3",
