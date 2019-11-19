@@ -1,6 +1,6 @@
 {
   "name": "uploader-test",
-  "version": "0.20.28",
+  "version": "0.20.29",
   "description": "used as a template for new reSolve applications",
   "private": true,
   "scripts": {

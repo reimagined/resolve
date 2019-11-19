@@ -1,7 +1,7 @@
-const getFormUpload = async (req, res) => {
+const getFormUpload = ({ dir }) => async (req, res) => {
   const adapter = req.resolve.uploader
   try {
-    const post = await adapter.getSignedPost('logo')
+    const post = await adapter.getSignedPost(dir)
 
     res.json(post)
   } catch (error) {

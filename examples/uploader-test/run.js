@@ -24,7 +24,10 @@ void (async () => {
   try {
     switch (launchMode) {
       case 'dev': {
-        const moduleUploader = resolveModuleUploader()
+        const moduleUploader = resolveModuleUploader({
+          dir: 'logo',
+          expireTime: 3600
+        })
         const resolveConfig = merge(
           defaultResolveConfig,
           appConfig,

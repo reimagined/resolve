@@ -1,14 +1,20 @@
-const createModule = () => {
+const createModule = options => {
   const config = {
     apiHandlers: [
       {
         path: '/api/uploader/getFormUpload',
-        controller: 'resolve-module-uploader/lib/api-handlers/getFormUpload.js',
+        controller: {
+          module: 'resolve-module-uploader/lib/api-handlers/getFormUpload.js',
+          options
+        },
         method: 'GET'
       },
       {
         path: '/api/uploader/createToken',
-        controller: 'resolve-module-uploader/lib/api-handlers/createToken.js',
+        controller: {
+          module: 'resolve-module-uploader/lib/api-handlers/createToken.js',
+          options
+        },
         method: 'GET'
       }
     ]

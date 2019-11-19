@@ -1,7 +1,7 @@
-const createToken = async (req, res) => {
+const createToken = ({ dir, expireTime }) => async (req, res) => {
   const adapter = req.resolve.uploader
   try {
-    const token = await adapter.createToken({ dir: 'logo', expireTime: 3600 })
+    const token = await adapter.createToken({ dir, expireTime })
 
     res.end(token)
   } catch (error) {
