@@ -124,8 +124,8 @@ const connectViewModelSaga = function*(sagaArgs, action) {
         (action.type === LOAD_VIEWMODEL_STATE_SUCCESS ||
           action.type === LOAD_VIEWMODEL_STATE_FAILURE) &&
         action.viewModelName === viewModelName &&
-          `${getHash(action.aggregateIds)}${getHash(action.aggregateArgs)}` ===
-            connectionId
+        `${getHash(action.aggregateIds)}${getHash(action.aggregateArgs)}` ===
+          connectionId
     )
 
     if (loadViewModelStateResultAction.type === LOAD_VIEWMODEL_STATE_SUCCESS) {

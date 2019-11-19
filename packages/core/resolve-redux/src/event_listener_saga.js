@@ -14,8 +14,8 @@ const eventListenerSaga = function*(
       action =>
         action.type === DISPATCH_TOPIC_MESSAGE &&
         eventTypes.indexOf(action.message.type) > -1 &&
-          (connectAction.aggregateIds === '*' ||
-            connectAction.aggregateIds.indexOf(action.message.aggregateId) > -1)
+        (connectAction.aggregateIds === '*' ||
+          connectAction.aggregateIds.indexOf(action.message.aggregateId) > -1)
     )
 
     const {
