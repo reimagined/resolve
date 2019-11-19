@@ -17,6 +17,7 @@ exports[`works correctly 1`] = `
   import viewModels from '$resolve.viewModels'
   import sagas from '$resolve.sagas'
   import schedulers from '$resolve.schedulers'
+  import uploadAdapter from '$resolve.uploadAdapter'
 
   export default {
     assemblies: {
@@ -24,7 +25,8 @@ exports[`works correctly 1`] = `
       storageAdapter,
       snapshotAdapter,
       readModelConnectors,
-      serverImports
+      serverImports,
+      uploadAdapter
     },
     constants,
     domain: {

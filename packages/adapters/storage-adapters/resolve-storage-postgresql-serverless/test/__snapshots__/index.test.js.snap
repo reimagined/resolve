@@ -325,8 +325,8 @@ Array [
         \\"payload\\",
         \\"eventSize\\"
       ) VALUES (
-        (SELECT MAX(\\"lastEventId\\") + 1
-        FROM \\"last_event\\"),
+        COALESCE((SELECT MAX(\\"lastEventId\\") + 1
+        FROM \\"last_event\\"), 0),
         (SELECT GREATEST(
           CAST(extract(epoch from now()) * 1000 AS BIGINT),
           MAX(\\"lastTimestamp\\")
@@ -398,8 +398,8 @@ Array [
         \\"payload\\",
         \\"eventSize\\"
       ) VALUES (
-        (SELECT MAX(\\"lastEventId\\") + 1
-        FROM \\"last_event\\"),
+        COALESCE((SELECT MAX(\\"lastEventId\\") + 1
+        FROM \\"last_event\\"), 0),
         (SELECT GREATEST(
           CAST(extract(epoch from now()) * 1000 AS BIGINT),
           MAX(\\"lastTimestamp\\")
