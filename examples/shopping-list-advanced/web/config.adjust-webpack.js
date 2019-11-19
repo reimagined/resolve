@@ -5,7 +5,7 @@ const adjustWebpackConfigs = webpackConfigs => {
       Object.keys(entry).find(entry => entry.endsWith('/ssr.js')) != null &&
       target === 'node'
     ) {
-      webpackConfig.externals.length = 0
+      webpackConfig.externals = []
     }
   }
 }

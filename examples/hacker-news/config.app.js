@@ -55,6 +55,14 @@ const appConfig = {
         moduleType: 'commonjs',
         target: 'node'
       }
+    ],
+    [
+      'client/ssr.js',
+      {
+        outputFile: 'common/cloud-entry/ssr.js',
+        moduleType: 'commonjs',
+        target: 'node'
+      }
     ]
   ]
 }

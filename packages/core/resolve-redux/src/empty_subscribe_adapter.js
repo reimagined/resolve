@@ -6,4 +6,6 @@ const emptySubscribeAdapter = () => ({
   isConnected: () => true
 })
 
+emptySubscribeAdapter.adapterName = 'empty'
+
 export default emptySubscribeAdapter

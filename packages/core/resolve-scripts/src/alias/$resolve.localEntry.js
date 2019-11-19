@@ -4,6 +4,8 @@ export default () => `
   import serverAssemblies from '$resolve.serverAssemblies'
   import eventBroker from '$resolve.eventBroker'
   import localEntry from 'resolve-runtime/lib/local'
+
+  export { default as entryPointMarker } from 'resolve-runtime/lib/common/utils/entry-point-marker'
   
   Object.assign(serverAssemblies.assemblies, {
     eventBroker,

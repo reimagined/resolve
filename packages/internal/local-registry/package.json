@@ -1,10 +1,10 @@
 {
   "name": "@internal/local-registry",
   "private": true,
-  "version": "0.20.28",
+  "version": "0.20.29",
   "bin": "./bin/index.js",
   "dependencies": {
-    "@internal/helpers": "0.20.28"
+    "@internal/helpers": "0.20.29"
   },
   "scripts": {
     "start": "node ./bin/index.js",
