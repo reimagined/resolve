@@ -8,6 +8,7 @@ const getDistributionId = arn => {
   const match = pattern.exec(arn)
   return match[1]
 }
+/* eslint-disable no-console */
 
 const getCloudFrontOriginAccessIdentity = async ({
   accessKeyId,
@@ -219,6 +220,7 @@ const ensureDistribution = async ({
       CloudFrontDefaultCertificate: false,
       ACMCertificateArn: domainCertificateArn,
       SSLSupportMethod: 'sni-only',
+      // eslint-disable-next-line spellcheck/spell-checker
       MinimumProtocolVersion: 'TLSv1.1_2016'
     },
     DefaultCacheBehavior: {
@@ -368,5 +370,5 @@ const createCloudFrontDistribution = async (
     tags
   })
 }
-
+/* eslint-enable no-console */
 export default createCloudFrontDistribution

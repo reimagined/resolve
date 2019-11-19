@@ -1,21 +1,33 @@
 import React from 'react'
 import { Navbar, Image, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
+import FileUploadProgress from 'react-fileupload-progress'
 
 import UploaderContext from '../context'
 
 class App extends React.Component {
   state = {
-    text: '',
-    token: ''
+    uploadId: '',
+    token: '',
+    uploadUrl: '',
+    isHidden: true,
+    isLoaded: false
   }
 
-  handleButton = () => {
-    fetch('http://localhost:3000/api/upload', { mode: 'no-cors' })
-      .then(response => response.text())
-      .then(result => this.setState({ text: result }))
+  handleGetUrl = () => {
+    fetch('http://localhost:3000/api/uploader/getFormUpload', {
+      mode: 'no-cors'
+    })
+      .then(response => response.json())
+      .then(result =>
+        this.setState({
+          uploadUrl: result.form.url,
+          uploadId: result.uploadId,
+          isHidden: false
+        })
+      )
 
-    fetch('http://localhost:3000/api/createToken', { mode: 'no-cors' })
+    fetch('http://localhost:3000/api/uploader/createToken', { mode: 'no-cors' })
       .then(response => response.text())
       .then(result => this.setState({ token: result }))
   }
@@ -68,24 +80,39 @@ class App extends React.Component {
             </Navbar.Collapse>
           </Navbar>
         </div>
-        <div style={{ textAlign: 'center' }}>
-          <Button onClick={this.handleButton}>Upload</Button>
+
+        <div style={{ marginLeft: '2%' }}>
+          <Button style={{ marginBottom: '10px' }} onClick={this.handleGetUrl}>
+            Upload file
+          </Button>
+
+          <div hidden={this.state.isHidden}>
+            <FileUploadProgress
+              key="file"
+              url={`${this.state.uploadUrl}.png`}
+              method="post"
+              onLoad={() => {
+                this.setState({ isLoaded: true })
+              }}
+            />
+
+            <h2>
+              <UploaderContext.Consumer>
+                {({ port, host, protocol }) =>
+                  this.state.isLoaded ? (
+                    <a
+                      href={`${protocol}://${host}:${port}/logo/${this.state.uploadId}.png?token=${this.state.token}`}
+                    >
+                      {this.state.uploadId}
+                    </a>
+                  ) : (
+                    ''
+                  )
+                }
+              </UploaderContext.Consumer>
+            </h2>
+          </div>
         </div>
-        <h2 align="center">
-          <UploaderContext.Consumer>
-            {({ port, host, protocol }) =>
-              this.state.text !== '' ? (
-                <a
-                  href={`${protocol}://${host}:${port}/logo/${this.state.text}.png?token=${this.state.token}`}
-                >
-                  {this.state.text}
-                </a>
-              ) : (
-                ''
-              )
-            }
-          </UploaderContext.Consumer>
-        </h2>
       </div>
     )
   }

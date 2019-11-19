@@ -3,10 +3,17 @@ import multer from 'multer'
 import bodyParser from 'body-parser'
 import fs from 'fs'
 import crypto from 'crypto'
+import cors from 'cors'
 
 const startS3Server = ({ directory, bucket, port, secretKey }) => {
   const path = `${directory}/${bucket}`
   const app = express()
+  app.use(
+    cors({
+      origin: '*',
+      optionsSuccessStatus: 200
+    })
+  )
   app.use((req, res, next) => {
     if (req.method === 'GET') {
       if (req.query.token == null || req.query.token === '') {
@@ -67,6 +74,10 @@ const startS3Server = ({ directory, bucket, port, secretKey }) => {
   const upload = multer({ storage })
 
   app.post('/upload', upload.single('file'))
+
+  app.use((req, res) => {
+    res.end()
+  })
 
   const bodyParserMiddleware = bodyParser.raw({
     type: () => true,

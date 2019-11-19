@@ -1,18 +1,19 @@
 {
-  "name": "resolve-upload-local",
+  "name": "resolve-module-uploader",
   "version": "0.20.28",
-  "description": "",
+  "description": "A reSolve module that adds uploader commands to an application.",
   "engines": {
     "node": ">=10.9"
   },
   "main": "./lib/index.js",
+  "bin": "./lib/cli.js",
   "module": "./es/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "test": "jest --config=../../../../jest.config.js --verbose",
-    "testw": "jest --config=../../../../jest.config.js --watchAll"
+    "test": "jest --config=../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../jest.config.js --watchAll"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
@@ -23,13 +24,9 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/upload-adapters/resolve-upload-local#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
-    "@babel/node": "^7.0.0",
-    "request": "^2.88.0",
-    "uuid": "^3.3.3",
-    "crypto": "^1.0.1"
+    "@babel/runtime": "^7.0.0"
   },
   "devDependencies": {
     "jest": "24.1.0"

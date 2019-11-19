@@ -16,6 +16,7 @@ import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
+import resolveModuleUploader from 'resolve-module-uploader'
 
 const launchMode = process.argv[2]
 
@@ -23,7 +24,13 @@ void (async () => {
   try {
     switch (launchMode) {
       case 'dev': {
-        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+        const moduleUploader = resolveModuleUploader()
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          devConfig,
+          moduleUploader
+        )
 
         await reset(resolveConfig, {
           dropEventStore: false,

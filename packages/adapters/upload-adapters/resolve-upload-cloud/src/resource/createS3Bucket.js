@@ -1,5 +1,7 @@
 import S3 from 'aws-sdk/clients/s3'
 
+/* eslint-disable no-console */
+
 const existS3Bucket = async ({
   accessKeyId,
   secretAccessKey,
@@ -128,5 +130,6 @@ const createS3Bucket = async ({
     })
     .promise()
 }
+/* eslint-enable no-console */
 
 export default createS3Bucket
