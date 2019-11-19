@@ -4,15 +4,12 @@ const destroy = async (pool, options) => {
   const { connect, disconnect, escapeId, escape } = pool
   const admin = {}
 
-  await connect(
-    admin,
-    {
-      awsSecretStoreArn: options.awsSecretStoreAdminArn,
-      dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
-      databaseName: options.databaseName,
-      region: options.region
-    }
-  )
+  await connect(admin, {
+    awsSecretStoreArn: options.awsSecretStoreAdminArn,
+    dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
+    databaseName: options.databaseName,
+    region: options.region
+  })
 
   let alterSchemaError = null
   let dropSchemaError = null

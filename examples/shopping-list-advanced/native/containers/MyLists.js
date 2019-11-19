@@ -89,9 +89,6 @@ export const mapDispatchToProps = dispatch =>
 
 export default requiredAuth(
   connectReadModel(mapStateToOptions)(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(MyLists)
+    connect(mapStateToProps, mapDispatchToProps)(MyLists)
   )
 )

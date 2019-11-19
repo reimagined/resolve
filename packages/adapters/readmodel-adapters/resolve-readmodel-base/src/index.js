@@ -26,10 +26,7 @@ const createAdapter = (implementation, options) => {
 
     const adapterPool = Object.create(baseAdapterPool)
     try {
-      await connect(
-        adapterPool,
-        options
-      )
+      await connect(adapterPool, options)
 
       const store = Object.keys(storeApi).reduce((acc, key) => {
         acc[key] = storeApi[key].bind(null, adapterPool, readModelName)

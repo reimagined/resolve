@@ -19,17 +19,14 @@ const create = async (pool, options) => {
       region: options.region
     }
   }
-  await connect(
-    admin,
-    {
-      RDSDataService,
-      escapeId,
-      escape,
-      fullJitter,
-      executeStatement,
-      coercer
-    }
-  )
+  await connect(admin, {
+    RDSDataService,
+    escapeId,
+    escape,
+    fullJitter,
+    executeStatement,
+    coercer
+  })
 
   await executeStatement(
     admin,

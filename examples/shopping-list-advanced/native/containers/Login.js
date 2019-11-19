@@ -122,9 +122,4 @@ export class Login extends React.PureComponent {
 export const mapDispatchToProps = dispatch =>
   bindActionCreators(actions, dispatch)
 
-export default requiredNoAuth(
-  connect(
-    null,
-    mapDispatchToProps
-  )(Login)
-)
+export default requiredNoAuth(connect(null, mapDispatchToProps)(Login))

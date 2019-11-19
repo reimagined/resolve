@@ -43,8 +43,5 @@ export const mapDispatchToProps = dispatch =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MyLists)
+  connect(mapStateToProps, mapDispatchToProps)(MyLists)
 )

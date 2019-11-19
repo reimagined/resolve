@@ -106,8 +106,5 @@ export const mapDispatchToProps = dispatch =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectResolveAdvanced(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Submit)
+  connect(mapStateToProps, mapDispatchToProps)(Submit)
 )

@@ -13,6 +13,7 @@ export default () => `
   import viewModels from '$resolve.viewModels'
   import sagas from '$resolve.sagas'
   import schedulers from '$resolve.schedulers'
+  import uploadAdapter from '$resolve.uploadAdapter'
 
   export default {
     assemblies: {
@@ -20,7 +21,8 @@ export default () => `
       storageAdapter,
       snapshotAdapter,
       readModelConnectors,
-      serverImports
+      serverImports,
+      uploadAdapter
     },
     constants,
     domain: {
