@@ -88,7 +88,4 @@ export const mapStateToProps = state => {
 export const mapDispatchToProps = dispatch =>
   bindActionCreators(actions, dispatch)
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SideBar)
+export default connect(mapStateToProps, mapDispatchToProps)(SideBar)

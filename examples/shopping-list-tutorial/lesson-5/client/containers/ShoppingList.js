@@ -104,8 +104,5 @@ export const mapDispatchToProps = dispatch =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToOptions)(
-  connect(
-    null,
-    mapDispatchToProps
-  )(ShoppingList)
+  connect(null, mapDispatchToProps)(ShoppingList)
 )

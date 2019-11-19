@@ -80,8 +80,5 @@ export const mapDispatchToProps = (
   )
 
 export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(CommentsTreeRenderless)
+  connect(mapStateToProps, mapDispatchToProps)(CommentsTreeRenderless)
 )

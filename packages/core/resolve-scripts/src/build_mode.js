@@ -42,7 +42,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
       copyEnvToDist(resolveConfig.distDir)
 
       const hasNoErrors = stats.reduce(
-        (acc, val) => acc && (val != null && !val.hasErrors()),
+        (acc, val) => acc && val != null && !val.hasErrors(),
         true
       )
 

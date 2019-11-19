@@ -21,17 +21,14 @@ const destroy = async (pool, options) => {
       region: options.region
     }
   }
-  await connect(
-    admin,
-    {
-      RDSDataService,
-      escapeId,
-      escape,
-      fullJitter,
-      executeStatement,
-      coercer
-    }
-  )
+  await connect(admin, {
+    RDSDataService,
+    escapeId,
+    escape,
+    fullJitter,
+    executeStatement,
+    coercer
+  })
 
   let alterSchemaError = null
   let dropSchemaError = null

@@ -194,8 +194,5 @@ export const mapDispatchToProps = dispatch =>
   )
 
 export default connectViewModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ShoppingList)
+  connect(mapStateToProps, mapDispatchToProps)(ShoppingList)
 )

@@ -48,10 +48,7 @@ const createStore = ({
     ...middlewares
   )
 
-  const composedEnhancers = compose(
-    appliedMiddlewares,
-    ...enhancers
-  )
+  const composedEnhancers = compose(appliedMiddlewares, ...enhancers)
 
   const store = reduxCreateStore(
     combinedReducers,

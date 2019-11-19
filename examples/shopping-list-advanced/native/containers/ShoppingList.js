@@ -128,9 +128,6 @@ export const mapDispatchToProps = dispatch =>
 
 export default requiredAuth(
   connectViewModel(mapStateToOptions)(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(ShoppingList)
+    connect(mapStateToProps, mapDispatchToProps)(ShoppingList)
   )
 )
