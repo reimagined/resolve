@@ -1,0 +1,51 @@
+{
+  "name": "uploader-test",
+  "version": "0.20.29",
+  "description": "used as a template for new reSolve applications",
+  "private": true,
+  "scripts": {
+    "build": "babel-node ./run.js build",
+    "cloud": "babel-node ./run.js cloud",
+    "dev": "babel-node ./run.js dev",
+    "start": "babel-node ./run.js start",
+    "test": "echo || exit 0",
+    "test:functional": "echo || exit 0",
+    "import-event-store": "babel-node ./run.js import-event-store",
+    "export-event-store": "babel-node ./run.js export-event-store"
+  },
+  "dependencies": {
+    "@babel/node": "7.0.0",
+    "@babel/polyfill": "7.0.0",
+    "react": "16.7.0",
+    "react-dom": "16.7.0",
+    "react-bootstrap": "0.32.1",
+    "react-helmet": "5.2.0",
+    "react-fileupload-progress": "^0.5.0",
+    "redux": "4.0.1",
+    "resolve-redux": "0.20.29",
+    "resolve-scripts": "0.20.29",
+    "resolve-storage-postgresql-serverless": "0.20.29",
+    "resolve-storage-lite": "0.20.29",
+    "resolve-readmodel-lite": "0.20.29",
+    "resolve-readmodel-mysql": "0.20.29",
+    "resolve-subscribe-mqtt": "0.20.29",
+    "resolve-subscribe-socket.io": "0.20.29",
+    "redux-devtools-extension": "2.13.7",
+    "webpack": "4.41.2",
+    "resolve-module-uploader": "0.20.29"
+  },
+  "devDependencies": {
+    "@babel/core": "7.0.0",
+    "@babel/plugin-proposal-class-properties": "7.0.0",
+    "@babel/plugin-proposal-export-default-from": "7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "7.0.0",
+    "@babel/plugin-transform-runtime": "7.0.0",
+    "@babel/preset-env": "7.0.0",
+    "@babel/preset-react": "7.0.0",
+    "babel-jest": "24.1.0",
+    "jest": "24.1.0",
+    "react-test-renderer": "16.7.0",
+    "testcafe": "0.23.3",
+    "resolve-cloud": "*"
+  }
+}
