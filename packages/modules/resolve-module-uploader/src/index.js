@@ -17,6 +17,15 @@ const createModule = options => {
         },
         method: 'GET'
       }
+    ],
+    aggregates: [
+      {
+        name: 'Uploader',
+        commands: {
+          module: 'resolve-module-uploader/lib/aggregates/uploader.commands.js',
+          options
+        }
+      }
     ]
   }
 
