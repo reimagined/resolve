@@ -1,7 +1,7 @@
 {
   "name": "@internal/helpers",
   "private": true,
-  "version": "0.21.0-alpha.11",
+  "version": "0.21.0-alpha.12",
   "bin": "./bin/index.js",
   "main": "./index.js",
   "dependencies": {

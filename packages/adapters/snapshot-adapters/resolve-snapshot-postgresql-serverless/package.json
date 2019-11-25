@@ -1,6 +1,6 @@
 {
   "name": "resolve-snapshot-postgresql-serverless",
-  "version": "0.21.0-alpha.11",
+  "version": "0.21.0-alpha.12",
   "description": "This package serves as an adapter for snapshots using postgres serverless.",
   "engines": {
     "node": ">=10.9"

@@ -1,6 +1,6 @@
 {
   "name": "image-gallery",
-  "version": "0.21.0-alpha.11",
+  "version": "0.21.0-alpha.12",
   "description": "used as a template for new reSolve applications",
   "private": true,
   "scripts": {
@@ -22,17 +22,17 @@
     "react-helmet": "5.2.0",
     "react-fileupload-progress": "^0.5.0",
     "redux": "4.0.1",
-    "resolve-redux": "0.21.0-alpha.11",
-    "resolve-scripts": "0.21.0-alpha.11",
-    "resolve-storage-postgresql-serverless": "0.21.0-alpha.11",
-    "resolve-storage-lite": "0.21.0-alpha.11",
-    "resolve-readmodel-lite": "0.21.0-alpha.11",
-    "resolve-readmodel-mysql": "0.21.0-alpha.11",
-    "resolve-subscribe-mqtt": "0.21.0-alpha.11",
-    "resolve-subscribe-socket.io": "0.21.0-alpha.11",
+    "resolve-redux": "0.21.0-alpha.12",
+    "resolve-scripts": "0.21.0-alpha.12",
+    "resolve-storage-postgresql-serverless": "0.21.0-alpha.12",
+    "resolve-storage-lite": "0.21.0-alpha.12",
+    "resolve-readmodel-lite": "0.21.0-alpha.12",
+    "resolve-readmodel-mysql": "0.21.0-alpha.12",
+    "resolve-subscribe-mqtt": "0.21.0-alpha.12",
+    "resolve-subscribe-socket.io": "0.21.0-alpha.12",
     "redux-devtools-extension": "2.13.7",
     "webpack": "4.41.2",
-    "resolve-module-uploader": "0.21.0-alpha.11"
+    "resolve-module-uploader": "0.21.0-alpha.12"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
