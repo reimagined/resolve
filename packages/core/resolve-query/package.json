@@ -1,6 +1,6 @@
 {
   "name": "resolve-query",
-  "version": "0.21.0-alpha.13",
+  "version": "0.21.0-alpha.14",
   "description": "Provides an interface used to create and querry read models and view models in a reSolve application.",
   "engines": {
     "node": ">=10.9"

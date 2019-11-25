@@ -1,6 +1,6 @@
 {
   "name": "resolve-redux",
-  "version": "0.21.0-alpha.13",
+  "version": "0.21.0-alpha.14",
   "description": "Provides tools that you can use to connect a React/Redux frontend to reSolve.",
   "engines": {
     "node": ">=10.9"
