@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-advanced/web",
-  "version": "0.21.0-alpha.9",
+  "version": "0.21.0-alpha.10",
   "private": true,
   "scripts": {
     "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose",
@@ -26,13 +26,13 @@
     "react-router": "4.3.1",
     "react-router-dom": "4.3.1",
     "react-router-redux": "5.0.0-alpha.9",
-    "@shopping-list-advanced/ui": "0.21.0-alpha.9",
-    "resolve-module-auth": "0.21.0-alpha.9",
-    "resolve-readmodel-lite": "0.21.0-alpha.9",
-    "resolve-storage-postgresql-serverless": "0.21.0-alpha.9",
-    "resolve-scripts": "0.21.0-alpha.9",
-    "resolve-redux": "0.21.0-alpha.9",
-    "resolve-runtime": "0.21.0-alpha.9",
+    "@shopping-list-advanced/ui": "0.21.0-alpha.10",
+    "resolve-module-auth": "0.21.0-alpha.10",
+    "resolve-readmodel-lite": "0.21.0-alpha.10",
+    "resolve-storage-postgresql-serverless": "0.21.0-alpha.10",
+    "resolve-scripts": "0.21.0-alpha.10",
+    "resolve-redux": "0.21.0-alpha.10",
+    "resolve-runtime": "0.21.0-alpha.10",
     "styled-components": "4.4.1"
   },
   "devDependencies": {
@@ -58,6 +58,6 @@
     "remotedev-server": "0.2.7",
     "redux-devtools-extension": "2.13.7",
     "resolve-cloud": "*",
-    "resolve-module-admin": "0.21.0-alpha.9"
+    "resolve-module-admin": "0.21.0-alpha.10"
   }
 }
