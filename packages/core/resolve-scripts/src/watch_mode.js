@@ -57,6 +57,29 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     })
   }
 
+  let uploader = null
+  if (
+    resolveConfig.hasOwnProperty('uploadAdapter') &&
+    resolveConfig.uploadAdapter.hasOwnProperty('options') &&
+    resolveConfig.uploadAdapter.options.hasOwnProperty('launchServer') &&
+    resolveConfig.uploadAdapter.options.launchServer
+  ) {
+    const uploaderPath = path.resolve(
+      process.cwd(),
+      path.join(
+        resolveConfig.distDir,
+        './common/local-entry/local-s3-server.js'
+      )
+    )
+
+    uploader = processRegister(['node', uploaderPath], {
+      cwd: process.cwd(),
+      maxRestarts: 0,
+      kill: 5000,
+      stdio: 'inherit'
+    })
+  }
+
   process.env.RESOLVE_SERVER_FIRST_START = 'true'
   process.env.RESOLVE_SERVER_OPEN_BROWSER = 'true'
 
@@ -111,6 +134,9 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
           } else {
             if (resolveConfig.eventBroker.launchBroker) {
               broker.start()
+            }
+            if (uploader != null) {
+              uploader.start()
             }
             server.start()
 

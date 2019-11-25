@@ -3,27 +3,21 @@ import Url from 'url'
 
 import getRootBasedUrl from './get-root-based-url'
 
-const log = debugLevels('resolve:resolve-runtime:get-static-based-path')
+const log = debugLevels('resolve:resolve-runtime:getStaticBasedPath')
 
-export const isString = value => value != null && value.constructor === String
+const validate = {
+  nonEmptyString: (value, name) => {
+    if (!(value != null && value.constructor === String)) {
+      log.warn('Value is not a string', value)
+      throw new Error(`${name} must be a string`)
+    }
 
-export const string = (value, name) => {
-  if (!isString(value)) {
-    log.warn('Value is not a string', value)
-    throw new Error(`${name} must be a string`)
+    if (value === '') {
+      log.warn('Value is not empty string', value)
+      throw new Error(`${name} must be a non-empty string`)
+    }
   }
 }
-
-export const nonEmptyString = (value, name) => {
-  string(value, name)
-
-  if (value === '') {
-    log.warn('Value is not empty string', value)
-    throw new Error(`${name} must be a non-empty string`)
-  }
-}
-
-const validate = { nonEmptyString }
 
 const getStaticBasedPath = (rootPath, staticPath, filename) => {
   validate.nonEmptyString(staticPath, 'Static path')

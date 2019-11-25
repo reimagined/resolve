@@ -5,12 +5,15 @@
   "scripts": {
     "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose",
     "import-event-store": "babel-node ./run.js import-event-store",
-    "export-event-store": "babel-node ./run.js export-event-store"
+    "export-event-store": "babel-node ./run.js export-event-store",
+    "resolve-module-admin": "resolve-module-admin"
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
-    "@babel/polyfill": "^7.0.0",
+    "@babel/runtime": "7.0.0",
+    "@babel/polyfill": "7.0.0",
     "jsonwebtoken": "8.3.0",
+    "express": "4.17.1",
+    "history": "4.10.1",
     "passport-local": "1.0.0",
     "uuid": "3.3.2",
     "react": "16.5.0",
@@ -28,21 +31,23 @@
     "resolve-readmodel-lite": "0.20.29",
     "resolve-storage-postgresql-serverless": "0.20.29",
     "resolve-scripts": "0.20.29",
-    "resolve-redux": "0.20.29"
+    "resolve-redux": "0.20.29",
+    "resolve-runtime": "0.20.29",
+    "styled-components": "4.4.1"
   },
   "devDependencies": {
     "babel-jest": "24.1.0",
     "jest": "24.1.0",
-    "@babel/core": "^7.0.0",
-    "@babel/plugin-proposal-decorators": "^7.0.0",
-    "@babel/plugin-proposal-class-properties": "^7.0.0",
-    "@babel/plugin-proposal-export-default-from": "^7.0.0",
-    "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
-    "@babel/plugin-transform-runtime": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/preset-flow": "^7.0.0",
+    "@babel/core": "7.0.0",
+    "@babel/plugin-proposal-decorators": "7.0.0",
+    "@babel/plugin-proposal-class-properties": "7.0.0",
+    "@babel/plugin-proposal-export-default-from": "7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "7.0.0",
+    "@babel/plugin-transform-runtime": "7.0.0",
+    "@babel/preset-env": "7.0.0",
+    "@babel/preset-react": "7.0.0",
+    "@babel/preset-flow": "7.0.0",
     "my-local-ip": "1.0.0",
     "react-test-renderer": "16.5.0",
     "enzyme": "3.7.0",
@@ -52,6 +57,7 @@
     "opn": "5.4.0",
     "remotedev-server": "0.2.7",
     "redux-devtools-extension": "2.13.7",
-    "resolve-cloud": "*"
+    "resolve-cloud": "*",
+    "resolve-module-admin": "0.20.29"
   }
 }

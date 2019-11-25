@@ -5,7 +5,11 @@ import { Text, Container, List, ListItem, Content, Icon } from 'native-base'
 import { StyleSheet, Platform } from 'react-native'
 
 import { Logo } from '@shopping-list-advanced/ui'
-import { actions } from 'resolve-redux'
+
+import getNativeChunk from '../native-chunk'
+const {
+  resolveRedux: { actions }
+} = getNativeChunk()
 
 const styles = StyleSheet.create({
   content: {
@@ -84,7 +88,4 @@ export const mapStateToProps = state => {
 export const mapDispatchToProps = dispatch =>
   bindActionCreators(actions, dispatch)
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SideBar)
+export default connect(mapStateToProps, mapDispatchToProps)(SideBar)

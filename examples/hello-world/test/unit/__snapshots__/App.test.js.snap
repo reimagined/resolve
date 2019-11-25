@@ -16,8 +16,7 @@ exports[`renders correctly 1`] = `
             className=""
             src="/static/resolve-logo.png"
           />
-           
-          Hello World Example
+           Hello World Example
         </p>
         <div
           aria-expanded={null}

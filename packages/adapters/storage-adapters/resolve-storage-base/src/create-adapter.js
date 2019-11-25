@@ -1,6 +1,5 @@
 const createAdapter = (
   {
-    prepare,
     wrapMethod,
     wrapEventFilter,
     wrapSaveEvent,
@@ -11,14 +10,13 @@ const createAdapter = (
   },
   {
     connect,
-    init,
     loadEvents,
     getLatestEvent,
     saveEvent,
+    init,
     drop,
     dispose,
     saveEventOnly,
-    saveSequenceOnly,
     paginateEvents,
     isFrozen,
     freeze,
@@ -30,37 +28,29 @@ const createAdapter = (
   const config = { ...options }
   const pool = { config, disposed: false, validateEventFilter }
 
+  let connectPromiseResolve
+  const connectPromise = new Promise(resolve => {
+    connectPromiseResolve = resolve.bind(null, null)
+  }).then(connect.bind(null, pool, adapterSpecificArguments))
+
   Object.assign(pool, {
     saveEventOnly: wrapMethod(pool, saveEventOnly),
-    saveSequenceOnly: wrapMethod(pool, saveSequenceOnly),
     paginateEvents: wrapMethod(pool, paginateEvents),
     // eslint-disable-next-line no-new-func
-    waitConnectAndInit: wrapMethod(pool, Function()),
-    initOnly: wrapMethod(pool, init),
+    waitConnect: wrapMethod(pool, Function()),
     wrapMethod,
-    isFrozen: wrapMethod(pool, isFrozen)
+    isFrozen: wrapMethod(pool, isFrozen),
+    connectPromise,
+    connectPromiseResolve
   })
 
-  prepare(pool, connect, init, adapterSpecificArguments)
-
   const adapter = {
-    init: wrapMethod(
-      Object.create(pool, {
-        config: {
-          writable: true,
-          configurable: true,
-          value: Object.create(config, {
-            skipInit: { value: false }
-          })
-        }
-      }),
-      () => pool.initialPromiseResult
-    ),
     loadEvents: wrapMethod(pool, wrapEventFilter(loadEvents)),
     import: importStream.bind(null, pool),
     export: exportStream.bind(null, pool),
     getLatestEvent: wrapMethod(pool, getLatestEvent),
     saveEvent: wrapMethod(pool, wrapSaveEvent(saveEvent)),
+    init: wrapMethod(pool, init),
     drop: wrapMethod(pool, drop),
     dispose: wrapDispose(pool, dispose),
     isFrozen: wrapMethod(pool, isFrozen),

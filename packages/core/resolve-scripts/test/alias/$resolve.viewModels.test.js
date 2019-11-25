@@ -20,7 +20,7 @@ describe('base config works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -33,7 +33,7 @@ describe('base config works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -61,7 +61,7 @@ describe('base(v2) config works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -74,7 +74,7 @@ describe('base(v2) config works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -103,7 +103,7 @@ describe('config with serializeState/deserializeState works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -116,7 +116,7 @@ describe('config with serializeState/deserializeState works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -141,7 +141,7 @@ describe('config with validator works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -154,7 +154,7 @@ describe('config with validator works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()

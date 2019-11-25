@@ -2,6 +2,7 @@
 
 exports[`base config works correctly [server] 1`] = `
 "
+import '$resolve.guardOnlyServer'
 import storageAdapter_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testAdapter.js\\"
 const constructorBindFunction =
     (
@@ -33,6 +34,7 @@ export default storageAdapter
 exports[`config with process.env works correctly 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
+import '$resolve.guardOnlyServer'
 const constructorBindFunction =
     (
       constructorFunction,

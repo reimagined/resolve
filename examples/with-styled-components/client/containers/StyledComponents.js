@@ -21,6 +21,7 @@ export const StyledComponents = () => (
       <title>reSolve Styled Components Example</title>
     </Helmet>
     <Title>Hello World, this is my first styled component!</Title>
+    <Title>SSR works too!</Title>
   </Wrapper>
 )
 

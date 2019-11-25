@@ -13,10 +13,9 @@ const eventListenerSaga = function*(
     const { message: event } = yield take(
       action =>
         action.type === DISPATCH_TOPIC_MESSAGE &&
-        (eventTypes.indexOf(action.message.type) > -1 &&
-          (connectAction.aggregateIds === '*' ||
-            connectAction.aggregateIds.indexOf(action.message.aggregateId) >
-              -1))
+        eventTypes.indexOf(action.message.type) > -1 &&
+        (connectAction.aggregateIds === '*' ||
+          connectAction.aggregateIds.indexOf(action.message.aggregateId) > -1)
     )
 
     const {

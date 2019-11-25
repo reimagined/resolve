@@ -1,8 +1,0 @@
-{
-  "name": "@shopping-list-advanced/scripts",
-  "version": "0.20.29",
-  "private": true,
-  "scripts": {
-    "test": "echo || exit 0"
-  }
-}

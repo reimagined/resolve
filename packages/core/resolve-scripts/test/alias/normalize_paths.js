@@ -22,6 +22,8 @@ const normalizePaths = source => {
     result = result.replace(new RegExp(escapeRegExp('\\\\'), 'gi'), '/')
   }
 
+  result = result.replace(/[0-9a-f]{128}/gi, '<INVARIANT_HASH>')
+
   return result
 }
 

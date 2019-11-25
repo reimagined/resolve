@@ -3,7 +3,7 @@
   "version": "0.20.29",
   "description": "The reSolve framework's event broker for applications on a local machine.",
   "engines": {
-    "node": ">=8.10"
+    "node": ">=10.9"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
@@ -28,6 +28,7 @@
     "@babel/runtime": "^7.0.0",
     "cuid": "^2.1.6",
     "sqlite": "^3.0.2",
+    "resolve-debug-levels": "0.20.29",
     "resolve-zeromq": "0.20.29"
   },
   "devDependencies": {

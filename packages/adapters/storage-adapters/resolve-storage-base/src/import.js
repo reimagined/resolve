@@ -43,9 +43,9 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
   }
 
   try {
-    await this.pool.waitConnectAndInit()
+    await this.pool.waitConnect()
 
-    const { drop, initOnly, freeze, saveEventOnly } = this.pool
+    const { drop, init, freeze, saveEventOnly } = this.pool
 
     if (
       this.maintenanceMode === MAINTENANCE_MODE_AUTO &&
@@ -53,7 +53,7 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
     ) {
       this.isMaintenanceInProgress = true
       await drop()
-      await initOnly()
+      await init()
       await freeze()
     }
 
@@ -165,9 +165,8 @@ EventStream.prototype._final = async function(callback) {
   }
 
   try {
-    await this.pool.waitConnectAndInit()
-
-    const { unfreeze, saveEventOnly, saveSequenceOnly } = this.pool
+    await this.pool.waitConnect()
+    const { unfreeze, saveEventOnly } = this.pool
 
     if (this.vacantSize !== BUFFER_SIZE) {
       let stringifiedEvent = null
@@ -214,14 +213,7 @@ EventStream.prototype._final = async function(callback) {
       }
     }
 
-    const saveSequenceOnlyPromise =
-      typeof saveSequenceOnly === 'function'
-        ? saveSequenceOnly(this.eventId, this.timestamp).catch(
-            this.saveEventErrors.push.bind(this.saveEventErrors)
-          )
-        : Promise.resolve()
-
-    await Promise.all([...this.saveEventPromiseSet, saveSequenceOnlyPromise])
+    await Promise.all([...this.saveEventPromiseSet])
 
     if (
       this.maintenanceMode === MAINTENANCE_MODE_AUTO &&

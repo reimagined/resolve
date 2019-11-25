@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders correctly 1`] = `
-<Component
+<View
   style={
     Object {
       "flexDirection": "row",
@@ -9,7 +9,7 @@ exports[`renders correctly 1`] = `
     }
   }
 >
-  <Component
+  <Image
     source={1}
     style={
       Object {
@@ -18,7 +18,7 @@ exports[`renders correctly 1`] = `
       }
     }
   />
-  <Component
+  <Text
     style={
       Object {
         "fontSize": 27,
@@ -28,6 +28,6 @@ exports[`renders correctly 1`] = `
     }
   >
     Shopping List
-  </Component>
-</Component>
+  </Text>
+</View>
 `;

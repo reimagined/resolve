@@ -19,7 +19,7 @@ function EventStream({ pool, maintenanceMode, cursor, bufferSize }) {
   this.readerId = null
   this.bufferSize = bufferSize
   this.initPromise = this.pool
-    .waitConnectAndInit()
+    .waitConnect()
     .then(this.startProcessEvents.bind(this))
     .catch(error => (this.initError = error))
 

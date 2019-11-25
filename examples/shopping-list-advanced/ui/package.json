@@ -9,38 +9,43 @@
     "test:native": "jest --config=jest.config.native.js"
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
+    "@babel/runtime": "7.0.0",
     "react-bootstrap": "0.32.4"
   },
   "devDependencies": {
-    "react": "16.5.0",
-    "react-dom": "16.5.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.1.tar.gz",
+    "react": "16.8.3",
+    "react-dom": "16.8.3",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.1.tar.gz",
     "redux": "4.0.1",
-    "resolve-redux": "0.20.29",
     "jest": "24.1.0",
     "jest-expo": "31.0.0",
-    "expo": "31.0.5",
+    "expo": "33.0.0",
     "enzyme": "3.7.0",
     "enzyme-adapter-react-16": "1.7.0",
     "enzyme-to-json": "3.3.5",
+    "expo-react-native-adapter": "3.0.1",
     "babel-jest": "24.1.0",
     "babel-preset-expo": "5.0.0",
-    "@babel/core": "^7.0.0",
-    "@babel/plugin-proposal-decorators": "^7.0.0",
-    "@babel/plugin-proposal-class-properties": "^7.0.0",
-    "@babel/plugin-proposal-export-default-from": "^7.0.0",
-    "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
-    "@babel/plugin-transform-runtime": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/preset-flow": "^7.0.0"
+    "@babel/core": "7.0.0",
+    "@babel/plugin-proposal-decorators": "7.0.0",
+    "@babel/plugin-proposal-class-properties": "7.0.0",
+    "@babel/plugin-proposal-export-default-from": "7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "7.0.0",
+    "@babel/plugin-transform-runtime": "7.0.0",
+    "@babel/preset-env": "7.0.0",
+    "@babel/preset-react": "7.0.0",
+    "@babel/preset-flow": "7.0.0"
   },
   "peerDependencies": {
     "react": "*",
     "react-dom": "*",
-    "react-native": "*",
-    "resolve-redux": "*"
+    "react-native": "*"
+  },
+  "workspaces": {
+    "nohoist": [
+      "**/",
+      "**/**"
+    ]
   }
 }

@@ -9,7 +9,7 @@ test('should fail when imported from client', () => {
         alias({
           resolveConfig: {},
           isClient: true
-        }).code +
+        }) +
         '\r\n'
     )
   ).toThrow()
@@ -30,7 +30,7 @@ test('should fail if "launchBroker" is runtime injection', () => {
               upstream: true
             }
           }
-        }).code +
+        }) +
         '\r\n'
     )
   ).toThrow()
@@ -51,7 +51,7 @@ test('works correctly', () => {
               upstream: true
             }
           }
-        }).code +
+        }) +
         '\r\n'
     )
   ).toMatchSnapshot()

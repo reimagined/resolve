@@ -3,7 +3,7 @@
   "version": "0.20.29",
   "description": "An adapter used to save snapshots to a file or in memory.",
   "engines": {
-    "node": ">=8.10"
+    "node": ">=10.9"
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",
@@ -26,7 +26,8 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/snapshot-adapters/resolve-snapshot-lite#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "sqlite": "^3.0.3"
+    "sqlite": "^3.0.3",
+    "tmp": "^0.1.0"
   },
   "babelCompile": [
     {

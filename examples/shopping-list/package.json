@@ -11,12 +11,14 @@
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
     "test:functional": "babel-node ./run.js test:functional",
     "import-event-store": "babel-node ./run.js import-event-store",
-    "export-event-store": "babel-node ./run.js export-event-store"
+    "export-event-store": "babel-node ./run.js export-event-store",
+    "resolve-module-admin": "resolve-module-admin"
   },
   "dependencies": {
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
     "isomorphic-fetch": "2.2.1",
+    "history": "4.10.1",
     "react": "16.7.0",
     "react-bootstrap": "0.32.1",
     "react-dom": "16.7.0",
@@ -36,6 +38,7 @@
     "resolve-storage-lite": "0.20.29",
     "resolve-subscribe-mqtt": "0.20.29",
     "resolve-subscribe-socket.io": "0.20.29",
+    "resolve-module-admin": "0.20.29",
     "uuid": "3.3.2"
   },
   "devDependencies": {

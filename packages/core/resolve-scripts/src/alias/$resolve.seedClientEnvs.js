@@ -14,7 +14,8 @@ export default ({ resolveConfig, isClient }) => {
     [
       resolveConfig.customConstants,
       resolveConfig.staticPath,
-      resolveConfig.rootPath
+      resolveConfig.rootPath,
+      resolveConfig.jwtCookie
     ],
     (key, value) => {
       if (checkRuntimeEnv(value)) {
@@ -32,7 +33,10 @@ export default ({ resolveConfig, isClient }) => {
   }
   /* eslint-enable no-console */
 
-  const exports = [`const seedClientEnvs = {}`, ``]
+  const exports = [
+    `import '$resolve.guardOnlyServer'`,
+    `const seedClientEnvs = {}`
+  ]
 
   for (const clientEnv of clientEnvs) {
     exports.push(`Object.defineProperty(
@@ -53,7 +57,5 @@ export default ({ resolveConfig, isClient }) => {
     `export default seedClientEnvs`
   )
 
-  return {
-    code: exports.join('\r\n')
-  }
+  return exports.join('\r\n')
 }

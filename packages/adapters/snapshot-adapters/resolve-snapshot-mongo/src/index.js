@@ -1,34 +1,39 @@
 import { MongoClient } from 'mongodb'
 
-const init = async pool => {
-  if (pool.initPromise != null) {
-    return pool.initPromise
+const connect = async pool => {
+  if (pool.connectPromise != null) {
+    return await pool.connectPromise
   }
-  pool.initPromise = (async () => {
-    const {
-      url,
-      tableName,
-      bucketSize = 100,
-      ...connectionOptions
-    } = pool.config
+
+  pool.connectPromise = (async () => {
+    const { url, bucketSize = 100, ...connectionOptions } = pool.config
     pool.bucketSize = bucketSize
+    pool.counters = new Map()
+
     pool.client = await MongoClient.connect(url, {
       ...connectionOptions,
       useNewUrlParser: true
     })
-    pool.database = await pool.client.db()
-    pool.collection = await pool.database.collection(tableName)
-
-    pool.counters = new Map()
-
-    pool.collection.createIndex('snapshotKey')
-    pool.collection.createIndex('content')
   })()
-  return pool.initPromise
+
+  return await pool.connectPromise
+}
+
+const init = async pool => {
+  await connect(pool)
+  if (pool.disposed) {
+    throw new Error('Adapter is disposed')
+  }
+
+  pool.database = await pool.client.db()
+  pool.collection = await pool.database.collection(pool.config.tableName)
+
+  pool.collection.createIndex('snapshotKey')
+  pool.collection.createIndex('content')
 }
 
 const loadSnapshot = async (pool, snapshotKey) => {
-  await init(pool)
+  await connect(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
@@ -38,7 +43,7 @@ const loadSnapshot = async (pool, snapshotKey) => {
 }
 
 const saveSnapshot = async (pool, snapshotKey, content) => {
-  await init(pool)
+  await connect(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
@@ -59,7 +64,6 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
 }
 
 const dispose = async pool => {
-  await init(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
@@ -69,13 +73,22 @@ const dispose = async pool => {
   await pool.client.close()
 }
 
-const drop = async (pool, snapshotKey) => {
-  await init(pool)
+const dropSnapshot = async (pool, snapshotKey) => {
+  await connect(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
 
   await pool.collection.findOneAndDelete({ snapshotKey })
+}
+
+const drop = async pool => {
+  await connect(pool)
+  if (pool.disposed) {
+    throw new Error('Adapter is disposed')
+  }
+
+  await pool.collection.drop()
 }
 
 const createAdapter = config => {
@@ -85,7 +98,9 @@ const createAdapter = config => {
     loadSnapshot: loadSnapshot.bind(null, pool),
     saveSnapshot: saveSnapshot.bind(null, pool),
     dispose: dispose.bind(null, pool),
-    drop: drop.bind(null, pool)
+    drop: drop.bind(null, pool),
+    dropSnapshot: dropSnapshot.bind(null, pool),
+    init: init.bind(null, pool)
   })
 }
 

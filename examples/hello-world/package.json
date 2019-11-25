@@ -29,7 +29,8 @@
     "resolve-readmodel-mysql": "0.20.29",
     "resolve-subscribe-mqtt": "0.20.29",
     "resolve-subscribe-socket.io": "0.20.29",
-    "redux-devtools-extension": "2.13.7"
+    "redux-devtools-extension": "2.13.7",
+    "webpack": "4.41.2"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",

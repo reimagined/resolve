@@ -4,7 +4,7 @@ import wrapDispose from '../src/wrap-dispose'
 
 test('wrap dispose should bypass on correct arguments', async () => {
   const rawDispose = sinon.stub().callsFake(async () => null)
-  const pool = { isInitialized: true, config: { skipInit: true } }
+  const pool = { isInitialized: true, config: {} }
 
   const dispose = wrapDispose(pool, rawDispose)
   await dispose()
@@ -16,7 +16,7 @@ test('wrap dispose should bypass on correct arguments', async () => {
 
 test('wrap dispose should fail on wrong arguments', async () => {
   const rawDispose = sinon.stub().callsFake(async () => null)
-  const pool = { isInitialized: true, config: { skipInit: true } }
+  const pool = { isInitialized: true, config: {} }
 
   try {
     const dispose = wrapDispose(pool, rawDispose)

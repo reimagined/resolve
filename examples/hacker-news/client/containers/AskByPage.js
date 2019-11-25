@@ -3,11 +3,20 @@ import { bindActionCreators } from 'redux'
 import { connectReadModel } from 'resolve-redux'
 import { connect } from 'react-redux'
 
+import * as aggregateActions from '../actions/aggregate-actions'
 import Stories from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
 
-const AskByPage = ({ page, stories, me, upvoteStory, unvoteStory }) => (
+const AskByPage = ({
+  isLoading,
+  page,
+  stories,
+  me,
+  upvoteStory,
+  unvoteStory
+}) => (
   <Stories
+    isLoading={isLoading}
     items={stories}
     page={page}
     type="ask"
@@ -39,26 +48,19 @@ const mapStateToProps = (
     match: {
       params: { page }
     },
+    isLoading,
     data
   }
 ) => ({
+  isLoading,
   page,
   stories: data,
   me: state.jwt
 })
 
-const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(
-    {
-      upvoteStory: aggregateActions.upvoteStory,
-      unvoteStory: aggregateActions.unvoteStory
-    },
-    dispatch
-  )
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AskByPage)
+  connect(mapStateToProps, mapDispatchToProps)(AskByPage)
 )

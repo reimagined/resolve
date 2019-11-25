@@ -1,5 +1,5 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { render } from 'enzyme'
 
 import { ShoppingList } from '../../client/containers/ShoppingList'
 
@@ -23,8 +23,9 @@ test('renders correctly', () => {
   const toggleShoppingItem = () => {}
   const removeShoppingItem = () => {}
 
-  const tree = shallow(
+  const tree = render(
     <ShoppingList
+      isLoading={false}
       data={data}
       jwt={jwt}
       aggregateId={aggregateId}
@@ -32,5 +33,6 @@ test('renders correctly', () => {
       removeShoppingItem={removeShoppingItem}
     />
   )
+
   expect(tree).toMatchSnapshot()
 })

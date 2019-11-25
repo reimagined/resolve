@@ -36,6 +36,8 @@ describe('import-export', () => {
     const outputStorageAdapter = createStorageAdapter({
       databaseFile: ':memory:'
     })
+    await inputStorageAdapter.init()
+    await outputStorageAdapter.init()
 
     const inputCountEvents = 300
 
@@ -66,6 +68,8 @@ describe('import-export', () => {
     const outputStorageAdapter = createStorageAdapter({
       databaseFile: ':memory:'
     })
+    await eventStorageAdapter.init()
+    await outputStorageAdapter.init()
 
     const inputCountEvents = 20
 
@@ -134,6 +138,7 @@ describe('import-export', () => {
     const inputStorageAdapter = createStorageAdapter({
       databaseFile: ':memory:'
     })
+    await inputStorageAdapter.init()
 
     const inputCountEvents = 1000
 

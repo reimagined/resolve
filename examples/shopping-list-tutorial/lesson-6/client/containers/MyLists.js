@@ -6,10 +6,16 @@ import { connect } from 'react-redux'
 
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
+import * as aggregateActions from '../actions/aggregate_actions'
 
 class MyLists extends React.PureComponent {
   render() {
-    const { lists, createShoppingList } = this.props
+    const { isLoading, lists, createShoppingList } = this.props
+
+    if (isLoading !== false) {
+      return null
+    }
+
     return (
       <div style={{ maxWidth: '500px', margin: 'auto' }}>
         <ShoppingLists lists={lists} />
@@ -33,12 +39,9 @@ export const mapStateToProps = (state, ownProps) => ({
   lists: state.optimisticShoppingLists || []
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MyLists)
+  connect(mapStateToProps, mapDispatchToProps)(MyLists)
 )

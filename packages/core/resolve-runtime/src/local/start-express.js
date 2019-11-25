@@ -12,24 +12,29 @@ const startExpress = async resolve => {
     }
   } = resolve
 
-  if (upstream) {
-    const currentResolve = Object.create(resolve)
-    try {
-      await initResolve(currentResolve)
-      await bootstrap(currentResolve)
-      readyLoop: while (true) {
-        for (const { name: readModelName } of resolve.readModels) {
-          const status = await resolve.eventBroker.status(readModelName)
-          if (status.lastEvent == null && status.lastError == null) {
-            continue readyLoop
-          }
-        }
-        // eslint-disable-next-line no-extra-label
-        break readyLoop
-      }
-    } finally {
-      await disposeResolve(currentResolve)
+  const currentResolve = Object.create(resolve)
+  try {
+    await initResolve(currentResolve)
+    await bootstrap(currentResolve)
+
+    let readyListeners = 0
+    while (upstream && readyListeners < resolve.eventListeners.size) {
+      readyListeners = await Promise.all(
+        Array.from(currentResolve.eventListeners.keys()).map(
+          currentResolve.eventBroker.status
+        )
+      ).then(statuses =>
+        statuses.reduce(
+          ({ lastEvent, lastError }, acc) =>
+            lastEvent != null || lastError != null ? acc + 1 : acc,
+          0
+        )
+      )
+
+      await new Promise(resolve => setTimeout(resolve, 1000))
     }
+  } finally {
+    await disposeResolve(currentResolve)
   }
 
   await new Promise((resolve, reject) =>

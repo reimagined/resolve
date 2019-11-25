@@ -7,11 +7,6 @@ const wrappedMethod = async (pool, method, wrappedArgs, ...args) => {
   pool.connectPromiseResolve()
   await pool.connectPromise
 
-  if (pool.config.skipInit !== true) {
-    pool.initialPromiseResolve()
-    await pool.initialPromise
-  }
-
   return await method(pool, ...wrappedArgs, ...args)
 }
 

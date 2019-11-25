@@ -6,14 +6,7 @@ import createApi from './create_api'
 
 class Providers extends React.PureComponent {
   render() {
-    const {
-      origin,
-      rootPath,
-      staticPath,
-      aggregateActions,
-      store,
-      children
-    } = this.props
+    const { origin, rootPath, staticPath, store, children } = this.props
 
     const api = createApi({ origin, rootPath, store })
 
@@ -23,8 +16,7 @@ class Providers extends React.PureComponent {
           api,
           origin,
           rootPath,
-          staticPath,
-          aggregateActions
+          staticPath
         }}
       >
         <ReduxProvider store={store}>{children}</ReduxProvider>

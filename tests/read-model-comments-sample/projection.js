@@ -76,15 +76,17 @@ const projection = {
     )
 
     if (parentId != null) {
-      const comments = (await store.findOne(
-        'CommentsAsList',
-        {
-          treeId
-        },
-        {
-          comments: 1
-        }
-      )).comments
+      const comments = (
+        await store.findOne(
+          'CommentsAsList',
+          {
+            treeId
+          },
+          {
+            comments: 1
+          }
+        )
+      ).comments
 
       const parentIndex = comments.findIndex(
         ({ aggregateId }) => aggregateId === parentId

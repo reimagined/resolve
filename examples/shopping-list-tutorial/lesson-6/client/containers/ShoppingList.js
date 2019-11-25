@@ -15,6 +15,8 @@ import {
   Button
 } from 'react-bootstrap'
 
+import * as aggregateActions from '../actions/aggregate_actions'
+
 export class ShoppingList extends React.PureComponent {
   state = {
     itemText: ''
@@ -46,6 +48,11 @@ export class ShoppingList extends React.PureComponent {
 
   render() {
     const { data, aggregateId, toggleShoppingItem } = this.props
+
+    if (data == null) {
+      return null
+    }
+
     const { list } = data
 
     return (
@@ -109,7 +116,7 @@ export const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       ...aggregateActions,
@@ -119,8 +126,5 @@ export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   )
 
 export default connectViewModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ShoppingList)
+  connect(mapStateToProps, mapDispatchToProps)(ShoppingList)
 )

@@ -4,8 +4,8 @@ const longNumberSqlType = 'BIGINT NOT NULL'
 const customObjectSqlType = 'JSON NULL'
 
 const init = async ({ tableName, connection, escapeId }) => {
-  await connection.execute(
-    `CREATE TABLE IF NOT EXISTS ${escapeId(tableName)}(
+  await connection.query(
+    `CREATE TABLE ${escapeId(tableName)}(
       \`timestamp\` ${longNumberSqlType},
       \`aggregateId\` ${longStringSqlType},
       \`aggregateVersion\` ${longNumberSqlType},
@@ -16,8 +16,7 @@ const init = async ({ tableName, connection, escapeId }) => {
       INDEX USING BTREE(\`aggregateVersion\`),
       INDEX USING BTREE(\`type\`),
       INDEX USING BTREE(\`timestamp\`)
-    )`,
-    []
+    )`
   )
 }
 

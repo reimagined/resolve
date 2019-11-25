@@ -1,5 +1,4 @@
 import createAdapter from './create-adapter'
-import prepare from './prepare'
 import importStream from './import'
 import exportStream from './export'
 import wrapMethod from './wrap-method'
@@ -12,7 +11,6 @@ import ConcurrentError from './concurrent-error'
 import pipeline from './pipeline'
 
 const wrappedCreateAdapter = createAdapter.bind(null, {
-  prepare,
   importStream,
   exportStream,
   wrapMethod,

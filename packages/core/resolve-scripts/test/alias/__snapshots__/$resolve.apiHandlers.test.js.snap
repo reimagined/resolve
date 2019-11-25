@@ -2,7 +2,7 @@
 
 exports[`base config works correctly [server] 1`] = `
 "
-
+import '$resolve.guardOnlyServer'
 import controller_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testApiHandler.js\\"
 const constructorBindFunction =
     (
@@ -17,7 +17,7 @@ const constructorBindFunction =
     )
 const idempotentFunction = value => value
 
-const path_0 = \\"api-handler\\"
+const path_0 = \\"/api/api-handler\\"
 const method_0 = \\"get\\"
 const controller_0 = controller_0_instance
 

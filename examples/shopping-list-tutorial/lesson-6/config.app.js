@@ -1,5 +1,4 @@
 const appConfig = {
-  routes: 'client/routes.js',
   aggregates: [
     {
       name: 'ShoppingList',
@@ -21,12 +20,7 @@ const appConfig = {
       projection: 'common/view-models/shopping_list.projection.js'
     }
   ],
-  redux: {
-    reducers: {
-      optimisticShoppingLists: 'client/reducers/optimistic_shopping_lists.js'
-    },
-    sagas: ['client/sagas/optimistic_shopping_lists_saga.js']
-  }
+  clientEntries: ['client/index.js']
 }
 
 export default appConfig

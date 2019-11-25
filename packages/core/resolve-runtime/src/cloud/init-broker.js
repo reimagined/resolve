@@ -10,12 +10,9 @@ const initBroker = resolve => {
     },
     resume: async listenerId => {
       const result = await invokeMeta(resolve, listenerId, 'resume')
+      const listener = resolve.eventListeners.get(listenerId)
 
-      const listenerDescriptor = resolve.readModels.find(
-        ({ name }) => name === listenerId
-      )
-      await invokeUpdateLambda(resolve, listenerDescriptor)
-
+      await invokeUpdateLambda(resolve, listener)
       return result
     },
     status: async listenerId => {
@@ -51,11 +48,9 @@ const initBroker = resolve => {
       value: publishEvent.bind(null, resolve)
     },
     doUpdateRequest: {
-      value: async readModelName => {
-        const readModel = resolve.readModels.find(
-          ({ name }) => name === readModelName
-        )
-        await invokeUpdateLambda(resolve, readModel)
+      value: async listenerName => {
+        const listener = resolve.eventListeners.get(listenerName)
+        await invokeUpdateLambda(resolve, listener)
       }
     }
   })

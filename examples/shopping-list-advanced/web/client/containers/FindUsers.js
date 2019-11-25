@@ -5,6 +5,7 @@ import { connectReadModel } from 'resolve-redux'
 import { ControlLabel } from 'react-bootstrap'
 
 import UserList from '../components/UserList'
+import * as aggregateActions from '../redux/aggregate-actions'
 
 class FindUsers extends React.PureComponent {
   shareShoppingListForUser = (userId, username) => {
@@ -55,12 +56,9 @@ export const mapStateToProps = state => ({
   users: state.optimisticSharings.users
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(FindUsers)
+  connect(mapStateToProps, mapDispatchToProps)(FindUsers)
 )

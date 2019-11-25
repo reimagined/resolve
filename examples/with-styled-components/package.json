@@ -16,6 +16,7 @@
   "dependencies": {
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
+    "history": "4.10.1",
     "react": "16.7.0",
     "react-dom": "16.7.0",
     "react-bootstrap": "0.32.1",
@@ -27,6 +28,7 @@
     "resolve-storage-lite": "0.20.29",
     "resolve-readmodel-lite": "0.20.29",
     "resolve-readmodel-mysql": "0.20.29",
+    "resolve-runtime": "0.20.29",
     "resolve-subscribe-mqtt": "0.20.29",
     "resolve-subscribe-socket.io": "0.20.29",
     "styled-components": "4.1.1",

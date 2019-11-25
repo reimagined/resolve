@@ -12,18 +12,22 @@ import createReadModelsReducer from './create_read_models_reducer'
 import createJwtReducer from './create_jwt_reducer'
 import createResolveMiddleware from './create_resolve_middleware'
 import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
+import emptySubscribeAdapter from './empty_subscribe_adapter'
 
 const createStore = ({
-  redux: { reducers, middlewares, enhancers, sagas: customSagas },
-  viewModels,
-  readModels,
-  aggregates,
-  subscribeAdapter,
-  initialState,
+  redux: {
+    reducers = {},
+    middlewares = [],
+    enhancers = [],
+    sagas: customSagas = []
+  } = {},
+  viewModels = [],
+  subscribeAdapter = emptySubscribeAdapter,
+  initialState = undefined,
+  jwtProvider = undefined,
   history,
   origin,
   rootPath,
-  jwtProvider,
   isClient
 }) => {
   const sessionId = uuid()
@@ -34,7 +38,7 @@ const createStore = ({
     ...reducers,
     router: routerReducer,
     viewModels: createViewModelsReducer(viewModels),
-    readModels: createReadModelsReducer(readModels),
+    readModels: createReadModelsReducer(),
     jwt: createJwtReducer()
   })
 
@@ -44,10 +48,7 @@ const createStore = ({
     ...middlewares
   )
 
-  const composedEnhancers = compose(
-    appliedMiddlewares,
-    ...enhancers
-  )
+  const composedEnhancers = compose(appliedMiddlewares, ...enhancers)
 
   const store = reduxCreateStore(
     combinedReducers,
@@ -58,8 +59,6 @@ const createStore = ({
   resolveMiddleware.run({
     store,
     viewModels,
-    readModels,
-    aggregates,
     origin,
     rootPath,
     subscribeAdapter,
@@ -69,10 +68,12 @@ const createStore = ({
     customSagas
   })
 
-  syncJwtProviderWithStore(jwtProvider, store).catch(
-    // eslint-disable-next-line no-console
-    error => console.error(error)
-  )
+  if (jwtProvider != null) {
+    syncJwtProviderWithStore(jwtProvider, store).catch(
+      // eslint-disable-next-line no-console
+      error => console.error(error)
+    )
+  }
 
   return store
 }

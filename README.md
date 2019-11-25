@@ -49,7 +49,7 @@ yarn run dev
 ```
 
 </details>
-<p></p>
+<p> </p>
 
 Your application will be running at http://localhost:3000/.
 
