@@ -1,6 +1,6 @@
 {
   "name": "resolve-subscribe-mqtt",
-  "version": "0.20.29",
+  "version": "0.21.0-alpha.7",
   "description": "An adapter resolve-redux uses to subscribe to events via the MQTT protocol.",
   "engines": {
     "node": ">=10.9"
