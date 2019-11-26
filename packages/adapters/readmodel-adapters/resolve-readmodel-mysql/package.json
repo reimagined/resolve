@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-mysql",
-  "version": "0.21.0-alpha.14",
+  "version": "0.21.0-alpha.15",
   "description": "An adapter the resolve-query uses to store the read model state in MySQL",
   "engines": {
     "node": ">=10.9"
@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "mysql2": "^1.6.1",
-    "resolve-readmodel-base": "0.21.0-alpha.14",
+    "resolve-readmodel-base": "0.21.0-alpha.15",
     "sql-formatter": "^2.3.1",
     "uuid": "^3.3.2"
   },
