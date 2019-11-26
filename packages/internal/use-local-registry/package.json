@@ -1,12 +1,12 @@
 {
   "name": "@internal/use-local-registry",
   "private": true,
-  "version": "0.21.0-alpha.15",
+  "version": "0.21.0",
   "bin": "./bin/index.js",
   "main": "./index.js",
   "dependencies": {
-    "@internal/helpers": "0.21.0-alpha.15",
-    "@internal/local-registry": "0.21.0-alpha.15",
+    "@internal/helpers": "0.21.0",
+    "@internal/local-registry": "0.21.0",
     "minimist": "1.2.0"
   },
   "scripts": {
