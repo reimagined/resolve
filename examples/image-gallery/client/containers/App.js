@@ -2,8 +2,12 @@ import React from 'react'
 import { Navbar, Image, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
 import FileUploadProgress from 'react-fileupload-progress'
-
 import UploaderContext from '../context'
+
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { connectReadModel } from 'resolve-redux'
+import * as aggregateActions from '../aggregate_actions'
 
 class App extends React.Component {
   state = {
@@ -30,23 +34,6 @@ class App extends React.Component {
     fetch('http://localhost:3000/api/uploader/createToken', { mode: 'no-cors' })
       .then(response => response.text())
       .then(result => this.setState({ token: result }))
-  }
-
-  imageUploadedAction = name => {
-    fetch('http://localhost:3000/api/commands', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'same-origin',
-      body: JSON.stringify({
-        type: 'createImage',
-        aggregateName: 'Image',
-        aggregateId: this.state.uploadId,
-        payload: {
-          name,
-          uploadId: this.state.uploadId
-        }
-      })
-    }).then()
   }
 
   render() {
@@ -109,7 +96,10 @@ class App extends React.Component {
               url={`${this.state.uploadUrl}.png`}
               method="post"
               onLoad={() => {
-                this.imageUploadedAction('logo')
+                this.props.createImage(this.state.uploadId, {
+                  name: 'logo',
+                  uploadId: this.state.uploadId
+                })
                 this.setState({ isLoaded: true })
               }}
             />
@@ -136,4 +126,17 @@ class App extends React.Component {
   }
 }
 
-export default App
+// export default App
+
+export const mapStateToOptions = () => ({
+  readModelName: 'Images',
+  resolverName: '',
+  resolverArgs: {}
+})
+
+export const mapDispatchToProps = dispatch =>
+  bindActionCreators(aggregateActions, dispatch)
+
+export default connectReadModel(mapStateToOptions)(
+  connect(null, mapDispatchToProps)(App)
+)
