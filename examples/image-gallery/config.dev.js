@@ -8,6 +8,14 @@ const devConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
+  readModelConnectors: {
+    default: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'data/read-models.db'
+      }
+    }
+  },
   uploadAdapter: {
     module: 'resolve-upload-local',
     options: {
@@ -19,6 +27,10 @@ const devConfig = {
       bucket: 'files',
       secretKey: 'key'
     }
+  },
+  jwtCookie: {
+    name: 'jwt',
+    maxAge: 31536000000
   }
 }
 

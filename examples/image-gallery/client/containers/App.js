@@ -32,6 +32,23 @@ class App extends React.Component {
       .then(result => this.setState({ token: result }))
   }
 
+  imageUploadedAction = name => {
+    fetch('http://localhost:3000/api/commands', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        type: 'createImage',
+        aggregateName: 'Image',
+        aggregateId: this.state.uploadId,
+        payload: {
+          name,
+          uploadId: this.state.uploadId
+        }
+      })
+    }).then()
+  }
+
   render() {
     const stylesheetLink = {
       rel: 'stylesheet',
@@ -92,6 +109,7 @@ class App extends React.Component {
               url={`${this.state.uploadUrl}.png`}
               method="post"
               onLoad={() => {
+                this.imageUploadedAction('logo')
                 this.setState({ isLoaded: true })
               }}
             />
