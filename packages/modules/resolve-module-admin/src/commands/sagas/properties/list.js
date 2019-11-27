@@ -6,6 +6,11 @@ export const handler = async ({ url, saga }) => {
     `${url}/event-broker/list-properties?listenerId=${saga}`
   )
   const result = await response.json()
+  if (result.hasOwnProperty('RESOLVE_SIDE_EFFECTS_START_TIMESTAMP')) {
+    result.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP = new Date(
+      +result.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP
+    )
+  }
   //eslint-disable-next-line no-console
   console.log(
     columnify(result, {
