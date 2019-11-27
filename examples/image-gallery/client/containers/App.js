@@ -2,20 +2,30 @@ import React from 'react'
 import { Navbar, Image, Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
 import FileUploadProgress from 'react-fileupload-progress'
-import UploaderContext from '../context'
-
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectReadModel } from 'resolve-redux'
+
+import UploaderContext from '../context'
 import * as aggregateActions from '../aggregate_actions'
+import ImageLogo from '../components/Image'
 
 class App extends React.Component {
   state = {
     uploadId: '',
     token: '',
     uploadUrl: '',
+    staticToken: '',
     isHidden: true,
     isLoaded: false
+  }
+
+  componentDidMount() {
+    fetch('http://localhost:3000/api/uploader/getStaticToken', {
+      mode: 'no-cors'
+    })
+      .then(response => response.text())
+      .then(result => this.setState({ staticToken: result }))
   }
 
   handleGetUrl = () => {
@@ -121,6 +131,19 @@ class App extends React.Component {
             </h2>
           </div>
         </div>
+
+        <div>
+          {this.props.data != null
+            ? this.props.data.map((image, index) => (
+                <ImageLogo
+                  src={`http://localhost:3001/logo/${image.uploadId}.png?token=${this.state.staticToken}`}
+                  name={image.name}
+                  key={image.uploadId}
+                  index={index}
+                />
+              ))
+            : 'No images'}
+        </div>
       </div>
     )
   }
@@ -130,7 +153,7 @@ class App extends React.Component {
 
 export const mapStateToOptions = () => ({
   readModelName: 'Images',
-  resolverName: '',
+  resolverName: 'allImages',
   resolverArgs: {}
 })
 
@@ -138,5 +161,8 @@ export const mapDispatchToProps = dispatch =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
-  connect(null, mapDispatchToProps)(App)
+  connect(
+    null,
+    mapDispatchToProps
+  )(App)
 )
