@@ -32,7 +32,6 @@
     "resolve-storage-postgresql-serverless": "0.21.0",
     "resolve-scripts": "0.21.0",
     "resolve-redux": "0.21.0",
-    "resolve-runtime": "0.21.0",
     "styled-components": "4.4.1"
   },
   "devDependencies": {
