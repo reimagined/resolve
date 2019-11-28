@@ -88,10 +88,17 @@ const dispose = async pool => {
     throw new Error('Adapter is disposed')
   }
   pool.disposed = true
+  if (pool.connectPromise != null) {
+    await pool.connectPromise
+  }
 
-  pool.counters.clear()
+  if (pool.counters != null) {
+    pool.counters.clear()
+  }
 
-  await pool.connection.end()
+  if (pool.connection != null) {
+    await pool.connection.end()
+  }
 }
 
 const drop = async pool => {
