@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch'
 
 export const handler = async ({ url, saga, timestamp }) => {
+  const response = await fetch(`${url}/event-broker/reset?listenerId=${saga}`)
   if (timestamp != null) {
     await fetch(
       `${url}/event-broker/set-property?listenerId=${saga}&key=RESOLVE_SIDE_EFFECTS_START_TIMESTAMP&value=${Date.parse(
@@ -8,7 +9,6 @@ export const handler = async ({ url, saga, timestamp }) => {
       )}`
     )
   }
-  const response = await fetch(`${url}/event-broker/reset?listenerId=${saga}`)
   const result = await response.text()
   //eslint-disable-next-line no-console
   console.log(result)

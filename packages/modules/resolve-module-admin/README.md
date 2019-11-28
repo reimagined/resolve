@@ -1,3 +1,7 @@
+# **resolve-module-admin**
+[![npm version](https://badge.fury.io/js/resolve-module-admin.svg)](https://badge.fury.io/js/resolve-module-admin)
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-module-admin-readme?pixel)
+
 ## Manage Read Models
 
 The `read-models` command manages the application's read models.
@@ -47,7 +51,7 @@ npx resolve-module-admin sagas resume <sagaName>
 ##### Reset a saga's persistent state:
 
 ```
-npx resolve-module-admin sagas reset <sagaName>
+npx resolve-module-admin sagas reset <sagaName> [--side-effects-start-timestamp YYYY-MM-DDTHH:mm:ss.sssZ]
 ```
 
 ### Manage Saga Properties
@@ -76,4 +80,13 @@ npx resolve-module-admin sagas properties list <sagaName>
 
 ```
 npx resolve-module-admin sagas properties remove <sagaName> <propertyName>
+```
+
+## FAQ
+
+### How to restart saga side effects with custom time
+
+```
+npx resolve-module-admin sagas reset <sagaName> --side-effects-start-timestamp YYYY-MM-DDTHH:mm:ss.sssZ
+npx resolve-module-admin sagas resume <sagaName>
 ```
