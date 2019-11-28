@@ -33,7 +33,9 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
     `import jsonUtfStringify from 'resolve-runtime/lib/common/utils/json-utf-stringify'`
   ]
 
-  const constants = [`const utils = { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify }`]
+  const constants = [
+    `const utils = { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify }`
+  ]
 
   const exports = []
 
