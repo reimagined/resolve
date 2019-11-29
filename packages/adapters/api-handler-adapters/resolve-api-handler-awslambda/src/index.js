@@ -2,7 +2,7 @@ import binaryCase from 'binary-case'
 import contentDisposition from 'content-disposition'
 import cookie from 'cookie'
 
-const COOKIE_CLEAR_DATE = new Date(0).toGMTString()
+const COOKIE_CLEAR_DATE = new Date(0)
 const INTERNAL = Symbol('INTERNAL')
 
 const normalizeKey = (key, mode) => {
@@ -159,7 +159,7 @@ const createResponse = () => {
     validateResponseOpened()
     const serializedCookie = cookie.serialize(name, '', {
       ...options,
-      expire: COOKIE_CLEAR_DATE
+      expires: COOKIE_CLEAR_DATE
     })
 
     internalRes.cookies.push(serializedCookie)
