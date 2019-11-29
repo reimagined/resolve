@@ -1,6 +1,6 @@
 {
   "name": "resolve-zeromq",
-  "version": "0.21.1",
+  "version": "0.21.2",
   "description": "Provides the ZeroMQ API to reSolve packages.",
   "engines": {
     "node": ">=10.9"
