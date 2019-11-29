@@ -27,8 +27,16 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
     ? clientEntry[1].moduleType
     : 'iife'
 
-  const imports = []
-  const constants = []
+  const imports = [
+    `import getRootBasedUrl from 'resolve-runtime/lib/common/utils/get-root-based-url'`,
+    `import getStaticBasedPath from 'resolve-runtime/lib/common/utils/get-static-based-path'`,
+    `import jsonUtfStringify from 'resolve-runtime/lib/common/utils/json-utf-stringify'`
+  ]
+
+  const constants = [
+    `const utils = { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify }`
+  ]
+
   const exports = []
 
   if (isClient) {
@@ -38,7 +46,8 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
     constants.push(`const entryArgs = {
       clientImports,
       localS3Constants,
-      ...clientChunk
+      ...clientChunk,
+      utils
     }`)
   } else {
     imports.push(`import serverImports from '$resolve.serverImports'`)
@@ -61,7 +70,8 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
       viewModels,
       sagas,
       schedulers,
-      localS3Constants
+      localS3Constants,
+      utils
     }`)
   }
 

@@ -49,7 +49,6 @@
     "resolve-readmodel-postgresql-serverless": "0.21.0",
     "resolve-readmodel-lite": "0.21.0",
     "resolve-readmodel-mysql": "0.21.0",
-    "resolve-runtime": "0.21.0",
     "resolve-scripts": "0.21.0",
     "resolve-storage-postgresql-serverless": "0.21.0",
     "resolve-storage-lite": "0.21.0",

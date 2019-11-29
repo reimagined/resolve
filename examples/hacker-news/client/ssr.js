@@ -6,19 +6,16 @@ import { createStore, AppContainer } from 'resolve-redux'
 import { Helmet } from 'react-helmet'
 import { StyleSheetManager, ServerStyleSheet } from 'styled-components'
 
-import getRootBasedUrl from 'resolve-runtime/lib/common/utils/get-root-based-url'
-import getStaticBasedPath from 'resolve-runtime/lib/common/utils/get-static-based-path'
-import jsonUtfStringify from 'resolve-runtime/lib/common/utils/json-utf-stringify'
-
 import getRoutes from './get-routes'
 import getRedux from './get-redux'
 
 const ssrHandler = async (
-  { serverImports, constants, seedClientEnvs, viewModels },
+  { serverImports, constants, seedClientEnvs, viewModels, utils },
   req,
   res
 ) => {
   try {
+    const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils
     const { rootPath, staticPath, jwtCookie } = constants
     const redux = getRedux(serverImports)
     const routes = getRoutes(serverImports)

@@ -28,7 +28,6 @@
     "resolve-storage-lite": "0.21.0",
     "resolve-readmodel-lite": "0.21.0",
     "resolve-readmodel-mysql": "0.21.0",
-    "resolve-runtime": "0.21.0",
     "resolve-subscribe-mqtt": "0.21.0",
     "resolve-subscribe-socket.io": "0.21.0",
     "redux-devtools-extension": "2.13.7"
