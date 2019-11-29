@@ -1,6 +1,6 @@
 {
   "name": "resolve-es",
-  "version": "0.21.0",
+  "version": "0.21.1",
   "description": "The reSolve framework's event store.",
   "engines": {
     "node": ">=10.9"
