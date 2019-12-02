@@ -4,7 +4,6 @@ import commandHandler from './handlers/command-handler'
 import queryHandler from './handlers/query-handler'
 import subscribeHandler from './handlers/subscribe-handler'
 import markupHandler from './handlers/markup-handler'
-import failHandler from './handlers/fail-handler'
 
 import getRootBasedUrl from './utils/get-root-based-url'
 
@@ -52,11 +51,6 @@ const wrapTrie = (apiHandlers, rootPath) => {
     trie
       .define(getRootBasedUrl(rootPath, path))
       .handle(String(method).toUpperCase(), controller)
-  }
-
-  const isRootPathEmpty = getRootBasedUrl(rootPath, '/') === '/'
-  if (!isRootPathEmpty) {
-    trie.define('/:root*').handle('GET', failHandler)
   }
 
   try {
