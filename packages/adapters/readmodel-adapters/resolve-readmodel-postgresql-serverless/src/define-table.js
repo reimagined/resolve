@@ -35,7 +35,11 @@ const defineTable = async (
           `${tablePrefix}${tableName}`
         )}
       ADD CONSTRAINT ${escapeId(`${indexName}-type-validation`)}
-      CHECK (jsonb_typeof(${escapeId(indexName)}) = ${escape(
+      CHECK (${
+        idx > 0
+          ? `jsonb_typeof(${escapeId(indexName)}) = ${escape('null')} OR `
+          : ''
+      }jsonb_typeof(${escapeId(indexName)}) = ${escape(
           indexType === 'number' ? 'number' : 'string'
         )});
 

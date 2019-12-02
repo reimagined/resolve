@@ -63,20 +63,21 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "WITH \\"cte\\" AS (
-        SELECT \\"filteredEvents\\".*,
-        SUM(\\"filteredEvents\\".\\"eventSize\\")
-        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
-        FROM (
-          SELECT * FROM \\"event-store\\".\\"events\\" 
-          ORDER BY \\"eventId\\" ASC
-          OFFSET 0
-          LIMIT 200
-        ) \\"filteredEvents\\"
-      )
-      SELECT * FROM \\"cte\\"
-      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
-      ORDER BY \\"cte\\".\\"eventId\\" ASC
-      ",
+  SELECT \\"filteredEvents\\".*,
+  SUM(\\"filteredEvents\\".\\"eventSize\\")
+  OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\")
+  AS \\"totalEventSize\\"
+  FROM (
+    SELECT * FROM \\"event-store\\".\\"events\\"
+    
+    ORDER BY \\"eventId\\" ASC
+    OFFSET 0
+    LIMIT 200
+  ) \\"filteredEvents\\"
+)
+SELECT * FROM \\"cte\\"
+WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+ORDER BY \\"cte\\".\\"eventId\\" ASC",
   },
   "executeStatement",
   Object {
@@ -86,20 +87,21 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "WITH \\"cte\\" AS (
-        SELECT \\"filteredEvents\\".*,
-        SUM(\\"filteredEvents\\".\\"eventSize\\")
-        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
-        FROM (
-          SELECT * FROM \\"event-store\\".\\"events\\" 
-          ORDER BY \\"eventId\\" ASC
-          OFFSET 1
-          LIMIT 200
-        ) \\"filteredEvents\\"
-      )
-      SELECT * FROM \\"cte\\"
-      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
-      ORDER BY \\"cte\\".\\"eventId\\" ASC
-      ",
+  SELECT \\"filteredEvents\\".*,
+  SUM(\\"filteredEvents\\".\\"eventSize\\")
+  OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\")
+  AS \\"totalEventSize\\"
+  FROM (
+    SELECT * FROM \\"event-store\\".\\"events\\"
+    
+    ORDER BY \\"eventId\\" ASC
+    OFFSET 1
+    LIMIT 200
+  ) \\"filteredEvents\\"
+)
+SELECT * FROM \\"cte\\"
+WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+ORDER BY \\"cte\\".\\"eventId\\" ASC",
   },
   "executeStatement",
   Object {
@@ -109,20 +111,21 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "WITH \\"cte\\" AS (
-        SELECT \\"filteredEvents\\".*,
-        SUM(\\"filteredEvents\\".\\"eventSize\\")
-        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
-        FROM (
-          SELECT * FROM \\"event-store\\".\\"events\\" 
-          ORDER BY \\"eventId\\" ASC
-          OFFSET 0
-          LIMIT 200
-        ) \\"filteredEvents\\"
-      )
-      SELECT * FROM \\"cte\\"
-      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
-      ORDER BY \\"cte\\".\\"eventId\\" ASC
-      ",
+  SELECT \\"filteredEvents\\".*,
+  SUM(\\"filteredEvents\\".\\"eventSize\\")
+  OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\")
+  AS \\"totalEventSize\\"
+  FROM (
+    SELECT * FROM \\"event-store\\".\\"events\\"
+    
+    ORDER BY \\"eventId\\" ASC
+    OFFSET 0
+    LIMIT 200
+  ) \\"filteredEvents\\"
+)
+SELECT * FROM \\"cte\\"
+WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+ORDER BY \\"cte\\".\\"eventId\\" ASC",
   },
   "executeStatement",
   Object {
@@ -132,20 +135,21 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "WITH \\"cte\\" AS (
-        SELECT \\"filteredEvents\\".*,
-        SUM(\\"filteredEvents\\".\\"eventSize\\")
-        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
-        FROM (
-          SELECT * FROM \\"event-store\\".\\"events\\" 
-          ORDER BY \\"eventId\\" ASC
-          OFFSET 1
-          LIMIT 200
-        ) \\"filteredEvents\\"
-      )
-      SELECT * FROM \\"cte\\"
-      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
-      ORDER BY \\"cte\\".\\"eventId\\" ASC
-      ",
+  SELECT \\"filteredEvents\\".*,
+  SUM(\\"filteredEvents\\".\\"eventSize\\")
+  OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\")
+  AS \\"totalEventSize\\"
+  FROM (
+    SELECT * FROM \\"event-store\\".\\"events\\"
+    
+    ORDER BY \\"eventId\\" ASC
+    OFFSET 1
+    LIMIT 200
+  ) \\"filteredEvents\\"
+)
+SELECT * FROM \\"cte\\"
+WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+ORDER BY \\"cte\\".\\"eventId\\" ASC",
   },
   "executeStatement",
   Object {
@@ -155,20 +159,21 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "WITH \\"cte\\" AS (
-        SELECT \\"filteredEvents\\".*,
-        SUM(\\"filteredEvents\\".\\"eventSize\\")
-        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
-        FROM (
-          SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"type\\" IN ('AAA')
-          ORDER BY \\"eventId\\" ASC
-          OFFSET 0
-          LIMIT 200
-        ) \\"filteredEvents\\"
-      )
-      SELECT * FROM \\"cte\\"
-      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
-      ORDER BY \\"cte\\".\\"eventId\\" ASC
-      ",
+  SELECT \\"filteredEvents\\".*,
+  SUM(\\"filteredEvents\\".\\"eventSize\\")
+  OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\")
+  AS \\"totalEventSize\\"
+  FROM (
+    SELECT * FROM \\"event-store\\".\\"events\\"
+    WHERE \\"type\\" IN ('AAA')
+    ORDER BY \\"eventId\\" ASC
+    OFFSET 0
+    LIMIT 200
+  ) \\"filteredEvents\\"
+)
+SELECT * FROM \\"cte\\"
+WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+ORDER BY \\"cte\\".\\"eventId\\" ASC",
   },
   "executeStatement",
   Object {
@@ -178,20 +183,21 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "WITH \\"cte\\" AS (
-        SELECT \\"filteredEvents\\".*,
-        SUM(\\"filteredEvents\\".\\"eventSize\\")
-        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
-        FROM (
-          SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"type\\" IN ('AAA')
-          ORDER BY \\"eventId\\" ASC
-          OFFSET 1
-          LIMIT 200
-        ) \\"filteredEvents\\"
-      )
-      SELECT * FROM \\"cte\\"
-      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
-      ORDER BY \\"cte\\".\\"eventId\\" ASC
-      ",
+  SELECT \\"filteredEvents\\".*,
+  SUM(\\"filteredEvents\\".\\"eventSize\\")
+  OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\")
+  AS \\"totalEventSize\\"
+  FROM (
+    SELECT * FROM \\"event-store\\".\\"events\\"
+    WHERE \\"type\\" IN ('AAA')
+    ORDER BY \\"eventId\\" ASC
+    OFFSET 1
+    LIMIT 200
+  ) \\"filteredEvents\\"
+)
+SELECT * FROM \\"cte\\"
+WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+ORDER BY \\"cte\\".\\"eventId\\" ASC",
   },
   "executeStatement",
   Object {
@@ -201,20 +207,21 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "WITH \\"cte\\" AS (
-        SELECT \\"filteredEvents\\".*,
-        SUM(\\"filteredEvents\\".\\"eventSize\\")
-        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
-        FROM (
-          SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"aggregateId\\" IN ('id1')
-          ORDER BY \\"eventId\\" ASC
-          OFFSET 0
-          LIMIT 200
-        ) \\"filteredEvents\\"
-      )
-      SELECT * FROM \\"cte\\"
-      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
-      ORDER BY \\"cte\\".\\"eventId\\" ASC
-      ",
+  SELECT \\"filteredEvents\\".*,
+  SUM(\\"filteredEvents\\".\\"eventSize\\")
+  OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\")
+  AS \\"totalEventSize\\"
+  FROM (
+    SELECT * FROM \\"event-store\\".\\"events\\"
+    WHERE \\"aggregateId\\" IN ('id1')
+    ORDER BY \\"eventId\\" ASC
+    OFFSET 0
+    LIMIT 200
+  ) \\"filteredEvents\\"
+)
+SELECT * FROM \\"cte\\"
+WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+ORDER BY \\"cte\\".\\"eventId\\" ASC",
   },
   "executeStatement",
   Object {
@@ -224,20 +231,21 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "WITH \\"cte\\" AS (
-        SELECT \\"filteredEvents\\".*,
-        SUM(\\"filteredEvents\\".\\"eventSize\\")
-        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
-        FROM (
-          SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"aggregateId\\" IN ('id1')
-          ORDER BY \\"eventId\\" ASC
-          OFFSET 1
-          LIMIT 200
-        ) \\"filteredEvents\\"
-      )
-      SELECT * FROM \\"cte\\"
-      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
-      ORDER BY \\"cte\\".\\"eventId\\" ASC
-      ",
+  SELECT \\"filteredEvents\\".*,
+  SUM(\\"filteredEvents\\".\\"eventSize\\")
+  OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\")
+  AS \\"totalEventSize\\"
+  FROM (
+    SELECT * FROM \\"event-store\\".\\"events\\"
+    WHERE \\"aggregateId\\" IN ('id1')
+    ORDER BY \\"eventId\\" ASC
+    OFFSET 1
+    LIMIT 200
+  ) \\"filteredEvents\\"
+)
+SELECT * FROM \\"cte\\"
+WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+ORDER BY \\"cte\\".\\"eventId\\" ASC",
   },
   "executeStatement",
   Object {
@@ -247,20 +255,21 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "WITH \\"cte\\" AS (
-        SELECT \\"filteredEvents\\".*,
-        SUM(\\"filteredEvents\\".\\"eventSize\\")
-        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
-        FROM (
-          SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"timestamp\\" > 1 AND \\"timestamp\\" < 3
-          ORDER BY \\"eventId\\" ASC
-          OFFSET 0
-          LIMIT 200
-        ) \\"filteredEvents\\"
-      )
-      SELECT * FROM \\"cte\\"
-      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
-      ORDER BY \\"cte\\".\\"eventId\\" ASC
-      ",
+  SELECT \\"filteredEvents\\".*,
+  SUM(\\"filteredEvents\\".\\"eventSize\\")
+  OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\")
+  AS \\"totalEventSize\\"
+  FROM (
+    SELECT * FROM \\"event-store\\".\\"events\\"
+    WHERE \\"timestamp\\" > 1 AND \\"timestamp\\" < 3
+    ORDER BY \\"eventId\\" ASC
+    OFFSET 0
+    LIMIT 200
+  ) \\"filteredEvents\\"
+)
+SELECT * FROM \\"cte\\"
+WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+ORDER BY \\"cte\\".\\"eventId\\" ASC",
   },
   "executeStatement",
   Object {
@@ -270,20 +279,21 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "WITH \\"cte\\" AS (
-        SELECT \\"filteredEvents\\".*,
-        SUM(\\"filteredEvents\\".\\"eventSize\\")
-        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
-        FROM (
-          SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"timestamp\\" > 1 AND \\"timestamp\\" < 3
-          ORDER BY \\"eventId\\" ASC
-          OFFSET 1
-          LIMIT 200
-        ) \\"filteredEvents\\"
-      )
-      SELECT * FROM \\"cte\\"
-      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
-      ORDER BY \\"cte\\".\\"eventId\\" ASC
-      ",
+  SELECT \\"filteredEvents\\".*,
+  SUM(\\"filteredEvents\\".\\"eventSize\\")
+  OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\")
+  AS \\"totalEventSize\\"
+  FROM (
+    SELECT * FROM \\"event-store\\".\\"events\\"
+    WHERE \\"timestamp\\" > 1 AND \\"timestamp\\" < 3
+    ORDER BY \\"eventId\\" ASC
+    OFFSET 1
+    LIMIT 200
+  ) \\"filteredEvents\\"
+)
+SELECT * FROM \\"cte\\"
+WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+ORDER BY \\"cte\\".\\"eventId\\" ASC",
   },
 ]
 `;
@@ -343,20 +353,21 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "WITH \\"cte\\" AS (
-        SELECT \\"filteredEvents\\".*,
-        SUM(\\"filteredEvents\\".\\"eventSize\\")
-        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
-        FROM (
-          SELECT * FROM \\"event-store\\".\\"events\\" 
-          ORDER BY \\"eventId\\" ASC
-          OFFSET 0
-          LIMIT 200
-        ) \\"filteredEvents\\"
-      )
-      SELECT * FROM \\"cte\\"
-      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
-      ORDER BY \\"cte\\".\\"eventId\\" ASC
-      ",
+  SELECT \\"filteredEvents\\".*,
+  SUM(\\"filteredEvents\\".\\"eventSize\\")
+  OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\")
+  AS \\"totalEventSize\\"
+  FROM (
+    SELECT * FROM \\"event-store\\".\\"events\\"
+    
+    ORDER BY \\"eventId\\" ASC
+    OFFSET 0
+    LIMIT 200
+  ) \\"filteredEvents\\"
+)
+SELECT * FROM \\"cte\\"
+WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+ORDER BY \\"cte\\".\\"eventId\\" ASC",
   },
 ]
 `;
@@ -416,20 +427,21 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "WITH \\"cte\\" AS (
-        SELECT \\"filteredEvents\\".*,
-        SUM(\\"filteredEvents\\".\\"eventSize\\")
-        OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\") AS \\"totalEventSize\\"
-        FROM (
-          SELECT * FROM \\"event-store\\".\\"events\\" 
-          ORDER BY \\"eventId\\" ASC
-          OFFSET 0
-          LIMIT 200
-        ) \\"filteredEvents\\"
-      )
-      SELECT * FROM \\"cte\\"
-      WHERE \\"cte\\".\\"totalEventSize\\" < 512000
-      ORDER BY \\"cte\\".\\"eventId\\" ASC
-      ",
+  SELECT \\"filteredEvents\\".*,
+  SUM(\\"filteredEvents\\".\\"eventSize\\")
+  OVER (ORDER BY \\"filteredEvents\\".\\"eventId\\")
+  AS \\"totalEventSize\\"
+  FROM (
+    SELECT * FROM \\"event-store\\".\\"events\\"
+    
+    ORDER BY \\"eventId\\" ASC
+    OFFSET 0
+    LIMIT 200
+  ) \\"filteredEvents\\"
+)
+SELECT * FROM \\"cte\\"
+WHERE \\"cte\\".\\"totalEventSize\\" < 512000
+ORDER BY \\"cte\\".\\"eventId\\" ASC",
   },
 ]
 `;
