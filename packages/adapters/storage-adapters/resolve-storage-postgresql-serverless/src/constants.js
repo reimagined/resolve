@@ -8,3 +8,4 @@ export const BATCH_SIZE = 100
 
 export const PARTIAL_EVENT_FLAG = Symbol()
 export const DATA_API_ERROR_FLAG = Symbol()
+export const RESPONSE_SIZE_LIMIT = Symbol()
