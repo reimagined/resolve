@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-advanced/native",
-  "version": "0.21.4",
+  "version": "0.21.5",
   "private": true,
   "main": "./index.js",
   "scripts": {
@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.0.0",
-    "@shopping-list-advanced/ui": "0.21.4",
+    "@shopping-list-advanced/ui": "0.21.5",
     "@expo/react-native-action-sheet": "1.1.2",
     "@expo/vector-icons": "10.0.1",
     "expo": "33.0.0",
