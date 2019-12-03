@@ -5,7 +5,7 @@ import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap'
 export default ({ children, staticPath }) => (
   <div>
     <Helmet>
-      <title>reSolve uploader test</title>
+      <title>reSolve image gallery</title>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link rel="stylesheet" href={`${staticPath}/bootstrap.min.css`} />
       <link rel="icon" href={`${staticPath}/favicon.ico`} />
