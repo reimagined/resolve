@@ -41,7 +41,7 @@ class App extends React.Component {
   }
 
   handleGetUrl = () => {
-    fetch('/api/uploader/getFormUpload', {
+    fetch('/api/uploader/getFormUpload?dir=logo', {
       mode: 'no-cors'
     })
       .then(response => response.json())
@@ -53,7 +53,7 @@ class App extends React.Component {
         })
       )
 
-    fetch('/api/uploader/createToken', { mode: 'no-cors' })
+    fetch('/api/uploader/getToken?dir=logo', { mode: 'no-cors' })
       .then(response => response.text())
       .then(result => this.setState({ token: result }))
   }

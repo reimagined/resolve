@@ -25,8 +25,8 @@ void (async () => {
     switch (launchMode) {
       case 'dev': {
         const moduleUploader = resolveModuleUploader({
-          dir: 'logo',
-          expireTime: 3600,
+          publicDirs: ['logo', 'avatar'],
+          expireTime: 604800,
           jwtSecret: 'SECRETJWT'
         })
         const resolveConfig = merge(

@@ -16,6 +16,14 @@ const createModule = options => {
           options
         },
         method: 'GET'
+      },
+      {
+        path: '/api/uploader/getToken',
+        controller: {
+          module: 'resolve-module-uploader/lib/api-handlers/getToken.js',
+          options
+        },
+        method: 'GET'
       }
     ],
     aggregates: [
