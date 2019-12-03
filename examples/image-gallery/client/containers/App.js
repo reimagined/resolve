@@ -1,6 +1,17 @@
 import React from 'react'
-import { Navbar, Image, Button } from 'react-bootstrap'
-import { Helmet } from 'react-helmet'
+import {
+  Form,
+  Input,
+  Label,
+  Button,
+  CardColumns,
+  Card,
+  CardBody,
+  CardImg,
+  CardTitle,
+  FormGroup,
+  CustomInput
+} from 'reactstrap'
 import FileUploadProgress from 'react-fileupload-progress'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -8,20 +19,21 @@ import { connectReadModel } from 'resolve-redux'
 
 import UploaderContext from '../context'
 import * as aggregateActions from '../aggregate_actions'
-import ImageLogo from '../components/Image'
 
 class App extends React.Component {
   state = {
     uploadId: '',
-    token: '',
     uploadUrl: '',
+    token: '',
     staticToken: '',
+    mimeType: '',
+    nameFile: '',
     isHidden: true,
     isLoaded: false
   }
 
   componentDidMount() {
-    fetch('http://localhost:3000/api/uploader/getStaticToken', {
+    fetch('/api/uploader/getStaticToken', {
       mode: 'no-cors'
     })
       .then(response => response.text())
@@ -29,7 +41,7 @@ class App extends React.Component {
   }
 
   handleGetUrl = () => {
-    fetch('http://localhost:3000/api/uploader/getFormUpload', {
+    fetch('/api/uploader/getFormUpload', {
       mode: 'no-cors'
     })
       .then(response => response.json())
@@ -41,73 +53,76 @@ class App extends React.Component {
         })
       )
 
-    fetch('http://localhost:3000/api/uploader/createToken', { mode: 'no-cors' })
+    fetch('/api/uploader/createToken', { mode: 'no-cors' })
       .then(response => response.text())
       .then(result => this.setState({ token: result }))
   }
 
-  render() {
-    const stylesheetLink = {
-      rel: 'stylesheet',
-      type: 'text/css',
-      href: `${this.props.staticPath}/bootstrap.min.css`
-    }
-    const faviconLink = {
-      rel: 'icon',
-      type: 'image/png',
-      href: `${this.props.staticPath}/favicon.ico`
-    }
-    const links = [stylesheetLink, faviconLink]
-    const meta = {
-      name: 'viewport',
-      content: 'width=device-width, initial-scale=1'
-    }
+  handleChange = event => this.setState({ nameFile: event.target.value })
 
+  ref = React.createRef()
+
+  customFormRender = onSubmit => {
+    return (
+      <Form id="customForm">
+        <FormGroup>
+          <Label>File input</Label>
+          <CustomInput type="file" name="file" id="input" innerRef={this.ref} />
+        </FormGroup>
+        <Input
+          type="text"
+          value={this.state.nameFile}
+          placeholder="File name"
+          onChange={this.handleChange}
+        />
+        <br />
+        <Button
+          outline
+          color="success"
+          onClick={(...args) => {
+            this.setState({ mimeType: this.ref.current.files[0].type })
+            onSubmit(...args)
+          }}
+        >
+          Upload
+        </Button>
+      </Form>
+    )
+  }
+
+  formGetter = () => {
+    return new FormData(document.getElementById('customForm'))
+  }
+
+  render() {
     return (
       <div>
-        <div>
-          <Helmet title="reSolve uploader test" link={links} meta={[meta]} />
-          <Navbar>
-            <Navbar.Text>
-              <Image src={`${this.props.staticPath}/resolve-logo.png`} />{' '}
-              Uploader Test
-            </Navbar.Text>
-
-            <Navbar.Collapse>
-              <Navbar.Text pullRight>
-                <Navbar.Link href="https://facebook.com/resolvejs/">
-                  <Image src={`${this.props.staticPath}/fb-logo.png`} />
-                </Navbar.Link>
-              </Navbar.Text>
-
-              <Navbar.Text pullRight>
-                <Navbar.Link href="https://twitter.com/resolvejs">
-                  <Image src={`${this.props.staticPath}/twitter-logo.png`} />
-                </Navbar.Link>
-              </Navbar.Text>
-
-              <Navbar.Text pullRight>
-                <Navbar.Link href="https://github.com/reimagined/resolve">
-                  <Image src={`${this.props.staticPath}/github-logo.png`} />
-                </Navbar.Link>
-              </Navbar.Text>
-            </Navbar.Collapse>
-          </Navbar>
-        </div>
-
-        <div style={{ marginLeft: '2%' }}>
-          <Button style={{ marginBottom: '10px' }} onClick={this.handleGetUrl}>
+        <div style={{ padding: '10px' }}>
+          <Button
+            outline
+            color="primary"
+            style={{ marginBottom: '10px' }}
+            onClick={this.handleGetUrl}
+          >
             Upload file
           </Button>
 
           <div hidden={this.state.isHidden}>
             <FileUploadProgress
               key="file"
-              url={`${this.state.uploadUrl}.png`}
+              url={`${this.state.uploadUrl}&type=${encodeURIComponent(
+                this.state.mimeType
+              )}`}
               method="post"
+              formRenderer={this.customFormRender}
+              formGetter={this.formGetter}
               onLoad={() => {
+                const name =
+                  this.state.nameFile === ''
+                    ? 'Default name'
+                    : this.state.nameFile
                 this.props.createImage(this.state.uploadId, {
-                  name: 'logo',
+                  name,
                   uploadId: this.state.uploadId
                 })
                 this.setState({ isLoaded: true })
@@ -119,7 +134,7 @@ class App extends React.Component {
                 {({ port, host, protocol }) =>
                   this.state.isLoaded ? (
                     <a
-                      href={`${protocol}://${host}:${port}/logo/${this.state.uploadId}.png?token=${this.state.token}`}
+                      href={`${protocol}://${host}:${port}/logo/${this.state.uploadId}?token=${this.state.token}`}
                     >
                       {this.state.uploadId}
                     </a>
@@ -132,24 +147,33 @@ class App extends React.Component {
           </div>
         </div>
 
-        <div>
+        <CardColumns>
           {this.props.data != null
             ? this.props.data.map((image, index) => (
-                <ImageLogo
-                  src={`http://localhost:3001/logo/${image.uploadId}.png?token=${this.state.staticToken}`}
-                  name={image.name}
-                  key={image.uploadId}
-                  index={index}
-                />
+                <Card
+                  bg="light"
+                  style={{
+                    display: 'inline-block',
+                    marginBottom: '15px'
+                  }}
+                  key={index}
+                >
+                  <CardImg
+                    width="300px"
+                    variant="top"
+                    src={`http://localhost:3001/logo/${image.uploadId}?token=${this.state.staticToken}`}
+                  />
+                  <CardBody>
+                    <CardTitle>{`${index + 1}: ${image.name}`}</CardTitle>
+                  </CardBody>
+                </Card>
               ))
-            : 'No images'}
-        </div>
+            : ''}
+        </CardColumns>
       </div>
     )
   }
 }
-
-// export default App
 
 export const mapStateToOptions = () => ({
   readModelName: 'Images',
@@ -161,8 +185,5 @@ export const mapDispatchToProps = dispatch =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
-  connect(
-    null,
-    mapDispatchToProps
-  )(App)
+  connect(null, mapDispatchToProps)(App)
 )

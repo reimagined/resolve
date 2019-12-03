@@ -4,6 +4,7 @@ import { createStore, getOrigin } from 'resolve-redux'
 import { createBrowserHistory } from 'history'
 
 import App from './containers/App'
+import Layout from './components/Layout'
 import UploaderContext from './context'
 
 const entryPoint = ({ rootPath, staticPath, localS3Constants }) => {
@@ -20,9 +21,11 @@ const entryPoint = ({ rootPath, staticPath, localS3Constants }) => {
   const appContainer = document.createElement('div')
   document.body.appendChild(appContainer)
   render(
-    <UploaderContext.Provider value={localS3Constants}>
-      <App staticPath={staticPath} store={store} />
-    </UploaderContext.Provider>,
+    <Layout staticPath={staticPath}>
+      <UploaderContext.Provider value={localS3Constants}>
+        <App staticPath={staticPath} store={store} />
+      </UploaderContext.Provider>
+    </Layout>,
     appContainer
   )
 }
