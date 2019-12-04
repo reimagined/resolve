@@ -23,7 +23,7 @@ const entryPoint = ({ rootPath, staticPath, localS3Constants }) => {
   render(
     <Layout staticPath={staticPath}>
       <UploaderContext.Provider value={localS3Constants}>
-        <App staticPath={staticPath} store={store} />
+        <App store={store} />
       </UploaderContext.Provider>
     </Layout>,
     appContainer

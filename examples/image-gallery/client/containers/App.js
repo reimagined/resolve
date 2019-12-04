@@ -96,81 +96,74 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
-        <div style={{ padding: '10px' }}>
-          <Button
-            outline
-            color="primary"
-            style={{ marginBottom: '10px' }}
-            onClick={this.handleGetUrl}
-          >
-            Upload file
-          </Button>
+      <UploaderContext.Consumer>
+        {({ CDNUrl }) => (
+          <div>
+            <div style={{ padding: '10px' }}>
+              <Button
+                outline
+                color="primary"
+                style={{ marginBottom: '10px' }}
+                onClick={this.handleGetUrl}
+              >
+                Upload file
+              </Button>
 
-          <div hidden={this.state.isHidden}>
-            <FileUploadProgress
-              key="file"
-              url={`${this.state.uploadUrl}&type=${encodeURIComponent(
-                this.state.mimeType
-              )}`}
-              method="post"
-              formRenderer={this.customFormRender}
-              formGetter={this.formGetter}
-              onLoad={() => {
-                const name =
-                  this.state.nameFile === ''
-                    ? 'Default name'
-                    : this.state.nameFile
-                this.props.createImage(this.state.uploadId, {
-                  name,
-                  uploadId: this.state.uploadId
-                })
-                this.setState({ isLoaded: true })
-              }}
-            />
+              <div hidden={this.state.isHidden}>
+                <FileUploadProgress
+                  key="file"
+                  url={`${this.state.uploadUrl}&type=${encodeURIComponent(
+                    this.state.mimeType
+                  )}`}
+                  method="post"
+                  formRenderer={this.customFormRender}
+                  formGetter={this.formGetter}
+                  onLoad={() => {
+                    const name =
+                      this.state.nameFile === ''
+                        ? 'Default name'
+                        : this.state.nameFile
+                    this.props.createImage(this.state.uploadId, {
+                      name,
+                      uploadId: this.state.uploadId
+                    })
+                    this.setState({ isLoaded: true })
+                  }}
+                />
 
-            <h2>
-              <UploaderContext.Consumer>
-                {({ port, host, protocol }) =>
-                  this.state.isLoaded ? (
+                <h2>
+                  {this.state.isLoaded ? (
                     <a
-                      href={`${protocol}://${host}:${port}/logo/${this.state.uploadId}?token=${this.state.token}`}
+                      href={`${CDNUrl}/logo/${this.state.uploadId}?token=${this.state.token}`}
                     >
                       {this.state.uploadId}
                     </a>
                   ) : (
                     ''
-                  )
-                }
-              </UploaderContext.Consumer>
-            </h2>
-          </div>
-        </div>
+                  )}
+                </h2>
+              </div>
+            </div>
 
-        <CardColumns>
-          {this.props.data != null
-            ? this.props.data.map((image, index) => (
-                <Card
-                  bg="light"
-                  style={{
-                    display: 'inline-block',
-                    marginBottom: '15px'
-                  }}
-                  key={index}
-                >
-                  <CardImg
-                    width="300px"
-                    variant="top"
-                    src={`http://localhost:3001/logo/${image.uploadId}?token=${this.state.staticToken}`}
-                  />
-                  <CardBody>
-                    <CardTitle>{`${index + 1}: ${image.name}`}</CardTitle>
-                  </CardBody>
-                </Card>
-              ))
-            : ''}
-        </CardColumns>
-      </div>
+            <CardColumns>
+              {this.props.data != null
+                ? this.props.data.map((image, index) => (
+                    <Card key={index}>
+                      <CardImg
+                        width="300px"
+                        src={`${CDNUrl}/logo/${image.uploadId}?token=${this.state.staticToken}`}
+                      />
+
+                      <CardBody>
+                        <CardTitle>{`${index + 1}: ${image.name}`}</CardTitle>
+                      </CardBody>
+                    </Card>
+                  ))
+                : ''}
+            </CardColumns>
+          </div>
+        )}
+      </UploaderContext.Consumer>
     )
   }
 }

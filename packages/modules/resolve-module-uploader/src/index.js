@@ -10,14 +10,6 @@ const createModule = options => {
         method: 'GET'
       },
       {
-        path: '/api/uploader/createToken',
-        controller: {
-          module: 'resolve-module-uploader/lib/api-handlers/createToken.js',
-          options
-        },
-        method: 'GET'
-      },
-      {
         path: '/api/uploader/getToken',
         controller: {
           module: 'resolve-module-uploader/lib/api-handlers/getToken.js',
