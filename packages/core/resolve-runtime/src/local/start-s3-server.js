@@ -82,9 +82,6 @@ const startS3Server = ({ directory, bucket, port, secretKey }) => {
 
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      if (!fs.existsSync(path.join(bucketPath, req.query.dir))) {
-        fs.mkdirSync(path.join(bucketPath, req.query.dir))
-      }
       cb(null, path.join(bucketPath, req.query.dir))
     },
     filename: (req, file, cb) => {
@@ -97,6 +94,9 @@ const startS3Server = ({ directory, bucket, port, secretKey }) => {
     '/upload',
     (req, res, next) => {
       try {
+        if (!fs.existsSync(path.join(bucketPath, req.query.dir))) {
+          fs.mkdirSync(path.join(bucketPath, req.query.dir))
+        }
         fs.appendFileSync(
           path.join(
             bucketPath,

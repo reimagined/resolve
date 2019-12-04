@@ -1,5 +1,5 @@
 const createModule = options => {
-  const config = {
+  return {
     apiHandlers: [
       {
         path: '/api/uploader/getFormUpload',
@@ -28,8 +28,22 @@ const createModule = options => {
       }
     ]
   }
+}
 
-  return config
+export const getCDNBasedUrl = ({ CDNUrl, dir, uploadId, token }) => {
+  return `${CDNUrl}/${dir}/${uploadId}?token=${token}`
+}
+
+export const getFormUpload = ({ dir }) => {
+  return fetch(`/api/uploader/getFormUpload?dir=${dir}`, {
+    mode: 'no-cors'
+  }).then(response => response.json())
+}
+
+export const getToken = ({ dir }) => {
+  return fetch(`/api/uploader/getToken?dir=${dir}`, {
+    mode: 'no-cors'
+  }).then(response => response.text())
 }
 
 export default createModule

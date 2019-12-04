@@ -16,14 +16,19 @@ import FileUploadProgress from 'react-fileupload-progress'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectReadModel } from 'resolve-redux'
+import {
+  getCDNBasedUrl,
+  getFormUpload,
+  getToken
+} from 'resolve-module-uploader'
 
 import UploaderContext from '../context'
 import * as aggregateActions from '../aggregate_actions'
 
 class App extends React.Component {
   state = {
+    form: {},
     uploadId: '',
-    uploadUrl: '',
     token: '',
     staticToken: '',
     mimeType: '',
@@ -33,29 +38,21 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    fetch('/api/uploader/getStaticToken', {
-      mode: 'no-cors'
-    })
-      .then(response => response.text())
-      .then(result => this.setState({ staticToken: result }))
+    getToken({ dir: 'logo' }).then(token =>
+      this.setState({ staticToken: token })
+    )
   }
 
   handleGetUrl = () => {
-    fetch('/api/uploader/getFormUpload?dir=logo', {
-      mode: 'no-cors'
-    })
-      .then(response => response.json())
-      .then(result =>
-        this.setState({
-          uploadUrl: result.form.url,
-          uploadId: result.uploadId,
-          isHidden: false
-        })
-      )
+    getFormUpload({ dir: 'logo' }).then(result =>
+      this.setState({
+        form: result.form,
+        uploadId: result.uploadId,
+        isHidden: false
+      })
+    )
 
-    fetch('/api/uploader/getToken?dir=logo', { mode: 'no-cors' })
-      .then(response => response.text())
-      .then(result => this.setState({ token: result }))
+    getToken({ dir: 'logo' }).then(token => this.setState({ token }))
   }
 
   handleChange = event => this.setState({ nameFile: event.target.value })
@@ -75,6 +72,17 @@ class App extends React.Component {
           placeholder="File name"
           onChange={this.handleChange}
         />
+        <Input type="hidden" name="Content-Type" value={this.state.mimeType} />
+        {this.state.form.url_fields != null
+          ? Object.keys(this.state.form.url_fields).map((key, index) => (
+              <Input
+                key={index}
+                name={key}
+                value={this.state.form.url_fields[key]}
+                type="hidden"
+              />
+            ))
+          : ''}
         <br />
         <Button
           outline
@@ -112,7 +120,7 @@ class App extends React.Component {
               <div hidden={this.state.isHidden}>
                 <FileUploadProgress
                   key="file"
-                  url={`${this.state.uploadUrl}&type=${encodeURIComponent(
+                  url={`${this.state.form.url}&type=${encodeURIComponent(
                     this.state.mimeType
                   )}`}
                   method="post"
@@ -134,7 +142,12 @@ class App extends React.Component {
                 <h2>
                   {this.state.isLoaded ? (
                     <a
-                      href={`${CDNUrl}/logo/${this.state.uploadId}?token=${this.state.token}`}
+                      href={getCDNBasedUrl({
+                        CDNUrl,
+                        dir: 'logo',
+                        uploadId: this.state.uploadId,
+                        token: this.state.token
+                      })}
                     >
                       {this.state.uploadId}
                     </a>
@@ -151,7 +164,12 @@ class App extends React.Component {
                     <Card key={index}>
                       <CardImg
                         width="300px"
-                        src={`${CDNUrl}/logo/${image.uploadId}?token=${this.state.staticToken}`}
+                        src={getCDNBasedUrl({
+                          CDNUrl,
+                          dir: 'logo',
+                          uploadId: image.uploadId,
+                          token: this.state.staticToken
+                        })}
                       />
 
                       <CardBody>

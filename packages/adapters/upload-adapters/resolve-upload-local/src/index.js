@@ -36,7 +36,8 @@ export const upload = (uploadUrl, filePath) => {
 const createPresignedPost = async ({ host, port, protocol }, dir) => {
   const uploadId = uuid()
   const form = {
-    url: `${protocol}://${host}:${port}/upload?dir=${dir}&uploadId=${uploadId}`
+    url: `${protocol}://${host}:${port}/upload?dir=${dir}&uploadId=${uploadId}`,
+    url_fields: {}
   }
 
   return {
