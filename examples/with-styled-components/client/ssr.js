@@ -5,18 +5,15 @@ import { createStore, AppContainer } from 'resolve-redux'
 import { Helmet } from 'react-helmet'
 import { StyleSheetManager, ServerStyleSheet } from 'styled-components'
 
-import getRootBasedUrl from 'resolve-runtime/lib/common/utils/get-root-based-url'
-import getStaticBasedPath from 'resolve-runtime/lib/common/utils/get-static-based-path'
-import jsonUtfStringify from 'resolve-runtime/lib/common/utils/json-utf-stringify'
-
 import routes from './routes'
 
 const ssrHandler = async (
-  { seedClientEnvs, constants: { rootPath, staticPath } },
+  { seedClientEnvs, constants: { rootPath, staticPath }, utils },
   req,
   res
 ) => {
   try {
+    const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils
     const baseQueryUrl = getRootBasedUrl(rootPath, '/')
     const url = req.path.substring(baseQueryUrl.length)
     const history = createMemoryHistory()

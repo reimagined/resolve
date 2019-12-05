@@ -1,3 +1,5 @@
+import { RESPONSE_SIZE_LIMIT } from './constants'
+
 const loadEvents = async (
   { executeStatement, escapeId, escape, tableName, databaseName },
   {
@@ -42,27 +44,47 @@ const loadEvents = async (
   let countEvents = 0
 
   loop: while (true) {
-    const rows = await executeStatement(
-      `WITH ${escapeId('cte')} AS (
-        SELECT ${escapeId('filteredEvents')}.*,
-        SUM(${escapeId('filteredEvents')}.${escapeId('eventSize')})
-        OVER (ORDER BY ${escapeId('filteredEvents')}.${escapeId(
-        'eventId'
-      )}) AS ${escapeId('totalEventSize')}
-        FROM (
-          SELECT * FROM ${escapeId(databaseName)}.${escapeId(
-        tableName
-      )} ${resultQueryCondition}
-          ORDER BY ${escapeId('eventId')} ASC
-          OFFSET ${+countEvents}
-          LIMIT ${+batchSize}
-        ) ${escapeId('filteredEvents')}
-      )
-      SELECT * FROM ${escapeId('cte')}
-      WHERE ${escapeId('cte')}.${escapeId('totalEventSize')} < 512000
-      ORDER BY ${escapeId('cte')}.${escapeId('eventId')} ASC
-      `
-    )
+    let rows = RESPONSE_SIZE_LIMIT
+    for (
+      let dynamicBatchSize = batchSize;
+      dynamicBatchSize >= 1;
+      dynamicBatchSize = Math.floor(dynamicBatchSize / 1.5)
+    ) {
+      try {
+        rows = await executeStatement(
+          [
+            `WITH ${escapeId('cte')} AS (`,
+            `  SELECT ${escapeId('filteredEvents')}.*,`,
+            `  SUM(${escapeId('filteredEvents')}.${escapeId('eventSize')})`,
+            `  OVER (ORDER BY ${escapeId('filteredEvents')}.${escapeId(
+              'eventId'
+            )})`,
+            `  AS ${escapeId('totalEventSize')}`,
+            `  FROM (`,
+            `    SELECT * FROM ${escapeId(databaseName)}.${escapeId(
+              tableName
+            )}`,
+            `    ${resultQueryCondition}`,
+            `    ORDER BY ${escapeId('eventId')} ASC`,
+            `    OFFSET ${+countEvents}`,
+            `    LIMIT ${+dynamicBatchSize}`,
+            `  ) ${escapeId('filteredEvents')}`,
+            `)`,
+            `SELECT * FROM ${escapeId('cte')}`,
+            `WHERE ${escapeId('cte')}.${escapeId('totalEventSize')} < 512000`,
+            `ORDER BY ${escapeId('cte')}.${escapeId('eventId')} ASC`
+          ].join('\n')
+        )
+        break
+      } catch (error) {
+        if (!/Database response exceeded size limit/.test(error.message)) {
+          throw error
+        }
+      }
+    }
+    if (rows === RESPONSE_SIZE_LIMIT) {
+      throw new Error('Database response exceeded size limit')
+    }
 
     for (const event of rows) {
       if (initialTimestamp == null) {

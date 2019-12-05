@@ -6,10 +6,6 @@ import { createStore, AppContainer } from 'resolve-redux'
 import { Helmet } from 'react-helmet'
 import { StyleSheetManager, ServerStyleSheet } from 'styled-components'
 
-import getRootBasedUrl from 'resolve-runtime/lib/common/utils/get-root-based-url'
-import getStaticBasedPath from 'resolve-runtime/lib/common/utils/get-static-based-path'
-import jsonUtfStringify from 'resolve-runtime/lib/common/utils/json-utf-stringify'
-
 import optimisticShoppingListsSaga from './redux/sagas/optimistic-shopping-lists-saga'
 import optimisticShoppingListsReducer from './redux/reducers/optimistic-shopping-lists'
 
@@ -19,11 +15,12 @@ import optimisticSharingsReducer from './redux/reducers/optimistic-sharings'
 import routes from './routes'
 
 const ssrHandler = async (
-  { constants, seedClientEnvs, viewModels },
+  { constants, seedClientEnvs, viewModels, utils },
   req,
   res
 ) => {
   try {
+    const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils
     const { rootPath, staticPath, jwtCookie } = constants
     const redux = {
       reducers: {

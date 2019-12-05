@@ -1,15 +1,15 @@
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 import { createRenderer } from 'vue-server-renderer'
-import getStaticBasedPath from 'resolve-runtime/lib/common/utils/get-static-based-path'
 import App from './App.vue'
 
 const entryPoint = async (
-  { constants: { rootPath, staticPath }, seedClientEnvs },
+  { constants: { rootPath, staticPath }, seedClientEnvs, utils },
   req,
   res
 ) => {
   try {
+    const { getStaticBasedPath } = utils
     Vue.use(BootstrapVue)
     const renderer = createRenderer()
     const makeStaticPath = getStaticBasedPath.bind(null, rootPath, staticPath)

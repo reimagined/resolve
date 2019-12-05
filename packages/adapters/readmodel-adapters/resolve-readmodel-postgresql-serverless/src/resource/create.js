@@ -1,5 +1,5 @@
 const create = async (pool, options) => {
-  const { connect, disconnect, escapeId, escape } = pool
+  const { connect, disconnect, escapeId } = pool
   const admin = {}
 
   await connect(admin, {
@@ -11,11 +11,6 @@ const create = async (pool, options) => {
 
   await admin.executeStatement(
     [
-      `CREATE USER ${escapeId(options.userLogin)}`,
-      `ALTER USER ${escapeId(options.userLogin)} PASSWORD ${escape(
-        options.userPassword
-      )}`,
-
       `CREATE SCHEMA ${escapeId(options.databaseName)}`,
       `GRANT USAGE ON SCHEMA ${escapeId(options.databaseName)} TO ${escapeId(
         options.userLogin

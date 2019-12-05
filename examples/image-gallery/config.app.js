@@ -13,13 +13,6 @@ const appConfig = {
       connectorName: 'default'
     }
   ],
-  apiHandlers: [
-    {
-      path: '/api/uploader/getStaticToken',
-      controller: 'common/api-handlers/getStaticToken.js',
-      method: 'GET'
-    }
-  ],
   clientEntries: ['client/index.js']
 }
 

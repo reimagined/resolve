@@ -1,6 +1,6 @@
 {
   "name": "shopping-list",
-  "version": "0.20.29",
+  "version": "0.21.5",
   "description": "shows how to work with read-models and view-models",
   "private": true,
   "scripts": {
@@ -30,15 +30,15 @@
     "redux": "4.0.1",
     "redux-devtools-extension": "2.13.7",
     "redux-saga": "1.0.5",
-    "resolve-readmodel-lite": "0.20.29",
-    "resolve-readmodel-mysql": "0.20.29",
-    "resolve-redux": "0.20.29",
-    "resolve-scripts": "0.20.29",
-    "resolve-storage-postgresql-serverless": "0.20.29",
-    "resolve-storage-lite": "0.20.29",
-    "resolve-subscribe-mqtt": "0.20.29",
-    "resolve-subscribe-socket.io": "0.20.29",
-    "resolve-module-admin": "0.20.29",
+    "resolve-readmodel-lite": "0.21.5",
+    "resolve-readmodel-mysql": "0.21.5",
+    "resolve-redux": "0.21.5",
+    "resolve-scripts": "0.21.5",
+    "resolve-storage-postgresql-serverless": "0.21.5",
+    "resolve-storage-lite": "0.21.5",
+    "resolve-subscribe-mqtt": "0.21.5",
+    "resolve-subscribe-socket.io": "0.21.5",
+    "resolve-module-admin": "0.21.5",
     "uuid": "3.3.2"
   },
   "devDependencies": {
@@ -53,7 +53,7 @@
     "enzyme": "3.6.0",
     "jest": "24.1.0",
     "react-test-renderer": "16.7.0",
-    "resolve-testing-tools": "0.20.29",
+    "resolve-testing-tools": "0.21.5",
     "testcafe": "0.23.3",
     "resolve-cloud": "*",
     "isomorphic-fetch": "2.2.1"
