@@ -1,5 +1,6 @@
 function ConcurrentError(aggregateId) {
   Error.call(this)
+  this.code = 409
   this.name = 'ConcurrentError'
 
   this.message = `Can not save the event because aggregate '${aggregateId}' is not actual at the moment. Please retry later.`
