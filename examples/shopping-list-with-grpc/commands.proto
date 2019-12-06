@@ -1,0 +1,27 @@
+syntax = "proto3"; //Specify proto3 version.
+
+package employees; //Optional: unique package name.
+
+service EmployeesService {
+  rpc List (Empty) returns (EmployeeList);
+  rpc Insert (Employee) returns (Empty);
+  rpc Get (EmployeeId) returns (EmployeeList);
+  rpc Remove (EmployeeId) returns (Empty);
+}
+
+// Message Type definition for an Employee.
+message Employee {
+  int32 employee_id = 1;
+  string email = 2;
+  string name = 3;
+}
+
+message EmployeeList {
+  repeated Employee employee = 1;
+}
+
+message EmployeeId {
+  int32 employee_id = 1;
+}
+
+message Empty {}
