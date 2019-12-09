@@ -1,12 +1,13 @@
 {
   "name": "shopping-list",
   "version": "0.21.5",
-  "description": "shows how to work with read-models and view-models",
+  "description": "shows how to work with read-models, view-models and grpc",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
     "cloud": "babel-node ./run.js cloud",
     "dev": "babel-node ./run.js dev",
+    "grpc-test": "babel-node ./run.js grpc-test",
     "start": "babel-node ./run.js start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
     "test:functional": "babel-node ./run.js test:functional",
@@ -39,6 +40,8 @@
     "resolve-subscribe-mqtt": "0.21.5",
     "resolve-subscribe-socket.io": "0.21.5",
     "resolve-module-admin": "0.21.5",
+    "grpc": "1.24.2",
+    "@grpc/proto-loader": "0.5.3",
     "uuid": "3.3.2"
   },
   "devDependencies": {

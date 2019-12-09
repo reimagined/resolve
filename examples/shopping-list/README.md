@@ -1,11 +1,11 @@
-# Shopping List Example
+# Shopping List with gRPC Example
 
 ![shopping-list](https://user-images.githubusercontent.com/19663260/44575926-f3613580-a795-11e8-825f-670c36b843dd.png)
 
-This example demonstrates how to work with [read-models](https://reimagined.github.io/resolve/docs/read-side#read-models) and [view-models](https://reimagined.github.io/resolve/docs/read-side#view-model-specifics).
+This example demonstrates how to work with [read-models](https://reimagined.github.io/resolve/docs/read-side#read-models), [view-models](https://reimagined.github.io/resolve/docs/read-side#view-model-specifics) and [gRPC](https://grpc.github.io/grpc/node/).
 
 ```sh
-npx create-resolve-app resolve-shopping-list -e shopping-list
+npx create-resolve-app resolve-shopping-list -e shopping-list-with-grpc
 ```
 
 ## What's next?
