@@ -1,6 +1,6 @@
 {
   "name": "resolve-command",
-  "version": "0.21.5",
+  "version": "0.21.6",
   "description": "Creates a function that handles commands in a reSolve application.",
   "engines": {
     "node": ">=10.9"
