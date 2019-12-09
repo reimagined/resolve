@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.resolve";
+option java_outer_classname = "ResolveProto";
+option objc_class_prefix = "RTG";
+
+package resolve;
+
+service Resolve {
+  rpc ExecuteCommand(CommandRequest) returns (CommandResponse) {}
+}
+
+message CommandRequest {
+  string aggregateName = 1;
+  string aggregateId = 2;
+  string type = 3;
+  string payload = 4;
+}
+
+message CommandResponse {
+  Error error = 1;
+  Event event = 2;
+}
+
+message Event {
+  string aggregateId = 1;
+  int32 aggregateVersion = 2;
+  string type = 3;
+  int64 timestamp = 4;
+  string payload = 5;
+}
+
+message Error {
+  int32 code = 1;
+  string message = 2;
+  string stack = 3;
+}
+

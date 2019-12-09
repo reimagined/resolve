@@ -18,6 +18,8 @@ import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
+import runGRPCServer from './gRPC/runServer'
+import runGRPCClient from './gRPC/runClient'
 
 const launchMode = process.argv[2]
 
@@ -33,6 +35,14 @@ void (async () => {
           moduleAdmin
         )
 
+        await runGRPCServer({
+          resolveRootPath: '',
+          resolvePort: 3000,
+          resolveHost: '0.0.0.0',
+          grpcHost: '0.0.0.0',
+          grpcPort: '50051'
+        })
+
         await reset(resolveConfig, {
           dropEventStore: false,
           dropSnapshots: true,
@@ -41,6 +51,14 @@ void (async () => {
         })
 
         await watch(resolveConfig)
+        break
+      }
+
+      case 'grpc-test': {
+        await runGRPCClient({
+          grpcHost: '0.0.0.0',
+          grpcPort: '50051'
+        })
         break
       }
 
