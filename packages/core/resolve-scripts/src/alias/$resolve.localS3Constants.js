@@ -3,10 +3,9 @@ export default ({ resolveConfig }) => {
 
   if (resolveConfig.hasOwnProperty('uploadAdapter')) {
     if (resolveConfig.uploadAdapter.module === 'resolve-upload-local') {
-      const { protocol, host, port } = resolveConfig.uploadAdapter.options
       exports.push(
         `const localS3Constants = {
-        CDNUrl: '${protocol}://${host}:${port}'
+        CDNUrl: 'http://localhost:3000/uploader'
       }`,
         ``,
         `export default localS3Constants`

@@ -33,6 +33,7 @@
     "resolve-debug-levels": "0.21.5",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.3.0",
+    "iconv-lite": "0.5.0",
     "mqtt-connection": "^4.0.0",
     "proper-lockfile": "^3.2.0",
     "resolve-api-handler-awslambda": "0.21.5",
@@ -59,7 +60,8 @@
     "multer": "^1.4.2",
     "body-parser": "^1.19.0",
     "crypto": "^1.0.1",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "content-disposition": "^0.5.3"
   },
   "peerDependencies": {
     "resolve-local-event-broker": "*",

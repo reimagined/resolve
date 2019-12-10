@@ -175,25 +175,6 @@ const getWebpackCommonConfigs = ({
     }
   ]
 
-  if (
-    targetMode === 'local' &&
-    resolveConfig.hasOwnProperty('uploadAdapter') &&
-    resolveConfig.uploadAdapter.hasOwnProperty('options') &&
-    resolveConfig.uploadAdapter.options.hasOwnProperty('launchServer') &&
-    resolveConfig.uploadAdapter.options.launchServer
-  ) {
-    commonConfigs.push({
-      ...baseCommonConfig,
-      name: `Server S3`,
-      entry: {
-        'common/local-entry/local-s3-server.js': path.resolve(
-          __dirname,
-          './alias/$resolve.localS3Server.js'
-        )
-      }
-    })
-  }
-
   attachWebpackConfigsClientEntries(
     resolveConfig,
     baseCommonConfig,

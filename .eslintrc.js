@@ -235,6 +235,7 @@ module.exports = {
           'Monorepos',
           'mqtt',
           'multer',
+          'multipart',
           'msg',
           'mysql',
           'namespace',
