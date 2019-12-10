@@ -213,6 +213,7 @@ module.exports = {
           'jsonschema',
           'jsonwebtoken',
           'jwt',
+          'latin1',
           'lan',
           'len',
           'libs',

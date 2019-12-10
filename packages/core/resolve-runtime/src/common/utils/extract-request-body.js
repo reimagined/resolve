@@ -44,6 +44,7 @@ const extractRequestBody = req => {
       }
       const boundaryRegexp = new RegExp(
         `\r?\n--${String(boundary).replace(
+          // eslint-disable-next-line no-useless-escape
           /[-\/\\^$*+?.()|[\]{}]/g,
           '\\$&'
         )}(?:(?:\r?\n)|--)`,
@@ -72,6 +73,7 @@ const extractRequestBody = req => {
           .split(/\r?\n/g)
           .reduce((acc, content) => {
             const [inlineHeaderName, ...inlineHeaderContent] = content.split(
+              // eslint-disable-next-line no-useless-escape
               /\: /g
             )
             const inlineHeaderValue = inlineHeaderContent.join(': ')
