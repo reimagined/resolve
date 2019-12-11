@@ -84,7 +84,7 @@ const uploaderHandler = async (req, res) => {
 
       res.setHeader('Content-Type', metadata['Content-Type'])
       res.setHeader('Content-Disposition', 'inline')
-      res.file(file)
+      res.end(file)
     }
   } catch (err) {
     log.warn('Uploader handler error', err)
