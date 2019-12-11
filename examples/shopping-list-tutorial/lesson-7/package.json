@@ -30,6 +30,8 @@
     "uuid": "3.3.2"
   },
   "devDependencies": {
+    "aws-sdk": "2.587.0",
+    "aws-xray-sdk-core": "2.5.0",
     "@babel/core": "7.0.0",
     "@babel/plugin-proposal-class-properties": "7.0.0",
     "@babel/plugin-proposal-export-default-from": "7.0.0",
