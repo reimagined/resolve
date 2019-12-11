@@ -4,6 +4,7 @@ import commandHandler from './handlers/command-handler'
 import queryHandler from './handlers/query-handler'
 import subscribeHandler from './handlers/subscribe-handler'
 import markupHandler from './handlers/markup-handler'
+import uploaderHandler from './handlers/uploader-handler'
 
 import getRootBasedUrl from './utils/get-root-based-url'
 
@@ -46,6 +47,16 @@ const wrapTrie = (apiHandlers, rootPath) => {
   trie
     .define(getRootBasedUrl(rootPath, '/api/subscribe'))
     .handle('POST', subscribeHandler)
+
+  trie
+    .define(getRootBasedUrl(rootPath, '/uploader'))
+    .handle('POST', uploaderHandler)
+  trie
+    .define(getRootBasedUrl(rootPath, '/uploader'))
+    .handle('PUT', uploaderHandler)
+  trie
+    .define(getRootBasedUrl(rootPath, '/uploader/:dir/:uploadId'))
+    .handle('GET', uploaderHandler)
 
   for (const { method, path, controller } of apiHandlers) {
     trie

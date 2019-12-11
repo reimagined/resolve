@@ -5,9 +5,6 @@ jest.mock('fs')
 describe('resolve-uploader-local', () => {
   let adapter = null
   let originalDateNow
-  const host = 'host'
-  const port = 'port'
-  const protocol = 'protocol'
   const secretKey = 'secretKey'
   const dir = 'dir'
 
@@ -21,9 +18,6 @@ describe('resolve-uploader-local', () => {
 
   beforeEach(() => {
     adapter = createUploadAdapter({
-      host,
-      port,
-      protocol,
       secretKey
     })
   })
@@ -32,7 +26,7 @@ describe('resolve-uploader-local', () => {
     const { uploadUrl, uploadId } = await adapter.createPresignedPut(dir)
 
     expect(uploadUrl).toEqual(
-      `${protocol}://${host}:${port}/upload?dir=${dir}&uploadId=${uploadId}`
+      `http://localhost:3000/uploader?dir=${dir}&uploadId=${uploadId}`
     )
 
     await adapter.upload(uploadUrl, 'path.file')
@@ -42,7 +36,7 @@ describe('resolve-uploader-local', () => {
     const { form, uploadId } = await adapter.createPresignedPost(dir)
 
     expect(form.url).toEqual(
-      `${protocol}://${host}:${port}/upload?dir=${dir}&uploadId=${uploadId}`
+      `http://localhost:3000/uploader?dir=${dir}&uploadId=${uploadId}`
     )
 
     await adapter.uploadFormData(form, 'path.file')
