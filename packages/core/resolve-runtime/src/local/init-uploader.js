@@ -14,7 +14,10 @@ const initUploader = async resolve => {
         getSignedPost: getSignedPost.bind(null, adapter),
         uploadPut: adapter.upload,
         uploadPost: adapter.uploadFormData,
-        createToken: adapter.createToken
+        createToken: adapter.createToken,
+        directory: adapter.directory,
+        bucket: adapter.bucket,
+        secretKey: adapter.secretKey
       }
     })
   }

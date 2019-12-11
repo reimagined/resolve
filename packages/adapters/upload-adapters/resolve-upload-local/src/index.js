@@ -4,9 +4,9 @@ import request from 'request'
 import uuid from 'uuid/v4'
 import crypto from 'crypto'
 
-const createPresignedPut = async ({ host, port, protocol }, dir) => {
+const createPresignedPut = async (pool, dir) => {
   const uploadId = uuid()
-  const uploadUrl = `${protocol}://${host}:${port}/upload?dir=${dir}&uploadId=${uploadId}`
+  const uploadUrl = `http://localhost:3000/uploader?dir=${dir}&uploadId=${uploadId}`
 
   return {
     uploadUrl,
@@ -33,11 +33,11 @@ export const upload = (uploadUrl, filePath) => {
   )
 }
 
-const createPresignedPost = async ({ host, port, protocol }, dir) => {
+const createPresignedPost = async (pool, dir) => {
   const uploadId = uuid()
   const form = {
-    url: `${protocol}://${host}:${port}/upload?dir=${dir}&uploadId=${uploadId}`,
-    url_fields: {}
+    url: `http://localhost:3000/uploader?dir=${dir}&uploadId=${uploadId}`,
+    fields: {}
   }
 
   return {
@@ -83,12 +83,16 @@ const createToken = ({ secretKey }, { dir, expireTime }) => {
 }
 
 const createUploadAdapter = pool => {
+  const { directory, bucket, secretKey } = pool
   return Object.freeze({
     createPresignedPut: createPresignedPut.bind(null, pool),
     createPresignedPost: createPresignedPost.bind(null, pool),
     createToken: createToken.bind(null, pool),
     upload: upload,
-    uploadFormData: uploadFormData
+    uploadFormData: uploadFormData,
+    directory,
+    bucket,
+    secretKey
   })
 }
 
