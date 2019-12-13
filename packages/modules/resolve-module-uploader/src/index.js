@@ -1,11 +1,24 @@
 const createModule = options => {
+  const apiHandlerOptions = options
+  const aggregateOptions = {}
+  const runtimeEnvSymbol = Symbol('@@resolve/runtime_env')
+
+  for (let key of Object.keys(options)) {
+    if (options[key].type && options[key].type.toString() === runtimeEnvSymbol.toString()) {
+      continue
+    }
+    Object.assign(aggregateOptions, {
+      [key]: options[key]
+    })
+  }
+
   return {
     apiHandlers: [
       {
         path: '/api/uploader/getFormUpload',
         controller: {
           module: 'resolve-module-uploader/lib/api-handlers/getFormUpload.js',
-          options
+          options: apiHandlerOptions
         },
         method: 'GET'
       },
@@ -13,7 +26,7 @@ const createModule = options => {
         path: '/api/uploader/getToken',
         controller: {
           module: 'resolve-module-uploader/lib/api-handlers/getToken.js',
-          options
+          options: apiHandlerOptions
         },
         method: 'GET'
       }
@@ -23,7 +36,7 @@ const createModule = options => {
         name: 'Uploader',
         commands: {
           module: 'resolve-module-uploader/lib/aggregates/uploader.commands.js',
-          options
+          options: aggregateOptions
         }
       }
     ]
