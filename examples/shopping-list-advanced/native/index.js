@@ -1,4 +1,5 @@
-import { KeepAwake, AppLoading, Font, registerRootComponent } from 'expo'
+import { AppLoading, registerRootComponent } from 'expo'
+import * as Font from 'expo-font'
 import React from 'react'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import { Ionicons } from '@expo/vector-icons'
@@ -13,10 +14,6 @@ const {
   staticPath,
   resolveRedux: { Providers }
 } = getNativeChunk()
-
-if (process.env.NODE_ENV === 'development') {
-  KeepAwake.activate()
-}
 
 class AppContainer extends React.PureComponent {
   state = {
