@@ -19,7 +19,7 @@
     "react-native-gesture-handler": "1.5.2",
     "redux": "4.0.1",
     "jest": "24.1.0",
-    "jest-expo": "31.0.0",
+    "jest-expo": "36.0.1",
     "expo": "36.0.0",
     "enzyme": "3.7.0",
     "enzyme-adapter-react-16": "1.7.0",
