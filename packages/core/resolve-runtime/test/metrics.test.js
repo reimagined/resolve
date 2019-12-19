@@ -4,17 +4,22 @@ import CloudWatch from 'aws-sdk/clients/cloudwatch'
 const lambdaContext = {
   getRemainingTimeInMillis: jest.fn().mockReturnValue(1000)
 }
+/* eslint-disable no-console */
+const consoleInfoOldHandler = console.info
 
 describe('put metrics', () => {
   beforeAll(async () => {
+    console.info = jest.fn()
     process.env.RESOLVE_DEPLOYMENT_ID = 'deployment-id'
   })
 
   afterAll(async () => {
+    console.info = consoleInfoOldHandler
     delete process.env.RESOLVE_DEPLOYMENT_ID
   })
 
   beforeEach(async () => {
+    console.info.mockClear()
     CloudWatch.putMetricData.mockClear()
     lambdaContext.getRemainingTimeInMillis.mockClear()
   })
@@ -46,6 +51,9 @@ describe('put metrics', () => {
       ],
       Namespace: 'RESOLVE_METRICS'
     })
+    expect(console.info).toBeCalledWith(
+      ['[REQUEST INFO]', 'route', '', 2000].join('\n')
+    )
   })
 
   test('query metric', async () => {
@@ -78,6 +86,14 @@ describe('put metrics', () => {
       ],
       Namespace: 'RESOLVE_METRICS'
     })
+    expect(console.info).toBeCalledWith(
+      [
+        '[REQUEST INFO]',
+        'query',
+        '/deployment-id.resolve.sh/api/query/any',
+        2000
+      ].join('\n')
+    )
   })
 
   test('command metric', async () => {
@@ -110,6 +126,14 @@ describe('put metrics', () => {
       ],
       Namespace: 'RESOLVE_METRICS'
     })
+    expect(console.info).toBeCalledWith(
+      [
+        '[REQUEST INFO]',
+        'command',
+        '/deployment-id.resolve.sh/api/commands/any',
+        2000
+      ].join('\n')
+    )
   })
 
   test('route metric', async () => {
@@ -142,6 +166,14 @@ describe('put metrics', () => {
       ],
       Namespace: 'RESOLVE_METRICS'
     })
+    expect(console.info).toBeCalledWith(
+      [
+        '[REQUEST INFO]',
+        'route',
+        '/deployment-id.resolve.sh/any-route',
+        2000
+      ].join('\n')
+    )
   })
 
   test('subscribe metric', async () => {
@@ -174,6 +206,14 @@ describe('put metrics', () => {
       ],
       Namespace: 'RESOLVE_METRICS'
     })
+    expect(console.info).toBeCalledWith(
+      [
+        '[REQUEST INFO]',
+        'subscribe',
+        '/deployment-id.resolve.sh/api/subscribe',
+        2000
+      ].join('\n')
+    )
   })
 
   test('cold start metric', async () => {
@@ -224,3 +264,4 @@ describe('put metrics', () => {
     })
   })
 })
+/* eslint-enable no-console */
