@@ -1,0 +1,2 @@
+{"timestamp":1570710814622,"aggregateId":"1c33b21f-ea9a-4dea-956d-e803fdbf57d2","aggregateVersion":1,"type":"UserCreated","payload":{"login":"user1", "passwordHash": "7c6a180b36896a0a8c02787eeafb0e4c"}}
+{"timestamp":1570710815970,"aggregateId":"1c33b21f-ea9a-4dea-956d-e803fdbf57d7","aggregateVersion":1,"type":"UserCreated","payload":{"login":"user2", "passwordHash": "6cb75f652a9b52798eb6cf2201057c73"}}

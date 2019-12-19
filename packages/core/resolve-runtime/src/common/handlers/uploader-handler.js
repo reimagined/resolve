@@ -1,9 +1,10 @@
 import debugLevels from 'resolve-debug-levels'
 import fs from 'fs'
 import path from 'path'
+import crypto from 'crypto'
+import fileType from 'file-type'
 
 import extractRequestBody from '../utils/extract-request-body'
-import crypto from 'crypto'
 
 const log = debugLevels('resolve:resolve-runtime:uploader-handler')
 
@@ -12,12 +13,8 @@ const uploaderHandler = async (req, res) => {
     const { directory, bucket, secretKey } = req.resolve.uploader
     const bucketPath = path.join(directory, bucket)
 
-    if (!fs.existsSync(directory)) {
-      fs.mkdirSync(directory)
-    }
-
     if (!fs.existsSync(bucketPath)) {
-      fs.mkdirSync(bucketPath)
+      fs.mkdirSync(bucketPath, { recursive: true })
     }
 
     if (req.method === 'POST' || req.method === 'PUT') {
@@ -25,21 +22,46 @@ const uploaderHandler = async (req, res) => {
 
       const dirName = path.join(directory, bucket, dir)
       if (!fs.existsSync(dirName)) {
-        fs.mkdirSync(dirName)
+        fs.mkdirSync(dirName, { recursive: true })
       }
 
-      const body = extractRequestBody(req)
-      const data = Buffer.from(body.file.contentData, 'latin1')
+      let body = null
+      let data = null
+
+      if (req.method === 'POST') {
+        body = extractRequestBody(req)
+        data = Buffer.from(body.file.contentData, 'latin1')
+
+        fs.appendFileSync(
+          `${dirName}/${uploadId}.metadata`,
+          JSON.stringify({
+            'Content-Type': body.file.contentType
+          })
+        )
+      } else {
+        body = req.body
+        data = Buffer.from(body, 'latin1')
+
+        fs.appendFileSync(
+          `${dirName}/${uploadId}.metadata`,
+          JSON.stringify({
+            'Content-Type':
+              fileType(data) != null ? fileType(data).mime : 'text/plain'
+          })
+        )
+      }
 
       fs.appendFileSync(`${dirName}/${uploadId}`, data)
-      fs.appendFileSync(
-        `${dirName}/${uploadId}.metadata`,
-        JSON.stringify({
-          'Content-Type': body.file.contentType
-        })
-      )
     } else if (req.method === 'GET') {
-      const { dir: requestDir, uploadId } = req.matchedParams
+      const uploadParams = req.matchedParams.params
+      if (uploadParams == null || uploadParams.constructor !== String) {
+        return res.status(403).end('Invalid URL.')
+      }
+
+      const uploadParamsArray = uploadParams.split('/')
+      const requestDir = uploadParamsArray.slice(0, -1).join('/')
+      const [uploadId] = uploadParamsArray.slice(-1)
+
       const { token } = req.query
 
       if (token == null || token === '') {

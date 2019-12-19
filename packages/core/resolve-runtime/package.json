@@ -60,7 +60,8 @@
     "body-parser": "^1.19.0",
     "crypto": "^1.0.1",
     "cors": "^2.8.5",
-    "content-disposition": "^0.5.3"
+    "content-disposition": "^0.5.3",
+    "file-type": "^12.4.0"
   },
   "peerDependencies": {
     "aws-sdk": "*",

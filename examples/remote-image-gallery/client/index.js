@@ -1,0 +1,38 @@
+import React from 'react'
+import { render } from 'react-dom'
+import { createStore, getOrigin } from 'resolve-redux'
+import { createBrowserHistory } from 'history'
+import jsCookie from 'js-cookie'
+import jwt from 'jsonwebtoken'
+
+import App from './containers/App'
+import Layout from './components/Layout'
+
+const entryPoint = ({ rootPath, staticPath }) => {
+  const origin = getOrigin(window.location)
+  const history = createBrowserHistory({ basename: rootPath })
+  const jwtToken = jsCookie.get('jwt')
+  const jwtObject =
+    jwtToken != null && jwtToken.constructor === String
+      ? jwt.decode(jwtToken)
+      : null
+
+  const store = createStore({
+    initialState: { jwt: jwtObject },
+    history,
+    origin,
+    rootPath,
+    isClient: true
+  })
+
+  const appContainer = document.createElement('div')
+  document.body.appendChild(appContainer)
+  render(
+    <Layout staticPath={staticPath} jwt={jwtObject}>
+      <App store={store} />
+    </Layout>,
+    appContainer
+  )
+}
+
+export default entryPoint
