@@ -1,4 +1,3 @@
-
 import putMetrics from '../src/cloud/metrics'
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
 

@@ -74,7 +74,9 @@ const putMetrics = async (
       })
     }
     // eslint-disable-next-line no-console
-    console.info(['[REQUEST INFO]', kind, lambdaEvent.path, duration].join('\n'))
+    console.info(
+      ['[REQUEST INFO]', kind, lambdaEvent.path, duration].join('\n')
+    )
     await cloudWatch.putMetricData(params).promise()
   }
 }
