@@ -1,5 +1,4 @@
 import fs from 'fs'
-import path from 'path'
 import request from 'request'
 import uuid from 'uuid/v4'
 import crypto from 'crypto'
@@ -23,7 +22,7 @@ export const upload = (uploadUrl, filePath) => {
         headers: {
           'Content-Length': fileSizeInBytes
         },
-        uri: uploadUrl.concat(path.extname(filePath)),
+        uri: uploadUrl,
         body: fileStream
       },
       (error, _, body) => {
@@ -52,7 +51,7 @@ export const uploadFormData = (form, filePath) => {
   return new Promise((resolve, reject) =>
     request.post(
       {
-        url: form.url.concat(path.extname(filePath)),
+        url: form.url,
         formData: {
           file: fileStream
         }
@@ -64,7 +63,7 @@ export const uploadFormData = (form, filePath) => {
   )
 }
 
-const createToken = ({ secretKey }, { dir, expireTime }) => {
+const createToken = ({ secretKey }, { dir, expireTime = 3600 }) => {
   const payload = Buffer.from(
     JSON.stringify({
       dir,
