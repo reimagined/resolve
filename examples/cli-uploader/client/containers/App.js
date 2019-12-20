@@ -43,7 +43,7 @@ class App extends React.Component {
       <Login />
     ) : (
       <div>
-        {this.props.files == null
+        {this.props.files == null || this.props.files.length === 0
           ? 'No loaded files'
           : this.props.files.map((file, index) => {
               const { id, userId, projectId, status } = file

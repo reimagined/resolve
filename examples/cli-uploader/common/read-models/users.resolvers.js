@@ -1,5 +1,6 @@
 import md5 from 'md5'
 import jwt from 'jsonwebtoken'
+import jwtSecret from '../jwt_secret'
 
 const getJwtToken = async (store, { login, password }) => {
   const passwordHash = md5(password)
@@ -16,11 +17,7 @@ const getJwtToken = async (store, { login, password }) => {
     throw error
   }
 
-  if (!process.env.hasOwnProperty('JWT_SECRET')) {
-    throw new Error('Environment variable JWT_SECRET not defined')
-  }
-
-  return jwt.sign({ login, passwordHash }, process.env.JWT_SECRET)
+  return jwt.sign({ login, passwordHash }, jwtSecret)
 }
 
 const getUser = async (store, { login }) => {
