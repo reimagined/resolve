@@ -118,7 +118,26 @@ const getWebpackCommonConfigs = ({
     externals: [
       packageJsonWriter,
       ...getModulesDirs().map(modulesDir =>
-        nodeExternals({ modulesDir, whitelist: [/resolve-runtime/] })
+        nodeExternals({
+          modulesDir,
+          importType: moduleName => `((() => {
+              const path = require('path')
+              const requireDirs = ['', 'resolve-runtime/node_modules/']
+              let modulePath = null
+              const moduleName = ${JSON.stringify(moduleName)}
+              for(const dir of requireDirs) {
+                try {
+                  modulePath = require.resolve(path.join(dir, moduleName))
+                  break
+                } catch(err) {}
+              }
+              if(modulePath == null) {
+                throw new Error(\`Module "\${moduleName}" cannot be resolved\`)
+              }
+              return require(modulePath)
+            })())`,
+          whitelist: [/resolve-runtime/]
+        })
       )
     ],
     plugins: []

@@ -30,6 +30,7 @@ const putMetrics = async (
     const duration =
       lambdaRemainingTimeStart - lambdaContext.getRemainingTimeInMillis()
     const now = new Date()
+    const kind = kindByEvent(lambdaEvent)
     const dimensions = [
       {
         Name: 'Deployment Id',
@@ -37,7 +38,7 @@ const putMetrics = async (
       },
       {
         Name: 'Kind',
-        Value: kindByEvent(lambdaEvent)
+        Value: kind
       }
     ]
 
@@ -72,6 +73,10 @@ const putMetrics = async (
         Value: coldStartDuration
       })
     }
+    // eslint-disable-next-line no-console
+    console.info(
+      ['[REQUEST INFO]', kind, lambdaEvent.path, duration].join('\n')
+    )
     await cloudWatch.putMetricData(params).promise()
   }
 }
