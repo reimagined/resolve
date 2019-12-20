@@ -1,25 +1,13 @@
-import jwt from 'jsonwebtoken'
-
-const getFormUpload = ({ jwtSecret }) => async (req, res) => {
+const getFormUpload = () => async (req, res) => {
   const adapter = req.resolve.uploader
   try {
     const { dir } = req.query
-    const post = await adapter.getSignedPost(dir)
+    const signedPost = await adapter.getSignedPost(dir)
 
-    await req.resolve.executeCommand({
-      type: 'createSignedUrl',
-      aggregateId: post.uploadId,
-      aggregateName: 'Uploader',
-      payload: {
-        uploadId: post.uploadId
-      },
-      jwtToken: jwt.sign(post.uploadId, jwtSecret)
-    })
-
-    await res.json(post)
+    await res.json(signedPost)
   } catch (error) {
     await res.status(405)
-    await res.end(error)
+    await res.end(error.toString())
   }
 }
 

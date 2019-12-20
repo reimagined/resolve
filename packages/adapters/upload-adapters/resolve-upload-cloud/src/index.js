@@ -3,20 +3,17 @@ import fs from 'fs'
 import request from 'request'
 import uuid from 'uuid/v4'
 import crypto from 'crypto'
+
 import createCloudFrontDistribution from './resource/createCloudFrontDistribution'
 
 const createPresignedPut = async (
   { s3, bucket, config: { deploymentId } },
-  dir,
-  uploadId = uuid()
+  dir
 ) => {
-  const key =
-    dir !== ''
-      ? `${deploymentId}/${dir}/${uploadId}`
-      : `${deploymentId}/${uploadId}`
+  const uploadId = uuid()
   const uploadUrl = await s3.getSignedUrlPromise('putObject', {
     Bucket: bucket,
-    Key: key
+    Key: `${deploymentId}/${dir}/${uploadId}`
   })
 
   return {
@@ -46,19 +43,15 @@ export const upload = (pool, uploadUrl, filePath) => {
 
 const createPresignedPost = async (
   { s3, bucket, config: { deploymentId } },
-  dir,
-  uploadId = uuid()
+  dir
 ) => {
-  const key =
-    dir !== ''
-      ? `${deploymentId}/${dir}/${uploadId}`
-      : `${deploymentId}/${uploadId}`
+  const uploadId = uuid()
   const form = await new Promise((resolve, reject) => {
     s3.createPresignedPost(
       {
         Bucket: bucket,
         Fields: {
-          Key: key
+          Key: `${deploymentId}/${dir}/${uploadId}`
         }
       },
       (error, data) => {
@@ -94,7 +87,7 @@ export const uploadFormData = (pool, form, filePath) => {
 }
 
 export const createToken = (
-  { config: { deploymentId } },
+  { config: { deploymentId, secretKey } },
   { dir, expireTime }
 ) => {
   const payload = Buffer.from(
@@ -108,7 +101,7 @@ export const createToken = (
     .replace(/=/g, '')
 
   const signature = crypto
-    .createHmac('md5', 'key')
+    .createHmac('md5', secretKey)
     .update(payload)
     .digest('hex')
 
@@ -119,12 +112,12 @@ const createUploadAdapter = config => {
   const {
     accessKeyId,
     secretAccessKey,
-    endpoint,
-    bucket,
     region,
+    bucket,
+    endpoint,
     deploymentId,
     CDN,
-    ...additionalParams
+    secretKey
   } = config
 
   const s3 = new S3({
@@ -135,7 +128,7 @@ const createUploadAdapter = config => {
     endpoint,
     region,
     signatureVersion: 'v4',
-    ...additionalParams
+    useAccelerateEndpoint: true
   })
 
   const pool = { config, s3, bucket }
@@ -147,6 +140,7 @@ const createUploadAdapter = config => {
     uploadFormData: uploadFormData.bind(null, pool),
     deploymentId,
     CDN,
+    secretKey,
     createToken,
     resource: {
       create: createCloudFrontDistribution.bind(null, {
