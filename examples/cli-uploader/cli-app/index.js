@@ -151,7 +151,7 @@ const main = async () => {
   }
 
   pool.jwtToken = JSON.parse(await getJwtToken(pool))
-  console.log(pool.jwtToken)
+
   const files = await readDir(directoryPath)
 
   for (let fileName of files) {
