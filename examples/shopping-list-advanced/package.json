@@ -1,7 +1,7 @@
 {
   "name": "shopping-list-advanced",
   "description": "shows how to work with React-Native",
-  "version": "0.21.9",
+  "version": "0.21.10",
   "private": true,
   "scripts": {
     "dev": "cd web && node ./run.js dev",

@@ -1,6 +1,6 @@
 {
   "name": "resolve-snapshot-mysql",
-  "version": "0.21.9",
+  "version": "0.21.10",
   "description": "An adapter used to save snapshots in MySQL.",
   "engines": {
     "node": ">=10.9"
