@@ -1,5 +1,5 @@
 {
-  "name": "remote-image-gallery",
+  "name": "cli-uploader",
   "version": "0.21.7",
   "description": "used as a template for new reSolve applications",
   "private": true,

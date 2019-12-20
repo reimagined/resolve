@@ -7,7 +7,7 @@ import Form from '../containers/Form'
 export default ({ children, staticPath, jwt }) => (
   <div>
     <Helmet>
-      <title>reSolve image gallery</title>
+      <title>reSolve cli uploader</title>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link rel="stylesheet" href={`${staticPath}/bootstrap.min.css`} />
       <link rel="icon" href={`${staticPath}/favicon.ico`} />
@@ -16,7 +16,7 @@ export default ({ children, staticPath, jwt }) => (
     <Navbar color="light" light expand="md">
       <NavbarBrand className="mr-auto" href="/">
         <img src={`${staticPath}/resolve-logo.png`} alt="resolve-logo" />
-        Remote Image Gallery
+        Cli uploader
       </NavbarBrand>
 
       <Nav navbar>

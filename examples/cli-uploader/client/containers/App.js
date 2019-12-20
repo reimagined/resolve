@@ -27,7 +27,7 @@ class App extends React.Component {
         `/api/uploader/getFileUrl?uploadId=${uploadId}`
       ).then(response => response.text())
 
-      this.linkOpener(`/uploader${url}`)
+      this.linkOpener(`${this.props.CDNUrl}${url}`)
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error)

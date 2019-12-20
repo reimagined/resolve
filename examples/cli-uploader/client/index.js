@@ -8,7 +8,8 @@ import jwt from 'jsonwebtoken'
 import App from './containers/App'
 import Layout from './components/Layout'
 
-const entryPoint = ({ rootPath, staticPath }) => {
+const entryPoint = ({ rootPath, staticPath, localS3Constants }) => {
+  const { CDNUrl } = localS3Constants
   const origin = getOrigin(window.location)
   const history = createBrowserHistory({ basename: rootPath })
   const jwtToken = jsCookie.get('jwt')
@@ -29,7 +30,7 @@ const entryPoint = ({ rootPath, staticPath }) => {
   document.body.appendChild(appContainer)
   render(
     <Layout staticPath={staticPath} jwt={jwtObject}>
-      <App store={store} />
+      <App store={store} CDNUrl={CDNUrl} />
     </Layout>,
     appContainer
   )
