@@ -65,7 +65,7 @@ const saveEvent = async (
       break
     } catch (error) {
       const errorMessage =
-        error != null && error.message == null ? error.message : ''
+        error != null && error.message != null ? error.message : ''
 
       if (errorMessage.indexOf('subquery used as an expression') > -1) {
         throw new Error('Event store is frozen')
