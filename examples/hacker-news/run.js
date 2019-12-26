@@ -153,7 +153,7 @@ void (async () => {
           dropSagas: true
         })
 
-        const importConfig = merge(defaultResolveConfig, devConfig, {
+        const importConfig = merge(baseConfig, devConfig, {
           eventBroker: { launchBroker: false },
           apiHandlers: [
             {
