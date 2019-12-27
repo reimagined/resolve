@@ -1,3 +1,8 @@
+import { EOL } from 'os'
+import debugLevels from 'resolve-debug-levels'
+
+const log = debugLevels('resolve:resolve-query:wrap-read-model')
+
 const RESERVED_TIME = 30 * 1000
 const TIMEOUT_SYMBOL = Symbol('TIMEOUT_SYMBOL')
 
@@ -196,19 +201,47 @@ const updateByEvents = async (pool, events, getRemainingTimeInMillis) => {
 
     await wrapConnection(pool, async connection => {
       try {
+        log.verbose(
+          `Applying ${events.length} events to read-model "${readModelName}" started`
+        )
+
         for (const event of events) {
           const remainingTime = getRemainingTimeInMillis() - RESERVED_TIME
+          log.verbose(
+            `Remaining time for feeding read-model "${readModelName}" is ${remainingTime} ms`
+          )
+
           if (remainingTime < 0) {
+            log.verbose(
+              `Stop applying events to read-model "${readModelName}" via timeout`
+            )
             break
           }
 
           if (event.type === 'Init') {
-            await handler(connection, event)
-            continue
+            try {
+              log.verbose(
+                `Applying "Init" event to read-model "${readModelName}" started`
+              )
+              await handler(connection, event)
+              log.verbose(
+                `Applying "Init" event to read-model "${readModelName}" succeed`
+              )
+              continue
+            } catch (error) {
+              log.verbose(
+                `Applying "Init" event to read-model "${readModelName}" failed`,
+                error
+              )
+              throw error
+            }
           }
 
           let timer = null
           try {
+            log.verbose(
+              `Applying "${event.type}" event to read-model "${readModelName}" started`
+            )
             if (typeof pool.connector.beginTransaction === 'function') {
               await pool.connector.beginTransaction(
                 connection,
@@ -232,18 +265,47 @@ const updateByEvents = async (pool, events, getRemainingTimeInMillis) => {
                 pool.readModel.name
               )
             }
-          } catch (error) {
+
+            log.verbose(
+              `Applying "${event.type}" event to read-model "${readModelName}" succeed`
+            )
+          } catch (readModelError) {
+            log.verbose(
+              `Applying "${event.type}" event to read-model "${readModelName}" failed`,
+              readModelError
+            )
+            let rollbackError = null
             if (typeof pool.connector.rollbackTransaction === 'function') {
-              await pool.connector.rollbackTransaction(
-                connection,
-                pool.readModel.name
-              )
+              try {
+                await pool.connector.rollbackTransaction(
+                  connection,
+                  pool.readModel.name
+                )
+              } catch (error) {
+                rollbackError = error
+              }
             }
 
-            if (error !== TIMEOUT_SYMBOL) {
-              throw error
-            } else {
+            const summaryError = new Error()
+            summaryError.message = readModelError.message
+            summaryError.stack = readModelError.stack
+
+            if (rollbackError != null) {
+              summaryError.message = `${summaryError.message}${EOL}${rollbackError.message}`
+              summaryError.stack = `${summaryError.stack}${EOL}${rollbackError.stack}`
+            }
+
+            if (readModelError === TIMEOUT_SYMBOL && rollbackError == null) {
+              log.verbose(
+                `Ignoring error for feeding read-model "${readModelName}" via timeout`
+              )
               break
+            } else {
+              log.verbose(
+                `Throwing error for feeding read-model "${readModelName}"`,
+                summaryError
+              )
+              throw summaryError
             }
           } finally {
             clearTimeout(timer)

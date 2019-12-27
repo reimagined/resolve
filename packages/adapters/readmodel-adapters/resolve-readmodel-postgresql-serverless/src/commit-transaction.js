@@ -1,13 +1,28 @@
-const commitTransaction = async pool => {
-  await pool.rdsDataService
-    .commitTransaction({
-      resourceArn: pool.dbClusterOrInstanceArn,
-      secretArn: pool.awsSecretStoreArn,
-      transactionId: pool.transactionId
-    })
-    .promise()
+import debugLevels from 'resolve-debug-levels'
 
-  pool.transactionId = null
+const log = debugLevels(
+  'resolve:resolve-readmodel-postgresql-serverless:commit-transaction'
+)
+
+const commitTransaction = async pool => {
+  try {
+    log.verbose('Commit transaction to postgresql database started')
+    await pool.rdsDataService
+      .commitTransaction({
+        resourceArn: pool.dbClusterOrInstanceArn,
+        secretArn: pool.awsSecretStoreArn,
+        transactionId: pool.transactionId
+      })
+      .promise()
+
+    log.verbose('Commit transaction to postgresql database succeed')
+  } catch (error) {
+    log.verbose('Commit transaction to postgresql database failed', error)
+
+    throw error
+  } finally {
+    pool.transactionId = null
+  }
 }
 
 export default commitTransaction
