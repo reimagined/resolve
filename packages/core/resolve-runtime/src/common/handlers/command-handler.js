@@ -8,8 +8,6 @@ import message from '../message'
 
 const log = debugLevels('resolve:resolve-runtime:command-handler')
 
-const CONCURRENT_RETRY_COUNT = 3
-
 const commandHandler = async (req, res) => {
   const segment = req.resolve.performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('command')
@@ -20,23 +18,16 @@ const commandHandler = async (req, res) => {
     let lastError = null
     let event = null
 
-    for (let i = 0; i < CONCURRENT_RETRY_COUNT; i++) {
-      try {
-        event = await executeCommand({ ...commandArgs, jwtToken: req.jwtToken })
-        lastError = null
-        break
-      } catch (error) {
-        lastError = error
-        if (error instanceof ConcurrentError) {
-          error.code = 408
-        } else {
-          break
-        }
-      }
+    try {
+      event = await executeCommand({ ...commandArgs, jwtToken: req.jwtToken })
+    } catch (error) {
+      lastError = error
     }
 
     if (lastError != null) {
-      if (lastError instanceof CommandError) {
+      if (lastError instanceof ConcurrentError) {
+        lastError.code = 408
+      } else if (lastError instanceof CommandError) {
         lastError.code = 400
       }
 
