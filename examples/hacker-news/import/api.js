@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import dns from 'dns'
+import path from 'path'
 
 const timeout = 15000
 
@@ -39,7 +40,8 @@ const fetchWithRetry = url => {
       let error
       for (let retry = 0; retry <= 5; retry++) {
         try {
-          resolve(await fetchSingle(url))
+          const result = await fetchSingle(url)
+          resolve(result)
         } catch (err) {
           error = err
         }
@@ -59,7 +61,10 @@ const invokeImportApi = async body => {
       while (loop) {
         try {
           const response = await fetch(
-            `http://localhost:${process.env.PORT}${process.env.ROOT_PATH}/api/import_events`,
+            `http://localhost:${path.join(
+              process.env.PORT,
+              process.env.ROOT_PATH
+            )}/api/import_events`,
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
