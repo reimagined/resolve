@@ -153,12 +153,12 @@ void (async () => {
           dropSagas: true
         })
 
-        const importConfig = merge(baseConfig, devConfig, {
+        const importConfig = merge(defaultResolveConfig, devConfig, {
           eventBroker: { launchBroker: false },
           apiHandlers: [
             {
               method: 'POST',
-              path: 'import_events',
+              path: '/api/import_events',
               controller: {
                 module: 'import/import_api_handler.js',
                 options: {}
@@ -166,6 +166,8 @@ void (async () => {
             }
           ]
         })
+        importConfig.readModelConnectors = {}
+        importConfig.schedulers = {}
 
         await build(importConfig)
 
