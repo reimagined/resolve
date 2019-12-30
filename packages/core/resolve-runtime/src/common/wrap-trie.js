@@ -66,7 +66,7 @@ const wrapTrie = (apiHandlers, rootPath) => {
 
   try {
     trie
-      .define(getRootBasedUrl(rootPath, '/:markup'))
+      .define(getRootBasedUrl(rootPath, '/:markup*'))
       .handle('GET', markupHandler)
   } catch (e) {}
 
