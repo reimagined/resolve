@@ -15,7 +15,7 @@ Type the following command to install the reSolve cloud CLI to your application.
 yarn global add resolve-cloud
 ```
 
-After this, use the CLI to authenticate to the reSolve Cloud Platform:
+The next step is to use the CLI to authenticate to the reSolve Cloud Platform:
 
 ```bash
 resolve-cloud login
