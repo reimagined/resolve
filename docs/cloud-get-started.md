@@ -21,7 +21,7 @@ The next step is to use the CLI to authenticate to the reSolve Cloud Platform:
 resolve-cloud login
 ```
 
-The CLI will ask you for you account credential and establish an authentication session.
+The CLI will ask you for you account credentials and establish an authentication session.
 
 ## Create a ReSolve Application
 
