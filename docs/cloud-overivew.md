@@ -31,4 +31,4 @@ By default, a reSolve application is configured to store its cloud-specific sett
 
 ## Limits
 
-The reSolve Cloud Platform allows you to assign no more then 3 SSL certificates to your account. Contact us if you need to go over this limitation.
+The reSolve Cloud Platform allows you to assign no more than 3 SSL certificates to your account. [Contact us](https://github.com/reimagined/resolve#loudspeaker-get-in-touch) if you need to go over this limitation.
