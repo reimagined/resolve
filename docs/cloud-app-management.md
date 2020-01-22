@@ -65,7 +65,7 @@ z6ze1aqfuedw54qa0gp58xu6ov     shopping-list    0.0.0         myemail@example.co
 f3vck8svysxfx0wu9umug2vefiv0   my-app           0.10.0        myemail@example.com  -> 0.11.0
 ```
 
-This output also provides information on what applications can be upgraded to a newer runtime. To upgrade an application's runtime to the latest minor within the current major version, type:
+This output also provides information on what applications can be upgraded to a newer runtime. To upgrade an application's runtime to the latest minor version within the current major version, type:
 
 ```bash
 $ resolve-cloud upgrade <app-id>
@@ -81,7 +81,7 @@ The runtime version should be specified in the SemVer format.
 
 ## Enable Logging
 
-For logging to work, make sure to enable the correct debug levels for your application. See the [Debugging](debugging.md) topic for more information.
+ReSolve groups debug messages into debug levels based on their urgency. Make sure to enable the correct debug levels for your application. See the [Debugging](debugging.md) topic for more information.
 
 Use the reSolve Cloud CLI's `logs get` command to obtain logs:
 
