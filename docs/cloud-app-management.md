@@ -13,7 +13,7 @@ After you [deploy a reSolve application](cloud-get-started.md#deploy-the-applica
 
    ```sh
    $ resolve-cloud domains add <your domain name>
-   To verify your domain add a "_resolve-challenge" TXT record with the <your_verification_code> value to your DNS
+   To verify your domain, add a "_resolve-challenge" TXT record with the <your_verification_code> value to your DNS.
    ```
 
 2) After the previous command is executed, the CLI asks you to add a verification record to your domain zone. Follow this instruction and add the DNS record.
