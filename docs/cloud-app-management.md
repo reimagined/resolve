@@ -103,7 +103,7 @@ To view the list of all generated traces:
 $ resolve-cloud tracing summary <deployment>
 ```
 
-To view details of particular trace:
+To view the details of a particular trace:
 
 ```
 $ resolve-cloud tracing get <deployment> <trace Id>
