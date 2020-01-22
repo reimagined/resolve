@@ -25,7 +25,7 @@ The CLI will ask you for you account credentials and establish an authentication
 
 ## Create a ReSolve Application
 
-Create a reSolve application. For this tutorial, you can use one of examples that come with the reSolve framework.
+Create a reSolve application. For this tutorial, you can use one of the examples that come with the reSolve framework.
 
 ```bash
 create resolve-app my-app -e shopping-list
