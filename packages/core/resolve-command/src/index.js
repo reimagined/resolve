@@ -268,6 +268,29 @@ const getAggregateState = async (
   }
 }
 
+const isInteger = val =>
+  val != null && val.constructor === Number && parseInt(val) === val
+const isString = val => val != null && val.constructor === String
+
+const saveEvent = async (eventStore, event) => {
+  if (!isString(event.type)) {
+    throw new Error('The `type` field is invalid')
+  }
+  if (!isString(event.aggregateId)) {
+    throw new Error('The `aggregateId` field is invalid')
+  }
+  if (!isInteger(event.aggregateVersion)) {
+    throw new Error('The `aggregateVersion` field is invalid')
+  }
+  if (!isInteger(event.timestamp)) {
+    throw new Error('The `timestamp` field is invalid')
+  }
+
+  event.aggregateId = String(event.aggregateId)
+
+  return await eventStore.saveEvent(event)
+}
+
 const executeCommand = async (pool, { jwtToken, ...command }) => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
@@ -365,7 +388,7 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
       const subSegment = segment ? segment.addNewSubsegment('saveEvent') : null
 
       try {
-        return await pool.eventStore.saveEvent(processedEvent)
+        return await saveEvent(pool.eventStore, processedEvent)
       } catch (error) {
         if (subSegment != null) {
           subSegment.addError(error)

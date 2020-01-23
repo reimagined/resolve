@@ -40,8 +40,11 @@ describe('Cloud entry', () => {
 
     storageAdapter = {
       loadEvents: jest.fn(),
+      getLatestEvent: jest.fn(),
       saveEvent: jest.fn(),
-      dispose: jest.fn()
+      dispose: jest.fn(),
+      import: jest.fn(),
+      export: jest.fn()
     }
 
     snapshotAdapter = {
