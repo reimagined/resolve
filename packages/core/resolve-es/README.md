@@ -10,7 +10,6 @@ When initializing an event store, pass the following arguments:
 
 #### `storage`  
 Use a reSolve framework [adapter](../../adapters/storage-adapters)
-* [resolve-storage-dynamo](../../adapters/storage-adapters/resolve-storage-dynamo)
 * [resolve-storage-lite](../../adapters/storage-adapters/resolve-storage-lite)
 * [resolve-storage-mongo](../../adapters/storage-adapters/resolve-storage-mongo)
 * [resolve-storage-mysql](../../adapters/storage-adapters/resolve-storage-mysql)
@@ -22,9 +21,9 @@ The hook function after calling "eventStore.saveEvent"
 ```js
 // Import and initializtion
 import createEventStore from 'resolve-es'
-import createInFileStorageAdapter from 'resolve-storage-lite'
+import createStorageLiteAdapter from 'resolve-storage-lite'
 
-const storage = createInFileStorageAdapter({ databaseFile: './data/event-store.db' })
+const storage = createStorageLiteAdapter({ databaseFile: './data/event-store.db' })
 
 const publishEvent = async (event) => {
   console.log(event) // Send event to subscribers
@@ -38,7 +37,6 @@ const eventStore = createEventStore({
 // Load events
 const eventHandler = async event => {
   console.log('Event from eventstore', event)
-  // Event store is waiting for event processing so overflow will not occur
   await processEvent(event)
 }
 
