@@ -7,7 +7,7 @@ reSolve Cloud CLI is a console tool that allows you to deploy an application to 
 
 ## Install ReSolve CLoud CLI
 
-ReSolve Cloud CLI is [available on NPM](https://www.npmjs.com/package/resolve-cloud). You can install it as shown bellow:
+ReSolve Cloud CLI is [available on NPM](https://www.npmjs.com/package/resolve-cloud). You can install it as shown below:
 
 ```bash
 yarn global add resolve-cloud
