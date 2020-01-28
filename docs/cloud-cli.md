@@ -3,7 +3,7 @@ id: cloud-cli
 title: reSolve Cloud CLI
 ---
 
-The reSolve Cloud CLI is a console tool that allows you to deploy an application to the cloud and manage all aspects of the deployed application's functionality.
+reSolve Cloud CLI is a console tool that allows you to deploy an application to the cloud and manage the deployed application's functionality.
 
 ## Install ReSolve CLoud CLI
 
@@ -15,7 +15,7 @@ yarn global add resolve-cloud
 
 ## Usage
 
-Use the following console inputs to login to the reSolve Cloud Platform and deploy an application:
+Use the following console inputs to log into the reSolve Cloud Platform and deploy an application:
 
 ```bash
 yarn create resolve-app resolve-app
@@ -25,7 +25,7 @@ resolve-cloud login
 resolve-cloud deploy
 ```
 
-The platform assigns a unique ID to an application's deployment. You can use this ID to view information about the deployment or manage the deployment's settings:
+The platform assigns a unique ID to an application's deployment. You can use this ID to view information about the deployment or change the deployment's settings:
 
 ```bash
 resolve-cloud describe <deploymentId>
@@ -36,7 +36,7 @@ resolve-cloud remove <deploymentId>
 
 ## View Help
 
-Use the `--help` option to view embedded help on the CLI or one of its commands:
+Use the `--help` option to view embedded help on the CLI or its commands:
 
 ```bash
 resolve-cloud --help
