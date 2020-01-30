@@ -1,6 +1,6 @@
 {
   "name": "resolve-api-handler-awslambda",
-  "version": "0.21.14",
+  "version": "0.21.15",
   "description": "An AWS Lambda adapter for reSolve API handlers.",
   "engines": {
     "node": ">=10.9"

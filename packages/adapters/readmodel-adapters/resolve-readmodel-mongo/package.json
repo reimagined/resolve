@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-mongo",
-  "version": "0.21.14",
+  "version": "0.21.15",
   "description": "An adapter the resolve-query uses to store the read model state in MongoDB",
   "engines": {
     "node": ">=10.9"
@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "mongodb": "^3.1.4",
-    "resolve-readmodel-base": "0.21.14",
+    "resolve-readmodel-base": "0.21.15",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
