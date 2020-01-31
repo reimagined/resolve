@@ -6,6 +6,12 @@ const prodConfig = {
   mode: 'production',
   rootPath: '',
   staticPath: 'static',
+  storageAdapter: {
+    module: 'resolve-storage-lite',
+    options: {
+      databaseFile: 'data/event-store.db'
+    }
+  },
   staticDir: 'static',
   distDir: 'dist'
 }
