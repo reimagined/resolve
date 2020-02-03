@@ -52,6 +52,11 @@ for (const { describeName, prepare } of [
           for (const event of events) {
             await handler(event)
           }
+        },
+        getNextCursor: (prevCursor, events) => {
+          return `${prevCursor == null ? '' : prevCursor}${events.map(e =>
+            Buffer.from(JSON.stringify(e)).toString('base64')
+          )}`
         }
       }
 
@@ -191,7 +196,7 @@ for (const { describeName, prepare } of [
             'viewModelName-invariantHash;id1',
             {
               aggregatesVersionsMap: [['id1', 1]],
-              lastTimestamp: 0,
+              cursor: expect.any(String),
               state: JSON.stringify({ value: 10 }, null, 2)
             }
           )
@@ -199,7 +204,7 @@ for (const { describeName, prepare } of [
             'viewModelName-invariantHash;id1',
             {
               aggregatesVersionsMap: [['id1', 2]],
-              lastTimestamp: 1,
+              cursor: expect.any(String),
               state: JSON.stringify({ value: 15 }, null, 2)
             }
           )
@@ -207,7 +212,7 @@ for (const { describeName, prepare } of [
             'viewModelName-invariantHash;id1',
             {
               aggregatesVersionsMap: [['id1', 3]],
-              lastTimestamp: 2,
+              cursor: expect.any(String),
               state: JSON.stringify({ value: 7 }, null, 2)
             }
           )
@@ -258,7 +263,7 @@ for (const { describeName, prepare } of [
             'viewModelName-invariantHash;id2',
             {
               aggregatesVersionsMap: [['id2', 1]],
-              lastTimestamp: 3,
+              cursor: expect.any(String),
               state: JSON.stringify({ value: 5 }, null, 2)
             }
           )
@@ -266,7 +271,7 @@ for (const { describeName, prepare } of [
             'viewModelName-invariantHash;id2',
             {
               aggregatesVersionsMap: [['id2', 2]],
-              lastTimestamp: 4,
+              cursor: expect.any(String),
               state: JSON.stringify({ value: 7 }, null, 2)
             }
           )
@@ -274,7 +279,7 @@ for (const { describeName, prepare } of [
             'viewModelName-invariantHash;id2',
             {
               aggregatesVersionsMap: [['id2', 3]],
-              lastTimestamp: 5,
+              cursor: expect.any(String),
               state: JSON.stringify({ value: 4 }, null, 2)
             }
           )
@@ -623,7 +628,7 @@ for (const { describeName, prepare } of [
             'viewModelName-invariantHash;id1',
             {
               aggregatesVersionsMap: [['id1', 1]],
-              lastTimestamp: 0,
+              cursor: expect.any(String),
               state: JSON.stringify({ value: 10 }, null, 2)
             }
           )
@@ -631,7 +636,7 @@ for (const { describeName, prepare } of [
             'viewModelName-invariantHash;id1',
             {
               aggregatesVersionsMap: [['id1', 2]],
-              lastTimestamp: 1,
+              cursor: expect.any(String),
               state: JSON.stringify({ value: 15 }, null, 2)
             }
           )
@@ -639,7 +644,7 @@ for (const { describeName, prepare } of [
             'viewModelName-invariantHash;id1',
             {
               aggregatesVersionsMap: [['id1', 3]],
-              lastTimestamp: 2,
+              cursor: expect.any(String),
               state: JSON.stringify({ value: 7 }, null, 2)
             }
           )
@@ -697,7 +702,7 @@ for (const { describeName, prepare } of [
             'viewModelName-invariantHash;id2',
             {
               aggregatesVersionsMap: [['id2', 1]],
-              lastTimestamp: 3,
+              cursor: expect.any(String),
               state: JSON.stringify({ value: 5 }, null, 2)
             }
           )
@@ -705,7 +710,7 @@ for (const { describeName, prepare } of [
             'viewModelName-invariantHash;id2',
             {
               aggregatesVersionsMap: [['id2', 2]],
-              lastTimestamp: 4,
+              cursor: expect.any(String),
               state: JSON.stringify({ value: 7 }, null, 2)
             }
           )
@@ -713,7 +718,7 @@ for (const { describeName, prepare } of [
             'viewModelName-invariantHash;id2',
             {
               aggregatesVersionsMap: [['id2', 3]],
-              lastTimestamp: 5,
+              cursor: expect.any(String),
               state: JSON.stringify({ value: 4 }, null, 2)
             }
           )

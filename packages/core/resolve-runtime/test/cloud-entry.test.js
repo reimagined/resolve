@@ -40,6 +40,7 @@ describe('Cloud entry', () => {
 
     storageAdapter = {
       loadEvents: jest.fn(),
+      getNextCursor: jest.fn(),
       getLatestEvent: jest.fn(),
       saveEvent: jest.fn(),
       dispose: jest.fn(),
@@ -357,7 +358,7 @@ describe('Cloud entry', () => {
       expect(JSON.parse(result.body)).toEqual({
         aggregateId: 'aggregateId',
         aggregateVersion: 1,
-        timestamp: 0,
+        timestamp: 1,
         type: 'SET',
         payload: {
           key: 'key1',
@@ -368,7 +369,7 @@ describe('Cloud entry', () => {
       expect(storageAdapter.saveEvent).toBeCalledWith({
         aggregateId: 'aggregateId',
         aggregateVersion: 1,
-        timestamp: 0,
+        timestamp: 1,
         type: 'SET',
         payload: {
           key: 'key1',
