@@ -1,7 +1,7 @@
 {
   "name": "resolve-storage-postgresql",
   "version": "0.21.14",
-  "description": "An adapter reSolve uses to store events in PostgreSQL Serverless.",
+  "description": "An adapter reSolve uses to store events in PostgreSQL.",
   "engines": {
     "node": ">=10.9"
   },
@@ -23,7 +23,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-postgresql-serverless#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-postgresql#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "resolve-storage-base": "0.21.14",
