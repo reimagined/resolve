@@ -3,13 +3,23 @@ const saveEventOnly = async function(
   event
 ) {
   await connection.query(
-    `INSERT INTO ${escapeId(tableName)}(
+    `START TRANSACTION;
+    SET @selectedThreadId = FLOOR(RAND() * 256);
+    INSERT INTO ${escapeId(tableName)}(
+      ${escapeId('threadId')},
+      ${escapeId('threadCounter')},
       ${escapeId('timestamp')},
       ${escapeId('aggregateId')},
       ${escapeId('aggregateVersion')},
       ${escapeId('type')},
       ${escapeId('payload')}
     ) VALUES(
+      @selectedThreadId,
+      COALESCE(
+        (SELECT MAX(${escapeId('threadCounter')}) FROM ${escapeId(tableName)}
+        WHERE ${escapeId('threadId')} = @selectedThreadId) + 1,
+        0
+      ),
       ${+event.timestamp},
       ${escape(event.aggregateId)},
       ${+event.aggregateVersion},
@@ -19,7 +29,8 @@ const saveEventOnly = async function(
           ? escape(JSON.stringify(event.payload))
           : escape('null')
       } AS JSON))
-    )`
+    );
+    COMMIT;`
   )
 }
 

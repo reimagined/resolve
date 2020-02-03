@@ -17,18 +17,18 @@ const paginateEvents = async (pool, offset, batchSize) => {
           `  SELECT ${escapeId('filteredEvents')}.*,`,
           `  SUM(${escapeId('filteredEvents')}.${escapeId('eventSize')})`,
           `  OVER (ORDER BY ${escapeId('filteredEvents')}.${escapeId(
-            'eventId'
+            'timestamp'
           )}) AS ${escapeId('totalEventSize')}`,
           `  FROM (`,
           `    SELECT * FROM ${escapeId(databaseName)}.${escapeId(tableName)}`,
-          `    ORDER BY ${escapeId('eventId')} ASC`,
+          `    ORDER BY ${escapeId('timestamp')} ASC`,
           `    OFFSET ${offset}`,
           `    LIMIT ${+dynamicBatchSize}`,
           `  ) ${escapeId('filteredEvents')}`,
           `)`,
           `SELECT * FROM ${escapeId('cte')}`,
           `WHERE ${escapeId('cte')}.${escapeId('totalEventSize')} < 512000`,
-          `ORDER BY ${escapeId('cte')}.${escapeId('eventId')} ASC`
+          `ORDER BY ${escapeId('cte')}.${escapeId('timestamp')} ASC`
         ].join(' ')
       )
       break
@@ -42,8 +42,11 @@ const paginateEvents = async (pool, offset, batchSize) => {
     throw new Error('Database response exceeded size limit')
   }
 
+  let eventOffset = 0
   for (const event of rows) {
     event.payload = JSON.parse(event.payload)
+    event[Symbol.for('sequenceIndex')] = offset + eventOffset
+    eventOffset++
 
     delete event.totalEventSize
     delete event.eventSize

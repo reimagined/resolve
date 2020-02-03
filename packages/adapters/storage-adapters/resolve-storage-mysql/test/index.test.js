@@ -56,7 +56,7 @@ describe('resolve-storage-mysql', () => {
   test('"loadEvents" should load events', async () => {
     const loadFilters = [
       {},
-      { maxEventsByTimeframe: 1 },
+      { limit: 1 },
       { eventTypes: ['eventType'] },
       { aggregateIds: ['aggregateId'] },
       { startTime: 1, finishTime: 3 }

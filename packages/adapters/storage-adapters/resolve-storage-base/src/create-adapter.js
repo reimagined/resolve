@@ -6,7 +6,8 @@ const createAdapter = (
     wrapDispose,
     validateEventFilter,
     importStream,
-    exportStream
+    exportStream,
+    getNextCursor
   },
   {
     connect,
@@ -55,7 +56,8 @@ const createAdapter = (
     dispose: wrapDispose(pool, dispose),
     isFrozen: wrapMethod(pool, isFrozen),
     freeze: wrapMethod(pool, freeze),
-    unfreeze: wrapMethod(pool, unfreeze)
+    unfreeze: wrapMethod(pool, unfreeze),
+    getNextCursor: getNextCursor.bind(null)
   }
 
   Object.assign(pool, adapter)

@@ -9,12 +9,12 @@ import {
   BATCH_SIZE
 } from './constants'
 
-function EventStream({ pool, maintenanceMode, byteOffset, eventId }) {
+function EventStream({ pool, maintenanceMode, byteOffset, sequenceIndex }) {
   stream.Writable.call(this, { objectMode: true })
 
   this.pool = pool
   this.byteOffset = byteOffset
-  this.eventId = eventId
+  this.sequenceIndex = sequenceIndex
   this.buffer = Buffer.allocUnsafe(BUFFER_SIZE)
   this.beginPosition = 0
   this.endPosition = 0
@@ -127,7 +127,7 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
       this.byteOffset += eventByteLength
 
       const event = JSON.parse(stringifiedEvent)
-      event.eventId = this.eventId++
+      event[Symbol.for('sequenceIndex')] = this.sequenceIndex++
       this.timestamp = Math.max(this.timestamp, event.timestamp)
 
       const saveEventPromise = saveEventOnly(event).catch(
@@ -195,7 +195,7 @@ EventStream.prototype._final = async function(callback) {
       } catch {}
 
       if (event !== PARTIAL_EVENT_FLAG) {
-        event.eventId = this.eventId++
+        event[Symbol.for('sequenceIndex')] = this.sequenceIndex++
         this.timestamp = Math.max(this.timestamp, event.timestamp)
 
         this.byteOffset += eventByteLength
@@ -237,7 +237,11 @@ EventStream.prototype._final = async function(callback) {
 
 const importStream = (
   pool,
-  { byteOffset = 0, eventId = 1, maintenanceMode = MAINTENANCE_MODE_AUTO } = {}
+  {
+    byteOffset = 0,
+    sequenceIndex = 1,
+    maintenanceMode = MAINTENANCE_MODE_AUTO
+  } = {}
 ) => {
   switch (maintenanceMode) {
     case MAINTENANCE_MODE_AUTO:
@@ -246,7 +250,7 @@ const importStream = (
         pool,
         maintenanceMode,
         byteOffset,
-        eventId
+        sequenceIndex
       })
     default:
       throw new Error(`Wrong maintenance mode ${maintenanceMode}`)

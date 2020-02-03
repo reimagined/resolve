@@ -31,9 +31,7 @@ const getListenerInfo = async (
   }
 
   const actualInfo = {
-    currentSkipCount: 0,
-    abutTimestamp: 0,
-    skipCount: 0,
+    cursor: null,
     status: READ_MODEL_STATUS.running,
     isFirstRun: false,
     properties: {}
@@ -45,8 +43,7 @@ const getListenerInfo = async (
   }
 
   Object.assign(actualInfo, {
-    abutTimestamp: Number(metaListenerInfo.AbutTimestamp),
-    skipCount: Number(metaListenerInfo.SkipCount),
+    cursor: metaListenerInfo.Cursor,
     properties: Object(metaListenerInfo.Properties),
     status: metaListenerInfo.Status
   })
