@@ -3,8 +3,8 @@ id: faq
 title: FAQ
 ---
 
-Q: Where to learn about CQRS and Event Sourcing <br/>
-A: Refer to the following resources to familiarize yourself with the main concepts of CQRS and Event Sourcing:
+**Q**: Where can I learn about CQRS and Event Sourcing?<br/>
+**A**: Refer to the following resources:
 
 - [Martin Fowler's Enterprise Architecture pattern](https://martinfowler.com/eaaDev/EventSourcing.html)
 - [Greg Young classic explanation talk](https://www.youtube.com/watch?v=8JKjvY4etTY)
@@ -15,26 +15,54 @@ A: Refer to the following resources to familiarize yourself with the main concep
 - [CQRS.nu](http://www.cqrs.nu)
 - [Event Sourcing: What it is and why it's awesome](https://barryosull.com/blog/event-sourcing-what-it-is-and-why-it-s-awesome), read other related posts at https://barryosull.com/blog
 
-Q: What is the difference between Read Models and View Models <br/>
-A: Read Models implement the standard event sourcing mechanisms.
-View Models are a Redux-specific addition to the standard model. View models are reactive, the use websockets to synchronize their state with the redux state on the client.
+**Q**: What is the difference between a Read Model and a View Model?<br/>
+**A**: Read Models implement the standard event sourcing mechanisms.
+View Models are a Redux-specific extension to these mechanisms. View models are reactive, they use websockets to synchronize their state with the redux state on the client.
 
-Q: How to implement a Read Model with direct access to the underlying store <br/>
-A: Implement a custom read model. Custom read models allow you to use custom logic to communicate with a read model store.
+**Q**: How to implement a Read Model with direct access to the underlying store?<br/>
+**A**: Implement a [custom Read Model](read-side.md#custom-read-models). Custom Read Models allow you to use custom logic to communicate with a Read Model store.
 
-Q: How to send an aggregate command <br/>
-A: On send a command from a client browser, use the standard HTTP API: <br/>
-On the server side, you can send a command from an API handler or saga.
+**Q**: How to send an aggregate command?<br/>
+**A**: To send a command from a client browser, use the [standard HTTP API](curl.md): <br/>
 
-Q: How to perform integrity validation for unique values <br/>
-A: In a distributed application, it is impossible to reliably perform such checks. Instead, you should check for duplicates in a read model or saga projection code and mark onу as incorrect.
 
-Q: How to implement a frontend <br/>
-A: There are three main approaches to frontend in reSolve:
+```
+$ curl -X POST "http://localhost:3000/api/commands"
+--header "Content-Type: application/json" \
+--data '
+{
+  "aggregateName":"Todo",
+  "type":"createItem",
+  "aggregateId":"root-id",
+  "payload": {
+    "id":`date +%s`,
+    "text":"Learn reSolve API"
+  }
+}
+```
 
-- Use the HOCs from the **redux-resolve** library to connect a React components to a reSolve backend.
-- Use the standard HTTP API exposed by a reSolve application.
-- Write your own wrappers to the standard HTTP API.
+On the server side, you can [send a command](api-reference.md#executecommand) from an API Handler or Saga:  
 
-Q: How do I drop persistent storages, replay the event log completely or selectively to recreate read models or saga storage, analyze, drop, recreate view model snapshots, etc. <br/>
-A: Implement an API handler. The required API is available within the API handler through the `req.resolve` object.
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/saga-sample/saga.js#execute)
+```js
+await sideEffects.executeCommand({
+  aggregateName: 'User',
+  aggregateId: event.aggregateId,
+  type: 'requestConfirmUser',
+  payload: event.payload
+})
+```
+
+<!-- prettier-ignore-end -->
+
+**Q**: How to perform uniqueness validation for input values?<br/>
+**A**: In a distributed application, it is impossible to reliably perform such checks. Instead, you should detect value duplicates in a Read Model or Saga projection code and mark duplicated values as incorrect.
+
+**Q**: How to implement a frontend?<br/>
+**A**: There are three main approaches to frontend development in reSolve:
+
+- Use the HOCs from the [redux-resolve](frontend.md#resolve-redux-library) library to connect a React components to a reSolve backend.
+- Use the [HTTP API](curl.md) exposed by a reSolve application.
+- Write your own wrappers for the reSolve HTTP API.
