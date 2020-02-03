@@ -1,6 +1,6 @@
 {
   "name": "resolve-scheduler-cloud",
-  "version": "0.21.14",
+  "version": "0.21.15",
   "description": "This package is an adapter for api handler to AWS Lambda.",
   "engines": {
     "node": ">=10.9"
@@ -29,7 +29,7 @@
     "binary-case": "1.1.4",
     "content-disposition": "0.5.2",
     "cookie": "0.3.1",
-    "resolve-debug-levels": "0.21.14"
+    "resolve-debug-levels": "0.21.15"
   },
   "devDependencies": {
     "jest": "24.1.0",
