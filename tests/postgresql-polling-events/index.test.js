@@ -113,21 +113,22 @@ describe.skip('resolve-storage-mysql-serverless', () => {
 
     let leftEvent = eventCount
     const promises = []
+
+    const eventWorker = async ei => {
+      logger.warn('save start', ei)
+      await storageAdapter.saveEvent({
+        type: 'TYPE😂',
+        aggregateId: `🐱-${ei}`,
+        aggregateVersion: ei,
+        timestamp: ei,
+        payload: { aggregate: true }
+      })
+      leftEvent--
+      logger.warn('save end', ei, 'left', leftEvent)
+    }
+
     for (let eventIndex = 1; eventIndex <= eventCount; eventIndex++) {
-      promises.push(
-        (async ei => {
-          logger.warn('save start', ei)
-          await storageAdapter.saveEvent({
-            type: 'TYPE😂',
-            aggregateId: `🐱-${eventIndex}`,
-            aggregateVersion: eventIndex,
-            timestamp: eventIndex,
-            payload: { aggregate: true }
-          })
-          leftEvent--
-          logger.warn('save end', ei, 'left', leftEvent)
-        })(eventIndex)
-      )
+      promises.push(eventWorker(eventIndex))
     }
     await Promise.all(promises)
 
