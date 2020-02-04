@@ -3,7 +3,7 @@ id: faq
 title: FAQ
 ---
 
-**Q**: Where can I learn about CQRS and Event Sourcing?<br/>
+**Q**: Where can I find information about CQRS and Event Sourcing?<br/>
 **A**: Refer to the following resources:
 
 - [Martin Fowler's Enterprise Architecture pattern](https://martinfowler.com/eaaDev/EventSourcing.html)
@@ -13,11 +13,11 @@ title: FAQ
 - [Event Sourcing Made Simple](https://kickstarter.engineering/event-sourcing-made-simple-4a2625113224)
 - [Migrating to Microservices and Event-Sourcing: the Dos and Dont’s](https://hackernoon.com/migrating-to-microservices-and-event-sourcing-the-dos-and-donts-195153c7487d)
 - [CQRS.nu](http://www.cqrs.nu)
-- [Event Sourcing: What it is and why it's awesome](https://barryosull.com/blog/event-sourcing-what-it-is-and-why-it-s-awesome), read other related posts at https://barryosull.com/blog
+- [Event Sourcing: What it is and why it's awesome](https://barryosull.com/blog/event-sourcing-what-it-is-and-why-it-s-awesome) and other related posts at https://barryosull.com/blog
 
 **Q**: What is the difference between a Read Model and a View Model?<br/>
 **A**: Read Models implement the standard event sourcing mechanisms.
-View Models are a Redux-specific extension to these mechanisms. View models are reactive, they use websockets to synchronize their state with the redux state on the client.
+View Models are a Redux-specific extension to these mechanisms. View models are reactive and use websockets to synchronize their state with the redux state on the client.
 
 **Q**: How to implement a Read Model with direct access to the underlying store?<br/>
 **A**: Implement a [custom Read Model](read-side.md#custom-read-models). Custom Read Models allow you to use custom logic to communicate with a Read Model store.
