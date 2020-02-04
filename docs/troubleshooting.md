@@ -5,7 +5,7 @@ title: Troubleshooting
 
 ## An application throws an error when a Read Model is queried.
 
-Reset the Read Model's consistent state.
+Reset the Read Model's consistent state as shown below.
 
 #### Local application:
 
