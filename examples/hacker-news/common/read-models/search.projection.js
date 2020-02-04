@@ -1,36 +1,34 @@
 import { STORY_CREATED, USER_CREATED } from '../event-types'
 
-const ifExist = async (es, fn) => {
-  if (es) return fn(es)
-}
-
 export default {
-  [STORY_CREATED]: async (es, { aggregateId, payload: { title, text } }) =>
-    ifExist(es, es =>
-      es.create({
+  [STORY_CREATED]: async (es, { aggregateId, payload: { title, text } }) => {
+    if (es) {
+      await es.index({
         index: 'primary',
-        type: 'story',
         id: aggregateId,
         body: {
+          type: 'story',
           aggregateId,
           text: `${title} ${text}`
         }
       })
-    ),
+    }
+  },
 
-  [USER_CREATED]: async (es, { aggregateId, payload: { name } }) =>
-    ifExist(es, es =>
-      es.create({
+  [USER_CREATED]: async (es, { aggregateId, payload: { name } }) => {
+    if (es) {
+      await es.index({
         index: 'primary',
         type: 'user',
         id: aggregateId,
         body: {
           aggregateId,
+          type: 'user',
           text: name
         }
       })
-    ),
-
+    }
+  },
   /* from module "resolve-module-comments" */
   COMMENT_CREATED: async (
     es,
@@ -41,25 +39,26 @@ export default {
         content: { text }
       }
     }
-  ) =>
-    ifExist(es, es =>
-      es.create({
+  ) => {
+    if (es) {
+      await es.index({
         index: 'primary',
-        type: 'comment',
         id: commentId,
         body: {
           aggregateId,
+          type: 'comment',
           text
         }
       })
-    ),
+    }
+  },
 
-  COMMENT_REMOVED: async (es, { payload: { commentId } }) =>
-    ifExist(es, es =>
-      es.delete({
+  COMMENT_REMOVED: async (es, { payload: { commentId } }) => {
+    if (es) {
+      await es.delete({
         index: 'primary',
-        type: 'comment',
         id: commentId
       })
-    )
+    }
+  }
 }
