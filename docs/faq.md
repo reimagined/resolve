@@ -57,8 +57,8 @@ await sideEffects.executeCommand({
 
 <!-- prettier-ignore-end -->
 
-**Q**: How to perform uniqueness validation for input values?<br/>
-**A**: In a distributed application, it is impossible to reliably perform such checks. Instead, you should detect value duplicates in a Read Model or Saga projection code and mark duplicated values as incorrect.
+**Q**: How to perform validation to ensure input values are unique?<br/>
+**A**: In a distributed application, it is not possible to perform reliable checks. You should detect value duplicates in a Read Model or Saga projection code and mark duplicated values as incorrect.
 
 **Q**: How to implement a frontend?<br/>
 **A**: There are three main approaches to frontend development in reSolve:
