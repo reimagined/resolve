@@ -6,9 +6,12 @@ const loadEventsByTimestamp = async (pool, filter, callback) => {
 
   const resultQueryCondition = createQuery(pool, filter)
 
+  const tableNameAsId = escapeId(tableName)
+
   const rows = await database.all(
-    `SELECT * FROM ${escapeId(tableName)} ${resultQueryCondition}
-    ORDER BY ${escapeId('timestamp')} ASC
+    `SELECT * FROM ${tableNameAsId}
+    ${resultQueryCondition}
+    ORDER BY "timestamp" ASC
     LIMIT 0, ${+batchSize}`
   )
 

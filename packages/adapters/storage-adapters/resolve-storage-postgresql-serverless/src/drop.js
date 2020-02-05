@@ -6,20 +6,23 @@ const drop = async ({
   executeStatement,
   escapeId
 }) => {
+  const databaseNameAsId = escapeId(databaseName)
+  const eventsTableNameAsId = escapeId(tableName)
+  const threadsTableNameAsId = escapeId(`${tableName}-threads`)
+  const freezeTableNameAsId = escapeId(`${tableName}-freeze`)
+
   const statements = [
-    `DROP TABLE ${escapeId(databaseName)}.${escapeId(tableName)}`,
+    `DROP TABLE ${databaseNameAsId}.${eventsTableNameAsId}`,
 
-    `DROP INDEX ${escapeId(databaseName)}.${escapeId('aggregateIdAndVersion')}`,
-    `DROP INDEX ${escapeId(databaseName)}.${escapeId('aggregateId')}`,
-    `DROP INDEX ${escapeId(databaseName)}.${escapeId('aggregateVersion')}`,
-    `DROP INDEX ${escapeId(databaseName)}.${escapeId('type')}`,
-    `DROP INDEX ${escapeId(databaseName)}.${escapeId('timestamp')}`,
+    `DROP INDEX ${databaseNameAsId}."aggregateIdAndVersion"`,
+    `DROP INDEX ${databaseNameAsId}."aggregateId"`,
+    `DROP INDEX ${databaseNameAsId}."aggregateVersion"`,
+    `DROP INDEX ${databaseNameAsId}."type"`,
+    `DROP INDEX ${databaseNameAsId}."timestamp"`,
 
-    `DROP TABLE ${escapeId(databaseName)}.${escapeId(`${tableName}-threads`)}`,
+    `DROP TABLE ${databaseNameAsId}.${threadsTableNameAsId}`,
 
-    `DROP TABLE IF EXISTS ${escapeId(databaseName)}.${escapeId(
-      `${tableName}-freeze`
-    )}`
+    `DROP TABLE IF EXISTS ${databaseNameAsId}.${freezeTableNameAsId}`
   ]
   const errors = []
 

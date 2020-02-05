@@ -10,3 +10,6 @@ export const BATCH_SIZE = 100
 export const PARTIAL_EVENT_FLAG = Symbol()
 export const DATA_API_ERROR_FLAG = Symbol()
 export const RESPONSE_SIZE_LIMIT = Symbol()
+
+export const REMAINING_CONNECTIONS_REGEXP = /remaining connection slots/i
+export const STATEMENT_TIMEOUT_CODE = /StatementTimeoutException/i

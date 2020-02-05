@@ -43,9 +43,12 @@ const loadEventsByCursor = async (pool, filter, callback) => {
       .join(' OR ')}
     ${queryConditions.length > 0 ? ')' : ''}`
 
+  const tableNameAsId = escapeId(tableName)
+
   const rows = await database.all(
-    `SELECT * FROM ${escapeId(tableName)} ${resultQueryCondition}
-    ORDER BY ${escapeId('timestamp')} ASC
+    `SELECT * FROM ${tableNameAsId}
+    ${resultQueryCondition}
+    ORDER BY "timestamp" ASC
     LIMIT 0, ${+batchSize}`
   )
 
