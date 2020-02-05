@@ -1,6 +1,13 @@
 import { ConcurrentError } from 'resolve-storage-base'
 import createStorageAdapter from '../src/index'
 
+const TIMESTAMP_1 = Number.MAX_SAFE_INTEGER - 6
+const TIMESTAMP_2 = Number.MAX_SAFE_INTEGER - 5
+const TIMESTAMP_3 = Number.MAX_SAFE_INTEGER - 4
+const TIMESTAMP_4 = Number.MAX_SAFE_INTEGER - 3
+const TIMESTAMP_5 = Number.MAX_SAFE_INTEGER - 2
+const TIMESTAMP_6 = Number.MAX_SAFE_INTEGER - 1
+
 describe('resolve-storage-lite', () => {
   let storageAdapter = null
 
@@ -21,7 +28,7 @@ describe('resolve-storage-lite', () => {
       type: 'AAA',
       aggregateId: 'id1',
       aggregateVersion: 1,
-      timestamp: 1
+      timestamp: TIMESTAMP_1
     })
 
     let events = []
@@ -42,7 +49,7 @@ describe('resolve-storage-lite', () => {
       type: 'AAA',
       aggregateId: 'id1',
       aggregateVersion: 1,
-      timestamp: 1,
+      timestamp: TIMESTAMP_1,
       payload: { index: 1 }
     })
 
@@ -64,7 +71,7 @@ describe('resolve-storage-lite', () => {
       type: 'AAA',
       aggregateId: 'id1',
       aggregateVersion: 1,
-      timestamp: 1,
+      timestamp: TIMESTAMP_1,
       payload: { index: 1 }
     })
 
@@ -73,7 +80,7 @@ describe('resolve-storage-lite', () => {
         type: 'AAA',
         aggregateId: 'id1',
         aggregateVersion: 1,
-        timestamp: 1,
+        timestamp: TIMESTAMP_1,
         payload: { index: 1 }
       })
       return Promise.reject(new Error('Test failed'))
@@ -98,42 +105,42 @@ describe('resolve-storage-lite', () => {
       type: 'AAA',
       aggregateId: 'id1',
       aggregateVersion: 1,
-      timestamp: 1,
+      timestamp: TIMESTAMP_1,
       payload: { index: 1 }
     })
     await storageAdapter.saveEvent({
       type: 'CCC',
       aggregateId: 'id3',
       aggregateVersion: 1,
-      timestamp: 1,
+      timestamp: TIMESTAMP_2,
       payload: { index: 2 }
     })
     await storageAdapter.saveEvent({
       type: 'BBB',
       aggregateId: 'id2',
       aggregateVersion: 1,
-      timestamp: 2,
+      timestamp: TIMESTAMP_3,
       payload: { index: 3 }
     })
     await storageAdapter.saveEvent({
       type: 'AAA',
       aggregateId: 'id2',
       aggregateVersion: 2,
-      timestamp: 2,
+      timestamp: TIMESTAMP_4,
       payload: { index: 4 }
     })
     await storageAdapter.saveEvent({
       type: 'BBB',
       aggregateId: 'id1',
       aggregateVersion: 2,
-      timestamp: 3,
+      timestamp: TIMESTAMP_5,
       payload: { index: 5 }
     })
     await storageAdapter.saveEvent({
       type: 'CCC',
       aggregateId: 'id3',
       aggregateVersion: 2,
-      timestamp: 3,
+      timestamp: TIMESTAMP_6,
       payload: { index: 6 }
     })
 
@@ -141,55 +148,48 @@ describe('resolve-storage-lite', () => {
     await storageAdapter.loadEvents({}, event => {
       events.push(event)
     })
-    expect(events.length).toEqual(6)
 
-    expect(
-      events.filter(({ aggregateId }) => aggregateId === 'id1')
-    ).toMatchObject([
+    expect(events).toMatchObject([
       {
         type: 'AAA',
         aggregateId: 'id1',
         aggregateVersion: 1,
+        timestamp: TIMESTAMP_1,
         payload: { index: 1 }
       },
       {
-        type: 'BBB',
-        aggregateId: 'id1',
-        aggregateVersion: 2,
-        payload: { index: 5 }
-      }
-    ])
-
-    expect(
-      events.filter(({ aggregateId }) => aggregateId === 'id2')
-    ).toMatchObject([
+        type: 'CCC',
+        aggregateId: 'id3',
+        aggregateVersion: 1,
+        timestamp: TIMESTAMP_2,
+        payload: { index: 2 }
+      },
       {
         type: 'BBB',
         aggregateId: 'id2',
         aggregateVersion: 1,
+        timestamp: TIMESTAMP_3,
         payload: { index: 3 }
       },
       {
         type: 'AAA',
         aggregateId: 'id2',
         aggregateVersion: 2,
+        timestamp: TIMESTAMP_4,
         payload: { index: 4 }
-      }
-    ])
-
-    expect(
-      events.filter(({ aggregateId }) => aggregateId === 'id3')
-    ).toMatchObject([
+      },
       {
-        type: 'CCC',
-        aggregateId: 'id3',
-        aggregateVersion: 1,
-        payload: { index: 2 }
+        type: 'BBB',
+        aggregateId: 'id1',
+        aggregateVersion: 2,
+        timestamp: TIMESTAMP_5,
+        payload: { index: 5 }
       },
       {
         type: 'CCC',
         aggregateId: 'id3',
         aggregateVersion: 2,
+        timestamp: TIMESTAMP_6,
         payload: { index: 6 }
       }
     ])
@@ -198,26 +198,19 @@ describe('resolve-storage-lite', () => {
     await storageAdapter.loadEvents({ eventTypes: ['AAA'] }, event => {
       events.push(event)
     })
-    expect(events.length).toEqual(2)
 
-    expect(
-      events.filter(({ aggregateId }) => aggregateId === 'id1')
-    ).toMatchObject([
+    expect(events).toMatchObject([
       {
         type: 'AAA',
         aggregateId: 'id1',
         aggregateVersion: 1,
         payload: { index: 1 }
-      }
-    ])
-
-    expect(
-      events.filter(({ aggregateId }) => aggregateId === 'id2')
-    ).toMatchObject([
+      },
       {
         type: 'AAA',
         aggregateId: 'id2',
         aggregateVersion: 2,
+        timestamp: TIMESTAMP_4,
         payload: { index: 4 }
       }
     ])
@@ -232,12 +225,14 @@ describe('resolve-storage-lite', () => {
         type: 'AAA',
         aggregateId: 'id1',
         aggregateVersion: 1,
+        timestamp: TIMESTAMP_1,
         payload: { index: 1 }
       },
       {
         type: 'BBB',
         aggregateId: 'id1',
         aggregateVersion: 2,
+        timestamp: TIMESTAMP_5,
         payload: { index: 5 }
       }
     ])
@@ -245,15 +240,44 @@ describe('resolve-storage-lite', () => {
     events = []
     await storageAdapter.loadEvents(
       {
-        startTime: 0,
-        finishTime: Number.MAX_SAFE_INTEGER
+        startTime: TIMESTAMP_2 - 1,
+        finishTime: TIMESTAMP_5 + 1
       },
       event => {
         events.push(event)
       }
     )
 
-    expect(events.length).toEqual(6)
+    expect(events).toMatchObject([
+      {
+        type: 'CCC',
+        aggregateId: 'id3',
+        aggregateVersion: 1,
+        timestamp: TIMESTAMP_2,
+        payload: { index: 2 }
+      },
+      {
+        type: 'BBB',
+        aggregateId: 'id2',
+        aggregateVersion: 1,
+        timestamp: TIMESTAMP_3,
+        payload: { index: 3 }
+      },
+      {
+        type: 'AAA',
+        aggregateId: 'id2',
+        aggregateVersion: 2,
+        timestamp: TIMESTAMP_4,
+        payload: { index: 4 }
+      },
+      {
+        type: 'BBB',
+        aggregateId: 'id1',
+        aggregateVersion: 2,
+        timestamp: TIMESTAMP_5,
+        payload: { index: 5 }
+      }
+    ])
   })
 
   test('"drop" should drop events', async () => {
@@ -261,7 +285,7 @@ describe('resolve-storage-lite', () => {
       type: 'AAA',
       aggregateId: 'id1',
       aggregateVersion: 1,
-      timestamp: 1,
+      timestamp: TIMESTAMP_1,
       payload: { index: 1 }
     })
 
@@ -287,7 +311,7 @@ describe('resolve-storage-lite', () => {
       type: 'AAA',
       aggregateId: 'id1',
       aggregateVersion: 1,
-      timestamp: 1,
+      timestamp: TIMESTAMP_1,
       payload: { index: 1 }
     })
 
@@ -302,7 +326,7 @@ describe('resolve-storage-lite', () => {
       type: 'BBB',
       aggregateId: 'id1',
       aggregateVersion: 2,
-      timestamp: 2,
+      timestamp: TIMESTAMP_2,
       payload: { index: 2 }
     })
 
