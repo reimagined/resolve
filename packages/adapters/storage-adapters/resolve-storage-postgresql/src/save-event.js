@@ -90,7 +90,7 @@ const saveEvent = async (
 
       if (errorMessage.indexOf('subquery used as an expression') > -1) {
         throw new Error('Event store is frozen')
-      } else if (/"aggregateIdAndVersion"/i.test(errorMessage)) {
+      } else if (/aggregateIdAndVersion/i.test(errorMessage)) {
         throw new ConcurrentError(event.aggregateId)
       } else {
         throw error

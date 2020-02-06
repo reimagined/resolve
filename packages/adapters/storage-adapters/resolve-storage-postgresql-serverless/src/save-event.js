@@ -1,6 +1,11 @@
 import { ConcurrentError } from 'resolve-storage-base'
 
-import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE, REMAINING_CONNECTIONS_REGEXP, STATEMENT_TIMEOUT_CODE  } from './constants'
+import {
+  RESERVED_EVENT_SIZE,
+  LONG_NUMBER_SQL_TYPE,
+  REMAINING_CONNECTIONS_REGEXP,
+  STATEMENT_TIMEOUT_CODE
+} from './constants'
 
 const saveEvent = async (
   { databaseName, tableName, executeStatement, escapeId, escape },
@@ -91,7 +96,7 @@ const saveEvent = async (
 
       if (errorMessage.indexOf('subquery used as an expression') > -1) {
         throw new Error('Event store is frozen')
-      } else if (/"aggregateIdAndVersion"/i.test(errorMessage)) {
+      } else if (/aggregateIdAndVersion/i.test(errorMessage)) {
         throw new ConcurrentError(event.aggregateId)
       } else if (
         REMAINING_CONNECTIONS_REGEXP.test(errorMessage) ||

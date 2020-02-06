@@ -4,12 +4,13 @@ const saveEventOnly = async function(
 ) {
   const currentThreadId = Math.floor(Math.random() * 256)
   const eventsTableNameAsId = escapeId(tableName)
-  const serializedPayload = event.payload != null
-    ? escape(JSON.stringify(event.payload))
-    : escape('null')
+  const serializedPayload =
+    event.payload != null
+      ? escape(JSON.stringify(event.payload))
+      : escape('null')
 
-
-    await database.exec(
+  // prettier-ignore
+  await database.exec(
     `INSERT INTO ${eventsTableNameAsId}(
       "threadId",
       "threadCounter",

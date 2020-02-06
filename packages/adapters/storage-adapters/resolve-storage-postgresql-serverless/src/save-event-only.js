@@ -1,4 +1,8 @@
-import { RESERVED_EVENT_SIZE, REMAINING_CONNECTIONS_REGEXP, STATEMENT_TIMEOUT_CODE } from './constants'
+import {
+  RESERVED_EVENT_SIZE,
+  REMAINING_CONNECTIONS_REGEXP,
+  STATEMENT_TIMEOUT_CODE
+} from './constants'
 
 const saveEventOnly = async function(pool, event) {
   const { databaseName, tableName, executeStatement, escapeId, escape } = pool
@@ -16,7 +20,7 @@ const saveEventOnly = async function(pool, event) {
   const threadsTableAsId = escapeId(`${tableName}-threads`)
   const eventsTableAsId = escapeId(tableName)
 
-  while(true) {
+  while (true) {
     try {
       // prettier-ignore
       await executeStatement(
@@ -51,8 +55,7 @@ const saveEventOnly = async function(pool, event) {
       )
 
       break
-
-    } catch(error) {
+    } catch (error) {
       const errorMessage =
         error != null && error.message != null ? error.message : ''
       const errorCode = error != null && error.code != null ? error.code : ''
@@ -63,12 +66,10 @@ const saveEventOnly = async function(pool, event) {
       ) {
         continue
       } else {
-      throw error
+        throw error
       }
-
     }
   }
-
 }
 
 export default saveEventOnly

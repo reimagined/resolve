@@ -6,9 +6,10 @@ const saveEvent = async (pool, event) => {
     const currentThreadId = Math.floor(Math.random() * 256)
     const eventsTableNameAsId = escapeId(tableName)
     const freezeTableNameAsString = escape(`${tableName}-freeze`)
-    const serializedPayload = event.payload != null
-      ? escape(JSON.stringify(event.payload))
-      : escape('null')
+    const serializedPayload =
+      event.payload != null
+        ? escape(JSON.stringify(event.payload))
+        : escape('null')
 
     await database.exec(
       `BEGIN IMMEDIATE;

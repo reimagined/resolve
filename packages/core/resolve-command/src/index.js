@@ -176,11 +176,11 @@ const getAggregateState = async (
         throw generateCommandError()
       }
 
-      if(projection == null) {
-        const lastEvent = await pool.eventStore.getLatestEvent(
-          { aggregateIds: [aggregateId] }
-        )
-        if(lastEvent != null) {
+      if (projection == null) {
+        const lastEvent = await pool.eventStore.getLatestEvent({
+          aggregateIds: [aggregateId]
+        })
+        if (lastEvent != null) {
           await regularHandler(pool, aggregateInfo, lastEvent)
         }
 

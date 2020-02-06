@@ -11,14 +11,22 @@ const drop = async ({
   const threadsTableNameAsId = escapeId(`${tableName}-threads`)
   const freezeTableNameAsId = escapeId(`${tableName}-freeze`)
 
+  const aggregateIdAndVersionIndexName = escapeId(
+    `${tableName}-aggregateIdAndVersion`
+  )
+  const aggregateIndexName = escapeId(`${tableName}-aggregateId`)
+  const aggregateVersionIndexName = escapeId(`${tableName}-aggregateVersion`)
+  const typeIndexName = escapeId(`${tableName}-type`)
+  const timestampIndexName = escapeId(`${tableName}-timestamp`)
+
   const statements = [
     `DROP TABLE ${databaseNameAsId}.${eventsTableNameAsId}`,
 
-    `DROP INDEX ${databaseNameAsId}."aggregateIdAndVersion"`,
-    `DROP INDEX ${databaseNameAsId}."aggregateId"`,
-    `DROP INDEX ${databaseNameAsId}."aggregateVersion"`,
-    `DROP INDEX ${databaseNameAsId}."type"`,
-    `DROP INDEX ${databaseNameAsId}."timestamp"`,
+    `DROP INDEX ${databaseNameAsId}.${aggregateIdAndVersionIndexName}`,
+    `DROP INDEX ${databaseNameAsId}.${aggregateIndexName}`,
+    `DROP INDEX ${databaseNameAsId}.${aggregateVersionIndexName}`,
+    `DROP INDEX ${databaseNameAsId}.${typeIndexName}`,
+    `DROP INDEX ${databaseNameAsId}.${timestampIndexName}`,
 
     `DROP TABLE ${databaseNameAsId}.${threadsTableNameAsId}`,
 
