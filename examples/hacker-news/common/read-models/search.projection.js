@@ -19,7 +19,6 @@ export default {
     if (es) {
       await es.index({
         index: 'primary',
-        type: 'user',
         id: aggregateId,
         body: {
           aggregateId,
