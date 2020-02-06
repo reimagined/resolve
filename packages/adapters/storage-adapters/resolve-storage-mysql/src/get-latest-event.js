@@ -24,8 +24,10 @@ const getLatestEvent = async (
   const resultQueryCondition =
     queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
 
+  const eventsTableNameAsId = escapeId(tableName)
+
   const [rows] = await connection.query(
-    `SELECT * FROM ${escapeId(tableName)} ${resultQueryCondition}
+    `SELECT * FROM ${eventsTableNameAsId} ${resultQueryCondition}
     ORDER BY \`timestamp\` DESC, \`aggregateVersion\` DESC`
   )
 
