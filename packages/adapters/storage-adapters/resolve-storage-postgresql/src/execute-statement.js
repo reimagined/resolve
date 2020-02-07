@@ -8,7 +8,12 @@ const executeStatement = async (pool, sql) => {
     database: pool.config.database,
     port: pool.config.port,
     host: pool.config.host,
-    password: pool.config.password
+    password: pool.config.password,
+    keepAlive: false,
+    connectionTimeoutMillis: 5000,
+    idle_in_transaction_session_timeout: 5000,
+    query_timeout: 5000,
+    statement_timeout: 5000
   })
 
   try {
