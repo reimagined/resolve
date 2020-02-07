@@ -33,7 +33,11 @@ const devConfig = {
       module: 'common/read-models/elastic-search-connector.js',
       options: {
         /*
-        host: 'localhost:9200'
+        node: "<your-cloud-elastic-search-host>:port",
+        auth: {
+          username: 'name',
+          password: 'pass'
+        }
         */
       }
     }
