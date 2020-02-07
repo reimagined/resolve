@@ -15,6 +15,11 @@ beforeEach(() => {
     saveEvent: jest.fn().mockImplementation(async event => {
       events.push(event)
       return event
+    }),
+    getNextCursor: jest.fn().mockImplementation((prevCursor, events) => {
+      return `${prevCursor == null ? '' : prevCursor}${events.map(e =>
+        Buffer.from(JSON.stringify(e)).toString('base64')
+      )}`
     })
   }
 

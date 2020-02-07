@@ -15,8 +15,10 @@ Available adapters:
    Used to store events in a local file.
 - [resolve-storage-mysql](./resolve-storage-mysql)  
    Used to store events in a MySQL.
-- [resolve-storage-dynamo](./resolve-storage-dynamo)  
-   Used to store events in a DynamoDB.
+- [resolve-storage-postgresql](./resolve-storage-postgresql)  
+  Used to store events in a PostgreSQL.
+- [resolve-storage-postgresql-serverless](./resolve-storage-postgresql-serverless)  
+   Used to store events in a PostgreSQL Serverless.  
    
 ### Example
 

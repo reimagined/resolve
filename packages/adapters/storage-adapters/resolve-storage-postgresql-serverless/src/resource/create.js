@@ -56,7 +56,8 @@ const create = async (pool, options) => {
       `ALTER SCHEMA ${escapeId(options.databaseName)} OWNER TO ${escapeId(
         options.userLogin
       )}`
-    ].join('; ')
+    ].join('; '),
+    false
   )
 
   await dispose(admin)

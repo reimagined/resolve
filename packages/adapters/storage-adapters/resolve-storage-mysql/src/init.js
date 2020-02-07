@@ -6,12 +6,15 @@ const customObjectSqlType = 'JSON NULL'
 const init = async ({ tableName, connection, escapeId }) => {
   await connection.query(
     `CREATE TABLE ${escapeId(tableName)}(
+      \`threadId\` ${longNumberSqlType},
+      \`threadCounter\` ${longNumberSqlType},
       \`timestamp\` ${longNumberSqlType},
       \`aggregateId\` ${longStringSqlType},
       \`aggregateVersion\` ${longNumberSqlType},
       \`type\` ${longStringSqlType},
       \`payload\` ${customObjectSqlType},
-      PRIMARY KEY(\`aggregateId\`, \`aggregateVersion\`),
+      PRIMARY KEY(\`threadId\`, \`threadCounter\`),
+      UNIQUE KEY \`aggregate\`(\`aggregateId\`, \`aggregateVersion\`),
       INDEX USING BTREE(\`aggregateId\`),
       INDEX USING BTREE(\`aggregateVersion\`),
       INDEX USING BTREE(\`type\`),

@@ -55,7 +55,7 @@ describe('resolve-storage-postgres-serverless index', () => {
   test('"loadEvents" should load events', async () => {
     await storageAdapter.loadEvents({}, () => {})
 
-    await storageAdapter.loadEvents({ maxEventsByTimeframe: 1 }, () => {})
+    await storageAdapter.loadEvents({ limit: 1 }, () => {})
 
     await storageAdapter.loadEvents({ eventTypes: ['AAA'] }, () => {})
 

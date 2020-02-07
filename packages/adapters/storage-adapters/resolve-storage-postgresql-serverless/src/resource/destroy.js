@@ -36,7 +36,8 @@ const destroy = async (pool, options) => {
   try {
     await executeStatement(
       admin,
-      `ALTER SCHEMA ${escapeId(options.databaseName)} OWNER TO SESSION_USER`
+      `ALTER SCHEMA ${escapeId(options.databaseName)} OWNER TO SESSION_USER`,
+      false
     )
   } catch (error) {
     alterSchemaError = error
@@ -45,7 +46,8 @@ const destroy = async (pool, options) => {
   try {
     await executeStatement(
       admin,
-      `DROP SCHEMA ${escapeId(options.databaseName)} CASCADE`
+      `DROP SCHEMA ${escapeId(options.databaseName)} CASCADE`,
+      false
     )
   } catch (error) {
     dropSchemaError = error

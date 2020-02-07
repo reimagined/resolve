@@ -1,12 +1,11 @@
 import { ConcurrentError } from 'resolve-storage-base'
 
-// https://dev.mysql.com/doc/refman/5.5/en/error-messages-server.html#error_er_dup_entry
+const ER_SUBQUERY_NO_1_ROW = 1242
+const ER_LOCK_DEADLOCK = 1213
 const ER_DUP_ENTRY = 1062
 
-const saveEvent = async (
-  { tableName, connection, database, escapeId, escape },
-  event
-) => {
+const saveEvent = async (pool, event) => {
+  const { tableName, connection, database, escapeId, escape } = pool
   try {
     await connection.query(
       [
@@ -31,14 +30,26 @@ const saveEvent = async (
           `${tableName}-freeze`
         )}`,
         `) = ${escape('OK')};`,
+        `SET @selectedThreadId = FLOOR(RAND() * 256);`,
+        `SELECT @nextThreadCounter := MAX(${escapeId('threadCounter')}) + 1`,
+        `FROM ${escapeId(tableName)}`,
+        `WHERE ${escapeId('threadId')} = @selectedThreadId`,
+        `FOR UPDATE;`,
         `INSERT INTO ${escapeId(tableName)}(`,
+        `  ${escapeId('threadId')},`,
+        `  ${escapeId('threadCounter')},`,
         `  ${escapeId('timestamp')},`,
         `  ${escapeId('aggregateId')},`,
         `  ${escapeId('aggregateVersion')},`,
         `  ${escapeId('type')},`,
         `  ${escapeId('payload')}`,
         `) VALUES(`,
-        ` ${+event.timestamp},`,
+        ` @selectedThreadId,`,
+        ` COALESCE(@nextThreadCounter, 0),`,
+        ` GREATEST(`,
+        `   ROUND(UNIX_TIMESTAMP(SYSDATE(4)) * 1000),`,
+        `   ${+event.timestamp}`,
+        ` ),`,
         ` ${escape(event.aggregateId)},`,
         ` ${+event.aggregateVersion},`,
         ` ${escape(event.type)},`,
@@ -52,14 +63,25 @@ const saveEvent = async (
       ].join('\n')
     )
   } catch (error) {
-    if (error.message === 'Subquery returns more than 1 row') {
+    const errno = error != null && error.errno != null ? error.errno : 0
+    const message = error != null && error.message != null ? error.message : ''
+
+    if (errno === ER_SUBQUERY_NO_1_ROW) {
       throw new Error('Event store is frozen')
-    }
-    if (error.errno !== ER_DUP_ENTRY) {
+    } else if (errno === ER_DUP_ENTRY && message.indexOf('aggregate') > -1) {
+      throw new ConcurrentError(event.aggregateId)
+    } else if (
+      (errno === ER_DUP_ENTRY && message.indexOf('PRIMARY') > -1) ||
+      errno === ER_LOCK_DEADLOCK
+    ) {
+      try {
+        await connection.query('ROLLBACK;')
+      } catch (e) {}
+
+      return await saveEvent(pool, event)
+    } else {
       throw error
     }
-
-    throw new ConcurrentError(event.aggregateId)
   }
 }
 

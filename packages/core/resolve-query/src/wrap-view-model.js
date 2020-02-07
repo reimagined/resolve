@@ -13,21 +13,18 @@ const buildViewModel = async (
   await Promise.resolve()
   const snapshotKey = `${pool.viewModel.invariantHash};${key}`
   let aggregatesVersionsMap = new Map()
-  let lastTimestamp = -1
+  let cursor = null
   let state = null
 
   try {
     const snapshot = await pool.snapshotAdapter.loadSnapshot(snapshotKey)
 
     aggregatesVersionsMap = new Map(snapshot.aggregatesVersionsMap)
-    lastTimestamp = snapshot.lastTimestamp
     state = await pool.viewModel.deserializeState(snapshot.state)
+    cursor = snapshot.cursor
   } catch (error) {}
 
-  if (
-    !(+lastTimestamp > 0) &&
-    typeof pool.viewModel.projection.Init === 'function'
-  ) {
+  if (cursor == null && typeof pool.viewModel.projection.Init === 'function') {
     state = pool.viewModel.projection.Init()
   }
 
@@ -60,7 +57,7 @@ const buildViewModel = async (
         aggregateArgs,
         jwtToken
       )
-      lastTimestamp = event.timestamp - 1
+      cursor = pool.eventStore.getNextCursor(cursor, [event])
 
       aggregatesVersionsMap.set(event.aggregateId, event.aggregateVersion)
 
@@ -68,7 +65,7 @@ const buildViewModel = async (
         await pool.snapshotAdapter.saveSnapshot(snapshotKey, {
           aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
           state: await pool.viewModel.serializeState(state),
-          lastTimestamp
+          cursor
         })
       }
     } catch (error) {
@@ -86,8 +83,8 @@ const buildViewModel = async (
   await pool.eventStore.loadEvents(
     {
       aggregateIds: aggregateIds !== '*' ? aggregateIds : null,
-      startTime: lastTimestamp,
-      eventTypes: Object.keys(pool.viewModel.projection)
+      eventTypes: Object.keys(pool.viewModel.projection),
+      cursor
     },
     handler
   )

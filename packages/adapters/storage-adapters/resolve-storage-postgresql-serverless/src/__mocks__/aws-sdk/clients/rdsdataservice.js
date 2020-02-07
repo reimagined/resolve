@@ -6,11 +6,17 @@ const resetExecuteStatementPromise = () => {
   executeStatementPromise.mockReturnValueOnce(
     Promise.resolve({
       records: [
-        [{ intValue: 10 }, { bigIntValue: 1000 }, { stringValue: '{}' }]
+        [
+          { intValue: 42 },
+          { intValue: 0 },
+          { bigIntValue: 1000 },
+          { stringValue: '{}' }
+        ]
       ],
       columnMetadata: [
+        { name: 'threadId' },
+        { name: 'threadCounter' },
         { name: 'aggregateVersion' },
-        { name: 'eventId' },
         { name: 'payload' }
       ]
     })

@@ -1,30 +1,44 @@
+import { EOL } from 'os'
+
 const executeStatement = async (pool, sql) => {
-  const { coercer } = pool
+  const errors = []
+  let rows = null
 
-  const result = await pool.rdsDataService
-    .executeStatement({
-      resourceArn: pool.dbClusterOrInstanceArn,
-      secretArn: pool.awsSecretStoreArn,
-      database: 'postgres',
-      continueAfterTimeout: false,
-      includeResultMetadata: true,
-      sql
-    })
-    .promise()
+  try {
+    const { coercer } = pool
 
-  const { columnMetadata, records } = result
+    const result = await pool.rdsDataService
+      .executeStatement({
+        resourceArn: pool.dbClusterOrInstanceArn,
+        secretArn: pool.awsSecretStoreArn,
+        database: 'postgres',
+        continueAfterTimeout: false,
+        includeResultMetadata: true,
+        sql
+      })
+      .promise()
 
-  if (!Array.isArray(records) || columnMetadata == null) {
-    return null
+    const { columnMetadata, records } = result
+
+    if (Array.isArray(records) && columnMetadata != null) {
+      rows = []
+      for (const record of records) {
+        const row = {}
+        for (let i = 0; i < columnMetadata.length; i++) {
+          row[columnMetadata[i].name] = coercer(record[i])
+        }
+        rows.push(row)
+      }
+    }
+  } catch (error) {
+    errors.push(error)
   }
 
-  const rows = []
-  for (const record of records) {
-    const row = {}
-    for (let i = 0; i < columnMetadata.length; i++) {
-      row[columnMetadata[i].name] = coercer(record[i])
-    }
-    rows.push(row)
+  if (errors.length > 0) {
+    const error = new Error()
+    error.message = errors.map(({ message }) => message).join(EOL)
+    error.stack = errors.map(({ stack }) => stack).join(EOL)
+    throw error
   }
 
   return rows

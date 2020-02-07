@@ -59,8 +59,12 @@ export default {
       module: 'common/read-models/elastic-search-connector.js',
       options: {
         /*
-        host: '<your-cloud-elastic-search-host>'
-         */
+        node: "<your-cloud-elastic-search-host>:port",
+        auth: {
+          username: 'name',
+          password: 'pass'
+        }
+        */
       }
     }
   }
