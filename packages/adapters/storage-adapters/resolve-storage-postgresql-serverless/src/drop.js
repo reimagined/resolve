@@ -22,11 +22,11 @@ const drop = async ({
   const statements = [
     `DROP TABLE ${databaseNameAsId}.${eventsTableNameAsId}`,
 
-    `DROP INDEX ${databaseNameAsId}.${aggregateIdAndVersionIndexName}`,
-    `DROP INDEX ${databaseNameAsId}.${aggregateIndexName}`,
-    `DROP INDEX ${databaseNameAsId}.${aggregateVersionIndexName}`,
-    `DROP INDEX ${databaseNameAsId}.${typeIndexName}`,
-    `DROP INDEX ${databaseNameAsId}.${timestampIndexName}`,
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${aggregateIdAndVersionIndexName}`,
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${aggregateIndexName}`,
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${aggregateVersionIndexName}`,
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${typeIndexName}`,
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${timestampIndexName}`,
 
     `DROP TABLE ${databaseNameAsId}.${threadsTableNameAsId}`,
 
