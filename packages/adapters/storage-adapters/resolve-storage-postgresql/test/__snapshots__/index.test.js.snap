@@ -14,42 +14,113 @@ Object {
   "calls": Array [
     Array [
       Object {
+        "connectionTimeoutMillis": 5000,
         "database": "database",
         "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
         "password": "password",
         "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
         "user": "user",
       },
     ],
     Array [
       Object {
+        "connectionTimeoutMillis": 5000,
         "database": "database",
         "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
         "password": "password",
         "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
         "user": "user",
       },
     ],
     Array [
       Object {
+        "connectionTimeoutMillis": 5000,
         "database": "database",
         "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
         "password": "password",
         "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
         "user": "user",
       },
     ],
     Array [
       Object {
+        "connectionTimeoutMillis": 5000,
         "database": "database",
         "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
         "password": "password",
         "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
+        "user": "user",
+      },
+    ],
+    Array [
+      Object {
+        "connectionTimeoutMillis": 5000,
+        "database": "database",
+        "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
+        "password": "password",
+        "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
         "user": "user",
       },
     ],
   ],
   "instances": Array [
+    mockConstructor {
+      "connect": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+      "end": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+      "query": [MockFunction] {
+        "calls": Array [
+          Array [
+            "SELECT 0 AS \\"defunct\\"",
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+    },
     mockConstructor {
       "connect": [MockFunction] {
         "calls": Array [
@@ -212,12 +283,17 @@ Object {
     },
   ],
   "invocationCallOrder": Array [
-    37,
-    41,
-    45,
     49,
+    53,
+    57,
+    61,
+    65,
   ],
   "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
     Object {
       "type": "return",
       "value": undefined,
@@ -245,51 +321,127 @@ Object {
   "calls": Array [
     Array [
       Object {
+        "connectionTimeoutMillis": 5000,
         "database": "database",
         "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
         "password": "password",
         "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
         "user": "user",
       },
     ],
     Array [
       Object {
+        "connectionTimeoutMillis": 5000,
         "database": "database",
         "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
         "password": "password",
         "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
         "user": "user",
       },
     ],
     Array [
       Object {
+        "connectionTimeoutMillis": 5000,
         "database": "database",
         "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
         "password": "password",
         "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
         "user": "user",
       },
     ],
     Array [
       Object {
+        "connectionTimeoutMillis": 5000,
         "database": "database",
         "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
         "password": "password",
         "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
         "user": "user",
       },
     ],
     Array [
       Object {
+        "connectionTimeoutMillis": 5000,
         "database": "database",
         "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
         "password": "password",
         "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
+        "user": "user",
+      },
+    ],
+    Array [
+      Object {
+        "connectionTimeoutMillis": 5000,
+        "database": "database",
+        "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
+        "password": "password",
+        "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
         "user": "user",
       },
     ],
   ],
   "instances": Array [
+    mockConstructor {
+      "connect": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+      "end": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+      "query": [MockFunction] {
+        "calls": Array [
+          Array [
+            "SELECT 0 AS \\"defunct\\"",
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+    },
     mockConstructor {
       "connect": [MockFunction] {
         "calls": Array [
@@ -500,13 +652,18 @@ LIMIT 2147483647",
     },
   ],
   "invocationCallOrder": Array [
-    17,
-    21,
     25,
     29,
     33,
+    37,
+    41,
+    45,
   ],
   "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
     Object {
       "type": "return",
       "value": undefined,
@@ -538,19 +695,43 @@ Object {
   "calls": Array [
     Array [
       Object {
+        "connectionTimeoutMillis": 5000,
         "database": "database",
         "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
         "password": "password",
         "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
         "user": "user",
       },
     ],
     Array [
       Object {
+        "connectionTimeoutMillis": 5000,
         "database": "database",
         "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
         "password": "password",
         "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
+        "user": "user",
+      },
+    ],
+    Array [
+      Object {
+        "connectionTimeoutMillis": 5000,
+        "database": "database",
+        "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
+        "password": "password",
+        "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
         "user": "user",
       },
     ],
@@ -582,21 +763,58 @@ Object {
       "query": [MockFunction] {
         "calls": Array [
           Array [
+            "SELECT 0 AS \\"defunct\\"",
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+    },
+    mockConstructor {
+      "connect": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+      "end": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+      "query": [MockFunction] {
+        "calls": Array [
+          Array [
             "WITH \\"freeze_check\\" AS (
           SELECT 0 AS \\"freeze_zero\\" WHERE (
-            (SELECT 'Event store is frozen' AS \\"EventStoreIsFrozen\\")
+            (SELECT 1 AS \\"EventStoreIsFrozen\\")
           UNION ALL
-            (SELECT 'Event store is frozen' AS \\"EventStoreIsFrozen\\"
+            (SELECT 1 AS \\"EventStoreIsFrozen\\"
             FROM \\"information_schema\\".\\"tables\\"
             WHERE \\"table_schema\\" = 'databaseName'
             AND \\"table_name\\" = 'tableName-freeze')
-          ) = 'Event store is frozen'
+          ) = 1
         ), \\"vacant_thread_id\\" AS (
           SELECT \\"threadId\\"
           FROM \\"databaseName\\".\\"tableName-threads\\"
           FOR UPDATE SKIP LOCKED
           LIMIT 1
-        ),\\"random_thread_id\\" AS (
+        ), \\"random_thread_id\\" AS (
           SELECT \\"threadId\\"
           FROM \\"databaseName\\".\\"tableName-threads\\"
           OFFSET FLOOR(Random() * 256)
@@ -690,10 +908,15 @@ LIMIT 2147483647",
     },
   ],
   "invocationCallOrder": Array [
-    9,
     13,
+    17,
+    21,
   ],
   "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
     Object {
       "type": "return",
       "value": undefined,
@@ -713,19 +936,43 @@ Object {
   "calls": Array [
     Array [
       Object {
+        "connectionTimeoutMillis": 5000,
         "database": "database",
         "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
         "password": "password",
         "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
         "user": "user",
       },
     ],
     Array [
       Object {
+        "connectionTimeoutMillis": 5000,
         "database": "database",
         "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
         "password": "password",
         "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
+        "user": "user",
+      },
+    ],
+    Array [
+      Object {
+        "connectionTimeoutMillis": 5000,
+        "database": "database",
+        "host": "host",
+        "idle_in_transaction_session_timeout": 5000,
+        "keepAlive": false,
+        "password": "password",
+        "port": "port",
+        "query_timeout": 5000,
+        "statement_timeout": 5000,
         "user": "user",
       },
     ],
@@ -757,21 +1004,58 @@ Object {
       "query": [MockFunction] {
         "calls": Array [
           Array [
+            "SELECT 0 AS \\"defunct\\"",
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+    },
+    mockConstructor {
+      "connect": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+      "end": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+      "query": [MockFunction] {
+        "calls": Array [
+          Array [
             "WITH \\"freeze_check\\" AS (
           SELECT 0 AS \\"freeze_zero\\" WHERE (
-            (SELECT 'Event store is frozen' AS \\"EventStoreIsFrozen\\")
+            (SELECT 1 AS \\"EventStoreIsFrozen\\")
           UNION ALL
-            (SELECT 'Event store is frozen' AS \\"EventStoreIsFrozen\\"
+            (SELECT 1 AS \\"EventStoreIsFrozen\\"
             FROM \\"information_schema\\".\\"tables\\"
             WHERE \\"table_schema\\" = 'databaseName'
             AND \\"table_name\\" = 'tableName-freeze')
-          ) = 'Event store is frozen'
+          ) = 1
         ), \\"vacant_thread_id\\" AS (
           SELECT \\"threadId\\"
           FROM \\"databaseName\\".\\"tableName-threads\\"
           FOR UPDATE SKIP LOCKED
           LIMIT 1
-        ),\\"random_thread_id\\" AS (
+        ), \\"random_thread_id\\" AS (
           SELECT \\"threadId\\"
           FROM \\"databaseName\\".\\"tableName-threads\\"
           OFFSET FLOOR(Random() * 256)
@@ -867,8 +1151,13 @@ LIMIT 2147483647",
   "invocationCallOrder": Array [
     1,
     5,
+    9,
   ],
   "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
     Object {
       "type": "return",
       "value": undefined,
