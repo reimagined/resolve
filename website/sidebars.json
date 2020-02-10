@@ -7,7 +7,13 @@
       {
         "type": "subcategory",
         "label": "Basics",
-        "ids": ["app-structure", "write-side", "read-side", "frontend", "curl"]
+        "ids": [
+          "app-structure",
+          "write-side",
+          "read-side",
+          "frontend",
+          "curl"
+        ]
       },
       {
         "type": "subcategory",
@@ -22,9 +28,25 @@
           "api-reference",
           "contributing"
         ]
+      },
+      {
+        "type": "subcategory",
+        "label": "reSolve Cloud Platform",
+        "ids": [
+          "cloud-overview",
+          "cloud-get-started",
+          "cloud-app-management",
+          "cloud-cli",
+          "cloud-web-gui",
+          "cloud-troubleshooting"
+        ]
       }
     ],
-    "FAQ": ["faq"],
-    "Troubleshooting": ["troubleshooting"]
+    "FAQ": [
+      "faq"
+    ],
+    "Troubleshooting": [
+      "troubleshooting"
+    ]
   }
 }

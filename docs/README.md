@@ -3,14 +3,14 @@ id: index
 title: reSolve Documentation
 ---
 
-- [Introduction](introduction.md)
+[Introduction](introduction.md)
 
-  - [Setting Up](introduction.md#setting-up)
-    - [Prerequisites](introduction.md#prerequisites)
-    - [Getting Started](introduction.md#getting-started)
-  - [Examples](introduction.md#examples)
+- [Setting Up](introduction.md#setting-up)
+- [Prerequisites](introduction.md#prerequisites)
+- [Getting Started](introduction.md#getting-started)
+- [Examples](introduction.md#examples)
 
-- [Step-by-Step Tutorial](tutorial.md)
+[Step-by-Step Tutorial](tutorial.md)
 
 #### Basics
 
@@ -74,8 +74,42 @@ title: reSolve Documentation
   - [Configuring Adapters](preparing-to-production.md#configuring-adapters)
   - [Using Environment Variables](preparing-to-production.md#using-environment-variables)
 
-- [FAQ](faq.md)
-- [API Reference](api-reference.md)
-- [Troubleshooting](troubleshooting.md)
+#### reSolve Clouds
+
+- [Overview](cloud-overview.md)
+
+  - [Platform Architecture](cloud-overview.md#platform-architecture)
+  - [Cloud Application Specifics](cloud-overview.md#cloud-application-specifics)
+  - [Limits](cloud-overview.md#limits)
+
+- [Getting Started](cloud-get-started.md)
+
+  - [Register on the ReSolve Cloud Platform](cloud-get-started.md#register-on-the-resolve-cloud-platform)
+  - [Install the ReSolve CLI](cloud-get-started.md#install-the-resolve-cli)
+  - [Create a ReSolve Application](cloud-get-started.md#create-a-resolve-application)
+  - [Deploy the Application](cloud-get-started.md#deploy-the-application)
+  - [View the Result](cloud-get-started.md#view-the-result)
+
+- [Application Management](cloud-app-management.md)
+
+  - [Register a Domain](cloud-app-management.md#register-a-domain)
+  - [Manage Runtimes](cloud-app-management.md#manage-runtimes)
+  - [Enable Logging](cloud-app-management.md#enable-logging)
+  - [Profiling an Application](cloud-app-management.md#profiling-an-application)
+
+- [reSolve Cloud CLI](cloud-cli.md)
+
+  - [Install ReSolve CLoud CLI](cloud-cli.md#install-resolve-cloud-cli)
+  - [Usage](cloud-cli.md#usage)
+  - [View Help](cloud-cli.md#view-help)
+
+- [Web Admin GUI](cloud-web-gui.md)
+- [Troubleshooting](cloud-troubleshooting.md)
+
+[FAQ](faq.md)
+
+[API Reference](api-reference.md)
+
+[Troubleshooting](troubleshooting.md)
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/docs/readme.md?pixel)
