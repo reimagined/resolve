@@ -77,13 +77,24 @@ const connect = async (imports, pool, options) => {
 
   let connector = null
   if (databaseFile === ':memory:') {
-    if (Object.keys(pool.memoryStore).length === 0) {
+    if(process.env.RESOLVE_LAUNCH_ID != null) {  
+      const tmpName = `${os.tmpdir()}/${+process.env.RESOLVE_LAUNCH_ID}}.db`
+      if(!imports.fs.existSync(tmpName)) {
+        imports.fs.writeFileSync(tmpName, '')
+        process.on('exit', imports.fs.unlinkSync.bind(imports.fs, tmpName))
+      }
+      Object.assign(pool.memoryStore, {
+        name: tmpName,
+        drop: imports.fs.unlinkSync.bind(imports.fs, tmpName)
+      })
+    } else {
       const temporaryFile = imports.tmp.fileSync()
       Object.assign(pool.memoryStore, {
-        ...temporaryFile,
+        name: temporaryFile.name,
         drop: temporaryFile.removeCallback.bind(temporaryFile)
       })
     }
+
     connector = imports.SQLite.open.bind(imports.SQLite, pool.memoryStore.name)
   } else {
     connector = imports.SQLite.open.bind(imports.SQLite, databaseFile)
