@@ -33,6 +33,7 @@
     "resolve-subscribe-mqtt": "0.21.15",
     "resolve-subscribe-socket.io": "0.21.15",
     "resolve-upload-local": "0.21.15",
+    "resolve-upload-cloud": "0.21.15",
     "redux-devtools-extension": "2.13.7",
     "webpack": "4.41.2",
     "resolve-module-uploader": "0.21.15",
