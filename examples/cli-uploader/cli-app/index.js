@@ -82,7 +82,8 @@ const getJwtToken = pool => {
 const uploadFile = async (pool, filePath) => {
   const { projectId, login } = pool
   const { uploadUrl, uploadId } = await getUploadUrl(pool)
-  const contentType = mime.contentType(path.extname(filePath)) || 'text/plain; charset=utf-8'
+  const contentType =
+    mime.contentType(path.extname(filePath)) || 'text/plain; charset=utf-8'
 
   await sendCommand(pool, {
     type: 'fileNotLoaded',
