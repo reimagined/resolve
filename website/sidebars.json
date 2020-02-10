@@ -7,13 +7,7 @@
       {
         "type": "subcategory",
         "label": "Basics",
-        "ids": [
-          "app-structure",
-          "write-side",
-          "read-side",
-          "frontend",
-          "curl"
-        ]
+        "ids": ["app-structure", "write-side", "read-side", "frontend", "curl"]
       },
       {
         "type": "subcategory",
@@ -42,11 +36,7 @@
         ]
       }
     ],
-    "FAQ": [
-      "faq"
-    ],
-    "Troubleshooting": [
-      "troubleshooting"
-    ]
+    "FAQ": ["faq"],
+    "Troubleshooting": ["troubleshooting"]
   }
 }
