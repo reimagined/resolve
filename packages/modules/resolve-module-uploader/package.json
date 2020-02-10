@@ -6,6 +6,7 @@
     "node": ">=10.9"
   },
   "main": "./lib/index.js",
+  "bin": "./lib/cli.js",
   "module": "./es/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"

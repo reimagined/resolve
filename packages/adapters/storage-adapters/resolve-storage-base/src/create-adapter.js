@@ -5,12 +5,15 @@ const createAdapter = (
     wrapSaveEvent,
     wrapDispose,
     validateEventFilter,
+    loadEvents,
     importStream,
-    exportStream
+    exportStream,
+    getNextCursor
   },
   {
     connect,
-    loadEvents,
+    loadEventsByCursor,
+    loadEventsByTimestamp,
     getLatestEvent,
     saveEvent,
     init,
@@ -35,6 +38,8 @@ const createAdapter = (
 
   Object.assign(pool, {
     saveEventOnly: wrapMethod(pool, saveEventOnly),
+    loadEventsByCursor: wrapMethod(pool, loadEventsByCursor),
+    loadEventsByTimestamp: wrapMethod(pool, loadEventsByTimestamp),
     paginateEvents: wrapMethod(pool, paginateEvents),
     // eslint-disable-next-line no-new-func
     waitConnect: wrapMethod(pool, Function()),
@@ -55,7 +60,8 @@ const createAdapter = (
     dispose: wrapDispose(pool, dispose),
     isFrozen: wrapMethod(pool, isFrozen),
     freeze: wrapMethod(pool, freeze),
-    unfreeze: wrapMethod(pool, unfreeze)
+    unfreeze: wrapMethod(pool, unfreeze),
+    getNextCursor: getNextCursor.bind(null)
   }
 
   Object.assign(pool, adapter)

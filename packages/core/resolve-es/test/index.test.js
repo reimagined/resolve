@@ -14,7 +14,8 @@ describe('resolve-es', () => {
       saveEvents: jest.fn(),
       import: jest.fn(),
       export: jest.fn(),
-      getLatestEvent: jest.fn()
+      getLatestEvent: jest.fn(),
+      getNextCursor: jest.fn()
     }
 
     const eventStore = createEventStore({ storage })
@@ -51,7 +52,8 @@ describe('resolve-es', () => {
       saveEvents: jest.fn(),
       import: jest.fn(),
       loadEvents: jest.fn(),
-      getLatestEvent: jest.fn()
+      getLatestEvent: jest.fn(),
+      getNextCursor: jest.fn()
     }
 
     const eventStore = createEventStore({ storage })
@@ -69,7 +71,8 @@ describe('resolve-es', () => {
       saveEvents: jest.fn(),
       loadEvents: jest.fn(),
       export: jest.fn(),
-      getLatestEvent: jest.fn()
+      getLatestEvent: jest.fn(),
+      getNextCursor: jest.fn()
     }
 
     const eventStore = createEventStore({ storage })
@@ -86,7 +89,8 @@ describe('resolve-es', () => {
       loadEvents: jest.fn(),
       import: jest.fn(),
       export: jest.fn(),
-      getLatestEvent: jest.fn()
+      getLatestEvent: jest.fn(),
+      getNextCursor: jest.fn()
     }
 
     const eventStore = createEventStore({ storage })
