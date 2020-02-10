@@ -22,6 +22,18 @@
           "api-reference",
           "contributing"
         ]
+      },
+      {
+        "type": "subcategory",
+        "label": "reSolve Cloud Platform",
+        "ids": [
+          "cloud-overview",
+          "cloud-get-started",
+          "cloud-app-management",
+          "cloud-cli",
+          "cloud-web-gui",
+          "cloud-troubleshooting"
+        ]
       }
     ],
     "FAQ": ["faq"],

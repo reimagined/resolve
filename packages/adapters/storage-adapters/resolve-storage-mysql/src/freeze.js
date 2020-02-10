@@ -1,4 +1,4 @@
-const deactivate = async ({ connection, tableName, escapeId }) => {
+const freeze = async ({ connection, tableName, escapeId }) => {
   await connection.execute(
     `CREATE TABLE IF NOT EXISTS ${escapeId(`${tableName}-freeze`)}(
       ${escapeId('surrogate')} BIGINT NOT NULL,
@@ -9,4 +9,4 @@ const deactivate = async ({ connection, tableName, escapeId }) => {
   )
 }
 
-export default deactivate
+export default freeze

@@ -3,7 +3,8 @@ import sqlite from 'sqlite'
 import tmp from 'tmp'
 
 import connect from './connect'
-import loadEvents from './load-events'
+import loadEventsByCursor from './load-events-by-cursor'
+import loadEventsByTimestamp from './load-events-by-timestamp'
 import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
 import init from './init'
@@ -16,7 +17,8 @@ import unfreeze from './unfreeze'
 
 const wrappedCreateAdapter = createAdapter.bind(null, {
   connect,
-  loadEvents,
+  loadEventsByCursor,
+  loadEventsByTimestamp,
   getLatestEvent,
   saveEvent,
   init,

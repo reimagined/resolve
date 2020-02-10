@@ -176,6 +176,18 @@ const getAggregateState = async (
         throw generateCommandError()
       }
 
+      if (projection == null) {
+        const lastEvent = await pool.eventStore.getLatestEvent({
+          aggregateIds: [aggregateId]
+        })
+        if (lastEvent != null) {
+          await regularHandler(pool, aggregateInfo, lastEvent)
+        }
+
+        aggregateInfo.cursor = null
+        return aggregateInfo
+      }
+
       const snapshot = await (async () => {
         const segment = pool.performanceTracer
           ? pool.performanceTracer.getSegment()
@@ -248,6 +260,7 @@ const getAggregateState = async (
           },
           eventHandler
         )
+
         if (subSegment != null) {
           subSegment.addAnnotation('eventCount', eventCount)
           subSegment.addAnnotation('origin', 'resolve:loadEvents')

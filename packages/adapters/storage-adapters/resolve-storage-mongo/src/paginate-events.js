@@ -15,6 +15,9 @@ const paginateEvents = async (
   for (let index = 0; index < rows.length; index++) {
     const event = rows[index]
     event[Symbol.for('sequenceIndex')] = offset + index
+
+    delete event.threadId
+    delete event.threadCounter
   }
 
   return rows
