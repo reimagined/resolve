@@ -11,53 +11,64 @@ const init = async ({
   executeStatement,
   escapeId
 }) => {
+  const databaseNameAsId = escapeId(databaseName)
+  const eventsTableNameAsId = escapeId(tableName)
+  const threadsTableNameAsId = escapeId(`${tableName}-threads`)
+
+  const aggregateIdAndVersionIndexName = escapeId(
+    `${tableName}-aggregateIdAndVersion`
+  )
+  const aggregateIndexName = escapeId(`${tableName}-aggregateId`)
+  const aggregateVersionIndexName = escapeId(`${tableName}-aggregateVersion`)
+  const typeIndexName = escapeId(`${tableName}-type`)
+  const timestampIndexName = escapeId(`${tableName}-timestamp`)
+
   await executeStatement(
-    [
-      `CREATE TABLE ${escapeId(databaseName)}.${escapeId(tableName)}(
-      ${escapeId('threadId')} ${LONG_NUMBER_SQL_TYPE} NOT NULL,
-      ${escapeId('threadCounter')} ${INT8_SQL_TYPE} NOT NULL,
-      ${escapeId('timestamp')} ${LONG_NUMBER_SQL_TYPE} NOT NULL,
-      ${escapeId('aggregateId')} ${LONG_STRING_SQL_TYPE} NOT NULL,
-      ${escapeId('aggregateVersion')} ${LONG_NUMBER_SQL_TYPE} NOT NULL,
-      ${escapeId('type')} ${LONG_STRING_SQL_TYPE} NOT NULL,
-      ${escapeId('payload')} ${JSON_SQL_TYPE},
-      ${escapeId('eventSize')} ${LONG_NUMBER_SQL_TYPE} NOT NULL,
-      PRIMARY KEY(${escapeId('threadId')}, ${escapeId('threadCounter')})
-    )`,
-      `CREATE UNIQUE INDEX ${escapeId('aggregateIdAndVersion')}
-     ON ${escapeId(databaseName)}.${escapeId(tableName)}
-     USING BTREE(${escapeId('aggregateId')}, ${escapeId('aggregateVersion')})`,
-      `CREATE INDEX ${escapeId('aggregateId')}
-     ON ${escapeId(databaseName)}.${escapeId(tableName)}
-     USING BTREE(${escapeId('aggregateId')})`,
-      `CREATE INDEX ${escapeId('aggregateVersion')}
-     ON ${escapeId(databaseName)}.${escapeId(tableName)}
-     USING BTREE(${escapeId('aggregateVersion')})`,
-      `CREATE INDEX ${escapeId('type')}
-     ON ${escapeId(databaseName)}.${escapeId(tableName)}
-     USING BTREE(${escapeId('type')})`,
-      `CREATE INDEX ${escapeId('timestamp')}
-     ON ${escapeId(databaseName)}.${escapeId(tableName)}
-     USING BTREE(${escapeId('timestamp')})`,
+    `CREATE TABLE ${databaseNameAsId}.${eventsTableNameAsId}(
+      "threadId" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
+      "threadCounter" ${INT8_SQL_TYPE} NOT NULL,
+      "timestamp" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
+      "aggregateId" ${LONG_STRING_SQL_TYPE} NOT NULL,
+      "aggregateVersion" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
+      "type" ${LONG_STRING_SQL_TYPE} NOT NULL,
+      "payload" ${JSON_SQL_TYPE},
+      "eventSize" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
+      PRIMARY KEY("threadId", "threadCounter")
+    );
+    
+    CREATE UNIQUE INDEX ${aggregateIdAndVersionIndexName}
+    ON ${databaseNameAsId}.${eventsTableNameAsId}
+    USING BTREE("aggregateId", "aggregateVersion");
+     
+    CREATE INDEX ${aggregateIndexName}
+    ON ${databaseNameAsId}.${eventsTableNameAsId}
+    USING BTREE("aggregateId");
+     
+    CREATE INDEX ${aggregateVersionIndexName}
+    ON ${databaseNameAsId}.${eventsTableNameAsId}
+    USING BTREE("aggregateVersion");
+     
+    CREATE INDEX ${typeIndexName}
+    ON ${databaseNameAsId}.${eventsTableNameAsId}
+    USING BTREE("type");
+     
+    CREATE INDEX ${timestampIndexName}
+    ON ${databaseNameAsId}.${eventsTableNameAsId}
+    USING BTREE("timestamp");
+     
+    CREATE TABLE ${databaseNameAsId}.${threadsTableNameAsId}(
+      "threadId" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
+      "threadCounter" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
+     PRIMARY KEY("threadId")
+    );
 
-      `CREATE TABLE ${escapeId(databaseName)}.${escapeId(
-        `${tableName}-threads`
-      )}(
-      ${escapeId('threadId')} ${LONG_NUMBER_SQL_TYPE} NOT NULL,
-      ${escapeId('threadCounter')} ${LONG_NUMBER_SQL_TYPE} NOT NULL,
-      PRIMARY KEY(${escapeId('threadId')})
-    )`,
-
-      `INSERT INTO ${escapeId(databaseName)}.${escapeId(
-        `${tableName}-threads`
-      )}(
-      ${escapeId('threadId')},
-      ${escapeId('threadCounter')}
+    INSERT INTO ${databaseNameAsId}.${threadsTableNameAsId}(
+      "threadId",
+      "threadCounter"
     ) VALUES ${Array.from(new Array(256))
       .map((_, index) => `(${index}, 0)`)
-      .join(',')}`
-    ].join('; '),
-    false
+      .join(',')}
+    ;`
   )
 }
 

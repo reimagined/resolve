@@ -41,10 +41,13 @@ const loadEventsByCursor = async (
       .join(' OR ')}
     ${queryConditions.length > 0 ? ')' : ''}`
 
+  const eventsTableNameAsId = escapeId(tableName)
+
   const [rows] = await connection.query(
-    `SELECT * FROM ${escapeId(tableName)} ${resultQueryCondition}
-    ORDER BY ${escapeId('timestamp')} ASC,
-    ${escapeId('threadCounter')} ASC
+    `SELECT * FROM ${eventsTableNameAsId}
+    ${resultQueryCondition}
+    ORDER BY \`timestamp\` ASC,
+    \`threadCounter\` ASC
     LIMIT 0, ${+batchSize}`
   )
 

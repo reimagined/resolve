@@ -19,68 +19,61 @@ const saveEvent = async (
       const byteLength =
         Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
 
+      const databaseNameAsString = escape(databaseName)
+      const databaseNameAsId = escapeId(databaseName)
+      const freezeTableNameAsString = escape(`${tableName}-freeze`)
+      const threadsTableAsId = escapeId(`${tableName}-threads`)
+      const eventsTableAsId = escapeId(tableName)
+
+      // prettier-ignore
       await executeStatement(
-        `WITH ${escapeId('freeze_check')} AS (
-          SELECT 0 AS ${escapeId('freeze_zero')} WHERE (
-            (SELECT ${escape('Event store is frozen')} AS ${escapeId(
-          'EventStoreIsFrozen'
-        )})
+        `WITH "freeze_check" AS (
+          SELECT 0 AS "freeze_zero" WHERE (
+            (SELECT 1 AS "EventStoreIsFrozen")
           UNION ALL
-            (SELECT ${escape('Event store is frozen')} AS ${escapeId(
-          'EventStoreIsFrozen'
-        )}
-            FROM ${escapeId('information_schema')}.${escapeId('tables')}
-            WHERE ${escapeId('table_schema')} = ${escape(databaseName)}
-            AND ${escapeId('table_name')} = ${escape(`${tableName}-freeze`)})
-          ) = ${escape('Event store is frozen')}
-        ), ${escapeId('vacant_thread_id')} AS (
-          SELECT ${escapeId('threadId')}
-          FROM ${escapeId(databaseName)}.${escapeId(`${tableName}-threads`)}
+            (SELECT 1 AS "EventStoreIsFrozen"
+            FROM "information_schema"."tables"
+            WHERE "table_schema" = ${databaseNameAsString}
+            AND "table_name" = ${freezeTableNameAsString})
+          ) = 1
+        ), "vacant_thread_id" AS (
+          SELECT "threadId"
+          FROM ${databaseNameAsId}.${threadsTableAsId}
           FOR UPDATE SKIP LOCKED
           LIMIT 1
-        ),${escapeId('random_thread_id')} AS (
-          SELECT ${escapeId('threadId')}
-          FROM ${escapeId(databaseName)}.${escapeId(`${tableName}-threads`)}
+        ), "random_thread_id" AS (
+          SELECT "threadId"
+          FROM ${databaseNameAsId}.${threadsTableAsId}
           OFFSET FLOOR(Random() * 256)
           LIMIT 1
-        ), ${escapeId('vector_id')} AS (
-          SELECT ${escapeId('threadId')}, ${escapeId('threadCounter')}
-          FROM ${escapeId(databaseName)}.${escapeId(`${tableName}-threads`)}
-          WHERE ${escapeId('threadId')} = COALESCE(
-            (SELECT ${escapeId('threadId')} FROM ${escapeId(
-          'vacant_thread_id'
-        )}),
-            (SELECT ${escapeId('threadId')} FROM ${escapeId(
-          'random_thread_id'
-        )})
+        ), "vector_id" AS (
+          SELECT "threadId", "threadCounter"
+          FROM ${databaseNameAsId}.${threadsTableAsId}
+          WHERE "threadId" = COALESCE(
+            (SELECT "threadId" FROM "vacant_thread_id"),
+            (SELECT "threadId" FROM "random_thread_id")
           ) FOR UPDATE
           LIMIT 1
-        ), ${escapeId('update_vector_id')} AS (
-          UPDATE ${escapeId(databaseName)}.${escapeId(`${tableName}-threads`)}
-          SET ${escapeId('threadCounter')} = ${escapeId('threadCounter')} + 1
-          WHERE ${escapeId('threadId')} = (
-            SELECT ${escapeId('threadId')} FROM ${escapeId('vector_id')} LIMIT 1
+        ), "update_vector_id" AS (
+          UPDATE ${databaseNameAsId}.${threadsTableAsId}
+          SET "threadCounter" = "threadCounter" + 1
+          WHERE "threadId" = (
+            SELECT "threadId" FROM "vector_id" LIMIT 1
           )
           RETURNING *
-        ) INSERT INTO ${escapeId(databaseName)}.${escapeId(tableName)}(
-          ${escapeId('threadId')},
-          ${escapeId('threadCounter')},
-          ${escapeId('timestamp')},
-          ${escapeId('aggregateId')},
-          ${escapeId('aggregateVersion')},
-          ${escapeId('type')},
-          ${escapeId('payload')},
-          ${escapeId('eventSize')}
+        ) INSERT INTO ${databaseNameAsId}.${eventsTableAsId}(
+          "threadId",
+          "threadCounter",
+          "timestamp",
+          "aggregateId",
+          "aggregateVersion",
+          "type",
+          "payload",
+          "eventSize"
         ) VALUES (
-          (SELECT ${escapeId('threadId')} FROM ${escapeId(
-          'vector_id'
-        )} LIMIT 1) +
-          (SELECT ${escapeId('freeze_zero')} FROM ${escapeId(
-          'freeze_check'
-        )} LIMIT 1),
-          (SELECT ${escapeId('threadCounter')} FROM ${escapeId(
-          'vector_id'
-        )} LIMIT 1),
+          (SELECT "threadId" FROM "vector_id" LIMIT 1) +
+          (SELECT "freeze_zero" FROM "freeze_check" LIMIT 1),
+          (SELECT "threadCounter" FROM "vector_id" LIMIT 1),
           GREATEST(
             CAST(extract(epoch from clock_timestamp()) * 1000 AS ${LONG_NUMBER_SQL_TYPE}),
             ${+event.timestamp}
@@ -97,7 +90,7 @@ const saveEvent = async (
 
       if (errorMessage.indexOf('subquery used as an expression') > -1) {
         throw new Error('Event store is frozen')
-      } else if (/"aggregateIdAndVersion"/i.test(errorMessage)) {
+      } else if (/aggregateIdAndVersion/i.test(errorMessage)) {
         throw new ConcurrentError(event.aggregateId)
       } else {
         throw error

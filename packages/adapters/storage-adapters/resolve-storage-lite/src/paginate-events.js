@@ -1,9 +1,11 @@
 const paginateEvents = async (pool, offset, batchSize) => {
   const { database, escapeId, tableName } = pool
 
+  const eventsTableNameAsId = escapeId(tableName)
+
   const rows = await database.all(
-    `SELECT * FROM ${escapeId(tableName)}
-    ORDER BY ${escapeId('timestamp')} ASC
+    `SELECT * FROM ${eventsTableNameAsId}
+    ORDER BY "timestamp" ASC
     LIMIT ${+offset}, ${+batchSize}`
   )
 
@@ -11,6 +13,9 @@ const paginateEvents = async (pool, offset, batchSize) => {
     const event = rows[index]
     event.payload = JSON.parse(event.payload)
     event[Symbol.for('sequenceIndex')] = offset + index
+
+    delete event.threadId
+    delete event.threadCounter
   }
 
   return rows

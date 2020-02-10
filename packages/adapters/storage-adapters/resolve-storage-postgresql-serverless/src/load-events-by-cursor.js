@@ -50,6 +50,9 @@ const loadEventsByCursor = async (
       .join(' OR ')}
     ${queryConditions.length > 0 ? ')' : ''}`
 
+    const databaseNameAsId = escapeId(databaseName)
+    const eventsTableAsId = escapeId(tableName)
+
     let rows = RESPONSE_SIZE_LIMIT
     for (
       let dynamicBatchSize = batchSize;
@@ -57,25 +60,23 @@ const loadEventsByCursor = async (
       dynamicBatchSize = Math.floor(dynamicBatchSize / 1.5)
     ) {
       try {
-        const sqlQuery = [
-          `WITH ${escapeId('cte')} AS (`,
-          `  SELECT ${escapeId('filteredEvents')}.*,`,
-          `  SUM(${escapeId('filteredEvents')}.${escapeId('eventSize')})`,
-          `  OVER (ORDER BY ${escapeId('filteredEvents')}.${escapeId(
-            'timestamp'
-          )})`,
-          `  AS ${escapeId('totalEventSize')}`,
-          `  FROM (`,
-          `    SELECT * FROM ${escapeId(databaseName)}.${escapeId(tableName)}`,
-          `    ${resultQueryCondition}`,
-          `    ORDER BY ${escapeId('timestamp')} ASC`,
-          `    LIMIT ${+dynamicBatchSize}`,
-          `  ) ${escapeId('filteredEvents')}`,
-          `)`,
-          `SELECT * FROM ${escapeId('cte')}`,
-          `WHERE ${escapeId('cte')}.${escapeId('totalEventSize')} < 512000`,
-          `ORDER BY ${escapeId('cte')}.${escapeId('timestamp')} ASC`
-        ].join('\n')
+        // prettier-ignore
+        const sqlQuery =
+          `WITH "filteredEvents" AS (
+            SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}
+            ${resultQueryCondition}
+            ORDER BY "timestamp" ASC
+            LIMIT ${+dynamicBatchSize}
+          ), "sizedEvents" AS (
+            SELECT "filteredEvents".*,
+            SUM("filteredEvents"."eventSize") OVER (
+              ORDER BY "filteredEvents"."timestamp"
+            ) AS "totalEventSize"
+            FROM "filteredEvents"
+          )
+          SELECT * FROM "sizedEvents"
+          WHERE "sizedEvents"."totalEventSize" < 512000
+          ORDER BY "sizedEvents"."timestamp" ASC`
 
         rows = await executeStatement(sqlQuery)
         break

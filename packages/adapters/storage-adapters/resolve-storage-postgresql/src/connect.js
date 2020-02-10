@@ -21,6 +21,8 @@ const connect = async (
     escapeId,
     escape
   })
+
+  await pool.executeStatement('SELECT 0 AS "defunct"')
 }
 
 export default connect

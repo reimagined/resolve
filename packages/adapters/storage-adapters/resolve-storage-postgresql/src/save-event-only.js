@@ -12,33 +12,36 @@ const saveEventOnly = async function(pool, event) {
 
   const byteLength = Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
 
+  const databaseNameAsId = escapeId(databaseName)
+  const threadsTableAsId = escapeId(`${tableName}-threads`)
+  const eventsTableAsId = escapeId(tableName)
+
+  // prettier-ignore
   await executeStatement(
-    `WITH ${escapeId('vector_id')} AS (
-      SELECT ${escapeId('threadId')}, ${escapeId('threadCounter')}
-      FROM ${escapeId(databaseName)}.${escapeId(`${tableName}-threads`)}
-      WHERE ${escapeId('threadId')} = FLOOR(Random() * 256)
+    `WITH "vector_id" AS (
+      SELECT "threadId", "threadCounter"
+      FROM ${databaseNameAsId}.${threadsTableAsId}
+      WHERE "threadId" = FLOOR(Random() * 256)
       FOR UPDATE LIMIT 1
-    ), ${escapeId('update_vector_id')} AS (
-      UPDATE ${escapeId(databaseName)}.${escapeId(`${tableName}-threads`)}
-      SET ${escapeId('threadCounter')} = ${escapeId('threadCounter')} + 1
-      WHERE ${escapeId('threadId')} = (
-        SELECT ${escapeId('threadId')} FROM ${escapeId('vector_id')} LIMIT 1
+    ), "update_vector_id" AS (
+      UPDATE ${databaseNameAsId}.${threadsTableAsId}
+      SET "threadCounter" = "threadCounter" + 1
+      WHERE "threadId" = (
+        SELECT "threadId" FROM "vector_id" LIMIT 1
       )
       RETURNING *
-    ) INSERT INTO ${escapeId(databaseName)}.${escapeId(tableName)}(
-    ${escapeId('threadId')},
-    ${escapeId('threadCounter')},
-    ${escapeId('timestamp')},
-    ${escapeId('aggregateId')},
-    ${escapeId('aggregateVersion')},
-    ${escapeId('type')},
-    ${escapeId('payload')},
-    ${escapeId('eventSize')}
+    ) INSERT INTO ${databaseNameAsId}.${eventsTableAsId}(
+    "threadId",
+    "threadCounter",
+    "timestamp",
+    "aggregateId",
+    "aggregateVersion",
+    "type",
+    "payload",
+    "eventSize"
     ) VALUES (
-      (SELECT ${escapeId('threadId')} FROM ${escapeId('vector_id')} LIMIT 1),
-      (SELECT ${escapeId('threadCounter')} FROM ${escapeId(
-      'vector_id'
-    )} LIMIT 1),
+      (SELECT "threadId" FROM "vector_id" LIMIT 1),
+      (SELECT "threadCounter" FROM "vector_id" LIMIT 1),
       ${+event.timestamp},
       ${serializedEvent},
       ${byteLength}

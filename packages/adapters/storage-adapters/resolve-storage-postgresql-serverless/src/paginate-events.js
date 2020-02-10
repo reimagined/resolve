@@ -4,6 +4,8 @@ const paginateEvents = async (pool, offset, batchSize) => {
   const { escapeId, tableName, databaseName, executeStatement } = pool
 
   let rows = RESPONSE_SIZE_LIMIT
+  const databaseNameAsId = escapeId(databaseName)
+  const eventsTableNameAsId = escapeId(tableName)
 
   for (
     let dynamicBatchSize = batchSize;
@@ -12,24 +14,21 @@ const paginateEvents = async (pool, offset, batchSize) => {
   ) {
     try {
       rows = await executeStatement(
-        [
-          `WITH ${escapeId('cte')} AS (`,
-          `  SELECT ${escapeId('filteredEvents')}.*,`,
-          `  SUM(${escapeId('filteredEvents')}.${escapeId('eventSize')})`,
-          `  OVER (ORDER BY ${escapeId('filteredEvents')}.${escapeId(
-            'timestamp'
-          )}) AS ${escapeId('totalEventSize')}`,
-          `  FROM (`,
-          `    SELECT * FROM ${escapeId(databaseName)}.${escapeId(tableName)}`,
-          `    ORDER BY ${escapeId('timestamp')} ASC`,
-          `    OFFSET ${offset}`,
-          `    LIMIT ${+dynamicBatchSize}`,
-          `  ) ${escapeId('filteredEvents')}`,
-          `)`,
-          `SELECT * FROM ${escapeId('cte')}`,
-          `WHERE ${escapeId('cte')}.${escapeId('totalEventSize')} < 512000`,
-          `ORDER BY ${escapeId('cte')}.${escapeId('timestamp')} ASC`
-        ].join(' ')
+        `WITH "filteredEvents" AS (
+          SELECT * FROM ${databaseNameAsId}.${eventsTableNameAsId}
+          ORDER BY "timestamp" ASC
+          OFFSET ${offset}
+          LIMIT ${+dynamicBatchSize}        
+        ), "sizedEvents" AS (
+          SELECT "filteredEvents".*,
+          SUM("filteredEvents"."eventSize") OVER (
+            ORDER BY "filteredEvents"."timestamp"
+          ) AS "totalEventSize"
+          FROM "filteredEvents"
+        ) SELECT * FROM "sizedEvents"
+        WHERE "sizedEvents"."totalEventSize" < 512000
+        ORDER BY "sizedEvents"."timestamp" ASC
+        `
       )
       break
     } catch (error) {
@@ -44,10 +43,11 @@ const paginateEvents = async (pool, offset, batchSize) => {
 
   let eventOffset = 0
   for (const event of rows) {
-    event.payload = JSON.parse(event.payload)
     event[Symbol.for('sequenceIndex')] = offset + eventOffset
     eventOffset++
 
+    delete event.threadId
+    delete event.threadCounter
     delete event.totalEventSize
     delete event.eventSize
   }

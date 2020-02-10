@@ -6,20 +6,31 @@ const drop = async ({
   executeStatement,
   escapeId
 }) => {
+  const databaseNameAsId = escapeId(databaseName)
+  const eventsTableNameAsId = escapeId(tableName)
+  const threadsTableNameAsId = escapeId(`${tableName}-threads`)
+  const freezeTableNameAsId = escapeId(`${tableName}-freeze`)
+
+  const aggregateIdAndVersionIndexName = escapeId(
+    `${tableName}-aggregateIdAndVersion`
+  )
+  const aggregateIndexName = escapeId(`${tableName}-aggregateId`)
+  const aggregateVersionIndexName = escapeId(`${tableName}-aggregateVersion`)
+  const typeIndexName = escapeId(`${tableName}-type`)
+  const timestampIndexName = escapeId(`${tableName}-timestamp`)
+
   const statements = [
-    `DROP TABLE ${escapeId(databaseName)}.${escapeId(tableName)}`,
+    `DROP TABLE ${databaseNameAsId}.${eventsTableNameAsId}`,
 
-    `DROP INDEX ${escapeId(databaseName)}.${escapeId('aggregateIdAndVersion')}`,
-    `DROP INDEX ${escapeId(databaseName)}.${escapeId('aggregateId')}`,
-    `DROP INDEX ${escapeId(databaseName)}.${escapeId('aggregateVersion')}`,
-    `DROP INDEX ${escapeId(databaseName)}.${escapeId('type')}`,
-    `DROP INDEX ${escapeId(databaseName)}.${escapeId('timestamp')}`,
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${aggregateIdAndVersionIndexName}`,
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${aggregateIndexName}`,
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${aggregateVersionIndexName}`,
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${typeIndexName}`,
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${timestampIndexName}`,
 
-    `DROP TABLE ${escapeId(databaseName)}.${escapeId(`${tableName}-threads`)}`,
+    `DROP TABLE ${databaseNameAsId}.${threadsTableNameAsId}`,
 
-    `DROP TABLE IF EXISTS ${escapeId(databaseName)}.${escapeId(
-      `${tableName}-freeze`
-    )}`
+    `DROP TABLE IF EXISTS ${databaseNameAsId}.${freezeTableNameAsId}`
   ]
   const errors = []
 

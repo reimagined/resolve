@@ -4,51 +4,53 @@ const saveEvent = async (pool, event) => {
   const { tableName, database, escapeId, escape } = pool
   try {
     const currentThreadId = Math.floor(Math.random() * 256)
+    const eventsTableNameAsId = escapeId(tableName)
+    const freezeTableNameAsString = escape(`${tableName}-freeze`)
+    const serializedPayload =
+      event.payload != null
+        ? escape(JSON.stringify(event.payload))
+        : escape('null')
+
     await database.exec(
-      [
-        `BEGIN IMMEDIATE;`,
-        `SELECT ABS(${escapeId('CTE')}.${escapeId(
-          'EventStoreIsFrozen'
-        )}) FROM (`,
-        `  SELECT 0 AS ${escapeId('EventStoreIsFrozen')}`,
-        `UNION ALL`,
-        `  SELECT -9223372036854775808 AS ${escapeId('EventStoreIsFrozen')}`,
-        `  FROM ${escapeId('sqlite_master')}`,
-        `  WHERE ${escapeId('type')} = ${escape('table')} AND `,
-        `  ${escapeId('name')} = ${escape(`${tableName}-freeze`)}`,
-        `) ${escapeId('CTE')};`,
-        `INSERT INTO ${escapeId(tableName)}(`,
-        `  ${escapeId('threadId')},`,
-        `  ${escapeId('threadCounter')},`,
-        `  ${escapeId('timestamp')},`,
-        `  ${escapeId('aggregateId')},`,
-        `  ${escapeId('aggregateVersion')},`,
-        `  ${escapeId('type')},`,
-        `  ${escapeId('payload')}`,
-        `) VALUES(`,
-        ` ${+currentThreadId},`,
-        ` COALESCE(`,
-        `   (SELECT MAX(${escapeId('threadCounter')}) FROM ${escapeId(
-          tableName
-        )}`,
-        `   WHERE ${escapeId('threadId')} = ${+currentThreadId}) + 1,`,
-        `   0`,
-        ` ),`,
-        ` MAX(`,
-        `   CAST(strftime('%s','now') || substr(strftime('%f','now'),4) AS INTEGER),`,
-        `   ${+event.timestamp}`,
-        ` ),`,
-        ` ${escape(event.aggregateId)},`,
-        ` ${+event.aggregateVersion},`,
-        ` ${escape(event.type)},`,
-        `  json(CAST(${
-          event.payload != null
-            ? escape(JSON.stringify(event.payload))
-            : escape('null')
-        } AS BLOB))`,
-        `);`,
-        `COMMIT;`
-      ].join('\n')
+      `BEGIN IMMEDIATE;
+
+      SELECT ABS("CTE"."EventStoreIsFrozen") FROM (
+        SELECT 0 AS "EventStoreIsFrozen"
+      UNION ALL
+        SELECT -9223372036854775808 AS "EventStoreIsFrozen"
+        FROM "sqlite_master"
+        WHERE "type" = 'table' AND 
+        "name" = ${freezeTableNameAsString}
+      ) CTE;
+
+      INSERT INTO ${eventsTableNameAsId}(
+        "threadId",
+        "threadCounter",
+        "timestamp",
+        "aggregateId",
+        "aggregateVersion",
+        "type",
+        "payload"
+      ) VALUES(
+        ${+currentThreadId},
+        COALESCE(
+          (
+            SELECT MAX("threadCounter") FROM ${eventsTableNameAsId}
+            WHERE "threadId" = ${+currentThreadId}
+          ) + 1,
+         0
+        ),
+        MAX(
+          CAST(strftime('%s','now') || substr(strftime('%f','now'),4) AS INTEGER),
+          ${+event.timestamp}
+        ),
+        ${escape(event.aggregateId)},
+        ${+event.aggregateVersion},
+        ${escape(event.type)},
+        json(CAST(${serializedPayload} AS BLOB))
+      );
+
+      COMMIT;`
     )
   } catch (error) {
     const errorMessage =
