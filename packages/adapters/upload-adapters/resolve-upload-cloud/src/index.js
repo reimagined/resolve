@@ -7,8 +7,7 @@ import mime from 'mime-types'
 
 const createPresignedPut = async (
   { uploaderArn, deploymentId, encryptedDeploymentId },
-  dir,
-  contentType
+  dir
 ) => {
   const lambda = new Lambda()
 
@@ -16,8 +15,7 @@ const createPresignedPut = async (
     .invoke({
       FunctionName: uploaderArn,
       Payload: JSON.stringify({
-        command: 'put',
-        contentType,
+        type: 'put',
         deploymentId,
         encryptedDeploymentId,
         dir
