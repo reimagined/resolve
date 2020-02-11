@@ -4,6 +4,7 @@ const path = require('path')
 const fs = require('fs')
 const request = require('request')
 const util = require('util')
+const mime = require('mime-types')
 
 const directoryPath = path.join(__dirname, 'files')
 const readDir = util.promisify(fs.readdir)
@@ -81,6 +82,8 @@ const getJwtToken = pool => {
 const uploadFile = async (pool, filePath) => {
   const { projectId, login } = pool
   const { uploadUrl, uploadId } = await getUploadUrl(pool)
+  const contentType =
+    mime.contentType(path.extname(filePath)) || 'text/plain; charset=utf-8'
 
   await sendCommand(pool, {
     type: 'fileNotLoaded',
@@ -105,7 +108,8 @@ const uploadFile = async (pool, filePath) => {
         {
           uri: uploadUrl,
           headers: {
-            'Content-Length': fileSizeInBytes
+            'Content-Length': fileSizeInBytes,
+            'Content-Type': contentType
           },
           body: file
         },
@@ -121,6 +125,7 @@ const uploadFile = async (pool, filePath) => {
       aggregateName: 'File'
     })
     console.log(`File: ${uploadId} - loading failure`)
+    console.log(`Error: ${error}`)
     return
   }
   await sendCommand(pool, {

@@ -29,7 +29,8 @@
     "aws-sdk": "^2.554.0",
     "request": "^2.88.0",
     "uuid": "^3.3.3",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "mime-types": "^2.1.26"
   },
   "devDependencies": {
     "jest": "24.1.0"
