@@ -32,11 +32,17 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     path.join(resolveConfig.distDir, './common/local-entry/local-entry.js')
   )
 
+  const resolveLaunchId = Math.floor(Math.random() * 1000000000)
+
   const server = processRegister(['node', serverPath], {
     cwd: process.cwd(),
     maxRestarts: 0,
     kill: 5000,
-    stdio: 'inherit'
+    stdio: 'inherit',
+    env: {
+      ...process.env,
+      RESOLVE_LAUNCH_ID: resolveLaunchId
+    }
   })
 
   let broker = null
@@ -53,7 +59,11 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
       cwd: process.cwd(),
       maxRestarts: 0,
       kill: 5000,
-      stdio: 'inherit'
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        RESOLVE_LAUNCH_ID: resolveLaunchId
+      }
     })
   }
 
