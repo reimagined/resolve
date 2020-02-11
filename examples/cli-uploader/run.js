@@ -24,38 +24,40 @@ const launchMode = process.argv[2]
 
 void (async () => {
   try {
+    const moduleUploader = resolveModuleUploader({ jwtSecret })
+    const moduleAuth = resolveModuleAuth([
+      {
+        name: 'local-strategy',
+        createStrategy: 'auth/create_strategy.js',
+        logoutRoute: {
+          path: 'logout',
+          method: 'POST'
+        },
+        routes: [
+          {
+            path: 'register',
+            method: 'POST',
+            callback: 'auth/route_register_callback.js'
+          },
+          {
+            path: 'login',
+            method: 'POST',
+            callback: 'auth/route_login_callback.js'
+          }
+        ]
+      }
+    ])
+
+    const baseConfig = merge(
+      defaultResolveConfig,
+      appConfig,
+      moduleAuth,
+      moduleUploader
+    )
+
     switch (launchMode) {
       case 'dev': {
-        const moduleAuth = resolveModuleAuth([
-          {
-            name: 'local-strategy',
-            createStrategy: 'auth/create_strategy.js',
-            logoutRoute: {
-              path: 'logout',
-              method: 'POST'
-            },
-            routes: [
-              {
-                path: 'register',
-                method: 'POST',
-                callback: 'auth/route_register_callback.js'
-              },
-              {
-                path: 'login',
-                method: 'POST',
-                callback: 'auth/route_login_callback.js'
-              }
-            ]
-          }
-        ])
-        const moduleUploader = resolveModuleUploader({ jwtSecret })
-        const resolveConfig = merge(
-          defaultResolveConfig,
-          appConfig,
-          devConfig,
-          moduleAuth,
-          moduleUploader
-        )
+        const resolveConfig = merge(baseConfig, devConfig)
 
         await reset(resolveConfig, {
           dropEventStore: false,
@@ -69,23 +71,24 @@ void (async () => {
       }
 
       case 'build': {
-        const resolveConfig = merge(defaultResolveConfig, appConfig, prodConfig)
+        const resolveConfig = merge(baseConfig, prodConfig)
         await build(resolveConfig)
         break
       }
 
       case 'cloud': {
-        await build(merge(defaultResolveConfig, appConfig, cloudConfig))
+        const resolveConfig = merge(baseConfig, cloudConfig)
+        await build(resolveConfig)
         break
       }
 
       case 'start': {
-        await start(merge(defaultResolveConfig, appConfig, prodConfig))
+        await start(merge(baseConfig, prodConfig))
         break
       }
 
       case 'reset': {
-        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+        const resolveConfig = merge(baseConfig, devConfig)
         await reset(resolveConfig, {
           dropEventStore: false,
           dropSnapshots: true,
@@ -97,7 +100,7 @@ void (async () => {
       }
 
       case 'import-event-store': {
-        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+        const resolveConfig = merge(baseConfig, devConfig)
 
         const importFile = process.argv[3]
 
@@ -106,7 +109,7 @@ void (async () => {
       }
 
       case 'export-event-store': {
-        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+        const resolveConfig = merge(baseConfig, devConfig)
 
         const exportFile = process.argv[3]
 
@@ -115,11 +118,7 @@ void (async () => {
       }
 
       case 'test:functional': {
-        const resolveConfig = merge(
-          defaultResolveConfig,
-          appConfig,
-          testFunctionalConfig
-        )
+        const resolveConfig = merge(baseConfig, testFunctionalConfig)
 
         await reset(resolveConfig, {
           dropEventStore: true,
