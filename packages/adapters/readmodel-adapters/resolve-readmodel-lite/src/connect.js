@@ -78,7 +78,8 @@ const connect = async (imports, pool, options) => {
   let connector = null
   if (databaseFile === ':memory:') {
     if (process.env.RESOLVE_LAUNCH_ID != null) {
-      const tmpName = `${os.tmpdir()}/${+process.env.RESOLVE_LAUNCH_ID}}.db`
+      const tmpName = `${imports.os.tmpdir()}/${+process.env
+        .RESOLVE_LAUNCH_ID}}.db`
       if (!imports.fs.existSync(tmpName)) {
         imports.fs.writeFileSync(tmpName, '')
         process.on('exit', imports.fs.unlinkSync.bind(imports.fs, tmpName))
