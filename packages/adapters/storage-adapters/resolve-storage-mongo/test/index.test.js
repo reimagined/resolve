@@ -2,6 +2,7 @@ import { result as mockResult, database as mockDatabase } from 'mongodb'
 import createStorageAdapter from '../src/index'
 
 describe('resolve-storage-mongo', () => {
+  let MathRandom = null
   let storageAdapter = null
 
   beforeEach(() => {
@@ -9,9 +10,12 @@ describe('resolve-storage-mongo', () => {
       collectionName: 'collectionName',
       url: 'url'
     })
+    MathRandom = Math.random
+    Math.random = () => 42
   })
 
   afterEach(async () => {
+    Math.random = MathRandom
     await storageAdapter.dispose()
 
     mockResult.length = 0
@@ -20,39 +24,55 @@ describe('resolve-storage-mongo', () => {
   })
 
   test('"saveEvent" should save an event with empty payload', async () => {
-    const collection = { insertOne: jest.fn() }
+    const collection = { find: jest.fn(), insertOne: jest.fn() }
+    mockDatabase.collection.mockImplementationOnce((name, _, cb) => cb(name))
+    mockDatabase.collection.mockImplementationOnce((name, _, cb) => cb(name))
     mockDatabase.collection.mockImplementationOnce(async () => collection)
-    mockDatabase.collection.mockImplementationOnce((name, _, cb) => cb(name))
-    mockDatabase.collection.mockImplementationOnce((name, _, cb) => cb(name))
+
+    const cursor = {
+      sort: jest.fn().mockImplementation(() => cursor),
+      project: jest.fn().mockImplementation(() => cursor),
+      toArray: jest.fn().mockImplementation(() => [])
+    }
+    collection.find.mockImplementation(() => cursor)
 
     await storageAdapter.saveEvent({
       type: 'eventType',
       aggregateId: 'aggregateId',
       aggregateVersion: 1,
-      timestamp: 1
+      timestamp: Number.MAX_SAFE_INTEGER
     })
 
     expect(mockDatabase.collection.mock.calls).toMatchSnapshot()
+    expect(collection.find.mock.calls).toMatchSnapshot()
     expect(collection.insertOne.mock.calls).toMatchSnapshot()
 
     expect(mockResult).toMatchSnapshot()
   })
 
   test('"saveEvent" should save an event', async () => {
-    const collection = { insertOne: jest.fn() }
+    const collection = { find: jest.fn(), insertOne: jest.fn() }
+    mockDatabase.collection.mockImplementationOnce((name, _, cb) => cb(name))
+    mockDatabase.collection.mockImplementationOnce((name, _, cb) => cb(name))
     mockDatabase.collection.mockImplementationOnce(async () => collection)
-    mockDatabase.collection.mockImplementationOnce((name, _, cb) => cb(name))
-    mockDatabase.collection.mockImplementationOnce((name, _, cb) => cb(name))
+
+    const cursor = {
+      sort: jest.fn().mockImplementation(() => cursor),
+      project: jest.fn().mockImplementation(() => cursor),
+      toArray: jest.fn().mockImplementation(() => [])
+    }
+    collection.find.mockImplementation(() => cursor)
 
     await storageAdapter.saveEvent({
       type: 'eventType',
       aggregateId: 'aggregateId',
       aggregateVersion: 1,
-      timestamp: 1,
+      timestamp: Number.MAX_SAFE_INTEGER,
       payload: { index: 1 }
     })
 
     expect(mockDatabase.collection.mock.calls).toMatchSnapshot()
+    expect(collection.find.mock.calls).toMatchSnapshot()
     expect(collection.insertOne.mock.calls).toMatchSnapshot()
 
     expect(mockResult).toMatchSnapshot()
@@ -60,8 +80,7 @@ describe('resolve-storage-mongo', () => {
 
   test('"loadEvents" should load events', async () => {
     const collection = { find: jest.fn() }
-    mockDatabase.collection.mockImplementationOnce(async () => collection)
-    mockDatabase.collection.mockImplementationOnce((name, _, cb) => cb(name))
+    mockDatabase.collection.mockImplementation(async () => collection)
 
     const cursor = {
       sort: jest.fn().mockImplementation(() => cursor),
@@ -74,7 +93,7 @@ describe('resolve-storage-mongo', () => {
 
     const loadFilters = [
       {},
-      { maxEventsByTimeframe: 1 },
+      { limit: 1 },
       { eventTypes: ['eventType'] },
       { aggregateIds: ['aggregateId'] },
       { startTime: 1, finishTime: 3 }
@@ -82,6 +101,8 @@ describe('resolve-storage-mongo', () => {
 
     for (const loadFilter of loadFilters) {
       cursor.next.mockReturnValueOnce({
+        threadId: 42,
+        threadCounter: 0,
         type: 'eventType',
         aggregateId: 'aggregateId',
         aggregateVersion: 1,
@@ -107,8 +128,7 @@ describe('resolve-storage-mongo', () => {
 
   test('"getLatestEvent" should get the latest event', async () => {
     const collection = { find: jest.fn() }
-    mockDatabase.collection.mockImplementationOnce(async () => collection)
-    mockDatabase.collection.mockImplementationOnce((name, _, cb) => cb(name))
+    mockDatabase.collection.mockImplementation(async () => collection)
 
     const cursor = {
       sort: jest.fn().mockImplementation(() => cursor),
@@ -129,6 +149,8 @@ describe('resolve-storage-mongo', () => {
     for (const loadFilter of loadFilters) {
       cursor.toArray.mockReturnValueOnce([
         {
+          threadId: 42,
+          threadCounter: 0,
           type: 'eventType',
           aggregateId: 'aggregateId',
           aggregateVersion: 1,

@@ -2,7 +2,8 @@ import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 import _createAdapter from 'resolve-storage-base'
 
 import connect from './connect'
-import loadEvents from './load-events'
+import loadEventsByCursor from './load-events-by-cursor'
+import loadEventsByTimestamp from './load-events-by-timestamp'
 import freeze from './freeze'
 import unfreeze from './unfreeze'
 import getLatestEvent from './get-latest-event'
@@ -24,7 +25,8 @@ import _destroyResource from './resource/destroy'
 
 const createAdapter = _createAdapter.bind(null, {
   connect,
-  loadEvents,
+  loadEventsByCursor,
+  loadEventsByTimestamp,
   getLatestEvent,
   saveEvent,
   init,

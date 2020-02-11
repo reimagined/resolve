@@ -4,6 +4,7 @@ export default ({ storage, publishEvent }) =>
     import: storage.import.bind(storage),
     export: storage.export.bind(storage),
     getLatestEvent: storage.getLatestEvent.bind(storage),
+    getNextCursor: storage.getNextCursor.bind(storage),
     saveEvent: async event => {
       await storage.saveEvent(event)
       if (typeof publishEvent === 'function') {

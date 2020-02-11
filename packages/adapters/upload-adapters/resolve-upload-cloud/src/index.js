@@ -1,35 +1,52 @@
-import S3 from 'aws-sdk/clients/s3'
+import Lambda from 'aws-sdk/clients/lambda'
 import fs from 'fs'
+import path from 'path'
 import request from 'request'
-import uuid from 'uuid/v4'
 import crypto from 'crypto'
-
-import createCloudFrontDistribution from './resource/createCloudFrontDistribution'
+import mime from 'mime-types'
 
 const createPresignedPut = async (
-  { s3, bucket, config: { deploymentId } },
+  { uploaderArn, deploymentId, encryptedDeploymentId },
   dir
 ) => {
-  const uploadId = uuid()
-  const uploadUrl = await s3.getSignedUrlPromise('putObject', {
-    Bucket: bucket,
-    Key: `${deploymentId}/${dir}/${uploadId}`
-  })
+  const lambda = new Lambda()
 
-  return {
-    uploadUrl,
-    uploadId
+  const result = await lambda
+    .invoke({
+      FunctionName: uploaderArn,
+      Payload: JSON.stringify({
+        type: 'put',
+        deploymentId,
+        encryptedDeploymentId,
+        dir
+      })
+    })
+    .promise()
+
+  const { FunctionError, Payload: ResponsePayload } = result
+
+  if (FunctionError != null) {
+    const { errorMessage } =
+      ResponsePayload == null
+        ? { errorMessage: 'Unknown error' }
+        : JSON.parse(ResponsePayload.toString())
+    throw new Error(errorMessage)
   }
+
+  return ResponsePayload != null ? JSON.parse(ResponsePayload.toString()) : null
 }
 
 export const upload = (pool, uploadUrl, filePath) => {
   const fileSizeInBytes = fs.statSync(filePath).size
   const fileStream = fs.createReadStream(filePath)
+  const contentType =
+    mime.contentType(path.extname(filePath)) || 'text/plain; charset=utf-8'
   return new Promise((resolve, reject) =>
     request.put(
       {
         headers: {
-          'Content-Length': fileSizeInBytes
+          'Content-Length': fileSizeInBytes,
+          'Content-Type': contentType
         },
         uri: uploadUrl,
         body: fileStream
@@ -42,32 +59,38 @@ export const upload = (pool, uploadUrl, filePath) => {
 }
 
 const createPresignedPost = async (
-  { s3, bucket, config: { deploymentId } },
+  { uploaderArn, deploymentId, encryptedDeploymentId },
   dir
 ) => {
-  const uploadId = uuid()
-  const form = await new Promise((resolve, reject) => {
-    s3.createPresignedPost(
-      {
-        Bucket: bucket,
-        Fields: {
-          Key: `${deploymentId}/${dir}/${uploadId}`
-        }
-      },
-      (error, data) => {
-        error ? reject(error) : resolve(data)
-      }
-    )
-  })
+  const lambda = new Lambda()
 
-  return {
-    form,
-    uploadId
+  const { FunctionError, Payload: ResponsePayload } = await lambda
+    .invoke({
+      FunctionName: uploaderArn,
+      Payload: JSON.stringify({
+        type: 'post',
+        deploymentId,
+        encryptedDeploymentId,
+        dir
+      })
+    })
+    .promise()
+
+  if (FunctionError != null) {
+    const { errorMessage } =
+      ResponsePayload == null
+        ? { errorMessage: 'Unknown error' }
+        : JSON.parse(ResponsePayload.toString())
+    throw new Error(errorMessage)
   }
+
+  return ResponsePayload != null ? JSON.parse(ResponsePayload.toString()) : null
 }
 
 export const uploadFormData = (pool, form, filePath) => {
   const fileStream = fs.createReadStream(filePath)
+  const contentType =
+    mime.contentType(path.extname(filePath)) || 'text/plain; charset=utf-8'
   form.fields.key = form.fields.Key
   delete form.fields.Key
   return new Promise((resolve, reject) =>
@@ -76,6 +99,7 @@ export const uploadFormData = (pool, form, filePath) => {
         url: form.url,
         formData: {
           ...form.fields,
+          'Content-Type': contentType,
           file: fileStream
         }
       },
@@ -87,21 +111,21 @@ export const uploadFormData = (pool, form, filePath) => {
 }
 
 export const createToken = (
-  { config: { deploymentId, secretKey } },
-  { dir, expireTime }
+  { encryptedDeploymentId },
+  { dir, expireTime = 3600 }
 ) => {
   const payload = Buffer.from(
     JSON.stringify({
-      deploymentId,
+      encryptedDeploymentId,
       dir,
-      expireTime: Date.now() + expireTime
+      expireTime: Date.now() + expireTime * 1000
     })
   )
     .toString('base64')
     .replace(/=/g, '')
 
   const signature = crypto
-    .createHmac('md5', secretKey)
+    .createHmac('md5', encryptedDeploymentId)
     .update(payload)
     .digest('hex')
 
@@ -109,47 +133,17 @@ export const createToken = (
 }
 
 const createUploadAdapter = config => {
-  const {
-    accessKeyId,
-    secretAccessKey,
-    region,
-    bucket,
-    endpoint,
-    deploymentId,
-    CDN,
-    secretKey
-  } = config
-
-  const s3 = new S3({
-    credentials: {
-      accessKeyId,
-      secretAccessKey
-    },
-    endpoint,
-    region,
-    signatureVersion: 'v4',
-    useAccelerateEndpoint: true
-  })
-
-  const pool = { config, s3, bucket }
+  const { deploymentId, CDN, encryptedDeploymentId } = config
 
   return Object.freeze({
-    createPresignedPut: createPresignedPut.bind(null, pool),
-    upload: upload.bind(null, pool),
-    createPresignedPost: createPresignedPost.bind(null, pool),
-    uploadFormData: uploadFormData.bind(null, pool),
+    createPresignedPut: createPresignedPut.bind(null, config),
+    upload: upload.bind(null, config),
+    createPresignedPost: createPresignedPost.bind(null, config),
+    uploadFormData: uploadFormData.bind(null, config),
+    createToken: createToken.bind(null, config),
     deploymentId,
     CDN,
-    secretKey,
-    createToken,
-    resource: {
-      create: createCloudFrontDistribution.bind(null, {
-        accessKeyId,
-        secretAccessKey,
-        bucketName: bucket,
-        region
-      })
-    }
+    encryptedDeploymentId
   })
 }
 

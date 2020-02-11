@@ -1,8 +1,8 @@
-const sortExpression = { timestamp: -1, aggregateVersion: -1 }
-const projectionExpression = { _id: 0 }
+const sortExpression = { timestamp: -1 }
+const projectionExpression = { _id: 0, threadId: 0, threadCounter: 0 }
 
 const getLatestEvent = async (
-  { collection },
+  { database, collectionName },
   { eventTypes, aggregateIds, startTime, finishTime }
 ) => {
   const findExpression = {
@@ -13,6 +13,8 @@ const getLatestEvent = async (
       $lt: finishTime != null ? finishTime : Infinity
     }
   }
+
+  const collection = await database.collection(collectionName)
 
   const events = await collection
     .find(findExpression)

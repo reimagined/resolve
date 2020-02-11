@@ -66,7 +66,7 @@ EventStream.prototype.processEvents = function() {
     } else {
       const eventOffset = event.eventOffset
       delete event.eventOffset
-      delete event.eventId
+      delete event[Symbol.for('sequenceIndex')]
 
       let chunk = Buffer.from(JSON.stringify(event) + '\n', 'utf8')
       const byteLength = chunk.byteLength

@@ -6,8 +6,10 @@ const initDatabase = async pool => {
   const escape = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
   const serializedFields = {
-    AbutTimestamp: { stringify: value => Number(value), parse: value => value },
-    SkipCount: { stringify: value => Number(value), parse: value => value },
+    Cursor: {
+      stringify: value => (value != null ? escape(value) : 'null'),
+      parse: value => value
+    },
     LastError: {
       stringify: value => escape(JSON.stringify(value)),
       parse: value => JSON.parse(value)
@@ -39,8 +41,7 @@ const initDatabase = async pool => {
     CREATE TABLE IF NOT EXISTS ${escapeId('Listeners')} (
       ${escapeId('ListenerId')} VARCHAR(128) NOT NULL,
       ${escapeId('Status')} VARCHAR(128) NOT NULL DEFAULT ${escape('running')},
-      ${escapeId('AbutTimestamp')} BIGINT NOT NULL DEFAULT 0,
-      ${escapeId('SkipCount')} BIGINT NOT NULL DEFAULT 0,
+      ${escapeId('Cursor')} CLOB,
       ${escapeId('Properties')} CLOB,
       ${escapeId('LastEvent')} CLOB,
       ${escapeId('LastError')} CLOB,

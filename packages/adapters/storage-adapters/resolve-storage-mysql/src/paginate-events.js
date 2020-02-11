@@ -1,17 +1,21 @@
 const paginateEvents = async (pool, offset, batchSize) => {
   const { connection, escapeId, tableName } = pool
 
+  const eventsTableNameAsId = escapeId(tableName)
+
   const [rows] = await connection.query(
-    `SELECT * FROM ${escapeId(tableName)}
-    ORDER BY ${escapeId('timestamp')} ASC,
-    ${escapeId('aggregateVersion')} ASC
+    `SELECT * FROM ${eventsTableNameAsId}
+    ORDER BY \`timestamp\` ASC
     LIMIT ${+offset}, ${+batchSize}`
   )
 
   for (let index = 0; index < rows.length; index++) {
     const event = rows[index]
     Object.setPrototypeOf(event, Object.prototype)
-    event.eventId = offset + index
+    event[Symbol.for('sequenceIndex')] = offset + index
+
+    delete event.threadId
+    delete event.threadCounter
   }
 
   return rows
