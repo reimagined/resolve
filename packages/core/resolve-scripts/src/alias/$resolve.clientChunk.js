@@ -47,9 +47,14 @@ export default ({ resolveConfig, isClient }) => {
   exports.push(`
     if(clientGlobalObject.__RESOLVE_RUNTIME_ENV__ == null) {
       clientGlobalObject.__RESOLVE_RUNTIME_ENV__ = defaultRuntimeEnv
-      console.warn(\`
-        Client-runtime variables have been set to default values since __RESOLVE_RUNTIME_ENV__ is not defined
-      \`)
+      try {
+        if(window == null || clientGlobalObject !== window) {
+          throw new Error('Skip warning')
+        }
+        console.warn(\`
+          Client-runtime variables have been set to default values since __RESOLVE_RUNTIME_ENV__ is not defined
+        \`)
+      } catch(e) {}
     }
   `)
 
