@@ -16,9 +16,7 @@ const connect = async pool => {
 
   pool.connectPromise = (async () => {
     let connector = null
-    if (pool.config && !pool.config.hasOwnProperty('databaseFile')) {
-      pool.config.databaseFile = ':memory:'
-
+    if (pool.databaseFile === ':memory:') {
       if (process.env.RESOLVE_LAUNCH_ID != null) {
         const tmpName = `${os.tmpdir()}/snapshot-${+process.env
           .RESOLVE_LAUNCH_ID}.db`
@@ -43,27 +41,24 @@ const connect = async pool => {
       } else {
         const temporaryFile = tmp.fileSync()
         pool.memoryStore = {
-          ...temporaryFile,
+          name: temporaryFile.name,
           drop: temporaryFile.removeCallback.bind(temporaryFile)
         }
       }
 
       connector = sqlite.open.bind(sqlite, pool.memoryStore.name)
     } else {
-      connector = sqlite.open.bind(sqlite, pool.config.databaseFile)
+      connector = sqlite.open.bind(sqlite, pool.databaseFile)
     }
     pool.database = await connector()
 
     await pool.database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
     await pool.database.exec(`PRAGMA synchronous=EXTRA`)
 
-    if (pool.config.databaseFile === ':memory:') {
+    if (pool.databaseFile === ':memory:') {
       await pool.database.exec(`PRAGMA journal_mode=MEMORY`)
     } else {
       await pool.database.exec(`PRAGMA journal_mode=DELETE`)
-    }
-    if (pool.config && pool.config.hasOwnProperty('bucketSize')) {
-      pool.bucketSize = Number(pool.config.bucketSize)
     }
 
     pool.counters = new Map()
@@ -171,7 +166,12 @@ const drop = async pool => {
 }
 
 const createAdapter = config => {
-  const pool = { config }
+  const { databaseFile, bucketSize } = config
+
+  const pool = {
+    databaseFile: databaseFile != null ? databaseFile : ':memory:',
+    bucketSize: bucketSize != null ? ~~bucketSize : DEFAULT_BUCKET_SIZE
+  }
 
   return Object.freeze({
     loadSnapshot: loadSnapshot.bind(null, pool),

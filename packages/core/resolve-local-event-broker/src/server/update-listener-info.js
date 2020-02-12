@@ -3,13 +3,24 @@ const updateListenerInfo = async (
   listenerId,
   nextValues
 ) => {
-  const prevValues = await database.get(`
-    SELECT ${Object.keys(serializedFields)
-      .map(escapeId)
-      .join(', ')} 
-    FROM ${escapeId('Listeners')}
-    WHERE ${escapeId('ListenerId')} = ${escape(listenerId)}
-  `)
+  let prevValues = null
+  try {
+    prevValues = await database.get(`
+      SELECT ${Object.keys(serializedFields)
+        .map(escapeId)
+        .join(', ')} 
+      FROM ${escapeId('Listeners')}
+      WHERE ${escapeId('ListenerId')} = ${escape(listenerId)}
+    `)
+  } catch (error) {
+    throw new Error(
+      [
+        `Local event broken run into error while reading meta information`,
+        `If you had upgraded reSolve version, delete "data/local-bus-broker.db" file`,
+        `Original error: ${error}`
+      ].join('\n')
+    )
+  }
 
   if (prevValues != null) {
     for (const fieldName of Object.keys(serializedFields)) {
@@ -29,19 +40,29 @@ const updateListenerInfo = async (
   const values =
     prevValues != null ? { ...prevValues, ...nextValues } : nextValues
 
-  await database.exec(`
-    REPLACE INTO ${escapeId('Listeners')}(
-      ${escapeId('ListenerId')}, ${Object.keys(values)
-    .map(escapeId)
-    .join(', ')}
-    ) VALUES(
-      ${escape(listenerId)}, ${Object.keys(values)
-    .map(key => serializedFields[key].stringify(values[key]))
-    .join(', ')}
-    );
-    COMMIT;
-    BEGIN IMMEDIATE;
-  `)
+  try {
+    await database.exec(`
+      REPLACE INTO ${escapeId('Listeners')}(
+        ${escapeId('ListenerId')}, ${Object.keys(values)
+      .map(escapeId)
+      .join(', ')}
+      ) VALUES(
+        ${escape(listenerId)}, ${Object.keys(values)
+      .map(key => serializedFields[key].stringify(values[key]))
+      .join(', ')}
+      );
+      COMMIT;
+      BEGIN IMMEDIATE;
+    `)
+  } catch (error) {
+    throw new Error(
+      [
+        `Local event broken run into error while updating meta information`,
+        `If you had upgraded reSolve version, delete "data/local-bus-broker.db" file`,
+        `Original error: ${error}`
+      ].join('\n')
+    )
+  }
 }
 
 export default updateListenerInfo
