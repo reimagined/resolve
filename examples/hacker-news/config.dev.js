@@ -7,33 +7,26 @@ const devConfig = {
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {
-      databaseFile: ':memory:'
-    }
-  },
-  snapshotAdapter: {
-    module: 'resolve-snapshot-lite',
-    options: {
-      databaseFile: ':memory:',
-      bucketSize: 1
+      databaseFile: 'data/event-store.db'
     }
   },
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: ':memory:'
+        databaseFile: 'data/read-model-default.db'
       }
     },
     hackerNews: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: ':memory:'
+        databaseFile: 'data/read-model-hackerNews.db'
       }
     },
     comments: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: ':memory:'
+        databaseFile: 'data/read-model-comments.db'
       }
     },
     elasticSearch: {
@@ -63,7 +56,7 @@ const devConfig = {
     maxAge: 31536000000
   },
   eventBroker: {
-    databaseFile: ':memory:'
+    databaseFile: 'data/local-bus-broker.db'
   }
 }
 
