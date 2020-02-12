@@ -1,5 +1,7 @@
 import sqlite from 'sqlite'
 import tmp from 'tmp'
+import os from 'os'
+import fs from 'fs'
 
 const DEFAULT_BUCKET_SIZE = 100
 const tableName = 'resolveSnapshotAdapter'
@@ -16,11 +18,36 @@ const connect = async pool => {
     let connector = null
     if (pool.config && !pool.config.hasOwnProperty('databaseFile')) {
       pool.config.databaseFile = ':memory:'
-      const temporaryFile = tmp.fileSync()
-      pool.memoryStore = {
-        ...temporaryFile,
-        drop: temporaryFile.removeCallback.bind(temporaryFile)
+
+      if (process.env.RESOLVE_LAUNCH_ID != null) {
+        const tmpName = `${os.tmpdir()}/snapshot-${+process.env
+          .RESOLVE_LAUNCH_ID}.db`
+        const removeCallback = () => {
+          if (fs.existsSync(tmpName)) {
+            fs.unlinkSync(tmpName)
+          }
+        }
+
+        if (!fs.existsSync(tmpName)) {
+          fs.writeFileSync(tmpName, '')
+          process.on('SIGINT', removeCallback)
+          process.on('SIGTERM', removeCallback)
+          process.on('beforeExit', removeCallback)
+          process.on('exit', removeCallback)
+        }
+
+        pool.memoryStore = {
+          name: tmpName,
+          drop: removeCallback
+        }
+      } else {
+        const temporaryFile = tmp.fileSync()
+        pool.memoryStore = {
+          ...temporaryFile,
+          drop: temporaryFile.removeCallback.bind(temporaryFile)
+        }
       }
+
       connector = sqlite.open.bind(sqlite, pool.memoryStore.name)
     } else {
       connector = sqlite.open.bind(sqlite, pool.config.databaseFile)
