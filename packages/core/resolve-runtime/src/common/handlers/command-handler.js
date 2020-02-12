@@ -8,6 +8,41 @@ import message from '../message'
 
 const log = debugLevels('resolve:resolve-runtime:command-handler')
 
+export const executeCommandWithRetryConflicts = async ({
+  executeCommand,
+  commandArgs,
+  jwtToken
+}) => {
+  const retryCount = commandArgs.immediateConflict != null ? 0 : 10
+  let lastError = null
+  let event = null
+
+  for (let retry = 0; retry <= retryCount; retry++) {
+    try {
+      event = await executeCommand({ ...commandArgs, jwtToken })
+      lastError = null
+      break
+    } catch (error) {
+      lastError = error
+      if (!(error instanceof ConcurrentError)) {
+        break
+      }
+    }
+  }
+
+  if (lastError != null) {
+    if (lastError instanceof ConcurrentError) {
+      lastError.code = 408
+    } else if (lastError instanceof CommandError) {
+      lastError.code = 400
+    }
+
+    throw lastError
+  }
+
+  return event
+}
+
 const commandHandler = async (req, res) => {
   const segment = req.resolve.performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('command')
@@ -15,24 +50,11 @@ const commandHandler = async (req, res) => {
   try {
     const executeCommand = req.resolve.executeCommand
     const commandArgs = extractRequestBody(req)
-    let lastError = null
-    let event = null
-
-    try {
-      event = await executeCommand({ ...commandArgs, jwtToken: req.jwtToken })
-    } catch (error) {
-      lastError = error
-    }
-
-    if (lastError != null) {
-      if (lastError instanceof ConcurrentError) {
-        lastError.code = 408
-      } else if (lastError instanceof CommandError) {
-        lastError.code = 400
-      }
-
-      throw lastError
-    }
+    const event = await executeCommandWithRetryConflicts({
+      executeCommand,
+      commandArgs,
+      jwtToken: req.jwtToken
+    })
 
     subSegment.addAnnotation('aggregateName', commandArgs.aggregateName)
     subSegment.addAnnotation('aggregateId', commandArgs.aggregateId)
