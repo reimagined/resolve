@@ -1,5 +1,13 @@
-import resolveConfigOrigin from '../configs/default.resolve.config.json'
+import defaultResolveConfig from '../configs/default.resolve.config.json'
 import validateConfig from '../src/validate_config'
+
+const resolveConfigOrigin = {
+  ...defaultResolveConfig,
+  storageAdapter: {
+    module: 'resolve-storage-lite',
+    options: {}
+  }
+}
 
 jest.setTimeout(30000)
 

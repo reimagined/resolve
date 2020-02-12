@@ -374,6 +374,7 @@ module.exports = {
           'tcp',
           'testcafe',
           'textarea',
+          'tmpdir',
           'transactionid',
           'tgz',
           'timestamp',

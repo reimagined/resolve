@@ -6,6 +6,12 @@ const testFunctionalConfig = {
   mode: 'development',
   rootPath: '',
   staticPath: 'static',
+  storageAdapter: {
+    module: 'resolve-storage-lite',
+    options: {
+      databaseFile: 'data/event-store-test-functional.db'
+    }
+  },
   staticDir: 'static',
   distDir: 'dist'
 }

@@ -13,6 +13,12 @@ const prodConfig = {
       }
     }
   }*/,
+  storageAdapter: {
+    module: 'resolve-storage-lite',
+    options: {
+      databaseFile: 'data/event-store.db'
+    }
+  },
   eventBroker: {
     launchBroker: false,
     databaseFile: 'data/local-bus-broker.db'

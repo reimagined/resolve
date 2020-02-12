@@ -8,6 +8,12 @@ const devConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
+  storageAdapter: {
+    module: 'resolve-storage-lite',
+    options: {
+      databaseFile: 'data/event-store.db'
+    }
+  },
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-lite',

@@ -7,13 +7,24 @@ const getListenerInfo = async (
   listenerId,
   rawResult = false
 ) => {
-  let metaListenerInfo = await database.get(`
-    SELECT ${Object.keys(serializedFields)
-      .map(escapeId)
-      .join(', ')} 
-    FROM ${escapeId('Listeners')}
-    WHERE ${escapeId('ListenerId')} = ${escape(listenerId)}
-  `)
+  let metaListenerInfo = null
+  try {
+    metaListenerInfo = await database.get(`
+      SELECT ${Object.keys(serializedFields)
+        .map(escapeId)
+        .join(', ')} 
+      FROM ${escapeId('Listeners')}
+      WHERE ${escapeId('ListenerId')} = ${escape(listenerId)}
+    `)
+  } catch (error) {
+    throw new Error(
+      [
+        `Local event broken run into error while reading meta information`,
+        `If you had upgraded reSolve version, delete "data/local-bus-broker.db" file`,
+        `Original error: ${error}`
+      ].join('\n')
+    )
+  }
 
   if (metaListenerInfo != null) {
     for (const fieldName of Object.keys(serializedFields)) {

@@ -20,6 +20,13 @@ const appConfig = {
 
 // mdis-start dev-config
 const devConfig = {
+  storageAdapter: {
+    module: 'resolve-storage-lite',
+    options: {
+      databaseFile: ':memory:'
+    }
+  },
+
   readModelConnectors: {
     default: {
       module: 'connector.js',
