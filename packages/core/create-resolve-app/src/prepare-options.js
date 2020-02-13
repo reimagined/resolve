@@ -85,6 +85,24 @@ const prepareOptions = async pool => {
     const useYarn = isYarnAvailable(pool)()
     const localRegistry = cliArgs['local-registry']
 
+    Object.assign(pool, {
+      applicationName,
+      commit,
+      branch,
+      exampleName,
+      revision,
+      resolveCloneDirName,
+      applicationPath,
+      applicationPackageJsonPath,
+      resolveClonePath,
+      resolveCloneExamplesPath,
+      resolveCloneExamplePath,
+      resolveDownloadZipUrl,
+      resolveCloneZipPath,
+      useYarn,
+      localRegistry
+    })
+
     const masterBranchVersionJsonUrl =
       'https://raw.githubusercontent.com/reimagined/resolve/master/packages/core/create-resolve-app/package.json'
     const masterBranchVersion = await new Promise(resolve => {
@@ -117,24 +135,6 @@ const prepareOptions = async pool => {
         `Run "npm uninstall -g create-resolve-app" or "yarn global remove create-resolve-app" in console`
       )
     }
-
-    Object.assign(pool, {
-      applicationName,
-      commit,
-      branch,
-      exampleName,
-      revision,
-      resolveCloneDirName,
-      applicationPath,
-      applicationPackageJsonPath,
-      resolveClonePath,
-      resolveCloneExamplesPath,
-      resolveCloneExamplePath,
-      resolveDownloadZipUrl,
-      resolveCloneZipPath,
-      useYarn,
-      localRegistry
-    })
   }
 }
 
