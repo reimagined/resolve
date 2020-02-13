@@ -168,6 +168,7 @@ module.exports = {
           'fpr',
           'func',
           'getter',
+          'githubusercontent',
           'github',
           'gte',
           'guid',
