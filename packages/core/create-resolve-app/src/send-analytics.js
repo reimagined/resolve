@@ -1,10 +1,6 @@
-const sendAnalytics = ({
-  https,
-  analyticsUrlBase,
-  exampleName,
-  resolveVersion
-}) => () =>
-  new Promise((resolve, reject) => {
+const sendAnalytics = pool => async () => {
+  const { https, analyticsUrlBase, exampleName, resolveVersion } = pool
+  return await new Promise((resolve, reject) => {
     const analyticsUrl = `${analyticsUrlBase}/${exampleName}/${resolveVersion}`
 
     https.get(analyticsUrl, response => {
@@ -12,5 +8,6 @@ const sendAnalytics = ({
       response.on('error', reject)
     })
   })
+}
 
 export default sendAnalytics
