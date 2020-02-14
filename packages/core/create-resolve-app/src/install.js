@@ -1,10 +1,5 @@
-const install = ({
-  chalk,
-  console,
-  execSync,
-  applicationPath,
-  useYarn
-}) => async () => {
+const install = pool => async () => {
+  const { chalk, console, execSync, applicationPath, useYarn } = pool
   console.log()
   console.log(chalk.green('Install dependencies'))
 

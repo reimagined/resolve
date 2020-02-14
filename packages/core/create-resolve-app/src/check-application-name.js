@@ -1,9 +1,5 @@
-const checkApplicationName = ({
-  EOL,
-  chalk,
-  validateProjectName,
-  applicationName
-}) => async () => {
+const checkApplicationName = pool => async () => {
+  const { EOL, chalk, validateProjectName, applicationName } = pool
   const result = validateProjectName(applicationName)
   if (!result.validForNewPackages) {
     let message = `It is impossible to create an application called ${chalk.red(
