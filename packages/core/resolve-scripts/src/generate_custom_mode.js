@@ -64,11 +64,17 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
         path.join(config.distDir, './common/local-entry/local-entry.js')
       )
 
+      const resolveLaunchId = Math.floor(Math.random() * 1000000000)
+
       const server = processRegister(['node', serverPath], {
         cwd: process.cwd(),
         maxRestarts: 0,
         kill: 5000,
-        stdio: 'inherit'
+        stdio: 'inherit',
+        env: {
+          ...process.env,
+          RESOLVE_LAUNCH_ID: resolveLaunchId
+        }
       })
 
       server.on('crash', reject)
@@ -85,7 +91,11 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
           cwd: process.cwd(),
           maxRestarts: 0,
           kill: 5000,
-          stdio: 'inherit'
+          stdio: 'inherit',
+          env: {
+            ...process.env,
+            RESOLVE_LAUNCH_ID: resolveLaunchId
+          }
         })
 
         broker.on('crash', reject)
@@ -109,9 +119,11 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
         while (true) {
           try {
             const response = await fetch(url)
-            const text = await response.text()
-            if (text !== 'ok') {
-              lastError = text
+            if ((await response.text()) !== 'ok') {
+              lastError = [
+                `Error while communication with reSolve HTTP server at port ${port}`,
+                `Maybe multiple instances of reSolve applications trying to run with similar port`
+              ].join('\n')
             }
             break
           } catch (e) {}

@@ -13,7 +13,8 @@ const prepareOptions = async pool => {
     commandLineArgs,
     isYarnAvailable,
     safeName,
-    message
+    message,
+    https
   } = pool
 
   const cliArgs = commandLineArgs(
@@ -56,7 +57,7 @@ const prepareOptions = async pool => {
 
     const { commit, branch, example: exampleName = 'hello-world' } = cliArgs
 
-    const revision = branch ? branch : commit ? commit : 'master'
+    const revision = branch ? branch : commit ? commit : `V${resolveVersion}`
 
     const resolveCloneDirName = `resolve-${safeName(revision)}`
 
@@ -101,6 +102,39 @@ const prepareOptions = async pool => {
       useYarn,
       localRegistry
     })
+
+    const masterBranchVersionJsonUrl =
+      'https://raw.githubusercontent.com/reimagined/resolve/master/packages/core/create-resolve-app/package.json'
+    const masterBranchVersion = await new Promise(resolve => {
+      let responseString = ''
+      https.get(masterBranchVersionJsonUrl, response => {
+        response.on('data', data => (responseString += data.toString()))
+        response.on('end', () =>
+          Promise.resolve()
+            .then(() => JSON.parse(responseString).version)
+            .catch(() => null)
+            .then(resolve)
+        )
+        response.on('error', () => resolve(null))
+      })
+    })
+
+    if (
+      masterBranchVersion != null &&
+      masterBranchVersion !== resolveVersion &&
+      branch == null &&
+      commit == null
+    ) {
+      console.warn(
+        `You are using create-resolve-app version ${resolveVersion}, but actual one is ${masterBranchVersion}`
+      )
+      console.warn(
+        `Most likely you have package globally installed in npm or yarn, which is highly discouraged`
+      )
+      console.warn(
+        `Run "npm uninstall -g create-resolve-app" or "yarn global remove create-resolve-app" in console`
+      )
+    }
   }
 }
 

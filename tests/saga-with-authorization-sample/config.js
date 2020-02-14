@@ -26,6 +26,13 @@ const appConfig = {
 
 // mdis-start dev-config
 const devConfig = {
+  storageAdapter: {
+    module: 'resolve-storage-lite',
+    options: {
+      databaseFile: ':memory:'
+    }
+  },
+
   // mdis-start schedulers-config
   schedulers: {
     scheduler: {

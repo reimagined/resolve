@@ -75,18 +75,42 @@ const connect = async (imports, pool, options) => {
     ...imports
   })
 
+  const { SQLite, fs, os, tmp } = imports
+
   let connector = null
   if (databaseFile === ':memory:') {
-    if (Object.keys(pool.memoryStore).length === 0) {
-      const temporaryFile = imports.tmp.fileSync()
+    if (process.env.RESOLVE_LAUNCH_ID != null) {
+      const tmpName = `${os.tmpdir()}/read-model-${+process.env
+        .RESOLVE_LAUNCH_ID}.db`
+      const removeCallback = () => {
+        if (fs.existsSync(tmpName)) {
+          fs.unlinkSync(tmpName)
+        }
+      }
+
+      if (!fs.existsSync(tmpName)) {
+        fs.writeFileSync(tmpName, '')
+        process.on('SIGINT', removeCallback)
+        process.on('SIGTERM', removeCallback)
+        process.on('beforeExit', removeCallback)
+        process.on('exit', removeCallback)
+      }
+
       Object.assign(pool.memoryStore, {
-        ...temporaryFile,
+        name: tmpName,
+        drop: removeCallback
+      })
+    } else if (Object.keys(pool.memoryStore).length === 0) {
+      const temporaryFile = tmp.fileSync()
+      Object.assign(pool.memoryStore, {
+        name: temporaryFile.name,
         drop: temporaryFile.removeCallback.bind(temporaryFile)
       })
     }
-    connector = imports.SQLite.open.bind(imports.SQLite, pool.memoryStore.name)
+
+    connector = SQLite.open.bind(SQLite, pool.memoryStore.name)
   } else {
-    connector = imports.SQLite.open.bind(imports.SQLite, databaseFile)
+    connector = SQLite.open.bind(SQLite, databaseFile)
   }
 
   for (let retry = 0; ; retry++) {
