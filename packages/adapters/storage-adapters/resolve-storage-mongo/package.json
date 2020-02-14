@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-mongo",
-  "version": "0.22.4",
+  "version": "0.22.5",
   "description": "An adapter reSolve uses to store events in MongoDB.",
   "engines": {
     "node": ">=10.9"
@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "mongodb": "^3.1.4",
-    "resolve-storage-base": "0.22.4"
+    "resolve-storage-base": "0.22.5"
   },
   "devDependencies": {
     "jest": "24.1.0",
