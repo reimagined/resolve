@@ -115,7 +115,7 @@ const Features = props => (
       },
       {
         content: `With CQRS and Event Sourcing, your application is easier to develop, adapt, maintain and scale. 
-  Functional Java Script code is easier to test and reason about.`,
+  Functional JavaScript code is easier to test and reason about.`,
         image: imgUrl('full-stack-scalable-modern-app.png'),
         imageAlign: 'top',
         title: 'Full stack scalable modern app'
