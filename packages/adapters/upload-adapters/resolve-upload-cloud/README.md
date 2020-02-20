@@ -7,8 +7,10 @@ This package is cloud uploader adapter.
 uploadAdapter: {
     module: 'resolve-upload-cloud',
     options: {
-      CDN: 'cdn',
-      deploymentId: 'deploymentId'
+      encryptedDeploymentId: declareRuntimeEnv('RESOLVE_ENCRYPTED_DEPLOYMENT_ID'),
+      deploymentId: declareRuntimeEnv('RESOLVE_DEPLOYMENT_ID'),
+      CDN: declareRuntimeEnv('RESOLVE_UPLOADER_URL'),
+      uploaderArn: declareRuntimeEnv('RESOLVE_UPLOADER_LAMBDA_ARN')
     }
   }
 ```
