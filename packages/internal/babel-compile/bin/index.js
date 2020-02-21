@@ -19,7 +19,7 @@ for (const config of configs) {
     cliOptions: {
       extensions: config.extensions,
       outFileExtension: config.outFileExtension,
-      filenames: [config.inputDir],
+      filenames: config.filenames,
       outDir: config.outDir,
       deleteDirOnStart: config.deleteDirOnStart
     }

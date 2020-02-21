@@ -39,7 +39,7 @@ const getCompileConfigs = () => {
 
     for (let index = 0; index < babelCompile.length; index++) {
       const config = babelCompile[index]
-      if(config.sourceType == null) {
+      if (config.sourceType == null) {
         config.sourceType = 'js'
       }
       if (config.sourceType.constructor !== String) {
@@ -66,6 +66,23 @@ const getCompileConfigs = () => {
       config.outFileExtension = config.moduleType === 'mjs' ? '.mjs' : '.js'
       config.extensions = config.sourceType === 'ts' ? '.ts' : '.js'
       config.deleteDirOnStart = config.sourceType === 'ts' ? false : true
+      config.filenames = []
+
+      for (const fileName of find(`./**/*${config.extensions}`, {
+        cwd: config.inputDir,
+        absolute: true
+      })) {
+        if (fileName.includes('node_modules')) {
+          continue
+        }
+        if (fileName.includes('__mocks__')) {
+          continue
+        }
+        if (fileName.includes('__tests__')) {
+          continue
+        }
+        config.filenames.push(fileName)
+      }
       configs.push(config)
     }
   }
