@@ -1,5 +1,5 @@
 {
-  "name": "resolve-zeromq",
+  "name": "ts-package-example",
   "version": "0.22.5",
   "description": "Provides the ZeroMQ API to reSolve packages.",
   "engines": {
@@ -11,6 +11,7 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
+    "prepare": "tsc --noEmit",
     "test": "echo || exit 0",
     "testw": "echo || exit 0"
   },
@@ -25,23 +26,40 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-zeromq#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
-    "zeromq": "^6.0.0-beta.2"
+    "@babel/runtime": "^7.0.0"
   },
   "devDependencies": {
-    "jest": "24.1.0"
+    "jest": "25.1.0",
+    "typescript": "3.8.2",
+    "ts-jest": "25.2.1"
+  },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/__tests__/**/*.unit.test.[jt]s?(x)",
+      "**/?(*.)+(spec|test).unit.test.[jt]s?(x)"
+    ],
+    "roots": [
+      "<rootDir>"
+    ]
   },
   "babelCompile": [
     {
-      "moduleType": "es",
-      "moduleTarget": "server",
-      "inputDir": "./src",
+      "sourceType": "ts",
+      "moduleType": "mjs",
+      "moduleTarget": "client",
+      "inputDir": "./",
       "outDir": "./es"
     },
     {
+      "sourceType": "ts",
       "moduleType": "cjs",
-      "moduleTarget": "server",
-      "inputDir": "./src",
+      "moduleTarget": "client",
+      "inputDir": "./",
       "outDir": "./lib"
     }
   ]
