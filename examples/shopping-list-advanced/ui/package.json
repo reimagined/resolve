@@ -18,7 +18,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
     "react-native-gesture-handler": "1.5.2",
     "redux": "4.0.1",
-    "jest": "24.1.0",
+    "jest": "25.1.0",
     "jest-expo": "36.0.1",
     "expo": "36.0.0",
     "enzyme": "3.7.0",

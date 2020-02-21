@@ -41,7 +41,7 @@
     "aws-sdk": "2.587.0",
     "aws-xray-sdk-core": "2.5.0",
     "babel-jest": "24.1.0",
-    "jest": "24.1.0",
+    "jest": "25.1.0",
     "@babel/core": "7.0.0",
     "@babel/plugin-proposal-decorators": "7.0.0",
     "@babel/plugin-proposal-class-properties": "7.0.0",

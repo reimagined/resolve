@@ -40,7 +40,7 @@
     "@babel/preset-env": "7.0.0",
     "@babel/preset-react": "7.0.0",
     "babel-jest": "24.1.0",
-    "jest": "24.1.0",
+    "jest": "25.1.0",
     "react-test-renderer": "16.7.0",
     "testcafe": "0.23.3",
     "isomorphic-fetch": "2.2.1",

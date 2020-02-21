@@ -27,6 +27,7 @@
     "@babel/runtime": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-eslint": "^10.0.1",
     "babel-jest": "24.1.0",
@@ -44,7 +45,8 @@
     "@internal/helpers": "0.22.5",
     "mdis": "^0.0.5",
     "lcov-result-merger": "^3.1.0",
-    "coveralls": "^3.0.6"
+    "coveralls": "^3.0.6",
+    "typescript": "3.8.2"
   },
   "workspaces": {
     "packages": [

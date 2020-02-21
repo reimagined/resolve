@@ -41,7 +41,7 @@
     "enzyme-to-json": "3.3.5",
     "expo-font": "8.0.0",
     "expo-react-native-adapter": "3.0.1",
-    "jest": "24.1.0",
+    "jest": "25.1.0",
     "jest-expo": "36.0.1",
     "metro-react-native-babel-preset": "0.56.0",
     "react-test-renderer": "16.5.0",

@@ -74,7 +74,7 @@
     "babel-jest": "24.1.0",
     "enzyme": "3.3.0",
     "enzyme-adapter-react-16": "1.1.1",
-    "jest": "24.1.0",
+    "jest": "25.1.0",
     "sinon": "7.2.2",
     "testcafe": "0.23.3",
     "resolve-cloud": "*"
