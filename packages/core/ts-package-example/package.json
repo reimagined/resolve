@@ -11,7 +11,7 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepare": "tsc --noEmit",
+    "prepare": "rimraf ./**/*.d.ts ./**/*.js ./**/*.js.map ./**/*.mjs ./**/*.mjs.map && tsc",
     "test": "echo || exit 0",
     "testw": "echo || exit 0"
   },
@@ -31,7 +31,8 @@
   "devDependencies": {
     "jest": "25.1.0",
     "typescript": "3.8.2",
-    "ts-jest": "25.2.1"
+    "ts-jest": "25.2.1",
+    "rimraf": "3.0.2"
   },
   "jest": {
     "verbose": true,
@@ -53,14 +54,14 @@
       "moduleType": "mjs",
       "moduleTarget": "client",
       "inputDir": "./",
-      "outDir": "./es"
+      "outDir": "./"
     },
     {
       "sourceType": "ts",
       "moduleType": "cjs",
       "moduleTarget": "client",
       "inputDir": "./",
-      "outDir": "./lib"
+      "outDir": "./"
     }
   ]
 }

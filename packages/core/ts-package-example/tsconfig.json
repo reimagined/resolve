@@ -3,7 +3,9 @@
     "target": "esnext",
     "moduleResolution": "node",
     "allowJs": true,
-    "noEmit": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "strict": true,
     "esModuleInterop": true,
     "jsx": "react"

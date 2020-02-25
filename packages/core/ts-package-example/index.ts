@@ -1,4 +1,4 @@
-export default function f(a:number):number {
-  const b = a + a;
-  return b
-}
+import * as a from './a'
+import * as b from './b'
+
+export { a, b }
