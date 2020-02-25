@@ -62,7 +62,7 @@ const getCompileConfigs = () => {
       config.version = version
       config.directory = path.dirname(filePath)
       config.inputDir = path.join(config.directory, config.inputDir)
-      config.outDir = path.join(config.directory, config.outDir)
+      config.outDir = config.sourceType === 'ts' ? undefined : path.join(config.directory, config.outDir)
       config.outFileExtension = config.moduleType === 'mjs' ? '.mjs' : '.js'
       config.extensions = config.sourceType === 'ts' ? '.ts' : '.js'
       config.deleteDirOnStart = config.sourceType === 'ts' ? false : true
@@ -81,7 +81,17 @@ const getCompileConfigs = () => {
         if (fileName.includes('__tests__')) {
           continue
         }
-        config.filenames.push(fileName)
+        if (fileName.includes('.d.ts')) {
+          continue
+        }
+
+        config.filenames.push(
+
+          fileName.replace('/home/mrcheater/resolve', '.')
+
+        )
+        config.relative = getResolveDir()//config.inputDir
+        console.log(config.filenames, config.relative)
       }
       configs.push(config)
     }
