@@ -1,9 +1,10 @@
 import unfetch from 'unfetch'
-import { URLSearchParams } from 'url'
+import qs from 'query-string'
 
 import getRootBasedUrl from './get_root_based_url'
 import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
 import { isString } from './utils'
+
 
 export class ApiError extends Error {
   constructor(error) {
@@ -65,14 +66,27 @@ const validateStatus = async response => {
   }
 }
 
+const stringifyUrl = (url, params) => {
+  if (params) {
+    if (isString(params)) {
+      return `${url}?${params}`
+    }
+    return `${url}?${qs.stringify(params, {
+      arrayFormat: 'bracket'
+    })}`
+  }
+  return url
+}
+
 const createApi = ({ origin, rootPath, jwtProvider, store, queryMethod }) => {
   if (!queryMethod || !isString(queryMethod) || !allowedQueryMethods.includes(queryMethod)) {
     throw Error(`unsupported query method [${queryMethod}], allowed ones are [${allowedQueryMethods.join(',')}]`)
   }
 
   const request = async (url, requestParams, method) => {
-    const rootBasedUrl = getRootBasedUrl(origin, rootPath, url)
+    let rootBasedUrl = getRootBasedUrl(origin, rootPath, url)
 
+    let requestUrl = null
     let init = null
 
     switch (method) {
@@ -82,7 +96,7 @@ const createApi = ({ origin, rootPath, jwtProvider, store, queryMethod }) => {
           headers: { },
           credentials: 'same-origin'
         }
-        rootBasedUrl.search = new URLSearchParams(requestParams).toString()
+        requestUrl = stringifyUrl(rootBasedUrl, requestParams)
         break
       case 'POST':
         init = {
@@ -91,6 +105,7 @@ const createApi = ({ origin, rootPath, jwtProvider, store, queryMethod }) => {
           credentials: 'same-origin',
           body: isString(requestParams) ? requestParams : JSON.stringify(requestParams)
         }
+        requestUrl = rootBasedUrl
         break
       default:
         throw Error(`unsupported request method [${method}]`)
@@ -101,7 +116,7 @@ const createApi = ({ origin, rootPath, jwtProvider, store, queryMethod }) => {
         init.headers.Authorization = `Bearer ${jwtToken}`
       }
     }
-    const response = await doFetch(rootBasedUrl, init)
+    const response = await doFetch(requestUrl, init)
 
     if (jwtProvider) {
       const responseJwtToken = response.headers.get('x-jwt')
@@ -116,18 +131,14 @@ const createApi = ({ origin, rootPath, jwtProvider, store, queryMethod }) => {
   }
 
   return {
-    async loadViewModelState({ viewModelName, aggregateIds, aggregateArgs }) {
+    async loadViewModelState({ viewModelName, aggregateIds }) {
       let response, result
       try {
         const queryAggregateIds =
           aggregateIds === '*' ? aggregateIds : aggregateIds.join(',')
 
         response = await request(
-          `/api/query/${viewModelName}/${queryAggregateIds}`,
-          {
-            aggregateArgs
-          },
-          queryMethod
+          `/api/query/${viewModelName}/${queryAggregateIds}`, {}, queryMethod
         )
       } catch (error) {
         throw new FetchError(error)
