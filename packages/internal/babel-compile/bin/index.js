@@ -9,24 +9,17 @@ for (const config of configs) {
   const cliOptions = {
     extensions: config.extensions,
     outFileExtension: config.outFileExtension,
-    inputDir: config.inputDir,
     relative: config.relative,
     filenames: config.filenames,
     outDir: config.outDir,
     deleteDirOnStart: config.deleteDirOnStart
   }
 
-  for(let key in cliOptions) {
-    if(cliOptions[key] === undefined) {
+  for (let key in cliOptions) {
+    if (cliOptions[key] === undefined) {
       delete cliOptions[key]
     }
   }
-  // console.log('===== config =====')
-  // console.log(config)
-  // console.log('')
-  // console.log('===== cliOptions =====')
-  // console.log(cliOptions)
-
 
   babel({
     babelOptions: {

@@ -58,25 +58,23 @@ const getCompileConfigs = () => {
         throw new Error(`.babelCompile[${index}].outDir must be a string`)
       }
 
-      const directory = path.dirname(filePath)
-      const inputDir = path.join(directory, config.inputDir)
-
       config.name = name
       config.version = version
-      config.directory = directory
-      config.inputDir = config.sourceType === 'ts' ? undefined : path.join(config.directory, config.inputDir)
-      config.outDir =  config.sourceType === 'ts' ? '.' : path.join(config.directory, config.outDir)
+      config.directory = path.dirname(filePath)
+      config.inputDir = path.join(config.directory, config.inputDir)
+      config.outDir =
+        config.sourceType === 'ts'
+          ? '.'
+          : path.join(config.directory, config.outDir)
       config.outFileExtension = config.moduleType === 'mjs' ? '.mjs' : '.js'
       config.extensions = config.sourceType === 'ts' ? '.ts' : '.js'
       config.deleteDirOnStart = config.sourceType === 'ts' ? false : true
-      config.filenames = config.sourceType === 'ts' ? [] : undefined
+      config.filenames = config.sourceType === 'ts' ? [] : [config.inputDir]
       config.relative = config.sourceType === 'ts' ? getResolveDir() : undefined
 
-      console.log(config)
-
-      if(Array.isArray(config.filenames)) {
+      if (config.sourceType === 'ts') {
         for (const fileName of find(`./**/*${config.extensions}`, {
-          cwd: inputDir,
+          cwd: config.inputDir,
           absolute: true
         })) {
           if (fileName.includes('node_modules')) {
@@ -91,14 +89,8 @@ const getCompileConfigs = () => {
           if (fileName.includes('.d.ts')) {
             continue
           }
-          config.filenames.push(
-            fileName.replace(config.relative, '.')
-          )
+          config.filenames.push(fileName.replace(config.relative, '.'))
         }
-
-
-
-
       }
       configs.push(config)
     }

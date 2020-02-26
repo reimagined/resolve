@@ -240,6 +240,7 @@ module.exports = {
           'multipart',
           'msg',
           'mysql',
+          'mjs',
           'namespace',
           'namespaces',
           'nav',
