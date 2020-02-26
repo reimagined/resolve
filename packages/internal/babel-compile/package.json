@@ -5,7 +5,8 @@
   "bin": "./bin/index.js",
   "dependencies": {
     "@babel/cli": "^7.0.0",
-    "@internal/helpers": "0.22.5"
+    "@internal/helpers": "0.22.5",
+    "glob": "7.1.6"
   },
   "scripts": {
     "start": "node ./bin/index.js",

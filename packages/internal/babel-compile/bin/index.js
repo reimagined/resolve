@@ -2,6 +2,7 @@
 
 const babel = require('@babel/cli/lib/babel/dir').default
 const { getBabelConfig, getCompileConfigs } = require('@internal/helpers')
+const { prepare } = require('./prepare')
 
 const configs = getCompileConfigs()
 
@@ -21,27 +22,29 @@ for (const config of configs) {
     }
   }
 
-  babel({
-    babelOptions: {
-      ...getBabelConfig({
-        sourceType: config.sourceType,
-        moduleType: config.moduleType,
-        moduleTarget: config.moduleTarget
-      }),
-      sourceMaps: true,
-      babelrc: false
-    },
-    cliOptions
-  })
-    .then(() => {
-      // eslint-disable-next-line no-console
-      console.log(
-        `↑ [${config.name}] { moduleType: "${config.moduleType}", moduleType: "${config.moduleTarget}" }`
-      )
+  prepare(config).then(() =>
+    babel({
+      babelOptions: {
+        ...getBabelConfig({
+          sourceType: config.sourceType,
+          moduleType: config.moduleType,
+          moduleTarget: config.moduleTarget
+        }),
+        sourceMaps: true,
+        babelrc: false
+      },
+      cliOptions
     })
-    .catch(error => {
-      // eslint-disable-next-line no-console
-      console.error(error)
-      process.exit(1)
-    })
+      .then(() => {
+        // eslint-disable-next-line no-console
+        console.log(
+          `↑ [${config.name}] { moduleType: "${config.moduleType}", moduleType: "${config.moduleTarget}" }`
+        )
+      })
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.error(error)
+        process.exit(1)
+      })
+  )
 }

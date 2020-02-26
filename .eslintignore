@@ -6,3 +6,10 @@ coverage
 examples/shopping-list-advanced/native/native-chunk*
 website
 packages/core/resolve-zeromq/optional
+
+packages/core/ts-package-example/**/*.js
+packages/core/ts-package-example/**/*.js.map
+packages/core/ts-package-example/**/*.mjs
+packages/core/ts-package-example/**/*.mjs.map
+packages/core/ts-package-example/**/*.dts
+
