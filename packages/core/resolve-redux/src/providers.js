@@ -6,7 +6,14 @@ import createApi from './create_api'
 
 class Providers extends React.PureComponent {
   render() {
-    const { origin, rootPath, staticPath, store, children, queryMethod } = this.props
+    const {
+      origin,
+      rootPath,
+      staticPath,
+      store,
+      children,
+      queryMethod
+    } = this.props
 
     const api = createApi({ origin, rootPath, store, queryMethod })
 
