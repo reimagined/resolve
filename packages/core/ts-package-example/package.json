@@ -11,7 +11,6 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepare": "rimraf ./**/*.d.ts ./**/*.js ./**/*.js.map ./**/*.mjs ./**/*.mjs.map && tsc",
     "test": "echo || exit 0",
     "testw": "echo || exit 0"
   },
