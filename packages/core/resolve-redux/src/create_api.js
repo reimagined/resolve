@@ -1,7 +1,9 @@
 import unfetch from 'unfetch'
+import qs from 'query-string'
 
 import getRootBasedUrl from './get_root_based_url'
 import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
+import { isString } from './utils'
 
 export class ApiError extends Error {
   constructor(error) {
@@ -43,6 +45,8 @@ export const temporaryErrorHttpCodes = [
   524 // A Timeout Occurred
 ]
 
+const allowedQueryMethods = ['GET', 'POST']
+
 const doFetch = (...args) => {
   try {
     return fetch(...args)
@@ -61,23 +65,67 @@ const validateStatus = async response => {
   }
 }
 
-const createApi = ({ origin, rootPath, jwtProvider, store }) => {
-  const request = async (url, body) => {
-    const rootBasedUrl = getRootBasedUrl(origin, rootPath, url)
-    const options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'same-origin',
-      body: JSON.stringify(body)
+const stringifyUrl = (url, params) => {
+  if (params) {
+    if (isString(params)) {
+      return `${url}?${params}`
     }
+    return `${url}?${qs.stringify(params, {
+      arrayFormat: 'bracket'
+    })}`
+  }
+  return url
+}
 
+const createApi = ({ origin, rootPath, jwtProvider, store, queryMethod }) => {
+  if (
+    !queryMethod ||
+    !isString(queryMethod) ||
+    !allowedQueryMethods.includes(queryMethod)
+  ) {
+    throw Error(
+      `unsupported query method [${queryMethod}], allowed ones are [${allowedQueryMethods.join(
+        ','
+      )}]`
+    )
+  }
+
+  const request = async (url, requestParams, method) => {
+    let rootBasedUrl = getRootBasedUrl(origin, rootPath, url)
+
+    let requestUrl = null
+    let init = null
+
+    switch (method) {
+      case 'GET':
+        init = {
+          method: 'GET',
+          headers: {},
+          credentials: 'same-origin'
+        }
+        requestUrl = stringifyUrl(rootBasedUrl, requestParams)
+        break
+      case 'POST':
+        init = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: isString(requestParams)
+            ? requestParams
+            : JSON.stringify(requestParams)
+        }
+        requestUrl = rootBasedUrl
+        break
+      default:
+        throw Error(`unsupported request method [${method}]`)
+    }
     if (jwtProvider) {
       const jwtToken = await jwtProvider.get()
       if (jwtToken) {
-        options.headers.Authorization = `Bearer ${jwtToken}`
+        init.headers.Authorization = `Bearer ${jwtToken}`
       }
     }
-    const response = await doFetch(rootBasedUrl, options)
+    const response = await doFetch(requestUrl, init)
 
     if (jwtProvider) {
       const responseJwtToken = response.headers.get('x-jwt')
@@ -92,7 +140,7 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
   }
 
   return {
-    async loadViewModelState({ viewModelName, aggregateIds, aggregateArgs }) {
+    async loadViewModelState({ viewModelName, aggregateIds }) {
       let response, result
       try {
         const queryAggregateIds =
@@ -100,9 +148,8 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
 
         response = await request(
           `/api/query/${viewModelName}/${queryAggregateIds}`,
-          {
-            aggregateArgs
-          }
+          {},
+          queryMethod
         )
       } catch (error) {
         throw new FetchError(error)
@@ -134,7 +181,8 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       try {
         response = await request(
           `/api/query/${readModelName}/${resolverName}`,
-          resolverArgs
+          resolverArgs,
+          queryMethod
         )
       } catch (error) {
         throw new FetchError(error)
@@ -164,12 +212,16 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
     async sendCommand({ commandType, aggregateId, aggregateName, payload }) {
       let response, result
       try {
-        response = await request('/api/commands', {
-          type: commandType,
-          aggregateId,
-          aggregateName,
-          payload
-        })
+        response = await request(
+          '/api/commands',
+          {
+            type: commandType,
+            aggregateId,
+            aggregateName,
+            payload
+          },
+          'POST'
+        )
       } catch (error) {
         throw new FetchError(error)
       }
@@ -195,11 +247,15 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
     async getSubscribeAdapterOptions(adapterName) {
       let response, result
       try {
-        response = await request('/api/subscribe', {
-          origin,
-          rootPath,
-          adapterName
-        })
+        response = await request(
+          '/api/subscribe',
+          {
+            origin,
+            rootPath,
+            adapterName
+          },
+          'POST'
+        )
       } catch (error) {
         throw new FetchError(error)
       }

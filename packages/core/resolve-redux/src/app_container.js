@@ -12,7 +12,8 @@ class AppContainer extends React.PureComponent {
       store,
       history,
       routes,
-      isSSR
+      isSSR,
+      queryMethod = 'GET'
     } = this.props
 
     return (
@@ -21,6 +22,7 @@ class AppContainer extends React.PureComponent {
         rootPath={rootPath}
         staticPath={staticPath}
         store={store}
+        queryMethod={queryMethod}
       >
         <ConnectedRouter history={history} isSSR={isSSR}>
           <Routes routes={routes} />

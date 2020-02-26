@@ -28,7 +28,8 @@ const createStore = ({
   history,
   origin,
   rootPath,
-  isClient
+  isClient,
+  queryMethod = 'GET'
 }) => {
   const sessionId = uuid()
 
@@ -65,7 +66,8 @@ const createStore = ({
     sessionId,
     jwtProvider,
     isClient,
-    customSagas
+    customSagas,
+    queryMethod
   })
 
   if (jwtProvider != null) {
