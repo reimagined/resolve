@@ -58,40 +58,47 @@ const getCompileConfigs = () => {
         throw new Error(`.babelCompile[${index}].outDir must be a string`)
       }
 
+      const directory = path.dirname(filePath)
+      const inputDir = path.join(directory, config.inputDir)
+
       config.name = name
       config.version = version
-      config.directory = path.dirname(filePath)
-      config.inputDir = path.join(config.directory, config.inputDir)
-      config.outDir = config.sourceType === 'ts' ? undefined : path.join(config.directory, config.outDir)
+      config.directory = directory
+      config.inputDir = config.sourceType === 'ts' ? undefined : path.join(config.directory, config.inputDir)
+      config.outDir =  config.sourceType === 'ts' ? '.' : path.join(config.directory, config.outDir)
       config.outFileExtension = config.moduleType === 'mjs' ? '.mjs' : '.js'
       config.extensions = config.sourceType === 'ts' ? '.ts' : '.js'
       config.deleteDirOnStart = config.sourceType === 'ts' ? false : true
-      config.filenames = []
+      config.filenames = config.sourceType === 'ts' ? [] : undefined
+      config.relative = config.sourceType === 'ts' ? getResolveDir() : undefined
 
-      for (const fileName of find(`./**/*${config.extensions}`, {
-        cwd: config.inputDir,
-        absolute: true
-      })) {
-        if (fileName.includes('node_modules')) {
-          continue
-        }
-        if (fileName.includes('__mocks__')) {
-          continue
-        }
-        if (fileName.includes('__tests__')) {
-          continue
-        }
-        if (fileName.includes('.d.ts')) {
-          continue
+      console.log(config)
+
+      if(Array.isArray(config.filenames)) {
+        for (const fileName of find(`./**/*${config.extensions}`, {
+          cwd: inputDir,
+          absolute: true
+        })) {
+          if (fileName.includes('node_modules')) {
+            continue
+          }
+          if (fileName.includes('__mocks__')) {
+            continue
+          }
+          if (fileName.includes('__tests__')) {
+            continue
+          }
+          if (fileName.includes('.d.ts')) {
+            continue
+          }
+          config.filenames.push(
+            fileName.replace(config.relative, '.')
+          )
         }
 
-        config.filenames.push(
 
-          fileName.replace('/home/mrcheater/resolve', '.')
 
-        )
-        config.relative = getResolveDir()//config.inputDir
-        console.log(config.filenames, config.relative)
+
       }
       configs.push(config)
     }
