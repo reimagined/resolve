@@ -1,5 +1,5 @@
-import { a } from '../index'
-import { f3 } from '../b/index'
+import { a } from '../src/index'
+import { f3 } from '../src/b/index'
 
 test('test', () => {
   const sum: number = a.f1(1, 2)

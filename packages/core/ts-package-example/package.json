@@ -5,8 +5,8 @@
   "engines": {
     "node": ">=10.9"
   },
-  "main": "./index.js",
-  "module": "./index.mjs",
+  "main": "src/index.js",
+  "module": "src/index.mjs",
   "types": "./index.d.ts",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -42,7 +42,7 @@
       "^.+\\.tsx?$": "ts-jest"
     },
     "testMatch": [
-      "**/__tests__/**/*.test.[jt]s?(x)",
+      "**/test/**/*.test.[jt]s?(x)",
       "**/?(*.)+(spec|test).test.[jt]s?(x)"
     ],
     "roots": [
@@ -52,17 +52,17 @@
   "babelCompile": [
     {
       "sourceType": "ts",
-      "moduleType": "mjs",
+      "moduleType": "es",
       "moduleTarget": "client",
-      "inputDir": "./",
-      "outDir": "./"
+      "inputDir": "./src",
+      "outDir": "./es"
     },
     {
       "sourceType": "ts",
       "moduleType": "cjs",
       "moduleTarget": "client",
-      "inputDir": "./",
-      "outDir": "./"
+      "inputDir": "./src",
+      "outDir": "./lib"
     }
   ]
 }
