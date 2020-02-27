@@ -24,14 +24,10 @@ const loadEventsByCursor = async (
 
   const queryConditions = []
   if (eventTypes != null) {
-    queryConditions.push(
-      `${escapeId('type')} IN (${eventTypes.map(injectString)})`
-    )
+    queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`)
   }
   if (aggregateIds != null) {
-    queryConditions.push(
-      `${escapeId('aggregateId')} IN (${aggregateIds.map(injectString)})`
-    )
+    queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
   }
 
   let countEvents = 0
@@ -43,9 +39,9 @@ const loadEventsByCursor = async (
     ${vectorConditions
       .map(
         (threadCounter, threadId) =>
-          `${escapeId('threadId')} = ${injectNumber(threadId)} AND ${escapeId(
-            'threadCounter'
-          )} >= ${threadCounter} `
+          `"threadId" = ${injectNumber(
+            threadId
+          )} AND "threadCounter" >= ${threadCounter} `
       )
       .join(' OR ')}
     ${queryConditions.length > 0 ? ')' : ''}`
