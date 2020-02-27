@@ -31,8 +31,10 @@
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-eslint": "^10.0.1",
     "babel-jest": "24.1.0",
-    "eslint": "^5.13.0",
+    "eslint": "^6.8.0",
     "eslint-config-react-app": "^3.0.6",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-flowtype": "^3.2.1",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-jsx-a11y": "^6.2.1",
@@ -46,7 +48,9 @@
     "mdis": "^0.0.5",
     "lcov-result-merger": "^3.1.0",
     "coveralls": "^3.0.6",
-    "typescript": "3.8.2"
+    "typescript": "3.8.2",
+    "@typescript-eslint/eslint-plugin": "^2.3.3",
+    "@typescript-eslint/parser": "^2.3.3"
   },
   "workspaces": {
     "packages": [
@@ -72,12 +76,12 @@
     "clean": "npm run clean:babel && npm run clean:packages && npx rimraf yarn-error.log && npx oao clean",
     "clean:babel": "npx oao all \"npx rimraf dist lib es coverage *.db*\" --parallel",
     "clean:packages": "npx rimraf .packages",
-    "lint": "eslint .",
+    "lint": "eslint . --ext=.js,.jst,.ts,.tsx",
     "mdis": "mdis",
     "prepare": "babel-compile",
     "build-packages": "build-packages",
     "local-registry": "local-registry",
-    "prettier": "prettier --write \"**/**.{js,json,babelrc}\"",
+    "prettier": "prettier --write \"**/**.{ts,tsx,js,json,babelrc}\"",
     "publish": "npx oao publish -i \"examples/*\" --no-git-commit --no-changelog",
     "test": "npx oao all -i \"examples/shopping-list-advanced\" \"yarn test --color 2>&1\"",
     "test:coverage": "npx oao all -i \"examples/shopping-list-advanced\" \"yarn test --coverage --coverageReporters=lcov --color 2>&1\" && npx lcov-result-merger 'packages/**/lcov.info' 'lcov.info'",

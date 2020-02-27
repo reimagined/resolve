@@ -1,21 +1,45 @@
+const typescriptEslintRecommended = require('@typescript-eslint/eslint-plugin')
+  .configs.recommended
+
 module.exports = {
   env: {
     node: true,
     jest: true,
-    es6: true
+    es6: true,
+    browser: true
   },
-  extends: 'react-app',
+  extends: ['react-app', 'plugin:prettier/recommended'],
   parserOptions: {
+    sourceType: 'module',
+    ecmaVersion: 2020,
     ecmaFeature: {
       jsx: true
     }
   },
   plugins: ['react', 'jsx-a11y', 'import', 'spellcheck'],
-  settings: {
-    react: {
-      version: '16.5'
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      plugins: ['@typescript-eslint'],
+      parser: '@typescript-eslint/parser',
+      extends: ['plugin:import/typescript'],
+      rules: Object.assign({}, typescriptEslintRecommended.rules, {
+        '@typescript-eslint/member-delimiter-style': [
+          'error',
+          {
+            multiline: {
+              delimiter: 'none',
+              requireLast: false
+            },
+            singleline: {
+              delimiter: 'comma',
+              requireLast: false
+            }
+          }
+        ]
+      })
     }
-  },
+  ],
   rules: {
     'func-names': 'off',
     'no-underscore-dangle': 'off',
