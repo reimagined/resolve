@@ -1,7 +1,11 @@
 import createConnectionManager from './create_connection_manager'
 import createEmptySubscribeAdapter from './empty_subscribe_adapter'
 import { Context } from './context'
-import { rootCallback, addCallback, removeCallback } from './view_model_subscribe_callback'
+import {
+  rootCallback,
+  addCallback,
+  removeCallback
+} from './view_model_subscribe_callback'
 import determineOrigin from './determine_origin'
 import { GenericError } from './errors'
 import { request } from './request'
@@ -24,7 +28,9 @@ export const getSubscriptionKeys = (
   if (!viewModel) {
     return []
   }
-  const eventTypes = Object.keys(viewModel.projection).filter(eventType => eventType !== 'Init')
+  const eventTypes = Object.keys(viewModel.projection).filter(
+    eventType => eventType !== 'Init'
+  )
   return eventTypes.reduce((acc: Array<SubscriptionKey>, eventType) => {
     if (Array.isArray(aggregateIds)) {
       acc.push(...aggregateIds.map(aggregateId => ({ aggregateId, eventType })))
@@ -68,7 +74,10 @@ const initSubscribeAdapter = async (context: Context): Promise<any> => {
   if (!createSubscribeAdapter) {
     return Promise.resolve()
   }
-  const { appId, url } = await getSubscribeAdapterOptions(context, createSubscribeAdapter.adapterName)
+  const { appId, url } = await getSubscribeAdapterOptions(
+    context,
+    createSubscribeAdapter.adapterName
+  )
   const { origin: customOrigin, rootPath } = context
 
   const origin = determineOrigin(customOrigin)
@@ -84,7 +93,10 @@ const initSubscribeAdapter = async (context: Context): Promise<any> => {
 
   if (!refreshTimeout) {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    refreshTimeout = setTimeout(() => refreshSubscribeAdapter(context), REFRESH_TIMEOUT)
+    refreshTimeout = setTimeout(
+      () => refreshSubscribeAdapter(context),
+      REFRESH_TIMEOUT
+    )
   }
 
   return subscribeAdapter
@@ -118,7 +130,10 @@ export const refreshSubscribeAdapter = async (
   } catch (error) {
     subscribeAdapterPromise = null
     clearTimeout(refreshTimeout)
-    refreshTimeout = setTimeout(() => refreshSubscribeAdapter(context, true), REFRESH_TIMEOUT)
+    refreshTimeout = setTimeout(
+      () => refreshSubscribeAdapter(context, true),
+      REFRESH_TIMEOUT
+    )
     return Promise.resolve()
   }
 
@@ -127,7 +142,10 @@ export const refreshSubscribeAdapter = async (
       if (subscribeAdapter.isConnected()) {
         // still connected
         clearTimeout(refreshTimeout)
-        refreshTimeout = setTimeout(() => refreshSubscribeAdapter(context), REFRESH_TIMEOUT)
+        refreshTimeout = setTimeout(
+          () => refreshSubscribeAdapter(context),
+          REFRESH_TIMEOUT
+        )
         return Promise.resolve()
       }
     } catch (error) {}
@@ -159,7 +177,10 @@ export const refreshSubscribeAdapter = async (
   } catch (err) {}
 
   clearTimeout(refreshTimeout)
-  refreshTimeout = setTimeout(() => refreshSubscribeAdapter(context), REFRESH_TIMEOUT)
+  refreshTimeout = setTimeout(
+    () => refreshSubscribeAdapter(context),
+    REFRESH_TIMEOUT
+  )
   return Promise.resolve()
 }
 
@@ -174,7 +195,10 @@ const doSubscribe = async (
   if (subscribeAdapter === null) {
     return Promise.resolve({})
   }
-  const { addedConnections, removedConnections } = connectionManager.addConnection({
+  const {
+    addedConnections,
+    removedConnections
+  } = connectionManager.addConnection({
     connectionName: topicName,
     connectionId: topicId
   })
@@ -213,7 +237,10 @@ const doUnsubscribe = async (
     return Promise.resolve({})
   }
 
-  const { addedConnections, removedConnections } = connectionManager.removeConnection({
+  const {
+    addedConnections,
+    removedConnections
+  } = connectionManager.removeConnection({
     connectionName: topicName,
     connectionId: topicId
   })

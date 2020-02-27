@@ -63,7 +63,11 @@ test('root based url constructed with valid parameters', async () => {
   })
 
   expect(mDetermineOrigin).toHaveBeenCalledWith('mock-origin')
-  expect(mGetRootBasedUrl).toHaveBeenCalledWith('root-path', '/request', 'mock-origin')
+  expect(mGetRootBasedUrl).toHaveBeenCalledWith(
+    'root-path',
+    '/request',
+    'mock-origin'
+  )
 })
 
 test('global fetch called', async () => {

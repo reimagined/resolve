@@ -12,7 +12,8 @@
   },
   "scripts": {
     "test": "jest",
-    "testw": "echo || exit 0"
+    "testw": "echo || exit 0",
+    "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",

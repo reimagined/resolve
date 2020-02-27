@@ -24,8 +24,14 @@ const addCallback = (
   callbackMap[topicName][topicId].push([eventCallback, resubscribeCallback])
 }
 
-const removeCallback = (topicName: string, topicId: string, eventCallback?: Function): void => {
-  callbackMap[topicName][topicId] = callbackMap[topicName][topicId].filter(f => f[0] !== eventCallback)
+const removeCallback = (
+  topicName: string,
+  topicId: string,
+  eventCallback?: Function
+): void => {
+  callbackMap[topicName][topicId] = callbackMap[topicName][topicId].filter(
+    f => f[0] !== eventCallback
+  )
 }
 
 const rootCallback = (event: any, resubscribed?: boolean): void => {
@@ -41,7 +47,9 @@ const rootCallback = (event: any, resubscribed?: boolean): void => {
       listeners = listeners.concat(wildcard).concat(aggregateIdListeners)
       if (listeners) {
         if (resubscribed) {
-          listeners.forEach(listener => listener[1] && listener[1]({ eventTopic, aggregateId }))
+          listeners.forEach(
+            listener => listener[1] && listener[1]({ eventTopic, aggregateId })
+          )
         } else {
           listeners.forEach(listener => listener[0](event))
         }

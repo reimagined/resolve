@@ -45,7 +45,8 @@ describe('subscribe', () => {
       headers: {
         get: (): void => undefined
       },
-      json: (): Promise<object> => Promise.resolve({ appId: 'application-id', url: 'http://options-url' }),
+      json: (): Promise<object> =>
+        Promise.resolve({ appId: 'application-id', url: 'http://options-url' }),
       text: (): Promise<string> => Promise.resolve('response')
     }))
     global.fetch = mFetch
@@ -254,7 +255,8 @@ describe('re-subscribe', () => {
       headers: {
         get: (): void => undefined
       },
-      json: (): Promise<object> => Promise.resolve({ appId: 'application-id', url: 'http://options-url' }),
+      json: (): Promise<object> =>
+        Promise.resolve({ appId: 'application-id', url: 'http://options-url' }),
       text: (): Promise<string> => Promise.resolve('response')
     }))
     global.fetch = mFetch

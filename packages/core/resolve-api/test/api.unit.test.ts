@@ -169,7 +169,8 @@ describe('query', () => {
       }
     )
 
-    const validator = mRequest.mock.calls[0][3]?.waitForResponse?.validator as Function
+    const validator = mRequest.mock.calls[0][3]?.waitForResponse
+      ?.validator as Function
 
     await expect(
       validator(

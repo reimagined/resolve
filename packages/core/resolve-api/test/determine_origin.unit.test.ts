@@ -41,7 +41,9 @@ test('custom: origin as string', () => {
     port: '8080'
   }
 
-  expect(determineOrigin('http://my.custom.com:2020')).toEqual('http://my.custom.com:2020')
+  expect(determineOrigin('http://my.custom.com:2020')).toEqual(
+    'http://my.custom.com:2020'
+  )
 })
 
 test('custom: origin as Location', () => {

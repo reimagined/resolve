@@ -16,7 +16,10 @@ describe('createConnectionManager', () => {
 
   test('connections added', () => {
     const connectionManager = createConnectionManager()
-    connectionManager.addConnection({ connectionName: 'connection-name-1', connectionId: 'connection-id-1' })
+    connectionManager.addConnection({
+      connectionName: 'connection-name-1',
+      connectionId: 'connection-id-1'
+    })
 
     const anotherConnectionManager = createConnectionManager()
     const result = anotherConnectionManager.addConnection({
@@ -46,7 +49,10 @@ describe('createConnectionManager', () => {
 
   test('connections removed', () => {
     const connectionManager = createConnectionManager()
-    connectionManager.addConnection({ connectionName: 'connection-name-1', connectionId: 'connection-id-1' })
+    connectionManager.addConnection({
+      connectionName: 'connection-name-1',
+      connectionId: 'connection-id-1'
+    })
 
     const anotherConnectionManager = createConnectionManager()
     anotherConnectionManager.addConnection({
@@ -86,9 +92,17 @@ describe('createConnectionManager', () => {
   })
 
   test('connections with same indices added', () => {
-    const connectionManager = createConnectionManager({ wildcardSymbol: 'symbol' })
-    connectionManager.addConnection({ connectionName: 'connection-name-1', connectionId: 'connection-id-1' })
-    connectionManager.addConnection({ connectionName: 'connection-name-1', connectionId: 'connection-id-1' })
+    const connectionManager = createConnectionManager({
+      wildcardSymbol: 'symbol'
+    })
+    connectionManager.addConnection({
+      connectionName: 'connection-name-1',
+      connectionId: 'connection-id-1'
+    })
+    connectionManager.addConnection({
+      connectionName: 'connection-name-1',
+      connectionId: 'connection-id-1'
+    })
 
     expect(connectionManager.getConnections()).toEqual([
       {

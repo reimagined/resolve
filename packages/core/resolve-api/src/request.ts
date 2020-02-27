@@ -5,7 +5,10 @@ import { getRootBasedUrl } from './utils'
 import determineOrigin from './determine_origin'
 import { GenericError, HttpError } from './errors'
 
-type FetchFunction = (input: RequestInfo, init?: RequestInit) => Promise<Response>
+type FetchFunction = (
+  input: RequestInfo,
+  init?: RequestInit
+) => Promise<Response>
 export type NarrowedResponse = {
   ok: boolean
   status: number
@@ -62,12 +65,15 @@ const insistentRequest = async (
 
   if (response.ok) {
     if (options?.waitForResponse) {
-      const isValid = await (options?.waitForResponse?.validator ?? everythingValid)(response)
+      const isValid = await (
+        options?.waitForResponse?.validator ?? everythingValid
+      )(response)
       if (isValid) {
         return response
       }
 
-      const isMaxAttemptsReached = attempts.response >= (options?.waitForResponse?.attempts ?? 0)
+      const isMaxAttemptsReached =
+        attempts.response >= (options?.waitForResponse?.attempts ?? 0)
 
       if (isMaxAttemptsReached) {
         throw new GenericError(` ${attempts.response} retries`)
@@ -102,12 +108,15 @@ const insistentRequest = async (
       typeof expectedErrors === 'number'
         ? expectedErrors === response.status
         : expectedErrors.includes(response.status)
-    const isMaxAttemptsReached = attempts.error >= (options?.retryOnError?.attempts ?? 0)
+    const isMaxAttemptsReached =
+      attempts.error >= (options?.retryOnError?.attempts ?? 0)
 
     if (isErrorExpected && !isMaxAttemptsReached) {
       if (options?.debug) {
         console.warn(
-          `Error code ${response.status} was expected. Attempting again #${attempts.error + 1}/${
+          `Error code ${
+            response.status
+          } was expected. Attempting again #${attempts.error + 1}/${
             options?.retryOnError?.attempts
           }.`
         )
@@ -141,7 +150,9 @@ export const request = async (
   options?: RequestOptions
 ): Promise<NarrowedResponse> => {
   const { origin, rootPath, jwtProvider } = context
-  const rootBasedUrl = new URL(getRootBasedUrl(rootPath, url, determineOrigin(origin)))
+  const rootBasedUrl = new URL(
+    getRootBasedUrl(rootPath, url, determineOrigin(origin))
+  )
 
   let init: RequestInit
 
@@ -158,7 +169,10 @@ export const request = async (
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
-        body: typeof requestParams === 'string' ? requestParams : JSON.stringify(requestParams)
+        body:
+          typeof requestParams === 'string'
+            ? requestParams
+            : JSON.stringify(requestParams)
       }
       break
     default:
@@ -172,7 +186,11 @@ export const request = async (
     }
   }
 
-  const response = await insistentRequest(rootBasedUrl.toString(), init, options)
+  const response = await insistentRequest(
+    rootBasedUrl.toString(),
+    init,
+    options
+  )
 
   if (jwtProvider && response.headers) {
     await jwtProvider.set(response.headers.get('x-jwt') ?? '')
