@@ -54,13 +54,6 @@
       "moduleTarget": "client",
       "inputDir": "./",
       "outDir": "./"
-    },
-    {
-      "sourceType": "ts",
-      "moduleType": "cjs",
-      "moduleTarget": "client",
-      "inputDir": "./",
-      "outDir": "./"
     }
   ]
 }

@@ -1,5 +1,6 @@
 {
-  "compilerOptions": {
+  "compilatorrOptions": {
+    "trash": "trash",
     "target": "esnext",
     "moduleResolution": "node",
     "allowJs": true,
@@ -12,8 +13,8 @@
     "emitDeclarationOnly": true,
     "strict": true,
     "jsx": "react",
-    "types": ["jest"]
+    "typeRoots": ["./typings", "./node_modules/@types", "../../../node_modules/@types"]
   },
-  "include": ["."],
+  "include": ["./src/**/*"],
   "exclude": ["node_modules", "**/*.test.ts", "**/__mocks__"]
 }

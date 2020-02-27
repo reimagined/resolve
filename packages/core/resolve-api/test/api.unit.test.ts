@@ -1,8 +1,10 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { isEqual } from 'lodash'
 import { mocked } from 'ts-jest/utils'
-import { API, getApi } from '../api'
-import { Context } from '../context'
-import { NarrowedResponse, request } from '../request'
+/* eslint-enable import/no-extraneous-dependencies */
+import { API, getApi } from '../src/api'
+import { Context } from '../src/context'
+import { NarrowedResponse, request } from '../src/request'
 
 jest.mock('../request', () => ({
   request: jest.fn()
@@ -181,7 +183,7 @@ describe('query', () => {
             })
         })
       )
-    ).resolves.toBeFalsy()
+    ).resolves.toEqual(false)
     await expect(
       validator(
         createMockResponse({

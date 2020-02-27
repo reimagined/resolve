@@ -6,9 +6,9 @@ type OriginLocation = {
   port?: string
 }
 
-const isLocation = (origin): origin is OriginLocation =>
+const isLocation = (origin: any): origin is OriginLocation =>
   origin?.protocol && origin?.hostname
-const isString = (origin): origin is string => typeof origin === 'string'
+const isString = (origin: any): origin is string => typeof origin === 'string'
 
 const determineOrigin = (
   origin: string | OriginLocation | undefined

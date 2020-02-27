@@ -1,7 +1,6 @@
-import * as subscribe from '../subscribe'
-import { refreshSubscribeAdapter } from '../subscribe'
+import * as subscribe from '../src/subscribe'
 
-import { rootCallback } from '../view_model_subscribe_callback'
+import { rootCallback } from '../src/view_model_subscribe_callback'
 
 const { doSubscribe, doUnsubscribe, dropSubscribeAdapterPromise } = subscribe
 

@@ -1,9 +1,10 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { mocked } from 'ts-jest/utils'
-import { request } from '../request'
-import { Context } from '../context'
-import determineOrigin from '../determine_origin'
-import { getRootBasedUrl } from '../utils'
-import { GenericError, HttpError } from '../errors'
+import { request } from '../src/request'
+import { Context } from '../src/context'
+import determineOrigin from '../src/determine_origin'
+import { getRootBasedUrl } from '../src/utils'
+import { GenericError, HttpError } from '../src/errors'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

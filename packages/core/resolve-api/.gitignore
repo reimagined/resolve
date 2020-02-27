@@ -2,4 +2,4 @@
 *.js.map
 *.mjs
 *.mjs.map
-*.d.ts
+src/*.d.ts

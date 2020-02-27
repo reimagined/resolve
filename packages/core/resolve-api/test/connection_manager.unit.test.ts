@@ -1,4 +1,4 @@
-import createConnectionManager from '../create_connection_manager'
+import createConnectionManager from '../src/create_connection_manager'
 
 describe('createConnectionManager', () => {
   test('instance created', () => {
@@ -7,7 +7,7 @@ describe('createConnectionManager', () => {
     connectionManager.destroy()
   })
 
-  test('instance is singletone', () => {
+  test('instance is singleton', () => {
     const connectionManager = createConnectionManager()
     const anotherConnectionManager = createConnectionManager()
     expect(connectionManager).toEqual(anotherConnectionManager)

@@ -1,8 +1,8 @@
 export interface SubscribeAdapter {
-  init: () => any
-  subscribeToTopics: () => any
-  unsubscribeFromTopics: () => any
-  close: () => any
+  init: () => Promise<any>
+  subscribeToTopics: () => Promise<any>
+  unsubscribeFromTopics: () => Promise<any>
+  close: () => Promise<any>
   isConnected: () => boolean
   adapterName?: string
 }
@@ -13,11 +13,11 @@ export interface CreateSubscribeAdapter {
 }
 
 const emptySubscribeAdapter = (): SubscribeAdapter => ({
-  async init() {},
-  async subscribeToTopics() {},
-  async unsubscribeFromTopics() {},
-  async close() {},
-  isConnected: () => true
+  init: (): Promise<any> => Promise.resolve(),
+  subscribeToTopics: (): Promise<any> => Promise.resolve(),
+  unsubscribeFromTopics: (): Promise<any> => Promise.resolve(),
+  close: (): Promise<any> => Promise.resolve(),
+  isConnected: (): boolean => true
 })
 
 emptySubscribeAdapter.adapterName = 'empty'
