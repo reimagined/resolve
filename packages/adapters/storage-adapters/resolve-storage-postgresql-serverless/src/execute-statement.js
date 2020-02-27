@@ -31,6 +31,7 @@ const executeStatement = async (pool, sql) => {
       }
     }
   } catch (error) {
+    errors.push({ message: sql, stack: '' })
     errors.push(error)
   }
 
