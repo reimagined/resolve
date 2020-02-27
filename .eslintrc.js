@@ -24,6 +24,7 @@ module.exports = {
       parser: '@typescript-eslint/parser',
       extends: ['plugin:import/typescript'],
       rules: Object.assign({}, typescriptEslintRecommended.rules, {
+        '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/member-delimiter-style': [
           'error',
           {

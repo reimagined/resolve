@@ -1,9 +1,8 @@
-import url from 'url'
 import { Context } from './context'
 import { GenericError } from './errors'
 import { doSubscribe, getSubscriptionKeys, doUnsubscribe } from './subscribe'
-import { RequestOptions, request } from './request'
-import { assertNonEmptyString } from './assertions'
+import { RequestOptions, request, NarrowedResponse } from './request'
+import { assertLeadingSlash, assertNonEmptyString } from './assertions'
 import { getRootBasedUrl } from './utils'
 
 function determineCallback<T>(options: any, callback: any): T | null {
@@ -28,7 +27,10 @@ export type Command = {
   immediateConflict?: boolean
 }
 export type CommandResult = object
-export type CommandCallback = (error: Error | null, result: CommandResult | null) => void
+export type CommandCallback = (
+  error: Error | null,
+  result: CommandResult | null
+) => void
 export type CommandOptions = {}
 
 export const command = (
@@ -79,7 +81,8 @@ type ReadModelQuery = {
   args: object
 }
 type Query = ViewModelQuery | ReadModelQuery
-const isReadModelQuery = (arg: any): arg is ReadModelQuery => arg && arg.resolver
+const isReadModelQuery = (arg: any): arg is ReadModelQuery =>
+  arg && arg.resolver
 
 type QueryResult = {
   timestamp: number
@@ -104,11 +107,15 @@ export const query = (
     // TODO: add retry on temporary errors?
   }
 
-  if (isOptions<QueryOptions>(options) && typeof options.waitFor?.validator === 'function') {
+  if (
+    isOptions<QueryOptions>(options) &&
+    typeof options.waitFor?.validator === 'function'
+  ) {
     const { validator, period = 1000, attempts = 5 } = options.waitFor
 
     requestOptions.waitForResponse = {
-      validator: async (response): Promise<boolean> => validator(await response.json()),
+      validator: async (response): Promise<boolean> =>
+        validator(await response.json()),
       period,
       attempts
     }
@@ -116,11 +123,16 @@ export const query = (
 
   const actualCallback = determineCallback<QueryCallback>(options, callback)
 
-  let queryRequest
+  let queryRequest: Promise<NarrowedResponse>
 
   if (isReadModelQuery(qr)) {
     const { name, resolver, args } = qr
-    queryRequest = request(context, `/api/query/${name}/${resolver}`, args, requestOptions)
+    queryRequest = request(
+      context,
+      `/api/query/${name}/${resolver}`,
+      args,
+      requestOptions
+    )
   } else {
     const { name, aggregateIds, args } = qr
     const ids = aggregateIds === '*' ? aggregateIds : aggregateIds.join(',')
@@ -178,13 +190,19 @@ export type Subscription = {
 
 export type SubscribeResult = void
 export type SubscribeHandler = (event: unknown) => void
-export type SubscribeCallback = (error: Error | null, result: Subscription | null) => void
+export type SubscribeCallback = (
+  error: Error | null,
+  result: Subscription | null
+) => void
 
 export type ResubscribeInfo = {
   eventTopic: string
   aggregateId: string
 }
-export type ResubscribeCallback = (error: Error | null, result: ResubscribeInfo | null) => void
+export type ResubscribeCallback = (
+  error: Error | null,
+  result: ResubscribeInfo | null
+) => void
 
 export const subscribeTo = (
   context: Context,
@@ -195,7 +213,11 @@ export const subscribeTo = (
   resubscribeCallback?: ResubscribeCallback
 ): PromiseOrVoid<Subscription> => {
   const subscribeAsync = async (): Promise<Subscription> => {
-    const subscriptionKeys = getSubscriptionKeys(context, viewModelName, aggregateIds)
+    const subscriptionKeys = getSubscriptionKeys(
+      context,
+      viewModelName,
+      aggregateIds
+    )
 
     await Promise.all(
       subscriptionKeys.map(({ aggregateId, eventType }) =>
@@ -222,22 +244,24 @@ export const subscribeTo = (
   }
 
   subscribeAsync()
-    .then(result => subscribeCallback(null, result))
+    .then((result: Subscription) => subscribeCallback(null, result))
     .catch(error => subscribeCallback(error, null))
 
-  return Promise.resolve({
-    viewModelName,
-    aggregateIds,
-    handler
-  })
+  return undefined
 }
 
-export const unsubscribe = (context: Context, subscription: Subscription): Promise<any> => {
+export const unsubscribe = (
+  context: Context,
+  subscription: Subscription
+): Promise<any> => {
   const { viewModelName, aggregateIds, handler } = subscription
 
   const unsubscribeAsync = async (): Promise<any> => {
-    const subscriptionKeys = getSubscriptionKeys(context, viewModelName, aggregateIds)
-    console.debug(subscriptionKeys)
+    const subscriptionKeys = getSubscriptionKeys(
+      context,
+      viewModelName,
+      aggregateIds
+    )
 
     if (typeof handler !== 'function') {
       return
@@ -260,10 +284,14 @@ export const unsubscribe = (context: Context, subscription: Subscription): Promi
   return unsubscribeAsync()
 }
 
-const getStaticAssetUrl = ({ rootPath, staticPath }: Context, fileName: string): string => {
-  assertNonEmptyString(fileName)
+const getStaticAssetUrl = (
+  { rootPath, staticPath, origin }: Context,
+  assetPath: string
+): string => {
+  assertNonEmptyString(assetPath, 'assetPath')
+  assertLeadingSlash(assetPath, 'assetPath')
 
-  return getRootBasedUrl(rootPath, url.resolve(`${staticPath}/`, `./${fileName}`))
+  return getRootBasedUrl(rootPath, `/${staticPath}${assetPath}`, origin)
 }
 
 export type API = {
@@ -277,7 +305,7 @@ export type API = {
     options?: QueryOptions | QueryCallback,
     callback?: QueryCallback
   ) => PromiseOrVoid<QueryResult>
-  getStaticAssetUrl: (fileName: string) => string
+  getStaticAssetUrl: (assetPath: string) => string
   subscribeTo: (
     viewModelName: string,
     aggregateIds: AggregateSelector,
@@ -291,8 +319,10 @@ export type API = {
 export const getApi = (context: Context): API => ({
   command: (cmd, options?, callback?): PromiseOrVoid<CommandResult> =>
     command(context, cmd, options, callback),
-  query: (qr, options, callback?): PromiseOrVoid<QueryResult> => query(context, qr, options, callback),
-  getStaticAssetUrl: (fileName: string): string => getStaticAssetUrl(context, fileName),
+  query: (qr, options, callback?): PromiseOrVoid<QueryResult> =>
+    query(context, qr, options, callback),
+  getStaticAssetUrl: (assetPath: string): string =>
+    getStaticAssetUrl(context, assetPath),
   subscribeTo: (
     viewModelName,
     aggregateIds,
@@ -300,6 +330,14 @@ export const getApi = (context: Context): API => ({
     subscribeCallback?,
     resubscribeCallback?
   ): PromiseOrVoid<Subscription> =>
-    subscribeTo(context, viewModelName, aggregateIds, handler, subscribeCallback, resubscribeCallback),
-  unsubscribe: (subscription: Subscription): PromiseOrVoid<void> => unsubscribe(context, subscription)
+    subscribeTo(
+      context,
+      viewModelName,
+      aggregateIds,
+      handler,
+      subscribeCallback,
+      resubscribeCallback
+    ),
+  unsubscribe: (subscription: Subscription): PromiseOrVoid<void> =>
+    unsubscribe(context, subscription)
 })

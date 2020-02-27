@@ -1,0 +1,65 @@
+{
+  "name": "resolve-api",
+  "version": "0.22.5",
+  "description": "Low-level reSolve API.",
+  "engines": {
+    "node": ">=10.9"
+  },
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "scripts": {
+    "test": "jest",
+    "testw": "echo || exit 0"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "author": "reimagined team",
+  "license": "MIT",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-api#readme",
+  "dependencies": {
+    "global": "^4.4.0",
+    "node-fetch": "^2.6.0",
+    "unfetch": "^4.1.0"
+  },
+  "devDependencies": {
+    "jest": "24.1.0"
+  },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/__tests__/**/*.test.[jt]s?(x)",
+      "**/?(*.)+(spec|test).test.[jt]s?(x)"
+    ],
+    "roots": [
+      "<rootDir>"
+    ]
+  },
+  "babelCompile": [
+    {
+      "sourceType": "ts",
+      "moduleType": "mjs",
+      "moduleTarget": "client",
+      "inputDir": "./",
+      "outDir": "./"
+    },
+    {
+      "sourceType": "ts",
+      "moduleType": "cjs",
+      "moduleTarget": "client",
+      "inputDir": "./",
+      "outDir": "./"
+    }
+  ]
+}
