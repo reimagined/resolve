@@ -5,6 +5,8 @@ declare module 'global/window' {
       hostname?: string
       port?: string
     } | string
+    clearTimeout?: (timeout: number) => void
+    setTimeout?: (handle: Function, ms: number) => number
   }
 
   const _default: Window

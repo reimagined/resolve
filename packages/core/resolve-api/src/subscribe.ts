@@ -23,7 +23,9 @@ const setTimeoutSafe =
     : setTimeout
 const clearTimeoutSafe = (timeout: number | NodeJS.Timeout): void => {
   if (typeof timeout === 'number') {
-    window.clearTimeout(timeout)
+    if (typeof window.clearTimeout === 'function') {
+      window.clearTimeout(timeout)
+    }
   } else {
     clearTimeout(timeout)
   }
@@ -150,7 +152,7 @@ export const refreshSubscribeAdapter = async (
         if (refreshTimeout) {
           clearTimeoutSafe(refreshTimeout)
         }
-        refreshTimeout = window.setTimeout(
+        refreshTimeout = setTimeoutSafe(
           () => refreshSubscribeAdapter(context),
           REFRESH_TIMEOUT
         )
