@@ -11,7 +11,7 @@ const getCompileConfigs = () => {
 
   const configs = []
 
-  for (const filePath of find('./packages/**/{resolve-command,ts-package-example}/package.json', {
+  for (const filePath of find('./packages/**/package.json', {
     cwd: getResolveDir(),
     absolute: true
   })) {
