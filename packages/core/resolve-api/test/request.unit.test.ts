@@ -15,8 +15,8 @@ declare global {
   }
 }
 
-jest.mock('../determine_origin', () => jest.fn((origin): string => origin))
-jest.mock('../utils', () => ({
+jest.mock('../src/determine_origin', () => jest.fn((origin): string => origin))
+jest.mock('../src/utils', () => ({
   getRootBasedUrl: jest.fn(() => 'http://root-based.url')
 }))
 const mFetch = jest.fn(() => ({
@@ -46,7 +46,7 @@ afterAll(() => {
   global.fetch = undefined
 })
 
-let mockContext
+let mockContext: Context
 
 beforeEach(() => {
   mockContext = createMockContext()
@@ -76,7 +76,7 @@ test('global fetch called', async () => {
     param: 'param'
   })
 
-  expect(mFetch).toHaveBeenCalledWith('http://root-based.url/', {
+  expect(mFetch).toHaveBeenCalledWith('http://root-based.url', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'same-origin',
@@ -104,7 +104,7 @@ test('http error thrown with response text', async () => {
 
 test('jwt set to authorization header', async () => {
   const jwtProvider = {
-    get: jest.fn(() => 'j-w-t'),
+    get: jest.fn(() => Promise.resolve('j-w-t')),
     set: jest.fn()
   }
 
@@ -123,7 +123,7 @@ test('jwt set to authorization header', async () => {
 
 test('jwt updated via provider with response header', async () => {
   const jwtProvider = {
-    get: jest.fn(() => 'j-w-t'),
+    get: jest.fn(() => Promise.resolve('j-w-t')),
     set: jest.fn()
   }
   const getHeader = jest.fn(() => 'response-jwt')

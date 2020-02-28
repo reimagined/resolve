@@ -1,7 +1,13 @@
 declare module 'global/window' {
-  type window = {
-    location: string
+  interface Window {
+    location?: {
+      protocol?: string
+      hostname?: string
+      port?: string
+    } | string
   }
 
-  export default window
+  const _default: Window
+
+  export default _default
 }

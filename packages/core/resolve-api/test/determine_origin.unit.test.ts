@@ -1,8 +1,8 @@
-import window from 'global/window'
-import determineOrigin from '../determine_origin'
+import win from 'global/window'
+import determineOrigin from '../src/determine_origin'
 
 afterEach(() => {
-  delete window.location
+  delete win.location
 })
 
 test('SSR: undefined origin and no window', () => {
@@ -10,7 +10,7 @@ test('SSR: undefined origin and no window', () => {
 })
 
 test('browser: undefined origin and a window with location', () => {
-  window.location = {
+  win.location = {
     protocol: 'http:',
     hostname: 'www.host.com',
     port: '8080'
@@ -20,7 +20,7 @@ test('browser: undefined origin and a window with location', () => {
 })
 
 test('browser: port is not defined', () => {
-  window.location = {
+  win.location = {
     protocol: 'http:',
     hostname: 'www.host.com'
   }
@@ -29,13 +29,13 @@ test('browser: port is not defined', () => {
 })
 
 test('browser: window.location is string (somehow)', () => {
-  window.location = 'http://funny.things.org:10'
+  win.location = 'http://funny.things.org:10'
 
   expect(determineOrigin(undefined)).toEqual('http://funny.things.org:10')
 })
 
 test('custom: origin as string', () => {
-  window.location = {
+  win.location = {
     protocol: 'http:',
     hostname: 'www.host.com',
     port: '8080'
@@ -47,7 +47,7 @@ test('custom: origin as string', () => {
 })
 
 test('custom: origin as Location', () => {
-  window.location = {
+  win.location = {
     protocol: 'http:',
     hostname: 'www.host.com',
     port: '8080'
@@ -63,7 +63,7 @@ test('custom: origin as Location', () => {
 })
 
 test('custom: origin as Location without port', () => {
-  window.location = {
+  win.location = {
     protocol: 'http:',
     hostname: 'www.host.com',
     port: '8080'

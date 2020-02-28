@@ -166,15 +166,14 @@ export const request = async (
   const { origin, rootPath, jwtProvider } = context
   const rootBasedUrl = getRootBasedUrl(rootPath, url, determineOrigin(origin))
 
+  const headers: { [key: string]: string } = {}
   let requestUrl: string
   let init: RequestInit
-  const headers = new Headers()
 
   switch (options?.method ?? 'POST') {
     case 'GET':
       init = {
         method: 'GET',
-        headers,
         credentials: 'same-origin'
       }
       requestUrl = stringifyUrl(rootBasedUrl, requestParams)
@@ -182,13 +181,13 @@ export const request = async (
     case 'POST':
       init = {
         method: 'POST',
-        headers,
         credentials: 'same-origin',
         body:
           typeof requestParams === 'string'
             ? requestParams
             : JSON.stringify(requestParams)
       }
+      headers['Content-Type'] = 'application/json'
       requestUrl = rootBasedUrl
       break
     default:
@@ -197,8 +196,10 @@ export const request = async (
 
   const token = await jwtProvider?.get()
   if (token) {
-    headers.set('Authorization', `Bearer ${token}`)
+    headers['Authorization'] = `Bearer ${token}`
   }
+
+  init.headers = headers
 
   const response = await insistentRequest(requestUrl, init, options)
 

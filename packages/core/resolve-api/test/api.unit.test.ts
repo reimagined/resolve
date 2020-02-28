@@ -6,8 +6,11 @@ import { API, getApi } from '../src/api'
 import { Context } from '../src/context'
 import { NarrowedResponse, request } from '../src/request'
 
-jest.mock('../request', () => ({
+jest.mock('../src/request', () => ({
   request: jest.fn()
+}))
+jest.mock('../src/subscribe', () => ({
+
 }))
 
 const createMockResponse = (overrides: object = {}): NarrowedResponse => ({

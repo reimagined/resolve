@@ -1,7 +1,7 @@
-import { assertLeadingSlash } from '../assertions'
+import { assertLeadingSlash } from '../src/assertions'
 
 describe('assertLeadingSlash', () => {
-  let spy
+  let spy: jest.SpiedFunction<any>
   beforeAll(() => {
     spy = jest.spyOn(console, 'error').mockImplementation((): void => {
       /* do nothing */

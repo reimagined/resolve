@@ -1,4 +1,4 @@
-import window from 'global/window'
+import win from 'global/window'
 import { isString } from './utils'
 
 type OriginLocation = {
@@ -13,7 +13,7 @@ const isLocation = (origin: any): origin is OriginLocation =>
 const determineOrigin = (
   origin: string | OriginLocation | undefined
 ): string => {
-  const actualOrigin = origin ?? window?.location
+  const actualOrigin = origin ?? win?.location
 
   if (isLocation(actualOrigin)) {
     const { protocol, hostname, port } = actualOrigin
