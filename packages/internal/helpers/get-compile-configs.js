@@ -11,7 +11,7 @@ const getCompileConfigs = () => {
 
   const configs = []
 
-  for (const filePath of find('./packages/**/package.json', {
+  for (const filePath of find('./packages/**/{resolve-command,ts-package-example}/package.json', {
     cwd: getResolveDir(),
     absolute: true
   })) {
@@ -66,32 +66,7 @@ const getCompileConfigs = () => {
       config.outFileExtension = config.moduleType === 'mjs' ? '.mjs' : '.js'
       config.extensions = config.sourceType === 'ts' ? '.ts' : '.js'
       config.deleteDirOnStart = true
-      config.filenames = []
-
-      for (const fileName of find(`./**/*${config.extensions}`, {
-        cwd: config.inputDir,
-        absolute: true
-      })) {
-        if (fileName.includes('node_modules')) {
-          continue
-        }
-        if (fileName.includes('__mocks__')) {
-          continue
-        }
-        if (fileName.includes('__tests__')) {
-          continue
-        }
-        if (fileName.includes('.d.ts')) {
-          continue
-        }
-        if (fileName.includes('.test')) {
-          continue
-        }
-        if (fileName.includes('.spec')) {
-          continue
-        }
-        config.filenames.push(fileName)
-      }
+      config.filenames = [config.inputDir]
 
       configs.push(config)
     }
