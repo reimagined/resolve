@@ -1,15 +1,17 @@
-interface Connection {
+type Connection = {
   connectionName: string
   connectionId: string
 }
 
-interface ConnectionOperationResult {
+type ConnectionOperationResult = {
   addedConnections: Array<Connection>
   removedConnections: Array<Connection>
 }
 
-interface Pool {
-  connections: object
+type ConnectionPool = { [key: string]: { [key: string]: number } }
+
+type Pool = {
+  connections: ConnectionPool
   wildcardSymbol: string
 }
 
@@ -39,8 +41,14 @@ const getRemovedConnections = (
       )
   )
 
-const getConnections = ({ connections, wildcardSymbol }): Array<Connection> => {
-  const result = []
+const getConnections = ({
+  connections,
+  wildcardSymbol
+}: {
+  connections: ConnectionPool
+  wildcardSymbol: string
+}): Array<Connection> => {
+  const result: any[] = []
   for (const connectionName in connections) {
     let connectionsByName: Array<Connection> = []
     for (const connectionId in connections[connectionName]) {
@@ -58,6 +66,7 @@ const getConnections = ({ connections, wildcardSymbol }): Array<Connection> => {
         connectionId
       })
     }
+    // eslint-disable-next-line prefer-spread
     result.push.apply(result, connectionsByName)
   }
 
@@ -118,10 +127,10 @@ const removeConnection = (
 
 export class ConnectionManager {
   private static instance: ConnectionManager
-  private wildcardSymbol: string
-  private pool
+  private readonly wildcardSymbol: string
+  private readonly pool: Pool
 
-  static getInstance(wildcardSymbol): ConnectionManager {
+  static getInstance(wildcardSymbol: string): ConnectionManager {
     if (!ConnectionManager.instance) {
       ConnectionManager.instance = new ConnectionManager(wildcardSymbol)
     }
