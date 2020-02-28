@@ -147,7 +147,8 @@ Object {
       "query": [MockFunction] {
         "calls": Array [
           Array [
-            "SELECT * FROM \\"databaseName\\".\\"tableName\\" 
+            "SELECT * FROM \\"databaseName\\".\\"tableName\\"
+    
     ORDER BY \\"timestamp\\" DESC
     OFFSET 0
     LIMIT 1",
@@ -187,7 +188,8 @@ Object {
       "query": [MockFunction] {
         "calls": Array [
           Array [
-            "SELECT * FROM \\"databaseName\\".\\"tableName\\" WHERE \\"type\\" IN ('AAA')
+            "SELECT * FROM \\"databaseName\\".\\"tableName\\"
+    WHERE \\"type\\" IN ('AAA')
     ORDER BY \\"timestamp\\" DESC
     OFFSET 0
     LIMIT 1",
@@ -227,7 +229,8 @@ Object {
       "query": [MockFunction] {
         "calls": Array [
           Array [
-            "SELECT * FROM \\"databaseName\\".\\"tableName\\" WHERE \\"aggregateId\\" IN ('id1')
+            "SELECT * FROM \\"databaseName\\".\\"tableName\\"
+    WHERE \\"aggregateId\\" IN ('id1')
     ORDER BY \\"timestamp\\" DESC
     OFFSET 0
     LIMIT 1",
@@ -267,7 +270,8 @@ Object {
       "query": [MockFunction] {
         "calls": Array [
           Array [
-            "SELECT * FROM \\"databaseName\\".\\"tableName\\" WHERE \\"timestamp\\" > 1 AND \\"timestamp\\" < 3
+            "SELECT * FROM \\"databaseName\\".\\"tableName\\"
+    WHERE \\"timestamp\\" > 1 AND \\"timestamp\\" < 3
     ORDER BY \\"timestamp\\" DESC
     OFFSET 0
     LIMIT 1",

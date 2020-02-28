@@ -27,7 +27,7 @@
     "resolve-storage-postgresql-serverless": "0.22.6",
     "resolve-storage-lite": "0.22.6",
     "resolve-readmodel-lite": "0.22.6",
-    "resolve-readmodel-mysql": "0.22.6",
+    "resolve-readmodel-postgresql-serverless": "0.22.6",
     "resolve-subscribe-mqtt": "0.22.6",
     "resolve-subscribe-socket.io": "0.22.6",
     "redux-devtools-extension": "2.13.7"
