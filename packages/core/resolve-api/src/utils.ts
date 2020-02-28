@@ -2,6 +2,9 @@ import { assertLeadingSlash } from './assertions'
 
 const regExpAbsoluteUrl = new RegExp('^(?:[a-z]+:)?//', 'i')
 
+export const isString = (value: any): value is string =>
+  value != null && value.constructor === String
+
 export const isAbsoluteUrl = (value: string): boolean =>
   regExpAbsoluteUrl.test(value)
 

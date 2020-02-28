@@ -8,9 +8,9 @@ export class GenericError extends ApiError {
 }
 
 export class HttpError extends ApiError {
-  readonly code: string
+  readonly code: number
 
-  constructor(code: string, message: string) {
+  constructor(code: number, message: string) {
     super(message)
     this.code = code
     this.name = 'HttpError'

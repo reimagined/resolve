@@ -1,7 +1,7 @@
 import unfetch from 'unfetch'
-import { URL, URLSearchParams } from 'url'
+import qs from 'query-string'
 import { Context } from './context'
-import { getRootBasedUrl } from './utils'
+import { getRootBasedUrl, isString } from './utils'
 import determineOrigin from './determine_origin'
 import { GenericError, HttpError } from './errors'
 
@@ -46,6 +46,18 @@ export type RequestOptions = {
   debug?: boolean
 }
 
+const stringifyUrl = (url: string, params: any): string => {
+  if (params) {
+    if (isString(params)) {
+      return `${url}?${params}`
+    }
+    return `${url}?${qs.stringify(params, {
+      arrayFormat: 'bracket'
+    })}`
+  }
+  return url
+}
+
 const insistentRequest = async (
   input: RequestInfo,
   init: RequestInit,
@@ -80,6 +92,7 @@ const insistentRequest = async (
       }
 
       if (options?.debug) {
+        // eslint-disable-next-line no-console
         console.warn(
           `Unexpected response. Attempting again #${attempts.response + 1}/${
             options?.waitForResponse?.attempts
@@ -137,6 +150,7 @@ const insistentRequest = async (
   const error = new HttpError(response.status, await response.text())
 
   if (options?.debug) {
+    // eslint-disable-next-line no-console
     console.error(error)
   }
 
@@ -150,47 +164,43 @@ export const request = async (
   options?: RequestOptions
 ): Promise<NarrowedResponse> => {
   const { origin, rootPath, jwtProvider } = context
-  const rootBasedUrl = new URL(
-    getRootBasedUrl(rootPath, url, determineOrigin(origin))
-  )
+  const rootBasedUrl = getRootBasedUrl(rootPath, url, determineOrigin(origin))
 
+  let requestUrl: string
   let init: RequestInit
+  const headers = new Headers()
 
   switch (options?.method ?? 'POST') {
     case 'GET':
       init = {
         method: 'GET',
+        headers,
         credentials: 'same-origin'
       }
-      rootBasedUrl.search = new URLSearchParams(requestParams).toString()
+      requestUrl = stringifyUrl(rootBasedUrl, requestParams)
       break
     case 'POST':
       init = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         credentials: 'same-origin',
         body:
           typeof requestParams === 'string'
             ? requestParams
             : JSON.stringify(requestParams)
       }
+      requestUrl = rootBasedUrl
       break
     default:
       throw new GenericError(`unsupported request method`)
   }
 
-  if (init.headers) {
-    const token = await jwtProvider?.get()
-    if (token) {
-      init.headers['Authorization'] = `Bearer ${token}`
-    }
+  const token = await jwtProvider?.get()
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`)
   }
 
-  const response = await insistentRequest(
-    rootBasedUrl.toString(),
-    init,
-    options
-  )
+  const response = await insistentRequest(requestUrl, init, options)
 
   if (jwtProvider && response.headers) {
     await jwtProvider.set(response.headers.get('x-jwt') ?? '')
