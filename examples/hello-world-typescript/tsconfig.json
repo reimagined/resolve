@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "jsx": "react",
+    "allowJs": true,
+    "target": "es2018",
+    "lib": ["es2018", "dom"],
+    "outDir": "build",
+    "types": ["node", "react"]
+  },
+  "include": ["types/**/*", "common/**/*", "client/**/*"],
+  "files": ["run.ts"]
+}

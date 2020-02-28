@@ -6,3 +6,4 @@ coverage
 examples/shopping-list-advanced/native/native-chunk*
 website
 packages/core/resolve-zeromq/optional
+build
