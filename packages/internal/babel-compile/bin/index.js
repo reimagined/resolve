@@ -22,29 +22,36 @@ for (const config of configs) {
     }
   }
 
-  prepare(config).then(() =>
-    babel({
-      babelOptions: {
-        ...getBabelConfig({
-          sourceType: config.sourceType,
-          moduleType: config.moduleType,
-          moduleTarget: config.moduleTarget
-        }),
-        sourceMaps: true,
-        babelrc: false
-      },
-      cliOptions
-    })
-      .then(() => {
-        // eslint-disable-next-line no-console
-        console.log(
-          `↑ [${config.name}] { moduleType: "${config.moduleType}", moduleType: "${config.moduleTarget}" }`
-        )
+  prepare(config)
+    .then(() =>
+      babel({
+        babelOptions: {
+          ...getBabelConfig({
+            sourceType: config.sourceType,
+            moduleType: config.moduleType,
+            moduleTarget: config.moduleTarget
+          }),
+          sourceMaps: true,
+          babelrc: false
+        },
+        cliOptions
       })
-      .catch(error => {
+        .then(() => {
+          // eslint-disable-next-line no-console
+          console.log(
+            `↑ [${config.name}] { moduleType: "${config.moduleType}", moduleType: "${config.moduleTarget}" }`
+          )
+        })
+        .catch(error => {
+          // eslint-disable-next-line no-console
+          console.error(error)
+          process.exit(1)
+        })
+    )
+    .catch(error => {
+      if (error != null && error !== '') {
         // eslint-disable-next-line no-console
         console.error(error)
-        process.exit(1)
-      })
-  )
+      }
+    })
 }
