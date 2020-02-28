@@ -42,8 +42,7 @@
       "^.+\\.tsx?$": "ts-jest"
     },
     "testMatch": [
-      "**/__tests__/**/*.test.[jt]s?(x)",
-      "**/?(*.)+(spec|test).test.[jt]s?(x)"
+      "**/test/**/*.test.[jt]s?(x)"
     ],
     "roots": [
       "<rootDir>"

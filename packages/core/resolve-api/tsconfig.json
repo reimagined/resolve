@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "es2018",
     "moduleResolution": "node",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
@@ -14,7 +14,7 @@
     "jsx": "react",
     "outDir": "lib",
     "declarationDir": "types",
-    "typeRoots": ["./typings", "./node_modules/@types"]
+    "typeRoots": ["./typings", "./node_modules/@types", "../../../node_modules/@types"]
   },
   "include": ["src", "typings"]
 }
