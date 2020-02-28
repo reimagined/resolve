@@ -1,6 +1,5 @@
 {
-  "compilatorrOptions": {
-    "trash": "trash",
+  "compilerOptions": {
     "target": "esnext",
     "moduleResolution": "node",
     "allowJs": true,
