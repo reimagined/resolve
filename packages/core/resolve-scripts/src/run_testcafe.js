@@ -60,7 +60,8 @@ const runAfterLaunch = async options => {
       { stdio: 'inherit' }
     )
   } catch (e) {
-    return ''
+    // eslint-disable-next-line no-throw-literal
+    throw ''
   }
 }
 

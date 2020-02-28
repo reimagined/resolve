@@ -9,7 +9,8 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
-    "sql": "SELECT * FROM \\"event-store\\".\\"events\\" 
+    "sql": "SELECT * FROM \\"event-store\\".\\"events\\"
+    
     ORDER BY \\"timestamp\\" DESC
     OFFSET 0
     LIMIT 1",
@@ -21,7 +22,8 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
-    "sql": "SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"type\\" IN ('AAA')
+    "sql": "SELECT * FROM \\"event-store\\".\\"events\\"
+    WHERE \\"type\\" IN ('AAA')
     ORDER BY \\"timestamp\\" DESC
     OFFSET 0
     LIMIT 1",
@@ -33,7 +35,8 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
-    "sql": "SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"aggregateId\\" IN ('id1')
+    "sql": "SELECT * FROM \\"event-store\\".\\"events\\"
+    WHERE \\"aggregateId\\" IN ('id1')
     ORDER BY \\"timestamp\\" DESC
     OFFSET 0
     LIMIT 1",
@@ -45,7 +48,8 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
-    "sql": "SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"timestamp\\" > 1 AND \\"timestamp\\" < 3
+    "sql": "SELECT * FROM \\"event-store\\".\\"events\\"
+    WHERE \\"timestamp\\" > 1 AND \\"timestamp\\" < 3
     ORDER BY \\"timestamp\\" DESC
     OFFSET 0
     LIMIT 1",

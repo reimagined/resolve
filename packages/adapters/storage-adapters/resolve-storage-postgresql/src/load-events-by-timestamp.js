@@ -9,33 +9,28 @@ const loadEventsByTimestamp = async (
 
   const queryConditions = []
   if (eventTypes != null) {
-    queryConditions.push(
-      `${escapeId('type')} IN (${eventTypes.map(injectString)})`
-    )
+    queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`)
   }
   if (aggregateIds != null) {
-    queryConditions.push(
-      `${escapeId('aggregateId')} IN (${aggregateIds.map(injectString)})`
-    )
+    queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
   }
   if (startTime != null) {
-    queryConditions.push(
-      `${escapeId('startTime')} >= ${injectNumber(startTime)}`
-    )
+    queryConditions.push(`"startTime" >= ${injectNumber(startTime)}`)
   }
   if (finishTime != null) {
-    queryConditions.push(
-      `${escapeId('finishTime')} <= ${injectNumber(finishTime)}`
-    )
+    queryConditions.push(`"finishTime" <= ${injectNumber(finishTime)}`)
   }
 
   const resultQueryCondition =
     queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
 
+  const databaseNameAsId = escapeId(databaseName)
+  const eventsTableNameAsId = escapeId(tableName)
+
   const sqlQuery = [
-    `SELECT * FROM ${escapeId(databaseName)}.${escapeId(tableName)}`,
+    `SELECT * FROM ${databaseNameAsId}.${eventsTableNameAsId}`,
     `${resultQueryCondition}`,
-    `ORDER BY ${escapeId('timestamp')} ASC`,
+    `ORDER BY "timestamp" ASC`,
     `LIMIT ${+batchSize}`
   ].join('\n')
 

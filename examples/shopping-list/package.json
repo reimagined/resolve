@@ -31,7 +31,7 @@
     "redux-devtools-extension": "2.13.7",
     "redux-saga": "1.0.5",
     "resolve-readmodel-lite": "0.22.6",
-    "resolve-readmodel-mysql": "0.22.6",
+    "resolve-readmodel-postgresql-serverless": "0.22.6",
     "resolve-redux": "0.22.6",
     "resolve-scripts": "0.22.6",
     "resolve-storage-postgresql-serverless": "0.22.6",

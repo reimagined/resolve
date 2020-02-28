@@ -21,8 +21,9 @@ const saveEventOnly = async function(pool, event) {
     `WITH "vector_id" AS (
       SELECT "threadId", "threadCounter"
       FROM ${databaseNameAsId}.${threadsTableAsId}
-      WHERE "threadId" = FLOOR(Random() * 256)
-      FOR UPDATE LIMIT 1
+      FOR UPDATE 
+      OFFSET FLOOR(Random() * 256)
+      LIMIT 1
     ), "update_vector_id" AS (
       UPDATE ${databaseNameAsId}.${threadsTableAsId}
       SET "threadCounter" = "threadCounter" + 1

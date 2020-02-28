@@ -31,7 +31,7 @@
     "@shopping-list-advanced/ui": "0.22.6",
     "resolve-module-auth": "0.22.6",
     "resolve-readmodel-lite": "0.22.6",
-    "resolve-readmodel-mysql": "0.22.6",
+    "resolve-readmodel-postgresql-serverless": "0.22.6",
     "resolve-storage-postgresql-serverless": "0.22.6",
     "resolve-scripts": "0.22.6",
     "resolve-redux": "0.22.6",

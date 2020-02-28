@@ -10,8 +10,6 @@ import createModuleUploader from 'resolve-module-uploader'
 merge(
   resolveConfig,
   createModuleUploader({
-     publicDirs: ['dir1', 'dir2'],
-     expireTime: 100500,
      jwtSecret: 'jwtSecret'
   })
 )
