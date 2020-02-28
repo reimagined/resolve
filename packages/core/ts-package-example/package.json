@@ -1,13 +1,13 @@
 {
   "name": "ts-package-example",
   "version": "0.22.5",
-  "description": "Provides the ZeroMQ API to reSolve packages.",
+  "description": "ts-package-example",
   "engines": {
     "node": ">=10.9"
   },
-  "main": "src/index.js",
-  "module": "src/index.mjs",
-  "types": "./index.d.ts",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "types/index.d.ts",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },

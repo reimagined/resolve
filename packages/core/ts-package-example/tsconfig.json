@@ -10,10 +10,12 @@
     "resolveJsonModule": true,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "strict": true,
+    "strict": false,
     "jsx": "react",
-    "types": ["jest"]
+    "types": ["jest"],
+    "outDir": "types",
+    "baseUrl": "."
   },
-  "include": ["."],
+  "include": ["./src"],
   "exclude": ["node_modules", "**/*.test.ts", "**/__mocks__"]
 }

@@ -50,10 +50,10 @@
   "babelCompile": [
     {
       "sourceType": "ts",
-      "moduleType": "mjs",
+      "moduleType": "cjs",
       "moduleTarget": "client",
-      "inputDir": "./",
-      "outDir": "./"
+      "inputDir": "./src",
+      "outDir": "./lib"
     }
   ]
 }

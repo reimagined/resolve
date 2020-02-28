@@ -10,8 +10,10 @@
     "resolveJsonModule": true,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "strict": false,
-    "jsx": "react"
+    "strict": true,
+    "jsx": "react",
+    "outDir": "lib",
+    "declarationDir": "types"
   },
-  "exclude": ["node_modules", "**/*.test.ts", "**/__mocks__"]
+  "exclude": ["node_modules", "**/*.test.ts", "**/__mocks__", "types", "lib"]
 }

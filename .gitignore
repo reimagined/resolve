@@ -48,6 +48,7 @@ vscode
 .packages
 
 #
+*.d.ts
 dist
 lib
 es
