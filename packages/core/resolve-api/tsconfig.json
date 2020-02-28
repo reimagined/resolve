@@ -10,10 +10,8 @@
     "resolveJsonModule": true,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "strict": true,
-    "jsx": "react",
-    "typeRoots": ["./typings", "./node_modules/@types", "../../../node_modules/@types"]
+    "strict": false,
+    "jsx": "react"
   },
-  "include": ["./src/**/*"],
   "exclude": ["node_modules", "**/*.test.ts", "**/__mocks__"]
 }
