@@ -1,3 +1,4 @@
+import window from 'global/window'
 import createConnectionManager from './create_connection_manager'
 import createEmptySubscribeAdapter from './empty_subscribe_adapter'
 import { Context } from './context'
@@ -16,8 +17,19 @@ interface SubscriptionKey {
 }
 
 const REFRESH_TIMEOUT = 5000
+const setTimeoutSafe =
+  window && typeof window.setTimeout === 'function'
+    ? window.setTimeout
+    : setTimeout
+const clearTimeoutSafe = (timeout: number | NodeJS.Timeout): void => {
+  if (typeof timeout === 'number') {
+    window.clearTimeout(timeout)
+  } else {
+    clearTimeout(timeout)
+  }
+}
 
-let refreshTimeout: number | null
+let refreshTimeout: number | NodeJS.Timeout | null
 let subscribeAdapterPromise: Promise<any> | null = null
 
 export const getSubscriptionKeys = (
@@ -94,7 +106,7 @@ const initSubscribeAdapter = async (context: Context): Promise<any> => {
   await subscribeAdapter.init()
 
   if (!refreshTimeout) {
-    refreshTimeout = setTimeout(
+    refreshTimeout = setTimeoutSafe(
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       () => refreshSubscribeAdapter(context),
       REFRESH_TIMEOUT
@@ -122,7 +134,7 @@ export const refreshSubscribeAdapter = async (
   } catch (error) {
     subscribeAdapterPromise = null
     if (refreshTimeout) {
-      clearTimeout(refreshTimeout)
+      clearTimeoutSafe(refreshTimeout)
     }
     refreshTimeout = setTimeout(
       () => refreshSubscribeAdapter(context, true),
@@ -136,9 +148,9 @@ export const refreshSubscribeAdapter = async (
       if (subscribeAdapter.isConnected()) {
         // still connected
         if (refreshTimeout) {
-          clearTimeout(refreshTimeout)
+          clearTimeoutSafe(refreshTimeout)
         }
-        refreshTimeout = setTimeout(
+        refreshTimeout = window.setTimeout(
           () => refreshSubscribeAdapter(context),
           REFRESH_TIMEOUT
         )
@@ -173,7 +185,7 @@ export const refreshSubscribeAdapter = async (
   } catch (err) {}
 
   if (refreshTimeout) {
-    clearTimeout(refreshTimeout)
+    clearTimeoutSafe(refreshTimeout)
   }
   refreshTimeout = setTimeout(
     () => refreshSubscribeAdapter(context),
@@ -187,7 +199,7 @@ export const dropSubscribeAdapterPromise = (): void => {
   const connectionManager = createConnectionManager()
   connectionManager.destroy()
   if (refreshTimeout) {
-    clearTimeout(refreshTimeout)
+    clearTimeoutSafe(refreshTimeout)
   }
   refreshTimeout = null
 }

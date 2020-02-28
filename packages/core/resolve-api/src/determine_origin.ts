@@ -1,4 +1,5 @@
 import window from 'global/window'
+import { isString } from './utils'
 
 type OriginLocation = {
   protocol: 'http:' | 'https:'
@@ -8,7 +9,6 @@ type OriginLocation = {
 
 const isLocation = (origin: any): origin is OriginLocation =>
   origin?.protocol && origin?.hostname
-const isString = (origin: any): origin is string => typeof origin === 'string'
 
 const determineOrigin = (
   origin: string | OriginLocation | undefined
