@@ -83,13 +83,15 @@ export const getSubscribeAdapterOptions = async (
 }
 
 const initSubscribeAdapter = async (context: Context): Promise<any> => {
-  const { subscribeAdapter: createSubscribeAdapter } = context
-  if (createSubscribeAdapter === createEmptySubscribeAdapter) {
-    return createEmptySubscribeAdapter()
-  }
+  const { subscribeAdapter: createSubscribeAdapter } = context  
   if (!createSubscribeAdapter) {
     return Promise.resolve()
   }
+
+  if (createSubscribeAdapter.create === createEmptySubscribeAdapter.create) {
+    return createEmptySubscribeAdapter.create()
+  }
+
   const { appId, url } = await getSubscribeAdapterOptions(
     context,
     createSubscribeAdapter.adapterName
@@ -98,7 +100,7 @@ const initSubscribeAdapter = async (context: Context): Promise<any> => {
 
   const origin = determineOrigin(customOrigin)
 
-  const subscribeAdapter = createSubscribeAdapter({
+  const subscribeAdapter = createSubscribeAdapter.create({
     appId,
     origin,
     rootPath,
@@ -138,7 +140,7 @@ export const refreshSubscribeAdapter = async (
     if (refreshTimeout) {
       clearTimeoutSafe(refreshTimeout)
     }
-    refreshTimeout = setTimeout(
+    refreshTimeout = setTimeoutSafe(
       () => refreshSubscribeAdapter(context, true),
       REFRESH_TIMEOUT
     )
@@ -189,7 +191,7 @@ export const refreshSubscribeAdapter = async (
   if (refreshTimeout) {
     clearTimeoutSafe(refreshTimeout)
   }
-  refreshTimeout = setTimeout(
+  refreshTimeout = setTimeoutSafe(
     () => refreshSubscribeAdapter(context),
     REFRESH_TIMEOUT
   )

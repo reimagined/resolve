@@ -1,10 +1,13 @@
-import * as subscribe from '../src/subscribe'
+jest.useFakeTimers()
 
+import * as subscribe from '../src/subscribe'
 import { rootCallback } from '../src/view_model_subscribe_callback'
+import { Context } from '../src/context'
 
 const { doSubscribe, doUnsubscribe, dropSubscribeAdapterPromise } = subscribe
 
-jest.mock('../empty_subscribe_adapter')
+
+jest.mock('../src/empty_subscribe_adapter')
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -24,11 +27,11 @@ const mockCallback = jest.fn()
 const mockIsConnected = jest.fn().mockReturnValue(true)
 const mockClose = jest.fn()
 
-let mockSubscribeAdapter
-let context
+let mockCreateSubscribeAdapter = jest.fn()
+let context: Context
 
 const clearMocks = (): void => {
-  mockSubscribeAdapter.mockClear()
+  mockCreateSubscribeAdapter.mockClear()
   mockClose.mockClear()
   mockInit.mockClear()
   mockSubscribe.mockClear()
@@ -56,18 +59,24 @@ describe('subscribe', () => {
   })
 
   beforeEach(async () => {
-    jest.useFakeTimers()
-    mockSubscribeAdapter = jest.fn().mockReturnValue({
+    mockCreateSubscribeAdapter.mockReturnValue({
       init: mockInit,
+      close: mockClose,
       isConnected: mockIsConnected,
       subscribeToTopics: mockSubscribe,
-      unsubscribeFromTopics: mockUnsubscribe
+      unsubscribeFromTopics: mockUnsubscribe,
+      adapterName: 'adapter-name'
     })
 
     context = {
       origin: 'http://origin-url',
       rootPath: '',
-      subscribeAdapter: mockSubscribeAdapter
+      staticPath: '',
+      viewModels: [],
+      subscribeAdapter: {
+        adapterName: 'adapter-name',
+        create: mockCreateSubscribeAdapter
+      }
     }
   })
 
@@ -86,7 +95,7 @@ describe('subscribe', () => {
       mockCallback
     )
 
-    expect(mockSubscribeAdapter).toBeCalledWith({
+    expect(mockCreateSubscribeAdapter).toBeCalledWith({
       appId: 'application-id',
       onEvent: rootCallback,
       origin: 'http://origin-url',
@@ -123,7 +132,7 @@ describe('subscribe', () => {
       mockCallback
     )
 
-    expect(mockSubscribeAdapter).toBeCalledWith({
+    expect(mockCreateSubscribeAdapter).toBeCalledWith({
       appId: 'application-id',
       onEvent: rootCallback,
       origin: 'http://origin-url',
@@ -245,7 +254,7 @@ describe('subscribe', () => {
 })
 
 describe('re-subscribe', () => {
-  let refreshSpy
+  let refreshSpy: jest.SpyInstance<Promise<any>>
 
   beforeAll(() => {
     mFetch = jest.fn(() => ({
@@ -267,20 +276,26 @@ describe('re-subscribe', () => {
   })
 
   beforeEach(async () => {
-    jest.useFakeTimers()
+    jest.clearAllMocks()
     refreshSpy = jest.spyOn(subscribe, 'refreshSubscribeAdapter')
-    mockSubscribeAdapter = jest.fn().mockReturnValue({
+    mockCreateSubscribeAdapter = jest.fn().mockReturnValue({
       init: mockInit,
       isConnected: mockIsConnected,
       close: mockClose,
       subscribeToTopics: mockSubscribe,
-      unsubscribeFromTopics: mockUnsubscribe
+      unsubscribeFromTopics: mockUnsubscribe,
+      adapterName: 'adapter-name'
     })
 
     context = {
       origin: 'http://origin-url',
       rootPath: '',
-      subscribeAdapter: mockSubscribeAdapter
+      staticPath: '',
+      viewModels: [],
+      subscribeAdapter: {
+        adapterName: 'adapter-name',
+        create: mockCreateSubscribeAdapter
+      }
     }
   })
 
