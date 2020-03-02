@@ -50,9 +50,11 @@ const paginateEvents = async (pool, offset, batchSize) => {
   let eventOffset = 0
   const resultRows = []
   for (const event of rows) {
-    resultRows.push(shapeEvent(event), {
-      [Symbol.for('sequenceIndex')]: offset + eventOffset
-    })
+    resultRows.push(
+      shapeEvent(event, {
+        [Symbol.for('sequenceIndex')]: offset + eventOffset
+      })
+    )
     eventOffset++
   }
 
