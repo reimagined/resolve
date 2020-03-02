@@ -1,6 +1,6 @@
 {
   "name": "resolve-snapshot-lite",
-  "version": "0.22.9",
+  "version": "0.22.10",
   "description": "An adapter used to save snapshots to a file or in memory.",
   "engines": {
     "node": ">=10.9"
