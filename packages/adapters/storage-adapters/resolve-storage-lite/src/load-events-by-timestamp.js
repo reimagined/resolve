@@ -1,7 +1,7 @@
 import createQuery from './create-query'
 
 const loadEventsByTimestamp = async (pool, filter, callback) => {
-  const { database, escapeId, tableName } = pool
+  const { database, escapeId, tableName, shapeEvent } = pool
   const batchSize = filter.limit != null ? filter.limit : 0x7fffffff
 
   const resultQueryCondition = createQuery(pool, filter)
@@ -16,12 +16,7 @@ const loadEventsByTimestamp = async (pool, filter, callback) => {
   )
 
   for (const event of rows) {
-    event.payload = JSON.parse(event.payload)
-
-    delete event.threadId
-    delete event.threadCounter
-
-    await callback(event)
+    await callback(shapeEvent(event))
   }
 }
 

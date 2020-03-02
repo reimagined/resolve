@@ -111,10 +111,12 @@ const read = async (pool, modelOptions, aggregateArgs, jwtToken) => {
     }
     let aggregateIds = null
     try {
-      if (modelOptions !== '*') {
-        aggregateIds = modelOptions.split(/,/)
-      } else {
+      if (Array.isArray(modelOptions)) {
+        aggregateIds = [...modelOptions]
+      } else if (modelOptions === '*') {
         aggregateIds = '*'
+      } else {
+        aggregateIds = modelOptions.split(/,/)
       }
     } catch (error) {
       throw new Error(

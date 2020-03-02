@@ -1,5 +1,5 @@
 const paginateEvents = async (
-  { database, collectionName },
+  { database, collectionName, shapeEvent },
   offset,
   batchSize
 ) => {
@@ -12,15 +12,15 @@ const paginateEvents = async (
     .limit(batchSize)
     .toArray()
 
+  const resultRows = []
   for (let index = 0; index < rows.length; index++) {
     const event = rows[index]
-    event[Symbol.for('sequenceIndex')] = offset + index
-
-    delete event.threadId
-    delete event.threadCounter
+    resultRows.push(
+      shapeEvent(event, { [Symbol.for('sequenceIndex')]: offset + index })
+    )
   }
 
-  return rows
+  return resultRows
 }
 
 export default paginateEvents
