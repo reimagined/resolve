@@ -2,36 +2,45 @@ const appConfig = {
   aggregates: [
     {
       name: 'aggregate-name',
-      commands: 'build/common/aggregates/aggregate-name.commands.js',
-      projection: 'build/common/aggregates/aggregate-name.projection.js'
+      commands: 'common/aggregates/aggregate-name.commands.ts',
+      projection: 'common/aggregates/aggregate-name.projection.ts'
     }
   ],
   readModels: [
     {
       name: 'read-model-name',
       connectorName: 'default',
-      projection: 'build/common/read-models/read-model-name.projection.js',
-      resolvers: 'build/common/read-models/read-model-name.resolvers.js'
+      projection: 'common/read-models/read-model-name.projection.ts',
+      resolvers: 'common/read-models/read-model-name.resolvers.ts'
     }
   ],
   viewModels: [
     {
       name: 'view-model-name',
-      projection: 'build/common/view-models/view-model-name.projection.js',
-      serializeState: 'build/common/view-models/view-model-name.serialize_state.js',
+      projection: 'common/view-models/view-model-name.projection.ts',
+      serializeState: 'common/view-models/view-model-name.serialize_state.ts',
       deserializeState:
-        'build/common/view-models/view-model-name.deserialize_state.js'
+        'common/view-models/view-model-name.deserialize_state.ts'
     }
   ],
   sagas: [
     {
       name: 'saga-name',
-      source: 'build/common/sagas/saga-name.js',
+      source: 'common/sagas/saga-name.ts',
       connectorName: 'default',
       schedulerName: 'scheduler'
     }
   ],
-  clientEntries: ['build/client/index.js']
+  clientEntries: [
+    [
+      'client/index.tsx',
+      {
+        outputFile: 'client/index.js',
+        moduleType: 'iife',
+        target: 'web'
+      }
+    ]
+  ]
 }
 
 export default appConfig

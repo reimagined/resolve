@@ -6,4 +6,5 @@ declare module 'resolve-scripts' {
   export function watch(...args: any[]): any
   export function runTestcafe(...args: any[]): any
   export function merge(...args: any[]): any
+  export function reset(...args: any[]): any
 }

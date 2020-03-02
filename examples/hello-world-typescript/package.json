@@ -4,14 +4,16 @@
   "description": "used as a template for new reSolve applications",
   "private": true,
   "scripts": {
-    "compile": "tsc",
-    "build": "tsc && node ./build/run.js build",
-    "dev": "tsc && node ./build/run.js dev",
-    "start": "tsc && node ./build/run.js start",
+    "type-check": "tsc",
+    "build": "tsc && babel-node --extensions='.ts,.tsx' run.ts build",
+    "dev": "tsc && babel-node --extensions='.ts,.tsx' run.ts dev",
+    "start": "tsc && babel-node --extensions='.ts,.tsx' run.ts start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
-    "test:functional": "tsc && babel-node ./build/run.js test:functional"
+    "test:functional": "tsc && babel-node --extensions='.ts,.tsx' run.ts test:functional"
   },
   "dependencies": {
+    "babel-loader": "^8.0.6",
+    "@babel/preset-typescript": "^7.8.3",
     "@babel/node": "^7.5.5",
     "@babel/polyfill": "^7.4.4",
     "@types/node": "^12.7.4",
