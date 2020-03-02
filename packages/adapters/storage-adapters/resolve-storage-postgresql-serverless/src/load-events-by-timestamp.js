@@ -1,7 +1,7 @@
 import { RESPONSE_SIZE_LIMIT } from './constants'
 
 const loadEventsByTimestamp = async (
-  { executeStatement, escapeId, escape, tableName, databaseName },
+  { executeStatement, escapeId, escape, tableName, databaseName, shapeEvent },
   { eventTypes, aggregateIds, startTime, finishTime, limit },
   callback
 ) => {
@@ -69,16 +69,8 @@ const loadEventsByTimestamp = async (
     }
 
     for (const event of rows) {
-      event.payload = JSON.parse(event.payload)
-
-      delete event.totalEventSize
-      delete event.eventSize
-      delete event.threadCounter
-      delete event.threadId
-
       countEvents++
-
-      await callback(event)
+      await callback(shapeEvent(event))
     }
 
     if (rows.length === 0 || countEvents > limit) {

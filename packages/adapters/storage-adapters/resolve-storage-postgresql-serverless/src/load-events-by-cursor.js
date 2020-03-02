@@ -1,4 +1,5 @@
 import { RESPONSE_SIZE_LIMIT, INT8_SQL_TYPE } from './constants'
+import shapeEvent from './shape-event'
 
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
@@ -89,9 +90,6 @@ const loadEventsByCursor = async (
     for (const event of rows) {
       const threadId = +event.threadId
       const threadCounter = +event.threadCounter
-      event[Symbol.for('threadCounter')] = threadCounter
-      event[Symbol.for('threadId')] = threadId
-
       const oldThreadCounter = parseInt(
         vectorConditions[threadId].substring(
           2,
@@ -107,16 +105,9 @@ const loadEventsByCursor = async (
         .toString(16)
         .padStart(12, '0')}'::${INT8_SQL_TYPE}`
 
-      event.payload = JSON.parse(event.payload)
-
-      delete event.totalEventSize
-      delete event.eventSize
-      delete event.threadCounter
-      delete event.threadId
-
       countEvents++
 
-      await callback(event)
+      await callback(shapeEvent(event))
     }
 
     if (rows.length === 0 || countEvents > limit) {

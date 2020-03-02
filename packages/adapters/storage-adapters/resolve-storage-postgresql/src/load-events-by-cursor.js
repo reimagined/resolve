@@ -3,7 +3,7 @@ import { INT8_SQL_TYPE } from './constants'
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
 const loadEventsByCursor = async (
-  { executeStatement, escapeId, escape, tableName, databaseName },
+  { executeStatement, escapeId, escape, tableName, databaseName, shapeEvent },
   { eventTypes, aggregateIds, cursor, limit },
   callback
 ) => {
@@ -58,9 +58,6 @@ const loadEventsByCursor = async (
   for (const event of rows) {
     const threadId = +event.threadId
     const threadCounter = +event.threadCounter
-    event[Symbol.for('threadCounter')] = threadCounter
-    event[Symbol.for('threadId')] = threadId
-
     const oldThreadCounter = parseInt(
       vectorConditions[threadId].substring(
         2,
@@ -76,15 +73,7 @@ const loadEventsByCursor = async (
       .toString(16)
       .padStart(12, '0')}'::${INT8_SQL_TYPE}`
 
-    event.aggregateVersion = +event.aggregateVersion
-    event.timestamp = +event.timestamp
-
-    delete event.totalEventSize
-    delete event.eventSize
-    delete event.threadCounter
-    delete event.threadId
-
-    await callback(event)
+    await callback(shapeEvent(event))
   }
 
   const nextConditionsBuffer = Buffer.alloc(1536)
