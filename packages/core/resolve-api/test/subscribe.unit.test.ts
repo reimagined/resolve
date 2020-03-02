@@ -1,11 +1,12 @@
 jest.useFakeTimers()
 
+/* eslint-disable import/first */
 import * as subscribe from '../src/subscribe'
 import { rootCallback } from '../src/view_model_subscribe_callback'
 import { Context } from '../src/context'
+/* eslint-enable */
 
 const { doSubscribe, doUnsubscribe, dropSubscribeAdapterPromise } = subscribe
-
 
 jest.mock('../src/empty_subscribe_adapter')
 
@@ -73,10 +74,7 @@ describe('subscribe', () => {
       rootPath: '',
       staticPath: '',
       viewModels: [],
-      subscribeAdapter: {
-        adapterName: 'adapter-name',
-        create: mockCreateSubscribeAdapter
-      }
+      subscribeAdapter: mockCreateSubscribeAdapter
     }
   })
 
@@ -292,10 +290,7 @@ describe('re-subscribe', () => {
       rootPath: '',
       staticPath: '',
       viewModels: [],
-      subscribeAdapter: {
-        adapterName: 'adapter-name',
-        create: mockCreateSubscribeAdapter
-      }
+      subscribeAdapter: mockCreateSubscribeAdapter
     }
   })
 

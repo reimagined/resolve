@@ -8,19 +8,18 @@ export interface SubscribeAdapter {
 }
 
 export interface CreateSubscribeAdapter {
-  create: (options: object) => SubscribeAdapter
+  (options: object): SubscribeAdapter
   adapterName: string
 }
 
-const emptySubscribeAdapter = {
-  adapterName: 'empty',
-  create: (): SubscribeAdapter => ({
-    init: (): Promise<any> => Promise.resolve(),
-    subscribeToTopics: (): Promise<any> => Promise.resolve(),
-    unsubscribeFromTopics: (): Promise<any> => Promise.resolve(),
-    close: (): Promise<any> => Promise.resolve(),
-    isConnected: (): boolean => true
-  })
-}
+const emptySubscribeAdapter: CreateSubscribeAdapter = (): SubscribeAdapter => ({
+  init: (): Promise<any> => Promise.resolve(),
+  subscribeToTopics: (): Promise<any> => Promise.resolve(),
+  unsubscribeFromTopics: (): Promise<any> => Promise.resolve(),
+  close: (): Promise<any> => Promise.resolve(),
+  isConnected: (): boolean => true
+})
+
+emptySubscribeAdapter.adapterName = 'empty'
 
 export default emptySubscribeAdapter
