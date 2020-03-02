@@ -9,7 +9,7 @@ export interface SubscribeAdapter {
 
 export interface CreateSubscribeAdapter {
   (options: object): SubscribeAdapter
-  adapterName: string
+  adapterName?: string
 }
 
 const emptySubscribeAdapter: CreateSubscribeAdapter = (): SubscribeAdapter => ({

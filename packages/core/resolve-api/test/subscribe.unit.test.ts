@@ -4,6 +4,7 @@ jest.useFakeTimers()
 import * as subscribe from '../src/subscribe'
 import { rootCallback } from '../src/view_model_subscribe_callback'
 import { Context } from '../src/context'
+import { CreateSubscribeAdapter } from '../src/empty_subscribe_adapter'
 /* eslint-enable */
 
 const { doSubscribe, doUnsubscribe, dropSubscribeAdapterPromise } = subscribe
@@ -28,7 +29,17 @@ const mockCallback = jest.fn()
 const mockIsConnected = jest.fn().mockReturnValue(true)
 const mockClose = jest.fn()
 
-let mockCreateSubscribeAdapter = jest.fn()
+const mockCreateSubscribeAdapter: jest.MockedFunction<CreateSubscribeAdapter> = jest
+  .fn()
+  .mockReturnValue({
+    init: mockInit,
+    close: mockClose,
+    isConnected: mockIsConnected,
+    subscribeToTopics: mockSubscribe,
+    unsubscribeFromTopics: mockUnsubscribe
+  })
+mockCreateSubscribeAdapter.adapterName = 'adapter-name'
+
 let context: Context
 
 const clearMocks = (): void => {
@@ -60,15 +71,6 @@ describe('subscribe', () => {
   })
 
   beforeEach(async () => {
-    mockCreateSubscribeAdapter.mockReturnValue({
-      init: mockInit,
-      close: mockClose,
-      isConnected: mockIsConnected,
-      subscribeToTopics: mockSubscribe,
-      unsubscribeFromTopics: mockUnsubscribe,
-      adapterName: 'adapter-name'
-    })
-
     context = {
       origin: 'http://origin-url',
       rootPath: '',
@@ -276,14 +278,14 @@ describe('re-subscribe', () => {
   beforeEach(async () => {
     jest.clearAllMocks()
     refreshSpy = jest.spyOn(subscribe, 'refreshSubscribeAdapter')
-    mockCreateSubscribeAdapter = jest.fn().mockReturnValue({
+    /* mockCreateSubscribeAdapter = jest.fn().mockReturnValue({
       init: mockInit,
       isConnected: mockIsConnected,
       close: mockClose,
       subscribeToTopics: mockSubscribe,
       unsubscribeFromTopics: mockUnsubscribe,
       adapterName: 'adapter-name'
-    })
+    }) */
 
     context = {
       origin: 'http://origin-url',

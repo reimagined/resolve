@@ -93,6 +93,10 @@ const initSubscribeAdapter = async (context: Context): Promise<any> => {
     return Promise.resolve()
   }
 
+  if (!createSubscribeAdapter.adapterName) {
+    throw new GenericError('Adapter name expected in SubscribeAdapter')
+  }
+
   const { appId, url } = await getSubscribeAdapterOptions(
     context,
     createSubscribeAdapter.adapterName
