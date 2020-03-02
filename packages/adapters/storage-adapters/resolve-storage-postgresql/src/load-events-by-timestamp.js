@@ -1,5 +1,5 @@
 const loadEventsByTimestamp = async (
-  { executeStatement, escapeId, escape, tableName, databaseName },
+  { executeStatement, escapeId, escape, tableName, databaseName, shapeEvent },
   { eventTypes, aggregateIds, startTime, finishTime, limit },
   callback
 ) => {
@@ -37,15 +37,7 @@ const loadEventsByTimestamp = async (
   const rows = await executeStatement(sqlQuery)
 
   for (const event of rows) {
-    event.aggregateVersion = +event.aggregateVersion
-    event.timestamp = +event.timestamp
-
-    delete event.totalEventSize
-    delete event.eventSize
-    delete event.threadCounter
-    delete event.threadId
-
-    await callback(event)
+    await callback(shapeEvent(event))
   }
 }
 

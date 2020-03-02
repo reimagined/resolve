@@ -2,7 +2,7 @@ const sortExpression = { timestamp: 1, threadCounter: 1 }
 const projectionExpression = { _id: 0, threadId: 0, threadCounter: 0 }
 
 const loadEventsByTimestamp = async (
-  { database, collectionName },
+  { database, collectionName, shapeEvent },
   { eventTypes, aggregateIds, startTime, finishTime, limit },
   callback
 ) => {
@@ -32,7 +32,7 @@ const loadEventsByTimestamp = async (
     event = await cursorStream.next()
   ) {
     try {
-      await callback(event)
+      await callback(shapeEvent(event))
     } catch (error) {
       lastError = error
       break

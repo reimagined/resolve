@@ -16,6 +16,7 @@ import paginateEvents from './paginate-events'
 import saveEventOnly from './save-event-only'
 import freeze from './freeze'
 import unfreeze from './unfreeze'
+import shapeEvent from './shape-event'
 
 const wrappedCreateAdapter = createAdapter.bind(null, {
   connect,
@@ -30,6 +31,7 @@ const wrappedCreateAdapter = createAdapter.bind(null, {
   saveEventOnly,
   freeze,
   unfreeze,
+  shapeEvent,
   sqlite,
   tmp,
   os,

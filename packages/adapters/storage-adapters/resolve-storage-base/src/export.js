@@ -122,7 +122,7 @@ EventStream.prototype.eventReader = async function(currentReaderId) {
       }
 
       for (let index = 0; index < nextRows.length; index++) {
-        const event = nextRows[index]
+        const event = { ...nextRows[index] }
         event.eventOffset = this.offset + index
         this.rows.push(event)
       }
