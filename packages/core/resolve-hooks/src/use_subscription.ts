@@ -39,7 +39,10 @@ const useSubscription = (
       result: Subscription | null
     ): void => {
       if (!err) {
-        subscription = result
+        // TODO Anton fix types
+        if(result != null) {
+          subscription = result
+        }
       }
 
       if (typeof onSubscribe === 'function') {
