@@ -1,0 +1,66 @@
+{
+  "name": "resolve-hooks",
+  "version": "0.22.5",
+  "description": "ReSolve hooks.",
+  "engines": {
+    "node": ">=10.9"
+  },
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "scripts": {
+    "test": "jest",
+    "testw": "echo || exit 0",
+    "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "author": "reimagined team",
+  "license": "MIT",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-api#readme",
+  "dependencies": {
+    "react": "^16.13.0",
+    "resolve-api": "0.22.5"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.1.1",
+    "@testing-library/react": "^9.4.1",
+    "@testing-library/react-hooks": "^3.2.1",
+    "@types/jest": "^25.1.3",
+    "@types/node": "^13.7.0",
+    "@types/react": "*",
+    "@types/react-dom": "*",
+    "jest": "^25.1.0",
+    "react-test-renderer": "^16.12.0",
+    "ts-jest": "^25.2.1"
+  },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/test/**/*.test.[jt]s?(x)"
+    ],
+    "roots": [
+      "<rootDir>"
+    ]
+  },
+  "babelCompile": [
+    {
+      "sourceType": "ts",
+      "moduleType": "cjs",
+      "moduleTarget": "client",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ]
+}
