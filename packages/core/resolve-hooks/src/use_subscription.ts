@@ -33,16 +33,13 @@ const useSubscription = (
       return undefined
     }
 
-    let subscription: Subscription
+    let subscription: Subscription | null
     const onSubscribeCallback = (
       err: Error | null,
       result: Subscription | null
     ): void => {
       if (!err) {
-        // TODO Anton fix types
-        if(result != null) {
-          subscription = result
-        }
+        subscription = result
       }
 
       if (typeof onSubscribe === 'function') {
