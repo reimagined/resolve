@@ -1,6 +1,6 @@
 {
   "name": "resolve-hooks",
-  "version": "0.22.5",
+  "version": "0.22.10",
   "description": "ReSolve hooks.",
   "engines": {
     "node": ">=10.9"
@@ -27,7 +27,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-api#readme",
   "dependencies": {
     "react": "^16.13.0",
-    "resolve-api": "0.22.5"
+    "resolve-api": "0.22.10"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.1.1",
