@@ -24,12 +24,18 @@ const saveEventOnly = async function(pool, event) {
     try {
       // prettier-ignore
       await executeStatement(
-        `WITH "vector_id" AS (
-          SELECT "threadId", "threadCounter"
+        `WITH "random_thread_id" AS (
+          SELECT "threadId"
           FROM ${databaseNameAsId}.${threadsTableAsId}
-          FOR UPDATE 
           OFFSET FLOOR(Random() * 256)
           LIMIT 1
+        ), "vector_id" AS (
+          SELECT "threadId", "threadCounter"
+          FROM ${databaseNameAsId}.${threadsTableAsId}
+          WHERE "threadId" = (
+            SELECT "threadId" FROM "random_thread_id"
+          )
+          FOR NO KEY UPDATE 
         ), "update_vector_id" AS (
           UPDATE ${databaseNameAsId}.${threadsTableAsId}
           SET "threadCounter" = "threadCounter" + 1
