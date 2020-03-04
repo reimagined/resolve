@@ -44,7 +44,7 @@ const saveEvent = async (
         ), "vacant_thread_id" AS (
           SELECT "threadId"
           FROM ${databaseNameAsId}.${threadsTableAsId}
-          FOR UPDATE SKIP LOCKED
+          FOR NO KEY UPDATE SKIP LOCKED
           LIMIT 1
         ), "random_thread_id" AS (
           SELECT "threadId"
@@ -57,7 +57,7 @@ const saveEvent = async (
           WHERE "threadId" = COALESCE(
             (SELECT "threadId" FROM "vacant_thread_id"),
             (SELECT "threadId" FROM "random_thread_id")
-          ) FOR UPDATE
+          ) FOR NO KEY UPDATE
           LIMIT 1
         ), "update_vector_id" AS (
           UPDATE ${databaseNameAsId}.${threadsTableAsId}
