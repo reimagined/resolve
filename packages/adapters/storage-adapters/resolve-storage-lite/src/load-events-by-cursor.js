@@ -1,7 +1,7 @@
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
 const loadEventsByCursor = async (pool, filter, callback) => {
-  const { database, escapeId, escape, tableName } = pool
+  const { database, escapeId, escape, tableName, shapeEvent } = pool
   const { eventTypes, aggregateIds, cursor, limit } = filter
   const batchSize = limit != null ? limit : 0x7fffffff
   const injectString = value => `${escape(value)}`
@@ -55,9 +55,6 @@ const loadEventsByCursor = async (pool, filter, callback) => {
   for (const event of rows) {
     const threadId = +event.threadId
     const threadCounter = +event.threadCounter
-    event[Symbol.for('threadCounter')] = threadCounter
-    event[Symbol.for('threadId')] = threadId
-
     const oldThreadCounter = parseInt(
       vectorConditions[threadId].substring(2),
       16
@@ -70,12 +67,7 @@ const loadEventsByCursor = async (pool, filter, callback) => {
       .toString(16)
       .padStart(12, '0')}`
 
-    event.payload = JSON.parse(event.payload)
-
-    delete event.threadId
-    delete event.threadCounter
-
-    await callback(event)
+    await callback(shapeEvent(event))
   }
 
   const nextConditionsBuffer = Buffer.alloc(1536)

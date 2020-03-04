@@ -9,7 +9,8 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
-    "sql": "SELECT * FROM \\"event-store\\".\\"events\\" 
+    "sql": "SELECT * FROM \\"event-store\\".\\"events\\"
+    
     ORDER BY \\"timestamp\\" DESC
     OFFSET 0
     LIMIT 1",
@@ -21,7 +22,8 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
-    "sql": "SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"type\\" IN ('AAA')
+    "sql": "SELECT * FROM \\"event-store\\".\\"events\\"
+    WHERE \\"type\\" IN ('AAA')
     ORDER BY \\"timestamp\\" DESC
     OFFSET 0
     LIMIT 1",
@@ -33,7 +35,8 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
-    "sql": "SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"aggregateId\\" IN ('id1')
+    "sql": "SELECT * FROM \\"event-store\\".\\"events\\"
+    WHERE \\"aggregateId\\" IN ('id1')
     ORDER BY \\"timestamp\\" DESC
     OFFSET 0
     LIMIT 1",
@@ -45,7 +48,8 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
-    "sql": "SELECT * FROM \\"event-store\\".\\"events\\" WHERE \\"timestamp\\" > 1 AND \\"timestamp\\" < 3
+    "sql": "SELECT * FROM \\"event-store\\".\\"events\\"
+    WHERE \\"timestamp\\" > 1 AND \\"timestamp\\" < 3
     ORDER BY \\"timestamp\\" DESC
     OFFSET 0
     LIMIT 1",
@@ -325,7 +329,7 @@ Array [
         ), \\"vacant_thread_id\\" AS (
           SELECT \\"threadId\\"
           FROM \\"event-store\\".\\"events-threads\\"
-          FOR UPDATE SKIP LOCKED
+          FOR NO KEY UPDATE SKIP LOCKED
           LIMIT 1
         ), \\"random_thread_id\\" AS (
           SELECT \\"threadId\\"
@@ -338,7 +342,7 @@ Array [
           WHERE \\"threadId\\" = COALESCE(
             (SELECT \\"threadId\\" FROM \\"vacant_thread_id\\"),
             (SELECT \\"threadId\\" FROM \\"random_thread_id\\")
-          ) FOR UPDATE
+          ) FOR NO KEY UPDATE
           LIMIT 1
         ), \\"update_vector_id\\" AS (
           UPDATE \\"event-store\\".\\"events-threads\\"
@@ -417,7 +421,7 @@ Array [
         ), \\"vacant_thread_id\\" AS (
           SELECT \\"threadId\\"
           FROM \\"event-store\\".\\"events-threads\\"
-          FOR UPDATE SKIP LOCKED
+          FOR NO KEY UPDATE SKIP LOCKED
           LIMIT 1
         ), \\"random_thread_id\\" AS (
           SELECT \\"threadId\\"
@@ -430,7 +434,7 @@ Array [
           WHERE \\"threadId\\" = COALESCE(
             (SELECT \\"threadId\\" FROM \\"vacant_thread_id\\"),
             (SELECT \\"threadId\\" FROM \\"random_thread_id\\")
-          ) FOR UPDATE
+          ) FOR NO KEY UPDATE
           LIMIT 1
         ), \\"update_vector_id\\" AS (
           UPDATE \\"event-store\\".\\"events-threads\\"

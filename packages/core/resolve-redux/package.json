@@ -1,6 +1,6 @@
 {
   "name": "resolve-redux",
-  "version": "0.22.5",
+  "version": "0.22.10",
   "description": "Provides tools that you can use to connect a React/Redux frontend to reSolve.",
   "engines": {
     "node": ">=10.9"
@@ -26,12 +26,13 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
+    "hoist-non-react-statics": "^3.2.1",
     "json-stable-stringify": "^1.0.1",
     "jwt-decode": "^2.2.0",
+    "query-string": "^5.1.1",
     "react-redux": "^5.1.1",
     "react-router": "^4.3.1",
     "react-router-redux": "^5.0.0-alpha.9",
-    "hoist-non-react-statics": "^3.2.1",
     "redux-saga": "^1.0.0",
     "unfetch": "^4.0.1",
     "uuid": "^3.3.2"

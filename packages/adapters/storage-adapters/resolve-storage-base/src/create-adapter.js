@@ -24,6 +24,7 @@ const createAdapter = (
     isFrozen,
     freeze,
     unfreeze,
+    shapeEvent,
     ...adapterSpecificArguments
   },
   options
@@ -46,7 +47,8 @@ const createAdapter = (
     wrapMethod,
     isFrozen: wrapMethod(pool, isFrozen),
     connectPromise,
-    connectPromiseResolve
+    connectPromiseResolve,
+    shapeEvent
   })
 
   const adapter = {

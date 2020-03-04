@@ -3,7 +3,7 @@ import { INT8_SQL_TYPE } from './constants'
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
 const loadEventsByCursor = async (
-  { executeStatement, escapeId, escape, tableName, databaseName },
+  { executeStatement, escapeId, escape, tableName, databaseName, shapeEvent },
   { eventTypes, aggregateIds, cursor, limit },
   callback
 ) => {
@@ -24,14 +24,10 @@ const loadEventsByCursor = async (
 
   const queryConditions = []
   if (eventTypes != null) {
-    queryConditions.push(
-      `${escapeId('type')} IN (${eventTypes.map(injectString)})`
-    )
+    queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`)
   }
   if (aggregateIds != null) {
-    queryConditions.push(
-      `${escapeId('aggregateId')} IN (${aggregateIds.map(injectString)})`
-    )
+    queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
   }
 
   const resultQueryCondition = `WHERE ${
@@ -40,17 +36,20 @@ const loadEventsByCursor = async (
     ${vectorConditions
       .map(
         (threadCounter, threadId) =>
-          `${escapeId('threadId')} = ${injectNumber(threadId)} AND ${escapeId(
-            'threadCounter'
-          )} >= ${threadCounter} `
+          `"threadId" = ${injectNumber(
+            threadId
+          )} AND "threadCounter" >= ${threadCounter} `
       )
       .join(' OR ')}
     ${queryConditions.length > 0 ? ')' : ''}`
 
+  const databaseNameAsId = escapeId(databaseName)
+  const eventsTableAsId = escapeId(tableName)
+
   const sqlQuery = [
-    `SELECT * FROM ${escapeId(databaseName)}.${escapeId(tableName)}`,
+    `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}`,
     `${resultQueryCondition}`,
-    `ORDER BY ${escapeId('timestamp')} ASC`,
+    `ORDER BY "timestamp" ASC`,
     `LIMIT ${+batchSize}`
   ].join('\n')
 
@@ -59,9 +58,6 @@ const loadEventsByCursor = async (
   for (const event of rows) {
     const threadId = +event.threadId
     const threadCounter = +event.threadCounter
-    event[Symbol.for('threadCounter')] = threadCounter
-    event[Symbol.for('threadId')] = threadId
-
     const oldThreadCounter = parseInt(
       vectorConditions[threadId].substring(
         2,
@@ -77,15 +73,7 @@ const loadEventsByCursor = async (
       .toString(16)
       .padStart(12, '0')}'::${INT8_SQL_TYPE}`
 
-    event.aggregateVersion = +event.aggregateVersion
-    event.timestamp = +event.timestamp
-
-    delete event.totalEventSize
-    delete event.eventSize
-    delete event.threadCounter
-    delete event.threadId
-
-    await callback(event)
+    await callback(shapeEvent(event))
   }
 
   const nextConditionsBuffer = Buffer.alloc(1536)

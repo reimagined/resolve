@@ -3,7 +3,7 @@ const sortExpression = { timestamp: 1, threadCounter: 1 }
 const projectionExpression = { _id: 0 }
 
 const loadEventsByCursor = async (
-  { database, collectionName },
+  { database, collectionName, shapeEvent },
   { eventTypes, aggregateIds, cursor, limit },
   callback
 ) => {
@@ -50,9 +50,6 @@ const loadEventsByCursor = async (
     try {
       const threadId = +event.threadId
       const threadCounter = +event.threadCounter
-      event[Symbol.for('threadCounter')] = threadCounter
-      event[Symbol.for('threadId')] = threadId
-
       const oldThreadCounter = parseInt(
         vectorConditions[threadId].substring(2),
         16
@@ -65,10 +62,7 @@ const loadEventsByCursor = async (
         .toString(16)
         .padStart(12, '0')}`
 
-      delete event.threadId
-      delete event.threadCounter
-
-      await callback(event)
+      await callback(shapeEvent(event))
     } catch (error) {
       lastError = error
       break

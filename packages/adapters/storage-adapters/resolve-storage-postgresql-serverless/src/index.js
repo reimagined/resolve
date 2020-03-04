@@ -18,6 +18,7 @@ import paginateEvents from './paginate-events'
 import coercer from './coercer'
 import escapeId from './escape-id'
 import escape from './escape'
+import shapeEvent from './shape-event'
 
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
@@ -41,7 +42,8 @@ const createAdapter = _createAdapter.bind(null, {
   executeStatement,
   saveEventOnly,
   paginateEvents,
-  coercer
+  coercer,
+  shapeEvent
 })
 
 export default createAdapter
@@ -54,7 +56,8 @@ const pool = {
   escape,
   fullJitter,
   coercer,
-  dispose
+  dispose,
+  shapeEvent
 }
 
 const createResource = _createResource.bind(null, pool)

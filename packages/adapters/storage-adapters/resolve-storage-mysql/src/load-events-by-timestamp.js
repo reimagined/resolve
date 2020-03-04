@@ -1,5 +1,5 @@
 const loadEventsByTimestamp = async (
-  { connection, escapeId, escape, tableName },
+  { connection, escapeId, escape, tableName, shapeEvent },
   { eventTypes, aggregateIds, startTime, finishTime, limit },
   callback
 ) => {
@@ -37,12 +37,7 @@ const loadEventsByTimestamp = async (
   )
 
   for (const event of rows) {
-    Object.setPrototypeOf(event, Object.prototype)
-
-    delete event.threadId
-    delete event.threadCounter
-
-    await callback(event)
+    await callback(shapeEvent(event))
   }
 }
 

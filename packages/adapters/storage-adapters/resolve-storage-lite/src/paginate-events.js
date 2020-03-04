@@ -1,5 +1,5 @@
 const paginateEvents = async (pool, offset, batchSize) => {
-  const { database, escapeId, tableName } = pool
+  const { database, escapeId, tableName, shapeEvent } = pool
 
   const eventsTableNameAsId = escapeId(tableName)
 
@@ -9,16 +9,15 @@ const paginateEvents = async (pool, offset, batchSize) => {
     LIMIT ${+offset}, ${+batchSize}`
   )
 
+  const resultRows = []
   for (let index = 0; index < rows.length; index++) {
     const event = rows[index]
-    event.payload = JSON.parse(event.payload)
-    event[Symbol.for('sequenceIndex')] = offset + index
-
-    delete event.threadId
-    delete event.threadCounter
+    resultRows.push(
+      shapeEvent(event, { [Symbol.for('sequenceIndex')]: offset + index })
+    )
   }
 
-  return rows
+  return resultRows
 }
 
 export default paginateEvents

@@ -238,6 +238,7 @@ module.exports = {
           'jsons',
           'jsonschema',
           'jsonwebtoken',
+          'jsx',
           'jwt',
           'latin1',
           'lan',
