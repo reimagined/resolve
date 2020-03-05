@@ -67,6 +67,10 @@ const saveEvent = async (pool, event) => {
     const errno = error != null && error.errno != null ? error.errno : 0
     const message = error != null && error.message != null ? error.message : ''
 
+    try {
+      await connection.query('ROLLBACK;')
+    } catch (e) {}
+
     if (errno === ER_SUBQUERY_NO_1_ROW) {
       throw new Error('Event store is frozen')
     } else if (errno === ER_DUP_ENTRY && message.indexOf('aggregate') > -1) {
@@ -75,10 +79,6 @@ const saveEvent = async (pool, event) => {
       (errno === ER_DUP_ENTRY && message.indexOf('PRIMARY') > -1) ||
       errno === ER_LOCK_DEADLOCK
     ) {
-      try {
-        await connection.query('ROLLBACK;')
-      } catch (e) {}
-
       return await saveEvent(pool, event)
     } else {
       throw error

@@ -36,9 +36,7 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
 
         if (index > 0) {
           await pool.executeStatement(
-            `UPDATE ${escapeId(pool.pool.databaseName)}.${escapeId(
-              pool.tableName
-            )}
+            `UPDATE ${escapeId(pool.databaseName)}.${escapeId(pool.tableName)}
             SET ${escapeId('SnapshotContent')} = ${escapeId(
               'SnapshotContent'
             )} || ${escape(chunk)}
