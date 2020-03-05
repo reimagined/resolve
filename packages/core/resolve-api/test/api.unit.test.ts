@@ -9,9 +9,7 @@ import { NarrowedResponse, request } from '../src/request'
 jest.mock('../src/request', () => ({
   request: jest.fn()
 }))
-jest.mock('../src/subscribe', () => ({
-
-}))
+jest.mock('../src/subscribe', () => ({}))
 
 const createMockResponse = (overrides: object = {}): NarrowedResponse => ({
   ok: true,

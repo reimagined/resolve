@@ -18,7 +18,7 @@ const Item = ({ aggregateId }) => {
 
   return (
     <React.Fragment>
-      <div style={{ borderTop: '1px solid gray', marginBottom: '20px'}}>
+      <div style={{ borderTop: '1px solid gray', marginBottom: '20px' }}>
         <button
           onClick={() => {
             handleSetOnline()

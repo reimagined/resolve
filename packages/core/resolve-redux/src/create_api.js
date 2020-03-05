@@ -77,7 +77,13 @@ const stringifyUrl = (url, params) => {
   return url
 }
 
-const createApi = ({ origin, rootPath, jwtProvider, store, queryMethod }) => {
+const createApi = ({
+  origin,
+  rootPath,
+  jwtProvider,
+  store,
+  queryMethod = 'GET'
+}) => {
   if (
     !queryMethod ||
     !isString(queryMethod) ||

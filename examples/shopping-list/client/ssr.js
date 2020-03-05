@@ -3,13 +3,12 @@ import ReactDOM from 'react-dom/server'
 import { createStore, AppContainer } from 'resolve-redux'
 import { Router } from 'react-router'
 import { Helmet } from 'react-helmet'
-import { StyleSheetManager, ServerStyleSheet } from 'styled-components'
 import { createMemoryHistory } from 'history'
 import jsonwebtoken from 'jsonwebtoken'
 
 import getRoutes from './get-routes'
 import getRedux from './get-redux'
-import Routes from './components/Routes'
+import Routes from '../client/components/Routes'
 
 const ssrHandler = async (
   { serverImports, constants, seedClientEnvs, viewModels, utils },
@@ -19,15 +18,14 @@ const ssrHandler = async (
   try {
     const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils
     const { rootPath, staticPath, jwtCookie } = constants
+    const redux = getRedux(serverImports)
+    const routes = getRoutes(serverImports)
 
-    const history = createMemoryHistory()
     const baseQueryUrl = getRootBasedUrl(rootPath, '/')
     const origin = ''
     const url = req.path.substring(baseQueryUrl.length)
+    const history = createMemoryHistory()
     history.push(url)
-
-    const redux = getRedux(serverImports, history)
-    const routes = getRoutes(serverImports)
 
     const jwt = {}
     try {
@@ -46,23 +44,19 @@ const ssrHandler = async (
     })
 
     const staticContext = {}
-    const sheet = new ServerStyleSheet()
     const markup = ReactDOM.renderToStaticMarkup(
-      <StyleSheetManager sheet={sheet.instance}>
-        <AppContainer
-          origin={origin}
-          rootPath={rootPath}
-          staticPath={staticPath}
-          store={store}
-        >
-          <Router history={history} staticContext={staticContext}>
-            <Routes routes={routes} />
-          </Router>
-        </AppContainer>
-      </StyleSheetManager>
+      <AppContainer
+        origin={origin}
+        rootPath={rootPath}
+        staticPath={staticPath}
+        store={store}
+        isSSR={true}
+      >
+        <Router history={history} staticContext={staticContext}>
+          <Routes routes={routes} />
+        </Router>
+      </AppContainer>
     )
-
-    const styleTags = sheet.getStyleTags()
 
     const initialState = store.getState()
     const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index.js')
@@ -83,7 +77,6 @@ const ssrHandler = async (
       `${helmet.meta.toString()}` +
       `${helmet.link.toString()}` +
       `${helmet.style.toString()}` +
-      styleTags +
       '<script>' +
       `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)};` +
       `window.__RESOLVE_RUNTIME_ENV__=${jsonUtfStringify(seedClientEnvs)};` +

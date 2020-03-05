@@ -26,29 +26,27 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "hoist-non-react-statics": "^3.2.1",
+    "hoist-non-react-statics": "^3.3.2",
     "json-stable-stringify": "^1.0.1",
     "jwt-decode": "^2.2.0",
     "query-string": "^5.1.1",
-    "react-redux": "^5.1.1",
-    "react-router": "^4.3.1",
-    "react-router-redux": "^5.0.0-alpha.9",
+    "react-redux": "^7.2.0",
     "redux-saga": "^1.0.0",
     "unfetch": "^4.0.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "jest": "24.1.0",
-    "react": "16.7.0",
-    "react-dom": "16.7.0",
-    "react-test-renderer": "16.7.0",
-    "redux": "4.0.1",
+    "jest": "25.1.0",
+    "react": "16.13.0",
+    "react-dom": "16.13.0",
+    "react-test-renderer": "16.13.0",
+    "redux": "4.0.5",
     "sinon": "7.2.2"
   },
   "peerDependencies": {
-    "react": "^16.5.0",
-    "react-dom": "^16.5.0",
-    "redux": "^4.0.0"
+    "react": "*",
+    "react-dom": "*",
+    "redux": "*"
   },
   "babelCompile": [
     {

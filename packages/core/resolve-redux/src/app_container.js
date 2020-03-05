@@ -1,6 +1,4 @@
 import React from 'react'
-import { ConnectedRouter } from 'react-router-redux'
-import Routes from './routes'
 import Providers from './providers'
 
 class AppContainer extends React.PureComponent {
@@ -10,10 +8,8 @@ class AppContainer extends React.PureComponent {
       rootPath,
       staticPath,
       store,
-      history,
-      routes,
-      isSSR,
-      queryMethod = 'GET'
+      children,
+      queryMethod
     } = this.props
 
     return (
@@ -24,9 +20,7 @@ class AppContainer extends React.PureComponent {
         store={store}
         queryMethod={queryMethod}
       >
-        <ConnectedRouter history={history} isSSR={isSSR}>
-          <Routes routes={routes} />
-        </ConnectedRouter>
+        {children}
       </Providers>
     )
   }

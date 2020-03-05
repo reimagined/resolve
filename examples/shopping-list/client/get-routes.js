@@ -2,7 +2,7 @@ import App from './containers/App'
 import ShoppingList from './containers/ShoppingList'
 import MyLists from './containers/MyLists'
 
-export default [
+const routes = [
   {
     component: App,
     routes: [
@@ -18,3 +18,7 @@ export default [
     ]
   }
 ]
+
+const getRoutes = () => routes
+
+export default getRoutes

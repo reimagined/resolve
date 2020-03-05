@@ -29,7 +29,7 @@
     "resolve-storage-base": "0.22.10"
   },
   "devDependencies": {
-    "jest": "24.1.0"
+    "jest": "25.1.0"
   },
   "peerDependencies": {
     "aws-sdk": "*"

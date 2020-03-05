@@ -13,9 +13,9 @@
     "test": "echo Test || exit 0"
   },
   "dependencies": {
-    "react": "16.7.0"
+    "react": "16.13.0"
   },
   "devDependencies": {
-    "docusaurus": "^1.6.2"
+    "docusaurus": "1.14.4"
   }
 }

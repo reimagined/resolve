@@ -33,7 +33,7 @@
     "mime-types": "^2.1.26"
   },
   "devDependencies": {
-    "jest": "24.1.0"
+    "jest": "25.1.0"
   },
   "babelCompile": [
     {

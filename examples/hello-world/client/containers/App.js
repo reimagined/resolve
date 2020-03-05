@@ -50,7 +50,6 @@ const App = ({ staticPath }) => {
         </Navbar>
       </div>
       <h1 align="center">Hello, reSolve world!</h1>
-
     </div>
   )
 }

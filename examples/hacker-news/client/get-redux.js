@@ -4,7 +4,7 @@ import optimisticReducer from './reducers/optimistic'
 import optimisticVotingSaga from './sagas/optimistic-voting-saga'
 import storyCreateSaga from './sagas/story-create-saga'
 
-const getRedux = ({ 'comments-hn': getCommentsOptions }) => {
+const getRedux = ({ 'comments-hn': getCommentsOptions }, history) => {
   const {
     reducerName: commentsReducerName,
     ...commentsOptions
@@ -14,7 +14,7 @@ const getRedux = ({ 'comments-hn': getCommentsOptions }) => {
       [commentsReducerName]: createCommentsReducer(commentsOptions),
       optimistic: optimisticReducer
     },
-    sagas: [optimisticVotingSaga, storyCreateSaga]
+    sagas: [optimisticVotingSaga, storyCreateSaga.bind(null, history)]
   }
 
   return redux

@@ -51,10 +51,10 @@ type ContextChildrenProps = {
 const contextWrapper: FunctionComponent<ContextChildrenProps> = ({
   children
 }) => (
-    <ResolveContext.Provider value={contextValue}>
-      {children}
-    </ResolveContext.Provider>
-  )
+  <ResolveContext.Provider value={contextValue}>
+    {children}
+  </ResolveContext.Provider>
+)
 
 describe('useSubscription', () => {
   beforeAll(() => {

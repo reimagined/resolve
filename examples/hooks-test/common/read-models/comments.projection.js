@@ -7,7 +7,10 @@ export default {
       fields: ['text', 'createdAt']
     })
   },
-  [COMMENT_CREATED]: async (store, { aggregateId, timestamp, payload: { text, target, targetId } }) => {
+  [COMMENT_CREATED]: async (
+    store,
+    { aggregateId, timestamp, payload: { text, target, targetId } }
+  ) => {
     await store.insert('comments', {
       target,
       targetId,
