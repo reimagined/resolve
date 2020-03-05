@@ -7,6 +7,7 @@
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",
+  "types": "./types/index.d.ts",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -26,10 +27,10 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-api#readme",
   "dependencies": {
-    "react": "^16.13.0",
     "resolve-api": "0.22.10"
   },
   "devDependencies": {
+    "react": "^16.13.0",
     "@testing-library/jest-dom": "^5.1.1",
     "@testing-library/react": "^9.4.1",
     "@testing-library/react-hooks": "^3.2.1",

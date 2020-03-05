@@ -80,22 +80,25 @@ type ReadModelQuery = {
   resolver: string
   args: object
 }
-type Query = ViewModelQuery | ReadModelQuery
+export type Query = ViewModelQuery | ReadModelQuery
 const isReadModelQuery = (arg: any): arg is ReadModelQuery =>
   arg && arg.resolver
 
-type QueryResult = {
+export type QueryResult = {
   timestamp: number
   data: any
 }
-type QueryOptions = {
+export type QueryOptions = {
   waitFor?: {
     validator: (result: any) => boolean
     period?: number
     attempts?: number
   }
 }
-type QueryCallback = (error: Error | null, result: QueryResult | null) => void
+export type QueryCallback = (
+  error: Error | null,
+  result: QueryResult | null
+) => void
 
 export const query = (
   context: Context,

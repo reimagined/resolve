@@ -5,7 +5,11 @@ import {
   SubscribeCallback,
   SubscribeHandler,
   Subscription,
-  ResubscribeCallback
+  ResubscribeCallback,
+  Query,
+  QueryOptions,
+  QueryCallback,
+  QueryResult
 } from './api'
 
 export {
@@ -17,5 +21,9 @@ export {
   SubscribeCallback,
   SubscribeHandler,
   Subscription,
-  ResubscribeCallback
+  ResubscribeCallback,
+  Query,
+  QueryOptions,
+  QueryCallback,
+  QueryResult
 }
