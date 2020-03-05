@@ -1,7 +1,14 @@
 import { SAVE_CHUNK_SIZE } from './constants'
 
-const saveSnapshot = async (pool, snapshotKey, snapshotValue) => {
+const saveSnapshot = async (pool, snapshotKey, content) => {
   const { escapeId, escape, connect } = pool
+  if (snapshotKey == null || snapshotKey.constructor !== String) {
+    throw new Error('Snapshot key must be string')
+  }
+  if (content == null || content.constructor !== String) {
+    throw new Error('Snapshot content must be string')
+  }
+
   await connect(pool)
 
   if (!pool.counters.has(snapshotKey)) {
@@ -14,7 +21,6 @@ const saveSnapshot = async (pool, snapshotKey, snapshotValue) => {
   }
   pool.counters.set(snapshotKey, 0)
 
-  const content = String(snapshotValue)
   const chunksCount = Math.ceil(content.length / SAVE_CHUNK_SIZE)
 
   if (chunksCount > 1) {
