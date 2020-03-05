@@ -53,10 +53,8 @@ for (const { describeName, prepare } of [
             await handler(event)
           }
         },
-        getNextCursor: (prevCursor, events) => {
-          return `${prevCursor == null ? '' : prevCursor}${events.map(e =>
-            Buffer.from(JSON.stringify(e)).toString('base64')
-          )}`
+        getNextCursor: prevCursor => {
+          return `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`
         }
       }
 
@@ -194,27 +192,27 @@ for (const { describeName, prepare } of [
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id1', 1]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 10 }, null, 2)
-            }
+              state: JSON.stringify({ value: 10 }, null, 2),
+              cursor: 'CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id1', 2]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 15 }, null, 2)
-            }
+              state: JSON.stringify({ value: 15 }, null, 2),
+              cursor: 'CURSOR-CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id1', 3]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 7 }, null, 2)
-            }
+              state: JSON.stringify({ value: 7 }, null, 2),
+              cursor: 'CURSOR-CURSOR-CURSOR'
+            })
           )
 
           events = [
@@ -261,27 +259,27 @@ for (const { describeName, prepare } of [
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id2', 1]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 5 }, null, 2)
-            }
+              state: JSON.stringify({ value: 5 }, null, 2),
+              cursor: 'CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id2', 2]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 7 }, null, 2)
-            }
+              state: JSON.stringify({ value: 7 }, null, 2),
+              cursor: 'CURSOR-CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id2', 3]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 4 }, null, 2)
-            }
+              state: JSON.stringify({ value: 4 }, null, 2),
+              cursor: 'CURSOR-CURSOR-CURSOR'
+            })
           )
 
           events = []
@@ -626,27 +624,27 @@ for (const { describeName, prepare } of [
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id1', 1]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 10 }, null, 2)
-            }
+              state: JSON.stringify({ value: 10 }, null, 2),
+              cursor: 'CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id1', 2]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 15 }, null, 2)
-            }
+              state: JSON.stringify({ value: 15 }, null, 2),
+              cursor: 'CURSOR-CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id1', 3]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 7 }, null, 2)
-            }
+              state: JSON.stringify({ value: 7 }, null, 2),
+              cursor: 'CURSOR-CURSOR-CURSOR'
+            })
           )
 
           events = [
@@ -700,27 +698,27 @@ for (const { describeName, prepare } of [
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id2', 1]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 5 }, null, 2)
-            }
+              state: JSON.stringify({ value: 5 }, null, 2),
+              cursor: 'CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id2', 2]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 7 }, null, 2)
-            }
+              state: JSON.stringify({ value: 7 }, null, 2),
+              cursor: 'CURSOR-CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id2', 3]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 4 }, null, 2)
-            }
+              state: JSON.stringify({ value: 4 }, null, 2),
+              cursor: 'CURSOR-CURSOR-CURSOR'
+            })
           )
 
           if (performanceTracer != null) {

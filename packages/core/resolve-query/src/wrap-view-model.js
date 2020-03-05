@@ -17,8 +17,9 @@ const buildViewModel = async (
   let state = null
 
   try {
-    const snapshot = await pool.snapshotAdapter.loadSnapshot(snapshotKey)
-
+    const snapshot = JSON.parse(
+      await pool.snapshotAdapter.loadSnapshot(snapshotKey)
+    )
     aggregatesVersionsMap = new Map(snapshot.aggregatesVersionsMap)
     state = await pool.viewModel.deserializeState(snapshot.state)
     cursor = snapshot.cursor
@@ -62,11 +63,14 @@ const buildViewModel = async (
       aggregatesVersionsMap.set(event.aggregateId, event.aggregateVersion)
 
       if (pool.snapshotAdapter != null) {
-        await pool.snapshotAdapter.saveSnapshot(snapshotKey, {
-          aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
-          state: await pool.viewModel.serializeState(state),
-          cursor
-        })
+        await pool.snapshotAdapter.saveSnapshot(
+          snapshotKey,
+          JSON.stringify({
+            aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
+            state: await pool.viewModel.serializeState(state),
+            cursor
+          })
+        )
       }
     } catch (error) {
       if (subSegment != null) {

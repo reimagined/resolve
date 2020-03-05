@@ -89,6 +89,9 @@ const loadSnapshot = async (pool, snapshotKey) => {
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
+  if (snapshotKey == null || snapshotKey.constructor !== String) {
+    throw new Error('Snapshot key must be string')
+  }
   await connect(pool)
 
   const result = await pool.database.get(
@@ -103,6 +106,13 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
+  if (snapshotKey == null || snapshotKey.constructor !== String) {
+    throw new Error('Snapshot key must be string')
+  }
+  if (content == null || content.constructor !== String) {
+    throw new Error('Snapshot content must be string')
+  }
+
   await connect(pool)
   if (!pool.counters.has(snapshotKey)) {
     pool.counters.set(snapshotKey, 0)
