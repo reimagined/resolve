@@ -9,9 +9,9 @@ const find = async (es, { q }) => {
     q
   })
 
-  return result.hits.hits.map(hit => ({
+  return result.body.hits.hits.map(hit => ({
     id: hit._id,
-    type: hit._type,
+    type: hit._source.type,
     aggregateId: hit._source.aggregateId,
     text: hit._source.text
   }))

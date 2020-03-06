@@ -2,7 +2,8 @@ import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 import _createAdapter from 'resolve-storage-base'
 
 import connect from './connect'
-import loadEvents from './load-events'
+import loadEventsByCursor from './load-events-by-cursor'
+import loadEventsByTimestamp from './load-events-by-timestamp'
 import freeze from './freeze'
 import unfreeze from './unfreeze'
 import getLatestEvent from './get-latest-event'
@@ -13,11 +14,11 @@ import dispose from './dispose'
 import fullJitter from './full-jitter'
 import executeStatement from './execute-statement'
 import saveEventOnly from './save-event-only'
-import saveSequenceOnly from './save-sequence-only'
 import paginateEvents from './paginate-events'
 import coercer from './coercer'
 import escapeId from './escape-id'
 import escape from './escape'
+import shapeEvent from './shape-event'
 
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
@@ -25,7 +26,8 @@ import _destroyResource from './resource/destroy'
 
 const createAdapter = _createAdapter.bind(null, {
   connect,
-  loadEvents,
+  loadEventsByCursor,
+  loadEventsByTimestamp,
   getLatestEvent,
   saveEvent,
   init,
@@ -39,9 +41,9 @@ const createAdapter = _createAdapter.bind(null, {
   fullJitter,
   executeStatement,
   saveEventOnly,
-  saveSequenceOnly,
   paginateEvents,
-  coercer
+  coercer,
+  shapeEvent
 })
 
 export default createAdapter
@@ -54,7 +56,8 @@ const pool = {
   escape,
   fullJitter,
   coercer,
-  dispose
+  dispose,
+  shapeEvent
 }
 
 const createResource = _createResource.bind(null, pool)

@@ -95,7 +95,7 @@ resolveMiddleware.run({
 
 ```js
 import { connect } from 'react-redux'
-import { connectViewModel } from 'resolve-redux'
+import { connectViewModel, sendAggregateAction } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 
 const MyComponent = () => { /* React component implementation */ }
@@ -110,7 +110,9 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) =>
-  bindActionCreators(aggregateActions, dispatch)
+  bindActionCreators({
+    commandName: sendAggregateAction.bind(null, 'AggregateName', 'CommandName')
+  }, dispatch)
 
 export default connectViewModel(mapStateToOptions)(
   connect(
@@ -125,7 +127,7 @@ export default connectViewModel(mapStateToOptions)(
 
 ```js
 import { connect } from 'react-redux'
-import { connectReadModel } from 'resolve-redux'
+import { connectReadModel, sendAggregateAction } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 
 const MyComponent = () => { /* React component implementation */ }
@@ -145,7 +147,9 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) =>
-  bindActionCreators(aggregateActions, dispatch)
+  bindActionCreators({
+    commandName: sendAggregateAction.bind(null, 'AggregateName', 'CommandName')
+  }, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
   connect(

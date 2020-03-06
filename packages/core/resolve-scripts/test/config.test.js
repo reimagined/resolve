@@ -1,5 +1,13 @@
-import resolveConfigOrigin from '../configs/default.resolve.config.json'
+import defaultResolveConfig from '../configs/default.resolve.config.json'
 import validateConfig from '../src/validate_config'
+
+const resolveConfigOrigin = {
+  ...defaultResolveConfig,
+  storageAdapter: {
+    module: 'resolve-storage-lite',
+    options: {}
+  }
+}
 
 jest.setTimeout(30000)
 
@@ -76,28 +84,6 @@ describe('validate schema', () => {
         mode: 'development',
         target: 'local',
         staticPath: 'my-cdn'
-      })
-    ).toBeTruthy()
-  })
-
-  it('custom routes path', () => {
-    expect(
-      validateConfig({
-        ...resolveConfigOrigin,
-        mode: 'development',
-        target: 'local',
-        routes: 'src/client/entryPoint.js'
-      })
-    ).toBeTruthy()
-  })
-
-  it('custom index path', () => {
-    expect(
-      validateConfig({
-        ...resolveConfigOrigin,
-        mode: 'development',
-        target: 'local',
-        index: 'src/client/index.js'
       })
     ).toBeTruthy()
   })
@@ -224,17 +210,6 @@ describe('validate schema (fail)', () => {
         mode: 'development',
         target: 'local',
         staticPath: 123
-      })
-    ).toThrow()
-  })
-
-  it('incorrect routes path', () => {
-    expect(() =>
-      validateConfig({
-        ...resolveConfigOrigin,
-        mode: 'development',
-        target: 'local',
-        routes: 123
       })
     ).toThrow()
   })

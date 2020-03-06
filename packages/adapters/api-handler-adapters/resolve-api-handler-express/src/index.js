@@ -1,6 +1,6 @@
-import binaryCase from 'binary-case'
 import contentDisposition from 'content-disposition'
 import cookie from 'cookie'
+import mimeTypes from 'mime-types'
 import getRawBody from 'raw-body'
 
 const COOKIE_CLEAR_DATE = new Date(0).toGMTString()
@@ -53,10 +53,27 @@ const createRequest = async (expressReq, customParameters) => {
       ? cookie.parse(headers.cookie)
       : {}
 
+  const [contentType, optionsEntry] = headers.hasOwnProperty('Content-Type')
+    ? String(headers['Content-Type'])
+        .split(';')
+        .map(value => value.trim().toLowerCase())
+    : []
+
+  let charset = null
+  if (optionsEntry != null && optionsEntry.startsWith('charset=')) {
+    charset = optionsEntry.substring('charset='.length)
+  }
+
+  if (charset == null) {
+    const mimeCharset =
+      contentType != null ? mimeTypes.charset(contentType) : null
+    charset = !!mimeCharset ? mimeCharset : 'latin1'
+  }
+
   const body = headers.hasOwnProperty('Content-Length')
     ? await getRawBody(expressReq, {
         length: headers['Content-Length'],
-        encoding: true
+        encoding: charset
       })
     : null
 
@@ -243,13 +260,8 @@ const wrapApiHandler = (handler, getCustomParameters) => async (
 
     const { status, headers, cookies, body } = res[INTERNAL]
     expressRes.status(status)
-
-    for (let idx = 0; idx < cookies.length; idx++) {
-      headers[binaryCase('Set-cookie', idx)] = cookies[idx]
-    }
-
+    headers['Set-Cookie'] = cookies
     expressRes.set(headers)
-
     expressRes.end(body)
   } catch (error) {
     const outError =

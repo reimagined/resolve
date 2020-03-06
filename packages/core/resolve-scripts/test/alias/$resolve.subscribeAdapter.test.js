@@ -21,7 +21,7 @@ describe('base config works correctly', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
     ).toMatchSnapshot()
@@ -34,7 +34,7 @@ describe('base config works correctly', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
     ).toThrow()
@@ -57,7 +57,7 @@ test('config with module/options and empty module failed', () => {
         alias({
           resolveConfig,
           isClient: true
-        }).code +
+        }) +
         '\r\n'
     )
   ).toThrow()
@@ -79,7 +79,7 @@ test('config with process.env failed', () => {
         alias({
           resolveConfig,
           isClient: true
-        }).code +
+        }) +
         '\r\n'
     )
   ).toThrow()
@@ -101,7 +101,7 @@ test('config with process.env (v2) failed', () => {
         alias({
           resolveConfig,
           isClient: true
-        }).code +
+        }) +
         '\r\n'
     )
   ).toThrow()

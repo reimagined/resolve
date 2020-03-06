@@ -66,7 +66,7 @@ EventStream.prototype.processEvents = function() {
     } else {
       const eventOffset = event.eventOffset
       delete event.eventOffset
-      delete event.eventId
+      delete event[Symbol.for('sequenceIndex')]
 
       let chunk = Buffer.from(JSON.stringify(event) + '\n', 'utf8')
       const byteLength = chunk.byteLength
@@ -122,7 +122,7 @@ EventStream.prototype.eventReader = async function(currentReaderId) {
       }
 
       for (let index = 0; index < nextRows.length; index++) {
-        const event = nextRows[index]
+        const event = { ...nextRows[index] }
         event.eventOffset = this.offset + index
         this.rows.push(event)
       }

@@ -13,9 +13,16 @@ describe('createCustomAdapter', () => {
         JSON.stringify(args, null, 2)
       )
     }
-    const loadEvents = async (pool, ...args) => {
+    const loadEventsByTimestamp = async (pool, ...args) => {
       result.push(
-        'loadEvents',
+        'loadEventsByTimestamp',
+        JSON.stringify(pool, null, 2),
+        JSON.stringify(args, null, 2)
+      )
+    }
+    const loadEventsByCursor = async (pool, ...args) => {
+      result.push(
+        'loadEventsByCursor',
         JSON.stringify(pool, null, 2),
         JSON.stringify(args, null, 2)
       )
@@ -58,7 +65,8 @@ describe('createCustomAdapter', () => {
 
     const createCustomAdapter = createAdapter.bind(null, {
       connect,
-      loadEvents,
+      loadEventsByTimestamp,
+      loadEventsByCursor,
       saveEvent,
       drop,
       dispose,

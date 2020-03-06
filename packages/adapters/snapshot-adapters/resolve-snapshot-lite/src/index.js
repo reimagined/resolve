@@ -1,4 +1,7 @@
 import sqlite from 'sqlite'
+import tmp from 'tmp'
+import os from 'os'
+import fs from 'fs'
 
 const DEFAULT_BUCKET_SIZE = 100
 const tableName = 'resolveSnapshotAdapter'
@@ -12,22 +15,50 @@ const connect = async pool => {
   }
 
   pool.connectPromise = (async () => {
-    pool.database = await sqlite.open(
-      pool.config && pool.config.hasOwnProperty('databaseFile')
-        ? pool.config.databaseFile
-        : (pool.config.databaseFile = ':memory:')
-    )
+    let connector = null
+    if (pool.databaseFile === ':memory:') {
+      if (process.env.RESOLVE_LAUNCH_ID != null) {
+        const tmpName = `${os.tmpdir()}/snapshot-${+process.env
+          .RESOLVE_LAUNCH_ID}.db`
+        const removeCallback = () => {
+          if (fs.existsSync(tmpName)) {
+            fs.unlinkSync(tmpName)
+          }
+        }
+
+        if (!fs.existsSync(tmpName)) {
+          fs.writeFileSync(tmpName, '')
+          process.on('SIGINT', removeCallback)
+          process.on('SIGTERM', removeCallback)
+          process.on('beforeExit', removeCallback)
+          process.on('exit', removeCallback)
+        }
+
+        pool.memoryStore = {
+          name: tmpName,
+          drop: removeCallback
+        }
+      } else {
+        const temporaryFile = tmp.fileSync()
+        pool.memoryStore = {
+          name: temporaryFile.name,
+          drop: temporaryFile.removeCallback.bind(temporaryFile)
+        }
+      }
+
+      connector = sqlite.open.bind(sqlite, pool.memoryStore.name)
+    } else {
+      connector = sqlite.open.bind(sqlite, pool.databaseFile)
+    }
+    pool.database = await connector()
 
     await pool.database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
     await pool.database.exec(`PRAGMA synchronous=EXTRA`)
 
-    if (pool.config.databaseFile === ':memory:') {
+    if (pool.databaseFile === ':memory:') {
       await pool.database.exec(`PRAGMA journal_mode=MEMORY`)
     } else {
       await pool.database.exec(`PRAGMA journal_mode=DELETE`)
-    }
-    if (pool.config && pool.config.hasOwnProperty('bucketSize')) {
-      pool.bucketSize = Number(pool.config.bucketSize)
     }
 
     pool.counters = new Map()
@@ -58,6 +89,9 @@ const loadSnapshot = async (pool, snapshotKey) => {
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
+  if (snapshotKey == null || snapshotKey.constructor !== String) {
+    throw new Error('Snapshot key must be string')
+  }
   await connect(pool)
 
   const result = await pool.database.get(
@@ -72,6 +106,13 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
+  if (snapshotKey == null || snapshotKey.constructor !== String) {
+    throw new Error('Snapshot key must be string')
+  }
+  if (content == null || content.constructor !== String) {
+    throw new Error('Snapshot content must be string')
+  }
+
   await connect(pool)
   if (!pool.counters.has(snapshotKey)) {
     pool.counters.set(snapshotKey, 0)
@@ -126,10 +167,21 @@ const drop = async pool => {
   await connect(pool)
 
   await pool.database.exec(`DROP TABLE ${escapeId(tableName)}`)
+
+  if (pool.memoryStore != null) {
+    try {
+      await pool.memoryStore.drop()
+    } catch (e) {}
+  }
 }
 
 const createAdapter = config => {
-  const pool = { config }
+  const { databaseFile, bucketSize } = config
+
+  const pool = {
+    databaseFile: databaseFile != null ? databaseFile : ':memory:',
+    bucketSize: bucketSize != null ? ~~bucketSize : DEFAULT_BUCKET_SIZE
+  }
 
   return Object.freeze({
     loadSnapshot: loadSnapshot.bind(null, pool),

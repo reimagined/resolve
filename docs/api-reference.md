@@ -559,10 +559,9 @@ export const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      ...aggregateActions,
       replaceUrl: routerActions.replace
     },
     dispatch
@@ -583,6 +582,9 @@ Connects a React component to a reSolve Read Model.
 ##### Example
 
 ```js
+import { sendAggregateAction } from 'resolve-redux'
+import { bindActionCreators } from 'redux'
+
 export const mapStateToOptions = () => ({
   readModelName: 'ShoppingLists',
   resolverName: 'all',
@@ -593,8 +595,10 @@ export const mapStateToProps = (state, ownProps) => ({
   lists: ownProps.data
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
+export const mapDispatchToProps = dispatch =>
+  bindActionCreators({
+    createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
+  }, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
   connect(

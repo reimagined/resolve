@@ -1,9 +1,9 @@
 {
   "name": "resolve-testing-tools",
-  "version": "0.20.28",
+  "version": "0.22.13",
   "description": "Tools used to test reSolve applications.",
   "engines": {
-    "node": ">=8.10"
+    "node": ">=10.9"
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",
@@ -28,10 +28,10 @@
     "@babel/runtime": "^7.0.0",
     "jest": "24.1.0",
     "sinon": "7.2.2",
-    "resolve-es": "0.20.28",
-    "resolve-query": "0.20.28",
-    "resolve-readmodel-lite": "0.20.28",
-    "resolve-storage-lite": "0.20.28"
+    "resolve-es": "0.22.13",
+    "resolve-query": "0.22.13",
+    "resolve-readmodel-lite": "0.22.13",
+    "resolve-storage-lite": "0.22.13"
   },
   "babelCompile": [
     {

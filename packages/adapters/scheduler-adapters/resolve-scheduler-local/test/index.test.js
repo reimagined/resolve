@@ -47,7 +47,7 @@ describe('resolve-scheduler-local', () => {
       { taskId: 'taskId', date: 1, command: 'command' }
     ])
 
-    await Promise.resolve()
+    await new Promise(resolve => setImmediate(resolve))
 
     expect(errorHandler).toHaveBeenCalledWith(error)
   })

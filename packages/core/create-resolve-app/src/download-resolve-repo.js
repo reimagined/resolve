@@ -1,13 +1,15 @@
-const downloadResolveRepo = ({
-  fs,
-  chalk,
-  https,
-  console,
-  AdmZip,
-  applicationPath,
-  resolveDownloadZipUrl,
-  resolveCloneZipPath
-}) => async () => {
+const downloadResolveRepo = pool => async () => {
+  const {
+    fs,
+    chalk,
+    https,
+    console,
+    AdmZip,
+    applicationPath,
+    resolveDownloadZipUrl,
+    resolveCloneZipPath,
+    path
+  } = pool
   try {
     await new Promise((resolve, reject) => {
       console.log(chalk.green('Load example'))
@@ -37,6 +39,33 @@ const downloadResolveRepo = ({
           resolveCloneZip.write(data)
         })
         response.on('end', () => {
+          const contentDisposition = String(
+            response.headers['content-disposition']
+          )
+          const fileNameLength = 'filename='.length
+          const zipExtLength = '.zip'.length
+          const fileNameIndex =
+            contentDisposition.indexOf('filename=') + fileNameLength
+          if (fileNameIndex > fileNameLength) {
+            const resolveDirName = contentDisposition.substring(
+              fileNameIndex,
+              contentDisposition.length - zipExtLength
+            )
+
+            pool.resolveClonePath = path.join(
+              pool.applicationPath,
+              resolveDirName
+            )
+            pool.resolveCloneExamplesPath = path.join(
+              pool.resolveClonePath,
+              'examples'
+            )
+            pool.resolveCloneExamplePath = path.join(
+              pool.resolveCloneExamplesPath,
+              pool.exampleName
+            )
+          }
+
           resolveCloneZip.end()
         })
         response.on('error', err => {

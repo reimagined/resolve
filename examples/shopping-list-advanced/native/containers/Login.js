@@ -15,9 +15,13 @@ import { StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import { actions } from 'resolve-redux'
 import requiredNoAuth from '../decorators/required-no-auth'
 import { Logo } from '@shopping-list-advanced/ui'
+
+import getNativeChunk from '../native-chunk'
+const {
+  resolveRedux: { actions }
+} = getNativeChunk()
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -118,9 +122,4 @@ export class Login extends React.PureComponent {
 export const mapDispatchToProps = dispatch =>
   bindActionCreators(actions, dispatch)
 
-export default requiredNoAuth(
-  connect(
-    null,
-    mapDispatchToProps
-  )(Login)
-)
+export default requiredNoAuth(connect(null, mapDispatchToProps)(Login))

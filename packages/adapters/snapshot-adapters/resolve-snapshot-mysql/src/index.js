@@ -47,13 +47,17 @@ const loadSnapshot = async (pool, snapshotKey) => {
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
+  if (snapshotKey == null || snapshotKey.constructor !== String) {
+    throw new Error('Snapshot key must be string')
+  }
 
   const [rows] = await pool.connection.execute(
     `SELECT ${escapeId('SnapshotContent')} FROM ${escapeId(pool.tableName)}
    WHERE ${escapeId('SnapshotKey')}= ${escape(snapshotKey)} `
   )
   const content = rows.length > 0 ? rows[0].SnapshotContent.toString() : null
-  return content != null ? JSON.parse(content) : null
+
+  return content
 }
 
 const saveSnapshot = async (pool, snapshotKey, content) => {
@@ -61,6 +65,13 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
+  if (snapshotKey == null || snapshotKey.constructor !== String) {
+    throw new Error('Snapshot key must be string')
+  }
+  if (content == null || content.constructor !== String) {
+    throw new Error('Snapshot content must be string')
+  }
+
   if (!pool.counters.has(snapshotKey)) {
     pool.counters.set(snapshotKey, 0)
   }
@@ -71,15 +82,13 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   }
   pool.counters.set(snapshotKey, 0)
 
-  const stringContent = JSON.stringify(content)
-
   await pool.connection.execute(
     `INSERT INTO ${escapeId(pool.tableName)}(${escapeId(
       'SnapshotKey'
     )}, ${escapeId('SnapshotContent')})
-    VALUES(${escape(snapshotKey)}, ${escape(stringContent)})
+    VALUES(${escape(snapshotKey)}, ${escape(content)})
     ON DUPLICATE KEY UPDATE
-    ${escapeId('SnapshotContent')} = ${escape(stringContent)}`
+    ${escapeId('SnapshotContent')} = ${escape(content)}`
   )
 }
 
@@ -88,10 +97,17 @@ const dispose = async pool => {
     throw new Error('Adapter is disposed')
   }
   pool.disposed = true
+  if (pool.connectPromise != null) {
+    await pool.connectPromise
+  }
 
-  pool.counters.clear()
+  if (pool.counters != null) {
+    pool.counters.clear()
+  }
 
-  await pool.connection.end()
+  if (pool.connection != null) {
+    await pool.connection.end()
+  }
 }
 
 const drop = async pool => {

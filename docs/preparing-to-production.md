@@ -17,7 +17,6 @@ An example **config.prod.js** file:
 ```js
 const prodConfig = {
   port: 3000,
-  polyfills: ['@babel/polyfill'],
   mode: 'production',
   readModelConnectors: {
     HackerNews: {
@@ -74,22 +73,17 @@ export default {
     module: 'resolve-subscribe-mqtt',
     options: {}
   },
-  readModels: [
-    {
-      name: 'deployments',
-      projection: 'common/read-models/deployments/projection.js',
-      resolvers: 'common/read-models/deployments/resolvers.js',
-      adapter: {
-        module: 'resolve-readmodel-mysql',
-        options: {
-          host: declareRuntimeEnv('RESOLVE_READMODEL_SQL_HOST'),
-          database: declareRuntimeEnv('RESOLVE_READMODEL_SQL_DATABASE'),
-          user: declareRuntimeEnv('RESOLVE_READMODEL_SQL_USER'),
-          password: declareRuntimeEnv('RESOLVE_READMODEL_SQL_PASSWORD')
-        }
+  readModelsConnectors: {
+    HackerNews: {
+      module: 'resolve-readmodel-postgresql-serverless',
+      options: {
+        dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_READMODEL_POSTGRESQL_CLUSTER_ARN'),
+        awsSecretStoreArn: declareRuntimeEnv('RESOLVE_READMODEL_POSTGRESQL_SECRET_ARN'),
+        databaseName: declareRuntimeEnv('RESOLVE_READMODEL_POSTGRESQL_DATABASE_NAME'),
+        region: declareRuntimeEnv('AWS_REGION')
       }
     }
-  ]
+  }
 }
 ```
 

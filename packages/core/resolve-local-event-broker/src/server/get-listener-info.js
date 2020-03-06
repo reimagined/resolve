@@ -7,13 +7,24 @@ const getListenerInfo = async (
   listenerId,
   rawResult = false
 ) => {
-  let metaListenerInfo = await database.get(`
-    SELECT ${Object.keys(serializedFields)
-      .map(escapeId)
-      .join(', ')} 
-    FROM ${escapeId('Listeners')}
-    WHERE ${escapeId('ListenerId')} = ${escape(listenerId)}
-  `)
+  let metaListenerInfo = null
+  try {
+    metaListenerInfo = await database.get(`
+      SELECT ${Object.keys(serializedFields)
+        .map(escapeId)
+        .join(', ')} 
+      FROM ${escapeId('Listeners')}
+      WHERE ${escapeId('ListenerId')} = ${escape(listenerId)}
+    `)
+  } catch (error) {
+    throw new Error(
+      [
+        `Local event broken run into error while reading meta information`,
+        `If you had upgraded reSolve version, delete "data/local-bus-broker.db" file`,
+        `Original error: ${error}`
+      ].join('\n')
+    )
+  }
 
   if (metaListenerInfo != null) {
     for (const fieldName of Object.keys(serializedFields)) {
@@ -31,9 +42,7 @@ const getListenerInfo = async (
   }
 
   const actualInfo = {
-    currentSkipCount: 0,
-    abutTimestamp: 0,
-    skipCount: 0,
+    cursor: null,
     status: READ_MODEL_STATUS.running,
     isFirstRun: false,
     properties: {}
@@ -45,8 +54,7 @@ const getListenerInfo = async (
   }
 
   Object.assign(actualInfo, {
-    abutTimestamp: Number(metaListenerInfo.AbutTimestamp),
-    skipCount: Number(metaListenerInfo.SkipCount),
+    cursor: metaListenerInfo.Cursor,
     properties: Object(metaListenerInfo.Properties),
     status: metaListenerInfo.Status
   })

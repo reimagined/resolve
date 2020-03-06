@@ -110,3 +110,4 @@ Run the example:
     📄 package.json
     📄 README.md
 ```
+!!! Warning: deploy this example from only `web` directory !!!

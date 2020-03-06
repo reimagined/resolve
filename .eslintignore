@@ -3,6 +3,6 @@ dist
 lib
 es
 coverage
-examples/shopping-list-advanced/native/resolve
+examples/shopping-list-advanced/native/native-chunk*
 website
 packages/core/resolve-zeromq/optional

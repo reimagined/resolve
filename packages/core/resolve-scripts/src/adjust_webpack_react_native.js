@@ -62,7 +62,7 @@ const adjustWebpackReactNative = ({ resolveConfig, reactNativeDir }) => (
               }
             },
             {
-              loader: require.resolve('val-loader'),
+              loader: require.resolve('./val_query_loader'),
               options: {
                 resolveConfig,
                 isClient
@@ -87,7 +87,27 @@ const adjustWebpackReactNative = ({ resolveConfig, reactNativeDir }) => (
         }
       ]
     },
-    externals: getModulesDirs().map(modulesDir => nodeExternals({ modulesDir }))
+    externals: getModulesDirs().map(modulesDir =>
+      nodeExternals({
+        modulesDir,
+        importType: moduleName => `((() => {
+        const path = require('path')
+        const requireDirs = ['', 'resolve-runtime/node_modules/']
+        let modulePath = null
+        const moduleName = ${JSON.stringify(moduleName)}
+        for(const dir of requireDirs) {
+          try {
+            modulePath = require.resolve(path.join(dir, moduleName))
+            break
+          } catch(err) {}
+        }
+        if(modulePath == null) {
+          throw new Error(\`Module "\${moduleName}" cannot be resolved\`)
+        }
+        return require(modulePath)
+      })())`
+      })
+    )
   }
 
   webpackConfigs.push(webpackNativeConfig)

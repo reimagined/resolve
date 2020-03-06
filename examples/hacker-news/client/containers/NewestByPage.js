@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectReadModel } from 'resolve-redux'
 
+import * as aggregateActions from '../actions/aggregate-actions'
 import Stories from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
 
@@ -57,18 +58,9 @@ export const mapStateToProps = (
   me: state.jwt
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(
-    {
-      upvoteStory: aggregateActions.upvoteStory,
-      unvoteStory: aggregateActions.unvoteStory
-    },
-    dispatch
-  )
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(NewestByPage)
+  connect(mapStateToProps, mapDispatchToProps)(NewestByPage)
 )

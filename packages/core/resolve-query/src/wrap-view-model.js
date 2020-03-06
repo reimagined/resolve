@@ -13,21 +13,19 @@ const buildViewModel = async (
   await Promise.resolve()
   const snapshotKey = `${pool.viewModel.invariantHash};${key}`
   let aggregatesVersionsMap = new Map()
-  let lastTimestamp = -1
+  let cursor = null
   let state = null
 
   try {
-    const snapshot = await pool.snapshotAdapter.loadSnapshot(snapshotKey)
-
+    const snapshot = JSON.parse(
+      await pool.snapshotAdapter.loadSnapshot(snapshotKey)
+    )
     aggregatesVersionsMap = new Map(snapshot.aggregatesVersionsMap)
-    lastTimestamp = snapshot.lastTimestamp
     state = await pool.viewModel.deserializeState(snapshot.state)
+    cursor = snapshot.cursor
   } catch (error) {}
 
-  if (
-    !(+lastTimestamp > 0) &&
-    typeof pool.viewModel.projection.Init === 'function'
-  ) {
+  if (cursor == null && typeof pool.viewModel.projection.Init === 'function') {
     state = pool.viewModel.projection.Init()
   }
 
@@ -60,16 +58,19 @@ const buildViewModel = async (
         aggregateArgs,
         jwtToken
       )
-      lastTimestamp = event.timestamp - 1
+      cursor = pool.eventStore.getNextCursor(cursor, [event])
 
       aggregatesVersionsMap.set(event.aggregateId, event.aggregateVersion)
 
       if (pool.snapshotAdapter != null) {
-        await pool.snapshotAdapter.saveSnapshot(snapshotKey, {
-          aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
-          state: await pool.viewModel.serializeState(state),
-          lastTimestamp
-        })
+        await pool.snapshotAdapter.saveSnapshot(
+          snapshotKey,
+          JSON.stringify({
+            aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
+            state: await pool.viewModel.serializeState(state),
+            cursor
+          })
+        )
       }
     } catch (error) {
       if (subSegment != null) {
@@ -86,8 +87,8 @@ const buildViewModel = async (
   await pool.eventStore.loadEvents(
     {
       aggregateIds: aggregateIds !== '*' ? aggregateIds : null,
-      startTime: lastTimestamp,
-      eventTypes: Object.keys(pool.viewModel.projection)
+      eventTypes: Object.keys(pool.viewModel.projection),
+      cursor
     },
     handler
   )
@@ -114,10 +115,12 @@ const read = async (pool, modelOptions, aggregateArgs, jwtToken) => {
     }
     let aggregateIds = null
     try {
-      if (modelOptions !== '*') {
-        aggregateIds = modelOptions.split(/,/)
-      } else {
+      if (Array.isArray(modelOptions)) {
+        aggregateIds = [...modelOptions]
+      } else if (modelOptions === '*') {
         aggregateIds = '*'
+      } else {
+        aggregateIds = modelOptions.split(/,/)
       }
     } catch (error) {
       throw new Error(

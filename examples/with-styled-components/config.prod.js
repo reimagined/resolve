@@ -3,7 +3,6 @@ import { declareRuntimeEnv } from 'resolve-scripts'
 const prodConfig = {
   target: 'local',
   port: declareRuntimeEnv('PORT', '3000'),
-  polyfills: ['@babel/polyfill'],
   mode:
     'production' /*,
   readModelConnectors: {
@@ -14,6 +13,12 @@ const prodConfig = {
       }
     }
   }*/,
+  storageAdapter: {
+    module: 'resolve-storage-lite',
+    options: {
+      databaseFile: 'data/event-store.db'
+    }
+  },
   eventBroker: {
     launchBroker: false,
     databaseFile: 'data/local-bus-broker.db'

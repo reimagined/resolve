@@ -21,12 +21,13 @@ import Image from './Image'
 import NotFound from '../components/NotFound'
 
 import requiredAuth from '../decorators/required-auth'
+import * as aggregateActions from '../redux/aggregate-actions'
 
 const ButtonLink = connectRootBasedUrls(['href'])(Button)
 
 export class ShoppingList extends React.PureComponent {
   state = {
-    shoppingListName: this.props.data && this.props.data.name,
+    shoppingListName: null,
     itemText: ''
   }
 
@@ -111,7 +112,11 @@ export class ShoppingList extends React.PureComponent {
             </InputGroup.Button>
             <FormControl
               type="text"
-              value={this.state.shoppingListName}
+              value={
+                this.state.shoppingListName == null
+                  ? this.props.data.name
+                  : this.state.shoppingListName
+              }
               onChange={this.updateShoppingListName}
               onKeyPress={this.onShoppingListNamePressEnter}
               onBlur={this.renameShoppingList}
@@ -189,7 +194,7 @@ export const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       ...aggregateActions,
@@ -200,9 +205,6 @@ export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
 
 export default requiredAuth(
   connectViewModel(mapStateToOptions)(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(ShoppingList)
+    connect(mapStateToProps, mapDispatchToProps)(ShoppingList)
   )
 )

@@ -1,4 +1,3 @@
-import React from 'react'
 import STS from 'aws-sdk/clients/sts'
 import { ConcurrentError } from 'resolve-storage-base'
 
@@ -41,8 +40,12 @@ describe('Cloud entry', () => {
 
     storageAdapter = {
       loadEvents: jest.fn(),
+      getNextCursor: jest.fn(),
+      getLatestEvent: jest.fn(),
       saveEvent: jest.fn(),
-      dispose: jest.fn()
+      dispose: jest.fn(),
+      import: jest.fn(),
+      export: jest.fn()
     }
 
     snapshotAdapter = {
@@ -52,7 +55,6 @@ describe('Cloud entry', () => {
     }
 
     assemblies = {
-      aggregateActions: {},
       seedClientEnvs: {
         customConstants,
         staticPath,
@@ -153,72 +155,8 @@ describe('Cloud entry', () => {
       expect(result).toEqual({
         statusCode: 405,
         headers: {},
-        body: 'Access error: path "/" is not addressable by current executor'
+        body: 'Access error: GET "/" is not addressable by current executor'
       })
-    })
-
-    test('should perform SSR on IndexPage on /"rootPath"/', async () => {
-      routes.push({
-        path: '/',
-        component: ({ match, location, history }) => (
-          <div>
-            Index SSR page Match {JSON.stringify(match)}
-            Location {JSON.stringify(location)}
-            History {JSON.stringify(history)}
-          </div>
-        ),
-        exact: true
-      })
-
-      const apiGatewayEvent = {
-        path: '/root-path/',
-        httpMethod: 'GET',
-        headers: { ...defaultRequestHttpHeaders },
-        queryStringParameters: {},
-        body: null
-      }
-
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
-
-      expect(result.statusCode).toEqual(200)
-      expect(result.headers).toEqual({ 'Content-Type': 'text/html' })
-      expect(result.body).toMatch('Index SSR page Match')
-      expect(result.body).toMatch('Location')
-      expect(result.body).toMatch('History')
-    })
-
-    test('should perform SSR on ErrorPage on /"rootPath"/non-existing-page', async () => {
-      routes.push({
-        path: '/',
-        component: ({ match, location, history }) => (
-          <div>
-            Error SSR page Match {JSON.stringify(match)}
-            Location {JSON.stringify(location)}
-            History {JSON.stringify(history)}
-          </div>
-        )
-      })
-
-      const apiGatewayEvent = {
-        path: '/root-path/non-existing-page',
-        httpMethod: 'GET',
-        headers: { ...defaultRequestHttpHeaders },
-        queryStringParameters: {},
-        body: null
-      }
-
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
-
-      // TODO. Must be 404. https://github.com/reimagined/resolve/issues/1066
-      //expect(result.statusCode).toEqual(404)
-      expect(result.headers).toEqual({ 'Content-Type': 'text/html' })
-      expect(result.body).toMatch('Error SSR page Match')
-      expect(result.body).toMatch('Location')
-      expect(result.body).toMatch('History')
     })
 
     test('should invoke existing read-model with existing resolver via GET /"rootPath"/api/query/"readModelName"/"resolverName"?"resolverArgs"', async () => {
@@ -420,7 +358,7 @@ describe('Cloud entry', () => {
       expect(JSON.parse(result.body)).toEqual({
         aggregateId: 'aggregateId',
         aggregateVersion: 1,
-        timestamp: 0,
+        timestamp: 1,
         type: 'SET',
         payload: {
           key: 'key1',
@@ -431,7 +369,7 @@ describe('Cloud entry', () => {
       expect(storageAdapter.saveEvent).toBeCalledWith({
         aggregateId: 'aggregateId',
         aggregateVersion: 1,
-        timestamp: 0,
+        timestamp: 1,
         type: 'SET',
         payload: {
           key: 'key1',
@@ -673,7 +611,7 @@ describe('Cloud entry', () => {
       domain.apiHandlers.push(
         {
           method: 'POST',
-          path: 'my-api-handler-1',
+          path: '/api/my-api-handler-1',
           controller: async (req, res) => {
             res.setHeader('Content-type', 'application/octet-stream')
             res.end('Custom octet stream')
@@ -681,7 +619,7 @@ describe('Cloud entry', () => {
         },
         {
           method: 'POST',
-          path: 'my-api-handler-2',
+          path: '/api/my-api-handler-2',
           controller: async (req, res) => {
             res.setHeader('Content-type', 'text/plain')
             res.end('ok')
@@ -710,6 +648,14 @@ describe('Cloud entry', () => {
     })
 
     test('should redirect from /"rootPath" to /"rootPath"/', async () => {
+      domain.apiHandlers.push({
+        method: 'POST',
+        path: '/',
+        controller: async (req, res) => {
+          res.end('Custom markup handler')
+        }
+      })
+
       const apiGatewayEvent = {
         path: '/root-path',
         httpMethod: 'POST',
@@ -730,6 +676,14 @@ describe('Cloud entry', () => {
     })
 
     test('should set header Bearer when jwt provided', async () => {
+      domain.apiHandlers.push({
+        method: 'POST',
+        path: '/',
+        controller: async (req, res) => {
+          res.end('Custom markup handler')
+        }
+      })
+
       const apiGatewayEvent = {
         path: '/root-path',
         httpMethod: 'POST',

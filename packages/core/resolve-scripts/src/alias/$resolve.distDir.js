@@ -18,7 +18,5 @@ export default ({ resolveConfig, isClient }) => {
     `export default distDir`
   )
 
-  return {
-    code: exports.join('\r\n')
-  }
+  return exports.join('\r\n')
 }

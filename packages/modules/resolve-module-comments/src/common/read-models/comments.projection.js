@@ -158,11 +158,13 @@ const createCommentsProjection = ({
       payload: { commentId }
     } = event
 
-    const childCommentsIds = (await store.find(
-      commentsTableName,
-      { treeId, commentId, childCommentId: { $ne: null } },
-      { childCommentId: 1 }
-    ))
+    const childCommentsIds = (
+      await store.find(
+        commentsTableName,
+        { treeId, commentId, childCommentId: { $ne: null } },
+        { childCommentId: 1 }
+      )
+    )
       .map(({ childCommentId }) => childCommentId)
       .concat(commentId)
 

@@ -3,14 +3,15 @@ import { ConcurrentError } from 'resolve-storage-base'
 import {
   RESERVED_EVENT_SIZE,
   LONG_NUMBER_SQL_TYPE,
-  LONG_STRING_SQL_TYPE
+  REMAINING_CONNECTIONS_REGEXP,
+  STATEMENT_TIMEOUT_CODE
 } from './constants'
 
 const saveEvent = async (
-  { databaseName, tableName, executeStatement, fullJitter, escapeId, escape },
+  { databaseName, tableName, executeStatement, escapeId, escape },
   event
 ) => {
-  for (let retry = 0; ; retry++) {
+  while (true) {
     try {
       const serializedEvent = [
         `${escape(event.aggregateId)},`,
@@ -19,105 +20,92 @@ const saveEvent = async (
         escape(JSON.stringify(event.payload != null ? event.payload : null))
       ].join('')
 
+      // TODO: Improve calculation byteLength depend on codepage and wide-characters
       const byteLength =
         Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
 
+      const databaseNameAsString = escape(databaseName)
+      const databaseNameAsId = escapeId(databaseName)
+      const freezeTableNameAsString = escape(`${tableName}-freeze`)
+      const threadsTableAsId = escapeId(`${tableName}-threads`)
+      const eventsTableAsId = escapeId(tableName)
+
+      // prettier-ignore
       await executeStatement(
-        [
-          `START TRANSACTION;`,
-          `SELECT ${escape('OK')} WHERE (`,
-          `  (SELECT ${escape('Event store is frozen')} AS ${escapeId(
-            'EventStoreIsFrozen'
-          )})`,
-          `UNION ALL (`,
-          `  SELECT ${escape('Event store is frozen')} AS ${escapeId(
-            'EventStoreIsFrozen'
-          )}`,
-          `  FROM ${escapeId('information_schema')}.${escapeId('tables')}`,
-          `  WHERE ${escapeId('table_schema')} = ${escape(databaseName)}`,
-          `  AND ${escapeId('table_name')} = ${escape(`${tableName}-freeze`)}`,
-          `)) = ${escape('OK')};`,
-          `WITH cte (`,
-          `${escapeId('lastEventId')},${escapeId('lastTimestamp')}`,
-          `) AS (VALUES ((`,
-          `SELECT ${escapeId('eventId')} + 1 AS ${escapeId('lastEventId')} `,
-          `FROM ${escapeId(databaseName)}.${escapeId(
-            `${tableName}-sequence`
-          )} `,
-          `WHERE ${escapeId('key')} = 0`,
-          `),(`,
-          `SELECT GREATEST(`,
-          `CAST(extract(epoch from now()) * 1000 AS ${LONG_NUMBER_SQL_TYPE}),${escapeId(
-            'timestamp'
-          )})`,
-          `AS ${escapeId('lastTimestamp')}`,
-          `FROM ${escapeId(databaseName)}.${escapeId(
-            `${tableName}-sequence`
-          )} `,
-          `WHERE ${escapeId('key')} = 0`,
-          `)))`,
-          `UPDATE ${escapeId(databaseName)}.${escapeId(
-            `${tableName}-sequence`
-          )} `,
-          `SET ${escapeId('eventId')} = cte.${escapeId('lastEventId')},`,
-          `${escapeId(
-            'transactionId'
-          )} = CAST(txid_current() AS ${LONG_STRING_SQL_TYPE}),`,
-          `${escapeId('timestamp')} = cte.${escapeId('lastTimestamp')} `,
-          `FROM cte `,
-          `WHERE ${escapeId('key')} = 0;`,
-          `INSERT INTO ${escapeId(databaseName)}.${escapeId(tableName)}(`,
-          `${escapeId('eventId')},`,
-          `${escapeId('timestamp')},`,
-          `${escapeId('aggregateId')},`,
-          `${escapeId('aggregateVersion')},`,
-          `${escapeId('type')},`,
-          `${escapeId('payload')},`,
-          `${escapeId('eventSize')}`,
-          `) VALUES ((`,
-          `SELECT ${escapeId('eventId')} `,
-          `FROM ${escapeId(databaseName)}.${escapeId(
-            `${tableName}-sequence`
-          )} `,
-          `WHERE ${escapeId('key')} = 0 `,
-          `AND ${escapeId(
-            'transactionId'
-          )} = CAST(txid_current() AS ${LONG_STRING_SQL_TYPE})`,
-          `),(`,
-          `SELECT ${escapeId('timestamp')} `,
-          `FROM ${escapeId(databaseName)}.${escapeId(
-            `${tableName}-sequence`
-          )} `,
-          `WHERE ${escapeId('key')} = 0 `,
-          `AND ${escapeId(
-            'transactionId'
-          )} = CAST(txid_current() AS ${LONG_STRING_SQL_TYPE})`,
-          `),${serializedEvent},${byteLength});`,
-          `COMMIT;`
-        ].join('')
+        `WITH "freeze_check" AS (
+          SELECT 0 AS "freeze_zero" WHERE (
+            (SELECT 1 AS "EventStoreIsFrozen")
+          UNION ALL
+            (SELECT 1 AS "EventStoreIsFrozen"
+            FROM "information_schema"."tables"
+            WHERE "table_schema" = ${databaseNameAsString}
+            AND "table_name" = ${freezeTableNameAsString})
+          ) = 1
+        ), "vacant_thread_id" AS (
+          SELECT "threadId"
+          FROM ${databaseNameAsId}.${threadsTableAsId}
+          FOR NO KEY UPDATE SKIP LOCKED
+          LIMIT 1
+        ), "random_thread_id" AS (
+          SELECT "threadId"
+          FROM ${databaseNameAsId}.${threadsTableAsId}
+          OFFSET FLOOR(Random() * 256)
+          LIMIT 1
+        ), "vector_id" AS (
+          SELECT "threadId", "threadCounter"
+          FROM ${databaseNameAsId}.${threadsTableAsId}
+          WHERE "threadId" = COALESCE(
+            (SELECT "threadId" FROM "vacant_thread_id"),
+            (SELECT "threadId" FROM "random_thread_id")
+          ) FOR NO KEY UPDATE
+          LIMIT 1
+        ), "update_vector_id" AS (
+          UPDATE ${databaseNameAsId}.${threadsTableAsId}
+          SET "threadCounter" = "threadCounter" + 1
+          WHERE "threadId" = (
+            SELECT "threadId" FROM "vector_id" LIMIT 1
+          )
+          RETURNING *
+        ) INSERT INTO ${databaseNameAsId}.${eventsTableAsId}(
+          "threadId",
+          "threadCounter",
+          "timestamp",
+          "aggregateId",
+          "aggregateVersion",
+          "type",
+          "payload",
+          "eventSize"
+        ) VALUES (
+          (SELECT "threadId" FROM "vector_id" LIMIT 1) +
+          (SELECT "freeze_zero" FROM "freeze_check" LIMIT 1),
+          (SELECT "threadCounter" FROM "vector_id" LIMIT 1),
+          GREATEST(
+            CAST(extract(epoch from clock_timestamp()) * 1000 AS ${LONG_NUMBER_SQL_TYPE}),
+            ${+event.timestamp}
+          ),
+          ${serializedEvent},
+          ${byteLength}
+        )`
       )
 
       break
     } catch (error) {
-      try {
-        await executeStatement(`ROLLBACK;`)
-      } catch (e) {}
-      if (error.message == null) {
-        throw error
-      }
-      if (error.message.indexOf('subquery used as an expression') > -1) {
+      const errorMessage =
+        error != null && error.message != null ? error.message : ''
+      const errorCode = error != null && error.code != null ? error.code : ''
+
+      if (errorMessage.indexOf('subquery used as an expression') > -1) {
         throw new Error('Event store is frozen')
-      }
-      if (error.message.indexOf('duplicate key') < 0) {
+      } else if (/aggregateIdAndVersion/i.test(errorMessage)) {
+        throw new ConcurrentError(event.aggregateId)
+      } else if (
+        REMAINING_CONNECTIONS_REGEXP.test(errorMessage) ||
+        STATEMENT_TIMEOUT_CODE === errorCode
+      ) {
+        continue
+      } else {
         throw error
       }
-
-      if (error.message.indexOf('aggregateIdAndVersion') < 0) {
-        await new Promise(resolve => setTimeout(resolve, fullJitter(retry)))
-        continue
-      }
-
-      throw new ConcurrentError(event.aggregateId)
     }
   }
 }

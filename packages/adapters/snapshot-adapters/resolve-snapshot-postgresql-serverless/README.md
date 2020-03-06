@@ -1,5 +1,5 @@
 # **resolve-snapshot-postgres-serverless**
-[![npm version](https://badge.fury.io/js/resolve-snapshot-postgres-serverless.svg)](https://badge.fury.io/js/resolve-snapshot-postgres-serverless)
+[![npm version](https://badge.fury.io/js/resolve-snapshot-postgresql-serverless.svg)](https://badge.fury.io/js/resolve-snapshot-postgres-serverless)
 
 This package is an adapter for storing snapshots using AWS Aurora Serverless PostgreSQL 10.7.
 

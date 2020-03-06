@@ -1,9 +1,9 @@
 {
   "name": "resolve-saga",
-  "version": "0.20.28",
+  "version": "0.22.13",
   "description": "Provides an interface used to execute sagas",
   "engines": {
-    "node": ">=8.10"
+    "node": ">=10.9"
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",
@@ -26,9 +26,9 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-saga#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "resolve-command": "0.20.28",
-    "resolve-debug-levels": "0.20.28",
-    "resolve-query": "0.20.28",
+    "resolve-command": "0.22.13",
+    "resolve-debug-levels": "0.22.13",
+    "resolve-query": "0.22.13",
     "uuid": "^3.3.3"
   },
   "devDependencies": {

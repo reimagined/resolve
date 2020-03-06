@@ -1,11 +1,12 @@
-const testExampleExists = ({
-  fs,
-  path,
-  EOL,
-  resolveCloneExamplesPath,
-  resolveCloneExamplePath,
-  exampleName
-}) => async () => {
+const testExampleExists = pool => async () => {
+  const {
+    fs,
+    path,
+    EOL,
+    resolveCloneExamplesPath,
+    resolveCloneExamplePath,
+    exampleName
+  } = pool
   if (fs.existsSync(resolveCloneExamplePath)) {
     return
   }

@@ -1,5 +1,4 @@
 const appConfig = {
-  routes: 'client/routes.js',
   aggregates: [
     {
       name: 'aggregate-name',
@@ -24,10 +23,7 @@ const appConfig = {
         'common/view-models/view-model-name.deserialize_state.js'
     }
   ],
-  redux: {
-    reducers: { 'reducer-name': 'client/reducers/reducer-name.js' },
-    middlewares: ['client/middlewares/middleware-name.js']
-  }
+  clientEntries: ['client/index.js']
 }
 
 export default appConfig

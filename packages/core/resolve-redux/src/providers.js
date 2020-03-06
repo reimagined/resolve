@@ -10,12 +10,12 @@ class Providers extends React.PureComponent {
       origin,
       rootPath,
       staticPath,
-      aggregateActions,
       store,
-      children
+      children,
+      queryMethod
     } = this.props
 
-    const api = createApi({ origin, rootPath, store })
+    const api = createApi({ origin, rootPath, store, queryMethod })
 
     return (
       <ResolveProvider
@@ -23,8 +23,7 @@ class Providers extends React.PureComponent {
           api,
           origin,
           rootPath,
-          staticPath,
-          aggregateActions
+          staticPath
         }}
       >
         <ReduxProvider store={store}>{children}</ReduxProvider>

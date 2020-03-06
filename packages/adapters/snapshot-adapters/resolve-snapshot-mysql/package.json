@@ -1,9 +1,9 @@
 {
   "name": "resolve-snapshot-mysql",
-  "version": "0.20.28",
+  "version": "0.22.13",
   "description": "An adapter used to save snapshots in MySQL.",
   "engines": {
-    "node": ">=8.10"
+    "node": ">=10.9"
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",

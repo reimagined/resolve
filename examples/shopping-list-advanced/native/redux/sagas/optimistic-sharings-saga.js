@@ -1,12 +1,14 @@
 import { takeEvery, put } from 'redux-saga/effects'
-import { actionTypes } from 'resolve-redux'
-
+import getNativeChunk from '../../native-chunk'
 import {
   OPTIMISTIC_SHARINGS_SYNC,
   OPTIMISTIC_SHARINGS_SHOPPING_LIST_SHARE,
   OPTIMISTIC_SHARINGS_SHOPPING_LIST_UNSHARE
 } from '../action-types'
 
+const {
+  resolveRedux: { actionTypes }
+} = getNativeChunk()
 const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
 
 export default function*() {

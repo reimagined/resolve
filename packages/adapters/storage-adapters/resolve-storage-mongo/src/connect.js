@@ -7,13 +7,11 @@ const connect = async (pool, { MongoClient }) => {
     useUnifiedTopology: true
   })
   const database = await client.db()
-  const collection = await database.collection(collectionName)
 
   Object.assign(pool, {
     collectionName,
     client,
-    database,
-    collection
+    database
   })
 }
 

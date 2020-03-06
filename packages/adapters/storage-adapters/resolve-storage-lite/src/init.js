@@ -1,12 +1,20 @@
 const init = async ({ database, tableName, escapeId }) => {
   await database.exec(
     `CREATE TABLE ${escapeId(tableName)}(
+      ${escapeId('threadId')} BIGINT NOT NULL,
+      ${escapeId('threadCounter')} BIGINT NOT NULL,
       ${escapeId('timestamp')} BIGINT NOT NULL,
       ${escapeId('aggregateId')} VARCHAR(700) NOT NULL,
       ${escapeId('aggregateVersion')} BIGINT NOT NULL,
       ${escapeId('type')} VARCHAR(700) NOT NULL,
       ${escapeId('payload')} JSON NULL,
-      PRIMARY KEY(${escapeId('aggregateId')}, ${escapeId('aggregateVersion')})
+      PRIMARY KEY(${escapeId('threadId')}, ${escapeId('threadCounter')}),
+      UNIQUE(${escapeId('aggregateId')}, ${escapeId('aggregateVersion')})
+    );
+    CREATE INDEX ${escapeId('aggregateIdAndVersion-idx')} ON ${escapeId(
+      tableName
+    )}(
+      ${escapeId('aggregateId')}, ${escapeId('aggregateVersion')}
     );
     CREATE INDEX ${escapeId('aggregateId-idx')} ON ${escapeId(tableName)}(
       ${escapeId('aggregateId')}

@@ -66,7 +66,11 @@ const regularHandler = async (pool, aggregateInfo, event) => {
       )
     }
 
-    aggregateInfo.lastTimestamp = event.timestamp
+    aggregateInfo.cursor = pool.eventStore.getNextCursor(aggregateInfo.cursor, [
+      event
+    ])
+
+    aggregateInfo.minimalTimestamp = event.timestamp
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)
@@ -103,11 +107,15 @@ const snapshotHandler = async (pool, aggregateInfo, event) => {
 
     await regularHandler(pool, aggregateInfo, event)
 
-    await pool.snapshotAdapter.saveSnapshot(aggregateInfo.snapshotKey, {
-      state: aggregateInfo.serializeState(aggregateInfo.aggregateState),
-      version: aggregateInfo.aggregateVersion,
-      timestamp: aggregateInfo.lastTimestamp - 1
-    })
+    await pool.snapshotAdapter.saveSnapshot(
+      aggregateInfo.snapshotKey,
+      JSON.stringify({
+        state: aggregateInfo.serializeState(aggregateInfo.aggregateState),
+        version: aggregateInfo.aggregateVersion,
+        minimalTimestamp: aggregateInfo.minimalTimestamp,
+        cursor: aggregateInfo.cursor
+      })
+    )
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)
@@ -157,7 +165,8 @@ const getAggregateState = async (
     const aggregateInfo = {
       aggregateState: null,
       aggregateVersion: 0,
-      lastTimestamp: -1,
+      minimalTimestamp: 0,
+      cursor: null,
       aggregateId,
       projection,
       serializeState,
@@ -168,6 +177,18 @@ const getAggregateState = async (
     try {
       if (snapshotKey == null || pool.snapshotAdapter == null) {
         throw generateCommandError()
+      }
+
+      if (projection == null) {
+        const lastEvent = await pool.eventStore.getLatestEvent({
+          aggregateIds: [aggregateId]
+        })
+        if (lastEvent != null) {
+          await regularHandler(pool, aggregateInfo, lastEvent)
+        }
+
+        aggregateInfo.cursor = null
+        return aggregateInfo
       }
 
       const snapshot = await (async () => {
@@ -183,7 +204,9 @@ const getAggregateState = async (
             throw generateCommandError('Command handler is disposed')
           }
 
-          return await pool.snapshotAdapter.loadSnapshot(snapshotKey)
+          return JSON.parse(
+            await pool.snapshotAdapter.loadSnapshot(snapshotKey)
+          )
         } catch (error) {
           if (subSegment != null) {
             subSegment.addError(error)
@@ -196,14 +219,19 @@ const getAggregateState = async (
         }
       })()
 
+      if (snapshot.cursor == null || isNaN(+snapshot.minimalTimestamp)) {
+        throw new Error('Invalidating snapshot')
+      }
+
       Object.assign(aggregateInfo, {
         aggregateState: deserializeState(snapshot.state),
         aggregateVersion: snapshot.version,
-        lastTimestamp: snapshot.timestamp
+        minimalTimestamp: snapshot.minimalTimestamp,
+        cursor: snapshot.cursor
       })
     } catch (err) {}
 
-    if (!(+aggregateInfo.lastTimestamp > 0) && projection != null) {
+    if (aggregateInfo.cursor == null && projection != null) {
       aggregateInfo.aggregateState =
         typeof projection.Init === 'function' ? await projection.Init() : null
     }
@@ -230,19 +258,18 @@ const getAggregateState = async (
         }
 
         eventCount = 0
-        const result = await pool.eventStore.loadEvents(
+        await pool.eventStore.loadEvents(
           {
             aggregateIds: [aggregateId],
-            startTime: aggregateInfo.lastTimestamp - 1
+            cursor: aggregateInfo.cursor
           },
           eventHandler
         )
+
         if (subSegment != null) {
           subSegment.addAnnotation('eventCount', eventCount)
           subSegment.addAnnotation('origin', 'resolve:loadEvents')
         }
-
-        return result
       } catch (error) {
         if (subSegment != null) {
           subSegment.addError(error)
@@ -266,6 +293,29 @@ const getAggregateState = async (
       subSegment.close()
     }
   }
+}
+
+const isInteger = val =>
+  val != null && val.constructor === Number && parseInt(val) === val
+const isString = val => val != null && val.constructor === String
+
+const saveEvent = async (eventStore, event) => {
+  if (!isString(event.type)) {
+    throw new Error('The `type` field is invalid')
+  }
+  if (!isString(event.aggregateId)) {
+    throw new Error('The `aggregateId` field is invalid')
+  }
+  if (!isInteger(event.aggregateVersion)) {
+    throw new Error('The `aggregateVersion` field is invalid')
+  }
+  if (!isInteger(event.timestamp)) {
+    throw new Error('The `timestamp` field is invalid')
+  }
+
+  event.aggregateId = String(event.aggregateId)
+
+  return await eventStore.saveEvent(event)
 }
 
 const executeCommand = async (pool, { jwtToken, ...command }) => {
@@ -295,7 +345,7 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
     const {
       aggregateState,
       aggregateVersion,
-      lastTimestamp
+      minimalTimestamp
     } = await getAggregateState(pool, aggregate, aggregateId)
 
     if (!aggregate.commands.hasOwnProperty(type)) {
@@ -353,7 +403,7 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
     const processedEvent = {
       aggregateId,
       aggregateVersion: aggregateVersion + 1,
-      timestamp: Math.max(Date.now(), lastTimestamp),
+      timestamp: Math.max(minimalTimestamp + 1, Date.now()),
       type: event.type,
       payload: event.payload
     }
@@ -365,7 +415,7 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
       const subSegment = segment ? segment.addNewSubsegment('saveEvent') : null
 
       try {
-        return await pool.eventStore.saveEvent(processedEvent)
+        return await saveEvent(pool.eventStore, processedEvent)
       } catch (error) {
         if (subSegment != null) {
           subSegment.addError(error)

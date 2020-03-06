@@ -4,7 +4,8 @@ import { escape, escapeId } from 'mysql2'
 import createAdapter from 'resolve-storage-base'
 
 import connect from './connect'
-import loadEvents from './load-events'
+import loadEventsByCursor from './load-events-by-cursor'
+import loadEventsByTimestamp from './load-events-by-timestamp'
 import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
 import init from './init'
@@ -14,10 +15,12 @@ import paginateEvents from './paginate-events'
 import saveEventOnly from './save-event-only'
 import freeze from './freeze'
 import unfreeze from './unfreeze'
+import shapeEvent from './shape-event'
 
 export default createAdapter.bind(null, {
   connect,
-  loadEvents,
+  loadEventsByCursor,
+  loadEventsByTimestamp,
   getLatestEvent,
   saveEvent,
   init,
@@ -27,6 +30,7 @@ export default createAdapter.bind(null, {
   saveEventOnly,
   freeze,
   unfreeze,
+  shapeEvent,
   MySQL,
   escapeId,
   escape

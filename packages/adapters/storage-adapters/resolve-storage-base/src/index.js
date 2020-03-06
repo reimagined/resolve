@@ -9,6 +9,8 @@ import validateEventFilter from './validate-event-filter'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
 import ConcurrentError from './concurrent-error'
 import pipeline from './pipeline'
+import loadEvents from './load-events'
+import getNextCursor from './get-next-cursor'
 
 const wrappedCreateAdapter = createAdapter.bind(null, {
   importStream,
@@ -17,7 +19,9 @@ const wrappedCreateAdapter = createAdapter.bind(null, {
   wrapEventFilter,
   wrapSaveEvent,
   wrapDispose,
-  validateEventFilter
+  validateEventFilter,
+  loadEvents,
+  getNextCursor
 })
 
 export default wrappedCreateAdapter

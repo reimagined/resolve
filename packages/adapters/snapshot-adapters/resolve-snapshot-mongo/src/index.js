@@ -37,6 +37,9 @@ const loadSnapshot = async (pool, snapshotKey) => {
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
+  if (snapshotKey == null || snapshotKey.constructor !== String) {
+    throw new Error('Snapshot key must be string')
+  }
 
   const result = await pool.collection.findOne({ snapshotKey })
   return result != null ? result.content : null
@@ -46,6 +49,12 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   await connect(pool)
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
+  }
+  if (snapshotKey == null || snapshotKey.constructor !== String) {
+    throw new Error('Snapshot key must be string')
+  }
+  if (content == null || content.constructor !== String) {
+    throw new Error('Snapshot content must be string')
   }
   if (!pool.counters.has(snapshotKey)) {
     pool.counters.set(snapshotKey, 0)
@@ -68,9 +77,17 @@ const dispose = async pool => {
     throw new Error('Adapter is disposed')
   }
   pool.disposed = true
+  if (pool.connectPromise != null) {
+    await pool.connectPromise
+  }
 
-  pool.counters.clear()
-  await pool.client.close()
+  if (pool.counters != null) {
+    pool.counters.clear()
+  }
+
+  if (pool.client != null) {
+    await pool.client.close()
+  }
 }
 
 const dropSnapshot = async (pool, snapshotKey) => {

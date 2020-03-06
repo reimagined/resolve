@@ -5,6 +5,11 @@ import dateFormat from 'dateformat'
 export const handler = async ({ url }) => {
   const response = await fetch(`${url}/event-broker/sagas-list`)
   const result = await response.json()
+  if (result.length === 0) {
+    // eslint-disable-next-line no-console
+    console.log('Sagas is not defined')
+    return
+  }
   const columns = []
   for (const { listenerId, status, lastEvent, lastError } of result) {
     columns.push({
@@ -18,7 +23,7 @@ export const handler = async ({ url }) => {
       'last error': lastError ? `${lastError.message}` : 'N\\A'
     })
   }
-  //eslint-disable-next-line no-console
+  // eslint-disable-next-line no-console
   console.log(
     columnify(columns, {
       minWidth: 20

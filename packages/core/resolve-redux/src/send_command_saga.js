@@ -1,22 +1,50 @@
 import { put } from 'redux-saga/effects'
 
+import { HttpError } from './create_api'
 import {
   sendCommandSuccess,
   sendCommandFailure,
   dispatchTopicMessage
 } from './actions'
 
+const CONCURRENT_ERROR_RETRY_COUNT = 3
+const CONCURRENT_ERROR_CODE = 408
+
 const sendCommandSaga = function*(
   { api },
   { commandType, aggregateId, aggregateName, payload }
 ) {
+  let event = null
+  let lastError = null
   try {
-    const event = yield api.sendCommand({
-      commandType,
-      aggregateId,
-      aggregateName,
-      payload
-    })
+    for (let index = 0; index < CONCURRENT_ERROR_RETRY_COUNT; index++) {
+      try {
+        event = yield api.sendCommand({
+          commandType,
+          aggregateId,
+          aggregateName,
+          payload
+        })
+
+        lastError = null
+        break
+      } catch (error) {
+        lastError = error
+
+        if (
+          error instanceof HttpError &&
+          error.code === CONCURRENT_ERROR_CODE
+        ) {
+          continue
+        } else {
+          break
+        }
+      }
+    }
+
+    if (lastError != null) {
+      throw lastError
+    }
 
     yield put(
       sendCommandSuccess(commandType, aggregateId, aggregateName, payload)

@@ -11,7 +11,7 @@ test('should fail when imported from client', () => {
             distDir: 'distDir'
           },
           isClient: true
-        }).code +
+        }) +
         '\r\n'
     )
   ).toThrow()
@@ -25,7 +25,7 @@ test('should fail when runtime env provided', () => {
           resolveConfig: {
             distDir: declareRuntimeEnv('distDir')
           }
-        }).code +
+        }) +
         '\r\n'
     )
   ).toThrow()
@@ -39,7 +39,7 @@ test('should work correctly', () => {
           resolveConfig: {
             distDir: 'distDir'
           }
-        }).code +
+        }) +
         '\r\n'
     )
   ).toMatchSnapshot()

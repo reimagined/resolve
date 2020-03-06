@@ -1,9 +1,9 @@
 {
   "name": "resolve-api-handler-express",
-  "version": "0.20.28",
+  "version": "0.22.13",
   "description": "An Express.js adapter for reSolve API handlers.",
   "engines": {
-    "node": ">=8.10"
+    "node": ">=10.9"
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",
@@ -29,6 +29,7 @@
     "binary-case": "1.1.4",
     "content-disposition": "0.5.2",
     "cookie": "0.3.1",
+    "mime-types": "2.1.25",
     "raw-body": "2.3.3"
   },
   "devDependencies": {

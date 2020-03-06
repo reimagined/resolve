@@ -1,35 +1,20 @@
 {
   "port": 3000,
-  "polyfills": [],
   "rootPath": "",
   "staticPath": "static",
   "staticDir": "static",
   "distDir": "dist",
-  "routes": "client/routes.js",
   "aggregates": [],
   "readModels": [],
   "viewModels": [],
   "sagas": [],
   "apiHandlers": [],
-  "index": "client/index.js",
-  "redux": {
-    "reducers": {},
-    "middlewares": [],
-    "sagas": [],
-    "enhancers": []
-  },
-  "storageAdapter": {
-    "module": "resolve-storage-lite",
-    "options": {
-      "databaseFile": "data/event-store.db"
-    }
-  },
   "subscribeAdapter": {
     "module": "resolve-subscribe-socket.io",
     "options": {}
   },
   "snapshotAdapter": {
-    "module": "resolve-snapshot-lite",
+    "module": "resolve-runtime/lib/common/defaults/empty-snapshot-adapter.js",
     "options": {}
   },
   "readModelConnectors": {},
@@ -46,5 +31,8 @@
     "name": "jwt",
     "maxAge": 31536000000
   },
-  "customConstants": {}
+  "customConstants": {},
+  "clientImports": {},
+  "serverImports": {},
+  "clientEntries": []
 }

@@ -1,9 +1,9 @@
 {
   "name": "resolve-scheduler-cloud",
-  "version": "0.20.28",
+  "version": "0.22.13",
   "description": "This package is an adapter for api handler to AWS Lambda.",
   "engines": {
-    "node": ">=8.10"
+    "node": ">=10.9"
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",
@@ -26,16 +26,18 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/api-handler-adapters/resolve-scheduler-cloud#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "aws-sdk": "^2.436.0",
     "binary-case": "1.1.4",
     "content-disposition": "0.5.2",
     "cookie": "0.3.1",
-    "resolve-debug-levels": "0.20.28"
+    "resolve-debug-levels": "0.22.13"
   },
   "devDependencies": {
     "jest": "24.1.0",
     "lodash.escaperegexp": "^4.1.2",
     "sinon": "7.2.2"
+  },
+  "peerDependencies": {
+    "aws-sdk": "*"
   },
   "babelCompile": [
     {

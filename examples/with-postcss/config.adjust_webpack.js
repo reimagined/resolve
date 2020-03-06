@@ -4,6 +4,18 @@ import autoprefixer from 'autoprefixer'
 
 const adjustWebpackConfigs = webpackConfigs => {
   for (const webpackConfig of webpackConfigs) {
+    const entries = Object.keys(webpackConfig.entry)
+    const target = webpackConfig.target
+    const isUIConfig =
+      (entries.find(entry => entry.endsWith('/ssr.js')) != null &&
+        target === 'node') ||
+      (entries.find(entry => entry.endsWith('client/index.js')) != null &&
+        target === 'web')
+
+    if (!isUIConfig) {
+      continue
+    }
+
     webpackConfig.module.rules.push({
       test: /\.css$/,
       use: ExtractTextPlugin.extract({
@@ -26,12 +38,14 @@ const adjustWebpackConfigs = webpackConfigs => {
       })
     })
 
-    webpackConfig.plugins = [
-      new ExtractTextPlugin({
-        filename: 'style.css',
-        allChunks: true
-      })
-    ]
+    const extractTextPlugin = new ExtractTextPlugin({
+      filename: 'client/style.css',
+      allChunks: true
+    })
+
+    webpackConfig.plugins = Array.isArray(webpackConfig.plugins)
+      ? webpackConfig.plugins.concat([extractTextPlugin])
+      : [extractTextPlugin]
   }
 }
 

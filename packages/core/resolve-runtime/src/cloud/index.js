@@ -1,16 +1,17 @@
 import 'source-map-support/register'
 
 import debugLevels from 'resolve-debug-levels'
-import { createActions } from 'resolve-redux'
 
 import initAwsClients from './init-aws-clients'
 import initBroker from './init-broker'
 import initPerformanceTracer from './init-performance-tracer'
 import lambdaWorker from './lambda-worker'
+import wrapTrie from '../common/wrap-trie'
+import initUploader from './init-uploader'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
-const index = async ({ assemblies, constants, domain, redux, routes }) => {
+const index = async ({ assemblies, constants, domain }) => {
   let subSegment = null
 
   log.debug(`starting lambda 'cold start'`)
@@ -18,17 +19,12 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
     log.debug('configuring reSolve framework')
     const resolve = {
       seedClientEnvs: assemblies.seedClientEnvs,
+      serverImports: assemblies.serverImports,
       ...domain,
       ...constants,
+      routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
       eventBroker: {},
-      assemblies,
-      redux,
-      routes
-    }
-
-    resolve.aggregateActions = {}
-    for (const aggregate of domain.aggregates) {
-      Object.assign(resolve.aggregateActions, createActions(aggregate))
+      assemblies
     }
 
     log.debug('preparing performance tracer')
@@ -37,16 +33,14 @@ const index = async ({ assemblies, constants, domain, redux, routes }) => {
     const segment = resolve.performanceTracer.getSegment()
     subSegment = segment.addNewSubsegment('initResolve')
 
-    resolve.aggregateActions = {}
-    for (const aggregate of domain.aggregates) {
-      Object.assign(resolve.aggregateActions, createActions(aggregate))
-    }
-
     log.debug('preparing aws clients')
     await initAwsClients(resolve)
 
     log.debug('preparing event broker')
     await initBroker(resolve)
+
+    log.debug('preparing uploader')
+    await initUploader(resolve)
 
     log.debug(`lambda 'cold start' succeeded`)
 

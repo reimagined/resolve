@@ -1,6 +1,7 @@
 import { put, takeEvery, fork, delay } from 'redux-saga/effects'
 
 import createConnectionManager from './create_connection_manager'
+import createEmptySubscribeAdapter from './empty_subscribe_adapter'
 
 import {
   SUBSCRIBE_TOPIC_REQUEST,
@@ -23,6 +24,10 @@ const initSubscribeAdapter = async ({
   store,
   subscribeAdapter: createSubscribeAdapter
 }) => {
+  if (createSubscribeAdapter === createEmptySubscribeAdapter) {
+    return createEmptySubscribeAdapter()
+  }
+
   const { appId, url } = await api.getSubscribeAdapterOptions(
     createSubscribeAdapter.adapterName
   )

@@ -1,6 +1,6 @@
 {
   "name": "shopping-list",
-  "version": "0.20.28",
+  "version": "0.22.13",
   "description": "shows how to work with read-models and view-models",
   "private": true,
   "scripts": {
@@ -11,12 +11,14 @@
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
     "test:functional": "babel-node ./run.js test:functional",
     "import-event-store": "babel-node ./run.js import-event-store",
-    "export-event-store": "babel-node ./run.js export-event-store"
+    "export-event-store": "babel-node ./run.js export-event-store",
+    "resolve-module-admin": "resolve-module-admin"
   },
   "dependencies": {
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
     "isomorphic-fetch": "2.2.1",
+    "history": "4.10.1",
     "react": "16.7.0",
     "react-bootstrap": "0.32.1",
     "react-dom": "16.7.0",
@@ -28,17 +30,20 @@
     "redux": "4.0.1",
     "redux-devtools-extension": "2.13.7",
     "redux-saga": "1.0.5",
-    "resolve-readmodel-lite": "0.20.28",
-    "resolve-readmodel-mysql": "0.20.28",
-    "resolve-redux": "0.20.28",
-    "resolve-scripts": "0.20.28",
-    "resolve-storage-postgresql-serverless": "0.20.28",
-    "resolve-storage-lite": "0.20.28",
-    "resolve-subscribe-mqtt": "0.20.28",
-    "resolve-subscribe-socket.io": "0.20.28",
+    "resolve-readmodel-lite": "0.22.13",
+    "resolve-readmodel-postgresql-serverless": "0.22.13",
+    "resolve-redux": "0.22.13",
+    "resolve-scripts": "0.22.13",
+    "resolve-storage-postgresql-serverless": "0.22.13",
+    "resolve-storage-lite": "0.22.13",
+    "resolve-subscribe-mqtt": "0.22.13",
+    "resolve-subscribe-socket.io": "0.22.13",
+    "resolve-module-admin": "0.22.13",
     "uuid": "3.3.2"
   },
   "devDependencies": {
+    "aws-sdk": "2.587.0",
+    "aws-xray-sdk-core": "2.5.0",
     "@babel/core": "7.0.0",
     "@babel/plugin-proposal-class-properties": "7.0.0",
     "@babel/plugin-proposal-export-default-from": "7.0.0",
@@ -50,7 +55,7 @@
     "enzyme": "3.6.0",
     "jest": "24.1.0",
     "react-test-renderer": "16.7.0",
-    "resolve-testing-tools": "0.20.28",
+    "resolve-testing-tools": "0.22.13",
     "testcafe": "0.23.3",
     "resolve-cloud": "*",
     "isomorphic-fetch": "2.2.1"

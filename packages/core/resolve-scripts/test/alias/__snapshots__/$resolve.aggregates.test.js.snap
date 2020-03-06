@@ -1,27 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`base config works correctly [client] 1`] = `
-"
-const name_0 = \\"Todo\\"
-const commands_0 = {
-  [\`create\`]: () => {},
-  [\`update\`]: () => {},
-  [\`remove\`]: () => {}
-}
-
-const aggregates = []
-
-aggregates.push({
-  name: name_0
-, commands: commands_0
-})
-
-export default aggregates
-"
-`;
-
 exports[`base config works correctly [server] 1`] = `
 "
+import '$resolve.guardOnlyServer'
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
 import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
@@ -55,39 +36,9 @@ export default aggregates
 "
 `;
 
-exports[`base(v2) config works correctly [client] 1`] = `
-"
-const name_0 = \\"Todo\\"
-const commands_0 = {
-  [\`create\`]: () => {},
-  [\`update\`]: () => {},
-  [\`remove\`]: () => {}
-}
-const name_1 = \\"Item\\"
-const commands_1 = {
-  [\`create\`]: () => {},
-  [\`update\`]: () => {},
-  [\`remove\`]: () => {}
-}
-
-const aggregates = []
-
-aggregates.push({
-  name: name_0
-, commands: commands_0
-})
-
-aggregates.push({
-  name: name_1
-, commands: commands_1
-})
-
-export default aggregates
-"
-`;
-
 exports[`base(v2) config works correctly [server] 1`] = `
 "
+import '$resolve.guardOnlyServer'
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
 import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
@@ -135,28 +86,9 @@ export default aggregates
 "
 `;
 
-exports[`config with commands as module works correctly [client] 1`] = `
-"
-const name_0 = \\"Todo\\"
-const commands_0 = {
-  [\`create\`]: () => {},
-  [\`update\`]: () => {},
-  [\`remove\`]: () => {}
-}
-
-const aggregates = []
-
-aggregates.push({
-  name: name_0
-, commands: commands_0
-})
-
-export default aggregates
-"
-`;
-
 exports[`config with commands as module works correctly [server] 1`] = `
 "
+import '$resolve.guardOnlyServer'
 import commands_0_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommandsAsModule.js\\"
 import commands_0_import_testCommandsAsModule from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommandsAsModule.js\\"
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
@@ -196,28 +128,9 @@ export default aggregates
 "
 `;
 
-exports[`config with projection works correctly [client] 1`] = `
-"
-const name_0 = \\"Todo\\"
-const commands_0 = {
-  [\`create\`]: () => {},
-  [\`update\`]: () => {},
-  [\`remove\`]: () => {}
-}
-
-const aggregates = []
-
-aggregates.push({
-  name: name_0
-, commands: commands_0
-})
-
-export default aggregates
-"
-`;
-
 exports[`config with projection works correctly [server] 1`] = `
 "
+import '$resolve.guardOnlyServer'
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
 import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
@@ -256,28 +169,9 @@ export default aggregates
 "
 `;
 
-exports[`config with schedulers works correctly [client] 1`] = `
-"
-const name_0 = \\"Todo\\"
-const commands_0 = {
-  [\`create\`]: () => {},
-  [\`update\`]: () => {},
-  [\`remove\`]: () => {}
-}
-
-const aggregates = []
-
-aggregates.push({
-  name: name_0
-, commands: commands_0
-})
-
-export default aggregates
-"
-`;
-
 exports[`config with schedulers works correctly [server] 1`] = `
 "
+import '$resolve.guardOnlyServer'
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
 import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"

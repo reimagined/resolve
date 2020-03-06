@@ -12,6 +12,7 @@ test('renders correctly', () => {
         toggleShoppingItem={() => {}}
         createShoppingItem={() => {}}
         removeShoppingItem={() => {}}
+        isLoading={false}
         data={{
           id: 'shopping-list-1',
           name: 'List 1',

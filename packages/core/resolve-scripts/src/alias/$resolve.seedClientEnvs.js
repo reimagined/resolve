@@ -10,19 +10,26 @@ export default ({ resolveConfig, isClient }) => {
 
   const clientEnvs = []
 
-  void JSON.stringify(
-    [
-      resolveConfig.customConstants,
-      resolveConfig.staticPath,
-      resolveConfig.rootPath
-    ],
-    (key, value) => {
-      if (checkRuntimeEnv(value)) {
-        clientEnvs.push(value)
-      }
-      return value
+  const configEnvs = [
+    resolveConfig.customConstants,
+    resolveConfig.staticPath,
+    resolveConfig.rootPath,
+    resolveConfig.jwtCookie
+  ]
+
+  if (resolveConfig.uploadAdapter != null) {
+    configEnvs.push(
+      resolveConfig.uploadAdapter.options.CDN,
+      resolveConfig.uploadAdapter.options.deploymentId
+    )
+  }
+
+  void JSON.stringify(configEnvs, (key, value) => {
+    if (checkRuntimeEnv(value)) {
+      clientEnvs.push(value)
     }
-  )
+    return value
+  })
 
   /* eslint-disable no-console */
   if (clientEnvs.length > 0) {
@@ -32,7 +39,10 @@ export default ({ resolveConfig, isClient }) => {
   }
   /* eslint-enable no-console */
 
-  const exports = [`const seedClientEnvs = {}`, ``]
+  const exports = [
+    `import '$resolve.guardOnlyServer'`,
+    `const seedClientEnvs = {}`
+  ]
 
   for (const clientEnv of clientEnvs) {
     exports.push(`Object.defineProperty(
@@ -53,7 +63,5 @@ export default ({ resolveConfig, isClient }) => {
     `export default seedClientEnvs`
   )
 
-  return {
-    code: exports.join('\r\n')
-  }
+  return exports.join('\r\n')
 }

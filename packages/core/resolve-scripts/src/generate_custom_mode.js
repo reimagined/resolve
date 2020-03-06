@@ -12,7 +12,7 @@ import showBuildInfo from './show_build_info'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
 import copyEnvToDist from './copy_env_to_dist'
 
-const generateCustomMode = (getConfig, apiHandlerUrl) => (
+const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
   resolveConfig,
   options,
   adjustWebpackConfigs
@@ -51,7 +51,7 @@ const generateCustomMode = (getConfig, apiHandlerUrl) => (
           copyEnvToDist(config.distDir)
 
           const hasNoErrors = stats.reduce(
-            (acc, val) => acc && (val != null && !val.hasErrors()),
+            (acc, val) => acc && val != null && !val.hasErrors(),
             true
           )
 
@@ -64,11 +64,17 @@ const generateCustomMode = (getConfig, apiHandlerUrl) => (
         path.join(config.distDir, './common/local-entry/local-entry.js')
       )
 
+      const resolveLaunchId = Math.floor(Math.random() * 1000000000)
+
       const server = processRegister(['node', serverPath], {
         cwd: process.cwd(),
         maxRestarts: 0,
         kill: 5000,
-        stdio: 'inherit'
+        stdio: 'inherit',
+        env: {
+          ...process.env,
+          RESOLVE_LAUNCH_ID: resolveLaunchId
+        }
       })
 
       server.on('crash', reject)
@@ -85,7 +91,11 @@ const generateCustomMode = (getConfig, apiHandlerUrl) => (
           cwd: process.cwd(),
           maxRestarts: 0,
           kill: 5000,
-          stdio: 'inherit'
+          stdio: 'inherit',
+          env: {
+            ...process.env,
+            RESOLVE_LAUNCH_ID: resolveLaunchId
+          }
         })
 
         broker.on('crash', reject)
@@ -99,21 +109,34 @@ const generateCustomMode = (getConfig, apiHandlerUrl) => (
           : config.port
       )
 
-      const urls = prepareUrls('http', '0.0.0.0', port, config.rootPath)
-      const baseUrl = urls.localUrlForBrowser
-      const url = `${baseUrl}api/${apiHandlerUrl}`
       let lastError = null
 
-      while (true) {
+      if (apiHandlerUrl != null) {
+        const urls = prepareUrls('http', '0.0.0.0', port, config.rootPath)
+        const baseUrl = urls.localUrlForBrowser
+        const url = `${baseUrl}api/${apiHandlerUrl}`
+
+        while (true) {
+          try {
+            const response = await fetch(url)
+            if ((await response.text()) !== 'ok') {
+              lastError = [
+                `Error while communication with reSolve HTTP server at port ${port}`,
+                `Maybe multiple instances of reSolve applications trying to run with similar port`
+              ].join('\n')
+            }
+            break
+          } catch (e) {}
+          await new Promise(resolve => setTimeout(resolve, 500))
+        }
+      }
+
+      if (typeof runAfterLaunch === 'function') {
         try {
-          const response = await fetch(url)
-          const text = await response.text()
-          if (text !== 'ok') {
-            lastError = text
-          }
-          break
-        } catch (e) {}
-        await new Promise(resolve => setTimeout(resolve, 500))
+          await runAfterLaunch(options, config)
+        } catch (error) {
+          lastError = error
+        }
       }
 
       await Promise.all([

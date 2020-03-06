@@ -1,14 +1,4 @@
 const appConfig = {
-  routes: 'client/routes.js',
-  redux: {
-    reducers: {
-      optimistic: 'client/reducers/optimistic.js'
-    },
-    sagas: [
-      'client/sagas/story-create-saga.js',
-      'client/sagas/optimistic-voting-saga.js'
-    ]
-  },
   aggregates: [
     {
       name: 'Story',
@@ -45,45 +35,35 @@ const appConfig = {
   ],
   apiHandlers: [
     {
-      path: 'event-broker/status-all',
-      controller: 'common/api-handlers/event-broker-status-all.js',
-      method: 'GET'
-    },
-    {
-      path: 'event-broker/status',
-      controller: 'common/api-handlers/event-broker-status.js',
-      method: 'GET'
-    },
-    {
-      path: 'event-broker/pause',
-      controller: 'common/api-handlers/event-broker-pause.js',
-      method: 'GET'
-    },
-    {
-      path: 'event-broker/resume',
-      controller: 'common/api-handlers/event-broker-resume.js',
-      method: 'GET'
-    },
-    {
-      path: 'event-broker/list-properties',
-      controller: 'common/api-handlers/event-broker-list-properties.js',
-      method: 'GET'
-    },
-    {
-      path: 'event-broker/get-property',
-      controller: 'common/api-handlers/event-broker-get-property.js',
-      method: 'GET'
-    },
-    {
-      path: 'event-broker/set-property',
-      controller: 'common/api-handlers/event-broker-set-property.js',
-      method: 'GET'
-    },
-    {
-      path: 'event-broker/delete-property',
-      controller: 'common/api-handlers/event-broker-delete-property.js',
+      controller: {
+        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+        options: {
+          modulePath: './ssr.js',
+          moduleFactoryImport: false
+        }
+      },
+      path: '/:markup*',
       method: 'GET'
     }
+  ],
+  clientEntries: [
+    'client/index.js',
+    [
+      'client/ssr.js',
+      {
+        outputFile: 'common/local-entry/ssr.js',
+        moduleType: 'commonjs',
+        target: 'node'
+      }
+    ],
+    [
+      'client/ssr.js',
+      {
+        outputFile: 'common/cloud-entry/ssr.js',
+        moduleType: 'commonjs',
+        target: 'node'
+      }
+    ]
   ]
 }
 

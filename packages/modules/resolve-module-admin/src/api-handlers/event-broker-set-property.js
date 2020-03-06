@@ -1,6 +1,10 @@
 const setProperty = async (req, res) => {
-  const { listenerId, key, value } = req.query
-  await req.resolve.eventBroker.setProperty(listenerId, key, value)
+  let { listenerId, key, value } = req.query
+  await req.resolve.eventBroker.setProperty(
+    listenerId,
+    String(key),
+    String(value)
+  )
   res.end(`ListenerId = "${listenerId}", Key = "${key}", Value = "${value}"`)
 }
 

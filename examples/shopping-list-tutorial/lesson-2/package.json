@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-tutorial/lesson-2",
-  "version": "0.20.28",
+  "version": "0.22.13",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
@@ -14,15 +14,18 @@
   "dependencies": {
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
+    "history": "4.10.1",
     "react": "16.7.0",
     "react-dom": "16.7.0",
     "react-bootstrap": "0.32.1",
     "react-helmet": "5.2.0",
     "redux": "4.0.1",
-    "resolve-redux": "0.20.28",
-    "resolve-scripts": "0.20.28"
+    "resolve-redux": "0.22.13",
+    "resolve-scripts": "0.22.13"
   },
   "devDependencies": {
+    "aws-sdk": "2.587.0",
+    "aws-xray-sdk-core": "2.5.0",
     "@babel/core": "7.0.0",
     "@babel/plugin-proposal-class-properties": "7.0.0",
     "@babel/plugin-proposal-export-default-from": "7.0.0",

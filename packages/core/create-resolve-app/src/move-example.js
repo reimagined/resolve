@@ -1,10 +1,11 @@
-const moveExample = ({
-  fs,
-  path,
-  applicationPath,
-  resolveClonePath,
-  resolveCloneExamplePath
-}) => async () => {
+const moveExample = pool => async () => {
+  const {
+    fs,
+    path,
+    applicationPath,
+    resolveClonePath,
+    resolveCloneExamplePath
+  } = pool
   for (const resource of fs.readdirSync(resolveCloneExamplePath)) {
     fs.moveSync(
       path.join(resolveCloneExamplePath, resource),

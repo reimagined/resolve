@@ -1,34 +1,64 @@
+import { RESPONSE_SIZE_LIMIT } from './constants'
+
 const paginateEvents = async (pool, offset, batchSize) => {
-  const { escapeId, tableName, databaseName, executeStatement } = pool
+  const {
+    escapeId,
+    tableName,
+    databaseName,
+    executeStatement,
+    shapeEvent
+  } = pool
 
-  const query = [
-    `WITH ${escapeId('cte')} AS (`,
-    `  SELECT ${escapeId('filteredEvents')}.*,`,
-    `  SUM(${escapeId('filteredEvents')}.${escapeId('eventSize')})`,
-    `  OVER (ORDER BY ${escapeId('filteredEvents')}.${escapeId(
-      'eventId'
-    )}) AS ${escapeId('totalEventSize')}`,
-    `  FROM (`,
-    `    SELECT * FROM ${escapeId(databaseName)}.${escapeId(tableName)}`,
-    `    ORDER BY ${escapeId('eventId')} ASC`,
-    `    OFFSET ${offset}`,
-    `    LIMIT ${+batchSize}`,
-    `  ) ${escapeId('filteredEvents')}`,
-    `)`,
-    `SELECT * FROM ${escapeId('cte')}`,
-    `WHERE ${escapeId('cte')}.${escapeId('totalEventSize')} < 512000`,
-    `ORDER BY ${escapeId('cte')}.${escapeId('eventId')} ASC`
-  ].join(' ')
+  let rows = RESPONSE_SIZE_LIMIT
+  const databaseNameAsId = escapeId(databaseName)
+  const eventsTableNameAsId = escapeId(tableName)
 
-  const rows = await executeStatement(query)
-  for (const event of rows) {
-    event.payload = JSON.parse(event.payload)
-
-    delete event.totalEventSize
-    delete event.eventSize
+  for (
+    let dynamicBatchSize = batchSize;
+    dynamicBatchSize >= 1;
+    dynamicBatchSize = Math.floor(dynamicBatchSize / 1.5)
+  ) {
+    try {
+      rows = await executeStatement(
+        `WITH "filteredEvents" AS (
+          SELECT * FROM ${databaseNameAsId}.${eventsTableNameAsId}
+          ORDER BY "timestamp" ASC
+          OFFSET ${offset}
+          LIMIT ${+dynamicBatchSize}        
+        ), "sizedEvents" AS (
+          SELECT "filteredEvents".*,
+          SUM("filteredEvents"."eventSize") OVER (
+            ORDER BY "filteredEvents"."timestamp"
+          ) AS "totalEventSize"
+          FROM "filteredEvents"
+        ) SELECT * FROM "sizedEvents"
+        WHERE "sizedEvents"."totalEventSize" < 512000
+        ORDER BY "sizedEvents"."timestamp" ASC
+        `
+      )
+      break
+    } catch (error) {
+      if (!/Database response exceeded size limit/.test(error.message)) {
+        throw error
+      }
+    }
+  }
+  if (rows === RESPONSE_SIZE_LIMIT) {
+    throw new Error('Database response exceeded size limit')
   }
 
-  return rows
+  let eventOffset = 0
+  const resultRows = []
+  for (const event of rows) {
+    resultRows.push(
+      shapeEvent(event, {
+        [Symbol.for('sequenceIndex')]: offset + eventOffset
+      })
+    )
+    eventOffset++
+  }
+
+  return resultRows
 }
 
 export default paginateEvents

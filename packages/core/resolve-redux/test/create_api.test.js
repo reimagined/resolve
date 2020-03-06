@@ -4,7 +4,8 @@ describe('createApi', () => {
   test('should return correctly API', () => {
     const rootPath = 'test'
     const origin = 'http://localhost:3000'
-    const api = createApi({ origin, rootPath })
+    const queryMethod = 'GET'
+    const api = createApi({ origin, rootPath, queryMethod })
 
     expect(api.loadViewModelState).toBeInstanceOf(Function)
     expect(api.loadReadModelState).toBeInstanceOf(Function)

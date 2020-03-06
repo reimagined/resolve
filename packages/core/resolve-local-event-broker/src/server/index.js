@@ -2,7 +2,6 @@ import cuid from 'cuid'
 import sqlite from 'sqlite'
 import zmq from 'resolve-zeromq'
 
-import adjustEventBatch from './adjust-event-batch'
 import anycastEvents from './anycast-events'
 import checkOptionShape from './check-option-shape'
 import createAndInitBroker from './create-and-init-broker'
@@ -32,7 +31,6 @@ import updateListenerInfo from './update-listener-info'
 import wrapWithQueue from './wrap-with-queue'
 
 const boundAdapter = createAndInitBroker.bind(null, {
-  adjustEventBatch,
   anycastEvents,
   checkOptionShape,
   createAndInitBroker,

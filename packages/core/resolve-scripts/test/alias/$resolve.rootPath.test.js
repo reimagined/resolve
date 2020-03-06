@@ -12,7 +12,7 @@ describe('$resolve.rootPath', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
 
@@ -25,7 +25,7 @@ describe('$resolve.rootPath', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
 
@@ -44,7 +44,7 @@ describe('$resolve.rootPath', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
 
@@ -59,7 +59,7 @@ describe('$resolve.rootPath', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
 
@@ -80,7 +80,7 @@ describe('$resolve.rootPath', () => {
           alias({
             resolveConfig,
             isClient: true
-          }).code +
+          }) +
           '\r\n'
       )
 
@@ -95,7 +95,7 @@ describe('$resolve.rootPath', () => {
           alias({
             resolveConfig,
             isClient: false
-          }).code +
+          }) +
           '\r\n'
       )
 
@@ -117,7 +117,7 @@ describe('$resolve.rootPath', () => {
             alias({
               resolveConfig,
               isClient: true
-            }).code +
+            }) +
             '\r\n'
         )
       ).toThrow()
@@ -130,7 +130,7 @@ describe('$resolve.rootPath', () => {
             alias({
               resolveConfig,
               isClient: false
-            }).code +
+            }) +
             '\r\n'
         )
 
@@ -150,7 +150,7 @@ describe('$resolve.rootPath', () => {
             alias({
               resolveConfig,
               isClient: true
-            }).code +
+            }) +
             '\r\n'
         )
       ).toThrow()
@@ -163,7 +163,7 @@ describe('$resolve.rootPath', () => {
             alias({
               resolveConfig,
               isClient: false
-            }).code +
+            }) +
             '\r\n'
         )
 
@@ -183,7 +183,7 @@ describe('$resolve.rootPath', () => {
             alias({
               resolveConfig,
               isClient: true
-            }).code +
+            }) +
             '\r\n'
         )
       ).toThrow()
@@ -196,7 +196,7 @@ describe('$resolve.rootPath', () => {
             alias({
               resolveConfig,
               isClient: false
-            }).code +
+            }) +
             '\r\n'
         )
 

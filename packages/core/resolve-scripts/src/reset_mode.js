@@ -26,7 +26,7 @@ const getConfig = async (resolveConfig, options) => {
     apiHandlers: [
       {
         method: 'GET',
-        path: 'reset-domain',
+        path: '/api/reset-domain',
         controller: {
           module: 'resolve-runtime/lib/local/reset-domain-handler.js',
           options

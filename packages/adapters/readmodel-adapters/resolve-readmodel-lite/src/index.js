@@ -2,6 +2,7 @@ import createAdapter from 'resolve-readmodel-base'
 import SQLite from 'sqlite'
 import tmp from 'tmp'
 import os from 'os'
+import fs from 'fs'
 
 import beginTransaction from './begin-transaction'
 import buildUpsertDocument from './build-upsert-document'
@@ -35,7 +36,8 @@ export default createAdapter.bind(null, {
     ...store,
     SQLite,
     tmp,
-    os
+    os,
+    fs
   }),
   beginTransaction,
   commitTransaction,

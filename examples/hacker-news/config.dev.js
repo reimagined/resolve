@@ -3,11 +3,7 @@ import { declareRuntimeEnv } from 'resolve-scripts'
 const devConfig = {
   target: 'local',
   port: declareRuntimeEnv('PORT', '3000'),
-  polyfills: ['@babel/polyfill'],
   mode: 'development',
-  redux: {
-    enhancers: ['client/enhancers/redux-devtools.js']
-  },
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {
@@ -37,7 +33,11 @@ const devConfig = {
       module: 'common/read-models/elastic-search-connector.js',
       options: {
         /*
-        host: 'localhost:9200'
+        node: "<your-cloud-elastic-search-host>:port",
+        auth: {
+          username: 'name',
+          password: 'pass'
+        }
         */
       }
     }

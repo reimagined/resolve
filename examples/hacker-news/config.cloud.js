@@ -29,38 +29,60 @@ export default {
   },
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-mysql',
+      module: 'resolve-readmodel-postgresql-serverless',
       options: {
-        host: declareRuntimeEnv('RESOLVE_READMODEL_SQL_HOST'),
-        database: declareRuntimeEnv('RESOLVE_READMODEL_SQL_DATABASE'),
-        user: declareRuntimeEnv('RESOLVE_READMODEL_SQL_USER'),
-        password: declareRuntimeEnv('RESOLVE_READMODEL_SQL_PASSWORD')
+        dbClusterOrInstanceArn: declareRuntimeEnv(
+          'RESOLVE_READMODEL_POSTGRESQL_CLUSTER_ARN'
+        ),
+        awsSecretStoreArn: declareRuntimeEnv(
+          'RESOLVE_READMODEL_POSTGRESQL_SECRET_ARN'
+        ),
+        databaseName: declareRuntimeEnv(
+          'RESOLVE_READMODEL_POSTGRESQL_DATABASE_NAME'
+        ),
+        region: declareRuntimeEnv('AWS_REGION')
       }
     },
     hackerNews: {
-      module: 'resolve-readmodel-mysql',
+      module: 'resolve-readmodel-postgresql-serverless',
       options: {
-        host: declareRuntimeEnv('RESOLVE_READMODEL_SQL_HOST'),
-        database: declareRuntimeEnv('RESOLVE_READMODEL_SQL_DATABASE'),
-        user: declareRuntimeEnv('RESOLVE_READMODEL_SQL_USER'),
-        password: declareRuntimeEnv('RESOLVE_READMODEL_SQL_PASSWORD')
+        dbClusterOrInstanceArn: declareRuntimeEnv(
+          'RESOLVE_READMODEL_POSTGRESQL_CLUSTER_ARN'
+        ),
+        awsSecretStoreArn: declareRuntimeEnv(
+          'RESOLVE_READMODEL_POSTGRESQL_SECRET_ARN'
+        ),
+        databaseName: declareRuntimeEnv(
+          'RESOLVE_READMODEL_POSTGRESQL_DATABASE_NAME'
+        ),
+        region: declareRuntimeEnv('AWS_REGION')
       }
     },
     comments: {
-      module: 'resolve-readmodel-mysql',
+      module: 'resolve-readmodel-postgresql-serverless',
       options: {
-        host: declareRuntimeEnv('RESOLVE_READMODEL_SQL_HOST'),
-        database: declareRuntimeEnv('RESOLVE_READMODEL_SQL_DATABASE'),
-        user: declareRuntimeEnv('RESOLVE_READMODEL_SQL_USER'),
-        password: declareRuntimeEnv('RESOLVE_READMODEL_SQL_PASSWORD')
+        dbClusterOrInstanceArn: declareRuntimeEnv(
+          'RESOLVE_READMODEL_POSTGRESQL_CLUSTER_ARN'
+        ),
+        awsSecretStoreArn: declareRuntimeEnv(
+          'RESOLVE_READMODEL_POSTGRESQL_SECRET_ARN'
+        ),
+        databaseName: declareRuntimeEnv(
+          'RESOLVE_READMODEL_POSTGRESQL_DATABASE_NAME'
+        ),
+        region: declareRuntimeEnv('AWS_REGION')
       }
     },
     elasticSearch: {
       module: 'common/read-models/elastic-search-connector.js',
       options: {
         /*
-        host: '<your-cloud-elastic-search-host>'
-         */
+        node: "<your-cloud-elastic-search-host>:port",
+        auth: {
+          username: 'name',
+          password: 'pass'
+        }
+        */
       }
     }
   }

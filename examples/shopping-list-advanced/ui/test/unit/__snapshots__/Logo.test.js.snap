@@ -3,9 +3,14 @@
 exports[`renders correctly 1`] = `
 <NavbarHeader>
   <NavbarBrand>
-    <ContextBasedComponent
+    <Image
+      bsClass="img"
+      circle={false}
       className="example-icon"
+      responsive={false}
+      rounded={false}
       src="/resolve-logo.png"
+      thumbnail={false}
     />
     Shopping List
   </NavbarBrand>

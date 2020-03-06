@@ -1,9 +1,9 @@
 {
   "name": "resolve-zeromq",
-  "version": "0.20.28",
+  "version": "0.22.13",
   "description": "Provides the ZeroMQ API to reSolve packages.",
   "engines": {
-    "node": ">=8.10"
+    "node": ">=10.9"
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",
@@ -11,9 +11,8 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "postinstall": "node scripts/install.js",
-    "test": "jest --config=../../../jest.config.js --verbose",
-    "testw": "jest --config=../../../jest.config.js --watchAll"
+    "test": "echo || exit 0",
+    "testw": "echo || exit 0"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
@@ -27,7 +26,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-zeromq#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "npm": "6.10.3"
+    "zeromq": "^6.0.0-beta.2"
   },
   "devDependencies": {
     "jest": "24.1.0"

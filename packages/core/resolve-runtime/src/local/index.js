@@ -1,6 +1,5 @@
 import 'source-map-support/register'
 import debugLevels from 'resolve-debug-levels'
-import { createActions } from 'resolve-redux'
 
 import initBroker from './init-broker'
 import initPerformanceTracer from './init-performance-tracer'
@@ -8,31 +7,29 @@ import initExpress from './init-express'
 import initWebsockets from './init-websockets'
 import startExpress from './start-express'
 import emptyWorker from './empty-worker'
+import wrapTrie from '../common/wrap-trie'
+import initUploader from './init-uploader'
 
 const log = debugLevels('resolve:resolve-runtime:local-entry')
 
-const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
+const localEntry = async ({ assemblies, constants, domain }) => {
   try {
     const resolve = {
       instanceId: `${process.pid}${Math.floor(Math.random() * 100000)}`,
       seedClientEnvs: assemblies.seedClientEnvs,
+      serverImports: assemblies.serverImports,
       ...domain,
       ...constants,
+      routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
       eventBroker: {},
-      assemblies,
-      redux,
-      routes
-    }
-
-    resolve.aggregateActions = {}
-    for (const aggregate of domain.aggregates) {
-      Object.assign(resolve.aggregateActions, createActions(aggregate))
+      assemblies
     }
 
     await initPerformanceTracer(resolve)
     await initBroker(resolve)
     await initExpress(resolve)
     await initWebsockets(resolve)
+    await initUploader(resolve)
     await startExpress(resolve)
 
     log.debug('Local entry point cold start success')
