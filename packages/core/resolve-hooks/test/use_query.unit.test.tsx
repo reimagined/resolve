@@ -1,5 +1,5 @@
 import React, { FunctionComponent, ReactNode } from 'react'
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook, act } from '@testing-library/react-hooks'
 
 import { mocked } from 'ts-jest/utils'
 import {
@@ -65,7 +65,7 @@ describe('useQuery', () => {
   })
 
   test('use view model query', async () => {
-    renderHook(
+    const { result } = renderHook(
       () =>
         useQuery(
           {
@@ -87,16 +87,25 @@ describe('useQuery', () => {
       { wrapper: contextWrapper }
     )
 
+    await act(() => Promise.resolve())
     expect(apiQueryMock).toBeCalledTimes(1)
+    expect(typeof result.current[1]).toBe('function')
     expect(apiQueryMock).toBeCalledWith(
       { aggregateIds: '*', args: { arg1: 'value-1' }, name: 'model-name' },
       { waitFor: { attempts: 5, period: 5, validator: validatorMock } },
       callbackMock
     )
+
+    act(() => {
+      const [data, getData] = result.current
+      getData()
+    })
+    await act(() => Promise.resolve())
+    expect(apiQueryMock).toBeCalledTimes(2)
   })
 
   test('use read model query', async () => {
-    renderHook(
+    const { result } = renderHook(
       () =>
         useQuery(
           {
@@ -117,8 +126,10 @@ describe('useQuery', () => {
         ),
       { wrapper: contextWrapper }
     )
+    await act(() => Promise.resolve())
 
     expect(apiQueryMock).toBeCalledTimes(1)
+    expect(typeof result.current[1]).toBe('function')
     expect(apiQueryMock).toBeCalledWith(
       {
         args: { arg1: 'value-1' },
@@ -128,5 +139,12 @@ describe('useQuery', () => {
       { waitFor: { attempts: 5, period: 5, validator: validatorMock } },
       callbackMock
     )
+
+    act(() => {
+      const [data, getData] = result.current
+      getData()
+    })
+    await act(() => Promise.resolve())
+    expect(apiQueryMock).toBeCalledTimes(2)
   })
 })
