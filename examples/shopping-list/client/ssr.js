@@ -50,7 +50,6 @@ const ssrHandler = async (
         rootPath={rootPath}
         staticPath={staticPath}
         store={store}
-        isSSR={true}
       >
         <Router history={history} staticContext={staticContext}>
           <Routes routes={routes} />
