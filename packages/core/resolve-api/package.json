@@ -1,6 +1,6 @@
 {
   "name": "resolve-api",
-  "version": "0.22.10",
+  "version": "0.22.13",
   "description": "Low-level reSolve API.",
   "engines": {
     "node": ">=10.9"

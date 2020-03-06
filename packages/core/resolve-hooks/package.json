@@ -1,6 +1,6 @@
 {
   "name": "resolve-hooks",
-  "version": "0.22.10",
+  "version": "0.22.13",
   "description": "ReSolve hooks.",
   "engines": {
     "node": ">=10.9"
@@ -27,7 +27,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-api#readme",
   "dependencies": {
-    "resolve-api": "0.22.10"
+    "resolve-api": "0.22.13"
   },
   "devDependencies": {
     "react": "^16.13.0",

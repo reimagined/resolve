@@ -1,6 +1,6 @@
 {
   "name": "ts-package-example",
-  "version": "0.22.10",
+  "version": "0.22.13",
   "description": "ts-package-example",
   "engines": {
     "node": ">=10.9"
