@@ -22,7 +22,6 @@
     "react-redux": "7.2.0",
     "react-router": "5.1.2",
     "react-router-dom": "5.1.2",
-    "react-router-redux": "5.0.0-alpha.9",
     "redux": "4.0.5",
     "redux-saga": "1.0.5",
     "resolve-redux": "0.22.13",
