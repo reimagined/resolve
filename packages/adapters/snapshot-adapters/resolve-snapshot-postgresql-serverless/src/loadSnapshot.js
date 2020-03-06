@@ -2,8 +2,11 @@ import { LOAD_CHUNK_SIZE } from './constants'
 
 const loadSnapshot = async (pool, snapshotKey) => {
   const { escapeId, escape, connect } = pool
-  await connect(pool)
+  if (snapshotKey == null || snapshotKey.constructor !== String) {
+    throw new Error('Snapshot key must be string')
+  }
 
+  await connect(pool)
   let result = null
 
   for (let index = 0; ; index++) {

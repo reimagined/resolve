@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-tutorial/lesson-5",
-  "version": "0.22.10",
+  "version": "0.22.13",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
@@ -21,8 +21,8 @@
     "react-helmet": "5.2.0",
     "redux": "4.0.5",
     "react-redux": "7.2.0",
-    "resolve-redux": "0.22.10",
-    "resolve-scripts": "0.22.10"
+    "resolve-redux": "0.22.13",
+    "resolve-scripts": "0.22.13"
   },
   "devDependencies": {
     "aws-sdk": "2.587.0",
