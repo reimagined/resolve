@@ -32,26 +32,28 @@ const uploaderHandler = async (req, res) => {
         body = extractRequestBody(req)
         data = Buffer.from(body.file.contentData, 'latin1')
 
-        fs.appendFileSync(
+        fs.writeFileSync(
           `${dirName}/${uploadId}.metadata`,
           JSON.stringify({
             'Content-Type': body.file.contentType
-          })
+          }),
+          { flag: 'w+', encoding: 'utf8' }
         )
       } else {
         body = req.body
         data = Buffer.from(body, 'latin1')
 
-        fs.appendFileSync(
+        fs.writeFileSync(
           `${dirName}/${uploadId}.metadata`,
           JSON.stringify({
             'Content-Type':
               fileType(data) != null ? fileType(data).mime : 'text/plain'
-          })
+          }),
+          { flag: 'w+', encoding: 'utf8' }
         )
       }
 
-      fs.appendFileSync(`${dirName}/${uploadId}`, data)
+      fs.writeFileSync(`${dirName}/${uploadId}`, data, { flag: 'w+' })
     } else if (req.method === 'GET') {
       const uploadParams = req.matchedParams.params
       if (uploadParams == null || uploadParams.constructor !== String) {

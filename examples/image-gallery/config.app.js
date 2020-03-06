@@ -2,7 +2,8 @@ const appConfig = {
   aggregates: [
     {
       name: 'Image',
-      commands: 'common/aggregates/image.commands.js'
+      commands: 'common/aggregates/image.commands.js',
+      projection: 'common/aggregates/image.projection.js'
     }
   ],
   readModels: [

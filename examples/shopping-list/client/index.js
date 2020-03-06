@@ -36,8 +36,6 @@ const entryPoint = ({
       rootPath={rootPath}
       staticPath={staticPath}
       store={store}
-      history={history}
-      routes={routes}
     >
       <Router history={history}>
         <Routes routes={routes} />
