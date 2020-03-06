@@ -2,13 +2,7 @@ import React, { FunctionComponent, ReactNode } from 'react'
 import { renderHook, act } from '@testing-library/react-hooks'
 
 import { mocked } from 'ts-jest/utils'
-import {
-  getApi,
-  Query,
-  QueryOptions,
-  QueryCallback,
-  QueryResult
-} from 'resolve-api'
+import { getApi } from 'resolve-api'
 import { useQuery } from '../src/use_query'
 import { ResolveContext } from '../src/context'
 
