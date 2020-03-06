@@ -9,7 +9,9 @@ import {
   Query,
   QueryOptions,
   QueryCallback,
-  QueryResult
+  QueryResult,
+  Command,
+  CommandResult
 } from './api'
 
 export {
@@ -25,5 +27,7 @@ export {
   Query,
   QueryOptions,
   QueryCallback,
-  QueryResult
+  QueryResult,
+  Command,
+  CommandResult
 }
