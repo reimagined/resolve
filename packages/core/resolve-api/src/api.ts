@@ -89,6 +89,8 @@ export type QueryResult = {
   data: any
 }
 export type QueryOptions = {
+  // TODO: add unit test
+  method?: 'GET' | 'POST'
   waitFor?: {
     validator: (result: any) => boolean
     period?: number
@@ -107,21 +109,23 @@ export const query = (
   callback?: QueryCallback
 ): PromiseOrVoid<QueryResult> => {
   const requestOptions: RequestOptions = {
+    method: 'GET'
     // TODO: add retry on temporary errors?
   }
 
-  if (
-    isOptions<QueryOptions>(options) &&
-    typeof options.waitFor?.validator === 'function'
-  ) {
-    const { validator, period = 1000, attempts = 5 } = options.waitFor
+  if (isOptions<QueryOptions>(options)) {
+    if (typeof options.waitFor?.validator === 'function') {
+      const { validator, period = 1000, attempts = 5 } = options.waitFor
 
-    requestOptions.waitForResponse = {
-      validator: async (response): Promise<boolean> =>
-        validator(await response.json()),
-      period,
-      attempts
+      requestOptions.waitForResponse = {
+        validator: async (response): Promise<boolean> =>
+          validator(await response.json()),
+        period,
+        attempts
+      }
     }
+    // TODO: add unit test
+    requestOptions.method = options?.method ?? 'GET'
   }
 
   const actualCallback = determineCallback<QueryCallback>(options, callback)
