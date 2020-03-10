@@ -1,5 +1,5 @@
 import domready from 'domready'
-import { getApi } from 'resolve-api'
+import { getApi } from 'resolve-client'
 import initUI from './init_ui'
 import updateUI from './update_ui'
 

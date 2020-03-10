@@ -25,6 +25,7 @@
     "resolve-runtime": "0.22.13",
     "resolve-subscribe-mqtt": "0.22.13",
     "resolve-subscribe-socket.io": "0.22.13",
+    "resolve-client": "0.22.13",
     "unfetch": "4.1.0",
     "webpack": "4.41.2"
   },

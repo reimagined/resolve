@@ -1,7 +1,7 @@
 {
-  "name": "resolve-api",
+  "name": "resolve-client",
   "version": "0.22.13",
-  "description": "Low-level reSolve API.",
+  "description": "Low-level reSolve client.",
   "engines": {
     "node": ">=10.9"
   },
