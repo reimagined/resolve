@@ -1,4 +1,3 @@
-import { LOCATION_CHANGE } from 'react-router-redux'
 import {
   OPTIMISTIC_CREATE_SHOPPING_LIST,
   OPTIMISTIC_SYNC
@@ -6,9 +5,6 @@ import {
 
 const optimistic_shopping_lists = (state = [], action) => {
   switch (action.type) {
-    case LOCATION_CHANGE: {
-      return []
-    }
     case OPTIMISTIC_CREATE_SHOPPING_LIST: {
       return [
         ...state,
