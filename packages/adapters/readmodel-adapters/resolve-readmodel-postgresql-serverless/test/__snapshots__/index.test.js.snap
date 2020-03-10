@@ -537,46 +537,54 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "UPDATE \\"databaseName\\".\\"tablePrefixvalues\\"
-    SET \\"value\\" =  CAST(( CAST(CASE
-            WHEN jsonb_typeof(\\"value\\") = 'string' THEN quote_ident(
-              CAST(\\"value\\" #>> '{}' AS VARCHAR) ||
+    SET \\"value\\" = CAST(( (SELECT CAST(CASE
+          WHEN jsonb_typeof(\\"inline-table-0\\".\\"val\\") = 'string' THEN quote_ident(
+            CAST(\\"inline-table-0\\".\\"val\\"  #>> '{}' AS VARCHAR) ||
+            CAST('1' AS VARCHAR)
+          )
+          WHEN jsonb_typeof(\\"inline-table-0\\".\\"val\\") = 'number' THEN CAST((
+            CAST(\\"inline-table-0\\".\\"val\\"  #>> '{}' AS DECIMAL(48, 16)) +
+            CAST(1 AS DECIMAL(48, 16))
+          ) AS VARCHAR)
+          ELSE (
+            SELECT 'Invalid JSON type for $inc operation'
+            FROM \\"pg_catalog\\".\\"pg_class\\"
+          )
+        END AS JSONB) AS \\"pg_catalog\\" FROM (
+          SELECT \\"value\\" AS \\"val\\"
+        ) \\"inline-table-0\\") ) AS JSONB), \\"obj\\" = (SELECT jsonb_set(\\"inline-table-1\\".\\"val\\", '{\\"value\\"}', CAST(CASE
+            WHEN jsonb_typeof(\\"inline-table-1\\".\\"val\\" #> '{\\"value\\"}' ) = 'string' THEN quote_ident(
+              CAST(\\"inline-table-1\\".\\"val\\" #>> '{\\"value\\"}' AS VARCHAR) ||
               CAST('1' AS VARCHAR)
             )
-            WHEN jsonb_typeof(\\"value\\") = 'number' THEN CAST((
-              CAST(\\"value\\" #>> '{}' AS DECIMAL(48, 16)) +
+            WHEN jsonb_typeof(\\"inline-table-1\\".\\"val\\" #> '{\\"value\\"}' ) = 'number' THEN CAST((
+              CAST(\\"inline-table-1\\".\\"val\\" #>> '{\\"value\\"}' AS DECIMAL(48, 16)) +
               CAST(1 AS DECIMAL(48, 16))
             ) AS VARCHAR)
             ELSE (
               SELECT 'Invalid JSON type for $inc operation'
               FROM \\"pg_catalog\\".\\"pg_class\\"
             )
-          END AS JSONB)  ) AS JSONB), \\"obj\\" = jsonb_set(\\"obj\\", '{\\"value\\"}', CAST(CASE
-            WHEN jsonb_typeof(\\"obj\\" #> '{\\"value\\"}') = 'string' THEN quote_ident(
-              CAST(\\"obj\\" #>> '{\\"value\\"}' AS VARCHAR) ||
+          END AS JSONB)) AS \\"pg_catalog\\" FROM (
+            SELECT \\"obj\\" AS \\"val\\"
+          ) \\"inline-table-1\\"
+          ), \\"arr\\" = (SELECT jsonb_set(\\"inline-table-2\\".\\"val\\", '{0,\\"value\\"}', CAST(CASE
+            WHEN jsonb_typeof(\\"inline-table-2\\".\\"val\\" #> '{0,\\"value\\"}' ) = 'string' THEN quote_ident(
+              CAST(\\"inline-table-2\\".\\"val\\" #>> '{0,\\"value\\"}' AS VARCHAR) ||
               CAST('1' AS VARCHAR)
             )
-            WHEN jsonb_typeof(\\"obj\\" #> '{\\"value\\"}') = 'number' THEN CAST((
-              CAST(\\"obj\\" #>> '{\\"value\\"}' AS DECIMAL(48, 16)) +
+            WHEN jsonb_typeof(\\"inline-table-2\\".\\"val\\" #> '{0,\\"value\\"}' ) = 'number' THEN CAST((
+              CAST(\\"inline-table-2\\".\\"val\\" #>> '{0,\\"value\\"}' AS DECIMAL(48, 16)) +
               CAST(1 AS DECIMAL(48, 16))
             ) AS VARCHAR)
             ELSE (
               SELECT 'Invalid JSON type for $inc operation'
               FROM \\"pg_catalog\\".\\"pg_class\\"
             )
-          END AS JSONB) ), \\"arr\\" = jsonb_set(\\"arr\\", '{0,\\"value\\"}', CAST(CASE
-            WHEN jsonb_typeof(\\"arr\\" #> '{0,\\"value\\"}') = 'string' THEN quote_ident(
-              CAST(\\"arr\\" #>> '{0,\\"value\\"}' AS VARCHAR) ||
-              CAST('1' AS VARCHAR)
-            )
-            WHEN jsonb_typeof(\\"arr\\" #> '{0,\\"value\\"}') = 'number' THEN CAST((
-              CAST(\\"arr\\" #>> '{0,\\"value\\"}' AS DECIMAL(48, 16)) +
-              CAST(1 AS DECIMAL(48, 16))
-            ) AS VARCHAR)
-            ELSE (
-              SELECT 'Invalid JSON type for $inc operation'
-              FROM \\"pg_catalog\\".\\"pg_class\\"
-            )
-          END AS JSONB) ) WHERE 
+          END AS JSONB)) AS \\"pg_catalog\\" FROM (
+            SELECT \\"arr\\" AS \\"val\\"
+          ) \\"inline-table-2\\"
+          ) WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
    ;",
@@ -589,46 +597,54 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "UPDATE \\"databaseName\\".\\"tablePrefixvalues\\"
-    SET \\"value\\" =  CAST(( CAST(CASE
-            WHEN jsonb_typeof(\\"value\\") = 'string' THEN quote_ident(
-              CAST(\\"value\\" #>> '{}' AS VARCHAR) ||
+    SET \\"value\\" = CAST(( (SELECT CAST(CASE
+          WHEN jsonb_typeof(\\"inline-table-0\\".\\"val\\") = 'string' THEN quote_ident(
+            CAST(\\"inline-table-0\\".\\"val\\"  #>> '{}' AS VARCHAR) ||
+            CAST('-1' AS VARCHAR)
+          )
+          WHEN jsonb_typeof(\\"inline-table-0\\".\\"val\\") = 'number' THEN CAST((
+            CAST(\\"inline-table-0\\".\\"val\\"  #>> '{}' AS DECIMAL(48, 16)) +
+            CAST(-1 AS DECIMAL(48, 16))
+          ) AS VARCHAR)
+          ELSE (
+            SELECT 'Invalid JSON type for $inc operation'
+            FROM \\"pg_catalog\\".\\"pg_class\\"
+          )
+        END AS JSONB) AS \\"pg_catalog\\" FROM (
+          SELECT \\"value\\" AS \\"val\\"
+        ) \\"inline-table-0\\") ) AS JSONB), \\"obj\\" = (SELECT jsonb_set(\\"inline-table-1\\".\\"val\\", '{\\"value\\"}', CAST(CASE
+            WHEN jsonb_typeof(\\"inline-table-1\\".\\"val\\" #> '{\\"value\\"}' ) = 'string' THEN quote_ident(
+              CAST(\\"inline-table-1\\".\\"val\\" #>> '{\\"value\\"}' AS VARCHAR) ||
               CAST('-1' AS VARCHAR)
             )
-            WHEN jsonb_typeof(\\"value\\") = 'number' THEN CAST((
-              CAST(\\"value\\" #>> '{}' AS DECIMAL(48, 16)) +
+            WHEN jsonb_typeof(\\"inline-table-1\\".\\"val\\" #> '{\\"value\\"}' ) = 'number' THEN CAST((
+              CAST(\\"inline-table-1\\".\\"val\\" #>> '{\\"value\\"}' AS DECIMAL(48, 16)) +
               CAST(-1 AS DECIMAL(48, 16))
             ) AS VARCHAR)
             ELSE (
               SELECT 'Invalid JSON type for $inc operation'
               FROM \\"pg_catalog\\".\\"pg_class\\"
             )
-          END AS JSONB)  ) AS JSONB), \\"obj\\" = jsonb_set(\\"obj\\", '{\\"value\\"}', CAST(CASE
-            WHEN jsonb_typeof(\\"obj\\" #> '{\\"value\\"}') = 'string' THEN quote_ident(
-              CAST(\\"obj\\" #>> '{\\"value\\"}' AS VARCHAR) ||
+          END AS JSONB)) AS \\"pg_catalog\\" FROM (
+            SELECT \\"obj\\" AS \\"val\\"
+          ) \\"inline-table-1\\"
+          ), \\"arr\\" = (SELECT jsonb_set(\\"inline-table-2\\".\\"val\\", '{0,\\"value\\"}', CAST(CASE
+            WHEN jsonb_typeof(\\"inline-table-2\\".\\"val\\" #> '{0,\\"value\\"}' ) = 'string' THEN quote_ident(
+              CAST(\\"inline-table-2\\".\\"val\\" #>> '{0,\\"value\\"}' AS VARCHAR) ||
               CAST('-1' AS VARCHAR)
             )
-            WHEN jsonb_typeof(\\"obj\\" #> '{\\"value\\"}') = 'number' THEN CAST((
-              CAST(\\"obj\\" #>> '{\\"value\\"}' AS DECIMAL(48, 16)) +
+            WHEN jsonb_typeof(\\"inline-table-2\\".\\"val\\" #> '{0,\\"value\\"}' ) = 'number' THEN CAST((
+              CAST(\\"inline-table-2\\".\\"val\\" #>> '{0,\\"value\\"}' AS DECIMAL(48, 16)) +
               CAST(-1 AS DECIMAL(48, 16))
             ) AS VARCHAR)
             ELSE (
               SELECT 'Invalid JSON type for $inc operation'
               FROM \\"pg_catalog\\".\\"pg_class\\"
             )
-          END AS JSONB) ), \\"arr\\" = jsonb_set(\\"arr\\", '{0,\\"value\\"}', CAST(CASE
-            WHEN jsonb_typeof(\\"arr\\" #> '{0,\\"value\\"}') = 'string' THEN quote_ident(
-              CAST(\\"arr\\" #>> '{0,\\"value\\"}' AS VARCHAR) ||
-              CAST('-1' AS VARCHAR)
-            )
-            WHEN jsonb_typeof(\\"arr\\" #> '{0,\\"value\\"}') = 'number' THEN CAST((
-              CAST(\\"arr\\" #>> '{0,\\"value\\"}' AS DECIMAL(48, 16)) +
-              CAST(-1 AS DECIMAL(48, 16))
-            ) AS VARCHAR)
-            ELSE (
-              SELECT 'Invalid JSON type for $inc operation'
-              FROM \\"pg_catalog\\".\\"pg_class\\"
-            )
-          END AS JSONB) ) WHERE 
+          END AS JSONB)) AS \\"pg_catalog\\" FROM (
+            SELECT \\"arr\\" AS \\"val\\"
+          ) \\"inline-table-2\\"
+          ) WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
    ;",
@@ -641,46 +657,54 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "UPDATE \\"databaseName\\".\\"tablePrefixvalues\\"
-    SET \\"value\\" =  CAST(( CAST(CASE
-            WHEN jsonb_typeof(\\"value\\") = 'string' THEN quote_ident(
-              CAST(\\"value\\" #>> '{}' AS VARCHAR) ||
+    SET \\"value\\" = CAST(( (SELECT CAST(CASE
+          WHEN jsonb_typeof(\\"inline-table-0\\".\\"val\\") = 'string' THEN quote_ident(
+            CAST(\\"inline-table-0\\".\\"val\\"  #>> '{}' AS VARCHAR) ||
+            CAST('0.42' AS VARCHAR)
+          )
+          WHEN jsonb_typeof(\\"inline-table-0\\".\\"val\\") = 'number' THEN CAST((
+            CAST(\\"inline-table-0\\".\\"val\\"  #>> '{}' AS DECIMAL(48, 16)) +
+            CAST(0.42 AS DECIMAL(48, 16))
+          ) AS VARCHAR)
+          ELSE (
+            SELECT 'Invalid JSON type for $inc operation'
+            FROM \\"pg_catalog\\".\\"pg_class\\"
+          )
+        END AS JSONB) AS \\"pg_catalog\\" FROM (
+          SELECT \\"value\\" AS \\"val\\"
+        ) \\"inline-table-0\\") ) AS JSONB), \\"obj\\" = (SELECT jsonb_set(\\"inline-table-1\\".\\"val\\", '{\\"value\\"}', CAST(CASE
+            WHEN jsonb_typeof(\\"inline-table-1\\".\\"val\\" #> '{\\"value\\"}' ) = 'string' THEN quote_ident(
+              CAST(\\"inline-table-1\\".\\"val\\" #>> '{\\"value\\"}' AS VARCHAR) ||
               CAST('0.42' AS VARCHAR)
             )
-            WHEN jsonb_typeof(\\"value\\") = 'number' THEN CAST((
-              CAST(\\"value\\" #>> '{}' AS DECIMAL(48, 16)) +
+            WHEN jsonb_typeof(\\"inline-table-1\\".\\"val\\" #> '{\\"value\\"}' ) = 'number' THEN CAST((
+              CAST(\\"inline-table-1\\".\\"val\\" #>> '{\\"value\\"}' AS DECIMAL(48, 16)) +
               CAST(0.42 AS DECIMAL(48, 16))
             ) AS VARCHAR)
             ELSE (
               SELECT 'Invalid JSON type for $inc operation'
               FROM \\"pg_catalog\\".\\"pg_class\\"
             )
-          END AS JSONB)  ) AS JSONB), \\"obj\\" = jsonb_set(\\"obj\\", '{\\"value\\"}', CAST(CASE
-            WHEN jsonb_typeof(\\"obj\\" #> '{\\"value\\"}') = 'string' THEN quote_ident(
-              CAST(\\"obj\\" #>> '{\\"value\\"}' AS VARCHAR) ||
+          END AS JSONB)) AS \\"pg_catalog\\" FROM (
+            SELECT \\"obj\\" AS \\"val\\"
+          ) \\"inline-table-1\\"
+          ), \\"arr\\" = (SELECT jsonb_set(\\"inline-table-2\\".\\"val\\", '{0,\\"value\\"}', CAST(CASE
+            WHEN jsonb_typeof(\\"inline-table-2\\".\\"val\\" #> '{0,\\"value\\"}' ) = 'string' THEN quote_ident(
+              CAST(\\"inline-table-2\\".\\"val\\" #>> '{0,\\"value\\"}' AS VARCHAR) ||
               CAST('0.42' AS VARCHAR)
             )
-            WHEN jsonb_typeof(\\"obj\\" #> '{\\"value\\"}') = 'number' THEN CAST((
-              CAST(\\"obj\\" #>> '{\\"value\\"}' AS DECIMAL(48, 16)) +
+            WHEN jsonb_typeof(\\"inline-table-2\\".\\"val\\" #> '{0,\\"value\\"}' ) = 'number' THEN CAST((
+              CAST(\\"inline-table-2\\".\\"val\\" #>> '{0,\\"value\\"}' AS DECIMAL(48, 16)) +
               CAST(0.42 AS DECIMAL(48, 16))
             ) AS VARCHAR)
             ELSE (
               SELECT 'Invalid JSON type for $inc operation'
               FROM \\"pg_catalog\\".\\"pg_class\\"
             )
-          END AS JSONB) ), \\"arr\\" = jsonb_set(\\"arr\\", '{0,\\"value\\"}', CAST(CASE
-            WHEN jsonb_typeof(\\"arr\\" #> '{0,\\"value\\"}') = 'string' THEN quote_ident(
-              CAST(\\"arr\\" #>> '{0,\\"value\\"}' AS VARCHAR) ||
-              CAST('0.42' AS VARCHAR)
-            )
-            WHEN jsonb_typeof(\\"arr\\" #> '{0,\\"value\\"}') = 'number' THEN CAST((
-              CAST(\\"arr\\" #>> '{0,\\"value\\"}' AS DECIMAL(48, 16)) +
-              CAST(0.42 AS DECIMAL(48, 16))
-            ) AS VARCHAR)
-            ELSE (
-              SELECT 'Invalid JSON type for $inc operation'
-              FROM \\"pg_catalog\\".\\"pg_class\\"
-            )
-          END AS JSONB) ) WHERE 
+          END AS JSONB)) AS \\"pg_catalog\\" FROM (
+            SELECT \\"arr\\" AS \\"val\\"
+          ) \\"inline-table-2\\"
+          ) WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
    ;",
@@ -693,46 +717,54 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "UPDATE \\"databaseName\\".\\"tablePrefixvalues\\"
-    SET \\"value\\" =  CAST(( CAST(CASE
-            WHEN jsonb_typeof(\\"value\\") = 'string' THEN quote_ident(
-              CAST(\\"value\\" #>> '{}' AS VARCHAR) ||
+    SET \\"value\\" = CAST(( (SELECT CAST(CASE
+          WHEN jsonb_typeof(\\"inline-table-0\\".\\"val\\") = 'string' THEN quote_ident(
+            CAST(\\"inline-table-0\\".\\"val\\"  #>> '{}' AS VARCHAR) ||
+            CAST('-0.42' AS VARCHAR)
+          )
+          WHEN jsonb_typeof(\\"inline-table-0\\".\\"val\\") = 'number' THEN CAST((
+            CAST(\\"inline-table-0\\".\\"val\\"  #>> '{}' AS DECIMAL(48, 16)) +
+            CAST(-0.42 AS DECIMAL(48, 16))
+          ) AS VARCHAR)
+          ELSE (
+            SELECT 'Invalid JSON type for $inc operation'
+            FROM \\"pg_catalog\\".\\"pg_class\\"
+          )
+        END AS JSONB) AS \\"pg_catalog\\" FROM (
+          SELECT \\"value\\" AS \\"val\\"
+        ) \\"inline-table-0\\") ) AS JSONB), \\"obj\\" = (SELECT jsonb_set(\\"inline-table-1\\".\\"val\\", '{\\"value\\"}', CAST(CASE
+            WHEN jsonb_typeof(\\"inline-table-1\\".\\"val\\" #> '{\\"value\\"}' ) = 'string' THEN quote_ident(
+              CAST(\\"inline-table-1\\".\\"val\\" #>> '{\\"value\\"}' AS VARCHAR) ||
               CAST('-0.42' AS VARCHAR)
             )
-            WHEN jsonb_typeof(\\"value\\") = 'number' THEN CAST((
-              CAST(\\"value\\" #>> '{}' AS DECIMAL(48, 16)) +
+            WHEN jsonb_typeof(\\"inline-table-1\\".\\"val\\" #> '{\\"value\\"}' ) = 'number' THEN CAST((
+              CAST(\\"inline-table-1\\".\\"val\\" #>> '{\\"value\\"}' AS DECIMAL(48, 16)) +
               CAST(-0.42 AS DECIMAL(48, 16))
             ) AS VARCHAR)
             ELSE (
               SELECT 'Invalid JSON type for $inc operation'
               FROM \\"pg_catalog\\".\\"pg_class\\"
             )
-          END AS JSONB)  ) AS JSONB), \\"obj\\" = jsonb_set(\\"obj\\", '{\\"value\\"}', CAST(CASE
-            WHEN jsonb_typeof(\\"obj\\" #> '{\\"value\\"}') = 'string' THEN quote_ident(
-              CAST(\\"obj\\" #>> '{\\"value\\"}' AS VARCHAR) ||
+          END AS JSONB)) AS \\"pg_catalog\\" FROM (
+            SELECT \\"obj\\" AS \\"val\\"
+          ) \\"inline-table-1\\"
+          ), \\"arr\\" = (SELECT jsonb_set(\\"inline-table-2\\".\\"val\\", '{0,\\"value\\"}', CAST(CASE
+            WHEN jsonb_typeof(\\"inline-table-2\\".\\"val\\" #> '{0,\\"value\\"}' ) = 'string' THEN quote_ident(
+              CAST(\\"inline-table-2\\".\\"val\\" #>> '{0,\\"value\\"}' AS VARCHAR) ||
               CAST('-0.42' AS VARCHAR)
             )
-            WHEN jsonb_typeof(\\"obj\\" #> '{\\"value\\"}') = 'number' THEN CAST((
-              CAST(\\"obj\\" #>> '{\\"value\\"}' AS DECIMAL(48, 16)) +
+            WHEN jsonb_typeof(\\"inline-table-2\\".\\"val\\" #> '{0,\\"value\\"}' ) = 'number' THEN CAST((
+              CAST(\\"inline-table-2\\".\\"val\\" #>> '{0,\\"value\\"}' AS DECIMAL(48, 16)) +
               CAST(-0.42 AS DECIMAL(48, 16))
             ) AS VARCHAR)
             ELSE (
               SELECT 'Invalid JSON type for $inc operation'
               FROM \\"pg_catalog\\".\\"pg_class\\"
             )
-          END AS JSONB) ), \\"arr\\" = jsonb_set(\\"arr\\", '{0,\\"value\\"}', CAST(CASE
-            WHEN jsonb_typeof(\\"arr\\" #> '{0,\\"value\\"}') = 'string' THEN quote_ident(
-              CAST(\\"arr\\" #>> '{0,\\"value\\"}' AS VARCHAR) ||
-              CAST('-0.42' AS VARCHAR)
-            )
-            WHEN jsonb_typeof(\\"arr\\" #> '{0,\\"value\\"}') = 'number' THEN CAST((
-              CAST(\\"arr\\" #>> '{0,\\"value\\"}' AS DECIMAL(48, 16)) +
-              CAST(-0.42 AS DECIMAL(48, 16))
-            ) AS VARCHAR)
-            ELSE (
-              SELECT 'Invalid JSON type for $inc operation'
-              FROM \\"pg_catalog\\".\\"pg_class\\"
-            )
-          END AS JSONB) ) WHERE 
+          END AS JSONB)) AS \\"pg_catalog\\" FROM (
+            SELECT \\"arr\\" AS \\"val\\"
+          ) \\"inline-table-2\\"
+          ) WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
    ;",
@@ -793,14 +825,14 @@ Array [
     "secretArn": "awsSecretStoreArn",
     "sql": "UPDATE \\"databaseName\\".\\"tablePrefixvalues\\"
     SET \\"value\\" = CAST('2' AS JSONB) , \\"obj\\" = jsonb_set(
-                \\"obj\\",
-                '{\\"value\\"}',
-                CAST('2' AS JSONB)
-              ) , \\"arr\\" = jsonb_set(
-                \\"arr\\",
-                '{0,\\"value\\"}',
-                CAST('2' AS JSONB)
-              )  WHERE 
+            \\"obj\\",
+            '{\\"value\\"}',
+            CAST('2' AS JSONB)
+            ) , \\"arr\\" = jsonb_set(
+            \\"arr\\",
+            '{0,\\"value\\"}',
+            CAST('2' AS JSONB)
+            )  WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
    ;",
