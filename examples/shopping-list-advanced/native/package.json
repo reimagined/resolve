@@ -17,7 +17,7 @@
     "@expo/vector-icons": "10.0.1",
     "expo": "36.0.0",
     "expo-cli": "2.6.0",
-    "history": "4.7.2",
+    "history": "4.10.1",
     "native-base": "2.13.8",
     "react": "16.13.0",
     "react-dom": "16.13.0",

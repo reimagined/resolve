@@ -16,7 +16,7 @@
   "dependencies": {
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
-    "history": "4.7.2",
+    "history": "4.10.1",
     "react": "16.13.0",
     "react-dom": "16.13.0",
     "reactstrap": "^8.1.1",
