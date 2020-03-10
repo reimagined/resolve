@@ -6,7 +6,7 @@ import {
   QueryOptions,
   QueryCallback,
   QueryResult
-} from 'resolve-api'
+} from 'resolve-client'
 
 import { ResolveContext } from './context'
 

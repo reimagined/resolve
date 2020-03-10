@@ -3,4 +3,4 @@ import { useQuery } from './use_query'
 import { useCommand } from './use_command'
 import { ResolveContext } from './context'
 
-export { useSubscription, ResolveContext }
+export { useSubscription, ResolveContext, useCommand, useQuery }

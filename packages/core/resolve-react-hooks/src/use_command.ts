@@ -1,4 +1,4 @@
-import { Command, CommandResult, getApi } from 'resolve-api'
+import { Command, CommandResult, getApi } from 'resolve-client'
 
 import { useContext, useCallback, useDebugValue } from 'react'
 import { ResolveContext } from './context'

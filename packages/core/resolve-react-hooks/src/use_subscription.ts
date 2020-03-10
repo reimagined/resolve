@@ -6,7 +6,7 @@ import {
   SubscribeHandler,
   ResubscribeCallback,
   Subscription
-} from 'resolve-api'
+} from 'resolve-client'
 
 import { ResolveContext } from './context'
 
