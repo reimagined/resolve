@@ -24,7 +24,7 @@
     "react-helmet": "5.2.0",
     "redux": "4.0.5",
     "redux-devtools-extension": "2.13.7",
-    "resolve-hooks": "0.22.13",
+    "resolve-react-hooks": "0.22.13",
     "resolve-readmodel-lite": "0.22.13",
     "resolve-readmodel-mysql": "0.22.13",
     "resolve-scripts": "0.22.13",
