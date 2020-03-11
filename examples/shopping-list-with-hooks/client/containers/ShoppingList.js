@@ -14,8 +14,6 @@ import {
   Row,
   Col,
   ListGroup,
-  ListGroupItem,
-  Checkbox,
   Button,
   InputGroup,
   FormControl,
@@ -23,7 +21,7 @@ import {
   ControlLabel
 } from 'react-bootstrap'
 
-import Image from './Image'
+import ShoppingListItem from '../components/ShoppingListItem'
 import NotFound from '../components/NotFound'
 // import * as aggregateActions from '../actions/aggregate_actions'
 
@@ -40,7 +38,6 @@ const ShoppingList = ({
     list: []
   })
   const [itemText, setItemText] = useState('')
-  // const [removed, setRemoved] = useState(false)
   const context = useContext(ResolveContext)
 
   const createShoppingItem = useCommand(
@@ -75,26 +72,6 @@ const ShoppingList = ({
     aggregateName: 'ShoppingList'
   })
 
-  const toggleShoppingItem = id =>
-    useCommand({
-      type: 'toggleShoppingItem',
-      aggregateId,
-      aggregateName: 'ShoppingList',
-      payload: {
-        id
-      }
-    })
-
-  const removeShoppingItem = id =>
-    useCommand({
-      type: 'removeShoppingItem',
-      aggregateId,
-      aggregateName: 'ShoppingList',
-      payload: {
-        id
-      }
-    })
-
   const updateItemText = event => {
     setItemText(event.target.value)
   }
@@ -118,7 +95,6 @@ const ShoppingList = ({
       args: {}
     },
     (error, result) => {
-      console.log('query callback')
       if (error == null) {
         if (result.data != null) {
           setShoppingList({ ...result.data })
@@ -134,7 +110,6 @@ const ShoppingList = ({
 
   const modelEventCallback = useCallback(
     event => {
-      console.log('event')
       const handler = viewModel.projection[event.type]
       const nextShoppingList = handler(shoppingList, event)
       setShoppingList(nextShoppingList)
@@ -142,8 +117,6 @@ const ShoppingList = ({
     [shoppingList]
   )
 
-
-  console.log('--- use subscription call')
   useSubscription(
     'shoppingList',
     [aggregateId],
@@ -180,26 +153,8 @@ const ShoppingList = ({
         </InputGroup>
       </FormGroup>
       <ListGroup className="example-list">
-        {shoppingList.list.map(todo => (
-          <ListGroupItem key={todo.id}>
-            <Checkbox
-              inline
-              checked={todo.checked}
-              onChange={() => {
-                // TODO
-              }}
-            >
-              {todo.text}
-            </Checkbox>
-            <Image
-              className="example-close-button"
-              src="/close-button.png"
-              onClick={
-                () => {}
-                // removeShoppingItem(todo.id)
-              }
-            />
-          </ListGroupItem>
+        {shoppingList.list.map(item => (
+          <ShoppingListItem shoppingListId={aggregateId} item={item} />
         ))}
       </ListGroup>
       <ControlLabel>Item name</ControlLabel>

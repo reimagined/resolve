@@ -56,10 +56,12 @@ const useSubscription = (
     )
 
     return (): void => {
+      console.log('use_subcription: unmount, subscription:', subscription)
       if (!viewModel) {
         return
       }
       if (subscription) {
+        console.log('use_subcription: unsubscribe')
         api.unsubscribe(subscription)
       }
     }
