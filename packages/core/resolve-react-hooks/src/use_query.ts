@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react'
 
 import {
-  getApi,
+  getClient,
   Query,
   QueryOptions,
   QueryCallback,
@@ -20,7 +20,7 @@ const useQuery = (
     throw Error('You cannot use resolve effects outside Resolve context')
   }
 
-  const api = getApi(context)
+  const api = getClient(context)
   const [data, setData] = useState<QueryResult>()
 
   const requestModel = useCallback(async () => {
