@@ -45,7 +45,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   mockContext = createMockContext()
-  api = getApi(mockContext)
+  api = getClient(mockContext)
 })
 
 afterEach(() => {
