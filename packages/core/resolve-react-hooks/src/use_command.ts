@@ -2,18 +2,17 @@ import {
   Command,
   CommandResult,
   CommandOptions,
-  CommandCallback,
   getClient
 } from 'resolve-client'
 
 import { useContext, useCallback } from 'react'
 import { ResolveContext } from './context'
 
-type CommandExecutor<TData> = (data: TData) => CommandResult | void
-type CommandSuccessCallback = (result: CommandResult) => void
-type CommandFailureCallback = (error: Error) => void
-type CommandRequestCallback = (command: Command) => void
-type CommandCallbacks = {
+export type CommandExecutor<TData> = (data: TData) => CommandResult | void
+export type CommandSuccessCallback = (result: CommandResult) => void
+export type CommandFailureCallback = (error: Error) => void
+export type CommandRequestCallback = (command: Command) => void
+export type CommandCallbacks = {
   request?: CommandRequestCallback
   failure?: CommandFailureCallback
   success?: CommandSuccessCallback
@@ -28,7 +27,7 @@ const isCommandCallbacks = (x: any): x is CommandCallbacks => {
   )
 }
 const isCommandOptions = (x: any): x is CommandOptions => {
-  return x && typeof x === 'object'
+  return x && typeof x === 'object' && !(x instanceof Array)
 }
 const isDependencies = (x: any): x is any[] => {
   return x && x instanceof Array
@@ -77,7 +76,15 @@ function useCommand(
   let actualCallbacks: CommandCallbacks = {}
   let actualDependencies: any[] = [command]
 
-  if (isCommandOptions(optionsCallbacksOrDependencies)) {
+  if (isCommandCallbacks(optionsCallbacksOrDependencies)) {
+    actualCallbacks = optionsCallbacksOrDependencies
+    if (isDependencies(callbacksOrDependencies)) {
+      actualDependencies = callbacksOrDependencies
+    }
+    if (isDependencies(dependencies)) {
+      actualDependencies = dependencies
+    }
+  } else if (isCommandOptions(optionsCallbacksOrDependencies)) {
     actualOptions = optionsCallbacksOrDependencies
     if (isCommandCallbacks(callbacksOrDependencies)) {
       actualCallbacks = callbacksOrDependencies
@@ -87,11 +94,6 @@ function useCommand(
     }
     if (isDependencies(dependencies)) {
       actualDependencies = dependencies
-    }
-  } else if (isCommandCallbacks(optionsCallbacksOrDependencies)) {
-    actualCallbacks = optionsCallbacksOrDependencies
-    if (isDependencies(callbacksOrDependencies)) {
-      actualDependencies = callbacksOrDependencies
     }
   } else if (isDependencies(optionsCallbacksOrDependencies)) {
     actualDependencies = optionsCallbacksOrDependencies
