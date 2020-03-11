@@ -63,7 +63,7 @@ const useSubscription = (
         api.unsubscribe(subscription)
       }
     }
-  }, [])
+  }, [onEvent, onSubscribe, onResubscribe])
 }
 
 export { useSubscription }
