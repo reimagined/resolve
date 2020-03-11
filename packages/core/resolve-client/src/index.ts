@@ -1,7 +1,7 @@
 import { Context } from './context'
 import { GenericError, HttpError, temporaryErrorHttpCodes } from './errors'
 import {
-  getApi,
+  getClient,
   SubscribeCallback,
   SubscribeHandler,
   Subscription,
@@ -11,11 +11,13 @@ import {
   QueryCallback,
   QueryResult,
   Command,
-  CommandResult
-} from './api'
+  CommandResult,
+  CommandCallback,
+  CommandOptions
+} from './client'
 
 export {
-  getApi,
+  getClient,
   Context,
   temporaryErrorHttpCodes,
   HttpError,
@@ -29,5 +31,7 @@ export {
   QueryCallback,
   QueryResult,
   Command,
-  CommandResult
+  CommandOptions,
+  CommandResult,
+  CommandCallback
 }

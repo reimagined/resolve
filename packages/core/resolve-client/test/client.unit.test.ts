@@ -2,7 +2,7 @@
 import { isEqual } from 'lodash'
 import { mocked } from 'ts-jest/utils'
 /* eslint-enable import/no-extraneous-dependencies */
-import { API, getApi } from '../src/api'
+import { Client, getClient } from '../src/client'
 import { Context } from '../src/context'
 import { NarrowedResponse, request } from '../src/request'
 
@@ -37,7 +37,7 @@ const createMockContext = (): Context => ({
 const mRequest = mocked(request)
 
 let mockContext: Context
-let api: API
+let api: Client
 
 beforeAll(() => {
   mRequest.mockResolvedValue(createMockResponse())

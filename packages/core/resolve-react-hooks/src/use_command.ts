@@ -1,47 +1,37 @@
-import { Command, CommandResult, getApi } from 'resolve-client'
+import {
+  Command,
+  CommandResult,
+  CommandOptions,
+  CommandCallback,
+  getApi
+} from 'resolve-client'
 
 import { useContext, useCallback, useDebugValue } from 'react'
 import { ResolveContext } from './context'
 
 type CommandBuilder<TData> = (data: TData) => Command
-type CommandSuccessCallback = (result: CommandResult) => void
-type CommandFailureCallback = (error: Error) => void
-type CommandRequestCallback = (command: Command) => void
-type CommandExecutor<TData> = (data: TData) => void
-
-type CommandOptions = {
-  successCallback?: CommandSuccessCallback
-  failureCallback?: CommandFailureCallback
-  requestCallback?: CommandFailureCallback
-}
+type CommandExecutor<TData> = (data: TData) => CommandResult | void
 
 function isCommandBuilder<T>(x: any): x is CommandBuilder<T> {
-  return x !== null && x !== undefined && typeof x === 'function'
-}
-const isCommandSuccessCallback = (x: any): x is CommandSuccessCallback => {
-  return x !== null && x !== undefined && typeof x === 'function'
-}
-const isCommandFailureCallback = (x: any): x is CommandFailureCallback => {
-  return x !== null && x !== undefined && typeof x === 'function'
-}
-const isCommandRequestCallback = (x: any): x is CommandRequestCallback => {
   return x !== null && x !== undefined && typeof x === 'function'
 }
 
 function useCommand(
   input: Command,
   options?: CommandOptions
-): CommandExecutor<never>
+): CommandExecutor<void>
 
 function useCommand<T>(
   input: CommandBuilder<T>,
-  options?: CommandOptions,
+  options?: CommandOptions | CommandCallback,
+  callback?: CommandCallback,
   dependencies?: any[]
 ): CommandExecutor<T>
 
 function useCommand<T>(
   input: Command | CommandBuilder<T>,
-  options: CommandOptions = {},
+  options?: CommandOptions | CommandCallback,
+  callback?: CommandCallback,
   dependencies: any[] = []
 ): CommandExecutor<T> {
   const context = useContext(ResolveContext)
@@ -51,25 +41,10 @@ function useCommand<T>(
   const api = getApi(context)
 
   const executor = useCallback(
-    async (data: T): Promise<void> => {
+    (data: T): Promise<CommandResult> | void => {
       const command = isCommandBuilder<T>(input) ? input(data) : input
-      const { successCallback, failureCallback, requestCallback } = options
 
-      try {
-        if (isCommandRequestCallback(requestCallback)) {
-          requestCallback(command)
-        }
-
-        const result = await api.command(command)
-
-        if (isCommandSuccessCallback(successCallback)) {
-          successCallback(result || {})
-        }
-      } catch (error) {
-        if (isCommandFailureCallback(failureCallback)) {
-          failureCallback(error)
-        }
-      }
+      return api.command(command, options, callback)
     },
     [context, ...actualDependencies]
   )

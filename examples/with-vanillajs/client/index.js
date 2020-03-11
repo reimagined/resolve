@@ -1,5 +1,5 @@
 import domready from 'domready'
-import { getApi } from 'resolve-client'
+import { getClient } from 'resolve-client'
 import initUI from './init_ui'
 import updateUI from './update_ui'
 
@@ -7,7 +7,7 @@ const main = async resolveContext => {
   await new Promise(resolve => domready(resolve))
   const { viewModels } = resolveContext
   const chatViewModel = viewModels.find(({ name }) => name === 'chat')
-  const api = getApi(resolveContext)
+  const api = getClient(resolveContext)
 
   const sendMessage = (userName, message) =>
     api.command(

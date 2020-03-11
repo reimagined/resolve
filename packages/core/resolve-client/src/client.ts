@@ -301,7 +301,7 @@ const getStaticAssetUrl = (
   return getRootBasedUrl(rootPath, `/${staticPath}${assetPath}`, origin)
 }
 
-export type API = {
+export type Client = {
   command: (
     command: Command,
     options?: CommandOptions | CommandCallback,
@@ -323,7 +323,7 @@ export type API = {
   unsubscribe: (subscription: Subscription) => PromiseOrVoid<void>
 }
 
-export const getApi = (context: Context): API => ({
+export const getClient = (context: Context): Client => ({
   command: (cmd, options?, callback?): PromiseOrVoid<CommandResult> =>
     command(context, cmd, options, callback),
   query: (qr, options, callback?): PromiseOrVoid<QueryResult> =>
