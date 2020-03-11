@@ -89,7 +89,9 @@ describe('query', () => {
       {
         name: 'value'
       },
-      {}
+      {
+        method: 'GET'
+      }
     )
   })
 
@@ -164,6 +166,7 @@ describe('query', () => {
         name: 'value'
       },
       {
+        method: 'GET',
         waitForResponse: {
           validator: expect.any(Function),
           period: 1,

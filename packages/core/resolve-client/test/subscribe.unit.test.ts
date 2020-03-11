@@ -2,7 +2,7 @@ jest.useFakeTimers()
 
 /* eslint-disable import/first */
 import * as subscribe from '../src/subscribe'
-import { rootCallback } from '../src/view_model_subscribe_callback'
+import { rootCallback } from '../src/subscribe_callback'
 import { Context } from '../src/context'
 import { CreateSubscribeAdapter } from '../src/empty_subscribe_adapter'
 /* eslint-enable */
