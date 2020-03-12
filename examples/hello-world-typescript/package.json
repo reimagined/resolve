@@ -26,6 +26,8 @@
     "reactstrap": "^8.1.1",
     "react-helmet": "6.0.0-beta",
     "redux": "4.0.5",
+    "react-redux": "7.2.0",
+    "redux-saga": "1.0.5",
     "redux-devtools-extension": "^2.13.8",
     "resolve-redux": "0.22.13",
     "resolve-command": "0.22.13",
