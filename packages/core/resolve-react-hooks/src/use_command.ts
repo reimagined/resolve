@@ -57,12 +57,9 @@ function useCommand(
   const actualCallback: CommandCallback | undefined = firstOfType<
     CommandCallback
   >(isCallback, options, callback)
-  const actualDependencies: any[] = firstOfType<any[]>(
-    isDependencies,
-    options,
-    callback,
-    dependencies
-  ) ?? [command]
+  const actualDependencies: any[] =
+    firstOfType<any[]>(isDependencies, options, callback, dependencies) ??
+    [command, actualOptions, actualCallback].filter(i => i)
 
   return useCallback(
     (): Promise<CommandResult> | void =>

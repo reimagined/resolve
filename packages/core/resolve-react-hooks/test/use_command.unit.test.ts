@@ -32,7 +32,7 @@ const basicCommand = (): Command => ({
   }
 })
 
-const clearMocks = () => {
+const clearMocks = (): void => {
   mockedGetApi.mockClear()
 
   mockedUseContext.mockClear()
@@ -56,17 +56,6 @@ describe('common', () => {
     expect(mockedUseContext).toHaveBeenCalledWith('mocked-context-selector')
     expect(getClient).toHaveBeenCalledWith('mocked-context')
   })
-
-  test('default dependency should be the command itself', () => {
-    const command = basicCommand()
-
-    useCommand(command)
-
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
-      command
-    ])
-  })
 })
 
 describe('async mode', () => {
@@ -80,6 +69,10 @@ describe('async mode', () => {
       undefined,
       undefined
     )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      'mocked-context',
+      command
+    ])
   })
 
   test('command and dependencies', async () => {
@@ -100,14 +93,20 @@ describe('async mode', () => {
 
   test('command and options', async () => {
     const command = basicCommand()
+    const options = { option: 'option' }
 
-    await useCommand(command, { option: 'option' })()
+    await useCommand(command, options)()
 
     expect(mockedClient.command).toHaveBeenCalledWith(
       command,
-      { option: 'option' },
+      options,
       undefined
     )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      'mocked-context',
+      command,
+      options
+    ])
   })
 
   test('command, options and dependencies', async () => {
@@ -144,6 +143,11 @@ describe('callback mode', () => {
       undefined,
       callback
     )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      'mocked-context',
+      command,
+      callback
+    ])
   })
 
   test('command, callback and dependencies', () => {
@@ -164,14 +168,21 @@ describe('callback mode', () => {
 
   test('command, options and callback', () => {
     const command = basicCommand()
+    const options = { option: 'option' }
 
-    useCommand(command, { option: 'option' }, callback)()
+    useCommand(command, options, callback)()
 
     expect(mockedClient.command).toHaveBeenCalledWith(
       command,
       { option: 'option' },
       callback
     )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      'mocked-context',
+      command,
+      options,
+      callback
+    ])
   })
 
   test('command, options, callback and dependencies', () => {
