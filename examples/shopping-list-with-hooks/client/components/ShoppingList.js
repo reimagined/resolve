@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import {
   useQuery,
   useCommand,
@@ -85,7 +85,7 @@ const ShoppingList = ({
     }
   }
 
-  const [shoppingListData, requestShoppingList] = useQuery(
+  const requestShoppingList = useQuery(
     {
       name: 'shoppingList',
       aggregateIds: [aggregateId],
@@ -101,6 +101,10 @@ const ShoppingList = ({
       }
     }
   )
+
+  useEffect(() => {
+    requestShoppingList()
+  }, [])
 
   const { viewModels } = context
   const viewModel = viewModels.find(({ name }) => name === 'shoppingList')
@@ -119,10 +123,10 @@ const ShoppingList = ({
     [aggregateId],
     modelEventCallback,
     empty,
-    requestShoppingList
+    () => requestShoppingList()
   )
 
-  if (shoppingList === null) {
+  if (shoppingList == null) {
     return <NotFound />
   }
 
