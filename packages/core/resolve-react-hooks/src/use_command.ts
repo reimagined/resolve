@@ -48,6 +48,10 @@ function useCommand(
   dependencies?: any[]
 ): CommandExecutor {
   const context = useContext(ResolveContext)
+  if (!context) {
+    throw Error('You cannot use reSolve hooks outside Resolve context')
+  }
+
   const client = getClient(context)
 
   const actualOptions: CommandOptions | undefined = firstOfType<CommandOptions>(

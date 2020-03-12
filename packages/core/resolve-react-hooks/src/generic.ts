@@ -1,4 +1,6 @@
-export type HookExecutor<TData, TResult> = (data: TData) => TResult | void
+export type HookExecutor<TData, TResult> = (
+  data: TData
+) => Promise<TResult> | void
 
 export function isCallback<T>(x: any): x is T {
   return x && typeof x === 'function'

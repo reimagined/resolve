@@ -12,7 +12,7 @@ jest.mock('../src/context', () => ({
   ResolveContext: 'mocked-context-selector'
 }))
 
-const mockedGetApi = mocked(getClient)
+const mockedGetClient = mocked(getClient)
 const mockedUseContext = mocked(useContext)
 const mockedUseCallback = mocked(useCallback)
 
@@ -33,7 +33,7 @@ const basicCommand = (): Command => ({
 })
 
 const clearMocks = (): void => {
-  mockedGetApi.mockClear()
+  mockedGetClient.mockClear()
 
   mockedUseContext.mockClear()
   mockedUseCallback.mockClear()
@@ -42,7 +42,7 @@ const clearMocks = (): void => {
 }
 
 beforeAll(() => {
-  mockedGetApi.mockReturnValue(mockedClient)
+  mockedGetClient.mockReturnValue(mockedClient)
 })
 
 afterEach(() => {
@@ -55,6 +55,13 @@ describe('common', () => {
 
     expect(mockedUseContext).toHaveBeenCalledWith('mocked-context-selector')
     expect(getClient).toHaveBeenCalledWith('mocked-context')
+  })
+
+  test('fail if not context found', () => {
+    mockedUseContext.mockReturnValueOnce(null)
+
+    expect(() => useCommand(basicCommand())).toThrow()
+    expect(mockedGetClient).not.toHaveBeenCalled()
   })
 })
 
