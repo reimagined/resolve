@@ -10,7 +10,7 @@ const ShoppingListCreator = ({ shoppingListId, onRemoveSuccess }) => {
       aggregateName: 'ShoppingList'
     },
     {
-      successCallback: onRemoveSuccess
+      success: onRemoveSuccess
     }
   )
 

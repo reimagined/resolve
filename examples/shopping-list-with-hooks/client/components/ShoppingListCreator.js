@@ -16,7 +16,7 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
       }
     },
     {
-      successCallback: result => {
+      success: result => {
         setShoppingListName('')
         onCreateSuccess(result)
       }

@@ -48,7 +48,7 @@ const ShoppingList = ({
       }
     },
     {
-      successCallback: clearItemText
+      success: clearItemText
     }
   )
 
