@@ -11,9 +11,6 @@ const adjustWebpackConfigs = webpackConfigs => {
       Object.keys(entry).find(entry => entry.endsWith('/native-chunk.js')) !=
       null
     ) {
-      console.log('!!!!!!!!!!!!!!')
-      // const isExternal = /^((?!(resolve-redux|resolve-subscribe-socket\.io)).)*$/
-      // const isNodeModule = /node_modules/
       webpackConfig.externals = [
         function(context, request, callback) {
           if (
@@ -21,7 +18,6 @@ const adjustWebpackConfigs = webpackConfigs => {
               request
             )
           ) {
-            console.log(request, context)
             callback()
           } else if (
             request[0] !== '/' &&
@@ -30,12 +26,9 @@ const adjustWebpackConfigs = webpackConfigs => {
           ) {
             callback(null, `commonjs ${request}`)
           } else {
-            console.log(request, context)
             callback()
           }
         }
-
-        //
       ]
     }
   }
