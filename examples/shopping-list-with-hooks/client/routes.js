@@ -1,6 +1,6 @@
-import App from './containers/App'
-import ShoppingList from './containers/ShoppingList'
-import MyLists from './containers/MyLists'
+import App from './components/App'
+import ShoppingList from './components/ShoppingList'
+import MyLists from './components/MyLists'
 
 export default [
   {

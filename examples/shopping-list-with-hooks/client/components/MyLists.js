@@ -1,15 +1,18 @@
 import React, { useState } from 'react'
 
 import { useQuery } from 'resolve-react-hooks'
-import ShoppingLists from '../components/ShoppingLists'
-import ShoppingListCreator from '../components/ShoppingListCreator'
+import ShoppingLists from './ShoppingLists'
+import ShoppingListCreator from './ShoppingListCreator'
 
 const MyLists = () => {
   const [lists, setLists] = useState([])
 
-  useQuery({ name: 'ShoppingLists', resolver: 'all', args: {} }, (error, result) => {
-    setLists(result)
-  })
+  useQuery(
+    { name: 'ShoppingLists', resolver: 'all', args: {} },
+    (error, result) => {
+      setLists(result)
+    }
+  )
 
   return (
     <div className="example-wrapper">
@@ -17,7 +20,10 @@ const MyLists = () => {
       <ShoppingLists
         lists={lists ? lists.data || [] : []}
         onRemoveSuccess={result => {
-          setLists({ ...lists, data: lists.data.filter(list => list.id !== result.aggregateId) })
+          setLists({
+            ...lists,
+            data: lists.data.filter(list => list.id !== result.aggregateId)
+          })
         }}
       />
       <ShoppingListCreator

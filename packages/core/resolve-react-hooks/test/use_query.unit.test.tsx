@@ -2,12 +2,12 @@ import React, { FunctionComponent, ReactNode } from 'react'
 import { renderHook, act } from '@testing-library/react-hooks'
 
 import { mocked } from 'ts-jest/utils'
-import { getApi } from 'resolve-client'
+import { getClient } from 'resolve-client'
 import { useQuery } from '../src/use_query'
 import { ResolveContext } from '../src/context'
 
 jest.mock('resolve-api')
-const mockedGetApi = mocked(getApi)
+const mockedGetApi = mocked(getClient)
 const validatorMock = jest.fn()
 const callbackMock = jest.fn()
 const apiQueryMock = jest.fn().mockReturnValue({})

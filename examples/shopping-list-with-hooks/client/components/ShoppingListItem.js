@@ -1,9 +1,8 @@
 import React from 'react'
 import { useCommand } from 'resolve-react-hooks'
-
 import { ListGroupItem, Checkbox } from 'react-bootstrap'
 
-import Image from '../containers/Image'
+import Image from './Image'
 
 const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
   const toggleItem = useCommand({

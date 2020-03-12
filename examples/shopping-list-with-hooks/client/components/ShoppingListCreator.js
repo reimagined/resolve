@@ -48,7 +48,11 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
           />
         </Col>
         <Col md={4}>
-          <Button className="example-button" bsStyle="success" onClick={createShoppingListCommand}>
+          <Button
+            className="example-button"
+            bsStyle="success"
+            onClick={createShoppingListCommand}
+          >
             Add Shopping List
           </Button>
         </Col>

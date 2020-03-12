@@ -5,11 +5,8 @@ import {
   useSubscription,
   ResolveContext
 } from 'resolve-react-hooks'
-// import { connect } from 'react-redux'
-// import { connectViewModel } from 'resolve-redux'
-// import { routerActions } from 'react-router-redux'
 import { Redirect } from 'react-router-dom'
-// import { bindActionCreators } from 'redux'
+
 import {
   Row,
   Col,
@@ -21,9 +18,8 @@ import {
   ControlLabel
 } from 'react-bootstrap'
 
-import ShoppingListItem from '../components/ShoppingListItem'
-import NotFound from '../components/NotFound'
-// import * as aggregateActions from '../actions/aggregate_actions'
+import ShoppingListItem from './ShoppingListItem'
+import NotFound from './NotFound'
 
 const empty = () => {}
 
@@ -181,32 +177,5 @@ const ShoppingList = ({
     </div>
   )
 }
-/*
-export const mapStateToOptions = (state, ownProps) => {
-  const aggregateId = ownProps.match.params.id
 
-  return {
-    viewModelName: 'shoppingList',
-    aggregateIds: [aggregateId]
-  }
-}
-
-export const mapStateToProps = (state, ownProps) => {
-  const aggregateId = ownProps.match.params.id
-
-  return {
-    aggregateId
-  }
-}
-
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      ...aggregateActions,
-      replaceUrl: routerActions.replace
-    },
-    dispatch
-  )
-*/
 export default ShoppingList
-// export default connectViewModel(mapStateToOptions)(connect(mapStateToProps, mapDispatchToProps)(ShoppingList))

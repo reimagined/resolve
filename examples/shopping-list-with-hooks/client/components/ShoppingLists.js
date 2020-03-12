@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, ControlLabel, Table } from 'react-bootstrap'
+import { ControlLabel, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import ShoppingListRemover from './ShoppingListRemover'
@@ -24,7 +24,10 @@ const ShoppingLists = ({ lists, onRemoveSuccess }) => {
                 <Link to={`/${id}`}>{name}</Link>
               </td>
               <td className="example-table-action">
-                <ShoppingListRemover shoppingListId={id} onRemoveSuccess={onRemoveSuccess} />
+                <ShoppingListRemover
+                  shoppingListId={id}
+                  onRemoveSuccess={onRemoveSuccess}
+                />
               </td>
             </tr>
           ))}

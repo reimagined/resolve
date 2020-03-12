@@ -1,7 +1,5 @@
 import React from 'react'
 import { Navbar } from 'react-bootstrap'
-// import { connectStaticBasedUrls } from 'resolve-redux'
-// import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 import { useStatic } from 'resolve-react-hooks'
@@ -9,8 +7,15 @@ import { useStatic } from 'resolve-react-hooks'
 import Image from './Image'
 
 const Header = ({ title, name, css, favicon }) => {
-  const stylesheetLinks = css.map(href => ({ rel: 'stylesheet', href: useStatic(href) }))
-  const faviconLink = { rel: 'icon', type: 'image/png', href: useStatic(favicon) }
+  const stylesheetLinks = css.map(href => ({
+    rel: 'stylesheet',
+    href: useStatic(href)
+  }))
+  const faviconLink = {
+    rel: 'icon',
+    type: 'image/png',
+    href: useStatic(favicon)
+  }
   const links = [...stylesheetLinks, faviconLink]
   const meta = {
     name: 'viewport',
@@ -34,10 +39,4 @@ const Header = ({ title, name, css, favicon }) => {
   )
 }
 
-/* const mapStateToProps = state => ({
-  jwt: state.jwt
-}) */
-
-export default Header // connectStaticBasedUrls(['css', 'favicon'])(
-// connect(mapStateToProps)(Header)
-// )
+export default Header

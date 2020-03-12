@@ -2,12 +2,12 @@ import React, { FunctionComponent, ReactNode } from 'react'
 import { renderHook } from '@testing-library/react-hooks'
 
 import { mocked } from 'ts-jest/utils'
-import { getApi } from 'resolve-api'
+import { getClient } from 'resolve-client'
 import { useSubscription } from '../src/use_subscription'
 import { ResolveContext } from '../src/context'
 
 jest.mock('resolve-api')
-const mockedGetApi = mocked(getApi)
+const mockedGetApi = mocked(getClient)
 
 const eventHandler = jest.fn()
 const subscribeHandler = jest.fn()
