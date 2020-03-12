@@ -1,40 +1,51 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
-
 import {
   getClient,
   Query,
   QueryOptions,
-  QueryCallback,
-  QueryResult
+  QueryResult,
+  QueryCallback
 } from 'resolve-client'
-
+import { useContext, useCallback } from 'react'
 import { ResolveContext } from './context'
+import {
+  firstOfType,
+  HookExecutor,
+  isCallback,
+  isDependencies,
+  isOptions
+} from './generic'
+
+type QueryExecutor = HookExecutor<void, QueryResult>
 
 const useQuery = (
-  qr: Query,
-  queryOptions?: QueryOptions | QueryCallback,
-  queryCallback?: QueryCallback
-): [QueryResult | undefined, Function] => {
+  query: Query,
+  options?: QueryOptions | QueryCallback | any[],
+  callback?: QueryCallback | any[],
+  dependencies?: any[]
+): QueryExecutor => {
   const context = useContext(ResolveContext)
   if (!context) {
-    throw Error('You cannot use resolve effects outside Resolve context')
+    throw Error('You cannot use reSolve hooks outside Resolve context')
   }
+  const client = getClient(context)
+  const actualOptions: QueryOptions | undefined = firstOfType<QueryOptions>(
+    isOptions,
+    options
+  )
+  const actualCallback: QueryCallback | undefined = firstOfType<QueryCallback>(
+    isCallback,
+    options,
+    callback
+  )
+  const actualDependencies: any[] =
+    firstOfType<any[]>(isDependencies, options, callback, dependencies) ??
+    [query, actualOptions, actualCallback].filter(i => i)
 
-  const api = getClient(context)
-  const [data, setData] = useState<QueryResult>()
-
-  const requestModel = useCallback(async () => {
-    const result = await api.query(qr, queryOptions, queryCallback)
-    if (result) {
-      setData(() => result)
-    }
-  }, [qr, queryOptions, queryCallback])
-
-  useEffect(() => {
-    requestModel()
-  }, [])
-
-  return [data, requestModel]
+  return useCallback(
+    (): Promise<QueryResult> | void =>
+      client.query(query, actualOptions, actualCallback),
+    [context, ...actualDependencies]
+  )
 }
 
 export { useQuery }
