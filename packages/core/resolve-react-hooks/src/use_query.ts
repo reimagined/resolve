@@ -17,12 +17,33 @@ import {
 
 type QueryExecutor = HookExecutor<void, QueryResult>
 
-const useQuery = (
+function useQuery(query: Query): QueryExecutor
+function useQuery(query: Query, options: QueryOptions): QueryExecutor
+function useQuery(query: Query, callback: QueryCallback): QueryExecutor
+function useQuery(query: Query, dependencies: any[]): QueryExecutor
+function useQuery(
+  query: Query,
+  options: QueryOptions,
+  callback: QueryCallback
+): QueryExecutor
+function useQuery(
+  query: Query,
+  options: QueryOptions,
+  dependencies: any[]
+): QueryExecutor
+function useQuery(
+  query: Query,
+  options: QueryOptions,
+  callback: QueryCallback,
+  dependencies: any[]
+): QueryExecutor
+
+function useQuery(
   query: Query,
   options?: QueryOptions | QueryCallback | any[],
   callback?: QueryCallback | any[],
   dependencies?: any[]
-): QueryExecutor => {
+): QueryExecutor {
   const context = useContext(ResolveContext)
   if (!context) {
     throw Error('You cannot use reSolve hooks outside Resolve context')
