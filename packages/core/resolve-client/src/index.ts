@@ -1,6 +1,7 @@
 import { Context } from './context'
 import { GenericError, HttpError, temporaryErrorHttpCodes } from './errors'
 import {
+  Client,
   getClient,
   SubscribeCallback,
   SubscribeHandler,
@@ -17,6 +18,7 @@ import {
 } from './client'
 
 export {
+  Client,
   getClient,
   Context,
   temporaryErrorHttpCodes,

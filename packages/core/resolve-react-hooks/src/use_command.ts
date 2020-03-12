@@ -26,6 +26,11 @@ function useCommand(
 function useCommand(command: Command, dependencies: any[]): CommandExecutor
 function useCommand(
   command: Command,
+  callback: CommandCallback,
+  dependencies: any[]
+): CommandExecutor
+function useCommand(
+  command: Command,
   options: CommandOptions,
   callback: CommandCallback
 ): CommandExecutor

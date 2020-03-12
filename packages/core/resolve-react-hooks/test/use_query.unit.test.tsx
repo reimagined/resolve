@@ -38,7 +38,7 @@ const clearMocks = (): void => {
   mockedUseContext.mockClear()
   mockedUseCallback.mockClear()
 
-  mockedClient.command.mockClear()
+  mockedClient.query.mockClear()
 }
 
 beforeAll(() => {

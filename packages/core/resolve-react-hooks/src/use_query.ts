@@ -23,6 +23,11 @@ function useQuery(query: Query, callback: QueryCallback): QueryExecutor
 function useQuery(query: Query, dependencies: any[]): QueryExecutor
 function useQuery(
   query: Query,
+  callback: QueryCallback,
+  dependencies: any[]
+): QueryExecutor
+function useQuery(
+  query: Query,
   options: QueryOptions,
   callback: QueryCallback
 ): QueryExecutor
