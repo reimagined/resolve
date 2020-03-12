@@ -34,6 +34,7 @@ const ShoppingList = ({
     list: []
   })
   const [itemText, setItemText] = useState('')
+  const clearItemText = () => setItemText('')
   const context = useContext(ResolveContext)
 
   const createShoppingItem = useCommand(
@@ -47,7 +48,7 @@ const ShoppingList = ({
       }
     },
     {
-      successCallback: () => setItemText('')
+      successCallback: clearItemText
     }
   )
 
@@ -149,8 +150,12 @@ const ShoppingList = ({
         </InputGroup>
       </FormGroup>
       <ListGroup className="example-list">
-        {shoppingList.list.map(item => (
-          <ShoppingListItem shoppingListId={aggregateId} item={item} />
+        {shoppingList.list.map((item, idx) => (
+          <ShoppingListItem
+            shoppingListId={aggregateId}
+            key={idx}
+            item={item}
+          />
         ))}
       </ListGroup>
       <ControlLabel>Item name</ControlLabel>
