@@ -2,35 +2,25 @@ import {
   Command,
   CommandResult,
   CommandOptions,
+  CommandCallback,
   getClient
 } from 'resolve-client'
-
 import { useContext, useCallback } from 'react'
 import { ResolveContext } from './context'
 
 export type CommandExecutor<TData> = (data: TData) => CommandResult | void
-export type CommandSuccessCallback = (result: CommandResult) => void
-export type CommandFailureCallback = (error: Error) => void
-export type CommandRequestCallback = (command: Command) => void
-export type CommandCallbacks = {
-  request?: CommandRequestCallback
-  failure?: CommandFailureCallback
-  success?: CommandSuccessCallback
-}
 
-const isCommandCallbacks = (x: any): x is CommandCallbacks => {
-  return (
-    x &&
-    (typeof x.request === 'function' ||
-      typeof x.failure === 'function' ||
-      typeof x.success === 'function')
-  )
+const isCallback = (x: any): x is CommandCallback => {
+  return x && typeof x === 'function'
 }
-const isCommandOptions = (x: any): x is CommandOptions => {
+const isOptions = (x: any): x is CommandOptions => {
   return x && typeof x === 'object' && !(x instanceof Array)
 }
 const isDependencies = (x: any): x is any[] => {
   return x && x instanceof Array
+}
+function firstOfType<T>(selector: Function, ...vars: any[]): T | undefined {
+  return vars.find(i => selector(i)) as T
 }
 
 function useCommand(command: Command): CommandExecutor<void>
@@ -40,7 +30,7 @@ function useCommand(
 ): CommandExecutor<void>
 function useCommand(
   command: Command,
-  callbacks: CommandCallbacks
+  callback: CommandCallback
 ): CommandExecutor<void>
 function useCommand(
   command: Command,
@@ -49,7 +39,7 @@ function useCommand(
 function useCommand(
   command: Command,
   options: CommandOptions,
-  callbacks: CommandCallbacks
+  callback: CommandCallback
 ): CommandExecutor<void>
 function useCommand(
   command: Command,
@@ -59,63 +49,38 @@ function useCommand(
 function useCommand(
   command: Command,
   options: CommandOptions,
-  callbacks: CommandCallbacks,
+  callback: CommandCallback,
   dependencies: any[]
 ): CommandExecutor<void>
 
 function useCommand(
   command: Command,
-  optionsCallbacksOrDependencies?: CommandOptions | CommandCallbacks | any[],
-  callbacksOrDependencies?: CommandCallbacks | any[],
+  options?: CommandOptions | CommandCallback | any[],
+  callback?: CommandCallback | any[],
   dependencies?: any[]
 ): CommandExecutor<void> {
   const context = useContext(ResolveContext)
   const client = getClient(context)
 
-  let actualOptions: CommandOptions | undefined = undefined
-  let actualCallbacks: CommandCallbacks = {}
-  let actualDependencies: any[] = [command]
+  const actualOptions: CommandOptions | undefined = firstOfType<CommandOptions>(
+    isOptions,
+    options
+  )
+  const actualCallback: CommandCallback | undefined = firstOfType<
+    CommandCallback
+  >(isCallback, options, callback)
+  const actualDependencies: any[] = firstOfType<any[]>(
+    isDependencies,
+    options,
+    callback,
+    dependencies
+  ) ?? [command]
 
-  if (isCommandCallbacks(optionsCallbacksOrDependencies)) {
-    actualCallbacks = optionsCallbacksOrDependencies
-    if (isDependencies(callbacksOrDependencies)) {
-      actualDependencies = callbacksOrDependencies
-    }
-    if (isDependencies(dependencies)) {
-      actualDependencies = dependencies
-    }
-  } else if (isCommandOptions(optionsCallbacksOrDependencies)) {
-    actualOptions = optionsCallbacksOrDependencies
-    if (isCommandCallbacks(callbacksOrDependencies)) {
-      actualCallbacks = callbacksOrDependencies
-    }
-    if (isDependencies(callbacksOrDependencies)) {
-      actualDependencies = callbacksOrDependencies
-    }
-    if (isDependencies(dependencies)) {
-      actualDependencies = dependencies
-    }
-  } else if (isDependencies(optionsCallbacksOrDependencies)) {
-    actualDependencies = optionsCallbacksOrDependencies
-  }
-
-  return useCallback(async (): Promise<void> => {
-    try {
-      if (typeof actualCallbacks.request === 'function') {
-        actualCallbacks.request(command)
-      }
-
-      const result = await client.command(command, actualOptions)
-
-      if (typeof actualCallbacks.success === 'function') {
-        actualCallbacks.success(result || {})
-      }
-    } catch (error) {
-      if (typeof actualCallbacks.failure === 'function') {
-        actualCallbacks.failure(error)
-      }
-    }
-  }, [context, ...actualDependencies])
+  return useCallback(
+    (): Promise<CommandResult> | void =>
+      client.command(command, actualOptions, actualCallback),
+    [context, ...actualDependencies]
+  )
 }
 
 export { useCommand }

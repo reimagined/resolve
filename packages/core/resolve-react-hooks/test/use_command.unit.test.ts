@@ -1,7 +1,7 @@
 import { useContext, useCallback } from 'react'
 import { mocked } from 'ts-jest/utils'
-import { Command, getClient } from 'resolve-client'
-import { CommandCallbacks, useCommand } from '../src/use_command'
+import { Command, CommandCallback, getClient } from 'resolve-client'
+import { useCommand } from '../src/use_command'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({
@@ -49,149 +49,144 @@ afterEach(() => {
   clearMocks()
 })
 
-test('client requested for specified context', () => {
-  useCommand(basicCommand())
+describe('common', () => {
+  test('client requested for specified context', () => {
+    useCommand(basicCommand())
 
-  expect(mockedUseContext).toHaveBeenCalledWith('mocked-context-selector')
-  expect(getClient).toHaveBeenCalledWith('mocked-context')
-})
-
-test('simple usage: command passed as is', () => {
-  const command = basicCommand()
-
-  useCommand(command)()
-
-  expect(mockedClient.command).toHaveBeenCalledWith(command, undefined)
-})
-
-test('default dependency should be the command itself', () => {
-  const command = basicCommand()
-
-  useCommand(command)
-
-  expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-    'mocked-context',
-    command
-  ])
-})
-
-test('specifying dependencies', () => {
-  useCommand(basicCommand(), ['dependency'])
-
-  expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-    'mocked-context',
-    'dependency'
-  ])
-})
-
-test('command with callbacks: success', async () => {
-  const command = basicCommand()
-
-  const callbacks = {
-    request: jest.fn(),
-    success: jest.fn(),
-    failure: jest.fn()
-  }
-  await new Promise(resolve => {
-    callbacks.success.mockImplementation(resolve)
-    useCommand(command, callbacks)()
+    expect(mockedUseContext).toHaveBeenCalledWith('mocked-context-selector')
+    expect(getClient).toHaveBeenCalledWith('mocked-context')
   })
 
-  expect(mockedClient.command).toHaveBeenCalledWith(command, undefined)
-  expect(callbacks.request).toHaveBeenCalledWith(command)
-  expect(callbacks.success).toHaveBeenCalledWith({ result: 'command-result' })
-  expect(callbacks.failure).not.toHaveBeenCalled()
-})
+  test('default dependency should be the command itself', () => {
+    const command = basicCommand()
 
-test('command with callbacks: failure', async () => {
-  const command = basicCommand()
+    useCommand(command)
 
-  const callbacks = {
-    request: jest.fn(),
-    success: jest.fn(),
-    failure: jest.fn()
-  }
-
-  mockedClient.command.mockRejectedValueOnce('command-error')
-
-  await new Promise(resolve => {
-    callbacks.failure.mockImplementation(resolve)
-    useCommand(command, callbacks)()
-  })
-
-  expect(mockedClient.command).toHaveBeenCalledWith(command, undefined)
-  expect(callbacks.request).toHaveBeenCalledWith(command)
-  expect(callbacks.success).not.toHaveBeenCalled()
-  expect(callbacks.failure).toHaveBeenCalledWith('command-error')
-})
-
-test('command with callbacks: only request', async () => {
-  const command = basicCommand()
-
-  const callbacks = {
-    request: jest.fn()
-  }
-
-  await new Promise(resolve => {
-    callbacks.request.mockImplementation(resolve)
-    useCommand(command, callbacks)()
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      'mocked-context',
+      command
+    ])
   })
 })
 
-test('command with callbacks: only success', async () => {
-  const command = basicCommand()
+describe('async mode', () => {
+  test('just a command', async () => {
+    const command = basicCommand()
 
-  const callbacks = {
-    success: jest.fn()
-  }
+    await useCommand(command)()
 
-  await new Promise(resolve => {
-    callbacks.success.mockImplementation(resolve)
-    useCommand(command, callbacks)()
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      command,
+      undefined,
+      undefined
+    )
+  })
+
+  test('command and dependencies', async () => {
+    const command = basicCommand()
+
+    await useCommand(command, ['dependency'])()
+
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      command,
+      undefined,
+      undefined
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      'mocked-context',
+      'dependency'
+    ])
+  })
+
+  test('command and options', async () => {
+    const command = basicCommand()
+
+    await useCommand(command, { option: 'option' })()
+
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      command,
+      { option: 'option' },
+      undefined
+    )
+  })
+
+  test('command, options and dependencies', async () => {
+    const command = basicCommand()
+
+    await useCommand(command, { option: 'option' }, ['dependency'])()
+
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      command,
+      { option: 'option' },
+      undefined
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      'mocked-context',
+      'dependency'
+    ])
   })
 })
 
-test('command with callbacks: only failure', async () => {
-  const command = basicCommand()
+describe('callback mode', () => {
+  let callback: CommandCallback
 
-  const callbacks = {
-    failure: jest.fn()
-  }
-
-  mockedClient.command.mockRejectedValueOnce('command-error')
-
-  await new Promise(resolve => {
-    callbacks.failure.mockImplementation(resolve)
-    useCommand(command, callbacks)()
-  })
-})
-
-test('pass command options to the client', async () => {
-  const command = basicCommand()
-
-  useCommand(command, { customOption: 'option' })()
-
-  expect(mockedClient.command).toHaveBeenCalledWith(command, {
-    customOption: 'option'
-  })
-})
-
-test('command, options, callbacks and dependencies all together', async () => {
-  const command = basicCommand()
-  const callbacks = {
-    success: jest.fn()
-  }
-
-  await new Promise(resolve => {
-    callbacks.success.mockImplementation(resolve)
-    useCommand(command, { customOption: 'option' }, callbacks, ['dependency'])()
+  beforeEach(() => {
+    callback = jest.fn()
   })
 
-  expect(mockedClient.command).toHaveBeenCalledWith(command, {
-    customOption: 'option'
+  test('just a command', () => {
+    const command = basicCommand()
+
+    useCommand(command, callback)()
+
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      command,
+      undefined,
+      callback
+    )
   })
-  expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-    'mocked-context',
-    'dependency'
-  ])
+
+  test('command, callback and dependencies', () => {
+    const command = basicCommand()
+
+    useCommand(command, callback, ['dependency'])()
+
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      command,
+      undefined,
+      callback
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      'mocked-context',
+      'dependency'
+    ])
+  })
+
+  test('command, options and callback', () => {
+    const command = basicCommand()
+
+    useCommand(command, { option: 'option' }, callback)()
+
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      command,
+      { option: 'option' },
+      callback
+    )
+  })
+
+  test('command, options, callback and dependencies', () => {
+    const command = basicCommand()
+
+    useCommand(command, { option: 'option' }, callback, ['dependency'])()
+
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      command,
+      { option: 'option' },
+      callback
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      'mocked-context',
+      'dependency'
+    ])
+  })
 })
