@@ -7,58 +7,46 @@ import {
 } from 'resolve-client'
 import { useContext, useCallback } from 'react'
 import { ResolveContext } from './context'
+import {
+  firstOfType,
+  HookExecutor,
+  isCallback,
+  isDependencies,
+  isOptions
+} from './generic'
 
-export type CommandExecutor<TData> = (data: TData) => CommandResult | void
+type CommandExecutor = HookExecutor<void, CommandResult>
 
-const isCallback = (x: any): x is CommandCallback => {
-  return x && typeof x === 'function'
-}
-const isOptions = (x: any): x is CommandOptions => {
-  return x && typeof x === 'object' && !(x instanceof Array)
-}
-const isDependencies = (x: any): x is any[] => {
-  return x && x instanceof Array
-}
-function firstOfType<T>(selector: Function, ...vars: any[]): T | undefined {
-  return vars.find(i => selector(i)) as T
-}
-
-function useCommand(command: Command): CommandExecutor<void>
-function useCommand(
-  command: Command,
-  options: CommandOptions
-): CommandExecutor<void>
+function useCommand(command: Command): CommandExecutor
+function useCommand(command: Command, options: CommandOptions): CommandExecutor
 function useCommand(
   command: Command,
   callback: CommandCallback
-): CommandExecutor<void>
-function useCommand(
-  command: Command,
-  dependencies: any[]
-): CommandExecutor<void>
+): CommandExecutor
+function useCommand(command: Command, dependencies: any[]): CommandExecutor
 function useCommand(
   command: Command,
   options: CommandOptions,
   callback: CommandCallback
-): CommandExecutor<void>
+): CommandExecutor
 function useCommand(
   command: Command,
   options: CommandOptions,
   dependencies: any[]
-): CommandExecutor<void>
+): CommandExecutor
 function useCommand(
   command: Command,
   options: CommandOptions,
   callback: CommandCallback,
   dependencies: any[]
-): CommandExecutor<void>
+): CommandExecutor
 
 function useCommand(
   command: Command,
   options?: CommandOptions | CommandCallback | any[],
   callback?: CommandCallback | any[],
   dependencies?: any[]
-): CommandExecutor<void> {
+): CommandExecutor {
   const context = useContext(ResolveContext)
   const client = getClient(context)
 
