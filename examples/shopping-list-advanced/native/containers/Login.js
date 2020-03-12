@@ -55,19 +55,29 @@ export class Login extends React.PureComponent {
   }
 
   onLogin = () => {
-    this.props.authRequest('/api/auth/local/login', {
-      username: this.state.username,
-      password: this.state.password,
-      noredirect: true
-    })
+    console.log('onLogin')
+    this.props.authRequest(
+      '/api/auth/local/login',
+      {
+        username: this.state.username,
+        password: this.state.password,
+        noredirect: true
+      },
+      'POST'
+    )
   }
 
   onRegister = () => {
-    this.props.authRequest('/api/auth/local/register', {
-      username: this.state.username,
-      password: this.state.password,
-      noredirect: true
-    })
+    console.log('onRegister')
+    this.props.authRequest(
+      '/api/auth/local/register',
+      {
+        username: this.state.username,
+        password: this.state.password,
+        noredirect: true
+      },
+      'POST'
+    )
   }
 
   updateUsername = username => {

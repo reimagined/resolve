@@ -31,6 +31,7 @@ export class SideBar extends React.Component {
       name: 'My Lists',
       icon: <Icon style={styles.icon} name="list" type="FontAwesome" />,
       callback: () => {
+        console.log(this.props.navigation)
         this.props.navigation.navigate('My Lists')
       }
     },
@@ -46,7 +47,7 @@ export class SideBar extends React.Component {
       icon: <Icon style={styles.icon} name="sign-out" type="FontAwesome" />,
       callback: () => {
         this.props.logout()
-        this.props.navigation.navigate('Logout')
+        this.props.navigation.navigate('Login')
       }
     }
   ]

@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { connectViewModel, connectRootBasedUrls } from 'resolve-redux'
-import { routerActions } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
 import { Redirect } from 'react-router-dom'
 import {
@@ -195,13 +194,7 @@ export const mapStateToProps = (state, ownProps) => {
 }
 
 export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      ...aggregateActions,
-      replaceUrl: routerActions.replace
-    },
-    dispatch
-  )
+  bindActionCreators(aggregateActions, dispatch)
 
 export default requiredAuth(
   connectViewModel(mapStateToOptions)(

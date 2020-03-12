@@ -5,7 +5,7 @@ import ShareForm from './containers/ShareForm'
 import Settings from './containers/Settings'
 import Login from './containers/Login'
 
-export default [
+const routes = [
   {
     component: App,
     routes: [
@@ -36,3 +36,7 @@ export default [
     ]
   }
 ]
+
+const getRoutes = () => routes
+
+export default getRoutes
