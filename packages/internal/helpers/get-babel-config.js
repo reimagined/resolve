@@ -94,7 +94,9 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
       break
     }
     default: {
-      throw new Error('"sourceType" must be one of ["js", "ts"]')
+      throw new Error(
+        `"sourceType" must be one of ["js", "ts"]. sourceType = ${sourceType}`
+      )
     }
   }
 
