@@ -1,4 +1,4 @@
-import ExtractTextPlugin from 'extract-text-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import postcssImport from 'postcss-import'
 import autoprefixer from 'autoprefixer'
 
@@ -18,29 +18,31 @@ const adjustWebpackConfigs = webpackConfigs => {
 
     webpackConfig.module.rules.push({
       test: /\.css$/,
-      use: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: [
-          {
-            loader: 'css-loader',
-            options: {
-              modules: true,
-              importLoaders: 1
-            }
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins: [postcssImport(), autoprefixer()]
-            }
+      use: [
+        {
+          loader: MiniCssExtractPlugin.loader,
+          options: {
+            publicPath: '/static/'
           }
-        ]
-      })
+        },
+        {
+          loader: 'css-loader',
+          options: {
+            modules: true,
+            importLoaders: 1
+          }
+        },
+        {
+          loader: 'postcss-loader',
+          options: {
+            plugins: [postcssImport(), autoprefixer()]
+          }
+        }
+      ]
     })
 
-    const extractTextPlugin = new ExtractTextPlugin({
-      filename: 'client/style.css',
-      allChunks: true
+    const extractTextPlugin = new MiniCssExtractPlugin({
+      filename: 'client/style.css'
     })
 
     webpackConfig.plugins = Array.isArray(webpackConfig.plugins)
