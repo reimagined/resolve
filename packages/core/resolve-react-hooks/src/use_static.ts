@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 
-import { getApi } from 'resolve-client'
+import { getClient } from 'resolve-client'
 
 import { ResolveContext } from './context'
 
@@ -9,7 +9,7 @@ const useStatic = (assetPath: string | Array<string>): string | string[] => {
   if (!context) {
     throw Error('You cannot use resolve effects outside Resolve context')
   }
-  const api = getApi(context)
+  const api = getClient(context)
   let result
   if (typeof assetPath === 'string') {
     result = api.getStaticAssetUrl(assetPath)

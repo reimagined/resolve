@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from 'react'
 
 import {
-  getApi,
+  getClient,
   SubscribeCallback,
   SubscribeHandler,
   ResubscribeCallback,
@@ -22,7 +22,7 @@ const useSubscription = (
     throw Error('You cannot use resolve effects outside Resolve context')
   }
   const { viewModels } = context
-  const api = getApi(context)
+  const api = getClient(context)
 
   useEffect(() => {
     const viewModel = viewModels.find(
