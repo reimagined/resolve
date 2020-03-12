@@ -1,9 +1,10 @@
 import React from 'react'
 import { Image as BootstrapImage } from 'react-bootstrap'
-import { useStatic } from 'resolve-react-hooks'
+import { useStaticResolver } from 'resolve-react-hooks'
 
-const Image = ({ src, ...otherProps }) => (
-  <BootstrapImage {...otherProps} src={useStatic(src)} />
-)
+const Image = ({ src, ...otherProps }) => {
+  const resolveStatic = useStaticResolver()
+  return <BootstrapImage {...otherProps} src={resolveStatic(src)} />
+}
 
 export default Image

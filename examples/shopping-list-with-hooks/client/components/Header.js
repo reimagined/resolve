@@ -2,19 +2,20 @@ import React from 'react'
 import { Navbar } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
-import { useStatic } from 'resolve-react-hooks'
+import { useStaticResolver } from 'resolve-react-hooks'
 
 import Image from './Image'
 
 const Header = ({ title, name, css, favicon }) => {
+  const resolveStatic = useStaticResolver()
   const stylesheetLinks = css.map(href => ({
     rel: 'stylesheet',
-    href: useStatic(href)
+    href: resolveStatic(href)
   }))
   const faviconLink = {
     rel: 'icon',
     type: 'image/png',
-    href: useStatic(favicon)
+    href: resolveStatic(favicon)
   }
   const links = [...stylesheetLinks, faviconLink]
   const meta = {
