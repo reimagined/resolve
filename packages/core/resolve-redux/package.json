@@ -30,8 +30,6 @@
     "json-stable-stringify": "^1.0.1",
     "jwt-decode": "^2.2.0",
     "query-string": "^5.1.1",
-    "react-redux": "^7.2.0",
-    "redux-saga": "^1.0.0",
     "unfetch": "^4.0.1",
     "uuid": "^3.3.2"
   },
@@ -41,12 +39,16 @@
     "react-dom": "16.13.0",
     "react-test-renderer": "16.13.0",
     "redux": "4.0.5",
-    "sinon": "7.2.2"
+    "sinon": "7.2.2",
+    "react-redux": "^7.2.0",
+    "redux-saga": "^1.0.0"
   },
   "peerDependencies": {
     "react": "*",
     "react-dom": "*",
-    "redux": "*"
+    "redux": "*",
+    "react-redux": "*",
+    "redux-saga": "*"
   },
   "babelCompile": [
     {

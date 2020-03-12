@@ -284,8 +284,8 @@ const createApi = ({
       return result
     },
 
-    async request({ url, body }) {
-      return request(url, body)
+    async request({ url, body, method }) {
+      return request(url, body, method == null ? queryMethod : method)
     }
   }
 }
