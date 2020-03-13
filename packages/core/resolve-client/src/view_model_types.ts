@@ -1,5 +1,6 @@
-export interface ViewModel {
+export type ViewModelReducer = (state: any, event: object) => any
+export type ViewModel = {
   name: string
-  projection: Array<object>
+  projection: { [key: string]: ViewModelReducer }
   deserializeState: (state: string) => object
 }
