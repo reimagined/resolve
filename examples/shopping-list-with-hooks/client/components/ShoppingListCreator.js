@@ -15,11 +15,9 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
         name: shoppingListName || `Shopping List ${lists.length + 1}`
       }
     },
-    {
-      success: result => {
-        setShoppingListName('')
-        onCreateSuccess(result)
-      }
+    (err, result) => {
+      setShoppingListName('')
+      onCreateSuccess(err, result)
     }
   )
 

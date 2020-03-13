@@ -22,7 +22,7 @@ const MyLists = () => {
       My lists
       <ShoppingLists
         lists={lists ? lists.data || [] : []}
-        onRemoveSuccess={result => {
+        onRemoveSuccess={(err, result) => {
           setLists({
             ...lists,
             data: lists.data.filter(list => list.id !== result.aggregateId)
@@ -31,7 +31,7 @@ const MyLists = () => {
       />
       <ShoppingListCreator
         lists={lists ? lists.data || [] : []}
-        onCreateSuccess={result => {
+        onCreateSuccess={(err, result) => {
           const nextLists = { ...lists }
           nextLists.data.push({
             name: result.payload.name,

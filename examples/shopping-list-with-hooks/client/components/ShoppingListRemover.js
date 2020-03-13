@@ -2,16 +2,14 @@ import React from 'react'
 import { Button } from 'react-bootstrap'
 import { useCommand } from 'resolve-react-hooks'
 
-const ShoppingListCreator = ({ shoppingListId, onRemoveSuccess }) => {
+const ShoppingListRemover = ({ shoppingListId, onRemoveSuccess }) => {
   const removeShoppingListCommand = useCommand(
     {
       type: 'removeShoppingList',
       aggregateId: shoppingListId,
       aggregateName: 'ShoppingList'
     },
-    {
-      success: onRemoveSuccess
-    }
+    onRemoveSuccess
   )
 
   return (
@@ -21,4 +19,4 @@ const ShoppingListCreator = ({ shoppingListId, onRemoveSuccess }) => {
   )
 }
 
-export default ShoppingListCreator
+export default ShoppingListRemover

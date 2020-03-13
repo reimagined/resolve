@@ -21,8 +21,6 @@ import {
 import ShoppingListItem from './ShoppingListItem'
 import NotFound from './NotFound'
 
-const empty = () => {}
-
 const ShoppingList = ({
   match: {
     params: { id: aggregateId }
@@ -47,9 +45,7 @@ const ShoppingList = ({
         id: Date.now().toString()
       }
     },
-    {
-      success: clearItemText
-    }
+    clearItemText
   )
 
   const updateShoppingListName = event => {
@@ -102,29 +98,29 @@ const ShoppingList = ({
     }
   )
 
+  const modelEventCallback = useCallback(event => {
+    const handler = viewModel.projection[event.type]
+    const nextShoppingList = handler(shoppingList, event)
+    setShoppingList(nextShoppingList)
+  })
+
+  const { subscribe, unsubscribe, setEventHandler } = useSubscription({
+    viewModelName: 'shoppingList',
+    aggregateIds: [aggregateId]
+  })
+
+  setEventHandler(modelEventCallback)
+
   useEffect(() => {
     requestShoppingList()
+    subscribe()
+    return () => {
+      unsubscribe()
+    }
   }, [])
 
   const { viewModels } = context
   const viewModel = viewModels.find(({ name }) => name === 'shoppingList')
-
-  const modelEventCallback = useCallback(
-    event => {
-      const handler = viewModel.projection[event.type]
-      const nextShoppingList = handler(shoppingList, event)
-      setShoppingList(nextShoppingList)
-    },
-    [shoppingList]
-  )
-
-  useSubscription(
-    'shoppingList',
-    [aggregateId],
-    modelEventCallback,
-    empty,
-    () => requestShoppingList()
-  )
 
   if (shoppingList == null) {
     return <NotFound />
