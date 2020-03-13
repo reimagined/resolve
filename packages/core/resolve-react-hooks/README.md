@@ -1,8 +1,9 @@
 # **resolve-react-hooks**
 
-reSolve React hooks library. An example usage can be found [here](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-with-hooks).
+reSolve React hooks library. A usage example can be found [here](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-with-hooks).
 
-Direct links to examples by hook:
+To view code samples for particular hooks, follow the links below:
+
 * [useCommand](https://github.com/reimagined/resolve/blob/master/examples/shopping-list-with-hooks/client/components/ShoppingListCreator.js)
 * [useQuery - read model](https://github.com/reimagined/resolve/blob/master/examples/shopping-list-with-hooks/client/components/MyLists.js)
 * [useQuery - view model](https://github.com/reimagined/resolve/blob/master/examples/shopping-list-with-hooks/client/components/ShoppingList.js)
