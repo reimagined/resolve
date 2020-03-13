@@ -22,7 +22,7 @@ const useViewModel = (
     throw Error('You cannot use reSolve hooks outside Resolve context')
   }
 
-  const client = getClient(context)
+  const client = useMemo(() => getClient(context), [context])
 
   const { viewModels } = context
   const viewModel = viewModels.find(({ name }) => name === modelName)
