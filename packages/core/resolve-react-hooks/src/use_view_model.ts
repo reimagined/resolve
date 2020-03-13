@@ -31,8 +31,12 @@ const useViewModel = (
     throw Error(`View model ${modelName} not exist within context`)
   }
 
-  // TODO: apply initial state from 'Init' view model handler
-  const closure = useMemo<Closure>(() => ({}), [])
+  const closure = useMemo<Closure>(
+    () => ({
+      state: viewModel.projection.Init ? viewModel.projection.Init() : null
+    }),
+    []
+  )
 
   const setState = useCallback(state => {
     closure.state = state
