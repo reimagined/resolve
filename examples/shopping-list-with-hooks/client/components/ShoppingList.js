@@ -1,10 +1,5 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
-import {
-  useQuery,
-  useCommand,
-  useSubscription,
-  ResolveContext
-} from 'resolve-react-hooks'
+import React, { useState, useEffect } from 'react'
+import { useCommand, useViewModel } from 'resolve-react-hooks'
 import { Redirect } from 'react-router-dom'
 
 import {
@@ -31,9 +26,13 @@ const ShoppingList = ({
     id: null,
     list: []
   })
+  const { connect, dispose } = useViewModel(
+    'shoppingList',
+    [aggregateId],
+    setShoppingList
+  )
   const [itemText, setItemText] = useState('')
   const clearItemText = () => setItemText('')
-  const context = useContext(ResolveContext)
 
   const createShoppingItem = useCommand(
     {
@@ -49,7 +48,11 @@ const ShoppingList = ({
   )
 
   const updateShoppingListName = event => {
-    setShoppingList({ ...shoppingList, name: event.target.value })
+    console.log(event)
+    /* WTF?
+      setShoppingList({ ...shoppingList, name: event.target.value })
+    }
+    */
   }
 
   const renameShoppingList = useCommand({
@@ -81,46 +84,12 @@ const ShoppingList = ({
     }
   }
 
-  const requestShoppingList = useQuery(
-    {
-      name: 'shoppingList',
-      aggregateIds: [aggregateId],
-      args: {}
-    },
-    (error, result) => {
-      if (error == null) {
-        if (result.data != null) {
-          setShoppingList({ ...result.data })
-        } else {
-          setShoppingList(null)
-        }
-      }
-    }
-  )
-
-  const modelEventCallback = useCallback(event => {
-    const handler = viewModel.projection[event.type]
-    const nextShoppingList = handler(shoppingList, event)
-    setShoppingList(nextShoppingList)
-  })
-
-  const { subscribe, unsubscribe, setEventHandler } = useSubscription({
-    viewModelName: 'shoppingList',
-    aggregateIds: [aggregateId]
-  })
-
-  setEventHandler(modelEventCallback)
-
   useEffect(() => {
-    requestShoppingList()
-    subscribe()
+    connect()
     return () => {
-      unsubscribe()
+      dispose()
     }
   }, [])
-
-  const { viewModels } = context
-  const viewModel = viewModels.find(({ name }) => name === 'shoppingList')
 
   if (shoppingList == null) {
     return <NotFound />
