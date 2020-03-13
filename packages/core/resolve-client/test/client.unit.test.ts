@@ -199,4 +199,52 @@ describe('query', () => {
       )
     ).resolves.toBeTruthy()
   })
+
+  test('POST method support', async () => {
+    await api.query(
+      {
+        name: 'query-name',
+        resolver: 'query-resolver',
+        args: {
+          name: 'value'
+        }
+      },
+      {
+        method: 'POST'
+      }
+    )
+    expect(mRequest).toHaveBeenCalledWith(
+      mockContext,
+      '/api/query/query-name/query-resolver',
+      {
+        name: 'value'
+      },
+      {
+        method: 'POST'
+      }
+    )
+  })
+
+  test('default GET method if user not provide it within options', async () => {
+    await api.query(
+      {
+        name: 'query-name',
+        resolver: 'query-resolver',
+        args: {
+          name: 'value'
+        }
+      },
+      {}
+    )
+    expect(mRequest).toHaveBeenCalledWith(
+      mockContext,
+      '/api/query/query-name/query-resolver',
+      {
+        name: 'value'
+      },
+      {
+        method: 'GET'
+      }
+    )
+  })
 })

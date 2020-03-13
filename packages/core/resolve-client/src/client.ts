@@ -89,7 +89,6 @@ export type QueryResult = {
   data: any
 }
 export type QueryOptions = {
-  // TODO: add unit test
   method?: 'GET' | 'POST'
   waitFor?: {
     validator: (result: any) => boolean
@@ -110,7 +109,6 @@ export const query = (
 ): PromiseOrVoid<QueryResult> => {
   const requestOptions: RequestOptions = {
     method: 'GET'
-    // TODO: add retry on temporary errors?
   }
 
   if (isOptions<QueryOptions>(options)) {
@@ -124,7 +122,6 @@ export const query = (
         attempts
       }
     }
-    // TODO: add unit test
     requestOptions.method = options?.method ?? 'GET'
   }
 
