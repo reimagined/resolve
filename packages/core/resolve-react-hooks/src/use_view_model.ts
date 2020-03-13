@@ -55,12 +55,13 @@ const useViewModel = (
   }, [])
 
   const connect = useCallback(async done => {
+    // TODO: return promise (on connection!) if no done callback provided
     await queryState()
     const subscription = await client.subscribeTo(
       modelName,
       aggregateIds,
       event => applyEvent(event),
-      done,
+      done, // here
       () => queryState()
     )
     if (subscription) {
@@ -69,10 +70,13 @@ const useViewModel = (
   }, [])
 
   const dispose = useCallback(async done => {
+    // TODO: return promise if no done callback provided
     if (closure.subscription) {
       await client.unsubscribe(closure.subscription)
     }
-    done()
+    if (done) {
+      done()
+    }
   }, [])
 
   return useMemo(
