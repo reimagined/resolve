@@ -7,10 +7,10 @@ const main = async resolveContext => {
   await new Promise(resolve => domready(resolve))
   const { viewModels } = resolveContext
   const chatViewModel = viewModels.find(({ name }) => name === 'chat')
-  const api = getClient(resolveContext)
+  const client = getClient(resolveContext)
 
   const sendMessage = (userName, message) =>
-    api.command(
+    client.command(
       {
         aggregateName: 'Chat',
         type: 'postMessage',
@@ -25,7 +25,7 @@ const main = async resolveContext => {
       }
     )
 
-  const { data } = await api.query({
+  const { data } = await client.query({
     name: 'chat',
     aggregateIds: '*'
   })
@@ -45,7 +45,7 @@ const main = async resolveContext => {
     setImmediate(updateUI.bind(null, chatViewModelState))
   }
 
-  await api.subscribeTo('chat', '*', chatViewModelUpdater)
+  await client.subscribeTo('chat', '*', chatViewModelUpdater)
 }
 
 export default main
