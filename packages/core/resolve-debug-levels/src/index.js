@@ -1,15 +1,19 @@
 import debug from 'debug'
 
 const logLevels = ['log', 'error', 'warn', 'debug', 'info', 'verbose']
+const defaultLogLevel = logLevels[2]
 const emptyFunction = Function() // eslint-disable-line no-new-func
 
 const debugLevels = (debugProvider, envProvider, namespace) => {
-  let logLevel = 'warn'
+  let logLevel = defaultLogLevel
   if (envProvider.hasOwnProperty('DEBUG_LEVEL')) {
     logLevel = envProvider.DEBUG_LEVEL
   }
   if (logLevels.indexOf(logLevel) < 0) {
-    throw new Error(`Log level ${logLevel} is not found in allowed levels`)
+    debugProvider(namespace)(
+      `Attempted to set unsupported DEBUG_LEVEL="${logLevel}", so fallback to default level "${defaultLogLevel}"`
+    )
+    logLevel = defaultLogLevel
   }
 
   if (!envProvider.hasOwnProperty('DEBUG')) {

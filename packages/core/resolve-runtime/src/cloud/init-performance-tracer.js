@@ -23,7 +23,10 @@ const initPerformanceTracer = resolve => {
             return {
               addAnnotation: (annotationName, data) => {
                 if (process.env.TRACE) {
-                  subsegment.addAnnotation(annotationName, data)
+                  subsegment.addAnnotation(
+                    annotationName,
+                    data != null ? data : '<Empty annotation>'
+                  )
                 }
               },
               addError: error => {

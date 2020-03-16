@@ -53,20 +53,6 @@ test('resolve-debug-levels should set DEBUG_LEVELS="warn" if DEBUG_LEVELS env is
   expect(debugPrinter).not.toBeCalledWith('Verbose message')
 })
 
-test('resolve-debug-levels should fail with wrong DEBUG_LEVELS env', () => {
-  const debugPrinter = jest.fn()
-  const debugProvider = jest.fn().mockReturnValue(debugPrinter)
-  const envProvider = {
-    DEBUG: 'namespace',
-    DEBUG_LEVEL: 'wrong-level'
-  }
-  const namespace = 'namespace'
-
-  expect(() => debugLevels(debugProvider, envProvider, namespace)).toThrowError(
-    `Log level wrong-level is not found in allowed levels`
-  )
-})
-
 test('resolve-debug-levels should set DEBUG="resolve:" if DEBUG env is not set', () => {
   const debugNamespaceEnabler = jest.fn()
   const debugPrinter = jest.fn()
