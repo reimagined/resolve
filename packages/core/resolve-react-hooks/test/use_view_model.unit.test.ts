@@ -173,17 +173,16 @@ describe('call', () => {
     })
   })
 
-  test('connect with callback', async () => {
+  test('connect with callback', done => {
     const { connect } = useViewModel(
       'view-model-name',
       ['aggregate-id'],
       mockStateChange
     )
 
-    const callback = jest.fn((err, result) => {})
-    const result = await connect(callback)
+    const callback = jest.fn(done)
+    const result = connect(callback)
     expect(result).toBeUndefined()
-    // TODO: expect(callback).toBeCalledTimes(1)
   })
 
   test('dispose with callback', async () => {
