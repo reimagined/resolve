@@ -172,7 +172,7 @@ const updateToSetExpression = (
       let updateExpr = escapeId(baseName)
       for (const { operationName, nestedPath, fieldValue } of operations) {
         if (operationName === '$unset') {
-          updateExpr = `${updateExpr} - '${makeNestedPath(nestedPath)}' `
+          updateExpr = `${updateExpr} #- '${makeNestedPath(nestedPath)}' `
         } else if (operationName === '$set') {
           updateExpr = `jsonb_set(
             ${updateExpr},
