@@ -1,6 +1,11 @@
 import { useContext, useCallback, useMemo } from 'react'
 import { ResolveContext } from './context'
-import { getClient, Subscription } from 'resolve-client'
+import {
+  getClient,
+  QueryOptions,
+  SubscribeCallback,
+  Subscription
+} from 'resolve-client'
 
 type Closure = {
   state?: any
@@ -8,14 +13,17 @@ type Closure = {
 }
 
 type ViewModelConnection = {
-  connect: (done?: Function) => void
+  connect: (done?: SubscribeCallback) => Promise<Subscription | undefined>
   dispose: (done?: Function) => void
 }
+
+type StateChangedCallback = (state: any) => void
 
 const useViewModel = (
   modelName: string,
   aggregateIds: string[] | '*',
-  stateChangeCallback: (state: any) => void
+  stateChangeCallback: StateChangedCallback,
+  queryOptions?: QueryOptions
 ): ViewModelConnection => {
   const context = useContext(ResolveContext)
   if (!context) {
@@ -44,11 +52,14 @@ const useViewModel = (
   }, [])
 
   const queryState = useCallback(async () => {
-    const result = await client.query({
-      name: modelName,
-      aggregateIds,
-      args: {}
-    })
+    const result = await client.query(
+      {
+        name: modelName,
+        aggregateIds,
+        args: {}
+      },
+      queryOptions
+    )
     if (result) {
       setState(result.data)
     }
@@ -58,19 +69,49 @@ const useViewModel = (
     setState(viewModel.projection[event.type](closure.state, event))
   }, [])
 
-  const connect = useCallback(async done => {
-    // TODO: return promise (on connection!) if no done callback provided
-    await queryState()
-    const subscription = await client.subscribeTo(
-      modelName,
-      aggregateIds,
-      event => applyEvent(event),
-      done, // here
-      () => queryState()
-    )
-    if (subscription) {
-      closure.subscription = subscription
+  const connect = useCallback(async (done?: SubscribeCallback): Promise<
+    Subscription | undefined
+  > => {
+    let complete: SubscribeCallback = () => {
+      /* no op */
     }
+    let promise: Promise<Subscription | undefined> = Promise.resolve(undefined)
+
+    if (typeof done === 'function') {
+      complete = done
+    } else {
+      promise = new Promise((resolve, reject) => {
+        complete = (
+          error: Error | null,
+          subscription: Subscription | null
+        ): any => {
+          if (error) {
+            return reject(error)
+          }
+          if (!subscription) {
+            return reject(Error(`no subscription returned`))
+          }
+          return resolve(subscription)
+        }
+      })
+    }
+
+    try {
+      await queryState()
+      const subscription = await client.subscribeTo(
+        modelName,
+        aggregateIds,
+        event => applyEvent(event),
+        complete,
+        () => queryState()
+      )
+      if (subscription) {
+        closure.subscription = subscription
+      }
+    } catch (err) {
+      complete(err, null)
+    }
+    return promise
   }, [])
 
   const dispose = useCallback(async done => {
