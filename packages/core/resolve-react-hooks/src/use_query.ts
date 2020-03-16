@@ -1,12 +1,10 @@
 import {
-  getClient,
   Query,
   QueryOptions,
   QueryResult,
   QueryCallback
 } from 'resolve-client'
-import { useContext, useCallback } from 'react'
-import { ResolveContext } from './context'
+import { useCallback } from 'react'
 import {
   firstOfType,
   HookExecutor,
@@ -14,6 +12,7 @@ import {
   isDependencies,
   isOptions
 } from './generic'
+import { useClient } from './use_client'
 
 type QueryExecutor = HookExecutor<void, QueryResult>
 
@@ -49,11 +48,7 @@ function useQuery(
   callback?: QueryCallback | any[],
   dependencies?: any[]
 ): QueryExecutor {
-  const context = useContext(ResolveContext)
-  if (!context) {
-    throw Error('You cannot use reSolve hooks outside Resolve context')
-  }
-  const client = getClient(context)
+  const client = useClient()
   const actualOptions: QueryOptions | undefined = firstOfType<QueryOptions>(
     isOptions,
     options
@@ -70,7 +65,7 @@ function useQuery(
   return useCallback(
     (): Promise<QueryResult> | void =>
       client.query(query, actualOptions, actualCallback),
-    [context, ...actualDependencies]
+    [client, ...actualDependencies]
   )
 }
 

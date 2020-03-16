@@ -1,11 +1,11 @@
 import { useContext, useCallback, useMemo } from 'react'
 import { ResolveContext } from './context'
 import {
-  getClient,
   QueryOptions,
   SubscribeCallback,
   Subscription
 } from 'resolve-client'
+import { useClient } from './use_client'
 
 type StateChangedCallback = (state: any) => void
 type PromiseOrVoid<T> = Promise<T> | void
@@ -27,11 +27,7 @@ const useViewModel = (
   queryOptions?: QueryOptions
 ): ViewModelConnection => {
   const context = useContext(ResolveContext)
-  if (!context) {
-    throw Error('You cannot use reSolve hooks outside Resolve context')
-  }
-
-  const client = useMemo(() => getClient(context), [context])
+  const client = useClient()
 
   const { viewModels } = context
   const viewModel = viewModels.find(({ name }) => name === modelName)

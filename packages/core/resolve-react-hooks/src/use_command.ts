@@ -2,11 +2,9 @@ import {
   Command,
   CommandResult,
   CommandOptions,
-  CommandCallback,
-  getClient
+  CommandCallback
 } from 'resolve-client'
-import { useContext, useCallback } from 'react'
-import { ResolveContext } from './context'
+import { useCallback } from 'react'
 import {
   firstOfType,
   HookExecutor,
@@ -14,6 +12,7 @@ import {
   isDependencies,
   isOptions
 } from './generic'
+import { useClient } from './use_client'
 
 type CommandExecutor = HookExecutor<void, CommandResult>
 
@@ -52,12 +51,7 @@ function useCommand(
   callback?: CommandCallback | any[],
   dependencies?: any[]
 ): CommandExecutor {
-  const context = useContext(ResolveContext)
-  if (!context) {
-    throw Error('You cannot use reSolve hooks outside Resolve context')
-  }
-
-  const client = getClient(context)
+  const client = useClient()
 
   const actualOptions: CommandOptions | undefined = firstOfType<CommandOptions>(
     isOptions,
@@ -73,7 +67,7 @@ function useCommand(
   return useCallback(
     (): Promise<CommandResult> | void =>
       client.command(command, actualOptions, actualCallback),
-    [context, ...actualDependencies]
+    [client, ...actualDependencies]
   )
 }
 
