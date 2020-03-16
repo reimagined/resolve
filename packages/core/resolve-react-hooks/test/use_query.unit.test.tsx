@@ -1,19 +1,18 @@
-import { useContext, useCallback } from 'react'
+import { useCallback } from 'react'
 import { mocked } from 'ts-jest/utils'
-import { Query, QueryCallback, getClient, QueryOptions } from 'resolve-client'
+import { Query, QueryCallback, QueryOptions } from 'resolve-client'
+import { useClient } from '../src/use_client'
 import { useQuery } from '../src/use_query'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({
-  useContext: jest.fn(() => 'mocked-context'),
   useCallback: jest.fn(cb => cb)
 }))
-jest.mock('../src/context', () => ({
-  ResolveContext: 'mocked-context-selector'
+jest.mock('../src/use_client', () => ({
+  useClient: jest.fn()
 }))
 
-const mockedGetClient = mocked(getClient)
-const mockedUseContext = mocked(useContext)
+const mockedUseClient = mocked(useClient)
 const mockedUseCallback = mocked(useCallback)
 
 const mockedClient = {
@@ -33,16 +32,15 @@ const customOptions = (): QueryOptions => ({
 })
 
 const clearMocks = (): void => {
-  mockedGetClient.mockClear()
+  mockedUseClient.mockClear()
 
-  mockedUseContext.mockClear()
   mockedUseCallback.mockClear()
 
   mockedClient.query.mockClear()
 }
 
 beforeAll(() => {
-  mockedGetClient.mockReturnValue(mockedClient)
+  mockedUseClient.mockReturnValue(mockedClient)
 })
 
 afterEach(() => {
@@ -50,18 +48,10 @@ afterEach(() => {
 })
 
 describe('common', () => {
-  test('client requested for specified context', () => {
+  test('useClient hook called', () => {
     useQuery(basicQuery())
 
-    expect(mockedUseContext).toHaveBeenCalledWith('mocked-context-selector')
-    expect(getClient).toHaveBeenCalledWith('mocked-context')
-  })
-
-  test('fail if not context found', () => {
-    mockedUseContext.mockReturnValueOnce(null)
-
-    expect(() => useQuery(basicQuery())).toThrow()
-    expect(mockedGetClient).not.toHaveBeenCalled()
+    expect(useClient).toHaveBeenCalled()
   })
 })
 
@@ -73,7 +63,7 @@ describe('async mode', () => {
 
     expect(mockedClient.query).toHaveBeenCalledWith(query, undefined, undefined)
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       query
     ])
   })
@@ -85,7 +75,7 @@ describe('async mode', () => {
 
     expect(mockedClient.query).toHaveBeenCalledWith(query, undefined, undefined)
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       'dependency'
     ])
   })
@@ -98,7 +88,7 @@ describe('async mode', () => {
 
     expect(mockedClient.query).toHaveBeenCalledWith(query, options, undefined)
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       query,
       options
     ])
@@ -112,7 +102,7 @@ describe('async mode', () => {
 
     expect(mockedClient.query).toHaveBeenCalledWith(query, options, undefined)
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       'dependency'
     ])
   })
@@ -132,7 +122,7 @@ describe('callback mode', () => {
 
     expect(mockedClient.query).toHaveBeenCalledWith(query, undefined, callback)
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       query,
       callback
     ])
@@ -145,7 +135,7 @@ describe('callback mode', () => {
 
     expect(mockedClient.query).toHaveBeenCalledWith(query, undefined, callback)
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       'dependency'
     ])
   })
@@ -158,7 +148,7 @@ describe('callback mode', () => {
 
     expect(mockedClient.query).toHaveBeenCalledWith(query, options, callback)
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       query,
       options,
       callback
@@ -173,7 +163,7 @@ describe('callback mode', () => {
 
     expect(mockedClient.query).toHaveBeenCalledWith(query, options, callback)
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       'dependency'
     ])
   })

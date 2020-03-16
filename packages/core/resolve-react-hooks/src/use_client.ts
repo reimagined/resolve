@@ -1,6 +1,6 @@
 import { useContext, useMemo } from 'react'
 import { Client, getClient } from 'resolve-client'
-import { ResolveContext } from './index'
+import { ResolveContext } from './context'
 
 const useClient = (): Client => {
   const context = useContext(ResolveContext)

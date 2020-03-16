@@ -1,19 +1,18 @@
-import { useContext, useCallback } from 'react'
+import { useCallback } from 'react'
 import { mocked } from 'ts-jest/utils'
-import { Command, CommandCallback, getClient } from 'resolve-client'
+import { Command, CommandCallback } from 'resolve-client'
+import { useClient } from '../src/use_client'
 import { useCommand } from '../src/use_command'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({
-  useContext: jest.fn(() => 'mocked-context'),
   useCallback: jest.fn(cb => cb)
 }))
-jest.mock('../src/context', () => ({
-  ResolveContext: 'mocked-context-selector'
+jest.mock('../src/use_client', () => ({
+  useClient: jest.fn()
 }))
 
-const mockedGetClient = mocked(getClient)
-const mockedUseContext = mocked(useContext)
+const mockedUseClient = mocked(useClient)
 const mockedUseCallback = mocked(useCallback)
 
 const mockedClient = {
@@ -33,16 +32,15 @@ const basicCommand = (): Command => ({
 })
 
 const clearMocks = (): void => {
-  mockedGetClient.mockClear()
+  mockedUseClient.mockClear()
 
-  mockedUseContext.mockClear()
   mockedUseCallback.mockClear()
 
   mockedClient.command.mockClear()
 }
 
 beforeAll(() => {
-  mockedGetClient.mockReturnValue(mockedClient)
+  mockedUseClient.mockReturnValue(mockedClient)
 })
 
 afterEach(() => {
@@ -50,18 +48,10 @@ afterEach(() => {
 })
 
 describe('common', () => {
-  test('client requested for specified context', () => {
+  test('useClient hook called', () => {
     useCommand(basicCommand())
 
-    expect(mockedUseContext).toHaveBeenCalledWith('mocked-context-selector')
-    expect(getClient).toHaveBeenCalledWith('mocked-context')
-  })
-
-  test('fail if not context found', () => {
-    mockedUseContext.mockReturnValueOnce(null)
-
-    expect(() => useCommand(basicCommand())).toThrow()
-    expect(mockedGetClient).not.toHaveBeenCalled()
+    expect(mockedUseClient).toHaveBeenCalled()
   })
 })
 
@@ -77,7 +67,7 @@ describe('async mode', () => {
       undefined
     )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       command
     ])
   })
@@ -93,7 +83,7 @@ describe('async mode', () => {
       undefined
     )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       'dependency'
     ])
   })
@@ -110,7 +100,7 @@ describe('async mode', () => {
       undefined
     )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       command,
       options
     ])
@@ -127,7 +117,7 @@ describe('async mode', () => {
       undefined
     )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       'dependency'
     ])
   })
@@ -151,7 +141,7 @@ describe('callback mode', () => {
       callback
     )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       command,
       callback
     ])
@@ -168,7 +158,7 @@ describe('callback mode', () => {
       callback
     )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       'dependency'
     ])
   })
@@ -185,7 +175,7 @@ describe('callback mode', () => {
       callback
     )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       command,
       options,
       callback
@@ -203,7 +193,7 @@ describe('callback mode', () => {
       callback
     )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      'mocked-context',
+      mockedClient,
       'dependency'
     ])
   })

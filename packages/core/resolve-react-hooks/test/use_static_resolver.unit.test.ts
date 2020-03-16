@@ -1,22 +1,18 @@
-import { useContext, useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { mocked } from 'ts-jest/utils'
-import { getClient } from 'resolve-client'
+import { useClient } from '../src/use_client'
 import { StaticResolver, useStaticResolver } from '../src/use_static_resolver'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({
-  useContext: jest.fn(() => 'mocked-context'),
   useCallback: jest.fn(cb => cb),
-  useMemo: jest.fn(evaluate => evaluate())
 }))
-jest.mock('../src/context', () => ({
-  ResolveContext: 'mocked-context-selector'
+jest.mock('../src/use_client', () => ({
+  useClient: jest.fn()
 }))
 
-const mockedGetClient = mocked(getClient)
-const mockedUseContext = mocked(useContext)
+const mockedUseClient = mocked(useClient)
 const mockedUseCallback = mocked(useCallback)
-const mockedUseMemo = mocked(useMemo)
 
 const mockedClient = {
   command: jest.fn(),
@@ -27,34 +23,25 @@ const mockedClient = {
 }
 
 const clearMocks = (): void => {
-  mockedGetClient.mockClear()
+  mockedUseClient.mockClear()
 
-  mockedUseContext.mockClear()
   mockedUseCallback.mockClear()
-  mockedUseMemo.mockClear()
 
   mockedClient.getStaticAssetUrl.mockClear()
 }
 
 beforeAll(() => {
-  mockedGetClient.mockReturnValue(mockedClient)
+  mockedUseClient.mockReturnValue(mockedClient)
 })
 
 afterEach(() => {
   clearMocks()
 })
 
-test('client obtained for provided context and cached', () => {
+test('useClient hook called', () => {
   useStaticResolver()
 
-  expect(mockedUseContext).toHaveBeenCalledWith('mocked-context-selector')
-  expect(mockedUseMemo).toHaveBeenCalledWith(expect.any(Function), [
-    'mocked-context'
-  ])
-  expect(getClient).toHaveBeenCalledWith('mocked-context')
-
-  const clientMemo = mockedUseMemo.mock.calls[0][0]
-  expect(clientMemo()).toEqual(mockedClient)
+  expect(mockedUseClient).toHaveBeenCalled()
 })
 
 test('cached resolver returned', () => {
