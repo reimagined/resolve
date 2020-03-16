@@ -1,10 +1,6 @@
 import { useContext, useCallback, useMemo } from 'react'
 import { ResolveContext } from './context'
-import {
-  QueryOptions,
-  SubscribeCallback,
-  Subscription
-} from 'resolve-client'
+import { QueryOptions, SubscribeCallback, Subscription } from 'resolve-client'
 import { useClient } from './use_client'
 
 type StateChangedCallback = (state: any) => void
@@ -71,13 +67,21 @@ const useViewModel = (
   > => {
     const asyncConnect = async (): Promise<Subscription> => {
       await queryState()
-      return client.subscribeTo(
+      const subscribe = client.subscribeTo(
         modelName,
         aggregateIds,
         event => applyEvent(event),
         undefined,
         () => queryState()
       ) as Promise<Subscription>
+
+      const subscription = await subscribe
+
+      if (subscription) {
+        closure.subscription = subscription
+      }
+
+      return subscription
     }
     if (typeof done !== 'function') {
       return asyncConnect()
