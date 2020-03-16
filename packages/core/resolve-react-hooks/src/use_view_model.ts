@@ -7,17 +7,18 @@ import {
   Subscription
 } from 'resolve-client'
 
+type StateChangedCallback = (state: any) => void
+type PromiseOrVoid<T> = Promise<T> | void
+
 type Closure = {
   state?: any
   subscription?: Subscription
 }
 
 type ViewModelConnection = {
-  connect: (done?: SubscribeCallback) => Promise<Subscription | undefined>
-  dispose: (done?: Function) => void
+  connect: (done?: SubscribeCallback) => PromiseOrVoid<Subscription>
+  dispose: (done?: (error?: Error) => void) => PromiseOrVoid<void>
 }
-
-type StateChangedCallback = (state: any) => void
 
 const useViewModel = (
   modelName: string,
@@ -69,59 +70,48 @@ const useViewModel = (
     setState(viewModel.projection[event.type](closure.state, event))
   }, [])
 
-  const connect = useCallback(async (done?: SubscribeCallback): Promise<
-    Subscription | undefined
+  const connect = useCallback((done?: SubscribeCallback): PromiseOrVoid<
+    Subscription
   > => {
-    let complete: SubscribeCallback = () => {
-      /* no op */
-    }
-    let promise: Promise<Subscription | undefined> = Promise.resolve(undefined)
-
-    if (typeof done === 'function') {
-      complete = done
-    } else {
-      promise = new Promise((resolve, reject) => {
-        complete = (
-          error: Error | null,
-          subscription: Subscription | null
-        ): any => {
-          if (error) {
-            return reject(error)
-          }
-          if (!subscription) {
-            return reject(Error(`no subscription returned`))
-          }
-          return resolve(subscription)
-        }
-      })
-    }
-
-    try {
+    const asyncConnect = async (): Promise<Subscription> => {
       await queryState()
-      const subscription = await client.subscribeTo(
+      return client.subscribeTo(
         modelName,
         aggregateIds,
         event => applyEvent(event),
-        complete,
+        undefined,
         () => queryState()
-      )
-      if (subscription) {
-        closure.subscription = subscription
-      }
-    } catch (err) {
-      complete(err, null)
+      ) as Promise<Subscription>
     }
-    return promise
+    if (typeof done !== 'function') {
+      return asyncConnect()
+    }
+
+    asyncConnect()
+      .then(result => done(null, result))
+      .catch(error => done(error, null))
+
+    return undefined
   }, [])
 
-  const dispose = useCallback(async done => {
-    // TODO: return promise if no done callback provided
-    if (closure.subscription) {
-      await client.unsubscribe(closure.subscription)
+  const dispose = useCallback((done?: (error?: Error) => void): PromiseOrVoid<
+    void
+  > => {
+    const asyncDispose = async (): Promise<void> => {
+      if (closure.subscription) {
+        await client.unsubscribe(closure.subscription)
+      }
     }
-    if (done) {
-      done()
+
+    if (typeof done !== 'function') {
+      return asyncDispose()
     }
+
+    asyncDispose()
+      .then(() => done())
+      .catch(error => done(error))
+
+    return undefined
   }, [])
 
   return useMemo(
