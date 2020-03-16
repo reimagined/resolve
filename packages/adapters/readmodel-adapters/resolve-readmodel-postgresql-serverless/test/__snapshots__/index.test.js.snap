@@ -892,7 +892,7 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "UPDATE \\"databaseName\\".\\"tablePrefixvalues\\"
-    SET \\"value\\" = NULL , \\"obj\\" = \\"obj\\" - '{\\"value\\"}' , \\"arr\\" = \\"arr\\" - '{0,\\"value\\"}'  WHERE 
+    SET \\"value\\" = NULL , \\"obj\\" = \\"obj\\" #- '{\\"value\\"}' , \\"arr\\" = \\"arr\\" #- '{0,\\"value\\"}'  WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
    ;",
