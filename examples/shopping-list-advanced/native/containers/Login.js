@@ -55,7 +55,6 @@ export class Login extends React.PureComponent {
   }
 
   onLogin = () => {
-    console.log('onLogin')
     this.props.authRequest(
       '/api/auth/local/login',
       {
@@ -68,7 +67,6 @@ export class Login extends React.PureComponent {
   }
 
   onRegister = () => {
-    console.log('onRegister')
     this.props.authRequest(
       '/api/auth/local/register',
       {

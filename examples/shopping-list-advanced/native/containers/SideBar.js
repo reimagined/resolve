@@ -31,7 +31,6 @@ export class SideBar extends React.Component {
       name: 'My Lists',
       icon: <Icon style={styles.icon} name="list" type="FontAwesome" />,
       callback: () => {
-        console.log(this.props.navigation)
         this.props.navigation.navigate('My Lists')
       }
     },

@@ -106,8 +106,6 @@ export class ShoppingList extends React.PureComponent {
 }
 
 export const mapStateToOptions = (state, ownProps) => {
-  console.log('######')
-  console.log(ownProps)
   const aggregateId = ownProps.route.params.id
 
   return {
@@ -117,8 +115,6 @@ export const mapStateToOptions = (state, ownProps) => {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  console.log('######')
-  console.log(ownProps)
   const aggregateId = ownProps.route.params.id
 
   return {

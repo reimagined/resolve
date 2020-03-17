@@ -5,7 +5,6 @@ import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import { Ionicons } from '@expo/vector-icons'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { NavigationContainer } from '@react-navigation/native'
-import { View, Text } from 'react-native'
 
 import getNativeChunk from './native-chunk'
 import origin from './constants/origin'
@@ -25,10 +24,6 @@ const {
 } = getNativeChunk()
 
 const Drawer = createDrawerNavigator()
-
-/*
-
- */
 
 const store = getStore()
 
@@ -55,12 +50,6 @@ class AppContainer extends React.PureComponent {
     if (!this.state.isReady) {
       return <AppLoading />
     }
-
-    console.log({
-      origin,
-      rootPath,
-      staticPath
-    })
 
     return (
       <Providers
