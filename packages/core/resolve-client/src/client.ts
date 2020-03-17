@@ -208,7 +208,7 @@ export type ResubscribeCallback = (
   result: ResubscribeInfo | null
 ) => void
 
-export const subscribeTo = (
+export const subscribe = (
   context: Context,
   viewModelName: string,
   aggregateIds: AggregateSelector,
@@ -310,7 +310,7 @@ export type Client = {
     callback?: QueryCallback
   ) => PromiseOrVoid<QueryResult>
   getStaticAssetUrl: (assetPath: string) => string
-  subscribeTo: (
+  subscribe: (
     viewModelName: string,
     aggregateIds: AggregateSelector,
     handler: SubscribeHandler,
@@ -327,14 +327,14 @@ export const getClient = (context: Context): Client => ({
     query(context, qr, options, callback),
   getStaticAssetUrl: (assetPath: string): string =>
     getStaticAssetUrl(context, assetPath),
-  subscribeTo: (
+  subscribe: (
     viewModelName,
     aggregateIds,
     handler,
     subscribeCallback?,
     resubscribeCallback?
   ): PromiseOrVoid<Subscription> =>
-    subscribeTo(
+    subscribe(
       context,
       viewModelName,
       aggregateIds,

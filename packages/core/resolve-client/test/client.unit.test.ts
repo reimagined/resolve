@@ -37,7 +37,7 @@ const createMockContext = (): Context => ({
 const mRequest = mocked(request)
 
 let mockContext: Context
-let api: Client
+let client: Client
 
 beforeAll(() => {
   mRequest.mockResolvedValue(createMockResponse())
@@ -45,11 +45,131 @@ beforeAll(() => {
 
 beforeEach(() => {
   mockContext = createMockContext()
-  api = getClient(mockContext)
+  client = getClient(mockContext)
 })
 
 afterEach(() => {
   mRequest.mockClear()
+})
+
+describe('command', () => {
+  let getHeader: () => string
+  let getJson: () => Promise<object>
+
+  beforeEach(() => {
+    getHeader = jest.fn((): string => '12345')
+    getJson = jest.fn(
+      (): Promise<object> =>
+        Promise.resolve({
+          result: 'command-result'
+        })
+    )
+    mRequest.mockResolvedValue(
+      createMockResponse({
+        headers: {
+          get: getHeader
+        },
+        json: getJson
+      })
+    )
+  })
+
+  test('request without options', async () => {
+    await client.command({
+      aggregateName: 'user',
+      aggregateId: 'user-id',
+      type: 'create',
+      payload: {
+        name: 'user-name'
+      }
+    })
+
+    expect(mRequest).toHaveBeenCalledWith(
+      mockContext,
+      '/api/commands',
+      {
+        aggregateName: 'user',
+        aggregateId: 'user-id',
+        type: 'create',
+        payload: {
+          name: 'user-name'
+        }
+      },
+      undefined
+    )
+  })
+
+  test('request with options', async () => {
+    await client.command(
+      {
+        aggregateName: 'user',
+        aggregateId: 'user-id',
+        type: 'create',
+        payload: {
+          name: 'user-name'
+        }
+      },
+      {
+        option: 'option'
+      }
+    )
+
+    expect(mRequest).toHaveBeenCalledWith(
+      mockContext,
+      '/api/commands',
+      {
+        aggregateName: 'user',
+        aggregateId: 'user-id',
+        type: 'create',
+        payload: {
+          name: 'user-name'
+        }
+      },
+      {
+        option: 'option'
+      }
+    )
+  })
+
+  test('result constructed from response data', async () => {
+    const result = await client.command({
+      aggregateName: 'user',
+      aggregateId: 'user-id',
+      type: 'create',
+      payload: {
+        name: 'user-name'
+      }
+    })
+
+    expect(getJson).toHaveBeenCalled()
+    expect(result).toEqual({
+      result: 'command-result'
+    })
+  })
+
+  test('callback instead of options', done => {
+    client.command(
+      {
+        aggregateName: 'user',
+        aggregateId: 'user-id',
+        type: 'create',
+        payload: {
+          name: 'user-name'
+        }
+      },
+      (error, result) => {
+        if (error) {
+          done(error)
+        }
+
+        expect(result).toEqual({
+          result: 'command-result'
+        })
+
+        done()
+      }
+    )
+  })
 })
 
 describe('query', () => {
@@ -75,7 +195,7 @@ describe('query', () => {
   })
 
   test('valid request made', async () => {
-    await api.query({
+    await client.query({
       name: 'query-name',
       resolver: 'query-resolver',
       args: {
@@ -96,7 +216,7 @@ describe('query', () => {
   })
 
   test('result constructed from response data', async () => {
-    const result = await api.query({
+    const result = await client.query({
       name: 'query-name',
       resolver: 'query-resolver',
       args: {
@@ -115,7 +235,7 @@ describe('query', () => {
   })
 
   test('callback instead of options', done => {
-    api.query(
+    client.query(
       {
         name: 'query-name',
         resolver: 'query-resolver',
@@ -141,7 +261,7 @@ describe('query', () => {
   })
 
   test('awaiting for result', async () => {
-    await api.query(
+    await client.query(
       {
         name: 'query-name',
         resolver: 'query-resolver',
@@ -201,7 +321,7 @@ describe('query', () => {
   })
 
   test('POST method support', async () => {
-    await api.query(
+    await client.query(
       {
         name: 'query-name',
         resolver: 'query-resolver',
@@ -226,7 +346,7 @@ describe('query', () => {
   })
 
   test('default GET method if user not provide it within options', async () => {
-    await api.query(
+    await client.query(
       {
         name: 'query-name',
         resolver: 'query-resolver',
