@@ -9,7 +9,7 @@ exports[`renders correctly 1`] = `
       className="example-icon"
       responsive={false}
       rounded={false}
-      src="/resolve-logo.png"
+      src="static/resolve-logo.png"
       thumbnail={false}
     />
     Shopping List
