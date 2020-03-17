@@ -126,6 +126,7 @@ const insistentRequest = async (
 
     if (isErrorExpected && !isMaxAttemptsReached) {
       if (options?.debug) {
+        // eslint-disable-next-line no-console
         console.warn(
           `Error code ${
             response.status

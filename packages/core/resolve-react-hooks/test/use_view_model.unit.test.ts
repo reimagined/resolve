@@ -5,11 +5,15 @@ import { useViewModel } from '../src/use_view_model'
 
 const mockedContext = {
   viewModels: [
-    { name: 'view-model-name', projection: [], deserializeState: () => ({}) },
+    {
+      name: 'view-model-name',
+      projection: [],
+      deserializeState: (): object => ({})
+    },
     {
       name: 'another-view-model-name',
       projection: [],
-      deserializeState: () => ({})
+      deserializeState: (): object => ({})
     }
   ]
 }
@@ -123,7 +127,7 @@ describe('call', () => {
   })
 
   test('connect as promise with query options', async () => {
-    const validator = () => true
+    const validator = (): boolean => true
     const { connect } = useViewModel(
       'view-model-name',
       ['aggregate-id'],
@@ -191,7 +195,9 @@ describe('call', () => {
       ['aggregate-id'],
       mockStateChange
     )
-    const callback = jest.fn(err => {})
+    const callback = jest.fn(() => {
+      /* no op */
+    })
 
     await connect(jest.fn())
 

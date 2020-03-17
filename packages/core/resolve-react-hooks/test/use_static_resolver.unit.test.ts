@@ -5,7 +5,7 @@ import { StaticResolver, useStaticResolver } from '../src/use_static_resolver'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({
-  useCallback: jest.fn(cb => cb),
+  useCallback: jest.fn(cb => cb)
 }))
 jest.mock('../src/use_client', () => ({
   useClient: jest.fn()

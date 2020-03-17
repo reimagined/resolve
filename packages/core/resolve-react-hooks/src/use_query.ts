@@ -1,9 +1,4 @@
-import {
-  Query,
-  QueryOptions,
-  QueryResult,
-  QueryCallback
-} from 'resolve-client'
+import { Query, QueryOptions, QueryResult, QueryCallback } from 'resolve-client'
 import { useCallback } from 'react'
 import {
   firstOfType,
