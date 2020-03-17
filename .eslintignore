@@ -18,3 +18,9 @@ packages/core/resolve-react-hooks/**/*.js.map
 packages/core/resolve-react-hooks/**/*.mjs
 packages/core/resolve-react-hooks/**/*.mjs.map
 packages/core/resolve-react-hooks/**/*.d.ts
+
+examples/with-angular/client/**/*.js
+examples/with-angular/client/**/*.js.map
+examples/with-angular/client/**/*.mjs
+examples/with-angular/client/**/*.mjs.map
+examples/with-angular/client/**/*.d.ts

@@ -5,7 +5,7 @@ const prepare = async ({ directory, sourceType }) => {
     try {
       execSync(`npx tsc`, { cwd: directory, stdio: 'inherit' })
     } catch (error) {
-      throw ''
+      throw Error('')
     }
   }
 }
