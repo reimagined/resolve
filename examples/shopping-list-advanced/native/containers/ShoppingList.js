@@ -106,7 +106,7 @@ export class ShoppingList extends React.PureComponent {
 }
 
 export const mapStateToOptions = (state, ownProps) => {
-  const aggregateId = ownProps.navigation.state.params.id
+  const aggregateId = ownProps.route.params.id
 
   return {
     viewModelName: 'shoppingList',
@@ -115,7 +115,7 @@ export const mapStateToOptions = (state, ownProps) => {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const aggregateId = ownProps.navigation.state.params.id
+  const aggregateId = ownProps.route.params.id
 
   return {
     jwt: state.jwt,

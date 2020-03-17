@@ -51,6 +51,7 @@ vscode
 dist
 lib
 es
+types
 /website/node_modules
 /website/build
 /website/i18n

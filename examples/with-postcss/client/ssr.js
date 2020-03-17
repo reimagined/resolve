@@ -4,10 +4,12 @@ import { createMemoryHistory } from 'history'
 import { createStore, AppContainer } from 'resolve-redux'
 import { Helmet } from 'react-helmet'
 
-import routes from './routes'
+import getRoutes from './get-routes'
+import Routes from '../client/components/Routes'
+import { Router } from 'react-router'
 
 const ssrHandler = async (
-  { seedClientEnvs, constants: { rootPath, staticPath }, utils },
+  { seedClientEnvs, constants: { rootPath, staticPath }, utils, serverImports },
   req,
   res
 ) => {
@@ -19,21 +21,23 @@ const ssrHandler = async (
     history.push(url)
     const origin = ''
 
+    const routes = getRoutes(serverImports)
+
     const store = createStore({ history, origin, rootPath, isClient: false })
 
-    const appContainer = (
+    const staticContext = {}
+    const markup = ReactDOM.renderToStaticMarkup(
       <AppContainer
         origin={origin}
         rootPath={rootPath}
         staticPath={staticPath}
         store={store}
-        history={history}
-        routes={routes}
-        isSSR={true}
-      />
+      >
+        <Router history={history} staticContext={staticContext}>
+          <Routes routes={routes} />
+        </Router>
+      </AppContainer>
     )
-
-    const markup = ReactDOM.renderToStaticMarkup(appContainer)
 
     const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index.js')
     const faviconUrl = getStaticBasedPath(rootPath, staticPath, 'favicon.ico')
@@ -54,7 +58,7 @@ const ssrHandler = async (
       `${helmet.script.toString()}` +
       '</head>' +
       `<body ${helmet.bodyAttributes.toString()}>` +
-      `<div class="app-container">${markup}</div>` +
+      `<div id="app-container">${markup}</div>` +
       `<script src="${bundleUrl}"></script>` +
       '</body>' +
       '</html>'

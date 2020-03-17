@@ -1,4 +1,4 @@
-const adjustWebpackConfigs = webpackConfigs => {
+const adjustWebpackConfigs = (webpackConfigs): void => {
   for (const webpackConfig of webpackConfigs) {
     const {
       module: { rules },

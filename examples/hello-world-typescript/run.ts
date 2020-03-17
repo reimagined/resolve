@@ -17,7 +17,7 @@ import adjustWebpackConfigs from './config.adjust_webpack'
 
 const launchMode = process.argv[2]
 
-void (async () => {
+void (async (): Promise<void> => {
   switch (launchMode) {
     case 'dev': {
       const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)

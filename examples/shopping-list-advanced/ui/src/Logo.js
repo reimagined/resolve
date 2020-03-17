@@ -6,7 +6,7 @@ class Logo extends React.PureComponent {
     return (
       <Navbar.Header>
         <Navbar.Brand>
-          <Image className="example-icon" src="/resolve-logo.png" />
+          <Image className="example-icon" src="static/resolve-logo.png" />
           Shopping List
         </Navbar.Brand>
         <Navbar.Toggle />

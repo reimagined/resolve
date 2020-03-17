@@ -5,13 +5,15 @@ import 'zone.js/dist/zone'
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'
 import { AppModule } from './app/app.module'
 
-const entryPoint = async ({
+async function entryPoint({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   rootPath,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   staticPath
 }: {
   rootPath: string
   staticPath: string
-}) => {
+}): Promise<void> {
   try {
     const appRoot = document.createElement('app-root')
     appRoot.setAttribute('id', 'app-root')
@@ -19,6 +21,7 @@ const entryPoint = async ({
 
     await platformBrowserDynamic().bootstrapModule(AppModule)
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(error)
   }
 }

@@ -103,10 +103,8 @@ export class ShareForm extends React.PureComponent {
 export const mapStateToProps = (
   state,
   {
-    navigation: {
-      state: {
-        params: { id }
-      }
+    route: {
+      params: { id }
     }
   }
 ) => ({

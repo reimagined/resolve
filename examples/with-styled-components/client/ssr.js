@@ -1,14 +1,16 @@
 import React from 'react'
 import ReactDOM from 'react-dom/server'
-import { createMemoryHistory } from 'history'
 import { createStore, AppContainer } from 'resolve-redux'
+import { Router } from 'react-router'
 import { Helmet } from 'react-helmet'
 import { StyleSheetManager, ServerStyleSheet } from 'styled-components'
+import { createMemoryHistory } from 'history'
 
-import routes from './routes'
+import getRoutes from './get-routes'
+import Routes from './components/Routes'
 
 const ssrHandler = async (
-  { seedClientEnvs, constants: { rootPath, staticPath }, utils },
+  { seedClientEnvs, constants: { rootPath, staticPath }, utils, serverImports },
   req,
   res
 ) => {
@@ -22,22 +24,23 @@ const ssrHandler = async (
 
     const store = createStore({ history, origin, rootPath, isClient: false })
 
-    const appContainer = (
-      <AppContainer
-        origin={origin}
-        rootPath={rootPath}
-        staticPath={staticPath}
-        store={store}
-        history={history}
-        routes={routes}
-        isSSR={true}
-      />
-    )
+    const routes = getRoutes(serverImports)
+
+    const staticContext = {}
 
     const sheet = new ServerStyleSheet()
     const markup = ReactDOM.renderToStaticMarkup(
       <StyleSheetManager sheet={sheet.instance}>
-        {appContainer}
+        <AppContainer
+          origin={origin}
+          rootPath={rootPath}
+          staticPath={staticPath}
+          store={store}
+        >
+          <Router history={history} staticContext={staticContext}>
+            <Routes routes={routes} />
+          </Router>
+        </AppContainer>
       </StyleSheetManager>
     )
 
@@ -62,7 +65,7 @@ const ssrHandler = async (
       `${helmet.script.toString()}` +
       '</head>' +
       `<body ${helmet.bodyAttributes.toString()}>` +
-      `<div class="app-container">${markup}</div>` +
+      `<div id="app-container">${markup}</div>` +
       `<script src="${bundleUrl}"></script>` +
       '</body>' +
       '</html>'

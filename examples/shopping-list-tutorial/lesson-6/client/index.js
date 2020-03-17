@@ -1,11 +1,14 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { createBrowserHistory } from 'history'
+import { Router } from 'react-router'
 import { AppContainer, createStore, getOrigin } from 'resolve-redux'
+import { createBrowserHistory } from 'history'
+
+import routes from './routes'
+import Routes from './components/Routes'
 
 import optimisticShoppingListsSaga from './sagas/optimistic_shopping_lists_saga'
 import optimisticShoppingListsReducer from './reducers/optimistic_shopping_lists'
-import routes from './routes'
 
 const entryPoint = ({ rootPath, staticPath, viewModels, subscribeAdapter }) => {
   const origin = getOrigin(window.location)
@@ -34,9 +37,11 @@ const entryPoint = ({ rootPath, staticPath, viewModels, subscribeAdapter }) => {
       rootPath={rootPath}
       staticPath={staticPath}
       store={store}
-      history={history}
-      routes={routes}
-    />,
+    >
+      <Router history={history}>
+        <Routes routes={routes} />
+      </Router>
+    </AppContainer>,
     appContainer
   )
 }

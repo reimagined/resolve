@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Helmet } from 'react-helmet'
 import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap'
 
-const App = ({ staticPath }) => (
+const App = ({ staticPath }): any => (
   <div>
     <Helmet>
       <title>reSolve Hello World TypeScript</title>

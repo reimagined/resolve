@@ -1,5 +1,5 @@
 import devToolsEnhancer from 'remote-redux-devtools'
-import createMemoryHistory from 'history/createMemoryHistory'
+import { createMemoryHistory } from 'history'
 import { AsyncStorage } from 'react-native'
 
 import getNativeChunk from '../../native-chunk'
@@ -60,16 +60,17 @@ const jwtProvider = {
   }
 }
 
-const store = createStore({
-  redux,
-  viewModels,
-  subscribeAdapter,
-  initialState,
-  history,
-  origin,
-  rootPath,
-  jwtProvider,
-  isClient
-})
+const getStore = () =>
+  createStore({
+    redux,
+    viewModels,
+    subscribeAdapter,
+    initialState,
+    history,
+    origin,
+    rootPath,
+    jwtProvider,
+    isClient
+  })
 
-export default store
+export default getStore
