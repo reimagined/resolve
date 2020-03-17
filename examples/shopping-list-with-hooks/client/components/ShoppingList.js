@@ -48,11 +48,7 @@ const ShoppingList = ({
   )
 
   const updateShoppingListName = event => {
-    console.log(event)
-    /* WTF?
-      setShoppingList({ ...shoppingList, name: event.target.value })
-    }
-    */
+    setShoppingList({ ...shoppingList, name: event.target.value })
   }
 
   const renameShoppingList = useCommand({
