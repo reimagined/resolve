@@ -1,6 +1,6 @@
 {
   "name": "shopping-list-with-hooks",
-  "version": "0.22.13",
+  "version": "0.22.15",
   "description": "shows how to work with read-models and view-models",
   "private": true,
   "scripts": {
@@ -31,15 +31,15 @@
     "redux": "4.0.1",
     "redux-devtools-extension": "2.13.7",
     "redux-saga": "1.0.5",
-    "resolve-module-admin": "0.22.13",
-    "resolve-react-hooks": "0.22.13",
-    "resolve-readmodel-lite": "0.22.13",
-    "resolve-readmodel-postgresql-serverless": "0.22.13",
-    "resolve-scripts": "0.22.13",
-    "resolve-storage-lite": "0.22.13",
-    "resolve-storage-postgresql-serverless": "0.22.13",
-    "resolve-subscribe-mqtt": "0.22.13",
-    "resolve-subscribe-socket.io": "0.22.13",
+    "resolve-module-admin": "0.22.15",
+    "resolve-react-hooks": "0.22.15",
+    "resolve-readmodel-lite": "0.22.15",
+    "resolve-readmodel-postgresql-serverless": "0.22.15",
+    "resolve-scripts": "0.22.15",
+    "resolve-storage-lite": "0.22.15",
+    "resolve-storage-postgresql-serverless": "0.22.15",
+    "resolve-subscribe-mqtt": "0.22.15",
+    "resolve-subscribe-socket.io": "0.22.15",
     "uuid": "3.3.2"
   },
   "devDependencies": {
