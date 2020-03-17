@@ -1,6 +1,6 @@
 {
   "name": "with-styled-components",
-  "version": "0.22.13",
+  "version": "0.22.15",
   "description": "shows how to work with Styled Components",
   "private": true,
   "scripts": {
