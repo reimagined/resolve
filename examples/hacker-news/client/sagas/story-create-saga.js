@@ -22,7 +22,7 @@ export default function*(history, { api }) {
             continue
           }
 
-          yield put(history.push(`/storyDetails/${action.aggregateId}`))
+          yield history.push(`/storyDetails/${action.aggregateId}`)
           break
         } catch (error) {
           // eslint-disable-next-line no-console
@@ -38,7 +38,7 @@ export default function*(history, { api }) {
       action.type === SEND_COMMAND_FAILURE &&
       action.commandType === 'createStory',
     function*() {
-      yield put(routerActions.push(`/error?text=Failed to create a story`))
+      yield history.push(`/error?text=Failed to create a story`)
     }
   )
 }
