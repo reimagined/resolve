@@ -33,6 +33,7 @@
     "resolve-command": "0.22.15",
     "resolve-scripts": "0.22.15",
     "resolve-query": "0.22.15",
+    "resolve-readmodel-base": "0.22.15",
     "resolve-readmodel-lite": "0.22.15",
     "resolve-readmodel-postgresql-serverless": "0.22.15",
     "resolve-scheduler-local": "0.22.15",

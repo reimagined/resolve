@@ -1,4 +1,4 @@
-import { put, takeEvery, delay } from 'redux-saga/effects'
+import { takeEvery, delay } from 'redux-saga/effects'
 import { actionTypes } from 'resolve-redux'
 
 const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = actionTypes
