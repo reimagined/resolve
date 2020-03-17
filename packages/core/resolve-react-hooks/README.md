@@ -8,9 +8,4 @@ To view code samples for particular hooks, follow the links below:
 * [useQuery - read model](https://github.com/reimagined/resolve/blob/master/examples/shopping-list-with-hooks/client/components/MyLists.js)
 * [useQuery - view model](https://github.com/reimagined/resolve/blob/master/examples/shopping-list-with-hooks/client/components/ShoppingList.js)
 * [useStaticResolver](https://github.com/reimagined/resolve/blob/master/examples/shopping-list-with-hooks/client/components/Header.js)
-* [useSubscription](https://github.com/reimagined/resolve/blob/master/examples/shopping-list-with-hooks/client/components/ShoppingList.js)
-
-
-
-
-
+* [useViewModel](https://github.com/reimagined/resolve/blob/master/examples/shopping-list-with-hooks/client/components/ShoppingList.js)
