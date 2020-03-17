@@ -32,7 +32,7 @@ const mockedClient = {
   command: jest.fn(),
   query: jest.fn(() => Promise.resolve({ data: 'query-result', timestamp: 1 })),
   getStaticAssetUrl: jest.fn(),
-  subscribeTo: jest.fn().mockResolvedValue({ key: 'subscription-data' }),
+  subscribe: jest.fn().mockResolvedValue({ key: 'subscription-data' }),
   unsubscribe: jest.fn()
 }
 
@@ -56,7 +56,7 @@ const clearMocks = (): void => {
   mockedUseMemo.mockClear()
 
   mockedClient.query.mockClear()
-  mockedClient.subscribeTo.mockClear()
+  mockedClient.subscribe.mockClear()
   mockedClient.unsubscribe.mockClear()
 
   mockStateChange.mockClear()
@@ -117,7 +117,7 @@ describe('call', () => {
       undefined
     )
 
-    expect(mockedClient.subscribeTo).toBeCalledWith(
+    expect(mockedClient.subscribe).toBeCalledWith(
       'view-model-name',
       ['aggregate-id'],
       expect.any(Function),
@@ -154,7 +154,7 @@ describe('call', () => {
         }
       }
     )
-    expect(mockedClient.subscribeTo).toBeCalledWith(
+    expect(mockedClient.subscribe).toBeCalledWith(
       'view-model-name',
       ['aggregate-id'],
       expect.any(Function),

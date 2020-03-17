@@ -18,7 +18,7 @@ const mockedClient = {
   command: jest.fn(),
   query: jest.fn(),
   getStaticAssetUrl: jest.fn(asset => `static_${asset}`),
-  subscribeTo: jest.fn(),
+  subscribe: jest.fn(),
   unsubscribe: jest.fn()
 }
 

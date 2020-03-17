@@ -67,7 +67,7 @@ const useViewModel = (
   > => {
     const asyncConnect = async (): Promise<Subscription> => {
       await queryState()
-      const subscribe = client.subscribeTo(
+      const subscribe = client.subscribe(
         modelName,
         aggregateIds,
         event => applyEvent(event),

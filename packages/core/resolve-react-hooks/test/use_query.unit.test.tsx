@@ -19,7 +19,7 @@ const mockedClient = {
   command: jest.fn(),
   query: jest.fn(() => Promise.resolve({ data: 'query-result', timestamp: 1 })),
   getStaticAssetUrl: jest.fn(),
-  subscribeTo: jest.fn(),
+  subscribe: jest.fn(),
   unsubscribe: jest.fn()
 }
 const basicQuery = (): Query => ({
