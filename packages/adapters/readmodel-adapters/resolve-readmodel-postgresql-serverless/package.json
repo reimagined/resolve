@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-postgresql-serverless",
-  "version": "0.22.15",
+  "version": "0.23.0",
   "description": "This package serves as a resolve-query adapter for storing a read model in postgres",
   "engines": {
     "node": ">=10.9"
@@ -26,8 +26,8 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/readmodel-adapters/resolve-readmodel-postgres#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "resolve-readmodel-base": "0.22.15",
-    "resolve-debug-levels": "0.22.15"
+    "resolve-readmodel-base": "0.23.0",
+    "resolve-debug-levels": "0.23.0"
   },
   "devDependencies": {
     "jest": "25.1.0",
