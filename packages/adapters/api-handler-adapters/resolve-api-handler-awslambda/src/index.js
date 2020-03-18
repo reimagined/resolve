@@ -4,6 +4,7 @@ import cookie from 'cookie'
 
 const COOKIE_CLEAR_DATE = new Date(0)
 const INTERNAL = Symbol('INTERNAL')
+const isTrailingBracket = /\[\]$/
 
 const normalizeKey = (key, mode) => {
   switch (mode) {
@@ -48,7 +49,7 @@ const createRequest = async (lambdaEvent, customParameters) => {
     path,
     httpMethod,
     headers: { 'x-proxy-headers': proxyHeadersString, ...originalHeaders },
-    queryStringParameters,
+    multiValueQueryStringParameters,
     body
   } = lambdaEvent
 
@@ -82,7 +83,18 @@ const createRequest = async (lambdaEvent, customParameters) => {
 
   const req = Object.create(null)
 
-  const query = queryStringParameters != null ? queryStringParameters : {}
+  const query =
+    multiValueQueryStringParameters != null
+      ? multiValueQueryStringParameters
+      : {}
+  for (const [queryKey, queryValue] of Object.entries(query)) {
+    if (isTrailingBracket.test(queryKey)) {
+      delete query[queryKey]
+      query[queryKey.replace(isTrailingBracket, '')] = queryValue
+    } else if (queryValue.length === 1) {
+      query[queryKey] = queryValue[0]
+    }
+  }
 
   const reqProperties = {
     adapter: 'awslambda',
