@@ -63,7 +63,7 @@ describe('API handler wrapper for AWS Lambda', () => {
         value: 'BODY_CONTENT',
         enumerable: true
       },
-      queryStringParameters: {
+      multiValueQueryStringParameters: {
         value: {
           'query-name-1': 'query-value-1',
           'query-name-2': 'query-value-2'
@@ -175,6 +175,10 @@ describe('API handler wrapper for AWS Lambda', () => {
     res.status(200).end()
   }
 
+  const apiReturnRequestHandler = async (req, res) => {
+    res.json(req)
+  }
+
   it('should work with primitive JSON handler with GET client request', async () => {
     const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
@@ -257,5 +261,34 @@ describe('API handler wrapper for AWS Lambda', () => {
     expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
 
     expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+  })
+
+  it('should correctly parsing query with array params', async () => {
+    const wrappedHandler = wrapApiHandler(
+      apiReturnRequestHandler,
+      getCustomParams
+    )
+    const customEvent = {
+      ...lambdaEvent,
+      multiValueQueryStringParameters: {
+        'a[]': ['1', '2'],
+        b: ['1', '2'],
+        c: ['[1,2]'],
+        d: ['1,2'],
+        'e[]': ['1,2'],
+        'f[]': ['1']
+      }
+    }
+    const { body } = await wrappedHandler(customEvent, lambdaContext)
+    const query = JSON.parse(body).query
+
+    expect(query).toEqual({
+      a: ['1', '2'],
+      b: ['1', '2'],
+      c: '[1,2]',
+      d: '1,2',
+      e: ['1,2'],
+      f: ['1']
+    })
   })
 })
