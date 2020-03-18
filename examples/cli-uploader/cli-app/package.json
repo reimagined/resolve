@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "request": "^2.88.0",
-    "jsonwebtoken": "^8.5.1",
-    "mime-types": "^2.1.26"
+    "request": "2.88.0",
+    "jsonwebtoken": "8.5.1",
+    "mime-types": "2.1.26"
   }
 }

@@ -1,7 +1,7 @@
 import { ResolveStore } from 'resolve-readmodel-base'
 
 export default {
-  Init: async (store: ResolveStore) => {
+  Init: async (store: ResolveStore): Promise<void> => {
     await store.defineTable('History', {
       indexes: { id: 'string' },
       fields: ['events']
@@ -21,7 +21,7 @@ export default {
         b: number
       }
     }
-  ) => {
+  ): Promise<void> => {
     const key = `K${timestamp}`
     if ((await store.count('History', { id: aggregateId })) === 0) {
       await store.insert('History', {

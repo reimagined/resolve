@@ -1,10 +1,9 @@
-import { put, takeEvery, delay } from 'redux-saga/effects'
-import { routerActions } from 'react-router-redux'
+import { takeEvery, delay } from 'redux-saga/effects'
 import { actionTypes } from 'resolve-redux'
 
 const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = actionTypes
 
-export default function*({ api }) {
+export default function*(history, { api }) {
   yield takeEvery(
     action =>
       action.type === SEND_COMMAND_SUCCESS &&
@@ -23,7 +22,7 @@ export default function*({ api }) {
             continue
           }
 
-          yield put(routerActions.push(`/storyDetails/${action.aggregateId}`))
+          yield history.push(`/storyDetails/${action.aggregateId}`)
           break
         } catch (error) {
           // eslint-disable-next-line no-console
@@ -39,7 +38,7 @@ export default function*({ api }) {
       action.type === SEND_COMMAND_FAILURE &&
       action.commandType === 'createStory',
     function*() {
-      yield put(routerActions.push(`/error?text=Failed to create a story`))
+      yield history.push(`/error?text=Failed to create a story`)
     }
   )
 }

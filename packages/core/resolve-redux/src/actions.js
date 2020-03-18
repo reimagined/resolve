@@ -278,21 +278,24 @@ export const logout = () => ({
   type: LOGOUT
 })
 
-export const authRequest = (url, body = {}) => ({
+export const authRequest = (url, body = {}, method) => ({
   type: AUTH_REQUEST,
   url,
-  body
+  body,
+  method
 })
 
-export const authSuccess = (url, body) => ({
+export const authSuccess = (url, body, method) => ({
   type: AUTH_SUCCESS,
   url,
-  body
+  body,
+  method
 })
 
-export const authFailure = (url, body, error) => ({
+export const authFailure = (url, body, method, error) => ({
   type: AUTH_FAILURE,
   url,
   body,
+  method,
   error
 })

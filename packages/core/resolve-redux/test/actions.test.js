@@ -505,10 +505,11 @@ describe('actions', () => {
       const url = '/api/auth/local'
       const body = { username: 'username', password: 'password' }
       const error = 'error'
-      expect(authFailure(url, body, error)).toEqual({
+      expect(authFailure(url, body, 'POST', error)).toEqual({
         type: AUTH_FAILURE,
         url,
         body,
+        method: 'POST',
         error
       })
     })

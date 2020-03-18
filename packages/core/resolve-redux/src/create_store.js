@@ -4,7 +4,6 @@ import {
   combineReducers,
   compose
 } from 'redux'
-import { routerReducer, routerMiddleware } from 'react-router-redux'
 import uuid from 'uuid/v4'
 
 import createViewModelsReducer from './create_view_models_reducer'
@@ -25,11 +24,10 @@ const createStore = ({
   subscribeAdapter = emptySubscribeAdapter,
   initialState = undefined,
   jwtProvider = undefined,
-  history,
   origin,
   rootPath,
   isClient,
-  queryMethod = 'GET'
+  queryMethod
 }) => {
   const sessionId = uuid()
 
@@ -37,17 +35,12 @@ const createStore = ({
 
   const combinedReducers = combineReducers({
     ...reducers,
-    router: routerReducer,
     viewModels: createViewModelsReducer(viewModels),
     readModels: createReadModelsReducer(),
     jwt: createJwtReducer()
   })
 
-  const appliedMiddlewares = applyMiddleware(
-    routerMiddleware(history),
-    resolveMiddleware,
-    ...middlewares
-  )
+  const appliedMiddlewares = applyMiddleware(resolveMiddleware, ...middlewares)
 
   const composedEnhancers = compose(appliedMiddlewares, ...enhancers)
 
