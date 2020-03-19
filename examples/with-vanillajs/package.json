@@ -26,8 +26,7 @@
     "resolve-subscribe-mqtt": "0.23.0",
     "resolve-subscribe-socket.io": "0.23.0",
     "resolve-client": "0.23.0",
-    "unfetch": "4.1.0",
-    "webpack": "4.41.2"
+    "unfetch": "4.1.0"
   },
   "devDependencies": {
     "aws-sdk": "2.587.0",
@@ -41,7 +40,6 @@
     "@babel/preset-react": "7.0.0",
     "babel-jest": "25.1.0",
     "jest": "25.1.0",
-    "react-test-renderer": "16.7.0",
     "testcafe": "0.23.3",
     "resolve-cloud": "*"
   }

@@ -23,7 +23,7 @@
     "react": "16.13.0",
     "react-dom": "16.13.0",
     "react-bootstrap": "0.32.1",
-    "react-helmet": "5.2.0",
+    "react-helmet": "6.0.0-beta.2",
     "react-redux": "7.2.0",
     "redux-saga": "1.0.5",
     "react-router": "5.1.2",

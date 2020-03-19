@@ -29,6 +29,10 @@
     "resolve-readmodel-lite": "0.23.0"
   },
   "devDependencies": {
+    "react": "*",
+    "redux": "*",
+    "react-redux": "*",
+    "resolve-redux": "0.23.0",
     "jest": "25.1.0",
     "sinon": "7.2.2"
   },
@@ -36,7 +40,7 @@
     "react": "*",
     "react-redux": "*",
     "redux": "*",
-    "resolve-redux": "*"
+    "resolve-redux": "0.23.0"
   },
   "babelCompile": [
     {
