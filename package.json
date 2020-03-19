@@ -65,7 +65,6 @@
       "packages/adapters/scheduler-adapters/*",
       "packages/adapters/upload-adapters/*",
       "examples/*",
-      "examples/shopping-list-advanced/*",
       "examples/shopping-list-tutorial/*",
       "packages/modules/*",
       "tests",
@@ -88,6 +87,9 @@
     "test:functional": "npx oao run-script -i \"{examples/shopping-list-advanced,examples/shopping-list-tutorial/*}\" test:functional",
     "test:integrational": "npx oao all -i \"{examples/**,packages/**,website}\" \"yarn test:integrational --color 2>&1\"",
     "tutorial-test:functional": "npx oao run-script -i \"examples/*\" test:functional",
-    "test:clean-snapshots": "npx oao all -i \"examples/shopping-list-advanced\"  \"yarn test -u --color 2>&1\""
+    "test:clean-snapshots": "npx oao all -i \"examples/shopping-list-advanced\"  \"yarn test -u --color 2>&1\"",
+    "workspace-manager": "node packages/internal/workspace-manager/bin/index.js",
+    "sla:enable": "yarn workspace-manager add \"examples/shopping-list-advanced/*\"",
+    "sla:disable": "yarn workspace-manager rm \"examples/shopping-list-advanced/*\""
   }
 }

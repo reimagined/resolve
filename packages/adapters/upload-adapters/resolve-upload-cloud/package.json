@@ -26,14 +26,15 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/upload-adapters/resolve-upload-cloud#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "aws-sdk": "^2.554.0",
     "request": "^2.88.0",
-    "uuid": "^3.3.3",
-    "lodash": "^4.17.15",
     "mime-types": "^2.1.26"
   },
   "devDependencies": {
+    "aws-sdk": "2.587.0",
     "jest": "25.1.0"
+  },
+  "peerDependencies": {
+    "aws-sdk": "*"
   },
   "babelCompile": [
     {
