@@ -60,7 +60,7 @@
     "postcss-import": "11.1.0",
     "postcss-loader": "2.1.5",
     "style-loader": "0.21.0",
-    "testcafe": "0.23.3",
+    "testcafe":  "1.8.3",
     "resolve-cloud": "*"
   }
 }

@@ -40,7 +40,7 @@
     "@babel/preset-react": "7.0.0",
     "babel-jest": "25.1.0",
     "jest": "25.1.0",
-    "testcafe": "0.23.3",
+    "testcafe": "1.8.3",
     "resolve-cloud": "*"
   }
 }

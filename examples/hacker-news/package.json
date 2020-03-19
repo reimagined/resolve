@@ -72,7 +72,7 @@
     "enzyme-adapter-react-16": "1.1.1",
     "jest": "25.1.0",
     "sinon": "7.2.2",
-    "testcafe": "0.23.3",
+    "testcafe":  "1.8.3",
     "resolve-cloud": "*"
   }
 }
