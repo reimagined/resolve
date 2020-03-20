@@ -88,3 +88,20 @@ A module is a standalone configuration object that can reference client code, re
 A merged module's code is treated the same as the application's code. The resulting application's bundles include the module code and configurations as if they were always a part of the application.
 
 For an example on using modules, see the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) sample application. This application makes use of the authentication module and the comments module provided by reSolve.
+
+## Upload Files
+
+The resolve-module-upload module implements the file upload functionality. You can enable this module as shown below:
+
+
+##### run.js:
+```js
+const moduleUploader = resolveModuleUploader({ jwtSecret })
+...
+const baseConfig = merge(
+  defaultResolveConfig,
+  appConfig,
+  moduleAuth,
+  moduleUploader
+)
+```
