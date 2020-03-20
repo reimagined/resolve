@@ -91,8 +91,7 @@ For an example on using modules, see the [Hacker News](https://github.com/reimag
 
 ## Upload Files
 
-The resolve-module-upload module implements the file upload functionality. You can enable this module as shown below:
-
+The **resolve-module-upload** module implements the file upload functionality. You can enable this module as shown below:
 
 ##### run.js:
 ```js
@@ -105,3 +104,11 @@ const baseConfig = merge(
   moduleUploader
 )
 ```
+
+The **resolve-module-upload** module adds the following API endpoints to an application:
+
+- /api/uploader/getFormUpload - Returns an upload path to use in HTTP forms.
+- /api/uploader/getUploadUrl - Returns a path used to upload files.
+- /api/uploader/getToken - Given credentials returns the user's authorization token.
+
+The [cli-uploader](https://github.com/reimagined/resolve/tree/master/examples/cli-uploader) example application demonstrates how to desighn a file auploader utility and handle file uploading on the server side.
