@@ -27,7 +27,7 @@
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
     "core-js": "3.3.5",
-    "@ngtools/webpack": "8.3.15",
+    "@ngtools/webpack": "9.0.6",
     "resolve-scripts": "0.23.0",
     "resolve-storage-postgresql-serverless": "0.23.0",
     "resolve-storage-lite": "0.23.0",
@@ -60,7 +60,7 @@
     "postcss-import": "11.1.0",
     "postcss-loader": "2.1.5",
     "style-loader": "0.21.0",
-    "testcafe": "0.23.3",
+    "testcafe": "1.8.3",
     "resolve-cloud": "*"
   }
 }

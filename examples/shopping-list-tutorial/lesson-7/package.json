@@ -18,7 +18,7 @@
     "react": "16.13.0",
     "react-dom": "16.13.0",
     "react-bootstrap": "0.32.1",
-    "react-helmet": "5.2.0",
+    "react-helmet": "6.0.0-beta.2",
     "react-router": "5.1.2",
     "react-router-dom": "5.1.2",
     "react-redux": "7.2.0",
@@ -41,7 +41,7 @@
     "babel-jest": "25.1.0",
     "jest": "25.1.0",
     "react-test-renderer": "16.7.0",
-    "testcafe": "0.23.3",
+    "testcafe": "1.8.3",
     "isomorphic-fetch": "2.2.1",
     "chai": "4.2.0",
     "resolve-cloud": "*"

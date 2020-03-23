@@ -20,7 +20,7 @@
     "react": "16.13.0",
     "react-dom": "16.13.0",
     "react-bootstrap": "0.32.1",
-    "react-helmet": "5.2.0",
+    "react-helmet": "6.0.0-beta.2",
     "react-router": "5.1.2",
     "react-router-dom": "5.1.2",
     "react-redux": "7.2.0",
@@ -56,7 +56,7 @@
     "postcss-loader": "2.1.5",
     "react-test-renderer": "16.7.0",
     "style-loader": "0.21.0",
-    "testcafe": "0.23.3",
+    "testcafe": "1.8.3",
     "webpack": "4.42.0",
     "resolve-cloud": "*"
   }

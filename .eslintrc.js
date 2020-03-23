@@ -468,6 +468,7 @@ module.exports = {
           'wikipedia',
           'wildcard',
           'workspaces',
+          'workspace',
           'writepolicy',
           'wss',
           'www',

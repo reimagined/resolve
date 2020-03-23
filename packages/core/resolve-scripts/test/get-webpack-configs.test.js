@@ -74,10 +74,12 @@ test('should make webpack configs for local mode', async () => {
     nodeModulesByAssembly
   })
 
-  expect(normalizePaths(JSON.stringify(webpackConfigs))).toMatchSnapshot()
+  expect(
+    normalizePaths(JSON.stringify(webpackConfigs, null, 2))
+  ).toMatchSnapshot()
 
   expect(
-    normalizePaths(JSON.stringify(Array.from(nodeModulesByAssembly)))
+    normalizePaths(JSON.stringify(Array.from(nodeModulesByAssembly), null, 2))
   ).toMatchSnapshot()
 })
 
@@ -92,10 +94,12 @@ test('should make webpack configs for cloud mode', async () => {
     nodeModulesByAssembly
   })
 
-  expect(normalizePaths(JSON.stringify(webpackConfigs))).toMatchSnapshot()
+  expect(
+    normalizePaths(JSON.stringify(webpackConfigs, null, 2))
+  ).toMatchSnapshot()
 
   expect(
-    normalizePaths(JSON.stringify(Array.from(nodeModulesByAssembly)))
+    normalizePaths(JSON.stringify(Array.from(nodeModulesByAssembly), null, 2))
   ).toMatchSnapshot()
 })
 
@@ -117,6 +121,6 @@ test('should make external package.json resolver', async () => {
   externalResolver(null, 'package', () => {})
 
   expect(
-    normalizePaths(JSON.stringify(Array.from(nodeModulesByAssembly)))
+    normalizePaths(JSON.stringify(Array.from(nodeModulesByAssembly), null, 2))
   ).toMatchSnapshot()
 })

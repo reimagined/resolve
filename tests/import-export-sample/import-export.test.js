@@ -1,7 +1,8 @@
 import fs from 'fs'
 import path from 'path'
-import { Readable } from 'stream'
-import { MAINTENANCE_MODE_MANUAL, pipeline } from 'resolve-storage-base'
+import { promisify } from 'util'
+import { Readable, pipeline } from 'stream'
+import { MAINTENANCE_MODE_MANUAL } from 'resolve-storage-base'
 import createStorageAdapter from 'resolve-storage-lite'
 
 import createStreamBuffer from './create-stream-buffer'
@@ -51,7 +52,10 @@ describe('import-export', () => {
       })
     }
 
-    await pipeline(inputStorageAdapter.export(), outputStorageAdapter.import())
+    await promisify(pipeline)(
+      inputStorageAdapter.export(),
+      outputStorageAdapter.import()
+    )
 
     let outputCountEvents = 0
     await outputStorageAdapter.loadEvents({}, () => {
@@ -103,7 +107,7 @@ describe('import-export', () => {
 
       const tempStream = createStreamBuffer()
 
-      await pipeline(exportStream, tempStream)
+      await promisify(pipeline)(exportStream, tempStream)
 
       await eventStorageAdapter.dispose()
 
@@ -124,7 +128,7 @@ describe('import-export', () => {
       this.push(null)
     }
 
-    await pipeline(exportBufferStream, outputStorageAdapter.import())
+    await promisify(pipeline)(exportBufferStream, outputStorageAdapter.import())
 
     let outputCountEvents = 0
     await outputStorageAdapter.loadEvents({}, () => {
@@ -160,9 +164,10 @@ describe('import-export', () => {
     while (cursor !== inputCountEvents) {
       const exportStream = inputStorageAdapter.export({ cursor })
       const tempStream = createStreamBuffer()
-      const pipelinePromise = pipeline(exportStream, tempStream).then(
-        () => false
-      )
+      const pipelinePromise = promisify(pipeline)(
+        exportStream,
+        tempStream
+      ).then(() => false)
 
       const timeoutPromise = new Promise(resolve =>
         setTimeout(() => {
