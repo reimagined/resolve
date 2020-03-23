@@ -41,7 +41,7 @@
     "babel-jest": "25.1.0",
     "jest": "25.1.0",
     "react-test-renderer": "16.7.0",
-    "testcafe":  "1.8.3",
+    "testcafe": "1.8.3",
     "isomorphic-fetch": "2.2.1",
     "chai": "4.2.0",
     "resolve-cloud": "*"
