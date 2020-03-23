@@ -1,6 +1,6 @@
 {
   "name": "with-vanillajs",
-  "version": "0.23.0",
+  "version": "0.23.1",
   "description": "used as a template for new reSolve applications",
   "private": true,
   "scripts": {
@@ -17,15 +17,15 @@
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
     "domready": "1.0.8",
-    "resolve-scripts": "0.23.0",
-    "resolve-storage-postgresql-serverless": "0.23.0",
-    "resolve-storage-lite": "0.23.0",
-    "resolve-readmodel-lite": "0.23.0",
-    "resolve-readmodel-postgresql-serverless": "0.23.0",
-    "resolve-runtime": "0.23.0",
-    "resolve-subscribe-mqtt": "0.23.0",
-    "resolve-subscribe-socket.io": "0.23.0",
-    "resolve-client": "0.23.0",
+    "resolve-scripts": "0.23.1",
+    "resolve-storage-postgresql-serverless": "0.23.1",
+    "resolve-storage-lite": "0.23.1",
+    "resolve-readmodel-lite": "0.23.1",
+    "resolve-readmodel-postgresql-serverless": "0.23.1",
+    "resolve-runtime": "0.23.1",
+    "resolve-subscribe-mqtt": "0.23.1",
+    "resolve-subscribe-socket.io": "0.23.1",
+    "resolve-client": "0.23.1",
     "unfetch": "4.1.0"
   },
   "devDependencies": {
