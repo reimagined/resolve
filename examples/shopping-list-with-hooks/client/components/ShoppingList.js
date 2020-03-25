@@ -74,7 +74,7 @@ const ShoppingList = ({
   const onItemTextPressEnter = event => {
     if (event.charCode === 13) {
       event.preventDefault()
-      createShoppingItem(shoppingList.name)
+      createShoppingItem(itemText)
     }
   }
   const onShoppingListNamePressEnter = event => {
@@ -142,7 +142,7 @@ const ShoppingList = ({
           <Button
             className="example-button"
             bsStyle="success"
-            onClick={createShoppingItem}
+            onClick={() => createShoppingItem(itemText)}
           >
             Add Item
           </Button>
