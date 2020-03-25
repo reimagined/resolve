@@ -25,9 +25,9 @@ const createMockResponse = (overrides: object = {}): NarrowedResponse => ({
   ...overrides
 })
 
-const createMockContext = (): Context => ({
+const createMockContext = (staticPath = 'static-path'): Context => ({
   origin: 'mock-origin',
-  staticPath: 'static-path',
+  staticPath,
   rootPath: 'root-path',
   jwtProvider: undefined,
   subscribeAdapter: undefined,
@@ -366,5 +366,41 @@ describe('query', () => {
         method: 'GET'
       }
     )
+  })
+})
+
+describe('getStaticAssetUrl', () => {
+  test('absolute asset url', () => {
+    expect(
+      client.getStaticAssetUrl('https://static.host.com/account/static.jpg')
+    ).toEqual('https://static.host.com/account/static.jpg')
+  })
+
+  test('absolute static url', () => {
+    client = getClient(createMockContext('https://static.host.com'))
+
+    expect(client.getStaticAssetUrl('/account/static.jpg')).toEqual(
+      'https://static.host.com/account/static.jpg'
+    )
+  })
+
+  test('root based static url', () => {
+    expect(client.getStaticAssetUrl('/account/static.jpg')).toEqual(
+      'mock-origin/root-path/static-path/account/static.jpg'
+    )
+  })
+
+  test('asset path should have leading slash', () => {
+    expect(() => client.getStaticAssetUrl('account/static.jpg')).toThrow()
+  })
+
+  test('empty asset path', () => {
+    expect(() => client.getStaticAssetUrl('')).toThrow()
+  })
+
+  test('empty static path', () => {
+    client = getClient(createMockContext(''))
+
+    expect(() => client.getStaticAssetUrl('account/static.jpg')).toThrow()
   })
 })

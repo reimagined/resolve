@@ -3,7 +3,7 @@ import { GenericError } from './errors'
 import { doSubscribe, getSubscriptionKeys, doUnsubscribe } from './subscribe'
 import { RequestOptions, request, NarrowedResponse } from './request'
 import { assertLeadingSlash, assertNonEmptyString } from './assertions'
-import { getRootBasedUrl } from './utils'
+import { getRootBasedUrl, isAbsoluteUrl } from './utils'
 
 function determineCallback<T>(options: any, callback: any): T | null {
   if (typeof options === 'function') {
@@ -292,8 +292,18 @@ const getStaticAssetUrl = (
   { rootPath, staticPath, origin }: Context,
   assetPath: string
 ): string => {
+  assertNonEmptyString(staticPath, 'staticPath')
   assertNonEmptyString(assetPath, 'assetPath')
+
+  if (isAbsoluteUrl(assetPath)) {
+    return assetPath
+  }
+
   assertLeadingSlash(assetPath, 'assetPath')
+
+  if (isAbsoluteUrl(staticPath)) {
+    return `${staticPath}${assetPath}`
+  }
 
   return getRootBasedUrl(rootPath, `/${staticPath}${assetPath}`, origin)
 }
