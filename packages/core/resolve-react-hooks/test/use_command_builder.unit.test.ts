@@ -58,11 +58,11 @@ describe('common', () => {
 
 describe('async mode', () => {
   test('just a command', async () => {
-    await useCommandBuilder(buildCommand)('data')
-    //expect(buildCommand).toHaveBeenCalledWith
+    await useCommandBuilder(buildCommand)('builder-input')
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
     expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand(),
+      buildCommand('builder-input'),
       undefined,
       undefined
     )
@@ -73,10 +73,11 @@ describe('async mode', () => {
   })
 
   test('command and dependencies', async () => {
-    await useCommandBuilder(buildCommand, ['dependency'])()
+    await useCommandBuilder(buildCommand, ['dependency'])('builder-input')
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
     expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand(),
+      buildCommand('builder-input'),
       undefined,
       undefined
     )
@@ -89,10 +90,11 @@ describe('async mode', () => {
   test('command and options', async () => {
     const options = { option: 'option' }
 
-    await useCommandBuilder(buildCommand, options)()
+    await useCommandBuilder(buildCommand, options)('builder-input')
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
     expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand(),
+      buildCommand('builder-input'),
       options,
       undefined
     )
@@ -104,12 +106,13 @@ describe('async mode', () => {
   })
 
   test('command, options and dependencies', async () => {
-    await useCommandBuilder(buildCommand, { option: 'option' }, [
-      'dependency'
-    ])()
+    await useCommandBuilder(buildCommand, { option: 'option' }, ['dependency'])(
+      'builder-input'
+    )
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
     expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand(),
+      buildCommand('builder-input'),
       { option: 'option' },
       undefined
     )
@@ -128,10 +131,11 @@ describe('callback mode', () => {
   })
 
   test('just a command', () => {
-    useCommandBuilder(buildCommand, callback)()
+    useCommandBuilder(buildCommand, callback)('builder-input')
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
     expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand(),
+      buildCommand('builder-input'),
       undefined,
       callback
     )
@@ -143,10 +147,11 @@ describe('callback mode', () => {
   })
 
   test('command, callback and dependencies', () => {
-    useCommandBuilder(buildCommand, callback, ['dependency'])()
+    useCommandBuilder(buildCommand, callback, ['dependency'])('builder-input')
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
     expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand(),
+      buildCommand('builder-input'),
       undefined,
       callback
     )
@@ -159,10 +164,11 @@ describe('callback mode', () => {
   test('command, options and callback', () => {
     const options = { option: 'option' }
 
-    useCommandBuilder(buildCommand, options, callback)()
+    useCommandBuilder(buildCommand, options, callback)('builder-input')
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
     expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand(),
+      buildCommand('builder-input'),
       { option: 'option' },
       callback
     )
@@ -177,10 +183,11 @@ describe('callback mode', () => {
   test('command, options, callback and dependencies', () => {
     useCommandBuilder(buildCommand, { option: 'option' }, callback, [
       'dependency'
-    ])()
+    ])('builder-input')
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
     expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand(),
+      buildCommand('builder-input'),
       { option: 'option' },
       callback
     )

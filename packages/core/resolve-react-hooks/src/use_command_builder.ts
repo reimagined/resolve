@@ -14,51 +14,51 @@ import {
   isOptions
 } from './generic'
 
-export type CommandBuilder = (...args: any[]) => Command
+export type CommandBuilder<T> = (data: T) => Command
 
-type CommandExecutor = HookExecutor<any[], CommandResult>
+type CommandExecutor<T> = HookExecutor<T, CommandResult>
 
-function useCommandBuilder(builder: CommandBuilder): CommandExecutor
-function useCommandBuilder(
-  builder: CommandBuilder,
+function useCommandBuilder<T>(builder: CommandBuilder<T>): CommandExecutor<T>
+function useCommandBuilder<T>(
+  builder: CommandBuilder<T>,
   options: CommandOptions
-): CommandExecutor
-function useCommandBuilder(
-  builder: CommandBuilder,
+): CommandExecutor<T>
+function useCommandBuilder<T>(
+  builder: CommandBuilder<T>,
   callback: CommandCallback
-): CommandExecutor
-function useCommandBuilder(
-  builder: CommandBuilder,
+): CommandExecutor<T>
+function useCommandBuilder<T>(
+  builder: CommandBuilder<T>,
   dependencies: any[]
-): CommandExecutor
-function useCommandBuilder(
-  builder: CommandBuilder,
+): CommandExecutor<T>
+function useCommandBuilder<T>(
+  builder: CommandBuilder<T>,
   callback: CommandCallback,
   dependencies: any[]
-): CommandExecutor
-function useCommandBuilder(
-  builder: CommandBuilder,
+): CommandExecutor<T>
+function useCommandBuilder<T>(
+  builder: CommandBuilder<T>,
   options: CommandOptions,
   callback: CommandCallback
-): CommandExecutor
-function useCommandBuilder(
-  builder: CommandBuilder,
+): CommandExecutor<T>
+function useCommandBuilder<T>(
+  builder: CommandBuilder<T>,
   options: CommandOptions,
   dependencies: any[]
-): CommandExecutor
-function useCommandBuilder(
-  builder: CommandBuilder,
+): CommandExecutor<T>
+function useCommandBuilder<T>(
+  builder: CommandBuilder<T>,
   options: CommandOptions,
   callback: CommandCallback,
   dependencies: any[]
-): CommandExecutor
+): CommandExecutor<T>
 
-function useCommandBuilder(
-  builder: CommandBuilder,
+function useCommandBuilder<T>(
+  builder: CommandBuilder<T>,
   options?: CommandOptions | CommandCallback | any[],
   callback?: CommandCallback | any[],
   dependencies?: any[]
-): CommandExecutor {
+): CommandExecutor<T> {
   const client = useClient()
 
   const actualOptions: CommandOptions | undefined = firstOfType<CommandOptions>(
@@ -73,8 +73,8 @@ function useCommandBuilder(
     [builder, actualOptions, actualCallback].filter(i => i)
 
   return useCallback(
-    (...args: any[]): Promise<CommandResult> | void =>
-      client.command(builder(...args), actualOptions, actualCallback),
+    (data: T): Promise<CommandResult> | void =>
+      client.command(builder(data), actualOptions, actualCallback),
     [client, ...actualDependencies]
   )
 }
