@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { useCommand, useViewModel } from 'resolve-react-hooks'
+import {
+  useCommand,
+  useCommandBuilder,
+  useViewModel
+} from 'resolve-react-hooks'
 import { Redirect } from 'react-router-dom'
 
 import {
@@ -34,16 +38,16 @@ const ShoppingList = ({
   const [itemText, setItemText] = useState('')
   const clearItemText = () => setItemText('')
 
-  const createShoppingItem = useCommand(
-    {
+  const createShoppingItem = useCommandBuilder(
+    text => ({
       type: 'createShoppingItem',
       aggregateId,
       aggregateName: 'ShoppingList',
       payload: {
-        text: itemText,
+        text,
         id: Date.now().toString()
       }
-    },
+    }),
     clearItemText
   )
 
@@ -70,7 +74,7 @@ const ShoppingList = ({
   const onItemTextPressEnter = event => {
     if (event.charCode === 13) {
       event.preventDefault()
-      createShoppingItem()
+      createShoppingItem(itemText)
     }
   }
   const onShoppingListNamePressEnter = event => {
@@ -138,7 +142,7 @@ const ShoppingList = ({
           <Button
             className="example-button"
             bsStyle="success"
-            onClick={createShoppingItem}
+            onClick={() => createShoppingItem(itemText)}
           >
             Add Item
           </Button>
