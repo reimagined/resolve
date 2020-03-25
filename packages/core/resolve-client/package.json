@@ -1,6 +1,6 @@
 {
   "name": "resolve-client",
-  "version": "0.23.1",
+  "version": "0.23.2",
   "description": "Basic reSolve client.",
   "engines": {
     "node": ">=10.9"
