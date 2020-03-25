@@ -57,7 +57,7 @@ describe('common', () => {
 })
 
 describe('async mode', () => {
-  test('just a command', async () => {
+  test('just a builder', async () => {
     await useCommandBuilder(buildCommand)('builder-input')
     expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
@@ -72,7 +72,7 @@ describe('async mode', () => {
     ])
   })
 
-  test('command and dependencies', async () => {
+  test('builder and dependencies', async () => {
     await useCommandBuilder(buildCommand, ['dependency'])('builder-input')
     expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
@@ -87,7 +87,7 @@ describe('async mode', () => {
     ])
   })
 
-  test('command and options', async () => {
+  test('builder and options', async () => {
     const options = { option: 'option' }
 
     await useCommandBuilder(buildCommand, options)('builder-input')
@@ -105,7 +105,7 @@ describe('async mode', () => {
     ])
   })
 
-  test('command, options and dependencies', async () => {
+  test('builder, options and dependencies', async () => {
     await useCommandBuilder(buildCommand, { option: 'option' }, ['dependency'])(
       'builder-input'
     )
@@ -130,7 +130,7 @@ describe('callback mode', () => {
     callback = jest.fn()
   })
 
-  test('just a command', () => {
+  test('just a builder', () => {
     useCommandBuilder(buildCommand, callback)('builder-input')
     expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
@@ -146,7 +146,7 @@ describe('callback mode', () => {
     ])
   })
 
-  test('command, callback and dependencies', () => {
+  test('builder, callback and dependencies', () => {
     useCommandBuilder(buildCommand, callback, ['dependency'])('builder-input')
     expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
@@ -161,7 +161,7 @@ describe('callback mode', () => {
     ])
   })
 
-  test('command, options and callback', () => {
+  test('builder, options and callback', () => {
     const options = { option: 'option' }
 
     useCommandBuilder(buildCommand, options, callback)('builder-input')
@@ -180,7 +180,7 @@ describe('callback mode', () => {
     ])
   })
 
-  test('command, options, callback and dependencies', () => {
+  test('builder, options, callback and dependencies', () => {
     useCommandBuilder(buildCommand, { option: 'option' }, callback, [
       'dependency'
     ])('builder-input')
