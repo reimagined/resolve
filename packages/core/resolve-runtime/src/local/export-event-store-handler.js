@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs'
+import { promisify } from 'util'
 
 import { pipeline } from 'stream'
 
@@ -11,7 +12,7 @@ const exportEventStoreHandler = options => async (req, res) => {
 
     const eventStream = storageAdapter.export()
     const fsStream = fs.createWriteStream(path.join(exportFile))
-    await pipeline(eventStream, fsStream)
+    await promisify(pipeline)(eventStream, fsStream)
 
     res.end('ok')
   } catch (error) {
