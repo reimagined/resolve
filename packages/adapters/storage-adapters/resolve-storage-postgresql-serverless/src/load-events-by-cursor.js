@@ -1,10 +1,9 @@
 import { INT8_SQL_TYPE } from './constants'
-import shapeEvent from './shape-event'
 
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
 const loadEventsByCursor = async (
-  { executeStatement, escapeId, escape, tableName, databaseName },
+  { executeStatement, escapeId, escape, tableName, databaseName, shapeEvent },
   {
     eventTypes,
     aggregateIds,
