@@ -1,7 +1,7 @@
 import createQuery from './create-query'
 
 const getLatestEvent = async (pool, filter) => {
-  const { database, tableName, escapeId } = pool
+  const { database, tableName, escapeId, shapeEvent } = pool
 
   const resultQueryCondition = createQuery(pool, filter)
 
@@ -11,17 +11,11 @@ const getLatestEvent = async (pool, filter) => {
     LIMIT 0, 1`
   )
 
-  if (rows.length > 0) {
-    const event = rows[0]
-    event.payload = JSON.parse(event.payload)
-
-    delete event.threadId
-    delete event.threadCounter
-
-    return event
+  if (rows.length === 0) {
+    return null
   }
 
-  return null
+  return shapeEvent(rows[0])
 }
 
 export default getLatestEvent

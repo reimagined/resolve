@@ -285,6 +285,7 @@ module.exports = {
           'nspname',
           'nullable',
           'nullish',
+          'num',
           'obj',
           'objoid',
           'objs',

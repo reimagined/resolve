@@ -2,7 +2,7 @@ const sortExpression = { timestamp: -1 }
 const projectionExpression = { _id: 0, threadId: 0, threadCounter: 0 }
 
 const getLatestEvent = async (
-  { database, collectionName },
+  { database, collectionName, shapeEvent },
   { eventTypes, aggregateIds, startTime, finishTime }
 ) => {
   const findExpression = {
@@ -24,7 +24,11 @@ const getLatestEvent = async (
     .limit(1)
     .toArray()
 
-  return events.length > 0 ? events[0] : null
+  if (events.length === 0) {
+    return null
+  }
+
+  return shapeEvent(events[0])
 }
 
 export default getLatestEvent
