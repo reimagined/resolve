@@ -107,8 +107,8 @@ const baseConfig = merge(
 
 The **resolve-module-upload** module adds the following API endpoints to an application:
 
-- /api/uploader/getFormUpload - Returns an upload path to use in HTTP forms.
-- /api/uploader/getUploadUrl - Returns a path used to upload files.
-- /api/uploader/getToken - Given credentials returns the user's authorization token.
+- `/api/uploader/getFormUpload` - Returns an upload path to use in HTTP forms.
+- `/api/uploader/getUploadUrl` - Returns a path used to upload files.
+- `/api/uploader/getToken` - Given credentials returns the user's authorization token.
 
-The [cli-uploader](https://github.com/reimagined/resolve/tree/master/examples/cli-uploader) example application demonstrates how to desighn a file auploader utility and handle file uploading on the server side.
+The [cli-uploader](https://github.com/reimagined/resolve/tree/master/examples/cli-uploader) example application demonstrates how to design a file uploader utility and handle file uploading on the server side.
