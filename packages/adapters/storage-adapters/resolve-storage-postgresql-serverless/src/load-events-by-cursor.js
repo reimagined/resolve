@@ -125,6 +125,7 @@ const loadEventsByCursor = async (
       )} AND ${injectBigInt(threadCounterEnd)}`
     )
   }
+
   for (let i = 0; i < requestCursors.length; i++) {
     const sqlQuery = `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}
     WHERE ${
@@ -137,7 +138,13 @@ const loadEventsByCursor = async (
     requestPromises.push(executeStatement(sqlQuery))
   }
 
-  const events = (await Promise.all(requestPromises)).flat()
+  const batchedEvents = await Promise.all(requestPromises)
+  const events = []
+  for (const eventBatch of batchedEvents) {
+    for (const event of eventBatch) {
+      events.push(event)
+    }
+  }
 
   for (const event of events) {
     const threadId = +event.threadId
