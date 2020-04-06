@@ -108,9 +108,9 @@ test('resolve-saga', async () => {
     'test-property': 'content'
   }
 
-  await sagaExecutor.updateByEvents(
-    'test-saga',
-    [
+  await sagaExecutor.updateByEvents({
+    modelName: 'test-saga',
+    events: [
       { type: 'Init' },
       {
         type: 'EVENT_TYPE',
@@ -120,17 +120,17 @@ test('resolve-saga', async () => {
         payload: { content: true }
       }
     ],
-    remainingTime,
+    getRemainingTimeInMillis: () => remainingTime,
     properties
-  )
+  })
 
   const schedulerEvents = createEventTypes({
     schedulerName: 'default-scheduler'
   })
 
-  await sagaExecutor.updateByEvents(
-    'default-scheduler',
-    [
+  await sagaExecutor.updateByEvents({
+    modelName: 'default-scheduler',
+    events: [
       { type: 'Init' },
       {
         type: schedulerEvents.SCHEDULED_COMMAND_CREATED,
@@ -162,9 +162,9 @@ test('resolve-saga', async () => {
         type: schedulerEvents.SCHEDULED_COMMAND_FAILED
       }
     ],
-    remainingTime,
+    getRemainingTimeInMillis: () => remainingTime,
     properties
-  )
+  })
 
   await sagaExecutor.drop('test-saga')
 

@@ -1156,6 +1156,14 @@ Array [
   ],
   Array [
     "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
     "remoteReadModelName",
   ],
   Array [
@@ -1165,14 +1173,6 @@ Array [
   Array [
     "origin",
     "resolve:query:applyEvent",
-  ],
-  Array [
-    "readModelName",
-    "readOnlyReadModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -1237,10 +1237,10 @@ Array [
     "dispose",
   ],
   Array [
-    "applyEvent",
+    "dispose",
   ],
   Array [
-    "dispose",
+    "applyEvent",
   ],
   Array [
     "dispose",

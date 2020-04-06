@@ -51,18 +51,20 @@ const createSaga = ({
     performanceTracer
   })
 
-  const updateByEvents = async (
-    sagaName,
+  const updateByEvents = async ({
+    modelName,
     events,
-    remainingTime,
+    getRemainingTimeInMillis,
+    transactionId,
     properties
-  ) => {
+  }) => {
     eventProperties = properties
-    const result = await executeListener.updateByEvents(
-      sagaName,
+    const result = await executeListener.updateByEvents({
+      modelName,
       events,
-      remainingTime
-    )
+      getRemainingTimeInMillis,
+      transactionId
+    })
     return result
   }
 
