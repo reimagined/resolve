@@ -52,7 +52,7 @@ const devConfig = {
     }
   },*/
   storageAdapter: {
-    module: 'resolve-storage-shit',
+    module: 'resolve-storage-lite',
     options: {
       databaseFile: 'data/storage.db'
     }
@@ -60,7 +60,12 @@ const devConfig = {
   encryptionAdapter: {
     module: 'resolve-encryption-local',
     options: {
-      algorithm: 'AES256'
+      algorithm: {
+        type: 'AES256'
+      },
+      keyStore: {
+        storeOption: 'store-option'
+      }
     }
   },
   /*{

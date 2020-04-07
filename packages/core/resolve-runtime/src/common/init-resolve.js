@@ -12,7 +12,8 @@ const initResolve = async resolve => {
   const {
     storageAdapter: createStorageAdapter,
     snapshotAdapter: createSnapshotAdapter,
-    readModelConnectors: readModelConnectorsCreators
+    readModelConnectors: readModelConnectorsCreators,
+    encryptionAdapter: createEncryptionAdapter
   } = resolve.assemblies
 
   const storageAdapter = createStorageAdapter()
@@ -31,11 +32,17 @@ const initResolve = async resolve => {
     })
   }
 
+  const encryptionAdapter =
+    typeof createEncryptionAdapter === 'function'
+      ? createEncryptionAdapter()
+      : null
+
   const executeCommand = createCommandExecutor({
     eventStore,
     aggregates,
     snapshotAdapter,
-    performanceTracer
+    performanceTracer,
+    encryptionAdapter
   })
 
   const executeQuery = createQueryExecutor({
@@ -44,7 +51,8 @@ const initResolve = async resolve => {
     snapshotAdapter,
     readModels,
     viewModels,
-    performanceTracer
+    performanceTracer,
+    encryptionAdapter
   })
 
   const executeSaga = createSagaExecutor({
@@ -55,7 +63,8 @@ const initResolve = async resolve => {
     snapshotAdapter,
     schedulers,
     sagas,
-    performanceTracer
+    performanceTracer,
+    encryptionAdapter
   })
 
   Object.assign(resolve, {

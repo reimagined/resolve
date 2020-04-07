@@ -16,6 +16,11 @@ type Options = {
 }
 
 export default (options: Options): EncryptionAdapter => {
+  // eslint-disable-next-line no-console
+  console.log(`building local encryption adapter`)
+  // eslint-disable-next-line no-console
+  console.log(`options: ${JSON.stringify(options)}`)
+
   const algorithm = createAlgorithm(options.algorithm)
   const store = createStore(options.keyStore)
 
@@ -32,7 +37,8 @@ export default (options: Options): EncryptionAdapter => {
     }
     return (blob: EncryptedBlob): PlainData => algorithm.decrypt(key, blob)
   }
-  const forget = (selector: AggregateId): Promise<void> => store.forget(selector)
+  const forget = (selector: AggregateId): Promise<void> =>
+    store.forget(selector)
 
   return Object.freeze({
     getEncrypter,
