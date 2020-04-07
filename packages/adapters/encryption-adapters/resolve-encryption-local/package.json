@@ -29,7 +29,8 @@
   "dependencies": {
     "cryptr": "^6.0.2",
     "pg": "^8.0.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "resolve-encryption-base": "0.23.2"
   },
   "devDependencies": {
     "@types/cryptr": "^4.0.0",

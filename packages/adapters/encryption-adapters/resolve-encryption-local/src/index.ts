@@ -1,45 +1,42 @@
-import Cryptr from 'cryptr'
-
 import {
-  getKey,
-  insertKey,
-  forgetKey,
-  generateKey,
-  ExecutionResult
-} from './api'
+  AggregateId,
+  AlgorithmOptions,
+  createAlgorithm,
+  Decrypter,
+  EncryptedBlob,
+  Encrypter,
+  EncryptionAdapter,
+  PlainData
+} from 'resolve-encryption-base'
+import { createStore, KeyStoreOptions } from './keyStore'
 
-type Decryptor = (blob: string) => string
-
-export const encrypt = async (
-  keySelector: string,
-  data: string
-): Promise<string> => {
-  let keyValue = await getKey(keySelector)
-  if (!keyValue) {
-    keyValue = generateKey()
-    await insertKey(keySelector, keyValue)
-  }
-  const cryptr = new Cryptr(keyValue)
-  const blob = await cryptr.encrypt(data)
-  return blob
+type Options = {
+  algorithm: AlgorithmOptions
+  keyStore: KeyStoreOptions
 }
 
-export const decrypt = async (
-  keySelector: string
-): Promise<Decryptor | null> => {
-  const keyValue = await getKey(keySelector)
-  if (keyValue) {
-    const cryptr = new Cryptr(keyValue)
-    return (blob: string): string => cryptr.decrypt(blob)
+export default (options: Options): EncryptionAdapter => {
+  const algorithm = createAlgorithm(options.algorithm)
+  const store = createStore(options.keyStore)
+
+  const getEncrypter = async (selector: AggregateId): Promise<Encrypter> => {
+    const key = (await store.get(selector)) || (await store.create(selector))
+    return (data: PlainData): EncryptedBlob => algorithm.encrypt(key, data)
   }
-  return null
+  const getDecrypter = async (
+    selector: AggregateId
+  ): Promise<Decrypter | null> => {
+    const key = await store.get(selector)
+    if (!key) {
+      return null
+    }
+    return (blob: EncryptedBlob): PlainData => algorithm.decrypt(key, blob)
+  }
+  const forget = (selector: AggregateId): Promise<void> => store.forget(selector)
+
+  return Object.freeze({
+    getEncrypter,
+    getDecrypter,
+    forget
+  })
 }
-
-export const forget = (keySelector: string): ExecutionResult =>
-  forgetKey(keySelector)
-
-/* export const test = async (count: number, data: string): Promise<void> => {
-  for (let i = 0; i < count; i++) {
-    const blob = await encryptAES256(generateKey(), data)
-  }
-} */

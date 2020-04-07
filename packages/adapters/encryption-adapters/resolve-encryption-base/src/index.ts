@@ -9,7 +9,7 @@ import {
   AggregateId
 } from './types'
 
-import { createAlgorithm } from './algorithms/factory'
+import { createAlgorithm, AlgorithmOptions } from './algorithms/factory'
 
 export {
   Encrypter,
@@ -20,5 +20,6 @@ export {
   EncryptionAdapter,
   PlainData,
   AggregateId,
+  AlgorithmOptions,
   createAlgorithm
 }
