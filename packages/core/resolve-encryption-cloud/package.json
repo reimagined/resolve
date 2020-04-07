@@ -1,0 +1,73 @@
+{
+  "name": "resolve-encryption-cloud",
+  "version": "0.23.2",
+  "description": "reSolve cloud encryption module",
+  "engines": {
+    "node": ">=10.9"
+  },
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "types": "./types/index.d.ts",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "scripts": {
+    "test": "jest",
+    "testw": "echo || exit 0",
+    "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "author": "reimagined team",
+  "license": "MIT",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-api#readme",
+  "dependencies": {
+    "@types/cryptr": "^4.0.0",
+    "@types/uuid": "^7.0.2",
+    "cryptr": "^6.0.2",
+    "resolve-cloud-common": "^0.0.15",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-export-default-from": "^7.5.2",
+    "@babel/plugin-proposal-export-namespace-from": "^7.5.2",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "7.0.0",
+    "babel-jest": "25.1.0",
+    "jest": "25.1.0",
+    "resolve-cloud": "*",
+    "testcafe": "1.8.3",
+    "ts-jest": "^25.3.1"
+  },
+  "peerDependencies": {},
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/test/**/*.test.[jt]s?(x)"
+    ],
+    "roots": [
+      "<rootDir>"
+    ]
+  },
+  "babelCompile": [
+    {
+      "sourceType": "ts",
+      "moduleType": "cjs",
+      "moduleTarget": "client",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ]
+}
