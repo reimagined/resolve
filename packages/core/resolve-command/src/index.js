@@ -352,6 +352,13 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
       throw generateCommandError(`Command type "${type}" does not exist`)
     }
 
+    const encrypt = pool.encryptionAdapter
+      ? await pool.encryptionAdapter.getEncrypter(aggregateId)
+      : () =>
+          throw Error(
+            `data encryption is disabled: no encryption adapter provided`
+          )
+
     const commandHandler = async (...args) => {
       const segment = pool.performanceTracer
         ? pool.performanceTracer.getSegment()
@@ -383,7 +390,8 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
       aggregateState,
       command,
       jwtToken,
-      aggregateVersion
+      aggregateVersion,
+      encrypt
     )
 
     if (!checkOptionShape(event.type, [String])) {
@@ -469,14 +477,16 @@ const createCommand = ({
   eventStore,
   aggregates,
   snapshotAdapter,
-  performanceTracer
+  performanceTracer,
+  encryptionAdapter
 }) => {
   const pool = {
     eventStore,
     aggregates,
     snapshotAdapter,
     isDisposed: false,
-    performanceTracer
+    performanceTracer,
+    encryptionAdapter
   }
 
   const api = {
