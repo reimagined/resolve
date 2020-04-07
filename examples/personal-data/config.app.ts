@@ -10,8 +10,8 @@ const appConfig = {
     {
       name: 'read-model-name',
       connectorName: 'default',
-      projection: 'common/read-models/read-model-name.projection.ts',
-      resolvers: 'common/read-models/read-model-name.resolvers.ts'
+      projection: 'common/read-models/users.projection.ts',
+      resolvers: 'common/read-models/users.resolvers.ts'
     }
   ],
   clientEntries: [

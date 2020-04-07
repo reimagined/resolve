@@ -405,6 +405,9 @@
         },
         "uploadAdapter": {
           "$ref": "#/definitions/adapter"
+        },
+        "encryptionAdapter": {
+          "$ref": "#/definitions/adapter"
         }
       },
       "required": [

@@ -14,6 +14,7 @@ export default () => `
   import sagas from '$resolve.sagas'
   import schedulers from '$resolve.schedulers'
   import uploadAdapter from '$resolve.uploadAdapter'
+  import encryptionAdapter from '$resolve.encryptionAdapter'
 
   export default {
     assemblies: {
@@ -22,7 +23,8 @@ export default () => `
       snapshotAdapter,
       readModelConnectors,
       serverImports,
-      uploadAdapter
+      uploadAdapter,
+      encryptionAdapter
     },
     constants,
     domain: {

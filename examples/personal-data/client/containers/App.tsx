@@ -11,13 +11,13 @@ const App = (): any => {
       <Helmet>
         <title>reSolve Hello World TypeScript</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href={asset('/bootstrap.min.css')} />
-        <link rel="icon" href={asset('favicon.ico')} />
+        <link rel="stylesheet" href={asset('/bootstrap.min.css') as string} />
+        <link rel="icon" href={asset('favicon.ico') as string} />
       </Helmet>
 
       <Navbar color="light" light expand="md">
         <NavbarBrand className="mr-auto" href="/">
-          <img src={asset('/resolve-logo.png')} alt="resolve-logo" />
+          <img src={asset('/resolve-logo.png') as string} alt="resolve-logo" />
           Hello World TypeScript
         </NavbarBrand>
       </Navbar>
