@@ -20,7 +20,7 @@ export type ExecutionResult = Promise<null | KeyRecord[]>
 const localCredentials: LocalCredentials = {
   user: 'admin',
   host: 'localhost',
-  database: 'testdb',
+  database: 'test-db',
   password: 'admin',
   port: 54320
 }
@@ -38,9 +38,11 @@ const executeStatement = async (pool: Pool, sql: string): ExecutionResult => {
     password: localCredentials.password,
     keepAlive: false,
     // connectionTimeoutMillis: 5000,
+    /* eslint-disable @typescript-eslint/camelcase */
     idle_in_transaction_session_timeout: 5000,
     query_timeout: 5000,
     statement_timeout: 5000
+    /* eslint-enable @typescript-eslint/camelcase */
   })
 
   try {

@@ -64,6 +64,7 @@
       "packages/adapters/api-handler-adapters/*",
       "packages/adapters/scheduler-adapters/*",
       "packages/adapters/upload-adapters/*",
+      "packages/adapters/encryption-adapters/*",
       "examples/*",
       "examples/shopping-list-tutorial/*",
       "packages/modules/*",
