@@ -52,7 +52,7 @@ const devConfig = {
     }
   },*/
   storageAdapter: {
-    module: 'resolve-storage-lite',
+    module: 'resolve-storage-shit',
     options: {
       databaseFile: 'data/storage.db'
     }
