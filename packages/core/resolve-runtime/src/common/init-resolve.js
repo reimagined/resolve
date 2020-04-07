@@ -11,16 +11,13 @@ const initResolve = async resolve => {
 
   const {
     storageAdapter: createStorageAdapter,
-    encryptionAdapter: createEncryptionAdapter,
     snapshotAdapter: createSnapshotAdapter,
     readModelConnectors: readModelConnectorsCreators
   } = resolve.assemblies
 
   const storageAdapter = createStorageAdapter()
-  const encryptionAdapter = createEncryptionAdapter()
   const eventStore = createEventStore({
     storage: storageAdapter,
-    encryption: encryptionAdapter,
     publishEvent: resolve.publishEvent
   })
 
