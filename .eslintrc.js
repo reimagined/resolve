@@ -69,6 +69,7 @@ module.exports = {
         lang: 'en_US',
         skipWordIfMatch: ['^[^A-Za-z_]'],
         skipWords: [
+          'aes',
           'acc',
           'ack',
           'acls',
@@ -173,6 +174,8 @@ module.exports = {
           'errno',
           'escaper',
           'escaperegexp',
+          'encrypter',
+          'decrypter',
           'eslint',
           'esm',
           'eventstore',

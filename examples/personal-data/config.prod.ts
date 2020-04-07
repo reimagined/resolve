@@ -62,6 +62,12 @@ const prodConfig = {
       databaseFile: 'data/event-store.db'
     }
   },
+  encryptionAdapter: {
+    module: 'resolve-encryption-local',
+    options: {
+      algorithm: 'AES256'
+    }
+  },
   /*
     {
       module: 'resolve-storage-mongo',
