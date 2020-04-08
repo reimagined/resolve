@@ -1,11 +1,10 @@
 const dropSnapshot = async (pool, snapshotKey) => {
-  const { escapeId, escape, connect } = pool
-  await connect(pool)
-
   await pool.executeStatement(
-    `DELETE FROM ${escapeId(pool.databaseName)}.${escapeId(pool.tableName)}
-    WHERE ${escapeId('SnapshotKey')}
-    LIKE ${escape(`${snapshotKey}%`)}`
+    `DELETE FROM ${pool.escapeId(pool.databaseName)}.${pool.escapeId(
+      pool.tableName
+    )}
+    WHERE ${pool.escapeId('SnapshotKey')}
+    LIKE ${pool.escape(`${snapshotKey}%`)}`
   )
 }
 

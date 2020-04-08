@@ -38,7 +38,7 @@ const init = async ({ database, tableName, escapeId, config }) => {
   } catch (error) {
     if (
       error != null &&
-      /^SQLITE_ERROR\:.*? already exists$/.test(error.message)
+      /^SQLITE_ERROR:.*? already exists$/.test(error.message)
     ) {
       throw new ResourceAlreadyExistError(
         `Double-initialize storage-lite adapter via "${config.databaseFile}" failed`

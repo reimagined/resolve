@@ -9,7 +9,7 @@ const drop = async ({ database, tableName, escapeId, memoryStore, config }) => {
   } catch (error) {
     if (
       error != null &&
-      /^SQLITE_ERROR\: no such table.*?$/.test(error.message)
+      /^SQLITE_ERROR: no such table.*?$/.test(error.message)
     ) {
       throw new ResourceNotExistError(
         `Double-free storage-lite adapter via "${config.databaseFile}" failed`

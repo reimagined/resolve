@@ -1,15 +1,12 @@
 import { SAVE_CHUNK_SIZE } from './constants'
 
 const saveSnapshot = async (pool, snapshotKey, content) => {
-  const { escapeId, escape, connect } = pool
   if (snapshotKey == null || snapshotKey.constructor !== String) {
     throw new Error('Snapshot key must be string')
   }
   if (content == null || content.constructor !== String) {
     throw new Error('Snapshot content must be string')
   }
-
-  await connect(pool)
 
   if (!pool.counters.has(snapshotKey)) {
     pool.counters.set(snapshotKey, 0)
@@ -36,24 +33,28 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
 
         if (index > 0) {
           await pool.executeStatement(
-            `UPDATE ${escapeId(pool.databaseName)}.${escapeId(pool.tableName)}
-            SET ${escapeId('SnapshotContent')} = ${escapeId(
+            `UPDATE ${pool.escapeId(pool.databaseName)}.${pool.escapeId(
+              pool.tableName
+            )}
+            SET ${pool.escapeId('SnapshotContent')} = ${pool.escapeId(
               'SnapshotContent'
-            )} || ${escape(chunk)}
-            WHERE ${escapeId('SnapshotKey')} = ${escape(snapshotKey)}`,
+            )} || ${pool.escape(chunk)}
+            WHERE ${pool.escapeId('SnapshotKey')} = ${pool.escape(
+              snapshotKey
+            )}`,
             transactionId
           )
         } else {
           await pool.executeStatement(
-            `INSERT INTO ${escapeId(pool.databaseName)}.${escapeId(
+            `INSERT INTO ${pool.escapeId(pool.databaseName)}.${pool.escapeId(
               pool.tableName
             )}(
-              ${escapeId('SnapshotKey')}, 
-              ${escapeId('SnapshotContent')}
+              ${pool.escapeId('SnapshotKey')}, 
+              ${pool.escapeId('SnapshotContent')}
             )
-            VALUES(${escape(snapshotKey)}, ${escape(chunk)})
-            ON CONFLICT (${escapeId('SnapshotKey')}) DO UPDATE
-            SET ${escapeId('SnapshotContent')} = ${escape(chunk)}`,
+            VALUES(${pool.escape(snapshotKey)}, ${pool.escape(chunk)})
+            ON CONFLICT (${pool.escapeId('SnapshotKey')}) DO UPDATE
+            SET ${pool.escapeId('SnapshotContent')} = ${pool.escape(chunk)}`,
             transactionId
           )
         }
@@ -67,13 +68,15 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
     }
   } else {
     await pool.executeStatement(
-      `INSERT INTO ${escapeId(pool.databaseName)}.${escapeId(pool.tableName)}(
-        ${escapeId('SnapshotKey')}, 
-        ${escapeId('SnapshotContent')}
+      `INSERT INTO ${pool.escapeId(pool.databaseName)}.${pool.escapeId(
+        pool.tableName
+      )}(
+        ${pool.escapeId('SnapshotKey')}, 
+        ${pool.escapeId('SnapshotContent')}
       )
-      VALUES(${escape(snapshotKey)}, ${escape(content)})
-      ON CONFLICT (${escapeId('SnapshotKey')}) DO UPDATE
-      SET ${escapeId('SnapshotContent')} = ${escape(content)}`
+      VALUES(${pool.escape(snapshotKey)}, ${pool.escape(content)})
+      ON CONFLICT (${pool.escapeId('SnapshotKey')}) DO UPDATE
+      SET ${pool.escapeId('SnapshotContent')} = ${pool.escape(content)}`
     )
   }
 }
