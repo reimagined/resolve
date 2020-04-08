@@ -64,7 +64,8 @@ const devConfig = {
         type: 'AES256'
       },
       keyStore: {
-        storeOption: 'store-option'
+        storeOption: 'store-option',
+        databaseFile: 'data/encryption-keys.db'
       }
     }
   },

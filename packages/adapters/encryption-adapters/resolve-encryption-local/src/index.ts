@@ -8,7 +8,8 @@ import {
   EncryptionAdapter,
   PlainData
 } from 'resolve-encryption-base'
-import { createStore, KeyStoreOptions } from './keyStore'
+import { createStore } from './keyStore'
+import { KeyStoreOptions } from './types'
 
 type Options = {
   algorithm: AlgorithmOptions
@@ -24,9 +25,16 @@ export default (options: Options): EncryptionAdapter => {
   const algorithm = createAlgorithm(options.algorithm)
   const store = createStore(options.keyStore)
 
+  const init = async (): Promise<void> => await store.init()
+
   const getEncrypter = async (selector: AggregateId): Promise<Encrypter> => {
-    const key = (await store.get(selector)) || (await store.create(selector))
-    return (data: PlainData): EncryptedBlob => algorithm.encrypt(key, data)
+    let key = await store.get(selector)
+    if (!key) {
+      key = await store.create(selector)
+      await store.set(selector, key)
+    }
+    return (data: PlainData): EncryptedBlob =>
+      algorithm.encrypt(key as string, data)
   }
   const getDecrypter = async (
     selector: AggregateId
@@ -41,6 +49,7 @@ export default (options: Options): EncryptionAdapter => {
     store.forget(selector)
 
   return Object.freeze({
+    init,
     getEncrypter,
     getDecrypter,
     forget

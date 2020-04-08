@@ -386,13 +386,11 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
       }
     }
 
-    const event = await commandHandler(
-      aggregateState,
-      command,
+    const event = await commandHandler(aggregateState, command, {
       jwtToken,
       aggregateVersion,
       encrypt
-    )
+    })
 
     if (!checkOptionShape(event.type, [String])) {
       throw generateCommandError('Event "type" is required')

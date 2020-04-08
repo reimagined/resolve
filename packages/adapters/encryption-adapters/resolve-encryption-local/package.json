@@ -29,13 +29,14 @@
   "dependencies": {
     "cryptr": "^6.0.2",
     "pg": "^8.0.0",
-    "uuid": "^3.3.2",
-    "resolve-encryption-base": "0.23.2"
+    "resolve-encryption-base": "0.23.2",
+    "sqlite": "^3.0.2",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@types/cryptr": "^4.0.0",
-    "@types/pg": "^7.14.3",
     "@types/node": "^13.7.0",
+    "@types/pg": "^7.14.3",
     "@types/react": "*",
     "@types/react-dom": "*",
     "jest": "25.1.0",

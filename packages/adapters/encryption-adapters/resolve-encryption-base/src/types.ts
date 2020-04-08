@@ -11,6 +11,7 @@ export type EncryptionAlgorithm = {
 }
 
 export type EncryptionAdapter = {
+  init: () => Promise<void>
   getEncrypter: (selector: AggregateId) => Promise<Encrypter>
   getDecrypter: (selector: AggregateId) => Promise<Decrypter | null>
   forget: (selector: AggregateId) => Promise<void>
