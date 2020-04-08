@@ -1,7 +1,7 @@
 {
-  "name": "resolve-snapshot-mongo",
+  "name": "resolve-snapshot-base",
   "version": "0.23.2",
-  "description": "This package serves as an adapter for snapshots using MongoDB.",
+  "description": "An base adapter for snapshots",
   "engines": {
     "node": ">=10.9"
   },
@@ -23,11 +23,9 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/snapshot-adapters/resolve-snapshot-mongo#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/snapshot-adapters/resolve-snapshot-base#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
-    "resolve-snapshot-base": "0.23.2",
-    "mongodb": "^3.3.2"
+    "@babel/runtime": "^7.0.0"
   },
   "babelCompile": [
     {

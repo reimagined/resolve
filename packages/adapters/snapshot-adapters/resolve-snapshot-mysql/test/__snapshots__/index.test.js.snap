@@ -4,7 +4,8 @@ exports[`resolve-snapshot-mysql "drop" should drop the snapshotAdapter 1`] = `
 Array [
   Array [
     "DELETE FROM \`__ResolveSnapshots__\`
-    WHERE \`SnapshotKey\` LIKE 'key%'",
+    WHERE \`SnapshotKey\`
+    LIKE 'key%'",
     Array [
       "key",
     ],

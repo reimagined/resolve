@@ -16,10 +16,10 @@ Array [
       "resourceArn": "dbClusterOrInstanceArn",
       "secretArn": "awsSecretStoreArn",
       "sql": "CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tableName\\" (
-      \\"SnapshotKey\\" text NOT NULL,
-      \\"SnapshotContent\\" text,
-      PRIMARY KEY(\\"SnapshotKey\\")
-    )",
+    \\"SnapshotKey\\" text NOT NULL,
+    \\"SnapshotContent\\" text,
+    PRIMARY KEY(\\"SnapshotKey\\")
+  )",
     },
   ],
   Array [
@@ -53,10 +53,10 @@ Array [
       "resourceArn": "dbClusterOrInstanceArn",
       "secretArn": "awsSecretStoreArn",
       "sql": "CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tableName\\" (
-      \\"SnapshotKey\\" text NOT NULL,
-      \\"SnapshotContent\\" text,
-      PRIMARY KEY(\\"SnapshotKey\\")
-    )",
+    \\"SnapshotKey\\" text NOT NULL,
+    \\"SnapshotContent\\" text,
+    PRIMARY KEY(\\"SnapshotKey\\")
+  )",
     },
   ],
   Array [
@@ -94,10 +94,10 @@ Array [
       "resourceArn": "dbClusterOrInstanceArn",
       "secretArn": "awsSecretStoreArn",
       "sql": "CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tableName\\" (
-      \\"SnapshotKey\\" text NOT NULL,
-      \\"SnapshotContent\\" text,
-      PRIMARY KEY(\\"SnapshotKey\\")
-    )",
+    \\"SnapshotKey\\" text NOT NULL,
+    \\"SnapshotContent\\" text,
+    PRIMARY KEY(\\"SnapshotKey\\")
+  )",
     },
   ],
   Array [
@@ -139,10 +139,10 @@ Array [
       "resourceArn": "dbClusterOrInstanceArn",
       "secretArn": "awsSecretStoreAdminArn",
       "sql": "CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tableName\\" (
-      \\"SnapshotKey\\" text NOT NULL,
-      \\"SnapshotContent\\" text,
-      PRIMARY KEY(\\"SnapshotKey\\")
-    )",
+    \\"SnapshotKey\\" text NOT NULL,
+    \\"SnapshotContent\\" text,
+    PRIMARY KEY(\\"SnapshotKey\\")
+  )",
     },
   ],
   Array [
@@ -243,10 +243,10 @@ Array [
       "resourceArn": "dbClusterOrInstanceArn",
       "secretArn": "awsSecretStoreAdminArn",
       "sql": "CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tableName\\" (
-      \\"SnapshotKey\\" text NOT NULL,
-      \\"SnapshotContent\\" text,
-      PRIMARY KEY(\\"SnapshotKey\\")
-    )",
+    \\"SnapshotKey\\" text NOT NULL,
+    \\"SnapshotContent\\" text,
+    PRIMARY KEY(\\"SnapshotKey\\")
+  )",
     },
   ],
   Array [
