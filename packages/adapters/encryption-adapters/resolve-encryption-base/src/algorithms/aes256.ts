@@ -1,5 +1,10 @@
 import Cryptr from 'cryptr'
-import { EncryptedBlob, EncryptionAlgorithm, EncryptionKey, PlainData } from '../types'
+import {
+  EncryptedBlob,
+  EncryptionAlgorithm,
+  EncryptionKey,
+  PlainData
+} from '../types'
 
 export type AES256EncryptionOptions = {
   type: 'AES256'
