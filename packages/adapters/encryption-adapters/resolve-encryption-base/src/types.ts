@@ -12,6 +12,7 @@ export type EncryptionAlgorithm = {
 
 export type EncryptionAdapter = {
   init: () => Promise<void>
+  dispose: () => Promise<void>
   getEncrypter: (selector: AggregateId) => Promise<Encrypter>
   getDecrypter: (selector: AggregateId) => Promise<Decrypter | null>
   forget: (selector: AggregateId) => Promise<void>
@@ -49,6 +50,7 @@ export type CreateAdapterOptions<Database, KeyStoreOptions> = {
     selector: AggregateId
   ) => Promise<Decrypter | null>
   forget: (pool: Pool<Database>, selector: AggregateId) => Promise<void>
+  dispose: (pool: Pool<Database>) => Promise<void>
   createStore: (pool: Pool<Database>, options: KeyStoreOptions) => KeyStore
 }
 

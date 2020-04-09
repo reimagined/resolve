@@ -18,6 +18,7 @@ function createAdapter<KeyStoreOptions, Database>(
     getDecrypter,
     getEncrypter,
     init,
+    dispose,
     createStore
   } = params
 
@@ -65,7 +66,8 @@ function createAdapter<KeyStoreOptions, Database>(
     init: wrapMethod(pool, init),
     getEncrypter: wrapMethod(pool, getEncrypter),
     getDecrypter: wrapMethod(pool, getDecrypter),
-    forget: wrapMethod(pool, forget)
+    forget: wrapMethod(pool, forget),
+    dispose: wrapMethod(pool, dispose)
   }
 
   return Object.freeze(adapter)

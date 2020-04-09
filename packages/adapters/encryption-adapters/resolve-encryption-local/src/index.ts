@@ -19,6 +19,11 @@ const init = async (pool: Pool<Database>): Promise<void> => {
   await store.init()
 }
 
+const dispose = async (pool: Pool<Database>): Promise<void> => {
+  const { store } = pool
+  await store.dispose()
+}
+
 const getEncrypter = async (
   pool: Pool<Database>,
   selector: AggregateId
@@ -58,7 +63,8 @@ export default (options: Options<KeyStoreOptions>) =>
       getDecrypter,
       forget,
       connect,
-      createStore
+      createStore,
+      dispose
     },
     options
   )

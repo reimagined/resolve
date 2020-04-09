@@ -41,7 +41,7 @@ export const createStore = (pool: Pool<Database>): KeyStore => {
     },
     drop: async (): Promise<void> => {
       const { database } = pool
-      await database.exec(`DROP TABLE IF NOT EXISTS ${keysTable}`)
+      await database.exec(`DROP TABLE IF EXISTS ${keysTable}`)
     },
     dispose: async (): Promise<void> => {
       const { database } = pool

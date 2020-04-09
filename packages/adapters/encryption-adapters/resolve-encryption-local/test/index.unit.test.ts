@@ -25,5 +25,7 @@ describe('event encryption local', () => {
     if (decryptor2 != null) {
       console.log(await decryptor2(await encryptor2('34567')))
     }
+
+    await ecryptionAdapter.dispose()
   })
 })
