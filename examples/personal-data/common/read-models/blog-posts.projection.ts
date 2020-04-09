@@ -15,7 +15,7 @@ const readModel: ReadModel = {
       payload: { authorId, content }
     } = event
 
-    await store.insert('Users', {
+    await store.insert('BlogPosts', {
       author: authorId,
       id: aggregateId,
       timestamp,

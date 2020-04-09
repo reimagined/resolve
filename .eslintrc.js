@@ -202,6 +202,7 @@ module.exports = {
           'githubusercontent',
           'github',
           'gte',
+          'gif',
           'guid',
           'gzip',
           'hmac',

@@ -131,7 +131,11 @@ export declare type ReadModel = {
   [key: string]: EventHandler
 }
 
-declare type Resolver = (store: ResolveStore, params: { [key: string]: any }) => Promise<any>
+declare type Resolver = (
+  store: ResolveStore,
+  params: { [key: string]: any },
+  jwt: string
+) => Promise<any>
 export declare type Resolvers = {
   [key: string]: Resolver
 }

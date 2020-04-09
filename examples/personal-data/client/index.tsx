@@ -2,7 +2,7 @@ import * as React from 'react'
 import { ResolveContext } from 'resolve-react-hooks'
 import { render } from 'react-dom'
 
-import App from './containers/App'
+import App from './App'
 
 const entryPoint = (context: any): any => {
   const appContainer = document.createElement('div')

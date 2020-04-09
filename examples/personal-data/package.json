@@ -12,37 +12,38 @@
     "test:functional": "tsc && babel-node --extensions='.ts,.tsx' run.ts test:functional"
   },
   "dependencies": {
-    "babel-loader": "^8.0.6",
-    "@babel/preset-typescript": "^7.8.3",
     "@babel/node": "^7.5.5",
     "@babel/polyfill": "^7.4.4",
+    "@babel/preset-typescript": "^7.8.3",
     "@types/node": "^12.7.4",
     "@types/react": "^16.8.8",
     "@types/react-dom": "^16.9.5",
-    "@types/redux-devtools-extension": "^2.13.2",
     "@types/reactstrap": "^8.4.2",
+    "@types/redux-devtools-extension": "^2.13.2",
+    "babel-loader": "^8.0.6",
+    "jsonwebtoken": "^8.5.1",
     "react": "16.13.0",
     "react-dom": "16.13.0",
-    "reactstrap": "^8.1.1",
     "react-helmet": "6.0.0-beta",
-    "redux": "4.0.5",
     "react-redux": "7.2.0",
-    "redux-saga": "1.0.5",
+    "reactstrap": "^8.1.1",
+    "redux": "4.0.5",
     "redux-devtools-extension": "^2.13.8",
-    "resolve-react-hooks": "0.23.2",
+    "redux-saga": "1.0.5",
     "resolve-command": "0.23.2",
-    "resolve-scripts": "0.23.2",
     "resolve-query": "0.23.2",
+    "resolve-react-hooks": "0.23.2",
     "resolve-readmodel-base": "0.23.2",
     "resolve-readmodel-lite": "0.23.2",
     "resolve-readmodel-postgresql-serverless": "0.23.2",
-    "resolve-scheduler-local": "0.23.2",
     "resolve-scheduler-cloud": "0.23.2",
+    "resolve-scheduler-local": "0.23.2",
+    "resolve-scripts": "0.23.2",
     "resolve-storage-lite": "0.23.2",
     "resolve-storage-postgresql-serverless": "0.23.2",
     "resolve-subscribe-mqtt": "0.23.2",
     "resolve-subscribe-socket.io": "0.23.2",
-    "typescript": "^3.3.4000"
+    "typescript": "^3.8.3"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
@@ -55,7 +56,7 @@
     "babel-jest": "25.1.0",
     "jest": "25.1.0",
     "react-test-renderer": "16.13.0",
-    "testcafe": "1.8.3",
-    "resolve-cloud": "*"
+    "resolve-cloud": "*",
+    "testcafe": "1.8.3"
   }
 }
