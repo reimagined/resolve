@@ -77,7 +77,8 @@ const initResolve = async resolve => {
   Object.defineProperties(resolve, {
     readModelConnectors: { value: readModelConnectors },
     snapshotAdapter: { value: snapshotAdapter },
-    storageAdapter: { value: storageAdapter }
+    storageAdapter: { value: storageAdapter },
+    encryptionAdapter: { value: encryptionAdapter }
   })
 
   if (!resolve.hasOwnProperty('getRemainingTimeInMillis')) {

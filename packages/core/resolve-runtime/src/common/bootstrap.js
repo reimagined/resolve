@@ -15,6 +15,11 @@ const bootstrap = async resolve => {
     await resolve.snapshotAdapter.init()
   } catch (e) {}
 
+  try {
+    // TODO: invoke "init" only during first run
+    await resolve.encryptionAdapter.init()
+  } catch (e) {}
+
   const applicationPromises = []
   for (const listenerName of resolve.eventListeners.keys()) {
     applicationPromises.push(resolve.doUpdateRequest(listenerName))

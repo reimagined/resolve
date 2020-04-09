@@ -18,7 +18,6 @@ export const createStore = (pool: Pool<Database>): KeyStore => {
         `SELECT key FROM ${keysTable} WHERE id = ?`,
         selector as string
       )
-      // console.log('--- keyRecord from storage', keyRecord)
       return keyRecord ? keyRecord.key : null
     },
     set: async (selector: AggregateId, key: EncryptionKey): Promise<void> => {
