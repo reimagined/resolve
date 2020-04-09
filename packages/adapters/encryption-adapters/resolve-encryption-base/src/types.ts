@@ -38,7 +38,7 @@ export type Pool<Database> = {
 }
 
 export type CreateAdapterOptions<Database, KeyStoreOptions> = {
-  connect: (pool: Pool<Database>, options: KeyStoreOptions) => Promise<void>
+  connect: (pool: Pool<Database>, options: KeyStoreOptions) => Promise<Database>
   init: (pool: Pool<Database>) => Promise<void>
   getEncrypter: (
     pool: Pool<Database>,

@@ -51,7 +51,7 @@ const forget = (pool: Pool<Database>, selector: AggregateId): Promise<void> => {
 }
 
 export default (options: Options<KeyStoreOptions>) =>
-  createAdapter<KeyStoreOptions, Database>(
+  createAdapter(
     {
       init,
       getEncrypter,

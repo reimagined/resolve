@@ -13,13 +13,12 @@ const fullJitter = (retries: number): number =>
 const connect = async (
   pool: Pool<Database>,
   options: KeyStoreOptions
-): Promise<void> => {
+): Promise<Database> => {
   for (let retry = 0; ; retry++) {
     try {
       const connection = await open(options.databaseFile)
 
-      pool.database = connection
-      return
+      return connection
     } catch (error) {
       if (error != null && error.code === SQLITE_BUSY) {
         await new Promise(resolve => setTimeout(resolve, fullJitter(retry)))

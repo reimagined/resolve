@@ -26,7 +26,9 @@ function createAdapter<KeyStoreOptions, Database>(
   let connectPromiseResolve: Function
   const connectPromise = new Promise(resolve => {
     connectPromiseResolve = resolve.bind(null, null)
-  }).then(() => connect(pool, options.keyStore))
+  }).then(async () => {
+    pool.database = await connect(pool, options.keyStore)
+  })
 
   let store: KeyStore | null = null
   let database: Database | null = null
