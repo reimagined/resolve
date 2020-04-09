@@ -1,4 +1,6 @@
 import { open, Database } from 'sqlite'
+import { Pool } from 'resolve-encryption-base'
+
 import { KeyStoreOptions } from './types'
 
 const SQLITE_BUSY = 'SQLITE_BUSY'
@@ -8,11 +10,16 @@ const randRange = (min: number, max: number): number =>
 const fullJitter = (retries: number): number =>
   randRange(0, Math.min(100, 2 * 2 ** retries))
 
-const connect = async (options: KeyStoreOptions): Promise<Database> => {
+const connect = async (
+  pool: Pool<Database>,
+  options: KeyStoreOptions
+): Promise<void> => {
   for (let retry = 0; ; retry++) {
     try {
       const connection = await open(options.databaseFile)
-      return connection
+
+      pool.database = connection
+      return
     } catch (error) {
       if (error != null && error.code === SQLITE_BUSY) {
         await new Promise(resolve => setTimeout(resolve, fullJitter(retry)))

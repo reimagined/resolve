@@ -1,57 +1,64 @@
+import { Database } from 'sqlite'
 import {
   AggregateId,
-  AlgorithmOptions,
-  createAlgorithm,
   Decrypter,
   EncryptedBlob,
   Encrypter,
-  EncryptionAdapter,
-  PlainData
+  PlainData,
+  createAdapter,
+  Pool,
+  Options
 } from 'resolve-encryption-base'
+import connect from './connect'
+
 import { createStore } from './keyStore'
 import { KeyStoreOptions } from './types'
 
-type Options = {
-  algorithm: AlgorithmOptions
-  keyStore: KeyStoreOptions
+const init = async (pool: Pool<Database>): Promise<void> => {
+  const { store } = pool
+  await store.init()
 }
 
-export default (options: Options): EncryptionAdapter => {
-  // eslint-disable-next-line no-console
-  console.log(`building local encryption adapter`)
-  // eslint-disable-next-line no-console
-  console.log(`options: ${JSON.stringify(options)}`)
+const getEncrypter = async (
+  pool: Pool<Database>,
+  selector: AggregateId
+): Promise<Encrypter> => {
+  const { store, algorithm } = pool
 
-  const algorithm = createAlgorithm(options.algorithm)
-  const store = createStore(options.keyStore)
-
-  const init = async (): Promise<void> => await store.init()
-
-  const getEncrypter = async (selector: AggregateId): Promise<Encrypter> => {
-    let key = await store.get(selector)
-    if (!key) {
-      key = await store.create(selector)
-      await store.set(selector, key)
-    }
-    return (data: PlainData): EncryptedBlob =>
-      algorithm.encrypt(key as string, data)
+  let key = await store.get(selector)
+  if (!key) {
+    key = await store.create(selector)
+    await store.set(selector, key)
   }
-  const getDecrypter = async (
-    selector: AggregateId
-  ): Promise<Decrypter | null> => {
-    const key = await store.get(selector)
-    if (!key) {
-      return null
-    }
-    return (blob: EncryptedBlob): PlainData => algorithm.decrypt(key, blob)
-  }
-  const forget = (selector: AggregateId): Promise<void> =>
-    store.forget(selector)
-
-  return Object.freeze({
-    init,
-    getEncrypter,
-    getDecrypter,
-    forget
-  })
+  return (data: PlainData): EncryptedBlob =>
+    algorithm.encrypt(key as string, data)
 }
+const getDecrypter = async (
+  pool: Pool<Database>,
+  selector: AggregateId
+): Promise<Decrypter | null> => {
+  const { store, algorithm } = pool
+
+  const key = await store.get(selector)
+  if (!key) {
+    return null
+  }
+  return (blob: EncryptedBlob): PlainData => algorithm.decrypt(key, blob)
+}
+const forget = (pool: Pool<Database>, selector: AggregateId): Promise<void> => {
+  const { store } = pool
+  return store.forget(selector)
+}
+
+export default (options: Options<KeyStoreOptions>) =>
+  createAdapter<KeyStoreOptions, Database>(
+    {
+      init,
+      getEncrypter,
+      getDecrypter,
+      forget,
+      connect,
+      createStore
+    },
+    options
+  )

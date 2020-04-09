@@ -6,10 +6,6 @@ import {
   PlainData
 } from '../types'
 
-export type AES256EncryptionOptions = {
-  type: 'AES256'
-}
-
 const objectBlobPrefix = '*object*'
 
 const encrypt = (key: EncryptionKey, data: PlainData): EncryptedBlob => {

@@ -1,7 +1,5 @@
-import { AES256EncryptionOptions, createAES256Algorithm } from './aes256'
-import { EncryptionAlgorithm } from '../types'
-
-export type AlgorithmOptions = AES256EncryptionOptions
+import { createAES256Algorithm } from './aes256'
+import { EncryptionAlgorithm, AlgorithmOptions } from '../types'
 
 export const createAlgorithm = (
   options: AlgorithmOptions

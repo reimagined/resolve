@@ -6,12 +6,17 @@ import {
   Encrypter,
   Decrypter,
   PlainData,
-  AggregateId
+  AggregateId,
+  KeyStore,
+  Pool,
+  AlgorithmOptions,
+  Options
 } from './types'
 
-import { createAlgorithm, AlgorithmOptions } from './algorithms/factory'
+import createAdapter from './create-adapter'
 
 export {
+  KeyStore,
   Encrypter,
   Decrypter,
   EncryptionKey,
@@ -21,5 +26,7 @@ export {
   PlainData,
   AggregateId,
   AlgorithmOptions,
-  createAlgorithm
+  createAdapter,
+  Pool,
+  Options
 }
