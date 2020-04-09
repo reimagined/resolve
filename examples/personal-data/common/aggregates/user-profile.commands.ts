@@ -62,7 +62,7 @@ const aggregate: Aggregate = {
       }
     }
 
-    throw Error("no changes to the user's profile found")
+    throw Error("no user's profile changes found")
   },
   delete: state => {
     const { isRegistered } = state
