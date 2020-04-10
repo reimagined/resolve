@@ -1,8 +1,5 @@
-import {
-  BLOG_POST_CREATED,
-  BLOG_POST_DELETED
-} from '../blog-post.events'
-import { Aggregate } from 'resolve-command'
+import { BLOG_POST_CREATED, BLOG_POST_DELETED } from '../blog-post.events'
+import { Aggregate } from 'resolve-core'
 
 const aggregate: Aggregate = {
   create: (state, command) => {
@@ -22,7 +19,7 @@ const aggregate: Aggregate = {
       }
     }
   },
-  deletePost: (state) => {
+  deletePost: state => {
     const { isExist } = state
 
     if (!isExist) {

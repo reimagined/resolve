@@ -3,7 +3,7 @@ import {
   MEDIA_UPLOAD_COMPLETED,
   MEDIA_UPLOAD_FAILED
 } from '../media.events'
-import { AggregateProjection } from 'resolve-command'
+import { AggregateProjection } from 'resolve-core'
 
 const projection: AggregateProjection = {
   Init: () => ({

@@ -5,7 +5,7 @@ import {
   USER_PERSONAL_DATA_REQUESTED,
   USER_PERSONAL_DATA_GATHERED
 } from '../user-profile.events'
-import { Aggregate } from 'resolve-command'
+import { Aggregate } from 'resolve-core'
 
 const aggregate: Aggregate = {
   register: (state, command, context) => {

@@ -1,5 +1,6 @@
-import { Resolvers } from 'resolve-readmodel-base'
+import { ReadModelResolvers } from 'resolve-core'
+import { ResolveStore } from 'resolve-readmodel-base'
 
-const resolvers: Resolvers = {}
+const resolvers: ReadModelResolvers<ResolveStore> = {}
 
 export default resolvers

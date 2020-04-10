@@ -1,7 +1,8 @@
-import { ReadModel } from 'resolve-readmodel-base'
+import { ReadModel } from 'resolve-core'
+import { ResolveStore } from 'resolve-readmodel-base'
 import { BLOG_POST_CREATED, BLOG_POST_DELETED } from '../blog-post.events'
 
-const readModel: ReadModel = {
+const readModel: ReadModel<ResolveStore> = {
   Init: async (store): Promise<void> => {
     await store.defineTable('BlogPosts', {
       indexes: { author: 'string', id: 'string' },

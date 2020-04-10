@@ -1,4 +1,4 @@
-import { ReadModel } from 'resolve-query'
+import { ReadModel } from 'resolve-core'
 import { ResolveStore } from 'resolve-readmodel-base'
 import {
   USER_PROFILE_DELETED,

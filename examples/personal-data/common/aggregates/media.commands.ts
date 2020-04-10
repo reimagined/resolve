@@ -3,7 +3,7 @@ import {
   MEDIA_UPLOAD_FAILED,
   MEDIA_UPLOAD_STARTED
 } from '../media.events'
-import { Aggregate } from 'resolve-command'
+import { Aggregate } from 'resolve-core'
 
 const aggregate: Aggregate = {
   startUpload: (state, command) => {

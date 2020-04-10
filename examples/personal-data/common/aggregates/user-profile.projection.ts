@@ -3,7 +3,7 @@ import {
   USER_PROFILE_UPDATED,
   USER_PROFILE_DELETED
 } from '../user-profile.events'
-import { AggregateProjection } from 'resolve-command'
+import { AggregateProjection } from 'resolve-core'
 
 const projection: AggregateProjection = {
   Init: () => ({

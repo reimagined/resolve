@@ -1,8 +1,5 @@
-import {
-  BLOG_POST_CREATED,
-  BLOG_POST_DELETED
-} from '../blog-post.events'
-import { AggregateProjection } from 'resolve-command'
+import { BLOG_POST_CREATED, BLOG_POST_DELETED } from '../blog-post.events'
+import { AggregateProjection } from 'resolve-core'
 
 const projection: AggregateProjection = {
   Init: () => ({
