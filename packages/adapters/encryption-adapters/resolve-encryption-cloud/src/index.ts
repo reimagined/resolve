@@ -1,40 +1,70 @@
-import Cryptr from 'cryptr'
+import RDSDataService from 'aws-sdk/clients/rdsdataservice'
+import {
+  AggregateId,
+  Decrypter,
+  EncryptedBlob,
+  Encrypter,
+  PlainData,
+  createAdapter,
+  Pool,
+  Options
+} from 'resolve-encryption-base'
+import connect from './connect'
+import { createStore } from './keyStore'
+import { KeyStoreOptions } from './types'
 
-import { getKey, insertKey, forgetKey, generateKey } from './api'
+const init = async (pool: Pool<RDSDataService>): Promise<void> => {
+  const { store } = pool
+  await store.init()
+}
+const dispose = async (pool: Pool<RDSDataService>): Promise<void> => {
+  const { store } = pool
+  await store.dispose()
+}
+const getEncrypter = async (
+  pool: Pool<RDSDataService>,
+  selector: AggregateId
+): Promise<Encrypter> => {
+  const { store, algorithm } = pool
 
-type Decryptor = (blob: string) => string
-
-export const encrypt = async (
-  keySelector: string,
-  data: string
-): Promise<string> => {
-  let keyValue = await getKey(keySelector)
-  if (!keyValue) {
-    keyValue = generateKey()
-    await insertKey(keySelector, keyValue)
+  let key = await store.get(selector)
+  if (!key) {
+    key = await store.create(selector)
+    await store.set(selector, key)
   }
-  const cryptr = new Cryptr(keyValue)
-  const blob = cryptr.encrypt(data)
-  return blob
+  return (data: PlainData): EncryptedBlob =>
+    algorithm.encrypt(key as string, data)
+}
+const getDecrypter = async (
+  pool: Pool<RDSDataService>,
+  selector: AggregateId
+): Promise<Decrypter | null> => {
+  const { store, algorithm } = pool
+
+  const key = await store.get(selector)
+  if (!key) {
+    return null
+  }
+  return (blob: EncryptedBlob): PlainData => algorithm.decrypt(key, blob)
+}
+const forget = (
+  pool: Pool<RDSDataService>,
+  selector: AggregateId
+): Promise<void> => {
+  const { store } = pool
+  return store.forget(selector)
 }
 
-export const decrypt = async (
-  keySelector: string
-): Promise<Decryptor | null> => {
-  const keyValue = await getKey(keySelector)
-  if (keyValue) {
-    const cryptr = new Cryptr(keyValue)
-    return (blob: string): string => cryptr.decrypt(blob)
-  }
-  return null
-}
-
-export const forget = (
-  keySelector: string
-): Promise<Array<{ [key: string]: any }>> => forgetKey(keySelector)
-
-/* export const test = async (count: number, data: string): Promise<void> => {
-  for (let i = 0; i < count; i++) {
-    const blob = await encryptAES256(generateKey(), data)
-  }
-} */
+export default (options: Options<KeyStoreOptions>) =>
+  createAdapter(
+    {
+      init,
+      getEncrypter,
+      getDecrypter,
+      forget,
+      connect,
+      createStore,
+      dispose
+    },
+    options
+  )
