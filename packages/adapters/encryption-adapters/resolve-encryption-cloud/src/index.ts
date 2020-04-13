@@ -13,6 +13,11 @@ import connect from './connect'
 import { createStore } from './keyStore'
 import { KeyStoreOptions } from './types'
 
+import _createResource from './resource/create'
+import _disposeResource from './resource/dispose'
+import _destroyResource from './resource/destroy'
+import _executeStatement from './resource/executeStatement'
+
 const init = async (pool: Pool<RDSDataService>): Promise<void> => {
   const { store } = pool
   await store.init()
@@ -68,3 +73,24 @@ export default (options: Options<KeyStoreOptions>) =>
     },
     options
   )
+
+const pool = {
+  RDSDataService,
+  executeStatement: _executeStatement
+}
+
+const createResource = _createResource.bind(null, pool)
+const disposeResource = _disposeResource.bind(null, pool)
+const destroyResource = _destroyResource.bind(null, pool)
+
+Object.assign(pool, {
+  createResource,
+  disposeResource,
+  destroyResource
+})
+
+export {
+  createResource as create,
+  disposeResource as dispose,
+  destroyResource as destroy
+}
