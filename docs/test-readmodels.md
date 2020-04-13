@@ -3,7 +3,7 @@ id: test-readmodels
 title: Test Read Models
 ---
 
-The **resolve-testing-tools** package contains utilities that allow you to test Read Models and Sagas. The provided tools reproduce a Read Model's full lifecycle in a testing environment.
+The **resolve-testing-tools** package contains utilities that allow you to test Read Models and Sagas. The provided tools reproduce a Read Model's full lifecycle in the testing environment.
 
 The code sample below demonstrates a Read Model testing code used from **jest**:
 
@@ -33,7 +33,7 @@ The code sample below demonstrates a Read Model testing code used from **jest**:
     })
 ```
 
-To write a test, call the `givenEvents` function. This function takes an array of events and gives access to a number of functions that you can chain together to describe the test's logic. The following functions are available:
+To write a test, call the `givenEvents` function. This function takes an array of events and gives access to a number of functions that you can chain together to describe the test case. The following functions are available:
 
 | Function  | Description   |
 |-- | --- |
