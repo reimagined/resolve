@@ -47,17 +47,20 @@ export const createStore = (
     init: async (): Promise<void> => {
       executeStatement({
         ...credentials,
-        Sql: `CREATE TABLE IF NOT EXISTS "${databaseName}".${tableName} (
-            id uuid NOT NULL,
-            key text COLLATE pg_catalog."default",
-            CONSTRAINT keys_pkey PRIMARY KEY (id)
-        )`
+        Sql: `CREATE TABLE IF NOT EXISTS "${databaseName}"."${tableName}" (
+            idx BIGSERIAL,
+            id uuid NOT NULL PRIMARY KEY,
+            key text COLLATE pg_catalog."default"
+          );
+          CREATE UNIQUE INDEX IF NOT EXISTS keys_index on "${databaseName}"."${tableName}"(idx);
+          `
       })
     },
     drop: async (): Promise<void> => {
       executeStatement({
         ...credentials,
-        Sql: `DROP TABLE IF EXISTS "${databaseName}".${tableName}`
+        Sql: `DROP INDEX IF EXISTS "${databaseName}"."keys_index";
+          DROP TABLE IF EXISTS "${databaseName}"."${tableName}";`
       })
     },
     dispose: async (): Promise<void> => {}
