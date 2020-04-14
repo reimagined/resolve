@@ -22,9 +22,23 @@ export const createStore = (pool: Pool<Database>): KeyStore => {
     },
     set: async (selector: AggregateId, key: EncryptionKey): Promise<void> => {
       const { database } = pool
-      await database.exec(
-        `INSERT INTO ${keysTable}(id, key) VALUES ("${selector}","${key}")`
-      )
+      try {
+        await database.exec(
+          `BEGIN IMMEDIATE;
+        INSERT INTO ${keysTable}(idx, id, key) VALUES (
+          "(SELECT max(idx) + 1 FROM ${keysTable})",
+          "${selector}",
+          "${key}"
+        );
+        COMMIT;`
+        )
+      } catch (error) {
+        try {
+          await database.exec('ROLLBACK;')
+        } catch (e) {}
+
+        throw error
+      }
     },
     forget: async (selector: AggregateId): Promise<void> => {
       const { database } = pool
@@ -33,9 +47,10 @@ export const createStore = (pool: Pool<Database>): KeyStore => {
     init: async (): Promise<void> => {
       const { database } = pool
       await database.exec(`CREATE TABLE IF NOT EXISTS ${keysTable} (
+        idx BIG INT NOT NULL,
         id uuid NOT NULL,
         key text,
-        PRIMARY KEY(id)
+        PRIMARY KEY(id, idx)
       )`)
     },
     drop: async (): Promise<void> => {
