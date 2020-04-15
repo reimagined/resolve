@@ -16,18 +16,38 @@ export declare type Event = {
   payload: SerializableMap
 }
 
+// Encryption
+
+export declare type PlainData = Serializable
+export declare type EncryptedBlob = string
+
+export declare type SecretStore = {
+  getSecret: (id: string) => Promise<string>
+  setSecret: (id: string) => Promise<void>
+  deleteSecret: (id: string) => Promise<void>
+}
+
+export declare type Encrypter = (data: PlainData) => EncryptedBlob
+export declare type Decrypter = (blob: EncryptedBlob) => PlainData
+
 // Aggregate
 
 export declare type AggregateState = any
+export declare type AggregateContext = {
+  encrypt: Encrypter
+  decrypt: Decrypter
+}
 export declare type AggregateEventHandler = (
   state: AggregateState,
-  event: Event
+  event: Event,
+  context: AggregateContext
 ) => AggregateState
 
 export declare type CommandContext = {
   jwt: string
   aggregateVersion: number
-  getSecret: () => string
+  encrypt: Encrypter
+  decrypt: Decrypter
 }
 
 export declare type Command = {
@@ -54,11 +74,19 @@ declare type CommandHandler = (
 
 export declare type Aggregate = {
   [key: string]: CommandHandler
+} & {
+  EncryptionFactory?: (secretStore: SecretStore, command: Command, context: CommandContext) => Promise<{
+    encrypt?: Encrypter
+    decrypt?: Decrypter
+  }>
 }
 
 // Read model
 
-declare type ReadModelContext = {}
+declare type ReadModelContext = {
+  encrypt: Encrypter
+  decrypt: Decrypter
+}
 declare type ReadModelInitHandler<TStore> = (store: TStore) => Promise<void>
 declare type ReadModelEventHandler<TStore> = (
   store: TStore,
@@ -66,8 +94,14 @@ declare type ReadModelEventHandler<TStore> = (
   context: ReadModelContext
 ) => Promise<void>
 export declare type ReadModel<TStore> = {
-  Init: ReadModelInitHandler<TStore>
   [key: string]: ReadModelEventHandler<TStore>
+} & {
+  Init: ReadModelInitHandler<TStore>
+} & {
+  EncryptionFactory?: (store: TStore, event: Event, context: ReadModelContext) => Promise<{
+    encrypt?: Encrypter
+    decrypt?: Decrypter
+  }>
 }
 declare type ReadModelResolver<TStore> = (
   store: TStore,
