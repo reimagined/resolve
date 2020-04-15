@@ -27,6 +27,7 @@ export declare type AggregateEventHandler = (
 export declare type CommandContext = {
   jwt: string
   aggregateVersion: number
+  getSecret: () => string
 }
 
 export declare type Command = {

@@ -58,6 +58,7 @@
     "jest": "25.1.0",
     "react-test-renderer": "16.13.0",
     "resolve-cloud": "*",
-    "testcafe": "1.8.3"
+    "testcafe": "1.8.3",
+    "@types/jest": "^25.2.1"
   }
 }
