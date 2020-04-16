@@ -4,7 +4,7 @@ const appConfig = {
       name: 'user-profile',
       commands: 'common/aggregates/user-profile.commands.ts',
       projection: 'common/aggregates/user-profile.projection.ts',
-      encryption: 'common/encryption.ts'
+      encryption: 'common/aggregates/encryption.ts'
     },
     {
       name: 'media',
@@ -22,7 +22,8 @@ const appConfig = {
       name: 'user-profiles',
       connectorName: 'default',
       projection: 'common/read-models/user-profiles.projection.ts',
-      resolvers: 'common/read-models/user-profiles.resolvers.ts'
+      resolvers: 'common/read-models/user-profiles.resolvers.ts',
+      encryption: 'common/aggregates/encryption.ts'
     },
     {
       name: 'blog-posts',

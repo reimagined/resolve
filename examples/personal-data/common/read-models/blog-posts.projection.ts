@@ -1,7 +1,6 @@
 import { ReadModel } from 'resolve-core'
 import { ResolveStore } from 'resolve-readmodel-base'
 import { BLOG_POST_CREATED, BLOG_POST_DELETED } from '../blog-post.events'
-import { getEncryption } from '../encryption'
 
 const readModel: ReadModel<ResolveStore> = {
   Init: async (store): Promise<void> => {
@@ -10,8 +9,7 @@ const readModel: ReadModel<ResolveStore> = {
       fields: ['timestamp', 'content']
     })
   },
-  EncryptionFactory: (store, event) => getEncryption(store, event.aggregateId),
-  [BLOG_POST_CREATED]: async (store, event, context): Promise<void> => {
+  [BLOG_POST_CREATED]: async (store, event): Promise<void> => {
     const {
       aggregateId,
       timestamp,

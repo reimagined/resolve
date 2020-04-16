@@ -33,6 +33,6 @@ const saga = {
     })
   },
   [USER_PROFILE_DELETED]: async ({ sideEffects }, event): Promise<void> => {
-    await sideEffects.forget(event.aggregateId)
+    await sideEffects.secretsManager.deleteSecret(event.aggregateId)
   }
 }
