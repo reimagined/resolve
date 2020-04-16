@@ -1,3 +1,6 @@
+import { ResourceAlreadyExistError as StorageResourceAlreadyExistError } from 'resolve-storage-base'
+import { ResourceAlreadyExistError as SnapshotResourceAlreadyExistError } from 'resolve-snapshot-base'
+
 import debugLevels from 'resolve-debug-levels'
 
 const log = debugLevels('resolve:resolve-runtime:bootstrap')
@@ -6,14 +9,20 @@ const bootstrap = async resolve => {
   log.debug('bootstrap started')
 
   try {
-    // TODO: invoke "init" only during first run
     await resolve.storageAdapter.init()
-  } catch (e) {}
+  } catch (error) {
+    if (!(error instanceof StorageResourceAlreadyExistError)) {
+      throw error
+    }
+  }
 
   try {
-    // TODO: invoke "init" only during first run
     await resolve.snapshotAdapter.init()
-  } catch (e) {}
+  } catch (error) {
+    if (!(error instanceof SnapshotResourceAlreadyExistError)) {
+      throw error
+    }
+  }
 
   try {
     // TODO: invoke "init" only during first run

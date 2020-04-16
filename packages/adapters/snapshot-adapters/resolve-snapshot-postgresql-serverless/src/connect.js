@@ -9,45 +9,37 @@ const connect = async pool => {
     rollbackTransaction
   } = pool
 
-  if (pool.connectPromise != null) {
-    return await pool.connectPromise
+  const {
+    dbClusterOrInstanceArn,
+    awsSecretStoreArn,
+    databaseName,
+    tableName,
+    bucketSize,
+    ...connectionOptions
+  } = pool.config
+
+  Object.assign(pool, {
+    rdsDataService: new RDSDataService(connectionOptions),
+    executeStatement: executeStatement.bind(null, pool),
+    beginTransaction: beginTransaction.bind(null, pool),
+    commitTransaction: commitTransaction.bind(null, pool),
+    rollbackTransaction: rollbackTransaction.bind(null, pool),
+    dbClusterOrInstanceArn,
+    awsSecretStoreArn,
+    bucketSize,
+    databaseName,
+    tableName
+  })
+
+  if (!Number.isInteger(pool.bucketSize) || pool.bucketSize < 1) {
+    pool.bucketSize = DEFAULT_BUCKET_SIZE
   }
 
-  pool.connectPromise = (async () => {
-    const {
-      dbClusterOrInstanceArn,
-      awsSecretStoreArn,
-      databaseName,
-      tableName,
-      bucketSize,
-      ...connectionOptions
-    } = pool.config
+  if (pool.tableName == null || pool.tableName.constructor !== String) {
+    pool.tableName = DEFAULT_TABLE_NAME
+  }
 
-    Object.assign(pool, {
-      rdsDataService: new RDSDataService(connectionOptions),
-      executeStatement: executeStatement.bind(null, pool),
-      beginTransaction: beginTransaction.bind(null, pool),
-      commitTransaction: commitTransaction.bind(null, pool),
-      rollbackTransaction: rollbackTransaction.bind(null, pool),
-      dbClusterOrInstanceArn,
-      awsSecretStoreArn,
-      bucketSize,
-      databaseName,
-      tableName
-    })
-
-    if (!Number.isInteger(pool.bucketSize) || pool.bucketSize < 1) {
-      pool.bucketSize = DEFAULT_BUCKET_SIZE
-    }
-
-    if (pool.tableName == null || pool.tableName.constructor !== String) {
-      pool.tableName = DEFAULT_TABLE_NAME
-    }
-
-    pool.counters = new Map()
-  })()
-
-  return await pool.connectPromise
+  pool.counters = new Map()
 }
 
 export default connect

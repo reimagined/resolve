@@ -1,6 +1,8 @@
 import wrapReadModel from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
 
+const getDefaultRemainingTime = () => 0x7fffffff
+
 const createQuery = ({
   readModelConnectors,
   snapshotAdapter,
@@ -100,31 +102,47 @@ const createQuery = ({
     return result
   }
 
-  const updateByEvents = async (
+  const updateByEvents = async ({
     modelName,
     events,
-    getRemainingTimeInMillisRaw
-  ) => {
+    getRemainingTimeInMillis,
+    transactionId
+  }) => {
     checkModelExists(modelName)
     if (!Array.isArray(events)) {
       throw new Error('Updating by events should supply events array')
     }
 
-    let getRemainingTimeInMillis = getRemainingTimeInMillisRaw
-    if (typeof getRemainingTimeInMillis !== 'function') {
-      getRemainingTimeInMillis = () => 0x7fffffff
-    }
-
-    return await models[modelName].updateByEvents(
+    const result = await models[modelName].updateByEvents(
       events,
-      getRemainingTimeInMillis
+      typeof getRemainingTimeInMillis === 'function'
+        ? getRemainingTimeInMillis
+        : getDefaultRemainingTime,
+      transactionId
     )
+
+    return result
   }
 
   const drop = async modelName => {
     checkModelExists(modelName)
 
     await models[modelName].drop()
+  }
+
+  const performXA = async (operationName, { modelName, ...parameters }) => {
+    checkModelExists(modelName)
+    if (typeof models[modelName][operationName] !== 'function') {
+      const error = new Error(
+        `Read/view model "${modelName}" does not support XA transactions`
+      )
+      error.code = 405
+      throw error
+    }
+
+    const result = await models[modelName][operationName](parameters)
+
+    return result
   }
 
   const dispose = async () => {
@@ -137,6 +155,9 @@ const createQuery = ({
     read,
     readAndSerialize,
     updateByEvents,
+    beginXATransaction: performXA.bind(null, 'beginXATransaction'),
+    commitXATransaction: performXA.bind(null, 'commitXATransaction'),
+    rollbackXATransaction: performXA.bind(null, 'rollbackXATransaction'),
     drop,
     dispose
   }

@@ -6,6 +6,12 @@ const createAdapter = (implementation, options) => {
     beginTransaction,
     commitTransaction,
     rollbackTransaction,
+    beginXATransaction,
+    commitXATransaction,
+    rollbackXATransaction,
+    beginEvent,
+    commitEvent,
+    rollbackEvent,
     disconnect,
     dropReadModel,
     ...storeApi
@@ -81,19 +87,25 @@ const createAdapter = (implementation, options) => {
     }
   }
 
-  const doDrop = async (store, readModelName) => {
+  const doOperation = async (
+    operationName,
+    operationFunc,
+    store,
+    readModelName,
+    ...args
+  ) => {
     const segment = performanceTracer ? performanceTracer.getSegment() : null
-    const subSegment = segment ? segment.addNewSubsegment('drop') : null
+    const subSegment = segment ? segment.addNewSubsegment(operationName) : null
 
     if (subSegment != null) {
       subSegment.addAnnotation('readModelName', readModelName)
-      subSegment.addAnnotation('origin', 'resolve:readmodel:drop')
+      subSegment.addAnnotation('origin', `resolve:readmodel:${operationName}`)
     }
 
     const adapterPool = adapterPoolMap.get(store)
 
     try {
-      await dropReadModel(adapterPool, readModelName)
+      await operationFunc(adapterPool, readModelName, ...args)
     } catch (error) {
       if (subSegment != null) {
         subSegment.addError(error)
@@ -106,89 +118,48 @@ const createAdapter = (implementation, options) => {
     }
   }
 
-  const doBeginTransaction = async (store, readModelName) => {
-    const segment = performanceTracer ? performanceTracer.getSegment() : null
-    const subSegment = segment
-      ? segment.addNewSubsegment('beginTransaction')
-      : null
-
-    if (subSegment != null) {
-      subSegment.addAnnotation('readModelName', readModelName)
-      subSegment.addAnnotation('origin', 'resolve:readmodel:beginTransaction')
-    }
-
-    const adapterPool = adapterPoolMap.get(store)
-
-    try {
-      await beginTransaction(adapterPool, readModelName)
-    } catch (error) {
-      if (subSegment != null) {
-        subSegment.addError(error)
-      }
-      throw error
-    } finally {
-      if (subSegment != null) {
-        subSegment.close()
-      }
+  const makeOperation = (operationName, operationFunc) => {
+    if (typeof operationFunc === 'function') {
+      return doOperation.bind(null, operationName, operationFunc)
+    } else {
+      return null
     }
   }
 
-  const doCommitTransaction = async (store, readModelName) => {
-    const segment = performanceTracer ? performanceTracer.getSegment() : null
-    const subSegment = segment
-      ? segment.addNewSubsegment('commitTransaction')
-      : null
+  const doDrop = makeOperation('dropReadModel', dropReadModel)
 
-    if (subSegment != null) {
-      subSegment.addAnnotation('readModelName', readModelName)
-      subSegment.addAnnotation('origin', 'resolve:readmodel:commitTransaction')
-    }
+  const doBeginTransaction = makeOperation('beginTransaction', beginTransaction)
 
-    const adapterPool = adapterPoolMap.get(store)
+  const doCommitTransaction = makeOperation(
+    'commitTransaction',
+    commitTransaction
+  )
 
-    try {
-      await commitTransaction(adapterPool, readModelName)
-    } catch (error) {
-      if (subSegment != null) {
-        subSegment.addError(error)
-      }
-      throw error
-    } finally {
-      if (subSegment != null) {
-        subSegment.close()
-      }
-    }
-  }
+  const doRollbackTransaction = makeOperation(
+    'rollbackTransaction',
+    rollbackTransaction
+  )
 
-  const doRollbackTransaction = async (store, readModelName) => {
-    const segment = performanceTracer ? performanceTracer.getSegment() : null
-    const subSegment = segment
-      ? segment.addNewSubsegment('rollbackTransaction')
-      : null
+  const doBeginXATransaction = makeOperation(
+    'beginXATransaction',
+    beginXATransaction
+  )
 
-    if (subSegment != null) {
-      subSegment.addAnnotation('readModelName', readModelName)
-      subSegment.addAnnotation(
-        'origin',
-        'resolve:readmodel:rollbackTransaction'
-      )
-    }
+  const doCommitXATransaction = makeOperation(
+    'commitXATransaction',
+    commitXATransaction
+  )
 
-    const adapterPool = adapterPoolMap.get(store)
+  const doRollbackXATransaction = makeOperation(
+    'rollbackXATransaction',
+    rollbackXATransaction
+  )
 
-    try {
-      await rollbackTransaction(adapterPool, readModelName)
-    } catch (error) {
-      if (subSegment != null) {
-        subSegment.addError(error)
-      }
-      throw error
-    } finally {
-      if (subSegment != null) {
-        subSegment.close()
-      }
-    }
-  }
+  const doBeginEvent = makeOperation('beginEvent', beginEvent)
+
+  const doCommitEvent = makeOperation('commitEvent', commitEvent)
+
+  const doRollbackEvent = makeOperation('rollbackEvent', rollbackEvent)
 
   const doDispose = async () => {
     const segment = performanceTracer ? performanceTracer.getSegment() : null
@@ -223,6 +194,12 @@ const createAdapter = (implementation, options) => {
     beginTransaction: doBeginTransaction,
     commitTransaction: doCommitTransaction,
     rollbackTransaction: doRollbackTransaction,
+    beginXATransaction: doBeginXATransaction,
+    commitXATransaction: doCommitXATransaction,
+    rollbackXATransaction: doRollbackXATransaction,
+    beginEvent: doBeginEvent,
+    commitEvent: doCommitEvent,
+    rollbackEvent: doRollbackEvent,
     disconnect: doDisconnect,
     drop: doDrop,
     dispose: doDispose

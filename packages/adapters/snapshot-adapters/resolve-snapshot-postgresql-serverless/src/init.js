@@ -1,16 +1,23 @@
+import { ResourceAlreadyExistError } from 'resolve-snapshot-base'
+
 const init = async pool => {
-  const { escapeId, connect } = pool
-  await connect(pool)
-  if (pool.disposed) {
-    throw new Error('Adapter is disposed')
+  try {
+    await pool.executeStatement(`CREATE TABLE IF NOT EXISTS ${pool.escapeId(
+      pool.databaseName
+    )}.${pool.escapeId(pool.tableName)} (
+    ${pool.escapeId('SnapshotKey')} text NOT NULL,
+    ${pool.escapeId('SnapshotContent')} text,
+    PRIMARY KEY(${pool.escapeId('SnapshotKey')})
+  )`)
+  } catch (error) {
+    if (error != null && /Relation.*? already exists$/i.test(error.message)) {
+      throw new ResourceAlreadyExistError(
+        `Double-initialize snapshot-postgresql-serverless adapter via "${pool.databaseName}" failed`
+      )
+    } else {
+      throw error
+    }
   }
-  await pool.executeStatement(`CREATE TABLE IF NOT EXISTS ${escapeId(
-    pool.databaseName
-  )}.${escapeId(pool.tableName)} (
-      ${escapeId('SnapshotKey')} text NOT NULL,
-      ${escapeId('SnapshotContent')} text,
-      PRIMARY KEY(${escapeId('SnapshotKey')})
-    )`)
 }
 
 export default init

@@ -1,4 +1,5 @@
 import { EOL } from 'os'
+import { ResourceNotExistError } from 'resolve-storage-base'
 
 const drop = async ({
   databaseName,
@@ -38,7 +39,13 @@ const drop = async ({
     try {
       await executeStatement(statement)
     } catch (error) {
-      errors.push(error)
+      if (error != null && /Table.*? does not exist$/i.test(error.message)) {
+        throw new ResourceNotExistError(
+          `Double-free storage-postgresql-serverless adapter via "${databaseName}" failed`
+        )
+      } else {
+        errors.push(error)
+      }
     }
   }
 

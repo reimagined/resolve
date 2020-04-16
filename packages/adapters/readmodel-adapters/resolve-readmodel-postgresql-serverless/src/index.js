@@ -1,8 +1,12 @@
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 import _createAdapter from 'resolve-readmodel-base'
 
+import beginXATransaction from './begin-xa-transaction'
+import beginEvent from './begin-event'
 import beginTransaction from './begin-transaction'
 import buildUpsertDocument from './build-upsert-document'
+import commitXATransaction from './commit-xa-transaction'
+import commitEvent from './commit-event'
 import commitTransaction from './commit-transaction'
 import coercer from './coercer'
 import _connect from './connect'
@@ -18,6 +22,8 @@ import executeStatement from './execute-statement'
 import findOne from './find-one'
 import find from './find'
 import insert from './insert'
+import rollbackXATransaction from './rollback-xa-transaction'
+import rollbackEvent from './rollback-event'
 import rollbackTransaction from './rollback-transaction'
 import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
@@ -48,6 +54,12 @@ const createAdapter = _createAdapter.bind(null, {
   beginTransaction,
   commitTransaction,
   rollbackTransaction,
+  beginXATransaction,
+  commitXATransaction,
+  rollbackXATransaction,
+  beginEvent,
+  commitEvent,
+  rollbackEvent,
   dropReadModel,
   disconnect
 })

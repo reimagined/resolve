@@ -1,25 +1,36 @@
-import { RESPONSE_SIZE_LIMIT, INT8_SQL_TYPE } from './constants'
-import shapeEvent from './shape-event'
+import { INT8_SQL_TYPE } from './constants'
 
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
 const loadEventsByCursor = async (
-  { executeStatement, escapeId, escape, tableName, databaseName },
-  { eventTypes, aggregateIds, cursor, limit },
+  { executeStatement, escapeId, escape, tableName, databaseName, shapeEvent },
+  {
+    eventTypes,
+    aggregateIds,
+    cursor,
+    limit,
+    eventsSizeLimit: inputEventsSizeLimit
+  },
   callback
 ) => {
+  const eventsSizeLimit =
+    inputEventsSizeLimit != null ? inputEventsSizeLimit : 2000000000
+
+  const makeBigIntLiteral = numStr => `x'${numStr}'::${INT8_SQL_TYPE}`
+  const parseBigIntString = str =>
+    str.substring(2, str.length - (INT8_SQL_TYPE.length + 3))
+
+  const injectBigInt = value =>
+    makeBigIntLiteral((+value).toString(16).padStart(12, '0'))
   const injectString = value => `${escape(value)}`
   const injectNumber = value => `${+value}`
-  const batchSize = limit != null ? Math.min(limit, 200) : 200
 
   const cursorBuffer =
     cursor != null ? Buffer.from(cursor, 'base64') : Buffer.alloc(1536, 0)
   const vectorConditions = []
   for (let i = 0; i < cursorBuffer.length / 6; i++) {
     vectorConditions.push(
-      `x'${cursorBuffer
-        .slice(i * 6, (i + 1) * 6)
-        .toString('hex')}'::${INT8_SQL_TYPE}`
+      makeBigIntLiteral(cursorBuffer.slice(i * 6, (i + 1) * 6).toString('hex'))
     )
   }
 
@@ -31,12 +42,9 @@ const loadEventsByCursor = async (
     queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
   }
 
-  let countEvents = 0
-
-  while (true) {
-    const resultQueryCondition = `WHERE ${
-      queryConditions.length > 0 ? `${queryConditions.join(' AND ')} AND (` : ''
-    }
+  const resultQueryCondition = `WHERE ${
+    queryConditions.length > 0 ? `${queryConditions.join(' AND ')} AND (` : ''
+  }
     ${vectorConditions
       .map(
         (threadCounter, threadId) =>
@@ -47,83 +55,119 @@ const loadEventsByCursor = async (
       .join(' OR ')}
     ${queryConditions.length > 0 ? ')' : ''}`
 
-    const databaseNameAsId = escapeId(databaseName)
-    const eventsTableAsId = escapeId(tableName)
+  const databaseNameAsId = escapeId(databaseName)
+  const eventsTableAsId = escapeId(tableName)
 
-    let rows = RESPONSE_SIZE_LIMIT
-    for (
-      let dynamicBatchSize = batchSize;
-      dynamicBatchSize >= 1;
-      dynamicBatchSize = Math.floor(dynamicBatchSize / 1.5)
-    ) {
-      try {
-        // prettier-ignore
-        const sqlQuery =
-          `WITH "filteredEvents" AS (
-            SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}
-            ${resultQueryCondition}
-            ORDER BY "timestamp" ASC
-            LIMIT ${+dynamicBatchSize}
-          ), "sizedEvents" AS (
-            SELECT "filteredEvents".*,
-            SUM("filteredEvents"."eventSize") OVER (
-              ORDER BY "filteredEvents"."timestamp"
-            ) AS "totalEventSize"
-            FROM "filteredEvents"
-          )
-          SELECT * FROM "sizedEvents"
-          WHERE "sizedEvents"."totalEventSize" < 512000
-          ORDER BY "sizedEvents"."timestamp" ASC`
+  // prettier-ignore
+  const sqlQuery =
+    `WITH "batchEvents" AS (
+      SELECT "threadId", "threadCounter",
+      SUM("eventSize") OVER (ORDER BY "timestamp") AS "totalEventsSize",
+      FLOOR((SUM("eventSize") OVER (ORDER BY "timestamp")) / 128000) AS "batchIndex"
+      FROM ${databaseNameAsId}.${eventsTableAsId}
+      ${resultQueryCondition}
+      ORDER BY "timestamp" ASC
+      LIMIT ${+limit}
+    ), "fullBatchList" AS (
+      SELECT "batchEvents"."batchIndex" AS "batchIndex",
+      "batchEvents"."threadId" AS "threadId",
+      MIN("batchEvents"."threadCounter") AS "threadCounterStart",
+      MAX("batchEvents"."threadCounter") AS "threadCounterEnd"
+      FROM "batchEvents"
+      WHERE "batchEvents"."totalEventsSize" < ${+eventsSizeLimit}
+      GROUP BY "batchEvents"."batchIndex",
+      "batchEvents"."threadId"
+      ORDER BY "batchEvents"."batchIndex"
+    ), "limitedBatchList" AS (
+      SELECT "fullBatchList".* FROM "fullBatchList"
+      ORDER BY "fullBatchList"."batchIndex"       
+      LIMIT 74700
+    ), "threadIdsPerFullBatchList" AS (
+      SELECT "fullBatchList"."batchIndex",
+      COUNT(DISTINCT "fullBatchList"."threadId") AS "value"
+      FROM "fullBatchList"
+      GROUP BY "fullBatchList"."batchIndex"
+    ), "threadIdsPerLimitedBatchList" AS (
+      SELECT "limitedBatchList"."batchIndex",
+      COUNT(DISTINCT "limitedBatchList"."threadId") AS "value"
+      FROM "limitedBatchList"
+      GROUP BY "limitedBatchList"."batchIndex"
+    )
+    SELECT "limitedBatchList".* FROM "limitedBatchList"
+    LEFT JOIN "threadIdsPerFullBatchList" ON 
+    "threadIdsPerFullBatchList"."batchIndex" =
+      "limitedBatchList"."batchIndex"
+    LEFT JOIN "threadIdsPerLimitedBatchList" ON
+    "threadIdsPerLimitedBatchList"."batchIndex" =
+      "limitedBatchList"."batchIndex"
+    WHERE "threadIdsPerFullBatchList"."value" =
+      "threadIdsPerLimitedBatchList"."value"
+    ORDER BY "limitedBatchList"."batchIndex"`
 
-        rows = await executeStatement(sqlQuery)
-        break
-      } catch (error) {
-        if (!/Database response exceeded size limit/.test(error.message)) {
-          throw error
-        }
-      }
+  const batchList = await executeStatement(sqlQuery)
+
+  const requestCursors = []
+  const requestPromises = []
+  for (const {
+    batchIndex,
+    threadId,
+    threadCounterStart,
+    threadCounterEnd
+  } of batchList) {
+    if (requestCursors[batchIndex] == null) {
+      requestCursors[batchIndex] = []
     }
-    if (rows === RESPONSE_SIZE_LIMIT) {
-      throw new Error('Database response exceeded size limit')
+
+    requestCursors[batchIndex].push(
+      `"threadId"= ${+threadId} AND "threadCounter" BETWEEN ${injectBigInt(
+        threadCounterStart
+      )} AND ${injectBigInt(threadCounterEnd)}`
+    )
+  }
+
+  for (let i = 0; i < requestCursors.length; i++) {
+    const sqlQuery = `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}
+    WHERE ${
+      queryConditions.length > 0 ? `${queryConditions.join(' AND ')} AND (` : ''
     }
+    ${requestCursors[i].join(' OR ')}
+    ${queryConditions.length > 0 ? ')' : ''}
+    ORDER BY "timestamp" ASC`
 
-    for (const event of rows) {
-      const threadId = +event.threadId
-      const threadCounter = +event.threadCounter
-      const oldThreadCounter = parseInt(
-        vectorConditions[threadId].substring(
-          2,
-          vectorConditions[threadId].length - (INT8_SQL_TYPE.length + 3)
-        ),
-        16
-      )
+    requestPromises.push(executeStatement(sqlQuery))
+  }
 
-      vectorConditions[threadId] = `x'${Math.max(
-        threadCounter + 1,
-        oldThreadCounter
-      )
-        .toString(16)
-        .padStart(12, '0')}'::${INT8_SQL_TYPE}`
-
-      countEvents++
-
-      await callback(shapeEvent(event))
+  const batchedEvents = await Promise.all(requestPromises)
+  const events = []
+  for (const eventBatch of batchedEvents) {
+    for (const event of eventBatch) {
+      events.push(event)
     }
+  }
 
-    if (rows.length === 0 || countEvents > limit) {
-      break
-    }
+  for (const event of events) {
+    const threadId = +event.threadId
+    const threadCounter = +event.threadCounter
+    const oldThreadCounter = parseInt(
+      parseBigIntString(vectorConditions[threadId]),
+      16
+    )
+    vectorConditions[threadId] = injectBigInt(
+      Math.max(threadCounter + 1, oldThreadCounter)
+    )
+
+    await callback(shapeEvent(event))
   }
 
   const nextConditionsBuffer = Buffer.alloc(1536)
   let byteIndex = 0
 
   for (const threadCounter of vectorConditions) {
-    const threadCounterBytes = threadCounter
-      .substring(2, threadCounter.length - (INT8_SQL_TYPE.length + 3))
-      .match(split2RegExp)
+    const threadCounterBytes = parseBigIntString(threadCounter).match(
+      split2RegExp
+    )
     for (const byteHex of threadCounterBytes) {
-      nextConditionsBuffer[byteIndex++] = Buffer.from(byteHex, 'hex')[0]
+      nextConditionsBuffer[byteIndex++] = parseInt(byteHex, 16)
     }
   }
 

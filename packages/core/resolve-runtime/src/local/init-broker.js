@@ -10,7 +10,12 @@ const initBroker = async resolve => {
     assemblies: { connectLocalBusBroker, eventBroker: eventBrokerConfig }
   } = resolve
 
-  const updateByEvents = async (listenerId, events, properties) => {
+  const updateByEvents = async ({
+    modelName: listenerId,
+    events,
+    properties,
+    transactionId
+  }) => {
     const currentResolve = Object.create(resolve)
     let result = null
 
@@ -25,12 +30,13 @@ const initBroker = async resolve => {
         ? currentResolve.executeSaga.updateByEvents
         : currentResolve.executeQuery.updateByEvents
 
-      result = await updateByEvents(
-        listenerId,
+      result = await updateByEvents({
+        modelName: listenerId,
         events,
-        currentResolve.getRemainingTimeInMillis,
-        properties
-      )
+        getRemainingTimeInMillis: currentResolve.getRemainingTimeInMillis,
+        properties,
+        transactionId
+      })
 
       if (result.lastError != null) {
         log.error('Error while applying events to read-model', result.lastError)

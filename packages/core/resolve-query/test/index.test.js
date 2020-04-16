@@ -801,7 +801,7 @@ for (const { describeName, prepare } of [
 
         test('"updateByEvents" should raise error on view models', async () => {
           try {
-            await query.updateByEvents('viewModelName', events)
+            await query.updateByEvents({ modelName: 'viewModelName', events })
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
             expect(error).toBeInstanceOf(Error)
@@ -830,7 +830,7 @@ for (const { describeName, prepare } of [
         test('"updateByEvents" should raise error when query is disposed', async () => {
           await query.dispose()
           try {
-            await query.updateByEvents('viewModelName', events)
+            await query.updateByEvents({ modelName: 'viewModelName', events })
 
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
@@ -885,7 +885,7 @@ for (const { describeName, prepare } of [
         test('"drop" should raise error when query is disposed', async () => {
           await query.dispose()
           try {
-            await query.updateByEvents('viewModelName', events)
+            await query.updateByEvents({ modelName: 'viewModelName', events })
 
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
@@ -1420,7 +1420,7 @@ for (const { describeName, prepare } of [
 
         test('"updateByEvents" should raise error on view models', async () => {
           try {
-            await query.updateByEvents('viewModelName', events)
+            await query.updateByEvents({ modelName: 'viewModelName', events })
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
             expect(error).toBeInstanceOf(Error)
@@ -1446,7 +1446,7 @@ for (const { describeName, prepare } of [
         test('"updateByEvents" should raise error when disposed', async () => {
           await query.dispose()
           try {
-            await query.updateByEvents('viewModelName', events)
+            await query.updateByEvents({ modelName: 'viewModelName', events })
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
             expect(error).toBeInstanceOf(Error)
@@ -1673,7 +1673,7 @@ for (const { describeName, prepare } of [
         })
 
         doUpdateRequest = async readModelName => {
-          await query.updateByEvents(readModelName, events)
+          await query.updateByEvents({ modelName: readModelName, events })
         }
       })
 
@@ -1749,7 +1749,10 @@ for (const { describeName, prepare } of [
         ]
 
         try {
-          await query.updateByEvents('brokenReadModelName', events)
+          await query.updateByEvents({
+            modelName: 'brokenReadModelName',
+            events
+          })
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
           expect(error.lastError.message).toEqual('BROKEN')
@@ -1873,7 +1876,10 @@ for (const { describeName, prepare } of [
           }
         ]
 
-        const result = await query.updateByEvents('readModelName', events)
+        const result = await query.updateByEvents({
+          modelName: 'readModelName',
+          events
+        })
 
         const value = await query.read({
           modelName: 'readModelName',
@@ -1915,7 +1921,10 @@ for (const { describeName, prepare } of [
 
       test('"updateByEvents" should raise error when a projection is not found', async () => {
         try {
-          await query.updateByEvents('readOnlyReadModelName', events)
+          await query.updateByEvents({
+            modelName: 'readOnlyReadModelName',
+            events
+          })
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
           expect(error).toBeInstanceOf(Error)
@@ -1940,7 +1949,10 @@ for (const { describeName, prepare } of [
 
       test('"updateByEvents" should raise error when events is not array', async () => {
         try {
-          await query.updateByEvents('readOnlyReadModelName', null)
+          await query.updateByEvents({
+            modelName: 'readOnlyReadModelName',
+            events: null
+          })
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
           expect(error).toBeInstanceOf(Error)
@@ -1987,7 +1999,10 @@ for (const { describeName, prepare } of [
           }
         ]
 
-        const result = query.updateByEvents('remoteReadModelName', events)
+        const result = query.updateByEvents({
+          modelName: 'remoteReadModelName',
+          events
+        })
 
         await query.dispose()
 
@@ -2028,7 +2043,7 @@ for (const { describeName, prepare } of [
         await query.dispose()
 
         try {
-          await query.updateByEvents('readModelName', events)
+          await query.updateByEvents({ modelName: 'readModelName', events })
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
           expect(error).toBeInstanceOf(Error)
