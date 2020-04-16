@@ -54,7 +54,8 @@ const devConfig = {
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {
-      databaseFile: 'data/storage.db'
+      databaseFile: 'data/storage.db',
+      secretsFile: 'data/secrets.db'
     }
   },
   /*{
