@@ -3,9 +3,13 @@ id: frontend
 title: Frontend
 ---
 
-## React/Redux Support
+This document describes approaches that you can use to implement a frontend for a reSolve application. The document's sections progress from the lowest level to higher level approaches.
 
-### resolve-redux library
+## HTTP API
+
+## resolve-client
+
+## resolve-redux
 
 The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend.
 
@@ -97,7 +101,7 @@ export default connectReadModel(mapStateToOptions)(
 
 <!-- prettier-ignore-end -->
 
-#### Fix URLs
+### Fix URLs
 
 Use the following HOCs to automatically fix URLs passed to a component as props. The resulting URLs take the backend structure into account.
 
@@ -111,7 +115,7 @@ Use the following HOCs to automatically fix URLs passed to a component as props.
   export default connectStaticBasedUrls(['css', 'favicon'])(Header)
   ```
 
-## Sending Commands as Redux Actions
+### Sending Commands as Redux Actions
 
 A component connected to a Read Model receives an object containing available command names. You can use the **redux.bindActionCreators** function to automatically wrap all these commands into **dispatch** function calls. This allows for a compact implementation of the **mapDispatchToProps** function.
 
@@ -140,7 +144,7 @@ class MyLists extends React.PureComponent {
 
 <!-- prettier-ignore-end -->
 
-## Reactive View Models, Event Subscription
+### Reactive View Models, Event Subscription
 
 A View Model is a special kind of a Read Model. Its projection is declared in a universal format so it can also serve as the reducer code on the client side. Events are automatically sent to the client through a WebSocket connection. Because of these properties, View Models are reactive. This means that a component connected to a View Model using the **connectViewModel** method automatically reflects the Read Model changes on the server side, without the need to implement any additional logic.
 
@@ -187,7 +191,7 @@ export default connectViewModel(mapStateToOptions)(
 
 <!-- prettier-ignore-end -->
 
-## Optimistic Commands
+### Optimistic Commands
 
 You can add **optimistic UI updating** functionality to enhance a component's responsiveness if this component is connected to a reSolve ReadModel. With this approach, a component applies model changes on the client side before synchronizing them with the server via an aggregate command.
 
@@ -313,3 +317,8 @@ export default optimistic_shopping_lists_middleware
 <!-- prettier-ignore-end -->
 
 For the full code, refer to the [Shopping List](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example project.
+
+
+## resolve-react-hooks
+
+
