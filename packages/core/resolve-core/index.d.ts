@@ -21,7 +21,7 @@ export declare type Event = {
 export declare type PlainData = Serializable
 export declare type EncryptedBlob = string
 
-export declare type SecretStore = {
+export declare type SecretsManager = {
   getSecret: (id: string) => Promise<string>
   setSecret: (id: string) => Promise<void>
   deleteSecret: (id: string) => Promise<void>
@@ -29,6 +29,10 @@ export declare type SecretStore = {
 
 export declare type Encrypter = (data: PlainData) => EncryptedBlob
 export declare type Decrypter = (blob: EncryptedBlob) => PlainData
+export declare type Encryption = {
+  encrypt?: Encrypter
+  decrypt?: Decrypter
+}
 
 // Aggregate
 
@@ -74,12 +78,15 @@ declare type CommandHandler = (
 
 export declare type Aggregate = {
   [key: string]: CommandHandler
-} & {
-  EncryptionFactory?: (secretStore: SecretStore, command: Command, context: CommandContext) => Promise<{
-    encrypt?: Encrypter
-    decrypt?: Decrypter
-  }>
 }
+export declare type AggregateEncryptionContext = {
+  jwt: string
+  secretsManager: SecretsManager
+}
+export declare type AggregateEncryptionFactory = (
+  aggregateId: string,
+  context: AggregateEncryptionContext
+) => Promise<Encryption | null>
 
 // Read model
 
@@ -97,11 +104,6 @@ export declare type ReadModel<TStore> = {
   [key: string]: ReadModelEventHandler<TStore>
 } & {
   Init: ReadModelInitHandler<TStore>
-} & {
-  EncryptionFactory?: (store: TStore, event: Event, context: ReadModelContext) => Promise<{
-    encrypt?: Encrypter
-    decrypt?: Decrypter
-  }>
 }
 declare type ReadModelResolver<TStore> = (
   store: TStore,
@@ -111,4 +113,12 @@ declare type ReadModelResolver<TStore> = (
 export declare type ReadModelResolvers<TStore> = {
   [key: string]: ReadModelResolver<TStore>
 }
+export declare type ReadModelEncryptionContext = {
+  secretsManager: SecretsManager
+}
+export declare type ReadModelEncryptionFactory = (
+  event: Event,
+  context: ReadModelEncryptionContext
+) => Promise<Encryption | null>
+
 

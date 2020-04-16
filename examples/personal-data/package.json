@@ -21,6 +21,8 @@
     "@types/reactstrap": "^8.4.2",
     "@types/redux-devtools-extension": "^2.13.2",
     "babel-loader": "^8.0.6",
+    "cryptr": "^6.0.2",
+    "generate-password": "^1.5.1",
     "jsonwebtoken": "^8.5.1",
     "react": "16.13.0",
     "react-dom": "16.13.0",
@@ -30,8 +32,8 @@
     "redux": "4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-saga": "1.0.5",
-    "resolve-core": "0.23.2",
     "resolve-command": "0.23.2",
+    "resolve-core": "0.23.2",
     "resolve-query": "0.23.2",
     "resolve-react-hooks": "0.23.2",
     "resolve-readmodel-base": "0.23.2",
@@ -54,11 +56,11 @@
     "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "7.0.0",
+    "@types/jest": "^25.2.1",
     "babel-jest": "25.1.0",
     "jest": "25.1.0",
     "react-test-renderer": "16.13.0",
     "resolve-cloud": "*",
-    "testcafe": "1.8.3",
-    "@types/jest": "^25.2.1"
+    "testcafe": "1.8.3"
   }
 }

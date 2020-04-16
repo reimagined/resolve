@@ -6,10 +6,8 @@ import {
   USER_PERSONAL_DATA_GATHERED
 } from '../user-profile.events'
 import { Aggregate } from 'resolve-core'
-import { getEncryption } from '../encryption'
 
 const aggregate: Aggregate = {
-  EncryptionFactory: async (store, command) => getEncryption(store, command.aggregateId),
   register: (state, command, context) => {
     // TODO: check user authorization token
 

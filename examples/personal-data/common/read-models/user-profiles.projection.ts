@@ -25,10 +25,10 @@ const readModel: ReadModel<ResolveStore> = {
       id: aggregateId,
       profile: {
         nickname,
-        firstName: decrypt(firstName) || 'unknown',
-        lastName: decrypt(lastName) || 'unknown',
+        firstName: decrypt(firstName as string) || 'unknown',
+        lastName: decrypt(lastName as string) || 'unknown',
         fullName: `${firstName} ${lastName}`,
-        contacts: decrypt(contacts) || {}
+        contacts: decrypt(contacts as string) || {}
       }
     })
   },
@@ -49,8 +49,8 @@ const readModel: ReadModel<ResolveStore> = {
         $set: {
           profile: {
             ...user.profile,
-            firstName: decrypt(firstName) || 'unknown',
-            lastName: decrypt(lastName) || 'unknown'
+            firstName: decrypt(firstName as string) || 'unknown',
+            lastName: decrypt(lastName as string) || 'unknown'
           }
         }
       }

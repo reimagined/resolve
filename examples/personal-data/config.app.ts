@@ -3,7 +3,8 @@ const appConfig = {
     {
       name: 'user-profile',
       commands: 'common/aggregates/user-profile.commands.ts',
-      projection: 'common/aggregates/user-profile.projection.ts'
+      projection: 'common/aggregates/user-profile.projection.ts',
+      encryption: 'common/encryption.ts'
     },
     {
       name: 'media',
