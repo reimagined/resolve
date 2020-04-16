@@ -12,8 +12,7 @@ const initResolve = async resolve => {
   const {
     storageAdapter: createStorageAdapter,
     snapshotAdapter: createSnapshotAdapter,
-    readModelConnectors: readModelConnectorsCreators,
-    encryptionAdapter: createEncryptionAdapter
+    readModelConnectors: readModelConnectorsCreators
   } = resolve.assemblies
 
   const storageAdapter = createStorageAdapter()
@@ -32,17 +31,11 @@ const initResolve = async resolve => {
     })
   }
 
-  const encryptionAdapter =
-    typeof createEncryptionAdapter === 'function'
-      ? createEncryptionAdapter()
-      : null
-
   const executeCommand = createCommandExecutor({
     eventStore,
     aggregates,
     snapshotAdapter,
-    performanceTracer,
-    encryptionAdapter
+    performanceTracer
   })
 
   const executeQuery = createQueryExecutor({
@@ -51,8 +44,7 @@ const initResolve = async resolve => {
     snapshotAdapter,
     readModels,
     viewModels,
-    performanceTracer,
-    encryptionAdapter
+    performanceTracer
   })
 
   const executeSaga = createSagaExecutor({
@@ -63,8 +55,7 @@ const initResolve = async resolve => {
     snapshotAdapter,
     schedulers,
     sagas,
-    performanceTracer,
-    encryptionAdapter
+    performanceTracer
   })
 
   Object.assign(resolve, {
@@ -77,8 +68,7 @@ const initResolve = async resolve => {
   Object.defineProperties(resolve, {
     readModelConnectors: { value: readModelConnectors },
     snapshotAdapter: { value: snapshotAdapter },
-    storageAdapter: { value: storageAdapter },
-    encryptionAdapter: { value: encryptionAdapter }
+    storageAdapter: { value: storageAdapter }
   })
 
   if (!resolve.hasOwnProperty('getRemainingTimeInMillis')) {
