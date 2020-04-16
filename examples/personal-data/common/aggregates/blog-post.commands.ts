@@ -19,7 +19,7 @@ const aggregate: Aggregate = {
       }
     }
   },
-  deletePost: state => {
+  delete: state => {
     const { isExist } = state
 
     if (!isExist) {
