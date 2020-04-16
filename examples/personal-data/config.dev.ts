@@ -57,18 +57,6 @@ const devConfig = {
       databaseFile: 'data/storage.db'
     }
   },
-  encryptionAdapter: {
-    module: 'resolve-encryption-local',
-    options: {
-      algorithm: {
-        type: 'AES256'
-      },
-      keyStore: {
-        storeOption: 'store-option',
-        databaseFile: 'data/encryption-keys.db'
-      }
-    }
-  },
   /*{
     module: 'resolve-storage-mongo',
     options: {
