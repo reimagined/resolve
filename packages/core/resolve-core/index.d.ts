@@ -57,6 +57,7 @@ export declare type CommandContext = {
 export declare type Command = {
   type: string
   aggregateId: string
+  aggregateName: string
   payload: SerializableMap
 }
 
@@ -121,4 +122,84 @@ export declare type ReadModelEncryptionFactory = (
   context: ReadModelEncryptionContext
 ) => Promise<Encryption | null>
 
+// Saga
 
+// TODO: move types from resolve-client here?
+// TODO: refactor jwtToken & query (as in client)
+
+declare type ReadModelQuery = {
+  modelName: string
+  resolverName: string
+  resolverArgs: Serializable
+  jwtToken: string
+}
+declare type ReadModelQueryResult = Serializable
+declare type ViewModelQuery = {
+  modelName: string
+  aggregateIds: Array<string> | '*'
+  aggregateArgs: Serializable
+}
+declare type ViewModelQueryResult = Serializable
+declare type SagaSideEffects = {
+  executeCommand: (command: Command) => Promise<CommandResult>
+  executeQuery: (query: ReadModelQuery | ViewModelQuery) =>
+    Promise<ReadModelQueryResult | ViewModelQueryResult>
+  scheduleCommand: (timestamp: number, command: Command) => Promise<void>
+  secretsManager: SecretsManager
+  isEnabled: boolean
+}
+declare type SagaSideEffectProperties = {
+  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: number
+} & {
+  [key: string]: SerializablePrimitive
+}
+export declare type SagaUserSideEffect =  (
+    properties: SagaSideEffectProperties,
+    sideEffects: SagaSideEffects,
+    effectName: string,
+    isEnabled: boolean
+  ) => Promise<any>
+
+export declare type SagaUserSideEffects = {
+  [key: string]: SagaUserSideEffect
+}
+
+declare type SagaContext<TStore, TSideEffects extends SagaUserSideEffects> = {
+  store: TStore
+  sideEffects: SagaSideEffects & TSideEffects
+  encrypt: Encrypter
+  decrypt: Decrypter
+}
+declare type SagaInitHandler<TStore, TSideEffects extends SagaUserSideEffects> = (
+  context: SagaContext<TStore, TSideEffects>
+) => Promise<void>
+declare type SagaEventHandler<TStore, TSideEffects extends SagaUserSideEffects> = (
+  context: SagaContext<TStore, TSideEffects>,
+  event: Event
+) => Promise<void>
+export declare type Saga<TStore = never, TSideEffects extends SagaUserSideEffects = {}> = {
+  handlers: {
+    [key: string]: SagaEventHandler<TStore, TSideEffects >
+  } & {
+    Init?: SagaInitHandler<TStore, TSideEffects>
+  }
+  sideEffects?: TSideEffects
+}
+export declare type SagaEncryptionContext = {
+  secretsManager: SecretsManager
+}
+export declare type SagaEncryptionFactory = (
+  event: Event,
+  context: SagaEncryptionContext
+) => Promise<Encryption | null>
+
+// TODO: add view model types
+
+/*
+state = await pool.viewModel.projection[event.type](
+        state,
+        event,
+        aggregateArgs,
+        jwtToken
+      )
+ */
