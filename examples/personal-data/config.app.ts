@@ -23,7 +23,7 @@ const appConfig = {
       connectorName: 'default',
       projection: 'common/read-models/user-profiles.projection.ts',
       resolvers: 'common/read-models/user-profiles.resolvers.ts',
-      encryption: 'common/aggregates/encryption.ts'
+      encryption: 'common/read-models/encryption.ts'
     },
     {
       name: 'blog-posts',
