@@ -9,6 +9,7 @@ export type AdapterPool = {
   database: any
   tableName: string
   escapeId: string
+  memoryStore: any
 }
 
 export type AdapterSpecific = {

@@ -11,8 +11,8 @@ const initSecretsStore = (pool: AdapterPool): Promise<any> => {
       )`)
 }
 
-const initAll = async (pool: AdapterPool): Promise<any> => {
+const init = async (pool: AdapterPool): Promise<any> => {
   return Promise.all([initEventStore(pool), initSecretsStore(pool)])
 }
 
-export default initAll
+export default init
