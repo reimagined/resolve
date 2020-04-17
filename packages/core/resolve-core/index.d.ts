@@ -23,7 +23,7 @@ export declare type EncryptedBlob = string
 
 export declare type SecretsManager = {
   getSecret: (id: string) => Promise<string>
-  setSecret: (id: string) => Promise<void>
+  setSecret: (id: string, secret: string) => Promise<void>
   deleteSecret: (id: string) => Promise<void>
 }
 
@@ -68,6 +68,7 @@ export declare type CommandResult = {
 
 export declare type AggregateProjection = {
   Init?: () => AggregateState
+} & {
   [key: string]: AggregateEventHandler
 }
 

@@ -25,6 +25,7 @@ const createAdapter = (
     freeze,
     unfreeze,
     shapeEvent,
+    getSecretsManager,
     ...adapterSpecificArguments
   },
   options
@@ -63,7 +64,8 @@ const createAdapter = (
     isFrozen: wrapMethod(pool, isFrozen),
     freeze: wrapMethod(pool, freeze),
     unfreeze: wrapMethod(pool, unfreeze),
-    getNextCursor: getNextCursor.bind(null)
+    getNextCursor: getNextCursor.bind(null),
+    getSecretsManager: wrapMethod(pool, getSecretsManager)
   }
 
   Object.assign(pool, adapter)

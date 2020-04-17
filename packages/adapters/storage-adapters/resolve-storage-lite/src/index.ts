@@ -18,6 +18,7 @@ import connect from './connect'
 import init from './init'
 import drop from './drop'
 import dispose from './dispose'
+import getSecretsManager from './secretsManager'
 
 const wrappedCreateAdapter = createAdapter.bind(null, {
   connect,
@@ -33,6 +34,7 @@ const wrappedCreateAdapter = createAdapter.bind(null, {
   freeze,
   unfreeze,
   shapeEvent,
+  getSecretsManager,
   sqlite,
   tmp,
   os,
