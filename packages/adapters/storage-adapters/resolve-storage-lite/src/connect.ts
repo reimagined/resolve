@@ -12,6 +12,8 @@ const connectSecretsStore = async (
   pool: AdapterPool,
   specific: AdapterSpecific
 ): Promise<void> => {
+  const secretsTableName = pool.config.secretsTableName || 'default'
+
   for (let retry = 0; ; retry++) {
     try {
       const secretsDatabase = await specific.sqlite.open(
@@ -19,7 +21,8 @@ const connectSecretsStore = async (
       )
 
       Object.assign(pool, {
-        secretsDatabase
+        secretsDatabase,
+        secretsTableName
       })
 
       return
