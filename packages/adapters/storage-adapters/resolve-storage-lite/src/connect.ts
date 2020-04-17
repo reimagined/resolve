@@ -1,6 +1,5 @@
-import { open, Database } from 'sqlite'
-
-import { KeyStoreOptions } from './types'
+import connectEventStore from './js/connect'
+import { AdapterPool, AdapterSpecific } from './types'
 
 const SQLITE_BUSY = 'SQLITE_BUSY'
 const randRange = (min: number, max: number): number =>
@@ -9,10 +8,21 @@ const randRange = (min: number, max: number): number =>
 const fullJitter = (retries: number): number =>
   randRange(0, Math.min(100, 2 * 2 ** retries))
 
-const connect = async (options: KeyStoreOptions): Promise<Database> => {
+const connectSecretsStore = async (
+  pool: AdapterPool,
+  specific: AdapterSpecific
+): Promise<void> => {
   for (let retry = 0; ; retry++) {
     try {
-      return await open(options.databaseFile)
+      const secretsDatabase = await specific.sqlite.open(
+        pool.config.secretsFile
+      )
+
+      Object.assign(pool, {
+        secretsDatabase
+      })
+
+      return
     } catch (error) {
       if (error != null && error.code === SQLITE_BUSY) {
         await new Promise(resolve => setTimeout(resolve, fullJitter(retry)))
@@ -22,5 +32,14 @@ const connect = async (options: KeyStoreOptions): Promise<Database> => {
     }
   }
 }
+
+const connect = async (
+  pool: AdapterPool,
+  specific: AdapterSpecific
+): Promise<any> =>
+  Promise.all([
+    connectEventStore(pool, specific),
+    connectSecretsStore(pool, specific)
+  ])
 
 export default connect

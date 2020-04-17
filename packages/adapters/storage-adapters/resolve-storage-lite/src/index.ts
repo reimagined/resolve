@@ -4,7 +4,6 @@ import tmp from 'tmp'
 import os from 'os'
 import fs from 'fs'
 
-import connect from './js/connect'
 import loadEventsByCursor from './js/load-events-by-cursor'
 import loadEventsByTimestamp from './js/load-events-by-timestamp'
 import getLatestEvent from './js/get-latest-event'
@@ -17,6 +16,7 @@ import saveEventOnly from './js/save-event-only'
 import freeze from './js/freeze'
 import unfreeze from './js/unfreeze'
 import shapeEvent from './js/shape-event'
+import connect from './connect'
 
 const wrappedCreateAdapter = createAdapter.bind(null, {
   connect,
