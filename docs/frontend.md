@@ -9,7 +9,19 @@ This document describes approaches that you can use to implement a frontend for 
 
 ## resolve-client
 
-## resolve-redux
+The resolve-client library provides an interface that you can use to communicate with  reSolve backend from JavaScript code. To initialize the client, call the library's getClient function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
+
+| Function | Description |
+| ---- | ----- |
+| command   | Sends an aggregate command to the backend. |
+| query     | Queries a Read Model.       |
+| getStaticAssetUrl     | Gets a URL path to static files. |
+| subscribe          | Subscribes to View Model updates. |
+| unsubscribe        | Unsubscribes from View Model updates. |
+
+
+
+## resolve-redux  
 
 The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend.
 
