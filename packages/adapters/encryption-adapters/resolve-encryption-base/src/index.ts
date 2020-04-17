@@ -10,10 +10,13 @@ import {
   KeyStore,
   Pool,
   AlgorithmOptions,
-  Options
+  Options,
+  StreamOptions,
+  Secret
 } from './types'
 
 import createAdapter from './create-adapter'
+import { ExportStream } from './export-stream'
 
 export {
   KeyStore,
@@ -27,6 +30,9 @@ export {
   AggregateId,
   AlgorithmOptions,
   createAdapter,
+  Secret,
+  ExportStream,
   Pool,
-  Options
+  Options,
+  StreamOptions
 }

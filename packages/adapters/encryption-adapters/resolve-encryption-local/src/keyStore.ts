@@ -7,7 +7,9 @@ import {
 } from 'resolve-encryption-base'
 import { Database } from 'sqlite'
 
-const keysTable = 'keys'
+import shapeSecret from './shape-secret'
+
+import { KEYS_TABLE } from './constants'
 
 export const createStore = (pool: Pool<Database>): KeyStore => {
   return {
@@ -15,7 +17,7 @@ export const createStore = (pool: Pool<Database>): KeyStore => {
     get: async (selector: AggregateId): Promise<EncryptionKey | null> => {
       const { database } = pool
       const keyRecord = await database.get(
-        `SELECT key FROM ${keysTable} WHERE id = ?`,
+        `SELECT key FROM ${KEYS_TABLE} WHERE id = ?`,
         selector as string
       )
       return keyRecord ? keyRecord.key : null
@@ -25,8 +27,8 @@ export const createStore = (pool: Pool<Database>): KeyStore => {
       try {
         await database.exec(
           `BEGIN IMMEDIATE;
-        INSERT INTO ${keysTable}(idx, id, key) VALUES (
-          "(SELECT max(idx) + 1 FROM ${keysTable})",
+        INSERT INTO ${KEYS_TABLE}(idx, id, key) VALUES (
+          ((SELECT IFNULL(MAX(idx), 0) + 1 FROM ${KEYS_TABLE})),
           "${selector}",
           "${key}"
         );
@@ -42,11 +44,11 @@ export const createStore = (pool: Pool<Database>): KeyStore => {
     },
     forget: async (selector: AggregateId): Promise<void> => {
       const { database } = pool
-      await database.exec(`DELETE FROM ${keysTable} WHERE id="${selector}"`)
+      await database.exec(`DELETE FROM ${KEYS_TABLE} WHERE id="${selector}"`)
     },
     init: async (): Promise<void> => {
       const { database } = pool
-      await database.exec(`CREATE TABLE IF NOT EXISTS ${keysTable} (
+      await database.exec(`CREATE TABLE IF NOT EXISTS ${KEYS_TABLE} (
         idx BIG INT NOT NULL,
         id uuid NOT NULL,
         key text,
@@ -55,11 +57,32 @@ export const createStore = (pool: Pool<Database>): KeyStore => {
     },
     drop: async (): Promise<void> => {
       const { database } = pool
-      await database.exec(`DROP TABLE IF EXISTS ${keysTable}`)
+      await database.exec(`DROP TABLE IF EXISTS ${KEYS_TABLE}`)
     },
     dispose: async (): Promise<void> => {
       const { database } = pool
       await database.close()
+    },
+    paginateSecrets: async (
+      offset: number,
+      batchSize: number
+    ): Promise<object[]> => {
+      const { database } = pool
+      const rows = await database.all(
+        `SELECT * FROM ${KEYS_TABLE}
+        ORDER BY "timestamp" ASC
+        LIMIT ${+offset}, ${+batchSize}`
+      )
+
+      const resultRows = []
+      for (let index = 0; index < rows.length; index++) {
+        const event = rows[index]
+        resultRows.push(
+          shapeSecret(event, { [Symbol.for('sequenceIndex')]: offset + index })
+        )
+      }
+
+      return resultRows
     }
   }
 }

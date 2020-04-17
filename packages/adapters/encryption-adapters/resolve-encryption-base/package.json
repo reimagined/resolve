@@ -29,15 +29,16 @@
   "dependencies": {
     "cryptr": "^6.0.2",
     "resolve-cloud-common": "^0.0.15",
+    "stream": "^0.0.2",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@types/cryptr": "^4.0.0",
-    "@types/pg": "^7.14.3",
     "@types/node": "^13.7.0",
-    "@types/uuid": "^7.0.2",
+    "@types/pg": "^7.14.3",
     "@types/react": "*",
     "@types/react-dom": "*",
+    "@types/uuid": "^7.0.2",
     "jest": "25.1.0",
     "ts-jest": "^25.2.1"
   },

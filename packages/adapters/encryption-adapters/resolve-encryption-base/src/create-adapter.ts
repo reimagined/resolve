@@ -3,15 +3,18 @@ import {
   EncryptionAdapter,
   CreateAdapterOptions,
   KeyStore,
-  Options
+  Options,
+  StreamOptions
 } from './types'
 import wrapMethod from './wrap-method'
 import { createAlgorithm } from './algorithms/factory'
+import createExportStream from './export-stream'
+import { ExportStream } from '.'
 
 function createAdapter<KeyStoreOptions, Database>(
   params: CreateAdapterOptions<Database, KeyStoreOptions>,
   options: Options<KeyStoreOptions>
-): EncryptionAdapter {
+): EncryptionAdapter<Database> {
   const {
     connect,
     forget,
@@ -62,12 +65,19 @@ function createAdapter<KeyStoreOptions, Database>(
   }
   pool.store = createStore(pool, options.keyStore)
 
+  const createExportStreamWithPool = (
+    streamOptions: StreamOptions
+  ): ExportStream<Database> => {
+    return createExportStream(pool, streamOptions)
+  }
+
   const adapter = {
     init: wrapMethod(pool, init),
     getEncrypter: wrapMethod(pool, getEncrypter),
     getDecrypter: wrapMethod(pool, getDecrypter),
     forget: wrapMethod(pool, forget),
-    dispose: wrapMethod(pool, dispose)
+    dispose: wrapMethod(pool, dispose),
+    createExportStream: createExportStreamWithPool
   }
 
   return Object.freeze(adapter)

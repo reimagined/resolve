@@ -1,3 +1,5 @@
+import { ExportStream } from './export-stream'
+
 export type AggregateId = string
 export type PlainData = string | object
 export type EncryptionKey = string
@@ -5,23 +7,37 @@ export type EncryptedBlob = string
 export type Encrypter = (data: PlainData) => EncryptedBlob
 export type Decrypter = (blob: EncryptedBlob) => PlainData
 
+export type StreamOptions = {
+  cursor?: number
+  // maintenanceMode?: symbol
+  bufferSize?: number
+}
+
+export type Secret = {
+  idx: number
+  id: AggregateId
+  key: EncryptionKey
+}
+
 export type EncryptionAlgorithm = {
   encrypt: (key: EncryptionKey, data: PlainData) => EncryptedBlob
   decrypt: (key: EncryptionKey, blob: EncryptedBlob) => PlainData
 }
 
-export type EncryptionAdapter = {
+export type EncryptionAdapter<Database> = {
   init: () => Promise<void>
   dispose: () => Promise<void>
   getEncrypter: (selector: AggregateId) => Promise<Encrypter>
   getDecrypter: (selector: AggregateId) => Promise<Decrypter | null>
   forget: (selector: AggregateId) => Promise<void>
+  createExportStream?: (streamOptions: StreamOptions) => ExportStream<Database>
 }
 
 export type KeyStore = {
   create: (selector: AggregateId) => Promise<EncryptionKey>
   get: (selector: AggregateId) => Promise<EncryptionKey | null>
   set: (selector: AggregateId, key: EncryptionKey) => Promise<void>
+  paginateSecrets?: (offset: number, batchSize: number) => Promise<object[]>
   forget: (selector: AggregateId) => Promise<void>
   init: () => Promise<void>
   drop: () => Promise<void>
