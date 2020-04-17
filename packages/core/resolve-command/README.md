@@ -27,7 +27,6 @@ After the command is initialized, you get a function that is used to send an eve
 ### Example
 Define a news handling aggregate (see the  `news-aggregate.js` file), use the `resolve-command` library to execute the `createNews` command and send the corresponding event to the specified event store. To see a read model handling events which this aggregate produces, refer to the [resolve-query](../resolve-query#example) package documentation.
 
-[mdis]:# (../../../tests/resolve-command/index.test.js)
 ```js
 import createStorageLiteAdapter from 'resolve-storage-lite'
 import createCommandExecutor from 'resolve-command'
@@ -56,7 +55,6 @@ import newsAggregate from './news-aggregate'
 ```
 
 ##### news-aggregate.js
-[mdis]:# (../../../tests/resolve-command/news-aggregate.js)
 ```js
 import Immutable from 'seamless-immutable'
 
