@@ -11,7 +11,7 @@ import {
 } from 'resolve-encryption-base'
 import connect from './connect'
 
-import { createStore } from './keyStore'
+import { createStore } from './key-store'
 import { KeyStoreOptions } from './types'
 
 const init = async (pool: Pool<Database>): Promise<void> => {

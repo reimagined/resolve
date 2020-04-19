@@ -7,9 +7,8 @@ import {
 } from 'resolve-encryption-base'
 import { Database } from 'sqlite'
 
-import shapeSecret from './shape-secret'
-
 import { KEYS_TABLE } from './constants'
+import shapeSecret from './shape-secret'
 
 export const createStore = (pool: Pool<Database>): KeyStore => {
   return {
@@ -70,15 +69,15 @@ export const createStore = (pool: Pool<Database>): KeyStore => {
       const { database } = pool
       const rows = await database.all(
         `SELECT * FROM ${KEYS_TABLE}
-        ORDER BY "timestamp" ASC
+        ORDER BY "idx" ASC
         LIMIT ${+offset}, ${+batchSize}`
       )
 
       const resultRows = []
       for (let index = 0; index < rows.length; index++) {
-        const event = rows[index]
+        const secret = rows[index]
         resultRows.push(
-          shapeSecret(event, { [Symbol.for('sequenceIndex')]: offset + index })
+          shapeSecret(secret, { [Symbol.for('sequenceIndex')]: offset + index })
         )
       }
 
