@@ -1,3 +1,5 @@
+process.env.TZ = 'Europe/Moscow'
+
 module.exports = {
   testEnvironment: 'node',
   transform: {
