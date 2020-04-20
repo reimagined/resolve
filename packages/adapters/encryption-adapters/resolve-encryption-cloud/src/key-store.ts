@@ -7,7 +7,9 @@ import {
   KeyStore,
   Pool
 } from 'resolve-encryption-base'
+
 import { KeyStoreOptions } from './types'
+import shapeSecret from './shape-secret'
 
 export const createStore = (
   pool: Pool<RDSDataService>,
@@ -56,6 +58,29 @@ export const createStore = (
           `
       })
     },
+    paginateSecrets: async (
+      offset: number,
+      batchSize: number
+    ): Promise<object[]> => {
+      const queryResult = await executeStatement({
+        ...credentials,
+        Sql: `SELECT * FROM "${databaseName}".${tableName} ORDER BY "idx" OFFSET ${+offset} LIMIT ${+batchSize}`
+      })
+
+      const resultRows = []
+      for (let index = 0; index < queryResult.length; index++) {
+        const secret = {
+          id: queryResult[index].id,
+          idx: queryResult[index].idx,
+          key: queryResult[index].key
+        }
+        resultRows.push(
+          shapeSecret(secret, { [Symbol.for('sequenceIndex')]: offset + index })
+        )
+      }
+
+      return resultRows
+    },
     drop: async (): Promise<void> => {
       executeStatement({
         ...credentials,
@@ -63,6 +88,7 @@ export const createStore = (
           DROP TABLE IF EXISTS "${databaseName}"."${tableName}";`
       })
     },
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     dispose: async (): Promise<void> => {}
   }
 }

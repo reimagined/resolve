@@ -10,7 +10,7 @@ import {
   Options
 } from 'resolve-encryption-base'
 import connect from './connect'
-import { createStore } from './keyStore'
+import { createStore } from './key-store'
 import { KeyStoreOptions } from './types'
 
 import _createResource from './resource/create'
