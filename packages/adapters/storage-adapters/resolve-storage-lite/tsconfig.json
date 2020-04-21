@@ -10,7 +10,6 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "declaration": true,
-    "emitDeclarationOnly": true,
     "strict": true,
     "jsx": "react",
     "outDir": "lib",

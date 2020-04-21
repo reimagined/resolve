@@ -27,7 +27,7 @@ export default async (
       length: 20,
       numbers: true
     })
-    await secretsManager.setSecret(aggregateId)
+    await secretsManager.setSecret(aggregateId, aggregateKey)
   }
   return {
     encrypt: (data): EncryptedBlob => encrypt(aggregateKey, data),
