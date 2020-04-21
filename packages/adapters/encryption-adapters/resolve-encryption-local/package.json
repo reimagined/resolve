@@ -38,7 +38,8 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "jest": "25.1.0",
-    "ts-jest": "^25.2.1"
+    "ts-jest": "^25.2.1",
+    "util": "^0.12.2"
   },
   "peerDependencies": {},
   "jest": {

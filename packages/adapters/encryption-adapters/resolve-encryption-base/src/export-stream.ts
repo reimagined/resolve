@@ -2,7 +2,6 @@ import Stream from 'stream'
 import { Pool } from './types'
 
 import {
-  KEYS_TABLE,
   MAINTENANCE_MODE_AUTO,
   MAINTENANCE_MODE_MANUAL,
   BATCH_SIZE
@@ -20,8 +19,6 @@ export class ExportStream<Database> extends Stream.Readable {
 
   cursor: number | null
   lastSecretOffset: number | null = null
-  // this.injectString = injectString.bind(this, pool)
-  // this.injectNumber = injectNumber.bind(this, pool)
   maintenanceMode: symbol
   isBufferOverflow = false
 
@@ -60,8 +57,6 @@ export class ExportStream<Database> extends Stream.Readable {
       .then(this.startProcessSecrets.bind(this))
       .catch((error: Error) => (this.initError = error))
 
-    // this.injectString = injectString.bind(this, pool)
-    // this.injectNumber = injectNumber.bind(this, pool)
     this.maintenanceMode = maintenanceMode
 
     this.rows = []
@@ -99,7 +94,6 @@ export class ExportStream<Database> extends Stream.Readable {
       } else {
         const secretOffset = secret.secretOffset
         delete secret.secretOffset
-        delete secret[Symbol.for('sequenceIndex')]
 
         let chunk: Buffer | null = Buffer.from(
           JSON.stringify(secret) + '\n',

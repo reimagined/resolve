@@ -68,7 +68,7 @@ export const createStore = (pool: Pool<Database>): KeyStore => {
     ): Promise<object[]> => {
       const { database } = pool
       const rows = await database.all(
-        `SELECT * FROM ${KEYS_TABLE}
+        `SELECT id, key FROM ${KEYS_TABLE}
         ORDER BY "idx" ASC
         LIMIT ${+offset}, ${+batchSize}`
       )
@@ -76,9 +76,7 @@ export const createStore = (pool: Pool<Database>): KeyStore => {
       const resultRows = []
       for (let index = 0; index < rows.length; index++) {
         const secret = rows[index]
-        resultRows.push(
-          shapeSecret(secret, { [Symbol.for('sequenceIndex')]: offset + index })
-        )
+        resultRows.push(shapeSecret(secret, {}))
       }
 
       return resultRows

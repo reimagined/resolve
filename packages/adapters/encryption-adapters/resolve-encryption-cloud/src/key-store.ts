@@ -71,12 +71,9 @@ export const createStore = (
       for (let index = 0; index < queryResult.length; index++) {
         const secret = {
           id: queryResult[index].id,
-          idx: queryResult[index].idx,
           key: queryResult[index].key
         }
-        resultRows.push(
-          shapeSecret(secret, { [Symbol.for('sequenceIndex')]: offset + index })
-        )
+        resultRows.push(shapeSecret(secret, {}))
       }
 
       return resultRows

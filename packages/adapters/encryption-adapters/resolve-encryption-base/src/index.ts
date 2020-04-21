@@ -11,7 +11,8 @@ import {
   Pool,
   AlgorithmOptions,
   Options,
-  StreamOptions,
+  ExportStreamOptions,
+  ImportStreamOptions,
   Secret
 } from './types'
 
@@ -34,5 +35,6 @@ export {
   ExportStream,
   Pool,
   Options,
-  StreamOptions
+  ExportStreamOptions,
+  ImportStreamOptions
 }

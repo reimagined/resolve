@@ -1,4 +1,5 @@
 import { ExportStream } from './export-stream'
+import { ImportStream } from './import-stream'
 
 export type AggregateId = string
 export type PlainData = string | object
@@ -7,14 +8,19 @@ export type EncryptedBlob = string
 export type Encrypter = (data: PlainData) => EncryptedBlob
 export type Decrypter = (blob: EncryptedBlob) => PlainData
 
-export type StreamOptions = {
+export type ExportStreamOptions = {
   cursor?: number
   // maintenanceMode?: symbol
   bufferSize?: number
 }
 
+export type ImportStreamOptions = {
+  // maintenanceMode?: symbol
+  byteOffset?: number
+  sequenceIndex?: number
+}
+
 export type Secret = {
-  idx: number
   id: AggregateId
   key: EncryptionKey
 }
@@ -30,7 +36,12 @@ export type EncryptionAdapter<Database> = {
   getEncrypter: (selector: AggregateId) => Promise<Encrypter>
   getDecrypter: (selector: AggregateId) => Promise<Decrypter | null>
   forget: (selector: AggregateId) => Promise<void>
-  createExportStream?: (streamOptions: StreamOptions) => ExportStream<Database>
+  createExportStream?: (
+    streamOptions: ExportStreamOptions
+  ) => ExportStream<Database>
+  createImportStream?: (
+    streamOptions: ImportStreamOptions
+  ) => ImportStream<Database>
 }
 
 export type KeyStore = {
