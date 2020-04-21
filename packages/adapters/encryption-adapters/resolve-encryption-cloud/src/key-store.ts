@@ -26,7 +26,7 @@ export const createStore = (
     get: async (selector: AggregateId): Promise<EncryptionKey | null> => {
       const queryResult = await executeStatement({
         ...credentials,
-        Sql: `SELECT * FROM "${databaseName}".${tableName} WHERE "id"='${selector}' LIMIT 1`
+        Sql: `SELECT * FROM "${databaseName}"."${tableName}" WHERE "id"='${selector}' LIMIT 1`
       })
       if (queryResult.length) {
         return queryResult[0].key
@@ -37,13 +37,13 @@ export const createStore = (
     set: async (selector: AggregateId, key: EncryptionKey): Promise<void> => {
       executeStatement({
         ...credentials,
-        Sql: `INSERT INTO "${databaseName}".${tableName}("id", "key") values ('${selector}', '${key}')`
+        Sql: `INSERT INTO "${databaseName}"."${tableName}"("id", "key") values ('${selector}', '${key}')`
       })
     },
     forget: async (selector: AggregateId): Promise<void> => {
       executeStatement({
         ...credentials,
-        Sql: `DELETE FROM "${databaseName}".${tableName} WHERE "id"='${selector}'`
+        Sql: `DELETE FROM "${databaseName}"."${tableName}" WHERE "id"='${selector}'`
       })
     },
     init: async (): Promise<void> => {
@@ -64,7 +64,7 @@ export const createStore = (
     ): Promise<object[]> => {
       const queryResult = await executeStatement({
         ...credentials,
-        Sql: `SELECT * FROM "${databaseName}".${tableName} ORDER BY "idx" OFFSET ${+offset} LIMIT ${+batchSize}`
+        Sql: `SELECT * FROM "${databaseName}"."${tableName}" ORDER BY "idx" OFFSET ${+offset} LIMIT ${+batchSize}`
       })
 
       const resultRows = []
