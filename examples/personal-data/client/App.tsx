@@ -18,7 +18,7 @@ const BrandSelector = (props: { user: UserProfile | string | null }): any => {
   if (user === null) {
     return null
   }
-  return <div>${user.nickname}'s blog</div>
+  return <div>{user.nickname}'s blog</div>
 }
 
 const ContentSelector = (props: { user: UserProfile | string | null }): any => {
@@ -47,12 +47,12 @@ const App = (): any => {
         setUser(null)
         return
       }
-      setUser(result.data)
+      setUser(result.data.profile)
     }
   )
   useEffect(() => {
     getUser()
-  }, [getUser])
+  }, [])
 
   return (
     <div>

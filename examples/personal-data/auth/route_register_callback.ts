@@ -28,7 +28,7 @@ const routeRegisterCallback = async params => {
 
   await resolve.executeCommand({
     type: 'register',
-    aggregateId: uuid(),
+    aggregateId: user.id,
     aggregateName: 'user-profile',
     payload: user
   })

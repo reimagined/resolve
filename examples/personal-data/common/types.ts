@@ -4,6 +4,7 @@ export type UserProfile = {
   lastName: string
   fullName: string
   contacts: {
+    phoneNumber?: string
     address?: string
   }
 }
