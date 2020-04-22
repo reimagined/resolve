@@ -48,34 +48,7 @@ The code sample below demonstrates a **jest** test for a Read Model:
       })
     })
 ```
-
 <!-- prettier-ignore-end -->
-
-```js
-test('projection "SHOPPING_LIST_CREATED" should create a shopping list', async () => {
-  const shoppingLists = await givenEvents([
-    {
-      aggregateId,
-      type: SHOPPING_LIST_CREATED,
-      payload: {
-        name: 'Products'
-      }
-    }
-  ])
-    .readModel({
-      name: 'ShoppingLists',
-      projection,
-      resolvers,
-      adapter
-    })
-    .all()
-
-  expect(shoppingLists[0]).toMatchObject({
-    id: aggregateId,
-    name: 'Products'
-  })
-})
-```
 
 In this example, the `.all` function called in the end of the call chain is the `ShoppingLists` Read Model's resolver function. It returns a promise that resolves to the resolver's response object.
 
@@ -83,6 +56,9 @@ In this example, the `.all` function called in the end of the call chain is the 
 
 The code sample below demonstrates a **jest** test for a Saga:
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/saga-sample/saga.test.js#saga-test)
 ```js
 test('success registration', async () => {
   const result = await givenEvents([
@@ -97,11 +73,16 @@ test('success registration', async () => {
       payload: { mail: 'user@example.com' }
     },
     { aggregateId: 'userId', type: 'USER_CONFIRMED', payload: {} }
-  ]).saga(sagaWithAdapter)
+  ])
+    .saga(sagaWithAdapter)
+    .properties({
+      [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE
+    })
 
   expect(result).toMatchSnapshot()
 })
 ```
+<!-- prettier-ignore-end -->
 
 The `saga` function returns a promise that resolves to an object containing the following fields:
 
