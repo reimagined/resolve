@@ -13,7 +13,7 @@ const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
   )} (
         ${escapeId('idx')} BIG INT NOT NULL,
         ${escapeId('id')} uuid NOT NULL,
-        ${escapeId('text')} text,
+        ${escapeId('secret')} text,
         PRIMARY KEY(${escapeId('id')}, ${escapeId('idx')})
       )`)
   log.debug(`secrets store database tables are initialized`)

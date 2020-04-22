@@ -341,8 +341,6 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
       throw generateCommandError(`Aggregate "${aggregateName}" does not exist`)
     }
 
-    console.log('loading aggregate state')
-
     const { aggregateId, type } = command
     const {
       aggregateState,
@@ -381,18 +379,12 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
       }
     }
 
-    console.log('building secrets manager')
-
     const secretsManager = await pool.eventStore.getSecretsManager()
-
-    console.log('building encryption')
 
     const { encrypt, decrypt } = await aggregate.encryption(aggregateId, {
       jwt: jwtToken,
       secretsManager
     })
-
-    console.log('executing command handler')
 
     const event = await commandHandler(aggregateState, command, {
       jwt: jwtToken,
