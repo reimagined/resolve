@@ -1,6 +1,7 @@
 import { ResourceAlreadyExistError } from 'resolve-storage-base'
 
 const init = async ({ database, tableName, escapeId, config }) => {
+  console.log(`initializing sqlite database with table ${tableName}`)
   try {
     await database.exec(
       `CREATE TABLE ${escapeId(tableName)}(
@@ -35,6 +36,7 @@ const init = async ({ database, tableName, escapeId, config }) => {
       )
       `
     )
+    console.log(`sqlite database file initialized`)
   } catch (error) {
     if (
       error != null &&

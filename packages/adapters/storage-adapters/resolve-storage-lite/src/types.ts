@@ -9,6 +9,7 @@ export type AdapterPool = {
   database: any
   tableName: string
   escapeId: (source: string) => string
+  escape: (source: string) => string
   memoryStore: any
 }
 

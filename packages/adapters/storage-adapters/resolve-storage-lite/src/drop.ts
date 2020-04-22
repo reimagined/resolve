@@ -9,6 +9,7 @@ const dropSecretsStore = (pool: AdapterPool): Promise<any> => {
 }
 
 const drop = async (pool: AdapterPool): Promise<any> => {
+  console.log('dropping storage')
   return Promise.all([dropEventStore(pool), dropSecretsStore(pool)])
 }
 

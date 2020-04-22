@@ -28,6 +28,7 @@
     "@babel/runtime": "^7.0.0",
     "resolve-core": "0.23.2",
     "resolve-storage-base": "0.23.2",
+    "resolve-debug-levels": "0.23.2",
     "sqlite": "^3.0.2",
     "tmp": "^0.1.0"
   },

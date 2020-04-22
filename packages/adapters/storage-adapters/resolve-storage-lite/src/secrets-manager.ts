@@ -1,13 +1,15 @@
+import getLog from 'resolve-debug-levels'
 import { SecretsManager } from 'resolve-core'
 import { AdapterPool } from './types'
+import logNamespace from './log-namespace'
 
 const getSecret = async (
   pool: AdapterPool,
   selector: string
 ): Promise<string> => {
-  const { secretsDatabase, secretsTableName } = pool
+  const { secretsDatabase, secretsTableName, escapeId } = pool
   const keyRecord = await secretsDatabase.get(
-    `SELECT key FROM ${secretsTableName} WHERE id = ?`,
+    `SELECT key FROM ${escapeId(secretsTableName)} WHERE id = ?`,
     selector
   )
   return keyRecord ? keyRecord.key : null
@@ -18,14 +20,14 @@ const setSecret = async (
   selector: string,
   secret: string
 ): Promise<void> => {
-  const { secretsDatabase, secretsTableName } = pool
+  const { secretsDatabase, secretsTableName, escape, escapeId } = pool
   try {
     await secretsDatabase.exec(
       `BEGIN IMMEDIATE;
-        INSERT INTO ${secretsTableName}(idx, id, key) VALUES (
-          "(SELECT max(idx) + 1 FROM ${secretsTableName})",
-          "${selector}",
-          "${secret}"
+        INSERT INTO ${escapeId(secretsTableName)}(idx, id, key) VALUES (
+          "(SELECT max(idx) + 1 FROM ${escapeId(secretsTableName)})",
+          "${escape(selector)}",
+          "${escape(secret)}"
         );
         COMMIT;`
     )
@@ -42,18 +44,22 @@ const deleteSecret = async (
   pool: AdapterPool,
   selector: string
 ): Promise<void> => {
-  const { secretsDatabase, secretsTableName } = pool
+  const { secretsDatabase, secretsTableName, escapeId } = pool
   await secretsDatabase.exec(
-    `DELETE FROM ${secretsTableName} WHERE id="${selector}"`
+    `DELETE FROM ${escapeId(secretsTableName)} WHERE id="${selector}"`
   )
 }
 
 const getSecretsManager = (pool: AdapterPool): SecretsManager => {
-  return Object.freeze({
+  const log = getLog(logNamespace('getSecretsManager'))
+  log.debug('building secrets manager')
+  const manager = Object.freeze({
     getSecret: getSecret.bind(null, pool),
     setSecret: setSecret.bind(null, pool),
     deleteSecret: deleteSecret.bind(null, pool)
   })
+  log.debug('secrets manager built')
+  return manager
 }
 
 export default getSecretsManager

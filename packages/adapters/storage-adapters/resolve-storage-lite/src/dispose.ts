@@ -7,6 +7,7 @@ const disposeSecretsStore = (pool: AdapterPool): Promise<any> => {
 }
 
 const dispose = async (pool: AdapterPool): Promise<any> => {
+  console.log('disposing storage')
   return Promise.all([disposeEventStore(pool), disposeSecretsStore(pool)])
 }
 
