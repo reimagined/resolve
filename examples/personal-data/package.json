@@ -46,7 +46,8 @@
     "resolve-storage-postgresql-serverless": "0.23.2",
     "resolve-subscribe-mqtt": "0.23.2",
     "resolve-subscribe-socket.io": "0.23.2",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "uuid": "^7.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
