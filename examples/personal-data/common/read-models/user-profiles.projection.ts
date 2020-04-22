@@ -21,13 +21,16 @@ const readModel: ReadModel<ResolveStore> = {
 
     const { decrypt = (): string => null } = context
 
+    const realFirstName = decrypt(firstName as string) || 'unknown'
+    const realLastName = decrypt(lastName as string) || 'unknown'
+
     await store.insert('Users', {
       id: aggregateId,
       profile: {
         nickname,
-        firstName: decrypt(firstName as string) || 'unknown',
-        lastName: decrypt(lastName as string) || 'unknown',
-        fullName: `${firstName} ${lastName}`,
+        firstName: realFirstName,
+        lastName: realLastName,
+        fullName: `${realFirstName} ${realLastName}`,
         contacts: decrypt(contacts as string) || {}
       }
     })
