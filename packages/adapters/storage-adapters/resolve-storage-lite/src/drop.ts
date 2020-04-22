@@ -2,8 +2,10 @@ import dropEventStore from './js/drop'
 import { AdapterPool } from './types'
 
 const dropSecretsStore = (pool: AdapterPool): Promise<any> => {
-  const { secretsDatabase, secretsTableName } = pool
-  return secretsDatabase.exec(`DROP TABLE IF EXISTS ${secretsTableName}`)
+  const { secretsDatabase, secretsTableName, escapeId } = pool
+  return secretsDatabase.exec(
+    `DROP TABLE IF EXISTS ${escapeId(secretsTableName)}`
+  )
 }
 
 const drop = async (pool: AdapterPool): Promise<any> => {
