@@ -1,11 +1,14 @@
-import getLog from 'resolve-debug-levels'
+import getLog from './js/get-log'
 import initEventStore from './js/init'
-import logNamespace from './log-namespace'
 import { AdapterPool } from './types'
 
-const initSecretsStore = (pool: AdapterPool): Promise<any> => {
+const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
   const { secretsDatabase, secretsTableName, escapeId } = pool
-  return secretsDatabase.exec(`CREATE TABLE IF NOT EXISTS ${escapeId(
+  const log = getLog('initSecretsStore')
+
+  log.debug(`initializing secrets store database tables`)
+  log.verbose(`secretsTableName: ${secretsTableName}`)
+  await secretsDatabase.exec(`CREATE TABLE IF NOT EXISTS ${escapeId(
     secretsTableName
   )} (
         ${escapeId('idx')} BIG INT NOT NULL,
@@ -13,10 +16,11 @@ const initSecretsStore = (pool: AdapterPool): Promise<any> => {
         ${escapeId('text')} text,
         PRIMARY KEY(${escapeId('id')}, ${escapeId('idx')})
       )`)
+  log.debug(`secrets store database tables are initialized`)
 }
 
 const init = async (pool: AdapterPool): Promise<any> => {
-  const log = getLog(logNamespace('init'))
+  const log = getLog('init')
   log.debug('initializing databases')
   const result = await Promise.all([
     initEventStore(pool),

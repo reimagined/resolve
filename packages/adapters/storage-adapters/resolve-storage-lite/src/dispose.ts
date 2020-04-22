@@ -1,3 +1,4 @@
+import getLog from 'resolve-debug-levels'
 import disposeEventStore from './js/drop'
 import { AdapterPool } from './types'
 
@@ -7,8 +8,11 @@ const disposeSecretsStore = (pool: AdapterPool): Promise<any> => {
 }
 
 const dispose = async (pool: AdapterPool): Promise<any> => {
-  console.log('disposing storage')
-  return Promise.all([disposeEventStore(pool), disposeSecretsStore(pool)])
+  const log = getLog('dispose')
+
+  log.debug(`disposing the event store`)
+  await Promise.all([disposeEventStore(pool), disposeSecretsStore(pool)])
+  log.debug(`the event store disposed`)
 }
 
 export default dispose

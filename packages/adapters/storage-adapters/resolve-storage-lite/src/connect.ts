@@ -1,7 +1,6 @@
-import getLog from 'resolve-debug-levels'
+import getLog from './js/get-log'
 import connectEventStore from './js/connect'
 import { AdapterPool, AdapterSpecific } from './types'
-import logNamespace from './log-namespace'
 
 const SQLITE_BUSY = 'SQLITE_BUSY'
 const randRange = (min: number, max: number): number =>
@@ -14,18 +13,27 @@ const connectSecretsStore = async (
   pool: AdapterPool,
   specific: AdapterSpecific
 ): Promise<void> => {
-  const log = getLog(logNamespace('connectSecretsStore'))
+  const log = getLog('connectSecretsStore')
 
   log.debug('connecting to secrets store database')
-  const secretsTableName = pool.config.secretsTableName || 'default'
+
+  const {
+    escape,
+    config: { secretsTableName = 'default', secretsFile = 'secrets.db' }
+  } = pool
+
   log.verbose(`secretsTableName: ${secretsTableName}`)
-  log.verbose(`secretsFile: ${pool.config.secretsFile}`)
+  log.verbose(`secretsFile: ${secretsFile}`)
 
   for (let retry = 0; ; retry++) {
     try {
-      const secretsDatabase = await specific.sqlite.open(
-        pool.config.secretsFile
-      )
+      const secretsDatabase = await specific.sqlite.open(secretsFile)
+
+      log.debug('adjusting connection')
+      await secretsDatabase.exec(`PRAGMA busy_timeout=1000000`)
+      await secretsDatabase.exec(`PRAGMA encoding=${escape('UTF-8')}`)
+      await secretsDatabase.exec(`PRAGMA synchronous=EXTRA`)
+      await secretsDatabase.exec(`PRAGMA journal_mode=DELETE`)
 
       Object.assign(pool, {
         secretsDatabase,
@@ -51,8 +59,19 @@ const connect = async (
   pool: AdapterPool,
   specific: AdapterSpecific
 ): Promise<any> => {
-  const log = getLog(logNamespace('connect'))
+  const log = getLog('connect')
   log.debug('connecting to sqlite databases')
+
+  const escapeId = (str: string): string =>
+    `"${String(str).replace(/(["])/gi, '$1$1')}"`
+  const escape = (str: string): string =>
+    `'${String(str).replace(/(['])/gi, '$1$1')}'`
+
+  Object.assign(pool, {
+    escapeId,
+    escape
+  })
+
   await Promise.all([
     connectEventStore(pool, specific),
     connectSecretsStore(pool, specific)

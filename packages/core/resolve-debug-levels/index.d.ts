@@ -10,5 +10,4 @@ declare type Levels = {
 declare type LoggerWithLevels = Logger & Levels
 
 declare function DefaultLogger (namespace: string): LoggerWithLevels
-
 export = DefaultLogger

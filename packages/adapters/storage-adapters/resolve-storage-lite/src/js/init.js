@@ -1,7 +1,13 @@
+import getLog from './get-log'
 import { ResourceAlreadyExistError } from 'resolve-storage-base'
 
-const init = async ({ database, tableName, escapeId, config }) => {
-  console.log(`initializing sqlite database with table ${tableName}`)
+const initEventStore = async ({ database, tableName, escapeId, config }) => {
+  const log = getLog('initEventStore')
+
+  log.debug(`initializing events database tables`)
+  log.verbose(`database: ${database}`)
+  log.verbose(`tableName: ${tableName}`)
+
   try {
     await database.exec(
       `CREATE TABLE ${escapeId(tableName)}(
@@ -36,19 +42,20 @@ const init = async ({ database, tableName, escapeId, config }) => {
       )
       `
     )
-    console.log(`sqlite database file initialized`)
+    log.debug(`events database tables are initialized`)
   } catch (error) {
-    if (
-      error != null &&
-      /^SQLITE_ERROR:.*? already exists$/.test(error.message)
-    ) {
-      throw new ResourceAlreadyExistError(
-        `Double-initialize storage-lite adapter via "${config.databaseFile}" failed`
-      )
-    } else {
-      throw error
+    if (error) {
+      let errorToThrow = error
+      if (/^SQLITE_ERROR:.*? already exists$/.test(error.message)) {
+        errorToThrow = new ResourceAlreadyExistError(
+          `duplicate initialization of the sqlite adapter with same file "${config.databaseFile}" not allowed`
+        )
+      }
+      log.error(errorToThrow.message)
+      log.verbose(errorToThrow.stack)
+      throw errorToThrow
     }
   }
 }
 
-export default init
+export default initEventStore

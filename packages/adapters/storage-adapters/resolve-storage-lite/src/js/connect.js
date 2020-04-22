@@ -1,16 +1,24 @@
+import getLog from './get-log'
+
 const coerceEmptyString = obj =>
   (obj != null && obj.constructor !== String) || obj == null ? 'default' : obj
 
-const connect = async (pool, { sqlite, tmp, os, fs }) => {
+const connectEventStore = async (pool, { sqlite, tmp, os, fs }) => {
+  const log = getLog('connectEventStore')
+
+  log.debug(`connecting to events database`)
+  const { escape } = pool
   let { databaseFile, tableName, ...initOptions } = pool.config
-  const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
-  const escape = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
   databaseFile = coerceEmptyString(databaseFile)
   tableName = coerceEmptyString(tableName)
 
-  let connector = null
+  log.verbose(`databaseFile: ${databaseFile}`)
+  log.verbose(`tableName: ${tableName}`)
+
+  let connector
   if (databaseFile === ':memory:') {
+    log.debug(`using memory connector`)
     if (process.env.RESOLVE_LAUNCH_ID != null) {
       const tmpName = `${os.tmpdir()}/storage-${+process.env
         .RESOLVE_LAUNCH_ID}.db`
@@ -42,26 +50,39 @@ const connect = async (pool, { sqlite, tmp, os, fs }) => {
 
     connector = sqlite.open.bind(sqlite, pool.memoryStore.name)
   } else {
+    log.debug(`using disk file connector`)
     connector = sqlite.open.bind(sqlite, databaseFile)
   }
 
+  log.debug(`connecting`)
   const database = await connector()
+
+  log.debug(`adjusting connection`)
+
+  log.verbose(`PRAGMA busy_timeout=1000000`)
   await database.exec(`PRAGMA busy_timeout=1000000`)
+
+  log.verbose(`PRAGMA encoding=${escape('UTF-8')}`)
   await database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
+
+  log.verbose(`PRAGMA synchronous=EXTRA`)
   await database.exec(`PRAGMA synchronous=EXTRA`)
+
   if (databaseFile === ':memory:') {
+    log.verbose(`PRAGMA journal_mode=MEMORY`)
     await database.exec(`PRAGMA journal_mode=MEMORY`)
   } else {
+    log.verbose(`PRAGMA journal_mode=DELETE`)
     await database.exec(`PRAGMA journal_mode=DELETE`)
   }
 
   Object.assign(pool, {
     database,
-    initOptions,
     tableName,
-    escapeId,
-    escape
+    initOptions
   })
+
+  log.debug(`events store database connected successfully`)
 }
 
-export default connect
+export default connectEventStore
