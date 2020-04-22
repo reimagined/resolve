@@ -1,11 +1,7 @@
 import Stream from 'stream'
-import { Pool } from './types'
 
-import {
-  MAINTENANCE_MODE_AUTO,
-  MAINTENANCE_MODE_MANUAL,
-  BATCH_SIZE
-} from './constants'
+import { Pool } from './types'
+import { BATCH_SIZE } from './constants'
 
 export class ExportStream<Database> extends Stream.Readable {
   secretsByteSize = 0
@@ -19,7 +15,6 @@ export class ExportStream<Database> extends Stream.Readable {
 
   cursor: number | null
   lastSecretOffset: number | null = null
-  maintenanceMode: symbol
   isBufferOverflow = false
 
   isLastBatch = false
@@ -29,12 +24,10 @@ export class ExportStream<Database> extends Stream.Readable {
 
   constructor({
     pool,
-    maintenanceMode,
     cursor,
     bufferSize
   }: {
     pool: Pool<Database>
-    maintenanceMode: symbol
     cursor: number
     bufferSize: number
   }) {
@@ -53,33 +46,11 @@ export class ExportStream<Database> extends Stream.Readable {
       await pool.connectPromiseResolve()
       await pool.connectPromise
     }
-    this.initPromise = waitConnect(pool)
-      .then(this.startProcessSecrets.bind(this))
-      .catch((error: Error) => (this.initError = error))
-
-    this.maintenanceMode = maintenanceMode
+    this.initPromise = waitConnect(pool).catch(
+      (error: Error) => (this.initError = error)
+    )
 
     this.rows = []
-  }
-
-  async startProcessSecrets(): Promise<void> {
-    try {
-      if (this.maintenanceMode === MAINTENANCE_MODE_AUTO) {
-        // await Object.freeze(this.pool) // TODO: freeze
-      }
-    } catch (error) {
-      this.emit('error', error)
-    }
-  }
-
-  async endProcessSecrets(): Promise<void> {
-    try {
-      if (this.maintenanceMode === MAINTENANCE_MODE_AUTO) {
-        // await Object.unfreeze(this.pool) // TODO: unfreeze
-      }
-    } catch (error) {
-      this.emit('error', error)
-    }
   }
 
   processSecrets(): void {
@@ -150,7 +121,6 @@ export class ExportStream<Database> extends Stream.Readable {
 
         if (nextRows.length === 0 && !this.isLastBatch) {
           this.isLastBatch = true
-          await this.endProcessSecrets()
         }
 
         if (this.readerId !== currentReaderId) {
@@ -201,17 +171,10 @@ export class ExportStream<Database> extends Stream.Readable {
 
 function createExportStream<Database>(
   pool: Pool<Database>,
-  {
-    cursor = 0,
-    // maintenanceMode = MAINTENANCE_MODE_AUTO,
-    bufferSize = Number.POSITIVE_INFINITY
-  }
+  { cursor = 0, bufferSize = Number.POSITIVE_INFINITY }
 ): ExportStream<Database> {
-  const maintenanceMode = MAINTENANCE_MODE_AUTO
-
   return new ExportStream({
     pool,
-    maintenanceMode,
     cursor,
     bufferSize
   })

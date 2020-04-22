@@ -1,13 +1,7 @@
 import Stream from 'stream'
-import { Pool, Secret } from './types'
 
-import {
-  MAINTENANCE_MODE_AUTO,
-  MAINTENANCE_MODE_MANUAL,
-  BATCH_SIZE,
-  PARTIAL_EVENT_FLAG,
-  BUFFER_SIZE
-} from './constants'
+import { Pool } from './types'
+import { BATCH_SIZE, BUFFER_SIZE } from './constants'
 
 export class ImportStream<Database> extends Stream.Writable {
   pool: Pool<Database>
@@ -22,8 +16,6 @@ export class ImportStream<Database> extends Stream.Writable {
   saveSecretPromiseSet: Set<Promise<void | number>>
   saveSecretErrors: Array<Error> = []
   timestamp = 0
-  maintenanceMode: symbol
-  isMaintenanceInProgress = false
   parsedSecretsCount = 0
   bypassMode = false
   externalTimeout = false
@@ -33,12 +25,10 @@ export class ImportStream<Database> extends Stream.Writable {
 
   constructor({
     pool,
-    maintenanceMode,
     byteOffset,
     sequenceIndex
   }: {
     pool: Pool<Database>
-    maintenanceMode: symbol
     byteOffset: number
     sequenceIndex: number
   }) {
@@ -50,7 +40,6 @@ export class ImportStream<Database> extends Stream.Writable {
     this.sequenceIndex = sequenceIndex
     this.buffer = Buffer.allocUnsafe(BUFFER_SIZE)
     this.saveSecretPromiseSet = new Set()
-    this.maintenanceMode = maintenanceMode
     this.encoding = null
 
     this.on('timeout', () => {
@@ -77,17 +66,6 @@ export class ImportStream<Database> extends Stream.Writable {
 
     try {
       await this.waitConnect(this.pool)
-      /*     const { drop, init, freeze, saveSecretOnly } = this.pool.store
-
-    if (
-      this.maintenanceMode === MAINTENANCE_MODE_AUTO &&
-      this.isMaintenanceInProgress === false
-    ) {
-      this.isMaintenanceInProgress = true
-      await drop()
-      await init()
-      await freeze()
-    } */
 
       if (this.encoding == null) {
         this.encoding = encoding
@@ -164,10 +142,7 @@ export class ImportStream<Database> extends Stream.Writable {
         this.byteOffset += secretByteLength
 
         const secret = JSON.parse(stringifiedSecret)
-        secret[Symbol.for('sequenceIndex')] = this.sequenceIndex++
-        // this.timestamp = Math.max(this.timestamp, secret.timestamp)
 
-        // const saveSecretPromise = saveSecretOnly(secret).catch(
         const saveSecretPromise = this.pool.store
           .set(secret.id, secret.key)
           .catch(this.saveSecretErrors.push.bind(this.saveSecretErrors))
@@ -204,7 +179,6 @@ export class ImportStream<Database> extends Stream.Writable {
 
     try {
       await this.waitConnect(this.pool)
-      // const { unfreeze, saveEventOnly } = this.pool
 
       if (this.vacantSize !== BUFFER_SIZE) {
         let stringifiedSecret = null
@@ -233,12 +207,10 @@ export class ImportStream<Database> extends Stream.Writable {
           eventByteLength += BUFFER_SIZE - this.beginPosition + this.endPosition
         }
 
-        interface SecretObject {
+        let secret: {
           id: string | null
           key: string | null
         }
-
-        let secret: SecretObject // symbol | object = PARTIAL_EVENT_FLAG
 
         try {
           secret = JSON.parse(stringifiedSecret)
@@ -246,19 +218,11 @@ export class ImportStream<Database> extends Stream.Writable {
           secret = { id: null, key: null }
         }
 
-        // if (secret !== PARTIAL_EVENT_FLAG) {
         if (secret.id != null && secret.key != null) {
-          // secret[Symbol.for('sequenceIndex')] = this.sequenceIndex++
-          // this.timestamp = Math.max(this.timestamp, event.timestamp)
-
           this.byteOffset += eventByteLength
 
-          const secretKey: string = secret.key
-          const secretId: string = secret.id
-
-          // const saveSecretPromise = saveSecretOnly(secret).catch(
           const saveSecretPromise = this.pool.store
-            .set(secretId, secretKey)
+            .set(secret.id, secret.id)
             .catch(this.saveSecretErrors.push.bind(this.saveSecretErrors))
           void saveSecretPromise.then(
             this.saveSecretPromiseSet.delete.bind(
@@ -272,14 +236,6 @@ export class ImportStream<Database> extends Stream.Writable {
 
       await Promise.all([...this.saveSecretPromiseSet])
 
-      if (
-        this.maintenanceMode === MAINTENANCE_MODE_AUTO &&
-        this.isMaintenanceInProgress === true
-      ) {
-        this.isMaintenanceInProgress = false
-        // await unfreeze()
-      }
-
       if (this.saveSecretErrors.length > 0) {
         throw new Error(this.saveSecretErrors.join('\n'))
       }
@@ -292,17 +248,10 @@ export class ImportStream<Database> extends Stream.Writable {
 
 function createImportStream<Database>(
   pool: Pool<Database>,
-  {
-    // maintenanceMode = MAINTENANCE_MODE_AUTO,
-    byteOffset = 0,
-    sequenceIndex = 1
-  }
+  { byteOffset = 0, sequenceIndex = 1 }
 ): ImportStream<Database> {
-  const maintenanceMode = MAINTENANCE_MODE_AUTO
-
   return new ImportStream({
     pool,
-    maintenanceMode,
     byteOffset,
     sequenceIndex
   })
