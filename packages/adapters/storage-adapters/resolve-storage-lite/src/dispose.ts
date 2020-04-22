@@ -1,5 +1,5 @@
 import getLog from 'resolve-debug-levels'
-import disposeEventStore from './js/drop'
+import disposeEventStore from './js/dispose'
 import { AdapterPool } from './types'
 
 const disposeSecretsStore = (pool: AdapterPool): Promise<any> => {
