@@ -20,7 +20,11 @@ const processEvents = async (pool, listenerId, content) => {
     })
   )
 
-  const result = await pool.updateByEvents(listenerId, events, properties)
+  const result = await pool.updateByEvents({
+    modelName: listenerId,
+    events,
+    properties
+  })
 
   const encodedMessage = pool.encodePubContent(
     JSON.stringify({

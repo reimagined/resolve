@@ -27,10 +27,10 @@ const init = async ({ promise, createQuery, transformEvents }) => {
 
     let updateResult = null
     try {
-      updateResult = await queryExecutor.updateByEvents(
-        promise[symbol].name,
-        transformEvents(promise[symbol].events)
-      )
+      updateResult = await queryExecutor.updateByEvents({
+        modelName: promise[symbol].name,
+        events: transformEvents(promise[symbol].events)
+      })
     } catch (error) {
       updateResult = error
     }

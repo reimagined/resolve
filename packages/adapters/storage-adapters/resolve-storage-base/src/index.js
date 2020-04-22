@@ -8,6 +8,10 @@ import wrapDispose from './wrap-dispose'
 import validateEventFilter from './validate-event-filter'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
 import ConcurrentError from './concurrent-error'
+import {
+  ResourceAlreadyExistError,
+  ResourceNotExistError
+} from './resource-errors'
 import loadEvents from './load-events'
 import getNextCursor from './get-next-cursor'
 
@@ -25,4 +29,10 @@ const wrappedCreateAdapter = createAdapter.bind(null, {
 
 export default wrappedCreateAdapter
 
-export { ConcurrentError, MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL }
+export {
+  ResourceAlreadyExistError,
+  ResourceNotExistError,
+  ConcurrentError,
+  MAINTENANCE_MODE_AUTO,
+  MAINTENANCE_MODE_MANUAL
+}

@@ -1,4 +1,6 @@
-const drop = async ({ tableName, connection, escapeId }) => {
+import { ResourceNotExistError } from 'resolve-storage-base'
+
+const drop = async ({ tableName, connection, escapeId, config }) => {
   const eventsTableNameAsId = escapeId(tableName)
   const freezeTableNameAsId = escapeId(`${tableName}-freeze`)
   const threadsTableNameAsId = escapeId(`${tableName}-threads`)
@@ -15,7 +17,13 @@ const drop = async ({ tableName, connection, escapeId }) => {
     try {
       await connection.execute(statement)
     } catch (error) {
-      errors.push(error)
+      if (error != null && /Unknown table/i.test(error.message)) {
+        throw new ResourceNotExistError(
+          `Double-free storage-mysql adapter via "${config.database}" failed`
+        )
+      } else {
+        errors.push(error)
+      }
     }
   }
 

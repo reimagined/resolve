@@ -1,3 +1,12 @@
+import {
+  ResourceAlreadyExistError as StorageResourceAlreadyExistError,
+  ResourceNotExistError as StorageResourceNotExistError
+} from 'resolve-storage-base'
+import {
+  ResourceAlreadyExistError as SnapshotResourceAlreadyExistError,
+  ResourceNotExistError as SnapshotResourceNotExistError
+} from 'resolve-snapshot-base'
+
 const resetDomainHandler = options => async (req, res) => {
   const {
     readModelConnectors,
@@ -15,33 +24,48 @@ const resetDomainHandler = options => async (req, res) => {
     if (dropEventStore) {
       try {
         await storageAdapter.drop()
-      } catch (e) {}
+      } catch (error) {
+        if (!(error instanceof StorageResourceNotExistError)) {
+          throw error
+        }
+      }
 
       try {
         await storageAdapter.init()
-      } catch (e) {}
+      } catch (error) {
+        if (!(error instanceof StorageResourceAlreadyExistError)) {
+          throw error
+        }
+      }
     }
 
     if (dropSnapshots) {
       try {
         await snapshotAdapter.drop()
-      } catch (e) {}
+      } catch (error) {
+        if (!(error instanceof SnapshotResourceNotExistError)) {
+          throw error
+        }
+      }
 
       try {
         await snapshotAdapter.init()
-      } catch (e) {}
+      } catch (error) {
+        if (!(error instanceof SnapshotResourceAlreadyExistError)) {
+          throw error
+        }
+      }
     }
 
     if (dropReadModels) {
       for (const { name, connectorName } of readModels) {
         const connector = readModelConnectors[connectorName]
 
-        try {
-          const connection = await connector.connect(name)
-          await connector.drop(connection, name)
-          await connector.disconnect(connection, name)
-        } catch (e) {}
+        const connection = await connector.connect(name)
+        await connector.drop(connection, name)
+        await connector.disconnect(connection, name)
 
+        // TODO: idempotent reset listener
         try {
           await resetListener(name)
         } catch (e) {}
@@ -52,12 +76,11 @@ const resetDomainHandler = options => async (req, res) => {
       for (const { name, connectorName } of [...sagas, ...schedulers]) {
         const connector = readModelConnectors[connectorName]
 
-        try {
-          const connection = await connector.connect(name)
-          await connector.drop(connection, name)
-          await connector.disconnect(connection, name)
-        } catch (e) {}
+        const connection = await connector.connect(name)
+        await connector.drop(connection, name)
+        await connector.disconnect(connection, name)
 
+        // TODO: idempotent reset listener
         try {
           await resetListener(name)
         } catch (e) {}
