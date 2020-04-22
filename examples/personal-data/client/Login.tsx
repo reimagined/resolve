@@ -48,7 +48,7 @@ const RegistrationForm = props => {
       }
     },
     [nickname, firstName, lastName, phoneNumber, address]
-  )
+  ) as () => void
 
   return (
     <React.Fragment>
@@ -131,7 +131,7 @@ const RegistrationForm = props => {
         </FormGroup>
         <FormGroup row>
           <Col>
-            <Button onClick={() => { register() }}>Sign Up</Button>
+            <Button onClick={register}>Sign Up</Button>
           </Col>
         </FormGroup>
       </Form>
