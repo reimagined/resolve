@@ -8,7 +8,7 @@ export type AdapterPool = {
   secretsTableName: string
   database: any
   tableName: string
-  escapeId: string
+  escapeId: (source: string) => string
   memoryStore: any
 }
 
