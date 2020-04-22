@@ -5,9 +5,9 @@ const getSecret = async (
   pool: AdapterPool,
   selector: string
 ): Promise<string> => {
-  const { secretsDatabase, secretsTableName } = pool
+  const { secretsDatabase, secretsTableName, escapeId } = pool
   const keyRecord = await secretsDatabase.get(
-    `SELECT key FROM ${secretsTableName} WHERE id = ?`,
+    `SELECT key FROM ${escapeId(secretsTableName)} WHERE id = ?`,
     selector
   )
   return keyRecord ? keyRecord.key : null
@@ -18,14 +18,14 @@ const setSecret = async (
   selector: string,
   secret: string
 ): Promise<void> => {
-  const { secretsDatabase, secretsTableName } = pool
+  const { secretsDatabase, secretsTableName, escape, escapeId } = pool
   try {
     await secretsDatabase.exec(
       `BEGIN IMMEDIATE;
-        INSERT INTO ${secretsTableName}(idx, id, key) VALUES (
-          "(SELECT max(idx) + 1 FROM ${secretsTableName})",
-          "${selector}",
-          "${secret}"
+        INSERT INTO ${escapeId(secretsTableName)}(idx, id, key) VALUES (
+          "(SELECT max(idx) + 1 FROM ${escapeId(secretsTableName)})",
+          "${escape(selector)}",
+          "${escape(secret)}"
         );
         COMMIT;`
     )
@@ -42,9 +42,9 @@ const deleteSecret = async (
   pool: AdapterPool,
   selector: string
 ): Promise<void> => {
-  const { secretsDatabase, secretsTableName } = pool
+  const { secretsDatabase, secretsTableName, escapeId } = pool
   await secretsDatabase.exec(
-    `DELETE FROM ${secretsTableName} WHERE id="${selector}"`
+    `DELETE FROM ${escapeId(secretsTableName)} WHERE id="${selector}"`
   )
 }
 
