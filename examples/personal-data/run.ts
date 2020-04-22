@@ -8,6 +8,8 @@ import {
   reset
 } from 'resolve-scripts'
 
+import resolveModuleAuth from 'resolve-module-auth'
+
 import appConfig from './config.app'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
@@ -18,9 +20,37 @@ import adjustWebpackConfigs from './config.adjust_webpack'
 const launchMode = process.argv[2]
 
 void (async (): Promise<void> => {
+  const moduleAuth = resolveModuleAuth([
+    {
+      name: 'local-strategy',
+      createStrategy: 'auth/create_strategy.ts',
+      logoutRoute: {
+        path: 'logout',
+        method: 'POST'
+      },
+      routes: [
+        {
+          path: 'register',
+          method: 'POST',
+          callback: 'auth/route_register_callback.ts'
+        },
+        {
+          path: 'login',
+          method: 'POST',
+          callback: 'auth/route_login_callback.ts'
+        }
+      ]
+    }
+  ])
+
   switch (launchMode) {
     case 'dev': {
-      const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+      const resolveConfig = merge(
+        defaultResolveConfig,
+        appConfig,
+        devConfig,
+        moduleAuth
+      )
 
       await reset(
         resolveConfig,
@@ -39,20 +69,22 @@ void (async (): Promise<void> => {
 
     case 'build': {
       await build(
-        merge(defaultResolveConfig, appConfig, prodConfig),
+        merge(defaultResolveConfig, appConfig, prodConfig, moduleAuth),
         adjustWebpackConfigs
       )
       break
     }
 
     case 'start': {
-      await start(merge(defaultResolveConfig, appConfig, prodConfig))
+      await start(
+        merge(defaultResolveConfig, appConfig, prodConfig, moduleAuth)
+      )
       break
     }
 
     case 'cloud': {
       await build(
-        merge(defaultResolveConfig, appConfig, cloudConfig),
+        merge(defaultResolveConfig, appConfig, cloudConfig, moduleAuth),
         adjustWebpackConfigs
       )
       break
