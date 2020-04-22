@@ -67,7 +67,8 @@ const createSchedulerSagas = (schedulers, sagaProvider) => {
       projection,
       resolvers: {},
       connectorName,
-      schedulerAdapter: sideEffects
+      schedulerAdapter: sideEffects,
+      encryption: () => Promise.resolve({})
     }
 
     sagaReadModels.push(sagaReadModel)

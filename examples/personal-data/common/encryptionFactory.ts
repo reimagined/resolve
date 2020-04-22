@@ -21,7 +21,6 @@ export default async (
   aggregateId: string,
   secretsManager: SecretsManager
 ): Promise<Encryption> => {
-  console.log(`building encryption`)
   let aggregateKey = await secretsManager.getSecret(aggregateId)
   if (!aggregateKey) {
     aggregateKey = generate({

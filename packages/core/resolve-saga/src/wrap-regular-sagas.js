@@ -27,7 +27,8 @@ const wrapRegularSagas = (sagas, sagaProvider) => {
     handlers,
     sideEffects,
     connectorName,
-    schedulerName
+    schedulerName,
+    encryption
   } of sagas) {
     const boundScheduleCommand = scheduleCommand.bind(
       null,
@@ -52,7 +53,8 @@ const wrapRegularSagas = (sagas, sagaProvider) => {
       name,
       projection,
       resolvers: {},
-      connectorName
+      connectorName,
+      encryption
     }
 
     sagaReadModels.push(sagaReadModel)
