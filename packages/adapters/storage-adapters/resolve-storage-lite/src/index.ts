@@ -18,7 +18,7 @@ import connect from './connect'
 import init from './init'
 import drop from './drop'
 import dispose from './dispose'
-import getSecretsManager from './secretsManager'
+import getSecretsManager from './secrets-manager'
 
 const wrappedCreateAdapter = createAdapter.bind(null, {
   connect,

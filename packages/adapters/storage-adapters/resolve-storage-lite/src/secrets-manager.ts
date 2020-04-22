@@ -1,5 +1,7 @@
+import getLog from 'resolve-debug-levels'
 import { SecretsManager } from 'resolve-core'
 import { AdapterPool } from './types'
+import logNamespace from './log-namespace'
 
 const getSecret = async (
   pool: AdapterPool,
@@ -49,11 +51,15 @@ const deleteSecret = async (
 }
 
 const getSecretsManager = (pool: AdapterPool): SecretsManager => {
-  return Object.freeze({
+  const log = getLog(logNamespace('getSecretsManager'))
+  log.debug('building secrets manager')
+  const manager = Object.freeze({
     getSecret: getSecret.bind(null, pool),
     setSecret: setSecret.bind(null, pool),
     deleteSecret: deleteSecret.bind(null, pool)
   })
+  log.debug('secrets manager built')
+  return manager
 }
 
 export default getSecretsManager
