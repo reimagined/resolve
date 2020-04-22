@@ -47,7 +47,7 @@ const App = (): any => {
         setUser(null)
         return
       }
-      setUser(result.data.profile)
+      setUser({ ...result.data.profile, id: result.data.id })
     }
   )
   useEffect(() => {

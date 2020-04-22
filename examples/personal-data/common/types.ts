@@ -1,4 +1,5 @@
 export type UserProfile = {
+  id: string
   nickname: string
   firstName: string
   lastName: string
