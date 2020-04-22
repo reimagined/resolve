@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
-import { useCommand } from 'resolve-react-hooks'
-import uuid from 'uuid/v4'
+import React from 'react'
+
 import {
   Row,
   Col,
@@ -14,88 +13,27 @@ import {
 } from 'reactstrap'
 
 const RegistrationForm = props => {
-  const [values, setValues] = useState({
-    nickname: '',
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    address: '',
-    error: null
-  })
-
-  const handleChange = prop => event => {
-    setValues({ ...values, [prop]: event.target.value, error: null })
-  }
-
-  const { nickname, firstName, lastName, phoneNumber, address, error } = values
-
-  const register = useCommand(
-    {
-      type: 'register',
-      aggregateId: uuid(),
-      aggregateName: 'user-profile',
-      payload: {
-        nickname,
-        firstName,
-        lastName,
-        phoneNumber,
-        address
-      }
-    },
-    error => {
-      if (error != null) {
-        setValues({ ...values, error })
-      }
-    },
-    [nickname, firstName, lastName, phoneNumber, address]
-  ) as () => void
-
   return (
     <React.Fragment>
-      <Form>
+      <Form method="post" action="/api/register">
         <FormGroup row>
           <Col>
             <h4>Registration</h4>
           </Col>
         </FormGroup>
-        {error ? (
-          <FormGroup row>
-            <Col>
-              <Alert color="danger">Error occurred</Alert>
-            </Col>
-          </FormGroup>
-        ) : null}
         <FormGroup row>
           <Col>
-            <Input
-              name="nickname"
-              id="nickname"
-              placeholder="Nickname"
-              value={nickname}
-              onChange={handleChange('nickname')}
-            />
+            <Input name="nickname" id="nickname" placeholder="Nickname" />
           </Col>
         </FormGroup>
         <FormGroup row>
           <Col>
-            <Input
-              name="firstName"
-              id="firstName"
-              placeholder="First name"
-              value={firstName}
-              onChange={handleChange('firstName')}
-            />
+            <Input name="firstName" id="firstName" placeholder="First name" />
           </Col>
         </FormGroup>
         <FormGroup row>
           <Col>
-            <Input
-              name="lastName"
-              id="lastName"
-              placeholder="Last name"
-              value={lastName}
-              onChange={handleChange('lastName')}
-            />
+            <Input name="lastName" id="lastName" placeholder="Last name" />
           </Col>
         </FormGroup>
         <FormGroup row>
@@ -104,8 +42,6 @@ const RegistrationForm = props => {
               name="phoneNumber"
               id="phoneNumber"
               placeholder="Phone number"
-              value={phoneNumber}
-              onChange={handleChange('phoneNumber')}
             />
           </Col>
         </FormGroup>
@@ -116,8 +52,6 @@ const RegistrationForm = props => {
               name="address"
               id="address"
               placeholder="Postal address"
-              value={address}
-              onChange={handleChange('address')}
             />
           </Col>
         </FormGroup>
@@ -131,7 +65,7 @@ const RegistrationForm = props => {
         </FormGroup>
         <FormGroup row>
           <Col>
-            <Button onClick={register}>Sign Up</Button>
+            <Button type="submit">Sign Up</Button>
           </Col>
         </FormGroup>
       </Form>
