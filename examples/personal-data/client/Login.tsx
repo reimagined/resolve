@@ -1,13 +1,15 @@
 import * as React from 'react'
-import { Row } from 'reactstrap'
+import { Row, Col, Container } from 'reactstrap'
 
 const Login = (): any => {
   return (
-    <div className="row align-items-center">
-      <div className="col-6">
-        <div className="card card-block">Center</div>
-      </div>
-    </div>
+    <Container>
+      <Row style={{ display: 'flex', justifyContent: 'center' }}>
+        <Col xs="8" sm="6">
+          <div className="card card-block">Center</div>
+        </Col>
+      </Row>
+    </Container>
   )
 }
 
