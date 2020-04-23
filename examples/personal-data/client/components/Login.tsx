@@ -1,5 +1,5 @@
-import React from 'react'
-
+import React, { useState } from 'react'
+import { useCommand } from 'resolve-react-hooks'
 import {
   Row,
   Col,
@@ -8,32 +8,69 @@ import {
   FormGroup,
   Input,
   FormText,
-  Button,
-  Alert
+  Button
 } from 'reactstrap'
 
-const RegistrationForm = props => {
+const RegistrationForm = ({ user }) => {
+  const [values, setValues] = useState({
+    nickname: user ? user.nickname : '',
+    firstName: user ? user.firstName : '',
+    lastName: user ? user.lastName : '',
+    phoneNumber: user ? user.contacts.phoneNumber : '',
+    address: user ? user.contacts.address : ''
+  })
+
+  const handleChange = prop => event => {
+    setValues({ ...values, [prop]: event.target.value })
+  }
+
+  const update = useCommand(
+    {
+      type: 'update',
+      aggregateId: user ? user.id : null,
+      aggregateName: 'user-profile',
+      payload: values
+    },
+    [user]
+  ) as () => void
+
   return (
     <React.Fragment>
       <Form method="post" action="/api/register">
         <FormGroup row>
+          <Col>{user ? <h4>Profile update</h4> : <h4>Registration</h4>}</Col>
+        </FormGroup>
+        <FormGroup row>
           <Col>
-            <h4>Registration</h4>
+            <Input
+              name="nickname"
+              id="nickname"
+              placeholder="Nickname"
+              defaultValue={user ? user.nickname : ''}
+              onChange={handleChange('nickname')}
+            />
           </Col>
         </FormGroup>
         <FormGroup row>
           <Col>
-            <Input name="nickname" id="nickname" placeholder="Nickname" />
+            <Input
+              name="firstName"
+              id="firstName"
+              placeholder="First name"
+              defaultValue={user ? user.firstName : ''}
+              onChange={handleChange('firstName')}
+            />
           </Col>
         </FormGroup>
         <FormGroup row>
           <Col>
-            <Input name="firstName" id="firstName" placeholder="First name" />
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <Col>
-            <Input name="lastName" id="lastName" placeholder="Last name" />
+            <Input
+              name="lastName"
+              id="lastName"
+              placeholder="Last name"
+              defaultValue={user ? user.lastName : ''}
+              onChange={handleChange('lastName')}
+            />
           </Col>
         </FormGroup>
         <FormGroup row>
@@ -42,6 +79,8 @@ const RegistrationForm = props => {
               name="phoneNumber"
               id="phoneNumber"
               placeholder="Phone number"
+              defaultValue={user ? user.contacts.phoneNumber : ''}
+              onChange={handleChange('phoneNumber')}
             />
           </Col>
         </FormGroup>
@@ -52,6 +91,8 @@ const RegistrationForm = props => {
               name="address"
               id="address"
               placeholder="Postal address"
+              defaultValue={user ? user.contacts.address : ''}
+              onChange={handleChange('address')}
             />
           </Col>
         </FormGroup>
@@ -65,7 +106,11 @@ const RegistrationForm = props => {
         </FormGroup>
         <FormGroup row>
           <Col>
-            <Button type="submit">Sign Up</Button>
+            {user ? (
+              <Button onClick={update}>Update</Button>
+            ) : (
+              <Button type="submit">Sign Up</Button>
+            )}
           </Col>
         </FormGroup>
       </Form>
@@ -73,12 +118,12 @@ const RegistrationForm = props => {
   )
 }
 
-const Login = (): any => {
+const Login = ({ user }): any => {
   return (
     <Container>
       <Row style={{ display: 'flex', justifyContent: 'center' }}>
         <Col className="pt-3" xs="8" sm="6">
-          <RegistrationForm />
+          <RegistrationForm user={user} />
         </Col>
       </Row>
     </Container>

@@ -45,7 +45,7 @@ const aggregate: Aggregate = {
   update: (state, command, context) => {
     // TODO: check user authorization token
     const { isRegistered } = state
-    if (isRegistered) {
+    if (!isRegistered) {
       throw Error(`the user does not exist`)
     }
 

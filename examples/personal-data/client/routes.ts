@@ -2,8 +2,7 @@ import App from './components/App'
 import Home from './components/Home'
 import UserBlog from './components/UserBlog'
 import Users from './components/Users'
-// import Feed from './components/Feed'
-// import MyProfile from './components/MyProfile'
+import Profile from './components/Profile'
 
 export default [
   {
@@ -18,10 +17,10 @@ export default [
         path: '/users',
         component: Users
       },
-/*       {
+      {
         path: '/profile',
-        component: MyProfile
-      }, */
+        component: Profile
+      },
       {
         path: '/blog/:id',
         component: UserBlog

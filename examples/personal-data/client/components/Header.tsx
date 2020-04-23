@@ -65,6 +65,7 @@ const UserInfo = (props: { user: UserProfile | string | null }): any => {
             {user.nickname}
           </DropdownToggle>
           <DropdownMenu right>
+            <DropdownItem tag={Link} to="/profile">Update my profile</DropdownItem>
             <DropdownItem onClick={deleteMe}>Delete my profile</DropdownItem>
           </DropdownMenu>
         </Dropdown>

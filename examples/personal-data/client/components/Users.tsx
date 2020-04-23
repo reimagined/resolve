@@ -30,7 +30,7 @@ const Users = () => {
           style={{ display: 'flex', justifyContent: 'center' }}
         >
           <Col xs={12} sm={8}>
-            <h4 className="display-6">Registered users</h4>
+            <h4>Registered users</h4>
             {users.map((user, idx) => (
               <User key={idx} user={user} />
             ))}
