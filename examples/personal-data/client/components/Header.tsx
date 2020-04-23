@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
-import { Navbar, NavbarBrand, Row, Col } from 'reactstrap'
-import { useStaticResolver } from 'resolve-react-hooks'
+import { Navbar, NavbarBrand, Row, Col, NavbarText } from 'reactstrap'
+import { useStaticResolver, useQuery } from 'resolve-react-hooks'
 import { UserProfile } from '../../common/types'
 
-const BrandSelector = (props: { user: UserProfile | string | null }): any => {
+const UserInfo = (props: { user: UserProfile | string | null }): any => {
   const { user } = props
 
   if (typeof user === 'string') {
@@ -15,11 +15,31 @@ const BrandSelector = (props: { user: UserProfile | string | null }): any => {
     return null
   }
 
-  return <div>Signed in as {user.nickname}</div>
+  return <span>Signed in as {user.nickname}</span>
 }
 
-const Header = ({ user }) => {
+const Header = () => {
   const asset = useStaticResolver()
+
+  const [user, setUser] = useState<UserProfile | string | null>('unknown')
+  const getUser = useQuery(
+    {
+      name: 'user-profiles',
+      resolver: 'profile',
+      args: {}
+    },
+    (err, result) => {
+      if (err) {
+        setUser(null)
+        return
+      }
+      setUser({ ...result.data.profile, id: result.data.id })
+    }
+  )
+  useEffect(() => {
+    getUser()
+  }, [])
+
   return (
     <React.Fragment>
       <Helmet>
@@ -38,9 +58,11 @@ const Header = ({ user }) => {
                 alt="resolve-logo"
               />
             </Col>
-            <Col>{BrandSelector({ user })}</Col>
           </Row>
         </NavbarBrand>
+        <NavbarText>
+          <UserInfo user={user} />
+        </NavbarText>
       </Navbar>
     </React.Fragment>
   )

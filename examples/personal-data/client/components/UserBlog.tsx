@@ -187,7 +187,8 @@ const UserBlog = ({
           style={{ display: 'flex', justifyContent: 'center' }}
         >
           <Col xs={12} sm={8}>
-            <BlogHeader user={user} />
+            {/* TODO: <BlogHeader user={userWith id === authorId} /> */}
+            <p className="lead">Blog of user: {authorId}</p>
             {authorId === user.id && <NewPost user={user} />}
           </Col>
         </Row>

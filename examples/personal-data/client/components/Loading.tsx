@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useStaticResolver } from 'resolve-react-hooks'
 
-const Login = (): any => {
+const Loading = (): any => {
   const asset = useStaticResolver()
 
   return (
@@ -11,4 +11,4 @@ const Login = (): any => {
   )
 }
 
-export default Login
+export default Loading
