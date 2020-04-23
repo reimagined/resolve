@@ -1,11 +1,41 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
-import { Navbar, NavbarBrand, Row, Col, NavbarText } from 'reactstrap'
-import { useStaticResolver, useQuery } from 'resolve-react-hooks'
+import { Redirect } from 'react-router-dom'
+import {
+  Navbar,
+  NavbarBrand,
+  Row,
+  Col,
+  NavbarText,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
+} from 'reactstrap'
+import { useStaticResolver, useQuery, useCommand } from 'resolve-react-hooks'
 import { UserProfile } from '../../common/types'
 
 const UserInfo = (props: { user: UserProfile | string | null }): any => {
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [deleted, setDeleted] = useState(false)
   const { user } = props
+
+  const toggle = () => setDropdownOpen(prevState => !prevState)
+
+  const deleteMe = useCommand(
+    {
+      type: 'delete',
+      aggregateId: typeof user === 'object' && user !== null ? user.id : null,
+      aggregateName: 'user-profile',
+      payload: {}
+    },
+    (error, result) => {
+      if (error == null) {
+        setDeleted(true)
+      }
+    },
+    [user]
+  ) as () => void
 
   if (typeof user === 'string') {
     return 'loading'
@@ -15,7 +45,20 @@ const UserInfo = (props: { user: UserProfile | string | null }): any => {
     return null
   }
 
-  return <span>Signed in as {user.nickname}</span>
+  if (deleted) {
+    return <Redirect to="/" />
+  }
+
+  return (
+    <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+      <DropdownToggle outline caret>{user.nickname}</DropdownToggle>
+      <DropdownMenu right>
+        <DropdownItem onClick={deleteMe}>Delete my profile</DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+  )
+
+  // return <span>Signed in as {user.nickname}</span>
 }
 
 const Header = () => {
@@ -33,7 +76,11 @@ const Header = () => {
         setUser(null)
         return
       }
-      setUser({ ...result.data.profile, id: result.data.id })
+      if (result.data !== null) {
+        setUser({ ...result.data.profile, id: result.data.id })
+      } else {
+        setUser(null)
+      }
     }
   )
   useEffect(() => {

@@ -38,7 +38,11 @@ const Home = () => {
         setUser(null)
         return
       }
-      setUser({ ...result.data.profile, id: result.data.id })
+      if (result.data !== null) {
+        setUser({ ...result.data.profile, id: result.data.id })
+      } else {
+        setUser(null)
+      }
     }
   )
   useEffect(() => {
