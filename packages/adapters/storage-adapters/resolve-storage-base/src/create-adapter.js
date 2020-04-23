@@ -1,3 +1,5 @@
+import getSecretsManagerFallback from './get-secrets-manager-fallback'
+
 const createAdapter = (
   {
     wrapMethod,
@@ -25,7 +27,7 @@ const createAdapter = (
     freeze,
     unfreeze,
     shapeEvent,
-    getSecretsManager,
+    getSecretsManager = getSecretsManagerFallback,
     ...adapterSpecificArguments
   },
   options
