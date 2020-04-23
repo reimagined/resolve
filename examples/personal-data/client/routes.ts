@@ -1,6 +1,7 @@
 import App from './components/App'
 import Home from './components/Home'
 import UserBlog from './components/UserBlog'
+import Feed from './components/Feed'
 
 export default [
   {
@@ -10,6 +11,10 @@ export default [
         path: '/',
         component: Home,
         exact: true
+      },
+      {
+        path: '/feed',
+        component: Feed
       },
       {
         path: '/blog/:id',

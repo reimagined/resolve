@@ -11,13 +11,14 @@ const aggregate: Aggregate = {
 
     // TODO: validate jwt
 
-    const { authorId, content } = command.payload
+    const { authorId, content, title } = command.payload
 
     return {
       type: BLOG_POST_CREATED,
       payload: {
         authorId,
-        content
+        content,
+        title
       }
     }
   },

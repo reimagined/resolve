@@ -10,21 +10,13 @@ import {
   Form,
   Input,
   Button,
-  FormText,
-  Alert,
-  Card,
-  CardBody,
-  CardTitle,
-  CardText
+  Alert
 } from 'reactstrap'
 import { useCommand, useQuery } from 'resolve-react-hooks'
 
 import { UserProfile } from '../../common/types'
 
-type PostProps = {
-  title: string
-  content: string
-}
+import Post from './Post'
 
 const BlogHeader = ({ user }: { user: UserProfile }) => (
   <p className="lead">
@@ -91,7 +83,7 @@ const NewPost = ({ user }: { user: UserProfile }) => {
               type="textarea"
               id="addPostContent"
             />
-            <FormText>Use MD syntax</FormText>
+            {/* // TODO: <FormText>Use MD syntax</FormText> */}
           </FormGroup>
           <FormGroup>
             <Button onClick={publish} className="mt-3">
@@ -125,20 +117,6 @@ const FeedByAuthor = ({ authorId }: { authorId: string }) => {
         <Post key={idx} post={{ title: p.title, content: p.content }} />
       ))}
     </React.Fragment>
-  )
-}
-
-const Post = ({ post }: { post: PostProps }) => {
-  const { title, content } = post
-  return (
-    <div className="mb-3">
-      <Card>
-        <CardBody>
-          <CardTitle>{title}</CardTitle>
-          <CardText>{content}</CardText>
-        </CardBody>
-      </Card>
-    </div>
   )
 }
 

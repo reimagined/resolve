@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import {
   Navbar,
   NavbarBrand,
   Row,
   Col,
   NavbarText,
+  Nav,
+  NavItem,
+  NavLink,
   Dropdown,
   DropdownToggle,
   DropdownMenu,
@@ -51,14 +54,14 @@ const UserInfo = (props: { user: UserProfile | string | null }): any => {
 
   return (
     <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-      <DropdownToggle outline caret>{user.nickname}</DropdownToggle>
+      <DropdownToggle outline caret>
+        {user.nickname}
+      </DropdownToggle>
       <DropdownMenu right>
         <DropdownItem onClick={deleteMe}>Delete my profile</DropdownItem>
       </DropdownMenu>
     </Dropdown>
   )
-
-  // return <span>Signed in as {user.nickname}</span>
 }
 
 const Header = () => {
@@ -107,6 +110,21 @@ const Header = () => {
             </Col>
           </Row>
         </NavbarBrand>
+        <Nav navbar>
+          <NavItem>
+            <NavLink tag={Link} exact to="/feed">
+              Feed
+            </NavLink>
+          </NavItem>
+
+          {typeof user === 'object' && user !== null && (
+            <NavItem>
+              <NavLink tag={Link} exact to={`/blog/${user.id}`}>
+                My blog
+              </NavLink>
+            </NavItem>
+          )}
+        </Nav>
         <NavbarText>
           <UserInfo user={user} />
         </NavbarText>

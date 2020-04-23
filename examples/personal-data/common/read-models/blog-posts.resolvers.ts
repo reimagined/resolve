@@ -11,6 +11,9 @@ const resolvers: ReadModelResolvers<ResolveStore> = {
     return store.find('BlogPosts', {
       author: params.authorId
     })
+  },
+  feed: async store => {
+    return store.find('BlogPosts', {}, {}, { timestamp: -1 })
   }
 }
 
