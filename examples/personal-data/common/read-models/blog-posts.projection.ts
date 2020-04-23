@@ -6,20 +6,21 @@ const readModel: ReadModel<ResolveStore> = {
   Init: async (store): Promise<void> => {
     await store.defineTable('BlogPosts', {
       indexes: { author: 'string', id: 'string' },
-      fields: ['timestamp', 'content']
+      fields: ['timestamp', 'title', 'content']
     })
   },
   [BLOG_POST_CREATED]: async (store, event): Promise<void> => {
     const {
       aggregateId,
       timestamp,
-      payload: { authorId, content }
+      payload: { authorId, title, content }
     } = event
 
     await store.insert('BlogPosts', {
       author: authorId,
       id: aggregateId,
       timestamp,
+      title,
       content
     })
   },
