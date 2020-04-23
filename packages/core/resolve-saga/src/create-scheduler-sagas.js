@@ -1,10 +1,9 @@
-import debugLevels from 'resolve-debug-levels'
-
+import getLog from './get-log'
 import createSchedulerEventTypes from './scheduler-event-types'
 import createSchedulerSagaHandlers from './scheduler-saga-handlers'
 import sagaEventHandler from './saga-event-handler'
 
-const log = debugLevels('resolve:resolve-runtime:wrap-scheduler-sagas')
+const log = getLog('wrap-scheduler-sagas')
 
 const execute = async (
   sagaProvider,
