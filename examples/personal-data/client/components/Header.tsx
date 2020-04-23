@@ -6,7 +6,6 @@ import {
   NavbarBrand,
   Row,
   Col,
-  NavbarText,
   Nav,
   NavItem,
   NavLink,
@@ -53,14 +52,23 @@ const UserInfo = (props: { user: UserProfile | string | null }): any => {
   }
 
   return (
-    <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-      <DropdownToggle outline caret>
-        {user.nickname}
-      </DropdownToggle>
-      <DropdownMenu right>
-        <DropdownItem onClick={deleteMe}>Delete my profile</DropdownItem>
-      </DropdownMenu>
-    </Dropdown>
+    <Nav navbar>
+      <NavItem>
+        <NavLink tag={Link} exact to={`/blog/${user.id}`}>
+          My blog
+        </NavLink>
+      </NavItem>
+      <NavItem>
+        <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+          <DropdownToggle outline caret>
+            {user.nickname}
+          </DropdownToggle>
+          <DropdownMenu right>
+            <DropdownItem onClick={deleteMe}>Delete my profile</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </NavItem>
+    </Nav>
   )
 }
 
@@ -116,18 +124,8 @@ const Header = () => {
               Feed
             </NavLink>
           </NavItem>
-
-          {typeof user === 'object' && user !== null && (
-            <NavItem>
-              <NavLink tag={Link} exact to={`/blog/${user.id}`}>
-                My blog
-              </NavLink>
-            </NavItem>
-          )}
         </Nav>
-        <NavbarText>
-          <UserInfo user={user} />
-        </NavbarText>
+        <UserInfo user={user} />
       </Navbar>
     </React.Fragment>
   )
