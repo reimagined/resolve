@@ -32,6 +32,14 @@ const appConfig = {
       resolvers: 'common/read-models/blog-posts.resolvers.ts'
     }
   ],
+  sagas: [
+    {
+      name: 'personal-data',
+      source: 'common/sagas/personal-data.saga.ts',
+      connectorName: 'default',
+      schedulerName: 'scheduler'
+    }
+  ],
   clientEntries: [
     [
       'client/index.tsx',
