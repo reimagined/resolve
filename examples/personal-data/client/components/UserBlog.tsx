@@ -17,6 +17,7 @@ import { useCommand, useQuery } from 'resolve-react-hooks'
 import { UserProfile } from '../../common/types'
 
 import Post from './Post'
+import Loading from './Loading'
 
 const BlogHeader = ({ user }: { user: UserProfile }) => (
   <p className="lead">
@@ -113,9 +114,13 @@ const FeedByAuthor = ({ authorId }: { authorId: string }) => {
   }, [])
   return (
     <React.Fragment>
-      {posts.map((p, idx) => (
-        <Post key={idx} post={{ title: p.title, content: p.content }} />
-      ))}
+      {posts.length > 0 ? (
+        posts.map((p, idx) => (
+          <Post key={idx} post={{ title: p.title, content: p.content }} />
+        ))
+      ) : (
+        <Alert color="secondary">No posts created yet</Alert>
+      )}
     </React.Fragment>
   )
 }
@@ -151,7 +156,7 @@ const UserBlog = ({
   }, [])
 
   if (typeof user === 'string') {
-    return 'loading'
+    return <Loading />
   }
   if (user === null) {
     return <Redirect to={'/'} />

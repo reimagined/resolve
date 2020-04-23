@@ -1,21 +1,17 @@
 import * as React from 'react'
-import { Helmet } from 'react-helmet'
-import { Navbar, NavbarBrand, Row, Col } from 'reactstrap'
-import { useStaticResolver, useQuery } from 'resolve-react-hooks'
+import { useQuery } from 'resolve-react-hooks'
 import { useEffect, useState } from 'react'
 import { Redirect } from 'react-router-dom'
-import { renderRoutes } from 'react-router-config'
 
 import { UserProfile } from '../../common/types'
 import Login from './Login'
 import Loading from './Loading'
-import Header from './Header'
 
 const ContentSelector = (props: { user: UserProfile | string | null }): any => {
   const { user } = props
 
   if (typeof user === 'string') {
-    return 'loading'
+    return <Loading />
   }
 
   if (user === null) {

@@ -16,6 +16,7 @@ import {
 } from 'reactstrap'
 import { useStaticResolver, useQuery, useCommand } from 'resolve-react-hooks'
 import { UserProfile } from '../../common/types'
+import Loading from './Loading'
 
 const UserInfo = (props: { user: UserProfile | string | null }): any => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -40,7 +41,7 @@ const UserInfo = (props: { user: UserProfile | string | null }): any => {
   ) as () => void
 
   if (typeof user === 'string') {
-    return 'loading'
+    return <Loading />
   }
 
   if (user === null) {
@@ -54,7 +55,7 @@ const UserInfo = (props: { user: UserProfile | string | null }): any => {
   return (
     <Nav navbar>
       <NavItem>
-        <NavLink tag={Link} exact to={`/blog/${user.id}`}>
+        <NavLink tag={Link} to={`/blog/${user.id}`}>
           My blog
         </NavLink>
       </NavItem>
@@ -120,8 +121,8 @@ const Header = () => {
         </NavbarBrand>
         <Nav navbar>
           <NavItem>
-            <NavLink tag={Link} exact to="/feed">
-              Feed
+            <NavLink tag={Link} to="/users">
+              Users
             </NavLink>
           </NavItem>
         </Nav>

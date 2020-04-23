@@ -9,6 +9,9 @@ const resolvers: ReadModelResolvers<ResolveStore> = {
     const actualUserId = userId === systemUserId ? params.userId : userId
     return store.findOne('Users', { id: actualUserId })
   },
+  all: async (store, params, jwt) => {
+    return store.find('Users', {})
+  },
   exists: async (store, params) => {
     return false
     /* // TODO: read from table
