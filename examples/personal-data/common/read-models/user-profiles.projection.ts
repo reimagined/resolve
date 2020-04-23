@@ -19,7 +19,7 @@ const readModel: ReadModel<ResolveStore> = {
       payload: { nickname, firstName, lastName, contacts }
     } = event
 
-    const { decrypt = (): string => null } = context
+    const { decrypt } = context
 
     const realFirstName = decrypt(firstName as string) || 'unknown'
     const realLastName = decrypt(lastName as string) || 'unknown'
@@ -41,7 +41,7 @@ const readModel: ReadModel<ResolveStore> = {
       payload: { firstName, lastName }
     } = event
 
-    const { decrypt = (): string => null } = context
+    const { decrypt } = context
 
     const user = await store.findOne('Users', { id: aggregateId })
 

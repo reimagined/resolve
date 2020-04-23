@@ -14,7 +14,11 @@ const encrypt = (key: string, data: PlainData): EncryptedBlob => {
 
 const decrypt = (key: string, blob: EncryptedBlob): PlainData => {
   const { decrypt } = new Cryptr(key)
-  return JSON.parse(decrypt(blob))
+  try {
+    return JSON.parse(decrypt(blob))
+  } catch {
+    return null
+  }
 }
 
 export default async (
