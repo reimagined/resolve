@@ -16,6 +16,8 @@ const sagaEventHandler = async (
   const applicationSideEffects =
     sideEffects != null && sideEffects.constructor === Object ? sideEffects : {}
 
+  const secretsManager = await sagaProvider.getSecretsManager()
+
   await handlers[eventType](
     {
       sideEffects: {
@@ -25,7 +27,8 @@ const sagaEventHandler = async (
             ...applicationSideEffects,
             executeCommand: sagaProvider.executeCommand,
             executeQuery: sagaProvider.executeQuery,
-            scheduleCommand
+            scheduleCommand,
+            secretsManager
           },
           isEnabled
         ),

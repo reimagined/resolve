@@ -36,7 +36,11 @@ const createSaga = ({
   const sagaProvider = Object.create(Object.prototype, {
     executeCommand: { get: () => executeCommandOrScheduler, enumerable: true },
     executeQuery: { get: () => executeQuery, enumerable: true },
-    eventProperties: { get: () => eventProperties, enumerable: true }
+    eventProperties: { get: () => eventProperties, enumerable: true },
+    getSecretsManager: {
+      get: () => eventStore.getSecretsManager,
+      enumerable: true
+    }
   })
 
   const regularSagas = wrapRegularSagas(sagas, sagaProvider)
