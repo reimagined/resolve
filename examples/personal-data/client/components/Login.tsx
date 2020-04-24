@@ -118,7 +118,7 @@ const RegistrationForm = ({ user }) => {
   )
 }
 
-const Login = ({ user }): any => {
+const Login = ({ user = null }): any => {
   return (
     <Container>
       <Row style={{ display: 'flex', justifyContent: 'center' }}>
