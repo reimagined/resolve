@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-postgresql",
-  "version": "0.22.6",
+  "version": "0.23.2",
   "description": "An adapter reSolve uses to store events in PostgreSQL.",
   "engines": {
     "node": ">=10.9"
@@ -26,11 +26,11 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-postgresql#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "resolve-storage-base": "0.22.6",
+    "resolve-storage-base": "0.23.2",
     "pg": "^7.17.1"
   },
   "devDependencies": {
-    "jest": "24.1.0"
+    "jest": "25.1.0"
   },
   "peerDependencies": {
     "aws-sdk": "*"

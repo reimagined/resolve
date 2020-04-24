@@ -7,25 +7,24 @@ import {
   deserializeInitialState,
   getOrigin
 } from 'resolve-redux'
+import { Router } from 'react-router'
 
-import optimisticShoppingListsSaga from './redux/sagas/optimistic-shopping-lists-saga'
-import optimisticShoppingListsReducer from './redux/reducers/optimistic-shopping-lists'
+import getRoutes from './get-routes'
+import getRedux from './get-redux'
+import Routes from './components/Routes'
 
-import optimisticSharingsSaga from './redux/sagas/optimistic-sharings-saga'
-import optimisticSharingsReducer from './redux/reducers/optimistic-sharings'
-
-import routes from './routes'
-
-const entryPoint = ({ rootPath, staticPath, viewModels, subscribeAdapter }) => {
+const entryPoint = ({
+  rootPath,
+  staticPath,
+  viewModels,
+  subscribeAdapter,
+  clientImports
+}) => {
   const origin = getOrigin(window.location)
   const history = createBrowserHistory({ basename: rootPath })
-  const redux = {
-    reducers: {
-      optimisticSharings: optimisticSharingsReducer,
-      optimisticShoppingLists: optimisticShoppingListsReducer
-    },
-    sagas: [optimisticSharingsSaga, optimisticShoppingListsSaga]
-  }
+
+  const redux = getRedux(clientImports)
+  const routes = getRoutes(clientImports)
 
   const store = createStore({
     initialState: deserializeInitialState(viewModels, window.__INITIAL_STATE__),
@@ -44,11 +43,12 @@ const entryPoint = ({ rootPath, staticPath, viewModels, subscribeAdapter }) => {
       rootPath={rootPath}
       staticPath={staticPath}
       store={store}
-      history={history}
-      routes={routes}
-    />,
-
-    document.getElementsByClassName('app-container')[0]
+    >
+      <Router history={history}>
+        <Routes routes={routes} />
+      </Router>
+    </AppContainer>,
+    document.getElementById('app-container')
   )
 }
 

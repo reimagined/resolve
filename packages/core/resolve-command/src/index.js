@@ -107,12 +107,15 @@ const snapshotHandler = async (pool, aggregateInfo, event) => {
 
     await regularHandler(pool, aggregateInfo, event)
 
-    await pool.snapshotAdapter.saveSnapshot(aggregateInfo.snapshotKey, {
-      state: aggregateInfo.serializeState(aggregateInfo.aggregateState),
-      version: aggregateInfo.aggregateVersion,
-      minimalTimestamp: aggregateInfo.minimalTimestamp,
-      cursor: aggregateInfo.cursor
-    })
+    await pool.snapshotAdapter.saveSnapshot(
+      aggregateInfo.snapshotKey,
+      JSON.stringify({
+        state: aggregateInfo.serializeState(aggregateInfo.aggregateState),
+        version: aggregateInfo.aggregateVersion,
+        minimalTimestamp: aggregateInfo.minimalTimestamp,
+        cursor: aggregateInfo.cursor
+      })
+    )
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)
@@ -201,7 +204,9 @@ const getAggregateState = async (
             throw generateCommandError('Command handler is disposed')
           }
 
-          return await pool.snapshotAdapter.loadSnapshot(snapshotKey)
+          return JSON.parse(
+            await pool.snapshotAdapter.loadSnapshot(snapshotKey)
+          )
         } catch (error) {
           if (subSegment != null) {
             subSegment.addError(error)

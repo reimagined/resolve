@@ -1,6 +1,6 @@
 {
   "name": "resolve-snapshot-mysql",
-  "version": "0.22.6",
+  "version": "0.23.2",
   "description": "An adapter used to save snapshots in MySQL.",
   "engines": {
     "node": ">=10.9"
@@ -26,6 +26,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/snapshot-adapters/resolve-snapshot-mysql#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
+    "resolve-snapshot-base": "0.23.2",
     "mysql2": "^1.6.4"
   },
   "babelCompile": [

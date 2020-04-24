@@ -6,7 +6,7 @@ const handleApplyEvents = async (lambdaEvent, resolve) => {
   const segment = resolve.performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('applyEventsFromBus')
 
-  const { events, properties, listenerId } = lambdaEvent
+  const { events, properties, listenerId, transactionId } = lambdaEvent
 
   log.debug('applying events started')
   log.verbose(JSON.stringify({ listenerId, properties }, null, 2))
@@ -23,12 +23,13 @@ const handleApplyEvents = async (lambdaEvent, resolve) => {
       ? resolve.executeSaga.updateByEvents
       : resolve.executeQuery.updateByEvents
 
-    result = await updateByEvents(
-      listenerId,
+    result = await updateByEvents({
+      modelName: listenerId,
       events,
-      resolve.getRemainingTimeInMillis,
-      properties
-    )
+      getRemainingTimeInMillis: resolve.getRemainingTimeInMillis,
+      properties,
+      transactionId
+    })
 
     subSegment.addAnnotation('eventCount', events.length)
     subSegment.addAnnotation('origin', 'resolve:applyEventsFromBus')

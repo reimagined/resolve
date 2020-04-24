@@ -144,7 +144,7 @@ describe('Cloud entry', () => {
         path: '/',
         httpMethod: 'GET',
         headers: { ...defaultRequestHttpHeaders },
-        queryStringParameters: {},
+        multiValueQueryStringParameters: {},
         body: null
       }
 
@@ -185,7 +185,7 @@ describe('Cloud entry', () => {
         path: '/root-path/api/query/read-model-name/resolver-name',
         httpMethod: 'GET',
         headers: { ...defaultRequestHttpHeaders },
-        queryStringParameters: {
+        multiValueQueryStringParameters: {
           key: 'value'
         },
         body: null
@@ -238,7 +238,7 @@ describe('Cloud entry', () => {
         path: '/root-path/api/query/read-model-name/non-existing-resolver-name',
         httpMethod: 'GET',
         headers: { ...defaultRequestHttpHeaders },
-        queryStringParameters: {
+        multiValueQueryStringParameters: {
           key: 'value'
         },
         body: null
@@ -266,7 +266,7 @@ describe('Cloud entry', () => {
           '/root-path/api/query/non-existing-read-model-name/non-existing-resolver-name',
         httpMethod: 'GET',
         headers: { ...defaultRequestHttpHeaders },
-        queryStringParameters: { key: 'value' },
+        multiValueQueryStringParameters: { key: 'value' },
         body: null
       }
 
@@ -286,7 +286,7 @@ describe('Cloud entry', () => {
         path: '/root-path/api/query/read-model-name',
         httpMethod: 'GET',
         headers: { ...defaultRequestHttpHeaders },
-        queryStringParameters: {},
+        multiValueQueryStringParameters: {},
         body: null
       }
 
@@ -337,7 +337,7 @@ describe('Cloud entry', () => {
           ...defaultRequestHttpHeaders,
           'Content-Type': 'application/json; charset=utf-8'
         },
-        queryStringParameters: {},
+        multiValueQueryStringParameters: {},
         body: JSON.stringify({
           aggregateName: 'Map',
           aggregateId: 'aggregateId',
@@ -418,7 +418,7 @@ describe('Cloud entry', () => {
           ...defaultRequestHttpHeaders,
           'Content-Type': 'application/json; charset=utf-8'
         },
-        queryStringParameters: '',
+        multiValueQueryStringParameters: '',
         body: JSON.stringify({
           aggregateName: 'Map',
           aggregateId: 'aggregateId',
@@ -464,7 +464,7 @@ describe('Cloud entry', () => {
           ...defaultRequestHttpHeaders,
           'Content-Type': 'application/json; charset=utf-8'
         },
-        queryStringParameters: {},
+        multiValueQueryStringParameters: {},
         body: JSON.stringify({
           aggregateName: 'BadAggregate',
           aggregateId: 'aggregateId',
@@ -506,7 +506,7 @@ describe('Cloud entry', () => {
           ...defaultRequestHttpHeaders,
           'Content-Type': 'application/json; charset=utf-8'
         },
-        queryStringParameters: {},
+        multiValueQueryStringParameters: {},
         body: JSON.stringify({
           aggregateName: 'BadAggregate',
           aggregateId: 'aggregateId',
@@ -538,7 +538,7 @@ describe('Cloud entry', () => {
         path: '/root-path/api/subscribe',
         httpMethod: 'GET',
         headers: { ...defaultRequestHttpHeaders },
-        queryStringParameters: {
+        multiValueQueryStringParameters: {
           origin: 'origin',
           adapterName: 'adapterName'
         },
@@ -583,7 +583,7 @@ describe('Cloud entry', () => {
           ...defaultRequestHttpHeaders,
           'Content-Type': 'application/json; charset=utf-8'
         },
-        queryStringParameters: '',
+        multiValueQueryStringParameters: '',
         body: JSON.stringify({})
       }
 
@@ -634,7 +634,7 @@ describe('Cloud entry', () => {
           ...defaultRequestHttpHeaders,
           'Content-Type': 'application/json; charset=utf-8'
         },
-        queryStringParameters: '',
+        multiValueQueryStringParameters: '',
         body: null
       }
 
@@ -662,7 +662,7 @@ describe('Cloud entry', () => {
         headers: {
           ...defaultRequestHttpHeaders
         },
-        queryStringParameters: '',
+        multiValueQueryStringParameters: '',
         body: null
       }
 
@@ -691,7 +691,7 @@ describe('Cloud entry', () => {
           ...defaultRequestHttpHeaders,
           authorization: 'Bearer JWT'
         },
-        queryStringParameters: '',
+        multiValueQueryStringParameters: '',
         body: null
       }
 

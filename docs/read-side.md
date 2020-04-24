@@ -52,7 +52,7 @@ const devConfig = {
 }
 ```
 
-##### config.prod.js:
+##### config.cloud.js:
 
 ```js
 import { declareRuntimeEnv } from 'resolve-scripts'
@@ -60,12 +60,12 @@ const prodConfig = {
   ...
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-mysql',
+      module: 'resolve-readmodel-postgresql-serverless',
       options: {
-        host: declareRuntimeEnv('RESOLVE_READMODEL_SQL_HOST'),
-        database: declareRuntimeEnv('RESOLVE_READMODEL_SQL_DATABASE'),
-        user: declareRuntimeEnv('RESOLVE_READMODEL_SQL_USER'),
-        password: declareRuntimeEnv('RESOLVE_READMODEL_SQL_PASSWORD'),
+        dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_READMODEL_POSTGRESQL_CLUSTER_ARN'),
+        awsSecretStoreArn: declareRuntimeEnv('RESOLVE_READMODEL_POSTGRESQL_SECRET_ARN'),
+        databaseName: declareRuntimeEnv('RESOLVE_READMODEL_POSTGRESQL_DATABASE_NAME'),
+        region: declareRuntimeEnv('AWS_REGION')
       }
     }
   },
@@ -102,12 +102,12 @@ In the configuration object, specify the View Model's name and the path to the f
 
 To create a custom Read Model, you need to manually implement a Read Model connector. A connector defines functions that manage a custom Read Model's store. The following functions can be defined:
 
-- **connect** - Initialises a connection to a storage.
+- **connect** - Initializes a connection to a storage.
 - **disconnect** - Closes the storage connection.
 - **drop** - Removes the Read Model's data from storage.
 - **dispose** - Forcefully disposes all unmanaged resources used by Read Models served by this connector.
 
-The code sample below demostrates how to implement a connector that provides a file-based storage for Read Models.
+The code sample below demonstrates how to implement a connector that provides a file-based storage for Read Models.
 
 ##### common/read-models/custom-read-model-connector.js:
 
@@ -197,7 +197,7 @@ Now you can assign the custom connector to a Read Model by name as shown below.
   ]
 ```
 
-The code sample below demostrates how you can use the custom store's API in the Read Model's code.
+The code sample below demonstrates how you can use the custom store's API in the Read Model's code.
 
 ##### common/read-models/custom-read-model.projection.js:
 
@@ -271,7 +271,7 @@ We recommend that you store Read Model data in a denormalized form so that your 
 
 A projection function is used to accumulate the event data in a **Read Model storage**. Each projection function receives the storage object and event information. The event information includes the aggregateID, timestamp, and payload.
 
-You can use the [standard API](api-reference#read-model-store-interface) to communicate with the store. The code sample below demonstrates a Read Model projection function's implementation:
+You can use the [standard API](api-reference.md#read-model-store-interface) to communicate with the store. The code sample below demonstrates a Read Model projection function's implementation:
 
 ```js
 [STORY_COMMENTED]: async (
@@ -291,6 +291,8 @@ You can use the [standard API](api-reference#read-model-store-interface) to comm
 ```
 
 A [resolver](#resolvers) then uses the data from the store to prepare final data samples for data requests.
+
+>A Read Model's projection should only use tables that were created in this Read Model's `Init` handler. If you try to access tables created in other Read Models, a “Table does not exist” error is generated.
 
 Note that you can add additional logic to a projection function. For instance, you can perform SQL queries, update Elastic Search indexes, write arbitrary data to files, etc.
 

@@ -1,5 +1,5 @@
 const getLatestEvent = async (
-  { connection, escapeId, escape, tableName },
+  { connection, escapeId, escape, tableName, shapeEvent },
   { eventTypes, aggregateIds, startTime, finishTime }
 ) => {
   const injectString = value => `${escape(value)}`
@@ -31,10 +31,11 @@ const getLatestEvent = async (
     ORDER BY \`timestamp\` DESC, \`aggregateVersion\` DESC`
   )
 
-  const event =
-    rows.length > 0 ? Object.setPrototypeOf(rows[0], Object.prototype) : null
+  if (rows.length === 0) {
+    return null
+  }
 
-  return event
+  return shapeEvent(rows[0])
 }
 
 export default getLatestEvent

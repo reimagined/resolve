@@ -53,10 +53,8 @@ for (const { describeName, prepare } of [
             await handler(event)
           }
         },
-        getNextCursor: (prevCursor, events) => {
-          return `${prevCursor == null ? '' : prevCursor}${events.map(e =>
-            Buffer.from(JSON.stringify(e)).toString('base64')
-          )}`
+        getNextCursor: prevCursor => {
+          return `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`
         }
       }
 
@@ -194,27 +192,27 @@ for (const { describeName, prepare } of [
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id1', 1]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 10 }, null, 2)
-            }
+              state: JSON.stringify({ value: 10 }, null, 2),
+              cursor: 'CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id1', 2]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 15 }, null, 2)
-            }
+              state: JSON.stringify({ value: 15 }, null, 2),
+              cursor: 'CURSOR-CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id1', 3]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 7 }, null, 2)
-            }
+              state: JSON.stringify({ value: 7 }, null, 2),
+              cursor: 'CURSOR-CURSOR-CURSOR'
+            })
           )
 
           events = [
@@ -261,27 +259,27 @@ for (const { describeName, prepare } of [
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id2', 1]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 5 }, null, 2)
-            }
+              state: JSON.stringify({ value: 5 }, null, 2),
+              cursor: 'CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id2', 2]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 7 }, null, 2)
-            }
+              state: JSON.stringify({ value: 7 }, null, 2),
+              cursor: 'CURSOR-CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id2', 3]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 4 }, null, 2)
-            }
+              state: JSON.stringify({ value: 4 }, null, 2),
+              cursor: 'CURSOR-CURSOR-CURSOR'
+            })
           )
 
           events = []
@@ -626,27 +624,27 @@ for (const { describeName, prepare } of [
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id1', 1]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 10 }, null, 2)
-            }
+              state: JSON.stringify({ value: 10 }, null, 2),
+              cursor: 'CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id1', 2]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 15 }, null, 2)
-            }
+              state: JSON.stringify({ value: 15 }, null, 2),
+              cursor: 'CURSOR-CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id1', 3]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 7 }, null, 2)
-            }
+              state: JSON.stringify({ value: 7 }, null, 2),
+              cursor: 'CURSOR-CURSOR-CURSOR'
+            })
           )
 
           events = [
@@ -700,27 +698,27 @@ for (const { describeName, prepare } of [
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id2', 1]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 5 }, null, 2)
-            }
+              state: JSON.stringify({ value: 5 }, null, 2),
+              cursor: 'CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id2', 2]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 7 }, null, 2)
-            }
+              state: JSON.stringify({ value: 7 }, null, 2),
+              cursor: 'CURSOR-CURSOR'
+            })
           )
           expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
-            {
+            JSON.stringify({
               aggregatesVersionsMap: [['id2', 3]],
-              cursor: expect.any(String),
-              state: JSON.stringify({ value: 4 }, null, 2)
-            }
+              state: JSON.stringify({ value: 4 }, null, 2),
+              cursor: 'CURSOR-CURSOR-CURSOR'
+            })
           )
 
           if (performanceTracer != null) {
@@ -803,7 +801,7 @@ for (const { describeName, prepare } of [
 
         test('"updateByEvents" should raise error on view models', async () => {
           try {
-            await query.updateByEvents('viewModelName', events)
+            await query.updateByEvents({ modelName: 'viewModelName', events })
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
             expect(error).toBeInstanceOf(Error)
@@ -832,7 +830,7 @@ for (const { describeName, prepare } of [
         test('"updateByEvents" should raise error when query is disposed', async () => {
           await query.dispose()
           try {
-            await query.updateByEvents('viewModelName', events)
+            await query.updateByEvents({ modelName: 'viewModelName', events })
 
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
@@ -887,7 +885,7 @@ for (const { describeName, prepare } of [
         test('"drop" should raise error when query is disposed', async () => {
           await query.dispose()
           try {
-            await query.updateByEvents('viewModelName', events)
+            await query.updateByEvents({ modelName: 'viewModelName', events })
 
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
@@ -1422,7 +1420,7 @@ for (const { describeName, prepare } of [
 
         test('"updateByEvents" should raise error on view models', async () => {
           try {
-            await query.updateByEvents('viewModelName', events)
+            await query.updateByEvents({ modelName: 'viewModelName', events })
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
             expect(error).toBeInstanceOf(Error)
@@ -1448,7 +1446,7 @@ for (const { describeName, prepare } of [
         test('"updateByEvents" should raise error when disposed', async () => {
           await query.dispose()
           try {
-            await query.updateByEvents('viewModelName', events)
+            await query.updateByEvents({ modelName: 'viewModelName', events })
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
             expect(error).toBeInstanceOf(Error)
@@ -1675,7 +1673,7 @@ for (const { describeName, prepare } of [
         })
 
         doUpdateRequest = async readModelName => {
-          await query.updateByEvents(readModelName, events)
+          await query.updateByEvents({ modelName: readModelName, events })
         }
       })
 
@@ -1751,7 +1749,10 @@ for (const { describeName, prepare } of [
         ]
 
         try {
-          await query.updateByEvents('brokenReadModelName', events)
+          await query.updateByEvents({
+            modelName: 'brokenReadModelName',
+            events
+          })
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
           expect(error.lastError.message).toEqual('BROKEN')
@@ -1875,7 +1876,10 @@ for (const { describeName, prepare } of [
           }
         ]
 
-        const result = await query.updateByEvents('readModelName', events)
+        const result = await query.updateByEvents({
+          modelName: 'readModelName',
+          events
+        })
 
         const value = await query.read({
           modelName: 'readModelName',
@@ -1917,7 +1921,10 @@ for (const { describeName, prepare } of [
 
       test('"updateByEvents" should raise error when a projection is not found', async () => {
         try {
-          await query.updateByEvents('readOnlyReadModelName', events)
+          await query.updateByEvents({
+            modelName: 'readOnlyReadModelName',
+            events
+          })
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
           expect(error).toBeInstanceOf(Error)
@@ -1942,7 +1949,10 @@ for (const { describeName, prepare } of [
 
       test('"updateByEvents" should raise error when events is not array', async () => {
         try {
-          await query.updateByEvents('readOnlyReadModelName', null)
+          await query.updateByEvents({
+            modelName: 'readOnlyReadModelName',
+            events: null
+          })
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
           expect(error).toBeInstanceOf(Error)
@@ -1989,7 +1999,10 @@ for (const { describeName, prepare } of [
           }
         ]
 
-        const result = query.updateByEvents('remoteReadModelName', events)
+        const result = query.updateByEvents({
+          modelName: 'remoteReadModelName',
+          events
+        })
 
         await query.dispose()
 
@@ -2030,7 +2043,7 @@ for (const { describeName, prepare } of [
         await query.dispose()
 
         try {
-          await query.updateByEvents('readModelName', events)
+          await query.updateByEvents({ modelName: 'readModelName', events })
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
           expect(error).toBeInstanceOf(Error)

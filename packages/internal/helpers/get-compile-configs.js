@@ -39,6 +39,12 @@ const getCompileConfigs = () => {
 
     for (let index = 0; index < babelCompile.length; index++) {
       const config = babelCompile[index]
+      if (config.sourceType == null) {
+        config.sourceType = 'js'
+      }
+      if (config.sourceType.constructor !== String) {
+        throw new Error(`.babelCompile[${index}].sourceType must be a string`)
+      }
       if (config.moduleType.constructor !== String) {
         throw new Error(`.babelCompile[${index}].moduleType must be a string`)
       }
@@ -57,6 +63,11 @@ const getCompileConfigs = () => {
       config.directory = path.dirname(filePath)
       config.inputDir = path.join(config.directory, config.inputDir)
       config.outDir = path.join(config.directory, config.outDir)
+      config.outFileExtension = config.moduleType === 'mjs' ? '.mjs' : '.js'
+      config.extensions = config.sourceType === 'ts' ? '.ts' : '.js'
+      config.deleteDirOnStart = true
+      config.filenames = [config.inputDir]
+
       configs.push(config)
     }
   }

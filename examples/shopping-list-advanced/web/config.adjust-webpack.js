@@ -7,6 +7,30 @@ const adjustWebpackConfigs = webpackConfigs => {
     ) {
       webpackConfig.externals = []
     }
+    if (
+      Object.keys(entry).find(entry => entry.endsWith('/native-chunk.js')) !=
+      null
+    ) {
+      webpackConfig.externals = [
+        function(context, request, callback) {
+          if (
+            /(resolve-runtime|resolve-debug-levels|resolve-redux|resolve-subscribe-socket\.io)/.test(
+              request
+            )
+          ) {
+            callback()
+          } else if (
+            request[0] !== '/' &&
+            request[0] !== '.' &&
+            !request.startsWith('$resolve')
+          ) {
+            callback(null, `commonjs ${request}`)
+          } else {
+            callback()
+          }
+        }
+      ]
+    }
   }
 }
 

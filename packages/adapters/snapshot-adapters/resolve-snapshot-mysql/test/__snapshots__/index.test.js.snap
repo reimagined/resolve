@@ -4,7 +4,8 @@ exports[`resolve-snapshot-mysql "drop" should drop the snapshotAdapter 1`] = `
 Array [
   Array [
     "DELETE FROM \`__ResolveSnapshots__\`
-    WHERE \`SnapshotKey\` LIKE 'key%'",
+    WHERE \`SnapshotKey\`
+    LIKE 'key%'",
     Array [
       "key",
     ],
@@ -21,7 +22,7 @@ Array [
 ]
 `;
 
-exports[`resolve-snapshot-mysql "loadSnapshot" should load the snapshot 2`] = `"value"`;
+exports[`resolve-snapshot-mysql "loadSnapshot" should load the snapshot 2`] = `"\\"value\\""`;
 
 exports[`resolve-snapshot-mysql "saveSnapshot" should save the snapshot every 5 times 1`] = `
 Array [
@@ -34,9 +35,9 @@ Array [
   ],
   Array [
     "INSERT INTO \`__ResolveSnapshots__\`(\`SnapshotKey\`, \`SnapshotContent\`)
-    VALUES('key', '\\\\\\"value = 5\\\\\\"')
+    VALUES('key', 'value = 5')
     ON DUPLICATE KEY UPDATE
-    \`SnapshotContent\` = '\\\\\\"value = 5\\\\\\"'",
+    \`SnapshotContent\` = 'value = 5'",
   ],
 ]
 `;

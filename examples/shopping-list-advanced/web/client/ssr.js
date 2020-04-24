@@ -6,29 +6,22 @@ import { createStore, AppContainer } from 'resolve-redux'
 import { Helmet } from 'react-helmet'
 import { StyleSheetManager, ServerStyleSheet } from 'styled-components'
 
-import optimisticShoppingListsSaga from './redux/sagas/optimistic-shopping-lists-saga'
-import optimisticShoppingListsReducer from './redux/reducers/optimistic-shopping-lists'
-
-import optimisticSharingsSaga from './redux/sagas/optimistic-sharings-saga'
-import optimisticSharingsReducer from './redux/reducers/optimistic-sharings'
-
-import routes from './routes'
+import getRoutes from './get-routes'
+import getRedux from './get-redux'
+import Routes from '../client/components/Routes'
+import { Router } from 'react-router'
 
 const ssrHandler = async (
-  { constants, seedClientEnvs, viewModels, utils },
+  { serverImports, constants, seedClientEnvs, viewModels, utils },
   req,
   res
 ) => {
   try {
     const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils
     const { rootPath, staticPath, jwtCookie } = constants
-    const redux = {
-      reducers: {
-        optimisticSharings: optimisticSharingsReducer,
-        optimisticShoppingLists: optimisticShoppingListsReducer
-      },
-      sagas: [optimisticSharingsSaga, optimisticShoppingListsSaga]
-    }
+
+    const redux = getRedux(serverImports)
+    const routes = getRoutes(serverImports)
 
     const baseQueryUrl = getRootBasedUrl(rootPath, '/')
     const origin = ''
@@ -52,22 +45,20 @@ const ssrHandler = async (
       isClient: false
     })
 
-    const appContainer = (
-      <AppContainer
-        origin={origin}
-        rootPath={rootPath}
-        staticPath={staticPath}
-        store={store}
-        history={history}
-        routes={routes}
-        isSSR={true}
-      />
-    )
-
+    const staticContext = {}
     const sheet = new ServerStyleSheet()
     const markup = ReactDOM.renderToStaticMarkup(
       <StyleSheetManager sheet={sheet.instance}>
-        {appContainer}
+        <AppContainer
+          origin={origin}
+          rootPath={rootPath}
+          staticPath={staticPath}
+          store={store}
+        >
+          <Router history={history} staticContext={staticContext}>
+            <Routes routes={routes} />
+          </Router>
+        </AppContainer>
       </StyleSheetManager>
     )
 
@@ -100,7 +91,7 @@ const ssrHandler = async (
       `${helmet.script.toString()}` +
       '</head>' +
       `<body ${helmet.bodyAttributes.toString()}>` +
-      `<div class="app-container">${markup}</div>` +
+      `<div id="app-container">${markup}</div>` +
       `<script src="${bundleUrl}"></script>` +
       '</body>' +
       '</html>'

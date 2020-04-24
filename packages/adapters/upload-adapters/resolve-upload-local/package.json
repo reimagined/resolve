@@ -1,6 +1,6 @@
 {
   "name": "resolve-upload-local",
-  "version": "0.22.6",
+  "version": "0.23.2",
   "description": "",
   "engines": {
     "node": ">=10.9"
@@ -31,7 +31,7 @@
     "crypto": "^1.0.1"
   },
   "devDependencies": {
-    "jest": "24.1.0"
+    "jest": "25.1.0"
   },
   "babelCompile": [
     {

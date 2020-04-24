@@ -15,6 +15,7 @@ import paginateEvents from './paginate-events'
 import saveEventOnly from './save-event-only'
 import freeze from './freeze'
 import unfreeze from './unfreeze'
+import shapeEvent from './shape-event'
 
 export default createAdapter.bind(null, {
   connect,
@@ -29,6 +30,7 @@ export default createAdapter.bind(null, {
   saveEventOnly,
   freeze,
   unfreeze,
+  shapeEvent,
   MySQL,
   escapeId,
   escape

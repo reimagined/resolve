@@ -1,7 +1,8 @@
 import path from 'path'
 import fs from 'fs'
+import { promisify } from 'util'
 
-import { pipeline } from 'resolve-storage-base'
+import { pipeline } from 'stream'
 
 const importEventStoreHandler = options => async (req, res) => {
   const { storageAdapter } = req.resolve
@@ -11,7 +12,7 @@ const importEventStoreHandler = options => async (req, res) => {
 
     const eventStream = storageAdapter.import()
     const fsStream = fs.createReadStream(path.join(importFile))
-    await pipeline(fsStream, eventStream)
+    await promisify(pipeline)(fsStream, eventStream)
 
     res.end('ok')
   } catch (error) {

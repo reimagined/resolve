@@ -1,40 +1,34 @@
 const getLatestEvent = async (
-  { executeStatement, escapeId, escape, tableName, databaseName },
+  { executeStatement, escapeId, escape, tableName, databaseName, shapeEvent },
   { eventTypes, aggregateIds, startTime, finishTime }
 ) => {
   const injectString = value => `${escape(value)}`
   const injectNumber = value => `${+value}`
 
+  const databaseNameAsId = escapeId(databaseName)
+  const eventsTableNameAsId = escapeId(tableName)
+
   const queryConditions = []
   if (eventTypes != null) {
-    queryConditions.push(
-      `${escapeId('type')} IN (${eventTypes.map(injectString)})`
-    )
+    queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`)
   }
   if (aggregateIds != null) {
-    queryConditions.push(
-      `${escapeId('aggregateId')} IN (${aggregateIds.map(injectString)})`
-    )
+    queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
   }
   if (startTime != null) {
-    queryConditions.push(
-      `${escapeId('timestamp')} > ${injectNumber(startTime)}`
-    )
+    queryConditions.push(`"timestamp" > ${injectNumber(startTime)}`)
   }
   if (finishTime != null) {
-    queryConditions.push(
-      `${escapeId('timestamp')} < ${injectNumber(finishTime)}`
-    )
+    queryConditions.push(`"timestamp" < ${injectNumber(finishTime)}`)
   }
 
   const resultQueryCondition =
     queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
 
   const rows = await executeStatement(
-    `SELECT * FROM ${escapeId(databaseName)}.${escapeId(
-      tableName
-    )} ${resultQueryCondition}
-    ORDER BY ${escapeId('timestamp')} DESC
+    `SELECT * FROM ${databaseNameAsId}.${eventsTableNameAsId}
+    ${resultQueryCondition}
+    ORDER BY "timestamp" DESC
     OFFSET 0
     LIMIT 1`
   )
@@ -43,10 +37,7 @@ const getLatestEvent = async (
     return null
   }
 
-  return {
-    ...rows[0],
-    payload: JSON.parse(rows[0].payload)
-  }
+  return shapeEvent(rows[0])
 }
 
 export default getLatestEvent

@@ -1,5 +1,4 @@
 import { actionTypes } from 'resolve-redux'
-import { routerActions } from 'react-router-redux'
 import { delay } from 'redux-saga/effects'
 import storyCreateSagaFactory from '../../../client/sagas/story-create-saga'
 
@@ -7,7 +6,8 @@ const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = actionTypes
 
 test('Create story saga - register takeAll sagas', () => {
   const api = {}
-  const storyCreateSaga = storyCreateSagaFactory({ api })
+  const history = []
+  const storyCreateSaga = storyCreateSagaFactory(history, { api })
   let step = null
 
   step = storyCreateSaga.next()
@@ -55,7 +55,8 @@ test('Create story saga - success story create and success fetch', () => {
   const api = {
     loadReadModelState: jest.fn().mockReturnValue(readModelStatePromise)
   }
-  const storyCreateSaga = storyCreateSagaFactory({ api })
+  const history = []
+  const storyCreateSaga = storyCreateSagaFactory(history, { api })
   let step = storyCreateSaga.next()
   const successCommandSagaFactory = step.value.payload.args[1]
 
@@ -89,9 +90,7 @@ test('Create story saga - success story create and success fetch', () => {
 
   step = successCommandSaga.next({ result: '{}' })
   expect(step.done).toEqual(false)
-  expect(step.value.payload.action).toEqual(
-    routerActions.push(`/storyDetails/aggregateId`)
-  )
+  expect(history).toEqual([`/storyDetails/aggregateId`])
 
   step = successCommandSaga.next()
   expect(step.done).toEqual(true)
@@ -102,7 +101,8 @@ test('Create story saga - success story create and failed fetch', () => {
   const api = {
     loadReadModelState: jest.fn().mockReturnValue(readModelStatePromise)
   }
-  const storyCreateSaga = storyCreateSagaFactory({ api })
+  const history = []
+  const storyCreateSaga = storyCreateSagaFactory(history, { api })
   let step = storyCreateSaga.next()
   const successCommandSagaFactory = step.value.payload.args[1]
 
@@ -123,9 +123,10 @@ test('Create story saga - success story create and failed fetch', () => {
   expect(step.done).toEqual(true)
 })
 
-test('Create story saga - fail story create', () => {
+test('Create story saga - story creating failed', () => {
   const api = {}
-  const storyCreateSaga = storyCreateSagaFactory({ api })
+  const history = []
+  const storyCreateSaga = storyCreateSagaFactory(history, { api })
   let step = storyCreateSaga.next()
   step = storyCreateSaga.next()
   const failureCommandSagaFactory = step.value.payload.args[1]
@@ -136,9 +137,7 @@ test('Create story saga - fail story create', () => {
 
   step = failureCommandSaga.next()
   expect(step.done).toEqual(false)
-  expect(step.value.payload.action).toEqual(
-    routerActions.push(`/error?text=Failed to create a story`)
-  )
+  expect(history).toEqual([`/error?text=Failed to create a story`])
 
   step = failureCommandSaga.next()
   expect(step.done).toEqual(true)

@@ -1,4 +1,6 @@
+import _createAdapter from 'resolve-snapshot-base'
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
+
 import rollbackTransaction from './rollbackTransaction'
 import commitTransaction from './commitTransaction'
 import executeStatement from './executeStatement'
@@ -19,31 +21,28 @@ import _destroyResource from './resource/destroy'
 const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
 const escape = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
-const createAdapter = config => {
-  const pool = {
+const createAdapter = _createAdapter.bind(
+  null,
+  {
+    connect,
+    loadSnapshot,
+    saveSnapshot,
+    dropSnapshot,
+    init,
+    drop,
+    dispose
+  },
+  {
     executeStatement,
     commitTransaction,
     rollbackTransaction,
     beginTransaction,
-    connect,
     RDSDataService,
     escape,
     escapeId,
-    coercer,
-    dispose
+    coercer
   }
-
-  Object.assign(pool, { config })
-
-  return Object.freeze({
-    loadSnapshot: loadSnapshot.bind(null, pool),
-    saveSnapshot: saveSnapshot.bind(null, pool),
-    dispose: dispose.bind(null, pool),
-    init: init.bind(null, pool),
-    dropSnapshot: dropSnapshot.bind(null, pool),
-    drop: drop.bind(null, pool)
-  })
-}
+)
 
 const resourcePool = {
   executeStatement,

@@ -1,21 +1,46 @@
+const typescriptEslintRecommended = require('@typescript-eslint/eslint-plugin')
+  .configs.recommended
+
 module.exports = {
   env: {
     node: true,
     jest: true,
-    es6: true
+    es6: true,
+    browser: true
   },
-  extends: 'react-app',
+  extends: ['react-app', 'plugin:prettier/recommended'],
   parserOptions: {
+    sourceType: 'module',
+    ecmaVersion: 2020,
     ecmaFeature: {
       jsx: true
     }
   },
   plugins: ['react', 'jsx-a11y', 'import', 'spellcheck'],
-  settings: {
-    react: {
-      version: '16.5'
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      plugins: ['@typescript-eslint'],
+      parser: '@typescript-eslint/parser',
+      extends: ['plugin:import/typescript'],
+      rules: Object.assign({}, typescriptEslintRecommended.rules, {
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/member-delimiter-style': [
+          'error',
+          {
+            multiline: {
+              delimiter: 'none',
+              requireLast: false
+            },
+            singleline: {
+              delimiter: 'comma',
+              requireLast: false
+            }
+          }
+        ]
+      })
     }
-  },
+  ],
   rules: {
     'func-names': 'off',
     'no-underscore-dangle': 'off',
@@ -213,11 +238,13 @@ module.exports = {
           'jsons',
           'jsonschema',
           'jsonwebtoken',
+          'jsx',
           'jwt',
           'latin1',
           'lan',
           'len',
           'libs',
+          'lifecycle',
           'linearized',
           'localhost',
           'lodash',
@@ -240,6 +267,7 @@ module.exports = {
           'multipart',
           'msg',
           'mysql',
+          'mjs',
           'namespace',
           'namespaces',
           'nav',
@@ -258,6 +286,7 @@ module.exports = {
           'nspname',
           'nullable',
           'nullish',
+          'num',
           'obj',
           'objoid',
           'objs',
@@ -331,6 +360,7 @@ module.exports = {
           'Roboto',
           'runtime',
           'sanitizer',
+          'savepoint',
           'scalable',
           'sdk',
           'sep',
@@ -385,6 +415,7 @@ module.exports = {
           'todos',
           'topstories',
           'Transactional',
+          'tsc',
           'trie',
           'truthy',
           'ttf',
@@ -440,6 +471,7 @@ module.exports = {
           'wikipedia',
           'wildcard',
           'workspaces',
+          'workspace',
           'writepolicy',
           'wss',
           'www',

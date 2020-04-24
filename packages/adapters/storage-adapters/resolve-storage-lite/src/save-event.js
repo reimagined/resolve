@@ -57,6 +57,10 @@ const saveEvent = async (pool, event) => {
       error != null && error.message != null ? error.message : ''
     const errorCode = error != null && error.code != null ? error.code : ''
 
+    try {
+      await database.exec('ROLLBACK;')
+    } catch (e) {}
+
     if (errorMessage === 'SQLITE_ERROR: integer overflow') {
       throw new Error('Event store is frozen')
     } else if (
@@ -68,10 +72,6 @@ const saveEvent = async (pool, event) => {
       errorCode === 'SQLITE_CONSTRAINT' &&
       errorMessage.indexOf('PRIMARY') > -1
     ) {
-      try {
-        await database.exec('ROLLBACK;')
-      } catch (e) {}
-
       return await saveEvent(pool, event)
     } else {
       throw error

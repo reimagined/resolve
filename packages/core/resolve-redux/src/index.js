@@ -19,7 +19,6 @@ import { FetchError, HttpError } from './create_api'
 import { Provider, Consumer } from './resolve_context'
 import Providers from './providers'
 import AppContainer from './app_container'
-import Routes from './routes'
 import deserializeInitialState from './deserialize_initial_state'
 import createStore from './create_store'
 import sendAggregateAction from './send_aggregate_action'
@@ -48,7 +47,6 @@ export {
   FetchError,
   HttpError,
   AppContainer,
-  Routes,
   Providers,
   createStore,
   deserializeInitialState,

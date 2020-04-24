@@ -1,7 +1,7 @@
 import { RESPONSE_SIZE_LIMIT } from './constants'
 
 const loadEventsByTimestamp = async (
-  { executeStatement, escapeId, escape, tableName, databaseName },
+  { executeStatement, escapeId, escape, tableName, databaseName, shapeEvent },
   { eventTypes, aggregateIds, startTime, finishTime, limit },
   callback
 ) => {
@@ -11,24 +11,16 @@ const loadEventsByTimestamp = async (
 
   const queryConditions = []
   if (eventTypes != null) {
-    queryConditions.push(
-      `${escapeId('type')} IN (${eventTypes.map(injectString)})`
-    )
+    queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`)
   }
   if (aggregateIds != null) {
-    queryConditions.push(
-      `${escapeId('aggregateId')} IN (${aggregateIds.map(injectString)})`
-    )
+    queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
   }
   if (startTime != null) {
-    queryConditions.push(
-      `${escapeId('startTime')} >= ${injectNumber(startTime)}`
-    )
+    queryConditions.push(`"startTime" >= ${injectNumber(startTime)}`)
   }
   if (finishTime != null) {
-    queryConditions.push(
-      `${escapeId('finishTime')} <= ${injectNumber(finishTime)}`
-    )
+    queryConditions.push(`"finishTime" <= ${injectNumber(finishTime)}`)
   }
 
   const resultQueryCondition =
@@ -77,16 +69,8 @@ const loadEventsByTimestamp = async (
     }
 
     for (const event of rows) {
-      event.payload = JSON.parse(event.payload)
-
-      delete event.totalEventSize
-      delete event.eventSize
-      delete event.threadCounter
-      delete event.threadId
-
       countEvents++
-
-      await callback(event)
+      await callback(shapeEvent(event))
     }
 
     if (rows.length === 0 || countEvents > limit) {

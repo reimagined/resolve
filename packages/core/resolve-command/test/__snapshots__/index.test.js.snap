@@ -242,6 +242,9 @@ Array [
 exports[`dispose with performance tracer should dispose the snapshot handler: addError 1`] = `
 Array [
   Array [
+    [SyntaxError: Unexpected token u in JSON at position 0],
+  ],
+  Array [
     [Error: Command handler is disposed],
   ],
   Array [
@@ -1481,7 +1484,16 @@ Array [
 ]
 `;
 
-exports[`executeCommand with performance tracer should use snapshotAdapter for building state: addError 1`] = `Array []`;
+exports[`executeCommand with performance tracer should use snapshotAdapter for building state: addError 1`] = `
+Array [
+  Array [
+    [SyntaxError: Unexpected token u in JSON at position 0],
+  ],
+  Array [
+    [SyntaxError: Unexpected token u in JSON at position 0],
+  ],
+]
+`;
 
 exports[`executeCommand with performance tracer should use snapshotAdapter for building state: addNewSubsegment 1`] = `
 Array [

@@ -1,7 +1,13 @@
 import { RESPONSE_SIZE_LIMIT } from './constants'
 
 const paginateEvents = async (pool, offset, batchSize) => {
-  const { escapeId, tableName, databaseName, executeStatement } = pool
+  const {
+    escapeId,
+    tableName,
+    databaseName,
+    executeStatement,
+    shapeEvent
+  } = pool
 
   let rows = RESPONSE_SIZE_LIMIT
   const databaseNameAsId = escapeId(databaseName)
@@ -42,17 +48,17 @@ const paginateEvents = async (pool, offset, batchSize) => {
   }
 
   let eventOffset = 0
+  const resultRows = []
   for (const event of rows) {
-    event[Symbol.for('sequenceIndex')] = offset + eventOffset
+    resultRows.push(
+      shapeEvent(event, {
+        [Symbol.for('sequenceIndex')]: offset + eventOffset
+      })
+    )
     eventOffset++
-
-    delete event.threadId
-    delete event.threadCounter
-    delete event.totalEventSize
-    delete event.eventSize
   }
 
-  return rows
+  return resultRows
 }
 
 export default paginateEvents

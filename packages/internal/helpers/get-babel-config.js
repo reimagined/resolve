@@ -1,7 +1,7 @@
 const { getResolvePackages } = require('./get-resolve-packages')
 const { getResolveExamples } = require('./get-resolve-examples')
 
-const getBabelConfig = ({ moduleType, moduleTarget }) => {
+const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
   const resolvePackages = getResolvePackages()
   const resolveExamples = getResolveExamples()
 
@@ -15,6 +15,7 @@ const getBabelConfig = ({ moduleType, moduleTarget }) => {
     modules,
     targets,
     loose,
+    presets,
     forceAllTransforms = false
 
   switch (moduleType) {
@@ -28,8 +29,13 @@ const getBabelConfig = ({ moduleType, moduleTarget }) => {
       useESModules = true
       break
     }
+    case 'mjs': {
+      modules = 'false'
+      useESModules = true
+      break
+    }
     default: {
-      throw new Error('"moduleType" must be one of ["cjs", "es"]')
+      throw new Error('"moduleType" must be one of ["cjs", "es", "mjs"]')
     }
   }
 
@@ -55,19 +61,47 @@ const getBabelConfig = ({ moduleType, moduleTarget }) => {
     }
   }
 
+  switch (sourceType) {
+    case 'js': {
+      presets = [
+        [
+          '@babel/preset-env',
+          {
+            loose,
+            targets,
+            forceAllTransforms,
+            modules
+          }
+        ],
+        '@babel/preset-react'
+      ]
+      break
+    }
+    case 'ts': {
+      presets = [
+        '@babel/preset-typescript',
+        [
+          '@babel/preset-env',
+          {
+            loose,
+            targets,
+            forceAllTransforms,
+            modules
+          }
+        ],
+        '@babel/preset-react'
+      ]
+      break
+    }
+    default: {
+      throw new Error(
+        `"sourceType" must be one of ["js", "ts"]. sourceType = ${sourceType}`
+      )
+    }
+  }
+
   return {
-    presets: [
-      [
-        '@babel/preset-env',
-        {
-          loose,
-          targets,
-          forceAllTransforms,
-          modules
-        }
-      ],
-      '@babel/preset-react'
-    ],
+    presets,
     plugins: [
       ['@babel/plugin-proposal-decorators', { legacy: true }],
       '@babel/plugin-proposal-class-properties',

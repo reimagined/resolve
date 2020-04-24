@@ -1,6 +1,6 @@
 {
   "name": "resolve-query",
-  "version": "0.22.6",
+  "version": "0.23.2",
   "description": "Provides an interface used to create and querry read models and view models in a reSolve application.",
   "engines": {
     "node": ">=10.9"
@@ -26,10 +26,10 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-query#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "resolve-debug-levels": "0.22.6"
+    "resolve-debug-levels": "0.23.2"
   },
   "devDependencies": {
-    "jest": "24.1.0"
+    "jest": "25.1.0"
   },
   "babelCompile": [
     {

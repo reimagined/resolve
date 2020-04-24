@@ -2,15 +2,16 @@ import { put } from 'redux-saga/effects'
 
 import { authSuccess, authFailure } from './actions'
 
-const authSaga = function*({ api }, { url, body }) {
+const authSaga = function*({ api }, { url, body, method }) {
   try {
     yield api.request({
       url,
-      body
+      body,
+      method
     })
-    yield put(authSuccess(url, body))
+    yield put(authSuccess(url, body, method))
   } catch (error) {
-    yield put(authFailure(url, body, error))
+    yield put(authFailure(url, body, method, error))
   }
 }
 

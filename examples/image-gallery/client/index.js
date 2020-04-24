@@ -18,15 +18,13 @@ const entryPoint = ({ rootPath, staticPath, localS3Constants }) => {
     isClient: true
   })
 
-  const appContainer = document.createElement('div')
-  document.body.appendChild(appContainer)
   render(
     <Layout staticPath={staticPath}>
       <UploaderContext.Provider value={localS3Constants}>
         <App store={store} />
       </UploaderContext.Provider>
     </Layout>,
-    appContainer
+    document.getElementById('app-container')
   )
 }
 

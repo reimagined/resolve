@@ -1,0 +1,15 @@
+{
+  "name": "@internal/workspace-manager",
+  "private": true,
+  "version": "0.23.2",
+  "bin": "./bin/index.js",
+  "dependencies": {
+    "@babel/cli": "^7.0.0",
+    "@internal/helpers": "0.23.2",
+    "glob": "7.1.6"
+  },
+  "scripts": {
+    "start": "node ./bin/index.js",
+    "test": "echo || exit 0"
+  }
+}

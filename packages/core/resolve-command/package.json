@@ -1,6 +1,6 @@
 {
   "name": "resolve-command",
-  "version": "0.22.6",
+  "version": "0.23.2",
   "description": "Creates a function that handles commands in a reSolve application.",
   "engines": {
     "node": ">=10.9"
@@ -28,7 +28,7 @@
     "@babel/runtime": "^7.0.0"
   },
   "devDependencies": {
-    "jest": "24.1.0"
+    "jest": "25.1.0"
   },
   "babelCompile": [
     {

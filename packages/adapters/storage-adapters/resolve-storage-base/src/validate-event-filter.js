@@ -25,11 +25,14 @@ const validateEventFilter = filter => {
     } else if (
       stringArrayFields.includes(key) &&
       !(
-        Array.isArray(filter[key]) &&
-        filter[key].every(hasType.bind(null, String))
+        (Array.isArray(filter[key]) &&
+          filter[key].every(hasType.bind(null, String))) ||
+        filter[key] == null
       )
     ) {
-      errors.push(`Event filter field "${key}" should be array of strings`)
+      errors.push(
+        `Event filter field "${key}" should be array of strings or be null`
+      )
     } else if (
       key === 'cursor' &&
       !(hasType(String, filter[key]) || filter[key] == null)

@@ -21,7 +21,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
         "null",
         "[FUNCTION IMPLEMENTATION]",
       ],
@@ -52,7 +52,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
         "null",
         "[FUNCTION IMPLEMENTATION]",
       ],
@@ -83,7 +83,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
         "null",
         "[FUNCTION IMPLEMENTATION]",
       ],
@@ -114,7 +114,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
         "null",
         "[FUNCTION IMPLEMENTATION]",
       ],
@@ -145,7 +145,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
         "null",
         "[FUNCTION IMPLEMENTATION]",
       ],
@@ -176,7 +176,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
         "null",
         "[FUNCTION IMPLEMENTATION]",
       ],
@@ -207,7 +207,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
         "null",
         "[FUNCTION IMPLEMENTATION]",
       ],
@@ -238,7 +238,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
         "null",
         "[FUNCTION IMPLEMENTATION]",
       ],
@@ -269,7 +269,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
         "null",
         "[FUNCTION IMPLEMENTATION]",
       ],
