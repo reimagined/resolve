@@ -31,7 +31,7 @@ const RegistrationForm = ({ user }) => {
       aggregateName: 'user-profile',
       payload: values
     },
-    [user]
+    [user, values]
   ) as () => void
 
   return (
@@ -47,6 +47,7 @@ const RegistrationForm = ({ user }) => {
               id="nickname"
               placeholder="Nickname"
               defaultValue={user ? user.nickname : ''}
+              disabled={!!user}
               onChange={handleChange('nickname')}
             />
           </Col>
