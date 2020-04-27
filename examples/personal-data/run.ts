@@ -9,6 +9,7 @@ import {
 } from 'resolve-scripts'
 
 import resolveModuleAuth from 'resolve-module-auth'
+import resolveModuleUploader from 'resolve-module-uploader'
 
 import appConfig from './config.app'
 import devConfig from './config.dev'
@@ -20,6 +21,12 @@ import adjustWebpackConfigs from './config.adjust_webpack'
 const launchMode = process.argv[2]
 
 void (async (): Promise<void> => {
+  const moduleUploader = resolveModuleUploader({
+    publicDirs: ['images'],
+    expireTime: 604800,
+    jwtSecret: 'SECRETJWT'
+  })
+
   const moduleAuth = resolveModuleAuth([
     {
       name: 'local-strategy',
@@ -49,7 +56,8 @@ void (async (): Promise<void> => {
         defaultResolveConfig,
         appConfig,
         devConfig,
-        moduleAuth
+        moduleAuth,
+        moduleUploader
       )
 
       await reset(

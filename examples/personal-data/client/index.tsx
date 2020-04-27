@@ -3,6 +3,7 @@ import { ResolveContext } from 'resolve-react-hooks'
 import { render } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
+import UploaderContext from './context'
 
 // import App from './components/App'
 
@@ -13,8 +14,9 @@ const entryPoint = (context: any): any => {
   document.body.appendChild(appContainer)
   render(
     <ResolveContext.Provider value={context}>
-      <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
-      {/* <App /> */}
+      <UploaderContext.Provider value={context.localS3Constants}>
+        <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
+      </UploaderContext.Provider>
     </ResolveContext.Provider>,
     appContainer
   )

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useQuery, useCommand } from 'resolve-react-hooks'
-import v4 from 'uuid/v4'
+import uuid from 'uuid/v4'
 import {
   FormGroup,
   Label,
@@ -13,6 +13,7 @@ import {
 
 import { UserProfile } from '../../common/types'
 import Feed from './Feed'
+import ImageUploader from './ImageUpload'
 
 const NewPost = ({
   user,
@@ -31,7 +32,7 @@ const NewPost = ({
   const publish = useCommand(
     {
       type: 'create',
-      aggregateId: v4(),
+      aggregateId: uuid(),
       aggregateName: 'blog-post',
       payload: {
         authorId: user.id,
@@ -67,28 +68,31 @@ const NewPost = ({
   return (
     <React.Fragment>
       {collapsed ? (
-        <Button onClick={toggleCollapsed}> Publish new post</Button>
+        <Button onClick={toggleCollapsed}>Publish new post</Button>
       ) : (
-        <Form>
-          <FormGroup>
-            <Label for="addPostTitle">New post</Label>
-            <Input id="addPostTitle" onChange={handleChange('title')} />
-          </FormGroup>
-          <FormGroup>
-            <Input
-              onChange={handleChange('content')}
-              type="textarea"
-              id="addPostContent"
-              rows="7"
-            />
-            <FormText>Use MD syntax</FormText>
-          </FormGroup>
-          <FormGroup>
-            <Button onClick={publish} className="mt-3">
-              Publish
-            </Button>
-          </FormGroup>
-        </Form>
+        <React.Fragment>
+          <Form>
+            <FormGroup>
+              <Label for="addPostTitle">New post</Label>
+              <Input id="addPostTitle" onChange={handleChange('title')} />
+            </FormGroup>
+            <FormGroup>
+              <Input
+                onChange={handleChange('content')}
+                type="textarea"
+                id="addPostContent"
+                rows="7"
+              />
+              <FormText>Use MD syntax</FormText>
+            </FormGroup>
+            <FormGroup>
+              <Button onClick={publish} className="mt-3">
+                Publish
+              </Button>
+            </FormGroup>
+          </Form>
+          <ImageUploader owner={user} />
+        </React.Fragment>
       )}
       {error && (
         <Alert color="danger">Ann error occurred while publishing</Alert>
