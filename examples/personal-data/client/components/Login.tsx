@@ -8,7 +8,8 @@ import {
   FormGroup,
   Input,
   FormText,
-  Button
+  Button,
+  Alert
 } from 'reactstrap'
 
 const RegistrationForm = ({ user }) => {
@@ -17,11 +18,18 @@ const RegistrationForm = ({ user }) => {
     firstName: user ? user.firstName : '',
     lastName: user ? user.lastName : '',
     phoneNumber: user ? user.contacts.phoneNumber : '',
-    address: user ? user.contacts.address : ''
+    address: user ? user.contacts.address : '',
+    error: null,
+    done: null
   })
 
   const handleChange = prop => event => {
-    setValues({ ...values, [prop]: event.target.value })
+    setValues({
+      ...values,
+      error: false,
+      done: false,
+      [prop]: event.target.value
+    })
   }
 
   const update = useCommand(
@@ -31,8 +39,17 @@ const RegistrationForm = ({ user }) => {
       aggregateName: 'user-profile',
       payload: values
     },
+    (error, result) => {
+      if (error) {
+        setValues({ ...values, error, done: false })
+      } else {
+        setValues({ ...values, error: false, done: true })
+      }
+    },
     [user, values]
   ) as () => void
+
+  const { error, done } = values
 
   return (
     <React.Fragment>
@@ -107,11 +124,15 @@ const RegistrationForm = ({ user }) => {
         </FormGroup>
         <FormGroup row>
           <Col>
-            {user ? (
-              <Button onClick={update}>Update</Button>
-            ) : (
-              <Button type="submit">Sign Up</Button>
-            )}
+            <div className="mb-3">
+              {user ? (
+                <Button onClick={update}>Update</Button>
+              ) : (
+                <Button type="submit">Sign Up</Button>
+              )}
+            </div>
+            {error && <Alert color="danger">An error occurred</Alert>}
+            {done && <Alert color="success">Successfully saved</Alert>}
           </Col>
         </FormGroup>
       </Form>
