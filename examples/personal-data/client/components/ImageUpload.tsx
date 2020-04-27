@@ -21,7 +21,7 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
       fields: {},
       url: ''
     },
-    uploadId: '',
+    uploadId: null,
     token: '',
     staticToken: '',
     mimeType: '',
@@ -49,9 +49,9 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
   const uploadStarted = useCommand({
     type: 'startUpload',
     aggregateName: 'media',
-    aggregateId, // TODO: what is here?
+    aggregateId, // TODO: what is here? uploadId?
     payload: {
-      mediaId: aggregateId, // TODO: what is here?
+      mediaId: aggregateId, // TODO: what is here? uploadId?
       owner: owner.fullName,
       ownerId: owner.id
     }
@@ -60,7 +60,7 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
   const uploadFinished = useCommand({
     type: 'finishUpload',
     aggregateName: 'media',
-    aggregateId, // TODO: what is here?
+    aggregateId, // TODO: what is here? uploadId?
     payload: {}
   })
 
@@ -68,7 +68,7 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     getFormUpload({ dir: DIRECTORY }).then(result => {
       const { form, uploadId } = result
       getToken({ dir: DIRECTORY }).then(token =>
-        setState({ ...state, token, form, uploadId })
+        setState({ ...state, token, form, uploadId, loaded: false })
       )
     })
   }, [state])
@@ -79,7 +79,7 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     return (
       <Form id="uploadForm">
         <FormGroup>
-          <CustomInput type="file" name="file" innerRef={ref} />
+          <CustomInput type="file" name="file" id="fileUpload" innerRef={ref} />
         </FormGroup>
 
         <Input type="hidden" name="Content-Type" value={mimeType} />
@@ -116,11 +116,11 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     <UploaderContext.Consumer>
       {({ CDNUrl }) => (
         <div>
-          <div>
-            <Button outline color="primary" onClick={handleGetUrl}>
-              Upload file
-            </Button>
+          <Button outline color="primary" onClick={handleGetUrl}>
+            Upload file
+          </Button>
 
+          {uploadId != null && (
             <div>
               <FileUploadProgress
                 key="file"
@@ -134,7 +134,7 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
               {loaded && (
                 <Input
                   type="text"
-                  value={getCDNBasedUrl({
+                  defaultValue={getCDNBasedUrl({
                     CDNUrl,
                     dir: DIRECTORY,
                     uploadId,
@@ -143,7 +143,8 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
                 />
               )}
             </div>
-          </div>
+          )}
+
         </div>
       )}
     </UploaderContext.Consumer>
