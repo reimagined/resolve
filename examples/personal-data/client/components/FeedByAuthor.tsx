@@ -1,7 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useQuery, useCommand } from 'resolve-react-hooks'
 import v4 from 'uuid/v4'
-import { FormGroup, Label, Form, Input, Button, Alert } from 'reactstrap'
+import {
+  FormGroup,
+  Label,
+  Form,
+  Input,
+  Button,
+  Alert,
+  FormText
+} from 'reactstrap'
 
 import { UserProfile } from '../../common/types'
 import Feed from './Feed'
@@ -71,8 +79,9 @@ const NewPost = ({
               onChange={handleChange('content')}
               type="textarea"
               id="addPostContent"
+              rows="7"
             />
-            {/* // TODO: <FormText>Use MD syntax</FormText> */}
+            <FormText>Use MD syntax</FormText>
           </FormGroup>
           <FormGroup>
             <Button onClick={publish} className="mt-3">
