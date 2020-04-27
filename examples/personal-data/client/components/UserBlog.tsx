@@ -1,22 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
-import v4 from 'uuid/v4'
-import {
-  Container,
-  Row,
-  Col,
-  FormGroup,
-  Label,
-  Form,
-  Input,
-  Button,
-  Alert
-} from 'reactstrap'
-import { useCommand, useQuery } from 'resolve-react-hooks'
+import { Container, Row, Col } from 'reactstrap'
+import { useQuery } from 'resolve-react-hooks'
 
 import { UserProfile } from '../../common/types'
 
-import Post from './Post'
+import FeedByAuthor from './FeedByAuthor'
+
 import Loading from './Loading'
 
 const BlogHeader = ({ user }: { user: UserProfile }) => (
@@ -24,106 +14,6 @@ const BlogHeader = ({ user }: { user: UserProfile }) => (
     Blog {user.fullName} ({user.nickname})
   </p>
 )
-
-const NewPost = ({ user }: { user: UserProfile }) => {
-  const [values, setValues] = useState({
-    title: '',
-    content: '',
-    error: null,
-    collapsed: true
-  })
-  const { title, content, collapsed, error } = values
-  const publish = useCommand(
-    {
-      type: 'create',
-      aggregateId: v4(),
-      aggregateName: 'blog-post',
-      payload: {
-        authorId: user.id,
-        content,
-        title
-      }
-    },
-    error => {
-      if (error) {
-        setValues({ ...values, error: true, collapsed: false })
-      } else {
-        setValues({
-          ...values,
-          error: false,
-          title: '',
-          content: '',
-          collapsed: true
-        })
-      }
-    },
-    [content]
-  ) as () => void
-
-  const handleChange = prop => event => {
-    setValues({ ...values, error: false, [prop]: event.target.value })
-  }
-
-  const toggleCollapsed = () => {
-    setValues({ ...values, collapsed: !collapsed })
-  }
-
-  return (
-    <React.Fragment>
-      {collapsed ? (
-        <Button onClick={toggleCollapsed}> Publish new post</Button>
-      ) : (
-        <Form>
-          <FormGroup>
-            <Label for="addPostTitle">New post</Label>
-            <Input id="addPostTitle" onChange={handleChange('title')} />
-          </FormGroup>
-          <FormGroup>
-            <Input
-              onChange={handleChange('content')}
-              type="textarea"
-              id="addPostContent"
-            />
-            {/* // TODO: <FormText>Use MD syntax</FormText> */}
-          </FormGroup>
-          <FormGroup>
-            <Button onClick={publish} className="mt-3">
-              Publish
-            </Button>
-          </FormGroup>
-        </Form>
-      )}
-      {error && (
-        <Alert color="danger">Ann error occurred while publishing</Alert>
-      )}
-    </React.Fragment>
-  )
-}
-
-const FeedByAuthor = ({ authorId }: { authorId: string }) => {
-  const [posts, setPosts] = useState([])
-
-  const getPosts = useQuery(
-    { name: 'blog-posts', resolver: 'feedByAuthor', args: { authorId } },
-    (error, result) => {
-      setPosts(result.data)
-    }
-  )
-  useEffect(() => {
-    getPosts()
-  }, [])
-  return (
-    <React.Fragment>
-      {posts.length > 0 ? (
-        posts.map((p, idx) => (
-          <Post key={idx} post={{ title: p.title, content: p.content }} />
-        ))
-      ) : (
-        <Alert color="secondary">No posts created yet</Alert>
-      )}
-    </React.Fragment>
-  )
-}
 
 const UserBlog = ({
   match: {
@@ -166,23 +56,19 @@ const UserBlog = ({
     <React.Fragment>
       <Container>
         <Row
-          className="py-3"
           style={{ display: 'flex', justifyContent: 'center' }}
+          className="pt-3"
         >
           <Col xs={12} sm={8}>
             {/* TODO: <BlogHeader user={userWith id === authorId} /> */}
             <p className="lead">Blog of user: {authorId}</p>
-            {authorId === user.id && <NewPost user={user} />}
           </Col>
         </Row>
       </Container>
       <Container>
-        <Row
-          className="py-3"
-          style={{ display: 'flex', justifyContent: 'center' }}
-        >
+        <Row style={{ display: 'flex', justifyContent: 'center' }}>
           <Col xs={12} sm={8}>
-            <FeedByAuthor authorId={authorId} />
+            <FeedByAuthor authorId={authorId} user={user} />
           </Col>
         </Row>
       </Container>

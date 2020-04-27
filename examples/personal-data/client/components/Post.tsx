@@ -1,12 +1,8 @@
 import React from 'react'
 import { Card, CardBody, CardTitle, CardText } from 'reactstrap'
+import { BlogPost } from '../../common/types'
 
-type PostProps = {
-  title: string
-  content: string
-}
-
-const Post = ({ post }: { post: PostProps }) => {
+const Post = ({ post }: { post: BlogPost }) => {
   const { title, content } = post
   return (
     <div className="mb-3">
