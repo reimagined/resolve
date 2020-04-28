@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Form, Input, Label, Button, FormGroup, CustomInput } from 'reactstrap'
+import {
+  Form,
+  Input,
+  Label,
+  Button,
+  FormGroup,
+  CustomInput,
+  FormText,
+  FormFeedback
+} from 'reactstrap'
 import uuid from 'uuid/v4'
 import FileUploadProgress from 'react-fileupload-progress'
 import { useCommand, useCommandBuilder } from 'resolve-react-hooks'
@@ -26,7 +35,8 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     staticToken: '',
     mimeType: '',
     fileName: '',
-    loaded: null
+    loaded: null,
+    loadedId: null
   })
 
   const {
@@ -36,7 +46,8 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     staticToken,
     mimeType,
     fileName,
-    loaded
+    loaded,
+    loadedId
   } = state
 
   useEffect(() => {
@@ -68,7 +79,7 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     }
   }))
 
-/*   const uploadFinished = useCommand({
+  /*   const uploadFinished = useCommand({
     type: 'finishUpload',
     aggregateName: 'media',
     aggregateId, // TODO: what is here? uploadId?
@@ -126,17 +137,21 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
   }
 
   const onLoad = () => {
-    setState({ ...state, loaded: true })
+    setState({ ...state, loaded: true, loadedId: uploadId, uploadId: null })
     uploadFinished(uploadId)
   }
+
+  const handleFocus = event => event.target.select()
 
   return (
     <UploaderContext.Consumer>
       {({ CDNUrl }) => (
         <div>
-          <Button outline color="primary" onClick={handleGetUrl}>
-            Upload file
-          </Button>
+          {uploadId == null && (
+            <Button outline color="primary" onClick={handleGetUrl}>
+              Upload file
+            </Button>
+          )}
 
           {uploadId != null && (
             <div>
@@ -148,19 +163,26 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
                 formGetter={formGetter}
                 onLoad={onLoad}
               />
-
-              {loaded && (
-                <Input
-                  type="text"
-                  defaultValue={getCDNBasedUrl({
-                    CDNUrl,
-                    dir: DIRECTORY,
-                    uploadId,
-                    token
-                  })}
-                />
-              )}
             </div>
+          )}
+
+          {loaded && loadedId && (
+            <FormGroup>
+              <Input
+                valid
+                type="text"
+                defaultValue={`![](${getCDNBasedUrl({
+                  CDNUrl,
+                  dir: DIRECTORY,
+                  uploadId: loadedId,
+                  token
+                })})`}
+                onFocus={handleFocus}
+              />
+              <FormFeedback valid>
+                File uploaded. Use the code above to embed uploaded image
+              </FormFeedback>
+            </FormGroup>
           )}
         </div>
       )}
