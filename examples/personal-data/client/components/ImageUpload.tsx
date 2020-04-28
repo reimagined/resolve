@@ -37,7 +37,8 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     fileName: '',
     picked: false,
     loaded: null,
-    loadedId: null
+    loadedId: null,
+    aggregateId: null
   })
 
   const {
@@ -49,7 +50,8 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     fileName,
     loaded,
     loadedId,
-    picked
+    picked,
+    aggregateId
   } = state
 
   useEffect(() => {
@@ -57,18 +59,6 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
       setState({ ...state, staticToken })
     })
   }, [])
-
-  /*   const aggregateId = uuid()
-  const uploadStarted = useCommand({
-    type: 'startUpload',
-    aggregateName: 'media',
-    aggregateId, // TODO: what is here? uploadId?
-    payload: {
-      mediaId: aggregateId, // TODO: what is here? uploadId?
-      owner: owner.fullName,
-      ownerId: owner.id
-    }
-  }) */
 
   const uploadStarted = useCommandBuilder(
     (aggregateId: string) => ({
@@ -84,13 +74,6 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     [uploadId]
   )
 
-  /*   const uploadFinished = useCommand({
-    type: 'finishUpload',
-    aggregateName: 'media',
-    aggregateId, // TODO: what is here? uploadId?
-    payload: {}
-  }) */
-
   const uploadFinished = useCommandBuilder((aggregateId: string) => ({
     type: 'finishUpload',
     aggregateName: 'media',
@@ -102,7 +85,14 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     getFormUpload({ dir: DIRECTORY }).then(result => {
       const { form, uploadId } = result
       getToken({ dir: DIRECTORY }).then(token =>
-        setState({ ...state, token, form, uploadId, loaded: false })
+        setState({
+          ...state,
+          token,
+          form,
+          uploadId,
+          aggregateId: uuid(),
+          loaded: false
+        })
       )
     })
   }, [state])
@@ -135,7 +125,7 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
                 mimeType: ref.current.files[0].type,
                 picked: false
               })
-              uploadStarted(uploadId)
+              uploadStarted(aggregateId)
               onSubmitHandler(...args)
             }}
           >
@@ -158,7 +148,7 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
 
   const onLoad = () => {
     setState({ ...state, loaded: true, loadedId: uploadId, uploadId: null })
-    uploadFinished(uploadId)
+    uploadFinished(aggregateId)
   }
 
   const handleFocus = event => event.target.select()
