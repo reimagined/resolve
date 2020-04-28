@@ -35,6 +35,7 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     staticToken: '',
     mimeType: '',
     fileName: '',
+    picked: false,
     loaded: null,
     loadedId: null
   })
@@ -47,7 +48,8 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     mimeType,
     fileName,
     loaded,
-    loadedId
+    loadedId,
+    picked
   } = state
 
   useEffect(() => {
@@ -102,31 +104,46 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     })
   }, [state])
 
+  const handlePickFile = () => {
+    setState({ ...state, picked: true })
+  }
+
   const ref = React.createRef<HTMLInputElement>()
 
   const uploadFormRender = onSubmitHandler => {
     return (
       <Form id="uploadForm">
-        <FormGroup>
-          <CustomInput type="file" name="file" id="fileUpload" innerRef={ref} />
+        <FormGroup style={{ display: 'flex' }}>
+          <CustomInput
+            onChange={handlePickFile}
+            type="file"
+            name="file"
+            id="fileUpload"
+            innerRef={ref}
+          />
+          <Button
+            className="ml-1"
+            outline={!picked}
+            color={picked ? 'success' : ''}
+            disabled={!picked}
+            onClick={(...args) => {
+              setState({
+                ...state,
+                mimeType: ref.current.files[0].type,
+                picked: false
+              })
+              uploadStarted(uploadId)
+              onSubmitHandler(...args)
+            }}
+          >
+            Upload
+          </Button>
         </FormGroup>
 
         <Input type="hidden" name="Content-Type" value={mimeType} />
         {Object.keys(fields).map((key, index) => (
           <Input key={index} name={key} value={fields[key]} type="hidden" />
         ))}
-
-        <Button
-          outline
-          color="success"
-          onClick={(...args) => {
-            setState({ ...state, mimeType: ref.current.files[0].type })
-            uploadStarted(uploadId)
-            onSubmitHandler(...args)
-          }}
-        >
-          Upload
-        </Button>
       </Form>
     )
   }
