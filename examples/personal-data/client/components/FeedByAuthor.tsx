@@ -71,7 +71,7 @@ const NewPost = ({
         <Button onClick={toggleCollapsed}>Publish new post</Button>
       ) : (
         <React.Fragment>
-          <Form>
+          <div>
             <FormGroup>
               <Label for="addPostTitle">New post</Label>
               <Input id="addPostTitle" onChange={handleChange('title')} />
@@ -86,12 +86,17 @@ const NewPost = ({
               <FormText>Use MD syntax</FormText>
             </FormGroup>
             <FormGroup>
-              <Button onClick={publish} className="mt-3">
-                Publish
-              </Button>
+              <div
+                className="mt-3"
+                style={{ display: 'flex', alignItems: 'flex-start' }}
+              >
+                <Button onClick={publish} className="mr-1">
+                  Publish
+                </Button>
+                <ImageUploader owner={user} />
+              </div>
             </FormGroup>
-          </Form>
-          <ImageUploader owner={user} />
+          </div>
         </React.Fragment>
       )}
       {error && (

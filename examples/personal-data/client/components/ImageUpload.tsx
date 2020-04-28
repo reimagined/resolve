@@ -175,14 +175,16 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
             }}
           >
             {uploadId == null && (
-              <Button
-                className="mr-1"
-                outline
-                color="primary"
-                onClick={handleGetUrl}
-              >
-                Upload file
-              </Button>
+              <FormGroup>
+                <Button
+                  className="mr-1"
+                  outline
+                  color="primary"
+                  onClick={handleGetUrl}
+                >
+                  Upload image
+                </Button>
+              </FormGroup>
             )}
             {loaded && loadedId && (
               <FormGroup>
