@@ -1,68 +1,35 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { useQuery, useCommand } from 'resolve-react-hooks'
-import uuid from 'uuid/v4'
-import {
-  FormGroup,
-  Label,
-  Form,
-  Input,
-  Button,
-  Alert,
-  FormText
-} from 'reactstrap'
+import { useQuery } from 'resolve-react-hooks'
+import { Button, Alert } from 'reactstrap'
 
 import { UserProfile } from '../../common/types'
 import Feed from './Feed'
-import ImageUploader from './ImageUpload'
+import PostForm from './PostForm'
 
 const NewPost = ({
   user,
-  successHandler
+  successHandlerProp
 }: {
   user: UserProfile
-  successHandler: (arg: any) => void
+  successHandlerProp: (arg: any) => void
 }) => {
   const [values, setValues] = useState({
-    title: '',
-    content: '',
     error: null,
     collapsed: true
   })
-  const { title, content, collapsed, error } = values
-  const publish = useCommand(
-    {
-      type: 'create',
-      aggregateId: uuid(),
-      aggregateName: 'blog-post',
-      payload: {
-        authorId: user.id,
-        content,
-        title
-      }
-    },
-    (error, result) => {
-      if (error) {
-        setValues({ ...values, error: true, collapsed: false })
-      } else {
-        setValues({
-          ...values,
-          error: false,
-          title: '',
-          content: '',
-          collapsed: true
-        })
-        successHandler(result)
-      }
-    },
-    [content]
-  ) as () => void
-
-  const handleChange = prop => event => {
-    setValues({ ...values, error: false, [prop]: event.target.value })
-  }
+  const { collapsed, error } = values
 
   const toggleCollapsed = () => {
     setValues({ ...values, collapsed: !collapsed })
+  }
+
+  const errorHandler = error => {
+    setValues({ ...values, collapsed: false, error })
+  }
+
+  const successHandler = result => {
+    setValues({ collapsed: true, error: null })
+    successHandlerProp(result)
   }
 
   return (
@@ -70,34 +37,11 @@ const NewPost = ({
       {collapsed ? (
         <Button onClick={toggleCollapsed}>Publish new post</Button>
       ) : (
-        <React.Fragment>
-          <div>
-            <FormGroup>
-              <Label for="addPostTitle">New post</Label>
-              <Input id="addPostTitle" onChange={handleChange('title')} />
-            </FormGroup>
-            <FormGroup>
-              <Input
-                onChange={handleChange('content')}
-                type="textarea"
-                id="addPostContent"
-                rows="7"
-              />
-              <FormText>Use MD syntax</FormText>
-            </FormGroup>
-            <FormGroup>
-              <div
-                className="mt-3"
-                style={{ display: 'flex', alignItems: 'flex-start' }}
-              >
-                <Button onClick={publish} className="mr-1">
-                  Publish
-                </Button>
-                <ImageUploader owner={user} />
-              </div>
-            </FormGroup>
-          </div>
-        </React.Fragment>
+        <PostForm
+          owner={user}
+          successHandler={successHandler}
+          errorHandler={errorHandler}
+        />
       )}
       {error && (
         <Alert color="danger">Ann error occurred while publishing</Alert>
@@ -149,7 +93,7 @@ const FeedByAuthor = ({
     <React.Fragment>
       <div className="mb-3">
         {authorId === user.id && (
-          <NewPost user={user} successHandler={successCallback} />
+          <NewPost user={user} successHandlerProp={successCallback} />
         )}
       </div>
       <Feed posts={posts} />
