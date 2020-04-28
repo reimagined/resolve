@@ -164,12 +164,42 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     <UploaderContext.Consumer>
       {({ CDNUrl }) => (
         <div>
-          {uploadId == null && (
-            <Button outline color="primary" onClick={handleGetUrl}>
-              Upload file
-            </Button>
-          )}
-
+          <div
+            style={{
+              display: 'flex',
+              alignContent: 'flex-start',
+              alignItems: 'flex-start'
+            }}
+          >
+            {uploadId == null && (
+              <Button
+                className="mr-1"
+                outline
+                color="primary"
+                onClick={handleGetUrl}
+              >
+                Upload file
+              </Button>
+            )}
+            {loaded && loadedId && (
+              <FormGroup>
+                <Input
+                  valid
+                  type="text"
+                  defaultValue={`![](${getCDNBasedUrl({
+                    CDNUrl,
+                    dir: DIRECTORY,
+                    uploadId: loadedId,
+                    token
+                  })})`}
+                  onFocus={handleFocus}
+                />
+                <FormFeedback valid>
+                  File uploaded. Use the code above to embed uploaded image
+                </FormFeedback>
+              </FormGroup>
+            )}
+          </div>
           {uploadId != null && (
             <div>
               <FileUploadProgress
@@ -181,25 +211,6 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
                 onLoad={onLoad}
               />
             </div>
-          )}
-
-          {loaded && loadedId && (
-            <FormGroup>
-              <Input
-                valid
-                type="text"
-                defaultValue={`![](${getCDNBasedUrl({
-                  CDNUrl,
-                  dir: DIRECTORY,
-                  uploadId: loadedId,
-                  token
-                })})`}
-                onFocus={handleFocus}
-              />
-              <FormFeedback valid>
-                File uploaded. Use the code above to embed uploaded image
-              </FormFeedback>
-            </FormGroup>
           )}
         </div>
       )}
