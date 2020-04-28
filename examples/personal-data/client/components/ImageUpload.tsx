@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Form, Input, Label, Button, FormGroup, CustomInput } from 'reactstrap'
 import uuid from 'uuid/v4'
 import FileUploadProgress from 'react-fileupload-progress'
-import { useCommand } from 'resolve-react-hooks'
+import { useCommand, useCommandBuilder } from 'resolve-react-hooks'
 
 import {
   getCDNBasedUrl,
@@ -45,7 +45,7 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     })
   }, [])
 
-  const aggregateId = uuid()
+  /*   const aggregateId = uuid()
   const uploadStarted = useCommand({
     type: 'startUpload',
     aggregateName: 'media',
@@ -55,14 +55,32 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
       owner: owner.fullName,
       ownerId: owner.id
     }
-  })
+  }) */
 
-  const uploadFinished = useCommand({
+  const uploadStarted = useCommandBuilder((aggregateId: string) => ({
+    type: 'startUpload',
+    aggregateName: 'media',
+    aggregateId, // TODO: what is here? uploadId?
+    payload: {
+      mediaId: aggregateId, // TODO: what is here? uploadId?
+      owner: owner.fullName,
+      ownerId: owner.id
+    }
+  }))
+
+/*   const uploadFinished = useCommand({
     type: 'finishUpload',
     aggregateName: 'media',
     aggregateId, // TODO: what is here? uploadId?
     payload: {}
-  })
+  }) */
+
+  const uploadFinished = useCommandBuilder((aggregateId: string) => ({
+    type: 'finishUpload',
+    aggregateName: 'media',
+    aggregateId, // TODO: what is here? uploadId?
+    payload: {}
+  }))
 
   const handleGetUrl = useCallback(() => {
     getFormUpload({ dir: DIRECTORY }).then(result => {
@@ -92,7 +110,7 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
           color="success"
           onClick={(...args) => {
             setState({ ...state, mimeType: ref.current.files[0].type })
-            // uploadStarted()
+            uploadStarted(uploadId)
             onSubmitHandler(...args)
           }}
         >
@@ -109,7 +127,7 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
 
   const onLoad = () => {
     setState({ ...state, loaded: true })
-    // uploadFinished()
+    uploadFinished(uploadId)
   }
 
   return (
@@ -144,7 +162,6 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
               )}
             </div>
           )}
-
         </div>
       )}
     </UploaderContext.Consumer>
