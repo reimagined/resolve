@@ -70,16 +70,19 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     }
   }) */
 
-  const uploadStarted = useCommandBuilder((aggregateId: string) => ({
-    type: 'startUpload',
-    aggregateName: 'media',
-    aggregateId, // TODO: what is here? uploadId?
-    payload: {
-      mediaId: aggregateId, // TODO: what is here? uploadId?
-      owner: owner.fullName,
-      ownerId: owner.id
-    }
-  }))
+  const uploadStarted = useCommandBuilder(
+    (aggregateId: string) => ({
+      type: 'startUpload',
+      aggregateName: 'media',
+      aggregateId, // TODO: what is here? uploadId?
+      payload: {
+        mediaId: uploadId, // TODO: what is here? uploadId?
+        owner: owner.fullName,
+        ownerId: owner.id
+      }
+    }),
+    [uploadId]
+  )
 
   /*   const uploadFinished = useCommand({
     type: 'finishUpload',
