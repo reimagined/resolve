@@ -59,6 +59,7 @@ export declare type Command = {
   aggregateId: string
   aggregateName: string
   payload: SerializableMap
+  jwtToken?: string
 }
 
 export declare type CommandResult = {
