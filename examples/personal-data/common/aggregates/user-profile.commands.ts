@@ -93,8 +93,12 @@ const aggregate: Aggregate = {
       type: USER_PROFILE_DELETED
     }
   },
-  gatherPersonalData: (state, command, authToken) => {
-    // TODO: check user authorization token
+  gatherPersonalData: (state, { aggregateId }, { jwt }) => {
+    const user = decode(jwt)
+    if (user.userId !== aggregateId) {
+      throw Error('you are not authorized to perform this operation')
+    }
+
     const { isRegistered, personalDataGathering } = state
     if (!isRegistered) {
       throw Error(`the user does not exist`)
