@@ -7,6 +7,8 @@ import {
 } from '../user-profile.events'
 import { Aggregate } from 'resolve-core'
 
+import { decode } from '../jwt'
+
 const aggregate: Aggregate = {
   register: (state, command, context) => {
     // TODO: check user authorization token
@@ -43,16 +45,22 @@ const aggregate: Aggregate = {
     }
   },
   update: (state, command, context) => {
-    // TODO: check user authorization token
+    const { decrypt, encrypt, jwt } = context
+    const {
+      aggregateId,
+      payload: { firstName, lastName }
+    } = command
+    const { firstName: currentFirstName, lastName: currentLastName } = state
+
+    const user = decode(jwt)
+    if (user.userId !== aggregateId) {
+      throw Error(`you are not authorized to perform this operation`)
+    }
+
     const { isRegistered } = state
     if (!isRegistered) {
       throw Error(`the user does not exist`)
     }
-
-    const { firstName, lastName } = command.payload
-    const { firstName: currentFirstName, lastName: currentLastName } = state
-
-    const { decrypt, encrypt } = context
 
     if (
       firstName !== decrypt(currentFirstName) ||
@@ -69,8 +77,12 @@ const aggregate: Aggregate = {
 
     throw Error("no user's profile changes found")
   },
-  delete: state => {
-    // TODO: check user authorization token
+  delete: (state, { aggregateId }, { jwt }) => {
+    const user = decode(jwt)
+    if (user.userId !== aggregateId) {
+      throw Error(`you are not authorized to perform this operation`)
+    }
+
     const { isRegistered } = state
     if (!isRegistered) {
       throw Error(`the user does not exist`)
