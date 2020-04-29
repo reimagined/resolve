@@ -10,23 +10,24 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  UncontrolledDropdown,
-  Spinner
+  Dropdown
 } from 'reactstrap'
 import { useStaticResolver, useQuery, useCommand } from 'resolve-react-hooks'
 import { UserProfile } from '../../common/types'
 import Loading from './Loading'
 
 const UserInfo = (props: { user: UserProfile | string | null }): any => {
-  const [dropdownOpen, setDropdownOpen] = useState(false)
   // const [deleted, setDeleted] = useState(false)
   const [state, setState] = useState({
     deleted: null,
-    gatheringStarted: null
+    gatheringStarted: null,
+    open: false
   })
-  const { deleted, gatheringStarted } = state
+  const { deleted, gatheringStarted, open } = state
   const { user } = props
-
+  const toggle = () => {
+    setState({ ...state, open: !open })
+  }
   const deleteMe = useCommand(
     {
       type: 'delete',
@@ -51,9 +52,7 @@ const UserInfo = (props: { user: UserProfile | string | null }): any => {
     },
     (error, result) => {
       if (error == null) {
-        if (error == null) {
-          setState({ ...state, gatheringStarted: true })
-        }
+        setState({ ...state, gatheringStarted: true, open: true })
       }
     },
     [user]
@@ -93,7 +92,7 @@ const UserInfo = (props: { user: UserProfile | string | null }): any => {
 
   return (
     <React.Fragment>
-      <UncontrolledDropdown nav inNavbar>
+      <Dropdown isOpen={open} nav inNavbar toggle={toggle}>
         <DropdownToggle nav caret>
           {user.nickname}
         </DropdownToggle>
@@ -107,7 +106,7 @@ const UserInfo = (props: { user: UserProfile | string | null }): any => {
           <DropdownItem onClick={deleteMe}>Delete my profile</DropdownItem>
           {archiveSubmenu}
         </DropdownMenu>
-      </UncontrolledDropdown>
+      </Dropdown>
     </React.Fragment>
   )
 }
