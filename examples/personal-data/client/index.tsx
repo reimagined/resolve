@@ -5,8 +5,6 @@ import { BrowserRouter } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
 import UploaderContext from './context'
 
-// import App from './components/App'
-
 import routes from './routes'
 
 const entryPoint = (context: any): any => {

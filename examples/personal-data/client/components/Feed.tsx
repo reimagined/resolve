@@ -9,10 +9,20 @@ const Feed = ({ posts }: { posts: BlogPost[] }) => {
     <React.Fragment>
       {posts.length > 0 ? (
         posts.map((p, idx) => (
-          <Post key={idx} post={{ title: p.title, content: p.content }} />
+          <Post
+            key={idx}
+            post={{
+              title: p.title,
+              content: p.content,
+              author: p.author,
+              id: p.id
+            }}
+          />
         ))
       ) : (
-        <Alert color="secondary">No posts created yet</Alert>
+        <Alert className="text-center" color="secondary">
+          No posts created yet
+        </Alert>
       )}
     </React.Fragment>
   )

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useContext } from 'react'
 import { useQuery } from 'resolve-react-hooks'
 import { Button, Alert } from 'reactstrap'
 
@@ -6,17 +6,18 @@ import { UserProfile } from '../../common/types'
 import Feed from './Feed'
 import PostForm from './PostForm'
 
+import UserContext from '../userContext'
+
 const NewPost = ({
-  user,
   successHandlerProp
 }: {
-  user: UserProfile
   successHandlerProp: (arg: any) => void
 }) => {
   const [values, setValues] = useState({
     error: null,
     collapsed: true
   })
+
   const { collapsed, error } = values
 
   const toggleCollapsed = () => {
@@ -37,11 +38,7 @@ const NewPost = ({
       {collapsed ? (
         <Button onClick={toggleCollapsed}>Publish new post</Button>
       ) : (
-        <PostForm
-          owner={user}
-          successHandler={successHandler}
-          errorHandler={errorHandler}
-        />
+        <PostForm successHandler={successHandler} errorHandler={errorHandler} />
       )}
       {error && (
         <Alert color="danger">Ann error occurred while publishing</Alert>
@@ -78,7 +75,7 @@ const FeedByAuthor = ({
         payload: { authorId, title, content }
       } = result
       nextPosts.unshift({
-        authorId,
+        author: authorId,
         title,
         content,
         id: aggregateId,
@@ -91,12 +88,14 @@ const FeedByAuthor = ({
 
   return (
     <React.Fragment>
-      <div className="mb-3">
-        {authorId === user.id && (
-          <NewPost user={user} successHandlerProp={successCallback} />
-        )}
-      </div>
-      <Feed posts={posts} />
+      <UserContext.Provider value={user}>
+        <div className="mb-3">
+          {authorId === user.id && (
+            <NewPost successHandlerProp={successCallback} />
+          )}
+        </div>
+        <Feed posts={posts} />
+      </UserContext.Provider>
     </React.Fragment>
   )
 }

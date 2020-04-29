@@ -1,17 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { FormGroup, Label, Input, Button, FormText } from 'reactstrap'
 import { useCommand } from 'resolve-react-hooks'
 import uuid from 'uuid/v4'
 
 import { UserProfile } from '../../common/types'
+import UserContext from '../userContext'
+
 import ImageUploader from './ImageUpload'
 
 const PostForm = ({
-  owner,
   successHandler,
   errorHandler
 }: {
-  owner: UserProfile
   successHandler: (arg: any) => void
   errorHandler: (error: Error | null) => void
 }) => {
@@ -20,6 +20,7 @@ const PostForm = ({
     content: ''
   })
   const { title, content } = values
+  const user = useContext(UserContext) as UserProfile
 
   const publish = useCommand(
     {
@@ -27,7 +28,7 @@ const PostForm = ({
       aggregateId: uuid(),
       aggregateName: 'blog-post',
       payload: {
-        authorId: owner.id,
+        authorId: user.id,
         content,
         title
       }
@@ -75,7 +76,7 @@ const PostForm = ({
             <Button onClick={publish} className="mr-1">
               Publish
             </Button>
-            <ImageUploader owner={owner} />
+            <ImageUploader owner={user} />
           </div>
         </FormGroup>
       </div>

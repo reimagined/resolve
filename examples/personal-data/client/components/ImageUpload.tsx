@@ -64,9 +64,9 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     (aggregateId: string) => ({
       type: 'startUpload',
       aggregateName: 'media',
-      aggregateId, // TODO: what is here? uploadId?
+      aggregateId,
       payload: {
-        mediaId: uploadId, // TODO: what is here? uploadId?
+        mediaId: uploadId,
         owner: owner.fullName,
         ownerId: owner.id
       }
@@ -77,9 +77,21 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
   const uploadFinished = useCommandBuilder((aggregateId: string) => ({
     type: 'finishUpload',
     aggregateName: 'media',
-    aggregateId, // TODO: what is here? uploadId?
+    aggregateId,
     payload: {}
   }))
+
+  const uploadError = useCommandBuilder(
+    // eslint-disable-next-line prettier/prettier
+    ({ aggregateId, error }: { aggregateId: string, error: Error }) => ({
+      type: 'finishUpload',
+      aggregateName: 'media',
+      aggregateId,
+      payload: {
+        error
+      }
+    })
+  )
 
   const handleGetUrl = useCallback(() => {
     getFormUpload({ dir: DIRECTORY }).then(result => {
@@ -151,6 +163,10 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
     uploadFinished(aggregateId)
   }
 
+  const onError = error => {
+    uploadError({ aggregateId, error })
+  }
+
   const handleFocus = event => event.target.select()
 
   return (
@@ -204,6 +220,7 @@ const ImageUploader = ({ owner }: { owner: UserProfile }) => {
                 formRenderer={uploadFormRender}
                 formGetter={formGetter}
                 onLoad={onLoad}
+                onError={onError}
               />
             </div>
           )}

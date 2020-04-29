@@ -6,7 +6,6 @@ import { useQuery } from 'resolve-react-hooks'
 import { UserProfile } from '../../common/types'
 
 import FeedByAuthor from './FeedByAuthor'
-
 import Loading from './Loading'
 
 const BlogHeader = ({ user }: { user: UserProfile }) => (
