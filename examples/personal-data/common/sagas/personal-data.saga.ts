@@ -28,11 +28,18 @@ const saga: Saga = {
         jwtToken: systemToken()
       })
 
+      const media = await sideEffects.executeQuery({
+        modelName: 'medias',
+        resolverName: 'byOwner',
+        resolverArgs: { ownerId: userId },
+        jwtToken: systemToken()
+      })
+
       const archiveId = uuid()
 
-      const archive = { id: archiveId, profile, posts }
-
+      const archive = { id: archiveId, profile, posts, media }
       // TODO: upload archive
+      console.log(archive)
 
       await sideEffects.executeCommand({
         type: 'completePersonalDataGathering',

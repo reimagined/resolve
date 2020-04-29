@@ -9,15 +9,14 @@ const resolvers: ReadModelResolvers<ResolveStore> = {
     const actualUserId = userId === systemUserId ? params.userId : userId
     return store.findOne('Users', { id: actualUserId })
   },
-  all: async (store, params, jwt) => {
+  all: async store => {
     return store.find('Users', {})
   },
   exists: async (store, params) => {
     const { nickname } = params
-    if (typeof nickname !== 'string') {
-      throw Error('nickname as string must be provided')
-    }
-    const user = await store.findOne('Users', { 'profile.nickname': nickname })
+    const user = await store.findOne('Users', {
+      'profile.nickname': nickname as string
+    })
     return user ? true : false
   }
 }

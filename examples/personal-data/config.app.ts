@@ -26,6 +26,13 @@ const appConfig = {
       encryption: 'common/read-models/encryption.ts'
     },
     {
+      name: 'medias',
+      connectorName: 'default',
+      projection: 'common/read-models/medias.projection.ts',
+      resolvers: 'common/read-models/medias.resolvers.ts',
+      encryption: 'common/read-models/encryption.ts'
+    },
+    {
       name: 'blog-posts',
       connectorName: 'default',
       projection: 'common/read-models/blog-posts.projection.ts',
