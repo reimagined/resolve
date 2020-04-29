@@ -1,4 +1,6 @@
 import { Saga } from 'resolve-core'
+import uuid from 'uuid/v4'
+
 import {
   USER_PERSONAL_DATA_REQUESTED,
   USER_PROFILE_DELETED
@@ -19,8 +21,18 @@ const saga: Saga = {
         jwtToken: systemToken()
       })
 
-      // upload
-      const archiveId = 'todo'
+      const posts = await sideEffects.executeQuery({
+        modelName: 'blog-posts',
+        resolverName: 'feedByAuthor',
+        resolverArgs: { authorId: userId },
+        jwtToken: systemToken()
+      })
+
+      const archiveId = uuid()
+
+      const archive = { id: archiveId, profile, posts }
+
+      // TODO: upload archive
 
       await sideEffects.executeCommand({
         type: 'completePersonalDataGathering',
@@ -28,7 +40,8 @@ const saga: Saga = {
         aggregateId: userId,
         payload: {
           archiveId
-        }
+        },
+        jwtToken: systemToken()
       })
     },
     [USER_PROFILE_DELETED]: async ({ sideEffects }, event): Promise<void> => {

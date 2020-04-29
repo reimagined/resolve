@@ -13,11 +13,12 @@ const resolvers: ReadModelResolvers<ResolveStore> = {
     return store.find('Users', {})
   },
   exists: async (store, params) => {
-    return false
-    /* // TODO: read from table
     const { nickname } = params
+    if (typeof nickname !== 'string') {
+      throw Error('nickname as string must be provided')
+    }
     const user = await store.findOne('Users', { 'profile.nickname': nickname })
-    return user ? true : false */
+    return user ? true : false
   }
 }
 

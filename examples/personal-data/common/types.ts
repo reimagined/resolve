@@ -8,6 +8,10 @@ export type UserProfile = {
     phoneNumber?: string
     address?: string
   }
+  archive?: {
+    id: string | null
+    timestamp: string
+  }
 }
 
 export type BlogPost = {

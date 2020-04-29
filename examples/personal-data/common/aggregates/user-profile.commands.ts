@@ -6,6 +6,7 @@ import {
   USER_PERSONAL_DATA_GATHERED
 } from '../user-profile.events'
 import { Aggregate } from 'resolve-core'
+import { systemUserId } from '../constants'
 
 import { decode } from '../jwt'
 
@@ -106,8 +107,12 @@ const aggregate: Aggregate = {
       type: USER_PERSONAL_DATA_REQUESTED
     }
   },
-  completePersonalDataGathering: (state, command, authToken) => {
-    // TODO: called by system saga - check system authorization token
+  completePersonalDataGathering: (state, command, { jwt }) => {
+    const user = decode(jwt)
+    if (user.userId !== systemUserId) {
+      throw Error('you are not authorized to perform this operation')
+    }
+
     const { isRegistered, personalDataGathering } = state
     if (!isRegistered) {
       throw Error(`the user does not exist`)

@@ -3,14 +3,16 @@ import { ResolveStore } from 'resolve-readmodel-base'
 import {
   USER_PROFILE_DELETED,
   USER_PROFILE_UPDATED,
-  USER_REGISTERED
+  USER_REGISTERED,
+  USER_PERSONAL_DATA_REQUESTED,
+  USER_PERSONAL_DATA_GATHERED
 } from '../user-profile.events'
 
 const readModel: ReadModel<ResolveStore> = {
   Init: async (store): Promise<void> => {
     await store.defineTable('Users', {
       indexes: { id: 'string' },
-      fields: ['profile']
+      fields: ['profile', 'archive']
     })
   },
   [USER_REGISTERED]: async (store, event, context): Promise<void> => {
@@ -65,6 +67,42 @@ const readModel: ReadModel<ResolveStore> = {
     await store.delete('Users', {
       id: aggregateId
     })
+  },
+  [USER_PERSONAL_DATA_REQUESTED]: async (store, event): Promise<void> => {
+    const { aggregateId, timestamp } = event
+
+    await store.update(
+      'Users',
+      { id: aggregateId },
+      {
+        $set: {
+          archive: {
+            id: null,
+            timestamp
+          }
+        }
+      }
+    )
+  },
+  [USER_PERSONAL_DATA_GATHERED]: async (store, event): Promise<void> => {
+    const {
+      aggregateId,
+      timestamp,
+      payload: { archiveId }
+    } = event
+
+    await store.update(
+      'Users',
+      { id: aggregateId },
+      {
+        $set: {
+          archive: {
+            id: archiveId,
+            timestamp
+          }
+        }
+      }
+    )
   }
 }
 
