@@ -19,6 +19,7 @@ The resolve-client library provides an interface that you can use to communicate
 | subscribe          | Subscribes to View Model updates. |
 | unsubscribe        | Unsubscribes from View Model updates. |
 
+The [with-vanilajs](https://github.com/reimagined/resolve/tree/master/examples/with-vanillajs) example application demonstrates how to use the **resolve-client** library to implement a frontend for a reSolve application in pure JavaScript.
 
 
 ## resolve-redux  
