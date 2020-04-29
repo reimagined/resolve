@@ -41,7 +41,7 @@ const NewPost = ({
         <PostForm successHandler={successHandler} errorHandler={errorHandler} />
       )}
       {error && (
-        <Alert color="danger">Ann error occurred while publishing</Alert>
+        <Alert color="danger">An error occurred while publishing</Alert>
       )}
     </React.Fragment>
   )
