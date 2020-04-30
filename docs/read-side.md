@@ -102,12 +102,12 @@ In the configuration object, specify the View Model's name and the path to the f
 
 To create a custom Read Model, you need to manually implement a Read Model connector. A connector defines functions that manage a custom Read Model's store. The following functions can be defined:
 
-- **connect** - Initialises a connection to a storage.
+- **connect** - Initializes a connection to a storage.
 - **disconnect** - Closes the storage connection.
 - **drop** - Removes the Read Model's data from storage.
 - **dispose** - Forcefully disposes all unmanaged resources used by Read Models served by this connector.
 
-The code sample below demostrates how to implement a connector that provides a file-based storage for Read Models.
+The code sample below demonstrates how to implement a connector that provides a file-based storage for Read Models.
 
 ##### common/read-models/custom-read-model-connector.js:
 
@@ -197,7 +197,7 @@ Now you can assign the custom connector to a Read Model by name as shown below.
   ]
 ```
 
-The code sample below demostrates how you can use the custom store's API in the Read Model's code.
+The code sample below demonstrates how you can use the custom store's API in the Read Model's code.
 
 ##### common/read-models/custom-read-model.projection.js:
 
