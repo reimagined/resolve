@@ -335,3 +335,9 @@ For the full code, refer to the [Shopping List](https://github.com/reimagined/re
 ## resolve-react-hooks
 
 
+| Hook | Description |
+| ---- | ----------- |
+| useCommand | initializes a command that can be passed to the backend |
+| useCommandBuilder | used to generate command based on input parameters |
+| useViewModel | connects to a reSolve View Model |
+| useQuery | allows a component to send queries to a reSolve Red Model |
