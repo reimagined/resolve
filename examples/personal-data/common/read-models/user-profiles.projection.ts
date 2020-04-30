@@ -40,7 +40,7 @@ const readModel: ReadModel<ResolveStore> = {
   [USER_PROFILE_UPDATED]: async (store, event, context): Promise<void> => {
     const {
       aggregateId,
-      payload: { firstName, lastName }
+      payload: { firstName, lastName, contacts }
     } = event
 
     const { decrypt } = context
@@ -55,7 +55,8 @@ const readModel: ReadModel<ResolveStore> = {
           profile: {
             ...user.profile,
             firstName: decrypt(firstName as string) || 'unknown',
-            lastName: decrypt(lastName as string) || 'unknown'
+            lastName: decrypt(lastName as string) || 'unknown',
+            contacts: decrypt(contacts as string) || {}
           }
         }
       }

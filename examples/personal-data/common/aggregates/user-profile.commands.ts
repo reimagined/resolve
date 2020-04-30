@@ -49,9 +49,13 @@ const aggregate: Aggregate = {
     const { decrypt, encrypt, jwt } = context
     const {
       aggregateId,
-      payload: { firstName, lastName }
+      payload: { firstName, lastName, phoneNumber, address }
     } = command
-    const { firstName: currentFirstName, lastName: currentLastName } = state
+    const {
+      firstName: currentFirstName,
+      lastName: currentLastName,
+      contacts: currentContacts
+    } = state
 
     const user = decode(jwt)
     if (user.userId !== aggregateId) {
@@ -63,15 +67,29 @@ const aggregate: Aggregate = {
       throw Error(`the user does not exist`)
     }
 
+    const {
+      phoneNumber: currentPhoneNumber,
+      address: currentAddress
+    } = decrypt(currentContacts) as {
+      phoneNumber: string
+      address: string
+    }
+
     if (
       firstName !== decrypt(currentFirstName) ||
-      lastName !== decrypt(currentLastName)
+      lastName !== decrypt(currentLastName) ||
+      address !== currentAddress ||
+      phoneNumber !== currentPhoneNumber
     ) {
       return {
         type: USER_PROFILE_UPDATED,
         payload: {
           firstName: encrypt(firstName),
-          lastName: encrypt(lastName)
+          lastName: encrypt(lastName),
+          contacts: encrypt({
+            phoneNumber,
+            address
+          })
         }
       }
     }

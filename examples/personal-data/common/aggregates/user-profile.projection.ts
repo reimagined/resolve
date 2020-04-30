@@ -10,16 +10,24 @@ const projection: AggregateProjection = {
     isRegistered: false,
     isDeleted: false
   }),
-  [USER_REGISTERED]: (state, { payload: { firstName, lastName } }) => ({
+  [USER_REGISTERED]: (
+    state,
+    { payload: { firstName, lastName, contacts } }
+  ) => ({
     ...state,
     isRegistered: true,
     firstName,
-    lastName
+    lastName,
+    contacts
   }),
-  [USER_PROFILE_UPDATED]: (state, { payload: { firstName, lastName } }) => ({
+  [USER_PROFILE_UPDATED]: (
+    state,
+    { payload: { firstName, lastName, contacts } }
+  ) => ({
     ...state,
     firstName,
-    lastName
+    lastName,
+    contacts
   }),
   [USER_PROFILE_DELETED]: state => ({
     ...state,
