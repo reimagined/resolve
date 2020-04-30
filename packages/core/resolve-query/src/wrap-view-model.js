@@ -1,3 +1,7 @@
+import debugLevels from 'resolve-debug-levels'
+
+const log = debugLevels('resolve:resolve-query:wrap-view-model')
+
 const getKey = aggregateIds =>
   Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds
 
@@ -40,7 +44,7 @@ const buildViewModel = async (
     try {
       if (!pool.workers.has(key)) {
         throw new Error(
-          `View model "${viewModelName}" build has been interrupted`
+          `View model "${viewModelName}" building has been interrupted`
         )
       }
 
@@ -52,11 +56,22 @@ const buildViewModel = async (
         subSegment.addAnnotation('origin', 'resolve:query:applyEvent')
       }
 
+      log.debug(`retrieving event store secrets manager`)
+      const secretsManager = await pool.eventStore.getSecretsManager()
+
+      log.debug(`building view-model encryption`)
+      const encryption = await pool.viewModel.encryption(event, {
+        secretsManager
+      })
+
       state = await pool.viewModel.projection[event.type](
         state,
         event,
         aggregateArgs,
-        jwtToken
+        {
+          jwt: jwtToken,
+          ...encryption
+        }
       )
       cursor = pool.eventStore.getNextCursor(cursor, [event])
 
