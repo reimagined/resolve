@@ -82,13 +82,14 @@ const UserInfo = (props: { user: UserProfile | string | null }): any => {
       </DropdownItem>
     )
 
-  const archiveSubmenu = archive ? (
-    <React.Fragment>
-      <DropdownItem divider />
-      <DropdownItem header>Archive</DropdownItem>
-      {archiveItem}
-    </React.Fragment>
-  ) : null
+  const archiveSubmenu =
+    archive || gatheringStarted ? (
+      <React.Fragment>
+        <DropdownItem divider />
+        <DropdownItem header>Archive</DropdownItem>
+        {archiveItem}
+      </React.Fragment>
+    ) : null
 
   return (
     <React.Fragment>
