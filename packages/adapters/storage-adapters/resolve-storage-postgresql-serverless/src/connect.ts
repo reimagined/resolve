@@ -42,7 +42,7 @@ const connect = async (
     escape
   })
 
-  log.debug('RDS data service client are configured')
+  log.debug('RDS data service client configured')
 }
 
 export default connect

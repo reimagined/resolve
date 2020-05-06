@@ -1,9 +1,12 @@
+import getLog from '../js/get-log'
 import { AdapterPool, CloudResourceOptions, CloudResourcePool } from '../types'
 
 const create = async (
   pool: CloudResourcePool,
   options: CloudResourceOptions
 ): Promise<any> => {
+  const log = getLog('resource:create')
+
   const {
     executeStatement,
     connect,
@@ -15,6 +18,7 @@ const create = async (
     dispose
   } = pool
 
+  log.debug(`configuring adapter with environment privileges`)
   const adminPool: AdapterPool = {
     config: {
       awsSecretStoreArn: options.awsSecretStoreAdminArn,
@@ -25,6 +29,8 @@ const create = async (
       secretsTableName: options.secretsTableName
     }
   }
+
+  log.debug(`connecting the adapter`)
   await connect(adminPool, {
     RDSDataService,
     escapeId,
@@ -34,6 +40,7 @@ const create = async (
     coercer
   })
 
+  log.debug(`building schema and granting privileges to user`)
   await executeStatement(
     adminPool,
     [
@@ -65,7 +72,10 @@ const create = async (
     ].join('; ')
   )
 
+  log.debug(`disposing the adapter`)
   await dispose(adminPool)
+
+  log.debug(`resource created successfully`)
 }
 
 export default create
