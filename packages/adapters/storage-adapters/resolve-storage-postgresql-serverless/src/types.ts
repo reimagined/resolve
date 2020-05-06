@@ -45,6 +45,12 @@ export type AdapterSpecific = {
   coercer: Coercer
 }
 
+export type CloudResource = {
+  createResource: (options: CloudResourceOptions) => Promise<any>
+  disposeResource: (options: CloudResourceOptions) => Promise<any>
+  destroyResource: (options: CloudResourceOptions) => Promise<any>
+}
+
 export type CloudResourcePool = {
   executeStatement: (pool: AdapterPool, sql: string) => Promise<any[] | null>
   RDSDataService: typeof RDSDataService
@@ -55,9 +61,6 @@ export type CloudResourcePool = {
   shapeEvent: (data: any) => any
   connect: (pool: AdapterPool, specific: AdapterSpecific) => Promise<any>
   dispose: (pool: AdapterPool) => Promise<any>
-  createResource: (options: CloudResourceOptions) => Promise<any>
-  disposeResource: (options: CloudResourceOptions) => Promise<any>
-  destroyResource: (options: CloudResourceOptions) => Promise<any>
 }
 
 export type CloudResourceOptions = {

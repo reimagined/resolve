@@ -22,11 +22,11 @@ import drop from './drop'
 import dispose from './dispose'
 import getSecretsManager from './secrets-manager'
 
-import _createResource from './js/resource/create'
-import _disposeResource from './js/resource/dispose'
-import _destroyResource from './js/resource/destroy'
+import _createResource from './resource/create'
+import _disposeResource from './resource/dispose'
+import _destroyResource from './resource/destroy'
 
-import { CloudResourcePool } from './types'
+import { CloudResource, CloudResourcePool } from './types'
 
 const createAdapter = _createAdapter.bind(null, {
   connect,
@@ -66,7 +66,10 @@ const cloudPool: CloudResourcePool = {
 }
 
 const createResource = _createResource.bind(null, cloudPool)
-const disposeResource = _disposeResource.bind(null, cloudPool)
+const disposeResource = _disposeResource.bind(
+  null,
+  cloudPool as CloudResourcePool & CloudResource
+)
 const destroyResource = _destroyResource.bind(null, cloudPool)
 
 Object.assign(cloudPool, {

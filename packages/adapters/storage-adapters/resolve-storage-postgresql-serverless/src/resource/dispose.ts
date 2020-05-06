@@ -1,7 +1,11 @@
-import { CloudResourceOptions, CloudResourcePool } from '../types'
+import {
+  CloudResource,
+  CloudResourceOptions,
+  CloudResourcePool
+} from '../types'
 
 const dispose = async (
-  pool: CloudResourcePool,
+  pool: CloudResourcePool & CloudResource,
   options: CloudResourceOptions
 ): Promise<any> => {
   const { destroyResource, createResource } = pool
