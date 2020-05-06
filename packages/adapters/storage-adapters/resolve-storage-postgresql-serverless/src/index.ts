@@ -17,9 +17,10 @@ import escape from './js/escape'
 import shapeEvent from './js/shape-event'
 
 import connect from './connect'
-import init from './js/init'
-import drop from './js/drop'
-import dispose from './js/dispose'
+import init from './init'
+import drop from './drop'
+import dispose from './dispose'
+import getSecretsManager from './secrets-manager'
 
 import _createResource from './js/resource/create'
 import _disposeResource from './js/resource/dispose'
@@ -46,7 +47,8 @@ const createAdapter = _createAdapter.bind(null, {
   saveEventOnly,
   paginateEvents,
   coercer,
-  shapeEvent
+  shapeEvent,
+  getSecretsManager
 })
 
 export default createAdapter
