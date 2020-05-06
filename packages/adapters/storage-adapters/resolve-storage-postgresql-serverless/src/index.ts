@@ -25,6 +25,8 @@ import _createResource from './js/resource/create'
 import _disposeResource from './js/resource/dispose'
 import _destroyResource from './js/resource/destroy'
 
+import { CloudResourcePool } from './types'
+
 const createAdapter = _createAdapter.bind(null, {
   connect,
   loadEventsByCursor,
@@ -49,7 +51,7 @@ const createAdapter = _createAdapter.bind(null, {
 
 export default createAdapter
 
-const pool = {
+const cloudPool: CloudResourcePool = {
   executeStatement,
   connect,
   RDSDataService,
@@ -61,11 +63,11 @@ const pool = {
   shapeEvent
 }
 
-const createResource = _createResource.bind(null, pool)
-const disposeResource = _disposeResource.bind(null, pool)
-const destroyResource = _destroyResource.bind(null, pool)
+const createResource = _createResource.bind(null, cloudPool)
+const disposeResource = _disposeResource.bind(null, cloudPool)
+const destroyResource = _destroyResource.bind(null, cloudPool)
 
-Object.assign(pool, {
+Object.assign(cloudPool, {
   createResource,
   disposeResource,
   destroyResource

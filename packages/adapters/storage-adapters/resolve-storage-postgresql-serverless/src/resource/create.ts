@@ -1,4 +1,9 @@
-const create = async (pool, options) => {
+import { AdapterPool, CloudResourceOptions, CloudResourcePool } from '../types'
+
+const create = async (
+  pool: CloudResourcePool,
+  options: CloudResourceOptions
+): Promise<any> => {
   const {
     executeStatement,
     connect,
@@ -10,7 +15,7 @@ const create = async (pool, options) => {
     dispose
   } = pool
 
-  const admin = {
+  const adminPool: AdapterPool = {
     config: {
       awsSecretStoreArn: options.awsSecretStoreAdminArn,
       dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
@@ -20,7 +25,7 @@ const create = async (pool, options) => {
       secretsTableName: options.secretsTableName
     }
   }
-  await connect(admin, {
+  await connect(adminPool, {
     RDSDataService,
     escapeId,
     escape,
@@ -30,7 +35,7 @@ const create = async (pool, options) => {
   })
 
   await executeStatement(
-    admin,
+    adminPool,
     [
       `CREATE SCHEMA ${escapeId(options.databaseName)}`,
 
@@ -57,11 +62,10 @@ const create = async (pool, options) => {
       `ALTER SCHEMA ${escapeId(options.databaseName)} OWNER TO ${escapeId(
         options.userLogin
       )}`
-    ].join('; '),
-    false
+    ].join('; ')
   )
 
-  await dispose(admin)
+  await dispose(adminPool)
 }
 
 export default create

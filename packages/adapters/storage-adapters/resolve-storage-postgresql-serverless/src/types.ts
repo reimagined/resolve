@@ -11,6 +11,8 @@ type Coercer = (
     [key: string]: any
   }
 ) => number | string | boolean
+type EscapeFunction = (source: string) => string
+type FullJitter = (retries: number) => number
 
 export type AdapterPool = {
   config: {
@@ -19,25 +21,50 @@ export type AdapterPool = {
     tableName: string
     databaseName: string
     secretsTableName: string
+    region?: string
   }
-  rdsDataService: typeof RDSDataService
-  dbClusterOrInstanceArn: string
-  awsSecretStoreArn: string
-  databaseName: string
-  secretsTableName: string
-  fullJitter: (retries: number) => number
-  coercer: Coercer
-  executeStatement: (sql: string) => any[]
-  tableName: string
-  escapeId: (source: string) => string
-  escape: (source: string) => string
+  rdsDataService?: typeof RDSDataService
+  dbClusterOrInstanceArn?: string
+  awsSecretStoreArn?: string
+  databaseName?: string
+  tableName?: string
+  secretsTableName?: string
+  fullJitter?: FullJitter
+  coercer?: Coercer
+  executeStatement?: (sql: string) => Promise<any[] | null>
+  escapeId?: EscapeFunction
+  escape?: EscapeFunction
 }
 
 export type AdapterSpecific = {
   RDSDataService: typeof RDSDataService
-  fullJitter: (retries: number) => number
-  escapeId: (source: string) => string
-  escape: (source: string) => string
-  executeStatement: (pool: AdapterPool, sql: string) => any[]
+  fullJitter: FullJitter
+  escapeId: EscapeFunction
+  escape: EscapeFunction
+  executeStatement: (pool: AdapterPool, sql: string) => Promise<any[] | null>
   coercer: Coercer
+}
+
+export type CloudResourcePool = {
+  executeStatement: (pool: AdapterPool, sql: string) => Promise<any[] | null>
+  RDSDataService: typeof RDSDataService
+  escapeId: EscapeFunction
+  escape: EscapeFunction
+  fullJitter: FullJitter
+  coercer: Coercer
+  shapeEvent: (data: any) => any
+  connect: (pool: AdapterPool, specific: AdapterSpecific) => Promise<any>
+  dispose: (pool: AdapterPool) => Promise<any>
+}
+
+export type CloudResourceOptions = {
+  region: string
+  databaseName: string
+  tableName: string
+  userLogin: string
+  awsSecretStoreArn: string
+  awsSecretStoreAdminArn: string
+  dbClusterOrInstanceArn: string
+  // TODO: add to lifecycle lambda
+  secretsTableName: string
 }
