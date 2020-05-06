@@ -12,9 +12,12 @@ import {
   DropdownItem,
   Dropdown
 } from 'reactstrap'
+import { getCDNBasedUrl } from 'resolve-module-uploader'
 import { useStaticResolver, useQuery, useCommand } from 'resolve-react-hooks'
+
 import { UserProfile } from '../../common/types'
 import Loading from './Loading'
+import UploaderContext from '../context'
 
 const UserInfo = (props: { user: UserProfile | string | null }): any => {
   // const [deleted, setDeleted] = useState(false)
@@ -71,15 +74,26 @@ const UserInfo = (props: { user: UserProfile | string | null }): any => {
   }
 
   const { archive = null } = user
-  const { id: archiveId } = archive || {}
+  const { id: uploadId, token } = archive || {}
 
   const archiveItem =
-    gatheringStarted || archiveId === null ? (
+    gatheringStarted || uploadId === null ? (
       <DropdownItem disabled>Being gathered now...</DropdownItem>
     ) : (
-      <DropdownItem>
-        Download <span>#{archiveId}</span>
-      </DropdownItem>
+      <UploaderContext.Consumer>
+        {({ CDNUrl }) => (
+          <DropdownItem
+            href={getCDNBasedUrl({
+              CDNUrl,
+              dir: 'archives',
+              uploadId,
+              token
+            })}
+          >
+            Download
+          </DropdownItem>
+        )}
+      </UploaderContext.Consumer>
     )
 
   const archiveSubmenu =

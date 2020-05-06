@@ -17,6 +17,13 @@ const appConfig = {
       projection: 'common/aggregates/blog-post.projection.ts'
     }
   ],
+  apiHandlers: [
+    {
+      path: '/api/register-archive',
+      controller: 'common/api-handlers/register-archive.ts',
+      method: 'put'
+    }
+  ],
   readModels: [
     {
       name: 'user-profiles',

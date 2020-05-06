@@ -143,12 +143,13 @@ const aggregate: Aggregate = {
       throw Error(`the user's personal data gathering in process`)
     }
 
-    const { archiveId } = command.payload
+    const { uploadId, token } = command.payload
 
     return {
       type: USER_PERSONAL_DATA_GATHERED,
       payload: {
-        archiveId
+        uploadId,
+        token
       }
     }
   }

@@ -22,7 +22,7 @@ const launchMode = process.argv[2]
 
 void (async (): Promise<void> => {
   const moduleUploader = resolveModuleUploader({
-    publicDirs: ['images'],
+    publicDirs: ['images', 'archives'],
     expireTime: 604800,
     jwtSecret: 'SECRETJWT'
   })

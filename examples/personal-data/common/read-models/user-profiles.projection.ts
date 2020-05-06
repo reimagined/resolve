@@ -78,7 +78,7 @@ const readModel: ReadModel<ResolveStore> = {
       {
         $set: {
           archive: {
-            id: null,
+            url: null,
             timestamp
           }
         }
@@ -89,7 +89,7 @@ const readModel: ReadModel<ResolveStore> = {
     const {
       aggregateId,
       timestamp,
-      payload: { archiveId }
+      payload: { uploadId, token }
     } = event
 
     await store.update(
@@ -98,7 +98,8 @@ const readModel: ReadModel<ResolveStore> = {
       {
         $set: {
           archive: {
-            id: archiveId,
+            id: uploadId,
+            token,
             timestamp
           }
         }

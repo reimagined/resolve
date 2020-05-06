@@ -10,6 +10,7 @@ export type UserProfile = {
   }
   archive?: {
     id: string | null
+    token: string | null
     timestamp: string
   }
 }

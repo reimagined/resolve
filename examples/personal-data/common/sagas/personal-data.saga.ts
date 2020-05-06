@@ -1,5 +1,8 @@
 import { Saga } from 'resolve-core'
 import uuid from 'uuid/v4'
+import fs from 'fs'
+import fetch from 'node-fetch'
+import { getCDNBasedUrl } from 'resolve-module-uploader'
 
 import {
   USER_PERSONAL_DATA_REQUESTED,
@@ -10,7 +13,6 @@ import { systemToken } from '../jwt'
 const saga: Saga = {
   handlers: {
     [USER_PERSONAL_DATA_REQUESTED]: async (context, event): Promise<void> => {
-      // TODO: gather all data, make a zip with report and upload it to where?
       const { aggregateId: userId } = event
       const { sideEffects } = context
 
@@ -38,15 +40,37 @@ const saga: Saga = {
       const archiveId = uuid()
 
       const archive = { id: archiveId, profile, posts, media }
-      // TODO: upload archive
-      console.log(archive)
+      const archiveFilePath = `./${archiveId}.json`
+      fs.writeFileSync(archiveFilePath, JSON.stringify(archive, null, 2))
+
+      let uploadInfo = { uploadId: null, token: null }
+      try {
+        // TODO: get app host from where?
+        const response = await fetch(
+          'http://localhost:3000/api/register-archive',
+          {
+            method: 'put',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ archiveFilePath })
+          }
+        )
+        uploadInfo = await response.json()
+      } catch (error) {
+        throw error
+      } finally {
+        fs.unlinkSync(archiveFilePath)
+      }
 
       await sideEffects.executeCommand({
         type: 'completePersonalDataGathering',
         aggregateName: 'user-profile',
         aggregateId: userId,
         payload: {
-          archiveId
+          uploadId: uploadInfo.uploadId,
+          token: uploadInfo.token
         },
         jwtToken: systemToken()
       })
