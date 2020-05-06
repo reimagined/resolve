@@ -1,18 +1,8 @@
-import getLog from 'resolve-debug-levels'
-import disposeEventStore from './js/dispose'
-import { AdapterPool } from './types'
+import getLog from './js/get-log'
 
-const disposeSecretsStore = (pool: AdapterPool): Promise<any> => {
-  const { secretsDatabase } = pool
-  return secretsDatabase.close()
-}
-
-const dispose = async (pool: AdapterPool): Promise<any> => {
-  const log = getLog('dispose')
-
-  log.debug(`disposing the event store`)
-  await Promise.all([disposeEventStore(pool), disposeSecretsStore(pool)])
-  log.debug(`the event store disposed`)
+const dispose = async (): Promise<any> => {
+  const log = getLog(`dispose`)
+  log.debug(`disposing the adapter`)
 }
 
 export default dispose
