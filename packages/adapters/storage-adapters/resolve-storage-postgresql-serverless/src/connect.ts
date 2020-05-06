@@ -1,39 +1,48 @@
+import getLog from './js/get-log'
+import { AdapterPool, AdapterSpecific } from './types'
+
 const connect = async (
-  pool,
-  {
+  pool: AdapterPool,
+  specific: AdapterSpecific
+): Promise<any> => {
+  const log = getLog('connect')
+  log.debug('configuring RDS data service client')
+
+  const {
     RDSDataService,
     escapeId,
     escape,
     fullJitter,
-    randRange,
     executeStatement,
     coercer
-  }
-) => {
+  } = specific
+
   const {
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
-    tableName,
     databaseName,
-    // eslint-disable-next-line no-unused-vars
-    ...config
+    tableName,
+    secretsTableName,
+    ...rdsConfig
   } = pool.config
 
-  const rdsDataService = new RDSDataService(config)
+  const rdsDataService = new RDSDataService(rdsConfig)
 
   Object.assign(pool, {
     rdsDataService,
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
-    tableName,
     databaseName,
+    tableName,
+    secretsTableName,
     fullJitter,
-    randRange,
     coercer,
     executeStatement: executeStatement.bind(null, pool),
     escapeId,
     escape
   })
+
+  log.debug('RDS data service client are configured')
 }
 
 export default connect
