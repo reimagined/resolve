@@ -5,6 +5,7 @@ import {
   JSON_SQL_TYPE
 } from './constants'
 import { ResourceAlreadyExistError } from 'resolve-storage-base'
+import getLog from './get-log'
 
 const init = async ({
   databaseName,
@@ -12,6 +13,8 @@ const init = async ({
   executeStatement,
   escapeId
 }) => {
+  const log = getLog(`initEventStore`)
+
   const databaseNameAsId = escapeId(databaseName)
   const eventsTableNameAsId = escapeId(tableName)
   const threadsTableNameAsId = escapeId(`${tableName}-threads`)
@@ -73,12 +76,16 @@ const init = async ({
       ;`
     )
   } catch (error) {
-    if (error != null && /Relation.*? already exists$/i.test(error.message)) {
-      throw new ResourceAlreadyExistError(
-        `Double-initialize storage-postgresql-serverless adapter via "${databaseName}" failed`
-      )
-    } else {
-      throw error
+    if (error) {
+      let errorToThrow = error
+      if (/Relation.*? already exists$/i.test(error.message)) {
+        errorToThrow = new ResourceAlreadyExistError(
+          `duplicate initialization of the postgresql-serverless event store with the same parameters not allowed`
+        )
+      }
+      log.error(errorToThrow.message)
+      log.verbose(errorToThrow.stack)
+      throw errorToThrow
     }
   }
 }

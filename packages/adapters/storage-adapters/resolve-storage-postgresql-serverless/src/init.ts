@@ -34,12 +34,16 @@ const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
        ("idx");`
     )
   } catch (error) {
-    if (error != null && /Relation.*? already exists$/i.test(error.message)) {
-      throw new ResourceAlreadyExistError(
-        `duplicate initialization of the postgresql-serverless secrets manager with the same parameters not allowed`
-      )
-    } else {
-      throw error
+    if (error) {
+      let errorToThrow = error
+      if (/Relation.*? already exists$/i.test(error.message)) {
+        errorToThrow = new ResourceAlreadyExistError(
+          `duplicate initialization of the postgresql-serverless secrets store with the same parameters not allowed`
+        )
+      }
+      log.error(errorToThrow.message)
+      log.verbose(errorToThrow.stack)
+      throw errorToThrow
     }
   }
 
