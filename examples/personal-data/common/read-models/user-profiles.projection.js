@@ -76,8 +76,10 @@ const readModel = {
       {
         $set: {
           archive: {
-            url: null,
-            timestamp
+            id: null,
+            token: null,
+            timestamp,
+            error: null
           }
         }
       }

@@ -55,9 +55,9 @@ const saga = {
   sideEffects: {
     createArchive: async (adapter, archive) => {
       const archiveFilePath = `./${archive.id}.json`
-      fs.writeFileSync(archiveFilePath, JSON.stringify(archive, null, 2))
       let result = {}
       try {
+        fs.writeFileSync(archiveFilePath, JSON.stringify(archive, null, 2))
         const { uploadUrl, uploadId } = await adapter.getSignedPut('archives')
         await adapter.uploadPut(uploadUrl, archiveFilePath)
         const token = await adapter.createToken({
@@ -67,10 +67,10 @@ const saga = {
           token,
           uploadId
         }
-      } catch (error) {
-        result = { error }
-      } finally {
         fs.unlinkSync(archiveFilePath)
+      } catch (error) {
+        result = { error: true, token: null, uploadId: null }
+      } finally {
         return result
       }
     }

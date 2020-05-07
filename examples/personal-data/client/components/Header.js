@@ -36,7 +36,7 @@ const UserInfo = props => {
       aggregateName: 'user-profile',
       payload: {}
     },
-    (error, result) => {
+    error => {
       if (error == null) {
         setState({ ...state, deleted: true })
       }
@@ -51,7 +51,7 @@ const UserInfo = props => {
       aggregateName: 'user-profile',
       payload: {}
     },
-    (error, result) => {
+    error => {
       if (error == null) {
         setState({ ...state, gatheringStarted: true, open: true })
       }
@@ -72,12 +72,18 @@ const UserInfo = props => {
   }
 
   const { archive = null } = user
-  const { id: uploadId, token } = archive || {}
+  const { id: uploadId, token, error } = archive || {}
 
-  const archiveItem =
-    gatheringStarted || uploadId === null ? (
-      <DropdownItem disabled>Being gathered now...</DropdownItem>
-    ) : (
+  let archiveItem = null
+
+  if (gatheringStarted) {
+    archiveItem = <DropdownItem disabled>Being gathered now...</DropdownItem>
+  } else if (error) {
+    archiveItem = <DropdownItem disabled>Error occurred</DropdownItem>
+  } else if (uploadId == null) {
+    archiveItem = <DropdownItem disabled>Being gathered now...</DropdownItem>
+  } else {
+    archiveItem = (
       <UploaderContext.Consumer>
         {({ CDNUrl }) => (
           <DropdownItem
@@ -93,6 +99,7 @@ const UserInfo = props => {
         )}
       </UploaderContext.Consumer>
     )
+  }
 
   const archiveSubmenu =
     archive || gatheringStarted ? (
