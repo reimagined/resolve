@@ -80,7 +80,7 @@ const setSecret = async (
   const secretsTableNameAsId = escapeId(secretsTableName)
 
   // logging of this sql query can lead to security issues
-  const sql = `INSERT INTO "${databaseNameAsId}"."${secretsTableNameAsId}"("id", "secret") 
+  const sql = `INSERT INTO ${databaseNameAsId}.${secretsTableNameAsId}("id", "secret") 
     VALUES ('${escape(selector)}', '${escape(secret)}')`
 
   try {
