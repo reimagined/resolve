@@ -78,7 +78,7 @@ const loadEventsByCursor = async (
       FROM ${databaseNameAsId}.${eventsTableAsId}
       ${resultQueryCondition}
       ORDER BY "timestamp" ASC
-      LIMIT ${+limit}
+      LIMIT ${limit || 0}
     ), "fullBatchList" AS (
       SELECT "batchEvents"."batchIndex" AS "batchIndex",
       "batchEvents"."threadId" AS "threadId",
