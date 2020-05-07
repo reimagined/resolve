@@ -4,22 +4,17 @@
   "description": "personal user data within events (GDPR compliance)",
   "private": true,
   "scripts": {
-    "type-check": "tsc",
-    "build": "tsc && babel-node --extensions='.ts,.tsx' run.ts build",
-    "dev": "tsc && babel-node --extensions='.ts,.tsx' run.ts dev",
-    "start": "tsc && babel-node --extensions='.ts,.tsx' run.ts start",
+    "build": "babel-node ./run.js build",
+    "cloud": "babel-node ./run.js cloud",
+    "dev": "babel-node ./run.js dev",
+    "start": "babel-node ./run.js start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
-    "test:functional": "tsc && babel-node --extensions='.ts,.tsx' run.ts test:functional"
+    "test:functional": "babel-node ./run.js test:functional"
   },
   "dependencies": {
     "@babel/node": "^7.5.5",
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-typescript": "^7.8.3",
-    "@types/node": "^12.7.4",
-    "@types/react": "^16.8.8",
-    "@types/react-dom": "^16.9.5",
-    "@types/reactstrap": "^8.4.2",
-    "@types/redux-devtools-extension": "^2.13.2",
     "babel-loader": "^8.0.6",
     "cryptr": "^6.0.2",
     "generate-password": "^1.5.1",
@@ -53,7 +48,6 @@
     "resolve-storage-postgresql-serverless": "0.23.2",
     "resolve-subscribe-mqtt": "0.23.2",
     "resolve-subscribe-socket.io": "0.23.2",
-    "typescript": "^3.8.3",
     "uuid": "^7.0.3"
   },
   "devDependencies": {
@@ -64,7 +58,6 @@
     "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "7.0.0",
-    "@types/jest": "^25.2.1",
     "babel-jest": "25.1.0",
     "jest": "25.1.0",
     "react-test-renderer": "16.13.0",
