@@ -39,12 +39,12 @@ const sagaEventHandler = async (
             executeCommand: sagaProvider.executeCommand,
             executeQuery: sagaProvider.executeQuery,
             scheduleCommand,
+            secretsManager,
             uploader: sagaProvider.uploader
           },
           isEnabled
         ),
-        isEnabled,
-        secretsManager
+        isEnabled
       },
       store
     },

@@ -15,13 +15,25 @@ const sideEffect = async (
 
 const wrapSideEffects = (eventProperties, sideEffects, isEnabled) => {
   return Object.keys(sideEffects).reduce((acc, effectName) => {
-    acc[effectName] = sideEffect.bind(
-      null,
-      eventProperties,
-      sideEffects,
-      effectName,
-      isEnabled
-    )
+    if (typeof sideEffects[effectName] === 'function') {
+      acc[effectName] = sideEffect.bind(
+        null,
+        eventProperties,
+        sideEffects,
+        effectName,
+        isEnabled
+      )
+    }
+    if (
+      typeof sideEffects[effectName] === 'object' &&
+      sideEffects[effectName] !== null
+    ) {
+      acc[effectName] = wrapSideEffects(
+        eventProperties,
+        sideEffects[effectName],
+        isEnabled
+      )
+    }
     return acc
   }, {})
 }
