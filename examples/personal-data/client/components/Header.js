@@ -1,0 +1,190 @@
+import React, { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet'
+import { Redirect, Link } from 'react-router-dom'
+import {
+  Navbar,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  Dropdown
+} from 'reactstrap'
+import { getCDNBasedUrl } from 'resolve-module-uploader'
+import { useStaticResolver, useQuery, useCommand } from 'resolve-react-hooks'
+
+import Loading from './Loading'
+import UploaderContext from '../context'
+
+const UserInfo = props => {
+  const [state, setState] = useState({
+    deleted: null,
+    gatheringStarted: null,
+    open: false
+  })
+  const { deleted, gatheringStarted, open } = state
+  const { user } = props
+  const toggle = () => {
+    setState({ ...state, open: !open })
+  }
+  const deleteMe = useCommand(
+    {
+      type: 'delete',
+      aggregateId: typeof user === 'object' && user !== null ? user.id : null,
+      aggregateName: 'user-profile',
+      payload: {}
+    },
+    (error, result) => {
+      if (error == null) {
+        setState({ ...state, deleted: true })
+      }
+    },
+    [user]
+  )
+
+  const gatherPersonalData = useCommand(
+    {
+      type: 'gatherPersonalData',
+      aggregateId: typeof user === 'object' && user !== null ? user.id : null,
+      aggregateName: 'user-profile',
+      payload: {}
+    },
+    (error, result) => {
+      if (error == null) {
+        setState({ ...state, gatheringStarted: true, open: true })
+      }
+    },
+    [user]
+  )
+
+  if (typeof user === 'string') {
+    return <Loading />
+  }
+
+  if (user === null) {
+    return null
+  }
+
+  if (deleted) {
+    return <Redirect to="/" />
+  }
+
+  const { archive = null } = user
+  const { id: uploadId, token } = archive || {}
+
+  const archiveItem =
+    gatheringStarted || uploadId === null ? (
+      <DropdownItem disabled>Being gathered now...</DropdownItem>
+    ) : (
+      <UploaderContext.Consumer>
+        {({ CDNUrl }) => (
+          <DropdownItem
+            href={getCDNBasedUrl({
+              CDNUrl,
+              dir: 'archives',
+              uploadId,
+              token
+            })}
+          >
+            Download
+          </DropdownItem>
+        )}
+      </UploaderContext.Consumer>
+    )
+
+  const archiveSubmenu =
+    archive || gatheringStarted ? (
+      <React.Fragment>
+        <DropdownItem divider />
+        <DropdownItem header>Archive</DropdownItem>
+        {archiveItem}
+      </React.Fragment>
+    ) : null
+
+  return (
+    <React.Fragment>
+      <Dropdown isOpen={open} nav inNavbar toggle={toggle}>
+        <DropdownToggle nav caret>
+          {user.nickname}
+        </DropdownToggle>
+        <DropdownMenu right>
+          <DropdownItem tag={Link} to="/profile">
+            Update my profile
+          </DropdownItem>
+          <DropdownItem onClick={gatherPersonalData}>
+            Gather my personal data
+          </DropdownItem>
+          <DropdownItem onClick={deleteMe}>Delete my profile</DropdownItem>
+          {archiveSubmenu}
+        </DropdownMenu>
+      </Dropdown>
+    </React.Fragment>
+  )
+}
+
+const Header = () => {
+  const asset = useStaticResolver()
+
+  const [user, setUser] = useState('unknown')
+  const getUser = useQuery(
+    {
+      name: 'user-profiles',
+      resolver: 'profile',
+      args: {}
+    },
+    (err, result) => {
+      if (err) {
+        setUser(null)
+        return
+      }
+      if (result.data !== null) {
+        setUser({
+          ...result.data.profile,
+          id: result.data.id,
+          archive: result.data.archive
+        })
+      } else {
+        setUser(null)
+      }
+    }
+  )
+  useEffect(() => {
+    getUser()
+  }, [])
+
+  return (
+    <React.Fragment>
+      <Helmet>
+        <title>Personal Blog Platform</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href={asset('/bootstrap.min.css')} />
+        <link rel="icon" href={asset('/favicon.ico')} />
+      </Helmet>
+
+      <Navbar color="light" light expand="md">
+        <NavbarBrand href="/">
+          <img src={asset('/resolve-logo.png')} alt="resolve-logo" />
+        </NavbarBrand>
+        <Nav navbar className="ml-auto">
+          <NavItem>
+            <NavLink tag={Link} to="/users">
+              Users
+            </NavLink>
+          </NavItem>
+          {typeof user === 'object' && user != null && (
+            <NavItem>
+              <NavLink tag={Link} to={`/blog/${user.id}`}>
+                My blog
+              </NavLink>
+            </NavItem>
+          )}
+          <UserInfo user={user} />
+        </Nav>
+      </Navbar>
+    </React.Fragment>
+  )
+}
+
+export default Header
