@@ -1,4 +1,4 @@
-import factory from '../encryptionFactory'
+import factory from '../encryption-factory'
 import { USER_REGISTERED, USER_PROFILE_UPDATED } from '../user-profile.events'
 
 const encryptedEvents = [USER_REGISTERED, USER_PROFILE_UPDATED]

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import jwtSecret from './jwt_secret'
+import jwtSecret from './jwt-secret'
 import uuid from 'uuid/v4'
 
 const routeRegisterCallback = async params => {

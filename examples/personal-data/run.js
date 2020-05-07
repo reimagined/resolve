@@ -15,7 +15,7 @@ import appConfig from './config.app'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import cloudConfig from './config.cloud'
-import testFunctionalConfig from './config.test_functional'
+import testFunctionalConfig from './config.test-functional'
 
 const launchMode = process.argv[2]
 
@@ -29,7 +29,7 @@ void (async () => {
   const moduleAuth = resolveModuleAuth([
     {
       name: 'local-strategy',
-      createStrategy: 'auth/create_strategy.js',
+      createStrategy: 'auth/create-strategy.js',
       logoutRoute: {
         path: 'logout',
         method: 'POST'
@@ -38,12 +38,12 @@ void (async () => {
         {
           path: 'register',
           method: 'POST',
-          callback: 'auth/route_register_callback.js'
+          callback: 'auth/route-register-callback.js'
         },
         {
           path: 'login',
           method: 'POST',
-          callback: 'auth/route_login_callback.js'
+          callback: 'auth/route-login-callback.js'
         }
       ]
     }

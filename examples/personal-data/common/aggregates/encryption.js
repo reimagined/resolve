@@ -1,4 +1,4 @@
-import factory from '../encryptionFactory'
+import factory from '../encryption-factory'
 
 const createEncryption = (aggregateId, context) =>
   factory(aggregateId, context.secretsManager)

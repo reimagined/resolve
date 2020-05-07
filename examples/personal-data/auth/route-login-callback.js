@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import jwtSecret from './jwt_secret'
+import jwtSecret from './jwt-secret'
 
 const routeLoginCallback = async ({ resolve }, nickname) => {
   const user = await resolve.executeQuery({
