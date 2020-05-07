@@ -87,7 +87,7 @@ const readModel = {
     const {
       aggregateId,
       timestamp,
-      payload: { uploadId, token }
+      payload: { uploadId, token, error }
     } = event
 
     await store.update(
@@ -98,7 +98,8 @@ const readModel = {
           archive: {
             id: uploadId,
             token,
-            timestamp
+            timestamp,
+            error
           }
         }
       }

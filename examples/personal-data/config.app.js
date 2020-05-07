@@ -17,13 +17,6 @@ const appConfig = {
       projection: 'common/aggregates/blog-post.projection.js'
     }
   ],
-  apiHandlers: [
-    {
-      path: '/api/register-archive',
-      controller: 'common/api-handlers/register-archive.js',
-      method: 'put'
-    }
-  ],
   readModels: [
     {
       name: 'user-profiles',
@@ -55,15 +48,6 @@ const appConfig = {
     }
   ],
   clientEntries: [
-/*     [
-      'client/index.js',
-      {
-        outputFile: 'client/index.js',
-        moduleType: 'iife',
-        target: 'web'
-      }
-    ] */
-
     [
       'client/index.js',
       {
@@ -72,7 +56,6 @@ const appConfig = {
         target: 'web'
       }
     ]
-
   ]
 }
 

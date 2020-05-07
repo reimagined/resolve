@@ -19,7 +19,6 @@
     "cryptr": "^6.0.2",
     "generate-password": "^1.5.1",
     "jsonwebtoken": "^8.5.1",
-    "node-fetch": "^2.6.0",
     "passport-local": "^1.0.0",
     "react": "16.13.0",
     "react-dom": "16.13.0",
