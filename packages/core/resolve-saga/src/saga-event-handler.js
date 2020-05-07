@@ -38,7 +38,8 @@ const sagaEventHandler = async (
             ...applicationSideEffects,
             executeCommand: sagaProvider.executeCommand,
             executeQuery: sagaProvider.executeQuery,
-            scheduleCommand
+            scheduleCommand,
+            uploader: sagaProvider.uploader
           },
           isEnabled
         ),

@@ -21,7 +21,7 @@ const initResolve = async resolve => {
     publishEvent: resolve.publishEvent
   })
 
-  const { aggregates, readModels, schedulers, sagas, viewModels } = resolve
+  const { aggregates, readModels, schedulers, sagas, viewModels, uploader } = resolve
   const snapshotAdapter = createSnapshotAdapter()
 
   const readModelConnectors = {}
@@ -55,7 +55,8 @@ const initResolve = async resolve => {
     snapshotAdapter,
     schedulers,
     sagas,
-    performanceTracer
+    performanceTracer,
+    uploader
   })
 
   Object.assign(resolve, {
