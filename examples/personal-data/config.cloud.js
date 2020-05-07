@@ -15,7 +15,8 @@ const cloudConfig = {
       dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_ES_CLUSTER_ARN'),
       databaseName: declareRuntimeEnv('RESOLVE_ES_DATABASE'),
       tableName: declareRuntimeEnv('RESOLVE_ES_TABLE'),
-      region: declareRuntimeEnv('AWS_REGION')
+      region: declareRuntimeEnv('AWS_REGION'),
+      secretsTableName: declareRuntimeEnv('RESOLVE_ES_SECRETS_TABLE')
     }
   },
   readModelConnectors: {

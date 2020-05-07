@@ -71,6 +71,5 @@ export type CloudResourceOptions = {
   awsSecretStoreArn: string
   awsSecretStoreAdminArn: string
   dbClusterOrInstanceArn: string
-  // TODO: add to lifecycle lambda
   secretsTableName: string
 }
