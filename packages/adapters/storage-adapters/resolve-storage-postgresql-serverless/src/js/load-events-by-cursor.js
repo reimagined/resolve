@@ -1,3 +1,4 @@
+import getLog from './get-log'
 import { INT8_SQL_TYPE } from './constants'
 
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
@@ -13,6 +14,16 @@ const loadEventsByCursor = async (
   },
   callback
 ) => {
+  const log = getLog('loadEventsByCursor')
+
+  log.verbose(`eventTypes: ${eventTypes ? eventTypes.join(',') : eventTypes}`)
+  log.verbose(
+    `aggregateIds: ${aggregateIds ? aggregateIds.join(',') : aggregateIds}`
+  )
+  log.verbose(`cursor: ${cursor}`)
+  log.verbose(`limit: ${limit}`)
+  log.verbose(`eventsSizeLimit: ${inputEventsSizeLimit}`)
+
   const eventsSizeLimit =
     inputEventsSizeLimit != null ? inputEventsSizeLimit : 2000000000
 
