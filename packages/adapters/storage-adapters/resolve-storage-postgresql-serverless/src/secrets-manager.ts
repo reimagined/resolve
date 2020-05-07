@@ -9,10 +9,22 @@ const getSecret = async (
   const log = getLog('secretsManager:getSecret')
   log.debug(`retrieving secret value from the database`)
 
-  const { databaseName, secretsTableName, escapeId, executeStatement } = pool
+  const {
+    databaseName,
+    secretsTableName,
+    escapeId,
+    executeStatement,
+    escape
+  } = pool
 
   // TODO: refactor
-  if (!secretsTableName || !escapeId || !databaseName || !executeStatement) {
+  if (
+    !secretsTableName ||
+    !escapeId ||
+    !databaseName ||
+    !executeStatement ||
+    !escape
+  ) {
     const error = Error(`adapter pool was not initialized properly!`)
     log.error(error.message)
     log.verbose(error.stack || error.message)
@@ -29,7 +41,7 @@ const getSecret = async (
   const sql = `
     SELECT "secret" 
     FROM ${databaseNameAsId}.${secretsTableNameAsId} 
-    WHERE "id"='${selector}' LIMIT 1;`
+    WHERE "id"=${escape(selector)} LIMIT 1;`
 
   log.debug(`executing SQL query`)
   log.verbose(sql)
@@ -81,7 +93,7 @@ const setSecret = async (
 
   // logging of this sql query can lead to security issues
   const sql = `INSERT INTO ${databaseNameAsId}.${secretsTableNameAsId}("id", "secret") 
-    VALUES ('${escape(selector)}', '${escape(secret)}')`
+    VALUES (${escape(selector)}, ${escape(secret)})`
 
   try {
     log.debug(`executing SQL query`)
@@ -133,7 +145,7 @@ const deleteSecret = async (
   const secretsTableNameAsId = escapeId(secretsTableName)
 
   const sql = `DELETE FROM ${databaseNameAsId}.${secretsTableNameAsId} 
-     WHERE "id"='${escape(selector)}`
+     WHERE "id"=${escape(selector)}`
 
   log.debug(`executing SQL query`)
 
