@@ -72,21 +72,39 @@ void (async () => {
 
     case 'build': {
       await build(
-        merge(defaultResolveConfig, appConfig, prodConfig, moduleAuth)
+        merge(
+          defaultResolveConfig,
+          appConfig,
+          prodConfig,
+          moduleAuth,
+          moduleUploader
+        )
       )
       break
     }
 
     case 'start': {
       await start(
-        merge(defaultResolveConfig, appConfig, prodConfig, moduleAuth)
+        merge(
+          defaultResolveConfig,
+          appConfig,
+          prodConfig,
+          moduleAuth,
+          moduleUploader
+        )
       )
       break
     }
 
     case 'cloud': {
       await build(
-        merge(defaultResolveConfig, appConfig, cloudConfig, moduleAuth)
+        merge(
+          defaultResolveConfig,
+          appConfig,
+          cloudConfig,
+          moduleAuth,
+          moduleUploader
+        )
       )
       break
     }
