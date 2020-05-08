@@ -85,9 +85,9 @@ A module is a standalone configuration object that can reference client code, re
 
 <!-- prettier-ignore-end -->
 
-A merged module's code is treated the same as the application's code. The resulting application's bundles include the module code and configurations as if they were always a part of the application.
+A merged module's code is included into the resulting application's bundles and behaves as a part of the application.
 
-For an example on using modules, see the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) sample application. This application makes use of the authentication module and the comments module provided by reSolve.
+For an example on how to use modules, see the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) sample application. This application uses the authentication module and the comments module that reSolve provides.
 
 ## Upload Files
 
@@ -109,6 +109,6 @@ The **resolve-module-upload** module adds the following API endpoints to an appl
 
 - `/api/uploader/getFormUpload` - Returns an upload path to use in HTTP forms.
 - `/api/uploader/getUploadUrl` - Returns a path used to upload files.
-- `/api/uploader/getToken` - Given credentials returns the user's authorization token.
+- `/api/uploader/getToken` - Takes user credentials and returns the user's authorization token.
 
 The [cli-uploader](https://github.com/reimagined/resolve/tree/master/examples/cli-uploader) example application demonstrates how to design a file uploader utility and handle file uploads on the server side.
