@@ -261,7 +261,8 @@ const getAggregateState = async (
         await pool.eventStore.loadEvents(
           {
             aggregateIds: [aggregateId],
-            cursor: aggregateInfo.cursor
+            cursor: aggregateInfo.cursor,
+            limit: 2147483648
           },
           eventHandler
         )

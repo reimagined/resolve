@@ -103,7 +103,8 @@ const buildViewModel = async (
     {
       aggregateIds: aggregateIds !== '*' ? aggregateIds : null,
       eventTypes: Object.keys(pool.viewModel.projection),
-      cursor
+      cursor,
+      limit: 2147483648
     },
     handler
   )
