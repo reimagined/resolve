@@ -7,6 +7,10 @@ const resolvers = {
     const actualUserId = userId === systemUserId ? params.userId : userId
     return store.findOne('Users', { id: actualUserId })
   },
+  profileById: async (store, params, jwt) => {
+    decode(jwt)
+    return store.findOne('Users', { id: params.userId })
+  },
   all: async store => {
     return store.find('Users', {})
   },

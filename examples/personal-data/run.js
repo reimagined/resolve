@@ -49,15 +49,16 @@ void (async () => {
     }
   ])
 
+  const baseConfig = merge(
+    defaultResolveConfig,
+    appConfig,
+    moduleAuth,
+    moduleUploader
+  )
+
   switch (launchMode) {
     case 'dev': {
-      const resolveConfig = merge(
-        defaultResolveConfig,
-        appConfig,
-        devConfig,
-        moduleAuth,
-        moduleUploader
-      )
+      const resolveConfig = merge(baseConfig, devConfig)
 
       await reset(resolveConfig, {
         dropEventStore: false,
@@ -71,32 +72,22 @@ void (async () => {
     }
 
     case 'build': {
-      await build(
-        merge(defaultResolveConfig, appConfig, prodConfig, moduleAuth)
-      )
+      await build(merge(baseConfig, prodConfig))
       break
     }
 
     case 'start': {
-      await start(
-        merge(defaultResolveConfig, appConfig, prodConfig, moduleAuth)
-      )
+      await start(merge(baseConfig, prodConfig))
       break
     }
 
     case 'cloud': {
-      await build(
-        merge(defaultResolveConfig, appConfig, cloudConfig, moduleAuth)
-      )
+      await build(merge(baseConfig, cloudConfig))
       break
     }
 
     case 'test:functional': {
-      const resolveConfig = merge(
-        defaultResolveConfig,
-        appConfig,
-        testFunctionalConfig
-      )
+      const resolveConfig = merge(baseConfig, testFunctionalConfig)
 
       await reset(resolveConfig, {
         dropEventStore: true,

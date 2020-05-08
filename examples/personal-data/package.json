@@ -32,10 +32,11 @@
     "redux": "4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-saga": "1.0.5",
+    "uuid": "^7.0.3",
     "resolve-command": "0.23.2",
     "resolve-core": "0.23.2",
-    "resolve-module-auth": "^0.23.2",
-    "resolve-module-uploader": "^0.23.2",
+    "resolve-module-auth": "0.23.2",
+    "resolve-module-uploader": "0.23.2",
     "resolve-query": "0.23.2",
     "resolve-react-hooks": "0.23.2",
     "resolve-readmodel-base": "0.23.2",
@@ -48,7 +49,8 @@
     "resolve-storage-postgresql-serverless": "0.23.2",
     "resolve-subscribe-mqtt": "0.23.2",
     "resolve-subscribe-socket.io": "0.23.2",
-    "uuid": "^7.0.3"
+    "resolve-upload-local": "0.23.2",
+    "resolve-upload-cloud": "0.23.2"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",

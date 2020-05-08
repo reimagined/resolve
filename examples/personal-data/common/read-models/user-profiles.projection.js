@@ -45,6 +45,8 @@ const readModel = {
 
     const user = await store.findOne('Users', { id: aggregateId })
 
+    const nextFirstName = decrypt(firstName) || 'unknown'
+    const nextLatName = decrypt(lastName) || 'unknown'
     await store.update(
       'Users',
       { id: aggregateId },
@@ -52,8 +54,9 @@ const readModel = {
         $set: {
           profile: {
             ...user.profile,
-            firstName: decrypt(firstName) || 'unknown',
-            lastName: decrypt(lastName) || 'unknown',
+            firstName: nextFirstName,
+            lastName: nextLatName,
+            fullName: `${nextFirstName} ${nextLatName}`,
             contacts: decrypt(contacts) || {}
           }
         }
