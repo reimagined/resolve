@@ -6,11 +6,35 @@ import { useQuery } from 'resolve-react-hooks'
 import FeedByAuthor from './FeedByAuthor'
 import Loading from './Loading'
 
-const BlogHeader = ({ user }) => (
-  <p className="lead">
-    Blog {user.fullName} ({user.nickname})
-  </p>
-)
+const BlogHeader = ({ userId }) => {
+  const [user, setUser] = useState('unknown')
+  const getUser = useQuery(
+    {
+      name: 'user-profiles',
+      resolver: 'profileById',
+      args: {
+        userId
+      }
+    },
+    (err, result) => {
+      if (err) {
+        setUser(null)
+        return
+      }
+      setUser({ ...result.data.profile, id: result.data.id })
+    }
+  )
+  useEffect(() => {
+    getUser()
+  }, [])
+
+  return (
+    <React.Fragment>
+      <div className="text-muted">Personal blog</div>
+      <p className="lead">{user.fullName}</p>
+    </React.Fragment>
+  )
+}
 
 const UserBlog = ({
   match: {
@@ -51,8 +75,7 @@ const UserBlog = ({
           className="pt-3"
         >
           <Col xs={12} sm={8}>
-            {/* TODO: <BlogHeader user={userWith id === authorId} /> */}
-            <p className="lead">Blog of user: {authorId}</p>
+            <BlogHeader userId={authorId} />
           </Col>
         </Row>
       </Container>
