@@ -112,6 +112,10 @@ const ImageUploader = ({ owner }) => {
   const uploadFormRender = onSubmitHandler => {
     return (
       <Form id="uploadForm">
+        {Object.keys(fields).map((key, index) => (
+          <Input key={index} name={key} value={fields[key]} type="hidden" />
+        ))}
+        <Input type="hidden" name="Content-Type" value={mimeType} />
         <FormGroup style={{ display: 'flex' }}>
           <CustomInput
             onChange={handlePickFile}
@@ -138,11 +142,6 @@ const ImageUploader = ({ owner }) => {
             Upload
           </Button>
         </FormGroup>
-
-        <Input type="hidden" name="Content-Type" value={mimeType} />
-        {Object.keys(fields).map((key, index) => (
-          <Input key={index} name={key} value={fields[key]} type="hidden" />
-        ))}
       </Form>
     )
   }
@@ -209,7 +208,7 @@ const ImageUploader = ({ owner }) => {
             <div>
               <FileUploadProgress
                 key="file"
-                url={`${url}&type=${encodeURIComponent(mimeType)}`}
+                url={url}
                 method="post"
                 formRenderer={uploadFormRender}
                 formGetter={formGetter}
