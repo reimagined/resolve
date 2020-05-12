@@ -85,7 +85,7 @@ A module is a standalone configuration object that can reference client code, re
 
 <!-- prettier-ignore-end -->
 
-A merged module's code is included into the resulting application's bundles and behaves as a part of the application.
+A merged module's code is included into the resulting application's bundles and is interpreted as a part of the application.
 
 For an example on how to use modules, see the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) sample application. This application uses the authentication and comments modules from reSolve.
 
