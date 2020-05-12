@@ -111,4 +111,4 @@ The **resolve-module-upload** module adds the following API endpoints to an appl
 - `/api/uploader/getUploadUrl` - Returns a path used to upload files.
 - `/api/uploader/getToken` - Takes user credentials and returns the user's authorization token.
 
-The [cli-uploader](https://github.com/reimagined/resolve/tree/master/examples/cli-uploader) example application demonstrates how to design a file uploader utility and handle file uploads on the server side.
+The [cli-uploader](https://github.com/reimagined/resolve/tree/master/examples/cli-uploader) example application demonstrates how to design a file uploader utility and handle file uploads on the server.
