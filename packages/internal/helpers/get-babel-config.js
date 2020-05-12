@@ -25,12 +25,12 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
       break
     }
     case 'es': {
-      modules = 'false'
+      modules = false
       useESModules = true
       break
     }
     case 'mjs': {
-      modules = 'false'
+      modules = false
       useESModules = true
       break
     }

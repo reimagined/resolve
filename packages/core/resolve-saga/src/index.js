@@ -14,7 +14,8 @@ const createSaga = ({
   schedulers,
   executeCommand,
   executeQuery,
-  performanceTracer
+  performanceTracer,
+  uploader
 }) => {
   const schedulerAggregatesNames = new Set(schedulers.map(({ name }) => name))
   let eventProperties = {}
@@ -36,7 +37,12 @@ const createSaga = ({
   const sagaProvider = Object.create(Object.prototype, {
     executeCommand: { get: () => executeCommandOrScheduler, enumerable: true },
     executeQuery: { get: () => executeQuery, enumerable: true },
-    eventProperties: { get: () => eventProperties, enumerable: true }
+    eventProperties: { get: () => eventProperties, enumerable: true },
+    getSecretsManager: {
+      get: () => eventStore.getSecretsManager,
+      enumerable: true
+    },
+    uploader: { get: () => uploader, enumerable: true }
   })
 
   const regularSagas = wrapRegularSagas(sagas, sagaProvider)

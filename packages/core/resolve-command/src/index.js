@@ -261,7 +261,8 @@ const getAggregateState = async (
         await pool.eventStore.loadEvents(
           {
             aggregateIds: [aggregateId],
-            cursor: aggregateInfo.cursor
+            cursor: aggregateInfo.cursor,
+            limit: 2147483648
           },
           eventHandler
         )
@@ -379,12 +380,19 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
       }
     }
 
-    const event = await commandHandler(
-      aggregateState,
-      command,
-      jwtToken,
-      aggregateVersion
-    )
+    const secretsManager = await pool.eventStore.getSecretsManager()
+
+    const { encrypt, decrypt } = await aggregate.encryption(aggregateId, {
+      jwt: jwtToken,
+      secretsManager
+    })
+
+    const event = await commandHandler(aggregateState, command, {
+      jwt: jwtToken,
+      aggregateVersion,
+      encrypt,
+      decrypt
+    })
 
     if (!checkOptionShape(event.type, [String])) {
       throw generateCommandError('Event "type" is required')

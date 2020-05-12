@@ -11,6 +11,7 @@ const disposeResolve = async resolve => {
       resolve.executeSaga.dispose(),
       resolve.storageAdapter.dispose(),
       resolve.snapshotAdapter.dispose()
+      // TODO: add dispose of encryptionAdapter
     ]
 
     for (const name of Object.keys(resolve.readModelConnectors)) {

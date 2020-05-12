@@ -12,5 +12,6 @@ export default ({ storage, publishEvent }) =>
       }
       return event
     },
-    dispose: Promise.resolve.bind(Promise)
+    dispose: Promise.resolve.bind(Promise),
+    getSecretsManager: storage.getSecretsManager.bind(storage)
   })

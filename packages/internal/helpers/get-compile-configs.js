@@ -64,7 +64,7 @@ const getCompileConfigs = () => {
       config.inputDir = path.join(config.directory, config.inputDir)
       config.outDir = path.join(config.directory, config.outDir)
       config.outFileExtension = config.moduleType === 'mjs' ? '.mjs' : '.js'
-      config.extensions = config.sourceType === 'ts' ? '.ts' : '.js'
+      config.extensions = config.sourceType === 'ts' ? ['.ts', '.js'] : '.js'
       config.deleteDirOnStart = true
       config.filenames = [config.inputDir]
 
