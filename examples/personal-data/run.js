@@ -99,7 +99,8 @@ void (async () => {
       await runTestcafe({
         resolveConfig,
         functionalTestsDir: 'test/functional',
-        browser: process.argv[3]
+        browser: process.argv[3],
+        customArgs: ['--skip-js-errors']
       })
       break
     }

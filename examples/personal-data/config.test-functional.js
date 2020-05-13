@@ -34,6 +34,14 @@ const testFunctionalConfig = {
     options: {
       databaseFile: 'data/event-store-test-functional.db'
     }
+  },
+  uploadAdapter: {
+    module: 'resolve-upload-local',
+    options: {
+      directory: 'data',
+      bucket: 'files',
+      secretKey: 'key'
+    }
   }
 }
 

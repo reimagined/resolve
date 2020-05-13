@@ -32,7 +32,6 @@
     "redux": "4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-saga": "1.0.5",
-    "uuid": "^7.0.3",
     "resolve-command": "0.23.2",
     "resolve-core": "0.23.2",
     "resolve-module-auth": "0.23.2",
@@ -49,12 +48,11 @@
     "resolve-storage-postgresql-serverless": "0.23.2",
     "resolve-subscribe-mqtt": "0.23.2",
     "resolve-subscribe-socket.io": "0.23.2",
+    "resolve-upload-cloud": "0.23.2",
     "resolve-upload-local": "0.23.2",
-    "resolve-upload-cloud": "0.23.2"
+    "uuid": "^7.0.3"
   },
   "devDependencies": {
-    "aws-sdk": "2.587.0",
-    "aws-xray-sdk-core": "2.5.0",
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-proposal-export-default-from": "^7.5.2",
@@ -62,10 +60,13 @@
     "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "7.0.0",
+    "aws-sdk": "2.587.0",
+    "aws-xray-sdk-core": "2.5.0",
     "babel-jest": "25.1.0",
     "jest": "25.1.0",
     "react-test-renderer": "16.13.0",
     "resolve-cloud": "*",
-    "testcafe": "1.8.3"
+    "testcafe": "1.8.3",
+    "testcafe-react-selectors": "^4.0.0"
   }
 }
