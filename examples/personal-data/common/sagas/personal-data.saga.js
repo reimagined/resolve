@@ -57,6 +57,10 @@ const saga = {
       const archiveFilePath = `./${archive.id}.json`
       let result = {}
       try {
+        for (const media of archive.media) {
+          media.token = await adapter.createToken({ dir: 'images' })
+        }
+
         fs.writeFileSync(archiveFilePath, JSON.stringify(archive, null, 2))
         const { uploadUrl, uploadId } = await adapter.getSignedPut('archives')
         await adapter.uploadPut(uploadUrl, archiveFilePath)
