@@ -50,7 +50,7 @@ The code sample below demonstrates a **jest** test for a Read Model:
 ```
 <!-- prettier-ignore-end -->
 
-In this example, the `.all` function called in the end of the call chain is the `ShoppingLists` Read Model's resolver function. It returns a promise that resolves to the resolver's response object.
+In this example, the `.all` function called at the end of the call chain is the `ShoppingLists` Read Model's resolver function. It returns a promise that resolves to the resolver's response object.
 
 ## Testing Sagas
 
