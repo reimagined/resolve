@@ -234,8 +234,17 @@ const updateByEvents = async (
         }
 
         if (event != null && typeof projection[event.type] === 'function') {
+          log.debug(`retrieving event store secrets manager`)
+          const secretsManager = await pool.eventStore.getSecretsManager()
+
+          log.debug(`building read-model encryption`)
+          const encryption = await pool.readModel.encryption(event, {
+            secretsManager
+          })
+
+          log.debug(`executing read-model event handler`)
           const executor = projection[event.type]
-          await executor(connection, event)
+          await executor(connection, event, { ...encryption })
           lastEvent = event
         }
       } catch (error) {
@@ -467,7 +476,12 @@ const dispose = async pool => {
   }
 }
 
-const wrapReadModel = (readModel, readModelConnectors, performanceTracer) => {
+const wrapReadModel = (
+  readModel,
+  readModelConnectors,
+  performanceTracer,
+  eventStore
+) => {
   const connector = readModelConnectors[readModel.connectorName]
   if (connector == null) {
     throw new Error(
@@ -480,7 +494,8 @@ const wrapReadModel = (readModel, readModelConnectors, performanceTracer) => {
     readModel,
     connector,
     isDisposed: false,
-    performanceTracer
+    performanceTracer,
+    eventStore
   }
 
   const api = {

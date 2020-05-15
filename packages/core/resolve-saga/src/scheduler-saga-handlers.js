@@ -1,7 +1,6 @@
-import debugLevels from 'resolve-debug-levels'
+import getRootLog from './get-log'
 
-const getLog = handler =>
-  debugLevels(`resolve:resolve-runtime:scheduler-saga-handlers:${handler}`)
+const getLog = handler => getRootLog(`scheduler-saga-handlers:${handler}`)
 
 export default ({
   schedulerAggregateName,

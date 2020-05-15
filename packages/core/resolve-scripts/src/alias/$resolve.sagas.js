@@ -2,7 +2,8 @@ import {
   message,
   RESOURCE_ANY,
   RUNTIME_ENV_ANYWHERE,
-  IMPORT_INSTANCE
+  IMPORT_INSTANCE,
+  RUNTIME_ENV_NOWHERE
 } from '../constants'
 import importResource from '../import_resource'
 import { checkRuntimeEnv } from '../declare_runtime_env'
@@ -81,12 +82,24 @@ export default ({ resolveConfig, isClient }) => {
       : source_${index}_original_hash
     `)
 
+    importResource({
+      resourceName: `encryption_${index}`,
+      resourceValue: saga.encryption,
+      runtimeMode: RUNTIME_ENV_NOWHERE,
+      importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
+      instanceFallback: 'resolve-runtime/lib/common/defaults/encryption.js',
+      imports,
+      constants
+    })
+
     exports.push(`sagas.push({`, `  name: name_${index}`)
     exports.push(`, connectorName: connectorName_${index}`)
     exports.push(`, schedulerName: schedulerName_${index}`)
     exports.push(`, handlers: handlers_${index}`)
     exports.push(`, sideEffects: sideEffects_${index}`)
     exports.push(`, invariantHash: invariantHash_${index}`)
+    exports.push(`, encryption: encryption_${index}`)
     exports.push(`})`, ``)
   }
 

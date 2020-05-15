@@ -1,3 +1,5 @@
+process.env.TZ = 'Europe/Moscow'
+
 module.exports = {
   testEnvironment: 'node',
   setupFiles: ['raf/polyfill', '<rootDir>/test/unit/jest-setup.js'],

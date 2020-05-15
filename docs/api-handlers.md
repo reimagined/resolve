@@ -82,7 +82,7 @@ The configuration object specifies the following options:
 
 | Option     | Description                                                                     |
 | ---------- | ------------------------------------------------------------------------------- |
-| Path       | The URL path for which the handler is invoked. This path is relative to `/api`. |
+| Path       | The URL path for which the handler is invoked. The path is specified in the [route-trie](https://www.npmjs.com/package/route-trie) router's format |
 | Controller | The path to the file that contains the handler's definition.                    |
 | Method     | The HTTP method to handle.                                                      |
 

@@ -80,7 +80,7 @@ A component connected to a View Model can access the View Model data through the
 
 ### Connect to Redux
 
-You can chain the **connectReadModel** or **connectViewModel** function call with the Redux **connect** function call to synchronize the client Rudux state with Read Model or View Model data.
+You can chain the **connectReadModel** or **connectViewModel** function call with the Redux **connect** function call to synchronize the client Redux state with Read Model or View Model data.
 
 <!-- prettier-ignore-start -->
 
