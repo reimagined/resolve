@@ -20,7 +20,8 @@ const initResolve = async resolve => {
     schedulers,
     sagas,
     viewModels,
-    publisher
+    publisher,
+    uploader
   } = resolve
   const snapshotAdapter = createSnapshotAdapter()
   const eventstoreAdapter = createEventstoreAdapter()
