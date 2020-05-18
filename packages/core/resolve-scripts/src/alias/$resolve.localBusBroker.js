@@ -13,15 +13,8 @@ export default ({ resolveConfig, isClient }) => {
 
   return `
     import '$resolve.guardOnlyServer'
-<<<<<<< HEAD
     import { createAndInitPublisher, connectConsumer } from 'resolve-local-event-broker'
     import eventBrokerConfig from '$resolve.eventBrokerConfig'
-=======
-    import createEventstoreAdapter from '$resolve.eventstoreAdapter'
-    import eventBrokerConfig from '$resolve.eventBroker'
-    import { createAndRunLocalBusBroker } from 'resolve-local-event-broker'
-    import createEventStore from 'resolve-es'
->>>>>>> feature/dev
 
     if(module.parent != null) {
       setImmediate(() => process.exit(1))
@@ -33,13 +26,7 @@ export default ({ resolveConfig, isClient }) => {
         const consumer = await connectConsumer({ ...eventBrokerConfig })
         const stopBroker = await createAndInitPublisher({
           ...eventBrokerConfig,
-<<<<<<< HEAD
           connectConsumer
-=======
-          eventStore: createEventStore({ 
-            eventstore: createEventstoreAdapter()
-          })
->>>>>>> feature/dev
         })
 
         process.on('exit', stopBroker)

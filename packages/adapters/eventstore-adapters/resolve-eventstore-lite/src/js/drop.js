@@ -1,5 +1,5 @@
 import getLog from './get-log'
-import { ResourceNotExistError } from 'resolve-storage-base'
+import { ResourceNotExistError } from 'resolve-eventstore-base'
 
 const dropEventStore = async ({
   database,

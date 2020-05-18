@@ -1,5 +1,5 @@
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
-import _createAdapter from 'resolve-storage-base'
+import _createAdapter from 'resolve-eventstore-base'
 
 import loadEventsByCursor from './js/load-events-by-cursor'
 import loadEventsByTimestamp from './js/load-events-by-timestamp'

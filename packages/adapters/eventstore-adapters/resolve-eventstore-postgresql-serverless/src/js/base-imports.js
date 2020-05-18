@@ -1,6 +1,6 @@
 import {
   ResourceAlreadyExistError,
   ResourceNotExistError
-} from 'resolve-storage-base'
+} from 'resolve-eventstore-base'
 
 export { ResourceAlreadyExistError, ResourceNotExistError }

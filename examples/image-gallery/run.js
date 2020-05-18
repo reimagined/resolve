@@ -48,18 +48,27 @@ void (async () => {
       }
 
       case 'build': {
-        const resolveConfig = merge(defaultResolveConfig, appConfig, prodConfig, moduleUploader)
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          prodConfig,
+          moduleUploader
+        )
         await build(resolveConfig)
         break
       }
 
       case 'cloud': {
-        await build(merge(defaultResolveConfig, appConfig, cloudConfig, moduleUploader))
+        await build(
+          merge(defaultResolveConfig, appConfig, cloudConfig, moduleUploader)
+        )
         break
       }
 
       case 'start': {
-        await start(merge(defaultResolveConfig, appConfig, prodConfig, moduleUploader))
+        await start(
+          merge(defaultResolveConfig, appConfig, prodConfig, moduleUploader)
+        )
         break
       }
 

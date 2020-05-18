@@ -4,7 +4,7 @@ import {
   INT8_SQL_TYPE,
   JSON_SQL_TYPE
 } from './constants'
-import { ResourceAlreadyExistError } from 'resolve-storage-base'
+import { ResourceAlreadyExistError } from 'resolve-eventstore-base'
 import getLog from './get-log'
 
 const init = async ({

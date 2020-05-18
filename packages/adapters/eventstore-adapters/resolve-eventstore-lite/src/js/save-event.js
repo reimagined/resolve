@@ -1,4 +1,4 @@
-import { ConcurrentError } from 'resolve-storage-base'
+import { ConcurrentError } from 'resolve-eventstore-base'
 
 const saveEvent = async (pool, event) => {
   const { tableName, database, escapeId, escape } = pool

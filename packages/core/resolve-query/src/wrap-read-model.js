@@ -247,13 +247,8 @@ const updateByEvents = async (
 
           log.debug(`executing read-model event handler`)
           const executor = projection[event.type]
-<<<<<<< HEAD
-          await executor(connection, event)
-          lastSuccessEvent = event
-=======
           await executor(connection, event, { ...encryption })
-          lastEvent = event
->>>>>>> feature/dev
+          lastSuccessEvent = event
         }
       } catch (error) {
         lastFailedEvent = event

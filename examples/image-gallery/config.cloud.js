@@ -5,7 +5,7 @@ export default {
   mode: 'production',
   staticPath: declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL'),
   eventstoreAdapter: {
-    module: 'resolve-storage-postgresql-serverless',
+    module: 'resolve-eventstore-postgresql-serverless',
     options: {
       awsSecretStoreArn: declareRuntimeEnv('RESOLVE_ES_SECRET_STORE_ARN'),
       dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_ES_CLUSTER_ARN'),

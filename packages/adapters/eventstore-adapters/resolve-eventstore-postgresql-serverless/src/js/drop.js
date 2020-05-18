@@ -1,5 +1,5 @@
 import { EOL } from 'os'
-import { ResourceNotExistError } from 'resolve-storage-base'
+import { ResourceNotExistError } from 'resolve-eventstore-base'
 import getLog from './get-log'
 
 const drop = async ({

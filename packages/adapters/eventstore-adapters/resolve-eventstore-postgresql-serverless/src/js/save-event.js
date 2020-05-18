@@ -1,4 +1,4 @@
-import { ConcurrentError } from 'resolve-storage-base'
+import { ConcurrentError } from 'resolve-eventstore-base'
 
 import {
   RESERVED_EVENT_SIZE,

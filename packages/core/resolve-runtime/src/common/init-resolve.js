@@ -24,7 +24,7 @@ const initResolve = async resolve => {
   } = resolve
   const snapshotAdapter = createSnapshotAdapter()
   const eventstoreAdapter = createEventstoreAdapter()
-  
+
   const readModelConnectors = {}
   for (const name of Object.keys(readModelConnectorsCreators)) {
     readModelConnectors[name] = readModelConnectorsCreators[name]({

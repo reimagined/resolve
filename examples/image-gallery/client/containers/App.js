@@ -64,13 +64,13 @@ class App extends React.Component {
       <Form id="customForm">
         {this.state.form.fields != null
           ? Object.keys(this.state.form.fields).map((key, index) => (
-            <Input
-              key={index}
-              name={key}
-              value={this.state.form.fields[key]}
-              type="hidden"
-            />
-          ))
+              <Input
+                key={index}
+                name={key}
+                value={this.state.form.fields[key]}
+                type="hidden"
+              />
+            ))
           : ''}
         <Input type="hidden" name="Content-Type" value={this.state.mimeType} />
         <FormGroup>

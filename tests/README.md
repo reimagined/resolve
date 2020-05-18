@@ -24,7 +24,7 @@ const appConfig = {
 ```js
 const devConfig = {
   storageAdapter: {
-    module: 'resolve-storage-lite',
+    module: 'resolve-eventstore-lite',
     options: {
       databaseFile: ':memory:'
     }
@@ -188,7 +188,7 @@ const appConfig = {
 ```js
 const devConfig = {
   storageAdapter: {
-    module: 'resolve-storage-lite',
+    module: 'resolve-eventstore-lite',
     options: {
       databaseFile: ':memory:'
     }
@@ -414,7 +414,7 @@ const appConfig = {
 ```js
 const devConfig = {
   storageAdapter: {
-    module: 'resolve-storage-lite',
+    module: 'resolve-eventstore-lite',
     options: {
       databaseFile: ':memory:'
     }
@@ -534,7 +534,7 @@ const appConfig = {
 ```js
 const devConfig = {
   storageAdapter: {
-    module: 'resolve-storage-lite',
+    module: 'resolve-eventstore-lite',
     options: {
       databaseFile: ':memory:'
     }
@@ -657,7 +657,7 @@ const appConfig = {
 ```js
 const devConfig = {
   storageAdapter: {
-    module: 'resolve-storage-lite',
+    module: 'resolve-eventstore-lite',
     options: {
       databaseFile: ':memory:'
     }

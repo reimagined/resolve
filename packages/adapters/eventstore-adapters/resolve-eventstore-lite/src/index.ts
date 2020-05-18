@@ -1,4 +1,4 @@
-import createAdapter from 'resolve-storage-base'
+import createAdapter from 'resolve-eventstore-base'
 import sqlite from 'sqlite'
 import tmp from 'tmp'
 import os from 'os'

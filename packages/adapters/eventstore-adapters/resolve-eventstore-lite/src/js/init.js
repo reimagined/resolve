@@ -1,5 +1,5 @@
 import getLog from './get-log'
-import { ResourceAlreadyExistError } from 'resolve-storage-base'
+import { ResourceAlreadyExistError } from 'resolve-eventstore-base'
 
 const initEventStore = async ({ database, tableName, escapeId, config }) => {
   const log = getLog('initEventStore')
