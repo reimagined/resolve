@@ -8,8 +8,8 @@ export default {
     module: 'resolve-subscribe-mqtt',
     options: {}
   },
-  storageAdapter: {
-    module: 'resolve-storage-postgresql-serverless',
+  eventstoreAdapter: {
+    module: 'resolve-eventstore-postgresql-serverless',
     options: {
       awsSecretStoreArn: declareRuntimeEnv('RESOLVE_ES_SECRET_STORE_ARN'),
       dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_ES_CLUSTER_ARN'),

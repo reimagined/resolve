@@ -22,13 +22,13 @@ const launchMode = process.argv[2]
 
 void (async () => {
   try {
+    const moduleUploader = resolveModuleUploader({
+      publicDirs: ['logo', 'avatar'],
+      expireTime: 604800,
+      jwtSecret: 'SECRETJWT'
+    })
     switch (launchMode) {
       case 'dev': {
-        const moduleUploader = resolveModuleUploader({
-          publicDirs: ['logo', 'avatar'],
-          expireTime: 604800,
-          jwtSecret: 'SECRETJWT'
-        })
         const resolveConfig = merge(
           defaultResolveConfig,
           appConfig,
@@ -48,18 +48,18 @@ void (async () => {
       }
 
       case 'build': {
-        const resolveConfig = merge(defaultResolveConfig, appConfig, prodConfig)
+        const resolveConfig = merge(defaultResolveConfig, appConfig, prodConfig, moduleUploader)
         await build(resolveConfig)
         break
       }
 
       case 'cloud': {
-        await build(merge(defaultResolveConfig, appConfig, cloudConfig))
+        await build(merge(defaultResolveConfig, appConfig, cloudConfig, moduleUploader))
         break
       }
 
       case 'start': {
-        await start(merge(defaultResolveConfig, appConfig, prodConfig))
+        await start(merge(defaultResolveConfig, appConfig, prodConfig, moduleUploader))
         break
       }
 

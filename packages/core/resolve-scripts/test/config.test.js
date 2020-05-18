@@ -3,8 +3,8 @@ import validateConfig from '../src/validate_config'
 
 const resolveConfigOrigin = {
   ...defaultResolveConfig,
-  storageAdapter: {
-    module: 'resolve-storage-lite',
+  eventstoreAdapter: {
+    module: 'resolve-eventstore-lite',
     options: {}
   }
 }
@@ -22,14 +22,14 @@ describe('validate schema', () => {
     ).toBeTruthy()
   })
 
-  it('custom storage adapter', () => {
+  it('custom eventstore adapter', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        storageAdapter: {
-          module: 'resolve-storage-mongo',
+        eventstoreAdapter: {
+          module: 'resolve-eventstore-mongo',
           options: {
             collectionName: 'MyEvents'
           }
@@ -44,7 +44,7 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        storageAdapter: {
+        eventstoreAdapter: {
           module: 'resolve-bus-rabbitmq',
           options: {}
         }
@@ -148,13 +148,13 @@ describe('validate schema', () => {
 })
 
 describe('validate schema (fail)', () => {
-  it('incorrect storage adapter', () => {
+  it('incorrect eventstore adapter', () => {
     expect(() =>
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        storageAdapter: {
+        eventstoreAdapter: {
           module: 123,
           options: {
             collectionName: 'MyEvents'
@@ -170,7 +170,7 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        storageAdapter: {
+        eventstoreAdapter: {
           module: 123,
           options: {}
         }

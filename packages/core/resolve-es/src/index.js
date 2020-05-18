@@ -1,17 +1,17 @@
-export default ({ storage, publishEvent }) =>
+export default ({ eventstore, publishEvent }) =>
   Object.freeze({
-    loadEvents: storage.loadEvents.bind(storage),
-    import: storage.import.bind(storage),
-    export: storage.export.bind(storage),
-    getLatestEvent: storage.getLatestEvent.bind(storage),
-    getNextCursor: storage.getNextCursor.bind(storage),
+    loadEvents: eventstore.loadEvents.bind(eventstore),
+    import: eventstore.import.bind(eventstore),
+    export: eventstore.export.bind(eventstore),
+    getLatestEvent: eventstore.getLatestEvent.bind(eventstore),
+    getNextCursor: eventstore.getNextCursor.bind(eventstore),
     saveEvent: async event => {
-      await storage.saveEvent(event)
+      await eventstore.saveEvent(event)
       if (typeof publishEvent === 'function') {
         await publishEvent(event)
       }
       return event
     },
     dispose: Promise.resolve.bind(Promise),
-    getSecretsManager: storage.getSecretsManager.bind(storage)
+    getSecretsManager: eventstore.getSecretsManager.bind(eventstore)
   })

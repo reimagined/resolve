@@ -1,12 +1,12 @@
 import STS from 'aws-sdk/clients/sts'
-import { ConcurrentError } from 'resolve-storage-base'
+import { ConcurrentError } from 'resolve-eventstore-base'
 
 import initCloudEntry from '../src/cloud/index'
 
 describe('Cloud entry', () => {
   let assemblies, constants, domain, redux, routes
   let getCloudEntryWorker, lambdaContext
-  let originalMathRandom, originalDateNow, storageAdapter, snapshotAdapter
+  let originalMathRandom, originalDateNow, eventstoreAdapter, snapshotAdapter
   let originalProcessEnv
 
   const defaultRequestHttpHeaders = {
@@ -38,7 +38,7 @@ describe('Cloud entry', () => {
       RESOLVE_IOT_ROLE_ARN: 'RESOLVE_IOT_ROLE_ARN'
     }
 
-    storageAdapter = {
+    eventstoreAdapter = {
       loadEvents: jest.fn(),
       getNextCursor: jest.fn(),
       getLatestEvent: jest.fn(),
@@ -60,7 +60,7 @@ describe('Cloud entry', () => {
         staticPath,
         rootPath
       },
-      storageAdapter: jest.fn().mockImplementation(() => storageAdapter),
+      eventstoreAdapter: jest.fn().mockImplementation(() => eventstoreAdapter),
       snapshotAdapter: jest.fn().mockImplementation(() => snapshotAdapter),
       readModelConnectors: {
         // default: jest.fn().mockReturnValue(defaultReadModelConnector)
@@ -366,7 +366,7 @@ describe('Cloud entry', () => {
         }
       })
 
-      expect(storageAdapter.saveEvent).toBeCalledWith({
+      expect(eventstoreAdapter.saveEvent).toBeCalledWith({
         aggregateId: 'aggregateId',
         aggregateVersion: 1,
         timestamp: 1,
@@ -379,7 +379,7 @@ describe('Cloud entry', () => {
     })
 
     test('should fail command via POST /"rootPath"/api/commands/ with ConcurrentError', async () => {
-      storageAdapter.saveEvent = jest.fn().mockImplementation(async () => {
+      eventstoreAdapter.saveEvent = jest.fn().mockImplementation(async () => {
         throw new ConcurrentError()
       })
 
@@ -440,7 +440,7 @@ describe('Cloud entry', () => {
     })
 
     test('should fail command via POST /"rootPath"/api/commands/ with CommandError', async () => {
-      storageAdapter.saveEvent = jest.fn().mockImplementation(async () => {
+      eventstoreAdapter.saveEvent = jest.fn().mockImplementation(async () => {
         throw new ConcurrentError()
       })
 
@@ -482,7 +482,7 @@ describe('Cloud entry', () => {
     })
 
     test('should fail command via POST /"rootPath"/api/commands/ with CustomerError', async () => {
-      storageAdapter.saveEvent = jest.fn().mockImplementation(async () => {
+      eventstoreAdapter.saveEvent = jest.fn().mockImplementation(async () => {
         throw new ConcurrentError()
       })
 

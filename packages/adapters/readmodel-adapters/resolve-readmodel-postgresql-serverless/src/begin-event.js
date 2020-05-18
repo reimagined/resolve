@@ -4,12 +4,15 @@ const log = debugLevels(
   'resolve:resolve-readmodel-postgresql-serverless:begin-event'
 )
 
-const beginEvent = async (pool, readModelName, transactionId) => {
+const beginEvent = async (pool, readModelName, xaTransactionId) => {
   try {
-    const hexTransactionId = Buffer.from(`${readModelName}${transactionId}`)
-      .toString('hex')
-      .toLowerCase()
-    const savepointId = `sv${hexTransactionId}`
+    pool.xaTransactionId = xaTransactionId
+    const savepointId = pool.generateGuid(readModelName, xaTransactionId)
+    const insideEventId = `resolve.${pool.generateGuid(
+      readModelName,
+      xaTransactionId,
+      'insideEventId'
+    )}`
 
     await pool.rdsDataService.executeStatement({
       resourceArn: pool.dbClusterOrInstanceArn,
@@ -17,14 +20,20 @@ const beginEvent = async (pool, readModelName, transactionId) => {
       database: 'postgres',
       continueAfterTimeout: false,
       includeResultMetadata: false,
-      sql: `SAVEPOINT ${savepointId}`
+      transactionId: xaTransactionId,
+      sql: `
+        SAVEPOINT ${savepointId};
+        SET LOCAL ${insideEventId} = 1;
+      `
     })
 
     log.verbose('Begin event to postgresql database succeed')
 
-    pool.eventsCount = pool.eventsCount != null ? pool.eventsCount : 0
+    if (!pool.eventCounters.has(xaTransactionId)) {
+      pool.eventCounters.set(xaTransactionId, 0)
+    }
+
     pool.readModelName = readModelName
-    pool.transactionId = transactionId
   } catch (error) {
     log.verbose('Begin event to postgresql database failed', error)
 

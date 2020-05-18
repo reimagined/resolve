@@ -7,7 +7,6 @@ exports[`local config works correctly [server] 1`] = `
     import createStorageAdapter from '$resolve.storageAdapter'
     import eventBrokerConfig from '$resolve.eventBroker'
     import { createAndRunLocalBusBroker } from 'resolve-local-event-broker'
-    import createEventStore from 'resolve-es'
 
     if(module.parent != null) {
       setImmediate(() => process.exit(1))
@@ -17,10 +16,7 @@ exports[`local config works correctly [server] 1`] = `
     (async () => {
       try {
         const stopBroker = await createAndRunLocalBusBroker({
-          ...eventBrokerConfig,
-          eventStore: createEventStore({ 
-            storage: createStorageAdapter()
-          })
+          ...eventBrokerConfig
         })
 
         process.on('exit', stopBroker)

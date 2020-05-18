@@ -13,8 +13,8 @@ const resolveConfig = {
   sagas: [],
   apiHandlers: [],
   index: 'client/index.js',
-  storageAdapter: {
-    module: 'resolve-storage-lite',
+  eventstoreAdapter: {
+    module: 'resolve-eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db'
     }

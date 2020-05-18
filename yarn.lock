@@ -10981,7 +10981,7 @@ lodash.difference@^4.5.0:
 
 lodash.differencewith@^4.5.0:
   version "4.5.0"
-  resolved "http://npm.resolve-dev.ml:10080/lodash.differencewith/-/lodash.differencewith-4.5.0.tgz#bafafbc918b55154e179176a00bb0aefaac854b7"
+  resolved "https://registry.yarnpkg.com/lodash.differencewith/-/lodash.differencewith-4.5.0.tgz#bafafbc918b55154e179176a00bb0aefaac854b7"
   integrity sha1-uvr7yRi1UVTheRdqALsK76rIVLc=
 
 lodash.escape@^4.0.1:
@@ -14975,10 +14975,10 @@ reselect@^3.0.1:
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-3.0.1.tgz#efdaa98ea7451324d092b2b2163a6a1d7a9a2147"
   integrity sha1-79qpjqdFEyTQkrKyFjpqHXqaIUc=
 
-resolve-cloud-common@^0.0.15:
-  version "0.0.15"
-  resolved "http://npm.resolve-dev.ml:10080/resolve-cloud-common/-/resolve-cloud-common-0.0.15.tgz#324dd8c974ea6354663e4409a9193fde459ab93c"
-  integrity sha512-8kyA5nZ3dXkPBI0G9FHchyG/0ewRdbpLbHtVyneyluBS3L5vOvKJw9XZryF33T+W5OI6SenfuTyJhkdrhT1l2Q==
+resolve-cloud-common@0.0.19:
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.19.tgz#8456fdc22371272f504c2c4ed02966faa4590f1f"
+  integrity sha512-85aOCKX+88K7jk3eVpQxu/BAnv9PX90jQGP8WzFfgKxgYNMgiUxDQ5yJMSLwQmz57G4adpjK3vp4yYQAI/44mw==
   dependencies:
     chalk "^3.0.0"
     debug "^4.1.1"

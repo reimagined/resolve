@@ -7,22 +7,28 @@ const log = debugLevels(
 const beginXATransaction = async (pool, readModelName) => {
   try {
     log.verbose('Begin XA-transaction to postgresql database started')
-    const { transactionId } = await pool.rdsDataService
-      .beginTransaction({
-        resourceArn: pool.dbClusterOrInstanceArn,
-        secretArn: pool.awsSecretStoreArn,
-        database: 'postgres'
-      })
-      .promise()
+    const {
+      transactionId: xaTransactionId
+    } = await pool.rdsDataService.beginTransaction({
+      resourceArn: pool.dbClusterOrInstanceArn,
+      secretArn: pool.awsSecretStoreArn,
+      database: 'postgres'
+    })
 
-    const hexTransactionId = Buffer.from(`${readModelName}${transactionId}`)
-      .toString('hex')
-      .toLowerCase()
-    const savepointId = `sv${hexTransactionId}`
-    const setLocalId = `resolve.sl${hexTransactionId}`
+    const savepointId = pool.generateGuid(readModelName, xaTransactionId)
+    const eventCountId = `resolve.${pool.generateGuid(
+      readModelName,
+      xaTransactionId,
+      'eventCountId'
+    )}`
+    const insideEventId = `resolve.${pool.generateGuid(
+      readModelName,
+      xaTransactionId,
+      'insideEventId'
+    )}`
 
-    if (transactionId == null) {
-      throw new Error('Begin XA-transaction returned null transactionId')
+    if (xaTransactionId == null) {
+      throw new Error('Begin XA-transaction returned null xaTransactionId')
     }
 
     await pool.rdsDataService.executeStatement({
@@ -31,16 +37,18 @@ const beginXATransaction = async (pool, readModelName) => {
       database: 'postgres',
       continueAfterTimeout: false,
       includeResultMetadata: false,
+      transactionId: xaTransactionId,
       sql: `
         SAVEPOINT ${savepointId};
-        SET LOCAL ${setLocalId} = 0;
+        SET LOCAL ${eventCountId} = 0;
+        SET LOCAL ${insideEventId} = 0;
+        RELEASE SAVEPOINT ${savepointId};
       `
     })
 
     log.verbose('Begin XA-transaction to postgresql database succeed')
-    pool.eventsCount = 0
 
-    return transactionId
+    return xaTransactionId
   } catch (error) {
     log.verbose('Begin XA-transaction to postgresql database failed', error)
 

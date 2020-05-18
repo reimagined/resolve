@@ -109,7 +109,7 @@ You can define a saga in one of the following ways:
   }
   ```
 
-### Initialize the Storage
+### Initialize the EventStore
 
 Every saga should define an `Init` function that initializes the saga's persistent storage:
 

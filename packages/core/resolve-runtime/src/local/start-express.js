@@ -1,6 +1,6 @@
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
-import bootstrap from '../common/bootstrap'
+import bootstrap from './bootstrap'
 
 const host = '0.0.0.0'
 const startExpress = async resolve => {
@@ -8,7 +8,7 @@ const startExpress = async resolve => {
     port,
     server,
     assemblies: {
-      eventBroker: { upstream }
+      eventBrokerConfig: { upstream }
     }
   } = resolve
 
@@ -21,12 +21,16 @@ const startExpress = async resolve => {
     while (upstream && readyListeners < resolve.eventListeners.size) {
       readyListeners = await Promise.all(
         Array.from(currentResolve.eventListeners.keys()).map(
-          currentResolve.eventBroker.status
+          currentResolve.publisher.status
         )
       ).then(statuses =>
         statuses.reduce(
-          ({ lastEvent, lastError }, acc) =>
-            lastEvent != null || lastError != null ? acc + 1 : acc,
+          ({ successEvent, failedEvent, errors }, acc) =>
+            successEvent != null ||
+            failedEvent != null ||
+            (Array.isArray(errors) && errors.length > 0)
+              ? acc + 1
+              : acc,
           0
         )
       )

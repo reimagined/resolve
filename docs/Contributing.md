@@ -105,7 +105,6 @@ Follow these guidelines to help maintainers and the community understand your re
 | `Component: Documentation`      | Issues related to package descriptions, [docs folder topics](https://github.com/reimagined/resolve/tree/master/docs), and README files      |
 | `Component: Core`               | Issues related to a core part of the framework, installation, etc.                                                                          |
 | `Component: Examples`           | Issues related to [reSolve examples](https://github.com/reimagined/resolve/tree/master/examples)                                            |
-| `Component: resolve-es`         | Issues related to the [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-es) package                      |
 | `Component: resolve-query`      | Issues related to the [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-query) package                |
 | `Component: resolve-redux`      | Issues related to the [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux) package                |
 | `Component: resolve-scripts`    | Issues related to the [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) package            |

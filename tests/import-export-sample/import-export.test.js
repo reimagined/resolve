@@ -2,8 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import { promisify } from 'util'
 import { Readable, pipeline } from 'stream'
-import { MAINTENANCE_MODE_MANUAL } from 'resolve-storage-base'
-import createStorageAdapter from 'resolve-storage-lite'
+import { MAINTENANCE_MODE_MANUAL } from 'resolve-eventstore-base'
+import createEventstoreAdapter from 'resolve-eventstore-lite'
 
 import createStreamBuffer from './create-stream-buffer'
 
@@ -31,19 +31,19 @@ describe('import-export', () => {
   })
 
   test('should works correctly with maintenanceMode = auto', async () => {
-    const inputStorageAdapter = createStorageAdapter({
+    const inputEventstoreAdapter = createEventstoreAdapter({
       databaseFile: ':memory:'
     })
-    const outputStorageAdapter = createStorageAdapter({
+    const outputEventstoreAdapter = createEventstoreAdapter({
       databaseFile: ':memory:'
     })
-    await inputStorageAdapter.init()
-    await outputStorageAdapter.init()
+    await inputEventstoreAdapter.init()
+    await outputEventstoreAdapter.init()
 
     const inputCountEvents = 300
 
     for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
-      await inputStorageAdapter.saveEvent({
+      await inputEventstoreAdapter.saveEvent({
         aggregateId: 'aggregateId',
         aggregateVersion: eventIndex + 1,
         type: 'EVENT',
@@ -53,12 +53,12 @@ describe('import-export', () => {
     }
 
     await promisify(pipeline)(
-      inputStorageAdapter.export(),
-      outputStorageAdapter.import()
+      inputEventstoreAdapter.export(),
+      outputEventstoreAdapter.import()
     )
 
     let outputCountEvents = 0
-    await outputStorageAdapter.loadEvents({}, () => {
+    await outputEventstoreAdapter.loadEvents({}, () => {
       outputCountEvents++
     })
 
@@ -66,19 +66,19 @@ describe('import-export', () => {
   })
 
   test('should works correctly with maintenanceMode = manual', async () => {
-    const eventStorageAdapter = createStorageAdapter({
+    const eventEventstoreAdapter = createEventstoreAdapter({
       databaseFile: eventStorePath
     })
-    const outputStorageAdapter = createStorageAdapter({
+    const outputEventstoreAdapter = createEventstoreAdapter({
       databaseFile: ':memory:'
     })
-    await eventStorageAdapter.init()
-    await outputStorageAdapter.init()
+    await eventEventstoreAdapter.init()
+    await outputEventstoreAdapter.init()
 
     const inputCountEvents = 20
 
     for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
-      await eventStorageAdapter.saveEvent({
+      await eventEventstoreAdapter.saveEvent({
         aggregateId: 'aggregateId',
         aggregateVersion: eventIndex + 1,
         type: 'EVENT',
@@ -89,17 +89,17 @@ describe('import-export', () => {
       })
     }
 
-    await eventStorageAdapter.dispose()
+    await eventEventstoreAdapter.dispose()
 
     const exportBuffers = []
     let cursor = 0
 
     while (true) {
-      const eventStorageAdapter = createStorageAdapter({
+      const eventEventstoreAdapter = createEventstoreAdapter({
         databaseFile: path.join(__dirname, 'es.txt')
       })
 
-      const exportStream = eventStorageAdapter.export({
+      const exportStream = eventEventstoreAdapter.export({
         maintenanceMode: MAINTENANCE_MODE_MANUAL,
         bufferSize: 512,
         cursor
@@ -109,7 +109,7 @@ describe('import-export', () => {
 
       await promisify(pipeline)(exportStream, tempStream)
 
-      await eventStorageAdapter.dispose()
+      await eventEventstoreAdapter.dispose()
 
       exportBuffers.push(tempStream.getBuffer().toString())
 
@@ -128,10 +128,13 @@ describe('import-export', () => {
       this.push(null)
     }
 
-    await promisify(pipeline)(exportBufferStream, outputStorageAdapter.import())
+    await promisify(pipeline)(
+      exportBufferStream,
+      outputEventstoreAdapter.import()
+    )
 
     let outputCountEvents = 0
-    await outputStorageAdapter.loadEvents({}, () => {
+    await outputEventstoreAdapter.loadEvents({}, () => {
       outputCountEvents++
     })
 
@@ -139,15 +142,15 @@ describe('import-export', () => {
   })
 
   test('should works correctly when stopped by timeout ', async () => {
-    const inputStorageAdapter = createStorageAdapter({
+    const inputEventstoreAdapter = createEventstoreAdapter({
       databaseFile: ':memory:'
     })
-    await inputStorageAdapter.init()
+    await inputEventstoreAdapter.init()
 
     const inputCountEvents = 1000
 
     for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
-      await inputStorageAdapter.saveEvent({
+      await inputEventstoreAdapter.saveEvent({
         aggregateId: 'aggregateId',
         aggregateVersion: eventIndex + 1,
         type: 'EVENT',
@@ -162,7 +165,7 @@ describe('import-export', () => {
 
     const exportBuffers = []
     while (cursor !== inputCountEvents) {
-      const exportStream = inputStorageAdapter.export({ cursor })
+      const exportStream = inputEventstoreAdapter.export({ cursor })
       const tempStream = createStreamBuffer()
       const pipelinePromise = promisify(pipeline)(
         exportStream,

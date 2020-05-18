@@ -265,17 +265,14 @@
         "launchBroker": {
           "type": "boolean"
         },
-        "zmqBrokerAddress": {
+        "publisherAddress": {
           "type": "string"
         },
-        "zmqConsumerAddress": {
+        "consumerAddress": {
           "type": "string"
         },
         "databaseFile": {
           "type": "string"
-        },
-        "batchSize": {
-          "type": "number"
         },
         "upstream": {
           "type": "boolean"
@@ -283,10 +280,9 @@
       },
       "required": [
         "launchBroker",
-        "zmqBrokerAddress",
-        "zmqConsumerAddress",
-        "databaseFile",
-        "batchSize"
+        "publisherAddress",
+        "consumerAddress",
+        "databaseFile"
       ],
       "additionalProperties": false
     },
@@ -406,7 +402,7 @@
             "$ref": "#/definitions/schedulerAdapter"
           }
         },
-        "storageAdapter": {
+        "eventstoreAdapter": {
           "$ref": "#/definitions/adapter"
         },
         "subscribeAdapter": {
@@ -446,7 +442,7 @@
         "readModels",
         "readModelConnectors",
         "schedulers",
-        "storageAdapter",
+        "eventstoreAdapter",
         "snapshotAdapter",
         "subscribeAdapter",
         "eventBroker",

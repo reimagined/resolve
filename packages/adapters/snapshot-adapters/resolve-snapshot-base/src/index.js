@@ -1,9 +1,9 @@
 import createAdapter from './create-adapter'
 import {
-  ResourceAlreadyExistError,
-  ResourceNotExistError
+  ResourceAlreadyExistError as SnapshotResourceAlreadyExistError,
+  ResourceNotExistError as SnapshotResourceNotExistError
 } from './resource-errors'
 
 export default createAdapter
 
-export { ResourceAlreadyExistError, ResourceNotExistError }
+export { SnapshotResourceAlreadyExistError, SnapshotResourceNotExistError }

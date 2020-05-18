@@ -1,4 +1,9 @@
-import wrapReadModel from './wrap-read-model'
+import wrapReadModel, {
+  FULL_XA_CONNECTOR,
+  FULL_REGULAR_CONNECTOR,
+  EMPTY_CONNECTOR,
+  detectConnectorFeatures
+} from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
 
 const getDefaultRemainingTime = () => 0x7fffffff
@@ -8,7 +13,7 @@ const createQuery = ({
   snapshotAdapter,
   readModels,
   viewModels,
-  eventStore,
+  publisher,
   performanceTracer
 }) => {
   const models = {}
@@ -31,7 +36,7 @@ const createQuery = ({
     models[viewModel.name] = wrapViewModel(
       viewModel,
       snapshotAdapter,
-      eventStore,
+      publisher,
       performanceTracer
     )
   }
@@ -107,7 +112,7 @@ const createQuery = ({
     modelName,
     events,
     getRemainingTimeInMillis,
-    transactionId
+    xaTransactionId
   }) => {
     checkModelExists(modelName)
     if (!Array.isArray(events)) {
@@ -119,7 +124,7 @@ const createQuery = ({
       typeof getRemainingTimeInMillis === 'function'
         ? getRemainingTimeInMillis
         : getDefaultRemainingTime,
-      transactionId
+      xaTransactionId
     )
 
     return result
@@ -169,4 +174,10 @@ const createQuery = ({
   return executeQuery
 }
 
+export {
+  FULL_XA_CONNECTOR,
+  FULL_REGULAR_CONNECTOR,
+  EMPTY_CONNECTOR,
+  detectConnectorFeatures
+}
 export default createQuery

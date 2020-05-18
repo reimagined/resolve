@@ -3,6 +3,7 @@ import debugLevels from 'resolve-debug-levels'
 import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
 import handleEventBusEvent from './event-bus-event-handler'
+import handleEventStoreEvent from './event-store-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
 import putMetrics from './metrics'
 import initResolve from '../common/init-resolve'
@@ -21,6 +22,20 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   resolve.getRemainingTimeInMillis = lambdaContext.getRemainingTimeInMillis.bind(
     lambdaContext
   )
+
+  resolve.eventSubscriberCredentials = {
+    mode: 'internal',
+    applicationLambdaArn: lambdaContext.invokedFunctionArn,
+    lambdaEventType: 'EventBus',
+    lambdaEventName: 'resolveSource'
+  }
+
+  resolve.eventstoreCredentials = {
+    mode: 'internal',
+    applicationLambdaArn: lambdaContext.invokedFunctionArn,
+    lambdaEventType: 'EventStore',
+    lambdaEventName: 'resolveSource'
+  }
 
   const lambdaRemainingTimeStart = lambdaContext.getRemainingTimeInMillis()
 
@@ -41,9 +56,17 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
 
       return executorResult
     } else if (lambdaEvent.resolveSource === 'EventBus') {
-      log.debug('identified event source: invoked by a step function')
+      log.debug('identified event source: event-bus')
 
       const executorResult = await handleEventBusEvent(lambdaEvent, resolve)
+
+      log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
+
+      return executorResult
+    } else if (lambdaEvent.resolveSource === 'EventStore') {
+      log.debug('identified event source: event-store')
+
+      const executorResult = await handleEventStoreEvent(lambdaEvent, resolve)
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
@@ -87,7 +110,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       log.error(JSON.stringify(error))
     }
 
-    return error
+    throw error
   } finally {
     await disposeResolve(resolve)
     if (process.env.RESOLVE_PERFORMANCE_MONITORING) {

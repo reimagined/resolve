@@ -1,4 +1,4 @@
-import { ResourceAlreadyExistError as StorageResourceAlreadyExistError } from 'resolve-storage-base'
+import { ResourceAlreadyExistError as EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 import { ResourceAlreadyExistError as SnapshotResourceAlreadyExistError } from 'resolve-snapshot-base'
 
 import debugLevels from 'resolve-debug-levels'
@@ -9,9 +9,9 @@ const bootstrap = async resolve => {
   log.debug('bootstrap started')
 
   try {
-    await resolve.storageAdapter.init()
+    await resolve.eventstoreAdapter.init()
   } catch (error) {
-    if (!(error instanceof StorageResourceAlreadyExistError)) {
+    if (!(error instanceof EventstoreResourceAlreadyExistError)) {
       throw error
     }
   }

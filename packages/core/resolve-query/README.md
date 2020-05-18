@@ -14,7 +14,6 @@ import createQuery from 'resolve-query'
 const query = createQuery({
   readModelConnectors,
   snapshotAdapter,
-  doUpdateRequest,
   readModels,
   viewModels,
   eventStore
@@ -22,7 +21,6 @@ const query = createQuery({
 ```
 
 #### Usage
-* `eventStore` - A configured [eventStore](../resolve-es) instance.
 * `snapshotAdapter` - An adapter for loading and saving the intermediate Aggregate state. The argument is optional, snapshots are not used by default.
 * `readModelConnectors` - A Read Model [connector](../../adapters/readmodel-adapters) instances.
 

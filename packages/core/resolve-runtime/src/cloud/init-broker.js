@@ -1,43 +1,91 @@
 import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
-import invokeMeta from './invoke-meta'
-import invokeUpdateLambda from './invoke-update-lambda'
+import invokeEventBus from './invoke-event-bus'
 import publishEvent from './publish-event'
 
 const initBroker = resolve => {
-  Object.assign(resolve.eventBroker, {
-    pause: async listenerId => {
-      return await invokeMeta(resolve, listenerId, 'pause')
-    },
-    resume: async listenerId => {
-      const result = await invokeMeta(resolve, listenerId, 'resume')
-      const listener = resolve.eventListeners.get(listenerId)
-
-      await invokeUpdateLambda(resolve, listener)
-      return result
-    },
-    status: async listenerId => {
-      return await invokeMeta(resolve, listenerId, 'status')
-    },
-    reset: async listenerId => {
-      return await invokeMeta(resolve, listenerId, 'reset')
-    },
-    listProperties: async listenerId => {
-      return await invokeMeta(resolve, listenerId, 'listProperties')
-    },
-    getProperty: async (listenerId, key) => {
-      return await invokeMeta(resolve, listenerId, 'getProperty', { key })
-    },
-    setProperty: async (listenerId, key, value) => {
-      return await invokeMeta(resolve, listenerId, 'setProperty', {
-        key,
-        value
+  Object.assign(resolve.publisher, {
+    pause: async eventSubscriber => {
+      return await invokeEventBus(resolve.eventstoreCredentials, 'pause', {
+        eventSubscriber
       })
     },
-    deleteProperty: async (listenerId, key) => {
-      return await invokeMeta(resolve, listenerId, 'deleteProperty', {
-        key
+    acknowledge: async (batchId, result) => {
+      return await invokeEventBus(
+        resolve.eventstoreCredentials,
+        'acknowledge',
+        {
+          batchId,
+          result
+        }
+      )
+    },
+    publish: async event => {
+      return await invokeEventBus(resolve.eventstoreCredentials, 'publish', {
+        event
       })
+    },
+    resume: async eventSubscriber => {
+      return await invokeEventBus(resolve.eventstoreCredentials, 'resume', {
+        eventSubscriber
+      })
+    },
+    status: async eventSubscriber => {
+      return await invokeEventBus(resolve.eventstoreCredentials, 'status', {
+        eventSubscriber
+      })
+    },
+    reset: async eventSubscriber => {
+      return await invokeEventBus(resolve.eventstoreCredentials, 'reset', {
+        eventSubscriber
+      })
+    },
+    read: async eventFilter => {
+      return await invokeEventBus(resolve.eventstoreCredentials, 'read', {
+        eventFilter
+      })
+    },
+    subscribe: async (eventSubscriber, subscriptionOptions) => {
+      return await invokeEventBus(resolve.eventstoreCredentials, 'subscribe', {
+        eventSubscriber,
+        subscriptionOptions
+      })
+    },
+    resubscribe: async (eventSubscriber, subscriptionOptions) => {
+      return await invokeEventBus(
+        resolve.eventstoreCredentials,
+        'resubscribe',
+        {
+          eventSubscriber,
+          subscriptionOptions
+        }
+      )
+    },
+    unsubscribe: async eventSubscriber => {
+      return await invokeEventBus(
+        resolve.eventstoreCredentials,
+        'unsubscribe',
+        {
+          eventSubscriber
+        }
+      )
     }
+    // listProperties: async eventSubscriber => {
+    //   return await invokeMeta(resolve, eventSubscriber, 'listProperties')
+    // },
+    // getProperty: async (eventSubscriber, key) => {
+    //   return await invokeMeta(resolve, eventSubscriber, 'getProperty', { key })
+    // },
+    // setProperty: async (eventSubscriber, key, value) => {
+    //   return await invokeMeta(resolve, eventSubscriber, 'setProperty', {
+    //     key,
+    //     value
+    //   })
+    // },
+    // deleteProperty: async (eventSubscriber, key) => {
+    //   return await invokeMeta(resolve, eventSubscriber, 'deleteProperty', {
+    //     key
+    //   })
+    // }
   })
 
   Object.defineProperties(resolve, {
@@ -46,12 +94,6 @@ const initBroker = resolve => {
     },
     publishEvent: {
       value: publishEvent.bind(null, resolve)
-    },
-    doUpdateRequest: {
-      value: async listenerName => {
-        const listener = resolve.eventListeners.get(listenerName)
-        await invokeUpdateLambda(resolve, listener)
-      }
     }
   })
 }

@@ -1,4 +1,3 @@
-import createEventStore from 'resolve-es'
 import createCommandExecutor from 'resolve-command'
 import createQueryExecutor from 'resolve-query'
 import createSagaExecutor from 'resolve-saga'
@@ -10,16 +9,10 @@ const initResolve = async resolve => {
   const performanceTracer = resolve.performanceTracer
 
   const {
-    storageAdapter: createStorageAdapter,
+    eventstoreAdapter: createEventstoreAdapter,
     snapshotAdapter: createSnapshotAdapter,
     readModelConnectors: readModelConnectorsCreators
   } = resolve.assemblies
-
-  const storageAdapter = createStorageAdapter()
-  const eventStore = createEventStore({
-    storage: storageAdapter,
-    publishEvent: resolve.publishEvent
-  })
 
   const {
     aggregates,
@@ -27,10 +20,11 @@ const initResolve = async resolve => {
     schedulers,
     sagas,
     viewModels,
-    uploader
+    publisher
   } = resolve
   const snapshotAdapter = createSnapshotAdapter()
-
+  const eventstoreAdapter = createEventstoreAdapter()
+  
   const readModelConnectors = {}
   for (const name of Object.keys(readModelConnectorsCreators)) {
     readModelConnectors[name] = readModelConnectorsCreators[name]({
@@ -39,14 +33,14 @@ const initResolve = async resolve => {
   }
 
   const executeCommand = createCommandExecutor({
-    eventStore,
+    publisher,
     aggregates,
     snapshotAdapter,
     performanceTracer
   })
 
   const executeQuery = createQueryExecutor({
-    eventStore,
+    publisher,
     readModelConnectors,
     snapshotAdapter,
     readModels,
@@ -57,7 +51,7 @@ const initResolve = async resolve => {
   const executeSaga = createSagaExecutor({
     executeCommand,
     executeQuery,
-    eventStore,
+    publisher,
     readModelConnectors,
     snapshotAdapter,
     schedulers,
@@ -69,14 +63,13 @@ const initResolve = async resolve => {
   Object.assign(resolve, {
     executeCommand,
     executeQuery,
-    executeSaga,
-    eventStore
+    executeSaga
   })
 
   Object.defineProperties(resolve, {
     readModelConnectors: { value: readModelConnectors },
     snapshotAdapter: { value: snapshotAdapter },
-    storageAdapter: { value: storageAdapter }
+    eventstoreAdapter: { value: eventstoreAdapter }
   })
 
   if (!resolve.hasOwnProperty('getRemainingTimeInMillis')) {

@@ -20,8 +20,8 @@ const appConfig = {
 
 // mdis-start dev-config
 const devConfig = {
-  storageAdapter: {
-    module: 'resolve-storage-lite',
+  eventstoreAdapter: {
+    module: 'resolve-eventstore-lite',
     options: {
       databaseFile: ':memory:'
     }

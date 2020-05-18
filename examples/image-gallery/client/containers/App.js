@@ -62,6 +62,17 @@ class App extends React.Component {
   customFormRender = onSubmit => {
     return (
       <Form id="customForm">
+        {this.state.form.fields != null
+          ? Object.keys(this.state.form.fields).map((key, index) => (
+            <Input
+              key={index}
+              name={key}
+              value={this.state.form.fields[key]}
+              type="hidden"
+            />
+          ))
+          : ''}
+        <Input type="hidden" name="Content-Type" value={this.state.mimeType} />
         <FormGroup>
           <Label>File input</Label>
           <CustomInput type="file" name="file" id="input" innerRef={this.ref} />
@@ -72,17 +83,6 @@ class App extends React.Component {
           placeholder="File name"
           onChange={this.handleChange}
         />
-        <Input type="hidden" name="Content-Type" value={this.state.mimeType} />
-        {this.state.form.fields != null
-          ? Object.keys(this.state.form.fields).map((key, index) => (
-              <Input
-                key={index}
-                name={key}
-                value={this.state.form.fields[key]}
-                type="hidden"
-              />
-            ))
-          : ''}
         <br />
         <Button
           outline
@@ -120,9 +120,7 @@ class App extends React.Component {
               <div hidden={this.state.isHidden}>
                 <FileUploadProgress
                   key="file"
-                  url={`${this.state.form.url}&type=${encodeURIComponent(
-                    this.state.mimeType
-                  )}`}
+                  url={this.state.form.url}
                   method="post"
                   formRenderer={this.customFormRender}
                   formGetter={this.formGetter}

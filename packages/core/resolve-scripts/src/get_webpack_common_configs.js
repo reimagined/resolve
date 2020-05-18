@@ -147,7 +147,7 @@ const getWebpackCommonConfigs = ({
     {
       ...baseCommonConfig,
       name: `Server ${targetMode} entry point${
-        targetMode === 'local' ? ', local bus broker' : ''
+        targetMode === 'local' ? ', local bus broker, local event store' : ''
       }`,
       entry: {
         [`common/${targetMode}-entry/${targetMode}-entry.js`]: path.resolve(

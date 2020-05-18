@@ -1,17 +1,23 @@
 const executeStatement = async (pool, sql) => {
-  const result = await pool.rdsDataService
-    .executeStatement({
-      ...(pool.transactionId != null
-        ? { transactionId: pool.transactionId }
-        : {}),
-      resourceArn: pool.dbClusterOrInstanceArn,
-      secretArn: pool.awsSecretStoreArn,
-      database: 'postgres',
-      continueAfterTimeout: false,
-      includeResultMetadata: true,
-      sql
-    })
-    .promise()
+  const transactionScope =
+    pool.xaTransactionId != null
+      ? {
+          transactionId: pool.xaTransactionId
+        }
+      : pool.transactionId != null
+      ? {
+          transactionId: pool.transactionId
+        }
+      : {}
+  const result = await pool.rdsDataService.executeStatement({
+    ...transactionScope,
+    resourceArn: pool.dbClusterOrInstanceArn,
+    secretArn: pool.awsSecretStoreArn,
+    database: 'postgres',
+    continueAfterTimeout: false,
+    includeResultMetadata: true,
+    sql
+  })
 
   const { columnMetadata, records } = result
 

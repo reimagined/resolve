@@ -4,7 +4,7 @@ const sagasList = async (req, res) => {
     ...req.resolve.sagas.map(({ name }) => name)
   ]
   const statuses = await Promise.all(
-    listenerIds.map(req.resolve.eventBroker.status)
+    listenerIds.map(req.resolve.publisher.status)
   )
   res.json(statuses)
 }
