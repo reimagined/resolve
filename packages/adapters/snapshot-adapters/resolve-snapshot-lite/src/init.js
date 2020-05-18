@@ -14,7 +14,7 @@ const init = async pool => {
       /^SQLITE_ERROR:.*? already exists$/.test(error.message)
     ) {
       throw new ResourceAlreadyExistError(
-        `Double-initialize storage-lite adapter via "${pool.config.databaseFile}" failed`
+        `Double-initialize eventstore-lite adapter via "${pool.config.databaseFile}" failed`
       )
     } else {
       throw error

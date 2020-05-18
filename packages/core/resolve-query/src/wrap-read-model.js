@@ -4,7 +4,6 @@ import debugLevels from 'resolve-debug-levels'
 const log = debugLevels('resolve:resolve-query:wrap-read-model')
 
 const RESERVED_TIME = 30 * 1000
-const TIMEOUT_SYMBOL = Symbol('TIMEOUT_SYMBOL')
 
 const wrapConnection = async (pool, callback) => {
   const readModelName = pool.readModel.name
@@ -133,7 +132,7 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
   }
 }
 
-const detectConnectorFeatures = connector =>
+export const detectConnectorFeatures = connector =>
   ((typeof connector.beginTransaction === 'function') << 0) +
   ((typeof connector.commitTransaction === 'function') << 1) +
   ((typeof connector.rollbackTransaction === 'function') << 2) +
@@ -144,15 +143,18 @@ const detectConnectorFeatures = connector =>
   ((typeof connector.commitEvent === 'function') << 7) +
   ((typeof connector.rollbackEvent === 'function') << 8)
 
-const FULL_XA_CONNECTOR = 504
-const FULL_REGULAR_CONNECTOR = 7
-const EMPTY_CONNECTOR = 0
+export const FULL_XA_CONNECTOR = 504
+export const FULL_REGULAR_CONNECTOR = 7
+export const EMPTY_CONNECTOR = 0
 
 const detectWrappers = connector => {
   const emptyFunction = Promise.resolve.bind(Promise)
   const featureDetection = detectConnectorFeatures(connector)
 
-  if (featureDetection === FULL_XA_CONNECTOR) {
+  if (
+    featureDetection === FULL_XA_CONNECTOR ||
+    featureDetection === FULL_REGULAR_CONNECTOR + FULL_XA_CONNECTOR
+  ) {
     return {
       onBeforeEvent: connector.beginEvent.bind(connector),
       onSuccessEvent: connector.commitEvent.bind(connector),
@@ -183,7 +185,7 @@ const updateByEvents = async (
   pool,
   events,
   getRemainingTimeInMillis,
-  transactionId
+  xaTransactionId
 ) => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
@@ -211,8 +213,9 @@ const updateByEvents = async (
       )
     }
 
+    let lastSuccessEvent = null
+    let lastFailedEvent = null
     let lastError = null
-    let lastEvent = null
 
     const handler = async (connection, event) => {
       const segment = pool.performanceTracer
@@ -245,9 +248,10 @@ const updateByEvents = async (
           log.debug(`executing read-model event handler`)
           const executor = projection[event.type]
           await executor(connection, event, { ...encryption })
-          lastEvent = event
+          lastSuccessEvent = event
         }
       } catch (error) {
+        lastFailedEvent = event
         if (subSegment != null) {
           subSegment.addError(error)
         }
@@ -305,19 +309,19 @@ const updateByEvents = async (
             log.verbose(
               `Applying "${event.type}" event to read-model "${readModelName}" started`
             )
-            await onBeforeEvent(connection, pool.readModel.name, transactionId)
+            await onBeforeEvent(
+              connection,
+              pool.readModel.name,
+              xaTransactionId
+            )
 
-            await Promise.race([
-              new Promise((_, reject) => {
-                timer = setTimeout(
-                  reject.bind(null, TIMEOUT_SYMBOL),
-                  remainingTime
-                )
-              }),
-              handler(connection, event)
-            ])
+            await handler(connection, event)
 
-            await onSuccessEvent(connection, pool.readModel.name, transactionId)
+            await onSuccessEvent(
+              connection,
+              pool.readModel.name,
+              xaTransactionId
+            )
 
             log.verbose(
               `Applying "${event.type}" event to read-model "${readModelName}" succeed`
@@ -329,7 +333,11 @@ const updateByEvents = async (
             )
             let rollbackError = null
             try {
-              await onFailEvent(connection, pool.readModel.name, transactionId)
+              await onFailEvent(
+                connection,
+                pool.readModel.name,
+                xaTransactionId
+              )
             } catch (error) {
               rollbackError = error
             }
@@ -343,18 +351,11 @@ const updateByEvents = async (
               summaryError.stack = `${summaryError.stack}${EOL}${rollbackError.stack}`
             }
 
-            if (readModelError === TIMEOUT_SYMBOL && rollbackError == null) {
-              log.verbose(
-                `Ignoring error for feeding read-model "${readModelName}" via timeout`
-              )
-              break
-            } else {
-              log.verbose(
-                `Throwing error for feeding read-model "${readModelName}"`,
-                summaryError
-              )
-              throw summaryError
-            }
+            log.verbose(
+              `Throwing error for feeding read-model "${readModelName}"`,
+              summaryError
+            )
+            throw summaryError
           } finally {
             clearTimeout(timer)
           }
@@ -368,9 +369,10 @@ const updateByEvents = async (
     })
 
     const result = {
-      listenerId: pool.readModel.name,
-      lastError,
-      lastEvent
+      eventSubscriber: pool.readModel.name,
+      successEvent: lastSuccessEvent,
+      failedEvent: lastFailedEvent,
+      error: lastError
     }
 
     if (lastError != null) {
@@ -402,7 +404,7 @@ const readAndSerialize = async (pool, resolverName, resolverArgs, jwtToken) => {
   return JSON.stringify(result, null, 2)
 }
 
-const doOperation = async (operationName, pool) => {
+const doOperation = async (operationName, pool, parameters) => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -420,9 +422,17 @@ const doOperation = async (operationName, pool) => {
       throw new Error(`Read model "${readModelName}" is disposed`)
     }
 
+    let result = null
+
     await wrapConnection(pool, async connection => {
-      await pool.connector[operationName](connection, pool.readModel.name)
+      result = await pool.connector[operationName](
+        connection,
+        pool.readModel.name,
+        parameters
+      )
     })
+
+    return result
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)
@@ -506,7 +516,12 @@ const wrapReadModel = (
     dispose: dispose.bind(null, pool)
   }
 
-  if (detectConnectorFeatures(connector) === FULL_XA_CONNECTOR) {
+  const detectedFeatures = detectConnectorFeatures(connector)
+
+  if (
+    detectedFeatures === FULL_XA_CONNECTOR ||
+    detectedFeatures === FULL_XA_CONNECTOR + FULL_REGULAR_CONNECTOR
+  ) {
     Object.assign(api, {
       beginXATransaction: beginXATransaction.bind(null, pool),
       commitXATransaction: commitXATransaction.bind(null, pool),

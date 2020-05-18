@@ -30,14 +30,15 @@
     "webpack": "4.41.2",
     "resolve-redux": "0.23.2",
     "resolve-scripts": "0.23.2",
-    "resolve-storage-postgresql-serverless": "0.23.2",
-    "resolve-storage-lite": "0.23.2",
+    "resolve-eventstore-postgresql-serverless": "0.23.2",
+    "resolve-eventstore-lite": "0.23.2",
     "resolve-readmodel-lite": "0.23.2",
     "resolve-readmodel-postgresql-serverless": "0.23.2",
     "resolve-subscribe-mqtt": "0.23.2",
     "resolve-subscribe-socket.io": "0.23.2",
     "resolve-upload-local": "0.23.2",
-    "resolve-module-uploader": "0.23.2"
+    "resolve-module-uploader": "0.23.2",
+    "resolve-upload-cloud": "0.23.2"
   },
   "devDependencies": {
     "aws-sdk": "2.587.0",

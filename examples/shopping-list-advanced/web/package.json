@@ -31,7 +31,7 @@
     "resolve-module-auth": "0.23.2",
     "resolve-readmodel-lite": "0.23.2",
     "resolve-readmodel-postgresql-serverless": "0.23.2",
-    "resolve-storage-postgresql-serverless": "0.23.2",
+    "resolve-eventstore-postgresql-serverless": "0.23.2",
     "resolve-scripts": "0.23.2",
     "resolve-redux": "0.23.2",
     "styled-components": "4.4.1"

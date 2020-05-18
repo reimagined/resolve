@@ -2,10 +2,10 @@ import path from 'path'
 import fs from 'fs'
 import createSnapshotAdapter from '../src'
 
-const snapshotStoragePath = path.join(__dirname, 'snapshotStorage.sqlite')
+const snapshotEventstorePath = path.join(__dirname, 'snapshotEventstore.sqlite')
 
 afterAll(() => {
-  fs.unlinkSync(snapshotStoragePath)
+  fs.unlinkSync(snapshotEventstorePath)
 })
 
 describe('resolve-snapshot-lite', () => {
@@ -35,7 +35,7 @@ describe('resolve-snapshot-lite', () => {
 
     const snapshotAdapter = createSnapshotAdapter({
       bucketSize,
-      databaseFile: snapshotStoragePath
+      databaseFile: snapshotEventstorePath
     })
     await snapshotAdapter.init()
 

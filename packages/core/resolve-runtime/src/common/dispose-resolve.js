@@ -5,11 +5,10 @@ const log = debugLevels('resolve:resolve-runtime:dispose-resolve')
 const disposeResolve = async resolve => {
   try {
     const disposePromises = [
-      resolve.eventStore.dispose(),
       resolve.executeCommand.dispose(),
       resolve.executeQuery.dispose(),
       resolve.executeSaga.dispose(),
-      resolve.storageAdapter.dispose(),
+      resolve.eventstoreAdapter.dispose(),
       resolve.snapshotAdapter.dispose()
       // TODO: add dispose of encryptionAdapter
     ]

@@ -1,3 +1,4 @@
+import { getNextCursor } from 'resolve-eventstore-base'
 import debugLevels from 'resolve-debug-levels'
 
 const log = debugLevels('resolve:resolve-query:wrap-view-model')
@@ -73,7 +74,7 @@ const buildViewModel = async (
           ...encryption
         }
       )
-      cursor = pool.eventStore.getNextCursor(cursor, [event])
+      cursor = await pool.getNextCursor(cursor, [event])
 
       aggregatesVersionsMap.set(event.aggregateId, event.aggregateVersion)
 
@@ -99,15 +100,16 @@ const buildViewModel = async (
     }
   }
 
-  await pool.eventStore.loadEvents(
-    {
-      aggregateIds: aggregateIds !== '*' ? aggregateIds : null,
-      eventTypes: Object.keys(pool.viewModel.projection),
-      cursor,
-      limit: 2147483648
-    },
-    handler
-  )
+  const { events } = await pool.publisher.read({
+    aggregateIds: aggregateIds !== '*' ? aggregateIds : null,
+    eventTypes: Object.keys(pool.viewModel.projection),
+    cursor,
+    limit: Number.MAX_SAFE_INTEGER
+  })
+
+  for (const event of events) {
+    await handler(event)
+  }
 
   return { state, eventCount }
 }
@@ -290,16 +292,17 @@ const dispose = async pool => {
 const wrapViewModel = (
   viewModel,
   snapshotAdapter,
-  eventStore,
+  publisher,
   performanceTracer
 ) => {
   const pool = {
     viewModel,
     snapshotAdapter,
-    eventStore,
+    publisher,
     workers: new Map(),
     isDisposed: false,
-    performanceTracer
+    performanceTracer,
+    getNextCursor
   }
 
   return Object.freeze({

@@ -12,7 +12,8 @@ function getResolveExamples() {
 
   for (const filePath of find('./examples/*/package.json', {
     cwd: getResolveDir(),
-    absolute: true
+    absolute: true,
+    ignore: ['**/node_modules/**', './node_modules/**']
   })) {
     if (filePath.includes('node_modules')) {
       continue

@@ -1,89 +1,75 @@
 import {
-  ResourceAlreadyExistError as StorageResourceAlreadyExistError,
-  ResourceNotExistError as StorageResourceNotExistError
-} from 'resolve-storage-base'
+  EventstoreResourceAlreadyExistError,
+  EventstoreResourceNotExistError
+} from 'resolve-eventstore-base'
 import {
-  ResourceAlreadyExistError as SnapshotResourceAlreadyExistError,
-  ResourceNotExistError as SnapshotResourceNotExistError
+  SnapshotResourceAlreadyExistError,
+  SnapshotResourceNotExistError
 } from 'resolve-snapshot-base'
+import {
+  PublisherResourceAlreadyExistError,
+  PublisherResourceNotExistError
+} from 'resolve-local-event-broker'
+
+import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 
 const resetDomainHandler = options => async (req, res) => {
   const {
-    readModelConnectors,
     snapshotAdapter,
-    storageAdapter,
-    eventBroker: { reset: resetListener },
+    eventstoreAdapter,
+    publisher,
     readModels,
     schedulers,
     sagas
   } = req.resolve
 
   try {
-    const { dropEventStore, dropSnapshots, dropReadModels, dropSagas } = options
+    const {
+      dropEventStore,
+      dropSnapshots,
+      dropEventBus,
+      dropReadModels,
+      dropSagas
+    } = options
 
     if (dropEventStore) {
-      try {
-        await storageAdapter.drop()
-      } catch (error) {
-        if (!(error instanceof StorageResourceNotExistError)) {
-          throw error
-        }
-      }
-
-      try {
-        await storageAdapter.init()
-      } catch (error) {
-        if (!(error instanceof StorageResourceAlreadyExistError)) {
-          throw error
-        }
-      }
+      await invokeFilterErrorTypes(
+        eventstoreAdapter.drop.bind(eventstoreAdapter),
+        [EventstoreResourceNotExistError]
+      )
+      await invokeFilterErrorTypes(
+        eventstoreAdapter.init.bind(eventstoreAdapter),
+        [EventstoreResourceAlreadyExistError]
+      )
     }
 
     if (dropSnapshots) {
-      try {
-        await snapshotAdapter.drop()
-      } catch (error) {
-        if (!(error instanceof SnapshotResourceNotExistError)) {
-          throw error
-        }
-      }
+      await invokeFilterErrorTypes(snapshotAdapter.drop.bind(snapshotAdapter), [
+        SnapshotResourceNotExistError
+      ])
+      await invokeFilterErrorTypes(snapshotAdapter.init.bind(snapshotAdapter), [
+        SnapshotResourceAlreadyExistError
+      ])
+    }
 
-      try {
-        await snapshotAdapter.init()
-      } catch (error) {
-        if (!(error instanceof SnapshotResourceAlreadyExistError)) {
-          throw error
-        }
-      }
+    if (dropEventBus) {
+      await invokeFilterErrorTypes(publisher.drop.bind(publisher), [
+        PublisherResourceNotExistError
+      ])
+      await invokeFilterErrorTypes(publisher.init.bind(publisher), [
+        PublisherResourceAlreadyExistError
+      ])
     }
 
     if (dropReadModels) {
-      for (const { name, connectorName } of readModels) {
-        const connector = readModelConnectors[connectorName]
-
-        const connection = await connector.connect(name)
-        await connector.drop(connection, name)
-        await connector.disconnect(connection, name)
-
-        // TODO: idempotent reset listener
-        try {
-          await resetListener(name)
-        } catch (e) {}
+      for (const { name } of readModels) {
+        await publisher.reset(name)
       }
     }
 
     if (dropSagas) {
-      for (const { name, connectorName } of [...sagas, ...schedulers]) {
-        const connector = readModelConnectors[connectorName]
-
-        const connection = await connector.connect(name)
-        await connector.drop(connection, name)
-        await connector.disconnect(connection, name)
-
-        // TODO: idempotent reset listener
-        try {
-          await resetListener(name)
-        } catch (e) {}
+      for (const { name } of [...sagas, ...schedulers]) {
+        await publisher.reset(name)
       }
     }
 

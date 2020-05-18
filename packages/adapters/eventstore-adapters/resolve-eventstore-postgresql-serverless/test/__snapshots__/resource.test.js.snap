@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`resolve-eventstore-postgres-serverless resource method "create" should create resource 1`] = `
+Array [
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "CREATE SCHEMA \\"databaseName\\"; GRANT USAGE ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL TABLES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL SEQUENCES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL FUNCTIONS IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; ALTER SCHEMA \\"databaseName\\" OWNER TO \\"userLogin\\"",
+  },
+]
+`;
+
+exports[`resolve-eventstore-postgres-serverless resource method "destroy" should destroy resource 1`] = `
+Array [
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "ALTER SCHEMA \\"databaseName\\" OWNER TO SESSION_USER",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "DROP SCHEMA \\"databaseName\\" CASCADE",
+  },
+]
+`;
+
+exports[`resolve-eventstore-postgres-serverless resource method "dispose" should dispose resource 1`] = `
+Array [
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "ALTER SCHEMA \\"databaseName\\" OWNER TO SESSION_USER",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "DROP SCHEMA \\"databaseName\\" CASCADE",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreAdminArn",
+    "sql": "CREATE SCHEMA \\"databaseName\\"; GRANT USAGE ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL TABLES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL SEQUENCES IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; GRANT ALL ON ALL FUNCTIONS IN SCHEMA \\"databaseName\\" TO \\"userLogin\\"; ALTER SCHEMA \\"databaseName\\" OWNER TO \\"userLogin\\"",
+  },
+]
+`;

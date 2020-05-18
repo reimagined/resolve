@@ -1,5 +1,7 @@
 import debugLevels from 'resolve-debug-levels'
 
+import invokeEventBus from './invoke-event-bus'
+
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
 const publishEvent = async (resolve, event) => {
@@ -9,20 +11,7 @@ const publishEvent = async (resolve, event) => {
     qos: 1
   }
 
-  try {
-    const promises = []
-    for (const listener of resolve.eventListeners.values()) {
-      const { name: listenerId, eventTypes } = listener
-      if (eventTypes.includes(event.type)) {
-        promises.push(resolve.doUpdateRequest(listenerId))
-      }
-    }
-    await Promise.all(promises)
-
-    log.info('Lambda pushed event into step function updater successfully')
-  } catch (error) {
-    log.warn('Lambda can not publish event into step function updater', error)
-  }
+  await invokeEventBus(resolve.eventstoreCredentials, 'publish', { event })
 
   try {
     await resolve.mqtt.publish(eventDescriptor).promise()

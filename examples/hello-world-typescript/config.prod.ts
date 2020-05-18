@@ -57,14 +57,14 @@ const prodConfig = {
       }
     }
   */ storageAdapter: {
-    module: 'resolve-storage-lite',
+    module: 'resolve-eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db'
     }
   },
   /*
     {
-      module: 'resolve-storage-mongo',
+      module: 'resolve-eventstore-mongo',
       options: {
         url: 'mongodb://127.0.0.1:27017/MyDatabaseName',
         collectionName: 'Events'
@@ -73,7 +73,7 @@ const prodConfig = {
   */
   /*
     {
-      module: 'resolve-storage-mysql',
+      module: 'resolve-eventstore-mysql',
       options: {
         host: 'localhost',
         port: 3306,

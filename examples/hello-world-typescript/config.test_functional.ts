@@ -30,7 +30,7 @@ const testFunctionalConfig = {
     maxAge: 31536000000
   },
   storageAdapter: {
-    module: 'resolve-storage-lite',
+    module: 'resolve-eventstore-lite',
     options: {
       databaseFile: 'data/event-store-test-functional.db'
     }

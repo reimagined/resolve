@@ -154,7 +154,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"apiHandlers\\": [],
                   \\"index\\": \\"client/index.js\\",
                   \\"storageAdapter\\": {
-                    \\"module\\": \\"resolve-storage-lite\\",
+                    \\"module\\": \\"resolve-eventstore-lite\\",
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
@@ -392,7 +392,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"apiHandlers\\": [],
                   \\"index\\": \\"client/index.js\\",
                   \\"storageAdapter\\": {
-                    \\"module\\": \\"resolve-storage-lite\\",
+                    \\"module\\": \\"resolve-eventstore-lite\\",
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
@@ -609,7 +609,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"apiHandlers\\": [],
                   \\"index\\": \\"client/index.js\\",
                   \\"storageAdapter\\": {
-                    \\"module\\": \\"resolve-storage-lite\\",
+                    \\"module\\": \\"resolve-eventstore-lite\\",
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
@@ -841,7 +841,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"apiHandlers\\": [],
                   \\"index\\": \\"client/index.js\\",
                   \\"storageAdapter\\": {
-                    \\"module\\": \\"resolve-storage-lite\\",
+                    \\"module\\": \\"resolve-eventstore-lite\\",
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
@@ -1079,7 +1079,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"apiHandlers\\": [],
                   \\"index\\": \\"client/index.js\\",
                   \\"storageAdapter\\": {
-                    \\"module\\": \\"resolve-storage-lite\\",
+                    \\"module\\": \\"resolve-eventstore-lite\\",
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
@@ -1297,7 +1297,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"apiHandlers\\": [],
                   \\"index\\": \\"client/index.js\\",
                   \\"storageAdapter\\": {
-                    \\"module\\": \\"resolve-storage-lite\\",
+                    \\"module\\": \\"resolve-eventstore-lite\\",
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }

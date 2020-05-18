@@ -7,13 +7,11 @@ const log = debugLevels(
 const rollbackTransaction = async pool => {
   try {
     log.verbose('Rollback transaction to postgresql database started')
-    await pool.rdsDataService
-      .rollbackTransaction({
-        resourceArn: pool.dbClusterOrInstanceArn,
-        secretArn: pool.awsSecretStoreArn,
-        transactionId: pool.transactionId
-      })
-      .promise()
+    await pool.rdsDataService.rollbackTransaction({
+      resourceArn: pool.dbClusterOrInstanceArn,
+      secretArn: pool.awsSecretStoreArn,
+      transactionId: pool.transactionId
+    })
 
     log.verbose('Rollback transaction to postgresql database succeed')
   } catch (error) {

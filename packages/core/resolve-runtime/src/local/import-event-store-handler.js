@@ -5,12 +5,12 @@ import { promisify } from 'util'
 import { pipeline } from 'stream'
 
 const importEventStoreHandler = options => async (req, res) => {
-  const { storageAdapter } = req.resolve
+  const { eventstoreAdapter } = req.resolve
 
   try {
     const { importFile } = options
 
-    const eventStream = storageAdapter.import()
+    const eventStream = eventstoreAdapter.import()
     const fsStream = fs.createReadStream(path.join(importFile))
     await promisify(pipeline)(fsStream, eventStream)
 

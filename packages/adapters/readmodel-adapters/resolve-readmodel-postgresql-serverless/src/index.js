@@ -28,6 +28,7 @@ import rollbackTransaction from './rollback-transaction'
 import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
 import update from './update'
+import generateGuid from './generate-guid'
 
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
@@ -45,6 +46,7 @@ const connect = _connect.bind(null, {
   updateToSetExpression,
   executeStatement,
   coercer,
+  generateGuid,
   ...store
 })
 

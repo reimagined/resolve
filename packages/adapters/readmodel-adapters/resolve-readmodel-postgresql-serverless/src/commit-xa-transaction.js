@@ -4,42 +4,72 @@ const log = debugLevels(
   'resolve:resolve-readmodel-postgresql-serverless:commit-xa-transaction'
 )
 
-const commitXATransaction = async (pool, readModelName, transactionId) => {
+const commitXATransaction = async (
+  pool,
+  readModelName,
+  { xaTransactionId, countEvents }
+) => {
   try {
     log.verbose('Commit XA-transaction to postgresql database started')
-
-    const hexTransactionId = Buffer.from(`${readModelName}${transactionId}`)
-      .toString('hex')
-      .toLowerCase()
-    const savepointId = `sv${hexTransactionId}`
-    const setLocalId = `resolve.sl${hexTransactionId}`
-
-    const result = await pool.rdsDataService.executeStatement({
+    await pool.rdsDataService.executeStatement({
       resourceArn: pool.dbClusterOrInstanceArn,
       secretArn: pool.awsSecretStoreArn,
-      database: 'postgres',
-      continueAfterTimeout: false,
-      includeResultMetadata: false,
-      sql: `
-        ROLLBACK TO SAVEPOINT ${savepointId};
-        SELECT current_setting(${pool.escape(setLocalId)})
-      `
+      transactionId: xaTransactionId,
+      sql: `SELECT 0`
     })
 
-    const appliedEventsCount = ~~pool.coercer(result[0])
+    if (countEvents) {
+      const savepointId = pool.generateGuid(readModelName, xaTransactionId)
+      const eventCountId = `resolve.${pool.generateGuid(
+        readModelName,
+        xaTransactionId,
+        'eventCountId'
+      )}`
+      const insideEventId = `resolve.${pool.generateGuid(
+        readModelName,
+        xaTransactionId,
+        'insideEventId'
+      )}`
 
-    await pool.rdsDataService
-      .commitTransaction({
+      let result = await pool.rdsDataService.executeStatement({
         resourceArn: pool.dbClusterOrInstanceArn,
         secretArn: pool.awsSecretStoreArn,
-        transactionId
+        transactionId: xaTransactionId,
+        sql: `SELECT current_setting(${pool.escape(insideEventId)})`
       })
-      .promise()
+
+      const isInsideEvent = +pool.coercer(result.records[0][0])
+      if (isInsideEvent) {
+        await pool.rdsDataService.executeStatement({
+          resourceArn: pool.dbClusterOrInstanceArn,
+          secretArn: pool.awsSecretStoreArn,
+          transactionId: xaTransactionId,
+          sql: `
+            ROLLBACK TO SAVEPOINT ${savepointId};
+            RELEASE SAVEPOINT ${savepointId};
+          `
+        })
+      }
+
+      result = await pool.rdsDataService.executeStatement({
+        resourceArn: pool.dbClusterOrInstanceArn,
+        secretArn: pool.awsSecretStoreArn,
+        transactionId: xaTransactionId,
+        sql: `SELECT current_setting(${pool.escape(eventCountId)})`
+      })
+
+      const appliedEventsCount = +pool.coercer(result.records[0][0])
+
+      return appliedEventsCount
+    }
+
+    await pool.rdsDataService.commitTransaction({
+      resourceArn: pool.dbClusterOrInstanceArn,
+      secretArn: pool.awsSecretStoreArn,
+      transactionId: xaTransactionId
+    })
 
     log.verbose('Commit XA-transaction to postgresql database succeed')
-    pool.eventsCount = null
-
-    return appliedEventsCount
   } catch (error) {
     log.verbose('Commit XA-transaction to postgresql database failed', error)
 

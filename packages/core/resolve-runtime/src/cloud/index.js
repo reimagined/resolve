@@ -23,7 +23,7 @@ const index = async ({ assemblies, constants, domain }) => {
       ...domain,
       ...constants,
       routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
-      eventBroker: {},
+      publisher: {},
       assemblies
     }
 

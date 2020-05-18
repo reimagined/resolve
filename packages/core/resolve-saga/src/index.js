@@ -7,7 +7,7 @@ import createSchedulerSagas from './create-scheduler-sagas'
 import wrapRegularSagas from './wrap-regular-sagas'
 
 const createSaga = ({
-  eventStore,
+  publisher,
   readModelConnectors,
   snapshotAdapter,
   sagas,
@@ -21,7 +21,7 @@ const createSaga = ({
   let eventProperties = {}
   const executeScheduleCommand = createCommand({
     aggregates: createSchedulersAggregates(schedulers),
-    eventStore,
+    publisher,
     snapshotAdapter
   })
 
@@ -49,7 +49,7 @@ const createSaga = ({
   const schedulerSagas = createSchedulerSagas(schedulers, sagaProvider)
 
   const executeListener = createQuery({
-    eventStore,
+    publisher,
     readModelConnectors,
     snapshotAdapter,
     readModels: [...regularSagas, ...schedulerSagas],
@@ -61,7 +61,7 @@ const createSaga = ({
     modelName,
     events,
     getRemainingTimeInMillis,
-    transactionId,
+    xaTransactionId,
     properties
   }) => {
     eventProperties = properties
@@ -69,7 +69,7 @@ const createSaga = ({
       modelName,
       events,
       getRemainingTimeInMillis,
-      transactionId
+      xaTransactionId
     })
     return result
   }

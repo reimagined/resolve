@@ -1,3 +1,5 @@
+import { getNextCursor } from 'resolve-eventstore-base'
+
 // eslint-disable-next-line no-new-func
 const CommandError = Function()
 Object.setPrototypeOf(CommandError.prototype, Error.prototype)
@@ -66,7 +68,7 @@ const regularHandler = async (pool, aggregateInfo, event) => {
       )
     }
 
-    aggregateInfo.cursor = pool.eventStore.getNextCursor(aggregateInfo.cursor, [
+    aggregateInfo.cursor = await pool.getNextCursor(aggregateInfo.cursor, [
       event
     ])
 
@@ -179,17 +181,18 @@ const getAggregateState = async (
         throw generateCommandError()
       }
 
-      if (projection == null) {
-        const lastEvent = await pool.eventStore.getLatestEvent({
-          aggregateIds: [aggregateId]
-        })
-        if (lastEvent != null) {
-          await regularHandler(pool, aggregateInfo, lastEvent)
-        }
-
-        aggregateInfo.cursor = null
-        return aggregateInfo
-      }
+      // TODO: Restore
+      // if (projection == null) {
+      //   const lastEvent = await pool.publisher.getLatestEvent({
+      //     aggregateIds: [aggregateId]
+      //   })
+      //   if (lastEvent != null) {
+      //     await regularHandler(pool, aggregateInfo, lastEvent)
+      //   }
+      //
+      //   aggregateInfo.cursor = null
+      //   return aggregateInfo
+      // }
 
       const snapshot = await (async () => {
         const segment = pool.performanceTracer
@@ -236,14 +239,9 @@ const getAggregateState = async (
         typeof projection.Init === 'function' ? await projection.Init() : null
     }
 
-    let eventCount = 0
-    const withIncrementEventCount = callback => async (...args) => {
-      eventCount++
-      return await callback(...args)
-    }
     const eventHandler = (pool.snapshotAdapter != null && snapshotKey != null
-      ? withIncrementEventCount(snapshotHandler)
-      : withIncrementEventCount(regularHandler)
+      ? snapshotHandler
+      : regularHandler
     ).bind(null, pool, aggregateInfo)
 
     await (async () => {
@@ -257,18 +255,18 @@ const getAggregateState = async (
           throw generateCommandError('Command handler is disposed')
         }
 
-        eventCount = 0
-        await pool.eventStore.loadEvents(
-          {
-            aggregateIds: [aggregateId],
-            cursor: aggregateInfo.cursor,
-            limit: 2147483648
-          },
-          eventHandler
-        )
+        const { events } = await pool.publisher.read({
+          aggregateIds: [aggregateId],
+          cursor: aggregateInfo.cursor,
+          limit: Number.MAX_SAFE_INTEGER
+        })
+
+        for (const event of events) {
+          await eventHandler(event)
+        }
 
         if (subSegment != null) {
-          subSegment.addAnnotation('eventCount', eventCount)
+          subSegment.addAnnotation('eventCount', events.length)
           subSegment.addAnnotation('origin', 'resolve:loadEvents')
         }
       } catch (error) {
@@ -300,7 +298,7 @@ const isInteger = val =>
   val != null && val.constructor === Number && parseInt(val) === val
 const isString = val => val != null && val.constructor === String
 
-const saveEvent = async (eventStore, event) => {
+const saveEvent = async (publisher, event) => {
   if (!isString(event.type)) {
     throw new Error('The `type` field is invalid')
   }
@@ -316,7 +314,7 @@ const saveEvent = async (eventStore, event) => {
 
   event.aggregateId = String(event.aggregateId)
 
-  return await eventStore.saveEvent(event)
+  return await publisher.publish(event)
 }
 
 const executeCommand = async (pool, { jwtToken, ...command }) => {
@@ -423,7 +421,7 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
       const subSegment = segment ? segment.addNewSubsegment('saveEvent') : null
 
       try {
-        return await saveEvent(pool.eventStore, processedEvent)
+        return await saveEvent(pool.publisher, processedEvent)
       } catch (error) {
         if (subSegment != null) {
           subSegment.addError(error)
@@ -474,17 +472,18 @@ const dispose = async pool => {
 }
 
 const createCommand = ({
-  eventStore,
+  publisher,
   aggregates,
   snapshotAdapter,
   performanceTracer
 }) => {
   const pool = {
-    eventStore,
+    publisher,
     aggregates,
     snapshotAdapter,
     isDisposed: false,
-    performanceTracer
+    performanceTracer,
+    getNextCursor
   }
 
   const api = {
