@@ -93,25 +93,25 @@ export declare type AggregateEncryptionFactory = (
 
 // Read model
 
-declare type ReadModelContext = {
-  encrypt: Encrypter
-  decrypt: Decrypter
-}
 declare type ReadModelInitHandler<TStore> = (store: TStore) => Promise<void>
 declare type ReadModelEventHandler<TStore> = (
   store: TStore,
-  event: Event,
-  context: ReadModelContext
+  event: Event
 ) => Promise<void>
 export declare type ReadModel<TStore> = {
   [key: string]: ReadModelEventHandler<TStore>
 } & {
   Init: ReadModelInitHandler<TStore>
 }
+declare type ReadModelResolverContext = {
+  jwt: string
+  encrypt: Encrypter
+  decrypt: Decrypter
+}
 declare type ReadModelResolver<TStore> = (
   store: TStore,
   params: SerializableMap,
-  jwt: string
+  context: ReadModelResolverContext
 ) => Promise<any>
 export declare type ReadModelResolvers<TStore> = {
   [key: string]: ReadModelResolver<TStore>

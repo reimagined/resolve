@@ -1,15 +1,28 @@
 import { decode } from '../jwt'
 import { systemUserId } from '../constants'
 
+const decryptProfile = (decrypt, profile) => ({
+  ...profile,
+  firstName: decrypt(profile.firstName),
+  lastName: decrypt(profile.lastName),
+  contacts: decrypt(profile.contacts)
+})
+
 const resolvers = {
-  profile: async (store, params, jwt) => {
+  profile: async (store, params, { jwt, decrypt }) => {
     const { userId } = decode(jwt)
     const actualUserId = userId === systemUserId ? params.userId : userId
-    return store.findOne('Users', { id: actualUserId })
+    return decryptProfile(
+      decrypt,
+      await store.findOne('Users', { id: actualUserId })
+    )
   },
-  profileById: async (store, params, jwt) => {
+  profileById: async (store, params, { jwt, decrypt }) => {
     decode(jwt)
-    return store.findOne('Users', { id: params.userId })
+    return decryptProfile(
+      decrypt,
+      await store.findOne('Users', { id: params.userId })
+    )
   },
   all: async store => {
     return store.find('Users', {})
@@ -19,7 +32,7 @@ const resolvers = {
     const user = await store.findOne('Users', {
       'profile.nickname': nickname
     })
-    return user ? true : false
+    return !!user
   }
 }
 
