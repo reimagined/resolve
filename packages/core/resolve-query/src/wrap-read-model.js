@@ -478,11 +478,7 @@ const dispose = async pool => {
   }
 }
 
-const wrapReadModel = (
-  readModel,
-  readModelConnectors,
-  performanceTracer
-) => {
+const wrapReadModel = (readModel, readModelConnectors, performanceTracer) => {
   const connector = readModelConnectors[readModel.connectorName]
   if (connector == null) {
     throw new Error(
