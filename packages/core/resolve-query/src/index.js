@@ -14,7 +14,8 @@ const createQuery = ({
   readModels,
   viewModels,
   publisher,
-  performanceTracer
+  performanceTracer,
+  eventstoreAdapter
 }) => {
   const models = {}
   for (const readModel of readModels) {
@@ -24,7 +25,8 @@ const createQuery = ({
     models[readModel.name] = wrapReadModel(
       readModel,
       readModelConnectors,
-      performanceTracer
+      performanceTracer,
+      eventstoreAdapter.getSecretsManager.bind(null)
     )
   }
 
@@ -36,7 +38,8 @@ const createQuery = ({
       viewModel,
       snapshotAdapter,
       publisher,
-      performanceTracer
+      performanceTracer,
+      eventstoreAdapter.getSecretsManager.bind(null)
     )
   }
 

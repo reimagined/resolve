@@ -67,10 +67,10 @@ const wrapConnection = async (pool, callback) => {
   }
 }
 
-const read = async (pool, resolverName, resolverArgs, jwtToken) => {
-  const segment = pool.performanceTracer
-    ? pool.performanceTracer.getSegment()
-    : null
+const read = async (pool, resolverName, resolverArgs, jwt) => {
+  const { performanceTracer, getSecretsManager, isDisposed, readModel } = pool
+
+  const segment = performanceTracer ? performanceTracer.getSegment() : null
   const subSegment = segment ? segment.addNewSubsegment('read') : null
 
   const readModelName = pool.readModel.name
@@ -82,7 +82,7 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
   }
 
   try {
-    if (pool.isDisposed) {
+    if (isDisposed) {
       throw new Error(`Read model "${pool.readModel.name}" is disposed`)
     }
     if (typeof pool.readModel.resolvers[resolverName] !== 'function') {
@@ -92,9 +92,7 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
     }
 
     return await wrapConnection(pool, async connection => {
-      const segment = pool.performanceTracer
-        ? pool.performanceTracer.getSegment()
-        : null
+      const segment = performanceTracer ? performanceTracer.getSegment() : null
       const subSegment = segment ? segment.addNewSubsegment('resolver') : null
 
       if (subSegment != null) {
@@ -104,10 +102,16 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
       }
 
       try {
-        return await pool.readModel.resolvers[resolverName](
+        return await readModel.resolvers[resolverName](
           connection,
           resolverArgs,
-          jwtToken
+          {
+            secretsManager:
+              typeof getSecretsManager === 'function'
+                ? await getSecretsManager()
+                : null,
+            jwt
+          }
         )
       } catch (error) {
         if (subSegment != null) {
@@ -384,14 +388,14 @@ const updateByEvents = async (
   }
 }
 
-const readAndSerialize = async (pool, resolverName, resolverArgs, jwtToken) => {
+const readAndSerialize = async (pool, resolverName, resolverArgs, jwt) => {
   const readModelName = pool.readModel.name
 
   if (pool.isDisposed) {
     throw new Error(`Read model "${readModelName}" is disposed`)
   }
 
-  const result = await read(pool, resolverName, resolverArgs, jwtToken)
+  const result = await read(pool, resolverName, resolverArgs, jwt)
 
   return JSON.stringify(result, null, 2)
 }
@@ -478,7 +482,12 @@ const dispose = async pool => {
   }
 }
 
-const wrapReadModel = (readModel, readModelConnectors, performanceTracer) => {
+const wrapReadModel = (
+  readModel,
+  readModelConnectors,
+  performanceTracer,
+  getSecretsManager
+) => {
   const connector = readModelConnectors[readModel.connectorName]
   if (connector == null) {
     throw new Error(
@@ -491,7 +500,8 @@ const wrapReadModel = (readModel, readModelConnectors, performanceTracer) => {
     readModel,
     connector,
     isDisposed: false,
-    performanceTracer
+    performanceTracer,
+    getSecretsManager
   }
 
   const api = {

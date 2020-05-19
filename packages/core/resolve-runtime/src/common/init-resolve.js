@@ -47,7 +47,8 @@ const initResolve = async resolve => {
     snapshotAdapter,
     readModels,
     viewModels,
-    performanceTracer
+    performanceTracer,
+    eventstoreAdapter
   })
 
   const executeSaga = createSagaExecutor({

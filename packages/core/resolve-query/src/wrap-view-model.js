@@ -6,13 +6,7 @@ const log = debugLevels('resolve:resolve-query:wrap-view-model')
 const getKey = aggregateIds =>
   Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds
 
-const buildViewModel = async (
-  pool,
-  aggregateIds,
-  aggregateArgs,
-  jwtToken,
-  key
-) => {
+const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
   const viewModelName = pool.viewModel.name
 
   await Promise.resolve()
@@ -58,7 +52,10 @@ const buildViewModel = async (
       }
 
       log.debug(`retrieving event store secrets manager`)
-      const secretsManager = await pool.eventStore.getSecretsManager()
+      const secretsManager =
+        typeof pool.getSecretsManager === 'function'
+          ? await pool.getSecretsManager()
+          : null
 
       log.debug(`building view-model encryption`)
       const encryption = await pool.viewModel.encryption(event, {
@@ -70,7 +67,7 @@ const buildViewModel = async (
         event,
         aggregateArgs,
         {
-          jwt: jwtToken,
+          jwt,
           ...encryption
         }
       )
@@ -114,7 +111,7 @@ const buildViewModel = async (
   return { state, eventCount }
 }
 
-const read = async (pool, modelOptions, aggregateArgs, jwtToken) => {
+const read = async (pool, modelOptions, aggregateArgs, jwt) => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -150,7 +147,7 @@ const read = async (pool, modelOptions, aggregateArgs, jwtToken) => {
     if (!pool.workers.has(key)) {
       pool.workers.set(
         key,
-        buildViewModel(pool, aggregateIds, aggregateArgs, jwtToken, key)
+        buildViewModel(pool, aggregateIds, aggregateArgs, jwt, key)
       )
     }
 
@@ -293,7 +290,8 @@ const wrapViewModel = (
   viewModel,
   snapshotAdapter,
   publisher,
-  performanceTracer
+  performanceTracer,
+  getSecretsManager
 ) => {
   const pool = {
     viewModel,
@@ -302,7 +300,8 @@ const wrapViewModel = (
     workers: new Map(),
     isDisposed: false,
     performanceTracer,
-    getNextCursor
+    getNextCursor,
+    getSecretsManager
   }
 
   return Object.freeze({
