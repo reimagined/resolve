@@ -40,7 +40,7 @@ const createSaga = ({
     executeQuery: { get: () => executeQuery, enumerable: true },
     eventProperties: { get: () => eventProperties, enumerable: true },
     getSecretsManager: {
-      get: () => eventstoreAdapter.getSecretsManager,
+      get: () => eventstoreAdapter.getSecretsManager.bind(null),
       enumerable: true
     },
     uploader: { get: () => uploader, enumerable: true }
@@ -55,7 +55,8 @@ const createSaga = ({
     snapshotAdapter,
     readModels: [...regularSagas, ...schedulerSagas],
     viewModels: [],
-    performanceTracer
+    performanceTracer,
+    eventstoreAdapter
   })
 
   const updateByEvents = async ({
