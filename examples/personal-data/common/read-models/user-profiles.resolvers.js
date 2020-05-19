@@ -1,26 +1,46 @@
 import { decode } from '../jwt'
 import { systemUserId } from '../constants'
+import encryptionFactory from '../encryption-factory'
 
-const decryptProfile = (decrypt, profile) => ({
-  ...profile,
-  firstName: decrypt(profile.firstName),
-  lastName: decrypt(profile.lastName),
-  contacts: decrypt(profile.contacts)
-})
+const decryptProfile = async (secretsManager, user) => {
+  const encryption = await encryptionFactory(user.id, secretsManager)
+  if (!encryption) {
+    return {
+      ...user,
+      profile: {
+        ...user.profile,
+        firstName: 'unknown',
+        lastName: 'unknown',
+        contacts: {}
+      }
+    }
+  }
+  const { decrypt } = encryption
+  const { profile } = user
+  return {
+    ...user,
+    profile: {
+      ...profile,
+      firstName: decrypt(profile.firstName),
+      lastName: decrypt(profile.lastName),
+      contacts: decrypt(profile.contacts)
+    }
+  }
+}
 
 const resolvers = {
-  profile: async (store, params, { jwt, decrypt }) => {
+  profile: async (store, params, { jwt, secretsManager }) => {
     const { userId } = decode(jwt)
     const actualUserId = userId === systemUserId ? params.userId : userId
     return decryptProfile(
-      decrypt,
+      secretsManager,
       await store.findOne('Users', { id: actualUserId })
     )
   },
-  profileById: async (store, params, { jwt, decrypt }) => {
+  profileById: async (store, params, { jwt, secretsManager }) => {
     decode(jwt)
     return decryptProfile(
-      decrypt,
+      secretsManager,
       await store.findOne('Users', { id: params.userId })
     )
   },

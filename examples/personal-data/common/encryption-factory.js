@@ -15,14 +15,17 @@ const decrypt = (key, blob) => {
   }
 }
 
-export default async (aggregateId, secretsManager) => {
+export default async (aggregateId, secretsManager, generateKey = true) => {
   let aggregateKey = await secretsManager.getSecret(aggregateId)
-  if (!aggregateKey) {
+  if (!aggregateKey && generateKey) {
     aggregateKey = generate({
       length: 20,
       numbers: true
     })
     await secretsManager.setSecret(aggregateId, aggregateKey)
+  }
+  if (!aggregateKey) {
+    return null
   }
   return {
     encrypt: data => encrypt(aggregateKey, data),
