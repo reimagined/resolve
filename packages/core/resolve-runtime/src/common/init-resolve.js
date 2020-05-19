@@ -37,7 +37,8 @@ const initResolve = async resolve => {
     publisher,
     aggregates,
     snapshotAdapter,
-    performanceTracer
+    performanceTracer,
+    eventstoreAdapter
   })
 
   const executeQuery = createQueryExecutor({
