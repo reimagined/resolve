@@ -59,7 +59,8 @@ const initResolve = async resolve => {
     schedulers,
     sagas,
     performanceTracer,
-    uploader
+    uploader,
+    eventstoreAdapter
   })
 
   Object.assign(resolve, {

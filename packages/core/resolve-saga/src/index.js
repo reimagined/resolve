@@ -15,7 +15,8 @@ const createSaga = ({
   executeCommand,
   executeQuery,
   performanceTracer,
-  uploader
+  uploader,
+  eventstoreAdapter
 }) => {
   const schedulerAggregatesNames = new Set(schedulers.map(({ name }) => name))
   let eventProperties = {}
@@ -39,7 +40,7 @@ const createSaga = ({
     executeQuery: { get: () => executeQuery, enumerable: true },
     eventProperties: { get: () => eventProperties, enumerable: true },
     getSecretsManager: {
-      get: () => eventStore.getSecretsManager,
+      get: () => eventstoreAdapter.getSecretsManager,
       enumerable: true
     },
     uploader: { get: () => uploader, enumerable: true }
