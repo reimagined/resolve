@@ -105,8 +105,7 @@ export declare type ReadModel<TStore> = {
 }
 declare type ReadModelResolverContext = {
   jwt: string
-  encrypt: Encrypter
-  decrypt: Decrypter
+  secretsManager: SecretsManager
 }
 declare type ReadModelResolver<TStore> = (
   store: TStore,
@@ -116,13 +115,6 @@ declare type ReadModelResolver<TStore> = (
 export declare type ReadModelResolvers<TStore> = {
   [key: string]: ReadModelResolver<TStore>
 }
-export declare type ReadModelEncryptionContext = {
-  secretsManager: SecretsManager
-}
-export declare type ReadModelEncryptionFactory = (
-  event: Event,
-  context: ReadModelEncryptionContext
-) => Promise<Encryption | null>
 
 // Saga
 
