@@ -26,23 +26,25 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/eventstore-adapters/resolve-eventstore-postgresql#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "resolve-eventstore-base": "0.23.2",
-    "pg": "^7.17.1"
+    "pg": "^8.2.1",
+    "resolve-core": "0.23.2",
+    "resolve-debug-levels": "0.23.2",
+    "resolve-eventstore-base": "0.23.2"
   },
   "devDependencies": {
+    "@types/pg": "^7.14.3",
     "jest": "25.1.0"
-  },
-  "peerDependencies": {
-    "aws-sdk": "*"
   },
   "babelCompile": [
     {
+      "sourceType": "ts",
       "moduleType": "es",
       "moduleTarget": "server",
       "inputDir": "./src",
       "outDir": "./es"
     },
     {
+      "sourceType": "ts",
       "moduleType": "cjs",
       "moduleTarget": "server",
       "inputDir": "./src",
