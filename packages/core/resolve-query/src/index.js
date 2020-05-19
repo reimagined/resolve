@@ -24,8 +24,7 @@ const createQuery = ({
     models[readModel.name] = wrapReadModel(
       readModel,
       readModelConnectors,
-      performanceTracer,
-      eventStore
+      performanceTracer
     )
   }
 
