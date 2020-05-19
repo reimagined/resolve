@@ -474,7 +474,6 @@ const dispose = async pool => {
 const createCommand = ({
   publisher,
   aggregates,
-  eventstoreAdapter,
   snapshotAdapter,
   performanceTracer,
   eventstoreAdapter
@@ -483,7 +482,6 @@ const createCommand = ({
     publisher,
     aggregates,
     snapshotAdapter,
-    eventstoreAdapter,
     isDisposed: false,
     performanceTracer,
     getNextCursor,
