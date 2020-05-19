@@ -45,6 +45,13 @@ const appConfig = {
       schedulerName: 'scheduler'
     }
   ],
+  apiHandlers: [
+    {
+      controller: 'common/api-handlers/delete-personal-key.js',
+      path: '/personal-data-keys/:userId',
+      method: 'DELETE'
+    }
+  ],
   clientEntries: [
     [
       'client/index.js',
