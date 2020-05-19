@@ -64,19 +64,6 @@ export default ({ resolveConfig, isClient }) => {
     exports.push(`, projection: projection_${index}`)
     exports.push(`, invariantHash: projection_${index}_hash`)
 
-    importResource({
-      resourceName: `encryption_${index}`,
-      resourceValue: readModel.encryption,
-      runtimeMode: RUNTIME_ENV_NOWHERE,
-      importMode: RESOURCE_ANY,
-      instanceMode: IMPORT_INSTANCE,
-      instanceFallback: 'resolve-runtime/lib/common/defaults/encryption.js',
-      imports,
-      constants
-    })
-
-    exports.push(`, encryption: encryption_${index}`)
-
     exports.push(`})`, ``)
   }
 
