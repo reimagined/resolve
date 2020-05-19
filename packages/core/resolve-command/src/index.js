@@ -378,7 +378,7 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
       }
     }
 
-    const secretsManager = await pool.eventStore.getSecretsManager()
+    const secretsManager = await pool.eventstoreAdapter.getSecretsManager()
 
     const { encrypt, decrypt } = await aggregate.encryption(aggregateId, {
       jwt: jwtToken,
@@ -474,6 +474,7 @@ const dispose = async pool => {
 const createCommand = ({
   publisher,
   aggregates,
+  eventstoreAdapter,
   snapshotAdapter,
   performanceTracer
 }) => {
@@ -481,6 +482,7 @@ const createCommand = ({
     publisher,
     aggregates,
     snapshotAdapter,
+    eventstoreAdapter,
     isDisposed: false,
     performanceTracer,
     getNextCursor

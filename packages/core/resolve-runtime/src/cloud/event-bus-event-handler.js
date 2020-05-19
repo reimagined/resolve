@@ -10,7 +10,9 @@ const sendEvents = async (payload, resolve) => {
   const { xaTransactionId, eventSubscriber, events, batchId } = payload
 
   //TODO Properties
-  const properties = {}
+  const properties = {
+    RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: 0
+  }
 
   log.debug('applying events started')
   log.verbose(JSON.stringify({ eventSubscriber, properties }, null, 2))

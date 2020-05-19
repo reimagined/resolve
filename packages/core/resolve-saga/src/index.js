@@ -9,6 +9,7 @@ import wrapRegularSagas from './wrap-regular-sagas'
 const createSaga = ({
   publisher,
   readModelConnectors,
+  eventstoreAdapter,
   snapshotAdapter,
   sagas,
   schedulers,
@@ -39,7 +40,7 @@ const createSaga = ({
     executeQuery: { get: () => executeQuery, enumerable: true },
     eventProperties: { get: () => eventProperties, enumerable: true },
     getSecretsManager: {
-      get: () => eventStore.getSecretsManager,
+      get: () => eventstoreAdapter.getSecretsManager,
       enumerable: true
     },
     uploader: { get: () => uploader, enumerable: true }

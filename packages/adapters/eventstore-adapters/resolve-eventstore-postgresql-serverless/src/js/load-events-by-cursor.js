@@ -1,4 +1,3 @@
-import getLog from './get-log'
 import { INT8_SQL_TYPE } from './constants'
 
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
@@ -11,19 +10,8 @@ const loadEventsByCursor = async (
     cursor,
     limit,
     eventsSizeLimit: inputEventsSizeLimit
-  },
-  callback
+  }
 ) => {
-  const log = getLog('loadEventsByCursor')
-
-  log.verbose(`eventTypes: ${eventTypes ? eventTypes.join(',') : eventTypes}`)
-  log.verbose(
-    `aggregateIds: ${aggregateIds ? aggregateIds.join(',') : aggregateIds}`
-  )
-  log.verbose(`cursor: ${cursor}`)
-  log.verbose(`limit: ${limit}`)
-  log.verbose(`eventsSizeLimit: ${inputEventsSizeLimit}`)
-
   const eventsSizeLimit =
     inputEventsSizeLimit != null ? inputEventsSizeLimit : 2000000000
 
@@ -78,7 +66,7 @@ const loadEventsByCursor = async (
       FROM ${databaseNameAsId}.${eventsTableAsId}
       ${resultQueryCondition}
       ORDER BY "timestamp" ASC
-      LIMIT ${limit || 0}
+      LIMIT ${+limit}
     ), "fullBatchList" AS (
       SELECT "batchEvents"."batchIndex" AS "batchIndex",
       "batchEvents"."threadId" AS "threadId",
@@ -156,6 +144,7 @@ const loadEventsByCursor = async (
     }
   }
 
+  const resultEvents = []
   for (const event of events) {
     const threadId = +event.threadId
     const threadCounter = +event.threadCounter
@@ -167,7 +156,7 @@ const loadEventsByCursor = async (
       Math.max(threadCounter + 1, oldThreadCounter)
     )
 
-    await callback(shapeEvent(event))
+    resultEvents.push(shapeEvent(event))
   }
 
   const nextConditionsBuffer = Buffer.alloc(1536)
@@ -182,7 +171,10 @@ const loadEventsByCursor = async (
     }
   }
 
-  return nextConditionsBuffer.toString('base64')
+  return {
+    cursor: nextConditionsBuffer.toString('base64'),
+    events: resultEvents
+  }
 }
 
 export default loadEventsByCursor

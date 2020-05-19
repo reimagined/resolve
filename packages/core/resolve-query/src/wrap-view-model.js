@@ -58,7 +58,7 @@ const buildViewModel = async (
       }
 
       log.debug(`retrieving event store secrets manager`)
-      const secretsManager = await pool.eventStore.getSecretsManager()
+      const secretsManager = await pool.eventstoreAdapter.getSecretsManager()
 
       log.debug(`building view-model encryption`)
       const encryption = await pool.viewModel.encryption(event, {
@@ -293,10 +293,12 @@ const wrapViewModel = (
   viewModel,
   snapshotAdapter,
   publisher,
-  performanceTracer
+  performanceTracer,
+  eventstoreAdapter
 ) => {
   const pool = {
     viewModel,
+    eventstoreAdapter,
     snapshotAdapter,
     publisher,
     workers: new Map(),

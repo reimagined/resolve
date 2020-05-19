@@ -57,10 +57,7 @@ const deliverBatchForSubscriber = async (pool, subscriptionDescription) => {
 
     return
   }
-  const isEventBasedRun =
-    successEvent != null ||
-    failedEvent != null ||
-    (errors != null && errors.length > 0)
+  const isEventBasedRun = successEvent != null || failedEvent != null
   let [events, xaTransactionId] = [null, null]
 
   if (isEventBasedRun) {

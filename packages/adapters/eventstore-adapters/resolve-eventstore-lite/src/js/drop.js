@@ -1,5 +1,5 @@
 import getLog from './get-log'
-import { ResourceNotExistError } from 'resolve-eventstore-base'
+import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
 
 const dropEventStore = async ({
   database,
@@ -23,12 +23,13 @@ const dropEventStore = async ({
     if (error) {
       let errorToThrow = error
       if (/^SQLITE_ERROR: no such table.*?$/.test(error.message)) {
-        errorToThrow = new ResourceNotExistError(
-          `duplicate initialization of the sqlite adapter with same file "${config.databaseFile}" not allowed`
+        errorToThrow = new EventstoreResourceNotExistError(
+          `double free of the sqlite adapter with same file "${config.databaseFile}" not allowed`
         )
+      } else {
+        log.error(errorToThrow.message)
+        log.verbose(errorToThrow.stack)
       }
-      log.error(errorToThrow.message)
-      log.verbose(errorToThrow.stack)
       throw errorToThrow
     }
   } finally {

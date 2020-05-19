@@ -1,8 +1,8 @@
+import { throwBadCursor } from 'resolve-eventstore-base'
 import createQuery from './create-query'
 
-const loadEventsByTimestamp = async (pool, filter, callback) => {
+const loadEventsByTimestamp = async (pool, filter) => {
   const { database, escapeId, tableName, shapeEvent } = pool
-  const batchSize = filter.limit != null ? filter.limit : 0x7fffffff
 
   const resultQueryCondition = createQuery(pool, filter)
 
@@ -12,11 +12,19 @@ const loadEventsByTimestamp = async (pool, filter, callback) => {
     `SELECT * FROM ${tableNameAsId}
     ${resultQueryCondition}
     ORDER BY "timestamp" ASC
-    LIMIT 0, ${+batchSize}`
+    LIMIT 0, ${+filter.limit}`
   )
+  const events = []
 
   for (const event of rows) {
-    await callback(shapeEvent(event))
+    events.push(shapeEvent(event))
+  }
+
+  return {
+    get cursor() {
+      return throwBadCursor()
+    },
+    events
   }
 }
 

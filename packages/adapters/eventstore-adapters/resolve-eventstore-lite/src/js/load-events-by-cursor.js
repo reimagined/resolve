@@ -1,9 +1,8 @@
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
-const loadEventsByCursor = async (pool, filter, callback) => {
+const loadEventsByCursor = async (pool, filter) => {
   const { database, escapeId, escape, tableName, shapeEvent } = pool
   const { eventTypes, aggregateIds, cursor, limit } = filter
-  const batchSize = limit != null ? limit : 0x7fffffff
   const injectString = value => `${escape(value)}`
   const injectNumber = value => `${+value}`
 
@@ -44,12 +43,13 @@ const loadEventsByCursor = async (pool, filter, callback) => {
     ${queryConditions.length > 0 ? ')' : ''}`
 
   const tableNameAsId = escapeId(tableName)
+  const events = []
 
   const rows = await database.all(
     `SELECT * FROM ${tableNameAsId}
     ${resultQueryCondition}
     ORDER BY "timestamp" ASC
-    LIMIT 0, ${+batchSize}`
+    LIMIT 0, ${+limit}`
   )
 
   for (const event of rows) {
@@ -67,7 +67,7 @@ const loadEventsByCursor = async (pool, filter, callback) => {
       .toString(16)
       .padStart(12, '0')}`
 
-    await callback(shapeEvent(event))
+    events.push(shapeEvent(event))
   }
 
   const nextConditionsBuffer = Buffer.alloc(1536)
@@ -80,7 +80,10 @@ const loadEventsByCursor = async (pool, filter, callback) => {
     }
   }
 
-  return nextConditionsBuffer.toString('base64')
+  return {
+    cursor: nextConditionsBuffer.toString('base64'),
+    events
+  }
 }
 
 export default loadEventsByCursor

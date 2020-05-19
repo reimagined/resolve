@@ -11,6 +11,7 @@ const getDefaultRemainingTime = () => 0x7fffffff
 const createQuery = ({
   readModelConnectors,
   snapshotAdapter,
+  eventstoreAdapter,
   readModels,
   viewModels,
   publisher,
@@ -25,7 +26,7 @@ const createQuery = ({
       readModel,
       readModelConnectors,
       performanceTracer,
-      eventStore
+      eventstoreAdapter
     )
   }
 
@@ -37,7 +38,8 @@ const createQuery = ({
       viewModel,
       snapshotAdapter,
       publisher,
-      performanceTracer
+      performanceTracer,
+      eventstoreAdapter
     )
   }
 

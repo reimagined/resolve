@@ -238,7 +238,7 @@ const updateByEvents = async (
 
         if (event != null && typeof projection[event.type] === 'function') {
           log.debug(`retrieving event store secrets manager`)
-          const secretsManager = await pool.eventStore.getSecretsManager()
+          const secretsManager = await pool.eventstoreAdapter.getSecretsManager()
 
           log.debug(`building read-model encryption`)
           const encryption = await pool.readModel.encryption(event, {
@@ -490,7 +490,7 @@ const wrapReadModel = (
   readModel,
   readModelConnectors,
   performanceTracer,
-  eventStore
+  eventstoreAdapter
 ) => {
   const connector = readModelConnectors[readModel.connectorName]
   if (connector == null) {
@@ -505,7 +505,7 @@ const wrapReadModel = (
     connector,
     isDisposed: false,
     performanceTracer,
-    eventStore
+    eventstoreAdapter
   }
 
   const api = {

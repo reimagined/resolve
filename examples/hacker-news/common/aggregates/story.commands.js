@@ -6,7 +6,7 @@ import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event-types'
 import jwtSecret from '../../auth/jwt_secret'
 
 export default {
-  createStory: (state, command, jwtToken) => {
+  createStory: (state, command, { jwt: jwtToken }) => {
     const jwt = jsonwebtoken.verify(jwtToken, jwtSecret)
 
     validate.fieldRequired(jwt, 'id')
@@ -36,7 +36,7 @@ export default {
     }
   },
 
-  upvoteStory: (state, command, jwtToken) => {
+  upvoteStory: (state, command, { jwt: jwtToken }) => {
     const jwt = jsonwebtoken.verify(jwtToken, jwtSecret)
 
     validate.fieldRequired(jwt, 'id')
@@ -51,7 +51,7 @@ export default {
     }
   },
 
-  unvoteStory: (state, command, jwtToken) => {
+  unvoteStory: (state, command, { jwt: jwtToken }) => {
     const jwt = jsonwebtoken.verify(jwtToken, jwtSecret)
 
     validate.fieldRequired(jwt, 'id')

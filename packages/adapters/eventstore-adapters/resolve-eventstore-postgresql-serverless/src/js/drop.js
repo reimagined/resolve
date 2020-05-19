@@ -1,5 +1,5 @@
 import { EOL } from 'os'
-import { ResourceNotExistError } from 'resolve-eventstore-base'
+import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
 import getLog from './get-log'
 
 const drop = async ({
@@ -43,12 +43,13 @@ const drop = async ({
       await executeStatement(statement)
     } catch (error) {
       if (error != null) {
-        log.error(error.message)
-        log.verbose(error.stack)
         if (/Table.*? does not exist$/i.test(error.message)) {
-          throw new ResourceNotExistError(
+          throw new EventstoreResourceNotExistError(
             `duplicate event store resource drop detected`
           )
+        } else {
+          log.error(error.message)
+          log.verbose(error.stack)
         }
         errors.push(error)
       }

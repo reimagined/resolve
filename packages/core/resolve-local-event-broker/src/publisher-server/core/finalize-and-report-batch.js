@@ -22,7 +22,6 @@ const finalizeAndReportBatch = async (
   ) {
     throw new Error(`Invalid nextStatus="${nextStatus}"`)
   }
-
   const {
     database: { escapeId, escapeStr, runQuery, runRawQuery },
     serializeError,

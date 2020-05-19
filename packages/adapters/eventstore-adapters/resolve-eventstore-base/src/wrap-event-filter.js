@@ -1,10 +1,6 @@
-const wrapEventFilter = loadEvents => async (pool, filter, callback) => {
+const wrapEventFilter = loadEvents => async (pool, filter) => {
   pool.validateEventFilter(filter)
-  if (typeof callback !== 'function') {
-    throw new Error(`Callback should be function`)
-  }
-
-  await loadEvents(pool, filter, callback)
+  return await loadEvents(pool, filter)
 }
 
 export default wrapEventFilter
