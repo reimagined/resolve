@@ -1,5 +1,5 @@
 import getLog from './get-log'
-import { ResourceAlreadyExistError } from 'resolve-eventstore-base'
+import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 
 const initEventStore = async ({ database, tableName, escapeId, config }) => {
   const log = getLog('initEventStore')
@@ -47,12 +47,13 @@ const initEventStore = async ({ database, tableName, escapeId, config }) => {
     if (error) {
       let errorToThrow = error
       if (/^SQLITE_ERROR:.*? already exists$/.test(error.message)) {
-        errorToThrow = new ResourceAlreadyExistError(
+        errorToThrow = new EventstoreResourceAlreadyExistError(
           `duplicate initialization of the sqlite adapter with same file "${config.databaseFile}" not allowed`
         )
+      } else {
+        log.error(errorToThrow.message)
+        log.verbose(errorToThrow.stack)
       }
-      log.error(errorToThrow.message)
-      log.verbose(errorToThrow.stack)
       throw errorToThrow
     }
   }

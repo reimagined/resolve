@@ -1,7 +1,7 @@
 const shapeEvent = (event, additionalFields) =>
   Object.freeze({
-    [Symbol.for('threadCounter')]: +event.threadCounter,
-    [Symbol.for('threadId')]: +event.threadId,
+    threadCounter: +event.threadCounter,
+    threadId: +event.threadId,
     type: event.type,
     timestamp: event.timestamp,
     aggregateId: event.aggregateId,

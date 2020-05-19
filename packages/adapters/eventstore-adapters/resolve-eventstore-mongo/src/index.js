@@ -15,7 +15,6 @@ import isFrozen from './is-frozen'
 import freeze from './freeze'
 import unfreeze from './unfreeze'
 import shapeEvent from './shape-event'
-import hasEvents from './has-events'
 
 export default createAdapter.bind(null, {
   connect,
@@ -32,6 +31,5 @@ export default createAdapter.bind(null, {
   freeze,
   unfreeze,
   MongoClient,
-  shapeEvent,
-  hasEvents
+  shapeEvent
 })

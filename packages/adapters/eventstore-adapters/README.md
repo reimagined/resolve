@@ -1,10 +1,10 @@
-# **Storage Adapters**
+# **EventStore Adapters**
 
 This folder contains eventstore adapters.
 
-A storage adapter is an object that must contain the following functions:
+A eventstore adapter is an object that must contain the following functions:
 
-- `saveEvent` - gets an event to be saved in storage. Returns a Promise object that is resolved when the event is stored.
+- `saveEvent` - gets an event to be saved in eventstore. Returns a Promise object that is resolved when the event is stored.
 - `loadEvents` - gets an array of events filtered by the first argument and a function for handling an event as the second argument. Returns a Promise object that is resolved when all the persistent events are handled.
 
 Available adapters:

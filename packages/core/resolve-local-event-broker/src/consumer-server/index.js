@@ -110,8 +110,12 @@ const createAndInitConsumer = async config => {
 
   const sendEventsImpl = async (
     eventSubscriber,
-    { batchId, xaTransactionId, events, properties }
+    { batchId, xaTransactionId, events }
   ) => {
+    // TODO properties
+    const properties = {
+      RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: 0
+    }
     const currentResolve = Object.create(baseResolve)
     let result = null
     try {

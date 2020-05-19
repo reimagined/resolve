@@ -3,7 +3,7 @@ import createQueryExecutor from 'resolve-query'
 import createSagaExecutor from 'resolve-saga'
 import crypto from 'crypto'
 
-const DEFAULT_WORKER_LIFETIME = 15 * 60 * 1000
+const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
 const initResolve = async resolve => {
   const performanceTracer = resolve.performanceTracer
@@ -36,6 +36,7 @@ const initResolve = async resolve => {
   const executeCommand = createCommandExecutor({
     publisher,
     aggregates,
+    eventstoreAdapter,
     snapshotAdapter,
     performanceTracer,
     eventstoreAdapter
@@ -43,6 +44,7 @@ const initResolve = async resolve => {
 
   const executeQuery = createQueryExecutor({
     publisher,
+    eventstoreAdapter,
     readModelConnectors,
     snapshotAdapter,
     readModels,
@@ -55,6 +57,7 @@ const initResolve = async resolve => {
     executeCommand,
     executeQuery,
     publisher,
+    eventstoreAdapter,
     readModelConnectors,
     snapshotAdapter,
     schedulers,

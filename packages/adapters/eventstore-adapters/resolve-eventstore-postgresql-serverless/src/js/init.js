@@ -4,7 +4,7 @@ import {
   INT8_SQL_TYPE,
   JSON_SQL_TYPE
 } from './constants'
-import { ResourceAlreadyExistError } from 'resolve-eventstore-base'
+import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 import getLog from './get-log'
 
 const init = async ({
@@ -79,12 +79,13 @@ const init = async ({
     if (error) {
       let errorToThrow = error
       if (/Relation.*? already exists$/i.test(error.message)) {
-        errorToThrow = new ResourceAlreadyExistError(
+        errorToThrow = new EventstoreResourceAlreadyExistError(
           `duplicate initialization of the postgresql-serverless event store with the same parameters not allowed`
         )
+      } else {
+        log.error(errorToThrow.message)
+        log.verbose(errorToThrow.stack)
       }
-      log.error(errorToThrow.message)
-      log.verbose(errorToThrow.stack)
       throw errorToThrow
     }
   }

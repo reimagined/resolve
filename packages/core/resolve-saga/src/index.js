@@ -40,7 +40,7 @@ const createSaga = ({
     executeQuery: { get: () => executeQuery, enumerable: true },
     eventProperties: { get: () => eventProperties, enumerable: true },
     getSecretsManager: {
-      get: () => eventstoreAdapter.getSecretsManager.bind(null),
+      get: () => eventstoreAdapter.getSecretsManager,
       enumerable: true
     },
     uploader: { get: () => uploader, enumerable: true }

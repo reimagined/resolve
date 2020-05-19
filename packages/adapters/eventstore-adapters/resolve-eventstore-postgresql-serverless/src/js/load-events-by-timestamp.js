@@ -1,9 +1,10 @@
+import { throwBadCursor } from 'resolve-eventstore-base'
+
 import { RESPONSE_SIZE_LIMIT } from './constants'
 
 const loadEventsByTimestamp = async (
   { executeStatement, escapeId, escape, tableName, databaseName, shapeEvent },
-  { eventTypes, aggregateIds, startTime, finishTime, limit },
-  callback
+  { eventTypes, aggregateIds, startTime, finishTime, limit }
 ) => {
   const injectString = value => `${escape(value)}`
   const injectNumber = value => `${+value}`
@@ -29,6 +30,7 @@ const loadEventsByTimestamp = async (
   const databaseNameAsId = escapeId(databaseName)
   const eventsTableAsId = escapeId(tableName)
   let countEvents = 0
+  const events = []
 
   while (true) {
     let rows = RESPONSE_SIZE_LIMIT
@@ -70,12 +72,19 @@ const loadEventsByTimestamp = async (
 
     for (const event of rows) {
       countEvents++
-      await callback(shapeEvent(event))
+      events.push(shapeEvent(event))
     }
 
-    if (rows.length === 0 || countEvents > limit) {
+    if (rows.length === 0 || countEvents >= limit) {
       break
     }
+  }
+
+  return {
+    get cursor() {
+      return throwBadCursor()
+    },
+    events
   }
 }
 

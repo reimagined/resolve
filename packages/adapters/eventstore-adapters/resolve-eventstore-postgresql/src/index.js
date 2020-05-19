@@ -19,7 +19,6 @@ import coercer from './coercer'
 import escapeId from './escape-id'
 import escape from './escape'
 import shapeEvent from './shape-event'
-import hasEvents from './has-events'
 
 const createAdapter = _createAdapter.bind(null, {
   connect,
@@ -40,8 +39,7 @@ const createAdapter = _createAdapter.bind(null, {
   saveEventOnly,
   paginateEvents,
   coercer,
-  shapeEvent,
-  hasEvents
+  shapeEvent
 })
 
 export default createAdapter
