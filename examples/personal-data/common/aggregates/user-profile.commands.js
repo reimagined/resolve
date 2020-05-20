@@ -45,7 +45,7 @@ const aggregate = {
     }
   },
   update: (state, command, context) => {
-    const { decrypt, encrypt, jwt } = context
+    const { encrypt, jwt } = context
     const {
       aggregateId,
       payload: { firstName, lastName, phoneNumber, address }
@@ -55,6 +55,12 @@ const aggregate = {
       lastName: currentLastName,
       contacts: currentContacts
     } = state
+    const updatedFirstName = encrypt(firstName)
+    const updatedLastName = encrypt(lastName)
+    const updatedContacts = encrypt({
+      phoneNumber,
+      address
+    })
 
     const user = decode(jwt)
     if (user.userId !== aggregateId) {
@@ -66,26 +72,17 @@ const aggregate = {
       throw Error(`the user does not exist`)
     }
 
-    const {
-      phoneNumber: currentPhoneNumber,
-      address: currentAddress
-    } = decrypt(currentContacts)
-
     if (
-      firstName !== decrypt(currentFirstName) ||
-      lastName !== decrypt(currentLastName) ||
-      address !== currentAddress ||
-      phoneNumber !== currentPhoneNumber
+      currentFirstName !== updatedFirstName ||
+      currentLastName !== updatedLastName ||
+      currentContacts !== updatedContacts
     ) {
       return {
         type: USER_PROFILE_UPDATED,
         payload: {
-          firstName: encrypt(firstName),
-          lastName: encrypt(lastName),
-          contacts: encrypt({
-            phoneNumber,
-            address
-          })
+          firstName: updatedFirstName,
+          lastName: updatedLastName,
+          contacts: updatedContacts
         }
       }
     }
