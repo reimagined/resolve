@@ -1,0 +1,34 @@
+import {
+  USER_PROFILE_DELETED,
+  USER_PROFILE_UPDATED,
+  USER_REGISTERED
+} from '../user-profile.events'
+
+export default {
+  Init: () => null,
+  [USER_REGISTERED]: (
+    state,
+    { aggregateId, payload: { nickname, firstName, lastName, contacts } }
+  ) => ({
+    id: aggregateId,
+    nickname,
+    firstName,
+    lastName,
+    contacts
+  }),
+  [USER_PROFILE_UPDATED]: (
+    state,
+    { payload: { nickname, firstName, lastName, contacts } }
+  ) => ({
+    ...state,
+    nickname,
+    firstName,
+    lastName,
+    contacts
+  }),
+  [USER_PROFILE_DELETED]: state => ({
+    ...state,
+    firstName: 'deleted user',
+    lastName: 'deleted user'
+  })
+}

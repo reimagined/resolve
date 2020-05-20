@@ -17,8 +17,8 @@ const RegistrationForm = ({ user }) => {
     nickname: user ? user.nickname : '',
     firstName: user ? user.firstName : '',
     lastName: user ? user.lastName : '',
-    phoneNumber: user ? user.contacts.phoneNumber : '',
-    address: user ? user.contacts.address : '',
+    phoneNumber: user && user.contacts ? user.contacts.phoneNumber : '',
+    address: user && user.contacts ? user.contacts.address : '',
     error: null,
     done: null
   })
@@ -97,7 +97,9 @@ const RegistrationForm = ({ user }) => {
               name="phoneNumber"
               id="phoneNumber"
               placeholder="Phone number"
-              defaultValue={user ? user.contacts.phoneNumber : ''}
+              defaultValue={
+                user && user.contacts ? user.contacts.phoneNumber : ''
+              }
               onChange={handleChange('phoneNumber')}
             />
           </Col>
@@ -109,7 +111,7 @@ const RegistrationForm = ({ user }) => {
               name="address"
               id="address"
               placeholder="Postal address"
-              defaultValue={user ? user.contacts.address : ''}
+              defaultValue={user && user.contacts ? user.contacts.address : ''}
               onChange={handleChange('address')}
             />
           </Col>

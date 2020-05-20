@@ -17,6 +17,12 @@ const appConfig = {
       projection: 'common/aggregates/blog-post.projection.js'
     }
   ],
+  viewModels: [
+    {
+      name: 'current-user-profile',
+      projection: 'common/view-models/current-user-profile.projection.js'
+    }
+  ],
   readModels: [
     {
       name: 'user-profiles',
