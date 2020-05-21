@@ -3,26 +3,155 @@ id: frontend
 title: Frontend
 ---
 
-This document describes approaches that you can use to implement a frontend for a reSolve application. The document's sections progress from the lowest level to higher level approaches.
+This document describes approaches that you can use to implement a frontend for a reSolve application. The following approaches are available:
+
+- [HTTP API](#http-api) - An HTTP API exposed by a reSolve server
+- [resolve-client library](#resolve-client-library) - A higher-level JavaScript library used to communicate with a reSolve server
+- [resolve-redux library](#resolve-redux-library) - A library used to connect React + Redux component to reSolve
+- [resolve-react-hooks library](#resolve-react-hooks-library) - A hook-based library used to connect React components to reSolve
 
 ## HTTP API
 
-## resolve-client
+A reSolve exposes HTTP API that you can use to send aggregate commands and query Read Models. The following endpoints are available.
 
-The resolve-client library provides an interface that you can use to communicate with  reSolve backend from JavaScript code. To initialize the client, call the library's getClient function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
+| Purpose            | Endpoint                                                    |
+| ------------------ | ----------------------------------------------------------- |
+| Send a command     | `http://{host}:{port}/api/commands`                         |
+| Query a Read Model | `http://{host}:{port}/api/query/{readModel}/{resolver}`     |
+| Query a View Model | `http://{host}:{port}/api/query/{viewModel}/{aggregateIds}` |
 
-| Function | Description |
-| ---- | ----- |
-| command   | Sends an aggregate command to the backend. |
-| query     | Queries a Read Model.       |
-| getStaticAssetUrl     | Gets a URL path to static files. |
-| subscribe          | Subscribes to View Model updates. |
-| unsubscribe        | Unsubscribes from View Model updates. |
+### Example
+
+> To test the provided console inputs on your machine, download and run the [Shopping List](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example project.
+
+1. Create a new shopping list named "List 1":
+
+```sh
+$ curl -i http://localhost:3000/api/commands/ \
+--header "Content-Type: application/json" \
+--data '
+{
+    "aggregateName": "ShoppingList",
+    "aggregateId": "12345-new-shopping-list",
+    "type": "createShoppingList",
+    "payload": {
+        "name": "List 1"
+    }
+}
+'
+
+
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 2
+ETag: W/"2-nOO9QiTIwXgNtWtBJezz8kv3SLc"
+Date: Tue, 02 Oct 2018 11:47:53 GMT
+Connection: keep-alive
+
+OK
+```
+
+2. Query a View Model to see the shopping list:
+
+```sh
+$ curl -i -g -X GET "http://localhost:3000/api/query/ShoppingList/12345-new-shopping-list"
+
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 58
+ETag: W/"3a-jyqRShDvCZnc9uCOPi31BlQFznA"
+Date: Tue, 02 Oct 2018 12:11:43 GMT
+Connection: keep-alive
+
+{"id":"12345-new-shopping-list","name":"List 1","list":[]}
+```
+
+3. Add an item to the shopping list:
+
+```sh
+$ curl -i http://localhost:3000/api/commands/ \
+--header "Content-Type: application/json" \
+--data '
+{
+    "aggregateName": "ShoppingList",
+    "aggregateId": "12345-new-shopping-list",
+    "type": "createShoppingItem",
+    "payload": {
+        "id": "1",
+        "text": "Beer"
+    }
+}
+'
+
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 2
+ETag: W/"2-nOO9QiTIwXgNtWtBJezz8kv3SLc"
+Date: Tue, 02 Oct 2018 12:13:39 GMT
+Connection: keep-alive
+
+OK
+```
+
+4. Add another item:
+
+```sh
+$ curl -i http://localhost:3000/api/commands/ \
+--header "Content-Type: application/json" \
+--data '
+{
+    "aggregateName": "ShoppingList",
+    "aggregateId": "12345-new-shopping-list",
+    "type": "createShoppingItem",
+    "payload": {
+        "id": "2",
+        "text": "Chips"
+    }
+}
+'
+```
+
+5. Now you can query the view model again and see the items you have added:
+
+```sh
+$ curl --g -X GET "http://localhost:3000/api/query/ShoppingList/12345-new-shopping-list" '
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 140
+ETag: W/"8c-rWsIpzFOfkV3y9g6x9FlenTaG/A"
+Date: Tue, 02 Oct 2018 12:17:57 GMT
+Connection: keep-alive
+
+{"id":"12345-new-shopping-list","name":"List 1","list":[{"id":"1","text":"Beer","checked":false},{"id":"2","text":"Chips","checked":false}]}
+```
+
+Below you can see the newly created list and its items on the Shopping List application's page.
+
+![List1-items](assets/curl/list1-items.png)
+
+For more information on the HTTP API, refer to the [API Reference](api-reference.md#http-api) topic.
+
+You can extend a reSolve server's API with API Handlers. Refer to the [API Handlers](api-handlers.md) topic for more information.
+
+## resolve-client library
+
+The **resolve-client** library provides an interface that you can use to communicate with reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
+
+| Function          | Description                                |
+| ----------------- | ------------------------------------------ |
+| command           | Sends an aggregate command to the backend. |
+| query             | Queries a Read Model.                      |
+| getStaticAssetUrl | Gets a static file's full URL.             |
+| subscribe         | Subscribes to View Model updates.          |
+| unsubscribe       | Unsubscribes from View Model updates.      |
 
 The [with-vanilajs](https://github.com/reimagined/resolve/tree/master/examples/with-vanillajs) example application demonstrates how to use the **resolve-client** library to implement a frontend for a reSolve application in pure JavaScript.
 
-
-## resolve-redux  
+## resolve-redux library
 
 The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend.
 
@@ -204,140 +333,15 @@ export default connectViewModel(mapStateToOptions)(
 
 <!-- prettier-ignore-end -->
 
-### Optimistic Commands
+## resolve-react-hooks library
 
-You can add **optimistic UI updating** functionality to enhance a component's responsiveness if this component is connected to a reSolve ReadModel. With this approach, a component applies model changes on the client side before synchronizing them with the server via an aggregate command.
+The **resolve-react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
 
-Use the following steps to implement optimistic UI updating:
+| Hook              | Description                                                             |
+| ----------------- | ----------------------------------------------------------------------- |
+| useCommand        | Initializes a command that can be passed to the backend                 |
+| useCommandBuilder | Allows to generate commands based on input parameters                   |
+| useViewModel      | Establishes a WebSocket connection to a reSolve View Model              |
+| useQuery          | Allows a component to send queries to a reSolve Red Model or View Model |
 
-1. Create Redux actions that perform updates:
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (..\..\examples\shopping-list\client\actions\optimistic_actions.js /^/ /\n$/)
-
-```js
-export const OPTIMISTIC_CREATE_SHOPPING_LIST = 'OPTIMISTIC_CREATE_SHOPPING_LIST'
-export const OPTIMISTIC_REMOVE_SHOPPING_LIST = 'OPTIMISTIC_REMOVE_SHOPPING_LIST'
-export const OPTIMISTIC_SYNC = 'OPTIMISTIC_SYNC'
-```
-
-<!-- prettier-ignore-end -->
-
-2. Implement an optimistic reducer function that responds to these commands to update the corresponding slice of the Redux state:
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (..\..\examples\shopping-list\client\reducers\optimistic_shopping_lists.js /^/ /\n$/)
-
-```js
-import { LOCATION_CHANGE } from 'react-router-redux'
-import {
-  OPTIMISTIC_CREATE_SHOPPING_LIST,
-  OPTIMISTIC_REMOVE_SHOPPING_LIST,
-  OPTIMISTIC_SYNC
-} from '../actions/optimistic_actions'
-
-const optimistic_shopping_lists = (state = [], action) => {
-  switch (action.type) {
-    case LOCATION_CHANGE: {
-      return []
-    }
-    case OPTIMISTIC_CREATE_SHOPPING_LIST: {
-      return [
-        ...state,
-        {
-          id: action.payload.id,
-          name: action.payload.name
-        }
-      ]
-    }
-    case OPTIMISTIC_REMOVE_SHOPPING_LIST: {
-      return state.filter(item => {
-        return item.id !== action.payload.id
-      })
-    }
-    case OPTIMISTIC_SYNC: {
-      return action.payload.originalLists
-    }
-    default: {
-      return state
-    }
-  }
-}
-
-export default optimistic_shopping_lists
-```
-
-<!-- prettier-ignore-end -->
-
-3. Implement an optimistic middleware to intercept actions used to communicate with a Read Model and update the Redux state accordingly:
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (..\..\examples\shopping-list\client\middlewares\optimistic_shopping_lists_middleware.js /^/ /\n$/)
-
-```js
-import { actionTypes } from 'resolve-redux'
-
-import {
-  OPTIMISTIC_CREATE_SHOPPING_LIST,
-  OPTIMISTIC_REMOVE_SHOPPING_LIST,
-  OPTIMISTIC_SYNC
-} from '../actions/optimistic_actions'
-
-const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
-
-const optimistic_shopping_lists_middleware = store => next => action => {
-  if (
-    action.type === SEND_COMMAND_SUCCESS &&
-    action.commandType === 'createShoppingList'
-  ) {
-    store.dispatch({
-      type: OPTIMISTIC_CREATE_SHOPPING_LIST,
-      payload: {
-        id: action.aggregateId,
-        name: action.payload.name
-      }
-    })
-  }
-  if (
-    action.type === SEND_COMMAND_SUCCESS &&
-    action.commandType === 'removeShoppingList'
-  ) {
-    store.dispatch({
-      type: OPTIMISTIC_REMOVE_SHOPPING_LIST,
-      payload: {
-        id: action.aggregateId
-      }
-    })
-  }
-  if (action.type === LOAD_READMODEL_STATE_SUCCESS) {
-    store.dispatch({
-      type: OPTIMISTIC_SYNC,
-      payload: {
-        originalLists: action.result
-      }
-    })
-  }
-
-  next(action)
-}
-
-export default optimistic_shopping_lists_middleware
-```
-
-<!-- prettier-ignore-end -->
-
-For the full code, refer to the [Shopping List](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example project.
-
-
-## resolve-react-hooks
-
-
-| Hook | Description |
-| ---- | ----------- |
-| useCommand | initializes a command that can be passed to the backend |
-| useCommandBuilder | used to generate command based on input parameters |
-| useViewModel | establishes a WebSocket connection to a reSolve View Model |
-| useQuery | allows a component to send queries to a reSolve Red Model or View Model |
+The [shopping-list-with-hooks](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-with-hooks) example application demonstrates how to use the **resolve-react-hooks** library to communicate with a reSolve backend.
