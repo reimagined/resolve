@@ -6,7 +6,7 @@ const encrypt = (key, data) => {
   return encrypt(JSON.stringify(data))
 }
 
-const decrypt = (key, blob) => {
+export const decrypt = (key, blob) => {
   const { decrypt } = new Cryptr(key)
   try {
     return JSON.parse(decrypt(blob))

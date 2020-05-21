@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useViewModel } from 'resolve-react-hooks'
 import { Redirect } from 'react-router-dom'
-import Cryptr from 'cryptr'
+import { decrypt } from '../../common/encryption-factory'
 import Login from './Login'
 import Loading from './Loading'
 
@@ -12,13 +12,11 @@ const ProfileWithViewModel = ({ userId }) => {
     fetch(`/api/personal-data-keys/${user.id}`)
       .then(response => response.text())
       .then(key => {
-        const cryptr = new Cryptr(key)
-        const decrypt = blob => JSON.parse(cryptr.decrypt(blob))
         setUser({
           ...user,
-          firstName: decrypt(user.firstName),
-          lastName: decrypt(user.lastName),
-          contacts: decrypt(user.contacts)
+          firstName: decrypt(key, user.firstName),
+          lastName: decrypt(key, user.lastName),
+          contacts: decrypt(key, user.contacts)
         })
       })
   }
