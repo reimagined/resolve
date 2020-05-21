@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Helmet } from 'react-helmet'
 import { Redirect, Link } from 'react-router-dom'
 import {
@@ -29,6 +29,9 @@ const UserInfo = props => {
   const toggle = () => {
     setState({ ...state, open: !open })
   }
+  const uploaderContext = useContext(UploaderContext)
+  const { CDNUrl } = uploaderContext
+
   const deleteMe = useCommand(
     {
       type: 'delete',
@@ -84,20 +87,16 @@ const UserInfo = props => {
     archiveItem = <DropdownItem disabled>Being gathered now...</DropdownItem>
   } else {
     archiveItem = (
-      <UploaderContext.Consumer>
-        {({ CDNUrl }) => (
-          <DropdownItem
-            href={getCDNBasedUrl({
-              CDNUrl,
-              dir: 'archives',
-              uploadId,
-              token
-            })}
-          >
-            Download
-          </DropdownItem>
-        )}
-      </UploaderContext.Consumer>
+      <DropdownItem
+        href={getCDNBasedUrl({
+          CDNUrl,
+          dir: 'archives',
+          uploadId,
+          token
+        })}
+      >
+        Download
+      </DropdownItem>
     )
   }
 
