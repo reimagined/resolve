@@ -13,7 +13,7 @@ const initBroker = async resolve => {
   })
 
   const publishEvent = async event => {
-    await publisher.publish(event)
+    await publisher.publish({ event })
 
     await resolve.pubsubManager.dispatch({
       topicName: event.type,

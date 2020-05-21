@@ -17,6 +17,10 @@ async function createDatabase({ database: { runRawQuery, escapeId } }) {
   const notificationsSubscriptionIdIndexNameAsId = escapeId(
     `${NOTIFICATIONS_TABLE_NAME}-subscriptionId`
   )
+  const notificationsBatchIdIndexNameAsId = escapeId(
+    `${NOTIFICATIONS_TABLE_NAME}-batchId`
+  )
+
   const subscribersEventSubscriberIndexNameAsId = escapeId(
     `${SUBSCRIBERS_TABLE_NAME}-eventSubscriber`
   )
@@ -33,7 +37,7 @@ async function createDatabase({ database: { runRawQuery, escapeId } }) {
         "processEndTimestamp" ${LONG_INTEGER_SQL_TYPE},
         "heartbeatTimestamp" ${LONG_INTEGER_SQL_TYPE},
         "aggregateIdAndVersion" ${STRING_SQL_TYPE} NOT NULL,
-        "xaTransactionId" ${STRING_SQL_TYPE},
+        "xaTransactionId" ${JSON_SQL_TYPE},
         "batchId" ${STRING_SQL_TYPE} NULL,
 
         PRIMARY KEY("insertionId", "subscriptionId")
@@ -52,7 +56,7 @@ async function createDatabase({ database: { runRawQuery, escapeId } }) {
         "successEvent" ${JSON_SQL_TYPE},
         "failedEvent" ${JSON_SQL_TYPE},
         "errors" ${JSON_SQL_TYPE},
-        "cursor" ${STRING_SQL_TYPE},
+        "cursor" ${JSON_SQL_TYPE},
         
         PRIMARY KEY("subscriptionId")
       );
@@ -69,6 +73,9 @@ async function createDatabase({ database: { runRawQuery, escapeId } }) {
       
       CREATE INDEX IF NOT EXISTS ${notificationsSubscriptionIdIndexNameAsId}
       ON ${notificationsTableNameAsId}("subscriptionId");
+
+      CREATE INDEX IF NOT EXISTS ${notificationsBatchIdIndexNameAsId}
+      ON ${notificationsTableNameAsId}("batchId");
 
       CREATE UNIQUE INDEX IF NOT EXISTS ${subscribersEventSubscriberIndexNameAsId}
       ON ${subscribersTableNameAsId}("eventSubscriber");

@@ -1,11 +1,20 @@
-import { UNSUBSCRIBE_SYMBOL } from '../constants'
+import { SUBSCRIBERS_TABLE_NAME } from '../constants'
 
-const unsubscribe = async (pool, eventSubscriber) => {
-  return await pool.ensureOrResetSubscription(
-    pool,
-    UNSUBSCRIBE_SYMBOL,
-    eventSubscriber
-  )
+async function unsubscribe(pool, payload) {
+  const {
+    database: { escapeStr, escapeId, runRawQuery }
+  } = pool
+
+  const { eventSubscriber } = payload
+  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
+
+  await runRawQuery(`
+    DELETE FROM ${subscribersTableNameAsId}
+    WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)};
+
+    COMMIT;
+    BEGIN IMMEDIATE;
+  `)
 }
 
 export default unsubscribe

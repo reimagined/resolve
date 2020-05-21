@@ -2,7 +2,6 @@ import SQLite from 'sqlite'
 import fs from 'fs'
 import os from 'os'
 import tmp from 'tmp'
-import { getNextCursor } from 'resolve-eventstore-base'
 import { createServer } from 'resolve-local-rpc'
 
 // broker
@@ -16,21 +15,24 @@ import resume from './broker/resume'
 import pause from './broker/pause'
 import reset from './broker/reset'
 import read from './broker/read'
-import init from './broker/init'
-import drop from './broker/drop'
 
 // functions
-import ensureOrResetSubscription from './core/ensure-or-reset-subscription'
-import createAndInitPublisher from './core/create-and-init-publisher'
 import acknowledgeBatch from './core/acknowledge-batch'
+import checkCursorEdge from './core/check-cursor-edge'
+import createAndInitPublisher from './core/create-and-init-publisher'
 import deliverBatchForSubscriber from './core/deliver-batch-for-subscriber'
 import finalizeAndReportBatch from './core/finalize-and-report-batch'
+import generateGuid from './core/generate-guid'
+import getNextCursor from './core/get-next-cursor'
+import invokeConsumer from './core/invoke-consumer'
+import invokeOperation from './core/invoke-operation'
+import parseSubscription from './core/parse-subscription'
 import pullNotificationsAsBatchForSubscriber from './core/pull-notifications-as-batch-for-subscriber'
 import pushNotificationAndGetSubscriptions from './core/push-notification-and-get-subscriptions'
-import manageSubscription from './core/manage-subscription'
-import getSubscriberOptions from './core/get-subscriber-options'
-import serializeError from './core/serialize-error'
 import requestTimeout from './core/request-timeout'
+import resumeSubscriber from './core/resume-subscriber'
+import serializeError from './core/serialize-error'
+
 import connectDatabase from './connect-database'
 import multiplexAsync from '../multiplex-async'
 
@@ -46,20 +48,25 @@ export default createAndInitPublisher.bind(null, {
     tmp
   },
   functions: {
-    ensureOrResetSubscription,
-    connectDatabase,
-    getNextCursor,
-    createServer,
+    acknowledgeBatch,
+    checkCursorEdge,
+    createAndInitPublisher,
     deliverBatchForSubscriber,
     finalizeAndReportBatch,
-    acknowledgeBatch,
+    generateGuid,
+    getNextCursor,
+    invokeConsumer,
+    invokeOperation,
+    parseSubscription,
     pullNotificationsAsBatchForSubscriber,
     pushNotificationAndGetSubscriptions,
-    getSubscriberOptions,
-    manageSubscription,
-    multiplexAsync,
+    requestTimeout,
+    resumeSubscriber,
     serializeError,
-    requestTimeout
+
+    createServer,
+    connectDatabase,
+    multiplexAsync
   },
   lifecycle: {
     createDatabase,
@@ -75,8 +82,6 @@ export default createAndInitPublisher.bind(null, {
     resume,
     pause,
     reset,
-    read,
-    init,
-    drop
+    read
   }
 })

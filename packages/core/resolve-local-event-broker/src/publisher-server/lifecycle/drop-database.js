@@ -13,6 +13,10 @@ async function dropDatabase({ database: { runRawQuery, escapeId } }) {
   const notificationsSubscriptionIdIndexNameAsId = escapeId(
     `${NOTIFICATIONS_TABLE_NAME}-subscriptionId`
   )
+  const notificationsBatchIdIndexNameAsId = escapeId(
+    `${NOTIFICATIONS_TABLE_NAME}-batchId`
+  )
+
   const subscribersEventSubscriberIndexNameAsId = escapeId(
     `${SUBSCRIBERS_TABLE_NAME}-eventSubscriber`
   )
@@ -28,9 +32,11 @@ async function dropDatabase({ database: { runRawQuery, escapeId } }) {
       
       DROP INDEX IF EXISTS ${notificationsSubscriptionIdIndexNameAsId};
 
-      DROP INDEX IF NOT EXISTS ${subscribersEventSubscriberIndexNameAsId};
+      DROP INDEX IF EXISTS ${notificationsBatchIdIndexNameAsId};
+
+      DROP INDEX IF EXISTS ${subscribersEventSubscriberIndexNameAsId};
       
-      DROP INDEX IF NOT EXISTS ${batchesBatchIdIndexNameAsId};
+      DROP INDEX IF EXISTS ${batchesBatchIdIndexNameAsId};
       
       COMMIT;
       BEGIN IMMEDIATE;

@@ -2,9 +2,9 @@ import { createClient } from 'resolve-local-rpc'
 
 const connectPublisher = async config => {
   const eventListenerHook = async args => {
-    const [eventListener] = args
-    if (!config.eventListeners.has(eventListener)) {
-      throw new Error(`Event listener ${eventListener} does not exist`)
+    const [{ eventSubscriber }] = args
+    if (!config.eventListeners.has(eventSubscriber)) {
+      throw new Error(`Event listener ${eventSubscriber} does not exist`)
     }
     return args
   }

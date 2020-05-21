@@ -1,21 +1,24 @@
-import { NOTIFICATION_EVENT_SYMBOL } from '../constants'
+import {
+  LazinessStrategy,
+  ConsumerMethod,
+  PrivateOperationType
+} from '../constants'
 
-const publish = async (pool, event) => {
-  const {
-    pullNotificationsAsBatchForSubscriber,
-    pushNotificationAndGetSubscriptions,
-    multiplexAsync
-  } = pool
+const publish = async (pool, payload) => {
+  const { invokeOperation, invokeConsumer } = pool
+  const { event } = payload
 
-  const subscriptionIds = await pushNotificationAndGetSubscriptions(
-    pool,
-    NOTIFICATION_EVENT_SYMBOL,
+  await invokeConsumer(pool, ConsumerMethod.SaveEvent, {
     event
-  )
+  })
 
-  for (const subscriptionId of subscriptionIds) {
-    multiplexAsync(pullNotificationsAsBatchForSubscriber, pool, subscriptionId)
+  const input = {
+    type: PrivateOperationType.PUSH_NOTIFICATIONS,
+    payload: {
+      event
+    }
   }
+  await invokeOperation(pool, LazinessStrategy.EAGER, input)
 }
 
 export default publish

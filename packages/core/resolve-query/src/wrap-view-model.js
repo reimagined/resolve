@@ -97,7 +97,7 @@ const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
     }
   }
 
-  const { events } = await pool.publisher.read({
+  const { events } = await pool.eventstoreAdapter.loadEvents({
     aggregateIds: aggregateIds !== '*' ? aggregateIds : null,
     eventTypes: Object.keys(pool.viewModel.projection),
     cursor,
@@ -289,14 +289,14 @@ const dispose = async pool => {
 const wrapViewModel = (
   viewModel,
   snapshotAdapter,
-  publisher,
+  eventstoreAdapter,
   performanceTracer,
   getSecretsManager
 ) => {
   const pool = {
     viewModel,
     snapshotAdapter,
-    publisher,
+    eventstoreAdapter,
     workers: new Map(),
     isDisposed: false,
     performanceTracer,

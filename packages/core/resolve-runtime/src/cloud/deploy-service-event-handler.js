@@ -20,45 +20,57 @@ const handleResolveReadModelEvent = async (
     case 'reset': {
       log.debug('operation "reset" started')
       log.debug('resetting event broker')
-      await resolve.publisher.reset(listenerId)
+      await resolve.publisher.reset({ eventSubscriber: listenerId })
       log.debug('operation "reset" completed')
       return 'ok'
     }
     case 'pause': {
       log.debug('operation "pause" started')
-      await resolve.publisher.pause(listenerId)
+      await resolve.publisher.pause({ eventSubscriber: listenerId })
       log.debug('operation "pause" completed')
       return 'ok'
     }
     case 'resume': {
       log.debug('operation "resume" started')
-      await resolve.publisher.resume(listenerId)
+      await resolve.publisher.resume({ eventSubscriber: listenerId })
       log.debug('operation "resume" completed')
       return 'ok'
     }
     case 'listProperties': {
       log.debug('operation "listProperties" started')
-      const result = await resolve.publisher.listProperties(listenerId)
+      const result = await resolve.publisher.listProperties({
+        eventSubscriber: listenerId
+      })
       log.debug('operation "listProperties" completed')
       log.verbose(JSON.stringify(result, null, 2))
       return result
     }
     case 'getProperty': {
       log.debug('operation "getProperty" started')
-      const result = await resolve.publisher.getProperty(listenerId, key)
+      const result = await resolve.publisher.getProperty({
+        eventSubscriber: listenerId,
+        key
+      })
       log.debug('operation "getProperty" completed')
       log.verbose(JSON.stringify(result, null, 2))
       return result
     }
     case 'setProperty': {
       log.debug('operation "setProperty" started')
-      await resolve.publisher.setProperty(listenerId, key, value)
+      await resolve.publisher.setProperty({
+        eventSubscriber: listenerId,
+        key,
+        value
+      })
       log.debug('operation "setProperty" completed')
       return 'ok'
     }
     case 'deleteProperty': {
       log.debug('operation "deleteProperty" started')
-      await resolve.publisher.deleteProperty(listenerId, key)
+      await resolve.publisher.deleteProperty({
+        eventSubscriber: listenerId,
+        key
+      })
       log.debug('operation "deleteProperty" completed')
       return 'ok'
     }
@@ -69,7 +81,9 @@ const handleResolveReadModelEvent = async (
       log.debug('operation "list" started')
       const result = await Promise.all(
         listenerIds.map(async listenerId => {
-          const status = await resolve.publisher.status(listenerId)
+          const status = await resolve.publisher.status({
+            eventSubscriber: listenerId
+          })
           return {
             ...status,
             name: listenerId

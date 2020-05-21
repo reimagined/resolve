@@ -7,6 +7,7 @@ const createAndInitPublisher = async (
   const pool = {
     ...imports,
     ...functions,
+    ...broker,
     ...lifecycle,
     database: await functions.connectDatabase(imports, {
       databaseFile: config.databaseFile
@@ -27,9 +28,25 @@ const createAndInitPublisher = async (
     pause: broker.pause.bind(null, pool),
     reset: broker.reset.bind(null, pool),
     read: broker.read.bind(null, pool),
-    init: broker.init.bind(null, pool),
-    drop: broker.drop.bind(null, pool),
-    dispose: pool.database.dispose
+    init: lifecycle.createDatabase.bind(null, pool),
+    drop: lifecycle.dropDatabase.bind(null, pool),
+    dispose: pool.database.dispose,
+
+    // TODO restore
+    listProperties: async eventSubscriber => {
+      void eventSubscriber
+      return []
+    },
+    getProperty: async (eventSubscriber, key) => {
+      void (eventSubscriber, key)
+      return null
+    },
+    setProperty: async (eventSubscriber, key, value) => {
+      void (eventSubscriber, key, value)
+    },
+    deleteProperty: async (eventSubscriber, key) => {
+      void (eventSubscriber, key)
+    }
   }
 
   const api = await functions.createServer({

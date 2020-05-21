@@ -1,5 +1,7 @@
 const readModelList = async (req, res) => {
-  const listenerIds = req.resolve.readModels.map(({ name }) => name)
+  const listenerIds = req.resolve.readModels.map(({ name }) => ({
+    eventSubscriber: name
+  }))
   const statuses = await Promise.all(
     listenerIds.map(req.resolve.publisher.status)
   )

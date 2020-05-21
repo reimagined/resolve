@@ -63,13 +63,13 @@ const resetDomainHandler = options => async (req, res) => {
 
     if (dropReadModels) {
       for (const { name } of readModels) {
-        await publisher.reset(name)
+        await publisher.reset({ eventSubscriber: name })
       }
     }
 
     if (dropSagas) {
       for (const { name } of [...sagas, ...schedulers]) {
-        await publisher.reset(name)
+        await publisher.reset({ eventSubscriber: name })
       }
     }
 
