@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import { Redirect, Link } from 'react-router-dom'
 import {
@@ -46,6 +46,16 @@ const UserInfo = props => {
     },
     [user]
   )
+
+  const deleteKeys = useCallback(() => {
+    if (user && user.id) {
+      fetch(`/api/personal-data-keys/${user.id}`, {
+        method: 'DELETE'
+      }).then(() => {
+        setState({ ...state, deleted: true })
+      })
+    }
+  }, [user])
 
   const gatherPersonalData = useCommand(
     {
@@ -121,6 +131,9 @@ const UserInfo = props => {
           </DropdownItem>
           <DropdownItem onClick={gatherPersonalData}>
             Gather my personal data
+          </DropdownItem>
+          <DropdownItem onClick={deleteKeys}>
+            Delete my personal keys
           </DropdownItem>
           <DropdownItem onClick={deleteMe}>Delete my profile</DropdownItem>
           {archiveSubmenu}

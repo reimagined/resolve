@@ -4,8 +4,13 @@ import { Link } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap'
 
 const User = ({ user }) => (
-  <div className="mb-1">
-    <Link to={`/blog/${user.id}`}>{user.profile.fullName}</Link>
+  <div className="mb-3">
+    <Link to={`/blog/${user.id}`} className="lead">
+      {user.profile.nickname}
+    </Link>
+    <div className="text-muted small">
+      {user.profile.firstName} {user.profile.lastName}
+    </div>
   </div>
 )
 

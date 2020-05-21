@@ -54,7 +54,7 @@ const appConfig = {
   apiHandlers: [
     {
       controller: 'common/api-handlers/delete-personal-key.js',
-      path: '/personal-data-keys/:userId',
+      path: '/api/personal-data-keys/:userId',
       method: 'DELETE'
     }
   ],

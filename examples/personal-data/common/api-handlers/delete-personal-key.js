@@ -5,6 +5,7 @@ const deletePersonalKey = async (req, res) => {
 
   try {
     await secretsManager.deleteSecret(userId)
+    res.status(200)
     res.end()
   } catch (e) {
     await res.status(405)
