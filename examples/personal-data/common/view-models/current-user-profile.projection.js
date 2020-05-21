@@ -18,10 +18,9 @@ export default {
   }),
   [USER_PROFILE_UPDATED]: (
     state,
-    { payload: { nickname, firstName, lastName, contacts } }
+    { payload: { firstName, lastName, contacts } }
   ) => ({
     ...state,
-    nickname,
     firstName,
     lastName,
     contacts

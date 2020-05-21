@@ -1,16 +1,31 @@
 import React, { useState, useEffect } from 'react'
 import { useViewModel } from 'resolve-react-hooks'
 import { Redirect } from 'react-router-dom'
+import Cryptr from 'cryptr'
 import Login from './Login'
 import Loading from './Loading'
 
 const ProfileWithViewModel = ({ userId }) => {
   const [user, setUser] = useState('unknown')
 
+  const onViewModelConnected = user => {
+    fetch(`/api/personal-data-keys/${user.id}`)
+      .then(response => response.text())
+      .then(key => {
+        const cryptr = new Cryptr(key)
+        const decrypt = blob => JSON.parse(cryptr.decrypt(blob))
+        setUser({
+          ...user,
+          firstName: decrypt(user.firstName),
+          lastName: decrypt(user.lastName),
+          contacts: decrypt(user.contacts)
+        })
+      })
+  }
   const { connect, dispose } = useViewModel(
     'current-user-profile',
     [userId],
-    setUser
+    onViewModelConnected
   )
 
   useEffect(() => {
