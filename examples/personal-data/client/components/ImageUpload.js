@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useContext } from 'react'
 import {
   Form,
   Input,
@@ -21,7 +21,7 @@ import UploaderContext from '../context'
 
 const DIRECTORY = 'images'
 
-const ImageUploader = ({ owner }) => {
+const ImageUploader = ({ owner, onUploaded }) => {
   const [state, setState] = useState({
     form: {
       fields: {},
@@ -50,6 +50,9 @@ const ImageUploader = ({ owner }) => {
     picked,
     aggregateId
   } = state
+
+  const uploaderContext = useContext(UploaderContext)
+  const { CDNUrl } = uploaderContext
 
   useEffect(() => {
     getToken({ dir: DIRECTORY }).then(staticToken => {
@@ -107,7 +110,7 @@ const ImageUploader = ({ owner }) => {
     setState({ ...state, picked: true })
   }
 
-  const ref = React.createRef()
+  const inputRef = React.createRef()
 
   const uploadFormRender = onSubmitHandler => {
     return (
@@ -122,7 +125,7 @@ const ImageUploader = ({ owner }) => {
             type="file"
             name="file"
             id="fileUpload"
-            innerRef={ref}
+            innerRef={inputRef}
           />
           <Button
             className="ml-1"
@@ -132,7 +135,7 @@ const ImageUploader = ({ owner }) => {
             onClick={(...args) => {
               setState({
                 ...state,
-                mimeType: ref.current.files[0].type,
+                mimeType: inputRef.current.files[0].type,
                 picked: false
               })
               uploadStarted(aggregateId)
@@ -154,6 +157,16 @@ const ImageUploader = ({ owner }) => {
   const onLoad = () => {
     setState({ ...state, loaded: true, loadedId: uploadId, uploadId: null })
     uploadFinished(aggregateId)
+    if (onUploaded) {
+      onUploaded(
+        `![](${getCDNBasedUrl({
+          CDNUrl,
+          dir: DIRECTORY,
+          uploadId: loadedId,
+          token
+        })})`
+      )
+    }
   }
 
   const onError = error => {
@@ -163,63 +176,59 @@ const ImageUploader = ({ owner }) => {
   const handleFocus = event => event.target.select()
 
   return (
-    <UploaderContext.Consumer>
-      {({ CDNUrl }) => (
+    <div>
+      <div
+        style={{
+          display: 'flex',
+          alignContent: 'flex-start',
+          alignItems: 'flex-start'
+        }}
+      >
+        {uploadId == null && (
+          <FormGroup>
+            <Button
+              className="mr-1"
+              outline
+              color="primary"
+              onClick={handleGetUrl}
+            >
+              Upload image
+            </Button>
+          </FormGroup>
+        )}
+        {loaded && loadedId && (
+          <FormGroup>
+            <Input
+              valid
+              type="text"
+              defaultValue={`![](${getCDNBasedUrl({
+                CDNUrl,
+                dir: DIRECTORY,
+                uploadId: loadedId,
+                token
+              })})`}
+              onFocus={handleFocus}
+            />
+            <FormFeedback valid>
+              File uploaded. Use the code above to embed uploaded image
+            </FormFeedback>
+          </FormGroup>
+        )}
+      </div>
+      {uploadId != null && (
         <div>
-          <div
-            style={{
-              display: 'flex',
-              alignContent: 'flex-start',
-              alignItems: 'flex-start'
-            }}
-          >
-            {uploadId == null && (
-              <FormGroup>
-                <Button
-                  className="mr-1"
-                  outline
-                  color="primary"
-                  onClick={handleGetUrl}
-                >
-                  Upload image
-                </Button>
-              </FormGroup>
-            )}
-            {loaded && loadedId && (
-              <FormGroup>
-                <Input
-                  valid
-                  type="text"
-                  defaultValue={`![](${getCDNBasedUrl({
-                    CDNUrl,
-                    dir: DIRECTORY,
-                    uploadId: loadedId,
-                    token
-                  })})`}
-                  onFocus={handleFocus}
-                />
-                <FormFeedback valid>
-                  File uploaded. Use the code above to embed uploaded image
-                </FormFeedback>
-              </FormGroup>
-            )}
-          </div>
-          {uploadId != null && (
-            <div>
-              <FileUploadProgress
-                key="file"
-                url={url}
-                method="post"
-                formRenderer={uploadFormRender}
-                formGetter={formGetter}
-                onLoad={onLoad}
-                onError={onError}
-              />
-            </div>
-          )}
+          <FileUploadProgress
+            key="file"
+            url={url}
+            method="post"
+            formRenderer={uploadFormRender}
+            formGetter={formGetter}
+            onLoad={onLoad}
+            onError={onError}
+          />
         </div>
       )}
-    </UploaderContext.Consumer>
+    </div>
   )
 }
 

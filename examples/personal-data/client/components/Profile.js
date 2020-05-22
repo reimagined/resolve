@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useQuery } from 'resolve-react-hooks'
 import { Redirect } from 'react-router-dom'
-import Login from './Login'
+import ProfileWithViewModel from './ProfileWithViewModel'
 import Loading from './Loading'
 
 const Profile = () => {
-  const [user, setUser] = useState('unknown')
-  const getUser = useQuery(
+  const [userId, setUserId] = useState('unknown')
+
+  const getUserId = useQuery(
     {
       name: 'user-profiles',
       resolver: 'profile',
@@ -14,27 +15,29 @@ const Profile = () => {
     },
     (err, result) => {
       if (err) {
-        setUser(null)
+        setUserId(null)
         return
       }
-      setUser({ ...result.data.profile, id: result.data.id })
-    }
+      setUserId(result.data.id)
+    },
+    [userId]
   )
+
   useEffect(() => {
-    getUser()
+    getUserId()
   }, [])
 
-  if (typeof user === 'string') {
+  if (userId === 'unknown') {
     return <Loading />
   }
 
-  if (user === null) {
+  if (userId === null) {
     return <Redirect to="/" />
   }
 
   return (
     <React.Fragment>
-      <Login user={user} />
+      <ProfileWithViewModel userId={userId} />
     </React.Fragment>
   )
 }

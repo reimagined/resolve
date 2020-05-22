@@ -44,8 +44,13 @@ const resolvers = {
       await store.findOne('Users', { id: params.userId })
     )
   },
-  all: async store => {
-    return store.find('Users', {})
+  all: async (store, params, { secretsManager }) => {
+    const users = await store.find('Users', {})
+    return await Promise.all(
+      users.map(async user => {
+        return decryptProfile(secretsManager, user)
+      })
+    )
   },
   exists: async (store, params) => {
     const { nickname } = params

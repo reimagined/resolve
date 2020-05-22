@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext, useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import { Redirect, Link } from 'react-router-dom'
 import {
@@ -29,6 +29,9 @@ const UserInfo = props => {
   const toggle = () => {
     setState({ ...state, open: !open })
   }
+  const uploaderContext = useContext(UploaderContext)
+  const { CDNUrl } = uploaderContext
+
   const deleteMe = useCommand(
     {
       type: 'delete',
@@ -43,6 +46,16 @@ const UserInfo = props => {
     },
     [user]
   )
+
+  const deleteKeys = useCallback(() => {
+    if (user && user.id) {
+      fetch(`/api/personal-data-keys/${user.id}`, {
+        method: 'DELETE'
+      }).then(() => {
+        setState({ ...state, deleted: true })
+      })
+    }
+  }, [user])
 
   const gatherPersonalData = useCommand(
     {
@@ -84,20 +97,16 @@ const UserInfo = props => {
     archiveItem = <DropdownItem disabled>Being gathered now...</DropdownItem>
   } else {
     archiveItem = (
-      <UploaderContext.Consumer>
-        {({ CDNUrl }) => (
-          <DropdownItem
-            href={getCDNBasedUrl({
-              CDNUrl,
-              dir: 'archives',
-              uploadId,
-              token
-            })}
-          >
-            Download
-          </DropdownItem>
-        )}
-      </UploaderContext.Consumer>
+      <DropdownItem
+        href={getCDNBasedUrl({
+          CDNUrl,
+          dir: 'archives',
+          uploadId,
+          token
+        })}
+      >
+        Download
+      </DropdownItem>
     )
   }
 
@@ -122,6 +131,9 @@ const UserInfo = props => {
           </DropdownItem>
           <DropdownItem onClick={gatherPersonalData}>
             Gather my personal data
+          </DropdownItem>
+          <DropdownItem onClick={deleteKeys}>
+            Delete my personal keys
           </DropdownItem>
           <DropdownItem onClick={deleteMe}>Delete my profile</DropdownItem>
           {archiveSubmenu}
