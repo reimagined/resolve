@@ -33,7 +33,7 @@ const loadEventsByCursor = async (
     )
   }
 
-  const queryConditions = []
+  const queryConditions = ['1=1']
   if (eventTypes != null) {
     queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`)
   }
@@ -41,30 +41,39 @@ const loadEventsByCursor = async (
     queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
   }
 
-  const resultQueryCondition = `WHERE ${
-    queryConditions.length > 0 ? `${queryConditions.join(' AND ')} AND (` : ''
-  }
-    ${vectorConditions
-      .map(
-        (threadCounter, threadId) =>
-          `"threadId" = ${injectNumber(
-            threadId
-          )} AND "threadCounter" >= ${threadCounter} `
-      )
-      .join(' OR ')}
-    ${queryConditions.length > 0 ? ')' : ''}`
+  const resultQueryCondition = queryConditions.join(' AND ')
+  const resultVectorConditions = vectorConditions
+    .map(
+      (threadCounter, threadId) =>
+        `"threadId"=${injectNumber(
+          threadId
+        )} AND "threadCounter">=${threadCounter}`
+    )
+    .join(' OR ')
+  const resultTimestampConditions = vectorConditions
+    .map(
+      (threadCounter, threadId) =>
+        `"threadId"=${injectNumber(
+          threadId
+        )} AND "threadCounter"=${threadCounter}`
+    )
+    .join(' OR ')
 
   const databaseNameAsId = escapeId(databaseName)
   const eventsTableAsId = escapeId(tableName)
 
   // prettier-ignore
   const sqlQuery =
-    `WITH "batchEvents" AS (
+    `WITH "minimalTimestamp" AS (
+      SELECT MIN("timestamp") AS "value" FROM ${databaseNameAsId}.${eventsTableAsId}
+      WHERE ${resultTimestampConditions}
+    ), "batchEvents" AS (
       SELECT "threadId", "threadCounter",
       SUM("eventSize") OVER (ORDER BY "timestamp") AS "totalEventsSize",
       FLOOR((SUM("eventSize") OVER (ORDER BY "timestamp")) / 128000) AS "batchIndex"
       FROM ${databaseNameAsId}.${eventsTableAsId}
-      ${resultQueryCondition}
+      WHERE (${resultQueryCondition}) AND (${resultVectorConditions})
+      AND "timestamp" >= (SELECT "minimalTimestamp"."value" FROM "minimalTimestamp")
       ORDER BY "timestamp" ASC
       LIMIT ${+limit}
     ), "fullBatchList" AS (
