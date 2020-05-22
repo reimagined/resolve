@@ -16,6 +16,9 @@ test('should create and init consumer', async () => {
       beginXATransaction: expect.any(Function),
       commitXATransaction: expect.any(Function),
       rollbackXATransaction: expect.any(Function),
+      drop: expect.any(Function),
+      loadEvents: expect.any(Function),
+      saveEvent: expect.any(Function),
       sendEvents: expect.any(Function)
     }
   })
