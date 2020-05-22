@@ -13,7 +13,6 @@ const createQuery = ({
   snapshotAdapter,
   readModels,
   viewModels,
-  publisher,
   performanceTracer,
   eventstoreAdapter
 }) => {
@@ -37,7 +36,7 @@ const createQuery = ({
     models[viewModel.name] = wrapViewModel(
       viewModel,
       snapshotAdapter,
-      publisher,
+      eventstoreAdapter,
       performanceTracer,
       eventstoreAdapter.getSecretsManager.bind(null)
     )

@@ -1,8 +1,5 @@
 import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
-import {
-  PublisherResourceAlreadyExistError,
-  PUBLISHER_CONSTANTS
-} from 'resolve-local-event-broker'
+import { PublisherResourceAlreadyExistError } from 'resolve-local-event-broker'
 import { SnapshotResourceAlreadyExistError } from 'resolve-snapshot-base'
 
 import debugLevels from 'resolve-debug-levels'
@@ -51,16 +48,16 @@ const bootstrap = async resolve => {
     let deliveryStrategy = null
     switch (connectorFeatures) {
       case FULL_XA_CONNECTOR:
-        deliveryStrategy = PUBLISHER_CONSTANTS.DELIVERY_STRATEGY_ACTIVE_XA
+        deliveryStrategy = 'active-xa-transaction'
         break
       case FULL_XA_CONNECTOR + FULL_REGULAR_CONNECTOR:
-        deliveryStrategy = PUBLISHER_CONSTANTS.DELIVERY_STRATEGY_ACTIVE_XA
+        deliveryStrategy = 'active-xa-transaction'
         break
       case FULL_REGULAR_CONNECTOR:
-        deliveryStrategy = PUBLISHER_CONSTANTS.DELIVERY_STRATEGY_ACTIVE_REGULAR
+        deliveryStrategy = 'active-regular-transaction'
         break
       case EMPTY_CONNECTOR:
-        deliveryStrategy = PUBLISHER_CONSTANTS.DELIVERY_STRATEGY_ACTIVE_NONE
+        deliveryStrategy = 'active-none-transaction'
         break
       default:
         break
@@ -80,26 +77,26 @@ const bootstrap = async resolve => {
       eventTypes
     }
 
-    const subscribePromise = publisher.subscribe(
+    const subscribePromise = publisher.subscribe({
       eventSubscriber,
       subscriptionOptions
-    )
+    })
 
     promises.push(subscribePromise)
 
-    const resumePromise = subscribePromise
-      .then(publisher.resume.bind(publisher, eventSubscriber))
-      .catch(error => {
-        if (upstream) {
+    if (upstream) {
+      const resumePromise = subscribePromise
+        .then(publisher.resume.bind(publisher, { eventSubscriber }))
+        .catch(error => {
           // eslint-disable-next-line no-console
           console.warn(`
             Event listener "${eventSubscriber}" can't resume subscription since event bus
             cannot initiate notification for it because of error "${error}"
           `)
-        }
-      })
+        })
 
-    promises.push(resumePromise)
+      promises.push(resumePromise)
+    }
   }
 
   await Promise.all(promises)

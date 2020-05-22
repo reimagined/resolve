@@ -1,13 +1,17 @@
-import { SERIALIZED_ERROR_SYMBOL } from '../constants'
-
 const serializeError = error => {
-  if (error != null && error[SERIALIZED_ERROR_SYMBOL] != null) {
+  if (error == null) {
+    return null
+  }
+  if (
+    error.constructor === Object &&
+    (error.code != null || error.message != null || error.stack != null)
+  ) {
     return error
-  } else if (error == null || !(error instanceof Error)) {
-    throw new Error(`The "${error}" is not instance of Error`)
+  }
+  if (!(error instanceof Error)) {
+    throw new Error(`The "${JSON.stringify(error)}" is not instance of Error`)
   } else {
     return {
-      [SERIALIZED_ERROR_SYMBOL]: true,
       code: error.code,
       message: error.message,
       stack: error.stack

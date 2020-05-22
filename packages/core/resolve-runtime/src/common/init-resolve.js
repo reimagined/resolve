@@ -37,8 +37,7 @@ const initResolve = async resolve => {
     publisher,
     aggregates,
     snapshotAdapter,
-    performanceTracer,
-    eventstoreAdapter
+    performanceTracer
   })
 
   const executeQuery = createQueryExecutor({
@@ -47,8 +46,7 @@ const initResolve = async resolve => {
     snapshotAdapter,
     readModels,
     viewModels,
-    performanceTracer,
-    eventstoreAdapter
+    performanceTracer
   })
 
   const executeSaga = createSagaExecutor({
@@ -60,8 +58,7 @@ const initResolve = async resolve => {
     schedulers,
     sagas,
     performanceTracer,
-    uploader,
-    eventstoreAdapter
+    uploader
   })
 
   Object.assign(resolve, {

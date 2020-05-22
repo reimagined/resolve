@@ -21,7 +21,7 @@ const Post = ({ post }) => {
     deleted: false,
     deletionError: null
   })
-  const { deleted, deletionError } = state
+  const { deleted } = state
 
   const deletePost = useCommand(
     {

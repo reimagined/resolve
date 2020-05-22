@@ -255,7 +255,7 @@ const getAggregateState = async (
           throw generateCommandError('Command handler is disposed')
         }
 
-        const { events } = await pool.publisher.read({
+        const { events } = await pool.eventstoreAdapter.loadEvents({
           aggregateIds: [aggregateId],
           cursor: aggregateInfo.cursor,
           limit: Number.MAX_SAFE_INTEGER
@@ -314,7 +314,7 @@ const saveEvent = async (publisher, event) => {
 
   event.aggregateId = String(event.aggregateId)
 
-  return await publisher.publish(event)
+  return await publisher.publish({ event })
 }
 
 const executeCommand = async (pool, { jwtToken, ...command }) => {

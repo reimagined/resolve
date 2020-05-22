@@ -62,15 +62,15 @@ const bootstrap = async resolve => {
       eventTypes
     }
 
-    const subscribePromise = publisher.subscribe(
+    const subscribePromise = publisher.subscribe({
       eventSubscriber,
       subscriptionOptions
-    )
+    })
 
     promises.push(subscribePromise)
 
     const resumePromise = subscribePromise
-      .then(publisher.resume.bind(publisher, eventSubscriber))
+      .then(publisher.resume.bind(publisher, { eventSubscriber }))
       .catch(error => {
         // eslint-disable-next-line no-console
         console.warn(`

@@ -1,19 +1,11 @@
-const { promisify } = require('util')
-const exec = promisify(require('child_process').exec)
+const { execSync } = require('child_process')
 
 const prepare = async ({ directory, sourceType }) => {
   if (sourceType === 'ts') {
-    const { stdout, stderr } = await exec(`npx tsc`, {
-      cwd: directory,
-      stdio: 'inherit'
-    })
-    if (stderr) {
-      // eslint-disable-next-line no-console
-      console.error(stderr)
-    }
-    if (stdout) {
-      // eslint-disable-next-line no-console
-      console.log(stdout)
+    try {
+      execSync(`npx tsc`, { cwd: directory, stdio: 'inherit' })
+    } catch (error) {
+      throw Error('')
     }
   }
 }

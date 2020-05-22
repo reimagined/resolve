@@ -13,9 +13,9 @@ const queryIsReadyHandler = async (req, res) => {
 
           let lastError, lastEvent
           while (lastError != null) {
-            void ({ lastEvent, lastError } = await publisher.status(
-              listenerName
-            ))
+            void ({ lastEvent, lastError } = await publisher.status({
+              eventSubscriber: listenerName
+            }))
             if (
               lastEvent != null &&
               lastEvent.timestamp >= latestEvent.timestamp

@@ -1,5 +1,4 @@
 import { createServer } from 'resolve-local-rpc'
-import multiplexAsync from '../multiplex-async'
 
 const createAndInitConsumer = async config => {
   const {
@@ -10,7 +9,7 @@ const createAndInitConsumer = async config => {
     address
   } = config
 
-  const beginXATransaction = async (eventSubscriber, { batchId }) => {
+  const beginXATransaction = async ({ eventSubscriber, batchId }) => {
     const currentResolve = Object.create(baseResolve)
     const listenerInfo = currentResolve.eventListeners.get(eventSubscriber)
     if (listenerInfo == null) {
@@ -34,10 +33,12 @@ const createAndInitConsumer = async config => {
     }
   }
 
-  const commitXATransaction = async (
+  const commitXATransaction = async ({
     eventSubscriber,
-    { batchId, xaTransactionId, preparePhase }
-  ) => {
+    batchId,
+    xaTransactionId,
+    countEvents
+  }) => {
     const currentResolve = Object.create(baseResolve)
     const listenerInfo = currentResolve.eventListeners.get(eventSubscriber)
     if (listenerInfo == null) {
@@ -54,7 +55,7 @@ const createAndInitConsumer = async config => {
         modelName: eventSubscriber,
         batchId,
         xaTransactionId,
-        preparePhase
+        countEvents
       })
 
       return maybeEventCount
@@ -63,10 +64,11 @@ const createAndInitConsumer = async config => {
     }
   }
 
-  const rollbackXATransaction = async (
+  const rollbackXATransaction = async ({
     eventSubscriber,
-    { batchId, xaTransactionId }
-  ) => {
+    batchId,
+    xaTransactionId
+  }) => {
     const currentResolve = Object.create(baseResolve)
     const listenerInfo = currentResolve.eventListeners.get(eventSubscriber)
     if (listenerInfo == null) {
@@ -89,7 +91,7 @@ const createAndInitConsumer = async config => {
     }
   }
 
-  const drop = async eventSubscriber => {
+  const drop = async ({ eventSubscriber }) => {
     const currentResolve = Object.create(baseResolve)
     const listenerInfo = currentResolve.eventListeners.get(eventSubscriber)
     if (listenerInfo == null) {
@@ -108,11 +110,13 @@ const createAndInitConsumer = async config => {
     }
   }
 
-  const sendEventsImpl = async (
+  const sendEvents = async ({
     eventSubscriber,
-    { batchId, xaTransactionId, events }
-  ) => {
-    // TODO properties
+    batchId,
+    xaTransactionId,
+    events
+  }) => {
+    // TODO restore
     const properties = {
       RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: 0
     }
@@ -142,15 +146,13 @@ const createAndInitConsumer = async config => {
         result = error
       }
 
-      await publisher.acknowledge(batchId, result)
+      await publisher.acknowledge({ batchId, result })
     } finally {
       await disposeResolve(currentResolve)
     }
   }
 
-  const sendEvents = multiplexAsync.bind(null, sendEventsImpl)
-
-  const loadEvents = async eventFilter => {
+  const loadEvents = async ({ ...eventFilter }) => {
     const currentResolve = Object.create(baseResolve)
     try {
       await initResolve(currentResolve)
@@ -160,7 +162,7 @@ const createAndInitConsumer = async config => {
     }
   }
 
-  const saveEvent = async event => {
+  const saveEvent = async ({ event }) => {
     const currentResolve = Object.create(baseResolve)
     try {
       await initResolve(currentResolve)

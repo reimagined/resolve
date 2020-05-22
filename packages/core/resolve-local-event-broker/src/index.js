@@ -8,12 +8,9 @@ import {
   ResourceNotExistError as PublisherResourceNotExistError
 } from './publisher-server/lifecycle/lifecycle-errors'
 
-import * as PUBLISHER_CONSTANTS from './publisher-server/constants'
-
 export {
   PublisherResourceAlreadyExistError,
   PublisherResourceNotExistError,
-  PUBLISHER_CONSTANTS,
   createAndInitPublisher,
   connectPublisher,
   createAndInitConsumer,

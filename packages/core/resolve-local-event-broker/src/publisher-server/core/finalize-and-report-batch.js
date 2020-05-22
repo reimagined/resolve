@@ -2,127 +2,113 @@ import {
   BATCHES_TABLE_NAME,
   LONG_INTEGER_SQL_TYPE,
   NOTIFICATIONS_TABLE_NAME,
+  PrivateOperationType,
+  LazinessStrategy,
   SUBSCRIBERS_TABLE_NAME,
-  STATUS_DELIVER,
-  STATUS_SKIP,
-  STATUS_ERROR,
-  NOTIFICATION_UPDATE_SYMBOL
+  SubscriptionStatus
 } from '../constants'
 
-const finalizeAndReportBatch = async (
-  pool,
-  subscriptionDescription,
-  nextStatus,
-  rawResult
-) => {
-  if (
-    nextStatus !== STATUS_DELIVER &&
-    nextStatus !== STATUS_SKIP &&
-    nextStatus !== STATUS_ERROR
-  ) {
-    throw new Error(`Invalid nextStatus="${nextStatus}"`)
-  }
+const finalizeAndReportBatch = async (pool, payload) => {
   const {
     database: { escapeId, escapeStr, runQuery, runRawQuery },
-    serializeError,
-    pushNotificationAndGetSubscriptions,
-    pullNotificationsAsBatchForSubscriber,
-    multiplexAsync
+    invokeOperation
   } = pool
+
+  const { activeBatch, result } = payload
   const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME)
   const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
   const batchesTableNameAsId = escapeId(BATCHES_TABLE_NAME)
 
-  const { batchId, subscriptionId, eventSubscriber } = subscriptionDescription
-  const result =
-    rawResult != null && rawResult.constructor === Object ? rawResult : {}
-  const { successEvent, failedEvent, error: rawError, cursor } = result
-
-  await runRawQuery(`
-    UPDATE ${notificationsTableNameAsId} SET
-    "processEndTimestamp" = CAST(strftime('%s','now') || substr(strftime('%f','now'),4) AS ${LONG_INTEGER_SQL_TYPE})
-    WHERE "batchId" = ${escapeStr(batchId)};
-    COMMIT;
-    BEGIN IMMEDIATE;
-  `)
-
+  const { batchId, subscriptionId, eventSubscriber } = activeBatch
+  const isActiveResult = result != null && result.constructor === Object
+  const updateStatements = []
+  if (isActiveResult && Object.keys(result).length > 0) {
+    // eslint-disable-next-line prefer-const
+    let { successEvent, failedEvent, error, cursor } = result
+    if (successEvent == null && failedEvent == null && error == null) {
+      error = {
+        message: `EventSubscriber ${eventSubscriber} on batchId ${batchId} perform idle operation`
+      }
+    }
+    const nextStatus =
+      error != null ? SubscriptionStatus.ERROR : SubscriptionStatus.DELIVER
+    updateStatements.push(`"status" = CASE WHEN "status" = ${escapeStr(
+      SubscriptionStatus.ERROR
+    )} THEN ${escapeStr(SubscriptionStatus.ERROR)}
+    WHEN ${
+      nextStatus === SubscriptionStatus.ERROR ? '1 = 1' : '1 = 0'
+    } THEN ${escapeStr(SubscriptionStatus.ERROR)}
+    WHEN "status" = ${escapeStr(SubscriptionStatus.SKIP)} THEN ${escapeStr(
+      SubscriptionStatus.SKIP
+    )}
+    ELSE ${escapeStr(SubscriptionStatus.DELIVER)}
+    END`)
+    if (successEvent != null) {
+      updateStatements.push(
+        `"successEvent" = json(${escapeStr(JSON.stringify(successEvent))})`
+      )
+    }
+    if (failedEvent != null) {
+      updateStatements.push(
+        `"failedEvent" = json(${escapeStr(JSON.stringify(failedEvent))})`
+      )
+    }
+    if (error != null) {
+      updateStatements.push(`"errors" = json_insert(
+        COALESCE("errors", json('[]')),
+        '$[' || json_array_length(COALESCE("errors", json('[]'))) || ']',
+        json(${escapeStr(JSON.stringify(error))})
+      )`)
+    }
+    if (cursor != null) {
+      updateStatements.push(
+        `"cursor" = json(${escapeStr(JSON.stringify(cursor))})`
+      )
+    }
+  } else if (isActiveResult) {
+    throw new Error('Delivery result should not be empty object')
+  }
   const notifications = await runQuery(`
-    SELECT * FROM ${notificationsTableNameAsId}
-    WHERE "batchId" = ${escapeStr(batchId)}
-  `)
-  void notifications
+      SELECT ${notificationsTableNameAsId}.*,
+      CAST(strftime('%s','now') || substr(strftime('%f','now'),4) AS ${LONG_INTEGER_SQL_TYPE}) AS "processEndTimestamp"
+      FROM ${notificationsTableNameAsId}
+      LIMIT 1
+    `)
+
+  await runRawQuery(`${
+    isActiveResult
+      ? `UPDATE ${subscribersTableNameAsId} SET
+      ${updateStatements.join(', ')}
+      WHERE "subscriptionId" = ${escapeStr(subscriptionId)};`
+      : ''
+  }
+    
+      DELETE FROM ${batchesTableNameAsId}
+      WHERE "batchId" = ${escapeStr(batchId)};
+    
+      DELETE FROM ${notificationsTableNameAsId}
+      WHERE "batchId" = ${escapeStr(batchId)};
+
+      COMMIT;
+      BEGIN IMMEDIATE;
+    `)
 
   // TODO: Report Statistics for notifications
-
-  const updateStatements = [
-    `"status" = CASE WHEN "status" = ${escapeStr(
-      STATUS_ERROR
-    )} THEN ${escapeStr(STATUS_ERROR)}
-    WHEN ${+(nextStatus === STATUS_ERROR)} THEN ${escapeStr(STATUS_ERROR)}
-    WHEN "status" = ${escapeStr(STATUS_SKIP)} THEN ${escapeStr(STATUS_SKIP)}
-    ELSE ${escapeStr(STATUS_DELIVER)}
-    END`
-  ]
-  if (successEvent != null) {
-    updateStatements.push(
-      `"successEvent" = json(${escapeStr(JSON.stringify(successEvent))})`
-    )
-  }
-  if (failedEvent != null) {
-    updateStatements.push(
-      `"failedEvent" = json(${escapeStr(JSON.stringify(failedEvent))})`
-    )
-  }
-  if (rawError != null) {
-    const error = serializeError(rawError)
-    updateStatements.push(`"errors" = json_insert(
-      "errors",
-      '$[' || json_array_length("errors") || ']',
-      json(${escapeStr(JSON.stringify(error))})
-    )`)
-  }
-  if (cursor != null) {
-    updateStatements.push(`"cursor" = ${escapeStr(cursor)}`)
-  }
-
-  if (updateStatements.length === 0) {
-    throw new TypeError()
-  }
-
-  await runRawQuery(`
-    UPDATE ${subscribersTableNameAsId} SET
-    ${updateStatements.join(', ')}
-    WHERE "subscriptionId" = ${escapeStr(subscriptionId)};
-
-    DELETE FROM ${notificationsTableNameAsId}
-    WHERE "batchId" = ${escapeStr(batchId)};
-    
-    DELETE FROM ${batchesTableNameAsId}
-    WHERE "batchId" = ${escapeStr(batchId)};
-    
-    COMMIT;
-    BEGIN IMMEDIATE;
-  `)
+  void notifications
 
   if (
-    nextStatus !== STATUS_DELIVER ||
-    (successEvent == null && failedEvent == null)
+    result != null &&
+    result.successEvent != null &&
+    result.failedEvent == null &&
+    result.error == null
   ) {
-    return
-  }
-
-  const subscriptionIds = await pushNotificationAndGetSubscriptions(
-    pool,
-    NOTIFICATION_UPDATE_SYMBOL,
-    eventSubscriber
-  )
-
-  if (subscriptionIds != null && subscriptionIds.length === 1) {
-    multiplexAsync(
-      pullNotificationsAsBatchForSubscriber,
-      pool,
-      subscriptionIds[0]
-    )
+    const input = {
+      type: PrivateOperationType.RESUME_SUBSCRIBER,
+      payload: {
+        eventSubscriber
+      }
+    }
+    await invokeOperation(pool, LazinessStrategy.EAGER, input)
   }
 }
 
