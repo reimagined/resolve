@@ -36,12 +36,14 @@ const initResolve = async resolve => {
   const executeCommand = createCommandExecutor({
     publisher,
     aggregates,
+    eventstoreAdapter,
     snapshotAdapter,
     performanceTracer
   })
 
   const executeQuery = createQueryExecutor({
     publisher,
+    eventstoreAdapter,
     readModelConnectors,
     snapshotAdapter,
     readModels,
@@ -53,6 +55,7 @@ const initResolve = async resolve => {
     executeCommand,
     executeQuery,
     publisher,
+    eventstoreAdapter,
     readModelConnectors,
     snapshotAdapter,
     schedulers,
