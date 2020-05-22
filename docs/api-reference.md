@@ -409,7 +409,7 @@ await sideEffects.scheduleCommand(
 
 ### HTTP API
 
-Resolve provides a standard HTTP API that allows you to send aggregate commands and query Read and View Models. Refer to the [Standard HTTP API](curl.md) topic for more information.
+Resolve provides a standard HTTP API that allows you to send aggregate commands and query Read and View Models.
 
 #### Read Model API
 

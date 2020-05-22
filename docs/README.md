@@ -34,7 +34,6 @@ title: reSolve Documentation
   - [Resolvers](read-side.md#resolvers)
   - [View Model Specifics](read-side.md#view-model-specifics)
   - [Performing Queries Using HTTP API](read-side.md#performing-queries-using-http-api)
-- [Standard HTTP API](curl.md)
 
 #### Guides
 

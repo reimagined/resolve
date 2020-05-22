@@ -20,7 +20,7 @@ A reSolve exposes HTTP API that you can use to send aggregate commands and query
 | Query a Read Model | `http://{host}:{port}/api/query/{readModel}/{resolver}`     |
 | Query a View Model | `http://{host}:{port}/api/query/{viewModel}/{aggregateIds}` |
 
-### Example
+#### Example
 
 > To test the provided console inputs on your machine, download and run the [Shopping List](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example project.
 
