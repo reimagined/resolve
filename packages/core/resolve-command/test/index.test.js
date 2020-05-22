@@ -1,25 +1,37 @@
 import createCommandExecutor from '../src'
 import { CommandError } from '../src'
 
-let eventStore, events, snapshotAdapter, DateNow, performanceTracer
+let eventstoreAdapter,
+  publisher,
+  events,
+  snapshotAdapter,
+  DateNow,
+  performanceTracer
 
 beforeEach(() => {
   events = []
 
-  eventStore = {
-    loadEvents: jest.fn().mockImplementation(async (filter, handler) => {
-      for (const event of events) {
-        await handler(event)
+  eventstoreAdapter = {
+    loadEvents: jest.fn().mockImplementation(async ({ cursor: prevCursor }) => {
+      return {
+        cursor: `${prevCursor == null ? '' : prevCursor}${events.map(e =>
+          Buffer.from(JSON.stringify(e)).toString('base64')
+        )}`,
+        events
       }
-    }),
-    saveEvent: jest.fn().mockImplementation(async event => {
-      events.push(event)
-      return event
     }),
     getNextCursor: jest.fn().mockImplementation((prevCursor, events) => {
       return `${prevCursor == null ? '' : prevCursor}${events.map(e =>
         Buffer.from(JSON.stringify(e)).toString('base64')
       )}`
+    }),
+    getSecretsManager: jest.fn()
+  }
+
+  publisher = {
+    publish: jest.fn().mockImplementation(async ({ event }) => {
+      events.push(event)
+      return event
     })
   }
 
@@ -49,17 +61,19 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  eventStore = null
+  eventstoreAdapter = null
   events = null
   snapshotAdapter = null
   global.Date.now = DateNow
   performanceTracer = null
+  publisher = null
 })
 
 describe('executeCommand', () => {
   describe('without performance tracer', () => {
     test('should success build aggregate state from empty event list and execute cmd', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -73,7 +87,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -88,6 +103,7 @@ describe('executeCommand', () => {
 
     test('should success build aggregate state and execute command', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'Entity',
         commands: {
           create: state => {
@@ -116,7 +132,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -143,9 +160,10 @@ describe('executeCommand', () => {
       const JWT_TOKEN = Buffer.from('ROOT', 'utf8').toString('base64')
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'User',
         commands: {
-          createUser: (aggregateState, command, jwtToken) => {
+          createUser: (aggregateState, command, { jwt: jwtToken }) => {
             if (Buffer.from(jwtToken, 'base64').toString('utf8') !== 'ROOT') {
               throw new Error('Access denied')
             }
@@ -162,7 +180,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -215,6 +234,7 @@ describe('executeCommand', () => {
       }
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -241,7 +261,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         snapshotAdapter
       })
@@ -301,6 +322,7 @@ describe('executeCommand', () => {
       }
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -326,7 +348,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         snapshotAdapter
       })
@@ -362,6 +385,7 @@ describe('executeCommand', () => {
       }
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -388,7 +412,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         snapshotAdapter
       })
@@ -437,6 +462,7 @@ describe('executeCommand', () => {
       ]
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -463,7 +489,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         snapshotAdapter
       })
@@ -490,6 +517,7 @@ describe('executeCommand', () => {
 
     test('should throw error when unknown command', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -503,7 +531,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -522,6 +551,7 @@ describe('executeCommand', () => {
 
     test('should throw error when the aggregateId is not a string', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -535,7 +565,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -557,6 +588,7 @@ describe('executeCommand', () => {
 
     test('should throw error when the aggregateName is not a string', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -570,7 +602,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -592,6 +625,7 @@ describe('executeCommand', () => {
 
     test('should throw error when the type is not a string', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -605,7 +639,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -625,7 +660,8 @@ describe('executeCommand', () => {
 
     test('should throw error when an aggregate does not exist', async () => {
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: []
       })
 
@@ -645,6 +681,7 @@ describe('executeCommand', () => {
 
     test('should throw error when an event contains "aggregateId", "aggregateVersion", "timestamp" fields', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -662,7 +699,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -684,6 +722,7 @@ describe('executeCommand', () => {
 
     test('should throw error when an event does not contain "type" field', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -696,7 +735,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -718,6 +758,7 @@ describe('executeCommand', () => {
   describe('with performance tracer', () => {
     test('should success build aggregate state from empty event list and execute cmd', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -731,7 +772,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -759,6 +801,7 @@ describe('executeCommand', () => {
 
     test('should success build aggregate state and execute command', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'Entity',
         commands: {
           create: state => {
@@ -787,7 +830,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -827,9 +871,10 @@ describe('executeCommand', () => {
       const JWT_TOKEN = Buffer.from('ROOT', 'utf8').toString('base64')
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'User',
         commands: {
-          createUser: (aggregateState, command, jwtToken) => {
+          createUser: (aggregateState, command, { jwt: jwtToken }) => {
             if (Buffer.from(jwtToken, 'base64').toString('utf8') !== 'ROOT') {
               throw new Error('Access denied')
             }
@@ -846,7 +891,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -912,6 +958,7 @@ describe('executeCommand', () => {
       }
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -938,7 +985,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         snapshotAdapter,
         performanceTracer
@@ -1011,6 +1059,7 @@ describe('executeCommand', () => {
       }
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -1036,7 +1085,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         snapshotAdapter,
         performanceTracer
@@ -1085,6 +1135,7 @@ describe('executeCommand', () => {
       }
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -1111,7 +1162,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         snapshotAdapter,
         performanceTracer
@@ -1173,6 +1225,7 @@ describe('executeCommand', () => {
       ]
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -1199,7 +1252,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         snapshotAdapter,
         performanceTracer
@@ -1239,6 +1293,7 @@ describe('executeCommand', () => {
 
     test('should throw error when unknown command', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1252,7 +1307,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -1284,6 +1340,7 @@ describe('executeCommand', () => {
 
     test('should throw error when the aggregateId is not a string', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1297,7 +1354,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1332,6 +1390,7 @@ describe('executeCommand', () => {
 
     test('should throw error when the aggregateName is not a string', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1345,7 +1404,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1380,6 +1440,7 @@ describe('executeCommand', () => {
 
     test('should throw error when the type is not a string', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1393,7 +1454,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1426,7 +1488,8 @@ describe('executeCommand', () => {
 
     test('should throw error when an aggregate does not exist', async () => {
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [],
         performanceTracer
       })
@@ -1459,6 +1522,7 @@ describe('executeCommand', () => {
 
     test('should throw error when an event contains "aggregateId", "aggregateVersion", "timestamp" fields', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1476,7 +1540,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1511,6 +1576,7 @@ describe('executeCommand', () => {
 
     test('should throw error when an event does not contain "type" field', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1523,7 +1589,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1560,7 +1627,8 @@ describe('dispose', () => {
   describe('without performance tracer', () => {
     test('should dispose the command executor', async () => {
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: []
       })
 
@@ -1588,6 +1656,7 @@ describe('dispose', () => {
       }
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -1614,7 +1683,8 @@ describe('dispose', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         snapshotAdapter
       })
@@ -1655,6 +1725,7 @@ describe('dispose', () => {
 
     test('should dispose the regular handler', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -1681,7 +1752,8 @@ describe('dispose', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         snapshotAdapter
       })
@@ -1722,7 +1794,8 @@ describe('dispose', () => {
   describe('with performance tracer', () => {
     test('should dispose the command executor', async () => {
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [],
         performanceTracer
       })
@@ -1763,6 +1836,7 @@ describe('dispose', () => {
       }
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -1789,7 +1863,8 @@ describe('dispose', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         snapshotAdapter,
         performanceTracer
@@ -1843,6 +1918,7 @@ describe('dispose', () => {
 
     test('should dispose the regular handler', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -1869,7 +1945,8 @@ describe('dispose', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         snapshotAdapter,
         performanceTracer

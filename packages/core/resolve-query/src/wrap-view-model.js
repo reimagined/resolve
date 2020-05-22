@@ -1,4 +1,3 @@
-import { getNextCursor } from 'resolve-eventstore-base'
 import debugLevels from 'resolve-debug-levels'
 
 const log = debugLevels('resolve:resolve-query:wrap-view-model')
@@ -71,7 +70,7 @@ const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
           ...encryption
         }
       )
-      cursor = await pool.getNextCursor(cursor, [event])
+      cursor = await pool.eventstoreAdapter.getNextCursor(cursor, [event])
 
       aggregatesVersionsMap.set(event.aggregateId, event.aggregateVersion)
 
@@ -300,7 +299,6 @@ const wrapViewModel = (
     workers: new Map(),
     isDisposed: false,
     performanceTracer,
-    getNextCursor,
     getSecretsManager
   }
 

@@ -70,18 +70,48 @@ const initBroker = resolve => {
       )
     },
     listProperties: async ({ eventSubscriber }) => {
-      void eventSubscriber
-      return []
+      try {
+        return await invokeEventBus(
+          resolve.eventstoreCredentials,
+          'listProperties',
+          { eventSubscriber }
+        )
+      } catch (err) {
+        return []
+      }
     },
     getProperty: async ({ eventSubscriber, key }) => {
-      void (eventSubscriber, key)
-      return null
+      try {
+        return await invokeEventBus(
+          resolve.eventstoreCredentials,
+          'getProperty',
+          { eventSubscriber, key }
+        )
+      } catch (err) {
+        return null
+      }
     },
     setProperty: async ({ eventSubscriber, key, value }) => {
-      void (eventSubscriber, key, value)
+      try {
+        return await invokeEventBus(
+          resolve.eventstoreCredentials,
+          'setProperty',
+          { eventSubscriber, key, value }
+        )
+      } catch (err) {
+        return null
+      }
     },
     deleteProperty: async ({ eventSubscriber, key }) => {
-      void (eventSubscriber, key)
+      try {
+        return await invokeEventBus(
+          resolve.eventstoreCredentials,
+          'deleteProperty',
+          { eventSubscriber, key }
+        )
+      } catch (err) {
+        return null
+      }
     }
   })
 

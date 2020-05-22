@@ -61,9 +61,9 @@ describe('deploy-service-event-handler.test', () => {
         resolve
       )
 
-      expect(resolve.publisher.listProperties).toHaveBeenCalledWith(
-        'readModelName'
-      )
+      expect(resolve.publisher.listProperties).toHaveBeenCalledWith({
+        eventSubscriber: 'readModelName'
+      })
       expect(result).toEqual({
         property: 'property'
       })
@@ -82,10 +82,10 @@ describe('deploy-service-event-handler.test', () => {
         resolve
       )
 
-      expect(resolve.publisher.getProperty).toHaveBeenCalledWith(
-        'readModelName',
-        'key'
-      )
+      expect(resolve.publisher.getProperty).toHaveBeenCalledWith({
+        eventSubscriber: 'readModelName',
+        key: 'key'
+      })
       expect(result).toEqual('value')
     })
 
@@ -103,11 +103,11 @@ describe('deploy-service-event-handler.test', () => {
         resolve
       )
 
-      expect(resolve.publisher.setProperty).toHaveBeenCalledWith(
-        'readModelName',
-        'key',
-        'value'
-      )
+      expect(resolve.publisher.setProperty).toHaveBeenCalledWith({
+        eventSubscriber: 'readModelName',
+        key: 'key',
+        value: 'value'
+      })
       expect(result).toEqual('ok')
     })
 
@@ -123,10 +123,10 @@ describe('deploy-service-event-handler.test', () => {
 
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
-      expect(resolve.publisher.deleteProperty).toHaveBeenCalledWith(
-        'readModelName',
-        'key'
-      )
+      expect(resolve.publisher.deleteProperty).toHaveBeenCalledWith({
+        eventSubscriber: 'readModelName',
+        key: 'key'
+      })
       expect(result).toEqual('ok')
     })
   })
@@ -143,9 +143,9 @@ describe('deploy-service-event-handler.test', () => {
 
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
-      expect(resolve.doUpdateRequest).toHaveBeenCalledWith('readModelName')
-      expect(resolve.publisher.reset).toHaveBeenCalledWith('readModelName')
-      expect(resolve.executeQuery.drop).toHaveBeenCalledWith('readModelName')
+      expect(resolve.publisher.reset).toHaveBeenCalledWith({
+        eventSubscriber: 'readModelName'
+      })
       expect(result).toEqual('ok')
     })
 
@@ -170,8 +170,12 @@ describe('deploy-service-event-handler.test', () => {
 
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
-      expect(resolve.publisher.status).toHaveBeenCalledWith('readModelName1')
-      expect(resolve.publisher.status).toHaveBeenCalledWith('readModelName2')
+      expect(resolve.publisher.status).toHaveBeenCalledWith({
+        eventSubscriber: 'readModelName1'
+      })
+      expect(resolve.publisher.status).toHaveBeenCalledWith({
+        eventSubscriber: 'readModelName2'
+      })
       expect(result).toEqual([
         {
           name: 'readModelName1',
@@ -200,7 +204,9 @@ describe('deploy-service-event-handler.test', () => {
 
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
-      expect(resolve.publisher.status).toHaveBeenCalledWith('readModelName1')
+      expect(resolve.publisher.status).toHaveBeenCalledWith({
+        eventSubscriber: 'readModelName1'
+      })
 
       expect(result).toEqual([
         {

@@ -12,9 +12,9 @@ afterAll(() => {
 
 test('resolve-saga', async () => {
   const remainingTime = 15 * 60 * 1000
-  const eventStore = {
-    loadEvents: jest.fn(),
-    saveEvent: jest.fn()
+  const eventstoreAdapter = {
+    loadEvents: jest.fn().mockReturnValue({ events: [], cursor: null }),
+    getSecretsManager: jest.fn()
   }
 
   const readModelStore = {
@@ -40,6 +40,10 @@ test('resolve-saga', async () => {
   const schedulerAdapterInstance = {
     addEntries: jest.fn(),
     clearEntries: jest.fn()
+  }
+
+  const publisher = {
+    publish: jest.fn().mockImplementation(async ({ event }) => event)
   }
 
   const schedulerAdapter = jest.fn().mockReturnValue(schedulerAdapterInstance)
@@ -89,18 +93,20 @@ test('resolve-saga', async () => {
       name: 'default-scheduler',
       connectorName: 'default-connector',
       adapter: schedulerAdapter,
-      invariantHash: 'invariantHash'
+      invariantHash: 'invariantHash',
+      encryption: () => ({})
     }
   ]
 
   const sagaExecutor = createSagaExecutor({
-    eventStore,
+    eventstoreAdapter,
     readModelConnectors,
     snapshotAdapter,
     executeCommand,
     executeQuery,
     sagas,
-    schedulers
+    schedulers,
+    publisher
   })
 
   const properties = {
@@ -188,12 +194,10 @@ test('resolve-saga', async () => {
     'readModelStore.delete'
   )
 
-  expect(eventStore.loadEvents.mock.calls).toMatchSnapshot(
-    'eventStore.loadEvents'
+  expect(eventstoreAdapter.loadEvents.mock.calls).toMatchSnapshot(
+    'eventstoreAdapter.loadEvents'
   )
-  expect(eventStore.saveEvent.mock.calls).toMatchSnapshot(
-    'eventStore.saveEvent'
-  )
+  expect(publisher.publish.mock.calls).toMatchSnapshot('publisher.publish')
 
   expect(
     readModelConnectors['default-connector'].connect.mock.calls

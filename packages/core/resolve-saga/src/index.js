@@ -23,7 +23,8 @@ const createSaga = ({
   const executeScheduleCommand = createCommand({
     aggregates: createSchedulersAggregates(schedulers),
     publisher,
-    snapshotAdapter
+    snapshotAdapter,
+    eventstoreAdapter
   })
 
   const executeCommandOrScheduler = async (...args) => {

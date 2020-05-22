@@ -7,7 +7,7 @@ const generateGuid = (...args) => {
     resultBuffer[index % 48] = resultBuffer[index % 48] ^ baseBuffer[index]
   }
   let result = resultBuffer.toString('base64')
-  result = result.replace(/[+\/=]/gi, 'z')
+  result = result.replace(/[+/=]/gi, 'z')
   return result
 }
 

@@ -1,5 +1,3 @@
-import { getNextCursor } from 'resolve-eventstore-base'
-
 // eslint-disable-next-line no-new-func
 const CommandError = Function()
 Object.setPrototypeOf(CommandError.prototype, Error.prototype)
@@ -38,7 +36,6 @@ const regularHandler = async (pool, aggregateInfo, event) => {
     ? pool.performanceTracer.getSegment()
     : null
   const subSegment = segment ? segment.addNewSubsegment('applyEvent') : null
-
   try {
     const aggregateName = pool.aggregateName
 
@@ -68,9 +65,10 @@ const regularHandler = async (pool, aggregateInfo, event) => {
       )
     }
 
-    aggregateInfo.cursor = await pool.getNextCursor(aggregateInfo.cursor, [
-      event
-    ])
+    aggregateInfo.cursor = await pool.eventstoreAdapter.getNextCursor(
+      aggregateInfo.cursor,
+      [event]
+    )
 
     aggregateInfo.minimalTimestamp = event.timestamp
   } catch (error) {
@@ -484,7 +482,6 @@ const createCommand = ({
     snapshotAdapter,
     isDisposed: false,
     performanceTracer,
-    getNextCursor,
     eventstoreAdapter
   }
 

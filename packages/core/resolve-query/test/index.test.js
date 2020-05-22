@@ -1,7 +1,7 @@
 import createQuery from '../src/index'
 
 let events,
-  eventStore,
+  eventstoreAdapter,
   snapshots,
   snapshotAdapter,
   viewModels,
@@ -47,15 +47,14 @@ for (const { describeName, prepare } of [
   describe(describeName, () => {
     beforeEach(() => {
       events = []
-      eventStore = {
-        loadEvents: async (filter, handler) => {
-          for (const event of events) {
-            await handler(event)
-          }
-        },
-        getNextCursor: prevCursor => {
-          return `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`
-        }
+      eventstoreAdapter = {
+        loadEvents: async ({ cursor: prevCursor }) => ({
+          events,
+          cursor: `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`
+        }),
+        getNextCursor: prevCursor =>
+          `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`,
+        getSecretsManager: async () => null
       }
 
       snapshots = new Map()
@@ -73,7 +72,7 @@ for (const { describeName, prepare } of [
     afterEach(() => {
       query = null
       events = null
-      eventStore = null
+      eventstoreAdapter = null
       snapshots = null
       snapshotAdapter = null
       viewModels = null
@@ -112,7 +111,8 @@ for (const { describeName, prepare } of [
             deserializeState: async serializedState => {
               return JSON.parse(serializedState)
             },
-            invariantHash: 'viewModelName-invariantHash'
+            invariantHash: 'viewModelName-invariantHash',
+            encryption: () => ({})
           }
         ]
       })
@@ -136,7 +136,7 @@ for (const { describeName, prepare } of [
             doUpdateRequest,
             readModels,
             viewModels,
-            eventStore,
+            eventstoreAdapter,
             performanceTracer
           })
         })
@@ -950,7 +950,7 @@ for (const { describeName, prepare } of [
             doUpdateRequest,
             readModels,
             viewModels,
-            eventStore,
+            eventstoreAdapter,
             performanceTracer
           })
         })
@@ -1668,7 +1668,7 @@ for (const { describeName, prepare } of [
           doUpdateRequest,
           readModels,
           viewModels,
-          eventStore,
+          eventstoreAdapter,
           performanceTracer
         })
 
@@ -1737,7 +1737,7 @@ for (const { describeName, prepare } of [
         }
       })
 
-      test('"read" should return { lastError, ... } when a read model is broken', async () => {
+      test('"read" should return { error, ... } when a read model is broken', async () => {
         const events = [
           {
             aggregateId: 'id1',
@@ -1755,8 +1755,8 @@ for (const { describeName, prepare } of [
           })
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
-          expect(error.lastError.message).toEqual('BROKEN')
-          expect(error.lastError).toBeInstanceOf(Error)
+          expect(error.error.message).toEqual('BROKEN')
+          expect(error.error).toBeInstanceOf(Error)
         }
 
         if (performanceTracer != null) {
@@ -1889,8 +1889,8 @@ for (const { describeName, prepare } of [
 
         expect(value).toEqual(7)
         expect(result).toEqual({
-          lastError: null,
-          lastEvent: {
+          error: null,
+          successEvent: {
             aggregateId: 'id1',
             aggregateVersion: 3,
             timestamp: 3,
@@ -1899,7 +1899,8 @@ for (const { describeName, prepare } of [
               value: 8
             }
           },
-          listenerId: 'readModelName'
+          failedEvent: null,
+          eventSubscriber: 'readModelName'
         })
 
         if (performanceTracer != null) {
@@ -2010,8 +2011,8 @@ for (const { describeName, prepare } of [
           await result
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
-          expect(error.lastError).toBeInstanceOf(Error)
-          expect(error.lastError.message).toEqual(
+          expect(error.error).toBeInstanceOf(Error)
+          expect(error.error.message).toEqual(
             'Read model "remoteReadModelName" updating had been interrupted'
           )
         }
@@ -2222,7 +2223,7 @@ for (const { describeName, prepare } of [
                 }
               ],
               viewModels,
-              eventStore,
+              eventstoreAdapter,
               performanceTracer
             }))
         ).toThrow(
@@ -2261,7 +2262,7 @@ for (const { describeName, prepare } of [
                 }
               ],
               viewModels,
-              eventStore,
+              eventstoreAdapter,
               performanceTracer
             }))
         ).toThrow('Duplicate name for read model: "readModelName"')
@@ -2303,7 +2304,7 @@ for (const { describeName, prepare } of [
                   invariantHash: 'viewModelName-invariantHash'
                 }
               ],
-              eventStore,
+              eventstoreAdapter,
               performanceTracer
             }))
         ).toThrow('Duplicate name for view model: "viewModelName"')
@@ -2338,7 +2339,7 @@ for (const { describeName, prepare } of [
               invariantHash: 'viewModelName-invariantHash'
             }
           ],
-          eventStore,
+          eventstoreAdapter,
           performanceTracer
         })
 

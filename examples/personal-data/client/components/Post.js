@@ -12,7 +12,7 @@ import { useCommand } from 'resolve-react-hooks'
 
 import UserContext from '../userContext'
 
-const Image = props => <img {...props} className="img-fluid" />
+const Image = props => <img {...props} className="img-fluid" alt="" />
 
 const Post = ({ post }) => {
   const { title, content, author, id: postId } = post

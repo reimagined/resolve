@@ -429,7 +429,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer read models "read" should return { lastError, ... } when a read model is broken: addAnnotation 1`] = `
+exports[`with performanceTracer read models "read" should return { error, ... } when a read model is broken: addAnnotation 1`] = `
 Array [
   Array [
     "readModelName",
@@ -474,22 +474,29 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer read models "read" should return { lastError, ... } when a read model is broken: addError 1`] = `
+exports[`with performanceTracer read models "read" should return { error, ... } when a read model is broken: addError 1`] = `
 Array [
   Array [
     [Error: BROKEN],
   ],
   Array [
     Object {
-      "lastError": [Error: BROKEN],
-      "lastEvent": null,
-      "listenerId": "brokenReadModelName",
+      "error": [Error: BROKEN],
+      "eventSubscriber": "brokenReadModelName",
+      "failedEvent": Object {
+        "aggregateId": "id1",
+        "aggregateVersion": 1,
+        "payload": Object {},
+        "timestamp": 1,
+        "type": "BROKEN",
+      },
+      "successEvent": null,
     },
   ],
 ]
 `;
 
-exports[`with performanceTracer read models "read" should return { lastError, ... } when a read model is broken: addNewSubsegment 1`] = `
+exports[`with performanceTracer read models "read" should return { error, ... } when a read model is broken: addNewSubsegment 1`] = `
 Array [
   Array [
     "updateByEvents",
@@ -506,7 +513,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer read models "read" should return { lastError, ... } when a read model is broken: close 1`] = `
+exports[`with performanceTracer read models "read" should return { error, ... } when a read model is broken: close 1`] = `
 Array [
   Array [],
   Array [],
@@ -515,7 +522,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer read models "read" should return { lastError, ... } when a read model is broken: getSegment 1`] = `
+exports[`with performanceTracer read models "read" should return { error, ... } when a read model is broken: getSegment 1`] = `
 Array [
   Array [],
   Array [],
@@ -1208,8 +1215,19 @@ Array [
   ],
   Array [
     Object {
-      "lastError": [Error: Read model "remoteReadModelName" updating had been interrupted],
-      "lastEvent": Object {
+      "error": [Error: Read model "remoteReadModelName" updating had been interrupted],
+      "eventSubscriber": "remoteReadModelName",
+      "failedEvent": Object {
+        "aggregateId": "id",
+        "aggregateVersion": 2,
+        "payload": Object {
+          "key": 3,
+          "value": 4,
+        },
+        "timestamp": 2,
+        "type": "SET",
+      },
+      "successEvent": Object {
         "aggregateId": "id",
         "aggregateVersion": 1,
         "payload": Object {
@@ -1219,7 +1237,6 @@ Array [
         "timestamp": 1,
         "type": "SET",
       },
-      "listenerId": "remoteReadModelName",
     },
   ],
 ]
@@ -1493,10 +1510,10 @@ Array [
 exports[`with performanceTracer view models with snapshot adapter "read" should raise error when interrupted: addError 1`] = `
 Array [
   Array [
-    [Error: View model "viewModelName" build has been interrupted],
+    [Error: View model "viewModelName" building has been interrupted],
   ],
   Array [
-    [Error: View model "viewModelName" build has been interrupted],
+    [Error: View model "viewModelName" building has been interrupted],
   ],
 ]
 `;
@@ -2605,10 +2622,10 @@ Array [
 exports[`with performanceTracer view models without snapshot adapter "read" should raise error when interrupted: addError 1`] = `
 Array [
   Array [
-    [Error: View model "viewModelName" build has been interrupted],
+    [Error: View model "viewModelName" building has been interrupted],
   ],
   Array [
-    [Error: View model "viewModelName" build has been interrupted],
+    [Error: View model "viewModelName" building has been interrupted],
   ],
 ]
 `;
