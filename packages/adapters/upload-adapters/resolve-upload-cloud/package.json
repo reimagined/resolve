@@ -30,8 +30,8 @@
     "mime-types": "^2.1.26"
   },
   "devDependencies": {
-    "aws-sdk": "2.587.0",
-    "jest": "25.1.0"
+    "aws-sdk": "2.631.0",
+    "jest": "26.0.1"
   },
   "peerDependencies": {
     "aws-sdk": "*"
