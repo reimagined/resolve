@@ -1,82 +1,53 @@
-import SQLite from 'sqlite'
-import fs from 'fs'
-import os from 'os'
-import tmp from 'tmp'
+import {
+  DeliveryStrategy,
+  NotificationStatus,
+  PrivateOperationType,
+  SubscriptionStatus,
+  LazinessStrategy,
+  ConsumerMethod,
+  QueueStrategy
+} from '../src/publisher-server/constants'
 
-import connectDatabase from '../src/publisher-server/connect-database'
+// broker
+import subscribe from '../src/publisher-server/broker/subscribe'
+import unsubscribe from '../src/publisher-server/broker/unsubscribe'
+import resubscribe from '../src/publisher-server/broker/resubscribe'
+import acknowledge from '../src/publisher-server/broker/acknowledge'
+import publish from '../src/publisher-server/broker/publish'
+import status from '../src/publisher-server/broker/status'
+import resume from '../src/publisher-server/broker/resume'
+import pause from '../src/publisher-server/broker/pause'
+import reset from '../src/publisher-server/broker/reset'
+import read from '../src/publisher-server/broker/read'
+
+// core
+import acknowledgeBatch from '../src/publisher-server/core/acknowledge-batch'
 import finalizeAndReportBatch from '../src/publisher-server/core/finalize-and-report-batch'
+import generateGuid from '../src/publisher-server/core/generate-guid'
+import invokeConsumer from '../src/publisher-server/core/invoke-consumer'
+import invokeOperation from '../src/publisher-server/core/invoke-operation'
+import parseSubscription from '../src/publisher-server/core/parse-subscription'
 import pullNotificationsAsBatchForSubscriber from '../src/publisher-server/core/pull-notifications-as-batch-for-subscriber'
 import pushNotificationAndGetSubscriptions from '../src/publisher-server/core/push-notification-and-get-subscriptions'
-import manageSubscription from '../src/publisher-server/core/manage-subscription'
-import getSubscriberOptions from '../src/publisher-server/core/get-subscriber-options'
 import requestTimeout from '../src/publisher-server/core/request-timeout'
-import ensureOrResetSubscription from '../src/publisher-server/core/ensure-or-reset-subscription'
-import deliverBatchForSubscriber from '../src/publisher-server/core/deliver-batch-for-subscriber'
-import acknowledgeBatch from '../src/publisher-server/core/acknowledge-batch'
-import * as constants from '../src/publisher-server/constants'
+import resumeSubscriber from '../src/publisher-server/core/resume-subscriber'
+import serializeError from '../src/publisher-server/core/serialize-error'
+
+jest.mock('../src/publisher-server/core/invoke-consumer', () => jest.fn())
+jest.mock('../src/publisher-server/core/invoke-operation', () => jest.fn())
+jest.mock('../src/publisher-server/core/get-next-cursor', () =>
+  jest.fn(() => 'nextCursor')
+)
 
 const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
-
 const escapeStr = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
-describe('finalize and report batch', () => {
-  let pool = null
-  beforeEach(() => {
-    pool = {
-      database: {
-        escapeId,
-        escapeStr,
-        runQuery: jest.fn(),
-        runRawQuery: jest.fn()
-      },
-      serializeError: jest.fn(),
-      pushNotificationAndGetSubscriptions: jest.fn(),
-      pullNotificationsAsBatchForSubscriber: jest.fn(),
-      multiplexAsync: jest.fn()
-    }
-  })
+const clearMocks = () => {
+  invokeConsumer.mockClear()
+  invokeOperation.mockClear()
+}
 
-  test('should call function with status "deliver"', async () => {
-    await finalizeAndReportBatch(
-      pool,
-      {
-        batchId: 'batchId',
-        subscriptionId: 'subscriptionId',
-        eventSubscriber: 'eventSubscriber'
-      },
-      constants.STATUS_DELIVER,
-      {
-        successEvent: {}
-      }
-    )
-
-    expect(pool.database.runQuery).toMatchSnapshot()
-    expect(pool.database.runRawQuery).toMatchSnapshot()
-    expect(pool.pushNotificationAndGetSubscriptions).toHaveBeenCalled()
-  })
-
-  test('should call function with status "skip"', async () => {
-    await finalizeAndReportBatch(
-      pool,
-      {
-        batchId: 'batchId',
-        subscriptionId: 'subscriptionId',
-        eventSubscriber: 'eventSubscriber'
-      },
-      constants.STATUS_SKIP,
-      {
-        successEvent: {}
-      }
-    )
-
-    expect(pool.database.runQuery).toMatchSnapshot()
-    expect(pool.database.runRawQuery).toMatchSnapshot()
-    expect(pool.pushNotificationAndGetSubscriptions).not.toHaveBeenCalled()
-  })
-})
-
-describe('pull notifications as batch for subscriber', () => {
-  let pool = null
+describe('Broker operation', () => {
   let DateNow = null
   let MathRandom = null
   beforeAll(() => {
@@ -89,570 +60,565 @@ describe('pull notifications as batch for subscriber', () => {
     global.Date.now = DateNow
     global.Math.random = MathRandom
   })
-  beforeEach(() => {
-    pool = {
-      database: {
-        runRawQuery: jest.fn(),
-        runQuery: jest.fn(),
-        escapeStr,
-        escapeId
-      },
-      deliverBatchForSubscriber: jest.fn()
+
+  afterEach(() => {
+    clearMocks()
+  })
+
+  test('acknowledge', async () => {
+    const pool = {
+      invokeOperation
     }
-  })
-
-  test('should affected notifications is null', async () => {
-    await pullNotificationsAsBatchForSubscriber(pool, 'subscriptionId')
-
-    expect(pool.database.runQuery).toMatchSnapshot()
-    expect(pool.database.runRawQuery).toMatchSnapshot()
-    expect(pool.deliverBatchForSubscriber).not.toHaveBeenCalled()
-  })
-
-  test('should affected notifications not null', async () => {
-    pool.database.runQuery = jest.fn(() => [''])
-    await pullNotificationsAsBatchForSubscriber(pool, 'subscriptionId')
-
-    expect(pool.database.runQuery).toMatchSnapshot()
-    expect(pool.database.runRawQuery).toMatchSnapshot()
-    expect(pool.deliverBatchForSubscriber).toHaveBeenCalled()
-  })
-})
-
-describe('push notification and get subscriptions', () => {
-  let pool = null
-  let DateNow = null
-  let MathRandom = null
-  beforeAll(() => {
-    DateNow = global.Date.now
-    global.Date.now = jest.fn(() => 1)
-    MathRandom = global.Math.random
-    global.Math.random = jest.fn(() => 2)
-  })
-  afterAll(() => {
-    global.Date.now = DateNow
-    global.Math.random = MathRandom
-  })
-  beforeEach(() => {
-    pool = {
-      database: {
-        runRawQuery: jest.fn(),
-        runQuery: jest.fn(() => [
-          {
-            subscriptionId: 'subscriptionId'
-          }
-        ]),
-        escapeStr,
-        escapeId,
-        encodeJsonPath: jest.fn(str => str)
-      }
+    const payload = {
+      batchId: 'batchId',
+      result: {}
     }
-  })
 
-  test('should execute with "event" mode', async () => {
-    await pushNotificationAndGetSubscriptions(
-      pool,
-      constants.NOTIFICATION_EVENT_SYMBOL,
-      {
-        type: 'type',
-        aggregateId: 'aggregateId',
-        aggregateVersion: 'aggregateVersion'
+    await acknowledge(pool, payload)
+
+    expect(invokeOperation).toHaveBeenCalledWith(pool, LazinessStrategy.EAGER, {
+      type: PrivateOperationType.ACKNOWLEDGE_BATCH,
+      payload: {
+        ...payload
       }
-    )
-
-    expect(pool.database.runQuery).toMatchSnapshot()
-    expect(pool.database.runRawQuery).toMatchSnapshot()
-    expect(pool.eventStore.saveEvent).toHaveBeenCalledWith({
-      type: 'type',
-      aggregateId: 'aggregateId',
-      aggregateVersion: 'aggregateVersion'
     })
   })
 
-  test('should execute with "update" mode', async () => {
-    await pushNotificationAndGetSubscriptions(
-      pool,
-      constants.NOTIFICATION_UPDATE_SYMBOL,
-      'eventSubscriber'
-    )
-
-    expect(pool.database.runQuery).toMatchSnapshot()
-    expect(pool.database.runRawQuery).toMatchSnapshot()
-    expect(pool.eventStore.saveEvent).not.toHaveBeenCalled()
-  })
-})
-
-describe('manage subscription', () => {
-  let pool = null
-  beforeEach(() => {
-    pool = {
-      database: {
-        escapeId,
-        escapeStr,
-        runQuery: jest.fn(() => [{ subscriptionId: 'subscriptionId' }]),
-        runRawQuery: jest.fn()
-      },
-      pushNotificationAndGetSubscriptions: jest.fn(() => ['']),
-      pullNotificationsAsBatchForSubscriber: jest.fn(),
-      multiplexAsync: jest.fn()
-    }
-  })
-
-  test('should execute with "resume" mode', async () => {
-    await manageSubscription(pool, constants.RESUME_SYMBOL, 'eventSubscriber')
-
-    expect(pool.database.runQuery).toMatchSnapshot()
-    expect(pool.database.runRawQuery).toMatchSnapshot()
-    expect(pool.multiplexAsync).toHaveBeenCalled()
-  })
-
-  test('should execute with "pause" mode', async () => {
-    await manageSubscription(pool, constants.PAUSE_SYMBOL, 'eventSubscriber')
-
-    expect(pool.database.runQuery).toMatchSnapshot()
-    expect(pool.database.runRawQuery).toMatchSnapshot()
-    expect(pool.multiplexAsync).not.toHaveBeenCalled()
-  })
-})
-
-describe('get subscriber options', () => {
-  let pool = null
-  beforeEach(() => {
-    pool = {
-      database: {
-        escapeId,
-        escapeStr,
-        runQuery: jest.fn(() => [
-          {
-            eventSubscriber: 'eventSubscriber',
-            subscriptionId: 'subscriptionId'
-          }
-        ]),
-        decodeJsonPath: jest.fn(str => str)
-      }
-    }
-  })
-
-  test('should execute with "fetch" mode', async () => {
-    const subscriberOptions = await getSubscriberOptions(
-      pool,
-      constants.SUBSCRIBER_OPTIONS_FETCH_SYMBOL,
-      'eventSubscriber',
-      ['eventSubscriber']
-    )
-
-    expect(pool.database.runQuery).toMatchSnapshot()
-    expect(subscriberOptions).toEqual({
-      eventSubscriber: 'eventSubscriber'
-    })
-  })
-
-  test('should execute with "parse" mode', async () => {
-    const subscriberOptions = await getSubscriberOptions(
-      pool,
-      constants.SUBSCRIBER_OPTIONS_PARSE_SYMBOL,
-      {
-        eventSubscriber: 'eventSubscriber',
-        subscriptionId: 'subscriptionId'
-      }
-    )
-
-    expect(pool.database.runQuery).not.toHaveBeenCalled()
-    expect(subscriberOptions).toEqual({
-      eventSubscriber: 'eventSubscriber',
-      subscriptionId: 'subscriptionId'
-    })
-  })
-})
-
-describe('request timeout', () => {
-  let pool = null
-  let SetTimeout = null
-  beforeAll(() => {
-    SetTimeout = global.setTimeout
-    global.setTimeout = jest.fn().mockImplementation(promise => {
-      promise()
-    })
-  })
-  afterAll(() => {
-    global.setTimeout = SetTimeout
-  })
-  beforeEach(() => {
-    pool = {
-      database: {
-        escapeId,
-        escapeStr,
-        runQuery: jest.fn(),
-        runRawQuery: jest.fn()
-      },
-      consumer: {
-        commitXATransaction: jest.fn(),
-        rollbackXATransaction: jest.fn()
-      },
-      finalizeAndReportBatch: jest.fn(),
-      acknowledgeBatch: jest.fn()
-    }
-  })
-
-  test('should execute with "active-xa" delivery strategy', async () => {
-    pool.database.runQuery.mockResolvedValueOnce([
-      {
-        deliveryStrategy: constants.DELIVERY_STRATEGY_ACTIVE_XA,
-        xaTransactionId: 'xaTransactionId',
-        eventSubscriber: 'eventSubscriber',
-        status: 'status'
-      }
-    ])
-
-    pool.consumer.commitXATransaction.mockResolvedValueOnce(1)
-
-    pool.database.runQuery.mockResolvedValueOnce([{}])
-
-    await requestTimeout(pool, 'batchId')
-
-    expect(pool.database.runQuery).toMatchSnapshot()
-    expect(pool.database.runRawQuery).toMatchSnapshot()
-    expect(pool.acknowledgeBatch).toHaveBeenCalledWith(pool, 'batchId', {
-      successEvent: {}
-    })
-  })
-
-  test('should execute with "passive" delivery strategy', async () => {
-    pool.database.runQuery.mockResolvedValueOnce([
-      {
-        deliveryStrategy: constants.DELIVERY_STRATEGY_PASSIVE,
-        xaTransactionId: 'xaTransactionId',
-        eventSubscriber: 'eventSubscriber',
-        status: 'status'
-      }
-    ])
-
-    await expect(requestTimeout(pool, 'batchId')).rejects.toThrowError(
-      'Request timeout should not be activated for passive mode'
-    )
-
-    expect(pool.database.runQuery).toMatchSnapshot()
-    expect(pool.database.runRawQuery).not.toHaveBeenCalled()
-    expect(pool.acknowledgeBatch).not.toHaveBeenCalled()
-  })
-})
-
-describe('ensure or reset subscription', () => {
-  let pool = null
-  let DateNow = null
-  let MathRandom = null
-  beforeAll(() => {
-    DateNow = global.Date.now
-    global.Date.now = jest.fn(() => 1)
-    MathRandom = global.Math.random
-    global.Math.random = jest.fn(() => 2)
-  })
-  afterAll(() => {
-    global.Date.now = DateNow
-    global.Math.random = MathRandom
-  })
-  beforeEach(() => {
-    pool = {
+  test('pause', async () => {
+    const pool = {
       database: {
         runQuery: jest.fn(() => [
           {
+            status: SubscriptionStatus.DELIVER,
             subscriptionId: 'subscriptionId'
           }
         ]),
         runRawQuery: jest.fn(),
-        escapeId,
-        escapeStr,
-        encodeJsonPath: jest.fn(str => str)
-      }
-    }
-  })
-
-  test('should execute with "unsubscribe" mode', async () => {
-    await ensureOrResetSubscription(
-      pool,
-      constants.UNSUBSCRIBE_SYMBOL,
-      'eventSubscriber'
-    )
-
-    expect(pool.database.runQuery).toMatchSnapshot()
-    expect(pool.database.runRawQuery).toMatchSnapshot()
-  })
-
-  test('should execute with "subscribe" mode', async () => {
-    const subscriptionId = await ensureOrResetSubscription(
-      pool,
-      constants.SUBSCRIBE_SYMBOL,
-      'eventSubscriber',
-      {
-        deliveryStrategy: constants.DELIVERY_STRATEGY_PASSIVE,
-        eventTypes: ['eventType'],
-        aggregateIds: ['aggregateId']
-      }
-    )
-
-    expect(pool.database.runQuery).toMatchSnapshot()
-    expect(pool.database.runRawQuery).toMatchSnapshot()
-    expect(subscriptionId).toEqual('subscriptionId')
-  })
-
-  test('should execute with "resubscribe" mode', async () => {
-    const subscriptionId = await ensureOrResetSubscription(
-      pool,
-      constants.RESUBSCRIBE_SYMBOL,
-      'eventSubscriber',
-      {
-        deliveryStrategy: constants.DELIVERY_STRATEGY_PASSIVE,
-        eventTypes: ['eventType'],
-        aggregateIds: ['aggregateId']
-      }
-    )
-
-    expect(pool.database.runQuery).toMatchSnapshot()
-    expect(pool.database.runRawQuery).toMatchSnapshot()
-    expect(subscriptionId).toEqual('eventSubscriber12')
-  })
-})
-
-describe('deliver batch for subscriber', () => {
-  let pool = null
-  const subscriptionDescription = {
-    batchId: 'batchId'
-  }
-  const events = [
-    {
-      threadId: 'threadId',
-      threadCounter: 1,
-      aggregateId: 'aggregateId',
-      aggregateVersion: 1,
-      timestamp: 1
-    }
-  ]
-  beforeEach(() => {
-    pool = {
-      database: { runRawQuery: jest.fn(), escapeId, escapeStr },
-      getSubscriberOptions: jest.fn(),
-      requestTimeout: jest.fn(),
-      finalizeAndReportBatch: jest.fn(),
-      serializeError: jest.fn(),
-      multiplexAsync: jest.fn(),
-      consumer: {
-        sendEvents: jest.fn(),
-        beginXATransaction: jest.fn(() => 'transactionId')
-      }
-    }
-  })
-
-  test('should execute with "passive" delivery strategy', async () => {
-    pool.getSubscriberOptions.mockResolvedValueOnce({
-      deliveryStrategy: constants.DELIVERY_STRATEGY_PASSIVE,
-      eventSubscriber: 'eventSubscriber'
-    })
-
-    await deliverBatchForSubscriber(pool, subscriptionDescription)
-
-    expect(pool.multiplexAsync).toHaveBeenCalledWith(
-      expect.any(Function),
-      'eventSubscriber',
-      {
-        batchId: 'batchId',
-        events: null,
-        properties: null
-      }
-    )
-    expect(pool.finalizeAndReportBatch).toHaveBeenCalledWith(
-      pool,
-      subscriptionDescription,
-      constants.STATUS_DELIVER
-    )
-  })
-
-  test('should event based run', async () => {
-    pool.getSubscriberOptions.mockResolvedValueOnce({
-      subscriptionId: 'subscriptionId',
-      deliveryStrategy: constants.DELIVERY_STRATEGY_ACTIVE_XA,
-      eventSubscriber: 'eventSubscriber',
-      successEvent: {}
-    })
-
-    await deliverBatchForSubscriber(pool, subscriptionDescription)
-
-    expect(pool.consumer.beginXATransaction).toHaveBeenCalledWith(
-      'batchId',
-      'eventSubscriber'
-    )
-    expect(pool.database.runRawQuery).toMatchSnapshot()
-    expect(pool.multiplexAsync).toHaveBeenNthCalledWith(
-      1,
-      expect.any(Function),
-      'eventSubscriber',
-      {
-        batchId: 'batchId',
-        transactionId: 'transactionId',
-        events,
-        properties: null
-      }
-    )
-    expect(pool.multiplexAsync).toHaveBeenNthCalledWith(
-      2,
-      expect.any(Function),
-      pool,
-      'batchId'
-    )
-  })
-
-  test('should initial event run', async () => {
-    pool.getSubscriberOptions.mockResolvedValueOnce({
-      subscriptionId: 'subscriptionId',
-      deliveryStrategy: constants.DELIVERY_STRATEGY_ACTIVE_XA,
-      eventSubscriber: 'eventSubscriber'
-    })
-
-    await deliverBatchForSubscriber(pool, subscriptionDescription)
-
-    expect(pool.consumer.beginXATransaction).not.toHaveBeenCalled()
-    expect(pool.database.runRawQuery).not.toHaveBeenCalled()
-    expect(pool.multiplexAsync).toHaveBeenNthCalledWith(
-      1,
-      expect.any(Function),
-      'eventSubscriber',
-      {
-        batchId: 'batchId',
-        transactionId: null,
-        events: [
-          {
-            type: 'Init',
-            timestamp: 1
-          }
-        ],
-        properties: null
-      }
-    )
-    expect(pool.multiplexAsync).toHaveBeenNthCalledWith(
-      2,
-      expect.any(Function),
-      pool,
-      'batchId'
-    )
-  })
-})
-
-describe('acknowledge batch', () => {
-  let pool = null
-  const subscriptionDescription = {
-    cursor: 'cursor',
-    xaTransactionId: 'xaTransactionId',
-    status: 'status',
-    deliveryStrategy: constants.DELIVERY_STRATEGY_ACTIVE_XA,
-    eventSubscriber: 'eventSubscriber'
-  }
-  beforeEach(() => {
-    pool = {
-      database: {
-        runRawQuery: jest.fn(),
-        runQuery: jest.fn(),
         escapeId,
         escapeStr
       },
-      getNextCursor: jest.fn(() => 'nextCursor'),
-      finalizeAndReportBatch: jest.fn(),
-      consumer: {
-        commitXATransaction: jest.fn(),
-        rollbackXATransaction: jest.fn()
+      parseSubscription
+    }
+    const payload = {
+      eventSubscriber: 'eventSubscriber'
+    }
+
+    const result = await pause(pool, payload)
+
+    expect(result).toEqual('subscriptionId')
+    expect(pool.database.runRawQuery).toMatchSnapshot()
+    expect(pool.database.runQuery).toMatchSnapshot()
+  })
+
+  test('publish', async () => {
+    const pool = {
+      invokeOperation,
+      invokeConsumer
+    }
+    const payload = {
+      event: {
+        type: 'busEvent'
       }
     }
+
+    await publish(pool, payload)
+
+    expect(invokeConsumer).toHaveBeenCalledWith(
+      pool,
+      ConsumerMethod.SaveEvent,
+      {
+        event: payload.event
+      }
+    )
+    expect(invokeOperation).toHaveBeenCalledWith(pool, LazinessStrategy.EAGER, {
+      type: PrivateOperationType.PUSH_NOTIFICATIONS,
+      payload
+    })
   })
 
-  test('should commit transaction', async () => {
-    pool.database.runQuery.mockResolvedValueOnce([
-      {
-        aggregateIdAndVersion: 'aggregateId:aggregateVersion'
+  test('read', async () => {
+    const pool = {
+      invokeConsumer
+    }
+    const payload = {
+      eventFilter: {
+        limit: 1
       }
-    ])
-    pool.database.runQuery.mockResolvedValueOnce([subscriptionDescription])
+    }
 
-    await acknowledgeBatch(pool, 'batchId', {
-      successEvent: {
-        aggregateId: 'aggregateId',
-        aggregateVersion: 'aggregateVersion'
+    const invokeResult = {
+      cursor: 'cursor',
+      events: [
+        {
+          type: 'busEvent'
+        }
+      ]
+    }
+    invokeConsumer.mockResolvedValueOnce(invokeResult)
+
+    const result = await read(pool, payload)
+
+    expect(invokeConsumer).toHaveBeenCalledWith(
+      pool,
+      ConsumerMethod.LoadEvents,
+      payload.eventFilter
+    )
+    expect(result).toEqual(invokeResult)
+  })
+
+  test('reset', async () => {
+    const resultRunQuery = {
+      subscriptionId: 'subscriptionId',
+      deliveryStrategy: DeliveryStrategy.ACTIVE_XA,
+      queueStrategy: QueueStrategy.NONE,
+      eventTypes: JSON.stringify({ eventTypes: true }),
+      aggregateIds: JSON.stringify({ aggregateIds: true })
+    }
+    const pool = {
+      database: {
+        runQuery: jest.fn(() => [resultRunQuery]),
+        runRawQuery: jest.fn(),
+        escapeStr,
+        escapeId,
+        encodeJsonPath: jest.fn(str => str)
       },
-      failedEvent: null,
-      error: null
+      parseSubscription,
+      invokeConsumer,
+      generateGuid
+    }
+    const payload = {
+      eventSubscriber: 'eventSubscriber'
+    }
+
+    const result = await reset(pool, payload)
+
+    expect(result).toEqual('subscriptionId')
+    expect(pool.database.runQuery).toMatchSnapshot()
+    expect(pool.database.runRawQuery).toMatchSnapshot()
+    expect(invokeConsumer).toHaveBeenCalledWith(pool, ConsumerMethod.Drop, {
+      eventSubscriber: payload.eventSubscriber
     })
+  })
+
+  test('resubscribe', async () => {
+    const pool = {
+      database: {
+        runQuery: jest.fn(() => [{ subscriptionId: 'subscriptionId' }]),
+        runRawQuery: jest.fn(),
+        escapeStr,
+        escapeId,
+        encodeJsonPath: jest.fn(str => str)
+      },
+      parseSubscription,
+      generateGuid
+    }
+    const payload = {
+      eventSubscriber: 'eventSubscriber',
+      subscriptionOptions: {
+        deliveryStrategy: DeliveryStrategy.ACTIVE_XA
+      }
+    }
+
+    const result = await resubscribe(pool, payload)
+
+    expect(result).toEqual('subscriptionId')
+    expect(pool.database.runQuery).toMatchSnapshot()
+    expect(pool.database.runRawQuery).toMatchSnapshot()
+  })
+
+  test('resume', async () => {
+    const pool = {
+      database: {
+        runQuery: jest.fn(() => [
+          {
+            status: SubscriptionStatus.DELIVER,
+            subscriptionId: 'subscriptionId'
+          }
+        ]),
+        escapeStr,
+        escapeId
+      },
+      parseSubscription,
+      invokeOperation
+    }
+    const payload = {
+      eventSubscriber: 'eventSubscriber'
+    }
+
+    const result = await resume(pool, payload)
+
+    expect(result).toEqual('subscriptionId')
+    expect(pool.database.runQuery).toMatchSnapshot()
+    expect(invokeOperation).toHaveBeenCalledWith(pool, LazinessStrategy.EAGER, {
+      type: PrivateOperationType.RESUME_SUBSCRIBER,
+      payload
+    })
+  })
+
+  test('status', async () => {
+    const resultRunQuery = {
+      subscriptionId: 'subscriptionId',
+      batchId: 'batchId',
+      eventSubscriber: 'eventSubscriber',
+      deliveryStrategy: 'deliveryStrategy',
+      scopeName: 'scopeName',
+      status: 'status',
+      maxParallel: 1,
+      successEvent: JSON.stringify({
+        type: 'busEvent'
+      }),
+      failedEvent: null,
+      errors: null,
+      cursor: JSON.stringify({ cursor: 'cursor' })
+    }
+    const pool = {
+      database: {
+        runQuery: jest.fn(() => [resultRunQuery]),
+        escapeStr,
+        escapeId
+      },
+      parseSubscription
+    }
+    const payload = {
+      eventSubscriber: 'eventSubscriber'
+    }
+
+    const result = await status(pool, payload)
+
+    expect(result).toEqual({
+      ...resultRunQuery,
+      successEvent: {
+        type: 'busEvent'
+      },
+      cursor: { cursor: 'cursor' }
+    })
+    expect(pool.database.runQuery).toMatchSnapshot()
+  })
+
+  test('subscribe', async () => {
+    const pool = {
+      database: {
+        runQuery: jest.fn(() => [
+          {
+            subscriptionId: 'subscriptionId'
+          }
+        ]),
+        runRawQuery: jest.fn(),
+        escapeStr,
+        escapeId,
+        encodeJsonPath: jest.fn(str => str)
+      },
+      parseSubscription,
+      generateGuid
+    }
+    const payload = {
+      eventSubscriber: 'eventSubscriber',
+      subscriptionOptions: {
+        deliveryStrategy: DeliveryStrategy.ACTIVE_XA
+      }
+    }
+
+    const result = await subscribe(pool, payload)
+
+    expect(result).toEqual('subscriptionId')
+    expect(pool.database.runQuery).toMatchSnapshot()
+    expect(pool.database.runRawQuery).toMatchSnapshot()
+  })
+
+  test('unsubscribe', async () => {
+    const pool = {
+      database: {
+        runRawQuery: jest.fn(),
+        escapeStr,
+        escapeId
+      }
+    }
+    const payload = {
+      eventSubscriber: 'eventSubscriber'
+    }
+
+    await unsubscribe(pool, payload)
 
     expect(pool.database.runRawQuery).toMatchSnapshot()
-    expect(pool.consumer.commitXATransaction).toHaveBeenCalledWith(
-      'eventSubscriber',
-      {
-        xaTransactionId: 'xaTransactionId',
-        batchId: 'batchId'
-      }
-    )
-    expect(pool.finalizeAndReportBatch).toHaveBeenCalledWith(
-      pool,
-      subscriptionDescription,
-      constants.STATUS_DELIVER,
-      {
-        cursor: 'nextCursor',
-        successEvent: {
-          aggregateId: 'aggregateId',
-          aggregateVersion: 'aggregateVersion'
-        },
-        failedEvent: null,
-        error: null
-      }
-    )
-  })
-
-  test('should rollback transaction', async () => {
-    subscriptionDescription.status = constants.STATUS_XA_PREPARE_NOTIFICATION
-    pool.database.runQuery.mockResolvedValueOnce([
-      {
-        aggregateIdAndVersion: 'aggregateId:aggregateVersion'
-      }
-    ])
-    pool.database.runQuery.mockResolvedValueOnce([subscriptionDescription])
-
-    await acknowledgeBatch(pool, 'batchId', {
-      successEvent: {
-        aggregateId: 'aggregateId',
-        aggregateVersion: 'aggregateVersion'
-      },
-      failedEvent: null,
-      error: null
-    })
-
-    expect(pool.database.runRawQuery).not.toHaveBeenCalled()
-    expect(pool.consumer.rollbackXATransaction).toHaveBeenCalledWith(
-      'eventSubscriber',
-      {
-        xaTransactionId: 'xaTransactionId',
-        batchId: 'batchId'
-      }
-    )
-    expect(pool.finalizeAndReportBatch).toHaveBeenCalledWith(
-      pool,
-      subscriptionDescription,
-      constants.STATUS_ERROR,
-      {
-        error: new Error('Finalizing batch in XA session failed')
-      }
-    )
   })
 })
 
-test('should connect database', async () => {
-  const imports = { SQLite, fs, os, tmp }
-  const database = await connectDatabase(imports, {
-    databaseFile: ':memory:'
+describe('Core operation', () => {
+  let DateNow = null
+  let MathRandom = null
+  beforeAll(() => {
+    DateNow = global.Date.now
+    global.Date.now = jest.fn(() => 1)
+    MathRandom = global.Math.random
+    global.Math.random = jest.fn(() => 2)
+  })
+  afterAll(() => {
+    global.Date.now = DateNow
+    global.Math.random = MathRandom
+  })
+  afterEach(() => {
+    clearMocks()
   })
 
-  expect(database).toEqual({
-    runRawQuery: expect.any(Function),
-    runQuery: expect.any(Function),
-    dispose: expect.any(Function),
-    encodeJsonPath: expect.any(Function),
-    decodeJsonPath: expect.any(Function),
-    escapeId: expect.any(Function),
-    escapeStr: expect.any(Function)
+  test('push notification', async () => {
+    const pool = {
+      database: {
+        runQuery: jest.fn(() => [
+          {
+            subscriptionId: 'subscriptionId'
+          }
+        ]),
+        runRawQuery: jest.fn(),
+        escapeStr,
+        escapeId,
+        encodeJsonPath: jest.fn(str => str)
+      },
+      invokeOperation,
+      generateGuid
+    }
+    const payload = {
+      event: {
+        type: 'busEvent',
+        aggregateId: 'aggregateId',
+        aggregateVersion: 'aggregateVersion'
+      }
+    }
+
+    await pushNotificationAndGetSubscriptions(pool, payload)
+
+    expect(invokeOperation).toHaveBeenCalledWith(pool, LazinessStrategy.EAGER, {
+      type: PrivateOperationType.PULL_NOTIFICATIONS,
+      payload: {
+        subscriptionId: 'subscriptionId'
+      }
+    })
+    expect(pool.database.runQuery).toMatchSnapshot()
+    expect(pool.database.runRawQuery).toMatchSnapshot()
+  })
+
+  test('pull notifications', async () => {
+    const activeBatch = {
+      subscriptionId: 'subscriptionId',
+      batchId: 'batchId',
+      eventSubscriber: 'eventSubscriber'
+    }
+    const pool = {
+      database: {
+        runQuery: jest.fn(() => [activeBatch]),
+        runRawQuery: jest.fn(),
+        escapeStr,
+        escapeId
+      },
+      parseSubscription,
+      invokeOperation,
+      generateGuid
+    }
+    const payload = { subscriptionId: 'subscriptionId' }
+
+    await pullNotificationsAsBatchForSubscriber(pool, payload)
+
+    expect(invokeOperation).toHaveBeenCalledWith(pool, LazinessStrategy.EAGER, {
+      type: PrivateOperationType.DELIVER_BATCH,
+      payload: {
+        activeBatch: {
+          ...activeBatch,
+          batchId: expect.any(String)
+        }
+      }
+    })
+    expect(pool.database.runQuery).toMatchSnapshot()
+    expect(pool.database.runRawQuery).toMatchSnapshot()
+  })
+
+  test('acknowledge batch', async () => {
+    const result = {
+      successEvent: {
+        aggregateId: 'aggregateId',
+        aggregateVersion: 'aggregateVersion'
+      },
+      failedEvent: null,
+      error: null
+    }
+    const pool = {
+      database: {
+        runQuery: jest.fn(),
+        runRawQuery: jest.fn(),
+        escapeStr,
+        escapeId
+      },
+      parseSubscription,
+      getNextCursor: jest.fn(() => 'nextCursor'),
+      invokeConsumer,
+      invokeOperation,
+      serializeError
+    }
+    const payload = { batchId: 'batchId', result }
+
+    const activeBatch = {
+      subscriptionId: 'subscriptionId',
+      batchId: 'batchId',
+      eventSubscriber: 'eventSubscriber'
+    }
+
+    pool.database.runQuery.mockResolvedValueOnce([
+      {
+        aggregateIdAndVersion: 'aggregateId:aggregateVersion'
+      }
+    ])
+
+    pool.database.runQuery.mockResolvedValueOnce([
+      {
+        ...activeBatch,
+        deliveryStrategy: DeliveryStrategy.ACTIVE_XA,
+        cursor: JSON.stringify({ cursor: 'cursor' }),
+        xaTransactionId: JSON.stringify({ xaTransactionId: 'xaTransactionId' }),
+        runStatus: NotificationStatus.PROCESSING
+      }
+    ])
+
+    pool.database.runQuery.mockResolvedValueOnce([{}])
+
+    await acknowledgeBatch(pool, payload)
+
+    expect(invokeOperation).toHaveBeenCalledWith(pool, LazinessStrategy.EAGER, {
+      type: PrivateOperationType.FINALIZE_BATCH,
+      payload: {
+        activeBatch,
+        result: {
+          ...result,
+          cursor: 'nextCursor'
+        }
+      }
+    })
+    expect(pool.database.runQuery).toMatchSnapshot()
+    expect(pool.database.runRawQuery).toMatchSnapshot()
+  })
+
+  test('resume subscriber', async () => {
+    const pool = {
+      database: {
+        runQuery: jest.fn(() => [{ subscriptionId: 'subscriptionId' }]),
+        runRawQuery: jest.fn(),
+        escapeStr,
+        escapeId
+      },
+      invokeOperation,
+      generateGuid
+    }
+    const payload = {
+      eventSubscriber: 'eventSubscriber'
+    }
+
+    await resumeSubscriber(pool, payload)
+
+    expect(invokeOperation).toHaveBeenCalledWith(pool, LazinessStrategy.EAGER, {
+      type: PrivateOperationType.PULL_NOTIFICATIONS,
+      payload: {
+        subscriptionId: 'subscriptionId'
+      }
+    })
+    expect(pool.database.runQuery).toMatchSnapshot()
+    expect(pool.database.runRawQuery).toMatchSnapshot()
+  })
+
+  test('finalize batch', async () => {
+    const result = {
+      successEvent: {
+        aggregateId: 'aggregateId',
+        aggregateVersion: 'aggregateVersion'
+      },
+      failedEvent: null,
+      error: null
+    }
+    const activeBatch = {
+      subscriptionId: 'subscriptionId',
+      batchId: 'batchId',
+      eventSubscriber: 'eventSubscriber'
+    }
+    const pool = {
+      database: {
+        runQuery: jest.fn(() => [{ subscriptionId: 'subscriptionId' }]),
+        runRawQuery: jest.fn(),
+        escapeStr,
+        escapeId
+      },
+      invokeOperation
+    }
+    const payload = {
+      activeBatch,
+      result
+    }
+
+    await finalizeAndReportBatch(pool, payload)
+
+    expect(invokeOperation).toHaveBeenCalledWith(pool, LazinessStrategy.EAGER, {
+      type: PrivateOperationType.RESUME_SUBSCRIBER,
+      payload: {
+        eventSubscriber: 'eventSubscriber'
+      }
+    })
+    expect(pool.database.runQuery).toMatchSnapshot()
+    expect(pool.database.runRawQuery).toMatchSnapshot()
+  })
+
+  test('request timeout', async () => {
+    const pool = {
+      database: {
+        runQuery: jest.fn(),
+        runRawQuery: jest.fn(),
+        escapeStr,
+        escapeId
+      },
+      parseSubscription,
+      invokeConsumer,
+      invokeOperation,
+      getNextCursor: jest.fn(() => 'nextCursor'),
+      serializeError
+    }
+    const payload = {
+      batchId: 'batchId'
+    }
+
+    const activeBatch = {
+      subscriptionId: 'subscriptionId',
+      batchId: 'batchId',
+      eventSubscriber: 'eventSubscriber'
+    }
+
+    pool.database.runQuery.mockResolvedValueOnce([
+      {
+        ...activeBatch,
+        deliveryStrategy: DeliveryStrategy.ACTIVE_XA,
+        cursor: JSON.stringify({ cursor: 'cursor' }),
+        xaTransactionId: JSON.stringify({ xaTransactionId: 'xaTransactionId' }),
+        runStatus: NotificationStatus.PROCESSING
+      }
+    ])
+
+    pool.database.runQuery.mockResolvedValueOnce([{}])
+
+    invokeConsumer.mockResolvedValueOnce('1')
+
+    const event = {
+      aggregateIdAndVersion: 'aggregateId:aggregateVersion'
+    }
+
+    pool.database.runQuery.mockResolvedValueOnce([event])
+
+    await requestTimeout(pool, payload)
+
+    expect(invokeOperation).toHaveBeenCalledWith(pool, LazinessStrategy.EAGER, {
+      type: PrivateOperationType.FINALIZE_BATCH,
+      payload: {
+        activeBatch,
+        result: {
+          error: null,
+          successEvent: event,
+          cursor: 'nextCursor'
+        }
+      }
+    })
+    expect(pool.database.runQuery).toMatchSnapshot()
+    expect(pool.database.runRawQuery).toMatchSnapshot()
   })
 })
