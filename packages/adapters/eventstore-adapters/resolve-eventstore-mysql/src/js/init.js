@@ -1,16 +1,17 @@
 import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
+import getLog from './get-log'
 
 const longStringSqlType =
   'VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL'
 const longNumberSqlType = 'BIGINT NOT NULL'
 const customObjectSqlType = 'JSON NULL'
 
-const init = async ({
-  tableName = 'default',
-  connection,
-  escapeId,
-  config
-}) => {
+const initEventStore = async ({ tableName, connection, escapeId, config }) => {
+  const log = getLog('initEventStore')
+
+  log.debug(`initializing events database tables`)
+  log.verbose(`tableName: ${tableName}`)
+
   const eventsTableNameAsId = escapeId(tableName)
   const threadsTableNameAsId = escapeId(`${tableName}-threads`)
 
@@ -49,7 +50,7 @@ const init = async ({
   } catch (error) {
     if (error != null && /Table.*? already exists$/i.test(error.message)) {
       throw new EventstoreResourceAlreadyExistError(
-        `Double-initialize eventstore-mysql adapter via "${config.database}" failed`
+        `duplicate initialization of the mysql adapter with same database "${config.database}" not allowed`
       )
     } else {
       throw error
@@ -57,4 +58,4 @@ const init = async ({
   }
 }
 
-export default init
+export default initEventStore
