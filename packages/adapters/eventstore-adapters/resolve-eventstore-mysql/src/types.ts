@@ -1,6 +1,7 @@
 type MySQLConnection = {
   execute: (sql: string) => Promise<never>
   query: (sql: string) => Promise<never>
+  end: () => Promise<never>
 }
 type MySQLLib = {
   createConnection: (options: any) => MySQLConnection
