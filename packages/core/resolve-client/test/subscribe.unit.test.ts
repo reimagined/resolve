@@ -11,16 +11,7 @@ const { doSubscribe, doUnsubscribe, dropSubscribeAdapterPromise } = subscribe
 
 jest.mock('../src/empty_subscribe_adapter')
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace NodeJS {
-    interface Global {
-      fetch?: Function
-    }
-  }
-}
-
-let mFetch
+let mFetch: any
 
 const mockInit = jest.fn()
 const mockSubscribe = jest.fn()
@@ -63,11 +54,11 @@ describe('subscribe', () => {
         Promise.resolve({ appId: 'application-id', url: 'http://options-url' }),
       text: (): Promise<string> => Promise.resolve('response')
     }))
-    global.fetch = mFetch
+    ; (global as any).fetch = mFetch
   })
 
   afterAll(() => {
-    global.fetch = undefined
+    ; (global as any).fetch = undefined
   })
 
   beforeEach(async () => {
@@ -267,11 +258,11 @@ describe('re-subscribe', () => {
         Promise.resolve({ appId: 'application-id', url: 'http://options-url' }),
       text: (): Promise<string> => Promise.resolve('response')
     }))
-    global.fetch = mFetch
+    ; (global as any).fetch = mFetch
   })
 
   afterAll(() => {
-    global.fetch = undefined
+    ; (global as any).fetch = undefined
     refreshSpy.mockRestore()
   })
 

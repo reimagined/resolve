@@ -6,15 +6,6 @@ import determineOrigin from '../src/determine_origin'
 import { getRootBasedUrl } from '../src/utils'
 import { GenericError, HttpError } from '../src/errors'
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace NodeJS {
-    interface Global {
-      fetch?: Function
-    }
-  }
-}
-
 jest.mock('../src/determine_origin', () => jest.fn((origin): string => origin))
 jest.mock('../src/utils', () => ({
   getRootBasedUrl: jest.fn(() => 'http://root-based.url')
@@ -39,11 +30,11 @@ const createMockContext = (): Context => ({
 })
 
 beforeAll(() => {
-  global.fetch = mFetch
+  ;(global as any).fetch = mFetch
 })
 
 afterAll(() => {
-  global.fetch = undefined
+  ;(global as any).fetch = undefined
 })
 
 let mockContext: Context
