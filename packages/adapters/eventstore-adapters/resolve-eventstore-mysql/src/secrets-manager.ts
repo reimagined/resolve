@@ -18,9 +18,9 @@ const getSecret = async (
   log.verbose(`selector: ${selector}`)
   log.verbose(`tableName: ${tableName}`)
 
-  const sql = `SELECT "secret" FROM ${escapeId(tableName)} WHERE id = ${escape(
-    selector
-  )}`
+  const sql = `SELECT \`secret\` FROM ${escapeId(
+    tableName
+  )} WHERE id = ${escape(selector)}`
 
   log.verbose(sql)
 
@@ -52,33 +52,36 @@ const setSecret = async (
 
   const tableId = escapeId(tableName)
 
+  // prettier-ignore
+  const query =
+     `START TRANSACTION;
+     
+      SELECT @idx := COALESCE(MAX(\`idx\`) + 1, 0) FROM ${tableId};
+      
+      INSERT INTO ${tableId}(
+       \`idx\`,
+       \`id\`, 
+       \`secret\`
+       ) VALUES(
+        @idx,
+        ${escape(selector)},
+        ${escape(secret)}
+      );
+      
+      COMMIT;`
+
   log.verbose(`SQL query verbose output hidden due to security`)
 
   try {
     log.debug(`executing SQL query`)
-    await connection.execute(
-      `START TRANSACTION;
-       INSERT INTO ${tableId}(
-        \`idx\`, 
-        \`id\`, 
-        \`secret\`
-        ) VALUES (
-         COALESCE(
-          (SELECT MAX(\`idx\`) FROM ${tableId}) + 1,
-          0
-         ),
-         ${escape(selector)},
-         ${escape(secret)}
-       );
-       COMMIT;`
-    )
+    await connection.query(query)
     log.debug(`query executed successfully`)
   } catch (error) {
     log.error(error.message)
     log.verbose(error.stack)
     try {
       log.debug(`rolling back`)
-      await connection.execute('ROLLBACK;')
+      await connection.query('ROLLBACK;')
     } catch (e) {
       log.error(e.message)
       log.verbose(e.stack)
@@ -95,7 +98,8 @@ const deleteSecret = async (
   log.debug(`removing secret from the database`)
   const {
     secrets: { tableName, connection },
-    escapeId
+    escapeId,
+    escape
   } = pool
 
   log.verbose(`selector: ${selector}`)

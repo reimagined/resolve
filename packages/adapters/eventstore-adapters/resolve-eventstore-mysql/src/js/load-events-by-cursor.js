@@ -1,7 +1,7 @@
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
 const loadEventsByCursor = async (
-  { connection, escapeId, escape, tableName, shapeEvent },
+  { events: { connection, tableName }, escapeId, escape, shapeEvent },
   { eventTypes, aggregateIds, cursor, limit }
 ) => {
   const injectString = value => `${escape(value)}`

@@ -1,5 +1,9 @@
 const paginateEvents = async (pool, offset, batchSize) => {
-  const { connection, escapeId, tableName, shapeEvent } = pool
+  const {
+    events: { connection, tableName },
+    escapeId,
+    shapeEvent
+  } = pool
 
   const eventsTableNameAsId = escapeId(tableName)
 
