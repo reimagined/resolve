@@ -1,5 +1,6 @@
 import debugLevels from 'resolve-debug-levels'
 import invokeEventBus from './invoke-event-bus'
+import { XaTransactionNotFoundError } from 'resolve-readmodel-base'
 
 const log = debugLevels('resolve:resolve-runtime:event-bus-event-handler')
 
@@ -45,6 +46,12 @@ const sendEvents = async (payload, resolve) => {
     result = error
   } finally {
     subSegment.close()
+  }
+
+  if (result != null && result.error instanceof XaTransactionNotFoundError) {
+    log.debug('XaTransaction is auto rollback')
+
+    return
   }
 
   if (result != null && result.constructor === Error) {
