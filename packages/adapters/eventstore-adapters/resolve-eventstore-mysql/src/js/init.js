@@ -5,7 +5,12 @@ const longStringSqlType =
 const longNumberSqlType = 'BIGINT NOT NULL'
 const customObjectSqlType = 'JSON NULL'
 
-const init = async ({ tableName, connection, escapeId, config }) => {
+const init = async ({
+  tableName = 'default',
+  connection,
+  escapeId,
+  config
+}) => {
   const eventsTableNameAsId = escapeId(tableName)
   const threadsTableNameAsId = escapeId(`${tableName}-threads`)
 
