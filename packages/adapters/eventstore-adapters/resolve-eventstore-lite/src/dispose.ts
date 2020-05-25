@@ -1,4 +1,4 @@
-import getLog from 'resolve-debug-levels'
+import getLog from './js/get-log'
 import disposeEventStore from './js/dispose'
 import { AdapterPool } from './types'
 
