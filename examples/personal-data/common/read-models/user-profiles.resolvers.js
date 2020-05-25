@@ -3,6 +3,10 @@ import { systemUserId } from '../constants'
 import encryptionFactory from '../encryption-factory'
 
 const decryptProfile = async (secretsManager, user) => {
+  if (!user) {
+    return null
+  }
+
   const encryption = await encryptionFactory(user.id, secretsManager)
   if (!encryption) {
     return {
