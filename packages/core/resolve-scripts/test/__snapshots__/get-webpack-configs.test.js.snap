@@ -48,8 +48,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.constants.js\\",
         \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.customConstants.js\\",
         \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.distDir.js\\",
-        \\"$resolve.eventBroker\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBroker.js\\",
+        \\"$resolve.eventBrokerConfig\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBrokerConfig.js\\",
         \\"$resolve.eventListeners\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventListeners.js\\",
+        \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventstoreAdapter.js\\",
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.jwtCookie.js\\",
         \\"$resolve.localBusBroker\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.localBusBroker.js\\",
@@ -67,7 +68,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.snapshotAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.snapshotAdapter.js\\",
         \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-        \\"$resolve.storageAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.storageAdapter.js\\",
         \\"$resolve.subscribeAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.subscribeAdapter.js\\",
         \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
@@ -88,8 +88,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.constants.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.customConstants.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.distDir.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBroker.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBrokerConfig.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventListeners.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventstoreAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.jwtCookie.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.localBusBroker.js\\",
@@ -107,7 +108,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.snapshotAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.storageAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.subscribeAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
@@ -153,7 +153,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"sagas\\": [],
                   \\"apiHandlers\\": [],
                   \\"index\\": \\"client/index.js\\",
-                  \\"storageAdapter\\": {
+                  \\"eventstoreAdapter\\": {
                     \\"module\\": \\"resolve-eventstore-lite\\",
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
@@ -272,8 +272,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.constants.js\\",
         \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.customConstants.js\\",
         \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.distDir.js\\",
-        \\"$resolve.eventBroker\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBroker.js\\",
+        \\"$resolve.eventBrokerConfig\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBrokerConfig.js\\",
         \\"$resolve.eventListeners\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventListeners.js\\",
+        \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventstoreAdapter.js\\",
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.jwtCookie.js\\",
         \\"$resolve.localBusBroker\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.localBusBroker.js\\",
@@ -291,7 +292,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.snapshotAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.snapshotAdapter.js\\",
         \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-        \\"$resolve.storageAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.storageAdapter.js\\",
         \\"$resolve.subscribeAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.subscribeAdapter.js\\",
         \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
@@ -319,8 +319,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.constants.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.customConstants.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.distDir.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBroker.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBrokerConfig.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventListeners.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventstoreAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.jwtCookie.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.localBusBroker.js\\",
@@ -338,7 +339,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.snapshotAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.storageAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.subscribeAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
@@ -391,7 +391,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"sagas\\": [],
                   \\"apiHandlers\\": [],
                   \\"index\\": \\"client/index.js\\",
-                  \\"storageAdapter\\": {
+                  \\"eventstoreAdapter\\": {
                     \\"module\\": \\"resolve-eventstore-lite\\",
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
@@ -488,8 +488,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.constants.js\\",
         \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.customConstants.js\\",
         \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.distDir.js\\",
-        \\"$resolve.eventBroker\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBroker.js\\",
+        \\"$resolve.eventBrokerConfig\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBrokerConfig.js\\",
         \\"$resolve.eventListeners\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventListeners.js\\",
+        \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventstoreAdapter.js\\",
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.jwtCookie.js\\",
         \\"$resolve.localBusBroker\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.localBusBroker.js\\",
@@ -507,7 +508,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.snapshotAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.snapshotAdapter.js\\",
         \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-        \\"$resolve.storageAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.storageAdapter.js\\",
         \\"$resolve.subscribeAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.subscribeAdapter.js\\",
         \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
@@ -536,8 +536,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.constants.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.customConstants.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.distDir.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBroker.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBrokerConfig.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventListeners.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventstoreAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.jwtCookie.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.localBusBroker.js\\",
@@ -555,7 +556,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.snapshotAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.storageAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.subscribeAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
@@ -608,7 +608,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"sagas\\": [],
                   \\"apiHandlers\\": [],
                   \\"index\\": \\"client/index.js\\",
-                  \\"storageAdapter\\": {
+                  \\"eventstoreAdapter\\": {
                     \\"module\\": \\"resolve-eventstore-lite\\",
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
@@ -735,8 +735,9 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.constants.js\\",
         \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.customConstants.js\\",
         \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.distDir.js\\",
-        \\"$resolve.eventBroker\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBroker.js\\",
+        \\"$resolve.eventBrokerConfig\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBrokerConfig.js\\",
         \\"$resolve.eventListeners\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventListeners.js\\",
+        \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventstoreAdapter.js\\",
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.jwtCookie.js\\",
         \\"$resolve.localBusBroker\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.localBusBroker.js\\",
@@ -754,7 +755,6 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.snapshotAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.snapshotAdapter.js\\",
         \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-        \\"$resolve.storageAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.storageAdapter.js\\",
         \\"$resolve.subscribeAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.subscribeAdapter.js\\",
         \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
@@ -775,8 +775,9 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.constants.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.customConstants.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.distDir.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBroker.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBrokerConfig.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventListeners.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventstoreAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.jwtCookie.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.localBusBroker.js\\",
@@ -794,7 +795,6 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.snapshotAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.storageAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.subscribeAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
@@ -840,7 +840,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"sagas\\": [],
                   \\"apiHandlers\\": [],
                   \\"index\\": \\"client/index.js\\",
-                  \\"storageAdapter\\": {
+                  \\"eventstoreAdapter\\": {
                     \\"module\\": \\"resolve-eventstore-lite\\",
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
@@ -959,8 +959,9 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.constants.js\\",
         \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.customConstants.js\\",
         \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.distDir.js\\",
-        \\"$resolve.eventBroker\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBroker.js\\",
+        \\"$resolve.eventBrokerConfig\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBrokerConfig.js\\",
         \\"$resolve.eventListeners\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventListeners.js\\",
+        \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventstoreAdapter.js\\",
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.jwtCookie.js\\",
         \\"$resolve.localBusBroker\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.localBusBroker.js\\",
@@ -978,7 +979,6 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.snapshotAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.snapshotAdapter.js\\",
         \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-        \\"$resolve.storageAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.storageAdapter.js\\",
         \\"$resolve.subscribeAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.subscribeAdapter.js\\",
         \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
@@ -1006,8 +1006,9 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.constants.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.customConstants.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.distDir.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBroker.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBrokerConfig.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventListeners.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventstoreAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.jwtCookie.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.localBusBroker.js\\",
@@ -1025,7 +1026,6 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.snapshotAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.storageAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.subscribeAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
@@ -1078,7 +1078,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"sagas\\": [],
                   \\"apiHandlers\\": [],
                   \\"index\\": \\"client/index.js\\",
-                  \\"storageAdapter\\": {
+                  \\"eventstoreAdapter\\": {
                     \\"module\\": \\"resolve-eventstore-lite\\",
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
@@ -1143,7 +1143,7 @@ exports[`should make webpack configs for local mode 1`] = `
       null
     ],
     \\"plugins\\": [],
-    \\"name\\": \\"Server local entry point, local bus broker\\",
+    \\"name\\": \\"Server local entry point, local bus broker, local event store\\",
     \\"entry\\": {
       \\"common/local-entry/local-entry.js\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.localEntry.js\\",
       \\"common/local-entry/local-bus-broker.js\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.localBusBroker.js\\"
@@ -1176,8 +1176,9 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.constants.js\\",
         \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.customConstants.js\\",
         \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.distDir.js\\",
-        \\"$resolve.eventBroker\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBroker.js\\",
+        \\"$resolve.eventBrokerConfig\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBrokerConfig.js\\",
         \\"$resolve.eventListeners\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventListeners.js\\",
+        \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventstoreAdapter.js\\",
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.jwtCookie.js\\",
         \\"$resolve.localBusBroker\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.localBusBroker.js\\",
@@ -1195,7 +1196,6 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.snapshotAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.snapshotAdapter.js\\",
         \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-        \\"$resolve.storageAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.storageAdapter.js\\",
         \\"$resolve.subscribeAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.subscribeAdapter.js\\",
         \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
@@ -1224,8 +1224,9 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.constants.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.customConstants.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.distDir.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBroker.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventBrokerConfig.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventListeners.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.eventstoreAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.jwtCookie.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.localBusBroker.js\\",
@@ -1243,7 +1244,6 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.snapshotAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.storageAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.subscribeAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
@@ -1296,7 +1296,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"sagas\\": [],
                   \\"apiHandlers\\": [],
                   \\"index\\": \\"client/index.js\\",
-                  \\"storageAdapter\\": {
+                  \\"eventstoreAdapter\\": {
                     \\"module\\": \\"resolve-eventstore-lite\\",
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"

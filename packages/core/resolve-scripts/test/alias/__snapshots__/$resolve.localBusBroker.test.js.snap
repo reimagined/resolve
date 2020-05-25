@@ -4,9 +4,8 @@ exports[`local config works correctly [server] 1`] = `
 "
 
     import '$resolve.guardOnlyServer'
-    import createStorageAdapter from '$resolve.storageAdapter'
-    import eventBrokerConfig from '$resolve.eventBroker'
-    import { createAndRunLocalBusBroker } from 'resolve-local-event-broker'
+    import { createAndInitPublisher, connectConsumer } from 'resolve-local-event-broker'
+    import eventBrokerConfig from '$resolve.eventBrokerConfig'
 
     if(module.parent != null) {
       setImmediate(() => process.exit(1))
@@ -15,8 +14,10 @@ exports[`local config works correctly [server] 1`] = `
 
     (async () => {
       try {
-        const stopBroker = await createAndRunLocalBusBroker({
-          ...eventBrokerConfig
+        const consumer = await connectConsumer({ ...eventBrokerConfig })
+        const stopBroker = await createAndInitPublisher({
+          ...eventBrokerConfig,
+          connectConsumer
         })
 
         process.on('exit', stopBroker)
