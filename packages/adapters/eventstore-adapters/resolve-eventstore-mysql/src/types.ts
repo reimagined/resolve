@@ -1,3 +1,11 @@
+type MySQLConnection = {
+  execute: (sql: string) => Promise<never>
+  query: (sql: string) => Promise<never>
+}
+type MySQLLib = {
+  createConnection: (options: any) => MySQLConnection
+}
+
 export type AdapterPool = {
   config: {
     database: string
@@ -6,17 +14,18 @@ export type AdapterPool = {
     secretsTableName?: string
   }
   events: {
-    connection: any
+    connection: MySQLConnection
     tableName: string
     database: string
   }
   secrets: {
-    connection: any
+    connection: MySQLConnection
     tableName: string
     database: string
   },
   escapeId: (val: string) => string
   escape: (val: string) => string
+  MySQL: MySQLLib
 }
 
 export type AdapterSpecific = {

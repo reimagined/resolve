@@ -24,7 +24,7 @@ const dropEventStore = async ({
       let errorToThrow = error
       if (/^SQLITE_ERROR: no such table.*?$/.test(error.message)) {
         errorToThrow = new EventstoreResourceNotExistError(
-          `double free of the sqlite adapter with same file "${config.databaseFile}" not allowed`
+          `sqlite adapter for database "${config.databaseFile}" already dropped`
         )
       } else {
         log.error(errorToThrow.message)
