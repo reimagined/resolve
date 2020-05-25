@@ -1,5 +1,5 @@
 const saveEventOnly = async function(
-  { tableName, connection, escapeId, escape },
+  { events: { tableName, connection }, escapeId, escape },
   event
 ) {
   const eventsTableNameAsId = escapeId(tableName)

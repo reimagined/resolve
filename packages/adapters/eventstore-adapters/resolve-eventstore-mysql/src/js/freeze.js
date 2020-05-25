@@ -1,4 +1,4 @@
-const freeze = async ({ connection, tableName, escapeId }) => {
+const freeze = async ({ events: { connection, tableName }, escapeId }) => {
   await connection.execute(
     `CREATE TABLE IF NOT EXISTS ${escapeId(`${tableName}-freeze`)}(
       ${escapeId('surrogate')} BIGINT NOT NULL,

@@ -154,7 +154,7 @@ const ImageUploader = ({ owner, onUploaded }) => {
     return form
   }
 
-  const onLoad = () => {
+  const onLoad = useCallback(() => {
     setState({ ...state, loaded: true, loadedId: uploadId, uploadId: null })
     uploadFinished(aggregateId)
     if (onUploaded) {
@@ -162,12 +162,12 @@ const ImageUploader = ({ owner, onUploaded }) => {
         `![](${getCDNBasedUrl({
           CDNUrl,
           dir: DIRECTORY,
-          uploadId: loadedId,
+          uploadId,
           token
         })})`
       )
     }
-  }
+  }, [uploadId])
 
   const onError = error => {
     uploadError({ aggregateId, error })

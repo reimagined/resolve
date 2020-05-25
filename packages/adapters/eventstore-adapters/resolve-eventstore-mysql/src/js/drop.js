@@ -1,6 +1,16 @@
+import { EOL } from 'os'
+import getLog from './get-log'
 import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
 
-const drop = async ({ tableName, connection, escapeId, config }) => {
+const drop = async ({
+  events: { tableName, connection, database },
+  escapeId
+}) => {
+  const log = getLog('dropEventStore')
+
+  log.debug(`dropping events tables`)
+  log.verbose(`tableName: ${tableName}`)
+
   const eventsTableNameAsId = escapeId(tableName)
   const freezeTableNameAsId = escapeId(`${tableName}-freeze`)
   const threadsTableNameAsId = escapeId(`${tableName}-threads`)
@@ -17,18 +27,22 @@ const drop = async ({ tableName, connection, escapeId, config }) => {
     try {
       await connection.execute(statement)
     } catch (error) {
-      if (error != null && /Unknown table/i.test(error.message)) {
-        throw new EventstoreResourceNotExistError(
-          `Double-free eventstore-mysql adapter via "${config.database}" failed`
-        )
-      } else {
+      if (error != null) {
+        if (/Unknown table/i.test(error.message)) {
+          throw new EventstoreResourceNotExistError(
+            `duplicate event store resource drop detected for database ${database}`
+          )
+        } else {
+          log.error(error.message)
+          log.verbose(error.stack)
+        }
         errors.push(error)
       }
     }
   }
 
   if (errors.length > 0) {
-    throw new Error(errors.map(error => error.stack).join('\n'))
+    throw new Error(errors.map(error => error.stack).join(EOL))
   }
 }
 

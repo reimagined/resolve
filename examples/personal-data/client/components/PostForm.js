@@ -47,16 +47,19 @@ const PostForm = ({ successHandler, errorHandler }) => {
   const textareaRef = React.createRef()
   const onUploaded = value => {
     const textarea = textareaRef.current
+    let nextContent = textarea.value
     if (textarea.selectionStart || textarea.selectionStart === '0') {
       const start = textarea.selectionStart
       const end = textarea.selectionEnd
-      textarea.value =
+      nextContent =
         textarea.value.substring(0, start) +
         value +
         textarea.value.substring(end, textarea.value.length)
     } else {
-      textarea.value += value
+      nextContent += value
     }
+    textarea.value = nextContent
+    setValues({ ...values, content: nextContent })
   }
 
   return (

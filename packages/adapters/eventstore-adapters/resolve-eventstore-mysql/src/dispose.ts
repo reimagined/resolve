@@ -2,9 +2,16 @@ import getLog from './js/get-log'
 import disposeEventStore from './js/dispose'
 import { AdapterPool } from './types'
 
-const disposeSecretsStore = (pool: AdapterPool): Promise<any> => {
-  const { secretsDatabase } = pool
-  return secretsDatabase.close()
+const disposeSecretsStore = async (pool: AdapterPool): Promise<any> => {
+  const log = getLog(`disposeSecretsStore`)
+  const {
+    secrets: { connection }
+  } = pool
+  log.debug(`closing mysql connection`)
+
+  await connection.end()
+
+  log.debug(`mysql connection closed`)
 }
 
 const dispose = async (pool: AdapterPool): Promise<any> => {

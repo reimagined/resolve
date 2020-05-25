@@ -10,18 +10,19 @@ const disposeResolve = async resolve => {
       resolve.executeSaga.dispose(),
       resolve.eventstoreAdapter.dispose(),
       resolve.snapshotAdapter.dispose()
-      // TODO: add dispose of encryptionAdapter
     ]
 
     for (const name of Object.keys(resolve.readModelConnectors)) {
       disposePromises.push(resolve.readModelConnectors[name].dispose())
     }
 
+    log.debug(`awaiting ${disposePromises.length} entries to dispose`)
+
     await Promise.all(disposePromises)
 
-    log.info('Dispose resolve entries successfully')
+    log.info('resolve entries are disposed')
   } catch (error) {
-    log.error('Dispose resolve entries failed with error:')
+    log.error('resolve entries disposing error')
     log.error(error)
   }
 }

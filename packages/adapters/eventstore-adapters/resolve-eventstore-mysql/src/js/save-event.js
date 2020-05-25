@@ -5,7 +5,11 @@ const ER_LOCK_DEADLOCK = 1213
 const ER_DUP_ENTRY = 1062
 
 const saveEvent = async (pool, event) => {
-  const { tableName, connection, database, escapeId, escape } = pool
+  const {
+    events: { tableName, connection, database },
+    escapeId,
+    escape
+  } = pool
   try {
     const eventsTableNameAsId = escapeId(tableName)
     const freezeTableNameAsString = escape(`${tableName}-freeze`)

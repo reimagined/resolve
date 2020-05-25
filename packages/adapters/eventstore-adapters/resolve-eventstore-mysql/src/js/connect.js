@@ -1,5 +1,16 @@
-const connect = async (pool, { MySQL, escapeId, escape }) => {
-  const { tableName, database, ...connectionOptions } = pool.config
+import getLog from './get-log'
+
+const connectEventStore = async (pool, { MySQL }) => {
+  const log = getLog(`connectEventStore`)
+
+  log.debug('connecting to events store database')
+
+  const { tableName = 'default', database, ...connectionOptions } = pool.config
+
+  log.verbose(`tableName: ${tableName}`)
+  log.verbose(`database: ${database}`)
+
+  log.debug(`establishing connection`)
 
   const connection = await MySQL.createConnection({
     ...connectionOptions,
@@ -7,13 +18,15 @@ const connect = async (pool, { MySQL, escapeId, escape }) => {
     multipleStatements: true
   })
 
+  log.debug(`connected successfully`)
+
   Object.assign(pool, {
-    connection,
-    tableName,
-    escapeId,
-    escape,
-    database
+    events: {
+      connection,
+      tableName,
+      database
+    }
   })
 }
 
-export default connect
+export default connectEventStore
