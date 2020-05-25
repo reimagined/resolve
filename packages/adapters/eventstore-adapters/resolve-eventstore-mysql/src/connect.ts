@@ -47,7 +47,7 @@ const connect = async (
   specific: AdapterSpecific
 ): Promise<any> => {
   const log = getLog('connect')
-  log.debug('connecting to mysql database')
+  log.debug('connecting to mysql databases')
 
   const { escapeId, escape } = specific
 
@@ -60,7 +60,7 @@ const connect = async (
     connectEventStore(pool, specific),
     connectSecretsStore(pool, specific)
   ])
-  log.debug('mysql database connected')
+  log.debug('mysql databases are connected')
 }
 
 export default connect
