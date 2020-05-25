@@ -14,7 +14,9 @@ export type AdapterPool = {
     connection: any
     tableName: string
     database: string
-  }
+  },
+  escapeId: (val: string) => string
+  escape: (val: string) => string
 }
 
 export type AdapterSpecific = {

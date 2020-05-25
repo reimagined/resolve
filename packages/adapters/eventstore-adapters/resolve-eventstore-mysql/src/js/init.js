@@ -1,12 +1,15 @@
 import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 import getLog from './get-log'
+import {
+  longNumberSqlType,
+  longStringSqlType,
+  customObjectSqlType
+} from './constants'
 
-const longStringSqlType =
-  'VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL'
-const longNumberSqlType = 'BIGINT NOT NULL'
-const customObjectSqlType = 'JSON NULL'
-
-const initEventStore = async ({ tableName, connection, escapeId, config }) => {
+const initEventStore = async ({
+  events: { tableName, connection, database },
+  escapeId
+}) => {
   const log = getLog('initEventStore')
 
   log.debug(`initializing events database tables`)
@@ -15,9 +18,8 @@ const initEventStore = async ({ tableName, connection, escapeId, config }) => {
   const eventsTableNameAsId = escapeId(tableName)
   const threadsTableNameAsId = escapeId(`${tableName}-threads`)
 
-  try {
-    await connection.query(
-      `CREATE TABLE ${eventsTableNameAsId}(
+  log.debug(`building a query`)
+  const query = `CREATE TABLE ${eventsTableNameAsId}(
         \`threadId\` ${longNumberSqlType},
         \`threadCounter\` ${longNumberSqlType},
         \`timestamp\` ${longNumberSqlType},
@@ -46,14 +48,24 @@ const initEventStore = async ({ tableName, connection, escapeId, config }) => {
         .map((_, index) => `(${index}, 0)`)
         .join(',')}
       ;`
-    )
+
+  try {
+    log.debug(`executing query`)
+    log.verbose(query)
+    await connection.query(query)
+    log.debug(`query executed successfully`)
   } catch (error) {
-    if (error != null && /Table.*? already exists$/i.test(error.message)) {
-      throw new EventstoreResourceAlreadyExistError(
-        `duplicate initialization of the mysql adapter with same database "${config.database}" not allowed`
-      )
-    } else {
-      throw error
+    if (error) {
+      let errorToThrow = error
+      if (/Table.*? already exists$/i.test(error.message)) {
+        errorToThrow = new EventstoreResourceAlreadyExistError(
+          `duplicate initialization of the mysql adapter with same events database "${database}" and table "${tableName}" not allowed`
+        )
+      } else {
+        log.error(errorToThrow.message)
+        log.verbose(errorToThrow.stack)
+      }
+      throw errorToThrow
     }
   }
 }
