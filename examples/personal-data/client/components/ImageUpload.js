@@ -42,9 +42,7 @@ const ImageUploader = ({ owner, onUploaded }) => {
     form: { url, fields },
     uploadId,
     token,
-    // staticToken,
     mimeType,
-    // fileName,
     loaded,
     loadedId,
     picked,
@@ -138,7 +136,6 @@ const ImageUploader = ({ owner, onUploaded }) => {
                 mimeType: inputRef.current.files[0].type,
                 picked: false
               })
-              uploadStarted(aggregateId)
               onSubmitHandler(...args)
             }}
           >
@@ -155,18 +152,28 @@ const ImageUploader = ({ owner, onUploaded }) => {
   }
 
   const onLoad = useCallback(() => {
-    setState({ ...state, loaded: true, loadedId: uploadId, uploadId: null })
-    uploadFinished(aggregateId)
-    if (onUploaded) {
-      onUploaded(
-        `![](${getCDNBasedUrl({
-          CDNUrl,
-          dir: DIRECTORY,
-          uploadId,
-          token
-        })})`
-      )
-    }
+    setState({
+      ...state,
+      loaded: true,
+      loadedId: uploadId,
+      uploadId: null
+    })
+    uploadStarted(aggregateId)
+      .then(() => {
+        return uploadFinished(aggregateId)
+      })
+      .then(() => {
+        if (onUploaded && uploadId) {
+          onUploaded(
+            `![](${getCDNBasedUrl({
+              CDNUrl,
+              dir: DIRECTORY,
+              uploadId,
+              token
+            })})`
+          )
+        }
+      })
   }, [uploadId])
 
   const onError = error => {
