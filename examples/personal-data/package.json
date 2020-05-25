@@ -12,10 +12,10 @@
     "test:functional": "babel-node ./run.js test:functional"
   },
   "dependencies": {
-    "@babel/node": "^7.5.5",
-    "@babel/polyfill": "^7.4.4",
-    "@babel/preset-typescript": "^7.8.3",
-    "babel-loader": "^8.0.6",
+    "@babel/node": "7.8.7",
+    "@babel/polyfill": "7.8.7",
+    "@babel/preset-typescript": "7.9.0",
+    "babel-loader": "8.1.0",
     "cryptr": "^6.0.2",
     "generate-password": "^1.5.1",
     "jsonwebtoken": "^8.5.1",
@@ -23,7 +23,7 @@
     "react": "16.13.0",
     "react-dom": "16.13.0",
     "react-fileupload-progress": "^0.5.0",
-    "react-helmet": "6.0.0-beta",
+    "react-helmet": "6.0.0",
     "react-markdown": "^4.3.1",
     "react-redux": "7.2.0",
     "react-router-config": "5.1.1",
@@ -61,13 +61,13 @@
     "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "7.0.0",
-    "aws-sdk": "2.587.0",
+    "aws-sdk": "2.631.0",
     "aws-xray-sdk-core": "2.5.0",
-    "babel-jest": "25.1.0",
-    "jest": "25.1.0",
+    "babel-jest": "26.0.1",
+    "jest": "26.0.1",
     "react-test-renderer": "16.13.0",
     "resolve-cloud": "*",
-    "testcafe": "1.8.3",
+    "testcafe": "1.8.5",
     "testcafe-react-selectors": "^4.0.0"
   }
 }
