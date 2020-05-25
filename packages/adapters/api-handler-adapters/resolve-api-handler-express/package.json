@@ -25,7 +25,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/api-handler-adapters/resolve-api-handler-express#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
+    "@babel/runtime": "7.9.6",
     "binary-case": "1.1.4",
     "content-disposition": "0.5.2",
     "cookie": "0.3.1",
@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "lodash.escaperegexp": "^4.1.2",
-    "jest": "25.1.0",
+    "jest": "26.0.1",
     "sinon": "7.2.2"
   },
   "babelCompile": [

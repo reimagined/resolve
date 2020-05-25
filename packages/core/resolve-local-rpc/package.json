@@ -25,10 +25,10 @@
   },
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-local-rpc#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0"
+    "@babel/runtime": "^7.9.0"
   },
   "devDependencies": {
-    "jest": "25.1.0"
+    "jest": "26.0.1"
   },
   "babelCompile": [
     {

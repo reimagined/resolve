@@ -4,7 +4,8 @@ describe('validate-event-filter should works correctly with', () => {
   test(`{ aggregateIds: '*' }`, () => {
     expect(() =>
       validateEventFilter({
-        aggregateIds: null
+        aggregateIds: null,
+        limit: 200
       })
     ).not.toThrow()
   })
@@ -12,7 +13,8 @@ describe('validate-event-filter should works correctly with', () => {
   test(`{ aggregateIds: ['id1', 'id2'] }`, () => {
     expect(() =>
       validateEventFilter({
-        aggregateIds: ['id1', 'id2']
+        aggregateIds: ['id1', 'id2'],
+        limit: 200
       })
     ).not.toThrow()
   })

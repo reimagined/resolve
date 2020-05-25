@@ -25,23 +25,13 @@ module.exports = {
       extends: ['plugin:import/typescript'],
       rules: Object.assign({}, typescriptEslintRecommended.rules, {
         '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/member-delimiter-style': [
-          'error',
-          {
-            multiline: {
-              delimiter: 'none',
-              requireLast: false
-            },
-            singleline: {
-              delimiter: 'comma',
-              requireLast: false
-            }
-          }
-        ]
+        '@typescript-eslint/member-delimiter-style': 'off'
       })
     }
   ],
   rules: {
+    'react-hooks/exhaustive-deps': 'off',
+    'react-hooks/rules-of-hooks': 'off',
     'func-names': 'off',
     'no-underscore-dangle': 'off',
     'import/no-unresolved': 'off',

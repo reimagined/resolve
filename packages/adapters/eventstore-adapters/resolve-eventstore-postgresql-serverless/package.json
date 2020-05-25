@@ -30,7 +30,8 @@
     "resolve-debug-levels": "0.23.2"
   },
   "devDependencies": {
-    "jest": "25.1.0"
+    "jest": "26.0.1",
+    "resolve-core": "0.23.2"
   },
   "peerDependencies": {
     "aws-sdk": "*"

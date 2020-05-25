@@ -25,7 +25,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
+    "@babel/runtime": "7.9.6",
     "hoist-non-react-statics": "^3.3.2",
     "json-stable-stringify": "^1.0.1",
     "jwt-decode": "^2.2.0",
@@ -34,7 +34,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "jest": "25.1.0",
+    "jest": "26.0.1",
     "react": "16.13.0",
     "react-dom": "16.13.0",
     "react-test-renderer": "16.13.0",
