@@ -17,6 +17,7 @@ import connect from './connect'
 import init from './init'
 import dispose from './dispose'
 import drop from './drop'
+import getSecretsManager from './secrets-manager'
 
 export default createAdapter.bind(null, {
   connect,
@@ -32,6 +33,7 @@ export default createAdapter.bind(null, {
   freeze,
   unfreeze,
   shapeEvent,
+  getSecretsManager,
   MySQL,
   escapeId,
   escape

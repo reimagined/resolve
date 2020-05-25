@@ -1,6 +1,6 @@
 type MySQLConnection = {
   execute: (sql: string) => Promise<never>
-  query: (sql: string) => Promise<never>
+  query: (sql: string) => Promise<Array<Array<any>>>
   end: () => Promise<never>
 }
 type MySQLLib = {
@@ -23,7 +23,7 @@ export type AdapterPool = {
     connection: MySQLConnection
     tableName: string
     database: string
-  },
+  }
   escapeId: (val: string) => string
   escape: (val: string) => string
   MySQL: MySQLLib

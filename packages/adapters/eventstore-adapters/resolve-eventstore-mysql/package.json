@@ -28,7 +28,8 @@
     "@babel/runtime": "^7.0.0",
     "mysql2": "^1.6.1",
     "resolve-eventstore-base": "0.23.2",
-    "resolve-debug-levels": "0.23.2"
+    "resolve-debug-levels": "0.23.2",
+    "resolve-core": "0.23.2"
   },
   "devDependencies": {
     "jest": "26.0.1",
