@@ -79,6 +79,9 @@ describe('createCustomAdapter', () => {
       b: 'b'
     })
 
-    await customAdapter.loadEvents({ aggregateIds: ['id1'] }, () => {})
+    await customAdapter.loadEvents({
+      aggregateIds: ['id1'],
+      limit: 200
+    })
   })
 })
