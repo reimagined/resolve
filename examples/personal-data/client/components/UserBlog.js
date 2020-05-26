@@ -11,7 +11,7 @@ const BlogHeader = ({ userId }) => {
   const getUser = useQuery(
     {
       name: 'user-profiles',
-      resolver: 'profileById',
+      resolver: 'fullNameById',
       args: {
         userId
       }
@@ -21,7 +21,7 @@ const BlogHeader = ({ userId }) => {
         setUser(null)
         return
       }
-      setUser({ ...result.data.profile, id: result.data.id })
+      setUser({ fullName: result.data })
     }
   )
   useEffect(() => {
