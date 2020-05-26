@@ -338,6 +338,9 @@ const updateByEvents = async (
               `applying "${event.type}" event to read-model "${readModelName}" succeed`
             )
           } catch (readModelError) {
+            if (readModelError instanceof XaTransactionNotFoundError) {
+              throw readModelError
+            }
             log.error(
               `applying "${event.type}" event to read-model "${readModelName}" failed`
             )
