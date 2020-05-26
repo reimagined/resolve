@@ -9,6 +9,7 @@ import { systemToken } from '../jwt'
 
 const saga = {
   handlers: {
+    Init: async () => Promise.resolve(),
     [USER_PERSONAL_DATA_REQUESTED]: async (context, event) => {
       const { aggregateId: userId } = event
       const { sideEffects } = context
