@@ -18,24 +18,24 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   log.verbose('incoming event', JSON.stringify(lambdaEvent, null, 2))
   lambdaContext.callbackWaitsForEmptyEventLoop = false
 
-  const resolve = Object.create(resolveBase)
-  resolve.getRemainingTimeInMillis = lambdaContext.getRemainingTimeInMillis.bind(
-    lambdaContext
-  )
-
-  resolve.eventSubscriberCredentials = {
+  resolveBase.eventSubscriberCredentials = {
     mode: 'internal',
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
     lambdaEventType: 'EventBus',
     lambdaEventName: 'resolveSource'
   }
 
-  resolve.eventstoreCredentials = {
+  resolveBase.eventstoreCredentials = {
     mode: 'internal',
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
     lambdaEventType: 'EventStore',
     lambdaEventName: 'resolveSource'
   }
+
+  const resolve = Object.create(resolveBase)
+  resolve.getRemainingTimeInMillis = lambdaContext.getRemainingTimeInMillis.bind(
+    lambdaContext
+  )
 
   const lambdaRemainingTimeStart = lambdaContext.getRemainingTimeInMillis()
 

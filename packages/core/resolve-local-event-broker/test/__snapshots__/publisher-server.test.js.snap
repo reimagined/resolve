@@ -656,6 +656,7 @@ exports[`Core operation request timeout 1`] = `
       SELECT \\"subscribers\\".\\"eventSubscriber\\" AS \\"eventSubscriber\\",
       \\"subscribers\\".\\"deliveryStrategy\\" AS \\"deliveryStrategy\\",
       \\"subscribers\\".\\"subscriptionId\\" AS \\"subscriptionId\\",
+      \\"subscribers\\".\\"successEvent\\" AS \\"successEvent\\",
       \\"subscribers\\".\\"cursor\\" AS \\"cursor\\",
       \\"notifications\\".\\"status\\" AS \\"runStatus\\",
       \\"notifications\\".\\"xaTransactionId\\" AS \\"xaTransactionId\\",
