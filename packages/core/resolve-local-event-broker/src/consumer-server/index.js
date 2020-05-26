@@ -1,4 +1,5 @@
 import { createServer } from 'resolve-local-rpc'
+import { XaTransactionNotFoundError } from 'resolve-readmodel-base'
 
 const createAndInitConsumer = async config => {
   const {
@@ -144,6 +145,13 @@ const createAndInitConsumer = async config => {
         })
       } catch (error) {
         result = error
+      }
+
+      if (
+        result != null &&
+        result.error instanceof XaTransactionNotFoundError
+      ) {
+        return
       }
 
       await publisher.acknowledge({ batchId, result })

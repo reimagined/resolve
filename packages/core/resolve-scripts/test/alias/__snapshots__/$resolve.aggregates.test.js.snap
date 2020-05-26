@@ -6,6 +6,7 @@ import '$resolve.guardOnlyServer'
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
 import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
+import encryption_0_instance from \\"resolve-runtime/lib/common/defaults/encryption.js\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -22,6 +23,7 @@ const name_0 = \\"Todo\\"
 const commands_0 = commands_0_instance
 const serializeState_0 = serializeState_0_instance
 const deserializeState_0 = deserializeState_0_instance
+const encryption_0 = encryption_0_instance
 
 const aggregates = []
 
@@ -30,6 +32,7 @@ aggregates.push({
 , commands: commands_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
+, encryption: encryption_0
 })
 
 export default aggregates
@@ -42,9 +45,11 @@ import '$resolve.guardOnlyServer'
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
 import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
+import encryption_0_instance from \\"resolve-runtime/lib/common/defaults/encryption.js\\"
 import commands_1_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
 import serializeState_1_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
 import deserializeState_1_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
+import encryption_1_instance from \\"resolve-runtime/lib/common/defaults/encryption.js\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -61,10 +66,12 @@ const name_0 = \\"Todo\\"
 const commands_0 = commands_0_instance
 const serializeState_0 = serializeState_0_instance
 const deserializeState_0 = deserializeState_0_instance
+const encryption_0 = encryption_0_instance
 const name_1 = \\"Item\\"
 const commands_1 = commands_1_instance
 const serializeState_1 = serializeState_1_instance
 const deserializeState_1 = deserializeState_1_instance
+const encryption_1 = encryption_1_instance
 
 const aggregates = []
 
@@ -73,6 +80,7 @@ aggregates.push({
 , commands: commands_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
+, encryption: encryption_0
 })
 
 aggregates.push({
@@ -80,6 +88,7 @@ aggregates.push({
 , commands: commands_1
 , serializeState: serializeState_1
 , deserializeState: deserializeState_1
+, encryption: encryption_1
 })
 
 export default aggregates
@@ -93,6 +102,7 @@ import commands_0_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/a
 import commands_0_import_testCommandsAsModule from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommandsAsModule.js\\"
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
 import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
+import encryption_0_instance from \\"resolve-runtime/lib/common/defaults/encryption.js\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -114,6 +124,7 @@ const commands_0 = commands_0_constructor(
     )
 const serializeState_0 = serializeState_0_instance
 const deserializeState_0 = deserializeState_0_instance
+const encryption_0 = encryption_0_instance
 
 const aggregates = []
 
@@ -122,6 +133,7 @@ aggregates.push({
 , commands: commands_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
+, encryption: encryption_0
 })
 
 export default aggregates
@@ -135,6 +147,7 @@ import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alia
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
 import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
 import projection_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
+import encryption_0_instance from \\"resolve-runtime/lib/common/defaults/encryption.js\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -153,6 +166,7 @@ const serializeState_0 = serializeState_0_instance
 const deserializeState_0 = deserializeState_0_instance
 const projection_0_hash = \\"<INVARIANT_HASH>\\"
 const projection_0 = projection_0_instance
+const encryption_0 = encryption_0_instance
 
 const aggregates = []
 
@@ -163,6 +177,7 @@ aggregates.push({
 , deserializeState: deserializeState_0
 , projection: projection_0
 , invariantHash: projection_0_hash
+, encryption: encryption_0
 })
 
 export default aggregates
@@ -175,6 +190,7 @@ import '$resolve.guardOnlyServer'
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
 import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
+import encryption_0_instance from \\"resolve-runtime/lib/common/defaults/encryption.js\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -191,6 +207,7 @@ const name_0 = \\"Todo\\"
 const commands_0 = commands_0_instance
 const serializeState_0 = serializeState_0_instance
 const deserializeState_0 = deserializeState_0_instance
+const encryption_0 = encryption_0_instance
 
 const aggregates = []
 
@@ -199,6 +216,7 @@ aggregates.push({
 , commands: commands_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
+, encryption: encryption_0
 })
 
 export default aggregates

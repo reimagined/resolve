@@ -1,5 +1,6 @@
 import { EOL } from 'os'
 import getLog from './get-log'
+import { XaTransactionNotFoundError } from 'resolve-readmodel-base'
 
 const RESERVED_TIME = 30 * 1000
 
@@ -311,7 +312,6 @@ const updateByEvents = async (
             }
           }
 
-          let timer = null
           try {
             log.verbose(
               `Applying "${event.type}" event to read-model "${readModelName}" started`
@@ -364,15 +364,17 @@ const updateByEvents = async (
               summaryError
             )
             throw summaryError
-          } finally {
-            clearTimeout(timer)
           }
         }
       } catch (error) {
-        lastError = Object.create(Error.prototype, {
-          message: { value: error.message, enumerable: true },
-          stack: { value: error.stack, enumerable: true }
-        })
+        if (error instanceof XaTransactionNotFoundError) {
+          lastError = error
+        } else {
+          lastError = Object.create(Error.prototype, {
+            message: { value: error.message, enumerable: true },
+            stack: { value: error.stack, enumerable: true }
+          })
+        }
       }
     })
 

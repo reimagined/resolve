@@ -29,6 +29,7 @@ async function requestTimeout(pool, payload) {
       SELECT ${subscribersTableNameAsId}."eventSubscriber" AS "eventSubscriber",
       ${subscribersTableNameAsId}."deliveryStrategy" AS "deliveryStrategy",
       ${subscribersTableNameAsId}."subscriptionId" AS "subscriptionId",
+      ${subscribersTableNameAsId}."successEvent" AS "successEvent",
       ${subscribersTableNameAsId}."cursor" AS "cursor",
       ${notificationsTableNameAsId}."status" AS "runStatus",
       ${notificationsTableNameAsId}."xaTransactionId" AS "xaTransactionId",
@@ -88,7 +89,8 @@ async function requestTimeout(pool, payload) {
     deliveryStrategy,
     runStatus,
     xaTransactionId,
-    cursor
+    cursor,
+    successEvent: prevSuccessEvent
   } = subscriptionDescription
   const activeBatch = {
     batchId: subscriptionDescription.batchId,
@@ -201,13 +203,18 @@ async function requestTimeout(pool, payload) {
       )
     }
   } catch (error) {
-    let compositeError = new Error(error.message)
-    compositeError.stack = error.stack
-    if (
-      runStatus === NotificationStatus.TIMEOUT_ENTERING ||
-      runStatus.startsWith(NotificationStatus.TIMEOUT_XA_COMMITING)
-    ) {
-      await runRawQuery(`
+    if (error != null && /Transaction .*? Is Not Found/i.test(error.message)) {
+      result.successEvent = prevSuccessEvent
+      result.failedEvent = null
+      result.error = null
+    } else {
+      let compositeError = new Error(error.message)
+      compositeError.stack = error.stack
+      if (
+        runStatus === NotificationStatus.TIMEOUT_ENTERING ||
+        runStatus.startsWith(NotificationStatus.TIMEOUT_XA_COMMITING)
+      ) {
+        await runRawQuery(`
         UPDATE ${notificationsTableNameAsId} SET
         "status" = ${escapeStr(NotificationStatus.TIMEOUT_XA_ROLLBACKING)}
         WHERE "batchId" = ${escapeStr(batchId)};
@@ -215,29 +222,30 @@ async function requestTimeout(pool, payload) {
         COMMIT;
         BEGIN IMMEDIATE;
       `)
-    }
-    try {
-      await invokeConsumer(pool, ConsumerMethod.RollbackXATransaction, {
-        eventSubscriber,
-        xaTransactionId,
-        batchId
-      })
-    } catch (rollbackError) {
-      if (
-        !(
-          rollbackError != null &&
-          /Transaction .*? Is Not Found/i.test(rollbackError.message)
-        ) ||
-        subscriptionDescription.runStatus ===
-          NotificationStatus.TIMEOUT_ENTERING
-      ) {
-        compositeError.message = `${compositeError.message}\n${rollbackError.message}`
-        compositeError.stack = `${compositeError.stack}\n${rollbackError.stack}`
-      } else if (error === retryRollback) {
-        compositeError = null
       }
+      try {
+        await invokeConsumer(pool, ConsumerMethod.RollbackXATransaction, {
+          eventSubscriber,
+          xaTransactionId,
+          batchId
+        })
+      } catch (rollbackError) {
+        if (
+          !(
+            rollbackError != null &&
+            /Transaction .*? Is Not Found/i.test(rollbackError.message)
+          ) ||
+          subscriptionDescription.runStatus ===
+            NotificationStatus.TIMEOUT_ENTERING
+        ) {
+          compositeError.message = `${compositeError.message}\n${rollbackError.message}`
+          compositeError.stack = `${compositeError.stack}\n${rollbackError.stack}`
+        } else if (error === retryRollback) {
+          compositeError = null
+        }
+      }
+      result.error = serializeError(compositeError)
     }
-    result.error = serializeError(compositeError)
   }
   const input = {
     type: PrivateOperationType.FINALIZE_BATCH,

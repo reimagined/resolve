@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works correctly 1`] = `
+"
+import '$resolve.guardOnlyServer'
+const eventBrokerConfig = {}
+eventBrokerConfig[\\"launchBroker\\"] = true
+eventBrokerConfig[\\"zmqBrokerAddress\\"] = (((first, second) => (first != null ? first : second))(process.env[\\"zmqBrokerAddress\\"], null))
+eventBrokerConfig[\\"zmqConsumerAddress\\"] = (((first, second) => (first != null ? first : second))(process.env[\\"zmqConsumerAddress\\"], null))
+eventBrokerConfig[\\"databaseFile\\"] = (((first, second) => (first != null ? first : second))(process.env[\\"databaseFile\\"], null))
+eventBrokerConfig[\\"batchSize\\"] = 100
+eventBrokerConfig[\\"upstream\\"] = true
+export default eventBrokerConfig
+"
+`;

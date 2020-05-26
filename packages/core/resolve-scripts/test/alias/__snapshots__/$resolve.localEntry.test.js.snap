@@ -4,16 +4,17 @@ exports[`works correctly 1`] = `
 "
 
   import '$resolve.guardOnlyServer'
-  import { connectLocalBusBroker } from 'resolve-local-event-broker'
+  import { connectPublisher, createAndInitConsumer } from 'resolve-local-event-broker'
   import serverAssemblies from '$resolve.serverAssemblies'
-  import eventBroker from '$resolve.eventBroker'
+  import eventBrokerConfig from '$resolve.eventBrokerConfig'
   import localEntry from 'resolve-runtime/lib/local'
 
   export { default as entryPointMarker } from 'resolve-runtime/lib/common/utils/entry-point-marker'
   
   Object.assign(serverAssemblies.assemblies, {
-    eventBroker,
-    connectLocalBusBroker
+    eventBrokerConfig,
+    createAndInitConsumer,
+    connectPublisher
   })
 
   const initPromise = localEntry(serverAssemblies)

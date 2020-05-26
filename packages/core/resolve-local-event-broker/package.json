@@ -30,7 +30,8 @@
     "tmp": "^0.1.0",
     "resolve-debug-levels": "0.23.2",
     "resolve-local-rpc": "0.23.2",
-    "resolve-eventstore-base": "0.23.2"
+    "resolve-eventstore-base": "0.23.2",
+    "resolve-readmodel-base": "0.23.2"
   },
   "devDependencies": {
     "sinon": "7.2.2",

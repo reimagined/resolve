@@ -207,3 +207,18 @@ const createAdapter = (implementation, options) => {
 }
 
 export default createAdapter
+
+export function XaTransactionNotFoundError(xaTransactionId) {
+  Error.call(this)
+  this.name = 'XaTransactionNotFoundError'
+
+  this.message = `Transaction ${xaTransactionId} Is Not Found`
+
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, XaTransactionNotFoundError)
+  } else {
+    this.stack = new Error().stack
+  }
+}
+
+XaTransactionNotFoundError.prototype = Object.create(Error.prototype)
