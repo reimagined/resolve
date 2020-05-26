@@ -247,12 +247,16 @@ const updateByEvents = async (
           subSegment.addAnnotation('origin', 'resolve:query:applyEvent')
         }
 
-        if (event != null && typeof projection[event.type] === 'function') {
-          log.debug(`executing handler`)
-          const executor = projection[event.type]
-          await executor(connection, event)
-          log.debug(`handler executed successfully`)
-          lastSuccessEvent = event
+        if (event != null) {
+          if (typeof projection[event.type] === 'function') {
+            log.debug(`executing handler`)
+            const executor = projection[event.type]
+            await executor(connection, event)
+            log.debug(`handler executed successfully`)
+            lastSuccessEvent = event
+          } else if (event.type === 'Init') {
+            lastSuccessEvent = event
+          }
         }
       } catch (error) {
         log.error(error.message)
