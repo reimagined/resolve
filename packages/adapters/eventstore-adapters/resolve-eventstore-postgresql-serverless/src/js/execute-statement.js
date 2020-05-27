@@ -1,5 +1,19 @@
 import { EOL } from 'os'
 
+const isHighloadError = error =>
+  error != null &&
+  (/Request timed out/i.test(error.message) ||
+    /Remaining connection slots are reserved/i.test(error.message) ||
+    /I\/O error occurr?ed/i.test(error.message) ||
+    /too many clients already/i.test(error.message) ||
+    /in a read-only transaction/i.test(error.message) ||
+    error.code === 'ProvisionedThroughputExceededException' ||
+    error.code === 'LimitExceededException' ||
+    error.code === 'RequestLimitExceeded' ||
+    error.code === 'ThrottlingException' ||
+    error.code === 'TooManyRequestsException' ||
+    error.code === 'NetworkingError')
+
 const executeStatement = async (pool, sql) => {
   const errors = []
   let rows = null
@@ -7,16 +21,27 @@ const executeStatement = async (pool, sql) => {
   try {
     const { coercer } = pool
 
-    const result = await pool.rdsDataService
-      .executeStatement({
-        resourceArn: pool.dbClusterOrInstanceArn,
-        secretArn: pool.awsSecretStoreArn,
-        database: 'postgres',
-        continueAfterTimeout: false,
-        includeResultMetadata: true,
-        sql
-      })
-      .promise()
+    let result = null
+
+    while (true) {
+      try {
+        result = await pool.rdsDataService
+          .executeStatement({
+            resourceArn: pool.dbClusterOrInstanceArn,
+            secretArn: pool.awsSecretStoreArn,
+            database: 'postgres',
+            continueAfterTimeout: false,
+            includeResultMetadata: true,
+            sql
+          })
+          .promise()
+        break
+      } catch (error) {
+        if (!isHighloadError(error)) {
+          throw error
+        }
+      }
+    }
 
     const { columnMetadata, records } = result
 
