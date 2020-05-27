@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { mocked } from 'ts-jest/utils'
-import { request } from '../src/request'
+import { request, VALIDATED_RESULT } from '../src/request'
 import { Context } from '../src/context'
 import determineOrigin from '../src/determine_origin'
 import { getRootBasedUrl } from '../src/utils'
@@ -274,12 +274,17 @@ test('wait for valid response', async () => {
       waitForResponse: {
         attempts: Infinity,
         period: 1,
-        validator: async (r): Promise<boolean> => (await r.text()) === 'valid'
+        validator: async (r, c): Promise<void> => {
+          const text = await r.text()
+          if (text === 'valid') {
+            c(text)
+          }
+        }
       }
     }
   )
 
-  expect(await response.text()).toEqual('valid')
+  expect(response[VALIDATED_RESULT]).toEqual('valid')
   expect(mFetch).toHaveBeenCalledTimes(2)
 })
 
@@ -311,7 +316,12 @@ test('response waiting failed: max attempts reached', async () => {
         waitForResponse: {
           attempts: 1,
           period: 1,
-          validator: async (r): Promise<boolean> => (await r.text()) === 'valid'
+          validator: async (r, c): Promise<void> => {
+            const text = await r.text()
+            if (text === 'valid') {
+              c(text)
+            }
+          }
         }
       }
     )

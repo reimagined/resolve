@@ -4,7 +4,7 @@ import { mocked } from 'ts-jest/utils'
 /* eslint-enable import/no-extraneous-dependencies */
 import { Client, getClient } from '../src/client'
 import { Context } from '../src/context'
-import { NarrowedResponse, request } from '../src/request'
+import { NarrowedResponse, request, VALIDATED_RESULT } from '../src/request'
 
 jest.mock('../src/request', () => ({
   request: jest.fn()
@@ -260,7 +260,7 @@ describe('query', () => {
     )
   })
 
-  test('awaiting for result', async () => {
+  test('awaiting for result: response validator', async () => {
     await client.query(
       {
         name: 'query-name',
@@ -298,26 +298,74 @@ describe('query', () => {
     const validator = mRequest.mock.calls[0][3]?.waitForResponse
       ?.validator as Function
 
-    await expect(
-      validator(
-        createMockResponse({
-          json: (): Promise<any> =>
-            Promise.resolve({
-              result: 'invalid-result'
-            })
-        })
-      )
-    ).resolves.toEqual(false)
-    await expect(
-      validator(
-        createMockResponse({
-          json: (): Promise<any> =>
-            Promise.resolve({
-              result: 'valid-result'
-            })
-        })
-      )
-    ).resolves.toBeTruthy()
+    let validResult: string | null = null
+    const confirm = (result: string): void => {
+      validResult = result
+    }
+
+    await validator(
+      createMockResponse({
+        json: (): Promise<any> =>
+          Promise.resolve({
+            result: 'invalid-result'
+          })
+      }),
+      confirm
+    )
+    expect(validResult).toBeNull()
+
+    await validator(
+      createMockResponse({
+        json: (): Promise<any> =>
+          Promise.resolve({
+            result: 'valid-result'
+          })
+      }),
+      confirm
+    )
+    expect(validResult).toEqual({
+      result: 'valid-result'
+    })
+  })
+
+  test('bug: response.json() called again after validation', async () => {
+    mRequest.mockResolvedValue(
+      createMockResponse({
+        headers: {
+          get: getHeader
+        },
+        json: getJson,
+        [VALIDATED_RESULT]: {
+          result: 'validated-result'
+        }
+      })
+    )
+    const result = await client.query(
+      {
+        name: 'query-name',
+        resolver: 'query-resolver',
+        args: {
+          name: 'value'
+        }
+      },
+      {
+        waitFor: {
+          validator: isEqual.bind(null, {
+            result: 'query-result'
+          }),
+          attempts: 1,
+          period: 1
+        }
+      }
+    )
+    expect(getJson).toBeCalledTimes(0)
+    expect(result).toEqual(
+      expect.objectContaining({
+        data: {
+          result: 'validated-result'
+        }
+      })
+    )
   })
 
   test('POST method support', async () => {
