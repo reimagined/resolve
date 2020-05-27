@@ -1,38 +1,31 @@
 import { ConcurrentError } from 'resolve-eventstore-base'
 
-import {
-  RESERVED_EVENT_SIZE,
-  LONG_NUMBER_SQL_TYPE,
-  REMAINING_CONNECTIONS_REGEXP,
-  STATEMENT_TIMEOUT_CODE
-} from './constants'
+import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants'
 
 const saveEvent = async (
   { databaseName, tableName, executeStatement, escapeId, escape },
   event
 ) => {
-  while (true) {
-    try {
-      const serializedEvent = [
-        `${escape(event.aggregateId)},`,
-        `${+event.aggregateVersion},`,
-        `${escape(event.type)},`,
-        escape(JSON.stringify(event.payload != null ? event.payload : null))
-      ].join('')
+  try {
+    const serializedEvent = [
+      `${escape(event.aggregateId)},`,
+      `${+event.aggregateVersion},`,
+      `${escape(event.type)},`,
+      escape(JSON.stringify(event.payload != null ? event.payload : null))
+    ].join('')
 
-      // TODO: Improve calculation byteLength depend on codepage and wide-characters
-      const byteLength =
-        Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
+    // TODO: Improve calculation byteLength depend on codepage and wide-characters
+    const byteLength = Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
 
-      const databaseNameAsString = escape(databaseName)
-      const databaseNameAsId = escapeId(databaseName)
-      const freezeTableNameAsString = escape(`${tableName}-freeze`)
-      const threadsTableAsId = escapeId(`${tableName}-threads`)
-      const eventsTableAsId = escapeId(tableName)
+    const databaseNameAsString = escape(databaseName)
+    const databaseNameAsId = escapeId(databaseName)
+    const freezeTableNameAsString = escape(`${tableName}-freeze`)
+    const threadsTableAsId = escapeId(`${tableName}-threads`)
+    const eventsTableAsId = escapeId(tableName)
 
-      // prettier-ignore
-      await executeStatement(
-        `WITH "freeze_check" AS (
+    // prettier-ignore
+    await executeStatement(
+      `WITH "freeze_check" AS (
           SELECT 0 AS "freeze_zero" WHERE (
             (SELECT 1 AS "EventStoreIsFrozen")
           UNION ALL
@@ -86,26 +79,17 @@ const saveEvent = async (
           ${serializedEvent},
           ${byteLength}
         )`
-      )
+    )
+  } catch (error) {
+    const errorMessage =
+      error != null && error.message != null ? error.message : ''
 
-      break
-    } catch (error) {
-      const errorMessage =
-        error != null && error.message != null ? error.message : ''
-      const errorCode = error != null && error.code != null ? error.code : ''
-
-      if (errorMessage.indexOf('subquery used as an expression') > -1) {
-        throw new Error('Event store is frozen')
-      } else if (/aggregateIdAndVersion/i.test(errorMessage)) {
-        throw new ConcurrentError(event.aggregateId)
-      } else if (
-        REMAINING_CONNECTIONS_REGEXP.test(errorMessage) ||
-        STATEMENT_TIMEOUT_CODE === errorCode
-      ) {
-        continue
-      } else {
-        throw error
-      }
+    if (errorMessage.indexOf('subquery used as an expression') > -1) {
+      throw new Error('Event store is frozen')
+    } else if (/aggregateIdAndVersion/i.test(errorMessage)) {
+      throw new ConcurrentError(event.aggregateId)
+    } else {
+      throw error
     }
   }
 }
