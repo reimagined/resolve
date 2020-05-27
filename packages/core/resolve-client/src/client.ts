@@ -1,7 +1,12 @@
 import { Context } from './context'
 import { GenericError } from './errors'
 import { doSubscribe, getSubscriptionKeys, doUnsubscribe } from './subscribe'
-import { RequestOptions, request, NarrowedResponse } from './request'
+import {
+  RequestOptions,
+  request,
+  NarrowedResponse,
+  VALIDATED_RESULT
+} from './request'
 import { assertLeadingSlash, assertNonEmptyString } from './assertions'
 import { getRootBasedUrl, isAbsoluteUrl } from './utils'
 
@@ -116,8 +121,12 @@ export const query = (
       const { validator, period = 1000, attempts = 5 } = options.waitFor
 
       requestOptions.waitForResponse = {
-        validator: async (response): Promise<boolean> =>
-          validator(await response.json()),
+        validator: async (response, confirm): Promise<void> => {
+          const result = await response.json()
+          if (validator(result)) {
+            confirm(result)
+          }
+        },
         period,
         attempts
       }
@@ -162,7 +171,10 @@ export const query = (
     try {
       return {
         timestamp: Number(responseDate),
-        data: await response.json()
+        data:
+          VALIDATED_RESULT in response
+            ? response[VALIDATED_RESULT]
+            : await response.json()
       }
     } catch (error) {
       throw new GenericError(error)

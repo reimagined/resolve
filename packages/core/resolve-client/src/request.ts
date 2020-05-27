@@ -9,6 +9,7 @@ type FetchFunction = (
   input: RequestInfo,
   init?: RequestInit
 ) => Promise<Response>
+export const VALIDATED_RESULT = Symbol('VALIDATED_RESULT')
 export type NarrowedResponse = {
   ok: boolean
   status: number
@@ -17,10 +18,12 @@ export type NarrowedResponse = {
   }
   json: () => Promise<any>
   text: () => Promise<string>
+  [VALIDATED_RESULT]?: any
 }
-type ResponseValidator = (response: NarrowedResponse) => Promise<boolean>
-
-const everythingValid: ResponseValidator = () => Promise.resolve(true)
+type ResponseValidator = (
+  response: NarrowedResponse,
+  confirm: (result: any) => void
+) => Promise<void>
 
 let cachedFetch: FetchFunction | null = null
 
@@ -66,7 +69,7 @@ const insistentRequest = async (
     error: 0,
     response: 0
   }
-): Promise<Response> => {
+): Promise<NarrowedResponse> => {
   let response
 
   try {
@@ -77,11 +80,25 @@ const insistentRequest = async (
 
   if (response.ok) {
     if (options?.waitForResponse) {
-      const isValid = await (
-        options?.waitForResponse?.validator ?? everythingValid
-      )(response)
-      if (isValid) {
-        return response
+      let isValidated = false
+      let validResult: any = null
+
+      const confirmResult = (result: any): void => {
+        isValidated = true
+        validResult = result
+      }
+
+      const validator = options.waitForResponse.validator
+
+      if (typeof validator === 'function') {
+        await validator(response, confirmResult)
+      }
+
+      if (isValidated) {
+        return {
+          ...response,
+          [VALIDATED_RESULT]: validResult
+        }
       }
 
       const isMaxAttemptsReached =
@@ -100,7 +117,7 @@ const insistentRequest = async (
         )
       }
 
-      const period = options?.retryOnError?.period
+      const period = options?.waitForResponse?.period
 
       if (typeof period === 'number' && period > 0) {
         await new Promise(resolve => setTimeout(resolve, period))
