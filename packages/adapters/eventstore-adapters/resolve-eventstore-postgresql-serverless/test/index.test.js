@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { result as mockResult } from 'aws-sdk/clients/rdsdataservice'
 import createEventstoreAdapter from '../src/index'
 

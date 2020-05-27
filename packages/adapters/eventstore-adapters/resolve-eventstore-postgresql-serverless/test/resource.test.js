@@ -1,4 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { result as mockResult } from 'aws-sdk/clients/rdsdataservice'
+// eslint-disable-next-line import/no-extraneous-dependencies
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 
 import connect from '../src/connect'
