@@ -1,4 +1,4 @@
-declare function createAdapter(adapter: {
+export default function createAdapter(adapter: {
   connect: Function
   loadEventsByCursor: Function
   loadEventsByTimestamp: Function
@@ -17,4 +17,11 @@ declare function createAdapter(adapter: {
   [key: string]: any
 }): any
 
-export = createAdapter
+export const EventstoreResourceAlreadyExistError: any
+export const EventstoreResourceNotExistError: any
+export const ConcurrentError: any
+export const MAINTENANCE_MODE_AUTO: any
+export const MAINTENANCE_MODE_MANUAL: any
+export const throwBadCursor: Function
+
+
