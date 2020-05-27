@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 import _createAdapter from 'resolve-eventstore-base'
 
