@@ -25,7 +25,7 @@
     "resolve-scripts": "0.23.2",
     "resolve-command": "0.23.2",
     "seamless-immutable": "7.1.4",
-    "@babel/runtime": "^7.4.3",
+    "@babel/runtime": "7.9.6",
     "mysql2": "1.6.4",
     "jsonwebtoken": "^8.5.1"
   }
