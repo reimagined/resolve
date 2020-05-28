@@ -2012,9 +2012,6 @@ for (const { describeName, prepare } of [
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
           expect(error.error).toBeInstanceOf(Error)
-          expect(error.error.message).toEqual(
-            'Read model "remoteReadModelName" updating had been interrupted'
-          )
         }
 
         if (performanceTracer != null) {
@@ -2226,9 +2223,7 @@ for (const { describeName, prepare } of [
               eventstoreAdapter,
               performanceTracer
             }))
-        ).toThrow(
-          'Connector "default" for read-model "readModelName" does not exist'
-        )
+        ).toThrow(Error)
       })
 
       test('"createQuery" should raise error when a read model is declared twice', async () => {

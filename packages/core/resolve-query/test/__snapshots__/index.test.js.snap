@@ -78,7 +78,7 @@ Array [
 exports[`with performanceTracer read models "dispose" should dispose only one time: addError 1`] = `
 Array [
   Array [
-    [Error: Read model "readModelName" is disposed],
+    [Error: read-model "readModelName" is disposed],
   ],
 ]
 `;
@@ -232,7 +232,7 @@ Array [
 exports[`with performanceTracer read models "drop" should raise error when query is disposed: addError 1`] = `
 Array [
   Array [
-    [Error: Read model "readModelName" is disposed],
+    [Error: read-model "readModelName" is disposed],
   ],
 ]
 `;
@@ -999,7 +999,7 @@ Array [
 exports[`with performanceTracer read models "updateByEvents" should raise error when a projection is not found: addError 1`] = `
 Array [
   Array [
-    [Error: Updating by events is prohibited when "readOnlyReadModelName" projection is not specified],
+    [Error: updating by events is prohibited when "readOnlyReadModelName" projection is not specified],
   ],
 ]
 `;
@@ -1086,7 +1086,7 @@ Array [
 exports[`with performanceTracer read models "updateByEvents" should raise error when query is disposed: addError 1`] = `
 Array [
   Array [
-    [Error: Read model "readModelName" is disposed],
+    [Error: read-model "readModelName" is disposed],
   ],
 ]
 `;
@@ -1211,11 +1211,11 @@ Array [
 exports[`with performanceTracer read models "updateByEvents" should raise error when updating had been interrupted: addError 1`] = `
 Array [
   Array [
-    [Error: Read model "remoteReadModelName" updating had been interrupted],
+    [Error: read-model "remoteReadModelName" updating had been interrupted],
   ],
   Array [
     Object {
-      "error": [Error: Read model "remoteReadModelName" updating had been interrupted],
+      "error": [Error: read-model "remoteReadModelName" updating had been interrupted],
       "eventSubscriber": "remoteReadModelName",
       "failedEvent": Object {
         "aggregateId": "id",
