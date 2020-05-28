@@ -19,9 +19,10 @@ export type AdapterPool = {
   config: {
     dbClusterOrInstanceArn: string
     awsSecretStoreArn: string
-    tableName: string
     databaseName: string
+    tableName: string
     secretsTableName: string
+    snapshotsTableName: string
     region?: string
   }
   rdsDataService?: typeof RDSDataService
@@ -68,9 +69,10 @@ export type CloudResourceOptions = {
   region: string
   databaseName: string
   tableName: string
+  secretsTableName: string
+  snapshotsTableName: string
   userLogin: string
   awsSecretStoreArn: string
   awsSecretStoreAdminArn: string
   dbClusterOrInstanceArn: string
-  secretsTableName: string
 }
