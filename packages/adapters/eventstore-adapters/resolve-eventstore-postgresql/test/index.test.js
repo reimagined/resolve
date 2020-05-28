@@ -1,7 +1,7 @@
 import { result as mockResult, Client as MockClient } from 'pg'
 import createEventstoreAdapter from '../src/index'
 
-describe('resolve-eventstore-postgres index', () => {
+describe.skip('resolve-eventstore-postgres index', () => {
   let eventstoreAdapter = null
 
   beforeEach(() => {
