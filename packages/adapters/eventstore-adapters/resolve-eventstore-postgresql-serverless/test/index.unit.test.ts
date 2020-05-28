@@ -33,7 +33,11 @@ import createAdapter, {
   destroy as exportedDestroy,
   dispose as exportedDispose
 } from '../src/index'
-import { CloudResource, CloudResourceOptions, CloudResourcePool } from '../src/types'
+import {
+  CloudResource,
+  CloudResourceOptions,
+  CloudResourcePool
+} from '../src/types'
 
 jest.mock('../src/js/load-events-by-cursor', () => jest.fn())
 jest.mock('../src/js/freeze', () => jest.fn())
