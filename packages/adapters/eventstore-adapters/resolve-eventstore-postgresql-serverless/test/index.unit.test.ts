@@ -114,7 +114,8 @@ describe('as cloud resource', () => {
       region: 'region',
       secretsTableName: 'secrets-table',
       tableName: 'table',
-      userLogin: 'user'
+      userLogin: 'user',
+      snapshotsTableName: 'snapshots-table'
     }
     completePool = {
       ...cloudPool,

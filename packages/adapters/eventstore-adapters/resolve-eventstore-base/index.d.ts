@@ -2,14 +2,7 @@ declare class EventStoreError {
   code: string
   name: string
   message: string
-}
-declare namespace createAdapter {
-  export class EventstoreResourceAlreadyExistError extends EventStoreError {
-    constructor(message: string)
-  }
-  export class EventstoreResourceNotExistError extends EventStoreError {
-    constructor(message: string)
-  }
+  constructor(message: string)
 }
 declare function createAdapter(adapter: {
   connect: Function
@@ -30,4 +23,13 @@ declare function createAdapter(adapter: {
   [key: string]: any
 }): any
 
-export = createAdapter
+export default createAdapter
+export class EventstoreResourceAlreadyExistError extends EventStoreError {}
+export class EventstoreResourceNotExistError extends EventStoreError {}
+export class ConcurrentError extends EventStoreError {
+  constructor(aggregateId: string)
+}
+export const throwBadCursor: Function
+export const getNextCursor: (prevCursor: any, events: any) => Promise<any>
+export const MAINTENANCE_MODE_AUTO: symbol
+export const MAINTENANCE_MODE_MANUAL: symbol
