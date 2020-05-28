@@ -90,7 +90,7 @@ test('registered user, posts deletion', async t => {
   await t.expect(posts2.exists).notOk()
 })
 
-test('registered user, profile update', async t => {
+test.skip('registered user, profile update', async t => {
   await userRegistration(t, generateUser(3))
 
   await t.navigateTo(`${MAIN_PAGE}/profile`)
