@@ -8,7 +8,7 @@ const cloudConfig = {
     module: 'resolve-subscribe-mqtt',
     options: {}
   },
-  storageAdapter: {
+  eventstoreAdapter: {
     module: 'resolve-eventstore-postgresql-serverless',
     options: {
       awsSecretStoreArn: declareRuntimeEnv('RESOLVE_ES_SECRET_STORE_ARN'),

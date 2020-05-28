@@ -51,7 +51,7 @@ const devConfig = {
       bucketSize: 100
     }
   },*/
-  storageAdapter: {
+  eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
     options: {
       databaseFile: 'data/storage.db'
