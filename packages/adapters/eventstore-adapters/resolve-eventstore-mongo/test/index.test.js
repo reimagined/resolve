@@ -1,7 +1,7 @@
 import { result as mockResult, database as mockDatabase } from 'mongodb'
 import createEventstoreAdapter from '../src/index'
 
-describe('resolve-eventstore-mongo', () => {
+describe.skip('resolve-eventstore-mongo', () => {
   let MathRandom = null
   let eventstoreAdapter = null
 
