@@ -7,6 +7,7 @@
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",
+  "types": "./types/index.d.ts",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -25,16 +26,13 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/eventstore-adapters/resolve-eventstore-postgresql-serverless#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
+    "@babel/runtime": "7.9.6",
     "resolve-eventstore-base": "0.23.2",
     "resolve-debug-levels": "0.23.2"
   },
   "devDependencies": {
     "jest": "26.0.1",
     "resolve-core": "0.23.2"
-  },
-  "peerDependencies": {
-    "aws-sdk": "*"
   },
   "babelCompile": [
     {

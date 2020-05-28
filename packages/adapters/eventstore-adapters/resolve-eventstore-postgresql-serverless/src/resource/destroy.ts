@@ -22,12 +22,13 @@ const destroy = async (
   log.debug(`configuring adapter with environment privileges`)
   const adminPool: AdapterPool = {
     config: {
+      region: options.region,
       awsSecretStoreArn: options.awsSecretStoreAdminArn,
       dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
       databaseName: options.databaseName,
       tableName: options.tableName,
-      region: options.region,
-      secretsTableName: options.secretsTableName
+      secretsTableName: options.secretsTableName,
+      snapshotsTableName: options.snapshotsTableName
     }
   }
 

@@ -31,4 +31,3 @@ declare function createAdapter(adapter: {
 }): any
 
 export = createAdapter
-

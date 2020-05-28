@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 
 type Coercer = (
@@ -18,9 +19,10 @@ export type AdapterPool = {
   config?: {
     dbClusterOrInstanceArn: string
     awsSecretStoreArn: string
-    tableName: string
     databaseName: string
+    tableName: string
     secretsTableName: string
+    snapshotsTableName: string
     region?: string
   }
   rdsDataService?: typeof RDSDataService
@@ -29,6 +31,7 @@ export type AdapterPool = {
   databaseName?: string
   tableName?: string
   secretsTableName?: string
+  snapshotsTableName?: string
   fullJitter?: FullJitter
   coercer?: Coercer
   executeStatement?: (sql: string) => Promise<any[] | null>
@@ -67,9 +70,10 @@ export type CloudResourceOptions = {
   region: string
   databaseName: string
   tableName: string
+  secretsTableName: string
+  snapshotsTableName: string
   userLogin: string
   awsSecretStoreArn: string
   awsSecretStoreAdminArn: string
   dbClusterOrInstanceArn: string
-  secretsTableName: string
 }

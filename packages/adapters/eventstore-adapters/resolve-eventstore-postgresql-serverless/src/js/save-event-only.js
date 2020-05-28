@@ -1,8 +1,4 @@
-import {
-  RESERVED_EVENT_SIZE,
-  REMAINING_CONNECTIONS_REGEXP,
-  STATEMENT_TIMEOUT_CODE
-} from './constants'
+import { RESERVED_EVENT_SIZE } from './constants'
 
 const saveEventOnly = async function(pool, event) {
   const { databaseName, tableName, executeStatement, escapeId, escape } = pool
@@ -20,11 +16,9 @@ const saveEventOnly = async function(pool, event) {
   const threadsTableAsId = escapeId(`${tableName}-threads`)
   const eventsTableAsId = escapeId(tableName)
 
-  while (true) {
-    try {
-      // prettier-ignore
-      await executeStatement(
-        `WITH "random_thread_id" AS (
+  // prettier-ignore
+  await executeStatement(
+    `WITH "random_thread_id" AS (
           SELECT "threadId"
           FROM ${databaseNameAsId}.${threadsTableAsId}
           OFFSET FLOOR(Random() * 256)
@@ -59,24 +53,7 @@ const saveEventOnly = async function(pool, event) {
           ${serializedEvent},
           ${byteLength}
         )`
-      )
-
-      break
-    } catch (error) {
-      const errorMessage =
-        error != null && error.message != null ? error.message : ''
-      const errorCode = error != null && error.code != null ? error.code : ''
-
-      if (
-        REMAINING_CONNECTIONS_REGEXP.test(errorMessage) ||
-        STATEMENT_TIMEOUT_CODE === errorCode
-      ) {
-        continue
-      } else {
-        throw error
-      }
-    }
-  }
+  )
 }
 
 export default saveEventOnly

@@ -23,6 +23,7 @@ const connect = async (
     databaseName,
     tableName,
     secretsTableName,
+    snapshotsTableName,
     ...rdsConfig
   } = pool.config ?? {}
 
@@ -35,6 +36,7 @@ const connect = async (
     databaseName,
     tableName,
     secretsTableName,
+    snapshotsTableName,
     fullJitter,
     coercer,
     executeStatement: executeStatement.bind(null, pool),

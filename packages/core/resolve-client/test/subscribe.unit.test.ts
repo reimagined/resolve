@@ -54,11 +54,11 @@ describe('subscribe', () => {
         Promise.resolve({ appId: 'application-id', url: 'http://options-url' }),
       text: (): Promise<string> => Promise.resolve('response')
     }))
-    ; (global as any).fetch = mFetch
+    ;(global as any).fetch = mFetch
   })
 
   afterAll(() => {
-    ; (global as any).fetch = undefined
+    ;(global as any).fetch = undefined
   })
 
   beforeEach(async () => {
@@ -258,11 +258,11 @@ describe('re-subscribe', () => {
         Promise.resolve({ appId: 'application-id', url: 'http://options-url' }),
       text: (): Promise<string> => Promise.resolve('response')
     }))
-    ; (global as any).fetch = mFetch
+    ;(global as any).fetch = mFetch
   })
 
   afterAll(() => {
-    ; (global as any).fetch = undefined
+    ;(global as any).fetch = undefined
     refreshSpy.mockRestore()
   })
 

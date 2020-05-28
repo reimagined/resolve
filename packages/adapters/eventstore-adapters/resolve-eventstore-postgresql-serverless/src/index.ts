@@ -29,7 +29,7 @@ import _destroyResource from './resource/destroy'
 
 import { CloudResource, CloudResourcePool } from './types'
 
-const createAdapter = _createAdapter.bind(null, {
+const createAdapter: any = _createAdapter.bind(null, {
   connect,
   loadEventsByCursor,
   loadEventsByTimestamp,
