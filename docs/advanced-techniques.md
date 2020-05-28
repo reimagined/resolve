@@ -24,6 +24,14 @@ In a cloud/serverless environment, chunks like read model projections & resolver
 
 When an application runs locally, the `resolve-scripts` utility loads all necessary chunks and combines them with the runtime code.
 
+## ReSolve Scripts
+
+The resolve-scripts library provides scripts that serve the fundamental stages of a reSolve application lifecycle. The package exports the following scripts:
+
+| Script | Description |
+| ------ | ----------- |
+|        |             |
+
 ## Adapters
 
 ReSolve uses the **adapter** mechanism to provide an abstraction layer above APIs used by its subsystems. For instance, adapters are used to define how a reSolve application stores its data. They abstract away all direct interactions with the underlying storage, allowing reSolve to provide a unified data management API.
@@ -94,6 +102,7 @@ For an example on how to use modules, see the [Hacker News](https://github.com/r
 The **resolve-module-upload** module implements the file upload functionality. You can enable this module as shown below:
 
 ##### run.js:
+
 ```js
 const moduleUploader = resolveModuleUploader({ jwtSecret })
 ...
