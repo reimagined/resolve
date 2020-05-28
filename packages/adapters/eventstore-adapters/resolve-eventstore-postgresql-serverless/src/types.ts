@@ -31,6 +31,7 @@ export type AdapterPool = {
   databaseName?: string
   tableName?: string
   secretsTableName?: string
+  snapshotsTableName?: string
   fullJitter?: FullJitter
   coercer?: Coercer
   executeStatement?: (sql: string) => Promise<any[] | null>
