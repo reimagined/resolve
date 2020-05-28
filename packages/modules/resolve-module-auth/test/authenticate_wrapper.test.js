@@ -2,6 +2,16 @@ import sinon from 'sinon'
 import authenticateWrapper from '../src/authenticate_wrapper'
 
 describe('method "fail"', () => {
+  /* eslint-disable no-console */
+  const consoleError = console.error
+  beforeAll(() => {
+    console.error = jest.fn()
+  })
+  afterAll(() => {
+    console.error = consoleError.bind(console)
+  })
+  /* eslint-enable no-console */
+
   test('should works correctly with Error', () => {
     const context = {
       jwtCookie: {
