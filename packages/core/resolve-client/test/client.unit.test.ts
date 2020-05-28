@@ -418,6 +418,16 @@ describe('query', () => {
 })
 
 describe('getStaticAssetUrl', () => {
+  /* eslint-disable no-console */
+  const consoleError = console.error
+  beforeAll(() => {
+    console.error = jest.fn()
+  })
+  afterAll(() => {
+    console.error = consoleError.bind(console)
+  })
+  /* eslint-enable no-console */
+
   test('absolute asset url', () => {
     expect(
       client.getStaticAssetUrl('https://static.host.com/account/static.jpg')
