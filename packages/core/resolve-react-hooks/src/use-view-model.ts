@@ -1,7 +1,7 @@
 import { useContext, useCallback, useMemo } from 'react'
 import { ResolveContext } from './context'
 import { QueryOptions, SubscribeCallback, Subscription } from 'resolve-client'
-import { useClient } from './use_client'
+import { useClient } from './use-client'
 
 type StateChangedCallback = (state: any) => void
 type PromiseOrVoid<T> = Promise<T> | void
@@ -22,15 +22,22 @@ const useViewModel = (
   stateChangeCallback: StateChangedCallback,
   queryOptions?: QueryOptions
 ): ViewModelConnection => {
+  const log = console
   const context = useContext(ResolveContext)
   const client = useClient()
+
+  log.debug(`searching for view model metadata`)
 
   const { viewModels } = context
   const viewModel = viewModels.find(({ name }) => name === modelName)
 
   if (!viewModel) {
-    throw Error(`View model ${modelName} not exist within context`)
+    const error = Error(`View model ${modelName} not exist within context`)
+    log.error(error.message)
+    throw error
   }
+
+  log.debug(`view model metadata found`)
 
   const closure = useMemo<Closure>(
     () => ({
@@ -45,6 +52,7 @@ const useViewModel = (
   }, [])
 
   const queryState = useCallback(async () => {
+    log.debug(`querying view model state`)
     const result = await client.query(
       {
         name: modelName,
@@ -53,12 +61,17 @@ const useViewModel = (
       },
       queryOptions
     )
+    log.debug(`view model state arrived`)
     if (result) {
+      log.debug(result.data)
       setState(result.data)
+    } else {
+      log.debug(`query have not result`)
     }
   }, [])
 
   const applyEvent = useCallback(event => {
+    log.debug(`applying event [${event.type}]`)
     setState(viewModel.projection[event.type](closure.state, event))
   }, [])
 
@@ -66,7 +79,12 @@ const useViewModel = (
     Subscription
   > => {
     const asyncConnect = async (): Promise<Subscription> => {
+      log.debug(`connecting view model`)
+
       await queryState()
+
+      log.debug(`subscribing to incoming events`)
+
       const subscribe = client.subscribe(
         modelName,
         aggregateIds,
@@ -76,6 +94,8 @@ const useViewModel = (
       ) as Promise<Subscription>
 
       const subscription = await subscribe
+
+      log.debug(`subscribed successfully`)
 
       if (subscription) {
         closure.subscription = subscription

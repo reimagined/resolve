@@ -1,11 +1,11 @@
-import { useQuery } from './use_query'
-import { useCommand } from './use_command'
-import { useStaticResolver } from './use_static_resolver'
-import { useViewModel } from './use_view_model'
-import { useClient } from './use_client'
+import { useQuery } from './use-query'
+import { useCommand } from './use-command'
+import { useStaticResolver } from './use-static-resolver'
+import { useViewModel } from './use-view-model'
+import { useClient } from './use-client'
 import { ResolveContext } from './context'
-import { useCommandBuilder } from './use_command_builder'
-import { useQueryBuilder } from './use_query_builder'
+import { useCommandBuilder } from './use-command-builder'
+import { useQueryBuilder } from './use-query-builder'
 
 export {
   useCommand,

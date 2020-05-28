@@ -12,6 +12,7 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
+    "build": "tsc",
     "test": "jest",
     "testw": "echo || exit 0",
     "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'"

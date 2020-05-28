@@ -7,7 +7,7 @@ declare type Levels = {
   info: Logger
   verbose: Logger
 }
-declare type LoggerWithLevels = Logger & Levels
+export declare type LoggerWithLevels = Logger & Levels
 
 declare function DefaultLogger (namespace: string): LoggerWithLevels
-export = DefaultLogger
+export default DefaultLogger
