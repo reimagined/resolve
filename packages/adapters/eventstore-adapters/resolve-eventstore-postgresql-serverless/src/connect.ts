@@ -24,7 +24,7 @@ const connect = async (
     tableName,
     secretsTableName,
     ...rdsConfig
-  } = pool.config
+  } = pool.config ?? {}
 
   const rdsDataService = new RDSDataService(rdsConfig)
 

@@ -1,3 +1,16 @@
+declare class EventStoreError {
+  code: string
+  name: string
+  message: string
+}
+declare namespace createAdapter {
+  export class EventstoreResourceAlreadyExistError extends EventStoreError {
+    constructor(message: string)
+  }
+  export class EventstoreResourceNotExistError extends EventStoreError {
+    constructor(message: string)
+  }
+}
 declare function createAdapter(adapter: {
   connect: Function
   loadEventsByCursor: Function
@@ -18,3 +31,4 @@ declare function createAdapter(adapter: {
 }): any
 
 export = createAdapter
+

@@ -15,7 +15,7 @@ type EscapeFunction = (source: string) => string
 type FullJitter = (retries: number) => number
 
 export type AdapterPool = {
-  config: {
+  config?: {
     dbClusterOrInstanceArn: string
     awsSecretStoreArn: string
     tableName: string
