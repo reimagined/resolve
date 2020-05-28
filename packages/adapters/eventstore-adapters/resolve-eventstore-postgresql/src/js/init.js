@@ -1,4 +1,4 @@
-import { ResourceAlreadyExistError } from 'resolve-eventstore-base'
+import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 
 import {
   LONG_STRING_SQL_TYPE,
@@ -75,7 +75,7 @@ const init = async ({
     )
   } catch (error) {
     if (error != null && /Relation.*? already exists$/i.test(error.message)) {
-      throw new ResourceAlreadyExistError(
+      throw new EventstoreResourceAlreadyExistError(
         `Double-initialize storage-postgresql adapter via "${databaseName}" failed`
       )
     } else {
