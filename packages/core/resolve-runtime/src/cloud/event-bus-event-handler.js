@@ -9,6 +9,20 @@ const sendEvents = async (payload, resolve) => {
   const subSegment = segment.addNewSubsegment('applyEventsFromBus')
 
   const { xaTransactionId, eventSubscriber, events, batchId } = payload
+  if (eventSubscriber === 'websocket' && batchId == null) {
+    // TODO: Inject MQTT events directly from cloud event bus lambda
+    for (const event of events) {
+      const eventDescriptor = {
+        topic: `${process.env.RESOLVE_DEPLOYMENT_ID}/${event.type}/${event.aggregateId}`,
+        payload: JSON.stringify(event),
+        qos: 1
+      }
+
+      await resolve.mqtt.publish(eventDescriptor).promise()
+    }
+
+    return
+  }
 
   //TODO Properties
   const properties = {
