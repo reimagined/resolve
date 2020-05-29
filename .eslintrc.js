@@ -300,6 +300,7 @@ module.exports = {
           'param',
           'parameterized',
           'params',
+          'passthrough',
           'pathname',
           'pid',
           'pingreq',

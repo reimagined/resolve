@@ -12,16 +12,6 @@ const initBroker = async resolve => {
     eventListeners
   })
 
-  const publishEvent = async event => {
-    await publisher.publish({ event })
-
-    await resolve.pubsubManager.dispatch({
-      topicName: event.type,
-      topicId: event.aggregateId,
-      event
-    })
-  }
-
   // TODO: improve lifecycle
   const consumer = await createAndInitConsumer({
     address: eventBrokerConfig.consumerAddress,
@@ -32,7 +22,6 @@ const initBroker = async resolve => {
   })
 
   Object.assign(resolve, {
-    publishEvent,
     publisher,
     consumer
   })

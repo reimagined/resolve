@@ -126,6 +126,18 @@ const createAndInitConsumer = async config => {
     try {
       await initResolve(currentResolve)
 
+      // TODO segragate passthough subscribers
+      if (batchId == null && eventSubscriber === 'websocket') {
+        for (const event of events) {
+          await currentResolve.pubsubManager.dispatch({
+            topicName: event.type,
+            topicId: event.aggregateId,
+            event
+          })
+        }
+        return
+      }
+
       const listenerInfo = currentResolve.eventListeners.get(eventSubscriber)
       if (listenerInfo == null) {
         throw new Error(`Listener ${eventSubscriber} does not exist`)
