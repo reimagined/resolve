@@ -27,6 +27,7 @@ const userRegistration = async (t, user) => {
   await t.typeText(registrationForm.find('#lastName'), lastName)
   await t.typeText(registrationForm.find('#phoneNumber'), phoneNumber)
   await t.typeText(registrationForm.find('#address'), address)
+  await t.click(registrationForm.find('#consent'))
   await t.click(registrationForm.find('button').withText('Sign Up'))
 }
 
