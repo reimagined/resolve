@@ -26,11 +26,28 @@ When an application runs locally, the `resolve-scripts` utility loads all necess
 
 ## ReSolve Scripts
 
-The resolve-scripts library provides scripts that serve the fundamental stages of a reSolve application lifecycle. The package exports the following scripts:
+The resolve-scripts library provides scripts that serve as entry points for the fundamental stages of a reSolve application lifecycle. The package exports the following scripts:
 
-| Script | Description |
-| ------ | ----------- |
-|        |             |
+| Script                      | Description |
+| --------------------------- | ----------- |
+| validateConfig              |             |
+| adjustWebpackReactNative    |             |
+| adjustWebpackCommonPackages |             |
+| defaultResolveConfig        |             |
+| declareRuntimeEnv           |             |
+| declareImportKey            |             |
+| declareImportKey            |             |
+| getModulesDirs              |             |
+| showBuildInfo               |             |
+| build                       |             |
+| start                       |             |
+| watch                       |             |
+| runTestcafe                 |             |
+| merge                       |             |
+| stop                        |             |
+| reset                       |             |
+| importEventStore            |             |
+| exportEventStore            |             |
 
 ## Adapters
 
