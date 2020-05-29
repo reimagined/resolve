@@ -12,7 +12,7 @@ A Read Model is defined by a set of projection functions and query resolver func
 - **[Projection functions](#updating-a-read-model-via-projection-functions)** build a Read Models state based on incoming events.
 - **[Query resolvers](#resolvers)** use data from the accumulated state to answer queries.
 
-ReSolve also supports **View Models**. A View Model is a Read Model that can be built on the fly, sent to the client and kept there up-to-date. Refer to the [View Model Specifics](view-model-specifics) section for more information.
+ReSolve also supports **View Models**. A View Model is a Read Model that can be built on the fly, sent to the client and kept there up-to-date. Refer to the [View Model Specifics](#view-model-specifics) section for more information.
 
 ## Configuring Read Models and View Models
 
