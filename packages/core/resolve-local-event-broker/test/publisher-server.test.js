@@ -374,6 +374,7 @@ describe('Core operation', () => {
         encodeJsonPath: jest.fn(str => str)
       },
       invokeOperation,
+      invokeConsumer,
       generateGuid
     }
     const payload = {
