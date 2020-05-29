@@ -12,7 +12,7 @@ import {
   isDependencies,
   isOptions
 } from './generic'
-import { useClient } from './use_client'
+import { useClient } from './use-client'
 
 type CommandExecutor = HookExecutor<void, CommandResult>
 

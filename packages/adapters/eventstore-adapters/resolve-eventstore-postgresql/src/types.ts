@@ -15,7 +15,7 @@ type EscapeFunction = (source: string) => string
 type FullJitter = (retries: number) => number
 
 export type AdapterPool = {
-  config: {
+  config?: {
     user: string
     database: string
     port: string

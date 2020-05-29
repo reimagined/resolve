@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useClient } from './use_client'
+import { useClient } from './use-client'
 
 export type StaticResolver = (assetPath: string | string[]) => string | string[]
 

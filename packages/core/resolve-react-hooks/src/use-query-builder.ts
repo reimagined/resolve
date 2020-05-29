@@ -7,7 +7,7 @@ import {
   isDependencies,
   isOptions
 } from './generic'
-import { useClient } from './use_client'
+import { useClient } from './use-client'
 
 type QueryBuilder<T> = (data: T) => Query
 type QueryExecutor<T> = HookExecutor<T, QueryResult>

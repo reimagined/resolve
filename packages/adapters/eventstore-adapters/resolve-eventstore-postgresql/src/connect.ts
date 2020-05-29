@@ -17,10 +17,12 @@ const connect = async (
     coercer
   } = specific
 
+  const { databaseName, tableName, secretsTableName } = pool.config ?? {}
+
   Object.assign(pool, {
-    databaseName: pool.config.databaseName,
-    tableName: pool.config.tableName,
-    secretsTableName: pool.config.secretsTableName,
+    databaseName,
+    tableName,
+    secretsTableName,
     Postgres,
     fullJitter,
     coercer,

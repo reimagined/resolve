@@ -1,7 +1,7 @@
 import { useContext, useCallback, useMemo } from 'react'
 import { mocked } from 'ts-jest/utils'
 import { useClient } from '../src/use_client'
-import { useViewModel } from '../src/use_view_model'
+import { useViewModel } from '../src/use-view-model'
 
 const mockedContext = {
   viewModels: [

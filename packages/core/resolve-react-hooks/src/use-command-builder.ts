@@ -5,7 +5,7 @@ import {
   CommandOptions,
   CommandResult
 } from 'resolve-client'
-import { useClient } from './use_client'
+import { useClient } from './use-client'
 import {
   firstOfType,
   HookExecutor,
