@@ -21,6 +21,7 @@ const handleResolveReadModelEvent = async (
       log.debug('operation "reset" started')
       log.debug('resetting event broker')
       await resolve.publisher.reset({ eventSubscriber: listenerId })
+      await resolve.publisher.resume({ eventSubscriber: listenerId })
       log.debug('operation "reset" completed')
       return 'ok'
     }
