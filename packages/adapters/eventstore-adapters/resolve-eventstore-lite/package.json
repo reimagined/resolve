@@ -27,14 +27,15 @@
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "resolve-core": "0.23.2",
-    "resolve-eventstore-base": "0.23.2",
     "resolve-debug-levels": "0.23.2",
+    "resolve-eventstore-base": "0.23.2",
     "sqlite": "^3.0.2",
     "tmp": "^0.1.0"
   },
   "devDependencies": {
     "jest": "26.0.1",
-    "sinon": "7.2.2"
+    "sinon": "7.2.2",
+    "ts-jest": "^26.1.0"
   },
   "babelCompile": [
     {
