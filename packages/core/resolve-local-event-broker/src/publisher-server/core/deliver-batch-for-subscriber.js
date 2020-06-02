@@ -12,7 +12,7 @@ import {
 } from '../constants'
 const deliverBatchForSubscriber = async (pool, payload) => {
   const {
-    database: { runRawQuery, runQuery, escapeStr, escapeId },
+    database: { runRawQuery, runQuery, escapeStr, escapeId, decodeJsonPath },
     parseSubscription,
     invokeConsumer,
     invokeOperation,
@@ -32,6 +32,7 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     ${subscribersTableNameAsId}."status" AS "status",
     ${subscribersTableNameAsId}."deliveryStrategy" AS "deliveryStrategy",
     ${subscribersTableNameAsId}."queueStrategy" AS "queueStrategy",
+    ${subscribersTableNameAsId}."properties" AS "properties",
     ${subscribersTableNameAsId}."cursor" AS "cursor",
     ${notificationsTableNameAsId}."status" AS "runStatus",
     ${notificationsTableNameAsId}."xaTransactionId" AS "xaTransactionId",
@@ -57,6 +58,7 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     cursor,
     runStatus,
     xaTransactionId: existingXaTransactionId,
+    properties,
     isEventBasedRun,
     status,
     hasErrors
@@ -268,12 +270,21 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     BATCH_CONSUMING_TIME
   )
 
+  const sendingProperties =
+    properties != null
+      ? Object.keys(properties).reduce((acc, key) => {
+          acc[decodeJsonPath(key)] = properties[key]
+          return acc
+        }, {})
+      : {}
+
   await invokeConsumer(
     pool,
     ConsumerMethod.SendEvents,
     {
       xaTransactionId,
       eventSubscriber,
+      properties: sendingProperties,
       events,
       batchId
     },

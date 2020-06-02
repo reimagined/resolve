@@ -5,6 +5,7 @@ const validOptions = [
   'dropEventStore',
   'dropSnapshots',
   'dropReadModels',
+  'dropEventBus',
   'dropSagas'
 ]
 

@@ -19,7 +19,8 @@ const reset = async (pool, payload) => {
     ${subscribersTableNameAsId}."deliveryStrategy" AS "deliveryStrategy",
     ${subscribersTableNameAsId}."queueStrategy" AS "queueStrategy",
     ${subscribersTableNameAsId}."eventTypes" AS "eventTypes",
-    ${subscribersTableNameAsId}."aggregateIds" AS "aggregateIds"
+    ${subscribersTableNameAsId}."aggregateIds" AS "aggregateIds",
+    ${subscribersTableNameAsId}."properties" AS "properties"
     FROM ${subscribersTableNameAsId}
     WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)}
   `)
@@ -31,7 +32,8 @@ const reset = async (pool, payload) => {
     deliveryStrategy,
     queueStrategy,
     eventTypes,
-    aggregateIds
+    aggregateIds,
+    properties
   } = parseSubscription(result[0])
 
   await runRawQuery(`
@@ -45,6 +47,7 @@ const reset = async (pool, payload) => {
       "deliveryStrategy",
       "eventTypes",
       "aggregateIds",
+      "properties",
       "queueStrategy",
       "maxParallel",
       "successEvent",
@@ -76,6 +79,7 @@ const reset = async (pool, payload) => {
               .join(', ')} }`
           : 'null'
       )},
+      ${escapeStr(properties != null ? JSON.stringify(properties) : 'null')},
       ${escapeStr(queueStrategy)},
       ${+1},
       NULL,

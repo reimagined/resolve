@@ -70,6 +70,7 @@ void (async () => {
         const resolveConfig = merge(baseConfig, devConfig, moduleAdmin)
         await reset(resolveConfig, {
           dropEventStore: false,
+          dropEventBus: true,
           dropSnapshots: true,
           dropReadModels: true,
           dropSagas: true
