@@ -29,7 +29,7 @@ const getConfig = async (resolveConfig, options) => {
   const config = merge(resolveConfig, {
     apiHandlers: [
       {
-        controller: 'resolve-runtime/lib/local/query-is-ready-handler.js',
+        handler: 'resolve-runtime/lib/local/query-is-ready-handler.js',
         path: '/api/query-is-ready',
         method: 'GET'
       }

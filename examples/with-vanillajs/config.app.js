@@ -14,7 +14,7 @@ const appConfig = {
   apiHandlers: [
     {
       path: '/:markup*',
-      controller: 'common/api-handlers/markup.js',
+      handler: 'common/api-handlers/markup.js',
       method: 'GET'
     }
   ],

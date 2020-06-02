@@ -58,10 +58,10 @@ const wrapTrie = (apiHandlers, rootPath) => {
     .define(getRootBasedUrl(rootPath, '/uploader/:params*'))
     .handle('GET', uploaderHandler)
 
-  for (const { method, path, controller } of apiHandlers) {
+  for (const { method, path, handler } of apiHandlers) {
     trie
       .define(getRootBasedUrl(rootPath, path))
-      .handle(String(method).toUpperCase(), controller)
+      .handle(String(method).toUpperCase(), handler)
   }
 
   try {
