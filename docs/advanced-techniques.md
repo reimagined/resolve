@@ -39,14 +39,14 @@ The resolve-scripts library provides scripts that serve as entry points for the 
 | reset                       | Resets the application's persistent storages and snapshots.                    |
 | importEventStore            | Imports events from a file to the application's event store.                   |
 | exportEventStore            | Exports events from the application's event store to a file.                   |
-| validateConfig              |                                                                                |
+| validateConfig              | Validates a configuration object.                                              |
 | adjustWebpackReactNative    |                                                                                |
 | adjustWebpackCommonPackages |                                                                                |
 | defaultResolveConfig        |                                                                                |
-| declareRuntimeEnv           |                                                                                |
+| declareRuntimeEnv           | Obtains an environment variable's value.                                       |
 | declareImportKey            |                                                                                |
-| declareImportKey            |                                                                                |
-| getModulesDirs              |                                                                                |
+| checkImportKey              |                                                                                |
+| getModulesDirs              | Get directories that contain modules used by reSolve.                          |
 | showBuildInfo               |                                                                                |
 
 ## Adapters
