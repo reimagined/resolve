@@ -1,4 +1,4 @@
-import { assertLeadingSlash } from '../src/assertions'
+import { assertLeadingSlash } from '../../src/assertions'
 
 describe('assertLeadingSlash', () => {
   let spy: jest.SpiedFunction<any>

@@ -2,13 +2,9 @@ import unfetch from 'unfetch'
 import qs from 'query-string'
 import { Context } from './context'
 import { getRootBasedUrl, isString } from './utils'
-import determineOrigin from './determine_origin'
+import determineOrigin from './determine-origin'
 import { GenericError, HttpError } from './errors'
 
-type FetchFunction = (
-  input: RequestInfo,
-  init?: RequestInit
-) => Promise<Response>
 export const VALIDATED_RESULT = Symbol('VALIDATED_RESULT')
 export type NarrowedResponse = {
   ok: boolean
@@ -24,10 +20,17 @@ type ResponseValidator = (
   response: NarrowedResponse,
   confirm: (result: any) => void
 ) => Promise<void>
+export type FetchFunction = (
+  input: RequestInfo,
+  init?: RequestInit
+) => Promise<Response & NarrowedResponse>
 
 let cachedFetch: FetchFunction | null = null
 
-const determineFetch = (): FetchFunction => {
+const determineFetch = (context: Context): FetchFunction => {
+  if (context.fetch) {
+    return context.fetch as FetchFunction
+  }
   if (!cachedFetch) {
     cachedFetch = typeof fetch === 'function' ? fetch : unfetch
   }
@@ -62,6 +65,7 @@ const stringifyUrl = (url: string, params: any): string => {
 }
 
 const insistentRequest = async (
+  fetch: FetchFunction,
   input: RequestInfo,
   init: RequestInit,
   options?: RequestOptions,
@@ -73,7 +77,7 @@ const insistentRequest = async (
   let response
 
   try {
-    response = await determineFetch()(input, init)
+    response = await fetch(input, init)
   } catch (error) {
     throw new GenericError(error)
   }
@@ -95,10 +99,8 @@ const insistentRequest = async (
       }
 
       if (isValidated) {
-        return {
-          ...response,
-          [VALIDATED_RESULT]: validResult
-        }
+        response[VALIDATED_RESULT] = validResult
+        return response
       }
 
       const isMaxAttemptsReached =
@@ -123,7 +125,7 @@ const insistentRequest = async (
         await new Promise(resolve => setTimeout(resolve, period))
       }
 
-      return insistentRequest(input, init, options, {
+      return insistentRequest(fetch, input, init, options, {
         ...attempts,
         response: attempts.response + 1
       })
@@ -158,7 +160,7 @@ const insistentRequest = async (
       if (typeof period === 'number' && period > 0) {
         await new Promise(resolve => setTimeout(resolve, period))
       }
-      return insistentRequest(input, init, options, {
+      return insistentRequest(fetch, input, init, options, {
         ...attempts,
         error: attempts.error + 1
       })
@@ -219,7 +221,12 @@ export const request = async (
 
   init.headers = headers
 
-  const response = await insistentRequest(requestUrl, init, options)
+  const response = await insistentRequest(
+    determineFetch(context),
+    requestUrl,
+    init,
+    options
+  )
 
   if (jwtProvider && response.headers) {
     await jwtProvider.set(response.headers.get('x-jwt') ?? '')
