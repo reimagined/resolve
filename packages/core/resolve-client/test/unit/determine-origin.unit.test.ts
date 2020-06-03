@@ -1,5 +1,5 @@
 import win from 'global/window'
-import determineOrigin from '../../src/determine_origin'
+import determineOrigin from '../../src/determine-origin'
 
 afterEach(() => {
   delete win.location

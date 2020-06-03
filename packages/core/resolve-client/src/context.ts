@@ -9,4 +9,5 @@ export type Context = {
   jwtProvider?: JSONWebTokenProvider
   viewModels: Array<ViewModel>
   subscribeAdapter?: CreateSubscribeAdapter
+  fetch?: Function
 }

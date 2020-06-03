@@ -2,11 +2,11 @@
 import { mocked } from 'ts-jest/utils'
 import { request, VALIDATED_RESULT } from '../../src/request'
 import { Context } from '../../src/context'
-import determineOrigin from '../../src/determine_origin'
+import determineOrigin from '../../src/determine-origin'
 import { getRootBasedUrl } from '../../src/utils'
 import { GenericError, HttpError } from '../../src/errors'
 
-jest.mock('../../src/determine_origin', () =>
+jest.mock('../../src/determine-origin', () =>
   jest.fn((origin): string => origin)
 )
 jest.mock('../../src/utils', () => ({
@@ -75,6 +75,15 @@ test('global fetch called', async () => {
     credentials: 'same-origin',
     body: JSON.stringify({ param: 'param' })
   })
+})
+
+test('custom fetch called', async () => {
+  mockContext.fetch = jest.fn(() => ({ ok: true }))
+  await request(mockContext, '/request', {
+    param: 'param'
+  })
+  expect(mFetch).not.toHaveBeenCalled()
+  expect(mockContext.fetch).toHaveBeenCalled()
 })
 
 test('http error thrown with response text', async () => {

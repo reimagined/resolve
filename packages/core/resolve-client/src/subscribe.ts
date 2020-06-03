@@ -3,7 +3,7 @@ import createConnectionManager from './connection-manager'
 import createEmptySubscribeAdapter from './empty-subscribe-adapter'
 import { Context } from './context'
 import { rootCallback, addCallback, removeCallback } from './subscribe-callback'
-import determineOrigin from './determine_origin'
+import determineOrigin from './determine-origin'
 import { GenericError } from './errors'
 import { request } from './request'
 
