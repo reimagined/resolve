@@ -1,31 +1,42 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import RDSDataService from 'aws-sdk/clients/rdsdataservice'
-/* eslint-ensable import/no-extraneous-dependencies */
+import MySQL from 'mysql2/promise'
+/* eslint-enable import/no-extraneous-dependencies */
+
 import { AdapterPool } from '../src/types'
+
 import getSecretsManager from '../src/secrets-manager'
 
-const mExecuteStatement = jest.fn()
-
 let pool: AdapterPool
+const connection = {
+  execute: jest.fn(),
+  query: jest.fn().mockResolvedValue([[{ secret: 'secret-value' }]]),
+  end: jest.fn()
+}
 
 beforeEach(() => {
   pool = {
-    dbClusterOrInstanceArn: 'instance-arn',
-    awsSecretStoreArn: 'secret-store-arn',
-    tableName: 'table',
-    databaseName: 'database',
-    secretsTableName: 'secrets-table',
-    coercer: jest.fn(),
-    escape: jest.fn().mockImplementation(v => `"${v}"`),
-    escapeId: jest.fn().mockImplementation(v => `"${v}-id"`),
-    executeStatement: mExecuteStatement,
-    fullJitter: jest.fn(),
-    rdsDataService: RDSDataService
+    config: {
+      database: 'database',
+      tableName: 'table-name',
+      secretsDatabase: 'secrets-database',
+      secretsTableName: 'secrets-table-name'
+    },
+    events: {
+      connection,
+      tableName: 'table-name',
+      database: 'database'
+    },
+    secrets: {
+      connection,
+      tableName: 'secrets-database',
+      database: 'secrets-table-name'
+    },
+    escape: jest.fn((v: any) => `"${v}-escaped"`),
+    escapeId: jest.fn((v: any) => `"${v}-escaped-id"`),
+    MySQL
   }
-})
-
-afterEach(() => {
-  mExecuteStatement.mockClear()
+  connection.query.mockClear()
+  connection.execute.mockClear()
 })
 
 test('secrets manager is created', async () => {
@@ -41,16 +52,16 @@ describe('get secret', () => {
   test('reading secret', async () => {
     const manager = getSecretsManager(pool)
     const { getSecret } = manager
-    mExecuteStatement.mockReturnValueOnce([{ secret: 'secret-value' }])
+
     const secret = await getSecret('secret-selector')
-    expect(mExecuteStatement.mock.calls).toMatchSnapshot(
+    expect(connection.query.mock.calls).toMatchSnapshot(
       'reading secret, secret exists'
     )
     expect(secret).toBe('secret-value')
   })
 
   test('reading secret if no secret exists', async () => {
-    mExecuteStatement.mockReturnValueOnce(null)
+    connection.query.mockReturnValueOnce([])
     const manager = getSecretsManager(pool)
     const { getSecret } = manager
 
@@ -65,7 +76,7 @@ describe('delete secret', () => {
     const { deleteSecret } = manager
 
     await deleteSecret('secret-selector')
-    expect(mExecuteStatement.mock.calls).toMatchSnapshot('secret removal')
+    expect(connection.execute.mock.calls).toMatchSnapshot('secret removal')
   })
 })
 
@@ -75,18 +86,19 @@ describe('set secret', () => {
     const { setSecret } = manager
 
     await setSecret('secret-selector', 'secret-value')
-    expect(mExecuteStatement.mock.calls).toMatchSnapshot('setting secret')
+    expect(connection.query.mock.calls).toMatchSnapshot('setting secret')
   })
+
   test('error on setting secret', async done => {
     const manager = getSecretsManager(pool)
     const { setSecret } = manager
 
-    mExecuteStatement.mockRejectedValueOnce(new Error('set-key-error'))
+    connection.query.mockRejectedValueOnce(new Error('set-key-error'))
     try {
       await setSecret('secret-selector', 'secret-value')
     } catch (error) {
-      expect(mExecuteStatement).toBeCalledTimes(1)
-      expect(mExecuteStatement.mock.calls).toMatchSnapshot(
+      expect(connection.query).toBeCalledTimes(2)
+      expect(connection.query.mock.calls).toMatchSnapshot(
         'error on setting secret'
       )
       done()

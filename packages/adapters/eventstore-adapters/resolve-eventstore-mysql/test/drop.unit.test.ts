@@ -1,4 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import MySQL from 'mysql2/promise'
 import { mocked } from 'ts-jest/utils'
 /* eslint-enable import/no-extraneous-dependencies */
 
@@ -10,30 +11,41 @@ jest.mock('../src/js/get-log')
 jest.mock('../src/js/drop', () => jest.fn())
 
 const mDropEventStore = mocked(dropEventStore)
-const mExec = jest.fn()
+const connection = {
+  execute: jest.fn(),
+  query: jest.fn(),
+  end: jest.fn()
+}
 
 let pool: AdapterPool
 
 beforeEach(() => {
   pool = {
     config: {
-      databaseFile: 'database-file',
-      secretsFile: 'secret-file',
-      secretsTableName: 'secrets-table'
+      database: 'database',
+      tableName: 'table-name',
+      secretsDatabase: 'secrets-database',
+      secretsTableName: 'secrets-table-name'
     },
-    secretsDatabase: { exec: mExec },
-    secretsTableName: 'secrets-table',
-    database: '',
-    tableName: '',
-    escape: jest.fn(),
-    escapeId: jest.fn((v: any) => `"${v}-escaped"`),
-    memoryStore: 'memory'
+    events: {
+      connection,
+      tableName: 'table-name',
+      database: 'database'
+    },
+    secrets: {
+      connection,
+      tableName: 'secrets-database',
+      database: 'secrets-table-name'
+    },
+    escape: jest.fn((v: any) => `"${v}-escaped"`),
+    escapeId: jest.fn((v: any) => `"${v}-escaped-id"`),
+    MySQL
   }
 })
 
 afterEach(() => {
   mDropEventStore.mockClear()
-  mExec.mockClear()
+  connection.execute.mockClear()
 })
 
 test('event store dropped', async () => {
@@ -45,5 +57,5 @@ test('event store dropped', async () => {
 test('secrets store dropped', async () => {
   await drop(pool)
 
-  expect(mExec.mock.calls).toMatchSnapshot('drop table with keys')
+  expect(connection.execute.mock.calls).toMatchSnapshot('drop table with keys')
 })

@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import sqlite from 'sqlite'
 import { mocked } from 'ts-jest/utils'
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-enable import/no-extraneous-dependencies */
 import { AdapterPool, AdapterSpecific } from '../src/types'
 import connect from '../src/connect'
 import connectEventStore from '../src/js/connect'
