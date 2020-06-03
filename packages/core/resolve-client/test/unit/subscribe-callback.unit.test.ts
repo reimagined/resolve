@@ -3,7 +3,7 @@ import {
   addCallback,
   removeCallback,
   dropCallbackMap
-} from '../src/subscribe_callback'
+} from '../../src/subscribe-callback'
 
 const restoreConnectionCallback = jest.fn()
 const eventCallback = jest.fn()

@@ -1,4 +1,4 @@
-import { isAbsoluteUrl } from '../src/utils'
+import { isAbsoluteUrl } from '../../src/utils'
 
 describe('isAbsoluteUrl', () => {
   test('some urls to test', () => {

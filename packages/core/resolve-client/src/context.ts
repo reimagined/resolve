@@ -1,6 +1,6 @@
-import { JSONWebTokenProvider } from './jwt_provider'
-import { ViewModel } from './view_model_types'
-import { CreateSubscribeAdapter } from './empty_subscribe_adapter'
+import { JSONWebTokenProvider } from './jwt-provider'
+import { ViewModel } from './view-model-types'
+import { CreateSubscribeAdapter } from './empty-subscribe-adapter'
 
 export type Context = {
   origin?: string

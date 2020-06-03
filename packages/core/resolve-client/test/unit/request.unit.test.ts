@@ -1,13 +1,15 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { mocked } from 'ts-jest/utils'
-import { request, VALIDATED_RESULT } from '../src/request'
-import { Context } from '../src/context'
-import determineOrigin from '../src/determine_origin'
-import { getRootBasedUrl } from '../src/utils'
-import { GenericError, HttpError } from '../src/errors'
+import { request, VALIDATED_RESULT } from '../../src/request'
+import { Context } from '../../src/context'
+import determineOrigin from '../../src/determine_origin'
+import { getRootBasedUrl } from '../../src/utils'
+import { GenericError, HttpError } from '../../src/errors'
 
-jest.mock('../src/determine_origin', () => jest.fn((origin): string => origin))
-jest.mock('../src/utils', () => ({
+jest.mock('../../src/determine_origin', () =>
+  jest.fn((origin): string => origin)
+)
+jest.mock('../../src/utils', () => ({
   getRootBasedUrl: jest.fn(() => 'http://root-based.url')
 }))
 const mFetch = jest.fn(() => ({
