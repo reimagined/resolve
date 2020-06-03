@@ -28,26 +28,26 @@ When an application runs locally, the `resolve-scripts` utility loads all necess
 
 The resolve-scripts library provides scripts that serve as entry points for the fundamental stages of a reSolve application lifecycle. The package exports the following scripts:
 
-| Script                      | Description |
-| --------------------------- | ----------- |
-| validateConfig              |             |
-| adjustWebpackReactNative    |             |
-| adjustWebpackCommonPackages |             |
-| defaultResolveConfig        |             |
-| declareRuntimeEnv           |             |
-| declareImportKey            |             |
-| declareImportKey            |             |
-| getModulesDirs              |             |
-| showBuildInfo               |             |
-| build                       |             |
-| start                       |             |
-| watch                       |             |
-| runTestcafe                 |             |
-| merge                       |             |
-| stop                        |             |
-| reset                       |             |
-| importEventStore            |             |
-| exportEventStore            |             |
+| Script                      | Description                                                                    |
+| --------------------------- | ------------------------------------------------------------------------------ |
+| build                       | Builds the application.                                                        |
+| start                       | Runs the built application.                                                    |
+| watch                       | Runs the application in **watch** mode. (Watch application files for changes.) |
+| runTestcafe                 | Runs TestCafe tests on the application.                                        |
+| merge                       | Merges modules and application configs into a single object.                   |
+| stop                        | Stops the application process.                                                 |
+| reset                       | Resets the application's persistent storages and snapshots.                    |
+| importEventStore            | Imports events from a file to the application's event store.                   |
+| exportEventStore            | Exports events from the application's event store to a file.                   |
+| validateConfig              |                                                                                |
+| adjustWebpackReactNative    |                                                                                |
+| adjustWebpackCommonPackages |                                                                                |
+| defaultResolveConfig        |                                                                                |
+| declareRuntimeEnv           |                                                                                |
+| declareImportKey            |                                                                                |
+| declareImportKey            |                                                                                |
+| getModulesDirs              |                                                                                |
+| showBuildInfo               |                                                                                |
 
 ## Adapters
 
