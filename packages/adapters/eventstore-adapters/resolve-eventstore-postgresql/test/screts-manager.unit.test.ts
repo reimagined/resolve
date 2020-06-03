@@ -1,31 +1,36 @@
-import { AdapterPool } from '../src/types'
+import { Client as Postgres } from 'pg'
+import { mocked } from 'ts-jest/utils'
 
+import { AdapterPool } from '../src/types'
 import getSecretsManager from '../src/secrets-manager'
-const mExec = jest.fn()
-const mGet = jest.fn().mockReturnValue({ secret: 'secret-value' })
+
+const mPostgres = mocked(Postgres)
+const mExecuteStatement = jest.fn()
 
 let pool: AdapterPool
 
 beforeEach(() => {
   pool = {
-    config: {
-      databaseFile: 'database-file',
-      secretsFile: 'secret-file',
-      secretsTableName: 'secrets-table'
-    },
-    secretsDatabase: { exec: mExec, get: mGet },
-    secretsTableName: 'secrets-table',
-    database: '',
-    tableName: '',
-    escape: jest.fn((v: any) => `"${v}-escaped"`),
-    escapeId: jest.fn((v: any) => `"${v}-escaped-id"`),
-    memoryStore: 'memory'
+    user: 'user',
+    database: 'database',
+    port: 'port',
+    host: 'host',
+    password: 'password',
+    databaseName: 'database-name',
+    tableName: 'table-name',
+    secretsTableName: 'secrets-table-name',
+    Postgres,
+    coercer: jest.fn(),
+    escape: jest.fn().mockImplementation(v => `"${v}"`),
+    escapeId: jest.fn().mockImplementation(v => `"${v}-id"`),
+    executeStatement: mExecuteStatement,
+    fullJitter: jest.fn()
   }
 })
 
 afterEach(() => {
-  mExec.mockClear()
-  mGet.mockClear()
+  mPostgres.mockClear()
+  mExecuteStatement.mockClear()
 })
 
 test('secrets manager is created', async () => {
@@ -41,14 +46,16 @@ describe('get secret', () => {
   test('reading secret', async () => {
     const manager = getSecretsManager(pool)
     const { getSecret } = manager
-
+    mExecuteStatement.mockReturnValueOnce([{ secret: 'secret-value' }])
     const secret = await getSecret('secret-selector')
-    expect(mGet.mock.calls).toMatchSnapshot('reading secret, secret exists')
+    expect(mExecuteStatement.mock.calls).toMatchSnapshot(
+      'reading secret, secret exists'
+    )
     expect(secret).toBe('secret-value')
   })
 
   test('reading secret if no secret exists', async () => {
-    mGet.mockReturnValueOnce(null)
+    mExecuteStatement.mockReturnValueOnce(null)
     const manager = getSecretsManager(pool)
     const { getSecret } = manager
 
@@ -63,7 +70,7 @@ describe('delete secret', () => {
     const { deleteSecret } = manager
 
     await deleteSecret('secret-selector')
-    expect(mExec.mock.calls).toMatchSnapshot('secret removal')
+    expect(mExecuteStatement.mock.calls).toMatchSnapshot('secret removal')
   })
 })
 
@@ -73,19 +80,20 @@ describe('set secret', () => {
     const { setSecret } = manager
 
     await setSecret('secret-selector', 'secret-value')
-    expect(mExec.mock.calls).toMatchSnapshot('setting secret')
+    expect(mExecuteStatement.mock.calls).toMatchSnapshot('setting secret')
   })
-
   test('error on setting secret', async done => {
     const manager = getSecretsManager(pool)
     const { setSecret } = manager
 
-    mExec.mockRejectedValueOnce(new Error('set-key-error'))
+    mExecuteStatement.mockRejectedValueOnce(new Error('set-key-error'))
     try {
       await setSecret('secret-selector', 'secret-value')
     } catch (error) {
-      expect(mExec).toBeCalledTimes(2)
-      expect(mExec.mock.calls).toMatchSnapshot('error on setting secret')
+      expect(mExecuteStatement).toBeCalledTimes(1)
+      expect(mExecuteStatement.mock.calls).toMatchSnapshot(
+        'error on setting secret'
+      )
       done()
     }
   })

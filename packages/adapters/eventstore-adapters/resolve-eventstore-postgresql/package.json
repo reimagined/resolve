@@ -33,7 +33,8 @@
   },
   "devDependencies": {
     "@types/pg": "^7.14.3",
-    "jest": "26.0.1"
+    "jest": "26.0.1",
+    "ts-jest": "^26.1.0"
   },
   "babelCompile": [
     {
