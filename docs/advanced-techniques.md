@@ -24,29 +24,6 @@ In a cloud/serverless environment, chunks like read model projections & resolver
 
 When an application runs locally, the `resolve-scripts` utility loads all necessary chunks and combines them with the runtime code.
 
-## ReSolve Scripts
-
-The resolve-scripts library provides scripts that serve as entry points for the fundamental stages of a reSolve application lifecycle. The package exports the following scripts:
-
-| Script           | Description                                                                    |
-| ---------------- | ------------------------------------------------------------------------------ |
-| build            | Builds the application.                                                        |
-| start            | Runs the built application.                                                    |
-| watch            | Runs the application in **watch** mode. (Watch application files for changes.) |
-| runTestcafe      | Runs TestCafe tests on the application.                                        |
-| merge            | Merges modules and application configs into a single object.                   |
-| stop             | Stops the application process.                                                 |
-| reset            | Resets the application's persistent storages and snapshots.                    |
-| importEventStore | Imports events from a file to the application's event store.                   |
-| exportEventStore | Exports events from the application's event store to a file.                   |
-| validateConfig   | Validates a configuration object.                                              |
-
-The resolve-scripts library also exports a `defaultResolveConfig` object that contains default reSolve configuration settings. This object is typically merged with an application's configs to receive a global configuration object:
-
-```js
-const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
-```
-
 ## Adapters
 
 ReSolve uses the **adapter** mechanism to provide an abstraction layer above APIs used by its subsystems. For instance, adapters are used to define how a reSolve application stores its data. They abstract away all direct interactions with the underlying storage, allowing reSolve to provide a unified data management API.

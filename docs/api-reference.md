@@ -405,6 +405,29 @@ await sideEffects.scheduleCommand(
 
 <!-- prettier-ignore-end -->
 
+## ReSolve Scripts
+
+The resolve-scripts library provides scripts that serve as entry points for the fundamental stages of a reSolve application lifecycle. The package exports the following scripts:
+
+| Script           | Description                                                                    |
+| ---------------- | ------------------------------------------------------------------------------ |
+| build            | Builds the application.                                                        |
+| start            | Runs the built application.                                                    |
+| watch            | Runs the application in **watch** mode. (Watch application files for changes.) |
+| runTestcafe      | Runs TestCafe tests on the application.                                        |
+| merge            | Merges modules and application configs into a single object.                   |
+| stop             | Stops the application process.                                                 |
+| reset            | Resets the application's persistent storages and snapshots.                    |
+| importEventStore | Imports events from a file to the application's event store.                   |
+| exportEventStore | Exports events from the application's event store to a file.                   |
+| validateConfig   | Validates a configuration object.                                              |
+
+The resolve-scripts library also exports a `defaultResolveConfig` object that contains default reSolve configuration settings. This object is typically merged with an application's configs to receive a global configuration object:
+
+```js
+const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+```
+
 ## Client-Side API
 
 ### HTTP API
@@ -502,7 +525,7 @@ The request body should have the `application/json` content type and contain the
 | **aggregateId**   | string | The ID of an aggregate that should handle the command |
 | **aggregateName** | string | The aggregate's name as defined in **config.app.js**  |
 | **commandType**   | string | The command type that the aggregate can handle        |
-| **payload**       | object | Parameters the command accepts               |
+| **payload**       | object | Parameters the command accepts                        |
 
 ##### Example
 
@@ -559,7 +582,7 @@ export const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       replaceUrl: routerActions.replace
@@ -568,10 +591,7 @@ export const mapDispatchToProps = (dispatch) =>
   )
 
 export default connectViewModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ShoppingList)
+  connect(mapStateToProps, mapDispatchToProps)(ShoppingList)
 )
 ```
 
@@ -596,15 +616,15 @@ export const mapStateToProps = (state, ownProps) => ({
 })
 
 export const mapDispatchToProps = dispatch =>
-  bindActionCreators({
-    createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
-  }, dispatch)
+  bindActionCreators(
+    {
+      createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
+    },
+    dispatch
+  )
 
 export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MyLists)
+  connect(mapStateToProps, mapDispatchToProps)(MyLists)
 )
 ```
 
