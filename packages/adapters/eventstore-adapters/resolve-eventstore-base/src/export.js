@@ -5,6 +5,7 @@ import {
   MAINTENANCE_MODE_AUTO,
   MAINTENANCE_MODE_MANUAL
 } from './constants'
+import getNextCursor from './get-next-cursor'
 
 const injectString = ({ escape }, value) => `${escape(value)}`
 const injectNumber = (pool, value) => `${+value}`
@@ -15,7 +16,7 @@ function EventStream({ pool, maintenanceMode, cursor, bufferSize }) {
   this.eventsByteSize = 0
   this.pool = pool
   this.initialCursor = cursor
-  this.offset = cursor
+  this.cursor = cursor
   this.readerId = null
   this.bufferSize = bufferSize
   this.initPromise = this.pool
@@ -64,21 +65,19 @@ EventStream.prototype.processEvents = function() {
       this.rows.length = 0
       return
     } else {
-      const eventOffset = event.eventOffset
-      delete event.eventOffset
-      delete event[Symbol.for('sequenceIndex')]
-
       let chunk = Buffer.from(JSON.stringify(event) + '\n', 'utf8')
       const byteLength = chunk.byteLength
       if (this.eventsByteSize + byteLength > this.bufferSize) {
         this.isBufferOverflow = true
         chunk = null
-        this.cursor = eventOffset
-      } else {
-        this.lastEventOffset = eventOffset
       }
       this.eventsByteSize += byteLength
 
+      if(chunk != null) {
+        //console.log('prev cursor', this.cursor)
+        this.cursor = getNextCursor(this.cursor, [event])
+        //console.log('next cursor', this.cursor)
+      }
       const isPaused = this.push(chunk) === false
 
       if (isPaused) {
@@ -89,9 +88,6 @@ EventStream.prototype.processEvents = function() {
   }
 
   if (this.isLastBatch) {
-    if (this.cursor == null) {
-      this.cursor = this.offset
-    }
     this.push(null)
   }
 }
@@ -104,15 +100,22 @@ EventStream.prototype.eventReader = async function(currentReaderId) {
       if (this.readerId !== currentReaderId) {
         throw new Error('Reader thread changed before done')
       }
-      let nextRows = null
 
       if (this.hasOwnProperty('initError')) {
         throw this.initError
       }
 
-      nextRows = await this.pool.paginateEvents(this.offset, BATCH_SIZE)
+      const { events } = await this.pool.loadEventsByCursor({
+        cursor: this.cursor,
+        limit: BATCH_SIZE
+      })
 
-      if (nextRows.length === 0 && !this.isLastBatch) {
+      if (this.readerId !== currentReaderId) {
+        throw new Error('Reader thread changed before done')
+      }
+
+
+      if (events.length === 0 && !this.isLastBatch) {
         this.isLastBatch = true
         await this.endProcessEvents()
       }
@@ -121,15 +124,14 @@ EventStream.prototype.eventReader = async function(currentReaderId) {
         throw new Error('Reader thread changed before done')
       }
 
-      for (let index = 0; index < nextRows.length; index++) {
-        const event = { ...nextRows[index] }
-        event.eventOffset = this.offset + index
-        this.rows.push(event)
+      this.rows.length = 0
+      for (let index = 0; index < events.length; index++) {
+        this.rows[index] = events[index]
       }
-      this.offset += nextRows.length
 
       this.processEvents()
-      if (this.isStreamPaused || nextRows.length === 0) {
+
+      if (this.isStreamPaused || this.rows.length === 0) {
         this.readerId = null
         return
       }
@@ -155,18 +157,13 @@ EventStream.prototype._read = function() {
 EventStream.prototype.end = function() {
   this.readerId = Symbol()
   this.rows.length = 0
-  if (this.lastEventOffset == null) {
-    this.cursor = this.initialCursor
-  } else {
-    this.cursor = this.lastEventOffset + 1
-  }
   this.push(null)
 }
 
 const exportStream = (
   pool,
   {
-    cursor = 0,
+    cursor = null,
     maintenanceMode = MAINTENANCE_MODE_AUTO,
     bufferSize = Number.POSITIVE_INFINITY
   } = {}

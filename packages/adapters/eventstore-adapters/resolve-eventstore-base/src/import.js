@@ -9,12 +9,11 @@ import {
   BATCH_SIZE
 } from './constants'
 
-function EventStream({ pool, maintenanceMode, byteOffset, sequenceIndex }) {
+function EventStream({ pool, maintenanceMode, byteOffset }) {
   stream.Writable.call(this, { objectMode: true })
 
   this.pool = pool
   this.byteOffset = byteOffset
-  this.sequenceIndex = sequenceIndex
   this.buffer = Buffer.allocUnsafe(BUFFER_SIZE)
   this.beginPosition = 0
   this.endPosition = 0
@@ -36,6 +35,7 @@ EventStream.prototype = Object.create(stream.Writable.prototype)
 EventStream.prototype.constructor = stream.Writable
 
 EventStream.prototype._write = async function(chunk, encoding, callback) {
+  //console.log(chunk.toString(encoding))
   if (this.bypassMode) {
     await new Promise(resolve => setImmediate(resolve))
     callback()
@@ -68,6 +68,7 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
 
     if (chunk.byteLength + this.endPosition <= BUFFER_SIZE) {
       chunk.copy(this.buffer, this.endPosition)
+      //console.log('copy [a]', this.endPosition)
     } else {
       chunk.copy(
         this.buffer,
@@ -81,9 +82,12 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
         BUFFER_SIZE - this.endPosition,
         chunk.byteLength
       )
+      // console.log('copy [b]', this.endPosition, 0, BUFFER_SIZE - this.endPosition)
+      // console.log('copy [c]', 0, BUFFER_SIZE - this.endPosition, chunk.byteLength)
     }
     this.endPosition = (this.endPosition + chunk.byteLength) % BUFFER_SIZE
     this.vacantSize -= chunk.byteLength
+    //console.log({ endPosition: this.endPosition, vacantSize: this.vacantSize })
 
     if (this.vacantSize === BUFFER_SIZE) {
       callback()
@@ -127,7 +131,7 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
       this.byteOffset += eventByteLength
 
       const event = JSON.parse(stringifiedEvent)
-      event[Symbol.for('sequenceIndex')] = this.sequenceIndex++
+      //console.log('event', event)
       this.timestamp = Math.max(this.timestamp, event.timestamp)
 
       const saveEventPromise = saveEventOnly(event).catch(
@@ -195,7 +199,6 @@ EventStream.prototype._final = async function(callback) {
       } catch {}
 
       if (event !== PARTIAL_EVENT_FLAG) {
-        event[Symbol.for('sequenceIndex')] = this.sequenceIndex++
         this.timestamp = Math.max(this.timestamp, event.timestamp)
 
         this.byteOffset += eventByteLength
@@ -239,7 +242,6 @@ const importStream = (
   pool,
   {
     byteOffset = 0,
-    sequenceIndex = 1,
     maintenanceMode = MAINTENANCE_MODE_AUTO
   } = {}
 ) => {
@@ -249,8 +251,7 @@ const importStream = (
       return new EventStream({
         pool,
         maintenanceMode,
-        byteOffset,
-        sequenceIndex
+        byteOffset
       })
     default:
       throw new Error(`Wrong maintenance mode ${maintenanceMode}`)

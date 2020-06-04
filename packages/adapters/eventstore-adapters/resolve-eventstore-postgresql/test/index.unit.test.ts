@@ -13,7 +13,6 @@ import saveEvent from '../src/js/save-event'
 import fullJitter from '../src/js/full-jitter'
 import executeStatement from '../src/js/execute-statement'
 import saveEventOnly from '../src/js/save-event-only'
-import paginateEvents from '../src/js/paginate-events'
 import coercer from '../src/js/coercer'
 import escapeId from '../src/js/escape-id'
 import escape from '../src/js/escape'
@@ -66,7 +65,6 @@ test('generic createAdapter invoked', () => {
     fullJitter,
     executeStatement,
     saveEventOnly,
-    paginateEvents,
     coercer,
     shapeEvent,
     getSecretsManager
