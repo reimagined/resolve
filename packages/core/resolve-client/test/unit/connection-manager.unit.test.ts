@@ -1,4 +1,4 @@
-import createConnectionManager from '../src/connection_manager'
+import createConnectionManager from '../../src/connection-manager'
 
 describe('createConnectionManager', () => {
   test('instance created', () => {

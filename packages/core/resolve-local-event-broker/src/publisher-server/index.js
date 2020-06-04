@@ -14,6 +14,7 @@ import status from './broker/status'
 import resume from './broker/resume'
 import pause from './broker/pause'
 import reset from './broker/reset'
+import interopProperty from './broker/interop-property'
 import read from './broker/read'
 
 // functions
@@ -82,6 +83,7 @@ export default createAndInitPublisher.bind(null, {
     resume,
     pause,
     reset,
+    interopProperty,
     read
   }
 })

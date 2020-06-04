@@ -58,7 +58,8 @@ exports[`Broker operation reset 1`] = `
     \\"subscribers\\".\\"deliveryStrategy\\" AS \\"deliveryStrategy\\",
     \\"subscribers\\".\\"queueStrategy\\" AS \\"queueStrategy\\",
     \\"subscribers\\".\\"eventTypes\\" AS \\"eventTypes\\",
-    \\"subscribers\\".\\"aggregateIds\\" AS \\"aggregateIds\\"
+    \\"subscribers\\".\\"aggregateIds\\" AS \\"aggregateIds\\",
+    \\"subscribers\\".\\"properties\\" AS \\"properties\\"
     FROM \\"subscribers\\"
     WHERE \\"eventSubscriber\\" = 'eventSubscriber'
   ",
@@ -96,6 +97,7 @@ exports[`Broker operation reset 2`] = `
       \\"deliveryStrategy\\",
       \\"eventTypes\\",
       \\"aggregateIds\\",
+      \\"properties\\",
       \\"queueStrategy\\",
       \\"maxParallel\\",
       \\"successEvent\\",
@@ -109,6 +111,7 @@ exports[`Broker operation reset 2`] = `
       'active-xa-transaction',
       '{ \\"eventTypes\\": true }',
       '{ \\"aggregateIds\\": true }',
+      'null',
       'none',
       1,
       NULL,
@@ -586,8 +589,41 @@ exports[`Core operation push notification 1`] = `
     WHERE \\"insertionId\\" = 'YWdncmVnYXRlSWRhZ2dyZWdhdGVWZXJzaW9uMTIAAAAAAAAAAAAAAAAAAAAAAAAA'
   ",
     ],
+    Array [
+      "
+    SELECT \\"subscribers\\".\\"eventSubscriber\\" AS \\"eventSubscriber\\"
+    FROM \\"subscribers\\"
+    WHERE \\"subscribers\\".\\"status\\" = 'deliver'
+    AND \\"subscribers\\".\\"deliveryStrategy\\" = 'passthrough'
+    AND (
+      json_extract(
+        \\"subscribers\\".\\"eventTypes\\",
+        '$.\\"busEvent\\"'
+      ) = 1 OR
+      json_extract(
+        \\"subscribers\\".\\"eventTypes\\", '$'
+      ) IS NULL
+    ) AND ( 
+      json_extract(
+        \\"subscribers\\".\\"aggregateIds\\",
+        '$.\\"aggregateId\\"'
+      ) = 1 OR
+      json_extract(
+        \\"subscribers\\".\\"aggregateIds\\", '$'
+      ) IS NULL
+    )
+  ",
+    ],
   ],
   "results": Array [
+    Object {
+      "type": "return",
+      "value": Array [
+        Object {
+          "subscriptionId": "subscriptionId",
+        },
+      ],
+    },
     Object {
       "type": "return",
       "value": Array [
@@ -604,38 +640,57 @@ exports[`Core operation push notification 2`] = `
 [MockFunction] {
   "calls": Array [
     Array [
-      "INSERT INTO \\"notifications\\"(
-        \\"insertionId\\",
-        \\"subscriptionId\\",
-        \\"incomingTimestamp\\",
-        \\"processStartTimestamp\\",
-        \\"processEndTimestamp\\",
-        \\"heartbeatTimestamp\\",
-        \\"aggregateIdAndVersion\\",
-        \\"status\\"
-      ) SELECT 
-        'YWdncmVnYXRlSWRhZ2dyZWdhdGVWZXJzaW9uMTIAAAAAAAAAAAAAAAAAAAAAAAAA' AS \\"insertionId\\",
-        \\"subscriptionIds\\".\\"subscriptionId\\" AS \\"subscriptionId\\",
-        CAST(strftime('%s','now') || substr(strftime('%f','now'),4) AS BIGINT) AS \\"incomingTimestamp\\",
-        NULL AS \\"processStartTimestamp\\",
-        NULL AS \\"processEndTimestamp\\",
-        NULL AS \\"heartbeatTimestamp\\",
-        'aggregateId:aggregateVersion' AS \\"aggregateIdAndVersion\\",
-        'received-notification' AS \\"status\\"
-      FROM (
-        SELECT \\"subscribers\\".\\"subscriptionId\\"
-        FROM \\"subscribers\\"
-        WHERE \\"subscribers\\".\\"status\\" = 'deliver' AND (
-          json_extract(\\"subscribers\\".\\"eventTypes\\", '$.\\"busEvent\\"') = 1 OR
-          json_extract(\\"subscribers\\".\\"eventTypes\\", '$') IS NULL
-        ) AND ( 
-          json_extract(\\"subscribers\\".\\"aggregateIds\\", '$.\\"aggregateId\\"') = 1 OR
-          json_extract(\\"subscribers\\".\\"aggregateIds\\", '$') IS NULL
-        )
-      ) \\"subscriptionIds\\";
+      "
+    INSERT OR IGNORE INTO \\"notifications\\"(
+      \\"insertionId\\",
+      \\"subscriptionId\\",
+      \\"incomingTimestamp\\",
+      \\"processStartTimestamp\\",
+      \\"processEndTimestamp\\",
+      \\"heartbeatTimestamp\\",
+      \\"aggregateIdAndVersion\\",
+      \\"status\\"
+    ) SELECT 
+      'YWdncmVnYXRlSWRhZ2dyZWdhdGVWZXJzaW9uMTIAAAAAAAAAAAAAAAAAAAAAAAAA' AS \\"insertionId\\",
+      \\"subscriptionIds\\".\\"subscriptionId\\" AS \\"subscriptionId\\",
+      CAST(strftime('%s','now') || substr(strftime('%f','now'),4) AS BIGINT) AS \\"incomingTimestamp\\",
+      NULL AS \\"processStartTimestamp\\",
+      NULL AS \\"processEndTimestamp\\",
+      NULL AS \\"heartbeatTimestamp\\",
+      'aggregateId:aggregateVersion' AS \\"aggregateIdAndVersion\\",
+      'received-notification' AS \\"status\\"
+    FROM (
+      SELECT \\"subscribers\\".\\"subscriptionId\\"
+      FROM \\"subscribers\\"
+      WHERE \\"subscribers\\".\\"status\\" = 'deliver'
+      AND \\"subscribers\\".\\"deliveryStrategy\\" <> 'passthrough'
+      AND (
+        json_extract(
+          \\"subscribers\\".\\"eventTypes\\",
+          '$.\\"busEvent\\"'
+        ) = 1 OR
+        json_extract(
+          \\"subscribers\\".\\"eventTypes\\", '$'
+        ) IS NULL
+      ) AND ( 
+        json_extract(
+          \\"subscribers\\".\\"aggregateIds\\",
+          '$.\\"aggregateId\\"'
+        ) = 1 OR
+        json_extract(
+          \\"subscribers\\".\\"aggregateIds\\", '$'
+        ) IS NULL
+      ) AND NOT EXISTS (
+        SELECT \\"notifications\\".\\"subscriptionId\\"
+        FROM \\"notifications\\"
+        WHERE \\"notifications\\".\\"subscriptionId\\" =
+        \\"notifications\\"
+        AND \\"notifications\\".\\"batchId\\" IS NULL
+      )
+    ) \\"subscriptionIds\\";
 
-      COMMIT;
-      BEGIN IMMEDIATE;
+    COMMIT;
+    BEGIN IMMEDIATE;
   ",
     ],
   ],
@@ -799,6 +854,7 @@ exports[`Core operation resume subscriber 2`] = `
         FROM \\"subscribers\\"
         WHERE \\"eventSubscriber\\" = 'eventSubscriber'
         AND \\"status\\" = 'deliver'
+        AND \\"deliveryStrategy\\" <> 'passthrough'
       ) \\"subscriptionIds\\";
 
       COMMIT;

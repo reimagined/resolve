@@ -1,15 +1,15 @@
 jest.useFakeTimers()
 
 /* eslint-disable import/first */
-import * as subscribe from '../src/subscribe'
-import { rootCallback } from '../src/subscribe_callback'
-import { Context } from '../src/context'
-import { CreateSubscribeAdapter } from '../src/empty_subscribe_adapter'
+import * as subscribe from '../../src/subscribe'
+import { rootCallback } from '../../src/subscribe-callback'
+import { Context } from '../../src/context'
+import { CreateSubscribeAdapter } from '../../src/empty-subscribe-adapter'
 /* eslint-enable */
 
 const { doSubscribe, doUnsubscribe, dropSubscribeAdapterPromise } = subscribe
 
-jest.mock('../src/empty_subscribe_adapter')
+jest.mock('../../src/empty-subscribe-adapter')
 
 let mFetch: any
 

@@ -11,10 +11,10 @@ export default {
   eventstoreAdapter: {
     module: 'resolve-eventstore-postgresql-serverless',
     options: {
-      awsSecretStoreArn: declareRuntimeEnv('RESOLVE_ES_SECRET_STORE_ARN'),
+      awsSecretStoreArn: declareRuntimeEnv('RESOLVE_ES_SECRET_ARN'),
       dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_ES_CLUSTER_ARN'),
       databaseName: declareRuntimeEnv('RESOLVE_ES_DATABASE'),
-      tableName: declareRuntimeEnv('RESOLVE_ES_TABLE'),
+      tableName: declareRuntimeEnv('RESOLVE_ES_EVENTS_TABLE'),
       region: declareRuntimeEnv('AWS_REGION')
     }
   }

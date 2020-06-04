@@ -52,25 +52,47 @@ const resetDomainHandler = options => async (req, res) => {
       ])
     }
 
+    const dropReadModelsSagasErrors = []
+    if (dropReadModels) {
+      for (const { name } of readModels) {
+        try {
+          await publisher.reset({ eventSubscriber: name })
+        } catch (error) {
+          dropReadModelsSagasErrors.push(error)
+        }
+      }
+    }
+
+    if (dropSagas) {
+      for (const { name } of [...sagas, ...schedulers]) {
+        try {
+          await publisher.reset({ eventSubscriber: name })
+        } catch (error) {
+          dropReadModelsSagasErrors.push(error)
+        }
+      }
+    }
+
     if (dropEventBus) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        dropReadModelsSagasErrors.map(error => error.message).join('\n')
+      )
+
       await invokeFilterErrorTypes(publisher.drop.bind(publisher), [
         PublisherResourceNotExistError
       ])
       await invokeFilterErrorTypes(publisher.init.bind(publisher), [
         PublisherResourceAlreadyExistError
       ])
-    }
-
-    if (dropReadModels) {
-      for (const { name } of readModels) {
-        await publisher.reset({ eventSubscriber: name })
-      }
-    }
-
-    if (dropSagas) {
-      for (const { name } of [...sagas, ...schedulers]) {
-        await publisher.reset({ eventSubscriber: name })
-      }
+    } else {
+      const compositeError = new Error(
+        dropReadModelsSagasErrors.map(error => error.message).join('\n')
+      )
+      compositeError.stack = dropReadModelsSagasErrors
+        .map(error => error.stack)
+        .join('\n')
+      throw compositeError
     }
 
     res.end('ok')

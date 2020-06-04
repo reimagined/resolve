@@ -53,12 +53,12 @@ const appConfig = {
   ],
   apiHandlers: [
     {
-      controller: 'common/api-handlers/get-personal-key.js',
+      handler: 'common/api-handlers/get-personal-key.js',
       path: '/api/personal-data-keys/:userId',
       method: 'GET'
     },
     {
-      controller: 'common/api-handlers/delete-personal-key.js',
+      handler: 'common/api-handlers/delete-personal-key.js',
       path: '/api/personal-data-keys/:userId',
       method: 'DELETE'
     }

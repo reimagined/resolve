@@ -70,6 +70,13 @@ const bootstrap = async resolve => {
     promises.push(subscribePromise)
 
     const resumePromise = subscribePromise
+      .then(
+        publisher.setProperty.bind(publisher, {
+          eventSubscriber,
+          key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
+          value: `${Date.now()}`
+        })
+      )
       .then(publisher.resume.bind(publisher, { eventSubscriber }))
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -83,6 +90,16 @@ const bootstrap = async resolve => {
   }
 
   await Promise.all(promises)
+
+  await publisher.subscribe({
+    eventSubscriber: 'websocket',
+    subscriptionOptions: {
+      credentials: resolve.eventSubscriberCredentials,
+      deliveryStrategy: 'passthrough'
+    }
+  })
+
+  await publisher.resume({ eventSubscriber: 'websocket' })
 
   log.debug('bootstrap successful')
 

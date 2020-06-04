@@ -2,14 +2,14 @@
 import { isEqual } from 'lodash'
 import { mocked } from 'ts-jest/utils'
 /* eslint-enable import/no-extraneous-dependencies */
-import { Client, getClient } from '../src/client'
-import { Context } from '../src/context'
-import { NarrowedResponse, request, VALIDATED_RESULT } from '../src/request'
+import { Client, getClient } from '../../src/client'
+import { Context } from '../../src/context'
+import { NarrowedResponse, request, VALIDATED_RESULT } from '../../src/request'
 
-jest.mock('../src/request', () => ({
+jest.mock('../../src/request', () => ({
   request: jest.fn()
 }))
-jest.mock('../src/subscribe', () => ({}))
+jest.mock('../../src/subscribe', () => ({}))
 
 const createMockResponse = (overrides: object = {}): NarrowedResponse => ({
   ok: true,

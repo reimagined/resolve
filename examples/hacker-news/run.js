@@ -70,6 +70,7 @@ void (async () => {
         const resolveConfig = merge(baseConfig, devConfig, moduleAdmin)
         await reset(resolveConfig, {
           dropEventStore: false,
+          dropEventBus: true,
           dropSnapshots: true,
           dropReadModels: true,
           dropSagas: true
@@ -159,7 +160,7 @@ void (async () => {
             {
               method: 'POST',
               path: '/api/import_events',
-              controller: {
+              handler: {
                 module: 'import/import_api_handler.js',
                 options: {}
               }

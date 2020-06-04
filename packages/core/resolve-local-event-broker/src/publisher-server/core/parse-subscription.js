@@ -24,7 +24,8 @@ function parseSubscription(subscriptionDescription, allowedKeys) {
     isEventBasedRun: TRANSFORM_NONE_SYMBOL,
     hasErrors: TRANSFORM_NONE_SYMBOL,
     maxParallel: TRANSFORM_NONE_SYMBOL,
-    scopeName: TRANSFORM_NONE_SYMBOL
+    scopeName: TRANSFORM_NONE_SYMBOL,
+    properties: TRANSFORM_JSON_REGULAR_SYMBOL
   }
   for (const key of Object.keys(subscriptionOptions)) {
     if (Array.isArray(allowedKeys) && allowedKeys.indexOf(key) < 0) {

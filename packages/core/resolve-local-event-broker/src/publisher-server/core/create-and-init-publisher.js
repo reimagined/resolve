@@ -27,26 +27,14 @@ const createAndInitPublisher = async (
     resume: broker.resume.bind(null, pool),
     pause: broker.pause.bind(null, pool),
     reset: broker.reset.bind(null, pool),
+    listProperties: broker.interopProperty.bind(null, pool, 'listProperties'),
+    getProperty: broker.interopProperty.bind(null, pool, 'getProperty'),
+    setProperty: broker.interopProperty.bind(null, pool, 'setProperty'),
+    deleteProperty: broker.interopProperty.bind(null, pool, 'deleteProperty'),
     read: broker.read.bind(null, pool),
     init: lifecycle.createDatabase.bind(null, pool),
     drop: lifecycle.dropDatabase.bind(null, pool),
-    dispose: pool.database.dispose,
-
-    // TODO restore
-    listProperties: async eventSubscriber => {
-      void eventSubscriber
-      return []
-    },
-    getProperty: async (eventSubscriber, key) => {
-      void (eventSubscriber, key)
-      return null
-    },
-    setProperty: async (eventSubscriber, key, value) => {
-      void (eventSubscriber, key, value)
-    },
-    deleteProperty: async (eventSubscriber, key) => {
-      void (eventSubscriber, key)
-    }
+    dispose: pool.database.dispose
   }
 
   const api = await functions.createServer({

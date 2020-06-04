@@ -115,16 +115,25 @@ const createAndInitConsumer = async config => {
     eventSubscriber,
     batchId,
     xaTransactionId,
+    properties,
     events
   }) => {
-    // TODO restore
-    const properties = {
-      RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: 0
-    }
     const currentResolve = Object.create(baseResolve)
     let result = null
     try {
       await initResolve(currentResolve)
+
+      // TODO segragate passthough subscribers
+      if (batchId == null && eventSubscriber === 'websocket') {
+        for (const event of events) {
+          await currentResolve.pubsubManager.dispatch({
+            topicName: event.type,
+            topicId: event.aggregateId,
+            event
+          })
+        }
+        return
+      }
 
       const listenerInfo = currentResolve.eventListeners.get(eventSubscriber)
       if (listenerInfo == null) {

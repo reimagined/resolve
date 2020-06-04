@@ -1,9 +1,9 @@
 import window from 'global/window'
-import createConnectionManager from './connection_manager'
-import createEmptySubscribeAdapter from './empty_subscribe_adapter'
+import createConnectionManager from './connection-manager'
+import createEmptySubscribeAdapter from './empty-subscribe-adapter'
 import { Context } from './context'
-import { rootCallback, addCallback, removeCallback } from './subscribe_callback'
-import determineOrigin from './determine_origin'
+import { rootCallback, addCallback, removeCallback } from './subscribe-callback'
+import determineOrigin from './determine-origin'
 import { GenericError } from './errors'
 import { request } from './request'
 

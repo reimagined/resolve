@@ -19,7 +19,7 @@ const createModule = options => {
     apiHandlers: [
       {
         path: '/api/uploader/getFormUpload',
-        controller: {
+        handler: {
           module: 'resolve-module-uploader/lib/api-handlers/getFormUpload.js',
           options: apiHandlerOptions
         },
@@ -27,7 +27,7 @@ const createModule = options => {
       },
       {
         path: '/api/uploader/getUploadUrl',
-        controller: {
+        handler: {
           module: 'resolve-module-uploader/lib/api-handlers/getUploadUrl.js',
           options: apiHandlerOptions
         },
@@ -35,7 +35,7 @@ const createModule = options => {
       },
       {
         path: '/api/uploader/getToken',
-        controller: {
+        handler: {
           module: 'resolve-module-uploader/lib/api-handlers/getToken.js',
           options: apiHandlerOptions
         },
