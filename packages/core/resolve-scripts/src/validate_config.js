@@ -57,9 +57,7 @@ export const validateApiHandlers = resolveConfig => {
     }
 
     if (checkRuntimeEnv(apiHandler.handler)) {
-      throw new Error(
-        `${message.clientEnvError}.apiHandlers[${idx}].handler`
-      )
+      throw new Error(`${message.clientEnvError}.apiHandlers[${idx}].handler`)
     }
 
     try {

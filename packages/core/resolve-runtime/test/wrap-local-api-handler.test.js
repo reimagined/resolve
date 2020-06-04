@@ -2,7 +2,7 @@ import escapeRegExp from 'lodash.escaperegexp'
 import path from 'path'
 import sinon from 'sinon'
 
-import wrapApiHandler from '../src'
+import wrapApiHandler from '../src/local/wrap-api-handler'
 
 const stringifyAndNormalizePaths = value => {
   const source = (() => {
@@ -16,7 +16,7 @@ const stringifyAndNormalizePaths = value => {
     }
   })()
 
-  const monorepoDir = path.resolve(__dirname, '../../../../../')
+  const monorepoDir = path.resolve(__dirname, '../../../../')
   const relativeSource = source.replace(
     new RegExp(escapeRegExp(monorepoDir), 'gi'),
     '<MONOREPO_DIR>'
@@ -39,13 +39,45 @@ const extractInvocationInfo = sinonStub => {
   return result
 }
 
-describe('API handler wrapper for AWS Lambda', () => {
-  let lambdaEvent, lambdaContext, lambdaCallback, getCustomParams
+describe('API handler wrapper for express.js', () => {
+  let expressReq, expressRes, httpBodyPromise, resolveHttpBody, getCustomParams
 
   beforeEach(() => {
+    httpBodyPromise = new Promise(resolve => (resolveHttpBody = resolve))
     getCustomParams = sinon.stub().callsFake(() => ({ param: 'value' }))
 
-    lambdaEvent = Object.create(null, {
+    expressReq = Object.create(null, {
+      on: {
+        value: sinon.stub().callsFake((event, callback) => {
+          if (event === 'data') {
+            httpBodyPromise.then(
+              bodyChunks =>
+                Array.isArray(bodyChunks) ? bodyChunks.map(callback) : null,
+              () => null
+            )
+          } else if (event === 'end') {
+            httpBodyPromise.then(callback, callback)
+          } else if (event === 'error') {
+            httpBodyPromise.catch(callback)
+          }
+        }),
+        enumerable: true
+      },
+      method: {
+        value: 'HTTP-VERB',
+        enumerable: true
+      },
+      query: {
+        value: {
+          'query-name-1': 'query-value-1',
+          'query-name-2': 'query-value-2'
+        },
+        enumerable: true
+      },
+      path: {
+        value: 'PATH_INFO',
+        enumerable: true
+      },
       headers: {
         value: {
           'header-name-1': 'header-value-1',
@@ -54,36 +86,22 @@ describe('API handler wrapper for AWS Lambda', () => {
           host: 'host-content'
         },
         enumerable: true
-      },
-      path: {
-        value: 'PATH_INFO',
-        enumerable: true
-      },
-      body: {
-        value: 'BODY_CONTENT',
-        enumerable: true
-      },
-      multiValueQueryStringParameters: {
-        value: {
-          'query-name-1': 'query-value-1',
-          'query-name-2': 'query-value-2'
-        },
-        enumerable: true
-      },
-      httpMethod: {
-        value: 'GET',
-        enumerable: true
       }
     })
-    lambdaContext = null
-    lambdaCallback = sinon.stub()
+
+    expressRes = {
+      status: sinon.stub().callsFake(() => expressRes),
+      set: sinon.stub().callsFake(() => expressRes),
+      end: sinon.stub().callsFake(() => expressRes)
+    }
   })
 
   afterEach(() => {
     getCustomParams = null
-    lambdaEvent = null
-    lambdaContext = null
-    lambdaCallback = null
+    httpBodyPromise = null
+    resolveHttpBody = null
+    expressReq = null
+    expressRes = null
   })
 
   const apiJsonHandler = async (req, res) => {
@@ -175,78 +193,133 @@ describe('API handler wrapper for AWS Lambda', () => {
     res.status(200).end()
   }
 
-  const apiReturnRequestHandler = async (req, res) => {
-    res.json(req)
-  }
-
   it('should work with primitive JSON handler with GET client request', async () => {
     const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
+    resolveHttpBody(null)
+    await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 
     expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
   })
 
   it('should work with primitive JSON handler with POST client request', async () => {
     const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
+    resolveHttpBody([
+      Buffer.from('Body partition one'),
+      Buffer.from('Body partition two')
+    ])
+    await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 
     expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
   })
 
   it('should work with text handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiTextHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
+    resolveHttpBody(null)
+    await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 
     expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
   })
 
   it('should work with custom handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiCustomHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
+    resolveHttpBody(null)
+    await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 
     expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
   })
 
   it('should work with file handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiFileHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
+    resolveHttpBody(null)
+    await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 
     expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
   })
 
   it('should work with redirect handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiRedirectHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
+    resolveHttpBody(null)
+    await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 
     expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
   })
 
   it('should work with error throwing handler', async () => {
     const wrappedHandler = wrapApiHandler(apiThrowHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
+    resolveHttpBody(null)
+    await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 
     expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
   })
 
   it('should work with empty end', async () => {
     const wrappedHandler = wrapApiHandler(apiEmptyEndHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
+    resolveHttpBody(null)
+    await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 
     expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
   })
@@ -256,39 +329,17 @@ describe('API handler wrapper for AWS Lambda', () => {
       apiEmptyEndChainingHandler,
       getCustomParams
     )
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
+    resolveHttpBody(null)
+    await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 
     expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
-  })
-
-  it('should correctly parsing query with array params', async () => {
-    const wrappedHandler = wrapApiHandler(
-      apiReturnRequestHandler,
-      getCustomParams
-    )
-    const customEvent = {
-      ...lambdaEvent,
-      multiValueQueryStringParameters: {
-        'a[]': ['1', '2'],
-        b: ['1', '2'],
-        c: ['[1,2]'],
-        d: ['1,2'],
-        'e[]': ['1,2'],
-        'f[]': ['1']
-      }
-    }
-    const { body } = await wrappedHandler(customEvent, lambdaContext)
-    const query = JSON.parse(body).query
-
-    expect(query).toEqual({
-      a: ['1', '2'],
-      b: ['1', '2'],
-      c: '[1,2]',
-      d: '1,2',
-      e: ['1,2'],
-      f: ['1']
-    })
   })
 })

@@ -17,14 +17,6 @@ const devConfig = {
     }
     /*
       default: {
-        module: 'resolve-readmodel-mongo',
-        options: {
-          url: 'mongodb://127.0.0.1:27017/MyDatabaseName',
-        }
-      }
-    */
-    /*
-      default: {
         module: 'resolve-readmodel-mysql',
         options: {
           host: 'localhost',
@@ -62,15 +54,6 @@ const devConfig = {
       databaseFile: 'data/event-store.db'
     }
   },
-  /*
-    {
-      module: 'resolve-eventstore-mongo',
-      options: {
-        url: 'mongodb://127.0.0.1:27017/MyDatabaseName',
-        collectionName: 'Events'
-      }
-    }
-  */
   /*
     {
       module: 'resolve-eventstore-mysql',

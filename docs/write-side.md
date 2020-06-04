@@ -183,7 +183,6 @@ storageAdapter: {
 Adapters for the following storage types are available out of the box:
 
 - [File or memory](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-eventstore-lite)
-- [MongoDB](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-eventstore-mongo)
 - [MySQL](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-eventstore-mysql)
 
 You can also add your own storage adapter to store events.

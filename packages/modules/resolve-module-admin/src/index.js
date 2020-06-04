@@ -15,20 +15,17 @@ const createModule = () => {
       },
       {
         path: '/api/event-broker/pause',
-        handler:
-          'resolve-module-admin/lib/api-handlers/event-broker-pause.js',
+        handler: 'resolve-module-admin/lib/api-handlers/event-broker-pause.js',
         method: 'GET'
       },
       {
         path: '/api/event-broker/resume',
-        handler:
-          'resolve-module-admin/lib/api-handlers/event-broker-resume.js',
+        handler: 'resolve-module-admin/lib/api-handlers/event-broker-resume.js',
         method: 'GET'
       },
       {
         path: '/api/event-broker/reset',
-        handler:
-          'resolve-module-admin/lib/api-handlers/event-broker-reset.js',
+        handler: 'resolve-module-admin/lib/api-handlers/event-broker-reset.js',
         method: 'GET'
       },
       {
