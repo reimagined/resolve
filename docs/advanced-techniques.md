@@ -28,26 +28,24 @@ When an application runs locally, the `resolve-scripts` utility loads all necess
 
 The resolve-scripts library provides scripts that serve as entry points for the fundamental stages of a reSolve application lifecycle. The package exports the following scripts:
 
-| Script                      | Description                                                                    |
-| --------------------------- | ------------------------------------------------------------------------------ |
-| build                       | Builds the application.                                                        |
-| start                       | Runs the built application.                                                    |
-| watch                       | Runs the application in **watch** mode. (Watch application files for changes.) |
-| runTestcafe                 | Runs TestCafe tests on the application.                                        |
-| merge                       | Merges modules and application configs into a single object.                   |
-| stop                        | Stops the application process.                                                 |
-| reset                       | Resets the application's persistent storages and snapshots.                    |
-| importEventStore            | Imports events from a file to the application's event store.                   |
-| exportEventStore            | Exports events from the application's event store to a file.                   |
-| validateConfig              | Validates a configuration object.                                              |
-| adjustWebpackReactNative    |                                                                                |
-| adjustWebpackCommonPackages |                                                                                |
-| defaultResolveConfig        |                                                                                |
-| declareRuntimeEnv           | Obtains an environment variable's value.                                       |
-| declareImportKey            |                                                                                |
-| checkImportKey              |                                                                                |
-| getModulesDirs              | Get directories that contain modules used by reSolve.                          |
-| showBuildInfo               |                                                                                |
+| Script           | Description                                                                    |
+| ---------------- | ------------------------------------------------------------------------------ |
+| build            | Builds the application.                                                        |
+| start            | Runs the built application.                                                    |
+| watch            | Runs the application in **watch** mode. (Watch application files for changes.) |
+| runTestcafe      | Runs TestCafe tests on the application.                                        |
+| merge            | Merges modules and application configs into a single object.                   |
+| stop             | Stops the application process.                                                 |
+| reset            | Resets the application's persistent storages and snapshots.                    |
+| importEventStore | Imports events from a file to the application's event store.                   |
+| exportEventStore | Exports events from the application's event store to a file.                   |
+| validateConfig   | Validates a configuration object.                                              |
+
+The resolve-scripts library also exports a `defaultResolveConfig` object that contains default reSolve configuration settings. This object is typically merged with an application's configs to receive a global configuration object:
+
+```js
+const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+```
 
 ## Adapters
 
