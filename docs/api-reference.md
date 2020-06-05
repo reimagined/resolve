@@ -405,9 +405,9 @@ await sideEffects.scheduleCommand(
 
 <!-- prettier-ignore-end -->
 
-## ReSolve Scripts
+## reSolve Scripts
 
-The resolve-scripts library provides scripts that serve as entry points for the fundamental stages of a reSolve application lifecycle. The package exports the following scripts:
+The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) library provides scripts that serve as entry points for the fundamental stages of a reSolve application lifecycle. The package exports the following scripts:
 
 | Script           | Description                                                                    |
 | ---------------- | ------------------------------------------------------------------------------ |
@@ -426,6 +426,96 @@ The resolve-scripts library also exports a `defaultResolveConfig` object that co
 
 ```js
 const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+```
+
+### build
+
+Builds the application.
+
+#### Example
+
+```js
+```
+
+### start
+
+Runs the built application.
+
+#### Example
+
+```js
+```
+
+### watch
+
+Runs the application in **watch** mode. (Watch application files for changes.)
+
+#### Example
+
+```js
+```
+
+### runTestcafe
+
+Runs TestCafe tests on the application.
+
+#### Example
+
+```js
+```
+
+### merge
+
+Merges modules and application configs into a single object.
+
+#### Example
+
+```js
+```
+
+### stop
+
+Stops the application process.
+
+#### Example
+
+```js
+```
+
+### reset
+
+Resets the application's persistent storages and snapshots.
+
+#### Example
+
+```js
+```
+
+### importEventStore
+
+Imports events from a file to the application's event store.
+
+#### Example
+
+```js
+```
+
+### exportEventStore
+
+Exports events from the application's event store to a file.
+
+#### Example
+
+```js
+```
+
+### validateConfig
+
+Validates a configuration object.
+
+#### Example
+
+```js
 ```
 
 ## Client-Side API
