@@ -435,6 +435,19 @@ Builds the application.
 #### Example
 
 ```js
+import {
+  build,
+  ...
+} from 'resolve-scripts'
+
+switch (launchMode) {
+  case 'build': {
+    const resolveConfig = merge(baseConfig, prodConfig)
+    await build(resolveConfig)
+    break
+  }
+  ...
+}
 ```
 
 ### start
@@ -444,6 +457,18 @@ Runs the built application.
 #### Example
 
 ```js
+import {
+  start,
+  ...
+} from 'resolve-scripts'
+
+switch (launchMode) {
+  case 'start': {
+    await start(merge(baseConfig, prodConfig))
+    break
+  }
+  ...
+}
 ```
 
 ### watch
@@ -453,6 +478,19 @@ Runs the application in **watch** mode. (Watch application files for changes.)
 #### Example
 
 ```js
+import {
+  watch,
+  ...
+} from 'resolve-scripts'
+
+switch (launchMode) {
+  case 'dev': {
+    const resolveConfig = merge(baseConfig, devConfig)
+    await watch(resolveConfig)
+    break
+  }
+  ...
+}
 ```
 
 ### runTestcafe
@@ -462,6 +500,23 @@ Runs TestCafe tests on the application.
 #### Example
 
 ```js
+import {
+  runTestcafe,
+  ...
+} from 'resolve-scripts'
+
+switch (launchMode) {
+  case 'test:functional': {
+    const resolveConfig = merge(baseConfig, testFunctionalConfig)
+    await runTestcafe({
+      resolveConfig,
+      functionalTestsDir: 'test/functional',
+      browser: process.argv[3]
+    })
+    break
+  }
+  ...
+}
 ```
 
 ### merge
@@ -471,6 +526,12 @@ Merges modules and application configs into a single object.
 #### Example
 
 ```js
+import {
+  merge,
+  ...
+} from 'resolve-scripts'
+
+const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
 ```
 
 ### stop
@@ -480,6 +541,16 @@ Stops the application process.
 #### Example
 
 ```js
+import {
+  stop,
+  ...
+} from 'resolve-scripts'
+
+try {
+  ...
+} catch(error) {
+  await stop(error)
+}
 ```
 
 ### reset
@@ -489,6 +560,24 @@ Resets the application's persistent storages and snapshots.
 #### Example
 
 ```js
+import {
+  reset,
+  ...
+} from 'resolve-scripts'
+
+switch (launchMode) {
+  case 'reset': {
+    const resolveConfig = merge(baseConfig, devConfig)
+    await reset(resolveConfig, {
+      dropEventStore: true,
+      dropSnapshots: true,
+      dropReadModels: true,
+      dropSagas: true
+    })
+    break
+  }
+  ...
+}
 ```
 
 ### importEventStore
@@ -498,6 +587,21 @@ Imports events from a file to the application's event store.
 #### Example
 
 ```js
+import {
+  importEventStore,
+  ...
+} from 'resolve-scripts'
+
+switch (launchMode) {
+  case 'import-event-store': {
+    const resolveConfig = merge(baseConfig, devConfig)
+
+    const importFile = process.argv[3]
+    await importEventStore(resolveConfig, { importFile })
+    break
+  }
+  ...
+}
 ```
 
 ### exportEventStore
@@ -507,6 +611,21 @@ Exports events from the application's event store to a file.
 #### Example
 
 ```js
+import {
+  exportEventStore,
+  ...
+} from 'resolve-scripts'
+
+switch (launchMode) {
+  case 'export-event-store': {
+    const resolveConfig = merge(baseConfig, devConfig)
+
+    const exportFile = process.argv[3]
+    await exportEventStore(resolveConfig, { exportFile })
+    break
+  }
+  ...
+}
 ```
 
 ### validateConfig
@@ -516,6 +635,12 @@ Validates a configuration object.
 #### Example
 
 ```js
+import {
+  validateConfig,
+  ...
+} from 'resolve-scripts'
+
+validateConfig(config)
 ```
 
 ## Client-Side API
