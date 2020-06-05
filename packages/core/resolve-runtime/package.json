@@ -27,6 +27,9 @@
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "aws-signature-v4": "^1.4.0",
+    "binary-case": "^1.1.4",
+    "content-disposition": "^0.5.3",
+    "cookie": "^0.4.1",
     "cron": "^1.5.0",
     "cuid": "^2.1.6",
     "resolve-debug-levels": "0.23.2",
@@ -35,8 +38,6 @@
     "iconv-lite": "^0.5.1",
     "mqtt-connection": "^4.0.0",
     "proper-lockfile": "^3.2.0",
-    "resolve-api-handler-awslambda": "0.23.2",
-    "resolve-api-handler-express": "0.23.2",
     "resolve-command": "0.23.2",
     "resolve-cloud-common": "0.0.19",
     "resolve-local-event-broker": "0.23.2",
@@ -60,8 +61,9 @@
     "multer": "^1.4.2",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
-    "content-disposition": "^0.5.3",
-    "file-type": "^12.4.0"
+    "file-type": "^12.4.0",
+    "mime-types": "2.1.25",
+    "raw-body": "2.3.3"
   },
   "peerDependencies": {
     "aws-sdk": "*",
@@ -69,6 +71,7 @@
     "resolve-local-event-broker": "*"
   },
   "devDependencies": {
+    "lodash.escaperegexp": "^4.1.2",
     "sinon": "7.2.2",
     "jest": "26.0.1"
   },

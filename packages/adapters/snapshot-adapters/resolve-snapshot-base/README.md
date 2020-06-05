@@ -1,7 +1,7 @@
 # **resolve-snapshot-lite**
 [![npm version](https://badge.fury.io/js/resolve-snapshot-lite.svg)](https://badge.fury.io/js/resolve-snapshot-lite)
 
-This package is an adapter for storing snapshots using a file or memory. It does not have binary dependencies and does not require additional applications (like MongoDB or SQL server).
+This package is an adapter for storing snapshots using a file or memory. It does not have binary dependencies and does not require additional applications (like SQL server).
 
 ## Available Parameters
 
