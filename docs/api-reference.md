@@ -409,18 +409,18 @@ await sideEffects.scheduleCommand(
 
 The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) library provides scripts that serve as entry points for the fundamental stages of a reSolve application lifecycle. The package exports the following scripts:
 
-| Script           | Description                                                                    |
-| ---------------- | ------------------------------------------------------------------------------ |
-| build            | Builds the application.                                                        |
-| start            | Runs the built application.                                                    |
-| watch            | Runs the application in **watch** mode. (Watch application files for changes.) |
-| runTestcafe      | Runs TestCafe tests on the application.                                        |
-| merge            | Merges modules and application configs into a single object.                   |
-| stop             | Stops the application process.                                                 |
-| reset            | Resets the application's persistent storages and snapshots.                    |
-| importEventStore | Imports events from a file to the application's event store.                   |
-| exportEventStore | Exports events from the application's event store to a file.                   |
-| validateConfig   | Validates a configuration object.                                              |
+| Script                                | Description                                                                    |
+| ------------------------------------- | ------------------------------------------------------------------------------ |
+| [build](#build)                       | Builds the application.                                                        |
+| [start](#start)                       | Runs the built application.                                                    |
+| [watch](#watch)                       | Runs the application in **watch** mode. (Watch application files for changes.) |
+| [runTestcafe](#runtestcafe)           | Runs TestCafe tests on the application.                                        |
+| [merge](#merge)                       | Merges modules and application configs into a single object.                   |
+| [stop](#stop)                         | Stops the application process.                                                 |
+| [reset](#reset)                       | Resets the application's persistent storages and snapshots.                    |
+| [importEventStore](#importeventstore) | Imports events from a file to the application's event store.                   |
+| [exportEventStore](#exporteventstore) | Exports events from the application's event store to a file.                   |
+| [validateConfig](#validateconfig)     | Validates a configuration object.                                              |
 
 The resolve-scripts library also exports a `defaultResolveConfig` object that contains default reSolve configuration settings. This object is typically merged with an application's configs to receive a global configuration object:
 
