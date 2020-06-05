@@ -3,7 +3,8 @@ import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
 
 const dropEventStore = async ({
   database,
-  tableName,
+  eventsTableName,
+  snapshotsTableName,
   escapeId,
   memoryStore,
   config
@@ -12,11 +13,14 @@ const dropEventStore = async ({
   try {
     log.debug(`dropping events freeze table`)
     await database.exec(
-      `DROP TABLE IF EXISTS ${escapeId(`${tableName}-freeze`)}`
+      `DROP TABLE IF EXISTS ${escapeId(`${eventsTableName}-freeze`)}`
     )
 
     log.debug(`dropping events primary table`)
-    await database.exec(`DROP TABLE ${escapeId(tableName)}`)
+    await database.exec(`DROP TABLE ${escapeId(eventsTableName)}`)
+
+    log.debug(`dropping snapshots table`)
+    await database.exec(`DROP TABLE ${escapeId(snapshotsTableName)}`)
 
     log.debug(`event store tables are dropped`)
   } catch (error) {

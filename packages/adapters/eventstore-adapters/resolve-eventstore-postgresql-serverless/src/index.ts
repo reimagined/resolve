@@ -15,6 +15,9 @@ import coercer from './js/coercer'
 import escapeId from './js/escape-id'
 import escape from './js/escape'
 import shapeEvent from './js/shape-event'
+import loadSnapshot from './js/load-snapshot'
+import saveSnapshot from './js/save-snapshot'
+import dropSnapshot from './js/drop-snapshot'
 
 import connect from './connect'
 import init from './init'
@@ -47,7 +50,10 @@ const createAdapter: any = _createAdapter.bind(null, {
   saveEventOnly,
   coercer,
   shapeEvent,
-  getSecretsManager
+  getSecretsManager,
+  loadSnapshot,
+  saveSnapshot,
+  dropSnapshot
 })
 
 export default createAdapter

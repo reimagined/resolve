@@ -1,9 +1,9 @@
 const saveEventOnly = async function(
-  { tableName, database, escapeId, escape },
+  { eventsTableName, database, escapeId, escape },
   event
 ) {
   const currentThreadId = Math.floor(Math.random() * 256)
-  const eventsTableNameAsId = escapeId(tableName)
+  const eventsTableNameAsId = escapeId(eventsTableName)
   const serializedPayload =
     event.payload != null
       ? escape(JSON.stringify(event.payload))

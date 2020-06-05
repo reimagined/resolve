@@ -3,20 +3,22 @@ import getLog from './get-log'
 import {
   longNumberSqlType,
   longStringSqlType,
-  customObjectSqlType
+  customObjectSqlType,
+  mediumBlobSqlType,
+  longBlobSqlType
 } from './constants'
 
 const initEventStore = async ({
-  events: { tableName, connection, database },
+  events: { eventsTableName, snapshotsTableName, connection, database },
   escapeId
 }) => {
   const log = getLog('initEventStore')
 
   log.debug(`initializing events database tables`)
-  log.verbose(`tableName: ${tableName}`)
 
-  const eventsTableNameAsId = escapeId(tableName)
-  const threadsTableNameAsId = escapeId(`${tableName}-threads`)
+  const eventsTableNameAsId = escapeId(eventsTableName)
+  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
   log.debug(`building a query`)
   const query = `CREATE TABLE ${eventsTableNameAsId}(
@@ -39,6 +41,12 @@ const initEventStore = async ({
         \`threadId\` ${longNumberSqlType},
         \`threadCounter\` ${longNumberSqlType},
         PRIMARY KEY(\`threadId\`)
+      );
+      
+      CREATE TABLE ${snapshotsTableNameAsId} (
+        \`SnapshotKey\` ${mediumBlobSqlType},
+        \`SnapshotContent\` ${longBlobSqlType},
+        PRIMARY KEY(\`SnapshotKey\`(255))
       );
   
       INSERT INTO ${threadsTableNameAsId}(

@@ -14,6 +14,7 @@ const drop = async ({
   const eventsTableNameAsId = escapeId(tableName)
   const threadsTableNameAsId = escapeId(`${tableName}-threads`)
   const freezeTableNameAsId = escapeId(`${tableName}-freeze`)
+  const snapshotsTableNameAsId = escapeId(`${tableName}-snapshots`)
 
   const aggregateIdAndVersionIndexName = escapeId(
     `${tableName}-aggregateIdAndVersion`
@@ -33,6 +34,8 @@ const drop = async ({
     `DROP INDEX IF EXISTS ${databaseNameAsId}.${timestampIndexName}`,
 
     `DROP TABLE ${databaseNameAsId}.${threadsTableNameAsId}`,
+
+    `DROP TABLE ${databaseNameAsId}.${snapshotsTableNameAsId}`,
 
     `DROP TABLE IF EXISTS ${databaseNameAsId}.${freezeTableNameAsId}`
   ]

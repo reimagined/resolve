@@ -20,10 +20,11 @@ export type AdapterPool = {
     dbClusterOrInstanceArn: string
     awsSecretStoreArn: string
     databaseName: string
-    tableName: string
+    eventsTableName: string
     secretsTableName: string
     snapshotsTableName: string
     region?: string
+    bucketSize?: number
   }
   rdsDataService?: typeof RDSDataService
   dbClusterOrInstanceArn?: string
@@ -37,6 +38,7 @@ export type AdapterPool = {
   executeStatement?: (sql: string) => Promise<any[] | null>
   escapeId?: EscapeFunction
   escape?: EscapeFunction
+  bucketSize?: number
 }
 
 export type AdapterSpecific = {

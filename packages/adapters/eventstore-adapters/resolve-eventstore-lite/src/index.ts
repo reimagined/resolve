@@ -12,6 +12,9 @@ import saveEventOnly from './js/save-event-only'
 import freeze from './js/freeze'
 import unfreeze from './js/unfreeze'
 import shapeEvent from './js/shape-event'
+import loadSnapshot from './js/load-snapshot'
+import dropSnapshot from './js/drop-snapshot'
+import saveSnapshot from './js/save-snapshot'
 
 import connect from './connect'
 import init from './init'
@@ -33,6 +36,9 @@ const wrappedCreateAdapter = createAdapter.bind(null, {
   unfreeze,
   shapeEvent,
   getSecretsManager,
+  saveSnapshot,
+  dropSnapshot,
+  loadSnapshot,
   sqlite,
   tmp,
   os,

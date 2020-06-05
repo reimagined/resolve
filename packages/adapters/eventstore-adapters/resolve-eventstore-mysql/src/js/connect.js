@@ -1,13 +1,22 @@
 import getLog from './get-log'
 
+const DEFAULT_BUCKET_SIZE = 100
+
 const connectEventStore = async (pool, { MySQL }) => {
   const log = getLog(`connectEventStore`)
 
   log.debug('connecting to events store database')
 
-  const { tableName = 'default', database, ...connectionOptions } = pool.config
+  const {
+    eventsTableName,
+    snapshotsTableName,
+    database,
+    bucketSize,
+    ...connectionOptions
+  } = pool.config
 
-  log.verbose(`tableName: ${tableName}`)
+  log.verbose(`eventsTableName: ${eventsTableName}`)
+  log.verbose(`snapshotsTableName: ${snapshotsTableName}`)
   log.verbose(`database: ${database}`)
 
   log.debug(`establishing connection`)
@@ -20,10 +29,16 @@ const connectEventStore = async (pool, { MySQL }) => {
 
   log.debug(`connected successfully`)
 
+  pool.bucketSize = bucketSize
+  if (!Number.isInteger(pool.bucketSize) || pool.bucketSize < 1) {
+    pool.bucketSize = DEFAULT_BUCKET_SIZE
+  }
+
   Object.assign(pool, {
     events: {
       connection,
-      tableName,
+      eventsTableName,
+      snapshotsTableName,
       database
     }
   })

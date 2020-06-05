@@ -26,6 +26,9 @@ const createAdapter = (
     freeze,
     unfreeze,
     shapeEvent,
+    loadSnapshot,
+    saveSnapshot,
+    dropSnapshot,
     getSecretsManager = getSecretsManagerFallback,
     ...adapterSpecificArguments
   },
@@ -49,7 +52,8 @@ const createAdapter = (
     isFrozen: wrapMethod(pool, isFrozen),
     connectPromise,
     connectPromiseResolve,
-    shapeEvent
+    shapeEvent,
+    counters: new Map()
   })
 
   const adapter = {
@@ -65,7 +69,10 @@ const createAdapter = (
     freeze: wrapMethod(pool, freeze),
     unfreeze: wrapMethod(pool, unfreeze),
     getNextCursor: getNextCursor.bind(null),
-    getSecretsManager: wrapMethod(pool, getSecretsManager)
+    getSecretsManager: wrapMethod(pool, getSecretsManager),
+    loadSnapshot: wrapMethod(pool, loadSnapshot),
+    saveSnapshot: wrapMethod(pool, saveSnapshot),
+    dropSnapshot: wrapMethod(pool, dropSnapshot)
   }
 
   Object.assign(pool, adapter)

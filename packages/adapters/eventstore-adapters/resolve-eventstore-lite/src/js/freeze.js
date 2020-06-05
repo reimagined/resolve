@@ -1,7 +1,7 @@
-const freeze = async ({ database, tableName, escapeId }) => {
+const freeze = async ({ database, eventsTableName, escapeId }) => {
   await database.exec(
-    `CREATE TABLE IF NOT EXISTS ${escapeId(`${tableName}-freeze`)}(
-      -- RESOLVE EVENT STORE ${escapeId(tableName)} FREEZE MARKER
+    `CREATE TABLE IF NOT EXISTS ${escapeId(`${eventsTableName}-freeze`)}(
+      -- RESOLVE EVENT STORE ${escapeId(eventsTableName)} FREEZE MARKER
       ${escapeId('surrogate')} BIGINT NOT NULL,
       PRIMARY KEY(${escapeId('surrogate')})
     )`
