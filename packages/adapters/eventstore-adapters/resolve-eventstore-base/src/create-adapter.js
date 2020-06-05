@@ -22,7 +22,6 @@ const createAdapter = (
     drop,
     dispose,
     saveEventOnly,
-    paginateEvents,
     isFrozen,
     freeze,
     unfreeze,
@@ -44,7 +43,6 @@ const createAdapter = (
     saveEventOnly: wrapMethod(pool, saveEventOnly),
     loadEventsByCursor: wrapMethod(pool, loadEventsByCursor),
     loadEventsByTimestamp: wrapMethod(pool, loadEventsByTimestamp),
-    paginateEvents: wrapMethod(pool, paginateEvents),
     // eslint-disable-next-line no-new-func
     waitConnect: wrapMethod(pool, Function()),
     wrapMethod,

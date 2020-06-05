@@ -7,7 +7,6 @@ import loadEventsByCursor from './js/load-events-by-cursor'
 import loadEventsByTimestamp from './js/load-events-by-timestamp'
 import getLatestEvent from './js/get-latest-event'
 import saveEvent from './js/save-event'
-import paginateEvents from './js/paginate-events'
 import saveEventOnly from './js/save-event-only'
 import freeze from './js/freeze'
 import unfreeze from './js/unfreeze'
@@ -28,7 +27,6 @@ export default createAdapter.bind(null, {
   init,
   drop,
   dispose,
-  paginateEvents,
   saveEventOnly,
   freeze,
   unfreeze,

@@ -14,7 +14,6 @@ declare function createAdapter(adapter: {
   drop: Function
   dispose: Function
   saveEventOnly: Function
-  paginateEvents: Function
   isFrozen?: Function
   freeze: Function
   unfreeze: Function
