@@ -9,21 +9,21 @@ import {
 
 const init = async ({
   databaseName,
-  tableName,
+  eventsTableName,
   executeStatement,
   escapeId
 }) => {
   const databaseNameAsId = escapeId(databaseName)
-  const eventsTableNameAsId = escapeId(tableName)
-  const threadsTableNameAsId = escapeId(`${tableName}-threads`)
+  const eventsTableNameAsId = escapeId(eventsTableName)
+  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
 
   const aggregateIdAndVersionIndexName = escapeId(
-    `${tableName}-aggregateIdAndVersion`
+    `${eventsTableName}-aggregateIdAndVersion`
   )
-  const aggregateIndexName = escapeId(`${tableName}-aggregateId`)
-  const aggregateVersionIndexName = escapeId(`${tableName}-aggregateVersion`)
-  const typeIndexName = escapeId(`${tableName}-type`)
-  const timestampIndexName = escapeId(`${tableName}-timestamp`)
+  const aggregateIndexName = escapeId(`${eventsTableName}-aggregateId`)
+  const aggregateVersionIndexName = escapeId(`${eventsTableName}-aggregateVersion`)
+  const typeIndexName = escapeId(`${eventsTableName}-type`)
+  const timestampIndexName = escapeId(`${eventsTableName}-timestamp`)
 
   try {
     await executeStatement(

@@ -1,6 +1,5 @@
 import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 import { PublisherResourceAlreadyExistError } from 'resolve-local-event-broker'
-import { SnapshotResourceAlreadyExistError } from 'resolve-snapshot-base'
 
 import debugLevels from 'resolve-debug-levels'
 import {
@@ -20,7 +19,6 @@ const bootstrap = async resolve => {
     assemblies: {
       eventBrokerConfig: { upstream }
     },
-    snapshotAdapter,
     readModelConnectors,
     eventstoreAdapter,
     publisher
@@ -28,9 +26,6 @@ const bootstrap = async resolve => {
 
   await invokeFilterErrorTypes(eventstoreAdapter.init.bind(eventstoreAdapter), [
     EventstoreResourceAlreadyExistError
-  ])
-  await invokeFilterErrorTypes(snapshotAdapter.init.bind(snapshotAdapter), [
-    SnapshotResourceAlreadyExistError
   ])
   await invokeFilterErrorTypes(publisher.init.bind(publisher), [
     PublisherResourceAlreadyExistError

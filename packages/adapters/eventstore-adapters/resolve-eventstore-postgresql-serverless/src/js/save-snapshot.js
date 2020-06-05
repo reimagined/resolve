@@ -3,7 +3,7 @@ import { SAVE_CHUNK_SIZE } from './constants'
 const saveSnapshot = async (
   {
     databaseName,
-    tableName,
+    snapshotsTableName,
     executeStatement,
     escapeId,
     escape,
@@ -17,7 +17,7 @@ const saveSnapshot = async (
   content
 ) => {
   const databaseNameAsId = escapeId(databaseName)
-  const snapshotsTableNameAsId = escapeId(`${tableName}-snapshots`)
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
   if (snapshotKey == null || snapshotKey.constructor !== String) {
     throw new Error('Snapshot key must be string')

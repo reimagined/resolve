@@ -3,7 +3,6 @@ export default () => `
   import serverImports from '$resolve.serverImports'
   import seedClientEnvs from '$resolve.seedClientEnvs'
   import eventstoreAdapter from '$resolve.eventstoreAdapter'
-  import snapshotAdapter from '$resolve.snapshotAdapter'
   import readModelConnectors from '$resolve.readModelConnectors'
   import constants from '$resolve.constants'
   import apiHandlers from '$resolve.apiHandlers'
@@ -19,7 +18,6 @@ export default () => `
     assemblies: {
       seedClientEnvs,
       eventstoreAdapter,
-      snapshotAdapter,
       readModelConnectors,
       serverImports,
       uploadAdapter

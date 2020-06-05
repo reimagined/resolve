@@ -10,8 +10,8 @@ const connectEventStore = async (pool, { sqlite, tmp, os, fs }) => {
   const { escape } = pool
   let {
     databaseFile,
-    eventsTableName,
-    snapshotsTableName,
+    eventsTableName = 'events',
+    snapshotsTableName = 'snapshots',
     ...initOptions
   } = pool.config
 

@@ -13,7 +13,6 @@ import createQuery from 'resolve-query'
 
 const query = createQuery({
   readModelConnectors,
-  snapshotAdapter,
   readModels,
   viewModels,
   eventStore

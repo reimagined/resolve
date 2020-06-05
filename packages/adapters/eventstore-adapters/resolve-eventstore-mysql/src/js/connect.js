@@ -8,8 +8,8 @@ const connectEventStore = async (pool, { MySQL }) => {
   log.debug('connecting to events store database')
 
   const {
-    eventsTableName,
-    snapshotsTableName,
+    eventsTableName = 'events',
+    snapshotsTableName = 'snapshots',
     database,
     bucketSize,
     ...connectionOptions

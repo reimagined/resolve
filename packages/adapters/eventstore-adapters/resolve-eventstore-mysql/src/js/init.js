@@ -67,7 +67,7 @@ const initEventStore = async ({
       let errorToThrow = error
       if (/Table.*? already exists$/i.test(error.message)) {
         errorToThrow = new EventstoreResourceAlreadyExistError(
-          `duplicate initialization of the mysql adapter with same events database "${database}" and table "${tableName}" not allowed`
+          `duplicate initialization of the mysql adapter with same events database "${database}" and table "${eventsTableName}" not allowed`
         )
       } else {
         log.error(errorToThrow.message)

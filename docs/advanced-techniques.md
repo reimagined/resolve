@@ -31,7 +31,6 @@ ReSolve uses the **adapter** mechanism to provide an abstraction layer above API
 ReSolve uses different types of adapters depending on which kind of data needs to be stored.
 
 - **Event store adapters**
-- **Snapshot store adapters**
 - **Read model store adapters**
 
 Resolve comes with a set of adapters covering popular DBMS choices. You can also implement new adapters to store data in any required way.

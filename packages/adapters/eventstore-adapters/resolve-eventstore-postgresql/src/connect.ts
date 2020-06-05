@@ -17,7 +17,10 @@ const connect = async (
     coercer
   } = specific
 
-  const { databaseName, tableName, secretsTableName } = pool.config ?? {}
+  const { databaseName,
+    eventsTableName = 'events',
+    snapshotsTableName = 'snapshots',
+    secretsTableName } = pool.config ?? {}
 
   Object.assign(pool, {
     databaseName,

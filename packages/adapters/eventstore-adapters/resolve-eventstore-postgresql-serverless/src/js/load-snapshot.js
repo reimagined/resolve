@@ -1,7 +1,7 @@
 import { LOAD_CHUNK_SIZE } from './constants'
 
 const loadSnapshot = async (
-  { databaseName, tableName, executeStatement, escapeId, escape },
+  { databaseName, snapshotsTableName, executeStatement, escapeId, escape },
   snapshotKey
 ) => {
   if (snapshotKey == null || snapshotKey.constructor !== String) {
@@ -9,7 +9,7 @@ const loadSnapshot = async (
   }
 
   const databaseNameAsId = escapeId(databaseName)
-  const snapshotsTableNameAsId = escapeId(`${tableName}-snapshots`)
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
   let result = null
   for (let index = 0; ; index++) {

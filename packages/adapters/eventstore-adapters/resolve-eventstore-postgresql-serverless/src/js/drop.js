@@ -4,25 +4,26 @@ import getLog from './get-log'
 
 const drop = async ({
   databaseName,
-  tableName,
+  eventsTableName,
+  snapshotsTableName,
   executeStatement,
   escapeId
 }) => {
   const log = getLog(`dropEventStore`)
 
   const databaseNameAsId = escapeId(databaseName)
-  const eventsTableNameAsId = escapeId(tableName)
-  const threadsTableNameAsId = escapeId(`${tableName}-threads`)
-  const freezeTableNameAsId = escapeId(`${tableName}-freeze`)
-  const snapshotsTableNameAsId = escapeId(`${tableName}-snapshots`)
+  const eventsTableNameAsId = escapeId(eventsTableName)
+  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
+  const freezeTableNameAsId = escapeId(`${eventsTableName}-freeze`)
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
   const aggregateIdAndVersionIndexName = escapeId(
-    `${tableName}-aggregateIdAndVersion`
+    `${eventsTableName}-aggregateIdAndVersion`
   )
-  const aggregateIndexName = escapeId(`${tableName}-aggregateId`)
-  const aggregateVersionIndexName = escapeId(`${tableName}-aggregateVersion`)
-  const typeIndexName = escapeId(`${tableName}-type`)
-  const timestampIndexName = escapeId(`${tableName}-timestamp`)
+  const aggregateIndexName = escapeId(`${eventsTableName}-aggregateId`)
+  const aggregateVersionIndexName = escapeId(`${eventsTableName}-aggregateVersion`)
+  const typeIndexName = escapeId(`${eventsTableName}-type`)
+  const timestampIndexName = escapeId(`${eventsTableName}-timestamp`)
 
   const statements = [
     `DROP TABLE ${databaseNameAsId}.${eventsTableNameAsId}`,

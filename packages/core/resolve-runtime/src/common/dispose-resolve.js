@@ -8,8 +8,7 @@ const disposeResolve = async resolve => {
       resolve.executeCommand.dispose(),
       resolve.executeQuery.dispose(),
       resolve.executeSaga.dispose(),
-      resolve.eventstoreAdapter.dispose(),
-      resolve.snapshotAdapter.dispose()
+      resolve.eventstoreAdapter.dispose()
     ]
 
     for (const name of Object.keys(resolve.readModelConnectors)) {

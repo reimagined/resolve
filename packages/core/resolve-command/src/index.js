@@ -107,7 +107,7 @@ const snapshotHandler = async (pool, aggregateInfo, event) => {
 
     await regularHandler(pool, aggregateInfo, event)
 
-    await pool.snapshotAdapter.saveSnapshot(
+    await pool.eventstoreAdapter.saveSnapshot(
       aggregateInfo.snapshotKey,
       JSON.stringify({
         state: aggregateInfo.serializeState(aggregateInfo.aggregateState),
@@ -152,11 +152,7 @@ const getAggregateState = async (
       ? `${invariantHash};${aggregateId}`
       : null
 
-    if (
-      !checkOptionShape(invariantHash, [String]) &&
-      pool.snapshotAdapter != null &&
-      snapshotKey != null
-    ) {
+    if (!checkOptionShape(invariantHash, [String]) && snapshotKey != null) {
       throw generateCommandError(
         `Field "invariantHash" is required and must be a string when using aggregate snapshots`
       )
@@ -175,7 +171,7 @@ const getAggregateState = async (
     }
 
     try {
-      if (snapshotKey == null || pool.snapshotAdapter == null) {
+      if (snapshotKey == null) {
         throw generateCommandError()
       }
 
@@ -206,7 +202,7 @@ const getAggregateState = async (
           }
 
           return JSON.parse(
-            await pool.snapshotAdapter.loadSnapshot(snapshotKey)
+            await pool.eventstoreAdapter.loadSnapshot(snapshotKey)
           )
         } catch (error) {
           if (subSegment != null) {
@@ -237,7 +233,7 @@ const getAggregateState = async (
         typeof projection.Init === 'function' ? await projection.Init() : null
     }
 
-    const eventHandler = (pool.snapshotAdapter != null && snapshotKey != null
+    const eventHandler = (snapshotKey != null
       ? snapshotHandler
       : regularHandler
     ).bind(null, pool, aggregateInfo)
@@ -472,14 +468,12 @@ const dispose = async pool => {
 const createCommand = ({
   publisher,
   aggregates,
-  snapshotAdapter,
   performanceTracer,
   eventstoreAdapter
 }) => {
   const pool = {
     publisher,
     aggregates,
-    snapshotAdapter,
     isDisposed: false,
     performanceTracer,
     eventstoreAdapter

@@ -1,12 +1,12 @@
 const getLatestEvent = async (
-  { executeStatement, escapeId, escape, tableName, databaseName, shapeEvent },
+  { executeStatement, escapeId, escape, eventsTableName, databaseName, shapeEvent },
   { eventTypes, aggregateIds, startTime, finishTime }
 ) => {
   const injectString = value => `${escape(value)}`
   const injectNumber = value => `${+value}`
 
   const databaseNameAsId = escapeId(databaseName)
-  const eventsTableNameAsId = escapeId(tableName)
+  const eventsTableNameAsId = escapeId(eventsTableName)
 
   const queryConditions = []
   if (eventTypes != null) {

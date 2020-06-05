@@ -48,8 +48,6 @@
     "resolve-eventstore-base": "0.23.2",
     "resolve-eventstore-lite": "0.23.2",
     "resolve-subscribe-socket.io": "0.23.2",
-    "resolve-snapshot-base": "0.23.2",
-    "resolve-snapshot-lite": "0.23.2",
     "resolve-readmodel-base": "0.23.2",
     "route-trie": "^3.0.0",
     "socket.io": "^2.1.1",

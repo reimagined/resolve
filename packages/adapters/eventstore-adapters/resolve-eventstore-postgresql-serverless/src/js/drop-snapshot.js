@@ -1,9 +1,9 @@
 const dropSnapshot = async (
-  { databaseName, tableName, executeStatement, escapeId, escape },
+  { databaseName, snapshotsTableName, executeStatement, escapeId, escape },
   snapshotKey
 ) => {
   const databaseNameAsId = escapeId(databaseName)
-  const snapshotsTableNameAsId = escapeId(`${tableName}-snapshots`)
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
   await executeStatement(
     `DELETE FROM ${databaseNameAsId}.${snapshotsTableNameAsId}

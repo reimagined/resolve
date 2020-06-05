@@ -10,24 +10,25 @@ import getLog from './get-log'
 
 const init = async ({
   databaseName,
-  tableName,
+  eventsTableName,
+  snapshotsTableName,
   executeStatement,
   escapeId
 }) => {
   const log = getLog(`initEventStore`)
 
   const databaseNameAsId = escapeId(databaseName)
-  const eventsTableNameAsId = escapeId(tableName)
-  const threadsTableNameAsId = escapeId(`${tableName}-threads`)
-  const snapshotsTableNameAsId = escapeId(`${tableName}-snapshots`)
+  const eventsTableNameAsId = escapeId(eventsTableName)
+  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
   const aggregateIdAndVersionIndexName = escapeId(
-    `${tableName}-aggregateIdAndVersion`
+    `${eventsTableName}-aggregateIdAndVersion`
   )
-  const aggregateIndexName = escapeId(`${tableName}-aggregateId`)
-  const aggregateVersionIndexName = escapeId(`${tableName}-aggregateVersion`)
-  const typeIndexName = escapeId(`${tableName}-type`)
-  const timestampIndexName = escapeId(`${tableName}-timestamp`)
+  const aggregateIndexName = escapeId(`${eventsTableName}-aggregateId`)
+  const aggregateVersionIndexName = escapeId(`${eventsTableName}-aggregateVersion`)
+  const typeIndexName = escapeId(`${eventsTableName}-type`)
+  const timestampIndexName = escapeId(`${eventsTableName}-timestamp`)
 
   try {
     await executeStatement(

@@ -10,7 +10,6 @@ const getDefaultRemainingTime = () => 0x7fffffff
 
 const createQuery = ({
   readModelConnectors,
-  snapshotAdapter,
   readModels,
   viewModels,
   performanceTracer,
@@ -35,7 +34,6 @@ const createQuery = ({
     }
     models[viewModel.name] = wrapViewModel(
       viewModel,
-      snapshotAdapter,
       eventstoreAdapter,
       performanceTracer,
       eventstoreAdapter.getSecretsManager.bind(null)

@@ -25,9 +25,9 @@ const connect = async (
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
     databaseName,
-    eventsTableName,
+    eventsTableName = 'events',
+    snapshotsTableName = 'snapshots',
     secretsTableName,
-    snapshotsTableName,
     bucketSize,
     ...rdsConfig
   } = pool.config ?? {}
