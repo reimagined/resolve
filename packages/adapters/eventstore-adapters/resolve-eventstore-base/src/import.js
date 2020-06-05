@@ -240,10 +240,7 @@ EventStream.prototype._final = async function(callback) {
 
 const importStream = (
   pool,
-  {
-    byteOffset = 0,
-    maintenanceMode = MAINTENANCE_MODE_AUTO
-  } = {}
+  { byteOffset = 0, maintenanceMode = MAINTENANCE_MODE_AUTO } = {}
 ) => {
   switch (maintenanceMode) {
     case MAINTENANCE_MODE_AUTO:
