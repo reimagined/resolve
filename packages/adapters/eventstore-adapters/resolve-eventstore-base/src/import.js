@@ -35,7 +35,6 @@ EventStream.prototype = Object.create(stream.Writable.prototype)
 EventStream.prototype.constructor = stream.Writable
 
 EventStream.prototype._write = async function(chunk, encoding, callback) {
-  //console.log(chunk.toString(encoding))
   if (this.bypassMode) {
     await new Promise(resolve => setImmediate(resolve))
     callback()
@@ -68,7 +67,6 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
 
     if (chunk.byteLength + this.endPosition <= BUFFER_SIZE) {
       chunk.copy(this.buffer, this.endPosition)
-      //console.log('copy [a]', this.endPosition)
     } else {
       chunk.copy(
         this.buffer,
@@ -82,12 +80,9 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
         BUFFER_SIZE - this.endPosition,
         chunk.byteLength
       )
-      // console.log('copy [b]', this.endPosition, 0, BUFFER_SIZE - this.endPosition)
-      // console.log('copy [c]', 0, BUFFER_SIZE - this.endPosition, chunk.byteLength)
     }
     this.endPosition = (this.endPosition + chunk.byteLength) % BUFFER_SIZE
     this.vacantSize -= chunk.byteLength
-    //console.log({ endPosition: this.endPosition, vacantSize: this.vacantSize })
 
     if (this.vacantSize === BUFFER_SIZE) {
       callback()
@@ -131,7 +126,7 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
       this.byteOffset += eventByteLength
 
       const event = JSON.parse(stringifiedEvent)
-      //console.log('event', event)
+
       this.timestamp = Math.max(this.timestamp, event.timestamp)
 
       const saveEventPromise = saveEventOnly(event).catch(
