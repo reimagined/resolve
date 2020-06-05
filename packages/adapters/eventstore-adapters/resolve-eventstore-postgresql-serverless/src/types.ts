@@ -30,7 +30,7 @@ export type AdapterPool = {
   dbClusterOrInstanceArn?: string
   awsSecretStoreArn?: string
   databaseName?: string
-  tableName?: string
+  eventsTableName?: string
   secretsTableName?: string
   snapshotsTableName?: string
   fullJitter?: FullJitter
@@ -71,7 +71,7 @@ export type CloudResourcePool = {
 export type CloudResourceOptions = {
   region: string
   databaseName: string
-  tableName: string
+  eventsTableName: string
   secretsTableName: string
   snapshotsTableName: string
   userLogin: string

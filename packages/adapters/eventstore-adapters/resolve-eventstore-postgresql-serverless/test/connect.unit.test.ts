@@ -21,7 +21,7 @@ beforeEach(() => {
     config: {
       dbClusterOrInstanceArn: 'instance-arn',
       awsSecretStoreArn: 'secret-store-arn',
-      tableName: 'table',
+      eventsTableName: 'table',
       databaseName: 'database',
       secretsTableName: 'secrets-table',
       ...rdsRelatedConfig
@@ -50,7 +50,7 @@ test("cloud config assigned to adapter's pool", async () => {
     expect.objectContaining({
       dbClusterOrInstanceArn: 'instance-arn',
       awsSecretStoreArn: 'secret-store-arn',
-      tableName: 'table',
+      eventsTableName: 'table',
       databaseName: 'database',
       secretsTableName: 'secrets-table'
     })

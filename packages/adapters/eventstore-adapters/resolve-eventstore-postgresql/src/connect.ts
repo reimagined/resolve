@@ -24,7 +24,8 @@ const connect = async (
 
   Object.assign(pool, {
     databaseName,
-    tableName,
+    eventsTableName,
+    snapshotsTableName,
     secretsTableName,
     Postgres,
     fullJitter,

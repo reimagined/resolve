@@ -4,18 +4,21 @@ import {
   LONG_STRING_SQL_TYPE,
   LONG_NUMBER_SQL_TYPE,
   INT8_SQL_TYPE,
-  JSON_SQL_TYPE
+  JSON_SQL_TYPE,
+  TEXT_SQL_TYPE
 } from './constants'
 
 const init = async ({
   databaseName,
   eventsTableName,
+  snapshotsTableName,
   executeStatement,
   escapeId
 }) => {
   const databaseNameAsId = escapeId(databaseName)
   const eventsTableNameAsId = escapeId(eventsTableName)
   const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
   const aggregateIdAndVersionIndexName = escapeId(
     `${eventsTableName}-aggregateIdAndVersion`
@@ -59,6 +62,12 @@ const init = async ({
       ON ${databaseNameAsId}.${eventsTableNameAsId}
       USING BTREE("timestamp");
       
+      CREATE TABLE ${databaseNameAsId}.${snapshotsTableNameAsId} (
+        "snapshotKey" ${TEXT_SQL_TYPE} NOT NULL,
+        "snapshotContent" ${TEXT_SQL_TYPE},
+        PRIMARY KEY("snapshotKey")
+      );
+
       CREATE TABLE ${databaseNameAsId}.${threadsTableNameAsId}(
         "threadId" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
         "threadCounter" ${LONG_NUMBER_SQL_TYPE} NOT NULL,

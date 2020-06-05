@@ -114,7 +114,7 @@ describe('as cloud resource', () => {
       dbClusterOrInstanceArn: 'cluster-arn',
       region: 'region',
       secretsTableName: 'secrets-table',
-      tableName: 'table',
+      eventsTableName: 'table',
       userLogin: 'user',
       snapshotsTableName: 'snapshots-table'
     }

@@ -3,6 +3,7 @@ import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
 const drop = async ({
   databaseName,
   eventsTableName,
+  snapshotsTableName,
   executeStatement,
   escapeId
 }) => {
@@ -30,7 +31,9 @@ const drop = async ({
 
     `DROP TABLE ${databaseNameAsId}.${threadsTableNameAsId}`,
 
-    `DROP TABLE IF EXISTS ${databaseNameAsId}.${freezeTableNameAsId}`
+    `DROP TABLE IF EXISTS ${databaseNameAsId}.${freezeTableNameAsId}`,
+
+    `DROP TABLE ${databaseNameAsId}.${snapshotsTableName}`
   ]
   const errors = []
 
