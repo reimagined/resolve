@@ -7,7 +7,7 @@ import {
 } from './constants'
 import getNextCursor from './get-next-cursor'
 
-async function startProcessEventsfunction({ pool, maintenanceMode }) {
+async function startProcessEvents({ pool, maintenanceMode }) {
   if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
     await pool.freeze()
   }
@@ -20,11 +20,11 @@ async function endProcessEvents({ pool, maintenanceMode }) {
 }
 
 async function* generator(context) {
-  const { pool, maintenanceMode, bufferSize } = context
+  const { pool, bufferSize } = context
 
   await pool.waitConnect()
 
-  await startProcessEventsfunction(context)
+  await startProcessEvents(context)
 
   let eventsByteSize = 0
   while (true) {
