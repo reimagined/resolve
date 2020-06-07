@@ -103,6 +103,12 @@ Array [
 exports[`dispose with performance tracer should dispose the regular handler: addError 1`] = `
 Array [
   Array [
+    [TypeError: pool.eventstoreAdapter.loadSnapshot is not a function],
+  ],
+  Array [
+    [Error: Command handler is disposed],
+  ],
+  Array [
     [Error: Command handler is disposed],
   ],
   Array [
@@ -123,6 +129,9 @@ Array [
     "getAggregateState",
   ],
   Array [
+    "loadSnapshot",
+  ],
+  Array [
     "loadEvents",
   ],
   Array [
@@ -141,6 +150,9 @@ Array [
     "getAggregateState",
   ],
   Array [
+    "loadSnapshot",
+  ],
+  Array [
     "loadEvents",
   ],
 ]
@@ -157,11 +169,15 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`dispose with performance tracer should dispose the regular handler: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -488,179 +504,6 @@ Array [
 `;
 
 exports[`executeCommand with performance tracer should pass security context to command handler: getSegment 1`] = `
-Array [
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-]
-`;
-
-exports[`executeCommand with performance tracer should success build aggregate state and execute command: addAnnotation 1`] = `
-Array [
-  Array [
-    "aggregateName",
-    "Entity",
-  ],
-  Array [
-    "commandType",
-    "create",
-  ],
-  Array [
-    "origin",
-    "resolve:executeCommand",
-  ],
-  Array [
-    "aggregateName",
-    "Entity",
-  ],
-  Array [
-    "origin",
-    "resolve:getAggregateState",
-  ],
-  Array [
-    "eventCount",
-    0,
-  ],
-  Array [
-    "origin",
-    "resolve:loadEvents",
-  ],
-  Array [
-    "aggregateName",
-    "Entity",
-  ],
-  Array [
-    "commandType",
-    "create",
-  ],
-  Array [
-    "origin",
-    "resolve:processCommand",
-  ],
-  Array [
-    "aggregateName",
-    "Entity",
-  ],
-  Array [
-    "commandType",
-    "create",
-  ],
-  Array [
-    "origin",
-    "resolve:executeCommand",
-  ],
-  Array [
-    "aggregateName",
-    "Entity",
-  ],
-  Array [
-    "origin",
-    "resolve:getAggregateState",
-  ],
-  Array [
-    "aggregateName",
-    "Entity",
-  ],
-  Array [
-    "eventType",
-    "CREATED",
-  ],
-  Array [
-    "origin",
-    "resolve:applyEvent",
-  ],
-  Array [
-    "eventCount",
-    1,
-  ],
-  Array [
-    "origin",
-    "resolve:loadEvents",
-  ],
-  Array [
-    "aggregateName",
-    "Entity",
-  ],
-  Array [
-    "commandType",
-    "create",
-  ],
-  Array [
-    "origin",
-    "resolve:processCommand",
-  ],
-]
-`;
-
-exports[`executeCommand with performance tracer should success build aggregate state and execute command: addError 1`] = `
-Array [
-  Array [
-    [Error: Entity already created],
-  ],
-  Array [
-    [Error: Entity already created],
-  ],
-]
-`;
-
-exports[`executeCommand with performance tracer should success build aggregate state and execute command: addNewSubsegment 1`] = `
-Array [
-  Array [
-    "executeCommand",
-  ],
-  Array [
-    "getAggregateState",
-  ],
-  Array [
-    "loadEvents",
-  ],
-  Array [
-    "processCommand",
-  ],
-  Array [
-    "saveEvent",
-  ],
-  Array [
-    "executeCommand",
-  ],
-  Array [
-    "getAggregateState",
-  ],
-  Array [
-    "loadEvents",
-  ],
-  Array [
-    "applyEvent",
-  ],
-  Array [
-    "processCommand",
-  ],
-]
-`;
-
-exports[`executeCommand with performance tracer should success build aggregate state and execute command: close 1`] = `
-Array [
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-]
-`;
-
-exports[`executeCommand with performance tracer should success build aggregate state and execute command: getSegment 1`] = `
 Array [
   Array [],
   Array [],
@@ -1043,112 +886,6 @@ Array [
 ]
 `;
 
-exports[`executeCommand with performance tracer should throw error when the incorrect order of events: addAnnotation 1`] = `
-Array [
-  Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
-    "commandType",
-    "set",
-  ],
-  Array [
-    "origin",
-    "resolve:executeCommand",
-  ],
-  Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
-    "origin",
-    "resolve:getAggregateState",
-  ],
-  Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
-    "eventType",
-    undefined,
-  ],
-  Array [
-    "origin",
-    "resolve:applyEvent",
-  ],
-  Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
-    "eventType",
-    undefined,
-  ],
-  Array [
-    "origin",
-    "resolve:applyEvent",
-  ],
-]
-`;
-
-exports[`executeCommand with performance tracer should throw error when the incorrect order of events: addError 1`] = `
-Array [
-  Array [
-    [Error: Incorrect order of events by aggregateId = "aggregateId"],
-  ],
-  Array [
-    [Error: Incorrect order of events by aggregateId = "aggregateId"],
-  ],
-  Array [
-    [Error: Incorrect order of events by aggregateId = "aggregateId"],
-  ],
-  Array [
-    [Error: Incorrect order of events by aggregateId = "aggregateId"],
-  ],
-]
-`;
-
-exports[`executeCommand with performance tracer should throw error when the incorrect order of events: addNewSubsegment 1`] = `
-Array [
-  Array [
-    "executeCommand",
-  ],
-  Array [
-    "getAggregateState",
-  ],
-  Array [
-    "loadEvents",
-  ],
-  Array [
-    "applyEvent",
-  ],
-  Array [
-    "applyEvent",
-  ],
-]
-`;
-
-exports[`executeCommand with performance tracer should throw error when the incorrect order of events: close 1`] = `
-Array [
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-]
-`;
-
-exports[`executeCommand with performance tracer should throw error when the incorrect order of events: getSegment 1`] = `
-Array [
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-  Array [],
-]
-`;
-
 exports[`executeCommand with performance tracer should throw error when the type is not a string: addAnnotation 1`] = `Array []`;
 
 exports[`executeCommand with performance tracer should throw error when the type is not a string: addError 1`] = `
@@ -1311,7 +1048,7 @@ Array [
 ]
 `;
 
-exports[`executeCommand with performance tracer should use snapshotAdapter for building state: addAnnotation 1`] = `
+exports[`executeCommand with performance tracer should use snapshots for building state: addAnnotation 1`] = `
 Array [
   Array [
     "aggregateName",
@@ -1484,7 +1221,7 @@ Array [
 ]
 `;
 
-exports[`executeCommand with performance tracer should use snapshotAdapter for building state: addError 1`] = `
+exports[`executeCommand with performance tracer should use snapshots for building state: addError 1`] = `
 Array [
   Array [
     [SyntaxError: Unexpected token u in JSON at position 0],
@@ -1495,7 +1232,7 @@ Array [
 ]
 `;
 
-exports[`executeCommand with performance tracer should use snapshotAdapter for building state: addNewSubsegment 1`] = `
+exports[`executeCommand with performance tracer should use snapshots for building state: addNewSubsegment 1`] = `
 Array [
   Array [
     "executeCommand",
@@ -1569,7 +1306,7 @@ Array [
 ]
 `;
 
-exports[`executeCommand with performance tracer should use snapshotAdapter for building state: close 1`] = `
+exports[`executeCommand with performance tracer should use snapshots for building state: close 1`] = `
 Array [
   Array [],
   Array [],
@@ -1597,7 +1334,7 @@ Array [
 ]
 `;
 
-exports[`executeCommand with performance tracer should use snapshotAdapter for building state: getSegment 1`] = `
+exports[`executeCommand with performance tracer should use snapshots for building state: getSegment 1`] = `
 Array [
   Array [],
   Array [],

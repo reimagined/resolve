@@ -33,8 +33,8 @@ export type AdapterPool = {
   host?: string
   password?: string
   databaseName?: string
-  eventsTableName: string
-  snapshotsTableName: string
+  eventsTableName?: string
+  snapshotsTableName?: string
   secretsTableName?: string
   fullJitter?: FullJitter
   coercer?: Coercer

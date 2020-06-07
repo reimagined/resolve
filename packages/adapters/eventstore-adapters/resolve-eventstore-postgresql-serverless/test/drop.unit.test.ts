@@ -15,8 +15,9 @@ let pool: AdapterPool
 
 beforeEach(() => {
   pool = {
-    eventsTableName: 'table',
+    eventsTableName: 'events-table',
     secretsTableName: 'secrets-table',
+    snapshotsTableName: 'snapshots-table',
     databaseName: 'database',
     executeStatement: jest.fn(),
     escapeId: jest.fn(v => `escaped-${v}`)
@@ -32,18 +33,11 @@ test('event store dropped', async () => {
 
   expect(mDropEventStore).toHaveBeenCalledWith({
     databaseName: 'database',
-    eventsTableName: 'table',
+    eventsTableName: 'events-table',
+    snapshotsTableName: 'snapshots-table',
     executeStatement: pool.executeStatement,
     escapeId: pool.escapeId
   })
-})
-
-test('event store drop avoided if required argument is missing: eventsTableName', async () => {
-  await drop({
-    ...pool,
-    eventsTableName: undefined
-  })
-  expect(mDropEventStore).not.toHaveBeenCalled()
 })
 
 test('error: secretsTableName is missing within pool', async () => {

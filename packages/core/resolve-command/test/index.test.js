@@ -1,12 +1,7 @@
 import createCommandExecutor from '../src'
 import { CommandError } from '../src'
 
-let eventstoreAdapter,
-  publisher,
-  events,
-  snapshotAdapter,
-  DateNow,
-  performanceTracer
+let eventstoreAdapter, publisher, events, DateNow, performanceTracer
 
 beforeEach(() => {
   events = []
@@ -63,7 +58,6 @@ beforeEach(() => {
 afterEach(() => {
   eventstoreAdapter = null
   events = null
-  snapshotAdapter = null
   global.Date.now = DateNow
   performanceTracer = null
   publisher = null
@@ -222,16 +216,16 @@ describe('executeCommand', () => {
       }
     })
 
-    test('should use snapshotAdapter for building state', async () => {
+    test('should use snapshots for building state', async () => {
       const snapshots = new Map()
-      snapshotAdapter = {
+      Object.assign(eventstoreAdapter, {
         saveSnapshot: jest.fn().mockImplementation((key, value) => {
           return snapshots.set(key, value)
         }),
         loadSnapshot: jest.fn().mockImplementation(key => {
           return snapshots.get(key)
         })
-      }
+      })
 
       const aggregate = {
         encryption: () => ({}),
@@ -263,8 +257,7 @@ describe('executeCommand', () => {
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
         publisher,
-        aggregates: [aggregate],
-        snapshotAdapter
+        aggregates: [aggregate]
       })
 
       await executeCommand({
@@ -277,8 +270,8 @@ describe('executeCommand', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(0)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(1)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(0)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(1)
       expect(events.length).toEqual(1)
 
       await executeCommand({
@@ -291,8 +284,8 @@ describe('executeCommand', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(1)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(2)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(1)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(2)
       expect(events.length).toEqual(2)
 
       await executeCommand({
@@ -305,21 +298,21 @@ describe('executeCommand', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(2)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(3)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(2)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(3)
       expect(events.length).toEqual(3)
     })
 
     test('should throw error when use snapshot adapter without invariant hash', async () => {
       const snapshots = new Map()
-      snapshotAdapter = {
+      Object.assign(eventstoreAdapter, {
         saveSnapshot: jest.fn().mockImplementation((key, value) => {
           return snapshots.set(key, value)
         }),
         loadSnapshot: jest.fn().mockImplementation(key => {
           return snapshots.get(key)
         })
-      }
+      })
 
       const aggregate = {
         encryption: () => ({}),
@@ -350,8 +343,7 @@ describe('executeCommand', () => {
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
         publisher,
-        aggregates: [aggregate],
-        snapshotAdapter
+        aggregates: [aggregate]
       })
 
       try {
@@ -375,14 +367,14 @@ describe('executeCommand', () => {
 
     test('should throw error when use snapshot adapter with incorrect invariant hash', async () => {
       const snapshots = new Map()
-      snapshotAdapter = {
+      Object.assign(eventstoreAdapter, {
         saveSnapshot: jest.fn().mockImplementation((key, value) => {
           return snapshots.set(key, value)
         }),
         loadSnapshot: jest.fn().mockImplementation(key => {
           return snapshots.get(key)
         })
-      }
+      })
 
       const aggregate = {
         encryption: () => ({}),
@@ -414,8 +406,7 @@ describe('executeCommand', () => {
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
         publisher,
-        aggregates: [aggregate],
-        snapshotAdapter
+        aggregates: [aggregate]
       })
 
       try {
@@ -491,8 +482,7 @@ describe('executeCommand', () => {
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
         publisher,
-        aggregates: [aggregate],
-        snapshotAdapter
+        aggregates: [aggregate]
       })
 
       try {
@@ -946,16 +936,16 @@ describe('executeCommand', () => {
       expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
     })
 
-    test('should use snapshotAdapter for building state', async () => {
+    test('should use snapshots for building state', async () => {
       const snapshots = new Map()
-      snapshotAdapter = {
+      Object.assign(eventstoreAdapter, {
         saveSnapshot: jest.fn().mockImplementation((key, value) => {
           return snapshots.set(key, value)
         }),
         loadSnapshot: jest.fn().mockImplementation(key => {
           return snapshots.get(key)
         })
-      }
+      })
 
       const aggregate = {
         encryption: () => ({}),
@@ -988,7 +978,6 @@ describe('executeCommand', () => {
         eventstoreAdapter,
         publisher,
         aggregates: [aggregate],
-        snapshotAdapter,
         performanceTracer
       })
 
@@ -1002,8 +991,8 @@ describe('executeCommand', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(0)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(1)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(0)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(1)
       expect(events.length).toEqual(1)
 
       await executeCommand({
@@ -1016,8 +1005,8 @@ describe('executeCommand', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(1)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(2)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(1)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(2)
       expect(events.length).toEqual(2)
 
       await executeCommand({
@@ -1030,8 +1019,8 @@ describe('executeCommand', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(2)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(3)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(2)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(3)
       expect(events.length).toEqual(3)
 
       expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -1049,14 +1038,14 @@ describe('executeCommand', () => {
 
     test('should throw error when use snapshot adapter without invariant hash', async () => {
       const snapshots = new Map()
-      snapshotAdapter = {
+      Object.assign(eventstoreAdapter, {
         saveSnapshot: jest.fn().mockImplementation((key, value) => {
           return snapshots.set(key, value)
         }),
         loadSnapshot: jest.fn().mockImplementation(key => {
           return snapshots.get(key)
         })
-      }
+      })
 
       const aggregate = {
         encryption: () => ({}),
@@ -1088,7 +1077,6 @@ describe('executeCommand', () => {
         eventstoreAdapter,
         publisher,
         aggregates: [aggregate],
-        snapshotAdapter,
         performanceTracer
       })
 
@@ -1125,14 +1113,14 @@ describe('executeCommand', () => {
 
     test('should throw error when use snapshot adapter with incorrect invariant hash', async () => {
       const snapshots = new Map()
-      snapshotAdapter = {
+      Object.assign(eventstoreAdapter, {
         saveSnapshot: jest.fn().mockImplementation((key, value) => {
           return snapshots.set(key, value)
         }),
         loadSnapshot: jest.fn().mockImplementation(key => {
           return snapshots.get(key)
         })
-      }
+      })
 
       const aggregate = {
         encryption: () => ({}),
@@ -1165,7 +1153,6 @@ describe('executeCommand', () => {
         eventstoreAdapter,
         publisher,
         aggregates: [aggregate],
-        snapshotAdapter,
         performanceTracer
       })
 
@@ -1255,7 +1242,6 @@ describe('executeCommand', () => {
         eventstoreAdapter,
         publisher,
         aggregates: [aggregate],
-        snapshotAdapter,
         performanceTracer
       })
 
@@ -1646,14 +1632,14 @@ describe('dispose', () => {
 
     test('should dispose the snapshot handler', async () => {
       const snapshots = new Map()
-      snapshotAdapter = {
+      Object.assign(eventstoreAdapter, {
         saveSnapshot: jest.fn().mockImplementation((key, value) => {
           return snapshots.set(key, value)
         }),
         loadSnapshot: jest.fn().mockImplementation(key => {
           return snapshots.get(key)
         })
-      }
+      })
 
       const aggregate = {
         encryption: () => ({}),
@@ -1685,8 +1671,7 @@ describe('dispose', () => {
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
         publisher,
-        aggregates: [aggregate],
-        snapshotAdapter
+        aggregates: [aggregate]
       })
 
       await executeCommand({
@@ -1699,8 +1684,8 @@ describe('dispose', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(0)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(1)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(0)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(1)
       expect(events.length).toEqual(1)
 
       await executeCommand.dispose()
@@ -1754,8 +1739,7 @@ describe('dispose', () => {
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
         publisher,
-        aggregates: [aggregate],
-        snapshotAdapter
+        aggregates: [aggregate]
       })
 
       await executeCommand({
@@ -1826,14 +1810,14 @@ describe('dispose', () => {
 
     test('should dispose the snapshot handler', async () => {
       const snapshots = new Map()
-      snapshotAdapter = {
+      Object.assign(eventstoreAdapter, {
         saveSnapshot: jest.fn().mockImplementation((key, value) => {
           return snapshots.set(key, value)
         }),
         loadSnapshot: jest.fn().mockImplementation(key => {
           return snapshots.get(key)
         })
-      }
+      })
 
       const aggregate = {
         encryption: () => ({}),
@@ -1866,7 +1850,6 @@ describe('dispose', () => {
         eventstoreAdapter,
         publisher,
         aggregates: [aggregate],
-        snapshotAdapter,
         performanceTracer
       })
 
@@ -1880,8 +1863,8 @@ describe('dispose', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(0)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(1)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(0)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(1)
       expect(events.length).toEqual(1)
 
       await executeCommand.dispose()
@@ -1948,7 +1931,6 @@ describe('dispose', () => {
         eventstoreAdapter,
         publisher,
         aggregates: [aggregate],
-        snapshotAdapter,
         performanceTracer
       })
 

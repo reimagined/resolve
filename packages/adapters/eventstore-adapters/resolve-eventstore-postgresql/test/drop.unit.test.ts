@@ -15,8 +15,9 @@ let pool: AdapterPool
 
 beforeEach(() => {
   pool = {
-    eventsTableName: 'table',
-    secretsTableName: 'secrets-table',
+    eventsTableName: 'events-table-name',
+    snapshotsTableName: 'snapshots-table-name',
+    secretsTableName: 'secrets-table-name',
     databaseName: 'database',
     executeStatement: jest.fn(),
     escapeId: jest.fn(v => `escaped-${v}`)
@@ -32,18 +33,11 @@ test('event store dropped', async () => {
 
   expect(mDropEventStore).toHaveBeenCalledWith({
     databaseName: 'database',
-    eventsTableName: 'table',
+    eventsTableName: 'events-table-name',
+    snapshotsTableName: 'snapshots-table-name',
     executeStatement: pool.executeStatement,
     escapeId: pool.escapeId
   })
-})
-
-test('event store drop avoided if required argument is missing: eventsTableName', async () => {
-  await drop({
-    ...pool,
-    eventsTableName: undefined
-  })
-  expect(mDropEventStore).not.toHaveBeenCalled()
 })
 
 test('error: secretsTableName is missing within pool', async () => {
@@ -86,7 +80,7 @@ test('secrets table dropped', async () => {
   await drop(pool)
 
   expect(pool.executeStatement).toHaveBeenCalledWith(
-    `DROP TABLE escaped-database.escaped-secrets-table`
+    `DROP TABLE escaped-database.escaped-secrets-table-name`
   )
 })
 
@@ -94,7 +88,7 @@ test('secrets stream index dropped', async () => {
   await drop(pool)
 
   expect(pool.executeStatement).toHaveBeenCalledWith(
-    `DROP INDEX IF EXISTS escaped-database.escaped-secrets-table-global`
+    `DROP INDEX IF EXISTS escaped-database.escaped-secrets-table-name-global`
   )
 })
 
