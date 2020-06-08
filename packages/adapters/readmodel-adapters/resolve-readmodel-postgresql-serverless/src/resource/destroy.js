@@ -33,7 +33,6 @@ const destroy = async (pool, options) => {
 
   try {
     await admin.executeStatement(
-      admin,
       [
         `SELECT pg_terminate_backend(pid) `,
         `FROM pg_stat_activity `,
