@@ -13,6 +13,9 @@ import saveEventOnly from '../src/js/save-event-only'
 import freeze from '../src/js/freeze'
 import unfreeze from '../src/js/unfreeze'
 import shapeEvent from '../src/js/shape-event'
+import loadSnapshot from '../src/js/load-snapshot'
+import saveSnapshot from '../src/js/save-snapshot'
+import dropSnapshot from '../src/js/drop-snapshot'
 import connect from '../src/connect'
 import init from '../src/init'
 import drop from '../src/drop'
@@ -28,6 +31,9 @@ jest.mock('../src/js/save-event-only', () => jest.fn())
 jest.mock('../src/js/freeze', () => jest.fn())
 jest.mock('../src/js/unfreeze', () => jest.fn())
 jest.mock('../src/js/shape-event', () => jest.fn())
+jest.mock('../src/js/load-snapshot', () => jest.fn())
+jest.mock('../src/js/save-snapshot', () => jest.fn())
+jest.mock('../src/js/drop-snapshot', () => jest.fn())
 jest.mock('../src/connect', () => jest.fn())
 jest.mock('../src/init', () => jest.fn())
 jest.mock('../src/drop', () => jest.fn())
@@ -50,6 +56,9 @@ test('generic createAdapter invoked', () => {
     saveEventOnly,
     freeze,
     unfreeze,
+    loadSnapshot,
+    saveSnapshot,
+    dropSnapshot,
     shapeEvent,
     getSecretsManager,
     MySQL,

@@ -20,12 +20,15 @@ beforeEach(() => {
     config: {
       databaseFile: 'database-file',
       secretsFile: 'secret-file',
-      secretsTableName: 'secrets-table'
+      secretsTableName: 'secrets-table',
+      eventsTableName: 'events-table-name',
+      snapshotsTableName: 'snapshots-table-name'
     },
     secretsDatabase: '',
     secretsTableName: '',
     database: '',
-    tableName: '',
+    eventsTableName: '',
+    snapshotsTableName: '',
     escape: jest.fn(),
     escapeId: jest.fn(),
     memoryStore: 'memory'

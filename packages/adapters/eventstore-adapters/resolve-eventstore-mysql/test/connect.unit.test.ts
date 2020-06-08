@@ -23,14 +23,16 @@ beforeEach(() => {
   pool = {
     config: {
       database: 'database',
-      tableName: 'table-name',
+      eventsTableName: 'table-name',
+      snapshotsTableName: 'snapshots-table-name',
       secretsDatabase: 'secrets-database',
       secretsTableName: 'secrets-table-name',
       ...mysqlRelatedConfig
     },
     events: {
       connection: MySQL.connection,
-      tableName: '',
+      eventsTableName: '',
+      snapshotsTableName: '',
       database: ''
     },
     secrets: {
@@ -57,7 +59,8 @@ test('MySQL client configured', async () => {
     ...mysqlRelatedConfig,
     database: 'secrets-database',
     multipleStatements: true,
-    tableName: 'table-name'
+    eventsTableName: 'table-name',
+    snapshotsTableName: 'snapshots-table-name'
   })
 })
 
@@ -66,7 +69,7 @@ test('MySQL client configured (no secrets database in config)', async () => {
     ...pool,
     config: {
       database: 'database',
-      tableName: 'table-name',
+      eventsTableName: 'table-name',
       secretsTableName: 'secrets-table-name',
       ...mysqlRelatedConfig
     }
@@ -77,7 +80,7 @@ test('MySQL client configured (no secrets database in config)', async () => {
     ...mysqlRelatedConfig,
     database: 'database',
     multipleStatements: true,
-    tableName: 'table-name'
+    eventsTableName: 'table-name'
   })
 })
 

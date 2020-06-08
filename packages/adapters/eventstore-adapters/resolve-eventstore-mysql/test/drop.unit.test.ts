@@ -23,14 +23,16 @@ beforeEach(() => {
   pool = {
     config: {
       database: 'database',
-      tableName: 'table-name',
+      eventsTableName: 'table-name',
+      snapshotsTableName: 'snapshots-table-name',
       secretsDatabase: 'secrets-database',
       secretsTableName: 'secrets-table-name'
     },
     events: {
-      connection,
-      tableName: 'table-name',
-      database: 'database'
+      connection: MySQL.connection,
+      eventsTableName: '',
+      snapshotsTableName: '',
+      database: ''
     },
     secrets: {
       connection,

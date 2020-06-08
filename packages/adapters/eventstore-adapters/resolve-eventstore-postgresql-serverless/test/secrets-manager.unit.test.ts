@@ -12,7 +12,7 @@ beforeEach(() => {
   pool = {
     dbClusterOrInstanceArn: 'instance-arn',
     awsSecretStoreArn: 'secret-store-arn',
-    tableName: 'table',
+    eventsTableName: 'table',
     databaseName: 'database',
     secretsTableName: 'secrets-table',
     coercer: jest.fn(),

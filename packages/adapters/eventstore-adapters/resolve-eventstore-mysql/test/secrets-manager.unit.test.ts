@@ -3,7 +3,6 @@ import MySQL from 'mysql2/promise'
 /* eslint-enable import/no-extraneous-dependencies */
 
 import { AdapterPool } from '../src/types'
-
 import getSecretsManager from '../src/secrets-manager'
 
 let pool: AdapterPool
@@ -17,13 +16,15 @@ beforeEach(() => {
   pool = {
     config: {
       database: 'database',
-      tableName: 'table-name',
+      eventsTableName: 'table-name',
+      snapshotsTableName: 'snapshots-table-name',
       secretsDatabase: 'secrets-database',
       secretsTableName: 'secrets-table-name'
     },
     events: {
       connection,
-      tableName: 'table-name',
+      eventsTableName: 'table-name',
+      snapshotsTableName: 'snapshots-table-name',
       database: 'database'
     },
     secrets: {
