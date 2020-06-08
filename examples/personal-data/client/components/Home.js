@@ -26,6 +26,15 @@ const Home = () => {
       resolver: 'profile',
       args: {}
     },
+    {
+      waitFor: {
+        validator: result => {
+          return result !== null
+        },
+        period: 1000,
+        attempts: 5
+      }
+    },
     (err, result) => {
       if (err) {
         setUser(null)

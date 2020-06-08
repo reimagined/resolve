@@ -27,14 +27,15 @@
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "mysql2": "^1.6.1",
-    "resolve-eventstore-base": "0.23.2",
+    "resolve-core": "0.23.2",
     "resolve-debug-levels": "0.23.2",
-    "resolve-core": "0.23.2"
+    "resolve-eventstore-base": "0.23.2"
   },
   "devDependencies": {
     "jest": "26.0.1",
     "sinon": "7.2.2",
-    "sql-formatter": "2.3.1"
+    "sql-formatter": "2.3.1",
+    "ts-jest": "^26.1.0"
   },
   "babelCompile": [
     {
