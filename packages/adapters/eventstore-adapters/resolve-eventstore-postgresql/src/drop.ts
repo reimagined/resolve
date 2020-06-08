@@ -60,17 +60,22 @@ const dropSecretsStore = async (pool: AdapterPool): Promise<any> => {
 const drop = async (pool: AdapterPool): Promise<any> => {
   const log = getLog('drop')
 
-  const { databaseName, tableName, executeStatement, escapeId } = pool
+  const {
+    databaseName,
+    eventsTableName,
+    snapshotsTableName,
+    executeStatement,
+    escapeId
+  } = pool
 
   const createDropEventStorePromise = (): Promise<any> =>
-    databaseName && tableName && executeStatement && escapeId
-      ? dropEventStore({
-          databaseName,
-          tableName,
-          executeStatement,
-          escapeId
-        })
-      : Promise.resolve()
+    dropEventStore({
+      databaseName,
+      eventsTableName,
+      snapshotsTableName,
+      executeStatement,
+      escapeId
+    })
 
   log.debug(`dropping the event store`)
   await Promise.all([createDropEventStorePromise(), dropSecretsStore(pool)])

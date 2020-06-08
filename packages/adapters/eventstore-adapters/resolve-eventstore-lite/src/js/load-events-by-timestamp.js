@@ -2,11 +2,11 @@ import { throwBadCursor } from 'resolve-eventstore-base'
 import createQuery from './create-query'
 
 const loadEventsByTimestamp = async (pool, filter) => {
-  const { database, escapeId, tableName, shapeEvent } = pool
+  const { database, escapeId, eventsTableName, shapeEvent } = pool
 
   const resultQueryCondition = createQuery(pool, filter)
 
-  const tableNameAsId = escapeId(tableName)
+  const tableNameAsId = escapeId(eventsTableName)
 
   const rows = await database.all(
     `SELECT * FROM ${tableNameAsId}

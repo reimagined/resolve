@@ -1,7 +1,13 @@
 import { RESERVED_EVENT_SIZE } from './constants'
 
 const saveEventOnly = async function(pool, event) {
-  const { databaseName, tableName, executeStatement, escapeId, escape } = pool
+  const {
+    databaseName,
+    eventsTableName,
+    executeStatement,
+    escapeId,
+    escape
+  } = pool
 
   const serializedEvent = [
     `${escape(event.aggregateId)},`,
@@ -13,8 +19,8 @@ const saveEventOnly = async function(pool, event) {
   const byteLength = Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
 
   const databaseNameAsId = escapeId(databaseName)
-  const threadsTableAsId = escapeId(`${tableName}-threads`)
-  const eventsTableAsId = escapeId(tableName)
+  const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
+  const eventsTableAsId = escapeId(eventsTableName)
 
   // prettier-ignore
   await executeStatement(

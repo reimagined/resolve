@@ -22,7 +22,8 @@ export type AdapterPool = {
     host: string
     password: string
     databaseName: string
-    tableName: string
+    eventsTableName: string
+    snapshotsTableName: string
     secretsTableName: string
   }
   Postgres?: typeof Postgres
@@ -32,7 +33,8 @@ export type AdapterPool = {
   host?: string
   password?: string
   databaseName?: string
-  tableName?: string
+  eventsTableName?: string
+  snapshotsTableName?: string
   secretsTableName?: string
   fullJitter?: FullJitter
   coercer?: Coercer

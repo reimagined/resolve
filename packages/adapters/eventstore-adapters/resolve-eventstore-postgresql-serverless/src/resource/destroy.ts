@@ -26,7 +26,7 @@ const destroy = async (
       awsSecretStoreArn: options.awsSecretStoreAdminArn,
       dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
       databaseName: options.databaseName,
-      tableName: options.tableName,
+      eventsTableName: options.eventsTableName,
       secretsTableName: options.secretsTableName,
       snapshotsTableName: options.snapshotsTableName
     }

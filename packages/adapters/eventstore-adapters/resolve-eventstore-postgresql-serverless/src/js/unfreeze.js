@@ -1,11 +1,11 @@
 const unfreeze = async ({
   executeStatement,
   databaseName,
-  tableName,
+  eventsTableName,
   escapeId
 }) => {
   const databaseNameAsId = escapeId(databaseName)
-  const freezeTableNameAsId = escapeId(`${tableName}-freeze`)
+  const freezeTableNameAsId = escapeId(`${eventsTableName}-freeze`)
 
   await executeStatement(
     `DROP TABLE IF EXISTS ${databaseNameAsId}.${freezeTableNameAsId}`

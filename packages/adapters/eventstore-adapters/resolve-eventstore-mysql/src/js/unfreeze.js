@@ -1,6 +1,9 @@
-const unfreeze = async ({ events: { connection, tableName }, escapeId }) => {
+const unfreeze = async ({
+  events: { connection, eventsTableName },
+  escapeId
+}) => {
   await connection.execute(
-    `DROP TABLE IF EXISTS ${escapeId(`${tableName}-freeze`)}`
+    `DROP TABLE IF EXISTS ${escapeId(`${eventsTableName}-freeze`)}`
   )
 }
 

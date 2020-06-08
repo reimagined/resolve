@@ -1,16 +1,22 @@
 import getLog from './get-log'
 import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 
-const initEventStore = async ({ database, tableName, escapeId, config }) => {
+const initEventStore = async ({
+  database,
+  eventsTableName,
+  snapshotsTableName,
+  escapeId,
+  config
+}) => {
   const log = getLog('initEventStore')
 
   log.debug(`initializing events database tables`)
   log.verbose(`database: ${database}`)
-  log.verbose(`tableName: ${tableName}`)
+  log.verbose(`eventsTableName: ${eventsTableName}`)
 
   try {
     await database.exec(
-      `CREATE TABLE ${escapeId(tableName)}(
+      `CREATE TABLE ${escapeId(eventsTableName)}(
         ${escapeId('threadId')} BIGINT NOT NULL,
         ${escapeId('threadCounter')} BIGINT NOT NULL,
         ${escapeId('timestamp')} BIGINT NOT NULL,
@@ -22,27 +28,37 @@ const initEventStore = async ({ database, tableName, escapeId, config }) => {
         UNIQUE(${escapeId('aggregateId')}, ${escapeId('aggregateVersion')})
       );
       CREATE INDEX ${escapeId('aggregateIdAndVersion-idx')} ON ${escapeId(
-        tableName
+        eventsTableName
       )}(
         ${escapeId('aggregateId')}, ${escapeId('aggregateVersion')}
       );
-      CREATE INDEX ${escapeId('aggregateId-idx')} ON ${escapeId(tableName)}(
+      CREATE INDEX ${escapeId('aggregateId-idx')} ON ${escapeId(
+        eventsTableName
+      )}(
         ${escapeId('aggregateId')}
       );
       CREATE INDEX ${escapeId('aggregateVersion-idx')} ON ${escapeId(
-        tableName
+        eventsTableName
       )}(
         ${escapeId('aggregateVersion')}
       );
-      CREATE INDEX ${escapeId('type-idx')} ON ${escapeId(tableName)}(
+      CREATE INDEX ${escapeId('type-idx')} ON ${escapeId(eventsTableName)}(
         ${escapeId('type')}
       );
-      CREATE INDEX ${escapeId('timestamp-idx')} ON ${escapeId(tableName)}(
+      CREATE INDEX ${escapeId('timestamp-idx')} ON ${escapeId(eventsTableName)}(
         ${escapeId('timestamp')}
       )
       `
     )
     log.debug(`events database tables are initialized`)
+
+    await database.exec(
+      `CREATE TABLE ${escapeId(snapshotsTableName)} (
+        ${escapeId('snapshotKey')} TEXT,
+        ${escapeId('content')} TEXT
+        )`
+    )
+    log.debug(`snapshots database tables are initialized`)
   } catch (error) {
     if (error) {
       let errorToThrow = error

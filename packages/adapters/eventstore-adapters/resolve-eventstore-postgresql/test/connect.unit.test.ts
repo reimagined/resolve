@@ -20,7 +20,8 @@ beforeEach(() => {
       host: 'host',
       password: 'password',
       databaseName: 'database-name',
-      tableName: 'table-name',
+      eventsTableName: 'events-table-name',
+      snapshotsTableName: 'snapshots-table-name',
       secretsTableName: 'secrets-table-name'
     }
   }

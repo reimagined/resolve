@@ -31,7 +31,7 @@ describe('validate schema', () => {
         eventstoreAdapter: {
           module: 'resolve-eventstore-mysql',
           options: {
-            tableName: 'MyEvents'
+            eventsTableName: 'MyEvents'
           }
         }
       })

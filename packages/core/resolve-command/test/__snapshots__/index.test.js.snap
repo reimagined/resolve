@@ -103,6 +103,12 @@ Array [
 exports[`dispose with performance tracer should dispose the regular handler: addError 1`] = `
 Array [
   Array [
+    [SyntaxError: Unexpected token u in JSON at position 0],
+  ],
+  Array [
+    [Error: Command handler is disposed],
+  ],
+  Array [
     [Error: Command handler is disposed],
   ],
   Array [
@@ -123,6 +129,9 @@ Array [
     "getAggregateState",
   ],
   Array [
+    "loadSnapshot",
+  ],
+  Array [
     "loadEvents",
   ],
   Array [
@@ -141,6 +150,9 @@ Array [
     "getAggregateState",
   ],
   Array [
+    "loadSnapshot",
+  ],
+  Array [
     "loadEvents",
   ],
 ]
@@ -157,11 +169,15 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`dispose with performance tracer should dispose the regular handler: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -569,6 +585,14 @@ Array [
     "Entity",
   ],
   Array [
+    "origin",
+    "resolve:applySnapshot",
+  ],
+  Array [
+    "aggregateName",
+    "Entity",
+  ],
+  Array [
     "eventType",
     "CREATED",
   ],
@@ -602,6 +626,12 @@ Array [
 exports[`executeCommand with performance tracer should success build aggregate state and execute command: addError 1`] = `
 Array [
   Array [
+    [SyntaxError: Unexpected token u in JSON at position 0],
+  ],
+  Array [
+    [SyntaxError: Unexpected token u in JSON at position 0],
+  ],
+  Array [
     [Error: Entity already created],
   ],
   Array [
@@ -619,6 +649,9 @@ Array [
     "getAggregateState",
   ],
   Array [
+    "loadSnapshot",
+  ],
+  Array [
     "loadEvents",
   ],
   Array [
@@ -634,7 +667,13 @@ Array [
     "getAggregateState",
   ],
   Array [
+    "loadSnapshot",
+  ],
+  Array [
     "loadEvents",
+  ],
+  Array [
+    "applySnapshot",
   ],
   Array [
     "applyEvent",
@@ -657,11 +696,17 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`executeCommand with performance tracer should success build aggregate state and execute command: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -1070,12 +1115,28 @@ Array [
     "Map",
   ],
   Array [
+    "origin",
+    "resolve:applySnapshot",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
     "eventType",
     undefined,
   ],
   Array [
     "origin",
     "resolve:applyEvent",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:applySnapshot",
   ],
   Array [
     "aggregateName",
@@ -1094,6 +1155,12 @@ Array [
 
 exports[`executeCommand with performance tracer should throw error when the incorrect order of events: addError 1`] = `
 Array [
+  Array [
+    [SyntaxError: Unexpected token u in JSON at position 0],
+  ],
+  Array [
+    [Error: Incorrect order of events by aggregateId = "aggregateId"],
+  ],
   Array [
     [Error: Incorrect order of events by aggregateId = "aggregateId"],
   ],
@@ -1118,10 +1185,19 @@ Array [
     "getAggregateState",
   ],
   Array [
+    "loadSnapshot",
+  ],
+  Array [
     "loadEvents",
   ],
   Array [
+    "applySnapshot",
+  ],
+  Array [
     "applyEvent",
+  ],
+  Array [
+    "applySnapshot",
   ],
   Array [
     "applyEvent",
@@ -1136,11 +1212,17 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`executeCommand with performance tracer should throw error when the incorrect order of events: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -1311,7 +1393,7 @@ Array [
 ]
 `;
 
-exports[`executeCommand with performance tracer should use snapshotAdapter for building state: addAnnotation 1`] = `
+exports[`executeCommand with performance tracer should use snapshots for building state: addAnnotation 1`] = `
 Array [
   Array [
     "aggregateName",
@@ -1446,14 +1528,6 @@ Array [
     "Map",
   ],
   Array [
-    "origin",
-    "resolve:applySnapshot",
-  ],
-  Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
     "eventType",
     "SET",
   ],
@@ -1463,7 +1537,7 @@ Array [
   ],
   Array [
     "eventCount",
-    2,
+    1,
   ],
   Array [
     "origin",
@@ -1484,7 +1558,7 @@ Array [
 ]
 `;
 
-exports[`executeCommand with performance tracer should use snapshotAdapter for building state: addError 1`] = `
+exports[`executeCommand with performance tracer should use snapshots for building state: addError 1`] = `
 Array [
   Array [
     [SyntaxError: Unexpected token u in JSON at position 0],
@@ -1495,7 +1569,7 @@ Array [
 ]
 `;
 
-exports[`executeCommand with performance tracer should use snapshotAdapter for building state: addNewSubsegment 1`] = `
+exports[`executeCommand with performance tracer should use snapshots for building state: addNewSubsegment 1`] = `
 Array [
   Array [
     "executeCommand",
@@ -1555,9 +1629,6 @@ Array [
     "applySnapshot",
   ],
   Array [
-    "applySnapshot",
-  ],
-  Array [
     "applyEvent",
   ],
   Array [
@@ -1569,9 +1640,8 @@ Array [
 ]
 `;
 
-exports[`executeCommand with performance tracer should use snapshotAdapter for building state: close 1`] = `
+exports[`executeCommand with performance tracer should use snapshots for building state: close 1`] = `
 Array [
-  Array [],
   Array [],
   Array [],
   Array [],
@@ -1597,9 +1667,8 @@ Array [
 ]
 `;
 
-exports[`executeCommand with performance tracer should use snapshotAdapter for building state: getSegment 1`] = `
+exports[`executeCommand with performance tracer should use snapshots for building state: getSegment 1`] = `
 Array [
-  Array [],
   Array [],
   Array [],
   Array [],

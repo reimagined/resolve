@@ -14,7 +14,7 @@ export default {
       awsSecretStoreArn: declareRuntimeEnv('RESOLVE_ES_SECRET_ARN'),
       dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_ES_CLUSTER_ARN'),
       databaseName: declareRuntimeEnv('RESOLVE_ES_DATABASE'),
-      tableName: declareRuntimeEnv('RESOLVE_ES_EVENTS_TABLE'),
+      eventsTableName: declareRuntimeEnv('RESOLVE_ES_EVENTS_TABLE'),
       region: declareRuntimeEnv('AWS_REGION')
     }
   } /*,

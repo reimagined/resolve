@@ -13,10 +13,6 @@
     "module": "resolve-subscribe-socket.io",
     "options": {}
   },
-  "snapshotAdapter": {
-    "module": "resolve-runtime/lib/common/defaults/empty-snapshot-adapter.js",
-    "options": {}
-  },
   "readModelConnectors": {},
   "schedulers": {},
   "eventBroker": {

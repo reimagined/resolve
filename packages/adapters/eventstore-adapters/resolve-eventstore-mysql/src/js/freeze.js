@@ -1,10 +1,13 @@
-const freeze = async ({ events: { connection, tableName }, escapeId }) => {
+const freeze = async ({
+  events: { connection, eventsTableName },
+  escapeId
+}) => {
   await connection.execute(
-    `CREATE TABLE IF NOT EXISTS ${escapeId(`${tableName}-freeze`)}(
+    `CREATE TABLE IF NOT EXISTS ${escapeId(`${eventsTableName}-freeze`)}(
       ${escapeId('surrogate')} BIGINT NOT NULL,
       PRIMARY KEY(${escapeId('surrogate')})
     )
-    COMMENT = "RESOLVE EVENT STORE ${escapeId(tableName)} FREEZE MARKER" 
+    COMMENT = "RESOLVE EVENT STORE ${escapeId(eventsTableName)} FREEZE MARKER" 
     `
   )
 }

@@ -22,6 +22,9 @@ import init from '../src/init'
 import drop from '../src/drop'
 import dispose from '../src/dispose'
 import getSecretsManager from '../src/secrets-manager'
+import loadSnapshot from '../src/js/load-snapshot'
+import saveSnapshot from '../src/js/save-snapshot'
+import dropSnapshot from '../src/js/drop-snapshot'
 
 import createResource from '../src/resource/create'
 import disposeResource from '../src/resource/dispose'
@@ -55,6 +58,9 @@ jest.mock('../src/init', () => jest.fn())
 jest.mock('../src/drop', () => jest.fn())
 jest.mock('../src/dispose', () => jest.fn())
 jest.mock('../src/secrets-manager', () => jest.fn())
+jest.mock('../src/js/load-snapshot', () => jest.fn())
+jest.mock('../src/js/save-snapshot', () => jest.fn())
+jest.mock('../src/js/drop-snapshot', () => jest.fn())
 
 jest.mock('../src/resource/create', () => jest.fn())
 jest.mock('../src/resource/dispose', () => jest.fn())
@@ -86,7 +92,10 @@ test('generic createAdapter invoked', () => {
     saveEventOnly,
     coercer,
     shapeEvent,
-    getSecretsManager
+    getSecretsManager,
+    loadSnapshot,
+    saveSnapshot,
+    dropSnapshot
   })
 })
 
@@ -114,7 +123,7 @@ describe('as cloud resource', () => {
       dbClusterOrInstanceArn: 'cluster-arn',
       region: 'region',
       secretsTableName: 'secrets-table',
-      tableName: 'table',
+      eventsTableName: 'table',
       userLogin: 'user',
       snapshotsTableName: 'snapshots-table'
     }

@@ -1,7 +1,7 @@
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
 const loadEventsByCursor = async (
-  { events: { connection, tableName }, escapeId, escape, shapeEvent },
+  { events: { connection, eventsTableName }, escapeId, escape, shapeEvent },
   { eventTypes, aggregateIds, cursor, limit }
 ) => {
   const injectString = value => `${escape(value)}`
@@ -39,7 +39,7 @@ const loadEventsByCursor = async (
       .join(' OR ')}
     ${queryConditions.length > 0 ? ')' : ''}`
 
-  const eventsTableNameAsId = escapeId(tableName)
+  const eventsTableNameAsId = escapeId(eventsTableName)
 
   const [rows] = await connection.query(
     `SELECT * FROM ${eventsTableNameAsId}

@@ -6,7 +6,7 @@ This package is a eventstore adapter for storing events using PostgreSQL 10.7.
 ## Available Parameters
 
 * `databaseName` - a name of a schema storing events.
-* `tableName` - a name of a table storing events.
+* `eventsTableName` - a name of a table storing events.
 * `user` - a name of an user.
 * `password` - a password of an user.
 * `database` - a name of a database.
@@ -26,7 +26,7 @@ const adapter = createAdapter({
   host: 'localhost',
   port: 5432,
   databaseName: 'public',
-  tableName: 'events'
+  eventsTableName: 'events'
 })
 ```
 

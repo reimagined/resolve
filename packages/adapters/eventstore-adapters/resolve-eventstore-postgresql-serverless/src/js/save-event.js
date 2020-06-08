@@ -3,7 +3,7 @@ import { ConcurrentError } from 'resolve-eventstore-base'
 import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants'
 
 const saveEvent = async (
-  { databaseName, tableName, executeStatement, escapeId, escape },
+  { databaseName, eventsTableName, executeStatement, escapeId, escape },
   event
 ) => {
   try {
@@ -19,9 +19,9 @@ const saveEvent = async (
 
     const databaseNameAsString = escape(databaseName)
     const databaseNameAsId = escapeId(databaseName)
-    const freezeTableNameAsString = escape(`${tableName}-freeze`)
-    const threadsTableAsId = escapeId(`${tableName}-threads`)
-    const eventsTableAsId = escapeId(tableName)
+    const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
+    const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
+    const eventsTableAsId = escapeId(eventsTableName)
 
     // prettier-ignore
     await executeStatement(

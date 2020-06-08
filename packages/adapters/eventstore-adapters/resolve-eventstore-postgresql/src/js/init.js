@@ -4,26 +4,31 @@ import {
   LONG_STRING_SQL_TYPE,
   LONG_NUMBER_SQL_TYPE,
   INT8_SQL_TYPE,
-  JSON_SQL_TYPE
+  JSON_SQL_TYPE,
+  TEXT_SQL_TYPE
 } from './constants'
 
 const init = async ({
   databaseName,
-  tableName,
+  eventsTableName,
+  snapshotsTableName,
   executeStatement,
   escapeId
 }) => {
   const databaseNameAsId = escapeId(databaseName)
-  const eventsTableNameAsId = escapeId(tableName)
-  const threadsTableNameAsId = escapeId(`${tableName}-threads`)
+  const eventsTableNameAsId = escapeId(eventsTableName)
+  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
   const aggregateIdAndVersionIndexName = escapeId(
-    `${tableName}-aggregateIdAndVersion`
+    `${eventsTableName}-aggregateIdAndVersion`
   )
-  const aggregateIndexName = escapeId(`${tableName}-aggregateId`)
-  const aggregateVersionIndexName = escapeId(`${tableName}-aggregateVersion`)
-  const typeIndexName = escapeId(`${tableName}-type`)
-  const timestampIndexName = escapeId(`${tableName}-timestamp`)
+  const aggregateIndexName = escapeId(`${eventsTableName}-aggregateId`)
+  const aggregateVersionIndexName = escapeId(
+    `${eventsTableName}-aggregateVersion`
+  )
+  const typeIndexName = escapeId(`${eventsTableName}-type`)
+  const timestampIndexName = escapeId(`${eventsTableName}-timestamp`)
 
   try {
     await executeStatement(
@@ -59,6 +64,12 @@ const init = async ({
       ON ${databaseNameAsId}.${eventsTableNameAsId}
       USING BTREE("timestamp");
       
+      CREATE TABLE ${databaseNameAsId}.${snapshotsTableNameAsId} (
+        "snapshotKey" ${TEXT_SQL_TYPE} NOT NULL,
+        "snapshotContent" ${TEXT_SQL_TYPE},
+        PRIMARY KEY("snapshotKey")
+      );
+
       CREATE TABLE ${databaseNameAsId}.${threadsTableNameAsId}(
         "threadId" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
         "threadCounter" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
