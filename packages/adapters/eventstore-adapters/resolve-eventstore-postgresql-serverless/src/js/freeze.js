@@ -1,11 +1,11 @@
 const freeze = async ({
   executeStatement,
   databaseName,
-  tableName,
+  eventsTableName,
   escapeId
 }) => {
   const databaseNameAsId = escapeId(databaseName)
-  const freezeTableNameAsId = escapeId(`${tableName}-freeze`)
+  const freezeTableNameAsId = escapeId(`${eventsTableName}-freeze`)
 
   await executeStatement(
     `CREATE TABLE IF NOT EXISTS ${databaseNameAsId}.${freezeTableNameAsId} (

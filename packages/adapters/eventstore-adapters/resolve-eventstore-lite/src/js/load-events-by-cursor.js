@@ -1,7 +1,7 @@
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
 const loadEventsByCursor = async (pool, filter) => {
-  const { database, escapeId, escape, tableName, shapeEvent } = pool
+  const { database, escapeId, escape, eventsTableName, shapeEvent } = pool
   const { eventTypes, aggregateIds, cursor, limit } = filter
   const injectString = value => `${escape(value)}`
   const injectNumber = value => `${+value}`
@@ -42,7 +42,7 @@ const loadEventsByCursor = async (pool, filter) => {
       .join(' OR ')}
     ${queryConditions.length > 0 ? ')' : ''}`
 
-  const tableNameAsId = escapeId(tableName)
+  const tableNameAsId = escapeId(eventsTableName)
   const events = []
 
   const rows = await database.all(

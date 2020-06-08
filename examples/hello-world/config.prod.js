@@ -44,7 +44,7 @@ const prodConfig = {
         user: 'customUser',
         password: 'customPassword',
         database: 'customDatabaseName',
-        tableName: 'customTableName',
+        eventsTableName: 'customTableName',
         bucketSize: 100
       }
     }
@@ -63,7 +63,7 @@ const prodConfig = {
         user: 'customUser',
         password: 'customPassword',
         database: 'customDatabaseName',
-        tableName: 'customTableName'
+        eventsTableName: 'customTableName'
       }
     }
   */ subscribeAdapter: {

@@ -10,13 +10,15 @@ type MySQLLib = {
 export type AdapterPool = {
   config: {
     database: string
-    tableName?: string
+    eventsTableName: string
+    snapshotsTableName: string
     secretsDatabase?: string
     secretsTableName?: string
   }
   events: {
     connection: MySQLConnection
-    tableName: string
+    eventsTableName: string
+    snapshotsTableName: string
     database: string
   }
   secrets: {

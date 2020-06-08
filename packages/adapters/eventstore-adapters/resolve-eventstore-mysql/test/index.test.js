@@ -15,7 +15,7 @@ describe.skip('resolve-eventstore-mysql', () => {
       user: 'user',
       password: 'password',
       database: 'database',
-      tableName: 'tableName'
+      eventsTableName: 'eventsTableName'
     })
   })
 

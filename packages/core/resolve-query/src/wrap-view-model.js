@@ -16,7 +16,7 @@ const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
 
   try {
     const snapshot = JSON.parse(
-      await pool.snapshotAdapter.loadSnapshot(snapshotKey)
+      await pool.eventstoreAdapter.loadSnapshot(snapshotKey)
     )
     aggregatesVersionsMap = new Map(snapshot.aggregatesVersionsMap)
     state = await pool.viewModel.deserializeState(snapshot.state)
@@ -74,16 +74,14 @@ const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
 
       aggregatesVersionsMap.set(event.aggregateId, event.aggregateVersion)
 
-      if (pool.snapshotAdapter != null) {
-        await pool.snapshotAdapter.saveSnapshot(
-          snapshotKey,
-          JSON.stringify({
-            aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
-            state: await pool.viewModel.serializeState(state),
-            cursor
-          })
-        )
-      }
+      await pool.eventstoreAdapter.saveSnapshot(
+        snapshotKey,
+        JSON.stringify({
+          aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
+          state: await pool.viewModel.serializeState(state),
+          cursor
+        })
+      )
     } catch (error) {
       if (subSegment != null) {
         subSegment.addError(error)
@@ -287,14 +285,12 @@ const dispose = async pool => {
 
 const wrapViewModel = (
   viewModel,
-  snapshotAdapter,
   eventstoreAdapter,
   performanceTracer,
   getSecretsManager
 ) => {
   const pool = {
     viewModel,
-    snapshotAdapter,
     eventstoreAdapter,
     workers: new Map(),
     isDisposed: false,

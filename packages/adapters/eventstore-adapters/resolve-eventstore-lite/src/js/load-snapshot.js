@@ -5,7 +5,7 @@ const loadSnapshot = async (pool, snapshotKey) => {
 
   const result = await pool.database.get(
     `SELECT ${pool.escapeId('content')} 
-    FROM ${pool.escapeId(pool.tableName)} 
+    FROM ${pool.escapeId(pool.snapshotsTableName)} 
     WHERE ${pool.escapeId('snapshotKey')} = 
     ${pool.escape(snapshotKey)}`
   )

@@ -11,6 +11,9 @@ import saveEventOnly from './js/save-event-only'
 import freeze from './js/freeze'
 import unfreeze from './js/unfreeze'
 import shapeEvent from './js/shape-event'
+import saveSnapshot from './js/save-snapshot'
+import loadSnapshot from './js/load-snapshot'
+import dropSnapshot from './js/drop-snapshot'
 
 import connect from './connect'
 import init from './init'
@@ -32,6 +35,9 @@ export default createAdapter.bind(null, {
   unfreeze,
   shapeEvent,
   getSecretsManager,
+  saveSnapshot,
+  loadSnapshot,
+  dropSnapshot,
   MySQL,
   escapeId,
   escape

@@ -10,7 +10,6 @@ const initResolve = async resolve => {
 
   const {
     eventstoreAdapter: createEventstoreAdapter,
-    snapshotAdapter: createSnapshotAdapter,
     readModelConnectors: readModelConnectorsCreators
   } = resolve.assemblies
 
@@ -23,7 +22,6 @@ const initResolve = async resolve => {
     publisher,
     uploader
   } = resolve
-  const snapshotAdapter = createSnapshotAdapter()
   const eventstoreAdapter = createEventstoreAdapter()
 
   const readModelConnectors = {}
@@ -37,7 +35,6 @@ const initResolve = async resolve => {
     publisher,
     aggregates,
     eventstoreAdapter,
-    snapshotAdapter,
     performanceTracer
   })
 
@@ -45,7 +42,6 @@ const initResolve = async resolve => {
     publisher,
     eventstoreAdapter,
     readModelConnectors,
-    snapshotAdapter,
     readModels,
     viewModels,
     performanceTracer
@@ -57,7 +53,6 @@ const initResolve = async resolve => {
     publisher,
     eventstoreAdapter,
     readModelConnectors,
-    snapshotAdapter,
     schedulers,
     sagas,
     performanceTracer,
@@ -72,7 +67,6 @@ const initResolve = async resolve => {
 
   Object.defineProperties(resolve, {
     readModelConnectors: { value: readModelConnectors },
-    snapshotAdapter: { value: snapshotAdapter },
     eventstoreAdapter: { value: eventstoreAdapter }
   })
 

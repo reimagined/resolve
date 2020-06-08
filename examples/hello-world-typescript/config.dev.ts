@@ -41,7 +41,7 @@ const devConfig = {
       user: 'customUser',
       password: 'customPassword',
       database: 'customDatabaseName',
-      tableName: 'customTableName',
+      eventsTableName: 'customTableName',
       bucketSize: 100
     }
   },*/
@@ -59,7 +59,7 @@ const devConfig = {
       user: 'customUser',
       password: 'customPassword',
       database: 'customDatabaseName',
-      tableName: 'customTableName'
+      eventsTableName: 'customTableName'
     }
   },*/
   subscribeAdapter: {

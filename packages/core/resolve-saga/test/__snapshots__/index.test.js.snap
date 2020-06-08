@@ -731,12 +731,6 @@ exports[`resolve-saga: schedulerAdapterInstance.addEntries 1`] = `Array []`;
 
 exports[`resolve-saga: schedulerAdapterInstance.clearEntries 1`] = `Array []`;
 
-exports[`resolve-saga: snapshotAdapter.loadSnapshot 1`] = `
-Array [
-  Array [
-    "invariantHash;guid",
-  ],
-]
-`;
+exports[`resolve-saga: snapshotAdapter.loadSnapshot 1`] = `Array []`;
 
 exports[`resolve-saga: snapshotAdapter.saveSnapshot 1`] = `Array []`;

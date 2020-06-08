@@ -3,7 +3,14 @@ import { throwBadCursor } from 'resolve-eventstore-base'
 import { RESPONSE_SIZE_LIMIT } from './constants'
 
 const loadEventsByTimestamp = async (
-  { executeStatement, escapeId, escape, tableName, databaseName, shapeEvent },
+  {
+    executeStatement,
+    escapeId,
+    escape,
+    eventsTableName,
+    databaseName,
+    shapeEvent
+  },
   { eventTypes, aggregateIds, startTime, finishTime, limit }
 ) => {
   const injectString = value => `${escape(value)}`
@@ -28,7 +35,7 @@ const loadEventsByTimestamp = async (
     queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
 
   const databaseNameAsId = escapeId(databaseName)
-  const eventsTableAsId = escapeId(tableName)
+  const eventsTableAsId = escapeId(eventsTableName)
   let countEvents = 0
   const events = []
 

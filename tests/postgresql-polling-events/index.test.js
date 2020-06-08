@@ -43,7 +43,7 @@ describe.skip('resolve-eventstore-mysql-serverless', () => {
       awsSecretStoreAdminArn: process.env.AWS_SECRET_STORE_ADMIN_ARN,
       dbClusterOrInstanceArn: process.env.AWS_POSTGRES_CLUSTER_ARN,
       databaseName: process.env.AWS_POSTGRES_DATABASE_NAME,
-      tableName: process.env.AWS_POSTGRES_TABLE_NAME,
+      eventsTableName: process.env.AWS_POSTGRES_TABLE_NAME,
       userLogin: process.env.AWS_POSTGRES_USER_NAME,
       userPassword: process.env.AWS_POSTGRES_PASSWORD
     })
@@ -68,7 +68,7 @@ describe.skip('resolve-eventstore-mysql-serverless', () => {
     eventstoreAdapter = createEventstoreAdapter({
       region: process.env.AWS_REGION,
       databaseName: process.env.AWS_POSTGRES_DATABASE_NAME,
-      tableName: process.env.AWS_POSTGRES_TABLE_NAME,
+      eventsTableName: process.env.AWS_POSTGRES_TABLE_NAME,
       awsSecretStoreArn: process.env.AWS_SECRET_STORE_ARN,
       dbClusterOrInstanceArn: process.env.AWS_POSTGRES_CLUSTER_ARN
     })

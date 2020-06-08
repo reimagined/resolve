@@ -1,5 +1,3 @@
-import { SnapshotResourceAlreadyExistError } from 'resolve-snapshot-base'
-
 import debugLevels from 'resolve-debug-levels'
 import {
   FULL_XA_CONNECTOR,
@@ -8,17 +6,11 @@ import {
   detectConnectorFeatures
 } from 'resolve-query'
 
-import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
-
 const log = debugLevels('resolve:resolve-runtime:bootstrap')
 
 const bootstrap = async resolve => {
   log.debug('bootstrap started')
-  const { snapshotAdapter, readModelConnectors, publisher } = resolve
-
-  await invokeFilterErrorTypes(snapshotAdapter.init.bind(snapshotAdapter), [
-    SnapshotResourceAlreadyExistError
-  ])
+  const { readModelConnectors, publisher } = resolve
 
   const promises = []
   for (const {

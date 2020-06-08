@@ -1,19 +1,24 @@
 import { LOAD_CHUNK_SIZE } from './constants'
 
-const loadSnapshot = async (pool, snapshotKey) => {
+const loadSnapshot = async (
+  { databaseName, snapshotsTableName, executeStatement, escapeId, escape },
+  snapshotKey
+) => {
   if (snapshotKey == null || snapshotKey.constructor !== String) {
     throw new Error('Snapshot key must be string')
   }
 
+  const databaseNameAsId = escapeId(databaseName)
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
+
   let result = null
   for (let index = 0; ; index++) {
-    const rows = await pool.executeStatement(
-      `SELECT substring(${pool.escapeId('SnapshotContent')} from ${index *
-        LOAD_CHUNK_SIZE +
+    const rows = await executeStatement(
+      `SELECT substring("snapshotContent" from ${index * LOAD_CHUNK_SIZE +
         1} for ${LOAD_CHUNK_SIZE})
-      AS ${pool.escapeId('SnapshotContentChunk')}
-      FROM ${pool.escapeId(pool.databaseName)}.${pool.escapeId(pool.tableName)}
-      WHERE ${pool.escapeId('SnapshotKey')} = ${pool.escape(snapshotKey)} 
+      AS "SnapshotContentChunk"
+      FROM ${databaseNameAsId}.${snapshotsTableNameAsId}
+      WHERE "snapshotKey" = ${escape(snapshotKey)} 
       LIMIT 1`
     )
 

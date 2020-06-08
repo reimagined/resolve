@@ -3,10 +3,6 @@ import {
   EventstoreResourceNotExistError
 } from 'resolve-eventstore-base'
 import {
-  SnapshotResourceAlreadyExistError,
-  SnapshotResourceNotExistError
-} from 'resolve-snapshot-base'
-import {
   PublisherResourceAlreadyExistError,
   PublisherResourceNotExistError
 } from 'resolve-local-event-broker'
@@ -15,7 +11,6 @@ import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 
 const resetDomainHandler = options => async (req, res) => {
   const {
-    snapshotAdapter,
     eventstoreAdapter,
     publisher,
     readModels,
@@ -24,13 +19,7 @@ const resetDomainHandler = options => async (req, res) => {
   } = req.resolve
 
   try {
-    const {
-      dropEventStore,
-      dropSnapshots,
-      dropEventBus,
-      dropReadModels,
-      dropSagas
-    } = options
+    const { dropEventStore, dropEventBus, dropReadModels, dropSagas } = options
 
     if (dropEventStore) {
       await invokeFilterErrorTypes(
@@ -41,15 +30,6 @@ const resetDomainHandler = options => async (req, res) => {
         eventstoreAdapter.init.bind(eventstoreAdapter),
         [EventstoreResourceAlreadyExistError]
       )
-    }
-
-    if (dropSnapshots) {
-      await invokeFilterErrorTypes(snapshotAdapter.drop.bind(snapshotAdapter), [
-        SnapshotResourceNotExistError
-      ])
-      await invokeFilterErrorTypes(snapshotAdapter.init.bind(snapshotAdapter), [
-        SnapshotResourceAlreadyExistError
-      ])
     }
 
     const dropReadModelsSagasErrors = []

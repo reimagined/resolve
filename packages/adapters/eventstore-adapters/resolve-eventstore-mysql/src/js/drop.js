@@ -3,22 +3,23 @@ import getLog from './get-log'
 import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
 
 const drop = async ({
-  events: { tableName, connection, database },
+  events: { eventsTableName, snapshotsTableName, connection, database },
   escapeId
 }) => {
   const log = getLog('dropEventStore')
 
   log.debug(`dropping events tables`)
-  log.verbose(`tableName: ${tableName}`)
 
-  const eventsTableNameAsId = escapeId(tableName)
-  const freezeTableNameAsId = escapeId(`${tableName}-freeze`)
-  const threadsTableNameAsId = escapeId(`${tableName}-threads`)
+  const eventsTableNameAsId = escapeId(eventsTableName)
+  const freezeTableNameAsId = escapeId(`${eventsTableName}-freeze`)
+  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
   const statements = [
     `DROP TABLE IF EXISTS ${freezeTableNameAsId}`,
     `DROP TABLE ${threadsTableNameAsId}`,
-    `DROP TABLE ${eventsTableNameAsId}`
+    `DROP TABLE ${eventsTableNameAsId}`,
+    `DROP TABLE ${snapshotsTableNameAsId}`
   ]
 
   const errors = []

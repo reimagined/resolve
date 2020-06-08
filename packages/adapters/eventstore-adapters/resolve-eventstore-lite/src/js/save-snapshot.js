@@ -17,7 +17,7 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   pool.counters.set(snapshotKey, 0)
 
   await pool.database.exec(
-    `INSERT INTO ${pool.escapeId(pool.tableName)} 
+    `INSERT INTO ${pool.escapeId(pool.snapshotsTableName)} 
     VALUES (${pool.escape(snapshotKey)}, ${pool.escape(content)})`
   )
 }
