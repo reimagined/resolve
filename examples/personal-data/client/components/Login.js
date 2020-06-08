@@ -9,7 +9,8 @@ import {
   Input,
   FormText,
   Button,
-  Alert
+  Alert,
+  Label
 } from 'reactstrap'
 
 const RegistrationForm = ({ user }) => {
@@ -22,6 +23,8 @@ const RegistrationForm = ({ user }) => {
     error: null,
     done: null
   })
+
+  const [agree, setAgree] = useState(false)
 
   const handleChange = prop => event => {
     setValues({
@@ -124,13 +127,29 @@ const RegistrationForm = ({ user }) => {
             </FormText>
           </Col>
         </FormGroup>
+        {!user && (
+          <FormGroup check className="mb-3">
+            <Label check>
+              <Input
+                id="consent"
+                type="checkbox"
+                onChange={() => {
+                  setAgree(!agree)
+                }}
+              />{' '}
+              I give my consent to the processing of personal data
+            </Label>
+          </FormGroup>
+        )}
         <FormGroup row>
           <Col>
             <div className="mb-3">
               {user ? (
                 <Button onClick={update}>Update</Button>
               ) : (
-                <Button type="submit">Sign Up</Button>
+                <Button disabled={!agree} type="submit">
+                  Sign Up
+                </Button>
               )}
             </div>
             {error && <Alert color="danger">An error occurred</Alert>}

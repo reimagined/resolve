@@ -15,7 +15,8 @@ describe.skip('resolve-eventstore-lite', () => {
   beforeEach(async () => {
     eventstoreAdapter = createEventstoreAdapter({
       databaseFile: ':memory:',
-      eventsTableName: 'eventsTableName'
+      eventsTableName: 'eventsTableName',
+      snapshotsTableName: 'snapshotsTableName'
     })
     await eventstoreAdapter.init()
   })
