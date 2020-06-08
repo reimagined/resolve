@@ -19,7 +19,6 @@ const drop = async ({
     `DROP TABLE IF EXISTS ${freezeTableNameAsId}`,
     `DROP TABLE ${threadsTableNameAsId}`,
     `DROP TABLE ${eventsTableNameAsId}`,
-    `DROP TABLE ${eventsTableNameAsId}`,
     `DROP TABLE ${snapshotsTableNameAsId}`
   ]
 
