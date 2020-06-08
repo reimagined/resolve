@@ -9,7 +9,6 @@ import loadEventsByCursor from '../src/js/load-events-by-cursor'
 import loadEventsByTimestamp from '../src/js/load-events-by-timestamp'
 import getLatestEvent from '../src/js/get-latest-event'
 import saveEvent from '../src/js/save-event'
-import paginateEvents from '../src/js/paginate-events'
 import saveEventOnly from '../src/js/save-event-only'
 import freeze from '../src/js/freeze'
 import unfreeze from '../src/js/unfreeze'
@@ -49,7 +48,6 @@ test('generic createAdapter invoked', () => {
     init,
     drop,
     dispose,
-    paginateEvents,
     saveEventOnly,
     freeze,
     unfreeze,

@@ -16,7 +16,6 @@ import getLatestEvent from '../src/js/get-latest-event'
 import saveEvent from '../src/js/save-event'
 
 import saveEventOnly from '../src/js/save-event-only'
-import paginateEvents from '../src/js/paginate-events'
 
 import shapeEvent from '../src/js/shape-event'
 import connect from '../src/connect'
@@ -61,7 +60,6 @@ test('generic createAdapter invoked', () => {
     os,
     fs,
     saveEventOnly,
-    paginateEvents,
     shapeEvent,
     getSecretsManager
   })
