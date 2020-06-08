@@ -1,7 +1,14 @@
 import { throwBadCursor } from 'resolve-eventstore-base'
 
 const loadEventsByTimestamp = async (
-  { executeStatement, escapeId, escape, eventsTableName, databaseName, shapeEvent },
+  {
+    executeStatement,
+    escapeId,
+    escape,
+    eventsTableName,
+    databaseName,
+    shapeEvent
+  },
   { eventTypes, aggregateIds, startTime, finishTime, limit }
 ) => {
   const injectString = value => `${escape(value)}`

@@ -54,15 +54,22 @@ const init = async (pool: AdapterPool): Promise<any> => {
   const log = getLog('init')
   log.debug('initializing databases')
 
-  const { databaseName, eventsTableName, snapshotsTableName, executeStatement, escapeId } = pool
-
-  const createInitEventStorePromise = (): Promise<any> => initEventStore({
+  const {
     databaseName,
     eventsTableName,
     snapshotsTableName,
     executeStatement,
     escapeId
-  })
+  } = pool
+
+  const createInitEventStorePromise = (): Promise<any> =>
+    initEventStore({
+      databaseName,
+      eventsTableName,
+      snapshotsTableName,
+      executeStatement,
+      escapeId
+    })
 
   const result = await Promise.all([
     createInitEventStorePromise(),

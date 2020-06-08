@@ -26,7 +26,9 @@ const init = async ({
     `${eventsTableName}-aggregateIdAndVersion`
   )
   const aggregateIndexName = escapeId(`${eventsTableName}-aggregateId`)
-  const aggregateVersionIndexName = escapeId(`${eventsTableName}-aggregateVersion`)
+  const aggregateVersionIndexName = escapeId(
+    `${eventsTableName}-aggregateVersion`
+  )
   const typeIndexName = escapeId(`${eventsTableName}-type`)
   const timestampIndexName = escapeId(`${eventsTableName}-timestamp`)
 

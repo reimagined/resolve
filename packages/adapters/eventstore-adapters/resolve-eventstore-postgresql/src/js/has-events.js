@@ -1,5 +1,11 @@
 const hasEvents = async (pool, events) => {
-  const { executeStatement, escapeId, escape, eventsTableName, databaseName } = pool
+  const {
+    executeStatement,
+    escapeId,
+    escape,
+    eventsTableName,
+    databaseName
+  } = pool
   if (!Array.isArray(events) || events.length === 0) {
     return []
   }

@@ -1,5 +1,12 @@
 const getLatestEvent = async (
-  { executeStatement, escapeId, escape, eventsTableName, databaseName, shapeEvent },
+  {
+    executeStatement,
+    escapeId,
+    escape,
+    eventsTableName,
+    databaseName,
+    shapeEvent
+  },
   { eventTypes, aggregateIds, startTime, finishTime }
 ) => {
   const injectString = value => `${escape(value)}`

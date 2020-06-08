@@ -1,7 +1,13 @@
 import { RESERVED_EVENT_SIZE } from './constants'
 
 const saveEventOnly = async function(pool, event) {
-  const { databaseName, eventsTableName, executeStatement, escapeId, escape } = pool
+  const {
+    databaseName,
+    eventsTableName,
+    executeStatement,
+    escapeId,
+    escape
+  } = pool
 
   const serializedEvent = [
     `${escape(event.aggregateId)},`,
