@@ -26,7 +26,7 @@ void (async (): Promise<void> => {
         resolveConfig,
         {
           dropEventStore: false,
-
+          dropEventBus: true,
           dropReadModels: true,
           dropSagas: true
         },
@@ -69,7 +69,7 @@ void (async (): Promise<void> => {
         resolveConfig,
         {
           dropEventStore: true,
-
+          dropEventBus: true,
           dropReadModels: true,
           dropSagas: true
         },

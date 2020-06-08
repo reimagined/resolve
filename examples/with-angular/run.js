@@ -26,7 +26,6 @@ void (async () => {
           {
             dropEventStore: false,
             dropEventBus: true,
-
             dropReadModels: true,
             dropSagas: true
           },
