@@ -12553,7 +12553,7 @@ mysql2@1.6.4:
     seq-queue "0.0.5"
     sqlstring "2.3.1"
 
-mysql2@^1.6.1, mysql2@^1.6.4:
+mysql2@^1.6.1:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/mysql2/-/mysql2-1.7.0.tgz#2fbf314da016a61d038ffcd57a2a0aa3b7b8eacc"
   integrity sha512-xTWWQPjP5rcrceZQ7CSTKR/4XIDeH/cRkNH/uzvVGQ7W5c7EJ0dXeJUusk7OKhIoHj7uFKUxDVSCfLIl+jluog==
@@ -16561,7 +16561,7 @@ sqlite3@^4.0.0:
     nan "^2.12.1"
     node-pre-gyp "^0.11.0"
 
-sqlite@^3.0.2, sqlite@^3.0.3:
+sqlite@^3.0.2:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/sqlite/-/sqlite-3.0.6.tgz#82d15bb45a1ca2a7ac8f7a1079f19dc9abe2ee75"
   integrity sha512-5SW7HcN+s3TyqpsxOujXhQDCRSCgsxdiU0peT/Y9CT5T0rAsGLwtpXcMyQ7OzOPQ4YUZ5XiGlrwuuQbszr2xtw==

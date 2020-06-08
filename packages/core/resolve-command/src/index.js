@@ -101,9 +101,9 @@ const snapshotHandler = async (pool, aggregateInfo, event) => {
       throw generateCommandError('Command handler is disposed')
     }
 
-    if (event.aggregateVersion <= aggregateInfo.aggregateVersion) {
-      return
-    }
+    // if (event.aggregateVersion <= aggregateInfo.aggregateVersion) {
+    //   return
+    // }
 
     await regularHandler(pool, aggregateInfo, event)
 

@@ -1,26 +1,43 @@
 import createCommandExecutor from '../src'
 import { CommandError } from '../src'
 
-let eventstoreAdapter, publisher, events, DateNow, performanceTracer
+let eventstoreAdapter, publisher, events, DateNow, performanceTracer, snapshots
 
 beforeEach(() => {
   events = []
+  snapshots = new Map()
 
   eventstoreAdapter = {
     loadEvents: jest.fn().mockImplementation(async ({ cursor: prevCursor }) => {
-      return {
-        cursor: `${prevCursor == null ? '' : prevCursor}${events.map(e =>
-          Buffer.from(JSON.stringify(e)).toString('base64')
-        )}`,
-        events
+      const result = {
+        cursor: `${prevCursor == null ? '' : prevCursor}${events
+          .map(e => Buffer.from(JSON.stringify(e)).toString('base64'))
+          .join(',')}`,
+        events:
+          prevCursor != null
+            ? `${events.map(e =>
+                Buffer.from(JSON.stringify(e)).toString('base64')
+              )}`
+                .substr(prevCursor.length)
+                .split(',')
+                .filter(e => e != null && e.length > 0)
+                .map(e => JSON.parse(Buffer.from(e, 'base64').toString()))
+            : events
       }
+      return result
     }),
     getNextCursor: jest.fn().mockImplementation((prevCursor, events) => {
-      return `${prevCursor == null ? '' : prevCursor}${events.map(e =>
-        Buffer.from(JSON.stringify(e)).toString('base64')
-      )}`
+      return `${prevCursor == null ? '' : prevCursor}${events
+        .map(e => Buffer.from(JSON.stringify(e)).toString('base64'))
+        .join(',')}`
     }),
-    getSecretsManager: jest.fn()
+    getSecretsManager: jest.fn(),
+    saveSnapshot: jest.fn().mockImplementation((key, value) => {
+      return snapshots.set(key, value)
+    }),
+    loadSnapshot: jest.fn().mockImplementation(key => {
+      return snapshots.get(key)
+    })
   }
 
   publisher = {
@@ -61,6 +78,7 @@ afterEach(() => {
   global.Date.now = DateNow
   performanceTracer = null
   publisher = null
+  snapshots = null
 })
 
 describe('executeCommand', () => {
@@ -122,6 +140,8 @@ describe('executeCommand', () => {
             }
           }
         },
+        serializeState: state => JSON.stringify(state),
+        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 'Entity-invariantHash'
       }
 
@@ -217,16 +237,6 @@ describe('executeCommand', () => {
     })
 
     test('should use snapshots for building state', async () => {
-      const snapshots = new Map()
-      Object.assign(eventstoreAdapter, {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      })
-
       const aggregate = {
         encryption: () => ({}),
         name: 'Map',
@@ -304,16 +314,6 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when use snapshot adapter without invariant hash', async () => {
-      const snapshots = new Map()
-      Object.assign(eventstoreAdapter, {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      })
-
       const aggregate = {
         encryption: () => ({}),
         name: 'Map',
@@ -366,16 +366,6 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when use snapshot adapter with incorrect invariant hash', async () => {
-      const snapshots = new Map()
-      Object.assign(eventstoreAdapter, {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      })
-
       const aggregate = {
         encryption: () => ({}),
         name: 'Map',
@@ -816,6 +806,8 @@ describe('executeCommand', () => {
             }
           }
         },
+        serializeState: state => JSON.stringify(state),
+        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 'Entity-invariantHash'
       }
 
@@ -937,16 +929,6 @@ describe('executeCommand', () => {
     })
 
     test('should use snapshots for building state', async () => {
-      const snapshots = new Map()
-      Object.assign(eventstoreAdapter, {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      })
-
       const aggregate = {
         encryption: () => ({}),
         name: 'Map',
@@ -1037,16 +1019,6 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when use snapshot adapter without invariant hash', async () => {
-      const snapshots = new Map()
-      Object.assign(eventstoreAdapter, {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      })
-
       const aggregate = {
         encryption: () => ({}),
         name: 'Map',
@@ -1112,16 +1084,6 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when use snapshot adapter with incorrect invariant hash', async () => {
-      const snapshots = new Map()
-      Object.assign(eventstoreAdapter, {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      })
-
       const aggregate = {
         encryption: () => ({}),
         name: 'Map',
@@ -1631,16 +1593,6 @@ describe('dispose', () => {
     })
 
     test('should dispose the snapshot handler', async () => {
-      const snapshots = new Map()
-      Object.assign(eventstoreAdapter, {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      })
-
       const aggregate = {
         encryption: () => ({}),
         name: 'Map',
@@ -1809,16 +1761,6 @@ describe('dispose', () => {
     })
 
     test('should dispose the snapshot handler', async () => {
-      const snapshots = new Map()
-      Object.assign(eventstoreAdapter, {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      })
-
       const aggregate = {
         encryption: () => ({}),
         name: 'Map',
