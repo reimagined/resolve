@@ -10,7 +10,6 @@ import saveEvent from './js/save-event'
 import fullJitter from './js/full-jitter'
 import executeStatement from './js/execute-statement'
 import saveEventOnly from './js/save-event-only'
-import paginateEvents from './js/paginate-events'
 import coercer from './js/coercer'
 import escapeId from './js/escape-id'
 import escape from './js/escape'
@@ -39,7 +38,6 @@ const createAdapter = _createAdapter.bind(null, {
   fullJitter,
   executeStatement,
   saveEventOnly,
-  paginateEvents,
   coercer,
   shapeEvent,
   getSecretsManager

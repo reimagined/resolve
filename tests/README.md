@@ -49,14 +49,6 @@ const devConfig = {
       }
     }
     */
-    /*
-    default: {
-      module: 'resolve-readmodel-mongo',
-      options: {
-        url: 'mongodb://127.0.0.1:27017/ReadModelStoriesSample'
-      }
-    }
-    */
   }
 }
 ```
@@ -210,14 +202,6 @@ const devConfig = {
         user: 'root',
         password: '',
         database: `ReadModelCommentsSample`
-      }
-    }
-    */
-    /*
-    default: {
-      module: 'resolve-readmodel-mongo',
-      options: {
-        url: 'mongodb://127.0.0.1:27017/ReadModelCommentsSample'
       }
     }
     */
@@ -568,14 +552,6 @@ const devConfig = {
       }
     }
     */
-    /*
-    default: {
-      module: 'resolve-readmodel-mongo',
-      options: {
-        url: 'mongodb://127.0.0.1:27017/SagaSample'
-      }
-    }
-    */
   }
 }
 ```
@@ -688,14 +664,6 @@ const devConfig = {
         user: 'root',
         password: '',
         database: 'SagaWithAuthorizationSample'
-      }
-    }
-    */
-    /*
-    default: {
-      module: 'resolve-readmodel-mongo',
-      options: {
-        url: 'mongodb://127.0.0.1:27017/SagaWithAuthorizationSample'
       }
     }
     */

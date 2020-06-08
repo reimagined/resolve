@@ -2,7 +2,7 @@ import express from 'express'
 import { Server } from 'http'
 import path from 'path'
 
-import wrapApiHandler from 'resolve-api-handler-express'
+import wrapApiHandler from './wrap-api-handler'
 import mainHandler from '../common/handlers/main-handler'
 import getRootBasedUrl from '../common/utils/get-root-based-url'
 

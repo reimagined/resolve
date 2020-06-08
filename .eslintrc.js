@@ -258,8 +258,6 @@ module.exports = {
           'middlewares',
           'millis',
           'minimist',
-          'mongo',
-          'mongodb',
           'monorepo',
           'Monorepos',
           'mqtt',

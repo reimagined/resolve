@@ -29,9 +29,9 @@ describe('validate schema', () => {
         mode: 'development',
         target: 'local',
         eventstoreAdapter: {
-          module: 'resolve-eventstore-mongo',
+          module: 'resolve-eventstore-mysql',
           options: {
-            collectionName: 'MyEvents'
+            tableName: 'MyEvents'
           }
         }
       })

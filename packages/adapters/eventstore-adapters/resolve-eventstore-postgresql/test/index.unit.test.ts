@@ -13,7 +13,6 @@ import saveEvent from '../src/js/save-event'
 import fullJitter from '../src/js/full-jitter'
 import executeStatement from '../src/js/execute-statement'
 import saveEventOnly from '../src/js/save-event-only'
-import paginateEvents from '../src/js/paginate-events'
 import coercer from '../src/js/coercer'
 import escapeId from '../src/js/escape-id'
 import escape from '../src/js/escape'
@@ -34,7 +33,6 @@ jest.mock('../src/js/save-event', () => jest.fn())
 jest.mock('../src/js/full-jitter', () => jest.fn())
 jest.mock('../src/js/execute-statement', () => jest.fn())
 jest.mock('../src/js/save-event-only', () => jest.fn())
-jest.mock('../src/js/paginate-events', () => jest.fn())
 jest.mock('../src/js/coercer', () => jest.fn())
 jest.mock('../src/js/escape-id', () => jest.fn())
 jest.mock('../src/js/escape', () => jest.fn())
@@ -66,7 +64,6 @@ test('generic createAdapter invoked', () => {
     fullJitter,
     executeStatement,
     saveEventOnly,
-    paginateEvents,
     coercer,
     shapeEvent,
     getSecretsManager
