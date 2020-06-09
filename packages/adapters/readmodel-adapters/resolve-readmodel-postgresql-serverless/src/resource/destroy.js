@@ -1,7 +1,7 @@
 import { EOL } from 'os'
 
 const destroy = async (pool, options) => {
-  const { connect, disconnect, escapeId, escape } = pool
+  const { connect, disconnect, escapeId } = pool
   const admin = {}
 
   await connect(admin, {
