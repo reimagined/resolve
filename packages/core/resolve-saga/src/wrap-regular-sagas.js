@@ -1,9 +1,9 @@
-import debugLevels from 'resolve-debug-levels'
+import getLog from './get-log'
 import uuid from 'uuid/v4'
 
 import sagaEventHandler from './saga-event-handler'
 
-const log = debugLevels('resolve:resolve-saga:wrap-regular-sagas')
+const log = getLog('wrap-regular-sagas')
 
 const scheduleCommand = async (sagaProvider, schedulerName, date, command) => {
   const aggregateName = schedulerName
@@ -27,7 +27,8 @@ const wrapRegularSagas = (sagas, sagaProvider) => {
     handlers,
     sideEffects,
     connectorName,
-    schedulerName
+    schedulerName,
+    encryption
   } of sagas) {
     const boundScheduleCommand = scheduleCommand.bind(
       null,
@@ -52,7 +53,8 @@ const wrapRegularSagas = (sagas, sagaProvider) => {
       name,
       projection,
       resolvers: {},
-      connectorName
+      connectorName,
+      encryption
     }
 
     sagaReadModels.push(sagaReadModel)

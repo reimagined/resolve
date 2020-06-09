@@ -23,6 +23,13 @@ const appConfig = {
 [mdis]:# (./read-model-stories-sample/config.js#dev-config)
 ```js
 const devConfig = {
+  storageAdapter: {
+    module: 'resolve-eventstore-lite',
+    options: {
+      databaseFile: ':memory:'
+    }
+  },
+
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-lite',
@@ -42,14 +49,6 @@ const devConfig = {
       }
     }
     */
-    /*
-    default: {
-      module: 'resolve-readmodel-mongo',
-      options: {
-        url: 'mongodb://127.0.0.1:27017/ReadModelStoriesSample'
-      }
-    }
-    */
   }
 }
 ```
@@ -64,7 +63,6 @@ const projection = {
       fields: ['text', 'version', 'active']
     })
   },
-
   STORY_CREATED: async (store, event) => {
     await store.insert('Stories', {
       id: event.aggregateId,
@@ -73,7 +71,6 @@ const projection = {
       version: 0
     })
   },
-
   STORY_UPDATED: async (store, event) => {
     await store.update(
       'Stories',
@@ -90,7 +87,6 @@ const projection = {
       }
     )
   },
-
   STORY_FLAGGED_FOR_DELETION: async (store, event) => {
     await store.update(
       'Stories',
@@ -104,7 +100,6 @@ const projection = {
       }
     )
   },
-
   STORY_DELETED: async (store, event) => {
     await store.delete('Stories', {
       id: event.aggregateId,
@@ -112,7 +107,6 @@ const projection = {
     })
   }
 }
-
 export default projection
 ```
 
@@ -123,7 +117,6 @@ const resolvers = {
   getStoryById: async (store, { id }) => {
     return await store.findOne('Stories', { id })
   },
-
   getStoriesByIds: async (store, { ids }) => {
     return await store.find('Stories', {
       $or: ids.map(storyId => ({ id: { $eq: storyId } }))
@@ -157,7 +150,6 @@ const resolvers = {
     const { version } = await store.findOne('Stories', { id }, { version: 1 })
     return version
   },
-
   getCountStories: async store => {
     return await store.count('Stories', {})
   }
@@ -187,6 +179,13 @@ const appConfig = {
 [mdis]:# (./read-model-comments-sample/config.js#dev-config)
 ```js
 const devConfig = {
+  storageAdapter: {
+    module: 'resolve-eventstore-lite',
+    options: {
+      databaseFile: ':memory:'
+    }
+  },
+
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-lite',
@@ -203,14 +202,6 @@ const devConfig = {
         user: 'root',
         password: '',
         database: `ReadModelCommentsSample`
-      }
-    }
-    */
-    /*
-    default: {
-      module: 'resolve-readmodel-mongo',
-      options: {
-        url: 'mongodb://127.0.0.1:27017/ReadModelCommentsSample'
       }
     }
     */
@@ -299,15 +290,17 @@ const projection = {
     )
 
     if (parentId != null) {
-      const comments = (await store.findOne(
-        'CommentsAsList',
-        {
-          treeId
-        },
-        {
-          comments: 1
-        }
-      )).comments
+      const comments = (
+        await store.findOne(
+          'CommentsAsList',
+          {
+            treeId
+          },
+          {
+            comments: 1
+          }
+        )
+      ).comments
 
       const parentIndex = comments.findIndex(
         ({ aggregateId }) => aggregateId === parentId
@@ -404,6 +397,13 @@ const appConfig = {
 [mdis]:# (./custom-readmodel-sample/config.js#dev-config)
 ```js
 const devConfig = {
+  storageAdapter: {
+    module: 'resolve-eventstore-lite',
+    options: {
+      databaseFile: ':memory:'
+    }
+  },
+
   readModelConnectors: {
     default: {
       module: 'connector.js',
@@ -457,7 +457,6 @@ export default options => {
     }
     readModels.clear()
   }
-
   return {
     connect,
     disconnect,
@@ -518,6 +517,13 @@ const appConfig = {
 [mdis]:# (./saga-sample/config.js#dev-config)
 ```js
 const devConfig = {
+  storageAdapter: {
+    module: 'resolve-eventstore-lite',
+    options: {
+      databaseFile: ':memory:'
+    }
+  },
+
   schedulers: {
     scheduler: {
       adapter: {
@@ -543,14 +549,6 @@ const devConfig = {
         user: 'root',
         password: '',
         database: 'SagaSample'
-      }
-    }
-    */
-    /*
-    default: {
-      module: 'resolve-readmodel-mongo',
-      options: {
-        url: 'mongodb://127.0.0.1:27017/SagaSample'
       }
     }
     */
@@ -634,6 +632,13 @@ const appConfig = {
 [mdis]:# (./saga-with-authorization-sample/config.js#dev-config)
 ```js
 const devConfig = {
+  storageAdapter: {
+    module: 'resolve-eventstore-lite',
+    options: {
+      databaseFile: ':memory:'
+    }
+  },
+
   schedulers: {
     scheduler: {
       adapter: {
@@ -659,14 +664,6 @@ const devConfig = {
         user: 'root',
         password: '',
         database: 'SagaWithAuthorizationSample'
-      }
-    }
-    */
-    /*
-    default: {
-      module: 'resolve-readmodel-mongo',
-      options: {
-        url: 'mongodb://127.0.0.1:27017/SagaWithAuthorizationSample'
       }
     }
     */

@@ -16,12 +16,6 @@ const devConfig = {
       }
     }
     /*default: {
-      module: 'resolve-readmodel-mongo',
-      options: {
-        url: 'mongodb://127.0.0.1:27017/MyDatabaseName',
-      }
-    },*/
-    /*default: {
       module: 'resolve-readmodel-mysql',
       options: {
         host: 'localhost',
@@ -47,32 +41,25 @@ const devConfig = {
       user: 'customUser',
       password: 'customPassword',
       database: 'customDatabaseName',
-      tableName: 'customTableName',
+      eventsTableName: 'customTableName',
       bucketSize: 100
     }
   },*/
-  storageAdapter: {
-    module: 'resolve-storage-lite',
+  eventstoreAdapter: {
+    module: 'resolve-eventstore-lite',
     options: {
       databaseFile: 'data/storage.db'
     }
   },
   /*{
-    module: 'resolve-storage-mongo',
-    options: {
-      url: 'mongodb://127.0.0.1:27017/MyDatabaseName',
-      collectionName: 'Events'
-    }
-  },*/
-  /*{
-    module: 'resolve-storage-mysql',
+    module: 'resolve-eventstore-mysql',
     options: {
       host: 'localhost',
       port: 3306,
       user: 'customUser',
       password: 'customPassword',
       database: 'customDatabaseName',
-      tableName: 'customTableName'
+      eventsTableName: 'customTableName'
     }
   },*/
   subscribeAdapter: {

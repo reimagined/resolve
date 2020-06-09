@@ -25,13 +25,13 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/upload-adapters/resolve-upload-local#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
+    "@babel/runtime": "7.9.6",
     "request": "^2.88.0",
     "uuid": "^3.3.3",
     "crypto": "^1.0.1"
   },
   "devDependencies": {
-    "jest": "25.1.0"
+    "jest": "26.0.1"
   },
   "babelCompile": [
     {

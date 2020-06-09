@@ -81,6 +81,19 @@ export default ({ resolveConfig, isClient }) => {
       })
 
       exports.push(`, validator: validator_${index}`)
+
+      importResource({
+        resourceName: `encryption_${index}`,
+        resourceValue: viewModel.encryption,
+        runtimeMode: RUNTIME_ENV_NOWHERE,
+        importMode: RESOURCE_ANY,
+        instanceMode: IMPORT_INSTANCE,
+        instanceFallback: 'resolve-runtime/lib/common/defaults/encryption.js',
+        imports,
+        constants
+      })
+
+      exports.push(`, encryption: encryption_${index}`)
     }
 
     exports.push(`})`, ``)

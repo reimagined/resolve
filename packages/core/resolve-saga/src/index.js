@@ -7,21 +7,22 @@ import createSchedulerSagas from './create-scheduler-sagas'
 import wrapRegularSagas from './wrap-regular-sagas'
 
 const createSaga = ({
-  eventStore,
+  publisher,
   readModelConnectors,
-  snapshotAdapter,
   sagas,
   schedulers,
   executeCommand,
   executeQuery,
-  performanceTracer
+  performanceTracer,
+  uploader,
+  eventstoreAdapter
 }) => {
   const schedulerAggregatesNames = new Set(schedulers.map(({ name }) => name))
   let eventProperties = {}
   const executeScheduleCommand = createCommand({
     aggregates: createSchedulersAggregates(schedulers),
-    eventStore,
-    snapshotAdapter
+    publisher,
+    eventstoreAdapter
   })
 
   const executeCommandOrScheduler = async (...args) => {
@@ -36,33 +37,40 @@ const createSaga = ({
   const sagaProvider = Object.create(Object.prototype, {
     executeCommand: { get: () => executeCommandOrScheduler, enumerable: true },
     executeQuery: { get: () => executeQuery, enumerable: true },
-    eventProperties: { get: () => eventProperties, enumerable: true }
+    eventProperties: { get: () => eventProperties, enumerable: true },
+    getSecretsManager: {
+      get: () => eventstoreAdapter.getSecretsManager,
+      enumerable: true
+    },
+    uploader: { get: () => uploader, enumerable: true }
   })
 
   const regularSagas = wrapRegularSagas(sagas, sagaProvider)
   const schedulerSagas = createSchedulerSagas(schedulers, sagaProvider)
 
   const executeListener = createQuery({
-    eventStore,
+    publisher,
     readModelConnectors,
-    snapshotAdapter,
     readModels: [...regularSagas, ...schedulerSagas],
     viewModels: [],
-    performanceTracer
+    performanceTracer,
+    eventstoreAdapter
   })
 
-  const updateByEvents = async (
-    sagaName,
+  const updateByEvents = async ({
+    modelName,
     events,
-    remainingTime,
+    getRemainingTimeInMillis,
+    xaTransactionId,
     properties
-  ) => {
+  }) => {
     eventProperties = properties
-    const result = await executeListener.updateByEvents(
-      sagaName,
+    const result = await executeListener.updateByEvents({
+      modelName,
       events,
-      remainingTime
-    )
+      getRemainingTimeInMillis,
+      xaTransactionId
+    })
     return result
   }
 

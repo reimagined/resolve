@@ -12,7 +12,8 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "test": "jest",
+    "build": "tsc",
+    "test": "echo || exit 0",
     "testw": "echo || exit 0",
     "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'"
   },
@@ -38,9 +39,9 @@
     "@types/node": "^13.7.0",
     "@types/react": "*",
     "@types/react-dom": "*",
-    "jest": "25.1.0",
-    "react-test-renderer": "^16.12.0",
-    "ts-jest": "^25.2.1"
+    "jest": "26.0.1",
+    "react-test-renderer": "16.13.0",
+    "ts-jest": "26.0.0"
   },
   "peerDependencies": {
     "react": "^16.13.0"

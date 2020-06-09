@@ -5,7 +5,7 @@ import validation from './validation'
 import { USER_CREATED, USER_NAME_UPDATED } from '../event-types'
 
 export default {
-  createUser: (state, command, jwtToken) => {
+  createUser: (state, command, { jwt: jwtToken }) => {
     const jwt = JWT.verify(jwtToken, jwtSecret)
 
     validation.stateIsAbsent(state, 'User')
@@ -21,7 +21,7 @@ export default {
       }
     }
   },
-  updateUserName: (state, command, jwtToken) => {
+  updateUserName: (state, command, { jwt: jwtToken }) => {
     const jwt = JWT.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'User')

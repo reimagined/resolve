@@ -13,8 +13,6 @@ Core libraries:
 
 - [resolve-command](resolve-command)  
    Provides a function for executing a commands.
-- [resolve-es](resolve-es)  
-   Provides an Event Store.
 - [resolve-query](resolve-query)  
    Provides a function for querying Read and View Models.
 - [resolve-redux](resolve-redux)  

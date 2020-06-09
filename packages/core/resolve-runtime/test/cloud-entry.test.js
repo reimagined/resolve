@@ -1,13 +1,13 @@
 import STS from 'aws-sdk/clients/sts'
-import { ConcurrentError } from 'resolve-storage-base'
+import { ConcurrentError } from 'resolve-eventstore-base'
 
 import initCloudEntry from '../src/cloud/index'
 
 describe('Cloud entry', () => {
   let assemblies, constants, domain, redux, routes
   let getCloudEntryWorker, lambdaContext
-  let originalMathRandom, originalDateNow, storageAdapter, snapshotAdapter
-  let originalProcessEnv
+  let originalMathRandom, originalDateNow, originalProcessEnv
+  let eventstoreAdapter, snapshotAdapter
 
   const defaultRequestHttpHeaders = {
     Accept: '*/*',
@@ -38,8 +38,9 @@ describe('Cloud entry', () => {
       RESOLVE_IOT_ROLE_ARN: 'RESOLVE_IOT_ROLE_ARN'
     }
 
-    storageAdapter = {
-      loadEvents: jest.fn(),
+    eventstoreAdapter = {
+      getSecretsManager: jest.fn().mockReturnValue({}),
+      loadEvents: jest.fn().mockReturnValue({ events: [], cursor: null }),
       getNextCursor: jest.fn(),
       getLatestEvent: jest.fn(),
       saveEvent: jest.fn(),
@@ -60,7 +61,7 @@ describe('Cloud entry', () => {
         staticPath,
         rootPath
       },
-      storageAdapter: jest.fn().mockImplementation(() => storageAdapter),
+      eventstoreAdapter: jest.fn().mockImplementation(() => eventstoreAdapter),
       snapshotAdapter: jest.fn().mockImplementation(() => snapshotAdapter),
       readModelConnectors: {
         // default: jest.fn().mockReturnValue(defaultReadModelConnector)
@@ -303,6 +304,7 @@ describe('Cloud entry', () => {
 
     test('should invoke command via POST /"rootPath"/api/commands/', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -365,43 +367,15 @@ describe('Cloud entry', () => {
           value: 'value1'
         }
       })
-
-      expect(storageAdapter.saveEvent).toBeCalledWith({
-        aggregateId: 'aggregateId',
-        aggregateVersion: 1,
-        timestamp: 1,
-        type: 'SET',
-        payload: {
-          key: 'key1',
-          value: 'value1'
-        }
-      })
     })
 
     test('should fail command via POST /"rootPath"/api/commands/ with ConcurrentError', async () => {
-      storageAdapter.saveEvent = jest.fn().mockImplementation(async () => {
-        throw new ConcurrentError()
-      })
-
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
-          set: (aggregateState, command) => {
-            return {
-              type: 'SET',
-              payload: {
-                key: command.payload.key,
-                value: command.payload.value
-              }
-            }
-          }
-        },
-        projection: {
-          SET: (state, event) => {
-            return {
-              ...state,
-              [event.payload.key]: [event.payload.value]
-            }
+          set: () => {
+            throw new ConcurrentError()
           }
         },
         serializeState: state => JSON.stringify(state),
@@ -440,11 +414,12 @@ describe('Cloud entry', () => {
     })
 
     test('should fail command via POST /"rootPath"/api/commands/ with CommandError', async () => {
-      storageAdapter.saveEvent = jest.fn().mockImplementation(async () => {
+      eventstoreAdapter.saveEvent = jest.fn().mockImplementation(async () => {
         throw new ConcurrentError()
       })
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'BadAggregate',
         commands: {
           fail: () => {
@@ -482,11 +457,12 @@ describe('Cloud entry', () => {
     })
 
     test('should fail command via POST /"rootPath"/api/commands/ with CustomerError', async () => {
-      storageAdapter.saveEvent = jest.fn().mockImplementation(async () => {
+      eventstoreAdapter.saveEvent = jest.fn().mockImplementation(async () => {
         throw new ConcurrentError()
       })
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'BadAggregate',
         commands: {
           fail: () => {
@@ -612,7 +588,7 @@ describe('Cloud entry', () => {
         {
           method: 'POST',
           path: '/api/my-api-handler-1',
-          controller: async (req, res) => {
+          handler: async (req, res) => {
             res.setHeader('Content-type', 'application/octet-stream')
             res.end('Custom octet stream')
           }
@@ -620,7 +596,7 @@ describe('Cloud entry', () => {
         {
           method: 'POST',
           path: '/api/my-api-handler-2',
-          controller: async (req, res) => {
+          handler: async (req, res) => {
             res.setHeader('Content-type', 'text/plain')
             res.end('ok')
           }
@@ -651,7 +627,7 @@ describe('Cloud entry', () => {
       domain.apiHandlers.push({
         method: 'POST',
         path: '/',
-        controller: async (req, res) => {
+        handler: async (req, res) => {
           res.end('Custom markup handler')
         }
       })
@@ -679,7 +655,7 @@ describe('Cloud entry', () => {
       domain.apiHandlers.push({
         method: 'POST',
         path: '/',
-        controller: async (req, res) => {
+        handler: async (req, res) => {
           res.end('Custom markup handler')
         }
       })

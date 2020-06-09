@@ -3,8 +3,8 @@ import generateCustomMode from './generate_custom_mode'
 
 const validOptions = [
   'dropEventStore',
-  'dropSnapshots',
   'dropReadModels',
+  'dropEventBus',
   'dropSagas'
 ]
 
@@ -27,7 +27,7 @@ const getConfig = async (resolveConfig, options) => {
       {
         method: 'GET',
         path: '/api/reset-domain',
-        controller: {
+        handler: {
           module: 'resolve-runtime/lib/local/reset-domain-handler.js',
           options
         }

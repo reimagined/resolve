@@ -1,67 +1,78 @@
+import {
+  EventstoreResourceAlreadyExistError,
+  EventstoreResourceNotExistError
+} from 'resolve-eventstore-base'
+import {
+  PublisherResourceAlreadyExistError,
+  PublisherResourceNotExistError
+} from 'resolve-local-event-broker'
+
+import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
+
 const resetDomainHandler = options => async (req, res) => {
   const {
-    readModelConnectors,
-    snapshotAdapter,
-    storageAdapter,
-    eventBroker: { reset: resetListener },
+    eventstoreAdapter,
+    publisher,
     readModels,
     schedulers,
     sagas
   } = req.resolve
 
   try {
-    const { dropEventStore, dropSnapshots, dropReadModels, dropSagas } = options
+    const { dropEventStore, dropEventBus, dropReadModels, dropSagas } = options
 
     if (dropEventStore) {
-      try {
-        await storageAdapter.drop()
-      } catch (e) {}
-
-      try {
-        await storageAdapter.init()
-      } catch (e) {}
+      await invokeFilterErrorTypes(
+        eventstoreAdapter.drop.bind(eventstoreAdapter),
+        [EventstoreResourceNotExistError]
+      )
+      await invokeFilterErrorTypes(
+        eventstoreAdapter.init.bind(eventstoreAdapter),
+        [EventstoreResourceAlreadyExistError]
+      )
     }
 
-    if (dropSnapshots) {
-      try {
-        await snapshotAdapter.drop()
-      } catch (e) {}
-
-      try {
-        await snapshotAdapter.init()
-      } catch (e) {}
-    }
-
+    const dropReadModelsSagasErrors = []
     if (dropReadModels) {
-      for (const { name, connectorName } of readModels) {
-        const connector = readModelConnectors[connectorName]
-
+      for (const { name } of readModels) {
         try {
-          const connection = await connector.connect(name)
-          await connector.drop(connection, name)
-          await connector.disconnect(connection, name)
-        } catch (e) {}
-
-        try {
-          await resetListener(name)
-        } catch (e) {}
+          await publisher.reset({ eventSubscriber: name })
+        } catch (error) {
+          dropReadModelsSagasErrors.push(error)
+        }
       }
     }
 
     if (dropSagas) {
-      for (const { name, connectorName } of [...sagas, ...schedulers]) {
-        const connector = readModelConnectors[connectorName]
-
+      for (const { name } of [...sagas, ...schedulers]) {
         try {
-          const connection = await connector.connect(name)
-          await connector.drop(connection, name)
-          await connector.disconnect(connection, name)
-        } catch (e) {}
-
-        try {
-          await resetListener(name)
-        } catch (e) {}
+          await publisher.reset({ eventSubscriber: name })
+        } catch (error) {
+          dropReadModelsSagasErrors.push(error)
+        }
       }
+    }
+
+    if (dropEventBus) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        dropReadModelsSagasErrors.map(error => error.message).join('\n')
+      )
+
+      await invokeFilterErrorTypes(publisher.drop.bind(publisher), [
+        PublisherResourceNotExistError
+      ])
+      await invokeFilterErrorTypes(publisher.init.bind(publisher), [
+        PublisherResourceAlreadyExistError
+      ])
+    } else {
+      const compositeError = new Error(
+        dropReadModelsSagasErrors.map(error => error.message).join('\n')
+      )
+      compositeError.stack = dropReadModelsSagasErrors
+        .map(error => error.stack)
+        .join('\n')
+      throw compositeError
     }
 
     res.end('ok')

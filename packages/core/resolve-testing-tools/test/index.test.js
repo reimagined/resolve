@@ -27,11 +27,11 @@ test('resolve-testing-tools index', async () => {
         }
       },
       resolvers: {
-        all: async (store, args, jwtToken) => {
+        all: async (store, args, context) => {
           return {
             items: await store.find('items', {}, { id: 1 }, { id: 1 }),
             args,
-            jwtToken
+            context
           }
         }
       },
@@ -45,6 +45,9 @@ test('resolve-testing-tools index', async () => {
   expect(result).toEqual({
     items: [{ id: 1 }, { id: 2 }, { id: 3 }],
     args: { a: 10, b: 20 },
-    jwtToken: 'JWT_TOKEN'
+    context: {
+      jwt: 'JWT_TOKEN',
+      secretsManager: expect.any(Object)
+    }
   })
 })

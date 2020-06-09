@@ -70,7 +70,7 @@ void (async () => {
         const resolveConfig = merge(baseConfig, devConfig, moduleAdmin)
         await reset(resolveConfig, {
           dropEventStore: false,
-          dropSnapshots: true,
+          dropEventBus: true,
           dropReadModels: true,
           dropSagas: true
         })
@@ -100,7 +100,7 @@ void (async () => {
         const resolveConfig = merge(baseConfig, devConfig)
         await reset(resolveConfig, {
           dropEventStore: true,
-          dropSnapshots: true,
+          dropEventBus: true,
           dropReadModels: true,
           dropSagas: true
         })
@@ -130,7 +130,7 @@ void (async () => {
         const resolveConfig = merge(baseConfig, testFunctionalConfig)
         await reset(resolveConfig, {
           dropEventStore: true,
-          dropSnapshots: true,
+          dropEventBus: true,
           dropReadModels: true,
           dropSagas: true
         })
@@ -148,7 +148,7 @@ void (async () => {
         const config = merge(baseConfig, devConfig)
         await reset(config, {
           dropEventStore: true,
-          dropSnapshots: true,
+          dropEventBus: true,
           dropReadModels: true,
           dropSagas: true
         })
@@ -159,7 +159,7 @@ void (async () => {
             {
               method: 'POST',
               path: '/api/import_events',
-              controller: {
+              handler: {
                 module: 'import/import_api_handler.js',
                 options: {}
               }

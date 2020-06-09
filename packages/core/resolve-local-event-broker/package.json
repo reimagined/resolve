@@ -25,15 +25,17 @@
   },
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-local-event-broker#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
-    "cuid": "^2.1.6",
+    "@babel/runtime": "7.9.6",
     "sqlite": "^3.0.2",
+    "tmp": "^0.1.0",
     "resolve-debug-levels": "0.23.2",
-    "resolve-zeromq": "0.23.2"
+    "resolve-local-rpc": "0.23.2",
+    "resolve-eventstore-base": "0.23.2",
+    "resolve-readmodel-base": "0.23.2"
   },
   "devDependencies": {
     "sinon": "7.2.2",
-    "jest": "25.1.0"
+    "jest": "26.0.1"
   },
   "babelCompile": [
     {

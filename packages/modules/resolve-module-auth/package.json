@@ -25,13 +25,13 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-auth#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
+    "@babel/runtime": "7.9.6",
     "iconv-lite": "0.4.24",
     "isomorphic-fetch": "2.2.1",
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "jest": "25.1.0",
+    "jest": "26.0.1",
     "sinon": "7.2.2"
   },
   "babelCompile": [

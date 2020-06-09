@@ -101,7 +101,7 @@ describe('Saga', () => {
       adapter = null
       sagaWithAdapter = null
     })
-
+    // mdis-start saga-test
     test('success registration', async () => {
       const result = await givenEvents([
         {
@@ -123,7 +123,7 @@ describe('Saga', () => {
 
       expect(result).toMatchSnapshot()
     })
-
+    // mdis-stop saga-test
     test('forgotten registration', async () => {
       const result = await givenEvents([
         {

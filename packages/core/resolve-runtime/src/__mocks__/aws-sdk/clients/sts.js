@@ -3,6 +3,9 @@
 const _STS = jest.fn().mockImplementation(() => STS)
 const STS = _STS.bind(null)
 
+STS.getCallerIdentity = jest.fn().mockReturnValue({
+  promise: jest.fn().mockReturnValue({ Arn: 'RoleValidationArn' })
+})
 STS.assumeRole = jest.fn()
 STS.invoke = jest.fn()
 

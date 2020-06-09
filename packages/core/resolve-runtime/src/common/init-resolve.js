@@ -1,28 +1,28 @@
-import createEventStore from 'resolve-es'
 import createCommandExecutor from 'resolve-command'
 import createQueryExecutor from 'resolve-query'
 import createSagaExecutor from 'resolve-saga'
 import crypto from 'crypto'
 
-const DEFAULT_WORKER_LIFETIME = 15 * 60 * 1000
+const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
 const initResolve = async resolve => {
   const performanceTracer = resolve.performanceTracer
 
   const {
-    storageAdapter: createStorageAdapter,
-    snapshotAdapter: createSnapshotAdapter,
+    eventstoreAdapter: createEventstoreAdapter,
     readModelConnectors: readModelConnectorsCreators
   } = resolve.assemblies
 
-  const storageAdapter = createStorageAdapter()
-  const eventStore = createEventStore({
-    storage: storageAdapter,
-    publishEvent: resolve.publishEvent
-  })
-
-  const { aggregates, readModels, schedulers, sagas, viewModels } = resolve
-  const snapshotAdapter = createSnapshotAdapter()
+  const {
+    aggregates,
+    readModels,
+    schedulers,
+    sagas,
+    viewModels,
+    publisher,
+    uploader
+  } = resolve
+  const eventstoreAdapter = createEventstoreAdapter()
 
   const readModelConnectors = {}
   for (const name of Object.keys(readModelConnectorsCreators)) {
@@ -32,16 +32,16 @@ const initResolve = async resolve => {
   }
 
   const executeCommand = createCommandExecutor({
-    eventStore,
+    publisher,
     aggregates,
-    snapshotAdapter,
+    eventstoreAdapter,
     performanceTracer
   })
 
   const executeQuery = createQueryExecutor({
-    eventStore,
+    publisher,
+    eventstoreAdapter,
     readModelConnectors,
-    snapshotAdapter,
     readModels,
     viewModels,
     performanceTracer
@@ -50,25 +50,24 @@ const initResolve = async resolve => {
   const executeSaga = createSagaExecutor({
     executeCommand,
     executeQuery,
-    eventStore,
+    publisher,
+    eventstoreAdapter,
     readModelConnectors,
-    snapshotAdapter,
     schedulers,
     sagas,
-    performanceTracer
+    performanceTracer,
+    uploader
   })
 
   Object.assign(resolve, {
     executeCommand,
     executeQuery,
-    executeSaga,
-    eventStore
+    executeSaga
   })
 
   Object.defineProperties(resolve, {
     readModelConnectors: { value: readModelConnectors },
-    snapshotAdapter: { value: snapshotAdapter },
-    storageAdapter: { value: storageAdapter }
+    eventstoreAdapter: { value: eventstoreAdapter }
   })
 
   if (!resolve.hasOwnProperty('getRemainingTimeInMillis')) {

@@ -7,13 +7,19 @@ const log = debugLevels(
 const commitTransaction = async pool => {
   try {
     log.verbose('Commit transaction to postgresql database started')
-    await pool.rdsDataService
-      .commitTransaction({
-        resourceArn: pool.dbClusterOrInstanceArn,
-        secretArn: pool.awsSecretStoreArn,
-        transactionId: pool.transactionId
-      })
-      .promise()
+
+    await pool.rdsDataService.executeStatement({
+      resourceArn: pool.dbClusterOrInstanceArn,
+      secretArn: pool.awsSecretStoreArn,
+      transactionId: pool.transactionId,
+      sql: `SELECT 0`
+    })
+
+    await pool.rdsDataService.commitTransaction({
+      resourceArn: pool.dbClusterOrInstanceArn,
+      secretArn: pool.awsSecretStoreArn,
+      transactionId: pool.transactionId
+    })
 
     log.verbose('Commit transaction to postgresql database succeed')
   } catch (error) {

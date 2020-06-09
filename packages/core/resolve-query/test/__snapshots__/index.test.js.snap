@@ -78,7 +78,7 @@ Array [
 exports[`with performanceTracer read models "dispose" should dispose only one time: addError 1`] = `
 Array [
   Array [
-    [Error: Read model "readModelName" is disposed],
+    [Error: read-model "readModelName" is disposed],
   ],
 ]
 `;
@@ -232,7 +232,7 @@ Array [
 exports[`with performanceTracer read models "drop" should raise error when query is disposed: addError 1`] = `
 Array [
   Array [
-    [Error: Read model "readModelName" is disposed],
+    [Error: read-model "readModelName" is disposed],
   ],
 ]
 `;
@@ -429,7 +429,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer read models "read" should return { lastError, ... } when a read model is broken: addAnnotation 1`] = `
+exports[`with performanceTracer read models "read" should return { error, ... } when a read model is broken: addAnnotation 1`] = `
 Array [
   Array [
     "readModelName",
@@ -474,22 +474,29 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer read models "read" should return { lastError, ... } when a read model is broken: addError 1`] = `
+exports[`with performanceTracer read models "read" should return { error, ... } when a read model is broken: addError 1`] = `
 Array [
   Array [
     [Error: BROKEN],
   ],
   Array [
     Object {
-      "lastError": [Error: BROKEN],
-      "lastEvent": null,
-      "listenerId": "brokenReadModelName",
+      "error": [Error: BROKEN],
+      "eventSubscriber": "brokenReadModelName",
+      "failedEvent": Object {
+        "aggregateId": "id1",
+        "aggregateVersion": 1,
+        "payload": Object {},
+        "timestamp": 1,
+        "type": "BROKEN",
+      },
+      "successEvent": null,
     },
   ],
 ]
 `;
 
-exports[`with performanceTracer read models "read" should return { lastError, ... } when a read model is broken: addNewSubsegment 1`] = `
+exports[`with performanceTracer read models "read" should return { error, ... } when a read model is broken: addNewSubsegment 1`] = `
 Array [
   Array [
     "updateByEvents",
@@ -506,7 +513,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer read models "read" should return { lastError, ... } when a read model is broken: close 1`] = `
+exports[`with performanceTracer read models "read" should return { error, ... } when a read model is broken: close 1`] = `
 Array [
   Array [],
   Array [],
@@ -515,7 +522,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer read models "read" should return { lastError, ... } when a read model is broken: getSegment 1`] = `
+exports[`with performanceTracer read models "read" should return { error, ... } when a read model is broken: getSegment 1`] = `
 Array [
   Array [],
   Array [],
@@ -992,7 +999,7 @@ Array [
 exports[`with performanceTracer read models "updateByEvents" should raise error when a projection is not found: addError 1`] = `
 Array [
   Array [
-    [Error: Updating by events is prohibited when "readOnlyReadModelName" projection is not specified],
+    [Error: updating by events is prohibited when "readOnlyReadModelName" projection is not specified],
   ],
 ]
 `;
@@ -1079,7 +1086,7 @@ Array [
 exports[`with performanceTracer read models "updateByEvents" should raise error when query is disposed: addError 1`] = `
 Array [
   Array [
-    [Error: Read model "readModelName" is disposed],
+    [Error: read-model "readModelName" is disposed],
   ],
 ]
 `;
@@ -1156,6 +1163,14 @@ Array [
   ],
   Array [
     "readModelName",
+    "readOnlyReadModelName",
+  ],
+  Array [
+    "origin",
+    "resolve:query:dispose",
+  ],
+  Array [
+    "readModelName",
     "remoteReadModelName",
   ],
   Array [
@@ -1165,14 +1180,6 @@ Array [
   Array [
     "origin",
     "resolve:query:applyEvent",
-  ],
-  Array [
-    "readModelName",
-    "readOnlyReadModelName",
-  ],
-  Array [
-    "origin",
-    "resolve:query:dispose",
   ],
   Array [
     "readModelName",
@@ -1204,12 +1211,23 @@ Array [
 exports[`with performanceTracer read models "updateByEvents" should raise error when updating had been interrupted: addError 1`] = `
 Array [
   Array [
-    [Error: Read model "remoteReadModelName" updating had been interrupted],
+    [Error: read-model "remoteReadModelName" updating had been interrupted],
   ],
   Array [
     Object {
-      "lastError": [Error: Read model "remoteReadModelName" updating had been interrupted],
-      "lastEvent": Object {
+      "error": [Error: read-model "remoteReadModelName" updating had been interrupted],
+      "eventSubscriber": "remoteReadModelName",
+      "failedEvent": Object {
+        "aggregateId": "id",
+        "aggregateVersion": 2,
+        "payload": Object {
+          "key": 3,
+          "value": 4,
+        },
+        "timestamp": 2,
+        "type": "SET",
+      },
+      "successEvent": Object {
         "aggregateId": "id",
         "aggregateVersion": 1,
         "payload": Object {
@@ -1219,7 +1237,6 @@ Array [
         "timestamp": 1,
         "type": "SET",
       },
-      "listenerId": "remoteReadModelName",
     },
   ],
 ]
@@ -1237,10 +1254,10 @@ Array [
     "dispose",
   ],
   Array [
-    "applyEvent",
+    "dispose",
   ],
   Array [
-    "dispose",
+    "applyEvent",
   ],
   Array [
     "dispose",
@@ -1285,7 +1302,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "dispose" should dispose only one time: addAnnotation 1`] = `
+exports[`with performanceTracer view models with snapshots "dispose" should dispose only one time: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -1298,7 +1315,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "dispose" should dispose only one time: addError 1`] = `
+exports[`with performanceTracer view models with snapshots "dispose" should dispose only one time: addError 1`] = `
 Array [
   Array [
     [Error: View model "viewModelName" is disposed],
@@ -1306,7 +1323,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "dispose" should dispose only one time: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models with snapshots "dispose" should dispose only one time: addNewSubsegment 1`] = `
 Array [
   Array [
     "dispose",
@@ -1317,21 +1334,21 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "dispose" should dispose only one time: close 1`] = `
+exports[`with performanceTracer view models with snapshots "dispose" should dispose only one time: close 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "dispose" should dispose only one time: getSegment 1`] = `
+exports[`with performanceTracer view models with snapshots "dispose" should dispose only one time: getSegment 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "drop" should raise error on view models: addAnnotation 1`] = `
+exports[`with performanceTracer view models with snapshots "drop" should raise error on view models: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -1344,7 +1361,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "drop" should raise error on view models: addError 1`] = `
+exports[`with performanceTracer view models with snapshots "drop" should raise error on view models: addError 1`] = `
 Array [
   Array [
     [Error: Snapshot cleaning for view-model "viewModelName" is not implemented],
@@ -1352,7 +1369,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "drop" should raise error on view models: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models with snapshots "drop" should raise error on view models: addNewSubsegment 1`] = `
 Array [
   Array [
     "drop",
@@ -1360,19 +1377,19 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "drop" should raise error on view models: close 1`] = `
+exports[`with performanceTracer view models with snapshots "drop" should raise error on view models: close 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "drop" should raise error on view models: getSegment 1`] = `
+exports[`with performanceTracer view models with snapshots "drop" should raise error on view models: getSegment 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "drop" should raise error when query is disposed: addAnnotation 1`] = `
+exports[`with performanceTracer view models with snapshots "drop" should raise error when query is disposed: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -1389,7 +1406,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "drop" should raise error when query is disposed: addError 1`] = `
+exports[`with performanceTracer view models with snapshots "drop" should raise error when query is disposed: addError 1`] = `
 Array [
   Array [
     [Error: View model "viewModelName" is disposed],
@@ -1397,7 +1414,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "drop" should raise error when query is disposed: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models with snapshots "drop" should raise error when query is disposed: addNewSubsegment 1`] = `
 Array [
   Array [
     "dispose",
@@ -1408,31 +1425,31 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "drop" should raise error when query is disposed: close 1`] = `
+exports[`with performanceTracer view models with snapshots "drop" should raise error when query is disposed: close 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "drop" should raise error when query is disposed: getSegment 1`] = `
+exports[`with performanceTracer view models with snapshots "drop" should raise error when query is disposed: getSegment 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when a view model does not exist: addAnnotation 1`] = `Array []`;
+exports[`with performanceTracer view models with snapshots "read" should raise error when a view model does not exist: addAnnotation 1`] = `Array []`;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when a view model does not exist: addError 1`] = `Array []`;
+exports[`with performanceTracer view models with snapshots "read" should raise error when a view model does not exist: addError 1`] = `Array []`;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when a view model does not exist: addNewSubsegment 1`] = `Array []`;
+exports[`with performanceTracer view models with snapshots "read" should raise error when a view model does not exist: addNewSubsegment 1`] = `Array []`;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when a view model does not exist: close 1`] = `Array []`;
+exports[`with performanceTracer view models with snapshots "read" should raise error when a view model does not exist: close 1`] = `Array []`;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when a view model does not exist: getSegment 1`] = `Array []`;
+exports[`with performanceTracer view models with snapshots "read" should raise error when a view model does not exist: getSegment 1`] = `Array []`;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when aggregateIds is a bad value: addAnnotation 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should raise error when aggregateIds is a bad value: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -1445,7 +1462,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when aggregateIds is a bad value: addError 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should raise error when aggregateIds is a bad value: addError 1`] = `
 Array [
   Array [
     [Error: View model "viewModelName" requires aggregates identifier list],
@@ -1453,7 +1470,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when aggregateIds is a bad value: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should raise error when aggregateIds is a bad value: addNewSubsegment 1`] = `
 Array [
   Array [
     "read",
@@ -1461,19 +1478,19 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when aggregateIds is a bad value: close 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should raise error when aggregateIds is a bad value: close 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when aggregateIds is a bad value: getSegment 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should raise error when aggregateIds is a bad value: getSegment 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when interrupted: addAnnotation 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should raise error when interrupted: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -1490,18 +1507,18 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when interrupted: addError 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should raise error when interrupted: addError 1`] = `
 Array [
   Array [
-    [Error: View model "viewModelName" build has been interrupted],
+    [Error: View model "viewModelName" building has been interrupted],
   ],
   Array [
-    [Error: View model "viewModelName" build has been interrupted],
+    [Error: View model "viewModelName" building has been interrupted],
   ],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when interrupted: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should raise error when interrupted: addNewSubsegment 1`] = `
 Array [
   Array [
     "read",
@@ -1515,7 +1532,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when interrupted: close 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should raise error when interrupted: close 1`] = `
 Array [
   Array [],
   Array [],
@@ -1523,7 +1540,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when interrupted: getSegment 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should raise error when interrupted: getSegment 1`] = `
 Array [
   Array [],
   Array [],
@@ -1531,7 +1548,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when query is disposed: addAnnotation 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should raise error when query is disposed: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -1548,7 +1565,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when query is disposed: addError 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should raise error when query is disposed: addError 1`] = `
 Array [
   Array [
     [Error: View model "viewModelName" is disposed],
@@ -1556,7 +1573,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when query is disposed: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should raise error when query is disposed: addNewSubsegment 1`] = `
 Array [
   Array [
     "dispose",
@@ -1567,21 +1584,21 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when query is disposed: close 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should raise error when query is disposed: close 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should raise error when query is disposed: getSegment 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should raise error when query is disposed: getSegment 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should return state: addAnnotation 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should return state: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -1882,9 +1899,9 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should return state: addError 1`] = `Array []`;
+exports[`with performanceTracer view models with snapshots "read" should return state: addError 1`] = `Array []`;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should return state: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should return state: addNewSubsegment 1`] = `
 Array [
   Array [
     "read",
@@ -1958,7 +1975,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should return state: close 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should return state: close 1`] = `
 Array [
   Array [],
   Array [],
@@ -1986,7 +2003,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should return state: getSegment 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should return state: getSegment 1`] = `
 Array [
   Array [],
   Array [],
@@ -2014,7 +2031,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should reuse working build process: addAnnotation 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should reuse working build process: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -2051,9 +2068,9 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should reuse working build process: addError 1`] = `Array []`;
+exports[`with performanceTracer view models with snapshots "read" should reuse working build process: addError 1`] = `Array []`;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should reuse working build process: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should reuse working build process: addNewSubsegment 1`] = `
 Array [
   Array [
     "read",
@@ -2064,21 +2081,21 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should reuse working build process: close 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should reuse working build process: close 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "read" should reuse working build process: getSegment 1`] = `
+exports[`with performanceTracer view models with snapshots "read" should reuse working build process: getSegment 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: addAnnotation 1`] = `
+exports[`with performanceTracer view models with snapshots "readAndSerialize" should raise error when aggregateIds is a bad value: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -2091,7 +2108,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: addError 1`] = `
+exports[`with performanceTracer view models with snapshots "readAndSerialize" should raise error when aggregateIds is a bad value: addError 1`] = `
 Array [
   Array [
     [Error: View model "viewModelName" requires aggregates identifier list],
@@ -2099,7 +2116,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models with snapshots "readAndSerialize" should raise error when aggregateIds is a bad value: addNewSubsegment 1`] = `
 Array [
   Array [
     "read",
@@ -2107,19 +2124,19 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: close 1`] = `
+exports[`with performanceTracer view models with snapshots "readAndSerialize" should raise error when aggregateIds is a bad value: close 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: getSegment 1`] = `
+exports[`with performanceTracer view models with snapshots "readAndSerialize" should raise error when aggregateIds is a bad value: getSegment 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when query is disposed: addAnnotation 1`] = `
+exports[`with performanceTracer view models with snapshots "readAndSerialize" should raise error when query is disposed: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -2128,9 +2145,9 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when query is disposed: addError 1`] = `Array []`;
+exports[`with performanceTracer view models with snapshots "readAndSerialize" should raise error when query is disposed: addError 1`] = `Array []`;
 
-exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when query is disposed: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models with snapshots "readAndSerialize" should raise error when query is disposed: addNewSubsegment 1`] = `
 Array [
   Array [
     "dispose",
@@ -2138,19 +2155,19 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when query is disposed: close 1`] = `
+exports[`with performanceTracer view models with snapshots "readAndSerialize" should raise error when query is disposed: close 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should raise error when query is disposed: getSegment 1`] = `
+exports[`with performanceTracer view models with snapshots "readAndSerialize" should raise error when query is disposed: getSegment 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should return serialized state: addAnnotation 1`] = `
+exports[`with performanceTracer view models with snapshots "readAndSerialize" should return serialized state: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -2259,9 +2276,9 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should return serialized state: addError 1`] = `Array []`;
+exports[`with performanceTracer view models with snapshots "readAndSerialize" should return serialized state: addError 1`] = `Array []`;
 
-exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should return serialized state: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models with snapshots "readAndSerialize" should return serialized state: addNewSubsegment 1`] = `
 Array [
   Array [
     "read",
@@ -2290,7 +2307,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should return serialized state: close 1`] = `
+exports[`with performanceTracer view models with snapshots "readAndSerialize" should return serialized state: close 1`] = `
 Array [
   Array [],
   Array [],
@@ -2303,7 +2320,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "readAndSerialize" should return serialized state: getSegment 1`] = `
+exports[`with performanceTracer view models with snapshots "readAndSerialize" should return serialized state: getSegment 1`] = `
 Array [
   Array [],
   Array [],
@@ -2316,7 +2333,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error on view models: addAnnotation 1`] = `
+exports[`with performanceTracer view models with snapshots "updateByEvents" should raise error on view models: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -2329,7 +2346,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error on view models: addError 1`] = `
+exports[`with performanceTracer view models with snapshots "updateByEvents" should raise error on view models: addError 1`] = `
 Array [
   Array [
     [Error: View model "viewModelName" cannot be updated by events],
@@ -2337,7 +2354,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error on view models: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models with snapshots "updateByEvents" should raise error on view models: addNewSubsegment 1`] = `
 Array [
   Array [
     "updateByEvents",
@@ -2345,19 +2362,19 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error on view models: close 1`] = `
+exports[`with performanceTracer view models with snapshots "updateByEvents" should raise error on view models: close 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error on view models: getSegment 1`] = `
+exports[`with performanceTracer view models with snapshots "updateByEvents" should raise error on view models: getSegment 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error when query is disposed: addAnnotation 1`] = `
+exports[`with performanceTracer view models with snapshots "updateByEvents" should raise error when query is disposed: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -2374,7 +2391,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error when query is disposed: addError 1`] = `
+exports[`with performanceTracer view models with snapshots "updateByEvents" should raise error when query is disposed: addError 1`] = `
 Array [
   Array [
     [Error: View model "viewModelName" is disposed],
@@ -2382,7 +2399,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error when query is disposed: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models with snapshots "updateByEvents" should raise error when query is disposed: addNewSubsegment 1`] = `
 Array [
   Array [
     "dispose",
@@ -2393,21 +2410,21 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error when query is disposed: close 1`] = `
+exports[`with performanceTracer view models with snapshots "updateByEvents" should raise error when query is disposed: close 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models with snapshot adapter "updateByEvents" should raise error when query is disposed: getSegment 1`] = `
+exports[`with performanceTracer view models with snapshots "updateByEvents" should raise error when query is disposed: getSegment 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "dispose" should dispose only one time: addAnnotation 1`] = `
+exports[`with performanceTracer view models without snapshots "dispose" should dispose only one time: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -2420,7 +2437,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "dispose" should dispose only one time: addError 1`] = `
+exports[`with performanceTracer view models without snapshots "dispose" should dispose only one time: addError 1`] = `
 Array [
   Array [
     [Error: View model "viewModelName" is disposed],
@@ -2428,7 +2445,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "dispose" should dispose only one time: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models without snapshots "dispose" should dispose only one time: addNewSubsegment 1`] = `
 Array [
   Array [
     "dispose",
@@ -2439,21 +2456,21 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "dispose" should dispose only one time: close 1`] = `
+exports[`with performanceTracer view models without snapshots "dispose" should dispose only one time: close 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "dispose" should dispose only one time: getSegment 1`] = `
+exports[`with performanceTracer view models without snapshots "dispose" should dispose only one time: getSegment 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "drop" should raise error on view-model: addAnnotation 1`] = `
+exports[`with performanceTracer view models without snapshots "drop" should raise error on view-model: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -2466,7 +2483,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "drop" should raise error on view-model: addError 1`] = `
+exports[`with performanceTracer view models without snapshots "drop" should raise error on view-model: addError 1`] = `
 Array [
   Array [
     [Error: Snapshot cleaning for view-model "viewModelName" is not implemented],
@@ -2474,7 +2491,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "drop" should raise error on view-model: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models without snapshots "drop" should raise error on view-model: addNewSubsegment 1`] = `
 Array [
   Array [
     "drop",
@@ -2482,19 +2499,19 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "drop" should raise error on view-model: close 1`] = `
+exports[`with performanceTracer view models without snapshots "drop" should raise error on view-model: close 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "drop" should raise error on view-model: getSegment 1`] = `
+exports[`with performanceTracer view models without snapshots "drop" should raise error on view-model: getSegment 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "drop" should raise error when disposed: addAnnotation 1`] = `
+exports[`with performanceTracer view models without snapshots "drop" should raise error when disposed: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -2511,7 +2528,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "drop" should raise error when disposed: addError 1`] = `
+exports[`with performanceTracer view models without snapshots "drop" should raise error when disposed: addError 1`] = `
 Array [
   Array [
     [Error: View model "viewModelName" is disposed],
@@ -2519,7 +2536,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "drop" should raise error when disposed: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models without snapshots "drop" should raise error when disposed: addNewSubsegment 1`] = `
 Array [
   Array [
     "dispose",
@@ -2530,21 +2547,21 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "drop" should raise error when disposed: close 1`] = `
+exports[`with performanceTracer view models without snapshots "drop" should raise error when disposed: close 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "drop" should raise error when disposed: getSegment 1`] = `
+exports[`with performanceTracer view models without snapshots "drop" should raise error when disposed: getSegment 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should raise error when aggregateIds is a bad value: addAnnotation 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should raise error when aggregateIds is a bad value: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -2557,7 +2574,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should raise error when aggregateIds is a bad value: addError 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should raise error when aggregateIds is a bad value: addError 1`] = `
 Array [
   Array [
     [Error: View model "viewModelName" requires aggregates identifier list],
@@ -2565,7 +2582,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should raise error when aggregateIds is a bad value: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should raise error when aggregateIds is a bad value: addNewSubsegment 1`] = `
 Array [
   Array [
     "read",
@@ -2573,19 +2590,19 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should raise error when aggregateIds is a bad value: close 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should raise error when aggregateIds is a bad value: close 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should raise error when aggregateIds is a bad value: getSegment 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should raise error when aggregateIds is a bad value: getSegment 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should raise error when interrupted: addAnnotation 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should raise error when interrupted: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -2602,18 +2619,18 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should raise error when interrupted: addError 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should raise error when interrupted: addError 1`] = `
 Array [
   Array [
-    [Error: View model "viewModelName" build has been interrupted],
+    [Error: View model "viewModelName" building has been interrupted],
   ],
   Array [
-    [Error: View model "viewModelName" build has been interrupted],
+    [Error: View model "viewModelName" building has been interrupted],
   ],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should raise error when interrupted: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should raise error when interrupted: addNewSubsegment 1`] = `
 Array [
   Array [
     "read",
@@ -2627,7 +2644,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should raise error when interrupted: close 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should raise error when interrupted: close 1`] = `
 Array [
   Array [],
   Array [],
@@ -2635,7 +2652,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should raise error when interrupted: getSegment 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should raise error when interrupted: getSegment 1`] = `
 Array [
   Array [],
   Array [],
@@ -2643,7 +2660,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should raise error when query is disposed: addAnnotation 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should raise error when query is disposed: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -2660,7 +2677,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should raise error when query is disposed: addError 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should raise error when query is disposed: addError 1`] = `
 Array [
   Array [
     [Error: View model "viewModelName" is disposed],
@@ -2668,7 +2685,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should raise error when query is disposed: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should raise error when query is disposed: addNewSubsegment 1`] = `
 Array [
   Array [
     "dispose",
@@ -2679,21 +2696,21 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should raise error when query is disposed: close 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should raise error when query is disposed: close 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should raise error when query is disposed: getSegment 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should raise error when query is disposed: getSegment 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should return state: addAnnotation 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should return state: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -2802,9 +2819,9 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should return state: addError 1`] = `Array []`;
+exports[`with performanceTracer view models without snapshots "read" should return state: addError 1`] = `Array []`;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should return state: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should return state: addNewSubsegment 1`] = `
 Array [
   Array [
     "read",
@@ -2833,7 +2850,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should return state: close 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should return state: close 1`] = `
 Array [
   Array [],
   Array [],
@@ -2846,7 +2863,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should return state: getSegment 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should return state: getSegment 1`] = `
 Array [
   Array [],
   Array [],
@@ -2859,7 +2876,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should reuse working build process: addAnnotation 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should reuse working build process: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -2932,9 +2949,9 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should reuse working build process: addError 1`] = `Array []`;
+exports[`with performanceTracer view models without snapshots "read" should reuse working build process: addError 1`] = `Array []`;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should reuse working build process: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should reuse working build process: addNewSubsegment 1`] = `
 Array [
   Array [
     "read",
@@ -2954,7 +2971,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should reuse working build process: close 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should reuse working build process: close 1`] = `
 Array [
   Array [],
   Array [],
@@ -2964,7 +2981,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "read" should reuse working build process: getSegment 1`] = `
+exports[`with performanceTracer view models without snapshots "read" should reuse working build process: getSegment 1`] = `
 Array [
   Array [],
   Array [],
@@ -2974,7 +2991,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: addAnnotation 1`] = `
+exports[`with performanceTracer view models without snapshots "readAndSerialize" should raise error when aggregateIds is a bad value: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -2987,7 +3004,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: addError 1`] = `
+exports[`with performanceTracer view models without snapshots "readAndSerialize" should raise error when aggregateIds is a bad value: addError 1`] = `
 Array [
   Array [
     [Error: View model "viewModelName" requires aggregates identifier list],
@@ -2995,7 +3012,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models without snapshots "readAndSerialize" should raise error when aggregateIds is a bad value: addNewSubsegment 1`] = `
 Array [
   Array [
     "read",
@@ -3003,19 +3020,19 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: close 1`] = `
+exports[`with performanceTracer view models without snapshots "readAndSerialize" should raise error when aggregateIds is a bad value: close 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when aggregateIds is a bad value: getSegment 1`] = `
+exports[`with performanceTracer view models without snapshots "readAndSerialize" should raise error when aggregateIds is a bad value: getSegment 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when query is disposed: addAnnotation 1`] = `
+exports[`with performanceTracer view models without snapshots "readAndSerialize" should raise error when query is disposed: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -3024,9 +3041,9 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when query is disposed: addError 1`] = `Array []`;
+exports[`with performanceTracer view models without snapshots "readAndSerialize" should raise error when query is disposed: addError 1`] = `Array []`;
 
-exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when query is disposed: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models without snapshots "readAndSerialize" should raise error when query is disposed: addNewSubsegment 1`] = `
 Array [
   Array [
     "dispose",
@@ -3034,19 +3051,19 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when query is disposed: close 1`] = `
+exports[`with performanceTracer view models without snapshots "readAndSerialize" should raise error when query is disposed: close 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should raise error when query is disposed: getSegment 1`] = `
+exports[`with performanceTracer view models without snapshots "readAndSerialize" should raise error when query is disposed: getSegment 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should return serialized state: addAnnotation 1`] = `
+exports[`with performanceTracer view models without snapshots "readAndSerialize" should return serialized state: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -3155,9 +3172,9 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should return serialized state: addError 1`] = `Array []`;
+exports[`with performanceTracer view models without snapshots "readAndSerialize" should return serialized state: addError 1`] = `Array []`;
 
-exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should return serialized state: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models without snapshots "readAndSerialize" should return serialized state: addNewSubsegment 1`] = `
 Array [
   Array [
     "read",
@@ -3186,7 +3203,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should return serialized state: close 1`] = `
+exports[`with performanceTracer view models without snapshots "readAndSerialize" should return serialized state: close 1`] = `
 Array [
   Array [],
   Array [],
@@ -3199,7 +3216,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "readAndSerialize" should return serialized state: getSegment 1`] = `
+exports[`with performanceTracer view models without snapshots "readAndSerialize" should return serialized state: getSegment 1`] = `
 Array [
   Array [],
   Array [],
@@ -3212,7 +3229,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error on view models: addAnnotation 1`] = `
+exports[`with performanceTracer view models without snapshots "updateByEvents" should raise error on view models: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -3225,7 +3242,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error on view models: addError 1`] = `
+exports[`with performanceTracer view models without snapshots "updateByEvents" should raise error on view models: addError 1`] = `
 Array [
   Array [
     [Error: View model "viewModelName" cannot be updated by events],
@@ -3233,7 +3250,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error on view models: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models without snapshots "updateByEvents" should raise error on view models: addNewSubsegment 1`] = `
 Array [
   Array [
     "updateByEvents",
@@ -3241,19 +3258,19 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error on view models: close 1`] = `
+exports[`with performanceTracer view models without snapshots "updateByEvents" should raise error on view models: close 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error on view models: getSegment 1`] = `
+exports[`with performanceTracer view models without snapshots "updateByEvents" should raise error on view models: getSegment 1`] = `
 Array [
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error when disposed: addAnnotation 1`] = `
+exports[`with performanceTracer view models without snapshots "updateByEvents" should raise error when disposed: addAnnotation 1`] = `
 Array [
   Array [
     "viewModelName",
@@ -3270,7 +3287,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error when disposed: addError 1`] = `
+exports[`with performanceTracer view models without snapshots "updateByEvents" should raise error when disposed: addError 1`] = `
 Array [
   Array [
     [Error: View model "viewModelName" is disposed],
@@ -3278,7 +3295,7 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error when disposed: addNewSubsegment 1`] = `
+exports[`with performanceTracer view models without snapshots "updateByEvents" should raise error when disposed: addNewSubsegment 1`] = `
 Array [
   Array [
     "dispose",
@@ -3289,14 +3306,14 @@ Array [
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error when disposed: close 1`] = `
+exports[`with performanceTracer view models without snapshots "updateByEvents" should raise error when disposed: close 1`] = `
 Array [
   Array [],
   Array [],
 ]
 `;
 
-exports[`with performanceTracer view models without snapshot adapter "updateByEvents" should raise error when disposed: getSegment 1`] = `
+exports[`with performanceTracer view models without snapshots "updateByEvents" should raise error when disposed: getSegment 1`] = `
 Array [
   Array [],
   Array [],

@@ -13,14 +13,13 @@ const testFunctionalConfig = {
       }
     }
   }*/,
-  storageAdapter: {
-    module: 'resolve-storage-lite',
+  eventstoreAdapter: {
+    module: 'resolve-eventstore-lite',
     options: {
       databaseFile: 'data/event-store-test-functional.db'
     }
   },
   eventBroker: {
-    launchBroker: false,
     databaseFile: 'data/local-bus-broker-test-functional.db'
   }
 }

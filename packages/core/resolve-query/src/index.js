@@ -1,13 +1,19 @@
-import wrapReadModel from './wrap-read-model'
+import wrapReadModel, {
+  FULL_XA_CONNECTOR,
+  FULL_REGULAR_CONNECTOR,
+  EMPTY_CONNECTOR,
+  detectConnectorFeatures
+} from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
+
+const getDefaultRemainingTime = () => 0x7fffffff
 
 const createQuery = ({
   readModelConnectors,
-  snapshotAdapter,
   readModels,
   viewModels,
-  eventStore,
-  performanceTracer
+  performanceTracer,
+  eventstoreAdapter
 }) => {
   const models = {}
   for (const readModel of readModels) {
@@ -17,7 +23,8 @@ const createQuery = ({
     models[readModel.name] = wrapReadModel(
       readModel,
       readModelConnectors,
-      performanceTracer
+      performanceTracer,
+      eventstoreAdapter.getSecretsManager.bind(null)
     )
   }
 
@@ -27,9 +34,9 @@ const createQuery = ({
     }
     models[viewModel.name] = wrapViewModel(
       viewModel,
-      snapshotAdapter,
-      eventStore,
-      performanceTracer
+      eventstoreAdapter,
+      performanceTracer,
+      eventstoreAdapter.getSecretsManager.bind(null)
     )
   }
 
@@ -100,31 +107,47 @@ const createQuery = ({
     return result
   }
 
-  const updateByEvents = async (
+  const updateByEvents = async ({
     modelName,
     events,
-    getRemainingTimeInMillisRaw
-  ) => {
+    getRemainingTimeInMillis,
+    xaTransactionId
+  }) => {
     checkModelExists(modelName)
     if (!Array.isArray(events)) {
       throw new Error('Updating by events should supply events array')
     }
 
-    let getRemainingTimeInMillis = getRemainingTimeInMillisRaw
-    if (typeof getRemainingTimeInMillis !== 'function') {
-      getRemainingTimeInMillis = () => 0x7fffffff
-    }
-
-    return await models[modelName].updateByEvents(
+    const result = await models[modelName].updateByEvents(
       events,
-      getRemainingTimeInMillis
+      typeof getRemainingTimeInMillis === 'function'
+        ? getRemainingTimeInMillis
+        : getDefaultRemainingTime,
+      xaTransactionId
     )
+
+    return result
   }
 
   const drop = async modelName => {
     checkModelExists(modelName)
 
     await models[modelName].drop()
+  }
+
+  const performXA = async (operationName, { modelName, ...parameters }) => {
+    checkModelExists(modelName)
+    if (typeof models[modelName][operationName] !== 'function') {
+      const error = new Error(
+        `Read/view model "${modelName}" does not support XA transactions`
+      )
+      error.code = 405
+      throw error
+    }
+
+    const result = await models[modelName][operationName](parameters)
+
+    return result
   }
 
   const dispose = async () => {
@@ -137,6 +160,9 @@ const createQuery = ({
     read,
     readAndSerialize,
     updateByEvents,
+    beginXATransaction: performXA.bind(null, 'beginXATransaction'),
+    commitXATransaction: performXA.bind(null, 'commitXATransaction'),
+    rollbackXATransaction: performXA.bind(null, 'rollbackXATransaction'),
     drop,
     dispose
   }
@@ -147,4 +173,10 @@ const createQuery = ({
   return executeQuery
 }
 
+export {
+  FULL_XA_CONNECTOR,
+  FULL_REGULAR_CONNECTOR,
+  EMPTY_CONNECTOR,
+  detectConnectorFeatures
+}
 export default createQuery

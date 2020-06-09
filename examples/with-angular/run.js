@@ -25,7 +25,7 @@ void (async () => {
           resolveConfig,
           {
             dropEventStore: false,
-            dropSnapshots: true,
+            dropEventBus: true,
             dropReadModels: true,
             dropSagas: true
           },

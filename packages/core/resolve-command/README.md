@@ -1,14 +1,11 @@
 # **resolve-command**
 [![npm version](https://badge.fury.io/js/resolve-command.svg)](https://badge.fury.io/js/resolve-command)
 
-Provides a function to handle a command and send the generated event to an [event store](../resolve-es) based on definitions of [aggregates](../resolve-scripts/src/template#aggregates-and-read-models-) and their commands. 
+Provides a function to handle a command and send the generated event to an eventstore based on definitions of [aggregates](../resolve-scripts/src/template#aggregates-and-read-models-) and their commands. 
 
 ## Usage
 When initializing a command, pass the following arguments:
 
-* `eventStore`  
-	A configured [eventStore](../resolve-es) instance.
-	
 * `aggregates`  
 	An array of [aggregates](../resolve-scripts/src/template#aggregates-and-read-models-).  
 
@@ -27,19 +24,15 @@ After the command is initialized, you get a function that is used to send an eve
 ### Example
 Define a news handling aggregate (see the  `news-aggregate.js` file), use the `resolve-command` library to execute the `createNews` command and send the corresponding event to the specified event store. To see a read model handling events which this aggregate produces, refer to the [resolve-query](../resolve-query#example) package documentation.
 
-[mdis]:# (../../../tests/resolve-command/index.test.js)
 ```js
-import createStorageLiteAdapter from 'resolve-storage-lite'
+import createStorageLiteAdapter from 'resolve-eventstore-lite'
 import createCommandExecutor from 'resolve-command'
-import createEventStore from 'resolve-es'
 import newsAggregate from './news-aggregate'
 ...
   const aggregates = [newsAggregate]
   const memoryStorage = createStorageLiteAdapter({ databaseFile: ':memory:' })
-  const eventStore = createEventStore({ storage: memoryStorage })
 
   const executeCommand = createCommandExecutor({
-    eventStore,
     aggregates
   })
 
@@ -56,7 +49,6 @@ import newsAggregate from './news-aggregate'
 ```
 
 ##### news-aggregate.js
-[mdis]:# (../../../tests/resolve-command/news-aggregate.js)
 ```js
 import Immutable from 'seamless-immutable'
 

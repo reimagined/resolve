@@ -1,8 +1,8 @@
+import Lambda, { setLambdaResult, result } from 'aws-sdk/clients/lambda'
 import initBroker from '../src/cloud/init-broker'
 
-describe('event-broker', () => {
-  let broker, lambda, lambdaResult
-
+describe('event-publisher', () => {
+  let publisher, lambdaInvoke
   const readModels = [
     {
       name: 'listenerId',
@@ -11,7 +11,6 @@ describe('event-broker', () => {
       resolvers: {}
     }
   ]
-
   const eventListeners = new Map([
     [
       'listenerId',
@@ -24,79 +23,73 @@ describe('event-broker', () => {
   ])
 
   beforeEach(async () => {
-    lambdaResult = null
-    lambda = {
-      invoke: jest.fn().mockReturnValue({
-        promise: jest.fn().mockImplementation(async () => lambdaResult)
-      })
-    }
-
-    broker = {}
+    lambdaInvoke = Lambda.prototype.invoke
+    publisher = {}
     await initBroker({
       eventListeners,
-      eventBroker: broker,
-      lambda,
+      publisher,
       readModels
     })
   })
 
   afterEach(() => {
-    lambdaResult = null
-    broker = null
-    lambda = null
+    jest.clearAllMocks()
+    setLambdaResult(null)
+    result.length = 0
+    publisher = null
+    lambdaInvoke = null
   })
 
   test('"pause" should pause listener by listenerId', async () => {
-    lambdaResult = {
-      Payload: JSON.stringify('ok')
-    }
+    setLambdaResult('ok')
 
-    const result = await broker.pause('listenerId')
+    const result = await publisher.pause({ eventSubscriber: 'listenerId' })
 
-    expect(JSON.parse(lambda.invoke.mock.calls[0][0].Payload)).toEqual({
-      listenerId: 'listenerId',
-      operation: 'pause'
+    expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
+      payload: {
+        principial: {},
+        eventSubscriber: 'listenerId',
+        validationRoleArn: 'RoleValidationArn'
+      },
+      type: 'pause'
     })
 
     expect(result).toEqual('ok')
   })
 
   test('"resume" should resume listener by listenerId', async () => {
-    lambdaResult = {
-      Payload: JSON.stringify('ok')
-    }
+    setLambdaResult('ok')
 
-    const result = await broker.resume('listenerId')
+    const result = await publisher.resume({ eventSubscriber: 'listenerId' })
 
-    expect(JSON.parse(lambda.invoke.mock.calls[0][0].Payload)).toEqual({
-      listenerId: 'listenerId',
-      operation: 'resume'
-    })
-
-    expect(JSON.parse(lambda.invoke.mock.calls[1][0].Payload)).toEqual({
-      listenerId: 'listenerId',
-      inactiveTimeout: 3600000,
-      invariantHash: 'invariantHash',
-      eventTypes: []
+    expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
+      payload: {
+        principial: {},
+        eventSubscriber: 'listenerId',
+        validationRoleArn: 'RoleValidationArn'
+      },
+      type: 'resume'
     })
 
     expect(result).toEqual('ok')
   })
 
   test('"status" should return status by listenerId', async () => {
-    lambdaResult = {
-      Payload: JSON.stringify({
-        lastEvent: null,
-        lastError: null,
-        status: 'running'
-      })
-    }
+    setLambdaResult({
+      lastEvent: null,
+      lastError: null,
+      status: 'running'
+    })
 
-    const result = await broker.status('listenerId')
+    const result = await publisher.status({ eventSubscriber: 'listenerId' })
 
-    expect(JSON.parse(lambda.invoke.mock.calls[0][0].Payload)).toEqual({
-      listenerId: 'listenerId',
-      operation: 'status'
+    expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
+      payload: {
+        principial: {},
+        eventSubscriber: 'listenerId',
+        validationRoleArn: 'RoleValidationArn'
+      },
+      type: 'status'
     })
 
     expect(result).toEqual({
@@ -107,33 +100,39 @@ describe('event-broker', () => {
   })
 
   test('"reset" should reset listener by listenerId', async () => {
-    lambdaResult = {
-      Payload: JSON.stringify('ok')
-    }
+    setLambdaResult('ok')
 
-    const result = await broker.reset('listenerId')
+    const result = await publisher.reset({ eventSubscriber: 'listenerId' })
 
-    expect(JSON.parse(lambda.invoke.mock.calls[0][0].Payload)).toEqual({
-      listenerId: 'listenerId',
-      operation: 'reset'
+    expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
+      payload: {
+        principial: {},
+        eventSubscriber: 'listenerId',
+        validationRoleArn: 'RoleValidationArn'
+      },
+      type: 'reset'
     })
 
     expect(result).toEqual('ok')
   })
 
   test('"listProperties" should return list properties by listenerId', async () => {
-    lambdaResult = {
-      Payload: JSON.stringify({
-        key1: 'value1',
-        key2: 'value2'
-      })
-    }
+    setLambdaResult({
+      key1: 'value1',
+      key2: 'value2'
+    })
 
-    const result = await broker.listProperties('listenerId')
+    const result = await publisher.listProperties({
+      eventSubscriber: 'listenerId'
+    })
 
-    expect(JSON.parse(lambda.invoke.mock.calls[0][0].Payload)).toEqual({
-      listenerId: 'listenerId',
-      operation: 'listProperties'
+    expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
+      payload: {
+        principial: {},
+        eventSubscriber: 'listenerId',
+        validationRoleArn: 'RoleValidationArn'
+      },
+      type: 'listProperties'
     })
 
     expect(result).toEqual({
@@ -143,49 +142,65 @@ describe('event-broker', () => {
   })
 
   test('"getProperty" should return property by listenerId, key', async () => {
-    lambdaResult = {
-      Payload: JSON.stringify('value1')
-    }
+    setLambdaResult('value1')
 
-    const result = await broker.getProperty('listenerId', 'key1')
-
-    expect(JSON.parse(lambda.invoke.mock.calls[0][0].Payload)).toEqual({
-      listenerId: 'listenerId',
-      operation: 'getProperty',
+    const result = await publisher.getProperty({
+      eventSubscriber: 'listenerId',
       key: 'key1'
+    })
+
+    expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
+      payload: {
+        principial: {},
+        eventSubscriber: 'listenerId',
+        validationRoleArn: 'RoleValidationArn',
+        key: 'key1'
+      },
+      type: 'getProperty'
     })
 
     expect(result).toEqual('value1')
   })
 
   test('"setProperty" should set property value by listenerId, key', async () => {
-    lambdaResult = {
-      Payload: JSON.stringify('ok')
-    }
+    setLambdaResult('ok')
 
-    const result = await broker.setProperty('listenerId', 'key1', 'value1')
-
-    expect(JSON.parse(lambda.invoke.mock.calls[0][0].Payload)).toEqual({
-      listenerId: 'listenerId',
-      operation: 'setProperty',
+    const result = await publisher.setProperty({
+      eventSubscriber: 'listenerId',
       key: 'key1',
       value: 'value1'
+    })
+
+    expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
+      payload: {
+        principial: {},
+        eventSubscriber: 'listenerId',
+        validationRoleArn: 'RoleValidationArn',
+        key: 'key1',
+        value: 'value1'
+      },
+      type: 'setProperty'
     })
 
     expect(result).toEqual('ok')
   })
 
   test('"deleteProperty" should delete property by listenerId, key', async () => {
-    lambdaResult = {
-      Payload: JSON.stringify('ok')
-    }
+    setLambdaResult('ok')
 
-    const result = await broker.deleteProperty('listenerId', 'key1')
-
-    expect(JSON.parse(lambda.invoke.mock.calls[0][0].Payload)).toEqual({
-      listenerId: 'listenerId',
-      operation: 'deleteProperty',
+    const result = await publisher.deleteProperty({
+      eventSubscriber: 'listenerId',
       key: 'key1'
+    })
+
+    expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
+      payload: {
+        principial: {},
+        eventSubscriber: 'listenerId',
+        validationRoleArn: 'RoleValidationArn',
+        key: 'key1'
+      },
+      type: 'deleteProperty'
     })
 
     expect(result).toEqual('ok')

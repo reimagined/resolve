@@ -7,7 +7,7 @@ const createCommentsCommands = (
   },
   { verifyCommand }
 ) => ({
-  [createComment]: async (state, command, jwtToken) => {
+  [createComment]: async (state, command, { jwt: jwtToken }) => {
     if (
       command.payload.commentId == null ||
       command.payload.commentId.constructor !== String
@@ -54,7 +54,7 @@ const createCommentsCommands = (
     }
   },
 
-  [updateComment]: async (state, command, jwtToken) => {
+  [updateComment]: async (state, command, { jwt: jwtToken }) => {
     if (
       command.payload.commentId == null ||
       command.payload.commentId.constructor !== String
@@ -91,7 +91,7 @@ const createCommentsCommands = (
     }
   },
 
-  [removeComment]: async (state, command, jwtToken) => {
+  [removeComment]: async (state, command, { jwt: jwtToken }) => {
     if (
       command.payload.commentId == null ||
       command.payload.commentId.constructor !== String

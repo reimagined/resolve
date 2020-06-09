@@ -2,13 +2,10 @@ import unfetch from 'unfetch'
 import qs from 'query-string'
 import { Context } from './context'
 import { getRootBasedUrl, isString } from './utils'
-import determineOrigin from './determine_origin'
+import determineOrigin from './determine-origin'
 import { GenericError, HttpError } from './errors'
 
-type FetchFunction = (
-  input: RequestInfo,
-  init?: RequestInit
-) => Promise<Response>
+export const VALIDATED_RESULT = Symbol('VALIDATED_RESULT')
 export type NarrowedResponse = {
   ok: boolean
   status: number
@@ -17,14 +14,23 @@ export type NarrowedResponse = {
   }
   json: () => Promise<any>
   text: () => Promise<string>
+  [VALIDATED_RESULT]?: any
 }
-type ResponseValidator = (response: NarrowedResponse) => Promise<boolean>
-
-const everythingValid: ResponseValidator = () => Promise.resolve(true)
+type ResponseValidator = (
+  response: NarrowedResponse,
+  confirm: (result: any) => void
+) => Promise<void>
+export type FetchFunction = (
+  input: RequestInfo,
+  init?: RequestInit
+) => Promise<Response & NarrowedResponse>
 
 let cachedFetch: FetchFunction | null = null
 
-const determineFetch = (): FetchFunction => {
+const determineFetch = (context: Context): FetchFunction => {
+  if (context.fetch) {
+    return context.fetch as FetchFunction
+  }
   if (!cachedFetch) {
     cachedFetch = typeof fetch === 'function' ? fetch : unfetch
   }
@@ -59,6 +65,7 @@ const stringifyUrl = (url: string, params: any): string => {
 }
 
 const insistentRequest = async (
+  fetch: FetchFunction,
   input: RequestInfo,
   init: RequestInit,
   options?: RequestOptions,
@@ -66,21 +73,33 @@ const insistentRequest = async (
     error: 0,
     response: 0
   }
-): Promise<Response> => {
+): Promise<NarrowedResponse> => {
   let response
 
   try {
-    response = await determineFetch()(input, init)
+    response = await fetch(input, init)
   } catch (error) {
     throw new GenericError(error)
   }
 
   if (response.ok) {
     if (options?.waitForResponse) {
-      const isValid = await (
-        options?.waitForResponse?.validator ?? everythingValid
-      )(response)
-      if (isValid) {
+      let isValidated = false
+      let validResult: any = null
+
+      const confirmResult = (result: any): void => {
+        isValidated = true
+        validResult = result
+      }
+
+      const validator = options.waitForResponse.validator
+
+      if (typeof validator === 'function') {
+        await validator(response, confirmResult)
+      }
+
+      if (isValidated) {
+        response[VALIDATED_RESULT] = validResult
         return response
       }
 
@@ -100,13 +119,13 @@ const insistentRequest = async (
         )
       }
 
-      const period = options?.retryOnError?.period
+      const period = options?.waitForResponse?.period
 
       if (typeof period === 'number' && period > 0) {
         await new Promise(resolve => setTimeout(resolve, period))
       }
 
-      return insistentRequest(input, init, options, {
+      return insistentRequest(fetch, input, init, options, {
         ...attempts,
         response: attempts.response + 1
       })
@@ -141,7 +160,7 @@ const insistentRequest = async (
       if (typeof period === 'number' && period > 0) {
         await new Promise(resolve => setTimeout(resolve, period))
       }
-      return insistentRequest(input, init, options, {
+      return insistentRequest(fetch, input, init, options, {
         ...attempts,
         error: attempts.error + 1
       })
@@ -202,7 +221,12 @@ export const request = async (
 
   init.headers = headers
 
-  const response = await insistentRequest(requestUrl, init, options)
+  const response = await insistentRequest(
+    determineFetch(context),
+    requestUrl,
+    init,
+    options
+  )
 
   if (jwtProvider && response.headers) {
     await jwtProvider.set(response.headers.get('x-jwt') ?? '')

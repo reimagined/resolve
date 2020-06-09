@@ -14,7 +14,7 @@ const getStories = async (type, store, { first, offset }) => {
       null,
       { createdAt: -1 },
       skip,
-      skip + offset
+      offset
     )
 
     return Array.isArray(stories) ? stories : []

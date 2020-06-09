@@ -13,13 +13,11 @@ const beginTransaction = async (pool, readModelName) => {
       } catch (error) {}
     }
 
-    const { transactionId } = await pool.rdsDataService
-      .beginTransaction({
-        resourceArn: pool.dbClusterOrInstanceArn,
-        secretArn: pool.awsSecretStoreArn,
-        database: 'postgres'
-      })
-      .promise()
+    const { transactionId } = await pool.rdsDataService.beginTransaction({
+      resourceArn: pool.dbClusterOrInstanceArn,
+      secretArn: pool.awsSecretStoreArn,
+      database: 'postgres'
+    })
 
     if (transactionId == null) {
       throw new Error('Begin transaction returned null transactionId')

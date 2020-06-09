@@ -14,12 +14,12 @@
     "export-event-store": "echo || exit 0"
   },
   "dependencies": {
-    "@babel/node": "7.0.0",
-    "@babel/polyfill": "7.0.0",
+    "@babel/node": "7.8.7",
+    "@babel/polyfill": "7.8.7",
     "domready": "1.0.8",
     "resolve-scripts": "0.23.2",
-    "resolve-storage-postgresql-serverless": "0.23.2",
-    "resolve-storage-lite": "0.23.2",
+    "resolve-eventstore-postgresql-serverless": "0.23.2",
+    "resolve-eventstore-lite": "0.23.2",
     "resolve-readmodel-lite": "0.23.2",
     "resolve-readmodel-postgresql-serverless": "0.23.2",
     "resolve-runtime": "0.23.2",
@@ -29,18 +29,18 @@
     "unfetch": "4.1.0"
   },
   "devDependencies": {
-    "aws-sdk": "2.587.0",
+    "aws-sdk": "2.631.0",
     "aws-xray-sdk-core": "2.5.0",
-    "@babel/core": "7.0.0",
-    "@babel/plugin-proposal-class-properties": "7.0.0",
-    "@babel/plugin-proposal-export-default-from": "7.0.0",
-    "@babel/plugin-proposal-export-namespace-from": "7.0.0",
-    "@babel/plugin-transform-runtime": "7.0.0",
-    "@babel/preset-env": "7.0.0",
-    "@babel/preset-react": "7.0.0",
-    "babel-jest": "25.1.0",
-    "jest": "25.1.0",
-    "testcafe": "1.8.3",
+    "@babel/core": "7.9.6",
+    "@babel/plugin-proposal-class-properties": "7.8.3",
+    "@babel/plugin-proposal-export-default-from": "7.8.3",
+    "@babel/plugin-proposal-export-namespace-from": "7.8.3",
+    "@babel/plugin-transform-runtime": "7.9.6",
+    "@babel/preset-env": "7.9.6",
+    "@babel/preset-react": "7.9.4",
+    "babel-jest": "26.0.1",
+    "jest": "26.0.1",
+    "testcafe": "1.8.5",
     "resolve-cloud": "*"
   }
 }

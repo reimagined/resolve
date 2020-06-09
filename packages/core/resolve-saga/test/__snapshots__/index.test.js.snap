@@ -98,7 +98,7 @@ Array [
 ]
 `;
 
-exports[`resolve-saga: eventStore.loadEvents 1`] = `
+exports[`resolve-saga: eventstoreAdapter.loadEvents 1`] = `
 Array [
   Array [
     Object {
@@ -106,29 +106,7 @@ Array [
         "guid",
       ],
       "cursor": null,
-    },
-    [Function],
-  ],
-]
-`;
-
-exports[`resolve-saga: eventStore.saveEvent 1`] = `
-Array [
-  Array [
-    Object {
-      "aggregateId": "guid",
-      "aggregateVersion": 1,
-      "payload": Object {
-        "command": Object {
-          "aggregateId": "scheduledId",
-          "aggregateName": "Test",
-          "payload": "scheduledCommand",
-          "type": "scheduledCommand",
-        },
-        "date": 100500,
-      },
-      "timestamp": 100500,
-      "type": "_RESOLVE_SYS_SCHEDULED_COMMAND_CREATED_default-scheduler",
+      "limit": 9007199254740991,
     },
   ],
 ]
@@ -164,6 +142,30 @@ Array [
     Object {
       "RESOLVE_SIDE_EFFECTS_START_TIMESTAMP": 0,
       "test-property": "content",
+    },
+  ],
+]
+`;
+
+exports[`resolve-saga: publisher.publish 1`] = `
+Array [
+  Array [
+    Object {
+      "event": Object {
+        "aggregateId": "guid",
+        "aggregateVersion": 1,
+        "payload": Object {
+          "command": Object {
+            "aggregateId": "scheduledId",
+            "aggregateName": "Test",
+            "payload": "scheduledCommand",
+            "type": "scheduledCommand",
+          },
+          "date": 100500,
+        },
+        "timestamp": 100500,
+        "type": "_RESOLVE_SYS_SCHEDULED_COMMAND_CREATED_default-scheduler",
+      },
     },
   ],
 ]
@@ -577,6 +579,7 @@ Array [
       },
     },
     "test-saga",
+    undefined,
   ],
   Array [
     Object {
@@ -654,6 +657,7 @@ Array [
       },
     },
     "default-scheduler",
+    undefined,
   ],
 ]
 `;
@@ -727,12 +731,6 @@ exports[`resolve-saga: schedulerAdapterInstance.addEntries 1`] = `Array []`;
 
 exports[`resolve-saga: schedulerAdapterInstance.clearEntries 1`] = `Array []`;
 
-exports[`resolve-saga: snapshotAdapter.loadSnapshot 1`] = `
-Array [
-  Array [
-    "invariantHash;guid",
-  ],
-]
-`;
+exports[`resolve-saga: snapshotAdapter.loadSnapshot 1`] = `Array []`;
 
 exports[`resolve-saga: snapshotAdapter.saveSnapshot 1`] = `Array []`;

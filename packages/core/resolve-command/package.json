@@ -25,10 +25,11 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-command#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0"
+    "@babel/runtime": "7.9.6",
+    "resolve-eventstore-base": "0.23.2"
   },
   "devDependencies": {
-    "jest": "25.1.0"
+    "jest": "26.0.1"
   },
   "babelCompile": [
     {

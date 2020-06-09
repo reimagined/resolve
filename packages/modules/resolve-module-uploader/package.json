@@ -25,11 +25,11 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
+    "@babel/runtime": "7.9.6",
     "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
-    "jest": "25.1.0"
+    "jest": "26.0.1"
   },
   "babelCompile": [
     {
