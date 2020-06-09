@@ -1,6 +1,6 @@
 {
   "name": "image-gallery",
-  "version": "0.23.2",
+  "version": "0.24.0",
   "description": "used as a template for new reSolve applications",
   "private": true,
   "scripts": {
@@ -28,17 +28,17 @@
     "jsonwebtoken": "^8.3.0",
     "redux-devtools-extension": "2.13.7",
     "webpack": "4.41.2",
-    "resolve-redux": "0.23.2",
-    "resolve-scripts": "0.23.2",
-    "resolve-eventstore-postgresql-serverless": "0.23.2",
-    "resolve-eventstore-lite": "0.23.2",
-    "resolve-readmodel-lite": "0.23.2",
-    "resolve-readmodel-postgresql-serverless": "0.23.2",
-    "resolve-subscribe-mqtt": "0.23.2",
-    "resolve-subscribe-socket.io": "0.23.2",
-    "resolve-upload-local": "0.23.2",
-    "resolve-module-uploader": "0.23.2",
-    "resolve-upload-cloud": "0.23.2"
+    "resolve-redux": "0.24.0",
+    "resolve-scripts": "0.24.0",
+    "resolve-eventstore-postgresql-serverless": "0.24.0",
+    "resolve-eventstore-lite": "0.24.0",
+    "resolve-readmodel-lite": "0.24.0",
+    "resolve-readmodel-postgresql-serverless": "0.24.0",
+    "resolve-subscribe-mqtt": "0.24.0",
+    "resolve-subscribe-socket.io": "0.24.0",
+    "resolve-upload-local": "0.24.0",
+    "resolve-module-uploader": "0.24.0",
+    "resolve-upload-cloud": "0.24.0"
   },
   "devDependencies": {
     "aws-sdk": "2.631.0",

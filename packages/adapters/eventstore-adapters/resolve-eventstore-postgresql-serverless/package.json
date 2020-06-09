@@ -1,6 +1,6 @@
 {
   "name": "resolve-eventstore-postgresql-serverless",
-  "version": "0.23.2",
+  "version": "0.24.0",
   "description": "An adapter reSolve uses to store events in PostgreSQL Serverless.",
   "engines": {
     "node": ">=10.9"
@@ -27,8 +27,8 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/eventstore-adapters/resolve-eventstore-postgresql-serverless#readme",
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "resolve-eventstore-base": "0.23.2",
-    "resolve-debug-levels": "0.23.2"
+    "resolve-eventstore-base": "0.24.0",
+    "resolve-debug-levels": "0.24.0"
   },
   "devDependencies": {
     "jest": "26.0.1",
