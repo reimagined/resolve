@@ -65,7 +65,7 @@ async function main() {
         }
       })
 
-    if (config.sync) {
+    if (config.sync || process.env.RESOLVE_ALLOW_PARALLEL_BUILDS != null) {
       await promise
     }
   }
