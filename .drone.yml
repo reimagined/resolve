@@ -16,7 +16,7 @@ steps:
       RESOLVE_ALLOW_PARALLEL_BUILDS: false
     commands:
       - yarn
-      # - VERSION=$(/scripts/prepare_downstream)
+      - VERSION=$(/scripts/prepare_downstream)
       - /scripts/npm_patch_rc
       - npx oao all "/scripts/package_json patch-dependencies '(?!resolve-cloud-common$)(resolve-.*$)' $VERSION && /scripts/npm_publish $VERSION nightly"
 
