@@ -19,7 +19,6 @@ const testFunctionalConfig = {
     }
   },
   eventBroker: {
-    launchBroker: false,
     databaseFile: 'data/local-bus-broker-test-functional.db'
   }
 }

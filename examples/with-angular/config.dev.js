@@ -20,7 +20,6 @@ const devConfig = {
     }
   },
   eventBroker: {
-    launchBroker: false,
     databaseFile: 'data/local-bus-broker.db'
   }
 }
