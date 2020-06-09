@@ -80,7 +80,11 @@ export default {
       payload: { id, userId }
     }
   },
-  shareShoppingListForUser: (state, { payload: { userId } }, { jwt: jwtToken }) => {
+  shareShoppingListForUser: (
+    state,
+    { payload: { userId } },
+    { jwt: jwtToken }
+  ) => {
     jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'User')
@@ -96,7 +100,11 @@ export default {
       payload: { userId }
     }
   },
-  unshareShoppingListForUser: (state, { payload: { userId } }, { jwt: jwtToken }) => {
+  unshareShoppingListForUser: (
+    state,
+    { payload: { userId } },
+    { jwt: jwtToken }
+  ) => {
     jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'User')
