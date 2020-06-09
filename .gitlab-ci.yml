@@ -260,11 +260,8 @@ unit-tests:
     - node ci-cd/create-github-status/index.js --state pending --context "3. Unit-tests" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID/
-    - yarn test:coverage
-    - export COVERALLS_GIT_COMMIT=${SOURCE_BRANCH_SHA}
-    - export COVERALLS_GIT_BRANCH=${TARGET_BRANCH_NAME}
+    - yarn test
     - export GITLAB_CI=
-    - cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js
     - cd ..
     - node ci-cd/job-status/index.js --end
   after_script:
