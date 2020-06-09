@@ -1,6 +1,6 @@
 import devToolsEnhancer from 'remote-redux-devtools'
 import { createMemoryHistory } from 'history'
-import { AsyncEventstore } from 'react-native'
+import { AsyncStorage } from 'react-native'
 
 import getNativeChunk from '../../native-chunk'
 import origin from '../../constants/origin'
@@ -48,15 +48,15 @@ const redux = {
 
 const jwtProvider = {
   async get() {
-    const jwtToken = (await AsyncEventstore.getItem(jwtCookie.name)) || ''
+    const jwtToken = (await AsyncStorage.getItem(jwtCookie.name)) || ''
 
     return jwtToken
   },
   async set(jwtToken) {
     if (jwtToken == null) {
-      return await AsyncEventstore.removeItem(jwtCookie.name)
+      return await AsyncStorage.removeItem(jwtCookie.name)
     }
-    return await AsyncEventstore.setItem(jwtCookie.name, jwtToken)
+    return await AsyncStorage.setItem(jwtCookie.name, jwtToken)
   }
 }
 

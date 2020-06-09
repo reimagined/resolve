@@ -32,7 +32,7 @@ describe('aggregates', () => {
       const command = { payload: { name } }
 
       expect(
-        shoppingListCommands.createShoppingList(state, command, jwtToken)
+        shoppingListCommands.createShoppingList(state, command, { jwt: jwtToken })
       ).toMatchObject({
         type: SHOPPING_LIST_CREATED,
         payload: { name }
@@ -46,7 +46,7 @@ describe('aggregates', () => {
       const command = { payload: { name } }
 
       expect(
-        shoppingListCommands.renameShoppingList(state, command, jwtToken)
+        shoppingListCommands.renameShoppingList(state, command, { jwt: jwtToken })
       ).toMatchObject({
         type: SHOPPING_LIST_RENAMED,
         payload: { name }
@@ -58,7 +58,7 @@ describe('aggregates', () => {
       const command = {}
 
       expect(
-        shoppingListCommands.removeShoppingList(state, command, jwtToken)
+        shoppingListCommands.removeShoppingList(state, command, { jwt: jwtToken })
       ).toMatchObject({
         type: SHOPPING_LIST_REMOVED,
         payload: {}
@@ -70,7 +70,7 @@ describe('aggregates', () => {
       const command = { payload: { id: 'id', text: 'id' } }
 
       expect(
-        shoppingListCommands.createShoppingItem(state, command, jwtToken)
+        shoppingListCommands.createShoppingItem(state, command, { jwt: jwtToken })
       ).toMatchObject({
         type: SHOPPING_ITEM_CREATED,
         payload: { id: 'id', text: 'id' }
@@ -82,7 +82,7 @@ describe('aggregates', () => {
       const command = { payload: { id: 'id' } }
 
       expect(
-        shoppingListCommands.toggleShoppingItem(state, command, jwtToken)
+        shoppingListCommands.toggleShoppingItem(state, command, { jwt: jwtToken })
       ).toMatchObject({
         type: SHOPPING_ITEM_TOGGLED,
         payload: { id: 'id' }
@@ -94,7 +94,7 @@ describe('aggregates', () => {
       const command = { payload: { id: 'id' } }
 
       expect(
-        shoppingListCommands.removeShoppingItem(state, command, jwtToken)
+        shoppingListCommands.removeShoppingItem(state, command, { jwt: jwtToken })
       ).toMatchObject({
         type: SHOPPING_ITEM_REMOVED,
         payload: { id: 'id' }
@@ -117,7 +117,7 @@ describe('aggregates', () => {
         }
       }
 
-      expect(userCommands.createUser(state, command, jwtToken)).toMatchObject({
+      expect(userCommands.createUser(state, command, { jwt: jwtToken })).toMatchObject({
         type: USER_CREATED,
         payload: {
           username,
@@ -137,7 +137,7 @@ describe('aggregates', () => {
       const command = { payload: { username } }
 
       expect(
-        userCommands.updateUserName(state, command, jwtToken)
+        userCommands.updateUserName(state, command, { jwt: jwtToken })
       ).toMatchObject({
         type: USER_NAME_UPDATED,
         payload: { username }
