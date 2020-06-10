@@ -2719,7 +2719,7 @@
 
 "@yarnpkg/lockfile@^1.1.0":
   version "1.1.0"
-  resolved "http://npm.resolve-dev.ml:10080/@yarnpkg%2flockfile/-/lockfile-1.1.0.tgz#e77a97fbd345b76d83245edcd17d393b1b41fb31"
+  resolved "http://registry.yarnpkg.com/@yarnpkg%2flockfile/-/lockfile-1.1.0.tgz#e77a97fbd345b76d83245edcd17d393b1b41fb31"
   integrity sha512-GpSwvyXOcOOlV70vbnzjj4fW5xW/FdUF6nQEt1ENy7m4ZCczi1+/buVUPAqmGfqznsORNFzUMjctTIp8a9tuCQ==
 
 abab@^2.0.0, abab@^2.0.3:
@@ -5931,7 +5931,7 @@ crypto-js@^3.1.9-1:
 
 crypto-js@^4.0.0:
   version "4.0.0"
-  resolved "http://npm.resolve-dev.ml:10080/crypto-js/-/crypto-js-4.0.0.tgz#2904ab2677a9d042856a2ea2ef80de92e4a36dcc"
+  resolved "http://registry.yarnpkg.com/crypto-js/-/crypto-js-4.0.0.tgz#2904ab2677a9d042856a2ea2ef80de92e4a36dcc"
   integrity sha512-bzHZN8Pn+gS7DQA6n+iUmBfl0hO5DJq++QP3U6uTucDtk/0iGpXd/Gg7CGR0p8tJhofJyaKoWBuJI4eAO00BBg==
 
 crypto-md5@^1.0.0:
