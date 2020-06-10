@@ -5,7 +5,9 @@ This directory contains API and integration tests for the reSolve framework.
 ## Read model "Stories"
 
 #### App Config
-[mdis]:# (./read-model-stories-sample/config.js#app-config)
+
+[mdis]: # './read-model-stories-sample/config.js#app-config'
+
 ```js
 const appConfig = {
   readModels: [
@@ -20,7 +22,9 @@ const appConfig = {
 ```
 
 #### Dev Config
-[mdis]:# (./read-model-stories-sample/config.js#dev-config)
+
+[mdis]: # './read-model-stories-sample/config.js#dev-config'
+
 ```js
 const devConfig = {
   eventstoreAdapter: {
@@ -62,7 +66,9 @@ const devConfig = {
 ```
 
 #### Projection
-[mdis]:# (./read-model-stories-sample/projection.js)
+
+[mdis]: # './read-model-stories-sample/projection.js'
+
 ```js
 const projection = {
   Init: async store => {
@@ -119,7 +125,9 @@ export default projection
 ```
 
 #### Resolvers
-[mdis]:# (./read-model-stories-sample/resolvers.js)
+
+[mdis]: # './read-model-stories-sample/resolvers.js'
+
 ```js
 const resolvers = {
   getStoryById: async (store, { id }) => {
@@ -169,7 +177,9 @@ export default resolvers
 ## Read model "Comments"
 
 #### App Config
-[mdis]:# (./read-model-comments-sample/config.js#app-config)
+
+[mdis]: # './read-model-comments-sample/config.js#app-config'
+
 ```js
 const appConfig = {
   readModels: [
@@ -183,8 +193,10 @@ const appConfig = {
 }
 ```
 
-#### Dev Config 
-[mdis]:# (./read-model-comments-sample/config.js#dev-config)
+#### Dev Config
+
+[mdis]: # './read-model-comments-sample/config.js#dev-config'
+
 ```js
 const devConfig = {
   eventstoreAdapter: {
@@ -226,7 +238,9 @@ const devConfig = {
 ```
 
 #### Projection
-[mdis]:# (./read-model-comments-sample/projection.js)
+
+[mdis]: # './read-model-comments-sample/projection.js'
+
 ```js
 const treeId = 'tree-id'
 
@@ -365,7 +379,9 @@ export default projection
 ```
 
 #### Resolvers
-[mdis]:# (./read-model-comments-sample/resolvers.js)
+
+[mdis]: # './read-model-comments-sample/resolvers.js'
+
 ```js
 const treeId = 'tree-id'
 
@@ -392,10 +408,13 @@ const resolvers = {
 
 export default resolvers
 ```
+
 ## Read model custom connector API example
 
 #### App Config
-[mdis]:# (./custom-readmodel-sample/config.js#app-config)
+
+[mdis]: # './custom-readmodel-sample/config.js#app-config'
+
 ```js
 const appConfig = {
   readModels: [
@@ -410,7 +429,9 @@ const appConfig = {
 ```
 
 #### Dev Config
-[mdis]:# (./custom-readmodel-sample/config.js#dev-config)
+
+[mdis]: # './custom-readmodel-sample/config.js#dev-config'
+
 ```js
 const devConfig = {
   eventstoreAdapter: {
@@ -433,7 +454,8 @@ const devConfig = {
 
 #### Connector
 
-[mdis]:# (./custom-readmodel-sample/connector.js)
+[mdis]: # './custom-readmodel-sample/connector.js'
+
 ```js
 import fs from 'fs'
 
@@ -483,7 +505,9 @@ export default options => {
 ```
 
 #### Projection
-[mdis]:# (./custom-readmodel-sample/projection.js)
+
+[mdis]: # './custom-readmodel-sample/projection.js'
+
 ```js
 const projection = {
   Init: async store => {
@@ -501,7 +525,9 @@ export default projection
 ```
 
 #### Resolvers
-[mdis]:# (./custom-readmodel-sample/resolvers.js)
+
+[mdis]: # './custom-readmodel-sample/resolvers.js'
+
 ```js
 const resolvers = {
   read: async store => {
@@ -515,7 +541,9 @@ export default resolvers
 ## Saga
 
 #### App Config
-[mdis]:# (./saga-sample/config.js#app-config)
+
+[mdis]: # './saga-sample/config.js#app-config'
+
 ```js
 const appConfig = {
   sagas: [
@@ -530,7 +558,9 @@ const appConfig = {
 ```
 
 #### Dev Config
-[mdis]:# (./saga-sample/config.js#dev-config)
+
+[mdis]: # './saga-sample/config.js#dev-config'
+
 ```js
 const devConfig = {
   eventstoreAdapter: {
@@ -581,7 +611,9 @@ const devConfig = {
 ```
 
 #### Handlers and Side Effects
-[mdis]:# (./saga-sample/saga.js)
+
+[mdis]: # './saga-sample/saga.js'
+
 ```js
 export default {
   handlers: {
@@ -632,7 +664,9 @@ export default {
 ## Saga with authorization
 
 #### App Config
-[mdis]:# (./saga-with-authorization-sample/config.js#app-config)
+
+[mdis]: # './saga-with-authorization-sample/config.js#app-config'
+
 ```js
 const appConfig = {
   aggregates: [
@@ -653,7 +687,9 @@ const appConfig = {
 ```
 
 #### Dev Config
-[mdis]:# (./saga-with-authorization-sample/config.js#dev-config)
+
+[mdis]: # './saga-with-authorization-sample/config.js#dev-config'
+
 ```js
 const devConfig = {
   eventstoreAdapter: {
@@ -704,7 +740,9 @@ const devConfig = {
 ```
 
 #### Aggregate Commands
-[mdis]:# (./saga-with-authorization-sample/process.commands.js)
+
+[mdis]: # './saga-with-authorization-sample/process.commands.js'
+
 ```js
 import jsonwebtoken from 'jsonwebtoken'
 
@@ -738,7 +776,9 @@ export default {
 ```
 
 #### Saga
-[mdis]:# (./saga-with-authorization-sample/saga.js)
+
+[mdis]: # './saga-with-authorization-sample/saga.js'
+
 ```js
 import jsonwebtoken from 'jsonwebtoken'
 
@@ -795,7 +835,8 @@ export default {
 
 ## Read model store advanced example
 
-[mdis]:# (./read-model-advanced-sample/projection.js#read-store-api)
+[mdis]: # './read-model-advanced-sample/projection.js#read-store-api'
+
 ```js
 await store.defineTable('TestTable', {
   indexes: {
@@ -863,7 +904,9 @@ await store.delete('TestTable', {
 ## Saga. How mock side-effects
 
 #### Saga with side-effects
-[mdis]:# (./saga-mock-side-effects-sample/saga.js)
+
+[mdis]: # './saga-mock-side-effects-sample/saga.js'
+
 ```js
 export default {
   handlers: {
@@ -891,7 +934,9 @@ export default {
 ```
 
 #### Tests
-[mdis]:# (./saga-mock-side-effects-sample/saga.test.js)
+
+[mdis]: # './saga-mock-side-effects-sample/saga.test.js'
+
 ```js
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import givenEvents, {
@@ -1024,8 +1069,11 @@ describe('Saga', () => {
 ```
 
 ## Scripts
+
 #### validateConfig
-[mdis]:# (./resolve-scripts-sample/run.js#validateConfig)
+
+[mdis]: # './resolve-scripts-sample/run.js#validateConfig'
+
 ```js
 import {
   ...
@@ -1037,7 +1085,9 @@ import {
 ```
 
 #### build
-[mdis]:# (./resolve-scripts-sample/run.js#build)
+
+[mdis]: # './resolve-scripts-sample/run.js#build'
+
 ```js
 import {
   build,
@@ -1056,7 +1106,9 @@ import {
 ```
 
 #### start
-[mdis]:# (./resolve-scripts-sample/run.js#start)
+
+[mdis]: # './resolve-scripts-sample/run.js#start'
+
 ```js
 import {
   ...
@@ -1075,7 +1127,9 @@ import {
 ```
 
 #### watch
-[mdis]:# (./resolve-scripts-sample/run.js#watch)
+
+[mdis]: # './resolve-scripts-sample/run.js#watch'
+
 ```js
 import {
   ...
@@ -1095,7 +1149,9 @@ import {
 ```
 
 #### runTestcafe
-[mdis]:# (./resolve-scripts-sample/run.js#runTestcafe)
+
+[mdis]: # './resolve-scripts-sample/run.js#runTestcafe'
+
 ```js
 import {
   ...
@@ -1119,7 +1175,9 @@ import {
 ```
 
 #### merge
-[mdis]:# (./resolve-scripts-sample/run.js#merge)
+
+[mdis]: # './resolve-scripts-sample/run.js#merge'
+
 ```js
 import {
   ...
@@ -1131,7 +1189,9 @@ import {
 ```
 
 #### stop
-[mdis]:# (./resolve-scripts-sample/run.js#stop)
+
+[mdis]: # './resolve-scripts-sample/run.js#stop'
+
 ```js
 import {
   ...
@@ -1143,7 +1203,9 @@ import {
 ```
 
 #### reset
-[mdis]:# (./resolve-scripts-sample/run.js#reset)
+
+[mdis]: # './resolve-scripts-sample/run.js#reset'
+
 ```js
 import {
   ...
@@ -1168,7 +1230,9 @@ import {
 ```
 
 #### importEventStore
-[mdis]:# (./resolve-scripts-sample/run.js#importEventStore)
+
+[mdis]: # './resolve-scripts-sample/run.js#importEventStore'
+
 ```js
 import {
   ...
@@ -1190,14 +1254,13 @@ import {
 ```
 
 #### exportEventStore
-[mdis]:# (./resolve-scripts-sample/run.js#exportEventStore)
+
+[mdis]: # './resolve-scripts-sample/run.js#exportEventStore'
+
 ```js
 import {
   ...
-  exportEventStore,
-  ...
-} from 'resolve-scripts'
-    ...
+  exportEventStore,Scrip
     switch (launchMode) {
       ...
       case 'export-event-store': {

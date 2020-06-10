@@ -434,21 +434,29 @@ Builds the application.
 
 #### Example
 
+#### build
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#build)
 ```js
 import {
   build,
   ...
 } from 'resolve-scripts'
-
-switch (launchMode) {
-  case 'build': {
-    const resolveConfig = merge(baseConfig, prodConfig)
-    await build(resolveConfig)
-    break
-  }
-  ...
-}
+    ...
+    switch (launchMode) {
+    ...
+      case 'build': {
+        const resolveConfig = merge(baseConfig, prodConfig)
+        await build(resolveConfig)
+        break
+      }
+      ...
+    }
 ```
+
+<!-- prettier-ignore-end -->
 
 ### start
 
@@ -456,20 +464,27 @@ Runs the built application.
 
 #### Example
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#start)
 ```js
 import {
+  ...
   start,
   ...
 } from 'resolve-scripts'
-
-switch (launchMode) {
-  case 'start': {
-    await start(merge(baseConfig, prodConfig))
-    break
-  }
-  ...
-}
+    ...
+    switch (launchMode) {
+      ...
+      case 'start': {
+        await start(merge(baseConfig, prodConfig))
+        break
+      }
+      ...
+    }
 ```
+
+<!-- prettier-ignore-end -->
 
 ### watch
 
@@ -477,21 +492,28 @@ Runs the application in **watch** mode. (Watch application files for changes.)
 
 #### Example
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#watch)
 ```js
 import {
+  ...
   watch,
   ...
 } from 'resolve-scripts'
-
-switch (launchMode) {
-  case 'dev': {
-    const resolveConfig = merge(baseConfig, devConfig)
-    await watch(resolveConfig)
-    break
-  }
-  ...
-}
+    ...
+    switch (launchMode) {
+      ...
+      case 'dev': {
+        const resolveConfig = merge(baseConfig, devConfig)
+        await watch(resolveConfig)
+        break
+      }
+      ...
+    }
 ```
+
+<!-- prettier-ignore-end -->
 
 ### runTestcafe
 
@@ -499,25 +521,32 @@ Runs TestCafe tests on the application.
 
 #### Example
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#runTestcafe)
 ```js
 import {
+  ...
   runTestcafe,
   ...
 } from 'resolve-scripts'
-
-switch (launchMode) {
-  case 'test:functional': {
-    const resolveConfig = merge(baseConfig, testFunctionalConfig)
-    await runTestcafe({
-      resolveConfig,
-      functionalTestsDir: 'test/functional',
-      browser: process.argv[3]
-    })
-    break
-  }
-  ...
-}
+    ...
+    switch (launchMode) {
+      ...
+      case 'test:functional': {
+        const resolveConfig = merge(baseConfig, testFunctionalConfig)
+        await runTestcafe({
+          resolveConfig,
+          functionalTestsDir: 'test/functional',
+          browser: process.argv[3]
+        })
+        break
+      }
+      ...
+    }
 ```
+
+<!-- prettier-ignore-end -->
 
 ### merge
 
@@ -525,33 +554,20 @@ Merges modules and application configs into a single object.
 
 #### Example
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#merge)
 ```js
 import {
+  ...
   merge,
   ...
 } from 'resolve-scripts'
-
-const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+  ...
+    const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
 ```
 
-### stop
-
-Stops the application process.
-
-#### Example
-
-```js
-import {
-  stop,
-  ...
-} from 'resolve-scripts'
-
-try {
-  ...
-} catch(error) {
-  await stop(error)
-}
-```
+<!-- prettier-ignore-end -->
 
 ### reset
 
@@ -559,26 +575,33 @@ Resets the application's persistent storages and snapshots.
 
 #### Example
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#reset)
 ```js
 import {
+  ...
   reset,
   ...
 } from 'resolve-scripts'
-
-switch (launchMode) {
-  case 'reset': {
-    const resolveConfig = merge(baseConfig, devConfig)
-    await reset(resolveConfig, {
-      dropEventStore: true,
-      dropSnapshots: true,
-      dropReadModels: true,
-      dropSagas: true
-    })
-    break
-  }
-  ...
-}
+    ...
+    switch (launchMode) {
+      ...
+      case 'reset': {
+        const resolveConfig = merge(baseConfig, devConfig)
+        await reset(resolveConfig, {
+          dropEventStore: true,
+          dropEventBus: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+        break
+      }
+      ...
+    }
 ```
+
+<!-- prettier-ignore-end -->
 
 ### importEventStore
 
@@ -586,23 +609,30 @@ Imports events from a file to the application's event store.
 
 #### Example
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#importEventStore)
 ```js
 import {
+  ...
   importEventStore,
   ...
 } from 'resolve-scripts'
+    ...
+    switch (launchMode) {
+      ...
+      case 'import-event-store': {
+        const resolveConfig = merge(baseConfig, devConfig)
 
-switch (launchMode) {
-  case 'import-event-store': {
-    const resolveConfig = merge(baseConfig, devConfig)
-
-    const importFile = process.argv[3]
-    await importEventStore(resolveConfig, { importFile })
-    break
-  }
-  ...
-}
+        const importFile = process.argv[3]
+        await importEventStore(resolveConfig, { importFile })
+        break
+      }
+      ...
+    }
 ```
+
+<!-- prettier-ignore-end -->
 
 ### exportEventStore
 
@@ -610,23 +640,30 @@ Exports events from the application's event store to a file.
 
 #### Example
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#exportEventStore)
 ```js
 import {
+  ...
   exportEventStore,
   ...
 } from 'resolve-scripts'
+    ...
+    switch (launchMode) {
+      ...
+      case 'export-event-store': {
+        const resolveConfig = merge(baseConfig, devConfig)
 
-switch (launchMode) {
-  case 'export-event-store': {
-    const resolveConfig = merge(baseConfig, devConfig)
-
-    const exportFile = process.argv[3]
-    await exportEventStore(resolveConfig, { exportFile })
-    break
-  }
-  ...
-}
+        const exportFile = process.argv[3]
+        await exportEventStore(resolveConfig, { exportFile })
+        break
+      }
+      ...
+    }
 ```
+
+<!-- prettier-ignore-end -->
 
 ### validateConfig
 
@@ -634,14 +671,20 @@ Validates a configuration object.
 
 #### Example
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#validateConfig)
 ```js
 import {
+  ...
   validateConfig,
   ...
 } from 'resolve-scripts'
-
-validateConfig(config)
+    ...
+    validateConfig(config)
 ```
+
+<!-- prettier-ignore-end -->
 
 ## Client-Side API
 
