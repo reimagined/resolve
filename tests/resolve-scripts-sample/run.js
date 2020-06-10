@@ -143,7 +143,7 @@ void (async function() {
         const resolveConfig = merge(baseConfig, devConfig)
         await reset(resolveConfig, {
           dropEventStore: true,
-          dropSnapshots: true,
+          dropEventBus: true,
           dropReadModels: true,
           dropSagas: true
         })
