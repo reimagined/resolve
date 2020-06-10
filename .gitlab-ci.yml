@@ -126,6 +126,7 @@ checks:
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
+    - yarn validate-lock-file
     - yarn lint
     - yarn test
     - yarn test:integrational
@@ -236,6 +237,7 @@ eslint + prettier:
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
+    - yarn validate-lock-file
     - yarn lint
     - cd ..
     - node ci-cd/job-status/index.js --end
