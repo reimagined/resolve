@@ -338,7 +338,6 @@ macOS (create-resolve-app + functional-tests):
     - node ci-cd/job-status/index.js --start
     - node ci-cd/create-github-status/index.js --state pending --context "6. Functional-tests (macOS)" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
-    - yarn cache clean
     - cd resolve-$CI_PIPELINE_ID
     - pm2 delete local-registry || true
     - pm2 start packages/internal/local-registry/bin/index.js --name local-registry
@@ -401,7 +400,6 @@ ubuntu (create-resolve-app + functional-tests):
     - node ci-cd/job-status/index.js --start
     - node ci-cd/create-github-status/index.js --state pending --context "7. Functional-tests (Ubuntu)" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
-    - yarn cache clean
     - cd resolve-$CI_PIPELINE_ID
     - pm2 delete local-registry || true
     - pm2 start packages/internal/local-registry/bin/index.js --name local-registry
