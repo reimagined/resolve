@@ -407,7 +407,7 @@ await sideEffects.scheduleCommand(
 
 ## reSolve Scripts
 
-The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) library provides scripts that serve as entry points for the fundamental stages of a reSolve application lifecycle. The package exports the following scripts:
+The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) package contains service scripts used to configure build and run reSolve applications. The package contains the following scripts:
 
 | Script                                | Description                                                                    |
 | ------------------------------------- | ------------------------------------------------------------------------------ |
