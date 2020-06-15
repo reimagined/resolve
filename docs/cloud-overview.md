@@ -5,7 +5,7 @@ title: Overview
 
 ReSolve Cloud is a serverless cloud platform for your reSolve applications.
 
-To get started with the reSolve cloud platform, register your account at [admin.resolve.sh](admin.resolve.sh). After this, you will gain access to your personal [admin panel](cloud-web-gui.md).
+To get started with the reSolve cloud platform, register your account at [admin.resolve.sh](https://admin.resolve.sh/). After this, you will gain access to your personal [admin panel](cloud-web-gui.md).
 
 The [resolve-cloud CLI tool](cloud-cli.md) allows you to manage your reSolve cloud applications, and their resources from the terminal.
 
