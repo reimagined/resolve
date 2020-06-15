@@ -46,7 +46,7 @@ Button.defaultProps = {
 const SplashContainer = ({ children }) => (
   <div
     className="homeContainer"
-    style={{ backgroundImage: `url(${imgUrl('background.png')})` }}
+    style={{ backgroundImage: `url(${imgUrl('header-background.svg')})` }}
   >
     <div className="homeSplashFade">
       <div className="wrapper homeWrapper">{children}</div>
