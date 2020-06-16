@@ -407,30 +407,31 @@ await sideEffects.scheduleCommand(
 
 ## reSolve Scripts
 
-The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) package contains service scripts used to configure build and run reSolve applications. The package contains the following scripts:
+The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) package contains service scripts used to configure, build and run reSolve applications. The package contains the following scripts:
 
-| Script                                | Description                                                                    |
-| ------------------------------------- | ------------------------------------------------------------------------------ |
-| [build](#build)                       | Builds the application.                                                        |
-| [start](#start)                       | Runs the built application.                                                    |
-| [watch](#watch)                       | Runs the application in **watch** mode. (Watch application files for changes.) |
-| [runTestcafe](#runtestcafe)           | Runs TestCafe tests on the application.                                        |
-| [merge](#merge)                       | Merges modules and application configs into a single object.                   |
-| [stop](#stop)                         | Stops the application process.                                                 |
-| [reset](#reset)                       | Resets the application's persistent storages and snapshots.                    |
-| [importEventStore](#importeventstore) | Imports events from a file to the application's event store.                   |
-| [exportEventStore](#exporteventstore) | Exports events from the application's event store to a file.                   |
-| [validateConfig](#validateconfig)     | Validates a configuration object.                                              |
+| Script                                | Description                                                                   |
+| ------------------------------------- | ----------------------------------------------------------------------------- |
+| [build](#build)                       | Builds an application.                                                        |
+| [start](#start)                       | Runs a built application.                                                     |
+| [watch](#watch)                       | Runs an application in **watch** mode. (Watch application files for changes.) |
+| [runTestcafe](#runtestcafe)           | Runs TestCafe tests.                                                          |
+| [merge](#merge)                       | Merges modules and application configs into a single object.                  |
+| [stop](#stop)                         | Stops an application process.                                                 |
+| [reset](#reset)                       | Resets an application's persistent storages and snapshots.                    |
+| [importEventStore](#importeventstore) | Imports events from a file to an application's event store.                   |
+| [exportEventStore](#exporteventstore) | Exports events from an application's event store to a file.                   |
+| [validateConfig](#validateconfig)     | Validates a configuration object.                                             |
 
-The resolve-scripts library also exports a `defaultResolveConfig` object that contains default reSolve configuration settings. This object is typically merged with an application's configs to receive a global configuration object:
+The resolve-scripts library also exports a `defaultResolveConfig` object that contains default configuration settings. This object is merged with an application's configuration objects to receive a global configuration object:
 
 ```js
+// run.js
 const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
 ```
 
 ### build
 
-Builds the application.
+Builds an application.
 
 #### Example
 
@@ -460,7 +461,7 @@ import {
 
 ### start
 
-Runs the built application.
+Runs a built application.
 
 #### Example
 
@@ -488,7 +489,7 @@ import {
 
 ### watch
 
-Runs the application in **watch** mode. (Watch application files for changes.)
+Runs an application in **watch** mode. (Watch application files for changes.)
 
 #### Example
 
@@ -517,7 +518,7 @@ import {
 
 ### runTestcafe
 
-Runs TestCafe tests on the application.
+Runs TestCafe tests.
 
 #### Example
 
@@ -571,7 +572,7 @@ import {
 
 ### reset
 
-Resets the application's persistent storages and snapshots.
+Resets an application's persistent storages and snapshots.
 
 #### Example
 
@@ -605,7 +606,7 @@ import {
 
 ### importEventStore
 
-Imports events from a file to the application's event store.
+Imports events from a file to an application's event store.
 
 #### Example
 
@@ -636,7 +637,7 @@ import {
 
 ### exportEventStore
 
-Exports events from the application's event store to a file.
+Exports events from an application's event store to a file.
 
 #### Example
 
