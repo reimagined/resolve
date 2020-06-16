@@ -407,16 +407,16 @@ await sideEffects.scheduleCommand(
 
 ## reSolve Scripts
 
-The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) package contains service scripts used to configure, build and run reSolve applications. The package contains the following scripts:
+The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) package contains service scripts used to configure, build, and run reSolve applications. The package contains the following scripts:
 
 | Script                                | Description                                                                   |
 | ------------------------------------- | ----------------------------------------------------------------------------- |
 | [build](#build)                       | Builds an application.                                                        |
-| [start](#start)                       | Runs a built application.                                                     |
+| [start](#start)                       | Runs an application.                                                     |
 | [watch](#watch)                       | Runs an application in **watch** mode. (Watch application files for changes.) |
 | [runTestcafe](#runtestcafe)           | Runs TestCafe tests.                                                          |
-| [merge](#merge)                       | Merges modules and application configs into a single object.                  |
-| [stop](#stop)                         | Stops an application process.                                                 |
+| [merge](#merge)                       | Merges modules and application configurations into a single object.                  |
+| [stop](#stop)                         | Stops an application.                                                 |
 | [reset](#reset)                       | Resets an application's persistent storages and snapshots.                    |
 | [importEventStore](#importeventstore) | Imports events from a file to an application's event store.                   |
 | [exportEventStore](#exporteventstore) | Exports events from an application's event store to a file.                   |
