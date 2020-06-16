@@ -1,3 +1,8 @@
+/*
+  Code in this file bootstraps and run a reSolve application based on 
+  different configuration settings under different environments.
+*/
+
 import {
   defaultResolveConfig,
   build,
@@ -21,8 +26,43 @@ const launchMode = process.argv[2]
 
 void (async () => {
   try {
+    // Here you may want to prepare a base config object
+    // that includes all modules that you want to be available for all
+    // execution targes:
+    // const moduleAuth = resolveModuleAuth([
+    //   {
+    //     name: 'local-strategy',
+    //     createStrategy: 'auth/create_strategy.js',
+    //     logoutRoute: {
+    //       path: 'logout',
+    //       method: 'POST'
+    //     },
+    //     routes: [
+    //       {
+    //         path: 'register',
+    //         method: 'POST',
+    //         callback: 'auth/route_register_callback.js'
+    //       },
+    //       {
+    //         path: 'login',
+    //         method: 'POST',
+    //         callback: 'auth/route_login_callback.js'
+    //       }
+    //     ]
+    //   }
+    // // ])
+    // const baseConfig = merge(
+    //   defaultResolveConfig,
+    //   appConfig,
+    //   moduleAuth
+    // )
+
+    // Check the execution target and run the corresponding script
     switch (launchMode) {
       case 'dev': {
+        // Merge cofiguration objects into the globla config
+        // Modify this section to define new execution targets
+        // and determine which configs should be available for what targets
         const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
 
         await reset(resolveConfig, {
