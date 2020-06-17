@@ -12,6 +12,15 @@ const create = async (pool, options) => {
   await admin.executeStatement(
     [
       `CREATE SCHEMA ${escapeId(options.databaseName)}`,
+
+      `CREATE TABLE ${escapeId(options.databaseName)}.${escapeId(
+        `__${options.databaseName}__XA__`
+      )}(
+        "xa_key" VARCHAR(190),
+        "timestamp" BIGINT,
+        PRIMARY KEY("xa_key")
+      )`,
+
       `GRANT USAGE ON SCHEMA ${escapeId(options.databaseName)} TO ${escapeId(
         options.userLogin
       )}`,

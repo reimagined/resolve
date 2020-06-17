@@ -86,6 +86,12 @@ const connect = async (imports, pool, options) => {
     )
   }
 
+  const hash512 = str => {
+    const hmac = imports.crypto.createHmac('sha512', awsSecretStoreArn)
+    hmac.update(str)
+    return hmac.digest('hex')
+  }
+
   const executeStatement = imports.executeStatement.bind(null, pool)
 
   const eventCounters = new Map()
@@ -102,7 +108,8 @@ const connect = async (imports, pool, options) => {
     readModelName: null,
     eventCounters,
     ...imports,
-    executeStatement
+    executeStatement,
+    hash512
   })
 }
 
