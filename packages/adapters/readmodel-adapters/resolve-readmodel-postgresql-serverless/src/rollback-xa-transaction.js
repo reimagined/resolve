@@ -44,7 +44,7 @@ const rollbackXATransaction = async (
             )}
           `
         })
-        if (xaResult[0].ok === 'ok') {
+        if (xaResult.length > 0) {
           throw new Error('Re-throwing')
         }
 
