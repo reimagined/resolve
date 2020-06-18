@@ -18,7 +18,7 @@ const ContentSelector = ({ user }) => {
   return <Redirect to={`/blog/${user.id}`} />
 }
 
-const Home = () => {
+const Home = ({ location: { hash } = {} }) => {
   const [user, setUser] = useState('unknown')
   const getUser = useQuery(
     {
@@ -48,7 +48,7 @@ const Home = () => {
     }
   )
   useEffect(() => {
-    if (window.location.hash === '#deleted') {
+    if (hash === '#deleted') {
       setUser(null)
     } else {
       getUser()
