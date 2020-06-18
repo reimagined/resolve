@@ -9,6 +9,7 @@ import {
 } from 'resolve-scripts'
 
 import resolveModuleAuth from 'resolve-module-auth'
+import resolveModuleAdmin from 'resolve-module-admin'
 import resolveModuleUploader from 'resolve-module-uploader'
 
 import appConfig from './config.app'
@@ -87,7 +88,12 @@ void (async () => {
     }
 
     case 'test:functional': {
-      const resolveConfig = merge(baseConfig, testFunctionalConfig)
+      const resolveAdmin = resolveModuleAdmin()
+      const resolveConfig = merge(
+        baseConfig,
+        resolveAdmin,
+        testFunctionalConfig
+      )
 
       await reset(resolveConfig, {
         dropEventStore: true,

@@ -13,6 +13,7 @@ import appConfig from './config.app'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
+import resolveModuleAdmin from 'resolve-module-admin'
 
 const launchMode = process.argv[2]
 
@@ -44,10 +45,12 @@ void (async () => {
       }
 
       case 'test:functional': {
+        const moduleAdmin = resolveModuleAdmin()
         const resolveConfig = merge(
           defaultResolveConfig,
           appConfig,
-          testFunctionalConfig
+          testFunctionalConfig,
+          moduleAdmin
         )
 
         await reset(resolveConfig, {

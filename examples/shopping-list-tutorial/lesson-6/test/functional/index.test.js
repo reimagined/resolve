@@ -6,6 +6,27 @@ const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || '3000'
 const MAIN_PAGE = `http://${host}:${port}`
 
+const waitSelector = async (eventSubscriber, selector) => {
+  while (true) {
+    const res = await fetch(
+      'http://localhost:3000/api/event-broker/read-models-list'
+    )
+
+    const comments = (await res.json()).find(
+      readModel => readModel.eventSubscriber === eventSubscriber
+    )
+
+    if (comments.status !== 'deliver') {
+      throw new Error(`Read-model status ${comments.status}`)
+    }
+
+    try {
+      await selector
+      break
+    } catch (e) {}
+  }
+}
+
 // eslint-disable-next-line no-unused-expressions, no-undef
 fixture`Shopping List`.beforeEach(async t => {
   await t.setNativeDialogHandler(() => true)
@@ -248,7 +269,7 @@ test('create second shopping list', async t => {
 test('create items in first shopping list', async t => {
   await t.click(Selector('a').withText('First Shopping List'))
 
-  await t.wait(3000)
+  await waitSelector('ShoppingLists', Selector('input[type=text]'))
 
   await t.typeText(Selector('input[type=text]'), 'Item 1')
   await t.click(Selector('button').withText('Add Item'))
@@ -267,7 +288,7 @@ test('create items in first shopping list', async t => {
 test('toggle items in first shopping list', async t => {
   await t.click(Selector('a').withText('First Shopping List'))
 
-  await t.wait(3000)
+  await waitSelector('ShoppingLists', Selector('label').withText('Item 1'))
 
   await t.click(Selector('label').withText('Item 1'))
   await t.click(Selector('label').withText('Item 2'))

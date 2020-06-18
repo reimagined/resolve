@@ -1,4 +1,5 @@
 import { Selector } from 'testcafe'
+import fetch from 'isomorphic-fetch'
 
 const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || '3000'
@@ -12,8 +13,6 @@ const registerFirstUser = async t => {
   await t.typeText(await Selector('input[name="password"]'), 'User Password 1')
   await t.click(await Selector('.btn-success'))
 
-  await t.wait(5000)
-
   // eslint-disable-next-line no-restricted-globals
   await t.eval(() => location.reload(true))
 }
@@ -23,8 +22,27 @@ const loginFirstUser = async t => {
   await t.typeText(await Selector('input[name="username"]'), 'User 1')
   await t.typeText(await Selector('input[name="password"]'), 'User Password 1')
   await t.click(await Selector('.btn-primary'))
+}
 
-  await t.wait(1000)
+const waitSelector = async (eventSubscriber, selector) => {
+  while (true) {
+    const res = await fetch(
+      'http://localhost:3000/api/event-broker/read-models-list'
+    )
+
+    const comments = (await res.json()).find(
+      readModel => readModel.eventSubscriber === eventSubscriber
+    )
+
+    if (comments.status !== 'deliver') {
+      throw new Error(`Read-model status ${comments.status}`)
+    }
+
+    try {
+      await selector
+      break
+    } catch (e) {}
+  }
 }
 
 // eslint-disable-next-line no-unused-expressions, no-undef
@@ -33,11 +51,15 @@ fixture`Shopping Lists`
 test('should list be empty', async t => {
   await registerFirstUser(t)
 
+  await waitSelector('ShoppingLists', Selector('.shopping-list'))
+
   await t.expect(await Selector('.shopping-list').count).eql(1)
 })
 
 test('create first shopping list', async t => {
   await loginFirstUser(t)
+
+  await waitSelector('ShoppingLists', Selector('.example-form-control'))
 
   await t.typeText(
     await Selector('.example-form-control'),
@@ -51,6 +73,8 @@ test('create first shopping list', async t => {
 test('create second shopping list', async t => {
   await loginFirstUser(t)
 
+  await waitSelector('ShoppingLists', Selector('.example-form-control'))
+
   await t.typeText(
     await Selector('.example-form-control'),
     'Second Shopping List'
@@ -63,9 +87,14 @@ test('create second shopping list', async t => {
 test('create items in first shopping list', async t => {
   await loginFirstUser(t)
 
+  await waitSelector(
+    'ShoppingLists',
+    Selector('a').withText('First Shopping List')
+  )
+
   await t.click(Selector('a').withText('First Shopping List'))
 
-  await t.wait(3000)
+  await waitSelector('ShoppingLists', Selector('input[type=text]').nth(1))
 
   await t.typeText(Selector('input[type=text]').nth(1), 'Item 1')
   await t.click(Selector('button').withText('Add Item'))
@@ -84,9 +113,14 @@ test('create items in first shopping list', async t => {
 test('toggle items in first shopping list', async t => {
   await loginFirstUser(t)
 
+  await waitSelector(
+    'ShoppingLists',
+    Selector('a').withText('First Shopping List')
+  )
+
   await t.click(Selector('a').withText('First Shopping List'))
 
-  await t.wait(3000)
+  await waitSelector('ShoppingLists', Selector('label').withText('Item 1'))
 
   await t.click(Selector('label').withText('Item 1'))
   await t.click(Selector('label').withText('Item 2'))
@@ -106,9 +140,14 @@ test('toggle items in first shopping list', async t => {
 test('remove items in first shopping list', async t => {
   await loginFirstUser(t)
 
+  await waitSelector(
+    'ShoppingLists',
+    Selector('a').withText('First Shopping List')
+  )
+
   await t.click(Selector('a').withText('First Shopping List'))
 
-  await t.wait(3000)
+  await waitSelector('ShoppingLists', Selector('.example-close-button'))
 
   await t.click(Selector('.example-close-button'))
   await t.click(Selector('.example-close-button'))

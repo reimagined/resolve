@@ -78,10 +78,12 @@ void (async () => {
       }
 
       case 'test:functional': {
+        const moduleAdmin = resolveModuleAdmin()
         const resolveConfig = merge(
           defaultResolveConfig,
           appConfig,
-          testFunctionalConfig
+          testFunctionalConfig,
+          moduleAdmin
         )
 
         await reset(resolveConfig, {
