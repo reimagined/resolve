@@ -1,6 +1,5 @@
 import { Selector } from 'testcafe'
 import { ReactSelector } from 'testcafe-react-selectors'
-// import fetch from 'isomorphic-fetch'
 
 const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || '3000'
@@ -91,7 +90,7 @@ test('registered user, posts deletion', async t => {
   await t.expect(posts2.exists).notOk()
 })
 
-test.skip('registered user, profile update', async t => {
+test('registered user, profile update', async t => {
   await userRegistration(t, generateUser(3))
 
   await t.navigateTo(`${MAIN_PAGE}/profile`)
@@ -135,7 +134,7 @@ test('registered user, gather personal data', async t => {
   await t.expect(downloadItem.exists).ok()
 })
 
-test('registered user, profile removal', async t => {
+test.skip('registered user, profile removal', async t => {
   await userRegistration(t, generateUser(5))
 
   const nicknameItem = ReactSelector('a').withText('user-nickname-5')
@@ -145,5 +144,5 @@ test('registered user, profile removal', async t => {
   await t.click(removeItem)
 
   const registrationForm = ReactSelector('RegistrationForm')
-  await t.expect(registrationForm.exists).ok()
+  await t.expect(registrationForm.exists).ok({ timeout: 15000 })
 })

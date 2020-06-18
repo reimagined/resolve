@@ -127,7 +127,12 @@ void (async () => {
       }
 
       case 'test:functional': {
-        const resolveConfig = merge(baseConfig, testFunctionalConfig)
+        const moduleAdmin = resolveModuleAdmin()
+        const resolveConfig = merge(
+          baseConfig,
+          moduleAdmin,
+          testFunctionalConfig
+        )
         await reset(resolveConfig, {
           dropEventStore: true,
           dropEventBus: true,

@@ -73,6 +73,7 @@
     "jest": "26.0.1",
     "sinon": "7.2.2",
     "testcafe": "1.8.5",
-    "resolve-cloud": "*"
+    "resolve-cloud": "*",
+    "isomorphic-fetch": "2.2.1"
   }
 }

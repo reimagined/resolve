@@ -28,27 +28,7 @@ const devConfig = {
       }
     */
   },
-  snapshotAdapter: {
-    module: 'resolve-snapshot-lite',
-    options: {
-      // databaseFile: 'path/to/file',
-      bucketSize: 100
-    }
-  },
-  /*
-    {
-      module: 'resolve-snapshot-mysql',
-      options: {
-        host: 'localhost',
-        port: 3306,
-        user: 'customUser',
-        password: 'customPassword',
-        database: 'customDatabaseName',
-        eventsTableName: 'customTableName',
-        bucketSize: 100
-      }
-    }
-  */ eventstoreAdapter: {
+  eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db'
