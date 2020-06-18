@@ -149,6 +149,8 @@ The **resolve-client** library provides an interface that you can use to communi
 | subscribe         | Subscribes to View Model updates.          |
 | unsubscribe       | Unsubscribes from View Model updates.      |
 
+#### Example
+
 The [with-vanilajs](https://github.com/reimagined/resolve/tree/master/examples/with-vanillajs) example application demonstrates how to use the **resolve-client** library to implement a frontend for a reSolve application in pure JavaScript.
 
 ## resolve-redux library
@@ -173,163 +175,9 @@ Use the following resolve-redux library's higher order components (HOCs) to conn
 
 A connected component receives additional props. These props provide access to the Read Model data and Redux action creators mapped to reSolve commands.
 
-### Obtain View Model Data
+#### Example
 
-The code sample below demonstrates how to obtain data from a reSolve backend in the most basic use-case scenario:
-
-```js
-import { connectViewModel } from 'resolve-redux'
-
-import React from 'react'
-...
-const TodoList = ({ data }) => (
-  <ul>
-    {data.map(i => ( // Access View Model data via the data prop
-      <li>{i}</li>
-    ))}
-  </ul>
-
-export const mapStateToOptions = () => {
-  return {
-    viewModelName: 'TodoList',
-    aggregateIds: ["root-id"]
-  }
-}
-
-export default connectViewModel(mapStateToOptions)(TodoList)
-
-```
-
-In this code, the **connectViewModel** HOC is used to connect a React component to an existing View Model. The **mapStateToOptions** function specifies the connection options. The following options are required:
-
-- **viewModelName** - the name of a View Model to bind to
-- **aggregateIds** - an array of aggregate IDs for which to obtain data
-
-A component connected to a View Model can access the View Model data through the **data** prop.
-
-### Connect to Redux
-
-You can chain the **connectReadModel** or **connectViewModel** function call with the Redux **connect** function call to synchronize the client Redux state with Read Model or View Model data.
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (..\..\examples\shopping-list\client\containers\MyLists.js /export const mapStateToOptions/ /^\)/)
-```js
-import { sendAggregateAction } from 'resolve-redux'
-import { bindActionCreators } from 'redux'
-
-export const mapStateToOptions = () => ({
-  readModelName: 'ShoppingLists',
-  resolverName: 'all',
-  resolverArgs: {}
-})
-
-export const mapStateToProps = state => ({
-  lists: state.optimisticShoppingLists || []
-})
-
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators({
-    createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
-  }, dispatch)
-
-export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MyLists)
-)
-```
-
-<!-- prettier-ignore-end -->
-
-### Fix URLs
-
-Use the following HOCs to automatically fix URLs passed to a component as props. The resulting URLs take the backend structure into account.
-
-- **connectRootBasedUrls** - Fixes server routs:
-  ```js
-  export default connectRootBasedUrls(['href'])(Link)
-  ```
-
-* **connectStaticBasedUrls** - Fixes static files paths:
-  ```js
-  export default connectStaticBasedUrls(['css', 'favicon'])(Header)
-  ```
-
-### Sending Commands as Redux Actions
-
-A component connected to a Read Model receives an object containing available command names. You can use the **redux.bindActionCreators** function to automatically wrap all these commands into **dispatch** function calls. This allows for a compact implementation of the **mapDispatchToProps** function.
-
-After this, you can dispatch aggregate commands using the corresponding props:
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (..\..\examples\shopping-list\client\containers\MyLists.js /class MyLists/ /^\}/)
-```js
-class MyLists extends React.PureComponent {
-  render() {
-    const { lists, createShoppingList, removeShoppingList } = this.props
-
-    return (
-      <div className="example-wrapper">
-        <ShoppingLists lists={lists} removeShoppingList={removeShoppingList} />
-        <ShoppingListCreator
-          lists={lists}
-          createShoppingList={createShoppingList}
-        />
-      </div>
-    )
-  }
-}
-```
-
-<!-- prettier-ignore-end -->
-
-### Reactive View Models, Event Subscription
-
-A View Model is a special kind of a Read Model. Its projection is declared in a universal format so it can also serve as the reducer code on the client side. Events are automatically sent to the client through a WebSocket connection. Because of these properties, View Models are reactive. This means that a component connected to a View Model using the **connectViewModel** method automatically reflects the Read Model changes on the server side, without the need to implement any additional logic.
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (..\..\examples\shopping-list\client\containers\ShoppingList.js /export const mapStateToOptions/ /^\)/)
-```js
-import { sendAggregateAction } from 'resolve-redux'
-import { bindActionCreators } from 'redux'
-
-export const mapStateToOptions = (state, ownProps) => {
-  const aggregateId = ownProps.match.params.id
-
-  return {
-    viewModelName: 'shoppingList',
-    aggregateIds: [aggregateId]
-  }
-}
-
-export const mapStateToProps = (state, ownProps) => {
-  const aggregateId = ownProps.match.params.id
-
-  return {
-    aggregateId
-  }
-}
-
-export const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(
-    {
-      createStory: sendAggregateAction.bind(null, 'Story', 'createStory'),
-      replaceUrl: routerActions.replace
-    },
-    dispatch
-  )
-
-export default connectViewModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ShoppingList)
-)
-```
+The [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example application demonstrates how to use the **resolve-client** library to implement a react-redux frontend for a reSolve application.
 
 <!-- prettier-ignore-end -->
 
@@ -343,5 +191,7 @@ The **resolve-react-hooks** library provides React hooks that you can use to con
 | useCommandBuilder | Allows to generate commands based on input parameters                   |
 | useViewModel      | Establishes a WebSocket connection to a reSolve View Model              |
 | useQuery          | Allows a component to send queries to a reSolve Red Model or View Model |
+
+#### Example
 
 The [shopping-list-with-hooks](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-with-hooks) example application demonstrates how to use the **resolve-react-hooks** library to communicate with a reSolve backend.
