@@ -81,7 +81,7 @@ const UserInfo = props => {
   }
 
   if (deleted) {
-    return <Redirect to="/" />
+    return <Redirect to="/#deleted" />
   }
 
   const { archive = null } = user

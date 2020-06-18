@@ -48,7 +48,11 @@ const Home = () => {
     }
   )
   useEffect(() => {
-    getUser()
+    if (window.location.hash === '#deleted') {
+      setUser(null)
+    } else {
+      getUser()
+    }
   }, [])
 
   return (
