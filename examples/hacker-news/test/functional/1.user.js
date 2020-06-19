@@ -59,7 +59,7 @@ test('create: User cannot be created', async (t /*: TestController */) => {
   await t.typeText(await Selector('input[type=text]').nth(2), '123')
   await t.click(await Selector('input[type=submit]').nth(1))
 
-  await waitSelector(t, 'HackerNews', Selector('a').withText('logout'))
+  await waitSelector(t, 'HackerNews', Selector('a').withText('login'))
 
   await t.expect(await Selector('a').withText('logout').exists).eql(false)
 
