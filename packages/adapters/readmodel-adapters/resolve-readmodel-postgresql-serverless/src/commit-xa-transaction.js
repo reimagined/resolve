@@ -1,5 +1,4 @@
 import debugLevels from 'resolve-debug-levels'
-import { XaTransactionNotFoundError } from 'resolve-readmodel-base'
 
 const log = debugLevels(
   'resolve:resolve-readmodel-postgresql-serverless:commit-xa-transaction'
@@ -71,6 +70,8 @@ const commitXATransaction = async (
     })
 
     log.verbose('Commit XA-transaction to postgresql database succeed')
+
+    return true
   } catch (error) {
     if (error != null && /Transaction .*? Is Not Found/i.test(error.message)) {
       try {
@@ -96,17 +97,16 @@ const commitXATransaction = async (
             )}
           `
         })
-        if (xaResult[0].ok !== 'ok') {
-          throw new Error('Re-throwing')
-        }
 
         log.verbose('Commit XA-transaction to postgresql database succeed')
+
+        return countEvents ? 0 : xaResult.length > 0 ? true : false
       } catch (err) {
         log.verbose(
           'Commit XA-transaction to postgresql database failed',
           error
         )
-        throw new XaTransactionNotFoundError(xaTransactionId)
+        throw error
       }
     }
 

@@ -37,6 +37,7 @@ const acknowledgeBatch = async (pool, payload) => {
       SELECT ${subscribersTableNameAsId}."subscriptionId" AS "subscriptionId",
       ${subscribersTableNameAsId}."eventSubscriber" AS "eventSubscriber",
       ${subscribersTableNameAsId}."deliveryStrategy" AS "deliveryStrategy",
+      ${subscribersTableNameAsId}."successEvent" AS "successEvent",
       ${subscribersTableNameAsId}."cursor" AS "cursor",
       ${notificationsTableNameAsId}."status" AS "runStatus",
       ${notificationsTableNameAsId}."xaTransactionId" AS "xaTransactionId",
@@ -133,24 +134,32 @@ const acknowledgeBatch = async (pool, payload) => {
             BEGIN IMMEDIATE;
           `)
         }
-        try {
-          await invokeConsumer(pool, ConsumerMethod.CommitXATransaction, {
+
+        const isXaCommitOk = await invokeConsumer(
+          pool,
+          ConsumerMethod.CommitXATransaction,
+          {
             eventSubscriber: subscriptionDescription.eventSubscriber,
             xaTransactionId: subscriptionDescription.xaTransactionId,
             batchId
-          })
-        } catch (commitError) {
-          if (
-            !(
-              commitError != null &&
-              /Transaction .*? Is Not Found/i.test(commitError.message)
-            ) ||
-            subscriptionDescription.runStatus ===
-              NotificationStatus.ACKNOWLEDGE_ENTERING
-          ) {
-            throw commitError
+          }
+        )
+
+        const input = {
+          type: PrivateOperationType.FINALIZE_BATCH,
+          payload: {
+            activeBatch,
+            result: {
+              cursor: nextCursor,
+              successEvent: isXaCommitOk
+                ? successEvent
+                : subscriptionDescription.successEvent,
+              failedEvent,
+              error: serializeError(error)
+            }
           }
         }
+        await invokeOperation(pool, LazinessStrategy.EAGER, input)
       } else if (
         subscriptionDescription.runStatus ===
         NotificationStatus.ACKNOWLEDGE_XA_ROLLBACKING
@@ -162,19 +171,6 @@ const acknowledgeBatch = async (pool, payload) => {
         )
       }
     }
-    const input = {
-      type: PrivateOperationType.FINALIZE_BATCH,
-      payload: {
-        activeBatch,
-        result: {
-          cursor: nextCursor,
-          successEvent,
-          failedEvent,
-          error: serializeError(error)
-        }
-      }
-    }
-    await invokeOperation(pool, LazinessStrategy.EAGER, input)
   } catch (error) {
     let compositeError = error
     if (
@@ -198,28 +194,29 @@ const acknowledgeBatch = async (pool, payload) => {
           BEGIN IMMEDIATE;
         `)
       }
+
       try {
-        await invokeConsumer(pool, ConsumerMethod.RollbackXATransaction, {
-          eventSubscriber: subscriptionDescription.eventSubscriber,
-          xaTransactionId: subscriptionDescription.xaTransactionId,
-          batchId
-        })
-      } catch (rollbackError) {
-        if (
-          !(
-            rollbackError != null &&
-            /Transaction .*? Is Not Found/i.test(rollbackError.message)
-          ) ||
-          subscriptionDescription.runStatus ===
-            NotificationStatus.ACKNOWLEDGE_ENTERING
-        ) {
-          compositeError.message = `${compositeError.message}\n${rollbackError.message}`
-          compositeError.stack = `${compositeError.stack}\n${rollbackError.stack}`
-        } else if (error === retryRollback) {
-          compositeError = null
+        const isXaRollbackOk = await invokeConsumer(
+          pool,
+          ConsumerMethod.RollbackXATransaction,
+          {
+            eventSubscriber: subscriptionDescription.eventSubscriber,
+            xaTransactionId: subscriptionDescription.xaTransactionId,
+            batchId
+          }
+        )
+
+        if (!isXaRollbackOk) {
+          throw new Error(
+            `Xa-transaction ${subscriptionDescription.xaTransactionId} early marked to rollback, but was auto-committed`
+          )
         }
+      } catch (rollbackError) {
+        compositeError.message = `${compositeError.message}\n${rollbackError.message}`
+        compositeError.stack = `${compositeError.stack}\n${rollbackError.stack}`
       }
     }
+
     const input = {
       type: PrivateOperationType.FINALIZE_BATCH,
       payload: {
@@ -229,6 +226,7 @@ const acknowledgeBatch = async (pool, payload) => {
         }
       }
     }
+
     await invokeOperation(pool, LazinessStrategy.EAGER, input)
   }
 }
