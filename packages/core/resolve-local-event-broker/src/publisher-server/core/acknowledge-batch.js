@@ -98,6 +98,7 @@ const acknowledgeBatch = async (pool, payload) => {
     batchId
   }
   try {
+    let isXaCommitOk = true
     const { successEvent, failedEvent, error } = result
     const lastSuccessEventIdx =
       successEvent != null
@@ -135,7 +136,7 @@ const acknowledgeBatch = async (pool, payload) => {
           `)
         }
 
-        const isXaCommitOk = await invokeConsumer(
+        isXaCommitOk = await invokeConsumer(
           pool,
           ConsumerMethod.CommitXATransaction,
           {
@@ -144,22 +145,6 @@ const acknowledgeBatch = async (pool, payload) => {
             batchId
           }
         )
-
-        const input = {
-          type: PrivateOperationType.FINALIZE_BATCH,
-          payload: {
-            activeBatch,
-            result: {
-              cursor: nextCursor,
-              successEvent: isXaCommitOk
-                ? successEvent
-                : subscriptionDescription.successEvent,
-              failedEvent,
-              error: serializeError(error)
-            }
-          }
-        }
-        await invokeOperation(pool, LazinessStrategy.EAGER, input)
       } else if (
         subscriptionDescription.runStatus ===
         NotificationStatus.ACKNOWLEDGE_XA_ROLLBACKING
@@ -171,6 +156,23 @@ const acknowledgeBatch = async (pool, payload) => {
         )
       }
     }
+
+    const input = {
+      type: PrivateOperationType.FINALIZE_BATCH,
+      payload: {
+        activeBatch,
+        result: {
+          cursor: nextCursor,
+          successEvent: isXaCommitOk
+            ? successEvent
+            : subscriptionDescription.successEvent,
+          failedEvent,
+          error: serializeError(error)
+        }
+      }
+    }
+
+    await invokeOperation(pool, LazinessStrategy.EAGER, input)
   } catch (error) {
     let compositeError = error
     if (
