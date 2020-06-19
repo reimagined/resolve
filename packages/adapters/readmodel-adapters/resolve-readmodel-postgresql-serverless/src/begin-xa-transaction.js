@@ -7,13 +7,53 @@ const log = debugLevels(
 const beginXATransaction = async (pool, readModelName) => {
   try {
     log.verbose('Begin XA-transaction to postgresql database started')
-    const {
-      transactionId: xaTransactionId
-    } = await pool.rdsDataService.beginTransaction({
-      resourceArn: pool.dbClusterOrInstanceArn,
-      secretArn: pool.awsSecretStoreArn,
-      database: 'postgres'
-    })
+    let xaTransactionId = (
+      await pool.rdsDataService.beginTransaction({
+        resourceArn: pool.dbClusterOrInstanceArn,
+        secretArn: pool.awsSecretStoreArn,
+        database: 'postgres'
+      })
+    ).transactionId
+
+    try {
+      await pool.rdsDataService.executeStatement({
+        resourceArn: pool.dbClusterOrInstanceArn,
+        secretArn: pool.awsSecretStoreArn,
+        database: 'postgres',
+        transactionId: xaTransactionId,
+        continueAfterTimeout: false,
+        includeResultMetadata: false,
+        sql: `
+          WITH "cte" AS (
+            DELETE FROM ${pool.escapeId(pool.schemaName)}.${pool.escapeId(
+          `__${pool.schemaName}__XA__`
+        )}
+            WHERE "timestamp" < CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) - 86400000
+          ) INSERT INTO ${pool.escapeId(pool.schemaName)}.${pool.escapeId(
+          `__${pool.schemaName}__XA__`
+        )}(
+            "xa_key", "timestamp"
+          ) VALUES (
+            ${pool.escape(pool.hash512(`${xaTransactionId}${readModelName}`))},
+            CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT)
+          )
+        `
+      })
+    } catch (err) {
+      await pool.rdsDataService.rollbackTransaction({
+        resourceArn: pool.dbClusterOrInstanceArn,
+        secretArn: pool.awsSecretStoreArn,
+        transactionId: xaTransactionId
+      })
+
+      xaTransactionId = (
+        await pool.rdsDataService.beginTransaction({
+          resourceArn: pool.dbClusterOrInstanceArn,
+          secretArn: pool.awsSecretStoreArn,
+          database: 'postgres'
+        })
+      ).transactionId
+    }
 
     const savepointId = pool.generateGuid(readModelName, xaTransactionId)
     const eventCountId = `resolve.${pool.generateGuid(

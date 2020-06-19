@@ -1,5 +1,5 @@
 import debugLevels from 'resolve-debug-levels'
-import { XaTransactionNotFoundError } from 'resolve-readmodel-base'
+import { OMIT_BATCH } from 'resolve-readmodel-base'
 
 const log = debugLevels(
   'resolve:resolve-readmodel-postgresql-serverless:begin-event'
@@ -39,7 +39,7 @@ const beginEvent = async (pool, readModelName, xaTransactionId) => {
     log.verbose('Begin event to postgresql database failed', error)
 
     if (error != null && /Transaction .*? Is Not Found/i.test(error.message)) {
-      throw new XaTransactionNotFoundError(xaTransactionId)
+      throw OMIT_BATCH
     }
 
     throw error

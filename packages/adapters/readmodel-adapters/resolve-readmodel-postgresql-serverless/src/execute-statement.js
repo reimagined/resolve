@@ -1,4 +1,4 @@
-import { XaTransactionNotFoundError } from 'resolve-readmodel-base'
+import { OMIT_BATCH } from 'resolve-readmodel-base'
 
 const executeStatement = async (pool, sql) => {
   try {
@@ -44,7 +44,7 @@ const executeStatement = async (pool, sql) => {
       pool.xaTransactionId != null &&
       /Transaction .*? Is Not Found/i.test(error.message)
     ) {
-      throw new XaTransactionNotFoundError(pool.xaTransactionId)
+      throw OMIT_BATCH
     }
     throw error
   }

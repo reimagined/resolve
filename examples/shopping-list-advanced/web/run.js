@@ -203,10 +203,12 @@ void (async () => {
       }
 
       case 'test:functional': {
+        const moduleAdmin = resolveModuleAdmin()
         const resolveConfig = merge(
           defaultResolveConfig,
           appConfig,
           testFunctionalConfig,
+          moduleAdmin,
           authModule
         )
 
@@ -225,7 +227,8 @@ void (async () => {
           resolveConfig,
           adjustWebpackConfigs,
           functionalTestsDir: './test/functional',
-          browser: process.argv[3]
+          browser: process.argv[3],
+          customArgs: ['--stop-on-first-fail']
           // customArgs: ['-r', 'json:report.json']
         })
         break

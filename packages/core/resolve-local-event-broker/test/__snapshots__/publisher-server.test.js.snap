@@ -381,6 +381,7 @@ exports[`Core operation acknowledge batch 1`] = `
       SELECT \\"subscribers\\".\\"subscriptionId\\" AS \\"subscriptionId\\",
       \\"subscribers\\".\\"eventSubscriber\\" AS \\"eventSubscriber\\",
       \\"subscribers\\".\\"deliveryStrategy\\" AS \\"deliveryStrategy\\",
+      \\"subscribers\\".\\"successEvent\\" AS \\"successEvent\\",
       \\"subscribers\\".\\"cursor\\" AS \\"cursor\\",
       \\"notifications\\".\\"status\\" AS \\"runStatus\\",
       \\"notifications\\".\\"xaTransactionId\\" AS \\"xaTransactionId\\",

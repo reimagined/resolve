@@ -93,6 +93,7 @@ For an example on how to use modules, see the [Hacker News](https://github.com/r
 The **resolve-module-upload** module implements the file upload functionality. You can enable this module as shown below:
 
 ##### run.js:
+
 ```js
 const moduleUploader = resolveModuleUploader({ jwtSecret })
 ...

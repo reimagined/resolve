@@ -2717,6 +2717,11 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
+"@yarnpkg/lockfile@^1.1.0":
+  version "1.1.0"
+  resolved "http://registry.yarnpkg.com/@yarnpkg%2flockfile/-/lockfile-1.1.0.tgz#e77a97fbd345b76d83245edcd17d393b1b41fb31"
+  integrity sha512-GpSwvyXOcOOlV70vbnzjj4fW5xW/FdUF6nQEt1ENy7m4ZCczi1+/buVUPAqmGfqznsORNFzUMjctTIp8a9tuCQ==
+
 abab@^2.0.0, abab@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.3.tgz#623e2075e02eb2d3f2475e49f99c91846467907a"
@@ -5924,6 +5929,11 @@ crypto-js@^3.1.9-1:
   resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-3.3.0.tgz#846dd1cce2f68aacfa156c8578f926a609b7976b"
   integrity sha512-DIT51nX0dCfKltpRiXV+/TVZq+Qq2NgF4644+K7Ttnla7zEzqc+kjJyiB96BHNyUTBxyjzRcZYpUdZa+QAqi6Q==
 
+crypto-js@^4.0.0:
+  version "4.0.0"
+  resolved "http://registry.yarnpkg.com/crypto-js/-/crypto-js-4.0.0.tgz#2904ab2677a9d042856a2ea2ef80de92e4a36dcc"
+  integrity sha512-bzHZN8Pn+gS7DQA6n+iUmBfl0hO5DJq++QP3U6uTucDtk/0iGpXd/Gg7CGR0p8tJhofJyaKoWBuJI4eAO00BBg==
+
 crypto-md5@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/crypto-md5/-/crypto-md5-1.0.0.tgz#ccc8da750c753c7edcbabc542967472a384e86bb"
@@ -5933,11 +5943,6 @@ crypto@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
   integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
-
-cryptr@^6.0.2:
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/cryptr/-/cryptr-6.0.2.tgz#3f9e97f825ffb93f425eb24068efbb6a652bf947"
-  integrity sha512-1TRHI4bmuLIB8WgkH9eeYXzhEg1T4tonO4vVaMBKKde8Dre51J68nAgTVXTwMYXAf7+mV2gBCkm/9wksjSb2sA==
 
 css-color-keywords@^1.0.0:
   version "1.0.0"

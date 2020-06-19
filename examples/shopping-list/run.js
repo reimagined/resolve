@@ -78,10 +78,12 @@ void (async () => {
       }
 
       case 'test:functional': {
+        const moduleAdmin = resolveModuleAdmin()
         const resolveConfig = merge(
           defaultResolveConfig,
           appConfig,
-          testFunctionalConfig
+          testFunctionalConfig,
+          moduleAdmin
         )
 
         await reset(resolveConfig, {
@@ -94,7 +96,8 @@ void (async () => {
         await runTestcafe({
           resolveConfig,
           functionalTestsDir: 'test/functional',
-          browser: process.argv[3]
+          browser: process.argv[3],
+          customArgs: ['--stop-on-first-fail']
         })
         break
       }
