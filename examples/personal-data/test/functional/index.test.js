@@ -134,7 +134,7 @@ test('registered user, gather personal data', async t => {
   await t.expect(downloadItem.exists).ok()
 })
 
-test.skip('registered user, profile removal', async t => {
+test('registered user, profile removal', async t => {
   await userRegistration(t, generateUser(5))
 
   const nicknameItem = ReactSelector('a').withText('user-nickname-5')

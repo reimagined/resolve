@@ -1,6 +1,6 @@
 {
   "name": "resolve-upload-cloud",
-  "version": "0.24.2",
+  "version": "0.24.3",
   "description": "",
   "engines": {
     "node": ">=10.9"

@@ -3,22 +3,20 @@ import fetch from 'isomorphic-fetch'
 
 import { ROOT_URL, login } from './utils'
 
-const waitSelector = async (eventSubscriber, selector) => {
+const waitSelector = async (t, eventSubscriber, selector) => {
   while (true) {
-    const res = await fetch(
-      'http://localhost:3000/api/event-broker/read-models-list'
-    )
+    const res = await fetch(`${ROOT_URL}/api/event-broker/read-models-list`)
 
-    const comments = (await res.json()).find(
+    const readModel = (await res.json()).find(
       readModel => readModel.eventSubscriber === eventSubscriber
     )
 
-    if (comments.status !== 'deliver') {
-      throw new Error(`Read-model status ${comments.status}`)
+    if (readModel.status !== 'deliver') {
+      throw new Error(`Test failed. Read-model status "${readModel.status}"`)
     }
 
     try {
-      await selector
+      await t.expect((await selector).exists).eql(true)
       break
     } catch (e) {}
   }
@@ -38,11 +36,15 @@ test('create', async (t /*: TestController */) => {
   await t.typeText('textarea', 'my text')
   await t.click('button')
 
+  await waitSelector(t, 'HackerNews', Selector('a').withText('Ask HN: my ask'))
+
   await t.expect('ok').ok('this assertion will pass')
 })
 
 test('add comment', async (t /*: TestController */) => {
   await t.navigateTo(`${ROOT_URL}/newest`)
+
+  await waitSelector(t, 'HackerNews', Selector('a').withText('Ask HN: my ask'))
 
   const titleLink = await Selector('a').withText('Ask HN: my ask')
 
@@ -50,7 +52,7 @@ test('add comment', async (t /*: TestController */) => {
 
   await t.click(titleLink)
 
-  await waitSelector('Comments', Selector('textarea').nth(-1))
+  await waitSelector(t, 'Comments', Selector('textarea').nth(-1))
 
   const textarea = await Selector('textarea').nth(-1)
   await t.typeText(textarea, 'first comment')
@@ -74,6 +76,7 @@ test('add reply', async (t /*: TestController */) => {
   )
 
   await waitSelector(
+    t,
     'Comments',
     Selector('a')
       .withText('reply')
@@ -86,7 +89,7 @@ test('add reply', async (t /*: TestController */) => {
       .nth(-1)
   )
 
-  await waitSelector('Comments', Selector('textarea').nth(-1))
+  await waitSelector(t, 'Comments', Selector('textarea').nth(-1))
 
   await t.expect(await Selector('div').withText('my text').exists).eql(false)
 
@@ -100,7 +103,7 @@ test('add reply', async (t /*: TestController */) => {
   const button = await Selector('button').nth(-1)
   await t.click(button)
 
-  await waitSelector('Comments', Selector('div').withText('first reply'))
+  await waitSelector(t, 'Comments', Selector('div').withText('first reply'))
 
   await t.expect(await Selector('div').withText('first reply').exists).eql(true)
 

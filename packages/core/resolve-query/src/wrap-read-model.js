@@ -1,6 +1,6 @@
 import { EOL } from 'os'
 import getLog from './get-log'
-import { XaTransactionNotFoundError } from 'resolve-readmodel-base'
+import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
 
 const RESERVED_TIME = 30 * 1000
 
@@ -338,7 +338,10 @@ const updateByEvents = async (
               `applying "${event.type}" event to read-model "${readModelName}" succeed`
             )
           } catch (readModelError) {
-            if (readModelError instanceof XaTransactionNotFoundError) {
+            if (
+              readModelError === OMIT_BATCH ||
+              readModelError === STOP_BATCH
+            ) {
               throw readModelError
             }
             log.error(
@@ -374,8 +377,10 @@ const updateByEvents = async (
           }
         }
       } catch (error) {
-        if (error instanceof XaTransactionNotFoundError) {
+        if (error === OMIT_BATCH) {
           lastError = error
+        } else if (lastError == null && error === STOP_BATCH) {
+          lastError = null
         } else {
           lastError = Object.create(Error.prototype, {
             message: { value: error.message, enumerable: true },
