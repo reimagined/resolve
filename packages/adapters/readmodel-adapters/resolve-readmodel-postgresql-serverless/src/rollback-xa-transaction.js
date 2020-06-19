@@ -1,5 +1,4 @@
 import debugLevels from 'resolve-debug-levels'
-import { XaTransactionNotFoundError } from 'resolve-readmodel-base'
 
 const log = debugLevels(
   'resolve:resolve-readmodel-postgresql-serverless:rollback-xa-transaction'
@@ -19,6 +18,8 @@ const rollbackXATransaction = async (
     })
 
     log.verbose('Rollback XA-transaction to postgresql database succeed')
+
+    return true
   } catch (error) {
     if (error != null && /Transaction .*? Is Not Found/i.test(error.message)) {
       try {
@@ -44,17 +45,16 @@ const rollbackXATransaction = async (
             )}
           `
         })
-        if (xaResult.length > 0) {
-          throw new Error('Re-throwing')
-        }
 
         log.verbose('Rollback XA-transaction to postgresql database succeed')
+
+        return xaResult.length === 0 ? true : false
       } catch (err) {
         log.verbose(
           'Rollback XA-transaction to postgresql database failed',
           error
         )
-        throw new XaTransactionNotFoundError(xaTransactionId)
+        throw error
       }
     }
 

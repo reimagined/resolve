@@ -178,22 +178,19 @@ async function requestTimeout(pool, payload) {
           applyingEvents.slice(0, lastSuccessEventIdx)
         )
       }
-      try {
-        await invokeConsumer(pool, ConsumerMethod.CommitXATransaction, {
+
+      const isXaCommitOk = await invokeConsumer(
+        pool,
+        ConsumerMethod.CommitXATransaction,
+        {
           eventSubscriber,
           xaTransactionId,
           batchId
-        })
-      } catch (commitError) {
-        if (
-          !(
-            commitError != null &&
-            /Transaction .*? Is Not Found/i.test(commitError.message)
-          ) ||
-          runStatus === NotificationStatus.TIMEOUT_ENTERING
-        ) {
-          throw commitError
         }
+      )
+
+      if (!isXaCommitOk) {
+        result.successEvent = prevSuccessEvent
       }
     } else if (runStatus === NotificationStatus.TIMEOUT_XA_ROLLBACKING) {
       throw retryRollback
@@ -203,50 +200,45 @@ async function requestTimeout(pool, payload) {
       )
     }
   } catch (error) {
-    if (error != null && /Transaction .*? Is Not Found/i.test(error.message)) {
-      result.successEvent = prevSuccessEvent
-      result.failedEvent = null
-      result.error = null
-    } else {
-      let compositeError = new Error(error.message)
-      compositeError.stack = error.stack
-      if (
-        runStatus === NotificationStatus.TIMEOUT_ENTERING ||
-        runStatus.startsWith(NotificationStatus.TIMEOUT_XA_COMMITING)
-      ) {
-        await runRawQuery(`
-        UPDATE ${notificationsTableNameAsId} SET
-        "status" = ${escapeStr(NotificationStatus.TIMEOUT_XA_ROLLBACKING)}
-        WHERE "batchId" = ${escapeStr(batchId)};
+    let compositeError = new Error(error.message)
+    compositeError.stack = error.stack
+    if (
+      runStatus === NotificationStatus.TIMEOUT_ENTERING ||
+      runStatus.startsWith(NotificationStatus.TIMEOUT_XA_COMMITING)
+    ) {
+      await runRawQuery(`
+      UPDATE ${notificationsTableNameAsId} SET
+      "status" = ${escapeStr(NotificationStatus.TIMEOUT_XA_ROLLBACKING)}
+      WHERE "batchId" = ${escapeStr(batchId)};
 
-        COMMIT;
-        BEGIN IMMEDIATE;
-      `)
-      }
-      try {
-        await invokeConsumer(pool, ConsumerMethod.RollbackXATransaction, {
+      COMMIT;
+      BEGIN IMMEDIATE;
+    `)
+    }
+    try {
+      const isXaRollbackOk = await invokeConsumer(
+        pool,
+        ConsumerMethod.RollbackXATransaction,
+        {
           eventSubscriber,
           xaTransactionId,
           batchId
-        })
-      } catch (rollbackError) {
-        if (
-          !(
-            rollbackError != null &&
-            /Transaction .*? Is Not Found/i.test(rollbackError.message)
-          ) ||
-          subscriptionDescription.runStatus ===
-            NotificationStatus.TIMEOUT_ENTERING
-        ) {
-          compositeError.message = `${compositeError.message}\n${rollbackError.message}`
-          compositeError.stack = `${compositeError.stack}\n${rollbackError.stack}`
-        } else if (error === retryRollback) {
-          compositeError = null
         }
+      )
+
+      if (!isXaRollbackOk) {
+        throw new Error(
+          `Xa-transaction ${xaTransactionId} early marked to rollback, but was auto-committed`
+        )
       }
-      result.error = serializeError(compositeError)
+    } catch (rollbackError) {
+      compositeError.message = `${compositeError.message}\n${rollbackError.message}`
+      compositeError.stack = `${compositeError.stack}\n${rollbackError.stack}`
     }
+
+    result.error = serializeError(compositeError)
   }
+
   const input = {
     type: PrivateOperationType.FINALIZE_BATCH,
     payload: {
@@ -254,6 +246,7 @@ async function requestTimeout(pool, payload) {
       result
     }
   }
+
   await invokeOperation(pool, LazinessStrategy.EAGER, input)
 }
 

@@ -1,5 +1,5 @@
 import { createServer } from 'resolve-local-rpc'
-import { XaTransactionNotFoundError } from 'resolve-readmodel-base'
+import { OMIT_BATCH } from 'resolve-readmodel-base'
 
 const createAndInitConsumer = async config => {
   const {
@@ -156,10 +156,7 @@ const createAndInitConsumer = async config => {
         result = error
       }
 
-      if (
-        result != null &&
-        result.error instanceof XaTransactionNotFoundError
-      ) {
+      if (result != null && result.error === OMIT_BATCH) {
         return
       }
 
