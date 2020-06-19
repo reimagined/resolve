@@ -1,6 +1,6 @@
 {
   "name": "resolve-module-auth",
-  "version": "0.24.2",
+  "version": "0.24.3",
   "description": "A reSolve module that adds authentication to an application.",
   "engines": {
     "node": ">=10.9"
