@@ -8,7 +8,8 @@ const prodConfig = {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'data/read-model-default.db'
+        databaseFile: 'data/read-model-default.db',
+        secretsFile: 'data/secrets.db'
       }
     },
     hackerNews: {

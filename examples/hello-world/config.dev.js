@@ -31,7 +31,8 @@ const devConfig = {
   eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
     options: {
-      databaseFile: 'data/event-store.db'
+      databaseFile: 'data/event-store.db',
+      secretsFile: 'data/secrets.db'
     }
   },
   /*
@@ -43,7 +44,9 @@ const devConfig = {
         user: 'customUser',
         password: 'customPassword',
         database: 'customDatabaseName',
-        eventsTableName: 'customTableName'
+        eventsTableName: 'customTableName',
+        secretsDatabase: 'customSecretsDatabaseName',
+        secretsTableName: 'customSecretsTableName'
       }
     }
   */ subscribeAdapter: {
