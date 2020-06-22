@@ -70,7 +70,7 @@ windows (prepare environment):
   cache:
     policy: pull-push
   script:
-    - rd /S /Q ci-cd || echo ok
+    - rd /S /Q ci-cd || cd .
     - git clone https://github.com/reimagined/resolve.git ci-cd
     - cd ci-cd
     - git fetch origin ci/cd:ci/cd
@@ -141,7 +141,7 @@ install (Windows):
   before_script:
     - node ci-cd\create-github-status\index.js --state pending --context "1. Pipeline" --description "Waiting ♯%CI_PIPELINE_IID% for status to be reported" --targetUrl %CI_PIPELINE_URL%
   script:
-    - rd /S /Q resolve-%CI_PIPELINE_ID% || echo ok
+    - rd /S /Q resolve-%CI_PIPELINE_ID% || cd .
     - git clone https://github.com/reimagined/resolve.git resolve-%CI_PIPELINE_ID%
     - cd resolve-%CI_PIPELINE_ID%
     - git fetch origin %MERGE_COMMIT_SHA%:merge-commit
@@ -340,7 +340,7 @@ windows (install):
   before_script:
     - node ci-cd\create-github-status\index.js --state pending --context "1. Pipeline" --description "Waiting ♯%CI_PIPELINE_IID% for status to be reported" --targetUrl %CI_PIPELINE_URL%
   script:
-    - rd /S /Q resolve-%CI_PIPELINE_ID% || echo ok
+    - rd /S /Q resolve-%CI_PIPELINE_ID% || cd .
     - git clone https://github.com/reimagined/resolve.git resolve-%CI_PIPELINE_ID%
     - cd resolve-%CI_PIPELINE_ID%
     - git fetch origin %MERGE_COMMIT_SHA%:merge-commit
@@ -651,41 +651,41 @@ windows (create-resolve-app + functional-tests):
     - node ci-cd\create-github-status\index.js --state pending --context "10. Functional-tests (Windows)" --description "Waiting ♯%CI_PIPELINE_IID% for status to be reported" --targetUrl %CI_JOB_URL%
   script:
     - cd resolve-%CI_PIPELINE_ID%
-    - pm2 delete local-registry || echo ok
+    - pm2 delete local-registry || cd .
     - pm2 start packages\internal\local-registry\bin\index.js --name local-registry
     - cd ..
     - sleep 3
-    - rd /S /Q hacker-news || echo ok
+    - rd /S /Q hacker-news || cd .
     - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e hacker-news hacker-news
     - cd hacker-news
     - yarn test:functional edge
     - cd ..
     - rd /S /Q hacker-news
-    - rd /S /Q hello-world || echo ok
+    - rd /S /Q hello-world || cd .
     - node resolve-%CI_PIPELINE_ID$\packages\core\create-resolve-app\bin/index.js --local-registry -c %MERGE_COMMIT_SHA% -e hello-world hello-world
     - cd hello-world
     - yarn test:functional edge
     - cd ..
     - rd /S /Q hello-world
-    - rd /S /Q shopping-list-advanced || echo ok
+    - rd /S /Q shopping-list-advanced || cd .
     - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e shopping-list-advanced shopping-list-advanced
     - cd shopping-list-advanced
     - yarn test:functional edge
     - cd ..
     - rd /S /Q shopping-list-advanced
-    - rd /S /Q shopping-list || echo ok
+    - rd /S /Q shopping-list || cd .
     - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e shopping-list shopping-list
     - cd shopping-list
     - yarn test:functional edge
     - cd ..
     - rd /S /Q shopping-list
-    - rd /S /Q with-postcss || echo ok
+    - rd /S /Q with-postcss || cd .
     - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e with-postcss with-postcss
     - cd with-postcss
     - yarn test:functional edge
     - cd ..
     - rd /S /Q with-postcss
-    - rd /S /Q with-styled-components || echo ok
+    - rd /S /Q with-styled-components || cd .
     - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e with-styled-components with-styled-components
     - cd with-styled-components
     - yarn test:functional edge
