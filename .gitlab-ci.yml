@@ -59,6 +59,24 @@ macOS (prepare environment):
     - git checkout ci/cd
     - yarn install --frozen-lockfile --cache-folder ../.yarn-cache
 
+windows (prepare environment):
+  stage: prepare-environment
+  tags:
+    - windows
+  only:
+    - ci/cd
+  except:
+    - triggers
+  cache:
+    policy: pull-push
+  script:
+    - rd /S /Q ci-cd || echo ok
+    - git clone https://github.com/reimagined/resolve.git ci-cd
+    - cd ci-cd
+    - git fetch origin ci/cd:ci/cd
+    - git checkout ci/cd
+    - yarn install --frozen-lockfile --cache-folder ..\.yarn-cache
+
 ubuntu (start environment):
   stage: start-environment
   tags:
@@ -78,7 +96,7 @@ ubuntu (start environment):
 # pull request -> dev or release #
 ##################################
 
-install:
+install (macOS):
   stage: install
   tags:
     - macos
@@ -104,7 +122,33 @@ install:
     - git checkout merge-commit
     - yarn install --frozen-lockfile --cache-folder ../.yarn-cache
 
-checks:
+install (Windows):
+  stage: install
+  tags:
+    - windows
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME =~ /^release\/.+/
+  cache:
+    policy: pull-push
+  before_script:
+    - node ci-cd\create-github-status\index.js --state pending --context "1. Pipeline" --description "Waiting ♯%CI_PIPELINE_IID% for status to be reported" --targetUrl %CI_PIPELINE_URL%
+  script:
+    - rd /S /Q resolve-%CI_PIPELINE_ID% || echo ok
+    - git clone https://github.com/reimagined/resolve.git resolve-%CI_PIPELINE_ID%
+    - cd resolve-%CI_PIPELINE_ID%
+    - git fetch origin %MERGE_COMMIT_SHA%:merge-commit
+    - git checkout merge-commit
+    - yarn install --frozen-lockfile --cache-folder ..\.yarn-cache
+
+checks (macOS):
   stage: unit-tests
   tags:
     - macos
@@ -135,6 +179,37 @@ checks:
   after_script:
     - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "2. Unit tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "2. Unit tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
 
+checks-lightweight (Windows):
+  stage: unit-tests
+  tags:
+    - windows
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME =~ /^release\/.+/
+  cache:
+    policy: pull
+  before_script:
+    - node ci-cd\job-status\index.js --start
+    - node ci-cd\create-github-status\index.js --state pending --context "3. Unit tests" --description "Waiting ♯%CI_PIPELINE_IID% for status to be reported" --targetUrl %CI_JOB_URL%
+  script:
+    - cd resolve-%CI_PIPELINE_ID%
+    - yarn lint
+    - yarn test
+    - yarn test:integrational
+    - cd ..
+    - node ci-cd\job-status\index.js --end
+  after_script:
+    - for /f "tokens=*" %%i in ('node ci-cd\job-status\index.js --isSucceeded') do set CI_STATUS=%%i
+    - if "%CI_STATUS%"=="true" (node ci-cd\create-github-status\index.js --state success --context "3. Unit tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% succeeded" --targetUrl %CI_JOB_URL%) else (node ci-cd\create-github-status\index.js --state failure --context "3. Unit tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% failed" --targetUrl %CI_JOB_URL%)
+    - set CI_STATUS=
+
 functional-tests:
   stage: functional-tests
   tags:
@@ -153,14 +228,43 @@ functional-tests:
     policy: pull
   before_script:
     - node ci-cd/job-status/index.js --start
-    - node ci-cd/create-github-status/index.js --state pending --context "3. Functional tests" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
+    - node ci-cd/create-github-status/index.js --state pending --context "4. Functional tests" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - yarn test:functional safari
     - cd ..
     - node ci-cd/job-status/index.js --end
   after_script:
-    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "3. Functional tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "3. Functional tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
+    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "4. Functional tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "4. Functional tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
+    
+functional-tests (Windows):
+  stage: functional-tests
+  tags:
+    - Windows
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME =~ /^release\/.+/
+  cache:
+    policy: pull
+  before_script:
+    - node ci-cd\job-status\index.js --start
+    - node ci-cd\create-github-status\index.js --state pending --context "5. Functional tests (Windows)" --description "Waiting ♯%CI_PIPELINE_IID% for status to be reported" --targetUrl %CI_JOB_URL%
+  script:
+    - cd resolve-%CI_PIPELINE_ID%/
+    - yarn test:functional edge
+    - cd ..
+    - node ci-cd\job-status\index.js --end
+  after_script:
+    - for /f "tokens=*" %%i in ('node ci-cd\job-status\index.js --isSucceeded') do set CI_STATUS=%%i
+    - if %CI_STATUS%=="true" (node ci-cd\create-github-status\index.js --state success --context "5. Functional-tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% succeeded" --targetUrl %CI_JOB_URL%) else (node ci-cd\create-github-status\index.js --state failure --context "5. Functional-tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% failed" --targetUrl %CI_JOB_URL%)
+    - set CI_STATUS=
 
 #################
 # dev -> master #
@@ -217,6 +321,32 @@ ubuntu (install):
     - git checkout merge-commit
     - yarn install --frozen-lockfile --cache-folder ../.yarn-cache
     - yarn build-packages
+    
+windows (install):
+  stage: install
+  tags:
+    - windows
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME == 'dev'
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'master'
+  cache:
+    policy: pull-push
+  before_script:
+    - node ci-cd\create-github-status\index.js --state pending --context "1. Pipeline" --description "Waiting ♯%CI_PIPELINE_IID% for status to be reported" --targetUrl %CI_PIPELINE_URL%
+  script:
+    - rd /S /Q resolve-%CI_PIPELINE_ID% || echo ok
+    - git clone https://github.com/reimagined/resolve.git resolve-%CI_PIPELINE_ID%
+    - cd resolve-%CI_PIPELINE_ID%
+    - git fetch origin %MERGE_COMMIT_SHA%:merge-commit
+    - git checkout merge-commit
+    - yarn install --frozen-lockfile --cache-folder ..\.yarn-cache
+    - yarn build-packages
 
 eslint + prettier:
   stage: unit-tests
@@ -244,6 +374,36 @@ eslint + prettier:
   after_script:
     - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "2. ESLint + Prettier" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "2. ESLint + Prettier" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
 
+eslint + prettier (Windows):
+  stage: unit-tests
+  tags:
+    - windows
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME == 'dev'
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'master'
+  before_script:
+    - node ci-cd\job-status\index.js --start
+    - node ci-cd\create-github-status\index.js --state pending --context "3. ESLint + Prettier (Windows)" --description "Waiting ♯%CI_PIPELINE_IID% for status to be reported" --targetUrl %CI_JOB_URL%
+  script:
+    - cd resolve-%CI_PIPELINE_ID%/
+    - for /f "tokens=*" %%i in ('node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js"') do set PRETTIER_STATUS=%%i
+    - if "%PRETTIER_STATUS%" (exit 1)
+    - set PRETTIER_STATUS=
+    - yarn validate-lock-file
+    - yarn lint
+    - cd ..
+    - node ci-cd\job-status\index.js --end
+  after_script:
+    - for /f "tokens=*" %%i in ('node ci-cd\job-status\index.js --isSucceeded') do set CI_STATUS=%%i
+    - if %CI_STATUS%=="true" (node ci-cd\create-github-status\index.js --state success --context "3. ESLint + Prettier (Windows)" --description "Build ♯%CI_PIPELINE_IID% succeeded" --targetUrl %CI_JOB_URL%) else (node ci-cd\create-github-status\index.js --state failure --context "3. ESLint + Prettier (Windows)" --description "Build ♯%CI_PIPELINE_IID% failed" --targetUrl %CI_JOB_URL%)
+    - set CI_STATUS=
+    
 unit-tests:
   stage: unit-tests
   tags:
@@ -259,7 +419,7 @@ unit-tests:
       - $TARGET_BRANCH_NAME == 'master'
   before_script:
     - node ci-cd/job-status/index.js --start
-    - node ci-cd/create-github-status/index.js --state pending --context "3. Unit-tests" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
+    - node ci-cd/create-github-status/index.js --state pending --context "4. Unit-tests" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - yarn test
@@ -267,7 +427,34 @@ unit-tests:
     - cd ..
     - node ci-cd/job-status/index.js --end
   after_script:
-    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "3. Unit-tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "3. Unit-tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
+    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "4. Unit-tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "4. Unit-tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
+    
+unit-tests (Windows):
+  stage: unit-tests
+  tags:
+    - windows
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME == 'dev'
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'master'
+  before_script:
+    - node ci-cd\job-status\index.js --start
+    - node ci-cd\create-github-status\index.js --state pending --context "5. Unit-tests (Windows)" --description "Waiting ♯%CI_PIPELINE_IID% for status to be reported" --targetUrl %CI_JOB_URL%
+  script:
+    - cd resolve-%CI_PIPELINE_ID%/
+    - yarn test
+    - set GITLAB_CI=
+    - cd ..
+    - node ci-cd\job-status\index.js --end
+  after_script:
+    - for /f "tokens=*" %%i in ('node ci-cd\job-status\index.js --isSucceeded') do set CI_STATUS=%%i
+    - if %CI_STATUS%=="true" (node ci-cd\create-github-status\index.js --state success --context "5. Unit-tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% succeeded" --targetUrl %CI_JOB_URL%) else (node ci-cd\create-github-status\index.js --state failure --context "5. Unit-tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% failed" --targetUrl %CI_JOB_URL%)
+    - set CI_STATUS=
 
 integrational-tests:
   stage: integrational-tests
@@ -286,14 +473,14 @@ integrational-tests:
     policy: pull
   before_script:
     - node ci-cd/job-status/index.js --start
-    - node ci-cd/create-github-status/index.js --state pending --context "4. Integrational tests" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
+    - node ci-cd/create-github-status/index.js --state pending --context "6. Integrational tests" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - yarn test:integrational
     - cd ..
     - node ci-cd/job-status/index.js --end
   after_script:
-    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "4. Integrational tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "4. Integrational tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
+    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "6. Integrational tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "6. Integrational tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
 
 tutorial-tests:
   stage: tutorial-tests
@@ -312,14 +499,14 @@ tutorial-tests:
     policy: pull
   before_script:
     - node ci-cd/job-status/index.js --start
-    - node ci-cd/create-github-status/index.js --state pending --context "5. Tutorial. Functional tests" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
+    - node ci-cd/create-github-status/index.js --state pending --context "7. Tutorial. Functional tests" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - yarn tutorial-test:functional safari
     - cd ..
     - node ci-cd/job-status/index.js --end
   after_script:
-    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "5. Tutorial. Functional tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "5. Tutorial. Functional tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
+    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "7. Tutorial. Functional tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "7. Tutorial. Functional tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
 
 macOS (create-resolve-app + functional-tests):
   stage: functional-tests
@@ -336,7 +523,7 @@ macOS (create-resolve-app + functional-tests):
       - $TARGET_BRANCH_NAME == 'master'
   before_script:
     - node ci-cd/job-status/index.js --start
-    - node ci-cd/create-github-status/index.js --state pending --context "6. Functional-tests (macOS)" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
+    - node ci-cd/create-github-status/index.js --state pending --context "8. Functional-tests (macOS)" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID
     - pm2 delete local-registry || true
@@ -381,7 +568,7 @@ macOS (create-resolve-app + functional-tests):
     - rm -rf with-styled-components
     - node ci-cd/job-status/index.js --end
   after_script:
-    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "6. Functional-tests (macOS)" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "6. Functional-tests (macOS)" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
+    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "8. Functional-tests (macOS)" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "8. Functional-tests (macOS)" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
     
 ubuntu (create-resolve-app + functional-tests):
   stage: functional-tests
@@ -398,7 +585,7 @@ ubuntu (create-resolve-app + functional-tests):
       - $TARGET_BRANCH_NAME == 'master'
   before_script:
     - node ci-cd/job-status/index.js --start
-    - node ci-cd/create-github-status/index.js --state pending --context "7. Functional-tests (Ubuntu)" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
+    - node ci-cd/create-github-status/index.js --state pending --context "9. Functional-tests (Ubuntu)" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID
     - pm2 delete local-registry || true
@@ -444,7 +631,71 @@ ubuntu (create-resolve-app + functional-tests):
     - rm -rf with-styled-components
     - node ci-cd/job-status/index.js --end
   after_script:
-    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "7. Functional-tests (Ubuntu)" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "7. Functional-tests (Ubuntu)" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
+    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "9. Functional-tests (Ubuntu)" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "9. Functional-tests (Ubuntu)" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
+    
+windows (create-resolve-app + functional-tests):
+  stage: functional-tests
+  tags:
+    - windows
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME == 'dev'
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'master'
+  before_script:
+    - node ci-cd\job-status\index.js --start
+    - node ci-cd\create-github-status\index.js --state pending --context "10. Functional-tests (Windows)" --description "Waiting ♯%CI_PIPELINE_IID% for status to be reported" --targetUrl %CI_JOB_URL%
+  script:
+    - cd resolve-%CI_PIPELINE_ID%
+    - pm2 delete local-registry || echo ok
+    - pm2 start packages\internal\local-registry\bin\index.js --name local-registry
+    - cd ..
+    - sleep 3
+    - rd /S /Q hacker-news || echo ok
+    - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e hacker-news hacker-news
+    - cd hacker-news
+    - yarn test:functional edge
+    - cd ..
+    - rd /S /Q hacker-news
+    - rd /S /Q hello-world || echo ok
+    - node resolve-%CI_PIPELINE_ID$\packages\core\create-resolve-app\bin/index.js --local-registry -c %MERGE_COMMIT_SHA% -e hello-world hello-world
+    - cd hello-world
+    - yarn test:functional edge
+    - cd ..
+    - rd /S /Q hello-world
+    - rd /S /Q shopping-list-advanced || echo ok
+    - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e shopping-list-advanced shopping-list-advanced
+    - cd shopping-list-advanced
+    - yarn test:functional edge
+    - cd ..
+    - rd /S /Q shopping-list-advanced
+    - rd /S /Q shopping-list || echo ok
+    - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e shopping-list shopping-list
+    - cd shopping-list
+    - yarn test:functional edge
+    - cd ..
+    - rd /S /Q shopping-list
+    - rd /S /Q with-postcss || echo ok
+    - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e with-postcss with-postcss
+    - cd with-postcss
+    - yarn test:functional edge
+    - cd ..
+    - rd /S /Q with-postcss
+    - rd /S /Q with-styled-components || echo ok
+    - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e with-styled-components with-styled-components
+    - cd with-styled-components
+    - yarn test:functional edge
+    - cd ..
+    - rd /S /Q with-styled-components
+    - node ci-cd/job-status/index.js --end
+  after_script:
+    - for /f "tokens=*" %%i in ('node ci-cd\job-status\index.js --isSucceeded') do set CI_STATUS=%%i
+    - if %CI_STATUS%=="true" (node ci-cd\create-github-status\index.js --state success --context "10. Functional-tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% succeeded" --targetUrl %CI_JOB_URL%) else (node ci-cd\create-github-status\index.js --state failure --context "10. Functional-tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% failed" --targetUrl %CI_JOB_URL%)
+    - set CI_STATUS=
 
 ##########
 # finish #
@@ -463,6 +714,19 @@ success:
   script:
     - rm -rf resolve-$CI_PIPELINE_ID
     - node ci-cd/create-github-status/index.js --state success --context "1. Pipeline" --description "Build ♯$CI_PIPELINE_IID succeeded" --targetUrl $CI_PIPELINE_URL
+    
+success (Windows):
+  stage: finish
+  when: on_success
+  tags:
+    - windows
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  cache:
+    policy: pull
+  script:
+    - rd /S /Q resolve-%CI_PIPELINE_ID%
 
 failure:
   stage: finish
@@ -476,4 +740,3 @@ failure:
     policy: pull
   script:
     - node ci-cd/create-github-status/index.js --state failure --context "1. Pipeline" --description "Build ♯$CI_PIPELINE_IID failed" --targetUrl $CI_PIPELINE_URL
-
