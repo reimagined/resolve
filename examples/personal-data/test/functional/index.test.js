@@ -48,13 +48,13 @@ fixture`PersonalData`.beforeEach(async t => {
 
 test('new user, first load', async t => {
   const registrationForm = ReactSelector('RegistrationForm')
-  await t.expect(registrationForm.exists).ok()
+  await t.expect(registrationForm.exists).ok({ timeout: 15000 })
 })
 
 test('new user, registration', async t => {
   await userRegistration(t, generateUser(1))
   const nicknameItem = ReactSelector('a').withText('user-nickname-1')
-  await t.expect(nicknameItem.exists).ok()
+  await t.expect(nicknameItem.exists).ok({ timeout: 15000 })
 })
 
 test('registered user, posts creation', async t => {
@@ -110,7 +110,7 @@ test('registered user, profile update', async t => {
     `user-name-3-updated user-lastName-3-updated`
   )
 
-  await t.expect(fullName.exists).ok()
+  await t.expect(fullName.exists).ok({ timeout: 15000 })
 })
 
 test('registered user, gather personal data', async t => {
@@ -123,7 +123,7 @@ test('registered user, gather personal data', async t => {
   await t.click(gatherItem)
 
   const progressItem = ReactSelector('button').withText('Being gathered now...')
-  await t.expect(progressItem.exists).ok()
+  await t.expect(progressItem.exists).ok({ timeout: 15000 })
 
   await t.wait(5000).navigateTo(MAIN_PAGE)
 
@@ -131,7 +131,7 @@ test('registered user, gather personal data', async t => {
   await t.click(nicknameItem)
 
   const downloadItem = ReactSelector('a').withText('Download')
-  await t.expect(downloadItem.exists).ok()
+  await t.expect(downloadItem.exists).ok({ timeout: 15000 })
 })
 
 test('registered user, profile removal', async t => {
