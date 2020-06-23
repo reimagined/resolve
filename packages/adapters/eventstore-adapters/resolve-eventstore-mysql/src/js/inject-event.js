@@ -1,4 +1,4 @@
-const saveEventOnly = async function(
+const injectEvent = async function(
   { events: { eventsTableName, connection }, escapeId, escape },
   event
 ) {
@@ -9,11 +9,28 @@ const saveEventOnly = async function(
       ? escape(JSON.stringify(event.payload))
       : escape('null')
 
+  const missingFields = []
+  if (event.threadId == null) {
+    missingFields.push(`"threadId"`)
+  }
+  if (event.threadCounter == null) {
+    missingFields.push(`"threadCounter"`)
+  }
+  if (event.timestamp == null) {
+    missingFields.push(`"timestamp"`)
+  }
+  if (missingFields.length > 0) {
+    throw new Error(
+      `The field ${missingFields.join(', ')} is required in ${JSON.stringify(
+        event
+      )}`
+    )
+  }
+
   try {
     // prettier-ignore
     await connection.query(
       `START TRANSACTION;
-      SET @selectedThreadId = FLOOR(RAND() * 256);
       
       INSERT INTO ${eventsTableNameAsId}(
         \`threadId\`,
@@ -24,14 +41,8 @@ const saveEventOnly = async function(
         \`type\`,
         \`payload\`
       ) VALUES(
-        @selectedThreadId,
-        COALESCE(
-          (
-            SELECT \`threadCounter\` FROM ${threadsTableNameAsId}
-            WHERE \`threadId\` = @selectedThreadId
-          ),
-          0
-        ),
+        ${+event.threadId},
+        ${+event.threadCounter},
         ${+event.timestamp},
         ${escape(event.aggregateId)},
         ${+event.aggregateVersion},
@@ -40,8 +51,8 @@ const saveEventOnly = async function(
       );
       
       UPDATE ${threadsTableNameAsId}
-      SET \`threadCounter\` = \`threadCounter\` + 1
-      WHERE \`threadId\` = @selectedThreadId;
+      SET \`threadCounter\` = GREATEST(\`threadCounter\`, ${+event.threadCounter} + 1)
+      WHERE \`threadId\` = ${+event.threadId};
       
       COMMIT;`
     )
@@ -54,4 +65,4 @@ const saveEventOnly = async function(
   }
 }
 
-export default saveEventOnly
+export default injectEvent

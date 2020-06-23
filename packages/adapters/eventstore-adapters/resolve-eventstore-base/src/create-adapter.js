@@ -21,7 +21,7 @@ const createAdapter = (
     init,
     drop,
     dispose,
-    saveEventOnly,
+    injectEvent,
     isFrozen,
     freeze,
     unfreeze,
@@ -43,7 +43,7 @@ const createAdapter = (
   }).then(connect.bind(null, pool, adapterSpecificArguments))
 
   Object.assign(pool, {
-    saveEventOnly: wrapMethod(pool, saveEventOnly),
+    injectEvent: wrapMethod(pool, injectEvent),
     loadEventsByCursor: wrapMethod(pool, loadEventsByCursor),
     loadEventsByTimestamp: wrapMethod(pool, loadEventsByTimestamp),
     // eslint-disable-next-line no-new-func

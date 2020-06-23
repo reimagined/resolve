@@ -10,7 +10,7 @@ import getLatestEvent from './js/get-latest-event'
 import saveEvent from './js/save-event'
 import fullJitter from './js/full-jitter'
 import executeStatement from './js/execute-statement'
-import saveEventOnly from './js/save-event-only'
+import injectEvent from './js/inject-event'
 import coercer from './js/coercer'
 import escapeId from './js/escape-id'
 import escape from './js/escape'
@@ -47,7 +47,7 @@ const createAdapter: any = _createAdapter.bind(null, {
   escape,
   fullJitter,
   executeStatement,
-  saveEventOnly,
+  injectEvent,
   coercer,
   shapeEvent,
   getSecretsManager,

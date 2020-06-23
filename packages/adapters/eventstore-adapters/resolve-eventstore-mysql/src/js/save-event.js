@@ -54,7 +54,7 @@ const saveEvent = async (pool, event) => {
         \`payload\`
       ) VALUES(
         @selectedThreadId,
-        COALESCE(@threadCounter + 1, 0),
+        COALESCE(@threadCounter, 0),
         GREATEST(
           ROUND(UNIX_TIMESTAMP(SYSDATE(4)) * 1000),
           ${+event.timestamp}
