@@ -1,6 +1,6 @@
 {
   "name": "resolve-local-event-broker",
-  "version": "0.24.3",
+  "version": "0.24.4",
   "description": "The reSolve framework's event broker for applications on a local machine.",
   "engines": {
     "node": ">=10.9"
@@ -28,10 +28,10 @@
     "@babel/runtime": "7.9.6",
     "sqlite": "^3.0.2",
     "tmp": "^0.1.0",
-    "resolve-debug-levels": "0.24.3",
-    "resolve-local-rpc": "0.24.3",
-    "resolve-eventstore-base": "0.24.3",
-    "resolve-readmodel-base": "0.24.3"
+    "resolve-debug-levels": "0.24.4",
+    "resolve-local-rpc": "0.24.4",
+    "resolve-eventstore-base": "0.24.4",
+    "resolve-readmodel-base": "0.24.4"
   },
   "devDependencies": {
     "sinon": "7.2.2",

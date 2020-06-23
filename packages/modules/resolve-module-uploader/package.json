@@ -1,6 +1,6 @@
 {
   "name": "resolve-module-uploader",
-  "version": "0.24.3",
+  "version": "0.24.4",
   "description": "A reSolve module that adds uploader commands to an application.",
   "engines": {
     "node": ">=10.9"
