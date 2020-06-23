@@ -5,11 +5,11 @@
   "private": true,
   "scripts": {
     "type-check": "tsc",
-    "build": "tsc && babel-node --extensions='.ts,.tsx' run.ts build",
-    "dev": "tsc && babel-node --extensions='.ts,.tsx' run.ts dev",
-    "start": "tsc && babel-node --extensions='.ts,.tsx' run.ts start",
+    "build": "tsc && babel-node --extensions=.ts,.tsx run.ts build",
+    "dev": "tsc && babel-node --extensions=.ts,.tsx run.ts dev",
+    "start": "tsc && babel-node --extensions=.ts,.tsx run.ts start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
-    "test:functional": "tsc && babel-node --extensions='.ts,.tsx' run.ts test:functional"
+    "test:functional": "tsc && babel-node --extensions=.ts,.tsx run.ts test:functional"
   },
   "dependencies": {
     "babel-loader": "8.1.0",
