@@ -200,7 +200,11 @@ checks-lightweight (Windows):
     - node ci-cd\create-github-status\index.js --state pending --context "3. Unit tests" --description "Waiting ♯%CI_PIPELINE_IID% for status to be reported" --targetUrl %CI_JOB_URL%
   script:
     - cd resolve-%CI_PIPELINE_ID%
-    - yarn lint && yarn test && yarn test:integrational && node ..\ci-cd\job-status\index.js --end
+    - call yarn lint
+    - call yarn test
+    - call yarn test:integrational
+    - cd ..
+    - node ci-cd\job-status\index.js --end
   after_script:
     - for /f "tokens=*" %%i in ('node ci-cd\job-status\index.js --isSucceeded') do set CI_STATUS=%%i
     - if "%CI_STATUS%"=="true" (node ci-cd\create-github-status\index.js --state success --context "3. Unit tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% succeeded" --targetUrl %CI_JOB_URL%) else (node ci-cd\create-github-status\index.js --state failure --context "3. Unit tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% failed" --targetUrl %CI_JOB_URL%)
@@ -254,7 +258,7 @@ functional-tests (Windows):
     - node ci-cd\create-github-status\index.js --state pending --context "5. Functional tests (Windows)" --description "Waiting ♯%CI_PIPELINE_IID% for status to be reported" --targetUrl %CI_JOB_URL%
   script:
     - cd resolve-%CI_PIPELINE_ID%/
-    - yarn test:functional edge
+    - call yarn test:functional edge
     - cd ..
     - node ci-cd\job-status\index.js --end
   after_script:
@@ -341,8 +345,8 @@ windows (install):
     - cd resolve-%CI_PIPELINE_ID%
     - git fetch origin %MERGE_COMMIT_SHA%:merge-commit
     - git checkout merge-commit
-    - yarn install --frozen-lockfile --cache-folder ..\.yarn-cache
-    - yarn build-packages
+    - call yarn install --frozen-lockfile --cache-folder ..\.yarn-cache
+    - call yarn build-packages
 
 eslint + prettier:
   stage: unit-tests
@@ -391,8 +395,8 @@ eslint + prettier (Windows):
     - for /f "tokens=*" %%i in ('node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js"') do set PRETTIER_STATUS=%%i
     - if "%PRETTIER_STATUS%" (exit 1)
     - set PRETTIER_STATUS=
-    - yarn validate-lock-file
-    - yarn lint
+    - call yarn validate-lock-file
+    - call yarn lint
     - cd ..
     - node ci-cd\job-status\index.js --end
   after_script:
@@ -443,7 +447,7 @@ unit-tests (Windows):
     - node ci-cd\create-github-status\index.js --state pending --context "5. Unit-tests (Windows)" --description "Waiting ♯%CI_PIPELINE_IID% for status to be reported" --targetUrl %CI_JOB_URL%
   script:
     - cd resolve-%CI_PIPELINE_ID%/
-    - yarn test
+    - call yarn test
     - set GITLAB_CI=
     - cd ..
     - node ci-cd\job-status\index.js --end
@@ -654,37 +658,37 @@ windows (create-resolve-app + functional-tests):
     - rd /S /Q hacker-news || cd .
     - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e hacker-news hacker-news
     - cd hacker-news
-    - yarn test:functional edge
+    - call yarn test:functional edge
     - cd ..
     - rd /S /Q hacker-news
     - rd /S /Q hello-world || cd .
     - node resolve-%CI_PIPELINE_ID$\packages\core\create-resolve-app\bin/index.js --local-registry -c %MERGE_COMMIT_SHA% -e hello-world hello-world
     - cd hello-world
-    - yarn test:functional edge
+    - call yarn test:functional edge
     - cd ..
     - rd /S /Q hello-world
     - rd /S /Q shopping-list-advanced || cd .
     - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e shopping-list-advanced shopping-list-advanced
     - cd shopping-list-advanced
-    - yarn test:functional edge
+    - call yarn test:functional edge
     - cd ..
     - rd /S /Q shopping-list-advanced
     - rd /S /Q shopping-list || cd .
     - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e shopping-list shopping-list
     - cd shopping-list
-    - yarn test:functional edge
+    - call yarn test:functional edge
     - cd ..
     - rd /S /Q shopping-list
     - rd /S /Q with-postcss || cd .
     - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e with-postcss with-postcss
     - cd with-postcss
-    - yarn test:functional edge
+    - call yarn test:functional edge
     - cd ..
     - rd /S /Q with-postcss
     - rd /S /Q with-styled-components || cd .
     - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e with-styled-components with-styled-components
     - cd with-styled-components
-    - yarn test:functional edge
+    - call yarn test:functional edge
     - cd ..
     - rd /S /Q with-styled-components
     - node ci-cd/job-status/index.js --end
