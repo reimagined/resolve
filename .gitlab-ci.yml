@@ -240,7 +240,7 @@ functional-tests:
 functional-tests (Windows):
   stage: functional-tests
   tags:
-    - Windows
+    - windows
   only:
     variables:
       - $CI_PIPELINE_TRIGGERED == 'true'
