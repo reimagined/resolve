@@ -44,7 +44,7 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
   try {
     await this.pool.waitConnect()
 
-    const { drop, init, freeze, saveEventOnly } = this.pool
+    const { drop, init, freeze, injectEvent } = this.pool
 
     if (
       this.maintenanceMode === MAINTENANCE_MODE_AUTO &&
@@ -129,7 +129,7 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
 
       this.timestamp = Math.max(this.timestamp, event.timestamp)
 
-      const saveEventPromise = saveEventOnly(event).catch(
+      const saveEventPromise = injectEvent(event).catch(
         this.saveEventErrors.push.bind(this.saveEventErrors)
       )
       void saveEventPromise.then(
@@ -165,7 +165,7 @@ EventStream.prototype._final = async function(callback) {
 
   try {
     await this.pool.waitConnect()
-    const { unfreeze, saveEventOnly } = this.pool
+    const { unfreeze, injectEvent } = this.pool
 
     if (this.vacantSize !== BUFFER_SIZE) {
       let stringifiedEvent = null
@@ -198,7 +198,7 @@ EventStream.prototype._final = async function(callback) {
 
         this.byteOffset += eventByteLength
 
-        const saveEventPromise = saveEventOnly(event).catch(
+        const saveEventPromise = injectEvent(event).catch(
           this.saveEventErrors.push.bind(this.saveEventErrors)
         )
         void saveEventPromise.then(
@@ -222,7 +222,11 @@ EventStream.prototype._final = async function(callback) {
     }
 
     if (this.saveEventErrors.length > 0) {
-      throw new Error(this.saveEventErrors.join(EOL))
+      const error = new Error(
+        this.saveEventErrors.map(({ message }) => message).join(EOL)
+      )
+      error.stack = this.saveEventErrors.map(({ stack }) => stack).join(EOL)
+      throw error
     }
 
     callback()

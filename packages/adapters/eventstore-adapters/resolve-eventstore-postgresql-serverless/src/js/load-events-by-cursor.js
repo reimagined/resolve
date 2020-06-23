@@ -76,8 +76,8 @@ const loadEventsByCursor = async (
       WHERE ${resultTimestampConditions}
     ), "batchEvents" AS (
       SELECT "threadId", "threadCounter",
-      SUM("eventSize") OVER (ORDER BY "timestamp") AS "totalEventsSize",
-      FLOOR((SUM("eventSize") OVER (ORDER BY "timestamp")) / 128000) AS "batchIndex"
+      SUM("eventSize") OVER (ORDER BY "timestamp", "threadId", "threadCounter") AS "totalEventsSize",
+      FLOOR((SUM("eventSize") OVER (ORDER BY "timestamp", "threadId", "threadCounter")) / 128000) AS "batchIndex"
       FROM ${databaseNameAsId}.${eventsTableAsId}
       WHERE (${resultQueryCondition}) AND (${resultVectorConditions})
       AND "timestamp" >= (SELECT "minimalTimestamp"."value" FROM "minimalTimestamp")

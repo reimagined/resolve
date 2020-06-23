@@ -14,7 +14,7 @@ import freeze from '../src/js/freeze'
 import unfreeze from '../src/js/unfreeze'
 import getLatestEvent from '../src/js/get-latest-event'
 import saveEvent from '../src/js/save-event'
-import saveEventOnly from '../src/js/save-event-only'
+import injectEvent from '../src/js/inject-event'
 import shapeEvent from '../src/js/shape-event'
 import loadSnapshot from '../src/js/load-snapshot'
 import saveSnapshot from '../src/js/save-snapshot'
@@ -31,7 +31,7 @@ jest.mock('../src/js/freeze', () => jest.fn())
 jest.mock('../src/js/unfreeze', () => jest.fn())
 jest.mock('../src/js/get-latest-event', () => jest.fn())
 jest.mock('../src/js/save-event', () => jest.fn())
-jest.mock('../src/js/save-event-only', () => jest.fn())
+jest.mock('../src/js/inject-event', () => jest.fn())
 jest.mock('../src/js/shape-event', () => jest.fn())
 jest.mock('../src/js/load-snapshot', () => jest.fn())
 jest.mock('../src/js/save-snapshot', () => jest.fn())
@@ -64,7 +64,7 @@ test('generic createAdapter invoked', () => {
     tmp,
     os,
     fs,
-    saveEventOnly,
+    injectEvent,
     shapeEvent,
     getSecretsManager
   })
