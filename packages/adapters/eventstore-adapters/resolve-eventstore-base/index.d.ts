@@ -13,7 +13,7 @@ declare function createAdapter(adapter: {
   init: Function
   drop: Function
   dispose: Function
-  saveEventOnly: Function
+  injectEvent: Function
   isFrozen?: Function
   freeze: Function
   unfreeze: Function

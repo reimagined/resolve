@@ -12,7 +12,7 @@ import getLatestEvent from '../src/js/get-latest-event'
 import saveEvent from '../src/js/save-event'
 import fullJitter from '../src/js/full-jitter'
 import executeStatement from '../src/js/execute-statement'
-import saveEventOnly from '../src/js/save-event-only'
+import injectEvent from '../src/js/inject-event'
 import coercer from '../src/js/coercer'
 import escapeId from '../src/js/escape-id'
 import escape from '../src/js/escape'
@@ -32,7 +32,7 @@ jest.mock('../src/js/get-latest-event', () => jest.fn())
 jest.mock('../src/js/save-event', () => jest.fn())
 jest.mock('../src/js/full-jitter', () => jest.fn())
 jest.mock('../src/js/execute-statement', () => jest.fn())
-jest.mock('../src/js/save-event-only', () => jest.fn())
+jest.mock('../src/js/inject-event', () => jest.fn())
 jest.mock('../src/js/coercer', () => jest.fn())
 jest.mock('../src/js/escape-id', () => jest.fn())
 jest.mock('../src/js/escape', () => jest.fn())
@@ -63,7 +63,7 @@ test('generic createAdapter invoked', () => {
     escape,
     fullJitter,
     executeStatement,
-    saveEventOnly,
+    injectEvent,
     coercer,
     shapeEvent,
     getSecretsManager
