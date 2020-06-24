@@ -158,17 +158,14 @@ test('registered user, gather personal data', async t => {
   await t.click(gatherItem)
 
   const progressItem = ReactSelector('button').withText('Being gathered now...')
-  await refreshAndWait(t, 'user-profiles', () => progressItem.exists, true)
   await t.expect(progressItem.exists).ok()
 
-  await t.navigateTo(MAIN_PAGE)
+  await t.wait(5000).navigateTo(MAIN_PAGE)
 
   nicknameItem = ReactSelector('a').withText('user-nickname-4')
-  await refreshAndWait(t, 'user-profiles', () => nicknameItem.exists, true)
   await t.click(nicknameItem)
 
   const downloadItem = ReactSelector('a').withText('Download')
-  await refreshAndWait(t, 'user-profiles', () => downloadItem.exists, true)
   await t.expect(downloadItem.exists).ok()
 })
 
