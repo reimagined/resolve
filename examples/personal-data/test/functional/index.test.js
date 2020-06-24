@@ -1,5 +1,6 @@
 import { Selector } from 'testcafe'
 import { ReactSelector } from 'testcafe-react-selectors'
+import fetch from 'isomorphic-fetch'
 
 const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || '3000'
@@ -18,6 +19,29 @@ const generatePost = id => ({
   content: `post-content-${id}`
 })
 
+const refreshAndWait = async (t, eventSubscriber, selector, expectedValue) => {
+  while (true) {
+    const res = await fetch(`${MAIN_PAGE}/api/event-broker/read-models-list`)
+
+    const readModel = (await res.json()).find(
+      readModel => readModel.eventSubscriber === eventSubscriber
+    )
+
+    if (readModel.status !== 'deliver') {
+      throw new Error(`Test failed. Read-model status "${readModel.status}"`)
+    }
+
+    await t.navigateTo(MAIN_PAGE)
+
+    try {
+      await t.expect(await selector()).eql(expectedValue)
+      break
+    } catch (e) {
+      await t.wait(1000)
+    }
+  }
+}
+
 const userRegistration = async (t, user) => {
   const { nickname, firstName, lastName, phoneNumber, address } = user
   const registrationForm = ReactSelector('RegistrationForm')
@@ -28,6 +52,12 @@ const userRegistration = async (t, user) => {
   await t.typeText(registrationForm.find('#address'), address)
   await t.click(registrationForm.find('#consent'))
   await t.click(registrationForm.find('button').withText('Sign Up'))
+  await refreshAndWait(
+    t,
+    'user-profiles',
+    () => ReactSelector('a').withText(nickname).exists,
+    true
+  )
 }
 
 const publishPost = async (t, post) => {
@@ -48,13 +78,14 @@ fixture`PersonalData`.beforeEach(async t => {
 
 test('new user, first load', async t => {
   const registrationForm = ReactSelector('RegistrationForm')
-  await t.expect(registrationForm.exists).ok({ timeout: 15000 })
+  await t.expect(registrationForm.exists).ok()
 })
 
 test('new user, registration', async t => {
   await userRegistration(t, generateUser(1))
   const nicknameItem = ReactSelector('a').withText('user-nickname-1')
-  await t.expect(nicknameItem.exists).ok({ timeout: 15000 })
+  await refreshAndWait(t, 'user-profiles', () => nicknameItem.exists, true)
+  await t.expect(nicknameItem.exists).ok()
 })
 
 test('registered user, posts creation', async t => {
@@ -68,6 +99,7 @@ test('registered user, posts creation', async t => {
   await t.navigateTo(MAIN_PAGE)
 
   const posts2 = ReactSelector('Post')
+  await refreshAndWait(t, 'blog-posts', () => posts2.count, 3)
   await t.expect(posts2.count).eql(3)
 })
 
@@ -80,6 +112,7 @@ test('registered user, posts deletion', async t => {
   await t.navigateTo(MAIN_PAGE)
 
   const deleteButtons = ReactSelector('button').withText('Delete post')
+  await refreshAndWait(t, 'blog-posts', () => deleteButtons.count, 3)
   await t.click(deleteButtons.nth(2))
   await t.click(deleteButtons.nth(1))
   await t.click(deleteButtons.nth(0))
@@ -87,6 +120,7 @@ test('registered user, posts deletion', async t => {
   await t.navigateTo(MAIN_PAGE)
 
   const posts2 = ReactSelector('Post')
+  await refreshAndWait(t, 'blog-posts', () => posts2.count, 0)
   await t.expect(posts2.exists).notOk()
 })
 
@@ -110,7 +144,8 @@ test('registered user, profile update', async t => {
     `user-name-3-updated user-lastName-3-updated`
   )
 
-  await t.expect(fullName.exists).ok({ timeout: 15000 })
+  await refreshAndWait(t, 'user-profiles', () => fullName.exists, true)
+  await t.expect(fullName.exists).ok()
 })
 
 test('registered user, gather personal data', async t => {
@@ -123,15 +158,18 @@ test('registered user, gather personal data', async t => {
   await t.click(gatherItem)
 
   const progressItem = ReactSelector('button').withText('Being gathered now...')
-  await t.expect(progressItem.exists).ok({ timeout: 15000 })
+  await refreshAndWait(t, 'user-profiles', () => progressItem.exists, true)
+  await t.expect(progressItem.exists).ok()
 
-  await t.wait(5000).navigateTo(MAIN_PAGE)
+  await t.navigateTo(MAIN_PAGE)
 
   nicknameItem = ReactSelector('a').withText('user-nickname-4')
+  await refreshAndWait(t, 'user-profiles', () => nicknameItem.exists, true)
   await t.click(nicknameItem)
 
   const downloadItem = ReactSelector('a').withText('Download')
-  await t.expect(downloadItem.exists).ok({ timeout: 15000 })
+  await refreshAndWait(t, 'user-profiles', () => downloadItem.exists, true)
+  await t.expect(downloadItem.exists).ok()
 })
 
 test('registered user, profile removal', async t => {
