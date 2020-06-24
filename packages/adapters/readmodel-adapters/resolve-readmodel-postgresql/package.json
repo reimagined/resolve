@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-postgresql",
-  "version": "0.24.4",
+  "version": "0.24.5",
   "description": "This package serves as a resolve-query adapter for storing a read model in postgres",
   "engines": {
     "node": ">=10.9"
@@ -27,8 +27,8 @@
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "pg": "^8.2.1",
-    "resolve-readmodel-base": "0.24.4",
-    "resolve-debug-levels": "0.24.4"
+    "resolve-readmodel-base": "0.24.5",
+    "resolve-debug-levels": "0.24.5"
   },
   "devDependencies": {
     "jest": "26.0.1",
