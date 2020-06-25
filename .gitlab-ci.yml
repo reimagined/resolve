@@ -393,7 +393,7 @@ eslint + prettier (Windows):
   script:
     - cd resolve-%CI_PIPELINE_ID%/
     - for /f "tokens=*" %%i in ('node_modules\.bin\prettier --no-semi --single-quote --list-different "**/*.js"') do set PRETTIER_STATUS=%%i
-    - if not "%PRETTIER_STATUS%"=="Active code page: 65001" (exit 1)
+    - if not "%PRETTIER_STATUS%"=="Active code page':' 65001" (exit 1)
     - set PRETTIER_STATUS=
     - call yarn validate-lock-file
     - call yarn lint
