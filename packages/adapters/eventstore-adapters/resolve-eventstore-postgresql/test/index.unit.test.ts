@@ -22,6 +22,9 @@ import init from '../src/init'
 import drop from '../src/drop'
 import dispose from '../src/dispose'
 import getSecretsManager from '../src/secrets-manager'
+import loadSnapshot from '../src/js/load-snapshot'
+import saveSnapshot from '../src/js/save-snapshot'
+import dropSnapshot from '../src/js/drop-snapshot'
 
 import createAdapter from '../src/index'
 
@@ -42,6 +45,9 @@ jest.mock('../src/init', () => jest.fn())
 jest.mock('../src/drop', () => jest.fn())
 jest.mock('../src/dispose', () => jest.fn())
 jest.mock('../src/secrets-manager', () => jest.fn())
+jest.mock('../src/js/load-snapshot', () => jest.fn())
+jest.mock('../src/js/save-snapshot', () => jest.fn())
+jest.mock('../src/js/drop-snapshot', () => jest.fn())
 
 const mGenericCreateAdapter = mocked(genericCreateAdapter)
 
@@ -66,6 +72,9 @@ test('generic createAdapter invoked', () => {
     injectEvent,
     coercer,
     shapeEvent,
-    getSecretsManager
+    getSecretsManager,
+    loadSnapshot,
+    saveSnapshot,
+    dropSnapshot
   })
 })
