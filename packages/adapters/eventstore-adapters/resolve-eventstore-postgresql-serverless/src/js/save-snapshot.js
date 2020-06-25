@@ -1,7 +1,7 @@
 import { SAVE_CHUNK_SIZE } from './constants'
 
-const saveSnapshot = async (
-  {
+const saveSnapshot = async (pool, snapshotKey, content) => {
+  const {
     databaseName,
     snapshotsTableName,
     executeStatement,
@@ -12,10 +12,7 @@ const saveSnapshot = async (
     beginTransaction,
     commitTransaction,
     rollbackTransaction
-  },
-  snapshotKey,
-  content
-) => {
+  } = pool
   const databaseNameAsId = escapeId(databaseName)
   const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
@@ -41,7 +38,7 @@ const saveSnapshot = async (
   if (chunksCount > 1) {
     let transactionId = null
     try {
-      transactionId = await beginTransaction()
+      transactionId = await beginTransaction(pool)
 
       for (let index = 0; index < chunksCount; index++) {
         const chunk = content.substring(
@@ -70,9 +67,9 @@ const saveSnapshot = async (
         }
       }
 
-      await commitTransaction(transactionId)
+      await commitTransaction(pool, transactionId)
     } catch (error) {
-      await rollbackTransaction(transactionId)
+      await rollbackTransaction(pool, transactionId)
 
       throw error
     }

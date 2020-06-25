@@ -1,9 +1,13 @@
 import { LOAD_CHUNK_SIZE } from './constants'
 
-const loadSnapshot = async (
-  { databaseName, snapshotsTableName, executeStatement, escapeId, escape },
-  snapshotKey
-) => {
+const loadSnapshot = async (pool, snapshotKey) => {
+  const {
+    databaseName,
+    snapshotsTableName,
+    executeStatement,
+    escapeId,
+    escape
+  } = pool
   if (snapshotKey == null || snapshotKey.constructor !== String) {
     throw new Error('Snapshot key must be string')
   }
