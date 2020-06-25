@@ -26,7 +26,6 @@ import loadSnapshot from '../src/js/load-snapshot'
 import saveSnapshot from '../src/js/save-snapshot'
 import dropSnapshot from '../src/js/drop-snapshot'
 
-
 import createAdapter from '../src/index'
 
 jest.mock('../src/js/load-events-by-cursor', () => jest.fn())
