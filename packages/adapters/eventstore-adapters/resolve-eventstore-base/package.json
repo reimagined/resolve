@@ -1,6 +1,6 @@
 {
   "name": "resolve-eventstore-base",
-  "version": "0.24.6",
+  "version": "0.24.7",
   "description": "A base for reSolve eventstore adapters",
   "engines": {
     "node": ">=10.9"
