@@ -141,13 +141,13 @@ You can extend a reSolve server's API with API Handlers. Refer to the [API Handl
 
 The **resolve-client** library provides an interface that you can use to communicate with reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
 
-| Function          | Description                                |
-| ----------------- | ------------------------------------------ |
-| command           | Sends an aggregate command to the backend. |
-| query             | Queries a Read Model.                      |
-| getStaticAssetUrl | Gets a static file's full URL.             |
-| subscribe         | Subscribes to View Model updates.          |
-| unsubscribe       | Unsubscribes from View Model updates.      |
+| Function                                                | Description                                |
+| ------------------------------------------------------- | ------------------------------------------ |
+| [command](api-reference.md#command)                     | Sends an aggregate command to the backend. |
+| [query](api-reference.md#query)                         | Queries a Read Model.                      |
+| [getStaticAssetUrl](api-reference.md#getstaticasseturl) | Gets a static file's full URL.             |
+| [subscribe](api-reference.md#subscribe)                 | Subscribes to View Model updates.          |
+| [unsubscribe](api-reference.md#unsubscribe)             | Unsubscribes from View Model updates.      |
 
 #### Example
 
@@ -159,10 +159,10 @@ The reSolve framework includes the client **resolve-redux** library used to conn
 
 Use the following resolve-redux library's higher order components (HOCs) to connect components to the backend:
 
-| HOC              | Description                           |
-| ---------------- | ------------------------------------- |
-| connectReadModel | Connects a component to a Read Model. |
-| connectViewModel | Connects a component to a View Model. |
+| HOC                                                   | Description                           |
+| ----------------------------------------------------- | ------------------------------------- |
+| [connectReadModel](api-reference.md#connectreadmodel) | Connects a component to a Read Model. |
+| [connectViewModel](api-reference.md#connectviewmodel) | Connects a component to a View Model. |
 
 A connected component receives additional props. These props provide access to the Read Model data and Redux action creators mapped to reSolve commands.
 
@@ -176,12 +176,12 @@ The [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/s
 
 The **resolve-react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
 
-| Hook              | Description                                                             |
-| ----------------- | ----------------------------------------------------------------------- |
-| useCommand        | Initializes a command that can be passed to the backend                 |
-| useCommandBuilder | Allows to generate commands based on input parameters                   |
-| useViewModel      | Establishes a WebSocket connection to a reSolve View Model              |
-| useQuery          | Allows a component to send queries to a reSolve Red Model or View Model |
+| Hook                                                    | Description                                                             |
+| ------------------------------------------------------- | ----------------------------------------------------------------------- |
+| [useCommand](api-reference.md#usecommand)               | Initializes a command that can be passed to the backend                 |
+| [useCommandBuilder](api-reference.md#usecommandbuilder) | Allows to generate commands based on input parameters                   |
+| [useViewModel](api-reference.md#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model              |
+| [useQuery](api-reference.md#usequery)                   | Allows a component to send queries to a reSolve Red Model or View Model |
 
 #### Example
 
