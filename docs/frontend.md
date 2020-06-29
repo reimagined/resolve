@@ -157,21 +157,12 @@ The [with-vanilajs](https://github.com/reimagined/resolve/tree/master/examples/w
 
 The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend.
 
-The **redux** configuration section specifies the following settings related to the frontend:
-
-- **store** - Specifies the file containing the Redux store definition.
-- **reducers** - Specifies the file containing the Redux reducer definition.
-- **middlewares** - Specifies the file containing the Redux middleware definitions.
-
-Based on these settings, reSolve generates client code to facilitate client-server communication:
-
-- Redux actions are generated for all reSolve aggregate commands.
-- Auxiliary reducers and middleware are generated to handle these actions and send the corresponding commands to the reSolve backend.
-
 Use the following resolve-redux library's higher order components (HOCs) to connect components to the backend:
 
-- **connectReadModel** - Connects a component to a Read Model.
-- **connectViewModel** - Connects a component to a View Model.
+| HOC              | Description                           |
+| ---------------- | ------------------------------------- |
+| connectReadModel | Connects a component to a Read Model. |
+| connectViewModel | Connects a component to a View Model. |
 
 A connected component receives additional props. These props provide access to the Read Model data and Redux action creators mapped to reSolve commands.
 
