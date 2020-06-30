@@ -25,4 +25,4 @@ examples/with-angular/client/**/*.mjs
 examples/with-angular/client/**/*.mjs.map
 examples/with-angular/client/**/*.d.ts
 
-packages/**/types/*.d.ts
+packages/**/types/**/*.d.ts

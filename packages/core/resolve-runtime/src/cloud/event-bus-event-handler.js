@@ -1,6 +1,6 @@
 import debugLevels from 'resolve-debug-levels'
 import invokeEventBus from './invoke-event-bus'
-import { XaTransactionNotFoundError } from 'resolve-readmodel-base'
+import { OMIT_BATCH } from 'resolve-readmodel-base'
 
 const log = debugLevels('resolve:resolve-runtime:event-bus-event-handler')
 
@@ -8,11 +8,26 @@ const sendEvents = async (payload, resolve) => {
   const segment = resolve.performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('applyEventsFromBus')
 
-  const { xaTransactionId, eventSubscriber, events, batchId } = payload
+  const {
+    xaTransactionId,
+    eventSubscriber,
+    events,
+    batchId,
+    properties
+  } = payload
+  if (eventSubscriber === 'websocket' && batchId == null) {
+    // TODO: Inject MQTT events directly from cloud event bus lambda
+    for (const event of events) {
+      const eventDescriptor = {
+        topic: `${process.env.RESOLVE_DEPLOYMENT_ID}/${event.type}/${event.aggregateId}`,
+        payload: JSON.stringify(event),
+        qos: 1
+      }
 
-  //TODO Properties
-  const properties = {
-    RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: 0
+      await resolve.mqtt.publish(eventDescriptor).promise()
+    }
+
+    return
   }
 
   log.debug('applying events started')
@@ -48,7 +63,7 @@ const sendEvents = async (payload, resolve) => {
     subSegment.close()
   }
 
-  if (result != null && result.error instanceof XaTransactionNotFoundError) {
+  if (result != null && result.error === OMIT_BATCH) {
     log.debug('XaTransaction is auto rollback')
 
     return

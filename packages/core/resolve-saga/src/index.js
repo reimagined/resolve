@@ -9,7 +9,6 @@ import wrapRegularSagas from './wrap-regular-sagas'
 const createSaga = ({
   publisher,
   readModelConnectors,
-  snapshotAdapter,
   sagas,
   schedulers,
   executeCommand,
@@ -23,7 +22,6 @@ const createSaga = ({
   const executeScheduleCommand = createCommand({
     aggregates: createSchedulersAggregates(schedulers),
     publisher,
-    snapshotAdapter,
     eventstoreAdapter
   })
 
@@ -53,7 +51,6 @@ const createSaga = ({
   const executeListener = createQuery({
     publisher,
     readModelConnectors,
-    snapshotAdapter,
     readModels: [...regularSagas, ...schedulerSagas],
     viewModels: [],
     performanceTracer,

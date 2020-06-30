@@ -5,7 +5,7 @@ This package is a eventstore adapter for storing events using MySQL.
 
 ## Available Parameters
 
-* `tableName` - a name of a table storing events.
+* `eventsTableName` - a name of a table storing events.
 * `...connectionSettings` - see [Connection Settings](https://www.npmjs.com/package/mysql2#first-query) for more information.
 
 ## Usage
@@ -19,7 +19,7 @@ const adapter = createAdapter({
   user: 'customUser',
   password: 'customPassword',
   database: 'customDatabaseName',
-  tableName: 'customTableName'
+  eventsTableName: 'customTableName'
 })
 ```
 

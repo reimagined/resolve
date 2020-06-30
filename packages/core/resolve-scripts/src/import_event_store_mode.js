@@ -15,7 +15,7 @@ const getConfig = async (resolveConfig, options) => {
       {
         method: 'GET',
         path: '/api/import-event-store',
-        controller: {
+        handler: {
           module: 'resolve-runtime/lib/local/import-event-store-handler.js',
           options
         }

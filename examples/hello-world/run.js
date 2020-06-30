@@ -27,7 +27,7 @@ void (async () => {
 
         await reset(resolveConfig, {
           dropEventStore: false,
-          dropSnapshots: true,
+          dropEventBus: true,
           dropReadModels: true,
           dropSagas: true
         })
@@ -56,7 +56,7 @@ void (async () => {
         const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
         await reset(resolveConfig, {
           dropEventStore: false,
-          dropSnapshots: true,
+          dropEventBus: true,
           dropReadModels: true,
           dropSagas: true
         })
@@ -91,7 +91,7 @@ void (async () => {
 
         await reset(resolveConfig, {
           dropEventStore: true,
-          dropSnapshots: true,
+          dropEventBus: true,
           dropReadModels: true,
           dropSagas: true
         })
@@ -99,7 +99,8 @@ void (async () => {
         await runTestcafe({
           resolveConfig,
           functionalTestsDir: 'test/functional',
-          browser: process.argv[3]
+          browser: process.argv[3],
+          customArgs: ['--stop-on-first-fail']
         })
         break
       }

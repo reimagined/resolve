@@ -1,6 +1,6 @@
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
-const getNextCursor = async (prevCursor, events) => {
+const getNextCursor = (prevCursor, events) => {
   const cursorBuffer =
     prevCursor != null
       ? Buffer.from(prevCursor, 'base64')

@@ -48,6 +48,19 @@ const resolvers = {
       await store.findOne('Users', { id: params.userId })
     )
   },
+  fullNameById: async (store, params, { jwt, secretsManager }) => {
+    decode(jwt)
+    const user = await decryptProfile(
+      secretsManager,
+      await store.findOne('Users', { id: params.userId })
+    )
+
+    if (user) {
+      return `${user.profile.firstName} ${user.profile.lastName}`
+    } else {
+      throw Error('User not found')
+    }
+  },
   all: async (store, params, { secretsManager }) => {
     const users = await store.find('Users', {})
     return await Promise.all(

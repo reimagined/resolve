@@ -1,4 +1,4 @@
-import { ResourceAlreadyExistError } from './js/base-imports'
+import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 import getLog from './js/get-log'
 import initEventStore from './js/init'
 import { AdapterPool } from './types'
@@ -37,7 +37,7 @@ const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
     if (error) {
       let errorToThrow = error
       if (/Relation.*? already exists$/i.test(error.message)) {
-        errorToThrow = new ResourceAlreadyExistError(
+        errorToThrow = new EventstoreResourceAlreadyExistError(
           `duplicate initialization of the postgresql-serverless secrets store with the same parameters not allowed`
         )
       }
@@ -54,17 +54,22 @@ const init = async (pool: AdapterPool): Promise<any> => {
   const log = getLog('init')
   log.debug('initializing databases')
 
-  const { databaseName, tableName, executeStatement, escapeId } = pool
+  const {
+    databaseName,
+    eventsTableName,
+    snapshotsTableName,
+    executeStatement,
+    escapeId
+  } = pool
 
   const createInitEventStorePromise = (): Promise<any> =>
-    databaseName && tableName && executeStatement && escapeId
-      ? initEventStore({
-          databaseName,
-          tableName,
-          executeStatement,
-          escapeId
-        })
-      : Promise.resolve()
+    initEventStore({
+      databaseName,
+      eventsTableName,
+      snapshotsTableName,
+      executeStatement,
+      escapeId
+    })
 
   const result = await Promise.all([
     createInitEventStorePromise(),

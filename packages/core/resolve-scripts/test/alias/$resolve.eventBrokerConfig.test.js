@@ -23,8 +23,8 @@ test('should fail if "launchBroker" is runtime injection', () => {
           resolveConfig: {
             eventBroker: {
               launchBroker: declareRuntimeEnv('true'),
-              zmqBrokerAddress: 'zmqBrokerAddress',
-              zmqConsumerAddress: 'zmqConsumerAddress',
+              publisherAddress: declareRuntimeEnv('publisherAddress'),
+              consumerAddress: declareRuntimeEnv('consumerAddress'),
               databaseFile: 'databaseFile',
               batchSize: 100,
               upstream: true
@@ -44,8 +44,8 @@ test('works correctly', () => {
           resolveConfig: {
             eventBroker: {
               launchBroker: true,
-              zmqBrokerAddress: declareRuntimeEnv('zmqBrokerAddress'),
-              zmqConsumerAddress: declareRuntimeEnv('zmqConsumerAddress'),
+              publisherAddress: declareRuntimeEnv('publisherAddress'),
+              consumerAddress: declareRuntimeEnv('consumerAddress'),
               databaseFile: declareRuntimeEnv('databaseFile'),
               batchSize: 100,
               upstream: true

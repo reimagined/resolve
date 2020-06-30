@@ -15,14 +15,15 @@ type EscapeFunction = (source: string) => string
 type FullJitter = (retries: number) => number
 
 export type AdapterPool = {
-  config: {
+  config?: {
     user: string
     database: string
     port: string
     host: string
     password: string
     databaseName: string
-    tableName: string
+    eventsTableName: string
+    snapshotsTableName: string
     secretsTableName: string
   }
   Postgres?: typeof Postgres
@@ -32,7 +33,8 @@ export type AdapterPool = {
   host?: string
   password?: string
   databaseName?: string
-  tableName?: string
+  eventsTableName?: string
+  snapshotsTableName?: string
   secretsTableName?: string
   fullJitter?: FullJitter
   coercer?: Coercer

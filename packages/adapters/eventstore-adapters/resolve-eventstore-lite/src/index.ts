@@ -8,11 +8,13 @@ import loadEventsByCursor from './js/load-events-by-cursor'
 import loadEventsByTimestamp from './js/load-events-by-timestamp'
 import getLatestEvent from './js/get-latest-event'
 import saveEvent from './js/save-event'
-import paginateEvents from './js/paginate-events'
-import saveEventOnly from './js/save-event-only'
+import injectEvent from './js/inject-event'
 import freeze from './js/freeze'
 import unfreeze from './js/unfreeze'
 import shapeEvent from './js/shape-event'
+import loadSnapshot from './js/load-snapshot'
+import dropSnapshot from './js/drop-snapshot'
+import saveSnapshot from './js/save-snapshot'
 
 import connect from './connect'
 import init from './init'
@@ -29,12 +31,14 @@ const wrappedCreateAdapter = createAdapter.bind(null, {
   init,
   drop,
   dispose,
-  saveEventOnly,
-  paginateEvents,
+  injectEvent,
   freeze,
   unfreeze,
   shapeEvent,
   getSecretsManager,
+  saveSnapshot,
+  dropSnapshot,
+  loadSnapshot,
   sqlite,
   tmp,
   os,

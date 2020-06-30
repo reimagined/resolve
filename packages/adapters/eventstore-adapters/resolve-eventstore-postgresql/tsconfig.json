@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2018",
-    "module": "es6",
+    "module": "commonjs",
     "moduleResolution": "node",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
@@ -20,5 +20,5 @@
       "../../../../node_modules/@types"
     ]
   },
-  "include": ["src", "typings", "__tests__"]
+  "include": ["src", "typings"]
 }

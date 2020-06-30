@@ -12,7 +12,7 @@ const appConfig = {
   apiHandlers: [
     {
       path: '/api/uploader/getFileUrl',
-      controller: 'common/api-handlers/getFileUrl.js',
+      handler: 'common/api-handlers/getFileUrl.js',
       method: 'GET'
     }
   ],

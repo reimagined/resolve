@@ -29,7 +29,7 @@ void (async () => {
           resolveConfig,
           {
             dropEventStore: false,
-            dropSnapshots: true,
+            dropEventBus: true,
             dropReadModels: true,
             dropSagas: true
           },
@@ -82,7 +82,7 @@ void (async () => {
           resolveConfig,
           {
             dropEventStore: true,
-            dropSnapshots: true,
+            dropEventBus: true,
             dropReadModels: true,
             dropSagas: true
           },
@@ -93,7 +93,8 @@ void (async () => {
           resolveConfig,
           adjustWebpackConfigs,
           functionalTestsDir: 'test/functional',
-          browser: process.argv[3]
+          browser: process.argv[3],
+          customArgs: ['--stop-on-first-fail']
         })
         break
       }

@@ -7,7 +7,8 @@ const devConfig = {
   eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
     options: {
-      databaseFile: 'data/event-store.db'
+      databaseFile: 'data/event-store.db',
+      secretsFile: 'data/secrets.db'
     }
   },
   readModelConnectors: {

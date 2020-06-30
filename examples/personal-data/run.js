@@ -9,6 +9,7 @@ import {
 } from 'resolve-scripts'
 
 import resolveModuleAuth from 'resolve-module-auth'
+import resolveModuleAdmin from 'resolve-module-admin'
 import resolveModuleUploader from 'resolve-module-uploader'
 
 import appConfig from './config.app'
@@ -62,7 +63,7 @@ void (async () => {
 
       await reset(resolveConfig, {
         dropEventStore: false,
-        dropSnapshots: true,
+        dropEventBus: true,
         dropReadModels: true,
         dropSagas: true
       })
@@ -87,11 +88,16 @@ void (async () => {
     }
 
     case 'test:functional': {
-      const resolveConfig = merge(baseConfig, testFunctionalConfig)
+      const resolveAdmin = resolveModuleAdmin()
+      const resolveConfig = merge(
+        baseConfig,
+        resolveAdmin,
+        testFunctionalConfig
+      )
 
       await reset(resolveConfig, {
         dropEventStore: true,
-        dropSnapshots: true,
+        dropEventBus: true,
         dropReadModels: true,
         dropSagas: true
       })
@@ -100,7 +106,7 @@ void (async () => {
         resolveConfig,
         functionalTestsDir: 'test/functional',
         browser: process.argv[3],
-        customArgs: ['--skip-js-errors']
+        customArgs: ['--skip-js-errors', '--stop-on-first-fail']
       })
       break
     }

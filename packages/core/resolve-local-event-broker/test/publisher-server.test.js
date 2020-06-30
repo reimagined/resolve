@@ -33,7 +33,9 @@ import requestTimeout from '../src/publisher-server/core/request-timeout'
 import resumeSubscriber from '../src/publisher-server/core/resume-subscriber'
 import serializeError from '../src/publisher-server/core/serialize-error'
 
-jest.mock('../src/publisher-server/core/invoke-consumer', () => jest.fn())
+jest.mock('../src/publisher-server/core/invoke-consumer', () =>
+  jest.fn().mockReturnValue(true)
+)
 jest.mock('../src/publisher-server/core/invoke-operation', () => jest.fn())
 jest.mock('../src/publisher-server/core/get-next-cursor', () =>
   jest.fn(() => 'nextCursor')
@@ -154,7 +156,7 @@ describe('Broker operation', () => {
         }
       ]
     }
-    invokeConsumer.mockResolvedValueOnce(invokeResult)
+    invokeConsumer.mockImplementation(async () => invokeResult)
 
     const result = await read(pool, payload)
 
@@ -374,6 +376,7 @@ describe('Core operation', () => {
         encodeJsonPath: jest.fn(str => str)
       },
       invokeOperation,
+      invokeConsumer,
       generateGuid
     }
     const payload = {

@@ -1,5 +1,6 @@
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 import _createAdapter from 'resolve-readmodel-base'
+import crypto from 'crypto'
 
 import beginXATransaction from './begin-xa-transaction'
 import beginEvent from './begin-event'
@@ -47,6 +48,7 @@ const connect = _connect.bind(null, {
   executeStatement,
   coercer,
   generateGuid,
+  crypto,
   ...store
 })
 

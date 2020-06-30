@@ -13,6 +13,7 @@ import appConfig from './config.app'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
+import resolveModuleAdmin from 'resolve-module-admin'
 
 const launchMode = process.argv[2]
 
@@ -24,7 +25,7 @@ void (async () => {
 
         await reset(resolveConfig, {
           dropEventStore: false,
-          dropSnapshots: true,
+          dropEventBus: true,
           dropReadModels: true,
           dropSagas: true
         })
@@ -44,15 +45,17 @@ void (async () => {
       }
 
       case 'test:functional': {
+        const moduleAdmin = resolveModuleAdmin()
         const resolveConfig = merge(
           defaultResolveConfig,
           appConfig,
-          testFunctionalConfig
+          testFunctionalConfig,
+          moduleAdmin
         )
 
         await reset(resolveConfig, {
           dropEventStore: true,
-          dropSnapshots: true,
+          dropEventBus: true,
           dropReadModels: true,
           dropSagas: true
         })
@@ -60,7 +63,8 @@ void (async () => {
         await runTestcafe({
           resolveConfig,
           functionalTestsDir: 'test/functional',
-          browser: process.argv[3]
+          browser: process.argv[3],
+          customArgs: ['--stop-on-first-fail']
         })
         break
       }

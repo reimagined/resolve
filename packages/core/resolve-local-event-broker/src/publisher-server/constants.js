@@ -28,6 +28,7 @@ export const DeliveryStrategy = (function(DeliveryStrategy) {
   DeliveryStrategy['ACTIVE_REGULAR'] = 'active-regular-transaction'
   DeliveryStrategy['ACTIVE_XA'] = 'active-xa-transaction'
   DeliveryStrategy['PASSIVE'] = 'passive'
+  DeliveryStrategy['PASSTHROUGH'] = 'passthrough'
   return Object.freeze(DeliveryStrategy)
 })({})
 

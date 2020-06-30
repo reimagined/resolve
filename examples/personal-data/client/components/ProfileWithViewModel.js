@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useViewModel } from 'resolve-react-hooks'
 import { Redirect } from 'react-router-dom'
-import { decrypt } from '../../common/encryption-factory'
+import { getDecrypter } from '../../common/encryption-factory'
 import Login from './Login'
 import Loading from './Loading'
 
@@ -12,14 +12,17 @@ const ProfileWithViewModel = ({ userId }) => {
     fetch(`/api/personal-data-keys/${user.id}`)
       .then(response => response.text())
       .then(key => {
+        const decrypt = getDecrypter(key)
+
         setUser({
           ...user,
-          firstName: decrypt(key, user.firstName),
-          lastName: decrypt(key, user.lastName),
-          contacts: decrypt(key, user.contacts)
+          firstName: decrypt(user.firstName),
+          lastName: decrypt(user.lastName),
+          contacts: decrypt(user.contacts)
         })
       })
   }
+
   const { connect, dispose } = useViewModel(
     'current-user-profile',
     [userId],
@@ -37,7 +40,7 @@ const ProfileWithViewModel = ({ userId }) => {
     return <Loading />
   }
 
-  if (user === null) {
+  if (user == null) {
     return <Redirect to="/" />
   }
 

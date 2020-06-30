@@ -5,8 +5,8 @@ exports[`works correctly 1`] = `
 import '$resolve.guardOnlyServer'
 const eventBrokerConfig = {}
 eventBrokerConfig[\\"launchBroker\\"] = true
-eventBrokerConfig[\\"zmqBrokerAddress\\"] = (((first, second) => (first != null ? first : second))(process.env[\\"zmqBrokerAddress\\"], null))
-eventBrokerConfig[\\"zmqConsumerAddress\\"] = (((first, second) => (first != null ? first : second))(process.env[\\"zmqConsumerAddress\\"], null))
+eventBrokerConfig[\\"publisherAddress\\"] = (((first, second) => (first != null ? first : second))(process.env[\\"publisherAddress\\"], null))
+eventBrokerConfig[\\"consumerAddress\\"] = (((first, second) => (first != null ? first : second))(process.env[\\"consumerAddress\\"], null))
 eventBrokerConfig[\\"databaseFile\\"] = (((first, second) => (first != null ? first : second))(process.env[\\"databaseFile\\"], null))
 eventBrokerConfig[\\"batchSize\\"] = 100
 eventBrokerConfig[\\"upstream\\"] = true

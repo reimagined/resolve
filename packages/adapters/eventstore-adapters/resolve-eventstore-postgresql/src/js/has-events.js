@@ -1,11 +1,17 @@
 const hasEvents = async (pool, events) => {
-  const { executeStatement, escapeId, escape, tableName, databaseName } = pool
+  const {
+    executeStatement,
+    escapeId,
+    escape,
+    eventsTableName,
+    databaseName
+  } = pool
   if (!Array.isArray(events) || events.length === 0) {
     return []
   }
 
   const databaseNameAsId = escapeId(databaseName)
-  const eventsTableAsId = escapeId(tableName)
+  const eventsTableAsId = escapeId(eventsTableName)
 
   const rows = await executeStatement(
     `SELECT "aggregateId", "aggregateVersion" FROM ${databaseNameAsId}.${eventsTableAsId} 

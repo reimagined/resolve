@@ -6,6 +6,36 @@ const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || '3000'
 const MAIN_PAGE = `http://${host}:${port}`
 
+const waitSelector = async (t, eventSubscriber, selector) => {
+  while (true) {
+    const res = await fetch(`${MAIN_PAGE}/api/event-broker/read-models-list`)
+
+    const readModel = (await res.json()).find(
+      readModel => readModel.eventSubscriber === eventSubscriber
+    )
+
+    if (readModel.status !== 'deliver') {
+      throw new Error(`Test failed. Read-model status "${readModel.status}"`)
+    }
+
+    try {
+      await t.expect((await selector).exists).eql(true)
+      break
+    } catch (e) {}
+  }
+}
+
+const refreshAndWait = async (t, selector, expectedValue) => {
+  while (true) {
+    await t.navigateTo(MAIN_PAGE)
+
+    try {
+      await t.expect(await selector()).eql(expectedValue, { timeout: 1000 })
+      break
+    } catch (e) {}
+  }
+}
+
 // eslint-disable-next-line no-unused-expressions, no-undef
 fixture`Shopping List`.beforeEach(async t => {
   await t.setNativeDialogHandler(() => true)
@@ -235,20 +265,20 @@ test('create first shopping list', async t => {
   await t.typeText(Selector('input[type=text]'), 'First Shopping List')
   await t.click(Selector('button').withText('Add Shopping List'))
 
-  await t.expect(await Selector('td > a').count).eql(2)
+  await refreshAndWait(t, () => Selector('td > a').count, 2)
 })
 
 test('create second shopping list', async t => {
   await t.typeText(Selector('input[type=text]'), 'Second Shopping List')
   await t.click(Selector('button').withText('Add Shopping List'))
 
-  await t.expect(await Selector('td > a').count).eql(3)
+  await refreshAndWait(t, () => Selector('td > a').count, 3)
 })
 
 test('create items in first shopping list', async t => {
   await t.click(Selector('a').withText('First Shopping List'))
 
-  await t.wait(3000)
+  await waitSelector(t, 'ShoppingLists', Selector('input[type=text]'))
 
   await t.typeText(Selector('input[type=text]'), 'Item 1')
   await t.click(Selector('button').withText('Add Item'))
@@ -267,7 +297,7 @@ test('create items in first shopping list', async t => {
 test('toggle items in first shopping list', async t => {
   await t.click(Selector('a').withText('First Shopping List'))
 
-  await t.wait(3000)
+  await waitSelector(t, 'ShoppingLists', Selector('label').withText('Item 1'))
 
   await t.click(Selector('label').withText('Item 1'))
   await t.click(Selector('label').withText('Item 2'))

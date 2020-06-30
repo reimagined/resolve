@@ -1,11 +1,11 @@
 import { ConcurrentError } from 'resolve-eventstore-base'
 
 const saveEvent = async (pool, event) => {
-  const { tableName, database, escapeId, escape } = pool
+  const { eventsTableName, database, escapeId, escape } = pool
   try {
     const currentThreadId = Math.floor(Math.random() * 256)
-    const eventsTableNameAsId = escapeId(tableName)
-    const freezeTableNameAsString = escape(`${tableName}-freeze`)
+    const eventsTableNameAsId = escapeId(eventsTableName)
+    const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
     const serializedPayload =
       event.payload != null
         ? escape(JSON.stringify(event.payload))

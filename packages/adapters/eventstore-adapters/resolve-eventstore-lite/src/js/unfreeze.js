@@ -1,5 +1,7 @@
-const unfreeze = async ({ database, tableName, escapeId }) => {
-  await database.exec(`DROP TABLE IF EXISTS ${escapeId(`${tableName}-freeze`)}`)
+const unfreeze = async ({ database, eventsTableName, escapeId }) => {
+  await database.exec(
+    `DROP TABLE IF EXISTS ${escapeId(`${eventsTableName}-freeze`)}`
+  )
 }
 
 export default unfreeze

@@ -16,17 +16,11 @@ const prodConfig = {
       }
     }
   },
-  snapshotAdapter: {
-    module: 'resolve-snapshot-lite',
-    options: {
-      // databaseFile: 'path/to/file',
-      bucketSize: 100
-    }
-  },
   eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
     options: {
-      databaseFile: 'data/event-store.db'
+      databaseFile: 'data/event-store.db',
+      secretsFile: 'data/secrets.db'
     }
   },
   subscribeAdapter: {

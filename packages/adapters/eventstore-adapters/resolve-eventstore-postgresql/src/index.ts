@@ -9,12 +9,14 @@ import getLatestEvent from './js/get-latest-event'
 import saveEvent from './js/save-event'
 import fullJitter from './js/full-jitter'
 import executeStatement from './js/execute-statement'
-import saveEventOnly from './js/save-event-only'
-import paginateEvents from './js/paginate-events'
+import injectEvent from './js/inject-event'
 import coercer from './js/coercer'
 import escapeId from './js/escape-id'
 import escape from './js/escape'
 import shapeEvent from './js/shape-event'
+import loadSnapshot from './js/load-snapshot'
+import saveSnapshot from './js/save-snapshot'
+import dropSnapshot from './js/drop-snapshot'
 
 import connect from './connect'
 import init from './init'
@@ -38,11 +40,13 @@ const createAdapter = _createAdapter.bind(null, {
   escape,
   fullJitter,
   executeStatement,
-  saveEventOnly,
-  paginateEvents,
+  injectEvent,
   coercer,
   shapeEvent,
-  getSecretsManager
+  getSecretsManager,
+  loadSnapshot,
+  saveSnapshot,
+  dropSnapshot
 })
 
 export default createAdapter

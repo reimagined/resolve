@@ -1,7 +1,7 @@
 import { throwBadCursor } from 'resolve-eventstore-base'
 
 const loadEventsByTimestamp = async (
-  { events: { connection, tableName }, escapeId, escape, shapeEvent },
+  { events: { connection, eventsTableName }, escapeId, escape, shapeEvent },
   { eventTypes, aggregateIds, startTime, finishTime, limit }
 ) => {
   const injectString = value => `${escape(value)}`
@@ -27,7 +27,7 @@ const loadEventsByTimestamp = async (
   const resultQueryCondition =
     queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
 
-  const eventsTableNameAsId = escapeId(tableName)
+  const eventsTableNameAsId = escapeId(eventsTableName)
 
   const [rows] = await connection.query(
     `SELECT * FROM ${eventsTableNameAsId}

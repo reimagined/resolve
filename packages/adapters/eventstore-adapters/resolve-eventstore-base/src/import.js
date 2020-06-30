@@ -9,12 +9,11 @@ import {
   BATCH_SIZE
 } from './constants'
 
-function EventStream({ pool, maintenanceMode, byteOffset, sequenceIndex }) {
+function EventStream({ pool, maintenanceMode, byteOffset }) {
   stream.Writable.call(this, { objectMode: true })
 
   this.pool = pool
   this.byteOffset = byteOffset
-  this.sequenceIndex = sequenceIndex
   this.buffer = Buffer.allocUnsafe(BUFFER_SIZE)
   this.beginPosition = 0
   this.endPosition = 0
@@ -45,7 +44,7 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
   try {
     await this.pool.waitConnect()
 
-    const { drop, init, freeze, saveEventOnly } = this.pool
+    const { drop, init, freeze, injectEvent } = this.pool
 
     if (
       this.maintenanceMode === MAINTENANCE_MODE_AUTO &&
@@ -127,10 +126,10 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
       this.byteOffset += eventByteLength
 
       const event = JSON.parse(stringifiedEvent)
-      event[Symbol.for('sequenceIndex')] = this.sequenceIndex++
+
       this.timestamp = Math.max(this.timestamp, event.timestamp)
 
-      const saveEventPromise = saveEventOnly(event).catch(
+      const saveEventPromise = injectEvent(event).catch(
         this.saveEventErrors.push.bind(this.saveEventErrors)
       )
       void saveEventPromise.then(
@@ -166,7 +165,7 @@ EventStream.prototype._final = async function(callback) {
 
   try {
     await this.pool.waitConnect()
-    const { unfreeze, saveEventOnly } = this.pool
+    const { unfreeze, injectEvent } = this.pool
 
     if (this.vacantSize !== BUFFER_SIZE) {
       let stringifiedEvent = null
@@ -195,12 +194,11 @@ EventStream.prototype._final = async function(callback) {
       } catch {}
 
       if (event !== PARTIAL_EVENT_FLAG) {
-        event[Symbol.for('sequenceIndex')] = this.sequenceIndex++
         this.timestamp = Math.max(this.timestamp, event.timestamp)
 
         this.byteOffset += eventByteLength
 
-        const saveEventPromise = saveEventOnly(event).catch(
+        const saveEventPromise = injectEvent(event).catch(
           this.saveEventErrors.push.bind(this.saveEventErrors)
         )
         void saveEventPromise.then(
@@ -224,7 +222,11 @@ EventStream.prototype._final = async function(callback) {
     }
 
     if (this.saveEventErrors.length > 0) {
-      throw new Error(this.saveEventErrors.join(EOL))
+      const error = new Error(
+        this.saveEventErrors.map(({ message }) => message).join(EOL)
+      )
+      error.stack = this.saveEventErrors.map(({ stack }) => stack).join(EOL)
+      throw error
     }
 
     callback()
@@ -237,11 +239,7 @@ EventStream.prototype._final = async function(callback) {
 
 const importStream = (
   pool,
-  {
-    byteOffset = 0,
-    sequenceIndex = 1,
-    maintenanceMode = MAINTENANCE_MODE_AUTO
-  } = {}
+  { byteOffset = 0, maintenanceMode = MAINTENANCE_MODE_AUTO } = {}
 ) => {
   switch (maintenanceMode) {
     case MAINTENANCE_MODE_AUTO:
@@ -249,8 +247,7 @@ const importStream = (
       return new EventStream({
         pool,
         maintenanceMode,
-        byteOffset,
-        sequenceIndex
+        byteOffset
       })
     default:
       throw new Error(`Wrong maintenance mode ${maintenanceMode}`)

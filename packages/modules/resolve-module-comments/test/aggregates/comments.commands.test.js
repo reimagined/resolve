@@ -10,6 +10,12 @@ import {
 
 describe('aggregate "comments"', () => {
   const commands = createCommentsCommands()
+  let context
+  beforeEach(() => {
+    context = {
+      jwt: 'JWT'
+    }
+  })
 
   test('command "createComment" should create comment', async () => {
     const state = {}
@@ -22,7 +28,7 @@ describe('aggregate "comments"', () => {
       }
     }
 
-    const event = await commands[createComment](state, command)
+    const event = await commands[createComment](state, command, context)
 
     expect(event).toEqual({
       type: COMMENT_CREATED,
@@ -45,7 +51,7 @@ describe('aggregate "comments"', () => {
       }
     }
 
-    const event = await commands[updateComment](state, command)
+    const event = await commands[updateComment](state, command, context)
 
     expect(event).toEqual({
       type: COMMENT_UPDATED,
@@ -66,7 +72,7 @@ describe('aggregate "comments"', () => {
       }
     }
 
-    const event = await commands[removeComment](state, command)
+    const event = await commands[removeComment](state, command, context)
 
     expect(event).toEqual({
       type: COMMENT_REMOVED,

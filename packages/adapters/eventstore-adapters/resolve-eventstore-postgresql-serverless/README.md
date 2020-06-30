@@ -6,7 +6,7 @@ This package is a eventstore adapter for storing events using AWS Aurora Serverl
 ## Available Parameters
 
 * `databaseName` - a name of a database storing events.
-* `tableName` - a name of a table storing events.
+* `eventsTableName` - a name of a table storing events.
 * `awsSecretStoreArn` - an AWS Secret store ARN.
 * `dbClusterOrInstanceArn` - a database cluster or instance ARN.
 * `region` - an AWS region.
@@ -19,7 +19,7 @@ import createAdapter from 'resolve-eventstore-postgresql-serverless'
 const adapter = createAdapter({
   region: 'us-east-1',
   databaseName: 'databaseName',
-  tableName: 'tableName',
+  eventsTableName: 'eventsTableName',
   awsSecretStoreArn: 'awsSecretStoreArn',
   dbClusterOrInstanceArn: 'dbClusterOrInstanceArn'
 })
@@ -34,7 +34,7 @@ await create({
   awsSecretStoreAdminArn: 'awsSecretStoreAdminArn',
   dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
   databaseName: 'creatingDatabaseName',
-  tableName: 'creatingTableName',
+  eventsTableName: 'creatingTableName',
   userLogin: 'creatingUserLogin',
   userPassword: 'creatingUserPassword'
 })
@@ -44,7 +44,7 @@ await dispose({
   awsSecretStoreAdminArn: 'awsSecretStoreAdminArn',
   dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
   databaseName: 'disposingDatabaseName',
-  tableName: 'disposingTableName',
+  eventsTableName: 'disposingTableName',
   userLogin: 'disposingUserLogin',
   userPassword: 'disposingUserPassword'
 })

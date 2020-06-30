@@ -1,6 +1,5 @@
 import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 import invokeEventBus from './invoke-event-bus'
-import publishEvent from './publish-event'
 
 const initBroker = resolve => {
   Object.assign(resolve.publisher, {
@@ -118,9 +117,6 @@ const initBroker = resolve => {
   Object.defineProperties(resolve, {
     getSubscribeAdapterOptions: {
       value: getSubscribeAdapterOptions.bind(null, resolve)
-    },
-    publishEvent: {
-      value: publishEvent.bind(null, resolve)
     }
   })
 }

@@ -405,6 +405,288 @@ await sideEffects.scheduleCommand(
 
 <!-- prettier-ignore-end -->
 
+## reSolve Scripts
+
+The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) package contains service scripts used to configure, build, and run reSolve applications. The package contains the following scripts:
+
+| Script                                | Description                                                                   |
+| ------------------------------------- | ----------------------------------------------------------------------------- |
+| [build](#build)                       | Builds an application.                                                        |
+| [start](#start)                       | Runs an application.                                                     |
+| [watch](#watch)                       | Runs an application in **watch** mode. (Watch application files for changes.) |
+| [runTestcafe](#runtestcafe)           | Runs TestCafe tests.                                                          |
+| [merge](#merge)                       | Merges modules and application configurations into a single object.                  |
+| [stop](#stop)                         | Stops an application.                                                 |
+| [reset](#reset)                       | Resets an application's persistent storages and snapshots.                    |
+| [importEventStore](#importeventstore) | Imports events from a file to an application's event store.                   |
+| [exportEventStore](#exporteventstore) | Exports events from an application's event store to a file.                   |
+| [validateConfig](#validateconfig)     | Validates a configuration object.                                             |
+
+The resolve-scripts library also exports a `defaultResolveConfig` object that contains default configuration settings. This object is merged with an application's configuration objects to receive a global configuration object:
+
+```js
+// run.js
+const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+```
+
+### build
+
+Builds an application.
+
+#### Example
+
+#### build
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#build)
+```js
+import {
+  build,
+  ...
+} from 'resolve-scripts'
+    ...
+    switch (launchMode) {
+    ...
+      case 'build': {
+        const resolveConfig = merge(baseConfig, prodConfig)
+        await build(resolveConfig)
+        break
+      }
+      ...
+    }
+```
+
+<!-- prettier-ignore-end -->
+
+### start
+
+Runs a built application.
+
+#### Example
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#start)
+```js
+import {
+  ...
+  start,
+  ...
+} from 'resolve-scripts'
+    ...
+    switch (launchMode) {
+      ...
+      case 'start': {
+        await start(merge(baseConfig, prodConfig))
+        break
+      }
+      ...
+    }
+```
+
+<!-- prettier-ignore-end -->
+
+### watch
+
+Runs an application in **watch** mode. (Watch application files for changes.)
+
+#### Example
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#watch)
+```js
+import {
+  ...
+  watch,
+  ...
+} from 'resolve-scripts'
+    ...
+    switch (launchMode) {
+      ...
+      case 'dev': {
+        const resolveConfig = merge(baseConfig, devConfig)
+        await watch(resolveConfig)
+        break
+      }
+      ...
+    }
+```
+
+<!-- prettier-ignore-end -->
+
+### runTestcafe
+
+Runs TestCafe tests.
+
+#### Example
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#runTestcafe)
+```js
+import {
+  ...
+  runTestcafe,
+  ...
+} from 'resolve-scripts'
+    ...
+    switch (launchMode) {
+      ...
+      case 'test:functional': {
+        const resolveConfig = merge(baseConfig, testFunctionalConfig)
+        await runTestcafe({
+          resolveConfig,
+          functionalTestsDir: 'test/functional',
+          browser: process.argv[3]
+        })
+        break
+      }
+      ...
+    }
+```
+
+<!-- prettier-ignore-end -->
+
+### merge
+
+Merges modules and application configs into a single object.
+
+#### Example
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#merge)
+```js
+import {
+  ...
+  merge,
+  ...
+} from 'resolve-scripts'
+  ...
+    const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+```
+
+<!-- prettier-ignore-end -->
+
+### reset
+
+Resets an application's persistent storages and snapshots.
+
+#### Example
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#reset)
+```js
+import {
+  ...
+  reset,
+  ...
+} from 'resolve-scripts'
+    ...
+    switch (launchMode) {
+      ...
+      case 'reset': {
+        const resolveConfig = merge(baseConfig, devConfig)
+        await reset(resolveConfig, {
+          dropEventStore: true,
+          dropEventBus: true,
+          dropReadModels: true,
+          dropSagas: true
+        })
+        break
+      }
+      ...
+    }
+```
+
+<!-- prettier-ignore-end -->
+
+### importEventStore
+
+Imports events from a file to an application's event store.
+
+#### Example
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#importEventStore)
+```js
+import {
+  ...
+  importEventStore,
+  ...
+} from 'resolve-scripts'
+    ...
+    switch (launchMode) {
+      ...
+      case 'import-event-store': {
+        const resolveConfig = merge(baseConfig, devConfig)
+
+        const importFile = process.argv[3]
+        await importEventStore(resolveConfig, { importFile })
+        break
+      }
+      ...
+    }
+```
+
+<!-- prettier-ignore-end -->
+
+### exportEventStore
+
+Exports events from an application's event store to a file.
+
+#### Example
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#exportEventStore)
+```js
+import {
+  ...
+  exportEventStore,
+  ...
+} from 'resolve-scripts'
+    ...
+    switch (launchMode) {
+      ...
+      case 'export-event-store': {
+        const resolveConfig = merge(baseConfig, devConfig)
+
+        const exportFile = process.argv[3]
+        await exportEventStore(resolveConfig, { exportFile })
+        break
+      }
+      ...
+    }
+```
+
+<!-- prettier-ignore-end -->
+
+### validateConfig
+
+Validates a configuration object.
+
+#### Example
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/resolve-scripts-sample/run.js#validateConfig)
+```js
+import {
+  ...
+  validateConfig,
+  ...
+} from 'resolve-scripts'
+    ...
+    validateConfig(config)
+```
+
+<!-- prettier-ignore-end -->
+
 ## Client-Side API
 
 ### HTTP API
@@ -502,7 +784,7 @@ The request body should have the `application/json` content type and contain the
 | **aggregateId**   | string | The ID of an aggregate that should handle the command |
 | **aggregateName** | string | The aggregate's name as defined in **config.app.js**  |
 | **commandType**   | string | The command type that the aggregate can handle        |
-| **payload**       | object | Parameters the command accepts               |
+| **payload**       | object | Parameters the command accepts                        |
 
 ##### Example
 
@@ -559,7 +841,7 @@ export const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       replaceUrl: routerActions.replace
@@ -568,10 +850,7 @@ export const mapDispatchToProps = (dispatch) =>
   )
 
 export default connectViewModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ShoppingList)
+  connect(mapStateToProps, mapDispatchToProps)(ShoppingList)
 )
 ```
 
@@ -596,15 +875,15 @@ export const mapStateToProps = (state, ownProps) => ({
 })
 
 export const mapDispatchToProps = dispatch =>
-  bindActionCreators({
-    createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
-  }, dispatch)
+  bindActionCreators(
+    {
+      createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
+    },
+    dispatch
+  )
 
 export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MyLists)
+  connect(mapStateToProps, mapDispatchToProps)(MyLists)
 )
 ```
 

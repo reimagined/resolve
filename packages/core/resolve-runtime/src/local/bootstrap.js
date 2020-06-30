@@ -1,6 +1,5 @@
 import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 import { PublisherResourceAlreadyExistError } from 'resolve-local-event-broker'
-import { SnapshotResourceAlreadyExistError } from 'resolve-snapshot-base'
 
 import debugLevels from 'resolve-debug-levels'
 import {
@@ -20,7 +19,6 @@ const bootstrap = async resolve => {
     assemblies: {
       eventBrokerConfig: { upstream }
     },
-    snapshotAdapter,
     readModelConnectors,
     eventstoreAdapter,
     publisher
@@ -28,9 +26,6 @@ const bootstrap = async resolve => {
 
   await invokeFilterErrorTypes(eventstoreAdapter.init.bind(eventstoreAdapter), [
     EventstoreResourceAlreadyExistError
-  ])
-  await invokeFilterErrorTypes(snapshotAdapter.init.bind(snapshotAdapter), [
-    SnapshotResourceAlreadyExistError
   ])
   await invokeFilterErrorTypes(publisher.init.bind(publisher), [
     PublisherResourceAlreadyExistError
@@ -86,6 +81,13 @@ const bootstrap = async resolve => {
 
     if (upstream) {
       const resumePromise = subscribePromise
+        .then(
+          publisher.setProperty.bind(publisher, {
+            eventSubscriber,
+            key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
+            value: `${Date.now()}`
+          })
+        )
         .then(publisher.resume.bind(publisher, { eventSubscriber }))
         .catch(error => {
           // eslint-disable-next-line no-console
@@ -100,6 +102,13 @@ const bootstrap = async resolve => {
   }
 
   await Promise.all(promises)
+
+  await publisher.subscribe({
+    eventSubscriber: 'websocket',
+    subscriptionOptions: { deliveryStrategy: 'passthrough' }
+  })
+
+  await publisher.resume({ eventSubscriber: 'websocket' })
 
   log.debug('bootstrap successful')
 

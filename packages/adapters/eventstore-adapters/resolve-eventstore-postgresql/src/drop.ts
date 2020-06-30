@@ -1,5 +1,5 @@
 import { EOL } from 'os'
-import { ResourceNotExistError } from './js/base-imports'
+import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
 import getLog from './js/get-log'
 import dropEventStore from './js/drop'
 import { AdapterPool } from './types'
@@ -41,7 +41,7 @@ const dropSecretsStore = async (pool: AdapterPool): Promise<any> => {
         log.error(error.message)
         log.verbose(error.stack)
         if (/Table.*? does not exist$/i.test(error.message)) {
-          throw new ResourceNotExistError(
+          throw new EventstoreResourceNotExistError(
             `duplicate event store resource drop detected`
           )
         }
@@ -60,17 +60,22 @@ const dropSecretsStore = async (pool: AdapterPool): Promise<any> => {
 const drop = async (pool: AdapterPool): Promise<any> => {
   const log = getLog('drop')
 
-  const { databaseName, tableName, executeStatement, escapeId } = pool
+  const {
+    databaseName,
+    eventsTableName,
+    snapshotsTableName,
+    executeStatement,
+    escapeId
+  } = pool
 
   const createDropEventStorePromise = (): Promise<any> =>
-    databaseName && tableName && executeStatement && escapeId
-      ? dropEventStore({
-          databaseName,
-          tableName,
-          executeStatement,
-          escapeId
-        })
-      : Promise.resolve()
+    dropEventStore({
+      databaseName,
+      eventsTableName,
+      snapshotsTableName,
+      executeStatement,
+      escapeId
+    })
 
   log.debug(`dropping the event store`)
   await Promise.all([createDropEventStorePromise(), dropSecretsStore(pool)])

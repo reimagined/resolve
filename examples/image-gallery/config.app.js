@@ -16,7 +16,7 @@ const appConfig = {
   ],
   apiHandlers: [
     {
-      controller: {
+      handler: {
         module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
         options: {
           modulePath: './ssr.js',

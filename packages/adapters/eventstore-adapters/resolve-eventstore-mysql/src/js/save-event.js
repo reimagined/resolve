@@ -6,14 +6,14 @@ const ER_DUP_ENTRY = 1062
 
 const saveEvent = async (pool, event) => {
   const {
-    events: { tableName, connection, database },
+    events: { eventsTableName, connection, database },
     escapeId,
     escape
   } = pool
   try {
-    const eventsTableNameAsId = escapeId(tableName)
-    const freezeTableNameAsString = escape(`${tableName}-freeze`)
-    const threadsTableNameAsId = escapeId(`${tableName}-threads`)
+    const eventsTableNameAsId = escapeId(eventsTableName)
+    const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
+    const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
     const databaseNameAsString = escape(database)
     const serializedPayload =
       event.payload != null
@@ -54,7 +54,7 @@ const saveEvent = async (pool, event) => {
         \`payload\`
       ) VALUES(
         @selectedThreadId,
-        COALESCE(@threadCounter + 1, 0),
+        COALESCE(@threadCounter, 0),
         GREATEST(
           ROUND(UNIX_TIMESTAMP(SYSDATE(4)) * 1000),
           ${+event.timestamp}

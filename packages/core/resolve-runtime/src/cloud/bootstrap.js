@@ -1,5 +1,3 @@
-import { SnapshotResourceAlreadyExistError } from 'resolve-snapshot-base'
-
 import debugLevels from 'resolve-debug-levels'
 import {
   FULL_XA_CONNECTOR,
@@ -8,17 +6,11 @@ import {
   detectConnectorFeatures
 } from 'resolve-query'
 
-import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
-
 const log = debugLevels('resolve:resolve-runtime:bootstrap')
 
 const bootstrap = async resolve => {
   log.debug('bootstrap started')
-  const { snapshotAdapter, readModelConnectors, publisher } = resolve
-
-  await invokeFilterErrorTypes(snapshotAdapter.init.bind(snapshotAdapter), [
-    SnapshotResourceAlreadyExistError
-  ])
+  const { readModelConnectors, publisher } = resolve
 
   const promises = []
   for (const {
@@ -70,6 +62,13 @@ const bootstrap = async resolve => {
     promises.push(subscribePromise)
 
     const resumePromise = subscribePromise
+      .then(
+        publisher.setProperty.bind(publisher, {
+          eventSubscriber,
+          key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
+          value: `${Date.now()}`
+        })
+      )
       .then(publisher.resume.bind(publisher, { eventSubscriber }))
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -83,6 +82,16 @@ const bootstrap = async resolve => {
   }
 
   await Promise.all(promises)
+
+  await publisher.subscribe({
+    eventSubscriber: 'websocket',
+    subscriptionOptions: {
+      credentials: resolve.eventSubscriberCredentials,
+      deliveryStrategy: 'passthrough'
+    }
+  })
+
+  await publisher.resume({ eventSubscriber: 'websocket' })
 
   log.debug('bootstrap successful')
 

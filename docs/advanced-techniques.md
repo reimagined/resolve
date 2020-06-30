@@ -31,7 +31,6 @@ ReSolve uses the **adapter** mechanism to provide an abstraction layer above API
 ReSolve uses different types of adapters depending on which kind of data needs to be stored.
 
 - **Event store adapters**
-- **Snapshot store adapters**
 - **Read model store adapters**
 
 Resolve comes with a set of adapters covering popular DBMS choices. You can also implement new adapters to store data in any required way.
@@ -91,10 +90,12 @@ For an example on how to use modules, see the [Hacker News](https://github.com/r
 
 ## Upload Files
 
-The **resolve-module-upload** module implements the file upload functionality. You can enable this module as shown below:
+The **resolve-module-uploader** module implements the file upload functionality. You can enable this module as shown below:
 
 ##### run.js:
+
 ```js
+import resolveModuleUploader from 'resolve-module-uploader'
 const moduleUploader = resolveModuleUploader({ jwtSecret })
 ...
 const baseConfig = merge(
@@ -105,7 +106,7 @@ const baseConfig = merge(
 )
 ```
 
-The **resolve-module-upload** module adds the following API endpoints to an application:
+The **resolve-module-uploader** module adds the following API endpoints to an application:
 
 - `/api/uploader/getFormUpload` - Returns an upload path to use in HTTP forms.
 - `/api/uploader/getUploadUrl` - Returns a path used to upload files.

@@ -21,12 +21,14 @@ const createAdapter = (
     init,
     drop,
     dispose,
-    saveEventOnly,
-    paginateEvents,
+    injectEvent,
     isFrozen,
     freeze,
     unfreeze,
     shapeEvent,
+    loadSnapshot,
+    saveSnapshot,
+    dropSnapshot,
     getSecretsManager = getSecretsManagerFallback,
     ...adapterSpecificArguments
   },
@@ -41,17 +43,17 @@ const createAdapter = (
   }).then(connect.bind(null, pool, adapterSpecificArguments))
 
   Object.assign(pool, {
-    saveEventOnly: wrapMethod(pool, saveEventOnly),
+    injectEvent: wrapMethod(pool, injectEvent),
     loadEventsByCursor: wrapMethod(pool, loadEventsByCursor),
     loadEventsByTimestamp: wrapMethod(pool, loadEventsByTimestamp),
-    paginateEvents: wrapMethod(pool, paginateEvents),
     // eslint-disable-next-line no-new-func
     waitConnect: wrapMethod(pool, Function()),
     wrapMethod,
     isFrozen: wrapMethod(pool, isFrozen),
     connectPromise,
     connectPromiseResolve,
-    shapeEvent
+    shapeEvent,
+    counters: new Map()
   })
 
   const adapter = {
@@ -67,7 +69,10 @@ const createAdapter = (
     freeze: wrapMethod(pool, freeze),
     unfreeze: wrapMethod(pool, unfreeze),
     getNextCursor: getNextCursor.bind(null),
-    getSecretsManager: wrapMethod(pool, getSecretsManager)
+    getSecretsManager: wrapMethod(pool, getSecretsManager),
+    loadSnapshot: wrapMethod(pool, loadSnapshot),
+    saveSnapshot: wrapMethod(pool, saveSnapshot),
+    dropSnapshot: wrapMethod(pool, dropSnapshot)
   }
 
   Object.assign(pool, adapter)

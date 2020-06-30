@@ -3,7 +3,14 @@ import { INT8_SQL_TYPE } from './constants'
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
 const loadEventsByCursor = async (
-  { executeStatement, escapeId, escape, tableName, databaseName, shapeEvent },
+  {
+    executeStatement,
+    escapeId,
+    escape,
+    eventsTableName,
+    databaseName,
+    shapeEvent
+  },
   { eventTypes, aggregateIds, cursor, limit }
 ) => {
   const injectString = value => `${escape(value)}`
@@ -42,7 +49,7 @@ const loadEventsByCursor = async (
     ${queryConditions.length > 0 ? ')' : ''}`
 
   const databaseNameAsId = escapeId(databaseName)
-  const eventsTableAsId = escapeId(tableName)
+  const eventsTableAsId = escapeId(eventsTableName)
 
   const sqlQuery = [
     `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}`,

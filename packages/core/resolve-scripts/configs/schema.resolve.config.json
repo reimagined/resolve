@@ -231,14 +231,14 @@
         "method": {
           "type": "string"
         },
-        "controller": {
+        "handler": {
           "oneOf": [
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
         }
       },
-      "required": ["path", "controller"],
+      "required": ["path", "handler"],
       "additionalProperties": false
     },
     "jwtCookie": {
@@ -402,9 +402,6 @@
         "subscribeAdapter": {
           "$ref": "#/definitions/subscribeAdapter"
         },
-        "snapshotAdapter": {
-          "$ref": "#/definitions/adapter"
-        },
         "jwtCookie": {
           "$ref": "#/definitions/jwtCookie"
         },
@@ -437,7 +434,6 @@
         "readModelConnectors",
         "schedulers",
         "eventstoreAdapter",
-        "snapshotAdapter",
         "subscribeAdapter",
         "eventBroker",
         "customConstants",

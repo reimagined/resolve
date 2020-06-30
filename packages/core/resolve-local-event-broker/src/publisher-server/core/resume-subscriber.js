@@ -5,7 +5,8 @@ import {
   SUBSCRIBERS_TABLE_NAME,
   LONG_INTEGER_SQL_TYPE,
   LazinessStrategy,
-  PrivateOperationType
+  PrivateOperationType,
+  DeliveryStrategy
 } from '../constants'
 
 const resumeSubscriber = async (pool, payload) => {
@@ -50,6 +51,7 @@ const resumeSubscriber = async (pool, payload) => {
         FROM ${subscribersTableNameAsId}
         WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)}
         AND "status" = ${escapeStr(SubscriptionStatus.DELIVER)}
+        AND "deliveryStrategy" <> ${escapeStr(DeliveryStrategy.PASSTHROUGH)}
       ) "subscriptionIds";
 
       COMMIT;

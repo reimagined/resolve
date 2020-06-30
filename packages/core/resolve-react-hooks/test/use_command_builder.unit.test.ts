@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { mocked } from 'ts-jest/utils'
 import { Command, CommandCallback } from 'resolve-client'
 import { useClient } from '../src/use_client'
-import { useCommandBuilder } from '../src/use_command_builder'
+import { useCommandBuilder } from '../src/use-command-builder'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({

@@ -9,8 +9,6 @@ A eventstore adapter is an object that must contain the following functions:
 
 Available adapters:
 
-- [resolve-eventstore-mongo](./resolve-eventstore-mongo)  
-   Used to store events in MongoDB.
 - [resolve-eventstore-lite](./resolve-eventstore-lite)  
    Used to store events in a local file.
 - [resolve-eventstore-mysql](./resolve-eventstore-mysql)  

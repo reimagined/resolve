@@ -8,13 +8,20 @@ const connectEventStore = async (pool, { sqlite, tmp, os, fs }) => {
 
   log.debug(`connecting to events database`)
   const { escape } = pool
-  let { databaseFile, tableName, ...initOptions } = pool.config
+  let {
+    databaseFile,
+    eventsTableName = 'events',
+    snapshotsTableName = 'snapshots',
+    ...initOptions
+  } = pool.config
 
   databaseFile = coerceEmptyString(databaseFile)
-  tableName = coerceEmptyString(tableName)
+  eventsTableName = coerceEmptyString(eventsTableName)
+  snapshotsTableName = coerceEmptyString(snapshotsTableName)
 
   log.verbose(`databaseFile: ${databaseFile}`)
-  log.verbose(`tableName: ${tableName}`)
+  log.verbose(`eventsTableName: ${eventsTableName}`)
+  log.verbose(`snapshotsTableName: ${snapshotsTableName}`)
 
   let connector
   if (databaseFile === ':memory:') {
@@ -78,7 +85,8 @@ const connectEventStore = async (pool, { sqlite, tmp, os, fs }) => {
 
   Object.assign(pool, {
     database,
-    tableName,
+    eventsTableName,
+    snapshotsTableName,
     initOptions
   })
 

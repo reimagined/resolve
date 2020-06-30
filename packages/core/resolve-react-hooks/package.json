@@ -1,6 +1,6 @@
 {
   "name": "resolve-react-hooks",
-  "version": "0.23.2",
+  "version": "0.24.7",
   "description": "reSolve client wrapper for using in React hooks projects.",
   "engines": {
     "node": ">=10.9"
@@ -12,7 +12,8 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "test": "jest",
+    "build": "tsc",
+    "test": "echo || exit 0",
     "testw": "echo || exit 0",
     "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'"
   },
@@ -27,7 +28,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-api#readme",
   "dependencies": {
-    "resolve-client": "0.23.2"
+    "resolve-client": "0.24.7"
   },
   "devDependencies": {
     "react": "16.13.0",

@@ -52,6 +52,7 @@ async function createDatabase({ database: { runRawQuery, escapeId } }) {
         "aggregateIds" ${JSON_SQL_TYPE} NOT NULL,
         "queueStrategy" ${STRING_SQL_TYPE} NOT NULL,
         "maxParallel" ${LONG_INTEGER_SQL_TYPE} NOT NULL,
+        "properties" ${JSON_SQL_TYPE},
         
         "successEvent" ${JSON_SQL_TYPE},
         "failedEvent" ${JSON_SQL_TYPE},

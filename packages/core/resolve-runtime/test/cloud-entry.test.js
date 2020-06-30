@@ -588,7 +588,7 @@ describe('Cloud entry', () => {
         {
           method: 'POST',
           path: '/api/my-api-handler-1',
-          controller: async (req, res) => {
+          handler: async (req, res) => {
             res.setHeader('Content-type', 'application/octet-stream')
             res.end('Custom octet stream')
           }
@@ -596,7 +596,7 @@ describe('Cloud entry', () => {
         {
           method: 'POST',
           path: '/api/my-api-handler-2',
-          controller: async (req, res) => {
+          handler: async (req, res) => {
             res.setHeader('Content-type', 'text/plain')
             res.end('ok')
           }
@@ -627,7 +627,7 @@ describe('Cloud entry', () => {
       domain.apiHandlers.push({
         method: 'POST',
         path: '/',
-        controller: async (req, res) => {
+        handler: async (req, res) => {
           res.end('Custom markup handler')
         }
       })
@@ -655,7 +655,7 @@ describe('Cloud entry', () => {
       domain.apiHandlers.push({
         method: 'POST',
         path: '/',
-        controller: async (req, res) => {
+        handler: async (req, res) => {
           res.end('Custom markup handler')
         }
       })

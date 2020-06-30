@@ -1,40 +1,41 @@
 {
   "name": "resolve",
-  "version": "0.23.2",
+  "version": "0.24.7",
   "repository": "https://github.com/reimagined/resolve.git",
   "license": "MIT",
   "private": true,
   "devDependencies": {
     "@babel/core": "7.9.6",
-    "@babel/runtime": "7.9.6",
+    "@babel/plugin-proposal-class-properties": "7.8.3",
+    "@babel/plugin-proposal-decorators": "7.8.3",
     "@babel/preset-env": "7.9.6",
     "@babel/preset-react": "7.9.4",
     "@babel/preset-typescript": "7.9.0",
-    "@babel/plugin-proposal-decorators": "7.8.3",
-    "@babel/plugin-proposal-class-properties": "7.8.3",
-    "babel-plugin-transform-inline-environment-variables": "0.4.3",
+    "@babel/runtime": "7.9.6",
+    "@internal/helpers": "0.24.7",
+    "@typescript-eslint/eslint-plugin": "2.34.0",
+    "@typescript-eslint/parser": "2.34.0",
     "babel-eslint": "10.1.0",
     "babel-jest": "26.0.1",
+    "babel-plugin-transform-inline-environment-variables": "0.4.3",
     "eslint": "6.8.0",
-    "eslint-config-react-app": "5.2.1",
     "eslint-config-prettier": "6.11.0",
-    "eslint-plugin-prettier": "3.1.3",
+    "eslint-config-react-app": "5.2.1",
+    "eslint-plugin-flowtype": "4.7.0",
     "eslint-plugin-import": "2.20.2",
     "eslint-plugin-jsx-a11y": "6.2.3",
+    "eslint-plugin-prettier": "3.1.3",
     "eslint-plugin-react": "7.20.0",
-    "eslint-plugin-spellcheck": "0.0.16",
-    "eslint-plugin-flowtype": "4.7.0",
     "eslint-plugin-react-hooks": "2.5.1",
+    "eslint-plugin-spellcheck": "0.0.16",
+    "glob": "7.1.6",
+    "lcov-result-merger": "3.1.0",
+    "mdis": "0.0.5",
     "oao": "1.8.0",
     "prettier": "^1.18.0",
     "rimraf": "3.0.2",
-    "glob": "7.1.6",
-    "@internal/helpers": "0.23.2",
-    "mdis": "0.0.5",
-    "lcov-result-merger": "3.1.0",
-    "typescript": "3.9.3",
-    "@typescript-eslint/eslint-plugin": "2.34.0",
-    "@typescript-eslint/parser": "2.34.0"
+    "ts-jest": "26.0.0",
+    "typescript": "3.9.3"
   },
   "workspaces": {
     "packages": [
@@ -76,6 +77,10 @@
     "test:clean-snapshots": "npx oao all -i \"examples/shopping-list-advanced\"  \"yarn test -u --color 2>&1\"",
     "workspace-manager": "node packages/internal/workspace-manager/bin/index.js",
     "sla:enable": "yarn workspace-manager add \"examples/shopping-list-advanced/*\"",
-    "sla:disable": "yarn workspace-manager rm \"examples/shopping-list-advanced/*\""
+    "sla:disable": "yarn workspace-manager rm \"examples/shopping-list-advanced/*\"",
+    "validate-lock-file": "node validate-lock-file.js"
+  },
+  "dependencies": {
+    "@yarnpkg/lockfile": "^1.1.0"
   }
 }

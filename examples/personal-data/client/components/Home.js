@@ -18,13 +18,22 @@ const ContentSelector = ({ user }) => {
   return <Redirect to={`/blog/${user.id}`} />
 }
 
-const Home = () => {
+const Home = ({ location: { hash } = {} }) => {
   const [user, setUser] = useState('unknown')
   const getUser = useQuery(
     {
       name: 'user-profiles',
       resolver: 'profile',
       args: {}
+    },
+    {
+      waitFor: {
+        validator: result => {
+          return result !== null
+        },
+        period: 1000,
+        attempts: 5
+      }
     },
     (err, result) => {
       if (err) {
@@ -39,7 +48,11 @@ const Home = () => {
     }
   )
   useEffect(() => {
-    getUser()
+    if (hash === '#deleted') {
+      setUser(null)
+    } else {
+      getUser()
+    }
   }, [])
 
   return (
