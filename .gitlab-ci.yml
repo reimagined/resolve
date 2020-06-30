@@ -263,7 +263,7 @@ functional-tests (Windows):
     - node ci-cd\job-status\index.js --end
   after_script:
     - for /f "tokens=*" %%i in ('node ci-cd\job-status\index.js --isSucceeded') do set CI_STATUS=%%i
-    - if %CI_STATUS%=="true" (node ci-cd\create-github-status\index.js --state success --context "4. Functional tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% succeeded" --targetUrl %CI_JOB_URL%) else (node ci-cd\create-github-status\index.js --state failure --context "4. Functional tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% failed" --targetUrl %CI_JOB_URL%)
+    - if "%CI_STATUS%"=="true" (node ci-cd\create-github-status\index.js --state success --context "4. Functional tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% succeeded" --targetUrl %CI_JOB_URL%) else (node ci-cd\create-github-status\index.js --state failure --context "4. Functional tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% failed" --targetUrl %CI_JOB_URL%)
     - set CI_STATUS=
 
 #################
@@ -401,7 +401,7 @@ eslint + prettier (Windows):
     - node ci-cd\job-status\index.js --end
   after_script:
     - for /f "tokens=*" %%i in ('node ci-cd\job-status\index.js --isSucceeded') do set CI_STATUS=%%i
-    - if %CI_STATUS%=="true" (node ci-cd\create-github-status\index.js --state success --context "2. ESLint + Prettier (Windows)" --description "Build ♯%CI_PIPELINE_IID% succeeded" --targetUrl %CI_JOB_URL%) else (node ci-cd\create-github-status\index.js --state failure --context "2. ESLint + Prettier (Windows)" --description "Build ♯%CI_PIPELINE_IID% failed" --targetUrl %CI_JOB_URL%)
+    - if "%CI_STATUS%"=="true" (node ci-cd\create-github-status\index.js --state success --context "2. ESLint + Prettier (Windows)" --description "Build ♯%CI_PIPELINE_IID% succeeded" --targetUrl %CI_JOB_URL%) else (node ci-cd\create-github-status\index.js --state failure --context "2. ESLint + Prettier (Windows)" --description "Build ♯%CI_PIPELINE_IID% failed" --targetUrl %CI_JOB_URL%)
     - set CI_STATUS=
     
 unit-tests:
@@ -453,7 +453,7 @@ unit-tests (Windows):
     - node ci-cd\job-status\index.js --end
   after_script:
     - for /f "tokens=*" %%i in ('node ci-cd\job-status\index.js --isSucceeded') do set CI_STATUS=%%i
-    - if %CI_STATUS%=="true" (node ci-cd\create-github-status\index.js --state success --context "4. Unit-tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% succeeded" --targetUrl %CI_JOB_URL%) else (node ci-cd\create-github-status\index.js --state failure --context "4. Unit-tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% failed" --targetUrl %CI_JOB_URL%)
+    - if "%CI_STATUS%"=="true" (node ci-cd\create-github-status\index.js --state success --context "4. Unit-tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% succeeded" --targetUrl %CI_JOB_URL%) else (node ci-cd\create-github-status\index.js --state failure --context "4. Unit-tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% failed" --targetUrl %CI_JOB_URL%)
     - set CI_STATUS=
 
 integrational-tests:
@@ -694,7 +694,7 @@ windows (create-resolve-app + functional-tests):
     - node ci-cd/job-status/index.js --end
   after_script:
     - for /f "tokens=*" %%i in ('node ci-cd\job-status\index.js --isSucceeded') do set CI_STATUS=%%i
-    - if %CI_STATUS%=="true" (node ci-cd\create-github-status\index.js --state success --context "9. Functional-tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% succeeded" --targetUrl %CI_JOB_URL%) else (node ci-cd\create-github-status\index.js --state failure --context "9. Functional-tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% failed" --targetUrl %CI_JOB_URL%)
+    - if "%CI_STATUS%"=="true" (node ci-cd\create-github-status\index.js --state success --context "9. Functional-tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% succeeded" --targetUrl %CI_JOB_URL%) else (node ci-cd\create-github-status\index.js --state failure --context "9. Functional-tests (Windows)" --description "Build ♯%CI_PIPELINE_IID% failed" --targetUrl %CI_JOB_URL%)
     - set CI_STATUS=
 
 ##########
