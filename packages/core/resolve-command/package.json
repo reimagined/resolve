@@ -1,6 +1,6 @@
 {
   "name": "resolve-command",
-  "version": "0.23.2",
+  "version": "0.24.7",
   "description": "Creates a function that handles commands in a reSolve application.",
   "engines": {
     "node": ">=10.9"
@@ -25,10 +25,11 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-command#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0"
+    "@babel/runtime": "7.9.6",
+    "resolve-eventstore-base": "0.24.7"
   },
   "devDependencies": {
-    "jest": "25.1.0"
+    "jest": "26.0.1"
   },
   "babelCompile": [
     {

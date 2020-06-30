@@ -13,40 +13,30 @@ const readModel = {
       fields: ['profile', 'archive']
     })
   },
-  [USER_REGISTERED]: async (store, event, context) => {
+  [USER_REGISTERED]: async (store, event) => {
     const {
       aggregateId,
       payload: { nickname, firstName, lastName, contacts }
     } = event
 
-    const { decrypt } = context
-
-    const realFirstName = decrypt(firstName) || 'unknown'
-    const realLastName = decrypt(lastName) || 'unknown'
-
     await store.insert('Users', {
       id: aggregateId,
       profile: {
         nickname,
-        firstName: realFirstName,
-        lastName: realLastName,
-        fullName: `${realFirstName} ${realLastName}`,
-        contacts: decrypt(contacts) || {}
+        firstName: firstName,
+        lastName: lastName,
+        contacts: contacts
       }
     })
   },
-  [USER_PROFILE_UPDATED]: async (store, event, context) => {
+  [USER_PROFILE_UPDATED]: async (store, event) => {
     const {
       aggregateId,
       payload: { firstName, lastName, contacts }
     } = event
 
-    const { decrypt } = context
-
     const user = await store.findOne('Users', { id: aggregateId })
 
-    const nextFirstName = decrypt(firstName) || 'unknown'
-    const nextLatName = decrypt(lastName) || 'unknown'
     await store.update(
       'Users',
       { id: aggregateId },
@@ -54,10 +44,9 @@ const readModel = {
         $set: {
           profile: {
             ...user.profile,
-            firstName: nextFirstName,
-            lastName: nextLatName,
-            fullName: `${nextFirstName} ${nextLatName}`,
-            contacts: decrypt(contacts) || {}
+            firstName,
+            lastName,
+            contacts
           }
         }
       }

@@ -9507,8 +9507,8 @@ resolve-runtime@0.22.13:
     resolve-scheduler-cloud "0.22.13"
     resolve-scheduler-local "0.22.13"
     resolve-snapshot-lite "0.22.13"
-    resolve-storage-base "0.22.13"
-    resolve-storage-lite "0.22.13"
+    resolve-eventstore-base "0.22.13"
+    resolve-eventstore-lite "0.22.13"
     resolve-subscribe-socket.io "0.22.13"
     resolve-zeromq "0.22.13"
     route-trie "^3.0.0"
@@ -9596,30 +9596,30 @@ resolve-snapshot-lite@0.22.13:
     sqlite "^3.0.3"
     tmp "^0.1.0"
 
-resolve-storage-base@0.22.13:
+resolve-eventstore-base@0.22.13:
   version "0.22.13"
-  resolved "https://registry.yarnpkg.com/resolve-storage-base/-/resolve-storage-base-0.22.13.tgz#22714ffd1087f5c934e4f182b6f35f0c9ca30726"
+  resolved "https://registry.yarnpkg.com/resolve-eventstore-base/-/resolve-eventstore-base-0.22.13.tgz#22714ffd1087f5c934e4f182b6f35f0c9ca30726"
   integrity sha512-bq5YlGqFKVeExJ4mJ1Xri3gXPcHq5v7e79+KL70F9OYPYUcRIpPzYBHWZg7YnrGCfILxsFHrPvjze4w8xskAGQ==
   dependencies:
     "@babel/runtime" "^7.0.0"
 
-resolve-storage-lite@0.22.13:
+resolve-eventstore-lite@0.22.13:
   version "0.22.13"
-  resolved "https://registry.yarnpkg.com/resolve-storage-lite/-/resolve-storage-lite-0.22.13.tgz#e44887abcbd188794f03001ea18eeba917946b1d"
+  resolved "https://registry.yarnpkg.com/resolve-eventstore-lite/-/resolve-eventstore-lite-0.22.13.tgz#e44887abcbd188794f03001ea18eeba917946b1d"
   integrity sha512-lPo6WFzHJB42bsOtV/MOld3Mqv/DA/SSKhywFyUgN60O17l9ThRPfcP+OqJBXm2q9YcMlz4YNmD/IoITFTUHKg==
   dependencies:
     "@babel/runtime" "^7.0.0"
-    resolve-storage-base "0.22.13"
+    resolve-eventstore-base "0.22.13"
     sqlite "^3.0.2"
     tmp "^0.1.0"
 
-resolve-storage-postgresql-serverless@0.22.13:
+resolve-eventstore-postgresql-serverless@0.22.13:
   version "0.22.13"
-  resolved "https://registry.yarnpkg.com/resolve-storage-postgresql-serverless/-/resolve-storage-postgresql-serverless-0.22.13.tgz#6a5c89d4d738814cebfa143253fc8146336fc5cd"
+  resolved "https://registry.yarnpkg.com/resolve-eventstore-postgresql-serverless/-/resolve-eventstore-postgresql-serverless-0.22.13.tgz#6a5c89d4d738814cebfa143253fc8146336fc5cd"
   integrity sha512-mSTVti/3xLNVl4lh0GHo06cqs+AUUvuiOd6oFuwbFnTrZYTdFq75tLE60gYPgaD3ZT+/Ov3nCVSY2jmHpno1Ow==
   dependencies:
     "@babel/runtime" "^7.0.0"
-    resolve-storage-base "0.22.13"
+    resolve-eventstore-base "0.22.13"
 
 resolve-subscribe-mqtt@0.22.13:
   version "0.22.13"
@@ -9647,7 +9647,7 @@ resolve-testing-tools@0.22.13:
     resolve-es "0.22.13"
     resolve-query "0.22.13"
     resolve-readmodel-lite "0.22.13"
-    resolve-storage-lite "0.22.13"
+    resolve-eventstore-lite "0.22.13"
     sinon "7.2.2"
 
 resolve-url@^0.2.1:

@@ -9,6 +9,7 @@ import { systemToken } from '../jwt'
 
 const saga = {
   handlers: {
+    Init: async () => Promise.resolve(),
     [USER_PERSONAL_DATA_REQUESTED]: async (context, event) => {
       const { aggregateId: userId } = event
       const { sideEffects } = context
@@ -57,6 +58,10 @@ const saga = {
       const archiveFilePath = `./${archive.id}.json`
       let result = {}
       try {
+        for (const media of archive.media) {
+          media.token = await adapter.createToken({ dir: 'images' })
+        }
+
         fs.writeFileSync(archiveFilePath, JSON.stringify(archive, null, 2))
         const { uploadUrl, uploadId } = await adapter.getSignedPut('archives')
         await adapter.uploadPut(uploadUrl, archiveFilePath)

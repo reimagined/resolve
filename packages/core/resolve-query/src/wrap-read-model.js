@@ -1,10 +1,8 @@
 import { EOL } from 'os'
-import debugLevels from 'resolve-debug-levels'
-
-const log = debugLevels('resolve:resolve-query:wrap-read-model')
+import getLog from './get-log'
+import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
 
 const RESERVED_TIME = 30 * 1000
-const TIMEOUT_SYMBOL = Symbol('TIMEOUT_SYMBOL')
 
 const wrapConnection = async (pool, callback) => {
   const readModelName = pool.readModel.name
@@ -68,10 +66,10 @@ const wrapConnection = async (pool, callback) => {
   }
 }
 
-const read = async (pool, resolverName, resolverArgs, jwtToken) => {
-  const segment = pool.performanceTracer
-    ? pool.performanceTracer.getSegment()
-    : null
+const read = async (pool, resolverName, resolverArgs, jwt) => {
+  const { performanceTracer, getSecretsManager, isDisposed, readModel } = pool
+
+  const segment = performanceTracer ? performanceTracer.getSegment() : null
   const subSegment = segment ? segment.addNewSubsegment('read') : null
 
   const readModelName = pool.readModel.name
@@ -83,7 +81,7 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
   }
 
   try {
-    if (pool.isDisposed) {
+    if (isDisposed) {
       throw new Error(`Read model "${pool.readModel.name}" is disposed`)
     }
     if (typeof pool.readModel.resolvers[resolverName] !== 'function') {
@@ -93,9 +91,7 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
     }
 
     return await wrapConnection(pool, async connection => {
-      const segment = pool.performanceTracer
-        ? pool.performanceTracer.getSegment()
-        : null
+      const segment = performanceTracer ? performanceTracer.getSegment() : null
       const subSegment = segment ? segment.addNewSubsegment('resolver') : null
 
       if (subSegment != null) {
@@ -105,10 +101,16 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
       }
 
       try {
-        return await pool.readModel.resolvers[resolverName](
+        return await readModel.resolvers[resolverName](
           connection,
           resolverArgs,
-          jwtToken
+          {
+            secretsManager:
+              typeof getSecretsManager === 'function'
+                ? await getSecretsManager()
+                : null,
+            jwt
+          }
         )
       } catch (error) {
         if (subSegment != null) {
@@ -133,7 +135,7 @@ const read = async (pool, resolverName, resolverArgs, jwtToken) => {
   }
 }
 
-const detectConnectorFeatures = connector =>
+export const detectConnectorFeatures = connector =>
   ((typeof connector.beginTransaction === 'function') << 0) +
   ((typeof connector.commitTransaction === 'function') << 1) +
   ((typeof connector.rollbackTransaction === 'function') << 2) +
@@ -144,15 +146,19 @@ const detectConnectorFeatures = connector =>
   ((typeof connector.commitEvent === 'function') << 7) +
   ((typeof connector.rollbackEvent === 'function') << 8)
 
-const FULL_XA_CONNECTOR = 504
-const FULL_REGULAR_CONNECTOR = 7
-const EMPTY_CONNECTOR = 0
+export const FULL_XA_CONNECTOR = 504
+export const FULL_REGULAR_CONNECTOR = 7
+export const EMPTY_CONNECTOR = 0
 
 const detectWrappers = connector => {
+  const log = getLog('detectWrappers')
   const emptyFunction = Promise.resolve.bind(Promise)
   const featureDetection = detectConnectorFeatures(connector)
 
-  if (featureDetection === FULL_XA_CONNECTOR) {
+  if (
+    featureDetection === FULL_XA_CONNECTOR ||
+    featureDetection === FULL_REGULAR_CONNECTOR + FULL_XA_CONNECTOR
+  ) {
     return {
       onBeforeEvent: connector.beginEvent.bind(connector),
       onSuccessEvent: connector.commitEvent.bind(connector),
@@ -183,13 +189,19 @@ const updateByEvents = async (
   pool,
   events,
   getRemainingTimeInMillis,
-  transactionId
+  xaTransactionId
 ) => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
   const subSegment = segment ? segment.addNewSubsegment('updateByEvents') : null
-
+  const log = getLog(
+    `updateByEvents:${
+      pool && pool.readModel && pool.readModel.name
+        ? pool.readModel.name
+        : `UNKNOWN`
+    }`
+  )
   try {
     const readModelName = pool.readModel.name
 
@@ -200,21 +212,23 @@ const updateByEvents = async (
     }
 
     if (pool.isDisposed) {
-      throw new Error(`Read model "${pool.readModel.name}" is disposed`)
+      throw new Error(`read-model "${pool.readModel.name}" is disposed`)
     }
 
     const projection = pool.readModel.projection
 
     if (projection == null) {
       throw new Error(
-        `Updating by events is prohibited when "${pool.readModel.name}" projection is not specified`
+        `updating by events is prohibited when "${pool.readModel.name}" projection is not specified`
       )
     }
 
+    let lastSuccessEvent = null
+    let lastFailedEvent = null
     let lastError = null
-    let lastEvent = null
 
     const handler = async (connection, event) => {
+      const log = getLog(`readModel:${readModelName}:[${event.type}]`)
       const segment = pool.performanceTracer
         ? pool.performanceTracer.getSegment()
         : null
@@ -223,7 +237,7 @@ const updateByEvents = async (
       try {
         if (pool.isDisposed) {
           throw new Error(
-            `Read model "${readModelName}" updating had been interrupted`
+            `read-model "${readModelName}" updating had been interrupted`
           )
         }
 
@@ -233,21 +247,21 @@ const updateByEvents = async (
           subSegment.addAnnotation('origin', 'resolve:query:applyEvent')
         }
 
-        if (event != null && typeof projection[event.type] === 'function') {
-          log.debug(`retrieving event store secrets manager`)
-          const secretsManager = await pool.eventStore.getSecretsManager()
-
-          log.debug(`building read-model encryption`)
-          const encryption = await pool.readModel.encryption(event, {
-            secretsManager
-          })
-
-          log.debug(`executing read-model event handler`)
-          const executor = projection[event.type]
-          await executor(connection, event, { ...encryption })
-          lastEvent = event
+        if (event != null) {
+          if (typeof projection[event.type] === 'function') {
+            log.debug(`executing handler`)
+            const executor = projection[event.type]
+            await executor(connection, event)
+            log.debug(`handler executed successfully`)
+            lastSuccessEvent = event
+          } else if (event.type === 'Init') {
+            lastSuccessEvent = event
+          }
         }
       } catch (error) {
+        log.error(error.message)
+        log.verbose(error.stack)
+        lastFailedEvent = event
         if (subSegment != null) {
           subSegment.addError(error)
         }
@@ -260,9 +274,10 @@ const updateByEvents = async (
     }
 
     await wrapConnection(pool, async connection => {
+      const log = getLog(`readModel:wrapConnection`)
       try {
-        log.verbose(
-          `Applying ${events.length} events to read-model "${readModelName}" started`
+        log.debug(
+          `applying ${events.length} events to read-model "${readModelName}" started`
         )
 
         const { onBeforeEvent, onSuccessEvent, onFailEvent } = detectWrappers(
@@ -270,66 +285,77 @@ const updateByEvents = async (
         )
         for (const event of events) {
           const remainingTime = getRemainingTimeInMillis() - RESERVED_TIME
-          log.verbose(
-            `Remaining time for feeding read-model "${readModelName}" is ${remainingTime} ms`
+          log.debug(
+            `remaining read-model "${readModelName}" feeding time is ${remainingTime} ms`
           )
 
           if (remainingTime < 0) {
-            log.verbose(
-              `Stop applying events to read-model "${readModelName}" via timeout`
+            log.debug(
+              `stop applying events to read-model "${readModelName}" because of timeout`
             )
             break
           }
 
           if (event.type === 'Init') {
             try {
-              log.verbose(
-                `Applying "Init" event to read-model "${readModelName}" started`
+              log.debug(
+                `applying "Init" event to read-model "${readModelName}" started`
               )
               await handler(connection, event)
-              log.verbose(
-                `Applying "Init" event to read-model "${readModelName}" succeed`
+              log.debug(
+                `applying "Init" event to read-model "${readModelName}" succeed`
               )
               continue
             } catch (error) {
-              log.verbose(
-                `Applying "Init" event to read-model "${readModelName}" failed`,
-                error
+              log.error(
+                `applying "Init" event to read-model "${readModelName}" failed`
               )
+              log.error(error.message)
+              log.verbose(error.stack)
               throw error
             }
           }
 
-          let timer = null
           try {
             log.verbose(
               `Applying "${event.type}" event to read-model "${readModelName}" started`
             )
-            await onBeforeEvent(connection, pool.readModel.name, transactionId)
+            await onBeforeEvent(
+              connection,
+              pool.readModel.name,
+              xaTransactionId
+            )
 
-            await Promise.race([
-              new Promise((_, reject) => {
-                timer = setTimeout(
-                  reject.bind(null, TIMEOUT_SYMBOL),
-                  remainingTime
-                )
-              }),
-              handler(connection, event)
-            ])
+            await handler(connection, event)
 
-            await onSuccessEvent(connection, pool.readModel.name, transactionId)
+            await onSuccessEvent(
+              connection,
+              pool.readModel.name,
+              xaTransactionId
+            )
 
-            log.verbose(
-              `Applying "${event.type}" event to read-model "${readModelName}" succeed`
+            log.debug(
+              `applying "${event.type}" event to read-model "${readModelName}" succeed`
             )
           } catch (readModelError) {
-            log.verbose(
-              `Applying "${event.type}" event to read-model "${readModelName}" failed`,
-              readModelError
+            if (
+              readModelError === OMIT_BATCH ||
+              readModelError === STOP_BATCH
+            ) {
+              throw readModelError
+            }
+            log.error(
+              `applying "${event.type}" event to read-model "${readModelName}" failed`
             )
+            log.error(readModelError.message)
+            log.verbose(readModelError.stack)
             let rollbackError = null
             try {
-              await onFailEvent(connection, pool.readModel.name, transactionId)
+              await onFailEvent(
+                connection,
+                pool.readModel.name,
+                xaTransactionId
+              )
             } catch (error) {
               rollbackError = error
             }
@@ -343,34 +369,32 @@ const updateByEvents = async (
               summaryError.stack = `${summaryError.stack}${EOL}${rollbackError.stack}`
             }
 
-            if (readModelError === TIMEOUT_SYMBOL && rollbackError == null) {
-              log.verbose(
-                `Ignoring error for feeding read-model "${readModelName}" via timeout`
-              )
-              break
-            } else {
-              log.verbose(
-                `Throwing error for feeding read-model "${readModelName}"`,
-                summaryError
-              )
-              throw summaryError
-            }
-          } finally {
-            clearTimeout(timer)
+            log.verbose(
+              `Throwing error for feeding read-model "${readModelName}"`,
+              summaryError
+            )
+            throw summaryError
           }
         }
       } catch (error) {
-        lastError = Object.create(Error.prototype, {
-          message: { value: error.message, enumerable: true },
-          stack: { value: error.stack, enumerable: true }
-        })
+        if (error === OMIT_BATCH) {
+          lastError = error
+        } else if (lastError == null && error === STOP_BATCH) {
+          lastError = null
+        } else {
+          lastError = Object.create(Error.prototype, {
+            message: { value: error.message, enumerable: true },
+            stack: { value: error.stack, enumerable: true }
+          })
+        }
       }
     })
 
     const result = {
-      listenerId: pool.readModel.name,
-      lastError,
-      lastEvent
+      eventSubscriber: pool.readModel.name,
+      successEvent: lastSuccessEvent,
+      failedEvent: lastFailedEvent,
+      error: lastError
     }
 
     if (lastError != null) {
@@ -379,6 +403,8 @@ const updateByEvents = async (
       return result
     }
   } catch (error) {
+    log.error(error.message)
+    log.verbose(error.stack)
     if (subSegment != null) {
       subSegment.addError(error)
     }
@@ -390,19 +416,19 @@ const updateByEvents = async (
   }
 }
 
-const readAndSerialize = async (pool, resolverName, resolverArgs, jwtToken) => {
+const readAndSerialize = async (pool, resolverName, resolverArgs, jwt) => {
   const readModelName = pool.readModel.name
 
   if (pool.isDisposed) {
-    throw new Error(`Read model "${readModelName}" is disposed`)
+    throw new Error(`read-model "${readModelName}" is disposed`)
   }
 
-  const result = await read(pool, resolverName, resolverArgs, jwtToken)
+  const result = await read(pool, resolverName, resolverArgs, jwt)
 
   return JSON.stringify(result, null, 2)
 }
 
-const doOperation = async (operationName, pool) => {
+const doOperation = async (operationName, pool, parameters) => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -417,12 +443,20 @@ const doOperation = async (operationName, pool) => {
 
   try {
     if (pool.isDisposed) {
-      throw new Error(`Read model "${readModelName}" is disposed`)
+      throw new Error(`read-model "${readModelName}" is disposed`)
     }
 
+    let result = null
+
     await wrapConnection(pool, async connection => {
-      await pool.connector[operationName](connection, pool.readModel.name)
+      result = await pool.connector[operationName](
+        connection,
+        pool.readModel.name,
+        parameters
+      )
     })
+
+    return result
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)
@@ -455,7 +489,7 @@ const dispose = async pool => {
 
   try {
     if (pool.isDisposed) {
-      throw new Error(`Read model "${pool.readModel.name}" is disposed`)
+      throw new Error(`read-model "${pool.readModel.name}" is disposed`)
     }
     pool.isDisposed = true
 
@@ -480,12 +514,15 @@ const wrapReadModel = (
   readModel,
   readModelConnectors,
   performanceTracer,
-  eventStore
+  getSecretsManager
 ) => {
+  const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
+
+  log.debug(`wrapping read-model`)
   const connector = readModelConnectors[readModel.connectorName]
   if (connector == null) {
     throw new Error(
-      `Connector "${readModel.connectorName}" for read-model "${readModel.name}" does not exist`
+      `connector "${readModel.connectorName}" for read-model "${readModel.name}" does not exist`
     )
   }
 
@@ -495,7 +532,7 @@ const wrapReadModel = (
     connector,
     isDisposed: false,
     performanceTracer,
-    eventStore
+    getSecretsManager
   }
 
   const api = {
@@ -506,13 +543,24 @@ const wrapReadModel = (
     dispose: dispose.bind(null, pool)
   }
 
-  if (detectConnectorFeatures(connector) === FULL_XA_CONNECTOR) {
+  log.debug(`detecting connector features`)
+
+  const detectedFeatures = detectConnectorFeatures(connector)
+
+  log.verbose(detectedFeatures)
+
+  if (
+    detectedFeatures === FULL_XA_CONNECTOR ||
+    detectedFeatures === FULL_XA_CONNECTOR + FULL_REGULAR_CONNECTOR
+  ) {
     Object.assign(api, {
       beginXATransaction: beginXATransaction.bind(null, pool),
       commitXATransaction: commitXATransaction.bind(null, pool),
       rollbackXATransaction: rollbackXATransaction.bind(null, pool)
     })
   }
+
+  log.debug(`read-model wrapped successfully`)
 
   return Object.freeze(api)
 }

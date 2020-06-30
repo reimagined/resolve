@@ -22,13 +22,13 @@ const launchMode = process.argv[2]
 
 void (async () => {
   try {
+    const moduleUploader = resolveModuleUploader({
+      publicDirs: ['logo', 'avatar'],
+      expireTime: 604800,
+      jwtSecret: 'SECRETJWT'
+    })
     switch (launchMode) {
       case 'dev': {
-        const moduleUploader = resolveModuleUploader({
-          publicDirs: ['logo', 'avatar'],
-          expireTime: 604800,
-          jwtSecret: 'SECRETJWT'
-        })
         const resolveConfig = merge(
           defaultResolveConfig,
           appConfig,
@@ -38,7 +38,7 @@ void (async () => {
 
         await reset(resolveConfig, {
           dropEventStore: false,
-          dropSnapshots: true,
+          dropEventBus: true,
           dropReadModels: true,
           dropSagas: true
         })
@@ -48,18 +48,27 @@ void (async () => {
       }
 
       case 'build': {
-        const resolveConfig = merge(defaultResolveConfig, appConfig, prodConfig)
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          prodConfig,
+          moduleUploader
+        )
         await build(resolveConfig)
         break
       }
 
       case 'cloud': {
-        await build(merge(defaultResolveConfig, appConfig, cloudConfig))
+        await build(
+          merge(defaultResolveConfig, appConfig, cloudConfig, moduleUploader)
+        )
         break
       }
 
       case 'start': {
-        await start(merge(defaultResolveConfig, appConfig, prodConfig))
+        await start(
+          merge(defaultResolveConfig, appConfig, prodConfig, moduleUploader)
+        )
         break
       }
 
@@ -67,7 +76,7 @@ void (async () => {
         const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
         await reset(resolveConfig, {
           dropEventStore: false,
-          dropSnapshots: true,
+          dropEventBus: true,
           dropReadModels: true,
           dropSagas: true
         })
@@ -102,7 +111,7 @@ void (async () => {
 
         await reset(resolveConfig, {
           dropEventStore: true,
-          dropSnapshots: true,
+          dropEventBus: true,
           dropReadModels: true,
           dropSagas: true
         })
@@ -110,7 +119,8 @@ void (async () => {
         await runTestcafe({
           resolveConfig,
           functionalTestsDir: 'test/functional',
-          browser: process.argv[3]
+          browser: process.argv[3],
+          customArgs: ['--stop-on-first-fail']
         })
         break
       }

@@ -1,4 +1,5 @@
 import { Phases, symbol } from './constants'
+import getSecretsManager from './secrets-manager'
 
 const init = async ({ promise, createQuery, transformEvents }) => {
   if (promise[symbol].phase < Phases.RESOLVER) {
@@ -8,8 +9,6 @@ const init = async ({ promise, createQuery, transformEvents }) => {
   let queryExecutor = null
   try {
     queryExecutor = createQuery({
-      doUpdateRequest: Promise.resolve.bind(Promise),
-      eventStore: null,
       viewModels: [],
       readModels: [
         {
@@ -22,7 +21,10 @@ const init = async ({ promise, createQuery, transformEvents }) => {
       readModelConnectors: {
         ADAPTER_NAME: promise[symbol].adapter
       },
-      snapshotAdapter: null
+      snapshotAdapter: null,
+      eventstoreAdapter: {
+        getSecretsManager
+      }
     })
 
     let updateResult = null

@@ -1,5 +1,6 @@
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 import _createAdapter from 'resolve-readmodel-base'
+import crypto from 'crypto'
 
 import beginXATransaction from './begin-xa-transaction'
 import beginEvent from './begin-event'
@@ -28,6 +29,7 @@ import rollbackTransaction from './rollback-transaction'
 import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
 import update from './update'
+import generateGuid from './generate-guid'
 
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
@@ -45,6 +47,8 @@ const connect = _connect.bind(null, {
   updateToSetExpression,
   executeStatement,
   coercer,
+  generateGuid,
+  crypto,
   ...store
 })
 

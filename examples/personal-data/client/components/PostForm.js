@@ -44,6 +44,23 @@ const PostForm = ({ successHandler, errorHandler }) => {
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
   }
+  const textareaRef = React.createRef()
+  const onUploaded = value => {
+    const textarea = textareaRef.current
+    let nextContent = textarea.value
+    if (textarea.selectionStart || textarea.selectionStart === '0') {
+      const start = textarea.selectionStart
+      const end = textarea.selectionEnd
+      nextContent =
+        textarea.value.substring(0, start) +
+        value +
+        textarea.value.substring(end, textarea.value.length)
+    } else {
+      nextContent += value
+    }
+    textarea.value = nextContent
+    setValues({ ...values, content: nextContent })
+  }
 
   return (
     <React.Fragment>
@@ -54,6 +71,7 @@ const PostForm = ({ successHandler, errorHandler }) => {
         </FormGroup>
         <FormGroup>
           <Input
+            innerRef={textareaRef}
             onChange={handleChange('content')}
             type="textarea"
             id="addPostContent"
@@ -69,7 +87,7 @@ const PostForm = ({ successHandler, errorHandler }) => {
             <Button onClick={publish} className="mr-1">
               Publish
             </Button>
-            <ImageUploader owner={user} />
+            <ImageUploader owner={user} onUploaded={onUploaded} />
           </div>
         </FormGroup>
       </div>

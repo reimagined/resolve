@@ -13,8 +13,8 @@ const resolveConfig = {
   sagas: [],
   apiHandlers: [],
   index: 'client/index.js',
-  storageAdapter: {
-    module: 'resolve-storage-lite',
+  eventstoreAdapter: {
+    module: 'resolve-eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db'
     }
@@ -31,8 +31,8 @@ const resolveConfig = {
   schedulers: {},
   eventBroker: {
     launchBroker: true,
-    zmqBrokerAddress: 'tcp://127.0.0.1:3500',
-    zmqConsumerAddress: 'tcp://127.0.0.1:3501',
+    publisherAddress: 'http://127.0.0.1:3500',
+    consumerAddress: 'http://127.0.0.1:3501',
     databaseFile: 'data/local-bus-broker.db',
     batchSize: 100,
     upstream: true

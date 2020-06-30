@@ -1,9 +1,9 @@
 import AWS from 'aws-sdk'
 import debugLevels from 'resolve-debug-levels'
-import createStorageAdapter, {
+import createEventstoreAdapter, {
   create,
   destroy
-} from 'resolve-storage-postgresql-serverless'
+} from 'resolve-eventstore-postgresql-serverless'
 
 const logger = debugLevels('resolve:postgresql-polling-events')
 
@@ -17,7 +17,7 @@ AWS.config.update({
 
 jest.setTimeout(20000000)
 
-describe.skip('resolve-storage-mysql-serverless', () => {
+describe.skip('resolve-eventstore-mysql-serverless', () => {
   beforeAll.skip(async () => {
     logger.warn('create start')
     const rdsDataApi = new AWS.RDSDataService({
@@ -43,7 +43,7 @@ describe.skip('resolve-storage-mysql-serverless', () => {
       awsSecretStoreAdminArn: process.env.AWS_SECRET_STORE_ADMIN_ARN,
       dbClusterOrInstanceArn: process.env.AWS_POSTGRES_CLUSTER_ARN,
       databaseName: process.env.AWS_POSTGRES_DATABASE_NAME,
-      tableName: process.env.AWS_POSTGRES_TABLE_NAME,
+      eventsTableName: process.env.AWS_POSTGRES_TABLE_NAME,
       userLogin: process.env.AWS_POSTGRES_USER_NAME,
       userPassword: process.env.AWS_POSTGRES_PASSWORD
     })
@@ -62,32 +62,32 @@ describe.skip('resolve-storage-mysql-serverless', () => {
     logger.warn('destroy end')
   })
 
-  let storageAdapter = null
+  let eventstoreAdapter = null
 
   beforeEach(async () => {
-    storageAdapter = createStorageAdapter({
+    eventstoreAdapter = createEventstoreAdapter({
       region: process.env.AWS_REGION,
       databaseName: process.env.AWS_POSTGRES_DATABASE_NAME,
-      tableName: process.env.AWS_POSTGRES_TABLE_NAME,
+      eventsTableName: process.env.AWS_POSTGRES_TABLE_NAME,
       awsSecretStoreArn: process.env.AWS_SECRET_STORE_ARN,
       dbClusterOrInstanceArn: process.env.AWS_POSTGRES_CLUSTER_ARN
     })
 
-    logger.warn('drop storage start')
+    logger.warn('drop eventstore start')
 
     try {
-      await storageAdapter.drop()
+      await eventstoreAdapter.drop()
     } catch (error) {}
 
-    logger.warn('drop storage end')
+    logger.warn('drop eventstore end')
 
-    logger.warn('init storage start')
+    logger.warn('init eventstore start')
 
     try {
-      await storageAdapter.init()
+      await eventstoreAdapter.init()
     } catch (error) {}
 
-    logger.warn('drop storage end')
+    logger.warn('drop eventstore end')
   })
 
   afterEach(async () => {
@@ -116,7 +116,7 @@ describe.skip('resolve-storage-mysql-serverless', () => {
 
     const eventWorker = async ei => {
       logger.warn('save start', ei)
-      await storageAdapter.saveEvent({
+      await eventstoreAdapter.saveEvent({
         type: 'TYPE😂',
         aggregateId: `🐱-${ei}`,
         aggregateVersion: ei,
@@ -140,17 +140,20 @@ describe.skip('resolve-storage-mysql-serverless', () => {
       logger.warn('Marker is', marker)
 
       const currentEvents = []
-      await storageAdapter.loadEvents({ cursor: marker, limit: 67 }, event => {
-        currentEvents.push(event)
-        events.push(event)
+      await eventstoreAdapter.loadEvents(
+        { cursor: marker, limit: 67 },
+        event => {
+          currentEvents.push(event)
+          events.push(event)
 
-        aggregateMap.set(
-          event.aggregateId,
-          ~~aggregateMap.get(event.aggregateId) + 1
-        )
-      })
+          aggregateMap.set(
+            event.aggregateId,
+            ~~aggregateMap.get(event.aggregateId) + 1
+          )
+        }
+      )
 
-      marker = storageAdapter.getNextCursor(marker, currentEvents)
+      marker = eventstoreAdapter.getNextCursor(marker, currentEvents)
 
       if (currentEvents.length === 0) {
         break

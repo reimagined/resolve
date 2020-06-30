@@ -11,7 +11,17 @@ const createSchedulersAggregates = schedulers => {
       name: schedulerName,
       commands: createSchedulerAggregateCommands({ eventTypes }),
       projection: createSchedulerAggregateProjection({ eventTypes }),
-      invariantHash
+      serializeState: JSON.stringify.bind(JSON),
+      deserializeState: JSON.parse.bind(JSON),
+      invariantHash,
+      encryption: () => ({
+        encrypt: () => {
+          throw Error(`encryption disabled, please check your configuration`)
+        },
+        decrypt: () => {
+          throw Error(`encryption disabled, please check your configuration`)
+        }
+      })
     })
   }
 

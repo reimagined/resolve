@@ -1,18 +1,30 @@
 import jwt from 'jsonwebtoken'
 import jwtSecret from './jwt_secret'
 
+const API_GATEWAY_TIMEOUT = 30000
+
 const routeLoginCallback = async ({ resolve }, username) => {
-  const user = await resolve.executeQuery({
-    modelName: 'HackerNews',
-    resolverName: 'user',
-    resolverArgs: { name: username.trim() }
-  })
+  const startTimestamp = Date.now()
 
-  if (!user) {
-    throw new Error('Incorrect "username"')
+  while (true) {
+    try {
+      const user = await resolve.executeQuery({
+        modelName: 'HackerNews',
+        resolverName: 'user',
+        resolverArgs: { name: username.trim() }
+      })
+
+      if (!user) {
+        throw new Error('Incorrect "username"')
+      }
+
+      return jwt.sign(user, jwtSecret)
+    } catch (error) {
+      if (Date.now() - startTimestamp > API_GATEWAY_TIMEOUT) {
+        throw error
+      }
+    }
   }
-
-  return jwt.sign(user, jwtSecret)
 }
 
 export default routeLoginCallback

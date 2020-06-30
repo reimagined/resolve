@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { mocked } from 'ts-jest/utils'
 import { useClient } from '../src/use_client'
-import { StaticResolver, useStaticResolver } from '../src/use_static_resolver'
+import { StaticResolver, useStaticResolver } from '../src/use-static-resolver'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({

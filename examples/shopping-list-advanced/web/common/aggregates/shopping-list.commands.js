@@ -14,7 +14,7 @@ import {
 } from '../event-types'
 
 export default {
-  createShoppingList: (state, { payload: { name } }, jwtToken) => {
+  createShoppingList: (state, { payload: { name } }, { jwt: jwtToken }) => {
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     validation.stateIsAbsent(state, 'Shopping List')
@@ -25,7 +25,7 @@ export default {
       payload: { name, userId }
     }
   },
-  renameShoppingList: (state, { payload: { name } }, jwtToken) => {
+  renameShoppingList: (state, { payload: { name } }, { jwt: jwtToken }) => {
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'Shopping List')
@@ -36,7 +36,7 @@ export default {
       payload: { name, userId }
     }
   },
-  removeShoppingList: (state, command, jwtToken) => {
+  removeShoppingList: (state, command, { jwt: jwtToken }) => {
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'Shopping List')
@@ -46,7 +46,7 @@ export default {
       payload: { userId }
     }
   },
-  createShoppingItem: (state, { payload: { id, text } }, jwtToken) => {
+  createShoppingItem: (state, { payload: { id, text } }, { jwt: jwtToken }) => {
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'Shopping List')
@@ -58,7 +58,7 @@ export default {
       payload: { id, text, userId }
     }
   },
-  toggleShoppingItem: (state, { payload: { id } }, jwtToken) => {
+  toggleShoppingItem: (state, { payload: { id } }, { jwt: jwtToken }) => {
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'Shopping List')
@@ -69,7 +69,7 @@ export default {
       payload: { id, userId }
     }
   },
-  removeShoppingItem: (state, { payload: { id } }, jwtToken) => {
+  removeShoppingItem: (state, { payload: { id } }, { jwt: jwtToken }) => {
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'Shopping List')
@@ -80,7 +80,11 @@ export default {
       payload: { id, userId }
     }
   },
-  shareShoppingListForUser: (state, { payload: { userId } }, jwtToken) => {
+  shareShoppingListForUser: (
+    state,
+    { payload: { userId } },
+    { jwt: jwtToken }
+  ) => {
     jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'User')
@@ -96,7 +100,11 @@ export default {
       payload: { userId }
     }
   },
-  unshareShoppingListForUser: (state, { payload: { userId } }, jwtToken) => {
+  unshareShoppingListForUser: (
+    state,
+    { payload: { userId } },
+    { jwt: jwtToken }
+  ) => {
     jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'User')

@@ -5,13 +5,7 @@ const log = debugLevels('resolve:resolve-query:wrap-view-model')
 const getKey = aggregateIds =>
   Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds
 
-const buildViewModel = async (
-  pool,
-  aggregateIds,
-  aggregateArgs,
-  jwtToken,
-  key
-) => {
+const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
   const viewModelName = pool.viewModel.name
 
   await Promise.resolve()
@@ -22,7 +16,7 @@ const buildViewModel = async (
 
   try {
     const snapshot = JSON.parse(
-      await pool.snapshotAdapter.loadSnapshot(snapshotKey)
+      await pool.eventstoreAdapter.loadSnapshot(snapshotKey)
     )
     aggregatesVersionsMap = new Map(snapshot.aggregatesVersionsMap)
     state = await pool.viewModel.deserializeState(snapshot.state)
@@ -57,7 +51,10 @@ const buildViewModel = async (
       }
 
       log.debug(`retrieving event store secrets manager`)
-      const secretsManager = await pool.eventStore.getSecretsManager()
+      const secretsManager =
+        typeof pool.getSecretsManager === 'function'
+          ? await pool.getSecretsManager()
+          : null
 
       log.debug(`building view-model encryption`)
       const encryption = await pool.viewModel.encryption(event, {
@@ -69,24 +66,22 @@ const buildViewModel = async (
         event,
         aggregateArgs,
         {
-          jwt: jwtToken,
+          jwt,
           ...encryption
         }
       )
-      cursor = pool.eventStore.getNextCursor(cursor, [event])
+      cursor = await pool.eventstoreAdapter.getNextCursor(cursor, [event])
 
       aggregatesVersionsMap.set(event.aggregateId, event.aggregateVersion)
 
-      if (pool.snapshotAdapter != null) {
-        await pool.snapshotAdapter.saveSnapshot(
-          snapshotKey,
-          JSON.stringify({
-            aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
-            state: await pool.viewModel.serializeState(state),
-            cursor
-          })
-        )
-      }
+      await pool.eventstoreAdapter.saveSnapshot(
+        snapshotKey,
+        JSON.stringify({
+          aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
+          state: await pool.viewModel.serializeState(state),
+          cursor
+        })
+      )
     } catch (error) {
       if (subSegment != null) {
         subSegment.addError(error)
@@ -99,20 +94,21 @@ const buildViewModel = async (
     }
   }
 
-  await pool.eventStore.loadEvents(
-    {
-      aggregateIds: aggregateIds !== '*' ? aggregateIds : null,
-      eventTypes: Object.keys(pool.viewModel.projection),
-      cursor,
-      limit: 2147483648
-    },
-    handler
-  )
+  const { events } = await pool.eventstoreAdapter.loadEvents({
+    aggregateIds: aggregateIds !== '*' ? aggregateIds : null,
+    eventTypes: Object.keys(pool.viewModel.projection),
+    cursor,
+    limit: Number.MAX_SAFE_INTEGER
+  })
+
+  for (const event of events) {
+    await handler(event)
+  }
 
   return { state, eventCount }
 }
 
-const read = async (pool, modelOptions, aggregateArgs, jwtToken) => {
+const read = async (pool, modelOptions, aggregateArgs, jwt) => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -148,7 +144,7 @@ const read = async (pool, modelOptions, aggregateArgs, jwtToken) => {
     if (!pool.workers.has(key)) {
       pool.workers.set(
         key,
-        buildViewModel(pool, aggregateIds, aggregateArgs, jwtToken, key)
+        buildViewModel(pool, aggregateIds, aggregateArgs, jwt, key)
       )
     }
 
@@ -289,17 +285,17 @@ const dispose = async pool => {
 
 const wrapViewModel = (
   viewModel,
-  snapshotAdapter,
-  eventStore,
-  performanceTracer
+  eventstoreAdapter,
+  performanceTracer,
+  getSecretsManager
 ) => {
   const pool = {
     viewModel,
-    snapshotAdapter,
-    eventStore,
+    eventstoreAdapter,
     workers: new Map(),
     isDisposed: false,
-    performanceTracer
+    performanceTracer,
+    getSecretsManager
   }
 
   return Object.freeze({

@@ -1,6 +1,6 @@
 {
   "name": "resolve-subscribe-mqtt",
-  "version": "0.23.2",
+  "version": "0.24.7",
   "description": "An adapter resolve-redux uses to subscribe to events via the MQTT protocol.",
   "engines": {
     "node": ">=10.9"
@@ -24,11 +24,11 @@
     "ddd"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
+    "@babel/runtime": "7.9.6",
     "mqtt": "^2.18.8"
   },
   "devDependencies": {
-    "jest": "25.1.0"
+    "jest": "26.0.1"
   },
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/subscribe-adapters/resolve-subscribe-mqtt#readme",
   "babelCompile": [

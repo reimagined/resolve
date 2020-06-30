@@ -24,13 +24,13 @@ const mainHandler = async (originalReq, res) => {
   }
 
   req.matchedParams = params
-  const controller = node.getHandler(req.method.toUpperCase())
+  const handler = node.getHandler(req.method.toUpperCase())
 
-  if (typeof controller !== 'function') {
+  if (typeof handler !== 'function') {
     return void (await failHandler(req, res))
   }
 
-  await controller(req, res)
+  await handler(req, res)
 }
 
 export default mainHandler

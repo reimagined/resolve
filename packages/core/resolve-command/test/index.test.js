@@ -1,25 +1,49 @@
 import createCommandExecutor from '../src'
 import { CommandError } from '../src'
 
-let eventStore, events, snapshotAdapter, DateNow, performanceTracer
+let eventstoreAdapter, publisher, events, DateNow, performanceTracer, snapshots
 
 beforeEach(() => {
   events = []
+  snapshots = new Map()
 
-  eventStore = {
-    loadEvents: jest.fn().mockImplementation(async (filter, handler) => {
-      for (const event of events) {
-        await handler(event)
+  eventstoreAdapter = {
+    loadEvents: jest.fn().mockImplementation(async ({ cursor: prevCursor }) => {
+      const result = {
+        cursor: `${prevCursor == null ? '' : prevCursor}${events
+          .map(e => Buffer.from(JSON.stringify(e)).toString('base64'))
+          .join(',')}`,
+        events:
+          prevCursor != null
+            ? `${events.map(e =>
+                Buffer.from(JSON.stringify(e)).toString('base64')
+              )}`
+                .substr(prevCursor.length)
+                .split(',')
+                .filter(e => e != null && e.length > 0)
+                .map(e => JSON.parse(Buffer.from(e, 'base64').toString()))
+            : events
       }
-    }),
-    saveEvent: jest.fn().mockImplementation(async event => {
-      events.push(event)
-      return event
+      return result
     }),
     getNextCursor: jest.fn().mockImplementation((prevCursor, events) => {
-      return `${prevCursor == null ? '' : prevCursor}${events.map(e =>
-        Buffer.from(JSON.stringify(e)).toString('base64')
-      )}`
+      return `${prevCursor == null ? '' : prevCursor}${events
+        .map(e => Buffer.from(JSON.stringify(e)).toString('base64'))
+        .join(',')}`
+    }),
+    getSecretsManager: jest.fn(),
+    saveSnapshot: jest.fn().mockImplementation((key, value) => {
+      return snapshots.set(key, value)
+    }),
+    loadSnapshot: jest.fn().mockImplementation(key => {
+      return snapshots.get(key)
+    })
+  }
+
+  publisher = {
+    publish: jest.fn().mockImplementation(async ({ event }) => {
+      events.push(event)
+      return event
     })
   }
 
@@ -49,17 +73,19 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  eventStore = null
+  eventstoreAdapter = null
   events = null
-  snapshotAdapter = null
   global.Date.now = DateNow
   performanceTracer = null
+  publisher = null
+  snapshots = null
 })
 
 describe('executeCommand', () => {
   describe('without performance tracer', () => {
     test('should success build aggregate state from empty event list and execute cmd', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -73,7 +99,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -88,6 +115,7 @@ describe('executeCommand', () => {
 
     test('should success build aggregate state and execute command', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'Entity',
         commands: {
           create: state => {
@@ -112,11 +140,14 @@ describe('executeCommand', () => {
             }
           }
         },
+        serializeState: state => JSON.stringify(state),
+        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 'Entity-invariantHash'
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -143,9 +174,10 @@ describe('executeCommand', () => {
       const JWT_TOKEN = Buffer.from('ROOT', 'utf8').toString('base64')
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'User',
         commands: {
-          createUser: (aggregateState, command, jwtToken) => {
+          createUser: (aggregateState, command, { jwt: jwtToken }) => {
             if (Buffer.from(jwtToken, 'base64').toString('utf8') !== 'ROOT') {
               throw new Error('Access denied')
             }
@@ -162,7 +194,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -203,18 +236,9 @@ describe('executeCommand', () => {
       }
     })
 
-    test('should use snapshotAdapter for building state', async () => {
-      const snapshots = new Map()
-      snapshotAdapter = {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      }
-
+    test('should use snapshots for building state', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -241,9 +265,9 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
-        aggregates: [aggregate],
-        snapshotAdapter
+        eventstoreAdapter,
+        publisher,
+        aggregates: [aggregate]
       })
 
       await executeCommand({
@@ -256,8 +280,8 @@ describe('executeCommand', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(0)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(1)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(0)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(1)
       expect(events.length).toEqual(1)
 
       await executeCommand({
@@ -270,8 +294,8 @@ describe('executeCommand', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(1)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(2)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(1)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(2)
       expect(events.length).toEqual(2)
 
       await executeCommand({
@@ -284,23 +308,14 @@ describe('executeCommand', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(2)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(3)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(2)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(3)
       expect(events.length).toEqual(3)
     })
 
     test('should throw error when use snapshot adapter without invariant hash', async () => {
-      const snapshots = new Map()
-      snapshotAdapter = {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      }
-
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -326,9 +341,9 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
-        aggregates: [aggregate],
-        snapshotAdapter
+        eventstoreAdapter,
+        publisher,
+        aggregates: [aggregate]
       })
 
       try {
@@ -351,17 +366,8 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when use snapshot adapter with incorrect invariant hash', async () => {
-      const snapshots = new Map()
-      snapshotAdapter = {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      }
-
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -388,9 +394,9 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
-        aggregates: [aggregate],
-        snapshotAdapter
+        eventstoreAdapter,
+        publisher,
+        aggregates: [aggregate]
       })
 
       try {
@@ -437,6 +443,7 @@ describe('executeCommand', () => {
       ]
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -463,9 +470,9 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
-        aggregates: [aggregate],
-        snapshotAdapter
+        eventstoreAdapter,
+        publisher,
+        aggregates: [aggregate]
       })
 
       try {
@@ -490,6 +497,7 @@ describe('executeCommand', () => {
 
     test('should throw error when unknown command', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -503,7 +511,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -522,6 +531,7 @@ describe('executeCommand', () => {
 
     test('should throw error when the aggregateId is not a string', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -535,7 +545,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -557,6 +568,7 @@ describe('executeCommand', () => {
 
     test('should throw error when the aggregateName is not a string', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -570,7 +582,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -592,6 +605,7 @@ describe('executeCommand', () => {
 
     test('should throw error when the type is not a string', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -605,7 +619,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -625,7 +640,8 @@ describe('executeCommand', () => {
 
     test('should throw error when an aggregate does not exist', async () => {
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: []
       })
 
@@ -645,6 +661,7 @@ describe('executeCommand', () => {
 
     test('should throw error when an event contains "aggregateId", "aggregateVersion", "timestamp" fields', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -662,7 +679,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -684,6 +702,7 @@ describe('executeCommand', () => {
 
     test('should throw error when an event does not contain "type" field', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -696,7 +715,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -718,6 +738,7 @@ describe('executeCommand', () => {
   describe('with performance tracer', () => {
     test('should success build aggregate state from empty event list and execute cmd', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -731,7 +752,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -759,6 +781,7 @@ describe('executeCommand', () => {
 
     test('should success build aggregate state and execute command', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'Entity',
         commands: {
           create: state => {
@@ -783,11 +806,14 @@ describe('executeCommand', () => {
             }
           }
         },
+        serializeState: state => JSON.stringify(state),
+        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 'Entity-invariantHash'
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -827,9 +853,10 @@ describe('executeCommand', () => {
       const JWT_TOKEN = Buffer.from('ROOT', 'utf8').toString('base64')
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'User',
         commands: {
-          createUser: (aggregateState, command, jwtToken) => {
+          createUser: (aggregateState, command, { jwt: jwtToken }) => {
             if (Buffer.from(jwtToken, 'base64').toString('utf8') !== 'ROOT') {
               throw new Error('Access denied')
             }
@@ -846,7 +873,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -900,18 +928,9 @@ describe('executeCommand', () => {
       expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
     })
 
-    test('should use snapshotAdapter for building state', async () => {
-      const snapshots = new Map()
-      snapshotAdapter = {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      }
-
+    test('should use snapshots for building state', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -938,9 +957,9 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
-        snapshotAdapter,
         performanceTracer
       })
 
@@ -954,8 +973,8 @@ describe('executeCommand', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(0)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(1)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(0)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(1)
       expect(events.length).toEqual(1)
 
       await executeCommand({
@@ -968,8 +987,8 @@ describe('executeCommand', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(1)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(2)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(1)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(2)
       expect(events.length).toEqual(2)
 
       await executeCommand({
@@ -982,8 +1001,8 @@ describe('executeCommand', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(2)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(3)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(2)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(3)
       expect(events.length).toEqual(3)
 
       expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -1000,17 +1019,8 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when use snapshot adapter without invariant hash', async () => {
-      const snapshots = new Map()
-      snapshotAdapter = {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      }
-
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -1036,9 +1046,9 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
-        snapshotAdapter,
         performanceTracer
       })
 
@@ -1074,17 +1084,8 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when use snapshot adapter with incorrect invariant hash', async () => {
-      const snapshots = new Map()
-      snapshotAdapter = {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      }
-
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -1111,9 +1112,9 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
-        snapshotAdapter,
         performanceTracer
       })
 
@@ -1173,6 +1174,7 @@ describe('executeCommand', () => {
       ]
 
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -1199,9 +1201,9 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
-        snapshotAdapter,
         performanceTracer
       })
 
@@ -1239,6 +1241,7 @@ describe('executeCommand', () => {
 
     test('should throw error when unknown command', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1252,7 +1255,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate]
       })
 
@@ -1284,6 +1288,7 @@ describe('executeCommand', () => {
 
     test('should throw error when the aggregateId is not a string', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1297,7 +1302,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1332,6 +1338,7 @@ describe('executeCommand', () => {
 
     test('should throw error when the aggregateName is not a string', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1345,7 +1352,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1380,6 +1388,7 @@ describe('executeCommand', () => {
 
     test('should throw error when the type is not a string', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1393,7 +1402,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1426,7 +1436,8 @@ describe('executeCommand', () => {
 
     test('should throw error when an aggregate does not exist', async () => {
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [],
         performanceTracer
       })
@@ -1459,6 +1470,7 @@ describe('executeCommand', () => {
 
     test('should throw error when an event contains "aggregateId", "aggregateVersion", "timestamp" fields', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1476,7 +1488,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1511,6 +1524,7 @@ describe('executeCommand', () => {
 
     test('should throw error when an event does not contain "type" field', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1523,7 +1537,8 @@ describe('executeCommand', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1560,7 +1575,8 @@ describe('dispose', () => {
   describe('without performance tracer', () => {
     test('should dispose the command executor', async () => {
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: []
       })
 
@@ -1577,17 +1593,8 @@ describe('dispose', () => {
     })
 
     test('should dispose the snapshot handler', async () => {
-      const snapshots = new Map()
-      snapshotAdapter = {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      }
-
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -1614,9 +1621,9 @@ describe('dispose', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
-        aggregates: [aggregate],
-        snapshotAdapter
+        eventstoreAdapter,
+        publisher,
+        aggregates: [aggregate]
       })
 
       await executeCommand({
@@ -1629,8 +1636,8 @@ describe('dispose', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(0)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(1)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(0)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(1)
       expect(events.length).toEqual(1)
 
       await executeCommand.dispose()
@@ -1655,6 +1662,7 @@ describe('dispose', () => {
 
     test('should dispose the regular handler', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -1681,9 +1689,9 @@ describe('dispose', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
-        aggregates: [aggregate],
-        snapshotAdapter
+        eventstoreAdapter,
+        publisher,
+        aggregates: [aggregate]
       })
 
       await executeCommand({
@@ -1722,7 +1730,8 @@ describe('dispose', () => {
   describe('with performance tracer', () => {
     test('should dispose the command executor', async () => {
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [],
         performanceTracer
       })
@@ -1752,17 +1761,8 @@ describe('dispose', () => {
     })
 
     test('should dispose the snapshot handler', async () => {
-      const snapshots = new Map()
-      snapshotAdapter = {
-        saveSnapshot: jest.fn().mockImplementation((key, value) => {
-          return snapshots.set(key, value)
-        }),
-        loadSnapshot: jest.fn().mockImplementation(key => {
-          return snapshots.get(key)
-        })
-      }
-
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -1789,9 +1789,9 @@ describe('dispose', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
-        snapshotAdapter,
         performanceTracer
       })
 
@@ -1805,8 +1805,8 @@ describe('dispose', () => {
         }
       })
 
-      expect(snapshotAdapter.saveSnapshot.mock.calls.length).toEqual(0)
-      expect(snapshotAdapter.loadSnapshot.mock.calls.length).toEqual(1)
+      expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(0)
+      expect(eventstoreAdapter.loadSnapshot.mock.calls.length).toEqual(1)
       expect(events.length).toEqual(1)
 
       await executeCommand.dispose()
@@ -1843,6 +1843,7 @@ describe('dispose', () => {
 
     test('should dispose the regular handler', async () => {
       const aggregate = {
+        encryption: () => ({}),
         name: 'Map',
         commands: {
           set: (aggregateState, command) => {
@@ -1869,9 +1870,9 @@ describe('dispose', () => {
       }
 
       const executeCommand = createCommandExecutor({
-        eventStore,
+        eventstoreAdapter,
+        publisher,
         aggregates: [aggregate],
-        snapshotAdapter,
         performanceTracer
       })
 

@@ -1,9 +1,8 @@
 import createQuery from '../src/index'
 
 let events,
-  eventStore,
+  eventstoreAdapter,
   snapshots,
-  snapshotAdapter,
   viewModels,
   readModels,
   readModelConnectors,
@@ -47,19 +46,23 @@ for (const { describeName, prepare } of [
   describe(describeName, () => {
     beforeEach(() => {
       events = []
-      eventStore = {
-        loadEvents: async (filter, handler) => {
-          for (const event of events) {
-            await handler(event)
-          }
-        },
-        getNextCursor: prevCursor => {
-          return `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`
-        }
+      eventstoreAdapter = {
+        loadEvents: async ({ cursor: prevCursor }) => ({
+          events,
+          cursor: `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`
+        }),
+        getNextCursor: prevCursor =>
+          `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`,
+        getSecretsManager: async () => null,
+        loadSnapshot: jest.fn().mockImplementation(async key => {
+          return snapshots.get(key)
+        }),
+        saveSnapshot: jest.fn().mockImplementation(async (key, value) => {
+          snapshots.set(key, value)
+        })
       }
 
       snapshots = new Map()
-      snapshotAdapter = null
 
       viewModels = []
       readModels = []
@@ -73,9 +76,8 @@ for (const { describeName, prepare } of [
     afterEach(() => {
       query = null
       events = null
-      eventStore = null
+      eventstoreAdapter = null
       snapshots = null
-      snapshotAdapter = null
       viewModels = null
       readModels = null
       readModelConnectors = null
@@ -112,38 +114,28 @@ for (const { describeName, prepare } of [
             deserializeState: async serializedState => {
               return JSON.parse(serializedState)
             },
-            invariantHash: 'viewModelName-invariantHash'
+            invariantHash: 'viewModelName-invariantHash',
+            encryption: () => ({})
           }
         ]
       })
 
-      describe('with snapshot adapter', () => {
+      describe('with snapshots', () => {
         query = null
 
         beforeEach(() => {
-          snapshotAdapter = {
-            loadSnapshot: jest.fn().mockImplementation(async key => {
-              return snapshots.get(key)
-            }),
-            saveSnapshot: jest.fn().mockImplementation(async (key, value) => {
-              snapshots.set(key, value)
-            })
-          }
-
           query = createQuery({
             readModelConnectors,
-            snapshotAdapter,
             doUpdateRequest,
             readModels,
             viewModels,
-            eventStore,
+            eventstoreAdapter,
             performanceTracer
           })
         })
 
         afterEach(() => {
           query = null
-          snapshotAdapter = null
         })
 
         test('"read" should return state', async () => {
@@ -187,10 +179,10 @@ for (const { describeName, prepare } of [
             value: 7
           })
 
-          expect(snapshotAdapter.loadSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1'
           )
-          expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 1]],
@@ -198,7 +190,7 @@ for (const { describeName, prepare } of [
               cursor: 'CURSOR'
             })
           )
-          expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 2]],
@@ -206,7 +198,7 @@ for (const { describeName, prepare } of [
               cursor: 'CURSOR-CURSOR'
             })
           )
-          expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 3]],
@@ -254,10 +246,10 @@ for (const { describeName, prepare } of [
             value: 4
           })
 
-          expect(snapshotAdapter.loadSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2'
           )
-          expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 1]],
@@ -265,7 +257,7 @@ for (const { describeName, prepare } of [
               cursor: 'CURSOR'
             })
           )
-          expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 2]],
@@ -273,7 +265,7 @@ for (const { describeName, prepare } of [
               cursor: 'CURSOR-CURSOR'
             })
           )
-          expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 3]],
@@ -619,10 +611,10 @@ for (const { describeName, prepare } of [
             )
           )
 
-          expect(snapshotAdapter.loadSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1'
           )
-          expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 1]],
@@ -630,7 +622,7 @@ for (const { describeName, prepare } of [
               cursor: 'CURSOR'
             })
           )
-          expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 2]],
@@ -638,7 +630,7 @@ for (const { describeName, prepare } of [
               cursor: 'CURSOR-CURSOR'
             })
           )
-          expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 3]],
@@ -693,10 +685,10 @@ for (const { describeName, prepare } of [
             )
           )
 
-          expect(snapshotAdapter.loadSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2'
           )
-          expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 1]],
@@ -704,7 +696,7 @@ for (const { describeName, prepare } of [
               cursor: 'CURSOR'
             })
           )
-          expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 2]],
@@ -712,7 +704,7 @@ for (const { describeName, prepare } of [
               cursor: 'CURSOR-CURSOR'
             })
           )
-          expect(snapshotAdapter.saveSnapshot).toBeCalledWith(
+          expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 3]],
@@ -807,8 +799,8 @@ for (const { describeName, prepare } of [
             expect(error).toBeInstanceOf(Error)
           }
 
-          expect(snapshotAdapter.loadSnapshot).not.toBeCalled()
-          expect(snapshotAdapter.loadSnapshot).not.toBeCalled()
+          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled()
+          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled()
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -862,8 +854,8 @@ for (const { describeName, prepare } of [
             expect(error).toBeInstanceOf(Error)
           }
 
-          expect(snapshotAdapter.loadSnapshot).not.toBeCalled()
-          expect(snapshotAdapter.loadSnapshot).not.toBeCalled()
+          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled()
+          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled()
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -919,8 +911,8 @@ for (const { describeName, prepare } of [
             expect(error).toBeInstanceOf(Error)
           }
 
-          expect(snapshotAdapter.loadSnapshot).not.toBeCalled()
-          expect(snapshotAdapter.loadSnapshot).not.toBeCalled()
+          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled()
+          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled()
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -940,17 +932,16 @@ for (const { describeName, prepare } of [
         })
       })
 
-      describe('without snapshot adapter', () => {
+      describe('without snapshots', () => {
         query = null
 
         beforeEach(() => {
           query = createQuery({
             readModelConnectors,
-            snapshotAdapter: null,
             doUpdateRequest,
             readModels,
             viewModels,
-            eventStore,
+            eventstoreAdapter,
             performanceTracer
           })
         })
@@ -1664,11 +1655,10 @@ for (const { describeName, prepare } of [
 
         query = createQuery({
           readModelConnectors,
-          snapshotAdapter,
           doUpdateRequest,
           readModels,
           viewModels,
-          eventStore,
+          eventstoreAdapter,
           performanceTracer
         })
 
@@ -1737,7 +1727,7 @@ for (const { describeName, prepare } of [
         }
       })
 
-      test('"read" should return { lastError, ... } when a read model is broken', async () => {
+      test('"read" should return { error, ... } when a read model is broken', async () => {
         const events = [
           {
             aggregateId: 'id1',
@@ -1755,8 +1745,8 @@ for (const { describeName, prepare } of [
           })
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
-          expect(error.lastError.message).toEqual('BROKEN')
-          expect(error.lastError).toBeInstanceOf(Error)
+          expect(error.error.message).toEqual('BROKEN')
+          expect(error.error).toBeInstanceOf(Error)
         }
 
         if (performanceTracer != null) {
@@ -1889,8 +1879,8 @@ for (const { describeName, prepare } of [
 
         expect(value).toEqual(7)
         expect(result).toEqual({
-          lastError: null,
-          lastEvent: {
+          error: null,
+          successEvent: {
             aggregateId: 'id1',
             aggregateVersion: 3,
             timestamp: 3,
@@ -1899,7 +1889,8 @@ for (const { describeName, prepare } of [
               value: 8
             }
           },
-          listenerId: 'readModelName'
+          failedEvent: null,
+          eventSubscriber: 'readModelName'
         })
 
         if (performanceTracer != null) {
@@ -2010,10 +2001,7 @@ for (const { describeName, prepare } of [
           await result
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
-          expect(error.lastError).toBeInstanceOf(Error)
-          expect(error.lastError.message).toEqual(
-            'Read model "remoteReadModelName" updating had been interrupted'
-          )
+          expect(error.error).toBeInstanceOf(Error)
         }
 
         if (performanceTracer != null) {
@@ -2210,7 +2198,6 @@ for (const { describeName, prepare } of [
           () =>
             (query = createQuery({
               readModelConnectors: {},
-              snapshotAdapter,
               doUpdateRequest,
               readModels: [
                 {
@@ -2222,12 +2209,10 @@ for (const { describeName, prepare } of [
                 }
               ],
               viewModels,
-              eventStore,
+              eventstoreAdapter,
               performanceTracer
             }))
-        ).toThrow(
-          'Connector "default" for read-model "readModelName" does not exist'
-        )
+        ).toThrow(Error)
       })
 
       test('"createQuery" should raise error when a read model is declared twice', async () => {
@@ -2242,7 +2227,6 @@ for (const { describeName, prepare } of [
                   dispose: jest.fn()
                 }
               },
-              snapshotAdapter,
               doUpdateRequest,
               readModels: [
                 {
@@ -2261,7 +2245,7 @@ for (const { describeName, prepare } of [
                 }
               ],
               viewModels,
-              eventStore,
+              eventstoreAdapter,
               performanceTracer
             }))
         ).toThrow('Duplicate name for read model: "readModelName"')
@@ -2288,7 +2272,6 @@ for (const { describeName, prepare } of [
           () =>
             (query = createQuery({
               readModelConnectors,
-              snapshotAdapter,
               doUpdateRequest,
               readModels,
               viewModels: [
@@ -2303,7 +2286,7 @@ for (const { describeName, prepare } of [
                   invariantHash: 'viewModelName-invariantHash'
                 }
               ],
-              eventStore,
+              eventstoreAdapter,
               performanceTracer
             }))
         ).toThrow('Duplicate name for view model: "viewModelName"')
@@ -2328,7 +2311,6 @@ for (const { describeName, prepare } of [
       test('"read" should raise error when wrong options for read invocation', async () => {
         query = createQuery({
           readModelConnectors,
-          snapshotAdapter,
           doUpdateRequest,
           readModels,
           viewModels: [
@@ -2338,7 +2320,7 @@ for (const { describeName, prepare } of [
               invariantHash: 'viewModelName-invariantHash'
             }
           ],
-          eventStore,
+          eventstoreAdapter,
           performanceTracer
         })
 

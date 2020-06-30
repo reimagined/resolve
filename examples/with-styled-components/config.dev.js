@@ -12,14 +12,14 @@ const devConfig = {
   //     }
   //   }
   // },
-  storageAdapter: {
-    module: 'resolve-storage-lite',
+  eventstoreAdapter: {
+    module: 'resolve-eventstore-lite',
     options: {
-      databaseFile: 'data/event-store.db'
+      databaseFile: 'data/event-store.db',
+      secretsFile: 'data/secrets.db'
     }
   },
   eventBroker: {
-    launchBroker: false,
     databaseFile: 'data/local-bus-broker.db'
   }
 }

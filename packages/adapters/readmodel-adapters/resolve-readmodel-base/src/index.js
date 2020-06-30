@@ -92,7 +92,7 @@ const createAdapter = (implementation, options) => {
     operationFunc,
     store,
     readModelName,
-    ...args
+    parameters
   ) => {
     const segment = performanceTracer ? performanceTracer.getSegment() : null
     const subSegment = segment ? segment.addNewSubsegment(operationName) : null
@@ -105,7 +105,7 @@ const createAdapter = (implementation, options) => {
     const adapterPool = adapterPoolMap.get(store)
 
     try {
-      await operationFunc(adapterPool, readModelName, ...args)
+      return await operationFunc(adapterPool, readModelName, parameters)
     } catch (error) {
       if (subSegment != null) {
         subSegment.addError(error)
@@ -207,3 +207,6 @@ const createAdapter = (implementation, options) => {
 }
 
 export default createAdapter
+
+export const STOP_BATCH = Symbol('STOP_BATCH')
+export const OMIT_BATCH = Symbol('OMIT_BATCH')

@@ -81,3 +81,4 @@ To get started with reSolve, see the [step-by-step tutorial](./docs/tutorial.md)
 reSolve is developed by [Developer Express Inc.](https://devexpress.com)
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/readme.md?pixel)
+

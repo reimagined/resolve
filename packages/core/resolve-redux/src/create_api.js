@@ -37,7 +37,7 @@ export const temporaryErrorHttpCodes = [
   502, // Bad Gateway
   503, // Service Unavailable
   504, // Gateway Timeout
-  507, // Insufficient Storage
+  507, // Insufficient Eventstore
   509, // Bandwidth Limit Exceeded
   521, // Web Server Is Down
   522, // Connection Timed Out

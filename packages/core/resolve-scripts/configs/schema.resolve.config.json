@@ -167,12 +167,6 @@
         },
         "connectorName": {
           "type": "string"
-        },
-        "encryption": {
-          "oneOf": [
-            { "$ref": "#/definitions/resourceInstance" },
-            { "$ref": "#/definitions/resourceConstructor" }
-          ]
         }
       },
       "required": ["name", "projection", "resolvers", "connectorName"],
@@ -237,14 +231,14 @@
         "method": {
           "type": "string"
         },
-        "controller": {
+        "handler": {
           "oneOf": [
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
         }
       },
-      "required": ["path", "controller"],
+      "required": ["path", "handler"],
       "additionalProperties": false
     },
     "jwtCookie": {
@@ -265,17 +259,14 @@
         "launchBroker": {
           "type": "boolean"
         },
-        "zmqBrokerAddress": {
+        "publisherAddress": {
           "type": "string"
         },
-        "zmqConsumerAddress": {
+        "consumerAddress": {
           "type": "string"
         },
         "databaseFile": {
           "type": "string"
-        },
-        "batchSize": {
-          "type": "number"
         },
         "upstream": {
           "type": "boolean"
@@ -283,10 +274,9 @@
       },
       "required": [
         "launchBroker",
-        "zmqBrokerAddress",
-        "zmqConsumerAddress",
-        "databaseFile",
-        "batchSize"
+        "publisherAddress",
+        "consumerAddress",
+        "databaseFile"
       ],
       "additionalProperties": false
     },
@@ -406,14 +396,11 @@
             "$ref": "#/definitions/schedulerAdapter"
           }
         },
-        "storageAdapter": {
+        "eventstoreAdapter": {
           "$ref": "#/definitions/adapter"
         },
         "subscribeAdapter": {
           "$ref": "#/definitions/subscribeAdapter"
-        },
-        "snapshotAdapter": {
-          "$ref": "#/definitions/adapter"
         },
         "jwtCookie": {
           "$ref": "#/definitions/jwtCookie"
@@ -446,8 +433,7 @@
         "readModels",
         "readModelConnectors",
         "schedulers",
-        "storageAdapter",
-        "snapshotAdapter",
+        "eventstoreAdapter",
         "subscribeAdapter",
         "eventBroker",
         "customConstants",

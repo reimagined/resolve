@@ -1,6 +1,6 @@
 {
   "name": "create-resolve-app",
-  "version": "0.23.2",
+  "version": "0.24.7",
   "description": "A tool that generates boilerplate web applications based on the reSolve framework",
   "engines": {
     "node": ">=10.9"
@@ -27,7 +27,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/create-resolve-app#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
+    "@babel/runtime": "7.9.6",
     "adm-zip": "^0.4.11",
     "chalk": "^2.4.1",
     "command-line-args": "^5.0.2",

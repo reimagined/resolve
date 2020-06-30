@@ -17,20 +17,24 @@ const appConfig = {
       projection: 'common/aggregates/blog-post.projection.js'
     }
   ],
+  viewModels: [
+    {
+      name: 'current-user-profile',
+      projection: 'common/view-models/current-user-profile.projection.js'
+    }
+  ],
   readModels: [
     {
       name: 'user-profiles',
       connectorName: 'default',
       projection: 'common/read-models/user-profiles.projection.js',
-      resolvers: 'common/read-models/user-profiles.resolvers.js',
-      encryption: 'common/read-models/encryption.js'
+      resolvers: 'common/read-models/user-profiles.resolvers.js'
     },
     {
       name: 'medias',
       connectorName: 'default',
       projection: 'common/read-models/medias.projection.js',
-      resolvers: 'common/read-models/medias.resolvers.js',
-      encryption: 'common/read-models/encryption.js'
+      resolvers: 'common/read-models/medias.resolvers.js'
     },
     {
       name: 'blog-posts',
@@ -45,6 +49,18 @@ const appConfig = {
       source: 'common/sagas/personal-data.saga.js',
       connectorName: 'default',
       schedulerName: 'scheduler'
+    }
+  ],
+  apiHandlers: [
+    {
+      handler: 'common/api-handlers/get-personal-key.js',
+      path: '/api/personal-data-keys/:userId',
+      method: 'GET'
+    },
+    {
+      handler: 'common/api-handlers/delete-personal-key.js',
+      path: '/api/personal-data-keys/:userId',
+      method: 'DELETE'
     }
   ],
   clientEntries: [

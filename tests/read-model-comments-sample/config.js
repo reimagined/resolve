@@ -20,8 +20,8 @@ const appConfig = {
 
 // mdis-start dev-config
 const devConfig = {
-  storageAdapter: {
-    module: 'resolve-storage-lite',
+  eventstoreAdapter: {
+    module: 'resolve-eventstore-lite',
     options: {
       databaseFile: ':memory:'
     }
@@ -43,14 +43,6 @@ const devConfig = {
         user: 'root',
         password: '',
         database: `ReadModelCommentsSample`
-      }
-    }
-    */
-    /*
-    default: {
-      module: 'resolve-readmodel-mongo',
-      options: {
-        url: 'mongodb://127.0.0.1:27017/ReadModelCommentsSample'
       }
     }
     */

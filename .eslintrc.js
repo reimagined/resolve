@@ -25,23 +25,13 @@ module.exports = {
       extends: ['plugin:import/typescript'],
       rules: Object.assign({}, typescriptEslintRecommended.rules, {
         '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/member-delimiter-style': [
-          'error',
-          {
-            multiline: {
-              delimiter: 'none',
-              requireLast: false
-            },
-            singleline: {
-              delimiter: 'comma',
-              requireLast: false
-            }
-          }
-        ]
+        '@typescript-eslint/member-delimiter-style': 'off'
       })
     }
   ],
   rules: {
+    'react-hooks/exhaustive-deps': 'off',
+    'react-hooks/rules-of-hooks': 'off',
     'func-names': 'off',
     'no-underscore-dangle': 'off',
     'import/no-unresolved': 'off',
@@ -121,6 +111,7 @@ module.exports = {
           'cmd',
           'codeload',
           'Codepage',
+          'commiting',
           'commonjs',
           'config',
           'configs',
@@ -162,6 +153,7 @@ module.exports = {
           'domready',
           'dotenv',
           'downvote',
+          'dropdown',
           'dup',
           'dynamodb',
           'ecma',
@@ -205,6 +197,7 @@ module.exports = {
           'gif',
           'guid',
           'gzip',
+          'Highload',
           'hmac',
           'hmr',
           'hostname',
@@ -265,8 +258,6 @@ module.exports = {
           'middlewares',
           'millis',
           'minimist',
-          'mongo',
-          'mongodb',
           'monorepo',
           'Monorepos',
           'mqtt',
@@ -307,6 +298,7 @@ module.exports = {
           'param',
           'parameterized',
           'params',
+          'passthrough',
           'pathname',
           'pid',
           'pingreq',
@@ -318,7 +310,9 @@ module.exports = {
           'postgres',
           'postgresql',
           'prefetch',
+          'principial',
           'Postfix',
+          'pre',
           'preloader',
           'Presigned',
           'prev',
@@ -364,7 +358,9 @@ module.exports = {
           'respawn',
           'rgba',
           'rmdir',
+          'rollbacking',
           'Roboto',
+          'rpc',
           'runtime',
           'sanitizer',
           'savepoint',
@@ -402,6 +398,7 @@ module.exports = {
           'stepfunctions',
           'suback',
           'subdirectory',
+          'submenu',
           'subsegment',
           'subsegments',
           'subquery',
@@ -488,6 +485,7 @@ module.exports = {
           'xsub',
           'xyz',
           'yargs',
+          'yarnpkg',
           'ycombinator',
           'zeromq',
           'zmq',

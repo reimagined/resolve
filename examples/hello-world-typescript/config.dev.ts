@@ -16,12 +16,6 @@ const devConfig = {
       }
     }
     /*default: {
-      module: 'resolve-readmodel-mongo',
-      options: {
-        url: 'mongodb://127.0.0.1:27017/MyDatabaseName',
-      }
-    },*/
-    /*default: {
       module: 'resolve-readmodel-mysql',
       options: {
         host: 'localhost',
@@ -32,47 +26,33 @@ const devConfig = {
       }
     }*/
   },
-  snapshotAdapter: {
-    module: 'resolve-snapshot-lite',
+  eventstoreAdapter: {
+    module: 'resolve-eventstore-lite',
     options: {
-      // pathToFile: 'path/to/file',
-      bucketSize: 100
+      databaseFile: 'data/storage.db',
+      secretsFile: 'data/secrets.db'
+    }
+  },
+  schedulers: {
+    scheduler: {
+      adapter: {
+        module: 'resolve-scheduler-local',
+        options: {}
+      },
+      connectorName: 'default'
     }
   },
   /*{
-    module: 'resolve-snapshot-mysql',
+    module: 'resolve-eventstore-mysql',
     options: {
       host: 'localhost',
       port: 3306,
       user: 'customUser',
       password: 'customPassword',
       database: 'customDatabaseName',
-      tableName: 'customTableName',
-      bucketSize: 100
-    }
-  },*/
-  storageAdapter: {
-    module: 'resolve-storage-lite',
-    options: {
-      databaseFile: 'data/storage.db'
-    }
-  },
-  /*{
-    module: 'resolve-storage-mongo',
-    options: {
-      url: 'mongodb://127.0.0.1:27017/MyDatabaseName',
-      collectionName: 'Events'
-    }
-  },*/
-  /*{
-    module: 'resolve-storage-mysql',
-    options: {
-      host: 'localhost',
-      port: 3306,
-      user: 'customUser',
-      password: 'customPassword',
-      database: 'customDatabaseName',
-      tableName: 'customTableName'
+      eventsTableName: 'customTableName',
+      secretsDatabase: 'customSecretsDatabaseName',
+      secretsTableName: 'customSecretsTableName'
     }
   },*/
   subscribeAdapter: {
@@ -86,15 +66,6 @@ const devConfig = {
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000
-  },
-  schedulers: {
-    scheduler: {
-      adapter: {
-        module: 'resolve-scheduler-local',
-        options: {}
-      },
-      connectorName: 'default'
-    }
   }
 }
 

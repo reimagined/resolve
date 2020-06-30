@@ -4,6 +4,7 @@ exports[`base config works correctly [server] 1`] = `
 "
 import '$resolve.guardOnlyServer'
 import source_0_original_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagaCronHandlers.js\\"
+import encryption_0_instance from \\"resolve-runtime/lib/common/defaults/encryption.js\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -35,6 +36,7 @@ const invariantHash_0 = sideEffects_0_original != null
       ? source_0_original_hash + sideEffects_0_original_hash
       : source_0_original_hash
     
+const encryption_0 = encryption_0_instance
 
 const sagas = []
 
@@ -45,6 +47,7 @@ sagas.push({
 , handlers: handlers_0
 , sideEffects: sideEffects_0
 , invariantHash: invariantHash_0
+, encryption: encryption_0
 })
 
 export default sagas
@@ -55,6 +58,7 @@ exports[`config with schedulers works correctly [server] 1`] = `
 "
 import '$resolve.guardOnlyServer'
 import source_0_original_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagaCronHandlers.js\\"
+import encryption_0_instance from \\"resolve-runtime/lib/common/defaults/encryption.js\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -86,6 +90,7 @@ const invariantHash_0 = sideEffects_0_original != null
       ? source_0_original_hash + sideEffects_0_original_hash
       : source_0_original_hash
     
+const encryption_0 = encryption_0_instance
 
 const sagas = []
 
@@ -96,6 +101,7 @@ sagas.push({
 , handlers: handlers_0
 , sideEffects: sideEffects_0
 , invariantHash: invariantHash_0
+, encryption: encryption_0
 })
 
 export default sagas

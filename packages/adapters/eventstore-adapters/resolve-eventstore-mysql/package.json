@@ -1,0 +1,56 @@
+{
+  "name": "resolve-eventstore-mysql",
+  "version": "0.24.7",
+  "description": "An adapter reSolve uses to store events in MySQL.",
+  "engines": {
+    "node": ">=10.9"
+  },
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "scripts": {
+    "test": "jest --config=../../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../../jest.config.js --watchAll"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "author": "reimagined team",
+  "license": "MIT",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/eventstore-adapters/resolve-eventstore-mysql#readme",
+  "dependencies": {
+    "@babel/runtime": "7.9.6",
+    "mysql2": "^1.6.1",
+    "resolve-core": "0.24.7",
+    "resolve-debug-levels": "0.24.7",
+    "resolve-eventstore-base": "0.24.7"
+  },
+  "devDependencies": {
+    "jest": "26.0.1",
+    "sinon": "7.2.2",
+    "sql-formatter": "2.3.1",
+    "ts-jest": "^26.1.0"
+  },
+  "babelCompile": [
+    {
+      "sourceType": "ts",
+      "moduleType": "es",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "sourceType": "ts",
+      "moduleType": "cjs",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ]
+}

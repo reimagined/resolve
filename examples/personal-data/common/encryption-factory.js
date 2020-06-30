@@ -1,31 +1,31 @@
-import Cryptr from 'cryptr'
+import { AES, enc } from 'crypto-js'
 import { generate } from 'generate-password'
 
-const encrypt = (key, data) => {
-  const { encrypt } = new Cryptr(key)
-  return encrypt(JSON.stringify(data))
-}
+export const getEncrypter = key => data =>
+  AES.encrypt(JSON.stringify(data), key).toString()
 
-const decrypt = (key, blob) => {
-  const { decrypt } = new Cryptr(key)
+export const getDecrypter = key => blob => {
   try {
-    return JSON.parse(decrypt(blob))
+    return JSON.parse(AES.decrypt(blob, key).toString(enc.Utf8))
   } catch {
     return null
   }
 }
 
-export default async (aggregateId, secretsManager) => {
+export default async (aggregateId, secretsManager, generateKey = true) => {
   let aggregateKey = await secretsManager.getSecret(aggregateId)
-  if (!aggregateKey) {
+  if (!aggregateKey && generateKey) {
     aggregateKey = generate({
       length: 20,
       numbers: true
     })
     await secretsManager.setSecret(aggregateId, aggregateKey)
   }
+  if (!aggregateKey) {
+    return null
+  }
   return {
-    encrypt: data => encrypt(aggregateKey, data),
-    decrypt: blob => decrypt(aggregateKey, blob)
+    encrypt: getEncrypter(aggregateKey),
+    decrypt: getDecrypter(aggregateKey)
   }
 }

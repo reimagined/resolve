@@ -1,6 +1,6 @@
 {
   "name": "resolve-module-admin",
-  "version": "0.23.2",
+  "version": "0.24.7",
   "description": "A reSolve module that adds admin commands to an application.",
   "engines": {
     "node": ">=10.9"
@@ -26,14 +26,14 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
+    "@babel/runtime": "7.9.6",
     "yargs": "^14.0.0",
     "isomorphic-fetch": "^2.2.1",
     "columnify": "^1.5.4",
     "dateformat": "^3.0.3"
   },
   "devDependencies": {
-    "jest": "25.1.0",
+    "jest": "26.0.1",
     "sinon": "7.2.2"
   },
   "babelCompile": [

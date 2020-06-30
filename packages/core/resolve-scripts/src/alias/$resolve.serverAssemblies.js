@@ -2,8 +2,7 @@ export default () => `
   import '$resolve.guardOnlyServer'
   import serverImports from '$resolve.serverImports'
   import seedClientEnvs from '$resolve.seedClientEnvs'
-  import storageAdapter from '$resolve.storageAdapter'
-  import snapshotAdapter from '$resolve.snapshotAdapter'
+  import eventstoreAdapter from '$resolve.eventstoreAdapter'
   import readModelConnectors from '$resolve.readModelConnectors'
   import constants from '$resolve.constants'
   import apiHandlers from '$resolve.apiHandlers'
@@ -18,8 +17,7 @@ export default () => `
   export default {
     assemblies: {
       seedClientEnvs,
-      storageAdapter,
-      snapshotAdapter,
+      eventstoreAdapter,
       readModelConnectors,
       serverImports,
       uploadAdapter

@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`secrets store dropped: drop table with keys 1`] = `
+Array [
+  Array [
+    "DROP TABLE IF EXISTS \\"secrets-database-escaped-id\\"",
+  ],
+]
+`;

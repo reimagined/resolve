@@ -34,8 +34,8 @@ export default ({ resolveConfig, isClient }) => {
     )
 
     importResource({
-      resourceName: `controller_${index}`,
-      resourceValue: apiHandler.controller,
+      resourceName: `handler_${index}`,
+      resourceValue: apiHandler.handler,
       runtimeMode: RUNTIME_ENV_ANYWHERE,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
@@ -44,7 +44,7 @@ export default ({ resolveConfig, isClient }) => {
     })
 
     exports.push(`apiHandlers.push({`, `  path: path_${index}`)
-    exports.push(`, controller: controller_${index}`)
+    exports.push(`, handler: handler_${index}`)
     exports.push(`, method: method_${index}`)
     exports.push(`})`, ``)
   }

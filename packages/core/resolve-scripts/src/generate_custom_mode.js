@@ -119,10 +119,14 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
         while (true) {
           try {
             const response = await fetch(url)
-            if ((await response.text()) !== 'ok') {
+
+            const result = await response.text()
+            if (result !== 'ok') {
               lastError = [
                 `Error while communication with reSolve HTTP server at port ${port}`,
-                `Maybe multiple instances of reSolve applications trying to run with similar port`
+                `Maybe multiple instances of reSolve applications trying to run with similar port`,
+                `${response.status}: ${response.statusText}`,
+                `${result}`
               ].join('\n')
             }
             break

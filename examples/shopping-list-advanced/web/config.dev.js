@@ -4,10 +4,11 @@ const devConfig = {
   target: 'local',
   port: declareRuntimeEnv('PORT', '3000'),
   mode: 'development',
-  storageAdapter: {
-    module: 'resolve-storage-lite',
+  eventstoreAdapter: {
+    module: 'resolve-eventstore-lite',
     options: {
-      databaseFile: 'data/event-store.db'
+      databaseFile: 'data/event-store.db',
+      secretsFile: 'data/secrets.db'
     }
   },
   readModelConnectors: {

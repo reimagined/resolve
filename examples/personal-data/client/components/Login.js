@@ -9,7 +9,8 @@ import {
   Input,
   FormText,
   Button,
-  Alert
+  Alert,
+  Label
 } from 'reactstrap'
 
 const RegistrationForm = ({ user }) => {
@@ -17,11 +18,13 @@ const RegistrationForm = ({ user }) => {
     nickname: user ? user.nickname : '',
     firstName: user ? user.firstName : '',
     lastName: user ? user.lastName : '',
-    phoneNumber: user ? user.contacts.phoneNumber : '',
-    address: user ? user.contacts.address : '',
+    phoneNumber: user && user.contacts ? user.contacts.phoneNumber : '',
+    address: user && user.contacts ? user.contacts.address : '',
     error: null,
     done: null
   })
+
+  const [agree, setAgree] = useState(false)
 
   const handleChange = prop => event => {
     setValues({
@@ -97,7 +100,9 @@ const RegistrationForm = ({ user }) => {
               name="phoneNumber"
               id="phoneNumber"
               placeholder="Phone number"
-              defaultValue={user ? user.contacts.phoneNumber : ''}
+              defaultValue={
+                user && user.contacts ? user.contacts.phoneNumber : ''
+              }
               onChange={handleChange('phoneNumber')}
             />
           </Col>
@@ -109,7 +114,7 @@ const RegistrationForm = ({ user }) => {
               name="address"
               id="address"
               placeholder="Postal address"
-              defaultValue={user ? user.contacts.address : ''}
+              defaultValue={user && user.contacts ? user.contacts.address : ''}
               onChange={handleChange('address')}
             />
           </Col>
@@ -122,13 +127,29 @@ const RegistrationForm = ({ user }) => {
             </FormText>
           </Col>
         </FormGroup>
+        {!user && (
+          <FormGroup check className="mb-3">
+            <Label check>
+              <Input
+                id="consent"
+                type="checkbox"
+                onChange={() => {
+                  setAgree(!agree)
+                }}
+              />{' '}
+              I give my consent to the processing of personal data
+            </Label>
+          </FormGroup>
+        )}
         <FormGroup row>
           <Col>
             <div className="mb-3">
               {user ? (
                 <Button onClick={update}>Update</Button>
               ) : (
-                <Button type="submit">Sign Up</Button>
+                <Button disabled={!agree} type="submit">
+                  Sign Up
+                </Button>
               )}
             </div>
             {error && <Alert color="danger">An error occurred</Alert>}

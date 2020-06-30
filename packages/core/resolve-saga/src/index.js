@@ -7,22 +7,22 @@ import createSchedulerSagas from './create-scheduler-sagas'
 import wrapRegularSagas from './wrap-regular-sagas'
 
 const createSaga = ({
-  eventStore,
+  publisher,
   readModelConnectors,
-  snapshotAdapter,
   sagas,
   schedulers,
   executeCommand,
   executeQuery,
   performanceTracer,
-  uploader
+  uploader,
+  eventstoreAdapter
 }) => {
   const schedulerAggregatesNames = new Set(schedulers.map(({ name }) => name))
   let eventProperties = {}
   const executeScheduleCommand = createCommand({
     aggregates: createSchedulersAggregates(schedulers),
-    eventStore,
-    snapshotAdapter
+    publisher,
+    eventstoreAdapter
   })
 
   const executeCommandOrScheduler = async (...args) => {
@@ -39,7 +39,7 @@ const createSaga = ({
     executeQuery: { get: () => executeQuery, enumerable: true },
     eventProperties: { get: () => eventProperties, enumerable: true },
     getSecretsManager: {
-      get: () => eventStore.getSecretsManager,
+      get: () => eventstoreAdapter.getSecretsManager,
       enumerable: true
     },
     uploader: { get: () => uploader, enumerable: true }
@@ -49,19 +49,19 @@ const createSaga = ({
   const schedulerSagas = createSchedulerSagas(schedulers, sagaProvider)
 
   const executeListener = createQuery({
-    eventStore,
+    publisher,
     readModelConnectors,
-    snapshotAdapter,
     readModels: [...regularSagas, ...schedulerSagas],
     viewModels: [],
-    performanceTracer
+    performanceTracer,
+    eventstoreAdapter
   })
 
   const updateByEvents = async ({
     modelName,
     events,
     getRemainingTimeInMillis,
-    transactionId,
+    xaTransactionId,
     properties
   }) => {
     eventProperties = properties
@@ -69,7 +69,7 @@ const createSaga = ({
       modelName,
       events,
       getRemainingTimeInMillis,
-      transactionId
+      xaTransactionId
     })
     return result
   }
