@@ -35,6 +35,15 @@ const cloudConfig = {
         region: declareRuntimeEnv('AWS_REGION')
       }
     }
+  },
+  schedulers: {
+    scheduler: {
+      adapter: {
+        module: 'resolve-scheduler-cloud',
+        options: {}
+      },
+      connectorName: 'default'
+    }
   }
 }
 

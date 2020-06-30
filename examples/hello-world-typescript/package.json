@@ -1,15 +1,15 @@
 {
   "name": "hello-world-typescript",
-  "version": "0.24.3",
+  "version": "0.24.7",
   "description": "used as a template for new reSolve applications",
   "private": true,
   "scripts": {
     "type-check": "tsc",
-    "build": "tsc && babel-node --extensions='.ts,.tsx' run.ts build",
-    "dev": "tsc && babel-node --extensions='.ts,.tsx' run.ts dev",
-    "start": "tsc && babel-node --extensions='.ts,.tsx' run.ts start",
+    "build": "tsc && babel-node --extensions=.ts,.tsx run.ts build",
+    "dev": "tsc && babel-node --extensions=.ts,.tsx run.ts dev",
+    "start": "tsc && babel-node --extensions=.ts,.tsx run.ts start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
-    "test:functional": "tsc && babel-node --extensions='.ts,.tsx' run.ts test:functional"
+    "test:functional": "tsc && babel-node --extensions=.ts,.tsx run.ts test:functional"
   },
   "dependencies": {
     "babel-loader": "8.1.0",
@@ -29,19 +29,19 @@
     "react-redux": "7.2.0",
     "redux-saga": "1.0.5",
     "redux-devtools-extension": "^2.13.8",
-    "resolve-redux": "0.24.3",
-    "resolve-command": "0.24.3",
-    "resolve-scripts": "0.24.3",
-    "resolve-query": "0.24.3",
-    "resolve-readmodel-base": "0.24.3",
-    "resolve-readmodel-lite": "0.24.3",
-    "resolve-readmodel-postgresql-serverless": "0.24.3",
-    "resolve-scheduler-local": "0.24.3",
-    "resolve-scheduler-cloud": "0.24.3",
-    "resolve-eventstore-lite": "0.24.3",
-    "resolve-eventstore-postgresql-serverless": "0.24.3",
-    "resolve-subscribe-mqtt": "0.24.3",
-    "resolve-subscribe-socket.io": "0.24.3"
+    "resolve-redux": "0.24.7",
+    "resolve-command": "0.24.7",
+    "resolve-scripts": "0.24.7",
+    "resolve-query": "0.24.7",
+    "resolve-readmodel-base": "0.24.7",
+    "resolve-readmodel-lite": "0.24.7",
+    "resolve-readmodel-postgresql-serverless": "0.24.7",
+    "resolve-scheduler-local": "0.24.7",
+    "resolve-scheduler-cloud": "0.24.7",
+    "resolve-eventstore-lite": "0.24.7",
+    "resolve-eventstore-postgresql-serverless": "0.24.7",
+    "resolve-subscribe-mqtt": "0.24.7",
+    "resolve-subscribe-socket.io": "0.24.7"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",

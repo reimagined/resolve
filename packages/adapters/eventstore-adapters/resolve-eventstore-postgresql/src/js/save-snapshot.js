@@ -1,5 +1,3 @@
-import { SAVE_CHUNK_SIZE } from './constants'
-
 const saveSnapshot = async (
   {
     databaseName,
@@ -8,10 +6,7 @@ const saveSnapshot = async (
     escapeId,
     escape,
     counters,
-    bucketSize,
-    beginTransaction,
-    commitTransaction,
-    rollbackTransaction
+    bucketSize
   },
   snapshotKey,
   content
@@ -36,57 +31,15 @@ const saveSnapshot = async (
   }
   counters.set(snapshotKey, 0)
 
-  const chunksCount = Math.ceil(content.length / SAVE_CHUNK_SIZE)
-
-  if (chunksCount > 1) {
-    let transactionId = null
-    try {
-      transactionId = await beginTransaction()
-
-      for (let index = 0; index < chunksCount; index++) {
-        const chunk = content.substring(
-          index * SAVE_CHUNK_SIZE,
-          (index + 1) * SAVE_CHUNK_SIZE
-        )
-
-        if (index > 0) {
-          await executeStatement(
-            `UPDATE ${databaseNameAsId}.${snapshotsTableNameAsId}
-            SET "snapshotContent" = "snapshotContent" || ${escape(chunk)}
-            WHERE "snapshotKey" = ${escape(snapshotKey)}`,
-            transactionId
-          )
-        } else {
-          await executeStatement(
-            `INSERT INTO ${databaseNameAsId}.${snapshotsTableNameAsId}(
-              "snapshotKey", 
-              "snapshotContent"
-            )
-            VALUES(${escape(snapshotKey)}, ${escape(chunk)})
-            ON CONFLICT ("snapshotKey") DO UPDATE
-            SET "snapshotContent" = ${escape(chunk)}`,
-            transactionId
-          )
-        }
-      }
-
-      await commitTransaction(transactionId)
-    } catch (error) {
-      await rollbackTransaction(transactionId)
-
-      throw error
-    }
-  } else {
-    await executeStatement(
-      `INSERT INTO ${databaseNameAsId}.${snapshotsTableNameAsId}(
-        "snapshotKey", 
-        "snapshotContent"
-      )
-      VALUES(${escape(snapshotKey)}, ${escape(content)})
-      ON CONFLICT ("snapshotKey") DO UPDATE
-      SET "snapshotContent" = ${escape(content)}`
+  await executeStatement(
+    `INSERT INTO ${databaseNameAsId}.${snapshotsTableNameAsId}(
+      "snapshotKey", 
+      "snapshotContent"
     )
-  }
+    VALUES(${escape(snapshotKey)}, ${escape(content)})
+    ON CONFLICT ("snapshotKey") DO UPDATE
+    SET "snapshotContent" = ${escape(content)}`
+  )
 }
 
 export default saveSnapshot

@@ -1,13 +1,30 @@
-const saveEventOnly = async function(
+const injectEvent = async function(
   { eventsTableName, database, escapeId, escape },
   event
 ) {
-  const currentThreadId = Math.floor(Math.random() * 256)
   const eventsTableNameAsId = escapeId(eventsTableName)
   const serializedPayload =
     event.payload != null
       ? escape(JSON.stringify(event.payload))
       : escape('null')
+
+  const missingFields = []
+  if (event.threadId == null) {
+    missingFields.push(`"threadId"`)
+  }
+  if (event.threadCounter == null) {
+    missingFields.push(`"threadCounter"`)
+  }
+  if (event.timestamp == null) {
+    missingFields.push(`"timestamp"`)
+  }
+  if (missingFields.length > 0) {
+    throw new Error(
+      `The field ${missingFields.join(', ')} is required in ${JSON.stringify(
+        event
+      )}`
+    )
+  }
 
   // prettier-ignore
   await database.exec(
@@ -20,14 +37,8 @@ const saveEventOnly = async function(
       "type",
       "payload"
     ) VALUES(
-      ${+currentThreadId},
-      COALESCE(
-        (
-          SELECT MAX("threadCounter") FROM ${eventsTableNameAsId}
-          WHERE "threadId" = ${+currentThreadId}
-        ) + 1,
-        0
-      ),
+      ${+event.threadId},
+      ${+event.threadCounter},
       ${+event.timestamp},
       ${escape(event.aggregateId)},
       ${+event.aggregateVersion},
@@ -37,4 +48,4 @@ const saveEventOnly = async function(
   )
 }
 
-export default saveEventOnly
+export default injectEvent

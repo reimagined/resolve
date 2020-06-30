@@ -33,6 +33,15 @@ const devConfig = {
       secretsFile: 'data/secrets.db'
     }
   },
+  schedulers: {
+    scheduler: {
+      adapter: {
+        module: 'resolve-scheduler-local',
+        options: {}
+      },
+      connectorName: 'default'
+    }
+  },
   /*{
     module: 'resolve-eventstore-mysql',
     options: {

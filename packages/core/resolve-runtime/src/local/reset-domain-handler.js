@@ -66,13 +66,15 @@ const resetDomainHandler = options => async (req, res) => {
         PublisherResourceAlreadyExistError
       ])
     } else {
-      const compositeError = new Error(
-        dropReadModelsSagasErrors.map(error => error.message).join('\n')
-      )
-      compositeError.stack = dropReadModelsSagasErrors
-        .map(error => error.stack)
-        .join('\n')
-      throw compositeError
+      if (dropReadModelsSagasErrors.length) {
+        const compositeError = new Error(
+          dropReadModelsSagasErrors.map(error => error.message).join('\n')
+        )
+        compositeError.stack = dropReadModelsSagasErrors
+          .map(error => error.stack)
+          .join('\n')
+        throw compositeError
+      }
     }
 
     res.end('ok')
