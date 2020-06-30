@@ -1,24 +1,47 @@
+import getLog from './get-log'
+
 const saveSnapshot = async (pool, snapshotKey, content) => {
+  const log = getLog(`saveSnapshot`)
+  const {
+    bucketSize,
+    escape,
+    escapeId,
+    counters,
+    database,
+    snapshotsTableName
+  } = pool
+
+  log.verbose(`snapshotKey: ${snapshotKey}`)
+  log.verbose(`bucketSize: ${bucketSize}`)
+  log.verbose(`snapshotsTableName: ${snapshotsTableName}`)
+  log.verbose(`counters.size: ${counters.size}`)
+
   if (snapshotKey == null || snapshotKey.constructor !== String) {
-    throw new Error('Snapshot key must be string')
+    const error = new Error('Snapshot key must be string')
+    log.error(error.message)
+    throw error
   }
   if (content == null || content.constructor !== String) {
-    throw new Error('Snapshot content must be string')
+    const error = new Error('Snapshot content must be string')
+    log.error(error.message)
+    throw error
   }
 
-  if (!pool.counters.has(snapshotKey)) {
-    pool.counters.set(snapshotKey, 0)
+  if (!counters.has(snapshotKey)) {
+    counters.set(snapshotKey, 0)
   }
 
-  if (pool.counters.get(snapshotKey) < pool.bucketSize) {
-    pool.counters.set(snapshotKey, pool.counters.get(snapshotKey) + 1)
+  if (counters.get(snapshotKey) < bucketSize) {
+    counters.set(snapshotKey, counters.get(snapshotKey) + 1)
     return
   }
-  pool.counters.set(snapshotKey, 0)
+  counters.set(snapshotKey, 0)
 
-  await pool.database.exec(
-    `INSERT INTO ${pool.escapeId(pool.snapshotsTableName)} 
-    VALUES (${pool.escape(snapshotKey)}, ${pool.escape(content)})`
+  log.debug(`saving snapshot ${snapshotKey}`)
+
+  await database.exec(
+    `INSERT INTO ${escapeId(snapshotsTableName)} 
+    VALUES (${escape(snapshotKey)}, ${escape(content)})`
   )
 }
 
