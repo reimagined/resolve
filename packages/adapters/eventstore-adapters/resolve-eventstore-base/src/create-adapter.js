@@ -54,9 +54,11 @@ const createAdapter = (
     connectPromiseResolve,
     shapeEvent,
     counters: new Map(),
-    bucketSize: Number.isInteger(config.snapshotBucketSize)
-      ? config.snapshotBucketSize
-      : 100 // just to not make snapshots on each event
+    bucketSize:
+      Number.isInteger(config.snapshotBucketSize) &&
+      config.snapshotBucketSize > 0
+        ? config.snapshotBucketSize
+        : 100
   })
 
   const adapter = {
