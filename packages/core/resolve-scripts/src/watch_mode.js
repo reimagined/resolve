@@ -94,6 +94,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
         poll: 1000
       },
       (err, { stats }) => {
+        console.log(' ') // eslint-disable-line no-console
         stats.forEach(showBuildInfo.bind(null, err))
 
         writePackageJsonsForAssemblies(

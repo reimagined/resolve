@@ -44,6 +44,7 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
 
       await new Promise((resolve, reject) => {
         compiler.run((err, { stats }) => {
+          console.log(' ') // eslint-disable-line no-console
           stats.forEach(showBuildInfo.bind(null, err))
 
           writePackageJsonsForAssemblies(
