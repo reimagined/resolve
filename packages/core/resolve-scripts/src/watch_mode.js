@@ -1,6 +1,7 @@
 import fsExtra from 'fs-extra'
 import path from 'path'
 import webpack from 'webpack'
+import getLog from './getLog'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
@@ -12,7 +13,10 @@ import validateConfig from './validate_config'
 import openBrowser from './open_browser'
 import { processRegister } from './process_manager'
 
+const log = getLog('watch')
+
 export default async (resolveConfig, adjustWebpackConfigs) => {
+  log.debug('Starting "watch" mode')
   validateConfig(resolveConfig)
 
   const nodeModulesByAssembly = new Map()
@@ -121,15 +125,19 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
           } else {
             if (resolveConfig.eventBroker.launchBroker) {
               broker.start()
+              log.debug(`Bus broker process pid: ${broker.pid}`)
             }
             server.start()
+            log.debug(`Server process pid: ${server.pid}`)
 
             const isOpenBrowser =
               process.env.RESOLVE_SERVER_OPEN_BROWSER === 'true'
             const serverFirstStart =
               process.env.RESOLVE_SERVER_FIRST_START === 'true'
             if (isOpenBrowser && serverFirstStart) {
+              log.debug('Opening browser')
               openBrowser(port, resolveConfig.rootPath).catch(() => {})
+              log.debug('Browser was opened')
             }
           }
         }
