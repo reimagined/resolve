@@ -32,6 +32,9 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   }
 
   if (counters.get(snapshotKey) < bucketSize) {
+    log.debug(
+      `skipping actual snapshot saving - not enough events to fill the bucket`
+    )
     counters.set(snapshotKey, counters.get(snapshotKey) + 1)
     return
   }

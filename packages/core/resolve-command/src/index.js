@@ -149,7 +149,7 @@ const getAggregateState = async (
     }
 
     const snapshotKey = checkOptionShape(projection, [Object])
-      ? `${invariantHash};${aggregateId}`
+      ? `AG;${invariantHash};${aggregateId}`
       : null
 
     if (!checkOptionShape(invariantHash, [String]) && snapshotKey != null) {

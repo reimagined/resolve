@@ -1,35 +1,52 @@
-import debugLevels from 'resolve-debug-levels'
-
-const log = debugLevels('resolve:resolve-query:wrap-view-model')
+import getLog from './get-log'
 
 const getKey = aggregateIds =>
   Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds
 
 const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
   const viewModelName = pool.viewModel.name
+  const getLocalLog = scope => getLog(`buildViewModel:${viewModelName}${scope}`)
+  const log = getLocalLog('')
 
   await Promise.resolve()
-  const snapshotKey = `${pool.viewModel.invariantHash};${key}`
+  const snapshotKey = `VM;${pool.viewModel.invariantHash};${key}`
+  log.verbose(`snapshotKey: ${snapshotKey}`)
+
   let aggregatesVersionsMap = new Map()
   let cursor = null
   let state = null
 
   try {
-    const snapshot = JSON.parse(
-      await pool.eventstoreAdapter.loadSnapshot(snapshotKey)
-    )
+    log.debug(`loading latest snapshot`)
+    const snapshotData = await pool.eventstoreAdapter.loadSnapshot(snapshotKey)
+    log.verbose(`snapshot: ${snapshotData}`)
+    const snapshot = JSON.parse(snapshotData)
     aggregatesVersionsMap = new Map(snapshot.aggregatesVersionsMap)
+    log.debug(`deserialize snapshot state`)
     state = await pool.viewModel.deserializeState(snapshot.state)
+    log.verbose(`snapshot state: ${state}`)
     cursor = snapshot.cursor
-  } catch (error) {}
+    log.verbose(`snapshot cursor: ${cursor}`)
+  } catch (error) {
+    log.warn(error.message)
+  }
 
   if (cursor == null && typeof pool.viewModel.projection.Init === 'function') {
+    log.debug(`initializing view model from scratch`)
     state = pool.viewModel.projection.Init()
   }
 
   let eventCount = 0
 
+  log.debug(`retrieving event store secrets manager`)
+  const secretsManager =
+    typeof pool.getSecretsManager === 'function'
+      ? await pool.getSecretsManager()
+      : null
+
   const handler = async event => {
+    const handlerLog = getLocalLog(`:handler:${event.type}`)
+    handlerLog.debug(`executing`)
     const segment = pool.performanceTracer
       ? pool.performanceTracer.getSegment()
       : null
@@ -50,17 +67,12 @@ const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
         subSegment.addAnnotation('origin', 'resolve:query:applyEvent')
       }
 
-      log.debug(`retrieving event store secrets manager`)
-      const secretsManager =
-        typeof pool.getSecretsManager === 'function'
-          ? await pool.getSecretsManager()
-          : null
-
-      log.debug(`building view-model encryption`)
+      handlerLog.debug(`building view-model encryption`)
       const encryption = await pool.viewModel.encryption(event, {
         secretsManager
       })
 
+      handlerLog.debug(`applying event to projection`)
       state = await pool.viewModel.projection[event.type](
         state,
         event,
@@ -74,6 +86,7 @@ const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
 
       aggregatesVersionsMap.set(event.aggregateId, event.aggregateVersion)
 
+      handlerLog.debug(`saving snapshot`)
       await pool.eventstoreAdapter.saveSnapshot(
         snapshotKey,
         JSON.stringify({
@@ -86,6 +99,7 @@ const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
       if (subSegment != null) {
         subSegment.addError(error)
       }
+      log.error(error.message)
       throw error
     } finally {
       if (subSegment != null) {
@@ -100,6 +114,8 @@ const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
     cursor,
     limit: Number.MAX_SAFE_INTEGER
   })
+
+  log.debug(`fetched ${events.length} events for the view model, applying`)
 
   for (const event of events) {
     await handler(event)
