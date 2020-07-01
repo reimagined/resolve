@@ -13,7 +13,7 @@ const devConfig = {
       module: 'resolve-readmodel-lite',
       options: {
         databaseFile: 'data/read-models.db',
-        secretsFile: 'data/secrets.db'
+        secretsFile: 'data/secrets.db',
       }
     }
   },
@@ -21,7 +21,8 @@ const devConfig = {
     module: 'resolve-eventstore-lite',
     options: {
       databaseFile: 'data/eventstore.db',
-      secretsFile: 'data/secrets.db'
+      secretsFile: 'data/secrets.db',
+      snapshotBucketSize: 100
     }
   },
   subscribeAdapter: {

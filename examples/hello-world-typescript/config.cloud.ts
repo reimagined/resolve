@@ -16,7 +16,8 @@ const cloudConfig = {
       databaseName: declareRuntimeEnv('RESOLVE_ES_DATABASE'),
       eventsTableName: declareRuntimeEnv('RESOLVE_ES_TABLE'),
       secretsTableName: declareRuntimeEnv('RESOLVE_ES_SECRETS_TABLE'),
-      region: declareRuntimeEnv('AWS_REGION')
+      region: declareRuntimeEnv('AWS_REGION'),
+      snapshotBucketSize: 100
     }
   },
   readModelConnectors: {
