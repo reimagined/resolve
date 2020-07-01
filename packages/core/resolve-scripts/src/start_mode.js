@@ -1,9 +1,13 @@
 import path from 'path'
+import getLog from './getLog'
 
 import { processRegister } from './process_manager'
 
+const log = getLog('start')
+
 export default resolveConfig =>
   new Promise(async (resolve, reject) => {
+    log.debug('Starting "start" mode')
     const serverPath = path.resolve(
       process.cwd(),
       path.join(resolveConfig.distDir, './common/local-entry/local-entry.js')
@@ -25,6 +29,7 @@ export default resolveConfig =>
     server.on('crash', reject)
 
     server.start()
+    log.debug(`Server process pid: ${server.pid}`)
 
     if (resolveConfig.eventBroker.launchBroker) {
       const brokerPath = path.resolve(
@@ -49,5 +54,6 @@ export default resolveConfig =>
       broker.on('crash', reject)
 
       broker.start()
+      log.debug(`Bus broker process pid: ${broker.pid}`)
     }
   })
