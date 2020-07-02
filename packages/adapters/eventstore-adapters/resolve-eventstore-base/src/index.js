@@ -15,6 +15,7 @@ import {
 import loadEvents from './load-events'
 import getNextCursor from './get-next-cursor'
 import throwBadCursor from './throw-bad-cursor'
+import snapshotTrigger from './snapshot-trigger'
 
 const wrappedCreateAdapter = createAdapter.bind(null, {
   importStream,
@@ -37,5 +38,6 @@ export {
   MAINTENANCE_MODE_AUTO,
   MAINTENANCE_MODE_MANUAL,
   throwBadCursor,
-  getNextCursor
+  getNextCursor,
+  snapshotTrigger
 }
