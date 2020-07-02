@@ -54,7 +54,8 @@
     "testcafe-browser-tools": "^2.0.10",
     "uuid": "^3.3.2",
     "webpack": "^4.42.0",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-node-externals": "^1.7.2",
+    "resolve-debug-levels": "0.24.7"
   },
   "devDependencies": {
     "jest": "26.0.1",
