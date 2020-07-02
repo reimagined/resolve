@@ -55,7 +55,8 @@ const initEventStore = async ({
     await database.exec(
       `CREATE TABLE ${escapeId(snapshotsTableName)} (
         ${escapeId('snapshotKey')} TEXT,
-        ${escapeId('content')} TEXT
+        ${escapeId('content')} TEXT,
+        PRIMARY KEY(${escapeId('snapshotKey')})
         )`
     )
     log.debug(`snapshots database tables are initialized`)

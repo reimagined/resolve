@@ -47,7 +47,7 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   log.verbose(content)
 
   await database.exec(
-    `INSERT INTO ${escapeId(snapshotsTableName)} 
+    `REPLACE INTO ${escapeId(snapshotsTableName)} 
     VALUES (${escape(snapshotKey)}, ${escape(content)})`
   )
 }
