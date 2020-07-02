@@ -1,7 +1,5 @@
 import getLog from './get-log'
 
-const DEFAULT_BUCKET_SIZE = 100
-
 const connectEventStore = async (pool, { MySQL }) => {
   const log = getLog(`connectEventStore`)
 
@@ -11,7 +9,6 @@ const connectEventStore = async (pool, { MySQL }) => {
     eventsTableName = 'events',
     snapshotsTableName = 'snapshots',
     database,
-    bucketSize,
     ...connectionOptions
   } = pool.config
 
@@ -21,6 +18,9 @@ const connectEventStore = async (pool, { MySQL }) => {
 
   log.debug(`establishing connection`)
 
+  // MySQL throws warning
+  delete connectionOptions.snapshotBucketSize
+
   const connection = await MySQL.createConnection({
     ...connectionOptions,
     database,
@@ -28,11 +28,6 @@ const connectEventStore = async (pool, { MySQL }) => {
   })
 
   log.debug(`connected successfully`)
-
-  pool.bucketSize = bucketSize
-  if (!Number.isInteger(pool.bucketSize) || pool.bucketSize < 1) {
-    pool.bucketSize = DEFAULT_BUCKET_SIZE
-  }
 
   Object.assign(pool, {
     events: {

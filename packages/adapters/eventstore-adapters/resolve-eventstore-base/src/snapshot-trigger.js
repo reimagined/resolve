@@ -2,11 +2,10 @@ import getLog from './get-log'
 
 export default async (state, snapshotKey, content, updateCallback) => {
   const log = getLog(`snapshotTrigger`)
-  const { bucketSize, counters, snapshotsTableName } = state
+  const { bucketSize, counters } = state
 
   log.verbose(`snapshotKey: ${snapshotKey}`)
   log.verbose(`bucketSize: ${bucketSize}`)
-  log.verbose(`snapshotsTableName: ${snapshotsTableName}`)
 
   if (snapshotKey == null || snapshotKey.constructor !== String) {
     const error = new Error('Snapshot key must be string')

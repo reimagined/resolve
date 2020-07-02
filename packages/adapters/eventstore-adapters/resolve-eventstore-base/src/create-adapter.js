@@ -1,3 +1,4 @@
+import getLog from './get-log'
 import getSecretsManagerFallback from './get-secrets-manager-fallback'
 
 const createAdapter = (
@@ -34,8 +35,18 @@ const createAdapter = (
   },
   options
 ) => {
+  const log = getLog(`createAdapter`)
   const config = { ...options }
   const pool = { config, disposed: false, validateEventFilter }
+
+  let bucketSize = 100
+  const { snapshotBucketSize } = config
+  if (Number.isSafeInteger(snapshotBucketSize) && snapshotBucketSize > 0) {
+    bucketSize = snapshotBucketSize
+    log.debug(`snapshot bucket size explicitly set to ${bucketSize}`)
+  } else {
+    log.debug(`snapshot bucket size defaulted to ${bucketSize}`)
+  }
 
   let connectPromiseResolve
   const connectPromise = new Promise(resolve => {
@@ -54,11 +65,7 @@ const createAdapter = (
     connectPromiseResolve,
     shapeEvent,
     counters: new Map(),
-    bucketSize:
-      Number.isInteger(config.snapshotBucketSize) &&
-      config.snapshotBucketSize > 0
-        ? config.snapshotBucketSize
-        : 100
+    bucketSize
   })
 
   const adapter = {
