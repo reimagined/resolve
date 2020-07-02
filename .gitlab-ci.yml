@@ -651,7 +651,7 @@ windows (create-resolve-app + functional-tests):
     - node ci-cd\create-github-status\index.js --state pending --context "9. Functional-tests (Windows)" --description "Waiting ♯%CI_PIPELINE_IID% for status to be reported" --targetUrl %CI_JOB_URL%
   script:
     - cd resolve-%CI_PIPELINE_ID%
-    - pm2 delete local-registry || cd .
+    - pm2 delete local-registry | cd .
     - pm2 start packages\internal\local-registry\bin\index.js --name local-registry
     - cd ..
     - sleep 3
