@@ -14,7 +14,6 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   log.verbose(`snapshotKey: ${snapshotKey}`)
   log.verbose(`bucketSize: ${bucketSize}`)
   log.verbose(`snapshotsTableName: ${snapshotsTableName}`)
-  log.verbose(`counters.size: ${counters.size}`)
 
   if (snapshotKey == null || snapshotKey.constructor !== String) {
     const error = new Error('Snapshot key must be string')
@@ -28,19 +27,24 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   }
 
   if (!counters.has(snapshotKey)) {
-    counters.set(snapshotKey, 0)
+    counters.set(snapshotKey, 1)
+  } else {
+    counters.set(snapshotKey, counters.get(snapshotKey) + 1)
   }
 
   if (counters.get(snapshotKey) < bucketSize) {
     log.debug(
-      `skipping actual snapshot saving - not enough events to fill the bucket`
+      `skipping actual snapshot saving - not enough events to fill the bucket (${counters.get(
+        snapshotKey
+      )}/${bucketSize})`
     )
-    counters.set(snapshotKey, counters.get(snapshotKey) + 1)
     return
   }
+
   counters.set(snapshotKey, 0)
 
   log.debug(`saving snapshot ${snapshotKey}`)
+  log.verbose(content)
 
   await database.exec(
     `INSERT INTO ${escapeId(snapshotsTableName)} 

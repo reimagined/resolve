@@ -86,7 +86,7 @@ const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
 
       aggregatesVersionsMap.set(event.aggregateId, event.aggregateVersion)
 
-      handlerLog.debug(`saving snapshot`)
+      handlerLog.debug(`saving the snapshot`)
       await pool.eventstoreAdapter.saveSnapshot(
         snapshotKey,
         JSON.stringify({
