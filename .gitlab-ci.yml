@@ -654,7 +654,6 @@ windows (create-resolve-app + functional-tests):
     - pm2 delete local-registry | cd .
     - call pm2 start packages\internal\local-registry\bin\index.js --name local-registry
     - cd ..
-    - timeout /t 3 /nobreak > nul
     - rd /S /Q hacker-news || cd .
     - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin\index.js --local-registry -c %MERGE_COMMIT_SHA% -e hacker-news hacker-news
     - cd hacker-news
