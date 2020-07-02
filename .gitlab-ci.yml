@@ -661,7 +661,7 @@ windows (create-resolve-app + functional-tests):
     - cd ..
     - rd /S /Q hacker-news
     - rd /S /Q hello-world || cd .
-    - node resolve-%CI_PIPELINE_ID$\packages\core\create-resolve-app\bin/index.js --local-registry -c %MERGE_COMMIT_SHA% -e hello-world hello-world
+    - node resolve-%CI_PIPELINE_ID%\packages\core\create-resolve-app\bin/index.js --local-registry -c %MERGE_COMMIT_SHA% -e hello-world hello-world
     - cd hello-world
     - call yarn test:functional edge
     - cd ..
