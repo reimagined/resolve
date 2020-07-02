@@ -585,20 +585,20 @@ Array [
     "Entity",
   ],
   Array [
-    "origin",
-    "resolve:applySnapshot",
-  ],
-  Array [
-    "aggregateName",
-    "Entity",
-  ],
-  Array [
     "eventType",
     "CREATED",
   ],
   Array [
     "origin",
     "resolve:applyEvent",
+  ],
+  Array [
+    "aggregateName",
+    "Entity",
+  ],
+  Array [
+    "origin",
+    "resolve:applySnapshot",
   ],
   Array [
     "eventCount",
@@ -673,10 +673,10 @@ Array [
     "loadEvents",
   ],
   Array [
-    "applySnapshot",
+    "applyEvent",
   ],
   Array [
-    "applyEvent",
+    "applySnapshot",
   ],
   Array [
     "processCommand",
@@ -1115,14 +1115,6 @@ Array [
     "Map",
   ],
   Array [
-    "origin",
-    "resolve:applySnapshot",
-  ],
-  Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
     "eventType",
     undefined,
   ],
@@ -1170,9 +1162,6 @@ Array [
   Array [
     [Error: Incorrect order of events by aggregateId = "aggregateId"],
   ],
-  Array [
-    [Error: Incorrect order of events by aggregateId = "aggregateId"],
-  ],
 ]
 `;
 
@@ -1189,9 +1178,6 @@ Array [
   ],
   Array [
     "loadEvents",
-  ],
-  Array [
-    "applySnapshot",
   ],
   Array [
     "applyEvent",
@@ -1214,13 +1200,11 @@ Array [
   Array [],
   Array [],
   Array [],
-  Array [],
 ]
 `;
 
 exports[`executeCommand with performance tracer should throw error when the incorrect order of events: getSegment 1`] = `
 Array [
-  Array [],
   Array [],
   Array [],
   Array [],
@@ -1460,20 +1444,20 @@ Array [
     "Map",
   ],
   Array [
-    "origin",
-    "resolve:applySnapshot",
-  ],
-  Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
     "eventType",
     "SET",
   ],
   Array [
     "origin",
     "resolve:applyEvent",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:applySnapshot",
   ],
   Array [
     "eventCount",
@@ -1520,20 +1504,20 @@ Array [
     "Map",
   ],
   Array [
-    "origin",
-    "resolve:applySnapshot",
-  ],
-  Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
     "eventType",
     "SET",
   ],
   Array [
     "origin",
     "resolve:applyEvent",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:applySnapshot",
   ],
   Array [
     "eventCount",
@@ -1602,10 +1586,10 @@ Array [
     "loadEvents",
   ],
   Array [
-    "applySnapshot",
+    "applyEvent",
   ],
   Array [
-    "applyEvent",
+    "applySnapshot",
   ],
   Array [
     "processCommand",
@@ -1626,10 +1610,10 @@ Array [
     "loadEvents",
   ],
   Array [
-    "applySnapshot",
+    "applyEvent",
   ],
   Array [
-    "applyEvent",
+    "applySnapshot",
   ],
   Array [
     "processCommand",
