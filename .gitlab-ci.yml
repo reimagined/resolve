@@ -652,7 +652,7 @@ windows (create-resolve-app + functional-tests):
   script:
     - cd resolve-%CI_PIPELINE_ID%
     - pm2 delete local-registry | cd .
-    - pm2 start packages\internal\local-registry\bin\index.js --name local-registry
+    - call pm2 start packages\internal\local-registry\bin\index.js --name local-registry
     - cd ..
     - sleep 3
     - rd /S /Q hacker-news || cd .
