@@ -272,7 +272,9 @@ const getAggregateState = async (
           limit: Number.MAX_SAFE_INTEGER
         })
 
-        log.debug(`loaded ${events.length} events starting from the last snapshot`)
+        log.debug(
+          `loaded ${events.length} events starting from the last snapshot`
+        )
         for (const event of events) {
           await eventHandler(event)
         }

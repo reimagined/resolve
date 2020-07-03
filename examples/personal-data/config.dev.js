@@ -13,7 +13,7 @@ const devConfig = {
       module: 'resolve-readmodel-lite',
       options: {
         databaseFile: 'data/read-models.db',
-        secretsFile: 'data/secrets.db',
+        secretsFile: 'data/secrets.db'
       }
     }
   },
