@@ -16,8 +16,6 @@ const generateCommandError = message => {
   return error
 }
 
-const INVALIDATE_SNAPSHOT = Symbol('INVALIDATE_SNAPSHOT')
-
 const checkOptionShape = (option, types) =>
   !(
     option == null ||
@@ -232,21 +230,19 @@ const getAggregateState = async (
         }
       })()
 
-      if (snapshot.cursor == null || isNaN(+snapshot.minimalTimestamp)) {
-        throw INVALIDATE_SNAPSHOT
+      if (!(snapshot.cursor == null || isNaN(+snapshot.minimalTimestamp))) {
+        log.verbose(`snapshot.version: ${snapshot.version}`)
+        log.verbose(`snapshot.minimalTimestamp: ${snapshot.minimalTimestamp}`)
+
+        Object.assign(aggregateInfo, {
+          aggregateState: deserializeState(snapshot.state),
+          aggregateVersion: snapshot.version,
+          minimalTimestamp: snapshot.minimalTimestamp,
+          cursor: snapshot.cursor
+        })
       }
-
-      log.verbose(`snapshot.version: ${snapshot.version}`)
-      log.verbose(`snapshot.minimalTimestamp: ${snapshot.minimalTimestamp}`)
-
-      Object.assign(aggregateInfo, {
-        aggregateState: deserializeState(snapshot.state),
-        aggregateVersion: snapshot.version,
-        minimalTimestamp: snapshot.minimalTimestamp,
-        cursor: snapshot.cursor
-      })
     } catch (err) {
-      log.warn(err.message)
+      log.info(err.message)
     }
 
     if (aggregateInfo.cursor == null && projection != null) {
