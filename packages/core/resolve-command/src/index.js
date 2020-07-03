@@ -7,11 +7,14 @@ const generateCommandError = message => {
   const error = new Error(message)
   Object.setPrototypeOf(error, CommandError.prototype)
   Object.defineProperties(error, {
+    name: { value: 'CommandError', enumerable: true },
     message: { value: error.message, enumerable: true },
     stack: { value: error.stack, enumerable: true }
   })
   return error
 }
+
+const INVALIDATE_SNAPSHOT = Symbol('INVALIDATE_SNAPSHOT')
 
 const checkOptionShape = (option, types) =>
   !(
@@ -217,7 +220,7 @@ const getAggregateState = async (
       })()
 
       if (snapshot.cursor == null || isNaN(+snapshot.minimalTimestamp)) {
-        throw new Error('Invalidating snapshot')
+        throw INVALIDATE_SNAPSHOT
       }
 
       Object.assign(aggregateInfo, {
@@ -294,16 +297,16 @@ const isString = val => val != null && val.constructor === String
 
 const saveEvent = async (publisher, event) => {
   if (!isString(event.type)) {
-    throw new Error('The `type` field is invalid')
+    throw generateCommandError(`Event "type" field is invalid`)
   }
   if (!isString(event.aggregateId)) {
-    throw new Error('The `aggregateId` field is invalid')
+    throw generateCommandError('Event "aggregateId" field is invalid')
   }
   if (!isInteger(event.aggregateVersion)) {
-    throw new Error('The `aggregateVersion` field is invalid')
+    throw generateCommandError('Event "aggregateVersion" field is invalid')
   }
   if (!isInteger(event.timestamp)) {
-    throw new Error('The `timestamp` field is invalid')
+    throw generateCommandError('Event "timestamp" field is invalid')
   }
 
   event.aggregateId = String(event.aggregateId)
