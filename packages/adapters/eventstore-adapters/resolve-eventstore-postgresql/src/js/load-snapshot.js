@@ -14,7 +14,7 @@ const loadSnapshot = async (
     WHERE "snapshotKey" = ${escape(snapshotKey)} 
     LIMIT 1`
   )
-  const content = rows.length > 0 ? rows[0].SnapshotContentChunk : null
+  const content = rows.length > 0 ? rows[0].snapshotContent : null
 
   return content
 }

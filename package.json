@@ -68,6 +68,7 @@
     "build-packages": "build-packages",
     "local-registry": "local-registry",
     "prettier": "prettier --write \"**/**.{ts,tsx,js,json,babelrc}\"",
+    "prettier:check": "prettier --list-different \"**/**.{ts,tsx,js,json,babelrc}\"",
     "publish": "npx oao publish -i \"examples/*\" --no-git-commit --no-changelog",
     "test": "npx oao all -i \"examples/shopping-list-advanced\" \"yarn test --color 2>&1\"",
     "test:coverage": "npx oao all -i \"examples/shopping-list-advanced\" \"yarn test --coverage --coverageReporters=lcov --color 2>&1\" && npx lcov-result-merger 'packages/**/lcov.info' 'lcov.info'",

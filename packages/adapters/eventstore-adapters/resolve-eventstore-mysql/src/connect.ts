@@ -18,6 +18,9 @@ const connectSecretsStore = async (
     ...connectionOptions
   } = pool.config
 
+  // MySQL throws warning
+  delete connectionOptions.snapshotBucketSize
+
   const actualDatabase = secretsDatabase || database
 
   log.verbose(`secretsDatabase: ${actualDatabase}`)

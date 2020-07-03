@@ -7,7 +7,6 @@ export const TEXT_SQL_TYPE = 'text'
 export const RESERVED_EVENT_SIZE = 66 // 3 reserved BIGINT fields with commas
 export const BUFFER_SIZE = 512 * 1024
 export const BATCH_SIZE = 100
-export const DEFAULT_BUCKET_SIZE = 100
 export const LOAD_CHUNK_SIZE = 128000
 export const SAVE_CHUNK_SIZE = 32000
 export const DEFAULT_TABLE_NAME = '__ResolveSnapshots__'

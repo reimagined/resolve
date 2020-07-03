@@ -408,7 +408,7 @@ describe('Cloud entry', () => {
 
       const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(408)
+      expect(result.statusCode).toEqual(409)
       expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
       expect(result.body).toContain('is not actual at the moment')
     })

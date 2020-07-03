@@ -20,7 +20,8 @@ const prodConfig = {
     module: 'resolve-eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db',
-      secretsFile: 'data/secrets.db'
+      secretsFile: 'data/secrets.db',
+      snapshotBucketSize: 100
     }
   },
   subscribeAdapter: {
