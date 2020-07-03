@@ -1,3 +1,8 @@
+export { default as validators } from './validators'
+
+export const STOP_BATCH = Symbol('STOP_BATCH')
+export const OMIT_BATCH = Symbol('OMIT_BATCH')
+
 const createAdapter = (implementation, options) => {
   const { performanceTracer } = options
 
@@ -207,6 +212,3 @@ const createAdapter = (implementation, options) => {
 }
 
 export default createAdapter
-
-export const STOP_BATCH = Symbol('STOP_BATCH')
-export const OMIT_BATCH = Symbol('OMIT_BATCH')

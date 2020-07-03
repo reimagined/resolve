@@ -1,4 +1,4 @@
-import createAdapter from 'resolve-readmodel-base'
+import createAdapter, { validators } from 'resolve-readmodel-base'
 import SQLite from 'sqlite'
 import tmp from 'tmp'
 import os from 'os'
@@ -34,6 +34,7 @@ export default createAdapter.bind(null, {
     updateToSetExpression,
     memoryStore,
     ...store,
+    validators,
     SQLite,
     tmp,
     os,
