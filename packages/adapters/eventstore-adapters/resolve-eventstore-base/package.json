@@ -26,7 +26,8 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/eventstore-adapters/resolve-eventstore-base#readme",
   "dependencies": {
-    "@babel/runtime": "7.9.6"
+    "@babel/runtime": "7.9.6",
+    "resolve-debug-levels": "0.24.7"
   },
   "devDependencies": {
     "jest": "26.0.1",

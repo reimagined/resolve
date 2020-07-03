@@ -1,3 +1,5 @@
+import getLog from './get-log'
+
 // eslint-disable-next-line no-new-func
 const CommandError = Function()
 Object.setPrototypeOf(CommandError.prototype, Error.prototype)
@@ -31,7 +33,12 @@ const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
   }
 }
 
-const regularHandler = async (pool, aggregateInfo, event) => {
+const projectionEventHandler = async (
+  pool,
+  aggregateInfo,
+  processSnapshot,
+  event
+) => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -71,6 +78,10 @@ const regularHandler = async (pool, aggregateInfo, event) => {
     )
 
     aggregateInfo.minimalTimestamp = event.timestamp
+
+    if (typeof processSnapshot === 'function') {
+      await processSnapshot(pool, aggregateInfo)
+    }
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)
@@ -83,31 +94,27 @@ const regularHandler = async (pool, aggregateInfo, event) => {
   }
 }
 
-const snapshotHandler = async (pool, aggregateInfo, event) => {
-  const segment = pool.performanceTracer
-    ? pool.performanceTracer.getSegment()
-    : null
+const takeSnapshot = async (pool, aggregateInfo) => {
+  const { aggregateName, performanceTracer, eventstoreAdapter } = pool
+
+  const log = getLog(
+    `takeSnapshot:${aggregateName}:${aggregateInfo.aggregateId}`
+  )
+
+  const segment = performanceTracer ? performanceTracer.getSegment() : null
   const subSegment = segment ? segment.addNewSubsegment('applySnapshot') : null
 
   try {
-    const aggregateName = pool.aggregateName
-
     if (subSegment != null) {
       subSegment.addAnnotation('aggregateName', aggregateName)
       subSegment.addAnnotation('origin', 'resolve:applySnapshot')
     }
 
-    if (pool.isDisposed) {
-      throw generateCommandError('Command handler is disposed')
-    }
+    log.debug(`invoking event store snapshot taking operation`)
+    log.verbose(`version: ${aggregateInfo.aggregateVersion}`)
+    log.verbose(`minimalTimestamp: ${aggregateInfo.minimalTimestamp}`)
 
-    // if (event.aggregateVersion <= aggregateInfo.aggregateVersion) {
-    //   return
-    // }
-
-    await regularHandler(pool, aggregateInfo, event)
-
-    await pool.eventstoreAdapter.saveSnapshot(
+    await eventstoreAdapter.saveSnapshot(
       aggregateInfo.snapshotKey,
       JSON.stringify({
         state: aggregateInfo.serializeState(aggregateInfo.aggregateState),
@@ -116,7 +123,10 @@ const snapshotHandler = async (pool, aggregateInfo, event) => {
         cursor: aggregateInfo.cursor
       })
     )
+
+    log.debug(`snapshot processed`)
   } catch (error) {
+    log.error(error.message)
     if (subSegment != null) {
       subSegment.addError(error)
     }
@@ -133,23 +143,27 @@ const getAggregateState = async (
   { projection, serializeState, deserializeState, invariantHash = null },
   aggregateId
 ) => {
-  const segment = pool.performanceTracer
-    ? pool.performanceTracer.getSegment()
-    : null
+  const {
+    aggregateName,
+    performanceTracer,
+    isDisposed,
+    eventstoreAdapter
+  } = pool
+  const log = getLog(`getAggregateState:${aggregateName}:${aggregateId}`)
+
+  const segment = performanceTracer ? performanceTracer.getSegment() : null
   const subSegment = segment
     ? segment.addNewSubsegment('getAggregateState')
     : null
 
   try {
-    const aggregateName = pool.aggregateName
-
     if (subSegment != null) {
       subSegment.addAnnotation('aggregateName', aggregateName)
       subSegment.addAnnotation('origin', 'resolve:getAggregateState')
     }
 
     const snapshotKey = checkOptionShape(projection, [Object])
-      ? `${invariantHash};${aggregateId}`
+      ? `AG;${invariantHash};${aggregateId}`
       : null
 
     if (!checkOptionShape(invariantHash, [String]) && snapshotKey != null) {
@@ -189,21 +203,20 @@ const getAggregateState = async (
       // }
 
       const snapshot = await (async () => {
-        const segment = pool.performanceTracer
-          ? pool.performanceTracer.getSegment()
+        const segment = performanceTracer
+          ? performanceTracer.getSegment()
           : null
         const subSegment = segment
           ? segment.addNewSubsegment('loadSnapshot')
           : null
 
         try {
-          if (pool.isDisposed) {
+          if (isDisposed) {
             throw generateCommandError('Command handler is disposed')
           }
 
-          return JSON.parse(
-            await pool.eventstoreAdapter.loadSnapshot(snapshotKey)
-          )
+          log.debug(`loading snapshot`)
+          return JSON.parse(await eventstoreAdapter.loadSnapshot(snapshotKey))
         } catch (error) {
           if (subSegment != null) {
             subSegment.addError(error)
@@ -217,8 +230,11 @@ const getAggregateState = async (
       })()
 
       if (snapshot.cursor == null || isNaN(+snapshot.minimalTimestamp)) {
-        throw new Error('Invalidating snapshot')
+        throw new Error('Invalid snapshot')
       }
+
+      log.verbose(`snapshot.version: ${snapshot.version}`)
+      log.verbose(`snapshot.minimalTimestamp: ${snapshot.minimalTimestamp}`)
 
       Object.assign(aggregateInfo, {
         aggregateState: deserializeState(snapshot.state),
@@ -226,35 +242,39 @@ const getAggregateState = async (
         minimalTimestamp: snapshot.minimalTimestamp,
         cursor: snapshot.cursor
       })
-    } catch (err) {}
+    } catch (err) {
+      log.warn(err.message)
+    }
 
     if (aggregateInfo.cursor == null && projection != null) {
+      log.debug(`building the aggregate state from scratch`)
       aggregateInfo.aggregateState =
         typeof projection.Init === 'function' ? await projection.Init() : null
     }
 
-    const eventHandler = (snapshotKey != null
-      ? snapshotHandler
-      : regularHandler
-    ).bind(null, pool, aggregateInfo)
+    const eventHandler =
+      snapshotKey != null
+        ? projectionEventHandler.bind(null, pool, aggregateInfo, takeSnapshot)
+        : projectionEventHandler.bind(null, pool, aggregateInfo, null)
 
     await (async () => {
-      const segment = pool.performanceTracer
-        ? pool.performanceTracer.getSegment()
-        : null
+      const segment = performanceTracer ? performanceTracer.getSegment() : null
       const subSegment = segment ? segment.addNewSubsegment('loadEvents') : null
 
       try {
-        if (pool.isDisposed) {
+        if (isDisposed) {
           throw generateCommandError('Command handler is disposed')
         }
 
-        const { events } = await pool.eventstoreAdapter.loadEvents({
+        const { events } = await eventstoreAdapter.loadEvents({
           aggregateIds: [aggregateId],
           cursor: aggregateInfo.cursor,
           limit: Number.MAX_SAFE_INTEGER
         })
 
+        log.debug(
+          `loaded ${events.length} events starting from the last snapshot`
+        )
         for (const event of events) {
           await eventHandler(event)
         }
@@ -264,6 +284,7 @@ const getAggregateState = async (
           subSegment.addAnnotation('origin', 'resolve:loadEvents')
         }
       } catch (error) {
+        log.error(error.message)
         if (subSegment != null) {
           subSegment.addError(error)
         }
@@ -277,6 +298,7 @@ const getAggregateState = async (
 
     return aggregateInfo
   } catch (error) {
+    log.error(error.message)
     if (subSegment != null) {
       subSegment.addError(error)
     }
@@ -311,7 +333,7 @@ const saveEvent = async (publisher, event) => {
   return await publisher.publish({ event })
 }
 
-const executeCommand = async (pool, { jwtToken, ...command }) => {
+const executeCommand = async (pool, { jwtToken: jwt, ...command }) => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -375,12 +397,12 @@ const executeCommand = async (pool, { jwtToken, ...command }) => {
     const secretsManager = await pool.eventstoreAdapter.getSecretsManager()
 
     const { encrypt, decrypt } = await aggregate.encryption(aggregateId, {
-      jwt: jwtToken,
+      jwt,
       secretsManager
     })
 
     const event = await commandHandler(aggregateState, command, {
-      jwt: jwtToken,
+      jwt,
       aggregateVersion,
       encrypt,
       decrypt
