@@ -105,7 +105,7 @@ install (macOS):
       - $CI_PIPELINE_TRIGGERED == 'true'
   only:
     variables:
-      - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
+      - $SOURCE_BRANCH_NAME =~ /(?:^feature\/.+$)|(?:^(?:hot)?fix\/.+$)/
   only:
     variables:
       - $TARGET_BRANCH_NAME == 'dev'
@@ -169,7 +169,7 @@ checks (macOS):
     - node ci-cd/create-github-status/index.js --state pending --context "1. Unit tests" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID/
-    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
+    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then echo "Prettier failed" && exit 1; fi
     - yarn validate-lock-file
     - yarn lint
     - yarn test
@@ -236,7 +236,7 @@ functional-tests:
     - node ci-cd/job-status/index.js --end
   after_script:
     - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "3. Functional tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "3. Functional tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
-    
+
 functional-tests (Windows):
   stage: functional-tests
   tags:
@@ -321,7 +321,7 @@ ubuntu (install):
     - git checkout merge-commit
     - yarn install --frozen-lockfile --cache-folder ../.yarn-cache
     - yarn build-packages
-    
+
 windows (install):
   stage: install
   tags:
@@ -366,7 +366,7 @@ eslint + prettier:
     - node ci-cd/create-github-status/index.js --state pending --context "1. ESLint + Prettier" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID/
-    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
+    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then echo "Prettier failed" && exit 1; fi
     - yarn validate-lock-file
     - yarn lint
     - cd ..
@@ -403,7 +403,7 @@ eslint + prettier (Windows):
     - for /f "tokens=*" %%i in ('node ci-cd\job-status\index.js --isSucceeded') do set CI_STATUS=%%i
     - if "%CI_STATUS%"=="true" (node ci-cd\create-github-status\index.js --state success --context "2. ESLint + Prettier (Windows)" --description "Build ♯%CI_PIPELINE_IID% succeeded" --targetUrl %CI_JOB_URL%) else (node ci-cd\create-github-status\index.js --state failure --context "2. ESLint + Prettier (Windows)" --description "Build ♯%CI_PIPELINE_IID% failed" --targetUrl %CI_JOB_URL%)
     - set CI_STATUS=
-    
+
 unit-tests:
   stage: unit-tests
   tags:
@@ -428,7 +428,7 @@ unit-tests:
     - node ci-cd/job-status/index.js --end
   after_script:
     - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "3. Unit-tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "3. Unit-tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
-    
+
 unit-tests (Windows):
   stage: unit-tests
   tags:
@@ -632,7 +632,7 @@ ubuntu (create-resolve-app + functional-tests):
     - node ci-cd/job-status/index.js --end
   after_script:
     - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "8. Functional-tests (Ubuntu)" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "8. Functional-tests (Ubuntu)" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
-    
+
 windows (create-resolve-app + functional-tests):
   stage: functional-tests
   tags:
@@ -713,7 +713,7 @@ success:
   script:
     - rm -rf resolve-$CI_PIPELINE_ID
     - node ci-cd/create-github-status/index.js --state success --context "0. Pipeline" --description "Build ♯$CI_PIPELINE_IID succeeded" --targetUrl $CI_PIPELINE_URL
-    
+
 success (Windows):
   stage: finish
   when: on_success
