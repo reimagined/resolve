@@ -21,7 +21,7 @@ const connect = async (
     databaseName,
     eventsTableName = 'events',
     snapshotsTableName = 'snapshots',
-    secretsTableName
+    secretsTableName = 'secrets'
   } = pool.config ?? {}
 
   Object.assign(pool, {
