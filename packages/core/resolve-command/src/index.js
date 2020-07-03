@@ -9,6 +9,7 @@ const generateCommandError = message => {
   const error = new Error(message)
   Object.setPrototypeOf(error, CommandError.prototype)
   Object.defineProperties(error, {
+    name: { value: 'CommandError', enumerable: true },
     message: { value: error.message, enumerable: true },
     stack: { value: error.stack, enumerable: true }
   })
@@ -229,21 +230,19 @@ const getAggregateState = async (
         }
       })()
 
-      if (snapshot.cursor == null || isNaN(+snapshot.minimalTimestamp)) {
-        throw new Error('Invalid snapshot')
+      if (!(snapshot.cursor == null || isNaN(+snapshot.minimalTimestamp))) {
+        log.verbose(`snapshot.version: ${snapshot.version}`)
+        log.verbose(`snapshot.minimalTimestamp: ${snapshot.minimalTimestamp}`)
+
+        Object.assign(aggregateInfo, {
+          aggregateState: deserializeState(snapshot.state),
+          aggregateVersion: snapshot.version,
+          minimalTimestamp: snapshot.minimalTimestamp,
+          cursor: snapshot.cursor
+        })
       }
-
-      log.verbose(`snapshot.version: ${snapshot.version}`)
-      log.verbose(`snapshot.minimalTimestamp: ${snapshot.minimalTimestamp}`)
-
-      Object.assign(aggregateInfo, {
-        aggregateState: deserializeState(snapshot.state),
-        aggregateVersion: snapshot.version,
-        minimalTimestamp: snapshot.minimalTimestamp,
-        cursor: snapshot.cursor
-      })
     } catch (err) {
-      log.warn(err.message)
+      log.info(err.message)
     }
 
     if (aggregateInfo.cursor == null && projection != null) {
@@ -316,16 +315,16 @@ const isString = val => val != null && val.constructor === String
 
 const saveEvent = async (publisher, event) => {
   if (!isString(event.type)) {
-    throw new Error('The `type` field is invalid')
+    throw generateCommandError(`Event "type" field is invalid`)
   }
   if (!isString(event.aggregateId)) {
-    throw new Error('The `aggregateId` field is invalid')
+    throw generateCommandError('Event "aggregateId" field is invalid')
   }
   if (!isInteger(event.aggregateVersion)) {
-    throw new Error('The `aggregateVersion` field is invalid')
+    throw generateCommandError('Event "aggregateVersion" field is invalid')
   }
   if (!isInteger(event.timestamp)) {
-    throw new Error('The `timestamp` field is invalid')
+    throw generateCommandError('Event "timestamp" field is invalid')
   }
 
   event.aggregateId = String(event.aggregateId)
