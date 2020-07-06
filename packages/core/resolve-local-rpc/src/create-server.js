@@ -2,33 +2,46 @@ import http from 'http'
 import https from 'https'
 import { URL } from 'url'
 
-function prepareBody(request) {
-  return new Promise((resolve, reject) => {
-    let chunks = []
-    request
-      .on('data', chunk => {
-        chunks.push(chunk)
-      })
-      .on('end', () => {
-        request.body = Buffer.concat(chunks)
-        chunks = null
-        resolve()
-      })
-      .on('error', error => {
-        reject(error)
-      })
-  })
-}
-
-async function mainHandler(hostObject, request, response) {
+export async function mainHandler(hostObject, request, response) {
   try {
-    await prepareBody(request)
+    await new Promise((resolve, reject) => {
+      let chunks = []
+      request
+        .on('data', chunk => {
+          chunks.push(chunk)
+        })
+        .on('end', () => {
+          request.body = Buffer.concat(chunks)
+          chunks = null
+          resolve()
+        })
+        .on('error', error => {
+          reject(error)
+        })
+    })
 
     request.hostObject = hostObject
 
     switch (request.method) {
       case 'POST': {
-        return await handler(request, response)
+        const { method, args } = JSON.parse(request.body)
+
+        const callback = request.hostObject[method]
+        if (callback == null) {
+          response.statusCode = 422
+          response.end(`Unsupported method = ${method}`)
+          return
+        }
+
+        let result = await callback(...args)
+        if (result == null) {
+          result = null
+        }
+
+        response.statusCode = 200
+        response.end(JSON.stringify(result, null, 2))
+
+        break
       }
       default: {
         response.statusCode = 422
@@ -37,27 +50,19 @@ async function mainHandler(hostObject, request, response) {
     }
   } catch (error) {
     response.statusCode = !isNaN(+error.code) ? +error.code : 500
-    response.end(error.stack)
+    response.end(
+      JSON.stringify(
+        {
+          name: error.name,
+          code: error.code,
+          message: error.message,
+          stack: error.stack
+        },
+        null,
+        2
+      )
+    )
   }
-}
-
-async function handler(request, response) {
-  const { method, args } = JSON.parse(request.body)
-
-  const callback = request.hostObject[method]
-  if (callback == null) {
-    response.statusCode = 422
-    response.end(`Unsupported method = ${method}`)
-    return
-  }
-
-  let result = await callback(...args)
-  if (result == null) {
-    result = null
-  }
-
-  response.statusCode = 200
-  response.end(JSON.stringify(result, null, 2))
 }
 
 const createServer = async ({ address, hostObject }) => {
