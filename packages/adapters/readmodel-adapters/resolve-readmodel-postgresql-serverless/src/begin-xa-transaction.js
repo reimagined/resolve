@@ -34,7 +34,7 @@ const beginXATransaction = async (pool, readModelName) => {
         )}(
             "xa_key", "timestamp"
           ) VALUES (
-            ${pool.escape(pool.hash512(`${xaTransactionId}${readModelName}`))},
+            ${pool.escapeStr(pool.hash512(`${xaTransactionId}${readModelName}`))},
             CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT)
           )
         `

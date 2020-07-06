@@ -2,7 +2,7 @@ const STRING_INDEX_TYPE = 'VARCHAR(190)'
 const NUMBER_INDEX_TYPE = 'BIGINT'
 
 const defineTable = async (
-  { executeStatement, tablePrefix, escapeId, escape, schemaName },
+  { executeStatement, tablePrefix, escapeId, escapeStr, schemaName },
   readModelName,
   tableName,
   tableDescription
@@ -37,9 +37,9 @@ const defineTable = async (
       ADD CONSTRAINT ${escapeId(`${indexName}-type-validation`)}
       CHECK (${
         idx > 0
-          ? `jsonb_typeof(${escapeId(indexName)}) = ${escape('null')} OR `
+          ? `jsonb_typeof(${escapeId(indexName)}) = ${escapeStr('null')} OR `
           : ''
-      }jsonb_typeof(${escapeId(indexName)}) = ${escape(
+      }jsonb_typeof(${escapeId(indexName)}) = ${escapeStr(
           indexType === 'number' ? 'number' : 'string'
         )});
 
@@ -64,7 +64,7 @@ const defineTable = async (
     COMMENT ON TABLE ${escapeId(schemaName)}.${escapeId(
     `${tablePrefix}${tableName}`
   )}
-    IS ${escape(`RESOLVE-${readModelName}`)};
+    IS ${escapeStr(`RESOLVE-${readModelName}`)};
   `)
 }
 

@@ -4,7 +4,6 @@ const validateTableName = (name, errors) => {
   } else {
     if(/^__(?:.*?)__$/.test(name)) {
       errors.push(`Table name should not begins and ends with double underscore`)
-
     }
   }
 

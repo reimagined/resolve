@@ -4,42 +4,38 @@ const log = debugLevels(
   'resolve:resolve-readmodel-postgresql-serverless:update-to-set-expression'
 )
 
-const allowedOperatorNames = new Set(['$set', '$unset', '$inc'])
+const EMPTY = Symbol('EMPTY')
 
 const updateToSetExpression = (
   expression,
   escapeId,
-  escape,
+  escapeStr,
   makeNestedPath
 ) => {
   const updatingFieldsDescriptors = new Set()
   const updatingFields = new Map()
 
   for (let operatorName of Object.keys(expression)) {
-    if (!allowedOperatorNames.has(operatorName)) {
-      log.warn(`Update operator "${operatorName}" is invalid`)
-      continue
-    }
     for (let fieldName of Object.keys(expression[operatorName])) {
       const fieldValue = expression[operatorName][fieldName]
       const [baseName, ...nestedPath] = fieldName.split('.')
       let updatingFieldLevelMap = updatingFields
-      let updatingFieldDescriptor = null
+      let updatingFieldDescriptor = EMPTY
 
       for (const partName of [baseName, ...nestedPath]) {
         if (!updatingFieldLevelMap.has(partName)) {
           updatingFieldLevelMap.set(partName, {
             key:
-              updatingFieldDescriptor != null
+              updatingFieldDescriptor != EMPTY
                 ? `${updatingFieldDescriptor.key}.${partName}`
                 : partName,
             nestedKey: nestedPath,
             baseName,
-            selectedOperation: null,
+            selectedOperation: EMPTY,
             children: new Map(),
-            $set: null,
-            $unset: null,
-            $inc: null
+            $set: EMPTY,
+            $unset: EMPTY,
+            $inc: EMPTY
           })
         }
         updatingFieldDescriptor = updatingFieldLevelMap.get(partName)
@@ -53,38 +49,21 @@ const updateToSetExpression = (
   }
 
   for (const descriptor of updatingFieldsDescriptors) {
-    const flagUnset = descriptor['$unset'] != null
-    const flagSet = descriptor['$set'] != null
-    const flagInc = descriptor['$inc'] != null
-    const flagChild = descriptor.children.size > 0
-
-    if (
-      Number(flagUnset) +
-        Number(flagSet) +
-        Number(flagInc) +
-        Number(flagChild) !==
-      1
-    ) {
-      log.warn(`Updating set for key "${descriptor.key}" came into conflict`)
-      log.warn(`Either key includes "$set", "$unset", "$inc" simultaneously`)
-      log.warn(`Either key has children update nodes`)
-    }
-
     switch (true) {
-      case flagUnset:
+      case descriptor['$unset'] !== EMPTY:
         descriptor.selectedOperation = '$unset'
-        descriptor['$set'] = null
+        descriptor['$set'] = EMPTY
       // eslint-disable-next-line no-fallthrough
-      case flagSet:
+      case descriptor['$set'] !== EMPTY:
         descriptor.selectedOperation =
-          descriptor.selectedOperation != null
+          descriptor.selectedOperation !== EMPTY
             ? descriptor.selectedOperation
             : '$set'
-        descriptor['$inc'] = null
+        descriptor['$inc'] = EMPTY
       // eslint-disable-next-line no-fallthrough
-      case flagInc:
+      case descriptor['$inc'] !== EMPTY:
         descriptor.selectedOperation =
-          descriptor.selectedOperation != null
+          descriptor.selectedOperation !== EMPTY
             ? descriptor.selectedOperation
             : '$inc'
         descriptor.children.clear()
@@ -131,12 +110,13 @@ const updateToSetExpression = (
 
     if (isBaseOperation && operations.operationName === '$unset') {
       updateExprArray.push(`${escapeId(baseName)} = NULL `)
-    } else if (isBaseOperation && operations.operationName === '$set') {
+    } else if (isBaseOperation && operations.operationName === '$set' && operations.fieldValue !== undefined) {
       const fieldValue = operations.fieldValue
+
       updateExprArray.push(
         `${escapeId(baseName)} = ${
           fieldValue != null
-            ? `CAST(${escape(JSON.stringify(fieldValue))} AS JSONB)`
+            ? `CAST(${escapeStr(JSON.stringify(fieldValue))} AS JSONB)`
             : null
         } `
       )
@@ -146,13 +126,13 @@ const updateToSetExpression = (
 
       updateExprArray.push(
         `${escapeId(baseName)} = CAST(( (SELECT CAST(CASE
-          WHEN jsonb_typeof(${inlineTableName}.${escapeId('val')}) = ${escape(
+          WHEN jsonb_typeof(${inlineTableName}.${escapeId('val')}) = ${escapeStr(
           'string'
         )} THEN quote_ident(
             CAST(${inlineTableName}.${escapeId('val')}  #>> '{}' AS VARCHAR) ||
-            CAST(${escape(fieldValue)} AS VARCHAR)
+            CAST(${escapeStr(fieldValue)} AS VARCHAR)
           )
-          WHEN jsonb_typeof(${inlineTableName}.${escapeId('val')}) = ${escape(
+          WHEN jsonb_typeof(${inlineTableName}.${escapeId('val')}) = ${escapeStr(
           'number'
         )} THEN CAST((
             CAST(${inlineTableName}.${escapeId(
@@ -161,7 +141,7 @@ const updateToSetExpression = (
             CAST(${+fieldValue} AS DECIMAL(48, 16))
           ) AS VARCHAR)
           ELSE (
-            SELECT ${escape('Invalid JSON type for $inc operation')}
+            SELECT ${escapeStr('Invalid JSON type for $inc operation')}
             FROM ${escapeId('pg_catalog')}.${escapeId('pg_class')}
           )
         END AS JSONB) AS ${escapeId('pg_catalog')} FROM (
@@ -173,13 +153,13 @@ const updateToSetExpression = (
       for (const { operationName, nestedPath, fieldValue } of operations) {
         if (operationName === '$unset') {
           updateExpr = `${updateExpr} #- '${makeNestedPath(nestedPath)}' `
-        } else if (operationName === '$set') {
+        } else if (operationName === '$set' && fieldValue !== undefined) {
           updateExpr = `jsonb_set(
             ${updateExpr},
             '${makeNestedPath(nestedPath)}',
             ${
               fieldValue != null
-                ? `CAST(${escape(JSON.stringify(fieldValue))} AS JSONB)`
+                ? `CAST(${escapeStr(JSON.stringify(fieldValue))} AS JSONB)`
                 : null
             }
             ) `
@@ -193,17 +173,17 @@ const updateToSetExpression = (
           )}, '${makeNestedPath(nestedPath)}', CAST(CASE
             WHEN jsonb_typeof(${inlineTableName}.${escapeId(
             'val'
-          )} #> '${makeNestedPath(nestedPath)}' ) = ${escape(
+          )} #> '${makeNestedPath(nestedPath)}' ) = ${escapeStr(
             'string'
           )} THEN quote_ident(
               CAST(${inlineTableName}.${escapeId('val')} #>> '${makeNestedPath(
             nestedPath
           )}' AS VARCHAR) ||
-              CAST(${escape(fieldValue)} AS VARCHAR)
+              CAST(${escapeStr(fieldValue)} AS VARCHAR)
             )
             WHEN jsonb_typeof(${inlineTableName}.${escapeId(
             'val'
-          )} #> '${makeNestedPath(nestedPath)}' ) = ${escape(
+          )} #> '${makeNestedPath(nestedPath)}' ) = ${escapeStr(
             'number'
           )} THEN CAST((
               CAST(${inlineTableName}.${escapeId('val')} #>> '${makeNestedPath(
@@ -212,7 +192,7 @@ const updateToSetExpression = (
               CAST(${+fieldValue} AS DECIMAL(48, 16))
             ) AS VARCHAR)
             ELSE (
-              SELECT ${escape('Invalid JSON type for $inc operation')}
+              SELECT ${escapeStr('Invalid JSON type for $inc operation')}
               FROM ${escapeId('pg_catalog')}.${escapeId('pg_class')}
             )
           END AS JSONB)) AS ${escapeId('pg_catalog')} FROM (

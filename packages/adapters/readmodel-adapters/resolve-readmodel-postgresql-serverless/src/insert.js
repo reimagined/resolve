@@ -1,5 +1,5 @@
 const insert = async (
-  { executeStatement, escapeId, escape, tablePrefix, schemaName },
+  { executeStatement, escapeId, escapeStr, tablePrefix, schemaName },
   readModelName,
   tableName,
   document
@@ -11,7 +11,7 @@ const insert = async (
       .map(key => escapeId(key))
       .join(', ')})
       VALUES(${Object.keys(document)
-        .map(key => `CAST(${escape(JSON.stringify(document[key]))} AS JSONB)`)
+        .map(key => `CAST(${escapeStr(JSON.stringify(document[key]))} AS JSONB)`)
         .join(', ')});
     `
   )

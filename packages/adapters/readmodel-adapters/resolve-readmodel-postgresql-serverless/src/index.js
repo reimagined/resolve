@@ -18,7 +18,7 @@ import del from './delete'
 import disconnect from './disconnect'
 import dropReadModel from './drop-read-model'
 import escapeId from './escape-id'
-import escape from './escape'
+import escapeStr from './escape-str'
 import executeStatement from './execute-statement'
 import findOne from './find-one'
 import find from './find'
@@ -40,7 +40,7 @@ const store = { defineTable, find, findOne, count, insert, update, delete: del }
 const connect = _connect.bind(null, {
   RDSDataService,
   escapeId,
-  escape,
+  escapeStr,
   buildUpsertDocument,
   convertResultRow,
   searchToWhereExpression,
@@ -74,7 +74,7 @@ const pool = {
   connect,
   disconnect,
   escapeId,
-  escape
+  escape: escapeStr
 }
 
 const createResource = _createResource.bind(null, pool)

@@ -4,7 +4,7 @@ const find = async (
   {
     executeStatement,
     escapeId,
-    escape,
+    escapeStr,
     tablePrefix,
     searchToWhereExpression,
     makeNestedPath,
@@ -44,7 +44,7 @@ const find = async (
   const searchExpr = searchToWhereExpression(
     searchExpression,
     escapeId,
-    escape,
+    escapeStr,
     makeNestedPath
   )
 

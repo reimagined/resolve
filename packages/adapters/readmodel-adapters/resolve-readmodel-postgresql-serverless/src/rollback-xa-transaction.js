@@ -40,7 +40,7 @@ const rollbackXATransaction = async (
             FROM ${pool.escapeId(pool.schemaName)}.${pool.escapeId(
             `__${pool.schemaName}__XA__`
           )}
-            WHERE "xa_key" = ${pool.escape(
+            WHERE "xa_key" = ${pool.escapeStr(
               pool.hash512(`${xaTransactionId}${readModelName}`)
             )}
           `

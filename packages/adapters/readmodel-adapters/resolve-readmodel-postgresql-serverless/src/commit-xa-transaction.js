@@ -35,7 +35,7 @@ const commitXATransaction = async (
         resourceArn: pool.dbClusterOrInstanceArn,
         secretArn: pool.awsSecretStoreArn,
         transactionId: xaTransactionId,
-        sql: `SELECT current_setting(${pool.escape(insideEventId)})`
+        sql: `SELECT current_setting(${pool.escapeStr(insideEventId)})`
       })
 
       const isInsideEvent = +pool.coercer(result.records[0][0])
@@ -55,7 +55,7 @@ const commitXATransaction = async (
         resourceArn: pool.dbClusterOrInstanceArn,
         secretArn: pool.awsSecretStoreArn,
         transactionId: xaTransactionId,
-        sql: `SELECT current_setting(${pool.escape(eventCountId)})`
+        sql: `SELECT current_setting(${pool.escapeStr(eventCountId)})`
       })
 
       const appliedEventsCount = +pool.coercer(result.records[0][0])
@@ -92,7 +92,7 @@ const commitXATransaction = async (
             FROM ${pool.escapeId(pool.schemaName)}.${pool.escapeId(
             `__${pool.schemaName}__XA__`
           )}
-            WHERE "xa_key" = ${pool.escape(
+            WHERE "xa_key" = ${pool.escapeStr(
               pool.hash512(`${xaTransactionId}${readModelName}`)
             )}
           `
