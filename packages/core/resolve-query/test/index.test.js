@@ -180,10 +180,10 @@ for (const { describeName, prepare } of [
           })
 
           expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id1'
+            'VM;viewModelName-invariantHash;id1'
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id1',
+            'VM;viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 1]],
               state: JSON.stringify({ value: 10 }, null, 2),
@@ -191,7 +191,7 @@ for (const { describeName, prepare } of [
             })
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id1',
+            'VM;viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 2]],
               state: JSON.stringify({ value: 15 }, null, 2),
@@ -199,7 +199,7 @@ for (const { describeName, prepare } of [
             })
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id1',
+            'VM;viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 3]],
               state: JSON.stringify({ value: 7 }, null, 2),
@@ -247,10 +247,10 @@ for (const { describeName, prepare } of [
           })
 
           expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id2'
+            'VM;viewModelName-invariantHash;id2'
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id2',
+            'VM;viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 1]],
               state: JSON.stringify({ value: 5 }, null, 2),
@@ -258,7 +258,7 @@ for (const { describeName, prepare } of [
             })
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id2',
+            'VM;viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 2]],
               state: JSON.stringify({ value: 7 }, null, 2),
@@ -266,7 +266,7 @@ for (const { describeName, prepare } of [
             })
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id2',
+            'VM;viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 3]],
               state: JSON.stringify({ value: 4 }, null, 2),
@@ -612,10 +612,10 @@ for (const { describeName, prepare } of [
           )
 
           expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id1'
+            'VM;viewModelName-invariantHash;id1'
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id1',
+            'VM;viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 1]],
               state: JSON.stringify({ value: 10 }, null, 2),
@@ -623,7 +623,7 @@ for (const { describeName, prepare } of [
             })
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id1',
+            'VM;viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 2]],
               state: JSON.stringify({ value: 15 }, null, 2),
@@ -631,7 +631,7 @@ for (const { describeName, prepare } of [
             })
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id1',
+            'VM;viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 3]],
               state: JSON.stringify({ value: 7 }, null, 2),
@@ -686,10 +686,10 @@ for (const { describeName, prepare } of [
           )
 
           expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id2'
+            'VM;viewModelName-invariantHash;id2'
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id2',
+            'VM;viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 1]],
               state: JSON.stringify({ value: 5 }, null, 2),
@@ -697,7 +697,7 @@ for (const { describeName, prepare } of [
             })
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id2',
+            'VM;viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 2]],
               state: JSON.stringify({ value: 7 }, null, 2),
@@ -705,7 +705,7 @@ for (const { describeName, prepare } of [
             })
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
-            'viewModelName-invariantHash;id2',
+            'VM;viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 3]],
               state: JSON.stringify({ value: 4 }, null, 2),

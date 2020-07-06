@@ -5,7 +5,7 @@ exports[`dispose with performance tracer should dispose the command executor: ad
 exports[`dispose with performance tracer should dispose the command executor: addError 1`] = `
 Array [
   Array [
-    [Error: Command handler is disposed],
+    [CommandError: Command handler is disposed],
   ],
 ]
 `;
@@ -106,16 +106,16 @@ Array [
     [SyntaxError: Unexpected token u in JSON at position 0],
   ],
   Array [
-    [Error: Command handler is disposed],
+    [CommandError: Command handler is disposed],
   ],
   Array [
-    [Error: Command handler is disposed],
+    [CommandError: Command handler is disposed],
   ],
   Array [
-    [Error: Command handler is disposed],
+    [CommandError: Command handler is disposed],
   ],
   Array [
-    [Error: Command handler is disposed],
+    [CommandError: Command handler is disposed],
   ],
 ]
 `;
@@ -261,16 +261,16 @@ Array [
     [SyntaxError: Unexpected token u in JSON at position 0],
   ],
   Array [
-    [Error: Command handler is disposed],
+    [CommandError: Command handler is disposed],
   ],
   Array [
-    [Error: Command handler is disposed],
+    [CommandError: Command handler is disposed],
   ],
   Array [
-    [Error: Command handler is disposed],
+    [CommandError: Command handler is disposed],
   ],
   Array [
-    [Error: Command handler is disposed],
+    [CommandError: Command handler is disposed],
   ],
 ]
 `;
@@ -585,20 +585,20 @@ Array [
     "Entity",
   ],
   Array [
-    "origin",
-    "resolve:applySnapshot",
-  ],
-  Array [
-    "aggregateName",
-    "Entity",
-  ],
-  Array [
     "eventType",
     "CREATED",
   ],
   Array [
     "origin",
     "resolve:applyEvent",
+  ],
+  Array [
+    "aggregateName",
+    "Entity",
+  ],
+  Array [
+    "origin",
+    "resolve:applySnapshot",
   ],
   Array [
     "eventCount",
@@ -673,10 +673,10 @@ Array [
     "loadEvents",
   ],
   Array [
-    "applySnapshot",
+    "applyEvent",
   ],
   Array [
-    "applyEvent",
+    "applySnapshot",
   ],
   Array [
     "processCommand",
@@ -827,7 +827,7 @@ Array [
 exports[`executeCommand with performance tracer should throw error when an aggregate does not exist: addError 1`] = `
 Array [
   Array [
-    [Error: Aggregate "empty" does not exist],
+    [CommandError: Aggregate "empty" does not exist],
   ],
 ]
 `;
@@ -900,7 +900,7 @@ Array [
 exports[`executeCommand with performance tracer should throw error when an event contains "aggregateId", "aggregateVersion", "timestamp" fields: addError 1`] = `
 Array [
   Array [
-    [Error: Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields],
+    [CommandError: Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields],
   ],
 ]
 `;
@@ -988,7 +988,7 @@ Array [
 exports[`executeCommand with performance tracer should throw error when an event does not contain "type" field: addError 1`] = `
 Array [
   Array [
-    [Error: Event "type" is required],
+    [CommandError: Event "type" is required],
   ],
 ]
 `;
@@ -1033,7 +1033,7 @@ exports[`executeCommand with performance tracer should throw error when the aggr
 exports[`executeCommand with performance tracer should throw error when the aggregateId is not a string: addError 1`] = `
 Array [
   Array [
-    [Error: The "aggregateId" argument must be a string],
+    [CommandError: The "aggregateId" argument must be a string],
   ],
 ]
 `;
@@ -1063,7 +1063,7 @@ exports[`executeCommand with performance tracer should throw error when the aggr
 exports[`executeCommand with performance tracer should throw error when the aggregateName is not a string: addError 1`] = `
 Array [
   Array [
-    [Error: The "aggregateName" argument must be a string],
+    [CommandError: The "aggregateName" argument must be a string],
   ],
 ]
 `;
@@ -1115,14 +1115,6 @@ Array [
     "Map",
   ],
   Array [
-    "origin",
-    "resolve:applySnapshot",
-  ],
-  Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
     "eventType",
     undefined,
   ],
@@ -1159,19 +1151,16 @@ Array [
     [SyntaxError: Unexpected token u in JSON at position 0],
   ],
   Array [
-    [Error: Incorrect order of events by aggregateId = "aggregateId"],
+    [CommandError: Incorrect order of events by aggregateId = "aggregateId"],
   ],
   Array [
-    [Error: Incorrect order of events by aggregateId = "aggregateId"],
+    [CommandError: Incorrect order of events by aggregateId = "aggregateId"],
   ],
   Array [
-    [Error: Incorrect order of events by aggregateId = "aggregateId"],
+    [CommandError: Incorrect order of events by aggregateId = "aggregateId"],
   ],
   Array [
-    [Error: Incorrect order of events by aggregateId = "aggregateId"],
-  ],
-  Array [
-    [Error: Incorrect order of events by aggregateId = "aggregateId"],
+    [CommandError: Incorrect order of events by aggregateId = "aggregateId"],
   ],
 ]
 `;
@@ -1189,9 +1178,6 @@ Array [
   ],
   Array [
     "loadEvents",
-  ],
-  Array [
-    "applySnapshot",
   ],
   Array [
     "applyEvent",
@@ -1214,13 +1200,11 @@ Array [
   Array [],
   Array [],
   Array [],
-  Array [],
 ]
 `;
 
 exports[`executeCommand with performance tracer should throw error when the incorrect order of events: getSegment 1`] = `
 Array [
-  Array [],
   Array [],
   Array [],
   Array [],
@@ -1236,7 +1220,7 @@ exports[`executeCommand with performance tracer should throw error when the type
 exports[`executeCommand with performance tracer should throw error when the type is not a string: addError 1`] = `
 Array [
   Array [
-    [Error: The "type" argument must be a string],
+    [CommandError: The "type" argument must be a string],
   ],
 ]
 `;
@@ -1299,10 +1283,10 @@ Array [
 exports[`executeCommand with performance tracer should throw error when use snapshot adapter with incorrect invariant hash: addError 1`] = `
 Array [
   Array [
-    [Error: Field "invariantHash" is required and must be a string when using aggregate snapshots],
+    [CommandError: Field "invariantHash" is required and must be a string when using aggregate snapshots],
   ],
   Array [
-    [Error: Field "invariantHash" is required and must be a string when using aggregate snapshots],
+    [CommandError: Field "invariantHash" is required and must be a string when using aggregate snapshots],
   ],
 ]
 `;
@@ -1360,10 +1344,10 @@ Array [
 exports[`executeCommand with performance tracer should throw error when use snapshot adapter without invariant hash: addError 1`] = `
 Array [
   Array [
-    [Error: Field "invariantHash" is required and must be a string when using aggregate snapshots],
+    [CommandError: Field "invariantHash" is required and must be a string when using aggregate snapshots],
   ],
   Array [
-    [Error: Field "invariantHash" is required and must be a string when using aggregate snapshots],
+    [CommandError: Field "invariantHash" is required and must be a string when using aggregate snapshots],
   ],
 ]
 `;
@@ -1460,20 +1444,20 @@ Array [
     "Map",
   ],
   Array [
-    "origin",
-    "resolve:applySnapshot",
-  ],
-  Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
     "eventType",
     "SET",
   ],
   Array [
     "origin",
     "resolve:applyEvent",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:applySnapshot",
   ],
   Array [
     "eventCount",
@@ -1520,20 +1504,20 @@ Array [
     "Map",
   ],
   Array [
-    "origin",
-    "resolve:applySnapshot",
-  ],
-  Array [
-    "aggregateName",
-    "Map",
-  ],
-  Array [
     "eventType",
     "SET",
   ],
   Array [
     "origin",
     "resolve:applyEvent",
+  ],
+  Array [
+    "aggregateName",
+    "Map",
+  ],
+  Array [
+    "origin",
+    "resolve:applySnapshot",
   ],
   Array [
     "eventCount",
@@ -1602,10 +1586,10 @@ Array [
     "loadEvents",
   ],
   Array [
-    "applySnapshot",
+    "applyEvent",
   ],
   Array [
-    "applyEvent",
+    "applySnapshot",
   ],
   Array [
     "processCommand",
@@ -1626,10 +1610,10 @@ Array [
     "loadEvents",
   ],
   Array [
-    "applySnapshot",
+    "applyEvent",
   ],
   Array [
-    "applyEvent",
+    "applySnapshot",
   ],
   Array [
     "processCommand",
