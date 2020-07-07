@@ -72,6 +72,7 @@ const sendEvents = async (payload, resolve) => {
   if (result != null && result.constructor === Error) {
     result = {
       error: {
+        name: result.name != null ? String(result.name) : result.name,
         code: String(result.code),
         message: String(result.message),
         stack: String(result.stack)
@@ -89,6 +90,10 @@ const sendEvents = async (payload, resolve) => {
     }
   } else if (result.error != null && result.error.constructor === Error) {
     result.error = {
+      name:
+        result.error.name != null
+          ? String(result.error.name)
+          : result.error.name,
       code: String(result.error.code),
       message: String(result.error.message),
       stack: String(result.error.stack)
