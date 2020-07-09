@@ -1,4 +1,3 @@
-const maybeThrowError = () => {
-}
+const maybeThrowError = () => {}
 
 export default maybeThrowError

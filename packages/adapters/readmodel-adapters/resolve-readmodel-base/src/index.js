@@ -1,11 +1,34 @@
-export { default as validators } from './validators'
+import { default as validators } from './validators'
 
 export const STOP_BATCH = Symbol('STOP_BATCH')
 export const OMIT_BATCH = Symbol('OMIT_BATCH')
 
-const createAdapter = (implementation, options) => {
-  const { performanceTracer } = options
+const combineValidation = (key, validators, methods) => {
+  if (validators[key] == null || methods[key] == null) {
+    throw new Error(
+      `Resolve read-model adapter cannot provide API method ${key}`
+    )
+  }
+  return async (pool, ...args) => {
+    await validators[key](...args)
+    const result = await methods[key](pool, ...args)
+    return result
+  }
+}
 
+const wrapResolveStoreApi = rawStoreApi => {
+  const storeApi = {}
+  for (const key of Object.keys(rawStoreApi)) {
+    storeApi[key] = combineValidation(key, validators, rawStoreApi)
+  }
+
+  return storeApi
+}
+
+const wrapCustomStoreApi = rawStoreApi => ({ ...rawStoreApi })
+
+const createAdapter = (wrapper, implementation, options) => {
+  const { performanceTracer } = options
   const {
     connect,
     beginTransaction,
@@ -19,8 +42,9 @@ const createAdapter = (implementation, options) => {
     rollbackEvent,
     disconnect,
     dropReadModel,
-    ...storeApi
+    ...rawStoreApi
   } = implementation
+  const storeApi = wrapper(rawStoreApi)
 
   const baseAdapterPool = Object.create(null)
   Object.assign(baseAdapterPool, { performanceTracer })
@@ -38,12 +62,10 @@ const createAdapter = (implementation, options) => {
     const adapterPool = Object.create(baseAdapterPool)
     try {
       await connect(adapterPool, options)
-
-      const store = Object.keys(storeApi).reduce((acc, key) => {
-        acc[key] = storeApi[key].bind(null, adapterPool, readModelName)
-        return acc
-      }, {})
-      store.performanceTracer = performanceTracer
+      const store = { performanceTracer }
+      for (const key of Object.keys(storeApi)) {
+        store[key] = storeApi[key].bind(null, adapterPool, readModelName)
+      }
 
       const resultStore = Object.freeze(Object.create(store))
 
@@ -211,4 +233,10 @@ const createAdapter = (implementation, options) => {
   })
 }
 
-export default createAdapter
+export const createResolveAdapter = createAdapter.bind(
+  null,
+  wrapResolveStoreApi
+)
+export const createCustomAdapter = createAdapter.bind(null, wrapCustomStoreApi)
+
+export default createCustomAdapter

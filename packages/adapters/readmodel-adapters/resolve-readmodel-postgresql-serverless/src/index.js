@@ -1,5 +1,5 @@
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
-import _createAdapter from 'resolve-readmodel-base'
+import { createResolveAdapter } from 'resolve-readmodel-base'
 import crypto from 'crypto'
 
 import beginXATransaction from './begin-xa-transaction'
@@ -52,7 +52,7 @@ const connect = _connect.bind(null, {
   ...store
 })
 
-const createAdapter = _createAdapter.bind(null, {
+const createAdapter = createResolveAdapter.bind(null, {
   ...store,
   connect,
   beginTransaction,

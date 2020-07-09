@@ -110,7 +110,11 @@ const updateToSetExpression = (
 
     if (isBaseOperation && operations.operationName === '$unset') {
       updateExprArray.push(`${escapeId(baseName)} = NULL `)
-    } else if (isBaseOperation && operations.operationName === '$set' && operations.fieldValue !== undefined) {
+    } else if (
+      isBaseOperation &&
+      operations.operationName === '$set' &&
+      operations.fieldValue !== undefined
+    ) {
       const fieldValue = operations.fieldValue
 
       updateExprArray.push(
@@ -126,15 +130,15 @@ const updateToSetExpression = (
 
       updateExprArray.push(
         `${escapeId(baseName)} = CAST(( (SELECT CAST(CASE
-          WHEN jsonb_typeof(${inlineTableName}.${escapeId('val')}) = ${escapeStr(
-          'string'
-        )} THEN quote_ident(
+          WHEN jsonb_typeof(${inlineTableName}.${escapeId(
+          'val'
+        )}) = ${escapeStr('string')} THEN quote_ident(
             CAST(${inlineTableName}.${escapeId('val')}  #>> '{}' AS VARCHAR) ||
             CAST(${escapeStr(fieldValue)} AS VARCHAR)
           )
-          WHEN jsonb_typeof(${inlineTableName}.${escapeId('val')}) = ${escapeStr(
-          'number'
-        )} THEN CAST((
+          WHEN jsonb_typeof(${inlineTableName}.${escapeId(
+          'val'
+        )}) = ${escapeStr('number')} THEN CAST((
             CAST(${inlineTableName}.${escapeId(
           'val'
         )}  #>> '{}' AS DECIMAL(48, 16)) +

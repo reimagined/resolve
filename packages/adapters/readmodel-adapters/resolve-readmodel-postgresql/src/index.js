@@ -1,4 +1,4 @@
-import _createAdapter, { validators } from 'resolve-readmodel-base'
+import { createResolveAdapter } from 'resolve-readmodel-base'
 import { Client as Postgres } from 'pg'
 
 import beginTransaction from './begin-transaction'
@@ -34,7 +34,7 @@ const connect = _connect.bind(null, {
   ...store
 })
 
-const createAdapter = _createAdapter.bind(null, {
+const createAdapter = createResolveAdapter.bind(null, {
   ...store,
   connect,
   beginTransaction,

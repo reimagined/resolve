@@ -1,4 +1,4 @@
-import createAdapter, { validators } from 'resolve-readmodel-base'
+import { createResolveAdapter } from 'resolve-readmodel-base'
 import SQLite from 'sqlite'
 import tmp from 'tmp'
 import os from 'os'
@@ -25,7 +25,7 @@ import update from './update'
 const memoryStore = {}
 const store = { defineTable, find, findOne, count, insert, update, delete: del }
 
-export default createAdapter.bind(null, {
+export default createResolveAdapter.bind(null, {
   ...store,
   connect: connect.bind(null, {
     buildUpsertDocument,
@@ -34,7 +34,6 @@ export default createAdapter.bind(null, {
     updateToSetExpression,
     memoryStore,
     ...store,
-    validators,
     SQLite,
     tmp,
     os,

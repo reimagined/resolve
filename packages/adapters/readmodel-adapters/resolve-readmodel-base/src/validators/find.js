@@ -1,4 +1,5 @@
 import validateSearchExpression from './validate-search-expression'
+import maybeThrowError from './maybe-throw-error'
 
 const find = async (
   readModelName,
@@ -9,7 +10,9 @@ const find = async (
   skip,
   limit
 ) => {
-  validateSearchExpression(searchExpression)
+  const errors = []
+  validateSearchExpression(searchExpression, errors)
+  maybeThrowError(errors)
 }
 
 export default find

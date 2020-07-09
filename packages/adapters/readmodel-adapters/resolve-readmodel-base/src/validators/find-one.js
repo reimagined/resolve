@@ -1,4 +1,5 @@
 import validateSearchExpression from './validate-search-expression'
+import maybeThrowError from './maybe-throw-error'
 
 const findOne = async (
   readModelName,
@@ -6,7 +7,9 @@ const findOne = async (
   searchExpression,
   fieldList
 ) => {
-  validateSearchExpression(searchExpression)
+  const errors = []
+  validateSearchExpression(searchExpression, errors)
+  maybeThrowError(errors)
 }
 
 export default findOne

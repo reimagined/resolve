@@ -2,7 +2,7 @@ const allowedOperatorNames = new Set(['$set', '$unset', '$inc'])
 const EMPTY = Symbol('EMPTY')
 
 const validateUpdateExpression = (expression, errors) => {
-  if(expression == null || expression.constructor !== Object) {
+  if (expression == null || expression.constructor !== Object) {
     errors.push(`Update expression is not object`)
     return
   }
@@ -46,10 +46,23 @@ const validateUpdateExpression = (expression, errors) => {
       }
 
       updatingFieldDescriptor[operatorName] = fieldValue
+
+      if (
+        !(
+          fieldValue == null ||
+          fieldValue.constructor === Number ||
+          fieldValue.constructor === String ||
+          fieldValue.constructor === Boolean ||
+          fieldValue.constructor === Object ||
+          Array.isArray(fieldValue)
+        )
+      ) {
+        errors.push(`Value should be serializable`)
+      }
     }
   }
 
-  if(isEmptyUpdate) {
+  if (isEmptyUpdate) {
     errors.push(`Update operator is empty`)
   }
 
@@ -61,16 +74,18 @@ const validateUpdateExpression = (expression, errors) => {
 
     if (
       Number(flagUnset) +
-      Number(flagSet) +
-      Number(flagInc) +
-      Number(flagChild) !==
+        Number(flagSet) +
+        Number(flagInc) +
+        Number(flagChild) !==
       1
     ) {
-      errors.push([
-        `Updating set for key "${descriptor.key}" came into conflict: `,
-        `either key includes "$set", "$unset", "$inc" simultaneously, `,
-        `either key has children update nodes`
-      ].join('\n'))
+      errors.push(
+        [
+          `Updating set for key "${descriptor.key}" came into conflict: `,
+          `either key includes "$set", "$unset", "$inc" simultaneously, `,
+          `either key has children update nodes`
+        ].join('\n')
+      )
     }
 
     switch (true) {

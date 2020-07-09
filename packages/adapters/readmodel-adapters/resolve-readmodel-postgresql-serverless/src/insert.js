@@ -11,7 +11,9 @@ const insert = async (
       .map(key => escapeId(key))
       .join(', ')})
       VALUES(${Object.keys(document)
-        .map(key => `CAST(${escapeStr(JSON.stringify(document[key]))} AS JSONB)`)
+        .map(
+          key => `CAST(${escapeStr(JSON.stringify(document[key]))} AS JSONB)`
+        )
         .join(', ')});
     `
   )

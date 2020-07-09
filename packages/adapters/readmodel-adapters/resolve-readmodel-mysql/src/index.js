@@ -1,6 +1,6 @@
 import MySQL from 'mysql2/promise'
 import { escapeId, escape } from 'mysql2'
-import createAdapter, { validators } from 'resolve-readmodel-base'
+import { createResolveAdapter } from 'resolve-readmodel-base'
 
 import beginTransaction from './begin-transaction'
 import buildUpsertDocument from './build-upsert-document'
@@ -22,10 +22,9 @@ import update from './update'
 
 const store = { defineTable, find, findOne, count, insert, update, delete: del }
 
-export default createAdapter.bind(null, {
+export default createResolveAdapter.bind(null, {
   ...store,
   connect: connect.bind(null, {
-    validators,
     MySQL,
     escapeId,
     escape,
