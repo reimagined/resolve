@@ -39,7 +39,7 @@
     "mqtt-connection": "^4.0.0",
     "proper-lockfile": "^3.2.0",
     "resolve-command": "0.24.9",
-    "resolve-cloud-common": "0.0.19",
+    "resolve-cloud-common": "0.0.35",
     "resolve-local-event-broker": "0.24.9",
     "resolve-query": "0.24.9",
     "resolve-saga": "0.24.9",

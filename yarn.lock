@@ -15664,12 +15664,12 @@ reselect@^4.0.0:
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.0.0.tgz#f2529830e5d3d0e021408b246a206ef4ea4437f7"
   integrity sha512-qUgANli03jjAyGlnbYVAV5vvnOmJnODyABz51RdBN7M4WaVu8mecZWgyQNkG8Yqe3KRGRt0l4K4B3XVEULC4CA==
 
-resolve-cloud-common@0.0.19:
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.19.tgz#8456fdc22371272f504c2c4ed02966faa4590f1f"
-  integrity sha512-85aOCKX+88K7jk3eVpQxu/BAnv9PX90jQGP8WzFfgKxgYNMgiUxDQ5yJMSLwQmz57G4adpjK3vp4yYQAI/44mw==
+resolve-cloud-common@0.0.35:
+  version "0.0.35"
+  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.35.tgz#946798a38f02322dafc093d7e10ec9c0b9bb3251"
+  integrity sha512-FNIPkyPy0WAu9umLsBApwid39Ixl+UcvTm/wAe/cpmx22TbCFrLACIix9marljE7W0P+COgTK+FYbBYThtnyqg==
   dependencies:
-    chalk "^3.0.0"
+    chalk "^4.0.0"
     debug "^4.1.1"
     lodash.differencewith "^4.5.0"
     lodash.isequal "^4.5.0"
