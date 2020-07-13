@@ -31,6 +31,10 @@ const createAdapter = (
     saveSnapshot,
     dropSnapshot,
     getSecretsManager = getSecretsManagerFallback,
+    beginIncrementalImport,
+    commitIncrementalImport,
+    rollbackIncrementalImport,
+    pushIncrementalImport,
     ...adapterSpecificArguments
   },
   options
@@ -84,7 +88,11 @@ const createAdapter = (
     getSecretsManager: wrapMethod(pool, getSecretsManager),
     loadSnapshot: wrapMethod(pool, loadSnapshot),
     saveSnapshot: wrapMethod(pool, saveSnapshot),
-    dropSnapshot: wrapMethod(pool, dropSnapshot)
+    dropSnapshot: wrapMethod(pool, dropSnapshot),
+    pushIncrementalImport: wrapMethod(pool, pushIncrementalImport),
+    beginIncrementalImport: wrapMethod(pool, beginIncrementalImport),
+    commitIncrementalImport: wrapMethod(pool, commitIncrementalImport),
+    rollbackIncrementalImport: wrapMethod(pool, rollbackIncrementalImport),
   }
 
   Object.assign(pool, adapter)
