@@ -92,7 +92,7 @@ const createAdapter = (
     pushIncrementalImport: wrapMethod(pool, pushIncrementalImport),
     beginIncrementalImport: wrapMethod(pool, beginIncrementalImport),
     commitIncrementalImport: wrapMethod(pool, commitIncrementalImport),
-    rollbackIncrementalImport: wrapMethod(pool, rollbackIncrementalImport),
+    rollbackIncrementalImport: wrapMethod(pool, rollbackIncrementalImport)
   }
 
   Object.assign(pool, adapter)

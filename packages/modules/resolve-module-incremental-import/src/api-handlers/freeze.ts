@@ -1,9 +1,9 @@
-const handler = async (req, res) => {
+const handler = async (req, res): Promise<void> => {
   try {
     const adapter = req.resolve.eventstoreAdapter
     await adapter.freeze()
     await res.end('OK')
-  } catch(error) {
+  } catch (error) {
     await res.status(500)
     await res.end(error)
   }

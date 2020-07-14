@@ -1,6 +1,6 @@
 import wrapRequest from './wrap-request'
 
-const handler = async (req, res) => {
+const handler = async (req, res): Promise<void> => {
   const adapter = req.resolve.eventstoreAdapter
   const request = wrapRequest(req)
   const events = request.body
@@ -10,10 +10,10 @@ const handler = async (req, res) => {
     await adapter.pushIncrementalImport(events, importId)
     await adapter.commitIncrementalImport(importId)
     await res.end('OK')
-  } catch(error) {
+  } catch (error) {
     try {
       await adapter.rollbackIncrementalImport()
-    } catch(e) {}
+    } catch (e) {}
 
     await res.status(500)
     await res.end(error)

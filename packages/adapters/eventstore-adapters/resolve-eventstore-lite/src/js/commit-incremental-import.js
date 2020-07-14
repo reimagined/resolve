@@ -1,10 +1,17 @@
-const commitIncrementalImport = async ({ database, eventsTableName, escapeId, escape }, importId) => {
-  const incrementalImportTableAsId = escapeId(`${eventsTableName}-incremental-import`)
-  const incrementalImportTableAsString = escape(`${eventsTableName}-incremental-import`)
+const commitIncrementalImport = async (
+  { database, eventsTableName, escapeId, escape },
+  importId
+) => {
+  const incrementalImportTableAsId = escapeId(
+    `${eventsTableName}-incremental-import`
+  )
+  const incrementalImportTableAsString = escape(
+    `${eventsTableName}-incremental-import`
+  )
   const eventsTableAsId = escapeId(eventsTableName)
 
   try {
-    const sql = `BEGIN IMMEDIATE;
+    await database.exec(`BEGIN IMMEDIATE;
       SELECT ABS("CTE1"."IncrementalImportFailed") FROM (
         SELECT 0 AS "IncrementalImportFailed"
       UNION ALL
@@ -13,8 +20,8 @@ const commitIncrementalImport = async ({ database, eventsTableName, escapeId, es
         WHERE "type" = 'table' AND 
         "name" = ${incrementalImportTableAsString} AND
         "sql" NOT LIKE ${escape(
-      `%-- RESOLVE INCREMENTAL-IMPORT ${escape(importId)} OWNED TABLE%`
-    )}
+          `%-- RESOLVE INCREMENTAL-IMPORT ${escape(importId)} OWNED TABLE%`
+        )}
       ) "CTE1";
       
       SELECT ABS("CTE2"."IncrementalImportFailed") FROM (
@@ -29,8 +36,8 @@ const commitIncrementalImport = async ({ database, eventsTableName, escapeId, es
       ) "CTE2";
       
       DELETE FROM ${incrementalImportTableAsId} WHERE "rowid" IN (
-        SELECT "MaybeEqualEvents"."rowidx" FROM (
-          SELECT "A"."payload" AS "payloadA", "B"."payload" AS "payloadB", "A"."rowid" AS "rowidx"
+        SELECT "MaybeEqualEvents"."rowIdX" FROM (
+          SELECT "A"."payload" AS "payloadA", "B"."payload" AS "payloadB", "A"."rowid" AS "rowIdX"
           FROM ${incrementalImportTableAsId} "A" LEFT JOIN ${eventsTableAsId} "B" ON
           "A"."timestamp" = "B"."timestamp" AND
           "A"."aggregateId" = "B"."aggregateId" AND
@@ -41,13 +48,13 @@ const commitIncrementalImport = async ({ database, eventsTableName, escapeId, es
       
       WITH "CTE3" AS (
         SELECT ROW_NUMBER() OVER (ORDER BY "timestamp", "type", "aggregateId") - 1 AS "sortedIdx",
-        "rowid" as "rowIdx"
+        "rowid" as "rowIdX"
         FROM ${incrementalImportTableAsId}
         ORDER BY "timestamp"
       )
       UPDATE ${incrementalImportTableAsId} SET "sortedIdx" = (
         SELECT "CTE3"."sortedIdx" FROM "CTE3"
-        WHERE "CTE3"."rowIdx" = ${incrementalImportTableAsId}."rowid"
+        WHERE "CTE3"."rowIdX" = ${incrementalImportTableAsId}."rowid"
       );
       
       WITH "CTE4" AS (
@@ -76,14 +83,14 @@ const commitIncrementalImport = async ({ database, eventsTableName, escapeId, es
       
       WITH "CTE6" AS (
         SELECT ROW_NUMBER() OVER (PARTITION BY "aggregateId" ORDER BY "timestamp", "type", "aggregateId") - 1 AS "increment",
-        "rowid" as "rowIdx"
+        "rowid" as "rowIdX"
         FROM ${incrementalImportTableAsId}
         ORDER BY "timestamp"
       )
       UPDATE ${incrementalImportTableAsId} 
       SET "aggregateVersion" = "aggregateVersion" + (
         SELECT "CTE6"."increment" FROM "CTE6" 
-        WHERE "CTE6"."rowIdx" = ${incrementalImportTableAsId}."rowid"
+        WHERE "CTE6"."rowIdX" = ${incrementalImportTableAsId}."rowid"
       );
       
       INSERT INTO ${eventsTableAsId}(
@@ -106,27 +113,27 @@ const commitIncrementalImport = async ({ database, eventsTableName, escapeId, es
       ORDER BY "sortedIdx";
            
       COMMIT;
-      `
-
-      console.log(sql)
-
-    await database.exec(sql)
-
-  } catch(error) {
+      `)
+  } catch (error) {
     try {
       await database.exec(`ROLLBACK;`)
-    } catch(e) {}
-    if (error != null && (error.message === 'SQLITE_ERROR: integer overflow' || /^SQLITE_ERROR:.*? not exists$/.test(error.message))) {
-      throw new Error(`Either event batch has timestamps from the past nor incremental importId=${importId} does not exist`)
+    } catch (e) {}
+    if (
+      error != null &&
+      (error.message === 'SQLITE_ERROR: integer overflow' ||
+        /^SQLITE_ERROR:.*? not exists$/.test(error.message))
+    ) {
+      throw new Error(
+        `Either event batch has timestamps from the past nor incremental importId=${importId} does not exist`
+      )
     } else {
       throw error
     }
   } finally {
     try {
       await database.exec(`DROP TABLE ${incrementalImportTableAsId};`)
-    } catch(e) {}
+    } catch (e) {}
   }
-
 }
 
 export default commitIncrementalImport

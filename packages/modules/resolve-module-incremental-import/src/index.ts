@@ -1,10 +1,15 @@
-const createModule = () => {
+const createModule = (): {
+  apiHandlers: Array<{
+    path: string
+    handler: string
+    method: string
+  }>
+} => {
   const config = {
     apiHandlers: [
       {
         path: '/api/incremental-import/freeze',
-        handler:
-          'resolve-module-incremental-import/lib/api-handlers/freeze.js',
+        handler: 'resolve-module-incremental-import/lib/api-handlers/freeze.js',
         method: 'POST'
       },
       {

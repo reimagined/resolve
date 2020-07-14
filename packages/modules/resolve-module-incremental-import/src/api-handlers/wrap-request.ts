@@ -1,9 +1,9 @@
 import iconv from 'iconv-lite'
 
-const convertCodepage = (content, fromEncoding, toEncoding) =>
+const convertCodepage = (content, fromEncoding, toEncoding): string =>
   iconv.decode(iconv.encode(content, fromEncoding), toEncoding)
 
-const wrapAuthRequest = req => {
+const wrapAuthRequest = (req): any => {
   if (req.body == null || req.headers['content-type'] == null) {
     return req
   }

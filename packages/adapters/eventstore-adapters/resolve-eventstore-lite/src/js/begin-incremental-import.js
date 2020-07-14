@@ -5,8 +5,12 @@ const beginIncrementalImport = async ({
   escape
 }) => {
   try {
-    const incrementalImportTableAsId = escapeId(`${eventsTableName}-incremental-import`)
-    const importId = Buffer.from(`${Date.now()}${Math.random()}`).toString('base64').replace(/\/|\+|=/gi, 'z')
+    const incrementalImportTableAsId = escapeId(
+      `${eventsTableName}-incremental-import`
+    )
+    const importId = Buffer.from(`${Date.now()}${Math.random()}`)
+      .toString('base64')
+      .replace(/\/|\+|=/gi, 'z')
     await database.exec(
       `CREATE TABLE ${incrementalImportTableAsId}(
       -- RESOLVE INCREMENTAL-IMPORT ${escape(importId)} OWNED TABLE
@@ -24,7 +28,10 @@ const beginIncrementalImport = async ({
 
     return importId
   } catch (error) {
-    if(error != null && /^SQLITE_ERROR:.*? already exists$/.test(error.message)) {
+    if (
+      error != null &&
+      /^SQLITE_ERROR:.*? already exists$/.test(error.message)
+    ) {
       throw new Error(`Previous incremental import is not finished`)
     } else {
       throw error
