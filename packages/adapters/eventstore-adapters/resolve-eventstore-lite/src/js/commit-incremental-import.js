@@ -47,7 +47,7 @@ const commitIncrementalImport = async (
       );
       
       WITH "CTE3" AS (
-        SELECT ROW_NUMBER() OVER (ORDER BY "timestamp", "type", "aggregateId") - 1 AS "sortedIdx",
+        SELECT ROW_NUMBER() OVER (ORDER BY "timestamp", "rowid") - 1 AS "sortedIdx",
         "rowid" as "rowIdX"
         FROM ${incrementalImportTableAsId}
         ORDER BY "timestamp"
@@ -82,7 +82,7 @@ const commitIncrementalImport = async (
       ), 0) + 1;
       
       WITH "CTE6" AS (
-        SELECT ROW_NUMBER() OVER (PARTITION BY "aggregateId" ORDER BY "timestamp", "type", "aggregateId") - 1 AS "increment",
+        SELECT ROW_NUMBER() OVER (PARTITION BY "aggregateId" ORDER BY "timestamp", "rowid") - 1 AS "increment",
         "rowid" as "rowIdX"
         FROM ${incrementalImportTableAsId}
         ORDER BY "timestamp"
