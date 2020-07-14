@@ -9,7 +9,7 @@ const beginIncrementalImport = async ({
     const importId = Buffer.from(`${Date.now()}${Math.random()}`).toString('base64').replace(/\/|\+|=/gi, 'z')
     await database.exec(
       `CREATE TABLE ${incrementalImportTableAsId}(
-      -- RESOLVE INCREMENTAL-IMPORT ${escape(`${importId}`)} OWNED TABLE
+      -- RESOLVE INCREMENTAL-IMPORT ${escape(importId)} OWNED TABLE
         ${escapeId('sortedIdx')} BIGINT NULL,
         ${escapeId('threadId')} BIGINT NULL,
         ${escapeId('threadCounter')} BIGINT NULL,

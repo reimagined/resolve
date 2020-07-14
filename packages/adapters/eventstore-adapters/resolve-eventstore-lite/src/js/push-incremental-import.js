@@ -13,7 +13,7 @@ const pushIncrementalImport = async ({ database, eventsTableName, escapeId, esca
         WHERE "type" = 'table' AND 
         "name" = ${incrementalImportTableAsString} AND
         "sql" NOT LIKE ${escape(
-        `%-- RESOLVE INCREMENTAL-IMPORT ${escape(`${importId}`)} OWNED TABLE%`
+        `%-- RESOLVE INCREMENTAL-IMPORT ${escape(importId)} OWNED TABLE%`
       )}
       ) CTE;
       

@@ -43,6 +43,7 @@
     "resolve-module-auth": "0.24.10",
     "resolve-module-comments": "0.24.10",
     "resolve-module-admin": "0.24.10",
+    "resolve-module-incremental-import": "0.24.10",
     "resolve-redux": "0.24.10",
     "resolve-readmodel-postgresql-serverless": "0.24.10",
     "resolve-readmodel-lite": "0.24.10",

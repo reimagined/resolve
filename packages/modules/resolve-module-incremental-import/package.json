@@ -6,7 +6,7 @@
     "node": ">=10.9"
   },
   "main": "./lib/index.js",
-  "module": "./es/index.js",
+  "types": "./lib/index.d.ts",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -31,16 +31,24 @@
   "devDependencies": {
     "jest": "26.0.1"
   },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/test/**/*.test.[jt]s?(x)"
+    ],
+    "roots": [
+      "<rootDir>"
+    ]
+  },
   "babelCompile": [
     {
-      "moduleType": "es",
-      "moduleTarget": "server",
-      "inputDir": "./src",
-      "outDir": "./es"
-    },
-    {
+      "sourceType": "ts",
       "moduleType": "cjs",
-      "moduleTarget": "server",
+      "moduleTarget": "client",
       "inputDir": "./src",
       "outDir": "./lib"
     }

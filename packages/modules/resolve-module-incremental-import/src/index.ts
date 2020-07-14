@@ -4,19 +4,19 @@ const createModule = () => {
       {
         path: '/api/incremental-import/freeze',
         handler:
-          'resolve-module-admin/lib/api-handlers/freeze.js',
+          'resolve-module-incremental-import/lib/api-handlers/freeze.js',
         method: 'POST'
       },
       {
         path: '/api/incremental-import/unfreeze',
         handler:
-          'resolve-module-admin/lib/api-handlers/unfreeze.js',
+          'resolve-module-incremental-import/lib/api-handlers/unfreeze.js',
         method: 'POST'
       },
       {
         path: '/api/incremental-import/inject-events',
         handler:
-          'resolve-module-admin/lib/api-handlers/inject-events.js',
+          'resolve-module-incremental-import/lib/api-handlers/inject-events.js',
         method: 'POST'
       }
     ]
