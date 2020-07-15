@@ -28,21 +28,28 @@ const eventStorage = createInFileStorageAdapter({
   databaseFile: './data/event-store.db'
 })
 
-// Load events
-const eventHandler = async event => {
-  console.log('Event from eventstore', event)
-  // Eventstore is waiting for event processing so overflow will not occur
-  await processEvent(event)
-}
-
-const eventFilter = {
+const eventFilterByTimestamp = {
   eventTypes: ['EVENT_TYPE_1', 'EVENT_TYPE_2'], // Or null to load ALL event types
   aggregateIds: ['AGGREGATE_ID_1', 'AGGREGATE_ID_2'], // Or null to load ALL aggregate ids
   startTime: Date.now() - 10000, // Or null to load events from beginnig of time
   finishTime: Date.now() + 10000 // Or null to load events to current time
 }
 
-await eventStore.loadEvents(eventFilter, eventHandler)
+const eventFilterByCursor = {
+  eventTypes: ['EVENT_TYPE_1', 'EVENT_TYPE_2'], // Or null to load ALL event types
+  aggregateIds: ['AGGREGATE_ID_1', 'AGGREGATE_ID_2'], // Or null to load ALL aggregate ids
+  limit: 100, //  You use the limit clause to constrain the number of events returned by the query.
+  cursor: null // Control structure that enables traversal over the records in a database.
+}
+
+const {
+  events: eventsByTimestamp,
+} = await eventStore.loadEvents(eventFilterByTimestamp)
+
+const {
+  events: eventsByCursor,
+  cursor: nextCursor
+} = await eventStore.loadEvents(eventFilterByCursor)
 
 // Save event
 const event = {
