@@ -1,4 +1,6 @@
-const handler = async (req, res): Promise<void> => {
+import { Request, Response } from '../types'
+
+const handler = async (req: Request, res: Response): Promise<void> => {
   try {
     const adapter = req.resolve.eventstoreAdapter
     await adapter.freeze()

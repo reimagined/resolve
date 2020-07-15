@@ -1,6 +1,7 @@
+import { Request, Response } from '../types'
 import wrapRequest from './wrap-request'
 
-const handler = async (req, res): Promise<void> => {
+const handler = async (req: Request, res: Response): Promise<void> => {
   const adapter = req.resolve.eventstoreAdapter
   const request = wrapRequest(req)
   const events = request.body

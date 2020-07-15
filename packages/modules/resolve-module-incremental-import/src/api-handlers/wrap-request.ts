@@ -1,9 +1,11 @@
 import iconv from 'iconv-lite'
 
-const convertCodepage = (content, fromEncoding, toEncoding): string =>
+import { Request, WrappedRequest } from '../types'
+
+const convertCodepage = (content: any, fromEncoding: string, toEncoding: string): string =>
   iconv.decode(iconv.encode(content, fromEncoding), toEncoding)
 
-const wrapAuthRequest = (req): any => {
+const wrapRequest = (req: Request): WrappedRequest => {
   if (req.body == null || req.headers['content-type'] == null) {
     return req
   }
@@ -61,4 +63,4 @@ const wrapAuthRequest = (req): any => {
   })
 }
 
-export default wrapAuthRequest
+export default wrapRequest
