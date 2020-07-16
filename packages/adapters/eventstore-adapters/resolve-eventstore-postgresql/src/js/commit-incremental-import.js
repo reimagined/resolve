@@ -1,6 +1,7 @@
 const commitIncrementalImport = async (
   { executeStatement, databaseName, eventsTableName, escapeId, escape },
-  importId
+  importId,
+  validateAfterCommit
 ) => {
   const incrementalImportTableAsId = escapeId(
     `${eventsTableName}-incremental-import`
@@ -138,6 +139,84 @@ const commitIncrementalImport = async (
         ) + 1, 0)
       )
     `)
+
+    if (validateAfterCommit != null && validateAfterCommit === true) {
+      const realThreadIdCounters = (
+        await executeStatement(
+          `SELECT "threadId", MAX("threadCounter") AS "threadCounter"
+        FROM ${databaseNameAsId}.${eventsTableAsId}
+        GROUP BY "threadId"
+        `
+        )
+      ).map(({ threadId, threadCounter }) => ({
+        threadId: !isNaN(+threadId) ? +threadId : Symbol('BAD_THREAD_ID'),
+        threadCounter: !isNaN(+threadCounter)
+          ? +threadCounter
+          : Symbol('BAD_THREAD_COUNTER')
+      }))
+
+      const predictedThreadIdCounters = (
+        await executeStatement(
+          `SELECT "threadId", "threadCounter"
+        FROM ${databaseNameAsId}.${threadsTableAsId}`
+        )
+      ).map(({ threadId, threadCounter }) => ({
+        threadId: !isNaN(+threadId) ? +threadId : Symbol('BAD_THREAD_ID'),
+        threadCounter: !isNaN(+threadCounter)
+          ? +threadCounter
+          : Symbol('BAD_THREAD_COUNTER')
+      }))
+
+      const validationMapReal = new Map()
+      const validationMapPredicted = new Map()
+
+      for (const { threadId, threadCounter } of realThreadIdCounters) {
+        validationMapReal.set(threadId, threadCounter)
+      }
+      for (const { threadId, threadCounter } of predictedThreadIdCounters) {
+        validationMapPredicted.set(threadId, threadCounter)
+      }
+
+      const validationErrors = []
+
+      for (const { threadId, threadCounter } of realThreadIdCounters) {
+        if (validationMapPredicted.get(threadId) !== threadCounter + 1) {
+          validationErrors.push(
+            new Error(
+              `Real -> Predicted threadCounter mismatch ${threadId} ${threadCounter} ${validationMapPredicted.get(
+                threadId
+              )}`
+            )
+          )
+        }
+      }
+      for (const { threadId, threadCounter } of predictedThreadIdCounters) {
+        if (
+          validationMapReal.get(threadId) !== threadCounter - 1 &&
+          validationMapReal.get(threadId) != null
+        ) {
+          validationErrors.push(
+            new Error(
+              `Predicted -> Real threadCounter mismatch ${threadId} ${threadCounter} ${validationMapReal.get(
+                threadId
+              )}`
+            )
+          )
+        }
+      }
+
+      if (validationErrors.length > 0) {
+        const compositeError = new Error(
+          validationErrors.map(({ message }) => message).join('\n')
+        )
+        compositeError.stack = validationErrors
+          .map(({ stack }) => stack)
+          .join('\n')
+        throw compositeError
+      }
+    } else if (validateAfterCommit != null) {
+      throw new Error('Bad argument for "validateAfterCommit"')
+    }
   } catch (error) {
     if (error != null && /Table.*? does not exist$/i.test(error.message)) {
       throw new Error(

@@ -120,8 +120,8 @@ function validateEvents(events) {
 }
 
 test('inject-events should work correctly', async () => {
-  const countInitialEvents = 250 + Math.floor(750 * Math.random())
-  const countIncrementalImportEvents = 250000 + Math.floor(750 * Math.random())
+  const countInitialEvents = 250 + Math.floor(75 * Math.random())
+  const countIncrementalImportEvents = 25000 + Math.floor(75 * Math.random())
   const countAllEvents = countInitialEvents + countIncrementalImportEvents
 
   const adapter = createAdapter()
@@ -231,7 +231,7 @@ test('inject-events should work correctly', async () => {
       t2} ms / Events ${countIncrementalImportEvents}`
   )
 
-  await adapter.commitIncrementalImport(importId)
+  await adapter.commitIncrementalImport(importId, true)
 
   const t4 = Date.now()
   await new Promise(resolve => setImmediate(resolve))
