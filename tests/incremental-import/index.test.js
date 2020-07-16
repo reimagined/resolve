@@ -121,7 +121,7 @@ function validateEvents(events) {
 
 test('inject-events should work correctly', async () => {
   const countInitialEvents = 250 + Math.floor(750 * Math.random())
-  const countIncrementalImportEvents = 250 + Math.floor(750 * Math.random())
+  const countIncrementalImportEvents = 250000 + Math.floor(750 * Math.random())
   const countAllEvents = countInitialEvents + countIncrementalImportEvents
 
   const adapter = createAdapter()
@@ -155,6 +155,12 @@ test('inject-events should work correctly', async () => {
   )
 
   const t1 = Date.now()
+  await new Promise(resolve => setImmediate(resolve))
+
+  // eslint-disable-next-line no-console
+  console.log(
+    `Importing initial events ${t1 - t0} ms / Events ${countInitialEvents}`
+  )
 
   const tempInitialEvents = (
     await adapter.loadEvents({ limit: countInitialEvents + 1 })
@@ -171,6 +177,7 @@ test('inject-events should work correctly', async () => {
 
   const importId = await adapter.beginIncrementalImport()
   const incrementalImportPromises = []
+  let incrementalBatchIdx = 0
 
   for (
     let eventIndex = 0;
@@ -184,10 +191,16 @@ test('inject-events should work correctly', async () => {
       payload: { eventIndex }
     })
 
-    if (eventIndex % 10 === 0) {
+    if (eventIndex % 4096 === 0) {
       shuffle(incrementalImportEvents)
+      const currentBatchIdx = incrementalBatchIdx++
       incrementalImportPromises.push(
-        adapter.pushIncrementalImport(incrementalImportEvents, importId)
+        adapter
+          .pushIncrementalImport(incrementalImportEvents, importId)
+          .then(() => {
+            // eslint-disable-next-line no-console
+            console.log(`Pushing incremental batch ${currentBatchIdx}`)
+          })
       )
 
       incrementalImportEvents = []
@@ -195,19 +208,39 @@ test('inject-events should work correctly', async () => {
   }
 
   if (incrementalImportEvents.length > 0) {
+    const currentBatchIdx = incrementalBatchIdx++
     shuffle(incrementalImportEvents)
     incrementalImportPromises.push(
-      adapter.pushIncrementalImport(incrementalImportEvents, importId)
+      adapter
+        .pushIncrementalImport(incrementalImportEvents, importId)
+        .then(() => {
+          // eslint-disable-next-line no-console
+          console.log(`Pushing incremental batch ${currentBatchIdx}`)
+        })
     )
   }
 
   await Promise.all(incrementalImportPromises)
 
   const t3 = Date.now()
+  await new Promise(resolve => setImmediate(resolve))
+
+  // eslint-disable-next-line no-console
+  console.log(
+    `Pushing incremental events ${t3 -
+      t2} ms / Events ${countIncrementalImportEvents}`
+  )
 
   await adapter.commitIncrementalImport(importId)
 
   const t4 = Date.now()
+  await new Promise(resolve => setImmediate(resolve))
+
+  // eslint-disable-next-line no-console
+  console.log(
+    `Commiting incremental events ${t4 -
+      t3} ms / Events ${countIncrementalImportEvents}`
+  )
 
   const resultEvents = (await adapter.loadEvents({ limit: countAllEvents + 1 }))
     .events
@@ -215,8 +248,4 @@ test('inject-events should work correctly', async () => {
   expect(resultEvents.length).toEqual(countAllEvents)
 
   validateEvents(resultEvents)
-
-  console.log(`Importing initial events ${t1-t0} ms / Events ${countInitialEvents}`)
-  console.log(`Pushing incremental events ${t3-t2} ms / Events ${countIncrementalImportEvents}`)
-  console.log(`Commiting incremental events ${t4-t3} ms / Events ${countIncrementalImportEvents}`)
 })

@@ -9,7 +9,9 @@ const rollbackIncrementalImport = async ({
     const incrementalImportTableAsId = escapeId(
       `${eventsTableName}-incremental-import`
     )
-    await executeStatement(`DROP TABLE ${databaseNameAsId}.${incrementalImportTableAsId};`)
+    await executeStatement(
+      `DROP TABLE ${databaseNameAsId}.${incrementalImportTableAsId};`
+    )
   } catch (error) {
     if (error != null && /Table.*? does not exist$/i.test(error.message)) {
       throw new Error(`Previous incremental import does not exist`)

@@ -130,9 +130,7 @@ const commitIncrementalImport = async (
       throw error
     }
   } finally {
-    try {
-      await database.exec(`DROP TABLE ${incrementalImportTableAsId};`)
-    } catch (e) {}
+    await database.exec(`DROP TABLE IF EXISTS ${incrementalImportTableAsId};`)
   }
 }
 

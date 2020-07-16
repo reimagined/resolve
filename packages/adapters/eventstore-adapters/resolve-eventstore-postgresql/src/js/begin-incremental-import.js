@@ -36,7 +36,9 @@ const beginIncrementalImport = async ({
       );
       
       COMMENT ON TABLE ${databaseNameAsId}.${incrementalImportTableAsId}
-      IS ${escape(`RESOLVE INCREMENTAL-IMPORT ${escape(importId)} OWNED TABLE`)};
+      IS ${escape(
+        `RESOLVE INCREMENTAL-IMPORT ${escape(importId)} OWNED TABLE`
+      )};
       `
     )
 

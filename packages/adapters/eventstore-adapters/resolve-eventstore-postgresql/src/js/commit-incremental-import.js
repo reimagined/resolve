@@ -8,12 +8,13 @@ const commitIncrementalImport = async (
   const incrementalImportTableAsString = escape(
     `${eventsTableName}-incremental-import`
   )
+  const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
   const eventsTableAsId = escapeId(eventsTableName)
   const databaseNameAsId = escapeId(databaseName)
   const databaseNameAsStr = escape(databaseName)
 
   try {
-  const sql = `
+    await executeStatement(`
       WITH "ValidateImportId" AS (
         SELECT 0 AS "Zero" WHERE (
           (SELECT 1 AS "IncrementalImportFailed")
@@ -25,7 +26,9 @@ const commitIncrementalImport = async (
           LEFT JOIN "pg_catalog"."pg_namespace" "NS"
           ON "CLS"."relnamespace" = "NS"."oid"
           WHERE "DESC"."description" <>
-          ${escape(`RESOLVE INCREMENTAL-IMPORT ${escape(importId)} OWNED TABLE`)}
+          ${escape(
+            `RESOLVE INCREMENTAL-IMPORT ${escape(importId)} OWNED TABLE`
+          )}
           AND "CLS"."relname" = ${incrementalImportTableAsString}
           AND "NS"."nspname" = ${databaseNameAsStr}
           AND "CLS"."relkind" = 'r')
@@ -112,32 +115,41 @@ const commitIncrementalImport = async (
         FROM "OriginalUniqueEvents"
         LEFT JOIN "ThreadHeads" ON "OriginalUniqueEvents"."rowid" = "ThreadHeads"."rowid"
         LEFT JOIN "IncrementedAggregateHeads" ON "OriginalUniqueEvents"."rowid" = "IncrementedAggregateHeads"."rowid"
+      ),
+      "ResultTable" AS (
+        INSERT INTO ${databaseNameAsId}.${eventsTableAsId}(
+          "threadId",
+          "threadCounter",
+          "timestamp",
+          "aggregateId",
+          "aggregateVersion",
+          "type",
+          "payload",
+          "eventSize"
+        )
+        SELECT * FROM "InsertionTable"
       )
-      INSERT INTO ${databaseNameAsId}.${eventsTableAsId}(
-        "threadId",
-        "threadCounter",
-        "timestamp",
-        "aggregateId",
-        "aggregateVersion",
-        "type",
-        "payload",
-        "eventSize"
+      UPDATE ${databaseNameAsId}.${threadsTableAsId} 
+      SET "threadCounter" = GREATEST(
+        ${databaseNameAsId}.${threadsTableAsId}."threadCounter",
+        COALESCE((SELECT MAX("InsertionTable"."threadCounter") AS "threadCounter"
+        FROM "InsertionTable"
+        WHERE "InsertionTable"."threadId" = ${databaseNameAsId}.${threadsTableAsId}."threadId"
+        ) + 1, 0)
       )
-      SELECT * FROM "InsertionTable"
-      `
-
-    await executeStatement(sql)
-
+    `)
   } catch (error) {
     if (error != null && /Table.*? does not exist$/i.test(error.message)) {
-      throw new Error(`Either event batch has timestamps from the past nor incremental importId=${importId} does not exist`)
+      throw new Error(
+        `Either event batch has timestamps from the past nor incremental importId=${importId} does not exist`
+      )
     } else {
       throw error
     }
   } finally {
-    try {
-      await database.exec(`DROP TABLE ${databaseNameAsId}.${incrementalImportTableAsId};`)
-    } catch (e) {}
+    await executeStatement(
+      `DROP TABLE IF EXISTS ${databaseNameAsId}.${incrementalImportTableAsId};`
+    )
   }
 }
 

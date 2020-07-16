@@ -1,13 +1,7 @@
 import { RESERVED_EVENT_SIZE } from './constants'
 
 const pushIncrementalImport = async (
-  {
-    executeStatement,
-    databaseName,
-    eventsTableName,
-    escapeId,
-    escape
-  },
+  { executeStatement, databaseName, eventsTableName, escapeId, escape },
   events,
   importId
 ) => {
@@ -33,7 +27,9 @@ const pushIncrementalImport = async (
             LEFT JOIN "pg_catalog"."pg_namespace" "NS"
             ON "CLS"."relnamespace" = "NS"."oid"
             WHERE "DESC"."description" <>
-            ${escape(`RESOLVE INCREMENTAL-IMPORT ${escape(importId)} OWNED TABLE`)}
+            ${escape(
+              `RESOLVE INCREMENTAL-IMPORT ${escape(importId)} OWNED TABLE`
+            )}
             AND "CLS"."relname" = ${incrementalImportTableAsString}
             AND "NS"."nspname" = ${databaseNameAsStr}
             AND "CLS"."relkind" = 'r')
