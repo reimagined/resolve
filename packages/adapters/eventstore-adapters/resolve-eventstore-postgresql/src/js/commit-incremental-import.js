@@ -126,7 +126,6 @@ const commitIncrementalImport = async (
       SELECT * FROM "InsertionTable"
       `
 
-    console.log(sql)
     await executeStatement(sql)
 
   } catch (error) {
