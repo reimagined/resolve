@@ -14,7 +14,7 @@ const commitIncrementalImport = async (
 
   try {
   const sql = `
-      WITH "CTE0" AS (
+      WITH "ValidateImportId" AS (
         SELECT 0 AS "Zero" WHERE (
           (SELECT 1 AS "IncrementalImportFailed")
         UNION ALL
@@ -31,7 +31,7 @@ const commitIncrementalImport = async (
           AND "CLS"."relkind" = 'r')
         ) = 1
       ),
-      "CTE1" AS (
+      "ValidateTimestamps" AS (
         SELECT 0 AS "Zero" WHERE (
           (SELECT 1 AS "IncrementalImportFailed")
         UNION ALL
@@ -39,98 +39,79 @@ const commitIncrementalImport = async (
           FROM ${databaseNameAsId}.${eventsTableAsId}
           WHERE ${databaseNameAsId}.${eventsTableAsId}."timestamp" > (
             SELECT MIN(${databaseNameAsId}.${incrementalImportTableAsId}."timestamp") +
-            (SELECT "CTE0"."Zero" FROM "CTE0")
+            (SELECT "ValidateImportId"."Zero" FROM "ValidateImportId")
             FROM ${databaseNameAsId}.${incrementalImportTableAsId}
           )
           LIMIT 2)    
         ) = 1
       ),
-      "CTE2A" AS (
-        DELETE FROM ${databaseNameAsId}.${incrementalImportTableAsId} WHERE "rowid" IN (
-          SELECT "MaybeEqualEvents"."rowIdX" FROM (
-            SELECT "A"."payload" AS "payloadA", "B"."payload" AS "payloadB", "A"."rowid" AS "rowIdX"
+      "OriginalUniqueEvents" AS (
+        SELECT * FROM ${databaseNameAsId}.${incrementalImportTableAsId} WHERE "rowid" NOT IN (
+          SELECT "MaybeEqualEvents"."rowid" FROM (
+            SELECT "A"."payload" AS "payloadA", "B"."payload" AS "payloadB", "A"."rowid" AS "rowid"
             FROM ${databaseNameAsId}.${incrementalImportTableAsId} "A" LEFT JOIN ${databaseNameAsId}.${eventsTableAsId} "B" ON
             "A"."timestamp" = "B"."timestamp" AND
             "A"."aggregateId" = "B"."aggregateId" AND
             "A"."type" = "B"."type"
           ) "MaybeEqualEvents"
           WHERE "MaybeEqualEvents"."payloadA" = "MaybeEqualEvents"."payloadB"
-          AND (SELECT "CTE1"."Zero" FROM "CTE1") = 0
+          AND (SELECT "ValidateTimestamps"."Zero" FROM "ValidateTimestamps") = 0
         )
-        RETURNING *
       ),
-      "CTE2B" AS (
-        SELECT LEAST(COUNT("CTE2A".*), 0) AS "Zero" FROM "CTE2A"
+      "EnumeratedUniqueEvents" AS (
+        SELECT ROW_NUMBER() OVER (ORDER BY "OriginalUniqueEvents"."timestamp", "OriginalUniqueEvents"."rowid") - 1 AS "sortedIdx",
+        "OriginalUniqueEvents"."rowid" as "rowid"
+        FROM "OriginalUniqueEvents"
+        ORDER BY "OriginalUniqueEvents"."timestamp"
       ),
-      "CTE3A" AS (
-        SELECT ROW_NUMBER() OVER (ORDER BY "timestamp", "rowid") - 1 AS "sortedIdx",
-        "rowid" as "rowIdX"
-        FROM ${databaseNameAsId}.${incrementalImportTableAsId}
-        WHERE (SELECT "CTE2B"."Zero" FROM "CTE2B") = 0
-        ORDER BY "timestamp"
-      ),
-      "CTE3B" AS (
-        UPDATE ${databaseNameAsId}.${incrementalImportTableAsId} SET "sortedIdx" = (
-          SELECT "CTE3A"."sortedIdx" FROM "CTE3A"
-          WHERE "CTE3A"."rowIdX" = ${databaseNameAsId}.${incrementalImportTableAsId}."rowid"
-        )
-        RETURNING *
-      ),
-      "CTE3C" AS (
-        SELECT LEAST(COUNT("CTE3B".*), 0) AS "Zero" FROM "CTE3B"
-      ),      
-      "CTE4A" AS (
+      "ThreadTails" AS (
         SELECT "threadId", MAX("threadCounter") AS "threadCounter"  
         FROM ${databaseNameAsId}.${eventsTableAsId}
-        WHERE (SELECT "CTE3C"."Zero" FROM "CTE3C") = 0
         GROUP BY "threadId"
       ),
-      "CTE4B" AS (
-        UPDATE ${databaseNameAsId}.${incrementalImportTableAsId} 
-        SET "threadId" = "sortedIdx" % 256,
-        "threadCounter" = COALESCE((
-          SELECT "CTE4A"."threadCounter" FROM "CTE4A"
-          WHERE "CTE4A"."threadId" = ${databaseNameAsId}.${incrementalImportTableAsId}."sortedIdx" % 256
-        ), -1) + 1 + FLOOR("sortedIdx" / 256)
-        RETURNING *
+      "ThreadHeads" AS (
+        SELECT "EnumeratedUniqueEvents"."sortedIdx" AS "sortedIdx",
+        "EnumeratedUniqueEvents"."rowid" AS "rowid",
+        "EnumeratedUniqueEvents"."sortedIdx" % 256 AS "threadId",
+        COALESCE((
+          SELECT "ThreadTails"."threadCounter" FROM "ThreadTails"
+          WHERE "ThreadTails"."threadId" = "EnumeratedUniqueEvents"."sortedIdx" % 256
+        ), -1) + 1 + FLOOR("EnumeratedUniqueEvents"."sortedIdx" / 256) AS "threadCounter"
+        FROM "EnumeratedUniqueEvents"
       ),
-      "CTE4C" AS (
-        SELECT LEAST(COUNT("CTE4B".*), 0) AS "Zero" FROM "CTE4B"
-      ),
-      "CTE5A" AS (
+      "AggregateTails" AS (
         SELECT MAX("aggregateVersion") AS "aggregateVersion", "aggregateId"  
         FROM ${databaseNameAsId}.${eventsTableAsId}
-        WHERE (SELECT "CTE4C"."Zero" FROM "CTE4C") = 0
         GROUP BY "aggregateId"
       ),
-      "CTE5B" AS (
-        UPDATE ${databaseNameAsId}.${incrementalImportTableAsId} 
-        SET "aggregateVersion" = COALESCE((
-          SELECT "CTE5A"."aggregateVersion" FROM "CTE5A" 
-          WHERE "CTE5A"."aggregateId" = ${databaseNameAsId}.${incrementalImportTableAsId}."aggregateId"
-        ), 0) + 1
-        RETURNING *
+      "OriginalAggregateHeads" AS (
+        SELECT "EnumeratedUniqueEvents"."sortedIdx" AS "sortedIdx",
+        "EnumeratedUniqueEvents"."rowid" AS "rowid",
+        "OriginalUniqueEvents"."aggregateId" AS "aggregateId",
+        "OriginalUniqueEvents"."timestamp" AS "timestamp",
+         COALESCE((
+          SELECT "AggregateTails"."aggregateVersion" FROM "AggregateTails" 
+          WHERE "AggregateTails"."aggregateId" = "OriginalUniqueEvents"."aggregateId"
+        ), 0) + 1 AS "aggregateVersion" 
+        FROM "OriginalUniqueEvents" LEFT JOIN "EnumeratedUniqueEvents"
+        ON "OriginalUniqueEvents"."rowid" = "EnumeratedUniqueEvents"."rowid"
       ),
-      "CTE5C" AS (
-        SELECT LEAST(COUNT("CTE5B".*), 0) AS "Zero" FROM "CTE5B"
+      "IncrementedAggregateHeads" AS (
+        SELECT ROW_NUMBER() OVER (PARTITION BY "OriginalAggregateHeads"."aggregateId" ORDER BY "OriginalAggregateHeads"."timestamp", "OriginalAggregateHeads"."rowid") - 1 +  
+        "OriginalAggregateHeads"."aggregateVersion" AS "aggregateVersion",
+        "OriginalAggregateHeads"."rowid" as "rowid"
+        FROM "OriginalAggregateHeads"
+        ORDER BY "OriginalAggregateHeads"."sortedIdx"
       ),
-      "CTE6A" AS (
-        SELECT ROW_NUMBER() OVER (PARTITION BY "aggregateId" ORDER BY "timestamp", "rowid") - 1 AS "increment",
-        "rowid" as "rowIdX"
-        FROM ${databaseNameAsId}.${incrementalImportTableAsId}
-        WHERE (SELECT "CTE5C"."Zero" FROM "CTE5C") = 0
-        ORDER BY "timestamp"
-      ),
-      "CTE6B" AS (
-        UPDATE ${databaseNameAsId}.${incrementalImportTableAsId} 
-        SET "aggregateVersion" = "aggregateVersion" + (
-          SELECT "CTE6A"."increment" FROM "CTE6A" 
-          WHERE "CTE6A"."rowIdX" = ${databaseNameAsId}.${incrementalImportTableAsId}."rowid"
-        )
-        RETURNING *
-      ),
-      "CTE6C" AS (
-        SELECT LEAST(COUNT("CTE6B".*), 0) AS "Zero" FROM "CTE6B"
+      "InsertionTable" AS (
+        SELECT "ThreadHeads"."threadId" AS "threadId", "ThreadHeads"."threadCounter" AS "threadCounter",
+        "OriginalUniqueEvents"."timestamp" AS "timestamp", "OriginalUniqueEvents"."aggregateId" AS "aggregateId",
+        "IncrementedAggregateHeads"."aggregateVersion" AS "aggregateVersion",
+        "OriginalUniqueEvents"."type" AS "type", "OriginalUniqueEvents"."payload" AS "payload",
+        "OriginalUniqueEvents"."eventSize" AS "eventSize"
+        FROM "OriginalUniqueEvents"
+        LEFT JOIN "ThreadHeads" ON "OriginalUniqueEvents"."rowid" = "ThreadHeads"."rowid"
+        LEFT JOIN "IncrementedAggregateHeads" ON "OriginalUniqueEvents"."rowid" = "IncrementedAggregateHeads"."rowid"
       )
       INSERT INTO ${databaseNameAsId}.${eventsTableAsId}(
         "threadId",
@@ -142,17 +123,7 @@ const commitIncrementalImport = async (
         "payload",
         "eventSize"
       )
-      SELECT "threadId",
-        "threadCounter",
-        "timestamp",
-        "aggregateId",
-        "aggregateVersion",
-        "type",
-        "payload",
-        "eventSize"
-      FROM ${databaseNameAsId}.${incrementalImportTableAsId}
-      WHERE (SELECT "CTE6C"."Zero" FROM "CTE6C") = 0
-      ORDER BY "sortedIdx"  
+      SELECT * FROM "InsertionTable"
       `
 
     console.log(sql)

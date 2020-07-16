@@ -5,7 +5,7 @@ import createAdapter from './create-adapter'
 
 const pipeline = promisify(rawPipeline)
 
-jest.setTimeout(10000 * 60)
+jest.setTimeout(10000 * 60 * 1000)
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -141,6 +141,8 @@ test('inject-events should work correctly', async () => {
     })
   }
 
+  const t0 = Date.now()
+
   await pipeline(
     Readable.from(
       (async function* eventStream() {
@@ -152,6 +154,8 @@ test('inject-events should work correctly', async () => {
     adapter.import()
   )
 
+  const t1 = Date.now()
+
   const tempInitialEvents = (
     await adapter.loadEvents({ limit: countInitialEvents + 1 })
   ).events
@@ -162,6 +166,8 @@ test('inject-events should work correctly', async () => {
 
   const incrementalImportTimestamp = Date.now()
   let incrementalImportEvents = []
+
+  const t2 = Date.now()
 
   const importId = await adapter.beginIncrementalImport()
   const incrementalImportPromises = []
@@ -197,7 +203,11 @@ test('inject-events should work correctly', async () => {
 
   await Promise.all(incrementalImportPromises)
 
+  const t3 = Date.now()
+
   await adapter.commitIncrementalImport(importId)
+
+  const t4 = Date.now()
 
   const resultEvents = (await adapter.loadEvents({ limit: countAllEvents + 1 }))
     .events
@@ -205,4 +215,8 @@ test('inject-events should work correctly', async () => {
   expect(resultEvents.length).toEqual(countAllEvents)
 
   validateEvents(resultEvents)
+
+  console.log(`Importing initial events ${t1-t0} ms / Events ${countInitialEvents}`)
+  console.log(`Pushing incremental events ${t3-t2} ms / Events ${countIncrementalImportEvents}`)
+  console.log(`Commiting incremental events ${t4-t3} ms / Events ${countIncrementalImportEvents}`)
 })
