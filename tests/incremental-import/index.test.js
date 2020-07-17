@@ -121,7 +121,7 @@ function validateEvents(events) {
 
 test('inject-events should work correctly', async () => {
   const countInitialEvents = 250 + Math.floor(75 * Math.random())
-  const countIncrementalImportEvents = 25000 + Math.floor(75 * Math.random())
+  const countIncrementalImportEvents = 250000 + Math.floor(75 * Math.random())
   const countAllEvents = countInitialEvents + countIncrementalImportEvents
 
   const adapter = createAdapter()
@@ -191,7 +191,7 @@ test('inject-events should work correctly', async () => {
       payload: { eventIndex }
     })
 
-    if (eventIndex % 4096 === 0) {
+    if (eventIndex % 256 === 0) {
       shuffle(incrementalImportEvents)
       const currentBatchIdx = incrementalBatchIdx++
       incrementalImportPromises.push(
