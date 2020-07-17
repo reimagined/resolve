@@ -108,7 +108,6 @@ await pipeline(
 )
 
 // Incremental import
-
 try {
   const importId = await eventStore.beginIncrementalImport()
   await eventStore.pushIncrementalImport(events, importId)
@@ -116,7 +115,6 @@ try {
 } catch (error) {
   await eventStore.rollbackIncrementalImport()
 }
-
 ```
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-eventstore-adapters-readme?pixel)
