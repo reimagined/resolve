@@ -5,9 +5,22 @@ import {
   subscribeAdapterAlreadyInitialized
 } from './constants'
 
-const createClientAdapter = ({ url, onEvent }) => {
-  let client
-  let isInitialized
+const createClientAdapter = ({
+  url,
+  onEvent
+}: {
+  url: string
+  onEvent: Function
+}) => {
+  let client:
+    | {
+        on: Function
+        close: Function
+        send: Function
+        readyState: number
+      }
+    | undefined
+  let isInitialized: boolean
 
   return {
     async init() {
@@ -23,11 +36,11 @@ const createClientAdapter = ({ url, onEvent }) => {
           resolve()
         })
 
-        client.on('error', err => {
+        client.on('error', (err: Error) => {
           reject(err)
         })
 
-        client.on('message', message => {
+        client.on('message', (message: string) => {
           try {
             onEvent(JSON.parse(message).payload)
           } catch (error) {
@@ -39,7 +52,7 @@ const createClientAdapter = ({ url, onEvent }) => {
     },
 
     async close() {
-      if (!isInitialized) {
+      if (!isInitialized || client == null) {
         throw new Error(subscribeAdapterNotInitialized)
       }
       isInitialized = false
@@ -48,8 +61,8 @@ const createClientAdapter = ({ url, onEvent }) => {
       client = undefined
     },
 
-    async subscribeToTopics(topics) {
-      if (!isInitialized) {
+    async subscribeToTopics(topics: object) {
+      if (!isInitialized || client == null) {
         throw new Error(subscribeAdapterNotInitialized)
       }
       client.send({
@@ -58,8 +71,8 @@ const createClientAdapter = ({ url, onEvent }) => {
       })
     },
 
-    async unsubscribeFromTopics(topics) {
-      if (!isInitialized) {
+    async unsubscribeFromTopics(topics: object) {
+      if (!isInitialized || client == null) {
         throw new Error(subscribeAdapterNotInitialized)
       }
       client.send({
@@ -69,7 +82,7 @@ const createClientAdapter = ({ url, onEvent }) => {
     },
 
     isConnected() {
-      if (!isInitialized) {
+      if (!isInitialized || client == null) {
         throw new Error(subscribeAdapterNotInitialized)
       }
 

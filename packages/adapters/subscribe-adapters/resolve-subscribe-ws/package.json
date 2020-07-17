@@ -28,6 +28,7 @@
     "ws": "7.3.1"
   },
   "devDependencies": {
+    "@types/ws": "7.2.6",
     "jest": "26.0.1"
   },
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/subscribe-adapters/resolve-subscribe-socket.io#readme",
