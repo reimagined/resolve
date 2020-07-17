@@ -8,14 +8,14 @@
 ```ts
 path: '/api/incremental-import/freeze'
 method: 'POST'
-arguments: None
+arguments: void
 ```
 
 #### Unfreeze eventstore
 ```ts
 path: '/api/incremental-import/unfreeze'
 method: 'POST'
-arguments: None
+arguments: void
 ```
 
 #### Inject events to eventstore
