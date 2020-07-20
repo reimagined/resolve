@@ -11,6 +11,7 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
+    "build": "tsc",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
@@ -34,6 +35,11 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@types/jwt-decode": "^2.2.1",
+    "@types/json-stable-stringify": "^1.0.32",
+    "@types/uuid": "^3.3.28",
+    "@types/query-string": "^5.1.0",
+    "@types/react-redux": "^7.1.9",
     "jest": "26.0.1",
     "react": "16.13.0",
     "react-dom": "16.13.0",
@@ -50,14 +56,22 @@
     "react-redux": "*",
     "redux-saga": "*"
   },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/test/**/*.test.[jt]s?(x)"
+    ],
+    "roots": [
+      "<rootDir>"
+    ]
+  },
   "babelCompile": [
     {
-      "moduleType": "es",
-      "moduleTarget": "client",
-      "inputDir": "./src",
-      "outDir": "./es"
-    },
-    {
+      "sourceType": "ts",
       "moduleType": "cjs",
       "moduleTarget": "client",
       "inputDir": "./src",
