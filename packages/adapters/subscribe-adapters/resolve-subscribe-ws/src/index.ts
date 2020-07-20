@@ -1,5 +1,3 @@
-import WebSocket from 'ws'
-
 import {
   subscribeAdapterNotInitialized,
   subscribeAdapterAlreadyInitialized
@@ -12,14 +10,7 @@ const createClientAdapter = ({
   url: string
   onEvent: Function
 }) => {
-  let client:
-    | {
-        on: Function
-        close: Function
-        send: Function
-        readyState: number
-      }
-    | undefined
+  let client: WebSocket | undefined
   let isInitialized: boolean
 
   return {
@@ -31,23 +22,23 @@ const createClientAdapter = ({
       return await new Promise((resolve, reject) => {
         client = new WebSocket(url)
 
-        client.on('open', () => {
+        client.onopen = () => {
           isInitialized = true
           resolve()
-        })
+        }
 
-        client.on('error', (err: Error) => {
+        client.onerror = err => {
           reject(err)
-        })
+        }
 
-        client.on('message', (message: string) => {
+        client.onmessage = message => {
           try {
-            onEvent(JSON.parse(message).payload)
+            onEvent(message.data.payload)
           } catch (error) {
             // eslint-disable-next-line no-console
             console.warn(message)
           }
-        })
+        }
       })
     },
 
@@ -65,20 +56,24 @@ const createClientAdapter = ({
       if (!isInitialized || client == null) {
         throw new Error(subscribeAdapterNotInitialized)
       }
-      client.send({
-        eventName: 'subscribe',
-        data: JSON.stringify(topics)
-      })
+      client.send(
+        JSON.stringify({
+          eventName: 'subscribe',
+          data: JSON.stringify(topics)
+        })
+      )
     },
 
     async unsubscribeFromTopics(topics: object) {
       if (!isInitialized || client == null) {
         throw new Error(subscribeAdapterNotInitialized)
       }
-      client.send({
-        eventName: 'unsubscribe',
-        data: JSON.stringify(topics)
-      })
+      client.send(
+        JSON.stringify({
+          eventName: 'unsubscribe',
+          data: JSON.stringify(topics)
+        })
+      )
     },
 
     isConnected() {

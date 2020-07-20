@@ -7,6 +7,7 @@
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",
+  "types": "./types/index.d.ts",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -28,18 +29,13 @@
     "ws": "7.3.1"
   },
   "devDependencies": {
-    "@types/ws": "7.2.6",
+    "@types/websocket": "1.0.1",
     "jest": "26.0.1"
   },
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/subscribe-adapters/resolve-subscribe-socket.io#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/subscribe-adapters/resolve-subscribe-ws#readme",
   "babelCompile": [
     {
-      "moduleType": "es",
-      "moduleTarget": "client",
-      "inputDir": "./src",
-      "outDir": "./es"
-    },
-    {
+      "sourceType": "ts",
       "moduleType": "cjs",
       "moduleTarget": "client",
       "inputDir": "./src",

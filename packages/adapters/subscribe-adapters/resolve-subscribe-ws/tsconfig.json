@@ -15,7 +15,7 @@
     "jsx": "react",
     "outDir": "lib",
     "declarationDir": "types",
-    "types": ["ws"],
+    "types": ["websocket"],
     "typeRoots": [
       "./node_modules/@types",
       "../../../node_modules/@types"

@@ -1,37 +1,29 @@
-import v4 from 'aws-signature-v4'
+import qs from 'querystring'
 
 const getSubscribeAdapterOptions = async ({ sts }) => {
   const {
     RESOLVE_DEPLOYMENT_ID,
-    RESOLVE_WS_ENDPOINT,
-    RESOLVE_IOT_ROLE_ARN
+    RESOLVE_WS_URL,
+    AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY,
+    AWS_SESSION_TOKEN
   } = process.env
 
-  const data = await sts
-    .assumeRole({
-      RoleArn: RESOLVE_IOT_ROLE_ARN,
-      RoleSessionName: `role-session-${RESOLVE_DEPLOYMENT_ID}`,
-      DurationSeconds: 3600
-    })
-    .promise()
+  const { Arn: validationRoleArn } = await sts.getCallerIdentity().promise()
 
-  const url = v4.createPresignedURL(
-    'GET',
-    RESOLVE_WS_ENDPOINT,
-    '/mqtt',
-    'iotdevicegateway',
-    '',
-    {
-      key: data.Credentials.AccessKeyId,
-      secret: data.Credentials.SecretAccessKey,
-      sessionToken: data.Credentials.SessionToken,
-      protocol: 'wss'
-    }
-  )
+  const queryString = qs.stringify({
+    validationRoleArn,
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    sessionToken: AWS_SESSION_TOKEN,
+    applicationId: RESOLVE_DEPLOYMENT_ID
+  })
+
+  const subscribeUrl = `${RESOLVE_WS_URL}?${queryString}`
 
   return {
     appId: RESOLVE_DEPLOYMENT_ID,
-    url
+    url: subscribeUrl
   }
 }
 
