@@ -34,6 +34,17 @@ Specifies an array of the application's API Handlers. A Saga configuration objec
 | handler | The path to the file that contains the handler's definition.                                                                                        |
 | method  | The HTTP method to handle.                                                                                                                          |
 
+
+#### eventstoreAdapter
+
+Specifies an adapter used to connect to to the application's event store. An adapter configuration object contains the following fields:
+
+| Field         | Description                                                          |
+| ------------- | -------------------------------------------------------------------- |
+| module        | The name of a module or the path to a file that defines an adapter. |
+| options    | An object that defines the adapter's options as key-value pairs                 |
+
+
 #### readModels
 
 An array of the application's Read Models. A Read Model configuration object within this array contains the following fields:
@@ -44,6 +55,16 @@ An array of the application's Read Models. A Read Model configuration object wit
 | projection    | A path to a file that defines Read Model projection.                 |
 | resolvers     | A path to a file that defines Read Model resolver.                   |
 | connectorName | The name of a connector used to connect the Read Model to its store. |
+
+#### readModelConnectors 
+
+An array of the application's Read Model connectors. A connector configuration object within this array contains the following fields:
+
+| Field         | Description                                                          |
+| ------------- | -------------------------------------------------------------------- |
+| module        | The name of a module or the path to a file that defines a connector. |
+| options    | An object that defines the connector's options as key-value pairs                 |
+
 
 #### viewModels
 
