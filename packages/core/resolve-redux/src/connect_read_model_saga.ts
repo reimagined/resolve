@@ -2,11 +2,11 @@ import { take, put, delay } from 'redux-saga/effects'
 import hash from 'uuid'
 
 import getHash from './get_hash'
-import { loadReadModelStateRequest } from './actions'
+import { queryReadModelRequest } from './actions'
 import {
   DISCONNECT_READMODEL,
   LOAD_READMODEL_STATE_FAILURE,
-  LOAD_READMODEL_STATE_SUCCESS
+  QUERY_READMODEL_SUCCESS
 } from './action_types'
 
 import { HttpError } from './create_api'
@@ -66,7 +66,7 @@ const connectReadModelSaga = function*(sagaArgs: any, action: any) {
 
   while (true) {
     yield put(
-      loadReadModelStateRequest(
+      queryReadModelRequest(
         readModelName,
         resolverName,
         resolverArgs,
@@ -76,12 +76,12 @@ const connectReadModelSaga = function*(sagaArgs: any, action: any) {
 
     const loadReadModelStateResultAction = yield take(
       (action: any) =>
-        (action.type === LOAD_READMODEL_STATE_SUCCESS ||
+        (action.type === QUERY_READMODEL_SUCCESS ||
           action.type === LOAD_READMODEL_STATE_FAILURE) &&
         action.queryId === queryId
     )
 
-    if (loadReadModelStateResultAction.type === LOAD_READMODEL_STATE_SUCCESS) {
+    if (loadReadModelStateResultAction.type === QUERY_READMODEL_SUCCESS) {
       break
     }
 

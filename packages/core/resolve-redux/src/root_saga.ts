@@ -2,7 +2,7 @@ import { fork, takeEvery } from 'redux-saga/effects'
 
 import {
   LOAD_VIEWMODEL_STATE_REQUEST,
-  LOAD_READMODEL_STATE_REQUEST,
+  QUERY_READMODEL_REQUEST,
   SEND_COMMAND_REQUEST,
   AUTH_REQUEST,
   LOGOUT
@@ -32,7 +32,7 @@ function* rootSaga({
     sagaArgs
   )
   yield takeEvery(
-    LOAD_READMODEL_STATE_REQUEST,
+    QUERY_READMODEL_REQUEST,
     loadReadModelStateSaga,
     sagaArgs
   )

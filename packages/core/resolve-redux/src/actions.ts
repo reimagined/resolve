@@ -17,8 +17,8 @@ import {
   DROP_VIEWMODEL_STATE,
   CONNECT_READMODEL,
   DISCONNECT_READMODEL,
-  LOAD_READMODEL_STATE_REQUEST,
-  LOAD_READMODEL_STATE_SUCCESS,
+  QUERY_READMODEL_REQUEST,
+  QUERY_READMODEL_SUCCESS,
   LOAD_READMODEL_STATE_FAILURE,
   DROP_READMODEL_STATE,
   DISPATCH_TOPIC_MESSAGE,
@@ -30,12 +30,19 @@ import {
   AUTH_FAILURE
 } from './action_types'
 
+export type SendCommandRequestAction = {
+  type: typeof SEND_COMMAND_REQUEST
+  commandType: string
+  aggregateId: string
+  aggregateName: string
+  payload: any
+}
 export const sendCommandRequest = (
   commandType: string,
   aggregateId: string,
   aggregateName: string,
   payload: any
-) => ({
+): SendCommandRequestAction => ({
   type: SEND_COMMAND_REQUEST,
   commandType,
   aggregateId,
@@ -218,28 +225,44 @@ export const disconnectReadModel = (
   resolverArgs
 })
 
-export const loadReadModelStateRequest = (
+export type QueryReadModelRequestAction = {
+  type: typeof QUERY_READMODEL_REQUEST
+  readModelName: string
+  resolverName: string
+  resolverArgs: any
+  queryId: string
+}
+export const queryReadModelRequest = (
   readModelName: string,
   resolverName: string,
   resolverArgs: any,
-  queryId: any
-) => ({
-  type: LOAD_READMODEL_STATE_REQUEST,
+  queryId: string
+): QueryReadModelRequestAction => ({
+  type: QUERY_READMODEL_REQUEST,
   readModelName,
   resolverName,
   resolverArgs,
   queryId
 })
 
-export const loadReadModelStateSuccess = (
+export type QueryReadModelSuccessAction = {
+  type: typeof QUERY_READMODEL_SUCCESS
+  readModelName: string
+  resolverName: string
+  resolverArgs: any
+  queryId: any
+  result: any
+  timestamp: any
+}
+export const queryReadModelSuccess = (
   readModelName: string,
   resolverName: string,
   resolverArgs: any,
   queryId: any,
   result: any,
   timestamp: any
-) => ({
-  type: LOAD_READMODEL_STATE_SUCCESS,
+): QueryReadModelSuccessAction => ({
+  type: QUERY_READMODEL_SUCCESS,
   readModelName,
   resolverName,
   resolverArgs,
@@ -247,14 +270,21 @@ export const loadReadModelStateSuccess = (
   result,
   timestamp
 })
-
-export const loadReadModelStateFailure = (
+export type QueryReadModelFailureAction = {
+  type: typeof LOAD_READMODEL_STATE_FAILURE
+  readModelName: string
+  resolverName: string
+  resolverArgs: any
+  queryId: any
+  error: Error
+}
+export const queryReadModelFailure = (
   readModelName: string,
   resolverName: string,
   resolverArgs: any,
   queryId: any,
   error: Error
-) => ({
+): QueryReadModelFailureAction => ({
   type: LOAD_READMODEL_STATE_FAILURE,
   readModelName,
   resolverName,

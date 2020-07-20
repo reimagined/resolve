@@ -1,7 +1,7 @@
 import { put } from 'redux-saga/effects'
 import { API } from './create_api'
 
-import { loadReadModelStateSuccess, loadReadModelStateFailure } from './actions'
+import { queryReadModelSuccess, queryReadModelFailure } from './actions'
 
 const loadReadModelStateSaga = function*(
   { api }: { api: API },
@@ -28,7 +28,7 @@ const loadReadModelStateSaga = function*(
     const data = JSON.parse(serializedData)
 
     yield put(
-      loadReadModelStateSuccess(
+      queryReadModelSuccess(
         readModelName,
         resolverName,
         resolverArgs,
@@ -39,7 +39,7 @@ const loadReadModelStateSaga = function*(
     )
   } catch (error) {
     yield put(
-      loadReadModelStateFailure(
+      queryReadModelFailure(
         readModelName,
         resolverName,
         resolverArgs,

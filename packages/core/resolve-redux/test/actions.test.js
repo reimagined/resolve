@@ -8,8 +8,8 @@ import {
   DROP_VIEWMODEL_STATE,
   HOT_MODULE_REPLACEMENT,
   LOAD_READMODEL_STATE_FAILURE,
-  LOAD_READMODEL_STATE_REQUEST,
-  LOAD_READMODEL_STATE_SUCCESS,
+  QUERY_READMODEL_REQUEST,
+  QUERY_READMODEL_SUCCESS,
   LOAD_VIEWMODEL_STATE_FAILURE,
   LOAD_VIEWMODEL_STATE_REQUEST,
   LOAD_VIEWMODEL_STATE_SUCCESS,
@@ -38,9 +38,9 @@ import {
   dropReadModelState,
   dropViewModelState,
   hotModuleReplacement,
-  loadReadModelStateRequest,
-  loadReadModelStateSuccess,
-  loadReadModelStateFailure,
+  queryReadModelRequest,
+  queryReadModelSuccess,
+  queryReadModelFailure,
   loadViewModelStateRequest,
   loadViewModelStateSuccess,
   loadViewModelStateFailure,
@@ -186,14 +186,14 @@ describe('actions', () => {
       }
       const queryId = 'uuid-1'
       expect(
-        loadReadModelStateRequest(
+        queryReadModelRequest(
           readModelName,
           resolverName,
           resolverArgs,
           queryId
         )
       ).toEqual({
-        type: LOAD_READMODEL_STATE_REQUEST,
+        type: QUERY_READMODEL_REQUEST,
         readModelName,
         resolverName,
         resolverArgs,
@@ -213,7 +213,7 @@ describe('actions', () => {
       const result = { test: true }
       const timestamp = Date.now()
       expect(
-        loadReadModelStateSuccess(
+        queryReadModelSuccess(
           readModelName,
           resolverName,
           resolverArgs,
@@ -222,7 +222,7 @@ describe('actions', () => {
           timestamp
         )
       ).toEqual({
-        type: LOAD_READMODEL_STATE_SUCCESS,
+        type: QUERY_READMODEL_SUCCESS,
         readModelName,
         resolverName,
         resolverArgs,
@@ -243,7 +243,7 @@ describe('actions', () => {
       const queryId = 'uuid-1'
       const error = 'error'
       expect(
-        loadReadModelStateFailure(
+        queryReadModelFailure(
           readModelName,
           resolverName,
           resolverArgs,

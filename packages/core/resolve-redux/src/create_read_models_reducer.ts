@@ -1,8 +1,8 @@
 import getHash from './get_hash'
 
 import {
-  LOAD_READMODEL_STATE_REQUEST,
-  LOAD_READMODEL_STATE_SUCCESS,
+  QUERY_READMODEL_REQUEST,
+  QUERY_READMODEL_SUCCESS,
   LOAD_READMODEL_STATE_FAILURE,
   DROP_READMODEL_STATE
 } from './action_types'
@@ -19,7 +19,7 @@ export const dropKey = (state: any, key: any): any => {
 export default (): any => {
   const handlers: { [key: string]: any } = {}
 
-  handlers[LOAD_READMODEL_STATE_REQUEST] = (state: any, action: any): any => {
+  handlers[QUERY_READMODEL_REQUEST] = (state: any, action: any): any => {
     const readModelName = action.readModelName
     const resolverName = getHash(action.resolverName)
     const resolverArgs = getHash(action.resolverArgs)
@@ -36,7 +36,7 @@ export default (): any => {
     }
   }
 
-  handlers[LOAD_READMODEL_STATE_SUCCESS] = (state: any, action: any): any => {
+  handlers[QUERY_READMODEL_SUCCESS] = (state: any, action: any): any => {
     const readModelName = action.readModelName
     const resolverName = getHash(action.resolverName)
     const resolverArgs = getHash(action.resolverArgs)

@@ -1,13 +1,18 @@
 import { Action } from 'redux'
 import { Query, QueryOptions, QueryResult } from 'resolve-client'
 import { useQuery, HookExecutor } from 'resolve-react-hooks'
+import {
+  QueryReadModelFailureAction,
+  QueryReadModelRequestAction,
+  QueryReadModelSuccessAction
+} from './actions'
 
 type QueryExecutor = HookExecutor<void, void>
 
 type ReadModelReduxActionsCreators = {
-  request: (query: Query) => Action
-  success: (result: QueryResult) => Action
-  failure: (error: Error) => Action
+  request: (query: Query) => QueryReadModelRequestAction
+  success: (result: QueryResult) => QueryReadModelSuccessAction
+  failure: (error: Error) => QueryReadModelFailureAction
 }
 
 function useReduxReadModel(query: Query): QueryExecutor

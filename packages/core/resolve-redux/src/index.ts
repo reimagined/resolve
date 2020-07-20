@@ -1,6 +1,4 @@
 /*
-import * as actions from './actions'
-import * as actionTypes from './action_types'
 import createResolveMiddleware from './create_resolve_middleware'
 import createViewModelsReducer from './create_view_models_reducer'
 import createReadModelsReducer from './create_read_models_reducer'
@@ -26,8 +24,6 @@ import sendAggregateAction from './send_aggregate_action'
 import getOrigin from './get_origin'
 
 export {
-  actions,
-  actionTypes,
   createViewModelsReducer,
   createReadModelsReducer,
   createJwtReducer,
