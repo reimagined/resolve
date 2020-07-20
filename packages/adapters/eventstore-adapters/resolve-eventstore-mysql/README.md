@@ -1,7 +1,7 @@
 # **resolve-eventstore-mysql**
 [![npm version](https://badge.fury.io/js/resolve-eventstore-mysql.svg)](https://badge.fury.io/js/resolve-eventstore-mysql)
 
-This package is a eventstore adapter for storing events using MySQL.
+This package is an eventstore adapter for storing events using MySQL 8.0.
 
 ## Available Parameters
 

@@ -43,7 +43,7 @@ test('credentials passed to postgres client', async () => {
 
   expect(mPostgres).toHaveBeenCalledWith(
     expect.objectContaining({
-      connectionTimeoutMillis: 5000,
+      connectionTimeoutMillis: 45000,
       database: 'database',
       host: 'host',
       keepAlive: false,

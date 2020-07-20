@@ -1,6 +1,9 @@
 export const result = []
 
 const query = (...args) => {
+  if (args.length === 1 && args[0] === `SELECT version() AS \`version\``) {
+    return [[{ version: '8.0.0' }]]
+  }
   result.push(['query', ...args])
   return [[], []]
 }

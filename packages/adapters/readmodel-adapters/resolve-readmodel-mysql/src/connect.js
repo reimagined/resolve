@@ -21,6 +21,14 @@ const setupConnection = async pool => {
   })
   const connection = await pool.connectionPromise
 
+  const [[{ version }]] = await connection.query(
+    `SELECT version() AS \`version\``
+  )
+  const major = +version.split('.')[0]
+  if (isNaN(major) || major < 8) {
+    throw new Error(`Supported MySQL version 8+, but got ${version}`)
+  }
+
   connection.onerror = async err => {
     if (err.code === 'PROTOCOL_CONNECTION_LOST') {
       return await setupConnection(pool)

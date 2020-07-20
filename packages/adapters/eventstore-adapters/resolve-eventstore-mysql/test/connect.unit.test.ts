@@ -58,9 +58,7 @@ test('MySQL client configured', async () => {
   expect(mCreateConnection).toHaveBeenCalledWith({
     ...mysqlRelatedConfig,
     database: 'secrets-database',
-    multipleStatements: true,
-    eventsTableName: 'table-name',
-    snapshotsTableName: 'snapshots-table-name'
+    multipleStatements: true
   })
 })
 
@@ -79,8 +77,7 @@ test('MySQL client configured (no secrets database in config)', async () => {
   expect(mCreateConnection).toHaveBeenCalledWith({
     ...mysqlRelatedConfig,
     database: 'database',
-    multipleStatements: true,
-    eventsTableName: 'table-name'
+    multipleStatements: true
   })
 })
 
