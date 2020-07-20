@@ -7,6 +7,8 @@ const { prepare } = require('./prepare')
 
 const configs = getCompileConfigs()
 
+let isFailed = false
+
 async function main() {
   for (const config of configs) {
     const cliOptions = {
@@ -52,18 +54,22 @@ async function main() {
             process.exit(1)
           })
       )
-      .catch(error => {
-        // eslint-disable-next-line no-console
-        console.log(
-          `↑ [${chalk.red(config.name)}] { moduleType: "${
-            config.moduleType
-          }", moduleType: "${config.moduleTarget}" }`
-        )
-        if (error != null && error !== '') {
+      .catch(
+        // eslint-disable-next-line no-loop-func
+        error => {
+          isFailed = true
           // eslint-disable-next-line no-console
-          console.error(error)
+          console.log(
+            `↑ [${chalk.red(config.name)}] { moduleType: "${
+              config.moduleType
+            }", moduleType: "${config.moduleTarget}" }`
+          )
+          if (error != null && error !== '') {
+            // eslint-disable-next-line no-console
+            console.error(error)
+          }
         }
-      })
+      )
 
     if (config.sync || process.env.RESOLVE_ALLOW_PARALLEL_BUILDS != null) {
       await promise
@@ -71,8 +77,14 @@ async function main() {
   }
 }
 
-main().catch(error => {
-  // eslint-disable-next-line no-console
-  console.error(error)
-  process.exit(1)
-})
+main()
+  .then(() => {
+    if (isFailed) {
+      process.exit(1)
+    }
+  })
+  .catch(error => {
+    // eslint-disable-next-line no-console
+    console.error(error)
+    process.exit(1)
+  })
