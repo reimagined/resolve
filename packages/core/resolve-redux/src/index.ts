@@ -1,3 +1,4 @@
+/*
 import * as actions from './actions'
 import * as actionTypes from './action_types'
 import createResolveMiddleware from './create_resolve_middleware'
@@ -53,3 +54,5 @@ export {
   sendAggregateAction,
   getOrigin
 }
+*/
+

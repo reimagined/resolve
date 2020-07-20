@@ -32,7 +32,10 @@
     "jwt-decode": "^2.2.0",
     "query-string": "^5.1.1",
     "unfetch": "^4.0.1",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "resolve-core": "0.24.11",
+    "resolve-client": "0.24.11",
+    "resolve-react-hooks": "0.24.11"
   },
   "devDependencies": {
     "@types/jwt-decode": "^2.2.1",

@@ -1,3 +1,4 @@
+import { Action } from 'redux'
 import {
   SEND_COMMAND_REQUEST,
   SEND_COMMAND_SUCCESS,
