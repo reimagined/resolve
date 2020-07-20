@@ -11,6 +11,7 @@ const createAdapter = (
     loadEvents,
     importStream,
     exportStream,
+    incrementalImport,
     getNextCursor
   },
   {
@@ -92,7 +93,8 @@ const createAdapter = (
     pushIncrementalImport: wrapMethod(pool, pushIncrementalImport),
     beginIncrementalImport: wrapMethod(pool, beginIncrementalImport),
     commitIncrementalImport: wrapMethod(pool, commitIncrementalImport),
-    rollbackIncrementalImport: wrapMethod(pool, rollbackIncrementalImport)
+    rollbackIncrementalImport: wrapMethod(pool, rollbackIncrementalImport),
+    incrementalImport: wrapMethod(pool, incrementalImport)
   }
 
   Object.assign(pool, adapter)

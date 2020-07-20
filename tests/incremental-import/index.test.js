@@ -121,14 +121,46 @@ function validateEvents(events) {
 
 let adapter = null
 
+beforeEach(async () => {
+  adapter = createAdapter()
+  await adapter.init()
+})
+
+afterEach(async () => {
+  if (adapter != null) {
+    await adapter.drop()
+    await adapter.dispose()
+    adapter = null
+  }
+})
+
+test('incremental import should work correctly', async () => {
+  const countEvents = 2500 + Math.floor(75 * Math.random())
+  const events = []
+
+  for (let eventIndex = 0; eventIndex < countEvents; eventIndex++) {
+    events.push({
+      aggregateId: `aggregateId${eventIndex % 10}`,
+      type: `EVENT${eventIndex % 3}`,
+      payload: { eventIndex },
+      timestamp: Date.now()
+    })
+  }
+
+  await adapter.incrementalImport(events)
+
+  const resultEvents = (await adapter.loadEvents({ limit: countEvents + 1 }))
+    .events
+
+  expect(resultEvents.length).toEqual(countEvents)
+
+  validateEvents(resultEvents)
+})
+
 test('inject-events should work correctly', async () => {
   const countInitialEvents = 250 + Math.floor(75 * Math.random())
   const countIncrementalImportEvents = 25000 + Math.floor(75000 * Math.random())
   const countAllEvents = countInitialEvents + countIncrementalImportEvents
-
-  adapter = createAdapter()
-
-  await adapter.init()
 
   const initialEvents = []
   for (let eventIndex = 0; eventIndex < countInitialEvents; eventIndex++) {
@@ -250,11 +282,4 @@ test('inject-events should work correctly', async () => {
   expect(resultEvents.length).toEqual(countAllEvents)
 
   validateEvents(resultEvents)
-})
-
-afterAll(async () => {
-  if (adapter != null) {
-    await adapter.dispose()
-    adapter = null
-  }
 })
