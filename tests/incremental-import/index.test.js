@@ -119,12 +119,14 @@ function validateEvents(events) {
   }
 }
 
+let adapter = null
+
 test('inject-events should work correctly', async () => {
   const countInitialEvents = 250 + Math.floor(75 * Math.random())
-  const countIncrementalImportEvents = 250000 + Math.floor(75 * Math.random())
+  const countIncrementalImportEvents = 25000 + Math.floor(75000 * Math.random())
   const countAllEvents = countInitialEvents + countIncrementalImportEvents
 
-  const adapter = createAdapter()
+  adapter = createAdapter()
 
   await adapter.init()
 
@@ -248,4 +250,11 @@ test('inject-events should work correctly', async () => {
   expect(resultEvents.length).toEqual(countAllEvents)
 
   validateEvents(resultEvents)
+})
+
+afterAll(async () => {
+  if (adapter != null) {
+    await adapter.dispose()
+    adapter = null
+  }
 })

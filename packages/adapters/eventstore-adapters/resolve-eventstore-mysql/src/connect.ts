@@ -12,6 +12,8 @@ const connectSecretsStore = async (
 
   const { MySQL } = specific
   const {
+    eventsTableName,
+    snapshotsTableName,
     secretsTableName = 'secrets',
     secretsDatabase,
     database,

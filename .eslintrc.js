@@ -312,6 +312,7 @@ module.exports = {
           'prefetch',
           'principial',
           'Postfix',
+          'Postgre',
           'pre',
           'preloader',
           'Presigned',

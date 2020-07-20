@@ -8,6 +8,8 @@ const connectEventStore = async (pool, { MySQL }) => {
   const {
     eventsTableName = 'events',
     snapshotsTableName = 'snapshots',
+    secretsTableName,
+    snapshotBucketSize,
     database,
     ...connectionOptions
   } = pool.config
@@ -18,14 +20,21 @@ const connectEventStore = async (pool, { MySQL }) => {
 
   log.debug(`establishing connection`)
 
-  // MySQL throws warning
-  delete connectionOptions.snapshotBucketSize
+  void (secretsTableName, snapshotBucketSize)
 
   const connection = await MySQL.createConnection({
     ...connectionOptions,
     database,
     multipleStatements: true
   })
+
+  const [[{ version }]] = await connection.query(
+    `SELECT version() AS \`version\``
+  )
+  const major = +version.split('.')[0]
+  if (isNaN(major) || major < 8) {
+    throw new Error(`Supported MySQL version 8+, but got ${version}`)
+  }
 
   log.debug(`connected successfully`)
 

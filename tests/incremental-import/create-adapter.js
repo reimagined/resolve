@@ -4,8 +4,21 @@ import createEventStoreLiteAdapter from 'resolve-eventstore-lite'
 import createEventStorePostgreSQLAdapter from 'resolve-eventstore-postgresql'
 // eslint-disable-next-line
 import createEventStorePostgreSQLServerlessAdapter from 'resolve-eventstore-postgresql-serverless'
+// eslint-disable-next-line
+import createEventStoreMySQLAdapter from 'resolve-eventstore-mysql'
 
 const createAdapter = () => {
+  // return createEventStoreMySQLAdapter({
+  //   host: '172.22.6.116',
+  //   port: 3306,
+  //   user: 'admin',
+  //   password: 'admin',
+  //   database: 'admin',
+  //   eventsTableName: 'events' + Date.now(),
+  //   snapshotsTableName: 'snapshots' + Date.now(),
+  //   secretsTableName: 'secrets' + Date.now()
+  // })
+
   // return createEventStorePostgreSQLServerlessAdapter({
   //   databaseName: process.env.EVENT_STORE_DATABASE_NAME,
   //   dbClusterOrInstanceArn: process.env.EVENT_STORE_CLUSTER_ARN,

@@ -26,9 +26,8 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/readmodel-adapters/resolve-readmodel-mysql#readme",
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "mysql2": "^1.6.1",
+    "mysql2": "^2.1.0",
     "resolve-readmodel-base": "0.24.10",
-    "sql-formatter": "^2.3.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

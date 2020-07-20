@@ -13,7 +13,6 @@ import {
 import resolveModuleComments from 'resolve-module-comments'
 import resolveModuleAuth from 'resolve-module-auth'
 import resolveModuleAdmin from 'resolve-module-admin'
-import resolveModuleIncrementalImport from 'resolve-module-incremental-import'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
@@ -27,8 +26,6 @@ const launchMode = process.argv[2]
 
 void (async () => {
   try {
-    const moduleIncrementalImport = resolveModuleIncrementalImport()
-
     const moduleComments = resolveModuleComments({
       commentsInstanceName: 'comments-hn',
       aggregateName: 'Comment',
@@ -64,8 +61,7 @@ void (async () => {
       defaultResolveConfig,
       appConfig,
       moduleComments,
-      moduleAuth,
-      moduleIncrementalImport
+      moduleAuth
     )
 
     switch (launchMode) {

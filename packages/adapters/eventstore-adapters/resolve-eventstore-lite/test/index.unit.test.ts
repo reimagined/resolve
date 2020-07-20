@@ -25,6 +25,10 @@ import drop from '../src/drop'
 import dispose from '../src/dispose'
 import getSecretsManager from '../src/secrets-manager'
 import createAdapter from '../src/index'
+import beginIncrementalImport from '../src/js/begin-incremental-import'
+import commitIncrementalImport from '../src/js/commit-incremental-import'
+import rollbackIncrementalImport from '../src/js/rollback-incremental-import'
+import pushIncrementalImport from '../src/js/push-incremental-import'
 
 jest.mock('../src/js/load-events-by-cursor', () => jest.fn())
 jest.mock('../src/js/freeze', () => jest.fn())
@@ -41,6 +45,10 @@ jest.mock('../src/init', () => jest.fn())
 jest.mock('../src/drop', () => jest.fn())
 jest.mock('../src/dispose', () => jest.fn())
 jest.mock('../src/secrets-manager', () => jest.fn())
+jest.mock('../src/js/begin-incremental-import', () => jest.fn())
+jest.mock('../src/js/commit-incremental-import', () => jest.fn())
+jest.mock('../src/js/rollback-incremental-import', () => jest.fn())
+jest.mock('../src/js/push-incremental-import', () => jest.fn())
 
 const mGenericCreateAdapter = mocked(genericCreateAdapter)
 
@@ -66,6 +74,10 @@ test('generic createAdapter invoked', () => {
     fs,
     injectEvent,
     shapeEvent,
-    getSecretsManager
+    getSecretsManager,
+    beginIncrementalImport,
+    commitIncrementalImport,
+    rollbackIncrementalImport,
+    pushIncrementalImport
   })
 })
