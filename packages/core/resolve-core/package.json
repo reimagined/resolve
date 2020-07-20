@@ -7,6 +7,7 @@
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",
+  "types": "./types/index.d.ts",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -32,14 +33,9 @@
   },
   "babelCompile": [
     {
-      "moduleType": "es",
-      "moduleTarget": "server",
-      "inputDir": "./src",
-      "outDir": "./es"
-    },
-    {
+      "sourceType": "ts",
       "moduleType": "cjs",
-      "moduleTarget": "server",
+      "moduleTarget": "client",
       "inputDir": "./src",
       "outDir": "./lib"
     }

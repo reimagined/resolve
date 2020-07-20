@@ -1,13 +1,13 @@
 import { Query, QueryOptions, QueryResult, QueryCallback } from 'resolve-client'
 import { useCallback } from 'react'
 import {
-  firstOfType,
   HookExecutor,
   isCallback,
   isDependencies,
   isOptions
 } from './generic'
 import { useClient } from './use-client'
+import { firstOfType } from 'resolve-core'
 
 type QueryBuilder<T> = (data: T) => Query
 type QueryExecutor<T> = HookExecutor<T, QueryResult>

@@ -7,12 +7,12 @@ import {
 } from 'resolve-client'
 import { useClient } from './use-client'
 import {
-  firstOfType,
   HookExecutor,
   isCallback,
   isDependencies,
   isOptions
 } from './generic'
+import { firstOfType } from 'resolve-core'
 
 export type CommandBuilder<T> = (data: T) => Command
 

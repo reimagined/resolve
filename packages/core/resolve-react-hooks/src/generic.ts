@@ -11,9 +11,3 @@ export function isOptions<T>(x: any): x is T {
 export const isDependencies = (x: any): x is any[] => {
   return x && x instanceof Array
 }
-export function firstOfType<T>(
-  selector: (x: any) => x is T,
-  ...vars: any[]
-): T | undefined {
-  return vars.find(i => selector(i)) as T
-}
