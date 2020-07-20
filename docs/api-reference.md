@@ -1014,7 +1014,7 @@ The **resolve-react-hooks** library provides React hooks that you can use to con
 | [useCommand](#useCommand)               | Initializes a command that can be passed to the backend.                 |
 | [useCommandBuilder](#useCommandBuilder) | Allows to generate commands based on input parameters.                   |
 | [useViewModel](#useViewModel)           | Establishes a WebSocket connection to a reSolve View Model.              |
-| [useQuery](#useQuery)                   | Allows a component to send queries to a reSolve Red Model or View Model. |
+| [useQuery](#useQuery)                   | Allows a component to send queries to a reSolve Read Model or View Model.|
 
 #### useCommand
 
