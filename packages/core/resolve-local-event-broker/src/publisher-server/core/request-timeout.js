@@ -137,7 +137,7 @@ async function requestTimeout(pool, payload) {
             eventSubscriber,
             xaTransactionId,
             batchId,
-            countEvents: true
+            dryRun: true
           }
         ))
         await runRawQuery(`

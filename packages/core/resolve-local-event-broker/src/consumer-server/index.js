@@ -38,7 +38,7 @@ const createAndInitConsumer = async config => {
     eventSubscriber,
     batchId,
     xaTransactionId,
-    countEvents
+    dryRun
   }) => {
     const currentResolve = Object.create(baseResolve)
     const listenerInfo = currentResolve.eventListeners.get(eventSubscriber)
@@ -56,7 +56,7 @@ const createAndInitConsumer = async config => {
         modelName: eventSubscriber,
         batchId,
         xaTransactionId,
-        countEvents
+        dryRun
       })
 
       return maybeEventCount

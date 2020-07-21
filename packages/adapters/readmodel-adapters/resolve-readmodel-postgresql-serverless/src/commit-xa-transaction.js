@@ -7,7 +7,7 @@ const log = debugLevels(
 const commitXATransaction = async (
   pool,
   readModelName,
-  { xaTransactionId, countEvents }
+  { xaTransactionId, dryRun }
 ) => {
   try {
     log.verbose('Commit XA-transaction to postgresql database started')
@@ -18,7 +18,7 @@ const commitXATransaction = async (
       sql: `SELECT 0`
     })
 
-    if (countEvents) {
+    if (dryRun) {
       const savepointId = pool.generateGuid(readModelName, xaTransactionId)
       const eventCountId = `resolve.${pool.generateGuid(
         readModelName,
@@ -100,7 +100,7 @@ const commitXATransaction = async (
 
         log.verbose('Commit XA-transaction to postgresql database succeed')
 
-        return countEvents ? 0 : xaResult.length > 0 ? true : false
+        return dryRun ? 0 : xaResult.length > 0 ? true : false
       } catch (err) {
         log.verbose(
           'Commit XA-transaction to postgresql database failed',

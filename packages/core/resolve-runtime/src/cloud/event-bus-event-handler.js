@@ -123,7 +123,7 @@ const beginXATransaction = async (payload, resolve) => {
 }
 
 const commitXATransaction = async (payload, resolve) => {
-  const { eventSubscriber, batchId, xaTransactionId, countEvents } = payload
+  const { eventSubscriber, batchId, xaTransactionId, dryRun } = payload
   const listenerInfo = resolve.eventListeners.get(eventSubscriber)
   if (listenerInfo == null) {
     throw new Error(`Listener ${eventSubscriber} does not exist`)
@@ -135,7 +135,7 @@ const commitXATransaction = async (payload, resolve) => {
     modelName: eventSubscriber,
     batchId,
     xaTransactionId,
-    countEvents
+    dryRun
   })
 
   return maybeEventCount
