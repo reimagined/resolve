@@ -2,7 +2,8 @@ import { ER_NO_SUCH_TABLE, ER_SUBQUERY_NO_1_ROW } from './constants'
 
 const commitIncrementalImport = async (
   { events: { eventsTableName, connection, database }, escapeId, escape },
-  importId
+  importId,
+  validateAfterCommit
 ) => {
   const incrementalImportTableAsId = escapeId(
     `${eventsTableName}-incremental-import`
@@ -10,6 +11,7 @@ const commitIncrementalImport = async (
   const incrementalImportTableAsString = escape(
     `${eventsTableName}-incremental-import`
   )
+  const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
   const eventsTableAsId = escapeId(eventsTableName)
 
   const databaseNameAsString = escape(database)
@@ -117,9 +119,95 @@ const commitIncrementalImport = async (
         \`payload\`
       FROM ${incrementalImportTableAsId}
       ORDER BY \`sortedIdx\`;
+      
+      UPDATE ${threadsTableAsId} 
+      SET \`threadCounter\` = GREATEST(
+        ${threadsTableAsId}.\`threadCounter\`,
+        COALESCE((SELECT MAX(${incrementalImportTableAsId}.\`threadCounter\`) AS \`threadCounter\`
+        FROM ${incrementalImportTableAsId}
+        WHERE ${incrementalImportTableAsId}.\`threadId\` = ${threadsTableAsId}.\`threadId\`
+        ) + 1, 0)
+      );
            
       COMMIT;
       `)
+
+    if (validateAfterCommit != null && validateAfterCommit === true) {
+      const realThreadIdCounters = (
+        await connection.query(
+          `SELECT \`threadId\`, MAX(\`threadCounter\`) AS \`threadCounter\`
+        FROM ${eventsTableAsId}
+        GROUP BY \`threadId\`
+        `
+        )
+      )[0].map(({ threadId, threadCounter }) => ({
+        threadId: !isNaN(+threadId) ? +threadId : Symbol('BAD_THREAD_ID'),
+        threadCounter: !isNaN(+threadCounter)
+          ? +threadCounter
+          : Symbol('BAD_THREAD_COUNTER')
+      }))
+
+      const predictedThreadIdCounters = (
+        await connection.query(
+          `SELECT \`threadId\`, \`threadCounter\` FROM ${threadsTableAsId}`
+        )
+      )[0].map(({ threadId, threadCounter }) => ({
+        threadId: !isNaN(+threadId) ? +threadId : Symbol('BAD_THREAD_ID'),
+        threadCounter: !isNaN(+threadCounter)
+          ? +threadCounter
+          : Symbol('BAD_THREAD_COUNTER')
+      }))
+
+      const validationMapReal = new Map()
+      const validationMapPredicted = new Map()
+
+      for (const { threadId, threadCounter } of realThreadIdCounters) {
+        validationMapReal.set(threadId, threadCounter)
+      }
+      for (const { threadId, threadCounter } of predictedThreadIdCounters) {
+        validationMapPredicted.set(threadId, threadCounter)
+      }
+
+      const validationErrors = []
+
+      for (const { threadId, threadCounter } of realThreadIdCounters) {
+        if (validationMapPredicted.get(threadId) !== threadCounter + 1) {
+          validationErrors.push(
+            new Error(
+              `Real -> Predicted threadCounter mismatch ${threadId} ${threadCounter} ${validationMapPredicted.get(
+                threadId
+              )}`
+            )
+          )
+        }
+      }
+      for (const { threadId, threadCounter } of predictedThreadIdCounters) {
+        if (
+          validationMapReal.get(threadId) !== threadCounter - 1 &&
+          validationMapReal.get(threadId) != null
+        ) {
+          validationErrors.push(
+            new Error(
+              `Predicted -> Real threadCounter mismatch ${threadId} ${threadCounter} ${validationMapReal.get(
+                threadId
+              )}`
+            )
+          )
+        }
+      }
+
+      if (validationErrors.length > 0) {
+        const compositeError = new Error(
+          validationErrors.map(({ message }) => message).join('\n')
+        )
+        compositeError.stack = validationErrors
+          .map(({ stack }) => stack)
+          .join('\n')
+        throw compositeError
+      }
+    } else if (validateAfterCommit != null) {
+      throw new Error('Bad argument for "validateAfterCommit"')
+    }
   } catch (error) {
     const errno = error != null && error.errno != null ? error.errno : 0
 
