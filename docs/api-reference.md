@@ -691,7 +691,7 @@ import {
 
 ### HTTP API
 
-Resolve provides a standard HTTP API that allows you to send aggregate commands and query Read and View Models.
+reSolve provides a standard HTTP API that allows you to send aggregate commands, and query Read and View Models.
 
 #### Read Model API
 
@@ -909,7 +909,7 @@ export default connectStaticBasedUrls(['css', 'favicon'])(Header)
 
 ### resolve-client Library
 
-The **resolve-client** library provides an interface that you can use to communicate with reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function:
+The **resolve-client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function:
 
 ```js
 import { getClient } from 'resolve-client'
@@ -1130,7 +1130,7 @@ const ShoppingList = ({
 
 #### useQuery
 
-Allows a component to send queries to a reSolve Red Model or View Model.
+Allows a component to send queries to a reSolve Read Model or View Model.
 
 ##### Example
 

@@ -7,7 +7,7 @@ This document describes approaches that you can use to implement a frontend for 
 
 - [HTTP API](#http-api) - An HTTP API exposed by a reSolve server
 - [resolve-client library](#resolve-client-library) - A higher-level JavaScript library used to communicate with a reSolve server
-- [resolve-redux library](#resolve-redux-library) - A library used to connect React + Redux component to reSolve
+- [resolve-redux library](#resolve-redux-library) - A library used to connect a React + Redux component to reSolve
 - [resolve-react-hooks library](#resolve-react-hooks-library) - A hook-based library used to connect React components to reSolve
 
 ## HTTP API
@@ -114,7 +114,7 @@ $ curl -i http://localhost:3000/api/commands/ \
 '
 ```
 
-5. Now you can query the view model again and see the items you have added:
+5. You can now query the view model again and see the items you have added:
 
 ```sh
 $ curl --g -X GET "http://localhost:3000/api/query/ShoppingList/12345-new-shopping-list" '
@@ -129,17 +129,17 @@ Connection: keep-alive
 {"id":"12345-new-shopping-list","name":"List 1","list":[{"id":"1","text":"Beer","checked":false},{"id":"2","text":"Chips","checked":false}]}
 ```
 
-Below you can see the newly created list and its items on the Shopping List application's page.
+Below, you can see the newly created list and its items on the Shopping List application's page.
 
 ![List1-items](assets/curl/list1-items.png)
 
-For more information on the HTTP API, refer to the [API Reference](api-reference.md#http-api) topic.
+For more information on the HTTP API, refer to the following help topic: [API Reference](api-reference.md#http-api).
 
-You can extend a reSolve server's API with API Handlers. Refer to the [API Handlers](api-handlers.md) topic for more information.
+You can extend a reSolve server's API with API Handlers. Refer to the following help topic for more information: [API Handlers](api-handlers.md).
 
 ## resolve-client library
 
-The **resolve-client** library provides an interface that you can use to communicate with reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
+The **resolve-client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
 
 | Function                                                | Description                                |
 | ------------------------------------------------------- | ------------------------------------------ |
