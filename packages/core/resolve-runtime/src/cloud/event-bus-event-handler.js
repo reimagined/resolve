@@ -136,14 +136,14 @@ const commitXATransaction = async (payload, resolve) => {
   const commitXATransaction = listenerInfo.isSaga
     ? resolve.executeSaga.commitXATransaction
     : resolve.executeQuery.commitXATransaction
-  const maybeEventCount = await commitXATransaction({
+  const maybeEventList = await commitXATransaction({
     modelName: eventSubscriber,
     batchId,
     xaTransactionId,
     dryRun
   })
 
-  return maybeEventCount
+  return maybeEventList
 }
 
 const rollbackXATransaction = async (payload, resolve) => {

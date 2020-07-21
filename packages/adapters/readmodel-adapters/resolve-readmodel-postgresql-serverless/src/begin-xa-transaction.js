@@ -56,10 +56,10 @@ const beginXATransaction = async (pool, readModelName) => {
     }
 
     const savepointId = pool.generateGuid(readModelName, xaTransactionId)
-    const eventCountId = `resolve.${pool.generateGuid(
+    const eventListId = `resolve.${pool.generateGuid(
       readModelName,
       xaTransactionId,
-      'eventCountId'
+      'eventListId'
     )}`
     const insideEventId = `resolve.${pool.generateGuid(
       readModelName,
@@ -80,7 +80,7 @@ const beginXATransaction = async (pool, readModelName) => {
       transactionId: xaTransactionId,
       sql: `
         SAVEPOINT ${savepointId};
-        SET LOCAL ${eventCountId} = 0;
+        SET LOCAL ${eventListId} = '';
         SET LOCAL ${insideEventId} = 0;
         RELEASE SAVEPOINT ${savepointId};
       `

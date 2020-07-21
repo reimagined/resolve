@@ -20,10 +20,10 @@ const commitXATransaction = async (
 
     if (dryRun) {
       const savepointId = pool.generateGuid(readModelName, xaTransactionId)
-      const eventCountId = `resolve.${pool.generateGuid(
+      const eventListId = `resolve.${pool.generateGuid(
         readModelName,
         xaTransactionId,
-        'eventCountId'
+        'eventListId'
       )}`
       const insideEventId = `resolve.${pool.generateGuid(
         readModelName,
@@ -55,12 +55,12 @@ const commitXATransaction = async (
         resourceArn: pool.dbClusterOrInstanceArn,
         secretArn: pool.awsSecretStoreArn,
         transactionId: xaTransactionId,
-        sql: `SELECT current_setting(${pool.escape(eventCountId)})`
+        sql: `SELECT current_setting(${pool.escape(eventListId)})`
       })
 
-      const appliedEventsCount = +pool.coercer(result.records[0][0])
+      const appliedEventsList = `${pool.coercer(result.records[0][0])}`.replace(/;$/, '')
 
-      return appliedEventsCount
+      return appliedEventsList
     }
 
     await pool.rdsDataService.commitTransaction({

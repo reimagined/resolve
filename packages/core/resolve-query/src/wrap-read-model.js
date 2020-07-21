@@ -323,7 +323,8 @@ const updateByEvents = async (
             await onBeforeEvent(
               connection,
               pool.readModel.name,
-              xaTransactionId
+              xaTransactionId,
+              event
             )
 
             await handler(connection, event)
@@ -331,7 +332,8 @@ const updateByEvents = async (
             await onSuccessEvent(
               connection,
               pool.readModel.name,
-              xaTransactionId
+              xaTransactionId,
+              event
             )
 
             log.debug(
@@ -354,7 +356,8 @@ const updateByEvents = async (
               await onFailEvent(
                 connection,
                 pool.readModel.name,
-                xaTransactionId
+                xaTransactionId,
+                event
               )
             } catch (error) {
               rollbackError = error

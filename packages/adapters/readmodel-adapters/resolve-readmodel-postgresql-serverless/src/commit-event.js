@@ -5,25 +5,20 @@ const log = debugLevels(
   'resolve:resolve-readmodel-postgresql-serverless:commit-event'
 )
 
-const commitEvent = async (pool, readModelName, xaTransactionId) => {
+const commitEvent = async (pool, readModelName, xaTransactionId, event) => {
   try {
     pool.xaTransactionId = null
     const savepointId = pool.generateGuid(readModelName, xaTransactionId)
-    const eventCountId = `resolve.${pool.generateGuid(
+    const eventListId = `resolve.${pool.generateGuid(
       readModelName,
       xaTransactionId,
-      'eventCountId'
+      'eventListId'
     )}`
     const insideEventId = `resolve.${pool.generateGuid(
       readModelName,
       xaTransactionId,
       'insideEventId'
     )}`
-    const eventCount = pool.eventCounters.get(xaTransactionId)
-
-    if (eventCount == null) {
-      throw new Error(`Xa-Transaction ${xaTransactionId} commit event failed`)
-    }
 
     await pool.rdsDataService.executeStatement({
       resourceArn: pool.dbClusterOrInstanceArn,
@@ -33,13 +28,11 @@ const commitEvent = async (pool, readModelName, xaTransactionId) => {
       includeResultMetadata: false,
       transactionId: xaTransactionId,
       sql: `
-        SET LOCAL ${eventCountId} = ${eventCount + 1};
+        SELECT set_config(${pool.escape(eventListId)}, (SELECT current_setting(${pool.escape(eventListId)}) || ${pool.escape(`${+event.threadId}:${+event.threadCounter};`)}), true);
         SET LOCAL ${insideEventId} = 0;
         RELEASE SAVEPOINT ${savepointId};
       `
     })
-
-    pool.eventCounters.set(xaTransactionId, eventCount + 1)
 
     log.verbose('Commit event to postgresql database succeed')
   } catch (error) {

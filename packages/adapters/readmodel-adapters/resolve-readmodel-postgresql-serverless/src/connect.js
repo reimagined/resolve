@@ -94,8 +94,6 @@ const connect = async (imports, pool, options) => {
 
   const executeStatement = imports.executeStatement.bind(null, pool)
 
-  const eventCounters = new Map()
-
   Object.assign(pool, {
     rdsDataService,
     dbClusterOrInstanceArn,
@@ -106,7 +104,6 @@ const connect = async (imports, pool, options) => {
     makeNestedPath,
     transactionId: null,
     readModelName: null,
-    eventCounters,
     ...imports,
     executeStatement,
     hash512

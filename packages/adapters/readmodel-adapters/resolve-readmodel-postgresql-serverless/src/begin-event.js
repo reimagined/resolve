@@ -30,10 +30,6 @@ const beginEvent = async (pool, readModelName, xaTransactionId) => {
 
     log.verbose('Begin event to postgresql database succeed')
 
-    if (!pool.eventCounters.has(xaTransactionId)) {
-      pool.eventCounters.set(xaTransactionId, 0)
-    }
-
     pool.readModelName = readModelName
   } catch (error) {
     log.verbose('Begin event to postgresql database failed', error)
