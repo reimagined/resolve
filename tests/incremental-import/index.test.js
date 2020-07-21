@@ -5,7 +5,7 @@ import createAdapter from './create-adapter'
 
 const pipeline = promisify(rawPipeline)
 
-jest.setTimeout(10000 * 60 * 1000)
+jest.setTimeout(1000 * 60 * 45)
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
