@@ -8,12 +8,12 @@ import {
   QueryReadModelSuccessAction
 } from './actions'
 import { firstOfType } from 'resolve-core'
-import { isActionCreators, isDependencies, isOptions } from './helpers'
+import { isActionCreators, isDependencies, isOptions } from '../helpers'
 import {
   QUERY_READMODEL_FAILURE,
   QUERY_READMODEL_REQUEST,
   QUERY_READMODEL_SUCCESS
-} from './action_types'
+} from '../action-types'
 
 type HookData = {
   request: () => void

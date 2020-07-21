@@ -1,8 +1,8 @@
 import { put } from 'redux-saga/effects'
 
-import getHash from './get_hash'
+import getHash from './get-hash'
 import { dropReadModelState } from './actions'
-import { CONNECT_READMODEL } from './action_types'
+import { CONNECT_READMODEL } from './action-types'
 
 const disconnectReadModelSaga = function*(sagaArgs: any, action: any): any {
   const { connectionManager, sagaManager, sagaKey } = sagaArgs

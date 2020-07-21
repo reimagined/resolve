@@ -17,10 +17,6 @@ import {
   DROP_VIEWMODEL_STATE,
   CONNECT_READMODEL,
   DISCONNECT_READMODEL,
-  QUERY_READMODEL_REQUEST,
-  QUERY_READMODEL_SUCCESS,
-  QUERY_READMODEL_FAILURE,
-  DROP_READMODEL_STATE,
   DISPATCH_TOPIC_MESSAGE,
   HOT_MODULE_REPLACEMENT,
   UPDATE_JWT,
@@ -28,7 +24,7 @@ import {
   AUTH_REQUEST,
   AUTH_SUCCESS,
   AUTH_FAILURE
-} from './action_types'
+} from './action-types'
 
 export type SendCommandRequestAction = {
   type: typeof SEND_COMMAND_REQUEST
@@ -220,76 +216,6 @@ export const disconnectReadModel = (
   resolverArgs: any
 ) => ({
   type: DISCONNECT_READMODEL,
-  readModelName,
-  resolverName,
-  resolverArgs
-})
-
-export type QueryReadModelRequestAction = {
-  type: typeof QUERY_READMODEL_REQUEST
-  readModelName: string
-  resolverName: string
-  resolverArgs: any
-}
-export const queryReadModelRequest = (
-  readModelName: string,
-  resolverName: string,
-  resolverArgs: any
-): QueryReadModelRequestAction => ({
-  type: QUERY_READMODEL_REQUEST,
-  readModelName,
-  resolverName,
-  resolverArgs
-})
-
-export type QueryReadModelSuccessAction = {
-  type: typeof QUERY_READMODEL_SUCCESS
-  readModelName: string
-  resolverName: string
-  resolverArgs: any
-  result: any
-  timestamp: any
-}
-export const queryReadModelSuccess = (
-  readModelName: string,
-  resolverName: string,
-  resolverArgs: any,
-  result: any,
-  timestamp: any
-): QueryReadModelSuccessAction => ({
-  type: QUERY_READMODEL_SUCCESS,
-  readModelName,
-  resolverName,
-  resolverArgs,
-  result,
-  timestamp
-})
-export type QueryReadModelFailureAction = {
-  type: typeof QUERY_READMODEL_FAILURE
-  readModelName: string
-  resolverName: string
-  resolverArgs: any
-  error: Error
-}
-export const queryReadModelFailure = (
-  readModelName: string,
-  resolverName: string,
-  resolverArgs: any,
-  error: Error
-): QueryReadModelFailureAction => ({
-  type: QUERY_READMODEL_FAILURE,
-  readModelName,
-  resolverName,
-  resolverArgs,
-  error
-})
-
-export const dropReadModelState = (
-  readModelName: string,
-  resolverName: string,
-  resolverArgs: any
-) => ({
-  type: DROP_READMODEL_STATE,
   readModelName,
   resolverName,
   resolverArgs

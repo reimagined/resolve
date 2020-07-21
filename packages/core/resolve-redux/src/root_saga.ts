@@ -6,7 +6,7 @@ import {
   SEND_COMMAND_REQUEST,
   AUTH_REQUEST,
   LOGOUT
-} from './action_types'
+} from './action-types'
 import loadViewModelStateSaga from './load_view_model_state_saga'
 import loadReadModelStateSaga from './load_read_model_state_saga'
 import sendCommandSaga from './send_command_saga'

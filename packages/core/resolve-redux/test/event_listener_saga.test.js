@@ -1,6 +1,6 @@
 import eventListenerSaga from '../src/event_listener_saga'
 import { aggregateVersionsMap, lastTimestampMap } from '../src/constants'
-import getHash from '../src/get_hash'
+import getHash from '../src/get-hash'
 
 describe('Regression test. eventListenerSaga', () => {
   test('should works correctly when take expected event', () => {

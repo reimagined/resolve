@@ -6,7 +6,7 @@ import createEmptySubscribeAdapter from './empty_subscribe_adapter'
 import {
   SUBSCRIBE_TOPIC_REQUEST,
   UNSUBSCRIBE_TOPIC_REQUEST
-} from './action_types'
+} from './action-types'
 import {
   subscribeTopicSuccess,
   subscribeTopicFailure,

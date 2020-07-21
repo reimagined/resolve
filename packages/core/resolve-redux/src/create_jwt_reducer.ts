@@ -1,4 +1,4 @@
-import { UPDATE_JWT, LOGOUT } from './action_types'
+import { UPDATE_JWT, LOGOUT } from './action-types'
 
 const createJwtReducer = () => (state = {}, action: any): any => {
   switch (action.type) {

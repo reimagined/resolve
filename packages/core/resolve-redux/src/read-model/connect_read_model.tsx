@@ -3,10 +3,9 @@ import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import hoistNonReactStatic from 'hoist-non-react-statics'
 
-import * as actions from './actions'
-import { connectorMetaMap } from './constants'
-import getHash from './get_hash'
-import connectResolveAdvanced from './connect_resolve_advanced'
+import * as actions from '../actions'
+import getHash from '../get-hash'
+import connectResolveAdvanced from '../connect_resolve_advanced'
 
 const connectReadModel = (mapStateToOptions: any) => (Component: any): any => {
   class ReadModelContainer extends React.PureComponent<any> {

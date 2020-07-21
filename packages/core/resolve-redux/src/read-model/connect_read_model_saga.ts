@@ -1,15 +1,17 @@
+/*
 import { take, put, delay } from 'redux-saga/effects'
 
-import getHash from './get_hash'
+import getHash from '../get_hash'
 import { queryReadModelRequest } from './actions'
 import {
   DISCONNECT_READMODEL,
   QUERY_READMODEL_FAILURE,
   QUERY_READMODEL_SUCCESS
-} from './action_types'
+} from '../action-types'
 
-import { HttpError } from './create_api'
-import { generateQueryId } from './helpers'
+import { HttpError } from '../create_api'
+import { generateQueryId } from '../helpers'
+*/
 
 /*
   Saga is launched on action `CONNECT_READMODEL`, emitted by read model connector.
@@ -20,15 +22,14 @@ import { generateQueryId } from './helpers'
   `LOAD_READMODEL_STATE_SUCCESS` and `LOAD_READMODEL_STATE_FAILURE`.
 */
 
+/*
 const connectReadModelSaga = function*(sagaArgs: any, action: any): any {
   const {
     connectionManager,
     sagaManager,
     sagaKey
-    /*
     queryIdMap,
     sessionId
-    */
   } = sagaArgs
   const {
     readModelName,
@@ -52,7 +53,6 @@ const connectReadModelSaga = function*(sagaArgs: any, action: any): any {
 
   yield* sagaManager.stop(`${DISCONNECT_READMODEL}${sagaKey}`)
 
-  /*
   const key = `${readModelName}${getHash(action.resolverName)}${getHash(
     action.resolverArgs
   )}`
@@ -66,12 +66,11 @@ const connectReadModelSaga = function*(sagaArgs: any, action: any): any {
     `${key}${queryIdMap.get(key)}${sessionId}` as any,
     '00000000-0000-0000-0000-000000000000' as any
   )
-  */
   const queryId = generateQueryId(readModelName, resolverName)
 
   while (true) {
     yield put(
-      queryReadModelRequest(readModelName, resolverName, resolverArgs, queryId)
+      queryReadModelRequest(readModelName, resolverName, resolverArgs)
     )
 
     const loadReadModelStateResultAction = yield take(
@@ -99,3 +98,4 @@ const connectReadModelSaga = function*(sagaArgs: any, action: any): any {
 }
 
 export default connectReadModelSaga
+*/

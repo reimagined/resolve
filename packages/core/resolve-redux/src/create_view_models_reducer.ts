@@ -1,4 +1,4 @@
-import getHash from './get_hash'
+import getHash from './get-hash'
 
 import {
   LOAD_VIEWMODEL_STATE_REQUEST,
@@ -7,7 +7,7 @@ import {
   DROP_VIEWMODEL_STATE,
   CONNECT_VIEWMODEL,
   DISCONNECT_VIEWMODEL
-} from './action_types'
+} from './action-types'
 
 import {
   connectorMetaMap,

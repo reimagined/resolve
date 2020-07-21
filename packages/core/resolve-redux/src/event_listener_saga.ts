@@ -1,8 +1,8 @@
 import { take, put, select } from 'redux-saga/effects'
 
-import getHash from './get_hash'
+import getHash from './get-hash'
 import { aggregateVersionsMap, lastTimestampMap } from './constants'
-import { CONNECT_VIEWMODEL, DISPATCH_TOPIC_MESSAGE } from './action_types'
+import { CONNECT_VIEWMODEL, DISPATCH_TOPIC_MESSAGE } from './action-types'
 import unsubscribeViewModelTopicsSaga from './unsubscribe_view_model_topics_saga'
 
 const eventListenerSaga = function*(

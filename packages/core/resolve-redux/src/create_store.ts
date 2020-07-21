@@ -7,7 +7,7 @@ import {
 import uuid from 'uuid/v4'
 
 import createViewModelsReducer from './create_view_models_reducer'
-import createReadModelsReducer from './create_read_models_reducer'
+import { create as createReadModelReducer } from './read-model/read-model-reducer'
 import createJwtReducer from './create_jwt_reducer'
 import createResolveMiddleware from './create_resolve_middleware'
 import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
@@ -51,11 +51,14 @@ const createStore = ({
   const combinedReducers = combineReducers({
     ...reducers,
     viewModels: createViewModelsReducer(viewModels),
-    readModels: createReadModelsReducer(),
+    readModels: createReadModelReducer(),
     jwt: createJwtReducer()
   })
 
-  const appliedMiddlewares = applyMiddleware(resolveMiddleware, ...middlewares)
+  // disable all sagas
+  const appliedMiddlewares = applyMiddleware(
+    /* resolveMiddleware , */ ...middlewares
+  )
 
   const composedEnhancers = compose(appliedMiddlewares, ...enhancers)
 

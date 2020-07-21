@@ -1,6 +1,6 @@
 import { take, put, delay } from 'redux-saga/effects'
 
-import getHash from './get_hash'
+import getHash from './get-hash'
 import eventListenerSaga from './event_listener_saga'
 import { subscribeTopicRequest, loadViewModelStateRequest } from './actions'
 import {
@@ -10,7 +10,7 @@ import {
   SUBSCRIBE_TOPIC_FAILURE,
   LOAD_VIEWMODEL_STATE_FAILURE,
   LOAD_VIEWMODEL_STATE_SUCCESS
-} from './action_types'
+} from './action-types'
 import { HttpError } from './create_api'
 
 /*

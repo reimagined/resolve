@@ -27,7 +27,7 @@ import {
   AUTH_FAILURE,
   UPDATE_JWT,
   LOGOUT
-} from '../src/action_types'
+} from '../src/action-types'
 
 import {
   connectReadModel,

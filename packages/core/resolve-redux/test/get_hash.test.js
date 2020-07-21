@@ -1,4 +1,4 @@
-import getHash from '../src/get_hash'
+import getHash from '../src/get-hash'
 
 describe('getHash', () => {
   test('string should work correctly', () => {
