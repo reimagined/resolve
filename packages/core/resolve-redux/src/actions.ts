@@ -19,7 +19,7 @@ import {
   DISCONNECT_READMODEL,
   QUERY_READMODEL_REQUEST,
   QUERY_READMODEL_SUCCESS,
-  LOAD_READMODEL_STATE_FAILURE,
+  QUERY_READMODEL_FAILURE,
   DROP_READMODEL_STATE,
   DISPATCH_TOPIC_MESSAGE,
   HOT_MODULE_REPLACEMENT,
@@ -230,19 +230,16 @@ export type QueryReadModelRequestAction = {
   readModelName: string
   resolverName: string
   resolverArgs: any
-  queryId: string
 }
 export const queryReadModelRequest = (
   readModelName: string,
   resolverName: string,
-  resolverArgs: any,
-  queryId: string
+  resolverArgs: any
 ): QueryReadModelRequestAction => ({
   type: QUERY_READMODEL_REQUEST,
   readModelName,
   resolverName,
-  resolverArgs,
-  queryId
+  resolverArgs
 })
 
 export type QueryReadModelSuccessAction = {
@@ -250,7 +247,6 @@ export type QueryReadModelSuccessAction = {
   readModelName: string
   resolverName: string
   resolverArgs: any
-  queryId: any
   result: any
   timestamp: any
 }
@@ -258,7 +254,6 @@ export const queryReadModelSuccess = (
   readModelName: string,
   resolverName: string,
   resolverArgs: any,
-  queryId: any,
   result: any,
   timestamp: any
 ): QueryReadModelSuccessAction => ({
@@ -266,30 +261,26 @@ export const queryReadModelSuccess = (
   readModelName,
   resolverName,
   resolverArgs,
-  queryId,
   result,
   timestamp
 })
 export type QueryReadModelFailureAction = {
-  type: typeof LOAD_READMODEL_STATE_FAILURE
+  type: typeof QUERY_READMODEL_FAILURE
   readModelName: string
   resolverName: string
   resolverArgs: any
-  queryId: any
   error: Error
 }
 export const queryReadModelFailure = (
   readModelName: string,
   resolverName: string,
   resolverArgs: any,
-  queryId: any,
   error: Error
 ): QueryReadModelFailureAction => ({
-  type: LOAD_READMODEL_STATE_FAILURE,
+  type: QUERY_READMODEL_FAILURE,
   readModelName,
   resolverName,
   resolverArgs,
-  queryId,
   error
 })
 

@@ -7,7 +7,7 @@ import {
   DROP_READMODEL_STATE,
   DROP_VIEWMODEL_STATE,
   HOT_MODULE_REPLACEMENT,
-  LOAD_READMODEL_STATE_FAILURE,
+  QUERY_READMODEL_FAILURE,
   QUERY_READMODEL_REQUEST,
   QUERY_READMODEL_SUCCESS,
   LOAD_VIEWMODEL_STATE_FAILURE,
@@ -251,7 +251,7 @@ describe('actions', () => {
           error
         )
       ).toEqual({
-        type: LOAD_READMODEL_STATE_FAILURE,
+        type: QUERY_READMODEL_FAILURE,
         readModelName,
         resolverName,
         resolverArgs,

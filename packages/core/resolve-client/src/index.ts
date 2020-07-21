@@ -14,7 +14,9 @@ import {
   Command,
   CommandResult,
   CommandCallback,
-  CommandOptions
+  CommandOptions,
+  ReadModelQuery,
+  ViewModelQuery
 } from './client'
 
 export {
@@ -35,5 +37,7 @@ export {
   Command,
   CommandOptions,
   CommandResult,
-  CommandCallback
+  CommandCallback,
+  ReadModelQuery,
+  ViewModelQuery
 }

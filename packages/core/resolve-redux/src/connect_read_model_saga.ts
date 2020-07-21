@@ -1,15 +1,15 @@
 import { take, put, delay } from 'redux-saga/effects'
-import hash from 'uuid'
 
 import getHash from './get_hash'
 import { queryReadModelRequest } from './actions'
 import {
   DISCONNECT_READMODEL,
-  LOAD_READMODEL_STATE_FAILURE,
+  QUERY_READMODEL_FAILURE,
   QUERY_READMODEL_SUCCESS
 } from './action_types'
 
 import { HttpError } from './create_api'
+import { generateQueryId } from './helpers'
 
 /*
   Saga is launched on action `CONNECT_READMODEL`, emitted by read model connector.
@@ -20,13 +20,15 @@ import { HttpError } from './create_api'
   `LOAD_READMODEL_STATE_SUCCESS` and `LOAD_READMODEL_STATE_FAILURE`.
 */
 
-const connectReadModelSaga = function*(sagaArgs: any, action: any) {
+const connectReadModelSaga = function*(sagaArgs: any, action: any): any {
   const {
     connectionManager,
     sagaManager,
-    sagaKey,
+    sagaKey
+    /*
     queryIdMap,
     sessionId
+    */
   } = sagaArgs
   const {
     readModelName,
@@ -50,6 +52,7 @@ const connectReadModelSaga = function*(sagaArgs: any, action: any) {
 
   yield* sagaManager.stop(`${DISCONNECT_READMODEL}${sagaKey}`)
 
+  /*
   const key = `${readModelName}${getHash(action.resolverName)}${getHash(
     action.resolverArgs
   )}`
@@ -63,21 +66,18 @@ const connectReadModelSaga = function*(sagaArgs: any, action: any) {
     `${key}${queryIdMap.get(key)}${sessionId}` as any,
     '00000000-0000-0000-0000-000000000000' as any
   )
+  */
+  const queryId = generateQueryId(readModelName, resolverName)
 
   while (true) {
     yield put(
-      queryReadModelRequest(
-        readModelName,
-        resolverName,
-        resolverArgs,
-        queryId
-      )
+      queryReadModelRequest(readModelName, resolverName, resolverArgs, queryId)
     )
 
     const loadReadModelStateResultAction = yield take(
       (action: any) =>
         (action.type === QUERY_READMODEL_SUCCESS ||
-          action.type === LOAD_READMODEL_STATE_FAILURE) &&
+          action.type === QUERY_READMODEL_FAILURE) &&
         action.queryId === queryId
     )
 
@@ -86,7 +86,7 @@ const connectReadModelSaga = function*(sagaArgs: any, action: any) {
     }
 
     if (
-      loadReadModelStateResultAction.type === LOAD_READMODEL_STATE_FAILURE &&
+      loadReadModelStateResultAction.type === QUERY_READMODEL_FAILURE &&
       loadReadModelStateResultAction.error instanceof HttpError
     ) {
       // eslint-disable-next-line no-console

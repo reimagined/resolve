@@ -75,12 +75,12 @@ export const command = (
 }
 
 type AggregateSelector = string[] | '*'
-type ViewModelQuery = {
+export type ViewModelQuery = {
   name: string
   aggregateIds: AggregateSelector
   args: any
 }
-type ReadModelQuery = {
+export type ReadModelQuery = {
   name: string
   resolver: string
   args: object
