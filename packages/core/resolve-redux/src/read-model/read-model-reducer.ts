@@ -1,6 +1,7 @@
 import getHash from '../get-hash'
 import setEntry from 'lodash.set'
 import unsetEntry from 'lodash.unset'
+import getByPath from 'lodash.get'
 
 import {
   QUERY_READMODEL_REQUEST,
@@ -14,12 +15,7 @@ import {
   QueryReadModelRequestAction,
   QueryReadModelSuccessAction
 } from './actions'
-
-export enum ReadModelResultState {
-  Requested,
-  Ready,
-  Failed
-}
+import { ReadModelResultEntry, ReadModelResultState, ResolveReduxState } from '../types'
 
 export const getEntryPath = ({
   readModelName,
@@ -32,13 +28,23 @@ export const getEntryPath = ({
 }): string =>
   `${getHash(readModelName)}.${getHash(resolverName)}.${getHash(resolverArgs)}`
 
+export const getEntry = (
+  state: ResolveReduxState,
+  selector: {
+    readModelName: string
+    resolverName: string
+    resolverArgs: any
+  },
+  placeholder?: ReadModelResultEntry
+): ReadModelResultEntry => getByPath(state, getEntryPath(selector), placeholder)
+
 export const create = (): any => {
   const handlers: { [key: string]: any } = {}
 
   handlers[QUERY_READMODEL_REQUEST] = (
-    state: any,
+    state: ResolveReduxState,
     action: QueryReadModelRequestAction
-  ): any =>
+  ): ResolveReduxState =>
     setEntry(
       {
         ...state
@@ -50,9 +56,9 @@ export const create = (): any => {
     )
 
   handlers[QUERY_READMODEL_SUCCESS] = (
-    state: any,
+    state: ResolveReduxState,
     action: QueryReadModelSuccessAction
-  ): any =>
+  ): ResolveReduxState =>
     setEntry(
       {
         ...state
@@ -66,9 +72,9 @@ export const create = (): any => {
     )
 
   handlers[QUERY_READMODEL_FAILURE] = (
-    state: any,
+    state: ResolveReduxState,
     action: QueryReadModelFailureAction
-  ): any =>
+  ): ResolveReduxState =>
     setEntry(
       {
         ...state
@@ -82,9 +88,9 @@ export const create = (): any => {
     )
 
   handlers[DROP_READMODEL_STATE] = (
-    state: any,
+    state: ResolveReduxState,
     action: DropReadModelResultAction
-  ): any => {
+  ): ResolveReduxState => {
     const newState = {
       ...state
     }
@@ -92,12 +98,11 @@ export const create = (): any => {
     return newState
   }
 
-  return (state: any = {}, action: any): any => {
+  return (state: ResolveReduxState = {}, action: any): ResolveReduxState => {
     const eventHandler = handlers[action.type]
     if (eventHandler) {
       return eventHandler(state, action)
     }
-
     return state
   }
 }

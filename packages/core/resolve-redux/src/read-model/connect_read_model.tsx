@@ -6,8 +6,22 @@ import hoistNonReactStatic from 'hoist-non-react-statics'
 import * as actions from '../actions'
 import getHash from '../get-hash'
 import connectResolveAdvanced from '../connect_resolve_advanced'
+import { ReadModelResultState, ResolveReduxState } from '../types'
+import { getEntry } from './read-model-reducer'
 
-const connectReadModel = (mapStateToOptions: any) => (Component: any): any => {
+type ReadModelConnectorOptions = {
+  readModelName: string
+  resolverName: string
+  resolverArgs: any
+}
+type ReadModelConnectorOptionsMapper = (
+  state: ResolveReduxState,
+  ownProps: any
+) => ReadModelConnectorOptions
+
+const connectReadModel = (
+  mapStateToOptions: ReadModelConnectorOptionsMapper
+) => (Component: any): any => {
   class ReadModelContainer extends React.PureComponent<any> {
     componentDidMount(): void {
       const {
@@ -65,39 +79,23 @@ const connectReadModel = (mapStateToOptions: any) => (Component: any): any => {
     }
   }
 
-  const mapStateToConnectorProps = (state: any, ownProps: any): any => {
+  const mapStateToConnectorProps = (
+    state: ResolveReduxState,
+    ownProps: any
+  ): any => {
     const connectorOptions = mapStateToOptions(state, ownProps)
 
-    const readModelName = connectorOptions.readModelName
-    const resolverName = getHash(connectorOptions.resolverName)
-    const resolverArgs = getHash(connectorOptions.resolverArgs)
-
-    const connectorMeta =
-      state.readModels &&
-      state.readModels[connectorMetaMap] &&
-      state.readModels[connectorMetaMap][
-        `${readModelName}${resolverName}${resolverArgs}`
-      ]
-        ? state.readModels[connectorMetaMap][
-            `${readModelName}${resolverName}${resolverArgs}`
-          ]
-        : {}
-
-    const { isLoading, isFailure } = connectorMeta
-
+    const entry = getEntry(state, connectorOptions)
     const data =
-      isLoading === false && isFailure === false
-        ? state.readModels[readModelName][resolverName][resolverArgs]
-        : null
-
+      entry && entry.state === ReadModelResultState.Ready ? entry.data : null
     const error =
-      isLoading === false && isFailure === true ? connectorMeta.error : null
+      entry && entry.state === ReadModelResultState.Failed ? entry.error : null
 
     return {
       ownProps,
       connectorOptions,
-      isLoading,
-      isFailure,
+      isLoading: entry && entry.state === ReadModelResultState.Requested,
+      isFailure: entry && entry.state === ReadModelResultState.Failed,
       data,
       error
     }
