@@ -1,6 +1,7 @@
 import fsExtra from 'fs-extra'
 import path from 'path'
 import webpack from 'webpack'
+import getLog from './getLog'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
@@ -9,7 +10,10 @@ import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
 
+const log = getLog('build')
+
 export default async (resolveConfig, adjustWebpackConfigs) => {
+  log.debug('Starting "build" mode')
   validateConfig(resolveConfig)
 
   const nodeModulesByAssembly = new Map()
@@ -31,6 +35,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
 
   return await new Promise((resolve, reject) => {
     compiler.run((err, { stats }) => {
+      console.log(' ') // eslint-disable-line no-console
       stats.forEach(showBuildInfo.bind(null, err))
 
       writePackageJsonsForAssemblies(
@@ -46,7 +51,12 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
         true
       )
 
-      void (hasNoErrors ? resolve() : reject(stats.toString('')))
+      if (hasNoErrors) {
+        resolve()
+        log.debug('Building complete')
+      } else {
+        reject(stats.toString(''))
+      }
     })
   })
 }

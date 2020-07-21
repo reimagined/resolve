@@ -11,6 +11,9 @@ import fsExtra from 'fs-extra'
 import showBuildInfo from './show_build_info'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
 import copyEnvToDist from './copy_env_to_dist'
+import getLog from './getLog'
+
+const log = getLog('custom')
 
 const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
   resolveConfig,
@@ -19,6 +22,7 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
 ) =>
   new Promise(async (resolve, reject) => {
     try {
+      log.debug(`Starting "${apiHandlerUrl}" mode`)
       const config = await getConfig(resolveConfig, options)
       validateConfig(config)
 
@@ -40,6 +44,7 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
 
       await new Promise((resolve, reject) => {
         compiler.run((err, { stats }) => {
+          console.log(' ') // eslint-disable-line no-console
           stats.forEach(showBuildInfo.bind(null, err))
 
           writePackageJsonsForAssemblies(
@@ -79,6 +84,7 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
 
       server.on('crash', reject)
       server.start()
+      log.debug(`Server process pid: ${server.pid}`)
 
       let broker = { stop: callback => callback() }
       if (config.eventBroker.launchBroker) {
@@ -100,6 +106,7 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
 
         broker.on('crash', reject)
         broker.start(resolve)
+        log.debug(`Bus broker process pid: ${broker.pid}`)
       }
 
       const port = Number(
@@ -119,10 +126,14 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
         while (true) {
           try {
             const response = await fetch(url)
-            if ((await response.text()) !== 'ok') {
+
+            const result = await response.text()
+            if (result !== 'ok') {
               lastError = [
                 `Error while communication with reSolve HTTP server at port ${port}`,
-                `Maybe multiple instances of reSolve applications trying to run with similar port`
+                `Maybe multiple instances of reSolve applications trying to run with similar port`,
+                `${response.status}: ${response.statusText}`,
+                `${result}`
               ].join('\n')
             }
             break
@@ -143,6 +154,9 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
         new Promise(resolve => server.stop(resolve)),
         new Promise(resolve => broker.stop(resolve))
       ])
+
+      log.debug('Server was stopped')
+      log.debug('Bus broker was stopped')
 
       if (lastError != null) {
         throw lastError

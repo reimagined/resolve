@@ -1,7 +1,5 @@
 import getLog from './get-log'
 
-const DEFAULT_BUCKET_SIZE = 100
-
 const connectEventStore = async (pool, { MySQL }) => {
   const log = getLog(`connectEventStore`)
 
@@ -10,8 +8,9 @@ const connectEventStore = async (pool, { MySQL }) => {
   const {
     eventsTableName = 'events',
     snapshotsTableName = 'snapshots',
+    secretsTableName,
+    snapshotBucketSize,
     database,
-    bucketSize,
     ...connectionOptions
   } = pool.config
 
@@ -21,18 +20,23 @@ const connectEventStore = async (pool, { MySQL }) => {
 
   log.debug(`establishing connection`)
 
+  void (secretsTableName, snapshotBucketSize)
+
   const connection = await MySQL.createConnection({
     ...connectionOptions,
     database,
     multipleStatements: true
   })
 
-  log.debug(`connected successfully`)
-
-  pool.bucketSize = bucketSize
-  if (!Number.isInteger(pool.bucketSize) || pool.bucketSize < 1) {
-    pool.bucketSize = DEFAULT_BUCKET_SIZE
+  const [[{ version }]] = await connection.query(
+    `SELECT version() AS \`version\``
+  )
+  const major = +version.split('.')[0]
+  if (isNaN(major) || major < 8) {
+    throw new Error(`Supported MySQL version 8+, but got ${version}`)
   }
+
+  log.debug(`connected successfully`)
 
   Object.assign(pool, {
     events: {

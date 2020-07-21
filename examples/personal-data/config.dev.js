@@ -21,7 +21,8 @@ const devConfig = {
     module: 'resolve-eventstore-lite',
     options: {
       databaseFile: 'data/eventstore.db',
-      secretsFile: 'data/secrets.db'
+      secretsFile: 'data/secrets.db',
+      snapshotBucketSize: 100
     }
   },
   subscribeAdapter: {

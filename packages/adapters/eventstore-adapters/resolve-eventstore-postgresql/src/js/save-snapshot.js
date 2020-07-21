@@ -1,45 +1,32 @@
-const saveSnapshot = async (
-  {
-    databaseName,
-    snapshotsTableName,
-    executeStatement,
-    escapeId,
-    escape,
-    counters,
-    bucketSize
-  },
-  snapshotKey,
-  content
-) => {
-  const databaseNameAsId = escapeId(databaseName)
-  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
+import { snapshotTrigger } from 'resolve-eventstore-base'
+import getLog from './get-log'
 
-  if (snapshotKey == null || snapshotKey.constructor !== String) {
-    throw new Error('Snapshot key must be string')
-  }
-  if (content == null || content.constructor !== String) {
-    throw new Error('Snapshot content must be string')
-  }
+const saveSnapshot = async (pool, snapshotKey, content) =>
+  snapshotTrigger(pool, snapshotKey, content, async () => {
+    const log = getLog(`saveSnapshot:${snapshotKey}`)
 
-  if (!counters.has(snapshotKey)) {
-    counters.set(snapshotKey, 0)
-  }
+    const {
+      databaseName,
+      snapshotsTableName,
+      escape,
+      escapeId,
+      executeStatement
+    } = pool
 
-  if (counters.get(snapshotKey) < bucketSize) {
-    counters.set(snapshotKey, counters.get(snapshotKey) + 1)
-    return
-  }
-  counters.set(snapshotKey, 0)
+    const databaseNameAsId = escapeId(databaseName)
+    const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
-  await executeStatement(
-    `INSERT INTO ${databaseNameAsId}.${snapshotsTableNameAsId}(
+    log.debug(`writing the snapshot to database`)
+    await executeStatement(
+      `INSERT INTO ${databaseNameAsId}.${snapshotsTableNameAsId}(
       "snapshotKey", 
       "snapshotContent"
     )
     VALUES(${escape(snapshotKey)}, ${escape(content)})
     ON CONFLICT ("snapshotKey") DO UPDATE
     SET "snapshotContent" = ${escape(content)}`
-  )
-}
+    )
+    log.debug(`the snapshot saved successfully`)
+  })
 
 export default saveSnapshot

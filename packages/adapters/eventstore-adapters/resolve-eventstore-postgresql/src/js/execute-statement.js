@@ -10,10 +10,10 @@ const executeStatement = async (pool, sql) => {
     host: pool.config.host,
     password: pool.config.password,
     keepAlive: false,
-    connectionTimeoutMillis: 5000,
-    idle_in_transaction_session_timeout: 5000,
-    query_timeout: 5000,
-    statement_timeout: 5000
+    connectionTimeoutMillis: 45000,
+    idle_in_transaction_session_timeout: 45000,
+    query_timeout: 45000,
+    statement_timeout: 45000
   })
 
   try {
