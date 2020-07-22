@@ -137,6 +137,12 @@
             { "$ref": "#/definitions/resourceConstructor" }
           ]
         },
+        "resolver": {
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
+        },
         "serializeState": {
           "oneOf": [
             { "$ref": "#/definitions/resourceInstance" },
