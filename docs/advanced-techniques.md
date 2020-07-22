@@ -114,24 +114,48 @@ The **resolve-module-uploader** module adds the following API endpoints to an ap
 
 The [cli-uploader](https://github.com/reimagined/resolve/tree/master/examples/cli-uploader) example application demonstrates how to design a file uploader utility and handle file uploads on the server.
 
-## Incremental import
+## Import-export
 
 ```js
-// Simple api-handler
-export default (req, res) => {
+import { Readable, pipeline as pipelineC } from 'stream'
 
-}
+import createEventStoreAdapter from 'resolve-eventstore-lite'
 
+const pipeline = promisify(pipelineC)
 
+const eventStore1 = createEventStoreAdapter({
+  databaseFile: './data/event-store-1.db'
+})
 
+const eventStore2 = createEventStoreAdapter({
+  databaseFile: './data/event-store-2.db'
+})
 
-
-
-
-
+await pipeline(
+  eventStore1.export(),
+  eventStore2.import()
+)
 ```
 
-or
+## Incremental import
 
-// Advanced api-handler
+##### Example api-handler
+```js
+import iconv from 'iconv-lite'
 
+async function handler(req, res) {
+  const bodyCharset = (
+    bodyOptions.find(option => option.startsWith('charset=')) || 'charset=utf-8'
+  ).substring(8)
+
+  if (bodyCharset !== 'utf-8') {
+    bodyContent = iconv.decode(iconv.encode(bodyContent, 'utf-8'), bodyCharset)
+  }
+    
+  const events = JSON.parse(body)
+
+  await req.resolve.eventstoreAdapter.incrementalImport(events)
+}
+
+export default handler
+```

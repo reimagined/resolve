@@ -909,4 +909,90 @@ export default connectStaticBasedUrls(['css', 'favicon'])(Header)
 
 ## Event store adapter
 
+An eventstore adapter is an object that must contain the following functions:
 
+#### init
+Init a database
+
+#### drop
+Drop a database
+
+#### dispose
+Disconnect
+
+#### saveEvent
+Save an event
+
+#### loadEvents
+Get an array of events and next cursor filtered by the event filter.
+
+#### getLatestEvent
+Get latest event
+
+#### import
+Get writable stream for save events
+
+#### export
+Get readable stream for load events
+
+#### freeze
+Freeze database
+
+#### unfreeze
+Unfreeze database
+
+#### isFrozen
+Get a boolean indicating whether the database is frozen 
+
+#### loadSnapshot
+Load a snapshot
+
+#### saveSnapshot
+Save a snapshot
+
+#### dropSnapshot
+Delete a snapshot
+
+#### getSecret
+Get a secret
+
+#### setSecret
+Save a secret
+
+#### deleteSecret
+Delete a secret
+
+#### incrementalImport
+Incremental import
+
+##### Example
+```js
+await eventStoreAdapter.incrementalImport(events, importId)
+```
+
+### Advanced Incremental import 
+
+##### Example
+```js
+try {
+  const importId = await eventStoreAdapter.beginIncrementalImport()
+  await eventStoreAdapter.pushIncrementalImport(events, importId)
+  await eventStoreAdapter.commitIncrementalImport(importId)
+} catch (error) {
+  await eventStoreAdapter.rollbackIncrementalImport()
+  throw error
+}
+```
+
+#### beginIncrementalImport
+Begin accumulate events for incremental import
+
+#### pushIncrementalImport
+Accumulate events for incremental import 
+
+#### commitIncrementalImport
+
+Commit accumulated events to the eventstore 
+
+#### rollbackIncrementalImport
+Drop accumulated events
