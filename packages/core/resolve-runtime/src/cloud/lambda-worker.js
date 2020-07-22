@@ -5,6 +5,7 @@ import handleDeployServiceEvent from './deploy-service-event-handler'
 import handleEventBusEvent from './event-bus-event-handler'
 import handleEventStoreEvent from './event-store-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
+import handleSubscriptionsEvent from './subscriptions-event-handler'
 import putMetrics from './metrics'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
@@ -30,6 +31,10 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
     lambdaEventType: 'EventStore',
     lambdaEventName: 'resolveSource'
+  }
+
+  resolveBase.subscriptionsCredentials = {
+    applicationLambdaArn: lambdaContext.invokedFunctionArn
   }
 
   const resolve = Object.create(resolveBase)
@@ -75,6 +80,17 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       log.debug('identified event source: cloud scheduler')
 
       const executorResult = await handleSchedulerEvent(lambdaEvent, resolve)
+
+      log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
+
+      return executorResult
+    } else if (lambdaEvent.resolveSource === 'Subscriptions') {
+      log.debug('identified event source: cloud subscriptions')
+
+      const executorResult = await handleSubscriptionsEvent(
+        lambdaEvent,
+        resolve
+      )
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
