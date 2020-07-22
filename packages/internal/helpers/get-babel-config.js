@@ -93,6 +93,28 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
       ]
       break
     }
+    case 'tsx': {
+      presets = [
+        [
+          '@babel/preset-typescript',
+          {
+            isTSX: true,
+            allExtensions: true
+          }
+        ],
+        [
+          '@babel/preset-env',
+          {
+            loose,
+            targets,
+            forceAllTransforms,
+            modules
+          }
+        ],
+        '@babel/preset-react'
+      ]
+      break
+    }
     default: {
       throw new Error(
         `"sourceType" must be one of ["js", "ts"]. sourceType = ${sourceType}`

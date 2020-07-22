@@ -80,9 +80,20 @@ const getCompileConfigs = () => {
       config.inputDir = path.join(config.directory, config.inputDir)
       config.outDir = path.join(config.directory, config.outDir)
       config.outFileExtension = config.moduleType === 'mjs' ? '.mjs' : '.js'
-      config.extensions = config.sourceType === 'ts' ? ['.ts', '.js'] : '.js'
       config.deleteDirOnStart = false
       config.filenames = [config.inputDir]
+
+      switch (config.sourceType) {
+        case 'ts':
+          config.extensions = ['.ts', '.js']
+          break
+        case 'tsx':
+          config.extensions = ['.ts', '.tsx', '.js', '.jsx']
+          break
+        default:
+          config.extensions = '.js'
+          break
+      }
 
       configs.push(config)
     }
@@ -91,6 +102,7 @@ const getCompileConfigs = () => {
   changeOrder(configs, 'resolve-core')
   changeOrder(configs, 'resolve-client')
   changeOrder(configs, 'resolve-react-hooks')
+  changeOrder(configs, 'resolve-redux')
 
   _configs = configs
 

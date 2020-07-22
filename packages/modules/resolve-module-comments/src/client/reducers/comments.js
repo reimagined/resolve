@@ -1,13 +1,13 @@
-import { actionTypes } from 'resolve-redux'
+import { internal } from 'resolve-redux'
 
 import injectDefaults from '../../common/inject-defaults'
 
 const {
   CONNECT_READMODEL,
   DISCONNECT_READMODEL,
-  LOAD_READMODEL_STATE_SUCCESS,
+  QUERY_READMODEL_SUCCESS,
   SEND_COMMAND_SUCCESS
-} = actionTypes
+} = internal.actionTypes
 
 const createCommentsReducer = ({
   aggregateName,
@@ -52,7 +52,7 @@ const createCommentsReducer = ({
   }
 
   if (
-    action.type === LOAD_READMODEL_STATE_SUCCESS &&
+    action.type === QUERY_READMODEL_SUCCESS &&
     action.readModelName === readModelName &&
     action.resolverName === commentsTree
   ) {

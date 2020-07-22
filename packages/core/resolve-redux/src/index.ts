@@ -20,6 +20,12 @@ import createStore from './create_store'
 import sendAggregateAction from './send_aggregate_action'
 import getOrigin from './get_origin'
 
+import * as actionTypes from './action-types'
+
+const internal = {
+  actionTypes
+}
+
 export {
   createViewModelsReducer,
   createJwtReducer,
@@ -43,5 +49,6 @@ export {
   createStore,
   deserializeInitialState,
   sendAggregateAction,
-  getOrigin
+  getOrigin,
+  internal
 }

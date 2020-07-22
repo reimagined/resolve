@@ -80,9 +80,16 @@
   },
   "babelCompile": [
     {
-      "sourceType": "ts",
+      "sourceType": "tsx",
+      "moduleType": "es",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "sourceType": "tsx",
       "moduleType": "cjs",
-      "moduleTarget": "client",
+      "moduleTarget": "server",
       "inputDir": "./src",
       "outDir": "./lib"
     }
