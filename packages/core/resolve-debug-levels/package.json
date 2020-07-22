@@ -37,12 +37,7 @@
   },
   "babelCompile": [
     {
-      "moduleType": "es",
-      "moduleTarget": "client",
-      "inputDir": "./src",
-      "outDir": "./es"
-    },
-    {
+      "sourceType": "ts",
       "moduleType": "cjs",
       "moduleTarget": "client",
       "inputDir": "./src",

@@ -24,7 +24,7 @@ const sendEvents = async (payload, resolve) => {
         qos: 1
       }
 
-      await resolve.mqtt.publish(eventDescriptor).promise()
+      // await resolve.mqtt.publish(eventDescriptor).promise()
     }
 
     return

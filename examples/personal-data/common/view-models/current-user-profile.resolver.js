@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 
 const currentUserProfileResolver = async ({ resolve }, { jwt: token }) => {
+  console.log('view model resolver')
   const { userId } = jwt.verify(token, process.env.JWT_WM_SECRET)
   const user = await resolve.executeQuery({
     modelName: 'user-profiles',
