@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import qs from 'querystring'
 
 const SECRET = 'secret'
 
@@ -12,7 +13,12 @@ const getSubscribeAdapterOptions = async ({ subscriptionsCredentials }) => {
     SECRET
   )
 
-  const subscribeUrl = `${RESOLVE_WS_URL}?token=${token}`
+  const query = qs.stringify({
+    token,
+    applicationArn: subscriptionsCredentials.applicationLambdaArn
+  })
+
+  const subscribeUrl = `${RESOLVE_WS_URL}?${query}`
 
   return {
     appId: RESOLVE_DEPLOYMENT_ID,
