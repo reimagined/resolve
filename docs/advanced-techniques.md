@@ -113,3 +113,25 @@ The **resolve-module-uploader** module adds the following API endpoints to an ap
 - `/api/uploader/getToken` - Takes user credentials and returns the user's authorization token.
 
 The [cli-uploader](https://github.com/reimagined/resolve/tree/master/examples/cli-uploader) example application demonstrates how to design a file uploader utility and handle file uploads on the server.
+
+## Incremental import
+
+```js
+// Simple api-handler
+export default (req, res) => {
+
+}
+
+
+
+
+
+
+
+
+```
+
+or
+
+// Advanced api-handler
+

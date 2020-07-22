@@ -906,3 +906,7 @@ Fixes URLs passed to the specified props to correct the static resource folder p
 ```js
 export default connectStaticBasedUrls(['css', 'favicon'])(Header)
 ```
+
+## Event store adapter
+
+

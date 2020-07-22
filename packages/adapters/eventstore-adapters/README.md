@@ -21,6 +21,7 @@ A eventstore adapter is an object that must contain the following functions:
 - `getSecret` - returns a secret
 - `setSecret` - saves a secret
 - `deleteSecret` - delete a secret
+- `incrementalImport` - incremental import
 - `beginIncrementalImport` - begin accumulate events for incremental import
 - `pushIncrementalImport` - accumulate events for incremental import 
 - `commitIncrementalImport` - commit accumulated events to eventstore 
