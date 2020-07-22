@@ -1,15 +1,12 @@
-/*
-import createResolveMiddleware from './create_resolve_middleware'
 import createViewModelsReducer from './create_view_models_reducer'
-import createReadModelsReducer from './create_read_models_reducer'
 import createJwtReducer from './create_jwt_reducer'
-import connectReadModel from './connect_read_model'
+import connectReadModel from './read-model/connect-read-model'
 import connectViewModel from './connect_view_model'
 import connectResolveAdvanced from './connect_resolve_advanced'
 import createApi from './create_api'
 import createConnectionManager from './create_connection_manager'
 import createSagaManager from './create_saga_manager'
-import getHash from './get_hash'
+import getHash from './get-hash'
 import getRootBasedUrl from './get_root_based_url'
 import getStaticBasedUrl from './get_static_based_url'
 import connectStaticBasedUrls from './connect_static_based_urls'
@@ -25,9 +22,7 @@ import getOrigin from './get_origin'
 
 export {
   createViewModelsReducer,
-  createReadModelsReducer,
   createJwtReducer,
-  createResolveMiddleware,
   connectViewModel,
   connectReadModel,
   connectResolveAdvanced,
@@ -50,5 +45,3 @@ export {
   sendAggregateAction,
   getOrigin
 }
-*/
-

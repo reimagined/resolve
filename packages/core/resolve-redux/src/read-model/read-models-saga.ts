@@ -5,9 +5,9 @@ import createSagaManager from '../create_saga_manager'
 import { CONNECT_READMODEL, DISCONNECT_READMODEL } from '../action-types'
 import connectReadModelSaga from './connect-read-model-saga'
 import disconnectReadModelSaga from './disconnect-read-model-saga'
-import { RootSagaArgs } from '../types'
+import { ChildSagaArgs } from '../types'
 
-const readModelsSaga = function*(sagaArgs: RootSagaArgs): any {
+const readModelsSaga = function*(sagaArgs: ChildSagaArgs): any {
   const sagaManager = createSagaManager()
 
   while (true) {

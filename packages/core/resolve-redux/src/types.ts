@@ -40,11 +40,14 @@ export type ReduxStoreContext = {
   queryMethod: string
 } & Context
 
-export type RootSagaArgs = {
+export type ChildSagaArgs = {
   store: any
   sessionId: any
-  customSagas: any[]
   api: API
   queryIdMap: Map<string, string>
   client: Client
 } & ReduxStoreContext
+
+export type RootSagaArgs = {
+  customSagas: any[]
+} & ChildSagaArgs
