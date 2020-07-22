@@ -3,9 +3,9 @@ import {
   optimisticUnvoteStory,
   optimisticUpvoteStory
 } from '../actions/optimistic-actions'
-import { actionTypes } from 'resolve-redux'
+import { internal } from 'resolve-redux'
 
-const { SEND_COMMAND_SUCCESS } = actionTypes
+const { SEND_COMMAND_SUCCESS } = internal.actionTypes
 
 export default function*() {
   yield takeEvery(

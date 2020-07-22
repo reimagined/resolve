@@ -1,7 +1,7 @@
 import { takeEvery, delay } from 'redux-saga/effects'
-import { actionTypes } from 'resolve-redux'
+import { internal } from 'resolve-redux'
 
-const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = actionTypes
+const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = internal.actionTypes
 
 export default function*(history, { api }) {
   yield takeEvery(

@@ -2,9 +2,9 @@ import { Client, Context } from 'resolve-client'
 import { API } from './create_api'
 
 export enum ReadModelResultState {
-  Requested,
-  Ready,
-  Failed
+  Requested = 'requested',
+  Ready = 'ready',
+  Failed = 'failed'
 }
 
 export type ReadModelResultEntry = {
@@ -14,13 +14,13 @@ export type ReadModelResultEntry = {
   error?: Error
 }
 
-type ReadModelResultMapByArgs = {
+export type ReadModelResultMapByArgs = {
   [key: string]: ReadModelResultEntry
 }
-type ReadModelResultMapByResolver = {
+export type ReadModelResultMapByResolver = {
   [key: string]: ReadModelResultMapByArgs
 }
-type ReadModelResultMapByName = {
+export type ReadModelResultMapByName = {
   [key: string]: ReadModelResultMapByResolver
 }
 

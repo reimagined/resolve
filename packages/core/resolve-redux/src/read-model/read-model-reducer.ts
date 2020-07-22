@@ -15,7 +15,12 @@ import {
   QueryReadModelRequestAction,
   QueryReadModelSuccessAction
 } from './actions'
-import { ReadModelResultEntry, ReadModelResultState, ReduxState } from '../types'
+import {
+  ReadModelResultEntry,
+  ReadModelResultMapByName,
+  ReadModelResultState,
+  ReduxState
+} from '../types'
 
 export const getEntryPath = ({
   readModelName,
@@ -29,14 +34,15 @@ export const getEntryPath = ({
   `${getHash(readModelName)}.${getHash(resolverName)}.${getHash(resolverArgs)}`
 
 export const getEntry = (
-  state: ReduxState,
+  state: ReadModelResultMapByName | undefined,
   selector: {
     readModelName: string
     resolverName: string
     resolverArgs: any
   },
   placeholder?: ReadModelResultEntry
-): ReadModelResultEntry => getByPath(state, getEntryPath(selector), placeholder)
+): ReadModelResultEntry =>
+  getByPath(state, getEntryPath(selector), placeholder) as ReadModelResultEntry
 
 export const create = (): any => {
   const handlers: { [key: string]: any } = {}
