@@ -187,6 +187,12 @@
             { "$ref": "#/definitions/resourceConstructor" }
           ]
         },
+        "classifier": {
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
+        },
         "connectorName": {
           "type": "string"
         }

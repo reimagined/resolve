@@ -59,6 +59,10 @@ const commitXATransaction = async (
       })
 
       const appliedEventsList = `${pool.coercer(result.records[0][0])}`.replace(/;$/, '')
+        .split(';').map(record => {
+          const [threadId, threadCounter] = record.split(':')
+          return {threadId, threadCounter}
+        })
 
       return appliedEventsList
     }

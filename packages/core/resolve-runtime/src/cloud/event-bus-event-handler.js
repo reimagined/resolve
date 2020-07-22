@@ -4,6 +4,13 @@ import { OMIT_BATCH } from 'resolve-readmodel-base'
 
 const log = debugLevels('resolve:resolve-runtime:event-bus-event-handler')
 
+const serializeError = error => ({
+  name: error.name != null ? String(error.name)  : error.name,
+  code: String(error.code),
+  message: String(error.message),
+  stack: String(error.stack)
+})
+
 const sendEvents = async (payload, resolve) => {
   const segment = resolve.performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('applyEventsFromBus')
@@ -11,10 +18,24 @@ const sendEvents = async (payload, resolve) => {
   const {
     xaTransactionId,
     eventSubscriber,
-    events,
+    deliveryStrategy,
+    eventTypes,
+    aggregateIds,
+    cursor,
     batchId,
     properties
   } = payload
+
+  const eventsCountLimit = deliveryStrategy === 'active-xa-transaction' ? 10 * 1000 * 1000 : 10
+
+  const { events: incomingEvents } = await resolve.eventstoreAdapter.loadEvents({
+    eventTypes,
+    limit: eventsCountLimit,
+    eventsSizeLimit: 1024 * 1024 * 1024,
+    aggregateIds,
+    cursor
+  })
+
   if (eventSubscriber === 'websocket' && batchId == null) {
     // TODO: Inject MQTT events directly from cloud event bus lambda
     for (const event of events) {
@@ -30,6 +51,17 @@ const sendEvents = async (payload, resolve) => {
     return
   }
 
+  let pureEventSubscriber, parallelGroupName
+  try {
+    void ({ pureEventSubscriber, parallelGroupName = 'default' } = JSON.parse(eventSubscriber))
+    if(pureEventSubscriber == null || pureEventSubscriber.constructor !== String &&
+      parallelGroupName == null || parallelGroupName.constructor !== String) {
+        throw null
+    }
+  } catch(error) {
+    throw new Error(`Incorrect event subscriber ${eventSubscriber}`)
+  }
+
   log.debug('applying events started')
   log.verbose(JSON.stringify({ eventSubscriber, properties }, null, 2))
 
@@ -40,6 +72,14 @@ const sendEvents = async (payload, resolve) => {
     if (listenerInfo == null) {
       throw new Error(`Listener ${eventSubscriber} does not exist`)
     }
+
+    const events = []
+    for(const event of incomingEvents) {
+      if(await listenerInfo.classifier(event) === parallelGroupName) {
+        events.push(event)
+      }
+    }
+    incomingEvents.length = 0
 
     const updateByEvents = listenerInfo.isSaga
       ? resolve.executeSaga.updateByEvents
@@ -69,44 +109,33 @@ const sendEvents = async (payload, resolve) => {
     return
   }
 
-  if (result != null && result.constructor === Error) {
+  if ((result != null && result.constructor === Error) || (result == null || result.constructor !== Object)) {
     result = {
-      error: {
-        name: result.name != null ? String(result.name) : result.name,
-        code: String(result.code),
-        message: String(result.message),
-        stack: String(result.stack)
-      },
+      error: result == null || result.constructor !== Object
+        ? serializeError(new Error(`Result is unknown entity ${JSON.stringify(result)}`))
+        : serializeError(result),
+      appliedEventsList: [],
       successEvent: null,
       failedEvent: null
     }
-  } else if (result == null || result.constructor !== Object) {
-    result = {
-      error: {
-        message: `Result is unknown entity ${JSON.stringify(result)}`
-      },
-      successEvent: null,
-      failedEvent: null
-    }
-  } else if (result.error != null && result.error.constructor === Error) {
-    result.error = {
-      name:
-        result.error.name != null
-          ? String(result.error.name)
-          : result.error.name,
-      code: String(result.error.code),
-      message: String(result.error.message),
-      stack: String(result.error.stack)
-    }
+  } else if (result.error.constructor === Error) {
+    result.error = serializeError(result.error)
   }
 
   const endTime = Date.now()
   log.debug('applying events successfully')
   log.verbose(`event count = ${events.length}, time = ${endTime - startTime}ms`)
 
+  const nextCursor = await resolve.eventstoreAdapter.getNextCursor(cursor, result.appliedEventsList)
+
   await invokeEventBus(resolve.eventstoreCredentials, 'acknowledge', {
     batchId,
-    result
+    result: {
+      successEvent: result.successEvent,
+      failedEvent: result.failedEvent,
+      cursor: nextCursor,
+      error: result.error
+    }
   })
 }
 
@@ -119,6 +148,7 @@ const beginXATransaction = async (payload, resolve) => {
   const beginXATransaction = listenerInfo.isSaga
     ? resolve.executeSaga.beginXATransaction
     : resolve.executeQuery.beginXATransaction
+
   const xaTransactionId = await beginXATransaction({
     modelName: eventSubscriber,
     batchId
@@ -128,7 +158,7 @@ const beginXATransaction = async (payload, resolve) => {
 }
 
 const commitXATransaction = async (payload, resolve) => {
-  const { eventSubscriber, batchId, xaTransactionId, dryRun } = payload
+  const { eventSubscriber, batchId, xaTransactionId, cursor, dryRun } = payload
   const listenerInfo = resolve.eventListeners.get(eventSubscriber)
   if (listenerInfo == null) {
     throw new Error(`Listener ${eventSubscriber} does not exist`)
@@ -136,14 +166,20 @@ const commitXATransaction = async (payload, resolve) => {
   const commitXATransaction = listenerInfo.isSaga
     ? resolve.executeSaga.commitXATransaction
     : resolve.executeQuery.commitXATransaction
-  const maybeEventList = await commitXATransaction({
+
+  const result = await commitXATransaction({
     modelName: eventSubscriber,
     batchId,
     xaTransactionId,
     dryRun
   })
 
-  return maybeEventList
+  if(dryRun) {
+    const nextCursor = await resolve.eventstoreAdapter.getNextCursor(cursor, result)
+    return nextCursor
+  } else {
+    return result
+  }
 }
 
 const rollbackXATransaction = async (payload, resolve) => {
@@ -155,6 +191,7 @@ const rollbackXATransaction = async (payload, resolve) => {
   const rollbackXATransaction = listenerInfo.isSaga
     ? resolve.executeSaga.rollbackXATransaction
     : resolve.executeQuery.rollbackXATransaction
+
   await rollbackXATransaction({
     modelName: eventSubscriber,
     batchId,
@@ -168,9 +205,11 @@ const drop = async (payload, resolve) => {
   if (listenerInfo == null) {
     throw new Error(`Listener ${eventSubscriber} does not exist`)
   }
+
   const drop = listenerInfo.isSaga
     ? resolve.executeSaga.drop
     : resolve.executeQuery.drop
+
   await drop(eventSubscriber)
 }
 

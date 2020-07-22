@@ -61,7 +61,22 @@ export default ({ resolveConfig, isClient }) => {
       imports,
       constants
     })
+
     exports.push(`, projection: projection_${index}`)
+
+    importResource({
+      resourceName: `classifier_${index}`,
+      resourceValue: readModel.classifier,
+      runtimeMode: RUNTIME_ENV_NOWHERE,
+      importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
+      calculateHash: 'resolve-read-model-projection-hash',
+      instanceFallback: 'resolve-runtime/lib/common/defaults/classifier.js',
+      imports,
+      constants
+    })
+
+
     exports.push(`, invariantHash: projection_${index}_hash`)
 
     exports.push(`})`, ``)

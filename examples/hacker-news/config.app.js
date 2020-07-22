@@ -16,6 +16,14 @@ const appConfig = {
       name: 'HackerNews',
       projection: 'common/read-models/hacker-news.projection.js',
       resolvers: 'common/read-models/hacker-news.resolvers.js',
+      classifier: 'common/read-models/hacker-news.classifier.js',
+      connectorName: 'hackerNews'
+    },
+    {
+      name: 'UserActions',
+      projection: 'common/read-models/user-actions.projection.js',
+      resolvers: 'common/read-models/user-actions.resolvers.js',
+      classifier: 'common/read-models/user-actions.classifier.js',
       connectorName: 'hackerNews'
     },
     {
