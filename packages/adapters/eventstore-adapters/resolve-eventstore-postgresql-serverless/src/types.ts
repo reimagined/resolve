@@ -24,7 +24,7 @@ export type AdapterPool = {
     secretsTableName: string
     snapshotsTableName: string
     region?: string
-    bucketSize?: number
+    snapshotBucketSize?: number
   }
   rdsDataService?: typeof RDSDataService
   dbClusterOrInstanceArn?: string

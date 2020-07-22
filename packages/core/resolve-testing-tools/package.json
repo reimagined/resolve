@@ -1,6 +1,6 @@
 {
   "name": "resolve-testing-tools",
-  "version": "0.24.7",
+  "version": "0.24.11",
   "description": "Tools used to test reSolve applications.",
   "engines": {
     "node": ">=10.9"
@@ -28,9 +28,9 @@
     "@babel/runtime": "7.9.6",
     "jest": "26.0.1",
     "sinon": "7.2.2",
-    "resolve-query": "0.24.7",
-    "resolve-readmodel-lite": "0.24.7",
-    "resolve-eventstore-lite": "0.24.7"
+    "resolve-query": "0.24.11",
+    "resolve-readmodel-lite": "0.24.11",
+    "resolve-eventstore-lite": "0.24.11"
   },
   "babelCompile": [
     {

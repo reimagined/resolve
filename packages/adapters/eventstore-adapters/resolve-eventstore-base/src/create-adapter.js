@@ -1,3 +1,4 @@
+import getLog from './get-log'
 import getSecretsManagerFallback from './get-secrets-manager-fallback'
 
 const createAdapter = (
@@ -10,6 +11,7 @@ const createAdapter = (
     loadEvents,
     importStream,
     exportStream,
+    incrementalImport,
     getNextCursor
   },
   {
@@ -30,12 +32,26 @@ const createAdapter = (
     saveSnapshot,
     dropSnapshot,
     getSecretsManager = getSecretsManagerFallback,
+    beginIncrementalImport,
+    commitIncrementalImport,
+    rollbackIncrementalImport,
+    pushIncrementalImport,
     ...adapterSpecificArguments
   },
   options
 ) => {
+  const log = getLog(`createAdapter`)
   const config = { ...options }
   const pool = { config, disposed: false, validateEventFilter }
+
+  let bucketSize = 100
+  const { snapshotBucketSize } = config
+  if (Number.isSafeInteger(snapshotBucketSize) && snapshotBucketSize > 0) {
+    bucketSize = snapshotBucketSize
+    log.debug(`snapshot bucket size explicitly set to ${bucketSize}`)
+  } else {
+    log.debug(`snapshot bucket size defaulted to ${bucketSize}`)
+  }
 
   let connectPromiseResolve
   const connectPromise = new Promise(resolve => {
@@ -53,7 +69,8 @@ const createAdapter = (
     connectPromise,
     connectPromiseResolve,
     shapeEvent,
-    counters: new Map()
+    counters: new Map(),
+    bucketSize
   })
 
   const adapter = {
@@ -72,7 +89,12 @@ const createAdapter = (
     getSecretsManager: wrapMethod(pool, getSecretsManager),
     loadSnapshot: wrapMethod(pool, loadSnapshot),
     saveSnapshot: wrapMethod(pool, saveSnapshot),
-    dropSnapshot: wrapMethod(pool, dropSnapshot)
+    dropSnapshot: wrapMethod(pool, dropSnapshot),
+    pushIncrementalImport: wrapMethod(pool, pushIncrementalImport),
+    beginIncrementalImport: wrapMethod(pool, beginIncrementalImport),
+    commitIncrementalImport: wrapMethod(pool, commitIncrementalImport),
+    rollbackIncrementalImport: wrapMethod(pool, rollbackIncrementalImport),
+    incrementalImport: wrapMethod(pool, incrementalImport)
   }
 
   Object.assign(pool, adapter)

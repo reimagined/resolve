@@ -1,25 +1,17 @@
-const saveSnapshot = async (pool, snapshotKey, content) => {
-  if (snapshotKey == null || snapshotKey.constructor !== String) {
-    throw new Error('Snapshot key must be string')
-  }
-  if (content == null || content.constructor !== String) {
-    throw new Error('Snapshot content must be string')
-  }
+import { snapshotTrigger } from 'resolve-eventstore-base'
+import getLog from './get-log'
 
-  if (!pool.counters.has(snapshotKey)) {
-    pool.counters.set(snapshotKey, 0)
-  }
+const saveSnapshot = async (pool, snapshotKey, content) =>
+  snapshotTrigger(pool, snapshotKey, content, async () => {
+    const log = getLog(`saveSnapshot:${snapshotKey}`)
+    const { escape, escapeId, database, snapshotsTableName } = pool
 
-  if (pool.counters.get(snapshotKey) < pool.bucketSize) {
-    pool.counters.set(snapshotKey, pool.counters.get(snapshotKey) + 1)
-    return
-  }
-  pool.counters.set(snapshotKey, 0)
-
-  await pool.database.exec(
-    `INSERT INTO ${pool.escapeId(pool.snapshotsTableName)} 
-    VALUES (${pool.escape(snapshotKey)}, ${pool.escape(content)})`
-  )
-}
+    log.debug(`writing the snapshot to database`)
+    await database.exec(
+      `REPLACE INTO ${escapeId(snapshotsTableName)} 
+       VALUES (${escape(snapshotKey)}, ${escape(content)})`
+    )
+    log.debug(`the snapshot saved successfully`)
+  })
 
 export default saveSnapshot

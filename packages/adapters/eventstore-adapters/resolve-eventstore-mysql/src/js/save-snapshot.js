@@ -1,38 +1,25 @@
-const saveSnapshot = async (
-  {
-    events: { snapshotsTableName, connection },
-    escapeId,
-    escape,
-    counters,
-    bucketSize
-  },
-  snapshotKey,
-  content
-) => {
-  if (snapshotKey == null || snapshotKey.constructor !== String) {
-    throw new Error('Snapshot key must be string')
-  }
-  if (content == null || content.constructor !== String) {
-    throw new Error('Snapshot content must be string')
-  }
+import { snapshotTrigger } from 'resolve-eventstore-base'
+import getLog from './get-log'
 
-  if (!counters.has(snapshotKey)) {
-    counters.set(snapshotKey, 0)
-  }
+const saveSnapshot = async (pool, snapshotKey, content) =>
+  snapshotTrigger(pool, snapshotKey, content, async () => {
+    const log = getLog(`saveSnapshot:${snapshotKey}`)
+    const {
+      events: { snapshotsTableName, connection },
+      escapeId,
+      escape
+    } = pool
 
-  if (counters.get(snapshotKey) < bucketSize) {
-    counters.set(snapshotKey, counters.get(snapshotKey) + 1)
-    return
-  }
-  counters.set(snapshotKey, 0)
+    const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
-  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
+    log.debug(`writing the snapshot to database`)
 
-  await connection.query(
-    `INSERT INTO ${snapshotsTableNameAsId}(\`SnapshotKey\`, \`SnapshotContent\`)
-    VALUES(${escape(snapshotKey)}, ${escape(content)})
-    ON DUPLICATE KEY UPDATE \`SnapshotContent\` = ${escape(content)}`
-  )
-}
+    await connection.query(
+      `INSERT INTO ${snapshotsTableNameAsId}(\`SnapshotKey\`, \`SnapshotContent\`)
+       VALUES(${escape(snapshotKey)}, ${escape(content)})
+       ON DUPLICATE KEY UPDATE \`SnapshotContent\` = ${escape(content)}`
+    )
+    log.debug(`the snapshot saved successfully`)
+  })
 
 export default saveSnapshot

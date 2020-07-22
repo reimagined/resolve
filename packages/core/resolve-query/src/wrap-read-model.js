@@ -383,6 +383,8 @@ const updateByEvents = async (
           lastError = null
         } else {
           lastError = Object.create(Error.prototype, {
+            name: { value: error.name, enumerable: true },
+            code: { value: error.code, enumerable: true },
             message: { value: error.message, enumerable: true },
             stack: { value: error.stack, enumerable: true }
           })

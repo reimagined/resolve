@@ -25,6 +25,10 @@ import getSecretsManager from '../src/secrets-manager'
 import loadSnapshot from '../src/js/load-snapshot'
 import saveSnapshot from '../src/js/save-snapshot'
 import dropSnapshot from '../src/js/drop-snapshot'
+import beginIncrementalImport from '../src/js/begin-incremental-import'
+import commitIncrementalImport from '../src/js/commit-incremental-import'
+import rollbackIncrementalImport from '../src/js/rollback-incremental-import'
+import pushIncrementalImport from '../src/js/push-incremental-import'
 
 import createResource from '../src/resource/create'
 import disposeResource from '../src/resource/dispose'
@@ -61,6 +65,10 @@ jest.mock('../src/secrets-manager', () => jest.fn())
 jest.mock('../src/js/load-snapshot', () => jest.fn())
 jest.mock('../src/js/save-snapshot', () => jest.fn())
 jest.mock('../src/js/drop-snapshot', () => jest.fn())
+jest.mock('../src/js/begin-incremental-import', () => jest.fn())
+jest.mock('../src/js/commit-incremental-import', () => jest.fn())
+jest.mock('../src/js/rollback-incremental-import', () => jest.fn())
+jest.mock('../src/js/push-incremental-import', () => jest.fn())
 
 jest.mock('../src/resource/create', () => jest.fn())
 jest.mock('../src/resource/dispose', () => jest.fn())
@@ -95,7 +103,11 @@ test('generic createAdapter invoked', () => {
     getSecretsManager,
     loadSnapshot,
     saveSnapshot,
-    dropSnapshot
+    dropSnapshot,
+    beginIncrementalImport,
+    commitIncrementalImport,
+    rollbackIncrementalImport,
+    pushIncrementalImport
   })
 })
 

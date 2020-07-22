@@ -30,7 +30,8 @@ const devConfig = {
     module: 'resolve-eventstore-lite',
     options: {
       databaseFile: 'data/storage.db',
-      secretsFile: 'data/secrets.db'
+      secretsFile: 'data/secrets.db',
+      snapshotBucketSize: 100
     }
   },
   schedulers: {

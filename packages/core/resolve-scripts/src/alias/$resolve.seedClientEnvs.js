@@ -1,11 +1,22 @@
 import { message } from '../constants'
 import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
+const CLIENT_ENV_KEY = '__CLIENT_ENV__'
+
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
       `${message.serverAliasInClientCodeError}$resolve.seedClientEnvs`
     )
+  }
+  if (!resolveConfig.hasOwnProperty(CLIENT_ENV_KEY)) {
+    Object.defineProperty(resolveConfig, CLIENT_ENV_KEY, {
+      value: {
+        showInformationWarn: true,
+        exposedEnvs: new Set()
+      },
+      enumerable: false
+    })
   }
 
   const clientEnvs = []
@@ -33,9 +44,16 @@ export default ({ resolveConfig, isClient }) => {
 
   /* eslint-disable no-console */
   if (clientEnvs.length > 0) {
-    console.log('Following environment variables will be sent into browser:')
-    clientEnvs.forEach(env => console.log(` * ${env}`))
-    console.log('')
+    if (resolveConfig[CLIENT_ENV_KEY].showInformationWarn) {
+      console.log('Following environment variables will be sent into browser:')
+      resolveConfig[CLIENT_ENV_KEY].showInformationWarn = false
+    }
+    for (const env of clientEnvs) {
+      if (!resolveConfig[CLIENT_ENV_KEY].exposedEnvs.has(env)) {
+        console.log(` * ${env}`)
+        resolveConfig[CLIENT_ENV_KEY].exposedEnvs.add(env)
+      }
+    }
   }
   /* eslint-enable no-console */
 

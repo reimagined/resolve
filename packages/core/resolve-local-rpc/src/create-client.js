@@ -61,8 +61,12 @@ function request(address, preExecHooks, postExecHooks, method, ...args) {
             try {
               result = Buffer.concat(buffers).toString()
               if (res.statusCode !== 200) {
-                const error = new Error(result)
-                error.code = res.statusCode
+                const responseError = JSON.parse(result)
+                const error = new Error(responseError.message)
+                error.code = responseError.code
+                error.name = responseError.name
+                error.stack = responseError.stack
+
                 throw error
               }
               try {

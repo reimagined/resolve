@@ -52,18 +52,23 @@ const loadEventsByTimestamp = async (
           `WITH "filteredEvents" AS (
             SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}
             ${resultQueryCondition}
-            ORDER BY "timestamp" ASC
+            ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC
             LIMIT ${+dynamicBatchSize}
           ), "sizedEvents" AS (
             SELECT "filteredEvents".*,
             SUM("filteredEvents"."eventSize") OVER (
-              ORDER BY "filteredEvents"."timestamp"
+              ORDER BY "filteredEvents"."timestamp",
+              "filteredEvents"."threadCounter",
+              "filteredEvents"."threadId"
             ) AS "totalEventSize"
             FROM "filteredEvents"
           )
           SELECT * FROM "sizedEvents"
           WHERE "sizedEvents"."totalEventSize" < 512000
-          ORDER BY "sizedEvents"."timestamp" ASC`
+          ORDER BY "sizedEvents"."timestamp" ASC
+          "sizedEvents"."threadCounter" ASC,
+          "sizedEvents"."threadId" ASC
+          `
 
         rows = await executeStatement(sqlQuery)
         break
