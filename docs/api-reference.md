@@ -1012,7 +1012,7 @@ The **resolve-react-hooks** library provides React hooks that you can use to con
 | Hook                                    | Description                                                              |
 | --------------------------------------- | ------------------------------------------------------------------------ |
 | [useCommand](#useCommand)               | Initializes a command that can be passed to the backend.                 |
-| [useCommandBuilder](#useCommandBuilder) | Allows to generate commands based on input parameters.                   |
+| [useCommandBuilder](#useCommandBuilder) | Allows a component to generate commands based on input parameters.                   |
 | [useViewModel](#useViewModel)           | Establishes a WebSocket connection to a reSolve View Model.              |
 | [useQuery](#useQuery)                   | Allows a component to send queries to a reSolve Read Model or View Model.|
 
@@ -1050,7 +1050,7 @@ const ShoppingList = ({
 
 #### useCommandBuilder
 
-Allows to generate commands based on input parameters.
+Allows a component to generate commands based on input parameters.
 
 ##### Example
 
