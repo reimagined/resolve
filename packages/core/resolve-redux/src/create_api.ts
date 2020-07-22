@@ -105,10 +105,10 @@ const createApi = ({
   store,
   queryMethod = 'GET'
 }: {
-  origin: any
+  origin?: any
   rootPath: any
   jwtProvider?: any
-  store: any
+  store?: any
   queryMethod: string
 }): API => {
   if (

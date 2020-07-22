@@ -1,14 +1,13 @@
 import { take } from 'redux-saga/effects'
 
 import getHash from '../get-hash'
-import createConnectionManager from './create_connection_manager'
 import createSagaManager from '../create_saga_manager'
-import { CONNECT_READMODEL, DISCONNECT_READMODEL } from './action-types'
-import connectReadModelSaga from './connect_read_model_saga'
-import disconnectReadModelSaga from './disconnect_read_model_saga'
+import { CONNECT_READMODEL, DISCONNECT_READMODEL } from '../action-types'
+import connectReadModelSaga from './connect-read-model-saga'
+import disconnectReadModelSaga from './disconnect-read-model-saga'
+import { RootSagaArgs } from '../types'
 
-const readModelsSaga = function*(sagaArgs: any): any {
-  const connectionManager = createConnectionManager({ wildcardSymbol: null })
+const readModelsSaga = function*(sagaArgs: RootSagaArgs): any {
   const sagaManager = createSagaManager()
 
   while (true) {
@@ -27,7 +26,6 @@ const readModelsSaga = function*(sagaArgs: any): any {
           connectReadModelSaga,
           {
             ...sagaArgs,
-            connectionManager,
             sagaManager,
             sagaKey
           },
@@ -47,7 +45,6 @@ const readModelsSaga = function*(sagaArgs: any): any {
           disconnectReadModelSaga,
           {
             ...sagaArgs,
-            connectionManager,
             sagaManager,
             sagaKey
           },

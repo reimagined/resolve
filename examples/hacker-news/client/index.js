@@ -34,6 +34,7 @@ const entryPoint = ({
     history,
     origin,
     rootPath,
+    staticPath,
     isClient: true
   })
 

@@ -2,7 +2,7 @@ import {
   QUERY_READMODEL_REQUEST,
   QUERY_READMODEL_SUCCESS,
   QUERY_READMODEL_FAILURE,
-  DROP_READMODEL_STATE
+  DROP_READMODEL_STATE, CONNECT_READMODEL, DISCONNECT_READMODEL
 } from '../action-types'
 
 export type QueryReadModelRequestAction = {
@@ -76,6 +76,43 @@ export const dropReadModelResult = (
   resolverArgs: any
 ): DropReadModelResultAction => ({
   type: DROP_READMODEL_STATE,
+  readModelName,
+  resolverName,
+  resolverArgs
+})
+
+export type ConnectReadModelAction = {
+  type: typeof CONNECT_READMODEL
+  readModelName: string
+  resolverName: string
+  resolverArgs: any
+  skipConnectionManager?: boolean
+}
+export const connectReadModel = (
+  readModelName: string,
+  resolverName: string,
+  resolverArgs: any,
+  skipConnectionManager?: boolean
+): ConnectReadModelAction => ({
+  type: CONNECT_READMODEL,
+  readModelName,
+  resolverName,
+  resolverArgs,
+  skipConnectionManager
+})
+
+export type DisconnectReadModelAction = {
+  type: typeof DISCONNECT_READMODEL
+  readModelName: string
+  resolverName: string
+  resolverArgs: any
+}
+export const disconnectReadModel = (
+  readModelName: string,
+  resolverName: string,
+  resolverArgs: any
+): DisconnectReadModelAction => ({
+  type: DISCONNECT_READMODEL,
   readModelName,
   resolverName,
   resolverArgs

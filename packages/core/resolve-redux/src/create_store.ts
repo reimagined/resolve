@@ -9,9 +9,10 @@ import uuid from 'uuid/v4'
 import createViewModelsReducer from './create_view_models_reducer'
 import { create as createReadModelReducer } from './read-model/read-model-reducer'
 import createJwtReducer from './create_jwt_reducer'
-import createResolveMiddleware from './create_resolve_middleware'
+import createResolveMiddleware from './create-resolve-middleware'
 import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
 import emptySubscribeAdapter from './empty_subscribe_adapter'
+import { ReduxStoreContext } from './types'
 
 const createStore = ({
   redux: {
@@ -22,28 +23,14 @@ const createStore = ({
   } = {},
   viewModels = [],
   subscribeAdapter = emptySubscribeAdapter,
-  initialState = undefined,
   jwtProvider = undefined,
   origin,
   rootPath,
+  staticPath,
+  initialState = undefined,
   isClient,
   queryMethod
-}: {
-  redux: {
-    reducers?: { [key: string]: string }
-    middlewares?: any[]
-    enhancers?: any[]
-    sagas?: any[]
-  }
-  viewModels: any[]
-  subscribeAdapter: any
-  initialState: any
-  jwtProvider: any
-  origin: any
-  rootPath: any
-  isClient: boolean
-  queryMethod: string
-}): any => {
+}: ReduxStoreContext): any => {
   const sessionId = uuid()
 
   const resolveMiddleware = createResolveMiddleware()
@@ -55,10 +42,7 @@ const createStore = ({
     jwt: createJwtReducer()
   })
 
-  // disable all sagas
-  const appliedMiddlewares = applyMiddleware(
-    /* resolveMiddleware , */ ...middlewares
-  )
+  const appliedMiddlewares = applyMiddleware(resolveMiddleware, ...middlewares)
 
   const composedEnhancers = compose(appliedMiddlewares, ...enhancers)
 
@@ -73,8 +57,9 @@ const createStore = ({
     viewModels,
     origin,
     rootPath,
-    subscribeAdapter,
+    staticPath,
     sessionId,
+    subscribeAdapter,
     jwtProvider,
     isClient,
     customSagas,

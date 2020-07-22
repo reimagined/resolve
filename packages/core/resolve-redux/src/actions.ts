@@ -199,28 +199,6 @@ export const dropViewModelState = (
   aggregateArgs
 })
 
-export const connectReadModel = (
-  readModelName: string,
-  resolverName: string,
-  resolverArgs: any
-) => ({
-  type: CONNECT_READMODEL,
-  readModelName,
-  resolverName,
-  resolverArgs
-})
-
-export const disconnectReadModel = (
-  readModelName: string,
-  resolverName: string,
-  resolverArgs: any
-) => ({
-  type: DISCONNECT_READMODEL,
-  readModelName,
-  resolverName,
-  resolverArgs
-})
-
 export const dispatchTopicMessage = (message: string) => ({
   type: DISPATCH_TOPIC_MESSAGE,
   message

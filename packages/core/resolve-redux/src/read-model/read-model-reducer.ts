@@ -15,7 +15,7 @@ import {
   QueryReadModelRequestAction,
   QueryReadModelSuccessAction
 } from './actions'
-import { ReadModelResultEntry, ReadModelResultState, ResolveReduxState } from '../types'
+import { ReadModelResultEntry, ReadModelResultState, ReduxState } from '../types'
 
 export const getEntryPath = ({
   readModelName,
@@ -29,7 +29,7 @@ export const getEntryPath = ({
   `${getHash(readModelName)}.${getHash(resolverName)}.${getHash(resolverArgs)}`
 
 export const getEntry = (
-  state: ResolveReduxState,
+  state: ReduxState,
   selector: {
     readModelName: string
     resolverName: string
@@ -42,9 +42,9 @@ export const create = (): any => {
   const handlers: { [key: string]: any } = {}
 
   handlers[QUERY_READMODEL_REQUEST] = (
-    state: ResolveReduxState,
+    state: ReduxState,
     action: QueryReadModelRequestAction
-  ): ResolveReduxState =>
+  ): ReduxState =>
     setEntry(
       {
         ...state
@@ -56,9 +56,9 @@ export const create = (): any => {
     )
 
   handlers[QUERY_READMODEL_SUCCESS] = (
-    state: ResolveReduxState,
+    state: ReduxState,
     action: QueryReadModelSuccessAction
-  ): ResolveReduxState =>
+  ): ReduxState =>
     setEntry(
       {
         ...state
@@ -72,9 +72,9 @@ export const create = (): any => {
     )
 
   handlers[QUERY_READMODEL_FAILURE] = (
-    state: ResolveReduxState,
+    state: ReduxState,
     action: QueryReadModelFailureAction
-  ): ResolveReduxState =>
+  ): ReduxState =>
     setEntry(
       {
         ...state
@@ -88,9 +88,9 @@ export const create = (): any => {
     )
 
   handlers[DROP_READMODEL_STATE] = (
-    state: ResolveReduxState,
+    state: ReduxState,
     action: DropReadModelResultAction
-  ): ResolveReduxState => {
+  ): ReduxState => {
     const newState = {
       ...state
     }
@@ -98,7 +98,7 @@ export const create = (): any => {
     return newState
   }
 
-  return (state: ResolveReduxState = {}, action: any): ResolveReduxState => {
+  return (state: ReduxState = {}, action: any): ReduxState => {
     const eventHandler = handlers[action.type]
     if (eventHandler) {
       return eventHandler(state, action)

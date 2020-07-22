@@ -3,10 +3,13 @@ import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import hoistNonReactStatic from 'hoist-non-react-statics'
 
-import * as actions from '../actions'
+import {
+  connectReadModel as connectReadModelAction,
+  disconnectReadModel as disconnectReadModelAction
+} from './actions'
 import getHash from '../get-hash'
 import connectResolveAdvanced from '../connect_resolve_advanced'
-import { ReadModelResultState, ResolveReduxState } from '../types'
+import { ReadModelResultState, ReduxState } from '../types'
 import { getEntry } from './read-model-reducer'
 
 type ReadModelConnectorOptions = {
@@ -15,7 +18,7 @@ type ReadModelConnectorOptions = {
   resolverArgs: any
 }
 type ReadModelConnectorOptionsMapper = (
-  state: ResolveReduxState,
+  state: ReduxState,
   ownProps: any
 ) => ReadModelConnectorOptions
 
@@ -79,10 +82,7 @@ const connectReadModel = (
     }
   }
 
-  const mapStateToConnectorProps = (
-    state: ResolveReduxState,
-    ownProps: any
-  ): any => {
+  const mapStateToConnectorProps = (state: ReduxState, ownProps: any): any => {
     const connectorOptions = mapStateToOptions(state, ownProps)
 
     const entry = getEntry(state, connectorOptions)
@@ -104,8 +104,8 @@ const connectReadModel = (
   const mapDispatchToConnectorProps = (dispatch: Dispatch): any =>
     bindActionCreators(
       {
-        connectReadModel: actions.connectReadModel,
-        disconnectReadModel: actions.disconnectReadModel
+        connectReadModel: connectReadModelAction,
+        disconnectReadModel: disconnectReadModelAction
       },
       dispatch
     )
