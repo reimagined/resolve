@@ -54,7 +54,7 @@ const loadEventsByCursor = async (
   const sqlQuery = [
     `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}`,
     `${resultQueryCondition}`,
-    `ORDER BY "timestamp" ASC`,
+    `ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC`,
     `LIMIT ${+limit}`
   ].join('\n')
 

@@ -11,7 +11,7 @@ const loadEventsByTimestamp = async (pool, filter) => {
   const rows = await database.all(
     `SELECT * FROM ${tableNameAsId}
     ${resultQueryCondition}
-    ORDER BY "timestamp" ASC
+    ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC
     LIMIT 0, ${+filter.limit}`
   )
   const events = []

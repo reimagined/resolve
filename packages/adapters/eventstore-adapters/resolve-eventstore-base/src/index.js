@@ -16,6 +16,7 @@ import loadEvents from './load-events'
 import getNextCursor from './get-next-cursor'
 import throwBadCursor from './throw-bad-cursor'
 import snapshotTrigger from './snapshot-trigger'
+import incrementalImport from './incremental-import'
 
 const wrappedCreateAdapter = createAdapter.bind(null, {
   importStream,
@@ -26,6 +27,7 @@ const wrappedCreateAdapter = createAdapter.bind(null, {
   wrapDispose,
   validateEventFilter,
   loadEvents,
+  incrementalImport,
   getNextCursor
 })
 
