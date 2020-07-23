@@ -34,12 +34,6 @@ title: reSolve Documentation
   - [Resolvers](read-side.md#resolvers)
   - [View Model Specifics](read-side.md#view-model-specifics)
   - [Performing Queries Using HTTP API](read-side.md#performing-queries-using-http-api)
-- [Frontend](frontend.md)
-  - [React/Redux Support](frontend.md#react-redux-support)
-  - [Sending Commands as Redux Actions](frontend.md#sending-commands-as-redux-actions)
-  - [Reactive View Models, Event Subscription](frontend.md#reactive-view-vodels-event-subscription)
-  - [Optimistic Commands](frontend.md#optimistic-commands)
-- [Standard HTTP API](curl.md)
 
 #### Guides
 
