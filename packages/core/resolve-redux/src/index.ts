@@ -20,6 +20,8 @@ import createStore from './create_store'
 import sendAggregateAction from './send_aggregate_action'
 import getOrigin from './get_origin'
 
+import useReduxReadModel from './read-model/use-redux-read-model'
+
 import * as actionTypes from './action-types'
 
 const internal = {
@@ -50,5 +52,6 @@ export {
   deserializeInitialState,
   sendAggregateAction,
   getOrigin,
-  internal
+  internal,
+  useReduxReadModel
 }

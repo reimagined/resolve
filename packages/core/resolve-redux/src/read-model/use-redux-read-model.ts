@@ -133,3 +133,5 @@ function useReduxReadModel(
     }, [actualDependencies])
   }
 }
+
+export default useReduxReadModel

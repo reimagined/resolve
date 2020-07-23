@@ -1,46 +1,30 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Router } from 'react-router'
-import { AppContainer, createStore, getOrigin } from 'resolve-redux'
+import { createStore } from 'resolve-redux'
 import { createBrowserHistory } from 'history'
 
 import Routes from './components/Routes'
 import getRoutes from './get-routes'
 import getRedux from './get-redux'
+import * as Redux from 'react-redux'
 
-const entryPoint = ({
-  rootPath,
-  staticPath,
-  viewModels,
-  subscribeAdapter,
-  clientImports
-}) => {
-  const origin = getOrigin(window.location)
-  const history = createBrowserHistory({ basename: rootPath })
-  const redux = getRedux(clientImports)
-  const routes = getRoutes(clientImports)
+const entryPoint = context => {
+  const history = createBrowserHistory({ basename: context.rootPath })
+  const routes = getRoutes()
 
   const store = createStore({
-    redux,
-    viewModels,
-    subscribeAdapter,
-    history,
-    origin,
-    rootPath,
+    ...context,
+    redux: getRedux(),
     isClient: true
   })
 
   render(
-    <AppContainer
-      origin={origin}
-      rootPath={rootPath}
-      staticPath={staticPath}
-      store={store}
-    >
+    <Redux.Provider store={store}>
       <Router history={history}>
         <Routes routes={routes} />
       </Router>
-    </AppContainer>,
+    </Redux.Provider>,
     document.getElementById('app-container')
   )
 }
