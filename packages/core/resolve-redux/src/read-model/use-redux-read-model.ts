@@ -17,6 +17,7 @@ import {
 
 type HookData = {
   request: () => void
+  selector: () => any
 }
 
 type ReadModelReduxActionsCreators = {
@@ -130,8 +131,9 @@ function useReduxReadModel(
         dispatch(request(query))
       }
       executor()
-    }, [actualDependencies])
+    }, [actualDependencies]),
+    selector: (): any => 'implement me, please'
   }
 }
 
-export default useReduxReadModel
+export { useReduxReadModel }

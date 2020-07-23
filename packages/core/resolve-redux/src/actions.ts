@@ -1,8 +1,4 @@
-import { Action } from 'redux'
 import {
-  SEND_COMMAND_REQUEST,
-  SEND_COMMAND_SUCCESS,
-  SEND_COMMAND_FAILURE,
   SUBSCRIBE_TOPIC_REQUEST,
   SUBSCRIBE_TOPIC_SUCCESS,
   SUBSCRIBE_TOPIC_FAILURE,
@@ -15,8 +11,6 @@ import {
   LOAD_VIEWMODEL_STATE_SUCCESS,
   LOAD_VIEWMODEL_STATE_FAILURE,
   DROP_VIEWMODEL_STATE,
-  CONNECT_READMODEL,
-  DISCONNECT_READMODEL,
   DISPATCH_TOPIC_MESSAGE,
   HOT_MODULE_REPLACEMENT,
   UPDATE_JWT,
@@ -25,54 +19,6 @@ import {
   AUTH_SUCCESS,
   AUTH_FAILURE
 } from './action-types'
-
-export type SendCommandRequestAction = {
-  type: typeof SEND_COMMAND_REQUEST
-  commandType: string
-  aggregateId: string
-  aggregateName: string
-  payload: any
-}
-export const sendCommandRequest = (
-  commandType: string,
-  aggregateId: string,
-  aggregateName: string,
-  payload: any
-): SendCommandRequestAction => ({
-  type: SEND_COMMAND_REQUEST,
-  commandType,
-  aggregateId,
-  aggregateName,
-  payload
-})
-
-export const sendCommandSuccess = (
-  commandType: string,
-  aggregateId: string,
-  aggregateName: string,
-  payload: any
-) => ({
-  type: SEND_COMMAND_SUCCESS,
-  commandType,
-  aggregateId,
-  aggregateName,
-  payload
-})
-
-export const sendCommandFailure = (
-  commandType: string,
-  aggregateId: string,
-  aggregateName: string,
-  payload: any,
-  error: Error
-) => ({
-  type: SEND_COMMAND_FAILURE,
-  commandType,
-  aggregateId,
-  aggregateName,
-  payload,
-  error
-})
 
 export const subscribeTopicRequest = (topicName: string, topicId: string) => ({
   type: SUBSCRIBE_TOPIC_REQUEST,

@@ -20,7 +20,8 @@ import createStore from './create_store'
 import sendAggregateAction from './send_aggregate_action'
 import getOrigin from './get_origin'
 
-import useReduxReadModel from './read-model/use-redux-read-model'
+import { useReduxReadModel } from './read-model/use-redux-read-model'
+import { useReduxCommand } from './command/use-redux-command'
 
 import * as actionTypes from './action-types'
 
@@ -53,5 +54,6 @@ export {
   sendAggregateAction,
   getOrigin,
   internal,
-  useReduxReadModel
+  useReduxReadModel,
+  useReduxCommand
 }
