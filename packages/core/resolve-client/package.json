@@ -55,9 +55,9 @@
       "<rootDir>"
     ]
   },
+  "sourceType": "ts",
   "babelCompile": [
     {
-      "sourceType": "ts",
       "moduleType": "cjs",
       "moduleTarget": "client",
       "inputDir": "./src",
