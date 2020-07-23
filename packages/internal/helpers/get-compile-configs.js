@@ -3,17 +3,15 @@ const find = require('glob').sync
 
 const { getResolveDir } = require('./get-resolve-dir')
 
-function changeOrder(configs, packageName) {
-  const includes = configs
-    .map((config, index) => ({ config, index }))
-    .filter(({ config: { name } }) => name === packageName)
+function makeSyncAtEnd(configs, packageName) {
+  const includedIndexes = configs.reduce((acc, config, index) => (
+    config.name === packageName ? [index].concat(acc) : acc
+  ), [])
 
-  const configLength = configs.length
-  for (const { config, index } of includes) {
-    for (let subIndex = index; subIndex < configLength - 1; subIndex++) {
-      configs[subIndex] = configs[subIndex + 1]
-    }
-    configs[configLength - 1] = config
+  for (const index of includedIndexes) {
+    const config = configs[index]
+    configs.splice(index, 1)
+    configs.push(config)
     config.sync = true
   }
 }
@@ -88,9 +86,9 @@ const getCompileConfigs = () => {
     }
   }
 
-  changeOrder(configs, 'resolve-core')
-  changeOrder(configs, 'resolve-client')
-  changeOrder(configs, 'resolve-react-hooks')
+  makeSyncAtEnd(configs, 'resolve-core')
+  makeSyncAtEnd(configs, 'resolve-client')
+  makeSyncAtEnd(configs, 'resolve-react-hooks')
 
   _configs = configs
 

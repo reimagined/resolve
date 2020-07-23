@@ -55,7 +55,7 @@ const debugLevels = (
   )
 }
 
-export { debugLevels }
+export { debugLevels, Debug }
 
 let envProvider = {}
 try {

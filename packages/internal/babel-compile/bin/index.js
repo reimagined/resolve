@@ -8,6 +8,9 @@ const { prepare } = require('./prepare')
 const configs = getCompileConfigs()
 
 async function main() {
+  const builds = []
+  const maxParallelBuilds = +process.env.MAX_PARALLEL_BUILDS
+
   for (const config of configs) {
     const cliOptions = {
       extensions: config.extensions,
@@ -21,6 +24,18 @@ async function main() {
     for (let key in cliOptions) {
       if (cliOptions[key] === undefined) {
         delete cliOptions[key]
+      }
+    }
+
+    if (!isNaN(maxParallelBuilds)) {
+      while (true) {
+        const pendingBuilds = builds.filter((build) => build.pending)
+
+        if (pendingBuilds.length < maxParallelBuilds) {
+          break
+        }
+
+        await Promise.race(pendingBuilds.map((build) => build.promise))
       }
     }
 
@@ -64,6 +79,14 @@ async function main() {
           console.error(error)
         }
       })
+
+    const promiseConfig = {
+      promise,
+      pending: true
+    }
+
+    promise.then(() => (promiseConfig.pending = false))
+    builds.push(promiseConfig)
 
     if (config.sync || process.env.RESOLVE_ALLOW_PARALLEL_BUILDS != null) {
       await promise
