@@ -691,7 +691,7 @@ import {
 
 ### HTTP API
 
-Resolve provides a standard HTTP API that allows you to send aggregate commands and query Read and View Models. Refer to the [Standard HTTP API](curl.md) topic for more information.
+reSolve provides a standard HTTP API that allows you to send aggregate commands, and query Read and View Models.
 
 #### Read Model API
 
@@ -806,7 +806,7 @@ $ curl -X POST "http://localhost:3000/api/commands"
 '
 ```
 
-### Resolve-Redux Library
+### resolve-redux Library
 
 The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library provides the following HOCs:
 
@@ -905,4 +905,260 @@ Fixes URLs passed to the specified props to correct the static resource folder p
 
 ```js
 export default connectStaticBasedUrls(['css', 'favicon'])(Header)
+```
+
+### resolve-client Library
+
+The **resolve-client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function:
+
+```js
+import { getClient } from 'resolve-client'
+
+const main = async resolveContext => {
+  const client = getClient(resolveContext)
+  ...
+```
+
+The `getClient` function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
+
+| Function Name                           | Description                                |
+| --------------------------------------- | ------------------------------------------ |
+| [command](#command)                     | Sends an aggregate command to the backend. |
+| [query](#query)                         | Queries a Read Model.                      |
+| [getStaticAssetUrl](#getstaticasseturl) | Gets a static file's full URL.             |
+| [subscribe](#subscribe)                 | Subscribes to View Model updates.          |
+| [unsubscribe](#unsubscribe)             | Unsubscribes from View Model updates.      |
+
+#### command
+
+Sends an aggregate command to the backend.
+
+##### Example
+
+```js
+client.command(
+  {
+    aggregateName: 'Chat',
+    type: 'postMessage',
+    aggregateId: userName,
+    payload: message
+  },
+  err => {
+    if (err) {
+      console.warn(`Error while sending command: ${err}`)
+    }
+  }
+)
+```
+
+#### query
+
+Queries a Read Model.
+
+##### Example
+
+```js
+const { data } = await client.query({
+  name: 'chat',
+  aggregateIds: '*'
+})
+```
+
+#### getStaticAssetUrl
+
+Gets a static file's full URL.
+
+##### Example
+
+```js
+var imagePath = client.getStaticAssetUrl('/account/image.jpg')
+```
+
+#### subscribe
+
+Subscribes to View Model updates. Returns a promise that resolves to a **subscription** object.
+
+##### Example
+
+```js
+const chatViewModelUpdater = event => {
+  const eventType = event != null && event.type != null ? event.type : null
+  const eventHandler = chatViewModel.projection[eventType]
+
+  if (typeof eventHandler === 'function') {
+    chatViewModelState = eventHandler(chatViewModelState, event)
+  }
+
+  setImmediate(updateUI.bind(null, chatViewModelState))
+}
+
+await client.subscribe('chat', '*', chatViewModelUpdater)
+```
+
+#### unsubscribe
+
+Unsubscribes from View Model updates.
+
+##### Example
+
+```js
+await client.unsubscribe(subscription)
+```
+
+### resolve-react-hooks library
+
+The **resolve-react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
+
+| Hook                                    | Description                                                              |
+| --------------------------------------- | ------------------------------------------------------------------------ |
+| [useCommand](#useCommand)               | Initializes a command that can be passed to the backend.                 |
+| [useCommandBuilder](#useCommandBuilder) | Allows a component to generate commands based on input parameters.                   |
+| [useViewModel](#useViewModel)           | Establishes a WebSocket connection to a reSolve View Model.              |
+| [useQuery](#useQuery)                   | Allows a component to send queries to a reSolve Read Model or View Model.|
+
+#### useCommand
+
+Initializes a command that can be passed to the backend.
+
+##### Example
+
+```js
+const ShoppingList = ({
+  match: {
+    params: { id: aggregateId }
+  }
+}) => {
+  const renameShoppingList = useCommand({
+    type: 'renameShoppingList',
+    aggregateId,
+    aggregateName: 'ShoppingList',
+    payload: { name: shoppingList ? shoppingList.name : '' }
+  })
+
+  ...
+
+  const onShoppingListNamePressEnter = event => {
+    if (event.charCode === 13) {
+      event.preventDefault()
+      renameShoppingList()
+    }
+  }
+
+  ...
+}
+```
+
+#### useCommandBuilder
+
+Allows a component to generate commands based on input parameters.
+
+##### Example
+
+```js
+const ShoppingList = ({
+  match: {
+    params: { id: aggregateId }
+  }
+}) => {
+  const clearItemText = () => setItemText('')
+
+  const createShoppingItem = useCommandBuilder(
+    text => ({
+      type: 'createShoppingItem',
+      aggregateId,
+      aggregateName: 'ShoppingList',
+      payload: {
+        text,
+        id: Date.now().toString()
+      }
+    }),
+    clearItemText
+  )
+
+  ...
+
+  const onItemTextPressEnter = event => {
+  if (event.charCode === 13) {
+    event.preventDefault()
+    createShoppingItem(itemText)
+  }
+
+  ...
+}
+```
+
+#### useViewModel
+
+Establishes a WebSocket connection to a reSolve View Model.
+
+##### Example
+
+```js
+const ShoppingList = ({
+  match: {
+    params: { id: aggregateId }
+  }
+}) => {
+  const [shoppingList, setShoppingList] = useState({
+    name: '',
+    id: null,
+    list: []
+  })
+
+  const { connect, dispose } = useViewModel(
+    'shoppingList',
+    [aggregateId],
+    setShoppingList
+  )
+
+  useEffect(() => {
+    connect()
+    return () => {
+      dispose()
+    }
+  }, [])
+
+  ...
+
+  const updateShoppingListName = event => {
+    setShoppingList({ ...shoppingList, name: event.target.value })
+  }
+
+  ...
+}
+```
+
+#### useQuery
+
+Allows a component to send queries to a reSolve Read Model or View Model.
+
+##### Example
+
+```js
+const MyLists = () => {
+  const getLists = useQuery(
+    { name: 'ShoppingLists', resolver: 'all', args: {} },
+    (error, result) => {
+      setLists(result)
+    }
+  )
+
+  useEffect(() => {
+    getLists()
+  }, [])
+
+  ...
+
+  onCreateSuccess={(err, result) => {
+    const nextLists = { ...lists }
+    nextLists.data.push({
+      name: result.payload.name,
+      createdAt: result.timestamp,
+      id: result.aggregateId
+    })
+    setLists(nextLists)
+  }}
+
+  ...
+}
 ```

@@ -81,7 +81,7 @@ const loadEventsByCursor = async (
       FROM ${databaseNameAsId}.${eventsTableAsId}
       WHERE (${resultQueryCondition}) AND (${resultVectorConditions})
       AND "timestamp" >= (SELECT "minimalTimestamp"."value" FROM "minimalTimestamp")
-      ORDER BY "timestamp" ASC
+      ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC
       LIMIT ${+limit}
     ), "fullBatchList" AS (
       SELECT "batchEvents"."batchIndex" AS "batchIndex",
@@ -147,7 +147,8 @@ const loadEventsByCursor = async (
     }
     ${requestCursors[i].join(' OR ')}
     ${queryConditions.length > 0 ? ')' : ''}
-    ORDER BY "timestamp" ASC`
+    ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC
+    `
 
     requestPromises.push(executeStatement(sqlQuery))
   }

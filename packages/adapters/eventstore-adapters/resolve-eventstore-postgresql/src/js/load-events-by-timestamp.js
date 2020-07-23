@@ -38,7 +38,7 @@ const loadEventsByTimestamp = async (
   const sqlQuery = [
     `SELECT * FROM ${databaseNameAsId}.${eventsTableNameAsId}`,
     `${resultQueryCondition}`,
-    `ORDER BY "timestamp" ASC`,
+    `ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC`,
     `LIMIT ${+limit}`
   ].join('\n')
 
