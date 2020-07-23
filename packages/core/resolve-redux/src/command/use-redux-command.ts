@@ -96,6 +96,7 @@ function useReduxCommand(
   const { request, success, failure } = actualActionCreators
 
   const dispatch = useDispatch()
+  /*
   const executor = useCommand(
     command,
     actualOptions,
@@ -116,6 +117,10 @@ function useReduxCommand(
     },
     actualDependencies
   )
+  */
+
+
+
 
   return {
     execute: useCallback((): void => {

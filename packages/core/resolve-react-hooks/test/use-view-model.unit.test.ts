@@ -1,6 +1,6 @@
 import { useContext, useCallback, useMemo } from 'react'
 import { mocked } from 'ts-jest/utils'
-import { useClient } from '../src/use_client'
+import { useClient } from '../src/use-client'
 import { useViewModel } from '../src/use-view-model'
 
 const mockedContext = {
@@ -36,7 +36,7 @@ const mockedClient = {
   unsubscribe: jest.fn()
 }
 
-jest.mock('../src/use_client', () => ({
+jest.mock('../src/use-client', () => ({
   useClient: jest.fn(() => mockedClient)
 }))
 

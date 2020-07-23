@@ -5,52 +5,87 @@ import {
   CommandCallback
 } from 'resolve-client'
 import { useCallback } from 'react'
-import {
-  HookExecutor,
-  isCallback,
-  isDependencies,
-  isOptions
-} from './generic'
+import { HookExecutor, isCallback, isDependencies, isOptions } from './generic'
 import { useClient } from './use-client'
 import { firstOfType } from 'resolve-core'
 
-type CommandExecutor = HookExecutor<void, CommandResult>
+export type CommandBuilder<T> = (data: T) => Command
+export type CommandExecutor<T> = HookExecutor<T, CommandResult>
 
-function useCommand(command: Command): CommandExecutor
-function useCommand(command: Command, options: CommandOptions): CommandExecutor
+function useCommand(command: Command): CommandExecutor<void>
+function useCommand(
+  command: Command,
+  options: CommandOptions
+): CommandExecutor<void>
 function useCommand(
   command: Command,
   callback: CommandCallback
-): CommandExecutor
-function useCommand(command: Command, dependencies: any[]): CommandExecutor
+): CommandExecutor<void>
+function useCommand(
+  command: Command,
+  dependencies: any[]
+): CommandExecutor<void>
 function useCommand(
   command: Command,
   callback: CommandCallback,
   dependencies: any[]
-): CommandExecutor
+): CommandExecutor<void>
 function useCommand(
   command: Command,
   options: CommandOptions,
   callback: CommandCallback
-): CommandExecutor
+): CommandExecutor<void>
 function useCommand(
   command: Command,
   options: CommandOptions,
   dependencies: any[]
-): CommandExecutor
+): CommandExecutor<void>
 function useCommand(
   command: Command,
   options: CommandOptions,
   callback: CommandCallback,
   dependencies: any[]
-): CommandExecutor
-
-function useCommand(
-  command: Command,
+): CommandExecutor<void>
+function useCommand<T>(builder: CommandBuilder<T>): CommandExecutor<T>
+function useCommand<T>(
+  builder: CommandBuilder<T>,
+  options: CommandOptions
+): CommandExecutor<T>
+function useCommand<T>(
+  builder: CommandBuilder<T>,
+  callback: CommandCallback
+): CommandExecutor<T>
+function useCommand<T>(
+  builder: CommandBuilder<T>,
+  dependencies: any[]
+): CommandExecutor<T>
+function useCommand<T>(
+  builder: CommandBuilder<T>,
+  callback: CommandCallback,
+  dependencies: any[]
+): CommandExecutor<T>
+function useCommand<T>(
+  builder: CommandBuilder<T>,
+  options: CommandOptions,
+  callback: CommandCallback
+): CommandExecutor<T>
+function useCommand<T>(
+  builder: CommandBuilder<T>,
+  options: CommandOptions,
+  dependencies: any[]
+): CommandExecutor<T>
+function useCommand<T>(
+  builder: CommandBuilder<T>,
+  options: CommandOptions,
+  callback: CommandCallback,
+  dependencies: any[]
+): CommandExecutor<T>
+function useCommand<T>(
+  command: Command | CommandBuilder<T>,
   options?: CommandOptions | CommandCallback | any[],
   callback?: CommandCallback | any[],
   dependencies?: any[]
-): CommandExecutor {
+): CommandExecutor<T> {
   const client = useClient()
 
   const actualOptions: CommandOptions | undefined = firstOfType<CommandOptions>(
@@ -64,6 +99,13 @@ function useCommand(
     firstOfType<any[]>(isDependencies, options, callback, dependencies) ??
     [command, actualOptions, actualCallback].filter(i => i)
 
+  if (typeof command === 'function') {
+    return useCallback(
+      (data: T): Promise<CommandResult> | void =>
+        client.command(command(data), actualOptions, actualCallback),
+      [client, ...actualDependencies]
+    )
+  }
   return useCallback(
     (): Promise<CommandResult> | void =>
       client.command(command, actualOptions, actualCallback),

@@ -1,14 +1,14 @@
 import { useCallback } from 'react'
 import { mocked } from 'ts-jest/utils'
 import { Command, CommandCallback } from 'resolve-client'
-import { useClient } from '../src/use_client'
-import { useCommandBuilder } from '../src/use-command-builder'
+import { useClient } from '../src/use-client'
+import { useCommand } from '../src/use-command'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({
   useCallback: jest.fn(cb => cb)
 }))
-jest.mock('../src/use_client', () => ({
+jest.mock('../src/use-client', () => ({
   useClient: jest.fn()
 }))
 
@@ -22,6 +22,15 @@ const mockedClient = {
   subscribe: jest.fn(),
   unsubscribe: jest.fn()
 }
+const basicCommand = (): Command => ({
+  type: 'create',
+  aggregateName: 'user',
+  aggregateId: 'new',
+  payload: {
+    name: 'username'
+  }
+})
+
 const buildCommand = jest.fn(
   (name: string): Command => ({
     type: 'create',
@@ -50,34 +59,36 @@ afterEach(() => {
 
 describe('common', () => {
   test('useClient hook called', () => {
-    useCommandBuilder(buildCommand)
+    useCommand(basicCommand())
 
     expect(mockedUseClient).toHaveBeenCalled()
   })
 })
 
 describe('async mode', () => {
-  test('just a builder', async () => {
-    await useCommandBuilder(buildCommand)('builder-input')
-    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+  test('just a command', async () => {
+    const command = basicCommand()
+
+    await useCommand(command)()
 
     expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand('builder-input'),
+      command,
       undefined,
       undefined
     )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
-      buildCommand
+      command
     ])
   })
 
-  test('builder and dependencies', async () => {
-    await useCommandBuilder(buildCommand, ['dependency'])('builder-input')
-    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+  test('command and dependencies', async () => {
+    const command = basicCommand()
+
+    await useCommand(command, ['dependency'])()
 
     expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand('builder-input'),
+      command,
       undefined,
       undefined
     )
@@ -87,32 +98,31 @@ describe('async mode', () => {
     ])
   })
 
-  test('builder and options', async () => {
+  test('command and options', async () => {
+    const command = basicCommand()
     const options = { option: 'option' }
 
-    await useCommandBuilder(buildCommand, options)('builder-input')
-    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+    await useCommand(command, options)()
 
     expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand('builder-input'),
+      command,
       options,
       undefined
     )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
-      buildCommand,
+      command,
       options
     ])
   })
 
-  test('builder, options and dependencies', async () => {
-    await useCommandBuilder(buildCommand, { option: 'option' }, ['dependency'])(
-      'builder-input'
-    )
-    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+  test('command, options and dependencies', async () => {
+    const command = basicCommand()
+
+    await useCommand(command, { option: 'option' }, ['dependency'])()
 
     expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand('builder-input'),
+      command,
       { option: 'option' },
       undefined
     )
@@ -130,8 +140,151 @@ describe('callback mode', () => {
     callback = jest.fn()
   })
 
+  test('just a command', () => {
+    const command = basicCommand()
+
+    useCommand(command, callback)()
+
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      command,
+      undefined,
+      callback
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      command,
+      callback
+    ])
+  })
+
+  test('command, callback and dependencies', () => {
+    const command = basicCommand()
+
+    useCommand(command, callback, ['dependency'])()
+
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      command,
+      undefined,
+      callback
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      'dependency'
+    ])
+  })
+
+  test('command, options and callback', () => {
+    const command = basicCommand()
+    const options = { option: 'option' }
+
+    useCommand(command, options, callback)()
+
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      command,
+      { option: 'option' },
+      callback
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      command,
+      options,
+      callback
+    ])
+  })
+
+  test('command, options, callback and dependencies', () => {
+    const command = basicCommand()
+
+    useCommand(command, { option: 'option' }, callback, ['dependency'])()
+
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      command,
+      { option: 'option' },
+      callback
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      'dependency'
+    ])
+  })
+})
+
+describe('builder: async mode', () => {
+  test('just a builder', async () => {
+    await useCommand(buildCommand)('builder-input')
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      buildCommand('builder-input'),
+      undefined,
+      undefined
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      buildCommand
+    ])
+  })
+
+  test('builder and dependencies', async () => {
+    await useCommand(buildCommand, ['dependency'])('builder-input')
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      buildCommand('builder-input'),
+      undefined,
+      undefined
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      'dependency'
+    ])
+  })
+
+  test('builder and options', async () => {
+    const options = { option: 'option' }
+
+    await useCommand(buildCommand, options)('builder-input')
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      buildCommand('builder-input'),
+      options,
+      undefined
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      buildCommand,
+      options
+    ])
+  })
+
+  test('builder, options and dependencies', async () => {
+    await useCommand(buildCommand, { option: 'option' }, ['dependency'])(
+      'builder-input'
+    )
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+
+    expect(mockedClient.command).toHaveBeenCalledWith(
+      buildCommand('builder-input'),
+      { option: 'option' },
+      undefined
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      'dependency'
+    ])
+  })
+})
+
+describe('builder: callback mode', () => {
+  let callback: CommandCallback
+
+  beforeEach(() => {
+    callback = jest.fn()
+  })
+
   test('just a builder', () => {
-    useCommandBuilder(buildCommand, callback)('builder-input')
+    useCommand(buildCommand, callback)('builder-input')
     expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
     expect(mockedClient.command).toHaveBeenCalledWith(
@@ -147,7 +300,7 @@ describe('callback mode', () => {
   })
 
   test('builder, callback and dependencies', () => {
-    useCommandBuilder(buildCommand, callback, ['dependency'])('builder-input')
+    useCommand(buildCommand, callback, ['dependency'])('builder-input')
     expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
     expect(mockedClient.command).toHaveBeenCalledWith(
@@ -164,7 +317,7 @@ describe('callback mode', () => {
   test('builder, options and callback', () => {
     const options = { option: 'option' }
 
-    useCommandBuilder(buildCommand, options, callback)('builder-input')
+    useCommand(buildCommand, options, callback)('builder-input')
     expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
     expect(mockedClient.command).toHaveBeenCalledWith(
@@ -181,9 +334,9 @@ describe('callback mode', () => {
   })
 
   test('builder, options, callback and dependencies', () => {
-    useCommandBuilder(buildCommand, { option: 'option' }, callback, [
-      'dependency'
-    ])('builder-input')
+    useCommand(buildCommand, { option: 'option' }, callback, ['dependency'])(
+      'builder-input'
+    )
     expect(buildCommand).toHaveBeenCalledWith('builder-input')
 
     expect(mockedClient.command).toHaveBeenCalledWith(

@@ -1,14 +1,14 @@
 import { useCallback } from 'react'
 import { mocked } from 'ts-jest/utils'
 import { Query, QueryCallback, QueryOptions } from 'resolve-client'
-import { useClient } from '../src/use_client'
+import { useClient } from '../src/use-client'
 import { useQueryBuilder } from '../src/use-query-builder'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({
   useCallback: jest.fn(cb => cb)
 }))
-jest.mock('../src/use_client', () => ({
+jest.mock('../src/use-client', () => ({
   useClient: jest.fn()
 }))
 

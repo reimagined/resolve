@@ -34,7 +34,8 @@ export type Command = {
 export type CommandResult = object
 export type CommandCallback = (
   error: Error | null,
-  result: CommandResult | null
+  result: CommandResult | null,
+  command: Command
 ) => void
 export type CommandOptions = {}
 
@@ -63,11 +64,11 @@ export const command = (
 
   asyncExec()
     .then(result => {
-      actualCallback(null, result)
+      actualCallback(null, result, cmd)
       return result
     })
     .catch(error => {
-      actualCallback(error, null)
+      actualCallback(error, null, cmd)
       throw error
     })
 

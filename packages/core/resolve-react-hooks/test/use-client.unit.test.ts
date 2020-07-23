@@ -1,7 +1,7 @@
 import { useContext, useMemo } from 'react'
 import { mocked } from 'ts-jest/utils'
 import { getClient } from 'resolve-client'
-import { useClient } from '../src/use_client'
+import { useClient } from '../src/use-client'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({
