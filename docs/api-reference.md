@@ -909,7 +909,7 @@ export default connectStaticBasedUrls(['css', 'favicon'])(Header)
 
 ## Event store adapter
 
-An eventstore adapter is an object that must contain the following functions:
+An event store adapter defines how the reSolve framework stores events in the underlying event store. An event store adapter object must expose the following functions:
 
 #### init
 Init a database
