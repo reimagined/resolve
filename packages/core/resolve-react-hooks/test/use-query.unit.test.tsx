@@ -30,13 +30,21 @@ const basicQuery = (): Query => ({
 const customOptions = (): QueryOptions => ({
   method: 'GET'
 })
+const buildQuery = jest.fn(
+  (user: string): Query => ({
+    name: 'model',
+    resolver: 'resolver',
+    args: {
+      user
+    }
+  })
+)
 
 const clearMocks = (): void => {
   mockedUseClient.mockClear()
-
   mockedUseCallback.mockClear()
-
   mockedClient.query.mockClear()
+  buildQuery.mockClear()
 }
 
 beforeAll(() => {
@@ -162,6 +170,148 @@ describe('callback mode', () => {
     useQuery(query, options, callback, ['dependency'])()
 
     expect(mockedClient.query).toHaveBeenCalledWith(query, options, callback)
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      'dependency'
+    ])
+  })
+})
+
+describe('builder: async mode', () => {
+  test('just a builder', async () => {
+    await useQuery(buildQuery)('john')
+
+    expect(buildQuery).toHaveBeenCalledWith('john')
+    expect(mockedClient.query).toHaveBeenCalledWith(
+      buildQuery('john'),
+      undefined,
+      undefined
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      buildQuery
+    ])
+  })
+
+  test('builder with dependencies', async () => {
+    await useQuery(buildQuery, ['dependency'])('john')
+
+    expect(buildQuery).toHaveBeenCalledWith('john')
+    expect(mockedClient.query).toHaveBeenCalledWith(
+      buildQuery('john'),
+      undefined,
+      undefined
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      'dependency'
+    ])
+  })
+
+  test('builder and options', async () => {
+    const options = customOptions()
+
+    await useQuery(buildQuery, options)('john')
+
+    expect(buildQuery).toHaveBeenCalledWith('john')
+    expect(mockedClient.query).toHaveBeenCalledWith(
+      buildQuery('john'),
+      options,
+      undefined
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      buildQuery,
+      options
+    ])
+  })
+
+  test('builder, options and dependencies', async () => {
+    const options = customOptions()
+
+    await useQuery(buildQuery, options, ['dependency'])('john')
+
+    expect(buildQuery).toHaveBeenCalledWith('john')
+    expect(mockedClient.query).toHaveBeenCalledWith(
+      buildQuery('john'),
+      options,
+      undefined
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      'dependency'
+    ])
+  })
+})
+
+describe('builder: callback mode', () => {
+  let callback: QueryCallback
+
+  beforeEach(() => {
+    callback = jest.fn()
+  })
+
+  test('just a builder', () => {
+    useQuery(buildQuery, callback)('john')
+
+    expect(buildQuery).toHaveBeenCalledWith('john')
+    expect(mockedClient.query).toHaveBeenCalledWith(
+      buildQuery('john'),
+      undefined,
+      callback
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      buildQuery,
+      callback
+    ])
+  })
+
+  test('builder, callback and dependencies', () => {
+    useQuery(buildQuery, callback, ['dependency'])('john')
+
+    expect(buildQuery).toHaveBeenCalledWith('john')
+    expect(mockedClient.query).toHaveBeenCalledWith(
+      buildQuery('john'),
+      undefined,
+      callback
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      'dependency'
+    ])
+  })
+
+  test('builder, options and callback', () => {
+    const options = customOptions()
+
+    useQuery(buildQuery, options, callback)('john')
+
+    expect(buildQuery).toHaveBeenCalledWith('john')
+    expect(mockedClient.query).toHaveBeenCalledWith(
+      buildQuery('john'),
+      options,
+      callback
+    )
+    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
+      mockedClient,
+      buildQuery,
+      options,
+      callback
+    ])
+  })
+
+  test('builder, options, callback and dependencies', () => {
+    const options = customOptions()
+
+    useQuery(buildQuery, options, callback, ['dependency'])('john')
+
+    expect(buildQuery).toHaveBeenCalledWith('john')
+    expect(mockedClient.query).toHaveBeenCalledWith(
+      buildQuery('john'),
+      options,
+      callback
+    )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
       'dependency'
