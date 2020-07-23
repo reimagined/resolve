@@ -10,6 +10,7 @@ const sendCommandSaga = function*(
   args: ChildSagaArgs,
   action: SendCommandRequestAction
 ): any {
+  /*
   const { client } = args
   const { aggregateName, aggregateId, commandType, payload } = action
 
@@ -40,6 +41,7 @@ const sendCommandSaga = function*(
       )
     )
   }
+  */
 }
 
 export default sendCommandSaga

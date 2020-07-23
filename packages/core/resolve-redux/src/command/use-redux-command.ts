@@ -156,16 +156,20 @@ function useReduxCommand<T>(
 
   return {
     execute: (data: T): void => {
-      if (typeof request === 'function') {
-        if (typeof command === 'function') {
-          dispatch(request(command(data)))
-          const narrowedExecutor = executor as HookExecutor<T, void>
-          narrowedExecutor(data)
-        } else {
+      const dispatchRequest = (command: Command): void => {
+        if (typeof request === 'function') {
           dispatch(request(command))
-          const narrowedExecutor = executor as HookExecutor<void, void>
-          narrowedExecutor()
         }
+      }
+
+      if (typeof command === 'function') {
+        dispatchRequest(command(data))
+        const narrowedExecutor = executor as HookExecutor<T, void>
+        narrowedExecutor(data)
+      } else {
+        dispatchRequest(command)
+        const narrowedExecutor = executor as HookExecutor<void, void>
+        narrowedExecutor()
       }
     }
   }

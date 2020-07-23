@@ -7,7 +7,10 @@ import {
   OPTIMISTIC_SYNC
 } from '../actions/optimistic_actions'
 
-const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = internal.actionTypes
+const {
+  SEND_COMMAND_SUCCESS,
+  LOAD_READMODEL_STATE_SUCCESS
+} = internal.actionTypes
 
 export default function*() {
   yield takeEvery(
