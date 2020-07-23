@@ -137,7 +137,7 @@
             { "$ref": "#/definitions/resourceConstructor" }
           ]
         },
-        "resolver": {
+        "resolvers": {
           "oneOf": [
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }

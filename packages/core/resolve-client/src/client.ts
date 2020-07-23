@@ -244,6 +244,7 @@ export const subscribe = (
             topicId: aggregateId
           },
           handler,
+          viewModelName,
           resubscribeCallback
         )
       )
@@ -291,6 +292,7 @@ export const unsubscribe = (
             topicName: eventType,
             topicId: aggregateId
           },
+          viewModelName,
           handler
         )
       )

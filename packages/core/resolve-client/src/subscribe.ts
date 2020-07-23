@@ -60,7 +60,8 @@ export interface SubscribeAdapterOptions {
 
 export const getSubscribeAdapterOptions = async (
   context: Context,
-  adapterName: string
+  adapterName: string,
+  viewModelName: string
 ): Promise<SubscribeAdapterOptions> => {
   const { rootPath, origin: customOrigin } = context
   const origin = determineOrigin(customOrigin)
@@ -68,7 +69,8 @@ export const getSubscribeAdapterOptions = async (
   const response = await request(context, '/api/subscribe', {
     origin,
     rootPath,
-    adapterName
+    adapterName,
+    viewModelName
   })
 
   try {
@@ -78,7 +80,10 @@ export const getSubscribeAdapterOptions = async (
   }
 }
 
-const initSubscribeAdapter = async (context: Context): Promise<any> => {
+const initSubscribeAdapter = async (
+  context: Context,
+  viewModelName: string
+): Promise<any> => {
   const { subscribeAdapter: createSubscribeAdapter } = context
 
   if (createSubscribeAdapter === createEmptySubscribeAdapter) {
@@ -95,7 +100,8 @@ const initSubscribeAdapter = async (context: Context): Promise<any> => {
 
   const { appId, url } = await getSubscribeAdapterOptions(
     context,
-    createSubscribeAdapter.adapterName
+    createSubscribeAdapter.adapterName,
+    viewModelName
   )
   const { origin: customOrigin, rootPath } = context
 
@@ -113,7 +119,7 @@ const initSubscribeAdapter = async (context: Context): Promise<any> => {
   if (!refreshTimeout) {
     refreshTimeout = setTimeoutSafe(
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      () => refreshSubscribeAdapter(context),
+      () => refreshSubscribeAdapter(context, viewModelName, false),
       REFRESH_TIMEOUT
     )
   }
@@ -121,28 +127,32 @@ const initSubscribeAdapter = async (context: Context): Promise<any> => {
   return subscribeAdapter
 }
 
-const getSubscribeAdapterPromise = (context: Context): Promise<any> => {
+const getSubscribeAdapterPromise = (
+  context: Context,
+  viewModelName: string
+): Promise<any> => {
   if (subscribeAdapterPromise !== null) {
     return subscribeAdapterPromise
   }
-  subscribeAdapterPromise = initSubscribeAdapter(context)
+  subscribeAdapterPromise = initSubscribeAdapter(context, viewModelName)
   return subscribeAdapterPromise
 }
 
 export const refreshSubscribeAdapter = async (
   context: Context,
+  viewModelName: string,
   subscribeAdapterRecreated?: boolean
 ): Promise<any> => {
   let subscribeAdapter
   try {
-    subscribeAdapter = await getSubscribeAdapterPromise(context)
+    subscribeAdapter = await getSubscribeAdapterPromise(context, viewModelName)
   } catch (error) {
     subscribeAdapterPromise = null
     if (refreshTimeout) {
       clearTimeoutSafe(refreshTimeout)
     }
     refreshTimeout = setTimeoutSafe(
-      () => refreshSubscribeAdapter(context, true),
+      () => refreshSubscribeAdapter(context, viewModelName, true),
       REFRESH_TIMEOUT
     )
     return Promise.resolve()
@@ -156,7 +166,7 @@ export const refreshSubscribeAdapter = async (
           clearTimeoutSafe(refreshTimeout)
         }
         refreshTimeout = setTimeoutSafe(
-          () => refreshSubscribeAdapter(context),
+          () => refreshSubscribeAdapter(context, viewModelName, false),
           REFRESH_TIMEOUT
         )
         return Promise.resolve()
@@ -174,7 +184,7 @@ export const refreshSubscribeAdapter = async (
       await subscribeAdapter.close()
     }
     subscribeAdapterPromise = null
-    subscribeAdapter = await getSubscribeAdapterPromise(context)
+    subscribeAdapter = await getSubscribeAdapterPromise(context, viewModelName)
 
     subscribeAdapter.subscribeToTopics(
       activeConnections.map(({ connectionName, connectionId }) => ({
@@ -193,7 +203,7 @@ export const refreshSubscribeAdapter = async (
     clearTimeoutSafe(refreshTimeout)
   }
   refreshTimeout = setTimeoutSafe(
-    () => refreshSubscribeAdapter(context),
+    () => refreshSubscribeAdapter(context, viewModelName, false),
     REFRESH_TIMEOUT
   )
   return Promise.resolve()
@@ -219,10 +229,14 @@ const doSubscribe = async (
     topicId: string
   },
   eventCallback: Function,
+  viewModelName: string,
   subscribeCallback?: Function
 ): Promise<object> => {
   const connectionManager = createConnectionManager()
-  const subscribeAdapter = await getSubscribeAdapterPromise(context)
+  const subscribeAdapter = await getSubscribeAdapterPromise(
+    context,
+    viewModelName
+  )
   if (subscribeAdapter === null) {
     return Promise.resolve({})
   }
@@ -266,10 +280,14 @@ const doUnsubscribe = async (
     topicName: string
     topicId: string
   },
+  viewModelName: string,
   callback?: Function
 ): Promise<object> => {
   const connectionManager = createConnectionManager()
-  const subscribeAdapter = await getSubscribeAdapterPromise(context)
+  const subscribeAdapter = await getSubscribeAdapterPromise(
+    context,
+    viewModelName
+  )
   if (subscribeAdapter === null) {
     return Promise.resolve({})
   }

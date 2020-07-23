@@ -1,21 +1,25 @@
-import jwt from 'jsonwebtoken'
 import qs from 'querystring'
 
-const SECRET = 'secret'
-
-const getSubscribeAdapterOptions = async ({ subscriptionsCredentials }) => {
+const getSubscribeAdapterOptions = async (
+  resolve,
+  origin,
+  adapterName,
+  viewModelName
+) => {
   const { RESOLVE_DEPLOYMENT_ID, RESOLVE_WS_URL } = process.env
 
-  const token = jwt.sign(
-    {
-      applicationArn: subscriptionsCredentials.applicationLambdaArn
-    },
-    SECRET
-  )
+  const viewModel = resolve.viewModels.find(vw => vw.name === viewModelName)
+
+  if (viewModel == null) {
+    throw new Error('View models is not found')
+  }
+
+  const token = await viewModel.resolvers.sign()
 
   const query = qs.stringify({
-    token,
-    applicationArn: subscriptionsCredentials.applicationLambdaArn
+    jwt: token,
+    applicationArn: resolve.subscriptionsCredentials.applicationLambdaArn,
+    viewModelName
   })
 
   const subscribeUrl = `${RESOLVE_WS_URL}?${query}`
