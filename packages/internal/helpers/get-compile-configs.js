@@ -3,19 +3,6 @@ const find = require('glob').sync
 
 const { getResolveDir } = require('./get-resolve-dir')
 
-function makeSyncAtEnd(configs, packageName) {
-  const includedIndexes = configs.reduce((acc, config, index) => (
-    config.name === packageName ? [index].concat(acc) : acc
-  ), [])
-
-  for (const index of includedIndexes) {
-    const config = configs[index]
-    configs.splice(index, 1)
-    configs.push(config)
-    config.sync = true
-  }
-}
-
 const externalDependencies = ['resolve-cloud-common']
 
 const isInternalDependency = (name) => name.startsWith('resolve-')
@@ -101,10 +88,6 @@ const getCompileConfigs = () => {
 
     configs.push(config)
   }
-
-  makeSyncAtEnd(configs, 'resolve-core')
-  makeSyncAtEnd(configs, 'resolve-client')
-  makeSyncAtEnd(configs, 'resolve-react-hooks')
 
   _configs = configs
 

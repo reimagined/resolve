@@ -69,11 +69,51 @@ async function compilePackage(config) {
 }
 
 async function main() {
-  for (const config of configs) {
-    const promise = compilePackage(config)
+  const map = new Map()
+  let pendingPromises = []
 
-    if (config.sync || process.env.RESOLVE_ALLOW_PARALLEL_BUILDS != null) {
-      await promise
+  const preparePendingBuild = (build) => {
+    build.status = 'building'
+    const promise = compilePackage(build.config)
+    build.promise = promise
+    promise.then(() => (build.status = 'succeeded'))
+    pendingPromises.push(promise)
+  }
+
+  for (const config of configs) {
+    const build = { config, status: 'waiting' }
+    map.set(config.name, build)
+
+    if (config.dependencies.length > 0) {
+      continue
+    }
+
+    preparePendingBuild(build)
+  }
+
+  while (true) {
+    if (pendingPromises.length > 0) {
+      await Promise.race([
+        Promise.race(pendingPromises),
+        Promise.all(pendingPromises)
+      ])
+    }
+
+    pendingPromises = []
+
+    for (const [, build] of map.entries()) {
+      if (build.status === 'building') {
+        pendingPromises.push(build.promise)
+      } else if (
+        build.status === 'waiting'
+        && build.config.dependencies.every((dependency) => map.get(dependency).status === 'succeeded')
+      ) {
+        preparePendingBuild(build)
+      }
+    }
+
+    if (pendingPromises.length === 0) {
+      break
     }
   }
 }
