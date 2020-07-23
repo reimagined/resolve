@@ -7,7 +7,7 @@
       {
         "type": "subcategory",
         "label": "Basics",
-        "ids": ["app-structure", "write-side", "read-side", "frontend", "curl"]
+        "ids": ["app-structure", "write-side", "read-side", "frontend"]
       },
       {
         "type": "subcategory",
