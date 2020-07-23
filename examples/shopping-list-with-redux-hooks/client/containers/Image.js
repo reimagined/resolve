@@ -1,6 +1,10 @@
+import React from 'react'
 import { Image as BootstrapImage } from 'react-bootstrap'
-import { connectStaticBasedUrls } from 'resolve-redux'
+import { useStaticResolver } from 'resolve-react-hooks'
 
-const Image = connectStaticBasedUrls(['src'])(BootstrapImage)
+const Image = ({ src, ...otherProps }) => {
+  const resolveStatic = useStaticResolver()
+  return <BootstrapImage {...otherProps} src={resolveStatic(src)} />
+}
 
 export default Image

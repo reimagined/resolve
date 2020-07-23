@@ -1,10 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom/server'
-import { createStore, AppContainer } from 'resolve-redux'
+import { createStore } from 'resolve-redux'
 import { Router } from 'react-router'
 import { Helmet } from 'react-helmet'
 import { createMemoryHistory } from 'history'
 import jsonwebtoken from 'jsonwebtoken'
+import * as Redux from 'react-redux'
+import { ResolveContext } from 'resolve-react-hooks'
 
 import getRoutes from './get-routes'
 import getRedux from './get-redux'
@@ -32,29 +34,31 @@ const ssrHandler = async (
       Object.assign(jwt, jsonwebtoken.decode(req.cookies[jwtCookie.name]))
     } catch (e) {}
 
-    const store = createStore({
-      initialState: { jwt },
-      redux,
+    const context = {
       viewModels,
       subscribeAdapter: {},
       history,
       origin,
       rootPath,
+      staticPath: '/'
+    }
+
+    const store = createStore({
+      ...context,
+      redux,
+      initialState: { jwt },
       isClient: false
     })
 
     const staticContext = {}
     const markup = ReactDOM.renderToStaticMarkup(
-      <AppContainer
-        origin={origin}
-        rootPath={rootPath}
-        staticPath={staticPath}
-        store={store}
-      >
-        <Router history={history} staticContext={staticContext}>
-          <Routes routes={routes} />
-        </Router>
-      </AppContainer>
+      <Redux.Provider store={store}>
+        <ResolveContext.Provider value={context}>
+          <Router history={history} staticContext={staticContext}>
+            <Routes routes={routes} />
+          </Router>
+        </ResolveContext.Provider>
+      </Redux.Provider>
     )
 
     const initialState = store.getState()

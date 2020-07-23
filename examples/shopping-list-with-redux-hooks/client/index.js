@@ -1,6 +1,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Router } from 'react-router'
+import { ResolveContext } from 'resolve-react-hooks'
 import { createStore } from 'resolve-redux'
 import { createBrowserHistory } from 'history'
 
@@ -13,6 +14,8 @@ const entryPoint = context => {
   const history = createBrowserHistory({ basename: context.rootPath })
   const routes = getRoutes()
 
+  console.log(JSON.stringify(context))
+
   const store = createStore({
     ...context,
     redux: getRedux(),
@@ -21,9 +24,11 @@ const entryPoint = context => {
 
   render(
     <Redux.Provider store={store}>
-      <Router history={history}>
-        <Routes routes={routes} />
-      </Router>
+      <ResolveContext.Provider value={context}>
+        <Router history={history}>
+          <Routes routes={routes} />
+        </Router>
+      </ResolveContext.Provider>
     </Redux.Provider>,
     document.getElementById('app-container')
   )

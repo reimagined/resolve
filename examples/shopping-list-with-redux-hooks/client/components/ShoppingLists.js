@@ -5,16 +5,25 @@ import { useReduxCommand, useReduxReadModel } from 'resolve-redux'
 import { useSelector } from 'react-redux'
 
 export default () => {
-  const { request: getLists, selector: myLists } = useReduxReadModel({
-    name: 'ShoppingLists',
-    resolver: 'all',
-    args: {}
-  })
-  const lists = useSelector(myLists)
-  const removeShoppingList = useReduxCommand({
+  const { request: getLists, selector: myLists } = useReduxReadModel(
+    {
+      name: 'ShoppingLists',
+      resolver: 'all',
+      args: {}
+    },
+    {
+      selectorId: 'all-user-lists'
+    }
+  )
+  const { execute: removeShoppingList } = useReduxCommand(({ id }) => ({
     aggregateName: 'ShoppingList',
-    type: 'renameShoppingList'
-  })
+    type: 'renameShoppingList',
+    aggregateId: id,
+    payload: {}
+  }))
+  const item = useSelector(myLists) || { data: [] }
+  console.log(item)
+  const lists = item.data || []
 
   useEffect(() => {
     getLists()
@@ -41,7 +50,7 @@ export default () => {
               <td className="example-table-action">
                 <Button
                   onClick={() => {
-                    this.props.removeShoppingList(id)
+                    removeShoppingList({ id })
                   }}
                 >
                   <i className="far fa-trash-alt" />

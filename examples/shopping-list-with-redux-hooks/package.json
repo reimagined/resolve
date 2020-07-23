@@ -32,6 +32,7 @@
     "redux-devtools-extension": "2.13.7",
     "resolve-readmodel-lite": "0.24.11",
     "resolve-readmodel-postgresql-serverless": "0.24.11",
+    "resolve-react-hooks": "0.24.11",
     "resolve-redux": "0.24.11",
     "resolve-scripts": "0.24.11",
     "resolve-eventstore-postgresql-serverless": "0.24.11",

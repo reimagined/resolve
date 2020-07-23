@@ -1,10 +1,10 @@
-import { useQuery } from './use-query'
-import { useCommand } from './use-command'
+import { useQuery, QueryBuilder } from './use-query'
+import { useCommand, CommandBuilder } from './use-command'
 import { useStaticResolver } from './use-static-resolver'
 import { useViewModel } from './use-view-model'
 import { useClient } from './use-client'
 import { ResolveContext } from './context'
-import { useCommandBuilder, CommandBuilder } from './use-command-builder'
+import { useCommandBuilder } from './use-command-builder'
 import { useQueryBuilder } from './use-query-builder'
 import { HookExecutor } from './generic'
 
@@ -18,5 +18,6 @@ export {
   useCommandBuilder,
   useQueryBuilder,
   HookExecutor,
-  CommandBuilder
+  CommandBuilder,
+  QueryBuilder
 }
