@@ -34,16 +34,15 @@
     "jest": "26.0.1",
     "resolve-core": "0.24.11"
   },
+  "sourceType": "ts",
   "babelCompile": [
     {
-      "sourceType": "ts",
       "moduleType": "es",
       "moduleTarget": "server",
       "inputDir": "./src",
       "outDir": "./es"
     },
     {
-      "sourceType": "ts",
       "moduleType": "cjs",
       "moduleTarget": "server",
       "inputDir": "./src",
