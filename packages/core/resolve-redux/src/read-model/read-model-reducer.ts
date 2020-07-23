@@ -40,7 +40,7 @@ export const getEntryPath = (
   selector: ReadModelResultEntrySelector | string
 ): string => {
   if (typeof selector === 'string') {
-    return `@@namedSelectors.${getHash(selector)}`
+    return `@@resolve/namedSelectors.${getHash(selector)}`
   }
   const { readModelName, resolverName, resolverArgs } = selector
   return `${getHash(readModelName)}.${getHash(resolverName)}.${getHash(

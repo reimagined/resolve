@@ -56,20 +56,22 @@ const internalActions: ReadModelReduxActionsCreators = {
     resolverArgs: query.args,
     selectorId
   }),
-  success: (query: ReadModelQuery, result: QueryResult) => ({
+  success: (query: ReadModelQuery, result: QueryResult, selectorId? : string) => ({
     type: QUERY_READMODEL_SUCCESS,
     readModelName: query.name,
     resolverName: query.resolver,
     resolverArgs: query.args,
     result: result.data,
-    timestamp: result.timestamp
+    timestamp: result.timestamp,
+    selectorId
   }),
-  failure: (query: ReadModelQuery, error: Error) => ({
+  failure: (query: ReadModelQuery, error: Error, selectorId?: string) => ({
     type: QUERY_READMODEL_FAILURE,
     readModelName: query.name,
     resolverName: query.resolver,
     resolverArgs: query.args,
-    error
+    error,
+    selectorId
   })
 }
 

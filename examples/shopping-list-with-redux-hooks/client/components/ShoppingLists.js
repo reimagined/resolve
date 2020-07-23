@@ -22,7 +22,6 @@ export default () => {
     payload: {}
   }))
   const item = useSelector(myLists) || { data: [] }
-  console.log(item)
   const lists = item.data || []
 
   useEffect(() => {
