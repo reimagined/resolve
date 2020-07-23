@@ -912,58 +912,58 @@ export default connectStaticBasedUrls(['css', 'favicon'])(Header)
 An event store adapter defines how the reSolve framework stores events in the underlying event store. An event store adapter object must expose the following functions:
 
 #### init
-Init a database
+Initializes a database.
 
 #### drop
-Drop a database
+Drops a database.
 
 #### dispose
-Disconnect
+Disconnects from a database and disposes unmanaged resources.
 
 #### saveEvent
-Save an event
+Saves an event to the database.
 
 #### loadEvents
-Get an array of events and next cursor filtered by the event filter.
+Gets an array of events and the next cursor filtered by the event filter.
 
 #### getLatestEvent
-Get latest event
+Gets the latest saved event.
 
 #### import
-Get writable stream for save events
+Gets a writable stream used to save events.
 
 #### export
-Get readable stream for load events
+Gets a readable stream used to load events.
 
 #### freeze
-Freeze database
+Freezes the database.
 
 #### unfreeze
-Unfreeze database
+Unfreezes the database.
 
 #### isFrozen
-Get a boolean indicating whether the database is frozen 
+Gets a boolean value that indicating whether the database is frozen.
 
 #### loadSnapshot
-Load a snapshot
+Loads a snapshot.
 
 #### saveSnapshot
-Save a snapshot
+Saves a snapshot.
 
 #### dropSnapshot
-Delete a snapshot
+Deletes a snapshot.
 
 #### getSecret
-Get a secret
+Gets a secret.
 
 #### setSecret
-Save a secret
+Saves a secret.
 
 #### deleteSecret
-Delete a secret
+Deletes a secret.
 
 #### incrementalImport
-Incremental import
+Incrementally imports events.
 
 ##### Example
 ```js
@@ -985,14 +985,13 @@ try {
 ```
 
 #### beginIncrementalImport
-Begin accumulate events for incremental import
+starts to accumulate events for incremental import.
 
 #### pushIncrementalImport
-Accumulate events for incremental import 
+Accumulates events for incremental import.
 
 #### commitIncrementalImport
-
-Commit accumulated events to the eventstore 
+Commits the accumulated events to the event store. 
 
 #### rollbackIncrementalImport
-Drop accumulated events
+Drops the accumulated events.
