@@ -17,10 +17,11 @@ import Providers from './providers'
 import AppContainer from './app_container'
 import deserializeInitialState from './deserialize_initial_state'
 import createStore from './create_store'
-import sendAggregateAction from './send_aggregate_action'
+import { sendAggregateAction } from './command/send-aggregate-action'
 import getOrigin from './get_origin'
 
 import { useReduxReadModel } from './read-model/use-redux-read-model'
+import { useReduxReadModelSelector } from './read-model/use-redux-read-model-selector'
 import { useReduxCommand } from './command/use-redux-command'
 
 import * as actionTypes from './action-types'
@@ -55,5 +56,6 @@ export {
   getOrigin,
   internal,
   useReduxReadModel,
+  useReduxReadModelSelector,
   useReduxCommand
 }

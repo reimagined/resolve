@@ -10,16 +10,19 @@ export type QueryReadModelRequestAction = {
   readModelName: string
   resolverName: string
   resolverArgs: any
+  selectorId?: string
 }
 export const queryReadModelRequest = (
   readModelName: string,
   resolverName: string,
-  resolverArgs: any
+  resolverArgs: any,
+  selectorId?: string
 ): QueryReadModelRequestAction => ({
   type: QUERY_READMODEL_REQUEST,
   readModelName,
   resolverName,
-  resolverArgs
+  resolverArgs,
+  selectorId
 })
 
 export type QueryReadModelSuccessAction = {
@@ -29,20 +32,23 @@ export type QueryReadModelSuccessAction = {
   resolverArgs: any
   result: any
   timestamp: any
+  selectorId?: string
 }
 export const queryReadModelSuccess = (
   readModelName: string,
   resolverName: string,
   resolverArgs: any,
   result: any,
-  timestamp: any
+  timestamp: any,
+  selectorId?: string
 ): QueryReadModelSuccessAction => ({
   type: QUERY_READMODEL_SUCCESS,
   readModelName,
   resolverName,
   resolverArgs,
   result,
-  timestamp
+  timestamp,
+  selectorId
 })
 export type QueryReadModelFailureAction = {
   type: typeof QUERY_READMODEL_FAILURE
@@ -50,18 +56,21 @@ export type QueryReadModelFailureAction = {
   resolverName: string
   resolverArgs: any
   error: Error
+  selectorId?: string
 }
 export const queryReadModelFailure = (
   readModelName: string,
   resolverName: string,
   resolverArgs: any,
-  error: Error
+  error: Error,
+  selectorId?: string
 ): QueryReadModelFailureAction => ({
   type: QUERY_READMODEL_FAILURE,
   readModelName,
   resolverName,
   resolverArgs,
-  error
+  error,
+  selectorId
 })
 
 export type DropReadModelResultAction = {
@@ -69,16 +78,19 @@ export type DropReadModelResultAction = {
   readModelName: string
   resolverName: string
   resolverArgs: any
+  selectorId?: string
 }
 export const dropReadModelResult = (
   readModelName: string,
   resolverName: string,
-  resolverArgs: any
+  resolverArgs: any,
+  selectorId?: string
 ): DropReadModelResultAction => ({
   type: DROP_READMODEL_STATE,
   readModelName,
   resolverName,
-  resolverArgs
+  resolverArgs,
+  selectorId
 })
 
 export type ConnectReadModelAction = {

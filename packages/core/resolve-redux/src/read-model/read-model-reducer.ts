@@ -22,24 +22,35 @@ import {
   ReduxState
 } from '../types'
 
-export const getEntryPath = ({
-  readModelName,
-  resolverName,
-  resolverArgs
-}: {
+export type ReadModelResultEntrySelector = {
   readModelName: string
   resolverName: string
   resolverArgs: any
-}): string =>
-  `${getHash(readModelName)}.${getHash(resolverName)}.${getHash(resolverArgs)}`
+}
+
+const getSelector = (
+  action:
+    | QueryReadModelRequestAction
+    | QueryReadModelSuccessAction
+    | QueryReadModelFailureAction
+    | DropReadModelResultAction
+): ReadModelResultEntrySelector | string => action.selectorId || action
+
+export const getEntryPath = (
+  selector: ReadModelResultEntrySelector | string
+): string => {
+  if (typeof selector === 'string') {
+    return `@@namedSelectors.${getHash(selector)}`
+  }
+  const { readModelName, resolverName, resolverArgs } = selector
+  return `${getHash(readModelName)}.${getHash(resolverName)}.${getHash(
+    resolverArgs
+  )}`
+}
 
 export const getEntry = (
   state: ReadModelResultMapByName | undefined,
-  selector: {
-    readModelName: string
-    resolverName: string
-    resolverArgs: any
-  },
+  selector: ReadModelResultEntrySelector | string,
   placeholder?: ReadModelResultEntry
 ): ReadModelResultEntry =>
   getByPath(state, getEntryPath(selector), placeholder) as ReadModelResultEntry
@@ -55,7 +66,7 @@ export const create = (): any => {
       {
         ...state
       },
-      getEntryPath(action),
+      getEntryPath(getSelector(action)),
       {
         state: ReadModelResultState.Requested
       }
@@ -69,7 +80,7 @@ export const create = (): any => {
       {
         ...state
       },
-      getEntryPath(action),
+      getEntryPath(getSelector(action)),
       {
         state: ReadModelResultState.Ready,
         data: action.result,
@@ -85,7 +96,7 @@ export const create = (): any => {
       {
         ...state
       },
-      getEntryPath(action),
+      getEntryPath(getSelector(action)),
       {
         state: ReadModelResultState.Failed,
         data: null,
@@ -100,7 +111,7 @@ export const create = (): any => {
     const newState = {
       ...state
     }
-    unsetEntry(newState, getEntryPath(action))
+    unsetEntry(newState, getEntryPath(getSelector(action)))
     return newState
   }
 

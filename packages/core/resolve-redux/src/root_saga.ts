@@ -9,7 +9,7 @@ import {
 } from './action-types'
 import loadViewModelStateSaga from './load_view_model_state_saga'
 //import loadReadModelStateSaga from './read-model/load_read_model_state_saga'
-import sendCommandSaga from './send_command_saga'
+import sendCommandSaga from './command/send-command-saga'
 import viewModelSaga from './view_models_saga'
 import readModelSaga from './read-model/read-models-saga'
 import subscribeSaga from './subscribe_saga'

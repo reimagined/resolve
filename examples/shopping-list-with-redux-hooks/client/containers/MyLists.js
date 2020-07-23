@@ -1,37 +1,15 @@
-import { useEffect } from 'react'
-
-import { useReduxReadModel } from 'resolve-redux'
-import { useSelector } from 'react-redux'
-
+import React from 'react'
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
-import * as aggregateActions from '../actions/aggregate_actions'
 
-const MyLists = () => {
-  const { request: getLists, selector: myLists } = useReduxReadModel({
-    readModelName: 'ShoppingLists',
-    resolveName: 'all'
-  })
-  const lists = useSelector(myLists)
-
-  useEffect(() => {
-    getLists()
-  }, [])
-
-  //const { lists, createShoppingList, removeShoppingList } = this.props
-
+export default () => {
   return (
     <div className="example-wrapper">
-      <ShoppingLists lists={lists} removeShoppingList={removeShoppingList} />
-      <ShoppingListCreator
-        lists={lists}
-        createShoppingList={createShoppingList}
-      />
+      <ShoppingLists />
+      <ShoppingListCreator />
     </div>
   )
 }
-
-export default MyLists
 
 /*
 export const mapStateToOptions = () => ({

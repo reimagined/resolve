@@ -4,7 +4,7 @@ import { useStaticResolver } from './use-static-resolver'
 import { useViewModel } from './use-view-model'
 import { useClient } from './use-client'
 import { ResolveContext } from './context'
-import { useCommandBuilder } from './use-command-builder'
+import { useCommandBuilder, CommandBuilder } from './use-command-builder'
 import { useQueryBuilder } from './use-query-builder'
 import { HookExecutor } from './generic'
 
@@ -17,5 +17,6 @@ export {
   ResolveContext,
   useCommandBuilder,
   useQueryBuilder,
-  HookExecutor
+  HookExecutor,
+  CommandBuilder
 }

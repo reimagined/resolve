@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { firstOfType } from 'resolve-core'
 import { Command, CommandResult, CommandOptions } from 'resolve-client'
-import { useCommand } from 'resolve-react-hooks'
+import { useCommand, CommandBuilder } from 'resolve-react-hooks'
 import { isActionCreators, isDependencies, isOptions } from '../helpers'
 import {
   SEND_COMMAND_REQUEST,

@@ -11,7 +11,7 @@ const exec = (cmd, opts = {}) =>
   })
 
 const prepare = async ({ directory, sourceType }) => {
-  if (sourceType === 'ts') {
+  if (['ts', 'tsx'].includes(sourceType)) {
     try {
       return exec(`node "${tscPath}"`, { cwd: directory })
     } catch (error) {
