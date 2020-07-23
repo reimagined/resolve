@@ -9,15 +9,29 @@ const configs = getCompileConfigs()
 
 let isFailed = false
 
-async function main() {
-  for (const config of configs) {
+async function compilePackage(config) {
+  try {
+    await prepare(config)
+  } catch (e) {
+    isFailed = true
+
+    // eslint-disable-next-line no-console
+    console.log(`↑ [${chalk.red(config.name)}] preparing failed`)
+    if (e != null && e !== '') {
+      // eslint-disable-next-line no-console
+      console.error(e)
+    }
+    throw e
+  }
+
+  for (const babelConfig of config.babelCompile) {
     const cliOptions = {
-      extensions: config.extensions,
-      outFileExtension: config.outFileExtension,
-      relative: config.relative,
-      filenames: config.filenames,
-      outDir: config.outDir,
-      deleteDirOnStart: config.deleteDirOnStart
+      extensions: babelConfig.extensions,
+      outFileExtension: babelConfig.outFileExtension,
+      relative: babelConfig.relative,
+      filenames: babelConfig.filenames,
+      outDir: babelConfig.outDir,
+      deleteDirOnStart: babelConfig.deleteDirOnStart
     }
 
     for (let key in cliOptions) {
@@ -26,50 +40,37 @@ async function main() {
       }
     }
 
-    const promise = prepare(config)
-      .then(() =>
-        babel({
-          babelOptions: {
-            ...getBabelConfig({
-              sourceType: config.sourceType,
-              moduleType: config.moduleType,
-              moduleTarget: config.moduleTarget
-            }),
-            sourceMaps: true,
-            babelrc: false
-          },
-          cliOptions
-        })
-          .then(() => {
-            // eslint-disable-next-line no-console
-            console.log(
-              `↑ [${chalk.green(config.name)}] { moduleType: "${
-                config.moduleType
-              }", moduleType: "${config.moduleTarget}" }`
-            )
-          })
-          .catch(error => {
-            // eslint-disable-next-line no-console
-            console.error(error)
-            process.exit(1)
-          })
-      )
-      .catch(
-        // eslint-disable-next-line no-loop-func
-        error => {
-          isFailed = true
-          // eslint-disable-next-line no-console
-          console.log(
-            `↑ [${chalk.red(config.name)}] { moduleType: "${
-              config.moduleType
-            }", moduleType: "${config.moduleTarget}" }`
-          )
-          if (error != null && error !== '') {
-            // eslint-disable-next-line no-console
-            console.error(error)
-          }
-        }
-      )
+    babel({
+      babelOptions: {
+        ...getBabelConfig({
+          sourceType: config.sourceType,
+          moduleType: babelConfig.moduleType,
+          moduleTarget: babelConfig.moduleTarget
+        }),
+        sourceMaps: true,
+        babelrc: false
+      },
+      cliOptions
+    })
+      .then(() => {
+        // eslint-disable-next-line no-console
+        console.log(
+          `↑ [${chalk.green(config.name)}] { moduleType: "${
+            babelConfig.moduleType
+          }", moduleType: "${babelConfig.moduleTarget}" }`
+        )
+      })
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.error(error)
+        process.exit(1)
+      })
+  }
+}
+
+async function main() {
+  for (const config of configs) {
+    const promise = compilePackage(config)
 
     if (config.sync || process.env.RESOLVE_ALLOW_PARALLEL_BUILDS != null) {
       await promise
