@@ -1,6 +1,5 @@
 export const NOTIFICATIONS_TABLE_NAME = 'notifications'
 export const SUBSCRIBERS_TABLE_NAME = 'subscribers'
-export const BATCHES_TABLE_NAME = 'batches'
 
 export const INTEGER_SQL_TYPE = 'INTEGER'
 export const LONG_INTEGER_SQL_TYPE = 'BIGINT'

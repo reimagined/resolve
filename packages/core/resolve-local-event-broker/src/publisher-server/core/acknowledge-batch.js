@@ -1,5 +1,4 @@
 import {
-  BATCHES_TABLE_NAME,
   NOTIFICATIONS_TABLE_NAME,
   SUBSCRIBERS_TABLE_NAME,
   DeliveryStrategy,
@@ -15,40 +14,31 @@ const acknowledgeBatch = async (pool, payload) => {
   const {
     database: { runRawQuery, runQuery, escapeStr, escapeId },
     parseSubscription,
-    getNextCursor,
     invokeConsumer,
     invokeOperation,
     serializeError
   } = pool
-
   const { batchId, result } = payload
 
   const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME)
   const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
-  const batchesTableNameAsId = escapeId(BATCHES_TABLE_NAME)
 
-  const [applyingEvents, affectedNotifications] = await Promise.all([
-    runQuery(`
-      SELECT * FROM ${batchesTableNameAsId}
-      WHERE ${batchesTableNameAsId}."batchId" = ${escapeStr(batchId)}
-      ORDER BY ${batchesTableNameAsId}."eventIndex" ASC
-    `),
-    runQuery(`
-      SELECT ${subscribersTableNameAsId}."subscriptionId" AS "subscriptionId",
-      ${subscribersTableNameAsId}."eventSubscriber" AS "eventSubscriber",
-      ${subscribersTableNameAsId}."deliveryStrategy" AS "deliveryStrategy",
-      ${subscribersTableNameAsId}."successEvent" AS "successEvent",
-      ${subscribersTableNameAsId}."cursor" AS "cursor",
-      ${notificationsTableNameAsId}."status" AS "runStatus",
-      ${notificationsTableNameAsId}."xaTransactionId" AS "xaTransactionId",
-      ${notificationsTableNameAsId}."batchId" AS "batchId"
-      FROM ${notificationsTableNameAsId} LEFT JOIN ${subscribersTableNameAsId}
-      ON ${subscribersTableNameAsId}."subscriptionId" = 
-      ${notificationsTableNameAsId}."subscriptionId"
-      WHERE ${notificationsTableNameAsId}."batchId" = ${escapeStr(batchId)}
-      LIMIT 1
-    `)
-  ])
+  const affectedNotifications = await runQuery(`
+    SELECT ${subscribersTableNameAsId}."subscriptionId" AS "subscriptionId",
+    ${subscribersTableNameAsId}."eventSubscriber" AS "eventSubscriber",
+    ${subscribersTableNameAsId}."deliveryStrategy" AS "deliveryStrategy",
+    ${subscribersTableNameAsId}."successEvent" AS "successEvent",
+    ${subscribersTableNameAsId}."cursor" AS "cursor",
+    ${notificationsTableNameAsId}."status" AS "runStatus",
+    ${notificationsTableNameAsId}."xaTransactionId" AS "xaTransactionId",
+    ${notificationsTableNameAsId}."batchId" AS "batchId"
+    FROM ${notificationsTableNameAsId} LEFT JOIN ${subscribersTableNameAsId}
+    ON ${subscribersTableNameAsId}."subscriptionId" = 
+    ${notificationsTableNameAsId}."subscriptionId"
+    WHERE ${notificationsTableNameAsId}."batchId" = ${escapeStr(batchId)}
+    LIMIT 1
+  `)
+
   if (affectedNotifications == null || affectedNotifications.length === 0) {
     return
   }
@@ -99,19 +89,8 @@ const acknowledgeBatch = async (pool, payload) => {
   }
   try {
     let isXaCommitOk = true
-    const { successEvent, failedEvent, error } = result
-    const lastSuccessEventIdx =
-      successEvent != null
-        ? applyingEvents.findIndex(
-            ({ aggregateIdAndVersion }) =>
-              aggregateIdAndVersion ===
-              `${successEvent.aggregateId}:${successEvent.aggregateVersion}`
-          ) + 1
-        : 0
-    const nextCursor = await getNextCursor(
-      subscriptionDescription.cursor,
-      applyingEvents.slice(0, lastSuccessEventIdx)
-    )
+    const { successEvent, failedEvent, error, nextCursor } = result
+
     if (
       subscriptionDescription.deliveryStrategy === DeliveryStrategy.ACTIVE_XA &&
       subscriptionDescription.xaTransactionId != null

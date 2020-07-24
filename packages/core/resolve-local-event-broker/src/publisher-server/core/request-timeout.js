@@ -1,7 +1,6 @@
 import {
   NOTIFICATIONS_TABLE_NAME,
   SUBSCRIBERS_TABLE_NAME,
-  BATCHES_TABLE_NAME,
   DeliveryStrategy,
   NotificationStatus,
   ConsumerMethod,
@@ -19,11 +18,10 @@ async function requestTimeout(pool, payload) {
     getNextCursor,
     serializeError
   } = pool
-
   const { batchId } = payload
+
   const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME)
   const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
-  const batchesTableNameAsId = escapeId(BATCHES_TABLE_NAME)
 
   const affectedNotifications = await runQuery(`
       SELECT ${subscribersTableNameAsId}."eventSubscriber" AS "eventSubscriber",
@@ -157,27 +155,7 @@ async function requestTimeout(pool, payload) {
           NotificationStatus.TIMEOUT_XA_COMMITING.length
         )
       }
-      if (appliedEventCount > 0) {
-        const applyingEvents = await runQuery(`
-          SELECT * FROM ${batchesTableNameAsId}
-          WHERE ${batchesTableNameAsId}."batchId" = ${escapeStr(batchId)}
-          ORDER BY ${batchesTableNameAsId}."eventIndex" ASC
-          LIMIT ${+appliedEventCount}
-        `)
-        result.successEvent = applyingEvents[appliedEventCount - 1]
-        const lastSuccessEventIdx =
-          result.successEvent != null
-            ? applyingEvents.findIndex(
-                ({ aggregateIdAndVersion }) =>
-                  aggregateIdAndVersion ===
-                  `${result.successEvent.aggregateId}:${result.successEvent.aggregateVersion}`
-              ) + 1
-            : 0
-        result.cursor = await getNextCursor(
-          cursor,
-          applyingEvents.slice(0, lastSuccessEventIdx)
-        )
-      }
+      
 
       const isXaCommitOk = await invokeConsumer(
         pool,

@@ -8,29 +8,39 @@ import handleSchedulerEvent from './scheduler-event-handler'
 import putMetrics from './metrics'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
+import { lambda } from 'resolve-cloud-common'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
+let lastReqId = Symbol('EMPTY_REQ_ID')
 let coldStart = true
 
 const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   log.debug('executing application lambda')
+  if(lastReqId === lambdaContext.awsRequestId) {
+    throw new Error(`Application lambda worker was invoked with duplicate request-id "${lastReqId}", so skipping request`)
+  } else {
+    lastReqId = lambdaContext.awsRequestId
+  }
+
   log.verbose('incoming event', JSON.stringify(lambdaEvent, null, 2))
   lambdaContext.callbackWaitsForEmptyEventLoop = false
-
-  resolveBase.eventSubscriberCredentials = {
-    mode: 'internal',
+  const baseCredentials = {
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
-    lambdaEventType: 'EventBus',
-    lambdaEventName: 'resolveSource'
+    lambdaEventName: 'resolveSource',
+    mode: 'internal'
   }
-
-  resolveBase.eventstoreCredentials = {
-    mode: 'internal',
-    applicationLambdaArn: lambdaContext.invokedFunctionArn,
-    lambdaEventType: 'EventStore',
-    lambdaEventName: 'resolveSource'
-  }
+ 
+  Object.assign(resolveBase, {
+    eventSubscriberCredentials: {
+      ...baseCredentials,
+      lambdaEventType: 'EventBus'
+    },
+    eventstoreCredentials: {
+      ...baseCredentials,
+      lambdaEventType: 'EventStore'
+    }
+  })
 
   const resolve = Object.create(resolveBase)
   resolve.getRemainingTimeInMillis = lambdaContext.getRemainingTimeInMillis.bind(

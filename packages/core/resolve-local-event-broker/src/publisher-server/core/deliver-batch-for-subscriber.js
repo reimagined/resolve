@@ -1,6 +1,5 @@
 import {
   NOTIFICATIONS_TABLE_NAME,
-  BATCHES_TABLE_NAME,
   SUBSCRIBERS_TABLE_NAME,
   DeliveryStrategy,
   ConsumerMethod,

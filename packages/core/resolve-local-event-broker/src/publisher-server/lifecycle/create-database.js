@@ -1,6 +1,5 @@
 import { ResourceAlreadyExistError } from './lifecycle-errors'
 import {
-  BATCHES_TABLE_NAME,
   INTEGER_SQL_TYPE,
   JSON_SQL_TYPE,
   LONG_INTEGER_SQL_TYPE,
@@ -12,7 +11,6 @@ import {
 async function createDatabase({ database: { runRawQuery, escapeId } }) {
   const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME)
   const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
-  const batchesTableNameAsId = escapeId(BATCHES_TABLE_NAME)
 
   const notificationsSubscriptionIdIndexNameAsId = escapeId(
     `${NOTIFICATIONS_TABLE_NAME}-subscriptionId`
@@ -24,7 +22,6 @@ async function createDatabase({ database: { runRawQuery, escapeId } }) {
   const subscribersEventSubscriberIndexNameAsId = escapeId(
     `${SUBSCRIBERS_TABLE_NAME}-eventSubscriber`
   )
-  const batchesBatchIdIndexNameAsId = escapeId(`${BATCHES_TABLE_NAME}-batchId`)
 
   try {
     await runRawQuery(`
@@ -38,6 +35,7 @@ async function createDatabase({ database: { runRawQuery, escapeId } }) {
         "heartbeatTimestamp" ${LONG_INTEGER_SQL_TYPE},
         "aggregateIdAndVersion" ${STRING_SQL_TYPE} NOT NULL,
         "xaTransactionId" ${JSON_SQL_TYPE},
+        "immediateCursor" ${JSON_SQL_TYPE},
         "batchId" ${STRING_SQL_TYPE} NULL,
 
         PRIMARY KEY("insertionId", "subscriptionId")
@@ -62,16 +60,6 @@ async function createDatabase({ database: { runRawQuery, escapeId } }) {
         PRIMARY KEY("subscriptionId")
       );
       
-      CREATE TABLE IF NOT EXISTS ${batchesTableNameAsId}(
-        "batchId" ${STRING_SQL_TYPE} NOT NULL,
-        "eventIndex" ${INTEGER_SQL_TYPE} NOT NULL,
-        "aggregateIdAndVersion" ${STRING_SQL_TYPE} NOT NULL,
-        "threadId" ${LONG_INTEGER_SQL_TYPE} NOT NULL,
-        "threadCounter" ${LONG_INTEGER_SQL_TYPE} NOT NULL,
-
-        PRIMARY KEY("batchId", "eventIndex")
-      );
-      
       CREATE INDEX IF NOT EXISTS ${notificationsSubscriptionIdIndexNameAsId}
       ON ${notificationsTableNameAsId}("subscriptionId");
 
@@ -81,9 +69,6 @@ async function createDatabase({ database: { runRawQuery, escapeId } }) {
       CREATE UNIQUE INDEX IF NOT EXISTS ${subscribersEventSubscriberIndexNameAsId}
       ON ${subscribersTableNameAsId}("eventSubscriber");
 
-      CREATE INDEX IF NOT EXISTS ${batchesBatchIdIndexNameAsId}
-      ON ${batchesTableNameAsId}("batchId");
-      
       COMMIT;
       BEGIN IMMEDIATE;
     `)

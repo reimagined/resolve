@@ -133,8 +133,8 @@ const sendEvents = async (payload, resolve) => {
     result: {
       successEvent: result.successEvent,
       failedEvent: result.failedEvent,
-      cursor: nextCursor,
-      error: result.error
+      error: result.error,
+      nextCursor
     }
   })
 }

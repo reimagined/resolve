@@ -1,5 +1,4 @@
 import {
-  BATCHES_TABLE_NAME,
   LONG_INTEGER_SQL_TYPE,
   NOTIFICATIONS_TABLE_NAME,
   PrivateOperationType,
@@ -13,11 +12,10 @@ const finalizeAndReportBatch = async (pool, payload) => {
     database: { escapeId, escapeStr, runQuery, runRawQuery },
     invokeOperation
   } = pool
-
   const { activeBatch, result } = payload
+
   const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME)
   const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
-  const batchesTableNameAsId = escapeId(BATCHES_TABLE_NAME)
 
   const { batchId, subscriptionId, eventSubscriber } = activeBatch
   const isActiveResult = result != null && result.constructor === Object
@@ -25,7 +23,7 @@ const finalizeAndReportBatch = async (pool, payload) => {
   if (isActiveResult && Object.keys(result).length > 0) {
     // eslint-disable-next-line prefer-const
     let { successEvent, failedEvent, error, cursor } = result
-    if (successEvent == null && failedEvent == null && error == null) {
+    if (successEvent == null && failedEvent == null && error == null && cursor == null) {
       error = {
         message: `EventSubscriber ${eventSubscriber} on batchId ${batchId} perform idle operation`
       }
@@ -83,9 +81,6 @@ const finalizeAndReportBatch = async (pool, payload) => {
       : ''
   }
     
-      DELETE FROM ${batchesTableNameAsId}
-      WHERE "batchId" = ${escapeStr(batchId)};
-    
       DELETE FROM ${notificationsTableNameAsId}
       WHERE "batchId" = ${escapeStr(batchId)};
 
@@ -98,6 +93,7 @@ const finalizeAndReportBatch = async (pool, payload) => {
 
   if (
     result != null &&
+    result.cursor != null &&
     result.successEvent != null &&
     result.failedEvent == null &&
     result.error == null
