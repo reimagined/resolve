@@ -948,7 +948,7 @@ Gets a boolean value that indicating whether the database is frozen.
 Loads a snapshot.
 
 #### saveSnapshot
-Saves a snapshot.
+Creates or update a snapshot
 
 #### dropSnapshot
 Deletes a snapshot.
@@ -956,14 +956,39 @@ Deletes a snapshot.
 #### getSecret
 Gets a secret.
 
+###### Arguments
+
+| Argument Name    | Description                     |
+| ---------------- | ------------------------------- |
+| selector         | Unique key in the secrets table |
+
 #### setSecret
-Saves a secret.
+Creates or update a secret
+
+###### Arguments
+
+| Argument Name    | Description                                          |
+| ---------------- | ---------------------------------------------------- |
+| selector         | Unique key in the secrets table                      |
+| secret           | A new encrypted secret value in the specified secret |
 
 #### deleteSecret
 Deletes a secret.
 
+###### Arguments
+
+| Argument Name    | Description                     |
+| ---------------- | ------------------------------- |
+| selector         | Unique key in the secrets table |
+
 #### incrementalImport
 Incrementally imports events.
+
+###### Arguments
+
+| Argument Name    | Description                                                                      |
+| ---------------- | -------------------------------------------------------------------------------- |
+| events           | Array of { aggregateId: string, type: string, timestamp: number, payload: any }. |
 
 ##### Example
 ```js
