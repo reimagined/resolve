@@ -1,12 +1,12 @@
 import {
-  OPTIMISTIC_CREATE_SHOPPING_LIST,
-  OPTIMISTIC_REMOVE_SHOPPING_LIST,
-  OPTIMISTIC_SYNC
+  SHOPPING_LISTS_ACQUIRED,
+  SHOPPING_LIST_CREATED,
+  SHOPPING_LIST_REMOVED
 } from '../actions/optimistic_actions'
 
 const optimistic_shopping_lists = (state = [], action) => {
   switch (action.type) {
-    case OPTIMISTIC_CREATE_SHOPPING_LIST: {
+    case SHOPPING_LIST_CREATED: {
       return [
         ...state,
         {
@@ -15,13 +15,13 @@ const optimistic_shopping_lists = (state = [], action) => {
         }
       ]
     }
-    case OPTIMISTIC_REMOVE_SHOPPING_LIST: {
+    case SHOPPING_LIST_REMOVED: {
       return state.filter(item => {
         return item.id !== action.payload.id
       })
     }
-    case OPTIMISTIC_SYNC: {
-      return action.payload.originalLists
+    case SHOPPING_LISTS_ACQUIRED: {
+      return action.payload.lists
     }
     default: {
       return state

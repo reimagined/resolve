@@ -57,9 +57,9 @@
   },
   "babelCompile": [
     {
-      "sourceType": "ts",
+      "sourceType": "tsx",
       "moduleType": "cjs",
-      "moduleTarget": "client",
+      "moduleTarget": "server",
       "inputDir": "./src",
       "outDir": "./lib"
     }

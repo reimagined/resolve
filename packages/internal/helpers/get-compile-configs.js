@@ -99,11 +99,12 @@ const getCompileConfigs = () => {
     }
   }
 
+  /*
   changeOrder(configs, 'resolve-core')
   changeOrder(configs, 'resolve-client')
   changeOrder(configs, 'resolve-react-hooks')
   changeOrder(configs, 'resolve-redux')
-
+  */
   _configs = configs
 
   return configs

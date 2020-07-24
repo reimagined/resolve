@@ -19,18 +19,19 @@ import { RootSagaArgs } from './types'
 
 function* rootSaga({ customSagas, ...sagaArgs }: RootSagaArgs): any {
   yield fork(subscribeSaga, sagaArgs)
-  yield takeEvery(
-    LOAD_VIEWMODEL_STATE_REQUEST,
-    loadViewModelStateSaga,
-    sagaArgs
-  )
-  //yield takeEvery(QUERY_READMODEL_REQUEST, loadReadModelStateSaga, sagaArgs)
-  yield takeEvery(SEND_COMMAND_REQUEST, sendCommandSaga, sagaArgs)
 
-  yield takeEvery(AUTH_REQUEST, authSaga, sagaArgs)
-  yield takeEvery(LOGOUT, logoutSaga)
-  yield fork(viewModelSaga, sagaArgs)
-  yield fork(readModelSaga, sagaArgs)
+  //yield takeEvery(
+  //    LOAD_VIEWMODEL_STATE_REQUEST,
+  //  loadViewModelStateSaga,
+  //sagaArgs
+  //)
+  //yield takeEvery(QUERY_READMODEL_REQUEST, loadReadModelStateSaga, sagaArgs)
+  //yield takeEvery(SEND_COMMAND_REQUEST, sendCommandSaga, sagaArgs)
+
+  //yield takeEvery(AUTH_REQUEST, authSaga, sagaArgs)
+  //yield takeEvery(LOGOUT, logoutSaga)
+  //yield fork(viewModelSaga, sagaArgs)
+  //yield fork(readModelSaga, sagaArgs)
 
   for (const customSaga of customSagas) {
     yield fork(customSaga, sagaArgs)

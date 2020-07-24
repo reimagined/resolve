@@ -1,4 +1,5 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
+import { Action } from 'redux'
 import { useDispatch } from 'react-redux'
 import { QueryOptions, QueryResult, ReadModelQuery } from 'resolve-client'
 import { useQuery } from 'resolve-react-hooks'
@@ -15,7 +16,7 @@ import {
   QUERY_READMODEL_SUCCESS
 } from '../action-types'
 import { ReduxState } from '../types'
-import { getEntry, ReadModelResultEntrySelector } from './read-model-reducer'
+import { getEntry } from './read-model-reducer'
 
 type HookData = {
   request: () => void
@@ -26,17 +27,17 @@ type ReadModelReduxActionsCreators = {
   request: (
     query: ReadModelQuery,
     selectorId?: string
-  ) => QueryReadModelRequestAction
+  ) => QueryReadModelRequestAction | Action
   success: (
     query: ReadModelQuery,
     result: QueryResult,
     selectorId?: string
-  ) => QueryReadModelSuccessAction
+  ) => QueryReadModelSuccessAction | Action
   failure: (
     query: ReadModelQuery,
     error: Error,
     selectorId?: string
-  ) => QueryReadModelFailureAction
+  ) => QueryReadModelFailureAction | Action
 }
 
 type ReduxReadModelHookOptions = {
@@ -56,7 +57,11 @@ const internalActions: ReadModelReduxActionsCreators = {
     resolverArgs: query.args,
     selectorId
   }),
-  success: (query: ReadModelQuery, result: QueryResult, selectorId? : string) => ({
+  success: (
+    query: ReadModelQuery,
+    result: QueryResult,
+    selectorId?: string
+  ) => ({
     type: QUERY_READMODEL_SUCCESS,
     readModelName: query.name,
     resolverName: query.resolver,

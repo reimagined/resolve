@@ -3,8 +3,12 @@ import { Button, ControlLabel, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { useReduxCommand, useReduxReadModel } from 'resolve-redux'
 import { useSelector } from 'react-redux'
+import {
+  SHOPPING_LIST_REMOVED,
+  SHOPPING_LISTS_ACQUIRED
+} from '../actions/optimistic_actions'
 
-export default () => {
+const useLists = () => {
   const { request: getLists, selector: myLists } = useReduxReadModel(
     {
       name: 'ShoppingLists',
@@ -21,8 +25,61 @@ export default () => {
     aggregateId: id,
     payload: {}
   }))
+
   const item = useSelector(myLists) || { data: [] }
   const lists = item.data || []
+
+  return {
+    getLists,
+    lists,
+    removeShoppingList
+  }
+}
+
+const useOptimisticLists = () => {
+  const { request: getLists } = useReduxReadModel(
+    {
+      name: 'ShoppingLists',
+      resolver: 'all',
+      args: {}
+    },
+    {
+      success: (_, result) => ({
+        type: SHOPPING_LISTS_ACQUIRED,
+        payload: {
+          lists: result.data
+        }
+      })
+    }
+  )
+  const { execute: removeShoppingList } = useReduxCommand(
+    ({ id }) => ({
+      aggregateName: 'ShoppingList',
+      type: 'removeShoppingList',
+      aggregateId: id,
+      payload: {}
+    }),
+    {
+      success: command => ({
+        type: SHOPPING_LIST_REMOVED,
+        payload: {
+          id: command.aggregateId
+        }
+      })
+    }
+  )
+
+  const lists = useSelector(state => state.optimisticShoppingLists) || []
+
+  return {
+    getLists,
+    lists,
+    removeShoppingList
+  }
+}
+
+export default () => {
+  const { getLists, removeShoppingList, lists } = useOptimisticLists()
 
   useEffect(() => {
     getLists()

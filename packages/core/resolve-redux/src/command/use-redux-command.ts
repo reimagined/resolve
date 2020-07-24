@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { firstOfType } from 'resolve-core'
 import {
@@ -156,6 +155,7 @@ function useReduxCommand<T>(
 
   return {
     execute: (data: T): void => {
+      console.log(`executing command: ${JSON.stringify(data)}`)
       const dispatchRequest = (command: Command): void => {
         if (typeof request === 'function') {
           dispatch(request(command))
@@ -165,10 +165,12 @@ function useReduxCommand<T>(
       if (typeof command === 'function') {
         dispatchRequest(command(data))
         const narrowedExecutor = executor as HookExecutor<T, void>
+        console.log(`executing builder executor`)
         narrowedExecutor(data)
       } else {
         dispatchRequest(command)
         const narrowedExecutor = executor as HookExecutor<void, void>
+        console.log(`executing direct executor`)
         narrowedExecutor()
       }
     }

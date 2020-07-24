@@ -2,20 +2,34 @@ import React, { useState } from 'react'
 import { Button, Col, ControlLabel, FormControl, Row } from 'react-bootstrap'
 import uuid from 'uuid/v4'
 import { useReduxReadModelSelector, useReduxCommand } from 'resolve-redux'
+import { SHOPPING_LIST_CREATED } from '../actions/optimistic_actions'
+import { useSelector } from 'react-redux'
 
 export default () => {
   const [shoppingListName, setShoppingListName] = useState('')
 
   const lists = useReduxReadModelSelector('all-user-lists') || []
+  //const lists = useSelector(state => state.optimisticShoppingLists)
 
-  const { execute: executeCreateListCommand } = useReduxCommand({
-    type: 'createShoppingList',
-    aggregateId: uuid(),
-    aggregateName: 'ShoppingList',
-    payload: {
-      name: shoppingListName || `Shopping List ${lists.length + 1}`
+  const { execute: executeCreateListCommand } = useReduxCommand(
+    {
+      type: 'createShoppingList',
+      aggregateId: uuid(),
+      aggregateName: 'ShoppingList',
+      payload: {
+        name: shoppingListName || `Shopping List ${lists.length + 1}`
+      }
+    },
+    {
+      success: command => ({
+        type: SHOPPING_LIST_CREATED,
+        payload: {
+          id: command.aggregateId,
+          name: command.payload.name
+        }
+      })
     }
-  })
+  )
 
   const updateShoppingListName = event => {
     setShoppingListName(event.target.value)

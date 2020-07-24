@@ -14,8 +14,6 @@ const entryPoint = context => {
   const history = createBrowserHistory({ basename: context.rootPath })
   const routes = getRoutes()
 
-  console.log(JSON.stringify(context))
-
   const store = createStore({
     ...context,
     redux: getRedux(),
