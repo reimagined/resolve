@@ -72,7 +72,7 @@ async function main() {
   const map = new Map()
   let pendingPromises = []
 
-  const preparePendingBuild = (build) => {
+  const preparePendingBuild = build => {
     build.status = 'building'
     const promise = compilePackage(build.config)
     build.promise = promise
@@ -105,8 +105,10 @@ async function main() {
       if (build.status === 'building') {
         pendingPromises.push(build.promise)
       } else if (
-        build.status === 'waiting'
-        && build.config.dependencies.every((dependency) => map.get(dependency).status === 'succeeded')
+        build.status === 'waiting' &&
+        build.config.dependencies.every(
+          dependency => map.get(dependency).status === 'succeeded'
+        )
       ) {
         preparePendingBuild(build)
       }
