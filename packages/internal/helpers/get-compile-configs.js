@@ -92,8 +92,12 @@ const getCompileConfigs = () => {
       babelConfig.outDir = path.join(config.directory, babelConfig.outDir)
       babelConfig.outFileExtension =
         babelConfig.moduleType === 'mjs' ? '.mjs' : '.js'
+
       babelConfig.extensions =
-        config.sourceType === 'ts' ? ['.ts', '.js'] : '.js'
+        config.sourceType === 'ts'
+          ? ['.ts', '.tsx', '.js', '.jsx']
+          : ['.js', '.jsx']
+
       babelConfig.deleteDirOnStart = false
       babelConfig.filenames = [babelConfig.inputDir]
     }
