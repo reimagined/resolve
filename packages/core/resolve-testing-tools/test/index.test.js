@@ -51,3 +51,54 @@ test('resolve-testing-tools index', async () => {
     }
   })
 })
+
+test('bug fix: default secrets manager', async () => {
+  await givenEvents([])
+    .readModel({
+      name: 'readModelName',
+      projection: {},
+      resolvers: {
+        all: async (store, params, { secretsManager }) => {
+          secretsManager.setSecret('id', 'secret')
+          secretsManager.getSecret('id')
+          secretsManager.deleteSecret('id')
+        }
+      },
+      adapter: createReadModelConnector({
+        databaseFile: ':memory:'
+      })
+    })
+    .all()
+    .as('jwt')
+})
+
+test('custom secrets manager', async () => {
+  const secretsManager = {
+    getSecret: jest.fn(),
+    setSecret: jest.fn(),
+    deleteSecret: jest.fn()
+  }
+
+  await givenEvents([])
+    .setSecretsManager(secretsManager)
+    .readModel({
+      name: 'readModelName',
+      projection: {},
+      resolvers: {
+        all: async (store, params, { secretsManager }) => {
+          secretsManager.setSecret('id', 'secret')
+          secretsManager.getSecret('id')
+          secretsManager.deleteSecret('id')
+        }
+      },
+      adapter: createReadModelConnector({
+        databaseFile: ':memory:'
+      })
+    })
+    .all()
+    .as('jwt')
+
+  expect(secretsManager.getSecret).toHaveBeenCalledWith('id')
+  expect(secretsManager.setSecret).toHaveBeenCalledWith('id', 'secret')
+  expect(secretsManager.deleteSecret).toHaveBeenCalledWith('id')
+})

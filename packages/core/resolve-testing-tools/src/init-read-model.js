@@ -2,7 +2,7 @@ import { Phases, symbol } from './constants'
 
 const init = async ({ promise, createQuery, transformEvents }) => {
   if (promise[symbol].phase < Phases.RESOLVER) {
-    throw new TypeError()
+    throw new TypeError(promise[symbol].phase)
   }
 
   let queryExecutor = null
