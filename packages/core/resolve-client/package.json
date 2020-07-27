@@ -1,6 +1,6 @@
 {
   "name": "resolve-client",
-  "version": "0.24.11",
+  "version": "0.24.12",
   "description": "Basic reSolve client.",
   "engines": {
     "node": ">=10.9"
@@ -55,9 +55,9 @@
       "<rootDir>"
     ]
   },
+  "sourceType": "ts",
   "babelCompile": [
     {
-      "sourceType": "tsx",
       "moduleType": "cjs",
       "moduleTarget": "server",
       "inputDir": "./src",

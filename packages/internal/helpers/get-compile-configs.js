@@ -3,20 +3,10 @@ const find = require('glob').sync
 
 const { getResolveDir } = require('./get-resolve-dir')
 
-function changeOrder(configs, packageName) {
-  const includes = configs
-    .map((config, index) => ({ config, index }))
-    .filter(({ config: { name } }) => name === packageName)
+const externalDependencies = ['resolve-cloud-common']
 
-  const configLength = configs.length
-  for (const { config, index } of includes) {
-    for (let subIndex = index; subIndex < configLength - 1; subIndex++) {
-      configs[subIndex] = configs[subIndex + 1]
-    }
-    configs[configLength - 1] = config
-    config.sync = true
-  }
-}
+const isInternalDependency = name =>
+  name.startsWith('resolve-') && !externalDependencies.includes(name)
 
 let _configs
 const getCompileConfigs = () => {
@@ -47,64 +37,74 @@ const getCompileConfigs = () => {
       continue
     }
 
-    const { version, name, babelCompile } = require(filePath)
+    const {
+      version,
+      name,
+      sourceType,
+      babelCompile,
+      dependencies = {}
+    } = require(filePath)
 
     if (!Array.isArray(babelCompile)) {
       throw new Error(`[${name}] package.json "babelCompile" must be an array`)
     }
 
+    const config = {
+      name,
+      version,
+      babelCompile,
+      directory: path.dirname(filePath),
+      sourceType,
+      dependencies: Object.keys(dependencies).reduce(
+        (acc, dependencyName) =>
+          isInternalDependency(dependencyName)
+            ? acc.concat(dependencyName)
+            : acc,
+        []
+      )
+    }
+
+    if (config.sourceType == null) {
+      config.sourceType = 'js'
+    }
+
+    if (config.sourceType.constructor !== String) {
+      throw new Error(`.sourceType must be a string`)
+    }
+
     for (let index = 0; index < babelCompile.length; index++) {
-      const config = babelCompile[index]
-      if (config.sourceType == null) {
-        config.sourceType = 'js'
-      }
-      if (config.sourceType.constructor !== String) {
-        throw new Error(`.babelCompile[${index}].sourceType must be a string`)
-      }
-      if (config.moduleType.constructor !== String) {
+      const babelConfig = babelCompile[index]
+
+      if (babelConfig.moduleType.constructor !== String) {
         throw new Error(`.babelCompile[${index}].moduleType must be a string`)
       }
-      if (config.moduleTarget.constructor !== String) {
+      if (babelConfig.moduleTarget.constructor !== String) {
         throw new Error(`.babelCompile[${index}].moduleTarget must be a string`)
       }
-      if (config.inputDir.constructor !== String) {
+      if (babelConfig.inputDir.constructor !== String) {
         throw new Error(`.babelCompile[${index}].inputDir must be a string`)
       }
-      if (config.outDir.constructor !== String) {
+      if (babelConfig.outDir.constructor !== String) {
         throw new Error(`.babelCompile[${index}].outDir must be a string`)
       }
 
-      config.name = name
-      config.version = version
-      config.directory = path.dirname(filePath)
-      config.inputDir = path.join(config.directory, config.inputDir)
-      config.outDir = path.join(config.directory, config.outDir)
-      config.outFileExtension = config.moduleType === 'mjs' ? '.mjs' : '.js'
-      config.deleteDirOnStart = false
-      config.filenames = [config.inputDir]
+      babelConfig.inputDir = path.join(config.directory, babelConfig.inputDir)
+      babelConfig.outDir = path.join(config.directory, babelConfig.outDir)
+      babelConfig.outFileExtension =
+        babelConfig.moduleType === 'mjs' ? '.mjs' : '.js'
 
-      switch (config.sourceType) {
-        case 'ts':
-          config.extensions = ['.ts', '.js']
-          break
-        case 'tsx':
-          config.extensions = ['.ts', '.tsx', '.js', '.jsx']
-          break
-        default:
-          config.extensions = '.js'
-          break
-      }
+      babelConfig.extensions =
+        config.sourceType === 'ts'
+          ? ['.ts', '.tsx', '.js', '.jsx']
+          : ['.js', '.jsx']
 
-      configs.push(config)
+      babelConfig.deleteDirOnStart = false
+      babelConfig.filenames = [babelConfig.inputDir]
     }
+
+    configs.push(config)
   }
 
-  /*
-  changeOrder(configs, 'resolve-core')
-  changeOrder(configs, 'resolve-client')
-  changeOrder(configs, 'resolve-react-hooks')
-  changeOrder(configs, 'resolve-redux')
-  */
   _configs = configs
 
   return configs

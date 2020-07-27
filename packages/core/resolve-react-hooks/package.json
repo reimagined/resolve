@@ -1,6 +1,6 @@
 {
   "name": "resolve-react-hooks",
-  "version": "0.24.11",
+  "version": "0.24.12",
   "description": "reSolve client wrapper for using in React hooks projects.",
   "engines": {
     "node": ">=10.9"
@@ -28,8 +28,8 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-api#readme",
   "dependencies": {
-    "resolve-core": "0.24.11",
-    "resolve-client": "0.24.11"
+    "resolve-core": "0.24.12",
+    "resolve-client": "0.24.12"
   },
   "devDependencies": {
     "react": "16.13.0",
@@ -60,9 +60,9 @@
       "<rootDir>"
     ]
   },
+  "sourceType": "ts",
   "babelCompile": [
     {
-      "sourceType": "tsx",
       "moduleType": "cjs",
       "moduleTarget": "server",
       "inputDir": "./src",

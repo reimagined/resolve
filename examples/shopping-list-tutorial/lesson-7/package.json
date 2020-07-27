@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-tutorial/lesson-7",
-  "version": "0.24.11",
+  "version": "0.24.12",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
@@ -24,8 +24,8 @@
     "react-redux": "7.2.0",
     "redux-saga": "1.0.5",
     "redux": "4.0.5",
-    "resolve-redux": "0.24.11",
-    "resolve-scripts": "0.24.11",
+    "resolve-redux": "0.24.12",
+    "resolve-scripts": "0.24.12",
     "uuid": "3.3.2"
   },
   "devDependencies": {
@@ -45,6 +45,6 @@
     "isomorphic-fetch": "2.2.1",
     "chai": "4.2.0",
     "resolve-cloud": "*",
-    "resolve-module-admin": "0.24.11"
+    "resolve-module-admin": "0.24.12"
   }
 }
