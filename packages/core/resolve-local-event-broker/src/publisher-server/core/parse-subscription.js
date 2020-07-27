@@ -19,6 +19,7 @@ function parseSubscription(subscriptionDescription, allowedKeys) {
     errors: TRANSFORM_JSON_REGULAR_SYMBOL,
     cursor: TRANSFORM_JSON_REGULAR_SYMBOL,
     xaTransactionId: TRANSFORM_JSON_REGULAR_SYMBOL,
+    immediateCursor: TRANSFORM_JSON_REGULAR_SYMBOL,
     runStatus: TRANSFORM_NONE_SYMBOL,
     batchId: TRANSFORM_NONE_SYMBOL,
     isEventBasedRun: TRANSFORM_NONE_SYMBOL,

@@ -16,14 +16,12 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     invokeConsumer,
     invokeOperation,
     serializeError,
-    checkCursorEdge
   } = pool
   const { activeBatch } = payload
   const { batchId, subscriptionId, eventSubscriber } = activeBatch
 
   const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
   const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME)
-  const batchesTableNameAsId = escapeId(BATCHES_TABLE_NAME)
 
   const result = await runQuery(`
     SELECT ${subscribersTableNameAsId}."eventTypes" AS "eventTypes",
@@ -36,7 +34,8 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     ${notificationsTableNameAsId}."status" AS "runStatus",
     ${notificationsTableNameAsId}."xaTransactionId" AS "xaTransactionId",
     (${subscribersTableNameAsId}."successEvent" IS NOT NULL OR
-    ${subscribersTableNameAsId}."failedEvent" IS NOT NULL) AS "isEventBasedRun",
+    ${subscribersTableNameAsId}."failedEvent" IS NOT NULL
+    ${subscribersTableNameAsId}."cursor" IS NOT NULL) AS "isEventBasedRun",
     ${subscribersTableNameAsId}."status" AS "status",
     ${subscribersTableNameAsId}."errors" IS NOT NULL AS "hasErrors"
     FROM ${notificationsTableNameAsId} LEFT JOIN ${subscribersTableNameAsId}
@@ -97,44 +96,12 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     await invokeOperation(pool, LazinessStrategy.EAGER, input)
     return
   }
-  let [events, xaTransactionId] = [null, existingXaTransactionId]
-  if (isEventBasedRun) {
-    try {
-      void ({ events } = await invokeConsumer(pool, ConsumerMethod.LoadEvents, {
-        eventTypes,
-        aggregateIds,
-        limit: 500,
-        cursor
-      }))
-      if (events == null || events.length === 0) {
-        const input = {
-          type: PrivateOperationType.FINALIZE_BATCH,
-          payload: {
-            activeBatch,
-            result: null
-          }
-        }
-        await invokeOperation(pool, LazinessStrategy.EAGER, input)
-        return
-      }
-      if (!checkCursorEdge(events, cursor)) {
-        const input = {
-          type: PrivateOperationType.FINALIZE_BATCH,
-          payload: {
-            activeBatch,
-            result: {
-              error: serializeError(
-                new Error(
-                  `Events batch ${batchId} has conflicted with its cursor`
-                )
-              )
-            }
-          }
-        }
-        await invokeOperation(pool, LazinessStrategy.EAGER, input)
-        return
-      }
-      if (deliveryStrategy === DeliveryStrategy.ACTIVE_XA) {
+
+  let xaTransactionId = existingXaTransactionId
+
+  if (runStatus !== NotificationStatus.PROCESSING) {
+    if (isEventBasedRun && deliveryStrategy === DeliveryStrategy.ACTIVE_XA) {
+      try {
         if (xaTransactionId == null) {
           xaTransactionId = await invokeConsumer(
             pool,
@@ -148,146 +115,77 @@ const deliverBatchForSubscriber = async (pool, payload) => {
         if (xaTransactionId == null) {
           throw new Error(`Failed to start XA session`)
         }
-      }
-    } catch (error) {
-      const input = {
-        type: PrivateOperationType.FINALIZE_BATCH,
-        payload: {
-          activeBatch,
-          result: {
-            error: serializeError(error)
+      } catch (error) {
+        const input = {
+          type: PrivateOperationType.FINALIZE_BATCH,
+          payload: {
+            activeBatch,
+            result: {
+              error: serializeError(error)
+            }
           }
         }
+        await invokeOperation(pool, LazinessStrategy.EAGER, input)
+        return
       }
-      await invokeOperation(pool, LazinessStrategy.EAGER, input)
-      return
     }
-    if (runStatus === NotificationStatus.RECIEVED) {
-      await runRawQuery(`
-        INSERT INTO ${batchesTableNameAsId}(
-          "batchId",
-          "eventIndex",
-          "threadId",
-          "threadCounter",
-          "aggregateIdAndVersion"
-        ) VALUES ${events
-          .map(
-            ({ threadId, threadCounter, aggregateId, aggregateVersion }, idx) =>
-              `(${escapeStr(
-                batchId
-              )},${+idx},${+threadId},${+threadCounter},${escapeStr(
-                `${aggregateId}:${aggregateVersion}`
-              )})`
-          )
-          .join(', ')};
-          
-        UPDATE ${notificationsTableNameAsId} SET "xaTransactionId" =
-        json(${escapeStr(JSON.stringify(xaTransactionId))}),
-        "status" = ${escapeStr(NotificationStatus.PROCESSING)}
-        WHERE "batchId" = ${escapeStr(batchId)};
-        
-        COMMIT;
-        BEGIN IMMEDIATE;
-    `)
-    } else {
-      await runRawQuery(`
-        DELETE FROM ${batchesTableNameAsId} WHERE 
-        ${batchesTableNameAsId}."batchId" = ${escapeStr(batchId)};
-        
-        INSERT INTO ${batchesTableNameAsId}(
-          "batchId",
-          "eventIndex",
-          "threadId",
-          "threadCounter",
-          "aggregateIdAndVersion"
-        ) VALUES ${events
-          .map(
-            ({ threadId, threadCounter, aggregateId, aggregateVersion }, idx) =>
-              `(${escapeStr(
-                batchId
-              )},${+idx},${+threadId},${+threadCounter},${escapeStr(
-                `${aggregateId}:${aggregateVersion}`
-              )})`
-          )
-          .join(', ')};
-        
-        COMMIT;
-        BEGIN IMMEDIATE;
-    `)
-    }
-  } else {
-    // TODO: improve Initial event timestamp for sagas
+
     await runRawQuery(`
-        UPDATE ${notificationsTableNameAsId} SET 
-        "status" = ${escapeStr(NotificationStatus.PROCESSING)}
-        WHERE "batchId" = ${escapeStr(batchId)};
-        
-        COMMIT;
-        BEGIN IMMEDIATE;
+      UPDATE ${notificationsTableNameAsId} SET 
+      ${isEventBasedRun ? `"xaTransactionId" = json(${escapeStr(JSON.stringify(xaTransactionId))}),` : ''}
+      "status" = ${escapeStr(NotificationStatus.PROCESSING)}
+      WHERE "batchId" = ${escapeStr(batchId)};
+      
+      COMMIT;
+      BEGIN IMMEDIATE;
     `)
-    let initialEvent = null
-    try {
-      const initialEvents = (
-        await invokeConsumer(pool, ConsumerMethod.LoadEvents, {
-          eventTypes,
-          aggregateIds,
-          limit: 1,
-          cursor: null
-        })
-      ).events
-      if (initialEvents != null && initialEvents.length > 0) {
-        void ([initialEvent] = initialEvents)
-      }
-    } catch (error) {
-      const input = {
-        type: PrivateOperationType.FINALIZE_BATCH,
-        payload: {
-          activeBatch,
-          result: {
-            error: serializeError(error)
-          }
-        }
-      }
-      await invokeOperation(pool, LazinessStrategy.EAGER, input)
-      return
-    }
-    events = [
-      {
-        timestamp: initialEvent != null ? initialEvent.timestamp : 0,
-        type: 'Init'
-      }
-    ]
   }
+
+  if (runStatus === NotificationStatus.RECIEVED) {
+    await runRawQuery(`
+      UPDATE ${notificationsTableNameAsId}
+      SET "status" = ${escapeStr(NotificationStatus.PROCESSING)}
+      WHERE "batchId" = ${escapeStr(batchId)};
+      
+      COMMIT;
+      BEGIN IMMEDIATE;
+  `)
+
+    const sendingProperties =
+      properties != null
+        ? Object.keys(properties).reduce((acc, key) => {
+          acc[decodeJsonPath(key)] = properties[key]
+          return acc
+        }, {})
+        : {}
+
+    await invokeConsumer(
+      pool,
+      ConsumerMethod.SendEvents,
+      {
+        xaTransactionId,
+        eventSubscriber,
+        deliveryStrategy,
+        cursor,
+        eventTypes,
+        aggregateIds,
+        properties: sendingProperties,
+        batchId
+      },
+      true
+    )
+  }
+
   const input = {
     type: PrivateOperationType.REQUEST_TIMEOUT,
     payload: { batchId }
   }
+
   await invokeOperation(
     pool,
     LazinessStrategy.LAZY,
     input,
     BATCH_CONSUMING_TIME
-  )
-
-  const sendingProperties =
-    properties != null
-      ? Object.keys(properties).reduce((acc, key) => {
-          acc[decodeJsonPath(key)] = properties[key]
-          return acc
-        }, {})
-      : {}
-
-  await invokeConsumer(
-    pool,
-    ConsumerMethod.SendEvents,
-    {
-      xaTransactionId,
-      eventSubscriber,
-      properties: sendingProperties,
-      events,
-      batchId
-    },
-    true
   )
 }
 
