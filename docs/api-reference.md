@@ -914,17 +914,64 @@ An event store adapter defines how the reSolve framework stores events in the un
 #### init
 Initializes a database.
 
+##### Example
+```js
+import createEventStoreAdapter from 'resolve-eventstore-xxx'
+
+const eventStoreAdapter = createEventStoreAdapter(options)
+
+await eventStoreAdapter.init()
+```
+
 #### drop
 Drops a database.
+
+##### Example
+```js
+await eventStoreAdapter.drop()
+```
 
 #### dispose
 Disconnects from a database and disposes unmanaged resources.
 
+##### Example
+```js
+await eventStoreAdapter.dispose()
+```
+
 #### saveEvent
 Saves an event to the database.
 
+| Argument Name    | Description                                                                                      |
+| ---------------- | ------------------------------------------------------------------------------------------------ |
+| event            | { aggregateId: string, aggregateVersion: number, type: string, timestamp: number, payload: any } |
+
+##### Example
+```js
+await eventStoreAdapter.saveEvent({
+  aggregateId: 'user-id', 
+  aggregateVersion: 1, 
+  type: 'USER_CREATED', 
+  timestamp: Date.now(), 
+  payload: {
+    name: 'user-name'
+  } 
+})
+```
+
 #### loadEvents
 Gets an array of events and the next cursor filtered by the event filter.
+
+
+##### Example
+```js
+const { events, cursor: nextCursor } = await eventStoreAdapter.loadEvents({
+  cursor: null,
+  limit: 100,
+  eventTypes: ['USER_CREATED', 'USER_DELETED'],
+  aggregateIds: ['user-id']
+})
+```
 
 #### getLatestEvent
 Gets the latest saved event.
@@ -986,13 +1033,13 @@ Incrementally imports events.
 
 ###### Arguments
 
-| Argument Name    | Description                                                                      |
-| ---------------- | -------------------------------------------------------------------------------- |
-| events           | Array of { aggregateId: string, type: string, timestamp: number, payload: any }. |
+| Argument Name    | Description                                                                     |
+| ---------------- | ------------------------------------------------------------------------------- |
+| events           | Array of { aggregateId: string, type: string, timestamp: number, payload: any } |
 
 ##### Example
 ```js
-await eventStoreAdapter.incrementalImport(events, importId)
+await eventStoreAdapter.incrementalImport(events)
 ```
 
 ### Advanced Incremental import 
