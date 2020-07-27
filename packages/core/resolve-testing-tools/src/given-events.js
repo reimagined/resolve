@@ -77,7 +77,15 @@ const getInitPromise = internalPool =>
   })
 
 const givenEvents = (dependencies, events) => {
-  const { readModel, as, init, saga, properties } = dependencies
+  const {
+    readModel,
+    as,
+    init,
+    saga,
+    properties,
+    setSecretsManager,
+    defaultSecretsManager
+  } = dependencies
 
   const internalPool = Object.create(null)
   const initPromise = getInitPromise(internalPool)
@@ -101,6 +109,8 @@ const givenEvents = (dependencies, events) => {
   promise.as = as.bind(null, pool)
   promise.saga = saga.bind(null, pool)
   promise.properties = properties.bind(null, pool)
+  promise.secretsManager = defaultSecretsManager
+  promise.setSecretsManager = setSecretsManager.bind(null, pool)
 
   initPromise.then(init.bind(null, pool))
 

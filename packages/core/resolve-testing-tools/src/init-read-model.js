@@ -1,5 +1,4 @@
 import { Phases, symbol } from './constants'
-import getSecretsManager from './secrets-manager'
 
 const init = async ({ promise, createQuery, transformEvents }) => {
   if (promise[symbol].phase < Phases.RESOLVER) {
@@ -23,7 +22,7 @@ const init = async ({ promise, createQuery, transformEvents }) => {
       },
       snapshotAdapter: null,
       eventstoreAdapter: {
-        getSecretsManager
+        getSecretsManager: () => promise[symbol].secretsManager
       }
     })
 
