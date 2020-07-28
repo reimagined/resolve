@@ -2,15 +2,34 @@ import STS from 'aws-sdk/clients/sts'
 import { invokeFunction } from 'resolve-cloud-common/lambda'
 
 const invokeEventBus = async (eventstoreCredentials, type, options) => {
-  const principial = {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    sessionToken: process.env.AWS_SESSION_TOKEN
-  }
+  const currentSTS = new STS()
+  const { Arn: currentRoleArn } = await currentSTS.getCallerIdentity().promise()
 
-  const {
-    Arn: validationRoleArn
-  } = await new STS().getCallerIdentity().promise()
+  const roleArnParts = currentRoleArn.match(/^arn\:aws\:sts\:\:(.*?)\:assumed-role\/(.*?)\/(.*?)$/)
+     const realRoleArn = `arn:aws:iam::${roleArnParts[1]}:role/${roleArnParts[2]}`
+
+    const {
+      Credentials: { AccessKeyId, SecretAccessKey, SessionToken }
+    } = await currentSTS.assumeRole({
+      RoleSessionName: `EventBusRole${Date.now()}${Math.floor(Math.random() * 10000000000)}`,
+      RoleArn: realRoleArn,
+      DurationSeconds: 3600
+    }).promise()
+
+    const principial = {
+      accessKeyId: AccessKeyId,
+      secretAccessKey: SecretAccessKey,
+      sessionToken: SessionToken
+    }
+
+  const validationSTS = new STS({...principial})
+
+  const {Arn: validationRoleArn } = await validationSTS.getCallerIdentity().promise()
+
+  console.log('КУБЫ ПОВЕРЖЕНЫ')
+
+
+
 
   const scopeName = process.env.RESOLVE_DEPLOYMENT_ID
 
