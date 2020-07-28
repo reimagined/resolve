@@ -5,9 +5,11 @@ import {
 
 const createClientAdapter = ({
   url,
+  appId,
   onEvent
 }: {
   url: string
+  appId: string
   onEvent: Function
 }) => {
   let client: WebSocket | undefined
@@ -32,6 +34,7 @@ const createClientAdapter = ({
         }
 
         client.onmessage = message => {
+          console.log('on message', message)
           try {
             onEvent(message.data.payload)
           } catch (error) {
@@ -59,7 +62,8 @@ const createClientAdapter = ({
       client.send(
         JSON.stringify({
           eventName: 'subscribe',
-          data: JSON.stringify(topics)
+          applicationId: appId,
+          data: topics
         })
       )
     },
@@ -71,7 +75,8 @@ const createClientAdapter = ({
       client.send(
         JSON.stringify({
           eventName: 'unsubscribe',
-          data: JSON.stringify(topics)
+          applicationId: appId,
+          data: topics
         })
       )
     },
