@@ -40,7 +40,7 @@ async function compilePackage(config) {
       }
     }
 
-    babel({
+    const buildPromise = babel({
       babelOptions: {
         ...getBabelConfig({
           sourceType: config.sourceType,
@@ -65,6 +65,10 @@ async function compilePackage(config) {
         console.error(error)
         process.exit(1)
       })
+
+    if (process.env.RESOLVE_ALLOW_PARALLEL_BUILDS != null) {
+      await buildPromise
+    }
   }
 }
 
@@ -89,6 +93,10 @@ async function main() {
     }
 
     preparePendingBuild(build)
+
+    if (process.env.RESOLVE_ALLOW_PARALLEL_BUILDS != null) {
+      await build.promise
+    }
   }
 
   while (true) {
@@ -111,6 +119,10 @@ async function main() {
         )
       ) {
         preparePendingBuild(build)
+      }
+
+      if (process.env.RESOLVE_ALLOW_PARALLEL_BUILDS != null) {
+        await build.promise
       }
     }
 
