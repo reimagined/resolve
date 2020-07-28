@@ -1,7 +1,6 @@
 import {
   SUBSCRIBERS_TABLE_NAME,
   DeliveryStrategy,
-  QueueStrategy,
   SubscriptionStatus
 } from '../constants'
 
@@ -44,8 +43,6 @@ async function resubscribe(pool, payload) {
         "deliveryStrategy",
         "eventTypes",
         "aggregateIds",
-        "queueStrategy",
-        "maxParallel",
         "successEvent",
         "failedEvent",
         "errors",
@@ -75,8 +72,6 @@ async function resubscribe(pool, payload) {
                 .join(', ')} }`
             : 'null'
         )},
-        ${escapeStr(QueueStrategy.NONE)},
-        ${+1},
         NULL,
         NULL,
         NULL,

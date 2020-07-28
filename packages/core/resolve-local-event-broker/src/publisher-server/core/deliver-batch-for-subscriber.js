@@ -28,7 +28,6 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     ${subscribersTableNameAsId}."aggregateIds" AS "aggregateIds",
     ${subscribersTableNameAsId}."status" AS "status",
     ${subscribersTableNameAsId}."deliveryStrategy" AS "deliveryStrategy",
-    ${subscribersTableNameAsId}."queueStrategy" AS "queueStrategy",
     ${subscribersTableNameAsId}."properties" AS "properties",
     ${subscribersTableNameAsId}."cursor" AS "cursor",
     ${notificationsTableNameAsId}."status" AS "runStatus",

@@ -1,7 +1,6 @@
 import {
   SUBSCRIBERS_TABLE_NAME,
   DeliveryStrategy,
-  QueueStrategy,
   SubscriptionStatus
 } from '../constants'
 
@@ -55,9 +54,7 @@ async function subscribe(pool, payload) {
               )
               .join(', ')} }`
           : 'null'
-      )},
-      "queueStrategy" = ${escapeStr(QueueStrategy.NONE)},
-      "maxParallel" = ${+1}
+      )}
       WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)};
 
       INSERT OR IGNORE INTO ${subscribersTableNameAsId}(
@@ -67,8 +64,6 @@ async function subscribe(pool, payload) {
         "deliveryStrategy",
         "eventTypes",
         "aggregateIds",
-        "queueStrategy",
-        "maxParallel",
         "successEvent",
         "failedEvent",
         "errors",
@@ -98,8 +93,6 @@ async function subscribe(pool, payload) {
                 .join(', ')} }`
             : 'null'
         )},
-        ${escapeStr(QueueStrategy.NONE)},
-        ${+1},
         NULL,
         NULL,
         NULL,

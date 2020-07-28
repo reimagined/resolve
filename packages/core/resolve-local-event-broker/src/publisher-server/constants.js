@@ -31,14 +31,6 @@ export const DeliveryStrategy = (function(DeliveryStrategy) {
   return Object.freeze(DeliveryStrategy)
 })({})
 
-export const QueueStrategy = (function(QueueStrategy) {
-  QueueStrategy['GLOBAL'] = 'global'
-  QueueStrategy['EVENT_TYPES'] = 'event-types'
-  QueueStrategy['AGGREGATE_IDS'] = 'aggregate-ids'
-  QueueStrategy['NONE'] = 'none'
-  return Object.freeze(QueueStrategy)
-})({})
-
 export const SubscriptionStatus = (function(SubscriptionStatus) {
   SubscriptionStatus['DELIVER'] = 'deliver'
   SubscriptionStatus['SKIP'] = 'skip'
