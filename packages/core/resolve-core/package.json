@@ -31,9 +31,9 @@
   "devDependencies": {
     "jest": "26.0.1"
   },
+  "sourceType": "ts",
   "babelCompile": [
     {
-      "sourceType": "ts",
       "moduleType": "cjs",
       "moduleTarget": "client",
       "inputDir": "./src",
