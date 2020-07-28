@@ -79,7 +79,13 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
     }
     case 'ts': {
       presets = [
-        '@babel/preset-typescript',
+        [
+          '@babel/preset-typescript',
+          {
+            isTSX: true,
+            allExtensions: true
+          }
+        ],
         [
           '@babel/preset-env',
           {

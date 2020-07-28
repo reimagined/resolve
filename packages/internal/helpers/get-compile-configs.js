@@ -5,8 +5,8 @@ const { getResolveDir } = require('./get-resolve-dir')
 
 const externalDependencies = ['resolve-cloud-common']
 
-const isInternalDependency = (name) => name.startsWith('resolve-')
-  && !externalDependencies.includes(name)
+const isInternalDependency = name =>
+  name.startsWith('resolve-') && !externalDependencies.includes(name)
 
 let _configs
 const getCompileConfigs = () => {
@@ -31,13 +31,19 @@ const getCompileConfigs = () => {
       continue
     }
     if (
-      filePath.includes('optional\\dependencies') ||
-      filePath.includes('optional/dependencies')
+      filePath.includes(`optional\\${'dependencies'}`) ||
+      filePath.includes(`optional/${'dependencies'}`)
     ) {
       continue
     }
 
-    const { version, name, sourceType, babelCompile, dependencies = {} } = require(filePath)
+    const {
+      version,
+      name,
+      sourceType,
+      babelCompile,
+      dependencies = {}
+    } = require(filePath)
 
     if (!Array.isArray(babelCompile)) {
       throw new Error(`[${name}] package.json "babelCompile" must be an array`)
@@ -49,9 +55,13 @@ const getCompileConfigs = () => {
       babelCompile,
       directory: path.dirname(filePath),
       sourceType,
-      dependencies: Object.keys(dependencies).reduce((acc, dependencyName) => (
-        isInternalDependency(dependencyName) ? acc.concat(dependencyName) : acc
-      ), [])
+      dependencies: Object.keys(dependencies).reduce(
+        (acc, dependencyName) =>
+          isInternalDependency(dependencyName)
+            ? acc.concat(dependencyName)
+            : acc,
+        []
+      )
     }
 
     if (config.sourceType == null) {
@@ -80,8 +90,14 @@ const getCompileConfigs = () => {
 
       babelConfig.inputDir = path.join(config.directory, babelConfig.inputDir)
       babelConfig.outDir = path.join(config.directory, babelConfig.outDir)
-      babelConfig.outFileExtension = babelConfig.moduleType === 'mjs' ? '.mjs' : '.js'
-      babelConfig.extensions = config.sourceType === 'ts' ? ['.ts', '.js'] : '.js'
+      babelConfig.outFileExtension =
+        babelConfig.moduleType === 'mjs' ? '.mjs' : '.js'
+
+      babelConfig.extensions =
+        config.sourceType === 'ts'
+          ? ['.ts', '.tsx', '.js', '.jsx']
+          : ['.js', '.jsx']
+
       babelConfig.deleteDirOnStart = false
       babelConfig.filenames = [babelConfig.inputDir]
     }

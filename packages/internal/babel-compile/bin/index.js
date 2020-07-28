@@ -7,10 +7,14 @@ const { prepare } = require('./prepare')
 
 const configs = getCompileConfigs()
 
+let isFailed = false
+
 async function compilePackage(config) {
   try {
     await prepare(config)
   } catch (e) {
+    isFailed = true
+
     // eslint-disable-next-line no-console
     console.log(`↑ [${chalk.red(config.name)}] preparing failed`)
     if (e != null && e !== '') {
@@ -68,7 +72,7 @@ async function main() {
   const map = new Map()
   let pendingPromises = []
 
-  const preparePendingBuild = (build) => {
+  const preparePendingBuild = build => {
     build.status = 'building'
     const promise = compilePackage(build.config)
     build.promise = promise
@@ -101,8 +105,10 @@ async function main() {
       if (build.status === 'building') {
         pendingPromises.push(build.promise)
       } else if (
-        build.status === 'waiting'
-        && build.config.dependencies.every((dependency) => map.get(dependency).status === 'succeeded')
+        build.status === 'waiting' &&
+        build.config.dependencies.every(
+          dependency => map.get(dependency).status === 'succeeded'
+        )
       ) {
         preparePendingBuild(build)
       }
@@ -114,8 +120,14 @@ async function main() {
   }
 }
 
-main().catch(error => {
-  // eslint-disable-next-line no-console
-  console.error(error)
-  process.exit(1)
-})
+main()
+  .then(() => {
+    if (isFailed) {
+      process.exit(1)
+    }
+  })
+  .catch(error => {
+    // eslint-disable-next-line no-console
+    console.error(error)
+    process.exit(1)
+  })

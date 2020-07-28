@@ -42,17 +42,15 @@ const debugLevels = (
 
   const originalLogger = debugProvider(namespace)
 
-  return Object.assign(
-    originalLogger.bind(null),
-    {
-      log: allowedLevels.indexOf('log') > -1 ? originalLogger : emptyFunction,
-      error: allowedLevels.indexOf('error') > -1 ? originalLogger : emptyFunction,
-      warn: allowedLevels.indexOf('warn') > -1 ? originalLogger : emptyFunction,
-      debug: allowedLevels.indexOf('debug') > -1 ? originalLogger : emptyFunction,
-      info: allowedLevels.indexOf('info') > -1 ? originalLogger : emptyFunction,
-      verbose: allowedLevels.indexOf('verbose') > -1 ? originalLogger : emptyFunction
-    }
-  )
+  return Object.assign(originalLogger.bind(null), {
+    log: allowedLevels.indexOf('log') > -1 ? originalLogger : emptyFunction,
+    error: allowedLevels.indexOf('error') > -1 ? originalLogger : emptyFunction,
+    warn: allowedLevels.indexOf('warn') > -1 ? originalLogger : emptyFunction,
+    debug: allowedLevels.indexOf('debug') > -1 ? originalLogger : emptyFunction,
+    info: allowedLevels.indexOf('info') > -1 ? originalLogger : emptyFunction,
+    verbose:
+      allowedLevels.indexOf('verbose') > -1 ? originalLogger : emptyFunction
+  })
 }
 
 export { debugLevels, Debug, LeveledDebugger }
