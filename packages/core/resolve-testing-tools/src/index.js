@@ -9,6 +9,8 @@ import initReadModel from './init-read-model'
 import initSaga from './init-saga'
 import saga from './saga'
 import properties from './properties'
+import getDefaultSecretsManager from './secrets-manager'
+import setSecretsManager from './set-secrets-manager'
 
 export default givenEvents.bind(null, {
   createQuery,
@@ -19,7 +21,9 @@ export default givenEvents.bind(null, {
   readModel,
   transformEvents,
   saga,
-  properties
+  properties,
+  getDefaultSecretsManager,
+  setSecretsManager
 })
 
 export const RESOLVE_SIDE_EFFECTS_START_TIMESTAMP =

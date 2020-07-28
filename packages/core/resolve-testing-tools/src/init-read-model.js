@@ -1,9 +1,8 @@
 import { Phases, symbol } from './constants'
-import getSecretsManager from './secrets-manager'
 
 const init = async ({ promise, createQuery, transformEvents }) => {
   if (promise[symbol].phase < Phases.RESOLVER) {
-    throw new TypeError()
+    throw new TypeError(promise[symbol].phase)
   }
 
   let queryExecutor = null
@@ -23,7 +22,7 @@ const init = async ({ promise, createQuery, transformEvents }) => {
       },
       snapshotAdapter: null,
       eventstoreAdapter: {
-        getSecretsManager
+        getSecretsManager: () => promise[symbol].secretsManager
       }
     })
 
