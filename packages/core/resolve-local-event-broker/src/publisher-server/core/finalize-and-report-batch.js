@@ -93,8 +93,7 @@ const finalizeAndReportBatch = async (pool, payload) => {
 
   if (
     result != null &&
-    result.cursor != null &&
-    result.successEvent != null &&
+    (result.cursor != null || result.successEvent != null) &&
     result.failedEvent == null &&
     result.error == null
   ) {
@@ -104,6 +103,7 @@ const finalizeAndReportBatch = async (pool, payload) => {
         eventSubscriber
       }
     }
+
     await invokeOperation(pool, LazinessStrategy.EAGER, input)
   }
 }
