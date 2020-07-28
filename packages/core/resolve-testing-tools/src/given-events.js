@@ -77,7 +77,15 @@ const getInitPromise = internalPool =>
   })
 
 const givenEvents = (dependencies, events) => {
-  const { readModel, as, init, saga, properties } = dependencies
+  const {
+    readModel,
+    as,
+    init,
+    saga,
+    properties,
+    setSecretsManager,
+    getDefaultSecretsManager
+  } = dependencies
 
   const internalPool = Object.create(null)
   const initPromise = getInitPromise(internalPool)
@@ -92,6 +100,7 @@ const givenEvents = (dependencies, events) => {
   promise[symbol].initPromise = initPromise
   promise[symbol].events = events
   promise[symbol].phase = Phases.GIVEN_EVENTS
+  promise[symbol].secretsManager = getDefaultSecretsManager()
 
   promise[symbol].properties = {
     RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: 0
@@ -101,6 +110,7 @@ const givenEvents = (dependencies, events) => {
   promise.as = as.bind(null, pool)
   promise.saga = saga.bind(null, pool)
   promise.properties = properties.bind(null, pool)
+  promise.setSecretsManager = setSecretsManager.bind(null, pool)
 
   initPromise.then(init.bind(null, pool))
 
