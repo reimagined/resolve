@@ -1,0 +1,31 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ dev, feature/github-actions ]
+
+jobs:
+  push-to-dev:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '10'
+
+      - name: Install
+        run: yarn install --frozen-lockfile
+
+      - name: Prettier
+        run: if [ "$(node_modules/.bin/prettier --list-different "**/*.js")" ]; then echo "Prettier failed" exit 1; fi
+
+      - name: ESLint
+        run: yarn lint
+
+      - name: Unit-tests
+        run: yarn test
+
+      - name: Integration testing
+        run: yarn test:integration
