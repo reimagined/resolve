@@ -9,7 +9,7 @@
     "dev": "tsc && babel-node --extensions=.ts,.tsx run.ts dev",
     "start": "tsc && babel-node --extensions=.ts,.tsx run.ts start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
-    "test:functional": "tsc && babel-node --extensions=.ts,.tsx run.ts test:functional"
+    "test:e2e": "tsc && babel-node --extensions=.ts,.tsx run.ts test:e2e"
   },
   "dependencies": {
     "babel-loader": "8.1.0",
