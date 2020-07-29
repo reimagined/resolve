@@ -3,6 +3,8 @@ name: CI/CD
 on:
   push:
     branches: [ dev, feature/github-actions ]
+  pull_request:
+    branches: [ dev, feature/github-actions ]
 
 jobs:
   push-to-dev:
@@ -15,6 +17,11 @@ jobs:
         with:
           node-version: '10'
 
+      - name: test
+        env: 
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+        
       - name: Install
         run: yarn install --frozen-lockfile
 
