@@ -7,7 +7,7 @@ on:
     branches: [ dev, feature/github-actions ]
 
 jobs:
-  push-to-dev:
+  smoke-test:
     runs-on: ubuntu-latest
     
     if: (github.event_name == 'push') || (github.event_name == 'pull_request' && ( startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')))
@@ -18,11 +18,6 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: '10'
-
-      - name: test
-        env: 
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
         
       - name: Install
         run: yarn install --frozen-lockfile
@@ -38,3 +33,19 @@ jobs:
 
       - name: Integration testing
         run: yarn test:integration
+        
+  e2e-macOS-test:
+    needs: [smoke-test]
+    
+    runs-on: resolve-mac-mini
+    
+    if: github.event_name == 'pull_request' && ( startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Install
+        run: yarn install --frozen-lockfile
+      
+      - name: E2E test
+        run: yarn test:e2e
