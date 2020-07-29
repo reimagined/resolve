@@ -37,7 +37,7 @@ jobs:
   e2e-macOS-test:
     runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
     
-    if: github.event_name == 'pull_request' && github.head_ref == 'dev'
+    if: github.event_name == 'pull_request'
 
     steps:
       - uses: actions/checkout@v2
