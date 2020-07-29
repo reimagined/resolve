@@ -9,6 +9,8 @@ on:
 jobs:
   push-to-dev:
     runs-on: ubuntu-latest
+    
+    if: startWith(github.head_ref, 'feature/') || startWith(github.head_ref, 'hotfix/') || startWith(github.head_ref, 'fix/')
 
     steps:
       - uses: actions/checkout@v2
