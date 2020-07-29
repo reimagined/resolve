@@ -23,20 +23,18 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Prettier
-        run: if [ "$(node_modules/.bin/prettier --list-different "**/*.js")" ]; then echo "Prettier failed" exit 1; fi
+        run: if [ "$(node_modules/.bin/prettier --list-different "**/*.{js,ts,tsx}")" ]; then echo "Prettier failed" exit 1; fi
 
       - name: ESLint
         run: yarn lint
 
-      - name: Unit-tests
+      - name: Unit test
         run: yarn test
 
-      - name: Integration testing
+      - name: Integration test
         run: yarn test:integration
         
   e2e-macOS-test:
-    needs: [smoke-test]
-    
     runs-on: resolve-mac-mini
     
     if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/'))
