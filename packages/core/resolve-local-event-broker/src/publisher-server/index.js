@@ -24,7 +24,6 @@ import createAndInitPublisher from './core/create-and-init-publisher'
 import deliverBatchForSubscriber from './core/deliver-batch-for-subscriber'
 import finalizeAndReportBatch from './core/finalize-and-report-batch'
 import generateGuid from './core/generate-guid'
-import getNextCursor from './core/get-next-cursor'
 import invokeConsumer from './core/invoke-consumer'
 import invokeOperation from './core/invoke-operation'
 import parseSubscription from './core/parse-subscription'
@@ -55,7 +54,6 @@ export default createAndInitPublisher.bind(null, {
     deliverBatchForSubscriber,
     finalizeAndReportBatch,
     generateGuid,
-    getNextCursor,
     invokeConsumer,
     invokeOperation,
     parseSubscription,

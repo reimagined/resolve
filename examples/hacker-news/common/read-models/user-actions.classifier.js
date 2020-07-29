@@ -6,7 +6,7 @@ import {
 } from '../event-types'
 
 const classifier = event => {
-  switch(event.type) {
+  switch (event.type) {
     case STORY_CREATED:
     case STORY_UNVOTED:
     case STORY_UPVOTED:

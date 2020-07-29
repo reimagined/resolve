@@ -395,10 +395,19 @@ const updateByEvents = async (
       }
     })
 
-    const appliedEventsList = lastSuccessEvent != null
-     ? events.slice(0, events.findIndex(({ threadId, threadCounter }) =>  lastSuccessEvent.threadId === threadId && lastSuccessEvent.threadCounter === threadCounter) + 1)
-        .map(({ threadId, threadCounter }) => ({ threadId, threadCounter }))
-     : []
+    const appliedEventsList =
+      lastSuccessEvent != null
+        ? events
+            .slice(
+              0,
+              events.findIndex(
+                ({ threadId, threadCounter }) =>
+                  lastSuccessEvent.threadId === threadId &&
+                  lastSuccessEvent.threadCounter === threadCounter
+              ) + 1
+            )
+            .map(({ threadId, threadCounter }) => ({ threadId, threadCounter }))
+        : []
 
     const result = {
       appliedEventsList,

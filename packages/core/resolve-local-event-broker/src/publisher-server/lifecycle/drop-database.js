@@ -1,8 +1,5 @@
 import { ResourceNotExistError } from './lifecycle-errors'
-import {
-  NOTIFICATIONS_TABLE_NAME,
-  SUBSCRIBERS_TABLE_NAME
-} from '../constants'
+import { NOTIFICATIONS_TABLE_NAME, SUBSCRIBERS_TABLE_NAME } from '../constants'
 
 async function dropDatabase({ database: { runRawQuery, escapeId } }) {
   const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME)

@@ -128,6 +128,11 @@ const pushNotificationAndGetSubscriptions = async (pool, payload) => {
     )
   `)
 
+  // TODO: restore view-model reactivity for fat events
+  if (event.payload.stripEvent) {
+    return
+  }
+
   const passthroughPromises = []
   for (const { eventSubscriber } of passthroughSubscriptions) {
     passthroughPromises.push(

@@ -2,7 +2,7 @@ import { createServer } from 'resolve-local-rpc'
 import { OMIT_BATCH } from 'resolve-readmodel-base'
 
 const serializeError = error => ({
-  name: error.name != null ? String(error.name)  : error.name,
+  name: error.name != null ? String(error.name) : error.name,
   code: String(error.code),
   message: String(error.message),
   stack: String(error.stack)
@@ -67,8 +67,11 @@ const createAndInitConsumer = async config => {
         dryRun
       })
 
-      if(dryRun) {
-        const nextCursor = await resolve.eventstoreAdapter.getNextCursor(cursor, result)
+      if (dryRun) {
+        const nextCursor = await currentResolve.eventstoreAdapter.getNextCursor(
+          cursor,
+          result
+        )
         return nextCursor
       } else {
         return result
@@ -124,7 +127,7 @@ const createAndInitConsumer = async config => {
     }
   }
 
-  const sendEvents = async ({
+  const sendCursor = async ({
     eventSubscriber,
     batchId,
     xaTransactionId,
@@ -139,9 +142,12 @@ const createAndInitConsumer = async config => {
     try {
       await initResolve(currentResolve)
 
-      const eventsCountLimit = deliveryStrategy === 'active-xa-transaction' ? 10 * 1000 * 1000 : 10
+      const eventsCountLimit =
+        deliveryStrategy === 'active-xa-transaction' ? 10 * 1000 * 1000 : 10
 
-      const { events: incomingEvents } = await currentResolve.eventstoreAdapter.loadEvents({
+      const {
+        events: incomingEvents
+      } = await currentResolve.eventstoreAdapter.loadEvents({
         eventTypes,
         limit: eventsCountLimit,
         eventsSizeLimit: 1024 * 1024 * 1024,
@@ -149,43 +155,43 @@ const createAndInitConsumer = async config => {
         cursor
       })
 
-      // TODO segragate passthough subscribers
-      if (batchId == null && eventSubscriber === 'websocket') {
-        for (const event of incomingEvents) {
-          await currentResolve.pubsubManager.dispatch({
-            topicName: event.type,
-            topicId: event.aggregateId,
-            event
-          })
-        }
-
-        return
-      }
-
       try {
         let pureEventSubscriber, parallelGroupName
         try {
-          void ({ pureEventSubscriber, parallelGroupName = 'default' } = JSON.parse(eventSubscriber))
-          if(pureEventSubscriber == null || pureEventSubscriber.constructor !== String &&
-            parallelGroupName == null || parallelGroupName.constructor !== String) {
-              throw null
+          void ({
+            pureEventSubscriber,
+            parallelGroupName = 'default'
+          } = JSON.parse(eventSubscriber))
+          if (
+            pureEventSubscriber == null ||
+            (pureEventSubscriber.constructor !== String &&
+              parallelGroupName == null) ||
+            parallelGroupName.constructor !== String
+          ) {
+            // eslint-disable-next-line no-throw-literal
+            throw null
           }
-        } catch(error) {
+        } catch (error) {
           throw new Error(`Incorrect event subscriber ${eventSubscriber}`)
         }
 
-        const listenerInfo = currentResolve.eventListeners.get(pureEventSubscriber)
+        const listenerInfo = currentResolve.eventListeners.get(
+          pureEventSubscriber
+        )
         if (listenerInfo == null) {
           throw new Error(`Listener ${pureEventSubscriber} does not exist`)
         }
 
-        const events = []
-        for(const event of incomingEvents) {
-          if(await listenerInfo.classifier(event) === parallelGroupName) {
-            events.push(event)
+        let events = incomingEvents
+        if (typeof listenerInfo.classifier === 'function') {
+          events = []
+          for (const event of incomingEvents) {
+            if ((await listenerInfo.classifier(event)) === parallelGroupName) {
+              events.push(event)
+            }
           }
+          incomingEvents.length = 0
         }
-        incomingEvents.length = 0
 
         const updateByEvents = listenerInfo.isSaga
           ? currentResolve.executeSaga.updateByEvents
@@ -206,11 +212,20 @@ const createAndInitConsumer = async config => {
         return
       }
 
-      if ((result != null && result.constructor === Error) || (result == null || result.constructor !== Object)) {
+      if (
+        (result != null && result.constructor === Error) ||
+        result == null ||
+        result.constructor !== Object
+      ) {
         result = {
-          error: result == null || result.constructor !== Object
-            ? serializeError(new Error(`Result is unknown entity ${JSON.stringify(result)}`))
-            : serializeError(result),
+          error:
+            result == null || result.constructor !== Object
+              ? serializeError(
+                  new Error(
+                    `Result is unknown entity ${JSON.stringify(result)}`
+                  )
+                )
+              : serializeError(result),
           appliedEventsList: [],
           successEvent: null,
           failedEvent: null
@@ -219,7 +234,10 @@ const createAndInitConsumer = async config => {
         result.error = serializeError(result.error)
       }
 
-      const nextCursor = await resolve.eventstoreAdapter.getNextCursor(cursor, result.appliedEventsList)
+      const nextCursor = await currentResolve.eventstoreAdapter.getNextCursor(
+        cursor,
+        result.appliedEventsList
+      )
 
       await publisher.acknowledge({
         batchId,
@@ -255,11 +273,35 @@ const createAndInitConsumer = async config => {
     }
   }
 
+  const sendEvents = async ({ eventSubscriber, batchId, events }) => {
+    const currentResolve = Object.create(baseResolve)
+    try {
+      await initResolve(currentResolve)
+      // TODO segragate passthough subscribers
+      if (!(batchId == null && eventSubscriber === 'websocket')) {
+        throw new Error(
+          `Unknown passthrough subscriber "${eventSubscriber}" via batchId="${batchId}"`
+        )
+      }
+
+      for (const event of events) {
+        await currentResolve.pubsubManager.dispatch({
+          topicName: event.type,
+          topicId: event.aggregateId,
+          event
+        })
+      }
+    } finally {
+      await disposeResolve(currentResolve)
+    }
+  }
+
   const consumer = {
     beginXATransaction,
     commitXATransaction,
     rollbackXATransaction,
     drop,
+    sendCursor,
     sendEvents,
     loadEvents,
     saveEvent

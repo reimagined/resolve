@@ -23,7 +23,12 @@ const finalizeAndReportBatch = async (pool, payload) => {
   if (isActiveResult && Object.keys(result).length > 0) {
     // eslint-disable-next-line prefer-const
     let { successEvent, failedEvent, error, cursor } = result
-    if (successEvent == null && failedEvent == null && error == null && cursor == null) {
+    if (
+      successEvent == null &&
+      failedEvent == null &&
+      error == null &&
+      cursor == null
+    ) {
       error = {
         message: `EventSubscriber ${eventSubscriber} on batchId ${batchId} perform idle operation`
       }

@@ -1,5 +1,4 @@
 export default () => `
-  import defaultClassifier from 'resolve-runtime/lib/common/defaults/classifier'
   import '$resolve.guardOnlyServer'
   import { schedulerEventTypes } from 'resolve-saga'
   import readModels from '$resolve.readModels'
@@ -36,7 +35,7 @@ export default () => `
       eventTypes: Object.values(schedulerEventTypes({ schedulerName: name })),
       invariantHash,
       connectorName,
-      classifier: defaultClassifier,
+      classifier: null,
       isSaga: true
     })
   }

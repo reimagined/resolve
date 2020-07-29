@@ -15,7 +15,6 @@ async function requestTimeout(pool, payload) {
     parseSubscription,
     invokeConsumer,
     invokeOperation,
-    getNextCursor,
     serializeError
   } = pool
   const { batchId } = payload
@@ -45,9 +44,8 @@ async function requestTimeout(pool, payload) {
   if (
     subscriptionDescription.runStatus !== NotificationStatus.PROCESSING &&
     subscriptionDescription.runStatus !== NotificationStatus.TIMEOUT_ENTERING &&
-    !subscriptionDescription.runStatus.startsWith(
-      NotificationStatus.TIMEOUT_XA_COMMITING
-    ) &&
+    subscriptionDescription.runStatus !==
+      NotificationStatus.TIMEOUT_XA_COMMITING &&
     subscriptionDescription.runStatus !==
       NotificationStatus.TIMEOUT_XA_ROLLBACKING
   ) {
@@ -87,6 +85,7 @@ async function requestTimeout(pool, payload) {
     deliveryStrategy,
     runStatus,
     xaTransactionId,
+    immediateCursor,
     cursor,
     successEvent: prevSuccessEvent
   } = subscriptionDescription
@@ -125,37 +124,40 @@ async function requestTimeout(pool, payload) {
       runStatus === NotificationStatus.TIMEOUT_ENTERING ||
       runStatus.startsWith(NotificationStatus.TIMEOUT_XA_COMMITING)
     ) {
-      let appliedEventCount = null
+      let nextCursor = null
       if (runStatus === NotificationStatus.TIMEOUT_ENTERING) {
-        // eslint-disable-next-line no-bitwise
-        appliedEventCount = ~~(await invokeConsumer(
+        nextCursor = await invokeConsumer(
           pool,
           ConsumerMethod.CommitXATransaction,
           {
             eventSubscriber,
             xaTransactionId,
             batchId,
+            cursor,
             dryRun: true
           }
-        ))
+        )
         await runRawQuery(`
           UPDATE ${notificationsTableNameAsId} SET
-          "status" = ${escapeStr(
-            // eslint-disable-next-line no-bitwise
-            `${NotificationStatus.TIMEOUT_XA_COMMITING}${~~appliedEventCount}`
-          )}
+          "status" = ${escapeStr(`${NotificationStatus.TIMEOUT_XA_COMMITING}`)},
+          "xaTransactionId" = json(${escapeStr(
+            JSON.stringify(xaTransactionId)
+          )}),
+          "immediateCursor" = json(${escapeStr(
+            JSON.stringify(immediateCursor)
+          )})
           WHERE "batchId" = ${escapeStr(batchId)};
 
           COMMIT;
           BEGIN IMMEDIATE;
         `)
       } else {
-        // eslint-disable-next-line no-bitwise
-        appliedEventCount = ~~runStatus.substring(
-          NotificationStatus.TIMEOUT_XA_COMMITING.length
-        )
+        nextCursor = immediateCursor
       }
-      
+
+      if (nextCursor != null) {
+        result.cursor = nextCursor
+      }
 
       const isXaCommitOk = await invokeConsumer(
         pool,
@@ -182,7 +184,7 @@ async function requestTimeout(pool, payload) {
     compositeError.stack = error.stack
     if (
       runStatus === NotificationStatus.TIMEOUT_ENTERING ||
-      runStatus.startsWith(NotificationStatus.TIMEOUT_XA_COMMITING)
+      runStatus === NotificationStatus.TIMEOUT_XA_COMMITING
     ) {
       await runRawQuery(`
       UPDATE ${notificationsTableNameAsId} SET

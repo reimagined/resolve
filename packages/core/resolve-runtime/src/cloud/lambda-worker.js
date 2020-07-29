@@ -8,7 +8,6 @@ import handleSchedulerEvent from './scheduler-event-handler'
 import putMetrics from './metrics'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
-import { lambda } from 'resolve-cloud-common'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
@@ -17,8 +16,10 @@ let coldStart = true
 
 const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   log.debug('executing application lambda')
-  if(lastReqId === lambdaContext.awsRequestId) {
-    throw new Error(`Application lambda worker was invoked with duplicate request-id "${lastReqId}", so skipping request`)
+  if (lastReqId === lambdaContext.awsRequestId) {
+    throw new Error(
+      `Application lambda worker was invoked with duplicate request-id "${lastReqId}", so skipping request`
+    )
   } else {
     lastReqId = lambdaContext.awsRequestId
   }
@@ -30,7 +31,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     lambdaEventName: 'resolveSource',
     mode: 'internal'
   }
- 
+
   Object.assign(resolveBase, {
     eventSubscriberCredentials: {
       ...baseCredentials,

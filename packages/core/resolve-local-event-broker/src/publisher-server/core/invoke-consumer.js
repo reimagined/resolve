@@ -4,6 +4,7 @@ const consumerMethodsMap = new Map([
   [ConsumerMethod.BeginXATransaction, 'beginXATransaction'],
   [ConsumerMethod.CommitXATransaction, 'commitXATransaction'],
   [ConsumerMethod.RollbackXATransaction, 'rollbackXATransaction'],
+  [ConsumerMethod.SendCursor, 'sendCursor'],
   [ConsumerMethod.SendEvents, 'sendEvents'],
   [ConsumerMethod.LoadEvents, 'loadEvents'],
   [ConsumerMethod.SaveEvent, 'saveEvent'],

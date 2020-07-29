@@ -28,7 +28,13 @@ const commitEvent = async (pool, readModelName, xaTransactionId, event) => {
       includeResultMetadata: false,
       transactionId: xaTransactionId,
       sql: `
-        SELECT set_config(${pool.escape(eventListId)}, (SELECT current_setting(${pool.escape(eventListId)}) || ${pool.escape(`${+event.threadId}:${+event.threadCounter};`)}), true);
+        SELECT set_config(${pool.escape(
+          eventListId
+        )}, (SELECT current_setting(${pool.escape(
+        eventListId
+      )}) || ${pool.escape(
+        `${+event.threadId}:${+event.threadCounter};`
+      )}), true);
         SET LOCAL ${insideEventId} = 0;
         RELEASE SAVEPOINT ${savepointId};
       `

@@ -85,6 +85,7 @@ export const PrivateOperationType = (function(PrivateOperationType) {
 export const ConsumerMethod = (function(ConsumerMethod) {
   ConsumerMethod['SaveEvent'] = 'SaveEvent'
   ConsumerMethod['LoadEvents'] = 'LoadEvents'
+  ConsumerMethod['SendCursor'] = 'SendCursor'
   ConsumerMethod['SendEvents'] = 'SendEvents'
   ConsumerMethod['BeginXATransaction'] = 'BeginXATransaction'
   ConsumerMethod['CommitXATransaction'] = 'CommitXATransaction'

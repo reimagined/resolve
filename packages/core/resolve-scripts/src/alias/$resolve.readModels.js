@@ -64,17 +64,20 @@ export default ({ resolveConfig, isClient }) => {
 
     exports.push(`, projection: projection_${index}`)
 
-    importResource({
-      resourceName: `classifier_${index}`,
-      resourceValue: readModel.classifier,
-      runtimeMode: RUNTIME_ENV_NOWHERE,
-      importMode: RESOURCE_ANY,
-      instanceMode: IMPORT_INSTANCE,
-      calculateHash: 'resolve-read-model-projection-hash',
-      instanceFallback: 'resolve-runtime/lib/common/defaults/classifier.js',
-      imports,
-      constants
-    })
+    if (readModel.classifier != null) {
+      importResource({
+        resourceName: `classifier_${index}`,
+        resourceValue: readModel.classifier,
+        runtimeMode: RUNTIME_ENV_NOWHERE,
+        importMode: RESOURCE_ANY,
+        instanceMode: IMPORT_INSTANCE,
+        calculateHash: 'resolve-read-model-classifier-hash',
+        imports,
+        constants
+      })
+    } else {
+      constants.push(`const classifier_${index} = null`)
+    }
 
     exports.push(`, classifier: classifier_${index}`)
 

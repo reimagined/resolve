@@ -5,13 +5,13 @@ import { OMIT_BATCH } from 'resolve-readmodel-base'
 const log = debugLevels('resolve:resolve-runtime:event-bus-event-handler')
 
 const serializeError = error => ({
-  name: error.name != null ? String(error.name)  : error.name,
+  name: error.name != null ? String(error.name) : error.name,
   code: String(error.code),
   message: String(error.message),
   stack: String(error.stack)
 })
 
-const sendEvents = async (payload, resolve) => {
+const sendCursor = async (payload, resolve) => {
   const segment = resolve.performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('applyEventsFromBus')
 
@@ -26,15 +26,18 @@ const sendEvents = async (payload, resolve) => {
     properties
   } = payload
 
-  const eventsCountLimit = deliveryStrategy === 'active-xa-transaction' ? 10 * 1000 * 1000 : 10
+  const eventsCountLimit =
+    deliveryStrategy === 'active-xa-transaction' ? 10 * 1000 * 1000 : 10
 
-  const { events: incomingEvents } = await resolve.eventstoreAdapter.loadEvents({
-    eventTypes,
-    limit: eventsCountLimit,
-    eventsSizeLimit: 1024 * 1024 * 1024,
-    aggregateIds,
-    cursor
-  })
+  const { events: incomingEvents } = await resolve.eventstoreAdapter.loadEvents(
+    {
+      eventTypes,
+      limit: eventsCountLimit,
+      eventsSizeLimit: 1024 * 1024 * 1024,
+      aggregateIds,
+      cursor
+    }
+  )
 
   if (eventSubscriber === 'websocket' && batchId == null) {
     // TODO: Inject MQTT events directly from cloud event bus lambda
@@ -53,16 +56,23 @@ const sendEvents = async (payload, resolve) => {
 
   const startTime = Date.now()
   let result = null
-  
+
   try {
     let pureEventSubscriber, parallelGroupName
     try {
-      void ({ pureEventSubscriber, parallelGroupName = 'default' } = JSON.parse(eventSubscriber))
-      if(pureEventSubscriber == null || pureEventSubscriber.constructor !== String &&
-        parallelGroupName == null || parallelGroupName.constructor !== String) {
-          throw null
+      void ({ pureEventSubscriber, parallelGroupName = 'default' } = JSON.parse(
+        eventSubscriber
+      ))
+      if (
+        pureEventSubscriber == null ||
+        (pureEventSubscriber.constructor !== String &&
+          parallelGroupName == null) ||
+        parallelGroupName.constructor !== String
+      ) {
+        // eslint-disable-next-line no-throw-literal
+        throw null
       }
-    } catch(error) {
+    } catch (error) {
       throw new Error(`Incorrect event subscriber ${eventSubscriber}`)
     }
 
@@ -74,13 +84,16 @@ const sendEvents = async (payload, resolve) => {
       throw new Error(`Listener ${pureEventSubscriber} does not exist`)
     }
 
-    const events = []
-    for(const event of incomingEvents) {
-      if(await listenerInfo.classifier(event) === parallelGroupName) {
-        events.push(event)
+    let events = incomingEvents
+    if (typeof listenerInfo.classifier === 'function') {
+      events = []
+      for (const event of incomingEvents) {
+        if ((await listenerInfo.classifier(event)) === parallelGroupName) {
+          events.push(event)
+        }
       }
+      incomingEvents.length = 0
     }
-    incomingEvents.length = 0
 
     const updateByEvents = listenerInfo.isSaga
       ? resolve.executeSaga.updateByEvents
@@ -110,11 +123,18 @@ const sendEvents = async (payload, resolve) => {
     return
   }
 
-  if ((result != null && result.constructor === Error) || (result == null || result.constructor !== Object)) {
+  if (
+    (result != null && result.constructor === Error) ||
+    result == null ||
+    result.constructor !== Object
+  ) {
     result = {
-      error: result == null || result.constructor !== Object
-        ? serializeError(new Error(`Result is unknown entity ${JSON.stringify(result)}`))
-        : serializeError(result),
+      error:
+        result == null || result.constructor !== Object
+          ? serializeError(
+              new Error(`Result is unknown entity ${JSON.stringify(result)}`)
+            )
+          : serializeError(result),
       appliedEventsList: [],
       successEvent: null,
       failedEvent: null
@@ -125,9 +145,15 @@ const sendEvents = async (payload, resolve) => {
 
   const endTime = Date.now()
   log.debug('applying events successfully')
-  log.verbose(`event count = ${events.length}, time = ${endTime - startTime}ms`)
+  log.verbose(
+    `event count = ${result.appliedEventsList.length}, time = ${endTime -
+      startTime}ms`
+  )
 
-  const nextCursor = await resolve.eventstoreAdapter.getNextCursor(cursor, result.appliedEventsList)
+  const nextCursor = await resolve.eventstoreAdapter.getNextCursor(
+    cursor,
+    result.appliedEventsList
+  )
 
   await invokeEventBus(resolve.eventstoreCredentials, 'acknowledge', {
     batchId,
@@ -138,6 +164,27 @@ const sendEvents = async (payload, resolve) => {
       nextCursor
     }
   })
+}
+
+const sendEvents = async (payload, resolve) => {
+  const { eventSubscriber, batchId, events } = payload
+
+  if (!(eventSubscriber === 'websocket' && batchId == null)) {
+    throw new Error(
+      `Unknown passthrough subscriber "${eventSubscriber}" via batchId="${batchId}"`
+    )
+  }
+
+  // TODO: Inject MQTT events directly from cloud event bus lambda
+  for (const event of events) {
+    const eventDescriptor = {
+      topic: `${process.env.RESOLVE_DEPLOYMENT_ID}/${event.type}/${event.aggregateId}`,
+      payload: JSON.stringify(event),
+      qos: 1
+    }
+
+    await resolve.mqtt.publish(eventDescriptor).promise()
+  }
 }
 
 const beginXATransaction = async (payload, resolve) => {
@@ -175,8 +222,11 @@ const commitXATransaction = async (payload, resolve) => {
     dryRun
   })
 
-  if(dryRun) {
-    const nextCursor = await resolve.eventstoreAdapter.getNextCursor(cursor, result)
+  if (dryRun) {
+    const nextCursor = await resolve.eventstoreAdapter.getNextCursor(
+      cursor,
+      result
+    )
     return nextCursor
   } else {
     return result
@@ -216,6 +266,9 @@ const drop = async (payload, resolve) => {
 
 const handleEventBusEvent = async (lambdaEvent, resolve) => {
   switch (lambdaEvent['method']) {
+    case 'SendCursor': {
+      return await sendCursor(lambdaEvent.payload, resolve)
+    }
     case 'SendEvents': {
       return await sendEvents(lambdaEvent.payload, resolve)
     }

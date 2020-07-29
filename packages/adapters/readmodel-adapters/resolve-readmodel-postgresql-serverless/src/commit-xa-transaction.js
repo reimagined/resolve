@@ -58,10 +58,12 @@ const commitXATransaction = async (
         sql: `SELECT current_setting(${pool.escape(eventListId)})`
       })
 
-      const appliedEventsList = `${pool.coercer(result.records[0][0])}`.replace(/;$/, '')
-        .split(';').map(record => {
+      const appliedEventsList = `${pool.coercer(result.records[0][0])}`
+        .replace(/;$/, '')
+        .split(';')
+        .map(record => {
           const [threadId, threadCounter] = record.split(':')
-          return {threadId, threadCounter}
+          return { threadId, threadCounter }
         })
 
       return appliedEventsList

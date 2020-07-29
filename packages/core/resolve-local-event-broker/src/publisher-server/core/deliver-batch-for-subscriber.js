@@ -15,7 +15,7 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     parseSubscription,
     invokeConsumer,
     invokeOperation,
-    serializeError,
+    serializeError
   } = pool
   const { activeBatch } = payload
   const { batchId, subscriptionId, eventSubscriber } = activeBatch
@@ -80,9 +80,9 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     throw new Error(`Wrong deliveryStrategy="${deliveryStrategy}"`)
   }
   if (deliveryStrategy === DeliveryStrategy.PASSIVE) {
-    await invokeConsumer(pool, ConsumerMethod.SendEvents, {
+    await invokeConsumer(pool, ConsumerMethod.SendCursor, {
       eventSubscriber,
-      events: null,
+      cursor: null,
       batchId
     })
     const input = {
@@ -131,7 +131,13 @@ const deliverBatchForSubscriber = async (pool, payload) => {
 
     await runRawQuery(`
       UPDATE ${notificationsTableNameAsId} SET 
-      ${isEventBasedRun ? `"xaTransactionId" = json(${escapeStr(JSON.stringify(xaTransactionId))}),` : ''}
+      ${
+        isEventBasedRun
+          ? `"xaTransactionId" = json(${escapeStr(
+              JSON.stringify(xaTransactionId)
+            )}),`
+          : ''
+      }
       "status" = ${escapeStr(NotificationStatus.PROCESSING)}
       WHERE "batchId" = ${escapeStr(batchId)};
       
@@ -153,14 +159,14 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     const sendingProperties =
       properties != null
         ? Object.keys(properties).reduce((acc, key) => {
-          acc[decodeJsonPath(key)] = properties[key]
-          return acc
-        }, {})
+            acc[decodeJsonPath(key)] = properties[key]
+            return acc
+          }, {})
         : {}
 
     await invokeConsumer(
       pool,
-      ConsumerMethod.SendEvents,
+      ConsumerMethod.SendCursor,
       {
         xaTransactionId,
         eventSubscriber,
