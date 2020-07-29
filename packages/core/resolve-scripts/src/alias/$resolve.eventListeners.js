@@ -1,4 +1,5 @@
 export default () => `
+  import defaultClassifier from 'resolve-runtime/lib/common/defaults/classifier'
   import '$resolve.guardOnlyServer'
   import { schedulerEventTypes } from 'resolve-saga'
   import readModels from '$resolve.readModels'
@@ -7,22 +8,24 @@ export default () => `
 
   const eventListeners = new Map()
 
-  for (const { name, projection, invariantHash, connectorName } of readModels) {
+  for (const { name, projection, invariantHash, connectorName, classifier } of readModels) {
     eventListeners.set(name, {
       name,
       eventTypes: Object.keys(projection),
       invariantHash,
       connectorName,
+      classifier,
       isSaga: false
     })
   }
 
-  for (const { name, handlers, invariantHash, connectorName } of sagas) {
+  for (const { name, handlers, invariantHash, connectorName, classifier } of sagas) {
     eventListeners.set(name, {
       name,
       eventTypes: Object.keys(handlers),
       invariantHash,
       connectorName,
+      classifier,
       isSaga: true
     })
   }
@@ -33,6 +36,7 @@ export default () => `
       eventTypes: Object.values(schedulerEventTypes({ schedulerName: name })),
       invariantHash,
       connectorName,
+      classifier: defaultClassifier,
       isSaga: true
     })
   }

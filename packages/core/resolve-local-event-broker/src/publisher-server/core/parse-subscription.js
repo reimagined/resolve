@@ -11,7 +11,6 @@ function parseSubscription(subscriptionDescription, allowedKeys) {
     eventSubscriber: TRANSFORM_NONE_SYMBOL,
     status: TRANSFORM_NONE_SYMBOL,
     deliveryStrategy: TRANSFORM_NONE_SYMBOL,
-    queueStrategy: TRANSFORM_NONE_SYMBOL,
     eventTypes: TRANSFORM_JSON_MAPPED_ARRAY_SYMBOL,
     aggregateIds: TRANSFORM_JSON_MAPPED_ARRAY_SYMBOL,
     successEvent: TRANSFORM_JSON_REGULAR_SYMBOL,
@@ -24,7 +23,6 @@ function parseSubscription(subscriptionDescription, allowedKeys) {
     batchId: TRANSFORM_NONE_SYMBOL,
     isEventBasedRun: TRANSFORM_NONE_SYMBOL,
     hasErrors: TRANSFORM_NONE_SYMBOL,
-    maxParallel: TRANSFORM_NONE_SYMBOL,
     scopeName: TRANSFORM_NONE_SYMBOL,
     properties: TRANSFORM_JSON_REGULAR_SYMBOL
   }

@@ -17,7 +17,6 @@ const reset = async (pool, payload) => {
   const result = await runQuery(`
     SELECT ${subscribersTableNameAsId}."subscriptionId" AS "subscriptionId",
     ${subscribersTableNameAsId}."deliveryStrategy" AS "deliveryStrategy",
-    ${subscribersTableNameAsId}."queueStrategy" AS "queueStrategy",
     ${subscribersTableNameAsId}."eventTypes" AS "eventTypes",
     ${subscribersTableNameAsId}."aggregateIds" AS "aggregateIds",
     ${subscribersTableNameAsId}."properties" AS "properties"
@@ -30,7 +29,6 @@ const reset = async (pool, payload) => {
   const {
     subscriptionId,
     deliveryStrategy,
-    queueStrategy,
     eventTypes,
     aggregateIds,
     properties
@@ -48,8 +46,6 @@ const reset = async (pool, payload) => {
       "eventTypes",
       "aggregateIds",
       "properties",
-      "queueStrategy",
-      "maxParallel",
       "successEvent",
       "failedEvent",
       "errors",
@@ -80,8 +76,6 @@ const reset = async (pool, payload) => {
           : 'null'
       )},
       ${escapeStr(properties != null ? JSON.stringify(properties) : 'null')},
-      ${escapeStr(queueStrategy)},
-      ${+1},
       NULL,
       NULL,
       NULL,

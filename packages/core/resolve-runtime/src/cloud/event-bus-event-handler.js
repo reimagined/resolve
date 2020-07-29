@@ -38,7 +38,7 @@ const sendEvents = async (payload, resolve) => {
 
   if (eventSubscriber === 'websocket' && batchId == null) {
     // TODO: Inject MQTT events directly from cloud event bus lambda
-    for (const event of events) {
+    for (const event of incomingEvents) {
       const eventDescriptor = {
         topic: `${process.env.RESOLVE_DEPLOYMENT_ID}/${event.type}/${event.aggregateId}`,
         payload: JSON.stringify(event),
@@ -51,26 +51,27 @@ const sendEvents = async (payload, resolve) => {
     return
   }
 
-  let pureEventSubscriber, parallelGroupName
-  try {
-    void ({ pureEventSubscriber, parallelGroupName = 'default' } = JSON.parse(eventSubscriber))
-    if(pureEventSubscriber == null || pureEventSubscriber.constructor !== String &&
-      parallelGroupName == null || parallelGroupName.constructor !== String) {
-        throw null
-    }
-  } catch(error) {
-    throw new Error(`Incorrect event subscriber ${eventSubscriber}`)
-  }
-
-  log.debug('applying events started')
-  log.verbose(JSON.stringify({ eventSubscriber, properties }, null, 2))
-
   const startTime = Date.now()
   let result = null
+  
   try {
-    const listenerInfo = resolve.eventListeners.get(eventSubscriber)
+    let pureEventSubscriber, parallelGroupName
+    try {
+      void ({ pureEventSubscriber, parallelGroupName = 'default' } = JSON.parse(eventSubscriber))
+      if(pureEventSubscriber == null || pureEventSubscriber.constructor !== String &&
+        parallelGroupName == null || parallelGroupName.constructor !== String) {
+          throw null
+      }
+    } catch(error) {
+      throw new Error(`Incorrect event subscriber ${eventSubscriber}`)
+    }
+
+    log.debug('applying events started')
+    log.verbose(JSON.stringify({ eventSubscriber, properties }, null, 2))
+
+    const listenerInfo = resolve.eventListeners.get(pureEventSubscriber)
     if (listenerInfo == null) {
-      throw new Error(`Listener ${eventSubscriber} does not exist`)
+      throw new Error(`Listener ${pureEventSubscriber} does not exist`)
     }
 
     const events = []

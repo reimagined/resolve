@@ -76,6 +76,7 @@ export default ({ resolveConfig, isClient }) => {
       constants
     })
 
+    exports.push(`, classifier: classifier_${index}`)
 
     exports.push(`, invariantHash: projection_${index}_hash`)
 

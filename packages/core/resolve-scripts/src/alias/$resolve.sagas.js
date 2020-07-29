@@ -93,6 +93,18 @@ export default ({ resolveConfig, isClient }) => {
       constants
     })
 
+    importResource({
+      resourceName: `classifier_${index}`,
+      resourceValue: readModel.classifier,
+      runtimeMode: RUNTIME_ENV_NOWHERE,
+      importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
+      calculateHash: 'resolve-read-model-projection-hash',
+      instanceFallback: 'resolve-runtime/lib/common/defaults/classifier.js',
+      imports,
+      constants
+    })
+
     exports.push(`sagas.push({`, `  name: name_${index}`)
     exports.push(`, connectorName: connectorName_${index}`)
     exports.push(`, schedulerName: schedulerName_${index}`)
@@ -100,6 +112,7 @@ export default ({ resolveConfig, isClient }) => {
     exports.push(`, sideEffects: sideEffects_${index}`)
     exports.push(`, invariantHash: invariantHash_${index}`)
     exports.push(`, encryption: encryption_${index}`)
+    exports.push(`, classifier: classifier_${index}`)
     exports.push(`})`, ``)
   }
 
