@@ -1,6 +1,6 @@
 import { Phases, symbol } from './constants'
 
-const as = ({ promise }, jwt) => {
+const as = ({ promise }: { promise: any }, jwt: any): any => {
   if (promise[symbol].phase !== Phases.RESOLVER) {
     throw new TypeError()
   }

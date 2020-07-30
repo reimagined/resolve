@@ -1,6 +1,23 @@
 import { symbol, Phases } from './constants'
 
-const readModel = ({ promise }, { name, projection, resolvers, adapter }) => {
+const readModel = (
+  {
+    promise
+  }: {
+    promise: any
+  },
+  {
+    name,
+    projection,
+    resolvers,
+    adapter
+  }: {
+    name: string
+    projection: any
+    resolvers: any
+    adapter: any
+  }
+): any => {
   if (promise[symbol].phase !== Phases.GIVEN_EVENTS) {
     throw new TypeError()
   }
@@ -10,7 +27,7 @@ const readModel = ({ promise }, { name, projection, resolvers, adapter }) => {
   promise[symbol].adapter = adapter
 
   for (const resolverName of Object.keys(promise[symbol].resolvers)) {
-    promise[resolverName] = resolverArgs => {
+    promise[resolverName] = (resolverArgs: any) => {
       promise[symbol].resolverArgs = resolverArgs
       promise[symbol].resolverName = resolverName
 

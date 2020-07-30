@@ -1,8 +1,22 @@
 import { symbol, Phases } from './constants'
 
 const saga = (
-  { promise },
-  { handlers, sideEffects, adapter, name = 'TEST-SAGA-READ-MODEL' }
+  {
+    promise
+  }: {
+    promise: any
+  },
+  {
+    handlers,
+    sideEffects,
+    adapter,
+    name = 'TEST-SAGA-READ-MODEL'
+  }: {
+    name: string
+    handlers: any
+    sideEffects: any
+    adapter: any
+  }
 ) => {
   if (promise[symbol].phase !== Phases.GIVEN_EVENTS) {
     throw new TypeError()

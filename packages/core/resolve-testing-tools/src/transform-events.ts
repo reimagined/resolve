@@ -1,4 +1,4 @@
-const transformEvents = events => {
+const transformEvents = (events: any[]): any => {
   let timestamp = 1
   const aggregateVersionsMap = new Map()
   const threadCountersMap = new Map()
