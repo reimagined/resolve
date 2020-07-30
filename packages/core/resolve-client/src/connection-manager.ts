@@ -5,7 +5,6 @@ type Connection = {
 
 type ConnectionOperationResult = {
   addedConnections: Array<Connection>
-  removedConnections: Array<Connection>
 }
 
 type ConnectionPool = { [key: string]: { [key: string]: number } }
@@ -90,20 +89,14 @@ const addConnection = (
   const nextConnections = getConnections(pool)
 
   const addedConnections = getAddedConnections(prevConnections, nextConnections)
-  const removedConnections = getRemovedConnections(
-    prevConnections,
-    nextConnections
-  )
 
-  return { addedConnections, removedConnections }
+  return { addedConnections }
 }
 
 const removeConnection = (
   pool: Pool,
   { connectionName, connectionId }: Connection
-): ConnectionOperationResult => {
-  const prevConnections = getConnections(pool)
-
+): void => {
   pool.connections[connectionName][connectionId]--
 
   if (!pool.connections[connectionName][connectionId]) {
@@ -113,16 +106,6 @@ const removeConnection = (
   if (Object.keys(pool.connections[connectionName]).length === 0) {
     delete pool.connections[connectionName]
   }
-
-  const nextConnections = getConnections(pool)
-
-  const addedConnections = getAddedConnections(prevConnections, nextConnections)
-  const removedConnections = getRemovedConnections(
-    prevConnections,
-    nextConnections
-  )
-
-  return { addedConnections, removedConnections }
 }
 
 export class ConnectionManager {
@@ -151,7 +134,7 @@ export class ConnectionManager {
   addConnection = (connection: Connection): ConnectionOperationResult =>
     addConnection(this.pool, connection)
 
-  removeConnection = (connection: Connection): ConnectionOperationResult =>
+  removeConnection = (connection: Connection): void =>
     removeConnection(this.pool, connection)
   getConnections = (): Array<Connection> => getConnections(this.pool)
 }

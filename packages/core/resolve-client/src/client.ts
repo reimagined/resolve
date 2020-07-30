@@ -1,6 +1,6 @@
 import { Context } from './context'
 import { GenericError } from './errors'
-import { doSubscribe, getSubscriptionKeys, doUnsubscribe } from './subscribe'
+import { connect, getSubscriptionKeys, disconnect } from './subscribe'
 import {
   RequestOptions,
   request,
@@ -229,26 +229,14 @@ export const subscribe = (
   resubscribeCallback?: ResubscribeCallback
 ): PromiseOrVoid<Subscription> => {
   const subscribeAsync = async (): Promise<Subscription> => {
-    const subscriptionKeys = getSubscriptionKeys(
+    await connect(
       context,
+      aggregateIds,
+      handler,
       viewModelName,
-      aggregateIds
+      resubscribeCallback
     )
 
-    await Promise.all(
-      subscriptionKeys.map(({ aggregateId, eventType }) =>
-        doSubscribe(
-          context,
-          {
-            topicName: eventType,
-            topicId: aggregateId
-          },
-          handler,
-          viewModelName,
-          resubscribeCallback
-        )
-      )
-    )
     return {
       viewModelName,
       aggregateIds,
@@ -274,29 +262,11 @@ export const unsubscribe = (
   const { viewModelName, aggregateIds, handler } = subscription
 
   const unsubscribeAsync = async (): Promise<any> => {
-    const subscriptionKeys = getSubscriptionKeys(
-      context,
-      viewModelName,
-      aggregateIds
-    )
-
     if (typeof handler !== 'function') {
       return
     }
 
-    await Promise.all(
-      subscriptionKeys.map(({ aggregateId, eventType }) =>
-        doUnsubscribe(
-          context,
-          {
-            topicName: eventType,
-            topicId: aggregateId
-          },
-          viewModelName,
-          handler
-        )
-      )
-    )
+    await disconnect(context, aggregateIds, viewModelName, handler)
   }
 
   return unsubscribeAsync()

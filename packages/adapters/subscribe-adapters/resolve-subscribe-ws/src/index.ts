@@ -5,11 +5,9 @@ import {
 
 const createClientAdapter = ({
   url,
-  appId,
   onEvent
 }: {
   url: string
-  appId: string
   onEvent: Function
 }) => {
   let client: WebSocket | undefined
@@ -29,12 +27,7 @@ const createClientAdapter = ({
           resolve()
         }
 
-        client.onerror = err => {
-          reject(err)
-        }
-
         client.onmessage = message => {
-          console.log('on message', message)
           try {
             onEvent(message.data.payload)
           } catch (error) {
@@ -53,32 +46,6 @@ const createClientAdapter = ({
       client.close()
 
       client = undefined
-    },
-
-    async subscribeToTopics(topics: object) {
-      if (!isInitialized || client == null) {
-        throw new Error(subscribeAdapterNotInitialized)
-      }
-      client.send(
-        JSON.stringify({
-          eventName: 'subscribe',
-          applicationId: appId,
-          data: topics
-        })
-      )
-    },
-
-    async unsubscribeFromTopics(topics: object) {
-      if (!isInitialized || client == null) {
-        throw new Error(subscribeAdapterNotInitialized)
-      }
-      client.send(
-        JSON.stringify({
-          eventName: 'unsubscribe',
-          applicationId: appId,
-          data: topics
-        })
-      )
     },
 
     isConnected() {

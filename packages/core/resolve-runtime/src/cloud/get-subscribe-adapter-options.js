@@ -4,7 +4,8 @@ const getSubscribeAdapterOptions = async (
   resolve,
   origin,
   adapterName,
-  viewModelName
+  viewModelName,
+  topics
 ) => {
   const { RESOLVE_DEPLOYMENT_ID, RESOLVE_WS_URL } = process.env
 
@@ -14,12 +15,15 @@ const getSubscribeAdapterOptions = async (
     throw new Error('View models is not found')
   }
 
+  console.log('getSubscribeAdapterOptions topics', topics)
+
   const token = await viewModel.resolvers.sign()
 
   const query = qs.stringify({
     jwt: token,
     applicationArn: resolve.subscriptionsCredentials.applicationLambdaArn,
-    viewModelName
+    viewModelName,
+    topics: JSON.stringify(topics)
   })
 
   const subscribeUrl = `${RESOLVE_WS_URL}?${query}`

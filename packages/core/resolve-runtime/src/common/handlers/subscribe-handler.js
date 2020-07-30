@@ -5,13 +5,14 @@ const log = debugLevels('resolve:resolve-runtime:subscribe-handler')
 const subscribeHandler = async (req, res) => {
   try {
     const parameters = req.method === 'POST' ? JSON.parse(req.body) : req.query
-    const { origin, adapterName, viewModelName } = parameters
+    const { origin, adapterName, viewModelName, topics } = parameters
     await res.setHeader('Content-Type', 'application/json')
     await res.json(
       await req.resolve.getSubscribeAdapterOptions(
         origin,
         adapterName,
-        viewModelName
+        viewModelName,
+        topics
       )
     )
   } catch (err) {
