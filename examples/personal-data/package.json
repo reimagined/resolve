@@ -9,7 +9,7 @@
     "dev": "babel-node ./run.js dev",
     "start": "babel-node ./run.js start",
     "test": "echo || exit 0",
-    "test:functional": "babel-node ./run.js test:functional"
+    "test:e2e": "babel-node ./run.js test:e2e"
   },
   "dependencies": {
     "@babel/node": "7.8.7",

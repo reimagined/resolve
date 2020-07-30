@@ -41,8 +41,8 @@ const executeStatement = async (pool, sql) => {
   } catch (error) {
     if (
       error != null &&
-      ((pool.xaTransactionId != null &&
-        /Transaction .*? Is Not Found/i.test(error.message)) ||
+      pool.xaTransactionId != null &&
+      (/Transaction .*? Is Not Found/i.test(error.message) ||
         /deadlock detected/i.test(error.message) ||
         /StatementTimeoutException/i.test(error.message))
     ) {
