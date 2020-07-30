@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "test": "echo || exit 0",
-    "test:integrational": "jest --config=./jest.config.js --testMatch=**/*.test.js"
+    "test:integration": "jest --config=./jest.config.js --testMatch=**/*.test.js"
   },
   "devDependencies": {
     "aws-sdk": "2.631.0",
