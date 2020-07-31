@@ -12,7 +12,8 @@ const subscribeHandler = async (req, res) => {
         origin,
         adapterName,
         viewModelName,
-        topics
+        topics,
+        req.jwtToken
       )
     )
   } catch (err) {
