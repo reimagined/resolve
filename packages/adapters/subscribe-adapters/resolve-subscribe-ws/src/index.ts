@@ -29,10 +29,10 @@ const createClientAdapter = ({
 
         client.onmessage = message => {
           try {
-            onEvent(message.data.payload)
+            onEvent(JSON.parse(message.data))
           } catch (error) {
             // eslint-disable-next-line no-console
-            console.warn(message)
+            console.error('WebSocket message error', error)
           }
         }
       })

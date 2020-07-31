@@ -27,19 +27,6 @@ const getAddedConnections = (
       )
   )
 
-const getRemovedConnections = (
-  prevConnections: Array<Connection>,
-  nextConnections: Array<Connection>
-): Array<Connection> =>
-  prevConnections.filter(
-    connection =>
-      !nextConnections.find(
-        ({ connectionName, connectionId }) =>
-          connection.connectionName === connectionName &&
-          connection.connectionId === connectionId
-      )
-  )
-
 const getConnections = ({
   connections,
   wildcardSymbol

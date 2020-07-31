@@ -9,6 +9,7 @@ const subscribeHandler = async (req, res) => {
     await res.setHeader('Content-Type', 'application/json')
     await res.json(
       await req.resolve.getSubscribeAdapterOptions(
+        req.resolve,
         origin,
         adapterName,
         viewModelName,
