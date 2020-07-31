@@ -70,7 +70,17 @@ const loadEventsByTimestamp = async (
           "sizedEvents"."threadId" ASC
           `
 
-        rows = await executeStatement(sqlQuery)
+        while (true) {
+          try {
+            rows = await executeStatement(sqlQuery)
+            break
+          } catch (err) {
+            if (err != null && /StatementTimeoutException/i.test(err.message)) {
+              continue
+            }
+            throw err
+          }
+        }
         break
       } catch (error) {
         if (!/Database response exceeded size limit/.test(error.message)) {
