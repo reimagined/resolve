@@ -32,13 +32,25 @@ const getLatestEvent = async (
   const resultQueryCondition =
     queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
 
-  const rows = await executeStatement(
-    `SELECT * FROM ${databaseNameAsId}.${eventsTableNameAsId}
-    ${resultQueryCondition}
-    ORDER BY "timestamp" DESC
-    OFFSET 0
-    LIMIT 1`
-  )
+  let rows = null
+
+  while (true) {
+    try {
+      rows = await executeStatement(
+        `SELECT * FROM ${databaseNameAsId}.${eventsTableNameAsId}
+        ${resultQueryCondition}
+        ORDER BY "timestamp" DESC
+        OFFSET 0
+        LIMIT 1`
+      )
+      break
+    } catch (err) {
+      if (err != null && /StatementTimeoutException/i.test(err.message)) {
+        continue
+      }
+      throw err
+    }
+  }
 
   if (rows.length === 0) {
     return null
