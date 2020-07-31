@@ -12,7 +12,7 @@ const handleSubscriptionsEvent = async (params, resolve) => {
     throw new Error('View models is not found')
   }
 
-  return viewModel.resolvers.verify({ resolve }, params)
+  return viewModel.resolvers.verify(resolve, params)
 }
 
 export default handleSubscriptionsEvent

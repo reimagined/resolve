@@ -15,9 +15,7 @@ const getSubscribeAdapterOptions = async (
     throw new Error('View models is not found')
   }
 
-  console.log('getSubscribeAdapterOptions topics', topics)
-
-  const token = await viewModel.resolvers.sign()
+  const token = await viewModel.resolvers.sign(resolve)
 
   const query = qs.stringify({
     jwt: token,
