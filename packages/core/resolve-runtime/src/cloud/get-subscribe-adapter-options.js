@@ -25,7 +25,7 @@ const getSubscribeAdapterOptions = async (
     topics: customTopics
   }, RESOLVE_ENCRYPTED_DEPLOYMENT_ID)
 
-  const subscribeUrl = `${RESOLVE_WS_URL}?token=${token}`
+  const subscribeUrl = `${RESOLVE_WS_URL}?deploymentId=${RESOLVE_DEPLOYMENT_ID}&token=${token}`
 
   return {
     appId: RESOLVE_DEPLOYMENT_ID,
