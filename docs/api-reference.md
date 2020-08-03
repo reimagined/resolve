@@ -962,15 +962,31 @@ await eventStoreAdapter.saveEvent({
 #### loadEvents
 Gets an array of events and the next cursor filtered by the event filter.
 
+###### Arguments
+| Argument Name | Description                     |
+| ------------- | ------------------------------- |
+| eventFilter   | { cursor: string or null, limit: number, eventsSizeLimit: number, eventTypes: Array<string>, aggregateIds: Array<string> } |
+|               | { startTime?: number, endTime?: number, limit: number, eventsSizeLimit: number, eventTypes: Array<string>, aggregateIds: Array<string> } |
 
-##### Example
+###### Result
+```ts
+Promise<{
+  events: Array<{ 
+    threadId: number, 
+    threadCounter: number, 
+    aggregateId: string,
+    aggregateVersion: number,
+    type: string,
+    timestamp: number,
+    payload: any
+  },
+  cursor: string    
+}>
+```
+
+###### Example
 ```js
-const { events, cursor: nextCursor } = await eventStoreAdapter.loadEvents({
-  cursor: null,
-  limit: 100,
-  eventTypes: ['USER_CREATED', 'USER_DELETED'],
-  aggregateIds: ['user-id']
-})
+const { events, cursor: nextCursor } = await eventStoreAdapter.loadEvents(eventFilter)
 ```
 
 #### getLatestEvent
@@ -1009,6 +1025,9 @@ Gets a secret.
 | ---------------- | ------------------------------- |
 | selector         | Unique key in the secrets table |
 
+###### Result
+secret: ```Promise<string>``` 
+
 #### setSecret
 Creates or update a secret
 
@@ -1019,6 +1038,9 @@ Creates or update a secret
 | selector         | Unique key in the secrets table                      |
 | secret           | A new encrypted secret value in the specified secret |
 
+###### Result
+```Promise<void>``` 
+
 #### deleteSecret
 Deletes a secret.
 
@@ -1028,14 +1050,20 @@ Deletes a secret.
 | ---------------- | ------------------------------- |
 | selector         | Unique key in the secrets table |
 
+###### Result
+```Promise<void>``` 
+
 #### incrementalImport
 Incrementally imports events.
 
 ###### Arguments
 
-| Argument Name    | Description                                                                     |
-| ---------------- | ------------------------------------------------------------------------------- |
-| events           | Array of { aggregateId: string, type: string, timestamp: number, payload: any } |
+| Argument Name    | Description                                                                           |
+| ---------------- | ------------------------------------------------------------------------------------- |
+| events           | Array of ```{ aggregateId: string, type: string, timestamp: number, payload: any }``` |
+
+###### Result
+```Promise<void>```
 
 ##### Example
 ```js
@@ -1057,13 +1085,44 @@ try {
 ```
 
 #### beginIncrementalImport
-starts to accumulate events for incremental import.
+Starts to accumulate events for incremental import.
+
+###### Arguments
+```void```
+
+###### Result
+importId: ```Promise<string>``` 
 
 #### pushIncrementalImport
 Accumulates events for incremental import.
 
+###### Arguments
+
+| Argument Name    | Description                                                                           |
+| ---------------- | ------------------------------------------------------------------------------------- |
+| events           | Array of ```{ aggregateId: string, type: string, timestamp: number, payload: any }``` |
+| importId         | Unique key for an incremental import                                                  |
+
+###### Result
+```Promise<void>``` 
+
 #### commitIncrementalImport
 Commits the accumulated events to the event store. 
 
+###### Arguments
+
+| Argument Name    | Description                                                                     |
+| ---------------- | ------------------------------------------------------------------------------- |
+| importId         | Unique key for an incremental import                                            |
+
+###### Result
+```Promise<void>``` 
+
 #### rollbackIncrementalImport
 Drops the accumulated events.
+
+###### Arguments
+```void```
+
+###### Result
+```Promise<void>``` 
