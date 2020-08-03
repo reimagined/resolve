@@ -3,6 +3,7 @@ import { AdapterPool, AdapterSpecific } from './types'
 import beginTransaction from './js/begin-transaction'
 import commitTransaction from './js/commit-transaction'
 import rollbackTransaction from './js/rollback-transaction'
+import isTimeoutError from './js/is-timeout-error'
 
 const connect = async (
   pool: AdapterPool,
@@ -47,7 +48,8 @@ const connect = async (
     commitTransaction,
     rollbackTransaction,
     escapeId,
-    escape
+    escape,
+    isTimeoutError
   })
 
   log.debug('RDS data service client configured')
