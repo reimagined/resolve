@@ -129,9 +129,7 @@ describe('aggregates', () => {
         }
       }
 
-      expect(
-        userCommands.createUser(state, command, { jwt })
-      ).toMatchObject({
+      expect(userCommands.createUser(state, command, { jwt })).toMatchObject({
         type: USER_CREATED,
         payload: {
           username,

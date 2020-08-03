@@ -1,9 +1,5 @@
 import { Phases, symbol } from './constants'
-import {
-  BDDAggregateAssertion,
-  shouldProduceEvent,
-  shouldThrow
-} from './aggregate-assertions'
+import { shouldProduceEvent, shouldThrow } from './aggregate-assertions'
 
 const internalPromise = Symbol()
 

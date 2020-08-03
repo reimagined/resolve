@@ -1,4 +1,4 @@
-import isEqual from 'lodash.isEqual'
+import isEqual from 'lodash.isequal'
 import { CommandResult } from 'resolve-core'
 import { Phases, symbol } from './constants'
 
