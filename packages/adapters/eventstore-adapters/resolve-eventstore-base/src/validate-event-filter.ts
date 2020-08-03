@@ -1,6 +1,10 @@
-const hasType = (type, obj) => obj != null && obj.constructor === type
+import { EventFilter } from './types'
 
-const validateEventFilter = filter => {
+function hasType(type: any, obj: any) {
+  return obj != null && obj.constructor === type
+}
+
+function validateEventFilter(filter: EventFilter) {
   if (!hasType(Object, filter)) {
     throw new Error('Event filter should be an object')
   }

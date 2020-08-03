@@ -1,4 +1,4 @@
-const wrappedMethod = async (pool, method, wrappedArgs, ...args) => {
+async function wrappedMethod(pool: any, method: Function, wrappedArgs: Array<any>, ...args: Array<any>) {
   if (pool.disposed) {
     throw new Error('Adapter has been already disposed')
   }
@@ -10,9 +10,10 @@ const wrappedMethod = async (pool, method, wrappedArgs, ...args) => {
   return await method(pool, ...wrappedArgs, ...args)
 }
 
-const wrapMethod = (pool, method, ...wrappedArgs) =>
-  typeof method === 'function'
+function wrapMethod (pool: any, method: Function, ...wrappedArgs: Array<any>) {
+  return typeof method === 'function'
     ? wrappedMethod.bind(null, pool, method, wrappedArgs)
     : null
+}
 
 export default wrapMethod

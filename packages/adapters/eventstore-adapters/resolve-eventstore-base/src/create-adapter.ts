@@ -1,7 +1,6 @@
 import getLog from './get-log'
-import getSecretsManagerFallback from './get-secrets-manager-fallback'
 
-const createAdapter = (
+function createAdapter(
   {
     wrapMethod,
     wrapEventFilter,
@@ -31,7 +30,9 @@ const createAdapter = (
     loadSnapshot,
     saveSnapshot,
     dropSnapshot,
-    getSecretsManager = getSecretsManagerFallback,
+    getSecret,
+    setSecret,
+    deleteSecret,
     beginIncrementalImport,
     commitIncrementalImport,
     rollbackIncrementalImport,
@@ -39,7 +40,7 @@ const createAdapter = (
     ...adapterSpecificArguments
   },
   options
-) => {
+) {
   const log = getLog(`createAdapter`)
   const config = { ...options }
   const pool = { config, disposed: false, validateEventFilter }
@@ -86,10 +87,12 @@ const createAdapter = (
     freeze: wrapMethod(pool, freeze),
     unfreeze: wrapMethod(pool, unfreeze),
     getNextCursor: getNextCursor.bind(null),
-    getSecretsManager: wrapMethod(pool, getSecretsManager),
     loadSnapshot: wrapMethod(pool, loadSnapshot),
     saveSnapshot: wrapMethod(pool, saveSnapshot),
     dropSnapshot: wrapMethod(pool, dropSnapshot),
+    getSecret: wrapMethod(pool, getSecret),
+    setSecret: wrapMethod(pool, setSecret),
+    deleteSecret: wrapMethod(pool, deleteSecret),
     pushIncrementalImport: wrapMethod(pool, pushIncrementalImport),
     beginIncrementalImport: wrapMethod(pool, beginIncrementalImport),
     commitIncrementalImport: wrapMethod(pool, commitIncrementalImport),

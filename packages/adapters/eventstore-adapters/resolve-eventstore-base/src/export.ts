@@ -65,7 +65,7 @@ const exportStream = (
   if (
     ![MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL].includes(maintenanceMode)
   ) {
-    throw new Error(`Wrong maintenance mode ${maintenanceMode}`)
+    throw new Error(`Wrong maintenance mode ${maintenanceMode.toString()}`)
   }
 
   const context = {
@@ -77,6 +77,7 @@ const exportStream = (
   }
 
   const stream = Readable.from(generator(context))
+
   Object.defineProperty(stream, 'cursor', {
     get() {
       return context.cursor

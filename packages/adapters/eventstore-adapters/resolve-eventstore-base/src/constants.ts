@@ -1,0 +1,11 @@
+export const MAINTENANCE_MODE_AUTO = 'MAINTENANCE_MODE_AUTO'
+export const MAINTENANCE_MODE_MANUAL = 'MAINTENANCE_MODE_MANUAL'
+export enum MaintenanceMode {
+  AUTO = 'AUTO',
+  MANUAL = 'MANUAL',
+}
+
+export const PARTIAL_EVENT_FLAG = 'PARTIAL_EVENT_FLAG'
+
+export const BUFFER_SIZE = 512 * 1024
+export const BATCH_SIZE = 200

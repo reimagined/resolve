@@ -1,6 +1,9 @@
 import getLog from './get-log'
 
-export default async (state, snapshotKey, content, updateCallback) => {
+async function snapshotTrigger(state: {
+  bucketSize: number,
+  counters: Map<string, number>
+}, snapshotKey: string, content: string, updateCallback: Function): Promise<void> {
   const log = getLog(`snapshotTrigger`)
   const { bucketSize, counters } = state
 
@@ -34,3 +37,5 @@ export default async (state, snapshotKey, content, updateCallback) => {
   log.debug(`updating snapshot ${snapshotKey}`)
   return updateCallback()
 }
+
+export default snapshotTrigger
