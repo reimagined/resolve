@@ -31,7 +31,7 @@
     "resolve-core": "0.24.16",
     "resolve-query": "0.24.16",
     "resolve-command": "0.24.16",
-    "resolve-readmodel-lite": "0.24.16",
+    "resolve-readmodel-lite": "0.24.16"
   },
   "devDependencies": {
     "@types/lodash.isequal": "4.5.5",
