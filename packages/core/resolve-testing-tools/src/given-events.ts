@@ -1,4 +1,5 @@
 import { Phases, symbol } from './constants'
+import { aggregate } from './aggregate'
 
 const internalPromise = Symbol()
 
@@ -84,12 +85,12 @@ const getDelayedPromise = (continuation: Function): any => {
 }
 
 const getInitPromise = (internalPool: any): Promise<any> =>
-  new Promise(initResolve => {
+  new Promise((resolve: Function) => {
     internalPool.initResolve = (
       continuation: Function,
       ...args: any[]
     ): Promise<any> => {
-      initResolve()
+      resolve()
       return continuation(...args)
     }
   })
@@ -129,6 +130,7 @@ const givenEvents = (dependencies: any, events: Array<any>): any => {
   promise.saga = saga.bind(null, pool)
   promise.properties = properties.bind(null, pool)
   promise.setSecretsManager = setSecretsManager.bind(null, pool)
+  promise.aggregate = aggregate.bind(null, promise)
 
   initPromise.then(init.bind(null, pool))
 

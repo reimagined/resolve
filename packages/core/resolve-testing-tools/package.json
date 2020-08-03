@@ -29,7 +29,9 @@
     "@babel/runtime": "7.9.6",
     "jest": "26.0.1",
     "sinon": "7.2.2",
+    "resolve-core": "0.24.15",
     "resolve-query": "0.24.15",
+    "resolve-command": "0.24.15",
     "resolve-readmodel-lite": "0.24.15",
     "resolve-eventstore-lite": "0.24.15"
   },
