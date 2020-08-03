@@ -20,7 +20,7 @@ const rollbackXATransaction = async (
         })
         break
       } catch (err) {
-        if (err != null && /StatementTimeoutException/i.test(err.message)) {
+        if (pool.isTimeoutError(err)) {
           continue
         }
         throw err
@@ -61,7 +61,7 @@ const rollbackXATransaction = async (
 
           return xaResult.length === 0 ? true : false
         } catch (err) {
-          if (err != null && /StatementTimeoutException/i.test(err.message)) {
+          if (pool.isTimeoutError(err)) {
             continue
           }
 

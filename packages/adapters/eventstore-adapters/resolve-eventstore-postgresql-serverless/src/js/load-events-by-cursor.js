@@ -9,7 +9,8 @@ const loadEventsByCursor = async (
     escape,
     eventsTableName,
     databaseName,
-    shapeEvent
+    shapeEvent,
+    isTimeoutError
   },
   {
     eventTypes,
@@ -125,7 +126,7 @@ const loadEventsByCursor = async (
       batchList = await executeStatement(sqlQuery)
       break
     } catch (err) {
-      if (err != null && /StatementTimeoutException/i.test(err.message)) {
+      if (isTimeoutError(err)) {
         continue
       }
       throw err
@@ -167,7 +168,7 @@ const loadEventsByCursor = async (
           try {
             return await executeStatement(sqlQuery)
           } catch (err) {
-            if (err != null && /StatementTimeoutException/i.test(err.message)) {
+            if (isTimeoutError(err)) {
               continue
             }
             throw err
