@@ -116,6 +116,17 @@ The [cli-uploader](https://github.com/reimagined/resolve/tree/master/examples/cl
 
 ## Import-export
 
+Each event store adapter exposes the following API used for event export and import:
+
+| Method | Description                                                           |
+| ------ | --------------------------------------------------------------------- |
+| export | Returns a readable stream used to export events from an event store.  |
+| import | Returns a writeable stream used to import events into an event store. |
+
+In the code sample below, a readable stream returned by an event store's `export` method is pipelined directly into a writable stream returned by a recipient event store's `import` method.
+
+##### Example
+
 ```js
 import { Readable, pipeline as pipelineC } from 'stream'
 
@@ -131,15 +142,13 @@ const eventStore2 = createEventStoreAdapter({
   databaseFile: './data/event-store-2.db'
 })
 
-await pipeline(
-  eventStore1.export(),
-  eventStore2.import()
-)
+await pipeline(eventStore1.export(), eventStore2.import())
 ```
 
 ## Incremental import
 
 ##### Example api-handler
+
 ```js
 import iconv from 'iconv-lite'
 
@@ -151,7 +160,7 @@ async function handler(req, res) {
   if (bodyCharset !== 'utf-8') {
     bodyContent = iconv.decode(iconv.encode(bodyContent, 'utf-8'), bodyCharset)
   }
-    
+
   const events = JSON.parse(body)
 
   await req.resolve.eventstoreAdapter.incrementalImport(events)
