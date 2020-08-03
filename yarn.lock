@@ -15750,10 +15750,10 @@ reselect@^4.0.0:
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.0.0.tgz#f2529830e5d3d0e021408b246a206ef4ea4437f7"
   integrity sha512-qUgANli03jjAyGlnbYVAV5vvnOmJnODyABz51RdBN7M4WaVu8mecZWgyQNkG8Yqe3KRGRt0l4K4B3XVEULC4CA==
 
-resolve-cloud-common@0.0.35:
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.35.tgz#946798a38f02322dafc093d7e10ec9c0b9bb3251"
-  integrity sha512-FNIPkyPy0WAu9umLsBApwid39Ixl+UcvTm/wAe/cpmx22TbCFrLACIix9marljE7W0P+COgTK+FYbBYThtnyqg==
+resolve-cloud-common@0.0.37:
+  version "0.0.37"
+  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.37.tgz#308032a0b60fdecd5f9cf48f22dc03f30a42407f"
+  integrity sha512-Yd5kYqkEp6GNbgPpJvhfzV3BdJLB58HgUb4zL/o2E607DvkVo0NQ7xWW5DVEuGmT0yz4OnmM5/A3i5AprgKRiw==
   dependencies:
     chalk "^4.0.0"
     debug "^4.1.1"

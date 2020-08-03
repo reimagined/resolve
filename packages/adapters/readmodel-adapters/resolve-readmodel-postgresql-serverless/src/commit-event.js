@@ -49,7 +49,7 @@ const commitEvent = async (pool, readModelName, xaTransactionId) => {
       error != null &&
       (/Transaction .*? Is Not Found/i.test(error.message) ||
         /deadlock detected/i.test(error.message) ||
-        /StatementTimeoutException/i.test(error.message))
+        pool.isTimeoutError(error))
     ) {
       throw OMIT_BATCH
     }

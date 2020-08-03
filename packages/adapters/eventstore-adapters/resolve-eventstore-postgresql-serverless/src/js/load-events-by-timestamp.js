@@ -9,7 +9,8 @@ const loadEventsByTimestamp = async (
     escape,
     eventsTableName,
     databaseName,
-    shapeEvent
+    shapeEvent,
+    isTimeoutError
   },
   { eventTypes, aggregateIds, startTime, finishTime, limit }
 ) => {
@@ -70,7 +71,17 @@ const loadEventsByTimestamp = async (
           "sizedEvents"."threadId" ASC
           `
 
-        rows = await executeStatement(sqlQuery)
+        while (true) {
+          try {
+            rows = await executeStatement(sqlQuery)
+            break
+          } catch (err) {
+            if (isTimeoutError(err)) {
+              continue
+            }
+            throw err
+          }
+        }
         break
       } catch (error) {
         if (!/Database response exceeded size limit/.test(error.message)) {

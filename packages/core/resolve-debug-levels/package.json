@@ -1,6 +1,6 @@
 {
   "name": "resolve-debug-levels",
-  "version": "0.24.13",
+  "version": "0.24.15",
   "description": "Provides the debug-level API for reSolve packages.",
   "engines": {
     "node": ">=10.9"

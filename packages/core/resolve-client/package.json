@@ -1,6 +1,6 @@
 {
   "name": "resolve-client",
-  "version": "0.24.13",
+  "version": "0.24.15",
   "description": "Basic reSolve client.",
   "engines": {
     "node": ">=10.9"
@@ -14,7 +14,7 @@
   "scripts": {
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll",
-    "test:functional": "jest --config=./jest.func-config.js --verbose",
+    "test:e2e": "jest --config=./jest.func-config.js --verbose",
     "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'"
   },
   "repository": "https://github.com/reimagined/resolve.git",
