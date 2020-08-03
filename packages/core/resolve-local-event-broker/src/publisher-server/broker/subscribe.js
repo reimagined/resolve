@@ -2,13 +2,15 @@ import {
   SUBSCRIBERS_TABLE_NAME,
   DeliveryStrategy,
   QueueStrategy,
-  SubscriptionStatus
+  SubscriptionStatus,
+  ConsumerMethod
 } from '../constants'
 
 async function subscribe(pool, payload) {
   const {
     database: { escapeStr, escapeId, runQuery, runRawQuery, encodeJsonPath },
     parseSubscription,
+    invokeConsumer,
     generateGuid
   } = pool
 
@@ -117,6 +119,13 @@ async function subscribe(pool, payload) {
 
   if (result == null || result.length !== 1) {
     throw new Error('Subscription failed')
+  }
+
+  if (deliveryStrategy === DeliveryStrategy.PASSIVE) {
+    await invokeConsumer(pool, ConsumerMethod.Notify, {
+      eventSubscriber,
+      notification: 'SUBSCRIBE'
+    })
   }
 
   const { subscriptionId } = parseSubscription(result[0])

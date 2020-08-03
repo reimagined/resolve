@@ -144,11 +144,13 @@ export const detectConnectorFeatures = connector =>
   ((typeof connector.rollbackXATransaction === 'function') << 5) +
   ((typeof connector.beginEvent === 'function') << 6) +
   ((typeof connector.commitEvent === 'function') << 7) +
-  ((typeof connector.rollbackEvent === 'function') << 8)
+  ((typeof connector.rollbackEvent === 'function') << 8) +
+  ((typeof connector.notify === 'function') << 9)
 
 export const FULL_XA_CONNECTOR = 504
 export const FULL_REGULAR_CONNECTOR = 7
 export const EMPTY_CONNECTOR = 0
+export const PASSIVE_CONNECTOR = 512
 
 const detectWrappers = connector => {
   const log = getLog('detectWrappers')
@@ -171,7 +173,10 @@ const detectWrappers = connector => {
       onFailEvent: connector.rollbackTransaction.bind(connector)
     }
   } else {
-    if (featureDetection !== EMPTY_CONNECTOR) {
+    if (
+      featureDetection !== EMPTY_CONNECTOR &&
+      featureDetection !== PASSIVE_CONNECTOR
+    ) {
       log.warn('Connector provided invalid event batch lifecycle functions set')
       log.warn(`Lifecycle detection constant is ${featureDetection}`)
       log.warn(`No-transactional lifecycle set will be used instead`)
@@ -475,6 +480,7 @@ const drop = doOperation.bind(null, 'drop')
 const beginXATransaction = doOperation.bind(null, 'beginXATransaction')
 const commitXATransaction = doOperation.bind(null, 'commitXATransaction')
 const rollbackXATransaction = doOperation.bind(null, 'rollbackXATransaction')
+const notify = doOperation.bind(null, 'notify')
 
 const dispose = async pool => {
   const segment = pool.performanceTracer
@@ -515,6 +521,7 @@ const dispose = async pool => {
 const wrapReadModel = (
   readModel,
   readModelConnectors,
+  eventstoreAdapter,
   performanceTracer,
   getSecretsManager
 ) => {
@@ -529,6 +536,7 @@ const wrapReadModel = (
   }
 
   const pool = {
+    eventstoreAdapter,
     connections: new Set(),
     readModel,
     connector,
@@ -559,6 +567,10 @@ const wrapReadModel = (
       beginXATransaction: beginXATransaction.bind(null, pool),
       commitXATransaction: commitXATransaction.bind(null, pool),
       rollbackXATransaction: rollbackXATransaction.bind(null, pool)
+    })
+  } else if (detectedFeatures === PASSIVE_CONNECTOR) {
+    Object.assign(api, {
+      notify: notify.bind(null, pool)
     })
   }
 

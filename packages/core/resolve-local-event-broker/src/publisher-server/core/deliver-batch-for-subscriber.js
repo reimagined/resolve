@@ -83,10 +83,9 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     throw new Error(`Wrong deliveryStrategy="${deliveryStrategy}"`)
   }
   if (deliveryStrategy === DeliveryStrategy.PASSIVE) {
-    await invokeConsumer(pool, ConsumerMethod.SendEvents, {
+    await invokeConsumer(pool, ConsumerMethod.Notify, {
       eventSubscriber,
-      events: null,
-      batchId
+      notification: 'BUILD'
     })
     const input = {
       type: PrivateOperationType.FINALIZE_BATCH,

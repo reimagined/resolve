@@ -99,5 +99,6 @@ export const ConsumerMethod = (function(ConsumerMethod) {
   ConsumerMethod['CommitXATransaction'] = 'CommitXATransaction'
   ConsumerMethod['RollbackXATransaction'] = 'RollbackXATransaction'
   ConsumerMethod['Drop'] = 'Drop'
+  ConsumerMethod['Notify'] = 'Notify'
   return Object.freeze(ConsumerMethod)
 })({})

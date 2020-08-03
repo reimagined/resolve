@@ -12,6 +12,7 @@ const createAdapter = (implementation, options) => {
     beginEvent,
     commitEvent,
     rollbackEvent,
+    notify,
     disconnect,
     dropReadModel,
     ...storeApi
@@ -161,6 +162,8 @@ const createAdapter = (implementation, options) => {
 
   const doRollbackEvent = makeOperation('rollbackEvent', rollbackEvent)
 
+  const doNotify = makeOperation('notify', notify)
+
   const doDispose = async () => {
     const segment = performanceTracer ? performanceTracer.getSegment() : null
     const subSegment = segment ? segment.addNewSubsegment('dispose') : null
@@ -200,6 +203,7 @@ const createAdapter = (implementation, options) => {
     beginEvent: doBeginEvent,
     commitEvent: doCommitEvent,
     rollbackEvent: doRollbackEvent,
+    notify: doNotify,
     disconnect: doDisconnect,
     drop: doDrop,
     dispose: doDispose

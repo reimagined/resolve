@@ -1,6 +1,7 @@
 import {
   ConsumerMethod,
   SubscriptionStatus,
+  DeliveryStrategy,
   SUBSCRIBERS_TABLE_NAME
 } from '../constants'
 
@@ -92,7 +93,18 @@ const reset = async (pool, payload) => {
     BEGIN IMMEDIATE;
   `)
 
-  await invokeConsumer(pool, ConsumerMethod.Drop, { eventSubscriber })
+  if (
+    deliveryStrategy === DeliveryStrategy.ACTIVE_NONE ||
+    deliveryStrategy === DeliveryStrategy.ACTIVE_REGULAR ||
+    deliveryStrategy === DeliveryStrategy.ACTIVE_XA
+  ) {
+    await invokeConsumer(pool, ConsumerMethod.Drop, { eventSubscriber })
+  } else if (deliveryStrategy === DeliveryStrategy.PASSIVE) {
+    await invokeConsumer(pool, ConsumerMethod.Notify, {
+      eventSubscriber,
+      notification: 'RESET'
+    })
+  }
 
   return subscriptionId
 }

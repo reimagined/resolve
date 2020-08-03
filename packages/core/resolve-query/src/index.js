@@ -2,6 +2,7 @@ import wrapReadModel, {
   FULL_XA_CONNECTOR,
   FULL_REGULAR_CONNECTOR,
   EMPTY_CONNECTOR,
+  PASSIVE_CONNECTOR,
   detectConnectorFeatures
 } from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
@@ -23,6 +24,7 @@ const createQuery = ({
     models[readModel.name] = wrapReadModel(
       readModel,
       readModelConnectors,
+      eventstoreAdapter,
       performanceTracer,
       eventstoreAdapter.getSecretsManager.bind(null)
     )
@@ -150,6 +152,14 @@ const createQuery = ({
     return result
   }
 
+  const notify = async modelNameAndParameters => {
+    checkModelExists(modelNameAndParameters.modelName)
+
+    await models[modelNameAndParameters.modelName].notify(
+      modelNameAndParameters
+    )
+  }
+
   const dispose = async () => {
     for (const modelName of Object.keys(models)) {
       await models[modelName].dispose()
@@ -163,6 +173,7 @@ const createQuery = ({
     beginXATransaction: performXA.bind(null, 'beginXATransaction'),
     commitXATransaction: performXA.bind(null, 'commitXATransaction'),
     rollbackXATransaction: performXA.bind(null, 'rollbackXATransaction'),
+    notify,
     drop,
     dispose
   }
@@ -177,6 +188,7 @@ export {
   FULL_XA_CONNECTOR,
   FULL_REGULAR_CONNECTOR,
   EMPTY_CONNECTOR,
+  PASSIVE_CONNECTOR,
   detectConnectorFeatures
 }
 export default createQuery

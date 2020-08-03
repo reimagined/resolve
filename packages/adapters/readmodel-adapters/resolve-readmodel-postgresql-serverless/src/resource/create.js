@@ -21,6 +21,20 @@ const create = async (pool, options) => {
         PRIMARY KEY("xa_key")
       )`,
 
+      `CREATE TABLE ${escapeId(options.databaseName)}.${escapeId(
+        `__${options.databaseName}__META__`
+      )}(
+        "ScopeName" VARCHAR(190) NOT NULL,
+        "EventSubscriber" VARCHAR(190) NOT NULL,
+        "Serial" BIGINT NOT NULL,
+        "Cursor" JSONB NULL,
+        "SuccessEvent" JSONB NULL,
+        "FailedEvent" JSONB NULL,
+        "Errors" JSONB NULL,
+        "Schema" JSONB NULL,
+        PRIMARY KEY("ScopeName", "EventSubscriber")
+      )`,
+
       `GRANT USAGE ON SCHEMA ${escapeId(options.databaseName)} TO ${escapeId(
         options.userLogin
       )}`,
