@@ -1,6 +1,6 @@
 import { Phases, symbol } from './constants'
 
-export const initReadModel = async ({
+export const executeReadModel = async ({
   promise,
   createQuery,
   transformEvents
@@ -64,4 +64,3 @@ export const initReadModel = async ({
     }
   }
 }
-

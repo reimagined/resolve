@@ -2,7 +2,7 @@ import { Phases, symbol } from './constants'
 
 const defaultMockError = `Using default mock result: override "executeCommand", "executeQuery" and "scheduleCommand" in "sideEffects" section with custom mocks`
 
-const initSaga = async ({
+export const executeSaga = async ({
   promise,
   transformEvents
 }: {
@@ -101,5 +101,3 @@ const initSaga = async ({
     promise[symbol].reject(error)
   }
 }
-
-export default initSaga

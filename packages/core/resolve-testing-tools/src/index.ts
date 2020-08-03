@@ -5,8 +5,9 @@ import givenEvents from './given-events'
 import { execute } from './execute'
 import readModel from './read-model'
 import transformEvents from './transform-events'
-import { initReadModel } from './init-read-model'
-import initSaga from './init-saga'
+import { executeReadModel } from './execute-read-model'
+import { executeSaga } from './execute-saga'
+import { executeCommand } from './execute-command'
 import saga from './saga'
 import properties from './properties'
 import getDefaultSecretsManager from './secrets-manager'
@@ -19,8 +20,9 @@ export default givenEvents.bind(null, {
   createQuery,
   as,
   execute,
-  initSaga,
-  initReadModel,
+  executeSaga,
+  executeReadModel,
+  executeCommand,
   readModel,
   transformEvents,
   saga,
