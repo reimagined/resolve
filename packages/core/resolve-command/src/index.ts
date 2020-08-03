@@ -1,11 +1,68 @@
+import {
+  Aggregate,
+  AggregateEncryptionFactory,
+  AggregateProjection,
+  Command,
+  CommandHandler,
+  CommandResult,
+  Event,
+  SecretsManager
+} from 'resolve-core'
 import getLog from './get-log'
+
+type EventPublisher = {
+  publish: ({ event }: { event: Event }) => Promise<void>
+}
+
+type EventstoreAdapter = {
+  getNextCursor: Function
+  saveSnapshot: Function
+  getSecretsManager: () => Promise<SecretsManager>
+  loadSnapshot: (snapshotKey: string) => Promise<string>
+  loadEvents: (param: {
+    aggregateIds: string[]
+    cursor: null
+    limit: number
+  }) => Promise<any>
+}
+
+type AggregateMeta = {
+  name: string
+  commands: Aggregate
+  projection: AggregateProjection
+  serializeState: Function
+  deserializeState: Function
+  encryption: AggregateEncryptionFactory
+  invariantHash?: string
+}
+
+type CommandPool = {
+  publisher: EventPublisher
+  performanceTracer: any
+  aggregateName: string
+  isDisposed: boolean
+  eventstoreAdapter: EventstoreAdapter
+  aggregates: AggregateMeta[]
+}
+
+type AggregateInfo = {
+  aggregateVersion: number
+  aggregateId: string
+  aggregateState: any
+  projection: AggregateProjection
+  cursor: any
+  minimalTimestamp: number
+  snapshotKey: string | null
+  serializeState: Function
+  deserializeState: Function
+}
 
 // eslint-disable-next-line no-new-func
 const CommandError = Function()
 Object.setPrototypeOf(CommandError.prototype, Error.prototype)
 export { CommandError }
 
-const generateCommandError = message => {
+const generateCommandError = (message: string): Error => {
   const error = new Error(message)
   Object.setPrototypeOf(error, CommandError.prototype)
   Object.defineProperties(error, {
@@ -16,13 +73,13 @@ const generateCommandError = message => {
   return error
 }
 
-const checkOptionShape = (option, types) =>
+const checkOptionShape = (option: any, types: any[]): boolean =>
   !(
     option == null ||
     !types.reduce((acc, type) => acc || option.constructor === type, false)
   )
 
-const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
+const verifyCommand = ({ aggregateId, aggregateName, type }: Command): void => {
   if (!checkOptionShape(aggregateId, [String])) {
     throw generateCommandError('The "aggregateId" argument must be a string')
   }
@@ -35,11 +92,11 @@ const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
 }
 
 const projectionEventHandler = async (
-  pool,
-  aggregateInfo,
-  processSnapshot,
-  event
-) => {
+  pool: CommandPool,
+  aggregateInfo: AggregateInfo,
+  processSnapshot: Function | null,
+  event: Event
+): Promise<any> => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -95,7 +152,10 @@ const projectionEventHandler = async (
   }
 }
 
-const takeSnapshot = async (pool, aggregateInfo) => {
+const takeSnapshot = async (
+  pool: CommandPool,
+  aggregateInfo: AggregateInfo
+): Promise<any> => {
   const { aggregateName, performanceTracer, eventstoreAdapter } = pool
 
   const log = getLog(
@@ -140,16 +200,22 @@ const takeSnapshot = async (pool, aggregateInfo) => {
 }
 
 const getAggregateState = async (
-  pool,
-  { projection, serializeState, deserializeState, invariantHash = null },
-  aggregateId
-) => {
+  pool: CommandPool,
+  meta: AggregateMeta,
+  aggregateId: string
+): Promise<any> => {
   const {
     aggregateName,
     performanceTracer,
     isDisposed,
     eventstoreAdapter
   } = pool
+  const {
+    projection,
+    serializeState,
+    deserializeState,
+    invariantHash = null
+  } = meta
   const log = getLog(`getAggregateState:${aggregateName}:${aggregateId}`)
 
   const segment = performanceTracer ? performanceTracer.getSegment() : null
@@ -187,7 +253,7 @@ const getAggregateState = async (
 
     try {
       if (snapshotKey == null) {
-        throw generateCommandError()
+        throw generateCommandError(`no snapshot key`)
       }
 
       // TODO: Restore
@@ -203,7 +269,7 @@ const getAggregateState = async (
       //   return aggregateInfo
       // }
 
-      const snapshot = await (async () => {
+      const snapshot = await (async (): Promise<any> => {
         const segment = performanceTracer
           ? performanceTracer.getSegment()
           : null
@@ -242,7 +308,7 @@ const getAggregateState = async (
         })
       }
     } catch (err) {
-      log.info(err.message)
+      log.verbose(err.message)
     }
 
     if (aggregateInfo.cursor == null && projection != null) {
@@ -256,7 +322,7 @@ const getAggregateState = async (
         ? projectionEventHandler.bind(null, pool, aggregateInfo, takeSnapshot)
         : projectionEventHandler.bind(null, pool, aggregateInfo, null)
 
-    await (async () => {
+    await (async (): Promise<any> => {
       const segment = performanceTracer ? performanceTracer.getSegment() : null
       const subSegment = segment ? segment.addNewSubsegment('loadEvents') : null
 
@@ -309,11 +375,15 @@ const getAggregateState = async (
   }
 }
 
-const isInteger = val =>
-  val != null && val.constructor === Number && parseInt(val) === val
-const isString = val => val != null && val.constructor === String
+const isInteger = (val: any): val is number =>
+  val != null && parseInt(val) === val && val.constructor === Number
+const isString = (val: any): val is string =>
+  val != null && val.constructor === String
 
-const saveEvent = async (publisher, event) => {
+const saveEvent = async (
+  publisher: EventPublisher,
+  event: Event
+): Promise<any> => {
   if (!isString(event.type)) {
     throw generateCommandError(`Event "type" field is invalid`)
   }
@@ -329,10 +399,15 @@ const saveEvent = async (publisher, event) => {
 
   event.aggregateId = String(event.aggregateId)
 
-  return await publisher.publish({ event })
+  return publisher.publish({ event })
 }
 
-const executeCommand = async (pool, { jwtToken: jwt, ...command }) => {
+const executeCommand = async (
+  pool: CommandPool,
+  command: Command
+): Promise<CommandResult> => {
+  const { jwt } = command
+
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -366,7 +441,9 @@ const executeCommand = async (pool, { jwtToken: jwt, ...command }) => {
       throw generateCommandError(`Command type "${type}" does not exist`)
     }
 
-    const commandHandler = async (...args) => {
+    const commandHandler: CommandHandler = async (
+      ...args
+    ): Promise<CommandResult> => {
       const segment = pool.performanceTracer
         ? pool.performanceTracer.getSegment()
         : null
@@ -395,10 +472,15 @@ const executeCommand = async (pool, { jwtToken: jwt, ...command }) => {
 
     const secretsManager = await pool.eventstoreAdapter.getSecretsManager()
 
-    const { encrypt, decrypt } = await aggregate.encryption(aggregateId, {
+    const encryption = await aggregate.encryption(aggregateId, {
       jwt,
       secretsManager
     })
+
+    const { encrypt = null, decrypt = null } = encryption || {
+      encrypt: null,
+      decrypt: null
+    }
 
     const event = await commandHandler(aggregateState, command, {
       jwt,
@@ -411,10 +493,12 @@ const executeCommand = async (pool, { jwtToken: jwt, ...command }) => {
       throw generateCommandError('Event "type" is required')
     }
 
+    const runtimeEvent = event as any
+
     if (
-      event.aggregateId != null ||
-      event.aggregateVersion != null ||
-      event.timestamp != null
+      runtimeEvent.aggregateId != null ||
+      runtimeEvent.aggregateVersion != null ||
+      runtimeEvent.timestamp != null
     ) {
       throw generateCommandError(
         'Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields'
@@ -426,10 +510,10 @@ const executeCommand = async (pool, { jwtToken: jwt, ...command }) => {
       aggregateVersion: aggregateVersion + 1,
       timestamp: Math.max(minimalTimestamp + 1, Date.now()),
       type: event.type,
-      payload: event.payload
+      payload: event.payload || {}
     }
 
-    await (async () => {
+    await (async (): Promise<void> => {
       const segment = pool.performanceTracer
         ? pool.performanceTracer.getSegment()
         : null
@@ -462,7 +546,7 @@ const executeCommand = async (pool, { jwtToken: jwt, ...command }) => {
   }
 }
 
-const dispose = async pool => {
+const dispose = async (pool: CommandPool): Promise<void> => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -491,6 +575,11 @@ const createCommand = ({
   aggregates,
   performanceTracer,
   eventstoreAdapter
+}: {
+  publisher: EventPublisher
+  aggregates: AggregateMeta[]
+  performanceTracer: any
+  eventstoreAdapter: EventstoreAdapter
 }) => {
   const pool = {
     publisher,
@@ -501,11 +590,11 @@ const createCommand = ({
   }
 
   const api = {
-    executeCommand: executeCommand.bind(null, pool),
-    dispose: dispose.bind(null, pool)
+    executeCommand: executeCommand.bind(null, pool as any),
+    dispose: dispose.bind(null, pool as any)
   }
 
-  const commandExecutor = executeCommand.bind(null, pool)
+  const commandExecutor = executeCommand.bind(null, pool as any)
   Object.assign(commandExecutor, api)
 
   return commandExecutor

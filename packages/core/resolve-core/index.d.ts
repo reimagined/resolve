@@ -13,6 +13,7 @@ export declare type Event = {
   type: string
   timestamp: number
   aggregateId: string
+  aggregateVersion: number
   payload: SerializableMap
 }
 
@@ -37,21 +38,16 @@ export declare type Encryption = {
 // Aggregate
 
 export declare type AggregateState = any
-export declare type AggregateContext = {
-  encrypt: Encrypter
-  decrypt: Decrypter
-}
 export declare type AggregateEventHandler = (
   state: AggregateState,
-  event: Event,
-  context: AggregateContext
+  event: Event
 ) => AggregateState
 
 export declare type CommandContext = {
-  jwt: string
+  jwt?: string
   aggregateVersion: number
-  encrypt: Encrypter
-  decrypt: Decrypter
+  encrypt: Encrypter | null
+  decrypt: Decrypter | null
 }
 
 export declare type Command = {
@@ -59,7 +55,7 @@ export declare type Command = {
   aggregateId: string
   aggregateName: string
   payload: SerializableMap
-  jwtToken?: string
+  jwt?: string
 }
 
 export declare type CommandResult = {
@@ -77,13 +73,13 @@ declare type CommandHandler = (
   state: AggregateState,
   command: Command,
   context: CommandContext
-) => CommandResult
+) => CommandResult | Promise<CommandResult>
 
 export declare type Aggregate = {
   [key: string]: CommandHandler
 }
 export declare type AggregateEncryptionContext = {
-  jwt: string
+  jwt?: string
   secretsManager: SecretsManager
 }
 export declare type AggregateEncryptionFactory = (
