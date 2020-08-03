@@ -27,6 +27,12 @@ const isHighloadError = error =>
     error.code === 'TooManyRequestsException' ||
     error.code === 'NetworkingError')
 
+const isTimeoutError = error =>
+  error != null &&
+  (/canceling statement due to user request/i.test(error.message) ||
+    /StatementTimeoutException/i.test(error.message) ||
+    error.code === 'StatementTimeoutException')
+
 const wrapHighload = async (obj, method, params) => {
   while (true) {
     try {
@@ -109,6 +115,7 @@ const connect = async (imports, pool, options) => {
     eventCounters,
     ...imports,
     executeStatement,
+    isTimeoutError,
     hash512
   })
 }
