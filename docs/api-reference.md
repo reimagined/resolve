@@ -1011,7 +1011,7 @@ Gets a boolean value that indicating whether the database is frozen.
 Loads a snapshot.
 
 #### saveSnapshot
-Creates or update a snapshot
+Creates or updates a snapshot
 
 #### dropSnapshot
 Deletes a snapshot.
@@ -1021,21 +1021,21 @@ Gets a secret.
 
 ###### Arguments
 
-| Argument Name    | Description                     |
-| ---------------- | ------------------------------- |
-| selector         | Unique key in the secrets table |
+| Argument Name    | Description                          |
+| ---------------- | ------------------------------------ |
+| selector         | A unique key in the table of secrets |
 
 ###### Result
 secret: ```Promise<string>``` 
 
 #### setSecret
-Creates or update a secret
+Creates or updates a secret
 
 ###### Arguments
 
 | Argument Name    | Description                                          |
 | ---------------- | ---------------------------------------------------- |
-| selector         | Unique key in the secrets table                      |
+| selector         | A unique key in the table of secrets                 |
 | secret           | A new encrypted secret value in the specified secret |
 
 ###### Result
@@ -1046,9 +1046,9 @@ Deletes a secret.
 
 ###### Arguments
 
-| Argument Name    | Description                     |
-| ---------------- | ------------------------------- |
-| selector         | Unique key in the secrets table |
+| Argument Name    | Description                          |
+| ---------------- | ------------------------------------ |
+| selector         | A unique key in the table of secrets |
 
 ###### Result
 ```Promise<void>``` 
@@ -1060,7 +1060,7 @@ Incrementally imports events.
 
 | Argument Name    | Description                                                                           |
 | ---------------- | ------------------------------------------------------------------------------------- |
-| events           | Array of ```{ aggregateId: string, type: string, timestamp: number, payload: any }``` |
+| events           | An array of ```{ aggregateId: string, type: string, timestamp: number, payload: any }``` |
 
 ###### Result
 ```Promise<void>```
@@ -1100,8 +1100,8 @@ Accumulates events for incremental import.
 
 | Argument Name    | Description                                                                           |
 | ---------------- | ------------------------------------------------------------------------------------- |
-| events           | Array of ```{ aggregateId: string, type: string, timestamp: number, payload: any }``` |
-| importId         | Unique key for an incremental import                                                  |
+| events           | An array of ```{ aggregateId: string, type: string, timestamp: number, payload: any }``` |
+| importId         | A unique key for an incremental import                                                  |
 
 ###### Result
 ```Promise<void>``` 
@@ -1113,7 +1113,7 @@ Commits the accumulated events to the event store.
 
 | Argument Name    | Description                                                                     |
 | ---------------- | ------------------------------------------------------------------------------- |
-| importId         | Unique key for an incremental import                                            |
+| importId         | A unique key for an incremental import                                            |
 
 ###### Result
 ```Promise<void>``` 
