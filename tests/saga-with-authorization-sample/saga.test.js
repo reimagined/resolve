@@ -27,9 +27,9 @@ describe('Saga', () => {
   const commands = interopRequireDefault(require(`./${commandsModule}`)).default
 
   let commandTimestamp = 0
-  const executeCommand = ({ aggregateId, type, jwtToken, ...command }) => {
+  const executeCommand = ({ aggregateId, type, jwt, ...command }) => {
     const event = {
-      ...commands[type]({}, command, jwtToken),
+      ...commands[type]({}, command, jwt),
       aggregateId,
       timestamp: commandTimestamp++
     }

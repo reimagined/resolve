@@ -2,7 +2,7 @@ import jsonwebtoken from 'jsonwebtoken'
 
 import jwtSecret from './jwt-secret'
 
-export const jwtToken = jsonwebtoken.sign(
+export const token = jsonwebtoken.sign(
   {
     permissions: {
       processes: {
@@ -39,7 +39,7 @@ export default {
           aggregateName: 'Process',
           aggregateId: process.id,
           type: 'PROCESS_KILLED',
-          jwtToken
+          token
         })
 
         await store.delete('Processes', {

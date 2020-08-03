@@ -177,8 +177,8 @@ describe('executeCommand', () => {
         encryption: () => ({}),
         name: 'User',
         commands: {
-          createUser: (aggregateState, command, { jwt: jwtToken }) => {
-            if (Buffer.from(jwtToken, 'base64').toString('utf8') !== 'ROOT') {
+          createUser: (aggregateState, command, { jwt }) => {
+            if (Buffer.from(jwt, 'base64').toString('utf8') !== 'ROOT') {
               throw new Error('Access denied')
             }
 
@@ -206,7 +206,7 @@ describe('executeCommand', () => {
         payload: {
           id: 'userId'
         },
-        jwtToken: JWT_TOKEN
+        jwt: JWT_TOKEN
       })
 
       expect(event).toEqual({
@@ -227,7 +227,7 @@ describe('executeCommand', () => {
           payload: {
             id: 'userId'
           },
-          jwtToken: 'INCORRECT_JWT_TOKEN'
+          jwt: 'INCORRECT_JWT_TOKEN'
         })
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
@@ -856,8 +856,8 @@ describe('executeCommand', () => {
         encryption: () => ({}),
         name: 'User',
         commands: {
-          createUser: (aggregateState, command, { jwt: jwtToken }) => {
-            if (Buffer.from(jwtToken, 'base64').toString('utf8') !== 'ROOT') {
+          createUser: (aggregateState, command, { jwt }) => {
+            if (Buffer.from(jwt, 'base64').toString('utf8') !== 'ROOT') {
               throw new Error('Access denied')
             }
 
@@ -886,7 +886,7 @@ describe('executeCommand', () => {
         payload: {
           id: 'userId'
         },
-        jwtToken: JWT_TOKEN
+        jwt: JWT_TOKEN
       })
 
       expect(event).toEqual({
@@ -907,7 +907,7 @@ describe('executeCommand', () => {
           payload: {
             id: 'userId'
           },
-          jwtToken: 'INCORRECT_JWT_TOKEN'
+          jwt: 'INCORRECT_JWT_TOKEN'
         })
         return Promise.reject(new Error('Test failed'))
       } catch (error) {

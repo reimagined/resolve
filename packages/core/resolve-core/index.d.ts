@@ -115,13 +115,12 @@ export declare type ReadModelResolvers<TStore> = {
 // Saga
 
 // TODO: move types from resolve-client here?
-// TODO: refactor jwtToken & query (as in client)
 
 declare type ReadModelQuery = {
   modelName: string
   resolverName: string
   resolverArgs: Serializable
-  jwtToken: string
+  jwt: string
 }
 declare type ReadModelQueryResult = Serializable
 declare type ViewModelQuery = {
@@ -184,12 +183,3 @@ export declare type SagaEncryptionFactory = (
 ) => Promise<Encryption | null>
 
 // TODO: add view model types
-
-/*
-state = await pool.viewModel.projection[event.type](
-        state,
-        event,
-        aggregateArgs,
-        jwtToken
-      )
- */
