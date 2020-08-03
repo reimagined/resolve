@@ -6,7 +6,8 @@ const loadSnapshot = async (pool, snapshotKey) => {
     snapshotsTableName,
     executeStatement,
     escapeId,
-    escape
+    escape,
+    isTimeoutError
   } = pool
   if (snapshotKey == null || snapshotKey.constructor !== String) {
     throw new Error('Snapshot key must be string')
@@ -33,7 +34,7 @@ const loadSnapshot = async (pool, snapshotKey) => {
         )
         break
       } catch (err) {
-        if (err != null && /StatementTimeoutException/i.test(err.message)) {
+        if (isTimeoutError(err)) {
           continue
         }
         throw err

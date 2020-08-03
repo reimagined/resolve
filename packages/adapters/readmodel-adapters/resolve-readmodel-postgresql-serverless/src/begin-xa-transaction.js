@@ -96,7 +96,7 @@ const beginXATransaction = async (pool, readModelName) => {
         })
         break
       } catch (err) {
-        if (err != null && /StatementTimeoutException/i.test(err.message)) {
+        if (pool.isTimeoutError(err)) {
           continue
         }
         throw err
