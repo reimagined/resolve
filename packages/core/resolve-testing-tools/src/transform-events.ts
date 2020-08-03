@@ -1,9 +1,12 @@
-const transformEvents = (events: any[]): any => {
+const transformEvents = (
+  events: any[],
+  target: 'read-model' | 'aggregate' = 'read-model'
+): any => {
   let timestamp = 1
   const aggregateVersionsMap = new Map()
   const threadCountersMap = new Map()
 
-  const result = [{ type: 'Init' }]
+  const result = target === 'read-model' ? [{ type: 'Init' }] : []
 
   for (const rawEvent of events) {
     const aggregateVersion = aggregateVersionsMap.has(rawEvent.aggregateId)

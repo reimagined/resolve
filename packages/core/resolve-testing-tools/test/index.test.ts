@@ -138,40 +138,79 @@ describe('aggregate', () => {
           throw Error('aggregate already exist')
         }
         return {
-          type: 'TEST_COMMAND_EXECUTED'
+          type: 'TEST_COMMAND_EXECUTED',
+          payload: {}
         }
       }
     }
   }
 
-  test('expecting success command execution', () =>
-    givenEvents([])
-      .aggregate(aggregate)
-      .command('create', {})
-      .as('valid-user')
-      .shouldProduceEvent({
-        type: 'TEST_COMMAND_EXECUTED'
-      }))
+  describe('native Jest assertions', () => {
+    test('expecting success command execution', async () => {
+      await expect(
+        givenEvents([])
+          .aggregate(aggregate)
+          .command('create', {})
+          .as('valid-user')
+      ).resolves.toEqual({
+        type: 'TEST_COMMAND_EXECUTED',
+        payload: {}
+      })
+    })
 
-  test('expecting business logic break', () =>
-    givenEvents([
-      {
-        type: 'TEST_COMMAND_EXECUTED'
-      }
-    ])
-      .aggregate(aggregate)
-      .command('create', {})
-      .as('valid-user')
-      .shouldThrow((err: any) =>
-        expect(err.message).toEqual(`aggregate already exist`)
-      ))
+    test('expecting business logic break', async () => {
+      await expect(
+        givenEvents([
+          {
+            type: 'TEST_COMMAND_EXECUTED'
+          }
+        ])
+          .aggregate(aggregate)
+          .command('create', {})
+          .as('valid-user')
+      ).rejects.toThrow(`aggregate already exist`)
+    })
 
-  test('unauthorized user', () =>
-    givenEvents([])
-      .aggregate(aggregate)
-      .command('create', {})
-      .as('invalid-user')
-      .shouldThrow((err: any) =>
-        expect(err.message).toEqual(`unauthorized user`)
-      ))
+    test('unauthorized user', async () => {
+      await expect(
+        givenEvents([])
+          .aggregate(aggregate)
+          .command('create', {})
+          .as('invalid-user')
+      ).rejects.toThrow(`unauthorized user`)
+    })
+  })
+
+  describe('with BDD assertions', () => {
+    test.skip('expecting success command execution', () =>
+      givenEvents([])
+        .aggregate(aggregate)
+        .command('create', {})
+        .as('valid-user')
+        .shouldProduceEvent({
+          type: 'TEST_COMMAND_EXECUTED'
+        }))
+
+    test.skip('expecting business logic break', () =>
+      givenEvents([
+        {
+          type: 'TEST_COMMAND_EXECUTED'
+        }
+      ])
+        .aggregate(aggregate)
+        .command('create', {})
+        .as('valid-user')
+        .shouldThrow((err: any) =>
+          expect(err.message).toEqual(`aggregate already exist`)
+        ))
+
+    test.skip('unauthorized user', () =>
+      givenEvents([])
+        .aggregate(aggregate)
+        .command('create', {})
+        .as('invalid-user')
+        .shouldThrow((err: any) =>
+          expect(err.message).toEqual(`unauthorized user`)
+        ))
+  })
 })

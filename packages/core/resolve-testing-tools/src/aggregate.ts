@@ -1,10 +1,15 @@
-import { Aggregate, AggregateProjection } from 'resolve-core'
+import {
+  Aggregate,
+  AggregateEncryptionFactory,
+  AggregateProjection
+} from 'resolve-core'
 import { symbol, Phases } from './constants'
 
 export type BDDAggregate = {
   name: string
   projection: AggregateProjection
   commands: Aggregate
+  encryption?: AggregateEncryptionFactory
 }
 
 type BDDAggregateContext = {
@@ -26,7 +31,8 @@ export const aggregate = (
   context[symbol].aggregate = {
     name: aggregate.name,
     commands: aggregate.commands || {},
-    projection: aggregate.projection || {}
+    projection: aggregate.projection || {},
+    encryption: aggregate.encryption
   }
 
   return context

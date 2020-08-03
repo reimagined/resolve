@@ -1,5 +1,4 @@
 import { Phases, symbol } from './constants'
-import { aggregate } from './aggregate'
 
 const internalPromise = Symbol()
 
@@ -103,7 +102,9 @@ const givenEvents = (dependencies: any, events: Array<any>): any => {
     saga,
     properties,
     setSecretsManager,
-    getDefaultSecretsManager
+    getDefaultSecretsManager,
+    aggregate,
+    command
   } = dependencies
 
   const internalPool = Object.create(null)
@@ -131,6 +132,7 @@ const givenEvents = (dependencies: any, events: Array<any>): any => {
   promise.properties = properties.bind(null, pool)
   promise.setSecretsManager = setSecretsManager.bind(null, pool)
   promise.aggregate = aggregate.bind(null, promise)
+  promise.command = command.bind(null, promise)
 
   initPromise.then(execute.bind(null, pool))
 

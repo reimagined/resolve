@@ -1,4 +1,5 @@
 import createQuery from 'resolve-query'
+import createCommand from 'resolve-command'
 
 import as from './as'
 import givenEvents from './given-events'
@@ -12,12 +13,14 @@ import saga from './saga'
 import properties from './properties'
 import getDefaultSecretsManager from './secrets-manager'
 import setSecretsManager from './set-secrets-manager'
-import { BDDAggregate } from './aggregate'
+import { aggregate, BDDAggregate } from './aggregate'
+import { command } from './command'
 
 export { BDDAggregate }
 
 export default givenEvents.bind(null, {
   createQuery,
+  createCommand,
   as,
   execute,
   executeSaga,
@@ -28,7 +31,9 @@ export default givenEvents.bind(null, {
   saga,
   properties,
   getDefaultSecretsManager,
-  setSecretsManager
+  setSecretsManager,
+  aggregate,
+  command
 })
 
 export const RESOLVE_SIDE_EFFECTS_START_TIMESTAMP =

@@ -18,12 +18,14 @@ type EventstoreAdapter = {
   getNextCursor: Function
   saveSnapshot: Function
   getSecretsManager: () => Promise<SecretsManager>
-  loadSnapshot: (snapshotKey: string) => Promise<string>
+  loadSnapshot: (snapshotKey: string) => Promise<string | null>
   loadEvents: (param: {
     aggregateIds: string[]
     cursor: null
     limit: number
-  }) => Promise<any>
+  }) => Promise<{
+    events: any[]
+  }>
 }
 
 type AggregateMeta = {
@@ -32,7 +34,7 @@ type AggregateMeta = {
   projection: AggregateProjection
   serializeState: Function
   deserializeState: Function
-  encryption: AggregateEncryptionFactory
+  encryption: AggregateEncryptionFactory | null
   invariantHash?: string
 }
 
@@ -56,6 +58,18 @@ type AggregateInfo = {
   serializeState: Function
   deserializeState: Function
 }
+
+export type CommandExecutor = {
+  (command: Command): Promise<CommandResult>
+  dispose: () => Promise<void>
+}
+
+export type CommandExecutorBuilder = (context: {
+  publisher: EventPublisher
+  aggregates: AggregateMeta[]
+  performanceTracer: any
+  eventstoreAdapter: EventstoreAdapter
+}) => CommandExecutor
 
 // eslint-disable-next-line no-new-func
 const CommandError = Function()
@@ -283,7 +297,12 @@ const getAggregateState = async (
           }
 
           log.debug(`loading snapshot`)
-          return JSON.parse(await eventstoreAdapter.loadSnapshot(snapshotKey))
+          const snapshot = await eventstoreAdapter.loadSnapshot(snapshotKey)
+
+          if (typeof snapshot === 'string') {
+            return JSON.parse(snapshot)
+          }
+          throw Error('invalid snapshot data')
         } catch (error) {
           if (subSegment != null) {
             subSegment.addError(error)
@@ -472,10 +491,13 @@ const executeCommand = async (
 
     const secretsManager = await pool.eventstoreAdapter.getSecretsManager()
 
-    const encryption = await aggregate.encryption(aggregateId, {
-      jwt,
-      secretsManager
-    })
+    const encryption =
+      typeof aggregate.encryption === 'function'
+        ? await aggregate.encryption(aggregateId, {
+            jwt,
+            secretsManager
+          })
+        : null
 
     const { encrypt = null, decrypt = null } = encryption || {
       encrypt: null,
@@ -570,17 +592,12 @@ const dispose = async (pool: CommandPool): Promise<void> => {
   }
 }
 
-const createCommand = ({
+const createCommand: CommandExecutorBuilder = ({
   publisher,
   aggregates,
   performanceTracer,
   eventstoreAdapter
-}: {
-  publisher: EventPublisher
-  aggregates: AggregateMeta[]
-  performanceTracer: any
-  eventstoreAdapter: EventstoreAdapter
-}) => {
+}): CommandExecutor => {
   const pool = {
     publisher,
     aggregates,
@@ -597,7 +614,7 @@ const createCommand = ({
   const commandExecutor = executeCommand.bind(null, pool as any)
   Object.assign(commandExecutor, api)
 
-  return commandExecutor
+  return commandExecutor as CommandExecutor
 }
 
 export default createCommand
