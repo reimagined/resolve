@@ -52,7 +52,7 @@ const init = async ({
       modelName: promise[symbol].name,
       resolverName: promise[symbol].resolverName,
       resolverArgs: promise[symbol].resolverArgs,
-      jwtToken: promise[symbol].jwtToken
+      jwt: promise[symbol].jwt
     })
 
     promise[symbol].resolve(result)

@@ -1,7 +1,7 @@
 import { Aggregate, AggregateProjection } from 'resolve-core'
 import { symbol, Phases } from './constants'
 
-type BDDAggregate = {
+export type BDDAggregate = {
   name: string
   projection: AggregateProjection
   commands: Aggregate

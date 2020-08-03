@@ -5,7 +5,7 @@ const as = ({ promise }: { promise: any }, jwt: any): any => {
     throw new TypeError()
   }
 
-  promise[symbol].jwtToken = jwt
+  promise[symbol].jwt = jwt
   promise[symbol].phase = Phases.AS
 
   return promise

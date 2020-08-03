@@ -11,6 +11,9 @@ import saga from './saga'
 import properties from './properties'
 import getDefaultSecretsManager from './secrets-manager'
 import setSecretsManager from './set-secrets-manager'
+import { BDDAggregate } from './aggregate'
+
+export { BDDAggregate }
 
 export default givenEvents.bind(null, {
   createQuery,
