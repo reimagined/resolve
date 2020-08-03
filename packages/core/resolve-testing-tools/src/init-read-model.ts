@@ -1,6 +1,6 @@
 import { Phases, symbol } from './constants'
 
-const init = async ({
+export const initReadModel = async ({
   promise,
   createQuery,
   transformEvents
@@ -59,8 +59,9 @@ const init = async ({
   } catch (error) {
     promise[symbol].reject(error)
   } finally {
-    await queryExecutor.dispose()
+    if (queryExecutor) {
+      await queryExecutor.dispose()
+    }
   }
 }
 
-export default init

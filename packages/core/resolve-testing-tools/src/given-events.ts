@@ -99,7 +99,7 @@ const givenEvents = (dependencies: any, events: Array<any>): any => {
   const {
     readModel,
     as,
-    init,
+    execute,
     saga,
     properties,
     setSecretsManager,
@@ -132,7 +132,7 @@ const givenEvents = (dependencies: any, events: Array<any>): any => {
   promise.setSecretsManager = setSecretsManager.bind(null, pool)
   promise.aggregate = aggregate.bind(null, promise)
 
-  initPromise.then(init.bind(null, pool))
+  initPromise.then(execute.bind(null, pool))
 
   return promise
 }

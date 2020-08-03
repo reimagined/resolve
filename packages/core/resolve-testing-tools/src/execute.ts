@@ -1,6 +1,6 @@
 import { Phases, symbol } from './constants'
 
-const init = async (pool: any): Promise<any> => {
+export const execute = async (pool: any): Promise<any> => {
   switch (pool.promise[symbol].phase) {
     case Phases.SAGA:
     case Phases.PROPERTIES: {
@@ -16,5 +16,3 @@ const init = async (pool: any): Promise<any> => {
     }
   }
 }
-
-export default init

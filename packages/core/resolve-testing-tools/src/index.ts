@@ -2,10 +2,10 @@ import createQuery from 'resolve-query'
 
 import as from './as'
 import givenEvents from './given-events'
-import init from './init'
+import { execute } from './execute'
 import readModel from './read-model'
 import transformEvents from './transform-events'
-import initReadModel from './init-read-model'
+import { initReadModel } from './init-read-model'
 import initSaga from './init-saga'
 import saga from './saga'
 import properties from './properties'
@@ -18,7 +18,7 @@ export { BDDAggregate }
 export default givenEvents.bind(null, {
   createQuery,
   as,
-  init,
+  execute,
   initSaga,
   initReadModel,
   readModel,
