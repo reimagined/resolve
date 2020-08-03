@@ -54,13 +54,16 @@ export declare type Command = {
   type: string
   aggregateId: string
   aggregateName: string
-  payload: SerializableMap
+  payload?: SerializableMap
   jwt?: string
 }
 
 export declare type CommandResult = {
   type: string
   payload?: SerializableMap
+  timestamp?: number
+  aggregateId?: string
+  aggregateVersion?: number
 }
 
 export declare type AggregateProjection = {

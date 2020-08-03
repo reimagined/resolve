@@ -67,7 +67,7 @@ export type CommandExecutor = {
 export type CommandExecutorBuilder = (context: {
   publisher: EventPublisher
   aggregates: AggregateMeta[]
-  performanceTracer: any
+  performanceTracer?: any
   eventstoreAdapter: EventstoreAdapter
 }) => CommandExecutor
 
