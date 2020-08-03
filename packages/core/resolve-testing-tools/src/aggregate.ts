@@ -4,6 +4,7 @@ import {
   AggregateProjection
 } from 'resolve-core'
 import { symbol, Phases } from './constants'
+import { BDDAggregateAssertion } from './aggregate-assertions'
 
 export type BDDAggregate = {
   name: string
@@ -16,6 +17,8 @@ type BDDAggregateContext = {
   [symbol]: {
     phase: Phases
     aggregate: BDDAggregate
+    assertion: BDDAggregateAssertion
+    isDefaultAssertion: boolean
   }
 }
 
@@ -34,6 +37,14 @@ export const aggregate = (
     projection: aggregate.projection || {},
     encryption: aggregate.encryption
   }
+  context[symbol].assertion = (resolve, reject, result, error) => {
+    if (error != null) {
+      reject(error)
+    } else {
+      resolve(result)
+    }
+  }
+  context[symbol].isDefaultAssertion = true
 
   return context
 }

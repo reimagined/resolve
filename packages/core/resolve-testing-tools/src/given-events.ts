@@ -1,4 +1,9 @@
 import { Phases, symbol } from './constants'
+import {
+  BDDAggregateAssertion,
+  shouldProduceEvent,
+  shouldThrow
+} from './aggregate-assertions'
 
 const internalPromise = Symbol()
 
@@ -133,6 +138,8 @@ const givenEvents = (dependencies: any, events: Array<any>): any => {
   promise.setSecretsManager = setSecretsManager.bind(null, pool)
   promise.aggregate = aggregate.bind(null, promise)
   promise.command = command.bind(null, promise)
+  promise.shouldProduceEvent = shouldProduceEvent.bind(null, promise)
+  promise.shouldThrow = shouldThrow.bind(null, promise)
 
   initPromise.then(execute.bind(null, pool))
 

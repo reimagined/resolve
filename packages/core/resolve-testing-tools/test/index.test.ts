@@ -162,7 +162,8 @@ describe('aggregate', () => {
       await expect(
         givenEvents([
           {
-            type: 'TEST_COMMAND_EXECUTED'
+            type: 'TEST_COMMAND_EXECUTED',
+            payload: {}
           }
         ])
           .aggregate(aggregate)
@@ -182,19 +183,21 @@ describe('aggregate', () => {
   })
 
   describe('with BDD assertions', () => {
-    test.skip('expecting success command execution', () =>
+    test('expecting success command execution', () =>
       givenEvents([])
         .aggregate(aggregate)
         .command('create', {})
         .as('valid-user')
         .shouldProduceEvent({
-          type: 'TEST_COMMAND_EXECUTED'
+          type: 'TEST_COMMAND_EXECUTED',
+          payload: {}
         }))
 
-    test.skip('expecting business logic break', () =>
+    test('expecting business logic break', () =>
       givenEvents([
         {
-          type: 'TEST_COMMAND_EXECUTED'
+          type: 'TEST_COMMAND_EXECUTED',
+          payload: {}
         }
       ])
         .aggregate(aggregate)
@@ -204,7 +207,7 @@ describe('aggregate', () => {
           expect(err.message).toEqual(`aggregate already exist`)
         ))
 
-    test.skip('unauthorized user', () =>
+    test('unauthorized user', () =>
       givenEvents([])
         .aggregate(aggregate)
         .command('create', {})

@@ -3,6 +3,7 @@ import { CommandExecutorBuilder, CommandExecutor } from 'resolve-command'
 import { Phases, symbol } from './constants'
 import { BDDAggregate } from './aggregate'
 import transformEvents from './transform-events'
+import { BDDAggregateAssertion } from './aggregate-assertions'
 
 type BDDExecuteCommandState = {
   phase: Phases
@@ -16,6 +17,7 @@ type BDDExecuteCommandState = {
   jwt?: string
   resolve: Function
   reject: Function
+  assertion: BDDAggregateAssertion
 }
 
 type BDDExecuteCommandContext = {
@@ -60,6 +62,7 @@ export const executeCommand = async (
     throw new TypeError(`unexpected phase`)
   }
 
+  const { assertion, resolve, reject } = state
   let executor: CommandExecutor | null = null
   try {
     const publisher = makeDummyPublisher()
@@ -89,12 +92,17 @@ export const executeCommand = async (
       jwt: state.jwt
     })
 
-    state.resolve({
-      type: result.type,
-      payload: result.payload
-    })
+    assertion(
+      resolve,
+      reject,
+      {
+        type: result.type,
+        payload: result.payload
+      },
+      null
+    )
   } catch (error) {
-    state.reject(error)
+    assertion(resolve, reject, null, error)
   } finally {
     if (executor) {
       await executor.dispose()
