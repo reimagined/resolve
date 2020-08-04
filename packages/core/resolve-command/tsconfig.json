@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2015",
+    "target": "es2018",
     "module": "commonjs",
     "moduleResolution": "node",
     "allowJs": true,
@@ -20,5 +20,5 @@
       "../../../node_modules/@types"
     ]
   },
-  "include": ["src", "test"]
+  "include": ["src"]
 }

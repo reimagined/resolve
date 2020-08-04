@@ -58,14 +58,12 @@
   "sourceType": "ts",
   "babelCompile": [
     {
-      "sourceType": "ts",
       "moduleType": "cjs",
       "moduleTarget": "client",
       "inputDir": "./src",
       "outDir": "./lib"
     },
     {
-      "sourceType": "ts",
       "moduleType": "es",
       "moduleTarget": "client",
       "inputDir": "./src",
