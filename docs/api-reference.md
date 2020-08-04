@@ -412,11 +412,11 @@ The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages
 | Script                                | Description                                                                   |
 | ------------------------------------- | ----------------------------------------------------------------------------- |
 | [build](#build)                       | Builds an application.                                                        |
-| [start](#start)                       | Runs an application.                                                     |
+| [start](#start)                       | Runs an application.                                                          |
 | [watch](#watch)                       | Runs an application in **watch** mode. (Watch application files for changes.) |
 | [runTestcafe](#runtestcafe)           | Runs TestCafe tests.                                                          |
-| [merge](#merge)                       | Merges modules and application configurations into a single object.                  |
-| [stop](#stop)                         | Stops an application.                                                 |
+| [merge](#merge)                       | Merges modules and application configurations into a single object.           |
+| [stop](#stop)                         | Stops an application.                                                         |
 | [reset](#reset)                       | Resets an application's persistent storages and snapshots.                    |
 | [importEventStore](#importeventstore) | Imports events from a file to an application's event store.                   |
 | [exportEventStore](#exporteventstore) | Exports events from an application's event store to a file.                   |
@@ -911,10 +911,37 @@ export default connectStaticBasedUrls(['css', 'favicon'])(Header)
 
 An event store adapter defines how the reSolve framework stores events in the underlying event store. An event store adapter object must expose the following functions:
 
+| Function Name                                           | Description                                                               |
+| ------------------------------------------------------- | ------------------------------------------------------------------------- |
+| [init](#init)                                           | Initializes a database.                                                   |
+| [drop](#drop)                                           | Drops a database.                                                         |
+| [dispose](#dispose)                                     | Disconnects from a database and disposes unmanaged resources.             |
+| [saveEvent](#saveevent)                                 | Saves an event to the database.                                           |
+| [loadEvents](#loadEvents)                               | Gets an array of events and the next cursor filtered by the event filter. |
+| [getLatestEvent](#getlatestevent)                       | Gets the latest saved event.                                              |
+| [import](#import)                                       | Gets a writable stream used to save events.                               |
+| [export](#export)                                       | Gets a readable stream used to load events.                               |
+| [freeze](#freeze)                                       | Freezes the database.                                                     |
+| [unfreeze](#unfreeze)                                   | Unfreezes the database.                                                   |
+| [isFrozen](#isfrozen)                                   | Gets a boolean value that indicating whether the database is frozen.      |
+| [loadSnapshot](#loadsnapshot)                           | Loads a snapshot.                                                         |
+| [saveSnapshot](#savesnapshot)                           | Creates or updates a snapshot.                                            |
+| [dropSnapshot](#dropsnapshot)                           | Deletes a snapshot.                                                       |
+| [getSecret](#getsecret)                                 | Gets a secret.                                                            |
+| [setSecret](#setsecret)                                 | Creates or updates a secret.                                              |
+| [deleteSecret](#deletesecret)                           | Deletes a secret.                                                         |
+| [incrementalImport](#incrementalimport)                 | Incrementally imports events.                                             |
+| [beginIncrementalImport](#beginincrementalimport)       | Starts to accumulate events for incremental import.                       |
+| [pushIncrementalImport](#pushincrementalimport)         | Accumulates events for incremental import.                                |
+| [commitIncrementalImport](#commitincrementalimport)     | Commits the accumulated events to the event store.                        |
+| [rollbackIncrementalImport](#rollbackincrementalimport) | Drops the accumulated events.                                             |
+
 #### init
+
 Initializes a database.
 
 ##### Example
+
 ```js
 import createEventStoreAdapter from 'resolve-eventstore-xxx'
 
@@ -924,202 +951,242 @@ await eventStoreAdapter.init()
 ```
 
 #### drop
+
 Drops a database.
 
 ##### Example
+
 ```js
 await eventStoreAdapter.drop()
 ```
 
 #### dispose
+
 Disconnects from a database and disposes unmanaged resources.
 
 ##### Example
+
 ```js
 await eventStoreAdapter.dispose()
 ```
 
 #### saveEvent
+
 Saves an event to the database.
 
-| Argument Name    | Description                                                                                      |
-| ---------------- | ------------------------------------------------------------------------------------------------ |
-| event            | { aggregateId: string, aggregateVersion: number, type: string, timestamp: number, payload: any } |
+| Argument Name | Description                                                                                      |
+| ------------- | ------------------------------------------------------------------------------------------------ |
+| event         | { aggregateId: string, aggregateVersion: number, type: string, timestamp: number, payload: any } |
 
 ##### Example
+
 ```js
 await eventStoreAdapter.saveEvent({
-  aggregateId: 'user-id', 
-  aggregateVersion: 1, 
-  type: 'USER_CREATED', 
-  timestamp: Date.now(), 
+  aggregateId: 'user-id',
+  aggregateVersion: 1,
+  type: 'USER_CREATED',
+  timestamp: Date.now(),
   payload: {
     name: 'user-name'
-  } 
+  }
 })
 ```
 
 #### loadEvents
+
 Gets an array of events and the next cursor filtered by the event filter.
 
 ###### Arguments
-| Argument Name | Description                     |
-| ------------- | ------------------------------- |
-| eventFilter   | { cursor: string or null, limit: number, eventsSizeLimit: number, eventTypes: Array<string>, aggregateIds: Array<string> } |
-|               | or |
+
+| Argument Name | Description                                                                                                                              |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| eventFilter   | { cursor: string or null, limit: number, eventsSizeLimit: number, eventTypes: Array<string>, aggregateIds: Array<string> }               |
+|               | or                                                                                                                                       |
 |               | { startTime?: number, endTime?: number, limit: number, eventsSizeLimit: number, eventTypes: Array<string>, aggregateIds: Array<string> } |
 
 ###### Result
+
 ```ts
 Promise<{
-  events: Array<{ 
-    threadId: number, 
-    threadCounter: number, 
+  events: Array<{
+    threadId: number,
+    threadCounter: number,
     aggregateId: string,
     aggregateVersion: number,
     type: string,
     timestamp: number,
     payload: any
   },
-  cursor: string    
+  cursor: string
 }>
 ```
 
 ###### Example
+
 ```js
-const { events, cursor: nextCursor } = await eventStoreAdapter.loadEvents(eventFilter)
+const { events, cursor: nextCursor } = await eventStoreAdapter.loadEvents(
+  eventFilter
+)
 ```
 
 #### getLatestEvent
+
 Gets the latest saved event.
 
 #### import
+
 Gets a writable stream used to save events.
 
 #### export
+
 Gets a readable stream used to load events.
 
 #### freeze
+
 Freezes the database.
 
 ###### Arguments
-```void```
+
+`void`
 
 ###### Result
-```Promise<void>```
+
+`Promise<void>`
 
 #### unfreeze
+
 Unfreezes the database.
 
 ###### Arguments
-```void```
+
+`void`
 
 ###### Result
-```Promise<void>```
+
+`Promise<void>`
 
 #### isFrozen
+
 Gets a boolean value that indicating whether the database is frozen.
 
 ###### Arguments
-```void```
+
+`void`
 
 ###### Result
-```Promise<boolean>```
+
+`Promise<boolean>`
 
 #### loadSnapshot
+
 Loads a snapshot.
 
 ###### Arguments
 
-| Argument Name    | Description |
-| ---------------- | ----------- |
-| snapshotKey      | A unique key in the table of snapshots |
+| Argument Name | Description                            |
+| ------------- | -------------------------------------- |
+| snapshotKey   | A unique key in the table of snapshots |
 
 ###### Result
-content: ```Promise<string | null>``` 
+
+content: `Promise<string | null>`
 
 #### saveSnapshot
+
 Creates or updates a snapshot
 
 ###### Arguments
 
-| Argument Name    | Description |
-| ---------------- | ----------- |
-| snapshotKey      | A unique key in the table of snapshots |
-| content          | A snapshot as text |
+| Argument Name | Description                            |
+| ------------- | -------------------------------------- |
+| snapshotKey   | A unique key in the table of snapshots |
+| content       | A snapshot as text                     |
 
 ###### Result
-```Promise<void>``` 
+
+`Promise<void>`
 
 #### dropSnapshot
+
 Deletes a snapshot.
 
 ###### Arguments
 
-| Argument Name    | Description |
-| ---------------- | ----------- |
-| snapshotKey      | A unique key in the table of snapshots |
+| Argument Name | Description                            |
+| ------------- | -------------------------------------- |
+| snapshotKey   | A unique key in the table of snapshots |
 
 ###### Result
-```Promise<void>``` 
+
+`Promise<void>`
 
 #### getSecret
+
 Gets a secret.
 
 ###### Arguments
 
-| Argument Name    | Description |
-| ---------------- | ----------- |
-| selector         | A unique key in the table of secrets |
+| Argument Name | Description                          |
+| ------------- | ------------------------------------ |
+| selector      | A unique key in the table of secrets |
 
 ###### Result
-secret: ```Promise<string>``` 
+
+secret: `Promise<string>`
 
 #### setSecret
+
 Creates or updates a secret
 
 ###### Arguments
 
-| Argument Name    | Description |
-| ---------------- | ----------- |
-| selector         | A unique key in the table of secrets |
-| secret           | A new encrypted secret value in the specified secret |
+| Argument Name | Description                                          |
+| ------------- | ---------------------------------------------------- |
+| selector      | A unique key in the table of secrets                 |
+| secret        | A new encrypted secret value in the specified secret |
 
 ###### Result
-```Promise<void>``` 
+
+`Promise<void>`
 
 #### deleteSecret
+
 Deletes a secret.
 
 ###### Arguments
 
-| Argument Name    | Description |
-| ---------------- | ----------- |
-| selector         | A unique key in the table of secrets |
+| Argument Name | Description                          |
+| ------------- | ------------------------------------ |
+| selector      | A unique key in the table of secrets |
 
 ###### Result
-```Promise<void>``` 
+
+`Promise<void>`
 
 #### incrementalImport
+
 Incrementally imports events.
 
 ###### Arguments
 
-| Argument Name    | Description |
-| ---------------- | ----------- |
-| events           | An array of ```{ aggregateId: string, type: string, timestamp: number, payload: any }``` |
+| Argument Name | Description                                                                          |
+| ------------- | ------------------------------------------------------------------------------------ |
+| events        | An array of `{ aggregateId: string, type: string, timestamp: number, payload: any }` |
 
 ###### Result
-```Promise<void>```
+
+`Promise<void>`
 
 ##### Example
+
 ```js
 await eventStoreAdapter.incrementalImport(events)
 ```
 
-### Advanced Incremental import 
+### Advanced Incremental import
 
 ##### Example
+
 ```js
 try {
   const importId = await eventStoreAdapter.beginIncrementalImport()
@@ -1132,44 +1199,54 @@ try {
 ```
 
 #### beginIncrementalImport
+
 Starts to accumulate events for incremental import.
 
 ###### Arguments
-```void```
+
+`void`
 
 ###### Result
-importId: ```Promise<string>``` 
+
+importId: `Promise<string>`
 
 #### pushIncrementalImport
+
 Accumulates events for incremental import.
 
 ###### Arguments
 
-| Argument Name    | Description |
-| ---------------- | ----------- |
-| events           | An array of ```{ aggregateId: string, type: string, timestamp: number, payload: any }``` |
-| importId         | A unique key for an incremental import |
+| Argument Name | Description                                                                          |
+| ------------- | ------------------------------------------------------------------------------------ |
+| events        | An array of `{ aggregateId: string, type: string, timestamp: number, payload: any }` |
+| importId      | A unique key for an incremental import                                               |
 
 ###### Result
-```Promise<void>``` 
+
+`Promise<void>`
 
 #### commitIncrementalImport
-Commits the accumulated events to the event store. 
+
+Commits the accumulated events to the event store.
 
 ###### Arguments
 
-| Argument Name    | Description |
-| ---------------- | ------------|
-| importId         | A unique key for an incremental import |
+| Argument Name | Description                            |
+| ------------- | -------------------------------------- |
+| importId      | A unique key for an incremental import |
 
 ###### Result
-```Promise<void>``` 
+
+`Promise<void>`
 
 #### rollbackIncrementalImport
+
 Drops the accumulated events.
 
 ###### Arguments
-```void```
+
+`void`
 
 ###### Result
-```Promise<void>``` 
+
+`Promise<void>`
