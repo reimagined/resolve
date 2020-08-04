@@ -175,7 +175,7 @@ test('inject-events should work correctly', async () => {
     })
   }
 
-  const t0 = Date.now()
+  // const t0 = Date.now()
 
   await pipeline(
     Readable.from(
@@ -188,7 +188,7 @@ test('inject-events should work correctly', async () => {
     adapter.import()
   )
 
-  const t1 = Date.now()
+  // const t1 = Date.now()
   await new Promise(resolve => setImmediate(resolve))
 
   // // eslint-disable-next-line no-console
@@ -207,11 +207,11 @@ test('inject-events should work correctly', async () => {
   const incrementalImportTimestamp = Date.now()
   let incrementalImportEvents = []
 
-  const t2 = Date.now()
+  // const t2 = Date.now()
 
   const importId = await adapter.beginIncrementalImport()
   const incrementalImportPromises = []
-  let incrementalBatchIdx = 0
+  // let incrementalBatchIdx = 0
 
   for (
     let eventIndex = 0;
