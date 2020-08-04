@@ -50,7 +50,7 @@
       "moduleType": "es",
       "moduleTarget": "client",
       "inputDir": "./src",
-      "outDir": "./lib"
+      "outDir": "./es"
     }
   ]
 }
