@@ -196,10 +196,5 @@ const createQuery = ({
   return executeQuery
 }
 
-/*
-FULL_XA_CONNECTOR,
-  FULL_REGULAR_CONNECTOR,
-  EMPTY_CONNECTOR,
- */
 export { ReadModelConnectorFeatures, detectConnectorFeatures }
 export default createQuery

@@ -175,6 +175,7 @@ module.exports = {
           'execpath',
           'expr',
           'extname',
+          'falsy',
           'facebook',
           'fanout',
           'fas',

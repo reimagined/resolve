@@ -4,9 +4,7 @@ import getLog from './get-log'
 import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
 import {
   detectConnectorFeatures,
-  EMPTY_CONNECTOR,
-  FULL_REGULAR_CONNECTOR,
-  FULL_XA_CONNECTOR
+  ReadModelConnectorFeatures
 } from './connector-features'
 
 const RESERVED_TIME = 30 * 1000
@@ -176,27 +174,30 @@ const read = async (
 const detectWrappers = (connector: any): any => {
   const log = getLog('detectWrappers')
   const emptyFunction = Promise.resolve.bind(Promise)
-  const featureDetection = detectConnectorFeatures(connector)
+  const features = detectConnectorFeatures(connector)
 
   if (
-    featureDetection === FULL_XA_CONNECTOR ||
-    featureDetection === FULL_REGULAR_CONNECTOR + FULL_XA_CONNECTOR
+    (features & ReadModelConnectorFeatures.XA) ===
+    ReadModelConnectorFeatures.XA
   ) {
     return {
       onBeforeEvent: connector.beginEvent.bind(connector),
       onSuccessEvent: connector.commitEvent.bind(connector),
       onFailEvent: connector.rollbackEvent.bind(connector)
     }
-  } else if (featureDetection === FULL_REGULAR_CONNECTOR) {
+  } else if (
+    (features & ReadModelConnectorFeatures.Regular) ===
+    ReadModelConnectorFeatures.Regular
+  ) {
     return {
       onBeforeEvent: connector.beginTransaction.bind(connector),
       onSuccessEvent: connector.commitTransaction.bind(connector),
       onFailEvent: connector.rollbackTransaction.bind(connector)
     }
   } else {
-    if (featureDetection !== EMPTY_CONNECTOR) {
+    if (features !== ReadModelConnectorFeatures.None) {
       log.warn('Connector provided invalid event batch lifecycle functions set')
-      log.warn(`Lifecycle detection constant is ${featureDetection}`)
+      log.warn(`Lifecycle detection constant is ${features}`)
       log.warn(`No-transactional lifecycle set will be used instead`)
     }
 
@@ -590,13 +591,13 @@ const wrapReadModel = (
 
   log.debug(`detecting connector features`)
 
-  const detectedFeatures = detectConnectorFeatures(connector)
+  const features = detectConnectorFeatures(connector)
 
-  log.verbose(detectedFeatures)
+  log.verbose(features)
 
   if (
-    detectedFeatures === FULL_XA_CONNECTOR ||
-    detectedFeatures === FULL_XA_CONNECTOR + FULL_REGULAR_CONNECTOR
+    (features & ReadModelConnectorFeatures.XA) ===
+    ReadModelConnectorFeatures.XA
   ) {
     Object.assign(api, {
       beginXATransaction: beginXATransaction.bind(null, pool),

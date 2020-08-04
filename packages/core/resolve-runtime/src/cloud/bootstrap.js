@@ -1,8 +1,6 @@
 import debugLevels from 'resolve-debug-levels'
 import {
-  FULL_XA_CONNECTOR,
-  FULL_REGULAR_CONNECTOR,
-  EMPTY_CONNECTOR,
+  ReadModelConnectorFeatures,
   detectConnectorFeatures
 } from 'resolve-query'
 
@@ -22,21 +20,21 @@ const bootstrap = async resolve => {
       readModelConnectors[connectorName]
     )
     let deliveryStrategy = null
-    switch (connectorFeatures) {
-      case FULL_XA_CONNECTOR:
-        deliveryStrategy = 'active-xa-transaction'
-        break
-      case FULL_XA_CONNECTOR + FULL_REGULAR_CONNECTOR:
-        deliveryStrategy = 'active-xa-transaction'
-        break
-      case FULL_REGULAR_CONNECTOR:
-        deliveryStrategy = 'active-regular-transaction'
-        break
-      case EMPTY_CONNECTOR:
-        deliveryStrategy = 'active-none-transaction'
-        break
-      default:
-        break
+    if (
+      (connectorFeatures & ReadModelConnectorFeatures.XA) ===
+      ReadModelConnectorFeatures.XA
+    ) {
+      deliveryStrategy = 'active-xa-transaction'
+    } else if (
+      (connectorFeatures & ReadModelConnectorFeatures.Regular) ===
+      ReadModelConnectorFeatures.Regular
+    ) {
+      deliveryStrategy = 'active-regular-transaction'
+    } else if (
+      (connectorFeatures & ReadModelConnectorFeatures.None) ===
+      ReadModelConnectorFeatures.None
+    ) {
+      deliveryStrategy = 'active-none-transaction'
     }
 
     if (deliveryStrategy == null) {

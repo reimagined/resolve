@@ -3,9 +3,9 @@ const functionsProvided = (...functions: any[]) =>
 
 export enum ReadModelConnectorFeatures {
   None = 0,
-  Basic = 1 << 0,
+  Regular = 1 << 0,
   XA = 1 << 1,
-  All = ~(~0 << 3)
+  All = ~(~0 << 2)
 }
 
 export const detectConnectorFeatures = (
@@ -20,7 +20,7 @@ export const detectConnectorFeatures = (
       connector.rollbackTransaction
     )
   ) {
-    features |= ReadModelConnectorFeatures.Basic
+    features |= ReadModelConnectorFeatures.Regular
   }
 
   if (
