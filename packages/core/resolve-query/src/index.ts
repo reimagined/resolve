@@ -1,10 +1,9 @@
-import wrapReadModel, {
-  FULL_XA_CONNECTOR,
-  FULL_REGULAR_CONNECTOR,
-  EMPTY_CONNECTOR,
-  detectConnectorFeatures
-} from './wrap-read-model'
+import wrapReadModel from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
+import {
+  detectConnectorFeatures,
+  ReadModelConnectorFeatures
+} from './connector-features'
 
 const getDefaultRemainingTime = (): number => 0x7fffffff
 
@@ -197,10 +196,10 @@ const createQuery = ({
   return executeQuery
 }
 
-export {
-  FULL_XA_CONNECTOR,
+/*
+FULL_XA_CONNECTOR,
   FULL_REGULAR_CONNECTOR,
   EMPTY_CONNECTOR,
-  detectConnectorFeatures
-}
+ */
+export { ReadModelConnectorFeatures, detectConnectorFeatures }
 export default createQuery

@@ -3,9 +3,7 @@ import { PublisherResourceAlreadyExistError } from 'resolve-local-event-broker'
 
 import debugLevels from 'resolve-debug-levels'
 import {
-  FULL_XA_CONNECTOR,
-  FULL_REGULAR_CONNECTOR,
-  EMPTY_CONNECTOR,
+  ReadModelConnectorFeatures,
   detectConnectorFeatures
 } from 'resolve-query'
 
