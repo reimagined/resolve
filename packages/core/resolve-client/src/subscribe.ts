@@ -1,5 +1,4 @@
 import window from 'global/window'
-import createConnectionManager from './connection-manager'
 import createEmptySubscribeAdapter from './empty-subscribe-adapter'
 import { Context } from './context'
 import { rootCallback, addCallback, removeCallback } from './subscribe-callback'
@@ -125,7 +124,7 @@ const initSubscribeAdapter = async (
   if (!refreshTimeout) {
     refreshTimeout = setTimeoutSafe(
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      () => refreshSubscribeAdapter(context, viewModelName, false),
+      () => refreshSubscribeAdapter(context, viewModelName, topics, false),
       REFRESH_TIMEOUT
     )
   }
@@ -148,17 +147,10 @@ const getSubscribeAdapterPromise = (
 export const refreshSubscribeAdapter = async (
   context: Context,
   viewModelName: string,
+  topics: Array<object>,
   subscribeAdapterRecreated?: boolean
 ): Promise<any> => {
   let subscribeAdapter
-
-  const connectionManager = createConnectionManager()
-  const activeConnections = connectionManager.getConnections()
-
-  const topics = activeConnections.map(({ connectionName, connectionId }) => ({
-    topicName: connectionName,
-    topicId: connectionId
-  }))
 
   try {
     subscribeAdapter = await getSubscribeAdapterPromise(
@@ -172,7 +164,7 @@ export const refreshSubscribeAdapter = async (
       clearTimeoutSafe(refreshTimeout)
     }
     refreshTimeout = setTimeoutSafe(
-      () => refreshSubscribeAdapter(context, viewModelName, true),
+      () => refreshSubscribeAdapter(context, viewModelName, topics, true),
       REFRESH_TIMEOUT
     )
     return Promise.resolve()
@@ -186,7 +178,7 @@ export const refreshSubscribeAdapter = async (
           clearTimeoutSafe(refreshTimeout)
         }
         refreshTimeout = setTimeoutSafe(
-          () => refreshSubscribeAdapter(context, viewModelName, false),
+          () => refreshSubscribeAdapter(context, viewModelName, topics, false),
           REFRESH_TIMEOUT
         )
         return Promise.resolve()
@@ -203,18 +195,13 @@ export const refreshSubscribeAdapter = async (
     subscribeAdapterPromise = null
 
     await getSubscribeAdapterPromise(context, viewModelName, topics)
-
-    for (const connection of activeConnections) {
-      const { connectionName, connectionId } = connection
-      rootCallback({ type: connectionName, aggregateId: connectionId }, true)
-    }
   } catch (err) {}
 
   if (refreshTimeout) {
     clearTimeoutSafe(refreshTimeout)
   }
   refreshTimeout = setTimeoutSafe(
-    () => refreshSubscribeAdapter(context, viewModelName, false),
+    () => refreshSubscribeAdapter(context, viewModelName, topics, false),
     REFRESH_TIMEOUT
   )
   return Promise.resolve()
@@ -222,8 +209,6 @@ export const refreshSubscribeAdapter = async (
 
 export const dropSubscribeAdapterPromise = (): void => {
   subscribeAdapterPromise = null
-  const connectionManager = createConnectionManager()
-  connectionManager.destroy()
   if (refreshTimeout) {
     clearTimeoutSafe(refreshTimeout)
   }
