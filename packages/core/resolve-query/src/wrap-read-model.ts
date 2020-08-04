@@ -168,15 +168,15 @@ const read = async (
 }
 
 export const detectConnectorFeatures = (connector: any): number =>
-  (typeof connector.beginTransaction === 'function' ? 1 : 0 << 0) +
-  (typeof connector.commitTransaction === 'function' ? 1 : 0 << 1) +
-  (typeof connector.rollbackTransaction === 'function' ? 1 : 0 << 2) +
-  (typeof connector.beginXATransaction === 'function' ? 1 : 0 << 3) +
-  (typeof connector.commitXATransaction === 'function' ? 1 : 0 << 4) +
-  (typeof connector.rollbackXATransaction === 'function' ? 1 : 0 << 5) +
-  (typeof connector.beginEvent === 'function' ? 1 : 0 << 6) +
-  (typeof connector.commitEvent === 'function' ? 1 : 0 << 7) +
-  (typeof connector.rollbackEvent === 'function' ? 1 : 0 << 8)
+  ((typeof connector.beginTransaction === 'function' ? 1 : 0) << 0) +
+  ((typeof connector.commitTransaction === 'function' ? 1 : 0) << 1) +
+  ((typeof connector.rollbackTransaction === 'function' ? 1 : 0) << 2) +
+  ((typeof connector.beginXATransaction === 'function' ? 1 : 0) << 3) +
+  ((typeof connector.commitXATransaction === 'function' ? 1 : 0) << 4) +
+  ((typeof connector.rollbackXATransaction === 'function' ? 1 : 0) << 5) +
+  ((typeof connector.beginEvent === 'function' ? 1 : 0) << 6) +
+  ((typeof connector.commitEvent === 'function' ? 1 : 0) << 7) +
+  ((typeof connector.rollbackEvent === 'function' ? 1 : 0) << 8)
 
 export const FULL_XA_CONNECTOR = 504
 export const FULL_REGULAR_CONNECTOR = 7
