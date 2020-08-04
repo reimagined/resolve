@@ -299,7 +299,7 @@ const getAggregateState = async (
           log.debug(`loading snapshot`)
           const snapshot = await eventstoreAdapter.loadSnapshot(snapshotKey)
 
-          if (typeof snapshot === 'string') {
+          if (snapshot != null && snapshot.constructor === String) {
             return JSON.parse(snapshot)
           }
           throw Error('invalid snapshot data')
