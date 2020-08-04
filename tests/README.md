@@ -729,8 +729,8 @@ export default {
     }
   },
 
-  killProcess: (state, command, jwtToken) => {
-    const jwt = jsonwebtoken.verify(jwtToken, jwtSecret)
+  killProcess: (state, command, token) => {
+    const jwt = jsonwebtoken.verify(token, jwtSecret)
 
     if (!jwt.permissions.processes.kill) {
       throw new Error('Access denied')
@@ -752,7 +752,7 @@ import jsonwebtoken from 'jsonwebtoken'
 
 import jwtSecret from './jwt-secret'
 
-export const jwtToken = jsonwebtoken.sign(
+export const jwt = jsonwebtoken.sign(
   {
     permissions: {
       processes: {
@@ -789,7 +789,7 @@ export default {
           aggregateName: 'Process',
           aggregateId: process.id,
           type: 'PROCESS_KILLED',
-          jwtToken
+          jwt
         })
 
         await store.delete('Processes', {

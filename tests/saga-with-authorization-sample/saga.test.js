@@ -4,6 +4,8 @@ import givenEvents from 'resolve-testing-tools'
 import config from './config'
 import resetReadModel from '../reset-read-model'
 
+jest.setTimeout(1000 * 60 * 5)
+
 describe('Saga', () => {
   const {
     name: sagaName,
@@ -27,9 +29,9 @@ describe('Saga', () => {
   const commands = interopRequireDefault(require(`./${commandsModule}`)).default
 
   let commandTimestamp = 0
-  const executeCommand = ({ aggregateId, type, jwtToken, ...command }) => {
+  const executeCommand = ({ aggregateId, type, jwt, ...command }) => {
     const event = {
-      ...commands[type]({}, command, jwtToken),
+      ...commands[type]({}, command, jwt),
       aggregateId,
       timestamp: commandTimestamp++
     }

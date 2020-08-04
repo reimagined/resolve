@@ -103,7 +103,7 @@ Array [
 exports[`dispose with performance tracer should dispose the regular handler: addError 1`] = `
 Array [
   Array [
-    [SyntaxError: Unexpected token u in JSON at position 0],
+    [Error: invalid snapshot data],
   ],
   Array [
     [CommandError: Command handler is disposed],
@@ -258,7 +258,7 @@ Array [
 exports[`dispose with performance tracer should dispose the snapshot handler: addError 1`] = `
 Array [
   Array [
-    [SyntaxError: Unexpected token u in JSON at position 0],
+    [Error: invalid snapshot data],
   ],
   Array [
     [CommandError: Command handler is disposed],
@@ -420,6 +420,14 @@ Array [
     "resolve:applyEvent",
   ],
   Array [
+    "aggregateName",
+    "User",
+  ],
+  Array [
+    "origin",
+    "resolve:applySnapshot",
+  ],
+  Array [
     "eventCount",
     1,
   ],
@@ -445,6 +453,12 @@ Array [
 exports[`executeCommand with performance tracer should pass security context to command handler: addError 1`] = `
 Array [
   Array [
+    [Error: invalid snapshot data],
+  ],
+  Array [
+    [Error: invalid snapshot data],
+  ],
+  Array [
     [Error: Access denied],
   ],
   Array [
@@ -462,6 +476,9 @@ Array [
     "getAggregateState",
   ],
   Array [
+    "loadSnapshot",
+  ],
+  Array [
     "loadEvents",
   ],
   Array [
@@ -477,10 +494,16 @@ Array [
     "getAggregateState",
   ],
   Array [
+    "loadSnapshot",
+  ],
+  Array [
     "loadEvents",
   ],
   Array [
     "applyEvent",
+  ],
+  Array [
+    "applySnapshot",
   ],
   Array [
     "processCommand",
@@ -500,11 +523,17 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
+  Array [],
+  Array [],
 ]
 `;
 
 exports[`executeCommand with performance tracer should pass security context to command handler: getSegment 1`] = `
 Array [
+  Array [],
+  Array [],
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -626,10 +655,10 @@ Array [
 exports[`executeCommand with performance tracer should success build aggregate state and execute command: addError 1`] = `
 Array [
   Array [
-    [SyntaxError: Unexpected token u in JSON at position 0],
+    [Error: invalid snapshot data],
   ],
   Array [
-    [SyntaxError: Unexpected token u in JSON at position 0],
+    [Error: invalid snapshot data],
   ],
   Array [
     [Error: Entity already created],
@@ -765,7 +794,13 @@ Array [
 ]
 `;
 
-exports[`executeCommand with performance tracer should success build aggregate state from empty event list and execute cmd: addError 1`] = `Array []`;
+exports[`executeCommand with performance tracer should success build aggregate state from empty event list and execute cmd: addError 1`] = `
+Array [
+  Array [
+    [Error: invalid snapshot data],
+  ],
+]
+`;
 
 exports[`executeCommand with performance tracer should success build aggregate state from empty event list and execute cmd: addNewSubsegment 1`] = `
 Array [
@@ -774,6 +809,9 @@ Array [
   ],
   Array [
     "getAggregateState",
+  ],
+  Array [
+    "loadSnapshot",
   ],
   Array [
     "loadEvents",
@@ -794,11 +832,13 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
 ]
 `;
 
 exports[`executeCommand with performance tracer should success build aggregate state from empty event list and execute cmd: getSegment 1`] = `
 Array [
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -900,6 +940,9 @@ Array [
 exports[`executeCommand with performance tracer should throw error when an event contains "aggregateId", "aggregateVersion", "timestamp" fields: addError 1`] = `
 Array [
   Array [
+    [Error: invalid snapshot data],
+  ],
+  Array [
     [CommandError: Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields],
   ],
 ]
@@ -912,6 +955,9 @@ Array [
   ],
   Array [
     "getAggregateState",
+  ],
+  Array [
+    "loadSnapshot",
   ],
   Array [
     "loadEvents",
@@ -928,11 +974,13 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
 ]
 `;
 
 exports[`executeCommand with performance tracer should throw error when an event contains "aggregateId", "aggregateVersion", "timestamp" fields: getSegment 1`] = `
 Array [
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -988,6 +1036,9 @@ Array [
 exports[`executeCommand with performance tracer should throw error when an event does not contain "type" field: addError 1`] = `
 Array [
   Array [
+    [Error: invalid snapshot data],
+  ],
+  Array [
     [CommandError: Event "type" is required],
   ],
 ]
@@ -1000,6 +1051,9 @@ Array [
   ],
   Array [
     "getAggregateState",
+  ],
+  Array [
+    "loadSnapshot",
   ],
   Array [
     "loadEvents",
@@ -1016,11 +1070,13 @@ Array [
   Array [],
   Array [],
   Array [],
+  Array [],
 ]
 `;
 
 exports[`executeCommand with performance tracer should throw error when an event does not contain "type" field: getSegment 1`] = `
 Array [
+  Array [],
   Array [],
   Array [],
   Array [],
@@ -1148,7 +1204,7 @@ Array [
 exports[`executeCommand with performance tracer should throw error when the incorrect order of events: addError 1`] = `
 Array [
   Array [
-    [SyntaxError: Unexpected token u in JSON at position 0],
+    [Error: invalid snapshot data],
   ],
   Array [
     [CommandError: Incorrect order of events by aggregateId = "aggregateId"],
@@ -1245,15 +1301,84 @@ Array [
 ]
 `;
 
-exports[`executeCommand with performance tracer should throw error when unknown command: addAnnotation 1`] = `Array []`;
+exports[`executeCommand with performance tracer should throw error when unknown command: addAnnotation 1`] = `
+Array [
+  Array [
+    "aggregateName",
+    "empty",
+  ],
+  Array [
+    "commandType",
+    "unknownCommand",
+  ],
+  Array [
+    "origin",
+    "resolve:executeCommand",
+  ],
+  Array [
+    "aggregateName",
+    "empty",
+  ],
+  Array [
+    "origin",
+    "resolve:getAggregateState",
+  ],
+  Array [
+    "eventCount",
+    0,
+  ],
+  Array [
+    "origin",
+    "resolve:loadEvents",
+  ],
+]
+`;
 
-exports[`executeCommand with performance tracer should throw error when unknown command: addError 1`] = `Array []`;
+exports[`executeCommand with performance tracer should throw error when unknown command: addError 1`] = `
+Array [
+  Array [
+    [Error: invalid snapshot data],
+  ],
+  Array [
+    [CommandError: Command type "unknownCommand" does not exist],
+  ],
+]
+`;
 
-exports[`executeCommand with performance tracer should throw error when unknown command: addNewSubsegment 1`] = `Array []`;
+exports[`executeCommand with performance tracer should throw error when unknown command: addNewSubsegment 1`] = `
+Array [
+  Array [
+    "executeCommand",
+  ],
+  Array [
+    "getAggregateState",
+  ],
+  Array [
+    "loadSnapshot",
+  ],
+  Array [
+    "loadEvents",
+  ],
+]
+`;
 
-exports[`executeCommand with performance tracer should throw error when unknown command: close 1`] = `Array []`;
+exports[`executeCommand with performance tracer should throw error when unknown command: close 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
 
-exports[`executeCommand with performance tracer should throw error when unknown command: getSegment 1`] = `Array []`;
+exports[`executeCommand with performance tracer should throw error when unknown command: getSegment 1`] = `
+Array [
+  Array [],
+  Array [],
+  Array [],
+  Array [],
+]
+`;
 
 exports[`executeCommand with performance tracer should throw error when use snapshot adapter with incorrect invariant hash: addAnnotation 1`] = `
 Array [
@@ -1545,10 +1670,10 @@ Array [
 exports[`executeCommand with performance tracer should use snapshots for building state: addError 1`] = `
 Array [
   Array [
-    [SyntaxError: Unexpected token u in JSON at position 0],
+    [Error: invalid snapshot data],
   ],
   Array [
-    [SyntaxError: Unexpected token u in JSON at position 0],
+    [Error: invalid snapshot data],
   ],
 ]
 `;

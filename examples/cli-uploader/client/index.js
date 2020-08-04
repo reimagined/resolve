@@ -12,11 +12,9 @@ const entryPoint = ({ rootPath, staticPath, localS3Constants }) => {
   const { CDNUrl } = localS3Constants
   const origin = getOrigin(window.location)
   const history = createBrowserHistory({ basename: rootPath })
-  const jwtToken = jsCookie.get('jwt')
+  const token = jsCookie.get('jwt')
   const jwtObject =
-    jwtToken != null && jwtToken.constructor === String
-      ? jwt.decode(jwtToken)
-      : null
+    token != null && token.constructor === String ? jwt.decode(token) : null
 
   const store = createStore({
     initialState: { jwt: jwtObject },
