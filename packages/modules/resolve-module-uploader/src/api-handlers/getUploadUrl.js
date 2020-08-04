@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 const getUploadUrl = ({ jwtSecret }) => async (req, res) => {
   const adapter = req.resolve.uploader
   try {
-    jwt.verify(req.jwtToken, jwtSecret)
+    jwt.verify(req.jwt, jwtSecret)
 
     const { dir } = req.query
     const signedPut = await adapter.getSignedPut(dir)

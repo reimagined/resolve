@@ -239,8 +239,8 @@ const jwtProvider = {
   async get() {
     return (await AsyncStorage.getItem(jwtCookie.name)) || ''
   },
-  async set(jwtToken) {
-    return AsyncStorage.setItem(jwtCookie.name, jwtToken)
+  async set(jwt) {
+    return AsyncStorage.setItem(jwtCookie.name, jwt)
   }
 }
 ```
