@@ -299,7 +299,7 @@ const getAggregateState = async (
           log.debug(`loading snapshot`)
           const snapshot = await eventstoreAdapter.loadSnapshot(snapshotKey)
 
-          if (typeof snapshot === 'string') {
+          if (snapshot != null && snapshot.constructor === String) {
             return JSON.parse(snapshot)
           }
           throw Error('invalid snapshot data')
@@ -532,7 +532,7 @@ const executeCommand = async (
       aggregateVersion: aggregateVersion + 1,
       timestamp: Math.max(minimalTimestamp + 1, Date.now()),
       type: event.type,
-      payload: event.payload || {}
+      payload: event.payload as any
     }
 
     await (async (): Promise<void> => {
