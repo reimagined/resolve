@@ -966,6 +966,7 @@ Gets an array of events and the next cursor filtered by the event filter.
 | Argument Name | Description                     |
 | ------------- | ------------------------------- |
 | eventFilter   | { cursor: string or null, limit: number, eventsSizeLimit: number, eventTypes: Array<string>, aggregateIds: Array<string> } |
+|               | or |
 |               | { startTime?: number, endTime?: number, limit: number, eventsSizeLimit: number, eventTypes: Array<string>, aggregateIds: Array<string> } |
 
 ###### Result
@@ -1001,28 +1002,74 @@ Gets a readable stream used to load events.
 #### freeze
 Freezes the database.
 
+###### Arguments
+```void```
+
+###### Result
+```Promise<void>```
+
 #### unfreeze
 Unfreezes the database.
+
+###### Arguments
+```void```
+
+###### Result
+```Promise<void>```
 
 #### isFrozen
 Gets a boolean value that indicating whether the database is frozen.
 
+###### Arguments
+```void```
+
+###### Result
+```Promise<boolean>```
+
 #### loadSnapshot
 Loads a snapshot.
+
+###### Arguments
+
+| Argument Name    | Description |
+| ---------------- | ----------- |
+| snapshotKey      | A unique key in the table of snapshots |
+
+###### Result
+content: ```Promise<string | null>``` 
 
 #### saveSnapshot
 Creates or updates a snapshot
 
+###### Arguments
+
+| Argument Name    | Description |
+| ---------------- | ----------- |
+| snapshotKey      | A unique key in the table of snapshots |
+| content          | A snapshot as text |
+
+###### Result
+```Promise<void>``` 
+
 #### dropSnapshot
 Deletes a snapshot.
+
+###### Arguments
+
+| Argument Name    | Description |
+| ---------------- | ----------- |
+| snapshotKey      | A unique key in the table of snapshots |
+
+###### Result
+```Promise<void>``` 
 
 #### getSecret
 Gets a secret.
 
 ###### Arguments
 
-| Argument Name    | Description                          |
-| ---------------- | ------------------------------------ |
+| Argument Name    | Description |
+| ---------------- | ----------- |
 | selector         | A unique key in the table of secrets |
 
 ###### Result
@@ -1033,9 +1080,9 @@ Creates or updates a secret
 
 ###### Arguments
 
-| Argument Name    | Description                                          |
-| ---------------- | ---------------------------------------------------- |
-| selector         | A unique key in the table of secrets                 |
+| Argument Name    | Description |
+| ---------------- | ----------- |
+| selector         | A unique key in the table of secrets |
 | secret           | A new encrypted secret value in the specified secret |
 
 ###### Result
@@ -1046,8 +1093,8 @@ Deletes a secret.
 
 ###### Arguments
 
-| Argument Name    | Description                          |
-| ---------------- | ------------------------------------ |
+| Argument Name    | Description |
+| ---------------- | ----------- |
 | selector         | A unique key in the table of secrets |
 
 ###### Result
@@ -1058,8 +1105,8 @@ Incrementally imports events.
 
 ###### Arguments
 
-| Argument Name    | Description                                                                           |
-| ---------------- | ------------------------------------------------------------------------------------- |
+| Argument Name    | Description |
+| ---------------- | ----------- |
 | events           | An array of ```{ aggregateId: string, type: string, timestamp: number, payload: any }``` |
 
 ###### Result
@@ -1098,10 +1145,10 @@ Accumulates events for incremental import.
 
 ###### Arguments
 
-| Argument Name    | Description                                                                           |
-| ---------------- | ------------------------------------------------------------------------------------- |
+| Argument Name    | Description |
+| ---------------- | ----------- |
 | events           | An array of ```{ aggregateId: string, type: string, timestamp: number, payload: any }``` |
-| importId         | A unique key for an incremental import                                                  |
+| importId         | A unique key for an incremental import |
 
 ###### Result
 ```Promise<void>``` 
@@ -1111,9 +1158,9 @@ Commits the accumulated events to the event store.
 
 ###### Arguments
 
-| Argument Name    | Description                                                                     |
-| ---------------- | ------------------------------------------------------------------------------- |
-| importId         | A unique key for an incremental import                                            |
+| Argument Name    | Description |
+| ---------------- | ------------|
+| importId         | A unique key for an incremental import |
 
 ###### Result
 ```Promise<void>``` 
