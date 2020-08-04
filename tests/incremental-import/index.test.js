@@ -5,7 +5,7 @@ import createAdapter from './create-adapter'
 
 const pipeline = promisify(rawPipeline)
 
-jest.setTimeout(1000 * 60 * 45)
+jest.setTimeout(1000 * 60 * 5)
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -191,10 +191,10 @@ test('inject-events should work correctly', async () => {
   const t1 = Date.now()
   await new Promise(resolve => setImmediate(resolve))
 
-  // eslint-disable-next-line no-console
-  console.log(
-    `Importing initial events ${t1 - t0} ms / Events ${countInitialEvents}`
-  )
+  // // eslint-disable-next-line no-console
+  // console.log(
+  //   `Importing initial events ${t1 - t0} ms / Events ${countInitialEvents}`
+  // )
 
   const tempInitialEvents = (
     await adapter.loadEvents({ limit: countInitialEvents + 1 })
@@ -227,14 +227,13 @@ test('inject-events should work correctly', async () => {
 
     if (eventIndex % 256 === 0) {
       shuffle(incrementalImportEvents)
-      const currentBatchIdx = incrementalBatchIdx++
+      //const currentBatchIdx = incrementalBatchIdx++
       incrementalImportPromises.push(
-        adapter
-          .pushIncrementalImport(incrementalImportEvents, importId)
-          .then(() => {
-            // eslint-disable-next-line no-console
-            console.log(`Pushing incremental batch ${currentBatchIdx}`)
-          })
+        adapter.pushIncrementalImport(incrementalImportEvents, importId)
+        // .then(() => {
+        //   // eslint-disable-next-line no-console
+        //   console.log(`Pushing incremental batch ${currentBatchIdx}`)
+        // })
       )
 
       incrementalImportEvents = []
@@ -242,39 +241,38 @@ test('inject-events should work correctly', async () => {
   }
 
   if (incrementalImportEvents.length > 0) {
-    const currentBatchIdx = incrementalBatchIdx++
+    // const currentBatchIdx = incrementalBatchIdx++
     shuffle(incrementalImportEvents)
     incrementalImportPromises.push(
-      adapter
-        .pushIncrementalImport(incrementalImportEvents, importId)
-        .then(() => {
-          // eslint-disable-next-line no-console
-          console.log(`Pushing incremental batch ${currentBatchIdx}`)
-        })
+      adapter.pushIncrementalImport(incrementalImportEvents, importId)
+      // .then(() => {
+      //   // eslint-disable-next-line no-console
+      //   console.log(`Pushing incremental batch ${currentBatchIdx}`)
+      // })
     )
   }
 
   await Promise.all(incrementalImportPromises)
 
-  const t3 = Date.now()
+  // const t3 = Date.now()
   await new Promise(resolve => setImmediate(resolve))
 
-  // eslint-disable-next-line no-console
-  console.log(
-    `Pushing incremental events ${t3 -
-      t2} ms / Events ${countIncrementalImportEvents}`
-  )
+  // // eslint-disable-next-line no-console
+  // console.log(
+  //   `Pushing incremental events ${t3 -
+  //     t2} ms / Events ${countIncrementalImportEvents}`
+  // )
 
   await adapter.commitIncrementalImport(importId, true)
 
-  const t4 = Date.now()
+  // const t4 = Date.now()
   await new Promise(resolve => setImmediate(resolve))
 
-  // eslint-disable-next-line no-console
-  console.log(
-    `Commiting incremental events ${t4 -
-      t3} ms / Events ${countIncrementalImportEvents}`
-  )
+  // // eslint-disable-next-line no-console
+  // console.log(
+  //   `Commiting incremental events ${t4 -
+  //     t3} ms / Events ${countIncrementalImportEvents}`
+  // )
 
   const resultEvents = (await adapter.loadEvents({ limit: countAllEvents + 1 }))
     .events

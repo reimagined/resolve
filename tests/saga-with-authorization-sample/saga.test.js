@@ -4,6 +4,8 @@ import givenEvents from 'resolve-testing-tools'
 import config from './config'
 import resetReadModel from '../reset-read-model'
 
+jest.setTimeout(1000 * 60 * 5)
+
 describe('Saga', () => {
   const {
     name: sagaName,

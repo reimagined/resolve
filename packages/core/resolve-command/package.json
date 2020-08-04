@@ -43,7 +43,7 @@
       "outDir": "./es"
     },
     {
-     "moduleType": "cjs",
+      "moduleType": "cjs",
       "moduleTarget": "server",
       "inputDir": "./src",
       "outDir": "./lib"
