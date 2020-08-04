@@ -26,7 +26,7 @@ const devConfig = {
     }
   },
   subscribeAdapter: {
-    module: 'resolve-subscribe-socket.io',
+    module: 'resolve-subscribe-ws',
     options: {}
   },
   jwtCookie: {

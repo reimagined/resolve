@@ -54,7 +54,7 @@
     "source-map-support": "^0.5.9",
     "url": "^0.11.0",
     "uuid": "^3.3.2",
-    "ws": "^5.2.1",
+    "ws": "7.3.1",
     "websocket-stream": "^5.1.2",
     "multer": "^1.4.2",
     "body-parser": "^1.19.0",

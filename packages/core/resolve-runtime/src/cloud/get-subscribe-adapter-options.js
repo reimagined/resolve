@@ -26,9 +26,7 @@ const getSubscribeAdapterOptions = async (
   })
 
   const token = jwt.sign(
-    {
-      topics: customTopics
-    },
+    { topics: customTopics },
     RESOLVE_ENCRYPTED_DEPLOYMENT_ID
   )
 

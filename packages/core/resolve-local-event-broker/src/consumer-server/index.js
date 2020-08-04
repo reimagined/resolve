@@ -126,11 +126,7 @@ const createAndInitConsumer = async config => {
       // TODO segragate passthough subscribers
       if (batchId == null && eventSubscriber === 'websocket') {
         for (const event of events) {
-          await currentResolve.pubsubManager.dispatch({
-            topicName: event.type,
-            topicId: event.aggregateId,
-            event
-          })
+          await currentResolve.pubsubManager.dispatch({ event })
         }
         return
       }
