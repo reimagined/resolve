@@ -6,7 +6,13 @@ import { CONNECT_VIEWMODEL, DISPATCH_TOPIC_MESSAGE } from './action-types'
 import unsubscribeViewModelTopicsSaga from './unsubscribe_view_model_topics_saga'
 
 const eventListenerSaga = function*(
-  { viewModels, sagaKey, sagaManager, eventTypes, store }: {
+  {
+    viewModels,
+    sagaKey,
+    sagaManager,
+    eventTypes,
+    store
+  }: {
     viewModels: any[]
     sagaKey: any
     sagaManager: any

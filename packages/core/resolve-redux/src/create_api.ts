@@ -26,7 +26,7 @@ export type API = {
 }
 
 export class ApiError extends Error {
-  public code: number = 500
+  public code = 500
   constructor(error: any) {
     super()
     const ref = this as { [key: string]: any }

@@ -5,7 +5,10 @@ export type SerializableMap = {
   [key: string]: Serializable
 }
 export type SerializableArray = Array<Serializable>
-export type Serializable = SerializablePrimitive | SerializableMap | SerializableArray
+export type Serializable =
+  | SerializablePrimitive
+  | SerializableMap
+  | SerializableArray
 
 // Common
 

@@ -34,7 +34,7 @@ export type ReduxStoreContext = {
     middlewares?: any[]
     enhancers?: any[]
     sagas?: any[]
-  },
+  }
   initialState: any
   isClient: boolean
   queryMethod: string
