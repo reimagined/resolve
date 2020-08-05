@@ -11,6 +11,11 @@ interface SubscriptionKey {
   eventType: string
 }
 
+interface Topic {
+  topicId: string
+  topicName: string
+}
+
 type AggregateSelector = string[] | '*'
 
 const REFRESH_TIMEOUT = 5000
@@ -27,9 +32,16 @@ const clearTimeoutSafe = (timeout: number | NodeJS.Timeout): void => {
     clearTimeout(timeout)
   }
 }
+let adaptersMap = new Map()
+const buildKey = (viewModelName: string, topics: Array<Topic>): string => {
+  const aggregateIds: AggregateSelector = topics.map(({ topicId }) => topicId)
+  const sortedAggregateIds = ([] as Array<string>)
+    .concat(aggregateIds)
+    .sort((a, b) => a.localeCompare(b))
+  return [viewModelName].concat(sortedAggregateIds).join(':')
+}
 
 let refreshTimeout: number | NodeJS.Timeout | null
-let subscribeAdapterPromise: Promise<any> | null = null
 
 export const getSubscriptionKeys = (
   context: Context,
@@ -86,7 +98,7 @@ export const getSubscribeAdapterOptions = async (
 const initSubscribeAdapter = async (
   context: Context,
   viewModelName: string,
-  topics: Array<object>
+  topics: Array<Topic>
 ): Promise<any> => {
   const { url } = await getSubscribeAdapterOptions(
     context,
@@ -112,34 +124,28 @@ const initSubscribeAdapter = async (
   return subscribeAdapter
 }
 
-const getSubscribeAdapterPromise = (
-  context: Context,
-  viewModelName: string,
-  topics: Array<object>
-): Promise<any> => {
-  if (subscribeAdapterPromise !== null) {
-    return subscribeAdapterPromise
-  }
-  subscribeAdapterPromise = initSubscribeAdapter(context, viewModelName, topics)
-  return subscribeAdapterPromise
-}
-
 export const refreshSubscribeAdapter = async (
   context: Context,
   viewModelName: string,
-  topics: Array<object>,
+  topics: Array<Topic>,
   subscribeAdapterRecreated?: boolean
 ): Promise<any> => {
   let subscribeAdapter
 
+  const key = buildKey(viewModelName, topics)
+
   try {
-    subscribeAdapter = await getSubscribeAdapterPromise(
-      context,
-      viewModelName,
-      topics
-    )
+    if (!adaptersMap.has(key)) {
+      subscribeAdapter = await initSubscribeAdapter(
+        context,
+        viewModelName,
+        topics
+      )
+    } else {
+      subscribeAdapter = adaptersMap.get(key)
+    }
   } catch (error) {
-    subscribeAdapterPromise = null
+    adaptersMap.delete(key)
     if (refreshTimeout) {
       clearTimeoutSafe(refreshTimeout)
     }
@@ -171,10 +177,12 @@ export const refreshSubscribeAdapter = async (
   try {
     if (subscribeAdapter != null) {
       await subscribeAdapter.close()
+      adaptersMap.delete(key)
     }
-    subscribeAdapterPromise = null
-
-    await getSubscribeAdapterPromise(context, viewModelName, topics)
+    adaptersMap.set(
+      key,
+      await initSubscribeAdapter(context, viewModelName, topics)
+    )
   } catch (err) {}
 
   if (refreshTimeout) {
@@ -188,7 +196,7 @@ export const refreshSubscribeAdapter = async (
 }
 
 export const dropSubscribeAdapterPromise = (): void => {
-  subscribeAdapterPromise = null
+  adaptersMap = new Map()
   if (refreshTimeout) {
     clearTimeoutSafe(refreshTimeout)
   }
@@ -213,14 +221,23 @@ const connect = async (
     topicId: aggregateId
   }))
 
-  const subscribeAdapter = await getSubscribeAdapterPromise(
+  const key = buildKey(viewModelName, topics)
+
+  if (adaptersMap.has(key)) {
+    return Promise.resolve()
+  }
+
+  const subscribeAdapter = await initSubscribeAdapter(
     context,
     viewModelName,
     topics
   )
+
   if (subscribeAdapter === null) {
     return Promise.resolve()
   }
+
+  adaptersMap.set(key, subscribeAdapter)
 
   for (const { eventType, aggregateId } of subscriptionKeys) {
     addCallback(eventType, aggregateId, eventCallback, subscribeCallback)
@@ -238,6 +255,18 @@ const disconnect = async (
     viewModelName,
     aggregateIds
   )
+
+  const topics = subscriptionKeys.map(({ eventType, aggregateId }) => ({
+    topicName: eventType,
+    topicId: aggregateId
+  }))
+
+  const key = buildKey(viewModelName, topics)
+  const subscribeAdapter = adaptersMap.get(key)
+
+  await subscribeAdapter.close()
+
+  adaptersMap.delete(key)
 
   for (const { eventType, aggregateId } of subscriptionKeys) {
     removeCallback(eventType, aggregateId, callback)
