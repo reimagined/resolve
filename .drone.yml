@@ -26,7 +26,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: build
+name: build-redux
 
 steps:
   - name: publish-nightly
