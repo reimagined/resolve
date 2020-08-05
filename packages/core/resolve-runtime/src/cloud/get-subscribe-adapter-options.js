@@ -20,7 +20,7 @@ const getSubscribeAdapterOptions = async (
     throw new Error('View model is not found')
   }
 
-  const customTopics = await viewModel.resolver(resolve, {
+  const customTopics = await viewModel.validator(resolve, {
     topics,
     jwt: authToken
   })

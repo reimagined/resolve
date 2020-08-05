@@ -32,15 +32,17 @@ const clearTimeoutSafe = (timeout: number | NodeJS.Timeout): void => {
     clearTimeout(timeout)
   }
 }
-let adaptersMap = new Map()
-const buildKey = (viewModelName: string, topics: Array<Topic>): string => {
-  const aggregateIds: AggregateSelector = topics.map(({ topicId }) => topicId)
+const buildKey = (
+  viewModelName: string,
+  aggregateIds: AggregateSelector
+): string => {
   const sortedAggregateIds = ([] as Array<string>)
     .concat(aggregateIds)
     .sort((a, b) => a.localeCompare(b))
   return [viewModelName].concat(sortedAggregateIds).join(':')
 }
 
+let adaptersMap = new Map()
 let refreshTimeout: number | NodeJS.Timeout | null
 
 export const getSubscriptionKeys = (
@@ -98,7 +100,8 @@ export const getSubscribeAdapterOptions = async (
 const initSubscribeAdapter = async (
   context: Context,
   viewModelName: string,
-  topics: Array<Topic>
+  topics: Array<Topic>,
+  aggregateIds: AggregateSelector
 ): Promise<any> => {
   const { url } = await getSubscribeAdapterOptions(
     context,
@@ -116,7 +119,14 @@ const initSubscribeAdapter = async (
   if (!refreshTimeout) {
     refreshTimeout = setTimeoutSafe(
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      () => refreshSubscribeAdapter(context, viewModelName, topics, false),
+      () =>
+        refreshSubscribeAdapter(
+          context,
+          viewModelName,
+          topics,
+          aggregateIds,
+          false
+        ),
       REFRESH_TIMEOUT
     )
   }
@@ -128,18 +138,20 @@ export const refreshSubscribeAdapter = async (
   context: Context,
   viewModelName: string,
   topics: Array<Topic>,
+  aggregateIds: AggregateSelector,
   subscribeAdapterRecreated?: boolean
 ): Promise<any> => {
   let subscribeAdapter
 
-  const key = buildKey(viewModelName, topics)
+  const key = buildKey(viewModelName, aggregateIds)
 
   try {
     if (!adaptersMap.has(key)) {
       subscribeAdapter = await initSubscribeAdapter(
         context,
         viewModelName,
-        topics
+        topics,
+        aggregateIds
       )
     } else {
       subscribeAdapter = adaptersMap.get(key)
@@ -150,7 +162,14 @@ export const refreshSubscribeAdapter = async (
       clearTimeoutSafe(refreshTimeout)
     }
     refreshTimeout = setTimeoutSafe(
-      () => refreshSubscribeAdapter(context, viewModelName, topics, true),
+      () =>
+        refreshSubscribeAdapter(
+          context,
+          viewModelName,
+          topics,
+          aggregateIds,
+          true
+        ),
       REFRESH_TIMEOUT
     )
     return Promise.resolve()
@@ -164,7 +183,14 @@ export const refreshSubscribeAdapter = async (
           clearTimeoutSafe(refreshTimeout)
         }
         refreshTimeout = setTimeoutSafe(
-          () => refreshSubscribeAdapter(context, viewModelName, topics, false),
+          () =>
+            refreshSubscribeAdapter(
+              context,
+              viewModelName,
+              topics,
+              aggregateIds,
+              false
+            ),
           REFRESH_TIMEOUT
         )
         return Promise.resolve()
@@ -181,7 +207,7 @@ export const refreshSubscribeAdapter = async (
     }
     adaptersMap.set(
       key,
-      await initSubscribeAdapter(context, viewModelName, topics)
+      await initSubscribeAdapter(context, viewModelName, topics, aggregateIds)
     )
   } catch (err) {}
 
@@ -189,7 +215,14 @@ export const refreshSubscribeAdapter = async (
     clearTimeoutSafe(refreshTimeout)
   }
   refreshTimeout = setTimeoutSafe(
-    () => refreshSubscribeAdapter(context, viewModelName, topics, false),
+    () =>
+      refreshSubscribeAdapter(
+        context,
+        viewModelName,
+        topics,
+        aggregateIds,
+        false
+      ),
     REFRESH_TIMEOUT
   )
   return Promise.resolve()
@@ -221,7 +254,7 @@ const connect = async (
     topicId: aggregateId
   }))
 
-  const key = buildKey(viewModelName, topics)
+  const key = buildKey(viewModelName, aggregateIds)
 
   if (adaptersMap.has(key)) {
     return Promise.resolve()
@@ -230,7 +263,8 @@ const connect = async (
   const subscribeAdapter = await initSubscribeAdapter(
     context,
     viewModelName,
-    topics
+    topics,
+    aggregateIds
   )
 
   if (subscribeAdapter === null) {
@@ -256,12 +290,7 @@ const disconnect = async (
     aggregateIds
   )
 
-  const topics = subscriptionKeys.map(({ eventType, aggregateId }) => ({
-    topicName: eventType,
-    topicId: aggregateId
-  }))
-
-  const key = buildKey(viewModelName, topics)
+  const key = buildKey(viewModelName, aggregateIds)
   const subscribeAdapter = adaptersMap.get(key)
 
   await subscribeAdapter.close()

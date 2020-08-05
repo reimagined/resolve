@@ -47,7 +47,6 @@
     "resolve-scheduler-local": "0.24.16",
     "resolve-eventstore-base": "0.24.16",
     "resolve-eventstore-lite": "0.24.16",
-    "resolve-subscribe-socket.io": "0.24.16",
     "resolve-readmodel-base": "0.24.16",
     "route-trie": "^3.0.0",
     "socket.io": "^2.1.1",

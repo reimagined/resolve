@@ -21,7 +21,7 @@ const getSubscribeAdapterOptions = async (
     throw new Error('View model is not found')
   }
 
-  const customTopics = await viewModel.resolver(resolve, {
+  const customTopics = await viewModel.validator(resolve, {
     topics,
     jwt: authToken
   })
@@ -32,7 +32,6 @@ const getSubscribeAdapterOptions = async (
   const isSecure = /^https/.test(protocol)
   const targetProtocol = isSecure ? 'wss' : 'ws'
   const targetPath = '/api/websocket'
-  // const targetPort = port == null ? [80, 443][+isSecure] : port
   const targetPort = 8080
 
   const subscribeUrl = `${targetProtocol}://${hostname}:${targetPort}${getRootBasedUrl(

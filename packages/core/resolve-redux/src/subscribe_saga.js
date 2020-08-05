@@ -22,7 +22,7 @@ const initSubscribeAdapter = async ({
   origin,
   rootPath,
   store,
-  subscribeAdapter: createSubscribeAdapter
+  subscriber: createSubscribeAdapter
 }) => {
   if (createSubscribeAdapter === createEmptySubscribeAdapter) {
     return createEmptySubscribeAdapter()
@@ -46,6 +46,8 @@ const initSubscribeAdapter = async ({
 
   return subscribeAdapter
 }
+
+// TODO: refactor subscribeSaga
 
 const subscribeSaga = function*(subscribeSagaOptions) {
   const connectionManager = createConnectionManager()

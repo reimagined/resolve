@@ -1,1 +1,1 @@
-export default function() {}
+export default (resolve, { topics }) => topics

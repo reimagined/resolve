@@ -17,7 +17,7 @@ const {
   viewModels,
   rootPath,
   customConstants,
-  subscribeAdapter,
+  subscriber,
   jwtCookie
 } = getNativeChunk()
 
@@ -64,7 +64,7 @@ const getStore = () =>
   createStore({
     redux,
     viewModels,
-    subscribeAdapter,
+    subscriber,
     initialState,
     history,
     origin,

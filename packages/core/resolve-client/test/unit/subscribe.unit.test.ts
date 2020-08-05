@@ -38,7 +38,7 @@ describe('subscribe', () => {
     mockCreateSubscribeAdapter.mockReturnValue({
       init: mockInit,
       close: mockClose,
-      isConnected: mockIsConnected,
+      isConnected: mockIsConnected
     })
 
     mFetch = jest.fn(() => ({
@@ -82,7 +82,7 @@ describe('subscribe', () => {
     expect(mockInit).toBeCalledTimes(1)
   })
 
-  test('init only once with params', async () => {
+  test('is subscribed', async () => {
     await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
     await connect(context, ['aggregate-id-2'], mockCallback, 'view-model')
     await connect(context, ['aggregate-id-3'], mockCallback, 'view-model')
@@ -91,13 +91,6 @@ describe('subscribe', () => {
       onEvent: rootCallback,
       url: 'http://options-url'
     })
-    expect(mockInit).toBeCalledTimes(1)
-  })
-
-  test('is subscribed', async () => {
-    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
-    await connect(context, ['aggregate-id-2'], mockCallback, 'view-model')
-    await connect(context, ['aggregate-id-3'], mockCallback, 'view-model')
     expect(mockInit).toBeCalledTimes(3)
   })
 

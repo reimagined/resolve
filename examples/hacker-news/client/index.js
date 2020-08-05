@@ -19,7 +19,7 @@ const entryPoint = ({
   rootPath,
   staticPath,
   viewModels,
-  subscribeAdapter
+  subscriber
 }) => {
   const origin = getOrigin(window.location)
   const history = createBrowserHistory({ basename: rootPath })
@@ -30,7 +30,7 @@ const entryPoint = ({
     initialState: deserializeInitialState(viewModels, window.__INITIAL_STATE__),
     redux,
     viewModels,
-    subscribeAdapter,
+    subscriber,
     history,
     origin,
     rootPath,
