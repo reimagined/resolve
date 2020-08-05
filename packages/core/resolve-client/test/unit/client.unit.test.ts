@@ -30,7 +30,6 @@ const createMockContext = (staticPath = 'static-path'): Context => ({
   staticPath,
   rootPath: 'root-path',
   jwtProvider: undefined,
-  subscribeAdapter: undefined,
   viewModels: []
 })
 

@@ -25,10 +25,6 @@ const devConfig = {
       snapshotBucketSize: 100
     }
   },
-  subscribeAdapter: {
-    module: 'resolve-subscribe-ws',
-    options: {}
-  },
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000

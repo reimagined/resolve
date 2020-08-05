@@ -66,7 +66,6 @@ export default ({ resolveConfig, isClient }) => {
     `  staticPath: interopRequireDefault(require('$resolve.staticPath')).default,`,
     `  jwtCookie: interopRequireDefault(require('$resolve.jwtCookie')).default,`,
     `  applicationName: interopRequireDefault(require('$resolve.applicationName')).default,`,
-    `  subscribeAdapter: interopRequireDefault(require('$resolve.subscribeAdapter')).default,`,
     `  customConstants: interopRequireDefault(require('$resolve.customConstants')).default`,
     `}`
   )

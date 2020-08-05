@@ -1,9 +1,20 @@
 import {
   subscribeAdapterNotInitialized,
   subscribeAdapterAlreadyInitialized
-} from './constants'
+} from './subscribe-adapter-constants'
 
-const createClientAdapter = ({
+export interface SubscribeAdapter {
+  init: () => Promise<any>
+  close: () => Promise<any>
+  isConnected: () => boolean
+}
+
+export interface CreateSubscribeAdapter {
+  (options: { url: string; onEvent: Function }): SubscribeAdapter
+  adapterName: string
+}
+
+const createClientAdapter: CreateSubscribeAdapter = ({
   url,
   onEvent
 }: {
@@ -14,7 +25,7 @@ const createClientAdapter = ({
   let isInitialized: boolean
 
   return {
-    async init() {
+    async init(): Promise<void> {
       if (isInitialized) {
         throw new Error(subscribeAdapterAlreadyInitialized)
       }
@@ -22,12 +33,12 @@ const createClientAdapter = ({
       return await new Promise((resolve, reject) => {
         client = new WebSocket(url)
 
-        client.onopen = () => {
+        client.onopen = (): void => {
           isInitialized = true
           resolve()
         }
 
-        client.onmessage = message => {
+        client.onmessage = (message): void => {
           try {
             onEvent(JSON.parse(message.data))
           } catch (error) {
@@ -38,7 +49,7 @@ const createClientAdapter = ({
       })
     },
 
-    async close() {
+    async close(): Promise<void> {
       if (!isInitialized || client == null) {
         throw new Error(subscribeAdapterNotInitialized)
       }
@@ -48,7 +59,7 @@ const createClientAdapter = ({
       client = undefined
     },
 
-    isConnected() {
+    isConnected(): boolean {
       if (!isInitialized || client == null) {
         throw new Error(subscribeAdapterNotInitialized)
       }

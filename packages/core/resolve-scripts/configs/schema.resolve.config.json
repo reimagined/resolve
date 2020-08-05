@@ -68,19 +68,6 @@
       "required": ["options"],
       "additionalProperties": false
     },
-    "subscribeAdapter": {
-      "type": "object",
-      "properties": {
-        "module": {
-          "type": "string"
-        },
-        "options": {
-          "type": "object"
-        }
-      },
-      "required": ["module", "options"],
-      "additionalProperties": false
-    },
     "aggregate": {
       "type": "object",
       "properties": {
@@ -427,9 +414,6 @@
         "eventstoreAdapter": {
           "$ref": "#/definitions/eventstoreAdapter"
         },
-        "subscribeAdapter": {
-          "$ref": "#/definitions/subscribeAdapter"
-        },
         "jwtCookie": {
           "$ref": "#/definitions/jwtCookie"
         },
@@ -462,7 +446,6 @@
         "readModelConnectors",
         "schedulers",
         "eventstoreAdapter",
-        "subscribeAdapter",
         "eventBroker",
         "customConstants",
         "target",

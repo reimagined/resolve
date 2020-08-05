@@ -1,5 +1,5 @@
 import window from 'global/window'
-import createEmptySubscribeAdapter from './empty-subscribe-adapter'
+import createSubscribeAdapter from './subscribe-adapter'
 import { Context } from './context'
 import { rootCallback, addCallback, removeCallback } from './subscribe-callback'
 import determineOrigin from './determine-origin'
@@ -88,34 +88,14 @@ const initSubscribeAdapter = async (
   viewModelName: string,
   topics: Array<object>
 ): Promise<any> => {
-  const { subscribeAdapter: createSubscribeAdapter } = context
-
-  if (createSubscribeAdapter === createEmptySubscribeAdapter) {
-    return createEmptySubscribeAdapter({})
-  }
-
-  if (!createSubscribeAdapter) {
-    return Promise.resolve()
-  }
-
-  if (!createSubscribeAdapter.adapterName) {
-    throw new GenericError('Adapter name expected in SubscribeAdapter')
-  }
-
-  const { appId, url } = await getSubscribeAdapterOptions(
+  const { url } = await getSubscribeAdapterOptions(
     context,
     createSubscribeAdapter.adapterName,
     viewModelName,
     topics
   )
-  const { origin: customOrigin, rootPath } = context
-
-  const origin = determineOrigin(customOrigin)
 
   const subscribeAdapter = createSubscribeAdapter({
-    appId,
-    origin,
-    rootPath,
     url,
     onEvent: rootCallback
   })
