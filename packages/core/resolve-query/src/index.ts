@@ -1,9 +1,9 @@
 import wrapReadModel from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
 import {
-  detectConnectorFeatures,
-  ReadModelConnectorFeatures
-} from './connector-features'
+  getConnectorCapability,
+  ReadModelConnectorCapability
+} from './connector-capability'
 
 const getDefaultRemainingTime = (): number => 0x7fffffff
 
@@ -196,5 +196,5 @@ const createQuery = ({
   return executeQuery
 }
 
-export { ReadModelConnectorFeatures, detectConnectorFeatures }
+export { ReadModelConnectorCapability, getConnectorCapability }
 export default createQuery

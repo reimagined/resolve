@@ -2,10 +2,7 @@ import { EOL } from 'os'
 import getLog from './get-log'
 // TODO: core cannot reference "top-level" packages, move these to resolve-core
 import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
-import {
-  detectConnectorFeatures,
-  ReadModelConnectorFeatures
-} from './connector-features'
+import { getConnectorCapability, ReadModelConnectorCapability } from './connector-capability'
 
 const RESERVED_TIME = 30 * 1000
 
@@ -174,38 +171,28 @@ const read = async (
 const detectWrappers = (connector: any): any => {
   const log = getLog('detectWrappers')
   const emptyFunction = Promise.resolve.bind(Promise)
-  const features = detectConnectorFeatures(connector)
 
-  if (
-    (features & ReadModelConnectorFeatures.XA) ===
-    ReadModelConnectorFeatures.XA
-  ) {
-    return {
-      onBeforeEvent: connector.beginEvent.bind(connector),
-      onSuccessEvent: connector.commitEvent.bind(connector),
-      onFailEvent: connector.rollbackEvent.bind(connector)
-    }
-  } else if (
-    (features & ReadModelConnectorFeatures.Regular) ===
-    ReadModelConnectorFeatures.Regular
-  ) {
-    return {
-      onBeforeEvent: connector.beginTransaction.bind(connector),
-      onSuccessEvent: connector.commitTransaction.bind(connector),
-      onFailEvent: connector.rollbackTransaction.bind(connector)
-    }
-  } else {
-    if (features !== ReadModelConnectorFeatures.None) {
+  switch (getConnectorCapability(connector)) {
+    case ReadModelConnectorCapability.XA:
+      return {
+        onBeforeEvent: connector.beginEvent.bind(connector),
+        onSuccessEvent: connector.commitEvent.bind(connector),
+        onFailEvent: connector.rollbackEvent.bind(connector)
+      }
+    case ReadModelConnectorCapability.Regular:
+      return {
+        onBeforeEvent: connector.beginTransaction.bind(connector),
+        onSuccessEvent: connector.commitTransaction.bind(connector),
+        onFailEvent: connector.rollbackTransaction.bind(connector)
+      }
+    case ReadModelConnectorCapability.None:
       log.warn('Connector provided invalid event batch lifecycle functions set')
-      log.warn(`Lifecycle detection constant is ${features}`)
       log.warn(`No-transactional lifecycle set will be used instead`)
-    }
-
-    return {
-      onBeforeEvent: emptyFunction,
-      onSuccessEvent: emptyFunction,
-      onFailEvent: emptyFunction
-    }
+      return {
+        onBeforeEvent: emptyFunction,
+        onSuccessEvent: emptyFunction,
+        onFailEvent: emptyFunction
+      }
   }
 }
 
@@ -591,14 +578,11 @@ const wrapReadModel = (
 
   log.debug(`detecting connector features`)
 
-  const features = detectConnectorFeatures(connector)
+  const features = getConnectorCapability(connector)
 
   log.verbose(features)
 
-  if (
-    (features & ReadModelConnectorFeatures.XA) ===
-    ReadModelConnectorFeatures.XA
-  ) {
+  if (getConnectorCapability(connector) === ReadModelConnectorCapability.XA) {
     Object.assign(api, {
       beginXATransaction: beginXATransaction.bind(null, pool),
       commitXATransaction: commitXATransaction.bind(null, pool),

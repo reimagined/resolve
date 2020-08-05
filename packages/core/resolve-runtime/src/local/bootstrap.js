@@ -3,13 +3,24 @@ import { PublisherResourceAlreadyExistError } from 'resolve-local-event-broker'
 
 import debugLevels from 'resolve-debug-levels'
 import {
-  ReadModelConnectorFeatures,
-  detectConnectorFeatures
+  ReadModelConnectorCapability,
+  getConnectorCapability
 } from 'resolve-query'
 
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 
 const log = debugLevels('resolve:resolve-runtime:bootstrap')
+
+const deliveryStrategies = new Map()
+deliveryStrategies.set(
+  ReadModelConnectorCapability.None,
+  'active-none-transaction'
+)
+deliveryStrategies.set(
+  ReadModelConnectorCapability.Regular,
+  'active-regular-transaction'
+)
+deliveryStrategies.set(ReadModelConnectorCapability.XA, 'active-xa-transaction')
 
 const bootstrap = async resolve => {
   log.debug('bootstrap started')
@@ -35,36 +46,9 @@ const bootstrap = async resolve => {
     eventTypes,
     connectorName
   } of resolve.eventListeners.values()) {
-    const connectorFeatures = detectConnectorFeatures(
-      readModelConnectors[connectorName]
+    const deliveryStrategy = deliveryStrategies.get(
+      getConnectorCapability(readModelConnectors[connectorName])
     )
-    let deliveryStrategy = null
-    if (
-      (connectorFeatures & ReadModelConnectorFeatures.XA) ===
-      ReadModelConnectorFeatures.XA
-    ) {
-      deliveryStrategy = 'active-xa-transaction'
-    } else if (
-      (connectorFeatures & ReadModelConnectorFeatures.Regular) ===
-      ReadModelConnectorFeatures.Regular
-    ) {
-      deliveryStrategy = 'active-regular-transaction'
-    } else if (
-      (connectorFeatures & ReadModelConnectorFeatures.None) ===
-      ReadModelConnectorFeatures.None
-    ) {
-      deliveryStrategy = 'active-none-transaction'
-    }
-
-    if (deliveryStrategy == null) {
-      // eslint-disable-next-line no-console
-      console.warn(`
-        Event listener "${eventSubscriber}" can't perform subscription since event bus
-        does not support connector capacities mask "${connectorFeatures}"
-      `)
-      continue
-    }
-
     const subscriptionOptions = {
       deliveryStrategy,
       eventTypes
