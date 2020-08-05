@@ -1,14 +1,13 @@
 import createQuery from '../src/index'
 
-let events,
-  eventstoreAdapter,
-  snapshots,
-  viewModels,
-  readModels,
-  readModelConnectors,
-  doUpdateRequest,
-  query,
-  performanceTracer
+let events: any[]
+let eventstoreAdapter: any
+let snapshots: Map<string, any>
+let viewModels: any[]
+let readModels: any[]
+let readModelConnectors: { [key: string]: any }
+let query: any
+let performanceTracer: any
 
 for (const { describeName, prepare } of [
   {
@@ -46,12 +45,13 @@ for (const { describeName, prepare } of [
   describe(describeName, () => {
     beforeEach(() => {
       events = []
+      snapshots = new Map()
       eventstoreAdapter = {
-        loadEvents: async ({ cursor: prevCursor }) => ({
+        loadEvents: async ({ cursor: prevCursor }: { cursor: any }) => ({
           events,
           cursor: `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`
         }),
-        getNextCursor: prevCursor =>
+        getNextCursor: (prevCursor: any) =>
           `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`,
         getSecretsManager: async () => null,
         loadSnapshot: jest.fn().mockImplementation(async key => {
@@ -62,26 +62,15 @@ for (const { describeName, prepare } of [
         })
       }
 
-      snapshots = new Map()
-
       viewModels = []
       readModels = []
       readModelConnectors = {}
-
-      doUpdateRequest = async () => {}
 
       prepare()
     })
 
     afterEach(() => {
       query = null
-      events = null
-      eventstoreAdapter = null
-      snapshots = null
-      viewModels = null
-      readModels = null
-      readModelConnectors = null
-      doUpdateRequest = null
     })
 
     describe('view models', () => {
@@ -95,23 +84,23 @@ for (const { describeName, prepare } of [
                   value: 0
                 }
               },
-              ADD: (state, event) => {
+              ADD: (state: any, event: any) => {
                 return {
                   ...state,
                   value: state.value + event.payload.value
                 }
               },
-              SUB: (state, event) => {
+              SUB: (state: any, event: any) => {
                 return {
                   ...state,
                   value: state.value - event.payload.value
                 }
               }
             },
-            serializeState: async state => {
+            serializeState: async (state: any) => {
               return JSON.stringify(state, null, 2)
             },
-            deserializeState: async serializedState => {
+            deserializeState: async (serializedState: string) => {
               return JSON.parse(serializedState)
             },
             invariantHash: 'viewModelName-invariantHash',
@@ -126,7 +115,6 @@ for (const { describeName, prepare } of [
         beforeEach(() => {
           query = createQuery({
             readModelConnectors,
-            doUpdateRequest,
             readModels,
             viewModels,
             eventstoreAdapter,
@@ -938,7 +926,6 @@ for (const { describeName, prepare } of [
         beforeEach(() => {
           query = createQuery({
             readModelConnectors,
-            doUpdateRequest,
             readModels,
             viewModels,
             eventstoreAdapter,
@@ -1542,26 +1529,26 @@ for (const { describeName, prepare } of [
 
     describe('read models', () => {
       query = null
-      const remoteReadModelStore = {}
+      const remoteReadModelStore: { [key: string]: any } = {}
       beforeEach(() => {
         readModels = [
           {
             name: 'readModelName',
             projection: {
-              Init: async store => {
+              Init: async (store: any) => {
                 await store.set('value', 0)
               },
-              ADD: async (store, event) => {
+              ADD: async (store: any, event: any) => {
                 const value = await store.get('value')
                 await store.set('value', value + event.payload.value)
               },
-              SUB: async (store, event) => {
+              SUB: async (store: any, event: any) => {
                 const value = await store.get('value')
                 await store.set('value', value - event.payload.value)
               }
             },
             resolvers: {
-              getValue: async store => {
+              getValue: async (store: any) => {
                 return await store.get('value')
               }
             },
@@ -1582,7 +1569,7 @@ for (const { describeName, prepare } of [
           {
             name: 'brokenReadModelName',
             projection: {
-              BROKEN: async (store, event) => {
+              BROKEN: async (store: any, event: any) => {
                 const error = new Error('BROKEN')
                 Object.assign(error, { store, event })
                 throw error
@@ -1595,13 +1582,13 @@ for (const { describeName, prepare } of [
           {
             name: 'remoteReadModelName',
             projection: {
-              SET: async (_, event) => {
+              SET: async (_: any, event: any) => {
                 await new Promise(resolve => setImmediate(resolve))
                 remoteReadModelStore[event.payload.key] = event.payload.value
               }
             },
             resolvers: {
-              getValue: async store => {
+              getValue: async (store: any) => {
                 return await store.get('value')
               }
             },
@@ -1620,10 +1607,10 @@ for (const { describeName, prepare } of [
                   readModels.set(readModelName, new Map())
                 }
                 return {
-                  get(key) {
+                  get(key: string) {
                     return readModels.get(readModelName).get(key)
                   },
-                  set(key, value) {
+                  set(key: string, value: any) {
                     readModels.get(readModelName).set(key, value)
                   }
                 }
@@ -1655,16 +1642,11 @@ for (const { describeName, prepare } of [
 
         query = createQuery({
           readModelConnectors,
-          doUpdateRequest,
           readModels,
           viewModels,
           eventstoreAdapter,
           performanceTracer
         })
-
-        doUpdateRequest = async readModelName => {
-          await query.updateByEvents({ modelName: readModelName, events })
-        }
       })
 
       afterEach(() => {
@@ -2198,7 +2180,6 @@ for (const { describeName, prepare } of [
           () =>
             (query = createQuery({
               readModelConnectors: {},
-              doUpdateRequest,
               readModels: [
                 {
                   name: 'readModelName',
@@ -2227,7 +2208,6 @@ for (const { describeName, prepare } of [
                   dispose: jest.fn()
                 }
               },
-              doUpdateRequest,
               readModels: [
                 {
                   name: 'readModelName',
@@ -2272,7 +2252,6 @@ for (const { describeName, prepare } of [
           () =>
             (query = createQuery({
               readModelConnectors,
-              doUpdateRequest,
               readModels,
               viewModels: [
                 {
@@ -2311,7 +2290,6 @@ for (const { describeName, prepare } of [
       test('"read" should raise error when wrong options for read invocation', async () => {
         query = createQuery({
           readModelConnectors,
-          doUpdateRequest,
           readModels,
           viewModels: [
             {
