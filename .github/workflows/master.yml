@@ -9,7 +9,7 @@ on:
 jobs:
   smoke-test:
     runs-on: ubuntu-latest
-    
+
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.head_ref == 'dev')
 
     steps:
@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: '10'
-        
+
       - name: Install
         run: yarn install --frozen-lockfile
 
@@ -33,24 +33,24 @@ jobs:
 
       - name: Integration test
         run: yarn test:integration
-        
+
   e2e-macOS-test:
     runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
-    
+
     if: github.event_name == 'pull_request' && github.head_ref == 'dev'
 
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Install
         run: |
           yarn install --frozen-lockfile
           yarn build-packages
-        
-      
+
+
       - name: Tutorial E2E test
         run: yarn tutorial-test:e2e safari
-        
+
       - name: CRA test
         run: |
           pm2 delete local-registry || true
@@ -68,12 +68,12 @@ jobs:
           yarn test:e2e safari
           cd ..
           rm -rf hello-world
-          rm -rf shopping-list-advanced || true
-          node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e shopping-list-advanced shopping-list-advanced
-          cd shopping-list-advanced
-          yarn test:e2e safari
-          cd ..
-          rm -rf shopping-list-advanced
+#          rm -rf shopping-list-advanced || true
+#          node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e shopping-list-advanced shopping-list-advanced
+#          cd shopping-list-advanced
+#          yarn test:e2e safari
+#          cd ..
+#          rm -rf shopping-list-advanced
           rm -rf shopping-list || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e shopping-list shopping-list
           cd shopping-list
