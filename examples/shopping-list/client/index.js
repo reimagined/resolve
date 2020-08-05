@@ -12,7 +12,7 @@ const entryPoint = ({
   rootPath,
   staticPath,
   viewModels,
-  subscribeAdapter,
+  subscriber,
   clientImports
 }) => {
   const origin = getOrigin(window.location)
@@ -23,7 +23,7 @@ const entryPoint = ({
   const store = createStore({
     redux,
     viewModels,
-    subscribeAdapter,
+    subscriber,
     history,
     origin,
     rootPath,
