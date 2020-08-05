@@ -46,8 +46,8 @@ export type AggregateEventHandler = (
 export type CommandContext = {
   jwt?: string
   aggregateVersion: number
-  encrypt: Encrypter
-  decrypt: Decrypter
+  encrypt: Encrypter | null
+  decrypt: Decrypter | null
 }
 
 export type Command = {
@@ -73,11 +73,11 @@ export type AggregateProjection = {
   [key: string]: AggregateEventHandler
 }
 
-type CommandHandler = (
+export type CommandHandler = (
   state: AggregateState,
   command: Command,
   context: CommandContext
-) => CommandResult
+) => CommandResult | Promise<CommandResult>
 
 export type Aggregate = {
   [key: string]: CommandHandler
