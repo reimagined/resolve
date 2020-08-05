@@ -13,6 +13,7 @@ export type Event = {
   type: string
   timestamp: number
   aggregateId: string
+  aggregateVersion: number
   payload: SerializableMap
 }
 
@@ -37,18 +38,13 @@ export type Encryption = {
 // Aggregate
 
 export type AggregateState = any
-export type AggregateContext = {
-  encrypt: Encrypter
-  decrypt: Decrypter
-}
 export type AggregateEventHandler = (
   state: AggregateState,
-  event: Event,
-  context: AggregateContext
+  event: Event
 ) => AggregateState
 
 export type CommandContext = {
-  jwt: string
+  jwt?: string
   aggregateVersion: number
   encrypt: Encrypter
   decrypt: Decrypter
@@ -58,13 +54,17 @@ export type Command = {
   type: string
   aggregateId: string
   aggregateName: string
-  payload: SerializableMap
-  jwtToken?: string
+  payload?: SerializableMap
+  jwt?: string
+  jwtToken?: string // deprecated
 }
 
 export type CommandResult = {
   type: string
   payload?: SerializableMap
+  timestamp?: number
+  aggregateId?: string
+  aggregateVersion?: number
 }
 
 export type AggregateProjection = {
@@ -83,7 +83,7 @@ export type Aggregate = {
   [key: string]: CommandHandler
 }
 export type AggregateEncryptionContext = {
-  jwt: string
+  jwt?: string
   secretsManager: SecretsManager
 }
 export type AggregateEncryptionFactory = (
@@ -119,13 +119,13 @@ export type ReadModelResolvers<TStore> = {
 // Saga
 
 // TODO: move types from resolve-client here?
-// TODO: refactor jwtToken & query (as in client)
 
 type ReadModelQuery = {
   modelName: string
   resolverName: string
   resolverArgs: Serializable
-  jwtToken: string
+  jwt?: string
+  jwtToken?: string
 }
 type ReadModelQueryResult = Serializable
 type ViewModelQuery = {
