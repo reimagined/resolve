@@ -1016,12 +1016,12 @@ Promise<{
     type: string,
     timestamp: number,
     payload: any
-  },
+  }>,
   cursor: string
 }>
 ```
 
-###### Example
+##### Example
 
 ```js
 const { events, cursor: nextCursor } = await eventStoreAdapter.loadEvents(
@@ -1053,6 +1053,12 @@ Freezes the database.
 
 `Promise<void>`
 
+##### Example
+
+```js
+await eventStoreAdapter.freeze()
+```
+
 #### unfreeze
 
 Unfreezes the database.
@@ -1065,6 +1071,12 @@ Unfreezes the database.
 
 `Promise<void>`
 
+##### Example
+
+```js
+await eventStoreAdapter.unfreeze()
+```
+
 #### isFrozen
 
 Gets a boolean value that indicating whether the database is frozen.
@@ -1076,6 +1088,12 @@ Gets a boolean value that indicating whether the database is frozen.
 ###### Result
 
 `Promise<boolean>`
+
+##### Example
+
+```js
+const frozen = await eventStoreAdapter.isFrozen()
+```
 
 #### loadSnapshot
 
@@ -1090,6 +1108,15 @@ Loads a snapshot.
 ###### Result
 
 content: `Promise<string | null>`
+
+##### Example
+
+```js
+const content = await eventStoreAdapter.loadSnapshot(snapshotKey)
+if (content == null) {
+  throw new Error('SnapshotNotFoundException')
+}
+```
 
 #### saveSnapshot
 
@@ -1106,6 +1133,12 @@ Creates or updates a snapshot
 
 `Promise<void>`
 
+##### Example
+
+```js
+await eventStoreAdapter.saveSnapshot(snapshotKey, content)
+```
+
 #### dropSnapshot
 
 Deletes a snapshot.
@@ -1120,6 +1153,12 @@ Deletes a snapshot.
 
 `Promise<void>`
 
+##### Example
+
+```js
+await eventStoreAdapter.dropSnapshot(snapshotKey)
+```
+
 #### getSecret
 
 Gets a secret.
@@ -1132,7 +1171,16 @@ Gets a secret.
 
 ###### Result
 
-secret: `Promise<string>`
+secret: `Promise<string | null>`
+
+##### Example
+
+```js
+const secret = await eventStoreAdapter.getSecret(selector)
+if (secret == null) {
+  throw new Error('SecretNotFoundException')
+}
+```
 
 #### setSecret
 
@@ -1149,6 +1197,12 @@ Creates or updates a secret
 
 `Promise<void>`
 
+##### Example
+
+```js
+await eventStoreAdapter.setSecret(selector, secret)
+```
+
 #### deleteSecret
 
 Deletes a secret.
@@ -1162,6 +1216,12 @@ Deletes a secret.
 ###### Result
 
 `Promise<void>`
+
+##### Example
+
+```js
+await eventStoreAdapter.deleteSecret(selector)
+```
 
 #### incrementalImport
 
