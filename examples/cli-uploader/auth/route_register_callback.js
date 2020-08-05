@@ -19,17 +19,17 @@ const routeRegisterCallback = async ({ resolve }, login, password) => {
     passwordHash: md5(password)
   }
 
-  const jwtToken = jwt.sign(user, jwtSecret)
+  const token = jwt.sign(user, jwtSecret)
 
   await resolve.executeCommand({
     type: 'createUser',
     aggregateId: uuid(),
     aggregateName: 'User',
     payload: user,
-    jwtToken
+    jwt
   })
 
-  return jwtToken
+  return token
 }
 
 export default routeRegisterCallback

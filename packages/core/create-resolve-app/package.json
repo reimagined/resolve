@@ -1,6 +1,6 @@
 {
   "name": "create-resolve-app",
-  "version": "0.24.12",
+  "version": "0.24.16",
   "description": "A tool that generates boilerplate web applications based on the reSolve framework",
   "engines": {
     "node": ">=10.9"

@@ -7,7 +7,7 @@ import createEventstoreAdapter from 'resolve-eventstore-lite'
 
 import createStreamBuffer from './create-stream-buffer'
 
-jest.setTimeout(1000 * 60 * 45)
+jest.setTimeout(1000 * 60 * 5)
 
 describe('import-export', () => {
   const eventStorePath = path.join(__dirname, 'es.txt')

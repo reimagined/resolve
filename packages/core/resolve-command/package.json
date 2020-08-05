@@ -1,12 +1,13 @@
 {
   "name": "resolve-command",
-  "version": "0.24.12",
+  "version": "0.24.16",
   "description": "Creates a function that handles commands in a reSolve application.",
   "engines": {
     "node": ">=10.9"
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",
+  "types": "./types/index.d.ts",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -26,12 +27,14 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-command#readme",
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "resolve-eventstore-base": "0.24.12",
-    "resolve-debug-levels": "0.24.12"
+    "resolve-core": "0.24.16",
+    "resolve-eventstore-base": "0.24.16",
+    "resolve-debug-levels": "0.24.16"
   },
   "devDependencies": {
     "jest": "26.0.1"
   },
+  "sourceType": "ts",
   "babelCompile": [
     {
       "moduleType": "cjs",

@@ -7,11 +7,11 @@ const syncJwtProviderWithStore = async (
   store: any
 ): Promise<void> => {
   if (jwtProvider) {
-    const jwtToken = await jwtProvider.get()
+    const token = await jwtProvider.get()
 
     let jwt = store.getState().jwt
     try {
-      jwt = jwtDecode(jwtToken)
+      jwt = jwtDecode(token)
     } catch (err) {}
 
     if (stableStringify(store.getState().jwt) !== stableStringify(jwt)) {
