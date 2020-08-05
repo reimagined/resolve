@@ -1,11 +1,11 @@
 // Primitives
 
-type SerializablePrimitive = string | number | boolean | null
-type SerializableMap = {
+export type SerializablePrimitive = string | number | boolean | null
+export type SerializableMap = {
   [key: string]: Serializable
 }
-type SerializableArray = Array<Serializable>
-type Serializable = SerializablePrimitive | SerializableMap | SerializableArray
+export type SerializableArray = Array<Serializable>
+export type Serializable = SerializablePrimitive | SerializableMap | SerializableArray
 
 // Common
 
