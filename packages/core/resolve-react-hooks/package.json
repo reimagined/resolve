@@ -28,8 +28,8 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-api#readme",
   "dependencies": {
-    "resolve-client": "0.24.16"
-    "resolve-core": "0.24.16",
+    "resolve-client": "0.24.16",
+    "resolve-core": "0.24.16"
   },
   "devDependencies": {
     "react": "16.13.0",
