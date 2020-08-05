@@ -30,6 +30,8 @@ import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
 import update from './update'
 import generateGuid from './generate-guid'
+import isHighloadError from './is-highload-error'
+import isTimeoutError from './is-timeout-error'
 
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
@@ -48,6 +50,8 @@ const connect = _connect.bind(null, {
   executeStatement,
   coercer,
   generateGuid,
+  isTimeoutError,
+  isHighloadError,
   crypto,
   ...store
 })

@@ -1,6 +1,13 @@
 import { symbol, Phases } from './constants'
 
-const properties = ({ promise }, sagaProperties) => {
+const properties = (
+  {
+    promise
+  }: {
+    promise: any
+  },
+  sagaProperties: any
+): any => {
   if (promise[symbol].phase !== Phases.SAGA) {
     throw new TypeError()
   }

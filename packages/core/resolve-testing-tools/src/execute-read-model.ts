@@ -1,9 +1,16 @@
 import { Phases, symbol } from './constants'
-import getSecretsManager from './secrets-manager'
 
-const init = async ({ promise, createQuery, transformEvents }) => {
+export const executeReadModel = async ({
+  promise,
+  createQuery,
+  transformEvents
+}: {
+  promise: any
+  createQuery: Function
+  transformEvents: Function
+}): Promise<any> => {
   if (promise[symbol].phase < Phases.RESOLVER) {
-    throw new TypeError()
+    throw new TypeError(promise[symbol].phase)
   }
 
   let queryExecutor = null
@@ -23,7 +30,7 @@ const init = async ({ promise, createQuery, transformEvents }) => {
       },
       snapshotAdapter: null,
       eventstoreAdapter: {
-        getSecretsManager
+        getSecretsManager: (): any => promise[symbol].secretsManager
       }
     })
 
@@ -45,15 +52,15 @@ const init = async ({ promise, createQuery, transformEvents }) => {
       modelName: promise[symbol].name,
       resolverName: promise[symbol].resolverName,
       resolverArgs: promise[symbol].resolverArgs,
-      jwtToken: promise[symbol].jwtToken
+      jwt: promise[symbol].jwt
     })
 
     promise[symbol].resolve(result)
   } catch (error) {
     promise[symbol].reject(error)
   } finally {
-    await queryExecutor.dispose()
+    if (queryExecutor) {
+      await queryExecutor.dispose()
+    }
   }
 }
-
-export default init

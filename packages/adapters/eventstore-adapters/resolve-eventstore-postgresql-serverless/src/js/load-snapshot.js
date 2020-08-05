@@ -6,7 +6,8 @@ const loadSnapshot = async (pool, snapshotKey) => {
     snapshotsTableName,
     executeStatement,
     escapeId,
-    escape
+    escape,
+    isTimeoutError
   } = pool
   if (snapshotKey == null || snapshotKey.constructor !== String) {
     throw new Error('Snapshot key must be string')
@@ -17,14 +18,28 @@ const loadSnapshot = async (pool, snapshotKey) => {
 
   let result = null
   for (let index = 0; ; index++) {
-    const rows = await executeStatement(
-      `SELECT substring("snapshotContent" from ${index * LOAD_CHUNK_SIZE +
-        1} for ${LOAD_CHUNK_SIZE})
-      AS "SnapshotContentChunk"
-      FROM ${databaseNameAsId}.${snapshotsTableNameAsId}
-      WHERE "snapshotKey" = ${escape(snapshotKey)} 
-      LIMIT 1`
-    )
+    let rows = null
+
+    while (true) {
+      try {
+        rows = await executeStatement(
+          `SELECT substring(
+            "snapshotContent" 
+            FROM ${index * LOAD_CHUNK_SIZE + 1}
+            FOR ${LOAD_CHUNK_SIZE}
+          ) AS "SnapshotContentChunk"
+          FROM ${databaseNameAsId}.${snapshotsTableNameAsId}
+          WHERE "snapshotKey" = ${escape(snapshotKey)} 
+          LIMIT 1`
+        )
+        break
+      } catch (err) {
+        if (isTimeoutError(err)) {
+          continue
+        }
+        throw err
+      }
+    }
 
     const content = rows.length > 0 ? rows[0].SnapshotContentChunk : null
     if (content == null) {

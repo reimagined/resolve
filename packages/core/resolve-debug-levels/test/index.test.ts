@@ -1,4 +1,4 @@
-import createLogger, { debugLevels } from '../src/index'
+import createLogger, { debugLevels, Debug } from '../src/index'
 
 test('resolve-debug-levels should work with provided DEBUG and DEBUG_LEVELS envs', () => {
   const debugPrinter = jest.fn()
@@ -8,7 +8,11 @@ test('resolve-debug-levels should work with provided DEBUG and DEBUG_LEVELS envs
     DEBUG_LEVEL: 'warn'
   }
   const namespace = 'namespace'
-  const logger = debugLevels(debugProvider, envProvider, namespace)
+  const logger = debugLevels(
+    (debugProvider as unknown) as Debug,
+    envProvider,
+    namespace
+  )
 
   logger.log('Log message')
   logger.error('Error message')
@@ -34,7 +38,11 @@ test('resolve-debug-levels should set DEBUG_LEVELS="warn" if DEBUG_LEVELS env is
     DEBUG: 'namespace'
   }
   const namespace = 'namespace'
-  const logger = debugLevels(debugProvider, envProvider, namespace)
+  const logger = debugLevels(
+    (debugProvider as unknown) as Debug,
+    envProvider,
+    namespace
+  )
 
   logger.log('Log message')
   logger.error('Error message')
@@ -65,7 +73,11 @@ test('resolve-debug-levels should set DEBUG="resolve:" if DEBUG env is not set',
     DEBUG_LEVEL: 'warn'
   }
   const namespace = 'resolve:test-namespace'
-  const logger = debugLevels(debugProvider, envProvider, namespace)
+  const logger = debugLevels(
+    (debugProvider as unknown) as Debug,
+    envProvider,
+    namespace
+  )
 
   expect(debugNamespaceEnabler).toBeCalledWith('resolve:*')
 

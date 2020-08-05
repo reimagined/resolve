@@ -128,7 +128,7 @@ void (async function() {
       }
       // mdis-stop watch
       // mdis-start runTestcafe
-      case 'test:functional': {
+      case 'test:e2e': {
         const resolveConfig = merge(baseConfig, testFunctionalConfig)
         await runTestcafe({
           resolveConfig,

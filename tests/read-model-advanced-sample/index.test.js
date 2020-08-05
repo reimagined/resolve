@@ -4,6 +4,8 @@ import resetReadModel from '../reset-read-model'
 
 import config from './config'
 
+jest.setTimeout(1000 * 60 * 5)
+
 describe('Read-model generic adapter API', () => {
   const {
     name,

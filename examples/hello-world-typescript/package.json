@@ -1,6 +1,6 @@
 {
   "name": "hello-world-typescript",
-  "version": "0.24.11",
+  "version": "0.24.16",
   "description": "used as a template for new reSolve applications",
   "private": true,
   "scripts": {
@@ -9,7 +9,7 @@
     "dev": "tsc && babel-node --extensions=.ts,.tsx run.ts dev",
     "start": "tsc && babel-node --extensions=.ts,.tsx run.ts start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
-    "test:functional": "tsc && babel-node --extensions=.ts,.tsx run.ts test:functional"
+    "test:e2e": "tsc && babel-node --extensions=.ts,.tsx run.ts test:e2e"
   },
   "dependencies": {
     "babel-loader": "8.1.0",
@@ -29,19 +29,19 @@
     "react-redux": "7.2.0",
     "redux-saga": "1.0.5",
     "redux-devtools-extension": "^2.13.8",
-    "resolve-redux": "0.24.11",
-    "resolve-command": "0.24.11",
-    "resolve-scripts": "0.24.11",
-    "resolve-query": "0.24.11",
-    "resolve-readmodel-base": "0.24.11",
-    "resolve-readmodel-lite": "0.24.11",
-    "resolve-readmodel-postgresql-serverless": "0.24.11",
-    "resolve-scheduler-local": "0.24.11",
-    "resolve-scheduler-cloud": "0.24.11",
-    "resolve-eventstore-lite": "0.24.11",
-    "resolve-eventstore-postgresql-serverless": "0.24.11",
-    "resolve-subscribe-mqtt": "0.24.11",
-    "resolve-subscribe-socket.io": "0.24.11"
+    "resolve-redux": "0.24.16",
+    "resolve-command": "0.24.16",
+    "resolve-scripts": "0.24.16",
+    "resolve-query": "0.24.16",
+    "resolve-readmodel-base": "0.24.16",
+    "resolve-readmodel-lite": "0.24.16",
+    "resolve-readmodel-postgresql-serverless": "0.24.16",
+    "resolve-scheduler-local": "0.24.16",
+    "resolve-scheduler-cloud": "0.24.16",
+    "resolve-eventstore-lite": "0.24.16",
+    "resolve-eventstore-postgresql-serverless": "0.24.16",
+    "resolve-subscribe-mqtt": "0.24.16",
+    "resolve-subscribe-socket.io": "0.24.16"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",

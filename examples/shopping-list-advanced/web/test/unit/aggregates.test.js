@@ -14,7 +14,7 @@ import {
 } from '../../common/event-types'
 import jwtSecret from '../../common/auth/jwt-secret'
 
-const jwtToken = JWT.sign(
+const jwt = JWT.sign(
   {
     username: 'root',
     id: '00000000-0000-0000-0000-000000000000',
@@ -33,7 +33,7 @@ describe('aggregates', () => {
 
       expect(
         shoppingListCommands.createShoppingList(state, command, {
-          jwt: jwtToken
+          jwt
         })
       ).toMatchObject({
         type: SHOPPING_LIST_CREATED,
@@ -49,7 +49,7 @@ describe('aggregates', () => {
 
       expect(
         shoppingListCommands.renameShoppingList(state, command, {
-          jwt: jwtToken
+          jwt
         })
       ).toMatchObject({
         type: SHOPPING_LIST_RENAMED,
@@ -63,7 +63,7 @@ describe('aggregates', () => {
 
       expect(
         shoppingListCommands.removeShoppingList(state, command, {
-          jwt: jwtToken
+          jwt
         })
       ).toMatchObject({
         type: SHOPPING_LIST_REMOVED,
@@ -77,7 +77,7 @@ describe('aggregates', () => {
 
       expect(
         shoppingListCommands.createShoppingItem(state, command, {
-          jwt: jwtToken
+          jwt
         })
       ).toMatchObject({
         type: SHOPPING_ITEM_CREATED,
@@ -91,7 +91,7 @@ describe('aggregates', () => {
 
       expect(
         shoppingListCommands.toggleShoppingItem(state, command, {
-          jwt: jwtToken
+          jwt
         })
       ).toMatchObject({
         type: SHOPPING_ITEM_TOGGLED,
@@ -105,7 +105,7 @@ describe('aggregates', () => {
 
       expect(
         shoppingListCommands.removeShoppingItem(state, command, {
-          jwt: jwtToken
+          jwt
         })
       ).toMatchObject({
         type: SHOPPING_ITEM_REMOVED,
@@ -129,9 +129,7 @@ describe('aggregates', () => {
         }
       }
 
-      expect(
-        userCommands.createUser(state, command, { jwt: jwtToken })
-      ).toMatchObject({
+      expect(userCommands.createUser(state, command, { jwt })).toMatchObject({
         type: USER_CREATED,
         payload: {
           username,
@@ -151,7 +149,7 @@ describe('aggregates', () => {
       const command = { payload: { username } }
 
       expect(
-        userCommands.updateUserName(state, command, { jwt: jwtToken })
+        userCommands.updateUserName(state, command, { jwt })
       ).toMatchObject({
         type: USER_NAME_UPDATED,
         payload: { username }
