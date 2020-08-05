@@ -11,12 +11,58 @@ To write a test, call the `givenEvents` function. This function takes an array o
 
 | Function                                              | Description                                                                                                                                                                                 |
 | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `aggregate({ aggregate })`                            | Runs an Aggregate's projection and command handlers.                                                                                                                                        |
+| `command(name, payload)`                              | Specifies a command to pass to the Aggregate.                                                                                                                                               |
 | `readModel({ name, projection, resolvers, adapter })` | Runs a Read Model projection on the given events and provides access to the Read Model's resolver functions.<br>A resolver function returns a promise that resolves to the response object. |
 | `as(jwt)`                                             | Specifies a JSON Web Token used for authentication.                                                                                                                                         |
 | `saga({ handlers, sideEffects, adapter, name })`      | Runs a Saga on the given events and provides access to a promise that resolves to an object containing information about the Saga's execution.                                              |
 | `properties(sagaProperties)`                          | Specifies Saga properties                                                                                                                                                                   |
+| `shouldProduceEvent( event )`                         | Succeeds if the specified event was produced in the given test case.                                                                                                                        |
 
 ## Testing Aggregates
+
+The code sample below demonstrates a **jest** test for an Aggregate:
+
+```js
+  ...
+  const aggregate:  = {
+    name: 'user',
+    projection: {
+      Init: () => ({
+        exist: false
+      }),
+      TEST_COMMAND_EXECUTED: (state: AggregateState) => ({
+        ...state,
+        exist: true
+      })
+    },
+    commands: {
+      create: (state, command, context) => {
+        if (context.jwt !== 'valid-user') {
+          throw Error('unauthorized user')
+        }
+        if (state.exist) {
+          throw Error('aggregate already exist')
+        }
+        return {
+          type: 'TEST_COMMAND_EXECUTED',
+          payload: {}
+        }
+      }
+    }
+  }
+
+  describe('with BDD assertions', () => {
+    test('expecting success command execution', () =>
+      givenEvents([])
+        .aggregate(aggregate)
+        .command('create', {})
+        .as('valid-user')
+        .shouldProduceEvent({
+          type: 'TEST_COMMAND_EXECUTED',
+          payload: {}
+        }))
+```
 
 ## Testing Read Models
 
