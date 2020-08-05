@@ -15,7 +15,7 @@
     "jsx": "react",
     "outDir": "lib",
     "declarationDir": "types",
-    "typeRoots": ["./node_modules/@types", "../../../node_modules/@types"]
+    "typeRoots": ["typings", "./node_modules/@types", "../../../node_modules/@types"]
   },
-  "include": ["src", "test"]
+  "include": ["src", "typings", "test"]
 }
