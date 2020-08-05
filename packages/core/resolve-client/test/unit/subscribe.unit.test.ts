@@ -14,8 +14,6 @@ jest.mock('../../src/empty-subscribe-adapter')
 let mFetch: any
 
 const mockInit = jest.fn()
-const mockSubscribe = jest.fn()
-const mockUnsubscribe = jest.fn()
 const mockCallback = jest.fn()
 const mockIsConnected = jest.fn().mockReturnValue(true)
 const mockClose = jest.fn()
@@ -25,9 +23,7 @@ const mockCreateSubscribeAdapter: jest.MockedFunction<CreateSubscribeAdapter> = 
   .mockReturnValue({
     init: mockInit,
     close: mockClose,
-    isConnected: mockIsConnected,
-    subscribeToTopics: mockSubscribe,
-    unsubscribeFromTopics: mockUnsubscribe
+    isConnected: mockIsConnected
   })
 mockCreateSubscribeAdapter.adapterName = 'adapter-name'
 
@@ -37,8 +33,6 @@ const clearMocks = (): void => {
   mockCreateSubscribeAdapter.mockClear()
   mockClose.mockClear()
   mockInit.mockClear()
-  mockSubscribe.mockClear()
-  mockUnsubscribe.mockClear()
   mockCallback.mockClear()
 }
 
@@ -77,12 +71,7 @@ describe('subscribe', () => {
   })
 
   test('init with params', async () => {
-    await connect(
-      context,
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
-    )
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
 
     expect(mockCreateSubscribeAdapter).toBeCalledWith({
       appId: 'application-id',
@@ -95,24 +84,9 @@ describe('subscribe', () => {
   })
 
   test('init only once with params', async () => {
-    await connect(
-      context,
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
-    )
-    await connect(
-      context,
-      ['aggregate-id-2'],
-      mockCallback,
-      'view-model'
-    )
-    await connect(
-      context,
-      ['aggregate-id-3'],
-      mockCallback,
-      'view-model'
-    )
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
+    await connect(context, ['aggregate-id-2'], mockCallback, 'view-model')
+    await connect(context, ['aggregate-id-3'], mockCallback, 'view-model')
 
     expect(mockCreateSubscribeAdapter).toBeCalledWith({
       appId: 'application-id',
@@ -121,92 +95,25 @@ describe('subscribe', () => {
       rootPath: '',
       url: 'http://options-url'
     })
-    expect(mockInit).toBeCalledTimes(1)
-  })
-
-  test('is subscribed', async () => {
-    await connect(
-      context,
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
-    )
-    await connect(
-      context,
-      ['aggregate-id-2'],
-      mockCallback,
-      'view-model'
-    )
-    await connect(
-      context,
-      ['aggregate-id-3'],
-      mockCallback,
-      'view-model'
-    )
     expect(mockInit).toBeCalledTimes(3)
   })
 
   test('is unsubscribed', async () => {
-    await connect(
-      context,
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
-    )
-    await connect(
-      context,
-      ['aggregate-id-2'],
-      mockCallback,
-      'view-model'
-    )
-    await connect(
-      context,
-      ['aggregate-id-3'],
-      mockCallback,
-      'view-model'
-    )
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
+    await connect(context, ['aggregate-id-2'], mockCallback, 'view-model')
+    await connect(context, ['aggregate-id-3'], mockCallback, 'view-model')
 
-    await disconnect(
-      context,
-      ['aggregate-id-1'],
-      'view-model',
-      mockCallback
-    )
-    await disconnect(
-      context,
-      ['aggregate-id-2'],
-      'view-model',
-      mockCallback
-    )
-    await disconnect(
-      context,
-      ['aggregate-id-3'],
-      'view-model',
-      mockCallback
-    )
+    await disconnect(context, ['aggregate-id-1'], 'view-model', mockCallback)
+    await disconnect(context, ['aggregate-id-2'], 'view-model', mockCallback)
+    await disconnect(context, ['aggregate-id-3'], 'view-model', mockCallback)
     expect(mockInit).toBeCalledTimes(3)
     expect(mockClose).toBeCalledTimes(3)
   })
 
   test('no multiple subscriptions', async () => {
-    await connect(
-      context,
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
-    )
-    await connect(
-      context,
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
-    )
-    await connect(
-      context,
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
-    )
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
     expect(mockInit).toBeCalledTimes(1)
   })
 })
@@ -261,12 +168,7 @@ describe('re-subscribe', () => {
   })
 
   test('refresh executed first time on subscribe adapter creation', async () => {
-    await connect(
-      context,
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
-    )
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
 
     expect(refreshSpy).not.toBeCalled()
 
@@ -282,12 +184,7 @@ describe('re-subscribe', () => {
     expect(setTimeout).not.toBeCalled()
     expect(refreshSpy).not.toBeCalled()
 
-    await connect(
-      context,
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
-    )
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
 
     expect(setTimeout).toHaveBeenCalledTimes(1) // initial call of resfresh
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 5000)
@@ -307,12 +204,7 @@ describe('re-subscribe', () => {
   })
 
   test('close, recreate and reschedule on disconnected', async () => {
-    await connect(
-      context,
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
-    )
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
 
     expect(refreshSpy).not.toBeCalled()
     expect(setTimeout).toHaveBeenCalledTimes(1)
