@@ -4,8 +4,8 @@ import jwtSecret from '../jwt_secret'
 import { USER_CREATED } from '../event-types'
 
 export default {
-  createUser: (state, command, jwtToken) => {
-    jsonwebtoken.verify(jwtToken, jwtSecret)
+  createUser: (state, command, jwt) => {
+    jsonwebtoken.verify(jwt, jwtSecret)
 
     const { login, passwordHash } = command.payload
 

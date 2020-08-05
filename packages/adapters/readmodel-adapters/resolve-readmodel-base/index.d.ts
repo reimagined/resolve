@@ -108,3 +108,6 @@ export declare type ResolveStore = {
   ) => Promise<void>
   delete: (tableName: string, searchCondition: SearchCondition) => Promise<void>
 }
+
+export const STOP_BATCH: symbol
+export const OMIT_BATCH: symbol

@@ -6,8 +6,8 @@ import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event-types'
 import jwtSecret from '../../auth/jwt_secret'
 
 export default {
-  createStory: (state, command, { jwt: jwtToken }) => {
-    const jwt = jsonwebtoken.verify(jwtToken, jwtSecret)
+  createStory: (state, command, { jwt: token }) => {
+    const jwt = jsonwebtoken.verify(token, jwtSecret)
 
     validate.fieldRequired(jwt, 'id')
     validate.stateIsAbsent(state, 'Story')
@@ -36,8 +36,8 @@ export default {
     }
   },
 
-  upvoteStory: (state, command, { jwt: jwtToken }) => {
-    const jwt = jsonwebtoken.verify(jwtToken, jwtSecret)
+  upvoteStory: (state, command, { jwt: token }) => {
+    const jwt = jsonwebtoken.verify(token, jwtSecret)
 
     validate.fieldRequired(jwt, 'id')
     validate.stateExists(state, 'Story')
@@ -51,8 +51,8 @@ export default {
     }
   },
 
-  unvoteStory: (state, command, { jwt: jwtToken }) => {
-    const jwt = jsonwebtoken.verify(jwtToken, jwtSecret)
+  unvoteStory: (state, command, { jwt: token }) => {
+    const jwt = jsonwebtoken.verify(token, jwtSecret)
 
     validate.fieldRequired(jwt, 'id')
     validate.stateExists(state, 'Story')
