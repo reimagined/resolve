@@ -1,6 +1,6 @@
 ---
-id: test-readmodels
-title: Test Read Models
+id: testing
+title: Testing
 ---
 
 ## Testing Tools
@@ -12,9 +12,11 @@ To write a test, call the `givenEvents` function. This function takes an array o
 | Function                                              | Description                                                                                                                                                                                 |
 | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `readModel({ name, projection, resolvers, adapter })` | Runs a Read Model projection on the given events and provides access to the Read Model's resolver functions.<br>A resolver function returns a promise that resolves to the response object. |
-| `as(jwt)`                                             | Specifies a JSON Web Token used for authentication.                                                                                                                                                    |
+| `as(jwt)`                                             | Specifies a JSON Web Token used for authentication.                                                                                                                                         |
 | `saga({ handlers, sideEffects, adapter, name })`      | Runs a Saga on the given events and provides access to a promise that resolves to an object containing information about the Saga's execution.                                              |
 | `properties(sagaProperties)`                          | Specifies Saga properties                                                                                                                                                                   |
+
+## Testing Aggregates
 
 ## Testing Read Models
 
