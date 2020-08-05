@@ -425,7 +425,9 @@ const executeCommand = async (
   pool: CommandPool,
   command: Command
 ): Promise<CommandResult> => {
-  const { jwt } = command
+  const { jwt: actualJwt, jwtToken: deprecatedJwt } = command
+
+  const jwt = actualJwt || deprecatedJwt
 
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
