@@ -92,32 +92,44 @@ const createQuery = ({
 
   const read = ({
     modelName,
-    jwt,
+    jwt: actualJwt,
+    jwtToken: deprecatedJwt,
     ...options
   }: {
     modelName: string
     jwt: string
+    jwtToken: string
     options: any[]
   }): any => {
     checkModelExists(modelName)
     const [modelOptions, modelArgs] = parseOptions(options)
 
-    return models[modelName].read(modelOptions, modelArgs, jwt)
+    return models[modelName].read(
+      modelOptions,
+      modelArgs,
+      actualJwt || deprecatedJwt
+    )
   }
 
   const readAndSerialize = ({
     modelName,
-    jwt,
+    jwt: actualJwt,
+    jwtToken: deprecatedJwt,
     ...options
   }: {
     modelName: string
     jwt: string
+    jwtToken: string
     options: any[]
   }): any => {
     checkModelExists(modelName)
     const [modelOptions, modelArgs] = parseOptions(options)
 
-    return models[modelName].readAndSerialize(modelOptions, modelArgs, jwt)
+    return models[modelName].readAndSerialize(
+      modelOptions,
+      modelArgs,
+      actualJwt || deprecatedJwt
+    )
   }
 
   const updateByEvents = ({
