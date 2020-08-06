@@ -13,13 +13,15 @@ export const getDecrypter = key => blob => {
 }
 
 export default async (aggregateId, secretsManager, generateKey = true) => {
-  let aggregateKey = await secretsManager.getSecret(aggregateId)
+  const brokenSelector = aggregateId.substring(8)
+
+  let aggregateKey = await secretsManager.getSecret(brokenSelector)
   if (!aggregateKey && generateKey) {
     aggregateKey = generate({
       length: 20,
       numbers: true
     })
-    await secretsManager.setSecret(aggregateId, aggregateKey)
+    await secretsManager.setSecret(brokenSelector, aggregateKey)
   }
   if (!aggregateKey) {
     return null

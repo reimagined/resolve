@@ -2,6 +2,7 @@ import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 import getLog from './js/get-log'
 import initEventStore from './js/init'
 import { AdapterPool } from './types'
+import { AGGREGATE_ID_SQL_TYPE, LONG_STRING_SQL_TYPE } from './js/constants'
 
 const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
   const { secretsTableName, escapeId, databaseName, executeStatement } = pool
@@ -26,7 +27,7 @@ const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
     await executeStatement(
       `CREATE TABLE IF NOT EXISTS ${databaseNameAsId}.${secretsTableNameAsId} (
         "idx" BIGSERIAL,
-        "id" uuid NOT NULL PRIMARY KEY,
+        "id" ${AGGREGATE_ID_SQL_TYPE} NOT NULL PRIMARY KEY,
         "secret" text COLLATE pg_catalog."default"
        );
        CREATE UNIQUE INDEX IF NOT EXISTS ${globalIndexName}
