@@ -15862,6 +15862,13 @@ resolve-cloud@*:
     semver "^6.3.0"
     yargs "^14.0.0"
 
+resolve-core@0.24.16:
+  version "0.24.16"
+  resolved "http://npm.resolve-dev.ml:10080/resolve-core/-/resolve-core-0.24.16.tgz#2bc9f7eca6f2e615391bd10dd881fa02f4afd868"
+  integrity sha512-M5FTHAGAUFnsvAJ8TDvfK04KQonbIrMQyzR7rhdeEERf5gxuxHHDaG65kk5eGtTl1alxm80eNCnBZ4mvfxum/A==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+
 resolve-cwd@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-1.0.0.tgz#4eaeea41ed040d1702457df64a42b2b07d246f9f"
@@ -15882,6 +15889,34 @@ resolve-cwd@^3.0.0:
   integrity sha512-OrZaX2Mb+rJCpH/6CpSqt9xFVpN++x01XnN2ie9g6P5/3xelLAkXWVADpdz1IHD/KFfEXyE6V0U01OQ3UO2rEg==
   dependencies:
     resolve-from "^5.0.0"
+
+resolve-debug-levels@0.24.16:
+  version "0.24.16"
+  resolved "http://npm.resolve-dev.ml:10080/resolve-debug-levels/-/resolve-debug-levels-0.24.16.tgz#e32bbfe2fad228bb75b66d53b9ddcb01b70cb72d"
+  integrity sha512-TF3yTLsWWljxnIxLwWSd4ZkMZ4A519Aeid+vsbFzGjOgf93KP4XnFaKXqleL0iViIXbQZ/56mK/gbTwya3PCKA==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    debug "4.1.1"
+
+resolve-eventstore-base@0.24.16:
+  version "0.24.16"
+  resolved "http://npm.resolve-dev.ml:10080/resolve-eventstore-base/-/resolve-eventstore-base-0.24.16.tgz#f0e410677e829da213103d1f41e1fcf21062466d"
+  integrity sha512-0i+PXx4rMJjqA2Joz0nYfvBVSN90RPP/K4rQ8GB6kaXLHDbKccCn8olke9KeVgDoGj4pDthIWWhWnkZRR1uQ8Q==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    resolve-debug-levels "0.24.16"
+
+resolve-eventstore-lite@0.24.16:
+  version "0.24.16"
+  resolved "http://npm.resolve-dev.ml:10080/resolve-eventstore-lite/-/resolve-eventstore-lite-0.24.16.tgz#cf015ec93a6f3465a8db77bd82d696777ede74c1"
+  integrity sha512-C7VhHjNFs7JzwhuDFSheLUFC1bsG4tn6/+8KFY4uLw1LC3O7qGTPcNRM6w6acbhrnsivkB5YPKAovPxm/O7vZg==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    resolve-core "0.24.16"
+    resolve-debug-levels "0.24.16"
+    resolve-eventstore-base "0.24.16"
+    sqlite "^3.0.2"
+    tmp "^0.1.0"
 
 resolve-from@^2.0.0:
   version "2.0.0"
@@ -15914,6 +15949,47 @@ resolve-pathname@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/resolve-pathname/-/resolve-pathname-3.0.0.tgz#99d02224d3cf263689becbb393bc560313025dcd"
   integrity sha512-C7rARubxI8bXFNB/hqcp/4iUeIXJhJZvFPFPiSPRnhU5UPxzMFIl+2E6yY6c4k9giDJAhtV+enfA+G89N6Csng==
+
+resolve-query@0.24.16:
+  version "0.24.16"
+  resolved "http://npm.resolve-dev.ml:10080/resolve-query/-/resolve-query-0.24.16.tgz#2d151549a56fda7fb7b9507899779330fbd18d94"
+  integrity sha512-sX5w99LTk2iPA+dnXfYqBKci1pWq7EXSJZ1notUhUxkvHBZ2X6mboGBwTHluzfThlzNW+B4VjqxTEUdeKqGS6A==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    resolve-debug-levels "0.24.16"
+    resolve-eventstore-base "0.24.16"
+    resolve-readmodel-base "0.24.16"
+
+resolve-readmodel-base@0.24.16:
+  version "0.24.16"
+  resolved "http://npm.resolve-dev.ml:10080/resolve-readmodel-base/-/resolve-readmodel-base-0.24.16.tgz#977a3fd90edc107a53e59925383e2fa03d4cd36d"
+  integrity sha512-JkQAlegj6SvlYXaT8JBM6AnCWMdS/RVBp3d3bgXC82ajzbd02SJUgi+y4e8uppx+BM4FWrqTmG3bnp32RWwvAQ==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    uuid "^3.3.2"
+
+resolve-readmodel-lite@0.24.16:
+  version "0.24.16"
+  resolved "http://npm.resolve-dev.ml:10080/resolve-readmodel-lite/-/resolve-readmodel-lite-0.24.16.tgz#8d8d083ee5088da5e41fca05ed83fe4db2fa5da9"
+  integrity sha512-LoGGoFdmUzlLwr6j7ir33LGvsMO16XLZx+oGufhgzzBYkfFrxyNP7k6nbb2w+iTwK+3zPSgKGUBwxvag3FETZw==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    resolve-readmodel-base "0.24.16"
+    sqlite "^3.0.2"
+    tmp "^0.1.0"
+    uuid "^3.3.2"
+
+resolve-testing-tools@0.24.16:
+  version "0.24.16"
+  resolved "http://npm.resolve-dev.ml:10080/resolve-testing-tools/-/resolve-testing-tools-0.24.16.tgz#39ea6fe34196da05afbf7505289717691c789984"
+  integrity sha512-nQjcgJUoNBNBzVsRNmJhfUXni+BhSnVD9s8wCs/51w035ffqbfLyMnVYqrQF0Rw3ql+VwX9psaJd8xlkj/9CHQ==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    jest "26.0.1"
+    resolve-eventstore-lite "0.24.16"
+    resolve-query "0.24.16"
+    resolve-readmodel-lite "0.24.16"
+    sinon "7.2.2"
 
 resolve-url@^0.2.1:
   version "0.2.1"
