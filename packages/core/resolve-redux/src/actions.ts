@@ -1,11 +1,4 @@
 import {
-  SUBSCRIBE_TOPIC_REQUEST,
-  SUBSCRIBE_TOPIC_SUCCESS,
-  SUBSCRIBE_TOPIC_FAILURE,
-  UNSUBSCRIBE_TOPIC_REQUEST,
-  UNSUBSCRIBE_TOPIC_SUCCESS,
-  UNSUBSCRIBE_TOPIC_FAILURE,
-  DISPATCH_TOPIC_MESSAGE,
   HOT_MODULE_REPLACEMENT,
   UPDATE_JWT,
   LOGOUT,
@@ -13,11 +6,6 @@ import {
   AUTH_SUCCESS,
   AUTH_FAILURE
 } from './action-types'
-
-export const dispatchTopicMessage = (message: string) => ({
-  type: DISPATCH_TOPIC_MESSAGE,
-  message
-})
 
 export const hotModuleReplacement = (hotModuleReplacementId: any) => ({
   type: HOT_MODULE_REPLACEMENT,

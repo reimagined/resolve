@@ -1,7 +1,7 @@
 import { put } from 'redux-saga/effects'
 
-import { API } from './create_api'
-import { loadViewModelStateSuccess, loadViewModelStateFailure } from './actions'
+import { API } from '../create_api'
+import { queryViewModelSuccess, queryViewModelFailure } from './actions'
 
 const loadViewModelStateSaga = function*(
   {
@@ -37,7 +37,7 @@ const loadViewModelStateSaga = function*(
     const state = deserializeState(serializedState)
 
     yield put(
-      loadViewModelStateSuccess(
+      queryViewModelSuccess(
         viewModelName,
         aggregateIds,
         aggregateArgs,
@@ -47,7 +47,7 @@ const loadViewModelStateSaga = function*(
     )
   } catch (error) {
     yield put(
-      loadViewModelStateFailure(
+      queryViewModelFailure(
         viewModelName,
         aggregateIds,
         aggregateArgs,

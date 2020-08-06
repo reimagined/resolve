@@ -10,7 +10,8 @@ import {
   SUBSCRIBE_TOPIC_FAILURE,
   UNSUBSCRIBE_TOPIC_REQUEST,
   UNSUBSCRIBE_TOPIC_SUCCESS,
-  UNSUBSCRIBE_TOPIC_FAILURE
+  UNSUBSCRIBE_TOPIC_FAILURE,
+  DISPATCH_TOPIC_MESSAGE
 } from '../action-types'
 
 type ViewModelAction = {
@@ -206,4 +207,15 @@ export const unsubscribeTopicFailure = (
   topicName,
   topicId,
   error
+})
+
+export type DispatchTopicMessageAction = {
+  type: typeof DISPATCH_TOPIC_MESSAGE
+  message: string
+}
+export const dispatchTopicMessage = (
+  message: string
+): DispatchTopicMessageAction => ({
+  type: DISPATCH_TOPIC_MESSAGE,
+  message
 })

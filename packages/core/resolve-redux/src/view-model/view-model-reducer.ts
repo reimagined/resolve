@@ -1,19 +1,19 @@
-import getHash from './get-hash'
+import getHash from '../get-hash'
 
 import {
-  LOAD_VIEWMODEL_STATE_REQUEST,
-  LOAD_VIEWMODEL_STATE_SUCCESS,
-  LOAD_VIEWMODEL_STATE_FAILURE,
+  QUERY_VIEWMODEL_REQUEST,
+  QUERY_VIEWMODEL_SUCCESS,
+  QUERY_VIEWMODEL_FAILURE,
   DROP_VIEWMODEL_STATE,
   CONNECT_VIEWMODEL,
   DISCONNECT_VIEWMODEL
-} from './action-types'
+} from '../action-types'
 
 import {
   connectorMetaMap,
   aggregateVersionsMap,
   lastTimestampMap
-} from './constants'
+} from '../constants'
 
 export const dropKey = (state: any, key: any): any => {
   const nextState = { ...state }
@@ -22,10 +22,10 @@ export const dropKey = (state: any, key: any): any => {
   return nextState
 }
 
-export default function createViewModelsReducer(viewModels: any[]): any {
+export const create = (viewModels: any[]): any => {
   const handlers: { [key: string]: any } = {}
 
-  handlers[LOAD_VIEWMODEL_STATE_REQUEST] = (state: any, action: any): any => {
+  handlers[QUERY_VIEWMODEL_REQUEST] = (state: any, action: any): any => {
     const viewModelName = action.viewModelName
     const aggregateIds = getHash(action.aggregateIds)
     const aggregateArgs = getHash(action.aggregateArgs)
@@ -52,7 +52,7 @@ export default function createViewModelsReducer(viewModels: any[]): any {
     }
   }
 
-  handlers[LOAD_VIEWMODEL_STATE_SUCCESS] = (state: any, action: any): any => {
+  handlers[QUERY_VIEWMODEL_SUCCESS] = (state: any, action: any): any => {
     const viewModelName = action.viewModelName
     const aggregateIds = getHash(action.aggregateIds)
     const aggregateArgs = getHash(action.aggregateArgs)
@@ -84,7 +84,7 @@ export default function createViewModelsReducer(viewModels: any[]): any {
     }
   }
 
-  handlers[LOAD_VIEWMODEL_STATE_FAILURE] = (state: any, action: any): any => {
+  handlers[QUERY_VIEWMODEL_FAILURE] = (state: any, action: any): any => {
     const viewModelName = action.viewModelName
     const aggregateIds = getHash(action.aggregateIds)
     const aggregateArgs = getHash(action.aggregateArgs)

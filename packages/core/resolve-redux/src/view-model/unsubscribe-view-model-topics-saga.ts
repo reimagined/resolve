@@ -4,7 +4,7 @@ import { unsubscribeTopicRequest } from './actions'
 import {
   UNSUBSCRIBE_TOPIC_FAILURE,
   UNSUBSCRIBE_TOPIC_SUCCESS
-} from './action-types'
+} from '../action-types'
 
 const unsubscribeViewModelTopicsSaga = function*({
   viewModels,

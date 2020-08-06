@@ -1,18 +1,18 @@
 import { fork, takeEvery } from 'redux-saga/effects'
 
 import {
-  LOAD_VIEWMODEL_STATE_REQUEST,
+  QUERY_VIEWMODEL_REQUEST,
   //  QUERY_READMODEL_REQUEST,
   SEND_COMMAND_REQUEST,
   AUTH_REQUEST,
   LOGOUT
 } from './action-types'
-import loadViewModelStateSaga from './load_view_model_state_saga'
+//import loadViewModelStateSaga from './load_view_model_state_saga'
 //import loadReadModelStateSaga from './read-model/load_read_model_state_saga'
 import sendCommandSaga from './command/send-command-saga'
-import viewModelSaga from './view_models_saga'
+import viewModelSaga from './view-model/view-models-saga'
 import readModelSaga from './read-model/read-models-saga'
-import subscribeSaga from './subscribe_saga'
+import subscribeSaga from './view-model/subscribe-saga'
 import authSaga from './auth_saga'
 import logoutSaga from './logout_saga'
 import { RootSagaArgs } from './types'

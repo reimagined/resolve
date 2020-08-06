@@ -1,31 +1,17 @@
 import { take, put, delay } from 'redux-saga/effects'
 
-import getHash from './get-hash'
-import eventListenerSaga from './event_listener_saga'
-import { subscribeTopicRequest, loadViewModelStateRequest } from './actions'
+import getHash from '../get-hash'
+import eventListenerSaga from './event-listener-saga'
+import { subscribeTopicRequest, queryViewModelRequest } from './actions'
 import {
   CONNECT_VIEWMODEL,
   DISCONNECT_VIEWMODEL,
   SUBSCRIBE_TOPIC_SUCCESS,
   SUBSCRIBE_TOPIC_FAILURE,
-  LOAD_VIEWMODEL_STATE_FAILURE,
-  LOAD_VIEWMODEL_STATE_SUCCESS
-} from './action-types'
-import { HttpError } from './create_api'
-
-/*
-  Saga is launched on action `CONNECT_VIEWMODEL`, emitted by view model connector.
-  If view model with supposed options had already been fetched, do nothing.
-  Saga performs view model state fetching and subscribe to topics Array<{aggregateId, eventType}>
-  If launches `event_listener_saga`.
-  Saga ends when view model state is fetched and all necessary topics are acknowledged.
-  View model state is fetched by `load_view_model_state_saga`, interaction
-  performs through following actions: `LOAD_VIEWMODEL_STATE_REQUEST`,
-  `LOAD_VIEWMODEL_STATE_SUCCESS` and `LOAD_VIEWMODEL_STATE_FAILURE`.
-  Subscription to necessary topics are performed by `subscribe_saga`, interaction
-  performs by following actions: `SUBSCRIBE_TOPIC_REQUEST`,
-  `SUBSCRIBE_TOPIC_SUCCESS` and `SUBSCRIBE_TOPIC_FAILURE`.
-*/
+  QUERY_VIEWMODEL_SUCCESS,
+  QUERY_VIEWMODEL_FAILURE
+} from '../action-types'
+import { HttpError } from '../create_api'
 
 const connectViewModelSaga = function*(
   sagaArgs: any,
@@ -124,25 +110,23 @@ const connectViewModelSaga = function*(
   )
 
   while (true) {
-    yield put(
-      loadViewModelStateRequest(viewModelName, aggregateIds, aggregateArgs)
-    )
+    yield put(queryViewModelRequest(viewModelName, aggregateIds, aggregateArgs))
 
     const loadViewModelStateResultAction = yield take(
       (action: any): any =>
-        (action.type === LOAD_VIEWMODEL_STATE_SUCCESS ||
-          action.type === LOAD_VIEWMODEL_STATE_FAILURE) &&
+        (action.type === QUERY_VIEWMODEL_SUCCESS ||
+          action.type === QUERY_VIEWMODEL_FAILURE) &&
         action.viewModelName === viewModelName &&
         `${getHash(action.aggregateIds)}${getHash(action.aggregateArgs)}` ===
           connectionId
     )
 
-    if (loadViewModelStateResultAction.type === LOAD_VIEWMODEL_STATE_SUCCESS) {
+    if (loadViewModelStateResultAction.type === QUERY_VIEWMODEL_SUCCESS) {
       break
     }
 
     if (
-      loadViewModelStateResultAction.type === LOAD_VIEWMODEL_STATE_FAILURE &&
+      loadViewModelStateResultAction.type === QUERY_VIEWMODEL_FAILURE &&
       loadViewModelStateResultAction.error instanceof HttpError
     ) {
       // eslint-disable-next-line no-console

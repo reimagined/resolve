@@ -1,7 +1,6 @@
-import createViewModelsReducer from './create_view_models_reducer'
 import createJwtReducer from './create_jwt_reducer'
 import connectReadModel from './read-model/connect-read-model'
-import connectViewModel from './connect_view_model'
+import connectViewModel from './view-model/connect-view-model'
 import connectResolveAdvanced from './connect_resolve_advanced'
 import createApi from './create_api'
 import createConnectionManager from './create_connection_manager'
@@ -31,7 +30,6 @@ const internal = {
 }
 
 export {
-  createViewModelsReducer,
   createJwtReducer,
   connectViewModel,
   connectReadModel,

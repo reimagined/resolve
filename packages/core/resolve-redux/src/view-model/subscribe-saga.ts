@@ -1,12 +1,12 @@
 import { put, takeEvery, fork, delay } from 'redux-saga/effects'
 
-import createConnectionManager from './create_connection_manager'
-import createEmptySubscribeAdapter from './empty_subscribe_adapter'
+import createConnectionManager from '../create_connection_manager'
+import createEmptySubscribeAdapter from '../empty_subscribe_adapter'
 
 import {
   SUBSCRIBE_TOPIC_REQUEST,
   UNSUBSCRIBE_TOPIC_REQUEST
-} from './action-types'
+} from '../action-types'
 import {
   subscribeTopicSuccess,
   subscribeTopicFailure,
@@ -14,7 +14,7 @@ import {
   unsubscribeTopicFailure,
   dispatchTopicMessage
 } from './actions'
-import { API } from './create_api'
+import { API } from '../create_api'
 
 const SUBSCRIBE_ADAPTER_POLL_INTERVAL = 5000
 

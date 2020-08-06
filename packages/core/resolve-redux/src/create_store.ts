@@ -6,7 +6,7 @@ import {
 } from 'redux'
 import uuid from 'uuid/v4'
 
-import createViewModelsReducer from './create_view_models_reducer'
+import { create as createViewModelReducer } from './view-model/view-model-reducer'
 import { create as createReadModelReducer } from './read-model/read-model-reducer'
 import createJwtReducer from './create_jwt_reducer'
 import createResolveMiddleware from './create-resolve-middleware'
@@ -37,7 +37,7 @@ const createStore = ({
 
   const combinedReducers = combineReducers({
     ...reducers,
-    viewModels: createViewModelsReducer(viewModels),
+    viewModels: createViewModelReducer(viewModels),
     readModels: createReadModelReducer(),
     jwt: createJwtReducer()
   })
