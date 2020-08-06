@@ -63,7 +63,7 @@ The code sample below demonstrates a **jest** test for an Aggregate:
         }))
 ```
 
-The `aggregate` configuration object should have the following fields:
+The `aggregate` function's parameter should be an object with the following fields:
 
 | Field                    | Description                         |
 | ------------------------ | ----------------------------------- |
