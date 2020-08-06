@@ -4,9 +4,8 @@ import { bindActionCreators, Dispatch } from 'redux'
 import hoistNonReactStatic from 'hoist-non-react-statics'
 
 import * as actions from './actions'
-import { connectorMetaMap } from './constants'
-import getHash from './get-hash'
-import connectResolveAdvanced from './connect_resolve_advanced'
+import getHash from '../get-hash'
+import connectResolveAdvanced from '../connect_resolve_advanced'
 
 export const mapDispatchToConnectorProps = (dispatch: Dispatch) =>
   bindActionCreators(
@@ -39,8 +38,9 @@ export const mapStateToConnectorProps = (
   const aggregateIds = getHash(connectorOptions.aggregateIds)
   const aggregateArgs = getHash(connectorOptions.aggregateArgs)
 
-  const connectorMeta =
-    state.viewModels &&
+  const connectorMeta = { isLoading: false, isFailure: false, error: null }
+  /*
+  state.viewModels &&
     state.viewModels[connectorMetaMap] &&
     state.viewModels[connectorMetaMap][
       `${viewModelName}${aggregateIds}${aggregateArgs}`
@@ -48,7 +48,7 @@ export const mapStateToConnectorProps = (
       ? state.viewModels[connectorMetaMap][
           `${viewModelName}${aggregateIds}${aggregateArgs}`
         ]
-      : {}
+      : {} */
 
   const { isLoading, isFailure } = connectorMeta
 
