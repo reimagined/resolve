@@ -17,7 +17,6 @@ To write a test, call the `givenEvents` function. This function takes an array o
 | `as(jwt)`                                             | Specifies a JSON Web Token used for authentication.                                                                                                                                         |
 | `saga({ handlers, sideEffects, adapter, name })`      | Runs a Saga on the given events and provides access to a promise that resolves to an object containing information about the Saga's execution.                                              |
 | `properties(sagaProperties)`                          | Specifies Saga properties                                                                                                                                                                   |
-| `shouldProduceEvent( event )`                         | Succeeds if the specified event was produced in the given test case.                                                                                                                        |
 
 ## Testing Aggregates
 
@@ -63,6 +62,22 @@ The code sample below demonstrates a **jest** test for an Aggregate:
           payload: {}
         }))
 ```
+
+The `aggregate` configuration object should have the following fields:
+
+| Field                    | Description                         |
+| ------------------------ | ----------------------------------- |
+| `name`                   | The Aggregate's name.               |
+| `projection`             | The projection definition.          |
+| `commands`               | The definition of command handlers. |
+| `encryption`_(optional)_ | An encryption factory function.     |
+
+When you add an `aggregate` function to the test case, it allows you to use the following assertions:
+
+| Assertion                     | Description                                                          |
+| ----------------------------- | -------------------------------------------------------------------- |
+| `shouldProduceEvent( event )` | Succeeds if the specified event was produced in the given test case. |
+| `shouldThrow( event )`        | Succeeds if the Aggregate throws an exception.                       |
 
 ## Testing Read Models
 
