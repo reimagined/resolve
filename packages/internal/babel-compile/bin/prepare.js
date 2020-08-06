@@ -1,6 +1,7 @@
 const { exec: execCallback } = require('child_process')
 
 const tscPath = require.resolve('typescript/bin/tsc')
+const configFile = 'tsconfig.prod.json'
 
 const exec = (cmd, opts = {}) =>
   new Promise((resolve, reject) => {
@@ -13,7 +14,9 @@ const exec = (cmd, opts = {}) =>
 const prepare = async ({ directory, sourceType }) => {
   if (sourceType === 'ts') {
     try {
-      return exec(`node "${tscPath}"`, { cwd: directory })
+      return exec(`node "${tscPath}" --project ${configFile}`, {
+        cwd: directory
+      })
     } catch (error) {
       throw Error('')
     }
