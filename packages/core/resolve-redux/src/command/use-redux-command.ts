@@ -148,31 +148,26 @@ function useReduxCommand<T>(
   }
 
   const dispatch = useDispatch()
-  const executor =
-    typeof command === 'function'
-      ? useCommand<T>(command, actualOptions, callback, actualDependencies)
-      : useCommand(command, actualOptions, callback, actualDependencies)
+  const executor = useCommand(
+    (command: Command) => command,
+    actualOptions,
+    callback,
+    actualDependencies
+  )
 
   return {
     execute: (data: T): void => {
-      console.log(`executing command: ${JSON.stringify(data)}`)
       const dispatchRequest = (command: Command): void => {
         if (typeof request === 'function') {
           dispatch(request(command))
         }
       }
 
-      if (typeof command === 'function') {
-        dispatchRequest(command(data))
-        const narrowedExecutor = executor as HookExecutor<T, void>
-        console.log(`executing builder executor`)
-        narrowedExecutor(data)
-      } else {
-        dispatchRequest(command)
-        const narrowedExecutor = executor as HookExecutor<void, void>
-        console.log(`executing direct executor`)
-        narrowedExecutor()
-      }
+      const plainCommand: Command =
+        typeof command === 'function' ? command(data) : command
+
+      dispatchRequest(plainCommand)
+      executor(plainCommand)
     }
   }
 }
