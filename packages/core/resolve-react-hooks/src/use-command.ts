@@ -100,18 +100,14 @@ function useCommand<T>(
     [command, actualOptions, actualCallback].filter(i => i)
 
   if (typeof command === 'function') {
-    console.log(`builder mode`)
     return useCallback(
       (data: T): Promise<CommandResult> | void => {
-        console.log(`builder mode: ${JSON.stringify(command(data))}`)
         return client.command(command(data), actualOptions, actualCallback)
       },
       [client, ...actualDependencies]
     )
   }
-  console.log(`command mode`)
   return useCallback((): Promise<CommandResult> | void => {
-    console.log(`command mode: ${JSON.stringify(command)}`)
     return client.command(command, actualOptions, actualCallback)
   }, [client, ...actualDependencies])
 }
