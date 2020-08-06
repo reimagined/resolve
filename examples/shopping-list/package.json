@@ -36,8 +36,6 @@
     "resolve-scripts": "0.24.20",
     "resolve-eventstore-postgresql-serverless": "0.24.20",
     "resolve-eventstore-lite": "0.24.20",
-    "resolve-subscribe-mqtt": "0.24.20",
-    "resolve-subscribe-socket.io": "0.24.20",
     "resolve-module-admin": "0.24.20",
     "uuid": "3.3.2"
   },

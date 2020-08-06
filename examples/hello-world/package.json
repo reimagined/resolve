@@ -29,8 +29,6 @@
     "resolve-eventstore-lite": "0.24.20",
     "resolve-readmodel-lite": "0.24.20",
     "resolve-readmodel-postgresql-serverless": "0.24.20",
-    "resolve-subscribe-mqtt": "0.24.20",
-    "resolve-subscribe-socket.io": "0.24.20",
     "redux-devtools-extension": "2.13.7"
   },
   "devDependencies": {

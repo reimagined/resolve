@@ -33,8 +33,6 @@
     "resolve-eventstore-lite": "0.24.20",
     "resolve-readmodel-lite": "0.24.20",
     "resolve-readmodel-postgresql-serverless": "0.24.20",
-    "resolve-subscribe-mqtt": "0.24.20",
-    "resolve-subscribe-socket.io": "0.24.20",
     "rxjs": "6.5.3",
     "@types/core-js": "2.5.2",
     "@types/node": "12.12.0",
