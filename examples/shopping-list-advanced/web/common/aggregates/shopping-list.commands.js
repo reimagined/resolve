@@ -14,8 +14,8 @@ import {
 } from '../event-types'
 
 export default {
-  createShoppingList: (state, { payload: { name } }, { jwt: jwtToken }) => {
-    const { id: userId } = jwt.verify(jwtToken, jwtSecret)
+  createShoppingList: (state, { payload: { name } }, { jwt: token }) => {
+    const { id: userId } = jwt.verify(token, jwtSecret)
 
     validation.stateIsAbsent(state, 'Shopping List')
     validation.fieldRequired({ name }, 'name')
@@ -25,8 +25,8 @@ export default {
       payload: { name, userId }
     }
   },
-  renameShoppingList: (state, { payload: { name } }, { jwt: jwtToken }) => {
-    const { id: userId } = jwt.verify(jwtToken, jwtSecret)
+  renameShoppingList: (state, { payload: { name } }, { jwt: token }) => {
+    const { id: userId } = jwt.verify(token, jwtSecret)
 
     validation.stateExists(state, 'Shopping List')
     validation.fieldRequired({ name }, 'name')
@@ -36,8 +36,8 @@ export default {
       payload: { name, userId }
     }
   },
-  removeShoppingList: (state, command, { jwt: jwtToken }) => {
-    const { id: userId } = jwt.verify(jwtToken, jwtSecret)
+  removeShoppingList: (state, command, { jwt: token }) => {
+    const { id: userId } = jwt.verify(token, jwtSecret)
 
     validation.stateExists(state, 'Shopping List')
 
@@ -46,8 +46,8 @@ export default {
       payload: { userId }
     }
   },
-  createShoppingItem: (state, { payload: { id, text } }, { jwt: jwtToken }) => {
-    const { id: userId } = jwt.verify(jwtToken, jwtSecret)
+  createShoppingItem: (state, { payload: { id, text } }, { jwt: token }) => {
+    const { id: userId } = jwt.verify(token, jwtSecret)
 
     validation.stateExists(state, 'Shopping List')
     validation.fieldRequired({ id }, 'id')
@@ -58,8 +58,8 @@ export default {
       payload: { id, text, userId }
     }
   },
-  toggleShoppingItem: (state, { payload: { id } }, { jwt: jwtToken }) => {
-    const { id: userId } = jwt.verify(jwtToken, jwtSecret)
+  toggleShoppingItem: (state, { payload: { id } }, { jwt: token }) => {
+    const { id: userId } = jwt.verify(token, jwtSecret)
 
     validation.stateExists(state, 'Shopping List')
     validation.fieldRequired({ id }, 'id')
@@ -69,8 +69,8 @@ export default {
       payload: { id, userId }
     }
   },
-  removeShoppingItem: (state, { payload: { id } }, { jwt: jwtToken }) => {
-    const { id: userId } = jwt.verify(jwtToken, jwtSecret)
+  removeShoppingItem: (state, { payload: { id } }, { jwt: token }) => {
+    const { id: userId } = jwt.verify(token, jwtSecret)
 
     validation.stateExists(state, 'Shopping List')
     validation.fieldRequired({ id }, 'id')
@@ -83,9 +83,9 @@ export default {
   shareShoppingListForUser: (
     state,
     { payload: { userId } },
-    { jwt: jwtToken }
+    { jwt: token }
   ) => {
-    jwt.verify(jwtToken, jwtSecret)
+    jwt.verify(token, jwtSecret)
 
     validation.stateExists(state, 'User')
     validation.fieldRequired({ userId }, 'userId')
@@ -103,9 +103,9 @@ export default {
   unshareShoppingListForUser: (
     state,
     { payload: { userId } },
-    { jwt: jwtToken }
+    { jwt: token }
   ) => {
-    jwt.verify(jwtToken, jwtSecret)
+    jwt.verify(token, jwtSecret)
 
     validation.stateExists(state, 'User')
     validation.fieldRequired({ userId }, 'userId')

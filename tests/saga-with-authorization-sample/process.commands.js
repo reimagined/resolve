@@ -15,8 +15,8 @@ export default {
     }
   },
 
-  killProcess: (state, command, jwtToken) => {
-    const jwt = jsonwebtoken.verify(jwtToken, jwtSecret)
+  killProcess: (state, command, token) => {
+    const jwt = jsonwebtoken.verify(token, jwtSecret)
 
     if (!jwt.permissions.processes.kill) {
       throw new Error('Access denied')

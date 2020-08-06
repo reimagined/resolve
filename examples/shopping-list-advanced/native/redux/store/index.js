@@ -48,15 +48,13 @@ const redux = {
 
 const jwtProvider = {
   async get() {
-    const jwtToken = (await AsyncStorage.getItem(jwtCookie.name)) || ''
-
-    return jwtToken
+    return (await AsyncStorage.getItem(jwtCookie.name)) || ''
   },
-  async set(jwtToken) {
-    if (jwtToken == null) {
+  async set(jwt) {
+    if (jwt == null) {
       return await AsyncStorage.removeItem(jwtCookie.name)
     }
-    return await AsyncStorage.setItem(jwtCookie.name, jwtToken)
+    return await AsyncStorage.setItem(jwtCookie.name, jwt)
   }
 }
 

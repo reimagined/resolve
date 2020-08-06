@@ -1,7 +1,27 @@
 import createCommandExecutor from '../src'
 import { CommandError } from '../src'
 
-let eventstoreAdapter, publisher, events, DateNow, performanceTracer, snapshots
+let eventstoreAdapter: any
+let publisher: any
+let events: any
+let DateNow: any
+let performanceTracer: any
+let snapshots: any
+
+const dummyEncryption = () => Promise.resolve({})
+
+const makeAggregateMeta = (params: any) => ({
+  encryption: params.encryption || dummyEncryption,
+  name: params.name || 'empty',
+  commands: params.commands || {},
+  invariantHash:
+    params.invariantHash || Object.keys(params).includes('invariantHash')
+      ? params.invariantHash
+      : 'empty-invariantHash',
+  serializeState: params.serializeState || JSON.stringify,
+  deserializeState: params.deserializeState || JSON.parse,
+  projection: params.projection || {}
+})
 
 beforeEach(() => {
   events = []
@@ -9,13 +29,13 @@ beforeEach(() => {
 
   eventstoreAdapter = {
     loadEvents: jest.fn().mockImplementation(async ({ cursor: prevCursor }) => {
-      const result = {
+      return {
         cursor: `${prevCursor == null ? '' : prevCursor}${events
-          .map(e => Buffer.from(JSON.stringify(e)).toString('base64'))
+          .map((e: any) => Buffer.from(JSON.stringify(e)).toString('base64'))
           .join(',')}`,
         events:
           prevCursor != null
-            ? `${events.map(e =>
+            ? `${events.map((e: any) =>
                 Buffer.from(JSON.stringify(e)).toString('base64')
               )}`
                 .substr(prevCursor.length)
@@ -24,11 +44,10 @@ beforeEach(() => {
                 .map(e => JSON.parse(Buffer.from(e, 'base64').toString()))
             : events
       }
-      return result
     }),
     getNextCursor: jest.fn().mockImplementation((prevCursor, events) => {
       return `${prevCursor == null ? '' : prevCursor}${events
-        .map(e => Buffer.from(JSON.stringify(e)).toString('base64'))
+        .map((e: any) => Buffer.from(JSON.stringify(e)).toString('base64'))
         .join(',')}`
     }),
     getSecretsManager: jest.fn(),
@@ -84,8 +103,8 @@ afterEach(() => {
 describe('executeCommand', () => {
   describe('without performance tracer', () => {
     test('should success build aggregate state from empty event list and execute cmd', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
+        encryption: () => Promise.resolve({}),
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -94,9 +113,8 @@ describe('executeCommand', () => {
               payload: {}
             }
           }
-        },
-        invariantHash: 'empty-invariantHash'
-      }
+        }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -114,11 +132,10 @@ describe('executeCommand', () => {
     })
 
     test('should success build aggregate state and execute command', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'Entity',
         commands: {
-          create: state => {
+          create: (state: any) => {
             if (state.created) {
               throw new Error('Entity already created')
             }
@@ -133,17 +150,15 @@ describe('executeCommand', () => {
               created: false
             }
           },
-          CREATED: state => {
+          CREATED: (state: any) => {
             return {
               ...state,
               created: true
             }
           }
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 'Entity-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -173,12 +188,15 @@ describe('executeCommand', () => {
     test('should pass security context to command handler', async () => {
       const JWT_TOKEN = Buffer.from('ROOT', 'utf8').toString('base64')
 
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'User',
         commands: {
-          createUser: (aggregateState, command, { jwt: jwtToken }) => {
-            if (Buffer.from(jwtToken, 'base64').toString('utf8') !== 'ROOT') {
+          createUser: (
+            aggregateState: any,
+            command: any,
+            { jwt }: { jwt: string }
+          ) => {
+            if (Buffer.from(jwt, 'base64').toString('utf8') !== 'ROOT') {
               throw new Error('Access denied')
             }
 
@@ -191,7 +209,7 @@ describe('executeCommand', () => {
           }
         },
         invariantHash: 'User-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -206,7 +224,7 @@ describe('executeCommand', () => {
         payload: {
           id: 'userId'
         },
-        jwtToken: JWT_TOKEN
+        jwt: JWT_TOKEN
       })
 
       expect(event).toEqual({
@@ -227,7 +245,7 @@ describe('executeCommand', () => {
           payload: {
             id: 'userId'
           },
-          jwtToken: 'INCORRECT_JWT_TOKEN'
+          jwt: 'INCORRECT_JWT_TOKEN'
         })
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
@@ -237,11 +255,10 @@ describe('executeCommand', () => {
     })
 
     test('should use snapshots for building state', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'Map',
         commands: {
-          set: (aggregateState, command) => {
+          set: (aggregateState: any, command: any) => {
             return {
               type: 'SET',
               payload: {
@@ -252,17 +269,15 @@ describe('executeCommand', () => {
           }
         },
         projection: {
-          SET: (state, event) => {
+          SET: (state: any, event: any) => {
             return {
               ...state,
               [event.payload.key]: [event.payload.value]
             }
           }
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 'Map-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -314,11 +329,10 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when use snapshot adapter without invariant hash', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'Map',
         commands: {
-          set: (aggregateState, command) => {
+          set: (aggregateState: any, command: any) => {
             return {
               type: 'SET',
               payload: {
@@ -329,16 +343,15 @@ describe('executeCommand', () => {
           }
         },
         projection: {
-          SET: (state, event) => {
+          SET: (state: any, event: any) => {
             return {
               ...state,
               [event.payload.key]: [event.payload.value]
             }
           }
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState)
-      }
+        invariantHash: undefined
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -366,11 +379,10 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when use snapshot adapter with incorrect invariant hash', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'Map',
         commands: {
-          set: (aggregateState, command) => {
+          set: (aggregateState: any, command: any) => {
             return {
               type: 'SET',
               payload: {
@@ -381,17 +393,15 @@ describe('executeCommand', () => {
           }
         },
         projection: {
-          SET: (state, event) => {
+          SET: (state: any, event: any) => {
             return {
               ...state,
               [event.payload.key]: [event.payload.value]
             }
           }
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 42
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -442,11 +452,10 @@ describe('executeCommand', () => {
         }
       ]
 
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'Map',
         commands: {
-          set: (aggregateState, command) => {
+          set: (aggregateState: any, command: any) => {
             return {
               type: 'SET',
               payload: {
@@ -457,17 +466,15 @@ describe('executeCommand', () => {
           }
         },
         projection: {
-          SET: (state, event) => {
+          SET: (state: any, event: any) => {
             return {
               ...state,
               [event.payload.key]: [event.payload.value]
             }
           }
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 'Map-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -496,8 +503,7 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when unknown command', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -508,7 +514,7 @@ describe('executeCommand', () => {
           }
         },
         invariantHash: 'empty-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -530,8 +536,7 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when the aggregateId is not a string', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -542,7 +547,7 @@ describe('executeCommand', () => {
           }
         },
         invariantHash: 'empty-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -553,7 +558,7 @@ describe('executeCommand', () => {
       try {
         await executeCommand({
           aggregateName: 'empty',
-          aggregateId: 42,
+          aggregateId: 42 as any,
           type: 'unknownCommand'
         })
 
@@ -567,8 +572,7 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when the aggregateName is not a string', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -579,7 +583,7 @@ describe('executeCommand', () => {
           }
         },
         invariantHash: 'empty-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -589,7 +593,7 @@ describe('executeCommand', () => {
 
       try {
         await executeCommand({
-          aggregateName: 42,
+          aggregateName: 42 as any,
           aggregateId: 'aggregateId',
           type: 'emptyCommand'
         })
@@ -604,8 +608,7 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when the type is not a string', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -616,7 +619,7 @@ describe('executeCommand', () => {
           }
         },
         invariantHash: 'empty-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -628,7 +631,7 @@ describe('executeCommand', () => {
         await executeCommand({
           aggregateName: 'empty',
           aggregateId: 'aggregateId',
-          type: 42
+          type: 42 as any
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -660,8 +663,7 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when an event contains "aggregateId", "aggregateVersion", "timestamp" fields', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -676,7 +678,7 @@ describe('executeCommand', () => {
           }
         },
         invariantHash: 'empty-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -701,8 +703,7 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when an event does not contain "type" field', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -712,7 +713,7 @@ describe('executeCommand', () => {
           }
         },
         invariantHash: 'empty-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -737,8 +738,7 @@ describe('executeCommand', () => {
 
   describe('with performance tracer', () => {
     test('should success build aggregate state from empty event list and execute cmd', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -749,7 +749,7 @@ describe('executeCommand', () => {
           }
         },
         invariantHash: 'empty-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -780,11 +780,10 @@ describe('executeCommand', () => {
     })
 
     test('should success build aggregate state and execute command', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'Entity',
         commands: {
-          create: state => {
+          create: (state: any) => {
             if (state.created) {
               throw new Error('Entity already created')
             }
@@ -799,17 +798,15 @@ describe('executeCommand', () => {
               created: false
             }
           },
-          CREATED: state => {
+          CREATED: (state: any) => {
             return {
               ...state,
               created: true
             }
           }
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 'Entity-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -852,12 +849,15 @@ describe('executeCommand', () => {
     test('should pass security context to command handler', async () => {
       const JWT_TOKEN = Buffer.from('ROOT', 'utf8').toString('base64')
 
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'User',
         commands: {
-          createUser: (aggregateState, command, { jwt: jwtToken }) => {
-            if (Buffer.from(jwtToken, 'base64').toString('utf8') !== 'ROOT') {
+          createUser: (
+            aggregateState: any,
+            command: any,
+            { jwt }: { jwt: any }
+          ) => {
+            if (Buffer.from(jwt, 'base64').toString('utf8') !== 'ROOT') {
               throw new Error('Access denied')
             }
 
@@ -870,7 +870,7 @@ describe('executeCommand', () => {
           }
         },
         invariantHash: 'User-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -886,7 +886,7 @@ describe('executeCommand', () => {
         payload: {
           id: 'userId'
         },
-        jwtToken: JWT_TOKEN
+        jwt: JWT_TOKEN
       })
 
       expect(event).toEqual({
@@ -907,7 +907,7 @@ describe('executeCommand', () => {
           payload: {
             id: 'userId'
           },
-          jwtToken: 'INCORRECT_JWT_TOKEN'
+          jwt: 'INCORRECT_JWT_TOKEN'
         })
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
@@ -929,11 +929,11 @@ describe('executeCommand', () => {
     })
 
     test('should use snapshots for building state', async () => {
-      const aggregate = {
+      const aggregate = makeAggregateMeta({
         encryption: () => ({}),
         name: 'Map',
         commands: {
-          set: (aggregateState, command) => {
+          set: (aggregateState: any, command: any) => {
             return {
               type: 'SET',
               payload: {
@@ -944,17 +944,15 @@ describe('executeCommand', () => {
           }
         },
         projection: {
-          SET: (state, event) => {
+          SET: (state: any, event: any) => {
             return {
               ...state,
               [event.payload.key]: [event.payload.value]
             }
           }
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 'Map-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -1019,11 +1017,11 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when use snapshot adapter without invariant hash', async () => {
-      const aggregate = {
+      const aggregate = makeAggregateMeta({
         encryption: () => ({}),
         name: 'Map',
         commands: {
-          set: (aggregateState, command) => {
+          set: (aggregateState: any, command: any) => {
             return {
               type: 'SET',
               payload: {
@@ -1034,16 +1032,15 @@ describe('executeCommand', () => {
           }
         },
         projection: {
-          SET: (state, event) => {
+          SET: (state: any, event: any) => {
             return {
               ...state,
               [event.payload.key]: [event.payload.value]
             }
           }
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState)
-      }
+        invariantHash: undefined
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -1084,11 +1081,10 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when use snapshot adapter with incorrect invariant hash', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'Map',
         commands: {
-          set: (aggregateState, command) => {
+          set: (aggregateState: any, command: any) => {
             return {
               type: 'SET',
               payload: {
@@ -1099,17 +1095,15 @@ describe('executeCommand', () => {
           }
         },
         projection: {
-          SET: (state, event) => {
+          SET: (state: any, event: any) => {
             return {
               ...state,
               [event.payload.key]: [event.payload.value]
             }
           }
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 42
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -1173,11 +1167,10 @@ describe('executeCommand', () => {
         }
       ]
 
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'Map',
         commands: {
-          set: (aggregateState, command) => {
+          set: (aggregateState: any, command: any) => {
             return {
               type: 'SET',
               payload: {
@@ -1188,17 +1181,15 @@ describe('executeCommand', () => {
           }
         },
         projection: {
-          SET: (state, event) => {
+          SET: (state: any, event: any) => {
             return {
               ...state,
               [event.payload.key]: [event.payload.value]
             }
           }
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 'Map-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -1240,8 +1231,7 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when unknown command', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1252,20 +1242,20 @@ describe('executeCommand', () => {
           }
         },
         invariantHash: 'empty-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
         publisher,
-        aggregates: [aggregate]
+        aggregates: [aggregate],
+        performanceTracer
       })
 
       try {
         await executeCommand({
           aggregateName: 'empty',
           aggregateId: 'aggregateId',
-          type: 'unknownCommand',
-          performanceTracer
+          type: 'unknownCommand'
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -1287,8 +1277,7 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when the aggregateId is not a string', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1299,7 +1288,7 @@ describe('executeCommand', () => {
           }
         },
         invariantHash: 'empty-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -1311,7 +1300,7 @@ describe('executeCommand', () => {
       try {
         await executeCommand({
           aggregateName: 'empty',
-          aggregateId: 42,
+          aggregateId: 42 as any,
           type: 'unknownCommand'
         })
 
@@ -1337,8 +1326,7 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when the aggregateName is not a string', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1349,7 +1337,7 @@ describe('executeCommand', () => {
           }
         },
         invariantHash: 'empty-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -1360,7 +1348,7 @@ describe('executeCommand', () => {
 
       try {
         await executeCommand({
-          aggregateName: 42,
+          aggregateName: 42 as any,
           aggregateId: 'aggregateId',
           type: 'emptyCommand'
         })
@@ -1387,8 +1375,7 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when the type is not a string', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1399,7 +1386,7 @@ describe('executeCommand', () => {
           }
         },
         invariantHash: 'empty-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -1412,7 +1399,7 @@ describe('executeCommand', () => {
         await executeCommand({
           aggregateName: 'empty',
           aggregateId: 'aggregateId',
-          type: 42
+          type: 42 as any
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -1469,8 +1456,7 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when an event contains "aggregateId", "aggregateVersion", "timestamp" fields', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1485,7 +1471,7 @@ describe('executeCommand', () => {
           }
         },
         invariantHash: 'empty-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -1523,8 +1509,7 @@ describe('executeCommand', () => {
     })
 
     test('should throw error when an event does not contain "type" field', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'empty',
         commands: {
           emptyCommand: () => {
@@ -1534,7 +1519,7 @@ describe('executeCommand', () => {
           }
         },
         invariantHash: 'empty-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -1593,11 +1578,10 @@ describe('dispose', () => {
     })
 
     test('should dispose the snapshot handler', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'Map',
         commands: {
-          set: (aggregateState, command) => {
+          set: (aggregateState: any, command: any) => {
             return {
               type: 'SET',
               payload: {
@@ -1608,17 +1592,15 @@ describe('dispose', () => {
           }
         },
         projection: {
-          SET: (state, event) => {
+          SET: (state: any, event: any) => {
             return {
               ...state,
               [event.payload.key]: [event.payload.value]
             }
           }
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 'Map-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -1661,11 +1643,10 @@ describe('dispose', () => {
     })
 
     test('should dispose the regular handler', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'Map',
         commands: {
-          set: (aggregateState, command) => {
+          set: (aggregateState: any, command: any) => {
             return {
               type: 'SET',
               payload: {
@@ -1676,17 +1657,15 @@ describe('dispose', () => {
           }
         },
         projection: {
-          SET: (state, event) => {
+          SET: (state: any, event: any) => {
             return {
               ...state,
               [event.payload.key]: [event.payload.value]
             }
           }
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 'Map-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -1761,11 +1740,10 @@ describe('dispose', () => {
     })
 
     test('should dispose the snapshot handler', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'Map',
         commands: {
-          set: (aggregateState, command) => {
+          set: (aggregateState: any, command: any) => {
             return {
               type: 'SET',
               payload: {
@@ -1776,17 +1754,15 @@ describe('dispose', () => {
           }
         },
         projection: {
-          SET: (state, event) => {
+          SET: (state: any, event: any) => {
             return {
               ...state,
               [event.payload.key]: [event.payload.value]
             }
           }
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 'Map-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
@@ -1842,11 +1818,10 @@ describe('dispose', () => {
     })
 
     test('should dispose the regular handler', async () => {
-      const aggregate = {
-        encryption: () => ({}),
+      const aggregate = makeAggregateMeta({
         name: 'Map',
         commands: {
-          set: (aggregateState, command) => {
+          set: (aggregateState: any, command: any) => {
             return {
               type: 'SET',
               payload: {
@@ -1857,17 +1832,15 @@ describe('dispose', () => {
           }
         },
         projection: {
-          SET: (state, event) => {
+          SET: (state: any, event: any) => {
             return {
               ...state,
               [event.payload.key]: [event.payload.value]
             }
           }
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState),
         invariantHash: 'Map-invariantHash'
-      }
+      })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,

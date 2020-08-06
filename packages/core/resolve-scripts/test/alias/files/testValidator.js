@@ -1,5 +1,5 @@
-const validator = (_, jwtToken) => {
-  if (!jwtToken) {
+const validator = (_, jwt) => {
+  if (!jwt) {
     throw new Error()
   }
 }

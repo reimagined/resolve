@@ -4,11 +4,11 @@ import { updateJwt } from './actions'
 
 const syncJwtProviderWithStore = async (jwtProvider, store) => {
   if (jwtProvider) {
-    const jwtToken = await jwtProvider.get()
+    const token = await jwtProvider.get()
 
     let jwt = store.getState().jwt
     try {
-      jwt = jwtDecode(jwtToken)
+      jwt = jwtDecode(token)
     } catch (err) {}
 
     if (stableStringify(store.getState().jwt) !== stableStringify(jwt)) {
