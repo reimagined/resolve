@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken'
 const getSubscribeAdapterOptions = async (
   resolve,
   origin,
-  adapterName,
   viewModelName,
   topics,
   authToken

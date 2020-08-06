@@ -250,15 +250,15 @@ const createApi = ({
       return result
     },
 
-    async getSubscribeAdapterOptions(adapterName) {
+    async getSubscribeAdapterOptions(viewModelName, topics) {
       let response, result
       try {
         response = await request(
           '/api/subscribe',
           {
             origin,
-            rootPath,
-            adapterName
+            viewModelName,
+            topics
           },
           'POST'
         )

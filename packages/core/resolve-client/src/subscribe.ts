@@ -75,17 +75,14 @@ export interface SubscribeAdapterOptions {
 
 export const getSubscribeAdapterOptions = async (
   context: Context,
-  adapterName: string,
   viewModelName: string,
   topics: Array<object>
 ): Promise<SubscribeAdapterOptions> => {
-  const { rootPath, origin: customOrigin } = context
+  const { origin: customOrigin } = context
   const origin = determineOrigin(customOrigin)
 
   const response = await request(context, '/api/subscribe', {
     origin,
-    rootPath,
-    adapterName,
     viewModelName,
     topics
   })
@@ -105,7 +102,6 @@ const initSubscribeAdapter = async (
 ): Promise<any> => {
   const { url } = await getSubscribeAdapterOptions(
     context,
-    createSubscribeAdapter.adapterName,
     viewModelName,
     topics
   )

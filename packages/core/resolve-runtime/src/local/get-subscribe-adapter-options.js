@@ -6,15 +6,10 @@ import jwt from 'jsonwebtoken'
 const getSubscribeAdapterOptions = async (
   resolve,
   origin,
-  adapterName,
   viewModelName,
   topics,
   authToken
 ) => {
-  if (adapterName !== 'ws') {
-    return null
-  }
-
   const viewModel = resolve.viewModels.find(vw => vw.name === viewModelName)
 
   if (viewModel == null) {

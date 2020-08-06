@@ -19,8 +19,6 @@ const SUBSCRIBE_ADAPTER_POLL_INTERVAL = 5000
 
 const initSubscribeAdapter = async ({
   api,
-  origin,
-  rootPath,
   store,
   subscriber: createSubscribeAdapter
 }) => {
@@ -28,16 +26,11 @@ const initSubscribeAdapter = async ({
     return createEmptySubscribeAdapter()
   }
 
-  const { appId, url } = await api.getSubscribeAdapterOptions(
-    createSubscribeAdapter.adapterName
-  )
+  const { url } = await api.getSubscribeAdapterOptions(viewModelName, topics)
 
   const onEvent = event => store.dispatch(dispatchTopicMessage(event))
 
   const subscribeAdapter = createSubscribeAdapter({
-    appId,
-    origin,
-    rootPath,
     url,
     onEvent
   })
@@ -50,7 +43,6 @@ const initSubscribeAdapter = async ({
 // TODO: refactor subscribeSaga
 
 const subscribeSaga = function*(subscribeSagaOptions) {
-  const connectionManager = createConnectionManager()
   let subscribeAdapterPromise = initSubscribeAdapter(subscribeSagaOptions)
 
   yield fork(function*() {
@@ -65,7 +57,6 @@ const subscribeSaga = function*(subscribeSagaOptions) {
         }
       } catch (error) {}
 
-      const activeConnections = connectionManager.getConnections()
       let refreshSubscribeAdapter = null
 
       subscribeAdapterPromise = new Promise(
