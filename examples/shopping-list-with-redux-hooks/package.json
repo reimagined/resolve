@@ -1,6 +1,6 @@
 {
   "name": "shopping-list-with-redux-hooks",
-  "version": "0.24.16",
+  "version": "0.24.20",
   "description": "shows how to work with read-models and view-models using redux hooks",
   "private": true,
   "scripts": {

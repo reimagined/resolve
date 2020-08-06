@@ -37,9 +37,9 @@
     "query-string": "^5.1.1",
     "unfetch": "^4.0.1",
     "uuid": "^3.3.2",
-    "resolve-core": "0.24.16",
-    "resolve-client": "0.24.16",
-    "resolve-react-hooks": "0.24.16"
+    "resolve-core": "0.24.20",
+    "resolve-client": "0.24.20",
+    "resolve-react-hooks": "0.24.20"
   },
   "devDependencies": {
     "@types/jwt-decode": "^2.2.1",
