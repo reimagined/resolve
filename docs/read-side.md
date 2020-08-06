@@ -90,13 +90,14 @@ const appConfig = {
         options: {
           databaseFile: 'snapshot.db',
         }
-      }
+      },
+      validator: 'common/view-models/story-details.validator.js'
     }
   ]
 }
 ```
 
-In the configuration object, specify the View Model's name and the path to the file containing projection definition. You can also specify the View Model snapshot storage adapter. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions.
+In the configuration object, specify the View Model's name and the path to the file containing projection definition. You can also specify the View Model snapshot storage adapter. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions. Add **validator** option to specify subscriptions validator.
 
 ### Custom Read Models
 
@@ -356,6 +357,31 @@ The code sample below demonstrates a View Model projection function:
 Refer to the [Query a View Model](#query-a-view-model) section, for information on how to query a View Model.
 
 Note that a View Model does not use the Read Model store.
+
+## View model validator
+
+A **validator** is the part of a View Model that handles event subscriptions. A validator function receives the resolve context, topics and request parameters. Based on the parameters, the validator function returns topic list to which a user is allowed to be subscribed.
+
+The code sample below demonstrates a View Model implementation:
+
+```js
+async (resolve, { topics, jwt: token }) => {
+  const { userId } = jwt.verify(token, process.env.JWT_SECRET)
+  const user = await resolve.executeQuery({
+    modelName: 'users',
+    resolverName: 'userById',
+    resolverArgs: { userId },
+    jwtToken: token
+  })
+
+  if (user == null) {
+    throw new Error('Permission denied')
+  }
+
+  return topics
+}
+
+```
 
 ## Performing Queries Using HTTP API
 
