@@ -2,12 +2,6 @@ import {
   SEND_COMMAND_REQUEST,
   SEND_COMMAND_SUCCESS,
   SEND_COMMAND_FAILURE,
-  SUBSCRIBE_TOPIC_REQUEST,
-  SUBSCRIBE_TOPIC_SUCCESS,
-  SUBSCRIBE_TOPIC_FAILURE,
-  UNSUBSCRIBE_TOPIC_REQUEST,
-  UNSUBSCRIBE_TOPIC_SUCCESS,
-  UNSUBSCRIBE_TOPIC_FAILURE,
   CONNECT_VIEWMODEL,
   DISCONNECT_VIEWMODEL,
   LOAD_VIEWMODEL_STATE_REQUEST,
@@ -67,44 +61,6 @@ export const sendCommandFailure = (
   aggregateId,
   aggregateName,
   payload,
-  error
-})
-
-export const subscribeTopicRequest = (topicName, topicId) => ({
-  type: SUBSCRIBE_TOPIC_REQUEST,
-  topicName,
-  topicId
-})
-
-export const subscribeTopicSuccess = (topicName, topicId) => ({
-  type: SUBSCRIBE_TOPIC_SUCCESS,
-  topicName,
-  topicId
-})
-
-export const subscribeTopicFailure = (topicName, topicId, error) => ({
-  type: SUBSCRIBE_TOPIC_FAILURE,
-  topicName,
-  topicId,
-  error
-})
-
-export const unsubscribeTopicRequest = (topicName, topicId) => ({
-  type: UNSUBSCRIBE_TOPIC_REQUEST,
-  topicName,
-  topicId
-})
-
-export const unsubscribeTopicSuccess = (topicName, topicId) => ({
-  type: UNSUBSCRIBE_TOPIC_SUCCESS,
-  topicName,
-  topicId
-})
-
-export const unsubscribeTopicFailure = (topicName, topicId, error) => ({
-  type: UNSUBSCRIBE_TOPIC_FAILURE,
-  topicName,
-  topicId,
   error
 })
 

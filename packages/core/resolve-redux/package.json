@@ -40,7 +40,7 @@
     "react-test-renderer": "16.13.0",
     "redux": "4.0.5",
     "sinon": "7.2.2",
-    "react-redux": "^7.2.0",
+    "react-redux": "7.2.0",
     "redux-saga": "^1.0.0"
   },
   "peerDependencies": {

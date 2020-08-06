@@ -12,12 +12,10 @@ import loadReadModelStateSaga from './load_read_model_state_saga'
 import sendCommandSaga from './send_command_saga'
 import viewModelSaga from './view_models_saga'
 import readModelSaga from './read_models_saga'
-import subscribeSaga from './subscribe_saga'
 import authSaga from './auth_saga'
 import logoutSaga from './logout_saga'
 
 function* rootSaga({ customSagas, ...sagaArgs }) {
-  yield fork(subscribeSaga, sagaArgs)
   yield takeEvery(
     LOAD_VIEWMODEL_STATE_REQUEST,
     loadViewModelStateSaga,

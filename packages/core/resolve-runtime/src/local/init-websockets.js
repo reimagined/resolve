@@ -19,7 +19,7 @@ const createServerWebSocketHandler = pubsubManager => (ws, req) => {
   let topics = null
 
   try {
-    ;({ topics } = jwt.verify(token, deploymentId))
+    void ({ topics } = jwt.verify(token, deploymentId))
   } catch (error) {
     throw new Error('Permission denied, invalid token')
   }
@@ -42,9 +42,7 @@ const createServerWebSocketHandler = pubsubManager => (ws, req) => {
 
 const initInterceptingHttpServer = resolve => {
   const { server: baseServer, websocketHttpServer } = resolve
-
-  const websocketBaseUrl = getRootBasedUrl(resolve.rootPath, '/api/websocket/')
-
+  const websocketBaseUrl = getRootBasedUrl(resolve.rootPath, '/api/websocket')
   const interceptingEvents = [
     'close',
     'listening',
@@ -78,7 +76,6 @@ const initInterceptingHttpServer = resolve => {
 const initWebSocketServer = async resolve => {
   try {
     const websocketServer = new WebSocket.Server({
-      port: 8080, // TODO: change port?
       path: getRootBasedUrl(resolve.rootPath, '/api/websocket'),
       server: resolve.websocketHttpServer
     })

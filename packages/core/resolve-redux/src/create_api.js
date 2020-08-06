@@ -250,7 +250,7 @@ const createApi = ({
       return result
     },
 
-    async getSubscribeAdapterOptions(viewModelName, topics) {
+    async getSubscribeAdapterOptions({ viewModelName, topics }) {
       let response, result
       try {
         response = await request(

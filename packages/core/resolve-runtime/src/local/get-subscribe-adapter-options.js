@@ -23,11 +23,11 @@ const getSubscribeAdapterOptions = async (
 
   const token = jwt.sign({ topics: customTopics }, resolve.applicationName)
 
-  const { protocol, hostname } = Url.parse(origin)
+  const { protocol, hostname, port } = Url.parse(origin)
   const isSecure = /^https/.test(protocol)
   const targetProtocol = isSecure ? 'wss' : 'ws'
   const targetPath = '/api/websocket'
-  const targetPort = 8080
+  const targetPort = port == null ? [80, 443][+isSecure] : port
 
   const subscribeUrl = `${targetProtocol}://${hostname}:${targetPort}${getRootBasedUrl(
     resolve.rootPath,

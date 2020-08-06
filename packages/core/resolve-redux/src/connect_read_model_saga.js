@@ -11,15 +11,6 @@ import {
 
 import { HttpError } from './create_api'
 
-/*
-  Saga is launched on action `CONNECT_READMODEL`, emitted by read model connector.
-  If read model with supposed options had already been fetched, do nothing.
-  Saga performs resolver result fetching and subscribes to diff topic.
-  Resolver result is fetched by `load_read_model_state_saga`, interaction
-  performs through following actions: `LOAD_READMODEL_STATE_REQUEST`,
-  `LOAD_READMODEL_STATE_SUCCESS` and `LOAD_READMODEL_STATE_FAILURE`.
-*/
-
 const connectReadModelSaga = function*(sagaArgs, action) {
   const {
     connectionManager,
