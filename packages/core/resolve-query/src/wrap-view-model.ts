@@ -58,7 +58,7 @@ const buildViewModel = async (
       log.verbose(`snapshot cursor: ${cursor}`)
     }
   } catch (error) {
-    log.warn(error.message)
+    log.verbose(error.message)
   }
 
   if (cursor == null && typeof pool.viewModel.projection.Init === 'function') {
