@@ -3,7 +3,8 @@ import {
   LONG_NUMBER_SQL_TYPE,
   INT8_SQL_TYPE,
   JSON_SQL_TYPE,
-  TEXT_SQL_TYPE, AGGREGATE_ID_SQL_TYPE
+  TEXT_SQL_TYPE,
+  AGGREGATE_ID_SQL_TYPE
 } from './constants'
 import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 import getLog from './get-log'

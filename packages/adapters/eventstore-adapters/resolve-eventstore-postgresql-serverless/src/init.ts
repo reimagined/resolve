@@ -2,7 +2,7 @@ import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 import getLog from './js/get-log'
 import initEventStore from './js/init'
 import { AdapterPool } from './types'
-import { AGGREGATE_ID_SQL_TYPE, LONG_STRING_SQL_TYPE } from './js/constants'
+import { AGGREGATE_ID_SQL_TYPE } from './js/constants'
 
 const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
   const { secretsTableName, escapeId, databaseName, executeStatement } = pool
