@@ -219,7 +219,7 @@ const doSubscribe = async (
     topicId: string
   },
   eventCallback: Function,
-  subscribeCallback?: Function
+  resubscribeCallback?: Function
 ): Promise<object> => {
   const connectionManager = createConnectionManager()
   const subscribeAdapter = await getSubscribeAdapterPromise(context)
@@ -234,7 +234,7 @@ const doSubscribe = async (
     connectionId: topicId
   })
 
-  addCallback(topicName, topicId, eventCallback, subscribeCallback)
+  addCallback(topicName, topicId, eventCallback, resubscribeCallback)
   await Promise.all([
     addedConnections.length > 0
       ? subscribeAdapter.subscribeToTopics(

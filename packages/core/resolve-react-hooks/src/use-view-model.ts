@@ -29,8 +29,7 @@ const useViewModel = (
   const viewModel = viewModels.find(({ name }) => name === modelName)
 
   if (!viewModel) {
-    const error = Error(`View model ${modelName} not exist within context`)
-    throw error
+    throw Error(`View model ${modelName} not exist within context`)
   }
 
   const closure = useMemo<Closure>(

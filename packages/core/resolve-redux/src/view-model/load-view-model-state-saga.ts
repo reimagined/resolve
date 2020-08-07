@@ -47,12 +47,7 @@ const loadViewModelStateSaga = function*(
     )
   } catch (error) {
     yield put(
-      queryViewModelFailure(
-        viewModelName,
-        aggregateIds,
-        aggregateArgs,
-        error
-      )
+      queryViewModelFailure(viewModelName, aggregateIds, aggregateArgs, error)
     )
   }
 }

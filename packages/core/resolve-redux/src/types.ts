@@ -1,31 +1,48 @@
 import { Client, Context } from 'resolve-client'
 import { API } from './create_api'
 
-export enum ReadModelResultState {
+enum RequestState {
   Requested = 'requested',
   Ready = 'ready',
   Failed = 'failed'
 }
 
-export type ReadModelResultEntry = {
-  state: ReadModelResultState
+type QueryResultEntry = {
+  state: RequestState
   data?: any
   timestamp?: number
   error?: Error
 }
 
-export type ReadModelResultMapByArgs = {
+export type ReadModelResultState = RequestState
+export type ViewModelResultState = RequestState
+
+export type ReadModelResultEntry = QueryResultEntry
+export type ViewModelResultEntry = QueryResultEntry
+
+type ReadModelResultMapByArgs = {
   [key: string]: ReadModelResultEntry
 }
-export type ReadModelResultMapByResolver = {
+type ReadModelResultMapByResolver = {
   [key: string]: ReadModelResultMapByArgs
 }
 export type ReadModelResultMapByName = {
   [key: string]: ReadModelResultMapByResolver
 }
 
+type ViewModelResultMapByAggregateArgs = {
+  [key: string]: ViewModelResultEntry
+}
+type ViewModelResultMapByAggregateIds = {
+  [key: string]: ViewModelResultMapByAggregateArgs
+}
+export type ViewModelResultMapByName = {
+  [key: string]: ViewModelResultMapByAggregateIds
+}
+
 export type ReduxState = {
   readModels?: ReadModelResultMapByName
+  viewModels?: ViewModelResultMapByName
 }
 
 export type ReduxStoreContext = {
