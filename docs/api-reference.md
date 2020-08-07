@@ -1037,9 +1037,39 @@ Gets the latest saved event.
 
 Gets a writable stream used to save events.
 
+###### Arguments
+
+`void`
+
+###### Result
+
+`WritableStream`
+
 #### export
 
 Gets a readable stream used to load events.
+
+###### Arguments
+
+`void`
+
+###### Result
+
+`ReadableStream`
+
+##### Example
+
+```js
+import { pipeline as pipelineC } from 'stream'
+import { promisify } from 'util' 
+
+const pipeline = promisify(pipelineC)
+
+await pipeline(
+  eventStoreAdapter1.import(),
+  eventStoreAdapter2.export()
+)
+```
 
 #### freeze
 
