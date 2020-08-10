@@ -2,14 +2,17 @@ import {
   LazinessStrategy,
   SUBSCRIBERS_TABLE_NAME,
   SubscriptionStatus,
-  PrivateOperationType
+  PrivateOperationType,
+  DeliveryStrategy,
+  ConsumerMethod
 } from '../constants'
 
 const resume = async (pool, payload) => {
   const {
     database: { runQuery, escapeId, escapeStr },
     invokeOperation,
-    parseSubscription
+    parseSubscription,
+    invokeConsumer
   } = pool
   const { eventSubscriber } = payload
   const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
@@ -25,17 +28,27 @@ const resume = async (pool, payload) => {
   for (let attempt = 0; ; attempt++) {
     const result = await runQuery(`
       SELECT ${subscribersTableNameAsId}."status" AS "status",
-      ${subscribersTableNameAsId}."subscriptionId" AS "subscriptionId"
+      ${subscribersTableNameAsId}."subscriptionId" AS "subscriptionId",
+      ${subscribersTableNameAsId}."deliveryStrategy" AS "deliveryStrategy"
       FROM ${subscribersTableNameAsId}
       WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)}
     `)
     if (result == null || result.length !== 1) {
       throw new Error(`Event subscriber ${eventSubscriber} does not found`)
     }
-    const { status, subscriptionId } = parseSubscription(result[0])
+    const { status, subscriptionId, deliveryStrategy } = parseSubscription(
+      result[0]
+    )
     if (status === SubscriptionStatus.ERROR) {
       throw new Error(`Event subscriber ${eventSubscriber} is in error state`)
     } else if (status === SubscriptionStatus.DELIVER) {
+      if (deliveryStrategy === DeliveryStrategy.PASSIVE) {
+        await invokeConsumer(pool, ConsumerMethod.Notify, {
+          eventSubscriber: payload.eventSubscriber,
+          notification: 'RESUME'
+        })
+      }
+
       return subscriptionId
     } else if (status === SubscriptionStatus.SKIP && attempt > 10) {
       throw new Error(

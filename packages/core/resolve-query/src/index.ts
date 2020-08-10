@@ -160,7 +160,7 @@ const createQuery = ({
     )
   }
 
-  const drop = (modelName: string): Promise<void> => {
+  const drop = async (modelName: string): Promise<void> => {
     checkModelExists(modelName)
 
     await models[modelName].drop()
@@ -188,12 +188,10 @@ const createQuery = ({
     return models[modelName][operationName](parameters)
   }
 
-  const notify = async modelNameAndParameters => {
-    checkModelExists(modelNameAndParameters.modelName)
+  const notify = async ({ modelName, ...parameters }: any): Promise<void> => {
+    checkModelExists(modelName)
 
-    await models[modelNameAndParameters.modelName].notify(
-      modelNameAndParameters
-    )
+    await models[modelName].notify(parameters)
   }
 
   const dispose = async (): Promise<any> => {
