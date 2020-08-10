@@ -1,13 +1,33 @@
 import { EOL } from 'os'
 import getLog from './get-log'
+// TODO: core cannot reference "top-level" packages, move these to resolve-core
 import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
 
 const RESERVED_TIME = 30 * 1000
 
-const wrapConnection = async (pool, callback) => {
+type ReadModelMeta = {
+  name: string
+  resolvers: { [key: string]: any }
+  projection: { [key: string]: Function }
+  connectorName: string
+}
+
+type ReadModelPool = {
+  performanceTracer: any
+  getSecretsManager: any
+  isDisposed: boolean
+  connector: any
+  connections: Set<any>
+  readModel: ReadModelMeta
+}
+
+const wrapConnection = async (
+  pool: ReadModelPool,
+  callback: Function
+): Promise<any> => {
   const readModelName = pool.readModel.name
 
-  const connection = await (async () => {
+  const connection = await (async (): Promise<void> => {
     const segment = pool.performanceTracer
       ? pool.performanceTracer.getSegment()
       : null
@@ -37,7 +57,7 @@ const wrapConnection = async (pool, callback) => {
   try {
     return await callback(connection)
   } finally {
-    await (async () => {
+    await (async (): Promise<void> => {
       const segment = pool.performanceTracer
         ? pool.performanceTracer.getSegment()
         : null
@@ -66,7 +86,12 @@ const wrapConnection = async (pool, callback) => {
   }
 }
 
-const read = async (pool, resolverName, resolverArgs, jwt) => {
+const read = async (
+  pool: ReadModelPool,
+  resolverName: string,
+  resolverArgs: object,
+  jwt: string
+): Promise<any> => {
   const { performanceTracer, getSecretsManager, isDisposed, readModel } = pool
 
   const segment = performanceTracer ? performanceTracer.getSegment() : null
@@ -85,44 +110,51 @@ const read = async (pool, resolverName, resolverArgs, jwt) => {
       throw new Error(`Read model "${pool.readModel.name}" is disposed`)
     }
     if (typeof pool.readModel.resolvers[resolverName] !== 'function') {
-      const error = new Error(`Resolver "${resolverName}" does not exist`)
+      const error = new Error(
+        `Resolver "${resolverName}" does not exist`
+      ) as any
       error.code = 422
       throw error
     }
 
-    return await wrapConnection(pool, async connection => {
-      const segment = performanceTracer ? performanceTracer.getSegment() : null
-      const subSegment = segment ? segment.addNewSubsegment('resolver') : null
+    return await wrapConnection(
+      pool,
+      async (connection: any): Promise<any> => {
+        const segment = performanceTracer
+          ? performanceTracer.getSegment()
+          : null
+        const subSegment = segment ? segment.addNewSubsegment('resolver') : null
 
-      if (subSegment != null) {
-        subSegment.addAnnotation('readModelName', readModelName)
-        subSegment.addAnnotation('resolverName', resolverName)
-        subSegment.addAnnotation('origin', 'resolve:query:resolver')
-      }
+        if (subSegment != null) {
+          subSegment.addAnnotation('readModelName', readModelName)
+          subSegment.addAnnotation('resolverName', resolverName)
+          subSegment.addAnnotation('origin', 'resolve:query:resolver')
+        }
 
-      try {
-        return await readModel.resolvers[resolverName](
-          connection,
-          resolverArgs,
-          {
-            secretsManager:
-              typeof getSecretsManager === 'function'
-                ? await getSecretsManager()
-                : null,
-            jwt
+        try {
+          return await readModel.resolvers[resolverName](
+            connection,
+            resolverArgs,
+            {
+              secretsManager:
+                typeof getSecretsManager === 'function'
+                  ? await getSecretsManager()
+                  : null,
+              jwt
+            }
+          )
+        } catch (error) {
+          if (subSegment != null) {
+            subSegment.addError(error)
           }
-        )
-      } catch (error) {
-        if (subSegment != null) {
-          subSegment.addError(error)
-        }
-        throw error
-      } finally {
-        if (subSegment != null) {
-          subSegment.close()
+          throw error
+        } finally {
+          if (subSegment != null) {
+            subSegment.close()
+          }
         }
       }
-    })
+    )
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)
@@ -135,24 +167,24 @@ const read = async (pool, resolverName, resolverArgs, jwt) => {
   }
 }
 
-export const detectConnectorFeatures = connector =>
-  ((typeof connector.beginTransaction === 'function') << 0) +
-  ((typeof connector.commitTransaction === 'function') << 1) +
-  ((typeof connector.rollbackTransaction === 'function') << 2) +
-  ((typeof connector.beginXATransaction === 'function') << 3) +
-  ((typeof connector.commitXATransaction === 'function') << 4) +
-  ((typeof connector.rollbackXATransaction === 'function') << 5) +
-  ((typeof connector.beginEvent === 'function') << 6) +
-  ((typeof connector.commitEvent === 'function') << 7) +
-  ((typeof connector.rollbackEvent === 'function') << 8) +
-  ((typeof connector.notify === 'function') << 9)
+export const detectConnectorFeatures = (connector: any): number =>
+  ((typeof connector.beginTransaction === 'function' ? 1 : 0) << 0) +
+  ((typeof connector.commitTransaction === 'function' ? 1 : 0) << 1) +
+  ((typeof connector.rollbackTransaction === 'function' ? 1 : 0) << 2) +
+  ((typeof connector.beginXATransaction === 'function' ? 1 : 0) << 3) +
+  ((typeof connector.commitXATransaction === 'function' ? 1 : 0) << 4) +
+  ((typeof connector.rollbackXATransaction === 'function' ? 1 : 0) << 5) +
+  ((typeof connector.beginEvent === 'function' ? 1 : 0) << 6) +
+  ((typeof connector.commitEvent === 'function' ? 1 : 0) << 7) +
+  ((typeof connector.rollbackEvent === 'function' ? 1 : 0) << 8) +
+  ((typeof connector.notify === 'function' ? 1 : 0) << 9)
 
 export const FULL_XA_CONNECTOR = 504
 export const FULL_REGULAR_CONNECTOR = 7
 export const EMPTY_CONNECTOR = 0
 export const PASSIVE_CONNECTOR = 512
 
-const detectWrappers = connector => {
+const detectWrappers = (connector: any): any => {
   const log = getLog('detectWrappers')
   const emptyFunction = Promise.resolve.bind(Promise)
   const featureDetection = detectConnectorFeatures(connector)
@@ -191,11 +223,11 @@ const detectWrappers = connector => {
 }
 
 const updateByEvents = async (
-  pool,
-  events,
-  getRemainingTimeInMillis,
-  xaTransactionId
-) => {
+  pool: ReadModelPool,
+  events: Array<any>,
+  getRemainingTimeInMillis: Function,
+  xaTransactionId: any
+): Promise<any> => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -230,10 +262,12 @@ const updateByEvents = async (
 
     let lastSuccessEvent = null
     let lastFailedEvent = null
-    let lastError = null
+    let lastError: any = null
 
-    const handler = async (connection, event) => {
-      const log = getLog(`readModel:${readModelName}:[${event.type}]`)
+    const handler = async (connection: any, event: any): Promise<void> => {
+      const log = getLog(
+        `readModel:${readModelName}:[${event != null ? event.type : 'null'}]`
+      )
       const segment = pool.performanceTracer
         ? pool.performanceTracer.getSegment()
         : null
@@ -248,7 +282,10 @@ const updateByEvents = async (
 
         if (subSegment != null) {
           subSegment.addAnnotation('readModelName', readModelName)
-          subSegment.addAnnotation('eventType', event.type)
+          subSegment.addAnnotation(
+            'eventType',
+            event != null ? event.type : 'null'
+          )
           subSegment.addAnnotation('origin', 'resolve:query:applyEvent')
         }
 
@@ -278,124 +315,127 @@ const updateByEvents = async (
       }
     }
 
-    await wrapConnection(pool, async connection => {
-      const log = getLog(`readModel:wrapConnection`)
-      try {
-        log.debug(
-          `applying ${events.length} events to read-model "${readModelName}" started`
-        )
-
-        const { onBeforeEvent, onSuccessEvent, onFailEvent } = detectWrappers(
-          pool.connector
-        )
-        for (const event of events) {
-          const remainingTime = getRemainingTimeInMillis() - RESERVED_TIME
+    await wrapConnection(
+      pool,
+      async (connection: any): Promise<any> => {
+        const log = getLog(`readModel:wrapConnection`)
+        try {
           log.debug(
-            `remaining read-model "${readModelName}" feeding time is ${remainingTime} ms`
+            `applying ${events.length} events to read-model "${readModelName}" started`
           )
 
-          if (remainingTime < 0) {
+          const { onBeforeEvent, onSuccessEvent, onFailEvent } = detectWrappers(
+            pool.connector
+          )
+          for (const event of events) {
+            const remainingTime = getRemainingTimeInMillis() - RESERVED_TIME
             log.debug(
-              `stop applying events to read-model "${readModelName}" because of timeout`
+              `remaining read-model "${readModelName}" feeding time is ${remainingTime} ms`
             )
-            break
-          }
 
-          if (event.type === 'Init') {
-            try {
+            if (remainingTime < 0) {
               log.debug(
-                `applying "Init" event to read-model "${readModelName}" started`
+                `stop applying events to read-model "${readModelName}" because of timeout`
               )
-              await handler(connection, event)
-              log.debug(
-                `applying "Init" event to read-model "${readModelName}" succeed`
-              )
-              continue
-            } catch (error) {
-              log.error(
-                `applying "Init" event to read-model "${readModelName}" failed`
-              )
-              log.error(error.message)
-              log.verbose(error.stack)
-              throw error
+              break
             }
-          }
 
-          try {
-            log.verbose(
-              `Applying "${event.type}" event to read-model "${readModelName}" started`
-            )
-            await onBeforeEvent(
-              connection,
-              pool.readModel.name,
-              xaTransactionId
-            )
-
-            await handler(connection, event)
-
-            await onSuccessEvent(
-              connection,
-              pool.readModel.name,
-              xaTransactionId
-            )
-
-            log.debug(
-              `applying "${event.type}" event to read-model "${readModelName}" succeed`
-            )
-          } catch (readModelError) {
-            if (
-              readModelError === OMIT_BATCH ||
-              readModelError === STOP_BATCH
-            ) {
-              throw readModelError
+            if (event.type === 'Init') {
+              try {
+                log.debug(
+                  `applying "Init" event to read-model "${readModelName}" started`
+                )
+                await handler(connection, event)
+                log.debug(
+                  `applying "Init" event to read-model "${readModelName}" succeed`
+                )
+                continue
+              } catch (error) {
+                log.error(
+                  `applying "Init" event to read-model "${readModelName}" failed`
+                )
+                log.error(error.message)
+                log.verbose(error.stack)
+                throw error
+              }
             }
-            log.error(
-              `applying "${event.type}" event to read-model "${readModelName}" failed`
-            )
-            log.error(readModelError.message)
-            log.verbose(readModelError.stack)
-            let rollbackError = null
+
             try {
-              await onFailEvent(
+              log.verbose(
+                `Applying "${event.type}" event to read-model "${readModelName}" started`
+              )
+              await onBeforeEvent(
                 connection,
                 pool.readModel.name,
                 xaTransactionId
               )
-            } catch (error) {
-              rollbackError = error
+
+              await handler(connection, event)
+
+              await onSuccessEvent(
+                connection,
+                pool.readModel.name,
+                xaTransactionId
+              )
+
+              log.debug(
+                `applying "${event.type}" event to read-model "${readModelName}" succeed`
+              )
+            } catch (readModelError) {
+              if (
+                readModelError === OMIT_BATCH ||
+                readModelError === STOP_BATCH
+              ) {
+                throw readModelError
+              }
+              log.error(
+                `applying "${event.type}" event to read-model "${readModelName}" failed`
+              )
+              log.error(readModelError.message)
+              log.verbose(readModelError.stack)
+              let rollbackError = null
+              try {
+                await onFailEvent(
+                  connection,
+                  pool.readModel.name,
+                  xaTransactionId
+                )
+              } catch (error) {
+                rollbackError = error
+              }
+
+              const summaryError = new Error()
+              summaryError.message = readModelError.message
+              summaryError.stack = readModelError.stack
+
+              if (rollbackError != null) {
+                summaryError.message = `${summaryError.message}${EOL}${rollbackError.message}`
+                summaryError.stack = `${summaryError.stack}${EOL}${rollbackError.stack}`
+              }
+
+              log.verbose(
+                `Throwing error for feeding read-model "${readModelName}"`,
+                summaryError
+              )
+              throw summaryError
             }
-
-            const summaryError = new Error()
-            summaryError.message = readModelError.message
-            summaryError.stack = readModelError.stack
-
-            if (rollbackError != null) {
-              summaryError.message = `${summaryError.message}${EOL}${rollbackError.message}`
-              summaryError.stack = `${summaryError.stack}${EOL}${rollbackError.stack}`
-            }
-
-            log.verbose(
-              `Throwing error for feeding read-model "${readModelName}"`,
-              summaryError
-            )
-            throw summaryError
+          }
+        } catch (error) {
+          if (error === OMIT_BATCH) {
+            lastError = error
+          } else if (lastError == null && error === STOP_BATCH) {
+            lastError = null
+          } else {
+            lastError = Object.create(Error.prototype, {
+              name: { value: error.name, enumerable: true },
+              code: { value: error.code, enumerable: true },
+              message: { value: error.message, enumerable: true },
+              stack: { value: error.stack, enumerable: true }
+            })
           }
         }
-      } catch (error) {
-        if (error === OMIT_BATCH) {
-          lastError = error
-        } else if (lastError == null && error === STOP_BATCH) {
-          lastError = null
-        } else {
-          lastError = Object.create(Error.prototype, {
-            name: { value: error.name, enumerable: true },
-            code: { value: error.code, enumerable: true },
-            message: { value: error.message, enumerable: true },
-            stack: { value: error.stack, enumerable: true }
-          })
-        }
       }
-    })
+    )
 
     const result = {
       eventSubscriber: pool.readModel.name,
@@ -423,7 +463,12 @@ const updateByEvents = async (
   }
 }
 
-const readAndSerialize = async (pool, resolverName, resolverArgs, jwt) => {
+const readAndSerialize = async (
+  pool: ReadModelPool,
+  resolverName: string,
+  resolverArgs: object,
+  jwt: string
+): Promise<string> => {
   const readModelName = pool.readModel.name
 
   if (pool.isDisposed) {
@@ -435,7 +480,11 @@ const readAndSerialize = async (pool, resolverName, resolverArgs, jwt) => {
   return JSON.stringify(result, null, 2)
 }
 
-const doOperation = async (operationName, pool, parameters) => {
+const doOperation = async (
+  operationName: string,
+  pool: ReadModelPool,
+  parameters: any
+): Promise<any> => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -455,13 +504,16 @@ const doOperation = async (operationName, pool, parameters) => {
 
     let result = null
 
-    await wrapConnection(pool, async connection => {
-      result = await pool.connector[operationName](
-        connection,
-        pool.readModel.name,
-        parameters
-      )
-    })
+    await wrapConnection(
+      pool,
+      async (connection: any): Promise<any> => {
+        result = await pool.connector[operationName](
+          connection,
+          pool.readModel.name,
+          parameters
+        )
+      }
+    )
 
     return result
   } catch (error) {
@@ -482,7 +534,7 @@ const commitXATransaction = doOperation.bind(null, 'commitXATransaction')
 const rollbackXATransaction = doOperation.bind(null, 'rollbackXATransaction')
 const notify = doOperation.bind(null, 'notify')
 
-const dispose = async pool => {
+const dispose = async (pool: ReadModelPool): Promise<void> => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -519,11 +571,11 @@ const dispose = async pool => {
 }
 
 const wrapReadModel = (
-  readModel,
-  readModelConnectors,
-  eventstoreAdapter,
-  performanceTracer,
-  getSecretsManager
+  readModel: ReadModelMeta,
+  readModelConnectors: { [key: string]: any },
+  eventstoreAdapter: any,
+  performanceTracer: any,
+  getSecretsManager: any
 ) => {
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
 

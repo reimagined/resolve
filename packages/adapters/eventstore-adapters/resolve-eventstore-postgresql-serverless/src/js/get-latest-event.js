@@ -5,7 +5,8 @@ const getLatestEvent = async (
     escape,
     eventsTableName,
     databaseName,
-    shapeEvent
+    shapeEvent,
+    isTimeoutError
   },
   { eventTypes, aggregateIds, startTime, finishTime }
 ) => {
@@ -45,7 +46,7 @@ const getLatestEvent = async (
       )
       break
     } catch (err) {
-      if (err != null && /StatementTimeoutException/i.test(err.message)) {
+      if (isTimeoutError(err)) {
         continue
       }
       throw err

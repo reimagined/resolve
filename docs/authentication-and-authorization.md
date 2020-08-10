@@ -171,14 +171,14 @@ Every command and query handler accepts a JSON Web Token (JWT) obtained during t
 A JWT is signed with a secret to prevent forgery. Use the same secret to decode and verify the token.
 
 ```js
-const { id: userId } = jwt.verify(jwtToken, jwtSecret)
+const { id: userId } = jwt.verify(token, jwtSecret)
 ```
 
 You can store any information in a JWT. For instance, you can look up a user's permissions and add them to the token
 during authentication. Then, you can check the user's permissions during a command or query execution as shown below:
 
 ```js
-const { id: userId, permissions } = jwt.verify(jwtToken, jwtSecret);
+const { id: userId, permissions } = jwt.verify(token, jwtSecret);
 
 if (permissions && permissions.includes("admin")) {
 ...

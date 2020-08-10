@@ -21,7 +21,7 @@ const commitXATransaction = async (
         })
         break
       } catch (err) {
-        if (err != null && /StatementTimeoutException/i.test(err.message)) {
+        if (pool.isTimeoutError(err)) {
           continue
         }
         throw err
@@ -66,7 +66,7 @@ const commitXATransaction = async (
 
           break
         } catch (err) {
-          if (err != null && /StatementTimeoutException/i.test(err.message)) {
+          if (pool.isTimeoutError(err)) {
             continue
           }
           throw err
@@ -83,7 +83,7 @@ const commitXATransaction = async (
           })
           break
         } catch (err) {
-          if (err != null && /StatementTimeoutException/i.test(err.message)) {
+          if (pool.isTimeoutError(err)) {
             continue
           }
           throw err
@@ -104,7 +104,7 @@ const commitXATransaction = async (
         })
         break
       } catch (err) {
-        if (err != null && /StatementTimeoutException/i.test(err.message)) {
+        if (pool.isTimeoutError(err)) {
           continue
         }
         throw err
@@ -145,7 +145,7 @@ const commitXATransaction = async (
 
           return countEvents ? 0 : xaResult.length > 0 ? true : false
         } catch (err) {
-          if (err != null && /StatementTimeoutException/i.test(err.message)) {
+          if (pool.isTimeoutError(err)) {
             continue
           }
 

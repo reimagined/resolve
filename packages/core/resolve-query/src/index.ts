@@ -7,7 +7,7 @@ import wrapReadModel, {
 } from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
 
-const getDefaultRemainingTime = () => 0x7fffffff
+const getDefaultRemainingTime = (): number => 0x7fffffff
 
 const createQuery = ({
   readModelConnectors,
@@ -15,8 +15,16 @@ const createQuery = ({
   viewModels,
   performanceTracer,
   eventstoreAdapter
-}) => {
-  const models = {}
+}: {
+  readModelConnectors: any
+  readModels: any[]
+  viewModels: any[]
+  performanceTracer: any
+  eventstoreAdapter: any
+}): any => {
+  const models: {
+    [key: string]: any
+  } = {}
   for (const readModel of readModels) {
     if (models[readModel.name] != null) {
       throw new Error(`Duplicate name for read model: "${readModel.name}"`)
@@ -42,16 +50,18 @@ const createQuery = ({
     )
   }
 
-  const checkModelExists = modelName => {
+  const checkModelExists = (modelName: string): void => {
     if (models[modelName] == null) {
-      const error = new Error(`Read/view model "${modelName}" does not exist`)
+      const error = new Error(
+        `Read/view model "${modelName}" does not exist`
+      ) as any
       error.code = 422
       throw error
     }
   }
 
-  const parseOptions = options => {
-    const optionsFlags = {
+  const parseOptions = (options: any): any => {
+    const optionsFlags: any = {
       modelOptions: 1 << 0,
       modelArgs: 1 << 1,
       resolverName: 1 << 2,
@@ -83,73 +93,99 @@ const createQuery = ({
     return [options[optionsMap[flag][0]], options[optionsMap[flag][1]]]
   }
 
-  const read = async ({ modelName, jwtToken, ...options }) => {
+  const read = ({
+    modelName,
+    jwt: actualJwt,
+    jwtToken: deprecatedJwt,
+    ...options
+  }: {
+    modelName: string
+    jwt: string
+    jwtToken: string
+    options: any[]
+  }): any => {
     checkModelExists(modelName)
     const [modelOptions, modelArgs] = parseOptions(options)
 
-    const result = await models[modelName].read(
+    return models[modelName].read(
       modelOptions,
       modelArgs,
-      jwtToken
+      actualJwt || deprecatedJwt
     )
-
-    return result
   }
 
-  const readAndSerialize = async ({ modelName, jwtToken, ...options }) => {
+  const readAndSerialize = ({
+    modelName,
+    jwt: actualJwt,
+    jwtToken: deprecatedJwt,
+    ...options
+  }: {
+    modelName: string
+    jwt: string
+    jwtToken: string
+    options: any[]
+  }): any => {
     checkModelExists(modelName)
     const [modelOptions, modelArgs] = parseOptions(options)
 
-    const result = await models[modelName].readAndSerialize(
+    return models[modelName].readAndSerialize(
       modelOptions,
       modelArgs,
-      jwtToken
+      actualJwt || deprecatedJwt
     )
-
-    return result
   }
 
-  const updateByEvents = async ({
+  const updateByEvents = ({
     modelName,
     events,
     getRemainingTimeInMillis,
     xaTransactionId
-  }) => {
+  }: {
+    modelName: string
+    events: any[]
+    getRemainingTimeInMillis: Function
+    xaTransactionId: any
+  }): Promise<any> => {
     checkModelExists(modelName)
     if (!Array.isArray(events)) {
       throw new Error('Updating by events should supply events array')
     }
 
-    const result = await models[modelName].updateByEvents(
+    return models[modelName].updateByEvents(
       events,
       typeof getRemainingTimeInMillis === 'function'
         ? getRemainingTimeInMillis
         : getDefaultRemainingTime,
       xaTransactionId
     )
-
-    return result
   }
 
-  const drop = async modelName => {
+  const drop = (modelName: string): Promise<void> => {
     checkModelExists(modelName)
 
     await models[modelName].drop()
   }
 
-  const performXA = async (operationName, { modelName, ...parameters }) => {
+  const performXA = (
+    operationName: string,
+    {
+      modelName,
+      ...parameters
+    }: {
+      modelName: string
+      parameters: any[]
+    }
+  ): any => {
     checkModelExists(modelName)
     if (typeof models[modelName][operationName] !== 'function') {
       const error = new Error(
         `Read/view model "${modelName}" does not support XA transactions`
-      )
+      ) as any
       error.code = 405
       throw error
     }
 
-    const result = await models[modelName][operationName](parameters)
-
-    return result
+    return models[modelName][operationName](parameters)
   }
 
   const notify = async modelNameAndParameters => {
@@ -160,7 +196,7 @@ const createQuery = ({
     )
   }
 
-  const dispose = async () => {
+  const dispose = async (): Promise<any> => {
     for (const modelName of Object.keys(models)) {
       await models[modelName].dispose()
     }

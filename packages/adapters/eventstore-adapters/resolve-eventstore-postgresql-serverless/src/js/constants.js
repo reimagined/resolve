@@ -16,5 +16,4 @@ export const PARTIAL_EVENT_FLAG = Symbol()
 export const DATA_API_ERROR_FLAG = Symbol()
 export const RESPONSE_SIZE_LIMIT = Symbol()
 
-export const REMAINING_CONNECTIONS_REGEXP = /remaining connection slots/i
-export const STATEMENT_TIMEOUT_CODE = /StatementTimeoutException/i
+export const AGGREGATE_ID_SQL_TYPE = LONG_STRING_SQL_TYPE
