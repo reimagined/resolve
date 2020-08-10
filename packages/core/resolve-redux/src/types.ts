@@ -1,21 +1,18 @@
 import { Client, Context } from 'resolve-client'
 import { API } from './create_api'
 
-enum RequestState {
+export enum ResultDataState {
   Requested = 'requested',
   Ready = 'ready',
   Failed = 'failed'
 }
 
 type QueryResultEntry = {
-  state: RequestState
+  state: ResultDataState
   data?: any
   timestamp?: number
   error?: Error
 }
-
-export type ReadModelResultState = RequestState
-export type ViewModelResultState = RequestState
 
 export type ReadModelResultEntry = QueryResultEntry
 export type ViewModelResultEntry = QueryResultEntry

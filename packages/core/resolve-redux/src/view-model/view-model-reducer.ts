@@ -1,233 +1,125 @@
 import getHash from '../get-hash'
+import setEntry from 'lodash.set'
+import unsetEntry from 'lodash.unset'
+import getByPath from 'lodash.get'
 
 import {
   QUERY_VIEWMODEL_REQUEST,
   QUERY_VIEWMODEL_SUCCESS,
   QUERY_VIEWMODEL_FAILURE,
-  DROP_VIEWMODEL_STATE,
-  CONNECT_VIEWMODEL,
-  DISCONNECT_VIEWMODEL
+  DROP_VIEWMODEL_STATE
 } from '../action-types'
-
 import {
-  connectorMetaMap,
-  aggregateVersionsMap,
-  lastTimestampMap
-} from '../constants'
+  DropViewModelStateAction,
+  QueryViewModelSuccessAction,
+  QueryViewModelFailureAction,
+  QueryReadModelSuccessAction
+} from './actions'
+import {
+  ReadModelResultEntry,
+  ReadModelResultMapByName,
+  ResultDataState,
+  ReduxState
+} from '../types'
 
-export const dropKey = (state: any, key: any): any => {
-  const nextState = { ...state }
-  delete nextState[key]
-
-  return nextState
+export type ReadModelResultEntrySelector = {
+  readModelName: string
+  resolverName: string
+  resolverArgs: any
 }
 
-export const create = (viewModels: any[]): any => {
+const getSelector = (
+  action:
+    | QueryReadModelRequestAction
+    | QueryReadModelSuccessAction
+    | QueryReadModelFailureAction
+    | DropReadModelResultAction
+): ReadModelResultEntrySelector | string => action.selectorId || action
+
+export const getEntryPath = (
+  selector: ReadModelResultEntrySelector | string
+): string => {
+  if (typeof selector === 'string') {
+    return `@@resolve/namedSelectors.${getHash(selector)}`
+  }
+  const { readModelName, resolverName, resolverArgs } = selector
+  return `${getHash(readModelName)}.${getHash(resolverName)}.${getHash(
+    resolverArgs
+  )}`
+}
+
+export const getEntry = (
+  state: ReadModelResultMapByName | undefined,
+  selector: ReadModelResultEntrySelector | string,
+  placeholder?: ReadModelResultEntry
+): ReadModelResultEntry =>
+  getByPath(state, getEntryPath(selector), placeholder) as ReadModelResultEntry
+
+export const create = (): any => {
   const handlers: { [key: string]: any } = {}
 
-  handlers[QUERY_VIEWMODEL_REQUEST] = (state: any, action: any): any => {
-    const viewModelName = action.viewModelName
-    const aggregateIds = getHash(action.aggregateIds)
-    const aggregateArgs = getHash(action.aggregateArgs)
-
-    const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
-
-    return {
-      ...state,
-      [connectorMetaMap]: {
-        ...state[connectorMetaMap],
-        [`${viewModelName}${aggregateIds}${aggregateArgs}`]: {
-          isLoading: true,
-          isFailure: false
-        }
+  handlers[QUERY_READMODEL_REQUEST] = (
+    state: ReduxState,
+    action: QueryReadModelRequestAction
+  ): ReduxState =>
+    setEntry(
+      {
+        ...state
       },
-      [aggregateVersionsMap]: {
-        ...state[aggregateVersionsMap],
-        [key]: {}
+      getEntryPath(getSelector(action)),
+      {
+        state: ResultDataState.Requested
+      }
+    )
+
+  handlers[QUERY_READMODEL_SUCCESS] = (
+    state: ReduxState,
+    action: QueryReadModelSuccessAction
+  ): ReduxState =>
+    setEntry(
+      {
+        ...state
       },
-      [lastTimestampMap]: {
-        ...state[lastTimestampMap],
-        [key]: +Infinity
+      getEntryPath(getSelector(action)),
+      {
+        state: ResultDataState.Ready,
+        data: action.result,
+        timestamp: action.timestamp
       }
-    }
-  }
+    )
 
-  handlers[QUERY_VIEWMODEL_SUCCESS] = (state: any, action: any): any => {
-    const viewModelName = action.viewModelName
-    const aggregateIds = getHash(action.aggregateIds)
-    const aggregateArgs = getHash(action.aggregateArgs)
-    const viewModelState = action.result
-    const viewModelTimestamp = action.timestamp
-
-    const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
-
-    return {
-      ...state,
-      [viewModelName]: {
-        ...(state[viewModelName] || {}),
-        [aggregateIds]: {
-          ...((state[viewModelName] || {})[aggregateIds] || {}),
-          [aggregateArgs]: viewModelState
-        }
+  handlers[QUERY_READMODEL_FAILURE] = (
+    state: ReduxState,
+    action: QueryReadModelFailureAction
+  ): ReduxState =>
+    setEntry(
+      {
+        ...state
       },
-      [connectorMetaMap]: {
-        ...state[connectorMetaMap],
-        [key]: {
-          isLoading: false,
-          isFailure: false
-        }
-      },
-      [lastTimestampMap]: {
-        ...state[lastTimestampMap],
-        [key]: viewModelTimestamp
+      getEntryPath(getSelector(action)),
+      {
+        state: ResultDataState.Failed,
+        data: null,
+        error: action.error
       }
+    )
+
+  handlers[DROP_READMODEL_STATE] = (
+    state: ReduxState,
+    action: DropReadModelResultAction
+  ): ReduxState => {
+    const newState = {
+      ...state
     }
+    unsetEntry(newState, getEntryPath(getSelector(action)))
+    return newState
   }
 
-  handlers[QUERY_VIEWMODEL_FAILURE] = (state: any, action: any): any => {
-    const viewModelName = action.viewModelName
-    const aggregateIds = getHash(action.aggregateIds)
-    const aggregateArgs = getHash(action.aggregateArgs)
-    const error = action.error
-
-    const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
-
-    return {
-      ...state,
-      [connectorMetaMap]: {
-        ...state[connectorMetaMap],
-        [key]: {
-          isLoading: false,
-          isFailure: true,
-          error
-        }
-      }
-    }
-  }
-
-  handlers[DROP_VIEWMODEL_STATE] = (state: any, action: any): any => {
-    const viewModelName = action.viewModelName
-    const aggregateIds = getHash(action.aggregateIds)
-    const aggregateArgs = getHash(action.aggregateArgs)
-
-    const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
-
-    return {
-      ...state,
-      [viewModelName]: {
-        ...state[viewModelName],
-        [aggregateIds]: dropKey(
-          state[viewModelName][aggregateIds],
-          aggregateArgs
-        )
-      },
-      [connectorMetaMap]: dropKey(state[connectorMetaMap], key),
-      [aggregateVersionsMap]: dropKey(state[aggregateVersionsMap], key),
-      [lastTimestampMap]: dropKey(state[lastTimestampMap], key)
-    }
-  }
-
-  const aggregateHash = new Map()
-
-  handlers[CONNECT_VIEWMODEL] = (state: any, action: any): any => {
-    if (action.aggregateIds !== '*') {
-      const aggregatesKey = getHash(action.aggregateIds)
-      for (const aggregateId of action.aggregateIds) {
-        if (!aggregateHash.has(aggregateId)) {
-          aggregateHash.set(aggregateId, [])
-        }
-        aggregateHash.get(aggregateId).push(aggregatesKey)
-      }
-    }
-    return state
-  }
-
-  handlers[DISCONNECT_VIEWMODEL] = (state: any, action: any): any => {
-    if (action.aggregateIds !== '*') {
-      const aggregatesKey = getHash(action.aggregateIds)
-      for (const aggregateId of action.aggregateIds) {
-        const aggregateKeys = aggregateHash.get(aggregateId)
-        const idx = aggregateKeys.indexOf(aggregatesKey)
-        if (idx >= 0) {
-          aggregateKeys.splice(idx, 1)
-        }
-        if (aggregateKeys.length === 0) {
-          aggregateHash.delete(aggregateId)
-        }
-      }
-    }
-    return state
-  }
-
-  const uniqueListeners = new Map()
-
-  for (const viewModel of viewModels) {
-    for (const eventType of Object.keys(viewModel.projection).filter(
-      eventType => eventType !== 'Init'
-    )) {
-      if (!uniqueListeners.has(eventType)) {
-        uniqueListeners.set(eventType, [])
-      }
-      uniqueListeners.get(eventType).push(viewModel)
-    }
-  }
-
-  for (const [eventType, viewModels] of uniqueListeners.entries()) {
-    handlers[eventType] = (state: any, action: any): any => {
-      for (const viewModel of viewModels) {
-        const handler = viewModel.projection[action.type]
-
-        const aggregateKeys: string[] = Array.from(
-          new Set(aggregateHash.get(action.aggregateId))
-        )
-
-        for (const aggregateKey of aggregateKeys) {
-          if (state[viewModel.name] && state[viewModel.name][aggregateKey]) {
-            for (const aggregateArgs of Object.keys(
-              state[viewModel.name][aggregateKey]
-            )) {
-              state[viewModel.name][aggregateKey][aggregateArgs] = handler(
-                state[viewModel.name][aggregateKey][aggregateArgs],
-                action
-              )
-            }
-
-            state[viewModel.name][aggregateKey] = {
-              ...state[viewModel.name][aggregateKey]
-            }
-          }
-        }
-
-        if (state[viewModel.name] && state[viewModel.name]['*']) {
-          for (const aggregateArgs of Object.keys(state[viewModel.name]['*'])) {
-            state[viewModel.name]['*'][aggregateArgs] = handler(
-              state[viewModel.name]['*'][aggregateArgs],
-              action
-            )
-          }
-
-          state[viewModel.name]['*'] = { ...state[viewModel.name]['*'] }
-        }
-
-        state[viewModel.name] = { ...state[viewModel.name] }
-      }
-
-      return { ...state }
-    }
-  }
-
-  let state = {
-    [connectorMetaMap]: {},
-    [aggregateVersionsMap]: {},
-    [lastTimestampMap]: {}
-  }
-
-  return (_: void, action: any) => {
+  return (state: ReduxState = {}, action: any): ReduxState => {
     const eventHandler = handlers[action.type]
     if (eventHandler) {
-      state = eventHandler(state, action)
+      return eventHandler(state, action)
     }
-
     return state
   }
 }

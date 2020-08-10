@@ -9,7 +9,7 @@ import {
 } from './actions'
 import getHash from '../get-hash'
 import connectResolveAdvanced from '../connect_resolve_advanced'
-import { ReadModelResultState, ReduxState } from '../types'
+import { ResultDataState, ReduxState } from '../types'
 import { getEntry } from './read-model-reducer'
 
 type ReadModelConnectorOptions = {
@@ -87,15 +87,15 @@ const connectReadModel = (
 
     const entry = getEntry(state.readModels, connectorOptions)
     const data =
-      entry && entry.state === ReadModelResultState.Ready ? entry.data : null
+      entry && entry.state === ResultDataState.Ready ? entry.data : null
     const error =
-      entry && entry.state === ReadModelResultState.Failed ? entry.error : null
+      entry && entry.state === ResultDataState.Failed ? entry.error : null
 
     return {
       ownProps,
       connectorOptions,
-      isLoading: entry && entry.state === ReadModelResultState.Requested,
-      isFailure: entry && entry.state === ReadModelResultState.Failed,
+      isLoading: entry && entry.state === ResultDataState.Requested,
+      isFailure: entry && entry.state === ResultDataState.Failed,
       data,
       error
     }

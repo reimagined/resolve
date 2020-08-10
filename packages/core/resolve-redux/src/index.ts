@@ -22,6 +22,7 @@ import getOrigin from './get_origin'
 import { useReduxReadModel } from './read-model/use-redux-read-model'
 import { useReduxReadModelSelector } from './read-model/use-redux-read-model-selector'
 import { useReduxCommand } from './command/use-redux-command'
+import { useReduxViewModel } from './view-model/use-redux-view-model'
 
 import * as actionTypes from './action-types'
 
@@ -55,5 +56,6 @@ export {
   internal,
   useReduxReadModel,
   useReduxReadModelSelector,
-  useReduxCommand
+  useReduxCommand,
+  useReduxViewModel
 }

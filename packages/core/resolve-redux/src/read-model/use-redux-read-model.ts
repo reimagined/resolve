@@ -108,6 +108,7 @@ function useReduxReadModel(
 ): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
+  initialState: any,
   options?: ReduxReadModelHookOptions | ReadModelReduxActionsCreators | any[],
   actions?: ReadModelReduxActionsCreators | any[],
   dependencies?: any[]

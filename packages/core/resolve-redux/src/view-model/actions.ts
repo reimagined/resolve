@@ -11,7 +11,8 @@ import {
   UNSUBSCRIBE_TOPIC_REQUEST,
   UNSUBSCRIBE_TOPIC_SUCCESS,
   UNSUBSCRIBE_TOPIC_FAILURE,
-  DISPATCH_TOPIC_MESSAGE
+  DISPATCH_TOPIC_MESSAGE,
+  VIEWMODEL_STATE_UPDATE
 } from '../action-types'
 
 type ViewModelAction = {
@@ -75,6 +76,28 @@ export const queryViewModelFailure = (
   aggregateIds,
   aggregateArgs,
   error,
+  selectorId
+})
+
+export type ViewModelStateUpdateAction = {
+  type: typeof VIEWMODEL_STATE_UPDATE
+  result: any
+  timestamp: number
+} & ViewModelAction
+export const viewModelStateUpdate = (
+  viewModelName: string,
+  aggregateIds: string | string[],
+  aggregateArgs: any,
+  result: any,
+  timestamp: number,
+  selectorId?: string
+): ViewModelStateUpdateAction => ({
+  type: VIEWMODEL_STATE_UPDATE,
+  viewModelName,
+  aggregateIds,
+  aggregateArgs,
+  result,
+  timestamp,
   selectorId
 })
 
