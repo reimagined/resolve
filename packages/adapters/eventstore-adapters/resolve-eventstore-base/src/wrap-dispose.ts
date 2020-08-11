@@ -1,22 +1,27 @@
-function wrapDispose(pool: any, dispose: Function)  {
-  return async function (options = {}) {
-    if (pool.disposed) {
-      throw new Error('Adapter has been already disposed')
+function wrapDispose<
+  Args extends Array<any>,
+  Result extends any,
+  AdapterConnection extends any,
+  AdapterImplementation extends IAdapterImplementation<
+    AdapterConnection,
+    AdapterOptions
+    >,
+  Adapter extends IAdapter,
+  AdapterOptions extends IAdapterOptions
+  >(
+  state: AdapterState<AdapterConnection>,
+  options: AdapterOptions,
+  dispose: (connection: AdapterConnection, ...args: Args) => Promise<void>
+): (...args: Args) => Promise<void> {
+  return async (...args: Args) => {
+    throwWhenDisposed(state);
+    state.status = Status.DISPOSED;
+    const connection = state.connection;
+    if (connection == null) {
+      return;
     }
-    if (options != null && options.constructor !== Object) {
-      throw new Error(
-        'Dispose options should be object or not be passed to use default behaviour'
-      )
-    }
-    pool.disposed = true
-    if (!pool.isInitialized) {
-      return
-    }
-
-    await pool.connectPromise
-
-    await dispose(pool, options)
-  }
+    await dispose(connection, ...args);
+  };
 }
 
 export default wrapDispose

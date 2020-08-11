@@ -17,21 +17,11 @@ import getNextCursor from './get-next-cursor'
 import throwBadCursor from './throw-bad-cursor'
 import snapshotTrigger from './snapshot-trigger'
 import incrementalImport from './incremental-import'
+import { AdapterImplementation, AdapterState } from './types'
 
-const wrappedCreateAdapter = createAdapter.bind(null, {
-  importStream,
-  exportStream,
-  wrapMethod,
-  wrapEventFilter,
-  wrapSaveEvent,
-  wrapDispose,
-  validateEventFilter,
-  loadEvents,
-  incrementalImport,
-  getNextCursor
-})
 
-export default wrappedCreateAdapter
+
+export default createAdapter
 
 export {
   ResourceAlreadyExistError as EventstoreResourceAlreadyExistError,

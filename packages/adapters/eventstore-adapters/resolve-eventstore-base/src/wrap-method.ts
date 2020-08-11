@@ -1,19 +1,28 @@
-async function wrappedMethod(pool: any, method: Function, wrappedArgs: Array<any>, ...args: Array<any>) {
-  if (pool.disposed) {
-    throw new Error('Adapter has been already disposed')
+function wrapMethod<
+  Args extends Array<any>,
+  Result extends any,
+  AdapterConnection extends any,
+  AdapterImplementation extends IAdapterImplementation<
+    AdapterConnection,
+    AdapterOptions
+    >,
+  Adapter extends IAdapter,
+  AdapterOptions extends IAdapterOptions
+  >(
+  state: AdapterState<AdapterConnection>,
+  options: AdapterOptions,
+  implementation: AdapterImplementation,
+  method: (connection: AdapterConnection, ...args: Args) => Promise<Result>
+): (...args: Args) => Promise<Result> {
+  return async (...args: Args) => {
+    throwWhenDisposed(state);
+    await connectOnDemand(options, state, implementation);
+    const connection = state.connection;
+    if (connection == null) {
+      throw new Error("Bad connection");
+    }
+    return method(connection, ...args);
   }
-
-  pool.isInitialized = true
-  pool.connectPromiseResolve()
-  await pool.connectPromise
-
-  return await method(pool, ...wrappedArgs, ...args)
-}
-
-function wrapMethod (pool: any, method: Function, ...wrappedArgs: Array<any>) {
-  return typeof method === 'function'
-    ? wrappedMethod.bind(null, pool, method, wrappedArgs)
-    : null
 }
 
 export default wrapMethod
