@@ -14,6 +14,7 @@ const initResolve = async resolve => {
   } = resolve.assemblies
 
   const {
+    invokeEventListenerAsync,
     aggregates,
     readModels,
     schedulers,
@@ -40,6 +41,7 @@ const initResolve = async resolve => {
   })
 
   const executeQuery = createQueryExecutor({
+    invokeEventListenerAsync,
     publisher,
     eventstoreAdapter,
     readModelConnectors,
@@ -49,6 +51,7 @@ const initResolve = async resolve => {
   })
 
   const executeSaga = createSagaExecutor({
+    invokeEventListenerAsync,
     executeCommand,
     executeQuery,
     publisher,

@@ -19,6 +19,7 @@ type ReadModelPool = {
   connector: any
   connections: Set<any>
   readModel: ReadModelMeta
+  invokeEventListenerAsync: Function
 }
 
 const wrapConnection = async (
@@ -542,6 +543,17 @@ const rollbackXATransaction = doOperation.bind(
   null
 )
 
+const notifyAsyncInvoke = async (
+  pool: ReadModelPool,
+  eventListener: string,
+  notification: string
+) => {
+  await pool.invokeEventListenerAsync('notify', {
+    eventListener,
+    notification
+  })
+}
+
 const notify = doOperation.bind(
   null,
   'notify',
@@ -553,6 +565,7 @@ const notify = doOperation.bind(
   ) => [
     connection,
     readModelName,
+    notifyAsyncInvoke.bind(null, pool, readModelName),
     connection,
     pool.readModel.projection,
     parameters.notification
@@ -599,6 +612,7 @@ const wrapReadModel = (
   readModel: ReadModelMeta,
   readModelConnectors: { [key: string]: any },
   eventstoreAdapter: any,
+  invokeEventListenerAsync: Function,
   performanceTracer: any,
   getSecretsManager: any
 ) => {
@@ -613,6 +627,7 @@ const wrapReadModel = (
   }
 
   const pool = {
+    invokeEventListenerAsync,
     eventstoreAdapter,
     connections: new Set(),
     readModel,

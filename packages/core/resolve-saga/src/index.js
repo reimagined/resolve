@@ -7,6 +7,7 @@ import createSchedulerSagas from './create-scheduler-sagas'
 import wrapRegularSagas from './wrap-regular-sagas'
 
 const createSaga = ({
+  invokeEventListenerAsync,
   publisher,
   readModelConnectors,
   sagas,
@@ -49,6 +50,7 @@ const createSaga = ({
   const schedulerSagas = createSchedulerSagas(schedulers, sagaProvider)
 
   const executeListener = createQuery({
+    invokeEventListenerAsync,
     publisher,
     readModelConnectors,
     readModels: [...regularSagas, ...schedulerSagas],

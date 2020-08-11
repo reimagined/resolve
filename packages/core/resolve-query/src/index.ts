@@ -10,12 +10,14 @@ import wrapViewModel from './wrap-view-model'
 const getDefaultRemainingTime = (): number => 0x7fffffff
 
 const createQuery = ({
+  invokeEventListenerAsync,
   readModelConnectors,
   readModels,
   viewModels,
   performanceTracer,
   eventstoreAdapter
 }: {
+  invokeEventListenerAsync: Function
   readModelConnectors: any
   readModels: any[]
   viewModels: any[]
@@ -33,6 +35,7 @@ const createQuery = ({
       readModel,
       readModelConnectors,
       eventstoreAdapter,
+      invokeEventListenerAsync,
       performanceTracer,
       eventstoreAdapter.getSecretsManager.bind(null)
     )

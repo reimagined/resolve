@@ -1,4 +1,5 @@
 import debugLevels from 'resolve-debug-levels'
+import { invokeFunction } from 'resolve-cloud-common/lambda'
 
 import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
@@ -30,6 +31,19 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
     lambdaEventType: 'EventStore',
     lambdaEventName: 'resolveSource'
+  }
+
+  resolveBase.invokeEventListenerAsync = async (method, payload) => {
+    await invokeFunction({
+      FunctionName: lambdaContext.invokedFunctionArn,
+      InvocationType: 'Event',
+      Region: process.env.AWS_REGION,
+      Payload: {
+        resolveSource: 'EventBus',
+        method,
+        payload
+      }
+    })
   }
 
   const resolve = Object.create(resolveBase)

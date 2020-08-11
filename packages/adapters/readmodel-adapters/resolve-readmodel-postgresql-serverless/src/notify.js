@@ -33,7 +33,14 @@ const isPassthroughError = error =>
   (error != null && /deadlock/.match(error.message)) ||
   error === passthroughError
 
-const notify = async (pool, readModelName, store, projection, notification) => {
+const notify = async (
+  pool,
+  readModelName,
+  notify,
+  store,
+  projection,
+  notification
+) => {
   const {
     eventstoreAdapter,
     databaseName,
@@ -70,9 +77,24 @@ const notify = async (pool, readModelName, store, projection, notification) => {
         }
       }
 
-      const eventTypes = JSON.parse(readModelLedger.eventTypes)
+      const eventTypes = JSON.parse(readModelLedger.EventTypes)
       if (!Array.isArray(eventTypes)) {
         throw new TypeError('eventTypes')
+      }
+
+      const cursor =
+        readModelLedger.Cursor != null
+          ? JSON.parse(readModelLedger.Cursor)
+          : null
+
+      if (cursor != null && cursor.constructor !== String) {
+        throw new TypeError('cursor')
+      }
+
+      if (cursor == null && typeof projection.Init === 'function') {
+        await projection.Init(store)
+
+        return
       }
 
       const events = await eventstoreAdapter.loadEvents({
