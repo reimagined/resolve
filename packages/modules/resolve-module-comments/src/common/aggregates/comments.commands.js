@@ -7,7 +7,7 @@ const createCommentsCommands = (
   },
   { verifyCommand }
 ) => ({
-  [createComment]: async (state, command, { jwt: jwtToken }) => {
+  [createComment]: async (state, command, { jwt }) => {
     if (
       command.payload.commentId == null ||
       command.payload.commentId.constructor !== String
@@ -41,7 +41,7 @@ const createCommentsCommands = (
       )
     }
 
-    await verifyCommand(state, command, jwtToken)
+    await verifyCommand(state, command, jwt)
 
     return {
       type: COMMENT_CREATED,
@@ -54,7 +54,7 @@ const createCommentsCommands = (
     }
   },
 
-  [updateComment]: async (state, command, { jwt: jwtToken }) => {
+  [updateComment]: async (state, command, { jwt }) => {
     if (
       command.payload.commentId == null ||
       command.payload.commentId.constructor !== String
@@ -79,7 +79,7 @@ const createCommentsCommands = (
       )
     }
 
-    await verifyCommand(state, command, jwtToken)
+    await verifyCommand(state, command, jwt)
 
     return {
       type: COMMENT_UPDATED,
@@ -91,7 +91,7 @@ const createCommentsCommands = (
     }
   },
 
-  [removeComment]: async (state, command, { jwt: jwtToken }) => {
+  [removeComment]: async (state, command, { jwt }) => {
     if (
       command.payload.commentId == null ||
       command.payload.commentId.constructor !== String
@@ -110,7 +110,7 @@ const createCommentsCommands = (
       )
     }
 
-    await verifyCommand(state, command, jwtToken)
+    await verifyCommand(state, command, jwt)
 
     return {
       type: COMMENT_REMOVED,

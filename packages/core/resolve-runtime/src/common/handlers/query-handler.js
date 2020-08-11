@@ -23,7 +23,7 @@ const queryHandler = async (req, res) => {
       modelName,
       modelOptions,
       modelArgs: extractRequestBody(req),
-      jwtToken: req.jwtToken
+      jwt: req.jwt
     })
 
     subSegment.addAnnotation('modelName', modelName)

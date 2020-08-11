@@ -17,7 +17,7 @@ function isCommandError(error) {
 export const executeCommandWithRetryConflicts = async ({
   executeCommand,
   commandArgs,
-  jwtToken
+  jwt
 }) => {
   const retryCount = commandArgs.immediateConflict != null ? 0 : 10
   let lastError = null
@@ -25,7 +25,7 @@ export const executeCommandWithRetryConflicts = async ({
 
   for (let retry = 0; retry <= retryCount; retry++) {
     try {
-      event = await executeCommand({ ...commandArgs, jwtToken })
+      event = await executeCommand({ ...commandArgs, jwt })
       lastError = null
       break
     } catch (error) {
@@ -59,7 +59,7 @@ const commandHandler = async (req, res) => {
     const event = await executeCommandWithRetryConflicts({
       executeCommand,
       commandArgs,
-      jwtToken: req.jwtToken
+      jwt: req.jwt
     })
 
     subSegment.addAnnotation('aggregateName', commandArgs.aggregateName)

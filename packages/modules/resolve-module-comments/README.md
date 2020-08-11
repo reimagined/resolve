@@ -54,7 +54,7 @@ merge(
 ```js
 // customVerifyCommand.js
 
-const verifyCommand = async (state, command, jwtToken) => {
+const verifyCommand = async (state, command, jwt) => {
   // ...
 }
 

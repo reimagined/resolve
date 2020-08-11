@@ -1,6 +1,6 @@
 {
   "name": "resolve-client",
-  "version": "0.24.14",
+  "version": "0.24.21",
   "description": "Basic reSolve client.",
   "engines": {
     "node": ">=10.9"
@@ -62,6 +62,12 @@
       "moduleTarget": "client",
       "inputDir": "./src",
       "outDir": "./lib"
+    },
+    {
+      "moduleType": "es",
+      "moduleTarget": "client",
+      "inputDir": "./src",
+      "outDir": "./es"
     }
   ]
 }

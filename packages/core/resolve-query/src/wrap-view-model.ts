@@ -1,11 +1,38 @@
 import getLog from './get-log'
 
-const getKey = aggregateIds =>
+type AggregateIds = string | string[]
+
+type ViewModelMeta = {
+  name: string
+  invariantHash: string
+  deserializeState: Function
+  serializeState: Function
+  projection: { [key: string]: Function }
+  encryption: Function
+}
+
+type ViewModelPool = {
+  viewModel: ViewModelMeta
+  eventstoreAdapter: any
+  getSecretsManager: Function
+  performanceTracer: any
+  workers: Map<string, any>
+  isDisposed: boolean
+}
+
+const getKey = (aggregateIds: AggregateIds): string =>
   Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds
 
-const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
+const buildViewModel = async (
+  pool: ViewModelPool,
+  aggregateIds: AggregateIds,
+  aggregateArgs: any,
+  jwt: string,
+  key: string
+): Promise<any> => {
   const viewModelName = pool.viewModel.name
-  const getLocalLog = scope => getLog(`buildViewModel:${viewModelName}${scope}`)
+  const getLocalLog = (scope: string): any =>
+    getLog(`buildViewModel:${viewModelName}${scope}`)
   const log = getLocalLog('')
 
   await Promise.resolve()
@@ -13,22 +40,25 @@ const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
   log.verbose(`snapshotKey: ${snapshotKey}`)
 
   let aggregatesVersionsMap = new Map()
-  let cursor = null
-  let state = null
+  let cursor: any = null
+  let state: any = null
 
   try {
     log.debug(`loading latest snapshot`)
     const snapshotData = await pool.eventstoreAdapter.loadSnapshot(snapshotKey)
     log.verbose(`snapshot: ${snapshotData}`)
     const snapshot = JSON.parse(snapshotData)
-    aggregatesVersionsMap = new Map(snapshot.aggregatesVersionsMap)
-    log.debug(`deserialize snapshot state`)
-    state = await pool.viewModel.deserializeState(snapshot.state)
-    log.verbose(`snapshot state: ${state}`)
-    cursor = snapshot.cursor
-    log.verbose(`snapshot cursor: ${cursor}`)
+
+    if (snapshot != null) {
+      aggregatesVersionsMap = new Map(snapshot.aggregatesVersionsMap)
+      log.debug(`deserialize snapshot state`)
+      state = await pool.viewModel.deserializeState(snapshot.state)
+      log.verbose(`snapshot state: ${state}`)
+      cursor = snapshot.cursor
+      log.verbose(`snapshot cursor: ${cursor}`)
+    }
   } catch (error) {
-    log.warn(error.message)
+    log.verbose(error.message)
   }
 
   if (cursor == null && typeof pool.viewModel.projection.Init === 'function') {
@@ -44,7 +74,7 @@ const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
       ? await pool.getSecretsManager()
       : null
 
-  const handler = async event => {
+  const handler = async (event: any): Promise<any> => {
     const handlerLog = getLocalLog(`:handler:${event.type}`)
     handlerLog.debug(`executing`)
     const segment = pool.performanceTracer
@@ -124,7 +154,12 @@ const buildViewModel = async (pool, aggregateIds, aggregateArgs, jwt, key) => {
   return { state, eventCount }
 }
 
-const read = async (pool, modelOptions, aggregateArgs, jwt) => {
+const read = async (
+  pool: ViewModelPool,
+  modelOptions: any,
+  aggregateArgs: any,
+  jwt: string
+): Promise<any> => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -187,24 +222,22 @@ const read = async (pool, modelOptions, aggregateArgs, jwt) => {
 }
 
 const readAndSerialize = async (
-  pool,
-  modelOptions,
-  aggregateArgs,
-  jwtToken
-) => {
+  pool: ViewModelPool,
+  modelOptions: any,
+  aggregateArgs: any,
+  jwt: string
+): Promise<any> => {
   const viewModelName = pool.viewModel.name
 
   if (pool.isDisposed) {
     throw new Error(`View model "${viewModelName}" is disposed`)
   }
-  const state = await read(pool, modelOptions, aggregateArgs, jwtToken)
+  const state = await read(pool, modelOptions, aggregateArgs, jwt)
 
-  const result = await pool.viewModel.serializeState(state, jwtToken)
-
-  return result
+  return pool.viewModel.serializeState(state, jwt)
 }
 
-const updateByEvents = async pool => {
+const updateByEvents = async (pool: ViewModelPool): Promise<any> => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -235,7 +268,7 @@ const updateByEvents = async pool => {
   }
 }
 
-const drop = async pool => {
+const drop = async (pool: ViewModelPool): Promise<any> => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -268,7 +301,7 @@ const drop = async pool => {
   }
 }
 
-const dispose = async pool => {
+const dispose = async (pool: ViewModelPool): Promise<any> => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -300,10 +333,10 @@ const dispose = async pool => {
 }
 
 const wrapViewModel = (
-  viewModel,
-  eventstoreAdapter,
-  performanceTracer,
-  getSecretsManager
+  viewModel: ViewModelMeta,
+  eventstoreAdapter: any,
+  performanceTracer: any,
+  getSecretsManager: any
 ) => {
   const pool = {
     viewModel,

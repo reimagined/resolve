@@ -19,7 +19,7 @@ const sendCommand = async (
       {
         uri: `${pool.applicationOrigin}/api/commands`,
         headers: {
-          authorization: `Bearer ${pool.jwtToken}`,
+          authorization: `Bearer ${pool.jwt}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -41,13 +41,13 @@ const sendCommand = async (
 }
 
 const getUploadUrl = async pool => {
-  const { login, projectId, jwtToken, applicationOrigin } = pool
+  const { login, projectId, jwt, applicationOrigin } = pool
   return new Promise((resolve, reject) => {
     request.get(
       {
         uri: `${applicationOrigin}/api/uploader/getUploadUrl?dir=${login}/${projectId}`,
         headers: {
-          authorization: `Bearer ${jwtToken}`
+          authorization: `Bearer ${jwt}`
         }
       },
       (error, _, body) => {
@@ -155,7 +155,7 @@ const main = async () => {
     password: process.env.PASSWORD
   }
 
-  pool.jwtToken = JSON.parse(await getJwtToken(pool))
+  pool.jwt = JSON.parse(await getJwtToken(pool))
 
   const files = await readDir(directoryPath)
 
