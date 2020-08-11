@@ -149,7 +149,9 @@ await pipeline(eventStore1.export(), eventStore2.import())
 
 The incremental import allows you to import into an event store only those events that do not already exist in this event store. The incremental import also skips events that are older (have an older timestamp) than the latest event in the recipient event store.
 
-To import events incrementally, pass an array of events to an event store adapter's `incrementalImport` method.
+### Basic Incremental Import
+
+To import events incrementally, pass an array of events to an event store adapter's [incrementalImport](api-reference.md#incrementalimport) method.
 
 The code sample below demonstrates how to implement and API endpoint that incrementally imports events into the application's event store.
 
@@ -173,4 +175,30 @@ async function handler(req, res) {
 }
 
 export default handler
+```
+
+### Advanced Incremental import
+
+The following methods give you additional control over the incremental import process:
+
+| Method                                                                  | Description                                         |
+| ----------------------------------------------------------------------- | --------------------------------------------------- |
+| [beginIncrementalImport](api-reference.md#beginincrementalimport)       | Starts to accumulate events for incremental import. |
+| [pushIncrementalImport](api-reference.md#pushincrementalimport)         | Accumulates events for incremental import.          |
+| [commitIncrementalImport](api-reference.md#commitincrementalimport)     | Commits the accumulated events to the event store.  |
+| [rollbackIncrementalImport](api-reference.md#rollbackincrementaiImport) | Drops the accumulated events.                       |
+
+The code sample below demonstrates how to use advanced incremental import in a try-catch block to roll back in case of errors.
+
+##### Example
+
+```js
+try {
+  const importId = await eventStoreAdapter.beginIncrementalImport()
+  await eventStoreAdapter.pushIncrementalImport(events, importId)
+  await eventStoreAdapter.commitIncrementalImport(importId)
+} catch (error) {
+  await eventStoreAdapter.rollbackIncrementalImport()
+  throw error
+}
 ```
