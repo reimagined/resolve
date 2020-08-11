@@ -27,7 +27,16 @@ const executeStatement = async (pool, transactionId, sql) => {
   return rows
 }
 
-const notify = async (pool, readModelName, { notification }) => {
+const passthroughError = new Error('PASSTHROUGH ERROR')
+
+const isPassthroughError = error =>
+  (error != null && (
+    /deadlock/.match(error.message)
+  ) ) || (
+    error === passthroughError
+  )
+
+const notify = async (pool, readModelName, store, projection, notification) => {
   const {
     eventstoreAdapter,
     databaseName,
@@ -51,13 +60,45 @@ const notify = async (pool, readModelName, { notification }) => {
           pool,
           transactionId,
           `SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-         WHERE "EventSubscriber" = ${escape(readModelName)}
-         FOR UPDATE`
+           WHERE "EventSubscriber" = ${escape(readModelName)}
+           FOR UPDATE`
         )
         if (rows.length !== 1) {
-          throw new Error()
+          throw passthroughError
         }
-      } catch (error) {}
+        readModelLedger = rows[0]
+
+      } catch (error) {
+        if(isPassthroughError(error)) {
+          return
+        }
+      }
+
+      const eventTypes =  JSON.parse(readModelLedger.eventTypes)
+      if(!Array.isArray(eventTypes)) {
+        throw new TypeError('eventTypes')
+      }
+
+      const events = await eventstoreAdapter.loadEvents({
+        eventTypes,
+        eventsSizeLimit: 256 * 1024,
+        limit: 0x7fffffff
+      })
+
+      let lastSuccessEvent = null
+      let lastFailedEvent = null
+      let lastError = null
+
+      for(const event of events) {
+        try {
+          await projection[event.type](store, event)
+          lastSuccessEvent = event
+        } catch(error) {
+          lastFailedEvent = event
+          lastError = error
+          break
+        }
+      }
 
       break
     }

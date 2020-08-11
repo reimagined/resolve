@@ -482,8 +482,9 @@ const readAndSerialize = async (
 
 const doOperation = async (
   operationName: string,
+  prepareArguments: Function | null,
   pool: ReadModelPool,
-  parameters: any
+  parameters: any,
 ): Promise<any> => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
@@ -507,11 +508,17 @@ const doOperation = async (
     await wrapConnection(
       pool,
       async (connection: any): Promise<any> => {
-        result = await pool.connector[operationName](
-          connection,
-          pool.readModel.name,
-          parameters
-        )
+      const originalArgs = [
+        connection,
+        pool.readModel.name,
+        parameters
+      ]
+
+      const args = prepareArguments != null
+        ? prepareArguments(pool, ...originalArgs)
+        : originalArgs
+
+        result = await pool.connector[operationName](...args)
       }
     )
 
@@ -528,11 +535,17 @@ const doOperation = async (
   }
 }
 
-const drop = doOperation.bind(null, 'drop')
-const beginXATransaction = doOperation.bind(null, 'beginXATransaction')
-const commitXATransaction = doOperation.bind(null, 'commitXATransaction')
-const rollbackXATransaction = doOperation.bind(null, 'rollbackXATransaction')
-const notify = doOperation.bind(null, 'notify')
+const drop = doOperation.bind(null, 'drop', null)
+
+const beginXATransaction = doOperation.bind(null, 'beginXATransaction', null)
+const commitXATransaction = doOperation.bind(null, 'commitXATransaction', null)
+const rollbackXATransaction = doOperation.bind(null, 'rollbackXATransaction', null)
+
+const notify = doOperation.bind(null, 'notify',
+  (pool,  connection,   readModelName,  parameters) => [
+    connection, readModelName, connection, pool.readModel.projection, parameters.notification
+  ]
+)
 
 const dispose = async (pool: ReadModelPool): Promise<void> => {
   const segment = pool.performanceTracer

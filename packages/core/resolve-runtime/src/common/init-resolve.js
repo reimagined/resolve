@@ -27,7 +27,8 @@ const initResolve = async resolve => {
   const readModelConnectors = {}
   for (const name of Object.keys(readModelConnectorsCreators)) {
     readModelConnectors[name] = readModelConnectorsCreators[name]({
-      performanceTracer
+      performanceTracer,
+      eventstoreAdapter
     })
   }
 
