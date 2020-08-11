@@ -30,11 +30,8 @@ const executeStatement = async (pool, transactionId, sql) => {
 const passthroughError = new Error('PASSTHROUGH ERROR')
 
 const isPassthroughError = error =>
-  (error != null && (
-    /deadlock/.match(error.message)
-  ) ) || (
-    error === passthroughError
-  )
+  (error != null && /deadlock/.match(error.message)) ||
+  error === passthroughError
 
 const notify = async (pool, readModelName, store, projection, notification) => {
   const {
@@ -67,15 +64,14 @@ const notify = async (pool, readModelName, store, projection, notification) => {
           throw passthroughError
         }
         readModelLedger = rows[0]
-
       } catch (error) {
-        if(isPassthroughError(error)) {
+        if (isPassthroughError(error)) {
           return
         }
       }
 
-      const eventTypes =  JSON.parse(readModelLedger.eventTypes)
-      if(!Array.isArray(eventTypes)) {
+      const eventTypes = JSON.parse(readModelLedger.eventTypes)
+      if (!Array.isArray(eventTypes)) {
         throw new TypeError('eventTypes')
       }
 
@@ -89,11 +85,11 @@ const notify = async (pool, readModelName, store, projection, notification) => {
       let lastFailedEvent = null
       let lastError = null
 
-      for(const event of events) {
+      for (const event of events) {
         try {
           await projection[event.type](store, event)
           lastSuccessEvent = event
-        } catch(error) {
+        } catch (error) {
           lastFailedEvent = event
           lastError = error
           break
