@@ -21,7 +21,7 @@ const appConfig = {
     {
       name: 'current-user-profile',
       projection: 'common/view-models/current-user-profile.projection.js',
-      validator: 'common/view-models/current-user-profile.validator.js'
+      resolver: 'common/view-models/current-user-profile.resolver.js'
     }
   ],
   readModels: [

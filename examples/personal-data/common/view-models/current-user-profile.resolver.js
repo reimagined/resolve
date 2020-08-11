@@ -7,7 +7,7 @@ export default async (resolve, { topics, jwt: token }) => {
     modelName: 'user-profiles',
     resolverName: 'profileById',
     resolverArgs: { userId },
-    jwtToken: token
+    jwt: token
   })
 
   if (user == null || !user) {

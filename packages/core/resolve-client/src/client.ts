@@ -1,6 +1,6 @@
 import { Context } from './context'
 import { GenericError } from './errors'
-import { connect, getSubscriptionKeys, disconnect } from './subscribe'
+import { connect, disconnect } from './subscribe'
 import {
   RequestOptions,
   request,

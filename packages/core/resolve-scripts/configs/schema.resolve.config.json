@@ -136,7 +136,7 @@
             { "$ref": "#/definitions/resourceConstructor" }
           ]
         },
-        "validator": {
+        "resolver": {
           "oneOf": [
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }

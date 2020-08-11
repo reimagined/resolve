@@ -34,7 +34,22 @@ const removeCallback = (
   )
 }
 
-const rootCallback = (event: any, resubscribed?: boolean): void => {
+const rootCallback = (
+  {
+    event,
+    cursor: prevCursor
+  }: {
+    event: {
+      aggregateId: string
+      aggregateVersion: number
+      payload: object
+      timestamp: number
+      type: string
+    }
+    cursor: string
+  },
+  resubscribed?: boolean
+): void => {
   const { type: eventTopic, aggregateId } = event
   for (const topicName in callbackMap) {
     if (topicName === eventTopic) {
