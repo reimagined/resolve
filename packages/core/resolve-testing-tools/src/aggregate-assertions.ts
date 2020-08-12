@@ -19,6 +19,19 @@ type BDDAggregateAssertionContext = {
   [symbol]: BDDAggregateAssertionState
 }
 
+const stringifyError = (error: any): string => {
+  if (!error) {
+    return 'no error'
+  }
+  if (typeof error === 'string') {
+    return error
+  }
+  if (error.message) {
+    return error.message
+  }
+  return JSON.stringify(error, null, 2)
+}
+
 const checkState = (state: BDDAggregateAssertionState): TypeError | null => {
   if (state.phase < Phases.COMMAND) {
     return new TypeError('invalid phase')
@@ -30,9 +43,10 @@ const checkState = (state: BDDAggregateAssertionState): TypeError | null => {
 }
 
 export const shouldProduceEvent = (
-  { [symbol]: state }: BDDAggregateAssertionContext,
+  context: BDDAggregateAssertionContext,
   expectedEvent: CommandResult
 ) => {
+  const { [symbol]: state } = context
   const invalidStateError = checkState(state)
   if (invalidStateError) {
     throw invalidStateError
@@ -55,12 +69,14 @@ export const shouldProduceEvent = (
     resolve(result)
   }
   state.isDefaultAssertion = false
+  return context
 }
 
 export const shouldThrow = (
-  { [symbol]: state }: BDDAggregateAssertionContext,
+  context: BDDAggregateAssertionContext,
   expectedError: any
 ) => {
+  const { [symbol]: state } = context
   const invalidStateError = checkState(state)
   if (invalidStateError) {
     throw invalidStateError
@@ -72,15 +88,14 @@ export const shouldThrow = (
     if (!isEqual(error, expectedError)) {
       reject(
         new Error(
-          `expected error ${JSON.stringify(
-            expectedError,
-            null,
-            2
-          )}, but received ${JSON.stringify(error, null, 2)}`
+          `expected error ${stringifyError(
+            expectedError
+          )}, but received ${stringifyError(error)}`
         )
       )
     }
     resolve(result)
   }
   state.isDefaultAssertion = false
+  return context
 }
