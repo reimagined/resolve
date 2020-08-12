@@ -1,9 +1,14 @@
 import getLog from './get-log'
 
-async function snapshotTrigger(state: {
-  bucketSize: number,
-  counters: Map<string, number>
-}, snapshotKey: string, content: string, updateCallback: Function): Promise<void> {
+async function snapshotTrigger(
+  state: {
+    bucketSize: number
+    counters: Map<string, number>
+  },
+  snapshotKey: string,
+  content: string,
+  updateCallback: Function
+): Promise<void> {
   const log = getLog(`snapshotTrigger`)
   const { bucketSize, counters } = state
 

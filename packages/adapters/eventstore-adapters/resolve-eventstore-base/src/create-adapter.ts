@@ -56,11 +56,9 @@ function createAdapter<Connection extends any, Options extends any>(
   let connectPromiseResolve: Promise<Connection> = Promise.resolve()
   const connectPromise = new Promise(resolve => {
     connectPromiseResolve = resolve.bind(null, null)
-  }).then(
-    function<Options extends any>(options: Options) {
-      return connect(adapterImplementation, state, options)
-    }
-  )
+  }).then(function<Options extends any>(options: Options) {
+    return connect(adapterImplementation, state, options)
+  })
 
   // Object.assign(pool, {
   //   injectEvent: wrapMethod(adapterImplementation, state, injectEvent),
@@ -78,11 +76,19 @@ function createAdapter<Connection extends any, Options extends any>(
   // })
 
   const adapter = {
-    loadEvents: wrapMethod(adapterImplementation, state, wrapEventFilter(loadEvents)),
+    loadEvents: wrapMethod(
+      adapterImplementation,
+      state,
+      wrapEventFilter(loadEvents)
+    ),
     import: importStream(adapterImplementation, state),
     export: exportStream(adapterImplementation, state),
     getLatestEvent: wrapMethod(adapterImplementation, state, getLatestEvent),
-    saveEvent: wrapMethod(adapterImplementation, state, wrapSaveEvent(saveEvent)),
+    saveEvent: wrapMethod(
+      adapterImplementation,
+      state,
+      wrapSaveEvent(saveEvent)
+    ),
     init: wrapMethod(adapterImplementation, state, init),
     drop: wrapMethod(adapterImplementation, state, drop),
     dispose: wrapDispose(adapterImplementation, state, dispose),
@@ -96,11 +102,31 @@ function createAdapter<Connection extends any, Options extends any>(
     getSecret: wrapMethod(adapterImplementation, state, getSecret),
     setSecret: wrapMethod(adapterImplementation, state, setSecret),
     deleteSecret: wrapMethod(adapterImplementation, state, deleteSecret),
-    pushIncrementalImport: wrapMethod(adapterImplementation, state, pushIncrementalImport),
-    beginIncrementalImport: wrapMethod(adapterImplementation, state, beginIncrementalImport),
-    commitIncrementalImport: wrapMethod(adapterImplementation, state, commitIncrementalImport),
-    rollbackIncrementalImport: wrapMethod(adapterImplementation, state, rollbackIncrementalImport),
-    incrementalImport: wrapMethod(adapterImplementation, state, incrementalImport)
+    pushIncrementalImport: wrapMethod(
+      adapterImplementation,
+      state,
+      pushIncrementalImport
+    ),
+    beginIncrementalImport: wrapMethod(
+      adapterImplementation,
+      state,
+      beginIncrementalImport
+    ),
+    commitIncrementalImport: wrapMethod(
+      adapterImplementation,
+      state,
+      commitIncrementalImport
+    ),
+    rollbackIncrementalImport: wrapMethod(
+      adapterImplementation,
+      state,
+      rollbackIncrementalImport
+    ),
+    incrementalImport: wrapMethod(
+      adapterImplementation,
+      state,
+      incrementalImport
+    )
   }
 
   Object.freeze(adapter)

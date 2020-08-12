@@ -1,6 +1,9 @@
 import { EventForIncrementalImport } from './types'
 
-async function incrementalImport (pool: any, events: Array<EventForIncrementalImport>) {
+async function incrementalImport(
+  pool: any,
+  events: Array<EventForIncrementalImport>
+) {
   try {
     const importId = await pool.beginIncrementalImport()
     await pool.pushIncrementalImport(events, importId)

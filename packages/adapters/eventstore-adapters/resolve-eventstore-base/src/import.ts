@@ -1,11 +1,7 @@
 import { Writable } from 'stream'
 import { EOL } from 'os'
 
-import {
-  BUFFER_SIZE,
-  BATCH_SIZE,
-  MaintenanceMode
-} from './constants'
+import { BUFFER_SIZE, BATCH_SIZE, MaintenanceMode } from './constants'
 
 class EventStream extends Writable {
   waitConnect: Function
@@ -30,7 +26,7 @@ class EventStream extends Writable {
   encoding?: BufferEncoding
 
   constructor({ pool, maintenanceMode, byteOffset }) {
-    super({ objectMode: true });
+    super({ objectMode: true })
 
     this.waitConnect = pool.waitConnect
     this.drop = pool.drop
