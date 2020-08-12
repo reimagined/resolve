@@ -93,7 +93,7 @@ const createAdapter = (implementation, options) => {
     operationFunc,
     store,
     readModelName,
-    parameters
+    ...args
   ) => {
     const segment = performanceTracer ? performanceTracer.getSegment() : null
     const subSegment = segment ? segment.addNewSubsegment(operationName) : null
@@ -106,7 +106,7 @@ const createAdapter = (implementation, options) => {
     const adapterPool = adapterPoolMap.get(store)
 
     try {
-      return await operationFunc(adapterPool, readModelName, parameters)
+      return await operationFunc(adapterPool, readModelName, ...args)
     } catch (error) {
       if (subSegment != null) {
         subSegment.addError(error)
@@ -143,8 +143,7 @@ const createAdapter = (implementation, options) => {
       rollbackXATransaction,
       beginEvent,
       commitEvent,
-      rollbackEvent,
-      notify
+      rollbackEvent
     })
     for (const key of Object.keys(adapterOperations)) {
       adapterOperations[key] = makeOperation(key, adapterOperations[key])

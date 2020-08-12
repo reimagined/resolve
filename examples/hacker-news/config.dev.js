@@ -1,5 +1,15 @@
 import { declareRuntimeEnv } from 'resolve-scripts'
 
+const readModelOptions = {
+  dbClusterOrInstanceArn: 'arn:aws:rds:eu-west-1:169462466426:cluster:event-store-postgres',
+  awsSecretStoreArn: 'arn:aws:secretsmanager:eu-west-1:169462466426:secret:prod/postgresUser/-LkrvYIjdRh5ZxJs-RGxUkC',
+  databaseName: 'readmodel-ct8rdp5ftqjtlkzq4lfcjlosnlv2',
+  region: 'eu-west-1',
+  accessKeyId: 'AKIASO5GAA55M4OYK2FT',
+  secretAccessKey: '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',
+  preferInlineLedger: true
+}
+
 const devConfig = {
   target: 'local',
   port: declareRuntimeEnv('PORT', '3000'),
@@ -14,22 +24,16 @@ const devConfig = {
   },
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
-      options: {
-        databaseFile: 'data/read-model-default.db'
-      }
+      module: 'resolve-readmodel-postgresql-serverless',
+      options: readModelOptions
     },
     hackerNews: {
-      module: 'resolve-readmodel-lite',
-      options: {
-        databaseFile: 'data/read-model-hackerNews.db'
-      }
+      module: 'resolve-readmodel-postgresql-serverless',
+      options: readModelOptions
     },
     comments: {
-      module: 'resolve-readmodel-lite',
-      options: {
-        databaseFile: 'data/read-model-comments.db'
-      }
+      module: 'resolve-readmodel-postgresql-serverless',
+      options: readModelOptions
     },
     elasticSearch: {
       module: 'common/read-models/elastic-search-connector.js',

@@ -20,10 +20,16 @@ const isPassthroughError = error =>
     /could not obtain lock/.test(error.message))
 
 const executeStatement = async (pool, sql, transactionId) => {
+  const {
+    rdsDataService,
+    dbClusterOrInstanceArn,
+    awsSecretStoreArn,
+    coercer
+  } = pool
   try {
-    const result = await pool.rdsDataService.executeStatement({
-      resourceArn: pool.dbClusterOrInstanceArn,
-      secretArn: pool.awsSecretStoreArn,
+    const result = await rdsDataService.executeStatement({
+      resourceArn: dbClusterOrInstanceArn,
+      secretArn: awsSecretStoreArn,
       database: 'postgres',
       continueAfterTimeout: false,
       includeResultMetadata: true,
@@ -41,7 +47,7 @@ const executeStatement = async (pool, sql, transactionId) => {
     for (const record of records) {
       const row = {}
       for (let i = 0; i < columnMetadata.length; i++) {
-        row[columnMetadata[i].name] = pool.coercer(record[i])
+        row[columnMetadata[i].name] = coercer(record[i])
       }
       rows.push(row)
     }
@@ -51,6 +57,9 @@ const executeStatement = async (pool, sql, transactionId) => {
     if (isPassthroughError(error)) {
       throw generatePassthroughError(transactionId)
     }
+
+      console.warn(error)
+
     throw error
   }
 }
@@ -60,13 +69,13 @@ const build = async (pool, readModelName, doNotify, store, projection) => {
     eventstoreAdapter,
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
-    databaseName,
+    schemaName,
     escapeId,
     escape,
     rdsDataService
   } = pool
-  const databaseNameAsId = escapeId(databaseName)
-  const ledgerTableNameAsId = escapeId(`__${databaseName}__LEDGER__`)
+  const databaseNameAsId = escapeId(schemaName)
+  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
 
   const { transactionId } = await rdsDataService.beginTransaction({
     resourceArn: dbClusterOrInstanceArn,
@@ -245,8 +254,18 @@ const build = async (pool, readModelName, doNotify, store, projection) => {
 }
 
 const forceStop = async (pool, readModelName) => {
-  const databaseNameAsId = pool.escapeId(pool.databaseName)
-  const ledgerTableNameAsId = pool.escapeId(`__${pool.databaseName}__LEDGER__`)
+  const {
+    eventstoreAdapter,
+    dbClusterOrInstanceArn,
+    awsSecretStoreArn,
+    schemaName,
+    escapeId,
+    escape,
+    rdsDataService
+  } = pool
+
+  const databaseNameAsId = escapeId(schemaName)
+  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
   while (true) {
     try {
       const rows = await executeStatement(
@@ -261,9 +280,9 @@ const forceStop = async (pool, readModelName) => {
       const transactionId = rows[0].XaKey
 
       try {
-        await pool.rdsDataService.rollbackTransaction({
-          resourceArn: pool.dbClusterOrInstanceArn,
-          secretArn: pool.awsSecretStoreArn,
+        await rdsDataService.rollbackTransaction({
+          resourceArn: dbClusterOrInstanceArn,
+          secretArn: awsSecretStoreArn,
           transactionId
         })
       } catch (err) {}
@@ -274,14 +293,28 @@ const forceStop = async (pool, readModelName) => {
         continue
       }
 
+
+        console.warn(error)
+
+
       throw error
     }
   }
 }
 
 const pause = async (pool, readModelName) => {
-  const databaseNameAsId = pool.escapeId(pool.databaseName)
-  const ledgerTableNameAsId = pool.escapeId(`__${pool.databaseName}__LEDGER__`)
+  const {
+    eventstoreAdapter,
+    dbClusterOrInstanceArn,
+    awsSecretStoreArn,
+    schemaName,
+    escapeId,
+    escape,
+    rdsDataService
+  } = pool
+
+  const databaseNameAsId = escapeId(schemaName)
+  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
 
   while (true) {
     try {
@@ -302,7 +335,9 @@ const pause = async (pool, readModelName) => {
       )
 
       break
-    } catch (err) {}
+    } catch (err) {
+      console.warn(err)
+    }
   }
 }
 
@@ -311,8 +346,18 @@ const resume = async (
   readModelName,
   doNotify /*, eventTypes, aggregateIds*/
 ) => {
-  const databaseNameAsId = pool.escapeId(pool.databaseName)
-  const ledgerTableNameAsId = pool.escapeId(`__${pool.databaseName}__LEDGER__`)
+  const {
+    eventstoreAdapter,
+    dbClusterOrInstanceArn,
+    awsSecretStoreArn,
+    schemaName,
+    escapeId,
+    escape,
+    rdsDataService
+  } = pool
+
+  const databaseNameAsId = escapeId(schemaName)
+  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
 
   while (true) {
     try {
@@ -333,7 +378,9 @@ const resume = async (
       )
 
       break
-    } catch (err) {}
+    } catch (err) {
+      console.warn(err)
+    }
   }
 
   await doNotify({
@@ -342,8 +389,19 @@ const resume = async (
 }
 
 const reset = async (pool, readModelName, doNotify) => {
-  const databaseNameAsId = pool.escapeId(pool.databaseName)
-  const ledgerTableNameAsId = pool.escapeId(`__${pool.databaseName}__LEDGER__`)
+  const {
+    eventstoreAdapter,
+    dbClusterOrInstanceArn,
+    awsSecretStoreArn,
+    schemaName,
+    escapeId,
+    escape,
+    rdsDataService,
+    dropReadModel
+  } = pool
+
+  const databaseNameAsId = escapeId(schemaName)
+  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
 
   while (true) {
     try {
@@ -368,10 +426,12 @@ const reset = async (pool, readModelName, doNotify) => {
       )
 
       break
-    } catch (err) {}
+    } catch (err) {
+      console.warn(err)
+    }
   }
 
-  await pool.dropReadModel(pool, readModelName)
+  await dropReadModel(pool, readModelName)
 
   while (true) {
     try {
@@ -404,8 +464,18 @@ const subscribe = async (
   eventTypes,
   aggregateIds
 ) => {
-  const databaseNameAsId = pool.escapeId(pool.databaseName)
-  const ledgerTableNameAsId = pool.escapeId(`__${pool.databaseName}__LEDGER__`)
+  const {
+    eventstoreAdapter,
+    dbClusterOrInstanceArn,
+    awsSecretStoreArn,
+    schemaName,
+    escapeId,
+    escape,
+    rdsDataService
+  } = pool
+
+  const databaseNameAsId = escapeId(schemaName)
+  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
 
   while (true) {
     try {
@@ -422,26 +492,26 @@ const subscribe = async (
          INSERT INTO ${databaseNameAsId}.${ledgerTableNameAsId}(
           "EventSubscriber", "EventTypes", "AggregateIds", "IsPaused"
          ) VALUES (
-           ${pool.escape(readModelName)},
+           ${escape(readModelName)},
            ${
              eventTypes != null
-               ? pool.escape(JSON.stringify(eventTypes))
+               ? escape(JSON.stringify(eventTypes))
                : 'NULL'
            },
            ${
              aggregateIds != null
-               ? pool.escape(JSON.stringify(aggregateIds))
+               ? escape(JSON.stringify(aggregateIds))
                : 'NULL'
            },
            COALESCE(NULLIF((SELECT Count("CTE".*) FROM "CTE"), 1), FALSE)
          )
          ON CONFLICT ("EventSubscriber") DO UPDATE SET
          "EventTypes" = ${
-           eventTypes != null ? pool.escape(JSON.stringify(eventTypes)) : 'NULL'
+           eventTypes != null ? escape(JSON.stringify(eventTypes)) : 'NULL'
          },
          "AggregateIds" = ${
            aggregateIds != null
-             ? pool.escape(JSON.stringify(aggregateIds))
+             ? escape(JSON.stringify(aggregateIds))
              : 'NULL'
          }
       `
@@ -458,8 +528,19 @@ const resubscribe = async (
   eventTypes,
   aggregateIds
 ) => {
-  const databaseNameAsId = pool.escapeId(pool.databaseName)
-  const ledgerTableNameAsId = pool.escapeId(`__${pool.databaseName}__LEDGER__`)
+  const {
+    eventstoreAdapter,
+    dbClusterOrInstanceArn,
+    awsSecretStoreArn,
+    schemaName,
+    escapeId,
+    escape,
+    rdsDataService,
+    dropReadModel
+  } = pool
+
+  const databaseNameAsId = escapeId(schemaName)
+  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
 
   while (true) {
     try {
@@ -487,7 +568,7 @@ const resubscribe = async (
     } catch (err) {}
   }
 
-  await pool.dropReadModel(pool, readModelName)
+  await dropReadModel(pool, readModelName)
 
   while (true) {
     try {
@@ -504,26 +585,26 @@ const resubscribe = async (
          INSERT INTO ${databaseNameAsId}.${ledgerTableNameAsId}(
           "EventSubscriber", "EventTypes", "AggregateIds", "IsPaused"
          ) VALUES (
-           ${pool.escape(readModelName)},
+           ${escape(readModelName)},
            ${
              eventTypes != null
-               ? pool.escape(JSON.stringify(eventTypes))
+               ? escape(JSON.stringify(eventTypes))
                : 'NULL'
            },
            ${
              aggregateIds != null
-               ? pool.escape(JSON.stringify(aggregateIds))
+               ? escape(JSON.stringify(aggregateIds))
                : 'NULL'
            },
            COALESCE(NULLIF((SELECT Count("CTE".*) FROM "CTE"), 1), FALSE)
          )
          ON CONFLICT ("EventSubscriber") DO UPDATE SET
          "EventTypes" = ${
-           eventTypes != null ? pool.escape(JSON.stringify(eventTypes)) : 'NULL'
+           eventTypes != null ? escape(JSON.stringify(eventTypes)) : 'NULL'
          },
          "AggregateIds" = ${
            aggregateIds != null
-             ? pool.escape(JSON.stringify(aggregateIds))
+             ? escape(JSON.stringify(aggregateIds))
              : 'NULL'
          }
       `
@@ -534,8 +615,19 @@ const resubscribe = async (
 }
 
 const unsubscribe = async (pool, readModelName) => {
-  const databaseNameAsId = pool.escapeId(pool.databaseName)
-  const ledgerTableNameAsId = pool.escapeId(`__${pool.databaseName}__LEDGER__`)
+  const {
+    eventstoreAdapter,
+    dbClusterOrInstanceArn,
+    awsSecretStoreArn,
+    schemaName,
+    escapeId,
+    escape,
+    rdsDataService,
+    dropReadModel
+  } = pool
+
+  const databaseNameAsId = escapeId(schemaName)
+  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
 
   while (true) {
     try {
@@ -563,7 +655,7 @@ const unsubscribe = async (pool, readModelName) => {
     } catch (err) {}
   }
 
-  await pool.dropReadModel(pool, readModelName)
+  await dropReadModel(pool, readModelName)
 
   while (true) {
     try {
@@ -595,6 +687,12 @@ const notify = async (
   projection,
   { notification, eventTypes, aggregateIds }
 ) => {
+  const {
+    rdsDataService,
+    dbClusterOrInstanceArn,
+    awsSecretStoreArn,
+  } = pool
+
   try {
     switch (notification) {
       case 'BUILD': {
@@ -643,9 +741,9 @@ const notify = async (
 
     if (error.lastTransactionId != null) {
       try {
-        await pool.rdsDataService.rollbackTransaction({
-          resourceArn: pool.dbClusterOrInstanceArn,
-          secretArn: pool.awsSecretStoreArn,
+        await rdsDataService.rollbackTransaction({
+          resourceArn: dbClusterOrInstanceArn,
+          secretArn: awsSecretStoreArn,
           transactionId: error.lastTransactionId
         })
       } catch (err) {}

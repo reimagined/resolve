@@ -111,7 +111,7 @@ const createAndInitConsumer = async config => {
     }
   }
 
-  const notify = async ({ eventSubscriber, notification }) => {
+  const notify = async ({ eventSubscriber, ...parameters }) => {
     const currentResolve = Object.create(baseResolve)
     const listenerInfo = currentResolve.eventListeners.get(eventSubscriber)
     if (listenerInfo == null) {
@@ -126,7 +126,7 @@ const createAndInitConsumer = async config => {
 
       await notify({
         modelName: eventSubscriber,
-        notification
+        ...parameters
       })
     } finally {
       await disposeResolve(currentResolve)
