@@ -12,7 +12,8 @@ import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 
 const log = debugLevels('resolve:resolve-runtime:local-subscribe-adapter')
 
-const createServerWebSocketHandler = pubsubManager => (ws, req) => {
+const createWebSocketConnectionHandler = resolve => (ws, req) => {
+  const { pubsubManager } = resolve
   const queryString = req.url.split('?')[1]
   const { token, deploymentId } = qs.parse(queryString)
   const connectionId = uuid()
@@ -36,8 +37,39 @@ const createServerWebSocketHandler = pubsubManager => (ws, req) => {
     ws.close()
   }
 
+  const handler = createWebSocketMessageHandler(resolve, ws)
+  ws.on('message', handler)
+
   ws.on('close', dispose)
   ws.on('error', dispose)
+}
+
+const createWebSocketMessageHandler = (resolve, ws) => message => {
+  const parsedMessage = JSON.parse(message)
+  switch (parsedMessage.type) {
+    case 'pullEvents': {
+      const {
+        events,
+        cursor
+      } = resolve.assemblies.eventstoreAdapter.loadEvents({
+        // eventTypes: parsedMessage.payload.eventTypes,
+        // aggregateIds: parsedMessage.payload.aggregateIds,
+        // limit: parsedMessage.payload.limit,
+        // eventsSizeLimit: parsedMessage.payload.eventsSizeLimit,
+        cursor: parsedMessage.cursor
+      })
+
+      ws.send({
+        type: 'pullEvents',
+        payload: { events, cursor }
+      })
+
+      break
+    }
+    default: {
+      throw new Error(`The '${parsedMessage.type}' message type is unknown`)
+    }
+  }
 }
 
 const initInterceptingHttpServer = resolve => {
@@ -79,8 +111,8 @@ const initWebSocketServer = async resolve => {
       path: getRootBasedUrl(resolve.rootPath, '/api/websocket'),
       server: resolve.websocketHttpServer
     })
-    const handler = createServerWebSocketHandler(resolve.pubsubManager)
-    websocketServer.on('connection', handler)
+    const connectionHandler = createWebSocketConnectionHandler(resolve)
+    websocketServer.on('connection', connectionHandler)
   } catch (error) {
     log.warn('Cannot init WebSocket server: ', error)
   }

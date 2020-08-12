@@ -25,6 +25,7 @@ const createClientAdapter: CreateSubscribeAdapter = ({
 }) => {
   let client: WebSocket | undefined
   let isInitialized: boolean
+  let currentCursor: string | undefined
 
   return {
     async init(): Promise<void> {
@@ -38,11 +39,41 @@ const createClientAdapter: CreateSubscribeAdapter = ({
         client.onopen = (): void => {
           isInitialized = true
           resolve()
+
+          client?.send(
+            JSON.stringify({
+              type: 'pullEvents',
+              cursor,
+            })
+          )
         }
 
         client.onmessage = (message): void => {
           try {
-            onEvent(JSON.parse(message.data))
+            const data = JSON.parse(message.data)
+
+            switch (data.type) {
+              case 'event': {
+                client?.send(
+                  JSON.stringify({
+                    type: 'pullEvents',
+                    cursor: currentCursor
+                  })
+                )
+                break
+              }
+              case 'pullEvents': {
+                data.events.forEach((event: any) => {
+                  onEvent({ event })
+                })
+                currentCursor = data.cursor
+                break
+              }
+              default: {
+                // eslint-disable-next-line no-console
+                console.warn(`Unknown '${data.type}' socket message type`)
+              }
+            }
           } catch (error) {
             // eslint-disable-next-line no-console
             console.error('WebSocket message error', error)
