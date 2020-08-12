@@ -10,16 +10,18 @@ export interface SubscribeAdapter {
 }
 
 export interface CreateSubscribeAdapter {
-  (options: { url: string; onEvent: Function }): SubscribeAdapter
+  (options: {
+    url: string
+    cursor: string
+    onEvent: Function
+  }): SubscribeAdapter
   adapterName: string
 }
 
 const createClientAdapter: CreateSubscribeAdapter = ({
   url,
+  cursor,
   onEvent
-}: {
-  url: string
-  onEvent: Function
 }) => {
   let client: WebSocket | undefined
   let isInitialized: boolean

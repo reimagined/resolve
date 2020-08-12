@@ -93,6 +93,8 @@ const isReadModelQuery = (arg: any): arg is ReadModelQuery =>
 export type QueryResult = {
   timestamp: number
   data: any
+  url: string
+  cursor: string
 }
 export type QueryOptions = {
   method?: 'GET' | 'POST'
@@ -166,6 +168,18 @@ export const query = (
 
     const responseDate = response.headers.get('Date')
 
+    let responseCursor = ''
+    let responseUrl = ''
+
+    if (!isReadModelQuery(qr)) {
+      responseCursor = response.headers.get('X-Resolve-View-Model-Cursor') ?? ''
+      const responseSubscription =
+        response.headers.get('X-Resolve-View-Model-Subscription') ??
+        '{ "url": "" }'
+      const { url } = JSON.parse(responseSubscription)
+      responseUrl = url
+    }
+
     if (!responseDate) {
       throw new GenericError(`"Date" header missed within response`)
     }
@@ -173,6 +187,8 @@ export const query = (
     try {
       return {
         timestamp: Number(responseDate),
+        url: responseUrl,
+        cursor: responseCursor,
         data:
           VALIDATED_RESULT in response
             ? response[VALIDATED_RESULT]
@@ -223,6 +239,8 @@ export type ResubscribeCallback = (
 ) => void
 
 export const subscribe = (
+  url: string,
+  cursor: string,
   context: Context,
   viewModelName: string,
   aggregateIds: AggregateSelector,
@@ -232,6 +250,8 @@ export const subscribe = (
 ): PromiseOrVoid<Subscription> => {
   const subscribeAsync = async (): Promise<Subscription> => {
     await connect(
+      url,
+      cursor,
       context,
       aggregateIds,
       handler,
@@ -307,6 +327,8 @@ export type Client = {
   ) => PromiseOrVoid<QueryResult>
   getStaticAssetUrl: (assetPath: string) => string
   subscribe: (
+    url: string,
+    cursor: string,
     viewModelName: string,
     aggregateIds: AggregateSelector,
     handler: SubscribeHandler,
@@ -324,6 +346,8 @@ export const getClient = (context: Context): Client => ({
   getStaticAssetUrl: (assetPath: string): string =>
     getStaticAssetUrl(context, assetPath),
   subscribe: (
+    url,
+    cursor,
     viewModelName,
     aggregateIds,
     handler,
@@ -331,6 +355,8 @@ export const getClient = (context: Context): Client => ({
     resubscribeCallback?
   ): PromiseOrVoid<Subscription> =>
     subscribe(
+      url,
+      cursor,
       context,
       viewModelName,
       aggregateIds,

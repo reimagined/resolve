@@ -9,6 +9,8 @@ type PromiseOrVoid<T> = Promise<T> | void
 type Closure = {
   state?: any
   subscription?: Subscription
+  url?: string
+  cursor?: string
 }
 
 type ViewModelConnection = {
@@ -63,8 +65,11 @@ const useViewModel = (
     )
     log.debug(`view model state arrived`)
     if (result) {
-      log.debug(result.data)
-      setState(result.data)
+      const { data, url, cursor } = result
+      log.debug(data)
+      setState(data)
+      closure.url = url
+      closure.cursor = cursor
     } else {
       log.debug(`query have not result`)
     }
@@ -86,6 +91,8 @@ const useViewModel = (
       log.debug(`subscribing to incoming events`)
 
       const subscribe = client.subscribe(
+        closure.url ?? '',
+        closure.cursor ?? '',
         modelName,
         aggregateIds,
         event => applyEvent(event),

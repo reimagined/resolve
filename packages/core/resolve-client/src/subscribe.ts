@@ -2,9 +2,6 @@ import window from 'global/window'
 import createSubscribeAdapter from './subscribe-adapter'
 import { Context } from './context'
 import { rootCallback, addCallback, removeCallback } from './subscribe-callback'
-import determineOrigin from './determine-origin'
-import { GenericError } from './errors'
-import { request } from './request'
 
 interface SubscriptionKey {
   aggregateId: string
@@ -73,41 +70,17 @@ export interface SubscribeAdapterOptions {
   url: string
 }
 
-export const getSubscribeAdapterOptions = async (
-  context: Context,
-  viewModelName: string,
-  topics: Array<object>
-): Promise<SubscribeAdapterOptions> => {
-  const { origin: customOrigin } = context
-  const origin = determineOrigin(customOrigin)
-
-  const response = await request(context, '/api/subscribe', {
-    origin,
-    viewModelName,
-    topics
-  })
-
-  try {
-    return await response.json()
-  } catch (error) {
-    throw new GenericError(error)
-  }
-}
-
 const initSubscribeAdapter = async (
+  url: string,
+  cursor: string,
   context: Context,
   viewModelName: string,
   topics: Array<Topic>,
   aggregateIds: AggregateSelector
 ): Promise<any> => {
-  const { url } = await getSubscribeAdapterOptions(
-    context,
-    viewModelName,
-    topics
-  )
-
   const subscribeAdapter = createSubscribeAdapter({
     url,
+    cursor,
     onEvent: rootCallback
   })
   await subscribeAdapter.init()
@@ -117,6 +90,8 @@ const initSubscribeAdapter = async (
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       () =>
         refreshSubscribeAdapter(
+          url,
+          cursor,
           context,
           viewModelName,
           topics,
@@ -131,6 +106,8 @@ const initSubscribeAdapter = async (
 }
 
 export const refreshSubscribeAdapter = async (
+  url: string,
+  cursor: string,
   context: Context,
   viewModelName: string,
   topics: Array<Topic>,
@@ -144,6 +121,8 @@ export const refreshSubscribeAdapter = async (
   try {
     if (!adaptersMap.has(key)) {
       subscribeAdapter = await initSubscribeAdapter(
+        url,
+        cursor,
         context,
         viewModelName,
         topics,
@@ -160,6 +139,8 @@ export const refreshSubscribeAdapter = async (
     refreshTimeout = setTimeoutSafe(
       () =>
         refreshSubscribeAdapter(
+          url,
+          cursor,
           context,
           viewModelName,
           topics,
@@ -181,6 +162,8 @@ export const refreshSubscribeAdapter = async (
         refreshTimeout = setTimeoutSafe(
           () =>
             refreshSubscribeAdapter(
+              url,
+              cursor,
               context,
               viewModelName,
               topics,
@@ -203,7 +186,14 @@ export const refreshSubscribeAdapter = async (
     }
     adaptersMap.set(
       key,
-      await initSubscribeAdapter(context, viewModelName, topics, aggregateIds)
+      await initSubscribeAdapter(
+        url,
+        cursor,
+        context,
+        viewModelName,
+        topics,
+        aggregateIds
+      )
     )
   } catch (err) {}
 
@@ -213,6 +203,8 @@ export const refreshSubscribeAdapter = async (
   refreshTimeout = setTimeoutSafe(
     () =>
       refreshSubscribeAdapter(
+        url,
+        cursor,
         context,
         viewModelName,
         topics,
@@ -233,6 +225,8 @@ export const dropSubscribeAdapterPromise = (): void => {
 }
 
 const connect = async (
+  url: string,
+  cursor: string,
   context: Context,
   aggregateIds: AggregateSelector,
   eventCallback: Function,
@@ -257,6 +251,8 @@ const connect = async (
   }
 
   const subscribeAdapter = await initSubscribeAdapter(
+    url,
+    cursor,
     context,
     viewModelName,
     topics,
