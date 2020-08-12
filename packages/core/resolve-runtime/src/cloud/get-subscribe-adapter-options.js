@@ -1,11 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-const getSubscribeAdapterOptions = async (
-  resolve,
-  origin,
-  viewModelName,
-  topics
-) => {
+const getSubscribeAdapterOptions = async (resolve, origin, topics) => {
   const {
     RESOLVE_DEPLOYMENT_ID,
     RESOLVE_WS_URL,

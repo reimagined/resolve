@@ -3,25 +3,8 @@ import Url from 'url'
 import getRootBasedUrl from '../common/utils/get-root-based-url'
 import jwt from 'jsonwebtoken'
 
-const getSubscribeAdapterOptions = async (
-  resolve,
-  origin,
-  viewModelName,
-  topics,
-  authToken
-) => {
-  const viewModel = resolve.viewModels.find(vw => vw.name === viewModelName)
-
-  if (viewModel == null) {
-    throw new Error('View model is not found')
-  }
-
-  const customTopics = await viewModel.resolver(resolve, {
-    topics,
-    jwt: authToken
-  })
-
-  const token = jwt.sign({ topics: customTopics }, resolve.applicationName)
+const getSubscribeAdapterOptions = async (resolve, origin, topics) => {
+  const token = jwt.sign({ topics }, resolve.applicationName)
 
   const { protocol, hostname, port } = Url.parse(origin)
   const isSecure = /^https/.test(protocol)

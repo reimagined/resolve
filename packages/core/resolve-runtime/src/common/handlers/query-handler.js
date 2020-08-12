@@ -40,9 +40,7 @@ const queryHandler = async (req, res) => {
       const subscribeOptions = await req.resolve.getSubscribeAdapterOptions(
         req.resolve,
         modelArgs.origin,
-        modelName,
-        result.topics,
-        req.jwt
+        result.topics
       )
 
       res.setHeader(
