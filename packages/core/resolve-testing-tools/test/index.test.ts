@@ -203,17 +203,13 @@ describe('aggregate', () => {
         .aggregate(aggregate)
         .command('create', {})
         .as('valid-user')
-        .shouldThrow((err: any) =>
-          expect(err.message).toEqual(`aggregate already exist`)
-        ))
+        .shouldThrow(Error(`aggregate already exist`)))
 
     test('unauthorized user', () =>
       givenEvents([])
         .aggregate(aggregate)
         .command('create', {})
         .as('invalid-user')
-        .shouldThrow((err: any) =>
-          expect(err.message).toEqual(`unauthorized user`)
-        ))
+        .shouldThrow(Error(`unauthorized user`)))
   })
 })
