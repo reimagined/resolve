@@ -8,6 +8,7 @@ type ViewModelMeta = {
   deserializeState: Function
   serializeState: Function
   projection: { [key: string]: Function }
+  resolver: Function
   encryption: Function
 }
 
@@ -148,7 +149,7 @@ const buildViewModel = async (
     await handler(event)
   }
 
-  return { state, eventCount }
+  return { state, eventCount, cursor }
 }
 
 const read = async (
@@ -196,7 +197,7 @@ const read = async (
       )
     }
 
-    const { state, eventCount } = await pool.workers.get(key)
+    const { state, eventCount, cursor } = await pool.workers.get(key)
 
     if (subSegment != null) {
       subSegment.addAnnotation('eventCount', eventCount)
@@ -205,7 +206,28 @@ const read = async (
 
     pool.workers.delete(key)
 
-    return state
+    const topics = []
+
+    for (const id of aggregateIds) {
+      for (const name of Object.keys(pool.viewModel.projection)) {
+        topics.push({
+          topicId: id,
+          topicName: name
+        })
+      }
+    }
+
+    const {
+      state: resolvedState,
+      topics: resolvedTopics
+    } = await pool.viewModel.resolver(state, { topics, jwt })
+
+    return {
+      state: resolvedState,
+      cursor,
+      topics: resolvedTopics,
+      isViewModel: true
+    }
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)
@@ -229,9 +251,9 @@ const readAndSerialize = async (
   if (pool.isDisposed) {
     throw new Error(`View model "${viewModelName}" is disposed`)
   }
-  const state = await read(pool, modelOptions, aggregateArgs, jwt)
+  const { state, ...other } = await read(pool, modelOptions, aggregateArgs, jwt)
 
-  return pool.viewModel.serializeState(state, jwt)
+  return { ...other, state: pool.viewModel.serializeState(state, jwt) }
 }
 
 const updateByEvents = async (pool: ViewModelPool): Promise<any> => {

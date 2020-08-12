@@ -4,8 +4,7 @@ const getSubscribeAdapterOptions = async (
   resolve,
   origin,
   viewModelName,
-  topics,
-  authToken
+  topics
 ) => {
   const {
     RESOLVE_DEPLOYMENT_ID,
@@ -13,19 +12,8 @@ const getSubscribeAdapterOptions = async (
     RESOLVE_ENCRYPTED_DEPLOYMENT_ID
   } = process.env
 
-  const viewModel = resolve.viewModels.find(vw => vw.name === viewModelName)
-
-  if (viewModel == null) {
-    throw new Error('View model is not found')
-  }
-
-  const customTopics = await viewModel.resolver(resolve, {
-    topics,
-    jwt: authToken
-  })
-
   const token = jwt.sign(
-    { topics: customTopics },
+    { topics },
     RESOLVE_ENCRYPTED_DEPLOYMENT_ID
   )
 
