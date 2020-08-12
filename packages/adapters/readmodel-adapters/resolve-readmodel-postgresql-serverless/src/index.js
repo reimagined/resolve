@@ -23,6 +23,7 @@ import executeStatement from './execute-statement'
 import findOne from './find-one'
 import find from './find'
 import insert from './insert'
+import notify from './notify'
 import rollbackXATransaction from './rollback-xa-transaction'
 import rollbackEvent from './rollback-event'
 import rollbackTransaction from './rollback-transaction'
@@ -69,7 +70,8 @@ const createAdapter = _createAdapter.bind(null, {
   commitEvent,
   rollbackEvent,
   dropReadModel,
-  disconnect
+  disconnect,
+  notify
 })
 
 export default createAdapter

@@ -1,5 +1,5 @@
 const createAdapter = (implementation, options) => {
-  const { performanceTracer } = options
+  const { performanceTracer, preferInlineLedger } = options
 
   const {
     connect,
@@ -127,42 +127,29 @@ const createAdapter = (implementation, options) => {
     }
   }
 
-  const doDrop = makeOperation('dropReadModel', dropReadModel)
-
-  const doBeginTransaction = makeOperation('beginTransaction', beginTransaction)
-
-  const doCommitTransaction = makeOperation(
-    'commitTransaction',
-    commitTransaction
-  )
-
-  const doRollbackTransaction = makeOperation(
-    'rollbackTransaction',
-    rollbackTransaction
-  )
-
-  const doBeginXATransaction = makeOperation(
-    'beginXATransaction',
-    beginXATransaction
-  )
-
-  const doCommitXATransaction = makeOperation(
-    'commitXATransaction',
-    commitXATransaction
-  )
-
-  const doRollbackXATransaction = makeOperation(
-    'rollbackXATransaction',
-    rollbackXATransaction
-  )
-
-  const doBeginEvent = makeOperation('beginEvent', beginEvent)
-
-  const doCommitEvent = makeOperation('commitEvent', commitEvent)
-
-  const doRollbackEvent = makeOperation('rollbackEvent', rollbackEvent)
-
-  const doNotify = makeOperation('notify', notify)
+  const adapterOperations = {}
+  if(typeof notify === 'function' && preferInlineLedger) {
+    Object.assign(adapterOperations, {
+      notify: makeOperation('notify', notify)
+    })
+  } else {
+    Object.assign(adapterOperations, {
+      dropReadModel,
+      beginTransaction,
+      commitTransaction,
+      rollbackTransaction,
+      beginXATransaction,
+      commitXATransaction,
+      rollbackXATransaction,
+      beginEvent,
+      commitEvent,
+      rollbackEvent,
+      notify
+    })
+    for(const key of Object.keys(adapterOperations)) {
+      adapterOperations[key] = makeOperation(key, adapterOperations[key])
+    }
+  }
 
   const doDispose = async () => {
     const segment = performanceTracer ? performanceTracer.getSegment() : null
@@ -194,19 +181,9 @@ const createAdapter = (implementation, options) => {
 
   return Object.freeze({
     connect: doConnect,
-    beginTransaction: doBeginTransaction,
-    commitTransaction: doCommitTransaction,
-    rollbackTransaction: doRollbackTransaction,
-    beginXATransaction: doBeginXATransaction,
-    commitXATransaction: doCommitXATransaction,
-    rollbackXATransaction: doRollbackXATransaction,
-    beginEvent: doBeginEvent,
-    commitEvent: doCommitEvent,
-    rollbackEvent: doRollbackEvent,
-    notify: doNotify,
     disconnect: doDisconnect,
-    drop: doDrop,
-    dispose: doDispose
+    dispose: doDispose,
+    ...adapterOperations
   })
 }
 

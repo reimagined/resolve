@@ -124,7 +124,8 @@ async function subscribe(pool, payload) {
   if (deliveryStrategy === DeliveryStrategy.PASSIVE) {
     await invokeConsumer(pool, ConsumerMethod.Notify, {
       eventSubscriber,
-      notification: 'SUBSCRIBE'
+      notification: 'SUBSCRIBE',
+      subscriptionOptions
     })
   }
 
