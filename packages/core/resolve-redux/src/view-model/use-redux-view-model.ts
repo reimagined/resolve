@@ -1,5 +1,10 @@
 import { Action } from 'redux'
-import { QueryOptions, QueryResult, SubscribeCallback, ViewModelQuery } from 'resolve-client'
+import {
+  QueryOptions,
+  QueryResult,
+  SubscribeCallback,
+  ViewModelQuery
+} from 'resolve-client'
 import {
   QueryViewModelFailureAction,
   QueryViewModelRequestAction,
@@ -131,6 +136,7 @@ export function useReduxViewModel(
   )
   */
 
+  /*
   const client = useClient()
   const queryState = useCallback(async () => {
     const result = await client.query(
@@ -188,5 +194,12 @@ export function useReduxViewModel(
               aggregateArgs: query.args
             }
       )
+  }
+     */
+  return {
+    connect: () => {},
+    dispose: () => {},
+    selector: (state: ReduxState) =>
+      state.viewModels ?? [query.name] ?? [query.args]
   }
 }
