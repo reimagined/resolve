@@ -19,10 +19,12 @@ const queryHandler = async (req, res) => {
       throw error
     }
 
+    const modelArgs = extractRequestBody(req)
+
     const result = await req.resolve.executeQuery.readAndSerialize({
       modelName,
       modelOptions,
-      modelArgs: extractRequestBody(req),
+      modelArgs,
       jwt: req.jwt
     })
 
@@ -37,7 +39,7 @@ const queryHandler = async (req, res) => {
 
       const subscribeOptions = await req.resolve.getSubscribeAdapterOptions(
         req.resolve,
-        req.get('origin'),
+        modelArgs.origin,
         modelName,
         result.topics,
         req.jwt

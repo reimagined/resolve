@@ -9,6 +9,7 @@ import {
 } from './request'
 import { assertLeadingSlash, assertNonEmptyString } from './assertions'
 import { getRootBasedUrl, isAbsoluteUrl } from './utils'
+import determineOrigin from './determine-origin'
 
 function determineCallback<T>(options: any, callback: any): T | null {
   if (typeof options === 'function') {
@@ -153,7 +154,8 @@ export const query = (
       context,
       `/api/query/${name}/${ids}`,
       {
-        args
+        args,
+        origin: determineOrigin(context.origin)
       },
       requestOptions
     )
