@@ -125,7 +125,8 @@ async function subscribe(pool, payload) {
     await invokeConsumer(pool, ConsumerMethod.Notify, {
       eventSubscriber,
       notification: 'SUBSCRIBE',
-      subscriptionOptions
+      eventTypes: subscriptionOptions.eventTypes,
+      aggregateIds: subscriptionOptions.aggregateIds
     })
   }
 

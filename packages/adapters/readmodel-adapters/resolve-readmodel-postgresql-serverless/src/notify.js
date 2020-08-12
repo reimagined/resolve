@@ -16,6 +16,7 @@ const generatePassthroughError = (lastTransactionId) => {
 
 const isPassthroughError = error =>
   error != null && (
+    /Transaction .*? Is Not Found/i.test(error.message) ||
     /deadlock detected/.test(error.message) ||
     /could not obtain lock/.test(error.message)
   )
@@ -80,19 +81,20 @@ const build = async (
     secretArn: awsSecretStoreArn,
     database: 'postgres'
   })
-  pool.transactionId = transactionId
 
   await executeStatement(
     pool,
     `WITH "CTE" AS (
        SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
        WHERE "EventSubscriber" = ${escape(readModelName)}
+       AND "IsPaused" = FALSE
        FOR NO KEY UPDATE NOWAIT
      )
      UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
      SET "XaKey" = ${escape(transactionId)}
      WHERE "EventSubscriber" = ${escape(readModelName)}
-     AND Count(SELECT * FROM "CTE") = 1
+     AND (SELECT Count("CTE".*) FROM "CTE") = 1
+     AND "IsPaused" = FALSE
     `
   )
 
@@ -108,6 +110,7 @@ const build = async (
     `SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
      WHERE "EventSubscriber" = ${escape(readModelName)}
      AND "XaKey" = ${escape(transactionId)}
+     AND "IsPaused" = FALSE
      FOR NO KEY UPDATE NOWAIT
     `,
     transactionId
@@ -118,8 +121,8 @@ const build = async (
     throw generatePassthroughError(transactionId)
   }
 
-  const eventTypes = JSON.parse(readModelLedger.EventTypes)
-  if (!Array.isArray(eventTypes)) {
+  const eventTypes = readModelLedger.EventTypes != null ? JSON.parse(readModelLedger.EventTypes) : null
+  if (!Array.isArray(eventTypes) && eventTypes != null) {
     throw new TypeError('eventTypes')
   }
 
@@ -132,10 +135,12 @@ const build = async (
     throw new TypeError('cursor')
   }
 
-  if (cursor == null && typeof projection.Init === 'function') {
-    const nextCursor = eventstoreAdapter.getNextCursor(null, [])
+  if (cursor == null) {
+    const nextCursor = await eventstoreAdapter.getNextCursor(null, [])
     try {
-      await projection.Init(store)
+      if(typeof projection.Init === 'function') {
+        await projection.Init(store)
+      }
 
       await executeStatement(
         pool,
@@ -153,7 +158,7 @@ const build = async (
         transactionId
       })
   
-      await doNotify('BUILD')
+      await doNotify({ notification: 'BUILD'})
     } catch(error) {
       await executeStatement(
         pool,
@@ -169,17 +174,18 @@ const build = async (
         `,
         transactionId
       )
-    }
 
-    await rdsDataService.commitTransaction({
-      resourceArn: dbClusterOrInstanceArn,
-      secretArn: awsSecretStoreArn,
-      transactionId
-    })
+      await rdsDataService.commitTransaction({
+        resourceArn: dbClusterOrInstanceArn,
+        secretArn: awsSecretStoreArn,
+        transactionId
+      })
+    }
 
     return
   }
 
+  pool.transactionId = transactionId
   const events = await eventstoreAdapter.loadEvents({
     eventTypes,
     eventsSizeLimit: 256 * 1024,
@@ -205,6 +211,7 @@ const build = async (
   }
 
   const nextCursor = eventstoreAdapter.getNextCursor(cursor, appliedEvents)
+  appliedEvents.length = 0
 
   if(lastError == null) {
     await executeStatement(
@@ -240,7 +247,7 @@ const build = async (
   })
 
   if(lastError == null) {
-    await doNotify('BUILD')
+    await doNotify({ notification: 'BUILD' })
   }
 }
 
@@ -254,26 +261,157 @@ const forceStop = async (pool, readModelName) => {
          WHERE "EventSubscriber" = ${escape(readModelName)}
         `
       )
-      if(rows.length !== 1) {
+      if(rows.length < 1) {
         break
       }
       const transactionId = rows[0].XaKey
 
-      await pool.rdsDataService.rollbackTransaction({
-        resourceArn: pool.dbClusterOrInstanceArn,
-        secretArn: pool.awsSecretStoreArn,
-        transactionId
-      })
+      try {
+        await pool.rdsDataService.rollbackTransaction({
+          resourceArn: pool.dbClusterOrInstanceArn,
+          secretArn: pool.awsSecretStoreArn,
+          transactionId
+        })
+      } catch(err) {}
       
       break
-    } catch(err) {
-      continue
+    } catch(error) {
+      if(isPassthroughError(error)) {
+        continue
+      }
+
+      throw error
     }
   }
 }
 
-const subscribe = async (pool, readModelName, doNotify) => {
-  
+
+const pause = async (pool, readModelName, doNotify) => {
+  const databaseNameAsId = pool.escapeId(pool.databaseName)
+  const ledgerTableNameAsId = pool.escapeId(`__${pool.databaseName}__LEDGER__`)
+
+  while(true) {
+    try {
+      await forceStop(pool, readModelName)
+      await executeStatement(pool, `
+        WITH "CTE" AS (
+         SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+         WHERE "EventSubscriber" = ${escape(readModelName)}
+         FOR NO KEY UPDATE NOWAIT
+       )
+        UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
+        SET "IsPaused" = TRUE
+        WHERE "EventSubscriber" = ${escape(readModelName)}
+        AND (SELECT Count("CTE".*) FROM "CTE") = 1
+      `)
+
+      break
+    } catch(err) {}
+  }
+}
+
+
+const resume = async (pool, readModelName, doNotify /*, eventTypes, aggregateIds*/) => {
+  const databaseNameAsId = pool.escapeId(pool.databaseName)
+  const ledgerTableNameAsId = pool.escapeId(`__${pool.databaseName}__LEDGER__`)
+
+
+  while(true) {
+    try {
+      await forceStop(pool, readModelName)
+      await executeStatement(pool, `
+        WITH "CTE" AS (
+         SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+         WHERE "EventSubscriber" = ${escape(readModelName)}
+         FOR NO KEY UPDATE NOWAIT
+       )
+        UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
+        SET "IsPaused" = FALSE
+        WHERE "EventSubscriber" = ${escape(readModelName)}
+        AND (SELECT Count("CTE".*) FROM "CTE") = 1
+      `)
+
+      break
+    } catch(err) {}
+  }
+
+  //
+  // while(true) {
+  //   try {
+  //     await forceStop(pool, readModelName)
+  //
+  //     await executeStatement(pool, `
+  //       WITH "CTE" AS (
+  //        SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+  //        WHERE "EventSubscriber" = ${escape(readModelName)}
+  //        FOR UPDATE NOWAIT
+  //       )
+  //        INSERT INTO ${databaseNameAsId}.${ledgerTableNameAsId}(
+  //         "EventSubscriber", "EventTypes", "AggregateIds", "IsPaused"
+  //        ) VALUES (
+  //          ${pool.escape(readModelName)},
+  //          ${eventTypes != null ? pool.escape(JSON.stringify(eventTypes)) : 'NULL'},
+  //          ${aggregateIds != null ? pool.escape(JSON.stringify(aggregateIds)) : 'NULL'},
+  //          COALESCE(NULLIF((SELECT Count("CTE".*) FROM "CTE"), 1), TRUE)
+  //        )
+  //        ON CONFLICT ("EventSubscriber") DO UPDATE
+  //        SET "IsPaused" = COALESCE(NULLIF((SELECT Count("CTE".*) FROM "CTE"), 1), TRUE)
+  //     `)
+  //     break
+  //   } catch(err) {}
+  // }
+
+  await doNotify({
+    notification: 'BUILD'
+  })
+}
+
+const reset = async (pool, readModelName, doNotify) => {
+  const databaseNameAsId = pool.escapeId(pool.databaseName)
+  const ledgerTableNameAsId = pool.escapeId(`__${pool.databaseName}__LEDGER__`)
+
+  while(true) {
+    try {
+      await forceStop(pool, readModelName)
+      await executeStatement(pool, `
+        WITH "CTE" AS (
+         SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+         WHERE "EventSubscriber" = ${escape(readModelName)}
+         FOR NO KEY UPDATE NOWAIT
+       )
+        UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
+        SET "Cursor" = NULL,
+        "SuccessEvent" = NULL,
+        "FailedEvent" = NULL,
+        "Errors" = NULL,
+        "IsPaused" = TRUE
+        WHERE "EventSubscriber" = ${escape(readModelName)}
+      `)
+
+      break
+    } catch(err) {}
+  }
+
+  await pool.dropReadModel(pool, readModelName)
+
+  while(true) {
+    try {
+      await executeStatement(pool, `
+        WITH "CTE" AS (
+         SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+         WHERE "EventSubscriber" = ${escape(readModelName)}
+         FOR NO KEY UPDATE NOWAIT
+       )
+        UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
+        SET "IsPaused" = FALSE
+        WHERE "EventSubscriber" = ${escape(readModelName)}
+      `)
+
+      break
+    } catch(err) {}
+  }
+
+  await doNotify({ notification: 'BUILD' })
 }
 
 const notify = async (
@@ -282,7 +420,7 @@ const notify = async (
   doNotify,
   store,
   projection,
-  notification
+  { notification, eventTypes, aggregateIds }
 ) => {
   try {
     switch (notification) {

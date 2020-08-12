@@ -25,6 +25,7 @@ const create = async (pool, options) => {
         `__${options.databaseName}__LEDGER__`
       )}(
         "EventSubscriber" VARCHAR(190) NOT NULL,
+        "IsPaused" BOOLEAN NOT NULL,
         "EventTypes" JSONB NOT NULL,
         "AggregateIds" JSONB NOT NULL,
         "XaKey" VARCHAR(190) NOT NULL,

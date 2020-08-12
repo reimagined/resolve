@@ -101,7 +101,9 @@ async function resubscribe(pool, payload) {
   if (deliveryStrategy === DeliveryStrategy.PASSIVE) {
     await invokeConsumer(pool, ConsumerMethod.Notify, {
       eventSubscriber,
-      notification: 'RESUBSCRIBE'
+      notification: 'RESUBSCRIBE',
+      eventTypes: subscriptionOptions.eventTypes,
+      aggregateIds: subscriptionOptions.aggregateIds
     })
   }
 

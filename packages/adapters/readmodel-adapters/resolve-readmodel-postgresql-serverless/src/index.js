@@ -40,8 +40,7 @@ import _destroyResource from './resource/destroy'
 
 const store = { defineTable, find, findOne, count, insert, update, delete: del }
 
-const connect = _connect.bind(null, {
-  RDSDataService,
+const internalMethods = {
   escapeId,
   escape,
   buildUpsertDocument,
@@ -52,14 +51,10 @@ const connect = _connect.bind(null, {
   coercer,
   generateGuid,
   isTimeoutError,
-  isHighloadError,
-  crypto,
-  ...store
-})
+  isHighloadError
+}
 
-const createAdapter = _createAdapter.bind(null, {
-  ...store,
-  connect,
+const externalMethods = {
   beginTransaction,
   commitTransaction,
   rollbackTransaction,
@@ -70,8 +65,22 @@ const createAdapter = _createAdapter.bind(null, {
   commitEvent,
   rollbackEvent,
   dropReadModel,
-  disconnect,
   notify
+}
+
+const connect = _connect.bind(null, {
+  RDSDataService,
+  crypto,
+  ...internalMethods,
+  ...externalMethods,
+  ...store
+})
+
+const createAdapter = _createAdapter.bind(null, {
+  ...store,
+  ...externalMethods,
+  connect,
+  disconnect
 })
 
 export default createAdapter

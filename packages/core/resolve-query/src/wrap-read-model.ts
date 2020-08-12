@@ -546,11 +546,11 @@ const rollbackXATransaction = doOperation.bind(
 const notifyAsyncInvoke = async (
   pool: ReadModelPool,
   eventListener: string,
-  notification: string
+  parameters: any
 ) => {
   await pool.invokeEventListenerAsync('notify', {
-    eventListener,
-    notification
+    ...parameters,
+    eventListener
   })
 }
 
@@ -568,7 +568,7 @@ const notify = doOperation.bind(
     notifyAsyncInvoke.bind(null, pool, readModelName),
     connection,
     pool.readModel.projection,
-    parameters.notification
+    parameters
   ]
 )
 

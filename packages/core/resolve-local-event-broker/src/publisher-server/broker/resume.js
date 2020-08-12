@@ -29,14 +29,16 @@ const resume = async (pool, payload) => {
     const result = await runQuery(`
       SELECT ${subscribersTableNameAsId}."status" AS "status",
       ${subscribersTableNameAsId}."subscriptionId" AS "subscriptionId",
-      ${subscribersTableNameAsId}."deliveryStrategy" AS "deliveryStrategy"
+      ${subscribersTableNameAsId}."deliveryStrategy" AS "deliveryStrategy",
+      ${subscribersTableNameAsId}."eventTypes" AS "eventTypes",
+      ${subscribersTableNameAsId}."aggregateIds" AS "aggregateIds"
       FROM ${subscribersTableNameAsId}
       WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)}
     `)
     if (result == null || result.length !== 1) {
       throw new Error(`Event subscriber ${eventSubscriber} does not found`)
     }
-    const { status, subscriptionId, deliveryStrategy } = parseSubscription(
+    const { status, subscriptionId, deliveryStrategy, eventTypes, aggregateIds } = parseSubscription(
       result[0]
     )
     if (status === SubscriptionStatus.ERROR) {
@@ -45,7 +47,9 @@ const resume = async (pool, payload) => {
       if (deliveryStrategy === DeliveryStrategy.PASSIVE) {
         await invokeConsumer(pool, ConsumerMethod.Notify, {
           eventSubscriber: payload.eventSubscriber,
-          notification: 'RESUME'
+          notification: 'RESUME',
+          eventTypes,
+          aggregateIds
         })
       }
 
