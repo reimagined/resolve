@@ -19,18 +19,8 @@ type BDDAggregateAssertionContext = {
   [symbol]: BDDAggregateAssertionState
 }
 
-const stringifyError = (error: any): string => {
-  if (!error) {
-    return 'no error'
-  }
-  if (typeof error === 'string') {
-    return error
-  }
-  if (error.message) {
-    return error.message
-  }
-  return JSON.stringify(error, null, 2)
-}
+const stringifyError = (error: any): string =>
+  error == null ? 'no error' : error.toString()
 
 const checkState = (state: BDDAggregateAssertionState): TypeError | null => {
   if (state.phase < Phases.COMMAND) {
