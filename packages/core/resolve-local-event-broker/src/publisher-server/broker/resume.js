@@ -38,9 +38,13 @@ const resume = async (pool, payload) => {
     if (result == null || result.length !== 1) {
       throw new Error(`Event subscriber ${eventSubscriber} does not found`)
     }
-    const { status, subscriptionId, deliveryStrategy, eventTypes, aggregateIds } = parseSubscription(
-      result[0]
-    )
+    const {
+      status,
+      subscriptionId,
+      deliveryStrategy,
+      eventTypes,
+      aggregateIds
+    } = parseSubscription(result[0])
     if (status === SubscriptionStatus.ERROR) {
       throw new Error(`Event subscriber ${eventSubscriber} is in error state`)
     } else if (status === SubscriptionStatus.DELIVER) {

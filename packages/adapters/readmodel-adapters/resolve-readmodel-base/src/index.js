@@ -128,7 +128,7 @@ const createAdapter = (implementation, options) => {
   }
 
   const adapterOperations = {}
-  if(typeof notify === 'function' && preferInlineLedger) {
+  if (typeof notify === 'function' && preferInlineLedger) {
     Object.assign(adapterOperations, {
       notify: makeOperation('notify', notify)
     })
@@ -146,7 +146,7 @@ const createAdapter = (implementation, options) => {
       rollbackEvent,
       notify
     })
-    for(const key of Object.keys(adapterOperations)) {
+    for (const key of Object.keys(adapterOperations)) {
       adapterOperations[key] = makeOperation(key, adapterOperations[key])
     }
   }
