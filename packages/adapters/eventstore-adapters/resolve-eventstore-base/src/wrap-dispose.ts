@@ -4,7 +4,7 @@ import {
   IAdapter,
   IEventFromDatabase,
   AdapterState,
-  Status,
+  Status
 } from './types'
 import throwWhenDisposed from './throw-when-disposed'
 

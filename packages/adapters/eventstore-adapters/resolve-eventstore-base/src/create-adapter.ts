@@ -9,7 +9,7 @@ import wrapDispose from './wrap-dispose'
 import loadEvents from './load-events'
 import getNextCursor from './get-next-cursor'
 import incrementalImport from './incremental-import'
-import { AdapterImplementation, AdapterState } from './types'
+import { AdapterImplementation, AdapterState, Status } from './types'
 
 function createAdapter<Connection extends any, Options extends any>(
   adapterImplementation: AdapterImplementation<Connection, Options>,
@@ -42,7 +42,10 @@ function createAdapter<Connection extends any, Options extends any>(
   } = adapterImplementation
 
   const log = getLog(`createAdapter`)
-  const state: AdapterState = { disposed: false }
+  const state: AdapterState = {
+    connection: null,
+    status: Status.NOT_CONNECTED
+  }
 
   let bucketSize = 100
   const { snapshotBucketSize } = options

@@ -4,6 +4,48 @@ export enum Status {
   DISPOSED
 }
 
+export type Event = {
+  threadId: number
+  threadCounter: number
+  aggregateId: string
+  aggregateVersion: number
+  type: string
+  timestamp: number
+  payload: any
+}
+
+export type EventForIncrementalImport = {
+  aggregateId: string
+  type: string
+  timestamp: number
+  payload: any
+}
+
+export type EventForSave = {
+  aggregateId: string
+  aggregateVersion: number
+  type: string
+  timestamp: number
+  payload: any
+}
+
+export type Cursor = string | null
+
+export type EventFilter = {
+  limit: number
+  eventTypes?: Array<string> | null
+  aggregateIds?: Array<string> | null
+  eventsSizeLimit?: number
+  cursor?: Cursor
+  startTime?: number
+  finishTime?: number
+}
+
+export type EventFilterForLatestEvent = {
+  eventTypes?: Array<string> | null
+  aggregateIds?: Array<string> | null
+}
+
 export interface IAdapterOptions {}
 export interface IEventFromDatabase {}
 
@@ -39,7 +81,7 @@ export interface IAdapterImplementation<
   init: (connection: AdapterConnection) => Promise<void>
   drop: (connection: AdapterConnection) => Promise<void>
   injectEvent: (connection: AdapterConnection, event: Event) => Promise<void>
-  isFrozen: (connection: AdapterConnection) => Promise<boolean>
+  isFrozen?: (connection: AdapterConnection) => Promise<boolean>
   freeze: (connection: AdapterConnection) => Promise<void>
   unfreeze: (connection: AdapterConnection) => Promise<void>
   shapeEvent: (event: EventFromDatabase) => Event
@@ -120,53 +162,11 @@ export interface AdapterState<AdapterConnection extends any> {
   status: Status
 }
 
-export type Event = {
-  threadId: number
-  threadCounter: number
-  aggregateId: string
-  aggregateVersion: number
-  type: string
-  timestamp: number
-  payload: any
-}
-
-export type EventForIncrementalImport = {
-  aggregateId: string
-  type: string
-  timestamp: number
-  payload: any
-}
-
-export type EventForSave = {
-  aggregateId: string
-  aggregateVersion: number
-  type: string
-  timestamp: number
-  payload: any
-}
-
-export type Cursor = string | null
-
-export type EventFilter = {
-  limit: number
-  eventTypes?: Array<string> | null
-  aggregateIds?: Array<string> | null
-  eventsSizeLimit?: number
-  cursor?: Cursor
-  startTime?: number
-  finishTime?: number
-}
-
-export type EventFilterForLatestEvent = {
-  eventTypes?: Array<string> | null
-  aggregateIds?: Array<string> | null
-}
-
 export type AdapterImplementation<
-  Connection extends any,
-  Options extends any
+  AdapterConnection extends any,
+  AdapterOptions extends IAdapterOptions
 > = {
-  connect(...args: Array<any>): Promise<Connection>
+  connect(options: AdapterOptions): Promise<AdapterConnection>
   loadEventsByCursor: Function
   loadEventsByTimestamp: Function
   getLatestEvent: Function

@@ -7,5 +7,5 @@ export enum MaintenanceMode {
 
 export const PARTIAL_EVENT_FLAG = 'PARTIAL_EVENT_FLAG'
 
-export const BUFFER_SIZE = 512 * 1024
-export const BATCH_SIZE = 200
+export const DEFAULT_BUFFER_SIZE = 512 * 1024
+export const DEFAULT_BATCH_SIZE = 200

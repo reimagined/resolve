@@ -1,13 +1,26 @@
+import {
+  IAdapter,
+  IAdapterImplementation,
+  IAdapterOptions,
+  AdapterState,
+  IEventFromDatabase
+} from './types'
+
+import throwWhenDisposed from './throw-when-disposed'
+import connectOnDemand from './connect-on-demand'
+
 function wrapMethod<
   Args extends Array<any>,
   Result extends any,
   AdapterConnection extends any,
   AdapterImplementation extends IAdapterImplementation<
     AdapterConnection,
-    AdapterOptions
+    AdapterOptions,
+    EventFromDatabase
   >,
   Adapter extends IAdapter,
-  AdapterOptions extends IAdapterOptions
+  AdapterOptions extends IAdapterOptions,
+  EventFromDatabase extends IEventFromDatabase
 >(
   state: AdapterState<AdapterConnection>,
   options: AdapterOptions,

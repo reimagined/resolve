@@ -1,7 +1,4 @@
-import {
-  AdapterState,
-  Status
-} from './types'
+import { AdapterState, Status } from './types'
 
 function throwWhenDisposed<AdapterConnection extends any>(
   state: AdapterState<AdapterConnection>

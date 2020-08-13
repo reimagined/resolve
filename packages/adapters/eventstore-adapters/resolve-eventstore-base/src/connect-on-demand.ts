@@ -28,3 +28,5 @@ async function connectOnDemand<
     state.status = Status.CONNECTED
   }
 }
+
+export default connectOnDemand
