@@ -158,6 +158,11 @@ const read = async (
   aggregateArgs: any,
   jwt: string
 ): Promise<any> => {
+  const viewModelName = pool.viewModel.name
+  const getLocalLog = (scope: string): any =>
+    getLog(`read:${viewModelName}${scope}`)
+  const log = getLocalLog('')
+
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -206,26 +211,38 @@ const read = async (
 
     pool.workers.delete(key)
 
-    const topics = []
+    const eventTypes = Object.keys(pool.viewModel.projection)
 
-    for (const id of aggregateIds) {
-      for (const name of Object.keys(pool.viewModel.projection)) {
-        topics.push({
-          topicId: id,
-          topicName: name
-        })
-      }
+    let {
+      state: resolvedState,
+      aggregateIds: resolvedAggregateIds,
+      eventTypes: resolvedEventTypes
+    } = await pool.viewModel.resolver(state, {
+      aggregateIds,
+      eventTypes,
+      jwt
+    })
+
+    if (resolvedState == null) {
+      log.warn(`Resolved state are undefined`)
+      resolvedState = state
     }
 
-    const {
-      state: resolvedState,
-      topics: resolvedTopics
-    } = await pool.viewModel.resolver(state, { topics, jwt })
+    if (resolvedAggregateIds == null) {
+      log.warn(`Resolved aggregateIds are undefined`)
+      resolvedAggregateIds = aggregateIds
+    }
+
+    if (resolvedEventTypes == null) {
+      log.warn(`Resolved eventTypes are undefined`)
+      resolvedEventTypes = eventTypes
+    }
 
     return {
       state: resolvedState,
       cursor,
-      topics: resolvedTopics,
+      aggregateIds: resolvedAggregateIds,
+      eventTypes: resolvedEventTypes,
       isViewModel: true
     }
   } catch (error) {

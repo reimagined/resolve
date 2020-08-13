@@ -6,12 +6,12 @@ const createPubsubManager = () => {
   const map = new Map()
 
   const pubsubManager = {
-    connect({ client, connectionId, topics }) {
+    connect({ client, connectionId, eventTypes, aggregateIds }) {
       if (!map.has(connectionId)) {
         map.set(connectionId, {
           client,
-          topics,
-          cursor: null
+          eventTypes,
+          aggregateIds
         })
       }
     },
@@ -24,28 +24,28 @@ const createPubsubManager = () => {
       map.delete(connectionId)
     },
 
+    getConnection({ connectionId }) {
+      const connection = map.get(connectionId)
+
+      return connection
+    },
+
     async dispatch({ event }) {
       const promises = []
-      const { type, aggregateId, aggregateVersion } = event
-      const aggregateIdAndVersion = `${aggregateId}:${aggregateVersion}`
+      const { type, aggregateId } = event
 
       for (const connectionId of map.keys()) {
-        const { topics, client, cursor } = map.get(connectionId)
-        for (const { topicName, topicId } of topics) {
-          if (
-            (topicName === type && topicId === aggregateId) ||
-            (topicName === '+' && topicId === aggregateId) ||
-            (topicName === type && topicId === '+') ||
-            (topicName === '+' && topicId === '+')
-          ) {
-            promises.push(client(JSON.stringify({ event, cursor })))
-          }
+        const { eventTypes, aggregateIds, client, cursor } = map.get(
+          connectionId
+        )
+        if (
+          (eventTypes === '+' || eventTypes?.includes?.(type)) &&
+          (aggregateIds === '+' || aggregateIds?.includes?.(aggregateId))
+        ) {
+          promises.push(
+            client(JSON.stringify({ type: 'event', event, cursor }))
+          )
         }
-        map.set(connectionId, {
-          topics,
-          client,
-          cursor: aggregateIdAndVersion
-        })
       }
 
       await Promise.all(promises)

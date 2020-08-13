@@ -43,7 +43,7 @@ const createClientAdapter: CreateSubscribeAdapter = ({
           client?.send(
             JSON.stringify({
               type: 'pullEvents',
-              cursor,
+              cursor
             })
           )
         }
@@ -63,10 +63,10 @@ const createClientAdapter: CreateSubscribeAdapter = ({
                 break
               }
               case 'pullEvents': {
-                data.events.forEach((event: any) => {
-                  onEvent({ event })
+                data.payload.events.forEach((event: any) => {
+                  onEvent(event)
                 })
-                currentCursor = data.cursor
+                currentCursor = data.payload.cursor
                 break
               }
               default: {

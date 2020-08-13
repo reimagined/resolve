@@ -12,15 +12,18 @@ import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 
 const log = debugLevels('resolve:resolve-runtime:local-subscribe-adapter')
 
+let eventstoreAdapter = null
+
 const createWebSocketConnectionHandler = resolve => (ws, req) => {
   const { pubsubManager } = resolve
   const queryString = req.url.split('?')[1]
   const { token, deploymentId } = qs.parse(queryString)
   const connectionId = uuid()
-  let topics = null
+  let eventTypes = null
+  let aggregateIds = null
 
   try {
-    void ({ topics } = jwt.verify(token, deploymentId))
+    void ({ eventTypes, aggregateIds } = jwt.verify(token, deploymentId))
   } catch (error) {
     throw new Error('Permission denied, invalid token')
   }
@@ -29,7 +32,8 @@ const createWebSocketConnectionHandler = resolve => (ws, req) => {
   pubsubManager.connect({
     client: publisher,
     connectionId,
-    topics
+    eventTypes,
+    aggregateIds
   })
 
   const dispose = () => {
@@ -37,32 +41,39 @@ const createWebSocketConnectionHandler = resolve => (ws, req) => {
     ws.close()
   }
 
-  const handler = createWebSocketMessageHandler(resolve, ws)
+  const handler = createWebSocketMessageHandler(resolve, ws, connectionId)
   ws.on('message', handler)
 
   ws.on('close', dispose)
   ws.on('error', dispose)
 }
 
-const createWebSocketMessageHandler = (resolve, ws) => message => {
+const createWebSocketMessageHandler = (
+  { pubsubManager },
+  ws,
+  connectionId
+) => async message => {
+  const { eventTypes, aggregateIds } = pubsubManager.getConnection({
+    connectionId
+  })
+
   const parsedMessage = JSON.parse(message)
   switch (parsedMessage.type) {
     case 'pullEvents': {
-      const {
-        events,
-        cursor
-      } = resolve.assemblies.eventstoreAdapter.loadEvents({
-        // eventTypes: parsedMessage.payload.eventTypes,
-        // aggregateIds: parsedMessage.payload.aggregateIds,
-        // limit: parsedMessage.payload.limit,
-        // eventsSizeLimit: parsedMessage.payload.eventsSizeLimit,
+      const { events, cursor } = await eventstoreAdapter.loadEvents({
+        eventTypes,
+        aggregateIds,
+        limit: 1000000,
+        eventsSizeLimit: 128,
         cursor: parsedMessage.cursor
       })
 
-      ws.send({
-        type: 'pullEvents',
-        payload: { events, cursor }
-      })
+      ws.send(
+        JSON.stringify({
+          type: 'pullEvents',
+          payload: { events, cursor }
+        })
+      )
 
       break
     }
@@ -128,6 +139,8 @@ const createSocketHttpServer = () => {
 const initWebsockets = async resolve => {
   const pubsubManager = createPubsubManager()
   const websocketHttpServer = createSocketHttpServer()
+
+  eventstoreAdapter = await resolve.assemblies.eventstoreAdapter()
 
   Object.defineProperties(resolve, {
     getSubscribeAdapterOptions: {

@@ -35,18 +35,12 @@ const removeCallback = (
 }
 
 const rootCallback = (
-  {
-    event,
-    cursor: prevCursor
-  }: {
-    event: {
-      aggregateId: string
-      aggregateVersion: number
-      payload: object
-      timestamp: number
-      type: string
-    }
-    cursor: string
+  event: {
+    aggregateId: string
+    aggregateVersion: number
+    payload: object
+    timestamp: number
+    type: string
   },
   resubscribed?: boolean
 ): void => {

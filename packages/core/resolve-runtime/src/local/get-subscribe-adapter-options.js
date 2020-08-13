@@ -3,8 +3,13 @@ import Url from 'url'
 import getRootBasedUrl from '../common/utils/get-root-based-url'
 import jwt from 'jsonwebtoken'
 
-const getSubscribeAdapterOptions = async (resolve, origin, topics) => {
-  const token = jwt.sign({ topics }, resolve.applicationName)
+const getSubscribeAdapterOptions = async (
+  resolve,
+  origin,
+  eventTypes,
+  aggregateIds
+) => {
+  const token = jwt.sign({ eventTypes, aggregateIds }, resolve.applicationName)
 
   const { protocol, hostname, port } = Url.parse(origin)
   const isSecure = /^https/.test(protocol)
