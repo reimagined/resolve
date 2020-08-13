@@ -180,7 +180,9 @@ const createAndInitConsumer = async config => {
     const currentResolve = Object.create(baseResolve)
     try {
       await initResolve(currentResolve)
-      return await currentResolve.eventstoreAdapter.saveEvent(event)
+      const result = await currentResolve.eventstoreAdapter.saveEvent(event)
+      await currentResolve.notifyInlineLedgers()
+      return result
     } finally {
       await disposeResolve(currentResolve)
     }

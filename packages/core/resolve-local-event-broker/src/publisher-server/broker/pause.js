@@ -1,9 +1,15 @@
-import { SUBSCRIBERS_TABLE_NAME, SubscriptionStatus } from '../constants'
+import {
+  SUBSCRIBERS_TABLE_NAME,
+  SubscriptionStatus,
+  DeliveryStrategy,
+  ConsumerMethod
+} from '../constants'
 
 const pause = async (pool, payload) => {
   const {
     database: { runQuery, runRawQuery, escapeId, escapeStr },
-    parseSubscription
+    parseSubscription,
+    invokeConsumer
   } = pool
 
   const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
@@ -29,6 +35,7 @@ const pause = async (pool, payload) => {
     )
   }
   const { status, subscriptionId } = parseSubscription(result[0])
+
   if (status === SubscriptionStatus.ERROR) {
     throw new Error(
       `Event subscriber ${payload.eventSubscriber} is in error state`

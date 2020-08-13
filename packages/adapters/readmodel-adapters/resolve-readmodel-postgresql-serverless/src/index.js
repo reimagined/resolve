@@ -23,6 +23,13 @@ import executeStatement from './execute-statement'
 import findOne from './find-one'
 import find from './find'
 import insert from './insert'
+import build from './build'
+import reset from './reset'
+import subscribe from './subscribe'
+import resubscribe from './resubscribe'
+import unsubscribe from './unsubscribe'
+import pause from './pause'
+import resume from './resume'
 import rollbackXATransaction from './rollback-xa-transaction'
 import rollbackEvent from './rollback-event'
 import rollbackTransaction from './rollback-transaction'
@@ -39,8 +46,7 @@ import _destroyResource from './resource/destroy'
 
 const store = { defineTable, find, findOne, count, insert, update, delete: del }
 
-const connect = _connect.bind(null, {
-  RDSDataService,
+const internalMethods = {
   escapeId,
   escape,
   buildUpsertDocument,
@@ -51,14 +57,10 @@ const connect = _connect.bind(null, {
   coercer,
   generateGuid,
   isTimeoutError,
-  isHighloadError,
-  crypto,
-  ...store
-})
+  isHighloadError
+}
 
-const createAdapter = _createAdapter.bind(null, {
-  ...store,
-  connect,
+const externalMethods = {
   beginTransaction,
   commitTransaction,
   rollbackTransaction,
@@ -69,6 +71,27 @@ const createAdapter = _createAdapter.bind(null, {
   commitEvent,
   rollbackEvent,
   dropReadModel,
+  build,
+  reset,
+  subscribe,
+  resubscribe,
+  unsubscribe,
+  pause,
+  resume
+}
+
+const connect = _connect.bind(null, {
+  RDSDataService,
+  crypto,
+  ...internalMethods,
+  ...externalMethods,
+  ...store
+})
+
+const createAdapter = _createAdapter.bind(null, {
+  ...store,
+  ...externalMethods,
+  connect,
   disconnect
 })
 

@@ -6,6 +6,7 @@ import {
   FULL_XA_CONNECTOR,
   FULL_REGULAR_CONNECTOR,
   EMPTY_CONNECTOR,
+  PASSIVE_CONNECTOR,
   detectConnectorFeatures
 } from 'resolve-query'
 
@@ -53,6 +54,9 @@ const bootstrap = async resolve => {
         break
       case EMPTY_CONNECTOR:
         deliveryStrategy = 'active-none-transaction'
+        break
+      case PASSIVE_CONNECTOR:
+        deliveryStrategy = 'passive'
         break
       default:
         break

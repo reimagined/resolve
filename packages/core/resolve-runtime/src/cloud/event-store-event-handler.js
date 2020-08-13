@@ -1,9 +1,13 @@
+import { detectConnectorFeatures, INLINE_LEDGER_CONNECTOR } from 'resolve-query'
+
 const handleEventStoreEvent = async (lambdaEvent, resolve) => {
   switch (lambdaEvent.method) {
     case 'SaveEvent': {
-      return await resolve.eventstoreAdapter.saveEvent(
+      const result = await resolve.eventstoreAdapter.saveEvent(
         lambdaEvent.payload.event
       )
+      await resolve.notifyInlineLedgers()
+      return result
     }
     case 'LoadEvents': {
       const { events, cursor } = await resolve.eventstoreAdapter.loadEvents({

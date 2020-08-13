@@ -2,13 +2,15 @@ import {
   SUBSCRIBERS_TABLE_NAME,
   DeliveryStrategy,
   QueueStrategy,
-  SubscriptionStatus
+  SubscriptionStatus,
+  ConsumerMethod
 } from '../constants'
 
 async function subscribe(pool, payload) {
   const {
     database: { escapeStr, escapeId, runQuery, runRawQuery, encodeJsonPath },
     parseSubscription,
+    invokeConsumer,
     generateGuid
   } = pool
 
@@ -21,7 +23,6 @@ async function subscribe(pool, payload) {
     deliveryStrategy !== DeliveryStrategy.ACTIVE_NONE &&
     deliveryStrategy !== DeliveryStrategy.ACTIVE_REGULAR &&
     deliveryStrategy !== DeliveryStrategy.ACTIVE_XA &&
-    deliveryStrategy !== DeliveryStrategy.PASSIVE &&
     deliveryStrategy !== DeliveryStrategy.PASSTHROUGH
   ) {
     throw new Error(`Wrong deliveryStrategy="${deliveryStrategy}"`)

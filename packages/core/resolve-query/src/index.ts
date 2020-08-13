@@ -2,6 +2,7 @@ import wrapReadModel, {
   FULL_XA_CONNECTOR,
   FULL_REGULAR_CONNECTOR,
   EMPTY_CONNECTOR,
+  INLINE_LEDGER_CONNECTOR,
   detectConnectorFeatures
 } from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
@@ -9,12 +10,14 @@ import wrapViewModel from './wrap-view-model'
 const getDefaultRemainingTime = (): number => 0x7fffffff
 
 const createQuery = ({
+  invokeEventListenerAsync,
   readModelConnectors,
   readModels,
   viewModels,
   performanceTracer,
   eventstoreAdapter
 }: {
+  invokeEventListenerAsync: Function
   readModelConnectors: any
   readModels: any[]
   viewModels: any[]
@@ -31,6 +34,8 @@ const createQuery = ({
     models[readModel.name] = wrapReadModel(
       readModel,
       readModelConnectors,
+      eventstoreAdapter,
+      invokeEventListenerAsync,
       performanceTracer,
       eventstoreAdapter.getSecretsManager.bind(null)
     )
@@ -158,10 +163,10 @@ const createQuery = ({
     )
   }
 
-  const drop = (modelName: string): Promise<any> => {
+  const drop = async (modelName: string): Promise<void> => {
     checkModelExists(modelName)
 
-    return models[modelName].drop()
+    await models[modelName].drop()
   }
 
   const performXA = (
@@ -186,6 +191,15 @@ const createQuery = ({
     return models[modelName][operationName](parameters)
   }
 
+  const performInlineLedger = async (
+    methodName,
+    { modelName, ...parameters }: any
+  ): Promise<void> => {
+    checkModelExists(modelName)
+
+    await models[modelName][methodName](parameters)
+  }
+
   const dispose = async (): Promise<any> => {
     for (const modelName of Object.keys(models)) {
       await models[modelName].dispose()
@@ -199,6 +213,13 @@ const createQuery = ({
     beginXATransaction: performXA.bind(null, 'beginXATransaction'),
     commitXATransaction: performXA.bind(null, 'commitXATransaction'),
     rollbackXATransaction: performXA.bind(null, 'rollbackXATransaction'),
+    build: performInlineLedger.bind(null, 'build'),
+    reset: performInlineLedger.bind(null, 'reset'),
+    pause: performInlineLedger.bind(null, 'pause'),
+    resume: performInlineLedger.bind(null, 'resume'),
+    subscribe: performInlineLedger.bind(null, 'subscribe'),
+    unsubscribe: performInlineLedger.bind(null, 'unsubscribe'),
+    resubscribe: performInlineLedger.bind(null, 'resubscribe'),
     drop,
     dispose
   }
@@ -213,6 +234,7 @@ export {
   FULL_XA_CONNECTOR,
   FULL_REGULAR_CONNECTOR,
   EMPTY_CONNECTOR,
+  INLINE_LEDGER_CONNECTOR,
   detectConnectorFeatures
 }
 export default createQuery

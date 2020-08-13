@@ -1,4 +1,5 @@
 import debugLevels from 'resolve-debug-levels'
+import { invokeFunction } from 'resolve-cloud-common/lambda'
 
 import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
@@ -32,6 +33,24 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     lambdaEventName: 'resolveSource'
   }
 
+  resolveBase.invokeEventListenerAsync = async (
+    eventSubscriber,
+    method,
+    ...args
+  ) => {
+    await invokeFunction({
+      FunctionName: lambdaContext.invokedFunctionArn,
+      InvocationType: 'Event',
+      Region: process.env.AWS_REGION,
+      Payload: {
+        resolveSource: 'EventListener',
+        eventSubscriber,
+        method,
+        args
+      }
+    })
+  }
+
   const resolve = Object.create(resolveBase)
   resolve.getRemainingTimeInMillis = lambdaContext.getRemainingTimeInMillis.bind(
     lambdaContext
@@ -55,6 +74,18 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
+    } else if (lambdaEvent.resolveSource === 'EventListener') {
+      const { eventSubscriber, method, args } = lambdaEvent
+      const listenerInfo = resolve.eventListeners.get(eventSubscriber)
+      if (listenerInfo == null) {
+        throw new Error(`Listener ${eventSubscriber} does not exist`)
+      }
+
+      const queryExecutor = listenerInfo.isSaga
+        ? resolve.executeSaga
+        : resolve.executeQuery
+
+      return await queryExecutor[method](...args)
     } else if (lambdaEvent.resolveSource === 'EventBus') {
       log.debug('identified event source: event-bus')
 
