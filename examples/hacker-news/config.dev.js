@@ -1,12 +1,14 @@
 import { declareRuntimeEnv } from 'resolve-scripts'
 
 const readModelOptions = {
-  dbClusterOrInstanceArn: 'arn:aws:rds:eu-west-1:169462466426:cluster:event-store-postgres',
-  awsSecretStoreArn: 'arn:aws:secretsmanager:eu-west-1:169462466426:secret:prod/postgresUser/-LkrvYIjdRh5ZxJs-RGxUkC',
+  dbClusterOrInstanceArn:
+    'xxx',
+  awsSecretStoreArn:
+    'xxx',
   databaseName: 'readmodel-ct8rdp5ftqjtlkzq4lfcjlosnlv2',
   region: 'eu-west-1',
-  accessKeyId: 'AKIASO5GAA55M4OYK2FT',
-  secretAccessKey: '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',
+  accessKeyId: 'xxx',
+  secretAccessKey: 'xxx',
   preferInlineLedger: true
 }
 

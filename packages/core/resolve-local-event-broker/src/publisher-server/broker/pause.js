@@ -34,16 +34,7 @@ const pause = async (pool, payload) => {
       `Event subscriber ${payload.eventSubscriber} does not found`
     )
   }
-  const { status, subscriptionId, deliveryStrategy } = parseSubscription(
-    result[0]
-  )
-
-  if (deliveryStrategy === DeliveryStrategy.PASSIVE) {
-    await invokeConsumer(pool, ConsumerMethod.Notify, {
-      eventSubscriber: payload.eventSubscriber,
-      notification: 'PAUSE'
-    })
-  }
+  const { status, subscriptionId } = parseSubscription(result[0])
 
   if (status === SubscriptionStatus.ERROR) {
     throw new Error(

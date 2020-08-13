@@ -28,35 +28,17 @@ const resume = async (pool, payload) => {
   for (let attempt = 0; ; attempt++) {
     const result = await runQuery(`
       SELECT ${subscribersTableNameAsId}."status" AS "status",
-      ${subscribersTableNameAsId}."subscriptionId" AS "subscriptionId",
-      ${subscribersTableNameAsId}."deliveryStrategy" AS "deliveryStrategy",
-      ${subscribersTableNameAsId}."eventTypes" AS "eventTypes",
-      ${subscribersTableNameAsId}."aggregateIds" AS "aggregateIds"
+      ${subscribersTableNameAsId}."subscriptionId" AS "subscriptionId"
       FROM ${subscribersTableNameAsId}
       WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)}
     `)
     if (result == null || result.length !== 1) {
       throw new Error(`Event subscriber ${eventSubscriber} does not found`)
     }
-    const {
-      status,
-      subscriptionId,
-      deliveryStrategy,
-      eventTypes,
-      aggregateIds
-    } = parseSubscription(result[0])
+    const { status, subscriptionId } = parseSubscription(result[0])
     if (status === SubscriptionStatus.ERROR) {
       throw new Error(`Event subscriber ${eventSubscriber} is in error state`)
     } else if (status === SubscriptionStatus.DELIVER) {
-      if (deliveryStrategy === DeliveryStrategy.PASSIVE) {
-        await invokeConsumer(pool, ConsumerMethod.Notify, {
-          eventSubscriber: payload.eventSubscriber,
-          notification: 'RESUME',
-          eventTypes,
-          aggregateIds
-        })
-      }
-
       return subscriptionId
     } else if (status === SubscriptionStatus.SKIP && attempt > 10) {
       throw new Error(

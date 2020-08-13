@@ -27,7 +27,6 @@ export const DeliveryStrategy = (function(DeliveryStrategy) {
   DeliveryStrategy['ACTIVE_NONE'] = 'active-none-transaction'
   DeliveryStrategy['ACTIVE_REGULAR'] = 'active-regular-transaction'
   DeliveryStrategy['ACTIVE_XA'] = 'active-xa-transaction'
-  DeliveryStrategy['PASSIVE'] = 'passive'
   DeliveryStrategy['PASSTHROUGH'] = 'passthrough'
   return Object.freeze(DeliveryStrategy)
 })({})
@@ -99,6 +98,5 @@ export const ConsumerMethod = (function(ConsumerMethod) {
   ConsumerMethod['CommitXATransaction'] = 'CommitXATransaction'
   ConsumerMethod['RollbackXATransaction'] = 'RollbackXATransaction'
   ConsumerMethod['Drop'] = 'Drop'
-  ConsumerMethod['Notify'] = 'Notify'
   return Object.freeze(ConsumerMethod)
 })({})

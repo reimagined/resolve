@@ -178,12 +178,18 @@ export const detectConnectorFeatures = (connector: any): number =>
   ((typeof connector.beginEvent === 'function' ? 1 : 0) << 6) +
   ((typeof connector.commitEvent === 'function' ? 1 : 0) << 7) +
   ((typeof connector.rollbackEvent === 'function' ? 1 : 0) << 8) +
-  ((typeof connector.notify === 'function' ? 1 : 0) << 9)
+  ((typeof connector.build === 'function' ? 1 : 0) << 9) +
+  ((typeof connector.reset === 'function' ? 1 : 0) << 10) +
+  ((typeof connector.pause === 'function' ? 1 : 0) << 11) +
+  ((typeof connector.resume === 'function' ? 1 : 0) << 12) +
+  ((typeof connector.subscribe === 'function' ? 1 : 0) << 13) +
+  ((typeof connector.unsubscribe === 'function' ? 1 : 0) << 14) +
+  ((typeof connector.resubscribe === 'function' ? 1 : 0) << 15)
 
 export const FULL_XA_CONNECTOR = 504
 export const FULL_REGULAR_CONNECTOR = 7
 export const EMPTY_CONNECTOR = 0
-export const PASSIVE_CONNECTOR = 512
+export const INLINE_LEDGER_CONNECTOR = 65024
 
 const detectWrappers = (connector: any): any => {
   const log = getLog('detectWrappers')
@@ -208,7 +214,7 @@ const detectWrappers = (connector: any): any => {
   } else {
     if (
       featureDetection !== EMPTY_CONNECTOR &&
-      featureDetection !== PASSIVE_CONNECTOR
+      featureDetection !== INLINE_LEDGER_CONNECTOR
     ) {
       log.warn('Connector provided invalid event batch lifecycle functions set')
       log.warn(`Lifecycle detection constant is ${featureDetection}`)
@@ -543,33 +549,109 @@ const rollbackXATransaction = doOperation.bind(
   null
 )
 
-const notifyAsyncInvoke = async (
-  pool: ReadModelPool,
-  eventListener: string,
-  parameters: any
-) => {
-  await pool.invokeEventListenerAsync('notify', {
-    ...parameters,
-    eventListener
-  })
+const next = async (pool: ReadModelPool, eventListener: string, ...args) => {
+  if (args.length > 0) {
+    throw new TypeError('Next should be invoked with no arguments')
+  }
+  await pool.invokeEventListenerAsync(eventListener, 'build')
 }
 
-const notify = doOperation.bind(
+const build = doOperation.bind(
   null,
-  'notify',
+  'build',
   (
     pool: ReadModelPool,
     connection: any,
     readModelName: string,
-    parameters: any
+    parameters: {}
   ) => [
     connection,
     readModelName,
-    notifyAsyncInvoke.bind(null, pool, readModelName),
     connection,
     pool.readModel.projection,
-    parameters
+    next.bind(null, pool, readModelName)
   ]
+)
+
+const reset = doOperation.bind(
+  null,
+  'reset',
+  (
+    pool: ReadModelPool,
+    connection: any,
+    readModelName: string,
+    parameters: {}
+  ) => [connection, readModelName, next.bind(null, pool, readModelName)]
+)
+
+const resume = doOperation.bind(
+  null,
+  'resume',
+  (
+    pool: ReadModelPool,
+    connection: any,
+    readModelName: string,
+    parameters: {}
+  ) => [connection, readModelName, next.bind(null, pool, readModelName)]
+)
+const pause = doOperation.bind(
+  null,
+  'pause',
+  (
+    pool: ReadModelPool,
+    connection: any,
+    readModelName: string,
+    parameters: {}
+  ) => [connection, readModelName]
+)
+
+const subscribe = doOperation.bind(
+  null,
+  'subscribe',
+  (
+    pool: ReadModelPool,
+    connection: any,
+    readModelName: string,
+    parameters: {
+      eventTypes: Array<string> | null
+      aggregateIds: Array<string> | null
+    }
+  ) => [
+    connection,
+    readModelName,
+    parameters.eventTypes,
+    parameters.aggregateIds
+  ]
+)
+
+const resubscribe = doOperation.bind(
+  null,
+  'subscribe',
+  (
+    pool: ReadModelPool,
+    connection: any,
+    readModelName: string,
+    parameters: {
+      eventTypes: Array<string> | null
+      aggregateIds: Array<string> | null
+    }
+  ) => [
+    connection,
+    readModelName,
+    parameters.eventTypes,
+    parameters.aggregateIds
+  ]
+)
+
+const unsubscribe = doOperation.bind(
+  null,
+  'subscribe',
+  (
+    pool: ReadModelPool,
+    connection: any,
+    readModelName: string,
+    parameters: {}
+  ) => [connection, readModelName]
 )
 
 const dispose = async (pool: ReadModelPool): Promise<void> => {
@@ -660,9 +742,15 @@ const wrapReadModel = (
       commitXATransaction: commitXATransaction.bind(null, pool),
       rollbackXATransaction: rollbackXATransaction.bind(null, pool)
     })
-  } else if (detectedFeatures === PASSIVE_CONNECTOR) {
+  } else if (detectedFeatures === INLINE_LEDGER_CONNECTOR) {
     Object.assign(api, {
-      notify: notify.bind(null, pool)
+      build: build.bind(null, pool),
+      reset: reset.bind(null, pool),
+      pause: pause.bind(null, pool),
+      resume: resume.bind(null, pool),
+      subscribe: subscribe.bind(null, pool),
+      unsubscribe: unsubscribe.bind(null, pool),
+      resubscribe: resubscribe.bind(null, pool)
     })
   }
 

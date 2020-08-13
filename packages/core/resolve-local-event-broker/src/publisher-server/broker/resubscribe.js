@@ -2,15 +2,13 @@ import {
   SUBSCRIBERS_TABLE_NAME,
   DeliveryStrategy,
   QueueStrategy,
-  SubscriptionStatus,
-  ConsumerMethod
+  SubscriptionStatus
 } from '../constants'
 
 async function resubscribe(pool, payload) {
   const {
     database: { escapeStr, escapeId, runQuery, runRawQuery, encodeJsonPath },
     parseSubscription,
-    invokeConsumer,
     generateGuid
   } = pool
 
@@ -23,7 +21,6 @@ async function resubscribe(pool, payload) {
     deliveryStrategy !== DeliveryStrategy.ACTIVE_NONE &&
     deliveryStrategy !== DeliveryStrategy.ACTIVE_REGULAR &&
     deliveryStrategy !== DeliveryStrategy.ACTIVE_XA &&
-    deliveryStrategy !== DeliveryStrategy.PASSIVE &&
     deliveryStrategy !== DeliveryStrategy.PASSTHROUGH
   ) {
     throw new Error(`Wrong deliveryStrategy="${deliveryStrategy}"`)
@@ -96,15 +93,6 @@ async function resubscribe(pool, payload) {
 
   if (result == null || result.length !== 1) {
     throw new Error('Subscription failed')
-  }
-
-  if (deliveryStrategy === DeliveryStrategy.PASSIVE) {
-    await invokeConsumer(pool, ConsumerMethod.Notify, {
-      eventSubscriber,
-      notification: 'RESUBSCRIBE',
-      eventTypes: subscriptionOptions.eventTypes,
-      aggregateIds: subscriptionOptions.aggregateIds
-    })
   }
 
   const { subscriptionId } = parseSubscription(result[0])

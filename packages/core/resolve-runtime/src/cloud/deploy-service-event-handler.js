@@ -10,6 +10,7 @@ const getSagaNames = resolve => [
   ...resolve.sagas.map(({ name }) => name)
 ]
 
+// TODO
 const handleResolveReadModelEvent = async (
   lambdaEvent,
   resolve,

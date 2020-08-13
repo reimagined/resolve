@@ -2,7 +2,7 @@ import wrapReadModel, {
   FULL_XA_CONNECTOR,
   FULL_REGULAR_CONNECTOR,
   EMPTY_CONNECTOR,
-  PASSIVE_CONNECTOR,
+  INLINE_LEDGER_CONNECTOR,
   detectConnectorFeatures
 } from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
@@ -191,10 +191,13 @@ const createQuery = ({
     return models[modelName][operationName](parameters)
   }
 
-  const notify = async ({ modelName, ...parameters }: any): Promise<void> => {
+  const performInlineLedger = async (
+    methodName,
+    { modelName, ...parameters }: any
+  ): Promise<void> => {
     checkModelExists(modelName)
 
-    await models[modelName].notify(parameters)
+    await models[modelName][methodName](parameters)
   }
 
   const dispose = async (): Promise<any> => {
@@ -210,7 +213,13 @@ const createQuery = ({
     beginXATransaction: performXA.bind(null, 'beginXATransaction'),
     commitXATransaction: performXA.bind(null, 'commitXATransaction'),
     rollbackXATransaction: performXA.bind(null, 'rollbackXATransaction'),
-    notify,
+    build: performInlineLedger.bind(null, 'build'),
+    reset: performInlineLedger.bind(null, 'reset'),
+    pause: performInlineLedger.bind(null, 'pause'),
+    resume: performInlineLedger.bind(null, 'resume'),
+    subscribe: performInlineLedger.bind(null, 'subscribe'),
+    unsubscribe: performInlineLedger.bind(null, 'unsubscribe'),
+    resubscribe: performInlineLedger.bind(null, 'resubscribe'),
     drop,
     dispose
   }
@@ -225,7 +234,7 @@ export {
   FULL_XA_CONNECTOR,
   FULL_REGULAR_CONNECTOR,
   EMPTY_CONNECTOR,
-  PASSIVE_CONNECTOR,
+  INLINE_LEDGER_CONNECTOR,
   detectConnectorFeatures
 }
 export default createQuery

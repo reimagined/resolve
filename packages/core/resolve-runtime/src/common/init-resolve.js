@@ -1,5 +1,11 @@
 import createCommandExecutor from 'resolve-command'
-import createQueryExecutor from 'resolve-query'
+import createQueryExecutor, {
+  detectConnectorFeatures,
+  FULL_REGULAR_CONNECTOR,
+  FULL_XA_CONNECTOR,
+  EMPTY_CONNECTOR,
+  INLINE_LEDGER_CONNECTOR
+} from 'resolve-query'
 import createSagaExecutor from 'resolve-saga'
 import crypto from 'crypto'
 
@@ -71,7 +77,52 @@ const initResolve = async resolve => {
 
   Object.defineProperties(resolve, {
     readModelConnectors: { value: readModelConnectors },
-    eventstoreAdapter: { value: eventstoreAdapter }
+    eventstoreAdapter: { value: eventstoreAdapter },
+    detectConnectorFeatures: { value: detectConnectorFeatures },
+    connectorCapabilities: {
+      value: {
+        FULL_REGULAR_CONNECTOR,
+        FULL_XA_CONNECTOR,
+        EMPTY_CONNECTOR,
+        INLINE_LEDGER_CONNECTOR
+      }
+    },
+    notifyInlineLedgers: {
+      value: async () => {
+        const maxDuration = Math.max(
+          resolve.getRemainingTimeInMillis() - 15000,
+          0
+        )
+        let timerId = null
+        const timerPromise = new Promise(resolve => {
+          timerId = setTimeout(resolve, maxDuration)
+        })
+        const inlineLedgerPromise = (async () => {
+          const promises = []
+          for (const {
+            name: eventListener,
+            connectorName
+          } of resolve.eventListeners.values()) {
+            const connector = resolve.readModelConnectors[connectorName]
+            if (
+              resolve.detectConnectorFeatures(connector) ===
+              resolve.connectorCapabilities.INLINE_LEDGER_CONNECTOR
+            ) {
+              promises.push(
+                resolve.invokeEventListenerAsync(eventListener, 'build')
+              )
+            }
+          }
+          await Promise.all(promises)
+
+          if (timerId != null) {
+            clearTimeout(timerId)
+          }
+        })()
+
+        await Promise.race([timerPromise, inlineLedgerPromise])
+      }
+    }
   })
 
   if (!resolve.hasOwnProperty('getRemainingTimeInMillis')) {

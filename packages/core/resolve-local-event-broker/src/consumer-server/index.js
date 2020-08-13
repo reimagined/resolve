@@ -111,28 +111,6 @@ const createAndInitConsumer = async config => {
     }
   }
 
-  const notify = async ({ eventSubscriber, ...parameters }) => {
-    const currentResolve = Object.create(baseResolve)
-    const listenerInfo = currentResolve.eventListeners.get(eventSubscriber)
-    if (listenerInfo == null) {
-      throw new Error(`Listener ${eventSubscriber} does not exist`)
-    }
-
-    try {
-      await initResolve(currentResolve)
-      const notify = listenerInfo.isSaga
-        ? currentResolve.executeSaga.notify
-        : currentResolve.executeQuery.notify
-
-      await notify({
-        modelName: eventSubscriber,
-        ...parameters
-      })
-    } finally {
-      await disposeResolve(currentResolve)
-    }
-  }
-
   const sendEvents = async ({
     eventSubscriber,
     batchId,
@@ -202,7 +180,9 @@ const createAndInitConsumer = async config => {
     const currentResolve = Object.create(baseResolve)
     try {
       await initResolve(currentResolve)
-      return await currentResolve.eventstoreAdapter.saveEvent(event)
+      const result = await currentResolve.eventstoreAdapter.saveEvent(event)
+      await currentResolve.notifyInlineLedgers()
+      return result
     } finally {
       await disposeResolve(currentResolve)
     }
@@ -215,8 +195,7 @@ const createAndInitConsumer = async config => {
     drop,
     sendEvents,
     loadEvents,
-    saveEvent,
-    notify
+    saveEvent
   }
 
   return await createServer({

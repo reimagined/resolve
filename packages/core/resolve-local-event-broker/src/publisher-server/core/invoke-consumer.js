@@ -7,8 +7,7 @@ const consumerMethodsMap = new Map([
   [ConsumerMethod.SendEvents, 'sendEvents'],
   [ConsumerMethod.LoadEvents, 'loadEvents'],
   [ConsumerMethod.SaveEvent, 'saveEvent'],
-  [ConsumerMethod.Drop, 'drop'],
-  [ConsumerMethod.Notify, 'notify']
+  [ConsumerMethod.Drop, 'drop']
 ])
 
 const invokeConsumer = async (pool, method, payload, isAsync) => {

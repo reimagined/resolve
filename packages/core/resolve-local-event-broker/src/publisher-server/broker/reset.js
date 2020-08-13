@@ -99,11 +99,6 @@ const reset = async (pool, payload) => {
     deliveryStrategy === DeliveryStrategy.ACTIVE_XA
   ) {
     await invokeConsumer(pool, ConsumerMethod.Drop, { eventSubscriber })
-  } else if (deliveryStrategy === DeliveryStrategy.PASSIVE) {
-    await invokeConsumer(pool, ConsumerMethod.Notify, {
-      eventSubscriber,
-      notification: 'RESET'
-    })
   }
 
   return subscriptionId

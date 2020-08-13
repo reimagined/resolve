@@ -174,22 +174,6 @@ const drop = async (payload, resolve) => {
   await drop(eventSubscriber)
 }
 
-const notify = async (payload, resolve) => {
-  const { eventSubscriber, notification } = payload
-  const listenerInfo = resolve.eventListeners.get(eventSubscriber)
-  if (listenerInfo == null) {
-    throw new Error(`Listener ${eventSubscriber} does not exist`)
-  }
-  const notify = listenerInfo.isSaga
-    ? resolve.executeSaga.notify
-    : resolve.executeQuery.notify
-
-  await notify({
-    modelName: eventSubscriber,
-    notification
-  })
-}
-
 const handleEventBusEvent = async (lambdaEvent, resolve) => {
   switch (lambdaEvent['method']) {
     case 'SendEvents': {
@@ -203,9 +187,6 @@ const handleEventBusEvent = async (lambdaEvent, resolve) => {
     }
     case 'RollbackXATransaction': {
       return await rollbackXATransaction(lambdaEvent.payload, resolve)
-    }
-    case 'Notify': {
-      return await notify(lambdaEvent.payload, resolve)
     }
     case 'Drop': {
       return await drop(lambdaEvent.payload, resolve)

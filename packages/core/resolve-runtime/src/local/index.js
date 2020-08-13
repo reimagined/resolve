@@ -10,6 +10,8 @@ import emptyWorker from './empty-worker'
 import wrapTrie from '../common/wrap-trie'
 import initUploader from './init-uploader'
 import multiplexAsync from '../common/utils/multiplex-async'
+import initResolve from '../common/init-resolve'
+import disposeResolve from '../common/dispose-resolve'
 
 const log = debugLevels('resolve:resolve-runtime:local-entry')
 
@@ -31,12 +33,29 @@ const localEntry = async ({ assemblies, constants, domain }) => {
     await initWebsockets(resolve)
     await initUploader(resolve)
 
-    resolve.invokeEventListenerAsync = async (method, payload) => {
-      await multiplexAsync(
-        resolve.consumer[method].bind(resolve.consumer),
-        payload
-      )
-    }
+    resolve.invokeEventListenerAsync = multiplexAsync.bind(
+      null,
+      async (eventSubscriber, method, ...args) => {
+        const currentResolve = Object.create(resolve)
+        try {
+          const listenerInfo = currentResolve.eventListeners.get(
+            eventSubscriber
+          )
+          if (listenerInfo == null) {
+            throw new Error(`Listener ${eventSubscriber} does not exist`)
+          }
+
+          await initResolve(currentResolve)
+          const queryExecutor = listenerInfo.isSaga
+            ? currentResolve.executeSaga
+            : currentResolve.executeQuery
+
+          await queryExecutor[method](...args)
+        } finally {
+          await disposeResolve(currentResolve)
+        }
+      }
+    )
 
     await startExpress(resolve)
 

@@ -12,7 +12,13 @@ const createAdapter = (implementation, options) => {
     beginEvent,
     commitEvent,
     rollbackEvent,
-    notify,
+    build,
+    reset,
+    pause,
+    resume,
+    subscribe,
+    unsubscribe,
+    resubscribe,
     disconnect,
     dropReadModel,
     ...storeApi
@@ -128,9 +134,15 @@ const createAdapter = (implementation, options) => {
   }
 
   const adapterOperations = {}
-  if (typeof notify === 'function' && preferInlineLedger) {
+  if (preferInlineLedger) {
     Object.assign(adapterOperations, {
-      notify: makeOperation('notify', notify)
+      build,
+      reset,
+      pause,
+      resume,
+      subscribe,
+      unsubscribe,
+      resubscribe
     })
   } else {
     Object.assign(adapterOperations, {
@@ -145,9 +157,9 @@ const createAdapter = (implementation, options) => {
       commitEvent,
       rollbackEvent
     })
-    for (const key of Object.keys(adapterOperations)) {
-      adapterOperations[key] = makeOperation(key, adapterOperations[key])
-    }
+  }
+  for (const key of Object.keys(adapterOperations)) {
+    adapterOperations[key] = makeOperation(key, adapterOperations[key])
   }
 
   const doDispose = async () => {
