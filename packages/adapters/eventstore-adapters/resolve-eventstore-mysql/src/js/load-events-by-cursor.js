@@ -45,7 +45,8 @@ const loadEventsByCursor = async (
     `SELECT * FROM ${eventsTableNameAsId}
     ${resultQueryCondition}
     ORDER BY \`timestamp\` ASC,
-    \`threadCounter\` ASC
+    \`threadCounter\` ASC,
+    \`threadId\` ASC
     LIMIT 0, ${+limit}`
   )
 

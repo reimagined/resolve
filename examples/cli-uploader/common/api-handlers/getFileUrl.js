@@ -3,7 +3,7 @@ import jwtSecret from '../jwt_secret'
 
 const getFileUrl = async (req, res) => {
   try {
-    const { login } = jwt.verify(req.jwtToken, jwtSecret)
+    const { login } = jwt.verify(req.jwt, jwtSecret)
     const { uploadId } = req.query
 
     const fileData = await req.resolve.executeQuery({

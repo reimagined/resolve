@@ -4,13 +4,13 @@ const mainHandler = async (originalReq, res) => {
   const { jwtCookie, routesTrie } = originalReq.resolve
   const req = Object.create(originalReq)
 
-  let jwtToken = req.cookies[jwtCookie.name]
+  let jwt = req.cookies[jwtCookie.name]
   if (req.headers && req.headers.authorization) {
-    jwtToken = req.headers.authorization.replace(/^Bearer /i, '')
+    jwt = req.headers.authorization.replace(/^Bearer /i, '')
   }
-  req.jwtToken = jwtToken
-  if (jwtToken) {
-    res.setHeader('Authorization', `Bearer ${jwtToken}`)
+  req.jwt = jwt
+  if (jwt) {
+    res.setHeader('Authorization', `Bearer ${jwt}`)
   }
 
   const { node, params, fpr, tsr } = routesTrie.match(req.path)

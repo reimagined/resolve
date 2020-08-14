@@ -7,52 +7,59 @@ const log = debugLevels(
 const beginXATransaction = async (pool, readModelName) => {
   try {
     log.verbose('Begin XA-transaction to postgresql database started')
-    let xaTransactionId = (
-      await pool.rdsDataService.beginTransaction({
-        resourceArn: pool.dbClusterOrInstanceArn,
-        secretArn: pool.awsSecretStoreArn,
-        database: 'postgres'
-      })
-    ).transactionId
+    let xaTransactionId = null
 
-    try {
-      await pool.rdsDataService.executeStatement({
-        resourceArn: pool.dbClusterOrInstanceArn,
-        secretArn: pool.awsSecretStoreArn,
-        database: 'postgres',
-        transactionId: xaTransactionId,
-        continueAfterTimeout: false,
-        includeResultMetadata: false,
-        sql: `
+    while (true) {
+      try {
+        xaTransactionId = null
+        xaTransactionId = (
+          await pool.rdsDataService.beginTransaction({
+            resourceArn: pool.dbClusterOrInstanceArn,
+            secretArn: pool.awsSecretStoreArn,
+            database: 'postgres'
+          })
+        ).transactionId
+
+        if (xaTransactionId == null) {
+          continue
+        }
+
+        await pool.rdsDataService.executeStatement({
+          resourceArn: pool.dbClusterOrInstanceArn,
+          secretArn: pool.awsSecretStoreArn,
+          database: 'postgres',
+          transactionId: xaTransactionId,
+          continueAfterTimeout: false,
+          includeResultMetadata: false,
+          sql: `
           WITH "cte" AS (
             DELETE FROM ${pool.escapeId(pool.schemaName)}.${pool.escapeId(
-          `__${pool.schemaName}__XA__`
-        )}
+            `__${pool.schemaName}__XA__`
+          )}
             WHERE "timestamp" < CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) - 86400000
           ) INSERT INTO ${pool.escapeId(pool.schemaName)}.${pool.escapeId(
-          `__${pool.schemaName}__XA__`
-        )}(
+            `__${pool.schemaName}__XA__`
+          )}(
             "xa_key", "timestamp"
           ) VALUES (
             ${pool.escape(pool.hash512(`${xaTransactionId}${readModelName}`))},
             CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT)
           )
         `
-      })
-    } catch (err) {
-      await pool.rdsDataService.rollbackTransaction({
-        resourceArn: pool.dbClusterOrInstanceArn,
-        secretArn: pool.awsSecretStoreArn,
-        transactionId: xaTransactionId
-      })
-
-      xaTransactionId = (
-        await pool.rdsDataService.beginTransaction({
-          resourceArn: pool.dbClusterOrInstanceArn,
-          secretArn: pool.awsSecretStoreArn,
-          database: 'postgres'
         })
-      ).transactionId
+
+        break
+      } catch (err) {
+        if (xaTransactionId != null) {
+          try {
+            await pool.rdsDataService.rollbackTransaction({
+              resourceArn: pool.dbClusterOrInstanceArn,
+              secretArn: pool.awsSecretStoreArn,
+              transactionId: xaTransactionId
+            })
+          } catch (e) {}
+        }
+      }
     }
 
     const savepointId = pool.generateGuid(readModelName, xaTransactionId)
@@ -71,20 +78,30 @@ const beginXATransaction = async (pool, readModelName) => {
       throw new Error('Begin XA-transaction returned null xaTransactionId')
     }
 
-    await pool.rdsDataService.executeStatement({
-      resourceArn: pool.dbClusterOrInstanceArn,
-      secretArn: pool.awsSecretStoreArn,
-      database: 'postgres',
-      continueAfterTimeout: false,
-      includeResultMetadata: false,
-      transactionId: xaTransactionId,
-      sql: `
-        SAVEPOINT ${savepointId};
-        SET LOCAL ${eventCountId} = 0;
-        SET LOCAL ${insideEventId} = 0;
-        RELEASE SAVEPOINT ${savepointId};
-      `
-    })
+    while (true) {
+      try {
+        await pool.rdsDataService.executeStatement({
+          resourceArn: pool.dbClusterOrInstanceArn,
+          secretArn: pool.awsSecretStoreArn,
+          database: 'postgres',
+          continueAfterTimeout: false,
+          includeResultMetadata: false,
+          transactionId: xaTransactionId,
+          sql: `
+            SAVEPOINT ${savepointId};
+            SET LOCAL ${eventCountId} = 0;
+            SET LOCAL ${insideEventId} = 0;
+            RELEASE SAVEPOINT ${savepointId};
+          `
+        })
+        break
+      } catch (err) {
+        if (pool.isTimeoutError(err)) {
+          continue
+        }
+        throw err
+      }
+    }
 
     log.verbose('Begin XA-transaction to postgresql database succeed')
 

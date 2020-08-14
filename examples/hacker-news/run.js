@@ -126,7 +126,7 @@ void (async () => {
         break
       }
 
-      case 'test:functional': {
+      case 'test:e2e': {
         const moduleAdmin = resolveModuleAdmin()
         const resolveConfig = merge(
           baseConfig,

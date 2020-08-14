@@ -3,7 +3,7 @@ import { AdapterPool, AdapterSpecific } from './types'
 import beginTransaction from './js/begin-transaction'
 import commitTransaction from './js/commit-transaction'
 import rollbackTransaction from './js/rollback-transaction'
-import { DEFAULT_BUCKET_SIZE } from './js/constants'
+import isTimeoutError from './js/is-timeout-error'
 
 const connect = async (
   pool: AdapterPool,
@@ -27,16 +27,9 @@ const connect = async (
     databaseName,
     eventsTableName = 'events',
     snapshotsTableName = 'snapshots',
-    secretsTableName,
-    bucketSize,
+    secretsTableName = 'secrets',
     ...rdsConfig
   } = pool.config ?? {}
-
-  pool.bucketSize = bucketSize as number
-
-  if (!Number.isInteger(pool.bucketSize) || pool.bucketSize < 1) {
-    pool.bucketSize = DEFAULT_BUCKET_SIZE
-  }
 
   const rdsDataService = new RDSDataService(rdsConfig)
 
@@ -55,7 +48,8 @@ const connect = async (
     commitTransaction,
     rollbackTransaction,
     escapeId,
-    escape
+    escape,
+    isTimeoutError
   })
 
   log.debug('RDS data service client configured')

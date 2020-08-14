@@ -1,6 +1,4 @@
 import debugLevels from 'resolve-debug-levels'
-import { ConcurrentError } from 'resolve-eventstore-base'
-import { CommandError } from 'resolve-command'
 
 import extractErrorHttpCode from '../utils/extract-error-http-code'
 import extractRequestBody from '../utils/extract-request-body'
@@ -8,10 +6,18 @@ import message from '../message'
 
 const log = debugLevels('resolve:resolve-runtime:command-handler')
 
+function isConcurrentError(error) {
+  return error.name === 'ConcurrentError'
+}
+
+function isCommandError(error) {
+  return error.name === 'CommandError'
+}
+
 export const executeCommandWithRetryConflicts = async ({
   executeCommand,
   commandArgs,
-  jwtToken
+  jwt
 }) => {
   const retryCount = commandArgs.immediateConflict != null ? 0 : 10
   let lastError = null
@@ -19,21 +25,21 @@ export const executeCommandWithRetryConflicts = async ({
 
   for (let retry = 0; retry <= retryCount; retry++) {
     try {
-      event = await executeCommand({ ...commandArgs, jwtToken })
+      event = await executeCommand({ ...commandArgs, jwt })
       lastError = null
       break
     } catch (error) {
       lastError = error
-      if (!(error instanceof ConcurrentError)) {
+      if (!isConcurrentError(error)) {
         break
       }
     }
   }
 
   if (lastError != null) {
-    if (lastError instanceof ConcurrentError) {
-      lastError.code = 408
-    } else if (lastError instanceof CommandError) {
+    if (isConcurrentError(lastError)) {
+      lastError.code = 409
+    } else if (isCommandError(lastError)) {
       lastError.code = 400
     }
 
@@ -53,7 +59,7 @@ const commandHandler = async (req, res) => {
     const event = await executeCommandWithRetryConflicts({
       executeCommand,
       commandArgs,
-      jwtToken: req.jwtToken
+      jwt: req.jwt
     })
 
     subSegment.addAnnotation('aggregateName', commandArgs.aggregateName)

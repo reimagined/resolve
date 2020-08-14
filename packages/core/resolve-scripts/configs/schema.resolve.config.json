@@ -17,6 +17,28 @@
       "required": ["module", "options"],
       "additionalProperties": false
     },
+    "eventstoreAdapter": {
+      "type": "object",
+      "properties": {
+        "module": {
+          "type": "string"
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "snapshotBucketSize": {
+              "type": "integer"
+            },
+            "additionalProperties": true
+          }
+        },
+        "imports": {
+          "type": "object"
+        }
+      },
+      "required": ["module", "options"],
+      "additionalProperties": false
+    },
     "resourceInstance": {
       "type": "string"
     },
@@ -397,7 +419,7 @@
           }
         },
         "eventstoreAdapter": {
-          "$ref": "#/definitions/adapter"
+          "$ref": "#/definitions/eventstoreAdapter"
         },
         "subscribeAdapter": {
           "$ref": "#/definitions/subscribeAdapter"

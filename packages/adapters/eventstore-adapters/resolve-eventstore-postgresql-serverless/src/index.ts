@@ -18,6 +18,10 @@ import shapeEvent from './js/shape-event'
 import loadSnapshot from './js/load-snapshot'
 import saveSnapshot from './js/save-snapshot'
 import dropSnapshot from './js/drop-snapshot'
+import beginIncrementalImport from './js/begin-incremental-import'
+import commitIncrementalImport from './js/commit-incremental-import'
+import rollbackIncrementalImport from './js/rollback-incremental-import'
+import pushIncrementalImport from './js/push-incremental-import'
 
 import connect from './connect'
 import init from './init'
@@ -53,7 +57,11 @@ const createAdapter: any = _createAdapter.bind(null, {
   getSecretsManager,
   loadSnapshot,
   saveSnapshot,
-  dropSnapshot
+  dropSnapshot,
+  beginIncrementalImport,
+  commitIncrementalImport,
+  rollbackIncrementalImport,
+  pushIncrementalImport
 })
 
 export default createAdapter

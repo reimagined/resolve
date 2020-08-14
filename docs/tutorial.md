@@ -503,7 +503,7 @@ http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
 
 This lesson provides information on how to display a View Model's data in the client browser. It uses the reSolve framework's **resolve-redux** library to implement a frontend based on React and Redux.
 
-> You can use the [standard HTTP API](curl.md) to communicate with a reSolve backend and use any client technology to implement the frontend.
+> You can use the standard HTTP API to communicate with a reSolve backend and use any client technology to implement the frontend.
 
 ### Implement a React Frontend
 
@@ -972,7 +972,7 @@ export const mapStateToProps = (state, ownProps) => ({
   lists: ownProps.data
 })
 
-export const mapDispatchToProps = (dispatch) =>
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
@@ -981,10 +981,7 @@ export const mapDispatchToProps = (dispatch) =>
   )
 
 export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps 
-  )(MyLists)
+  connect(mapStateToProps, mapDispatchToProps)(MyLists)
 )
 ```
 
@@ -1492,12 +1489,12 @@ import {
 
 const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
 
-export default function* () {
+export default function*() {
   yield takeEvery(
     action =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.commandType === 'createShoppingList',
-    function* (action) {
+    function*(action) {
       yield put({
         type: OPTIMISTIC_CREATE_SHOPPING_LIST,
         payload: {
@@ -1512,7 +1509,7 @@ export default function* () {
     action =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.commandType === 'removeShoppingList',
-    function* (action) {
+    function*(action) {
       yield put({
         type: OPTIMISTIC_REMOVE_SHOPPING_LIST,
         payload: {
@@ -1523,9 +1520,8 @@ export default function* () {
   )
 
   yield takeEvery(
-    action =>
-      action.type === LOAD_READMODEL_STATE_SUCCESS,
-    function* (action) {
+    action => action.type === LOAD_READMODEL_STATE_SUCCESS,
+    function*(action) {
       yield put({
         type: OPTIMISTIC_SYNC,
         payload: {

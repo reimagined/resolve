@@ -9,7 +9,8 @@ const loadEventsByCursor = async (
     escape,
     eventsTableName,
     databaseName,
-    shapeEvent
+    shapeEvent,
+    isTimeoutError
   },
   {
     eventTypes,
@@ -81,7 +82,7 @@ const loadEventsByCursor = async (
       FROM ${databaseNameAsId}.${eventsTableAsId}
       WHERE (${resultQueryCondition}) AND (${resultVectorConditions})
       AND "timestamp" >= (SELECT "minimalTimestamp"."value" FROM "minimalTimestamp")
-      ORDER BY "timestamp" ASC
+      ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC
       LIMIT ${+limit}
     ), "fullBatchList" AS (
       SELECT "batchEvents"."batchIndex" AS "batchIndex",
@@ -119,7 +120,18 @@ const loadEventsByCursor = async (
       "threadIdsPerLimitedBatchList"."value"
     ORDER BY "limitedBatchList"."batchIndex"`
 
-  const batchList = await executeStatement(sqlQuery)
+  let batchList = null
+  while (true) {
+    try {
+      batchList = await executeStatement(sqlQuery)
+      break
+    } catch (err) {
+      if (isTimeoutError(err)) {
+        continue
+      }
+      throw err
+    }
+  }
 
   const requestCursors = []
   const requestPromises = []
@@ -147,9 +159,23 @@ const loadEventsByCursor = async (
     }
     ${requestCursors[i].join(' OR ')}
     ${queryConditions.length > 0 ? ')' : ''}
-    ORDER BY "timestamp" ASC`
+    ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC
+    `
 
-    requestPromises.push(executeStatement(sqlQuery))
+    requestPromises.push(
+      (async () => {
+        while (true) {
+          try {
+            return await executeStatement(sqlQuery)
+          } catch (err) {
+            if (isTimeoutError(err)) {
+              continue
+            }
+            throw err
+          }
+        }
+      })()
+    )
   }
 
   const batchedEvents = await Promise.all(requestPromises)

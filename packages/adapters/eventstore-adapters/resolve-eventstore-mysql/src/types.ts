@@ -14,6 +14,7 @@ export type AdapterPool = {
     snapshotsTableName: string
     secretsDatabase?: string
     secretsTableName?: string
+    snapshotBucketSize?: string
   }
   events: {
     connection: MySQLConnection

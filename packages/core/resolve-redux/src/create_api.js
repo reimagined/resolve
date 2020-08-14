@@ -126,9 +126,9 @@ const createApi = ({
         throw Error(`unsupported request method [${method}]`)
     }
     if (jwtProvider) {
-      const jwtToken = await jwtProvider.get()
-      if (jwtToken) {
-        init.headers.Authorization = `Bearer ${jwtToken}`
+      const jwt = await jwtProvider.get()
+      if (jwt) {
+        init.headers.Authorization = `Bearer ${jwt}`
       }
     }
     const response = await doFetch(requestUrl, init)

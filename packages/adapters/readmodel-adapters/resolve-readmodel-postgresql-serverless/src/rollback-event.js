@@ -27,7 +27,12 @@ const rollbackEvent = async (pool, readModelName, xaTransactionId) => {
   } catch (error) {
     log.verbose('Rollback event to postgresql database failed', error)
 
-    if (error != null && /Transaction .*? Is Not Found/i.test(error.message)) {
+    if (
+      error != null &&
+      (/Transaction .*? Is Not Found/i.test(error.message) ||
+        /deadlock detected/i.test(error.message) ||
+        pool.isTimeoutError(error))
+    ) {
       throw OMIT_BATCH
     }
 

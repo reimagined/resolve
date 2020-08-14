@@ -1,0 +1,94 @@
+name: Master CI/CD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.head_ref == 'dev')
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '10'
+        
+      - name: Install
+        run: yarn install --frozen-lockfile
+
+      - name: Prettier
+        run: if [ "$(node_modules/.bin/prettier --list-different "**/*.{js,ts,tsx}")" ]; then echo "Prettier failed" exit 1; fi
+
+      - name: ESLint
+        run: yarn lint
+
+      - name: Unit test
+        run: yarn test
+
+      - name: Integration test
+        run: yarn test:integration
+        
+  e2e-macOS-test:
+    runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
+    
+    if: github.event_name == 'pull_request' && github.head_ref == 'dev'
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install
+        run: |
+          yarn install --frozen-lockfile
+          yarn build-packages
+        
+      
+      - name: Tutorial E2E test
+        run: yarn tutorial-test:e2e safari
+        
+      - name: CRA test
+        run: |
+          pm2 delete local-registry || true
+          pm2 start packages/internal/local-registry/bin/index.js --name local-registry
+          cd ..
+          rm -rf hacker-news || true
+          node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e hacker-news hacker-news
+          cd hacker-news
+          yarn test:e2e safari
+          cd ..
+          rm -rf hacker-news
+          rm -rf hello-world || true
+          node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e hello-world hello-world
+          cd hello-world
+          yarn test:e2e safari
+          cd ..
+          rm -rf hello-world
+          rm -rf shopping-list-advanced || true
+          node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e shopping-list-advanced shopping-list-advanced
+          cd shopping-list-advanced
+          yarn test:e2e safari
+          cd ..
+          rm -rf shopping-list-advanced
+          rm -rf shopping-list || true
+          node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e shopping-list shopping-list
+          cd shopping-list
+          yarn test:e2e safari
+          cd ..
+          rm -rf shopping-list
+          rm -rf with-postcss || true
+          node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e with-postcss with-postcss
+          cd with-postcss
+          yarn test:e2e safari
+          cd ..
+          rm -rf with-postcss
+          rm -rf with-styled-components || true
+          node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e with-styled-components with-styled-components
+          cd with-styled-components
+          yarn test:e2e safari
+          cd ..
+          rm -rf with-styled-components

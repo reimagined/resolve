@@ -56,7 +56,7 @@ const pushNotificationAndGetSubscriptions = async (pool, payload) => {
       AND (
         json_extract(
           ${subscribersTableNameAsId}."eventTypes",
-          ${escapeStr(`$."${encodeJsonPath(event.type)}"`)}
+          ${escapeStr(`$.${JSON.stringify(encodeJsonPath(event.type))}`)}
         ) = 1 OR
         json_extract(
           ${subscribersTableNameAsId}."eventTypes", '$'
@@ -64,7 +64,7 @@ const pushNotificationAndGetSubscriptions = async (pool, payload) => {
       ) AND ( 
         json_extract(
           ${subscribersTableNameAsId}."aggregateIds",
-          ${escapeStr(`$."${encodeJsonPath(event.aggregateId)}"`)}
+          ${escapeStr(`$.${JSON.stringify(encodeJsonPath(event.aggregateId))}`)}
         ) = 1 OR
         json_extract(
           ${subscribersTableNameAsId}."aggregateIds", '$'

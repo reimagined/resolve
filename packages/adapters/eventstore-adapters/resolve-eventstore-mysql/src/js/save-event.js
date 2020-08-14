@@ -1,8 +1,10 @@
 import { ConcurrentError } from 'resolve-eventstore-base'
 
-const ER_SUBQUERY_NO_1_ROW = 1242
-const ER_LOCK_DEADLOCK = 1213
-const ER_DUP_ENTRY = 1062
+import {
+  ER_DUP_ENTRY,
+  ER_LOCK_DEADLOCK,
+  ER_SUBQUERY_NO_1_ROW
+} from './constants'
 
 const saveEvent = async (pool, event) => {
   const {

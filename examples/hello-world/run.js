@@ -82,7 +82,7 @@ void (async () => {
         break
       }
 
-      case 'test:functional': {
+      case 'test:e2e': {
         const resolveConfig = merge(
           defaultResolveConfig,
           appConfig,

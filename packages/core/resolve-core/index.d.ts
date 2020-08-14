@@ -13,6 +13,7 @@ export declare type Event = {
   type: string
   timestamp: number
   aggregateId: string
+  aggregateVersion: number
   payload: SerializableMap
 }
 
@@ -37,34 +38,32 @@ export declare type Encryption = {
 // Aggregate
 
 export declare type AggregateState = any
-export declare type AggregateContext = {
-  encrypt: Encrypter
-  decrypt: Decrypter
-}
 export declare type AggregateEventHandler = (
   state: AggregateState,
-  event: Event,
-  context: AggregateContext
+  event: Event
 ) => AggregateState
 
 export declare type CommandContext = {
-  jwt: string
+  jwt?: string
   aggregateVersion: number
-  encrypt: Encrypter
-  decrypt: Decrypter
+  encrypt: Encrypter | null
+  decrypt: Decrypter | null
 }
 
 export declare type Command = {
   type: string
   aggregateId: string
   aggregateName: string
-  payload: SerializableMap
-  jwtToken?: string
+  payload?: SerializableMap
+  jwt?: string
 }
 
 export declare type CommandResult = {
   type: string
   payload?: SerializableMap
+  timestamp?: number
+  aggregateId?: string
+  aggregateVersion?: number
 }
 
 export declare type AggregateProjection = {
@@ -77,13 +76,13 @@ declare type CommandHandler = (
   state: AggregateState,
   command: Command,
   context: CommandContext
-) => CommandResult
+) => CommandResult | Promise<CommandResult>
 
 export declare type Aggregate = {
   [key: string]: CommandHandler
 }
 export declare type AggregateEncryptionContext = {
-  jwt: string
+  jwt?: string
   secretsManager: SecretsManager
 }
 export declare type AggregateEncryptionFactory = (
@@ -119,13 +118,12 @@ export declare type ReadModelResolvers<TStore> = {
 // Saga
 
 // TODO: move types from resolve-client here?
-// TODO: refactor jwtToken & query (as in client)
 
 declare type ReadModelQuery = {
   modelName: string
   resolverName: string
   resolverArgs: Serializable
-  jwtToken: string
+  jwt: string
 }
 declare type ReadModelQueryResult = Serializable
 declare type ViewModelQuery = {
@@ -188,12 +186,3 @@ export declare type SagaEncryptionFactory = (
 ) => Promise<Encryption | null>
 
 // TODO: add view model types
-
-/*
-state = await pool.viewModel.projection[event.type](
-        state,
-        event,
-        aggregateArgs,
-        jwtToken
-      )
- */

@@ -25,7 +25,8 @@ module.exports = {
       extends: ['plugin:import/typescript'],
       rules: Object.assign({}, typescriptEslintRecommended.rules, {
         '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/member-delimiter-style': 'off'
+        '@typescript-eslint/member-delimiter-style': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'off'
       })
     }
   ],
@@ -312,6 +313,7 @@ module.exports = {
           'prefetch',
           'principial',
           'Postfix',
+          'Postgre',
           'pre',
           'preloader',
           'Presigned',
@@ -359,6 +361,7 @@ module.exports = {
           'rgba',
           'rmdir',
           'rollbacking',
+          'rowid',
           'Roboto',
           'rpc',
           'runtime',
@@ -413,6 +416,7 @@ module.exports = {
           'transactionid',
           'tgz',
           'timestamp',
+          'timestamps',
           'tmp',
           'todo',
           'todolist',
