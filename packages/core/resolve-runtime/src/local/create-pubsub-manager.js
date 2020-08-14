@@ -35,16 +35,12 @@ const createPubsubManager = () => {
       const { type, aggregateId } = event
 
       for (const connectionId of map.keys()) {
-        const { eventTypes, aggregateIds, client, cursor } = map.get(
-          connectionId
-        )
+        const { eventTypes, aggregateIds, client } = map.get(connectionId)
         if (
           (eventTypes === '+' || eventTypes?.includes?.(type)) &&
           (aggregateIds === '+' || aggregateIds?.includes?.(aggregateId))
         ) {
-          promises.push(
-            client(JSON.stringify({ type: 'event', event, cursor }))
-          )
+          promises.push(client(JSON.stringify({ type: 'event', event })))
         }
       }
 
