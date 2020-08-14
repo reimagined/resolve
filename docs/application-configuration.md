@@ -174,7 +174,7 @@ Each entry in this array should specify the path to the SSR script and a configu
 
 The following module type options are available:
 
-- `'iife'` - A chunk that contains a Immediately Invoked Function Expression (IIFE).
+- `'iife'` - A chunk that contains an Immediately Invoked Function Expression (IIFE).
 - `'commonjs'` - A chunk in the CommonJS module format.
 - `'esm'` - A chunk in the ECMAScript module format.
 
