@@ -229,7 +229,9 @@ describe('query', () => {
       timestamp: 12345,
       data: {
         result: 'query-result'
-      }
+      },
+      cursor: '',
+      url: ''
     })
   })
 
@@ -251,7 +253,9 @@ describe('query', () => {
           timestamp: 12345,
           data: {
             result: 'query-result'
-          }
+          },
+          cursor: '',
+          url: ''
         })
 
         done()
