@@ -1,6 +1,6 @@
 const deleteProperty = async (req, res) => {
   const { listenerId, key } = req.query
-  await req.resolve.publisher.deleteProperty({
+  await req.resolve.eventBus.deleteProperty({
     eventSubscriber: listenerId,
     key
   })

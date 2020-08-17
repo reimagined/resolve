@@ -1,10 +1,8 @@
 import { declareRuntimeEnv } from 'resolve-scripts'
 
 const readModelOptions = {
-  dbClusterOrInstanceArn:
-    'xxx',
-  awsSecretStoreArn:
-    'xxx',
+  dbClusterOrInstanceArn: 'xxx',
+  awsSecretStoreArn: 'xxx',
   databaseName: 'readmodel-ct8rdp5ftqjtlkzq4lfcjlosnlv2',
   region: 'eu-west-1',
   accessKeyId: 'xxx',

@@ -192,8 +192,14 @@ const createQuery = ({
   }
 
   const performInlineLedger = async (
-    methodName,
-    { modelName, ...parameters }: any
+    methodName: string,
+    {
+      modelName,
+      ...parameters
+    }: {
+      modelName: string
+      parameters: any
+    }
   ): Promise<void> => {
     checkModelExists(modelName)
 

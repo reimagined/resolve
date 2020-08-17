@@ -6,7 +6,7 @@ import {
   FULL_XA_CONNECTOR,
   FULL_REGULAR_CONNECTOR,
   EMPTY_CONNECTOR,
-  PASSIVE_CONNECTOR,
+  INLINE_LEDGER_CONNECTOR,
   detectConnectorFeatures
 } from 'resolve-query'
 
@@ -22,7 +22,8 @@ const bootstrap = async resolve => {
     },
     readModelConnectors,
     eventstoreAdapter,
-    publisher
+    publisher,
+    eventBus
   } = resolve
 
   await invokeFilterErrorTypes(eventstoreAdapter.init.bind(eventstoreAdapter), [
@@ -55,8 +56,8 @@ const bootstrap = async resolve => {
       case EMPTY_CONNECTOR:
         deliveryStrategy = 'active-none-transaction'
         break
-      case PASSIVE_CONNECTOR:
-        deliveryStrategy = 'passive'
+      case INLINE_LEDGER_CONNECTOR:
+        deliveryStrategy = 'inline-ledger'
         break
       default:
         break
@@ -76,7 +77,7 @@ const bootstrap = async resolve => {
       eventTypes
     }
 
-    const subscribePromise = publisher.subscribe({
+    const subscribePromise = eventBus.subscribe({
       eventSubscriber,
       subscriptionOptions
     })
@@ -86,13 +87,13 @@ const bootstrap = async resolve => {
     if (upstream) {
       const resumePromise = subscribePromise
         .then(
-          publisher.setProperty.bind(publisher, {
+          eventBus.setProperty.bind(eventBus, {
             eventSubscriber,
             key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
             value: `${Date.now()}`
           })
         )
-        .then(publisher.resume.bind(publisher, { eventSubscriber }))
+        .then(eventBus.resume.bind(eventBus, { eventSubscriber }))
         .catch(error => {
           // eslint-disable-next-line no-console
           console.warn(`

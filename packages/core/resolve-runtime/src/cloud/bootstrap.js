@@ -3,6 +3,7 @@ import {
   FULL_XA_CONNECTOR,
   FULL_REGULAR_CONNECTOR,
   EMPTY_CONNECTOR,
+  INLINE_LEDGER_CONNECTOR,
   detectConnectorFeatures
 } from 'resolve-query'
 
@@ -10,7 +11,7 @@ const log = debugLevels('resolve:resolve-runtime:bootstrap')
 
 const bootstrap = async resolve => {
   log.debug('bootstrap started')
-  const { readModelConnectors, publisher } = resolve
+  const { readModelConnectors, publisher, eventBus } = resolve
 
   const promises = []
   for (const {
@@ -35,6 +36,8 @@ const bootstrap = async resolve => {
       case EMPTY_CONNECTOR:
         deliveryStrategy = 'active-none-transaction'
         break
+      case INLINE_LEDGER_CONNECTOR:
+        deliveryStrategy = 'inline-ledger'
       default:
         break
     }
@@ -54,7 +57,7 @@ const bootstrap = async resolve => {
       eventTypes
     }
 
-    const subscribePromise = publisher.subscribe({
+    const subscribePromise = eventBus.subscribe({
       eventSubscriber,
       subscriptionOptions
     })
@@ -63,13 +66,13 @@ const bootstrap = async resolve => {
 
     const resumePromise = subscribePromise
       .then(
-        publisher.setProperty.bind(publisher, {
+        eventBus.setProperty.bind(eventBus, {
           eventSubscriber,
           key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
           value: `${Date.now()}`
         })
       )
-      .then(publisher.resume.bind(publisher, { eventSubscriber }))
+      .then(eventBus.resume.bind(eventBus, { eventSubscriber }))
       .catch(error => {
         // eslint-disable-next-line no-console
         console.warn(`

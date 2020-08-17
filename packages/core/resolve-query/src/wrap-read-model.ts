@@ -549,7 +549,11 @@ const rollbackXATransaction = doOperation.bind(
   null
 )
 
-const next = async (pool: ReadModelPool, eventListener: string, ...args) => {
+const next = async (
+  pool: ReadModelPool,
+  eventListener: string,
+  ...args: any[]
+) => {
   if (args.length > 0) {
     throw new TypeError('Next should be invoked with no arguments')
   }

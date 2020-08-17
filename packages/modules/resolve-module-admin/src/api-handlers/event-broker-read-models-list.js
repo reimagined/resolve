@@ -3,7 +3,7 @@ const readModelList = async (req, res) => {
     eventSubscriber: name
   }))
   const statuses = await Promise.all(
-    listenerIds.map(req.resolve.publisher.status)
+    listenerIds.map(req.resolve.eventBus.status)
   )
   res.json(statuses)
 }
