@@ -2,17 +2,14 @@ import {
   LazinessStrategy,
   SUBSCRIBERS_TABLE_NAME,
   SubscriptionStatus,
-  PrivateOperationType,
-  DeliveryStrategy,
-  ConsumerMethod
+  PrivateOperationType
 } from '../constants'
 
 const resume = async (pool, payload) => {
   const {
     database: { runQuery, escapeId, escapeStr },
     invokeOperation,
-    parseSubscription,
-    invokeConsumer
+    parseSubscription
   } = pool
   const { eventSubscriber } = payload
   const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)

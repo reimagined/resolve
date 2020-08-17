@@ -2,15 +2,13 @@ import {
   SUBSCRIBERS_TABLE_NAME,
   DeliveryStrategy,
   QueueStrategy,
-  SubscriptionStatus,
-  ConsumerMethod
+  SubscriptionStatus
 } from '../constants'
 
 async function subscribe(pool, payload) {
   const {
     database: { escapeStr, escapeId, runQuery, runRawQuery, encodeJsonPath },
     parseSubscription,
-    invokeConsumer,
     generateGuid
   } = pool
 

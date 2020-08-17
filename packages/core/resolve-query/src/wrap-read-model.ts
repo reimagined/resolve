@@ -630,7 +630,7 @@ const subscribe = doOperation.bind(
 
 const resubscribe = doOperation.bind(
   null,
-  'subscribe',
+  'resubscribe',
   (
     pool: ReadModelPool,
     connection: any,
@@ -649,7 +649,7 @@ const resubscribe = doOperation.bind(
 
 const unsubscribe = doOperation.bind(
   null,
-  'subscribe',
+  'unsubscribe',
   (
     pool: ReadModelPool,
     connection: any,

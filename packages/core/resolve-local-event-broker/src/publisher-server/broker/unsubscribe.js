@@ -1,8 +1,4 @@
-import {
-  SUBSCRIBERS_TABLE_NAME,
-  DeliveryStrategy,
-  ConsumerMethod
-} from '../constants'
+import { SUBSCRIBERS_TABLE_NAME } from '../constants'
 
 async function unsubscribe(pool, payload) {
   const {

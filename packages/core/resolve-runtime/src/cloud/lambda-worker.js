@@ -43,7 +43,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       InvocationType: 'Event',
       Region: process.env.AWS_REGION,
       Payload: {
-        resolveSource: 'EventListener',
+        resolveSource: 'EventBus',
         eventSubscriber,
         method,
         args
@@ -74,18 +74,6 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
-    } else if (lambdaEvent.resolveSource === 'EventListener') {
-      const { eventSubscriber, method, args } = lambdaEvent
-      const listenerInfo = resolve.eventListeners.get(eventSubscriber)
-      if (listenerInfo == null) {
-        throw new Error(`Listener ${eventSubscriber} does not exist`)
-      }
-
-      const queryExecutor = listenerInfo.isSaga
-        ? resolve.executeSaga
-        : resolve.executeQuery
-
-      return await queryExecutor[method](...args)
     } else if (lambdaEvent.resolveSource === 'EventBus') {
       log.debug('identified event source: event-bus')
 

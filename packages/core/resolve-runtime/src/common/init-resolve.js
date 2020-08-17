@@ -73,7 +73,8 @@ const initResolve = async resolve => {
     if (args.length !== 1 || Object(args[0]) !== args[0]) {
       throw new TypeError(`Invalid EventBus method "${key}" arguments ${args}`)
     }
-    const { eventSubscriber, ...parameters } = args[0]
+    const parameters = args[0]
+    const eventSubscriber = parameters.eventSubscriber
 
     const listenerInfo = resolve.eventListeners.get(eventSubscriber)
     if (listenerInfo == null) {
@@ -99,6 +100,7 @@ const initResolve = async resolve => {
 
   const eventBus = {}
   for (const key of [
+    'build',
     'reset',
     'pause',
     'resume',

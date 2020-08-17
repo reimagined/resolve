@@ -1,12 +1,8 @@
 const unsubscribe = async (pool, readModelName) => {
   const {
-    eventstoreAdapter,
-    dbClusterOrInstanceArn,
-    awsSecretStoreArn,
     schemaName,
     escapeId,
     escape,
-    rdsDataService,
     dropReadModel,
     inlineLedgerForceStop,
     inlineLedgerExecuteStatement

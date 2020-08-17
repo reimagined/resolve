@@ -1,5 +1,3 @@
-import { detectConnectorFeatures, INLINE_LEDGER_CONNECTOR } from 'resolve-query'
-
 const handleEventStoreEvent = async (lambdaEvent, resolve) => {
   switch (lambdaEvent.method) {
     case 'SaveEvent': {

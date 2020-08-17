@@ -38,6 +38,7 @@ const bootstrap = async resolve => {
         break
       case INLINE_LEDGER_CONNECTOR:
         deliveryStrategy = 'inline-ledger'
+        break
       default:
         break
     }

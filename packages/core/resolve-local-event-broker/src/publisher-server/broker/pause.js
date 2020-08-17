@@ -1,15 +1,9 @@
-import {
-  SUBSCRIBERS_TABLE_NAME,
-  SubscriptionStatus,
-  DeliveryStrategy,
-  ConsumerMethod
-} from '../constants'
+import { SUBSCRIBERS_TABLE_NAME, SubscriptionStatus } from '../constants'
 
 const pause = async (pool, payload) => {
   const {
     database: { runQuery, runRawQuery, escapeId, escapeStr },
-    parseSubscription,
-    invokeConsumer
+    parseSubscription
   } = pool
 
   const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)

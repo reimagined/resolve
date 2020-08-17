@@ -162,6 +162,19 @@ const rollbackXATransaction = async (payload, resolve) => {
   })
 }
 
+const build = async (payload, resolve) => {
+  const { eventSubscriber } = payload
+  const listenerInfo = resolve.eventListeners.get(eventSubscriber)
+  if (listenerInfo == null) {
+    throw new Error(`Listener ${eventSubscriber} does not exist`)
+  }
+  const build = listenerInfo.isSaga
+    ? resolve.executeSaga.build
+    : resolve.executeQuery.build
+
+  await build({ modelName: eventSubscriber })
+}
+
 const drop = async (payload, resolve) => {
   const { eventSubscriber } = payload
   const listenerInfo = resolve.eventListeners.get(eventSubscriber)
@@ -187,6 +200,9 @@ const handleEventBusEvent = async (lambdaEvent, resolve) => {
     }
     case 'RollbackXATransaction': {
       return await rollbackXATransaction(lambdaEvent.payload, resolve)
+    }
+    case 'Build': {
+      return await build(lambdaEvent.payload, resolve)
     }
     case 'Drop': {
       return await drop(lambdaEvent.payload, resolve)
