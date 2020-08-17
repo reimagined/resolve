@@ -13,6 +13,7 @@ type BDDExecuteCommandState = {
   command: {
     name: string
     payload: SerializableMap
+    aggregateId: string
   }
   jwt?: string
   resolve: Function
@@ -85,7 +86,7 @@ export const executeCommand = async (
     })
 
     const result = await executor({
-      aggregateId: 'test-aggregate-id',
+      aggregateId: state.command.aggregateId,
       aggregateName: state.aggregate.name,
       type: state.command.name,
       payload: state.command.payload || {},
