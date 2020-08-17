@@ -57,7 +57,6 @@ const useViewModel = (
     )
     if (result) {
       const { data, url, cursor } = result
-      log.debug(data)
       setState(data)
       closure.url = url
       closure.cursor = cursor
