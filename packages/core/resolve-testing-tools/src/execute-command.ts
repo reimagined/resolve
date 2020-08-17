@@ -8,6 +8,7 @@ import { BDDAggregateAssertion } from './aggregate-assertions'
 type BDDExecuteCommandState = {
   phase: Phases
   aggregate: BDDAggregate
+  aggregateId: string
   secretsManager: SecretsManager
   events: Event[]
   command: {
@@ -86,7 +87,7 @@ export const executeCommand = async (
     })
 
     const result = await executor({
-      aggregateId: state.command.aggregateId,
+      aggregateId: state.aggregateId,
       aggregateName: state.aggregate.name,
       type: state.command.name,
       payload: state.command.payload || {},

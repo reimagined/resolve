@@ -198,8 +198,8 @@ describe('aggregate', () => {
     test('custom aggregate id within command', async () => {
       await expect(
         givenEvents([])
-          .aggregate(aggregate)
-          .command('failWithCustomId', 'custom-id', {})
+          .aggregate(aggregate, 'custom-id')
+          .command('failWithCustomId', {})
           .as('valid-user')
       ).rejects.toThrow('aggregate custom-id failure')
     })
@@ -214,7 +214,7 @@ describe('aggregate', () => {
           }
         ])
           .aggregate(aggregate)
-          .command('failWithCustomId', 'custom-id', {})
+          .command('failWithCustomId', {})
           .as('valid-user')
       ).rejects.toThrow(`aggregate custom-id already exist`)
     })
@@ -263,8 +263,8 @@ describe('aggregate', () => {
 
     test('custom aggregate id within command', () =>
       givenEvents([])
-        .aggregate(aggregate)
-        .command('failWithCustomId', 'custom-id', {})
+        .aggregate(aggregate, 'custom-id')
+        .command('failWithCustomId', {})
         .as('valid-user')
         .shouldThrow(Error(`aggregate custom-id failure`)))
 
@@ -277,7 +277,7 @@ describe('aggregate', () => {
         }
       ])
         .aggregate(aggregate)
-        .command('failWithCustomId', 'custom-id', {})
+        .command('failWithCustomId', {})
         .as('valid-user')
         .shouldThrow(Error(`aggregate custom-id already exist`)))
 
