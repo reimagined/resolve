@@ -21,7 +21,7 @@ const queryHandler = async (req, res) => {
 
     const modelArgs = extractRequestBody(req)
 
-    const result = await req.resolve.executeQuery.readAndSerialize({
+    const result = await req.resolve.executeQuery.read({
       modelName,
       modelOptions,
       modelArgs,
@@ -34,25 +34,34 @@ const queryHandler = async (req, res) => {
     res.status(200)
     res.setHeader('Content-Type', 'application/json')
 
-    if (result?.isViewModel) {
-      res.setHeader('X-Resolve-View-Model-Cursor', result.cursor)
+    if (result?.__meta) {
+      res.setHeader('X-Resolve-View-Model-Cursor', result.__meta.cursor)
 
       const subscribeOptions = await req.resolve.getSubscribeAdapterOptions(
         req.resolve,
         modelArgs.origin,
-        result.eventTypes,
-        result.aggregateIds
+        result.__meta.eventTypes,
+        // TODO: normalized aggregate ids somewhere above
+        Array.isArray(modelOptions) ||
+          modelOptions === '*' ||
+          modelOptions == null
+          ? modelOptions
+          : [modelOptions]
       )
 
       res.setHeader(
         'X-Resolve-View-Model-Subscription',
         JSON.stringify(subscribeOptions)
       )
-
-      res.end(result.state)
-    } else {
-      res.end(result)
     }
+
+    res.end(
+      await req.resolve.executeQuery.serializeState({
+        modelName,
+        state: result,
+        jwt: req.jwt
+      })
+    )
   } catch (error) {
     const errorCode = extractErrorHttpCode(error)
     res.status(errorCode)

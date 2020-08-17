@@ -64,7 +64,7 @@ const createWebSocketMessageHandler = (
         eventTypes,
         aggregateIds,
         limit: 1000000,
-        eventsSizeLimit: 128,
+        eventsSizeLimit: 124 * 1024,
         cursor: parsedMessage.cursor
       })
 
