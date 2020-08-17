@@ -191,6 +191,30 @@ describe('aggregate', () => {
           .as('invalid-user')
       ).rejects.toThrow(`unauthorized user`)
     })
+
+    test('custom aggregate id within command', async () => {
+      await expect(
+        givenEvents([])
+          .aggregate(aggregate)
+          .command('failWithCustomId', 'custom-id', {})
+          .as('valid-user')
+      ).rejects.toThrow('aggregate custom-id failure')
+    })
+
+    test('custom aggregate id within given events', async () => {
+      await expect(
+        givenEvents([
+          {
+            type: 'TEST_COMMAND_EXECUTED',
+            aggregateId: 'custom-id',
+            payload: {}
+          }
+        ])
+          .aggregate(aggregate)
+          .command('failWithCustomId', 'custom-id', {})
+          .as('valid-user')
+      ).rejects.toThrow(`aggregate custom-id already exist`)
+    })
   })
 
   describe('with BDD assertions', () => {
