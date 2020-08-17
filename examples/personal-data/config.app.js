@@ -20,7 +20,8 @@ const appConfig = {
   viewModels: [
     {
       name: 'current-user-profile',
-      projection: 'common/view-models/current-user-profile.projection.js'
+      projection: 'common/view-models/current-user-profile.projection.js',
+      resolver: 'common/view-models/current-user-profile.resolver.js'
     }
   ],
   readModels: [

@@ -1,34 +1,27 @@
 jest.useFakeTimers()
 
 /* eslint-disable import/first */
+import { mocked } from 'ts-jest'
+
 import * as subscribe from '../../src/subscribe'
 import { rootCallback } from '../../src/subscribe-callback'
 import { Context } from '../../src/context'
-import { CreateSubscribeAdapter } from '../../src/empty-subscribe-adapter'
+import createClientAdapter from '../../src/subscribe-adapter'
 /* eslint-enable */
 
-const { doSubscribe, doUnsubscribe, dropSubscribeAdapterPromise } = subscribe
-
-jest.mock('../../src/empty-subscribe-adapter')
+const { connect, disconnect, dropSubscribeAdapterPromise } = subscribe
 
 let mFetch: any
 
 const mockInit = jest.fn()
-const mockSubscribe = jest.fn()
-const mockUnsubscribe = jest.fn()
 const mockCallback = jest.fn()
 const mockIsConnected = jest.fn().mockReturnValue(true)
 const mockClose = jest.fn()
 
-const mockCreateSubscribeAdapter: jest.MockedFunction<CreateSubscribeAdapter> = jest
-  .fn()
-  .mockReturnValue({
-    init: mockInit,
-    close: mockClose,
-    isConnected: mockIsConnected,
-    subscribeToTopics: mockSubscribe,
-    unsubscribeFromTopics: mockUnsubscribe
-  })
+const mockCreateSubscribeAdapter = mocked(createClientAdapter)
+
+jest.mock('../../src/subscribe-adapter', () => jest.fn())
+
 mockCreateSubscribeAdapter.adapterName = 'adapter-name'
 
 let context: Context
@@ -37,13 +30,17 @@ const clearMocks = (): void => {
   mockCreateSubscribeAdapter.mockClear()
   mockClose.mockClear()
   mockInit.mockClear()
-  mockSubscribe.mockClear()
-  mockUnsubscribe.mockClear()
   mockCallback.mockClear()
 }
 
 describe('subscribe', () => {
   beforeAll(() => {
+    mockCreateSubscribeAdapter.mockReturnValue({
+      init: mockInit,
+      close: mockClose,
+      isConnected: mockIsConnected
+    })
+
     mFetch = jest.fn(() => ({
       ok: true,
       status: 200,
@@ -66,8 +63,7 @@ describe('subscribe', () => {
       origin: 'http://origin-url',
       rootPath: '',
       staticPath: '',
-      viewModels: [],
-      subscribeAdapter: mockCreateSubscribeAdapter
+      viewModels: []
     }
   })
 
@@ -77,170 +73,44 @@ describe('subscribe', () => {
   })
 
   test('init with params', async () => {
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-1',
-        topicId: 'aggregate-id-1'
-      },
-      mockCallback
-    )
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
 
     expect(mockCreateSubscribeAdapter).toBeCalledWith({
-      appId: 'application-id',
       onEvent: rootCallback,
-      origin: 'http://origin-url',
-      rootPath: '',
-      url: 'http://options-url'
-    })
-    expect(mockInit).toBeCalledTimes(1)
-    expect(mockSubscribe).toBeCalledTimes(1)
-  })
-
-  test('init only once with params', async () => {
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-1',
-        topicId: 'aggregate-id-1'
-      },
-      mockCallback
-    )
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-2',
-        topicId: 'aggregate-id-2'
-      },
-      mockCallback
-    )
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-3',
-        topicId: 'aggregate-id-3'
-      },
-      mockCallback
-    )
-
-    expect(mockCreateSubscribeAdapter).toBeCalledWith({
-      appId: 'application-id',
-      onEvent: rootCallback,
-      origin: 'http://origin-url',
-      rootPath: '',
       url: 'http://options-url'
     })
     expect(mockInit).toBeCalledTimes(1)
   })
 
   test('is subscribed', async () => {
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-1',
-        topicId: 'aggregate-id-1'
-      },
-      mockCallback
-    )
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-2',
-        topicId: 'aggregate-id-2'
-      },
-      mockCallback
-    )
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-3',
-        topicId: 'aggregate-id-3'
-      },
-      mockCallback
-    )
-    expect(mockSubscribe).toBeCalledTimes(3)
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
+    await connect(context, ['aggregate-id-2'], mockCallback, 'view-model')
+    await connect(context, ['aggregate-id-3'], mockCallback, 'view-model')
+
+    expect(mockCreateSubscribeAdapter).toBeCalledWith({
+      onEvent: rootCallback,
+      url: 'http://options-url'
+    })
+    expect(mockInit).toBeCalledTimes(3)
   })
 
   test('is unsubscribed', async () => {
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-1',
-        topicId: 'aggregate-id-1'
-      },
-      mockCallback
-    )
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-2',
-        topicId: 'aggregate-id-2'
-      },
-      mockCallback
-    )
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-3',
-        topicId: 'aggregate-id-3'
-      },
-      mockCallback
-    )
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
+    await connect(context, ['aggregate-id-2'], mockCallback, 'view-model')
+    await connect(context, ['aggregate-id-3'], mockCallback, 'view-model')
 
-    await doUnsubscribe(
-      context,
-      {
-        topicName: 'event-type-1',
-        topicId: 'aggregate-id-1'
-      },
-      mockCallback
-    )
-    await doUnsubscribe(
-      context,
-      {
-        topicName: 'event-type-2',
-        topicId: 'aggregate-id-2'
-      },
-      mockCallback
-    )
-    await doUnsubscribe(
-      context,
-      {
-        topicName: 'event-type-3',
-        topicId: 'aggregate-id-3'
-      },
-      mockCallback
-    )
-    expect(mockSubscribe).toBeCalledTimes(3)
-    expect(mockUnsubscribe).toBeCalledTimes(3)
+    await disconnect(context, ['aggregate-id-1'], 'view-model', mockCallback)
+    await disconnect(context, ['aggregate-id-2'], 'view-model', mockCallback)
+    await disconnect(context, ['aggregate-id-3'], 'view-model', mockCallback)
+    expect(mockInit).toBeCalledTimes(3)
+    expect(mockClose).toBeCalledTimes(3)
   })
 
   test('no multiple subscriptions', async () => {
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-1',
-        topicId: 'aggregate-id-1'
-      },
-      mockCallback
-    )
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-1',
-        topicId: 'aggregate-id-1'
-      },
-      mockCallback
-    )
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-1',
-        topicId: 'aggregate-id-1'
-      },
-      mockCallback
-    )
-    expect(mockSubscribe).toBeCalledTimes(1)
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
+    expect(mockInit).toBeCalledTimes(1)
   })
 })
 
@@ -282,8 +152,7 @@ describe('re-subscribe', () => {
       origin: 'http://origin-url',
       rootPath: '',
       staticPath: '',
-      viewModels: [],
-      subscribeAdapter: mockCreateSubscribeAdapter
+      viewModels: []
     }
   })
 
@@ -294,14 +163,7 @@ describe('re-subscribe', () => {
   })
 
   test('refresh executed first time on subscribe adapter creation', async () => {
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-1',
-        topicId: 'aggregate-id-1'
-      },
-      mockCallback
-    )
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
 
     expect(refreshSpy).not.toBeCalled()
 
@@ -317,14 +179,7 @@ describe('re-subscribe', () => {
     expect(setTimeout).not.toBeCalled()
     expect(refreshSpy).not.toBeCalled()
 
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-1',
-        topicId: 'aggregate-id-1'
-      },
-      mockCallback
-    )
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
 
     expect(setTimeout).toHaveBeenCalledTimes(1) // initial call of resfresh
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 5000)
@@ -344,14 +199,7 @@ describe('re-subscribe', () => {
   })
 
   test('close, recreate and reschedule on disconnected', async () => {
-    await doSubscribe(
-      context,
-      {
-        topicName: 'event-type-1',
-        topicId: 'aggregate-id-1'
-      },
-      mockCallback
-    )
+    await connect(context, ['aggregate-id-1'], mockCallback, 'view-model')
 
     expect(refreshSpy).not.toBeCalled()
     expect(setTimeout).toHaveBeenCalledTimes(1)
@@ -364,6 +212,6 @@ describe('re-subscribe', () => {
     await Promise.resolve()
 
     expect(mockClose).toBeCalled()
-    expect(mockSubscribe).toBeCalledTimes(1)
+    expect(mockInit).toBeCalledTimes(1)
   })
 })

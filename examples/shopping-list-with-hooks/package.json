@@ -37,8 +37,6 @@
     "resolve-scripts": "0.24.22",
     "resolve-eventstore-lite": "0.24.22",
     "resolve-eventstore-postgresql-serverless": "0.24.22",
-    "resolve-subscribe-mqtt": "0.24.22",
-    "resolve-subscribe-socket.io": "0.24.22",
     "uuid": "3.3.2"
   },
   "devDependencies": {

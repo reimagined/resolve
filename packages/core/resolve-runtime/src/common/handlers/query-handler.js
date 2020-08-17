@@ -19,24 +19,45 @@ const queryHandler = async (req, res) => {
       throw error
     }
 
+    const modelArgs = extractRequestBody(req)
+
     const result = await req.resolve.executeQuery.readAndSerialize({
       modelName,
       modelOptions,
-      modelArgs: extractRequestBody(req),
+      modelArgs,
       jwt: req.jwt
     })
 
     subSegment.addAnnotation('modelName', modelName)
     subSegment.addAnnotation('origin', 'resolve:query')
 
-    await res.status(200)
-    await res.setHeader('Content-Type', 'application/json')
-    await res.end(result)
+    res.status(200)
+    res.setHeader('Content-Type', 'application/json')
+
+    if (result?.isViewModel) {
+      res.setHeader('X-Resolve-View-Model-Cursor', result.cursor)
+
+      const subscribeOptions = await req.resolve.getSubscribeAdapterOptions(
+        req.resolve,
+        modelArgs.origin,
+        result.eventTypes,
+        result.aggregateIds
+      )
+
+      res.setHeader(
+        'X-Resolve-View-Model-Subscription',
+        JSON.stringify(subscribeOptions)
+      )
+
+      res.end(result.state)
+    } else {
+      res.end(result)
+    }
   } catch (error) {
     const errorCode = extractErrorHttpCode(error)
-    await res.status(errorCode)
-    await res.setHeader('Content-Type', 'text/plain')
-    await res.end(error.message)
+    res.status(errorCode)
+    res.setHeader('Content-Type', 'text/plain')
+    res.end(error.message)
     subSegment.addError(error)
   } finally {
     subSegment.close()

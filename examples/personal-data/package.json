@@ -47,8 +47,6 @@
     "resolve-eventstore-lite": "0.24.22",
     "resolve-eventstore-postgresql": "0.24.22",
     "resolve-eventstore-postgresql-serverless": "0.24.22",
-    "resolve-subscribe-mqtt": "0.24.22",
-    "resolve-subscribe-socket.io": "0.24.22",
     "resolve-upload-cloud": "0.24.22",
     "resolve-upload-local": "0.24.22",
     "uuid": "^7.0.3"

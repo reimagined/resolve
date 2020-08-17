@@ -55,7 +55,7 @@
     "ts-jest": "26.1.4",
     "react": "16.13.0",
     "react-dom": "16.13.0",
-    "react-redux": "^7.2.0",
+    "react-redux": "7.2.0",
     "react-test-renderer": "16.13.0",
     "redux": "4.0.5",
     "redux-saga": "^1.0.0",

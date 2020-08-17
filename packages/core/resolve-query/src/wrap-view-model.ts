@@ -8,6 +8,7 @@ type ViewModelMeta = {
   deserializeState: Function
   serializeState: Function
   projection: { [key: string]: Function }
+  resolver: Function
   encryption: Function
 }
 
@@ -151,7 +152,7 @@ const buildViewModel = async (
     await handler(event)
   }
 
-  return { state, eventCount }
+  return { state, eventCount, cursor }
 }
 
 const read = async (
@@ -160,6 +161,11 @@ const read = async (
   aggregateArgs: any,
   jwt: string
 ): Promise<any> => {
+  const viewModelName = pool.viewModel.name
+  const getLocalLog = (scope: string): any =>
+    getLog(`read:${viewModelName}${scope}`)
+  const log = getLocalLog('')
+
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
@@ -199,7 +205,7 @@ const read = async (
       )
     }
 
-    const { state, eventCount } = await pool.workers.get(key)
+    const { state, eventCount, cursor } = await pool.workers.get(key)
 
     if (subSegment != null) {
       subSegment.addAnnotation('eventCount', eventCount)
@@ -208,7 +214,40 @@ const read = async (
 
     pool.workers.delete(key)
 
-    return state
+    const eventTypes = Object.keys(pool.viewModel.projection)
+
+    let {
+      state: resolvedState,
+      aggregateIds: resolvedAggregateIds,
+      eventTypes: resolvedEventTypes
+    } = await pool.viewModel.resolver(state, {
+      aggregateIds,
+      eventTypes,
+      jwt
+    })
+
+    if (resolvedState == null) {
+      log.warn(`Resolved state are undefined`)
+      resolvedState = state
+    }
+
+    if (resolvedAggregateIds == null) {
+      log.warn(`Resolved aggregateIds are undefined`)
+      resolvedAggregateIds = aggregateIds
+    }
+
+    if (resolvedEventTypes == null) {
+      log.warn(`Resolved eventTypes are undefined`)
+      resolvedEventTypes = eventTypes
+    }
+
+    return {
+      state: resolvedState,
+      cursor,
+      aggregateIds: resolvedAggregateIds,
+      eventTypes: resolvedEventTypes,
+      isViewModel: true
+    }
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)
@@ -232,9 +271,9 @@ const readAndSerialize = async (
   if (pool.isDisposed) {
     throw new Error(`View model "${viewModelName}" is disposed`)
   }
-  const state = await read(pool, modelOptions, aggregateArgs, jwt)
+  const { state, ...other } = await read(pool, modelOptions, aggregateArgs, jwt)
 
-  return pool.viewModel.serializeState(state, jwt)
+  return { ...other, state: pool.viewModel.serializeState(state, jwt) }
 }
 
 const updateByEvents = async (pool: ViewModelPool): Promise<any> => {

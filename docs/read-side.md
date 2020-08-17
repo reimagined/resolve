@@ -90,13 +90,14 @@ const appConfig = {
         options: {
           databaseFile: 'snapshot.db',
         }
-      }
+      },
+      validator: 'common/view-models/story-details.validator.js'
     }
   ]
 }
 ```
 
-In the configuration object, specify the View Model's name and the path to the file containing projection definition. You can also specify the View Model snapshot storage adapter. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions.
+In the configuration object, specify the View Model's name and the path to the file containing projection definition. You can also specify the View Model snapshot storage adapter. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions. Specify the **validator** option to add a [subscription validator](#view-model-subscription-validator) to the View Model.
 
 ### Custom Read Models
 
@@ -292,7 +293,7 @@ You can use the [standard API](api-reference.md#read-model-store-interface) to c
 
 A [resolver](#resolvers) then uses the data from the store to prepare final data samples for data requests.
 
->A Read Model's projection should only use tables that were created in this Read Model's `Init` handler. If you try to access tables created in other Read Models, a “Table does not exist” error is generated.
+> A Read Model's projection should only use tables that were created in this Read Model's `Init` handler. If you try to access tables created in other Read Models, a “Table does not exist” error is generated.
 
 Note that you can add additional logic to a projection function. For instance, you can perform SQL queries, update Elastic Search indexes, write arbitrary data to files, etc.
 
@@ -356,6 +357,30 @@ The code sample below demonstrates a View Model projection function:
 Refer to the [Query a View Model](#query-a-view-model) section, for information on how to query a View Model.
 
 Note that a View Model does not use the Read Model store.
+
+## View Model Subscription Validator
+
+A View Model's **validator** defines to what topics a client is allowed to subscribe. A validator function receives the resolve context, topics and request parameters. Based on the parameters, the validator function returns a list of topics.
+
+The code sample below demonstrates a View Model subscription validator implementation:
+
+```js
+;async (resolve, { topics, jwt: token }) => {
+  const { userId } = jwt.verify(token, process.env.JWT_SECRET)
+  const user = await resolve.executeQuery({
+    modelName: 'users',
+    resolverName: 'userById',
+    resolverArgs: { userId },
+    jwtToken: token
+  })
+
+  if (user == null) {
+    throw new Error('Permission denied')
+  }
+
+  return topics
+}
+```
 
 ## Performing Queries Using HTTP API
 

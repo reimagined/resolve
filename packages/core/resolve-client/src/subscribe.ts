@@ -1,16 +1,19 @@
 import window from 'global/window'
-import createConnectionManager from './connection-manager'
-import createEmptySubscribeAdapter from './empty-subscribe-adapter'
+import createSubscribeAdapter from './subscribe-adapter'
 import { Context } from './context'
 import { rootCallback, addCallback, removeCallback } from './subscribe-callback'
-import determineOrigin from './determine-origin'
-import { GenericError } from './errors'
-import { request } from './request'
 
 interface SubscriptionKey {
   aggregateId: string
   eventType: string
 }
+
+interface Topic {
+  topicId: string
+  topicName: string
+}
+
+type AggregateSelector = string[] | '*'
 
 const REFRESH_TIMEOUT = 5000
 const setTimeoutSafe =
@@ -26,9 +29,18 @@ const clearTimeoutSafe = (timeout: number | NodeJS.Timeout): void => {
     clearTimeout(timeout)
   }
 }
+const buildKey = (
+  viewModelName: string,
+  aggregateIds: AggregateSelector
+): string => {
+  const sortedAggregateIds = ([] as Array<string>)
+    .concat(aggregateIds)
+    .sort((a, b) => a.localeCompare(b))
+  return [viewModelName].concat(sortedAggregateIds).join(':')
+}
 
+let adaptersMap = new Map()
 let refreshTimeout: number | NodeJS.Timeout | null
-let subscribeAdapterPromise: Promise<any> | null = null
 
 export const getSubscriptionKeys = (
   context: Context,
@@ -58,54 +70,17 @@ export interface SubscribeAdapterOptions {
   url: string
 }
 
-export const getSubscribeAdapterOptions = async (
+const initSubscribeAdapter = async (
+  url: string,
+  cursor: string,
   context: Context,
-  adapterName: string
-): Promise<SubscribeAdapterOptions> => {
-  const { rootPath, origin: customOrigin } = context
-  const origin = determineOrigin(customOrigin)
-
-  const response = await request(context, '/api/subscribe', {
-    origin,
-    rootPath,
-    adapterName
-  })
-
-  try {
-    return await response.json()
-  } catch (error) {
-    throw new GenericError(error)
-  }
-}
-
-const initSubscribeAdapter = async (context: Context): Promise<any> => {
-  const { subscribeAdapter: createSubscribeAdapter } = context
-
-  if (createSubscribeAdapter === createEmptySubscribeAdapter) {
-    return createEmptySubscribeAdapter({})
-  }
-
-  if (!createSubscribeAdapter) {
-    return Promise.resolve()
-  }
-
-  if (!createSubscribeAdapter.adapterName) {
-    throw new GenericError('Adapter name expected in SubscribeAdapter')
-  }
-
-  const { appId, url } = await getSubscribeAdapterOptions(
-    context,
-    createSubscribeAdapter.adapterName
-  )
-  const { origin: customOrigin, rootPath } = context
-
-  const origin = determineOrigin(customOrigin)
-
+  viewModelName: string,
+  topics: Array<Topic>,
+  aggregateIds: AggregateSelector
+): Promise<any> => {
   const subscribeAdapter = createSubscribeAdapter({
-    appId,
-    origin,
-    rootPath,
     url,
+    cursor,
     onEvent: rootCallback
   })
   await subscribeAdapter.init()
@@ -113,7 +88,16 @@ const initSubscribeAdapter = async (context: Context): Promise<any> => {
   if (!refreshTimeout) {
     refreshTimeout = setTimeoutSafe(
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      () => refreshSubscribeAdapter(context),
+      () =>
+        refreshSubscribeAdapter(
+          url,
+          cursor,
+          context,
+          viewModelName,
+          topics,
+          aggregateIds,
+          false
+        ),
       REFRESH_TIMEOUT
     )
   }
@@ -121,28 +105,48 @@ const initSubscribeAdapter = async (context: Context): Promise<any> => {
   return subscribeAdapter
 }
 
-const getSubscribeAdapterPromise = (context: Context): Promise<any> => {
-  if (subscribeAdapterPromise !== null) {
-    return subscribeAdapterPromise
-  }
-  subscribeAdapterPromise = initSubscribeAdapter(context)
-  return subscribeAdapterPromise
-}
-
 export const refreshSubscribeAdapter = async (
+  url: string,
+  cursor: string,
   context: Context,
+  viewModelName: string,
+  topics: Array<Topic>,
+  aggregateIds: AggregateSelector,
   subscribeAdapterRecreated?: boolean
 ): Promise<any> => {
   let subscribeAdapter
+
+  const key = buildKey(viewModelName, aggregateIds)
+
   try {
-    subscribeAdapter = await getSubscribeAdapterPromise(context)
+    if (!adaptersMap.has(key)) {
+      subscribeAdapter = await initSubscribeAdapter(
+        url,
+        cursor,
+        context,
+        viewModelName,
+        topics,
+        aggregateIds
+      )
+    } else {
+      subscribeAdapter = adaptersMap.get(key)
+    }
   } catch (error) {
-    subscribeAdapterPromise = null
+    adaptersMap.delete(key)
     if (refreshTimeout) {
       clearTimeoutSafe(refreshTimeout)
     }
     refreshTimeout = setTimeoutSafe(
-      () => refreshSubscribeAdapter(context, true),
+      () =>
+        refreshSubscribeAdapter(
+          url,
+          cursor,
+          context,
+          viewModelName,
+          topics,
+          aggregateIds,
+          true
+        ),
       REFRESH_TIMEOUT
     )
     return Promise.resolve()
@@ -156,7 +160,16 @@ export const refreshSubscribeAdapter = async (
           clearTimeoutSafe(refreshTimeout)
         }
         refreshTimeout = setTimeoutSafe(
-          () => refreshSubscribeAdapter(context),
+          () =>
+            refreshSubscribeAdapter(
+              url,
+              cursor,
+              context,
+              viewModelName,
+              topics,
+              aggregateIds,
+              false
+            ),
           REFRESH_TIMEOUT
         )
         return Promise.resolve()
@@ -164,144 +177,121 @@ export const refreshSubscribeAdapter = async (
     } catch (error) {}
   }
 
-  const connectionManager = createConnectionManager()
-  const activeConnections = connectionManager.getConnections()
-
   // disconnected
 
   try {
     if (subscribeAdapter != null) {
       await subscribeAdapter.close()
+      adaptersMap.delete(key)
     }
-    subscribeAdapterPromise = null
-    subscribeAdapter = await getSubscribeAdapterPromise(context)
-
-    subscribeAdapter.subscribeToTopics(
-      activeConnections.map(({ connectionName, connectionId }) => ({
-        topicName: connectionName,
-        topicId: connectionId
-      }))
+    adaptersMap.set(
+      key,
+      await initSubscribeAdapter(
+        url,
+        cursor,
+        context,
+        viewModelName,
+        topics,
+        aggregateIds
+      )
     )
-
-    for (const connection of activeConnections) {
-      const { connectionName, connectionId } = connection
-      rootCallback({ type: connectionName, aggregateId: connectionId }, true)
-    }
   } catch (err) {}
 
   if (refreshTimeout) {
     clearTimeoutSafe(refreshTimeout)
   }
   refreshTimeout = setTimeoutSafe(
-    () => refreshSubscribeAdapter(context),
+    () =>
+      refreshSubscribeAdapter(
+        url,
+        cursor,
+        context,
+        viewModelName,
+        topics,
+        aggregateIds,
+        false
+      ),
     REFRESH_TIMEOUT
   )
   return Promise.resolve()
 }
 
 export const dropSubscribeAdapterPromise = (): void => {
-  subscribeAdapterPromise = null
-  const connectionManager = createConnectionManager()
-  connectionManager.destroy()
+  adaptersMap = new Map()
   if (refreshTimeout) {
     clearTimeoutSafe(refreshTimeout)
   }
   refreshTimeout = null
 }
 
-const doSubscribe = async (
+const connect = async (
+  url: string,
+  cursor: string,
   context: Context,
-  {
-    topicName,
-    topicId
-  }: {
-    topicName: string
-    topicId: string
-  },
+  aggregateIds: AggregateSelector,
   eventCallback: Function,
-  resubscribeCallback?: Function
-): Promise<object> => {
-  const connectionManager = createConnectionManager()
-  const subscribeAdapter = await getSubscribeAdapterPromise(context)
-  if (subscribeAdapter === null) {
-    return Promise.resolve({})
+  viewModelName: string,
+  subscribeCallback?: Function
+): Promise<void> => {
+  const subscriptionKeys = getSubscriptionKeys(
+    context,
+    viewModelName,
+    aggregateIds
+  )
+
+  const topics = subscriptionKeys.map(({ eventType, aggregateId }) => ({
+    topicName: eventType,
+    topicId: aggregateId
+  }))
+
+  const key = buildKey(viewModelName, aggregateIds)
+
+  if (adaptersMap.has(key)) {
+    return Promise.resolve()
   }
-  const {
-    addedConnections,
-    removedConnections
-  } = connectionManager.addConnection({
-    connectionName: topicName,
-    connectionId: topicId
-  })
 
-  addCallback(topicName, topicId, eventCallback, resubscribeCallback)
-  await Promise.all([
-    addedConnections.length > 0
-      ? subscribeAdapter.subscribeToTopics(
-          addedConnections.map(({ connectionName, connectionId }) => ({
-            topicName: connectionName,
-            topicId: connectionId
-          }))
-        )
-      : Promise.resolve(),
-    removedConnections.length > 0
-      ? subscribeAdapter.unsubscribeFromTopics(
-          removedConnections.map(({ connectionName, connectionId }) => ({
-            topicName: connectionName,
-            topicId: connectionId
-          }))
-        )
-      : Promise.resolve()
-  ])
+  const subscribeAdapter = await initSubscribeAdapter(
+    url,
+    cursor,
+    context,
+    viewModelName,
+    topics,
+    aggregateIds
+  )
 
-  return { topicName, topicId }
+  if (subscribeAdapter === null) {
+    return Promise.resolve()
+  }
+
+  adaptersMap.set(key, subscribeAdapter)
+
+  for (const { eventType, aggregateId } of subscriptionKeys) {
+    addCallback(eventType, aggregateId, eventCallback, subscribeCallback)
+  }
 }
 
-const doUnsubscribe = async (
+const disconnect = async (
   context: Context,
-  {
-    topicName,
-    topicId
-  }: {
-    topicName: string
-    topicId: string
-  },
+  aggregateIds: AggregateSelector,
+  viewModelName: string,
   callback?: Function
-): Promise<object> => {
-  const connectionManager = createConnectionManager()
-  const subscribeAdapter = await getSubscribeAdapterPromise(context)
-  if (subscribeAdapter === null) {
-    return Promise.resolve({})
+): Promise<void> => {
+  const subscriptionKeys = getSubscriptionKeys(
+    context,
+    viewModelName,
+    aggregateIds
+  )
+
+  const key = buildKey(viewModelName, aggregateIds)
+  const subscribeAdapter = adaptersMap.get(key)
+
+  await subscribeAdapter.close()
+
+  adaptersMap.delete(key)
+
+  for (const { eventType, aggregateId } of subscriptionKeys) {
+    removeCallback(eventType, aggregateId, callback)
   }
-
-  const {
-    addedConnections,
-    removedConnections
-  } = connectionManager.removeConnection({
-    connectionName: topicName,
-    connectionId: topicId
-  })
-  removeCallback(topicName, topicId, callback)
-  await Promise.all([
-    addedConnections.length > 0
-      ? subscribeAdapter.subscribeToTopics(
-          addedConnections.map(({ connectionName, connectionId }) => ({
-            topicName: connectionName,
-            topicId: connectionId
-          }))
-        )
-      : Promise.resolve(),
-    removedConnections.length > 0
-      ? subscribeAdapter.unsubscribeFromTopics(
-          removedConnections.map(({ connectionName, connectionId }) => ({
-            topicName: connectionName,
-            topicId: connectionId
-          }))
-        )
-      : Promise.resolve()
-  ])
-
-  return { topicName, topicId }
 }
 
-export { doSubscribe, doUnsubscribe }
+export { connect, disconnect }

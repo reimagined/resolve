@@ -31,8 +31,6 @@
     "resolve-eventstore-lite": "0.24.22",
     "resolve-readmodel-lite": "0.24.22",
     "resolve-readmodel-postgresql-serverless": "0.24.22",
-    "resolve-subscribe-mqtt": "0.24.22",
-    "resolve-subscribe-socket.io": "0.24.22",
     "resolve-upload-local": "0.24.22",
     "resolve-upload-cloud": "0.24.22",
     "redux-devtools-extension": "2.13.7",
