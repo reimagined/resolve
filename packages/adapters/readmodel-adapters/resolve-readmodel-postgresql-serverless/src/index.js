@@ -2,43 +2,52 @@ import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 import _createAdapter from 'resolve-readmodel-base'
 import crypto from 'crypto'
 
-import beginXATransaction from './begin-xa-transaction'
-import beginEvent from './begin-event'
-import beginTransaction from './begin-transaction'
-import buildUpsertDocument from './build-upsert-document'
-import commitXATransaction from './commit-xa-transaction'
-import commitEvent from './commit-event'
-import commitTransaction from './commit-transaction'
-import coercer from './coercer'
 import _connect from './connect'
-import convertResultRow from './convert-result-row'
+import disconnect from './disconnect'
+
 import count from './count'
 import defineTable from './define-table'
 import del from './delete'
-import disconnect from './disconnect'
-import dropReadModel from './drop-read-model'
-import escapeId from './escape-id'
-import escape from './escape'
-import executeStatement from './execute-statement'
 import findOne from './find-one'
 import find from './find'
 import insert from './insert'
-import build from './build'
-import reset from './reset'
-import subscribe from './subscribe'
-import resubscribe from './resubscribe'
-import unsubscribe from './unsubscribe'
-import pause from './pause'
-import resume from './resume'
-import rollbackXATransaction from './rollback-xa-transaction'
-import rollbackEvent from './rollback-event'
+import update from './update'
+
+import beginTransaction from './begin-transaction'
+import buildUpsertDocument from './build-upsert-document'
+import commitTransaction from './commit-transaction'
+import coercer from './coercer'
+import convertResultRow from './convert-result-row'
+import escapeId from './escape-id'
+import escape from './escape'
+import executeStatement from './execute-statement'
 import rollbackTransaction from './rollback-transaction'
 import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
-import update from './update'
+
 import generateGuid from './generate-guid'
 import isHighloadError from './is-highload-error'
 import isTimeoutError from './is-timeout-error'
+
+import subscribe from './subscribe'
+import resubscribe from './resubscribe'
+import unsubscribe from './unsubscribe'
+import deleteProperty from './delete-property'
+import getProperty from './get-property'
+import listProperties from './list-properties'
+import setProperty from './set-property'
+import reset from './reset'
+import pause from './pause'
+import resume from './resume'
+import build from './build'
+
+import beginXATransaction from './begin-xa-transaction'
+import beginEvent from './begin-event'
+import commitXATransaction from './commit-xa-transaction'
+import commitEvent from './commit-event'
+import rollbackXATransaction from './rollback-xa-transaction'
+import rollbackEvent from './rollback-event'
+import dropReadModel from './drop-read-model'
 
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
@@ -71,13 +80,17 @@ const externalMethods = {
   commitEvent,
   rollbackEvent,
   dropReadModel,
-  build,
-  reset,
   subscribe,
   resubscribe,
   unsubscribe,
+  deleteProperty,
+  getProperty,
+  listProperties,
+  setProperty,
+  resume,
   pause,
-  resume
+  reset,
+  build
 }
 
 const connect = _connect.bind(null, {

@@ -73,8 +73,15 @@ const initResolve = async resolve => {
     if (args.length !== 1 || Object(args[0]) !== args[0]) {
       throw new TypeError(`Invalid EventBus method "${key}" arguments ${args}`)
     }
-    const parameters = args[0]
-    const eventSubscriber = parameters.eventSubscriber
+
+    let { eventSubscriber, modelName, ...parameters } = args[0]
+    if (eventSubscriber == null && modelName == null) {
+      throw new Error(`Either "eventSubscriber" nor "modelName" is null`)
+    } else if (eventSubscriber == null) {
+      eventSubscriber = modelName
+    } else {
+      modelName = eventSubscriber
+    }
 
     const listenerInfo = resolve.eventListeners.get(eventSubscriber)
     if (listenerInfo == null) {
@@ -93,7 +100,11 @@ const initResolve = async resolve => {
         : resolve.executeQuery[key]
       : resolve.publisher[key]
 
-    const result = await method(parameters)
+    const result = await method(
+      isInlineLedger
+        ? { modelName, ...parameters }
+        : { eventSubscriber, ...parameters }
+    )
 
     return result
   }
@@ -101,17 +112,17 @@ const initResolve = async resolve => {
   const eventBus = {}
   for (const key of [
     'build',
-    'reset',
-    'pause',
+    'subscribe',
+    'resubscribe',
+    'unsubscribe',
+    'status',
     'resume',
+    'pause',
+    'reset',
     'listProperties',
     'getProperty',
     'setProperty',
-    'deleteProperty',
-    'status',
-    'subscribe',
-    'resubscribe',
-    'unsubscribe'
+    'deleteProperty'
   ]) {
     Object.defineProperty(eventBus, key, {
       value: eventBusMethod.bind(eventBus, key)

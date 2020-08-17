@@ -33,6 +33,7 @@ const create = async (pool, options) => {
         "SuccessEvent" JSONB NULL,
         "FailedEvent" JSONB NULL,
         "Errors" JSONB NULL,
+        "Properties" JSONB DEFAULT '{}'::JSONB,
         "Schema" JSONB NULL,
         PRIMARY KEY("EventSubscriber")
       )`,
