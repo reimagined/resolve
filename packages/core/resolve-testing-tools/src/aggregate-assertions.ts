@@ -25,7 +25,7 @@ const stringifyError = (error: any): string =>
   error == null ? 'no error' : error.toString()
 
 const stringifyDiff = (expected: any, result: any): string =>
-  diffJson(expected, result)
+  diffJson(expected, result, { undefinedReplacement: '<undefined>' })
     .map(change => {
       let color = colors.gray
       let prefix = ''

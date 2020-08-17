@@ -152,7 +152,10 @@ describe('aggregate', () => {
           throw Error(`aggregate ${state.id} already exist`)
         }
         throw Error(`aggregate ${command.aggregateId} failure`)
-      }
+      },
+      noPayload: (): any => ({
+        type: 'EVENT_WITHOUT_PAYLOAD'
+      })
     }
   }
 
@@ -215,6 +218,17 @@ describe('aggregate', () => {
           .as('valid-user')
       ).rejects.toThrow(`aggregate custom-id already exist`)
     })
+
+    test('events without payload support', async () => {
+      await expect(
+        givenEvents([])
+          .aggregate(aggregate)
+          .command('noPayload')
+          .as('valid-user')
+      ).resolves.toEqual({
+        type: 'EVENT_WITHOUT_PAYLOAD'
+      })
+    })
   })
 
   describe('with BDD assertions', () => {
@@ -266,5 +280,14 @@ describe('aggregate', () => {
         .command('failWithCustomId', 'custom-id', {})
         .as('valid-user')
         .shouldThrow(Error(`aggregate custom-id already exist`)))
+
+    test('events without payload support', () =>
+      givenEvents([])
+        .aggregate(aggregate)
+        .command('noPayload')
+        .as('valid-user')
+        .shouldProduceEvent({
+          type: 'EVENT_WITHOUT_PAYLOAD'
+        }))
   })
 })

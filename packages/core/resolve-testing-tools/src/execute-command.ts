@@ -93,15 +93,18 @@ export const executeCommand = async (
       jwt: state.jwt
     })
 
-    assertion(
-      resolve,
-      reject,
-      {
-        type: result.type,
-        payload: result.payload
-      },
-      null
-    )
+    const event: {
+      type: string
+      payload?: SerializableMap
+    } = {
+      type: result.type
+    }
+
+    if (Object.prototype.hasOwnProperty.call(result, 'payload')) {
+      event['payload'] = result['payload']
+    }
+
+    assertion(resolve, reject, event, null)
   } catch (error) {
     assertion(resolve, reject, null, error)
   } finally {
