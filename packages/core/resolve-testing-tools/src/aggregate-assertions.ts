@@ -1,4 +1,6 @@
 import isEqual from 'lodash.isequal'
+import { diffJson } from 'diff'
+import colors from 'colors'
 import { CommandResult } from 'resolve-core'
 import { Phases, symbol } from './constants'
 
@@ -21,6 +23,24 @@ type BDDAggregateAssertionContext = {
 
 const stringifyError = (error: any): string =>
   error == null ? 'no error' : error.toString()
+
+const stringifyDiff = (expected: any, result: any): string =>
+  diffJson(expected, result)
+    .map(change => {
+      let color = colors.gray
+      let prefix = ''
+
+      if (change.added) {
+        color = colors.green
+        prefix = '+'
+      } else if (change.removed) {
+        color = colors.red
+        prefix = '-'
+      }
+
+      return color(`${prefix}${change.value}`)
+    })
+    .join('')
 
 const checkState = (state: BDDAggregateAssertionState): TypeError | null => {
   if (state.phase < Phases.COMMAND) {
@@ -48,11 +68,10 @@ export const shouldProduceEvent = (
     if (!isEqual(result, expectedEvent)) {
       reject(
         new Error(
-          `expected event ${JSON.stringify(
+          `shouldProduceEvent assertion failed:\n ${stringifyDiff(
             expectedEvent,
-            null,
-            2
-          )}, but received ${JSON.stringify(result, null, 2)}`
+            result
+          )}`
         )
       )
     }
