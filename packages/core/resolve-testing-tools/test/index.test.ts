@@ -209,11 +209,10 @@ describe('aggregate', () => {
         givenEvents([
           {
             type: 'TEST_COMMAND_EXECUTED',
-            aggregateId: 'custom-id',
             payload: {}
           }
         ])
-          .aggregate(aggregate)
+          .aggregate(aggregate, 'custom-id')
           .command('failWithCustomId', {})
           .as('valid-user')
       ).rejects.toThrow(`aggregate custom-id already exist`)
@@ -272,11 +271,10 @@ describe('aggregate', () => {
       givenEvents([
         {
           type: 'TEST_COMMAND_EXECUTED',
-          aggregateId: 'custom-id',
           payload: {}
         }
       ])
-        .aggregate(aggregate)
+        .aggregate(aggregate, 'custom-id')
         .command('failWithCustomId', {})
         .as('valid-user')
         .shouldThrow(Error(`aggregate custom-id already exist`)))

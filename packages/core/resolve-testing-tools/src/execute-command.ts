@@ -31,14 +31,17 @@ type BDDExecuteCommandContext = {
 
 const makeDummyEventStoreAdapter = ({
   secretsManager,
-  events
+  events,
+  aggregateId
 }: BDDExecuteCommandState) => ({
   getNextCursor: () => Promise.resolve(null),
   saveSnapshot: () => Promise.resolve(),
   getSecretsManager: () => Promise.resolve(secretsManager),
   loadSnapshot: () => Promise.resolve(null),
   loadEvents: () =>
-    Promise.resolve({ events: transformEvents(events, 'aggregate') })
+    Promise.resolve({
+      events: transformEvents(events, 'aggregate', { aggregateId })
+    })
 })
 
 const makeDummyPublisher = () => {
