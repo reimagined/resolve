@@ -8,11 +8,6 @@ interface SubscriptionKey {
   eventType: string
 }
 
-interface Topic {
-  topicId: string
-  topicName: string
-}
-
 type AggregateSelector = string[] | '*'
 
 const REFRESH_TIMEOUT = 5000
@@ -75,7 +70,6 @@ const initSubscribeAdapter = async (
   cursor: string,
   context: Context,
   viewModelName: string,
-  topics: Array<Topic>,
   aggregateIds: AggregateSelector
 ): Promise<any> => {
   const subscribeAdapter = createSubscribeAdapter({
@@ -94,7 +88,6 @@ const initSubscribeAdapter = async (
           cursor,
           context,
           viewModelName,
-          topics,
           aggregateIds,
           false
         ),
@@ -110,7 +103,6 @@ export const refreshSubscribeAdapter = async (
   cursor: string,
   context: Context,
   viewModelName: string,
-  topics: Array<Topic>,
   aggregateIds: AggregateSelector,
   subscribeAdapterRecreated?: boolean
 ): Promise<any> => {
@@ -125,7 +117,6 @@ export const refreshSubscribeAdapter = async (
         cursor,
         context,
         viewModelName,
-        topics,
         aggregateIds
       )
     } else {
@@ -143,7 +134,6 @@ export const refreshSubscribeAdapter = async (
           cursor,
           context,
           viewModelName,
-          topics,
           aggregateIds,
           true
         ),
@@ -166,7 +156,6 @@ export const refreshSubscribeAdapter = async (
               cursor,
               context,
               viewModelName,
-              topics,
               aggregateIds,
               false
             ),
@@ -191,7 +180,6 @@ export const refreshSubscribeAdapter = async (
         cursor,
         context,
         viewModelName,
-        topics,
         aggregateIds
       )
     )
@@ -207,7 +195,6 @@ export const refreshSubscribeAdapter = async (
         cursor,
         context,
         viewModelName,
-        topics,
         aggregateIds,
         false
       ),
@@ -225,9 +212,9 @@ export const dropSubscribeAdapterPromise = (): void => {
 }
 
 const connect = async (
+  context: Context,
   url: string,
   cursor: string,
-  context: Context,
   aggregateIds: AggregateSelector,
   eventCallback: Function,
   viewModelName: string,
@@ -238,11 +225,6 @@ const connect = async (
     viewModelName,
     aggregateIds
   )
-
-  const topics = subscriptionKeys.map(({ eventType, aggregateId }) => ({
-    topicName: eventType,
-    topicId: aggregateId
-  }))
 
   const key = buildKey(viewModelName, aggregateIds)
 
@@ -255,7 +237,6 @@ const connect = async (
     cursor,
     context,
     viewModelName,
-    topics,
     aggregateIds
   )
 

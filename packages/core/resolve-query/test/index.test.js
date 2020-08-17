@@ -115,7 +115,12 @@ for (const { describeName, prepare } of [
               return JSON.parse(serializedState)
             },
             invariantHash: 'viewModelName-invariantHash',
-            encryption: () => ({})
+            encryption: () => ({}),
+            resolver: (state, { aggregateIds, eventTypes }) => ({
+              state,
+              aggregateIds,
+              eventTypes
+            })
           }
         ]
       })
@@ -176,7 +181,13 @@ for (const { describeName, prepare } of [
           })
 
           expect(stateId1).toEqual({
-            value: 7
+            state: {
+              value: 7
+            },
+            cursor: 'CURSOR-CURSOR-CURSOR',
+            aggregateIds: ['id1'],
+            eventTypes: ['Init', 'ADD', 'SUB'],
+            isViewModel: true
           })
 
           expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
@@ -243,7 +254,13 @@ for (const { describeName, prepare } of [
           })
 
           expect(stateId2).toEqual({
-            value: 4
+            state: {
+              value: 4
+            },
+            cursor: 'CURSOR-CURSOR-CURSOR',
+            aggregateIds: ['id2'],
+            eventTypes: ['Init', 'ADD', 'SUB'],
+            isViewModel: true
           })
 
           expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
@@ -347,7 +364,15 @@ for (const { describeName, prepare } of [
             aggregateArgs: {}
           })
 
-          expect(stateWildcard).toEqual({ value: 11 })
+          expect(stateWildcard).toEqual({
+            state: {
+              value: 11
+            },
+            cursor: 'CURSOR-CURSOR-CURSOR-CURSOR-CURSOR-CURSOR',
+            aggregateIds: '*',
+            eventTypes: ['Init', 'ADD', 'SUB'],
+            isViewModel: true
+          })
 
           const stateId1AndId2 = await query.read({
             modelName: 'viewModelName',
@@ -355,7 +380,15 @@ for (const { describeName, prepare } of [
             aggregateArgs: {}
           })
 
-          expect(stateId1AndId2).toEqual({ value: 11 })
+          expect(stateId1AndId2).toEqual({
+            state: {
+              value: 11
+            },
+            cursor: 'CURSOR-CURSOR-CURSOR-CURSOR-CURSOR-CURSOR',
+            aggregateIds: ['id1', 'id2'],
+            eventTypes: ['Init', 'ADD', 'SUB'],
+            isViewModel: true
+          })
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -601,15 +634,19 @@ for (const { describeName, prepare } of [
             aggregateArgs: {}
           })
 
-          expect(stateId1).toEqual(
-            JSON.stringify(
+          expect(stateId1).toEqual({
+            cursor: 'CURSOR-CURSOR-CURSOR',
+            aggregateIds: ['id1'],
+            eventTypes: ['Init', 'ADD', 'SUB'],
+            isViewModel: true,
+            state: JSON.stringify(
               {
                 value: 7
               },
               null,
               2
             )
-          )
+          })
 
           expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
             'VM;viewModelName-invariantHash;id1'
@@ -675,15 +712,19 @@ for (const { describeName, prepare } of [
             aggregateArgs: {}
           })
 
-          expect(stateId2).toEqual(
-            JSON.stringify(
+          expect(stateId2).toEqual({
+            cursor: 'CURSOR-CURSOR-CURSOR',
+            aggregateIds: ['id2'],
+            eventTypes: ['Init', 'ADD', 'SUB'],
+            isViewModel: true,
+            state: JSON.stringify(
               {
                 value: 4
               },
               null,
               2
             )
-          )
+          })
 
           expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
             'VM;viewModelName-invariantHash;id2'
@@ -988,7 +1029,11 @@ for (const { describeName, prepare } of [
           })
 
           expect(stateId1).toEqual({
-            value: 7
+            cursor: 'CURSOR-CURSOR-CURSOR',
+            aggregateIds: ['id1'],
+            eventTypes: ['Init', 'ADD', 'SUB'],
+            isViewModel: true,
+            state: { value: 7 }
           })
 
           events = [
@@ -1028,7 +1073,11 @@ for (const { describeName, prepare } of [
           })
 
           expect(stateId2).toEqual({
-            value: 4
+            cursor: 'CURSOR-CURSOR-CURSOR',
+            aggregateIds: ['id2'],
+            eventTypes: ['Init', 'ADD', 'SUB'],
+            isViewModel: true,
+            state: { value: 4 }
           })
 
           if (performanceTracer != null) {
@@ -1275,15 +1324,19 @@ for (const { describeName, prepare } of [
             aggregateArgs: {}
           })
 
-          expect(stateId1).toEqual(
-            JSON.stringify(
+          expect(stateId1).toEqual({
+            cursor: 'CURSOR-CURSOR-CURSOR',
+            aggregateIds: ['id1'],
+            eventTypes: ['Init', 'ADD', 'SUB'],
+            isViewModel: true,
+            state: JSON.stringify(
               {
                 value: 7
               },
               null,
               2
             )
-          )
+          })
 
           events = [
             {
@@ -1321,15 +1374,19 @@ for (const { describeName, prepare } of [
             aggregateArgs: {}
           })
 
-          expect(stateId2).toEqual(
-            JSON.stringify(
+          expect(stateId2).toEqual({
+            cursor: 'CURSOR-CURSOR-CURSOR',
+            aggregateIds: ['id2'],
+            eventTypes: ['Init', 'ADD', 'SUB'],
+            isViewModel: true,
+            state: JSON.stringify(
               {
                 value: 4
               },
               null,
               2
             )
-          )
+          })
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
