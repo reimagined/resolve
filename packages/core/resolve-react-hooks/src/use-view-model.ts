@@ -1,9 +1,11 @@
 import { useContext, useCallback, useMemo } from 'react'
 import { ResolveContext } from './context'
+import { Event } from 'resolve-core'
 import { QueryOptions, SubscribeCallback, Subscription } from 'resolve-client'
 import { useClient } from './use-client'
 
 type StateChangedCallback = (state: any) => void
+type EventReceivedCallback = (event: Event) => void
 type PromiseOrVoid<T> = Promise<T> | void
 
 type Closure = {
@@ -18,12 +20,39 @@ type ViewModelConnection = {
   dispose: (done?: (error?: Error) => void) => PromiseOrVoid<void>
 }
 
-const useViewModel = (
+// TODO: add unit tests after new 'subscription' feature will be fixed
+
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  stateChangeCallback: StateChangedCallback
+): ViewModelConnection
+function useViewModel(
   modelName: string,
   aggregateIds: string[] | '*',
   stateChangeCallback: StateChangedCallback,
+  eventReceivedCallback: EventReceivedCallback
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  stateChangeCallback: StateChangedCallback,
+  queryOptions: QueryOptions
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  stateChangeCallback: StateChangedCallback,
+  eventReceivedCallback: EventReceivedCallback,
+  queryOptions: QueryOptions
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  stateChangeCallback: StateChangedCallback,
+  eventReceivedCallback?: QueryOptions | EventReceivedCallback,
   queryOptions?: QueryOptions
-): ViewModelConnection => {
+): ViewModelConnection {
   const context = useContext(ResolveContext)
   const client = useClient()
 

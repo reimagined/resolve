@@ -2,7 +2,6 @@ import { Action } from 'redux'
 import {
   QueryOptions,
   QueryResult,
-  SubscribeCallback,
   ViewModelQuery
 } from 'resolve-client'
 import {
@@ -64,9 +63,7 @@ const defaultQueryOptions: QueryOptions = {
 const internalActions: ViewModelReduxActionsCreators = {
   request: (query: ViewModelQuery, selectorId?: string) => ({
     type: QUERY_VIEWMODEL_REQUEST,
-    viewModelName: query.name,
-    aggregateIds: query.aggregateIds,
-    aggregateArgs: query.args,
+    query,
     selectorId
   }),
   success: (
@@ -75,18 +72,14 @@ const internalActions: ViewModelReduxActionsCreators = {
     selectorId?: string
   ) => ({
     type: QUERY_VIEWMODEL_SUCCESS,
-    viewModelName: query.name,
-    aggregateIds: query.aggregateIds,
-    aggregateArgs: query.args,
+    query,
     result: result.data,
     timestamp: result.timestamp,
     selectorId
   }),
   failure: (query: ViewModelQuery, error: Error, selectorId?: string) => ({
     type: QUERY_VIEWMODEL_FAILURE,
-    viewModelName: query.name,
-    aggregateIds: query.aggregateIds,
-    aggregateArgs: query.args,
+    query,
     error,
     selectorId
   }),
@@ -96,9 +89,7 @@ const internalActions: ViewModelReduxActionsCreators = {
     selectorId?: string
   ) => ({
     type: VIEWMODEL_STATE_UPDATE,
-    viewModelName: query.name,
-    aggregateIds: query.aggregateIds,
-    aggregateArgs: query.args,
+    query,
     result: result.data,
     timestamp: result.timestamp,
     selectorId

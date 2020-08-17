@@ -5,20 +5,12 @@ import {
   DROP_VIEWMODEL_STATE,
   CONNECT_VIEWMODEL,
   DISCONNECT_VIEWMODEL,
-  SUBSCRIBE_TOPIC_REQUEST,
-  SUBSCRIBE_TOPIC_SUCCESS,
-  SUBSCRIBE_TOPIC_FAILURE,
-  UNSUBSCRIBE_TOPIC_REQUEST,
-  UNSUBSCRIBE_TOPIC_SUCCESS,
-  UNSUBSCRIBE_TOPIC_FAILURE,
-  DISPATCH_TOPIC_MESSAGE,
   VIEWMODEL_STATE_UPDATE
 } from '../action-types'
+import { ViewModelQuery } from 'resolve-client'
 
 type ViewModelAction = {
-  viewModelName: string
-  aggregateIds: string | string[]
-  aggregateArgs: any
+  query: ViewModelQuery
   selectorId?: string
 }
 
@@ -26,15 +18,11 @@ export type QueryViewModelRequestAction = {
   type: typeof QUERY_VIEWMODEL_REQUEST
 } & ViewModelAction
 export const queryViewModelRequest = (
-  viewModelName: string,
-  aggregateIds: string | string[],
-  aggregateArgs: any,
+  query: ViewModelQuery,
   selectorId?: string
 ): QueryViewModelRequestAction => ({
   type: QUERY_VIEWMODEL_REQUEST,
-  viewModelName,
-  aggregateIds,
-  aggregateArgs,
+  query,
   selectorId
 })
 
@@ -44,17 +32,13 @@ export type QueryViewModelSuccessAction = {
   timestamp: number
 } & ViewModelAction
 export const queryViewModelSuccess = (
-  viewModelName: string,
-  aggregateIds: string | string[],
-  aggregateArgs: any,
+  query: ViewModelQuery,
   result: any,
   timestamp: number,
   selectorId?: string
 ): QueryViewModelSuccessAction => ({
   type: QUERY_VIEWMODEL_SUCCESS,
-  viewModelName,
-  aggregateIds,
-  aggregateArgs,
+  query,
   result,
   timestamp,
   selectorId
@@ -65,16 +49,12 @@ export type QueryViewModelFailureAction = {
   error: Error
 } & ViewModelAction
 export const queryViewModelFailure = (
-  viewModelName: string,
-  aggregateIds: string | string[],
-  aggregateArgs: any,
+  query: ViewModelQuery,
   error: Error,
   selectorId?: string
 ): QueryViewModelFailureAction => ({
   type: QUERY_VIEWMODEL_FAILURE,
-  viewModelName,
-  aggregateIds,
-  aggregateArgs,
+  query,
   error,
   selectorId
 })
@@ -85,17 +65,13 @@ export type ViewModelStateUpdateAction = {
   timestamp: number
 } & ViewModelAction
 export const viewModelStateUpdate = (
-  viewModelName: string,
-  aggregateIds: string | string[],
-  aggregateArgs: any,
+  query: ViewModelQuery,
   result: any,
   timestamp: number,
   selectorId?: string
 ): ViewModelStateUpdateAction => ({
   type: VIEWMODEL_STATE_UPDATE,
-  viewModelName,
-  aggregateIds,
-  aggregateArgs,
+  query,
   result,
   timestamp,
   selectorId
@@ -105,15 +81,11 @@ export type DropViewModelStateAction = {
   type: typeof DROP_VIEWMODEL_STATE
 } & ViewModelAction
 export const dropViewModelState = (
-  viewModelName: string,
-  aggregateIds: string | string[],
-  aggregateArgs: any,
+  query: ViewModelQuery,
   selectorId?: string
 ): DropViewModelStateAction => ({
   type: DROP_VIEWMODEL_STATE,
-  viewModelName,
-  aggregateIds,
-  aggregateArgs,
+  query,
   selectorId
 })
 
@@ -121,15 +93,11 @@ export type ConnectViewModelAction = {
   type: typeof CONNECT_VIEWMODEL
 } & ViewModelAction
 export const connectViewModel = (
-  viewModelName: string,
-  aggregateIds: string | string[],
-  aggregateArgs: any,
+  query: ViewModelQuery,
   selectorId?: string
 ): ConnectViewModelAction => ({
   type: CONNECT_VIEWMODEL,
-  viewModelName,
-  aggregateIds,
-  aggregateArgs,
+  query,
   selectorId
 })
 
@@ -137,108 +105,10 @@ export type DisconnectViewModelAction = {
   type: typeof DISCONNECT_VIEWMODEL
 } & ViewModelAction
 export const disconnectViewModel = (
-  viewModelName: string,
-  aggregateIds: string | string[],
-  aggregateArgs: any,
+  query: ViewModelQuery,
   selectorId?: string
 ): DisconnectViewModelAction => ({
   type: DISCONNECT_VIEWMODEL,
-  viewModelName,
-  aggregateIds,
-  aggregateArgs,
+  query,
   selectorId
-})
-
-type TopicAction = {
-  topicName: string
-  topicId: string
-}
-
-export type SubscribeTopicRequestAction = {
-  type: typeof SUBSCRIBE_TOPIC_REQUEST
-} & TopicAction
-export const subscribeTopicRequest = (
-  topicName: string,
-  topicId: string
-): SubscribeTopicRequestAction => ({
-  type: SUBSCRIBE_TOPIC_REQUEST,
-  topicName,
-  topicId
-})
-
-export type SubscribeTopicSuccessAction = {
-  type: typeof SUBSCRIBE_TOPIC_SUCCESS
-} & TopicAction
-export const subscribeTopicSuccess = (
-  topicName: string,
-  topicId: string
-): SubscribeTopicSuccessAction => ({
-  type: SUBSCRIBE_TOPIC_SUCCESS,
-  topicName,
-  topicId
-})
-
-export type SubscribeTopicFailureAction = {
-  type: typeof SUBSCRIBE_TOPIC_FAILURE
-  error: Error
-} & TopicAction
-export const subscribeTopicFailure = (
-  topicName: string,
-  topicId: string,
-  error: Error
-): SubscribeTopicFailureAction => ({
-  type: SUBSCRIBE_TOPIC_FAILURE,
-  topicName,
-  topicId,
-  error
-})
-
-export type UnsubscribeTopicRequestAction = {
-  type: typeof UNSUBSCRIBE_TOPIC_REQUEST
-} & TopicAction
-export const unsubscribeTopicRequest = (
-  topicName: string,
-  topicId: string
-): UnsubscribeTopicRequestAction => ({
-  type: UNSUBSCRIBE_TOPIC_REQUEST,
-  topicName,
-  topicId
-})
-
-export type UnsubscribeTopicSuccessAction = {
-  type: typeof UNSUBSCRIBE_TOPIC_SUCCESS
-} & TopicAction
-export const unsubscribeTopicSuccess = (
-  topicName: string,
-  topicId: string
-): UnsubscribeTopicSuccessAction => ({
-  type: UNSUBSCRIBE_TOPIC_SUCCESS,
-  topicName,
-  topicId
-})
-
-export type UnsubscribeTopicFailureAction = {
-  type: typeof UNSUBSCRIBE_TOPIC_FAILURE
-  error: Error
-} & TopicAction
-export const unsubscribeTopicFailure = (
-  topicName: string,
-  topicId: string,
-  error: Error
-): UnsubscribeTopicFailureAction => ({
-  type: UNSUBSCRIBE_TOPIC_FAILURE,
-  topicName,
-  topicId,
-  error
-})
-
-export type DispatchTopicMessageAction = {
-  type: typeof DISPATCH_TOPIC_MESSAGE
-  message: string
-}
-export const dispatchTopicMessage = (
-  message: string
-): DispatchTopicMessageAction => ({
-  type: DISPATCH_TOPIC_MESSAGE,
-  message
 })
