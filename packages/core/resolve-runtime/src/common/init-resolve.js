@@ -9,6 +9,20 @@ import createQueryExecutor, {
 import createSagaExecutor from 'resolve-saga'
 import crypto from 'crypto'
 
+const EVENT_BUS_METHODS = [
+  'subscribe',
+  'resubscribe',
+  'unsubscribe',
+  'deleteProperty',
+  'getProperty',
+  'listProperties',
+  'setProperty',
+  'resume',
+  'pause',
+  'reset',
+  'status',
+  'build'
+]
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
 const initResolve = async resolve => {
@@ -26,7 +40,6 @@ const initResolve = async resolve => {
     schedulers,
     sagas,
     viewModels,
-    publisher,
     uploader
   } = resolve
   const eventstoreAdapter = createEventstoreAdapter()
@@ -39,16 +52,20 @@ const initResolve = async resolve => {
     })
   }
 
+  const onCommandExecuted = async (event) => {
+    await resolve.publisher.publish({ event })
+    await resolve.notifyInlineLedgers()
+  }
+
   const executeCommand = createCommandExecutor({
-    publisher,
     aggregates,
     eventstoreAdapter,
-    performanceTracer
+    performanceTracer,
+    onCommandExecuted
   })
 
   const executeQuery = createQueryExecutor({
     invokeEventListenerAsync,
-    publisher,
     eventstoreAdapter,
     readModelConnectors,
     readModels,
@@ -60,7 +77,7 @@ const initResolve = async resolve => {
     invokeEventListenerAsync,
     executeCommand,
     executeQuery,
-    publisher,
+    onCommandExecuted,
     eventstoreAdapter,
     readModelConnectors,
     schedulers,
@@ -100,6 +117,10 @@ const initResolve = async resolve => {
         : resolve.executeQuery[key]
       : resolve.publisher[key]
 
+    if (typeof method != 'function') {
+      throw new TypeError(key)
+    }
+
     const result = await method(
       isInlineLedger
         ? { modelName, ...parameters }
@@ -110,20 +131,7 @@ const initResolve = async resolve => {
   }
 
   const eventBus = {}
-  for (const key of [
-    'build',
-    'subscribe',
-    'resubscribe',
-    'unsubscribe',
-    'status',
-    'resume',
-    'pause',
-    'reset',
-    'listProperties',
-    'getProperty',
-    'setProperty',
-    'deleteProperty'
-  ]) {
+  for (const key of EVENT_BUS_METHODS) {
     Object.defineProperty(eventBus, key, {
       value: eventBusMethod.bind(eventBus, key)
     })

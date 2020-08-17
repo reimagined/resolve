@@ -12,6 +12,7 @@ import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 const resetDomainHandler = options => async (req, res) => {
   const {
     eventstoreAdapter,
+    eventBus,
     publisher,
     readModels,
     schedulers,
@@ -36,7 +37,7 @@ const resetDomainHandler = options => async (req, res) => {
     if (dropReadModels) {
       for (const { name } of readModels) {
         try {
-          await publisher.reset({ eventSubscriber: name })
+          await eventBus.reset({ eventSubscriber: name })
         } catch (error) {
           dropReadModelsSagasErrors.push(error)
         }
@@ -46,7 +47,7 @@ const resetDomainHandler = options => async (req, res) => {
     if (dropSagas) {
       for (const { name } of [...sagas, ...schedulers]) {
         try {
-          await publisher.reset({ eventSubscriber: name })
+          await eventBus.reset({ eventSubscriber: name })
         } catch (error) {
           dropReadModelsSagasErrors.push(error)
         }

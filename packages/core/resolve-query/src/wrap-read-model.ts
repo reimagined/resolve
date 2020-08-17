@@ -178,18 +178,23 @@ export const detectConnectorFeatures = (connector: any): number =>
   ((typeof connector.beginEvent === 'function' ? 1 : 0) << 6) +
   ((typeof connector.commitEvent === 'function' ? 1 : 0) << 7) +
   ((typeof connector.rollbackEvent === 'function' ? 1 : 0) << 8) +
-  ((typeof connector.build === 'function' ? 1 : 0) << 9) +
-  ((typeof connector.reset === 'function' ? 1 : 0) << 10) +
-  ((typeof connector.pause === 'function' ? 1 : 0) << 11) +
-  ((typeof connector.resume === 'function' ? 1 : 0) << 12) +
-  ((typeof connector.subscribe === 'function' ? 1 : 0) << 13) +
-  ((typeof connector.unsubscribe === 'function' ? 1 : 0) << 14) +
-  ((typeof connector.resubscribe === 'function' ? 1 : 0) << 15)
+  ((typeof connector.subscribe === 'function' ? 1 : 0) << 9) +
+  ((typeof connector.unsubscribe === 'function' ? 1 : 0) << 10) +
+  ((typeof connector.resubscribe === 'function' ? 1 : 0) << 11) +
+  ((typeof connector.deleteProperty === 'function' ? 1 : 0) << 12) +
+  ((typeof connector.getProperty === 'function' ? 1 : 0) << 13) +
+  ((typeof connector.listProperties === 'function' ? 1 : 0) << 14) +
+  ((typeof connector.setProperty === 'function' ? 1 : 0) << 15) +
+  ((typeof connector.resume === 'function' ? 1 : 0) << 16) +
+  ((typeof connector.pause === 'function' ? 1 : 0) << 17) +
+  ((typeof connector.reset === 'function' ? 1 : 0) << 18) +
+  ((typeof connector.status === 'function' ? 1 : 0) << 19) +
+  ((typeof connector.build === 'function' ? 1 : 0) << 20)
 
 export const FULL_XA_CONNECTOR = 504
 export const FULL_REGULAR_CONNECTOR = 7
 export const EMPTY_CONNECTOR = 0
-export const INLINE_LEDGER_CONNECTOR = 65024
+export const INLINE_LEDGER_CONNECTOR = 2096640
 
 const detectWrappers = (connector: any): any => {
   const log = getLog('detectWrappers')
@@ -658,6 +663,66 @@ const unsubscribe = doOperation.bind(
   ) => [connection, readModelName]
 )
 
+const deleteProperty = doOperation.bind(
+  null,
+  'deleteProperty',
+  (
+    pool: ReadModelPool,
+    connection: any,
+    readModelName: string,
+    parameters: {
+      key: string
+    }
+  ) => [connection, readModelName, parameters.key]
+)
+const getProperty = doOperation.bind(
+  null,
+  'getProperty',
+  (
+    pool: ReadModelPool,
+    connection: any,
+    readModelName: string,
+    parameters: {
+      key: string
+    }
+  ) => [connection, readModelName, parameters.key]
+)
+
+const listProperties = doOperation.bind(
+  null,
+  'listProperties',
+  (
+    pool: ReadModelPool,
+    connection: any,
+    readModelName: string,
+    parameters: {}
+  ) => [connection, readModelName]
+)
+const setProperty = doOperation.bind(
+  null,
+  'setProperty',
+  (
+    pool: ReadModelPool,
+    connection: any,
+    readModelName: string,
+    parameters: {
+      key: string
+      value: any
+    }
+  ) => [connection, readModelName, parameters.key, parameters.value]
+)
+
+const status = doOperation.bind(
+  null,
+  'status',
+  (
+    pool: ReadModelPool,
+    connection: any,
+    readModelName: string,
+    parameters: {}
+  ) => [connection, readModelName]
+)
+
 const dispose = async (pool: ReadModelPool): Promise<void> => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
@@ -748,13 +813,18 @@ const wrapReadModel = (
     })
   } else if (detectedFeatures === INLINE_LEDGER_CONNECTOR) {
     Object.assign(api, {
-      build: build.bind(null, pool),
-      reset: reset.bind(null, pool),
-      pause: pause.bind(null, pool),
-      resume: resume.bind(null, pool),
       subscribe: subscribe.bind(null, pool),
       unsubscribe: unsubscribe.bind(null, pool),
-      resubscribe: resubscribe.bind(null, pool)
+      resubscribe: resubscribe.bind(null, pool),
+      deleteProperty: deleteProperty.bind(null, pool),
+      getProperty: getProperty.bind(null, pool),
+      listProperties: listProperties.bind(null, pool),
+      setProperty: setProperty.bind(null, pool),
+      resume: resume.bind(null, pool),
+      pause: pause.bind(null, pool),
+      reset: reset.bind(null, pool),
+      status: status.bind(null, pool),
+      build: build.bind(null, pool)
     })
   }
 

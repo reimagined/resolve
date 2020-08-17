@@ -46,4 +46,5 @@ const resume = async (pool, payload) => {
     }
   }
 }
+
 export default resume

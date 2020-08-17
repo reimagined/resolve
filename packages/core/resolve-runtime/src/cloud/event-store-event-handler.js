@@ -4,7 +4,6 @@ const handleEventStoreEvent = async (lambdaEvent, resolve) => {
       const result = await resolve.eventstoreAdapter.saveEvent(
         lambdaEvent.payload.event
       )
-      await resolve.notifyInlineLedgers()
       return result
     }
     case 'LoadEvents': {

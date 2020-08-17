@@ -28,7 +28,7 @@ const create = async (pool, options) => {
         "IsPaused" BOOLEAN NOT NULL,
         "EventTypes" JSONB NOT NULL,
         "AggregateIds" JSONB NOT NULL,
-        "XaKey" VARCHAR(190) NOT NULL,
+        "XaKey" VARCHAR(190) NULL,
         "Cursor" JSONB NULL,
         "SuccessEvent" JSONB NULL,
         "FailedEvent" JSONB NULL,

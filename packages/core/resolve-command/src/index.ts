@@ -10,10 +10,6 @@ import {
 } from 'resolve-core'
 import getLog from './get-log'
 
-type EventPublisher = {
-  publish: ({ event }: { event: Event }) => Promise<void>
-}
-
 type EventstoreAdapter = {
   getNextCursor: Function
   saveSnapshot: Function
@@ -39,7 +35,7 @@ type AggregateMeta = {
 }
 
 type CommandPool = {
-  publisher: EventPublisher
+  onCommandExecuted: (event: any) => Promise<void>
   performanceTracer: any
   aggregateName: string
   isDisposed: boolean
@@ -65,7 +61,7 @@ export type CommandExecutor = {
 }
 
 export type CommandExecutorBuilder = (context: {
-  publisher: EventPublisher
+  onCommandExecuted: (event: any) => Promise<void>
   aggregates: AggregateMeta[]
   performanceTracer?: any
   eventstoreAdapter: EventstoreAdapter
@@ -400,7 +396,7 @@ const isString = (val: any): val is string =>
   val != null && val.constructor === String
 
 const saveEvent = async (
-  publisher: EventPublisher,
+  onCommandExecuted: (event: any) => Promise<void>,
   event: Event
 ): Promise<any> => {
   if (!isString(event.type)) {
@@ -418,7 +414,9 @@ const saveEvent = async (
 
   event.aggregateId = String(event.aggregateId)
 
-  return publisher.publish({ event })
+  await onCommandExecuted(event)
+
+  return event
 }
 
 const executeCommand = async (
@@ -544,7 +542,7 @@ const executeCommand = async (
       const subSegment = segment ? segment.addNewSubsegment('saveEvent') : null
 
       try {
-        return await saveEvent(pool.publisher, processedEvent)
+        return await saveEvent(pool.onCommandExecuted, processedEvent)
       } catch (error) {
         if (subSegment != null) {
           subSegment.addError(error)
@@ -595,13 +593,13 @@ const dispose = async (pool: CommandPool): Promise<void> => {
 }
 
 const createCommand: CommandExecutorBuilder = ({
-  publisher,
+   onCommandExecuted,
   aggregates,
   performanceTracer,
   eventstoreAdapter
 }): CommandExecutor => {
   const pool = {
-    publisher,
+    onCommandExecuted,
     aggregates,
     isDisposed: false,
     performanceTracer,

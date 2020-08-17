@@ -181,7 +181,6 @@ const createAndInitConsumer = async config => {
     try {
       await initResolve(currentResolve)
       const result = await currentResolve.eventstoreAdapter.saveEvent(event)
-      await currentResolve.notifyInlineLedgers()
       return result
     } finally {
       await disposeResolve(currentResolve)

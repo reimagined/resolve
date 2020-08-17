@@ -55,20 +55,28 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
           "EventSubscriber", "EventTypes", "AggregateIds", "IsPaused"
          ) VALUES (
            ${escape(readModelName)},
-           ${eventTypes != null ? escape(JSON.stringify(eventTypes)) : 'NULL'},
+           ${
+             eventTypes != null
+               ? escape(JSON.stringify(eventTypes))
+               : escape('null')
+           },
            ${
              aggregateIds != null
                ? escape(JSON.stringify(aggregateIds))
-               : 'NULL'
+               : escape('null')
            },
-           COALESCE(NULLIF((SELECT Count("CTE".*) FROM "CTE"), 1), FALSE)
+           COALESCE(NULLIF((SELECT Count("CTE".*) < 2 FROM "CTE"), TRUE), FALSE)
          )
          ON CONFLICT ("EventSubscriber") DO UPDATE SET
          "EventTypes" = ${
-           eventTypes != null ? escape(JSON.stringify(eventTypes)) : 'NULL'
+           eventTypes != null
+             ? escape(JSON.stringify(eventTypes))
+             : escape('null')
          },
          "AggregateIds" = ${
-           aggregateIds != null ? escape(JSON.stringify(aggregateIds)) : 'NULL'
+           aggregateIds != null
+             ? escape(JSON.stringify(aggregateIds))
+             : escape('null')
          }
       `
       )

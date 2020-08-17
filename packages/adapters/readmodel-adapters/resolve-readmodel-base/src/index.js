@@ -3,6 +3,8 @@ const createAdapter = (implementation, options) => {
 
   const {
     connect,
+    disconnect,
+    dropReadModel,
     beginTransaction,
     commitTransaction,
     rollbackTransaction,
@@ -12,15 +14,18 @@ const createAdapter = (implementation, options) => {
     beginEvent,
     commitEvent,
     rollbackEvent,
-    build,
-    reset,
-    pause,
-    resume,
     subscribe,
     unsubscribe,
     resubscribe,
-    disconnect,
-    dropReadModel,
+    deleteProperty,
+    getProperty,
+    listProperties,
+    setProperty,
+    resume,
+    pause,
+    reset,
+    status,
+    build,
     ...storeApi
   } = implementation
 
@@ -136,13 +141,18 @@ const createAdapter = (implementation, options) => {
   const adapterOperations = {}
   if (preferInlineLedger) {
     Object.assign(adapterOperations, {
-      build,
-      reset,
-      pause,
-      resume,
       subscribe,
       unsubscribe,
-      resubscribe
+      resubscribe,
+      deleteProperty,
+      getProperty,
+      listProperties,
+      setProperty,
+      resume,
+      pause,
+      reset,
+      status,
+      build
     })
   } else {
     Object.assign(adapterOperations, {

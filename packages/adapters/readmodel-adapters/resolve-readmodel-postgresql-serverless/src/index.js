@@ -25,6 +25,9 @@ import rollbackTransaction from './rollback-transaction'
 import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
 
+import PassthroughError from './passthrough-error'
+import inlineLedgerExecuteStatement from './inline-ledger-execute-statement'
+import inlineLedgerForceStop from './inline-ledger-force-stop'
 import generateGuid from './generate-guid'
 import isHighloadError from './is-highload-error'
 import isTimeoutError from './is-timeout-error'
@@ -39,6 +42,7 @@ import setProperty from './set-property'
 import reset from './reset'
 import pause from './pause'
 import resume from './resume'
+import status from './status'
 import build from './build'
 
 import beginXATransaction from './begin-xa-transaction'
@@ -65,6 +69,9 @@ const internalMethods = {
   executeStatement,
   coercer,
   generateGuid,
+  PassthroughError,
+  inlineLedgerExecuteStatement,
+  inlineLedgerForceStop,
   isTimeoutError,
   isHighloadError
 }
@@ -90,6 +97,7 @@ const externalMethods = {
   resume,
   pause,
   reset,
+  status,
   build
 }
 

@@ -8,7 +8,7 @@ import wrapRegularSagas from './wrap-regular-sagas'
 
 const createSaga = ({
   invokeEventListenerAsync,
-  publisher,
+  onCommandExecuted,
   readModelConnectors,
   sagas,
   schedulers,
@@ -22,7 +22,7 @@ const createSaga = ({
   let eventProperties = {}
   const executeScheduleCommand = createCommand({
     aggregates: createSchedulersAggregates(schedulers),
-    publisher,
+    onCommandExecuted,
     eventstoreAdapter
   })
 
@@ -51,7 +51,6 @@ const createSaga = ({
 
   const executeListener = createQuery({
     invokeEventListenerAsync,
-    publisher,
     readModelConnectors,
     readModels: [...regularSagas, ...schedulerSagas],
     viewModels: [],

@@ -17,23 +17,23 @@ const startExpress = async resolve => {
     await initResolve(currentResolve)
     await bootstrap(currentResolve)
 
-    let readyListeners = 0
-    while (upstream && readyListeners < resolve.eventListeners.size) {
-      readyListeners = await Promise.all(
-        Array.from(currentResolve.eventListeners.keys()).map(eventSubscriber =>
-          currentResolve.publisher.status({ eventSubscriber })
-        )
-      ).then(statuses =>
-        statuses.reduce(
-          ({ successEvent, failedEvent, errors }, acc) =>
-            successEvent != null ||
-            failedEvent != null ||
-            (Array.isArray(errors) && errors.length > 0)
-              ? acc + 1
-              : acc,
-          0
-        )
-      )
+    const notReadyListeners = new Set([...resolve.eventListeners.keys()])
+
+    while (upstream && notReadyListeners.size > 0) {
+      for (const eventSubscriber of notReadyListeners) {
+        const {
+          successEvent,
+          failedEvent,
+          errors
+        } = await currentResolve.eventBus.status({ eventSubscriber })
+        if (
+          successEvent != null ||
+          failedEvent != null ||
+          (Array.isArray(errors) && errors.length > 0)
+        ) {
+          notReadyListeners.delete(eventSubscriber)
+        }
+      }
 
       await new Promise(resolve => setTimeout(resolve, 1000))
     }
