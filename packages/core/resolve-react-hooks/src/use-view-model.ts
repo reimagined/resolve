@@ -5,7 +5,7 @@ import { QueryOptions, SubscribeCallback, Subscription } from 'resolve-client'
 import { useClient } from './use-client'
 import { isCallback, isOptions, isSerializableMap } from './generic'
 
-type StateChangedCallback = (state: any) => void
+type StateChangedCallback = (state: any, initial: boolean) => void
 type EventReceivedCallback = (event: Event) => void
 type PromiseOrVoid<T> = Promise<T> | void
 
@@ -138,14 +138,13 @@ function useViewModel(
       ? viewModel.projection.Init()
       : null
     return {
-      state: initialState,
       initialState
     }
   }, [])
 
-  const setState = useCallback(state => {
+  const setState = useCallback((state: any, initial: boolean) => {
     closure.state = state
-    actualStateChangeCallback(closure.state)
+    actualStateChangeCallback(closure.state, initial)
   }, [])
 
   const queryState = useCallback(async () => {
@@ -159,7 +158,7 @@ function useViewModel(
     )
     if (result) {
       const { data, url, cursor } = result
-      setState(data)
+      setState(data, false)
       closure.url = url
       closure.cursor = cursor
     }
@@ -169,7 +168,7 @@ function useViewModel(
     if (isCallback<EventReceivedCallback>(actualEventReceivedCallback)) {
       actualEventReceivedCallback(event)
     }
-    setState(viewModel.projection[event.type](closure.state, event))
+    setState(viewModel.projection[event.type](closure.state, event), false)
   }, [])
 
   const connect = useCallback((done?: SubscribeCallback): PromiseOrVoid<
@@ -197,7 +196,7 @@ function useViewModel(
       return subscription
     }
 
-    setState(closure.initialState)
+    setState(closure.initialState, true)
 
     if (typeof done !== 'function') {
       return asyncConnect()
