@@ -1,8 +1,9 @@
 import { useContext, useCallback, useMemo } from 'react'
 import { ResolveContext } from './context'
-import { Event } from 'resolve-core'
+import { Event, firstOfType } from 'resolve-core'
 import { QueryOptions, SubscribeCallback, Subscription } from 'resolve-client'
 import { useClient } from './use-client'
+import { isCallback, isOptions } from './generic'
 
 type StateChangedCallback = (state: any) => void
 type EventReceivedCallback = (event: Event) => void
@@ -63,6 +64,10 @@ function useViewModel(
     throw Error(`View model ${modelName} not exist within context`)
   }
 
+  const actualQueryOptions: QueryOptions | undefined = firstOfType<
+    QueryOptions
+  >(isOptions, eventReceivedCallback, queryOptions)
+
   const closure = useMemo<Closure>(
     () => ({
       state: viewModel.projection.Init ? viewModel.projection.Init() : null
@@ -82,7 +87,7 @@ function useViewModel(
         aggregateIds,
         args: {}
       },
-      queryOptions
+      actualQueryOptions
     )
     if (result) {
       const { data, url, cursor } = result
@@ -93,6 +98,9 @@ function useViewModel(
   }, [])
 
   const applyEvent = useCallback(event => {
+    if (isCallback<EventReceivedCallback>(eventReceivedCallback)) {
+      eventReceivedCallback(event)
+    }
     setState(viewModel.projection[event.type](closure.state, event))
   }, [])
 
