@@ -181,10 +181,6 @@ const read = async (
     throw new Error(`View model "${viewModelName}" is disposed`)
   }
 
-  const getLocalLog = (scope: string): any =>
-    getLog(`read:${viewModelName}${scope}`)
-  const log = getLocalLog('')
-
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
     : null
