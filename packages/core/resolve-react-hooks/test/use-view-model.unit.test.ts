@@ -3,16 +3,23 @@ import { mocked } from 'ts-jest/utils'
 import { useClient } from '../src/use-client'
 import { useViewModel } from '../src/use-view-model'
 
+const projectionInitHandler = jest.fn()
 const mockedContext = {
   viewModels: [
     {
       name: 'view-model-name',
-      projection: [],
+      projection: {
+        Init: projectionInitHandler,
+        EVENT_TYPE: (state: any, event: any) => ({
+          ...state,
+          appliedEvent: event
+        })
+      },
       deserializeState: (): object => ({})
     },
     {
       name: 'another-view-model-name',
-      projection: [],
+      projection: {},
       deserializeState: (): object => ({})
     }
   ]
@@ -32,7 +39,9 @@ const mockedClient = {
   command: jest.fn(),
   query: jest.fn(() =>
     Promise.resolve({
-      data: 'query-result',
+      data: {
+        queried: 'result'
+      },
       timestamp: 1,
       url: 'url',
       cursor: 'cursor'
@@ -54,6 +63,7 @@ const mockedUseMemo = mocked(useMemo)
 const mockedUseClient = mocked(useClient)
 
 const mockStateChange = jest.fn()
+const mockEventReceived = jest.fn()
 
 const clearMocks = (): void => {
   mockedUseClient.mockClear()
@@ -67,6 +77,9 @@ const clearMocks = (): void => {
   mockedClient.unsubscribe.mockClear()
 
   mockStateChange.mockClear()
+  mockEventReceived.mockClear()
+
+  projectionInitHandler.mockClear()
 }
 
 beforeAll(() => {
@@ -106,6 +119,11 @@ describe('common', () => {
 })
 
 describe('call', () => {
+  const emulateIncomingEvent = async (event: any) => {
+    const subscriptionEventHandler = mockedClient.subscribe.mock.calls[0][4]
+    await subscriptionEventHandler(event)
+  }
+
   test('connect as promise', async () => {
     const { connect } = useViewModel(
       'view-model-name',
@@ -215,5 +233,63 @@ describe('call', () => {
     const result = await dispose(callback)
     expect(result).toBeUndefined()
     expect(callback).toHaveBeenCalledTimes(1)
+  })
+
+  test('projection Init handler invoked during initialization', () => {
+    useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
+
+    expect(projectionInitHandler).toHaveBeenCalled()
+  })
+
+  test('state changed callback invoked on connect with initial queried state', async () => {
+    const { connect } = useViewModel(
+      'view-model-name',
+      ['aggregate-id'],
+      mockStateChange
+    )
+
+    await connect()
+
+    expect(mockStateChange).toHaveBeenCalledWith({
+      queried: 'result'
+    })
+  })
+
+  test('state changed callback invoked with updated state', async () => {
+    const event = {
+      type: 'EVENT_TYPE'
+    }
+    const { connect } = useViewModel(
+      'view-model-name',
+      ['aggregate-id'],
+      mockStateChange
+    )
+
+    await connect()
+
+    await emulateIncomingEvent(event)
+
+    expect(mockStateChange).toHaveBeenCalledWith({
+      queried: 'result',
+      appliedEvent: event
+    })
+  })
+
+  test('event received callback invoked with incoming event', async () => {
+    const event = {
+      type: 'EVENT_TYPE'
+    }
+    const { connect } = useViewModel(
+      'view-model-name',
+      ['aggregate-id'],
+      mockStateChange,
+      mockEventReceived
+    )
+
+    await connect()
+
+    await emulateIncomingEvent(event)
+
+    expect(mockEventReceived).toHaveBeenCalledWith(event)
   })
 })
