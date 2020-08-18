@@ -3,7 +3,7 @@ import { mocked } from 'ts-jest/utils'
 import { useClient } from '../src/use-client'
 import { useViewModel } from '../src/use-view-model'
 
-const projectionInitHandler = jest.fn()
+const projectionInitHandler = jest.fn(() => ({ initializedOnClient: true }))
 const mockedContext = {
   viewModels: [
     {
@@ -344,5 +344,15 @@ describe('call', () => {
       }),
       undefined
     )
+  })
+
+  test('initial state returned', () => {
+    const { initialState } = useViewModel(
+      'view-model-name',
+      ['aggregate-id'],
+      mockStateChange
+    )
+
+    expect(initialState).toEqual({ initializedOnClient: true })
   })
 })

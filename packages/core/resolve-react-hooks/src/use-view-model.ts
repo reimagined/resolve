@@ -10,6 +10,7 @@ type EventReceivedCallback = (event: Event) => void
 type PromiseOrVoid<T> = Promise<T> | void
 
 type Closure = {
+  initialState: any
   state?: any
   subscription?: Subscription
   url?: string
@@ -19,6 +20,7 @@ type Closure = {
 type ViewModelConnection = {
   connect: (done?: SubscribeCallback) => PromiseOrVoid<Subscription>
   dispose: (done?: (error?: Error) => void) => PromiseOrVoid<void>
+  initialState: any
 }
 
 function useViewModel(
@@ -131,12 +133,15 @@ function useViewModel(
     throw Error(`state change callback required`)
   }
 
-  const closure = useMemo<Closure>(
-    () => ({
-      state: viewModel.projection.Init ? viewModel.projection.Init() : null
-    }),
-    []
-  )
+  const closure = useMemo<Closure>(() => {
+    const initialState = viewModel.projection.Init
+      ? viewModel.projection.Init()
+      : null
+    return {
+      state: initialState,
+      initialState
+    }
+  }, [])
 
   const setState = useCallback(state => {
     closure.state = state
@@ -191,6 +196,9 @@ function useViewModel(
 
       return subscription
     }
+
+    setState(closure.initialState)
+
     if (typeof done !== 'function') {
       return asyncConnect()
     }
@@ -225,7 +233,8 @@ function useViewModel(
   return useMemo(
     () => ({
       connect,
-      dispose
+      dispose,
+      initialState: closure.initialState
     }),
     []
   )

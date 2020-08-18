@@ -6,7 +6,7 @@ import {
   viewModelStateUpdate,
   ViewModelStateUpdateAction
 } from './actions'
-import { ReduxState, ViewModelReactiveEvent } from '../types'
+import { ReduxState, ResultDataState, ViewModelReactiveEvent } from '../types'
 import { firstOfType } from 'resolve-core'
 import { isActionCreators, isDependencies, isOptions } from '../helpers'
 import { useDispatch } from 'react-redux'
@@ -39,7 +39,7 @@ type ViewModelReduxActionsCreators = {
   */
   stateUpdate: (
     query: ViewModelQuery,
-    result: QueryResult,
+    state: any,
     selectorId?: string
   ) => ViewModelStateUpdateAction | Action
   eventReceived: (
@@ -101,7 +101,7 @@ export function useReduxViewModel(
     }
   }, actualDependencies)
 
-  const { connect, dispose } = useViewModel(
+  const { connect, dispose, initialState } = useViewModel(
     name,
     aggregateIds,
     args,
@@ -120,7 +120,11 @@ export function useReduxViewModel(
           ? selectorId
           : {
               query
-            }
+            },
+        {
+          data: initialState,
+          state: ResultDataState.Requested
+        }
       )
   }
 }

@@ -5,7 +5,8 @@ import {
   DROP_VIEWMODEL_STATE,
   CONNECT_VIEWMODEL,
   DISCONNECT_VIEWMODEL,
-  VIEWMODEL_STATE_UPDATE, VIEWMODEL_EVENT_RECEIVED
+  VIEWMODEL_STATE_UPDATE,
+  VIEWMODEL_EVENT_RECEIVED
 } from '../action-types'
 import { ViewModelQuery } from 'resolve-client'
 import { ViewModelReactiveEvent } from '../types'
@@ -73,7 +74,7 @@ export const viewModelStateUpdate = (
 })
 
 export type ViewModelEventReceivedAction = {
-  type: typeof VIEWMODEL_EVENT_RECEIVED,
+  type: typeof VIEWMODEL_EVENT_RECEIVED
   event: ViewModelReactiveEvent
 } & ViewModelAction
 export const viewModelEventReceived = (

@@ -20,6 +20,12 @@ const entryPoint = context => {
     isClient: true
   })
 
+  let appContainer = document.getElementById('app-container')
+  if (!appContainer) {
+    appContainer = document.createElement('div')
+    document.body.appendChild(appContainer)
+  }
+
   render(
     <Redux.Provider store={store}>
       <ResolveContext.Provider value={context}>
@@ -28,7 +34,7 @@ const entryPoint = context => {
         </Router>
       </ResolveContext.Provider>
     </Redux.Provider>,
-    document.getElementById('app-container')
+    appContainer
   )
 }
 
