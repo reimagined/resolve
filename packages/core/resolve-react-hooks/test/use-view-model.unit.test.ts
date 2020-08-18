@@ -116,6 +116,17 @@ describe('common', () => {
       useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
     ).toThrow()
   })
+
+  test('fail if no state changed callback set', () => {
+    const dynamic = useViewModel as Function
+
+    expect(() => dynamic('view-model-name', ['aggregate-id'])).toThrow(
+      'state change callback required'
+    )
+    expect(() => dynamic('view-model-name', ['aggregate-id'], {})).toThrow(
+      'state change callback required'
+    )
+  })
 })
 
 describe('call', () => {
@@ -136,7 +147,7 @@ describe('call', () => {
     expect(mockedClient.query).toBeCalledWith(
       {
         aggregateIds: ['aggregate-id'],
-        args: {},
+        args: undefined,
         name: 'view-model-name'
       },
       undefined
@@ -171,7 +182,7 @@ describe('call', () => {
     expect(mockedClient.query).toBeCalledWith(
       {
         aggregateIds: ['aggregate-id'],
-        args: {},
+        args: undefined,
         name: 'view-model-name'
       },
       {
@@ -311,5 +322,27 @@ describe('call', () => {
 
     expect(mockedClient.query).toHaveBeenCalled()
     expect(mockStateChange).toHaveBeenCalled()
+  })
+
+  test('pass view model arguments to client', async () => {
+    const { connect } = useViewModel(
+      'view-model-name',
+      ['aggregate-id'],
+      {
+        a: 'a'
+      },
+      mockStateChange
+    )
+
+    await connect()
+
+    expect(mockedClient.query).toBeCalledWith(
+      expect.objectContaining({
+        aggregateIds: ['aggregate-id'],
+        args: { a: 'a' },
+        name: 'view-model-name'
+      }),
+      undefined
+    )
   })
 })

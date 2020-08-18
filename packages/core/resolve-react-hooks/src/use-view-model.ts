@@ -1,9 +1,9 @@
 import { useContext, useCallback, useMemo } from 'react'
 import { ResolveContext } from './context'
-import { Event, firstOfType } from 'resolve-core'
+import { Event, firstOfType, SerializableMap } from 'resolve-core'
 import { QueryOptions, SubscribeCallback, Subscription } from 'resolve-client'
 import { useClient } from './use-client'
-import { isCallback, isOptions } from './generic'
+import { isCallback, isOptions, isSerializableMap } from './generic'
 
 type StateChangedCallback = (state: any) => void
 type EventReceivedCallback = (event: Event) => void
@@ -21,12 +21,23 @@ type ViewModelConnection = {
   dispose: (done?: (error?: Error) => void) => PromiseOrVoid<void>
 }
 
-// TODO: add unit tests after new 'subscription' feature will be fixed
-
 function useViewModel(
   modelName: string,
   aggregateIds: string[] | '*',
   stateChangeCallback: StateChangedCallback
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  args: SerializableMap,
+  stateChangeCallback: StateChangedCallback
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  args: SerializableMap,
+  stateChangeCallback: StateChangedCallback,
+  eventReceivedCallback: EventReceivedCallback
 ): ViewModelConnection
 function useViewModel(
   modelName: string,
@@ -37,7 +48,22 @@ function useViewModel(
 function useViewModel(
   modelName: string,
   aggregateIds: string[] | '*',
+  args: SerializableMap,
   stateChangeCallback: StateChangedCallback,
+  queryOptions: QueryOptions
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  stateChangeCallback: StateChangedCallback,
+  queryOptions: QueryOptions
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  args: SerializableMap,
+  stateChangeCallback: StateChangedCallback,
+  eventReceivedCallback: EventReceivedCallback,
   queryOptions: QueryOptions
 ): ViewModelConnection
 function useViewModel(
@@ -50,7 +76,11 @@ function useViewModel(
 function useViewModel(
   modelName: string,
   aggregateIds: string[] | '*',
-  stateChangeCallback: StateChangedCallback,
+  args: SerializableMap | StateChangedCallback,
+  stateChangeCallback?:
+    | StateChangedCallback
+    | QueryOptions
+    | EventReceivedCallback,
   eventReceivedCallback?: QueryOptions | EventReceivedCallback,
   queryOptions?: QueryOptions
 ): ViewModelConnection {
@@ -64,9 +94,34 @@ function useViewModel(
     throw Error(`View model ${modelName} not exist within context`)
   }
 
+  const actualArgs: SerializableMap | undefined = isSerializableMap(args)
+    ? args
+    : undefined
   const actualQueryOptions: QueryOptions | undefined = firstOfType<
     QueryOptions
-  >(isOptions, eventReceivedCallback, queryOptions)
+  >(isOptions, stateChangeCallback, eventReceivedCallback, queryOptions)
+  const actualStateChangeCallback:
+    | StateChangedCallback
+    | undefined = firstOfType<StateChangedCallback>(
+    isCallback,
+    args,
+    stateChangeCallback
+  )
+  let actualEventReceivedCallback:
+    | EventReceivedCallback
+    | undefined = firstOfType<EventReceivedCallback>(
+    isCallback,
+    stateChangeCallback,
+    eventReceivedCallback
+  )
+  actualEventReceivedCallback =
+    actualEventReceivedCallback !== actualStateChangeCallback
+      ? actualEventReceivedCallback
+      : undefined
+
+  if (!actualStateChangeCallback) {
+    throw Error(`state change callback required`)
+  }
 
   const closure = useMemo<Closure>(
     () => ({
@@ -77,7 +132,7 @@ function useViewModel(
 
   const setState = useCallback(state => {
     closure.state = state
-    stateChangeCallback(closure.state)
+    actualStateChangeCallback(closure.state)
   }, [])
 
   const queryState = useCallback(async () => {
@@ -85,7 +140,7 @@ function useViewModel(
       {
         name: modelName,
         aggregateIds,
-        args: {}
+        args: actualArgs
       },
       actualQueryOptions
     )
@@ -98,8 +153,8 @@ function useViewModel(
   }, [])
 
   const applyEvent = useCallback(event => {
-    if (isCallback<EventReceivedCallback>(eventReceivedCallback)) {
-      eventReceivedCallback(event)
+    if (isCallback<EventReceivedCallback>(actualEventReceivedCallback)) {
+      actualEventReceivedCallback(event)
     }
     setState(viewModel.projection[event.type](closure.state, event))
   }, [])
