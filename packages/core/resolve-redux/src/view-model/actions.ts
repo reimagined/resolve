@@ -61,15 +61,18 @@ export const queryViewModelFailure = (
 export type ViewModelStateUpdateAction = {
   type: typeof VIEWMODEL_STATE_UPDATE
   state: any
+  initial: boolean
 } & ViewModelAction
 export const viewModelStateUpdate = (
   query: ViewModelQuery,
   state: any,
+  initial: boolean,
   selectorId?: string
 ): ViewModelStateUpdateAction => ({
   type: VIEWMODEL_STATE_UPDATE,
   query,
   state,
+  initial,
   selectorId
 })
 

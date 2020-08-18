@@ -40,6 +40,7 @@ type ViewModelReduxActionsCreators = {
   stateUpdate: (
     query: ViewModelQuery,
     state: any,
+    initial: boolean,
     selectorId?: string
   ) => ViewModelStateUpdateAction | Action
   eventReceived: (
@@ -90,9 +91,9 @@ export function useReduxViewModel(
 
   const dispatch = useDispatch()
 
-  const stateChangeCallback = useCallback((state: any) => {
+  const stateChangeCallback = useCallback((state: any, initial: boolean) => {
     if (typeof stateUpdate === 'function') {
-      dispatch(stateUpdate(query, state, selectorId))
+      dispatch(stateUpdate(query, state, initial, selectorId))
     }
   }, actualDependencies)
   const eventReceivedCallback = useCallback((event: ViewModelReactiveEvent) => {

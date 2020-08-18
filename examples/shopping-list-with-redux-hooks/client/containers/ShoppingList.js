@@ -1,5 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useReduxCommand, useReduxViewModel } from 'resolve-redux'
+import {
+  ResultDataState,
+  useReduxCommand,
+  useReduxViewModel
+} from 'resolve-redux'
 import { Redirect } from 'react-router-dom'
 
 import {
@@ -27,9 +31,7 @@ const ShoppingList = ({
     aggregateIds: [aggregateId]
   })
 
-  const entry = useSelector(thisList)
-
-  const { data: shoppingList, state: shoppingListState } = entry
+  const { data: shoppingList, state: shoppingListState } = useSelector(thisList)
 
   const { execute: executeCreateShoppingItem } = useReduxCommand(text => ({
     type: 'createShoppingItem',
@@ -90,6 +92,10 @@ const ShoppingList = ({
       dispose()
     }
   }, [])
+
+  if (shoppingListState === ResultDataState.Requested) {
+    return null
+  }
 
   if (shoppingList == null) {
     return <NotFound />

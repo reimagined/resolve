@@ -26,6 +26,8 @@ import { useReduxViewModel } from './view-model/use-redux-view-model'
 
 import * as actionTypes from './action-types'
 
+import { ResultDataState } from './types'
+
 const internal = {
   actionTypes
 }
@@ -57,5 +59,6 @@ export {
   useReduxReadModel,
   useReduxReadModelSelector,
   useReduxCommand,
-  useReduxViewModel
+  useReduxViewModel,
+  ResultDataState
 }

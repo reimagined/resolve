@@ -53,7 +53,9 @@ export const create = (): any => {
       },
       getEntryPath(getSelector(action)),
       {
-        state: ResultDataState.Ready,
+        state: action.initial
+          ? ResultDataState.Requested
+          : ResultDataState.Ready,
         data: action.state
       }
     )
