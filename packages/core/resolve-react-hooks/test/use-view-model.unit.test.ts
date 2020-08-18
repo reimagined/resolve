@@ -254,9 +254,12 @@ describe('call', () => {
 
   test('state changed callback invoked with local client state with Init event applied', () => {
     useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
-    expect(mockStateChange).toHaveBeenCalledWith({
-      initializedOnClient: true
-    })
+    expect(mockStateChange).toHaveBeenCalledWith(
+      {
+        initializedOnClient: true
+      },
+      true
+    )
   })
 
   test('state changed callback invoked on connect with initial queried state', async () => {
@@ -268,9 +271,12 @@ describe('call', () => {
 
     await connect()
 
-    expect(mockStateChange).toHaveBeenCalledWith({
-      queried: 'result'
-    })
+    expect(mockStateChange).toHaveBeenCalledWith(
+      {
+        queried: 'result'
+      },
+      false
+    )
   })
 
   test('state changed callback invoked with updated state', async () => {
@@ -287,10 +293,13 @@ describe('call', () => {
 
     await emulateIncomingEvent(event)
 
-    expect(mockStateChange).toHaveBeenCalledWith({
-      queried: 'result',
-      appliedEvent: event
-    })
+    expect(mockStateChange).toHaveBeenCalledWith(
+      {
+        queried: 'result',
+        appliedEvent: event
+      },
+      false
+    )
   })
 
   test('event received callback invoked with incoming event', async () => {

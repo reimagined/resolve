@@ -5,7 +5,7 @@ import { QueryOptions, SubscribeCallback, Subscription } from 'resolve-client'
 import { useClient } from './use-client'
 import { isCallback, isOptions, isSerializableMap } from './generic'
 
-type StateChangedCallback = (state: any) => void
+type StateChangedCallback = (state: any, initial: boolean) => void
 type EventReceivedCallback = (event: Event) => void
 type PromiseOrVoid<T> = Promise<T> | void
 
@@ -142,7 +142,7 @@ function useViewModel(
 
   const setState = useCallback(state => {
     closure.state = state
-    actualStateChangeCallback(closure.state)
+    actualStateChangeCallback(closure.state, false)
   }, [])
 
   const queryState = useCallback(async () => {
@@ -228,7 +228,7 @@ function useViewModel(
     !closure.initialStateSent &&
     typeof actualStateChangeCallback === 'function'
   ) {
-    actualStateChangeCallback(closure.state)
+    actualStateChangeCallback(closure.state, true)
     closure.initialStateSent = true
   }
 
