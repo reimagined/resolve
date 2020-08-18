@@ -1,26 +1,16 @@
 import { Action } from 'redux'
+import { QueryOptions, QueryResult, ViewModelQuery } from 'resolve-client'
 import {
-  QueryOptions,
-  QueryResult,
-  ViewModelQuery
-} from 'resolve-client'
-import {
-  QueryViewModelFailureAction,
-  QueryViewModelRequestAction,
-  QueryViewModelSuccessAction,
+  viewModelEventReceived,
+  ViewModelEventReceivedAction,
+  viewModelStateUpdate,
   ViewModelStateUpdateAction
 } from './actions'
-import { ReduxState } from '../types'
-import {
-  QUERY_VIEWMODEL_FAILURE,
-  QUERY_VIEWMODEL_REQUEST,
-  QUERY_VIEWMODEL_SUCCESS,
-  VIEWMODEL_STATE_UPDATE
-} from '../action-types'
+import { ReduxState, ViewModelReactiveEvent } from '../types'
 import { firstOfType } from 'resolve-core'
 import { isActionCreators, isDependencies, isOptions } from '../helpers'
 import { useDispatch } from 'react-redux'
-import { useClient, useViewModel } from 'resolve-react-hooks'
+import { useViewModel } from 'resolve-react-hooks'
 import { useCallback } from 'react'
 
 type HookData = {
@@ -30,6 +20,7 @@ type HookData = {
 }
 
 type ViewModelReduxActionsCreators = {
+  /*
   request: (
     query: ViewModelQuery,
     selectorId?: string
@@ -44,11 +35,17 @@ type ViewModelReduxActionsCreators = {
     error: Error,
     selectorId?: string
   ) => QueryViewModelFailureAction | Action
-  update: (
+  */
+  stateUpdate: (
     query: ViewModelQuery,
     result: QueryResult,
     selectorId?: string
   ) => ViewModelStateUpdateAction | Action
+  eventReceived: (
+    query: ViewModelQuery,
+    event: ViewModelReactiveEvent,
+    selectorId?: string
+  ) => ViewModelEventReceivedAction | Action
 }
 
 type ReduxViewModelHookOptions = {
@@ -61,39 +58,11 @@ const defaultQueryOptions: QueryOptions = {
 }
 
 const internalActions: ViewModelReduxActionsCreators = {
-  request: (query: ViewModelQuery, selectorId?: string) => ({
-    type: QUERY_VIEWMODEL_REQUEST,
-    query,
-    selectorId
-  }),
-  success: (
-    query: ViewModelQuery,
-    result: QueryResult,
-    selectorId?: string
-  ) => ({
-    type: QUERY_VIEWMODEL_SUCCESS,
-    query,
-    result: result.data,
-    timestamp: result.timestamp,
-    selectorId
-  }),
-  failure: (query: ViewModelQuery, error: Error, selectorId?: string) => ({
-    type: QUERY_VIEWMODEL_FAILURE,
-    query,
-    error,
-    selectorId
-  }),
-  update: (
-    query: ViewModelQuery,
-    result: QueryResult,
-    selectorId?: string
-  ) => ({
-    type: VIEWMODEL_STATE_UPDATE,
-    query,
-    result: result.data,
-    timestamp: result.timestamp,
-    selectorId
-  })
+  //request: queryViewModelRequest,
+  //success: queryViewModelSuccess,
+  //failure: queryViewModelFailure,
+  stateUpdate: viewModelStateUpdate,
+  eventReceived: viewModelEventReceived
 }
 
 export function useReduxViewModel(
@@ -114,83 +83,39 @@ export function useReduxViewModel(
     firstOfType<any[]>(isDependencies, options, actions, dependencies) ??
     [query, actualOptions, actualActionCreators].filter(i => i)
 
-  const { request, success, failure } = actualActionCreators
+  const {
+    stateUpdate,
+    eventReceived
+  } = actualActionCreators
   const { selectorId } = actualOptions
+  const { name, aggregateIds, args } = query
 
   const dispatch = useDispatch()
-  /*
+
+  const stateChangeCallback = useCallback((state: any) => {
+    if (typeof stateUpdate === 'function') {
+      dispatch(stateUpdate(query, state, selectorId))
+    }
+  }, actualDependencies)
+  const eventReceivedCallback = useCallback((event: ViewModelReactiveEvent) => {
+    if (typeof eventReceived === 'function') {
+      dispatch(eventReceived(query, event, selectorId))
+    }
+  }, actualDependencies)
+
   const { connect, dispose } = useViewModel(
-    query.name,
-    query.aggregateIds,
-    query.args,
+    name,
+    aggregateIds,
+    args,
+    stateChangeCallback,
+    eventReceivedCallback,
     actualOptions.queryOptions || defaultQueryOptions
   )
-  */
 
-  /*
-  const client = useClient()
-  const queryState = useCallback(async () => {
-    const result = await client.query(
-      {
-        name: modelName,
-        aggregateIds,
-        args: {}
-      },
-      queryOptions
-    )
-    if (result) {
-      setState(result.data)
-    }
-  }, [])
-
-  const applyEvent = useCallback(event => {
-    setState(viewModel.projection[event.type](closure.state, event))
-  }, [])
-
-  const connect = useCallback((done?: SubscribeCallback): void => {
-    const asyncConnect = async (): Promise<Subscription> => {
-      await queryState()
-
-      const subscribe = client.subscribe(
-        modelName,
-        aggregateIds,
-        event => applyEvent(event),
-        undefined,
-        () => queryState()
-      ) as Promise<Subscription>
-
-      const subscription = await subscribe
-
-      if (subscription) {
-        closure.subscription = subscription
-      }
-
-      return subscription
-    }
-    if (typeof done !== 'function') {
-      return asyncConnect()
-    }
-
-    return {
-    connect: () => connect,
-    dispose: () => dispose,
-    selector: (state: ReduxState): any =>
-      getEntry(
-        state.readModels,
-        selectorId
-          ? selectorId
-          : {
-              viewModelName: query.name,
-              aggregateIds: query.aggregateIds,
-              aggregateArgs: query.args
-            }
-      )
-  }
-     */
   return {
-    connect: () => {},
-    dispose: () => {},
+    connect,
+    dispose,
     selector: (state: ReduxState) =>
-      state.viewModels ?? [query.name] ?? [query.args]
+      state.viewModels ?? [query.name] ?? [query.aggregateIds] ?? [query.args]
   }
 }

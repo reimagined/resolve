@@ -5,9 +5,10 @@ import {
   DROP_VIEWMODEL_STATE,
   CONNECT_VIEWMODEL,
   DISCONNECT_VIEWMODEL,
-  VIEWMODEL_STATE_UPDATE
+  VIEWMODEL_STATE_UPDATE, VIEWMODEL_EVENT_RECEIVED
 } from '../action-types'
 import { ViewModelQuery } from 'resolve-client'
+import { ViewModelReactiveEvent } from '../types'
 
 type ViewModelAction = {
   query: ViewModelQuery
@@ -29,18 +30,15 @@ export const queryViewModelRequest = (
 export type QueryViewModelSuccessAction = {
   type: typeof QUERY_VIEWMODEL_SUCCESS
   result: any
-  timestamp: number
 } & ViewModelAction
 export const queryViewModelSuccess = (
   query: ViewModelQuery,
   result: any,
-  timestamp: number,
   selectorId?: string
 ): QueryViewModelSuccessAction => ({
   type: QUERY_VIEWMODEL_SUCCESS,
   query,
   result,
-  timestamp,
   selectorId
 })
 
@@ -61,19 +59,31 @@ export const queryViewModelFailure = (
 
 export type ViewModelStateUpdateAction = {
   type: typeof VIEWMODEL_STATE_UPDATE
-  result: any
-  timestamp: number
+  state: any
 } & ViewModelAction
 export const viewModelStateUpdate = (
   query: ViewModelQuery,
-  result: any,
-  timestamp: number,
+  state: any,
   selectorId?: string
 ): ViewModelStateUpdateAction => ({
   type: VIEWMODEL_STATE_UPDATE,
   query,
-  result,
-  timestamp,
+  state,
+  selectorId
+})
+
+export type ViewModelEventReceivedAction = {
+  type: typeof VIEWMODEL_EVENT_RECEIVED,
+  event: ViewModelReactiveEvent
+} & ViewModelAction
+export const viewModelEventReceived = (
+  query: ViewModelQuery,
+  event: ViewModelReactiveEvent,
+  selectorId?: string
+): ViewModelEventReceivedAction => ({
+  type: VIEWMODEL_EVENT_RECEIVED,
+  query,
+  event,
   selectorId
 })
 

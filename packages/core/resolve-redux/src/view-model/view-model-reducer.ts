@@ -3,78 +3,49 @@ import setEntry from 'lodash.set'
 import unsetEntry from 'lodash.unset'
 import getByPath from 'lodash.get'
 
+import { DROP_VIEWMODEL_STATE, VIEWMODEL_STATE_UPDATE } from '../action-types'
 import {
-  QUERY_VIEWMODEL_REQUEST,
-  QUERY_VIEWMODEL_SUCCESS,
-  QUERY_VIEWMODEL_FAILURE,
-  DROP_VIEWMODEL_STATE
-} from '../action-types'
-import {
-  DropViewModelStateAction,
-  QueryViewModelSuccessAction,
-  QueryViewModelFailureAction,
-  QueryReadModelSuccessAction
-} from './actions'
-import {
-  ReadModelResultEntry,
-  ReadModelResultMapByName,
+  ViewModelResultEntry,
+  ViewModelResultMapByName,
   ResultDataState,
   ReduxState
 } from '../types'
+import { DropViewModelStateAction, ViewModelStateUpdateAction } from './actions'
+import { ViewModelQuery } from 'resolve-client'
 
-export type ReadModelResultEntrySelector = {
-  readModelName: string
-  resolverName: string
-  resolverArgs: any
+export type ViewModelResultSelector = {
+  query: ViewModelQuery
 }
 
 const getSelector = (
-  action:
-    | QueryReadModelRequestAction
-    | QueryReadModelSuccessAction
-    | QueryReadModelFailureAction
-    | DropReadModelResultAction
-): ReadModelResultEntrySelector | string => action.selectorId || action
+  action: ViewModelStateUpdateAction | DropViewModelStateAction
+): ViewModelResultSelector | string => action.selectorId || action
 
 export const getEntryPath = (
-  selector: ReadModelResultEntrySelector | string
+  selector: ViewModelResultSelector | string
 ): string => {
   if (typeof selector === 'string') {
     return `@@resolve/namedSelectors.${getHash(selector)}`
   }
-  const { readModelName, resolverName, resolverArgs } = selector
-  return `${getHash(readModelName)}.${getHash(resolverName)}.${getHash(
-    resolverArgs
-  )}`
+  const {
+    query: { name, aggregateIds, args }
+  } = selector
+  return `${getHash(name)}.${getHash(aggregateIds)}.${getHash(args)}`
 }
 
 export const getEntry = (
-  state: ReadModelResultMapByName | undefined,
-  selector: ReadModelResultEntrySelector | string,
-  placeholder?: ReadModelResultEntry
-): ReadModelResultEntry =>
-  getByPath(state, getEntryPath(selector), placeholder) as ReadModelResultEntry
+  state: ViewModelResultMapByName | undefined,
+  selector: ViewModelResultSelector | string,
+  placeholder?: ViewModelResultEntry
+): ViewModelResultEntry =>
+  getByPath(state, getEntryPath(selector), placeholder) as ViewModelResultEntry
 
 export const create = (): any => {
   const handlers: { [key: string]: any } = {}
 
-  handlers[QUERY_READMODEL_REQUEST] = (
+  handlers[VIEWMODEL_STATE_UPDATE] = (
     state: ReduxState,
-    action: QueryReadModelRequestAction
-  ): ReduxState =>
-    setEntry(
-      {
-        ...state
-      },
-      getEntryPath(getSelector(action)),
-      {
-        state: ResultDataState.Requested
-      }
-    )
-
-  handlers[QUERY_READMODEL_SUCCESS] = (
-    state: ReduxState,
-    action: QueryReadModelSuccessAction
+    action: ViewModelStateUpdateAction
   ): ReduxState =>
     setEntry(
       {
@@ -83,30 +54,13 @@ export const create = (): any => {
       getEntryPath(getSelector(action)),
       {
         state: ResultDataState.Ready,
-        data: action.result,
-        timestamp: action.timestamp
+        data: action.state
       }
     )
 
-  handlers[QUERY_READMODEL_FAILURE] = (
+  handlers[DROP_VIEWMODEL_STATE] = (
     state: ReduxState,
-    action: QueryReadModelFailureAction
-  ): ReduxState =>
-    setEntry(
-      {
-        ...state
-      },
-      getEntryPath(getSelector(action)),
-      {
-        state: ResultDataState.Failed,
-        data: null,
-        error: action.error
-      }
-    )
-
-  handlers[DROP_READMODEL_STATE] = (
-    state: ReduxState,
-    action: DropReadModelResultAction
+    action: DropViewModelStateAction
   ): ReduxState => {
     const newState = {
       ...state

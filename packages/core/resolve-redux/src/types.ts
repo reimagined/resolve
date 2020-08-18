@@ -1,3 +1,4 @@
+import { Event } from 'resolve-core'
 import { Client, Context } from 'resolve-client'
 import { API } from './create_api'
 
@@ -65,3 +66,5 @@ export type ChildSagaArgs = {
 export type RootSagaArgs = {
   customSagas: any[]
 } & ChildSagaArgs
+
+export type ViewModelReactiveEvent = Event

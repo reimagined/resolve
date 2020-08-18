@@ -22,7 +22,6 @@ const createStore = ({
     sagas: customSagas = []
   } = {},
   viewModels = [],
-  subscribeAdapter = emptySubscribeAdapter,
   jwtProvider = undefined,
   origin,
   rootPath,

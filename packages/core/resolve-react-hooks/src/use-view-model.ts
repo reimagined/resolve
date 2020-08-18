@@ -76,6 +76,14 @@ function useViewModel(
 function useViewModel(
   modelName: string,
   aggregateIds: string[] | '*',
+  args: SerializableMap,
+  stateChangeCallback: StateChangedCallback,
+  eventReceivedCallback: EventReceivedCallback,
+  queryOptions: QueryOptions
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
   args: SerializableMap | StateChangedCallback,
   stateChangeCallback?:
     | StateChangedCallback
