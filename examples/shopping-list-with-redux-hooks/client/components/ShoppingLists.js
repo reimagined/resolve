@@ -43,6 +43,7 @@ const useOptimisticLists = () => {
       resolver: 'all',
       args: {}
     },
+    [],
     {
       success: (_, result) => ({
         type: SHOPPING_LISTS_ACQUIRED,
@@ -69,7 +70,7 @@ const useOptimisticLists = () => {
     }
   )
 
-  const lists = useSelector(state => state.optimisticShoppingLists) || []
+  const lists = useSelector(state => state.optimisticShoppingLists)
 
   return {
     getLists,

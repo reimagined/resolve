@@ -83,41 +83,34 @@ const internalActions: ReadModelReduxActionsCreators = {
 function useReduxReadModel(query: ReadModelQuery, initialState: any): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
-  initialState: any,
   options: ReduxReadModelHookOptions
 ): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
-  initialState: any,
   actions: ReadModelReduxActionsCreators
 ): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
-  initialState: any,
   dependencies: any[]
 ): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
-  initialState: any,
   options: ReduxReadModelHookOptions,
   actions: ReadModelReduxActionsCreators
 ): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
-  initialState: any,
   options: ReduxReadModelHookOptions,
   dependencies: any[]
 ): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
-  initialState: any,
   options: ReduxReadModelHookOptions,
   actions: ReadModelReduxActionsCreators,
   dependencies: any[]
 ): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
-  initialState: any,
   options?: ReduxReadModelHookOptions | ReadModelReduxActionsCreators | any[],
   actions?: ReadModelReduxActionsCreators | any[],
   dependencies?: any[]
