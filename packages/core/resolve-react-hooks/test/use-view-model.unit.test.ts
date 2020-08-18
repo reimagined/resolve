@@ -3,7 +3,7 @@ import { mocked } from 'ts-jest/utils'
 import { useClient } from '../src/use-client'
 import { useViewModel } from '../src/use-view-model'
 
-const projectionInitHandler = jest.fn(() => ({ initializedOnClient: true }))
+const projectionInitHandler = jest.fn()
 const mockedContext = {
   viewModels: [
     {
@@ -252,16 +252,6 @@ describe('call', () => {
     expect(projectionInitHandler).toHaveBeenCalled()
   })
 
-  test('state changed callback invoked with local client state with Init event applied', () => {
-    useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
-    expect(mockStateChange).toHaveBeenCalledWith(
-      {
-        initializedOnClient: true
-      },
-      true
-    )
-  })
-
   test('state changed callback invoked on connect with initial queried state', async () => {
     const { connect } = useViewModel(
       'view-model-name',
@@ -271,12 +261,9 @@ describe('call', () => {
 
     await connect()
 
-    expect(mockStateChange).toHaveBeenCalledWith(
-      {
-        queried: 'result'
-      },
-      false
-    )
+    expect(mockStateChange).toHaveBeenCalledWith({
+      queried: 'result'
+    })
   })
 
   test('state changed callback invoked with updated state', async () => {
@@ -293,13 +280,10 @@ describe('call', () => {
 
     await emulateIncomingEvent(event)
 
-    expect(mockStateChange).toHaveBeenCalledWith(
-      {
-        queried: 'result',
-        appliedEvent: event
-      },
-      false
-    )
+    expect(mockStateChange).toHaveBeenCalledWith({
+      queried: 'result',
+      appliedEvent: event
+    })
   })
 
   test('event received callback invoked with incoming event', async () => {

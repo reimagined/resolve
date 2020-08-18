@@ -5,12 +5,11 @@ import { QueryOptions, SubscribeCallback, Subscription } from 'resolve-client'
 import { useClient } from './use-client'
 import { isCallback, isOptions, isSerializableMap } from './generic'
 
-type StateChangedCallback = (state: any, initial: boolean) => void
+type StateChangedCallback = (state: any) => void
 type EventReceivedCallback = (event: Event) => void
 type PromiseOrVoid<T> = Promise<T> | void
 
 type Closure = {
-  initialStateSent: boolean
   state?: any
   subscription?: Subscription
   url?: string
@@ -134,15 +133,14 @@ function useViewModel(
 
   const closure = useMemo<Closure>(
     () => ({
-      state: viewModel.projection.Init ? viewModel.projection.Init() : null,
-      initialStateSent: false
+      state: viewModel.projection.Init ? viewModel.projection.Init() : null
     }),
     []
   )
 
   const setState = useCallback(state => {
     closure.state = state
-    actualStateChangeCallback(closure.state, false)
+    actualStateChangeCallback(closure.state)
   }, [])
 
   const queryState = useCallback(async () => {
@@ -223,14 +221,6 @@ function useViewModel(
 
     return undefined
   }, [])
-
-  if (
-    !closure.initialStateSent &&
-    typeof actualStateChangeCallback === 'function'
-  ) {
-    actualStateChangeCallback(closure.state, true)
-    closure.initialStateSent = true
-  }
 
   return useMemo(
     () => ({
