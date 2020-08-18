@@ -116,12 +116,10 @@ export function useReduxViewModel(
     dispose,
     selector: (state: ReduxState): any =>
       getEntry(
-        state.readModels,
-        selectorId
-          ? selectorId
-          : {
-              query
-            },
+        state.viewModels,
+        selectorId || {
+          query
+        },
         {
           data: initialState,
           state: ResultDataState.Requested

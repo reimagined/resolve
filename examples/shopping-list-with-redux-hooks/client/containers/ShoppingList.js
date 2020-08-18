@@ -33,6 +33,8 @@ const ShoppingList = ({
 
   const { data: shoppingList, state: shoppingListState } = useSelector(thisList)
 
+  console.log(shoppingList, shoppingListState)
+
   const { execute: executeCreateShoppingItem } = useReduxCommand(text => ({
     type: 'createShoppingItem',
     aggregateId,

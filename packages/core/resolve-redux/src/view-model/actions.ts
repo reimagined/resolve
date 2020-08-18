@@ -11,7 +11,7 @@ import {
 import { ViewModelQuery } from 'resolve-client'
 import { ViewModelReactiveEvent } from '../types'
 
-type ViewModelAction = {
+export type ViewModelAction = {
   query: ViewModelQuery
   selectorId?: string
 }

@@ -10,7 +10,11 @@ import {
   ResultDataState,
   ReduxState
 } from '../types'
-import { DropViewModelStateAction, ViewModelStateUpdateAction } from './actions'
+import {
+  DropViewModelStateAction,
+  ViewModelAction,
+  ViewModelStateUpdateAction
+} from './actions'
 import { ViewModelQuery } from 'resolve-client'
 
 export type ViewModelResultSelector = {
@@ -18,7 +22,7 @@ export type ViewModelResultSelector = {
 }
 
 const getSelector = (
-  action: ViewModelStateUpdateAction | DropViewModelStateAction
+  action: ViewModelAction
 ): ViewModelResultSelector | string => action.selectorId || action
 
 export const getEntryPath = (
@@ -44,9 +48,9 @@ export const create = (): any => {
   const handlers: { [key: string]: any } = {}
 
   handlers[VIEWMODEL_STATE_UPDATE] = (
-    state: ReduxState,
+    state: ViewModelResultMapByName,
     action: ViewModelStateUpdateAction
-  ): ReduxState =>
+  ): ViewModelResultMapByName =>
     setEntry(
       {
         ...state
@@ -61,9 +65,9 @@ export const create = (): any => {
     )
 
   handlers[DROP_VIEWMODEL_STATE] = (
-    state: ReduxState,
+    state: ViewModelResultMapByName,
     action: DropViewModelStateAction
-  ): ReduxState => {
+  ): ViewModelResultMapByName => {
     const newState = {
       ...state
     }
