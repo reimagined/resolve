@@ -17,7 +17,14 @@ const mockedUseCallback = mocked(useCallback)
 
 const mockedClient = {
   command: jest.fn(),
-  query: jest.fn(() => Promise.resolve({ data: 'query-result', timestamp: 1 })),
+  query: jest.fn(() =>
+    Promise.resolve({
+      data: 'query-result',
+      timestamp: 1,
+      url: 'url',
+      cursor: 'cursor'
+    })
+  ),
   getStaticAssetUrl: jest.fn(),
   subscribe: jest.fn(),
   unsubscribe: jest.fn()

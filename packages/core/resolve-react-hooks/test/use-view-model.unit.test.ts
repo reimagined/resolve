@@ -30,7 +30,14 @@ jest.mock('../src/context', () => ({
 
 const mockedClient = {
   command: jest.fn(),
-  query: jest.fn(() => Promise.resolve({ data: 'query-result', timestamp: 1 })),
+  query: jest.fn(() =>
+    Promise.resolve({
+      data: 'query-result',
+      timestamp: 1,
+      url: 'url',
+      cursor: 'cursor'
+    })
+  ),
   getStaticAssetUrl: jest.fn(),
   subscribe: jest.fn().mockResolvedValue({ key: 'subscription-data' }),
   unsubscribe: jest.fn()
@@ -118,6 +125,8 @@ describe('call', () => {
     )
 
     expect(mockedClient.subscribe).toBeCalledWith(
+      'url',
+      'cursor',
       'view-model-name',
       ['aggregate-id'],
       expect.any(Function),
@@ -155,6 +164,8 @@ describe('call', () => {
       }
     )
     expect(mockedClient.subscribe).toBeCalledWith(
+      'url',
+      'cursor',
       'view-model-name',
       ['aggregate-id'],
       expect.any(Function),

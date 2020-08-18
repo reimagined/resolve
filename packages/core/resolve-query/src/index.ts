@@ -112,25 +112,20 @@ const createQuery = ({
     )
   }
 
-  const readAndSerialize = ({
+  const serializeState = ({
     modelName,
+    state,
     jwt: actualJwt,
     jwtToken: deprecatedJwt,
-    ...options
   }: {
     modelName: string
+    state: any
     jwt: string
     jwtToken: string
-    options: any[]
   }): any => {
     checkModelExists(modelName)
-    const [modelOptions, modelArgs] = parseOptions(options)
 
-    return models[modelName].readAndSerialize(
-      modelOptions,
-      modelArgs,
-      actualJwt || deprecatedJwt
-    )
+    return models[modelName].serializeState(state, actualJwt || deprecatedJwt)
   }
 
   const updateByEvents = ({
@@ -194,7 +189,7 @@ const createQuery = ({
 
   const api = {
     read,
-    readAndSerialize,
+    serializeState,
     updateByEvents,
     beginXATransaction: performXA.bind(null, 'beginXATransaction'),
     commitXATransaction: performXA.bind(null, 'commitXATransaction'),
