@@ -11,7 +11,8 @@ const appConfig = {
   viewModels: [
     {
       name: 'shoppingList',
-      projection: 'common/view-models/shopping_list.projection.js'
+      projection: 'common/view-models/shopping-list.projection.js',
+      resolver: 'common/view-models/shopping-list.resolver.js'
     }
   ],
   readModels: [

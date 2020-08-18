@@ -12,6 +12,7 @@ import { isActionCreators, isDependencies, isOptions } from '../helpers'
 import { useDispatch } from 'react-redux'
 import { useViewModel } from 'resolve-react-hooks'
 import { useCallback } from 'react'
+import { getEntry } from './view-model-reducer'
 
 type HookData = {
   connect: () => void
@@ -83,10 +84,7 @@ export function useReduxViewModel(
     firstOfType<any[]>(isDependencies, options, actions, dependencies) ??
     [query, actualOptions, actualActionCreators].filter(i => i)
 
-  const {
-    stateUpdate,
-    eventReceived
-  } = actualActionCreators
+  const { stateUpdate, eventReceived } = actualActionCreators
   const { selectorId } = actualOptions
   const { name, aggregateIds, args } = query
 
@@ -115,7 +113,14 @@ export function useReduxViewModel(
   return {
     connect,
     dispose,
-    selector: (state: ReduxState) =>
-      state.viewModels ?? [query.name] ?? [query.aggregateIds] ?? [query.args]
+    selector: (state: ReduxState): any =>
+      getEntry(
+        state.readModels,
+        selectorId
+          ? selectorId
+          : {
+              query
+            }
+      )
   }
 }

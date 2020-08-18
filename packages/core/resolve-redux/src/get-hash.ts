@@ -4,7 +4,7 @@ const weakMap = new WeakMap()
 
 const getHash = (value: any) => {
   if (value == null) {
-    throw new Error('Can not calculate hash of null/undefined value')
+    return 'null-or-undefined'
   }
 
   if (

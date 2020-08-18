@@ -27,7 +27,7 @@ const ShoppingList = ({
     aggregateIds: [aggregateId]
   })
 
-  const shoppingList = useSelector(thisList)
+  const shoppingList = useSelector(thisList) || { list: [] }
 
   const { execute: executeCreateShoppingItem } = useReduxCommand(text => ({
     type: 'createShoppingItem',
@@ -89,7 +89,7 @@ const ShoppingList = ({
     }
   }, [])
 
-  if (shoppingList == null) {
+  if (shoppingList == null || !shoppingList.list) {
     return <NotFound />
   }
 
