@@ -1,8 +1,8 @@
 import {
-  IAdapter,
-  IAdapterImplementation,
-  IAdapterOptions,
   AdapterState,
+  AdapterImplementation,
+  IAdapter,
+  IAdapterOptions,
   IEventFromDatabase
 } from './types'
 
@@ -13,28 +13,29 @@ function wrapMethod<
   Args extends Array<any>,
   Result extends any,
   AdapterConnection extends any,
-  AdapterImplementation extends IAdapterImplementation<
-    AdapterConnection,
-    AdapterOptions,
-    EventFromDatabase
-  >,
   Adapter extends IAdapter,
   AdapterOptions extends IAdapterOptions,
   EventFromDatabase extends IEventFromDatabase
 >(
-  state: AdapterState<AdapterConnection>,
-  options: AdapterOptions,
-  implementation: AdapterImplementation,
-  method: (connection: AdapterConnection, ...args: Args) => Promise<Result>
+  state: AdapterState<AdapterConnection, AdapterOptions>,
+  implementation: AdapterImplementation<
+    AdapterConnection,
+    AdapterOptions,
+    EventFromDatabase
+  >,
+  method: (
+    state: AdapterState<AdapterConnection, AdapterOptions>,
+    ...args: Args
+  ) => Promise<Result>
 ): (...args: Args) => Promise<Result> {
   return async (...args: Args) => {
     throwWhenDisposed(state)
-    await connectOnDemand(options, state, implementation)
+    await connectOnDemand(state, implementation)
     const connection = state.connection
     if (connection == null) {
       throw new Error('Bad connection')
     }
-    return method(connection, ...args)
+    return method(state, ...args)
   }
 }
 

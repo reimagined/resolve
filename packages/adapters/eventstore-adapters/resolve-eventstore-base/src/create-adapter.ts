@@ -6,16 +6,33 @@ import wrapMethod from './wrap-method'
 import wrapEventFilter from './wrap-event-filter'
 import wrapSaveEvent from './wrap-save-event'
 import wrapDispose from './wrap-dispose'
+import wrapStream from './wrap-stream'
 import loadEvents from './load-events'
-import getNextCursor from './get-next-cursor'
+import { DEFAULT_SNAPSHOT_BUCKET_SIZE } from './constants'
 import incrementalImport from './incremental-import'
-import { AdapterImplementation, AdapterState, Status } from './types'
+import {
+  AdapterImplementation,
+  AdapterState,
+  Status,
+  IAdapter,
+  IAdapterOptions,
+  IEventFromDatabase
+} from './types'
 
-function createAdapter<Connection extends any, Options extends any>(
-  adapterImplementation: AdapterImplementation<Connection, Options>,
+function createAdapter<
+  AdapterConnection extends any,
+  AdapterOptions extends IAdapterOptions,
+  EventFromDatabase extends IEventFromDatabase
+>(
+  implementation: AdapterImplementation<
+    AdapterConnection,
+    AdapterOptions,
+    EventFromDatabase
+  >,
   options
-) {
+): IAdapter {
   const {
+    getConfig,
     connect,
     loadEventsByCursor,
     loadEventsByTimestamp,
@@ -39,97 +56,66 @@ function createAdapter<Connection extends any, Options extends any>(
     commitIncrementalImport,
     rollbackIncrementalImport,
     pushIncrementalImport
-  } = adapterImplementation
+  } = implementation
 
   const log = getLog(`createAdapter`)
-  const state: AdapterState = {
-    connection: null,
-    status: Status.NOT_CONNECTED
-  }
 
-  let bucketSize = 100
+  let bucketSize = DEFAULT_SNAPSHOT_BUCKET_SIZE
   const { snapshotBucketSize } = options
   if (Number.isSafeInteger(snapshotBucketSize) && snapshotBucketSize > 0) {
     bucketSize = snapshotBucketSize
     log.debug(`snapshot bucket size explicitly set to ${bucketSize}`)
   } else {
-    log.debug(`snapshot bucket size defaulted to ${bucketSize}`)
+    log.debug(
+      `snapshot bucket size defaulted to ${DEFAULT_SNAPSHOT_BUCKET_SIZE}`
+    )
   }
 
-  let connectPromiseResolve: Promise<Connection> = Promise.resolve()
-  const connectPromise = new Promise(resolve => {
-    connectPromiseResolve = resolve.bind(null, null)
-  }).then(function<Options extends any>(options: Options) {
-    return connect(adapterImplementation, state, options)
-  })
-
-  // Object.assign(pool, {
-  //   injectEvent: wrapMethod(adapterImplementation, state, injectEvent),
-  //   loadEventsByCursor: wrapMethod(adapterImplementation, state, loadEventsByCursor),
-  //   loadEventsByTimestamp: wrapMethod(adapterImplementation, state, loadEventsByTimestamp),
-  //   // eslint-disable-next-line no-new-func
-  //   waitConnect: wrapMethod(pool, Function()),
-  //   wrapMethod,
-  //   isFrozen: wrapMethod(pool, isFrozen),
-  //   connectPromise,
-  //   connectPromiseResolve,
-  //   shapeEvent,
-  //   counters: new Map(),
-  //   bucketSize
-  // })
+  const state: AdapterState<AdapterConnection, AdapterOptions> = {
+    connection: null,
+    status: Status.NOT_CONNECTED,
+    config: getConfig(options)
+  }
 
   const adapter = {
-    loadEvents: wrapMethod(
-      adapterImplementation,
-      state,
-      wrapEventFilter(loadEvents)
-    ),
-    import: importStream(adapterImplementation, state),
-    export: exportStream(adapterImplementation, state),
-    getLatestEvent: wrapMethod(adapterImplementation, state, getLatestEvent),
-    saveEvent: wrapMethod(
-      adapterImplementation,
-      state,
-      wrapSaveEvent(saveEvent)
-    ),
-    init: wrapMethod(adapterImplementation, state, init),
-    drop: wrapMethod(adapterImplementation, state, drop),
-    dispose: wrapDispose(adapterImplementation, state, dispose),
-    isFrozen: wrapMethod(adapterImplementation, state, isFrozen),
-    freeze: wrapMethod(adapterImplementation, state, freeze),
-    unfreeze: wrapMethod(adapterImplementation, state, unfreeze),
-    getNextCursor: getNextCursor(adapterImplementation, state),
-    loadSnapshot: wrapMethod(adapterImplementation, state, loadSnapshot),
-    saveSnapshot: wrapMethod(adapterImplementation, state, saveSnapshot),
-    dropSnapshot: wrapMethod(adapterImplementation, state, dropSnapshot),
-    getSecret: wrapMethod(adapterImplementation, state, getSecret),
-    setSecret: wrapMethod(adapterImplementation, state, setSecret),
-    deleteSecret: wrapMethod(adapterImplementation, state, deleteSecret),
+    loadEvents: wrapMethod(state, implementation, wrapEventFilter(loadEvents)),
+    import: wrapStream(state, implementation, importStream),
+    export: wrapStream(state, implementation, exportStream),
+    getLatestEvent: wrapMethod(state, implementation, getLatestEvent),
+    saveEvent: wrapSaveEvent(state, implementation, saveEvent),
+    init: wrapMethod(state, implementation, init),
+    drop: wrapMethod(state, implementation, drop),
+    dispose: wrapDispose(state, implementation, dispose),
+    isFrozen: wrapMethod(state, implementation, isFrozen),
+    freeze: wrapMethod(state, implementation, freeze),
+    unfreeze: wrapMethod(state, implementation, unfreeze),
+    loadSnapshot: wrapMethod(state, implementation, loadSnapshot),
+    saveSnapshot: wrapMethod(state, implementation, saveSnapshot),
+    dropSnapshot: wrapMethod(state, implementation, dropSnapshot),
+    getSecret: wrapMethod(state, implementation, getSecret),
+    setSecret: wrapMethod(state, implementation, setSecret),
+    deleteSecret: wrapMethod(state, implementation, deleteSecret),
     pushIncrementalImport: wrapMethod(
-      adapterImplementation,
       state,
+      implementation,
       pushIncrementalImport
     ),
     beginIncrementalImport: wrapMethod(
-      adapterImplementation,
       state,
+      implementation,
       beginIncrementalImport
     ),
     commitIncrementalImport: wrapMethod(
-      adapterImplementation,
       state,
+      implementation,
       commitIncrementalImport
     ),
     rollbackIncrementalImport: wrapMethod(
-      adapterImplementation,
       state,
+      implementation,
       rollbackIncrementalImport
     ),
-    incrementalImport: wrapMethod(
-      adapterImplementation,
-      state,
-      incrementalImport
-    )
+    incrementalImport: wrapMethod(state, implementation, incrementalImport)
   }
 
   Object.freeze(adapter)

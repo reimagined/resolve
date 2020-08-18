@@ -1,7 +1,7 @@
 import {
   AdapterState,
   AdapterImplementation,
-  EventForSave,
+  IAdapter,
   IAdapterOptions,
   IEventFromDatabase
 } from './types'
@@ -9,8 +9,11 @@ import {
 import throwWhenDisposed from './throw-when-disposed'
 import connectOnDemand from './connect-on-demand'
 
-function wrapSaveEvent<
+function wrapStream<
+  Args extends Array<any>,
+  Result extends any,
   AdapterConnection extends any,
+  Adapter extends IAdapter,
   AdapterOptions extends IAdapterOptions,
   EventFromDatabase extends IEventFromDatabase
 >(
@@ -22,24 +25,18 @@ function wrapSaveEvent<
   >,
   method: (
     state: AdapterState<AdapterConnection, AdapterOptions>,
-    event: EventForSave
-  ) => Promise<void>
-): (event: EventForSave) => Promise<void> {
-  return async (event: EventForSave) => {
+    ...args: Args
+  ) => Promise<Result>
+): (...args: Args) => Promise<Result> {
+  return async (...args: Args) => {
     throwWhenDisposed(state)
     await connectOnDemand(state, implementation)
     const connection = state.connection
     if (connection == null) {
       throw new Error('Bad connection')
     }
-    if (
-      typeof implementation.isFrozen === 'function' &&
-      (await implementation.isFrozen(connection))
-    ) {
-      throw new Error('Event store is frozen')
-    }
-    return method(state, event)
+    return method(state, ...args)
   }
 }
 
-export default wrapSaveEvent
+export default wrapStream

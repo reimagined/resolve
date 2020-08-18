@@ -18,13 +18,12 @@ async function connectOnDemand<
   AdapterOptions extends IAdapterOptions,
   EventFromDatabase extends IEventFromDatabase
 >(
-  options: AdapterOptions,
-  state: AdapterState<AdapterConnection>,
+  state: AdapterState<AdapterConnection, AdapterOptions>,
   implementation: AdapterImplementation
 ): Promise<void> {
   throwWhenDisposed(state)
   if (state.status === Status.NOT_CONNECTED) {
-    state.connection = await implementation.connect(options)
+    state.connection = await implementation.connect(state.config)
     state.status = Status.CONNECTED
   }
 }
