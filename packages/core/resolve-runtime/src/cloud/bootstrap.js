@@ -15,10 +15,7 @@ const bootstrapOne = async (
   eventTypes,
   connectorName
 ) => {
-  const {
-    readModelConnectors,
-    eventBus
-  } = resolve
+  const { readModelConnectors, eventBus } = resolve
 
   const connectorFeatures = detectConnectorFeatures(
     readModelConnectors[connectorName]
@@ -61,13 +58,13 @@ const bootstrapOne = async (
       }
     })
 
-      await eventBus.setProperty({
-        eventSubscriber,
-        key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
-        value: `${Date.now()}`
-      })
+    await eventBus.setProperty({
+      eventSubscriber,
+      key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
+      value: `${Date.now()}`
+    })
 
-      await eventBus.resume({ eventSubscriber })
+    await eventBus.resume({ eventSubscriber })
   } catch (error) {
     // eslint-disable-next-line no-console
     console.warn(`

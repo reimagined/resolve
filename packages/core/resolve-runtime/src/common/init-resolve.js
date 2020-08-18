@@ -52,7 +52,7 @@ const initResolve = async resolve => {
     })
   }
 
-  const onCommandExecuted = async (event) => {
+  const onCommandExecuted = async event => {
     await resolve.publisher.publish({ event })
     await resolve.notifyInlineLedgers()
   }

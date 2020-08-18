@@ -92,11 +92,22 @@ const createSaga = ({
       executeListener.dispose()
     ])
 
-  const executeSaga = Object.assign(
-    executeListener.bind(executeListener),
-    executeListener,
-    { updateByEvents, runScheduler, dispose }
-  )
+  const executeSaga = new Proxy(executeListener, {
+    get(_, key) {
+      if (key === 'runScheduler') {
+        return runScheduler
+      }else if (key === 'updateByEvents') {
+        return updateByEvents
+      }else if (key === 'dispose') {
+        return dispose
+      }  else {
+        return executeListener[key].bind(executeListener)
+      }
+    },
+    set() {
+      throw new TypeError(`Resolve-saga API is immutable`)
+    }
+  })
 
   return executeSaga
 }

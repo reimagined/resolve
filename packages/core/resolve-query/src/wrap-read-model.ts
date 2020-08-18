@@ -89,9 +89,15 @@ const wrapConnection = async (
 
 const read = async (
   pool: ReadModelPool,
-  resolverName: string,
-  resolverArgs: object,
-  jwt: string
+  {
+    modelOptions: resolverName,
+    modelArgs: resolverArgs,
+    jwt
+  }: {
+    modelOptions: string
+    modelArgs: object
+    jwt: string
+  }
 ): Promise<any> => {
   const { performanceTracer, getSecretsManager, isDisposed, readModel } = pool
 
@@ -236,9 +242,15 @@ const detectWrappers = (connector: any): any => {
 
 const updateByEvents = async (
   pool: ReadModelPool,
-  events: Array<any>,
-  getRemainingTimeInMillis: Function,
-  xaTransactionId: any
+  {
+    events,
+    getRemainingTimeInMillis,
+    xaTransactionId
+  }: {
+    events: Array<any>
+    getRemainingTimeInMillis: Function
+    xaTransactionId: any
+  }
 ): Promise<any> => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
@@ -340,7 +352,11 @@ const updateByEvents = async (
             pool.connector
           )
           for (const event of events) {
-            const remainingTime = getRemainingTimeInMillis() - RESERVED_TIME
+            const remainingTime =
+              typeof getRemainingTimeInMillis === 'function'
+                ? getRemainingTimeInMillis() - RESERVED_TIME
+                : 0x7fffffff
+
             log.debug(
               `remaining read-model "${readModelName}" feeding time is ${remainingTime} ms`
             )
@@ -477,9 +493,15 @@ const updateByEvents = async (
 
 const readAndSerialize = async (
   pool: ReadModelPool,
-  resolverName: string,
-  resolverArgs: object,
-  jwt: string
+  {
+    modelOptions: resolverName,
+    modelArgs: resolverArgs,
+    jwt
+  }: {
+    modelOptions: string
+    modelArgs: object
+    jwt: string
+  }
 ): Promise<string> => {
   const readModelName = pool.readModel.name
 
@@ -487,7 +509,11 @@ const readAndSerialize = async (
     throw new Error(`read-model "${readModelName}" is disposed`)
   }
 
-  const result = await read(pool, resolverName, resolverArgs, jwt)
+  const result = await read(pool, {
+    modelOptions: resolverName,
+    modelArgs: resolverArgs,
+    jwt
+  })
 
   return JSON.stringify(result, null, 2)
 }

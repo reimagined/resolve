@@ -7,8 +7,6 @@ import wrapReadModel, {
 } from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
 
-const getDefaultRemainingTime = (): number => 0x7fffffff
-
 const createQuery = ({
   invokeEventListenerAsync,
   readModelConnectors,
@@ -96,149 +94,74 @@ const createQuery = ({
     return [options[optionsMap[flag][0]], options[optionsMap[flag][1]]]
   }
 
-  const read = ({
-    modelName,
-    jwt: actualJwt,
-    jwtToken: deprecatedJwt,
-    ...options
-  }: {
-    modelName: string
-    jwt: string
-    jwtToken: string
-    options: any[]
-  }): any => {
-    checkModelExists(modelName)
-    const [modelOptions, modelArgs] = parseOptions(options)
-
-    return models[modelName].read(
-      modelOptions,
-      modelArgs,
-      actualJwt || deprecatedJwt
-    )
-  }
-
-  const readAndSerialize = ({
-    modelName,
-    jwt: actualJwt,
-    jwtToken: deprecatedJwt,
-    ...options
-  }: {
-    modelName: string
-    jwt: string
-    jwtToken: string
-    options: any[]
-  }): any => {
-    checkModelExists(modelName)
-    const [modelOptions, modelArgs] = parseOptions(options)
-
-    return models[modelName].readAndSerialize(
-      modelOptions,
-      modelArgs,
-      actualJwt || deprecatedJwt
-    )
-  }
-
-  const updateByEvents = ({
-    modelName,
-    events,
-    getRemainingTimeInMillis,
-    xaTransactionId
-  }: {
-    modelName: string
-    events: any[]
-    getRemainingTimeInMillis: Function
-    xaTransactionId: any
-  }): Promise<any> => {
-    checkModelExists(modelName)
-    if (!Array.isArray(events)) {
-      throw new Error('Updating by events should supply events array')
-    }
-
-    return models[modelName].updateByEvents(
-      events,
-      typeof getRemainingTimeInMillis === 'function'
-        ? getRemainingTimeInMillis
-        : getDefaultRemainingTime,
-      xaTransactionId
-    )
-  }
-
-  const drop = async (modelName: string): Promise<void> => {
-    checkModelExists(modelName)
-
-    await models[modelName].drop()
-  }
-
-  const performXA = (
-    operationName: string,
-    {
-      modelName,
-      ...parameters
-    }: {
-      modelName: string
-      parameters: any[]
-    }
-  ): any => {
-    checkModelExists(modelName)
-    if (typeof models[modelName][operationName] !== 'function') {
-      const error = new Error(
-        `Read/view model "${modelName}" does not support XA transactions`
-      ) as any
-      error.code = 405
-      throw error
-    }
-
-    return models[modelName][operationName](parameters)
-  }
-
-  const performInlineLedger = async (
-    methodName: string,
-    {
-      modelName,
-      ...parameters
-    }: {
-      modelName: string
-      parameters: any
-    }
-  ): Promise<void> => {
-    checkModelExists(modelName)
-
-    await models[modelName][methodName](parameters)
-  }
-
   const dispose = async (): Promise<any> => {
     for (const modelName of Object.keys(models)) {
       await models[modelName].dispose()
     }
   }
 
-  const api = {
-    read,
-    readAndSerialize,
-    updateByEvents,
-    beginXATransaction: performXA.bind(null, 'beginXATransaction'),
-    commitXATransaction: performXA.bind(null, 'commitXATransaction'),
-    rollbackXATransaction: performXA.bind(null, 'rollbackXATransaction'),
-    subscribe: performInlineLedger.bind(null, 'subscribe'),
-    unsubscribe: performInlineLedger.bind(null, 'unsubscribe'),
-    resubscribe: performInlineLedger.bind(null, 'resubscribe'),
-    deleteProperty: performInlineLedger.bind(null, 'deleteProperty'),
-    getProperty: performInlineLedger.bind(null, 'getProperty'),
-    listProperties: performInlineLedger.bind(null, 'listProperties'),
-    setProperty: performInlineLedger.bind(null, 'setProperty'),
-    resume: performInlineLedger.bind(null, 'resume'),
-    pause: performInlineLedger.bind(null, 'pause'),
-    reset: performInlineLedger.bind(null, 'reset'),
-    status: performInlineLedger.bind(null, 'status'),
-    build: performInlineLedger.bind(null, 'build'),
-    drop,
-    dispose
+  const interopApi = async (key: string, ...args: Array<any>) => {
+    if (args.length !== 1 || Object(args[0]) !== args[0]) {
+      throw new TypeError(
+        `Invalid resolve-query method "${key}" arguments ${args}`
+      )
+    }
+
+    let {
+      eventSubscriber,
+      modelName,
+      jwt: actualJwt,
+      jwtToken: deprecatedJwt,
+      ...parameters
+    } = args[0]
+
+    console.log('$$$',{ key, modelName, eventSubscriber})
+
+    if (eventSubscriber == null && modelName == null) {
+      throw new Error(`Either "eventSubscriber" nor "modelName" is null`)
+    } else if (modelName == null) {
+      modelName = eventSubscriber
+    }
+    const jwt = actualJwt != null ? actualJwt : deprecatedJwt
+
+    checkModelExists(modelName)
+    const model = models[modelName]
+    const method = model[key]
+
+    if (typeof method !== 'function') {
+      throw new TypeError(
+        `Model "${modelName}" does not implement method "${key}"`
+      )
+    }
+
+    const [modelOptions, modelArgs] = parseOptions(parameters)
+
+    const result = await method({
+      ...parameters,
+      modelOptions,
+      modelArgs,
+      jwt
+    })
+    return result
   }
 
-  const executeQuery = read.bind(null)
-  Object.assign(executeQuery, api)
+  const read = interopApi.bind(null, 'read') as any
+  const api = new Proxy(read, {
+    get(_: any, key: string): any {
+      if (key === 'bind' || key === 'apply' || key === 'call') {
+        return read[key].bind(read)
+      } else if (key === 'dispose') {
+        return dispose
+      } else {
+        return interopApi.bind(null, key)
+      }
+    },
+    set() {
+      throw new TypeError(`Resolve-query API is immutable`)
+    }
+  } as any)
 
-  return executeQuery
+  return api
 }
 
 export {

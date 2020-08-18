@@ -42,7 +42,7 @@ const makeDummyEventStoreAdapter = ({
 const makeDummyPublisher = () => {
   const savedEvents: Event[] = []
 
-  return async ( event: Event ) => {
+  return async (event: Event) => {
     savedEvents.push(event)
   }
 }
