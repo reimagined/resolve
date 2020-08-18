@@ -1,14 +1,14 @@
 import { useCallback } from 'react'
 import { mocked } from 'ts-jest/utils'
 import { Command, CommandCallback } from 'resolve-client'
-import { useClient } from '../src/use_client'
+import { useClient } from '../src/use-client'
 import { useCommandBuilder } from '../src/use-command-builder'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({
   useCallback: jest.fn(cb => cb)
 }))
-jest.mock('../src/use_client', () => ({
+jest.mock('../src/use-client', () => ({
   useClient: jest.fn()
 }))
 

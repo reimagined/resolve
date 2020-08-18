@@ -1,6 +1,6 @@
 import { useContext, useCallback, useMemo } from 'react'
 import { mocked } from 'ts-jest/utils'
-import { useClient } from '../src/use_client'
+import { useClient } from '../src/use-client'
 import { useViewModel } from '../src/use-view-model'
 
 const mockedContext = {
@@ -30,13 +30,20 @@ jest.mock('../src/context', () => ({
 
 const mockedClient = {
   command: jest.fn(),
-  query: jest.fn(() => Promise.resolve({ data: 'query-result', timestamp: 1 })),
+  query: jest.fn(() =>
+    Promise.resolve({
+      data: 'query-result',
+      timestamp: 1,
+      url: 'url',
+      cursor: 'cursor'
+    })
+  ),
   getStaticAssetUrl: jest.fn(),
   subscribe: jest.fn().mockResolvedValue({ key: 'subscription-data' }),
   unsubscribe: jest.fn()
 }
 
-jest.mock('../src/use_client', () => ({
+jest.mock('../src/use-client', () => ({
   useClient: jest.fn(() => mockedClient)
 }))
 
@@ -118,6 +125,8 @@ describe('call', () => {
     )
 
     expect(mockedClient.subscribe).toBeCalledWith(
+      'url',
+      'cursor',
       'view-model-name',
       ['aggregate-id'],
       expect.any(Function),
@@ -155,6 +164,8 @@ describe('call', () => {
       }
     )
     expect(mockedClient.subscribe).toBeCalledWith(
+      'url',
+      'cursor',
       'view-model-name',
       ['aggregate-id'],
       expect.any(Function),

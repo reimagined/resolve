@@ -1,14 +1,14 @@
 import { useCallback } from 'react'
 import { mocked } from 'ts-jest/utils'
 import { Query, QueryCallback, QueryOptions } from 'resolve-client'
-import { useClient } from '../src/use_client'
+import { useClient } from '../src/use-client'
 import { useQueryBuilder } from '../src/use-query-builder'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({
   useCallback: jest.fn(cb => cb)
 }))
-jest.mock('../src/use_client', () => ({
+jest.mock('../src/use-client', () => ({
   useClient: jest.fn()
 }))
 
@@ -17,7 +17,14 @@ const mockedUseCallback = mocked(useCallback)
 
 const mockedClient = {
   command: jest.fn(),
-  query: jest.fn(() => Promise.resolve({ data: 'query-result', timestamp: 1 })),
+  query: jest.fn(() =>
+    Promise.resolve({
+      data: 'query-result',
+      timestamp: 1,
+      url: 'url',
+      cursor: 'cursor'
+    })
+  ),
   getStaticAssetUrl: jest.fn(),
   subscribe: jest.fn(),
   unsubscribe: jest.fn()
