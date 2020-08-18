@@ -6,7 +6,7 @@ type BDDCommandContext = {
     phase: Phases
     command: {
       name: string
-      payload: SerializableMap
+      payload?: SerializableMap
     }
   }
 }
@@ -23,7 +23,7 @@ export const command = (
   context[symbol].phase = Phases.COMMAND
   context[symbol].command = {
     name,
-    payload: payload || {}
+    payload
   }
 
   return context

@@ -1,6 +1,9 @@
 const transformEvents = (
   events: any[],
-  target: 'read-model' | 'aggregate' = 'read-model'
+  target: 'read-model' | 'aggregate' = 'read-model',
+  context?: {
+    aggregateId: string
+  }
 ): any => {
   let timestamp = 1
   const aggregateVersionsMap = new Map()
@@ -9,8 +12,11 @@ const transformEvents = (
   const result = target === 'read-model' ? [{ type: 'Init' }] : []
 
   for (const rawEvent of events) {
-    const aggregateVersion = aggregateVersionsMap.has(rawEvent.aggregateId)
-      ? aggregateVersionsMap.get(rawEvent.aggregateId) + 1
+    const aggregateId =
+      target === 'aggregate' ? context?.aggregateId : rawEvent.aggregateId
+
+    const aggregateVersion = aggregateVersionsMap.has(aggregateId)
+      ? aggregateVersionsMap.get(aggregateId) + 1
       : 1
     const threadId = Buffer.from(JSON.stringify(rawEvent)).reduce(
       (acc, val) => (acc + val) % 256,
@@ -22,6 +28,7 @@ const transformEvents = (
 
     const event = {
       ...rawEvent,
+      aggregateId,
       aggregateVersion,
       timestamp: timestamp++,
       threadId,
@@ -30,7 +37,7 @@ const transformEvents = (
 
     result.push(event)
 
-    aggregateVersionsMap.set(rawEvent.aggregateId, aggregateVersion)
+    aggregateVersionsMap.set(aggregateId, aggregateVersion)
     threadCountersMap.set(threadId, threadCounter + 1)
   }
 
