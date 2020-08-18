@@ -10,6 +10,7 @@ type EventReceivedCallback = (event: Event) => void
 type PromiseOrVoid<T> = Promise<T> | void
 
 type Closure = {
+  initialStateSent: boolean
   state?: any
   subscription?: Subscription
   url?: string
@@ -133,7 +134,8 @@ function useViewModel(
 
   const closure = useMemo<Closure>(
     () => ({
-      state: viewModel.projection.Init ? viewModel.projection.Init() : null
+      state: viewModel.projection.Init ? viewModel.projection.Init() : null,
+      initialStateSent: false
     }),
     []
   )
@@ -221,6 +223,14 @@ function useViewModel(
 
     return undefined
   }, [])
+
+  if (
+    !closure.initialStateSent &&
+    typeof actualStateChangeCallback === 'function'
+  ) {
+    actualStateChangeCallback(closure.state)
+    closure.initialStateSent = true
+  }
 
   return useMemo(
     () => ({

@@ -3,7 +3,7 @@ import { mocked } from 'ts-jest/utils'
 import { useClient } from '../src/use-client'
 import { useViewModel } from '../src/use-view-model'
 
-const projectionInitHandler = jest.fn()
+const projectionInitHandler = jest.fn(() => ({ initializedOnClient: true }))
 const mockedContext = {
   viewModels: [
     {
@@ -250,6 +250,13 @@ describe('call', () => {
     useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
 
     expect(projectionInitHandler).toHaveBeenCalled()
+  })
+
+  test('state changed callback invoked with local client state with Init event applied', () => {
+    useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
+    expect(mockStateChange).toHaveBeenCalledWith({
+      initializedOnClient: true
+    })
   })
 
   test('state changed callback invoked on connect with initial queried state', async () => {
