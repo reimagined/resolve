@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-advanced/ui",
-  "version": "0.24.22",
+  "version": "0.24.23",
   "private": true,
   "main": "./src/index.js",
   "scripts": {
