@@ -56,6 +56,16 @@ An array of the application's aggregates. An aggregate configuration object with
 | deserializeState | A path to a file that defines a state deserializer function.        |
 | encryption       | A path to a file that defines data encryption and decryption logic. |
 
+```js
+aggregates: [
+  {
+    name: 'ShoppingList',
+    commands: 'common/aggregates/shopping_list.commands.js',
+    projection: 'common/aggregates/shopping_list.projection.js'
+  }
+]
+```
+
 ### apiHandlers
 
 Specifies an array of the application's API Handlers. A Saga configuration object within this array contains the following fields:
@@ -65,6 +75,18 @@ Specifies an array of the application's API Handlers. A Saga configuration objec
 | path    | The URL path for which the handler is invoked. The path is specified in the [route-trie](https://www.npmjs.com/package/route-trie) router's format. |
 | handler | The path to the file that contains the handler's definition.                                                                                        |
 | method  | The HTTP method to handle.                                                                                                                          |
+
+##### Example:
+
+```js
+apiHandlers: [
+  {
+    path: '/api/uploader/getFileUrl',
+    handler: 'common/api-handlers/getFileUrl.js',
+    method: 'GET'
+  }
+]
+```
 
 ### clientEntries
 
@@ -169,6 +191,17 @@ Specifies an adapter used to connect to to the application's event store. An ada
 | module  | The name of a module or the path to a file that defines an adapter. |
 | options | An object that defines the adapter's options as key-value pairs     |
 
+##### Example:
+
+```js
+eventstoreAdapter: {
+  module: 'resolve-eventstore-lite',
+  options: {
+    databaseFile: ':memory:'
+  }
+}
+```
+
 ### eventBroker
 
 Specifies settings of the application's event broker. Use these settings to set up a reSolve application in a distributed environment. The configuration object contains the following fields:
@@ -189,6 +222,13 @@ Specifies global settings for the application's JWT cookies. The configuration o
 | ------ | ---------------------------------------------- |
 | name   | The cookie's name.                             |
 | maxAge | The value of the cookie's `max-age` attribute. |
+
+```js
+jwtCookie: {
+  name: 'jwt',
+  maxAge: 31536000000
+}
+```
 
 ### mode
 
@@ -215,14 +255,44 @@ An array of the application's Read Models. A Read Model configuration object wit
 | resolvers     | A path to a file that defines Read Model resolver.                   |
 | connectorName | The name of a connector used to connect the Read Model to its store. |
 
+##### Example:
+
+```js
+readModels: [
+  {
+    name: 'ShoppingLists',
+    projection: 'common/read-models/shopping_lists.projection.js',
+    resolvers: 'common/read-models/shopping_lists.resolvers.js',
+    connectorName: 'default'
+  }
+]
+```
+
 ### readModelConnectors
 
-An array of the application's Read Model connectors. A connector configuration object within this array contains the following fields:
+Specifies the application's Read Model connectors a key-value pairs. A connector configuration object contains the following fields:
 
 | Field   | Description                                                          |
 | ------- | -------------------------------------------------------------------- |
 | module  | The name of a module or the path to a file that defines a connector. |
 | options | An object that defines the connector's options as key-value pairs    |
+
+##### Example:
+
+```js
+readModelConnectors: {
+  default: {
+    module: 'resolve-readmodel-mysql',
+    options: {
+      host: 'localhost',
+      port: 3306,
+      user: 'root',
+      password: '',
+      database: 'ReadModelStoriesSample'
+    }
+  }
+}
+```
 
 ### sagas
 
@@ -236,6 +306,26 @@ Specifies an array of the application's Sagas. A Saga configuration object withi
 | connectorName | Defines a Read Model storage used to store the saga's persistent data.     |
 | schedulerName | Specifies the scheduler that should be used to schedule command execution. |
 | encryption    | A path to a file that defines data encryption and decryption logic.        |
+
+##### Example:
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/saga-sample/config.js#app-config)
+```js
+const appConfig = {
+  sagas: [
+    {
+      name: 'UserConfirmation',
+      source: 'saga.js',
+      connectorName: 'default',
+      schedulerName: 'scheduler'
+    }
+  ]
+}
+```
+
+<!-- prettier-ignore-end -->
 
 ### schedulers
 
@@ -252,6 +342,25 @@ A scheduler adapter configuration object has the following fields:
 | ------- | ------------------------------------------------------------------- |
 | module  | The name of a module or the path to a file that defines an adapter. |
 | options | An object that defines the adapter's options as key-value pairs     |
+
+##### Example:
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/saga-sample/config.js#schedulers-config)
+```js
+schedulers: {
+  scheduler: {
+    adapter: {
+      module: 'resolve-scheduler-local',
+      options: {}
+    },
+    connectorName: 'default'
+  }
+},
+```
+
+<!-- prettier-ignore-end -->
 
 ### serverImports
 
@@ -284,5 +393,13 @@ Specifies an array of the application's View Models. A View Model configuration 
 | projection       | A path to a file that defines View Model projection.                |
 | serializeState   | A path to a file that defines a state serializer function.          |
 | deserializeState | A path to a file that defines a state deserializer function.        |
-| validator        | A path to a file that defines a validation function.                |
 | encryption       | A path to a file that defines data encryption and decryption logic. |
+
+```js
+viewModels: [
+  {
+    name: 'shoppingList',
+    projection: 'common/view-models/shopping_list.projection.js'
+  }
+]
+```
