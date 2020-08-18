@@ -3,8 +3,8 @@ import getLog from './js/get-log'
 import initEventStore from './js/init'
 import { AdapterPool } from './types'
 import {
+  aggregateIdSqlType,
   longNumberSqlType,
-  uuidSqlType,
   longStringSqlType
 } from './js/constants'
 
@@ -26,7 +26,7 @@ const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
 
   const query = `CREATE TABLE ${secretsTableNameAsId}(
         \`idx\` ${longNumberSqlType},
-        \`id\` ${uuidSqlType},
+        \`id\` ${aggregateIdSqlType},
         \`secret\` ${longStringSqlType},
         PRIMARY KEY(\`id\`, \`idx\`)
       );`
