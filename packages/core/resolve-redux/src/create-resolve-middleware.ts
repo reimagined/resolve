@@ -13,7 +13,6 @@ type MiddlewareContext = {
   rootPath: any
   staticPath: any
   sessionId: any
-  subscribeAdapter: any
   jwtProvider: any
   isClient: boolean
   customSagas: any[]

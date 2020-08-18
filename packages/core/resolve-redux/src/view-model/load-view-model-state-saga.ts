@@ -22,6 +22,7 @@ const loadViewModelStateSaga = function*(
     aggregateArgs: any
   }
 ): any {
+  /*
   try {
     const { result: serializedState, timestamp } = yield api.loadViewModelState(
       {
@@ -50,6 +51,7 @@ const loadViewModelStateSaga = function*(
       queryViewModelFailure(viewModelName, aggregateIds, aggregateArgs, error)
     )
   }
+  */
 }
 
 export default loadViewModelStateSaga

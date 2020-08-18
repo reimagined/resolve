@@ -36,7 +36,7 @@ const createStore = ({
 
   const combinedReducers = combineReducers({
     ...reducers,
-    viewModels: createViewModelReducer(viewModels),
+    viewModels: createViewModelReducer(),
     readModels: createReadModelReducer(),
     jwt: createJwtReducer()
   })
@@ -58,7 +58,6 @@ const createStore = ({
     rootPath,
     staticPath,
     sessionId,
-    subscribeAdapter,
     jwtProvider,
     isClient,
     customSagas,

@@ -1,11 +1,5 @@
 import { take, put } from 'redux-saga/effects'
 
-import { unsubscribeTopicRequest } from './actions'
-import {
-  UNSUBSCRIBE_TOPIC_FAILURE,
-  UNSUBSCRIBE_TOPIC_SUCCESS
-} from '../action-types'
-
 const unsubscribeViewModelTopicsSaga = function*({
   viewModels,
   viewModelName,
@@ -15,6 +9,7 @@ const unsubscribeViewModelTopicsSaga = function*({
   viewModelName: string
   aggregateIds: string | string[]
 }): any {
+  /*
   const viewModel = viewModels.find(({ name }) => name === viewModelName)
   const eventTypes = Object.keys(viewModel.projection).filter(
     eventType => eventType !== 'Init'
@@ -66,6 +61,7 @@ const unsubscribeViewModelTopicsSaga = function*({
       counter--
     }
   }
+   */
 }
 
 export default unsubscribeViewModelTopicsSaga
