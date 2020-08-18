@@ -16033,18 +16033,18 @@ resolve-readmodel-lite@0.24.16:
     tmp "^0.1.0"
     uuid "^3.3.2"
 
-resolve-subscribe-mqtt@0.24.22:
-  version "0.24.22"
-  resolved "http://npm.resolve-dev.ml:10080/resolve-subscribe-mqtt/-/resolve-subscribe-mqtt-0.24.22.tgz#767998165653e1e4c92be98c7c9db1143778e875"
-  integrity sha512-zDitOAKZ7+Klcbvo/ePtDNR9teX3UZopty4U/KxMcvQQJ01uzwdovrcERugkhOReDD/s41ISI8V4k++nygvBpA==
+resolve-subscribe-mqtt@0.24.23:
+  version "0.24.23"
+  resolved "http://npm.resolve-dev.ml:10080/resolve-subscribe-mqtt/-/resolve-subscribe-mqtt-0.24.23.tgz#767998165653e1e4c92be98c7c9db1143778e875"
+  integrity "sha1-qxFViOyu4S8z51hGWmUbjqcwB98= sha512-D2XwL5dxqovyboUPhJcmBj7zYjqFm8ioUX/6SdxZugFcyZJZw7gTih34ZIYgRLt+mDUqDfe/cC1BkFt3XPJQQQ=="
   dependencies:
     "@babel/runtime" "7.9.6"
     mqtt "^2.18.8"
 
-resolve-subscribe-socket.io@0.24.22:
-  version "0.24.22"
-  resolved "http://npm.resolve-dev.ml:10080/resolve-subscribe-socket.io/-/resolve-subscribe-socket.io-0.24.22.tgz#2d75d0f9c2baf07916a667cb1734716ca05459c1"
-  integrity sha512-DuhCmQ+Z2SfvI1/Czd/z1i8CJwmC8BL1z4kUO4OvZETeDfAThuK1CSVV3uyUu2+C6ZWLSrub1BXmkI/fEUccQA==
+resolve-subscribe-socket.io@0.24.23:
+  version "0.24.23"
+  resolved "http://npm.resolve-dev.ml:10080/resolve-subscribe-socket.io/-/resolve-subscribe-socket.io-0.24.23.tgz#2d75d0f9c2baf07916a667cb1734716ca05459c1"
+  integrity "sha1-qaX5Chjhnq8iczdCxnk5cRnCJ2g= sha512-8f3pjk2gCwtUuMswJYIAkWQHU+0ME/M+z3fpdFCqyzJR4k9gthA15wFh4iqPrc74rN4W+1wjd2Cfsw7gBEjRgA=="
   dependencies:
     "@babel/runtime" "7.9.6"
     socket.io-client "2.1.1"

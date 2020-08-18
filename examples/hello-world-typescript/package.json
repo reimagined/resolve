@@ -39,7 +39,7 @@
     "resolve-scheduler-local": "0.24.23",
     "resolve-scheduler-cloud": "0.24.23",
     "resolve-eventstore-lite": "0.24.23",
-    "resolve-eventstore-postgresql-serverless": "0.24.23",
+    "resolve-eventstore-postgresql-serverless": "0.24.23"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",

@@ -35,9 +35,9 @@
     "lodash.set": "4.3.2",
     "lodash.unset": "4.5.2",
     "query-string": "^5.1.1",
-    "resolve-client": "0.24.22",
-    "resolve-core": "0.24.22",
-    "resolve-react-hooks": "0.24.22",
+    "resolve-client": "0.24.23",
+    "resolve-core": "0.24.23",
+    "resolve-react-hooks": "0.24.23",
     "unfetch": "^4.0.1",
     "uuid": "^3.3.2"
   },
