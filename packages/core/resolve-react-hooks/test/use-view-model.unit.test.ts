@@ -292,4 +292,24 @@ describe('call', () => {
 
     expect(mockEventReceived).toHaveBeenCalledWith(event)
   })
+
+  test('state re-requested on resubscribe callback', async () => {
+    const { connect } = useViewModel(
+      'view-model-name',
+      ['aggregate-id'],
+      mockStateChange,
+      mockEventReceived
+    )
+
+    await connect()
+
+    const reconnectCallback = mockedClient.subscribe.mock.calls[0][6]
+
+    clearMocks()
+
+    await reconnectCallback()
+
+    expect(mockedClient.query).toHaveBeenCalled()
+    expect(mockStateChange).toHaveBeenCalled()
+  })
 })
