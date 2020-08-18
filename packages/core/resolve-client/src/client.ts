@@ -240,9 +240,9 @@ export type ResubscribeCallback = (
 ) => void
 
 export const subscribe = (
+  context: Context,
   url: string,
   cursor: string,
-  context: Context,
   viewModelName: string,
   aggregateIds: AggregateSelector,
   handler: SubscribeHandler,
@@ -251,9 +251,9 @@ export const subscribe = (
 ): PromiseOrVoid<Subscription> => {
   const subscribeAsync = async (): Promise<Subscription> => {
     await connect(
+      context,
       url,
       cursor,
-      context,
       aggregateIds,
       handler,
       viewModelName,
@@ -356,9 +356,9 @@ export const getClient = (context: Context): Client => ({
     resubscribeCallback?
   ): PromiseOrVoid<Subscription> =>
     subscribe(
+      context,
       url,
       cursor,
-      context,
       viewModelName,
       aggregateIds,
       handler,

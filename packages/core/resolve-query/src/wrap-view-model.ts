@@ -273,7 +273,7 @@ const readAndSerialize = async (
   }
   const { state, ...other } = await read(pool, modelOptions, aggregateArgs, jwt)
 
-  return { ...other, state: pool.viewModel.serializeState(state, jwt) }
+  return { ...other, state: await pool.viewModel.serializeState(state, jwt) }
 }
 
 const updateByEvents = async (pool: ViewModelPool): Promise<any> => {
