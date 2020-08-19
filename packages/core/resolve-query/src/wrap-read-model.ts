@@ -19,7 +19,7 @@ type ReadModelPool = {
   connector: any
   connections: Set<any>
   readModel: ReadModelMeta
-  invokeEventListenerAsync: Function
+  invokeEventBusAsync: Function
 }
 
 const wrapConnection = async (
@@ -588,7 +588,7 @@ const next = async (
   if (args.length > 0) {
     throw new TypeError('Next should be invoked with no arguments')
   }
-  await pool.invokeEventListenerAsync(eventListener, 'build')
+  await pool.invokeEventBusAsync(eventListener, 'build')
 }
 
 const build = doOperation.bind(
@@ -789,9 +789,10 @@ const wrapReadModel = (
   readModel: ReadModelMeta,
   readModelConnectors: { [key: string]: any },
   eventstoreAdapter: any,
-  invokeEventListenerAsync: Function,
+  invokeEventBusAsync: Function,
   performanceTracer: any,
-  getSecretsManager: any
+  getSecretsManager: any,
+  parseReadOptions: any
 ) => {
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
 
@@ -804,14 +805,15 @@ const wrapReadModel = (
   }
 
   const pool = {
-    invokeEventListenerAsync,
+    invokeEventBusAsync,
     eventstoreAdapter,
     connections: new Set(),
     readModel,
     connector,
     isDisposed: false,
     performanceTracer,
-    getSecretsManager
+    getSecretsManager,
+    parseReadOptions
   }
 
   const api = {

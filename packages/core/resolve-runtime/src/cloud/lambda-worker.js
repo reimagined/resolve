@@ -33,10 +33,10 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     lambdaEventName: 'resolveSource'
   }
 
-  resolveBase.invokeEventListenerAsync = async (
+  resolveBase.invokeEventBusAsync = async (
     eventSubscriber,
     method,
-    ...args
+    parameters
   ) => {
     await invokeFunction({
       FunctionName: lambdaContext.invokedFunctionArn,
@@ -46,7 +46,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
         resolveSource: 'EventBus',
         eventSubscriber,
         method,
-        args
+        ...parameters
       }
     })
   }
@@ -76,16 +76,16 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       return executorResult
     } else if (lambdaEvent.resolveSource === 'EventBus') {
       log.debug('identified event source: event-bus')
-
-      const executorResult = await handleEventBusEvent(lambdaEvent, resolve)
+      const { method, payload } = lambdaEvent
+      const executorResult = await resolve.eventBus[method](payload)
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
     } else if (lambdaEvent.resolveSource === 'EventStore') {
       log.debug('identified event source: event-store')
-
-      const executorResult = await handleEventStoreEvent(lambdaEvent, resolve)
+      const { method, payload } = lambdaEvent
+      const executorResult = await resolve.eventstoreAdapter[method](payload)
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 

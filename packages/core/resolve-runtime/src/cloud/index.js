@@ -42,6 +42,16 @@ const index = async ({ assemblies, constants, domain }) => {
     log.debug('preparing uploader')
     await initUploader(resolve)
 
+    resolve.sendReactiveEvent = async (event) => {
+      const eventDescriptor = {
+        topic: `${process.env.RESOLVE_DEPLOYMENT_ID}/${event.type}/${event.aggregateId}`,
+        payload: JSON.stringify(event),
+        qos: 1
+      }
+  
+      await resolve.mqtt.publish(eventDescriptor).promise()
+    }
+
     log.debug(`lambda 'cold start' succeeded`)
 
     return lambdaWorker.bind(null, resolve)

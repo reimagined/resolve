@@ -7,7 +7,7 @@ import createSchedulerSagas from './create-scheduler-sagas'
 import wrapRegularSagas from './wrap-regular-sagas'
 
 const createSaga = ({
-  invokeEventListenerAsync,
+  invokeEventBusAsync,
   onCommandExecuted,
   readModelConnectors,
   sagas,
@@ -50,7 +50,7 @@ const createSaga = ({
   const schedulerSagas = createSchedulerSagas(schedulers, sagaProvider)
 
   const executeListener = createQuery({
-    invokeEventListenerAsync,
+    invokeEventBusAsync,
     readModelConnectors,
     readModels: [...regularSagas, ...schedulerSagas],
     viewModels: [],

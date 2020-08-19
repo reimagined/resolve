@@ -33,29 +33,36 @@ const localEntry = async ({ assemblies, constants, domain }) => {
     await initWebsockets(resolve)
     await initUploader(resolve)
 
-    resolve.invokeEventListenerAsync = multiplexAsync.bind(
+    resolve.invokeEventBusAsync = multiplexAsync.bind(
       null,
-      async (eventSubscriber, method, ...args) => {
+      async (eventSubscriber, method, parameters) => {
         const currentResolve = Object.create(resolve)
         try {
-          const listenerInfo = currentResolve.eventListeners.get(
-            eventSubscriber
-          )
-          if (listenerInfo == null) {
-            throw new Error(`Listener ${eventSubscriber} does not exist`)
+          await initResolve(currentResolve)
+          const rawMethod = currentResolve.eventBus[method]
+          if(typeof rawMethod !== 'function') {
+            throw new TypeError(method)
           }
 
-          await initResolve(currentResolve)
-          const queryExecutor = listenerInfo.isSaga
-            ? currentResolve.executeSaga
-            : currentResolve.executeQuery
+          const result = await rawMethod.call(
+            currentResolve.eventBus,
+            { eventSubscriber, ...parameters }
+          )
 
-          await queryExecutor[method](...args)
+          return result
         } finally {
           await disposeResolve(currentResolve)
         }
       }
     )
+
+    resolve.sendReactiveEvent = async (event) => {
+      await resolve.pubsubManager.dispatch({
+        topicName: event.type,
+        topicId: event.aggregateId,
+        event
+      })
+    }
 
     await startExpress(resolve)
 

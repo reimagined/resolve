@@ -336,7 +336,8 @@ const wrapViewModel = (
   viewModel: ViewModelMeta,
   eventstoreAdapter: any,
   performanceTracer: any,
-  getSecretsManager: any
+  getSecretsManager: any,
+  parseReadOptions: any
 ) => {
   const pool = {
     viewModel,
@@ -344,7 +345,8 @@ const wrapViewModel = (
     workers: new Map(),
     isDisposed: false,
     performanceTracer,
-    getSecretsManager
+    getSecretsManager,
+    parseReadOptions
   }
 
   return Object.freeze({

@@ -1,28 +1,12 @@
 import createCommandExecutor from 'resolve-command'
-import createQueryExecutor, {
-  detectConnectorFeatures,
-  FULL_REGULAR_CONNECTOR,
-  FULL_XA_CONNECTOR,
-  EMPTY_CONNECTOR,
-  INLINE_LEDGER_CONNECTOR
-} from 'resolve-query'
+import createQueryExecutor from 'resolve-query'
 import createSagaExecutor from 'resolve-saga'
 import crypto from 'crypto'
 
-const EVENT_BUS_METHODS = [
-  'subscribe',
-  'resubscribe',
-  'unsubscribe',
-  'deleteProperty',
-  'getProperty',
-  'listProperties',
-  'setProperty',
-  'resume',
-  'pause',
-  'reset',
-  'status',
-  'build'
-]
+import createOnCommandExecuted from './on-command-executed'
+import createEventListener from './event-listener'
+import createEventBus from './event-bus'
+
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
 const initResolve = async resolve => {
@@ -34,7 +18,7 @@ const initResolve = async resolve => {
   } = resolve.assemblies
 
   const {
-    invokeEventListenerAsync,
+    invokeEventBusAsync,
     aggregates,
     readModels,
     schedulers,
@@ -52,10 +36,7 @@ const initResolve = async resolve => {
     })
   }
 
-  const onCommandExecuted = async event => {
-    await resolve.publisher.publish({ event })
-    await resolve.notifyInlineLedgers()
-  }
+  const onCommandExecuted = createOnCommandExecuted(resolve)
 
   const executeCommand = createCommandExecutor({
     aggregates,
@@ -65,7 +46,7 @@ const initResolve = async resolve => {
   })
 
   const executeQuery = createQueryExecutor({
-    invokeEventListenerAsync,
+    invokeEventBusAsync,
     eventstoreAdapter,
     readModelConnectors,
     readModels,
@@ -74,7 +55,7 @@ const initResolve = async resolve => {
   })
 
   const executeSaga = createSagaExecutor({
-    invokeEventListenerAsync,
+    invokeEventBusAsync,
     executeCommand,
     executeQuery,
     onCommandExecuted,
@@ -86,110 +67,21 @@ const initResolve = async resolve => {
     uploader
   })
 
-  const eventBusMethod = async (key, ...args) => {
-    if (args.length !== 1 || Object(args[0]) !== args[0]) {
-      throw new TypeError(`Invalid EventBus method "${key}" arguments ${args}`)
-    }
-
-    let { eventSubscriber, modelName, ...parameters } = args[0]
-    if (eventSubscriber == null && modelName == null) {
-      throw new Error(`Either "eventSubscriber" nor "modelName" is null`)
-    } else if (eventSubscriber == null) {
-      eventSubscriber = modelName
-    } else {
-      modelName = eventSubscriber
-    }
-
-    const listenerInfo = resolve.eventListeners.get(eventSubscriber)
-    if (listenerInfo == null) {
-      throw new Error(`Listener ${eventSubscriber} does not exist`)
-    }
-
-    const connector = resolve.readModelConnectors[listenerInfo.connectorName]
-
-    const isInlineLedger =
-      resolve.detectConnectorFeatures(connector) ===
-      resolve.connectorCapabilities.INLINE_LEDGER_CONNECTOR
-
-    const method = isInlineLedger
-      ? listenerInfo.isSaga
-        ? resolve.executeSaga[key]
-        : resolve.executeQuery[key]
-      : resolve.publisher[key]
-
-    if (typeof method != 'function') {
-      throw new TypeError(key)
-    }
-
-    const result = await method(
-      isInlineLedger
-        ? { modelName, ...parameters }
-        : { eventSubscriber, ...parameters }
-    )
-
-    return result
-  }
-
-  const eventBus = {}
-  for (const key of EVENT_BUS_METHODS) {
-    Object.defineProperty(eventBus, key, {
-      value: eventBusMethod.bind(eventBus, key)
-    })
-  }
-  Object.freeze(eventBus)
+  const eventBus = createEventBus(resolve)
+  
+  const eventListener = createEventListener(resolve)
 
   Object.assign(resolve, {
     executeCommand,
     executeQuery,
     executeSaga,
+    eventListener,
     eventBus
   })
 
-  const connectorCapabilities = {
-    FULL_REGULAR_CONNECTOR,
-    FULL_XA_CONNECTOR,
-    EMPTY_CONNECTOR,
-    INLINE_LEDGER_CONNECTOR
-  }
-
-  const notifyInlineLedgers = async () => {
-    const maxDuration = Math.max(resolve.getRemainingTimeInMillis() - 15000, 0)
-    let timerId = null
-    const timerPromise = new Promise(resolve => {
-      timerId = setTimeout(resolve, maxDuration)
-    })
-    const inlineLedgerPromise = (async () => {
-      const promises = []
-      for (const {
-        name: eventListener,
-        connectorName
-      } of resolve.eventListeners.values()) {
-        const connector = resolve.readModelConnectors[connectorName]
-        if (
-          resolve.detectConnectorFeatures(connector) ===
-          resolve.connectorCapabilities.INLINE_LEDGER_CONNECTOR
-        ) {
-          promises.push(
-            resolve.invokeEventListenerAsync(eventListener, 'build')
-          )
-        }
-      }
-      await Promise.all(promises)
-
-      if (timerId != null) {
-        clearTimeout(timerId)
-      }
-    })()
-
-    await Promise.race([timerPromise, inlineLedgerPromise])
-  }
-
   Object.defineProperties(resolve, {
     readModelConnectors: { value: readModelConnectors },
-    eventstoreAdapter: { value: eventstoreAdapter },
-    detectConnectorFeatures: { value: detectConnectorFeatures },
-    connectorCapabilities: { value: connectorCapabilities },
-    notifyInlineLedgers: { value: notifyInlineLedgers }
+    eventstoreAdapter: { value: eventstoreAdapter }
   })
 
   if (!resolve.hasOwnProperty('getRemainingTimeInMillis')) {
