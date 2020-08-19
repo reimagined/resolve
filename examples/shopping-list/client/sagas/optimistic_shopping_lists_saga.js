@@ -13,13 +13,13 @@ export default function*() {
   yield takeEvery(
     action =>
       action.type === SEND_COMMAND_SUCCESS &&
-      action.commandType === 'createShoppingList',
+      action.command.type === 'createShoppingList',
     function*(action) {
       yield put({
         type: OPTIMISTIC_CREATE_SHOPPING_LIST,
         payload: {
-          id: action.aggregateId,
-          name: action.payload.name
+          id: action.command.aggregateId,
+          name: action.command.payload.name
         }
       })
     }
@@ -28,12 +28,12 @@ export default function*() {
   yield takeEvery(
     action =>
       action.type === SEND_COMMAND_SUCCESS &&
-      action.commandType === 'removeShoppingList',
+      action.command.type === 'removeShoppingList',
     function*(action) {
       yield put({
         type: OPTIMISTIC_REMOVE_SHOPPING_LIST,
         payload: {
-          id: action.aggregateId
+          id: action.command.aggregateId
         }
       })
     }
@@ -45,7 +45,7 @@ export default function*() {
       yield put({
         type: OPTIMISTIC_SYNC,
         payload: {
-          originalLists: action.result.data
+          originalLists: action.result
         }
       })
     }
