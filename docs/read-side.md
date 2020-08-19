@@ -358,27 +358,40 @@ Refer to the [Query a View Model](#query-a-view-model) section, for information 
 
 Note that a View Model does not use the Read Model store.
 
-## View Model Subscription Validator
+## View Model Resolver
 
-A View Model's **validator** defines to what topics a client is allowed to subscribe. A validator function receives the resolve context, topics and request parameters. Based on the parameters, the validator function returns a list of topics.
+A View Model's **resolver** allows to validate the user and build the view-model. By applying a filter to eventTypes, you can select which events the user subscribes to. A resolver function receives the resolve context, object with eventTypes and aggregateIds and object with jsonWebToken and view-model name parameters. Based on the parameters, the resolver function returns built view-model data and meta object that contains the returned cursor eventTypes and aggregateIds.
 
-The code sample below demonstrates a View Model subscription validator implementation:
+The code sample below demonstrates a View Model resolver implementation:
 
 ```js
-;async (resolve, { topics, jwt: token }) => {
-  const { userId } = jwt.verify(token, process.env.JWT_SECRET)
-  const user = await resolve.executeQuery({
-    modelName: 'users',
-    resolverName: 'userById',
-    resolverArgs: { userId },
-    jwtToken: token
-  })
+import jwt from 'jsonwebtoken'
+import jwtSecret from '../../auth/jwt-secret'
 
-  if (user == null) {
+export default async (
+  resolve,
+  { eventTypes, aggregateIds },
+  { jwt: token, viewModel }
+) => {
+  try {
+    jwt.verify(token, jwtSecret)
+  } catch (error) {
     throw new Error('Permission denied')
   }
 
-  return topics
+  const { data, cursor } = await resolve.buildViewModel(viewModel.name, {
+    eventTypes,
+    aggregateIds
+  })
+
+  return {
+    data,
+    meta: {
+      cursor,
+      eventTypes,
+      aggregateIds
+    }
+  }
 }
 ```
 
