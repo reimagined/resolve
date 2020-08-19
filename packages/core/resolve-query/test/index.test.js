@@ -597,7 +597,7 @@ for (const { describeName, prepare } of [
           }
         })
 
-        test('"readAndSerialize" should return serialized state', async () => {
+        test('"serializeState" should return serialized state', async () => {
           events = [
             {
               aggregateId: 'id1',

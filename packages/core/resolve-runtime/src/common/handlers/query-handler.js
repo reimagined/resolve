@@ -34,13 +34,11 @@ const queryHandler = async (req, res) => {
     res.status(200)
     res.setHeader('Content-Type', 'application/json')
 
-    if (result?.__meta) {
-      res.setHeader('X-Resolve-View-Model-Cursor', result.__meta.cursor)
-
+    if (result.meta?.aggregateIds != null || result.meta?.eventTypes != null) {
       const subscribeOptions = await req.resolve.getSubscribeAdapterOptions(
         req.resolve,
         modelArgs.origin,
-        result.__meta.eventTypes,
+        result.meta.eventTypes,
         // TODO: normalized aggregate ids somewhere above
         Array.isArray(modelOptions) ||
           modelOptions === '*' ||

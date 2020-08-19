@@ -154,13 +154,7 @@ const buildViewModel = async (
   }
 
   return {
-    state: {
-      ...state,
-      __meta: {
-        cursor,
-        eventTypes
-      }
-    },
+    data: state,
     eventCount,
     cursor
   }
@@ -198,6 +192,7 @@ const read = async (
     if (pool.isDisposed) {
       throw new Error(`View model "${viewModelName}" is disposed`)
     }
+
     let aggregateIds = null
     try {
       if (Array.isArray(modelOptions)) {
@@ -212,23 +207,6 @@ const read = async (
         `View model "${viewModelName}" requires aggregates identifier list`
       )
     }
-    const key = getKey(aggregateIds)
-
-    if (!pool.workers.has(key)) {
-      pool.workers.set(
-        key,
-        buildViewModel(pool, aggregateIds, aggregateArgs, jwt, key)
-      )
-    }
-
-    const { state, eventCount } = await pool.workers.get(key)
-
-    if (subSegment != null) {
-      subSegment.addAnnotation('eventCount', eventCount)
-      subSegment.addAnnotation('origin', 'resolve:query:read')
-    }
-
-    pool.workers.delete(key)
 
     const eventTypes = Object.keys(pool.viewModel.projection).filter(
       type => type !== 'Init'
@@ -236,17 +214,62 @@ const read = async (
 
     return await pool.viewModel.resolver(
       {
-        buildViewModel: (name: string, params: any) => {
-          if (name !== viewModelName) {
-            throw new Error(`The '${name}' view model is inaccessible`)
-          }
+        buildViewModel: async (
+          name: string,
+          { aggregateIds }: any
+        ): Promise<any> => {
+          const buildSubSegment = segment
+            ? segment.addNewSubsegment('buildViewModel')
+            : null
 
-          return state
+          try {
+            if (buildSubSegment != null) {
+              buildSubSegment.addAnnotation('viewModelName', viewModelName)
+              buildSubSegment.addAnnotation('origin', 'resolve:query:read')
+            }
+
+            if (name !== viewModelName) {
+              throw new Error(`The '${name}' view model is inaccessible`)
+            }
+
+            if (pool.isDisposed) {
+              throw new Error(`View model "${viewModelName}" is disposed`)
+            }
+
+            const key = getKey(aggregateIds)
+
+            if (!pool.workers.has(key)) {
+              pool.workers.set(
+                key,
+                buildViewModel(pool, aggregateIds, aggregateArgs, jwt, key)
+              )
+            }
+
+            const { data, eventCount, cursor } = await pool.workers.get(key)
+
+            if (buildSubSegment != null) {
+              buildSubSegment.addAnnotation('eventCount', eventCount)
+              buildSubSegment.addAnnotation('origin', 'resolve:query:read')
+            }
+
+            pool.workers.delete(key)
+
+            return { data, cursor }
+          } catch (error) {
+            if (buildSubSegment != null) {
+              buildSubSegment.addError(error)
+            }
+
+            throw error
+          } finally {
+            if (buildSubSegment != null) {
+              buildSubSegment.close()
+            }
+          }
         }
       },
-      { aggregateIds },
+      { aggregateIds, eventTypes },
       {
-        eventTypes,
         jwt,
         viewModel: pool.viewModel
       }

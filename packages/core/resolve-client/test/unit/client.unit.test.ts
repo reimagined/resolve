@@ -19,7 +19,7 @@ const createMockResponse = (overrides: object = {}): NarrowedResponse => ({
   },
   json: (): Promise<object> =>
     Promise.resolve({
-      data: 'response-data'
+      data: { data: 'response-data' }
     }),
   text: (): Promise<string> => Promise.resolve('response-text'),
   ...overrides
@@ -180,7 +180,10 @@ describe('query', () => {
     getJson = jest.fn(
       (): Promise<object> =>
         Promise.resolve({
-          result: 'query-result'
+          data: {
+            result: 'query-result'
+          },
+          meta: {}
         })
     )
     mRequest.mockResolvedValue(
@@ -226,12 +229,12 @@ describe('query', () => {
     expect(getHeader).toHaveBeenCalledWith('Date')
     expect(getJson).toHaveBeenCalled()
     expect(result).toEqual({
-      timestamp: 12345,
       data: {
         result: 'query-result'
       },
-      cursor: '',
-      url: ''
+      meta: {
+        timestamp: 12345
+      }
     })
   })
 
@@ -250,12 +253,12 @@ describe('query', () => {
         }
 
         expect(result).toEqual({
-          timestamp: 12345,
           data: {
             result: 'query-result'
           },
-          cursor: '',
-          url: ''
+          meta: {
+            timestamp: 12345
+          }
         })
 
         done()
@@ -339,7 +342,9 @@ describe('query', () => {
         },
         json: getJson,
         [VALIDATED_RESULT]: {
-          result: 'validated-result'
+          data: {
+            result: 'validated-result'
+          }
         }
       })
     )

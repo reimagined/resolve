@@ -65,7 +65,7 @@ const useViewModel = (
     )
     log.debug(`view model state arrived`)
     if (result) {
-      const { data, url, cursor } = result
+      const { data, meta: { url, cursor } = {} } = result
       log.debug(data)
       setState(data)
       closure.url = url
