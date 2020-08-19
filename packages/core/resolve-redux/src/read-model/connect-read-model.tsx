@@ -7,8 +7,8 @@ import {
   connectReadModel as connectReadModelAction,
   disconnectReadModel as disconnectReadModelAction
 } from './actions'
-import getHash from '../get-hash'
-import connectResolveAdvanced from '../connect_resolve_advanced'
+import getHash from '../internal/get-hash'
+import connectResolveAdvanced from '../internal/connect-resolve-advanced'
 import { ResultStatus, ReduxState } from '../types'
 import { getEntry } from './read-model-reducer'
 

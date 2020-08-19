@@ -1,5 +1,5 @@
-import getRootBasedUrl from './get_root_based_url'
-import createContextBasedConnector from './create_context_based_connector'
+import getRootBasedUrl from './get-root-based-url'
+import createContextBasedConnector from './create-context-based-connector'
 
 const connectRootBasedUrls = createContextBasedConnector(
   (

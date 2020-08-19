@@ -8,10 +8,7 @@ import uuid from 'uuid/v4'
 
 import { create as createViewModelReducer } from './view-model/view-model-reducer'
 import { create as createReadModelReducer } from './read-model/read-model-reducer'
-import createJwtReducer from './create_jwt_reducer'
 import createResolveMiddleware from './create-resolve-middleware'
-import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
-import emptySubscribeAdapter from './empty_subscribe_adapter'
 import { ReduxStoreContext } from './types'
 
 const createStore = ({
@@ -37,8 +34,7 @@ const createStore = ({
   const combinedReducers = combineReducers({
     ...reducers,
     viewModels: createViewModelReducer(),
-    readModels: createReadModelReducer(),
-    jwt: createJwtReducer()
+    readModels: createReadModelReducer()
   })
 
   const appliedMiddlewares = applyMiddleware(resolveMiddleware, ...middlewares)
@@ -63,13 +59,6 @@ const createStore = ({
     customSagas,
     queryMethod
   })
-
-  if (jwtProvider != null) {
-    syncJwtProviderWithStore(jwtProvider, store).catch(
-      // eslint-disable-next-line no-console
-      error => console.error(error)
-    )
-  }
 
   return store
 }

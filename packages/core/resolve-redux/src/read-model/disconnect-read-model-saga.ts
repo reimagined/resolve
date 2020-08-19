@@ -1,7 +1,7 @@
 import { put } from 'redux-saga/effects'
 
 import { DisconnectReadModelAction, dropReadModelResult } from './actions'
-import { CONNECT_READMODEL } from '../action-types'
+import { CONNECT_READMODEL } from '../internal/action-types'
 import { RootSagaArgs } from '../types'
 
 type DisconnectReadModelSagaArgs = {

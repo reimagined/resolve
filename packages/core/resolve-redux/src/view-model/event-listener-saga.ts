@@ -3,7 +3,7 @@ import { call, take } from 'redux-saga/effects'
 import { RootSagaArgs } from '../types'
 import { ViewModelQuery } from 'resolve-client'
 import { DisconnectViewModelAction, viewModelStateUpdate } from './actions'
-import { DISCONNECT_VIEWMODEL } from '../action-types'
+import { DISCONNECT_VIEWMODEL } from '../internal/action-types'
 
 type EventListenerSagaArgs = {
   viewModels: any

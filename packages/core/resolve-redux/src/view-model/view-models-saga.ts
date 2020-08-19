@@ -1,9 +1,8 @@
 import { take } from 'redux-saga/effects'
 
-import getHash from '../get-hash'
-import createConnectionManager from '../create_connection_manager'
-import createSagaManager from '../create_saga_manager'
-import { CONNECT_VIEWMODEL, DISCONNECT_VIEWMODEL } from '../action-types'
+import getHash from '../internal/get-hash'
+import createSagaManager from '../internal/create-saga-manager'
+import { CONNECT_VIEWMODEL, DISCONNECT_VIEWMODEL } from '../internal/action-types'
 import connectViewModelSaga from './connect-view-model-saga'
 import disconnectViewModelSaga from './disconnect-view-model-saga'
 import { ConnectViewModelAction, DisconnectViewModelAction } from './actions'

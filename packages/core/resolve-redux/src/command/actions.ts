@@ -3,7 +3,7 @@ import {
   SEND_COMMAND_FAILURE,
   SEND_COMMAND_REQUEST,
   SEND_COMMAND_SUCCESS
-} from '../action-types'
+} from '../internal/action-types'
 
 export type CommandAction = {
   type: string

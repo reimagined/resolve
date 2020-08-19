@@ -7,7 +7,7 @@ import {
   DISCONNECT_VIEWMODEL,
   VIEWMODEL_STATE_UPDATE,
   VIEWMODEL_EVENT_RECEIVED
-} from '../action-types'
+} from '../internal/action-types'
 import { ViewModelQuery } from 'resolve-client'
 import { ViewModelReactiveEvent } from '../types'
 

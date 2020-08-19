@@ -1,14 +1,13 @@
-import * as validate from './validate'
-import { isAbsoluteUrl } from './utils'
+import { string, leadingSlash, isAbsoluteUrl } from '../helpers'
 
 const getRootBasedUrl = (origin: any, rootPath: any, path: any) => {
-  validate.string(path, 'Path')
+  string(path, 'Path')
 
   if (isAbsoluteUrl(path)) {
     return path
   }
 
-  validate.leadingSlash(path, 'Path')
+  leadingSlash(path, 'Path')
 
   return `${origin}${rootPath ? `/${rootPath}` : ''}${path}`
 }

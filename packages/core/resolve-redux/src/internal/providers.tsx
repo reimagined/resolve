@@ -1,8 +1,7 @@
 import React from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
 
-import { Provider as ResolveProvider } from './resolve_context'
-import createApi from './create_api'
+import { Provider as ResolveProvider } from './resolve-context'
 
 class Providers extends React.PureComponent<any> {
   render() {
@@ -11,11 +10,11 @@ class Providers extends React.PureComponent<any> {
       rootPath,
       staticPath,
       store,
-      children,
-      queryMethod
+      children
+      //queryMethod
     } = this.props
 
-    const api = createApi({ origin, rootPath, store, queryMethod })
+    const api = null //createApi({ origin, rootPath, store, queryMethod })
 
     return (
       <ResolveProvider

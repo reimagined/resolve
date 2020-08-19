@@ -1,14 +1,14 @@
 import React from 'react'
 
-import { Consumer } from './resolve_context'
-import * as validate from './validate'
+import { Consumer } from '../internal/resolve-context'
+import { arrayOfString } from '../helpers'
 
 const defaultContext = { origin: '', rootPath: '', staticPath: 'static' }
 
 const createContextBasedConnector = (getContextBasedUrl: Function): any => (
   propsList: any[]
 ): any => (Component: any): any => {
-  validate.arrayOfString(propsList, 'Props list')
+  arrayOfString(propsList, 'Props list')
 
   const propsListSize = propsList.length
 

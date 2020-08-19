@@ -6,7 +6,7 @@ import {
   queryReadModelRequest,
   queryReadModelSuccess
 } from './actions'
-import { DISCONNECT_READMODEL } from '../action-types'
+import { DISCONNECT_READMODEL } from '../internal/action-types'
 
 import { RootSagaArgs } from '../types'
 

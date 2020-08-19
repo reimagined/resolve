@@ -1,15 +1,15 @@
-import getHash from '../get-hash'
 import setEntry from 'lodash.set'
 import unsetEntry from 'lodash.unset'
 import getByPath from 'lodash.get'
 import { ReadModelQuery } from 'resolve-client'
+import getHash from '../internal/get-hash'
 
 import {
   QUERY_READMODEL_REQUEST,
   QUERY_READMODEL_SUCCESS,
   QUERY_READMODEL_FAILURE,
   DROP_READMODEL_STATE
-} from '../action-types'
+} from '../internal/action-types'
 import {
   ReadModelAction,
   DropReadModelResultAction,

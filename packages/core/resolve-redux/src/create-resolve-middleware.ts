@@ -2,9 +2,7 @@ import { Middleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import { getClient } from 'resolve-client'
 
-import rootSaga from './root_saga'
-import emptySaga from './empty_saga'
-import createApi from './create_api'
+import rootSaga from './root-saga'
 
 type MiddlewareContext = {
   store: any
@@ -19,16 +17,18 @@ type MiddlewareContext = {
   queryMethod: string
 }
 
+const emptySaga = function*() {
+  /* empty */
+}
+
 const wrapSagaMiddleware = (sagaMiddleware: any): any => {
   const run = (context: MiddlewareContext): void => {
-    const api = createApi(context)
     const client = getClient(context)
     const queryIdMap = new Map()
 
     sagaMiddleware.run(context.isClient ? rootSaga : emptySaga, {
       ...context,
       queryIdMap,
-      api,
       client
     })
   }

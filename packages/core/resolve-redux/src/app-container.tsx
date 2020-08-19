@@ -1,5 +1,5 @@
 import React from 'react'
-import Providers from './providers'
+import Providers from './internal/providers'
 
 class AppContainer extends React.PureComponent<any> {
   render() {

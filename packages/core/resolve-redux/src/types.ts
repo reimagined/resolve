@@ -1,6 +1,5 @@
 import { Event } from 'resolve-core'
 import { Client, Context } from 'resolve-client'
-import { API } from './create_api'
 
 export enum ResultStatus {
   Initial = 'initial',
@@ -59,7 +58,6 @@ export type ReduxStoreContext = {
 export type ChildSagaArgs = {
   store: any
   sessionId: any
-  api: API
   queryIdMap: Map<string, string>
   client: Client
 } & ReduxStoreContext

@@ -1,6 +1,6 @@
 import { call, put } from 'redux-saga/effects'
 import { ConnectViewModelAction, viewModelStateUpdate } from './actions'
-import { CONNECT_VIEWMODEL, DISCONNECT_VIEWMODEL } from '../action-types'
+import { CONNECT_VIEWMODEL, DISCONNECT_VIEWMODEL } from '../internal/action-types'
 import { RootSagaArgs } from '../types'
 import eventListenerSaga from './event-listener-saga'
 

@@ -4,8 +4,8 @@ import { bindActionCreators, Dispatch } from 'redux'
 import hoistNonReactStatic from 'hoist-non-react-statics'
 
 import * as actions from './actions'
-import getHash from '../get-hash'
-import connectResolveAdvanced from '../connect_resolve_advanced'
+import getHash from '../internal/get-hash'
+import connectResolveAdvanced from '../internal/connect-resolve-advanced'
 import { getEntry } from './view-model-reducer'
 import { ReduxState, ResultStatus } from '../types'
 

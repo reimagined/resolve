@@ -54,7 +54,15 @@ describe('command as plain object overload', () => {
     act(() => execute())
 
     expect(mDispatch).toHaveBeenCalledWith(
-      sendCommandRequest('type', 'aggregate-id', 'aggregate-name', { a: 'a' })
+      sendCommandRequest(
+        {
+          type: 'type',
+          aggregateId: 'aggregate-id',
+          aggregateName: 'aggregate-name',
+          payload: { a: 'a' }
+        },
+        true
+      )
     )
   })
 
@@ -100,7 +108,15 @@ describe('command as builder function overload', () => {
     act(() => execute({ a: 'a' }))
 
     expect(mDispatch).toHaveBeenCalledWith(
-      sendCommandRequest('type', 'aggregate-id', 'aggregate-name', { a: 'a' })
+      sendCommandRequest(
+        {
+          type: 'type',
+          aggregateId: 'aggregate-id',
+          aggregateName: 'aggregate-name',
+          payload: { a: 'a' }
+        },
+        true
+      )
     )
   })
 

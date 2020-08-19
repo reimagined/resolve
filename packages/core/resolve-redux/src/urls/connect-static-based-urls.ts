@@ -1,5 +1,5 @@
-import getStaticBasedUrl from './get_static_based_url'
-import createContextBasedConnector from './create_context_based_connector'
+import getStaticBasedUrl from './get-static-based-url'
+import createContextBasedConnector from './create-context-based-connector'
 
 const connectStaticBasedUrls = createContextBasedConnector(
   (

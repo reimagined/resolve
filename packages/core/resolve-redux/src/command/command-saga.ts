@@ -1,7 +1,7 @@
 import { Action } from 'redux'
 import { takeEvery } from 'redux-saga/effects'
 import { ChildSagaArgs } from '../types'
-import { SEND_COMMAND_REQUEST } from '../action-types'
+import { SEND_COMMAND_REQUEST } from '../internal/action-types'
 import sendCommandSaga from './send-command-saga'
 import { SendCommandRequestAction } from './actions'
 

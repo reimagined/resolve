@@ -5,7 +5,7 @@ import {
   DROP_READMODEL_STATE,
   CONNECT_READMODEL,
   DISCONNECT_READMODEL
-} from '../action-types'
+} from '../internal/action-types'
 import { ReadModelQuery } from 'resolve-client'
 
 export type ReadModelAction = {
