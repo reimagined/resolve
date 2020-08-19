@@ -40,5 +40,6 @@ export {
   useReduxCommand,
   useReduxViewModel,
   ResultStatus,
+  getOrigin, // this is everywhere
   internal
 }
