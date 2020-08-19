@@ -389,7 +389,7 @@ Specifies an array of the application's View Models. A View Model configuration 
 
 | Field            | Description                                                         |
 | ---------------- | ------------------------------------------------------------------- |
-| name             | The aggregate's name.                                               |
+| name             | The View Model's name.                                              |
 | projection       | A path to a file that defines View Model projection.                |
 | serializeState   | A path to a file that defines a state serializer function.          |
 | deserializeState | A path to a file that defines a state deserializer function.        |
