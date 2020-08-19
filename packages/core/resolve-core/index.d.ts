@@ -14,7 +14,7 @@ export declare type Event = {
   timestamp: number
   aggregateId: string
   aggregateVersion: number
-  payload: SerializableMap
+  payload?: SerializableMap
 }
 
 // Encryption
@@ -56,6 +56,7 @@ export declare type Command = {
   aggregateName: string
   payload?: SerializableMap
   jwt?: string
+  jwtToken?: string // deprecated
 }
 
 export declare type CommandResult = {
@@ -123,7 +124,8 @@ declare type ReadModelQuery = {
   modelName: string
   resolverName: string
   resolverArgs: Serializable
-  jwt: string
+  jwt?: string
+  jwtToken?: string
 }
 declare type ReadModelQueryResult = Serializable
 declare type ViewModelQuery = {

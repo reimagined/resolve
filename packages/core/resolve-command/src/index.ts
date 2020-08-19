@@ -425,7 +425,9 @@ const executeCommand = async (
   pool: CommandPool,
   command: Command
 ): Promise<CommandResult> => {
-  const { jwt } = command
+  const { jwt: actualJwt, jwtToken: deprecatedJwt } = command
+
+  const jwt = actualJwt || deprecatedJwt
 
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
@@ -527,12 +529,15 @@ const executeCommand = async (
       )
     }
 
-    const processedEvent = {
+    const processedEvent: Event = {
       aggregateId,
       aggregateVersion: aggregateVersion + 1,
       timestamp: Math.max(minimalTimestamp + 1, Date.now()),
-      type: event.type,
-      payload: event.payload as any
+      type: event.type
+    }
+
+    if (Object.prototype.hasOwnProperty.call(event, 'payload')) {
+      processedEvent.payload = event.payload
     }
 
     await (async (): Promise<void> => {
