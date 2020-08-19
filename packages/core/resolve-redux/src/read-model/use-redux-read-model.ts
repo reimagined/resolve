@@ -13,7 +13,7 @@ import {
 } from './actions'
 import { firstOfType } from 'resolve-core'
 import { isActionCreators, isDependencies, isOptions } from '../helpers'
-import { ReduxState, ResultDataState } from '../types'
+import { ReduxState, ResultStatus } from '../types'
 import { getEntry } from './read-model-reducer'
 
 type HookData = {
@@ -147,7 +147,7 @@ function useReduxReadModel(
           query
         },
         {
-          state: ResultDataState.Initial,
+          status: ResultStatus.Initial,
           data: initialState
         }
       )

@@ -6,7 +6,7 @@ import {
   viewModelStateUpdate,
   ViewModelStateUpdateAction
 } from './actions'
-import { ReduxState, ResultDataState, ViewModelReactiveEvent } from '../types'
+import { ReduxState, ResultStatus, ViewModelReactiveEvent } from '../types'
 import { firstOfType } from 'resolve-core'
 import { isActionCreators, isDependencies, isOptions } from '../helpers'
 import { useDispatch } from 'react-redux'
@@ -121,7 +121,7 @@ export function useReduxViewModel(
           query
         },
         {
-          state: ResultDataState.Initial,
+          status: ResultStatus.Initial,
           data: initialState
         }
       )

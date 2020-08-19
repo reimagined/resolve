@@ -20,7 +20,7 @@ import {
 import {
   ReadModelResultEntry,
   ReadModelResultMapByName,
-  ResultDataState,
+  ResultStatus,
   ReduxState
 } from '../types'
 
@@ -64,7 +64,7 @@ export const create = (): any => {
       },
       getEntryPath(getSelector(action)),
       {
-        state: ResultDataState.Requested,
+        status: ResultStatus.Requested,
         data: action.initialState
       }
     )
@@ -79,7 +79,7 @@ export const create = (): any => {
       },
       getEntryPath(getSelector(action)),
       {
-        state: ResultDataState.Ready,
+        status: ResultStatus.Ready,
         data: action.result.data
       }
     )
@@ -94,7 +94,7 @@ export const create = (): any => {
       },
       getEntryPath(getSelector(action)),
       {
-        state: ResultDataState.Failed,
+        status: ResultStatus.Failed,
         data: null,
         error: action.error?.message ?? 'unknown error'
       }

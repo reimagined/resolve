@@ -7,7 +7,7 @@ import { DROP_VIEWMODEL_STATE, VIEWMODEL_STATE_UPDATE } from '../action-types'
 import {
   ViewModelResultEntry,
   ViewModelResultMapByName,
-  ResultDataState,
+  ResultStatus,
   ReduxState
 } from '../types'
 import {
@@ -57,9 +57,7 @@ export const create = (): any => {
       },
       getEntryPath(getSelector(action)),
       {
-        state: action.initial
-          ? ResultDataState.Requested
-          : ResultDataState.Ready,
+        status: action.initial ? ResultStatus.Requested : ResultStatus.Ready,
         data: action.state
       }
     )

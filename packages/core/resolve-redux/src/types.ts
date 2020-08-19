@@ -2,7 +2,7 @@ import { Event } from 'resolve-core'
 import { Client, Context } from 'resolve-client'
 import { API } from './create_api'
 
-export enum ResultDataState {
+export enum ResultStatus {
   Initial = 'initial',
   Requested = 'requested',
   Ready = 'ready',
@@ -10,7 +10,7 @@ export enum ResultDataState {
 }
 
 type QueryResultEntry = {
-  state: ResultDataState
+  status: ResultStatus
   data?: any
   timestamp?: number
   error?: Error
