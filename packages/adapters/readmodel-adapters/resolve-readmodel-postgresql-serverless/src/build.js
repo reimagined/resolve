@@ -1,3 +1,13 @@
+const serializeError = error =>
+  error != null
+    ? {
+        name: error.name == null ? null : String(error.name),
+        code: error.code == null ? null : String(error.code),
+        message: String(error.message),
+        stack: String(error.stack)
+      }
+    : null
+
 const build = async (pool, readModelName, store, projection, next) => {
   const {
     PassthroughError,
@@ -110,7 +120,7 @@ const build = async (pool, readModelName, store, projection, next) => {
            SET "Errors" = jsonb_insert(
              COALESCE("Errors", jsonb('[]')),
              CAST(('{' || jsonb_array_length(COALESCE("Errors", jsonb('[]'))) || '}') AS TEXT[]),
-             jsonb(${escape(JSON.stringify(error))})
+             jsonb(${escape(JSON.stringify(serializeError(error)))})
            ),
            "FailedEvent" = ${escape(JSON.stringify({ type: 'Init' }))},
            "Cursor" = ${escape(JSON.stringify(nextCursor))}
@@ -126,6 +136,7 @@ const build = async (pool, readModelName, store, projection, next) => {
         })
       }
 
+      console.log('BUILD END BY FLOW (I)')
       return
     }
 
@@ -144,9 +155,11 @@ const build = async (pool, readModelName, store, projection, next) => {
 
     for (const event of events) {
       try {
-        await projection[event.type](store, event)
-        appliedEvents.push(event)
-        lastSuccessEvent = event
+        if (typeof projection[event.type] === 'function') {
+          await projection[event.type](store, event)
+          appliedEvents.push(event)
+          lastSuccessEvent = event
+        }
       } catch (error) {
         lastFailedEvent = event
         lastError = error
@@ -155,7 +168,6 @@ const build = async (pool, readModelName, store, projection, next) => {
     }
 
     const nextCursor = eventstoreAdapter.getNextCursor(cursor, appliedEvents)
-    appliedEvents.length = 0
 
     if (lastError == null) {
       await inlineLedgerExecuteStatement(
@@ -174,7 +186,7 @@ const build = async (pool, readModelName, store, projection, next) => {
          SET "Errors" = jsonb_insert(
            COALESCE("Errors", jsonb('[]')),
            CAST(('{' || jsonb_array_length(COALESCE("Errors", jsonb('[]'))) || '}') AS TEXT[]),
-           jsonb(${escape(JSON.stringify(lastError))})
+           jsonb(${escape(JSON.stringify(serializeError(lastError)))})
          ),
          "FailedEvent" = ${escape(JSON.stringify(lastFailedEvent))},
          "Cursor" = ${escape(JSON.stringify(nextCursor))}
@@ -190,10 +202,13 @@ const build = async (pool, readModelName, store, projection, next) => {
       transactionId
     })
 
-    if (lastError == null) {
+    if (lastError == null && appliedEvents.length > 0) {
       await next()
     }
-    console.log('BUILD END BY FLOW')
+
+    appliedEvents.length = 0
+
+    console.log('BUILD END BY FLOW (II)')
   } catch (error) {
     if (!(error instanceof PassthroughError)) {
       throw error
