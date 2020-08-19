@@ -27,8 +27,8 @@ const connectReadModelSaga = function*(
   yield put(queryReadModelRequest(query, null))
 
   try {
-    const { data } = yield call([client, client.query], query)
-    yield put(queryReadModelSuccess(query, data))
+    const result = yield call([client, client.query], query)
+    yield put(queryReadModelSuccess(query, result))
   } catch (error) {
     yield put(queryReadModelFailure(query, error))
   }
