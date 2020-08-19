@@ -4,7 +4,8 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     escapeId,
     escape,
     inlineLedgerForceStop,
-    inlineLedgerExecuteStatement
+    inlineLedgerExecuteStatement,
+    PassthroughError
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
@@ -53,7 +54,9 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
       )
       break
     } catch (err) {
-      console.error(err)
+      if (!(err instanceof PassthroughError)) {
+        throw err
+      }
     }
   }
 }

@@ -11,6 +11,8 @@ const build = async (pool, readModelName, store, projection, next) => {
     inlineLedgerExecuteStatement
   } = pool
 
+  console.log('BUILD STARTED')
+
   try {
     const databaseNameAsId = escapeId(schemaName)
     const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
@@ -191,10 +193,13 @@ const build = async (pool, readModelName, store, projection, next) => {
     if (lastError == null) {
       await next()
     }
+    console.log('BUILD END BY FLOW')
   } catch (error) {
     if (!(error instanceof PassthroughError)) {
       throw error
     }
+
+    console.log('BUILD END BY MUTEX')
 
     if (error.lastTransactionId != null) {
       try {
@@ -203,7 +208,11 @@ const build = async (pool, readModelName, store, projection, next) => {
           secretArn: awsSecretStoreArn,
           transactionId: error.lastTransactionId
         })
-      } catch (err) {}
+      } catch (err) {
+        if (err == null || !/Transaction .*? Is Not Found/i.test(err.message)) {
+          throw err
+        }
+      }
     }
   }
 }

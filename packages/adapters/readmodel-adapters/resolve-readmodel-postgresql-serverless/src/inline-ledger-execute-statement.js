@@ -38,8 +38,6 @@ const inlineLedgerExecuteStatement = async (pool, sql, transactionId) => {
       throw new PassthroughError(transactionId)
     }
 
-    console.warn(error)
-
     throw error
   }
 }

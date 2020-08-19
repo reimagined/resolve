@@ -5,7 +5,8 @@ const unsubscribe = async (pool, readModelName) => {
     escape,
     dropReadModel,
     inlineLedgerForceStop,
-    inlineLedgerExecuteStatement
+    inlineLedgerExecuteStatement,
+    PassthroughError
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
@@ -34,7 +35,11 @@ const unsubscribe = async (pool, readModelName) => {
       )
 
       break
-    } catch (err) {}
+    } catch (err) {
+      if (!(err instanceof PassthroughError)) {
+        throw err
+      }
+    }
   }
 
   await dropReadModel(pool, readModelName)
@@ -57,7 +62,11 @@ const unsubscribe = async (pool, readModelName) => {
       `
       )
       break
-    } catch (err) {}
+    } catch (err) {
+      if (!(err instanceof PassthroughError)) {
+        throw err
+      }
+    }
   }
 }
 

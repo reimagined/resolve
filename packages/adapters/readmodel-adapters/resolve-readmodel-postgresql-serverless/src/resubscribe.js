@@ -5,7 +5,8 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     escape,
     dropReadModel,
     inlineLedgerForceStop,
-    inlineLedgerExecuteStatement
+    inlineLedgerExecuteStatement,
+    PassthroughError
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
@@ -34,7 +35,11 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
       )
 
       break
-    } catch (err) {}
+    } catch (err) {
+      if (!(err instanceof PassthroughError)) {
+        throw err
+      }
+    }
   }
 
   await dropReadModel(pool, readModelName)
@@ -81,7 +86,11 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
       `
       )
       break
-    } catch (err) {}
+    } catch (err) {
+      if (!(err instanceof PassthroughError)) {
+        throw err
+      }
+    }
   }
 }
 

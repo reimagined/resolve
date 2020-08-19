@@ -4,7 +4,8 @@ const resume = async (pool, readModelName, next) => {
     escapeId,
     escape,
     inlineLedgerForceStop,
-    inlineLedgerExecuteStatement
+    inlineLedgerExecuteStatement,
+    PassthroughError
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
@@ -29,7 +30,9 @@ const resume = async (pool, readModelName, next) => {
       )
       break
     } catch (err) {
-      console.warn(err)
+      if (!(err instanceof PassthroughError)) {
+        throw err
+      }
     }
   }
 

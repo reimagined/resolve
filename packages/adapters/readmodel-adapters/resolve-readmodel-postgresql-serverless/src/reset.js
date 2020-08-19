@@ -1,11 +1,12 @@
-const reset = async (pool, readModelName, next) => {
+const reset = async (pool, readModelName) => {
   const {
     schemaName,
     escapeId,
     escape,
     dropReadModel,
     inlineLedgerForceStop,
-    inlineLedgerExecuteStatement
+    inlineLedgerExecuteStatement,
+    PassthroughError
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
@@ -35,7 +36,9 @@ const reset = async (pool, readModelName, next) => {
 
       break
     } catch (err) {
-      console.warn(err)
+      if (!(err instanceof PassthroughError)) {
+        throw err
+      }
     }
   }
 
@@ -59,10 +62,12 @@ const reset = async (pool, readModelName, next) => {
       )
 
       break
-    } catch (err) {}
+    } catch (err) {
+      if (!(err instanceof PassthroughError)) {
+        throw err
+      }
+    }
   }
-
-  await next()
 }
 
 export default reset

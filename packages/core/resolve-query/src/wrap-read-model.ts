@@ -94,12 +94,17 @@ const detectWrappers = (connector: any, bypass?: boolean): any => {
   }
 }
 
-const serializeError = (error: Error & { code?: number }): SerializedError => ({
-  name: error.name == null ? null : String(error.name),
-  code: error.code == null ? null : String(error.code),
-  message: String(error.message),
-  stack: String(error.stack)
-})
+const serializeError = (
+  error: (Error & { code?: number }) | null
+): SerializedError | null =>
+  error != null
+    ? {
+        name: error.name == null ? null : String(error.name),
+        code: error.code == null ? null : String(error.code),
+        message: String(error.message),
+        stack: String(error.stack)
+      }
+    : null
 
 const sendEvents = async (
   pool: ReadModelPool,
@@ -115,19 +120,8 @@ const sendEvents = async (
     batchId: any
   }
 ): Promise<any> => {
-  const {
-    performAcknowledge,
-    getRemainingTimeInMillis,
-    sendReactiveEvent
-  } = pool
+  const { performAcknowledge, getRemainingTimeInMillis } = pool
   const readModelName = pool.readModel.name
-
-  if (batchId == null && readModelName === 'websocket') {
-    for (const event of events) {
-      await sendReactiveEvent(event)
-    }
-    return
-  }
   let result = null
 
   const log = getLog(`updateByEvents:${readModelName}`)
@@ -567,8 +561,7 @@ const wrapReadModel = ({
   invokeEventBusAsync,
   performanceTracer,
   getRemainingTimeInMillis,
-  performAcknowledge,
-  sendReactiveEvent
+  performAcknowledge
 }: WrapReadModelOptions) => {
   const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
@@ -591,8 +584,7 @@ const wrapReadModel = ({
     performanceTracer,
     getSecretsManager,
     getRemainingTimeInMillis,
-    performAcknowledge,
-    sendReactiveEvent
+    performAcknowledge
   }
 
   const api = {

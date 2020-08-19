@@ -31,15 +31,17 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
           secretArn: awsSecretStoreArn,
           transactionId
         })
-      } catch (err) {}
+      } catch (err) {
+        if (err == null || !/Transaction .*? Is Not Found/i.test(err.message)) {
+          throw err
+        }
+      }
 
       break
     } catch (error) {
-      if (PassthroughError.isPassthroughError(error)) {
+      if (error instanceof PassthroughError) {
         continue
       }
-
-      console.warn(error)
 
       throw error
     }

@@ -7,7 +7,6 @@ export type CreateQueryOptions = {
   eventstoreAdapter: any
   getRemainingTimeInMillis: any
   performAcknowledge: any
-  sendReactiveEvent: any
 }
 
 type WrapModelOptions = Omit<
@@ -42,6 +41,5 @@ export type ReadModelPool = {
   readModel: ReadModelMeta
   invokeEventBusAsync: Function
   performAcknowledge: Function
-  sendReactiveEvent: Function
   getRemainingTimeInMillis: Function
 }
