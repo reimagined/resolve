@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - action types moved to internal namespace, avoid using them
 - internal actions structure drastically changed, avoid using them, they can change in future
+- custom redux sagas context changed:
+  - **api** removed, **client** instance added (resolve-client package)
 
 
 ### Added
