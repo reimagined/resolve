@@ -6,6 +6,7 @@ import {
 } from 'redux'
 import uuid from 'uuid/v4'
 
+import { create as createJwtReducer } from './internal/jwt-reducer'
 import { create as createViewModelReducer } from './view-model/view-model-reducer'
 import { create as createReadModelReducer } from './read-model/read-model-reducer'
 import createResolveMiddleware from './create-resolve-middleware'
@@ -50,7 +51,8 @@ const createStore = ({
   const combinedReducers = combineReducers({
     ...reducers,
     viewModels: createViewModelReducer(),
-    readModels: createReadModelReducer()
+    readModels: createReadModelReducer(),
+    jwt: createJwtReducer() // does it really actual?
   })
 
   const appliedMiddlewares = applyMiddleware(resolveMiddleware, ...middlewares)
