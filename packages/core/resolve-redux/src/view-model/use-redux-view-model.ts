@@ -8,7 +8,7 @@ import {
 } from './actions'
 import { ReduxState, ResultStatus, ViewModelReactiveEvent } from '../types'
 import { firstOfType } from 'resolve-core'
-import { isDependencies, isOptions } from '../helpers'
+import { isActionCreators, isDependencies, isOptions } from '../helpers'
 import { useDispatch } from 'react-redux'
 import { useViewModel } from 'resolve-react-hooks'
 import { useCallback } from 'react'
@@ -50,6 +50,11 @@ type ViewModelReduxActionsCreators = {
   ) => ViewModelEventReceivedAction | Action
 }
 
+const isViewModelReduxActionsCreators = (
+  x: any
+): x is ViewModelReduxActionsCreators =>
+  isActionCreators(['stateUpdate', 'eventReceived'], x)
+
 type ReduxViewModelHookOptions = {
   queryOptions?: QueryOptions
   selectorId?: string
@@ -67,15 +72,6 @@ const internalActions: ViewModelReduxActionsCreators = {
   eventReceived: viewModelEventReceived
 }
 
-export function isActionCreators(x: any): x is ViewModelReduxActionsCreators {
-  return (
-    x &&
-    typeof x === 'object' &&
-    (typeof x.stateUpdate === 'function' ||
-      typeof x.eventReceived === 'function')
-  )
-}
-
 export function useReduxViewModel(
   query: ViewModelQuery,
   options?: ReduxViewModelHookOptions | ViewModelReduxActionsCreators | any[],
@@ -86,7 +82,7 @@ export function useReduxViewModel(
     firstOfType<ReduxViewModelHookOptions>(isOptions, options) || {}
   const actualActionCreators: ViewModelReduxActionsCreators =
     firstOfType<ViewModelReduxActionsCreators>(
-      isActionCreators,
+      isViewModelReduxActionsCreators,
       options,
       actions
     ) || internalActions

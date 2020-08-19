@@ -26,6 +26,11 @@ type CommandReduxActionsCreators = {
   failure: (command: Command, error: Error) => SendCommandFailureAction
 }
 
+const isCommandReduxActionsCreators = (
+  x: any
+): x is CommandReduxActionsCreators =>
+  isActionCreators(['success', 'request', 'failure'], x)
+
 const internalActions: CommandReduxActionsCreators = {
   request: (command: Command) => sendCommandRequest(command, true),
   success: sendCommandSuccess,
@@ -99,7 +104,7 @@ function useReduxCommand<T>(
     firstOfType<CommandOptions>(isOptions, options) || defaultCommandOptions
   const actualActionCreators: CommandReduxActionsCreators =
     firstOfType<CommandReduxActionsCreators>(
-      isActionCreators,
+      isCommandReduxActionsCreators,
       options,
       actions
     ) || internalActions

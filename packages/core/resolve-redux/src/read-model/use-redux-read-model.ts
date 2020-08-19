@@ -39,6 +39,11 @@ type ReadModelReduxActionsCreators = {
   ) => QueryReadModelFailureAction | Action
 }
 
+const isReadModelReduxActionsCreators = (
+  x: any
+): x is ReadModelReduxActionsCreators =>
+  isActionCreators(['success', 'request', 'failure'], x)
+
 type ReduxReadModelHookOptions = {
   queryOptions?: QueryOptions
   selectorId?: string
@@ -100,7 +105,7 @@ function useReduxReadModel(
     firstOfType<ReduxReadModelHookOptions>(isOptions, options) || {}
   const actualActionCreators: ReadModelReduxActionsCreators =
     firstOfType<ReadModelReduxActionsCreators>(
-      isActionCreators,
+      isReadModelReduxActionsCreators,
       options,
       actions
     ) || internalActions
