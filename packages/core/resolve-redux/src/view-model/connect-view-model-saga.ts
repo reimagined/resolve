@@ -14,14 +14,25 @@ const connectViewModelSaga = function*(
   sagaArgs: ConnectViewSagaArgs,
   action: ConnectViewModelAction
 ) {
-  const { sagaManager, sagaKey, client } = sagaArgs
+  const { sagaManager, sagaKey, client, viewModels } = sagaArgs
   const { query } = action
 
   yield* sagaManager.stop(`${DISCONNECT_VIEWMODEL}${sagaKey}`)
 
+  const viewModel = viewModels.find((model: any) => model.name === query.name)
+
+  let state =
+    typeof viewModel.projection.Init === 'function'
+      ? viewModel.projection.Init
+      : null
+
+  yield put(viewModelStateUpdate(query, state, true))
+
   const { data, url, cursor } = yield call([client, client.query], query)
 
   yield put(viewModelStateUpdate(query, data, false))
+
+  state = data
 
   yield* sagaManager.start(
     `${CONNECT_VIEWMODEL}${sagaKey}`,
@@ -29,7 +40,10 @@ const connectViewModelSaga = function*(
     sagaArgs,
     {
       url,
-      cursor
+      cursor,
+      query,
+      viewModel,
+      state
     }
   )
 }

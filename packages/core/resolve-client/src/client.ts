@@ -224,7 +224,7 @@ export type Subscription = {
 }
 
 export type SubscribeResult = void
-export type SubscribeHandler = (event: unknown) => void
+export type SubscribeHandler = (event: any) => void
 export type SubscribeCallback = (
   error: Error | null,
   result: Subscription | null

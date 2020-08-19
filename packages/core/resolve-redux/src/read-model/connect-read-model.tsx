@@ -47,7 +47,11 @@ const connectReadModel = (
         resolverArgs
       } = this.props.connectorOptions
 
-      this.props.disconnectReadModel(readModelName, resolverName, resolverArgs)
+      this.props.disconnectReadModel({
+        name: readModelName,
+        resolver: resolverName,
+        args: resolverArgs
+      })
     }
 
     componentDidUpdate(prevProps: any): void {

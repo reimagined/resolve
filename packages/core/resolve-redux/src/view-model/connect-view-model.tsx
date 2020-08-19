@@ -6,6 +6,18 @@ import hoistNonReactStatic from 'hoist-non-react-statics'
 import * as actions from './actions'
 import getHash from '../get-hash'
 import connectResolveAdvanced from '../connect_resolve_advanced'
+import { getEntry } from './view-model-reducer'
+import { ReduxState, ResultStatus } from '../types'
+
+type ViewModelConnectorOptions = {
+  viewModelName: string
+  aggregateIds: string[]
+  aggregateArgs: any
+}
+type ViewModelConnectorOptionsMapper = (
+  state: ReduxState,
+  ownProps: any
+) => ViewModelConnectorOptions
 
 export const mapDispatchToConnectorProps = (dispatch: Dispatch) =>
   bindActionCreators(
@@ -17,62 +29,36 @@ export const mapDispatchToConnectorProps = (dispatch: Dispatch) =>
   )
 
 export const mapStateToConnectorProps = (
-  mapStateToOptions: Function,
-  state: any,
+  mapStateToOptions: ViewModelConnectorOptionsMapper,
+  state: ReduxState,
   ownProps: any
-) => {
+): any => {
   const connectorOptions = mapStateToOptions(state, ownProps)
-  if (!connectorOptions.hasOwnProperty('aggregateArgs')) {
-    connectorOptions.aggregateArgs = {}
-  }
-  if (
-    Array.isArray(connectorOptions.aggregateIds) &&
-    connectorOptions.aggregateIds.indexOf('*') !== -1
-  ) {
-    throw new Error(
-      `Incorrect value of "aggregateIds". Maybe you meant to use "*", not ["*"]`
-    )
-  }
 
-  const viewModelName = connectorOptions.viewModelName
-  const aggregateIds = getHash(connectorOptions.aggregateIds)
-  const aggregateArgs = getHash(connectorOptions.aggregateArgs)
-
-  const connectorMeta = { isLoading: false, isFailure: false, error: null }
-  /*
-  state.viewModels &&
-    state.viewModels[connectorMetaMap] &&
-    state.viewModels[connectorMetaMap][
-      `${viewModelName}${aggregateIds}${aggregateArgs}`
-    ]
-      ? state.viewModels[connectorMetaMap][
-          `${viewModelName}${aggregateIds}${aggregateArgs}`
-        ]
-      : {} */
-
-  const { isLoading, isFailure } = connectorMeta
-
-  const data =
-    isLoading === false && isFailure === false
-      ? state.viewModels[viewModelName][aggregateIds][aggregateArgs]
-      : null
-
+  const entry = getEntry(state.viewModels, {
+    query: {
+      name: connectorOptions.viewModelName,
+      aggregateIds: connectorOptions.aggregateIds,
+      args: connectorOptions.aggregateArgs
+    }
+  })
+  const data = entry && entry.status === ResultStatus.Ready ? entry.data : null
   const error =
-    isLoading === false && isFailure === true ? connectorMeta.error : null
+    entry && entry.status === ResultStatus.Failed ? entry.error : null
 
   return {
     ownProps,
     connectorOptions,
-    isLoading,
-    isFailure,
+    isLoading: entry && entry.status === ResultStatus.Requested,
+    isFailure: entry && entry.status === ResultStatus.Failed,
     data,
     error
   }
 }
 
-const connectViewModel = (mapStateToOptions: Function): any => (
-  Component: any
-): any => {
+const connectViewModel = (
+  mapStateToOptions: ViewModelConnectorOptionsMapper
+): any => (Component: any): any => {
   class ViewModelContainer extends React.PureComponent<any> {
     componentDidMount() {
       const {
@@ -81,7 +67,11 @@ const connectViewModel = (mapStateToOptions: Function): any => (
         aggregateArgs
       } = this.props.connectorOptions
 
-      this.props.connectViewModel(viewModelName, aggregateIds, aggregateArgs)
+      this.props.connectViewModel({
+        name: viewModelName,
+        aggregateIds: aggregateIds,
+        args: aggregateArgs
+      })
     }
 
     componentWillUnmount() {
@@ -91,7 +81,11 @@ const connectViewModel = (mapStateToOptions: Function): any => (
         aggregateArgs
       } = this.props.connectorOptions
 
-      this.props.disconnectViewModel(viewModelName, aggregateIds, aggregateArgs)
+      this.props.disconnectViewModel({
+        name: viewModelName,
+        aggregateIds: aggregateIds,
+        args: aggregateArgs
+      })
     }
 
     componentDidUpdate(prevProps: any) {
@@ -109,8 +103,8 @@ const connectViewModel = (mapStateToOptions: Function): any => (
           connectorOptions.viewModelName ||
           getHash(prevConnectorOptions.aggregateIds) !==
             getHash(connectorOptions.aggregateIds) ||
-          getHash(prevConnectorOptions.aggregateArgs) !==
-            getHash(connectorOptions.aggregateArgs))
+          getHash(prevConnectorOptions.aggregateArgs, 'empty') !==
+            getHash(connectorOptions.aggregateArgs, 'empty'))
       ) {
         this.props.disconnectViewModel(
           prevConnectorOptions.viewModelName,
