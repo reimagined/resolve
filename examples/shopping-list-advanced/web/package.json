@@ -18,7 +18,7 @@
     "history": "4.10.1",
     "passport-local": "1.0.0",
     "uuid": "3.3.2",
-    "react": "16.13.0",
+    "react": "16.13.1",
     "react-dom": "16.13.0",
     "react-bootstrap": "0.32.4",
     "react-helmet": "6.0.0",

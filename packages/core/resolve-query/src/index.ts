@@ -116,7 +116,7 @@ const createQuery = ({
     modelName,
     state,
     jwt: actualJwt,
-    jwtToken: deprecatedJwt,
+    jwtToken: deprecatedJwt
   }: {
     modelName: string
     state: any
