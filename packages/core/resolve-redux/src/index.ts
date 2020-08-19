@@ -16,6 +16,8 @@ import getOrigin from './internal/get-origin'
 import { Provider, Consumer } from './internal/resolve-context'
 import Providers from './internal/providers'
 import * as actionTypes from './internal/action-types'
+import deserializeInitialState from './internal/deserialize-initial-state'
+import connectResolveAdvanced from './internal/connect-resolve-advanced'
 
 import { ResultStatus } from './types'
 
@@ -24,7 +26,8 @@ const internal = {
   getOrigin,
   Provider,
   Consumer,
-  Providers
+  Providers,
+  deserializeInitialState
 }
 
 export {
@@ -40,6 +43,9 @@ export {
   useReduxCommand,
   useReduxViewModel,
   ResultStatus,
-  getOrigin, // this is everywhere
-  internal
+  internal,
+  // deprecated, encapsulation breach
+  getOrigin,
+  deserializeInitialState,
+  connectResolveAdvanced
 }

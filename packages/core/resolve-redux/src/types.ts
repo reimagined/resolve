@@ -51,6 +51,7 @@ export type ReduxStoreContext = {
     sagas?: any[]
   }
   initialState: any
+  serializedState?: string
   isClient: boolean
   queryMethod: string
 } & Context

@@ -27,7 +27,7 @@ const entryPoint = ({
   const redux = getRedux(clientImports, history)
 
   const store = createStore({
-    initialState: deserializeInitialState(viewModels, window.__INITIAL_STATE__),
+    serializedState: window.__INITIAL_STATE__,
     redux,
     viewModels,
     subscriber,

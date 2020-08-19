@@ -10,6 +10,7 @@ import { create as createViewModelReducer } from './view-model/view-model-reduce
 import { create as createReadModelReducer } from './read-model/read-model-reducer'
 import createResolveMiddleware from './create-resolve-middleware'
 import { ReduxStoreContext } from './types'
+import deserializeInitialState from './internal/deserialize-initial-state'
 
 const createStore = ({
   redux: {
@@ -24,10 +25,25 @@ const createStore = ({
   rootPath,
   staticPath,
   initialState = undefined,
+  serializedState,
   isClient,
   queryMethod
 }: ReduxStoreContext): any => {
   const sessionId = uuid()
+
+  if (serializedState != null && initialState != null) {
+    throw Error(
+      `ambiguous initial state: both initialState and serializedState set`
+    )
+  }
+
+  let actualInitialState
+
+  if (serializedState != null) {
+    actualInitialState = deserializeInitialState(viewModels, serializedState)
+  } else {
+    actualInitialState = initialState
+  }
 
   const resolveMiddleware = createResolveMiddleware()
 
@@ -43,7 +59,7 @@ const createStore = ({
 
   const store = reduxCreateStore(
     combinedReducers,
-    initialState,
+    actualInitialState,
     composedEnhancers
   ) as any
 
