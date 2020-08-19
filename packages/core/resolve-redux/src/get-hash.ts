@@ -2,9 +2,12 @@ import stringify from 'json-stable-stringify'
 
 const weakMap = new WeakMap()
 
-const getHash = (value: any) => {
+const getHash = (value: any, placeholder?: string) => {
   if (value == null) {
-    return 'null-or-undefined'
+    if (placeholder == null) {
+      throw new Error("Can't calculate hash of null/undefined value")
+    }
+    return placeholder
   }
 
   if (

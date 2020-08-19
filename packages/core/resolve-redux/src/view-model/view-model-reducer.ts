@@ -34,7 +34,7 @@ export const getEntryPath = (
   const {
     query: { name, aggregateIds, args }
   } = selector
-  return `${getHash(name)}.${getHash(aggregateIds)}.${getHash(args)}`
+  return `${getHash(name)}.${getHash(aggregateIds)}.${getHash(args, 'no-args')}`
 }
 
 export const getEntry = (
