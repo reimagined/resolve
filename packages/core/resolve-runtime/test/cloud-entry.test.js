@@ -199,7 +199,9 @@ describe('Cloud entry', () => {
       expect(result.statusCode).toEqual(200)
       expect(result.headers).toEqual({ 'Content-Type': 'application/json' })
       expect(JSON.parse(result.body)).toEqual({
-        key: 'value'
+        data: {
+          key: 'value'
+        }
       })
 
       expect(readModelConnector.connect.mock.calls[0][0]).toEqual(
