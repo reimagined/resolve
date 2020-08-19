@@ -2,25 +2,36 @@ import { take, put, select } from 'redux-saga/effects'
 
 import getHash from '../get-hash'
 import { aggregateVersionsMap, lastTimestampMap } from '../constants'
-import { CONNECT_VIEWMODEL, DISPATCH_TOPIC_MESSAGE } from '../action-types'
+import { CONNECT_VIEWMODEL } from '../action-types'
 import unsubscribeViewModelTopicsSaga from './unsubscribe-view-model-topics-saga'
+import { RootSagaArgs } from '../types'
+
+type EventListenerSagaArgs = {
+  viewModels: any
+  sagaManager: any
+  sagaKey: string
+} & RootSagaArgs
+
+type SubscriptionArgs = {
+  cursor: string
+  url: string
+}
 
 const eventListenerSaga = function*(
-  {
-    viewModels,
-    sagaKey,
-    sagaManager,
-    eventTypes,
-    store
-  }: {
-    viewModels: any[]
-    sagaKey: any
-    sagaManager: any
-    eventTypes: string[]
-    store: any
-  },
-  connectAction: any
+  { viewModels, sagaKey, sagaManager, store }: EventListenerSagaArgs,
+  { cursor, url }: SubscriptionArgs
 ) {
+
+
+
+
+  //  const viewM
+
+  //setState(viewModel.projection[event.type](closure.state, event), false)
+
+
+
+  /*
   while (true) {
     const { message: event } = yield take(
       (action: any): any =>
@@ -78,6 +89,7 @@ const eventListenerSaga = function*(
       }
     }
   }
+   */
 }
 
 export default eventListenerSaga

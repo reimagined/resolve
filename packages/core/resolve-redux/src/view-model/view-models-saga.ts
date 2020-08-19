@@ -9,7 +9,6 @@ import disconnectViewModelSaga from './disconnect-view-model-saga'
 import { ConnectViewModelAction, DisconnectViewModelAction } from './actions'
 
 const viewModelsSaga = function*(sagaArgs: any): any {
-  const connectionManager = createConnectionManager({ wildcardSymbol: null })
   const sagaManager = createSagaManager()
 
   while (true) {
@@ -29,7 +28,6 @@ const viewModelsSaga = function*(sagaArgs: any): any {
           connectViewModelSaga,
           {
             ...sagaArgs,
-            connectionManager,
             sagaManager,
             sagaKey
           },
@@ -45,7 +43,6 @@ const viewModelsSaga = function*(sagaArgs: any): any {
           disconnectViewModelSaga,
           {
             ...sagaArgs,
-            connectionManager,
             sagaManager,
             sagaKey
           },
