@@ -14,11 +14,11 @@ const disconnectReadModelSaga = function*(
   action: DisconnectReadModelAction
 ): any {
   const { sagaManager, sagaKey } = sagaArgs
-  const { readModelName, resolverName, resolverArgs } = action
+  const { query } = action
 
   yield* sagaManager.stop(`${CONNECT_READMODEL}${sagaKey}`)
 
-  yield put(dropReadModelResult(readModelName, resolverName, resolverArgs))
+  yield put(dropReadModelResult(query))
 }
 
 export default disconnectReadModelSaga

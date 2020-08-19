@@ -85,7 +85,13 @@ const connectReadModel = (
   const mapStateToConnectorProps = (state: ReduxState, ownProps: any): any => {
     const connectorOptions = mapStateToOptions(state, ownProps)
 
-    const entry = getEntry(state.readModels, connectorOptions)
+    const entry = getEntry(state.readModels, {
+      query: {
+        name: connectorOptions.readModelName,
+        resolver: connectorOptions.resolverName,
+        args: connectorOptions.resolverArgs
+      }
+    })
     const data =
       entry && entry.state === ResultDataState.Ready ? entry.data : null
     const error =

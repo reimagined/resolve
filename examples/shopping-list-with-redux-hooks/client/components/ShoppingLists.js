@@ -27,8 +27,7 @@ const useLists = () => {
     payload: {}
   }))
 
-  const item = useSelector(myLists) || { data: [] }
-  const lists = item.data || []
+  const { data: lists } = useSelector(myLists)
 
   return {
     getLists,

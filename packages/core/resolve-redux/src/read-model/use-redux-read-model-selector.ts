@@ -9,9 +9,7 @@ function useReduxReadModelSelector(query: ReadModelQuery | string): any {
   }
   return useSelector((state: ReduxState) =>
     getEntry(state.readModels, {
-      readModelName: query.name,
-      resolverName: query.resolver,
-      resolverArgs: query.args
+      query
     })
   )
 }

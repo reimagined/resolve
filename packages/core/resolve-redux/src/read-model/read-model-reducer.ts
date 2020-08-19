@@ -2,6 +2,7 @@ import getHash from '../get-hash'
 import setEntry from 'lodash.set'
 import unsetEntry from 'lodash.unset'
 import getByPath from 'lodash.get'
+import { ReadModelQuery } from 'resolve-client'
 
 import {
   QUERY_READMODEL_REQUEST,
@@ -10,6 +11,7 @@ import {
   DROP_READMODEL_STATE
 } from '../action-types'
 import {
+  ReadModelAction,
   DropReadModelResultAction,
   QueryReadModelFailureAction,
   QueryReadModelRequestAction,
@@ -23,17 +25,11 @@ import {
 } from '../types'
 
 export type ReadModelResultEntrySelector = {
-  readModelName: string
-  resolverName: string
-  resolverArgs: any
+  query: ReadModelQuery
 }
 
 const getSelector = (
-  action:
-    | QueryReadModelRequestAction
-    | QueryReadModelSuccessAction
-    | QueryReadModelFailureAction
-    | DropReadModelResultAction
+  action: ReadModelAction
 ): ReadModelResultEntrySelector | string => action.selectorId || action
 
 export const getEntryPath = (
@@ -42,10 +38,10 @@ export const getEntryPath = (
   if (typeof selector === 'string') {
     return `@@resolve/namedSelectors.${getHash(selector)}`
   }
-  const { readModelName, resolverName, resolverArgs } = selector
-  return `${getHash(readModelName)}.${getHash(resolverName)}.${getHash(
-    resolverArgs
-  )}`
+  const {
+    query: { name, resolver, args }
+  } = selector
+  return `${getHash(name)}.${getHash(resolver)}.${getHash(args)}`
 }
 
 export const getEntry = (
@@ -68,7 +64,8 @@ export const create = (): any => {
       },
       getEntryPath(getSelector(action)),
       {
-        state: ResultDataState.Requested
+        state: ResultDataState.Requested,
+        data: action.initialState
       }
     )
 
@@ -83,8 +80,7 @@ export const create = (): any => {
       getEntryPath(getSelector(action)),
       {
         state: ResultDataState.Ready,
-        data: action.result,
-        timestamp: action.timestamp
+        data: action.result.data
       }
     )
 
@@ -100,7 +96,7 @@ export const create = (): any => {
       {
         state: ResultDataState.Failed,
         data: null,
-        error: action.error
+        error: action.error?.message ?? 'unknown error'
       }
     )
 

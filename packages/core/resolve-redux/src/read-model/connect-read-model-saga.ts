@@ -20,31 +20,17 @@ const connectReadModelSaga = function*(
   action: ConnectReadModelAction
 ): any {
   const { sagaManager, sagaKey, client } = sagaArgs
-  const { readModelName, resolverName, resolverArgs } = action
+  const { query } = action
 
   yield* sagaManager.stop(`${DISCONNECT_READMODEL}${sagaKey}`)
 
-  yield put(queryReadModelRequest(readModelName, resolverName, resolverArgs))
+  yield put(queryReadModelRequest(query, null))
 
   try {
-    const { timestamp, data } = yield call([client, client.query], {
-      name: readModelName,
-      resolver: resolverName,
-      args: resolverArgs
-    })
-    yield put(
-      queryReadModelSuccess(
-        readModelName,
-        resolverName,
-        resolverArgs,
-        data,
-        timestamp
-      )
-    )
+    const { timestamp, data } = yield call([client, client.query], query)
+    yield put(queryReadModelSuccess(query, data, timestamp))
   } catch (error) {
-    yield put(
-      queryReadModelFailure(readModelName, resolverName, resolverArgs, error)
-    )
+    yield put(queryReadModelFailure(query, error))
   }
 }
 

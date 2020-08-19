@@ -4,17 +4,15 @@ import { useDispatch } from 'react-redux'
 import { QueryOptions, QueryResult, ReadModelQuery } from 'resolve-client'
 import { useQuery } from 'resolve-react-hooks'
 import {
+  queryReadModelFailure,
   QueryReadModelFailureAction,
+  queryReadModelRequest,
   QueryReadModelRequestAction,
+  queryReadModelSuccess,
   QueryReadModelSuccessAction
 } from './actions'
 import { firstOfType } from 'resolve-core'
 import { isActionCreators, isDependencies, isOptions } from '../helpers'
-import {
-  QUERY_READMODEL_FAILURE,
-  QUERY_READMODEL_REQUEST,
-  QUERY_READMODEL_SUCCESS
-} from '../action-types'
 import { ReduxState, ResultDataState } from '../types'
 import { getEntry } from './read-model-reducer'
 
@@ -26,6 +24,7 @@ type HookData = {
 type ReadModelReduxActionsCreators = {
   request: (
     query: ReadModelQuery,
+    initialState: any,
     selectorId?: string
   ) => QueryReadModelRequestAction | Action
   success: (
@@ -50,34 +49,9 @@ const defaultQueryOptions: QueryOptions = {
 }
 
 const internalActions: ReadModelReduxActionsCreators = {
-  request: (query: ReadModelQuery, selectorId?: string) => ({
-    type: QUERY_READMODEL_REQUEST,
-    readModelName: query.name,
-    resolverName: query.resolver,
-    resolverArgs: query.args,
-    selectorId
-  }),
-  success: (
-    query: ReadModelQuery,
-    result: QueryResult,
-    selectorId?: string
-  ) => ({
-    type: QUERY_READMODEL_SUCCESS,
-    readModelName: query.name,
-    resolverName: query.resolver,
-    resolverArgs: query.args,
-    result: result.data,
-    timestamp: result.timestamp,
-    selectorId
-  }),
-  failure: (query: ReadModelQuery, error: Error, selectorId?: string) => ({
-    type: QUERY_READMODEL_FAILURE,
-    readModelName: query.name,
-    resolverName: query.resolver,
-    resolverArgs: query.args,
-    error,
-    selectorId
-  })
+  request: queryReadModelRequest,
+  success: queryReadModelSuccess,
+  failure: queryReadModelFailure
 }
 
 function useReduxReadModel(query: ReadModelQuery, initialState: any): HookData
@@ -162,7 +136,7 @@ function useReduxReadModel(
   return {
     request: useCallback((): void => {
       if (typeof request === 'function') {
-        dispatch(request(query, selectorId))
+        dispatch(request(query, initialState, selectorId))
       }
       executor()
     }, [actualDependencies]),
@@ -170,9 +144,7 @@ function useReduxReadModel(
       getEntry(
         state.readModels,
         selectorId || {
-          readModelName: query.name,
-          resolverName: query.resolver,
-          resolverArgs: query.args
+          query
         },
         {
           state: ResultDataState.Initial,
