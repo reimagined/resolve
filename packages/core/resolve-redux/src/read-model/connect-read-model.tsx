@@ -33,7 +33,11 @@ const connectReadModel = (
         resolverArgs
       } = this.props.connectorOptions
 
-      this.props.connectReadModel(readModelName, resolverName, resolverArgs)
+      this.props.connectReadModel({
+        name: readModelName,
+        resolver: resolverName,
+        args: resolverArgs
+      })
     }
 
     componentWillUnmount(): void {

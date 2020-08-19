@@ -6,21 +6,23 @@ import { CONNECT_READMODEL, DISCONNECT_READMODEL } from '../action-types'
 import connectReadModelSaga from './connect-read-model-saga'
 import disconnectReadModelSaga from './disconnect-read-model-saga'
 import { ChildSagaArgs } from '../types'
+import { ConnectReadModelAction, DisconnectReadModelAction } from './actions'
 
 const readModelsSaga = function*(sagaArgs: ChildSagaArgs): any {
   const sagaManager = createSagaManager()
 
   while (true) {
-    const action = yield take([CONNECT_READMODEL, DISCONNECT_READMODEL])
+    const action:
+      | ConnectReadModelAction
+      | DisconnectReadModelAction = yield take([
+      CONNECT_READMODEL,
+      DISCONNECT_READMODEL
+    ])
 
     switch (action.type) {
       case CONNECT_READMODEL: {
-        const { readModelName, resolverName, resolverArgs } = action
-        const sagaKey = getHash({
-          readModelName,
-          resolverName,
-          resolverArgs
-        })
+        const { query } = action
+        const sagaKey = getHash(query)
         yield* sagaManager.start(
           `${CONNECT_READMODEL}${sagaKey}`,
           connectReadModelSaga,
@@ -34,12 +36,8 @@ const readModelsSaga = function*(sagaArgs: ChildSagaArgs): any {
         break
       }
       case DISCONNECT_READMODEL: {
-        const { readModelName, resolverName, resolverArgs } = action
-        const sagaKey = getHash({
-          readModelName,
-          resolverName,
-          resolverArgs
-        })
+        const { query } = action
+        const sagaKey = getHash(query)
         yield* sagaManager.start(
           `${DISCONNECT_READMODEL}${sagaKey}`,
           disconnectReadModelSaga,

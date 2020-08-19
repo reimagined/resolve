@@ -10,38 +10,15 @@ const sendCommandSaga = function*(
   args: ChildSagaArgs,
   action: SendCommandRequestAction
 ): any {
-  /*
   const { client } = args
-  const { aggregateName, aggregateId, commandType, payload } = action
+  const { command } = action
 
   try {
-    const result = yield call([client, client.command], {
-      aggregateName,
-      aggregateId,
-      type: commandType,
-      payload
-    })
-    yield put(
-      sendCommandSuccess(
-        commandType,
-        aggregateId,
-        aggregateName,
-        payload,
-        result
-      )
-    )
+    const result = yield call([client, client.command], command)
+    yield put(sendCommandSuccess(command, result))
   } catch (error) {
-    yield put(
-      sendCommandFailure(
-        commandType,
-        aggregateId,
-        aggregateName,
-        payload,
-        error
-      )
-    )
+    yield put(sendCommandFailure(command, error))
   }
-  */
 }
 
 export default sendCommandSaga

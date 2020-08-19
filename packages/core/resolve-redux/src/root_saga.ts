@@ -12,13 +12,14 @@ import {
 import sendCommandSaga from './command/send-command-saga'
 import viewModelSaga from './view-model/view-models-saga'
 import readModelSaga from './read-model/read-models-saga'
+import commandSaga from './command/command-saga'
 import subscribeSaga from './view-model/subscribe-saga'
 import authSaga from './auth_saga'
 import logoutSaga from './logout_saga'
 import { RootSagaArgs } from './types'
 
 function* rootSaga({ customSagas, ...sagaArgs }: RootSagaArgs): any {
-  yield fork(subscribeSaga, sagaArgs)
+  //yield fork(subscribeSaga, sagaArgs)
 
   //yield takeEvery(
   //    LOAD_VIEWMODEL_STATE_REQUEST,
@@ -31,7 +32,8 @@ function* rootSaga({ customSagas, ...sagaArgs }: RootSagaArgs): any {
   //yield takeEvery(AUTH_REQUEST, authSaga, sagaArgs)
   //yield takeEvery(LOGOUT, logoutSaga)
   //yield fork(viewModelSaga, sagaArgs)
-  //yield fork(readModelSaga, sagaArgs)
+  yield fork(commandSaga, sagaArgs)
+  yield fork(readModelSaga, sagaArgs)
 
   for (const customSaga of customSagas) {
     yield fork(customSaga, sagaArgs)

@@ -6,16 +6,14 @@ import {
   CommandOptions,
   CommandCallback
 } from 'resolve-client'
-import { useCommand, CommandBuilder, HookExecutor } from 'resolve-react-hooks'
+import { useCommand, CommandBuilder } from 'resolve-react-hooks'
 import { isActionCreators, isDependencies, isOptions } from '../helpers'
 import {
-  SEND_COMMAND_REQUEST,
-  SEND_COMMAND_FAILURE,
-  SEND_COMMAND_SUCCESS
-} from '../action-types'
-import {
+  sendCommandFailure,
   SendCommandFailureAction,
+  sendCommandRequest,
   SendCommandRequestAction,
+  sendCommandSuccess,
   SendCommandSuccessAction
 } from './actions'
 
@@ -29,29 +27,9 @@ type CommandReduxActionsCreators = {
 }
 
 const internalActions: CommandReduxActionsCreators = {
-  request: (command: Command) => ({
-    type: SEND_COMMAND_REQUEST,
-    aggregateId: command.aggregateId,
-    aggregateName: command.aggregateName,
-    commandType: command.type,
-    payload: command.payload
-  }),
-  success: (command: Command, result: CommandResult) => ({
-    type: SEND_COMMAND_SUCCESS,
-    aggregateId: command.aggregateId,
-    aggregateName: command.aggregateName,
-    commandType: command.type,
-    payload: command.payload,
-    result
-  }),
-  failure: (command: Command, error: Error) => ({
-    type: SEND_COMMAND_FAILURE,
-    aggregateId: command.aggregateId,
-    aggregateName: command.aggregateName,
-    commandType: command.type,
-    payload: command.payload,
-    error
-  })
+  request: (command: Command) => sendCommandRequest(command, true),
+  success: sendCommandSuccess,
+  failure: sendCommandFailure
 }
 
 const defaultCommandOptions: CommandOptions = {}

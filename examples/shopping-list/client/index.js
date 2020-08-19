@@ -30,6 +30,12 @@ const entryPoint = ({
     isClient: true
   })
 
+  let appContainer = document.getElementById('app-container')
+  if (!appContainer) {
+    appContainer = document.createElement('div')
+    document.body.appendChild(appContainer)
+  }
+
   render(
     <AppContainer
       origin={origin}
@@ -41,7 +47,7 @@ const entryPoint = ({
         <Routes routes={routes} />
       </Router>
     </AppContainer>,
-    document.getElementById('app-container')
+    appContainer
   )
 }
 

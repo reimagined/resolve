@@ -1,5 +1,5 @@
 import { takeEvery, put } from 'redux-saga/effects'
-import { actionTypes } from 'resolve-redux'
+import { internal } from 'resolve-redux'
 
 import {
   OPTIMISTIC_CREATE_SHOPPING_LIST,
@@ -7,7 +7,7 @@ import {
   OPTIMISTIC_SYNC
 } from '../actions/optimistic_actions'
 
-const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
+const { SEND_COMMAND_SUCCESS, QUERY_READMODEL_SUCCESS } = internal.actionTypes
 
 export default function*() {
   yield takeEvery(
@@ -40,12 +40,12 @@ export default function*() {
   )
 
   yield takeEvery(
-    action => action.type === LOAD_READMODEL_STATE_SUCCESS,
+    action => action.type === QUERY_READMODEL_SUCCESS,
     function*(action) {
       yield put({
         type: OPTIMISTIC_SYNC,
         payload: {
-          originalLists: action.result
+          originalLists: action.result.data
         }
       })
     }

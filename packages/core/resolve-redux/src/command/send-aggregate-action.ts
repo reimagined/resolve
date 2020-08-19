@@ -6,6 +6,14 @@ const sendAggregateAction = (
   aggregateId: string,
   payload: any
 ): SendCommandRequestAction =>
-  sendCommandRequest(commandType, aggregateId, aggregateName, payload)
+  sendCommandRequest(
+    {
+      type: commandType,
+      aggregateName,
+      aggregateId,
+      payload
+    },
+    false
+  )
 
 export { sendAggregateAction }
