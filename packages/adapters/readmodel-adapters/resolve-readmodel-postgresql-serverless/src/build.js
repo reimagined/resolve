@@ -27,6 +27,7 @@ const build = async (pool, readModelName, store, projection, next) => {
          SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escape(readModelName)}
          AND "IsPaused" = FALSE
+         AND "Errors" IS NULL
          FOR NO KEY UPDATE NOWAIT
        )
        UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
@@ -34,6 +35,7 @@ const build = async (pool, readModelName, store, projection, next) => {
        WHERE "EventSubscriber" = ${escape(readModelName)}
        AND (SELECT Count("CTE".*) FROM "CTE") = 1
        AND "IsPaused" = FALSE
+       AND "Errors" IS NULL
       `
     )
 
@@ -43,19 +45,19 @@ const build = async (pool, readModelName, store, projection, next) => {
       transactionId
     )
 
-    let readModelLedger = null
     const rows = await inlineLedgerExecuteStatement(
       pool,
       `SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
        WHERE "EventSubscriber" = ${escape(readModelName)}
        AND "XaKey" = ${escape(transactionId)}
        AND "IsPaused" = FALSE
+       AND "Errors" IS NULL
        FOR NO KEY UPDATE NOWAIT
       `,
       transactionId
     )
 
-    readModelLedger = rows.length === 1 ? rows[0] : null
+    let readModelLedger = rows.length === 1 ? rows[0] : null
     if (readModelLedger == null || readModelLedger.Errors != null) {
       throw new PassthroughError(transactionId)
     }
@@ -126,7 +128,7 @@ const build = async (pool, readModelName, store, projection, next) => {
     }
 
     pool.transactionId = transactionId
-    const events = await eventstoreAdapter.loadEvents({
+    const { events } = await eventstoreAdapter.loadEvents({
       eventTypes,
       eventsSizeLimit: 256 * 1024,
       limit: 0x7fffffff,

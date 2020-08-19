@@ -13,7 +13,7 @@ const connectorCapabilities = {
   INLINE_LEDGER_CONNECTOR
 }
 
-const notifyInlineLedgers = async (resolve) => {
+const notifyInlineLedgers = async resolve => {
   const maxDuration = Math.max(resolve.getRemainingTimeInMillis() - 15000, 0)
   let timerId = null
   const timerPromise = new Promise(resolve => {
@@ -30,9 +30,7 @@ const notifyInlineLedgers = async (resolve) => {
         detectConnectorFeatures(connector) ===
         connectorCapabilities.INLINE_LEDGER_CONNECTOR
       ) {
-        promises.push(
-          resolve.invokeEventBusAsync(eventListener, 'build')
-        )
+        promises.push(resolve.invokeEventBusAsync(eventListener, 'build'))
       }
     }
     await Promise.all(promises)
@@ -50,7 +48,7 @@ const onCommandExecuted = async (resolve, event) => {
   await notifyInlineLedgers(resolve)
 }
 
-const createOnCommandExecuted = (resolve) => {
+const createOnCommandExecuted = resolve => {
   return onCommandExecuted.bind(null, resolve)
 }
 

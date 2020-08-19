@@ -57,15 +57,18 @@ const eventBusMethod = async (resolve, key, ...args) => {
   return result
 }
 
-const createEventBus = (resolve) => {
-  const eventBus = new Proxy({}, {
-    get(_, key) {
-      return eventBusMethod.bind(null, resolve, key)
-    },
-    set() {
-      throw new Error(`Event bus API is immutable`)
+const createEventBus = resolve => {
+  const eventBus = new Proxy(
+    {},
+    {
+      get(_, key) {
+        return eventBusMethod.bind(null, resolve, key)
+      },
+      set() {
+        throw new Error(`Event bus API is immutable`)
+      }
     }
-  })
+  )
 
   return eventBus
 }

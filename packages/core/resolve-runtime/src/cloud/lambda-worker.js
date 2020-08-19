@@ -3,8 +3,6 @@ import { invokeFunction } from 'resolve-cloud-common/lambda'
 
 import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
-import handleEventBusEvent from './event-bus-event-handler'
-import handleEventStoreEvent from './event-store-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
 import putMetrics from './metrics'
 import initResolve from '../common/init-resolve'
@@ -85,7 +83,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     } else if (lambdaEvent.resolveSource === 'EventStore') {
       log.debug('identified event source: event-store')
       const { method, payload } = lambdaEvent
-      const executorResult = await resolve.eventstoreAdapter[method](payload)
+      const executorResult = await resolve.eventStore[method](payload)
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 

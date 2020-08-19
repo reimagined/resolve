@@ -40,14 +40,14 @@ const localEntry = async ({ assemblies, constants, domain }) => {
         try {
           await initResolve(currentResolve)
           const rawMethod = currentResolve.eventBus[method]
-          if(typeof rawMethod !== 'function') {
+          if (typeof rawMethod !== 'function') {
             throw new TypeError(method)
           }
 
-          const result = await rawMethod.call(
-            currentResolve.eventBus,
-            { eventSubscriber, ...parameters }
-          )
+          const result = await rawMethod.call(currentResolve.eventBus, {
+            eventSubscriber,
+            ...parameters
+          })
 
           return result
         } finally {
@@ -56,7 +56,7 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       }
     )
 
-    resolve.sendReactiveEvent = async (event) => {
+    resolve.sendReactiveEvent = async event => {
       await resolve.pubsubManager.dispatch({
         topicName: event.type,
         topicId: event.aggregateId,

@@ -1,43 +1,48 @@
 import { createServer } from 'resolve-local-rpc'
 
-const EVENT_LISTENER_PROVIDER = 'eventLisneter'
-const EVENTSTORE_PROVIDER = 'eventstoreAdapter'
-
-const PROVIDER_MAP = new Map([
-  ['loadEvents', EVENTSTORE_PROVIDER],
-  ['saveEvent', EVENTSTORE_PROVIDER],
-  ['beginXATransaction', EVENT_LISTENER_PROVIDER],
-  ['commitXATransaction', EVENT_LISTENER_PROVIDER],
-  ['rollbackXATransaction', EVENT_LISTENER_PROVIDER],
-  ['drop', EVENT_LISTENER_PROVIDER],
-  ['sendEvents', EVENT_LISTENER_PROVIDER]
-])
+const getProvider = (host, key) => {
+  switch (key) {
+    case 'BeginXATransaction':
+    case 'CommitXATransaction':
+    case 'RollbackXATransaction':
+    case 'Drop':
+    case 'SendEvents':
+      return host.eventListener
+    case 'LoadEvents':
+    case 'SaveEvent':
+      return host.eventStore
+    default: {
+      throw new Error(`Invalid key ${key}`)
+    }
+  }
+}
 
 const createAndInitConsumer = async config => {
   const { baseResolve, initResolve, disposeResolve, address } = config
 
-  const consumerMethod = async (provider, key, ...args) => {
+  const consumerMethod = async (key, ...args) => {
     const currentResolve = Object.create(baseResolve)
     try {
       await initResolve(currentResolve)
-      const result = await currentResolve[provider][key](...args)
+      const provider = getProvider(currentResolve, key)
+      const result = await provider[key](...args)
       return result
     } finally {
       await disposeResolve(currentResolve)
     }
   }
-  
-  const consumer = new Proxy({}, {
-    get(_, key) {
-      if(!PROVIDER_MAP.has(key)) {
-        throw new Error(`Invalid consumer method ${key}`)
+
+  const consumer = new Proxy(
+    {},
+    {
+      get(_, key) {
+        return consumerMethod.bind(null, key)
+      },
+      set() {
+        throw new Error(`Consumer API is immutable`)
       }
-      return consumerMethod.bind(null, PROVIDER_MAP.get(key), key)
-    },
-    set() {
-      throw new Error(`Consumer API is immutable`)
     }
-  })
+  )
 
   return await createServer({
     hostObject: consumer,

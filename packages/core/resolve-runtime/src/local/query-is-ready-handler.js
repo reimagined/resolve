@@ -11,14 +11,14 @@ const queryIsReadyHandler = async (req, res) => {
             return
           }
 
-          let lastError, lastEvent
-          while (lastError != null) {
-            void ({ lastEvent, lastError } = await eventBus.status({
+          let successEvent, failedEvent
+          while (failedEvent == null) {
+            void ({ successEvent, failedEvent } = await eventBus.status({
               eventSubscriber: listenerName
             }))
             if (
-              lastEvent != null &&
-              lastEvent.timestamp >= latestEvent.timestamp
+              successEvent != null &&
+              successEvent.timestamp >= latestEvent.timestamp
             ) {
               break
             }

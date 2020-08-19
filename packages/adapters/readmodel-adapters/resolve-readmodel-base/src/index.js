@@ -1,5 +1,5 @@
 const createAdapter = (implementation, options) => {
-  const { performanceTracer, preferInlineLedger } = options
+  const { eventstoreAdapter, performanceTracer, preferInlineLedger } = options
 
   const {
     connect,
@@ -30,7 +30,7 @@ const createAdapter = (implementation, options) => {
   } = implementation
 
   const baseAdapterPool = Object.create(null)
-  Object.assign(baseAdapterPool, { performanceTracer })
+  Object.assign(baseAdapterPool, { performanceTracer, eventstoreAdapter })
   const adapterPoolMap = new Map()
 
   const doConnect = async readModelName => {

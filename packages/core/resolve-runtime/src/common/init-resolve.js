@@ -36,7 +36,19 @@ const initResolve = async resolve => {
     })
   }
 
+  if (!resolve.hasOwnProperty('getRemainingTimeInMillis')) {
+    const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
+    resolve.getRemainingTimeInMillis = () => endTime - Date.now()
+  }
+
+  const getRemainingTimeInMillis = resolve.getRemainingTimeInMillis
+
   const onCommandExecuted = createOnCommandExecuted(resolve)
+
+  const sendReactiveEvent = resolve.sendReactiveEvent.bind(resolve)
+  const performAcknowledge = resolve.publisher.acknowledge.bind(
+    resolve.publisher
+  )
 
   const executeCommand = createCommandExecutor({
     aggregates,
@@ -51,7 +63,10 @@ const initResolve = async resolve => {
     readModelConnectors,
     readModels,
     viewModels,
-    performanceTracer
+    performanceTracer,
+    getRemainingTimeInMillis,
+    performAcknowledge,
+    sendReactiveEvent
   })
 
   const executeSaga = createSagaExecutor({
@@ -64,30 +79,47 @@ const initResolve = async resolve => {
     schedulers,
     sagas,
     performanceTracer,
+    getRemainingTimeInMillis,
+    performAcknowledge,
+    sendReactiveEvent,
     uploader
   })
 
   const eventBus = createEventBus(resolve)
-  
+
   const eventListener = createEventListener(resolve)
+
+  const eventStore = new Proxy(
+    {},
+    {
+      get(_, key) {
+        if (key === 'SaveEvent') {
+          return async ({ event }) => await eventstoreAdapter.saveEvent(event)
+        } else {
+          return eventstoreAdapter[key[0].toLowerCase() + key.slice(1)].bind(
+            eventstoreAdapter
+          )
+        }
+      },
+      set() {
+        throw new Error(`Event store API is immutable`)
+      }
+    }
+  )
 
   Object.assign(resolve, {
     executeCommand,
     executeQuery,
-    executeSaga,
-    eventListener,
-    eventBus
+    executeSaga
   })
 
   Object.defineProperties(resolve, {
     readModelConnectors: { value: readModelConnectors },
-    eventstoreAdapter: { value: eventstoreAdapter }
+    eventstoreAdapter: { value: eventstoreAdapter },
+    eventListener: { value: eventListener },
+    eventBus: { value: eventBus },
+    eventStore: { value: eventStore }
   })
-
-  if (!resolve.hasOwnProperty('getRemainingTimeInMillis')) {
-    const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
-    resolve.getRemainingTimeInMillis = () => endTime - Date.now()
-  }
 
   process.env.RESOLVE_LOCAL_TRACE_ID = crypto
     .randomBytes(Math.ceil(32 / 2))

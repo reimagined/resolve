@@ -59,7 +59,6 @@ const resetDomainHandler = options => async (req, res) => {
       console.warn(
         dropReadModelsSagasErrors.map(error => error.message).join('\n')
       )
-
       await invokeFilterErrorTypes(publisher.drop.bind(publisher), [
         PublisherResourceNotExistError
       ])

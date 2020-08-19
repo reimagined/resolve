@@ -7,38 +7,7 @@ import wrapReadModel, {
 } from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
 
-const parseReadOptions = (options: any): any => {
-  const optionsFlags: any = {
-    modelOptions: 1 << 0,
-    modelArgs: 1 << 1,
-    resolverName: 1 << 2,
-    resolverArgs: 1 << 3,
-    aggregateIds: 1 << 4,
-    aggregateArgs: 1 << 5
-  }
-
-  const optionsMap = []
-  optionsMap[optionsFlags.modelOptions] = optionsMap[
-    optionsFlags.modelOptions + optionsFlags.modelArgs
-  ] = ['modelOptions', 'modelArgs']
-  optionsMap[optionsFlags.resolverName] = optionsMap[
-    optionsFlags.resolverName + optionsFlags.resolverArgs
-  ] = ['resolverName', 'resolverArgs']
-  optionsMap[optionsFlags.aggregateIds] = optionsMap[
-    optionsFlags.aggregateIds + optionsFlags.aggregateArgs
-  ] = ['aggregateIds', 'aggregateArgs']
-
-  let flag = 0
-  for (const key of Object.keys(options)) {
-    flag += ~~optionsFlags[key]
-  }
-
-  if (optionsMap[flag] == null) {
-    throw new Error('Wrong options for read invocation')
-  }
-
-  return [options[optionsMap[flag][0]], options[optionsMap[flag][1]]]
-}
+import { CreateQueryOptions } from './types'
 
 const dispose = async (models: any): Promise<any> => {
   for (const modelName of Object.keys(models)) {
@@ -53,6 +22,7 @@ const interopApi = async (models: any, key: string, ...args: Array<any>) => {
     )
   }
 
+  // eslint-disable-next-line prefer-const
   let { eventSubscriber, modelName, ...parameters } = args[0]
 
   if (eventSubscriber == null && modelName == null) {
@@ -60,7 +30,7 @@ const interopApi = async (models: any, key: string, ...args: Array<any>) => {
   } else if (modelName == null) {
     modelName = eventSubscriber
   }
- 
+
   if (models[modelName] == null) {
     const error = new Error(
       `Read/view model "${modelName}" does not exist`
@@ -82,53 +52,28 @@ const interopApi = async (models: any, key: string, ...args: Array<any>) => {
   return result
 }
 
-const createQuery = ({
-  invokeEventBusAsync,
-  readModelConnectors,
-  readModels,
-  viewModels,
-  performanceTracer,
-  eventstoreAdapter
-}: {
-  invokeEventBusAsync: Function
-  readModelConnectors: any
-  readModels: any[]
-  viewModels: any[]
-  performanceTracer: any
-  eventstoreAdapter: any
-}): any => {
+const createQuery = (params: CreateQueryOptions): any => {
   const models: {
     [key: string]: any
   } = {}
+
+  const { readModels, viewModels, ...imports } = params
+
   for (const readModel of readModels) {
     if (models[readModel.name] != null) {
       throw new Error(`Duplicate name for read model: "${readModel.name}"`)
     }
-    models[readModel.name] = wrapReadModel(
-      readModel,
-      readModelConnectors,
-      eventstoreAdapter,
-      invokeEventBusAsync,
-      performanceTracer,
-      eventstoreAdapter.getSecretsManager.bind(null),
-      parseReadOptions
-    )
+    models[readModel.name] = wrapReadModel({ readModel, ...imports })
   }
 
   for (const viewModel of viewModels) {
     if (models[viewModel.name] != null) {
       throw new Error(`Duplicate name for view model: "${viewModel.name}"`)
     }
-    models[viewModel.name] = wrapViewModel(
-      viewModel,
-      eventstoreAdapter,
-      performanceTracer,
-      eventstoreAdapter.getSecretsManager.bind(null),
-      parseReadOptions
-    )
+    models[viewModel.name] = wrapViewModel({ viewModel, ...imports })
   }
 
-  const read = interopApi.bind(null, 'read') as any
+  const read = interopApi.bind(null, models, 'read') as any
   const api = new Proxy(read, {
     get(_: any, key: string): any {
       if (key === 'bind' || key === 'apply' || key === 'call') {
