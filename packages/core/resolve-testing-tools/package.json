@@ -1,6 +1,6 @@
 {
   "name": "resolve-testing-tools",
-  "version": "0.24.22",
+  "version": "0.24.23",
   "description": "Tools used to test reSolve applications.",
   "engines": {
     "node": ">=10.9"
@@ -30,10 +30,10 @@
     "colors": "^1.4.0",
     "diff": "^4.0.2",
     "lodash.isequal": "4.5.0",
-    "resolve-command": "0.24.22",
-    "resolve-core": "0.24.22",
-    "resolve-query": "0.24.22",
-    "resolve-readmodel-lite": "0.24.22"
+    "resolve-command": "0.24.23",
+    "resolve-core": "0.24.23",
+    "resolve-query": "0.24.23",
+    "resolve-readmodel-lite": "0.24.23"
   },
   "devDependencies": {
     "@types/diff": "4.0.2",
