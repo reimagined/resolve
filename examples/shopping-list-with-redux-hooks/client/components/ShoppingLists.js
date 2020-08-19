@@ -15,6 +15,7 @@ const useLists = () => {
       resolver: 'all',
       args: {}
     },
+    [],
     {
       selectorId: 'all-user-lists'
     }
@@ -80,7 +81,7 @@ const useOptimisticLists = () => {
 }
 
 export default () => {
-  const { getLists, removeShoppingList, lists } = useOptimisticLists()
+  const { getLists, removeShoppingList, lists } = useLists()
 
   useEffect(() => {
     getLists()

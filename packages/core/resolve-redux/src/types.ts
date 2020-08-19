@@ -3,6 +3,7 @@ import { Client, Context } from 'resolve-client'
 import { API } from './create_api'
 
 export enum ResultDataState {
+  Initial = 'initial',
   Requested = 'requested',
   Ready = 'ready',
   Failed = 'failed'

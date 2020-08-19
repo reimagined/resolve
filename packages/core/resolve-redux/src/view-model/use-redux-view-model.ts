@@ -121,8 +121,8 @@ export function useReduxViewModel(
           query
         },
         {
-          data: initialState,
-          state: ResultDataState.Requested
+          state: ResultDataState.Initial,
+          data: initialState
         }
       )
   }

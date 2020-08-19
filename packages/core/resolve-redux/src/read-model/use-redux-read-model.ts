@@ -15,7 +15,7 @@ import {
   QUERY_READMODEL_REQUEST,
   QUERY_READMODEL_SUCCESS
 } from '../action-types'
-import { ReduxState } from '../types'
+import { ReduxState, ResultDataState } from '../types'
 import { getEntry } from './read-model-reducer'
 
 type HookData = {
@@ -83,34 +83,41 @@ const internalActions: ReadModelReduxActionsCreators = {
 function useReduxReadModel(query: ReadModelQuery, initialState: any): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
+  initialState: any,
   options: ReduxReadModelHookOptions
 ): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
+  initialState: any,
   actions: ReadModelReduxActionsCreators
 ): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
+  initialState: any,
   dependencies: any[]
 ): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
+  initialState: any,
   options: ReduxReadModelHookOptions,
   actions: ReadModelReduxActionsCreators
 ): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
+  initialState: any,
   options: ReduxReadModelHookOptions,
   dependencies: any[]
 ): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
+  initialState: any,
   options: ReduxReadModelHookOptions,
   actions: ReadModelReduxActionsCreators,
   dependencies: any[]
 ): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
+  initialState: any,
   options?: ReduxReadModelHookOptions | ReadModelReduxActionsCreators | any[],
   actions?: ReadModelReduxActionsCreators | any[],
   dependencies?: any[]
@@ -162,13 +169,15 @@ function useReduxReadModel(
     selector: (state: ReduxState): any =>
       getEntry(
         state.readModels,
-        selectorId
-          ? selectorId
-          : {
-              readModelName: query.name,
-              resolverName: query.resolver,
-              resolverArgs: query.args
-            }
+        selectorId || {
+          readModelName: query.name,
+          resolverName: query.resolver,
+          resolverArgs: query.args
+        },
+        {
+          state: ResultDataState.Initial,
+          data: initialState
+        }
       )
   }
 }
