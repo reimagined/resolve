@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking Changes
 
+
+#### react-hooks
+
+- **useViewModel** hook state callback initially invoked with view model's *Init* handler state value with second argument **initial=true**. Other state changes will come with **initial=false**
+
 #### resolve-redux
 
 - action types moved to internal namespace, avoid using them
