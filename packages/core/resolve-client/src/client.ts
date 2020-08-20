@@ -92,10 +92,12 @@ const isReadModelQuery = (arg: any): arg is ReadModelQuery =>
   arg && arg.resolver
 
 export type QueryResult = {
-  timestamp: number
   data: any
-  url: string
-  cursor: string
+  meta?: {
+    url?: string
+    cursor?: string
+    timestamp?: number
+  }
 }
 export type QueryOptions = {
   method?: 'GET' | 'POST'
@@ -169,16 +171,14 @@ export const query = (
 
     const responseDate = response.headers.get('Date')
 
-    let responseCursor = ''
-    let responseUrl = ''
+    let subscriptionsUrl = null
 
     if (!isReadModelQuery(qr)) {
-      responseCursor = response.headers.get('X-Resolve-View-Model-Cursor') ?? ''
       const responseSubscription =
         response.headers.get('X-Resolve-View-Model-Subscription') ??
         '{ "url": "" }'
       const { url } = JSON.parse(responseSubscription)
-      responseUrl = url
+      subscriptionsUrl = url
     }
 
     if (!responseDate) {
@@ -186,14 +186,23 @@ export const query = (
     }
 
     try {
+      const result =
+        VALIDATED_RESULT in response
+          ? response[VALIDATED_RESULT]
+          : await response.json()
+
+      const meta = {
+        ...result.meta,
+        timestamp: Number(responseDate)
+      }
+
+      if (subscriptionsUrl != null) {
+        meta.url = subscriptionsUrl
+      }
+
       return {
-        timestamp: Number(responseDate),
-        url: responseUrl,
-        cursor: responseCursor,
-        data:
-          VALIDATED_RESULT in response
-            ? response[VALIDATED_RESULT]
-            : await response.json()
+        ...result,
+        meta
       }
     } catch (error) {
       throw new GenericError(error)

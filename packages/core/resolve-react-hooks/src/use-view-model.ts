@@ -157,7 +157,7 @@ function useViewModel(
       actualQueryOptions
     )
     if (result) {
-      const { data, url, cursor } = result
+      const { data, meta: { url, cursor } = {} } = result
       setState(data, false)
       closure.url = url
       closure.cursor = cursor

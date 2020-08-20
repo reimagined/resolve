@@ -42,9 +42,11 @@ const mockedClient = {
       data: {
         queried: 'result'
       },
-      timestamp: 1,
-      url: 'url',
-      cursor: 'cursor'
+      meta: {
+        timestamp: 1,
+        url: 'url',
+        cursor: 'cursor'
+      }
     })
   ),
   getStaticAssetUrl: jest.fn(),

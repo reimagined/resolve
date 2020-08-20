@@ -19,7 +19,7 @@
     "@babel/polyfill": "7.8.7",
     "history": "4.10.1",
     "isomorphic-fetch": "2.2.1",
-    "react": "16.13.0",
+    "react": "16.13.1",
     "react-bootstrap": "0.32.1",
     "react-dom": "16.13.0",
     "react-helmet": "6.0.0",

@@ -136,17 +136,19 @@ const read = async (
         }
 
         try {
-          return await readModel.resolvers[resolverName](
-            connection,
-            resolverArgs,
-            {
-              secretsManager:
-                typeof getSecretsManager === 'function'
-                  ? await getSecretsManager()
-                  : null,
-              jwt
-            }
-          )
+          return {
+            data: await readModel.resolvers[resolverName](
+              connection,
+              resolverArgs,
+              {
+                secretsManager:
+                  typeof getSecretsManager === 'function'
+                    ? await getSecretsManager()
+                    : null,
+                jwt
+              }
+            )
+          }
         } catch (error) {
           if (subSegment != null) {
             subSegment.addError(error)

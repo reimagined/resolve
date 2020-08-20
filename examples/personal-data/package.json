@@ -20,7 +20,7 @@
     "generate-password": "^1.5.1",
     "jsonwebtoken": "^8.5.1",
     "passport-local": "^1.0.0",
-    "react": "16.13.0",
+    "react": "16.13.1",
     "react-dom": "16.13.0",
     "react-fileupload-progress": "^0.5.0",
     "react-helmet": "6.0.0",
