@@ -363,7 +363,7 @@ Note that a View Model does not use the Read Model store.
 A View Model's **resolver** allows you to restrict a user's access to the View Model's data. A resolver function receives the following parameters:
 
 - The reSolve context object;
-- An object that contains a list available event types and a list of aggregate IDs;
+- The query object that contains a list of aggregate IDs;
 - An object that contains a JSON Web Token and the View Model name.
 
 In the resolver's code, you can use arbitrary logic to check a user's access permissions and either throw an exception to indicate an access error, or filter the `eventTypes` list to define which events are available to the user.
@@ -382,7 +382,7 @@ import jwtSecret from '../../auth/jwt-secret'
 
 export default async (
   resolve,
-  { eventTypes, aggregateIds },
+  query,
   { jwt: token, viewModel }
 ) => {
   try {
@@ -391,17 +391,14 @@ export default async (
     throw new Error('Permission denied')
   }
 
-  const { data, cursor } = await resolve.buildViewModel(viewModel.name, {
-    eventTypes,
-    aggregateIds
-  })
+  const { data, cursor } = await resolve.buildViewModel(viewModel.name, query)
 
   return {
     data,
     meta: {
       cursor,
-      eventTypes,
-      aggregateIds
+      eventTypes: viewModel.eventTypes,
+      aggregateIds: query.aggregateIds
     }
   }
 }
