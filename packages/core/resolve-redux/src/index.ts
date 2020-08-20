@@ -7,10 +7,11 @@ import connectReadModel from './read-model/connect-read-model'
 import connectViewModel from './view-model/connect-view-model'
 
 import { sendAggregateAction } from './command/send-aggregate-action'
+import { useReduxCommand } from './command/use-redux-command'
 import { useReduxReadModel } from './read-model/use-redux-read-model'
 import { useReduxReadModelSelector } from './read-model/use-redux-read-model-selector'
-import { useReduxCommand } from './command/use-redux-command'
 import { useReduxViewModel } from './view-model/use-redux-view-model'
+import { useReduxViewModelSelector } from './view-model/use-redux-view-model-selector'
 
 import getOrigin from './internal/get-origin'
 import { Provider, Consumer } from './internal/resolve-context'
@@ -42,6 +43,7 @@ export {
   useReduxReadModelSelector,
   useReduxCommand,
   useReduxViewModel,
+  useReduxViewModelSelector,
   ResultStatus,
   internal,
   // deprecated, encapsulation breach
