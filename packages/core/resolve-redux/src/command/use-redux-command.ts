@@ -73,8 +73,7 @@ function useReduxCommand<T>(
     ? options
     : {}
 
-  const actualActionCreators: CommandReduxActionsCreators =
-    actualOptions.actions || internalActions
+  const actualActionCreators = actualOptions.actions || internalActions
 
   const actualDependencies: any[] =
     firstOfType<any[]>(isDependencies, options, dependencies, dependencies) ??

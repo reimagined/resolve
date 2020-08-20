@@ -72,8 +72,7 @@ export function useReduxViewModel(
     ? options
     : {}
 
-  const actualActionCreators: ViewModelReduxActionsCreators =
-    actualOptions.actions || internalActions
+  const actualActionCreators = actualOptions.actions || internalActions
 
   const actualDependencies: any[] =
     firstOfType<any[]>(isDependencies, options, dependencies, dependencies) ??

@@ -12,7 +12,7 @@ import {
   QueryReadModelSuccessAction
 } from './actions'
 import { firstOfType } from 'resolve-core'
-import { isActionCreators, isDependencies, isOptions } from '../helpers'
+import { isDependencies, isOptions } from '../helpers'
 import { ReduxState, ResultStatus } from '../types'
 import { getEntry } from './read-model-reducer'
 
@@ -39,12 +39,8 @@ type ReadModelReduxActionsCreators = {
   ) => QueryReadModelFailureAction | Action
 }
 
-const isReadModelReduxActionsCreators = (
-  x: any
-): x is ReadModelReduxActionsCreators =>
-  isActionCreators(['success', 'request', 'failure'], x)
-
 type ReduxReadModelHookOptions = {
+  actions?: ReadModelReduxActionsCreators
   queryOptions?: QueryOptions
   selectorId?: string
 }
@@ -68,18 +64,7 @@ function useReduxReadModel(
 function useReduxReadModel(
   query: ReadModelQuery,
   initialState: any,
-  actions: ReadModelReduxActionsCreators
-): HookData
-function useReduxReadModel(
-  query: ReadModelQuery,
-  initialState: any,
   dependencies: any[]
-): HookData
-function useReduxReadModel(
-  query: ReadModelQuery,
-  initialState: any,
-  options: ReduxReadModelHookOptions,
-  actions: ReadModelReduxActionsCreators
 ): HookData
 function useReduxReadModel(
   query: ReadModelQuery,
@@ -90,27 +75,17 @@ function useReduxReadModel(
 function useReduxReadModel(
   query: ReadModelQuery,
   initialState: any,
-  options: ReduxReadModelHookOptions,
-  actions: ReadModelReduxActionsCreators,
-  dependencies: any[]
-): HookData
-function useReduxReadModel(
-  query: ReadModelQuery,
-  initialState: any,
-  options?: ReduxReadModelHookOptions | ReadModelReduxActionsCreators | any[],
-  actions?: ReadModelReduxActionsCreators | any[],
+  options?: ReduxReadModelHookOptions | any[],
   dependencies?: any[]
 ): HookData {
-  const actualOptions: ReduxReadModelHookOptions =
-    firstOfType<ReduxReadModelHookOptions>(isOptions, options) || {}
-  const actualActionCreators: ReadModelReduxActionsCreators =
-    firstOfType<ReadModelReduxActionsCreators>(
-      isReadModelReduxActionsCreators,
-      options,
-      actions
-    ) || internalActions
+  const actualOptions = isOptions<ReduxReadModelHookOptions>(options)
+    ? options
+    : {}
+
+  const actualActionCreators = actualOptions.actions || internalActions
+
   const actualDependencies: any[] =
-    firstOfType<any[]>(isDependencies, options, actions, dependencies) ??
+    firstOfType<any[]>(isDependencies, options, dependencies, dependencies) ??
     [query, actualOptions, actualActionCreators].filter(i => i)
 
   const { request, success, failure } = actualActionCreators
