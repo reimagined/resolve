@@ -6,7 +6,7 @@ const getFileUrl = async (req, res) => {
     const { login } = jwt.verify(req.jwt, jwtSecret)
     const { uploadId } = req.query
 
-    const fileData = await req.resolve.executeQuery({
+    const { data: fileData } = await req.resolve.executeQuery({
       modelName: 'Files',
       resolverName: 'file',
       resolverArgs: { uploadId }

@@ -23,7 +23,7 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
 
   const passwordHash = hmac.digest('hex')
 
-  const existingUser = await resolve.executeQuery({
+  const { data: existingUser } = await resolve.executeQuery({
     modelName: 'ShoppingLists',
     resolverName: 'user',
     resolverArgs: {

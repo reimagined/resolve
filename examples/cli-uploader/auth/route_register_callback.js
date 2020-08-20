@@ -4,7 +4,7 @@ import uuid from 'uuid/v4'
 import md5 from 'md5'
 
 const routeRegisterCallback = async ({ resolve }, login, password) => {
-  const existingUser = await resolve.executeQuery({
+  const { data: existingUser } = await resolve.executeQuery({
     modelName: 'Users',
     resolverName: 'user',
     resolverArgs: { login: login.trim() }

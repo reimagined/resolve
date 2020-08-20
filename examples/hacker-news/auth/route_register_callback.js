@@ -3,7 +3,7 @@ import jwtSecret from './jwt_secret'
 import uuid from 'uuid'
 
 const routeRegisterCallback = async ({ resolve }, username) => {
-  const existingUser = await resolve.executeQuery({
+  const { data: existingUser } = await resolve.executeQuery({
     modelName: 'HackerNews',
     resolverName: 'user',
     resolverArgs: { name: username.trim() }
