@@ -23,9 +23,7 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
   })
   return (
     <ListGroupItem key={id}>
-      <FormCheck inline checked={checked} onChange={toggleItem}>
-        {text}
-      </FormCheck>
+      <FormCheck inline checked={checked} onChange={toggleItem} label={text} />
       <Image
         className="example-close-button"
         src="/close-button.png"
