@@ -81,7 +81,7 @@ export default () => {
                 <Link to={`/${id}`}>{name}</Link>
               </td>
               <td className="example-table-action">
-                <Button
+                <Button variant="danger"
                   onClick={() => {
                     removeShoppingList({ id })
                   }}

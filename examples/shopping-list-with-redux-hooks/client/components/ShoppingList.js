@@ -109,13 +109,11 @@ const ShoppingList = ({
   return (
     <div className="example-wrapper">
       <FormLabel>Shopping list name</FormLabel>
-      <FormGroup bsSize="large">
+      <FormGroup bssize="large">
         <InputGroup>
-          <InputGroup.Button>
-            <Button bsSize="large" onClick={removeShoppingList}>
-              <i className="far fa-trash-alt" />
-            </Button>
-          </InputGroup.Button>
+          <Button bssize="large" variant="danger" onClick={removeShoppingList}>
+            <i className="far fa-trash-alt" />
+          </Button>
           <FormControl
             type="text"
             value={
@@ -150,7 +148,7 @@ const ShoppingList = ({
         <Col md={4}>
           <Button
             className="example-button"
-            bsStyle="success"
+            bsstyle="success"
             onClick={() => createShoppingItem(itemText)}
           >
             Add Item
