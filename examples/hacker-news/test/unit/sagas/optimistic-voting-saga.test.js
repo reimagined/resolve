@@ -1,11 +1,11 @@
-import { actionTypes } from 'resolve-redux'
+import { internal } from 'resolve-redux'
 import optimisticVotingSagaFactory from '../../../client/sagas/optimistic-voting-saga'
 import {
   optimisticUnvoteStory,
   optimisticUpvoteStory
 } from '../../../client/actions/optimistic-actions'
 
-const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = actionTypes
+const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = internal.actionTypes
 
 test('Optimistic voting saga - register takeAll sagas', () => {
   const optimisticVotingSaga = optimisticVotingSagaFactory()
