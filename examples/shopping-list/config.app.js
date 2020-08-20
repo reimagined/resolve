@@ -11,8 +11,7 @@ const appConfig = {
   viewModels: [
     {
       name: 'shoppingList',
-      projection: 'common/view-models/shopping_list.projection.js',
-      resolver: 'common/view-models/shopping_list.resolver.js'
+      projection: 'common/view-models/shopping_list.projection.js'
     }
   ],
   readModels: [
@@ -28,9 +27,7 @@ const appConfig = {
       path: '/api/shopping-lists.json',
       handler: 'common/api-handlers/shopping_lists.js',
       method: 'GET'
-    }
-    /*
-    ,
+    },
     {
       handler: {
         module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
@@ -42,12 +39,9 @@ const appConfig = {
       path: '/:markup*',
       method: 'GET'
     }
-     */
   ],
   clientEntries: [
-    'client/index.js'
-    /*
-    ,
+    'client/index.js',
     [
       'client/ssr.js',
       {
@@ -64,7 +58,6 @@ const appConfig = {
         target: 'node'
       }
     ]
-    */
   ]
 }
 

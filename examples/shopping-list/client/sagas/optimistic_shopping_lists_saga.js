@@ -45,7 +45,7 @@ export default function*() {
       yield put({
         type: OPTIMISTIC_SYNC,
         payload: {
-          originalLists: action.result
+          originalLists: action.result.data
         }
       })
     }
