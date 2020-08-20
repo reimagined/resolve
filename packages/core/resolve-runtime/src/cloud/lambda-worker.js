@@ -41,10 +41,12 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       InvocationType: 'Event',
       Region: process.env.AWS_REGION,
       Payload: {
-        resolveSource: 'EventBus',
-        eventSubscriber,
+        resolveSource: 'EventBusDirect',
         method,
-        ...parameters
+        payload: {
+          eventSubscriber,
+          ...parameters
+        }
       }
     })
   }
@@ -72,10 +74,18 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
+    } else if (lambdaEvent.resolveSource === 'EventBusDirect') {
+      log.debug('identified event source: event-bus-direct')
+      const { method, payload } = lambdaEvent
+      const executorResult = await resolve.eventBus[method](payload)
+
+      log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
+
+      return executorResult
     } else if (lambdaEvent.resolveSource === 'EventBus') {
       log.debug('identified event source: event-bus')
       const { method, payload } = lambdaEvent
-      const executorResult = await resolve.eventBus[method](payload)
+      const executorResult = await resolve.eventListener[method](payload)
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 

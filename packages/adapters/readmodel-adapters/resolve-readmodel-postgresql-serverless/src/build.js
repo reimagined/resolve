@@ -21,8 +21,6 @@ const build = async (pool, readModelName, store, projection, next) => {
     inlineLedgerExecuteStatement
   } = pool
 
-  console.log('BUILD STARTED')
-
   try {
     const databaseNameAsId = escapeId(schemaName)
     const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
@@ -136,7 +134,6 @@ const build = async (pool, readModelName, store, projection, next) => {
         })
       }
 
-      console.log('BUILD END BY FLOW (I)')
       return
     }
 
@@ -144,14 +141,9 @@ const build = async (pool, readModelName, store, projection, next) => {
     const { events } = await eventstoreAdapter.loadEvents({
       eventTypes,
       eventsSizeLimit: 1024 * 1024,
-      limit: 0x7fffffff,
+      limit: 10,
       cursor
     })
-    if (events.length === 0) {
-      console.log(`${readModelName}: Empty batch`)
-    } else {
-      console.log(`${readModelName}: Batch size ${events.length}`)
-    }
 
     let lastSuccessEvent = null
     let lastFailedEvent = null
@@ -220,14 +212,10 @@ const build = async (pool, readModelName, store, projection, next) => {
     }
 
     appliedEvents.length = 0
-
-    console.log('BUILD END BY FLOW (II)')
   } catch (error) {
     if (!(error instanceof PassthroughError)) {
       throw error
     }
-
-    console.log('BUILD END BY MUTEX')
 
     if (error.lastTransactionId != null) {
       try {
