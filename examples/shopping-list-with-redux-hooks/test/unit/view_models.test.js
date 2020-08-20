@@ -1,4 +1,4 @@
-import projection from '../../common/view-models/shopping_list.projection'
+import projection from '../../common/view-models/shopping-list.projection'
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_RENAMED,
