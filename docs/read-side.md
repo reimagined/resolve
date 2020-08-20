@@ -360,7 +360,19 @@ Note that a View Model does not use the Read Model store.
 
 ## View Model Resolver
 
-A View Model's **resolver** allows to validate the user and build the view-model. By applying a filter to eventTypes, you can select which events the user subscribes to. A resolver function receives the resolve context, object with eventTypes and aggregateIds and object with jsonWebToken and view-model name parameters. Based on the parameters, the resolver function returns built view-model data and meta object that contains the returned cursor eventTypes and aggregateIds.
+A View Model's **resolver** allows you to restrict a user's access to the View Model's data. A resolver function receives the following parameters:
+
+- The reSolve context object;
+- An object that contains a list available event types and a list of aggregate IDs;
+- An object that contains a JSON Web Token and the View Model name.
+
+In the resolver's code, you can use arbitrary logic to check a user's access permissions and either throw an exception to indicate an access error, or filter the `eventTypes` list to define which events are available to the user.
+
+The resolver function should return a built View Model data object and a meta object that contains the following data:
+
+- A cursor returned by the `buildViewModel` function;
+- A list of event types;
+- A list of aggregate IDs.
 
 The code sample below demonstrates a View Model resolver implementation:
 
