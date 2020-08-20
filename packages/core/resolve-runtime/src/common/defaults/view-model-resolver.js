@@ -1,15 +1,12 @@
-export default async (resolve, { eventTypes, aggregateIds }, { viewModel }) => {
-  const { data, cursor } = await resolve.buildViewModel(viewModel.name, {
-    eventTypes,
-    aggregateIds
-  })
+export default async (resolve, query, { viewModel }) => {
+  const { data, cursor } = await resolve.buildViewModel(viewModel.name, query)
 
   return {
     data,
     meta: {
       cursor,
-      eventTypes,
-      aggregateIds
+      eventTypes: viewModel.eventTypes,
+      aggregateIds: query.aggregateIds
     }
   }
 }

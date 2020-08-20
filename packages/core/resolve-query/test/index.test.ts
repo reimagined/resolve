@@ -26,7 +26,7 @@ type ResolveQuery = ReturnType<typeof createQuery>
 type AddEvent = Event
 type SubEvent = Event
 
-type ResolverParams = {
+type ResolverQuery = {
   aggregateIds: Array<string>
   eventTypes: Array<string>
 }
@@ -152,7 +152,7 @@ for (const { describeName, prepare } of [
             encryption: () => ({}),
             resolver: async (
               resolve: any,
-              params: ResolverParams,
+              query: ResolverQuery,
               { viewModel }: any
             ): Promise<{
               data: any
@@ -160,13 +160,14 @@ for (const { describeName, prepare } of [
             }> => {
               const { data, cursor } = await resolve.buildViewModel(
                 viewModel.name,
-                params
+                query
               )
 
               return {
                 data,
                 meta: {
-                  ...params,
+                  aggregateIds: query.aggregateIds,
+                  eventTypes: viewModel.eventTypes,
                   cursor
                 }
               }

@@ -1,28 +1,21 @@
 import jwt from 'jsonwebtoken'
 import jwtSecret from '../../auth/jwt-secret'
 
-export default async (
-  resolve,
-  { eventTypes, aggregateIds },
-  { jwt: token, viewModel }
-) => {
+export default async (resolve, query, { jwt: token, viewModel }) => {
   try {
     jwt.verify(token, jwtSecret)
   } catch (error) {
     throw new Error('Permission denied')
   }
 
-  const { data, cursor } = await resolve.buildViewModel(viewModel.name, {
-    eventTypes,
-    aggregateIds
-  })
+  const { data, cursor } = await resolve.buildViewModel(viewModel.name, query)
 
   return {
     data,
     meta: {
       cursor,
-      eventTypes,
-      aggregateIds
+      eventTypes: viewModel.eventTypes,
+      aggregateIds: query.aggregateIds
     }
   }
 }
