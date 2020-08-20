@@ -4,7 +4,11 @@ import { useDispatch } from 'react-redux'
 import { renderHook, act } from '@testing-library/react-hooks'
 import { CommandBuilder, useCommand } from 'resolve-react-hooks'
 import { sendCommandRequest } from '../../src/command/actions'
-import { useReduxCommand } from '../../src/command/use-redux-command'
+import {
+  useReduxCommand,
+  CommandReduxHookOptions
+} from '../../src/command/use-redux-command'
+import { CommandCallback } from 'resolve-client'
 
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn()
@@ -29,6 +33,9 @@ afterEach(() => {
   mUseCommandHookExecutor.mockClear()
 })
 
+const extractUseCommandCallback = (): CommandCallback =>
+  mUseCommand.mock.calls[0][2]
+
 describe('command as plain object overload', () => {
   const makeCommand = (): Command => ({
     type: 'type',
@@ -39,12 +46,17 @@ describe('command as plain object overload', () => {
     }
   })
 
-  const renderCommandHook = (command: Command) => {
+  const renderCommandHook = (
+    command: Command,
+    options?: CommandReduxHookOptions
+  ) => {
     const {
       result: {
         current: { execute }
       }
-    } = renderHook(() => useReduxCommand(command))
+    } = renderHook(() =>
+      options ? useReduxCommand(command, options) : useReduxCommand(command)
+    )
     return execute
   }
 
@@ -83,6 +95,54 @@ describe('command as plain object overload', () => {
     const genericBuilder = mUseCommand.mock.calls[0][0]
     expect(genericBuilder(command)).toEqual(command)
   })
+
+  test('custom command options are passed to base hook', () => {
+    renderCommandHook(makeCommand(), {
+      commandOptions: {
+        option: 'a'
+      }
+    })
+
+    expect(mUseCommand).toHaveBeenCalledWith(
+      expect.anything(),
+      { option: 'a' },
+      expect.anything(),
+      expect.anything()
+    )
+  })
+
+  test('custom redux actions', async () => {
+    const command = makeCommand()
+    const execute = renderCommandHook(command, {
+      actions: {
+        request: command => ({ type: 'request', command }),
+        success: (command, result) => ({ type: 'success', command, result }),
+        failure: (command, error) => ({ type: 'failure', command, error })
+      }
+    })
+
+    act(() => execute())
+
+    expect(mDispatch).toHaveBeenCalledWith({ type: 'request', command })
+
+    const callback = extractUseCommandCallback()
+
+    mDispatch.mockClear()
+    await callback(null, { a: 'a' }, command)
+    expect(mDispatch).toHaveBeenCalledWith({
+      type: 'success',
+      command,
+      result: { a: 'a' }
+    })
+
+    mDispatch.mockClear()
+    await callback(Error('error'), null, command)
+    expect(mDispatch).toHaveBeenCalledWith({
+      type: 'failure',
+      command,
+      error: Error('error')
+    })
+  })
 })
 
 describe('command as builder function overload', () => {
@@ -93,12 +153,17 @@ describe('command as builder function overload', () => {
     payload: data
   })
 
-  function renderCommandHook<T>(builder: CommandBuilder<T>) {
+  function renderCommandHook<T>(
+    builder: CommandBuilder<T>,
+    options?: CommandReduxHookOptions
+  ) {
     const {
       result: {
         current: { execute }
       }
-    } = renderHook(() => useReduxCommand(builder))
+    } = renderHook(() =>
+      options ? useReduxCommand(builder, options) : useReduxCommand(builder)
+    )
     return execute
   }
 
@@ -136,5 +201,54 @@ describe('command as builder function overload', () => {
 
     const genericBuilder = mUseCommand.mock.calls[0][0]
     expect(genericBuilder(command)).toEqual(command)
+  })
+
+  test('custom command options are passed to base hook', () => {
+    renderCommandHook(builder, {
+      commandOptions: {
+        option: 'a'
+      }
+    })
+
+    expect(mUseCommand).toHaveBeenCalledWith(
+      expect.anything(),
+      { option: 'a' },
+      expect.anything(),
+      expect.anything()
+    )
+  })
+
+  test('custom redux actions', async () => {
+    const execute = renderCommandHook(builder, {
+      actions: {
+        request: command => ({ type: 'request', command }),
+        success: (command, result) => ({ type: 'success', command, result }),
+        failure: (command, error) => ({ type: 'failure', command, error })
+      }
+    })
+
+    const command = builder({ a: 'a' })
+
+    act(() => execute({ a: 'a' }))
+
+    expect(mDispatch).toHaveBeenCalledWith({ type: 'request', command })
+
+    const callback = extractUseCommandCallback()
+
+    mDispatch.mockClear()
+    await callback(null, { a: 'a' }, command)
+    expect(mDispatch).toHaveBeenCalledWith({
+      type: 'success',
+      command,
+      result: { a: 'a' }
+    })
+
+    mDispatch.mockClear()
+    await callback(Error('error'), null, command)
+    expect(mDispatch).toHaveBeenCalledWith({
+      type: 'failure',
+      command,
+      error: Error('error')
+    })
   })
 })

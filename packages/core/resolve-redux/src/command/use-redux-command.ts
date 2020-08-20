@@ -33,7 +33,7 @@ type CommandReduxActionsCreators = {
   ) => SendCommandFailureAction | AnyAction
 }
 
-type CommandReduxHookOptions = {
+export type CommandReduxHookOptions = {
   actions?: CommandReduxActionsCreators
   commandOptions?: CommandOptions
 }
