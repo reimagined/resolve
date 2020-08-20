@@ -364,7 +364,7 @@ A View Model's **resolver** allows you to restrict a user's access to the View M
 
 - The reSolve context object;
 - The query object that contains a list of aggregate IDs;
-- An object that contains a JSON Web Token and the View Model name.
+- An object that contains a JSON Web Token and the View Model that contains a View Model name and a list available event types.
 
 In the resolver's code, you can use arbitrary logic to check a user's access permissions and either throw an exception to indicate an access error, or filter the `eventTypes` list to define which events are available to the user.
 
