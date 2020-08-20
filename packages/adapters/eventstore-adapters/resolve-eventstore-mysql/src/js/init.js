@@ -5,7 +5,8 @@ import {
   longStringSqlType,
   customObjectSqlType,
   mediumBlobSqlType,
-  longBlobSqlType
+  longBlobSqlType,
+  aggregateIdSqlType
 } from './constants'
 
 const initEventStore = async ({
@@ -25,7 +26,7 @@ const initEventStore = async ({
         \`threadId\` ${longNumberSqlType},
         \`threadCounter\` ${longNumberSqlType},
         \`timestamp\` ${longNumberSqlType},
-        \`aggregateId\` ${longStringSqlType},
+        \`aggregateId\` ${aggregateIdSqlType},
         \`aggregateVersion\` ${longNumberSqlType},
         \`type\` ${longStringSqlType},
         \`payload\` ${customObjectSqlType},

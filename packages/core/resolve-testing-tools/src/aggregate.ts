@@ -17,6 +17,7 @@ type BDDAggregateContext = {
   [symbol]: {
     phase: Phases
     aggregate: BDDAggregate
+    aggregateId: string
     assertion: BDDAggregateAssertion
     isDefaultAssertion: boolean
   }
@@ -24,7 +25,8 @@ type BDDAggregateContext = {
 
 export const aggregate = (
   context: BDDAggregateContext,
-  aggregate: BDDAggregate
+  aggregate: BDDAggregate,
+  aggregateId?: string
 ): any => {
   if (context[symbol].phase !== Phases.GIVEN_EVENTS) {
     throw new TypeError()
@@ -37,6 +39,7 @@ export const aggregate = (
     projection: aggregate.projection || {},
     encryption: aggregate.encryption
   }
+  context[symbol].aggregateId = aggregateId || 'test-aggregate-id'
   context[symbol].assertion = (resolve, reject, result, error) => {
     if (error != null) {
       reject(error)

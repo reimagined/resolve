@@ -14,7 +14,7 @@ export declare type Event = {
   timestamp: number
   aggregateId: string
   aggregateVersion: number
-  payload: SerializableMap
+  payload?: SerializableMap
 }
 
 // Encryption

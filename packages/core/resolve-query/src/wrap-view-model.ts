@@ -49,14 +49,17 @@ const buildViewModel = async (
     const snapshotData = await pool.eventstoreAdapter.loadSnapshot(snapshotKey)
     log.verbose(`snapshot: ${snapshotData}`)
     const snapshot = JSON.parse(snapshotData)
-    aggregatesVersionsMap = new Map(snapshot.aggregatesVersionsMap)
-    log.debug(`deserialize snapshot state`)
-    state = await pool.viewModel.deserializeState(snapshot.state)
-    log.verbose(`snapshot state: ${state}`)
-    cursor = snapshot.cursor
-    log.verbose(`snapshot cursor: ${cursor}`)
+
+    if (snapshot != null) {
+      aggregatesVersionsMap = new Map(snapshot.aggregatesVersionsMap)
+      log.debug(`deserialize snapshot state`)
+      state = await pool.viewModel.deserializeState(snapshot.state)
+      log.verbose(`snapshot state: ${state}`)
+      cursor = snapshot.cursor
+      log.verbose(`snapshot cursor: ${cursor}`)
+    }
   } catch (error) {
-    log.warn(error.message)
+    log.verbose(error.message)
   }
 
   if (cursor == null && typeof pool.viewModel.projection.Init === 'function') {
