@@ -14,21 +14,21 @@ const saga = {
       const { aggregateId: userId } = event
       const { sideEffects } = context
 
-      const profile = await sideEffects.executeQuery({
+      const { data: profile } = await sideEffects.executeQuery({
         modelName: 'user-profiles',
         resolverName: 'profile',
         resolverArgs: { userId },
         jwt: systemToken()
       })
 
-      const posts = await sideEffects.executeQuery({
+      const { data: posts } = await sideEffects.executeQuery({
         modelName: 'blog-posts',
         resolverName: 'feedByAuthor',
         resolverArgs: { authorId: userId },
         jwt: systemToken()
       })
 
-      const media = await sideEffects.executeQuery({
+      const { data: media } = await sideEffects.executeQuery({
         modelName: 'medias',
         resolverName: 'byOwner',
         resolverArgs: { ownerId: userId },

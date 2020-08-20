@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import jwtSecret from './jwt-secret'
 
 const routeLoginCallback = async ({ resolve }, nickname) => {
-  const user = await resolve.executeQuery({
+  const { data: user } = await resolve.executeQuery({
     modelName: 'user-profiles',
     resolverName: 'user',
     resolverArgs: { name: nickname.trim() }
