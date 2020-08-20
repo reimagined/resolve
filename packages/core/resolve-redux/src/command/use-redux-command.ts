@@ -101,7 +101,7 @@ function useReduxCommand<T>(
   const dispatch = useDispatch()
   const executor = useCommand(
     (command: Command) => command,
-    actualOptions,
+    actualOptions.commandOptions || defaultCommandOptions,
     callback,
     actualDependencies
   )
