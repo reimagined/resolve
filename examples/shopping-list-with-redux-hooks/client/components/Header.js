@@ -1,5 +1,5 @@
 import React from 'react'
-import { Navbar } from 'react-bootstrap'
+import { Navbar, NavbarBrand } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 import { useStaticResolver } from 'resolve-react-hooks'
@@ -27,14 +27,12 @@ const Header = ({ title, name, css, favicon }) => {
     <div>
       <Helmet title={title} link={links} meta={[meta]} />
       <Navbar collapseOnSelect>
-        <Navbar.Header>
-          <Navbar.Brand>
-            <Link to="/">
-              <Image className="example-icon" src="/resolve-logo.png" /> {name}
-            </Link>
-          </Navbar.Brand>
-          <Navbar.Toggle />
-        </Navbar.Header>
+        <NavbarBrand>
+          <Link to="/">
+            <Image className="example-icon" src="/resolve-logo.png" /> {name}
+          </Link>
+        </NavbarBrand>
+        <Navbar.Toggle />
       </Navbar>
     </div>
   )

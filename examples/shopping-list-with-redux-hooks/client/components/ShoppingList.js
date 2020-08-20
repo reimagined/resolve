@@ -10,7 +10,7 @@ import {
   InputGroup,
   FormControl,
   FormGroup,
-  ControlLabel
+  FormLabel
 } from 'react-bootstrap'
 
 import ShoppingListItem from './ShoppingListItem'
@@ -108,7 +108,7 @@ const ShoppingList = ({
 
   return (
     <div className="example-wrapper">
-      <ControlLabel>Shopping list name</ControlLabel>
+      <FormLabel>Shopping list name</FormLabel>
       <FormGroup bsSize="large">
         <InputGroup>
           <InputGroup.Button>
@@ -136,7 +136,7 @@ const ShoppingList = ({
           />
         ))}
       </ListGroup>
-      <ControlLabel>Item name</ControlLabel>
+      <FormLabel>Item name</FormLabel>
       <Row>
         <Col md={8}>
           <FormControl

@@ -5,7 +5,7 @@
 This example demonstrates how to work with [read-models](https://reimagined.github.io/resolve/docs/read-side#read-models) and [view-models](https://reimagined.github.io/resolve/docs/read-side#view-model-specifics).
 
 ```sh
-npx create-resolve-app resolve-shopping-list -e shopping-list
+npx create-resolve-app resolve-shopping-list-with-redux-hooks -e shopping-list-with-redux-hooks
 ```
 
 ## What's next?

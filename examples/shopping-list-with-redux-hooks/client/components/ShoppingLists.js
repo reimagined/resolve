@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Button, ControlLabel, Table } from 'react-bootstrap'
+import { Button, FormLabel, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { useReduxCommand, useReduxReadModel } from 'resolve-redux'
 import { useSelector } from 'react-redux'
@@ -7,34 +7,6 @@ import {
   SHOPPING_LIST_REMOVED,
   SHOPPING_LISTS_ACQUIRED
 } from '../actions/optimistic-actions'
-
-const useLists = () => {
-  const { request: getLists, selector: myLists } = useReduxReadModel(
-    {
-      name: 'ShoppingLists',
-      resolver: 'all',
-      args: {}
-    },
-    [],
-    {
-      selectorId: 'all-user-lists'
-    }
-  )
-  const { execute: removeShoppingList } = useReduxCommand(({ id }) => ({
-    aggregateName: 'ShoppingList',
-    type: 'renameShoppingList',
-    aggregateId: id,
-    payload: {}
-  }))
-
-  const { data: lists } = useSelector(myLists)
-
-  return {
-    getLists,
-    lists,
-    removeShoppingList
-  }
-}
 
 const useOptimisticLists = () => {
   const { request: getLists } = useReduxReadModel(
@@ -92,7 +64,7 @@ export default () => {
 
   return (
     <div>
-      <ControlLabel>My shopping lists</ControlLabel>
+      <FormLabel>My shopping lists</FormLabel>
       <Table responsive>
         <thead>
           <tr>

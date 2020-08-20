@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
-import { Button, Col, ControlLabel, FormControl, Row } from 'react-bootstrap'
+import { Button, Col, FormLabel, FormControl, Row } from 'react-bootstrap'
 import uuid from 'uuid/v4'
 import { useReduxReadModelSelector, useReduxCommand } from 'resolve-redux'
 import { SHOPPING_LIST_CREATED } from '../actions/optimistic-actions'
-import { useSelector } from 'react-redux'
 
 export default () => {
   const [shoppingListName, setShoppingListName] = useState('')
@@ -21,13 +20,15 @@ export default () => {
       }
     },
     {
-      success: command => ({
-        type: SHOPPING_LIST_CREATED,
-        payload: {
-          id: command.aggregateId,
-          name: command.payload.name
-        }
-      })
+      actions: {
+        success: command => ({
+          type: SHOPPING_LIST_CREATED,
+          payload: {
+            id: command.aggregateId,
+            name: command.payload.name
+          }
+        })
+      }
     }
   )
 
@@ -45,7 +46,7 @@ export default () => {
 
   return (
     <div>
-      <ControlLabel>Shopping list name</ControlLabel>
+      <FormLabel>Shopping list name</FormLabel>
       <Row>
         <Col md={8}>
           <FormControl
@@ -59,7 +60,7 @@ export default () => {
         <Col md={4}>
           <Button
             className="example-button"
-            bsStyle="success"
+            bsstyle="success"
             onClick={executeCreateListCommand}
           >
             Add Shopping List
