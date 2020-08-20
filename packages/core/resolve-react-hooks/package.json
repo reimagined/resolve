@@ -41,7 +41,7 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "jest": "26.0.1",
-    "react-test-renderer": "16.13.0",
+    "react-test-renderer": "16.13.1",
     "ts-jest": "26.0.0"
   },
   "peerDependencies": {
