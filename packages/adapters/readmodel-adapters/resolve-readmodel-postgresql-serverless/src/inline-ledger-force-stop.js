@@ -32,7 +32,13 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
           transactionId
         })
       } catch (err) {
-        if (err == null || !/Transaction .*? Is Not Found/i.test(err.message)) {
+        if (
+          !(
+            err != null &&
+            (/Transaction .*? Is Not Found/i.test(err.message) ||
+              /Invalid transaction ID/i.test(err.message))
+          )
+        ) {
           throw err
         }
       }

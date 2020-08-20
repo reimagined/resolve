@@ -143,10 +143,15 @@ const build = async (pool, readModelName, store, projection, next) => {
     pool.transactionId = transactionId
     const { events } = await eventstoreAdapter.loadEvents({
       eventTypes,
-      eventsSizeLimit: 256 * 1024,
+      eventsSizeLimit: 1024 * 1024,
       limit: 0x7fffffff,
       cursor
     })
+    if(events.length === 0) {
+      console.log(`${readModelName}: Empty batch`)
+    } else {
+      console.log(`${readModelName}: Batch size ${events.length}`)
+    }
 
     let lastSuccessEvent = null
     let lastFailedEvent = null
@@ -172,8 +177,12 @@ const build = async (pool, readModelName, store, projection, next) => {
     if (lastError == null) {
       await inlineLedgerExecuteStatement(
         pool,
-        `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
-         SET "SuccessEvent" = ${escape(JSON.stringify(lastSuccessEvent))},
+        `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId} SET 
+         ${
+           lastSuccessEvent != null
+             ? `"SuccessEvent" = ${escape(JSON.stringify(lastSuccessEvent))},`
+             : ''
+         } 
          "Cursor" = ${escape(JSON.stringify(nextCursor))}
          WHERE "EventSubscriber" = ${escape(readModelName)}
         `,
@@ -188,7 +197,11 @@ const build = async (pool, readModelName, store, projection, next) => {
            CAST(('{' || jsonb_array_length(COALESCE("Errors", jsonb('[]'))) || '}') AS TEXT[]),
            jsonb(${escape(JSON.stringify(serializeError(lastError)))})
          ),
-         "FailedEvent" = ${escape(JSON.stringify(lastFailedEvent))},
+         ${
+           lastFailedEvent != null
+             ? `"FailedEvent" = ${escape(JSON.stringify(lastFailedEvent))},`
+             : ''
+         }
          "Cursor" = ${escape(JSON.stringify(nextCursor))}
          WHERE "EventSubscriber" = ${escape(readModelName)}
         `,
@@ -224,7 +237,13 @@ const build = async (pool, readModelName, store, projection, next) => {
           transactionId: error.lastTransactionId
         })
       } catch (err) {
-        if (err == null || !/Transaction .*? Is Not Found/i.test(err.message)) {
+        if (
+          !(
+            err != null &&
+            (/Transaction .*? Is Not Found/i.test(err.message) ||
+              /Invalid transaction ID/i.test(err.message))
+          )
+        ) {
           throw err
         }
       }

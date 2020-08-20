@@ -10,7 +10,13 @@ const log = debugLevels('resolve:resolve-runtime:bootstrap')
 
 const bootstrap = async resolve => {
   log.debug('bootstrap started')
-  const { eventstoreAdapter, publisher } = resolve
+  const {
+    assemblies: {
+      eventBrokerConfig: { upstream }
+    },
+    eventstoreAdapter,
+    publisher
+  } = resolve
 
   await invokeFilterErrorTypes(eventstoreAdapter.init.bind(eventstoreAdapter), [
     EventstoreResourceAlreadyExistError
@@ -26,7 +32,13 @@ const bootstrap = async resolve => {
     connectorName
   } of resolve.eventListeners.values()) {
     promises.push(
-      bootstrapOne(resolve, eventSubscriber, eventTypes, connectorName)
+      bootstrapOne(
+        resolve,
+        eventSubscriber,
+        eventTypes,
+        connectorName,
+        upstream
+      )
     )
   }
 

@@ -10,15 +10,10 @@ const bootstrapOne = async (
   resolve,
   eventSubscriber,
   eventTypes,
-  connectorName
+  connectorName,
+  upstream
 ) => {
-  const {
-    assemblies: {
-      eventBrokerConfig: { upstream }
-    },
-    readModelConnectors,
-    eventBus
-  } = resolve
+  const { readModelConnectors, eventBus } = resolve
 
   const connectorFeatures = detectConnectorFeatures(
     readModelConnectors[connectorName]
