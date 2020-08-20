@@ -358,27 +358,52 @@ Refer to the [Query a View Model](#query-a-view-model) section, for information 
 
 Note that a View Model does not use the Read Model store.
 
-## View Model Subscription Validator
+## View Model Resolver
 
-A View Model's **validator** defines to what topics a client is allowed to subscribe. A validator function receives the resolve context, topics and request parameters. Based on the parameters, the validator function returns a list of topics.
+A View Model's **resolver** allows you to restrict a user's access to the View Model's data. A resolver function receives the following parameters:
 
-The code sample below demonstrates a View Model subscription validator implementation:
+- The reSolve context object;
+- An object that contains a list available event types and a list of aggregate IDs;
+- An object that contains a JSON Web Token and the View Model name.
+
+In the resolver's code, you can use arbitrary logic to check a user's access permissions and either throw an exception to indicate an access error, or filter the `eventTypes` list to define which events are available to the user.
+
+The resolver function should return a built View Model data object and a meta object that contains the following data:
+
+- A cursor returned by the `buildViewModel` function;
+- A list of event types;
+- A list of aggregate IDs.
+
+The code sample below demonstrates a View Model resolver implementation:
 
 ```js
-;async (resolve, { topics, jwt: token }) => {
-  const { userId } = jwt.verify(token, process.env.JWT_SECRET)
-  const user = await resolve.executeQuery({
-    modelName: 'users',
-    resolverName: 'userById',
-    resolverArgs: { userId },
-    jwtToken: token
-  })
+import jwt from 'jsonwebtoken'
+import jwtSecret from '../../auth/jwt-secret'
 
-  if (user == null) {
+export default async (
+  resolve,
+  { eventTypes, aggregateIds },
+  { jwt: token, viewModel }
+) => {
+  try {
+    jwt.verify(token, jwtSecret)
+  } catch (error) {
     throw new Error('Permission denied')
   }
 
-  return topics
+  const { data, cursor } = await resolve.buildViewModel(viewModel.name, {
+    eventTypes,
+    aggregateIds
+  })
+
+  return {
+    data,
+    meta: {
+      cursor,
+      eventTypes,
+      aggregateIds
+    }
+  }
 }
 ```
 
