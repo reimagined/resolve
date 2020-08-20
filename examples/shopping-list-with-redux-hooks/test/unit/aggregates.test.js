@@ -1,4 +1,4 @@
-import commands from '../../common/aggregates/shopping_list.commands'
+import commands from '../../common/aggregates/shopping-list.commands'
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_RENAMED,
