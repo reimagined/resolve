@@ -8,12 +8,12 @@ import {
   queryReadModelRequest,
   queryReadModelSuccess
 } from '../../src/read-model/actions'
+import { getEntry } from '../../src/read-model/read-model-reducer'
+import { ResultStatus } from '../../src'
 import {
   useReduxReadModel,
   ReduxReadModelHookOptions
 } from '../../src/read-model/use-redux-read-model'
-import { getEntry } from '../../src/read-model/read-model-reducer'
-import { ResultStatus } from '../../src'
 
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn()
