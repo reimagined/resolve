@@ -7,7 +7,7 @@ import {
   CommandCallback
 } from 'resolve-client'
 import { useCommand, CommandBuilder } from 'resolve-react-hooks'
-import { isActionCreators, isDependencies, isOptions } from '../helpers'
+import { isDependencies, isOptions } from '../helpers'
 import {
   sendCommandFailure,
   SendCommandFailureAction,
@@ -26,10 +26,10 @@ type CommandReduxActionsCreators = {
   failure: (command: Command, error: Error) => SendCommandFailureAction
 }
 
-const isCommandReduxActionsCreators = (
-  x: any
-): x is CommandReduxActionsCreators =>
-  isActionCreators(['success', 'request', 'failure'], x)
+type CommandReduxHookOptions = {
+  actions?: CommandReduxActionsCreators
+  commandOptions?: CommandOptions
+}
 
 const internalActions: CommandReduxActionsCreators = {
   request: (command: Command) => sendCommandRequest(command, true),
@@ -42,27 +42,12 @@ const defaultCommandOptions: CommandOptions = {}
 function useReduxCommand(command: Command): HookData<void>
 function useReduxCommand(
   command: Command,
-  options: CommandOptions
-): HookData<void>
-function useReduxCommand(
-  command: Command,
-  actions: CommandReduxActionsCreators
+  options: CommandReduxHookOptions
 ): HookData<void>
 function useReduxCommand(command: Command, dependencies: any[]): HookData<void>
 function useReduxCommand(
   command: Command,
   options: CommandOptions,
-  actions: CommandReduxActionsCreators
-): HookData<void>
-function useReduxCommand(
-  command: Command,
-  options: CommandOptions,
-  dependencies: any[]
-): HookData<void>
-function useReduxCommand(
-  command: Command,
-  options: CommandOptions,
-  actions: CommandReduxActionsCreators,
   dependencies: any[]
 ): HookData<void>
 function useReduxCommand<T>(builder: CommandBuilder<T>): HookData<T>
@@ -72,44 +57,27 @@ function useReduxCommand<T>(
 ): HookData<T>
 function useReduxCommand<T>(
   builder: CommandBuilder<T>,
-  actions: CommandReduxActionsCreators
-): HookData<T>
-function useReduxCommand<T>(
-  builder: CommandBuilder<T>,
   dependencies: any[]
 ): HookData<T>
 function useReduxCommand<T>(
   builder: CommandBuilder<T>,
   options: CommandOptions,
-  actions: CommandReduxActionsCreators
-): HookData<T>
-function useReduxCommand<T>(
-  builder: CommandBuilder<T>,
-  options: CommandOptions,
-  dependencies: any[]
-): HookData<T>
-function useReduxCommand<T>(
-  builder: CommandBuilder<T>,
-  options: CommandOptions,
-  actions: CommandReduxActionsCreators,
   dependencies: any[]
 ): HookData<T>
 function useReduxCommand<T>(
   command: Command | CommandBuilder<T>,
-  options?: CommandOptions | CommandReduxActionsCreators | any[],
-  actions?: CommandReduxActionsCreators | any[],
+  options?: CommandReduxHookOptions | any[],
   dependencies?: any[]
 ): HookData<T> {
-  const actualOptions: CommandOptions =
-    firstOfType<CommandOptions>(isOptions, options) || defaultCommandOptions
+  const actualOptions = isOptions<CommandReduxHookOptions>(options)
+    ? options
+    : {}
+
   const actualActionCreators: CommandReduxActionsCreators =
-    firstOfType<CommandReduxActionsCreators>(
-      isCommandReduxActionsCreators,
-      options,
-      actions
-    ) || internalActions
+    actualOptions.actions || internalActions
+
   const actualDependencies: any[] =
-    firstOfType<any[]>(isDependencies, options, actions, dependencies) ??
+    firstOfType<any[]>(isDependencies, options, dependencies, dependencies) ??
     [command, actualOptions, actualActionCreators].filter(i => i)
 
   const { request, success, failure } = actualActionCreators
