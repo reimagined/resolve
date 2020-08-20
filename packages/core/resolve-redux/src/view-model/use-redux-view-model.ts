@@ -1,5 +1,5 @@
 import { Action } from 'redux'
-import { QueryOptions, QueryResult, ViewModelQuery } from 'resolve-client'
+import { QueryOptions, ViewModelQuery } from 'resolve-client'
 import {
   viewModelEventReceived,
   ViewModelEventReceivedAction,
@@ -8,7 +8,7 @@ import {
 } from './actions'
 import { ReduxState, ResultStatus, ViewModelReactiveEvent } from '../types'
 import { firstOfType } from 'resolve-core'
-import { isActionCreators, isDependencies, isOptions } from '../helpers'
+import { isDependencies, isOptions } from '../helpers'
 import { useDispatch } from 'react-redux'
 import { useViewModel } from 'resolve-react-hooks'
 import { useCallback } from 'react'
@@ -21,22 +21,6 @@ type HookData = {
 }
 
 type ViewModelReduxActionsCreators = {
-  /*
-  request: (
-    query: ViewModelQuery,
-    selectorId?: string
-  ) => QueryViewModelRequestAction | Action
-  success: (
-    query: ViewModelQuery,
-    result: QueryResult,
-    selectorId?: string
-  ) => QueryViewModelSuccessAction | Action
-  failure: (
-    query: ViewModelQuery,
-    error: Error,
-    selectorId?: string
-  ) => QueryViewModelFailureAction | Action
-  */
   stateUpdate: (
     query: ViewModelQuery,
     state: any,
@@ -50,12 +34,8 @@ type ViewModelReduxActionsCreators = {
   ) => ViewModelEventReceivedAction | Action
 }
 
-const isViewModelReduxActionsCreators = (
-  x: any
-): x is ViewModelReduxActionsCreators =>
-  isActionCreators(['stateUpdate', 'eventReceived'], x)
-
 type ReduxViewModelHookOptions = {
+  actions?: ViewModelReduxActionsCreators
   queryOptions?: QueryOptions
   selectorId?: string
 }
@@ -65,29 +45,38 @@ const defaultQueryOptions: QueryOptions = {
 }
 
 const internalActions: ViewModelReduxActionsCreators = {
-  //request: queryViewModelRequest,
-  //success: queryViewModelSuccess,
-  //failure: queryViewModelFailure,
   stateUpdate: viewModelStateUpdate,
   eventReceived: viewModelEventReceived
 }
 
+export function useReduxViewModel(query: ViewModelQuery): HookData
 export function useReduxViewModel(
   query: ViewModelQuery,
-  options?: ReduxViewModelHookOptions | ViewModelReduxActionsCreators | any[],
-  actions?: ViewModelReduxActionsCreators | any[],
+  dependencies: any[]
+): HookData
+export function useReduxViewModel(
+  query: ViewModelQuery,
+  options: ReduxViewModelHookOptions
+): HookData
+export function useReduxViewModel(
+  query: ViewModelQuery,
+  options: ReduxViewModelHookOptions,
+  dependencies: any[]
+): HookData
+export function useReduxViewModel(
+  query: ViewModelQuery,
+  options?: ReduxViewModelHookOptions | any[],
   dependencies?: any[]
 ): HookData {
-  const actualOptions: ReduxViewModelHookOptions =
-    firstOfType<ReduxViewModelHookOptions>(isOptions, options) || {}
+  const actualOptions = isOptions<ReduxViewModelHookOptions>(options)
+    ? options
+    : {}
+
   const actualActionCreators: ViewModelReduxActionsCreators =
-    firstOfType<ViewModelReduxActionsCreators>(
-      isViewModelReduxActionsCreators,
-      options,
-      actions
-    ) || internalActions
+    actualOptions.actions || internalActions
+
   const actualDependencies: any[] =
-    firstOfType<any[]>(isDependencies, options, actions, dependencies) ??
+    firstOfType<any[]>(isDependencies, options, dependencies, dependencies) ??
     [query, actualOptions, actualActionCreators].filter(i => i)
 
   const { stateUpdate, eventReceived } = actualActionCreators
