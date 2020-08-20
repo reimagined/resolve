@@ -33,7 +33,7 @@ export const isString = (value: string): boolean =>
 
 export const isNonString = (value: string): boolean => !isString(value)
 
-export const string = (value: any, name: string): void => {
+export const assertString = (value: any, name: string): void => {
   if (!isString(value)) {
     // eslint-disable-next-line
     console.error(value)
@@ -42,7 +42,7 @@ export const string = (value: any, name: string): void => {
 }
 
 export const nonEmptyString = (value: any, name: string): void => {
-  string(value, name)
+  assertString(value, name)
 
   if (value === '') {
     // eslint-disable-next-line

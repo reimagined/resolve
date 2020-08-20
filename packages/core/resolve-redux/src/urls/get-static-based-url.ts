@@ -1,5 +1,5 @@
 import getRootBasedUrl from './get-root-based-url'
-import { isAbsoluteUrl, string, nonEmptyString, leadingSlash } from '../helpers'
+import { isAbsoluteUrl, assertString, nonEmptyString, leadingSlash } from '../helpers'
 
 const getStaticBasedUrl = (
   origin: any,
@@ -7,7 +7,7 @@ const getStaticBasedUrl = (
   staticPath: any,
   path: any
 ) => {
-  string(path, 'Path')
+  assertString(path, 'Path')
   nonEmptyString(staticPath, 'Static path')
 
   if (isAbsoluteUrl(path)) {

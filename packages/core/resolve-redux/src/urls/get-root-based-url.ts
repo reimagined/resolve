@@ -1,7 +1,7 @@
-import { string, leadingSlash, isAbsoluteUrl } from '../helpers'
+import { assertString, leadingSlash, isAbsoluteUrl } from '../helpers'
 
 const getRootBasedUrl = (origin: any, rootPath: any, path: any) => {
-  string(path, 'Path')
+  assertString(path, 'Path')
 
   if (isAbsoluteUrl(path)) {
     return path
