@@ -112,7 +112,7 @@ const createCommentsReducer = ({
             child.commentId === action.command.payload.commentId
               ? {
                   ...child,
-                  ...action.payload
+                  ...action.command.payload
                 }
               : child
           )
