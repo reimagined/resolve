@@ -439,14 +439,16 @@ const subscribe = doOperation.bind(
     connection: any,
     readModelName: string,
     parameters: {
-      eventTypes: Array<string> | null
-      aggregateIds: Array<string> | null
+      subscriptionOptions: {
+        eventTypes: Array<string> | null
+        aggregateIds: Array<string> | null
+      }
     }
   ) => [
     connection,
     readModelName,
-    parameters.eventTypes,
-    parameters.aggregateIds
+    parameters.subscriptionOptions.eventTypes,
+    parameters.subscriptionOptions.aggregateIds
   ]
 )
 
@@ -458,14 +460,16 @@ const resubscribe = doOperation.bind(
     connection: any,
     readModelName: string,
     parameters: {
-      eventTypes: Array<string> | null
-      aggregateIds: Array<string> | null
+      subscriptionOptions: {
+        eventTypes: Array<string> | null
+        aggregateIds: Array<string> | null
+      }
     }
   ) => [
     connection,
     readModelName,
-    parameters.eventTypes,
-    parameters.aggregateIds
+    parameters.subscriptionOptions.eventTypes,
+    parameters.subscriptionOptions.aggregateIds
   ]
 )
 

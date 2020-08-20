@@ -14,23 +14,13 @@ const makeNestedPath = nestedPath => {
 }
 
 const wrapHighload = async (isHighloadError, obj, method, params) => {
-  const beginTime = Date.now()
-  let retries = 0
   while (true) {
     try {
-      const result = await obj[method](params).promise()
-      if(retries > 1) {
-        const endTime = Date.now()
-        console.log(`Method ${method} jittered ${retries} times [${endTime - beginTime} ms]`)
-      }
-
-      return result
+      return await obj[method](params).promise()
     } catch (error) {
       if (isHighloadError(error)) {
-        //const jitterDelay = Math.floor(2 + Math.random() * 7)
         const jitterDelay = Math.floor(250 + Math.random() * 750)
         await new Promise(resolve => setTimeout(resolve, jitterDelay))
-        retries++
       } else {
         throw error
       }

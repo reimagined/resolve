@@ -147,7 +147,7 @@ const build = async (pool, readModelName, store, projection, next) => {
       limit: 0x7fffffff,
       cursor
     })
-    if(events.length === 0) {
+    if (events.length === 0) {
       console.log(`${readModelName}: Empty batch`)
     } else {
       console.log(`${readModelName}: Batch size ${events.length}`)
@@ -162,9 +162,9 @@ const build = async (pool, readModelName, store, projection, next) => {
       try {
         if (typeof projection[event.type] === 'function') {
           await projection[event.type](store, event)
-          appliedEvents.push(event)
           lastSuccessEvent = event
         }
+        appliedEvents.push(event)
       } catch (error) {
         lastFailedEvent = event
         lastError = error
