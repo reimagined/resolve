@@ -1,14 +1,14 @@
 import givenEvents from 'resolve-testing-tools'
 import createReadModelAdapter from 'resolve-readmodel-lite'
 
-import projection from '../../common/read-models/shopping_lists.projection'
-import resolvers from '../../common/read-models/shopping_lists.resolvers'
+import projection from '../../common/read-models/shopping-lists.projection'
+import resolvers from '../../common/read-models/shopping-lists.resolvers'
 
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_REMOVED,
   SHOPPING_LIST_RENAMED
-} from '../../common/event_types'
+} from '../../common/event-types'
 
 const resetReadModel = async (
   createConnector,

@@ -6,7 +6,7 @@ import {
   SHOPPING_ITEM_CREATED,
   SHOPPING_ITEM_TOGGLED,
   SHOPPING_ITEM_REMOVED
-} from '../../common/event_types'
+} from '../../common/event-types'
 
 describe('view-models', () => {
   describe('ShoppingList', () => {

@@ -1,4 +1,4 @@
-import optimisticShoppingLists from './reducers/optimistic_shopping_lists'
+import optimisticShoppingLists from './reducers/optimistic-shopping-lists'
 import devToolsEnhancer from './enhancers/redux-devtools'
 
 const getRedux = () => ({

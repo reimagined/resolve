@@ -2,9 +2,9 @@ import {
   SHOPPING_LISTS_ACQUIRED,
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_REMOVED
-} from '../actions/optimistic_actions'
+} from '../actions/optimistic-actions'
 
-const optimistic_shopping_lists = (state = [], action) => {
+const optimisticShoppingLists = (state = [], action) => {
   switch (action.type) {
     case SHOPPING_LIST_CREATED: {
       return [
@@ -29,4 +29,4 @@ const optimistic_shopping_lists = (state = [], action) => {
   }
 }
 
-export default optimistic_shopping_lists
+export default optimisticShoppingLists

@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import {
   SHOPPING_LIST_REMOVED,
   SHOPPING_LISTS_ACQUIRED
-} from '../actions/optimistic_actions'
+} from '../actions/optimistic-actions'
 
 const useLists = () => {
   const { request: getLists, selector: myLists } = useReduxReadModel(

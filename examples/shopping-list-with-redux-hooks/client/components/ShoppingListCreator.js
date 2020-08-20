@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Col, ControlLabel, FormControl, Row } from 'react-bootstrap'
 import uuid from 'uuid/v4'
 import { useReduxReadModelSelector, useReduxCommand } from 'resolve-redux'
-import { SHOPPING_LIST_CREATED } from '../actions/optimistic_actions'
+import { SHOPPING_LIST_CREATED } from '../actions/optimistic-actions'
 import { useSelector } from 'react-redux'
 
 export default () => {
