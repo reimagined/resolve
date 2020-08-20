@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { Action } from 'redux'
+import { AnyAction } from 'redux'
 import { useDispatch } from 'react-redux'
 import { QueryOptions, QueryResult, ReadModelQuery } from 'resolve-client'
 import { useQuery } from 'resolve-react-hooks'
@@ -22,21 +22,21 @@ type HookData = {
 }
 
 type ReadModelReduxActionsCreators = {
-  request: (
+  request?: (
     query: ReadModelQuery,
     initialState: any,
     selectorId?: string
-  ) => QueryReadModelRequestAction | Action
-  success: (
+  ) => QueryReadModelRequestAction | AnyAction
+  success?: (
     query: ReadModelQuery,
     result: QueryResult,
     selectorId?: string
-  ) => QueryReadModelSuccessAction | Action
-  failure: (
+  ) => QueryReadModelSuccessAction | AnyAction
+  failure?: (
     query: ReadModelQuery,
     error: Error,
     selectorId?: string
-  ) => QueryReadModelFailureAction | Action
+  ) => QueryReadModelFailureAction | AnyAction
 }
 
 type ReduxReadModelHookOptions = {

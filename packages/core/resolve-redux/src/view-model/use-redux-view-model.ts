@@ -1,4 +1,4 @@
-import { Action } from 'redux'
+import { AnyAction } from 'redux'
 import { QueryOptions, ViewModelQuery } from 'resolve-client'
 import {
   viewModelEventReceived,
@@ -21,17 +21,17 @@ type HookData = {
 }
 
 type ViewModelReduxActionsCreators = {
-  stateUpdate: (
+  stateUpdate?: (
     query: ViewModelQuery,
     state: any,
     initial: boolean,
     selectorId?: string
-  ) => ViewModelStateUpdateAction | Action
-  eventReceived: (
+  ) => ViewModelStateUpdateAction | AnyAction
+  eventReceived?: (
     query: ViewModelQuery,
     event: ViewModelReactiveEvent,
     selectorId?: string
-  ) => ViewModelEventReceivedAction | Action
+  ) => ViewModelEventReceivedAction | AnyAction
 }
 
 type ReduxViewModelHookOptions = {

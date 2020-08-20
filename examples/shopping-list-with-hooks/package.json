@@ -21,7 +21,7 @@
     "isomorphic-fetch": "2.2.1",
     "react": "16.13.1",
     "react-bootstrap": "0.32.1",
-    "react-dom": "16.13.0",
+    "react-dom": "16.13.1",
     "react-helmet": "6.0.0",
     "react-router": "5.1.2",
     "react-router-config": "5.1.1",

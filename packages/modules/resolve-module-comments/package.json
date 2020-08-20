@@ -28,7 +28,7 @@
     "@babel/runtime": "7.9.6"
   },
   "devDependencies": {
-    "react": "16.13.0",
+    "react": "16.13.1",
     "redux": "4.0.5",
     "react-redux": "7.2.0",
     "resolve-redux": "0.24.23",

@@ -45,12 +45,14 @@ const useOptimisticLists = () => {
     },
     [],
     {
-      success: (_, result) => ({
-        type: SHOPPING_LISTS_ACQUIRED,
-        payload: {
-          lists: result.data
-        }
-      })
+      actions: {
+        success: (_, result) => ({
+          type: SHOPPING_LISTS_ACQUIRED,
+          payload: {
+            lists: result.data
+          }
+        })
+      }
     }
   )
   const { execute: removeShoppingList } = useReduxCommand(
@@ -61,12 +63,14 @@ const useOptimisticLists = () => {
       payload: {}
     }),
     {
-      success: command => ({
-        type: SHOPPING_LIST_REMOVED,
-        payload: {
-          id: command.aggregateId
-        }
-      })
+      actions: {
+        success: command => ({
+          type: SHOPPING_LIST_REMOVED,
+          payload: {
+            id: command.aggregateId
+          }
+        })
+      }
     }
   )
 
@@ -80,7 +84,7 @@ const useOptimisticLists = () => {
 }
 
 export default () => {
-  const { getLists, removeShoppingList, lists } = useLists()
+  const { getLists, removeShoppingList, lists } = useOptimisticLists()
 
   useEffect(() => {
     getLists()

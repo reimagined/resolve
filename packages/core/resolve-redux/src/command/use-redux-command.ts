@@ -16,14 +16,21 @@ import {
   sendCommandSuccess,
   SendCommandSuccessAction
 } from './actions'
+import { AnyAction } from 'redux'
 
 type HookData<T> = {
   execute: (data: T) => void
 }
 type CommandReduxActionsCreators = {
-  request: (command: Command) => SendCommandRequestAction
-  success: (command: Command, result: CommandResult) => SendCommandSuccessAction
-  failure: (command: Command, error: Error) => SendCommandFailureAction
+  request?: (command: Command) => SendCommandRequestAction | AnyAction
+  success?: (
+    command: Command,
+    result: CommandResult
+  ) => SendCommandSuccessAction | AnyAction
+  failure?: (
+    command: Command,
+    error: Error
+  ) => SendCommandFailureAction | AnyAction
 }
 
 type CommandReduxHookOptions = {
