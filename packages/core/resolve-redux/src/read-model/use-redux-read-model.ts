@@ -39,7 +39,7 @@ type ReadModelReduxActionsCreators = {
   ) => QueryReadModelFailureAction | AnyAction
 }
 
-type ReduxReadModelHookOptions = {
+export type ReduxReadModelHookOptions = {
   actions?: ReadModelReduxActionsCreators
   queryOptions?: QueryOptions
   selectorId?: string

@@ -109,7 +109,8 @@ export type QueryOptions = {
 }
 export type QueryCallback = (
   error: Error | null,
-  result: QueryResult | null
+  result: QueryResult | null,
+  query: Query
 ) => void
 
 export const query = (
@@ -215,11 +216,11 @@ export const query = (
 
   asyncExec()
     .then(result => {
-      actualCallback(null, result)
+      actualCallback(null, result, qr)
       return result
     })
     .catch(error => {
-      actualCallback(error, null)
+      actualCallback(error, null, qr)
       throw error
     })
 
