@@ -28,9 +28,9 @@
     "@babel/runtime": "7.9.6"
   },
   "devDependencies": {
-    "react": "*",
-    "redux": "*",
-    "react-redux": "*",
+    "react": "16.13.0",
+    "redux": "4.0.5",
+    "react-redux": "7.2.0",
     "resolve-redux": "0.24.23",
     "jest": "26.0.1",
     "sinon": "7.2.2"
@@ -39,7 +39,7 @@
     "react": "*",
     "react-redux": "*",
     "redux": "*",
-    "resolve-redux": "0.23.2"
+    "resolve-redux": "0.24.23"
   },
   "babelCompile": [
     {

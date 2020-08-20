@@ -71,16 +71,16 @@ const connectReadModel = (
           getHash(prevConnectorOptions.resolverArgs) !==
             getHash(connectorOptions.resolverArgs))
       ) {
-        this.props.disconnectReadModel(
-          prevConnectorOptions.readModelName,
-          prevConnectorOptions.resolverName,
-          prevConnectorOptions.resolverArgs
-        )
-        this.props.connectReadModel(
-          connectorOptions.readModelName,
-          connectorOptions.resolverName,
-          connectorOptions.resolverArgs
-        )
+        this.props.disconnectReadModel({
+          name: prevConnectorOptions.readModelName,
+          resolver: prevConnectorOptions.resolverName,
+          args: prevConnectorOptions.resolverArgs
+        })
+        this.props.connectReadModel({
+          name: prevConnectorOptions.readModelName,
+          resolver: prevConnectorOptions.resolverName,
+          args: prevConnectorOptions.resolverArgs
+        })
       }
     }
 
