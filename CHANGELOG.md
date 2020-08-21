@@ -32,6 +32,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **subscribeAdapter** option is removed from config
 
+#### Removed packages
+
+- resolve-subscribe-mqtt
+- resolve-subscribe-socket.io
+
 ### Added
 
 - [Incremental import module](packages/modules/resolve-module-incremental-import/) (packages/modules/resolve-module-incremental-import/) provides out-of-the-box api-handlers that allow you to implement incremental import in any application..
@@ -44,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **meta** object in query response containing meta data
 - resolve-redux
   - new redux hook API
-- resolve-scripts
+- resolve-query
   - [view model resolver](docs/read-side.md#view-model-resolver)
 
 ### Changed
