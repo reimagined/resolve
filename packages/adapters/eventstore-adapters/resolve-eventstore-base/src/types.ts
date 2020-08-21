@@ -59,6 +59,7 @@ export type AdapterState<
   connection: AdapterConnection | null
   status: Status
   config: AdapterConfig<AdapterOptions>
+  snapshotBucketSize: number
 }
 
 export type AdapterConfig<

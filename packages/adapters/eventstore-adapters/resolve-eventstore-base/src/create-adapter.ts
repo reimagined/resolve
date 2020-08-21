@@ -29,23 +29,18 @@ function createAdapter<
     AdapterOptions,
     EventFromDatabase
   >,
-  options
+  options: AdapterOptions
 ): IAdapter {
   const {
     getConfig,
-    connect,
-    loadEventsByCursor,
-    loadEventsByTimestamp,
     getLatestEvent,
     saveEvent,
     init,
     drop,
     dispose,
-    injectEvent,
     isFrozen,
     freeze,
     unfreeze,
-    shapeEvent,
     loadSnapshot,
     saveSnapshot,
     dropSnapshot,
@@ -62,7 +57,7 @@ function createAdapter<
 
   let bucketSize = DEFAULT_SNAPSHOT_BUCKET_SIZE
   const { snapshotBucketSize } = options
-  if (Number.isSafeInteger(snapshotBucketSize) && snapshotBucketSize > 0) {
+  if (snapshotBucketSize != null && Number.isSafeInteger(snapshotBucketSize) && snapshotBucketSize > 0) {
     bucketSize = snapshotBucketSize
     log.debug(`snapshot bucket size explicitly set to ${bucketSize}`)
   } else {
@@ -74,7 +69,8 @@ function createAdapter<
   const state: AdapterState<AdapterConnection, AdapterOptions> = {
     connection: null,
     status: Status.NOT_CONNECTED,
-    config: getConfig(options)
+    config: getConfig(options),
+    snapshotBucketSize
   }
 
   const adapter = {

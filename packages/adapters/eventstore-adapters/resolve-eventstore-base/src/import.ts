@@ -1,7 +1,7 @@
 import { Writable } from 'stream'
 import { EOL } from 'os'
 
-import { BUFFER_SIZE, BATCH_SIZE, MaintenanceMode } from './constants'
+import { DEFAULT_BUFFER_SIZE, BATCH_SIZE, MaintenanceMode } from './constants'
 
 class EventStream extends Writable {
   waitConnect: Function
@@ -11,6 +11,7 @@ class EventStream extends Writable {
   unfreeze: Function
   injectEvent: Function
   byteOffset: number
+  bufferSize: number
   buffer: Buffer
   beginPosition: number
   endPosition: number
@@ -23,9 +24,9 @@ class EventStream extends Writable {
   parsedEventsCount: number
   bypassMode: boolean
   externalTimeout: boolean
-  encoding?: BufferEncoding
+  encoding: BufferEncoding = undefined as BufferEncoding
 
-  constructor({ pool, maintenanceMode, byteOffset }) {
+  constructor({ pool, maintenanceMode, byteOffset, bufferSize = DEFAULT_BUFFER_SIZE }) {
     super({ objectMode: true })
 
     this.waitConnect = pool.waitConnect
@@ -36,10 +37,11 @@ class EventStream extends Writable {
     this.injectEvent = pool.injectEvent
 
     this.byteOffset = byteOffset
-    this.buffer = Buffer.allocUnsafe(BUFFER_SIZE)
+    this.bufferSize = bufferSize
+    this.buffer = Buffer.allocUnsafe(bufferSize)
     this.beginPosition = 0
     this.endPosition = 0
-    this.vacantSize = BUFFER_SIZE
+    this.vacantSize = bufferSize
     this.saveEventPromiseSet = new Set()
     this.saveEventErrors = []
     this.timestamp = 0
@@ -82,26 +84,26 @@ class EventStream extends Writable {
         throw new Error('Buffer overflow')
       }
 
-      if (chunk.byteLength + this.endPosition <= BUFFER_SIZE) {
+      if (chunk.byteLength + this.endPosition <= this.bufferSize) {
         chunk.copy(this.buffer, this.endPosition)
       } else {
         chunk.copy(
           this.buffer,
           this.endPosition,
           0,
-          BUFFER_SIZE - this.endPosition
+          this.bufferSize - this.endPosition
         )
         chunk.copy(
           this.buffer,
           0,
-          BUFFER_SIZE - this.endPosition,
+          this.bufferSize - this.endPosition,
           chunk.byteLength
         )
       }
-      this.endPosition = (this.endPosition + chunk.byteLength) % BUFFER_SIZE
+      this.endPosition = (this.endPosition + chunk.byteLength) % this.bufferSize
       this.vacantSize -= chunk.byteLength
 
-      if (this.vacantSize === BUFFER_SIZE) {
+      if (this.vacantSize === this.bufferSize) {
         callback()
         return
       }
@@ -116,8 +118,8 @@ class EventStream extends Writable {
         }
 
         const endEventPosition =
-          (BUFFER_SIZE + this.endPosition - chunk.byteLength + eolPosition) %
-          BUFFER_SIZE
+          (this.bufferSize + this.endPosition - chunk.byteLength + eolPosition) %
+          this.bufferSize
         let eventAsText = null
         let eventByteLength = 0
 
@@ -129,13 +131,13 @@ class EventStream extends Writable {
           eventByteLength += endEventPosition - this.beginPosition
         } else {
           eventAsText = this.buffer
-            .slice(this.beginPosition, BUFFER_SIZE)
+            .slice(this.beginPosition, this.bufferSize)
             .toString(this.encoding)
           eventAsText += this.buffer
             .slice(0, endEventPosition)
             .toString(this.encoding)
 
-          eventByteLength += BUFFER_SIZE - this.beginPosition + endEventPosition
+          eventByteLength += this.bufferSize - this.beginPosition + endEventPosition
         }
 
         this.vacantSize += eventByteLength
@@ -183,7 +185,7 @@ class EventStream extends Writable {
     try {
       await this.waitConnect()
 
-      if (this.vacantSize !== BUFFER_SIZE) {
+      if (this.vacantSize !== this.bufferSize) {
         let eventAsText: string
         let eventByteLength = 0
 
@@ -195,13 +197,13 @@ class EventStream extends Writable {
           eventByteLength += this.endPosition - this.beginPosition
         } else {
           eventAsText = this.buffer
-            .slice(this.beginPosition, BUFFER_SIZE)
+            .slice(this.beginPosition, this.bufferSize)
             .toString(this.encoding)
           eventAsText += this.buffer
             .slice(0, this.endPosition)
             .toString(this.encoding)
 
-          eventByteLength += BUFFER_SIZE - this.beginPosition + this.endPosition
+          eventByteLength += this.bufferSize - this.beginPosition + this.endPosition
         }
 
         let event

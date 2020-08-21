@@ -1,8 +1,8 @@
 import {
-  IAdapterImplementation,
-  IAdapterOptions,
+  AdapterImplementation,
   AdapterState,
   Status,
+  IAdapterOptions,
   IEventFromDatabase
 } from './types'
 
@@ -10,16 +10,15 @@ import throwWhenDisposed from './throw-when-disposed'
 
 async function connectOnDemand<
   AdapterConnection extends any,
-  AdapterImplementation extends IAdapterImplementation<
-    AdapterConnection,
-    AdapterOptions,
-    EventFromDatabase
-  >,
   AdapterOptions extends IAdapterOptions,
   EventFromDatabase extends IEventFromDatabase
 >(
   state: AdapterState<AdapterConnection, AdapterOptions>,
-  implementation: AdapterImplementation
+  implementation: AdapterImplementation<
+    AdapterConnection,
+    AdapterOptions,
+    EventFromDatabase
+  >
 ): Promise<void> {
   throwWhenDisposed(state)
   if (state.status === Status.NOT_CONNECTED) {
