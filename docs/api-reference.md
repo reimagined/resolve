@@ -808,7 +808,111 @@ $ curl -X POST "http://localhost:3000/api/commands"
 
 ### resolve-redux Library
 
-The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library provides the following HOCs:
+The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library provides Redux hooks and HOCs. 
+
+Hooks:
+
+| Function Name                                           | Description                                                                                        |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| [useReduxCommand](#usereduxcommand)                     | Creates a hook to execute command.                                                                 |
+| [useReduxReadModel](#usereduxreadmodel)                 | Creates a hook to query read model.                                                                |
+| [useReduxReadModelSelector](#usereduxreadmodelselector) | Creates a hook to access read model query result.                                                  |
+| [useReduxViewModel](#usereduxviewmodel)                 | Creates a hook to receive view model's state updates and reactive events                           |
+| [useReduxViewModelSelector](#usereduxviewmodelselector) | Creates a hoot to access current view model's state                                                |
+
+
+#### useReduxCommand
+
+Creates a hook to execute reSolve command.
+
+##### Example
+
+```js
+const { execute: toggleItem } = useReduxCommand({
+  type: 'toggleShoppingItem',
+  aggregateId: shoppingListId,
+  aggregateName: 'ShoppingList',
+  payload: {
+    id: 'shopping-list-id'
+  }
+})
+```
+
+#### useReduxReadModel
+
+Creates a hoot to query reSolve read model
+
+##### Example
+
+```js
+const { request: getLists, selector: allLists } = useReduxReadModel({
+    name: 'ShoppingLists',
+    resolver: 'all',
+    args: {
+      filter: 'none'  
+    }
+  }, [])
+
+const { status, data } = useSelector(allLists)
+```
+
+##### useReduxReadModelSelector
+
+Creates a hook to access read model's query local result (no remote request)
+
+```js
+const { request: getLists, selector: allLists } = useReduxReadModel({
+    name: 'ShoppingLists',
+    resolver: 'all',
+    args: {
+      filter: 'none'  
+    }
+  }, 
+  [], {
+    selectorId: 'all-user-lists'
+  })
+
+const { status, data } = useReduxReadModelSelector('all-user-lists')
+```
+
+##### useReduxViewModel
+
+Creates a hook to receive view model's state updates and reactive events
+
+```js
+const { connect, dispose, selector: thisList } = useReduxViewModel({
+  name: 'shoppingList',
+  aggregateIds: ['my-list']
+})
+
+const { data, status } = useSelector(
+  thisList
+)
+
+useEffect(() => {
+  connect()
+  return () => {
+    dispose()
+  }
+}, [])
+```
+
+##### useReduxViewModelSelector
+
+Creates a hook to access view model's local state (no remote connection)
+
+```js
+const { connect, dispose, selector: thisList } = useReduxViewModel({
+  name: 'shoppingList',
+  aggregateIds: ['my-list']
+}, {
+  selectorId: 'this-list'
+})
+
+const { data, status } = useReduxViewModelSelector('this-list')
+```
+
+HOCs:
 
 | Function Name                                     | Description                                                                                        |
 | ------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
