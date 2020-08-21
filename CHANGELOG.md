@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **meta** object in query response containing meta data
 - resolve-redux
   - new redux hook API
+  - added **serializedState** parameter to createStore
 - resolve-scripts
   - [view model resolver](docs/read-side.md#view-model-resolver)
 
