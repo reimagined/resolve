@@ -1,4 +1,8 @@
-import { queryReadModelFailure, queryReadModelRequest, queryReadModelSuccess } from '../../src/read-model/actions'
+import {
+  queryReadModelFailure,
+  queryReadModelRequest,
+  queryReadModelSuccess
+} from '../../src/read-model/actions'
 import {
   QUERY_READMODEL_FAILURE,
   QUERY_READMODEL_REQUEST,
@@ -162,4 +166,3 @@ test('queryReadModelFailure', () => {
     selectorId: 'selector-id'
   })
 })
-

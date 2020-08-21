@@ -1,7 +1,3 @@
-import debugLevels from 'resolve-debug-levels'
-
-const log = debugLevels('resolve:resolve-runtime:pubsub-manager')
-
 const createPubsubManager = () => {
   const map = new Map()
 

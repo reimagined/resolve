@@ -214,7 +214,8 @@ test('toggle items in second shopping list', async t => {
         .withText('Item 3')
         .sibling(0).checked
     )
-    .eql(true)})
+    .eql(true)
+})
 
 test('remove items in second shopping list', async t => {
   await t.click(Selector('a').withText('Second Shopping List'))

@@ -2,12 +2,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Router } from 'react-router'
 import { createBrowserHistory } from 'history'
-import {
-  AppContainer,
-  createStore,
-  deserializeInitialState,
-  getOrigin
-} from 'resolve-redux'
+import { AppContainer, createStore, getOrigin } from 'resolve-redux'
 
 import getRoutes from './get-routes'
 import getRedux from './get-redux'
