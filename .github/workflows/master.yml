@@ -23,7 +23,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Prettier
-        run: if [ "$(node_modules/.bin/prettier --list-different "**/*.{js,ts,tsx}")" ]; then echo "Prettier failed" exit 1; fi
+        run: if [ "$(node_modules/.bin/prettier --list-different "**/*.{js,ts,tsx}")" ]; then echo "Prettier failed" && exit 1; fi
 
       - name: ESLint
         run: yarn lint
@@ -68,12 +68,6 @@ jobs:
           yarn test:e2e safari
           cd ..
           rm -rf hello-world
-          rm -rf shopping-list-advanced || true
-          node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e shopping-list-advanced shopping-list-advanced
-          cd shopping-list-advanced
-          yarn test:e2e safari
-          cd ..
-          rm -rf shopping-list-advanced
           rm -rf shopping-list || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e shopping-list shopping-list
           cd shopping-list

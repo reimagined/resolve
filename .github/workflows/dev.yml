@@ -23,7 +23,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Prettier
-        run: if [ "$(node_modules/.bin/prettier --list-different "**/*.{js,ts,tsx}")" ]; then echo "Prettier failed" exit 1; fi
+        run: if [ "$(node_modules/.bin/prettier --list-different "**/*.{js,ts,tsx}")" ]; then echo "Prettier failed" && exit 1; fi
 
       - name: ESLint
         run: yarn lint

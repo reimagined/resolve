@@ -23,7 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - internal actions structure drastically changed, avoid using them, they can change in future
 - custom redux sagas context changed:
   - **api** removed, **client** instance added (resolve-client package)
-  
+- react native support temporary suspended
+
 #### resolve-runtime
 
 - **executeQuery** in API handlers now returns **data** object containing view or read model data and **meta** containing query meta data
