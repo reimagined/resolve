@@ -1,8 +1,6 @@
-import { renderHook, act } from '@testing-library/react-hooks'
 import { useSelector } from 'react-redux'
 import { mocked } from 'ts-jest/utils'
 import { getEntry } from '../../src/read-model/read-model-reducer'
-import { ReadModelQuery } from 'resolve-client'
 import { ResultStatus } from '../../src'
 import { useReduxReadModelSelector } from '../../src/read-model/use-redux-read-model-selector'
 
@@ -15,13 +13,6 @@ jest.mock('../../src/read-model/read-model-reducer', () => ({
 
 const mUseSelector = mocked(useSelector)
 const mGetEntry = mocked(getEntry)
-
-const renderUseReadModelSelectorHook = (query: ReadModelQuery | string) => {
-  const {
-    result: { current }
-  } = renderHook(() => useReduxReadModelSelector(query))
-  return current
-}
 
 afterEach(() => {
   mUseSelector.mockClear()

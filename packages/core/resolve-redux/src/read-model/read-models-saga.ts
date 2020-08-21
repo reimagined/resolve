@@ -2,7 +2,10 @@ import { take } from 'redux-saga/effects'
 
 import getHash from '../internal/get-hash'
 import createSagaManager from '../internal/create-saga-manager'
-import { CONNECT_READMODEL, DISCONNECT_READMODEL } from '../internal/action-types'
+import {
+  CONNECT_READMODEL,
+  DISCONNECT_READMODEL
+} from '../internal/action-types'
 import connectReadModelSaga from './connect-read-model-saga'
 import disconnectReadModelSaga from './disconnect-read-model-saga'
 import { ChildSagaArgs } from '../types'

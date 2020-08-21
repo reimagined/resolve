@@ -3,7 +3,10 @@ import setEntry from 'lodash.set'
 import unsetEntry from 'lodash.unset'
 import getByPath from 'lodash.get'
 
-import { DROP_VIEWMODEL_STATE, VIEWMODEL_STATE_UPDATE } from '../internal/action-types'
+import {
+  DROP_VIEWMODEL_STATE,
+  VIEWMODEL_STATE_UPDATE
+} from '../internal/action-types'
 import {
   ViewModelResultEntry,
   ViewModelResultMapByName,
