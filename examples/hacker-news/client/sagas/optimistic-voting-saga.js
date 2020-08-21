@@ -11,18 +11,18 @@ export default function*() {
   yield takeEvery(
     action =>
       action.type === SEND_COMMAND_SUCCESS &&
-      action.commandType === 'upvoteStory',
+      action.command.type === 'upvoteStory',
     function*(action) {
-      yield put(optimisticUpvoteStory(action.aggregateId))
+      yield put(optimisticUpvoteStory(action.command.aggregateId))
     }
   )
 
   yield takeEvery(
     action =>
       action.type === SEND_COMMAND_SUCCESS &&
-      action.commandType === 'unvoteStory',
+      action.command.type === 'unvoteStory',
     function*(action) {
-      yield put(optimisticUnvoteStory(action.aggregateId))
+      yield put(optimisticUnvoteStory(action.command.aggregateId))
     }
   )
 }
