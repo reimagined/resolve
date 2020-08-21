@@ -9,8 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking Changes
 
+#### resolve-client
 
-#### react-hooks
+- **timestamp** from query response now located in meta object
+
+#### resolve-react-hooks
 
 - **useViewModel** hook state callback initially invoked with view model's *Init* handler state value with second argument **initial=true**. Other state changes will come with **initial=false**
 
@@ -20,7 +23,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - internal actions structure drastically changed, avoid using them, they can change in future
 - custom redux sagas context changed:
   - **api** removed, **client** instance added (resolve-client package)
+  
+#### resolve-runtime
 
+- **executeQuery** in API handlers now returns **data** object containing view or read model data and **meta** containing query meta data
+
+#### resolve-scripts
+
+- **subscribeAdapter** option is removed from config
 
 ### Added
 
@@ -30,10 +40,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `pushIncrementalImport` - accumulate events for incremental import 
   - `commitIncrementalImport` - commit accumulated events to eventstore 
   - `rollbackIncrementalImport` - drop accumulated events
+- resolve-client
+  - **meta** object in query response containing meta data
 - resolve-redux
   - new redux hook API
+- resolve-scripts
+  - [view model resolver](docs/read-side.md#view-model-resolver)
 
 ### Changed
+
+- resolve-client
+  - **url** and **cursor** params in the **subscribe** function
 
 ### Removed
 
