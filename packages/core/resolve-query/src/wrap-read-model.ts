@@ -309,25 +309,12 @@ const read = async (
   )
 }
 
-const readAndSerialize = async (
+const serializeState = async (
   pool: ReadModelPool,
-  { jwt, ...params }: any
+  state: any,
+  jwt: string
 ): Promise<string> => {
-  const readModelName = pool.readModel.name
-
-  if (pool.isDisposed) {
-    throw new Error(`read-model "${readModelName}" is disposed`)
-  }
-
-  const [resolverName, resolverArgs] = parseReadOptions(params)
-
-  const result = await read(pool, {
-    modelOptions: resolverName,
-    modelArgs: resolverArgs,
-    jwt
-  })
-
-  return JSON.stringify(result, null, 2)
+  return JSON.stringify(state, null, 2)
 }
 
 const doOperation = async (
@@ -595,6 +582,8 @@ const wrapReadModel = ({
     read: read.bind(null, pool),
     readAndSerialize: readAndSerialize.bind(null, pool),
     sendEvents: sendEvents.bind(null, pool),
+    serializeState: serializeState.bind(null, pool),
+    updateByEvents: updateByEvents.bind(null, pool),
     drop: drop.bind(null, pool),
     dispose: dispose.bind(null, pool)
   }

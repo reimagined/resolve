@@ -9,10 +9,6 @@
   "viewModels": [],
   "sagas": [],
   "apiHandlers": [],
-  "subscribeAdapter": {
-    "module": "resolve-subscribe-socket.io",
-    "options": {}
-  },
   "readModelConnectors": {},
   "schedulers": {},
   "eventBroker": {

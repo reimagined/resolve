@@ -10,45 +10,51 @@ let callbackMap: {
 } = {}
 
 const addCallback = (
-  topicName: string,
-  topicId: string,
+  eventType: string,
+  aggregateId: string,
   eventCallback: Function,
   resubscribeCallback?: Function
 ): void => {
-  if (!callbackMap[topicName]) {
-    callbackMap[topicName] = {}
+  if (!callbackMap[eventType]) {
+    callbackMap[eventType] = {}
   }
-  if (!callbackMap[topicName][topicId]) {
-    callbackMap[topicName][topicId] = []
+  if (!callbackMap[eventType][aggregateId]) {
+    callbackMap[eventType][aggregateId] = []
   }
-  callbackMap[topicName][topicId].push([eventCallback, resubscribeCallback])
+  callbackMap[eventType][aggregateId].push([eventCallback, resubscribeCallback])
 }
 
 const removeCallback = (
-  topicName: string,
-  topicId: string,
+  eventType: string,
+  aggregateId: string,
   eventCallback?: Function
 ): void => {
-  callbackMap[topicName][topicId] = callbackMap[topicName][topicId].filter(
-    f => f[0] !== eventCallback
-  )
+  callbackMap[eventType][aggregateId] = callbackMap[eventType][
+    aggregateId
+  ].filter(f => f[0] !== eventCallback)
 }
 
-const rootCallback = (event: any, resubscribed?: boolean): void => {
-  const { type: eventTopic, aggregateId } = event
-  for (const topicName in callbackMap) {
-    if (topicName === eventTopic) {
+const rootCallback = (
+  event: {
+    aggregateId: string
+    type: string
+  },
+  resubscribed?: boolean
+): void => {
+  const { type, aggregateId } = event
+  for (const eventType in callbackMap) {
+    if (eventType === type) {
       let listeners: Array<CallbackTuple> = []
-      const wildcard = callbackMap[topicName]['*'] ?? []
+      const wildcard = callbackMap[eventType]['*'] ?? []
       let aggregateIdListeners: Array<CallbackTuple> = []
       if (aggregateId !== '*') {
-        aggregateIdListeners = callbackMap[topicName][aggregateId] ?? []
+        aggregateIdListeners = callbackMap[eventType][aggregateId] ?? []
       }
       listeners = listeners.concat(wildcard).concat(aggregateIdListeners)
       if (listeners) {
         if (resubscribed) {
           listeners.forEach(
-            listener => listener[1] && listener[1]({ eventTopic, aggregateId })
+            listener => listener[1] && listener[1]({ eventType, aggregateId })
           )
         } else {
           listeners.forEach(listener => listener[0](event))

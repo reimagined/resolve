@@ -10,6 +10,7 @@ type ViewModelMeta = {
   deserializeState: Function
   serializeState: Function
   projection: { [key: string]: Function }
+  resolver: Function
   encryption: Function
 }
 
@@ -18,6 +19,7 @@ type ViewModelPool = {
   eventstoreAdapter: any
   getSecretsManager: Function
   performanceTracer: any
+  workers: Map<string, any>
   isDisposed: boolean
 }
 
@@ -129,9 +131,13 @@ const read = async (
     }
   }
 
+  const eventTypes = Object.keys(pool.viewModel.projection).filter(
+    type => type !== 'Init'
+  )
+
   const { events } = await pool.eventstoreAdapter.loadEvents({
     aggregateIds: aggregateIds !== '*' ? aggregateIds : null,
-    eventTypes: Object.keys(pool.viewModel.projection),
+    eventTypes,
     cursor,
     limit: Number.MAX_SAFE_INTEGER
   })
@@ -143,20 +149,146 @@ const read = async (
   }
 
   return state
+  return {
+    data: state,
+    eventCount,
+    cursor
+  }
 }
 
-const readAndSerialize = async (
+const read = async (
   pool: ViewModelPool,
-  { jwt, ...params }: any
+  modelOptions: any,
+  aggregateArgs: any,
+  jwt: string
 ): Promise<any> => {
   const viewModelName = pool.viewModel.name
 
   if (pool.isDisposed) {
     throw new Error(`View model "${viewModelName}" is disposed`)
   }
-  const state = await read(pool, { jwt, ...params })
 
-  return await pool.viewModel.serializeState(state, jwt)
+  const segment = pool.performanceTracer
+    ? pool.performanceTracer.getSegment()
+    : null
+  const subSegment = segment ? segment.addNewSubsegment('read') : null
+
+  try {
+    const viewModelName = pool.viewModel.name
+
+    if (subSegment != null) {
+      subSegment.addAnnotation('viewModelName', viewModelName)
+      subSegment.addAnnotation('origin', 'resolve:query:read')
+    }
+
+    if (pool.isDisposed) {
+      throw new Error(`View model "${viewModelName}" is disposed`)
+    }
+
+    let aggregateIds = null
+    try {
+      if (Array.isArray(modelOptions)) {
+        aggregateIds = [...modelOptions]
+      } else if (modelOptions === '*') {
+        aggregateIds = '*'
+      } else {
+        aggregateIds = modelOptions.split(/,/)
+      }
+    } catch (error) {
+      throw new Error(
+        `View model "${viewModelName}" requires aggregates identifier list`
+      )
+    }
+
+    const eventTypes = Object.keys(pool.viewModel.projection).filter(
+      type => type !== 'Init'
+    )
+
+    const resolverViewModelBuilder = async (
+      name: string,
+      { aggregateIds }: any
+    ): Promise<any> => {
+      const buildSubSegment = segment
+        ? segment.addNewSubsegment('buildViewModel')
+        : null
+
+      try {
+        if (buildSubSegment != null) {
+          buildSubSegment.addAnnotation('viewModelName', viewModelName)
+          buildSubSegment.addAnnotation('origin', 'resolve:query:read')
+        }
+
+        if (name !== viewModelName) {
+          throw new Error(`The '${name}' view model is inaccessible`)
+        }
+
+        if (pool.isDisposed) {
+          throw new Error(`View model "${viewModelName}" is disposed`)
+        }
+
+        const key = getKey(aggregateIds)
+
+        if (!pool.workers.has(key)) {
+          pool.workers.set(
+            key,
+            buildViewModel(pool, aggregateIds, aggregateArgs, jwt, key)
+          )
+        }
+
+        const { data, eventCount, cursor } = await pool.workers.get(key)
+
+        if (buildSubSegment != null) {
+          buildSubSegment.addAnnotation('eventCount', eventCount)
+          buildSubSegment.addAnnotation('origin', 'resolve:query:read')
+        }
+
+        pool.workers.delete(key)
+
+        return { data, cursor }
+      } catch (error) {
+        if (buildSubSegment != null) {
+          buildSubSegment.addError(error)
+        }
+
+        throw error
+      } finally {
+        if (buildSubSegment != null) {
+          buildSubSegment.close()
+        }
+      }
+    }
+
+    return await pool.viewModel.resolver(
+      {
+        buildViewModel: resolverViewModelBuilder
+      },
+      { aggregateIds },
+      {
+        jwt,
+        viewModel: {
+          ...pool.viewModel,
+          eventTypes
+        }
+      }
+    )
+  } catch (error) {
+    if (subSegment != null) {
+      subSegment.addError(error)
+    }
+    throw error
+  } finally {
+    if (subSegment != null) {
+      subSegment.close()
+    }
+  }
+}
+
+const serializeState = async (
+  pool: ViewModelPool,
+  state: any,
+  jwt: string
+): Promise<any> => {
+  return pool.viewModel.serializeState(state, jwt)
 }
 
 const sendEvents = async (pool: ViewModelPool): Promise<any> => {
@@ -208,6 +340,8 @@ const wrapViewModel = ({
     read: read.bind(null, pool),
     readAndSerialize: readAndSerialize.bind(null, pool),
     sendEvents: sendEvents.bind(null, pool),
+    serializeState: serializeState.bind(null, pool),
+    updateByEvents: updateByEvents.bind(null, pool),
     drop: drop.bind(null, pool),
     dispose: dispose.bind(null, pool)
   })

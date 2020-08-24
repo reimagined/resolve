@@ -38,7 +38,7 @@ const ssrHandler = async (
       initialState: { jwt },
       redux,
       viewModels,
-      subscribeAdapter: {},
+      subscriber: {},
       history,
       origin,
       rootPath,

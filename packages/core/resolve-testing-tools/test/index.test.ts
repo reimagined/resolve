@@ -1,6 +1,6 @@
 import givenEvents, { BDDAggregate } from '../src/index'
 import createReadModelConnector from 'resolve-readmodel-lite'
-import { SecretsManager } from 'resolve-core'
+import { SecretsManager, Event } from 'resolve-core'
 
 describe('read model', () => {
   test('basic flow', async () => {
@@ -45,11 +45,13 @@ describe('read model', () => {
       .as('JWT_TOKEN')
 
     expect(result).toEqual({
-      items: [{ id: 1 }, { id: 2 }, { id: 3 }],
-      args: { a: 10, b: 20 },
-      context: {
-        jwt: 'JWT_TOKEN',
-        secretsManager: expect.any(Object)
+      data: {
+        items: [{ id: 1 }, { id: 2 }, { id: 3 }],
+        args: { a: 10, b: 20 },
+        context: {
+          jwt: 'JWT_TOKEN',
+          secretsManager: expect.any(Object)
+        }
       }
     })
   })
@@ -117,6 +119,7 @@ describe('read model', () => {
 describe('aggregate', () => {
   type AggregateState = {
     exist: boolean
+    id?: string
   }
   const aggregate: BDDAggregate = {
     name: 'user',
@@ -124,9 +127,13 @@ describe('aggregate', () => {
       Init: (): AggregateState => ({
         exist: false
       }),
-      TEST_COMMAND_EXECUTED: (state: AggregateState): AggregateState => ({
+      TEST_COMMAND_EXECUTED: (
+        state: AggregateState,
+        event: Event
+      ): AggregateState => ({
         ...state,
-        exist: true
+        exist: true,
+        id: event.aggregateId
       })
     },
     commands: {
@@ -141,7 +148,16 @@ describe('aggregate', () => {
           type: 'TEST_COMMAND_EXECUTED',
           payload: {}
         }
-      }
+      },
+      failWithCustomId: (state: AggregateState, command): any => {
+        if (state.exist) {
+          throw Error(`aggregate ${state.id} already exist`)
+        }
+        throw Error(`aggregate ${command.aggregateId} failure`)
+      },
+      noPayload: (): any => ({
+        type: 'EVENT_WITHOUT_PAYLOAD'
+      })
     }
   }
 
@@ -180,6 +196,40 @@ describe('aggregate', () => {
           .as('invalid-user')
       ).rejects.toThrow(`unauthorized user`)
     })
+
+    test('custom aggregate id within command', async () => {
+      await expect(
+        givenEvents([])
+          .aggregate(aggregate, 'custom-id')
+          .command('failWithCustomId', {})
+          .as('valid-user')
+      ).rejects.toThrow('aggregate custom-id failure')
+    })
+
+    test('custom aggregate id within given events', async () => {
+      await expect(
+        givenEvents([
+          {
+            type: 'TEST_COMMAND_EXECUTED',
+            payload: {}
+          }
+        ])
+          .aggregate(aggregate, 'custom-id')
+          .command('failWithCustomId', {})
+          .as('valid-user')
+      ).rejects.toThrow(`aggregate custom-id already exist`)
+    })
+
+    test('events without payload support', async () => {
+      await expect(
+        givenEvents([])
+          .aggregate(aggregate)
+          .command('noPayload')
+          .as('valid-user')
+      ).resolves.toEqual({
+        type: 'EVENT_WITHOUT_PAYLOAD'
+      })
+    })
   })
 
   describe('with BDD assertions', () => {
@@ -211,5 +261,33 @@ describe('aggregate', () => {
         .command('create', {})
         .as('invalid-user')
         .shouldThrow(Error(`unauthorized user`)))
+
+    test('custom aggregate id within command', () =>
+      givenEvents([])
+        .aggregate(aggregate, 'custom-id')
+        .command('failWithCustomId', {})
+        .as('valid-user')
+        .shouldThrow(Error(`aggregate custom-id failure`)))
+
+    test('custom aggregate id within given events', () =>
+      givenEvents([
+        {
+          type: 'TEST_COMMAND_EXECUTED',
+          payload: {}
+        }
+      ])
+        .aggregate(aggregate, 'custom-id')
+        .command('failWithCustomId', {})
+        .as('valid-user')
+        .shouldThrow(Error(`aggregate custom-id already exist`)))
+
+    test('events without payload support', () =>
+      givenEvents([])
+        .aggregate(aggregate)
+        .command('noPayload')
+        .as('valid-user')
+        .shouldProduceEvent({
+          type: 'EVENT_WITHOUT_PAYLOAD'
+        }))
   })
 })

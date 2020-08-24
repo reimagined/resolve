@@ -31,6 +31,10 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     lambdaEventName: 'resolveSource'
   }
 
+  resolveBase.subscriptionsCredentials = {
+    applicationLambdaArn: lambdaContext.invokedFunctionArn
+  }
+
   resolveBase.invokeEventBusAsync = async (
     eventSubscriber,
     method,
