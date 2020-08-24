@@ -1,22 +1,5 @@
-import { useCallback } from 'react'
-import {
-  Command,
-  CommandCallback,
-  CommandOptions,
-  CommandResult
-} from 'resolve-client'
-import { useClient } from './use-client'
-import {
-  firstOfType,
-  HookExecutor,
-  isCallback,
-  isDependencies,
-  isOptions
-} from './generic'
-
-export type CommandBuilder<T> = (data: T) => Command
-
-type CommandExecutor<T> = HookExecutor<T, CommandResult>
+import { CommandCallback, CommandOptions } from 'resolve-client'
+import { CommandBuilder, CommandExecutor, useCommand } from './use-command'
 
 function useCommandBuilder<T>(builder: CommandBuilder<T>): CommandExecutor<T>
 function useCommandBuilder<T>(
@@ -52,30 +35,17 @@ function useCommandBuilder<T>(
   callback: CommandCallback,
   dependencies: any[]
 ): CommandExecutor<T>
-
 function useCommandBuilder<T>(
   builder: CommandBuilder<T>,
   options?: CommandOptions | CommandCallback | any[],
   callback?: CommandCallback | any[],
   dependencies?: any[]
 ): CommandExecutor<T> {
-  const client = useClient()
-
-  const actualOptions: CommandOptions | undefined = firstOfType<CommandOptions>(
-    isOptions,
-    options
-  )
-  const actualCallback: CommandCallback | undefined = firstOfType<
-    CommandCallback
-  >(isCallback, options, callback)
-  const actualDependencies: any[] =
-    firstOfType<any[]>(isDependencies, options, callback, dependencies) ??
-    [builder, actualOptions, actualCallback].filter(i => i)
-
-  return useCallback(
-    (data: T): Promise<CommandResult> | void =>
-      client.command(builder(data), actualOptions, actualCallback),
-    [client, ...actualDependencies]
+  return useCommand(
+    builder,
+    options as any,
+    callback as any,
+    dependencies as any
   )
 }
 

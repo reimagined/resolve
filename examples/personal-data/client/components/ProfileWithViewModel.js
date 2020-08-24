@@ -8,25 +8,27 @@ import Loading from './Loading'
 const ProfileWithViewModel = ({ userId }) => {
   const [user, setUser] = useState('unknown')
 
-  const onViewModelConnected = user => {
-    fetch(`/api/personal-data-keys/${user.id}`)
-      .then(response => response.text())
-      .then(key => {
-        const decrypt = getDecrypter(key)
+  const viewModelStateChanged = (user, initial) => {
+    if (!initial) {
+      fetch(`/api/personal-data-keys/${user.id}`)
+        .then(response => response.text())
+        .then(key => {
+          const decrypt = getDecrypter(key)
 
-        setUser({
-          ...user,
-          firstName: decrypt(user.firstName),
-          lastName: decrypt(user.lastName),
-          contacts: decrypt(user.contacts)
+          setUser({
+            ...user,
+            firstName: decrypt(user.firstName),
+            lastName: decrypt(user.lastName),
+            contacts: decrypt(user.contacts)
+          })
         })
-      })
+    }
   }
 
   const { connect, dispose } = useViewModel(
     'current-user-profile',
     [userId],
-    onViewModelConnected
+    viewModelStateChanged
   )
 
   useEffect(() => {

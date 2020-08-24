@@ -21,8 +21,8 @@
     "@types/react-dom": "^16.9.5",
     "@types/redux-devtools-extension": "^2.13.2",
     "@types/reactstrap": "^8.4.2",
-    "react": "16.13.0",
-    "react-dom": "16.13.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
     "reactstrap": "^8.1.1",
     "react-helmet": "6.0.0",
     "redux": "4.0.5",
@@ -39,9 +39,7 @@
     "resolve-scheduler-local": "0.24.23",
     "resolve-scheduler-cloud": "0.24.23",
     "resolve-eventstore-lite": "0.24.23",
-    "resolve-eventstore-postgresql-serverless": "0.24.23",
-    "resolve-subscribe-mqtt": "0.24.23",
-    "resolve-subscribe-socket.io": "0.24.23"
+    "resolve-eventstore-postgresql-serverless": "0.24.23"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",
@@ -53,7 +51,7 @@
     "@babel/preset-react": "7.9.4",
     "babel-jest": "26.0.1",
     "jest": "26.0.1",
-    "react-test-renderer": "16.13.0",
+    "react-test-renderer": "16.13.1",
     "testcafe": "1.8.5",
     "resolve-cloud": "*"
   }

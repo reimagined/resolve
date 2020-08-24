@@ -68,19 +68,6 @@
       "required": ["options"],
       "additionalProperties": false
     },
-    "subscribeAdapter": {
-      "type": "object",
-      "properties": {
-        "module": {
-          "type": "string"
-        },
-        "options": {
-          "type": "object"
-        }
-      },
-      "required": ["module", "options"],
-      "additionalProperties": false
-    },
     "aggregate": {
       "type": "object",
       "properties": {
@@ -149,7 +136,7 @@
             { "$ref": "#/definitions/resourceConstructor" }
           ]
         },
-        "validator": {
+        "resolver": {
           "oneOf": [
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
@@ -421,9 +408,6 @@
         "eventstoreAdapter": {
           "$ref": "#/definitions/eventstoreAdapter"
         },
-        "subscribeAdapter": {
-          "$ref": "#/definitions/subscribeAdapter"
-        },
         "jwtCookie": {
           "$ref": "#/definitions/jwtCookie"
         },
@@ -456,7 +440,6 @@
         "readModelConnectors",
         "schedulers",
         "eventstoreAdapter",
-        "subscribeAdapter",
         "eventBroker",
         "customConstants",
         "target",

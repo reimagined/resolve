@@ -199,7 +199,9 @@ describe('Cloud entry', () => {
       expect(result.statusCode).toEqual(200)
       expect(result.headers).toEqual({ 'Content-Type': 'application/json' })
       expect(JSON.parse(result.body)).toEqual({
-        key: 'value'
+        data: {
+          key: 'value'
+        }
       })
 
       expect(readModelConnector.connect.mock.calls[0][0]).toEqual(
@@ -497,90 +499,6 @@ describe('Cloud entry', () => {
       expect(result.statusCode).toEqual(418)
       expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
       expect(result.body).toEqual('Command error: I’m a teapot')
-    })
-
-    test('should get subscribe options via GET /"rootPath"/api/subscribe/', async () => {
-      STS.assumeRole.mockReturnValue({
-        promise: jest.fn().mockReturnValue({
-          Credentials: {
-            AccessKeyId: 'AccessKeyId',
-            SecretAccessKey: 'SecretAccessKey',
-            SessionToken: 'SessionToken'
-          }
-        })
-      })
-
-      const apiGatewayEvent = {
-        path: '/root-path/api/subscribe',
-        httpMethod: 'GET',
-        headers: { ...defaultRequestHttpHeaders },
-        multiValueQueryStringParameters: {
-          origin: 'origin',
-          adapterName: 'adapterName'
-        },
-        body: null
-      }
-
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
-
-      expect(result.statusCode).toEqual(200)
-      expect(result.headers).toEqual({ 'Content-Type': 'application/json' })
-      expect(JSON.parse(result.body).appId).toEqual(
-        process.env.RESOLVE_DEPLOYMENT_ID
-      )
-      expect(JSON.parse(result.body).url).toMatch(
-        `wss://${process.env.RESOLVE_WS_ENDPOINT}/mqtt`
-      )
-
-      expect(STS.assumeRole).toBeCalledWith({
-        RoleArn: process.env.RESOLVE_IOT_ROLE_ARN,
-        RoleSessionName: `role-session-${process.env.RESOLVE_DEPLOYMENT_ID}`,
-        DurationSeconds: 3600
-      })
-    })
-
-    test('should get subscribe options via POST /"rootPath"/api/subscribe/', async () => {
-      STS.assumeRole.mockReturnValue({
-        promise: jest.fn().mockReturnValue({
-          Credentials: {
-            AccessKeyId: 'AccessKeyId',
-            SecretAccessKey: 'SecretAccessKey',
-            SessionToken: 'SessionToken'
-          }
-        })
-      })
-
-      const apiGatewayEvent = {
-        path: '/root-path/api/subscribe',
-        httpMethod: 'POST',
-        headers: {
-          ...defaultRequestHttpHeaders,
-          'Content-Type': 'application/json; charset=utf-8'
-        },
-        multiValueQueryStringParameters: '',
-        body: JSON.stringify({})
-      }
-
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
-
-      expect(result.statusCode).toEqual(200)
-      expect(result.headers).toEqual({ 'Content-Type': 'application/json' })
-      expect(JSON.parse(result.body).appId).toEqual(
-        process.env.RESOLVE_DEPLOYMENT_ID
-      )
-      expect(JSON.parse(result.body).url).toMatch(
-        `wss://${process.env.RESOLVE_WS_ENDPOINT}/mqtt`
-      )
-
-      expect(STS.assumeRole).toBeCalledWith({
-        RoleArn: process.env.RESOLVE_IOT_ROLE_ARN,
-        RoleSessionName: `role-session-${process.env.RESOLVE_DEPLOYMENT_ID}`,
-        DurationSeconds: 3600
-      })
     })
 
     test('should get subscribe options via POST /"rootPath"/api/my-api-handler-1/', async () => {

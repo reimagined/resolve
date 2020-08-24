@@ -55,7 +55,7 @@ describe('read-models', () => {
         })
         .all()
 
-      expect(shoppingLists).toEqual([])
+      expect(shoppingLists).toEqual({ data: [] })
     })
 
     test('projection "SHOPPING_LIST_CREATED" should create a shopping list', async () => {
@@ -76,7 +76,7 @@ describe('read-models', () => {
         })
         .all()
 
-      expect(shoppingLists[0]).toMatchObject({
+      expect(shoppingLists.data[0]).toMatchObject({
         id: aggregateId,
         name: 'Products'
       })
@@ -107,7 +107,7 @@ describe('read-models', () => {
         })
         .all()
 
-      expect(shoppingLists[0]).toMatchObject({
+      expect(shoppingLists.data[0]).toMatchObject({
         id: aggregateId,
         name: 'Medicines'
       })
@@ -135,7 +135,7 @@ describe('read-models', () => {
         })
         .all()
 
-      expect(shoppingLists.length).toEqual(0)
+      expect(shoppingLists.data.length).toEqual(0)
     })
   })
 })

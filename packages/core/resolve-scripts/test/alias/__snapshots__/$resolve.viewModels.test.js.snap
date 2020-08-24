@@ -36,7 +36,7 @@ exports[`base config works correctly [server] 1`] = `
 import projection_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
-import validator_0_instance from \\"resolve-runtime/lib/common/defaults/view-model-validator.js\\"
+import resolver_0_instance from \\"resolve-runtime/lib/common/defaults/view-model-resolver.js\\"
 import encryption_0_instance from \\"resolve-runtime/lib/common/defaults/encryption.js\\"
 const constructorBindFunction =
     (
@@ -55,7 +55,7 @@ const projection_0_hash = \\"<INVARIANT_HASH>\\"
 const projection_0 = projection_0_instance
 const deserializeState_0 = deserializeState_0_instance
 const serializeState_0 = serializeState_0_instance
-const validator_0 = validator_0_instance
+const resolver_0 = resolver_0_instance
 const encryption_0 = encryption_0_instance
 const viewModels = []
 
@@ -65,7 +65,7 @@ viewModels.push({
 , deserializeState: deserializeState_0
 , invariantHash: projection_0_hash
 , serializeState: serializeState_0
-, validator: validator_0
+, resolver: resolver_0
 , encryption: encryption_0
 })
 
@@ -163,12 +163,12 @@ exports[`base(v2) config works correctly [server] 1`] = `
 import projection_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
-import validator_0_instance from \\"resolve-runtime/lib/common/defaults/view-model-validator.js\\"
+import resolver_0_instance from \\"resolve-runtime/lib/common/defaults/view-model-resolver.js\\"
 import encryption_0_instance from \\"resolve-runtime/lib/common/defaults/encryption.js\\"
 import projection_1_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 import deserializeState_1_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
 import serializeState_1_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
-import validator_1_instance from \\"resolve-runtime/lib/common/defaults/view-model-validator.js\\"
+import resolver_1_instance from \\"resolve-runtime/lib/common/defaults/view-model-resolver.js\\"
 import encryption_1_instance from \\"resolve-runtime/lib/common/defaults/encryption.js\\"
 const constructorBindFunction =
     (
@@ -187,14 +187,14 @@ const projection_0_hash = \\"<INVARIANT_HASH>\\"
 const projection_0 = projection_0_instance
 const deserializeState_0 = deserializeState_0_instance
 const serializeState_0 = serializeState_0_instance
-const validator_0 = validator_0_instance
+const resolver_0 = resolver_0_instance
 const encryption_0 = encryption_0_instance
 const name_1 = \\"Items\\"
 const projection_1_hash = \\"<INVARIANT_HASH>\\"
 const projection_1 = projection_1_instance
 const deserializeState_1 = deserializeState_1_instance
 const serializeState_1 = serializeState_1_instance
-const validator_1 = validator_1_instance
+const resolver_1 = resolver_1_instance
 const encryption_1 = encryption_1_instance
 const viewModels = []
 
@@ -204,7 +204,7 @@ viewModels.push({
 , deserializeState: deserializeState_0
 , invariantHash: projection_0_hash
 , serializeState: serializeState_0
-, validator: validator_0
+, resolver: resolver_0
 , encryption: encryption_0
 })
 
@@ -214,7 +214,7 @@ viewModels.push({
 , deserializeState: deserializeState_1
 , invariantHash: projection_1_hash
 , serializeState: serializeState_1
-, validator: validator_1
+, resolver: resolver_1
 , encryption: encryption_1
 })
 
@@ -301,7 +301,7 @@ exports[`config with serializeState/deserializeState works correctly [server] 1`
 import projection_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 import deserializeState_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testDeserializeState.js\\"
 import serializeState_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSerializeState.js\\"
-import validator_0_instance from \\"resolve-runtime/lib/common/defaults/view-model-validator.js\\"
+import resolver_0_instance from \\"resolve-runtime/lib/common/defaults/view-model-resolver.js\\"
 import encryption_0_instance from \\"resolve-runtime/lib/common/defaults/encryption.js\\"
 const constructorBindFunction =
     (
@@ -320,7 +320,7 @@ const projection_0_hash = \\"<INVARIANT_HASH>\\"
 const projection_0 = projection_0_instance
 const deserializeState_0 = deserializeState_0_instance
 const serializeState_0 = serializeState_0_instance
-const validator_0 = validator_0_instance
+const resolver_0 = resolver_0_instance
 const encryption_0 = encryption_0_instance
 const viewModels = []
 
@@ -330,7 +330,7 @@ viewModels.push({
 , deserializeState: deserializeState_0
 , invariantHash: projection_0_hash
 , serializeState: serializeState_0
-, validator: validator_0
+, resolver: resolver_0
 , encryption: encryption_0
 })
 
@@ -417,7 +417,7 @@ exports[`config with validator works correctly [server] 1`] = `
 import projection_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 import deserializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-deserialize-state.js\\"
 import serializeState_0_instance from \\"resolve-runtime/lib/common/defaults/json-serialize-state.js\\"
-import validator_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testValidator.js\\"
+import resolver_0_instance from \\"resolve-runtime/lib/common/defaults/view-model-resolver.js\\"
 import encryption_0_instance from \\"resolve-runtime/lib/common/defaults/encryption.js\\"
 const constructorBindFunction =
     (
@@ -436,7 +436,7 @@ const projection_0_hash = \\"<INVARIANT_HASH>\\"
 const projection_0 = projection_0_instance
 const deserializeState_0 = deserializeState_0_instance
 const serializeState_0 = serializeState_0_instance
-const validator_0 = validator_0_instance
+const resolver_0 = resolver_0_instance
 const encryption_0 = encryption_0_instance
 const viewModels = []
 
@@ -446,7 +446,7 @@ viewModels.push({
 , deserializeState: deserializeState_0
 , invariantHash: projection_0_hash
 , serializeState: serializeState_0
-, validator: validator_0
+, resolver: resolver_0
 , encryption: encryption_0
 })
 

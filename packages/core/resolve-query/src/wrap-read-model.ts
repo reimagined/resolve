@@ -92,6 +92,10 @@ const read = async (
   resolverArgs: object,
   jwt: string
 ): Promise<any> => {
+  if (pool.isDisposed) {
+    throw new Error(`read-model "${pool.readModel.name}" is disposed`)
+  }
+
   const { performanceTracer, getSecretsManager, isDisposed, readModel } = pool
 
   const segment = performanceTracer ? performanceTracer.getSegment() : null
@@ -132,17 +136,19 @@ const read = async (
         }
 
         try {
-          return await readModel.resolvers[resolverName](
-            connection,
-            resolverArgs,
-            {
-              secretsManager:
-                typeof getSecretsManager === 'function'
-                  ? await getSecretsManager()
-                  : null,
-              jwt
-            }
-          )
+          return {
+            data: await readModel.resolvers[resolverName](
+              connection,
+              resolverArgs,
+              {
+                secretsManager:
+                  typeof getSecretsManager === 'function'
+                    ? await getSecretsManager()
+                    : null,
+                jwt
+              }
+            )
+          }
         } catch (error) {
           if (subSegment != null) {
             subSegment.addError(error)
@@ -458,21 +464,12 @@ const updateByEvents = async (
   }
 }
 
-const readAndSerialize = async (
+const serializeState = async (
   pool: ReadModelPool,
-  resolverName: string,
-  resolverArgs: object,
+  state: any,
   jwt: string
 ): Promise<string> => {
-  const readModelName = pool.readModel.name
-
-  if (pool.isDisposed) {
-    throw new Error(`read-model "${readModelName}" is disposed`)
-  }
-
-  const result = await read(pool, resolverName, resolverArgs, jwt)
-
-  return JSON.stringify(result, null, 2)
+  return JSON.stringify(state, null, 2)
 }
 
 const doOperation = async (
@@ -591,7 +588,7 @@ const wrapReadModel = (
 
   const api = {
     read: read.bind(null, pool),
-    readAndSerialize: readAndSerialize.bind(null, pool),
+    serializeState: serializeState.bind(null, pool),
     updateByEvents: updateByEvents.bind(null, pool),
     drop: drop.bind(null, pool),
     dispose: dispose.bind(null, pool)

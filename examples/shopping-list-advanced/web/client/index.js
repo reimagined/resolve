@@ -17,7 +17,7 @@ const entryPoint = ({
   rootPath,
   staticPath,
   viewModels,
-  subscribeAdapter,
+  subscriber,
   clientImports
 }) => {
   const origin = getOrigin(window.location)
@@ -30,7 +30,7 @@ const entryPoint = ({
     initialState: deserializeInitialState(viewModels, window.__INITIAL_STATE__),
     redux,
     viewModels,
-    subscribeAdapter,
+    subscriber,
     history,
     origin,
     rootPath,

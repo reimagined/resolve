@@ -90,13 +90,14 @@ const appConfig = {
         options: {
           databaseFile: 'snapshot.db',
         }
-      }
+      },
+      validator: 'common/view-models/story-details.validator.js'
     }
   ]
 }
 ```
 
-In the configuration object, specify the View Model's name and the path to the file containing projection definition. You can also specify the View Model snapshot storage adapter. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions.
+In the configuration object, specify the View Model's name and the path to the file containing projection definition. You can also specify the View Model snapshot storage adapter. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions. Specify the **validator** option to add a [subscription validator](#view-model-subscription-validator) to the View Model.
 
 ### Custom Read Models
 
@@ -292,7 +293,7 @@ You can use the [standard API](api-reference.md#read-model-store-interface) to c
 
 A [resolver](#resolvers) then uses the data from the store to prepare final data samples for data requests.
 
->A Read Model's projection should only use tables that were created in this Read Model's `Init` handler. If you try to access tables created in other Read Models, a “Table does not exist” error is generated.
+> A Read Model's projection should only use tables that were created in this Read Model's `Init` handler. If you try to access tables created in other Read Models, a “Table does not exist” error is generated.
 
 Note that you can add additional logic to a projection function. For instance, you can perform SQL queries, update Elastic Search indexes, write arbitrary data to files, etc.
 
@@ -356,6 +357,52 @@ The code sample below demonstrates a View Model projection function:
 Refer to the [Query a View Model](#query-a-view-model) section, for information on how to query a View Model.
 
 Note that a View Model does not use the Read Model store.
+
+## View Model Resolver
+
+A View Model's **resolver** allows you to restrict a user's access to the View Model's data. A resolver function receives the following parameters:
+
+- The reSolve context object;
+- The query object that contains a list of aggregate IDs;
+- An object that contains a JSON Web Token and the View Model that contains a View Model name and a list available event types.
+
+In the resolver's code, you can use arbitrary logic to check a user's access permissions and either throw an exception to indicate an access error, or filter the `eventTypes` list to define which events are available to the user.
+
+The resolver function should return a built View Model data object and a meta object that contains the following data:
+
+- A cursor returned by the `buildViewModel` function;
+- A list of event types;
+- A list of aggregate IDs.
+
+The code sample below demonstrates a View Model resolver implementation:
+
+```js
+import jwt from 'jsonwebtoken'
+import jwtSecret from '../../auth/jwt-secret'
+
+export default async (
+  resolve,
+  query,
+  { jwt: token, viewModel }
+) => {
+  try {
+    jwt.verify(token, jwtSecret)
+  } catch (error) {
+    throw new Error('Permission denied')
+  }
+
+  const { data, cursor } = await resolve.buildViewModel(viewModel.name, query)
+
+  return {
+    data,
+    meta: {
+      cursor,
+      eventTypes: viewModel.eventTypes,
+      aggregateIds: query.aggregateIds
+    }
+  }
+}
+```
 
 ## Performing Queries Using HTTP API
 
