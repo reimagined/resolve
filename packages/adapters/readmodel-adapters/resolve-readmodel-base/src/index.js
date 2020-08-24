@@ -156,6 +156,8 @@ const createAdapter = (implementation, options) => {
     })
   } else {
     Object.assign(adapterOperations, {
+      // TODO
+      drop: dropReadModel,
       dropReadModel,
       beginTransaction,
       commitTransaction,
