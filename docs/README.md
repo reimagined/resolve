@@ -104,6 +104,8 @@ title: reSolve Documentation
 
 [API Reference](api-reference.md)
 
+[Application Configuration](application-configuration.md)
+
 [Troubleshooting](troubleshooting.md)
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/docs/readme.md?pixel)

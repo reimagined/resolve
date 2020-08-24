@@ -10,6 +10,7 @@ This document describes configuration options available for a reSolve applicatio
 In a new reSolve application, configuration settings are split across the following files for different run targets:
 
 - **config.app.js** - Contains general app configuration settings. In this file, you should register the application's aggregates, Read Models and View Models.
+- **config.cloud.js** - Contains configuration settings that target the [reSolve Cloud](cloud-overview.md) environment.
 - **config.dev.js** - Contains configuration settings that target the development server.
 - **config.prod.js** - Contains configuration settings that target the production server.
 - **config.test_functional.js** - Contains configuration settings that target the test environment.
