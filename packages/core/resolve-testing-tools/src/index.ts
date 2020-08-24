@@ -1,6 +1,6 @@
 import createQuery from 'resolve-query'
 import createCommand from 'resolve-command'
-import { SerializableMap } from 'resolve-core'
+import { SerializableMap, CommandResult } from 'resolve-core'
 import as from './as'
 import givenEvents from './given-events'
 import { execute } from './execute'
@@ -15,7 +15,6 @@ import getDefaultSecretsManager from './secrets-manager'
 import setSecretsManager from './set-secrets-manager'
 import { aggregate, BDDAggregate } from './aggregate'
 import { command } from './command'
-import { CommandResult } from 'resolve-core'
 
 export { BDDAggregate }
 
@@ -41,6 +40,7 @@ export const RESOLVE_SIDE_EFFECTS_START_TIMESTAMP =
   'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP'
 
 export interface GivenEventsContext {
+  all: any
   createQuery: any
   createCommand: any
   as: (jwt: any) => GivenEventsContext
