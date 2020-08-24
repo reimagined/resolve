@@ -39,7 +39,7 @@ import {
 
 <!-- prettier-ignore-end -->
 
-See the [JSON schema](https://github.com/reimagined/resolve/blob/master/packages/core/resolve-scripts/configs/schema.resolve.config.json) to familiarize yourself with the definition of the configuration object's structure.
+Refer to the [JSON schema](https://github.com/reimagined/resolve/blob/master/packages/core/resolve-scripts/configs/schema.resolve.config.json) file to familiarize yourself with the definition of the configuration object's structure.
 
 ## Reference
 
@@ -68,7 +68,7 @@ aggregates: [
 
 ### apiHandlers
 
-Specifies an array of the application's API Handlers. A Saga configuration object within this array contains the following fields:
+Specifies an array of the application's API Handlers. An API handler configuration object within this array contains the following fields:
 
 | Field   | Description                                                                                                                                         |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
