@@ -10,6 +10,24 @@ This document describes approaches that you can use to implement a frontend for 
 - [resolve-redux library](#resolve-redux-library) - A library used to connect a React + Redux component to reSolve
 - [resolve-react-hooks library](#resolve-react-hooks-library) - A hook-based library used to connect React components to reSolve
 
+## Client Application Entrypoint
+
+### Basic Entry Point
+
+A client script should export a function that is the script's entry point. This fuction takes reSolve context as the parameter.
+
+```js
+```
+
+Register the entry point in the `clientEntries` configuration section:
+
+```js
+```
+
+### Entry Point With SSR Support
+
+## [TODO] Plain JS
+
 ## HTTP API
 
 A reSolve exposes HTTP API that you can use to send aggregate commands and query Read Models. The following endpoints are available.
@@ -176,11 +194,11 @@ The [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/s
 
 The **resolve-react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
 
-| Hook                                                    | Description                                                             |
-| ------------------------------------------------------- | ----------------------------------------------------------------------- |
-| [useCommand](api-reference.md#usecommand)               | Initializes a command that can be passed to the backend                 |
-| [useCommandBuilder](api-reference.md#usecommandbuilder) | Allows to generate commands based on input parameters                   |
-| [useViewModel](api-reference.md#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model              |
+| Hook                                                    | Description                                                              |
+| ------------------------------------------------------- | ------------------------------------------------------------------------ |
+| [useCommand](api-reference.md#usecommand)               | Initializes a command that can be passed to the backend                  |
+| [useCommandBuilder](api-reference.md#usecommandbuilder) | Allows to generate commands based on input parameters                    |
+| [useViewModel](api-reference.md#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model               |
 | [useQuery](api-reference.md#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model |
 
 #### Example
