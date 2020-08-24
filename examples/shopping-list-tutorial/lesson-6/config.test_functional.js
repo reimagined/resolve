@@ -22,10 +22,6 @@ const testFunctionalConfig = {
       databaseFile: 'data/event-store-test-functional.db'
     }
   },
-  subscribeAdapter: {
-    module: 'resolve-subscribe-socket.io',
-    options: {}
-  },
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000

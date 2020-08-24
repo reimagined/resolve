@@ -1,37 +1,27 @@
-import v4 from 'aws-signature-v4'
+import jwt from 'jsonwebtoken'
 
-const getSubscribeAdapterOptions = async ({ sts }) => {
+const getSubscribeAdapterOptions = async (
+  resolve,
+  origin,
+  eventTypes,
+  aggregateIds
+) => {
   const {
     RESOLVE_DEPLOYMENT_ID,
-    RESOLVE_WS_ENDPOINT,
-    RESOLVE_IOT_ROLE_ARN
+    RESOLVE_WS_URL,
+    RESOLVE_ENCRYPTED_DEPLOYMENT_ID
   } = process.env
 
-  const data = await sts
-    .assumeRole({
-      RoleArn: RESOLVE_IOT_ROLE_ARN,
-      RoleSessionName: `role-session-${RESOLVE_DEPLOYMENT_ID}`,
-      DurationSeconds: 3600
-    })
-    .promise()
-
-  const url = v4.createPresignedURL(
-    'GET',
-    RESOLVE_WS_ENDPOINT,
-    '/mqtt',
-    'iotdevicegateway',
-    '',
-    {
-      key: data.Credentials.AccessKeyId,
-      secret: data.Credentials.SecretAccessKey,
-      sessionToken: data.Credentials.SessionToken,
-      protocol: 'wss'
-    }
+  const token = jwt.sign(
+    { eventTypes, aggregateIds },
+    RESOLVE_ENCRYPTED_DEPLOYMENT_ID
   )
+
+  const subscribeUrl = `${RESOLVE_WS_URL}?deploymentId=${RESOLVE_DEPLOYMENT_ID}&token=${token}`
 
   return {
     appId: RESOLVE_DEPLOYMENT_ID,
-    url
+    url: subscribeUrl
   }
 }
 

@@ -9,7 +9,7 @@ type BDDAsContext = {
   }
 }
 
-const as = ({ promise }: BDDAsContext, jwt: any): any => {
+const as = ({ promise }: BDDAsContext, jwt: any) => {
   const phase = promise[symbol].phase
 
   if (![Phases.RESOLVER, Phases.COMMAND].includes(promise[symbol].phase)) {

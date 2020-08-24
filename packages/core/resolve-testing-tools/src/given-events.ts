@@ -1,3 +1,5 @@
+import { GivenEventsContext } from '.'
+import { SagaParams } from './saga'
 import { Phases, symbol } from './constants'
 import { shouldProduceEvent, shouldThrow } from './aggregate-assertions'
 
@@ -95,7 +97,10 @@ const getInitPromise = (internalPool: any): Promise<any> =>
     }
   })
 
-const givenEvents = (dependencies: any, events: Array<any>): any => {
+const givenEvents = (
+  dependencies: any,
+  events: Array<any>
+): GivenEventsContext => {
   const {
     readModel,
     as,

@@ -31,10 +31,6 @@ const appConfig = {
     name: 'shopping-list-jwt',
     maxAge: 31536000000
   },
-  subscribeAdapter: {
-    module: 'resolve-subscribe-socket.io',
-    options: {}
-  },
   apiHandlers: [
     {
       handler: {
