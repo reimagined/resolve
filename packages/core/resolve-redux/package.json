@@ -85,9 +85,15 @@
   "babelCompile": [
     {
       "moduleType": "cjs",
-      "moduleTarget": "server",
+      "moduleTarget": "client",
       "inputDir": "./src",
       "outDir": "./lib"
+    },
+    {
+      "moduleType": "es",
+      "moduleTarget": "client",
+      "inputDir": "./src",
+      "outDir": "./es"
     }
   ]
 }
