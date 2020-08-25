@@ -496,11 +496,9 @@ Gets an array of events and the next cursor filtered by the event filter.
 
 ##### Arguments
 
-| Argument Name | Description                                                                                                                              |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| eventFilter   | { cursor: string or null, limit: number, eventsSizeLimit: number, eventTypes: Array<string>, aggregateIds: Array<string> }               |
-|               | or                                                                                                                                       |
-|               | { startTime?: number, endTime?: number, limit: number, eventsSizeLimit: number, eventTypes: Array<string>, aggregateIds: Array<string> } |
+| Argument Name | Description                                                                                                                                                                                                                                                                        |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| eventFilter   | { cursor: string or null, limit: number, eventsSizeLimit: number, eventTypes: Array<string>, aggregateIds: Array<string> } </br> or </br> { startTime?: number, endTime?: number, limit: number, eventsSizeLimit: number, eventTypes: Array<string>, aggregateIds: Array<string> } |
 
 ##### Result
 
@@ -604,7 +602,7 @@ await eventStoreAdapter.unfreeze()
 
 ### isFrozen
 
-Gets a boolean value that indicating whether the database is frozen.
+Gets a boolean value that indicates whether the database is frozen.
 
 ##### Arguments
 
@@ -626,9 +624,9 @@ Loads a snapshot.
 
 ##### Arguments
 
-| Argument Name | Description                            |
-| ------------- | -------------------------------------- |
-| snapshotKey   | A unique key in the table of snapshots |
+| Argument Name | Description                             |
+| ------------- | --------------------------------------- |
+| snapshotKey   | A unique key in the table of snapshots. |
 
 ##### Result
 
@@ -645,14 +643,14 @@ if (content == null) {
 
 ### saveSnapshot
 
-Creates or updates a snapshot
+Creates or updates a snapshot.
 
 ##### Arguments
 
-| Argument Name | Description                            |
-| ------------- | -------------------------------------- |
-| snapshotKey   | A unique key in the table of snapshots |
-| content       | A snapshot as text                     |
+| Argument Name | Description                             |
+| ------------- | --------------------------------------- |
+| snapshotKey   | A unique key in the table of snapshots. |
+| content       | A snapshot in the text format.          |
 
 ##### Result
 
@@ -709,14 +707,14 @@ if (secret == null) {
 
 ### setSecret
 
-Creates or updates a secret
+Creates or updates a secret.
 
 ##### Arguments
 
-| Argument Name | Description                                          |
-| ------------- | ---------------------------------------------------- |
-| selector      | A unique key in the table of secrets                 |
-| secret        | A new encrypted secret value in the specified secret |
+| Argument Name | Description                                           |
+| ------------- | ----------------------------------------------------- |
+| selector      | A unique key in the table of secrets.                 |
+| secret        | A new encrypted secret value in the specified secret. |
 
 ##### Result
 
@@ -734,9 +732,9 @@ Deletes a secret.
 
 ##### Arguments
 
-| Argument Name | Description                          |
-| ------------- | ------------------------------------ |
-| selector      | A unique key in the table of secrets |
+| Argument Name | Description                           |
+| ------------- | ------------------------------------- |
+| selector      | A unique key in the table of secrets. |
 
 ##### Result
 
@@ -754,9 +752,9 @@ Incrementally imports events.
 
 ##### Arguments
 
-| Argument Name | Description                                                                          |
-| ------------- | ------------------------------------------------------------------------------------ |
-| events        | An array of `{ aggregateId: string, type: string, timestamp: number, payload: any }` |
+| Argument Name | Description                                                                           |
+| ------------- | ------------------------------------------------------------------------------------- |
+| events        | An array of `{ aggregateId: string, type: string, timestamp: number, payload: any }`. |
 
 ##### Result
 
@@ -770,7 +768,7 @@ await eventStoreAdapter.incrementalImport(events)
 
 ### beginIncrementalImport
 
-Starts to accumulate events for incremental import.
+Starts to build a batch of events to import.
 
 ##### Arguments
 
@@ -782,14 +780,14 @@ importId: `Promise<string>`
 
 ### pushIncrementalImport
 
-Accumulates events for incremental import.
+Adds events to an incremental import batch.
 
 ##### Arguments
 
-| Argument Name | Description                                                                          |
-| ------------- | ------------------------------------------------------------------------------------ |
-| events        | An array of `{ aggregateId: string, type: string, timestamp: number, payload: any }` |
-| importId      | A unique key for an incremental import                                               |
+| Argument Name | Description                                                                           |
+| ------------- | ------------------------------------------------------------------------------------- |
+| events        | An array of `{ aggregateId: string, type: string, timestamp: number, payload: any }`. |
+| importId      | A unique key of an import batch.                                                      |
 
 ##### Result
 
@@ -797,13 +795,13 @@ Accumulates events for incremental import.
 
 ### commitIncrementalImport
 
-Commits the accumulated events to the event store.
+Commits an incremental import batch to the event store.
 
 ##### Arguments
 
-| Argument Name | Description                            |
-| ------------- | -------------------------------------- |
-| importId      | A unique key for an incremental import |
+| Argument Name | Description                      |
+| ------------- | -------------------------------- |
+| importId      | A unique key of an import batch. |
 
 ##### Result
 
@@ -811,7 +809,7 @@ Commits the accumulated events to the event store.
 
 ### rollbackIncrementalImport
 
-Drops the accumulated events.
+Drops an incremental import batch.
 
 ##### Arguments
 
