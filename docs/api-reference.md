@@ -412,11 +412,11 @@ The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages
 | Script                                | Description                                                                   |
 | ------------------------------------- | ----------------------------------------------------------------------------- |
 | [build](#build)                       | Builds an application.                                                        |
-| [start](#start)                       | Runs an application.                                                     |
+| [start](#start)                       | Runs an application.                                                          |
 | [watch](#watch)                       | Runs an application in **watch** mode. (Watch application files for changes.) |
 | [runTestcafe](#runtestcafe)           | Runs TestCafe tests.                                                          |
-| [merge](#merge)                       | Merges modules and application configurations into a single object.                  |
-| [stop](#stop)                         | Stops an application.                                                 |
+| [merge](#merge)                       | Merges modules and application configurations into a single object.           |
+| [stop](#stop)                         | Stops an application.                                                         |
 | [reset](#reset)                       | Resets an application's persistent storages and snapshots.                    |
 | [importEventStore](#importeventstore) | Imports events from a file to an application's event store.                   |
 | [exportEventStore](#exporteventstore) | Exports events from an application's event store to a file.                   |
@@ -808,7 +808,19 @@ $ curl -X POST "http://localhost:3000/api/commands"
 
 ### resolve-redux Library
 
-The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library provides the following HOCs:
+The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library includes both React Hooks and Higher-Order Components (HOCs).
+
+##### React Hooks:
+
+| Function Name                                           | Description                                                                 |
+| ------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [useReduxCommand](#usereduxcommand)                     | Creates a hook to execute a command.                                        |
+| [useReduxReadModel](#usereduxreadmodel)                 | Creates a hook to query a Read Model.                                       |
+| [useReduxReadModelSelector](#usereduxreadmodelselector) | Creates a hook to access a Read Model query result.                         |
+| [useReduxViewModel](#usereduxviewmodel)                 | Creates a hook to receive a View Model's state updates and reactive events. |
+| [useReduxViewModelSelector](#usereduxviewmodelselector) | Creates a hook to access a View Model's current state on the client.        |
+
+##### Higher-Order Components:
 
 | Function Name                                     | Description                                                                                        |
 | ------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
@@ -816,6 +828,104 @@ The reSolve framework includes the client **resolve-redux** library used to conn
 | [connectReadModel](#connectreadmodel)             | Connects a React component to a reSolve Read Model.                                                |
 | [connectRootBasedUrls](#connectrootbasedurls)     | Fixes URLs passed to the specified props so that they use the correct root folder path.            |
 | [connectStaticBasedUrls](#connectstaticbasedurls) | Fixes URLs passed to the specified props so that they use the correct static resource folder path. |
+
+#### useReduxCommand
+
+Creates a hook to execute a reSolve command.
+
+##### Example
+
+```js
+const { execute: toggleItem } = useReduxCommand({
+  type: 'toggleShoppingItem',
+  aggregateId: shoppingListId,
+  aggregateName: 'ShoppingList',
+  payload: {
+    id: 'shopping-list-id'
+  }
+})
+```
+
+#### useReduxReadModel
+
+Creates a hook to query a reSolve Read Model
+
+##### Example
+
+```js
+const { request: getLists, selector: allLists } = useReduxReadModel(
+  {
+    name: 'ShoppingLists',
+    resolver: 'all',
+    args: {
+      filter: 'none'
+    }
+  },
+  []
+)
+
+const { status, data } = useSelector(allLists)
+```
+
+##### useReduxReadModelSelector
+
+Creates a hook to access the result of a Read Model query. Note that this hook provides access to data obtained through `useReduxReadModel` and does not send any requests to the server.
+
+```js
+const { request: getLists, selector: allLists } = useReduxReadModel(
+  {
+    name: 'ShoppingLists',
+    resolver: 'all',
+    args: {
+      filter: 'none'
+    }
+  },
+  [],
+  {
+    selectorId: 'all-user-lists'
+  }
+)
+
+const { status, data } = useReduxReadModelSelector('all-user-lists')
+```
+
+##### useReduxViewModel
+
+Creates a hook to receive a View Model's state updates and reactive events.
+
+```js
+const { connect, dispose, selector: thisList } = useReduxViewModel({
+  name: 'shoppingList',
+  aggregateIds: ['my-list']
+})
+
+const { data, status } = useSelector(thisList)
+
+useEffect(() => {
+  connect()
+  return () => {
+    dispose()
+  }
+}, [])
+```
+
+##### useReduxViewModelSelector
+
+Creates a hook to access a view model's local state. This hook queries the View Model's current state on the client and does not send any requests to the server.
+
+```js
+const { connect, dispose, selector: thisList } = useReduxViewModel(
+  {
+    name: 'shoppingList',
+    aggregateIds: ['my-list']
+  },
+  {
+    selectorId: 'this-list'
+  }
+)
+
+const { data, status } = useReduxViewModelSelector('this-list')
+```
 
 #### connectViewModel
 
@@ -1009,12 +1119,12 @@ await client.unsubscribe(subscription)
 
 The **resolve-react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
 
-| Hook                                    | Description                                                              |
-| --------------------------------------- | ------------------------------------------------------------------------ |
-| [useCommand](#useCommand)               | Initializes a command that can be passed to the backend.                 |
-| [useCommandBuilder](#useCommandBuilder) | Allows a component to generate commands based on input parameters.                   |
-| [useViewModel](#useViewModel)           | Establishes a WebSocket connection to a reSolve View Model.              |
-| [useQuery](#useQuery)                   | Allows a component to send queries to a reSolve Read Model or View Model.|
+| Hook                                    | Description                                                               |
+| --------------------------------------- | ------------------------------------------------------------------------- |
+| [useCommand](#usecommand)               | Initializes a command that can be passed to the backend.                  |
+| [useCommandBuilder](#usecommandbuilder) | Allows a component to generate commands based on input parameters.        |
+| [useViewModel](#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model.               |
+| [useQuery](#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model. |
 
 #### useCommand
 

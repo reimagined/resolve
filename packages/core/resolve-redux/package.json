@@ -7,10 +7,12 @@
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",
+  "types": "./types/index.d.ts",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
+    "build": "tsc",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
@@ -29,37 +31,61 @@
     "hoist-non-react-statics": "^3.3.2",
     "json-stable-stringify": "^1.0.1",
     "jwt-decode": "^2.2.0",
+    "lodash.get": "4.4.2",
+    "lodash.set": "4.3.2",
+    "lodash.unset": "4.5.2",
     "query-string": "^5.1.1",
+    "resolve-client": "0.24.23",
+    "resolve-core": "0.24.23",
+    "resolve-react-hooks": "0.24.23",
     "unfetch": "^4.0.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@types/json-stable-stringify": "^1.0.32",
+    "@types/jwt-decode": "^2.2.1",
+    "@types/lodash.get": "4.4.6",
+    "@types/lodash.set": "4.3.6",
+    "@types/lodash.unset": "4.5.6",
+    "@types/query-string": "^5.1.0",
+    "@types/react-redux": "^7.1.9",
+    "@types/uuid": "^3.3.28",
+    "@testing-library/react-hooks": "3.4.1",
     "jest": "26.0.1",
-    "react": "16.13.0",
-    "react-dom": "16.13.0",
-    "react-test-renderer": "16.13.0",
+    "ts-jest": "26.1.4",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-redux": "7.2.0",
+    "react-test-renderer": "16.13.1",
     "redux": "4.0.5",
-    "sinon": "7.2.2",
-    "react-redux": "^7.2.0",
-    "redux-saga": "^1.0.0"
+    "redux-saga": "^1.0.0",
+    "sinon": "7.2.2"
   },
   "peerDependencies": {
     "react": "*",
     "react-dom": "*",
-    "redux": "*",
     "react-redux": "*",
+    "redux": "*",
     "redux-saga": "*"
   },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/test/**/*.test.[jt]s?(x)"
+    ],
+    "roots": [
+      "<rootDir>"
+    ]
+  },
+  "sourceType": "ts",
   "babelCompile": [
     {
-      "moduleType": "es",
-      "moduleTarget": "client",
-      "inputDir": "./src",
-      "outDir": "./es"
-    },
-    {
       "moduleType": "cjs",
-      "moduleTarget": "client",
+      "moduleTarget": "server",
       "inputDir": "./src",
       "outDir": "./lib"
     }

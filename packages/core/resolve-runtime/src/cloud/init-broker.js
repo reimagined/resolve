@@ -116,7 +116,7 @@ const initBroker = resolve => {
 
   Object.defineProperties(resolve, {
     getSubscribeAdapterOptions: {
-      value: getSubscribeAdapterOptions.bind(null, resolve)
+      value: getSubscribeAdapterOptions
     }
   })
 }

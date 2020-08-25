@@ -1,16 +1,5 @@
-import { Query, QueryOptions, QueryResult, QueryCallback } from 'resolve-client'
-import { useCallback } from 'react'
-import {
-  firstOfType,
-  HookExecutor,
-  isCallback,
-  isDependencies,
-  isOptions
-} from './generic'
-import { useClient } from './use-client'
-
-type QueryBuilder<T> = (data: T) => Query
-type QueryExecutor<T> = HookExecutor<T, QueryResult>
+import { QueryOptions, QueryCallback } from 'resolve-client'
+import { QueryBuilder, QueryExecutor, useQuery } from './use-query'
 
 function useQueryBuilder<T>(builder: QueryBuilder<T>): QueryExecutor<T>
 function useQueryBuilder<T>(
@@ -53,25 +42,6 @@ function useQueryBuilder<T>(
   callback?: QueryCallback | any[],
   dependencies?: any[]
 ): QueryExecutor<T> {
-  const client = useClient()
-  const actualOptions: QueryOptions | undefined = firstOfType<QueryOptions>(
-    isOptions,
-    options
-  )
-  const actualCallback: QueryCallback | undefined = firstOfType<QueryCallback>(
-    isCallback,
-    options,
-    callback
-  )
-  const actualDependencies: any[] =
-    firstOfType<any[]>(isDependencies, options, callback, dependencies) ??
-    [builder, actualOptions, actualCallback].filter(i => i)
-
-  return useCallback(
-    (data: T): Promise<QueryResult> | void =>
-      client.query(builder(data), actualOptions, actualCallback),
-    [client, ...actualDependencies]
-  )
+  return useQuery(builder, options as any, callback as any, dependencies as any)
 }
-
 export { useQueryBuilder }

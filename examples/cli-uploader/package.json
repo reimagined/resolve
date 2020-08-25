@@ -17,8 +17,8 @@
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
     "history": "4.10.1",
-    "react": "16.13.0",
-    "react-dom": "16.13.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
     "reactstrap": "^8.1.1",
     "react-helmet": "6.0.0",
     "react-fileupload-progress": "0.5.0",
@@ -31,8 +31,6 @@
     "resolve-eventstore-lite": "0.24.23",
     "resolve-readmodel-lite": "0.24.23",
     "resolve-readmodel-postgresql-serverless": "0.24.23",
-    "resolve-subscribe-mqtt": "0.24.23",
-    "resolve-subscribe-socket.io": "0.24.23",
     "resolve-upload-local": "0.24.23",
     "resolve-upload-cloud": "0.24.23",
     "redux-devtools-extension": "2.13.7",
@@ -57,7 +55,7 @@
     "@babel/preset-react": "7.9.4",
     "babel-jest": "26.0.1",
     "jest": "26.0.1",
-    "react-test-renderer": "16.13.0",
+    "react-test-renderer": "16.13.1",
     "testcafe": "1.8.5",
     "resolve-cloud": "*"
   }
