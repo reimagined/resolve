@@ -233,7 +233,7 @@ test('query should works correctly', async () => {
 
   const result = await response.json()
 
-  expect(result).to.deep.equal({
+  expect(result.data).to.deep.equal({
     id: 'shopping-list-1',
     name: 'List 1',
     list: [
