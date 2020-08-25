@@ -34,7 +34,10 @@ const queryHandler = async (req, res) => {
     res.status(200)
     res.setHeader('Content-Type', 'application/json')
 
-    if (result.meta?.aggregateIds != null || result.meta?.eventTypes != null) {
+    if (
+      (result.meta?.aggregateIds != null || result.meta?.eventTypes != null) &&
+      modelArgs.origin != null
+    ) {
       const subscribeOptions = await req.resolve.getSubscribeAdapterOptions(
         req.resolve,
         modelArgs.origin,

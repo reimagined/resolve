@@ -196,9 +196,9 @@ test('validation should works correctly', async () => {
   }
 })
 
-test('query should works correctly', async () => {
+test('query should work correctly', async () => {
   const response = await fetch(
-    `${MAIN_PAGE}/api/query/shoppingList/shopping-list-1`,
+    `${MAIN_PAGE}/api/query/shoppingList/shopping-list-1?origin=${MAIN_PAGE}`,
     {
       headers: {
         'Content-Type': 'application/json'
@@ -209,7 +209,7 @@ test('query should works correctly', async () => {
 
   const result = await response.json()
 
-  expect(result).to.deep.equal({
+  expect(result.data).to.deep.equal({
     id: 'shopping-list-1',
     name: 'List 1',
     list: [
