@@ -11,10 +11,10 @@ const install = pool => async () => {
     } catch (error) {
       if (
         error != null &&
-        error.message != null &&
-        error.message.constructor === String &&
-        error.message.includes('http://0.0.0.0:10080') &&
-        error.message.includes('ENOENT: no such file or directory')
+        error.stderr != null &&
+        error.stderr.constructor === String &&
+        error.stderr.includes('http://0.0.0.0:10080') &&
+        error.stderr.includes('ENOENT: no such file or directory')
       ) {
         continue
       }
