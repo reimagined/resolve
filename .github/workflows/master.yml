@@ -41,18 +41,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
+
+      - name: Yarn Cache Clean
+        run: yarn cache clean 
+
       - name: Install
         run: |
           yarn install --frozen-lockfile
           yarn build-packages
-        
-      
+
       - name: Tutorial E2E test
         run: yarn tutorial-test:e2e safari
-
-      - name: Yarn Cache Clean
-        run: yarn cache clean 
 
       - name: CRA test
         run: |
