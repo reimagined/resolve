@@ -28,6 +28,23 @@ const parseReadOptions = (options: any): [any, any] => {
     throw new Error('Wrong options for read invocation')
   }
 
+  if (optionsMap[flag][0] === 'aggregateIds') {
+    const originalAggregateIds = options[optionsMap[flag][0]]
+    const aggregateArgs = options[optionsMap[flag][1]]
+    let aggregateIds = null
+    try {
+      if (Array.isArray(originalAggregateIds)) {
+        aggregateIds = [...originalAggregateIds]
+      } else if (originalAggregateIds === '*') {
+        aggregateIds = null
+      } else {
+        aggregateIds = originalAggregateIds.split(/,/)
+      }
+    } catch (error) {
+      throw new Error(`The following arguments are required: aggregateIds`)
+    }
+    return [aggregateIds, aggregateArgs]
+  }
   return [options[optionsMap[flag][0]], options[optionsMap[flag][1]]]
 }
 

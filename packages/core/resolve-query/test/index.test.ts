@@ -33,6 +33,10 @@ type ResolverQuery = {
 
 let performanceTracer: any | null = null
 
+let invokeEventBusAsync: any = null
+let getRemainingTimeInMillis: any = null
+let performAcknowledge: any = null
+
 for (const { describeName, prepare } of [
   {
     describeName: 'with performanceTracer',
@@ -83,6 +87,10 @@ for (const { describeName, prepare } of [
 
       snapshots = new Map()
 
+      invokeEventBusAsync = jest.fn()
+      getRemainingTimeInMillis = jest.fn()
+      performAcknowledge = jest.fn()
+
       eventstoreAdapter = {
         loadEvents: async ({ cursor: prevCursor }: { cursor: string }) => ({
           events,
@@ -114,6 +122,9 @@ for (const { describeName, prepare } of [
       viewModels = null
       readModels = null
       readModelConnectors = null
+      invokeEventBusAsync = null
+      getRemainingTimeInMillis = null
+      performAcknowledge = null
     })
 
     describe('view models', () => {
@@ -181,11 +192,14 @@ for (const { describeName, prepare } of [
 
         beforeEach(() => {
           query = createQuery({
+            invokeEventBusAsync,
             readModelConnectors,
             readModels,
             viewModels,
+            performanceTracer,
             eventstoreAdapter,
-            performanceTracer
+            getRemainingTimeInMillis,
+            performAcknowledge
           })
         })
 
@@ -426,7 +440,7 @@ for (const { describeName, prepare } of [
             },
             meta: {
               cursor: 'CURSOR-CURSOR-CURSOR-CURSOR-CURSOR-CURSOR',
-              aggregateIds: '*',
+              aggregateIds: null,
               eventTypes: ['ADD', 'SUB']
             }
           })
@@ -486,74 +500,6 @@ for (const { describeName, prepare } of [
 
           await state1Promise
           await state2Promise
-
-          if (performanceTracer != null) {
-            expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
-              'getSegment'
-            )
-            expect(
-              performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment')
-            expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
-              'addAnnotation'
-            )
-            expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
-              'addError'
-            )
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
-          }
-        })
-
-        test('"read" should raise error when interrupted', async () => {
-          if (query == null) {
-            throw new Error('Some of test tools are not initialized')
-          }
-
-          events = [
-            {
-              aggregateId: 'id1',
-              aggregateVersion: 1,
-              timestamp: 1,
-              type: 'ADD',
-              payload: {
-                value: 10
-              }
-            },
-            {
-              aggregateId: 'id1',
-              aggregateVersion: 2,
-              timestamp: 2,
-              type: 'ADD',
-              payload: {
-                value: 5
-              }
-            },
-            {
-              aggregateId: 'id1',
-              aggregateVersion: 3,
-              timestamp: 3,
-              type: 'SUB',
-              payload: {
-                value: 8
-              }
-            }
-          ]
-
-          const statePromise = query.read({
-            modelName: 'viewModelName',
-            aggregateIds: 'id1',
-            aggregateArgs: {}
-          })
-
-          await query.dispose()
-
-          try {
-            await statePromise
-
-            return Promise.reject(new Error('Test failed'))
-          } catch (error) {
-            expect(error).toBeInstanceOf(Error)
-          }
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -712,13 +658,13 @@ for (const { describeName, prepare } of [
           }
         })
 
-        test('"updateByEvents" should raise error on view models', async () => {
+        test('"sendEvents" should raise error on view models', async () => {
           if (query == null || events == null) {
             throw new Error('Some of test tools are not initialized')
           }
 
           try {
-            await query.updateByEvents({ modelName: 'viewModelName', events })
+            await query.sendEvents({ modelName: 'viewModelName', events })
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
             expect(error).toBeInstanceOf(Error)
@@ -744,14 +690,14 @@ for (const { describeName, prepare } of [
           }
         })
 
-        test('"updateByEvents" should raise error when query is disposed', async () => {
+        test('"sendEvents" should raise error when query is disposed', async () => {
           if (query == null || events == null) {
             throw new Error('Some of test tools are not initialized')
           }
 
           await query.dispose()
           try {
-            await query.updateByEvents({ modelName: 'viewModelName', events })
+            await query.sendEvents({ modelName: 'viewModelName', events })
 
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
@@ -814,7 +760,7 @@ for (const { describeName, prepare } of [
 
           await query.dispose()
           try {
-            await query.updateByEvents({ modelName: 'viewModelName', events })
+            await query.sendEvents({ modelName: 'viewModelName', events })
 
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
@@ -878,11 +824,14 @@ for (const { describeName, prepare } of [
 
         beforeEach(() => {
           query = createQuery({
+            invokeEventBusAsync,
             readModelConnectors,
             readModels,
             viewModels,
+            performanceTracer,
             eventstoreAdapter,
-            performanceTracer
+            getRemainingTimeInMillis,
+            performAcknowledge
           })
         })
 
@@ -1071,74 +1020,6 @@ for (const { describeName, prepare } of [
           }
         })
 
-        test('"read" should raise error when interrupted', async () => {
-          if (query == null) {
-            throw new Error('Some of test tools are not initialized')
-          }
-
-          events = [
-            {
-              aggregateId: 'id1',
-              aggregateVersion: 1,
-              timestamp: 1,
-              type: 'ADD',
-              payload: {
-                value: 10
-              }
-            },
-            {
-              aggregateId: 'id1',
-              aggregateVersion: 2,
-              timestamp: 2,
-              type: 'ADD',
-              payload: {
-                value: 5
-              }
-            },
-            {
-              aggregateId: 'id1',
-              aggregateVersion: 3,
-              timestamp: 3,
-              type: 'SUB',
-              payload: {
-                value: 8
-              }
-            }
-          ]
-
-          const statePromise = query.read({
-            modelName: 'viewModelName',
-            aggregateIds: 'id1',
-            aggregateArgs: {}
-          })
-
-          await query.dispose()
-
-          try {
-            await statePromise
-
-            return Promise.reject(new Error('Test failed'))
-          } catch (error) {
-            expect(error).toBeInstanceOf(Error)
-          }
-
-          if (performanceTracer != null) {
-            expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
-              'getSegment'
-            )
-            expect(
-              performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment')
-            expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
-              'addAnnotation'
-            )
-            expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
-              'addError'
-            )
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
-          }
-        })
-
         test('"read" should raise error when query is disposed', async () => {
           if (query == null) {
             throw new Error('Some of test tools are not initialized')
@@ -1245,13 +1126,13 @@ for (const { describeName, prepare } of [
           }
         })
 
-        test('"updateByEvents" should raise error on view models', async () => {
+        test('"sendEvents" should raise error on view models', async () => {
           if (query == null || events == null) {
             throw new Error('Some of test tools are not initialized')
           }
 
           try {
-            await query.updateByEvents({ modelName: 'viewModelName', events })
+            await query.sendEvents({ modelName: 'viewModelName', events })
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
             expect(error).toBeInstanceOf(Error)
@@ -1274,14 +1155,14 @@ for (const { describeName, prepare } of [
           }
         })
 
-        test('"updateByEvents" should raise error when disposed', async () => {
+        test('"sendEvents" should raise error when disposed', async () => {
           if (query == null || events == null) {
             throw new Error('Some of test tools are not initialized')
           }
 
           await query.dispose()
           try {
-            await query.updateByEvents({ modelName: 'viewModelName', events })
+            await query.sendEvents({ modelName: 'viewModelName', events })
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
             expect(error).toBeInstanceOf(Error)
@@ -1511,11 +1392,14 @@ for (const { describeName, prepare } of [
         }
 
         query = createQuery({
+          invokeEventBusAsync,
           readModelConnectors,
           readModels,
           viewModels,
+          performanceTracer,
           eventstoreAdapter,
-          performanceTracer
+          getRemainingTimeInMillis,
+          performAcknowledge
         })
       })
 
@@ -1603,7 +1487,7 @@ for (const { describeName, prepare } of [
         ]
 
         try {
-          await query.updateByEvents({
+          await query.sendEvents({
             modelName: 'brokenReadModelName',
             events
           })
@@ -1697,7 +1581,7 @@ for (const { describeName, prepare } of [
         }
       })
 
-      test('"updateByEvents" should apply events to the read model, "read" should return the resolver result', async () => {
+      test('"sendEvents" should apply events to the read model, "read" should return the resolver result', async () => {
         if (query == null) {
           throw new Error('Some of test tools are not initialized')
         }
@@ -1742,7 +1626,7 @@ for (const { describeName, prepare } of [
           }
         ]
 
-        const result = await query.updateByEvents({
+        const result = await query.sendEvents({
           modelName: 'readModelName',
           events
         })
@@ -1786,13 +1670,13 @@ for (const { describeName, prepare } of [
         }
       })
 
-      test('"updateByEvents" should raise error when a projection is not found', async () => {
+      test('"sendEvents" should raise error when a projection is not found', async () => {
         if (query == null || events == null) {
           throw new Error('Some of test tools are not initialized')
         }
 
         try {
-          await query.updateByEvents({
+          await query.sendEvents({
             modelName: 'readOnlyReadModelName',
             events
           })
@@ -1818,13 +1702,13 @@ for (const { describeName, prepare } of [
         }
       })
 
-      test('"updateByEvents" should raise error when events is not array', async () => {
+      test('"sendEvents" should raise error when events is not array', async () => {
         if (query == null) {
           throw new Error('Some of test tools are not initialized')
         }
 
         try {
-          await query.updateByEvents({
+          await query.sendEvents({
             modelName: 'readOnlyReadModelName',
             events: (null as unknown) as any[]
           })
@@ -1850,7 +1734,7 @@ for (const { describeName, prepare } of [
         }
       })
 
-      test('"updateByEvents" should raise error when updating had been interrupted', async () => {
+      test('"sendEvents" should raise error when updating had been interrupted', async () => {
         if (query == null) {
           throw new Error('Some of test tools are not initialized')
         }
@@ -1878,7 +1762,7 @@ for (const { describeName, prepare } of [
           }
         ]
 
-        const result = query.updateByEvents({
+        const result = query.sendEvents({
           modelName: 'remoteReadModelName',
           events
         })
@@ -1909,7 +1793,7 @@ for (const { describeName, prepare } of [
         }
       })
 
-      test('"updateByEvents" should raise error when query is disposed', async () => {
+      test('"sendEvents" should raise error when query is disposed', async () => {
         if (query == null) {
           throw new Error('Some of test tools are not initialized')
         }
@@ -1923,7 +1807,7 @@ for (const { describeName, prepare } of [
         await query.dispose()
 
         try {
-          await query.updateByEvents({ modelName: 'readModelName', events })
+          await query.sendEvents({ modelName: 'readModelName', events })
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
           expect(error).toBeInstanceOf(Error)
@@ -2084,7 +1968,10 @@ for (const { describeName, prepare } of [
               ],
               viewModels,
               eventstoreAdapter,
-              performanceTracer
+              performanceTracer,
+              invokeEventBusAsync,
+              getRemainingTimeInMillis,
+              performAcknowledge
             }))
         ).toThrow(Error)
       })
@@ -2119,7 +2006,10 @@ for (const { describeName, prepare } of [
               ],
               viewModels,
               eventstoreAdapter,
-              performanceTracer
+              performanceTracer,
+              invokeEventBusAsync,
+              getRemainingTimeInMillis,
+              performAcknowledge
             }))
         ).toThrow('Duplicate name for read model: "readModelName"')
 
@@ -2159,7 +2049,10 @@ for (const { describeName, prepare } of [
                 }
               ],
               eventstoreAdapter,
-              performanceTracer
+              performanceTracer,
+              invokeEventBusAsync,
+              getRemainingTimeInMillis,
+              performAcknowledge
             }))
         ).toThrow('Duplicate name for view model: "viewModelName"')
 
@@ -2192,19 +2085,19 @@ for (const { describeName, prepare } of [
             }
           ],
           eventstoreAdapter,
-          performanceTracer
+          performanceTracer,
+          invokeEventBusAsync,
+          getRemainingTimeInMillis,
+          performAcknowledge
         })
 
-        try {
-          await query.read({
+        await expect(
+          query.read({
             modelName: 'viewModelName',
             wrongArg1: '1',
             wrongArg2: '2'
           } as any)
-          return Promise.reject(new Error('Test failed'))
-        } catch (error) {
-          expect(error.message).toEqual('Wrong options for read invocation')
-        }
+        ).rejects.toBeTruthy()
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(

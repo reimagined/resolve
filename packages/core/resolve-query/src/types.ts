@@ -17,6 +17,11 @@ type WrapModelOptions = Omit<
 export type WrapReadModelOptions = WrapModelOptions & { readModel: any }
 export type WrapViewModelOptions = WrapModelOptions & { viewModel: any }
 
+export type EventStoreAdapter = {
+  loadEvents: Function
+  getNextCursor: Function
+}
+
 export type SerializedError = {
   name: string | null
   code: string | null
@@ -42,4 +47,22 @@ export type ReadModelPool = {
   invokeEventBusAsync: Function
   performAcknowledge: Function
   getRemainingTimeInMillis: Function
+}
+
+export type ViewModelMeta = {
+  name: string
+  invariantHash: string
+  deserializeState: Function
+  serializeState: Function
+  projection: { [key: string]: Function }
+  resolver: Function
+  encryption: Function
+}
+
+export type ViewModelPool = {
+  viewModel: ViewModelMeta
+  eventstoreAdapter: any
+  getSecretsManager: Function
+  performanceTracer: any
+  isDisposed: boolean
 }

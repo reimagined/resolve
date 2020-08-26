@@ -281,7 +281,7 @@ const read = async (
   pool: ReadModelPool,
   { jwt, ...params }: any
 ): Promise<any> => {
-  const { getSecretsManager, isDisposed, readModel } = pool
+  const { getSecretsManager, isDisposed, readModel, performanceTracer } = pool
   const readModelName = readModel.name
 
   const [resolverName, resolverArgs] = parseReadOptions(params)
@@ -289,30 +289,83 @@ const read = async (
   if (isDisposed) {
     throw new Error(`Read model "${readModelName}" is disposed`)
   }
-  if (typeof readModel.resolvers[resolverName] !== 'function') {
-    const error = new Error(`Resolver "${resolverName}" does not exist`) as any
-    error.code = 422
-    throw error
+
+  const segment = performanceTracer ? performanceTracer.getSegment() : null
+  const subSegment = segment ? segment.addNewSubsegment('read') : null
+
+  if (subSegment != null) {
+    subSegment.addAnnotation('readModelName', readModelName)
+    subSegment.addAnnotation('resolverName', resolverName)
+    subSegment.addAnnotation('origin', 'resolve:query:read')
   }
 
-  return await wrapConnection(
-    pool,
-    async (connection: any): Promise<any> => {
-      return await readModel.resolvers[resolverName](connection, resolverArgs, {
-        secretsManager:
-          typeof getSecretsManager === 'function'
-            ? await getSecretsManager()
-            : null,
-        jwt
-      })
+  try {
+    if (isDisposed) {
+      throw new Error(`Read model "${readModelName}" is disposed`)
     }
-  )
+    if (typeof pool.readModel.resolvers[resolverName] !== 'function') {
+      const error = new Error(
+        `Resolver "${resolverName}" does not exist`
+      ) as any
+      error.code = 422
+      throw error
+    }
+
+    return await wrapConnection(
+      pool,
+      async (connection: any): Promise<any> => {
+        const segment = performanceTracer
+          ? performanceTracer.getSegment()
+          : null
+        const subSegment = segment ? segment.addNewSubsegment('resolver') : null
+
+        if (subSegment != null) {
+          subSegment.addAnnotation('readModelName', readModelName)
+          subSegment.addAnnotation('resolverName', resolverName)
+          subSegment.addAnnotation('origin', 'resolve:query:resolver')
+        }
+
+        try {
+          return {
+            data: await readModel.resolvers[resolverName](
+              connection,
+              resolverArgs,
+              {
+                secretsManager:
+                  typeof getSecretsManager === 'function'
+                    ? await getSecretsManager()
+                    : null,
+                jwt
+              }
+            )
+          }
+        } catch (error) {
+          if (subSegment != null) {
+            subSegment.addError(error)
+          }
+          throw error
+        } finally {
+          if (subSegment != null) {
+            subSegment.close()
+          }
+        }
+      }
+    )
+  } catch (error) {
+    if (subSegment != null) {
+      subSegment.addError(error)
+    }
+    throw error
+  } finally {
+    if (subSegment != null) {
+      subSegment.close()
+    }
+  }
 }
 
 const serializeState = async (
   pool: ReadModelPool,
-  state: any,
-  jwt: string
+  { state }: any
 ): Promise<string> => {
   return JSON.stringify(state, null, 2)
 }
@@ -580,10 +633,8 @@ const wrapReadModel = ({
 
   const api = {
     read: read.bind(null, pool),
-    readAndSerialize: readAndSerialize.bind(null, pool),
     sendEvents: sendEvents.bind(null, pool),
     serializeState: serializeState.bind(null, pool),
-    updateByEvents: updateByEvents.bind(null, pool),
     drop: drop.bind(null, pool),
     dispose: dispose.bind(null, pool)
   }

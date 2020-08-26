@@ -1,60 +1,26 @@
 import getLog from './get-log'
-import { WrapViewModelOptions } from './types'
+import { WrapViewModelOptions, ViewModelPool } from './types'
 import parseReadOptions from './parse-read-options'
 
 type AggregateIds = string | string[]
 
-type ViewModelMeta = {
-  name: string
-  invariantHash: string
-  deserializeState: Function
-  serializeState: Function
-  projection: { [key: string]: Function }
-  resolver: Function
-  encryption: Function
-}
-
-type ViewModelPool = {
-  viewModel: ViewModelMeta
-  eventstoreAdapter: any
-  getSecretsManager: Function
-  performanceTracer: any
-  workers: Map<string, any>
-  isDisposed: boolean
-}
-
 const getKey = (aggregateIds: AggregateIds): string =>
   Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds
 
-const read = async (
+const buildViewModel = async (
   pool: ViewModelPool,
-  { jwt, ...params }: any
+  aggregateIds: any,
+  aggregateArgs: any,
+  jwt: any,
+  key: any
 ): Promise<any> => {
   const viewModelName = pool.viewModel.name
-  const [modelOptions, aggregateArgs] = parseReadOptions(params)
 
   if (pool.isDisposed) {
     throw new Error(`View model "${viewModelName}" is disposed`)
   }
-  let aggregateIds = null
-  try {
-    if (Array.isArray(modelOptions)) {
-      aggregateIds = [...modelOptions]
-    } else if (modelOptions === '*') {
-      aggregateIds = '*'
-    } else {
-      aggregateIds = modelOptions.split(/,/)
-    }
-  } catch (error) {
-    throw new Error(
-      `View model "${viewModelName}" requires aggregates identifier list`
-    )
-  }
-  const key = getKey(aggregateIds)
 
-  const getLocalLog = (scope: string): any =>
-    getLog(`buildViewModel:${viewModelName}${scope}`)
-  const log = getLocalLog('')
+  const log = getLog(`buildViewModel:${viewModelName}`)
 
   const snapshotKey = `VM;${pool.viewModel.invariantHash};${key}`
   log.verbose(`snapshotKey: ${snapshotKey}`)
@@ -86,6 +52,8 @@ const read = async (
     state = pool.viewModel.projection.Init()
   }
 
+  let eventCount = 0
+
   log.debug(`retrieving event store secrets manager`)
   const secretsManager =
     typeof pool.getSecretsManager === 'function'
@@ -93,10 +61,24 @@ const read = async (
       : null
 
   const handler = async (event: any): Promise<any> => {
-    const handlerLog = getLocalLog(`:handler:${event.type}`)
+    const handlerLog = getLog(
+      `buildViewModel:${viewModelName}:handler:${event.type}`
+    )
     handlerLog.debug(`executing`)
+    const segment = pool.performanceTracer
+      ? pool.performanceTracer.getSegment()
+      : null
+    const subSegment = segment ? segment.addNewSubsegment('applyEvent') : null
 
     try {
+      eventCount++
+
+      if (subSegment != null) {
+        subSegment.addAnnotation('viewModelName', viewModelName)
+        subSegment.addAnnotation('eventType', event.type)
+        subSegment.addAnnotation('origin', 'resolve:query:applyEvent')
+      }
+
       handlerLog.debug(`building view-model encryption`)
       const encryption = await pool.viewModel.encryption(event, {
         secretsManager
@@ -126,8 +108,15 @@ const read = async (
         })
       )
     } catch (error) {
+      if (subSegment != null) {
+        subSegment.addError(error)
+      }
       log.error(error.message)
       throw error
+    } finally {
+      if (subSegment != null) {
+        subSegment.close()
+      }
     }
   }
 
@@ -136,7 +125,7 @@ const read = async (
   )
 
   const { events } = await pool.eventstoreAdapter.loadEvents({
-    aggregateIds: aggregateIds !== '*' ? aggregateIds : null,
+    aggregateIds,
     eventTypes,
     cursor,
     limit: Number.MAX_SAFE_INTEGER
@@ -148,7 +137,6 @@ const read = async (
     await handler(event)
   }
 
-  return state
   return {
     data: state,
     eventCount,
@@ -158,11 +146,11 @@ const read = async (
 
 const read = async (
   pool: ViewModelPool,
-  modelOptions: any,
-  aggregateArgs: any,
-  jwt: string
+  { jwt, ...params }: any
 ): Promise<any> => {
   const viewModelName = pool.viewModel.name
+
+  const [aggregateIds, aggregateArgs] = parseReadOptions(params)
 
   if (pool.isDisposed) {
     throw new Error(`View model "${viewModelName}" is disposed`)
@@ -183,21 +171,6 @@ const read = async (
 
     if (pool.isDisposed) {
       throw new Error(`View model "${viewModelName}" is disposed`)
-    }
-
-    let aggregateIds = null
-    try {
-      if (Array.isArray(modelOptions)) {
-        aggregateIds = [...modelOptions]
-      } else if (modelOptions === '*') {
-        aggregateIds = '*'
-      } else {
-        aggregateIds = modelOptions.split(/,/)
-      }
-    } catch (error) {
-      throw new Error(
-        `View model "${viewModelName}" requires aggregates identifier list`
-      )
     }
 
     const eventTypes = Object.keys(pool.viewModel.projection).filter(
@@ -228,21 +201,18 @@ const read = async (
 
         const key = getKey(aggregateIds)
 
-        if (!pool.workers.has(key)) {
-          pool.workers.set(
-            key,
-            buildViewModel(pool, aggregateIds, aggregateArgs, jwt, key)
-          )
-        }
-
-        const { data, eventCount, cursor } = await pool.workers.get(key)
+        const { data, eventCount, cursor } = await buildViewModel(
+          pool,
+          aggregateIds,
+          aggregateArgs,
+          jwt,
+          key
+        )
 
         if (buildSubSegment != null) {
           buildSubSegment.addAnnotation('eventCount', eventCount)
           buildSubSegment.addAnnotation('origin', 'resolve:query:read')
         }
-
-        pool.workers.delete(key)
 
         return { data, cursor }
       } catch (error) {
@@ -285,7 +255,7 @@ const read = async (
 
 const serializeState = async (
   pool: ViewModelPool,
-  state: any,
+  { state }: any,
   jwt: string
 ): Promise<any> => {
   return pool.viewModel.serializeState(state, jwt)
@@ -328,7 +298,7 @@ const wrapViewModel = ({
   performanceTracer
 }: WrapViewModelOptions) => {
   const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
-  const pool = {
+  const pool: ViewModelPool = {
     viewModel,
     eventstoreAdapter,
     isDisposed: false,
@@ -338,10 +308,8 @@ const wrapViewModel = ({
 
   return Object.freeze({
     read: read.bind(null, pool),
-    readAndSerialize: readAndSerialize.bind(null, pool),
     sendEvents: sendEvents.bind(null, pool),
     serializeState: serializeState.bind(null, pool),
-    updateByEvents: updateByEvents.bind(null, pool),
     drop: drop.bind(null, pool),
     dispose: dispose.bind(null, pool)
   })
