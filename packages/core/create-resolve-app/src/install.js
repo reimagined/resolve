@@ -19,7 +19,6 @@ const install = pool => async () => {
         continue
       }
       throw error
-      break
     }
   }
 }
