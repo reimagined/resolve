@@ -7,14 +7,13 @@ const install = pool => async () => {
 
   for (let retry = 0; retry < 10; retry++) {
     try {
-      execSync(command, { stdio: 'inherit', cwd: applicationPath })
+      execSync(command, { stdout: 'inherit', cwd: applicationPath })
     } catch (error) {
       if (
         error != null &&
         error.stderr != null &&
-        error.stderr.constructor === String &&
-        error.stderr.includes('http://0.0.0.0:10080') &&
-        error.stderr.includes('ENOENT: no such file or directory')
+        error.stderr.toString().includes('http://0.0.0.0:10080') &&
+        error.stderr.toString().includes('ENOENT: no such file or directory')
       ) {
         continue
       }
