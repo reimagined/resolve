@@ -1471,49 +1471,6 @@ for (const { describeName, prepare } of [
         }
       })
 
-      test('"read" should return { error, ... } when a read model is broken', async () => {
-        if (query == null) {
-          throw new Error('Some of test tools are not initialized')
-        }
-
-        const events = [
-          {
-            aggregateId: 'id1',
-            aggregateVersion: 1,
-            timestamp: 1,
-            type: 'BROKEN',
-            payload: {}
-          }
-        ]
-
-        try {
-          await query.sendEvents({
-            modelName: 'brokenReadModelName',
-            events
-          })
-          return Promise.reject(new Error('Test failed'))
-        } catch (error) {
-          expect(error.error.message).toEqual('BROKEN')
-          expect(error.error).toBeInstanceOf(Error)
-        }
-
-        if (performanceTracer != null) {
-          expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
-            'getSegment'
-          )
-          expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
-            'addNewSubsegment'
-          )
-          expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
-            'addAnnotation'
-          )
-          expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
-            'addError'
-          )
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
-        }
-      })
-
       test('"read" should raise error when a resolver is not found', async () => {
         if (query == null) {
           throw new Error('Some of test tools are not initialized')
@@ -1626,19 +1583,15 @@ for (const { describeName, prepare } of [
           }
         ]
 
-        const result = await query.sendEvents({
+        await query.sendEvents({
           modelName: 'readModelName',
-          events
+          events,
+          xaTransactionId: 'xaTransactionId',
+          properties: {},
+          batchId: 'batchId'
         })
 
-        const value = await query.read({
-          modelName: 'readModelName',
-          resolverName: 'getValue',
-          resolverArgs: {}
-        })
-
-        expect(value).toEqual({ data: 7 })
-        expect(result).toEqual({
+        expect(performAcknowledge.mock.calls[0][0].result).toMatchObject({
           error: null,
           successEvent: {
             aggregateId: 'id1',
@@ -1670,20 +1623,64 @@ for (const { describeName, prepare } of [
         }
       })
 
+      test('"sendEvents" should raise error when a projection is broken', async () => {
+        if (query == null) {
+          throw new Error('Some of test tools are not initialized')
+        }
+
+        const events = [
+          {
+            aggregateId: 'id1',
+            aggregateVersion: 1,
+            timestamp: 1,
+            type: 'BROKEN',
+            payload: {}
+          }
+        ]
+
+        await query.sendEvents({
+          modelName: 'brokenReadModelName',
+          events,
+          xaTransactionId: 'xaTransactionId',
+          properties: {},
+          batchId: 'batchId'
+        })
+
+        expect(performAcknowledge.mock.calls[0][0].result.error).toMatchObject({
+          message: 'BROKEN'
+        })
+
+        if (performanceTracer != null) {
+          expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
+            'getSegment'
+          )
+          expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
+            'addNewSubsegment'
+          )
+          expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
+            'addAnnotation'
+          )
+          expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
+            'addError'
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
+        }
+      })
+
       test('"sendEvents" should raise error when a projection is not found', async () => {
         if (query == null || events == null) {
           throw new Error('Some of test tools are not initialized')
         }
 
-        try {
-          await query.sendEvents({
-            modelName: 'readOnlyReadModelName',
-            events
-          })
-          return Promise.reject(new Error('Test failed'))
-        } catch (error) {
-          expect(error).toBeInstanceOf(Error)
-        }
+        await query.sendEvents({
+          modelName: 'readOnlyReadModelName',
+          events,
+          xaTransactionId: 'xaTransactionId',
+          properties: {},
+          batchId: 'batchId'
+        })
+
+        expect(performAcknowledge.mock.calls[0][0].result.error).not.toBeNull()
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -1707,15 +1704,15 @@ for (const { describeName, prepare } of [
           throw new Error('Some of test tools are not initialized')
         }
 
-        try {
-          await query.sendEvents({
-            modelName: 'readOnlyReadModelName',
-            events: (null as unknown) as any[]
-          })
-          return Promise.reject(new Error('Test failed'))
-        } catch (error) {
-          expect(error).toBeInstanceOf(Error)
-        }
+        await query.sendEvents({
+          modelName: 'readOnlyReadModelName',
+          events: (null as unknown) as any[],
+          xaTransactionId: 'xaTransactionId',
+          properties: {},
+          batchId: 'batchId'
+        })
+
+        expect(performAcknowledge.mock.calls[0][0].result.error).not.toBeNull()
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -1769,12 +1766,9 @@ for (const { describeName, prepare } of [
 
         await query.dispose()
 
-        try {
-          await result
-          return Promise.reject(new Error('Test failed'))
-        } catch (error) {
-          expect(error.error).toBeInstanceOf(Error)
-        }
+        await result
+
+        expect(performAcknowledge.mock.calls[0][0].result.error).not.toBeNull()
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -1806,12 +1800,9 @@ for (const { describeName, prepare } of [
 
         await query.dispose()
 
-        try {
-          await query.sendEvents({ modelName: 'readModelName', events })
-          return Promise.reject(new Error('Test failed'))
-        } catch (error) {
-          expect(error).toBeInstanceOf(Error)
-        }
+        await query.sendEvents({ modelName: 'readModelName', events })
+
+        expect(performAcknowledge.mock.calls[0][0].result.error).not.toBeNull()
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(

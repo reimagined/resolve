@@ -171,6 +171,66 @@ Array [
 ]
 `;
 
+exports[`with performanceTracer read models "sendEvents" should apply events to the read model, "read" should return the resolver result: addAnnotation 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should apply events to the read model, "read" should return the resolver result: addError 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should apply events to the read model, "read" should return the resolver result: addNewSubsegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should apply events to the read model, "read" should return the resolver result: close 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should apply events to the read model, "read" should return the resolver result: getSegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when a projection is broken: addAnnotation 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when a projection is broken: addError 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when a projection is broken: addNewSubsegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when a projection is broken: close 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when a projection is broken: getSegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when a projection is not found: addAnnotation 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when a projection is not found: addError 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when a projection is not found: addNewSubsegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when a projection is not found: close 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when a projection is not found: getSegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when events is not array: addAnnotation 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when events is not array: addError 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when events is not array: addNewSubsegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when events is not array: close 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when events is not array: getSegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when query is disposed: addAnnotation 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when query is disposed: addError 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when query is disposed: addNewSubsegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when query is disposed: close 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when query is disposed: getSegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when updating had been interrupted: addAnnotation 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when updating had been interrupted: addError 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when updating had been interrupted: addNewSubsegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when updating had been interrupted: close 1`] = `Array []`;
+
+exports[`with performanceTracer read models "sendEvents" should raise error when updating had been interrupted: getSegment 1`] = `Array []`;
+
 exports[`with performanceTracer read models "serializeState" should return the resolver result: addAnnotation 1`] = `Array []`;
 
 exports[`with performanceTracer read models "serializeState" should return the resolver result: addError 1`] = `Array []`;
