@@ -1,6 +1,6 @@
 import { Context } from './context'
 import { GenericError } from './errors'
-import { doSubscribe, getSubscriptionKeys, doUnsubscribe } from './subscribe'
+import { connect, disconnect } from './subscribe'
 import {
   RequestOptions,
   request,
@@ -9,6 +9,7 @@ import {
 } from './request'
 import { assertLeadingSlash, assertNonEmptyString } from './assertions'
 import { getRootBasedUrl, isAbsoluteUrl } from './utils'
+import determineOrigin from './determine-origin'
 
 function determineCallback<T>(options: any, callback: any): T | null {
   if (typeof options === 'function') {
@@ -34,7 +35,8 @@ export type Command = {
 export type CommandResult = object
 export type CommandCallback = (
   error: Error | null,
-  result: CommandResult | null
+  result: CommandResult | null,
+  command: Command
 ) => void
 export type CommandOptions = {}
 
@@ -63,11 +65,11 @@ export const command = (
 
   asyncExec()
     .then(result => {
-      actualCallback(null, result)
+      actualCallback(null, result, cmd)
       return result
     })
     .catch(error => {
-      actualCallback(error, null)
+      actualCallback(error, null, cmd)
       throw error
     })
 
@@ -75,12 +77,12 @@ export const command = (
 }
 
 type AggregateSelector = string[] | '*'
-type ViewModelQuery = {
+export type ViewModelQuery = {
   name: string
   aggregateIds: AggregateSelector
   args: any
 }
-type ReadModelQuery = {
+export type ReadModelQuery = {
   name: string
   resolver: string
   args: object
@@ -90,8 +92,12 @@ const isReadModelQuery = (arg: any): arg is ReadModelQuery =>
   arg && arg.resolver
 
 export type QueryResult = {
-  timestamp: number
   data: any
+  meta?: {
+    url?: string
+    cursor?: string
+    timestamp?: number
+  }
 }
 export type QueryOptions = {
   method?: 'GET' | 'POST'
@@ -103,7 +109,8 @@ export type QueryOptions = {
 }
 export type QueryCallback = (
   error: Error | null,
-  result: QueryResult | null
+  result: QueryResult | null,
+  query: Query
 ) => void
 
 export const query = (
@@ -153,7 +160,8 @@ export const query = (
       context,
       `/api/query/${name}/${ids}`,
       {
-        args
+        args,
+        origin: determineOrigin(context.origin)
       },
       requestOptions
     )
@@ -164,17 +172,38 @@ export const query = (
 
     const responseDate = response.headers.get('Date')
 
+    let subscriptionsUrl = null
+
+    if (!isReadModelQuery(qr)) {
+      const responseSubscription =
+        response.headers.get('X-Resolve-View-Model-Subscription') ??
+        '{ "url": "" }'
+      const { url } = JSON.parse(responseSubscription)
+      subscriptionsUrl = url
+    }
+
     if (!responseDate) {
       throw new GenericError(`"Date" header missed within response`)
     }
 
     try {
+      const result =
+        VALIDATED_RESULT in response
+          ? response[VALIDATED_RESULT]
+          : await response.json()
+
+      const meta = {
+        ...result.meta,
+        timestamp: Number(responseDate)
+      }
+
+      if (subscriptionsUrl != null) {
+        meta.url = subscriptionsUrl
+      }
+
       return {
-        timestamp: Number(responseDate),
-        data:
-          VALIDATED_RESULT in response
-            ? response[VALIDATED_RESULT]
-            : await response.json()
+        ...result,
+        meta
       }
     } catch (error) {
       throw new GenericError(error)
@@ -187,11 +216,11 @@ export const query = (
 
   asyncExec()
     .then(result => {
-      actualCallback(null, result)
+      actualCallback(null, result, qr)
       return result
     })
     .catch(error => {
-      actualCallback(error, null)
+      actualCallback(error, null, qr)
       throw error
     })
 
@@ -205,7 +234,7 @@ export type Subscription = {
 }
 
 export type SubscribeResult = void
-export type SubscribeHandler = (event: unknown) => void
+export type SubscribeHandler = (event: any) => void
 export type SubscribeCallback = (
   error: Error | null,
   result: Subscription | null
@@ -222,6 +251,8 @@ export type ResubscribeCallback = (
 
 export const subscribe = (
   context: Context,
+  url: string,
+  cursor: string,
   viewModelName: string,
   aggregateIds: AggregateSelector,
   handler: SubscribeHandler,
@@ -229,25 +260,16 @@ export const subscribe = (
   resubscribeCallback?: ResubscribeCallback
 ): PromiseOrVoid<Subscription> => {
   const subscribeAsync = async (): Promise<Subscription> => {
-    const subscriptionKeys = getSubscriptionKeys(
+    await connect(
       context,
+      url,
+      cursor,
+      aggregateIds,
+      handler,
       viewModelName,
-      aggregateIds
+      resubscribeCallback
     )
 
-    await Promise.all(
-      subscriptionKeys.map(({ aggregateId, eventType }) =>
-        doSubscribe(
-          context,
-          {
-            topicName: eventType,
-            topicId: aggregateId
-          },
-          handler,
-          resubscribeCallback
-        )
-      )
-    )
     return {
       viewModelName,
       aggregateIds,
@@ -273,28 +295,11 @@ export const unsubscribe = (
   const { viewModelName, aggregateIds, handler } = subscription
 
   const unsubscribeAsync = async (): Promise<any> => {
-    const subscriptionKeys = getSubscriptionKeys(
-      context,
-      viewModelName,
-      aggregateIds
-    )
-
     if (typeof handler !== 'function') {
       return
     }
 
-    await Promise.all(
-      subscriptionKeys.map(({ aggregateId, eventType }) =>
-        doUnsubscribe(
-          context,
-          {
-            topicName: eventType,
-            topicId: aggregateId
-          },
-          handler
-        )
-      )
-    )
+    await disconnect(context, aggregateIds, viewModelName, handler)
   }
 
   return unsubscribeAsync()
@@ -333,6 +338,8 @@ export type Client = {
   ) => PromiseOrVoid<QueryResult>
   getStaticAssetUrl: (assetPath: string) => string
   subscribe: (
+    url: string,
+    cursor: string,
     viewModelName: string,
     aggregateIds: AggregateSelector,
     handler: SubscribeHandler,
@@ -350,6 +357,8 @@ export const getClient = (context: Context): Client => ({
   getStaticAssetUrl: (assetPath: string): string =>
     getStaticAssetUrl(context, assetPath),
   subscribe: (
+    url,
+    cursor,
     viewModelName,
     aggregateIds,
     handler,
@@ -358,6 +367,8 @@ export const getClient = (context: Context): Client => ({
   ): PromiseOrVoid<Subscription> =>
     subscribe(
       context,
+      url,
+      cursor,
       viewModelName,
       aggregateIds,
       handler,

@@ -15,20 +15,6 @@ const sendEvents = async (payload, resolve) => {
     batchId,
     properties
   } = payload
-  if (eventSubscriber === 'websocket' && batchId == null) {
-    // TODO: Inject MQTT events directly from cloud event bus lambda
-    for (const event of events) {
-      const eventDescriptor = {
-        topic: `${process.env.RESOLVE_DEPLOYMENT_ID}/${event.type}/${event.aggregateId}`,
-        payload: JSON.stringify(event),
-        qos: 1
-      }
-
-      await resolve.mqtt.publish(eventDescriptor).promise()
-    }
-
-    return
-  }
 
   log.debug('applying events started')
   log.verbose(JSON.stringify({ eventSubscriber, properties }, null, 2))

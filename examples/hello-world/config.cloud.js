@@ -4,10 +4,6 @@ export default {
   target: 'cloud',
   mode: 'production',
   staticPath: declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL'),
-  subscribeAdapter: {
-    module: 'resolve-subscribe-mqtt',
-    options: {}
-  },
   eventstoreAdapter: {
     module: 'resolve-eventstore-postgresql-serverless',
     options: {

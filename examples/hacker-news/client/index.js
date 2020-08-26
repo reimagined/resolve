@@ -2,12 +2,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Router } from 'react-router'
 import { createBrowserHistory } from 'history'
-import {
-  AppContainer,
-  createStore,
-  deserializeInitialState,
-  getOrigin
-} from 'resolve-redux'
+import { AppContainer, createStore, getOrigin } from 'resolve-redux'
 
 import getRoutes from './get-routes'
 import getRedux from './get-redux'
@@ -19,7 +14,7 @@ const entryPoint = ({
   rootPath,
   staticPath,
   viewModels,
-  subscribeAdapter
+  subscriber
 }) => {
   const origin = getOrigin(window.location)
   const history = createBrowserHistory({ basename: rootPath })
@@ -27,13 +22,14 @@ const entryPoint = ({
   const redux = getRedux(clientImports, history)
 
   const store = createStore({
-    initialState: deserializeInitialState(viewModels, window.__INITIAL_STATE__),
+    serializedState: window.__INITIAL_STATE__,
     redux,
     viewModels,
-    subscribeAdapter,
+    subscriber,
     history,
     origin,
     rootPath,
+    staticPath,
     isClient: true
   })
 

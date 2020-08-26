@@ -154,7 +154,7 @@ You can now query a user's read model and add the obtained user information to t
 
 ```js
 ...
-const user = await resolve.executeQuery({
+const { data: user } = await resolve.executeQuery({
   modelName: 'Users',
   resolverName: 'userById',
   resolverArgs: { id }

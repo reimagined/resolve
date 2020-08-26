@@ -7,7 +7,7 @@ steps:
     when:
       event: push
     image: reimagined/resolve-docker
-    pull: true
+    pull: always
     environment:
       NPM_REGISTRY:
         from_secret: npm_registry

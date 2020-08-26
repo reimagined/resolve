@@ -20,7 +20,7 @@ const createQuery = ({
   viewModels: any[]
   performanceTracer: any
   eventstoreAdapter: any
-}): any => {
+}) => {
   const models: {
     [key: string]: any
   } = {}
@@ -98,9 +98,14 @@ const createQuery = ({
     ...options
   }: {
     modelName: string
-    jwt: string
-    jwtToken: string
-    options: any[]
+    jwt?: string
+    jwtToken?: string
+    modelOptions?: any
+    modelArgs?: any
+    resolverName?: any
+    resolverArgs?: any
+    aggregateIds?: any
+    aggregateArgs?: any
   }): any => {
     checkModelExists(modelName)
     const [modelOptions, modelArgs] = parseOptions(options)
@@ -112,25 +117,20 @@ const createQuery = ({
     )
   }
 
-  const readAndSerialize = ({
+  const serializeState = ({
     modelName,
+    state,
     jwt: actualJwt,
-    jwtToken: deprecatedJwt,
-    ...options
+    jwtToken: deprecatedJwt
   }: {
     modelName: string
-    jwt: string
-    jwtToken: string
-    options: any[]
+    state: any
+    jwt?: string
+    jwtToken?: string
   }): any => {
     checkModelExists(modelName)
-    const [modelOptions, modelArgs] = parseOptions(options)
 
-    return models[modelName].readAndSerialize(
-      modelOptions,
-      modelArgs,
-      actualJwt || deprecatedJwt
-    )
+    return models[modelName].serializeState(state, actualJwt || deprecatedJwt)
   }
 
   const updateByEvents = ({
@@ -141,8 +141,8 @@ const createQuery = ({
   }: {
     modelName: string
     events: any[]
-    getRemainingTimeInMillis: Function
-    xaTransactionId: any
+    getRemainingTimeInMillis?: Function
+    xaTransactionId?: any
   }): Promise<any> => {
     checkModelExists(modelName)
     if (!Array.isArray(events)) {
@@ -194,7 +194,7 @@ const createQuery = ({
 
   const api = {
     read,
-    readAndSerialize,
+    serializeState,
     updateByEvents,
     beginXATransaction: performXA.bind(null, 'beginXATransaction'),
     commitXATransaction: performXA.bind(null, 'commitXATransaction'),
@@ -206,7 +206,7 @@ const createQuery = ({
   const executeQuery = read.bind(null)
   Object.assign(executeQuery, api)
 
-  return executeQuery
+  return executeQuery as typeof executeQuery & typeof api
 }
 
 export {

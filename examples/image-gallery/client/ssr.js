@@ -32,7 +32,7 @@ const ssrHandler = async (
     const store = createStore({
       initialState: { jwt },
       viewModels,
-      subscribeAdapter: {},
+      subscriber: {},
       history,
       origin,
       rootPath,

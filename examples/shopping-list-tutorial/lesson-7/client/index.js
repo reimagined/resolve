@@ -10,7 +10,7 @@ import Routes from './components/Routes'
 import optimisticShoppingListsSaga from './sagas/optimistic_shopping_lists_saga'
 import optimisticShoppingListsReducer from './reducers/optimistic_shopping_lists'
 
-const entryPoint = ({ rootPath, staticPath, viewModels, subscribeAdapter }) => {
+const entryPoint = ({ rootPath, staticPath, viewModels, subscriber }) => {
   const origin = getOrigin(window.location)
   const history = createBrowserHistory({ basename: rootPath })
   const redux = {
@@ -21,7 +21,7 @@ const entryPoint = ({ rootPath, staticPath, viewModels, subscribeAdapter }) => {
   const store = createStore({
     redux,
     viewModels,
-    subscribeAdapter,
+    subscriber,
     history,
     origin,
     rootPath,
