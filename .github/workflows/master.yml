@@ -50,7 +50,10 @@ jobs:
       
       - name: Tutorial E2E test
         run: yarn tutorial-test:e2e safari
-        
+
+      - name: Yarn Cache Clean
+        run: yarn cache clean 
+
       - name: CRA test
         run: |
           pm2 delete local-registry || true
