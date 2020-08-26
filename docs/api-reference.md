@@ -409,30 +409,30 @@ await sideEffects.scheduleCommand(
 
 An event store adapter defines how the reSolve framework stores events in the underlying event store. An event store adapter object must expose the following functions:
 
-| Function Name                                           | Description                                                               |
-| ------------------------------------------------------- | ------------------------------------------------------------------------- |
-| [init](#init)                                           | Initializes a database.                                                   |
-| [drop](#drop)                                           | Drops a database.                                                         |
-| [dispose](#dispose)                                     | Disconnects from a database and disposes unmanaged resources.             |
-| [saveEvent](#saveevent)                                 | Saves an event to the database.                                           |
-| [loadEvents](#loadEvents)                               | Gets an array of events and the next cursor filtered by the event filter. |
-| [getLatestEvent](#getlatestevent)                       | Gets the latest saved event.                                              |
-| [import](#import)                                       | Gets a writable stream used to save events.                               |
-| [export](#export)                                       | Gets a readable stream used to load events.                               |
-| [freeze](#freeze)                                       | Freezes the database.                                                     |
-| [unfreeze](#unfreeze)                                   | Unfreezes the database.                                                   |
-| [isFrozen](#isfrozen)                                   | Gets a boolean value that indicating whether the database is frozen.      |
-| [loadSnapshot](#loadsnapshot)                           | Loads a snapshot.                                                         |
-| [saveSnapshot](#savesnapshot)                           | Creates or updates a snapshot.                                            |
-| [dropSnapshot](#dropsnapshot)                           | Deletes a snapshot.                                                       |
-| [getSecret](#getsecret)                                 | Gets a secret.                                                            |
-| [setSecret](#setsecret)                                 | Creates or updates a secret.                                              |
-| [deleteSecret](#deletesecret)                           | Deletes a secret.                                                         |
-| [incrementalImport](#incrementalimport)                 | Incrementally imports events.                                             |
-| [beginIncrementalImport](#beginincrementalimport)       | Starts to accumulate events for incremental import.                       |
-| [pushIncrementalImport](#pushincrementalimport)         | Accumulates events for incremental import.                                |
-| [commitIncrementalImport](#commitincrementalimport)     | Commits the accumulated events to the event store.                        |
-| [rollbackIncrementalImport](#rollbackincrementalimport) | Drops the accumulated events.                                             |
+| Function Name                                           | Description                                                                                           |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| [init](#init)                                           | Initializes a database.                                                                               |
+| [drop](#drop)                                           | Drops a database.                                                                                     |
+| [dispose](#dispose)                                     | Disconnects from a database and disposes unmanaged resources.                                         |
+| [saveEvent](#saveevent)                                 | Saves an event to the database.                                                                       |
+| [loadEvents](#loadEvents)                               | Gets an array of events and the next cursor from the store based on the specified filtering criteria. |
+| [getLatestEvent](#getlatestevent)                       | Gets the latest saved event.                                                                          |
+| [import](#import)                                       | Gets a writable stream used to save events.                                                           |
+| [export](#export)                                       | Gets a readable stream used to load events.                                                           |
+| [freeze](#freeze)                                       | Freezes the database.                                                                                 |
+| [unfreeze](#unfreeze)                                   | Unfreezes the database.                                                                               |
+| [isFrozen](#isfrozen)                                   | Gets a boolean value that indicates whether the database is frozen.                                   |
+| [loadSnapshot](#loadsnapshot)                           | Loads a snapshot.                                                                                     |
+| [saveSnapshot](#savesnapshot)                           | Creates or updates a snapshot.                                                                        |
+| [dropSnapshot](#dropsnapshot)                           | Deletes a snapshot.                                                                                   |
+| [getSecret](#getsecret)                                 | Gets a secret.                                                                                        |
+| [setSecret](#setsecret)                                 | Creates or updates a secret.                                                                          |
+| [deleteSecret](#deletesecret)                           | Deletes a secret.                                                                                     |
+| [incrementalImport](#incrementalimport)                 | Incrementally imports events.                                                                         |
+| [beginIncrementalImport](#beginincrementalimport)       | Starts to build a batch of events to import.                                                          |
+| [pushIncrementalImport](#pushincrementalimport)         | Adds events to an incremental import batch.                                                           |
+| [commitIncrementalImport](#commitincrementalimport)     | Commits an incremental import batch to the event store.                                               |
+| [rollbackIncrementalImport](#rollbackincrementalimport) | Drops an incremental import batch.                                                                    |
 
 ### init
 
@@ -492,7 +492,7 @@ await eventStoreAdapter.saveEvent({
 
 ### loadEvents
 
-Gets an array of events and the next cursor filtered by the event filter.
+Gets an array of events and the next cursor from the store based on the specified filtering criteria.
 
 ##### Arguments
 
