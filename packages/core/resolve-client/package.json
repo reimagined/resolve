@@ -1,6 +1,6 @@
 {
   "name": "resolve-client",
-  "version": "0.24.23",
+  "version": "0.25.0",
   "description": "Basic reSolve client.",
   "engines": {
     "node": ">=10.9"
@@ -59,7 +59,7 @@
   "babelCompile": [
     {
       "moduleType": "cjs",
-      "moduleTarget": "server",
+      "moduleTarget": "client",
       "inputDir": "./src",
       "outDir": "./lib"
     },

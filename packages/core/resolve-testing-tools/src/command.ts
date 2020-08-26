@@ -15,7 +15,7 @@ export const command = (
   context: BDDCommandContext,
   name: string,
   payload?: SerializableMap
-): any => {
+) => {
   if (context[symbol].phase !== Phases.AGGREGATE) {
     throw new TypeError()
   }
