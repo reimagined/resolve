@@ -3,7 +3,7 @@ const install = pool => async () => {
   console.log()
   console.log(chalk.green('Install dependencies'))
 
-  const command = `${useYarn ? 'yarn' : 'npm install'}`
+  const command = `${useYarn ? 'yarn --mutex file' : 'npm install'}`
 
   execSync(command, { stdio: 'inherit', cwd: applicationPath })
 }
