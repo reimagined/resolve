@@ -415,13 +415,13 @@ An event store adapter defines how the reSolve framework stores events in the un
 | [drop](#drop)                                           | Drops a database.                                                                                     |
 | [dispose](#dispose)                                     | Disconnects from a database and disposes unmanaged resources.                                         |
 | [saveEvent](#saveevent)                                 | Saves an event to the database.                                                                       |
-| [loadEvents](#loadEvents)                               | Gets an array of events and the next cursor from the store based on the specified filtering criteria. |
+| [loadEvents](#loadEvents)                               | Gets an array of events and the next cursor from the store based on the specified filter criteria. |
 | [getLatestEvent](#getlatestevent)                       | Gets the latest saved event.                                                                          |
 | [import](#import)                                       | Gets a writable stream used to save events.                                                           |
 | [export](#export)                                       | Gets a readable stream used to load events.                                                           |
 | [freeze](#freeze)                                       | Freezes the database.                                                                                 |
 | [unfreeze](#unfreeze)                                   | Unfreezes the database.                                                                               |
-| [isFrozen](#isfrozen)                                   | Gets a boolean value that indicates whether the database is frozen.                                   |
+| [isFrozen](#isfrozen)                                   | Gets a Boolean value that indicates whether the database is frozen.                                   |
 | [loadSnapshot](#loadsnapshot)                           | Loads a snapshot.                                                                                     |
 | [saveSnapshot](#savesnapshot)                           | Creates or updates a snapshot.                                                                        |
 | [dropSnapshot](#dropsnapshot)                           | Deletes a snapshot.                                                                                   |
@@ -436,7 +436,7 @@ An event store adapter defines how the reSolve framework stores events in the un
 
 ### init
 
-Initializes a database.
+Initializes the database.
 
 #### Example
 
@@ -450,7 +450,7 @@ await eventStoreAdapter.init()
 
 ### drop
 
-Drops a database.
+Drops the database.
 
 #### Example
 
@@ -460,7 +460,7 @@ await eventStoreAdapter.drop()
 
 ### dispose
 
-Disconnects from a database and disposes unmanaged resources.
+Disconnects from the database and disposes unmanaged resources.
 
 #### Example
 
@@ -492,7 +492,7 @@ await eventStoreAdapter.saveEvent({
 
 ### loadEvents
 
-Gets an array of events and the next cursor from the store based on the specified filtering criteria.
+Gets an array of events and the next cursor from the store based on the specified filter criteria.
 
 ##### Arguments
 
@@ -602,7 +602,7 @@ await eventStoreAdapter.unfreeze()
 
 ### isFrozen
 
-Gets a boolean value that indicates whether the database is frozen.
+Gets a Boolean value that indicates whether the database is frozen.
 
 ##### Arguments
 
@@ -650,7 +650,7 @@ Creates or updates a snapshot.
 | Argument Name | Description                             |
 | ------------- | --------------------------------------- |
 | snapshotKey   | A unique key in the table of snapshots. |
-| content       | A snapshot in the text format.          |
+| content       | A snapshot in text format.          |
 
 ##### Result
 
