@@ -41,20 +41,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
+
+      - name: Yarn Cache Clean
+        run: yarn cache clean 
+
       - name: Install
         run: |
           yarn install --frozen-lockfile
           yarn build-packages
-        
-      
-      - name: Tutorial E2E test
-        run: yarn tutorial-test:e2e safari
-        
-      - name: CRA test
-        run: |
           pm2 delete local-registry || true
           pm2 start packages/internal/local-registry/bin/index.js --name local-registry
+
+      - name: Tutorial E2E test
+        run: yarn tutorial-test:e2e safari
+
+      - name: CRA test
+        run: |
           cd ..
           rm -rf hacker-news || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e hacker-news hacker-news

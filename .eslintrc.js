@@ -264,6 +264,7 @@ module.exports = {
           'mqtt',
           'multer',
           'multipart',
+          'mutex',
           'msg',
           'mysql',
           'mjs',

@@ -3,9 +3,23 @@ const install = pool => async () => {
   console.log()
   console.log(chalk.green('Install dependencies'))
 
-  const command = `${useYarn ? 'yarn' : 'npm install'}`
+  const command = `${useYarn ? 'yarn --mutex file' : 'npm install'}`
 
-  execSync(command, { stdio: 'inherit', cwd: applicationPath })
+  for (let retry = 0; retry < 10; retry++) {
+    try {
+      execSync(command, { stdout: 'inherit', cwd: applicationPath })
+    } catch (error) {
+      if (
+        error != null &&
+        error.stderr != null &&
+        error.stderr.toString().includes('http://0.0.0.0:10080') &&
+        error.stderr.toString().includes('ENOENT: no such file or directory')
+      ) {
+        continue
+      }
+      throw error
+    }
+  }
 }
 
 export default install
