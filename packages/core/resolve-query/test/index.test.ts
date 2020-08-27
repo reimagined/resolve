@@ -727,7 +727,7 @@ for (const { describeName, prepare } of [
           }
 
           try {
-            await query.drop('viewModelName')
+            await query.drop({ modelName: 'viewModelName' })
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
             expect(error).toBeInstanceOf(Error)
@@ -1191,7 +1191,7 @@ for (const { describeName, prepare } of [
           }
 
           try {
-            await query.drop('viewModelName')
+            await query.drop({ modelName: 'viewModelName' })
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
             expect(error).toBeInstanceOf(Error)
@@ -1221,7 +1221,7 @@ for (const { describeName, prepare } of [
 
           await query.dispose()
           try {
-            await query.drop('viewModelName')
+            await query.drop({ modelName: 'viewModelName' })
             return Promise.reject(new Error('Test failed'))
           } catch (error) {
             expect(error).toBeInstanceOf(Error)
@@ -1855,7 +1855,7 @@ for (const { describeName, prepare } of [
           throw new Error('Some of test tools are not initialized')
         }
 
-        await query.drop('readModelName')
+        await query.drop({ modelName: 'readModelName' })
 
         const connector = readModelConnectors['default']
 
@@ -1886,7 +1886,7 @@ for (const { describeName, prepare } of [
         await query.dispose()
 
         try {
-          await query.drop('readModelName')
+          await query.drop({ modelName: 'readModelName' })
 
           return Promise.reject(new Error('Test failed'))
         } catch (error) {

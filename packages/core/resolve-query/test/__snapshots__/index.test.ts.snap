@@ -40,6 +40,16 @@ exports[`with performanceTracer read models "dispose" should dispose only one ti
 
 exports[`with performanceTracer read models "dispose" should dispose only one time: getSegment 1`] = `Array []`;
 
+exports[`with performanceTracer read models "drop" should drop read model: addAnnotation 1`] = `Array []`;
+
+exports[`with performanceTracer read models "drop" should drop read model: addError 1`] = `Array []`;
+
+exports[`with performanceTracer read models "drop" should drop read model: addNewSubsegment 1`] = `Array []`;
+
+exports[`with performanceTracer read models "drop" should drop read model: close 1`] = `Array []`;
+
+exports[`with performanceTracer read models "drop" should drop read model: getSegment 1`] = `Array []`;
+
 exports[`with performanceTracer read models "drop" should raise error when query is disposed: addAnnotation 1`] = `Array []`;
 
 exports[`with performanceTracer read models "drop" should raise error when query is disposed: addError 1`] = `Array []`;

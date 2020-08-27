@@ -268,7 +268,7 @@ const getAggregateState = async (
 
       // TODO: Restore
       // if (projection == null) {
-      //   const lastEvent = await pool.publisher.getLatestEvent({
+      //   const lastEvent = await pool.eventstoreAdapter.getLatestEvent({
       //     aggregateIds: [aggregateId]
       //   })
       //   if (lastEvent != null) {
