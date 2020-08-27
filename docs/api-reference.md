@@ -1105,7 +1105,7 @@ import {
 
 ### HTTP API
 
-Resolve provides a standard HTTP API that allows you to send aggregate commands and query Read and View Models. Refer to the [Standard HTTP API](curl.md) topic for more information.
+ReSolve provides a standard HTTP API that allows you to send aggregate commands and query Read and View Models. Refer to the [Standard HTTP API](curl.md) topic for more information.
 
 #### Read Model API
 
