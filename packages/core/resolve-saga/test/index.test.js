@@ -42,7 +42,9 @@ test('resolve-saga', async () => {
     clearEntries: jest.fn()
   }
 
-  const performAcknowledge = jest.fn().mockImplementation(async ({ event }) => event)
+  const performAcknowledge = jest
+    .fn()
+    .mockImplementation(async ({ event }) => event)
 
   const schedulerAdapter = jest.fn().mockReturnValue(schedulerAdapterInstance)
 
