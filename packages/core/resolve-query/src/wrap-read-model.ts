@@ -124,7 +124,7 @@ const sendEvents = async (
   const readModelName = pool.readModel.name
   let result = null
 
-  const log = getLog(`updateByEvents:${readModelName}`)
+  const log = getLog(`sendEvents:${readModelName}`)
 
   let lastSuccessEvent = null
   let lastFailedEvent = null

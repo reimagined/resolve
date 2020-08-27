@@ -18,8 +18,7 @@ const createSaga = ({
   uploader,
   eventstoreAdapter,
   getRemainingTimeInMillis,
-  performAcknowledge,
-  sendReactiveEvent
+  performAcknowledge
 }) => {
   const schedulerAggregatesNames = new Set(schedulers.map(({ name }) => name))
   let eventProperties = {}
@@ -60,11 +59,10 @@ const createSaga = ({
     performanceTracer,
     getRemainingTimeInMillis,
     performAcknowledge,
-    sendReactiveEvent,
     eventstoreAdapter
   })
 
-  const updateByEvents = async ({
+  const sendEvents = async ({
     modelName,
     events,
     getRemainingTimeInMillis,
@@ -72,7 +70,7 @@ const createSaga = ({
     properties
   }) => {
     eventProperties = properties
-    const result = await executeListener.updateByEvents({
+    const result = await executeListener.sendEvents({
       modelName,
       events,
       getRemainingTimeInMillis,
@@ -102,8 +100,8 @@ const createSaga = ({
     get(_, key) {
       if (key === 'runScheduler') {
         return runScheduler
-      } else if (key === 'updateByEvents') {
-        return updateByEvents
+      } else if (key === 'sendEvents') {
+        return sendEvents
       } else if (key === 'dispose') {
         return dispose
       } else {

@@ -42,9 +42,7 @@ test('resolve-saga', async () => {
     clearEntries: jest.fn()
   }
 
-  const publisher = {
-    publish: jest.fn().mockImplementation(async ({ event }) => event)
-  }
+  const performAcknowledge = jest.fn().mockImplementation(async ({ event }) => event)
 
   const schedulerAdapter = jest.fn().mockReturnValue(schedulerAdapterInstance)
 
@@ -98,7 +96,11 @@ test('resolve-saga', async () => {
     }
   ]
 
+  const onCommandExecuted = jest.fn().mockImplementation(async () => {})
+  const getRemainingTimeInMillis = () => 0x7fffffff
+
   const sagaExecutor = createSagaExecutor({
+    getRemainingTimeInMillis,
     eventstoreAdapter,
     readModelConnectors,
     snapshotAdapter,
@@ -106,7 +108,8 @@ test('resolve-saga', async () => {
     executeQuery,
     sagas,
     schedulers,
-    publisher
+    performAcknowledge,
+    onCommandExecuted
   })
 
   const properties = {
@@ -114,7 +117,7 @@ test('resolve-saga', async () => {
     'test-property': 'content'
   }
 
-  await sagaExecutor.updateByEvents({
+  await sagaExecutor.sendEvents({
     modelName: 'test-saga',
     events: [
       { type: 'Init' },
@@ -134,7 +137,7 @@ test('resolve-saga', async () => {
     schedulerName: 'default-scheduler'
   })
 
-  await sagaExecutor.updateByEvents({
+  await sagaExecutor.sendEvents({
     modelName: 'default-scheduler',
     events: [
       { type: 'Init' },
@@ -172,9 +175,9 @@ test('resolve-saga', async () => {
     properties
   })
 
-  await sagaExecutor.drop('test-saga')
+  await sagaExecutor.drop({ modelName: 'test-saga' })
 
-  await sagaExecutor.drop('default-scheduler')
+  await sagaExecutor.drop({ modelName: 'default-scheduler' })
 
   await sagaExecutor.dispose()
 
@@ -197,7 +200,7 @@ test('resolve-saga', async () => {
   expect(eventstoreAdapter.loadEvents.mock.calls).toMatchSnapshot(
     'eventstoreAdapter.loadEvents'
   )
-  expect(publisher.publish.mock.calls).toMatchSnapshot('publisher.publish')
+  expect(performAcknowledge.mock.calls).toMatchSnapshot('performAcknowledge')
 
   expect(
     readModelConnectors['default-connector'].connect.mock.calls

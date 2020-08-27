@@ -28,6 +28,7 @@ export const executeReadModel = async ({
       readModelConnectors: {
         ADAPTER_NAME: promise[symbol].adapter
       },
+      getRemainingTimeInMillis: () => 0x7fffffff,
       snapshotAdapter: null,
       eventstoreAdapter: {
         getSecretsManager: (): any => promise[symbol].secretsManager
@@ -36,7 +37,7 @@ export const executeReadModel = async ({
 
     let updateResult = null
     try {
-      updateResult = await queryExecutor.updateByEvents({
+      updateResult = await queryExecutor.sendEvents({
         modelName: promise[symbol].name,
         events: transformEvents(promise[symbol].events)
       })
