@@ -170,36 +170,14 @@ export const refreshSubscribeAdapter = async (
 
   try {
     if (subscribeAdapter != null) {
-      await subscribeAdapter.close()
       adaptersMap.delete(key)
+      if (refreshTimeout) {
+        clearTimeoutSafe(refreshTimeout)
+      }
+      refreshTimeout = null
     }
-    adaptersMap.set(
-      key,
-      await initSubscribeAdapter(
-        url,
-        cursor,
-        context,
-        viewModelName,
-        aggregateIds
-      )
-    )
   } catch (err) {}
 
-  if (refreshTimeout) {
-    clearTimeoutSafe(refreshTimeout)
-  }
-  refreshTimeout = setTimeoutSafe(
-    () =>
-      refreshSubscribeAdapter(
-        url,
-        cursor,
-        context,
-        viewModelName,
-        aggregateIds,
-        false
-      ),
-    REFRESH_TIMEOUT
-  )
   return Promise.resolve()
 }
 
@@ -267,8 +245,6 @@ const disconnect = async (
   const subscribeAdapter = adaptersMap.get(key)
 
   await subscribeAdapter.close()
-
-  adaptersMap.delete(key)
 
   for (const { eventType, aggregateId } of subscriptionKeys) {
     removeCallback(eventType, aggregateId, callback)
