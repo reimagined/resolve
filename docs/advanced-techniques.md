@@ -147,13 +147,13 @@ await pipeline(eventStore1.export(), eventStore2.import())
 
 ## Incremental import
 
-The incremental import allows you to import into an event store only those events that do not already exist in this event store. The incremental import also skips events that are older (have an older timestamp) than the latest event in the recipient event store.
+Incremental import allows you to import into an event store only those events that do not already exist in this event store. Incremental import also skips events that are older (i.e., have an older timestamp) than the latest event in the recipient event store.
 
 ### Basic Incremental Import
 
 To import events incrementally, pass an array of events to an event store adapter's [incrementalImport](api-reference.md#incrementalimport) method.
 
-The code sample below demonstrates how to implement and API endpoint that incrementally imports events into the application's event store.
+The code sample below implements an API endpoint that incrementally imports events into the application's event store.
 
 ##### Example API handler
 
