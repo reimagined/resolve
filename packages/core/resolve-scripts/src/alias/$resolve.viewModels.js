@@ -69,18 +69,18 @@ export default ({ resolveConfig, isClient }) => {
       exports.push(`, serializeState: serializeState_${index}`)
 
       importResource({
-        resourceName: `validator_${index}`,
-        resourceValue: viewModel.validator,
+        resourceName: `resolver_${index}`,
+        resourceValue: viewModel.resolver,
         runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
         instanceFallback:
-          'resolve-runtime/lib/common/defaults/view-model-validator.js',
+          'resolve-runtime/lib/common/defaults/view-model-resolver.js',
         imports,
         constants
       })
 
-      exports.push(`, validator: validator_${index}`)
+      exports.push(`, resolver: resolver_${index}`)
 
       importResource({
         resourceName: `encryption_${index}`,

@@ -52,20 +52,6 @@ describe('validate schema', () => {
     ).toBeTruthy()
   })
 
-  it('custom subscribe adapter', () => {
-    expect(
-      validateConfig({
-        ...resolveConfigOrigin,
-        mode: 'development',
-        target: 'local',
-        subscribeAdapter: {
-          module: 'resolve-subscribe-mqtt',
-          options: {}
-        }
-      })
-    ).toBeTruthy()
-  })
-
   it('custom root path', () => {
     expect(
       validateConfig({

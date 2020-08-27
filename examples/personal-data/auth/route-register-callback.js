@@ -7,7 +7,7 @@ const routeRegisterCallback = async params => {
     resolve,
     body: { nickname, firstName, lastName, phoneNumber, address }
   } = params
-  const userExists = await resolve.executeQuery({
+  const { data: userExists } = await resolve.executeQuery({
     modelName: 'user-profiles',
     resolverName: 'exists',
     resolverArgs: { nickname: nickname.trim() }

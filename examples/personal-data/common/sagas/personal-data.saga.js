@@ -14,25 +14,25 @@ const saga = {
       const { aggregateId: userId } = event
       const { sideEffects } = context
 
-      const profile = await sideEffects.executeQuery({
+      const { data: profile } = await sideEffects.executeQuery({
         modelName: 'user-profiles',
         resolverName: 'profile',
         resolverArgs: { userId },
-        jwtToken: systemToken()
+        jwt: systemToken()
       })
 
-      const posts = await sideEffects.executeQuery({
+      const { data: posts } = await sideEffects.executeQuery({
         modelName: 'blog-posts',
         resolverName: 'feedByAuthor',
         resolverArgs: { authorId: userId },
-        jwtToken: systemToken()
+        jwt: systemToken()
       })
 
-      const media = await sideEffects.executeQuery({
+      const { data: media } = await sideEffects.executeQuery({
         modelName: 'medias',
         resolverName: 'byOwner',
         resolverArgs: { ownerId: userId },
-        jwtToken: systemToken()
+        jwt: systemToken()
       })
 
       const archive = { id: uuid(), profile, posts, media }
@@ -46,7 +46,7 @@ const saga = {
         aggregateName: 'user-profile',
         aggregateId: userId,
         payload: result,
-        jwtToken: systemToken()
+        jwt: systemToken()
       })
     },
     [USER_PROFILE_DELETED]: async ({ sideEffects }, event) => {

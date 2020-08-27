@@ -6,6 +6,8 @@ import path from 'path'
 import config from './config'
 import resetReadModel from '../reset-read-model'
 
+jest.setTimeout(1000 * 60 * 5)
+
 describe('Read-model generic adapter API', () => {
   const {
     name,
@@ -74,6 +76,6 @@ describe('Read-model generic adapter API', () => {
       })
       .read({})
 
-    expect(result).toEqual(200)
+    expect(result.data).toEqual(200)
   })
 })

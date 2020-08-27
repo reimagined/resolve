@@ -1,5 +1,5 @@
 import { takeEvery, put } from 'redux-saga/effects'
-import { actionTypes } from 'resolve-redux'
+import { internal } from 'resolve-redux'
 
 import {
   OPTIMISTIC_CREATE_SHOPPING_LIST,
@@ -7,19 +7,19 @@ import {
   OPTIMISTIC_SYNC
 } from '../actions/optimistic_actions'
 
-const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
+const { SEND_COMMAND_SUCCESS, QUERY_READMODEL_SUCCESS } = internal.actionTypes
 
 export default function*() {
   yield takeEvery(
     action =>
       action.type === SEND_COMMAND_SUCCESS &&
-      action.commandType === 'createShoppingList',
+      action.command.type === 'createShoppingList',
     function*(action) {
       yield put({
         type: OPTIMISTIC_CREATE_SHOPPING_LIST,
         payload: {
-          id: action.aggregateId,
-          name: action.payload.name
+          id: action.command.aggregateId,
+          name: action.command.payload.name
         }
       })
     }
@@ -28,24 +28,24 @@ export default function*() {
   yield takeEvery(
     action =>
       action.type === SEND_COMMAND_SUCCESS &&
-      action.commandType === 'removeShoppingList',
+      action.command.type === 'removeShoppingList',
     function*(action) {
       yield put({
         type: OPTIMISTIC_REMOVE_SHOPPING_LIST,
         payload: {
-          id: action.aggregateId
+          id: action.command.aggregateId
         }
       })
     }
   )
 
   yield takeEvery(
-    action => action.type === LOAD_READMODEL_STATE_SUCCESS,
+    action => action.type === QUERY_READMODEL_SUCCESS,
     function*(action) {
       yield put({
         type: OPTIMISTIC_SYNC,
         payload: {
-          originalLists: action.result
+          originalLists: action.result.data
         }
       })
     }

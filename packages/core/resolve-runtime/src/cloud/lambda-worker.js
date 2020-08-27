@@ -32,6 +32,10 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     lambdaEventName: 'resolveSource'
   }
 
+  resolveBase.subscriptionsCredentials = {
+    applicationLambdaArn: lambdaContext.invokedFunctionArn
+  }
+
   const resolve = Object.create(resolveBase)
   resolve.getRemainingTimeInMillis = lambdaContext.getRemainingTimeInMillis.bind(
     lambdaContext

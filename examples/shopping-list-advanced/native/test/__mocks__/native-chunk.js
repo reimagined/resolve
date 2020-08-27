@@ -18,11 +18,9 @@ const customConstants = {
 const port = '3000'
 const applicationName = 'react-native-shopping-list'
 
-export const subscribeAdapter = {
+export const subscriber = {
   async init() {},
   async close() {},
-  async subscribeToTopics() {},
-  async unsubscribeFromTopics() {},
   isConnected() {
     return true
   }
@@ -50,7 +48,7 @@ const nativeChunk = {
   customConstants,
   port,
   applicationName,
-  subscribeAdapter,
+  subscriber,
   jwtCookie,
   resolveRedux
 }

@@ -50,15 +50,6 @@ const prodConfig = {
         secretsTableName: 'customSecretsTableName'
       }
     }
-  */ subscribeAdapter: {
-    module: 'resolve-subscribe-socket.io',
-    options: {}
-  },
-  /*
-    {
-      module: 'resolve-subscribe-mqtt',
-      options: {}
-    }
   */ jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000

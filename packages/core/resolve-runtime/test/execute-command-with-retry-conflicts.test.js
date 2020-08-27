@@ -15,13 +15,13 @@ test('Execute command should retry 10 times and fail with a ConcurrentError', as
   executeCommand.mockImplementationOnce(async () => event)
 
   const commandArgs = {}
-  const jwtToken = 'JWT_TOKEN'
+  const jwt = 'JWT_TOKEN'
 
   try {
     await executeCommandWithRetryConflicts({
       executeCommand,
       commandArgs,
-      jwtToken
+      jwt
     })
     return Promise.reject('Test failed')
   } catch (error) {
@@ -42,12 +42,12 @@ test('Execute command should retry 5 times and returns an event', async () => {
   executeCommand.mockImplementationOnce(async () => event)
 
   const commandArgs = {}
-  const jwtToken = 'JWT_TOKEN'
+  const jwt = 'JWT_TOKEN'
 
   const result = await executeCommandWithRetryConflicts({
     executeCommand,
     commandArgs,
-    jwtToken
+    jwt
   })
   expect(result).toEqual(event)
 })
@@ -67,13 +67,13 @@ test('Execute command should retry 5 times and fails on immediate conflict', asy
   const commandArgs = {
     immediateConflict: true
   }
-  const jwtToken = 'JWT_TOKEN'
+  const jwt = 'JWT_TOKEN'
 
   try {
     await executeCommandWithRetryConflicts({
       executeCommand,
       commandArgs,
-      jwtToken
+      jwt
     })
     return Promise.reject('Test failed')
   } catch (error) {
@@ -89,13 +89,13 @@ test('Execute command should bypass a command error', async () => {
   })
 
   const commandArgs = {}
-  const jwtToken = 'JWT_TOKEN'
+  const jwt = 'JWT_TOKEN'
 
   try {
     await executeCommandWithRetryConflicts({
       executeCommand,
       commandArgs,
-      jwtToken
+      jwt
     })
     return Promise.reject('Test failed')
   } catch (error) {
@@ -111,13 +111,13 @@ test('Execute command should bypass a custom error', async () => {
   })
 
   const commandArgs = {}
-  const jwtToken = 'JWT_TOKEN'
+  const jwt = 'JWT_TOKEN'
 
   try {
     await executeCommandWithRetryConflicts({
       executeCommand,
       commandArgs,
-      jwtToken
+      jwt
     })
     return Promise.reject('Test failed')
   } catch (error) {

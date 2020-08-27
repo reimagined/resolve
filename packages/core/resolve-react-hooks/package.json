@@ -1,6 +1,6 @@
 {
   "name": "resolve-react-hooks",
-  "version": "0.24.11",
+  "version": "0.25.0",
   "description": "reSolve client wrapper for using in React hooks projects.",
   "engines": {
     "node": ">=10.9"
@@ -13,7 +13,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "echo || exit 0",
+    "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "echo || exit 0",
     "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'"
   },
@@ -28,10 +28,11 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-api#readme",
   "dependencies": {
-    "resolve-client": "0.24.11"
+    "resolve-client": "0.25.0",
+    "resolve-core": "0.25.0"
   },
   "devDependencies": {
-    "react": "16.13.0",
+    "react": "16.13.1",
     "@testing-library/jest-dom": "^5.1.1",
     "@testing-library/react": "^9.4.1",
     "@testing-library/react-hooks": "^3.2.1",
@@ -40,7 +41,7 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "jest": "26.0.1",
-    "react-test-renderer": "16.13.0",
+    "react-test-renderer": "16.13.1",
     "ts-jest": "26.0.0"
   },
   "peerDependencies": {
@@ -59,13 +60,19 @@
       "<rootDir>"
     ]
   },
+  "sourceType": "ts",
   "babelCompile": [
     {
-      "sourceType": "ts",
       "moduleType": "cjs",
       "moduleTarget": "client",
       "inputDir": "./src",
       "outDir": "./lib"
+    },
+    {
+      "moduleType": "es",
+      "moduleTarget": "client",
+      "inputDir": "./src",
+      "outDir": "./es"
     }
   ]
 }

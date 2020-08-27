@@ -25,7 +25,8 @@ module.exports = {
       extends: ['plugin:import/typescript'],
       rules: Object.assign({}, typescriptEslintRecommended.rules, {
         '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/member-delimiter-style': 'off'
+        '@typescript-eslint/member-delimiter-style': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'off'
       })
     }
   ],
@@ -263,6 +264,7 @@ module.exports = {
           'mqtt',
           'multer',
           'multipart',
+          'mutex',
           'msg',
           'mysql',
           'mjs',
@@ -289,6 +291,10 @@ module.exports = {
           'objoid',
           'objs',
           'octicon',
+          'onopen',
+          'onerror',
+          'onmessage',
+          'onclose',
           'oid',
           'oper',
           'opn',

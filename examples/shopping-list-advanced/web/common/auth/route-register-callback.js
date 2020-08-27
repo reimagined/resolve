@@ -23,7 +23,7 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
 
   const passwordHash = hmac.digest('hex')
 
-  const existingUser = await resolve.executeQuery({
+  const { data: existingUser } = await resolve.executeQuery({
     modelName: 'ShoppingLists',
     resolverName: 'user',
     resolverArgs: {
@@ -37,7 +37,7 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
 
   const userId = uuid()
 
-  const jwtToken = JWT.sign(
+  const jwt = JWT.sign(
     {
       username: username.trim(),
       id: userId
@@ -53,7 +53,7 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
       username,
       passwordHash
     },
-    jwtToken: ROOT_JWT_TOKEN
+    jwt: ROOT_JWT_TOKEN
   })
 
   await resolve.executeCommand({
@@ -63,10 +63,10 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
     payload: {
       name: 'Shopping List'
     },
-    jwtToken
+    jwt
   })
 
-  return jwtToken
+  return jwt
 }
 
 export default routeRegisterCallback

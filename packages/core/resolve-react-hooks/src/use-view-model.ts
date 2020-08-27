@@ -1,91 +1,185 @@
 import { useContext, useCallback, useMemo } from 'react'
 import { ResolveContext } from './context'
+import { Event, firstOfType, SerializableMap } from 'resolve-core'
 import { QueryOptions, SubscribeCallback, Subscription } from 'resolve-client'
 import { useClient } from './use-client'
+import { isCallback, isOptions, isSerializableMap } from './generic'
 
-type StateChangedCallback = (state: any) => void
+type StateChangedCallback = (state: any, initial: boolean) => void
+type EventReceivedCallback = (event: Event) => void
 type PromiseOrVoid<T> = Promise<T> | void
 
 type Closure = {
+  initialState: any
   state?: any
   subscription?: Subscription
+  url?: string
+  cursor?: string
 }
 
 type ViewModelConnection = {
   connect: (done?: SubscribeCallback) => PromiseOrVoid<Subscription>
   dispose: (done?: (error?: Error) => void) => PromiseOrVoid<void>
+  initialState: any
 }
 
-const useViewModel = (
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  stateChangeCallback: StateChangedCallback
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  args: SerializableMap,
+  stateChangeCallback: StateChangedCallback
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  args: SerializableMap,
+  stateChangeCallback: StateChangedCallback,
+  eventReceivedCallback: EventReceivedCallback
+): ViewModelConnection
+function useViewModel(
   modelName: string,
   aggregateIds: string[] | '*',
   stateChangeCallback: StateChangedCallback,
+  eventReceivedCallback: EventReceivedCallback
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  args: SerializableMap,
+  stateChangeCallback: StateChangedCallback,
+  queryOptions: QueryOptions
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  stateChangeCallback: StateChangedCallback,
+  queryOptions: QueryOptions
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  args: SerializableMap,
+  stateChangeCallback: StateChangedCallback,
+  eventReceivedCallback: EventReceivedCallback,
+  queryOptions: QueryOptions
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  stateChangeCallback: StateChangedCallback,
+  eventReceivedCallback: EventReceivedCallback,
+  queryOptions: QueryOptions
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  args: SerializableMap,
+  stateChangeCallback: StateChangedCallback,
+  eventReceivedCallback: EventReceivedCallback,
+  queryOptions: QueryOptions
+): ViewModelConnection
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  args: SerializableMap | StateChangedCallback,
+  stateChangeCallback?:
+    | StateChangedCallback
+    | QueryOptions
+    | EventReceivedCallback,
+  eventReceivedCallback?: QueryOptions | EventReceivedCallback,
   queryOptions?: QueryOptions
-): ViewModelConnection => {
-  const log = console
+): ViewModelConnection {
   const context = useContext(ResolveContext)
   const client = useClient()
-
-  log.debug(`searching for view model metadata`)
 
   const { viewModels } = context
   const viewModel = viewModels.find(({ name }) => name === modelName)
 
   if (!viewModel) {
-    const error = Error(`View model ${modelName} not exist within context`)
-    log.error(error.message)
-    throw error
+    throw Error(`View model ${modelName} not exist within context`)
   }
 
-  log.debug(`view model metadata found`)
-
-  const closure = useMemo<Closure>(
-    () => ({
-      state: viewModel.projection.Init ? viewModel.projection.Init() : null
-    }),
-    []
+  const actualArgs: SerializableMap | undefined = isSerializableMap(args)
+    ? args
+    : undefined
+  const actualQueryOptions: QueryOptions | undefined = firstOfType<
+    QueryOptions
+  >(isOptions, stateChangeCallback, eventReceivedCallback, queryOptions)
+  const actualStateChangeCallback:
+    | StateChangedCallback
+    | undefined = firstOfType<StateChangedCallback>(
+    isCallback,
+    args,
+    stateChangeCallback
   )
+  let actualEventReceivedCallback:
+    | EventReceivedCallback
+    | undefined = firstOfType<EventReceivedCallback>(
+    isCallback,
+    stateChangeCallback,
+    eventReceivedCallback
+  )
+  actualEventReceivedCallback =
+    actualEventReceivedCallback !== actualStateChangeCallback
+      ? actualEventReceivedCallback
+      : undefined
 
-  const setState = useCallback(state => {
+  if (!actualStateChangeCallback) {
+    throw Error(`state change callback required`)
+  }
+
+  const closure = useMemo<Closure>(() => {
+    const initialState = viewModel.projection.Init
+      ? viewModel.projection.Init()
+      : null
+    return {
+      initialState
+    }
+  }, [])
+
+  const setState = useCallback((state: any, initial: boolean) => {
     closure.state = state
-    stateChangeCallback(closure.state)
+    actualStateChangeCallback(closure.state, initial)
   }, [])
 
   const queryState = useCallback(async () => {
-    log.debug(`querying view model state`)
     const result = await client.query(
       {
         name: modelName,
         aggregateIds,
-        args: {}
+        args: actualArgs
       },
-      queryOptions
+      actualQueryOptions
     )
-    log.debug(`view model state arrived`)
     if (result) {
-      log.debug(result.data)
-      setState(result.data)
-    } else {
-      log.debug(`query have not result`)
+      const { data, meta: { url, cursor } = {} } = result
+      setState(data, false)
+      closure.url = url
+      closure.cursor = cursor
     }
   }, [])
 
   const applyEvent = useCallback(event => {
-    log.debug(`applying event [${event.type}]`)
-    setState(viewModel.projection[event.type](closure.state, event))
+    if (isCallback<EventReceivedCallback>(actualEventReceivedCallback)) {
+      actualEventReceivedCallback(event)
+    }
+    setState(viewModel.projection[event.type](closure.state, event), false)
   }, [])
 
   const connect = useCallback((done?: SubscribeCallback): PromiseOrVoid<
     Subscription
   > => {
     const asyncConnect = async (): Promise<Subscription> => {
-      log.debug(`connecting view model`)
-
       await queryState()
 
-      log.debug(`subscribing to incoming events`)
-
       const subscribe = client.subscribe(
+        closure.url ?? '',
+        closure.cursor ?? '',
         modelName,
         aggregateIds,
         event => applyEvent(event),
@@ -95,14 +189,15 @@ const useViewModel = (
 
       const subscription = await subscribe
 
-      log.debug(`subscribed successfully`)
-
       if (subscription) {
         closure.subscription = subscription
       }
 
       return subscription
     }
+
+    setState(closure.initialState, true)
+
     if (typeof done !== 'function') {
       return asyncConnect()
     }
@@ -137,7 +232,8 @@ const useViewModel = (
   return useMemo(
     () => ({
       connect,
-      dispose
+      dispose,
+      initialState: closure.initialState
     }),
     []
   )

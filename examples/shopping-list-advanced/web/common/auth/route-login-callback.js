@@ -4,7 +4,7 @@ import JWT from 'jsonwebtoken'
 import jwtSecret from './jwt-secret'
 
 const routeLoginCallback = async ({ resolve }, username, password) => {
-  const user = await resolve.executeQuery({
+  const { data: user } = await resolve.executeQuery({
     modelName: 'ShoppingLists',
     resolverName: 'user',
     resolverArgs: { username }

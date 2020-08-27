@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-advanced/ui",
-  "version": "0.24.11",
+  "version": "0.25.0",
   "private": true,
   "main": "./src/index.js",
   "scripts": {
@@ -13,8 +13,8 @@
     "react-bootstrap": "0.32.4"
   },
   "devDependencies": {
-    "react": "16.13.0",
-    "react-dom": "16.13.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
     "react-native-gesture-handler": "1.5.6",
     "redux": "4.0.5",

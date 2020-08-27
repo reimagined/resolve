@@ -9,7 +9,8 @@ const loadEventsByCursor = async (
     escape,
     eventsTableName,
     databaseName,
-    shapeEvent
+    shapeEvent,
+    isTimeoutError
   },
   {
     eventTypes,
@@ -119,7 +120,18 @@ const loadEventsByCursor = async (
       "threadIdsPerLimitedBatchList"."value"
     ORDER BY "limitedBatchList"."batchIndex"`
 
-  const batchList = await executeStatement(sqlQuery)
+  let batchList = null
+  while (true) {
+    try {
+      batchList = await executeStatement(sqlQuery)
+      break
+    } catch (err) {
+      if (isTimeoutError(err)) {
+        continue
+      }
+      throw err
+    }
+  }
 
   const requestCursors = []
   const requestPromises = []
@@ -150,7 +162,20 @@ const loadEventsByCursor = async (
     ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC
     `
 
-    requestPromises.push(executeStatement(sqlQuery))
+    requestPromises.push(
+      (async () => {
+        while (true) {
+          try {
+            return await executeStatement(sqlQuery)
+          } catch (err) {
+            if (isTimeoutError(err)) {
+              continue
+            }
+            throw err
+          }
+        }
+      })()
+    )
   }
 
   const batchedEvents = await Promise.all(requestPromises)

@@ -1,6 +1,6 @@
 {
   "name": "resolve-eventstore-mysql",
-  "version": "0.24.11",
+  "version": "0.25.0",
   "description": "An adapter reSolve uses to store events in MySQL.",
   "engines": {
     "node": ">=10.9"
@@ -27,25 +27,24 @@
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "mysql2": "^2.1.0",
-    "resolve-core": "0.24.11",
-    "resolve-debug-levels": "0.24.11",
-    "resolve-eventstore-base": "0.24.11"
+    "resolve-core": "0.25.0",
+    "resolve-debug-levels": "0.25.0",
+    "resolve-eventstore-base": "0.25.0"
   },
   "devDependencies": {
     "jest": "26.0.1",
     "sinon": "7.2.2",
     "ts-jest": "26.1.0"
   },
+  "sourceType": "ts",
   "babelCompile": [
     {
-      "sourceType": "ts",
       "moduleType": "es",
       "moduleTarget": "server",
       "inputDir": "./src",
       "outDir": "./es"
     },
     {
-      "sourceType": "ts",
       "moduleType": "cjs",
       "moduleTarget": "server",
       "inputDir": "./src",

@@ -409,30 +409,30 @@ await sideEffects.scheduleCommand(
 
 An event store adapter defines how the reSolve framework stores events in the underlying event store. An event store adapter object must expose the following functions:
 
-| Function Name                                           | Description                                                                                           |
-| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| [init](#init)                                           | Initializes a database.                                                                               |
-| [drop](#drop)                                           | Drops a database.                                                                                     |
-| [dispose](#dispose)                                     | Disconnects from a database and disposes unmanaged resources.                                         |
-| [saveEvent](#saveevent)                                 | Saves an event to the database.                                                                       |
+| Function Name                                           | Description                                                                                        |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| [init](#init)                                           | Initializes a database.                                                                            |
+| [drop](#drop)                                           | Drops a database.                                                                                  |
+| [dispose](#dispose)                                     | Disconnects from a database and disposes unmanaged resources.                                      |
+| [saveEvent](#saveevent)                                 | Saves an event to the database.                                                                    |
 | [loadEvents](#loadEvents)                               | Gets an array of events and the next cursor from the store based on the specified filter criteria. |
-| [getLatestEvent](#getlatestevent)                       | Gets the latest saved event.                                                                          |
-| [import](#import)                                       | Gets a writable stream used to save events.                                                           |
-| [export](#export)                                       | Gets a readable stream used to load events.                                                           |
-| [freeze](#freeze)                                       | Freezes the database.                                                                                 |
-| [unfreeze](#unfreeze)                                   | Unfreezes the database.                                                                               |
-| [isFrozen](#isfrozen)                                   | Gets a Boolean value that indicates whether the database is frozen.                                   |
-| [loadSnapshot](#loadsnapshot)                           | Loads a snapshot.                                                                                     |
-| [saveSnapshot](#savesnapshot)                           | Creates or updates a snapshot.                                                                        |
-| [dropSnapshot](#dropsnapshot)                           | Deletes a snapshot.                                                                                   |
-| [getSecret](#getsecret)                                 | Gets a secret.                                                                                        |
-| [setSecret](#setsecret)                                 | Creates or updates a secret.                                                                          |
-| [deleteSecret](#deletesecret)                           | Deletes a secret.                                                                                     |
-| [incrementalImport](#incrementalimport)                 | Incrementally imports events.                                                                         |
-| [beginIncrementalImport](#beginincrementalimport)       | Starts to build a batch of events to import.                                                          |
-| [pushIncrementalImport](#pushincrementalimport)         | Adds events to an incremental import batch.                                                           |
-| [commitIncrementalImport](#commitincrementalimport)     | Commits an incremental import batch to the event store.                                               |
-| [rollbackIncrementalImport](#rollbackincrementalimport) | Drops an incremental import batch.                                                                    |
+| [getLatestEvent](#getlatestevent)                       | Gets the latest saved event.                                                                       |
+| [import](#import)                                       | Gets a writable stream used to save events.                                                        |
+| [export](#export)                                       | Gets a readable stream used to load events.                                                        |
+| [freeze](#freeze)                                       | Freezes the database.                                                                              |
+| [unfreeze](#unfreeze)                                   | Unfreezes the database.                                                                            |
+| [isFrozen](#isfrozen)                                   | Gets a Boolean value that indicates whether the database is frozen.                                |
+| [loadSnapshot](#loadsnapshot)                           | Loads a snapshot.                                                                                  |
+| [saveSnapshot](#savesnapshot)                           | Creates or updates a snapshot.                                                                     |
+| [dropSnapshot](#dropsnapshot)                           | Deletes a snapshot.                                                                                |
+| [getSecret](#getsecret)                                 | Gets a secret.                                                                                     |
+| [setSecret](#setsecret)                                 | Creates or updates a secret.                                                                       |
+| [deleteSecret](#deletesecret)                           | Deletes a secret.                                                                                  |
+| [incrementalImport](#incrementalimport)                 | Incrementally imports events.                                                                      |
+| [beginIncrementalImport](#beginincrementalimport)       | Starts to build a batch of events to import.                                                       |
+| [pushIncrementalImport](#pushincrementalimport)         | Adds events to an incremental import batch.                                                        |
+| [commitIncrementalImport](#commitincrementalimport)     | Commits an incremental import batch to the event store.                                            |
+| [rollbackIncrementalImport](#rollbackincrementalimport) | Drops an incremental import batch.                                                                 |
 
 ### init
 
@@ -650,7 +650,7 @@ Creates or updates a snapshot.
 | Argument Name | Description                             |
 | ------------- | --------------------------------------- |
 | snapshotKey   | A unique key in the table of snapshots. |
-| content       | A snapshot in text format.          |
+| content       | A snapshot in text format.              |
 
 ##### Result
 
@@ -1105,7 +1105,7 @@ import {
 
 ### HTTP API
 
-ReSolve provides a standard HTTP API that allows you to send aggregate commands and query Read and View Models. Refer to the [Standard HTTP API](curl.md) topic for more information.
+ReSolve provides a standard HTTP API that allows you to send aggregate commands, and query Read and View Models.
 
 #### Read Model API
 
@@ -1220,9 +1220,21 @@ $ curl -X POST "http://localhost:3000/api/commands"
 '
 ```
 
-### Resolve-Redux Library
+### resolve-redux Library
 
-The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library provides the following HOCs:
+The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library includes both React Hooks and Higher-Order Components (HOCs).
+
+##### React Hooks:
+
+| Function Name                                           | Description                                                                 |
+| ------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [useReduxCommand](#usereduxcommand)                     | Creates a hook to execute a command.                                        |
+| [useReduxReadModel](#usereduxreadmodel)                 | Creates a hook to query a Read Model.                                       |
+| [useReduxReadModelSelector](#usereduxreadmodelselector) | Creates a hook to access a Read Model query result.                         |
+| [useReduxViewModel](#usereduxviewmodel)                 | Creates a hook to receive a View Model's state updates and reactive events. |
+| [useReduxViewModelSelector](#usereduxviewmodelselector) | Creates a hook to access a View Model's current state on the client.        |
+
+##### Higher-Order Components:
 
 | Function Name                                     | Description                                                                                        |
 | ------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
@@ -1230,6 +1242,104 @@ The reSolve framework includes the client **resolve-redux** library used to conn
 | [connectReadModel](#connectreadmodel)             | Connects a React component to a reSolve Read Model.                                                |
 | [connectRootBasedUrls](#connectrootbasedurls)     | Fixes URLs passed to the specified props so that they use the correct root folder path.            |
 | [connectStaticBasedUrls](#connectstaticbasedurls) | Fixes URLs passed to the specified props so that they use the correct static resource folder path. |
+
+#### useReduxCommand
+
+Creates a hook to execute a reSolve command.
+
+##### Example
+
+```js
+const { execute: toggleItem } = useReduxCommand({
+  type: 'toggleShoppingItem',
+  aggregateId: shoppingListId,
+  aggregateName: 'ShoppingList',
+  payload: {
+    id: 'shopping-list-id'
+  }
+})
+```
+
+#### useReduxReadModel
+
+Creates a hook to query a reSolve Read Model
+
+##### Example
+
+```js
+const { request: getLists, selector: allLists } = useReduxReadModel(
+  {
+    name: 'ShoppingLists',
+    resolver: 'all',
+    args: {
+      filter: 'none'
+    }
+  },
+  []
+)
+
+const { status, data } = useSelector(allLists)
+```
+
+##### useReduxReadModelSelector
+
+Creates a hook to access the result of a Read Model query. Note that this hook provides access to data obtained through `useReduxReadModel` and does not send any requests to the server.
+
+```js
+const { request: getLists, selector: allLists } = useReduxReadModel(
+  {
+    name: 'ShoppingLists',
+    resolver: 'all',
+    args: {
+      filter: 'none'
+    }
+  },
+  [],
+  {
+    selectorId: 'all-user-lists'
+  }
+)
+
+const { status, data } = useReduxReadModelSelector('all-user-lists')
+```
+
+##### useReduxViewModel
+
+Creates a hook to receive a View Model's state updates and reactive events.
+
+```js
+const { connect, dispose, selector: thisList } = useReduxViewModel({
+  name: 'shoppingList',
+  aggregateIds: ['my-list']
+})
+
+const { data, status } = useSelector(thisList)
+
+useEffect(() => {
+  connect()
+  return () => {
+    dispose()
+  }
+}, [])
+```
+
+##### useReduxViewModelSelector
+
+Creates a hook to access a view model's local state. This hook queries the View Model's current state on the client and does not send any requests to the server.
+
+```js
+const { connect, dispose, selector: thisList } = useReduxViewModel(
+  {
+    name: 'shoppingList',
+    aggregateIds: ['my-list']
+  },
+  {
+    selectorId: 'this-list'
+  }
+)
+
+const { data, status } = useReduxViewModelSelector('this-list')
+```
 
 #### connectViewModel
 
@@ -1319,4 +1429,260 @@ Fixes URLs passed to the specified props to correct the static resource folder p
 
 ```js
 export default connectStaticBasedUrls(['css', 'favicon'])(Header)
+```
+
+### resolve-client Library
+
+The **resolve-client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function:
+
+```js
+import { getClient } from 'resolve-client'
+
+const main = async resolveContext => {
+  const client = getClient(resolveContext)
+  ...
+```
+
+The `getClient` function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
+
+| Function Name                           | Description                                |
+| --------------------------------------- | ------------------------------------------ |
+| [command](#command)                     | Sends an aggregate command to the backend. |
+| [query](#query)                         | Queries a Read Model.                      |
+| [getStaticAssetUrl](#getstaticasseturl) | Gets a static file's full URL.             |
+| [subscribe](#subscribe)                 | Subscribes to View Model updates.          |
+| [unsubscribe](#unsubscribe)             | Unsubscribes from View Model updates.      |
+
+#### command
+
+Sends an aggregate command to the backend.
+
+##### Example
+
+```js
+client.command(
+  {
+    aggregateName: 'Chat',
+    type: 'postMessage',
+    aggregateId: userName,
+    payload: message
+  },
+  err => {
+    if (err) {
+      console.warn(`Error while sending command: ${err}`)
+    }
+  }
+)
+```
+
+#### query
+
+Queries a Read Model.
+
+##### Example
+
+```js
+const { data } = await client.query({
+  name: 'chat',
+  aggregateIds: '*'
+})
+```
+
+#### getStaticAssetUrl
+
+Gets a static file's full URL.
+
+##### Example
+
+```js
+var imagePath = client.getStaticAssetUrl('/account/image.jpg')
+```
+
+#### subscribe
+
+Subscribes to View Model updates. Returns a promise that resolves to a **subscription** object.
+
+##### Example
+
+```js
+const chatViewModelUpdater = event => {
+  const eventType = event != null && event.type != null ? event.type : null
+  const eventHandler = chatViewModel.projection[eventType]
+
+  if (typeof eventHandler === 'function') {
+    chatViewModelState = eventHandler(chatViewModelState, event)
+  }
+
+  setImmediate(updateUI.bind(null, chatViewModelState))
+}
+
+await client.subscribe('chat', '*', chatViewModelUpdater)
+```
+
+#### unsubscribe
+
+Unsubscribes from View Model updates.
+
+##### Example
+
+```js
+await client.unsubscribe(subscription)
+```
+
+### resolve-react-hooks library
+
+The **resolve-react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
+
+| Hook                                    | Description                                                               |
+| --------------------------------------- | ------------------------------------------------------------------------- |
+| [useCommand](#usecommand)               | Initializes a command that can be passed to the backend.                  |
+| [useCommandBuilder](#usecommandbuilder) | Allows a component to generate commands based on input parameters.        |
+| [useViewModel](#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model.               |
+| [useQuery](#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model. |
+
+#### useCommand
+
+Initializes a command that can be passed to the backend.
+
+##### Example
+
+```js
+const ShoppingList = ({
+  match: {
+    params: { id: aggregateId }
+  }
+}) => {
+  const renameShoppingList = useCommand({
+    type: 'renameShoppingList',
+    aggregateId,
+    aggregateName: 'ShoppingList',
+    payload: { name: shoppingList ? shoppingList.name : '' }
+  })
+
+  ...
+
+  const onShoppingListNamePressEnter = event => {
+    if (event.charCode === 13) {
+      event.preventDefault()
+      renameShoppingList()
+    }
+  }
+
+  ...
+}
+```
+
+#### useCommandBuilder
+
+Allows a component to generate commands based on input parameters.
+
+##### Example
+
+```js
+const ShoppingList = ({
+  match: {
+    params: { id: aggregateId }
+  }
+}) => {
+  const clearItemText = () => setItemText('')
+
+  const createShoppingItem = useCommandBuilder(
+    text => ({
+      type: 'createShoppingItem',
+      aggregateId,
+      aggregateName: 'ShoppingList',
+      payload: {
+        text,
+        id: Date.now().toString()
+      }
+    }),
+    clearItemText
+  )
+
+  ...
+
+  const onItemTextPressEnter = event => {
+  if (event.charCode === 13) {
+    event.preventDefault()
+    createShoppingItem(itemText)
+  }
+
+  ...
+}
+```
+
+#### useViewModel
+
+Establishes a WebSocket connection to a reSolve View Model.
+
+##### Example
+
+```js
+const ShoppingList = ({
+  match: {
+    params: { id: aggregateId }
+  }
+}) => {
+  const [shoppingList, setShoppingList] = useState({
+    name: '',
+    id: null,
+    list: []
+  })
+
+  const { connect, dispose } = useViewModel(
+    'shoppingList',
+    [aggregateId],
+    setShoppingList
+  )
+
+  useEffect(() => {
+    connect()
+    return () => {
+      dispose()
+    }
+  }, [])
+
+  ...
+
+  const updateShoppingListName = event => {
+    setShoppingList({ ...shoppingList, name: event.target.value })
+  }
+
+  ...
+}
+```
+
+#### useQuery
+
+Allows a component to send queries to a reSolve Read Model or View Model.
+
+##### Example
+
+```js
+const MyLists = () => {
+  const getLists = useQuery(
+    { name: 'ShoppingLists', resolver: 'all', args: {} },
+    (error, result) => {
+      setLists(result)
+    }
+  )
+
+  useEffect(() => {
+    getLists()
+  }, [])
+
+  ...
+
+  onCreateSuccess={(err, result) => {
+    const nextLists = { ...lists }
+    nextLists.data.push({
+      name: result.payload.name,
+      createdAt: result.timestamp,
+      id: result.aggregateId
+    })
+    setLists(nextLists)
+  }}
+
+  ...
+}
 ```
