@@ -65,18 +65,18 @@ const createSaga = ({
   const sendEvents = async ({
     modelName,
     events,
-    getRemainingTimeInMillis,
     xaTransactionId,
-    properties
+    properties,
+    batchId
   }) => {
     eventProperties = properties
-    const result = await executeListener.sendEvents({
+    await executeListener.sendEvents({
       modelName,
       events,
-      getRemainingTimeInMillis,
-      xaTransactionId
+      xaTransactionId,
+      properties,
+      batchId
     })
-    return result
   }
 
   const runScheduler = async entry => {

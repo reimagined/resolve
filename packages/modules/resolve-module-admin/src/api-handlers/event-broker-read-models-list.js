@@ -1,11 +1,11 @@
 const readModelList = async (req, res) => {
-  const listenerIds = req.resolve.readModels.map(({ name }) => ({
-    eventSubscriber: name
-  }))
-  const statuses = await Promise.all(
-    listenerIds.map(req.resolve.eventBus.status)
-  )
-  res.json(statuses)
+  const statusPromises = []
+  for(const { name: eventSubscriber } of req.resolve.readModels) {
+    statusPromises.push(req.resolve.eventBus.status({ eventSubscriber }))
+  }
+  const statuses = await Promise.all(statusPromises)
+
+  await res.json(statuses)
 }
 
 export default readModelList

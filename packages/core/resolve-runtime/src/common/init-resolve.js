@@ -42,10 +42,8 @@ const initResolve = async resolve => {
   }
 
   const getRemainingTimeInMillis = resolve.getRemainingTimeInMillis
-
   const onCommandExecuted = createOnCommandExecuted(resolve)
 
-  const sendReactiveEvent = resolve.sendReactiveEvent.bind(resolve)
   const performAcknowledge = resolve.publisher.acknowledge.bind(
     resolve.publisher
   )
@@ -65,8 +63,7 @@ const initResolve = async resolve => {
     viewModels,
     performanceTracer,
     getRemainingTimeInMillis,
-    performAcknowledge,
-    sendReactiveEvent
+    performAcknowledge
   })
 
   const executeSaga = createSagaExecutor({
@@ -81,7 +78,6 @@ const initResolve = async resolve => {
     performanceTracer,
     getRemainingTimeInMillis,
     performAcknowledge,
-    sendReactiveEvent,
     uploader
   })
 
