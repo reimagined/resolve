@@ -6,7 +6,7 @@ describe('deploy-service-event-handler.test', () => {
   beforeEach(() => {
     resolve = {
       readModels: [],
-      publisher: {
+      eventBus: {
         reset: jest.fn(),
         pause: jest.fn(),
         resume: jest.fn(),
@@ -48,7 +48,7 @@ describe('deploy-service-event-handler.test', () => {
 
   describe('properties', () => {
     test('listProperties should return list properties', async () => {
-      resolve.publisher.listProperties.mockResolvedValueOnce({
+      resolve.eventBus.listProperties.mockResolvedValueOnce({
         property: 'property'
       })
 
@@ -61,7 +61,7 @@ describe('deploy-service-event-handler.test', () => {
         resolve
       )
 
-      expect(resolve.publisher.listProperties).toHaveBeenCalledWith({
+      expect(resolve.eventBus.listProperties).toHaveBeenCalledWith({
         eventSubscriber: 'readModelName'
       })
       expect(result).toEqual({
@@ -70,7 +70,7 @@ describe('deploy-service-event-handler.test', () => {
     })
 
     test('getProperty should return property', async () => {
-      resolve.publisher.getProperty.mockResolvedValueOnce('value')
+      resolve.eventBus.getProperty.mockResolvedValueOnce('value')
 
       const result = await handleDeployServiceEvent(
         {
@@ -82,7 +82,7 @@ describe('deploy-service-event-handler.test', () => {
         resolve
       )
 
-      expect(resolve.publisher.getProperty).toHaveBeenCalledWith({
+      expect(resolve.eventBus.getProperty).toHaveBeenCalledWith({
         eventSubscriber: 'readModelName',
         key: 'key'
       })
@@ -90,7 +90,7 @@ describe('deploy-service-event-handler.test', () => {
     })
 
     test('setProperty should set property', async () => {
-      resolve.publisher.setProperty.mockResolvedValueOnce('value')
+      resolve.eventBus.setProperty.mockResolvedValueOnce('value')
 
       const result = await handleDeployServiceEvent(
         {
@@ -103,7 +103,7 @@ describe('deploy-service-event-handler.test', () => {
         resolve
       )
 
-      expect(resolve.publisher.setProperty).toHaveBeenCalledWith({
+      expect(resolve.eventBus.setProperty).toHaveBeenCalledWith({
         eventSubscriber: 'readModelName',
         key: 'key',
         value: 'value'
@@ -112,7 +112,7 @@ describe('deploy-service-event-handler.test', () => {
     })
 
     test('deleteProperty should delete property', async () => {
-      resolve.publisher.setProperty.mockResolvedValueOnce('value')
+      resolve.eventBus.setProperty.mockResolvedValueOnce('value')
 
       const lambdaEvent = {
         part: 'readModel',
@@ -123,7 +123,7 @@ describe('deploy-service-event-handler.test', () => {
 
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
-      expect(resolve.publisher.deleteProperty).toHaveBeenCalledWith({
+      expect(resolve.eventBus.deleteProperty).toHaveBeenCalledWith({
         eventSubscriber: 'readModelName',
         key: 'key'
       })
@@ -133,7 +133,7 @@ describe('deploy-service-event-handler.test', () => {
 
   describe('read model', () => {
     test('handles specific read model reset correctly', async () => {
-      resolve.publisher.reset.mockResolvedValueOnce({})
+      resolve.eventBus.reset.mockResolvedValueOnce({})
 
       const lambdaEvent = {
         part: 'readModel',
@@ -143,18 +143,18 @@ describe('deploy-service-event-handler.test', () => {
 
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
-      expect(resolve.publisher.reset).toHaveBeenCalledWith({
+      expect(resolve.eventBus.reset).toHaveBeenCalledWith({
         eventSubscriber: 'readModelName'
       })
       expect(result).toEqual('ok')
     })
 
     test('handles getting of list', async () => {
-      resolve.publisher.status.mockResolvedValueOnce({
+      resolve.eventBus.status.mockResolvedValueOnce({
         lastEvent: { type: 'TEST1' },
         lastError: null
       })
-      resolve.publisher.status.mockResolvedValueOnce({
+      resolve.eventBus.status.mockResolvedValueOnce({
         lastEvent: { type: 'TEST2' },
         lastError: null
       })
@@ -170,10 +170,10 @@ describe('deploy-service-event-handler.test', () => {
 
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
-      expect(resolve.publisher.status).toHaveBeenCalledWith({
+      expect(resolve.eventBus.status).toHaveBeenCalledWith({
         eventSubscriber: 'readModelName1'
       })
-      expect(resolve.publisher.status).toHaveBeenCalledWith({
+      expect(resolve.eventBus.status).toHaveBeenCalledWith({
         eventSubscriber: 'readModelName2'
       })
       expect(result).toEqual([
@@ -191,7 +191,7 @@ describe('deploy-service-event-handler.test', () => {
     })
 
     test('handles specific read model getting of list', async () => {
-      resolve.publisher.status.mockResolvedValueOnce({
+      resolve.eventBus.status.mockResolvedValueOnce({
         lastEvent: { type: 'TEST1' },
         lastError: null
       })
@@ -204,7 +204,7 @@ describe('deploy-service-event-handler.test', () => {
 
       const result = await handleDeployServiceEvent(lambdaEvent, resolve)
 
-      expect(resolve.publisher.status).toHaveBeenCalledWith({
+      expect(resolve.eventBus.status).toHaveBeenCalledWith({
         eventSubscriber: 'readModelName1'
       })
 
