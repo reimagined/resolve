@@ -29,17 +29,47 @@ const createSaga = ({
   })
 
   const executeCommandOrScheduler = async (...args) => {
-    const aggregateName = args[0].aggregateName
-    if (schedulerAggregatesNames.has(aggregateName)) {
-      return await executeScheduleCommand(...args)
-    } else {
-      return await executeCommand(...args)
+    if (
+      !(
+        args.length > 0 &&
+        args.length < 3 &&
+        Object(args[0]) === args[0] &&
+        (Object(args[1]) === args[1] || args[1] == null)
+      )
+    ) {
+      throw new Error(
+        `Invalid saga command/scheduler args ${JSON.stringify(args)}`
+      )
     }
+    const options = { ...args[0] }
+
+    const aggregateName = options.aggregateName
+    if (schedulerAggregatesNames.has(aggregateName)) {
+      return await executeScheduleCommand(options)
+    } else {
+      return await executeCommand(options)
+    }
+  }
+
+  const executeDirectQuery = async (...args) => {
+    if (
+      !(
+        args.length > 0 &&
+        args.length < 3 &&
+        Object(args[0]) === args[0] &&
+        (Object(args[1]) === args[1] || args[1] == null)
+      )
+    ) {
+      throw new Error(`Invalid saga query args ${JSON.stringify(args)}`)
+    }
+
+    const options = { ...args[0], properties: args[1] }
+    return await executeQuery(options)
   }
 
   const sagaProvider = Object.create(Object.prototype, {
     executeCommand: { get: () => executeCommandOrScheduler, enumerable: true },
-    executeQuery: { get: () => executeQuery, enumerable: true },
+    executeQuery: { get: () => executeDirectQuery, enumerable: true },
     eventProperties: { get: () => eventProperties, enumerable: true },
     getSecretsManager: {
       get: () => eventstoreAdapter.getSecretsManager,

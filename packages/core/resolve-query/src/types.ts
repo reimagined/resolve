@@ -66,3 +66,8 @@ export type ViewModelPool = {
   performanceTracer: any
   isDisposed: boolean
 }
+
+export type BuildViewModelQuery = {
+  aggregateIds: Array<string> | null
+  aggregateArgs: any
+}

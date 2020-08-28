@@ -15,7 +15,9 @@ const connectorCapabilities = {
 
 const eventBusMethod = async (resolve, key, ...args) => {
   if (args.length !== 1 || Object(args[0]) !== args[0]) {
-    throw new TypeError(`Invalid EventBus method "${key}" arguments ${args}`)
+    throw new TypeError(
+      `Invalid EventBus method "${key}" arguments ${JSON.stringify(args)}`
+    )
   }
 
   let { eventSubscriber, modelName, ...parameters } = args[0]

@@ -18,7 +18,7 @@ const dispose = async (models: any): Promise<any> => {
 const interopApi = async (models: any, key: string, ...args: Array<any>) => {
   if (args.length !== 1 || Object(args[0]) !== args[0]) {
     throw new TypeError(
-      `Invalid resolve-query method "${key}" arguments ${args}`
+      `Invalid resolve-query method "${key}" arguments ${JSON.stringify(args)}`
     )
   }
 

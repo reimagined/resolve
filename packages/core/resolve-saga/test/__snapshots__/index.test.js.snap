@@ -121,10 +121,6 @@ Array [
       "payload": "executedCommand",
       "type": "executedCommand",
     },
-    Object {
-      "RESOLVE_SIDE_EFFECTS_START_TIMESTAMP": 0,
-      "test-property": "content",
-    },
   ],
 ]
 `;
@@ -134,14 +130,14 @@ Array [
   Array [
     Object {
       "modelName": "modelName",
+      "properties": Object {
+        "RESOLVE_SIDE_EFFECTS_START_TIMESTAMP": 0,
+        "test-property": "content",
+      },
       "resolverArgs": Object {
         "arg": "value",
       },
       "resolverName": "resolverName",
-    },
-    Object {
-      "RESOLVE_SIDE_EFFECTS_START_TIMESTAMP": 0,
-      "test-property": "content",
     },
   ],
 ]

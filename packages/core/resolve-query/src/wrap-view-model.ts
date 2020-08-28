@@ -1,5 +1,9 @@
 import getLog from './get-log'
-import { WrapViewModelOptions, ViewModelPool } from './types'
+import {
+  WrapViewModelOptions,
+  ViewModelPool,
+  BuildViewModelQuery
+} from './types'
 import parseReadOptions from './parse-read-options'
 
 type AggregateIds = string | string[]
@@ -9,8 +13,7 @@ const getKey = (aggregateIds: AggregateIds): string =>
 
 const buildViewModel = async (
   pool: ViewModelPool,
-  aggregateIds: any,
-  aggregateArgs: any,
+  { aggregateIds, aggregateArgs }: BuildViewModelQuery,
   jwt: any,
   key: any
 ): Promise<any> => {
@@ -150,7 +153,19 @@ const read = async (
 ): Promise<any> => {
   const viewModelName = pool.viewModel.name
 
-  const [aggregateIds, aggregateArgs] = parseReadOptions(params)
+  const [originalAggregateIds, aggregateArgs] = parseReadOptions(params)
+  let aggregateIds = null
+  try {
+    if (Array.isArray(originalAggregateIds)) {
+      aggregateIds = [...originalAggregateIds]
+    } else if (originalAggregateIds === '*') {
+      aggregateIds = null
+    } else {
+      aggregateIds = originalAggregateIds.split(/,/)
+    }
+  } catch (error) {
+    throw new Error(`The following arguments are required: aggregateIds`)
+  }
 
   if (pool.isDisposed) {
     throw new Error(`View model "${viewModelName}" is disposed`)
@@ -203,8 +218,7 @@ const read = async (
 
         const { data, eventCount, cursor } = await buildViewModel(
           pool,
-          aggregateIds,
-          aggregateArgs,
+          { aggregateIds, aggregateArgs },
           jwt,
           key
         )
