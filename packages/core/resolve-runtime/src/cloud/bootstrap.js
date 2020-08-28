@@ -13,7 +13,15 @@ const bootstrap = async resolve => {
     connectorName
   } of resolve.eventListeners.values()) {
     promises.push(
-      bootstrapOne(resolve, eventSubscriber, eventTypes, connectorName, true)
+      bootstrapOne({
+        readModelConnectors: resolve.readModelConnectors,
+        eventBus: resolve.eventBus,
+        eventSubscriber,
+        eventTypes,
+        connectorName,
+        credentials: resolve.eventSubscriberCredentials,
+        upstream: true
+      })
     )
   }
 

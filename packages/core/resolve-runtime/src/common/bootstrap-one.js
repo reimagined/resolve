@@ -6,15 +6,15 @@ import {
   INLINE_LEDGER_CONNECTOR
 } from 'resolve-query'
 
-const bootstrapOne = async (
-  resolve,
+const bootstrapOne = async ({
+  readModelConnectors,
+  eventBus,
   eventSubscriber,
   eventTypes,
   connectorName,
+  credentials,
   upstream
-) => {
-  const { readModelConnectors, eventBus } = resolve
-
+}) => {
   const connectorFeatures = detectConnectorFeatures(
     readModelConnectors[connectorName]
   )
@@ -51,6 +51,7 @@ const bootstrapOne = async (
     await eventBus.subscribe({
       eventSubscriber,
       subscriptionOptions: {
+        ...(credentials != null ? { credentials } : {}),
         deliveryStrategy,
         eventTypes
       }
