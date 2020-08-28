@@ -33,7 +33,9 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   }
 
   resolveBase.subscriptionsCredentials = {
-    applicationLambdaArn: lambdaContext.invokedFunctionArn
+    mode: 'websocket',
+    applicationLambdaArn: lambdaContext.invokedFunctionArn,
+    websocketLambdaArn: process.env.SUBSCRIPTIONS_LAMBDA_ARN
   }
 
   const resolve = Object.create(resolveBase)

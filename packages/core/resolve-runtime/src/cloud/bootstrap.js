@@ -86,7 +86,7 @@ const bootstrap = async resolve => {
   await publisher.subscribe({
     eventSubscriber: 'websocket',
     subscriptionOptions: {
-      credentials: resolve.eventSubscriberCredentials,
+      credentials: resolve.subscriptionsCredentials,
       deliveryStrategy: 'passthrough'
     }
   })
