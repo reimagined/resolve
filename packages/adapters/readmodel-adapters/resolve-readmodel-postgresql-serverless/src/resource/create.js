@@ -21,6 +21,23 @@ const create = async (pool, options) => {
         PRIMARY KEY("xa_key")
       )`,
 
+      `CREATE TABLE ${escapeId(options.databaseName)}.${escapeId(
+        `__${options.databaseName}__LEDGER__`
+      )}(
+        "EventSubscriber" VARCHAR(190) NOT NULL,
+        "IsPaused" BOOLEAN NOT NULL,
+        "EventTypes" JSONB NOT NULL,
+        "AggregateIds" JSONB NOT NULL,
+        "XaKey" VARCHAR(190) NULL,
+        "Cursor" JSONB NULL,
+        "SuccessEvent" JSONB NULL,
+        "FailedEvent" JSONB NULL,
+        "Errors" JSONB NULL,
+        "Properties" JSONB DEFAULT '{}'::JSONB,
+        "Schema" JSONB NULL,
+        PRIMARY KEY("EventSubscriber")
+      )`,
+
       `GRANT USAGE ON SCHEMA ${escapeId(options.databaseName)} TO ${escapeId(
         options.userLogin
       )}`,
