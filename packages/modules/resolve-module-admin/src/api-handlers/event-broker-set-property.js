@@ -1,6 +1,6 @@
 const setProperty = async (req, res) => {
   let { listenerId, key, value } = req.query
-  await req.resolve.publisher.setProperty({
+  await req.resolve.eventBus.setProperty({
     eventSubscriber: listenerId,
     key: String(key),
     value: String(value)

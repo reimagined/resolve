@@ -18,10 +18,11 @@ const defineTable = async (
   }
   const { fields, indexes } = tableDescription
 
-  await executeStatement(`
+  await executeStatement(
+    `
     CREATE TABLE ${escapeId(schemaName)}.${escapeId(
-    `${tablePrefix}${tableName}`
-  )} (
+      `${tablePrefix}${tableName}`
+    )} (
       ${fields
         .concat(Object.keys(indexes))
         .map(columnName => `${escapeId(columnName)} JSONB`)
@@ -62,10 +63,11 @@ const defineTable = async (
       .join('\n')}
 
     COMMENT ON TABLE ${escapeId(schemaName)}.${escapeId(
-    `${tablePrefix}${tableName}`
-  )}
+      `${tablePrefix}${tableName}`
+    )}
     IS ${escape(`RESOLVE-${readModelName}`)};
-  `)
+  `
+  )
 }
 
 export default defineTable
