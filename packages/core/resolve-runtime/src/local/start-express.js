@@ -1,6 +1,6 @@
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
-import bootstrap from './bootstrap'
+import bootstrap from '../common/bootstrap'
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 import { PublisherResourceAlreadyExistError } from 'resolve-local-event-broker'
