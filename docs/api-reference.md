@@ -412,11 +412,11 @@ The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages
 | Script                                | Description                                                                   |
 | ------------------------------------- | ----------------------------------------------------------------------------- |
 | [build](#build)                       | Builds an application.                                                        |
-| [start](#start)                       | Runs an application.                                                     |
+| [start](#start)                       | Runs an application.                                                          |
 | [watch](#watch)                       | Runs an application in **watch** mode. (Watch application files for changes.) |
 | [runTestcafe](#runtestcafe)           | Runs TestCafe tests.                                                          |
-| [merge](#merge)                       | Merges modules and application configurations into a single object.                  |
-| [stop](#stop)                         | Stops an application.                                                 |
+| [merge](#merge)                       | Merges modules and application configurations into a single object.           |
+| [stop](#stop)                         | Stops an application.                                                         |
 | [reset](#reset)                       | Resets an application's persistent storages and snapshots.                    |
 | [importEventStore](#importeventstore) | Imports events from a file to an application's event store.                   |
 | [exportEventStore](#exporteventstore) | Exports events from an application's event store to a file.                   |
@@ -806,6 +806,34 @@ $ curl -X POST "http://localhost:3000/api/commands"
 '
 ```
 
+### Client Entry Point
+
+The entry point is a function that is the first to be called when the client script runs. It takes a reSolve context object as a parameter.
+
+##### client/index.js:
+
+```js
+const main = async resolveContext => {
+...
+}
+export default main
+```
+
+The resolveContext object has the following members:
+
+| Member           | Description |
+| ---------------- | ----------- |
+| clientImports    |             |
+| localS3Constants |             |
+| viewModels       |             |
+| rootPath         |             |
+| staticPath       |             |
+| jwtCookie        |             |
+| applicationName  |             |
+| subscribeAdapter |             |
+| customConstants  |             |
+| utils            |             |
+
 ### resolve-redux Library
 
 The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library provides the following HOCs:
@@ -1009,12 +1037,12 @@ await client.unsubscribe(subscription)
 
 The **resolve-react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
 
-| Hook                                    | Description                                                              |
-| --------------------------------------- | ------------------------------------------------------------------------ |
-| [useCommand](#useCommand)               | Initializes a command that can be passed to the backend.                 |
-| [useCommandBuilder](#useCommandBuilder) | Allows a component to generate commands based on input parameters.                   |
-| [useViewModel](#useViewModel)           | Establishes a WebSocket connection to a reSolve View Model.              |
-| [useQuery](#useQuery)                   | Allows a component to send queries to a reSolve Read Model or View Model.|
+| Hook                                    | Description                                                               |
+| --------------------------------------- | ------------------------------------------------------------------------- |
+| [useCommand](#useCommand)               | Initializes a command that can be passed to the backend.                  |
+| [useCommandBuilder](#useCommandBuilder) | Allows a component to generate commands based on input parameters.        |
+| [useViewModel](#useViewModel)           | Establishes a WebSocket connection to a reSolve View Model.               |
+| [useQuery](#useQuery)                   | Allows a component to send queries to a reSolve Read Model or View Model. |
 
 #### useCommand
 

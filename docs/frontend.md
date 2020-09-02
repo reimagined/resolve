@@ -10,11 +10,11 @@ This document describes approaches that you can use to implement a frontend for 
 - [resolve-redux library](#resolve-redux-library) - A library used to connect a React + Redux component to reSolve
 - [resolve-react-hooks library](#resolve-react-hooks-library) - A hook-based library used to connect React components to reSolve
 
-## Client Application Entrypoint
+## Client Application Entry Point
 
 ### Basic Entry Point
 
-A client script should export a function that is the script's entry point. This fuction takes reSolve context as the parameter.
+A client script should export a function that is the script's entry point. This function takes reSolve context as the parameter.
 
 ```js
 ```
@@ -23,6 +23,8 @@ Register the entry point in the `clientEntries` configuration section:
 
 ```js
 ```
+
+Use the API available through the reSolve context object to communicate with the backend. For the detailed description of this API, see the [API Reference](api-reference.md).
 
 ### Entry Point With SSR Support
 
