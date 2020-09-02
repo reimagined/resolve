@@ -6,7 +6,9 @@ const queryIsReadyHandler = async (req, res) => {
     for (const [listenerName, { eventTypes }] of eventListeners) {
       queryIsReadyPromises.push(
         (async () => {
-          const latestEvent = await eventstoreAdapter.getLatestEvent(eventTypes)
+          const latestEvent = await eventstoreAdapter.getLatestEvent({
+            eventTypes
+          })
           if (latestEvent == null) {
             return
           }
@@ -22,6 +24,8 @@ const queryIsReadyHandler = async (req, res) => {
             ) {
               break
             }
+
+            await new Promise(resolve => setTimeout(resolve, 1000))
           }
         })()
       )

@@ -1,10 +1,10 @@
 import debugLevels from 'resolve-debug-levels'
 
-import bootstrapOne from '../common/bootstrap-one'
+import bootstrapOne from './bootstrap-one'
 
 const log = debugLevels('resolve:resolve-runtime:bootstrap')
 
-const bootstrap = async resolve => {
+const bootstrap = async (resolve, upstream) => {
   log.debug('bootstrap started')
   const promises = []
   for (const {
@@ -20,7 +20,7 @@ const bootstrap = async resolve => {
         eventTypes,
         connectorName,
         credentials: resolve.eventSubscriberCredentials,
-        upstream: true
+        upstream
       })
     )
   }
