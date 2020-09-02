@@ -1,11 +1,11 @@
 {
   "name": "@internal/workspace-manager",
   "private": true,
-  "version": "0.25.1",
+  "version": "0.25.2",
   "bin": "./bin/index.js",
   "dependencies": {
     "@babel/cli": "^7.0.0",
-    "@internal/helpers": "0.25.1",
+    "@internal/helpers": "0.25.2",
     "glob": "7.1.6"
   },
   "scripts": {
