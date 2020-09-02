@@ -1,6 +1,7 @@
 import debugLevels from 'resolve-debug-levels'
 
-import bootstrap from './bootstrap'
+import bootstrap from '../common/bootstrap'
+import shutdown from '../common/shutdown'
 
 const log = debugLevels('resolve:resolve-runtime:deploy-service-event-handler')
 
@@ -115,7 +116,17 @@ const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
   switch (lambdaEvent.part) {
     case 'bootstrap': {
       try {
-        return await bootstrap(resolve)
+        return await bootstrap(resolve, true)
+      } catch (error) {
+        subSegment.addError(error)
+        throw error
+      } finally {
+        subSegment.close()
+      }
+    }
+    case 'shutdown': {
+      try {
+        return await shutdown(resolve, true)
       } catch (error) {
         subSegment.addError(error)
         throw error

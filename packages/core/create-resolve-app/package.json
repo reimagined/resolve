@@ -13,6 +13,7 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=create-resolve-app",
     "test": "echo || exit 0",
     "testw": "echo || exit 0"
   },
@@ -33,7 +34,9 @@
     "command-line-args": "^5.0.2",
     "fs-extra": "^7.0.1",
     "validate-npm-package-name": "^3.0.0",
-    "source-map-support": "^0.5.9"
+    "source-map-support": "^0.5.9",
+    "resolve-debug-levels": "0.25.1",
+    "progress": "2.0.3"
   },
   "babelCompile": [
     {
