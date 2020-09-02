@@ -21,6 +21,7 @@ const install = pool => async () => {
         execSync(command, {
           cwd: applicationPath
         })
+        return
       } catch (error) {
         if (
           error != null &&
