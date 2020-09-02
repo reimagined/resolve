@@ -19,7 +19,6 @@ const install = pool => async () => {
     for (let retry = 0; retry < 10; retry++) {
       try {
         execSync(command, {
-          stdio: 'ignore',
           cwd: applicationPath
         })
       } catch (error) {
