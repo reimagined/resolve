@@ -364,9 +364,9 @@ A View Model's **resolver** allows you to restrict a user's access to the View M
 
 - The reSolve context object;
 - The query object that contains a list of aggregate IDs;
-- An object that contains a JSON Web Token and the View Model that contains a View Model name and a list available event types.
+- An object that contains a JSON Web Token and View Model settings. The View Model settings object contains the View Model's name and a list of available event types.
 
-In the resolver's code, you can use arbitrary logic to check a user's access permissions and either throw an exception to indicate an access error, or filter the `eventTypes` list to define which events are available to the user.
+In the resolver's code, you can use arbitrary logic to check a user's access permissions and either throw an exception to indicate an access error or filter the `eventTypes` list to specify what events are available to the user.
 
 The resolver function should return a built View Model data object and a meta object that contains the following data:
 
@@ -380,11 +380,7 @@ The code sample below demonstrates a View Model resolver implementation:
 import jwt from 'jsonwebtoken'
 import jwtSecret from '../../auth/jwt-secret'
 
-export default async (
-  resolve,
-  query,
-  { jwt: token, viewModel }
-) => {
+export default async (resolve, query, { jwt: token, viewModel }) => {
   try {
     jwt.verify(token, jwtSecret)
   } catch (error) {
