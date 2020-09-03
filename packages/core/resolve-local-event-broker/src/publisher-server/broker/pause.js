@@ -29,6 +29,7 @@ const pause = async (pool, payload) => {
     )
   }
   const { status, subscriptionId } = parseSubscription(result[0])
+
   if (status === SubscriptionStatus.ERROR) {
     throw new Error(
       `Event subscriber ${payload.eventSubscriber} is in error state`

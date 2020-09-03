@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const minimist = require('minimist')
 const chalk = require('chalk')
 const babel = require('@babel/cli/lib/babel/dir').default
 const { getBabelConfig, getCompileConfigs } = require('@internal/helpers')
@@ -72,7 +73,7 @@ async function compilePackage(config) {
   }
 }
 
-async function main() {
+async function main({ name: packageName }) {
   const map = new Map()
   let pendingPromises = []
 
@@ -84,7 +85,18 @@ async function main() {
     pendingPromises.push(promise)
   }
 
+  const whiteList = []
+  if (packageName != null) {
+    const config = configs.find(({ name }) => name === packageName)
+    if (config != null) {
+      whiteList.push(packageName, ...config.dependencies)
+    }
+  }
+
   for (const config of configs) {
+    if (whiteList.length > 0 && !whiteList.includes(config.name)) {
+      continue
+    }
     const build = { config, status: 'waiting' }
     map.set(config.name, build)
 
@@ -132,7 +144,7 @@ async function main() {
   }
 }
 
-main()
+main(minimist(process.argv.slice(2)))
   .then(() => {
     if (isFailed) {
       process.exit(1)

@@ -6,3 +6,4 @@ examples/**/lib
 examples/shopping-list-advanced/native/resolve/
 packages/core/resolve-zeromq/optional
 **/*.d.ts
+packages/core/resolve-react-hooks/src/index.ts

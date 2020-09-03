@@ -150,6 +150,13 @@ void (async () => {
         break
       }
 
+      case 'test:e2e-cloud': {
+        const moduleAdmin = resolveModuleAdmin()
+        const resolveConfig = merge(baseConfig, moduleAdmin, cloudConfig)
+        await build(resolveConfig)
+        break
+      }
+
       case 'import': {
         const config = merge(baseConfig, devConfig)
         await reset(config, {

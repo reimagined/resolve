@@ -1,6 +1,6 @@
 {
   "name": "resolve-saga",
-  "version": "0.25.0",
+  "version": "0.25.2",
   "description": "Provides an interface used to execute sagas",
   "engines": {
     "node": ">=10.9"
@@ -26,9 +26,9 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-saga#readme",
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "resolve-command": "0.25.0",
-    "resolve-debug-levels": "0.25.0",
-    "resolve-query": "0.25.0",
+    "resolve-command": "0.25.2",
+    "resolve-debug-levels": "0.25.2",
+    "resolve-query": "0.25.2",
     "uuid": "^3.3.3"
   },
   "devDependencies": {
