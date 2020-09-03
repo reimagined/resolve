@@ -2,7 +2,7 @@ import createCommandExecutor from '../src'
 import { CommandError } from '../src'
 
 let eventstoreAdapter: any
-let publisher: any
+let onCommandExecuted: any
 let events: any
 let DateNow: any
 let performanceTracer: any
@@ -59,12 +59,10 @@ beforeEach(() => {
     })
   }
 
-  publisher = {
-    publish: jest.fn().mockImplementation(async ({ event }) => {
-      events.push(event)
-      return event
-    })
-  }
+  onCommandExecuted = jest.fn().mockImplementation(async event => {
+    events.push(event)
+    return event
+  })
 
   DateNow = Date.now
   const timestamp = Date.now()
@@ -96,7 +94,7 @@ afterEach(() => {
   events = null
   global.Date.now = DateNow
   performanceTracer = null
-  publisher = null
+  onCommandExecuted = null
   snapshots = null
 })
 
@@ -118,7 +116,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -162,7 +160,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -213,7 +211,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -281,7 +279,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -355,7 +353,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -405,7 +403,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -478,7 +476,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -518,7 +516,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -551,7 +549,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -587,7 +585,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -623,7 +621,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -644,7 +642,7 @@ describe('executeCommand', () => {
     test('should throw error when an aggregate does not exist', async () => {
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: []
       })
 
@@ -682,7 +680,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -717,7 +715,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -750,7 +748,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -785,7 +783,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -842,7 +840,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -906,7 +904,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -988,7 +986,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1076,7 +1074,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1139,7 +1137,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1225,7 +1223,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1278,7 +1276,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1324,7 +1322,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1373,7 +1371,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1422,7 +1420,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1456,7 +1454,7 @@ describe('executeCommand', () => {
     test('should throw error when an aggregate does not exist', async () => {
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [],
         performanceTracer
       })
@@ -1507,7 +1505,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1555,7 +1553,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1601,7 +1599,7 @@ describe('executeCommand', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1626,7 +1624,7 @@ describe('dispose', () => {
     test('should dispose the command executor', async () => {
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: []
       })
 
@@ -1669,7 +1667,7 @@ describe('dispose', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -1734,7 +1732,7 @@ describe('dispose', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate]
       })
 
@@ -1775,7 +1773,7 @@ describe('dispose', () => {
     test('should dispose the command executor', async () => {
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [],
         performanceTracer
       })
@@ -1831,7 +1829,7 @@ describe('dispose', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })
@@ -1909,7 +1907,7 @@ describe('dispose', () => {
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
         performanceTracer
       })

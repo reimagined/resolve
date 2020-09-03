@@ -47,11 +47,8 @@ const makeDummyEventStoreAdapter = ({
 const makeDummyPublisher = () => {
   const savedEvents: Event[] = []
 
-  return {
-    savedEvents,
-    publish: async ({ event }: { event: Event }) => {
-      savedEvents.push(event)
-    }
+  return async (event: Event) => {
+    savedEvents.push(event)
   }
 }
 
@@ -70,11 +67,11 @@ export const executeCommand = async (
   const { assertion, resolve, reject } = state
   let executor: CommandExecutor | null = null
   try {
-    const publisher = makeDummyPublisher()
+    const onCommandExecuted = makeDummyPublisher()
 
     executor = createCommand({
       eventstoreAdapter: makeDummyEventStoreAdapter(state),
-      publisher,
+      onCommandExecuted,
       performanceTracer: null,
       aggregates: [
         {

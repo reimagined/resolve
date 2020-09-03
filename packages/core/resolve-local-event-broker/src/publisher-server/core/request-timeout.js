@@ -97,9 +97,7 @@ async function requestTimeout(pool, payload) {
     subscriptionId: subscriptionDescription.subscriptionId,
     eventSubscriber: subscriptionDescription.eventSubscriber
   }
-  if (deliveryStrategy === DeliveryStrategy.PASSIVE) {
-    throw new Error(`Request timeout should not be activated for passive mode`)
-  }
+
   if (
     (deliveryStrategy === DeliveryStrategy.ACTIVE_XA &&
       xaTransactionId == null) ||
@@ -117,6 +115,7 @@ async function requestTimeout(pool, payload) {
     await invokeOperation(pool, LazinessStrategy.EAGER, input)
     return
   }
+
   const result = {
     successEvent: null,
     error: null,

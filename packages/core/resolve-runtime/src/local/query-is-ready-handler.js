@@ -1,27 +1,31 @@
 const queryIsReadyHandler = async (req, res) => {
   try {
-    const { eventstoreAdapter, publisher, eventListeners } = req.resolve
+    const { eventstoreAdapter, eventBus, eventListeners } = req.resolve
     const queryIsReadyPromises = []
 
     for (const [listenerName, { eventTypes }] of eventListeners) {
       queryIsReadyPromises.push(
         (async () => {
-          const latestEvent = await eventstoreAdapter.getLatestEvent(eventTypes)
+          const latestEvent = await eventstoreAdapter.getLatestEvent({
+            eventTypes
+          })
           if (latestEvent == null) {
             return
           }
 
-          let lastError, lastEvent
-          while (lastError != null) {
-            void ({ lastEvent, lastError } = await publisher.status({
+          let successEvent, failedEvent
+          while (failedEvent == null) {
+            void ({ successEvent, failedEvent } = await eventBus.status({
               eventSubscriber: listenerName
             }))
             if (
-              lastEvent != null &&
-              lastEvent.timestamp >= latestEvent.timestamp
+              successEvent != null &&
+              successEvent.timestamp >= latestEvent.timestamp
             ) {
               break
             }
+
+            await new Promise(resolve => setTimeout(resolve, 1000))
           }
         })()
       )

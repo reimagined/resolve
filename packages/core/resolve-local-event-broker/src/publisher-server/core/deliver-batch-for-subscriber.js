@@ -77,27 +77,11 @@ const deliverBatchForSubscriber = async (pool, payload) => {
   if (
     deliveryStrategy !== DeliveryStrategy.ACTIVE_NONE &&
     deliveryStrategy !== DeliveryStrategy.ACTIVE_REGULAR &&
-    deliveryStrategy !== DeliveryStrategy.ACTIVE_XA &&
-    deliveryStrategy !== DeliveryStrategy.PASSIVE
+    deliveryStrategy !== DeliveryStrategy.ACTIVE_XA
   ) {
     throw new Error(`Wrong deliveryStrategy="${deliveryStrategy}"`)
   }
-  if (deliveryStrategy === DeliveryStrategy.PASSIVE) {
-    await invokeConsumer(pool, ConsumerMethod.SendEvents, {
-      eventSubscriber,
-      events: null,
-      batchId
-    })
-    const input = {
-      type: PrivateOperationType.FINALIZE_BATCH,
-      payload: {
-        activeBatch,
-        result: null
-      }
-    }
-    await invokeOperation(pool, LazinessStrategy.EAGER, input)
-    return
-  }
+
   let [events, xaTransactionId] = [null, existingXaTransactionId]
   if (isEventBasedRun) {
     try {

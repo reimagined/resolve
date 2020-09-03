@@ -7,7 +7,8 @@ import createSchedulerSagas from './create-scheduler-sagas'
 import wrapRegularSagas from './wrap-regular-sagas'
 
 const createSaga = ({
-  publisher,
+  invokeEventBusAsync,
+  onCommandExecuted,
   readModelConnectors,
   sagas,
   schedulers,
@@ -15,28 +16,60 @@ const createSaga = ({
   executeQuery,
   performanceTracer,
   uploader,
-  eventstoreAdapter
+  eventstoreAdapter,
+  getRemainingTimeInMillis,
+  performAcknowledge
 }) => {
   const schedulerAggregatesNames = new Set(schedulers.map(({ name }) => name))
   let eventProperties = {}
   const executeScheduleCommand = createCommand({
     aggregates: createSchedulersAggregates(schedulers),
-    publisher,
+    onCommandExecuted,
     eventstoreAdapter
   })
 
   const executeCommandOrScheduler = async (...args) => {
-    const aggregateName = args[0].aggregateName
-    if (schedulerAggregatesNames.has(aggregateName)) {
-      return await executeScheduleCommand(...args)
-    } else {
-      return await executeCommand(...args)
+    if (
+      !(
+        args.length > 0 &&
+        args.length < 3 &&
+        Object(args[0]) === args[0] &&
+        (Object(args[1]) === args[1] || args[1] == null)
+      )
+    ) {
+      throw new Error(
+        `Invalid saga command/scheduler args ${JSON.stringify(args)}`
+      )
     }
+    const options = { ...args[0] }
+
+    const aggregateName = options.aggregateName
+    if (schedulerAggregatesNames.has(aggregateName)) {
+      return await executeScheduleCommand(options)
+    } else {
+      return await executeCommand(options)
+    }
+  }
+
+  const executeDirectQuery = async (...args) => {
+    if (
+      !(
+        args.length > 0 &&
+        args.length < 3 &&
+        Object(args[0]) === args[0] &&
+        (Object(args[1]) === args[1] || args[1] == null)
+      )
+    ) {
+      throw new Error(`Invalid saga query args ${JSON.stringify(args)}`)
+    }
+
+    const options = { ...args[0], properties: args[1] }
+    return await executeQuery(options)
   }
 
   const sagaProvider = Object.create(Object.prototype, {
     executeCommand: { get: () => executeCommandOrScheduler, enumerable: true },
-    executeQuery: { get: () => executeQuery, enumerable: true },
+    executeQuery: { get: () => executeDirectQuery, enumerable: true },
     eventProperties: { get: () => eventProperties, enumerable: true },
     getSecretsManager: {
       get: () => eventstoreAdapter.getSecretsManager,
@@ -49,29 +82,31 @@ const createSaga = ({
   const schedulerSagas = createSchedulerSagas(schedulers, sagaProvider)
 
   const executeListener = createQuery({
-    publisher,
+    invokeEventBusAsync,
     readModelConnectors,
     readModels: [...regularSagas, ...schedulerSagas],
     viewModels: [],
     performanceTracer,
+    getRemainingTimeInMillis,
+    performAcknowledge,
     eventstoreAdapter
   })
 
-  const updateByEvents = async ({
+  const sendEvents = async ({
     modelName,
     events,
-    getRemainingTimeInMillis,
     xaTransactionId,
-    properties
+    properties,
+    batchId
   }) => {
     eventProperties = properties
-    const result = await executeListener.updateByEvents({
+    await executeListener.sendEvents({
       modelName,
       events,
-      getRemainingTimeInMillis,
-      xaTransactionId
+      xaTransactionId,
+      properties,
+      batchId
     })
-    return result
   }
 
   const runScheduler = async entry => {
@@ -91,11 +126,22 @@ const createSaga = ({
       executeListener.dispose()
     ])
 
-  const executeSaga = Object.assign(
-    executeListener.bind(executeListener),
-    executeListener,
-    { updateByEvents, runScheduler, dispose }
-  )
+  const executeSaga = new Proxy(executeListener, {
+    get(_, key) {
+      if (key === 'runScheduler') {
+        return runScheduler
+      } else if (key === 'sendEvents') {
+        return sendEvents
+      } else if (key === 'dispose') {
+        return dispose
+      } else {
+        return executeListener[key].bind(executeListener)
+      }
+    },
+    set() {
+      throw new TypeError(`Resolve-saga API is immutable`)
+    }
+  })
 
   return executeSaga
 }
