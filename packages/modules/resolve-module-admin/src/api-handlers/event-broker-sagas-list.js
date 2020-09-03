@@ -1,12 +1,14 @@
 const sagasList = async (req, res) => {
-  const listenerIds = [
-    ...req.resolve.schedulers.map(({ name }) => ({ eventSubscriber: name })),
-    ...req.resolve.sagas.map(({ name }) => ({ eventSubscriber: name }))
-  ]
-  const statuses = await Promise.all(
-    listenerIds.map(req.resolve.publisher.status)
-  )
-  res.json(statuses)
+  const statusPromises = []
+  for (const { name: eventSubscriber } of [
+    ...req.resolve.schedulers,
+    ...req.resolve.sagas
+  ]) {
+    statusPromises.push(req.resolve.eventBus.status({ eventSubscriber }))
+  }
+  const statuses = await Promise.all(statusPromises)
+
+  await res.json(statuses)
 }
 
 export default sagasList

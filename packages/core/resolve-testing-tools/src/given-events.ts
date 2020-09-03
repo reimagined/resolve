@@ -1,5 +1,4 @@
 import { GivenEventsContext } from '.'
-import { SagaParams } from './saga'
 import { Phases, symbol } from './constants'
 import { shouldProduceEvent, shouldThrow } from './aggregate-assertions'
 

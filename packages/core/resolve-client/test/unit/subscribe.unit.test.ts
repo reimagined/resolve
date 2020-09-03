@@ -284,7 +284,7 @@ describe('re-subscribe', () => {
     expect(refreshSpy).toBeCalledTimes(2)
   })
 
-  test('close, recreate and reschedule on disconnected', async () => {
+  test('close on disconnected', async () => {
     await connect(
       context,
       'subscribe-url',
@@ -300,11 +300,11 @@ describe('re-subscribe', () => {
 
     mockIsConnected.mockReturnValueOnce(false)
 
+    await disconnect(context, ['aggregate-id-1'], 'view-model', mockCallback)
+
     jest.runOnlyPendingTimers()
 
-    await Promise.resolve()
-
     expect(mockClose).toBeCalled()
-    expect(mockInit).toBeCalledTimes(2)
+    expect(mockInit).toBeCalledTimes(1)
   })
 })
