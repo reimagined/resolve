@@ -1,6 +1,6 @@
 import { localRegistry as server } from './constants'
 
-const patchPackageJson = pool => async () => {
+const patchPackageJson = (pool) => async () => {
   const {
     console,
     chalk,
@@ -11,7 +11,7 @@ const patchPackageJson = pool => async () => {
     applicationPackageJsonPath,
     resolvePackages,
     safeName,
-    localRegistry
+    localRegistry,
   } = pool
   console.log()
   console.log(chalk.green('Patch package.json'))
@@ -27,7 +27,7 @@ const patchPackageJson = pool => async () => {
     'dependencies',
     'devDependencies',
     'peerDependencies',
-    'optionalDependencies'
+    'optionalDependencies',
   ]
 
   fs.writeFileSync(
@@ -37,7 +37,7 @@ const patchPackageJson = pool => async () => {
 
   const localPackages = fs
     .readdirSync(applicationPath)
-    .filter(directory => {
+    .filter((directory) => {
       try {
         require(path.join(applicationPath, directory, 'package.json'))
         return true
@@ -45,20 +45,20 @@ const patchPackageJson = pool => async () => {
         return false
       }
     })
-    .map(directory => ({
+    .map((directory) => ({
       name: path.join(applicationPath, directory, 'package.json').name,
-      directory: path.join(applicationPath, directory)
+      directory: path.join(applicationPath, directory),
     }))
 
   localPackages.push({
     name: applicationName,
-    directory: applicationPath
+    directory: applicationPath,
   })
 
   for (const { directory } of localPackages) {
     const listPackageNamesForPatching = [
       ...resolvePackages,
-      ...localPackages.map(({ name }) => name)
+      ...localPackages.map(({ name }) => name),
     ]
 
     const packageJson = require(path.join(directory, 'package.json'))

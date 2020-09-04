@@ -3,7 +3,7 @@ const getStaticToken = async (req, res) => {
   try {
     const token = await adapter.createToken({
       dir: 'logo',
-      expireTime: 10000000
+      expireTime: 10000000,
     })
 
     res.end(token)

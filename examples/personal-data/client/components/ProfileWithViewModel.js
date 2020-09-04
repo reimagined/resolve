@@ -11,15 +11,15 @@ const ProfileWithViewModel = ({ userId }) => {
   const viewModelStateChanged = (user, initial) => {
     if (!initial) {
       fetch(`/api/personal-data-keys/${user.id}`)
-        .then(response => response.text())
-        .then(key => {
+        .then((response) => response.text())
+        .then((key) => {
           const decrypt = getDecrypter(key)
 
           setUser({
             ...user,
             firstName: decrypt(user.firstName),
             lastName: decrypt(user.lastName),
-            contacts: decrypt(user.contacts)
+            contacts: decrypt(user.contacts),
           })
         })
     }

@@ -3,16 +3,16 @@ export default ({
     SCHEDULED_COMMAND_CREATED,
     SCHEDULED_COMMAND_EXECUTED,
     SCHEDULED_COMMAND_SUCCEEDED,
-    SCHEDULED_COMMAND_FAILED
-  }
+    SCHEDULED_COMMAND_FAILED,
+  },
 }) => ({
   create: async (
     state,
     {
       payload: {
         date,
-        command: { aggregateId, aggregateName, type, payload = {} }
-      }
+        command: { aggregateId, aggregateName, type, payload = {} },
+      },
     }
   ) => {
     if (
@@ -38,9 +38,9 @@ export default ({
           aggregateId,
           aggregateName,
           type,
-          payload
-        }
-      }
+          payload,
+        },
+      },
     }
   },
   execute: async ({ state, date, command }) => {
@@ -51,8 +51,8 @@ export default ({
       type: SCHEDULED_COMMAND_EXECUTED,
       payload: {
         date,
-        command
-      }
+        command,
+      },
     }
   },
   success: async ({ state }) => {
@@ -61,7 +61,7 @@ export default ({
 
     return {
       type: SCHEDULED_COMMAND_SUCCEEDED,
-      payload: {}
+      payload: {},
     }
   },
   failure: async ({ state }, { payload: { reason } }) => {
@@ -71,8 +71,8 @@ export default ({
     return {
       type: SCHEDULED_COMMAND_FAILED,
       payload: {
-        reason
-      }
+        reason,
+      },
     }
-  }
+  },
 })

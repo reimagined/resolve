@@ -7,7 +7,7 @@ const emptySnapshotAdapter = () =>
     dispose: emptyAsyncFunction,
     dropSnapshot: emptyAsyncFunction,
     init: emptyAsyncFunction,
-    drop: emptyAsyncFunction
+    drop: emptyAsyncFunction,
   })
 
 export default emptySnapshotAdapter

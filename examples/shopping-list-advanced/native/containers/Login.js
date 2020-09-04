@@ -9,7 +9,7 @@ import {
   Input,
   Item,
   Label,
-  View
+  View,
 } from 'native-base'
 import { StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
@@ -20,38 +20,38 @@ import { Logo } from '@shopping-list-advanced/ui'
 
 import getNativeChunk from '../native-chunk'
 const {
-  resolveRedux: { actions }
+  resolveRedux: { actions },
 } = getNativeChunk()
 
 const styles = StyleSheet.create({
   contentContainer: {
     justifyContent: 'center',
-    flex: 1
+    flex: 1,
   },
   form: {
-    marginBottom: 20
+    marginBottom: 20,
   },
   buttonContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   button: {
-    marginRight: 5
+    marginRight: 5,
   },
   socialTitle: {
-    marginTop: 30
+    marginTop: 30,
   },
   socialButton: {
-    marginTop: 10
+    marginTop: 10,
   },
   socialButtonIcon: {
-    marginRight: 0
-  }
+    marginRight: 0,
+  },
 })
 
 export class Login extends React.PureComponent {
   state = {
     username: '',
-    password: ''
+    password: '',
   }
 
   onLogin = () => {
@@ -60,7 +60,7 @@ export class Login extends React.PureComponent {
       {
         username: this.state.username,
         password: this.state.password,
-        noredirect: true
+        noredirect: true,
       },
       'POST'
     )
@@ -72,21 +72,21 @@ export class Login extends React.PureComponent {
       {
         username: this.state.username,
         password: this.state.password,
-        noredirect: true
+        noredirect: true,
       },
       'POST'
     )
   }
 
-  updateUsername = username => {
+  updateUsername = (username) => {
     this.setState({
-      username
+      username,
     })
   }
 
-  updatePassword = password => {
+  updatePassword = (password) => {
     this.setState({
-      password
+      password,
     })
   }
 
@@ -127,7 +127,7 @@ export class Login extends React.PureComponent {
   }
 }
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(actions, dispatch)
 
 export default requiredNoAuth(connect(null, mapDispatchToProps)(Login))

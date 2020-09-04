@@ -3,7 +3,7 @@ import { EOL } from 'os'
 
 import { start } from './importer'
 
-const runImport = importConfig => {
+const runImport = (importConfig) => {
   if (process.env.hasOwnProperty(String(importConfig.port))) {
     process.env.PORT = +String(process.env.PORT)
   } else if (
@@ -17,7 +17,7 @@ const runImport = importConfig => {
 
   Object.assign(process.env, {
     RESOLVE_SERVER_OPEN_BROWSER: 'false',
-    ROOT_PATH: importConfig.rootPath
+    ROOT_PATH: importConfig.rootPath,
   })
 
   let bar
@@ -25,12 +25,12 @@ const runImport = importConfig => {
   console.log('Import has been started. Press Control+C to stop import')
 
   start(
-    total => {
+    (total) => {
       bar = new ProgressBar(
         'Data importing from news.ycombinator.com [:bar] :current/:total',
         {
           width: 20,
-          total
+          total,
         }
       )
     },

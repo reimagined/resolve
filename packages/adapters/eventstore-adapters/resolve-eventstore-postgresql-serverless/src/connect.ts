@@ -18,7 +18,7 @@ const connect = async (
     escape,
     fullJitter,
     executeStatement,
-    coercer
+    coercer,
   } = specific
 
   const {
@@ -49,7 +49,7 @@ const connect = async (
     rollbackTransaction,
     escapeId,
     escape,
-    isTimeoutError
+    isTimeoutError,
   })
 
   log.debug('RDS data service client configured')

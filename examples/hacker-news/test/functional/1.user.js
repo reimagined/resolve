@@ -8,7 +8,7 @@ const waitSelector = async (t, eventSubscriber, selector) => {
     const res = await fetch(`${ROOT_URL}/api/event-broker/read-models-list`)
 
     const readModel = (await res.json()).find(
-      readModel => readModel.eventSubscriber === eventSubscriber
+      (readModel) => readModel.eventSubscriber === eventSubscriber
     )
 
     if (readModel.status !== 'deliver') {

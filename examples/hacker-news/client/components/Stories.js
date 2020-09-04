@@ -12,7 +12,7 @@ const Stories = ({
   type,
   userId,
   upvoteStory,
-  unvoteStory
+  unvoteStory,
 }) => {
   if (isLoading !== false) {
     return null

@@ -10,7 +10,7 @@ const pureRequire = __non_webpack_require__ //eslint-disable-line no-undef
 const entryPointDirnamePlaceholder = Symbol('EntryPointDirnamePlaceholder')
 let entryPointDirname = entryPointDirnamePlaceholder
 
-const liveRequire = filePath => {
+const liveRequire = (filePath) => {
   if (entryPointDirname === entryPointDirnamePlaceholder) {
     entryPointDirname = (
       Object.values(pureRequire.cache).find(

@@ -24,7 +24,7 @@ const defineTable = async (
   )} (
       ${fields
         .concat(Object.keys(indexes))
-        .map(columnName => `${escapeId(columnName)} JSONB`)
+        .map((columnName) => `${escapeId(columnName)} JSONB`)
         .join(', ')}
     );
 

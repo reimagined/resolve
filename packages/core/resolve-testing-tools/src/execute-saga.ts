@@ -4,7 +4,7 @@ const defaultMockError = `Using default mock result: override "executeCommand", 
 
 export const executeSaga = async ({
   promise,
-  transformEvents
+  transformEvents,
 }: {
   promise: any
   transformEvents: Function
@@ -23,7 +23,7 @@ export const executeSaga = async ({
       commands: [],
       scheduleCommands: [],
       sideEffects: [],
-      queries: []
+      queries: [],
     }
     const {
       name,
@@ -31,7 +31,7 @@ export const executeSaga = async ({
       events,
       handlers,
       sideEffects,
-      properties
+      properties,
     } = promise[symbol]
 
     const store = await adapter.connect(name)
@@ -74,7 +74,7 @@ export const executeSaga = async ({
             console.warn(defaultMockError)
           }
         },
-        isEnabled
+        isEnabled,
       }
 
       await handler(
@@ -88,7 +88,7 @@ export const executeSaga = async ({
             }
             return acc
           }, accumulator),
-          store
+          store,
         },
         event
       )

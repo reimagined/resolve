@@ -10,7 +10,7 @@ import {
   InputGroup,
   FormControl,
   FormGroup,
-  FormLabel
+  FormLabel,
 } from 'react-bootstrap'
 
 import ShoppingListItem from './ShoppingListItem'
@@ -19,31 +19,31 @@ import { useSelector } from 'react-redux'
 
 const ShoppingList = ({
   match: {
-    params: { id: aggregateId }
-  }
+    params: { id: aggregateId },
+  },
 }) => {
   const { connect, dispose, selector: thisList } = useReduxViewModel({
     name: 'shoppingList',
-    aggregateIds: [aggregateId]
+    aggregateIds: [aggregateId],
   })
 
   const { data: shoppingList, status: shoppingListStatus } = useSelector(
     thisList
   )
 
-  const { execute: executeCreateShoppingItem } = useReduxCommand(text => ({
+  const { execute: executeCreateShoppingItem } = useReduxCommand((text) => ({
     type: 'createShoppingItem',
     aggregateId,
     aggregateName: 'ShoppingList',
     payload: {
       text,
-      id: Date.now().toString()
-    }
+      id: Date.now().toString(),
+    },
   }))
 
   const [itemText, setItemText] = useState('')
   const createShoppingItem = useCallback(
-    text => {
+    (text) => {
       executeCreateShoppingItem(text)
       setItemText('')
     },
@@ -51,7 +51,7 @@ const ShoppingList = ({
   )
 
   const [shoppingListName, setShoppingListName] = useState(null)
-  const updateShoppingListName = event => {
+  const updateShoppingListName = (event) => {
     setShoppingListName(event.target.value)
   }
 
@@ -59,25 +59,25 @@ const ShoppingList = ({
     type: 'renameShoppingList',
     aggregateId,
     aggregateName: 'ShoppingList',
-    payload: { name: shoppingList ? shoppingList.name : '' }
+    payload: { name: shoppingList ? shoppingList.name : '' },
   })
 
   const { execute: removeShoppingList } = useReduxCommand({
     type: 'removeShoppingList',
     aggregateId,
-    aggregateName: 'ShoppingList'
+    aggregateName: 'ShoppingList',
   })
 
-  const updateItemText = event => {
+  const updateItemText = (event) => {
     setItemText(event.target.value)
   }
-  const onItemTextPressEnter = event => {
+  const onItemTextPressEnter = (event) => {
     if (event.charCode === 13) {
       event.preventDefault()
       createShoppingItem(itemText)
     }
   }
-  const onShoppingListNamePressEnter = event => {
+  const onShoppingListNamePressEnter = (event) => {
     if (event.charCode === 13) {
       event.preventDefault()
       renameShoppingList()

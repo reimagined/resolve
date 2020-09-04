@@ -9,7 +9,7 @@ import {
   queryReadModelRequest,
   QueryReadModelRequestAction,
   queryReadModelSuccess,
-  QueryReadModelSuccessAction
+  QueryReadModelSuccessAction,
 } from './actions'
 import { firstOfType } from 'resolve-core'
 import { isDependencies, isOptions } from '../helpers'
@@ -46,13 +46,13 @@ export type ReduxReadModelHookOptions = {
 }
 
 const defaultQueryOptions: QueryOptions = {
-  method: 'GET'
+  method: 'GET',
 }
 
 const internalActions: ReadModelReduxActionsCreators = {
   request: queryReadModelRequest,
   success: queryReadModelSuccess,
-  failure: queryReadModelFailure
+  failure: queryReadModelFailure,
 }
 
 function useReduxReadModel(query: ReadModelQuery, initialState: any): HookData
@@ -86,7 +86,7 @@ function useReduxReadModel(
 
   const actualDependencies: any[] =
     firstOfType<any[]>(isDependencies, options, dependencies, dependencies) ??
-    [query, actualOptions, actualActionCreators].filter(i => i)
+    [query, actualOptions, actualActionCreators].filter((i) => i)
 
   const { request, success, failure } = actualActionCreators
   const { selectorId } = actualOptions
@@ -124,13 +124,13 @@ function useReduxReadModel(
       getEntry(
         state.readModels,
         selectorId || {
-          query
+          query,
         },
         {
           status: ResultStatus.Initial,
-          data: initialState
+          data: initialState,
         }
-      )
+      ),
   }
 }
 

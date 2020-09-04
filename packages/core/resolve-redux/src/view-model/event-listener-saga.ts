@@ -19,7 +19,7 @@ type SubscriptionArgs = {
   viewModel: any
 }
 
-const eventListenerSaga = function*(
+const eventListenerSaga = function* (
   { viewModels, sagaKey, sagaManager, client, store }: EventListenerSagaArgs,
   { cursor, url, query, state, viewModel }: SubscriptionArgs
 ) {

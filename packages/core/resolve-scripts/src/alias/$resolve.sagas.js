@@ -3,7 +3,7 @@ import {
   RESOURCE_ANY,
   RUNTIME_ENV_ANYWHERE,
   IMPORT_INSTANCE,
-  RUNTIME_ENV_NOWHERE
+  RUNTIME_ENV_NOWHERE,
 } from '../constants'
 import importResource from '../import_resource'
 import { checkRuntimeEnv } from '../declare_runtime_env'
@@ -49,7 +49,7 @@ export default ({ resolveConfig, isClient }) => {
       instanceMode: IMPORT_INSTANCE,
       calculateHash: 'resolve-saga-source-hash',
       imports,
-      constants
+      constants,
     })
 
     if (saga.sideEffects != null) {
@@ -61,7 +61,7 @@ export default ({ resolveConfig, isClient }) => {
         instanceMode: IMPORT_INSTANCE,
         calculateHash: 'resolve-saga-side-effects-hash',
         imports,
-        constants
+        constants,
       })
     } else {
       constants.push(`const sideEffects_${index}_original = null`)
@@ -90,7 +90,7 @@ export default ({ resolveConfig, isClient }) => {
       instanceMode: IMPORT_INSTANCE,
       instanceFallback: 'resolve-runtime/lib/common/defaults/encryption.js',
       imports,
-      constants
+      constants,
     })
 
     exports.push(`sagas.push({`, `  name: name_${index}`)

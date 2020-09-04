@@ -5,13 +5,13 @@ import {
   PrivateOperationType,
   LazinessStrategy,
   SUBSCRIBERS_TABLE_NAME,
-  SubscriptionStatus
+  SubscriptionStatus,
 } from '../constants'
 
 const finalizeAndReportBatch = async (pool, payload) => {
   const {
     database: { escapeId, escapeStr, runQuery, runRawQuery },
-    invokeOperation
+    invokeOperation,
   } = pool
 
   const { activeBatch, result } = payload
@@ -27,7 +27,7 @@ const finalizeAndReportBatch = async (pool, payload) => {
     let { successEvent, failedEvent, error, cursor } = result
     if (successEvent == null && failedEvent == null && error == null) {
       error = {
-        message: `EventSubscriber ${eventSubscriber} on batchId ${batchId} perform idle operation`
+        message: `EventSubscriber ${eventSubscriber} on batchId ${batchId} perform idle operation`,
       }
     }
     const nextStatus =
@@ -105,8 +105,8 @@ const finalizeAndReportBatch = async (pool, payload) => {
     const input = {
       type: PrivateOperationType.RESUME_SUBSCRIBER,
       payload: {
-        eventSubscriber
-      }
+        eventSubscriber,
+      },
     }
     await invokeOperation(pool, LazinessStrategy.EAGER, input)
   }

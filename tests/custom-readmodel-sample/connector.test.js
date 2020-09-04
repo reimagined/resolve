@@ -13,11 +13,11 @@ describe('Read-model generic adapter API', () => {
     name,
     resolvers: resolversModule,
     projection: projectionModule,
-    connectorName
+    connectorName,
   } = config.readModels.find(({ name }) => name === 'Counter')
   const {
     module: connectorModule,
-    options: connectorOptions
+    options: connectorOptions,
   } = config.readModelConnectors[connectorName]
 
   const createConnector = interopRequireDefault(require(`./${connectorModule}`))
@@ -53,26 +53,26 @@ describe('Read-model generic adapter API', () => {
         aggregateId: 'ID',
         type: 'INCREMENT',
         timestamp: 1,
-        payload: 100
+        payload: 100,
       },
       {
         aggregateId: 'ID',
         type: 'DECREMENT',
         timestamp: 2,
-        payload: 200
+        payload: 200,
       },
       {
         aggregateId: 'ID',
         type: 'INCREMENT',
         timestamp: 3,
-        payload: 300
-      }
+        payload: 300,
+      },
     ])
       .readModel({
         name,
         projection,
         resolvers,
-        adapter: adapter
+        adapter: adapter,
       })
       .read({})
 

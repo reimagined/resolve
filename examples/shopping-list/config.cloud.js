@@ -13,8 +13,8 @@ export default {
       eventsTableName: declareRuntimeEnv('RESOLVE_ES_EVENTS_TABLE'),
       secretsTableName: declareRuntimeEnv('RESOLVE_ES_SECRETS_TABLE'),
       region: declareRuntimeEnv('AWS_REGION'),
-      snapshotBucketSize: 100
-    }
+      snapshotBucketSize: 100,
+    },
   },
   readModelConnectors: {
     default: {
@@ -25,8 +25,8 @@ export default {
         ),
         awsSecretStoreArn: declareRuntimeEnv('RESOLVE_READMODEL_SECRET_ARN'),
         databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
-        region: declareRuntimeEnv('AWS_REGION')
-      }
-    }
-  }
+        region: declareRuntimeEnv('AWS_REGION'),
+      },
+    },
+  },
 }

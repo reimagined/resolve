@@ -16,12 +16,12 @@ const testFunctionalConfig = {
   eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
     options: {
-      databaseFile: 'data/event-store-test-functional.db'
-    }
+      databaseFile: 'data/event-store-test-functional.db',
+    },
   },
   eventBroker: {
-    databaseFile: 'data/local-bus-broker-test-functional.db'
-  }
+    databaseFile: 'data/local-bus-broker-test-functional.db',
+  },
 }
 
 export default testFunctionalConfig

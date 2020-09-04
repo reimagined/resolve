@@ -1,5 +1,5 @@
 const resolvers = {
-  NON_PARAMETERIZED_RESOLVER_TEST: async store => {
+  NON_PARAMETERIZED_RESOLVER_TEST: async (store) => {
     const searchExpression = { firstIndexName: { $gte: 1 } }
     const projectionExpression = { firstJsonName: 1 }
     const sortExpression = { secondFieldName: 1 }
@@ -26,7 +26,7 @@ const resolvers = {
     return {
       findResult,
       findOneResult,
-      countResult
+      countResult,
     }
   },
 
@@ -35,14 +35,14 @@ const resolvers = {
       firstFieldCondition,
       secondFieldCondition,
       pageNumber,
-      pageLength
+      pageLength,
     } = args
 
     const searchCondition = {
       $or: [
         { firstFieldName: { $lte: firstFieldCondition } },
-        { secondFieldName: { $gte: secondFieldCondition } }
-      ]
+        { secondFieldName: { $gte: secondFieldCondition } },
+      ],
     }
 
     const countResult = await store.count('TestTable', searchCondition)
@@ -63,7 +63,7 @@ const resolvers = {
     )
 
     return findResult
-  }
+  },
 }
 
 export default resolvers

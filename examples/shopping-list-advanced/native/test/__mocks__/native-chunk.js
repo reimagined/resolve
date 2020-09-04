@@ -8,12 +8,12 @@ const customConstants = {
   backend: {
     protocol: 'http',
     hostname: '127.0.0.1',
-    port: 3000
+    port: 3000,
   },
   remoteReduxDevTools: {
     hostname: '127.0.0.1',
-    port: 19042
-  }
+    port: 19042,
+  },
 }
 const port = '3000'
 const applicationName = 'react-native-shopping-list'
@@ -23,7 +23,7 @@ export const subscriber = {
   async close() {},
   isConnected() {
     return true
-  }
+  },
 }
 
 const jwtCookie = { name: 'jwt' }
@@ -36,7 +36,7 @@ const resolveRedux = {
   Providers: {},
   createStore: () => {},
   sendAggregateAction: () => {},
-  getOrigin: () => {}
+  getOrigin: () => {},
 }
 
 const nativeChunk = {
@@ -50,7 +50,7 @@ const nativeChunk = {
   applicationName,
   subscriber,
   jwtCookie,
-  resolveRedux
+  resolveRedux,
 }
 
 const getNativeChunk = () => nativeChunk

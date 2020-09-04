@@ -1,6 +1,6 @@
 import {
   subscribeAdapterNotInitialized,
-  subscribeAdapterAlreadyInitialized
+  subscribeAdapterAlreadyInitialized,
 } from './subscribe-adapter-constants'
 
 export interface SubscribeAdapter {
@@ -21,7 +21,7 @@ export interface CreateSubscribeAdapter {
 const createClientAdapter: CreateSubscribeAdapter = ({
   url,
   cursor,
-  onEvent
+  onEvent,
 }) => {
   let client: WebSocket | undefined
   let isInitialized: boolean
@@ -43,7 +43,7 @@ const createClientAdapter: CreateSubscribeAdapter = ({
           client?.send(
             JSON.stringify({
               type: 'pullEvents',
-              cursor
+              cursor,
             })
           )
         }
@@ -57,7 +57,7 @@ const createClientAdapter: CreateSubscribeAdapter = ({
                 client?.send(
                   JSON.stringify({
                     type: 'pullEvents',
-                    cursor: currentCursor
+                    cursor: currentCursor,
                   })
                 )
                 break
@@ -98,7 +98,7 @@ const createClientAdapter: CreateSubscribeAdapter = ({
       }
 
       return client.readyState === 1
-    }
+    },
   }
 }
 

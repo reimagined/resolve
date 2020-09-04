@@ -3,7 +3,7 @@ import {
   isAbsoluteUrl,
   assertString,
   nonEmptyString,
-  leadingSlash
+  leadingSlash,
 } from '../helpers'
 
 const getStaticBasedUrl = (

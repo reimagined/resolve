@@ -18,7 +18,7 @@ describe('resolve-uploader-local', () => {
 
   beforeEach(() => {
     adapter = createUploadAdapter({
-      secretKey
+      secretKey,
     })
   })
 

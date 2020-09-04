@@ -48,11 +48,13 @@ export const getSubscriptionKeys = (
     return []
   }
   const eventTypes = Object.keys(viewModel.projection).filter(
-    eventType => eventType !== 'Init'
+    (eventType) => eventType !== 'Init'
   )
   return eventTypes.reduce((acc: Array<SubscriptionKey>, eventType) => {
     if (Array.isArray(aggregateIds)) {
-      acc.push(...aggregateIds.map(aggregateId => ({ aggregateId, eventType })))
+      acc.push(
+        ...aggregateIds.map((aggregateId) => ({ aggregateId, eventType }))
+      )
     } else if (aggregateIds === '*') {
       acc.push({ aggregateId: '*', eventType })
     }
@@ -75,7 +77,7 @@ const initSubscribeAdapter = async (
   const subscribeAdapter = createSubscribeAdapter({
     url,
     cursor,
-    onEvent: rootCallback
+    onEvent: rootCallback,
   })
   await subscribeAdapter.init()
 

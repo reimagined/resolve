@@ -5,7 +5,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     escape,
     inlineLedgerForceStop,
     inlineLedgerExecuteStatement,
-    PassthroughError
+    PassthroughError,
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)

@@ -31,7 +31,7 @@ const removeCallback = (
 ): void => {
   callbackMap[eventType][aggregateId] = callbackMap[eventType][
     aggregateId
-  ].filter(f => f[0] !== eventCallback)
+  ].filter((f) => f[0] !== eventCallback)
 }
 
 const rootCallback = (
@@ -54,10 +54,10 @@ const rootCallback = (
       if (listeners) {
         if (resubscribed) {
           listeners.forEach(
-            listener => listener[1] && listener[1]({ eventType, aggregateId })
+            (listener) => listener[1] && listener[1]({ eventType, aggregateId })
           )
         } else {
-          listeners.forEach(listener => listener[0](event))
+          listeners.forEach((listener) => listener[0](event))
         }
       }
     }

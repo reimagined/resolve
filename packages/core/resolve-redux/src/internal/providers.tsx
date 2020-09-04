@@ -10,7 +10,7 @@ class Providers extends React.PureComponent<any> {
       rootPath,
       staticPath,
       store,
-      children
+      children,
       //queryMethod
     } = this.props
 
@@ -22,7 +22,7 @@ class Providers extends React.PureComponent<any> {
           api,
           origin,
           rootPath,
-          staticPath
+          staticPath,
         }}
       >
         <ReduxProvider store={store}>{children}</ReduxProvider>

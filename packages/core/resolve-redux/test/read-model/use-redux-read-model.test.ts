@@ -6,23 +6,23 @@ import { useQuery } from 'resolve-react-hooks'
 import {
   queryReadModelFailure,
   queryReadModelRequest,
-  queryReadModelSuccess
+  queryReadModelSuccess,
 } from '../../src/read-model/actions'
 import { getEntry } from '../../src/read-model/read-model-reducer'
 import { ResultStatus } from '../../src'
 import {
   useReduxReadModel,
-  ReduxReadModelHookOptions
+  ReduxReadModelHookOptions,
 } from '../../src/read-model/use-redux-read-model'
 
 jest.mock('react-redux', () => ({
-  useDispatch: jest.fn()
+  useDispatch: jest.fn(),
 }))
 jest.mock('resolve-react-hooks', () => ({
-  useQuery: jest.fn()
+  useQuery: jest.fn(),
 }))
 jest.mock('../../src/read-model/read-model-reducer', () => ({
-  getEntry: jest.fn(() => 'state-entry')
+  getEntry: jest.fn(() => 'state-entry'),
 }))
 
 const mUseDispatch = mocked(useDispatch)
@@ -48,8 +48,8 @@ const makeQuery = (): ReadModelQuery => ({
   name: 'read-model',
   resolver: 'resolver',
   args: {
-    a: 'a'
-  }
+    a: 'a',
+  },
 })
 
 const renderReadModelHook = (
@@ -58,7 +58,7 @@ const renderReadModelHook = (
   options?: ReduxReadModelHookOptions
 ) => {
   const {
-    result: { current }
+    result: { current },
   } = renderHook(() =>
     options
       ? useReduxReadModel(query, initialState, options)
@@ -102,7 +102,7 @@ test('useQuery base hook called with query and default options', () => {
   expect(mUseQuery).toHaveBeenCalledWith(
     query,
     {
-      method: 'GET'
+      method: 'GET',
     },
     expect.any(Function),
     expect.any(Array)
@@ -117,9 +117,9 @@ test('custom command options are passed to base hook', () => {
       method: 'POST',
       waitFor: {
         attempts: 123,
-        validator
-      }
-    }
+        validator,
+      },
+    },
   })
 
   expect(mUseQuery).toHaveBeenCalledWith(
@@ -128,8 +128,8 @@ test('custom command options are passed to base hook', () => {
       method: 'POST',
       waitFor: {
         attempts: 123,
-        validator
-      }
+        validator,
+      },
     },
     expect.anything(),
     expect.anything()
@@ -146,11 +146,11 @@ test('custom redux actions', () => {
         request: (query, initialState) => ({
           type: 'request',
           query,
-          initialState
+          initialState,
         }),
         success: (query, result) => ({ type: 'success', query, result }),
-        failure: (query, error) => ({ type: 'failure', query, error })
-      }
+        failure: (query, error) => ({ type: 'failure', query, error }),
+      },
     }
   )
 
@@ -159,7 +159,7 @@ test('custom redux actions', () => {
   expect(mDispatch).toHaveBeenCalledWith({
     type: 'request',
     query,
-    initialState: { initial: 'state' }
+    initialState: { initial: 'state' },
   })
 
   const callback = extractUseQueryCallback()
@@ -169,7 +169,7 @@ test('custom redux actions', () => {
   expect(mDispatch).toHaveBeenCalledWith({
     type: 'success',
     query,
-    result: { data: { a: 'a' } }
+    result: { data: { a: 'a' } },
   })
 
   mDispatch.mockClear()
@@ -177,7 +177,7 @@ test('custom redux actions', () => {
   expect(mDispatch).toHaveBeenCalledWith({
     type: 'failure',
     query,
-    error: Error('error')
+    error: Error('error'),
   })
 })
 
@@ -187,8 +187,10 @@ test('redux state selector: no selectorId', () => {
 
   const state = {
     readModels: {
-      name: { resolver: { args: { status: ResultStatus.Ready, data: 'data' } } }
-    }
+      name: {
+        resolver: { args: { status: ResultStatus.Ready, data: 'data' } },
+      },
+    },
   }
 
   expect(selector(state)).toEqual('state-entry')
@@ -197,7 +199,7 @@ test('redux state selector: no selectorId', () => {
     { query },
     {
       status: ResultStatus.Initial,
-      data: { initial: 'state' }
+      data: { initial: 'state' },
     }
   )
 })
@@ -212,13 +214,15 @@ test('redux state selector: selectorId used', () => {
 
   const state = {
     readModels: {
-      name: { resolver: { args: { status: ResultStatus.Ready, data: 'data' } } }
-    }
+      name: {
+        resolver: { args: { status: ResultStatus.Ready, data: 'data' } },
+      },
+    },
   }
 
   expect(selector(state)).toEqual('state-entry')
   expect(mGetEntry).toHaveBeenCalledWith(state.readModels, 'selector-id', {
     status: ResultStatus.Initial,
-    data: { initial: 'state' }
+    data: { initial: 'state' },
   })
 })

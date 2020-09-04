@@ -47,7 +47,7 @@ import {
   // mdis-start validateConfig
   validateConfig,
   // mdis-stop validateConfig
-  defaultResolveConfig
+  defaultResolveConfig,
   // mdis-start build
   // mdis-start start
   // mdis-start watch
@@ -76,7 +76,7 @@ const devConfig = {}
 const prodConfig = {}
 const testFunctionalConfig = {}
 
-void (async function() {
+void (async function () {
   const launchMode = process.argv[2]
   // mdis-start stop
   try {
@@ -133,7 +133,7 @@ void (async function() {
         await runTestcafe({
           resolveConfig,
           functionalTestsDir: 'test/functional',
-          browser: process.argv[3]
+          browser: process.argv[3],
         })
         break
       }
@@ -145,7 +145,7 @@ void (async function() {
           dropEventStore: true,
           dropEventBus: true,
           dropReadModels: true,
-          dropSagas: true
+          dropSagas: true,
         })
         break
       }

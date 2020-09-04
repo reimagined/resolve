@@ -8,19 +8,19 @@ import Image from './Image'
 
 const Header = ({ title, name, css, favicon }) => {
   const resolveStatic = useStaticResolver()
-  const stylesheetLinks = css.map(href => ({
+  const stylesheetLinks = css.map((href) => ({
     rel: 'stylesheet',
-    href: resolveStatic(href)
+    href: resolveStatic(href),
   }))
   const faviconLink = {
     rel: 'icon',
     type: 'image/png',
-    href: resolveStatic(favicon)
+    href: resolveStatic(favicon),
   }
   const links = [...stylesheetLinks, faviconLink]
   const meta = {
     name: 'viewport',
-    content: 'width=device-width, initial-scale=1'
+    content: 'width=device-width, initial-scale=1',
   }
 
   return (

@@ -13,8 +13,8 @@ const BlogHeader = ({ userId }) => {
       name: 'user-profiles',
       resolver: 'fullNameById',
       args: {
-        userId
-      }
+        userId,
+      },
     },
     (err, result) => {
       if (err) {
@@ -38,15 +38,15 @@ const BlogHeader = ({ userId }) => {
 
 const UserBlog = ({
   match: {
-    params: { id: authorId }
-  }
+    params: { id: authorId },
+  },
 }) => {
   const [user, setUser] = useState('unknown')
   const getUser = useQuery(
     {
       name: 'user-profiles',
       resolver: 'profile',
-      args: {}
+      args: {},
     },
     (err, result) => {
       if (err) {

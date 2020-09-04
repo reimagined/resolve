@@ -6,17 +6,17 @@ const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || '3000'
 const MAIN_PAGE = `http://${host}:${port}`
 
-const generateUser = id => ({
+const generateUser = (id) => ({
   nickname: `user-nickname-${id}`,
   firstName: `user-name-${id}`,
   lastName: `user-lastName-${id}`,
   phoneNumber: `555-1234-${id}`,
-  address: `User address-${id}`
+  address: `User address-${id}`,
 })
 
-const generatePost = id => ({
+const generatePost = (id) => ({
   title: `post-title-${id}`,
-  content: `post-content-${id}`
+  content: `post-content-${id}`,
 })
 
 const refreshAndWait = async (t, eventSubscriber, selector, expectedValue) => {
@@ -24,7 +24,7 @@ const refreshAndWait = async (t, eventSubscriber, selector, expectedValue) => {
     const res = await fetch(`${MAIN_PAGE}/api/event-broker/read-models-list`)
 
     const readModel = (await res.json()).find(
-      readModel => readModel.eventSubscriber === eventSubscriber
+      (readModel) => readModel.eventSubscriber === eventSubscriber
     )
 
     if (readModel.status !== 'deliver') {
@@ -71,24 +71,24 @@ const publishPost = async (t, post) => {
 }
 
 // eslint-disable-next-line no-unused-expressions, no-undef
-fixture`PersonalData`.beforeEach(async t => {
+fixture`PersonalData`.beforeEach(async (t) => {
   await t.setNativeDialogHandler(() => true)
   await t.navigateTo(MAIN_PAGE)
 })
 
-test('new user, first load', async t => {
+test('new user, first load', async (t) => {
   const registrationForm = ReactSelector('RegistrationForm')
   await t.expect(registrationForm.exists).ok()
 })
 
-test('new user, registration', async t => {
+test('new user, registration', async (t) => {
   await userRegistration(t, generateUser(1))
   const nicknameItem = ReactSelector('a').withText('user-nickname-1')
   await refreshAndWait(t, 'user-profiles', () => nicknameItem.exists, true)
   await t.expect(nicknameItem.exists).ok()
 })
 
-test('registered user, posts creation', async t => {
+test('registered user, posts creation', async (t) => {
   await userRegistration(t, generateUser(2))
   await publishPost(t, generatePost(1))
   await publishPost(t, generatePost(2))
@@ -103,7 +103,7 @@ test('registered user, posts creation', async t => {
   await t.expect(posts2.count).eql(3)
 })
 
-test('registered user, posts deletion', async t => {
+test('registered user, posts deletion', async (t) => {
   await userRegistration(t, generateUser(2))
   await publishPost(t, generatePost(1))
   await publishPost(t, generatePost(2))
@@ -124,7 +124,7 @@ test('registered user, posts deletion', async t => {
   await t.expect(posts2.exists).notOk()
 })
 
-test('registered user, profile update', async t => {
+test('registered user, profile update', async (t) => {
   await userRegistration(t, generateUser(3))
 
   await t.navigateTo(`${MAIN_PAGE}/profile`)
@@ -148,7 +148,7 @@ test('registered user, profile update', async t => {
   await t.expect(fullName.exists).ok()
 })
 
-test('registered user, gather personal data', async t => {
+test('registered user, gather personal data', async (t) => {
   await userRegistration(t, generateUser(4))
 
   let nicknameItem = ReactSelector('a').withText('user-nickname-4')
@@ -169,7 +169,7 @@ test('registered user, gather personal data', async t => {
   await t.expect(downloadItem.exists).ok()
 })
 
-test('registered user, profile removal', async t => {
+test('registered user, profile removal', async (t) => {
   await userRegistration(t, generateUser(5))
 
   const nicknameItem = ReactSelector('a').withText('user-nickname-5')

@@ -6,13 +6,13 @@ export const jwt = jsonwebtoken.sign(
   {
     permissions: {
       processes: {
-        kill: true
-      }
-    }
+        kill: true,
+      },
+    },
   },
   jwtSecret,
   {
-    noTimestamp: true
+    noTimestamp: true,
   }
 )
 
@@ -21,13 +21,13 @@ export default {
     Init: async ({ store }) => {
       await store.defineTable('Processes', {
         indexes: { id: 'string' },
-        fields: []
+        fields: [],
       })
     },
 
     PROCESS_CREATED: async ({ store }, event) => {
       await store.insert('Processes', {
-        id: event.aggregateId
+        id: event.aggregateId,
       })
     },
 
@@ -39,13 +39,13 @@ export default {
           aggregateName: 'Process',
           aggregateId: process.id,
           type: 'PROCESS_KILLED',
-          jwt
+          jwt,
         })
 
         await store.delete('Processes', {
-          id: process.id
+          id: process.id,
         })
       }
-    }
-  }
+    },
+  },
 }

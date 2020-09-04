@@ -8,7 +8,7 @@ import getModulesDirs from './get_modules_dirs'
 const getWebpackCommonConfigs = ({
   resolveConfig,
   alias,
-  nodeModulesByAssembly
+  nodeModulesByAssembly,
 }) => {
   const targetMode = resolveConfig.target
   if (!['local', 'cloud'].includes(targetMode)) {
@@ -42,17 +42,18 @@ const getWebpackCommonConfigs = ({
     target: 'node',
     node: {
       __dirname: true,
-      __filename: true
+      __filename: true,
     },
     resolve: {
       modules: getModulesDirs(),
-      alias
+      alias,
     },
     output: {
       path: distDir,
       filename: '[name]',
       devtoolModuleFilenameTemplate: '[namespace][resource-path]',
-      devtoolFallbackModuleFilenameTemplate: '[namespace][resource-path]?[hash]'
+      devtoolFallbackModuleFilenameTemplate:
+        '[namespace][resource-path]?[hash]',
     },
     module: {
       rules: [
@@ -68,10 +69,10 @@ const getWebpackCommonConfigs = ({
                   [
                     '@babel/preset-env',
                     {
-                      targets: { node: '8.10.0' }
-                    }
+                      targets: { node: '8.10.0' },
+                    },
                   ],
-                  '@babel/preset-react'
+                  '@babel/preset-react',
                 ],
                 plugins: [
                   '@babel/plugin-proposal-class-properties',
@@ -83,44 +84,44 @@ const getWebpackCommonConfigs = ({
                       corejs: false,
                       helpers: false,
                       regenerator: false,
-                      useESModules: false
-                    }
-                  ]
-                ]
-              }
+                      useESModules: false,
+                    },
+                  ],
+                ],
+              },
             },
             {
               loader: require.resolve('./val_query_loader'),
               options: {
                 resolveConfig,
-                isClient
-              }
-            }
-          ]
+                isClient,
+              },
+            },
+          ],
         },
         {
           test: /\.js$/,
           use: {
             loader: require.resolve('babel-loader'),
             options: {
-              cacheDirectory: true
-            }
+              cacheDirectory: true,
+            },
           },
           exclude: [
             /node_modules/,
             ...getModulesDirs({ isAbsolutePath: true }),
             path.resolve(__dirname, '../lib'),
-            path.resolve(__dirname, '../es')
-          ]
-        }
-      ]
+            path.resolve(__dirname, '../es'),
+          ],
+        },
+      ],
     },
     externals: [
       packageJsonWriter,
-      ...getModulesDirs().map(modulesDir =>
+      ...getModulesDirs().map((modulesDir) =>
         nodeExternals({
           modulesDir,
-          importType: moduleName => `((() => {
+          importType: (moduleName) => `((() => {
               const path = require('path')
               const requireDirs = ['', 'resolve-runtime/node_modules/']
               let modulePath = null
@@ -136,11 +137,11 @@ const getWebpackCommonConfigs = ({
               }
               return require(modulePath)
             })())`,
-          whitelist: [/resolve-runtime/]
+          whitelist: [/resolve-runtime/],
         })
-      )
+      ),
     ],
-    plugins: []
+    plugins: [],
   }
 
   const commonConfigs = [
@@ -159,14 +160,14 @@ const getWebpackCommonConfigs = ({
               'common/local-entry/local-bus-broker.js': path.resolve(
                 __dirname,
                 './alias/$resolve.localBusBroker.js'
-              )
+              ),
             }
-          : {})
+          : {}),
       },
       output: {
         ...baseCommonConfig.output,
-        libraryTarget: 'commonjs-module'
-      }
+        libraryTarget: 'commonjs-module',
+      },
     },
     {
       ...baseCommonConfig,
@@ -183,15 +184,15 @@ const getWebpackCommonConfigs = ({
         'common/shared/server-seed-client-envs.js': path.resolve(
           __dirname,
           './alias/$resolve.seedClientEnvs.js'
-        )
+        ),
       },
       output: {
         ...baseCommonConfig.output,
         libraryTarget: 'var',
-        library: '__RESOLVE_ENTRY__'
+        library: '__RESOLVE_ENTRY__',
       },
-      plugins: [...baseCommonConfig.plugins, new EsmWebpackPlugin()]
-    }
+      plugins: [...baseCommonConfig.plugins, new EsmWebpackPlugin()],
+    },
   ]
 
   attachWebpackConfigsClientEntries(

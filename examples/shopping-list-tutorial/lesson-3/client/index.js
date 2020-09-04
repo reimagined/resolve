@@ -14,7 +14,7 @@ const entryPoint = ({ rootPath, staticPath }) => {
     history,
     origin,
     rootPath,
-    isClient: true
+    isClient: true,
   })
 
   const appContainer = document.createElement('div')

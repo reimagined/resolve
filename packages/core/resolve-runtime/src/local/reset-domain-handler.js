@@ -1,22 +1,22 @@
 import {
   EventstoreResourceAlreadyExistError,
-  EventstoreResourceNotExistError
+  EventstoreResourceNotExistError,
 } from 'resolve-eventstore-base'
 import {
   PublisherResourceAlreadyExistError,
-  PublisherResourceNotExistError
+  PublisherResourceNotExistError,
 } from 'resolve-local-event-broker'
 
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 
-const resetDomainHandler = options => async (req, res) => {
+const resetDomainHandler = (options) => async (req, res) => {
   const {
     eventstoreAdapter,
     eventBus,
     publisher,
     readModels,
     schedulers,
-    sagas
+    sagas,
   } = req.resolve
 
   try {
@@ -57,21 +57,21 @@ const resetDomainHandler = options => async (req, res) => {
     if (dropEventBus) {
       // eslint-disable-next-line no-console
       console.warn(
-        dropReadModelsSagasErrors.map(error => error.message).join('\n')
+        dropReadModelsSagasErrors.map((error) => error.message).join('\n')
       )
       await invokeFilterErrorTypes(publisher.drop.bind(publisher), [
-        PublisherResourceNotExistError
+        PublisherResourceNotExistError,
       ])
       await invokeFilterErrorTypes(publisher.init.bind(publisher), [
-        PublisherResourceAlreadyExistError
+        PublisherResourceAlreadyExistError,
       ])
     } else {
       if (dropReadModelsSagasErrors.length) {
         const compositeError = new Error(
-          dropReadModelsSagasErrors.map(error => error.message).join('\n')
+          dropReadModelsSagasErrors.map((error) => error.message).join('\n')
         )
         compositeError.stack = dropReadModelsSagasErrors
-          .map(error => error.stack)
+          .map((error) => error.stack)
           .join('\n')
         throw compositeError
       }

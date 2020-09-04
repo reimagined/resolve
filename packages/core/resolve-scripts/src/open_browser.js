@@ -18,7 +18,7 @@ const openBrowser = async (port, rootPath) => {
   /* eslint-disable no-console */
   while (true) {
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
       await fetch(url)
       break
     } catch (error) {

@@ -4,7 +4,7 @@ import {
   viewModelEventReceived,
   ViewModelEventReceivedAction,
   viewModelStateUpdate,
-  ViewModelStateUpdateAction
+  ViewModelStateUpdateAction,
 } from './actions'
 import { ReduxState, ResultStatus, ViewModelReactiveEvent } from '../types'
 import { firstOfType } from 'resolve-core'
@@ -41,12 +41,12 @@ type ReduxViewModelHookOptions = {
 }
 
 const defaultQueryOptions: QueryOptions = {
-  method: 'GET'
+  method: 'GET',
 }
 
 const internalActions: ViewModelReduxActionsCreators = {
   stateUpdate: viewModelStateUpdate,
-  eventReceived: viewModelEventReceived
+  eventReceived: viewModelEventReceived,
 }
 
 export function useReduxViewModel(query: ViewModelQuery): HookData
@@ -76,7 +76,7 @@ export function useReduxViewModel(
 
   const actualDependencies: any[] =
     firstOfType<any[]>(isDependencies, options, dependencies, dependencies) ??
-    [query, actualOptions, actualActionCreators].filter(i => i)
+    [query, actualOptions, actualActionCreators].filter((i) => i)
 
   const { stateUpdate, eventReceived } = actualActionCreators
   const { selectorId } = actualOptions
@@ -111,12 +111,12 @@ export function useReduxViewModel(
       getEntry(
         state.viewModels,
         selectorId || {
-          query
+          query,
         },
         {
           status: ResultStatus.Initial,
-          data: initialState
+          data: initialState,
         }
-      )
+      ),
   }
 }

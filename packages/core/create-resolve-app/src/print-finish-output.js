@@ -1,6 +1,6 @@
-const printFinishOutput = pool => async () => {
+const printFinishOutput = (pool) => async () => {
   const { chalk, console, applicationName, useYarn } = pool
-  const displayCommand = isDefaultCmd =>
+  const displayCommand = (isDefaultCmd) =>
     useYarn ? 'yarn' : isDefaultCmd ? 'npm' : 'npm run'
 
   console.log()

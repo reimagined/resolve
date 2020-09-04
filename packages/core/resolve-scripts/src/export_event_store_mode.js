@@ -17,13 +17,13 @@ const getConfig = async (resolveConfig, options) => {
         path: '/api/export-event-store',
         handler: {
           module: 'resolve-runtime/lib/local/export-event-store-handler.js',
-          options
-        }
-      }
+          options,
+        },
+      },
     ],
     eventBroker: {
-      upstream: false
-    }
+      upstream: false,
+    },
   })
 
   return config

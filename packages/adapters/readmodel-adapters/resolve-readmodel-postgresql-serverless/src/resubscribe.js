@@ -6,7 +6,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     dropReadModel,
     inlineLedgerForceStop,
     inlineLedgerExecuteStatement,
-    PassthroughError
+    PassthroughError,
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)

@@ -6,7 +6,7 @@ const resetExecuteStatementPromise = () => {
   executeStatementPromise.mockReturnValueOnce(
     Promise.resolve({
       records: [],
-      columnMetadata: []
+      columnMetadata: [],
     })
   )
 }
@@ -43,10 +43,10 @@ const rdsDataService = {
     result.push('executeStatement', ...args)
     resetExecuteStatementPromise()
     return { promise: executeStatementPromise }
-  })
+  }),
 }
 
-const RDSDataService = function() {
+const RDSDataService = function () {
   return rdsDataService
 }
 

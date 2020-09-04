@@ -6,7 +6,7 @@ yargs
   .commandDir('commands')
   .option('api-url', {
     alias: 'url',
-    default: 'http://localhost:3000/api'
+    default: 'http://localhost:3000/api',
   })
   .recommendCommands()
   .strict()

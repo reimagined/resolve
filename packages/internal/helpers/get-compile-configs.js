@@ -5,7 +5,7 @@ const { getResolveDir } = require('./get-resolve-dir')
 
 const externalDependencies = ['resolve-cloud-common']
 
-const isInternalDependency = name =>
+const isInternalDependency = (name) =>
   name.startsWith('resolve-') && !externalDependencies.includes(name)
 
 let _configs
@@ -19,7 +19,7 @@ const getCompileConfigs = () => {
   for (const filePath of find('./packages/**/package.json', {
     cwd: getResolveDir(),
     absolute: true,
-    ignore: ['**/node_modules/**', './node_modules/**']
+    ignore: ['**/node_modules/**', './node_modules/**'],
   })) {
     if (filePath.includes('node_modules')) {
       continue
@@ -42,7 +42,7 @@ const getCompileConfigs = () => {
       name,
       sourceType,
       babelCompile,
-      dependencies = {}
+      dependencies = {},
     } = require(filePath)
 
     if (!Array.isArray(babelCompile)) {
@@ -61,7 +61,7 @@ const getCompileConfigs = () => {
             ? acc.concat(dependencyName)
             : acc,
         []
-      )
+      ),
     }
 
     if (config.sourceType == null) {

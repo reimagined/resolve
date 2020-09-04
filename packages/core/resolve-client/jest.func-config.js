@@ -8,7 +8,7 @@ module.exports = {
   testMatch: ['**/test/**/*.func.test.[jt]s?(x)'],
   collectCoverageFrom: ['src/**/*.js'],
   transform: {
-    '^.+\\.tsx?$': 'ts-jest'
+    '^.+\\.tsx?$': 'ts-jest',
   },
-  roots: ['<rootDir>/src', '<rootDir>/test']
+  roots: ['<rootDir>/src', '<rootDir>/test'],
 }

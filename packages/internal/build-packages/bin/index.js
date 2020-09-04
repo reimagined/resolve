@@ -7,7 +7,7 @@ const {
   getCompileConfigs,
   getLocalRegistryConfig,
   safeName,
-  patchPackageJson
+  patchPackageJson,
 } = require('@internal/helpers')
 
 const localRegistry = getLocalRegistryConfig()
@@ -23,7 +23,7 @@ for (const { directory, name } of configs) {
     )}"`,
     {
       cwd: directory,
-      stdio: 'inherit'
+      stdio: 'inherit',
     }
   )
 

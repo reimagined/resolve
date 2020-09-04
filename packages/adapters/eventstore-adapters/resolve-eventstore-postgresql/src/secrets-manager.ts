@@ -14,7 +14,7 @@ const getSecret = async (
     secretsTableName,
     escapeId,
     executeStatement,
-    escape
+    escape,
   } = pool
 
   // TODO: refactor
@@ -67,7 +67,7 @@ const setSecret = async (
     secretsTableName,
     escape,
     escapeId,
-    executeStatement
+    executeStatement,
   } = pool
 
   // TODO: refactor
@@ -120,7 +120,7 @@ const deleteSecret = async (
     secretsTableName,
     escapeId,
     escape,
-    executeStatement
+    executeStatement,
   } = pool
 
   // TODO: refactor
@@ -160,7 +160,7 @@ const getSecretsManager = (pool: AdapterPool): SecretsManager => {
   const manager = Object.freeze({
     getSecret: getSecret.bind(null, pool),
     setSecret: setSecret.bind(null, pool),
-    deleteSecret: deleteSecret.bind(null, pool)
+    deleteSecret: deleteSecret.bind(null, pool),
   })
   log.debug('secrets manager built')
   return manager

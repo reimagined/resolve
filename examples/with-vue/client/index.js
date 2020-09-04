@@ -9,8 +9,8 @@ const entryPoint = ({ rootPath, staticPath }) => {
   Vue.use(BootstrapVue)
   new Vue({
     data: { rootPath, staticPath },
-    render: h => h(App),
-    el: '#app-container'
+    render: (h) => h(App),
+    el: '#app-container',
   })
 }
 

@@ -9,7 +9,7 @@ const getFileUrl = async (req, res) => {
     const { data: fileData } = await req.resolve.executeQuery({
       modelName: 'Files',
       resolverName: 'file',
-      resolverArgs: { uploadId }
+      resolverArgs: { uploadId },
     })
 
     if (fileData == null || fileData.status !== 'success') {

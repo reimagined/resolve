@@ -11,11 +11,11 @@ describe('Saga', () => {
     name: sagaName,
     source: sourceModule,
     connectorName,
-    schedulerName
+    schedulerName,
   } = config.sagas.find(({ name }) => name === 'ProcessKiller')
   const {
     module: connectorModule,
-    options: connectorOptions
+    options: connectorOptions,
   } = config.readModelConnectors[connectorName]
 
   const createConnector = interopRequireDefault(require(connectorModule))
@@ -33,7 +33,7 @@ describe('Saga', () => {
     const event = {
       ...commands[type]({}, command, jwt),
       aggregateId,
-      timestamp: commandTimestamp++
+      timestamp: commandTimestamp++,
     }
     return event
   }
@@ -50,7 +50,7 @@ describe('Saga', () => {
       handlers: source.handlers,
       sideEffects: source.sideEffects,
       adapter,
-      name: sagaName
+      name: sagaName,
     }
   })
 
@@ -67,23 +67,23 @@ describe('Saga', () => {
       executeCommand({
         aggregateId: 'id1',
         aggregateName: 'Process',
-        type: 'createProcess'
+        type: 'createProcess',
       }),
       executeCommand({
         aggregateId: 'id2',
         aggregateName: 'Process',
-        type: 'createProcess'
+        type: 'createProcess',
       }),
       executeCommand({
         aggregateId: 'id3',
         aggregateName: 'Process',
-        type: 'createProcess'
+        type: 'createProcess',
       }),
       executeCommand({
         aggregateId: 'root',
         aggregateName: 'Process',
-        type: 'killAllProcesses'
-      })
+        type: 'killAllProcesses',
+      }),
     ]).saga(sagaWithAdapter)
 
     expect(result).toMatchSnapshot()

@@ -4,7 +4,7 @@ export default {
   Init: async (store: ResolveStore): Promise<void> => {
     await store.defineTable('History', {
       indexes: { id: 'string' },
-      fields: ['events']
+      fields: ['events'],
     })
   },
   EventType: async (
@@ -12,7 +12,7 @@ export default {
     {
       aggregateId,
       timestamp,
-      payload: { a, b }
+      payload: { a, b },
     }: {
       aggregateId: string
       timestamp: number
@@ -27,21 +27,21 @@ export default {
       await store.insert('History', {
         id: aggregateId,
         events: {
-          [key]: { a, b }
-        }
+          [key]: { a, b },
+        },
       })
     } else {
       await store.update(
         'History',
         {
-          id: aggregateId
+          id: aggregateId,
         },
         {
           $set: {
-            [`events.${key}`]: { a, b }
-          }
+            [`events.${key}`]: { a, b },
+          },
         }
       )
     }
-  }
+  },
 }

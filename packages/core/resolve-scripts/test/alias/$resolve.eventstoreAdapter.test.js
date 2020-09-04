@@ -9,9 +9,9 @@ describe('base config works correctly', () => {
     eventstoreAdapter: {
       module: path.resolve(__dirname, 'files/testAdapter.js'),
       options: {
-        url: 'http://test.test'
-      }
-    }
+        url: 'http://test.test',
+      },
+    },
   }
 
   test('[client]', () => {
@@ -20,7 +20,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -33,7 +33,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -46,9 +46,9 @@ test('config with process.env works correctly', () => {
     eventstoreAdapter: {
       module: declareRuntimeEnv('STORAGE_ADAPTER'),
       options: {
-        url: declareRuntimeEnv('STORAGE_OPTIONS_URL')
-      }
-    }
+        url: declareRuntimeEnv('STORAGE_OPTIONS_URL'),
+      },
+    },
   }
 
   expect(
@@ -56,7 +56,7 @@ test('config with process.env works correctly', () => {
       '\r\n' +
         alias({
           resolveConfig,
-          isClient: false
+          isClient: false,
         }) +
         '\r\n'
     )

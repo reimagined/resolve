@@ -9,12 +9,12 @@ import createEventBus from './event-bus'
 
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
-const initResolve = async resolve => {
+const initResolve = async (resolve) => {
   const performanceTracer = resolve.performanceTracer
 
   const {
     eventstoreAdapter: createEventstoreAdapter,
-    readModelConnectors: readModelConnectorsCreators
+    readModelConnectors: readModelConnectorsCreators,
   } = resolve.assemblies
 
   const {
@@ -24,7 +24,7 @@ const initResolve = async resolve => {
     schedulers,
     sagas,
     viewModels,
-    uploader
+    uploader,
   } = resolve
   const eventstoreAdapter = createEventstoreAdapter()
 
@@ -32,7 +32,7 @@ const initResolve = async resolve => {
   for (const name of Object.keys(readModelConnectorsCreators)) {
     readModelConnectors[name] = readModelConnectorsCreators[name]({
       performanceTracer,
-      eventstoreAdapter
+      eventstoreAdapter,
     })
   }
 
@@ -52,7 +52,7 @@ const initResolve = async resolve => {
     aggregates,
     eventstoreAdapter,
     performanceTracer,
-    onCommandExecuted
+    onCommandExecuted,
   })
 
   const executeQuery = createQueryExecutor({
@@ -63,7 +63,7 @@ const initResolve = async resolve => {
     viewModels,
     performanceTracer,
     getRemainingTimeInMillis,
-    performAcknowledge
+    performAcknowledge,
   })
 
   const executeSaga = createSagaExecutor({
@@ -78,7 +78,7 @@ const initResolve = async resolve => {
     performanceTracer,
     getRemainingTimeInMillis,
     performAcknowledge,
-    uploader
+    uploader,
   })
 
   const eventBus = createEventBus(resolve)
@@ -102,14 +102,14 @@ const initResolve = async resolve => {
       },
       set() {
         throw new Error(`Event store API is immutable`)
-      }
+      },
     }
   )
 
   Object.assign(resolve, {
     executeCommand,
     executeQuery,
-    executeSaga
+    executeSaga,
   })
 
   Object.defineProperties(resolve, {
@@ -117,7 +117,7 @@ const initResolve = async resolve => {
     eventstoreAdapter: { value: eventstoreAdapter },
     eventListener: { value: eventListener },
     eventBus: { value: eventBus },
-    eventStore: { value: eventStore }
+    eventStore: { value: eventStore },
   })
 
   process.env.RESOLVE_LOCAL_TRACE_ID = crypto

@@ -9,7 +9,7 @@ const saveEvent = async (pool, event) => {
     executeStatement,
     isTimeoutError,
     escapeId,
-    escape
+    escape,
   } = pool
 
   try {
@@ -20,7 +20,7 @@ const saveEvent = async (pool, event) => {
       `${escape(event.aggregateId)},`,
       `${+event.aggregateVersion},`,
       `${escape(event.type)},`,
-      escape(serializedPayload)
+      escape(serializedPayload),
     ].join('')
 
     // TODO: Improve calculation byteLength depend on codepage and wide-characters

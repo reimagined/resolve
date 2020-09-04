@@ -11,7 +11,7 @@ export class CommentsTreeRenderless extends React.PureComponent {
       // eslint-disable-next-line
       console.log('comments:', comments)
       return null
-    }
+    },
   }
 
   render() {
@@ -27,7 +27,7 @@ export const mapStateToOptions = (
     resolverName = defaults.commentsTree,
     treeId,
     parentCommentId,
-    authorId
+    authorId,
   }
 ) => ({
   readModelName,
@@ -35,8 +35,8 @@ export const mapStateToOptions = (
   resolverArgs: {
     authorId,
     treeId,
-    parentCommentId
-  }
+    parentCommentId,
+  },
 })
 
 export const mapStateToProps = (
@@ -46,7 +46,7 @@ export const mapStateToProps = (
   comments: [reducerName, treeId, parentCommentId].reduce(
     (result, partName) => (result ? result[partName] : result),
     state
-  )
+  ),
 })
 
 export const mapDispatchToProps = (
@@ -55,7 +55,7 @@ export const mapDispatchToProps = (
     aggregateName = defaults.aggregateName,
     createComment = defaults.createComment,
     updateComment = defaults.updateComment,
-    removeComment = defaults.removeComment
+    removeComment = defaults.removeComment,
   }
 ) =>
   bindActionCreators(
@@ -74,7 +74,7 @@ export const mapDispatchToProps = (
         null,
         aggregateName,
         removeComment
-      )
+      ),
     },
     dispatch
   )

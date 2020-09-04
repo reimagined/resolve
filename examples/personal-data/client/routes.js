@@ -11,20 +11,20 @@ export default [
       {
         path: '/',
         component: Home,
-        exact: true
+        exact: true,
       },
       {
         path: '/users',
-        component: Users
+        component: Users,
       },
       {
         path: '/profile',
-        component: Profile
+        component: Profile,
       },
       {
         path: '/blog/:id',
-        component: UserBlog
-      }
-    ]
-  }
+        component: UserBlog,
+      },
+    ],
+  },
 ]

@@ -16,11 +16,11 @@ beforeEach(() => {
     databaseName: 'database',
     secretsTableName: 'secrets-table',
     coercer: jest.fn(),
-    escape: jest.fn().mockImplementation(v => `"${v}"`),
-    escapeId: jest.fn().mockImplementation(v => `"${v}-id"`),
+    escape: jest.fn().mockImplementation((v) => `"${v}"`),
+    escapeId: jest.fn().mockImplementation((v) => `"${v}-id"`),
     executeStatement: mExecuteStatement,
     fullJitter: jest.fn(),
-    rdsDataService: RDSDataService
+    rdsDataService: RDSDataService,
   }
 })
 
@@ -33,7 +33,7 @@ test('secrets manager is created', async () => {
   expect(manager).toStrictEqual({
     getSecret: expect.any(Function),
     setSecret: expect.any(Function),
-    deleteSecret: expect.any(Function)
+    deleteSecret: expect.any(Function),
   })
 })
 
@@ -77,7 +77,7 @@ describe('set secret', () => {
     await setSecret('secret-selector', 'secret-value')
     expect(mExecuteStatement.mock.calls).toMatchSnapshot('setting secret')
   })
-  test('error on setting secret', async done => {
+  test('error on setting secret', async (done) => {
     const manager = getSecretsManager(pool)
     const { setSecret } = manager
 

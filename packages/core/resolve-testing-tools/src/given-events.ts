@@ -36,7 +36,7 @@ const getDelayedPromise = (continuation: Function): any => {
         thenFunctions: [],
         catchFunctions: [],
         state: null,
-        result: null
+        result: null,
       },
       then: (next: Function): any => {
         if (complexPromise[internalPromise].state == null) {
@@ -51,7 +51,7 @@ const getDelayedPromise = (continuation: Function): any => {
         } else if (complexPromise[internalPromise].state === false) {
           next(complexPromise[internalPromise].result)
         }
-      }
+      },
     }
     promiseResolve = (result: any): any => {
       if (complexPromise[internalPromise].state == null) {
@@ -109,7 +109,7 @@ const givenEvents = (
     setSecretsManager,
     getDefaultSecretsManager,
     aggregate,
-    command
+    command,
   } = dependencies
 
   const internalPool = Object.create(null)
@@ -128,7 +128,7 @@ const givenEvents = (
   promise[symbol].secretsManager = getDefaultSecretsManager()
 
   promise[symbol].properties = {
-    RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: 0
+    RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: 0,
   }
 
   promise.readModel = readModel.bind(null, pool)

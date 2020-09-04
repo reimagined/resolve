@@ -13,7 +13,7 @@ import {
   InputGroup,
   FormControl,
   FormGroup,
-  ControlLabel
+  ControlLabel,
 } from 'react-bootstrap'
 
 import Image from './Image'
@@ -23,29 +23,29 @@ import * as aggregateActions from '../actions/aggregate_actions'
 export class ShoppingList extends React.PureComponent {
   state = {
     shoppingListName: null,
-    itemText: ''
+    itemText: '',
   }
 
   createShoppingItem = () => {
     this.props.createShoppingItem(this.props.aggregateId, {
       text: this.state.itemText,
-      id: Date.now().toString()
+      id: Date.now().toString(),
     })
 
     this.setState({
-      itemText: ''
+      itemText: '',
     })
   }
 
-  updateShoppingListName = event => {
+  updateShoppingListName = (event) => {
     this.setState({
-      shoppingListName: event.target.value
+      shoppingListName: event.target.value,
     })
   }
 
   renameShoppingList = () => {
     this.props.renameShoppingList(this.props.aggregateId, {
-      name: this.state.shoppingListName
+      name: this.state.shoppingListName,
     })
   }
 
@@ -53,19 +53,19 @@ export class ShoppingList extends React.PureComponent {
     this.props.removeShoppingList(this.props.aggregateId)
   }
 
-  updateItemText = event => {
+  updateItemText = (event) => {
     this.setState({
-      itemText: event.target.value
+      itemText: event.target.value,
     })
   }
 
-  onItemTextPressEnter = event => {
+  onItemTextPressEnter = (event) => {
     if (event.charCode === 13) {
       event.preventDefault()
       this.createShoppingItem()
     }
   }
-  onShoppingListNamePressEnter = event => {
+  onShoppingListNamePressEnter = (event) => {
     if (event.charCode === 13) {
       event.preventDefault()
       this.renameShoppingList()
@@ -78,7 +78,7 @@ export class ShoppingList extends React.PureComponent {
       data,
       aggregateId,
       toggleShoppingItem,
-      removeShoppingItem
+      removeShoppingItem,
     } = this.props
 
     if (isLoading !== false) {
@@ -119,13 +119,13 @@ export class ShoppingList extends React.PureComponent {
           </InputGroup>
         </FormGroup>
         <ListGroup className="example-list">
-          {list.map(todo => (
+          {list.map((todo) => (
             <ListGroupItem key={todo.id}>
               <Checkbox
                 inline
                 checked={todo.checked}
                 onChange={toggleShoppingItem.bind(null, aggregateId, {
-                  id: todo.id
+                  id: todo.id,
                 })}
               >
                 {todo.text}
@@ -134,7 +134,7 @@ export class ShoppingList extends React.PureComponent {
                 className="example-close-button"
                 src="/close-button.png"
                 onClick={removeShoppingItem.bind(null, aggregateId, {
-                  id: todo.id
+                  id: todo.id,
                 })}
               />
             </ListGroupItem>
@@ -171,7 +171,7 @@ export const mapStateToOptions = (state, ownProps) => {
 
   return {
     viewModelName: 'shoppingList',
-    aggregateIds: [aggregateId]
+    aggregateIds: [aggregateId],
   }
 }
 
@@ -179,11 +179,11 @@ export const mapStateToProps = (state, ownProps) => {
   const aggregateId = ownProps.match.params.id
 
   return {
-    aggregateId
+    aggregateId,
   }
 }
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToOptions)(

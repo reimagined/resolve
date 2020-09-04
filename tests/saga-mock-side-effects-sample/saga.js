@@ -9,15 +9,15 @@ export default {
           aggregateName: 'Counter',
           aggregateId: event.aggregateId,
           type: randomCommandType,
-          payload: 1
+          payload: 1,
         })
       }
-    }
+    },
   },
 
   sideEffects: {
     getRandom: async () => {
       return Math.random()
-    }
-  }
+    },
+  },
 }

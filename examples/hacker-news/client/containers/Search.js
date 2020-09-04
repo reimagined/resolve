@@ -77,11 +77,11 @@ export class Search extends React.PureComponent {
 const mapStateToOptions = () => ({
   readModelName: 'Search',
   resolverName: 'enabled',
-  resolverArgs: {}
+  resolverArgs: {},
 })
 
 const mapStateToProps = (state, { data }) => ({
-  enabled: data
+  enabled: data,
 })
 
 export default connectReadModel(mapStateToOptions)(

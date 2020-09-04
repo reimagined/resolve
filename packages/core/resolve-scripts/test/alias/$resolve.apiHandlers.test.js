@@ -9,9 +9,9 @@ describe('base config works correctly', () => {
       {
         path: '/api/api-handler',
         method: 'get',
-        handler: path.resolve(__dirname, 'files/testApiHandler.js')
-      }
-    ]
+        handler: path.resolve(__dirname, 'files/testApiHandler.js'),
+      },
+    ],
   }
 
   test('[client]', () => {
@@ -20,7 +20,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -33,7 +33,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -47,9 +47,9 @@ describe('config throw error when method is process.env', () => {
       {
         path: '/api/api-handler',
         method: declareRuntimeEnv('METHOD'),
-        handler: path.resolve(__dirname, 'files/testApiHandler.js')
-      }
-    ]
+        handler: path.resolve(__dirname, 'files/testApiHandler.js'),
+      },
+    ],
   }
 
   test('[client]', () => {
@@ -58,7 +58,7 @@ describe('config throw error when method is process.env', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -71,7 +71,7 @@ describe('config throw error when method is process.env', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -85,9 +85,9 @@ describe('config throw error when method is process.env', () => {
       {
         path: `/api/${declareRuntimeEnv('PATH')}`,
         method: 'get',
-        handler: path.resolve(__dirname, 'files/testApiHandler.js')
-      }
-    ]
+        handler: path.resolve(__dirname, 'files/testApiHandler.js'),
+      },
+    ],
   }
 
   test('[client]', () => {
@@ -96,7 +96,7 @@ describe('config throw error when method is process.env', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -109,7 +109,7 @@ describe('config throw error when method is process.env', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )

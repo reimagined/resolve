@@ -16,7 +16,7 @@ const status = async (pool, readModelName) => {
       successEvent: JSON.parse(rows[0].SuccessEvent),
       failedEvent: JSON.parse(rows[0].FailedEvent),
       errors: JSON.parse(rows[0].Errors),
-      cursor: JSON.parse(rows[0].Cursor)
+      cursor: JSON.parse(rows[0].Cursor),
     }
   } else {
     return null

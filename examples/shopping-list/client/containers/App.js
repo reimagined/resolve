@@ -5,8 +5,8 @@ import Header from './Header'
 const App = ({
   children,
   match: {
-    params: { id }
-  }
+    params: { id },
+  },
 }) => (
   <div>
     <Header

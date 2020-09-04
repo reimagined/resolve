@@ -12,7 +12,7 @@ const saveEvent = async (
         `${escape(event.aggregateId)},`,
         `${+event.aggregateVersion},`,
         `${escape(event.type)},`,
-        escape(JSON.stringify(event.payload != null ? event.payload : null))
+        escape(JSON.stringify(event.payload != null ? event.payload : null)),
       ].join('')
 
       // TODO: Improve calculation byteLength depend on codepage and wide-characters

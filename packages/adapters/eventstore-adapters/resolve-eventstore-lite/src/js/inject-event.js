@@ -1,4 +1,4 @@
-const injectEvent = async function(
+const injectEvent = async function (
   { eventsTableName, database, escapeId, escape },
   event
 ) {

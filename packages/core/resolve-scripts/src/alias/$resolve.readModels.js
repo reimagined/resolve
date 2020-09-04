@@ -2,7 +2,7 @@ import {
   message,
   RUNTIME_ENV_NOWHERE,
   RESOURCE_ANY,
-  IMPORT_INSTANCE
+  IMPORT_INSTANCE,
 } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
@@ -44,7 +44,7 @@ export default ({ resolveConfig, isClient }) => {
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
       imports,
-      constants
+      constants,
     })
 
     exports.push(`readModels.push({`, `  name: name_${index}`)
@@ -59,7 +59,7 @@ export default ({ resolveConfig, isClient }) => {
       instanceMode: IMPORT_INSTANCE,
       calculateHash: 'resolve-read-model-projection-hash',
       imports,
-      constants
+      constants,
     })
     exports.push(`, projection: projection_${index}`)
     exports.push(`, invariantHash: projection_${index}_hash`)

@@ -5,7 +5,7 @@ const routeLoginCallback = async ({ resolve }, nickname) => {
   const { data: user } = await resolve.executeQuery({
     modelName: 'user-profiles',
     resolverName: 'user',
-    resolverArgs: { name: nickname.trim() }
+    resolverArgs: { name: nickname.trim() },
   })
 
   if (!user) {

@@ -8,7 +8,7 @@ export const includeAlias = [
   'port',
   'rootPath',
   'staticDir',
-  'staticPath'
+  'staticPath',
 ]
 
 export default () => {
@@ -16,9 +16,9 @@ export default () => {
 
   const alias = fs
     .readdirSync(__dirname)
-    .filter(filename => path.extname(filename) === '.js')
-    .map(filename => path.basename(filename, '.js').replace('$resolve.', ''))
-    .filter(alias => includeAlias.includes(alias))
+    .filter((filename) => path.extname(filename) === '.js')
+    .map((filename) => path.basename(filename, '.js').replace('$resolve.', ''))
+    .filter((alias) => includeAlias.includes(alias))
 
   for (const name of alias) {
     exports.push(`import ${name} from '$resolve.${name}'`)

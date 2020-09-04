@@ -9,8 +9,8 @@ export default {
         body: {
           type: 'story',
           aggregateId,
-          text: `${title} ${text}`
-        }
+          text: `${title} ${text}`,
+        },
       })
     }
   },
@@ -23,8 +23,8 @@ export default {
         body: {
           aggregateId,
           type: 'user',
-          text: name
-        }
+          text: name,
+        },
       })
     }
   },
@@ -35,8 +35,8 @@ export default {
       aggregateId,
       payload: {
         commentId,
-        content: { text }
-      }
+        content: { text },
+      },
     }
   ) => {
     if (es) {
@@ -46,8 +46,8 @@ export default {
         body: {
           aggregateId,
           type: 'comment',
-          text
-        }
+          text,
+        },
       })
     }
   },
@@ -56,8 +56,8 @@ export default {
     if (es) {
       await es.delete({
         index: 'primary',
-        id: commentId
+        id: commentId,
       })
     }
-  }
+  },
 }

@@ -84,7 +84,7 @@ function useQuery<T>(
   )
   const actualDependencies: any[] =
     firstOfType<any[]>(isDependencies, options, callback, dependencies) ??
-    [query, actualOptions, actualCallback].filter(i => i)
+    [query, actualOptions, actualCallback].filter((i) => i)
 
   if (typeof query === 'function') {
     return useCallback(

@@ -31,15 +31,15 @@ class MyLists extends React.PureComponent {
 export const mapStateToOptions = () => ({
   readModelName: 'ShoppingLists',
   resolverName: 'all',
-  resolverArgs: {}
+  resolverArgs: {},
 })
 
 // eslint-disable-next-line no-unused-vars
 export const mapStateToProps = (state, ownProps) => ({
-  lists: state.optimisticShoppingLists || []
+  lists: state.optimisticShoppingLists || [],
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(

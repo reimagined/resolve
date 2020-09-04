@@ -4,7 +4,7 @@ const inlineLedgerExecuteStatement = async (pool, sql, transactionId) => {
     rdsDataService,
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
-    coercer
+    coercer,
   } = pool
   try {
     const result = await rdsDataService.executeStatement({
@@ -14,7 +14,7 @@ const inlineLedgerExecuteStatement = async (pool, sql, transactionId) => {
       continueAfterTimeout: false,
       includeResultMetadata: true,
       ...(transactionId != null ? { transactionId } : {}),
-      sql
+      sql,
     })
 
     const { columnMetadata, records } = result

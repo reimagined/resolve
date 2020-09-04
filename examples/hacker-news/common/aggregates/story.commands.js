@@ -31,8 +31,8 @@ export default {
         text,
         link,
         userId: jwt.id,
-        userName: jwt.name
-      }
+        userName: jwt.name,
+      },
     }
   },
 
@@ -46,8 +46,8 @@ export default {
     return {
       type: STORY_UPVOTED,
       payload: {
-        userId: jwt.id
-      }
+        userId: jwt.id,
+      },
     }
   },
 
@@ -61,8 +61,8 @@ export default {
     return {
       type: STORY_UNVOTED,
       payload: {
-        userId: jwt.id
-      }
+        userId: jwt.id,
+      },
     }
-  }
+  },
 }

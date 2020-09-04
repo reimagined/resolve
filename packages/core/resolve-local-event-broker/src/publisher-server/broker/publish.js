@@ -1,7 +1,7 @@
 import {
   LazinessStrategy,
   ConsumerMethod,
-  PrivateOperationType
+  PrivateOperationType,
 } from '../constants'
 
 const publish = async (pool, payload) => {
@@ -9,14 +9,14 @@ const publish = async (pool, payload) => {
   const { event } = payload
 
   await invokeConsumer(pool, ConsumerMethod.SaveEvent, {
-    event
+    event,
   })
 
   const input = {
     type: PrivateOperationType.PUSH_NOTIFICATIONS,
     payload: {
-      event
-    }
+      event,
+    },
   }
   await invokeOperation(pool, LazinessStrategy.EAGER, input)
 }

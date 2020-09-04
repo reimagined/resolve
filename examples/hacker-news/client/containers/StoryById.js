@@ -10,9 +10,9 @@ export class StoryById extends React.PureComponent {
   render() {
     const {
       match: {
-        params: { storyId }
+        params: { storyId },
       },
-      authorId
+      authorId,
     } = this.props
 
     if (!storyId) {
@@ -42,7 +42,7 @@ export class StoryById extends React.PureComponent {
 }
 
 export const mapStateToProps = ({ jwt }) => ({
-  authorId: jwt.id
+  authorId: jwt.id,
 })
 
 export default connect(mapStateToProps)(StoryById)

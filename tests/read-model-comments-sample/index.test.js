@@ -11,11 +11,11 @@ describe('Read-model Comments sample', () => {
     name,
     resolvers: resolversModule,
     projection: projectionModule,
-    connectorName
+    connectorName,
   } = config.readModels.find(({ name }) => name === 'Comments')
   const {
     module: connectorModule,
-    options: connectorOptions
+    options: connectorOptions,
   } = config.readModelConnectors[connectorName]
 
   const createConnector = interopRequireDefault(require(connectorModule))
@@ -42,57 +42,57 @@ describe('Read-model Comments sample', () => {
       type: 'COMMENT_CREATED',
       payload: {
         parentId: null,
-        content: 'Level 1'
-      }
+        content: 'Level 1',
+      },
     },
     {
       aggregateId: 'comment-id-2',
       type: 'COMMENT_CREATED',
       payload: {
         parentId: 'comment-id-1',
-        content: 'Level 1.1'
-      }
+        content: 'Level 1.1',
+      },
     },
     {
       aggregateId: 'comment-id-3',
       type: 'COMMENT_CREATED',
       payload: {
         parentId: 'comment-id-2',
-        content: 'Level 1.1.1'
-      }
+        content: 'Level 1.1.1',
+      },
     },
     {
       aggregateId: 'comment-id-4',
       type: 'COMMENT_CREATED',
       payload: {
         parentId: 'comment-id-2',
-        content: 'Level 1.1.2'
-      }
+        content: 'Level 1.1.2',
+      },
     },
     {
       aggregateId: 'comment-id-5',
       type: 'COMMENT_CREATED',
       payload: {
         parentId: 'comment-id-2',
-        content: 'Level 1.1.3'
-      }
+        content: 'Level 1.1.3',
+      },
     },
     {
       aggregateId: 'comment-id-6',
       type: 'COMMENT_CREATED',
       payload: {
         parentId: 'comment-id-1',
-        content: 'Level 1.2'
-      }
+        content: 'Level 1.2',
+      },
     },
     {
       aggregateId: 'comment-id-7',
       type: 'COMMENT_CREATED',
       payload: {
         parentId: 'comment-id-1',
-        content: 'Level 1.3'
-      }
-    }
+        content: 'Level 1.3',
+      },
+    },
   ]
 
   test(`resolve "getComments"`, async () => {
@@ -102,7 +102,7 @@ describe('Read-model Comments sample', () => {
           name,
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .getComments({})
     ).toMatchSnapshot(`getComments`)

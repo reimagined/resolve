@@ -10,12 +10,12 @@ import Image from './Image'
 const NavItem = connectRootBasedUrls(['href'])(RawNavItem)
 
 const Header = ({ title, css, favicon, jwt }) => {
-  const stylesheetLinks = css.map(href => ({ rel: 'stylesheet', href }))
+  const stylesheetLinks = css.map((href) => ({ rel: 'stylesheet', href }))
   const faviconLink = { rel: 'icon', type: 'image/png', href: favicon }
   const links = [...stylesheetLinks, faviconLink]
   const meta = {
     name: 'viewport',
-    content: 'width=device-width, initial-scale=1'
+    content: 'width=device-width, initial-scale=1',
   }
 
   return (
@@ -48,8 +48,8 @@ const Header = ({ title, css, favicon, jwt }) => {
   )
 }
 
-const mapStateToProps = state => ({
-  jwt: state.jwt
+const mapStateToProps = (state) => ({
+  jwt: state.jwt,
 })
 
 export default connectStaticBasedUrls(['css', 'favicon'])(

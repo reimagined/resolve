@@ -11,7 +11,7 @@ export default {
 
     return {
       type: USER_CREATED,
-      payload: { login, passwordHash }
+      payload: { login, passwordHash },
     }
-  }
+  },
 }

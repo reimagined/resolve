@@ -14,7 +14,7 @@ const entryPoint = ({
   rootPath,
   staticPath,
   viewModels,
-  subscriber
+  subscriber,
 }) => {
   const origin = getOrigin(window.location)
   const history = createBrowserHistory({ basename: rootPath })
@@ -30,7 +30,7 @@ const entryPoint = ({
     origin,
     rootPath,
     staticPath,
-    isClient: true
+    isClient: true,
   })
 
   render(

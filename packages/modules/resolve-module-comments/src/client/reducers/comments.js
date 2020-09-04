@@ -6,14 +6,14 @@ const {
   CONNECT_READMODEL,
   DISCONNECT_READMODEL,
   QUERY_READMODEL_SUCCESS,
-  SEND_COMMAND_SUCCESS
+  SEND_COMMAND_SUCCESS,
 } = internal.actionTypes
 
 const createCommentsReducer = ({
   aggregateName,
   readModelName,
   resolverNames: { commentsTree },
-  commandTypes: { createComment, updateComment, removeComment }
+  commandTypes: { createComment, updateComment, removeComment },
 }) => (state = {}, action) => {
   if (
     action.type === CONNECT_READMODEL &&
@@ -25,9 +25,9 @@ const createCommentsReducer = ({
       [action.query.args.treeId]: {
         ...state[action.query.args.treeId],
         [action.query.args.parentCommentId]: {
-          children: []
-        }
-      }
+          children: [],
+        },
+      },
     }
   }
 
@@ -39,8 +39,8 @@ const createCommentsReducer = ({
     const nextState = {
       ...state,
       [action.query.args.treeId]: {
-        ...state[action.query.args.treeId]
-      }
+        ...state[action.query.args.treeId],
+      },
     }
     delete nextState[action.query.args.treeId][
       action.query.args.parentCommentId
@@ -60,8 +60,8 @@ const createCommentsReducer = ({
       ...state,
       [action.query.args.treeId]: {
         ...state[action.query.args.treeId],
-        [action.query.args.parentCommentId]: action.result.data
-      }
+        [action.query.args.parentCommentId]: action.result.data,
+      },
     }
   }
 
@@ -83,13 +83,13 @@ const createCommentsReducer = ({
               state[action.command.aggregateId][
                 action.command.payload.parentCommentId
               ] || {
-                children: []
+                children: [],
               }
             ).children,
-            action.command.payload
-          ]
-        }
-      }
+            action.command.payload,
+          ],
+        },
+      },
     }
   }
 
@@ -108,16 +108,16 @@ const createCommentsReducer = ({
           ],
           children: state[action.command.aggregateId][
             action.command.payload.parentCommentId
-          ].children.map(child =>
+          ].children.map((child) =>
             child.commentId === action.command.payload.commentId
               ? {
                   ...child,
-                  ...action.command.payload
+                  ...action.command.payload,
                 }
               : child
-          )
-        }
-      }
+          ),
+        },
+      },
     }
   }
 
@@ -137,10 +137,10 @@ const createCommentsReducer = ({
           children: state[action.command.aggregateId][
             action.command.payload.parentCommentId
           ].children.filter(
-            child => child.commentId !== action.command.payload.commentId
-          )
-        }
-      }
+            (child) => child.commentId !== action.command.payload.commentId
+          ),
+        },
+      },
     }
   }
 

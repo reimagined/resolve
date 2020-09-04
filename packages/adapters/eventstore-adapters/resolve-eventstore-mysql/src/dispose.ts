@@ -5,7 +5,7 @@ import { AdapterPool } from './types'
 const disposeSecretsStore = async (pool: AdapterPool): Promise<any> => {
   const log = getLog(`disposeSecretsStore`)
   const {
-    secrets: { connection }
+    secrets: { connection },
   } = pool
   log.debug(`closing mysql connection`)
 

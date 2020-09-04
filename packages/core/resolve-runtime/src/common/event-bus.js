@@ -3,14 +3,14 @@ import {
   FULL_REGULAR_CONNECTOR,
   FULL_XA_CONNECTOR,
   EMPTY_CONNECTOR,
-  INLINE_LEDGER_CONNECTOR
+  INLINE_LEDGER_CONNECTOR,
 } from 'resolve-query'
 
 const connectorCapabilities = {
   FULL_REGULAR_CONNECTOR,
   FULL_XA_CONNECTOR,
   EMPTY_CONNECTOR,
-  INLINE_LEDGER_CONNECTOR
+  INLINE_LEDGER_CONNECTOR,
 }
 
 const eventBusMethod = async (resolve, key, ...args) => {
@@ -59,7 +59,7 @@ const eventBusMethod = async (resolve, key, ...args) => {
   return result
 }
 
-const createEventBus = resolve => {
+const createEventBus = (resolve) => {
   const eventBus = new Proxy(
     {},
     {
@@ -68,7 +68,7 @@ const createEventBus = resolve => {
       },
       set() {
         throw new Error(`Event bus API is immutable`)
-      }
+      },
     }
   )
 

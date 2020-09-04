@@ -4,7 +4,7 @@ import {
   Command,
   CommandResult,
   CommandOptions,
-  CommandCallback
+  CommandCallback,
 } from 'resolve-client'
 import { useCommand, CommandBuilder } from 'resolve-react-hooks'
 import { isDependencies, isOptions } from '../helpers'
@@ -14,7 +14,7 @@ import {
   sendCommandRequest,
   SendCommandRequestAction,
   sendCommandSuccess,
-  SendCommandSuccessAction
+  SendCommandSuccessAction,
 } from './actions'
 import { AnyAction } from 'redux'
 
@@ -41,7 +41,7 @@ export type CommandReduxHookOptions = {
 const internalActions: CommandReduxActionsCreators = {
   request: (command: Command) => sendCommandRequest(command, true),
   success: sendCommandSuccess,
-  failure: sendCommandFailure
+  failure: sendCommandFailure,
 }
 
 const defaultCommandOptions: CommandOptions = {}
@@ -84,7 +84,7 @@ function useReduxCommand<T>(
 
   const actualDependencies: any[] =
     firstOfType<any[]>(isDependencies, options, dependencies, dependencies) ??
-    [command, actualOptions, actualActionCreators].filter(i => i)
+    [command, actualOptions, actualActionCreators].filter((i) => i)
 
   const { request, success, failure } = actualActionCreators
 
@@ -125,7 +125,7 @@ function useReduxCommand<T>(
 
       dispatchRequest(plainCommand)
       executor(plainCommand)
-    }
+    },
   }
 }
 

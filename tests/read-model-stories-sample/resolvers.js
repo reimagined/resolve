@@ -8,7 +8,7 @@ const resolvers = {
   // mdis-start find
   getStoriesByIds: async (store, { ids }) => {
     return await store.find('Stories', {
-      $or: ids.map(storyId => ({ id: { $eq: storyId } }))
+      $or: ids.map((storyId) => ({ id: { $eq: storyId } })),
     })
   },
   // mdis-stop find
@@ -31,8 +31,8 @@ const resolvers = {
     return await store.find('Stories', {
       $and: [
         { version: { [openRange ? '$gte' : '$gt']: minVersion } },
-        { version: { [openRange ? '$lte' : '$lt']: maxVersion } }
-      ]
+        { version: { [openRange ? '$lte' : '$lt']: maxVersion } },
+      ],
     })
   },
 
@@ -41,9 +41,9 @@ const resolvers = {
     return version
   },
   // mdis-start count
-  getCountStories: async store => {
+  getCountStories: async (store) => {
     return await store.count('Stories', {})
-  }
+  },
   // mdis-stop count
 }
 

@@ -22,54 +22,54 @@ const routes = [
     routes: [
       {
         path: '/error',
-        component: Error
+        component: Error,
       },
       {
         path: '/login',
-        component: Login
+        component: Login,
       },
       {
         path: '/user/:userId',
-        component: UserById
+        component: UserById,
       },
       {
         path: '/',
         component: NewestByPage,
-        exact: true
+        exact: true,
       },
       {
         path: '/newest/:page?',
-        component: NewestByPage
+        component: NewestByPage,
       },
       {
         path: '/show/:page?',
-        component: ShowByPage
+        component: ShowByPage,
       },
       {
         path: '/ask/:page?',
-        component: AskByPage
+        component: AskByPage,
       },
       {
         path: '/submit',
-        component: Submit
+        component: Submit,
       },
       {
         path: '/storyDetails/:storyId/comments/:commentId',
-        component: CommentsTreeById
+        component: CommentsTreeById,
       },
       {
         path: '/storyDetails/:storyId',
-        component: StoryById
+        component: StoryById,
       },
       {
         path: '/comments/:page?',
-        component: CommentsByPage
+        component: CommentsByPage,
       },
       {
-        component: PageNotFound
-      }
-    ]
-  }
+        component: PageNotFound,
+      },
+    ],
+  },
 ]
 
 const getRoutes = () => routes

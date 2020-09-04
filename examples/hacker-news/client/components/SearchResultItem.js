@@ -20,7 +20,7 @@ const Link = styled(NavLink)`
 
 const SearchResultItem = ({
   data: { type, aggregateId, text },
-  onNavigate
+  onNavigate,
 }) => {
   return (
     <Link

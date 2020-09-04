@@ -5,7 +5,7 @@ const connectRootBasedUrls = createContextBasedConnector(
   (
     {
       origin,
-      rootPath
+      rootPath,
     }: {
       origin: string
       rootPath: string

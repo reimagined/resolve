@@ -2,14 +2,14 @@ import {
   FILE_LOADING_START,
   FILE_LOADING_SUCCESS,
   FILE_LOADING_FAILURE,
-  FILE_NOT_LOADED
+  FILE_NOT_LOADED,
 } from '../event-types'
 
 export default {
-  Init: async store => {
+  Init: async (store) => {
     await store.defineTable('Files', {
       indexes: { id: 'string' },
-      fields: ['userId', 'projectId', 'status']
+      fields: ['userId', 'projectId', 'status'],
     })
   },
 
@@ -21,7 +21,7 @@ export default {
       id: aggregateId,
       userId,
       projectId,
-      status: 'not loaded'
+      status: 'not loaded',
     }
 
     await store.insert('Files', file)
@@ -49,5 +49,5 @@ export default {
       { id: aggregateId },
       { $set: { status: 'failure' } }
     )
-  }
+  },
 }

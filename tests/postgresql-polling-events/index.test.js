@@ -2,7 +2,7 @@ import AWS from 'aws-sdk'
 import debugLevels from 'resolve-debug-levels'
 import createEventstoreAdapter, {
   create,
-  destroy
+  destroy,
 } from 'resolve-eventstore-postgresql-serverless'
 
 const logger = debugLevels('resolve:postgresql-polling-events')
@@ -10,9 +10,9 @@ const logger = debugLevels('resolve:postgresql-polling-events')
 AWS.config.update({
   credentials: {
     accessKeyId: process.env.ACCESS_KEY_ID,
-    secretAccessKey: process.env.SECRET_ACCESS_KEY
+    secretAccessKey: process.env.SECRET_ACCESS_KEY,
   },
-  httpOptions: { timeout: 300000 }
+  httpOptions: { timeout: 300000 },
 })
 
 jest.setTimeout(20000000)
@@ -21,7 +21,7 @@ describe.skip('resolve-eventstore-mysql-serverless', () => {
   beforeAll.skip(async () => {
     logger.warn('create start')
     const rdsDataApi = new AWS.RDSDataService({
-      region: process.env.AWS_REGION
+      region: process.env.AWS_REGION,
     })
     try {
       await rdsDataApi
@@ -33,7 +33,7 @@ describe.skip('resolve-eventstore-mysql-serverless', () => {
           includeResultMetadata: true,
           sql: `SELECT pg_terminate_backend(pid)
           FROM pg_stat_activity
-          WHERE usename='${process.env.AWS_POSTGRES_USER_NAME}';`
+          WHERE usename='${process.env.AWS_POSTGRES_USER_NAME}';`,
         })
         .promise()
     } catch (error) {}
@@ -45,7 +45,7 @@ describe.skip('resolve-eventstore-mysql-serverless', () => {
       databaseName: process.env.AWS_POSTGRES_DATABASE_NAME,
       eventsTableName: process.env.AWS_POSTGRES_TABLE_NAME,
       userLogin: process.env.AWS_POSTGRES_USER_NAME,
-      userPassword: process.env.AWS_POSTGRES_PASSWORD
+      userPassword: process.env.AWS_POSTGRES_PASSWORD,
     })
     logger.warn('create end')
   })
@@ -57,7 +57,7 @@ describe.skip('resolve-eventstore-mysql-serverless', () => {
       awsSecretStoreAdminArn: process.env.AWS_SECRET_STORE_ADMIN_ARN,
       dbClusterOrInstanceArn: process.env.AWS_POSTGRES_CLUSTER_ARN,
       databaseName: process.env.AWS_POSTGRES_DATABASE_NAME,
-      userLogin: process.env.AWS_POSTGRES_USER_NAME
+      userLogin: process.env.AWS_POSTGRES_USER_NAME,
     })
     logger.warn('destroy end')
   })
@@ -70,7 +70,7 @@ describe.skip('resolve-eventstore-mysql-serverless', () => {
       databaseName: process.env.AWS_POSTGRES_DATABASE_NAME,
       eventsTableName: process.env.AWS_POSTGRES_TABLE_NAME,
       awsSecretStoreArn: process.env.AWS_SECRET_STORE_ARN,
-      dbClusterOrInstanceArn: process.env.AWS_POSTGRES_CLUSTER_ARN
+      dbClusterOrInstanceArn: process.env.AWS_POSTGRES_CLUSTER_ARN,
     })
 
     logger.warn('drop eventstore start')
@@ -102,7 +102,7 @@ describe.skip('resolve-eventstore-mysql-serverless', () => {
           includeResultMetadata: true,
           sql: `SELECT pg_terminate_backend(pid)
           FROM pg_stat_activity
-          WHERE usename='${process.env.AWS_POSTGRES_USER_NAME}';`
+          WHERE usename='${process.env.AWS_POSTGRES_USER_NAME}';`,
         })
         .promise()
     } catch (error) {}
@@ -114,14 +114,14 @@ describe.skip('resolve-eventstore-mysql-serverless', () => {
     let leftEvent = eventCount
     const promises = []
 
-    const eventWorker = async ei => {
+    const eventWorker = async (ei) => {
       logger.warn('save start', ei)
       await eventstoreAdapter.saveEvent({
         type: 'TYPE😂',
         aggregateId: `🐱-${ei}`,
         aggregateVersion: ei,
         timestamp: ei,
-        payload: { aggregate: true }
+        payload: { aggregate: true },
       })
       leftEvent--
       logger.warn('save end', ei, 'left', leftEvent)
@@ -142,7 +142,7 @@ describe.skip('resolve-eventstore-mysql-serverless', () => {
       const currentEvents = []
       await eventstoreAdapter.loadEvents(
         { cursor: marker, limit: 67 },
-        event => {
+        (event) => {
           currentEvents.push(event)
           events.push(event)
 

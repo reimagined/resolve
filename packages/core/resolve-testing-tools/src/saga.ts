@@ -9,7 +9,7 @@ export type SagaParams = {
 
 const saga = (
   {
-    promise
+    promise,
   }: {
     promise: any
   },

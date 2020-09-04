@@ -3,8 +3,8 @@ import { getClient } from 'resolve-client'
 import initUI from './init_ui'
 import updateUI from './update_ui'
 
-const main = async resolveContext => {
-  await new Promise(resolve => domready(resolve))
+const main = async (resolveContext) => {
+  await new Promise((resolve) => domready(resolve))
   const { viewModels } = resolveContext
   const chatViewModel = viewModels.find(({ name }) => name === 'chat')
   const client = getClient(resolveContext)
@@ -15,9 +15,9 @@ const main = async resolveContext => {
         aggregateName: 'Chat',
         type: 'postMessage',
         aggregateId: userName,
-        payload: message
+        payload: message,
       },
-      err => {
+      (err) => {
         if (err) {
           // eslint-disable-next-line no-console
           console.warn(`Error while sending command: ${err}`)
@@ -27,14 +27,14 @@ const main = async resolveContext => {
 
   const { data } = await client.query({
     name: 'chat',
-    aggregateIds: '*'
+    aggregateIds: '*',
   })
 
   let chatViewModelState = data
 
   initUI(data, sendMessage)
 
-  const chatViewModelUpdater = event => {
+  const chatViewModelUpdater = (event) => {
     const eventType = event != null && event.type != null ? event.type : null
     const eventHandler = chatViewModel.projection[eventType]
 

@@ -6,16 +6,16 @@ export default {
     ...state,
     createdAt: timestamp,
     createdBy: userId,
-    voted: []
+    voted: [],
   }),
 
   [STORY_UPVOTED]: (state, { payload: { userId } }) => ({
     ...state,
-    voted: state.voted.concat(userId)
+    voted: state.voted.concat(userId),
   }),
 
   [STORY_UNVOTED]: (state, { payload: { userId } }) => ({
     ...state,
-    voted: state.voted.filter(curUserId => curUserId !== userId)
-  })
+    voted: state.voted.filter((curUserId) => curUserId !== userId),
+  }),
 }

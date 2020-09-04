@@ -2,7 +2,7 @@ const beginIncrementalImport = async ({
   database,
   eventsTableName,
   escapeId,
-  escape
+  escape,
 }) => {
   try {
     const incrementalImportTableAsId = escapeId(

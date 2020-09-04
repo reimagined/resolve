@@ -5,7 +5,7 @@ const resume = async (pool, readModelName, next) => {
     escape,
     inlineLedgerForceStop,
     inlineLedgerExecuteStatement,
-    PassthroughError
+    PassthroughError,
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)

@@ -12,7 +12,7 @@ const NothingFound = styled.div`
 
 const SearchResults = ({ results, onNavigate }) => {
   return results && results.length ? (
-    results.map(item => (
+    results.map((item) => (
       <SearchResultItem data={item} onNavigate={onNavigate} />
     ))
   ) : (
@@ -24,12 +24,12 @@ const mapStateToOptions = (state, { query }) => ({
   readModelName: 'Search',
   resolverName: 'find',
   resolverArgs: {
-    q: query
-  }
+    q: query,
+  },
 })
 
 const mapStateToProps = (state, { data }) => ({
-  results: data
+  results: data,
 })
 
 export default connectReadModel(mapStateToOptions)(

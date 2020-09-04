@@ -13,7 +13,7 @@ const entryPoint = ({
   staticPath,
   viewModels,
   subscriber,
-  clientImports
+  clientImports,
 }) => {
   const origin = getOrigin(window.location)
   const history = createBrowserHistory({ basename: rootPath })
@@ -27,7 +27,7 @@ const entryPoint = ({
     history,
     origin,
     rootPath,
-    isClient: true
+    isClient: true,
   })
 
   let appContainer = document.getElementById('app-container')

@@ -5,11 +5,11 @@ module.exports = {
   resolver: {
     blacklistRE: blacklist([
       /ui[/\\]node_modules[/\\]react-native[/\\].*/,
-      /ui[/\\]node_modules[/\\]expo[/\\].*/
+      /ui[/\\]node_modules[/\\]expo[/\\].*/,
     ]),
     extraNodeModules: {
       'react-native': path.resolve(__dirname, 'node_modules/react-native'),
-      expo: path.resolve(__dirname, 'node_modules/expo')
-    }
-  }
+      expo: path.resolve(__dirname, 'node_modules/expo'),
+    },
+  },
 }

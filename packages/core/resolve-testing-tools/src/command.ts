@@ -23,7 +23,7 @@ export const command = (
   context[symbol].phase = Phases.COMMAND
   context[symbol].command = {
     name,
-    payload
+    payload,
   }
 
   return context

@@ -1,18 +1,18 @@
 // mdis-start
 const projection = {
-  Init: async store => {
+  Init: async (store) => {
     // mdis-start read-store-api
     await store.defineTable('TestTable', {
       indexes: {
         firstIndexName: 'number',
-        secondIndexName: 'string'
+        secondIndexName: 'string',
       },
       fields: [
         'firstFieldName',
         'secondFieldName',
         'firstJsonName',
-        'secondJsonName'
-      ]
+        'secondJsonName',
+      ],
     })
     // mdis-stop read-store-api
   },
@@ -27,7 +27,7 @@ const projection = {
       firstFieldName: testEventContent,
       secondFieldName: 0,
       firstJsonName: { a: 1, b: 2, e: 10 },
-      secondJsonName: [1, 2, 3]
+      secondJsonName: [1, 2, 3],
     })
     // mdis-stop read-store-api
 
@@ -37,7 +37,7 @@ const projection = {
       firstFieldName: null,
       secondFieldName: 100,
       firstJsonName: { c: 3, d: 4, e: 20 },
-      secondJsonName: null
+      secondJsonName: null,
     })
 
     await store.insert('TestTable', {
@@ -46,7 +46,7 @@ const projection = {
       firstFieldName: null,
       secondFieldName: 200,
       firstJsonName: null,
-      secondJsonName: [3, 2, 1]
+      secondJsonName: [3, 2, 1],
     })
 
     await store.insert('TestTable', {
@@ -55,7 +55,7 @@ const projection = {
       firstFieldName: testEventContent,
       secondFieldName: null,
       firstJsonName: null,
-      secondJsonName: null
+      secondJsonName: null,
     })
   },
 
@@ -67,21 +67,21 @@ const projection = {
       'TestTable',
       {
         firstIndexName: { $gt: 1 },
-        secondIndexName: 'idx-a'
+        secondIndexName: 'idx-a',
       },
       {
         $set: {
           'firstJsonName.f': 'inner-field',
           firstFieldName: 'outer-field',
-          secondJsonName: ['outer', 'json', 'value', testEventContent]
+          secondJsonName: ['outer', 'json', 'value', testEventContent],
         },
         $unset: {
-          'firstJsonName.d': true
+          'firstJsonName.d': true,
         },
         $inc: {
           'firstJsonName.e': 5,
-          secondFieldName: 42
-        }
+          secondFieldName: 42,
+        },
       }
     )
     // mdis-stop read-store-api
@@ -91,16 +91,19 @@ const projection = {
       {
         $or: [
           {
-            $and: [{ firstIndexName: { $lt: 1 } }, { secondIndexName: 'idx-a' }]
+            $and: [
+              { firstIndexName: { $lt: 1 } },
+              { secondIndexName: 'idx-a' },
+            ],
           },
-          { secondIndexName: 'idx-b' }
-        ]
+          { secondIndexName: 'idx-b' },
+        ],
       },
       {
         $set: {
           firstFieldName: 'outer-field',
-          secondJsonName: ['outer', 'json', 'value', testEventContent]
-        }
+          secondJsonName: ['outer', 'json', 'value', testEventContent],
+        },
       }
     )
   },
@@ -116,8 +119,8 @@ const projection = {
         $set: {
           'firstJsonName.f': 'inner-field',
           firstFieldName: 'outer-field',
-          secondJsonName: ['outer', 'json', 'value', testEventContent]
-        }
+          secondJsonName: ['outer', 'json', 'value', testEventContent],
+        },
       },
       { upsert: true }
     )
@@ -130,19 +133,19 @@ const projection = {
     // mdis-start read-store-api
     await store.delete('TestTable', {
       firstIndexName: { $gt: 1 },
-      secondIndexName: 'idx-a'
+      secondIndexName: 'idx-a',
     })
     // mdis-stop read-store-api
 
     await store.delete('TestTable', {
       $or: [
         {
-          $and: [{ firstIndexName: { $lt: 1 } }, { secondIndexName: 'idx-a' }]
+          $and: [{ firstIndexName: { $lt: 1 } }, { secondIndexName: 'idx-a' }],
         },
-        { secondIndexName: testEventContent }
-      ]
+        { secondIndexName: testEventContent },
+      ],
     })
-  }
+  },
 }
 
 export default projection

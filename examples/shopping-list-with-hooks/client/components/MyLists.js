@@ -25,7 +25,7 @@ const MyLists = () => {
         onRemoveSuccess={(err, result) => {
           setLists({
             ...lists,
-            data: lists.data.filter(list => list.id !== result.aggregateId)
+            data: lists.data.filter((list) => list.id !== result.aggregateId),
           })
         }}
       />
@@ -36,7 +36,7 @@ const MyLists = () => {
           nextLists.data.push({
             name: result.payload.name,
             createdAt: result.timestamp,
-            id: result.aggregateId
+            id: result.aggregateId,
           })
           setLists(nextLists)
         }}

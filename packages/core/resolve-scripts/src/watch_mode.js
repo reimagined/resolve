@@ -24,7 +24,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
   const webpackConfigs = await getWebpackConfigs({
     resolveConfig,
     nodeModulesByAssembly,
-    adjustWebpackConfigs
+    adjustWebpackConfigs,
   })
 
   const peerDependencies = getPeerDependencies()
@@ -45,8 +45,8 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     stdio: 'inherit',
     env: {
       ...process.env,
-      RESOLVE_LAUNCH_ID: resolveLaunchId
-    }
+      RESOLVE_LAUNCH_ID: resolveLaunchId,
+    },
   })
 
   let broker = null
@@ -66,8 +66,8 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
       stdio: 'inherit',
       env: {
         ...process.env,
-        RESOLVE_LAUNCH_ID: resolveLaunchId
-      }
+        RESOLVE_LAUNCH_ID: resolveLaunchId,
+      },
     })
   }
 
@@ -80,7 +80,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
   )
 
   const stdin = process.openStdin()
-  stdin.addListener('data', data => {
+  stdin.addListener('data', (data) => {
     if (data.toString().indexOf('rs') !== -1) {
       process.env.RESOLVE_SERVER_FIRST_START = 'false'
       server.stop(() => server.start())
@@ -91,7 +91,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     compiler.watch(
       {
         aggregateTimeout: 1000,
-        poll: 1000
+        poll: 1000,
       },
       (err, { stats }) => {
         console.log(' ') // eslint-disable-line no-console

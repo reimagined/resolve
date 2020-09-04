@@ -16,27 +16,27 @@ export default () => {
       aggregateId: uuid(),
       aggregateName: 'ShoppingList',
       payload: {
-        name: shoppingListName || `Shopping List ${lists.length + 1}`
-      }
+        name: shoppingListName || `Shopping List ${lists.length + 1}`,
+      },
     },
     {
       actions: {
-        success: command => ({
+        success: (command) => ({
           type: SHOPPING_LIST_CREATED,
           payload: {
             id: command.aggregateId,
-            name: command.payload.name
-          }
-        })
-      }
+            name: command.payload.name,
+          },
+        }),
+      },
     }
   )
 
-  const updateShoppingListName = event => {
+  const updateShoppingListName = (event) => {
     setShoppingListName(event.target.value)
   }
 
-  const onShoppingListNamePressEnter = event => {
+  const onShoppingListNamePressEnter = (event) => {
     if (event.charCode === 13) {
       event.preventDefault()
       executeCreateListCommand()

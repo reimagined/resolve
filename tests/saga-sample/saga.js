@@ -5,21 +5,21 @@ export default {
     Init: async ({ store }) => {
       await store.defineTable('users', {
         indexes: { id: 'string' },
-        fields: ['mail']
+        fields: ['mail'],
       })
     },
     // mdis-stop init
     USER_CREATED: async ({ store, sideEffects }, event) => {
       await store.insert('users', {
         id: event.aggregateId,
-        mail: event.payload.mail
+        mail: event.payload.mail,
       })
       // mdis-start execute
       await sideEffects.executeCommand({
         aggregateName: 'User',
         aggregateId: event.aggregateId,
         type: 'requestConfirmUser',
-        payload: event.payload
+        payload: event.payload,
       })
       // mdis-stop execute
     },
@@ -34,16 +34,16 @@ export default {
           aggregateName: 'User',
           aggregateId: event.aggregateId,
           type: 'forgetUser',
-          payload: {}
+          payload: {},
         }
       )
       // mdis-stop schedule
     },
     USER_FORGOTTEN: async ({ store }, event) => {
       await store.delete('users', {
-        id: event.aggregateId
+        id: event.aggregateId,
       })
-    }
+    },
   },
   // mdis-start define-side-effect
   sideEffects: {
@@ -54,8 +54,8 @@ export default {
       console.log(mail, content)
       // mdis-start define-side-effect
       // mdis-start
-    }
-  }
+    },
+  },
   // mdis-stop define-side-effect
 }
 // mdis-stop
