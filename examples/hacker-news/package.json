@@ -15,6 +15,7 @@
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watchAll",
     "test:e2e": "babel-node ./run.js test:e2e",
+    "test:e2e-cloud": "babel-node ./run.js test:e2e-cloud",
     "import-event-store": "babel-node ./run.js import-event-store",
     "export-event-store": "babel-node ./run.js export-event-store",
     "resolve-module-admin": "resolve-module-admin"
