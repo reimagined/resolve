@@ -1,4 +1,4 @@
-const emptyAsyncFunction = Promise.resolve.bind(Promise, null);
+const emptyAsyncFunction = Promise.resolve.bind(Promise, null)
 
 const emptySnapshotAdapter = () =>
   Object.freeze({
@@ -8,6 +8,6 @@ const emptySnapshotAdapter = () =>
     dropSnapshot: emptyAsyncFunction,
     init: emptyAsyncFunction,
     drop: emptyAsyncFunction,
-  });
+  })
 
-export default emptySnapshotAdapter;
+export default emptySnapshotAdapter

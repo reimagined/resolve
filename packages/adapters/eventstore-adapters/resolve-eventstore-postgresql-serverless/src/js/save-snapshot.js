@@ -1,10 +1,10 @@
-import getLog from './get-log';
-import { snapshotTrigger } from 'resolve-eventstore-base';
-import { SAVE_CHUNK_SIZE } from './constants';
+import getLog from './get-log'
+import { snapshotTrigger } from 'resolve-eventstore-base'
+import { SAVE_CHUNK_SIZE } from './constants'
 
 const saveSnapshot = async (pool, snapshotKey, content) =>
   snapshotTrigger(pool, snapshotKey, content, async () => {
-    const log = getLog(`saveSnapshot:${snapshotKey}`);
+    const log = getLog(`saveSnapshot:${snapshotKey}`)
 
     const {
       databaseName,
@@ -15,24 +15,24 @@ const saveSnapshot = async (pool, snapshotKey, content) =>
       beginTransaction,
       commitTransaction,
       rollbackTransaction,
-    } = pool;
+    } = pool
 
-    const databaseNameAsId = escapeId(databaseName);
-    const snapshotsTableNameAsId = escapeId(snapshotsTableName);
+    const databaseNameAsId = escapeId(databaseName)
+    const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
-    const chunksCount = Math.ceil(content.length / SAVE_CHUNK_SIZE);
+    const chunksCount = Math.ceil(content.length / SAVE_CHUNK_SIZE)
 
     if (chunksCount > 1) {
-      log.debug(`writing the snapshot to database (chunked)`);
-      let transactionId = null;
+      log.debug(`writing the snapshot to database (chunked)`)
+      let transactionId = null
       try {
-        transactionId = await beginTransaction(pool);
+        transactionId = await beginTransaction(pool)
 
         for (let index = 0; index < chunksCount; index++) {
           const chunk = content.substring(
             index * SAVE_CHUNK_SIZE,
             (index + 1) * SAVE_CHUNK_SIZE
-          );
+          )
 
           if (index > 0) {
             await executeStatement(
@@ -40,7 +40,7 @@ const saveSnapshot = async (pool, snapshotKey, content) =>
             SET "snapshotContent" = "snapshotContent" || ${escape(chunk)}
             WHERE "snapshotKey" = ${escape(snapshotKey)}`,
               transactionId
-            );
+            )
           } else {
             await executeStatement(
               `INSERT INTO ${databaseNameAsId}.${snapshotsTableNameAsId}(
@@ -51,18 +51,18 @@ const saveSnapshot = async (pool, snapshotKey, content) =>
             ON CONFLICT ("snapshotKey") DO UPDATE
             SET "snapshotContent" = ${escape(chunk)}`,
               transactionId
-            );
+            )
           }
         }
 
-        await commitTransaction(pool, transactionId);
+        await commitTransaction(pool, transactionId)
       } catch (error) {
-        await rollbackTransaction(pool, transactionId);
+        await rollbackTransaction(pool, transactionId)
 
-        throw error;
+        throw error
       }
     } else {
-      log.debug(`writing the snapshot to database (whole)`);
+      log.debug(`writing the snapshot to database (whole)`)
       await executeStatement(
         `INSERT INTO ${databaseNameAsId}.${snapshotsTableNameAsId}(
         "snapshotKey", 
@@ -71,9 +71,9 @@ const saveSnapshot = async (pool, snapshotKey, content) =>
       VALUES(${escape(snapshotKey)}, ${escape(content)})
       ON CONFLICT ("snapshotKey") DO UPDATE
       SET "snapshotContent" = ${escape(content)}`
-      );
+      )
     }
-    log.debug(`the snapshot saved successfully`);
-  });
+    log.debug(`the snapshot saved successfully`)
+  })
 
-export default saveSnapshot;
+export default saveSnapshot

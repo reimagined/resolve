@@ -1,1 +1,1 @@
-export default (safeName) => safeName.replace(/@/, '').replace(/[/|\\]/g, '-');
+export default (safeName) => safeName.replace(/@/, '').replace(/[/|\\]/g, '-')

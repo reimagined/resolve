@@ -3,39 +3,39 @@ import {
   RUNTIME_ENV_NOWHERE,
   RESOURCE_ANY,
   IMPORT_INSTANCE,
-} from '../constants';
-import { checkRuntimeEnv } from '../declare_runtime_env';
-import importResource from '../import_resource';
+} from '../constants'
+import { checkRuntimeEnv } from '../declare_runtime_env'
+import importResource from '../import_resource'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
       `${message.serverAliasInClientCodeError}$resolve.readModels`
-    );
+    )
   }
 
-  const imports = [`import '$resolve.guardOnlyServer'`];
-  const constants = [``];
-  const exports = [``, `const readModels = []`, ``];
+  const imports = [`import '$resolve.guardOnlyServer'`]
+  const constants = [``]
+  const exports = [``, `const readModels = []`, ``]
 
   for (let index = 0; index < resolveConfig.readModels.length; index++) {
-    const readModel = resolveConfig.readModels[index];
+    const readModel = resolveConfig.readModels[index]
 
     if (checkRuntimeEnv(readModel.name)) {
-      throw new Error(`${message.clientEnvError}.readModels[${index}].name`);
+      throw new Error(`${message.clientEnvError}.readModels[${index}].name`)
     }
-    constants.push(`const name_${index} = ${JSON.stringify(readModel.name)}`);
+    constants.push(`const name_${index} = ${JSON.stringify(readModel.name)}`)
 
     if (checkRuntimeEnv(readModel.connectorName)) {
       throw new Error(
         `${message.clientEnvError}.readModels[${index}].connectorName`
-      );
+      )
     }
     constants.push(
       `const connectorName_${index} = ${JSON.stringify(
         readModel.connectorName
       )}`
-    );
+    )
 
     importResource({
       resourceName: `resolvers_${index}`,
@@ -45,11 +45,11 @@ export default ({ resolveConfig, isClient }) => {
       instanceMode: IMPORT_INSTANCE,
       imports,
       constants,
-    });
+    })
 
-    exports.push(`readModels.push({`, `  name: name_${index}`);
-    exports.push(`, resolvers: resolvers_${index}`);
-    exports.push(`, connectorName: connectorName_${index}`);
+    exports.push(`readModels.push({`, `  name: name_${index}`)
+    exports.push(`, resolvers: resolvers_${index}`)
+    exports.push(`, connectorName: connectorName_${index}`)
 
     importResource({
       resourceName: `projection_${index}`,
@@ -60,14 +60,14 @@ export default ({ resolveConfig, isClient }) => {
       calculateHash: 'resolve-read-model-projection-hash',
       imports,
       constants,
-    });
-    exports.push(`, projection: projection_${index}`);
-    exports.push(`, invariantHash: projection_${index}_hash`);
+    })
+    exports.push(`, projection: projection_${index}`)
+    exports.push(`, invariantHash: projection_${index}_hash`)
 
-    exports.push(`})`, ``);
+    exports.push(`})`, ``)
   }
 
-  exports.push(`export default readModels`);
+  exports.push(`export default readModels`)
 
-  return [...imports, ...constants, ...exports].join('\r\n');
-};
+  return [...imports, ...constants, ...exports].join('\r\n')
+}

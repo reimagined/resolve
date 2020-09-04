@@ -52,22 +52,22 @@ export const unicodeSymbolsForEscape = `
   \\uFE1A-\\uFE1F\\uFE27-\\uFE2F\\uFE53\\uFE67\\uFE6C-\\uFE6F\\uFE75\\uFEFD-\\uFF00\\uFFBF-
   \\uFFC1\\uFFC8\\uFFC9\\uFFD0\\uFFD1\\uFFD8\\uFFD9\\uFFDD-\\uFFDF\\uFFE7\\uFFEF-
   \\uFFFB\\u038D\\uFFFE\\uFFFF]
-`;
+`
 
 const unicodeEscapeRegex = new RegExp(
   unicodeSymbolsForEscape.replace(/\s/g, ''),
   'g'
-);
+)
 
 const unicodeSymbolEscaper = function (match) {
-  return `\\u${(+match.codePointAt(0)).toString(16).padStart(4, '0')}`;
-};
+  return `\\u${(+match.codePointAt(0)).toString(16).padStart(4, '0')}`
+}
 
 const jsonUtfStringify = function (inputObject) {
   return JSON.stringify(inputObject).replace(
     unicodeEscapeRegex,
     unicodeSymbolEscaper
-  );
-};
+  )
+}
 
-export default jsonUtfStringify;
+export default jsonUtfStringify

@@ -1,8 +1,8 @@
 const dispose = async (pool, options) => {
-  const { destroyResource, createResource } = pool;
+  const { destroyResource, createResource } = pool
 
-  await destroyResource(options);
-  await createResource(options);
-};
+  await destroyResource(options)
+  await createResource(options)
+}
 
-export default dispose;
+export default dispose

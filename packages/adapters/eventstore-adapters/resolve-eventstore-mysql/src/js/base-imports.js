@@ -1,6 +1,6 @@
 import {
   EventstoreResourceNotExistError,
   EventstoreResourceAlreadyExistError,
-} from 'resolve-eventstore-base';
+} from 'resolve-eventstore-base'
 
-export { EventstoreResourceNotExistError, EventstoreResourceAlreadyExistError };
+export { EventstoreResourceNotExistError, EventstoreResourceAlreadyExistError }

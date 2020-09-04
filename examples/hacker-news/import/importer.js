@@ -1,17 +1,17 @@
-import { COMMENT_CREATED } from 'resolve-module-comments/lib/common/defaults';
-import uuid from 'uuid';
-import { EOL } from 'os';
+import { COMMENT_CREATED } from 'resolve-module-comments/lib/common/defaults'
+import uuid from 'uuid'
+import { EOL } from 'os'
 
 import {
   USER_CREATED,
   STORY_CREATED,
   STORY_UPVOTED,
-} from '../common/event-types';
-import api from './api';
+} from '../common/event-types'
+import api from './api'
 
-const aggregateVersionsMap = new Map();
-let eventTimestamp = Date.now();
-const users = {};
+const aggregateVersionsMap = new Map()
+let eventTimestamp = Date.now()
+const users = {}
 
 const saveOneEvent = async (event) =>
   await api.invokeImportApi({
@@ -25,37 +25,37 @@ const saveOneEvent = async (event) =>
       )
       .get(event.aggregateId),
     timestamp: eventTimestamp++,
-  });
+  })
 
 const generateUserEvents = async (name) => {
-  const aggregateId = uuid.v4();
+  const aggregateId = uuid.v4()
 
   await saveOneEvent({
     type: USER_CREATED,
     aggregateId,
     payload: { name },
-  });
+  })
 
-  users[name] = aggregateId;
-  return aggregateId;
-};
+  users[name] = aggregateId
+  return aggregateId
+}
 
 const getUserId = async (userName) => {
-  const user = users[userName];
+  const user = users[userName]
 
   if (user) {
-    return user;
+    return user
   }
 
-  const aggregateId = await generateUserEvents(userName);
-  users[userName] = aggregateId;
-  return aggregateId;
-};
+  const aggregateId = await generateUserEvents(userName)
+  users[userName] = aggregateId
+  return aggregateId
+}
 
 const generateCommentEvents = async (comment, aggregateId, parentId) => {
-  const userName = comment.by;
-  const userId = await getUserId(userName);
-  const commentId = uuid.v4();
+  const userName = comment.by
+  const userId = await getUserId(userName)
+  const commentId = uuid.v4()
 
   await saveOneEvent({
     type: COMMENT_CREATED,
@@ -71,23 +71,23 @@ const generateCommentEvents = async (comment, aggregateId, parentId) => {
         parentId: parentId,
       },
     },
-  });
+  })
 
-  return commentId;
-};
+  return commentId
+}
 
 async function generateComments(ids, aggregateId, parentId, options) {
   if (options.count-- <= 0) {
-    return Promise.resolve();
+    return Promise.resolve()
   }
-  const comments = await api.fetchItems(ids);
-  const promises = [];
+  const comments = await api.fetchItems(ids)
+  const promises = []
   for (const comment of comments) {
     if (!comment || !comment.by) {
-      continue;
+      continue
     }
     if (options.count-- <= 0) {
-      break;
+      break
     }
 
     promises.push(
@@ -99,18 +99,18 @@ async function generateComments(ids, aggregateId, parentId, options) {
               aggregateId,
               commentId,
               options
-            );
+            )
           }
         }
       )
-    );
+    )
   }
-  return await Promise.all(promises);
+  return await Promise.all(promises)
 }
 
 const generatePointEvents = async (aggregateId, pointCount) => {
-  const keys = Object.keys(users);
-  const count = Math.min(keys.length, pointCount);
+  const keys = Object.keys(users)
+  const count = Math.min(keys.length, pointCount)
 
   for (let i = 0; i < count; i++) {
     await saveOneEvent({
@@ -119,17 +119,17 @@ const generatePointEvents = async (aggregateId, pointCount) => {
       payload: {
         userId: users[keys[i]],
       },
-    });
+    })
   }
-};
+}
 
 const generateStoryEvents = async (story) => {
   if (!story || !story.by) {
-    return;
+    return
   }
 
-  const userName = story.by || 'anonymous';
-  const aggregateId = uuid.v4();
+  const userName = story.by || 'anonymous'
+  const aggregateId = uuid.v4()
 
   await saveOneEvent({
     type: STORY_CREATED,
@@ -141,89 +141,89 @@ const generateStoryEvents = async (story) => {
       userName,
       link: story.url || '',
     },
-  });
+  })
 
   if (story.score) {
-    await generatePointEvents(aggregateId, story.score);
+    await generatePointEvents(aggregateId, story.score)
   }
 
   if (story.kids) {
     await generateComments(story.kids, aggregateId, null, {
       count: Math.floor(Math.random() * 100),
-    });
+    })
   }
 
-  return aggregateId;
-};
+  return aggregateId
+}
 
 const getUniqueStoryIds = async (categories) => {
-  const result = new Set();
+  const result = new Set()
 
   for (const ids of categories) {
     if (Array.isArray(ids)) {
-      ids.forEach((id) => result.add(id));
+      ids.forEach((id) => result.add(id))
     }
   }
 
-  return [...result];
-};
+  return [...result]
+}
 
 const fetchStoryIds = async () => {
   const categories = await Promise.all(
     ['topstories', 'newstories', 'showstories', 'askstories'].map((category) =>
       api.fetchStoryIds(category)
     )
-  );
+  )
 
-  return await getUniqueStoryIds(categories);
-};
+  return await getUniqueStoryIds(categories)
+}
 
 const fetchStories = async (ids, tickCallback) => {
-  const stories = await api.fetchItems(ids);
+  const stories = await api.fetchItems(ids)
 
-  const storiesSlice = [];
+  const storiesSlice = []
   for (let sliceIndex = 0; sliceIndex < stories.length / 20; sliceIndex++) {
-    storiesSlice[sliceIndex] = [];
+    storiesSlice[sliceIndex] = []
     for (let index = 0; index < 20; index++) {
-      const story = stories[+(sliceIndex * 20) + index];
+      const story = stories[+(sliceIndex * 20) + index]
       if (story) {
-        storiesSlice[sliceIndex][index] = story;
+        storiesSlice[sliceIndex][index] = story
       }
     }
   }
 
   for (const storySlice of storiesSlice) {
-    const promises = [];
+    const promises = []
     for (const story of storySlice) {
       promises.push(
         (async () => {
           if (!(story && !story.deleted && story.by)) {
-            return;
+            return
           }
 
-          await generateStoryEvents(story);
+          await generateStoryEvents(story)
 
-          tickCallback();
+          tickCallback()
         })()
-      );
+      )
     }
 
-    await Promise.all(promises);
+    await Promise.all(promises)
   }
-};
+}
 
 export const start = async (countCallback, tickCallback) => {
   try {
-    const storyIds = await fetchStoryIds();
-    countCallback(storyIds.length);
-    await fetchStories(storyIds, tickCallback);
+    const storyIds = await fetchStoryIds()
+    countCallback(storyIds.length)
+    await fetchStories(storyIds, tickCallback)
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.log(EOL);
+    console.log(EOL)
     // eslint-disable-next-line no-console
-    console.error(error);
-    process.exit(1);
+    console.error(error)
+    process.exit(1)
   }
 
-  return null;
-};
+  return null
+}

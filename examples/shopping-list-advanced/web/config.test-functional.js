@@ -1,4 +1,4 @@
-const { declareRuntimeEnv } = require('resolve-scripts');
+const { declareRuntimeEnv } = require('resolve-scripts')
 
 const testFunctionalConfig = {
   target: 'local',
@@ -21,6 +21,6 @@ const testFunctionalConfig = {
   eventBroker: {
     databaseFile: 'data/local-bus-broker-test-functional.db',
   },
-};
+}
 
-module.exports = testFunctionalConfig;
+module.exports = testFunctionalConfig

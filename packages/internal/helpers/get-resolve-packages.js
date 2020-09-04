@@ -1,14 +1,14 @@
-const find = require('glob').sync;
+const find = require('glob').sync
 
-const { getResolveDir } = require('./get-resolve-dir');
+const { getResolveDir } = require('./get-resolve-dir')
 
-let _resolvePackages;
+let _resolvePackages
 function getResolvePackages() {
   if (_resolvePackages) {
-    return _resolvePackages;
+    return _resolvePackages
   }
 
-  const resolvePackages = [];
+  const resolvePackages = []
 
   for (const filePath of find('./packages/**/package.json', {
     cwd: getResolveDir(),
@@ -16,31 +16,31 @@ function getResolvePackages() {
     ignore: ['**/node_modules/**', './node_modules/**'],
   })) {
     if (filePath.includes('node_modules')) {
-      continue;
+      continue
     }
     if (
       filePath.includes('packages\\internal') ||
       filePath.includes('packages/internal')
     ) {
-      continue;
+      continue
     }
     if (
       filePath.includes(`optional\\${'dependencies'}`) ||
       filePath.includes(`optional/${'dependencies'}`)
     ) {
-      continue;
+      continue
     }
 
-    const { name } = require(filePath);
+    const { name } = require(filePath)
 
-    resolvePackages.push(name);
+    resolvePackages.push(name)
   }
 
-  resolvePackages.sort((a, b) => (a > b ? 1 : a < b ? -1 : 0));
+  resolvePackages.sort((a, b) => (a > b ? 1 : a < b ? -1 : 0))
 
-  _resolvePackages = resolvePackages;
+  _resolvePackages = resolvePackages
 
-  return resolvePackages;
+  return resolvePackages
 }
 
-module.exports = { getResolvePackages };
+module.exports = { getResolvePackages }

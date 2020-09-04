@@ -1,4 +1,4 @@
-import { ER_NO_SUCH_TABLE, ER_SUBQUERY_NO_1_ROW } from './constants';
+import { ER_NO_SUCH_TABLE, ER_SUBQUERY_NO_1_ROW } from './constants'
 
 const commitIncrementalImport = async (
   { events: { eventsTableName, connection, database }, escapeId, escape },
@@ -7,14 +7,14 @@ const commitIncrementalImport = async (
 ) => {
   const incrementalImportTableAsId = escapeId(
     `${eventsTableName}-incremental-import`
-  );
+  )
   const incrementalImportTableAsString = escape(
     `${eventsTableName}-incremental-import`
-  );
-  const threadsTableAsId = escapeId(`${eventsTableName}-threads`);
-  const eventsTableAsId = escapeId(eventsTableName);
+  )
+  const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
+  const eventsTableAsId = escapeId(eventsTableName)
 
-  const databaseNameAsString = escape(database);
+  const databaseNameAsString = escape(database)
 
   try {
     await connection.query(`START TRANSACTION;
@@ -130,7 +130,7 @@ const commitIncrementalImport = async (
       );
            
       COMMIT;
-      `);
+      `)
 
     if (validateAfterCommit != null && validateAfterCommit === true) {
       const realThreadIdCounters = (
@@ -145,7 +145,7 @@ const commitIncrementalImport = async (
         threadCounter: !isNaN(+threadCounter)
           ? +threadCounter
           : Symbol('BAD_THREAD_COUNTER'),
-      }));
+      }))
 
       const predictedThreadIdCounters = (
         await connection.query(
@@ -156,19 +156,19 @@ const commitIncrementalImport = async (
         threadCounter: !isNaN(+threadCounter)
           ? +threadCounter
           : Symbol('BAD_THREAD_COUNTER'),
-      }));
+      }))
 
-      const validationMapReal = new Map();
-      const validationMapPredicted = new Map();
+      const validationMapReal = new Map()
+      const validationMapPredicted = new Map()
 
       for (const { threadId, threadCounter } of realThreadIdCounters) {
-        validationMapReal.set(threadId, threadCounter);
+        validationMapReal.set(threadId, threadCounter)
       }
       for (const { threadId, threadCounter } of predictedThreadIdCounters) {
-        validationMapPredicted.set(threadId, threadCounter);
+        validationMapPredicted.set(threadId, threadCounter)
       }
 
-      const validationErrors = [];
+      const validationErrors = []
 
       for (const { threadId, threadCounter } of realThreadIdCounters) {
         if (validationMapPredicted.get(threadId) !== threadCounter + 1) {
@@ -178,7 +178,7 @@ const commitIncrementalImport = async (
                 threadId
               )}`
             )
-          );
+          )
         }
       }
       for (const { threadId, threadCounter } of predictedThreadIdCounters) {
@@ -192,41 +192,41 @@ const commitIncrementalImport = async (
                 threadId
               )}`
             )
-          );
+          )
         }
       }
 
       if (validationErrors.length > 0) {
         const compositeError = new Error(
           validationErrors.map(({ message }) => message).join('\n')
-        );
+        )
         compositeError.stack = validationErrors
           .map(({ stack }) => stack)
-          .join('\n');
-        throw compositeError;
+          .join('\n')
+        throw compositeError
       }
     } else if (validateAfterCommit != null) {
-      throw new Error('Bad argument for "validateAfterCommit"');
+      throw new Error('Bad argument for "validateAfterCommit"')
     }
   } catch (error) {
-    const errno = error != null && error.errno != null ? error.errno : 0;
+    const errno = error != null && error.errno != null ? error.errno : 0
 
     try {
-      await connection.query('ROLLBACK;');
+      await connection.query('ROLLBACK;')
     } catch (e) {}
 
     if (errno === ER_SUBQUERY_NO_1_ROW || errno === ER_NO_SUCH_TABLE) {
       throw new Error(
         `Either event batch has timestamps from the past nor incremental importId=${importId} does not exist`
-      );
+      )
     } else {
-      throw error;
+      throw error
     }
   } finally {
     await connection.query(
       `DROP TABLE IF EXISTS ${incrementalImportTableAsId};`
-    );
+    )
   }
-};
+}
 
-export default commitIncrementalImport;
+export default commitIncrementalImport

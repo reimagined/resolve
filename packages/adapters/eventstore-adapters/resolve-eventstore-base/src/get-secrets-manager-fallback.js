@@ -11,4 +11,4 @@ export default () => ({
     Promise.reject(
       'configured event store adapter does not support secrets management'
     ),
-});
+})

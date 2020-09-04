@@ -1,6 +1,6 @@
-import { ConcurrentError } from 'resolve-eventstore-base';
+import { ConcurrentError } from 'resolve-eventstore-base'
 
-import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants';
+import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants'
 
 const saveEvent = async (pool, event) => {
   const {
@@ -10,27 +10,27 @@ const saveEvent = async (pool, event) => {
     isTimeoutError,
     escapeId,
     escape,
-  } = pool;
+  } = pool
 
   try {
     const serializedPayload = JSON.stringify(
       event.payload != null ? event.payload : null
-    );
+    )
     const serializedEvent = [
       `${escape(event.aggregateId)},`,
       `${+event.aggregateVersion},`,
       `${escape(event.type)},`,
       escape(serializedPayload),
-    ].join('');
+    ].join('')
 
     // TODO: Improve calculation byteLength depend on codepage and wide-characters
-    const byteLength = Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE;
+    const byteLength = Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
 
-    const databaseNameAsString = escape(databaseName);
-    const databaseNameAsId = escapeId(databaseName);
-    const freezeTableNameAsString = escape(`${eventsTableName}-freeze`);
-    const threadsTableAsId = escapeId(`${eventsTableName}-threads`);
-    const eventsTableAsId = escapeId(eventsTableName);
+    const databaseNameAsString = escape(databaseName)
+    const databaseNameAsId = escapeId(databaseName)
+    const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
+    const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
+    const eventsTableAsId = escapeId(eventsTableName)
 
     savingEvent: while (true) {
       try {
@@ -91,7 +91,7 @@ const saveEvent = async (pool, event) => {
               ${byteLength}
             )`
         )
-        break;
+        break
       } catch (error) {
         if (isTimeoutError(error)) {
           while (true) {
@@ -102,43 +102,43 @@ const saveEvent = async (pool, event) => {
                 AND "aggregateVersion"=${+event.aggregateVersion}
                 LIMIT 1
                 `
-              );
+              )
               if (rows[0] == null) {
-                continue savingEvent;
+                continue savingEvent
               }
               if (
                 rows[0].type === event.type &&
                 rows[0].payload === serializedPayload
               ) {
-                break;
+                break
               } else {
-                throw new ConcurrentError(event.aggregateId);
+                throw new ConcurrentError(event.aggregateId)
               }
             } catch (selectError) {
               if (isTimeoutError(selectError)) {
-                continue;
+                continue
               } else {
-                throw selectError;
+                throw selectError
               }
             }
           }
         } else {
-          throw error;
+          throw error
         }
       }
     }
   } catch (error) {
     const errorMessage =
-      error != null && error.message != null ? error.message : '';
+      error != null && error.message != null ? error.message : ''
 
     if (errorMessage.indexOf('subquery used as an expression') > -1) {
-      throw new Error('Event store is frozen');
+      throw new Error('Event store is frozen')
     } else if (/aggregateIdAndVersion/i.test(errorMessage)) {
-      throw new ConcurrentError(event.aggregateId);
+      throw new ConcurrentError(event.aggregateId)
     } else {
-      throw error;
+      throw error
     }
   }
-};
+}
 
-export default saveEvent;
+export default saveEvent

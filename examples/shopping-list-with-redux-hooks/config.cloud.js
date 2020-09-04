@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts';
+import { declareRuntimeEnv } from 'resolve-scripts'
 
 export default {
   target: 'cloud',
@@ -33,4 +33,4 @@ export default {
       },
     },
   },
-};
+}

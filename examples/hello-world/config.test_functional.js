@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts';
+import { declareRuntimeEnv } from 'resolve-scripts'
 
 const testFunctionalConfig = {
   target: 'local',
@@ -26,6 +26,6 @@ const testFunctionalConfig = {
     name: 'jwt',
     maxAge: 31536000000,
   },
-};
+}
 
-export default testFunctionalConfig;
+export default testFunctionalConfig

@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts';
+import { declareRuntimeEnv } from 'resolve-scripts'
 
 const prodConfig = {
   target: 'local',
@@ -28,6 +28,6 @@ const prodConfig = {
     name: 'jwt',
     maxAge: 31536000000,
   },
-};
+}
 
-export default prodConfig;
+export default prodConfig

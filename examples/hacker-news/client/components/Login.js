@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 
-import AuthForm from './AuthForm';
+import AuthForm from './AuthForm'
 
 const Login = (props) => {
   return (
@@ -16,7 +16,7 @@ const Login = (props) => {
         title="Create account"
       />
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

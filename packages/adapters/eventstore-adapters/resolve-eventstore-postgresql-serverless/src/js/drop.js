@@ -1,6 +1,6 @@
-import { EOL } from 'os';
-import { EventstoreResourceNotExistError } from 'resolve-eventstore-base';
-import getLog from './get-log';
+import { EOL } from 'os'
+import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
+import getLog from './get-log'
 
 const drop = async ({
   databaseName,
@@ -9,23 +9,23 @@ const drop = async ({
   executeStatement,
   escapeId,
 }) => {
-  const log = getLog(`dropEventStore`);
+  const log = getLog(`dropEventStore`)
 
-  const databaseNameAsId = escapeId(databaseName);
-  const eventsTableNameAsId = escapeId(eventsTableName);
-  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`);
-  const freezeTableNameAsId = escapeId(`${eventsTableName}-freeze`);
-  const snapshotsTableNameAsId = escapeId(snapshotsTableName);
+  const databaseNameAsId = escapeId(databaseName)
+  const eventsTableNameAsId = escapeId(eventsTableName)
+  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
+  const freezeTableNameAsId = escapeId(`${eventsTableName}-freeze`)
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
   const aggregateIdAndVersionIndexName = escapeId(
     `${eventsTableName}-aggregateIdAndVersion`
-  );
-  const aggregateIndexName = escapeId(`${eventsTableName}-aggregateId`);
+  )
+  const aggregateIndexName = escapeId(`${eventsTableName}-aggregateId`)
   const aggregateVersionIndexName = escapeId(
     `${eventsTableName}-aggregateVersion`
-  );
-  const typeIndexName = escapeId(`${eventsTableName}-type`);
-  const timestampIndexName = escapeId(`${eventsTableName}-timestamp`);
+  )
+  const typeIndexName = escapeId(`${eventsTableName}-type`)
+  const timestampIndexName = escapeId(`${eventsTableName}-timestamp`)
 
   const statements = [
     `DROP TABLE ${databaseNameAsId}.${eventsTableNameAsId}`,
@@ -41,30 +41,30 @@ const drop = async ({
     `DROP TABLE ${databaseNameAsId}.${snapshotsTableNameAsId}`,
 
     `DROP TABLE IF EXISTS ${databaseNameAsId}.${freezeTableNameAsId}`,
-  ];
-  const errors = [];
+  ]
+  const errors = []
 
   for (const statement of statements) {
     try {
-      await executeStatement(statement);
+      await executeStatement(statement)
     } catch (error) {
       if (error != null) {
         if (/Table.*? does not exist$/i.test(error.message)) {
           throw new EventstoreResourceNotExistError(
             `duplicate event store resource drop detected`
-          );
+          )
         } else {
-          log.error(error.message);
-          log.verbose(error.stack);
+          log.error(error.message)
+          log.verbose(error.stack)
         }
-        errors.push(error);
+        errors.push(error)
       }
     }
   }
 
   if (errors.length > 0) {
-    throw new Error(errors.map((error) => error.stack).join(EOL));
+    throw new Error(errors.map((error) => error.stack).join(EOL))
   }
-};
+}
 
-export default drop;
+export default drop

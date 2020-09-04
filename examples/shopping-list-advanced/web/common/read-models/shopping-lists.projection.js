@@ -6,7 +6,7 @@ import {
   SHOPPING_LIST_SHARED,
   SHOPPING_LIST_UNSHARED,
   SHOPPING_LIST_REMOVED,
-} from '../event-types';
+} from '../event-types'
 
 export default {
   Init: async (store) => {
@@ -18,7 +18,7 @@ export default {
         accessTokenHash: 'string',
       },
       fields: ['createdAt'],
-    });
+    })
 
     await store.defineTable('ShoppingLists', {
       indexes: {
@@ -26,7 +26,7 @@ export default {
         createdBy: 'string',
       },
       fields: ['createdAt', 'name'],
-    });
+    })
 
     await store.defineTable('Sharings', {
       indexes: {
@@ -35,7 +35,7 @@ export default {
         userId: 'string',
       },
       fields: [],
-    });
+    })
   },
 
   [USER_CREATED]: async (
@@ -52,8 +52,8 @@ export default {
       createdAt: timestamp,
       passwordHash,
       accessTokenHash,
-    };
-    await store.insert('Users', user);
+    }
+    await store.insert('Users', user)
   },
 
   [USER_NAME_UPDATED]: async (
@@ -64,7 +64,7 @@ export default {
       'Users',
       { id: aggregateId },
       { $set: { username: username.trim() } }
-    );
+    )
   },
 
   [SHOPPING_LIST_CREATED]: async (
@@ -76,30 +76,26 @@ export default {
       name,
       createdAt: timestamp,
       createdBy: userId,
-    };
+    }
 
-    await store.insert('ShoppingLists', shoppingList);
+    await store.insert('ShoppingLists', shoppingList)
     await store.insert('Sharings', {
       id: `${aggregateId}-${userId}`,
       shoppingListId: aggregateId,
       userId,
-    });
+    })
   },
 
   [SHOPPING_LIST_REMOVED]: async (store, { aggregateId }) => {
-    await store.delete('ShoppingLists', { id: aggregateId });
-    await store.delete('Sharings', { shoppingListId: aggregateId });
+    await store.delete('ShoppingLists', { id: aggregateId })
+    await store.delete('Sharings', { shoppingListId: aggregateId })
   },
 
   [SHOPPING_LIST_RENAMED]: async (
     store,
     { aggregateId, payload: { name } }
   ) => {
-    await store.update(
-      'ShoppingLists',
-      { id: aggregateId },
-      { $set: { name } }
-    );
+    await store.update('ShoppingLists', { id: aggregateId }, { $set: { name } })
   },
 
   [SHOPPING_LIST_SHARED]: async (
@@ -109,14 +105,14 @@ export default {
     const record = await store.findOne('Sharings', {
       shoppingListId: aggregateId,
       userId,
-    });
+    })
 
     if (!record) {
       await store.insert('Sharings', {
         id: `${aggregateId}-${userId}`,
         shoppingListId: aggregateId,
         userId,
-      });
+      })
     }
   },
 
@@ -127,10 +123,10 @@ export default {
     const record = await store.findOne('Sharings', {
       shoppingListId: aggregateId,
       userId,
-    });
+    })
 
     if (record) {
-      await store.delete('Sharings', { shoppingListId: aggregateId, userId });
+      await store.delete('Sharings', { shoppingListId: aggregateId, userId })
     }
   },
-};
+}

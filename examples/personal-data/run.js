@@ -6,26 +6,26 @@ import {
   runTestcafe,
   merge,
   reset,
-} from 'resolve-scripts';
+} from 'resolve-scripts'
 
-import resolveModuleAuth from 'resolve-module-auth';
-import resolveModuleAdmin from 'resolve-module-admin';
-import resolveModuleUploader from 'resolve-module-uploader';
+import resolveModuleAuth from 'resolve-module-auth'
+import resolveModuleAdmin from 'resolve-module-admin'
+import resolveModuleUploader from 'resolve-module-uploader'
 
-import appConfig from './config.app';
-import devConfig from './config.dev';
-import prodConfig from './config.prod';
-import cloudConfig from './config.cloud';
-import testFunctionalConfig from './config.test-functional';
+import appConfig from './config.app'
+import devConfig from './config.dev'
+import prodConfig from './config.prod'
+import cloudConfig from './config.cloud'
+import testFunctionalConfig from './config.test-functional'
 
-const launchMode = process.argv[2];
+const launchMode = process.argv[2]
 
 void (async () => {
   const moduleUploader = resolveModuleUploader({
     publicDirs: ['images', 'archives'],
     expireTime: 604800,
     jwtSecret: 'SECRETJWT',
-  });
+  })
 
   const moduleAuth = resolveModuleAuth([
     {
@@ -48,75 +48,75 @@ void (async () => {
         },
       ],
     },
-  ]);
+  ])
 
   const baseConfig = merge(
     defaultResolveConfig,
     appConfig,
     moduleAuth,
     moduleUploader
-  );
+  )
 
   switch (launchMode) {
     case 'dev': {
-      const resolveConfig = merge(baseConfig, devConfig);
+      const resolveConfig = merge(baseConfig, devConfig)
 
       await reset(resolveConfig, {
         dropEventStore: false,
         dropEventBus: true,
         dropReadModels: true,
         dropSagas: true,
-      });
+      })
 
-      await watch(resolveConfig);
-      break;
+      await watch(resolveConfig)
+      break
     }
 
     case 'build': {
-      await build(merge(baseConfig, prodConfig));
-      break;
+      await build(merge(baseConfig, prodConfig))
+      break
     }
 
     case 'start': {
-      await start(merge(baseConfig, prodConfig));
-      break;
+      await start(merge(baseConfig, prodConfig))
+      break
     }
 
     case 'cloud': {
-      await build(merge(baseConfig, cloudConfig));
-      break;
+      await build(merge(baseConfig, cloudConfig))
+      break
     }
 
     case 'test:e2e': {
-      const resolveAdmin = resolveModuleAdmin();
+      const resolveAdmin = resolveModuleAdmin()
       const resolveConfig = merge(
         baseConfig,
         resolveAdmin,
         testFunctionalConfig
-      );
+      )
 
       await reset(resolveConfig, {
         dropEventStore: true,
         dropEventBus: true,
         dropReadModels: true,
         dropSagas: true,
-      });
+      })
 
       await runTestcafe({
         resolveConfig,
         functionalTestsDir: 'test/functional',
         browser: process.argv[3],
         customArgs: ['--skip-js-errors', '--stop-on-first-fail'],
-      });
-      break;
+      })
+      break
     }
 
     default: {
-      throw new Error('Unknown option');
+      throw new Error('Unknown option')
     }
   }
 })().catch((error) => {
   // eslint-disable-next-line no-console
-  console.log(error);
-  process.exit(1);
-});
+  console.log(error)
+  process.exit(1)
+})

@@ -1,16 +1,16 @@
-import merge from './merge';
-import generateCustomMode from './generate_custom_mode';
+import merge from './merge'
+import generateCustomMode from './generate_custom_mode'
 
 const validOptions = [
   'dropEventStore',
   'dropReadModels',
   'dropEventBus',
   'dropSagas',
-];
+]
 
 const getConfig = async (resolveConfig, options) => {
   if (options == null || options.constructor !== Object) {
-    throw new Error('Invalid reset options');
+    throw new Error('Invalid reset options')
   }
   for (const key of Object.keys(options)) {
     if (
@@ -18,7 +18,7 @@ const getConfig = async (resolveConfig, options) => {
       options[key] == null ||
       options[key].constructor !== Boolean
     ) {
-      throw new Error(`Invalid reset options: ${key}`);
+      throw new Error(`Invalid reset options: ${key}`)
     }
   }
 
@@ -36,11 +36,11 @@ const getConfig = async (resolveConfig, options) => {
     eventBroker: {
       upstream: false,
     },
-  });
+  })
 
-  return config;
-};
+  return config
+}
 
-const reset = generateCustomMode(getConfig, 'reset-domain');
+const reset = generateCustomMode(getConfig, 'reset-domain')
 
-export default reset;
+export default reset

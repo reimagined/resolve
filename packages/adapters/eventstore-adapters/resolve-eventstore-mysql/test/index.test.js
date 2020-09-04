@@ -1,12 +1,12 @@
 import {
   result as mockResult,
   connection as mockConnection,
-} from 'mysql2/promise';
-import createEventstoreAdapter from '../src/index';
+} from 'mysql2/promise'
+import createEventstoreAdapter from '../src/index'
 
 // TODO: rewrite tests
 describe.skip('resolve-eventstore-mysql', () => {
-  let eventstoreAdapter = null;
+  let eventstoreAdapter = null
 
   beforeEach(() => {
     eventstoreAdapter = createEventstoreAdapter({
@@ -16,16 +16,16 @@ describe.skip('resolve-eventstore-mysql', () => {
       password: 'password',
       database: 'database',
       eventsTableName: 'eventsTableName',
-    });
-  });
+    })
+  })
 
   afterEach(async () => {
-    await eventstoreAdapter.dispose();
+    await eventstoreAdapter.dispose()
 
-    mockResult.length = 0;
+    mockResult.length = 0
 
-    jest.resetAllMocks();
-  });
+    jest.resetAllMocks()
+  })
 
   test('"saveEvent" should save an event with empty payload', async () => {
     await eventstoreAdapter.saveEvent({
@@ -33,12 +33,12 @@ describe.skip('resolve-eventstore-mysql', () => {
       aggregateId: 'aggregateId',
       aggregateVersion: 1,
       timestamp: 1,
-    });
+    })
 
-    expect(mockConnection.query.mock.calls).toMatchSnapshot();
+    expect(mockConnection.query.mock.calls).toMatchSnapshot()
 
-    expect(mockResult).toMatchSnapshot();
-  });
+    expect(mockResult).toMatchSnapshot()
+  })
 
   test('"saveEvent" should save an event', async () => {
     await eventstoreAdapter.saveEvent({
@@ -47,12 +47,12 @@ describe.skip('resolve-eventstore-mysql', () => {
       aggregateVersion: 1,
       timestamp: 1,
       payload: { index: 1 },
-    });
+    })
 
-    expect(mockConnection.query.mock.calls).toMatchSnapshot();
+    expect(mockConnection.query.mock.calls).toMatchSnapshot()
 
-    expect(mockResult).toMatchSnapshot();
-  });
+    expect(mockResult).toMatchSnapshot()
+  })
 
   test('"loadEvents" should load events', async () => {
     const loadFilters = [
@@ -61,18 +61,18 @@ describe.skip('resolve-eventstore-mysql', () => {
       { eventTypes: ['eventType'] },
       { aggregateIds: ['aggregateId'] },
       { startTime: 1, finishTime: 3 },
-    ];
+    ]
 
     for (const loadFilter of loadFilters) {
-      mockConnection.query.mockReturnValueOnce([[], []]);
+      mockConnection.query.mockReturnValueOnce([[], []])
 
-      await eventstoreAdapter.loadEvents(loadFilter, () => {});
+      await eventstoreAdapter.loadEvents(loadFilter, () => {})
     }
 
-    expect(mockConnection.query.mock.calls).toMatchSnapshot();
+    expect(mockConnection.query.mock.calls).toMatchSnapshot()
 
-    expect(mockResult).toMatchSnapshot();
-  });
+    expect(mockResult).toMatchSnapshot()
+  })
 
   test('"getLatestEvent" should get the latest event', async () => {
     const loadFilters = [
@@ -80,33 +80,33 @@ describe.skip('resolve-eventstore-mysql', () => {
       { eventTypes: ['eventType'] },
       { aggregateIds: ['aggregateId'] },
       { startTime: 1, finishTime: 3 },
-    ];
+    ]
 
     for (const loadFilter of loadFilters) {
-      mockConnection.query.mockReturnValueOnce([[], []]);
+      mockConnection.query.mockReturnValueOnce([[], []])
 
-      await eventstoreAdapter.getLatestEvent(loadFilter);
+      await eventstoreAdapter.getLatestEvent(loadFilter)
     }
 
-    expect(mockConnection.query.mock.calls).toMatchSnapshot();
+    expect(mockConnection.query.mock.calls).toMatchSnapshot()
 
-    expect(mockResult).toMatchSnapshot();
-  });
+    expect(mockResult).toMatchSnapshot()
+  })
 
   test('"export" should return eventStream', async () => {
-    mockConnection.query.mockReturnValueOnce([[], []]);
+    mockConnection.query.mockReturnValueOnce([[], []])
 
-    const eventStream = eventstoreAdapter.export();
+    const eventStream = eventstoreAdapter.export()
 
     eventStream.on('data', (event) => {
-      expect(JSON.parse(event)).toHaveProperty('payload');
-      expect(JSON.parse(event)).toHaveProperty('aggregateVersion');
-    });
+      expect(JSON.parse(event)).toHaveProperty('payload')
+      expect(JSON.parse(event)).toHaveProperty('aggregateVersion')
+    })
 
-    await new Promise((done) => eventStream.on('end', done));
+    await new Promise((done) => eventStream.on('end', done))
 
-    expect(mockConnection.query.mock.calls).toMatchSnapshot();
+    expect(mockConnection.query.mock.calls).toMatchSnapshot()
 
-    expect(mockResult).toMatchSnapshot();
-  });
-});
+    expect(mockResult).toMatchSnapshot()
+  })
+})

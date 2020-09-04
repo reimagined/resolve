@@ -1,8 +1,8 @@
-import React from 'react';
-import { Helmet } from 'react-helmet';
-import { Navbar, NavbarBrand, Nav, NavItem, NavLink, Button } from 'reactstrap';
+import React from 'react'
+import { Helmet } from 'react-helmet'
+import { Navbar, NavbarBrand, Nav, NavItem, NavLink, Button } from 'reactstrap'
 
-import Form from '../containers/Form';
+import Form from '../containers/Form'
 
 export default ({ children, staticPath, jwt }) => (
   <div>
@@ -45,4 +45,4 @@ export default ({ children, staticPath, jwt }) => (
     <br />
     {children}
   </div>
-);
+)

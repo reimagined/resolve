@@ -1,4 +1,4 @@
-import { IMAGE_CREATED } from '../event-types';
+import { IMAGE_CREATED } from '../event-types'
 
 export default {
   Init: () => ({}),
@@ -6,4 +6,4 @@ export default {
     ...state,
     createdAt: timestamp,
   }),
-};
+}

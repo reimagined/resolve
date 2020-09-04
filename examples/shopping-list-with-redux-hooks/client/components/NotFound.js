@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Button } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
 class NotFound extends React.PureComponent {
   render() {
@@ -15,8 +15,8 @@ class NotFound extends React.PureComponent {
           <Button bsStyle="primary">Take Me Home</Button>
         </Link>
       </div>
-    );
+    )
   }
 }
 
-export default NotFound;
+export default NotFound

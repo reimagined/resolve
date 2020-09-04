@@ -1,7 +1,7 @@
-import React from 'react';
-import renderer from 'react-test-renderer';
+import React from 'react'
+import renderer from 'react-test-renderer'
 
-import { ShoppingList } from '../../client/containers/ShoppingList';
+import { ShoppingList } from '../../client/containers/ShoppingList'
 
 test('renders correctly', () => {
   const tree = renderer
@@ -37,7 +37,7 @@ test('renders correctly', () => {
         }}
       />
     )
-    .toJSON();
+    .toJSON()
 
-  expect(tree).toMatchSnapshot();
-});
+  expect(tree).toMatchSnapshot()
+})

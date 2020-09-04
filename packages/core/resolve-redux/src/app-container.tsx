@@ -1,5 +1,5 @@
-import React from 'react';
-import Providers from './internal/providers';
+import React from 'react'
+import Providers from './internal/providers'
 
 class AppContainer extends React.PureComponent<any> {
   render() {
@@ -10,7 +10,7 @@ class AppContainer extends React.PureComponent<any> {
       store,
       children,
       queryMethod,
-    } = this.props;
+    } = this.props
 
     return (
       <Providers
@@ -22,8 +22,8 @@ class AppContainer extends React.PureComponent<any> {
       >
         {children}
       </Providers>
-    );
+    )
   }
 }
 
-export default AppContainer;
+export default AppContainer

@@ -1,26 +1,26 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
-import hoistNonReactStatic from 'hoist-non-react-statics';
+import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators, Dispatch } from 'redux'
+import hoistNonReactStatic from 'hoist-non-react-statics'
 
 import {
   connectReadModel as connectReadModelAction,
   disconnectReadModel as disconnectReadModelAction,
-} from './actions';
-import getHash from '../internal/get-hash';
-import connectResolveAdvanced from '../internal/connect-resolve-advanced';
-import { ResultStatus, ReduxState } from '../types';
-import { getEntry } from './read-model-reducer';
+} from './actions'
+import getHash from '../internal/get-hash'
+import connectResolveAdvanced from '../internal/connect-resolve-advanced'
+import { ResultStatus, ReduxState } from '../types'
+import { getEntry } from './read-model-reducer'
 
 type ReadModelConnectorOptions = {
-  readModelName: string;
-  resolverName: string;
-  resolverArgs: any;
-};
+  readModelName: string
+  resolverName: string
+  resolverArgs: any
+}
 type ReadModelConnectorOptionsMapper = (
   state: ReduxState,
   ownProps: any
-) => ReadModelConnectorOptions;
+) => ReadModelConnectorOptions
 
 const connectReadModel = (
   mapStateToOptions: ReadModelConnectorOptionsMapper
@@ -31,13 +31,13 @@ const connectReadModel = (
         readModelName,
         resolverName,
         resolverArgs,
-      } = this.props.connectorOptions;
+      } = this.props.connectorOptions
 
       this.props.connectReadModel({
         name: readModelName,
         resolver: resolverName,
         args: resolverArgs,
-      });
+      })
     }
 
     componentWillUnmount(): void {
@@ -45,18 +45,18 @@ const connectReadModel = (
         readModelName,
         resolverName,
         resolverArgs,
-      } = this.props.connectorOptions;
+      } = this.props.connectorOptions
 
       this.props.disconnectReadModel({
         name: readModelName,
         resolver: resolverName,
         args: resolverArgs,
-      });
+      })
     }
 
     componentDidUpdate(prevProps: any): void {
-      const connectorOptions = this.props.connectorOptions;
-      const prevConnectorOptions = prevProps.connectorOptions;
+      const connectorOptions = this.props.connectorOptions
+      const prevConnectorOptions = prevProps.connectorOptions
       if (
         connectorOptions &&
         prevConnectorOptions &&
@@ -75,23 +75,23 @@ const connectReadModel = (
           name: prevConnectorOptions.readModelName,
           resolver: prevConnectorOptions.resolverName,
           args: prevConnectorOptions.resolverArgs,
-        });
+        })
         this.props.connectReadModel({
           name: prevConnectorOptions.readModelName,
           resolver: prevConnectorOptions.resolverName,
           args: prevConnectorOptions.resolverArgs,
-        });
+        })
       }
     }
 
     render(): any {
-      const { ownProps, isLoading, data } = this.props;
-      return <Component {...ownProps} isLoading={isLoading} data={data} />;
+      const { ownProps, isLoading, data } = this.props
+      return <Component {...ownProps} isLoading={isLoading} data={data} />
     }
   }
 
   const mapStateToConnectorProps = (state: ReduxState, ownProps: any): any => {
-    const connectorOptions = mapStateToOptions(state, ownProps);
+    const connectorOptions = mapStateToOptions(state, ownProps)
 
     const entry = getEntry(state.readModels, {
       query: {
@@ -99,11 +99,11 @@ const connectReadModel = (
         resolver: connectorOptions.resolverName,
         args: connectorOptions.resolverArgs,
       },
-    });
+    })
     const data =
-      entry && entry.status === ResultStatus.Ready ? entry.data : null;
+      entry && entry.status === ResultStatus.Ready ? entry.data : null
     const error =
-      entry && entry.status === ResultStatus.Failed ? entry.error : null;
+      entry && entry.status === ResultStatus.Failed ? entry.error : null
 
     return {
       ownProps,
@@ -112,8 +112,8 @@ const connectReadModel = (
       isFailure: entry && entry.status === ResultStatus.Failed,
       data,
       error,
-    };
-  };
+    }
+  }
 
   const mapDispatchToConnectorProps = (dispatch: Dispatch): any =>
     bindActionCreators(
@@ -122,18 +122,18 @@ const connectReadModel = (
         disconnectReadModel: disconnectReadModelAction,
       },
       dispatch
-    );
+    )
 
   const ReadModelConnector = connect(
     mapStateToConnectorProps,
     mapDispatchToConnectorProps
-  )(ReadModelContainer) as any;
+  )(ReadModelContainer) as any
 
-  ReadModelConnector.mapStateToOptions = mapStateToOptions;
+  ReadModelConnector.mapStateToOptions = mapStateToOptions
 
-  hoistNonReactStatic(ReadModelConnector, ReadModelContainer);
+  hoistNonReactStatic(ReadModelConnector, ReadModelContainer)
 
-  return connectResolveAdvanced(ReadModelConnector);
-};
+  return connectResolveAdvanced(ReadModelConnector)
+}
 
-export default connectReadModel;
+export default connectReadModel

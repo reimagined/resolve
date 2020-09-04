@@ -1,10 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-  ResultStatus,
-  useReduxCommand,
-  useReduxViewModel,
-} from 'resolve-redux';
-import { Redirect } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react'
+import { ResultStatus, useReduxCommand, useReduxViewModel } from 'resolve-redux'
+import { Redirect } from 'react-router-dom'
 
 import {
   Row,
@@ -15,11 +11,11 @@ import {
   FormControl,
   FormGroup,
   FormLabel,
-} from 'react-bootstrap';
+} from 'react-bootstrap'
 
-import ShoppingListItem from './ShoppingListItem';
-import NotFound from '../components/NotFound';
-import { useSelector } from 'react-redux';
+import ShoppingListItem from './ShoppingListItem'
+import NotFound from '../components/NotFound'
+import { useSelector } from 'react-redux'
 
 const ShoppingList = ({
   match: {
@@ -29,11 +25,11 @@ const ShoppingList = ({
   const { connect, dispose, selector: thisList } = useReduxViewModel({
     name: 'shoppingList',
     aggregateIds: [aggregateId],
-  });
+  })
 
   const { data: shoppingList, status: shoppingListStatus } = useSelector(
     thisList
-  );
+  )
 
   const { execute: executeCreateShoppingItem } = useReduxCommand((text) => ({
     type: 'createShoppingItem',
@@ -43,71 +39,71 @@ const ShoppingList = ({
       text,
       id: Date.now().toString(),
     },
-  }));
+  }))
 
-  const [itemText, setItemText] = useState('');
+  const [itemText, setItemText] = useState('')
   const createShoppingItem = useCallback(
     (text) => {
-      executeCreateShoppingItem(text);
-      setItemText('');
+      executeCreateShoppingItem(text)
+      setItemText('')
     },
     [executeCreateShoppingItem, setItemText]
-  );
+  )
 
-  const [shoppingListName, setShoppingListName] = useState(null);
+  const [shoppingListName, setShoppingListName] = useState(null)
   const updateShoppingListName = (event) => {
-    setShoppingListName(event.target.value);
-  };
+    setShoppingListName(event.target.value)
+  }
 
   const { execute: renameShoppingList } = useReduxCommand({
     type: 'renameShoppingList',
     aggregateId,
     aggregateName: 'ShoppingList',
     payload: { name: shoppingList ? shoppingList.name : '' },
-  });
+  })
 
   const { execute: removeShoppingList } = useReduxCommand({
     type: 'removeShoppingList',
     aggregateId,
     aggregateName: 'ShoppingList',
-  });
+  })
 
   const updateItemText = (event) => {
-    setItemText(event.target.value);
-  };
+    setItemText(event.target.value)
+  }
   const onItemTextPressEnter = (event) => {
     if (event.charCode === 13) {
-      event.preventDefault();
-      createShoppingItem(itemText);
+      event.preventDefault()
+      createShoppingItem(itemText)
     }
-  };
+  }
   const onShoppingListNamePressEnter = (event) => {
     if (event.charCode === 13) {
-      event.preventDefault();
-      renameShoppingList();
+      event.preventDefault()
+      renameShoppingList()
     }
-  };
+  }
 
   useEffect(() => {
-    connect();
+    connect()
     return () => {
-      dispose();
-    };
-  }, []);
+      dispose()
+    }
+  }, [])
 
   if (
     shoppingListStatus === ResultStatus.Requested ||
     shoppingListStatus === ResultStatus.Initial
   ) {
-    return null;
+    return null
   }
 
   if (shoppingList == null) {
-    return <NotFound />;
+    return <NotFound />
   }
 
   if (shoppingList.removed) {
-    return <Redirect to="/" />;
+    return <Redirect to="/" />
   }
 
   return (
@@ -160,7 +156,7 @@ const ShoppingList = ({
         </Col>
       </Row>
     </div>
-  );
-};
+  )
+}
 
-export default ShoppingList;
+export default ShoppingList

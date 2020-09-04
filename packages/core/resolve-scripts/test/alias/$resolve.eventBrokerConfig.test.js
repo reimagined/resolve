@@ -1,6 +1,6 @@
-import alias from '../../src/alias/$resolve.eventBrokerConfig';
-import declareRuntimeEnv from '../../src/declare_runtime_env';
-import normalizePaths from './normalize_paths';
+import alias from '../../src/alias/$resolve.eventBrokerConfig'
+import declareRuntimeEnv from '../../src/declare_runtime_env'
+import normalizePaths from './normalize_paths'
 
 test('should fail when imported from client', () => {
   expect(() =>
@@ -12,8 +12,8 @@ test('should fail when imported from client', () => {
         }) +
         '\r\n'
     )
-  ).toThrow();
-});
+  ).toThrow()
+})
 
 test('should fail if "launchBroker" is runtime injection', () => {
   expect(() =>
@@ -33,8 +33,8 @@ test('should fail if "launchBroker" is runtime injection', () => {
         }) +
         '\r\n'
     )
-  ).toThrow();
-});
+  ).toThrow()
+})
 
 test('works correctly', () => {
   expect(
@@ -54,5 +54,5 @@ test('works correctly', () => {
         }) +
         '\r\n'
     )
-  ).toMatchSnapshot();
-});
+  ).toMatchSnapshot()
+})

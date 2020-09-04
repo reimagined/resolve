@@ -5,7 +5,7 @@ import {
   SHOPPING_ITEM_CREATED,
   SHOPPING_ITEM_TOGGLED,
   SHOPPING_ITEM_REMOVED,
-} from '../event_types';
+} from '../event_types'
 
 export default {
   Init: () => null,
@@ -47,4 +47,4 @@ export default {
     ...state,
     list: state.list.filter((item) => item.id !== id),
   }),
-};
+}

@@ -1,12 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom/server';
-import { createMemoryHistory } from 'history';
-import { createStore, AppContainer } from 'resolve-redux';
-import { Helmet } from 'react-helmet';
+import React from 'react'
+import ReactDOM from 'react-dom/server'
+import { createMemoryHistory } from 'history'
+import { createStore, AppContainer } from 'resolve-redux'
+import { Helmet } from 'react-helmet'
 
-import getRoutes from './get-routes';
-import Routes from '../client/components/Routes';
-import { Router } from 'react-router';
+import getRoutes from './get-routes'
+import Routes from '../client/components/Routes'
+import { Router } from 'react-router'
 
 const ssrHandler = async (
   { seedClientEnvs, constants: { rootPath, staticPath }, utils, serverImports },
@@ -14,18 +14,18 @@ const ssrHandler = async (
   res
 ) => {
   try {
-    const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils;
-    const baseQueryUrl = getRootBasedUrl(rootPath, '/');
-    const url = req.path.substring(baseQueryUrl.length);
-    const history = createMemoryHistory();
-    history.push(url);
-    const origin = '';
+    const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils
+    const baseQueryUrl = getRootBasedUrl(rootPath, '/')
+    const url = req.path.substring(baseQueryUrl.length)
+    const history = createMemoryHistory()
+    history.push(url)
+    const origin = ''
 
-    const routes = getRoutes(serverImports);
+    const routes = getRoutes(serverImports)
 
-    const store = createStore({ history, origin, rootPath, isClient: false });
+    const store = createStore({ history, origin, rootPath, isClient: false })
 
-    const staticContext = {};
+    const staticContext = {}
     const markup = ReactDOM.renderToStaticMarkup(
       <AppContainer
         origin={origin}
@@ -37,11 +37,11 @@ const ssrHandler = async (
           <Routes routes={routes} />
         </Router>
       </AppContainer>
-    );
+    )
 
-    const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index.js');
-    const faviconUrl = getStaticBasedPath(rootPath, staticPath, 'favicon.ico');
-    const helmet = Helmet.renderStatic();
+    const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index.js')
+    const faviconUrl = getStaticBasedPath(rootPath, staticPath, 'favicon.ico')
+    const helmet = Helmet.renderStatic()
 
     const markupHtml =
       `<!doctype html>` +
@@ -61,17 +61,17 @@ const ssrHandler = async (
       `<div id="app-container">${markup}</div>` +
       `<script src="${bundleUrl}"></script>` +
       '</body>' +
-      '</html>';
+      '</html>'
 
-    await res.setHeader('Content-Type', 'text/html');
+    await res.setHeader('Content-Type', 'text/html')
 
-    await res.end(markupHtml);
+    await res.end(markupHtml)
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.warn('SSR error', error);
-    res.status(500);
-    res.end('SSR error');
+    console.warn('SSR error', error)
+    res.status(500)
+    res.end('SSR error')
   }
-};
+}
 
-export default ssrHandler;
+export default ssrHandler

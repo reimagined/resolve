@@ -1,13 +1,13 @@
-import { takeEvery, put } from 'redux-saga/effects';
-import { internal } from 'resolve-redux';
+import { takeEvery, put } from 'redux-saga/effects'
+import { internal } from 'resolve-redux'
 
 import {
   OPTIMISTIC_CREATE_SHOPPING_LIST,
   OPTIMISTIC_REMOVE_SHOPPING_LIST,
   OPTIMISTIC_SYNC,
-} from '../actions/optimistic_actions';
+} from '../actions/optimistic_actions'
 
-const { SEND_COMMAND_SUCCESS, QUERY_READMODEL_SUCCESS } = internal.actionTypes;
+const { SEND_COMMAND_SUCCESS, QUERY_READMODEL_SUCCESS } = internal.actionTypes
 
 export default function* () {
   yield takeEvery(
@@ -21,9 +21,9 @@ export default function* () {
           id: action.command.aggregateId,
           name: action.command.payload.name,
         },
-      });
+      })
     }
-  );
+  )
 
   yield takeEvery(
     (action) =>
@@ -35,9 +35,9 @@ export default function* () {
         payload: {
           id: action.command.aggregateId,
         },
-      });
+      })
     }
-  );
+  )
 
   yield takeEvery(
     (action) => action.type === QUERY_READMODEL_SUCCESS,
@@ -47,7 +47,7 @@ export default function* () {
         payload: {
           originalLists: action.result.data,
         },
-      });
+      })
     }
-  );
+  )
 }

@@ -5,7 +5,7 @@ const inlineLedgerExecuteStatement = async (pool, sql, transactionId) => {
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
     coercer,
-  } = pool;
+  } = pool
   try {
     const result = await rdsDataService.executeStatement({
       resourceArn: dbClusterOrInstanceArn,
@@ -15,31 +15,31 @@ const inlineLedgerExecuteStatement = async (pool, sql, transactionId) => {
       includeResultMetadata: true,
       ...(transactionId != null ? { transactionId } : {}),
       sql,
-    });
+    })
 
-    const { columnMetadata, records } = result;
+    const { columnMetadata, records } = result
 
     if (!Array.isArray(records) || columnMetadata == null) {
-      return null;
+      return null
     }
 
-    const rows = [];
+    const rows = []
     for (const record of records) {
-      const row = {};
+      const row = {}
       for (let i = 0; i < columnMetadata.length; i++) {
-        row[columnMetadata[i].name] = coercer(record[i]);
+        row[columnMetadata[i].name] = coercer(record[i])
       }
-      rows.push(row);
+      rows.push(row)
     }
 
-    return rows;
+    return rows
   } catch (error) {
     if (PassthroughError.isPassthroughError(error)) {
-      throw new PassthroughError(transactionId);
+      throw new PassthroughError(transactionId)
     }
 
-    throw error;
+    throw error
   }
-};
+}
 
-export default inlineLedgerExecuteStatement;
+export default inlineLedgerExecuteStatement

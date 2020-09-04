@@ -27,7 +27,7 @@ export default ({
     ) {
       throw Error(
         `scheduler.create: cannot create a scheduled command - bad parameters`
-      );
+      )
     }
 
     return {
@@ -41,11 +41,11 @@ export default ({
           payload,
         },
       },
-    };
+    }
   },
   execute: async ({ state, date, command }) => {
     if (state !== 'scheduled')
-      throw Error(`scheduler.execute: unexpected task state "${state}"`);
+      throw Error(`scheduler.execute: unexpected task state "${state}"`)
 
     return {
       type: SCHEDULED_COMMAND_EXECUTED,
@@ -53,26 +53,26 @@ export default ({
         date,
         command,
       },
-    };
+    }
   },
   success: async ({ state }) => {
     if (state !== 'executed')
-      throw Error(`scheduler.success: unexpected task state "${state}"`);
+      throw Error(`scheduler.success: unexpected task state "${state}"`)
 
     return {
       type: SCHEDULED_COMMAND_SUCCEEDED,
       payload: {},
-    };
+    }
   },
   failure: async ({ state }, { payload: { reason } }) => {
     if (state !== 'executed')
-      throw Error(`scheduler.failure: unexpected task state "${state}"`);
+      throw Error(`scheduler.failure: unexpected task state "${state}"`)
 
     return {
       type: SCHEDULED_COMMAND_FAILED,
       payload: {
         reason,
       },
-    };
+    }
   },
-});
+})

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import {
   useCommand,
   useCommandBuilder,
   useViewModel,
-} from 'resolve-react-hooks';
-import { Redirect } from 'react-router-dom';
+} from 'resolve-react-hooks'
+import { Redirect } from 'react-router-dom'
 
 import {
   Row,
@@ -15,10 +15,10 @@ import {
   FormControl,
   FormGroup,
   ControlLabel,
-} from 'react-bootstrap';
+} from 'react-bootstrap'
 
-import ShoppingListItem from './ShoppingListItem';
-import NotFound from './NotFound';
+import ShoppingListItem from './ShoppingListItem'
+import NotFound from './NotFound'
 
 const ShoppingList = ({
   match: {
@@ -29,14 +29,14 @@ const ShoppingList = ({
     name: '',
     id: null,
     list: [],
-  });
+  })
   const { connect, dispose } = useViewModel(
     'shoppingList',
     [aggregateId],
     setShoppingList
-  );
-  const [itemText, setItemText] = useState('');
-  const clearItemText = () => setItemText('');
+  )
+  const [itemText, setItemText] = useState('')
+  const clearItemText = () => setItemText('')
 
   const createShoppingItem = useCommandBuilder(
     (text) => ({
@@ -49,54 +49,54 @@ const ShoppingList = ({
       },
     }),
     clearItemText
-  );
+  )
 
   const updateShoppingListName = (event) => {
-    setShoppingList({ ...shoppingList, name: event.target.value });
-  };
+    setShoppingList({ ...shoppingList, name: event.target.value })
+  }
 
   const renameShoppingList = useCommand({
     type: 'renameShoppingList',
     aggregateId,
     aggregateName: 'ShoppingList',
     payload: { name: shoppingList ? shoppingList.name : '' },
-  });
+  })
 
   const removeShoppingList = useCommand({
     type: 'removeShoppingList',
     aggregateId,
     aggregateName: 'ShoppingList',
-  });
+  })
 
   const updateItemText = (event) => {
-    setItemText(event.target.value);
-  };
+    setItemText(event.target.value)
+  }
   const onItemTextPressEnter = (event) => {
     if (event.charCode === 13) {
-      event.preventDefault();
-      createShoppingItem(itemText);
+      event.preventDefault()
+      createShoppingItem(itemText)
     }
-  };
+  }
   const onShoppingListNamePressEnter = (event) => {
     if (event.charCode === 13) {
-      event.preventDefault();
-      renameShoppingList();
+      event.preventDefault()
+      renameShoppingList()
     }
-  };
+  }
 
   useEffect(() => {
-    connect();
+    connect()
     return () => {
-      dispose();
-    };
-  }, []);
+      dispose()
+    }
+  }, [])
 
   if (shoppingList == null) {
-    return <NotFound />;
+    return <NotFound />
   }
 
   if (shoppingList.removed) {
-    return <Redirect to="/" />;
+    return <Redirect to="/" />
   }
 
   return (
@@ -149,7 +149,7 @@ const ShoppingList = ({
         </Col>
       </Row>
     </div>
-  );
-};
+  )
+}
 
-export default ShoppingList;
+export default ShoppingList

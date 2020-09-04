@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button } from 'react-bootstrap';
-import { useCommand } from 'resolve-react-hooks';
+import React from 'react'
+import { Button } from 'react-bootstrap'
+import { useCommand } from 'resolve-react-hooks'
 
 const ShoppingListRemover = ({ shoppingListId, onRemoveSuccess }) => {
   const removeShoppingListCommand = useCommand(
@@ -10,13 +10,13 @@ const ShoppingListRemover = ({ shoppingListId, onRemoveSuccess }) => {
       aggregateName: 'ShoppingList',
     },
     onRemoveSuccess
-  );
+  )
 
   return (
     <Button onClick={removeShoppingListCommand}>
       <i className="far fa-trash-alt" />
     </Button>
-  );
-};
+  )
+}
 
-export default ShoppingListRemover;
+export default ShoppingListRemover

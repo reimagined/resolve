@@ -1,11 +1,11 @@
-import declareRuntimeEnv from '../../src/declare_runtime_env';
+import declareRuntimeEnv from '../../src/declare_runtime_env'
 
-import alias from '../../src/alias/$resolve.staticDir';
-import normalizePaths from './normalize_paths';
+import alias from '../../src/alias/$resolve.staticDir'
+import normalizePaths from './normalize_paths'
 
 describe('$resolve.staticDir', () => {
   test('should works correctly with base config', () => {
-    const resolveConfig = { staticDir: 'staticDir' };
+    const resolveConfig = { staticDir: 'staticDir' }
     {
       const result = normalizePaths(
         '\r\n' +
@@ -14,9 +14,9 @@ describe('$resolve.staticDir', () => {
             isClient: false,
           }) +
           '\r\n'
-      );
+      )
 
-      expect(result).toMatchSnapshot('[server - runtime]');
+      expect(result).toMatchSnapshot('[server - runtime]')
     }
 
     {
@@ -29,12 +29,12 @@ describe('$resolve.staticDir', () => {
             }) +
             '\r\n'
         )
-      ).toThrow();
+      ).toThrow()
     }
-  });
+  })
 
   test('should not support runtime envs', () => {
-    const resolveConfig = { staticDir: declareRuntimeEnv('STATIC_DIR') };
+    const resolveConfig = { staticDir: declareRuntimeEnv('STATIC_DIR') }
     {
       expect(() =>
         normalizePaths(
@@ -45,7 +45,7 @@ describe('$resolve.staticDir', () => {
             }) +
             '\r\n'
         )
-      ).toThrow();
+      ).toThrow()
     }
 
     {
@@ -58,7 +58,7 @@ describe('$resolve.staticDir', () => {
             }) +
             '\r\n'
         )
-      ).toThrow();
+      ).toThrow()
     }
-  });
-});
+  })
+})

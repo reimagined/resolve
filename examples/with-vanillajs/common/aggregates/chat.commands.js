@@ -3,4 +3,4 @@ export default {
     type: 'MESSAGE_POSTED',
     payload: message,
   }),
-};
+}

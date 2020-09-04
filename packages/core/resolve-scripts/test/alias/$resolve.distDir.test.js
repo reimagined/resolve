@@ -1,6 +1,6 @@
-import alias from '../../src/alias/$resolve.distDir';
-import normalizePaths from './normalize_paths';
-import declareRuntimeEnv from '../../src/declare_runtime_env';
+import alias from '../../src/alias/$resolve.distDir'
+import normalizePaths from './normalize_paths'
+import declareRuntimeEnv from '../../src/declare_runtime_env'
 
 test('should fail when imported from client', () => {
   expect(() =>
@@ -14,8 +14,8 @@ test('should fail when imported from client', () => {
         }) +
         '\r\n'
     )
-  ).toThrow();
-});
+  ).toThrow()
+})
 
 test('should fail when runtime env provided', () => {
   expect(() =>
@@ -28,8 +28,8 @@ test('should fail when runtime env provided', () => {
         }) +
         '\r\n'
     )
-  ).toThrow();
-});
+  ).toThrow()
+})
 
 test('should work correctly', () => {
   expect(
@@ -42,5 +42,5 @@ test('should work correctly', () => {
         }) +
         '\r\n'
     )
-  ).toMatchSnapshot();
-});
+  ).toMatchSnapshot()
+})

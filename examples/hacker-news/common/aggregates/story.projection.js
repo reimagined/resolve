@@ -1,4 +1,4 @@
-import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event-types';
+import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event-types'
 
 export default {
   Init: () => ({}),
@@ -18,4 +18,4 @@ export default {
     ...state,
     voted: state.voted.filter((curUserId) => curUserId !== userId),
   }),
-};
+}

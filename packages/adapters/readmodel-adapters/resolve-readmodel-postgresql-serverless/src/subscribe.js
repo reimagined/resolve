@@ -6,14 +6,14 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     inlineLedgerForceStop,
     inlineLedgerExecuteStatement,
     PassthroughError,
-  } = pool;
+  } = pool
 
-  const databaseNameAsId = escapeId(schemaName);
-  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`);
+  const databaseNameAsId = escapeId(schemaName)
+  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
 
   while (true) {
     try {
-      await inlineLedgerForceStop(pool, readModelName);
+      await inlineLedgerForceStop(pool, readModelName)
 
       await inlineLedgerExecuteStatement(
         pool,
@@ -51,14 +51,14 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
              : escape('null')
          }
       `
-      );
-      break;
+      )
+      break
     } catch (err) {
       if (!(err instanceof PassthroughError)) {
-        throw err;
+        throw err
       }
     }
   }
-};
+}
 
-export default subscribe;
+export default subscribe

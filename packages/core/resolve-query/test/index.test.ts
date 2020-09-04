@@ -1,57 +1,57 @@
-import createQuery from '../src/index';
+import createQuery from '../src/index'
 
 type State = {
-  value: number;
-};
+  value: number
+}
 
 type Store = {
-  set(key: string, value: any): void;
-  get(key: string): any;
-};
+  set(key: string, value: any): void
+  get(key: string): any
+}
 
 type Event = {
   payload: {
-    value: number;
-  };
-};
+    value: number
+  }
+}
 
 type ReturnType<T extends (...args: any[]) => any> = T extends (
   ...args: any[]
 ) => infer R
   ? R
-  : never;
+  : never
 
-type ResolveQuery = ReturnType<typeof createQuery>;
+type ResolveQuery = ReturnType<typeof createQuery>
 
-type AddEvent = Event;
-type SubEvent = Event;
+type AddEvent = Event
+type SubEvent = Event
 
 type ResolverQuery = {
-  aggregateIds: Array<string>;
-  eventTypes: Array<string>;
-};
+  aggregateIds: Array<string>
+  eventTypes: Array<string>
+}
 
-let performanceTracer: any | null = null;
+let performanceTracer: any | null = null
 
-let invokeEventBusAsync: any = null;
-let getRemainingTimeInMillis: any = null;
-let performAcknowledge: any = null;
+let invokeEventBusAsync: any = null
+let getRemainingTimeInMillis: any = null
+let performAcknowledge: any = null
 
 for (const { describeName, prepare } of [
   {
     describeName: 'with performanceTracer',
     prepare: () => {
-      const addAnnotation = jest.fn();
-      const addError = jest.fn();
-      const close = jest.fn();
+      const addAnnotation = jest.fn()
+      const addError = jest.fn()
+      const close = jest.fn()
       const addNewSubsegment = jest.fn().mockReturnValue({
         addAnnotation,
         addError,
         close,
-      });
+      })
       const getSegment = jest.fn().mockReturnValue({
         addNewSubsegment,
-      });
+      })
 
       performanceTracer = {
         getSegment,
@@ -59,37 +59,37 @@ for (const { describeName, prepare } of [
         addAnnotation,
         addError,
         close,
-      };
+      }
     },
   },
   {
     describeName: 'without performanceTracer',
     prepare: () => {
-      performanceTracer = null;
+      performanceTracer = null
     },
   },
 ]) {
-  let events: Array<any> | null = null;
-  let eventstoreAdapter: any | null = null;
+  let events: Array<any> | null = null
+  let eventstoreAdapter: any | null = null
 
-  type SnapshotMap = Map<string, any>;
-  let snapshots: SnapshotMap | null = null;
+  type SnapshotMap = Map<string, any>
+  let snapshots: SnapshotMap | null = null
 
-  let viewModels: any | null = null;
-  let readModels: any | null = null;
-  let readModelConnectors: any | null = null;
-  let query: ResolveQuery | null = null;
+  let viewModels: any | null = null
+  let readModels: any | null = null
+  let readModelConnectors: any | null = null
+  let query: ResolveQuery | null = null
 
   // eslint-disable-next-line no-loop-func
   describe(describeName, () => {
     beforeEach(() => {
-      events = [];
+      events = []
 
-      snapshots = new Map();
+      snapshots = new Map()
 
-      invokeEventBusAsync = jest.fn();
-      getRemainingTimeInMillis = jest.fn();
-      performAcknowledge = jest.fn();
+      invokeEventBusAsync = jest.fn()
+      getRemainingTimeInMillis = jest.fn()
+      performAcknowledge = jest.fn()
 
       eventstoreAdapter = {
         loadEvents: async ({ cursor: prevCursor }: { cursor: string }) => ({
@@ -100,32 +100,32 @@ for (const { describeName, prepare } of [
           `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`,
         getSecretsManager: async () => null,
         loadSnapshot: jest.fn().mockImplementation(async (key) => {
-          return (snapshots as SnapshotMap).get(key);
+          return (snapshots as SnapshotMap).get(key)
         }),
         saveSnapshot: jest.fn().mockImplementation(async (key, value) => {
-          void (snapshots as SnapshotMap).set(key, value);
+          void (snapshots as SnapshotMap).set(key, value)
         }),
-      };
+      }
 
-      viewModels = [];
-      readModels = [];
-      readModelConnectors = {};
+      viewModels = []
+      readModels = []
+      readModelConnectors = {}
 
-      prepare();
-    });
+      prepare()
+    })
 
     afterEach(() => {
-      query = null;
-      events = null;
-      eventstoreAdapter = null;
-      snapshots = null;
-      viewModels = null;
-      readModels = null;
-      readModelConnectors = null;
-      invokeEventBusAsync = null;
-      getRemainingTimeInMillis = null;
-      performAcknowledge = null;
-    });
+      query = null
+      events = null
+      eventstoreAdapter = null
+      snapshots = null
+      viewModels = null
+      readModels = null
+      readModelConnectors = null
+      invokeEventBusAsync = null
+      getRemainingTimeInMillis = null
+      performAcknowledge = null
+    })
 
     describe('view models', () => {
       beforeEach(() => {
@@ -136,28 +136,28 @@ for (const { describeName, prepare } of [
               Init: (): State => {
                 return {
                   value: 0,
-                };
+                }
               },
               ADD: (state: State, event: AddEvent): State => {
                 return {
                   ...state,
                   value: state.value + event.payload.value,
-                };
+                }
               },
               SUB: (state: State, event: SubEvent): State => {
                 return {
                   ...state,
                   value: state.value - event.payload.value,
-                };
+                }
               },
             },
             serializeState: async (state: State): Promise<string> => {
-              return JSON.stringify(state, null, 2);
+              return JSON.stringify(state, null, 2)
             },
             deserializeState: async (
               serializedState: string
             ): Promise<State> => {
-              return JSON.parse(serializedState);
+              return JSON.parse(serializedState)
             },
             invariantHash: 'viewModelName-invariantHash',
             encryption: () => ({}),
@@ -166,13 +166,13 @@ for (const { describeName, prepare } of [
               query: ResolverQuery,
               { viewModel }: any
             ): Promise<{
-              data: any;
-              meta: any;
+              data: any
+              meta: any
             }> => {
               const { data, cursor } = await resolve.buildViewModel(
                 viewModel.name,
                 query
-              );
+              )
 
               return {
                 data,
@@ -181,14 +181,14 @@ for (const { describeName, prepare } of [
                   eventTypes: viewModel.eventTypes,
                   cursor,
                 },
-              };
+              }
             },
           },
-        ];
-      });
+        ]
+      })
 
       describe('with snapshots', () => {
-        query = null;
+        query = null
 
         beforeEach(() => {
           query = createQuery({
@@ -200,16 +200,16 @@ for (const { describeName, prepare } of [
             eventstoreAdapter,
             getRemainingTimeInMillis,
             performAcknowledge,
-          });
-        });
+          })
+        })
 
         afterEach(() => {
-          query = null;
-        });
+          query = null
+        })
 
         test('"read" should return state', async () => {
           if (query == null) {
-            throw new Error('Query is null');
+            throw new Error('Query is null')
           }
 
           events = [
@@ -240,13 +240,13 @@ for (const { describeName, prepare } of [
                 value: 8,
               },
             },
-          ];
+          ]
 
           const stateId1 = await query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id1',
             aggregateArgs: {},
-          });
+          })
 
           expect(stateId1).toEqual({
             data: {
@@ -257,11 +257,11 @@ for (const { describeName, prepare } of [
               aggregateIds: ['id1'],
               eventTypes: ['ADD', 'SUB'],
             },
-          });
+          })
 
           expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
             'VM;viewModelName-invariantHash;id1'
-          );
+          )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'VM;viewModelName-invariantHash;id1',
             JSON.stringify({
@@ -269,7 +269,7 @@ for (const { describeName, prepare } of [
               state: JSON.stringify({ value: 10 }, null, 2),
               cursor: 'CURSOR',
             })
-          );
+          )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'VM;viewModelName-invariantHash;id1',
             JSON.stringify({
@@ -277,7 +277,7 @@ for (const { describeName, prepare } of [
               state: JSON.stringify({ value: 15 }, null, 2),
               cursor: 'CURSOR-CURSOR',
             })
-          );
+          )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'VM;viewModelName-invariantHash;id1',
             JSON.stringify({
@@ -285,7 +285,7 @@ for (const { describeName, prepare } of [
               state: JSON.stringify({ value: 7 }, null, 2),
               cursor: 'CURSOR-CURSOR-CURSOR',
             })
-          );
+          )
 
           events = [
             {
@@ -315,12 +315,12 @@ for (const { describeName, prepare } of [
                 value: 3,
               },
             },
-          ];
+          ]
           const stateId2 = await query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id2',
             aggregateArgs: {},
-          });
+          })
 
           expect(stateId2).toEqual({
             data: {
@@ -331,11 +331,11 @@ for (const { describeName, prepare } of [
               aggregateIds: ['id2'],
               eventTypes: ['ADD', 'SUB'],
             },
-          });
+          })
 
           expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
             'VM;viewModelName-invariantHash;id2'
-          );
+          )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'VM;viewModelName-invariantHash;id2',
             JSON.stringify({
@@ -343,7 +343,7 @@ for (const { describeName, prepare } of [
               state: JSON.stringify({ value: 5 }, null, 2),
               cursor: 'CURSOR',
             })
-          );
+          )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'VM;viewModelName-invariantHash;id2',
             JSON.stringify({
@@ -351,7 +351,7 @@ for (const { describeName, prepare } of [
               state: JSON.stringify({ value: 7 }, null, 2),
               cursor: 'CURSOR-CURSOR',
             })
-          );
+          )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
             'VM;viewModelName-invariantHash;id2',
             JSON.stringify({
@@ -359,17 +359,17 @@ for (const { describeName, prepare } of [
               state: JSON.stringify({ value: 4 }, null, 2),
               cursor: 'CURSOR-CURSOR-CURSOR',
             })
-          );
+          )
 
-          events = [];
+          events = []
 
           const stateId2Second = await query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id2',
             aggregateArgs: {},
-          });
+          })
 
-          expect(stateId2Second).toEqual(stateId2);
+          expect(stateId2Second).toEqual(stateId2)
 
           events = [
             {
@@ -426,13 +426,13 @@ for (const { describeName, prepare } of [
                 value: 3,
               },
             },
-          ];
+          ]
 
           const stateWildcard = await query.read({
             modelName: 'viewModelName',
             aggregateIds: '*',
             aggregateArgs: {},
-          });
+          })
 
           expect(stateWildcard).toEqual({
             data: {
@@ -443,13 +443,13 @@ for (const { describeName, prepare } of [
               aggregateIds: null,
               eventTypes: ['ADD', 'SUB'],
             },
-          });
+          })
 
           const stateId1AndId2 = await query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id1,id2',
             aggregateArgs: {},
-          });
+          })
 
           expect(stateId1AndId2).toEqual({
             data: {
@@ -460,67 +460,67 @@ for (const { describeName, prepare } of [
               aggregateIds: ['id1', 'id2'],
               eventTypes: ['ADD', 'SUB'],
             },
-          });
+          })
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"read" should reuse working build process', async () => {
           if (query == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
           const state1Promise = query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id1',
             aggregateArgs: {},
-          });
+          })
 
           const state2Promise = query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id1',
             aggregateArgs: {},
-          });
+          })
 
-          expect(state1Promise).toEqual(state2Promise);
+          expect(state1Promise).toEqual(state2Promise)
 
-          await state1Promise;
-          await state2Promise;
+          await state1Promise
+          await state2Promise
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"read" should raise error when aggregateIds is a bad value', async () => {
           if (query == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
           try {
@@ -528,33 +528,33 @@ for (const { describeName, prepare } of [
               modelName: 'viewModelName',
               aggregateIds: Symbol('BAD_VALUE'),
               aggregateArgs: {},
-            });
+            })
 
-            return Promise.reject(new Error('Test failed'));
+            return Promise.reject(new Error('Test failed'))
           } catch (error) {
-            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(Error)
           }
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"read" should raise error when a view model does not exist', async () => {
           if (query == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
           try {
@@ -562,74 +562,74 @@ for (const { describeName, prepare } of [
               modelName: 'notFound',
               aggregateIds: 'id1',
               aggregateArgs: {},
-            });
+            })
 
-            return Promise.reject(new Error('Test failed'));
+            return Promise.reject(new Error('Test failed'))
           } catch (error) {
-            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(Error)
           }
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"read" should raise error when query is disposed', async () => {
           if (query == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
-          await query.dispose();
+          await query.dispose()
           try {
             await query.read({
               modelName: 'viewModelName',
               aggregateIds: 'id1',
               aggregateArgs: {},
-            });
+            })
 
-            return Promise.reject(new Error('Test failed'));
+            return Promise.reject(new Error('Test failed'))
           } catch (error) {
-            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(Error)
           }
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"serializeState" should return serialized state', async () => {
           if (query == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
           const result = await query.serializeState({
             modelName: 'viewModelName',
             state: { value: 7 },
-          });
+          })
 
           expect(result).toEqual(
             JSON.stringify(
@@ -639,188 +639,188 @@ for (const { describeName, prepare } of [
               null,
               2
             )
-          );
+          )
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"sendEvents" should raise error on view models', async () => {
           if (query == null || events == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
           try {
-            await query.sendEvents({ modelName: 'viewModelName', events });
-            return Promise.reject(new Error('Test failed'));
+            await query.sendEvents({ modelName: 'viewModelName', events })
+            return Promise.reject(new Error('Test failed'))
           } catch (error) {
-            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(Error)
           }
 
-          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled();
-          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled();
+          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled()
+          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled()
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"sendEvents" should raise error when query is disposed', async () => {
           if (query == null || events == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
-          await query.dispose();
+          await query.dispose()
           try {
-            await query.sendEvents({ modelName: 'viewModelName', events });
+            await query.sendEvents({ modelName: 'viewModelName', events })
 
-            return Promise.reject(new Error('Test failed'));
+            return Promise.reject(new Error('Test failed'))
           } catch (error) {
-            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(Error)
           }
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"drop" should raise error on view models', async () => {
           if (query == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
           try {
-            await query.drop({ modelName: 'viewModelName' });
-            return Promise.reject(new Error('Test failed'));
+            await query.drop({ modelName: 'viewModelName' })
+            return Promise.reject(new Error('Test failed'))
           } catch (error) {
-            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(Error)
           }
 
-          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled();
-          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled();
+          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled()
+          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled()
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"drop" should raise error when query is disposed', async () => {
           if (query == null || events == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
-          await query.dispose();
+          await query.dispose()
           try {
-            await query.sendEvents({ modelName: 'viewModelName', events });
+            await query.sendEvents({ modelName: 'viewModelName', events })
 
-            return Promise.reject(new Error('Test failed'));
+            return Promise.reject(new Error('Test failed'))
           } catch (error) {
-            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(Error)
           }
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"dispose" should dispose only one time', async () => {
           if (query == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
-          await query.dispose();
+          await query.dispose()
 
           try {
-            await query.dispose();
-            return Promise.reject(new Error('Test failed'));
+            await query.dispose()
+            return Promise.reject(new Error('Test failed'))
           } catch (error) {
-            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(Error)
           }
 
-          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled();
-          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled();
+          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled()
+          expect(eventstoreAdapter.loadSnapshot).not.toBeCalled()
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
-      });
+        })
+      })
 
       describe('without snapshots', () => {
-        query = null;
+        query = null
 
         beforeEach(() => {
           query = createQuery({
@@ -832,16 +832,16 @@ for (const { describeName, prepare } of [
             eventstoreAdapter,
             getRemainingTimeInMillis,
             performAcknowledge,
-          });
-        });
+          })
+        })
 
         afterEach(() => {
-          query = null;
-        });
+          query = null
+        })
 
         test('"read" should return state', async () => {
           if (query == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
           events = [
@@ -872,13 +872,13 @@ for (const { describeName, prepare } of [
                 value: 8,
               },
             },
-          ];
+          ]
 
           const stateId1 = await query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id1',
             aggregateArgs: {},
-          });
+          })
 
           expect(stateId1).toEqual({
             data: { value: 7 },
@@ -887,7 +887,7 @@ for (const { describeName, prepare } of [
               aggregateIds: ['id1'],
               eventTypes: ['ADD', 'SUB'],
             },
-          });
+          })
 
           events = [
             {
@@ -917,13 +917,13 @@ for (const { describeName, prepare } of [
                 value: 3,
               },
             },
-          ];
+          ]
 
           const stateId2 = await query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id2',
             aggregateArgs: {},
-          });
+          })
 
           expect(stateId2).toEqual({
             data: { value: 4 },
@@ -932,28 +932,28 @@ for (const { describeName, prepare } of [
               aggregateIds: ['id2'],
               eventTypes: ['ADD', 'SUB'],
             },
-          });
+          })
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"read" should reuse working build process', async () => {
           if (query == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
           events = [
@@ -984,80 +984,80 @@ for (const { describeName, prepare } of [
                 value: 8,
               },
             },
-          ];
+          ]
 
           const state1Promise = query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id1',
             aggregateArgs: {},
-          });
+          })
 
           const state2Promise = query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id1',
             aggregateArgs: {},
-          });
+          })
 
-          expect(state1Promise).toEqual(state2Promise);
+          expect(state1Promise).toEqual(state2Promise)
 
-          await state1Promise;
-          await state2Promise;
+          await state1Promise
+          await state2Promise
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"read" should raise error when query is disposed', async () => {
           if (query == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
-          await query.dispose();
+          await query.dispose()
           try {
             await query.read({
               modelName: 'viewModelName',
               aggregateIds: 'id1',
               aggregateArgs: {},
-            });
+            })
 
-            return Promise.reject(new Error('Test failed'));
+            return Promise.reject(new Error('Test failed'))
           } catch (error) {
-            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(Error)
           }
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"read" should raise error when aggregateIds is a bad value', async () => {
           if (query == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
           try {
@@ -1065,39 +1065,39 @@ for (const { describeName, prepare } of [
               modelName: 'viewModelName',
               aggregateIds: Symbol('BAD_VALUE'),
               aggregateArgs: {},
-            });
+            })
 
-            return Promise.reject(new Error('Test failed'));
+            return Promise.reject(new Error('Test failed'))
           } catch (error) {
-            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(Error)
           }
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"serializeState" should return serialized state', async () => {
           if (query == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
           const result = await query.serializeState({
             modelName: 'viewModelName',
             state: { value: 7 },
-          });
+          })
 
           expect(result).toEqual(
             JSON.stringify(
@@ -1107,179 +1107,179 @@ for (const { describeName, prepare } of [
               null,
               2
             )
-          );
+          )
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"sendEvents" should raise error on view models', async () => {
           if (query == null || events == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
           try {
-            await query.sendEvents({ modelName: 'viewModelName', events });
-            return Promise.reject(new Error('Test failed'));
+            await query.sendEvents({ modelName: 'viewModelName', events })
+            return Promise.reject(new Error('Test failed'))
           } catch (error) {
-            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(Error)
           }
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"sendEvents" should raise error when disposed', async () => {
           if (query == null || events == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
-          await query.dispose();
+          await query.dispose()
           try {
-            await query.sendEvents({ modelName: 'viewModelName', events });
-            return Promise.reject(new Error('Test failed'));
+            await query.sendEvents({ modelName: 'viewModelName', events })
+            return Promise.reject(new Error('Test failed'))
           } catch (error) {
-            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(Error)
           }
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"drop" should raise error on view-model', async () => {
           if (query == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
           try {
-            await query.drop({ modelName: 'viewModelName' });
-            return Promise.reject(new Error('Test failed'));
+            await query.drop({ modelName: 'viewModelName' })
+            return Promise.reject(new Error('Test failed'))
           } catch (error) {
-            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(Error)
           }
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"drop" should raise error when disposed', async () => {
           if (query == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
-          await query.dispose();
+          await query.dispose()
           try {
-            await query.drop({ modelName: 'viewModelName' });
-            return Promise.reject(new Error('Test failed'));
+            await query.drop({ modelName: 'viewModelName' })
+            return Promise.reject(new Error('Test failed'))
           } catch (error) {
-            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(Error)
           }
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
+        })
 
         test('"dispose" should dispose only one time', async () => {
           if (query == null) {
-            throw new Error('Some of test tools are not initialized');
+            throw new Error('Some of test tools are not initialized')
           }
 
-          await query.dispose();
+          await query.dispose()
 
           try {
-            await query.dispose();
-            return Promise.reject(new Error('Test failed'));
+            await query.dispose()
+            return Promise.reject(new Error('Test failed'))
           } catch (error) {
-            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(Error)
           }
 
           if (performanceTracer != null) {
             expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
               'getSegment'
-            );
+            )
             expect(
               performanceTracer.addNewSubsegment.mock.calls
-            ).toMatchSnapshot('addNewSubsegment');
+            ).toMatchSnapshot('addNewSubsegment')
             expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
               'addAnnotation'
-            );
+            )
             expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
               'addError'
-            );
-            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+            )
+            expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
-        });
-      });
-    });
+        })
+      })
+    })
 
     describe('read models', () => {
-      query = null;
-      const remoteReadModelStore: { [key: string]: any } = {};
+      query = null
+      const remoteReadModelStore: { [key: string]: any } = {}
 
       beforeEach(() => {
         readModels = [
@@ -1287,20 +1287,20 @@ for (const { describeName, prepare } of [
             name: 'readModelName',
             projection: {
               Init: async (store: Store) => {
-                await store.set('value', 0);
+                await store.set('value', 0)
               },
               ADD: async (store: Store, event: AddEvent) => {
-                const value = await store.get('value');
-                await store.set('value', value + event.payload.value);
+                const value = await store.get('value')
+                await store.set('value', value + event.payload.value)
               },
               SUB: async (store: Store, event: SubEvent) => {
-                const value = await store.get('value');
-                await store.set('value', value - event.payload.value);
+                const value = await store.get('value')
+                await store.set('value', value - event.payload.value)
               },
             },
             resolvers: {
               getValue: async (store: Store) => {
-                return await store.get('value');
+                return await store.get('value')
               },
             },
             connectorName: 'default',
@@ -1311,7 +1311,7 @@ for (const { describeName, prepare } of [
             projection: null,
             resolvers: {
               readFromDatabase: async () => {
-                return 42;
+                return 42
               },
             },
             connectorName: 'default',
@@ -1321,9 +1321,9 @@ for (const { describeName, prepare } of [
             name: 'brokenReadModelName',
             projection: {
               BROKEN: async (store: Store, event: any) => {
-                const error = new Error('BROKEN');
-                Object.assign(error, { store, event });
-                throw error;
+                const error = new Error('BROKEN')
+                Object.assign(error, { store, event })
+                throw error
               },
             },
             resolvers: {},
@@ -1334,54 +1334,54 @@ for (const { describeName, prepare } of [
             name: 'remoteReadModelName',
             projection: {
               SET: async (store: Store, event: any) => {
-                await new Promise((resolve) => setImmediate(resolve));
-                remoteReadModelStore[event.payload.key] = event.payload.value;
+                await new Promise((resolve) => setImmediate(resolve))
+                remoteReadModelStore[event.payload.key] = event.payload.value
               },
             },
             resolvers: {
               getValue: async (store: Store) => {
-                return await store.get('value');
+                return await store.get('value')
               },
             },
             connectorName: 'empty',
             invariantHash: 'remoteReadModelName-invariantHash',
           },
-        ];
+        ]
 
         readModelConnectors = {
           default: (() => {
-            const readModels = new Map();
+            const readModels = new Map()
             const connect = jest
               .fn()
               .mockImplementation(async (readModelName) => {
                 if (!readModels.has(readModelName)) {
-                  readModels.set(readModelName, new Map());
+                  readModels.set(readModelName, new Map())
                 }
                 return {
                   get(key: string): any {
-                    return readModels.get(readModelName).get(key);
+                    return readModels.get(readModelName).get(key)
                   },
                   set(key: string, value: any): void {
-                    readModels.get(readModelName).set(key, value);
+                    readModels.get(readModelName).set(key, value)
                   },
-                };
-              });
-            const disconnect = jest.fn();
+                }
+              })
+            const disconnect = jest.fn()
             const drop = jest
               .fn()
               .mockImplementation(async (store, readModelName) => {
-                readModels.delete(readModelName);
-              });
+                readModels.delete(readModelName)
+              })
             const dispose = jest.fn().mockImplementation(async (a: string) => {
-              readModels.clear();
-            });
+              readModels.clear()
+            })
 
             return {
               connect,
               disconnect,
               drop,
               dispose,
-            };
+            }
           })(),
           empty: {
             connect: jest.fn(),
@@ -1389,7 +1389,7 @@ for (const { describeName, prepare } of [
             drop: jest.fn(),
             dispose: jest.fn(),
           },
-        };
+        }
 
         query = createQuery({
           invokeEventBusAsync,
@@ -1400,46 +1400,46 @@ for (const { describeName, prepare } of [
           eventstoreAdapter,
           getRemainingTimeInMillis,
           performAcknowledge,
-        });
-      });
+        })
+      })
 
       afterEach(() => {
-        query = null;
-      });
+        query = null
+      })
 
       test('"read" should return the resolver result', async () => {
         if (query == null) {
-          throw new Error('Some of test tools are not initialized');
+          throw new Error('Some of test tools are not initialized')
         }
 
         const value = await query.read({
           modelName: 'readOnlyReadModelName',
           resolverName: 'readFromDatabase',
           resolverArgs: {},
-        });
+        })
 
-        expect(value).toEqual({ data: 42 });
+        expect(value).toEqual({ data: 42 })
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
+      })
 
       test('"read" should raise error when a read model does not exist', async () => {
         if (query == null) {
-          throw new Error('Some of test tools are not initialized');
+          throw new Error('Some of test tools are not initialized')
         }
 
         try {
@@ -1447,33 +1447,33 @@ for (const { describeName, prepare } of [
             modelName: 'notFound',
             resolverName: 'notFound',
             resolverArgs: {},
-          });
+          })
 
-          return Promise.reject(new Error('Test failed'));
+          return Promise.reject(new Error('Test failed'))
         } catch (error) {
-          expect(error).toBeInstanceOf(Error);
+          expect(error).toBeInstanceOf(Error)
         }
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
+      })
 
       test('"read" should raise error when a resolver is not found', async () => {
         if (query == null) {
-          throw new Error('Some of test tools are not initialized');
+          throw new Error('Some of test tools are not initialized')
         }
 
         try {
@@ -1481,66 +1481,66 @@ for (const { describeName, prepare } of [
             modelName: 'readModelName',
             resolverName: 'notFound',
             resolverArgs: {},
-          });
-          return Promise.reject(new Error('Test failed'));
+          })
+          return Promise.reject(new Error('Test failed'))
         } catch (error) {
-          expect(error).toBeInstanceOf(Error);
+          expect(error).toBeInstanceOf(Error)
         }
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
+      })
 
       test('"read" should raise error when query is disposed', async () => {
         if (query == null) {
-          throw new Error('Some of test tools are not initialized');
+          throw new Error('Some of test tools are not initialized')
         }
 
         try {
-          await query.dispose();
+          await query.dispose()
           await query.read({
             modelName: 'readOnlyReadModelName',
             resolverName: 'readFromDatabase',
             resolverArgs: {},
-          });
-          return Promise.reject(new Error('Test failed'));
+          })
+          return Promise.reject(new Error('Test failed'))
         } catch (error) {
-          expect(error).toBeInstanceOf(Error);
+          expect(error).toBeInstanceOf(Error)
         }
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
+      })
 
       test('"sendEvents" should apply events to the read model, "read" should return the resolver result', async () => {
         if (query == null) {
-          throw new Error('Some of test tools are not initialized');
+          throw new Error('Some of test tools are not initialized')
         }
 
         events = [
@@ -1581,7 +1581,7 @@ for (const { describeName, prepare } of [
             type: 'OTHER_EVENT',
             payload: {},
           },
-        ];
+        ]
 
         await query.sendEvents({
           modelName: 'readModelName',
@@ -1589,7 +1589,7 @@ for (const { describeName, prepare } of [
           xaTransactionId: 'xaTransactionId',
           properties: {},
           batchId: 'batchId',
-        });
+        })
 
         expect(performAcknowledge.mock.calls[0][0].result).toMatchObject({
           error: null,
@@ -1604,28 +1604,28 @@ for (const { describeName, prepare } of [
           },
           failedEvent: null,
           eventSubscriber: 'readModelName',
-        });
+        })
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
+      })
 
       test('"sendEvents" should raise error when a projection is broken', async () => {
         if (query == null) {
-          throw new Error('Some of test tools are not initialized');
+          throw new Error('Some of test tools are not initialized')
         }
 
         const events = [
@@ -1636,7 +1636,7 @@ for (const { describeName, prepare } of [
             type: 'BROKEN',
             payload: {},
           },
-        ];
+        ]
 
         await query.sendEvents({
           modelName: 'brokenReadModelName',
@@ -1644,32 +1644,32 @@ for (const { describeName, prepare } of [
           xaTransactionId: 'xaTransactionId',
           properties: {},
           batchId: 'batchId',
-        });
+        })
 
         expect(performAcknowledge.mock.calls[0][0].result.error).toMatchObject({
           message: 'BROKEN',
-        });
+        })
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
+      })
 
       test('"sendEvents" should raise error when a projection is not found', async () => {
         if (query == null || events == null) {
-          throw new Error('Some of test tools are not initialized');
+          throw new Error('Some of test tools are not initialized')
         }
 
         await query.sendEvents({
@@ -1678,30 +1678,30 @@ for (const { describeName, prepare } of [
           xaTransactionId: 'xaTransactionId',
           properties: {},
           batchId: 'batchId',
-        });
+        })
 
-        expect(performAcknowledge.mock.calls[0][0].result.error).not.toBeNull();
+        expect(performAcknowledge.mock.calls[0][0].result.error).not.toBeNull()
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
+      })
 
       test('"sendEvents" should raise error when events is not array', async () => {
         if (query == null) {
-          throw new Error('Some of test tools are not initialized');
+          throw new Error('Some of test tools are not initialized')
         }
 
         await query.sendEvents({
@@ -1710,30 +1710,30 @@ for (const { describeName, prepare } of [
           xaTransactionId: 'xaTransactionId',
           properties: {},
           batchId: 'batchId',
-        });
+        })
 
-        expect(performAcknowledge.mock.calls[0][0].result.error).not.toBeNull();
+        expect(performAcknowledge.mock.calls[0][0].result.error).not.toBeNull()
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
+      })
 
       test('"sendEvents" should raise error when updating had been interrupted', async () => {
         if (query == null) {
-          throw new Error('Some of test tools are not initialized');
+          throw new Error('Some of test tools are not initialized')
         }
 
         events = [
@@ -1757,190 +1757,190 @@ for (const { describeName, prepare } of [
               value: 4,
             },
           },
-        ];
+        ]
 
         const result = query.sendEvents({
           modelName: 'remoteReadModelName',
           events,
-        });
+        })
 
-        await query.dispose();
+        await query.dispose()
 
-        await result;
+        await result
 
-        expect(performAcknowledge.mock.calls[0][0].result.error).not.toBeNull();
+        expect(performAcknowledge.mock.calls[0][0].result.error).not.toBeNull()
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
+      })
 
       test('"sendEvents" should raise error when query is disposed', async () => {
         if (query == null) {
-          throw new Error('Some of test tools are not initialized');
+          throw new Error('Some of test tools are not initialized')
         }
 
         events = [
           {
             type: 'Init',
           },
-        ];
+        ]
 
-        await query.dispose();
+        await query.dispose()
 
-        await query.sendEvents({ modelName: 'readModelName', events });
+        await query.sendEvents({ modelName: 'readModelName', events })
 
-        expect(performAcknowledge.mock.calls[0][0].result.error).not.toBeNull();
+        expect(performAcknowledge.mock.calls[0][0].result.error).not.toBeNull()
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
+      })
 
       test('"serializeState" should return the resolver result', async () => {
         if (query == null) {
-          throw new Error('Some of test tools are not initialized');
+          throw new Error('Some of test tools are not initialized')
         }
 
         const value = await query.serializeState({
           modelName: 'readOnlyReadModelName',
           state: 42,
-        });
+        })
 
-        expect(value).toEqual(JSON.stringify(42, null, 2));
+        expect(value).toEqual(JSON.stringify(42, null, 2))
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
+      })
 
       test('"drop" should drop read model', async () => {
         if (query == null) {
-          throw new Error('Some of test tools are not initialized');
+          throw new Error('Some of test tools are not initialized')
         }
 
-        await query.drop({ modelName: 'readModelName' });
+        await query.drop({ modelName: 'readModelName' })
 
-        const connector = readModelConnectors['default'];
+        const connector = readModelConnectors['default']
 
-        expect(connector.drop.mock.calls[0][1]).toEqual('readModelName');
+        expect(connector.drop.mock.calls[0][1]).toEqual('readModelName')
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
+      })
 
       test('"drop" should raise error when query is disposed', async () => {
         if (query == null) {
-          throw new Error('Some of test tools are not initialized');
+          throw new Error('Some of test tools are not initialized')
         }
 
-        await query.dispose();
+        await query.dispose()
 
         try {
-          await query.drop({ modelName: 'readModelName' });
+          await query.drop({ modelName: 'readModelName' })
 
-          return Promise.reject(new Error('Test failed'));
+          return Promise.reject(new Error('Test failed'))
         } catch (error) {
-          expect(error).toBeInstanceOf(Error);
+          expect(error).toBeInstanceOf(Error)
         }
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
+      })
 
       test('"dispose" should dispose only one time', async () => {
         if (query == null) {
-          throw new Error('Some of test tools are not initialized');
+          throw new Error('Some of test tools are not initialized')
         }
 
-        await query.dispose();
+        await query.dispose()
 
         try {
-          await query.dispose();
-          return Promise.reject(new Error('Test failed'));
+          await query.dispose()
+          return Promise.reject(new Error('Test failed'))
         } catch (error) {
-          expect(error).toBeInstanceOf(Error);
+          expect(error).toBeInstanceOf(Error)
         }
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
-    });
+      })
+    })
 
     describe('common', () => {
       test('"createQuery" should raise error when a read model is declared without a connector', async () => {
@@ -1964,8 +1964,8 @@ for (const { describeName, prepare } of [
               getRemainingTimeInMillis,
               performAcknowledge,
             }))
-        ).toThrow(Error);
-      });
+        ).toThrow(Error)
+      })
 
       test('"createQuery" should raise error when a read model is declared twice', async () => {
         expect(
@@ -2002,24 +2002,24 @@ for (const { describeName, prepare } of [
               getRemainingTimeInMillis,
               performAcknowledge,
             }))
-        ).toThrow('Duplicate name for read model: "readModelName"');
+        ).toThrow('Duplicate name for read model: "readModelName"')
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
+      })
 
       test('"createQuery" should raise error when a view model is declared twice', async () => {
         expect(
@@ -2045,24 +2045,24 @@ for (const { describeName, prepare } of [
               getRemainingTimeInMillis,
               performAcknowledge,
             }))
-        ).toThrow('Duplicate name for view model: "viewModelName"');
+        ).toThrow('Duplicate name for view model: "viewModelName"')
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
+      })
 
       test('"read" should raise error when wrong options for read invocation', async () => {
         query = createQuery({
@@ -2080,7 +2080,7 @@ for (const { describeName, prepare } of [
           invokeEventBusAsync,
           getRemainingTimeInMillis,
           performAcknowledge,
-        });
+        })
 
         await expect(
           query.read({
@@ -2088,24 +2088,24 @@ for (const { describeName, prepare } of [
             wrongArg1: '1',
             wrongArg2: '2',
           } as any)
-        ).rejects.toBeTruthy();
+        ).rejects.toBeTruthy()
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
             'getSegment'
-          );
+          )
           expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
             'addNewSubsegment'
-          );
+          )
           expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
             'addAnnotation'
-          );
+          )
           expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
             'addError'
-          );
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close');
+          )
+          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
-      });
-    });
-  });
+      })
+    })
+  })
 }

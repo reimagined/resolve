@@ -1,6 +1,6 @@
-import React from 'react';
-import ShoppingLists from '../components/ShoppingLists';
-import ShoppingListCreator from '../components/ShoppingListCreator';
+import React from 'react'
+import ShoppingLists from '../components/ShoppingLists'
+import ShoppingListCreator from '../components/ShoppingListCreator'
 
 export default () => {
   return (
@@ -8,5 +8,5 @@ export default () => {
       <ShoppingLists />
       <ShoppingListCreator />
     </div>
-  );
-};
+  )
+}

@@ -1,7 +1,7 @@
-import React from 'react';
-import { render } from 'enzyme';
+import React from 'react'
+import { render } from 'enzyme'
 
-import { ShoppingList } from '../../client/containers/ShoppingList';
+import { ShoppingList } from '../../client/containers/ShoppingList'
 
 test('renders correctly', () => {
   const data = {
@@ -17,11 +17,11 @@ test('renders correctly', () => {
         text: '2',
       },
     ],
-  };
-  const jwt = { id: 'id' };
-  const aggregateId = 'aggregateId';
-  const toggleShoppingItem = () => {};
-  const removeShoppingItem = () => {};
+  }
+  const jwt = { id: 'id' }
+  const aggregateId = 'aggregateId'
+  const toggleShoppingItem = () => {}
+  const removeShoppingItem = () => {}
 
   const tree = render(
     <ShoppingList
@@ -32,7 +32,7 @@ test('renders correctly', () => {
       toggleShoppingItem={toggleShoppingItem}
       removeShoppingItem={removeShoppingItem}
     />
-  );
+  )
 
-  expect(tree).toMatchSnapshot();
-});
+  expect(tree).toMatchSnapshot()
+})

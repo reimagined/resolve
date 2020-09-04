@@ -1,14 +1,14 @@
-import debugLevels from 'resolve-debug-levels';
-import { OMIT_BATCH } from 'resolve-readmodel-base';
+import debugLevels from 'resolve-debug-levels'
+import { OMIT_BATCH } from 'resolve-readmodel-base'
 
 const log = debugLevels(
   'resolve:resolve-readmodel-postgresql-serverless:rollback-event'
-);
+)
 
 const rollbackEvent = async (pool, readModelName, xaTransactionId) => {
   try {
-    pool.xaTransactionId = null;
-    const savepointId = pool.generateGuid(readModelName, xaTransactionId);
+    pool.xaTransactionId = null
+    const savepointId = pool.generateGuid(readModelName, xaTransactionId)
 
     await pool.rdsDataService.executeStatement({
       resourceArn: pool.dbClusterOrInstanceArn,
@@ -21,11 +21,11 @@ const rollbackEvent = async (pool, readModelName, xaTransactionId) => {
         ROLLBACK TO SAVEPOINT ${savepointId};
         RELEASE SAVEPOINT ${savepointId};
       `,
-    });
+    })
 
-    log.verbose('Rollback event to postgresql database succeed');
+    log.verbose('Rollback event to postgresql database succeed')
   } catch (error) {
-    log.verbose('Rollback event to postgresql database failed', error);
+    log.verbose('Rollback event to postgresql database failed', error)
 
     if (
       error != null &&
@@ -33,11 +33,11 @@ const rollbackEvent = async (pool, readModelName, xaTransactionId) => {
         /deadlock detected/i.test(error.message) ||
         pool.isTimeoutError(error))
     ) {
-      throw OMIT_BATCH;
+      throw OMIT_BATCH
     }
 
-    throw error;
+    throw error
   }
-};
+}
 
-export default rollbackEvent;
+export default rollbackEvent

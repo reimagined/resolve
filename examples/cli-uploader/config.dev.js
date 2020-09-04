@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts';
+import { declareRuntimeEnv } from 'resolve-scripts'
 
 const devConfig = {
   target: 'local',
@@ -38,6 +38,6 @@ const devConfig = {
       secretKey: 'key',
     },
   },
-};
+}
 
-export default devConfig;
+export default devConfig

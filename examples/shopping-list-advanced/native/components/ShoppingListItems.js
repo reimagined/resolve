@@ -1,6 +1,6 @@
-import React from 'react';
-import { Icon, Left, List, ListItem, Right, Text } from 'native-base';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import React from 'react'
+import { Icon, Left, List, ListItem, Right, Text } from 'native-base'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 
 const styles = StyleSheet.create({
   container: {
@@ -46,19 +46,19 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
   },
-});
+})
 
 class ShoppingListItems extends React.PureComponent {
   toggleShoppingItem = (id) => {
-    this.props.toggleShoppingItem(this.props.aggregateId, { id });
-  };
+    this.props.toggleShoppingItem(this.props.aggregateId, { id })
+  }
 
   removeShoppingItem = (id) => {
-    this.props.removeShoppingItem(this.props.aggregateId, { id });
-  };
+    this.props.removeShoppingItem(this.props.aggregateId, { id })
+  }
 
   render() {
-    const { items } = this.props;
+    const { items } = this.props
 
     return (
       <List>
@@ -101,8 +101,8 @@ class ShoppingListItems extends React.PureComponent {
           </ListItem>
         ))}
       </List>
-    );
+    )
   }
 }
 
-export default ShoppingListItems;
+export default ShoppingListItems

@@ -1,11 +1,11 @@
-import { IMAGE_CREATED } from '../event-types';
+import { IMAGE_CREATED } from '../event-types'
 
 export default {
   Init: async (store) => {
     await store.defineTable('Images', {
       indexes: { id: 'string' },
       fields: ['name', 'uploadId'],
-    });
+    })
   },
 
   [IMAGE_CREATED]: async (
@@ -16,8 +16,8 @@ export default {
       id: aggregateId,
       name,
       uploadId,
-    };
+    }
 
-    await store.insert('Images', image);
+    await store.insert('Images', image)
   },
-};
+}

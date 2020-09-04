@@ -1,12 +1,12 @@
-import debugLevels from 'resolve-debug-levels';
+import debugLevels from 'resolve-debug-levels'
 
-import shutdownOne from './shutdown-one';
+import shutdownOne from './shutdown-one'
 
-const log = debugLevels('resolve:resolve-runtime:shutdown');
+const log = debugLevels('resolve:resolve-runtime:shutdown')
 
 const shutdown = async (resolve, upstream) => {
-  log.debug('shutdown started');
-  const promises = [];
+  log.debug('shutdown started')
+  const promises = []
   for (const { name: eventSubscriber } of resolve.eventListeners.values()) {
     promises.push(
       shutdownOne({
@@ -14,18 +14,18 @@ const shutdown = async (resolve, upstream) => {
         eventSubscriber,
         upstream,
       })
-    );
+    )
   }
 
-  await Promise.all(promises);
+  await Promise.all(promises)
 
-  await resolve.publisher.pause({ eventSubscriber: 'websocket' });
+  await resolve.publisher.pause({ eventSubscriber: 'websocket' })
 
-  await resolve.publisher.unsubscribe({ eventSubscriber: 'websocket' });
+  await resolve.publisher.unsubscribe({ eventSubscriber: 'websocket' })
 
-  log.debug('shutdown successful');
+  log.debug('shutdown successful')
 
-  return 'ok';
-};
+  return 'ok'
+}
 
-export default shutdown;
+export default shutdown

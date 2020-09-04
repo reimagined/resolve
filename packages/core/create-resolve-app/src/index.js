@@ -3,6 +3,6 @@ import {
   resolveExamples,
   resolvePackages,
   resolveVersion,
-} from './constants';
+} from './constants'
 
-export { analyticsUrlBase, resolveExamples, resolvePackages, resolveVersion };
+export { analyticsUrlBase, resolveExamples, resolvePackages, resolveVersion }

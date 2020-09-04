@@ -1,26 +1,26 @@
-import { message } from '../constants';
-import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env';
+import { message } from '../constants'
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
-    throw new Error(`${message.serverAliasInClientCodeError}$resolve.port`);
+    throw new Error(`${message.serverAliasInClientCodeError}$resolve.port`)
   }
 
-  const exports = [];
+  const exports = []
 
   if (checkRuntimeEnv(resolveConfig.port)) {
     exports.push(
       `const port = ${injectRuntimeEnv(resolveConfig.port)}`,
       ``,
       `export default port`
-    );
+    )
   } else {
     exports.push(
       `const port = ${JSON.stringify(resolveConfig.port)}`,
       ``,
       `export default port`
-    );
+    )
   }
 
-  return exports.join('\r\n');
-};
+  return exports.join('\r\n')
+}

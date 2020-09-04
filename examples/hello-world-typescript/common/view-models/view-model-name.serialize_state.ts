@@ -1,1 +1,1 @@
-export default (state): string => JSON.stringify(state || {});
+export default (state): string => JSON.stringify(state || {})

@@ -1,5 +1,5 @@
 export default async (resolve, query, { viewModel }) => {
-  const { data, cursor } = await resolve.buildViewModel(viewModel.name, query);
+  const { data, cursor } = await resolve.buildViewModel(viewModel.name, query)
 
   return {
     data,
@@ -8,5 +8,5 @@ export default async (resolve, query, { viewModel }) => {
       eventTypes: viewModel.eventTypes,
       aggregateIds: query.aggregateIds,
     },
-  };
-};
+  }
+}

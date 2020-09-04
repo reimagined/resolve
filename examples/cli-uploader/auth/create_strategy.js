@@ -1,4 +1,4 @@
-import { Strategy as StrategyFactory } from 'passport-local';
+import { Strategy as StrategyFactory } from 'passport-local'
 
 const createStrategy = (options) => ({
   factory: StrategyFactory,
@@ -12,6 +12,6 @@ const createStrategy = (options) => ({
     successRedirect: null,
     ...options,
   },
-});
+})
 
-export default createStrategy;
+export default createStrategy

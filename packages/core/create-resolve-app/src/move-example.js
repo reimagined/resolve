@@ -5,16 +5,16 @@ const moveExample = (pool) => async () => {
     applicationPath,
     resolveClonePath,
     resolveCloneExamplePath,
-  } = pool;
+  } = pool
   for (const resource of fs.readdirSync(resolveCloneExamplePath)) {
     fs.moveSync(
       path.join(resolveCloneExamplePath, resource),
       path.join(applicationPath, resource),
       { overwrite: true }
-    );
+    )
   }
 
-  fs.removeSync(resolveClonePath);
-};
+  fs.removeSync(resolveClonePath)
+}
 
-export default moveExample;
+export default moveExample

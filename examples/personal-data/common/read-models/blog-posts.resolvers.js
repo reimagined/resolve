@@ -7,8 +7,8 @@ const resolvers = {
       },
       {},
       { timestamp: -1 }
-    );
+    )
   },
-};
+}
 
-export default resolvers;
+export default resolvers

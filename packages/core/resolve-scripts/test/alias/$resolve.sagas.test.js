@@ -1,6 +1,6 @@
-import path from 'path';
-import alias from '../../src/alias/$resolve.sagas';
-import normalizePaths from './normalize_paths';
+import path from 'path'
+import alias from '../../src/alias/$resolve.sagas'
+import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
   const resolveConfig = {
@@ -12,7 +12,7 @@ describe('base config works correctly', () => {
       },
     ],
     schedulers: {},
-  };
+  }
 
   test('[client]', () => {
     expect(() =>
@@ -24,8 +24,8 @@ describe('base config works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toThrow();
-  });
+    ).toThrow()
+  })
 
   test('[server]', () => {
     expect(
@@ -37,9 +37,9 @@ describe('base config works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})
 
 describe('config with schedulers works correctly', () => {
   const resolveConfig = {
@@ -59,7 +59,7 @@ describe('config with schedulers works correctly', () => {
         connectorName: 'default',
       },
     },
-  };
+  }
 
   test('[client]', () => {
     expect(() =>
@@ -71,8 +71,8 @@ describe('config with schedulers works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toThrow();
-  });
+    ).toThrow()
+  })
 
   test('[server]', () => {
     expect(
@@ -84,6 +84,6 @@ describe('config with schedulers works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})

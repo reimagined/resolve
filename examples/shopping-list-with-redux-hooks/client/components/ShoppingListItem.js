@@ -1,8 +1,8 @@
-import React from 'react';
-import { useReduxCommand } from 'resolve-redux';
-import { ListGroupItem, FormCheck } from 'react-bootstrap';
+import React from 'react'
+import { useReduxCommand } from 'resolve-redux'
+import { ListGroupItem, FormCheck } from 'react-bootstrap'
 
-import Image from './Image';
+import Image from './Image'
 
 const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
   const { execute: toggleItem } = useReduxCommand({
@@ -12,7 +12,7 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
     payload: {
       id,
     },
-  });
+  })
   const { execute: removeItem } = useReduxCommand({
     type: 'removeShoppingItem',
     aggregateId: shoppingListId,
@@ -20,7 +20,7 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
     payload: {
       id,
     },
-  });
+  })
   return (
     <ListGroupItem key={id}>
       <FormCheck inline checked={checked} onChange={toggleItem} label={text} />
@@ -30,7 +30,7 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
         onClick={removeItem}
       />
     </ListGroupItem>
-  );
-};
+  )
+}
 
-export default ShoppingListItem;
+export default ShoppingListItem

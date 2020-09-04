@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react'
 import {
   Form,
   Input,
@@ -6,20 +6,20 @@ import {
   FormGroup,
   CustomInput,
   FormFeedback,
-} from 'reactstrap';
-import uuid from 'uuid/v4';
-import FileUploadProgress from 'react-fileupload-progress';
-import { useCommandBuilder } from 'resolve-react-hooks';
+} from 'reactstrap'
+import uuid from 'uuid/v4'
+import FileUploadProgress from 'react-fileupload-progress'
+import { useCommandBuilder } from 'resolve-react-hooks'
 
 import {
   getCDNBasedUrl,
   getFormUpload,
   getToken,
-} from 'resolve-module-uploader';
+} from 'resolve-module-uploader'
 
-import UploaderContext from '../context';
+import UploaderContext from '../context'
 
-const DIRECTORY = 'images';
+const DIRECTORY = 'images'
 
 const ImageUploader = ({ owner, onUploaded }) => {
   const [state, setState] = useState({
@@ -36,7 +36,7 @@ const ImageUploader = ({ owner, onUploaded }) => {
     loaded: null,
     loadedId: null,
     aggregateId: null,
-  });
+  })
 
   const {
     form: { url, fields },
@@ -47,16 +47,16 @@ const ImageUploader = ({ owner, onUploaded }) => {
     loadedId,
     picked,
     aggregateId,
-  } = state;
+  } = state
 
-  const uploaderContext = useContext(UploaderContext);
-  const { CDNUrl } = uploaderContext;
+  const uploaderContext = useContext(UploaderContext)
+  const { CDNUrl } = uploaderContext
 
   useEffect(() => {
     getToken({ dir: DIRECTORY }).then((staticToken) => {
-      setState({ ...state, staticToken });
-    });
-  }, []);
+      setState({ ...state, staticToken })
+    })
+  }, [])
 
   const uploadStarted = useCommandBuilder(
     (aggregateId) => ({
@@ -70,14 +70,14 @@ const ImageUploader = ({ owner, onUploaded }) => {
       },
     }),
     [uploadId]
-  );
+  )
 
   const uploadFinished = useCommandBuilder((aggregateId) => ({
     type: 'finishUpload',
     aggregateName: 'media',
     aggregateId,
     payload: {},
-  }));
+  }))
 
   const uploadError = useCommandBuilder(({ aggregateId, error }) => ({
     type: 'finishUpload',
@@ -86,11 +86,11 @@ const ImageUploader = ({ owner, onUploaded }) => {
     payload: {
       error,
     },
-  }));
+  }))
 
   const handleGetUrl = useCallback(() => {
     getFormUpload({ dir: DIRECTORY }).then((result) => {
-      const { form, uploadId } = result;
+      const { form, uploadId } = result
       getToken({ dir: DIRECTORY }).then((token) =>
         setState({
           ...state,
@@ -100,15 +100,15 @@ const ImageUploader = ({ owner, onUploaded }) => {
           aggregateId: uuid(),
           loaded: false,
         })
-      );
-    });
-  }, [state]);
+      )
+    })
+  }, [state])
 
   const handlePickFile = () => {
-    setState({ ...state, picked: true });
-  };
+    setState({ ...state, picked: true })
+  }
 
-  const inputRef = React.createRef();
+  const inputRef = React.createRef()
 
   const uploadFormRender = (onSubmitHandler) => {
     return (
@@ -135,21 +135,21 @@ const ImageUploader = ({ owner, onUploaded }) => {
                 ...state,
                 mimeType: inputRef.current.files[0].type,
                 picked: false,
-              });
-              onSubmitHandler(...args);
+              })
+              onSubmitHandler(...args)
             }}
           >
             Upload
           </Button>
         </FormGroup>
       </Form>
-    );
-  };
+    )
+  }
 
   const formGetter = () => {
-    const form = new FormData(document.querySelector('#uploadForm'));
-    return form;
-  };
+    const form = new FormData(document.querySelector('#uploadForm'))
+    return form
+  }
 
   const onLoad = useCallback(() => {
     setState({
@@ -157,10 +157,10 @@ const ImageUploader = ({ owner, onUploaded }) => {
       loaded: true,
       loadedId: uploadId,
       uploadId: null,
-    });
+    })
     uploadStarted(aggregateId)
       .then(() => {
-        return uploadFinished(aggregateId);
+        return uploadFinished(aggregateId)
       })
       .then(() => {
         if (onUploaded && uploadId) {
@@ -171,16 +171,16 @@ const ImageUploader = ({ owner, onUploaded }) => {
               uploadId,
               token,
             })})`
-          );
+          )
         }
-      });
-  }, [uploadId]);
+      })
+  }, [uploadId])
 
   const onError = (error) => {
-    uploadError({ aggregateId, error });
-  };
+    uploadError({ aggregateId, error })
+  }
 
-  const handleFocus = (event) => event.target.select();
+  const handleFocus = (event) => event.target.select()
 
   return (
     <div>
@@ -236,7 +236,7 @@ const ImageUploader = ({ owner, onUploaded }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ImageUploader;
+export default ImageUploader

@@ -1,12 +1,12 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
-import { Link as NormalLink } from 'react-router-dom';
+import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import styled from 'styled-components'
+import { Link as NormalLink } from 'react-router-dom'
 
-import Splitter from '../components/Splitter';
-import * as optimisticActions from '../actions/optimistic-actions';
-import Form from './Form';
+import Splitter from '../components/Splitter'
+import * as optimisticActions from '../actions/optimistic-actions'
+import Form from './Form'
 
 const Link = styled(NormalLink)`
   color: white;
@@ -15,11 +15,11 @@ const Link = styled(NormalLink)`
     font-weight: bold;
     text-decoration: underline;
   }
-`;
+`
 
 const PageAuth = styled.div`
   float: right;
-`;
+`
 
 const LoginInfo = ({ me }) => (
   <PageAuth>
@@ -44,11 +44,11 @@ const LoginInfo = ({ me }) => (
       <Link to="/login">login</Link>
     )}
   </PageAuth>
-);
+)
 
 export const mapStateToProps = (state) => ({
   me: state.jwt,
-});
+})
 
 export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
@@ -56,6 +56,6 @@ export const mapDispatchToProps = (dispatch) =>
       logout: optimisticActions.logout,
     },
     dispatch
-  );
+  )
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginInfo)

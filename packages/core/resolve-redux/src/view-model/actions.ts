@@ -7,18 +7,18 @@ import {
   DISCONNECT_VIEWMODEL,
   VIEWMODEL_STATE_UPDATE,
   VIEWMODEL_EVENT_RECEIVED,
-} from '../internal/action-types';
-import { ViewModelQuery } from 'resolve-client';
-import { ViewModelReactiveEvent } from '../types';
+} from '../internal/action-types'
+import { ViewModelQuery } from 'resolve-client'
+import { ViewModelReactiveEvent } from '../types'
 
 export type ViewModelAction = {
-  query: ViewModelQuery;
-  selectorId?: string;
-};
+  query: ViewModelQuery
+  selectorId?: string
+}
 
 export type QueryViewModelRequestAction = {
-  type: typeof QUERY_VIEWMODEL_REQUEST;
-} & ViewModelAction;
+  type: typeof QUERY_VIEWMODEL_REQUEST
+} & ViewModelAction
 export const queryViewModelRequest = (
   query: ViewModelQuery,
   selectorId?: string
@@ -26,12 +26,12 @@ export const queryViewModelRequest = (
   type: QUERY_VIEWMODEL_REQUEST,
   query,
   selectorId,
-});
+})
 
 export type QueryViewModelSuccessAction = {
-  type: typeof QUERY_VIEWMODEL_SUCCESS;
-  result: any;
-} & ViewModelAction;
+  type: typeof QUERY_VIEWMODEL_SUCCESS
+  result: any
+} & ViewModelAction
 export const queryViewModelSuccess = (
   query: ViewModelQuery,
   result: any,
@@ -41,12 +41,12 @@ export const queryViewModelSuccess = (
   query,
   result,
   selectorId,
-});
+})
 
 export type QueryViewModelFailureAction = {
-  type: typeof QUERY_VIEWMODEL_FAILURE;
-  error: Error;
-} & ViewModelAction;
+  type: typeof QUERY_VIEWMODEL_FAILURE
+  error: Error
+} & ViewModelAction
 export const queryViewModelFailure = (
   query: ViewModelQuery,
   error: Error,
@@ -56,13 +56,13 @@ export const queryViewModelFailure = (
   query,
   error,
   selectorId,
-});
+})
 
 export type ViewModelStateUpdateAction = {
-  type: typeof VIEWMODEL_STATE_UPDATE;
-  state: any;
-  initial: boolean;
-} & ViewModelAction;
+  type: typeof VIEWMODEL_STATE_UPDATE
+  state: any
+  initial: boolean
+} & ViewModelAction
 export const viewModelStateUpdate = (
   query: ViewModelQuery,
   state: any,
@@ -74,12 +74,12 @@ export const viewModelStateUpdate = (
   state,
   initial,
   selectorId,
-});
+})
 
 export type ViewModelEventReceivedAction = {
-  type: typeof VIEWMODEL_EVENT_RECEIVED;
-  event: ViewModelReactiveEvent;
-} & ViewModelAction;
+  type: typeof VIEWMODEL_EVENT_RECEIVED
+  event: ViewModelReactiveEvent
+} & ViewModelAction
 export const viewModelEventReceived = (
   query: ViewModelQuery,
   event: ViewModelReactiveEvent,
@@ -89,11 +89,11 @@ export const viewModelEventReceived = (
   query,
   event,
   selectorId,
-});
+})
 
 export type DropViewModelStateAction = {
-  type: typeof DROP_VIEWMODEL_STATE;
-} & ViewModelAction;
+  type: typeof DROP_VIEWMODEL_STATE
+} & ViewModelAction
 export const dropViewModelState = (
   query: ViewModelQuery,
   selectorId?: string
@@ -101,11 +101,11 @@ export const dropViewModelState = (
   type: DROP_VIEWMODEL_STATE,
   query,
   selectorId,
-});
+})
 
 export type ConnectViewModelAction = {
-  type: typeof CONNECT_VIEWMODEL;
-} & ViewModelAction;
+  type: typeof CONNECT_VIEWMODEL
+} & ViewModelAction
 export const connectViewModel = (
   query: ViewModelQuery,
   selectorId?: string
@@ -113,11 +113,11 @@ export const connectViewModel = (
   type: CONNECT_VIEWMODEL,
   query,
   selectorId,
-});
+})
 
 export type DisconnectViewModelAction = {
-  type: typeof DISCONNECT_VIEWMODEL;
-} & ViewModelAction;
+  type: typeof DISCONNECT_VIEWMODEL
+} & ViewModelAction
 export const disconnectViewModel = (
   query: ViewModelQuery,
   selectorId?: string
@@ -125,4 +125,4 @@ export const disconnectViewModel = (
   type: DISCONNECT_VIEWMODEL,
   query,
   selectorId,
-});
+})

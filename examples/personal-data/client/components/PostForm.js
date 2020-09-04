@@ -1,19 +1,19 @@
-import React, { useState, useContext } from 'react';
-import { FormGroup, Label, Input, Button, FormText } from 'reactstrap';
-import { useCommand } from 'resolve-react-hooks';
-import uuid from 'uuid/v4';
+import React, { useState, useContext } from 'react'
+import { FormGroup, Label, Input, Button, FormText } from 'reactstrap'
+import { useCommand } from 'resolve-react-hooks'
+import uuid from 'uuid/v4'
 
-import UserContext from '../userContext';
+import UserContext from '../userContext'
 
-import ImageUploader from './ImageUpload';
+import ImageUploader from './ImageUpload'
 
 const PostForm = ({ successHandler, errorHandler }) => {
   const [values, setValues] = useState({
     title: '',
     content: '',
-  });
-  const { title, content } = values;
-  const user = useContext(UserContext);
+  })
+  const { title, content } = values
+  const user = useContext(UserContext)
 
   const publish = useCommand(
     {
@@ -28,39 +28,39 @@ const PostForm = ({ successHandler, errorHandler }) => {
     },
     (error, result) => {
       if (error) {
-        errorHandler(error);
+        errorHandler(error)
       } else {
         setValues({
           ...values,
           title: '',
           content: '',
-        });
-        successHandler(result);
+        })
+        successHandler(result)
       }
     },
     [content]
-  );
+  )
 
   const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
-  const textareaRef = React.createRef();
+    setValues({ ...values, [prop]: event.target.value })
+  }
+  const textareaRef = React.createRef()
   const onUploaded = (value) => {
-    const textarea = textareaRef.current;
-    let nextContent = textarea.value;
+    const textarea = textareaRef.current
+    let nextContent = textarea.value
     if (textarea.selectionStart || textarea.selectionStart === '0') {
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
+      const start = textarea.selectionStart
+      const end = textarea.selectionEnd
       nextContent =
         textarea.value.substring(0, start) +
         value +
-        textarea.value.substring(end, textarea.value.length);
+        textarea.value.substring(end, textarea.value.length)
     } else {
-      nextContent += value;
+      nextContent += value
     }
-    textarea.value = nextContent;
-    setValues({ ...values, content: nextContent });
-  };
+    textarea.value = nextContent
+    setValues({ ...values, content: nextContent })
+  }
 
   return (
     <React.Fragment>
@@ -92,7 +92,7 @@ const PostForm = ({ successHandler, errorHandler }) => {
         </FormGroup>
       </div>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default PostForm;
+export default PostForm

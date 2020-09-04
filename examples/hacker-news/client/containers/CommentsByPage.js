@@ -1,11 +1,11 @@
-import React from 'react';
-import { Redirect } from 'react-router-dom';
+import React from 'react'
+import { Redirect } from 'react-router-dom'
 
-import Comment from '../components/Comment';
-import Pagination from '../components/Pagination';
-import { CommentsPaginateRenderless } from 'resolve-module-comments';
+import Comment from '../components/Comment'
+import Pagination from '../components/Pagination'
+import { CommentsPaginateRenderless } from 'resolve-module-comments'
 
-import { ITEMS_PER_PAGE } from '../constants';
+import { ITEMS_PER_PAGE } from '../constants'
 
 class CommentsByPage extends React.PureComponent {
   render() {
@@ -13,7 +13,7 @@ class CommentsByPage extends React.PureComponent {
       match: {
         params: { page },
       },
-    } = this.props;
+    } = this.props
 
     return page && !Number.isInteger(Number(page)) ? (
       <Redirect push to={`/error?text=No such page`} />
@@ -45,8 +45,8 @@ class CommentsByPage extends React.PureComponent {
           </div>
         )}
       </CommentsPaginateRenderless>
-    );
+    )
   }
 }
 
-export default CommentsByPage;
+export default CommentsByPage

@@ -1,5 +1,5 @@
 const disconnect = async (pool) => {
-  await pool.connection.end();
-};
+  await pool.connection.end()
+}
 
-export default disconnect;
+export default disconnect

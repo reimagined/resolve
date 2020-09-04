@@ -14,7 +14,7 @@ const insert = async (
         .map((key) => `CAST(${escape(JSON.stringify(document[key]))} AS JSON)`)
         .join(', ')});
     `
-  );
-};
+  )
+}
 
-export default insert;
+export default insert

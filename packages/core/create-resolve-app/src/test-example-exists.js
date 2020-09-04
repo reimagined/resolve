@@ -6,9 +6,9 @@ const testExampleExists = (pool) => async () => {
     resolveCloneExamplesPath,
     resolveCloneExamplePath,
     exampleName,
-  } = pool;
+  } = pool
   if (fs.existsSync(resolveCloneExamplePath)) {
-    return;
+    return
   }
 
   const examplesDirs = fs
@@ -16,12 +16,12 @@ const testExampleExists = (pool) => async () => {
     .filter((name) =>
       fs.statSync(path.join(resolveCloneExamplesPath, name)).isDirectory()
     )
-    .map((name) => ` * ${name}`);
+    .map((name) => ` * ${name}`)
 
   throw new Error(
     `No such example, ${exampleName}. Available examples are: ${EOL}` +
       examplesDirs.join(EOL)
-  );
-};
+  )
+}
 
-export default testExampleExists;
+export default testExampleExists

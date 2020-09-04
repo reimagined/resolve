@@ -1,25 +1,25 @@
-import path from 'path';
-import EsmWebpackPlugin from '@purtuga/esm-webpack-plugin';
-import nodeExternals from 'webpack-node-externals';
+import path from 'path'
+import EsmWebpackPlugin from '@purtuga/esm-webpack-plugin'
+import nodeExternals from 'webpack-node-externals'
 
-import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries';
-import getModulesDirs from './get_modules_dirs';
+import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries'
+import getModulesDirs from './get_modules_dirs'
 
 const getWebpackCommonConfigs = ({
   resolveConfig,
   alias,
   nodeModulesByAssembly,
 }) => {
-  const targetMode = resolveConfig.target;
+  const targetMode = resolveConfig.target
   if (!['local', 'cloud'].includes(targetMode)) {
-    throw new Error(`Wrong target mode ${targetMode}`);
+    throw new Error(`Wrong target mode ${targetMode}`)
   }
-  const distDir = path.resolve(process.cwd(), resolveConfig.distDir);
-  const isClient = false;
+  const distDir = path.resolve(process.cwd(), resolveConfig.distDir)
+  const isClient = false
 
-  const packageJson = `common/${targetMode}-entry/package.json`;
+  const packageJson = `common/${targetMode}-entry/package.json`
   if (!nodeModulesByAssembly.has(packageJson)) {
-    nodeModulesByAssembly.set(packageJson, new Set());
+    nodeModulesByAssembly.set(packageJson, new Set())
   }
 
   const packageJsonWriter = (context, request, callback) => {
@@ -27,12 +27,12 @@ const getWebpackCommonConfigs = ({
       const packageName = request
         .split('/')
         .slice(0, request[0] === '@' ? 2 : 1)
-        .join('/');
+        .join('/')
 
-      nodeModulesByAssembly.get(packageJson).add(packageName);
+      nodeModulesByAssembly.get(packageJson).add(packageName)
     }
-    callback();
-  };
+    callback()
+  }
 
   const baseCommonConfig = {
     context: path.resolve(process.cwd()),
@@ -142,7 +142,7 @@ const getWebpackCommonConfigs = ({
       ),
     ],
     plugins: [],
-  };
+  }
 
   const commonConfigs = [
     {
@@ -193,16 +193,16 @@ const getWebpackCommonConfigs = ({
       },
       plugins: [...baseCommonConfig.plugins, new EsmWebpackPlugin()],
     },
-  ];
+  ]
 
   attachWebpackConfigsClientEntries(
     resolveConfig,
     baseCommonConfig,
     commonConfigs,
     false
-  );
+  )
 
-  return commonConfigs;
-};
+  return commonConfigs
+}
 
-export default getWebpackCommonConfigs;
+export default getWebpackCommonConfigs

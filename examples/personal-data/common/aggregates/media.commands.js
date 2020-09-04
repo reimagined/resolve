@@ -2,17 +2,17 @@ import {
   MEDIA_UPLOAD_COMPLETED,
   MEDIA_UPLOAD_FAILED,
   MEDIA_UPLOAD_STARTED,
-} from '../media.events';
+} from '../media.events'
 
 const aggregate = {
   startUpload: (state, command) => {
-    const { status } = state;
+    const { status } = state
 
     if (status !== 'none') {
-      throw Error(`the media already uploading or uploaded`);
+      throw Error(`the media already uploading or uploaded`)
     }
 
-    const { mediaId, owner, ownerId } = command.payload;
+    const { mediaId, owner, ownerId } = command.payload
 
     return {
       type: MEDIA_UPLOAD_STARTED,
@@ -21,16 +21,16 @@ const aggregate = {
         owner,
         ownerId,
       },
-    };
+    }
   },
   finishUpload: (state, command) => {
-    const { status } = state;
+    const { status } = state
 
     if (status !== 'started') {
-      throw Error(`the media uploading not started or already completed`);
+      throw Error(`the media uploading not started or already completed`)
     }
 
-    const { error } = command.payload;
+    const { error } = command.payload
 
     if (error) {
       return {
@@ -38,12 +38,12 @@ const aggregate = {
         payload: {
           error,
         },
-      };
+      }
     }
     return {
       type: MEDIA_UPLOAD_COMPLETED,
-    };
+    }
   },
-};
+}
 
-export default aggregate;
+export default aggregate

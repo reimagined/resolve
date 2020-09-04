@@ -1,7 +1,7 @@
-import path from 'path';
+import path from 'path'
 
-import alias from '../../src/alias/$resolve.viewModels';
-import normalizePaths from './normalize_paths';
+import alias from '../../src/alias/$resolve.viewModels'
+import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
   const resolveConfig = {
@@ -11,7 +11,7 @@ describe('base config works correctly', () => {
         projection: path.resolve(__dirname, 'files/testProjection.js'),
       },
     ],
-  };
+  }
 
   test('[client]', () => {
     expect(
@@ -23,8 +23,8 @@ describe('base config works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
   test('[server]', () => {
     expect(
@@ -36,9 +36,9 @@ describe('base config works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})
 
 describe('base(v2) config works correctly', () => {
   const resolveConfig = {
@@ -52,7 +52,7 @@ describe('base(v2) config works correctly', () => {
         projection: path.resolve(__dirname, 'files/testProjection.js'),
       },
     ],
-  };
+  }
 
   test('[client]', () => {
     expect(
@@ -64,8 +64,8 @@ describe('base(v2) config works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
   test('[server]', () => {
     expect(
@@ -77,9 +77,9 @@ describe('base(v2) config works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})
 
 describe('config with serializeState/deserializeState works correctly', () => {
   const resolveConfig = {
@@ -94,7 +94,7 @@ describe('config with serializeState/deserializeState works correctly', () => {
         ),
       },
     ],
-  };
+  }
 
   test('[client]', () => {
     expect(
@@ -106,8 +106,8 @@ describe('config with serializeState/deserializeState works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
   test('[server]', () => {
     expect(
@@ -119,9 +119,9 @@ describe('config with serializeState/deserializeState works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})
 
 describe('config with validator works correctly', () => {
   const resolveConfig = {
@@ -132,7 +132,7 @@ describe('config with validator works correctly', () => {
         validator: path.resolve(__dirname, 'files/testValidator.js'),
       },
     ],
-  };
+  }
 
   test('[client]', () => {
     expect(
@@ -144,8 +144,8 @@ describe('config with validator works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
   test('[server]', () => {
     expect(
@@ -157,6 +157,6 @@ describe('config with validator works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})

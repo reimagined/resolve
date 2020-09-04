@@ -22,6 +22,6 @@ const getClientGlobalEnvObject = (key) => `((() => {
     }
   
     return globalObject[key]
-  })())`;
+  })())`
 
-export default getClientGlobalEnvObject;
+export default getClientGlobalEnvObject

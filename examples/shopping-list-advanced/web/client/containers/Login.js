@@ -1,14 +1,14 @@
-import React from 'react';
+import React from 'react'
 
-import { FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
+import { FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap'
 
-import Form from './Form';
-import requiredNoAuth from '../decorators/required-no-auth';
+import Form from './Form'
+import requiredNoAuth from '../decorators/required-no-auth'
 
 class Login extends React.PureComponent {
   state = {
     action: '/',
-  };
+  }
 
   onLoginClick = () => {
     this.setState(
@@ -16,10 +16,10 @@ class Login extends React.PureComponent {
         action: '/api/auth/local/login',
       },
       () => {
-        this.form.submit();
+        this.form.submit()
       }
-    );
-  };
+    )
+  }
 
   onRegisterClick = () => {
     this.setState(
@@ -27,14 +27,14 @@ class Login extends React.PureComponent {
         action: '/api/auth/local/register',
       },
       () => {
-        this.form.submit();
+        this.form.submit()
       }
-    );
-  };
+    )
+  }
 
   formRef = (element) => {
-    this.form = element;
-  };
+    this.form = element
+  }
 
   render() {
     return (
@@ -59,8 +59,8 @@ class Login extends React.PureComponent {
           </FormGroup>
         </Form>
       </div>
-    );
+    )
   }
 }
 
-export default requiredNoAuth(Login);
+export default requiredNoAuth(Login)

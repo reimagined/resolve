@@ -1,16 +1,16 @@
-import fetch from 'isomorphic-fetch';
-import columnify from 'columnify';
-import dateFormat from 'dateformat';
+import fetch from 'isomorphic-fetch'
+import columnify from 'columnify'
+import dateFormat from 'dateformat'
 
 export const handler = async ({ url }) => {
-  const response = await fetch(`${url}/event-broker/sagas-list`);
-  const result = await response.json();
+  const response = await fetch(`${url}/event-broker/sagas-list`)
+  const result = await response.json()
   if (result.length === 0) {
     // eslint-disable-next-line no-console
-    console.log('Sagas is not defined');
-    return;
+    console.log('Sagas is not defined')
+    return
   }
-  const columns = [];
+  const columns = []
   for (const { listenerId, status, lastEvent, lastError } of result) {
     columns.push({
       name: listenerId,
@@ -21,16 +21,16 @@ export const handler = async ({ url }) => {
           }`
         : 'N\\A',
       'last error': lastError ? `${lastError.message}` : 'N\\A',
-    });
+    })
   }
   // eslint-disable-next-line no-console
   console.log(
     columnify(columns, {
       minWidth: 20,
     })
-  );
-};
+  )
+}
 
-export const command = 'list';
-export const aliases = ['ls'];
-export const describe = "display a list of an application's sagas";
+export const command = 'list'
+export const aliases = ['ls']
+export const describe = "display a list of an application's sagas"

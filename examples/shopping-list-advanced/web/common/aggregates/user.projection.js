@@ -1,4 +1,4 @@
-import { USER_CREATED } from '../event-types';
+import { USER_CREATED } from '../event-types'
 
 export default {
   Init: () => ({}),
@@ -7,4 +7,4 @@ export default {
     createdAt: timestamp,
     userId: aggregateId,
   }),
-};
+}

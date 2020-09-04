@@ -1,12 +1,12 @@
-import React from 'react';
-import { NavLink, Link as NormalLink } from 'react-router-dom';
-import styled from 'styled-components';
+import React from 'react'
+import { NavLink, Link as NormalLink } from 'react-router-dom'
+import styled from 'styled-components'
 
-import Splitter from '../components/Splitter';
-import Header from './Header';
-import LoginInfo from './LoginInfo';
-import Image from './Image';
-import Search from './Search';
+import Splitter from '../components/Splitter'
+import Header from './Header'
+import LoginInfo from './LoginInfo'
+import Image from './Image'
+import Search from './Search'
 
 const ContentRoot = styled.div`
   width: 90%;
@@ -21,7 +21,7 @@ const ContentRoot = styled.div`
     width: 100%;
     margin: 0px auto;
   }
-`;
+`
 
 const PageHeader = styled.div`
   color: #fff;
@@ -30,7 +30,7 @@ const PageHeader = styled.div`
   line-height: 18px;
   vertical-align: middle;
   position: relative;
-`;
+`
 
 const Link = styled(NavLink)`
   color: white;
@@ -39,7 +39,7 @@ const Link = styled(NavLink)`
     font-weight: bold;
     text-decoration: underline;
   }
-`;
+`
 
 const PageTitle = styled.div`
   display: inline-block;
@@ -51,25 +51,25 @@ const PageTitle = styled.div`
   @media only screen and (max-width: 750px) and (min-width: 300px) {
     display: none;
   }
-`;
+`
 
 const Content = styled.div`
   overflow-wrap: break-word;
   word-wrap: break-word;
   padding: 1em;
-`;
+`
 
 const Footer = styled.div`
   margin-top: 1em;
   border-top: 1px solid #e7e7e7;
   text-align: center;
   padding: 6px 0;
-`;
+`
 
 const FooterLink = styled.a`
   color: #333;
   text-decoration: underline;
-`;
+`
 
 const App = ({ children }) => (
   <div>
@@ -107,6 +107,6 @@ const App = ({ children }) => (
       </Footer>
     </ContentRoot>
   </div>
-);
+)
 
-export default App;
+export default App

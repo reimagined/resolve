@@ -1,6 +1,6 @@
-import path from 'path';
-import alias from '../../src/alias/$resolve.readModelConnectors';
-import normalizePaths from './normalize_paths';
+import path from 'path'
+import alias from '../../src/alias/$resolve.readModelConnectors'
+import normalizePaths from './normalize_paths'
 
 test('should fail when imported from client', () => {
   expect(() =>
@@ -12,8 +12,8 @@ test('should fail when imported from client', () => {
         }) +
         '\r\n'
     )
-  ).toThrow();
-});
+  ).toThrow()
+})
 
 test('base config works correctly with module and options', () => {
   const resolveConfig = {
@@ -23,7 +23,7 @@ test('base config works correctly with module and options', () => {
         options: {},
       },
     },
-  };
+  }
 
   expect(
     normalizePaths(
@@ -34,8 +34,8 @@ test('base config works correctly with module and options', () => {
         }) +
         '\r\n'
     )
-  ).toMatchSnapshot();
-});
+  ).toMatchSnapshot()
+})
 
 test('base config works correctly with options and default module', () => {
   const resolveConfig = {
@@ -44,7 +44,7 @@ test('base config works correctly with options and default module', () => {
         options: {},
       },
     },
-  };
+  }
 
   expect(
     normalizePaths(
@@ -55,8 +55,8 @@ test('base config works correctly with options and default module', () => {
         }) +
         '\r\n'
     )
-  ).toMatchSnapshot();
-});
+  ).toMatchSnapshot()
+})
 
 test('base config works correctly with default module and options', () => {
   const resolveConfig = {
@@ -65,7 +65,7 @@ test('base config works correctly with default module and options', () => {
         module: path.join(__dirname, 'files', 'testReadmodelConnector.js'),
       },
     },
-  };
+  }
 
   expect(
     normalizePaths(
@@ -76,5 +76,5 @@ test('base config works correctly with default module and options', () => {
         }) +
         '\r\n'
     )
-  ).toMatchSnapshot();
-});
+  ).toMatchSnapshot()
+})

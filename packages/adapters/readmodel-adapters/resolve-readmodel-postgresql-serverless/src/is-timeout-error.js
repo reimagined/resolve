@@ -5,6 +5,6 @@ const isTimeoutError = (error) =>
     /StatementTimeoutException/i.test(error.message) ||
     /StatementTimeoutException/i.test(error.stack) ||
     error.code === 'StatementTimeoutException' ||
-    error.name === 'StatementTimeoutException');
+    error.name === 'StatementTimeoutException')
 
-export default isTimeoutError;
+export default isTimeoutError

@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from 'react'
+import styled from 'styled-components'
 
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom'
 
 const Link = styled(NavLink)`
   display: block;
@@ -16,7 +16,7 @@ const Link = styled(NavLink)`
     font-weight: bold;
     text-decoration: underline;
   }
-`;
+`
 
 const SearchResultItem = ({
   data: { type, aggregateId, text },
@@ -34,7 +34,7 @@ const SearchResultItem = ({
     >
       {`${type}: ${text}`}
     </Link>
-  );
-};
+  )
+}
 
-export default SearchResultItem;
+export default SearchResultItem

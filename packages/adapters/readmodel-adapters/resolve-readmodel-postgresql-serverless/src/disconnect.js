@@ -1,3 +1,3 @@
-const disconnect = async () => {};
+const disconnect = async () => {}
 
-export default disconnect;
+export default disconnect

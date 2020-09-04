@@ -1,24 +1,24 @@
-import getClientGlobalEnvObject from '../client_global_object';
-import { checkRuntimeEnv } from '../declare_runtime_env';
+import getClientGlobalEnvObject from '../client_global_object'
+import { checkRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig }) => {
-  const exports = [];
+  const exports = []
 
   exports.push(
     `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
     `const clientGlobalObject = ${getClientGlobalEnvObject()}`,
     `clientGlobalObject.__RESOLVE_RUNTIME_ENV__ = { }`
-  );
+  )
 
-  exports.push(`import { createActions } from 'resolve-redux'`);
+  exports.push(`import { createActions } from 'resolve-redux'`)
 
-  const clientEnvs = [];
+  const clientEnvs = []
   void JSON.stringify(resolveConfig, (key, value) => {
     if (checkRuntimeEnv(value)) {
-      clientEnvs.push(value);
+      clientEnvs.push(value)
     }
-    return value;
-  });
+    return value
+  })
 
   for (const clientEnv of clientEnvs) {
     if (process.env[String(clientEnv)] != null) {
@@ -29,7 +29,7 @@ export default ({ resolveConfig }) => {
           enumerable: true,
           value: ${JSON.stringify(process.env[String(clientEnv)])}
         }
-      )`);
+      )`)
     } else {
       exports.push(`Object.defineProperty(
         clientGlobalObject.__RESOLVE_RUNTIME_ENV__,
@@ -38,7 +38,7 @@ export default ({ resolveConfig }) => {
           enumerable: true,
           value: ${JSON.stringify(String(clientEnv.defaultValue))}
         }
-      )`);
+      )`)
     }
   }
 
@@ -50,7 +50,7 @@ export default ({ resolveConfig }) => {
     `export const applicationName = interopRequireDefault(require('$resolve.applicationName')).default`,
     `export const subscriber = interopRequireDefault(require('resolve-client/lib/subscribe-adapter')).default`,
     `export const customConstants = interopRequireDefault(require('$resolve.customConstants')).default`
-  );
+  )
 
-  return exports.join('\r\n');
-};
+  return exports.join('\r\n')
+}

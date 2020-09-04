@@ -1,5 +1,5 @@
-import { getModulesDirs } from 'resolve-scripts';
-import path from 'path';
+import { getModulesDirs } from 'resolve-scripts'
+import path from 'path'
 
 const clientTransformBabelOptions = {
   cacheDirectory: true,
@@ -19,7 +19,7 @@ const clientTransformBabelOptions = {
       },
     ],
   ],
-};
+}
 
 const baseConfig = {
   context: path.resolve(process.cwd()),
@@ -56,7 +56,7 @@ const baseConfig = {
       },
     ],
   },
-};
+}
 
 const getWebpackConfigs = ({ mode, distDir }) => [
   {
@@ -72,6 +72,6 @@ const getWebpackConfigs = ({ mode, distDir }) => [
       path: path.join(__dirname, distDir),
     },
   },
-];
+]
 
-export default getWebpackConfigs;
+export default getWebpackConfigs

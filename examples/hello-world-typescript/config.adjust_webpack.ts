@@ -3,7 +3,7 @@ const adjustWebpackConfigs = (webpackConfigs): void => {
     const {
       module: { rules },
       resolve,
-    } = webpackConfig;
+    } = webpackConfig
 
     rules.push({
       test: /\.tsx?$/,
@@ -11,8 +11,8 @@ const adjustWebpackConfigs = (webpackConfigs): void => {
       options: {
         presets: ['@babel/preset-typescript'],
       },
-    });
-    resolve.extensions = ['.js', '.jsx', '.ts', '.tsx'];
+    })
+    resolve.extensions = ['.js', '.jsx', '.ts', '.tsx']
   }
-};
-export default adjustWebpackConfigs;
+}
+export default adjustWebpackConfigs

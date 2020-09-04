@@ -17,7 +17,7 @@ const insert = async (
         )
         .join(', ')})
     `
-  );
-};
+  )
+}
 
-export default insert;
+export default insert

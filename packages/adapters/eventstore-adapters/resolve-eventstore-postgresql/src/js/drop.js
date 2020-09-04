@@ -1,4 +1,4 @@
-import { EventstoreResourceNotExistError } from 'resolve-eventstore-base';
+import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
 
 const drop = async ({
   databaseName,
@@ -7,20 +7,20 @@ const drop = async ({
   executeStatement,
   escapeId,
 }) => {
-  const databaseNameAsId = escapeId(databaseName);
-  const eventsTableNameAsId = escapeId(eventsTableName);
-  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`);
-  const freezeTableNameAsId = escapeId(`${eventsTableName}-freeze`);
+  const databaseNameAsId = escapeId(databaseName)
+  const eventsTableNameAsId = escapeId(eventsTableName)
+  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
+  const freezeTableNameAsId = escapeId(`${eventsTableName}-freeze`)
 
   const aggregateIdAndVersionIndexName = escapeId(
     `${eventsTableName}-aggregateIdAndVersion`
-  );
-  const aggregateIndexName = escapeId(`${eventsTableName}-aggregateId`);
+  )
+  const aggregateIndexName = escapeId(`${eventsTableName}-aggregateId`)
   const aggregateVersionIndexName = escapeId(
     `${eventsTableName}-aggregateVersion`
-  );
-  const typeIndexName = escapeId(`${eventsTableName}-type`);
-  const timestampIndexName = escapeId(`${eventsTableName}-timestamp`);
+  )
+  const typeIndexName = escapeId(`${eventsTableName}-type`)
+  const timestampIndexName = escapeId(`${eventsTableName}-timestamp`)
 
   const statements = [
     `DROP TABLE ${databaseNameAsId}.${eventsTableNameAsId}`,
@@ -36,26 +36,26 @@ const drop = async ({
     `DROP TABLE IF EXISTS ${databaseNameAsId}.${freezeTableNameAsId}`,
 
     `DROP TABLE ${databaseNameAsId}.${snapshotsTableName}`,
-  ];
-  const errors = [];
+  ]
+  const errors = []
 
   for (const statement of statements) {
     try {
-      await executeStatement(statement);
+      await executeStatement(statement)
     } catch (error) {
       if (error != null && /Table.*? does not exist$/i.test(error.message)) {
         throw new EventstoreResourceNotExistError(
           `Double-free eventstore-postgresql adapter via "${databaseName}" failed`
-        );
+        )
       } else {
-        errors.push(error);
+        errors.push(error)
       }
     }
   }
 
   if (errors.length > 0) {
-    throw new Error(errors.map((error) => error.stack).join('\n'));
+    throw new Error(errors.map((error) => error.stack).join('\n'))
   }
-};
+}
 
-export default drop;
+export default drop

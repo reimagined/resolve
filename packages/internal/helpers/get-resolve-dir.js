@@ -1,17 +1,17 @@
-const path = require('path');
-const minimist = require('minimist');
+const path = require('path')
+const minimist = require('minimist')
 
-let _resolveDir;
+let _resolveDir
 const getResolveDir = () => {
   if (_resolveDir) {
-    return _resolveDir;
+    return _resolveDir
   }
 
-  const { resolveDir } = minimist(process.argv.slice(2));
+  const { resolveDir } = minimist(process.argv.slice(2))
 
-  _resolveDir = resolveDir || path.join(__dirname, '..', '..', '..');
+  _resolveDir = resolveDir || path.join(__dirname, '..', '..', '..')
 
-  return _resolveDir;
-};
+  return _resolveDir
+}
 
-module.exports = { getResolveDir };
+module.exports = { getResolveDir }

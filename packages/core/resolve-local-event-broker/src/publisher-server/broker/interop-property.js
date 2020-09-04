@@ -1,4 +1,4 @@
-import { SUBSCRIBERS_TABLE_NAME } from '../constants';
+import { SUBSCRIBERS_TABLE_NAME } from '../constants'
 
 const interopProperty = async (pool, method, payload) => {
   const {
@@ -11,48 +11,48 @@ const interopProperty = async (pool, method, payload) => {
       decodeJsonPath,
     },
     parseSubscription,
-  } = pool;
-  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME);
-  const { eventSubscriber, key, value } = payload;
+  } = pool
+  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
+  const { eventSubscriber, key, value } = payload
 
   switch (method) {
     case 'listProperties': {
       const result = await runQuery(`
         SELECT "properties" FROM ${subscribersTableNameAsId}
         WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)}
-      `);
+      `)
 
       if (result == null || result.length !== 1) {
-        throw new Error('Invalid subscriber');
+        throw new Error('Invalid subscriber')
       }
 
-      let { properties } = parseSubscription(result[0]);
+      let { properties } = parseSubscription(result[0])
       if (properties == null) {
-        properties = {};
+        properties = {}
       }
       properties = Object.keys(properties).reduce((acc, key) => {
-        acc[decodeJsonPath(key)] = properties[key];
-        return acc;
-      }, {});
+        acc[decodeJsonPath(key)] = properties[key]
+        return acc
+      }, {})
 
-      return properties;
+      return properties
     }
     case 'getProperty': {
       const result = await runQuery(`
         SELECT "properties" FROM ${subscribersTableNameAsId}
         WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)}
-      `);
+      `)
 
       if (result == null || result.length !== 1) {
-        throw new Error('Invalid subscriber');
+        throw new Error('Invalid subscriber')
       }
 
-      let { properties } = parseSubscription(result[0]);
+      let { properties } = parseSubscription(result[0])
       if (properties == null) {
-        properties = {};
+        properties = {}
       }
 
-      return properties[encodeJsonPath(key)];
+      return properties[encodeJsonPath(key)]
     }
     case 'setProperty': {
       await runRawQuery(`
@@ -64,9 +64,9 @@ const interopProperty = async (pool, method, payload) => {
 
         COMMIT;
         BEGIN IMMEDIATE;
-      `);
+      `)
 
-      return null;
+      return null
     }
     case 'deleteProperty': {
       await runRawQuery(`
@@ -76,18 +76,18 @@ const interopProperty = async (pool, method, payload) => {
       
         COMMIT;
         BEGIN IMMEDIATE;
-      `);
+      `)
 
-      return null;
+      return null
     }
     default: {
       throw new Error(
         `Wrong interop property ${method} with payload ${JSON.stringify(
           payload
         )}`
-      );
+      )
     }
   }
-};
+}
 
-export default interopProperty;
+export default interopProperty

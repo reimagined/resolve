@@ -1,16 +1,16 @@
-import { createClient } from 'resolve-local-rpc';
+import { createClient } from 'resolve-local-rpc'
 
 const connectPublisher = async (config) => {
   const eventListenerHook = async (args) => {
-    const [{ eventSubscriber }] = args;
+    const [{ eventSubscriber }] = args
     if (
       !config.eventListeners.has(eventSubscriber) &&
       eventSubscriber !== 'websocket'
     ) {
-      throw new Error(`Event listener ${eventSubscriber} does not exist`);
+      throw new Error(`Event listener ${eventSubscriber} does not exist`)
     }
-    return args;
-  };
+    return args
+  }
 
   const client = await createClient({
     address: config.address,
@@ -19,9 +19,9 @@ const connectPublisher = async (config) => {
       resume: eventListenerHook,
       pause: eventListenerHook,
     },
-  });
+  })
 
-  return client;
-};
+  return client
+}
 
-export default connectPublisher;
+export default connectPublisher

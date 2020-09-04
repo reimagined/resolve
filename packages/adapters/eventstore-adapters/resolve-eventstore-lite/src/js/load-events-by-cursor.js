@@ -1,32 +1,32 @@
-const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g;
+const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
 const loadEventsByCursor = async (pool, filter) => {
-  const { database, escapeId, escape, eventsTableName, shapeEvent } = pool;
-  const { eventTypes, aggregateIds, cursor, limit } = filter;
-  const injectString = (value) => `${escape(value)}`;
-  const injectNumber = (value) => `${+value}`;
+  const { database, escapeId, escape, eventsTableName, shapeEvent } = pool
+  const { eventTypes, aggregateIds, cursor, limit } = filter
+  const injectString = (value) => `${escape(value)}`
+  const injectNumber = (value) => `${+value}`
 
   const cursorBuffer =
-    cursor != null ? Buffer.from(cursor, 'base64') : Buffer.alloc(1536, 0);
-  const vectorConditions = [];
+    cursor != null ? Buffer.from(cursor, 'base64') : Buffer.alloc(1536, 0)
+  const vectorConditions = []
   for (let i = 0; i < cursorBuffer.length / 6; i++) {
     vectorConditions.push(
       `0x${cursorBuffer.slice(i * 6, (i + 1) * 6).toString('hex')}`
-    );
+    )
   }
 
-  const queryConditions = [];
+  const queryConditions = []
   if (eventTypes != null) {
     queryConditions.push(
       `${escapeId('type')} IN (${eventTypes.map(injectString).join(', ')})`
-    );
+    )
   }
   if (aggregateIds != null) {
     queryConditions.push(
       `${escapeId('aggregateId')} IN (${aggregateIds
         .map(injectString)
         .join(', ')})`
-    );
+    )
   }
 
   const resultQueryCondition = `WHERE ${
@@ -40,50 +40,50 @@ const loadEventsByCursor = async (pool, filter) => {
           )} >= ${threadCounter} `
       )
       .join(' OR ')}
-    ${queryConditions.length > 0 ? ')' : ''}`;
+    ${queryConditions.length > 0 ? ')' : ''}`
 
-  const tableNameAsId = escapeId(eventsTableName);
-  const events = [];
+  const tableNameAsId = escapeId(eventsTableName)
+  const events = []
 
   const rows = await database.all(
     `SELECT * FROM ${tableNameAsId}
     ${resultQueryCondition}
     ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC
     LIMIT 0, ${+limit}`
-  );
+  )
 
   for (const event of rows) {
-    const threadId = +event.threadId;
-    const threadCounter = +event.threadCounter;
+    const threadId = +event.threadId
+    const threadCounter = +event.threadCounter
     const oldThreadCounter = parseInt(
       vectorConditions[threadId].substring(2),
       16
-    );
+    )
 
     vectorConditions[threadId] = `0x${Math.max(
       threadCounter + 1,
       oldThreadCounter
     )
       .toString(16)
-      .padStart(12, '0')}`;
+      .padStart(12, '0')}`
 
-    events.push(shapeEvent(event));
+    events.push(shapeEvent(event))
   }
 
-  const nextConditionsBuffer = Buffer.alloc(1536);
-  let byteIndex = 0;
+  const nextConditionsBuffer = Buffer.alloc(1536)
+  let byteIndex = 0
 
   for (const threadCounter of vectorConditions) {
-    const threadCounterBytes = threadCounter.substring(2).match(split2RegExp);
+    const threadCounterBytes = threadCounter.substring(2).match(split2RegExp)
     for (const byteHex of threadCounterBytes) {
-      nextConditionsBuffer[byteIndex++] = Buffer.from(byteHex, 'hex')[0];
+      nextConditionsBuffer[byteIndex++] = Buffer.from(byteHex, 'hex')[0]
     }
   }
 
   return {
     cursor: nextConditionsBuffer.toString('base64'),
     events,
-  };
-};
+  }
+}
 
-export default loadEventsByCursor;
+export default loadEventsByCursor

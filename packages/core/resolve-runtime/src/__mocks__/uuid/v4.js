@@ -1,1 +1,1 @@
-export default () => 'UUID';
+export default () => 'UUID'

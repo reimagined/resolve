@@ -2,7 +2,7 @@ import {
   USER_PROFILE_DELETED,
   USER_PROFILE_UPDATED,
   USER_REGISTERED,
-} from '../user-profile.events';
+} from '../user-profile.events'
 
 export default {
   Init: () => null,
@@ -30,4 +30,4 @@ export default {
     firstName: 'deleted user',
     lastName: 'deleted user',
   }),
-};
+}

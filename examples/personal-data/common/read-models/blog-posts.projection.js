@@ -1,18 +1,18 @@
-import { BLOG_POST_CREATED, BLOG_POST_DELETED } from '../blog-post.events';
+import { BLOG_POST_CREATED, BLOG_POST_DELETED } from '../blog-post.events'
 
 const readModel = {
   Init: async (store) => {
     await store.defineTable('BlogPosts', {
       indexes: { id: 'string', author: 'string' },
       fields: ['timestamp', 'title', 'content'],
-    });
+    })
   },
   [BLOG_POST_CREATED]: async (store, event) => {
     const {
       aggregateId,
       timestamp,
       payload: { authorId, title, content },
-    } = event;
+    } = event
 
     await store.insert('BlogPosts', {
       author: authorId,
@@ -20,12 +20,12 @@ const readModel = {
       timestamp,
       title,
       content,
-    });
+    })
   },
   [BLOG_POST_DELETED]: async (store, event) =>
     store.delete('BlogPosts', {
       id: event.aggregateId,
     }),
-};
+}
 
-export default readModel;
+export default readModel

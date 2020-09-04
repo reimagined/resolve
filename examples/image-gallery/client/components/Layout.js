@@ -1,6 +1,6 @@
-import React from 'react';
-import { Helmet } from 'react-helmet';
-import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
+import React from 'react'
+import { Helmet } from 'react-helmet'
+import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap'
 
 export default ({ children, staticPath }) => (
   <div>
@@ -38,4 +38,4 @@ export default ({ children, staticPath }) => (
     <br />
     {children}
   </div>
-);
+)

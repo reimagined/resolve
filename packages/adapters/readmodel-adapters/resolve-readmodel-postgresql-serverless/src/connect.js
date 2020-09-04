@@ -1,32 +1,32 @@
 const makeNestedPath = (nestedPath) => {
-  const jsonPathParts = [];
+  const jsonPathParts = []
   for (const part of nestedPath) {
     if (part == null || part.constructor !== String) {
-      throw new Error('Invalid JSON path');
+      throw new Error('Invalid JSON path')
     }
     if (!isNaN(+part)) {
-      jsonPathParts.push(String(+part));
+      jsonPathParts.push(String(+part))
     } else {
-      jsonPathParts.push(JSON.stringify(part));
+      jsonPathParts.push(JSON.stringify(part))
     }
   }
-  return `{${jsonPathParts.join(',')}}`;
-};
+  return `{${jsonPathParts.join(',')}}`
+}
 
 const wrapHighload = async (isHighloadError, obj, method, params) => {
   while (true) {
     try {
-      return await obj[method](params).promise();
+      return await obj[method](params).promise()
     } catch (error) {
       if (isHighloadError(error)) {
-        const jitterDelay = Math.floor(250 + Math.random() * 750);
-        await new Promise((resolve) => setTimeout(resolve, jitterDelay));
+        const jitterDelay = Math.floor(250 + Math.random() * 750)
+        await new Promise((resolve) => setTimeout(resolve, jitterDelay))
       } else {
-        throw error;
+        throw error
       }
     }
   }
-};
+}
 
 const connect = async (imports, pool, options) => {
   let {
@@ -36,19 +36,19 @@ const connect = async (imports, pool, options) => {
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
     ...connectionOptions
-  } = options;
+  } = options
 
   if (databaseName == null || databaseName.constructor !== String) {
-    throw new Error(`Wrong database name: ${databaseName}`);
+    throw new Error(`Wrong database name: ${databaseName}`)
   }
 
   if (tablePrefix != null && tablePrefix.constructor !== String) {
-    throw new Error(`Wrong table prefix: ${tablePrefix}`);
+    throw new Error(`Wrong table prefix: ${tablePrefix}`)
   } else if (tablePrefix == null) {
-    tablePrefix = '';
+    tablePrefix = ''
   }
 
-  const rawRdsDataService = new imports.RDSDataService(connectionOptions);
+  const rawRdsDataService = new imports.RDSDataService(connectionOptions)
   const rdsDataService = {
     executeStatement: wrapHighload.bind(
       null,
@@ -74,17 +74,17 @@ const connect = async (imports, pool, options) => {
       rawRdsDataService,
       'rollbackTransaction'
     ),
-  };
+  }
 
   const hash512 = (str) => {
-    const hmac = imports.crypto.createHmac('sha512', awsSecretStoreArn);
-    hmac.update(str);
-    return hmac.digest('hex');
-  };
+    const hmac = imports.crypto.createHmac('sha512', awsSecretStoreArn)
+    hmac.update(str)
+    return hmac.digest('hex')
+  }
 
-  const executeStatement = imports.executeStatement.bind(null, pool);
+  const executeStatement = imports.executeStatement.bind(null, pool)
 
-  const eventCounters = new Map();
+  const eventCounters = new Map()
 
   Object.assign(pool, {
     rdsDataService,
@@ -100,7 +100,7 @@ const connect = async (imports, pool, options) => {
     ...imports,
     executeStatement,
     hash512,
-  });
-};
+  })
+}
 
-export default connect;
+export default connect

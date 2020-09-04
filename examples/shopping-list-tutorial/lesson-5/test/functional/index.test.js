@@ -1,22 +1,22 @@
-import { Selector } from 'testcafe';
-import fetch from 'isomorphic-fetch';
-import { expect } from 'chai';
+import { Selector } from 'testcafe'
+import fetch from 'isomorphic-fetch'
+import { expect } from 'chai'
 
-const host = process.env.HOST || 'localhost';
-const port = process.env.PORT || '3000';
-const MAIN_PAGE = `http://${host}:${port}`;
+const host = process.env.HOST || 'localhost'
+const port = process.env.PORT || '3000'
+const MAIN_PAGE = `http://${host}:${port}`
 
 // eslint-disable-next-line no-unused-expressions, no-undef
 fixture`Shopping List`.beforeEach(async (t) => {
-  await t.setNativeDialogHandler(() => true);
-  await t.navigateTo(MAIN_PAGE);
-});
+  await t.setNativeDialogHandler(() => true)
+  await t.navigateTo(MAIN_PAGE)
+})
 
 test('home page', async (t) => {
   await t
     .expect(await Selector('h1').withText('Shopping List').exists)
-    .eql(true);
-});
+    .eql(true)
+})
 
 test('createShoppingList', async () => {
   const command = {
@@ -26,7 +26,7 @@ test('createShoppingList', async () => {
     payload: {
       name: 'List 1',
     },
-  };
+  }
 
   const response = await fetch(`${MAIN_PAGE}/api/commands`, {
     headers: {
@@ -34,17 +34,17 @@ test('createShoppingList', async () => {
     },
     method: 'POST',
     body: JSON.stringify(command),
-  });
+  })
 
-  const event = await response.json();
+  const event = await response.json()
 
   expect(event).to.deep.include({
     type: 'SHOPPING_LIST_CREATED',
     payload: { name: 'List 1' },
     aggregateId: 'shopping-list-1',
     aggregateVersion: 1,
-  });
-});
+  })
+})
 
 test('createShoppingItem', async () => {
   const command = {
@@ -55,7 +55,7 @@ test('createShoppingItem', async () => {
       id: '1',
       text: 'Milk',
     },
-  };
+  }
 
   const response = await fetch(`${MAIN_PAGE}/api/commands`, {
     headers: {
@@ -63,17 +63,17 @@ test('createShoppingItem', async () => {
     },
     method: 'POST',
     body: JSON.stringify(command),
-  });
+  })
 
-  const event = await response.json();
+  const event = await response.json()
 
   expect(event).to.deep.include({
     type: 'SHOPPING_ITEM_CREATED',
     payload: { id: '1', text: 'Milk' },
     aggregateId: 'shopping-list-1',
     aggregateVersion: 2,
-  });
-});
+  })
+})
 
 test('createShoppingItems', async () => {
   const matches = [
@@ -128,7 +128,7 @@ test('createShoppingItems', async () => {
         aggregateVersion: 5,
       },
     },
-  ];
+  ]
 
   for (const match of matches) {
     const response = await fetch(`${MAIN_PAGE}/api/commands`, {
@@ -137,13 +137,13 @@ test('createShoppingItems', async () => {
       },
       method: 'POST',
       body: JSON.stringify(match.command),
-    });
+    })
 
-    const event = await response.json();
+    const event = await response.json()
 
-    expect(event).to.deep.include(match.event);
+    expect(event).to.deep.include(match.event)
   }
-});
+})
 
 test('validation should works correctly', async () => {
   const matches = [
@@ -179,7 +179,7 @@ test('validation should works correctly', async () => {
       },
       error: 'shopping list does not exist',
     },
-  ];
+  ]
 
   for (const match of matches) {
     const response = await fetch(`${MAIN_PAGE}/api/commands`, {
@@ -188,13 +188,13 @@ test('validation should works correctly', async () => {
       },
       method: 'POST',
       body: JSON.stringify(match.command),
-    });
+    })
 
-    const event = await response.text();
+    const event = await response.text()
 
-    expect(event).to.include(match.error);
+    expect(event).to.include(match.error)
   }
-});
+})
 
 test('query should works correctly', async () => {
   const response = await fetch(
@@ -205,9 +205,9 @@ test('query should works correctly', async () => {
       },
       method: 'GET',
     }
-  );
+  )
 
-  const result = await response.json();
+  const result = await response.json()
 
   expect(result.data).to.deep.equal({
     id: 'shopping-list-1',
@@ -234,36 +234,36 @@ test('query should works correctly', async () => {
         checked: false,
       },
     ],
-  });
-});
+  })
+})
 
 test('create items in second shopping list', async (t) => {
-  await t.typeText(Selector('input[type=text]'), 'Item 1');
-  await t.click(Selector('button').withText('Add Item'));
+  await t.typeText(Selector('input[type=text]'), 'Item 1')
+  await t.click(Selector('button').withText('Add Item'))
 
-  await t.typeText(Selector('input[type=text]'), 'Item 2');
-  await t.click(Selector('button').withText('Add Item'));
+  await t.typeText(Selector('input[type=text]'), 'Item 2')
+  await t.click(Selector('button').withText('Add Item'))
 
-  await t.typeText(Selector('input[type=text]'), 'Item 3');
-  await t.click(Selector('button').withText('Add Item'));
+  await t.typeText(Selector('input[type=text]'), 'Item 3')
+  await t.click(Selector('button').withText('Add Item'))
 
-  await t.expect(Selector('label').withText('Item 1').exists).eql(true);
-  await t.expect(Selector('label').withText('Item 2').exists).eql(true);
-  await t.expect(Selector('label').withText('Item 3').exists).eql(true);
-});
+  await t.expect(Selector('label').withText('Item 1').exists).eql(true)
+  await t.expect(Selector('label').withText('Item 2').exists).eql(true)
+  await t.expect(Selector('label').withText('Item 3').exists).eql(true)
+})
 
 test('toggle items in second shopping list', async (t) => {
-  await t.click(Selector('label').withText('Item 1'));
-  await t.click(Selector('label').withText('Item 2'));
-  await t.click(Selector('label').withText('Item 3'));
+  await t.click(Selector('label').withText('Item 1'))
+  await t.click(Selector('label').withText('Item 2'))
+  await t.click(Selector('label').withText('Item 3'))
 
   await t
     .expect(Selector('label > input[type=checkbox]').nth(4).checked)
-    .eql(true);
+    .eql(true)
   await t
     .expect(Selector('label > input[type=checkbox]').nth(5).checked)
-    .eql(true);
+    .eql(true)
   await t
     .expect(Selector('label > input[type=checkbox]').nth(6).checked)
-    .eql(true);
-});
+    .eql(true)
+})

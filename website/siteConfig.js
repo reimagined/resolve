@@ -8,7 +8,7 @@
 // See https://docusaurus.io/docs/site-config for all the possible
 // site configuration options.
 
-const GITHUB_URL = 'https://github.com/reimagined/resolve';
+const GITHUB_URL = 'https://github.com/reimagined/resolve'
 
 const siteConfig = {
   title: 'reSolve', // Title for your website.
@@ -60,6 +60,6 @@ const siteConfig = {
   },
   gaTrackingId: 'UA-118635726-3',
   ogImage: 'img/reSolve400x400-fill.png',
-};
+}
 
-module.exports = siteConfig;
+module.exports = siteConfig

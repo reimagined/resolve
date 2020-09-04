@@ -1,9 +1,9 @@
-import { merge, defaultResolveConfig, validateConfig } from 'resolve-scripts';
+import { merge, defaultResolveConfig, validateConfig } from 'resolve-scripts'
 
 const localConfig = {
   mode: 'development',
   target: 'local',
-};
+}
 
 // mdis-start app-config
 const appConfig = {
@@ -21,7 +21,7 @@ const appConfig = {
       schedulerName: 'scheduler',
     },
   ],
-};
+}
 // mdis-stop app-config
 
 // mdis-start dev-config
@@ -64,11 +64,11 @@ const devConfig = {
     }
     */
   },
-};
+}
 // mdis-stop dev-config
 
-const config = merge(defaultResolveConfig, localConfig, appConfig, devConfig);
+const config = merge(defaultResolveConfig, localConfig, appConfig, devConfig)
 
-validateConfig(config);
+validateConfig(config)
 
-export default config;
+export default config

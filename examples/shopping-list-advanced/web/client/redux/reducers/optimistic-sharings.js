@@ -2,7 +2,7 @@ import {
   OPTIMISTIC_SHARINGS_SYNC,
   OPTIMISTIC_SHARINGS_SHOPPING_LIST_SHARE,
   OPTIMISTIC_SHARINGS_SHOPPING_LIST_UNSHARE,
-} from '../action-types';
+} from '../action-types'
 
 const initialState = {
   id: '',
@@ -11,12 +11,12 @@ const initialState = {
     sharings: [],
     other: [],
   },
-};
+}
 
 const optimisticSharings = (state = initialState, action) => {
   switch (action.type) {
     case OPTIMISTIC_SHARINGS_SYNC: {
-      return action.payload;
+      return action.payload
     }
     case OPTIMISTIC_SHARINGS_SHOPPING_LIST_SHARE: {
       return {
@@ -31,7 +31,7 @@ const optimisticSharings = (state = initialState, action) => {
           ],
           other: state.users.other.filter(({ id }) => id !== action.payload.id),
         },
-      };
+      }
     }
     case OPTIMISTIC_SHARINGS_SHOPPING_LIST_UNSHARE: {
       return {
@@ -48,12 +48,12 @@ const optimisticSharings = (state = initialState, action) => {
             },
           ],
         },
-      };
+      }
     }
     default: {
-      return state;
+      return state
     }
   }
-};
+}
 
-export default optimisticSharings;
+export default optimisticSharings

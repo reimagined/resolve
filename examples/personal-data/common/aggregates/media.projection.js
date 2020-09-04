@@ -2,7 +2,7 @@ import {
   MEDIA_UPLOAD_STARTED,
   MEDIA_UPLOAD_COMPLETED,
   MEDIA_UPLOAD_FAILED,
-} from '../media.events';
+} from '../media.events'
 
 const projection = {
   Init: () => ({
@@ -21,6 +21,6 @@ const projection = {
     ...state,
     status: 'finished',
   }),
-};
+}
 
-export default projection;
+export default projection

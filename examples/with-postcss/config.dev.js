@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts';
+import { declareRuntimeEnv } from 'resolve-scripts'
 
 const devConfig = {
   target: 'local',
@@ -24,6 +24,6 @@ const devConfig = {
   eventBroker: {
     databaseFile: 'data/local-bus-broker.db',
   },
-};
+}
 
-export default devConfig;
+export default devConfig

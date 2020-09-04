@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts';
+import { declareRuntimeEnv } from 'resolve-scripts'
 
 const cloudConfig = {
   target: 'cloud',
@@ -49,6 +49,6 @@ const cloudConfig = {
       uploaderArn: declareRuntimeEnv('RESOLVE_UPLOADER_LAMBDA_ARN'),
     },
   },
-};
+}
 
-export default cloudConfig;
+export default cloudConfig

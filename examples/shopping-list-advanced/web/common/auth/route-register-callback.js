@@ -1,8 +1,8 @@
-import uuid from 'uuid/v4';
-import crypto from 'crypto';
-import JWT from 'jsonwebtoken';
+import uuid from 'uuid/v4'
+import crypto from 'crypto'
+import JWT from 'jsonwebtoken'
 
-import jwtSecret from './jwt-secret';
+import jwtSecret from './jwt-secret'
 
 const ROOT_JWT_TOKEN = JWT.sign(
   {
@@ -11,17 +11,17 @@ const ROOT_JWT_TOKEN = JWT.sign(
     role: 'root',
   },
   jwtSecret
-);
+)
 
 const routeRegisterCallback = async ({ resolve }, username, password) => {
   if (!password) {
-    throw new Error('The "password" field is required');
+    throw new Error('The "password" field is required')
   }
 
-  const hmac = crypto.createHmac('sha512', jwtSecret);
-  hmac.update(password);
+  const hmac = crypto.createHmac('sha512', jwtSecret)
+  hmac.update(password)
 
-  const passwordHash = hmac.digest('hex');
+  const passwordHash = hmac.digest('hex')
 
   const { data: existingUser } = await resolve.executeQuery({
     modelName: 'ShoppingLists',
@@ -29,13 +29,13 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
     resolverArgs: {
       username,
     },
-  });
+  })
 
   if (existingUser) {
-    throw new Error('User can not be created');
+    throw new Error('User can not be created')
   }
 
-  const userId = uuid();
+  const userId = uuid()
 
   const jwt = JWT.sign(
     {
@@ -43,7 +43,7 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
       id: userId,
     },
     jwtSecret
-  );
+  )
 
   await resolve.executeCommand({
     type: 'createUser',
@@ -54,7 +54,7 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
       passwordHash,
     },
     jwt: ROOT_JWT_TOKEN,
-  });
+  })
 
   await resolve.executeCommand({
     type: 'createShoppingList',
@@ -64,9 +64,9 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
       name: 'Shopping List',
     },
     jwt,
-  });
+  })
 
-  return jwt;
-};
+  return jwt
+}
 
-export default routeRegisterCallback;
+export default routeRegisterCallback

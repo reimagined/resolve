@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts';
+import { declareRuntimeEnv } from 'resolve-scripts'
 
 const testFunctionalConfig = {
   target: 'local',
@@ -43,6 +43,6 @@ const testFunctionalConfig = {
       secretKey: 'key',
     },
   },
-};
+}
 
-export default testFunctionalConfig;
+export default testFunctionalConfig

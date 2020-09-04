@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { Helmet } from 'react-helmet';
-import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
+import * as React from 'react'
+import { Helmet } from 'react-helmet'
+import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap'
 
 const App = ({ staticPath }): any => (
   <div>
@@ -37,6 +37,6 @@ const App = ({ staticPath }): any => (
     </Navbar>
     <h1 style={{ textAlign: 'center' }}>Hello, reSolve world!</h1>
   </div>
-);
+)
 
-export default App;
+export default App

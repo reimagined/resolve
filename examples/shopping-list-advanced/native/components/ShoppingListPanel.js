@@ -1,7 +1,7 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Icon, Input, Label } from 'native-base';
-import { connectActionSheet } from '@expo/react-native-action-sheet';
+import React from 'react'
+import { StyleSheet, View } from 'react-native'
+import { Icon, Input, Label } from 'native-base'
+import { connectActionSheet } from '@expo/react-native-action-sheet'
 
 const styles = StyleSheet.create({
   container: {
@@ -28,26 +28,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#575757',
   },
-});
+})
 
-const options = ['Share', 'Remove', 'Cancel'];
+const options = ['Share', 'Remove', 'Cancel']
 
 class ShoppingListPanel extends React.PureComponent {
   state = {
     name: this.props.name,
-  };
+  }
 
   onMenuItemSelect = (index) => {
     switch (options[index]) {
       case 'Share':
-        this.props.navigate('ShareForm', { id: this.props.aggregateId });
-        break;
+        this.props.navigate('ShareForm', { id: this.props.aggregateId })
+        break
       case 'Remove':
-        this.props.removeShoppingList(this.props.aggregateId, {});
-        break;
+        this.props.removeShoppingList(this.props.aggregateId, {})
+        break
       default:
     }
-  };
+  }
 
   onMenuPress = () => {
     this.props.showActionSheetWithOptions(
@@ -56,20 +56,20 @@ class ShoppingListPanel extends React.PureComponent {
       },
       this.onMenuItemSelect,
       2
-    );
-  };
+    )
+  }
 
   updateName = (name) => {
     this.setState({
       name,
-    });
-  };
+    })
+  }
 
   renameShoppingList = () => {
     this.props.renameShoppingList(this.props.aggregateId, {
       name: this.state.name,
-    });
-  };
+    })
+  }
 
   render() {
     return (
@@ -93,8 +93,8 @@ class ShoppingListPanel extends React.PureComponent {
           />
         </View>
       </View>
-    );
+    )
   }
 }
 
-export default connectActionSheet(ShoppingListPanel);
+export default connectActionSheet(ShoppingListPanel)

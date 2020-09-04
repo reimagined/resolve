@@ -1,17 +1,17 @@
-import React from 'react';
-import { render } from 'react-dom';
-import { Router } from 'react-router';
-import { createBrowserHistory } from 'history';
-import { AppContainer, createStore, getOrigin } from 'resolve-redux';
+import React from 'react'
+import { render } from 'react-dom'
+import { Router } from 'react-router'
+import { createBrowserHistory } from 'history'
+import { AppContainer, createStore, getOrigin } from 'resolve-redux'
 
-import Routes from './components/Routes';
-import getRoutes from './get-routes';
+import Routes from './components/Routes'
+import getRoutes from './get-routes'
 
 const entryPoint = ({ rootPath, staticPath, clientImports }) => {
-  const origin = getOrigin(window.location);
-  const history = createBrowserHistory({ basename: rootPath });
-  const store = createStore({ history, origin, rootPath, isClient: true });
-  const routes = getRoutes(clientImports);
+  const origin = getOrigin(window.location)
+  const history = createBrowserHistory({ basename: rootPath })
+  const store = createStore({ history, origin, rootPath, isClient: true })
+  const routes = getRoutes(clientImports)
 
   render(
     <AppContainer
@@ -25,7 +25,7 @@ const entryPoint = ({ rootPath, staticPath, clientImports }) => {
       </Router>
     </AppContainer>,
     document.getElementById('app-container')
-  );
-};
+  )
+}
 
-export default entryPoint;
+export default entryPoint

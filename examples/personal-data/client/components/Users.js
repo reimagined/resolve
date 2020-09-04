@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery } from 'resolve-react-hooks';
-import { Link } from 'react-router-dom';
-import { Container, Row, Col } from 'reactstrap';
+import React, { useState, useEffect } from 'react'
+import { useQuery } from 'resolve-react-hooks'
+import { Link } from 'react-router-dom'
+import { Container, Row, Col } from 'reactstrap'
 
 const User = ({ user }) => (
   <div className="mb-3">
@@ -12,20 +12,20 @@ const User = ({ user }) => (
       {user.profile.firstName} {user.profile.lastName}
     </div>
   </div>
-);
+)
 
 const Users = () => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([])
 
   const getUsers = useQuery(
     { name: 'user-profiles', resolver: 'all', args: {} },
     (error, result) => {
-      setUsers(result.data);
+      setUsers(result.data)
     }
-  );
+  )
   useEffect(() => {
-    getUsers();
-  }, []);
+    getUsers()
+  }, [])
 
   return (
     <React.Fragment>
@@ -43,7 +43,7 @@ const Users = () => {
         </Row>
       </Container>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default Users;
+export default Users

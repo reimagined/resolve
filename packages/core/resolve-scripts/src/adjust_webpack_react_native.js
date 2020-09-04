@@ -1,18 +1,18 @@
-import path from 'path';
-import nodeExternals from 'webpack-node-externals';
+import path from 'path'
+import nodeExternals from 'webpack-node-externals'
 
-import getModulesDirs from './get_modules_dirs';
+import getModulesDirs from './get_modules_dirs'
 
-const isString = (val) => val != null && val.constructor === String;
+const isString = (val) => val != null && val.constructor === String
 
 const adjustWebpackReactNative = ({ resolveConfig, reactNativeDir }) => (
   webpackConfigs,
   { alias }
 ) => {
-  const isClient = true;
+  const isClient = true
 
   if (!isString(reactNativeDir)) {
-    throw new Error('The `reactNativeDir` field must be String');
+    throw new Error('The `reactNativeDir` field must be String')
   }
 
   const webpackNativeConfig = {
@@ -109,9 +109,9 @@ const adjustWebpackReactNative = ({ resolveConfig, reactNativeDir }) => (
       })())`,
       })
     ),
-  };
+  }
 
-  webpackConfigs.push(webpackNativeConfig);
-};
+  webpackConfigs.push(webpackNativeConfig)
+}
 
-export default adjustWebpackReactNative;
+export default adjustWebpackReactNative

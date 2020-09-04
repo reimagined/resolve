@@ -1,12 +1,12 @@
-import { EOL } from 'os';
-import getLog from '../js/get-log';
-import { AdapterPool, CloudResourceOptions, CloudResourcePool } from '../types';
+import { EOL } from 'os'
+import getLog from '../js/get-log'
+import { AdapterPool, CloudResourceOptions, CloudResourcePool } from '../types'
 
 const destroy = async (
   pool: CloudResourcePool,
   options: CloudResourceOptions
 ): Promise<any> => {
-  const log = getLog(`resource: destroy`);
+  const log = getLog(`resource: destroy`)
 
   const {
     executeStatement,
@@ -17,9 +17,9 @@ const destroy = async (
     fullJitter,
     coercer,
     dispose,
-  } = pool;
+  } = pool
 
-  log.debug(`configuring adapter with environment privileges`);
+  log.debug(`configuring adapter with environment privileges`)
   const adminPool: AdapterPool = {
     config: {
       region: options.region,
@@ -30,9 +30,9 @@ const destroy = async (
       secretsTableName: options.secretsTableName,
       snapshotsTableName: options.snapshotsTableName,
     },
-  };
+  }
 
-  log.debug(`connecting the adapter`);
+  log.debug(`connecting the adapter`)
   await connect(adminPool, {
     RDSDataService,
     escapeId,
@@ -40,47 +40,47 @@ const destroy = async (
     fullJitter,
     executeStatement,
     coercer,
-  });
+  })
 
-  let alterSchemaError = null;
-  let dropSchemaError = null;
+  let alterSchemaError = null
+  let dropSchemaError = null
 
   try {
-    log.debug(`altering schema owner`);
+    log.debug(`altering schema owner`)
     await executeStatement(
       adminPool,
       `ALTER SCHEMA ${escapeId(options.databaseName)} OWNER TO SESSION_USER`
-    );
+    )
   } catch (error) {
-    alterSchemaError = error;
+    alterSchemaError = error
   }
 
   try {
-    log.debug(`dropping schema with all its tables`);
+    log.debug(`dropping schema with all its tables`)
     await executeStatement(
       adminPool,
       `DROP SCHEMA ${escapeId(options.databaseName)} CASCADE`
-    );
+    )
   } catch (error) {
-    dropSchemaError = error;
+    dropSchemaError = error
   }
 
   if (alterSchemaError != null || dropSchemaError != null) {
-    const error = new Error();
+    const error = new Error()
     error.message = `${
       alterSchemaError != null ? `${alterSchemaError.message}${EOL}` : ''
-    }${dropSchemaError != null ? `${dropSchemaError.message}${EOL}` : ''}`;
+    }${dropSchemaError != null ? `${dropSchemaError.message}${EOL}` : ''}`
 
-    log.error(error.message);
-    log.verbose(error.stack || error.message);
+    log.error(error.message)
+    log.verbose(error.stack || error.message)
 
-    throw error;
+    throw error
   }
 
-  log.debug(`disposing the adapter`);
-  await dispose(adminPool);
+  log.debug(`disposing the adapter`)
+  await dispose(adminPool)
 
-  log.debug(`resource destroyed successfully`);
-};
+  log.debug(`resource destroyed successfully`)
+}
 
-export default destroy;
+export default destroy

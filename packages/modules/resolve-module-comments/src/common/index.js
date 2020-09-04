@@ -1,7 +1,7 @@
-import createCommentsCommands from './aggregates/comments.commands';
-import createCommentsProjection from './read-models/comments.projection';
-import createCommentsResolvers from './read-models/comments.resolvers';
-import injectDefaults from './inject-defaults';
+import createCommentsCommands from './aggregates/comments.commands'
+import createCommentsProjection from './read-models/comments.projection'
+import createCommentsResolvers from './read-models/comments.resolvers'
+import injectDefaults from './inject-defaults'
 
 import {
   defaults,
@@ -10,7 +10,7 @@ import {
   CommentsPaginateRenderless,
   RefreshHelperRenderless,
   createCommentsReducer,
-} from '../client';
+} from '../client'
 
 export {
   defaults,
@@ -22,7 +22,7 @@ export {
   createCommentsCommands,
   createCommentsProjection,
   createCommentsResolvers,
-};
+}
 
 const makeConfig = (options, imports) => {
   const config = {
@@ -67,10 +67,10 @@ const makeConfig = (options, imports) => {
         options,
       },
     },
-  };
+  }
 
-  return config;
-};
+  return config
+}
 
 export default ({
   aggregateName,
@@ -96,13 +96,13 @@ export default ({
     maxNestedLevel,
     commentsInstanceName,
     reducerName,
-  };
+  }
   const imports = {
     verifyCommand:
       verifyCommand == null
         ? 'resolve-module-comments/lib/common/aggregates/verify-command.js'
         : verifyCommand,
-  };
+  }
 
-  return injectDefaults(makeConfig)(options, imports);
-};
+  return injectDefaults(makeConfig)(options, imports)
+}

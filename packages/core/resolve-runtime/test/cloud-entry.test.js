@@ -1,13 +1,13 @@
-import STS from 'aws-sdk/clients/sts';
-import { ConcurrentError } from 'resolve-eventstore-base';
+import STS from 'aws-sdk/clients/sts'
+import { ConcurrentError } from 'resolve-eventstore-base'
 
-import initCloudEntry from '../src/cloud/index';
+import initCloudEntry from '../src/cloud/index'
 
 describe('Cloud entry', () => {
-  let assemblies, constants, domain, redux, routes;
-  let getCloudEntryWorker, lambdaContext;
-  let originalMathRandom, originalDateNow, originalProcessEnv;
-  let eventstoreAdapter, snapshotAdapter;
+  let assemblies, constants, domain, redux, routes
+  let getCloudEntryWorker, lambdaContext
+  let originalMathRandom, originalDateNow, originalProcessEnv
+  let eventstoreAdapter, snapshotAdapter
 
   const defaultRequestHttpHeaders = {
     Accept: '*/*',
@@ -16,27 +16,27 @@ describe('Cloud entry', () => {
     'Cache-Control': 'no-cache',
     Host: 'aws-gateway-test-host',
     'User-Agent': 'jest/mock',
-  };
+  }
 
   const customConstants = {
     customConstantName: 'customConstantValue',
-  };
-  const staticPath = 'static-path';
-  const rootPath = 'root-path';
+  }
+  const staticPath = 'static-path'
+  const rootPath = 'root-path'
 
   beforeEach(async () => {
-    let nowTickCounter = 0;
-    originalMathRandom = Math.random.bind(Math);
-    originalDateNow = Date.now.bind(Date);
-    originalProcessEnv = process.env;
+    let nowTickCounter = 0
+    originalMathRandom = Math.random.bind(Math)
+    originalDateNow = Date.now.bind(Date)
+    originalProcessEnv = process.env
 
-    Math.random = () => 0.123456789;
-    Date.now = () => nowTickCounter++;
+    Math.random = () => 0.123456789
+    Date.now = () => nowTickCounter++
     process.env = {
       RESOLVE_DEPLOYMENT_ID: 'RESOLVE_DEPLOYMENT_ID',
       RESOLVE_WS_ENDPOINT: 'RESOLVE_WS_ENDPOINT',
       RESOLVE_IOT_ROLE_ARN: 'RESOLVE_IOT_ROLE_ARN',
-    };
+    }
 
     eventstoreAdapter = {
       getSecretsManager: jest.fn().mockReturnValue({}),
@@ -47,13 +47,13 @@ describe('Cloud entry', () => {
       dispose: jest.fn(),
       import: jest.fn(),
       export: jest.fn(),
-    };
+    }
 
     snapshotAdapter = {
       loadSnapshot: jest.fn(),
       saveSnapshot: jest.fn(),
       dispose: jest.fn(),
-    };
+    }
 
     assemblies = {
       seedClientEnvs: {
@@ -66,7 +66,7 @@ describe('Cloud entry', () => {
       readModelConnectors: {
         // default: jest.fn().mockReturnValue(defaultReadModelConnector)
       },
-    };
+    }
 
     constants = {
       applicationName: 'application-name',
@@ -78,7 +78,7 @@ describe('Cloud entry', () => {
       rootPath,
       staticDir: 'static-dir',
       staticPath,
-    };
+    }
 
     domain = {
       eventListeners: new Map(),
@@ -94,20 +94,20 @@ describe('Cloud entry', () => {
       viewModels: [],
       sagas: [],
       schedulers: [],
-    };
+    }
 
     redux = {
       reducers: {},
       middlewares: [],
       sagas: [],
       enhancers: [],
-    };
+    }
 
-    routes = [];
+    routes = []
 
     lambdaContext = {
       getRemainingTimeInMillis: () => 0x7fffffff,
-    };
+    }
 
     getCloudEntryWorker = async () => {
       return await initCloudEntry({
@@ -116,28 +116,28 @@ describe('Cloud entry', () => {
         domain,
         redux,
         routes,
-      });
-    };
-  });
+      })
+    }
+  })
 
   afterEach(async () => {
-    Math.random = originalMathRandom;
-    Date.now = originalDateNow;
-    process.env = originalProcessEnv;
+    Math.random = originalMathRandom
+    Date.now = originalDateNow
+    process.env = originalProcessEnv
 
-    getCloudEntryWorker = null;
-    assemblies = null;
-    constants = null;
-    domain = null;
-    redux = null;
-    routes = null;
+    getCloudEntryWorker = null
+    assemblies = null
+    constants = null
+    domain = null
+    redux = null
+    routes = null
 
-    snapshotAdapter = null;
+    snapshotAdapter = null
 
-    lambdaContext = null;
+    lambdaContext = null
 
-    STS.assumeRole.mockReset();
-  });
+    STS.assumeRole.mockReset()
+  })
 
   describe('API gateway event', () => {
     test('should handle URL-addresses outside "rootPath"', async () => {
@@ -147,18 +147,18 @@ describe('Cloud entry', () => {
         headers: { ...defaultRequestHttpHeaders },
         multiValueQueryStringParameters: {},
         body: null,
-      };
+      }
 
-      const cloudEntryWorker = await getCloudEntryWorker();
+      const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext);
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
       expect(result).toEqual({
         statusCode: 405,
         headers: {},
         body: 'Access error: GET "/" is not addressable by current executor',
-      });
-    });
+      })
+    })
 
     test('should invoke existing read-model with existing resolver via GET /"rootPath"/api/query/"readModelName"/"resolverName"?"resolverArgs"', async () => {
       const readModel = {
@@ -167,20 +167,20 @@ describe('Cloud entry', () => {
         projection: {},
         resolvers: {
           'resolver-name': jest.fn().mockImplementation(async (store, args) => {
-            return args;
+            return args
           }),
         },
-      };
+      }
 
       const readModelConnector = {
         connect: jest.fn(),
         disconnect: jest.fn(),
         drop: jest.fn(),
         dispose: jest.fn(),
-      };
+      }
 
-      domain.readModels.push(readModel);
-      assemblies.readModelConnectors['default'] = () => readModelConnector;
+      domain.readModels.push(readModel)
+      assemblies.readModelConnectors['default'] = () => readModelConnector
 
       const apiGatewayEvent = {
         path: '/root-path/api/query/read-model-name/resolver-name',
@@ -190,30 +190,30 @@ describe('Cloud entry', () => {
           key: 'value',
         },
         body: null,
-      };
+      }
 
-      const cloudEntryWorker = await getCloudEntryWorker();
+      const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext);
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(200);
-      expect(result.headers).toEqual({ 'Content-Type': 'application/json' });
+      expect(result.statusCode).toEqual(200)
+      expect(result.headers).toEqual({ 'Content-Type': 'application/json' })
       expect(JSON.parse(result.body)).toEqual({
         data: {
           key: 'value',
         },
-      });
+      })
 
       expect(readModelConnector.connect.mock.calls[0][0]).toEqual(
         'read-model-name'
-      );
+      )
       expect(readModelConnector.disconnect.mock.calls[0][1]).toEqual(
         'read-model-name'
-      );
-      expect(readModelConnector.disconnect.mock.calls[0].length).toEqual(2);
-      expect(readModelConnector.drop.mock.calls.length).toEqual(0);
-      expect(readModelConnector.dispose.mock.calls.length).toEqual(1);
-    });
+      )
+      expect(readModelConnector.disconnect.mock.calls[0].length).toEqual(2)
+      expect(readModelConnector.drop.mock.calls.length).toEqual(0)
+      expect(readModelConnector.dispose.mock.calls.length).toEqual(1)
+    })
 
     test('should invoke existing read-model with non-existing resolver via GET /"rootPath"/api/query/"readModelName"/"resolverName"?"resolverArgs"', async () => {
       const readModel = {
@@ -222,20 +222,20 @@ describe('Cloud entry', () => {
         projection: {},
         resolvers: {
           'resolver-name': jest.fn().mockImplementation(async (store, args) => {
-            return args;
+            return args
           }),
         },
-      };
+      }
 
       const readModelConnector = {
         connect: jest.fn(),
         disconnect: jest.fn(),
         drop: jest.fn(),
         dispose: jest.fn(),
-      };
+      }
 
-      domain.readModels.push(readModel);
-      assemblies.readModelConnectors['default'] = () => readModelConnector;
+      domain.readModels.push(readModel)
+      assemblies.readModelConnectors['default'] = () => readModelConnector
 
       const apiGatewayEvent = {
         path: '/root-path/api/query/read-model-name/non-existing-resolver-name',
@@ -245,23 +245,23 @@ describe('Cloud entry', () => {
           key: 'value',
         },
         body: null,
-      };
+      }
 
-      const cloudEntryWorker = await getCloudEntryWorker();
+      const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext);
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(422);
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' });
+      expect(result.statusCode).toEqual(422)
+      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
       expect(result.body).toEqual(
         'Resolver "non-existing-resolver-name" does not exist'
-      );
+      )
 
-      expect(readModelConnector.connect.mock.calls.length).toEqual(0);
-      expect(readModelConnector.disconnect.mock.calls.length).toEqual(0);
-      expect(readModelConnector.drop.mock.calls.length).toEqual(0);
-      expect(readModelConnector.dispose.mock.calls.length).toEqual(1);
-    });
+      expect(readModelConnector.connect.mock.calls.length).toEqual(0)
+      expect(readModelConnector.disconnect.mock.calls.length).toEqual(0)
+      expect(readModelConnector.drop.mock.calls.length).toEqual(0)
+      expect(readModelConnector.dispose.mock.calls.length).toEqual(1)
+    })
 
     test('should invoke non-existing read-model via GET /"rootPath"/api/query/"readModelName"/"resolverName"?"resolverArgs"', async () => {
       const apiGatewayEvent = {
@@ -271,18 +271,18 @@ describe('Cloud entry', () => {
         headers: { ...defaultRequestHttpHeaders },
         multiValueQueryStringParameters: { key: 'value' },
         body: null,
-      };
+      }
 
-      const cloudEntryWorker = await getCloudEntryWorker();
+      const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext);
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(422);
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' });
+      expect(result.statusCode).toEqual(422)
+      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
       expect(result.body).toEqual(
         'Read/view model "non-existing-read-model-name" does not exist'
-      );
-    });
+      )
+    })
 
     test('should fail on invoking read-model without "resolverName" via GET /"rootPath"/api/query/"readModelName"', async () => {
       const apiGatewayEvent = {
@@ -291,18 +291,18 @@ describe('Cloud entry', () => {
         headers: { ...defaultRequestHttpHeaders },
         multiValueQueryStringParameters: {},
         body: null,
-      };
+      }
 
-      const cloudEntryWorker = await getCloudEntryWorker();
+      const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext);
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(400);
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' });
+      expect(result.statusCode).toEqual(400)
+      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
       expect(result.body).toEqual(
         'Invalid "modelName" and/or "modelOptions" parameters'
-      );
-    });
+      )
+    })
 
     test('should invoke command via POST /"rootPath"/api/commands/', async () => {
       const aggregate = {
@@ -316,7 +316,7 @@ describe('Cloud entry', () => {
                 key: command.payload.key,
                 value: command.payload.value,
               },
-            };
+            }
           },
         },
         projection: {
@@ -324,15 +324,15 @@ describe('Cloud entry', () => {
             return {
               ...state,
               [event.payload.key]: [event.payload.value],
-            };
+            }
           },
         },
         serializeState: (state) => JSON.stringify(state),
         deserializeState: (serializedState) => JSON.parse(serializedState),
         invariantHash: 'aggregate-invariantHash',
-      };
+      }
 
-      domain.aggregates.push(aggregate);
+      domain.aggregates.push(aggregate)
 
       const apiGatewayEvent = {
         path: '/root-path/api/commands',
@@ -351,14 +351,14 @@ describe('Cloud entry', () => {
             value: 'value1',
           },
         }),
-      };
+      }
 
-      const cloudEntryWorker = await getCloudEntryWorker();
+      const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext);
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(200);
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' });
+      expect(result.statusCode).toEqual(200)
+      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
       expect(JSON.parse(result.body)).toEqual({
         aggregateId: 'aggregateId',
         aggregateVersion: 1,
@@ -368,8 +368,8 @@ describe('Cloud entry', () => {
           key: 'key1',
           value: 'value1',
         },
-      });
-    });
+      })
+    })
 
     test('should fail command via POST /"rootPath"/api/commands/ with ConcurrentError', async () => {
       const aggregate = {
@@ -377,15 +377,15 @@ describe('Cloud entry', () => {
         name: 'Map',
         commands: {
           set: () => {
-            throw new ConcurrentError();
+            throw new ConcurrentError()
           },
         },
         serializeState: (state) => JSON.stringify(state),
         deserializeState: (serializedState) => JSON.parse(serializedState),
         invariantHash: 'aggregate-invariantHash',
-      };
+      }
 
-      domain.aggregates.push(aggregate);
+      domain.aggregates.push(aggregate)
 
       const apiGatewayEvent = {
         path: '/root-path/api/commands',
@@ -404,21 +404,21 @@ describe('Cloud entry', () => {
             value: 'value1',
           },
         }),
-      };
+      }
 
-      const cloudEntryWorker = await getCloudEntryWorker();
+      const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext);
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(409);
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' });
-      expect(result.body).toContain('is not actual at the moment');
-    });
+      expect(result.statusCode).toEqual(409)
+      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
+      expect(result.body).toContain('is not actual at the moment')
+    })
 
     test('should fail command via POST /"rootPath"/api/commands/ with CommandError', async () => {
       eventstoreAdapter.saveEvent = jest.fn().mockImplementation(async () => {
-        throw new ConcurrentError();
-      });
+        throw new ConcurrentError()
+      })
 
       const aggregate = {
         encryption: () => ({}),
@@ -427,12 +427,12 @@ describe('Cloud entry', () => {
           fail: () => {
             return {
               // BAD EVENT
-            };
+            }
           },
         },
-      };
+      }
 
-      domain.aggregates.push(aggregate);
+      domain.aggregates.push(aggregate)
 
       const apiGatewayEvent = {
         path: '/root-path/api/commands',
@@ -447,35 +447,35 @@ describe('Cloud entry', () => {
           aggregateId: 'aggregateId',
           type: 'fail',
         }),
-      };
+      }
 
-      const cloudEntryWorker = await getCloudEntryWorker();
+      const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext);
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(400);
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' });
-      expect(result.body).toEqual('Command error: Event "type" is required');
-    });
+      expect(result.statusCode).toEqual(400)
+      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
+      expect(result.body).toEqual('Command error: Event "type" is required')
+    })
 
     test('should fail command via POST /"rootPath"/api/commands/ with CustomerError', async () => {
       eventstoreAdapter.saveEvent = jest.fn().mockImplementation(async () => {
-        throw new ConcurrentError();
-      });
+        throw new ConcurrentError()
+      })
 
       const aggregate = {
         encryption: () => ({}),
         name: 'BadAggregate',
         commands: {
           fail: () => {
-            const error = new Error('I’m a teapot');
-            error.code = 418;
-            throw error;
+            const error = new Error('I’m a teapot')
+            error.code = 418
+            throw error
           },
         },
-      };
+      }
 
-      domain.aggregates.push(aggregate);
+      domain.aggregates.push(aggregate)
 
       const apiGatewayEvent = {
         path: '/root-path/api/commands',
@@ -490,16 +490,16 @@ describe('Cloud entry', () => {
           aggregateId: 'aggregateId',
           type: 'fail',
         }),
-      };
+      }
 
-      const cloudEntryWorker = await getCloudEntryWorker();
+      const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext);
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(418);
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' });
-      expect(result.body).toEqual('Command error: I’m a teapot');
-    });
+      expect(result.statusCode).toEqual(418)
+      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
+      expect(result.body).toEqual('Command error: I’m a teapot')
+    })
 
     test('should get subscribe options via POST /"rootPath"/api/my-api-handler-1/', async () => {
       domain.apiHandlers.push(
@@ -507,19 +507,19 @@ describe('Cloud entry', () => {
           method: 'POST',
           path: '/api/my-api-handler-1',
           handler: async (req, res) => {
-            res.setHeader('Content-type', 'application/octet-stream');
-            res.end('Custom octet stream');
+            res.setHeader('Content-type', 'application/octet-stream')
+            res.end('Custom octet stream')
           },
         },
         {
           method: 'POST',
           path: '/api/my-api-handler-2',
           handler: async (req, res) => {
-            res.setHeader('Content-type', 'text/plain');
-            res.end('ok');
+            res.setHeader('Content-type', 'text/plain')
+            res.end('ok')
           },
         }
-      );
+      )
 
       const apiGatewayEvent = {
         path: '/root-path/api/my-api-handler-2',
@@ -530,25 +530,25 @@ describe('Cloud entry', () => {
         },
         multiValueQueryStringParameters: '',
         body: null,
-      };
+      }
 
-      const cloudEntryWorker = await getCloudEntryWorker();
+      const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext);
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(200);
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' });
-      expect(result.body).toEqual('ok');
-    });
+      expect(result.statusCode).toEqual(200)
+      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
+      expect(result.body).toEqual('ok')
+    })
 
     test('should redirect from /"rootPath" to /"rootPath"/', async () => {
       domain.apiHandlers.push({
         method: 'POST',
         path: '/',
         handler: async (req, res) => {
-          res.end('Custom markup handler');
+          res.end('Custom markup handler')
         },
-      });
+      })
 
       const apiGatewayEvent = {
         path: '/root-path',
@@ -558,25 +558,25 @@ describe('Cloud entry', () => {
         },
         multiValueQueryStringParameters: '',
         body: null,
-      };
+      }
 
-      const cloudEntryWorker = await getCloudEntryWorker();
+      const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext);
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(302);
-      expect(result.headers).toEqual({ Location: '/root-path/' });
-      expect(result.body).toEqual('');
-    });
+      expect(result.statusCode).toEqual(302)
+      expect(result.headers).toEqual({ Location: '/root-path/' })
+      expect(result.body).toEqual('')
+    })
 
     test('should set header Bearer when jwt provided', async () => {
       domain.apiHandlers.push({
         method: 'POST',
         path: '/',
         handler: async (req, res) => {
-          res.end('Custom markup handler');
+          res.end('Custom markup handler')
         },
-      });
+      })
 
       const apiGatewayEvent = {
         path: '/root-path',
@@ -587,18 +587,18 @@ describe('Cloud entry', () => {
         },
         multiValueQueryStringParameters: '',
         body: null,
-      };
+      }
 
-      const cloudEntryWorker = await getCloudEntryWorker();
+      const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext);
+      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(302);
+      expect(result.statusCode).toEqual(302)
       expect(result.headers).toEqual({
         Authorization: 'Bearer JWT',
         Location: '/root-path/',
-      });
-      expect(result.body).toEqual('');
-    });
-  });
-});
+      })
+      expect(result.body).toEqual('')
+    })
+  })
+})

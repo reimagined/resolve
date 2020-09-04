@@ -1,7 +1,7 @@
-import React from 'react';
-import { Alert } from 'reactstrap';
+import React from 'react'
+import { Alert } from 'reactstrap'
 
-import Post from './Post';
+import Post from './Post'
 
 const Feed = ({ posts }) => {
   return (
@@ -24,7 +24,7 @@ const Feed = ({ posts }) => {
         </Alert>
       )}
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default Feed;
+export default Feed

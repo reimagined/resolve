@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { renderRoutes } from 'react-router-config';
-import Header from './Header';
+import * as React from 'react'
+import { renderRoutes } from 'react-router-config'
+import Header from './Header'
 
 const App = ({ children, route }) => {
   return (
@@ -9,7 +9,7 @@ const App = ({ children, route }) => {
       {renderRoutes(route.routes)}
       {children}
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App

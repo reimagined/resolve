@@ -5,7 +5,7 @@ const freeze = async ({ database, eventsTableName, escapeId }) => {
       ${escapeId('surrogate')} BIGINT NOT NULL,
       PRIMARY KEY(${escapeId('surrogate')})
     )`
-  );
-};
+  )
+}
 
-export default freeze;
+export default freeze

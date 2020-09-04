@@ -5,14 +5,14 @@ const commitIncrementalImport = async (
 ) => {
   const incrementalImportTableAsId = escapeId(
     `${eventsTableName}-incremental-import`
-  );
+  )
   const incrementalImportTableAsString = escape(
     `${eventsTableName}-incremental-import`
-  );
-  const threadsTableAsId = escapeId(`${eventsTableName}-threads`);
-  const eventsTableAsId = escapeId(eventsTableName);
-  const databaseNameAsId = escapeId(databaseName);
-  const databaseNameAsStr = escape(databaseName);
+  )
+  const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
+  const eventsTableAsId = escapeId(eventsTableName)
+  const databaseNameAsId = escapeId(databaseName)
+  const databaseNameAsStr = escape(databaseName)
 
   try {
     await executeStatement(`
@@ -138,7 +138,7 @@ const commitIncrementalImport = async (
         WHERE "InsertionTable"."threadId" = ${databaseNameAsId}.${threadsTableAsId}."threadId"
         ) + 1, 0)
       )
-    `);
+    `)
 
     if (validateAfterCommit != null && validateAfterCommit === true) {
       const realThreadIdCounters = (
@@ -153,7 +153,7 @@ const commitIncrementalImport = async (
         threadCounter: !isNaN(+threadCounter)
           ? +threadCounter
           : Symbol('BAD_THREAD_COUNTER'),
-      }));
+      }))
 
       const predictedThreadIdCounters = (
         await executeStatement(
@@ -165,19 +165,19 @@ const commitIncrementalImport = async (
         threadCounter: !isNaN(+threadCounter)
           ? +threadCounter
           : Symbol('BAD_THREAD_COUNTER'),
-      }));
+      }))
 
-      const validationMapReal = new Map();
-      const validationMapPredicted = new Map();
+      const validationMapReal = new Map()
+      const validationMapPredicted = new Map()
 
       for (const { threadId, threadCounter } of realThreadIdCounters) {
-        validationMapReal.set(threadId, threadCounter);
+        validationMapReal.set(threadId, threadCounter)
       }
       for (const { threadId, threadCounter } of predictedThreadIdCounters) {
-        validationMapPredicted.set(threadId, threadCounter);
+        validationMapPredicted.set(threadId, threadCounter)
       }
 
-      const validationErrors = [];
+      const validationErrors = []
 
       for (const { threadId, threadCounter } of realThreadIdCounters) {
         if (validationMapPredicted.get(threadId) !== threadCounter + 1) {
@@ -187,7 +187,7 @@ const commitIncrementalImport = async (
                 threadId
               )}`
             )
-          );
+          )
         }
       }
       for (const { threadId, threadCounter } of predictedThreadIdCounters) {
@@ -201,35 +201,35 @@ const commitIncrementalImport = async (
                 threadId
               )}`
             )
-          );
+          )
         }
       }
 
       if (validationErrors.length > 0) {
         const compositeError = new Error(
           validationErrors.map(({ message }) => message).join('\n')
-        );
+        )
         compositeError.stack = validationErrors
           .map(({ stack }) => stack)
-          .join('\n');
-        throw compositeError;
+          .join('\n')
+        throw compositeError
       }
     } else if (validateAfterCommit != null) {
-      throw new Error('Bad argument for "validateAfterCommit"');
+      throw new Error('Bad argument for "validateAfterCommit"')
     }
   } catch (error) {
     if (error != null && /Table.*? does not exist$/i.test(error.message)) {
       throw new Error(
         `Either event batch has timestamps from the past nor incremental importId=${importId} does not exist`
-      );
+      )
     } else {
-      throw error;
+      throw error
     }
   } finally {
     await executeStatement(
       `DROP TABLE IF EXISTS ${databaseNameAsId}.${incrementalImportTableAsId};`
-    );
+    )
   }
-};
+}
 
-export default commitIncrementalImport;
+export default commitIncrementalImport

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useCommand } from 'resolve-react-hooks';
+import React, { useState } from 'react'
+import { useCommand } from 'resolve-react-hooks'
 import {
   Row,
   Col,
@@ -11,7 +11,7 @@ import {
   Button,
   Alert,
   Label,
-} from 'reactstrap';
+} from 'reactstrap'
 
 const RegistrationForm = ({ user }) => {
   const [values, setValues] = useState({
@@ -22,9 +22,9 @@ const RegistrationForm = ({ user }) => {
     address: user && user.contacts ? user.contacts.address : '',
     error: null,
     done: null,
-  });
+  })
 
-  const [agree, setAgree] = useState(false);
+  const [agree, setAgree] = useState(false)
 
   const handleChange = (prop) => (event) => {
     setValues({
@@ -32,8 +32,8 @@ const RegistrationForm = ({ user }) => {
       error: false,
       done: false,
       [prop]: event.target.value,
-    });
-  };
+    })
+  }
 
   const update = useCommand(
     {
@@ -44,15 +44,15 @@ const RegistrationForm = ({ user }) => {
     },
     (error) => {
       if (error) {
-        setValues({ ...values, error, done: false });
+        setValues({ ...values, error, done: false })
       } else {
-        setValues({ ...values, error: false, done: true });
+        setValues({ ...values, error: false, done: true })
       }
     },
     [user, values]
-  );
+  )
 
-  const { error, done } = values;
+  const { error, done } = values
 
   return (
     <React.Fragment>
@@ -134,7 +134,7 @@ const RegistrationForm = ({ user }) => {
                 id="consent"
                 type="checkbox"
                 onChange={() => {
-                  setAgree(!agree);
+                  setAgree(!agree)
                 }}
               />{' '}
               I give my consent to the processing of personal data
@@ -158,8 +158,8 @@ const RegistrationForm = ({ user }) => {
         </FormGroup>
       </Form>
     </React.Fragment>
-  );
-};
+  )
+}
 
 const Login = ({ user = null }) => {
   return (
@@ -170,7 +170,7 @@ const Login = ({ user = null }) => {
         </Col>
       </Row>
     </Container>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

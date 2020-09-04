@@ -10,7 +10,7 @@ const optionsInfo = (examples) => [
   `  -c, --commit     commit`,
   `  -V, --version    outputs the version number`,
   `  -h, --help       outputs usage information`,
-];
+]
 
 const message = {
   help: ({ chalk, EOL, resolveExamples }) =>
@@ -55,6 +55,6 @@ const message = {
         `` +
         `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
     ].join(EOL),
-};
+}
 
-export default message;
+export default message

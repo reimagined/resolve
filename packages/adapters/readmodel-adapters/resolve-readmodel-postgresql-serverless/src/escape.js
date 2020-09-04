@@ -1,3 +1,3 @@
-const escape = (str) => `'${String(str).replace(/(['])/gi, '$1$1')}'`;
+const escape = (str) => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
-export default escape;
+export default escape

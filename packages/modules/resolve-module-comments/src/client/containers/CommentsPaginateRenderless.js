@@ -1,10 +1,10 @@
-import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connectReadModel, sendAggregateAction } from 'resolve-redux';
-import { connect } from 'react-redux';
+import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connectReadModel, sendAggregateAction } from 'resolve-redux'
+import { connect } from 'react-redux'
 
-import * as defaults from '../../common/defaults';
-import { CommentsTreeRenderless } from './CommentsTreeRenderless';
+import * as defaults from '../../common/defaults'
+import { CommentsTreeRenderless } from './CommentsTreeRenderless'
 
 export class CommentsPaginateRenderless extends React.PureComponent {
   static defaultProps = {
@@ -13,14 +13,14 @@ export class CommentsPaginateRenderless extends React.PureComponent {
       console.log(
         `comments (pageNumber: ${pageNumber}, itemsOnPage: ${itemsOnPage}):`,
         comments
-      );
-      return null;
+      )
+      return null
     },
-  };
+  }
 
   render() {
-    const { children: Component, comments, ...props } = this.props;
-    return <Component {...props} comments={comments} />;
+    const { children: Component, comments, ...props } = this.props
+    return <Component {...props} comments={comments} />
   }
 }
 
@@ -39,12 +39,12 @@ export const mapStateToOptions = (
     itemsOnPage,
     pageNumber,
   },
-});
+})
 
 const mapStateToProps = (state, { data }) => ({
   comments: data ? data.comments : undefined,
   paginationDone: data ? data.paginationDone : undefined,
-});
+})
 
 export const mapDispatchToProps = (
   dispatch,
@@ -74,8 +74,8 @@ export const mapDispatchToProps = (
       ),
     },
     dispatch
-  );
+  )
 
 export default connectReadModel(mapStateToOptions)(
   connect(mapStateToProps, mapDispatchToProps)(CommentsTreeRenderless)
-);
+)

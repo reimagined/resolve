@@ -3,16 +3,16 @@ import {
   FILE_LOADING_SUCCESS,
   FILE_LOADING_FAILURE,
   FILE_NOT_LOADED,
-} from '../event-types';
+} from '../event-types'
 
 export default {
   fileNotLoaded: (state, command) => {
-    const { userId, projectId } = command.payload;
+    const { userId, projectId } = command.payload
 
     return {
       type: FILE_NOT_LOADED,
       payload: { userId, projectId },
-    };
+    }
   },
 
   startLoadingFile: () => ({
@@ -26,4 +26,4 @@ export default {
   failureLoadingFile: () => ({
     type: FILE_LOADING_FAILURE,
   }),
-};
+}

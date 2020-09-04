@@ -1,5 +1,5 @@
-import React from 'react';
+import React from 'react'
 
-const UploaderContext = React.createContext({});
+const UploaderContext = React.createContext({})
 
-export default UploaderContext;
+export default UploaderContext

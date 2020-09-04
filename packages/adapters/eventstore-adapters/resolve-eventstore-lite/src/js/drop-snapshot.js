@@ -3,7 +3,7 @@ const dropSnapshot = async (pool, snapshotKey) => {
     `DELETE FROM ${pool.escapeId(pool.snapshotsTableName)}
     WHERE ${pool.escapeId('snapshotKey')}=
     ${pool.escape(snapshotKey)}`
-  );
-};
+  )
+}
 
-export default dropSnapshot;
+export default dropSnapshot

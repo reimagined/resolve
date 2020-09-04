@@ -1,8 +1,8 @@
-import debugLevels from 'resolve-debug-levels';
+import debugLevels from 'resolve-debug-levels'
 
 const log = debugLevels(
   'resolve:resolve-readmodel-postgresql-serverless:rollback-xa-transaction'
-);
+)
 
 const rollbackXATransaction = async (
   pool,
@@ -10,26 +10,26 @@ const rollbackXATransaction = async (
   { xaTransactionId }
 ) => {
   try {
-    log.verbose('Rollback XA-transaction to postgresql database started');
+    log.verbose('Rollback XA-transaction to postgresql database started')
     while (true) {
       try {
         await pool.rdsDataService.rollbackTransaction({
           resourceArn: pool.dbClusterOrInstanceArn,
           secretArn: pool.awsSecretStoreArn,
           transactionId: xaTransactionId,
-        });
-        break;
+        })
+        break
       } catch (err) {
         if (pool.isTimeoutError(err)) {
-          continue;
+          continue
         }
-        throw err;
+        throw err
       }
     }
 
-    log.verbose('Rollback XA-transaction to postgresql database succeed');
+    log.verbose('Rollback XA-transaction to postgresql database succeed')
 
-    return true;
+    return true
   } catch (error) {
     if (error != null && /Transaction .*? Is Not Found/i.test(error.message)) {
       while (true) {
@@ -55,28 +55,28 @@ const rollbackXATransaction = async (
                 pool.hash512(`${xaTransactionId}${readModelName}`)
               )}
             `,
-          });
+          })
 
-          log.verbose('Rollback XA-transaction to postgresql database succeed');
+          log.verbose('Rollback XA-transaction to postgresql database succeed')
 
-          return xaResult.length === 0 ? true : false;
+          return xaResult.length === 0 ? true : false
         } catch (err) {
           if (pool.isTimeoutError(err)) {
-            continue;
+            continue
           }
 
           log.verbose(
             'Rollback XA-transaction to postgresql database failed',
             error
-          );
-          throw error;
+          )
+          throw error
         }
       }
     }
 
-    log.verbose('Rollback XA-transaction to postgresql database failed', error);
-    throw error;
+    log.verbose('Rollback XA-transaction to postgresql database failed', error)
+    throw error
   }
-};
+}
 
-export default rollbackXATransaction;
+export default rollbackXATransaction

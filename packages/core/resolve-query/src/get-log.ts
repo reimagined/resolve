@@ -1,3 +1,3 @@
-import getLog from 'resolve-debug-levels';
+import getLog from 'resolve-debug-levels'
 
-export default (scope: string): any => getLog(`resolve:resolve-query:${scope}`);
+export default (scope: string): any => getLog(`resolve:resolve-query:${scope}`)

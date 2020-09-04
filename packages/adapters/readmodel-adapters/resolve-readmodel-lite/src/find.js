@@ -1,4 +1,4 @@
-const MAX_LIMIT_VALUE = 0x0fffffff | 0;
+const MAX_LIMIT_VALUE = 0x0fffffff | 0
 
 const find = async (
   {
@@ -23,46 +23,46 @@ const find = async (
       ? 'ORDER BY ' +
         Object.keys(sort)
           .map((fieldName) => {
-            const [baseName, ...nestedPath] = fieldName.split('.');
+            const [baseName, ...nestedPath] = fieldName.split('.')
             const provisionedName =
               nestedPath.length > 0
                 ? `json_extract(${escapeId(baseName)}, '${makeNestedPath(
                     nestedPath
                   )}')`
-                : escapeId(baseName);
+                : escapeId(baseName)
             return sort[fieldName] > 0
               ? `${provisionedName} ASC`
-              : `${provisionedName} DESC`;
+              : `${provisionedName} DESC`
           })
           .join(', ')
-      : '';
+      : ''
 
   const skipLimit = `LIMIT ${isFinite(skip) ? skip : 0},${
     isFinite(limit) ? limit : MAX_LIMIT_VALUE
-  }`;
+  }`
 
   const searchExpr = searchToWhereExpression(
     searchExpression,
     escapeId,
     escape,
     makeNestedPath
-  );
+  )
 
   const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : '';
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   const rows = await runQuery(
     `SELECT * FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr}
     ${orderExpression}
     ${skipLimit}`
-  );
+  )
 
   for (let idx = 0; idx < rows.length; idx++) {
-    rows[idx] = convertBinaryRow(rows[idx], readModelName, fieldList);
+    rows[idx] = convertBinaryRow(rows[idx], readModelName, fieldList)
   }
 
-  return rows;
-};
+  return rows
+}
 
-export default find;
+export default find

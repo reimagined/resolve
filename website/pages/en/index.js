@@ -5,26 +5,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
+const React = require('react')
 
-const CompLibrary = require('../../core/CompLibrary.js');
+const CompLibrary = require('../../core/CompLibrary.js')
 
-const MarkdownBlock = CompLibrary.MarkdownBlock; /* Used to read markdown */
-const Container = CompLibrary.Container;
-const GridBlock = CompLibrary.GridBlock;
+const MarkdownBlock = CompLibrary.MarkdownBlock /* Used to read markdown */
+const Container = CompLibrary.Container
+const GridBlock = CompLibrary.GridBlock
 
-const siteConfig = require(`${process.cwd()}/siteConfig.js`);
+const siteConfig = require(`${process.cwd()}/siteConfig.js`)
 
 function imgUrl(img) {
-  return `${siteConfig.baseUrl}img/${img}`;
+  return `${siteConfig.baseUrl}img/${img}`
 }
 
 function docUrl(doc, language) {
-  return `${siteConfig.baseUrl}docs/${language ? `${language}/` : ''}${doc}`;
+  return `${siteConfig.baseUrl}docs/${language ? `${language}/` : ''}${doc}`
 }
 
 function pageUrl(page, language) {
-  return siteConfig.baseUrl + (language ? `${language}/` : '') + page;
+  return siteConfig.baseUrl + (language ? `${language}/` : '') + page
 }
 
 class Button extends React.Component {
@@ -35,13 +35,13 @@ class Button extends React.Component {
           {this.props.children}
         </a>
       </div>
-    );
+    )
   }
 }
 
 Button.defaultProps = {
   target: '_self',
-};
+}
 
 const SplashContainer = ({ children }) => (
   <div
@@ -52,14 +52,14 @@ const SplashContainer = ({ children }) => (
       <div className="wrapper homeWrapper">{children}</div>
     </div>
   </div>
-);
+)
 
 const ProjectTitle = () => (
   <h1 className="projectTitle">
     {siteConfig.title}
     <small>{siteConfig.tagline}</small>
   </h1>
-);
+)
 
 const PromoSection = (props) => (
   <div className="section promoSection">
@@ -67,11 +67,11 @@ const PromoSection = (props) => (
       <div className="pluginRowBlock">{props.children}</div>
     </div>
   </div>
-);
+)
 
 class HomeSplash extends React.Component {
   render() {
-    const language = this.props.language || '';
+    const language = this.props.language || ''
     return (
       <SplashContainer>
         <div className="inner">
@@ -89,7 +89,7 @@ class HomeSplash extends React.Component {
           </PromoSection>
         </div>
       </SplashContainer>
-    );
+    )
   }
 }
 
@@ -101,7 +101,7 @@ const Block = (props) => (
   >
     <GridBlock align="center" contents={props.children} layout={props.layout} />
   </Container>
-);
+)
 
 const Features = (props) => (
   <Block layout="threeColumn" {...props}>
@@ -129,7 +129,7 @@ You don't have to anticipate what data you will need later.`,
       },
     ]}
   </Block>
-);
+)
 
 const GetStarted = (props) => (
   <Block layout="twoColumn" background="light" {...props}>
@@ -150,7 +150,7 @@ yarn create resolve-app my-app
       },
     ]}
   </Block>
-);
+)
 
 const FeatureCallout = () => (
   <div
@@ -163,7 +163,7 @@ const FeatureCallout = () => (
       ```js const a = 3 ```
     </MarkdownBlock>
   </div>
-);
+)
 
 const LearnHow = () => (
   <Block background="light">
@@ -176,7 +176,7 @@ const LearnHow = () => (
       },
     ]}
   </Block>
-);
+)
 
 const TryOut = () => (
   <Block id="try">
@@ -189,7 +189,7 @@ const TryOut = () => (
       },
     ]}
   </Block>
-);
+)
 
 const Description = () => (
   <Block background="dark">
@@ -202,11 +202,11 @@ const Description = () => (
       },
     ]}
   </Block>
-);
+)
 
 const Showcase = (props) => {
   if ((siteConfig.users || []).length === 0) {
-    return null;
+    return null
   }
 
   const showcase = siteConfig.users
@@ -215,7 +215,7 @@ const Showcase = (props) => {
       <a href={user.infoLink} key={user.infoLink}>
         <img src={user.image} alt={user.caption} title={user.caption} />
       </a>
-    ));
+    ))
 
   return (
     <div className="productShowcaseSection paddingBottom">
@@ -228,8 +228,8 @@ const Showcase = (props) => {
         </a>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const Index = ({ language = '' }) => (
   <div>
@@ -244,6 +244,6 @@ const Index = ({ language = '' }) => (
       <Showcase language={language} /> */}
     </div>
   </div>
-);
+)
 
-module.exports = Index;
+module.exports = Index

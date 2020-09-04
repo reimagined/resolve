@@ -1,69 +1,69 @@
 const runRawQuery = async (pool, querySQL) => {
-  const connection = await pool.connectionPromise;
+  const connection = await pool.connectionPromise
 
-  const result = await connection.query(querySQL);
-  return result;
-};
+  const result = await connection.query(querySQL)
+  return result
+}
 
 const runQuery = async (pool, querySQL) => {
-  const [rows] = await runRawQuery(pool, querySQL);
-  return rows;
-};
+  const [rows] = await runRawQuery(pool, querySQL)
+  return rows
+}
 
 const setupConnection = async (pool) => {
   if (pool.isDisconnected) {
-    pool.connectionPromise = null;
-    return;
+    pool.connectionPromise = null
+    return
   }
   pool.connectionPromise = pool.MySQL.createConnection({
     ...pool.connectionOptions,
     multipleStatements: true,
-  });
-  const connection = await pool.connectionPromise;
+  })
+  const connection = await pool.connectionPromise
 
   const [[{ version }]] = await connection.query(
     `SELECT version() AS \`version\``
-  );
-  const major = +version.split('.')[0];
+  )
+  const major = +version.split('.')[0]
   if (isNaN(major) || major < 8) {
-    throw new Error(`Supported MySQL version 8+, but got ${version}`);
+    throw new Error(`Supported MySQL version 8+, but got ${version}`)
   }
 
   connection.onerror = async (err) => {
     if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-      return await setupConnection(pool);
+      return await setupConnection(pool)
     }
 
-    pool.lastMysqlError = err;
+    pool.lastMysqlError = err
     // eslint-disable-next-line no-console
-    console.warn('SQL error: ', err);
-  };
-};
+    console.warn('SQL error: ', err)
+  }
+}
 
 const makeNestedPath = (nestedPath) => {
-  let result = '$';
+  let result = '$'
   for (const part of nestedPath) {
     if (part == null || part.constructor !== String) {
-      throw new Error('Invalid JSON path');
+      throw new Error('Invalid JSON path')
     }
-    const invariant = Number(part);
+    const invariant = Number(part)
     if (!isNaN(invariant)) {
-      result += `[${invariant}]`;
+      result += `[${invariant}]`
     } else {
-      result += `.${JSON.stringify(part)}`;
+      result += `.${JSON.stringify(part)}`
     }
   }
-  return result;
-};
+  return result
+}
 
 const connect = async (imports, pool, options) => {
-  let { tablePrefix, performanceTracer, ...connectionOptions } = options;
+  let { tablePrefix, performanceTracer, ...connectionOptions } = options
 
   if (
     tablePrefix == null ||
     (tablePrefix != null && tablePrefix.constructor !== String)
   ) {
-    tablePrefix = '';
+    tablePrefix = ''
   }
 
   Object.assign(pool, {
@@ -74,9 +74,9 @@ const connect = async (imports, pool, options) => {
     tablePrefix,
     makeNestedPath,
     ...imports,
-  });
+  })
 
-  await setupConnection(pool);
-};
+  await setupConnection(pool)
+}
 
-export default connect;
+export default connect

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Image, Navbar } from 'react-bootstrap';
+import React from 'react'
+import { Image, Navbar } from 'react-bootstrap'
 
 class Logo extends React.PureComponent {
   render() {
@@ -11,8 +11,8 @@ class Logo extends React.PureComponent {
         </Navbar.Brand>
         <Navbar.Toggle />
       </Navbar.Header>
-    );
+    )
   }
 }
 
-export default Logo;
+export default Logo

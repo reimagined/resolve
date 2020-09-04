@@ -1,4 +1,4 @@
-process.env.TZ = 'Europe/Moscow';
+process.env.TZ = 'Europe/Moscow'
 
 module.exports = {
   testEnvironment: 'node',
@@ -16,4 +16,4 @@ module.exports = {
   transform: {
     '^.+\\.js$': 'babel-jest',
   },
-};
+}

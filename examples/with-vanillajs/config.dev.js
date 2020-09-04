@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts';
+import { declareRuntimeEnv } from 'resolve-scripts'
 
 const devConfig = {
   target: 'local',
@@ -16,6 +16,6 @@ const devConfig = {
       snapshotBucketSize: 100,
     },
   },
-};
+}
 
-export default devConfig;
+export default devConfig

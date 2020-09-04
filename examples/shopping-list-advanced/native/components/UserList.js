@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { List, ListItem, Button, Text } from 'native-base';
+import React from 'react'
+import { View, StyleSheet } from 'react-native'
+import { List, ListItem, Button, Text } from 'native-base'
 
 const styles = StyleSheet.create({
   container: {
@@ -17,22 +17,22 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 20,
   },
-});
+})
 
 class UserList extends React.PureComponent {
   onPressButton = (userId, username) => {
-    this.props.onPressButton(userId, username);
-  };
+    this.props.onPressButton(userId, username)
+  }
 
   render() {
-    const { buttonText, users } = this.props;
+    const { buttonText, users } = this.props
 
     if (users.length === 0) {
       return (
         <View style={styles.notFound}>
           <Text>Users not found</Text>
         </View>
-      );
+      )
     }
 
     return (
@@ -54,8 +54,8 @@ class UserList extends React.PureComponent {
           </ListItem>
         ))}
       </List>
-    );
+    )
   }
 }
 
-export default UserList;
+export default UserList

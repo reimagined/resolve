@@ -4,20 +4,20 @@ import {
   USER_REGISTERED,
   USER_PERSONAL_DATA_REQUESTED,
   USER_PERSONAL_DATA_GATHERED,
-} from '../user-profile.events';
+} from '../user-profile.events'
 
 const readModel = {
   Init: async (store) => {
     await store.defineTable('Users', {
       indexes: { id: 'string' },
       fields: ['profile', 'archive'],
-    });
+    })
   },
   [USER_REGISTERED]: async (store, event) => {
     const {
       aggregateId,
       payload: { nickname, firstName, lastName, contacts },
-    } = event;
+    } = event
 
     await store.insert('Users', {
       id: aggregateId,
@@ -27,15 +27,15 @@ const readModel = {
         lastName: lastName,
         contacts: contacts,
       },
-    });
+    })
   },
   [USER_PROFILE_UPDATED]: async (store, event) => {
     const {
       aggregateId,
       payload: { firstName, lastName, contacts },
-    } = event;
+    } = event
 
-    const user = await store.findOne('Users', { id: aggregateId });
+    const user = await store.findOne('Users', { id: aggregateId })
 
     await store.update(
       'Users',
@@ -50,17 +50,17 @@ const readModel = {
           },
         },
       }
-    );
+    )
   },
   [USER_PROFILE_DELETED]: async (store, event) => {
-    const { aggregateId } = event;
+    const { aggregateId } = event
 
     await store.delete('Users', {
       id: aggregateId,
-    });
+    })
   },
   [USER_PERSONAL_DATA_REQUESTED]: async (store, event) => {
-    const { aggregateId, timestamp } = event;
+    const { aggregateId, timestamp } = event
 
     await store.update(
       'Users',
@@ -75,14 +75,14 @@ const readModel = {
           },
         },
       }
-    );
+    )
   },
   [USER_PERSONAL_DATA_GATHERED]: async (store, event) => {
     const {
       aggregateId,
       timestamp,
       payload: { uploadId, token, error },
-    } = event;
+    } = event
 
     await store.update(
       'Users',
@@ -97,8 +97,8 @@ const readModel = {
           },
         },
       }
-    );
+    )
   },
-};
+}
 
-export default readModel;
+export default readModel

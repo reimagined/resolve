@@ -1,20 +1,20 @@
 const wrapDispose = (pool, dispose) => async (options = {}) => {
   if (pool.disposed) {
-    throw new Error('Adapter has been already disposed');
+    throw new Error('Adapter has been already disposed')
   }
   if (options != null && options.constructor !== Object) {
     throw new Error(
       'Dispose options should be object or not be passed to use default behaviour'
-    );
+    )
   }
-  pool.disposed = true;
+  pool.disposed = true
   if (!pool.isInitialized) {
-    return;
+    return
   }
 
-  await pool.connectPromise;
+  await pool.connectPromise
 
-  await dispose(pool, options);
-};
+  await dispose(pool, options)
+}
 
-export default wrapDispose;
+export default wrapDispose

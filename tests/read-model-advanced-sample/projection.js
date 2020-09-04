@@ -13,12 +13,12 @@ const projection = {
         'firstJsonName',
         'secondJsonName',
       ],
-    });
+    })
     // mdis-stop read-store-api
   },
 
   INSERT_TEST: async (store, event) => {
-    const testEventContent = event.payload;
+    const testEventContent = event.payload
 
     // mdis-start read-store-api
     await store.insert('TestTable', {
@@ -28,7 +28,7 @@ const projection = {
       secondFieldName: 0,
       firstJsonName: { a: 1, b: 2, e: 10 },
       secondJsonName: [1, 2, 3],
-    });
+    })
     // mdis-stop read-store-api
 
     await store.insert('TestTable', {
@@ -38,7 +38,7 @@ const projection = {
       secondFieldName: 100,
       firstJsonName: { c: 3, d: 4, e: 20 },
       secondJsonName: null,
-    });
+    })
 
     await store.insert('TestTable', {
       firstIndexName: 3,
@@ -47,7 +47,7 @@ const projection = {
       secondFieldName: 200,
       firstJsonName: null,
       secondJsonName: [3, 2, 1],
-    });
+    })
 
     await store.insert('TestTable', {
       firstIndexName: 4,
@@ -56,11 +56,11 @@ const projection = {
       secondFieldName: null,
       firstJsonName: null,
       secondJsonName: null,
-    });
+    })
   },
 
   UPDATE_TEST: async (store, event) => {
-    const testEventContent = event.payload;
+    const testEventContent = event.payload
 
     // mdis-start read-store-api
     await store.update(
@@ -83,7 +83,7 @@ const projection = {
           secondFieldName: 42,
         },
       }
-    );
+    )
     // mdis-stop read-store-api
 
     await store.update(
@@ -105,11 +105,11 @@ const projection = {
           secondJsonName: ['outer', 'json', 'value', testEventContent],
         },
       }
-    );
+    )
   },
 
   UPSERT_TEST: async (store, event) => {
-    const testEventContent = event.payload;
+    const testEventContent = event.payload
 
     // mdis-start read-store-api
     await store.update(
@@ -123,18 +123,18 @@ const projection = {
         },
       },
       { upsert: true }
-    );
+    )
     // mdis-stop read-store-api
   },
 
   DELETE_TEST: async (store, event) => {
-    const testEventContent = event.payload;
+    const testEventContent = event.payload
 
     // mdis-start read-store-api
     await store.delete('TestTable', {
       firstIndexName: { $gt: 1 },
       secondIndexName: 'idx-a',
-    });
+    })
     // mdis-stop read-store-api
 
     await store.delete('TestTable', {
@@ -144,9 +144,9 @@ const projection = {
         },
         { secondIndexName: testEventContent },
       ],
-    });
+    })
   },
-};
+}
 
-export default projection;
+export default projection
 // mdis-stop

@@ -4,7 +4,7 @@ const unfreeze = async ({
 }) => {
   await connection.execute(
     `DROP TABLE IF EXISTS ${escapeId(`${eventsTableName}-freeze`)}`
-  );
-};
+  )
+}
 
-export default unfreeze;
+export default unfreeze

@@ -1,19 +1,19 @@
-import { Phases, symbol } from './constants';
+import { Phases, symbol } from './constants'
 
 export const executeReadModel = async ({
   promise,
   createQuery,
   transformEvents,
 }: {
-  promise: any;
-  createQuery: Function;
-  transformEvents: Function;
+  promise: any
+  createQuery: Function
+  transformEvents: Function
 }): Promise<any> => {
   if (promise[symbol].phase < Phases.RESOLVER) {
-    throw new TypeError(promise[symbol].phase);
+    throw new TypeError(promise[symbol].phase)
   }
 
-  let queryExecutor = null;
+  let queryExecutor = null
   try {
     queryExecutor = createQuery({
       viewModels: [],
@@ -33,20 +33,20 @@ export const executeReadModel = async ({
       eventstoreAdapter: {
         getSecretsManager: (): any => promise[symbol].secretsManager,
       },
-    });
+    })
 
-    let updateResult = null;
+    let updateResult = null
     try {
       updateResult = await queryExecutor.sendEvents({
         modelName: promise[symbol].name,
         events: transformEvents(promise[symbol].events),
-      });
+      })
     } catch (error) {
-      updateResult = error;
+      updateResult = error
     }
 
     if (updateResult != null && updateResult.lastError != null) {
-      throw updateResult.lastError;
+      throw updateResult.lastError
     }
 
     const result = await queryExecutor.read({
@@ -54,14 +54,14 @@ export const executeReadModel = async ({
       resolverName: promise[symbol].resolverName,
       resolverArgs: promise[symbol].resolverArgs,
       jwt: promise[symbol].jwt,
-    });
+    })
 
-    promise[symbol].resolve(result);
+    promise[symbol].resolve(result)
   } catch (error) {
-    promise[symbol].reject(error);
+    promise[symbol].reject(error)
   } finally {
     if (queryExecutor) {
-      await queryExecutor.dispose();
+      await queryExecutor.dispose()
     }
   }
-};
+}

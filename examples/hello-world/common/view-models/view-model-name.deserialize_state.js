@@ -1,1 +1,1 @@
-export default (state) => JSON.parse(state);
+export default (state) => JSON.parse(state)

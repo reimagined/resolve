@@ -3,15 +3,15 @@ import {
   applyMiddleware,
   combineReducers,
   compose,
-} from 'redux';
-import uuid from 'uuid/v4';
+} from 'redux'
+import uuid from 'uuid/v4'
 
-import { create as createJwtReducer } from './internal/jwt-reducer';
-import { create as createViewModelReducer } from './view-model/view-model-reducer';
-import { create as createReadModelReducer } from './read-model/read-model-reducer';
-import createResolveMiddleware from './create-resolve-middleware';
-import { ReduxStoreContext } from './types';
-import deserializeInitialState from './internal/deserialize-initial-state';
+import { create as createJwtReducer } from './internal/jwt-reducer'
+import { create as createViewModelReducer } from './view-model/view-model-reducer'
+import { create as createReadModelReducer } from './read-model/read-model-reducer'
+import createResolveMiddleware from './create-resolve-middleware'
+import { ReduxStoreContext } from './types'
+import deserializeInitialState from './internal/deserialize-initial-state'
 
 const createStore = ({
   redux: {
@@ -30,40 +30,40 @@ const createStore = ({
   isClient,
   queryMethod,
 }: ReduxStoreContext): any => {
-  const sessionId = uuid();
+  const sessionId = uuid()
 
   if (serializedState != null && initialState != null) {
     throw Error(
       `ambiguous initial state: both initialState and serializedState set`
-    );
+    )
   }
 
-  let actualInitialState;
+  let actualInitialState
 
   if (serializedState != null) {
-    actualInitialState = deserializeInitialState(viewModels, serializedState);
+    actualInitialState = deserializeInitialState(viewModels, serializedState)
   } else {
-    actualInitialState = initialState;
+    actualInitialState = initialState
   }
 
-  const resolveMiddleware = createResolveMiddleware();
+  const resolveMiddleware = createResolveMiddleware()
 
   const combinedReducers = combineReducers({
     ...reducers,
     viewModels: createViewModelReducer(),
     readModels: createReadModelReducer(),
     jwt: createJwtReducer(), // does it really actual?
-  });
+  })
 
-  const appliedMiddlewares = applyMiddleware(resolveMiddleware, ...middlewares);
+  const appliedMiddlewares = applyMiddleware(resolveMiddleware, ...middlewares)
 
-  const composedEnhancers = compose(appliedMiddlewares, ...enhancers);
+  const composedEnhancers = compose(appliedMiddlewares, ...enhancers)
 
   const store = reduxCreateStore(
     combinedReducers,
     actualInitialState,
     composedEnhancers
-  ) as any;
+  ) as any
 
   resolveMiddleware.run({
     store,
@@ -76,9 +76,9 @@ const createStore = ({
     isClient,
     customSagas,
     queryMethod,
-  });
+  })
 
-  return store;
-};
+  return store
+}
 
-export default createStore;
+export default createStore

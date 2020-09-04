@@ -1,12 +1,12 @@
-import path from 'path';
-import EsmWebpackPlugin from '@purtuga/esm-webpack-plugin';
+import path from 'path'
+import EsmWebpackPlugin from '@purtuga/esm-webpack-plugin'
 
-import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries';
-import getModulesDirs from './get_modules_dirs';
+import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries'
+import getModulesDirs from './get_modules_dirs'
 
 const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
-  const distDir = path.resolve(process.cwd(), resolveConfig.distDir);
-  const isClient = true;
+  const distDir = path.resolve(process.cwd(), resolveConfig.distDir)
+  const isClient = true
 
   const clientTransformBabelOptions = {
     cacheDirectory: true,
@@ -26,7 +26,7 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
         },
       ],
     ],
-  };
+  }
 
   const baseClientConfig = {
     name: 'ClientConfigName',
@@ -90,7 +90,7 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
       ],
     },
     plugins: [],
-  };
+  }
 
   const clientConfigs = [
     {
@@ -117,16 +117,16 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
       },
       plugins: [...baseClientConfig.plugins, new EsmWebpackPlugin()],
     },
-  ];
+  ]
 
   attachWebpackConfigsClientEntries(
     resolveConfig,
     baseClientConfig,
     clientConfigs,
     true
-  );
+  )
 
-  return clientConfigs;
-};
+  return clientConfigs
+}
 
-export default getClientWebpackConfigs;
+export default getClientWebpackConfigs

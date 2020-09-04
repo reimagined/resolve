@@ -1,6 +1,6 @@
-import App from './containers/App';
-import ShoppingList from './containers/ShoppingList';
-import MyLists from './containers/MyLists';
+import App from './containers/App'
+import ShoppingList from './containers/ShoppingList'
+import MyLists from './containers/MyLists'
 
 const routes = [
   {
@@ -17,8 +17,8 @@ const routes = [
       },
     ],
   },
-];
+]
 
-const getRoutes = () => routes;
+const getRoutes = () => routes
 
-export default getRoutes;
+export default getRoutes

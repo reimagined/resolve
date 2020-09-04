@@ -1,8 +1,8 @@
-import debugLevels from 'resolve-debug-levels';
+import debugLevels from 'resolve-debug-levels'
 
 const log = debugLevels(
   'resolve:resolve-readmodel-postgresql-serverless:commit-xa-transaction'
-);
+)
 
 const commitXATransaction = async (
   pool,
@@ -10,7 +10,7 @@ const commitXATransaction = async (
   { xaTransactionId, countEvents }
 ) => {
   try {
-    log.verbose('Commit XA-transaction to postgresql database started');
+    log.verbose('Commit XA-transaction to postgresql database started')
     while (true) {
       try {
         await pool.rdsDataService.executeStatement({
@@ -18,30 +18,30 @@ const commitXATransaction = async (
           secretArn: pool.awsSecretStoreArn,
           transactionId: xaTransactionId,
           sql: `SELECT 0`,
-        });
-        break;
+        })
+        break
       } catch (err) {
         if (pool.isTimeoutError(err)) {
-          continue;
+          continue
         }
-        throw err;
+        throw err
       }
     }
 
     if (countEvents) {
-      const savepointId = pool.generateGuid(readModelName, xaTransactionId);
+      const savepointId = pool.generateGuid(readModelName, xaTransactionId)
       const eventCountId = `resolve.${pool.generateGuid(
         readModelName,
         xaTransactionId,
         'eventCountId'
-      )}`;
+      )}`
       const insideEventId = `resolve.${pool.generateGuid(
         readModelName,
         xaTransactionId,
         'insideEventId'
-      )}`;
+      )}`
 
-      let result = null;
+      let result = null
       while (true) {
         try {
           result = await pool.rdsDataService.executeStatement({
@@ -49,9 +49,9 @@ const commitXATransaction = async (
             secretArn: pool.awsSecretStoreArn,
             transactionId: xaTransactionId,
             sql: `SELECT current_setting(${pool.escape(insideEventId)})`,
-          });
+          })
 
-          const isInsideEvent = +pool.coercer(result.records[0][0]);
+          const isInsideEvent = +pool.coercer(result.records[0][0])
           if (isInsideEvent) {
             await pool.rdsDataService.executeStatement({
               resourceArn: pool.dbClusterOrInstanceArn,
@@ -61,15 +61,15 @@ const commitXATransaction = async (
                 ROLLBACK TO SAVEPOINT ${savepointId};
                 RELEASE SAVEPOINT ${savepointId};
               `,
-            });
+            })
           }
 
-          break;
+          break
         } catch (err) {
           if (pool.isTimeoutError(err)) {
-            continue;
+            continue
           }
-          throw err;
+          throw err
         }
       }
 
@@ -80,19 +80,19 @@ const commitXATransaction = async (
             secretArn: pool.awsSecretStoreArn,
             transactionId: xaTransactionId,
             sql: `SELECT current_setting(${pool.escape(eventCountId)})`,
-          });
-          break;
+          })
+          break
         } catch (err) {
           if (pool.isTimeoutError(err)) {
-            continue;
+            continue
           }
-          throw err;
+          throw err
         }
       }
 
-      const appliedEventsCount = +pool.coercer(result.records[0][0]);
+      const appliedEventsCount = +pool.coercer(result.records[0][0])
 
-      return appliedEventsCount;
+      return appliedEventsCount
     }
 
     while (true) {
@@ -101,19 +101,19 @@ const commitXATransaction = async (
           resourceArn: pool.dbClusterOrInstanceArn,
           secretArn: pool.awsSecretStoreArn,
           transactionId: xaTransactionId,
-        });
-        break;
+        })
+        break
       } catch (err) {
         if (pool.isTimeoutError(err)) {
-          continue;
+          continue
         }
-        throw err;
+        throw err
       }
     }
 
-    log.verbose('Commit XA-transaction to postgresql database succeed');
+    log.verbose('Commit XA-transaction to postgresql database succeed')
 
-    return true;
+    return true
   } catch (error) {
     if (error != null && /Transaction .*? Is Not Found/i.test(error.message)) {
       while (true) {
@@ -139,28 +139,28 @@ const commitXATransaction = async (
                 pool.hash512(`${xaTransactionId}${readModelName}`)
               )}
             `,
-          });
+          })
 
-          log.verbose('Commit XA-transaction to postgresql database succeed');
+          log.verbose('Commit XA-transaction to postgresql database succeed')
 
-          return countEvents ? 0 : xaResult.length > 0 ? true : false;
+          return countEvents ? 0 : xaResult.length > 0 ? true : false
         } catch (err) {
           if (pool.isTimeoutError(err)) {
-            continue;
+            continue
           }
 
           log.verbose(
             'Commit XA-transaction to postgresql database failed',
             error
-          );
-          throw error;
+          )
+          throw error
         }
       }
     }
 
-    log.verbose('Commit XA-transaction to postgresql database failed', error);
-    throw error;
+    log.verbose('Commit XA-transaction to postgresql database failed', error)
+    throw error
   }
-};
+}
 
-export default commitXATransaction;
+export default commitXATransaction

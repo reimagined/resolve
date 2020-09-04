@@ -1,5 +1,5 @@
-import declareRuntimeEnv from '../../src/declare_runtime_env';
-import alias from '../../src/alias/$resolve.customConstants';
+import declareRuntimeEnv from '../../src/declare_runtime_env'
+import alias from '../../src/alias/$resolve.customConstants'
 
 describe('base config works correctly', () => {
   const resolveConfig = {
@@ -13,7 +13,7 @@ describe('base config works correctly', () => {
         c: 20,
       },
     },
-  };
+  }
 
   test('[client]', () => {
     expect(
@@ -21,8 +21,8 @@ describe('base config works correctly', () => {
         resolveConfig,
         isClient: true,
       }).code
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
   test('[server]', () => {
     expect(
@@ -30,16 +30,16 @@ describe('base config works correctly', () => {
         resolveConfig,
         isClient: false,
       }).code
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})
 
 describe('config with process.env failure', () => {
   const resolveConfig = {
     customConstants: {
       AAA: declareRuntimeEnv('AAA'),
     },
-  };
+  }
 
   test('[client]', () => {
     expect(
@@ -48,8 +48,8 @@ describe('config with process.env failure', () => {
           resolveConfig,
           isClient: true,
         }).code
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
   test('[server]', () => {
     expect(
@@ -58,9 +58,9 @@ describe('config with process.env failure', () => {
           resolveConfig,
           isClient: false,
         }).code
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})
 
 describe('config with deep process.env failure', () => {
   const resolveConfig = {
@@ -69,7 +69,7 @@ describe('config with deep process.env failure', () => {
         AAA: declareRuntimeEnv('AAA'),
       },
     },
-  };
+  }
 
   test('[client]', () => {
     expect(
@@ -78,8 +78,8 @@ describe('config with deep process.env failure', () => {
           resolveConfig,
           isClient: true,
         }).code
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
   test('[server]', () => {
     expect(
@@ -88,9 +88,9 @@ describe('config with deep process.env failure', () => {
           resolveConfig,
           isClient: false,
         }).code
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})
 
 describe('config with non-json type failure', () => {
   const resolveConfig = {
@@ -99,7 +99,7 @@ describe('config with non-json type failure', () => {
         func: () => {},
       },
     },
-  };
+  }
 
   test('[client]', () => {
     expect(
@@ -108,8 +108,8 @@ describe('config with non-json type failure', () => {
           resolveConfig,
           isClient: true,
         }).code
-    ).toThrow();
-  });
+    ).toThrow()
+  })
 
   test('[server]', () => {
     expect(
@@ -118,6 +118,6 @@ describe('config with non-json type failure', () => {
           resolveConfig,
           isClient: false,
         }).code
-    ).toThrow();
-  });
-});
+    ).toThrow()
+  })
+})

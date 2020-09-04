@@ -4,22 +4,22 @@ import {
   RESOURCE_ANY,
   RUNTIME_ENV_OPTIONS_ONLY,
   IMPORT_INSTANCE,
-} from '../constants';
-import { checkRuntimeEnv } from '../declare_runtime_env';
-import importResource from '../import_resource';
+} from '../constants'
+import { checkRuntimeEnv } from '../declare_runtime_env'
+import importResource from '../import_resource'
 
 export default ({ resolveConfig, isClient }) => {
-  const imports = [];
-  const constants = [];
-  const exports = [`const viewModels = []`, ``];
+  const imports = []
+  const constants = []
+  const exports = [`const viewModels = []`, ``]
 
   for (let index = 0; index < resolveConfig.viewModels.length; index++) {
-    const viewModel = resolveConfig.viewModels[index];
+    const viewModel = resolveConfig.viewModels[index]
 
     if (checkRuntimeEnv(viewModel.name)) {
-      throw new Error(`${message.clientEnvError}.viewModels[${index}].name`);
+      throw new Error(`${message.clientEnvError}.viewModels[${index}].name`)
     }
-    constants.push(`const name_${index} = ${JSON.stringify(viewModel.name)}`);
+    constants.push(`const name_${index} = ${JSON.stringify(viewModel.name)}`)
 
     importResource({
       resourceName: `projection_${index}`,
@@ -30,7 +30,7 @@ export default ({ resolveConfig, isClient }) => {
       calculateHash: !isClient ? 'resolve-view-model-projection-hash' : null,
       imports,
       constants,
-    });
+    })
 
     importResource({
       resourceName: `deserializeState_${index}`,
@@ -42,17 +42,17 @@ export default ({ resolveConfig, isClient }) => {
         'resolve-runtime/lib/common/defaults/json-deserialize-state.js',
       imports,
       constants,
-    });
+    })
 
     exports.push(
       `viewModels.push({`,
       `  name: name_${index}`,
       `, projection: projection_${index}`,
       `, deserializeState: deserializeState_${index}`
-    );
+    )
 
     if (!isClient) {
-      exports.push(`, invariantHash: projection_${index}_hash`);
+      exports.push(`, invariantHash: projection_${index}_hash`)
 
       importResource({
         resourceName: `serializeState_${index}`,
@@ -64,9 +64,9 @@ export default ({ resolveConfig, isClient }) => {
           'resolve-runtime/lib/common/defaults/json-serialize-state.js',
         imports,
         constants,
-      });
+      })
 
-      exports.push(`, serializeState: serializeState_${index}`);
+      exports.push(`, serializeState: serializeState_${index}`)
 
       importResource({
         resourceName: `resolver_${index}`,
@@ -78,9 +78,9 @@ export default ({ resolveConfig, isClient }) => {
           'resolve-runtime/lib/common/defaults/view-model-resolver.js',
         imports,
         constants,
-      });
+      })
 
-      exports.push(`, resolver: resolver_${index}`);
+      exports.push(`, resolver: resolver_${index}`)
 
       importResource({
         resourceName: `encryption_${index}`,
@@ -91,12 +91,12 @@ export default ({ resolveConfig, isClient }) => {
         instanceFallback: 'resolve-runtime/lib/common/defaults/encryption.js',
         imports,
         constants,
-      });
+      })
 
-      exports.push(`, encryption: encryption_${index}`);
+      exports.push(`, encryption: encryption_${index}`)
     }
 
-    exports.push(`})`, ``);
+    exports.push(`})`, ``)
   }
 
   if (!isClient) {
@@ -142,10 +142,10 @@ export default ({ resolveConfig, isClient }) => {
           }
         }
       }
-    `);
+    `)
   }
 
-  exports.push(`export default viewModels`);
+  exports.push(`export default viewModels`)
 
-  return [...imports, ...constants, ...exports].join('\r\n');
-};
+  return [...imports, ...constants, ...exports].join('\r\n')
+}

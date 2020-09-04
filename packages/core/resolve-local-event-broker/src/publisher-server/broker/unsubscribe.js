@@ -1,12 +1,12 @@
-import { SUBSCRIBERS_TABLE_NAME } from '../constants';
+import { SUBSCRIBERS_TABLE_NAME } from '../constants'
 
 async function unsubscribe(pool, payload) {
   const {
     database: { escapeStr, escapeId, runRawQuery },
-  } = pool;
+  } = pool
 
-  const { eventSubscriber } = payload;
-  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME);
+  const { eventSubscriber } = payload
+  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
 
   await runRawQuery(`
     DELETE FROM ${subscribersTableNameAsId}
@@ -14,7 +14,7 @@ async function unsubscribe(pool, payload) {
 
     COMMIT;
     BEGIN IMMEDIATE;
-  `);
+  `)
 }
 
-export default unsubscribe;
+export default unsubscribe

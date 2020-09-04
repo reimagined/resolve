@@ -2,7 +2,7 @@ import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_SHARED,
   SHOPPING_LIST_UNSHARED,
-} from '../event-types';
+} from '../event-types'
 
 export default {
   Init: () => ({}),
@@ -19,4 +19,4 @@ export default {
     ...state,
     sharing: state.sharing.filter((id) => id !== userId),
   }),
-};
+}

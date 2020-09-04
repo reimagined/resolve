@@ -1,5 +1,5 @@
-import * as defaults from './defaults';
-import defaultVerifyCommand from './aggregates/verify-command';
+import * as defaults from './defaults'
+import defaultVerifyCommand from './aggregates/verify-command'
 
 const injectDefaults = (callback) => (
   {
@@ -56,6 +56,6 @@ const injectDefaults = (callback) => (
     },
     { verifyCommand },
     ...args
-  );
+  )
 
-export default injectDefaults;
+export default injectDefaults

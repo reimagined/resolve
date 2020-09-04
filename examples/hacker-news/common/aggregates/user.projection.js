@@ -1,4 +1,4 @@
-import { USER_CREATED, USER_CONFIRMED, USER_REJECTED } from '../event-types';
+import { USER_CREATED, USER_CONFIRMED, USER_REJECTED } from '../event-types'
 
 export default {
   Init: () => ({}),
@@ -16,4 +16,4 @@ export default {
     ...state,
     rejected: true,
   }),
-};
+}

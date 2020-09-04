@@ -1,10 +1,10 @@
-import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault';
-import givenEvents from 'resolve-testing-tools';
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
+import givenEvents from 'resolve-testing-tools'
 
-import config from './config';
-import resetReadModel from '../reset-read-model';
+import config from './config'
+import resetReadModel from '../reset-read-model'
 
-jest.setTimeout(1000 * 60 * 5);
+jest.setTimeout(1000 * 60 * 5)
 
 describe('Read-model sample', () => {
   const {
@@ -12,29 +12,29 @@ describe('Read-model sample', () => {
     resolvers: resolversModule,
     projection: projectionModule,
     connectorName,
-  } = config.readModels.find(({ name }) => name === 'Stories');
+  } = config.readModels.find(({ name }) => name === 'Stories')
   const {
     module: connectorModule,
     options: connectorOptions,
-  } = config.readModelConnectors[connectorName];
+  } = config.readModelConnectors[connectorName]
 
   const createConnector = interopRequireDefault(require(connectorModule))
-    .default;
+    .default
 
   const projection = interopRequireDefault(require(`./${projectionModule}`))
-    .default;
+    .default
   const resolvers = interopRequireDefault(require(`./${resolversModule}`))
-    .default;
+    .default
 
-  let adapter = null;
+  let adapter = null
   beforeEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name);
-    adapter = createConnector(connectorOptions);
-  });
+    await resetReadModel(createConnector, connectorOptions, name)
+    adapter = createConnector(connectorOptions)
+  })
   afterEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name);
-    adapter = null;
-  });
+    await resetReadModel(createConnector, connectorOptions, name)
+    adapter = null
+  })
 
   const events = [
     {
@@ -114,7 +114,7 @@ describe('Read-model sample', () => {
       aggregateId: 'story-id-3',
       type: 'STORY_DELETED',
     },
-  ];
+  ]
 
   test(`resolve "getStoryById" ({ id: 'story-id-1' })`, async () => {
     expect(
@@ -126,8 +126,8 @@ describe('Read-model sample', () => {
           adapter,
         })
         .getStoryById({ id: 'story-id-1' })
-    ).toMatchSnapshot(`getStoryById({ id: 'story-id-1' })`);
-  });
+    ).toMatchSnapshot(`getStoryById({ id: 'story-id-1' })`)
+  })
 
   test(`resolve "getStoryById" ({ id: 'story-id-2' })`, async () => {
     expect(
@@ -139,8 +139,8 @@ describe('Read-model sample', () => {
           adapter,
         })
         .getStoryById({ id: 'story-id-2' })
-    ).toMatchSnapshot(`getStoryById({ id: 'story-id-2' })`);
-  });
+    ).toMatchSnapshot(`getStoryById({ id: 'story-id-2' })`)
+  })
 
   test(`resolve "getStoryById" ({ id: 'story-id-3' })`, async () => {
     expect(
@@ -152,8 +152,8 @@ describe('Read-model sample', () => {
           adapter,
         })
         .getStoryById({ id: 'story-id-3' })
-    ).toMatchSnapshot(`getStoryById({ id: 'story-id-3' })`);
-  });
+    ).toMatchSnapshot(`getStoryById({ id: 'story-id-3' })`)
+  })
 
   test(`resolve "getStoryById" ({ id: 'story-id-4' })`, async () => {
     expect(
@@ -165,8 +165,8 @@ describe('Read-model sample', () => {
           adapter,
         })
         .getStoryById({ id: 'story-id-4' })
-    ).toMatchSnapshot(`getStoryById({ id: 'story-id-4' })`);
-  });
+    ).toMatchSnapshot(`getStoryById({ id: 'story-id-4' })`)
+  })
 
   test(`resolve "getStoryById" ({ id: 'story-id-5' })`, async () => {
     expect(
@@ -178,8 +178,8 @@ describe('Read-model sample', () => {
           adapter,
         })
         .getStoryById({ id: 'story-id-5' })
-    ).toMatchSnapshot(`getStoryById({ id: 'story-id-5' })`);
-  });
+    ).toMatchSnapshot(`getStoryById({ id: 'story-id-5' })`)
+  })
 
   test(`resolve "getCountStories" ()`, async () => {
     expect(
@@ -191,8 +191,8 @@ describe('Read-model sample', () => {
           adapter,
         })
         .getCountStories()
-    ).toMatchSnapshot(`getCountStories()`);
-  });
+    ).toMatchSnapshot(`getCountStories()`)
+  })
 
   test(`resolve "getStoriesByIds" ({ ids: ['story-id-1', 'story-id-2', 'story-id-3', 'story-id-4', 'story-id-5'] })`, async () => {
     expect(
@@ -214,8 +214,8 @@ describe('Read-model sample', () => {
         })
     ).toMatchSnapshot(
       `.getStoriesByIds({ ids: ['story-id-1', 'story-id-2', 'story-id-3', 'story-id-4', 'story-id-5'] })`
-    );
-  });
+    )
+  })
 
   test(`resolve "getStoriesByPage" ({ skip: 0, limit: 2, ascending: true })`, async () => {
     expect(
@@ -229,8 +229,8 @@ describe('Read-model sample', () => {
         .getStoriesByPage({ skip: 0, limit: 2, ascending: true })
     ).toMatchSnapshot(
       `.getStoriesByPage({ skip: 0, limit: 2, ascending: true })`
-    );
-  });
+    )
+  })
 
   test(`resolve "getStoriesByPage" ({ skip: 2, limit: 2, ascending: true })`, async () => {
     expect(
@@ -244,8 +244,8 @@ describe('Read-model sample', () => {
         .getStoriesByPage({ skip: 2, limit: 2, ascending: true })
     ).toMatchSnapshot(
       `.getStoriesByPage({ skip: 2, limit: 2, ascending: true })`
-    );
-  });
+    )
+  })
 
   test(`resolve "getStoriesByPage" ({ skip: 0, limit: 2, ascending: false })`, async () => {
     expect(
@@ -259,8 +259,8 @@ describe('Read-model sample', () => {
         .getStoriesByPage({ skip: 0, limit: 2, ascending: false })
     ).toMatchSnapshot(
       `.getStoriesByPage({ skip: 0, limit: 2, ascending: false })`
-    );
-  });
+    )
+  })
 
   test(`resolve "getStoriesByPage" ({ skip: 2, limit: 2, ascending: false })`, async () => {
     expect(
@@ -274,8 +274,8 @@ describe('Read-model sample', () => {
         .getStoriesByPage({ skip: 2, limit: 2, ascending: false })
     ).toMatchSnapshot(
       `.getStoriesByPage({ skip: 2, limit: 2, ascending: false })`
-    );
-  });
+    )
+  })
 
   test(`resolve "getStoriesWithRangedVersion" ({ minVersion: 1, maxVersion: 3, openRange: false })`, async () => {
     expect(
@@ -293,8 +293,8 @@ describe('Read-model sample', () => {
         })
     ).toMatchSnapshot(
       `.getStoriesWithRangedVersion({ minVersion: 1, maxVersion: 3, openRange: false })`
-    );
-  });
+    )
+  })
 
   test(`resolve "getStoriesWithRangedVersion" ({ minVersion: 1, maxVersion: 3, openRange: true })`, async () => {
     expect(
@@ -312,8 +312,8 @@ describe('Read-model sample', () => {
         })
     ).toMatchSnapshot(
       `.getStoriesWithRangedVersion({ minVersion: 1, maxVersion: 3, openRange: true })`
-    );
-  });
+    )
+  })
 
   test(`resolve "getStoryVersionById" ({ id: 'story-id-1' })`, async () => {
     expect(
@@ -325,6 +325,6 @@ describe('Read-model sample', () => {
           adapter,
         })
         .getStoryVersionById({ id: 'story-id-1' })
-    ).toMatchSnapshot(`.getStoryVersionById({ id: 'story-id-1' })`);
-  });
-});
+    ).toMatchSnapshot(`.getStoryVersionById({ id: 'story-id-1' })`)
+  })
+})

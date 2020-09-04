@@ -1,10 +1,10 @@
-import React from 'react';
-import { Button, ControlLabel, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Button, ControlLabel, Table } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
 class ShoppingLists extends React.PureComponent {
   render() {
-    const { lists, removeShoppingList } = this.props;
+    const { lists, removeShoppingList } = this.props
 
     return (
       <div>
@@ -37,8 +37,8 @@ class ShoppingLists extends React.PureComponent {
           </tbody>
         </Table>
       </div>
-    );
+    )
   }
 }
 
-export default ShoppingLists;
+export default ShoppingLists

@@ -1,5 +1,5 @@
-import { connectRootBasedUrls } from 'resolve-redux';
+import { connectRootBasedUrls } from 'resolve-redux'
 
-const Form = connectRootBasedUrls(['action'])('form');
+const Form = connectRootBasedUrls(['action'])('form')
 
-export default Form;
+export default Form

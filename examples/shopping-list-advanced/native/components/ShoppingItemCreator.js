@@ -1,7 +1,7 @@
-import React from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
-import { Footer, Input, Label } from 'native-base';
-import uuid from 'uuid/v4';
+import React from 'react'
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
+import { Footer, Input, Label } from 'native-base'
+import uuid from 'uuid/v4'
 
 const styles = StyleSheet.create({
   footer: {
@@ -31,28 +31,28 @@ const styles = StyleSheet.create({
     color: '#000',
     backgroundColor: '#fff',
   },
-});
+})
 
 class ShoppingItemCreator extends React.PureComponent {
   state = {
     text: '',
-  };
+  }
 
   updateText = (text) => {
     this.setState({
       text,
-    });
-  };
+    })
+  }
 
   createShoppingItem = () => {
     this.props.createShoppingItem(this.props.aggregateId, {
       id: uuid(),
       text: this.state.text,
-    });
+    })
     this.setState({
       text: '',
-    });
-  };
+    })
+  }
 
   render() {
     return (
@@ -74,8 +74,8 @@ class ShoppingItemCreator extends React.PureComponent {
           </View>
         </Footer>
       </KeyboardAvoidingView>
-    );
+    )
   }
 }
 
-export default ShoppingItemCreator;
+export default ShoppingItemCreator

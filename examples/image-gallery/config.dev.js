@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts';
+import { declareRuntimeEnv } from 'resolve-scripts'
 
 const devConfig = {
   target: 'local',
@@ -36,6 +36,6 @@ const devConfig = {
     name: 'jwt',
     maxAge: 31536000000,
   },
-};
+}
 
-export default devConfig;
+export default devConfig

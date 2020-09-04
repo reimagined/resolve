@@ -2,7 +2,7 @@ import {
   PrivateOperationType,
   PublicOperationType,
   LazinessStrategy,
-} from '../constants';
+} from '../constants'
 
 const operationTypesMap = new Map([
   [
@@ -28,20 +28,20 @@ const operationTypesMap = new Map([
   [PublicOperationType.PAUSE, 'pause'],
   [PublicOperationType.RESET, 'reset'],
   [PublicOperationType.READ, 'read'],
-]);
+])
 
 const invokeOperation = async (pool, laziness, { type, payload }, timeout) => {
-  const methodName = operationTypesMap.get(type);
+  const methodName = operationTypesMap.get(type)
   if (methodName == null) {
     throw new Error(
       `Invalid invoke operation type "${type}" with payload: ${JSON.stringify(
         payload
       )}`
-    );
+    )
   }
 
   if (laziness === LazinessStrategy.EAGER) {
-    pool.multiplexAsync(pool[methodName].bind(pool), pool, payload);
+    pool.multiplexAsync(pool[methodName].bind(pool), pool, payload)
   } else if (
     laziness === LazinessStrategy.LAZY &&
     !isNaN(+timeout) &&
@@ -55,14 +55,14 @@ const invokeOperation = async (pool, laziness, { type, payload }, timeout) => {
         payload
       ),
       +timeout
-    );
+    )
   } else {
     throw new Error(
       `Invalid invoke operation type "${type}" with payload: ${JSON.stringify(
         payload
       )}`
-    );
+    )
   }
-};
+}
 
-export default invokeOperation;
+export default invokeOperation

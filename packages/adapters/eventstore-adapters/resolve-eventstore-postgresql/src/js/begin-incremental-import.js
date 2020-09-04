@@ -4,7 +4,7 @@ import {
   INT8_SQL_TYPE,
   JSON_SQL_TYPE,
   BIG_SERIAL,
-} from './constants';
+} from './constants'
 
 const beginIncrementalImport = async ({
   executeStatement,
@@ -14,13 +14,13 @@ const beginIncrementalImport = async ({
   escape,
 }) => {
   try {
-    const databaseNameAsId = escapeId(databaseName);
+    const databaseNameAsId = escapeId(databaseName)
     const incrementalImportTableAsId = escapeId(
       `${eventsTableName}-incremental-import`
-    );
+    )
     const importId = Buffer.from(`${Date.now()}${Math.random()}`)
       .toString('base64')
-      .replace(/\/|\+|=/gi, 'z');
+      .replace(/\/|\+|=/gi, 'z')
     await executeStatement(
       `CREATE TABLE ${databaseNameAsId}.${incrementalImportTableAsId}(
         "sortedIdx" ${LONG_NUMBER_SQL_TYPE} NULL,
@@ -40,16 +40,16 @@ const beginIncrementalImport = async ({
         `RESOLVE INCREMENTAL-IMPORT ${escape(importId)} OWNED TABLE`
       )};
       `
-    );
+    )
 
-    return importId;
+    return importId
   } catch (error) {
     if (error != null && /Relation.*? already exists$/i.test(error.message)) {
-      throw new Error(`Previous incremental import is not finished`);
+      throw new Error(`Previous incremental import is not finished`)
     } else {
-      throw error;
+      throw error
     }
   }
-};
+}
 
-export default beginIncrementalImport;
+export default beginIncrementalImport

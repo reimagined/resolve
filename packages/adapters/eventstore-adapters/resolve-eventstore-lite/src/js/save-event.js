@@ -1,15 +1,15 @@
-import { ConcurrentError } from 'resolve-eventstore-base';
+import { ConcurrentError } from 'resolve-eventstore-base'
 
 const saveEvent = async (pool, event) => {
-  const { eventsTableName, database, escapeId, escape } = pool;
+  const { eventsTableName, database, escapeId, escape } = pool
   try {
-    const currentThreadId = Math.floor(Math.random() * 256);
-    const eventsTableNameAsId = escapeId(eventsTableName);
-    const freezeTableNameAsString = escape(`${eventsTableName}-freeze`);
+    const currentThreadId = Math.floor(Math.random() * 256)
+    const eventsTableNameAsId = escapeId(eventsTableName)
+    const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
     const serializedPayload =
       event.payload != null
         ? escape(JSON.stringify(event.payload))
-        : escape('null');
+        : escape('null')
 
     await database.exec(
       `BEGIN IMMEDIATE;
@@ -51,32 +51,32 @@ const saveEvent = async (pool, event) => {
       );
 
       COMMIT;`
-    );
+    )
   } catch (error) {
     const errorMessage =
-      error != null && error.message != null ? error.message : '';
-    const errorCode = error != null && error.code != null ? error.code : '';
+      error != null && error.message != null ? error.message : ''
+    const errorCode = error != null && error.code != null ? error.code : ''
 
     try {
-      await database.exec('ROLLBACK;');
+      await database.exec('ROLLBACK;')
     } catch (e) {}
 
     if (errorMessage === 'SQLITE_ERROR: integer overflow') {
-      throw new Error('Event store is frozen');
+      throw new Error('Event store is frozen')
     } else if (
       errorCode === 'SQLITE_CONSTRAINT' &&
       errorMessage.indexOf('aggregate') > -1
     ) {
-      throw new ConcurrentError(event.aggregateId);
+      throw new ConcurrentError(event.aggregateId)
     } else if (
       errorCode === 'SQLITE_CONSTRAINT' &&
       errorMessage.indexOf('PRIMARY') > -1
     ) {
-      return await saveEvent(pool, event);
+      return await saveEvent(pool, event)
     } else {
-      throw error;
+      throw error
     }
   }
-};
+}
 
-export default saveEvent;
+export default saveEvent

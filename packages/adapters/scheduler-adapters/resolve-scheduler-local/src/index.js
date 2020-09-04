@@ -1,6 +1,6 @@
 const createAdapter = ({ execute, errorHandler }) => {
-  const timeouts = new Set();
-  let flowPromise = Promise.resolve();
+  const timeouts = new Set()
+  let flowPromise = Promise.resolve()
 
   return {
     async addEntries(array) {
@@ -9,29 +9,29 @@ const createAdapter = ({ execute, errorHandler }) => {
         const timeout = setTimeout(() => {
           flowPromise = flowPromise
             .then(async () => {
-              timeouts.delete(timeout);
-              await execute(entry.taskId, entry.date, entry.command);
+              timeouts.delete(timeout)
+              await execute(entry.taskId, entry.date, entry.command)
             })
             .catch(async (error) => {
               if (typeof errorHandler === 'function') {
-                await errorHandler(error);
+                await errorHandler(error)
               } else {
-                throw error;
+                throw error
               }
-            });
-        }, new Date(entry.date).getTime() - Date.now());
+            })
+        }, new Date(entry.date).getTime() - Date.now())
 
-        timeouts.add(timeout);
+        timeouts.add(timeout)
       }
     },
     async clearEntries() {
       for (const timeout of timeouts.values()) {
-        clearTimeout(timeout);
+        clearTimeout(timeout)
       }
 
-      timeouts.clear();
+      timeouts.clear()
     },
-  };
-};
+  }
+}
 
-export default createAdapter;
+export default createAdapter

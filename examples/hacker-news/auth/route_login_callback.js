@@ -1,10 +1,10 @@
-import jwt from 'jsonwebtoken';
-import jwtSecret from './jwt_secret';
+import jwt from 'jsonwebtoken'
+import jwtSecret from './jwt_secret'
 
-const API_GATEWAY_TIMEOUT = 30000;
+const API_GATEWAY_TIMEOUT = 30000
 
 const routeLoginCallback = async ({ resolve }, username) => {
-  const startTimestamp = Date.now();
+  const startTimestamp = Date.now()
 
   while (true) {
     try {
@@ -12,19 +12,19 @@ const routeLoginCallback = async ({ resolve }, username) => {
         modelName: 'HackerNews',
         resolverName: 'user',
         resolverArgs: { name: username.trim() },
-      });
+      })
 
       if (!user) {
-        throw new Error('Incorrect "username"');
+        throw new Error('Incorrect "username"')
       }
 
-      return jwt.sign(user, jwtSecret);
+      return jwt.sign(user, jwtSecret)
     } catch (error) {
       if (Date.now() - startTimestamp > API_GATEWAY_TIMEOUT) {
-        throw error;
+        throw error
       }
     }
   }
-};
+}
 
-export default routeLoginCallback;
+export default routeLoginCallback

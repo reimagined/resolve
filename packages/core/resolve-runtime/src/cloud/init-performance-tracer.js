@@ -1,24 +1,24 @@
-import AWSXray from 'aws-xray-sdk-core';
+import AWSXray from 'aws-xray-sdk-core'
 
 const initPerformanceTracer = (resolve) => {
-  let segment = process.env.TRACE ? AWSXray.getSegment() : null;
-  let traceId = process.env._X_AMZN_TRACE_ID;
+  let segment = process.env.TRACE ? AWSXray.getSegment() : null
+  let traceId = process.env._X_AMZN_TRACE_ID
 
   Object.defineProperty(resolve, 'performanceTracer', {
     value: {
       getSegment: () => {
         if (traceId !== process.env._X_AMZN_TRACE_ID) {
-          traceId = process.env._X_AMZN_TRACE_ID;
-          segment = process.env.TRACE ? AWSXray.getSegment() : null;
+          traceId = process.env._X_AMZN_TRACE_ID
+          segment = process.env.TRACE ? AWSXray.getSegment() : null
         }
 
         return {
           addNewSubsegment: (subsegmentName) => {
             const subsegment = process.env.TRACE
               ? segment.addNewSubsegment(subsegmentName)
-              : null;
-            const prevSegment = segment;
-            segment = subsegment;
+              : null
+            const prevSegment = segment
+            segment = subsegment
 
             return {
               addAnnotation: (annotationName, data) => {
@@ -26,26 +26,26 @@ const initPerformanceTracer = (resolve) => {
                   subsegment.addAnnotation(
                     annotationName,
                     data != null ? data : '<Empty annotation>'
-                  );
+                  )
                 }
               },
               addError: (error) => {
                 if (process.env.TRACE) {
-                  subsegment.addError(error);
+                  subsegment.addError(error)
                 }
               },
               close: () => {
                 if (process.env.TRACE) {
-                  subsegment.close();
-                  segment = prevSegment;
+                  subsegment.close()
+                  segment = prevSegment
                 }
               },
-            };
+            }
           },
-        };
+        }
       },
     },
-  });
-};
+  })
+}
 
-export default initPerformanceTracer;
+export default initPerformanceTracer

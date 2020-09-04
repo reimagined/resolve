@@ -1,19 +1,19 @@
 const checkApplicationName = (pool) => async () => {
-  const { EOL, chalk, validateProjectName, applicationName } = pool;
-  const result = validateProjectName(applicationName);
+  const { EOL, chalk, validateProjectName, applicationName } = pool
+  const result = validateProjectName(applicationName)
   if (!result.validForNewPackages) {
     let message = `It is impossible to create an application called ${chalk.red(
       `"${applicationName}"`
-    )} because of npm naming restrictions:`;
+    )} because of npm naming restrictions:`
 
     message += []
       .concat(result.errors || [])
       .concat(result.warnings || [])
       .map((e) => `  *  ${e}`)
-      .join(EOL);
+      .join(EOL)
 
-    throw message;
+    throw message
   }
-};
+}
 
-export default checkApplicationName;
+export default checkApplicationName

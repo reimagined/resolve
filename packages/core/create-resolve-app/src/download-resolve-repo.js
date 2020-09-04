@@ -1,7 +1,7 @@
-import ProgressBar from 'progress';
-import getLog from 'resolve-debug-levels';
+import ProgressBar from 'progress'
+import getLog from 'resolve-debug-levels'
 
-const log = getLog('resolve:create-resolve-app:download-resolve-repo');
+const log = getLog('resolve:create-resolve-app:download-resolve-repo')
 
 const downloadResolveRepo = (pool) => async () => {
   const {
@@ -14,37 +14,37 @@ const downloadResolveRepo = (pool) => async () => {
     resolveDownloadZipUrl,
     resolveCloneZipPath,
     path,
-  } = pool;
+  } = pool
   try {
     await new Promise((resolve, reject) => {
       try {
-        fs.removeSync(applicationPath);
+        fs.removeSync(applicationPath)
       } catch (e) {}
 
       try {
-        fs.ensureDirSync(applicationPath);
+        fs.ensureDirSync(applicationPath)
       } catch (e) {}
 
-      const resolveCloneZip = fs.createWriteStream(resolveCloneZipPath);
+      const resolveCloneZip = fs.createWriteStream(resolveCloneZipPath)
 
-      let error = null;
-      let downloadedBytes = 0;
+      let error = null
+      let downloadedBytes = 0
 
       resolveCloneZip.on('finish', function () {
         if (error) {
-          log.debug('Clone failed');
-          reject(error);
+          log.debug('Clone failed')
+          reject(error)
         } else {
-          log.debug('Clone succeeded');
-          resolve();
+          log.debug('Clone succeeded')
+          resolve()
         }
-      });
+      })
 
       https.get(resolveDownloadZipUrl, (response) => {
-        let bar = null;
+        let bar = null
         const showProgressBar = (total, increment) => {
           if (isNaN(+total)) {
-            return;
+            return
           }
           if (bar == null) {
             bar = new ProgressBar(
@@ -53,82 +53,82 @@ const downloadResolveRepo = (pool) => async () => {
                 width: 20,
                 total: +total,
               }
-            );
+            )
 
-            bar.tick(downloadedBytes);
+            bar.tick(downloadedBytes)
           }
-          bar.tick(increment);
-        };
+          bar.tick(increment)
+        }
 
         response.on('data', (data) => {
-          const currentBytes = Buffer.byteLength(data);
-          const total = response.headers['content-length'];
-          downloadedBytes += currentBytes;
-          showProgressBar(total, currentBytes);
+          const currentBytes = Buffer.byteLength(data)
+          const total = response.headers['content-length']
+          downloadedBytes += currentBytes
+          showProgressBar(total, currentBytes)
 
-          resolveCloneZip.write(data);
-        });
+          resolveCloneZip.write(data)
+        })
         response.on('end', () => {
-          const total = response.headers['content-length'] ?? downloadedBytes;
-          showProgressBar(total, 0);
+          const total = response.headers['content-length'] ?? downloadedBytes
+          showProgressBar(total, 0)
 
           const contentDisposition = String(
             response.headers['content-disposition']
-          );
-          const fileNameLength = 'filename='.length;
-          const zipExtLength = '.zip'.length;
+          )
+          const fileNameLength = 'filename='.length
+          const zipExtLength = '.zip'.length
           const fileNameIndex =
-            contentDisposition.indexOf('filename=') + fileNameLength;
+            contentDisposition.indexOf('filename=') + fileNameLength
           if (fileNameIndex > fileNameLength) {
             const resolveDirName = contentDisposition.substring(
               fileNameIndex,
               contentDisposition.length - zipExtLength
-            );
+            )
 
             pool.resolveClonePath = path.join(
               pool.applicationPath,
               resolveDirName
-            );
+            )
             pool.resolveCloneExamplesPath = path.join(
               pool.resolveClonePath,
               'examples'
-            );
+            )
             pool.resolveCloneExamplePath = path.join(
               pool.resolveCloneExamplesPath,
               pool.exampleName
-            );
+            )
           }
 
-          resolveCloneZip.end();
-        });
+          resolveCloneZip.end()
+        })
         response.on('error', (err) => {
-          error = err;
-          resolveCloneZip.end();
-        });
-      });
-    });
+          error = err
+          resolveCloneZip.end()
+        })
+      })
+    })
   } catch (_) {
     console.log(
       chalk.red('Referent commit does not exists in resolve repository.')
-    );
+    )
     console.log(
       chalk.red('Maybe you forgot to merge your feature branch with dev branch')
-    );
-    log.debug('Repo downloading failed');
+    )
+    log.debug('Repo downloading failed')
     // eslint-disable-next-line
-    throw 'Repo downloading failed';
+    throw 'Repo downloading failed'
   }
 
   try {
-    const zip = new AdmZip(resolveCloneZipPath);
-    zip.extractAllTo(applicationPath, true);
-    log.debug('Unzip succeeded');
+    const zip = new AdmZip(resolveCloneZipPath)
+    zip.extractAllTo(applicationPath, true)
+    log.debug('Unzip succeeded')
   } catch (error) {
-    log.debug('Unzip failed');
-    throw error;
+    log.debug('Unzip failed')
+    throw error
   }
 
-  fs.removeSync(resolveCloneZipPath);
-};
+  fs.removeSync(resolveCloneZipPath)
+}
 
-export default downloadResolveRepo;
+export default downloadResolveRepo

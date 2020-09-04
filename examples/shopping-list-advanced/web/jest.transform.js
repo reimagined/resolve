@@ -8,6 +8,6 @@ const babelrc = {
     '@babel/plugin-proposal-export-namespace-from',
     '@babel/plugin-transform-runtime',
   ],
-};
+}
 
-module.exports = require('babel-jest').createTransformer(babelrc);
+module.exports = require('babel-jest').createTransformer(babelrc)

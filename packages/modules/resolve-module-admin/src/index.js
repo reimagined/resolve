@@ -53,9 +53,9 @@ const createModule = () => {
         method: 'GET',
       },
     ],
-  };
+  }
 
-  return config;
-};
+  return config
+}
 
-export default createModule;
+export default createModule

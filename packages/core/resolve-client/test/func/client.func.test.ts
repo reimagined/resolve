@@ -1,32 +1,32 @@
-import fetch from 'node-fetch';
-import express from 'express';
-import { getClient, Client } from '../../src/index';
+import fetch from 'node-fetch'
+import express from 'express'
+import { getClient, Client } from '../../src/index'
 
-let app: any;
-let server: any;
+let app: any
+let server: any
 
 beforeAll(() => {
-  app = express();
+  app = express()
 
   app.get('/api/query/read-model/resolver', (req: any, res: any) => {
-    res.setHeader('Date', '12345');
+    res.setHeader('Date', '12345')
     res.send(
       JSON.stringify({
         data: {
           status: 'valid',
         },
       })
-    );
-  });
+    )
+  })
 
-  server = app.listen('3300');
-});
+  server = app.listen('3300')
+})
 
 afterAll(() => {
-  server.close();
-});
+  server.close()
+})
 
-let client: Client;
+let client: Client
 
 beforeEach(() => {
   client = getClient({
@@ -35,8 +35,8 @@ beforeEach(() => {
     staticPath: '/static',
     viewModels: [],
     fetch,
-  });
-});
+  })
+})
 
 test('bug: waitFor headers are undefined on success validation', async () => {
   const result = await client.query(
@@ -52,7 +52,7 @@ test('bug: waitFor headers are undefined on success validation', async () => {
         period: 1,
       },
     }
-  );
+  )
   expect(result).toEqual({
     meta: {
       timestamp: 12345,
@@ -60,5 +60,5 @@ test('bug: waitFor headers are undefined on success validation', async () => {
     data: {
       status: 'valid',
     },
-  });
-});
+  })
+})

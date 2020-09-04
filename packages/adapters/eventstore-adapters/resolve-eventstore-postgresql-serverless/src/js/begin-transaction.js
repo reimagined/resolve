@@ -5,11 +5,11 @@ const beginTransaction = async (pool) => {
       secretArn: pool.awsSecretStoreArn,
       database: 'postgres',
     })
-    .promise();
+    .promise()
 
-  const { transactionId } = result;
+  const { transactionId } = result
 
-  return transactionId;
-};
+  return transactionId
+}
 
-export default beginTransaction;
+export default beginTransaction

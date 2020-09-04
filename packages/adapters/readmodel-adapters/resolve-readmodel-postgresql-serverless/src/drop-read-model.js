@@ -25,13 +25,13 @@ const dropReadModel = async (
     AND ${escapeId('NS')}.${escapeId('nspname')} = ${escape(schemaName)}
     AND ${escapeId('CLS')}.${escapeId('relkind')} = ${escape('r')}
     ;`
-  );
+  )
 
   for (const { tableName } of rows) {
     await executeStatement(
       `DROP TABLE ${escapeId(schemaName)}.${escapeId(tableName)};`
-    );
+    )
   }
-};
+}
 
-export default dropReadModel;
+export default dropReadModel

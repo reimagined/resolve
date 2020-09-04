@@ -1,4 +1,4 @@
-import { LOAD_CHUNK_SIZE } from './constants';
+import { LOAD_CHUNK_SIZE } from './constants'
 
 const loadSnapshot = async (pool, snapshotKey) => {
   const {
@@ -8,17 +8,17 @@ const loadSnapshot = async (pool, snapshotKey) => {
     escapeId,
     escape,
     isTimeoutError,
-  } = pool;
+  } = pool
   if (snapshotKey == null || snapshotKey.constructor !== String) {
-    throw new Error('Snapshot key must be string');
+    throw new Error('Snapshot key must be string')
   }
 
-  const databaseNameAsId = escapeId(databaseName);
-  const snapshotsTableNameAsId = escapeId(snapshotsTableName);
+  const databaseNameAsId = escapeId(databaseName)
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
-  let result = null;
+  let result = null
   for (let index = 0; ; index++) {
-    let rows = null;
+    let rows = null
 
     while (true) {
       try {
@@ -31,31 +31,31 @@ const loadSnapshot = async (pool, snapshotKey) => {
           FROM ${databaseNameAsId}.${snapshotsTableNameAsId}
           WHERE "snapshotKey" = ${escape(snapshotKey)} 
           LIMIT 1`
-        );
-        break;
+        )
+        break
       } catch (err) {
         if (isTimeoutError(err)) {
-          continue;
+          continue
         }
-        throw err;
+        throw err
       }
     }
 
-    const content = rows.length > 0 ? rows[0].SnapshotContentChunk : null;
+    const content = rows.length > 0 ? rows[0].SnapshotContentChunk : null
     if (content == null) {
-      break;
+      break
     } else if (content != null && result == null) {
-      result = '';
+      result = ''
     }
 
-    result += content;
+    result += content
 
     if (content.length < LOAD_CHUNK_SIZE) {
-      break;
+      break
     }
   }
 
-  return result;
-};
+  return result
+}
 
-export default loadSnapshot;
+export default loadSnapshot

@@ -2,10 +2,10 @@ import {
   TRANSFORM_JSON_MAPPED_ARRAY_SYMBOL,
   TRANSFORM_JSON_REGULAR_SYMBOL,
   TRANSFORM_NONE_SYMBOL,
-} from '../constants';
+} from '../constants'
 
 function parseSubscription(subscriptionDescription, allowedKeys) {
-  const subscriptionOptions = { ...subscriptionDescription };
+  const subscriptionOptions = { ...subscriptionDescription }
   const allowedAndTransformedKeys = {
     subscriptionId: TRANSFORM_NONE_SYMBOL,
     eventSubscriber: TRANSFORM_NONE_SYMBOL,
@@ -26,17 +26,17 @@ function parseSubscription(subscriptionDescription, allowedKeys) {
     maxParallel: TRANSFORM_NONE_SYMBOL,
     scopeName: TRANSFORM_NONE_SYMBOL,
     properties: TRANSFORM_JSON_REGULAR_SYMBOL,
-  };
+  }
   for (const key of Object.keys(subscriptionOptions)) {
     if (Array.isArray(allowedKeys) && allowedKeys.indexOf(key) < 0) {
-      delete subscriptionOptions[key];
+      delete subscriptionOptions[key]
     }
     if (
       allowedAndTransformedKeys[key] === TRANSFORM_JSON_MAPPED_ARRAY_SYMBOL ||
       allowedAndTransformedKeys[key] === TRANSFORM_JSON_REGULAR_SYMBOL
     ) {
-      let value = subscriptionOptions[key];
-      value = value != null ? JSON.parse(value) : null;
+      let value = subscriptionOptions[key]
+      value = value != null ? JSON.parse(value) : null
       if (
         allowedAndTransformedKeys[key] === TRANSFORM_JSON_MAPPED_ARRAY_SYMBOL
       ) {
@@ -49,14 +49,14 @@ function parseSubscription(subscriptionDescription, allowedKeys) {
                   .replace(/\u001aQUOTE/g, '"')
                   .replace(/\u001aSUB/g, '\u001a')
               )
-            : null;
+            : null
       }
-      subscriptionOptions[key] = value;
+      subscriptionOptions[key] = value
     } else if (allowedAndTransformedKeys[key] !== TRANSFORM_NONE_SYMBOL) {
-      delete subscriptionOptions[key];
+      delete subscriptionOptions[key]
     }
   }
-  return subscriptionOptions;
+  return subscriptionOptions
 }
 
-export default parseSubscription;
+export default parseSubscription

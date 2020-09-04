@@ -1,8 +1,8 @@
-import path from 'path';
+import path from 'path'
 
-import getModulesDirs from './get_modules_dirs';
+import getModulesDirs from './get_modules_dirs'
 
-const isString = (val) => val != null && val.constructor === String;
+const isString = (val) => val != null && val.constructor === String
 
 const adjustWebpackCommonPackages = ({ commonPackages }) => (
   webpackConfigs
@@ -12,16 +12,14 @@ const adjustWebpackCommonPackages = ({ commonPackages }) => (
     !Object.keys(commonPackages).every(isString) ||
     !Object.values(commonPackages).every(isString)
   ) {
-    throw new Error(
-      'The `commonPackages` field must be Object<String, String>'
-    );
+    throw new Error('The `commonPackages` field must be Object<String, String>')
   }
 
   for (const webpackConfig of webpackConfigs) {
     webpackConfig.resolve.modules = [
       path.join(process.cwd(), 'node_modules'), // TODO. Hot-fix
       'node_modules',
-    ];
+    ]
     webpackConfig.module.rules[1].use.options.plugins = [
       ...(webpackConfig.module.rules[1].use.options.plugins || []),
       [
@@ -30,7 +28,7 @@ const adjustWebpackCommonPackages = ({ commonPackages }) => (
           alias: commonPackages,
         },
       ],
-    ];
+    ]
     webpackConfig.module.rules.push({
       test: /\.js$/,
       include: Object.values(commonPackages),
@@ -54,8 +52,8 @@ const adjustWebpackCommonPackages = ({ commonPackages }) => (
           ],
         },
       },
-    });
+    })
   }
-};
+}
 
-export default adjustWebpackCommonPackages;
+export default adjustWebpackCommonPackages

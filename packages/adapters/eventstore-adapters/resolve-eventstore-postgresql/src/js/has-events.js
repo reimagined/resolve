@@ -5,13 +5,13 @@ const hasEvents = async (pool, events) => {
     escape,
     eventsTableName,
     databaseName,
-  } = pool;
+  } = pool
   if (!Array.isArray(events) || events.length === 0) {
-    return [];
+    return []
   }
 
-  const databaseNameAsId = escapeId(databaseName);
-  const eventsTableAsId = escapeId(eventsTableName);
+  const databaseNameAsId = escapeId(databaseName)
+  const eventsTableAsId = escapeId(eventsTableName)
 
   const rows = await executeStatement(
     `SELECT "aggregateId", "aggregateVersion" FROM ${databaseNameAsId}.${eventsTableAsId} 
@@ -23,18 +23,18 @@ const hasEvents = async (pool, events) => {
           )} AND "aggregateVersion" = ${escape(aggregateVersion)} )`
       )
       .join(' OR ')}`
-  );
+  )
 
-  const resultSet = new Set();
+  const resultSet = new Set()
   for (const { aggregateId, aggregateVersion } of rows) {
-    resultSet.add(`${aggregateId}-${aggregateVersion}`);
+    resultSet.add(`${aggregateId}-${aggregateVersion}`)
   }
 
   const result = events.map(({ aggregateId, aggregateVersion }) =>
     resultSet.has(`${aggregateId}-${aggregateVersion}`)
-  );
+  )
 
-  return result;
-};
+  return result
+}
 
-export default hasEvents;
+export default hasEvents

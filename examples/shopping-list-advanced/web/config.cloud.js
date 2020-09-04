@@ -1,4 +1,4 @@
-const { declareRuntimeEnv } = require('resolve-scripts');
+const { declareRuntimeEnv } = require('resolve-scripts')
 
 const cloudConfig = {
   target: 'cloud',
@@ -29,6 +29,6 @@ const cloudConfig = {
       },
     },
   },
-};
+}
 
-module.exports = cloudConfig;
+module.exports = cloudConfig

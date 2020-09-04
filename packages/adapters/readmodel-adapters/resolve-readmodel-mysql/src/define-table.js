@@ -1,6 +1,6 @@
 const STRING_INDEX_TYPE =
-  'VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
-const NUMBER_INDEX_TYPE = 'BIGINT';
+  'VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
+const NUMBER_INDEX_TYPE = 'BIGINT'
 
 const defineTable = async (
   { runQuery, tablePrefix, escapeId },
@@ -15,7 +15,7 @@ const defineTable = async (
     tableDescription.indexes.constructor !== Object ||
     !Array.isArray(tableDescription.fields)
   ) {
-    throw new Error(`Wrong table description ${tableDescription}`);
+    throw new Error(`Wrong table description ${tableDescription}`)
   }
 
   await runQuery(
@@ -27,28 +27,28 @@ const defineTable = async (
         ...Object.keys(tableDescription.indexes).map((indexName, idx) => {
           let declaration = `${escapeId(indexName)} JSON, ${escapeId(
             `${indexName}\u0004`
-          )} `;
+          )} `
           switch (tableDescription.indexes[indexName]) {
             case 'string':
-              declaration += STRING_INDEX_TYPE;
-              break;
+              declaration += STRING_INDEX_TYPE
+              break
             case 'number':
-              declaration += NUMBER_INDEX_TYPE;
-              break;
+              declaration += NUMBER_INDEX_TYPE
+              break
             default:
               throw new Error(
                 `Wrong index "${indexName}" type "${tableDescription.indexes[indexName]}"`
-              );
+              )
           }
           declaration += ` GENERATED ALWAYS AS (${escapeId(
             indexName
-          )}->"$") STORED `;
+          )}->"$") STORED `
           if (idx === 0) {
-            declaration += ' NOT NULL PRIMARY KEY';
+            declaration += ' NOT NULL PRIMARY KEY'
           } else {
-            declaration += ' NULL';
+            declaration += ' NULL'
           }
-          return declaration;
+          return declaration
         }),
         ...Object.keys(tableDescription.indexes).map(
           (indexName) =>
@@ -61,7 +61,7 @@ const defineTable = async (
       COMMENT = "RESOLVE-${readModelName}"
       ENGINE = "InnoDB";
       `
-  );
-};
+  )
+}
 
-export default defineTable;
+export default defineTable

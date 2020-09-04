@@ -2,12 +2,12 @@ import {
   queryReadModelFailure,
   queryReadModelRequest,
   queryReadModelSuccess,
-} from '../../src/read-model/actions';
+} from '../../src/read-model/actions'
 import {
   QUERY_READMODEL_FAILURE,
   QUERY_READMODEL_REQUEST,
   QUERY_READMODEL_SUCCESS,
-} from '../../src/internal/action-types';
+} from '../../src/internal/action-types'
 
 test('queryReadModelRequest', () => {
   expect(
@@ -34,7 +34,7 @@ test('queryReadModelRequest', () => {
       initial: 'state',
     },
     selectorId: undefined,
-  });
+  })
   expect(
     queryReadModelRequest(
       {
@@ -60,8 +60,8 @@ test('queryReadModelRequest', () => {
       initial: 'diamond',
     },
     selectorId: 'selector-id',
-  });
-});
+  })
+})
 
 test('queryReadModelSuccess', () => {
   expect(
@@ -88,7 +88,7 @@ test('queryReadModelSuccess', () => {
       data: 'data',
     },
     selectorId: undefined,
-  });
+  })
   expect(
     queryReadModelSuccess(
       {
@@ -114,8 +114,8 @@ test('queryReadModelSuccess', () => {
       data: 'diamond',
     },
     selectorId: 'selector-id',
-  });
-});
+  })
+})
 
 test('queryReadModelFailure', () => {
   expect(
@@ -140,7 +140,7 @@ test('queryReadModelFailure', () => {
     },
     error: Error('error'),
     selectorId: undefined,
-  });
+  })
   expect(
     queryReadModelFailure(
       {
@@ -164,5 +164,5 @@ test('queryReadModelFailure', () => {
     },
     error: Error('diamond'),
     selectorId: 'selector-id',
-  });
-});
+  })
+})

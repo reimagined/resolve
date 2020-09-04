@@ -1,3 +1,3 @@
-const jwtSecret = process.env.JWT_SECRET || 'JWT_SECRET';
+const jwtSecret = process.env.JWT_SECRET || 'JWT_SECRET'
 
-export default jwtSecret;
+export default jwtSecret

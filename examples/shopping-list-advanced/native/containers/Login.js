@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Container,
   Content,
@@ -10,18 +10,18 @@ import {
   Item,
   Label,
   View,
-} from 'native-base';
-import { StyleSheet } from 'react-native';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+} from 'native-base'
+import { StyleSheet } from 'react-native'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
-import requiredNoAuth from '../decorators/required-no-auth';
-import { Logo } from '@shopping-list-advanced/ui';
+import requiredNoAuth from '../decorators/required-no-auth'
+import { Logo } from '@shopping-list-advanced/ui'
 
-import getNativeChunk from '../native-chunk';
+import getNativeChunk from '../native-chunk'
 const {
   resolveRedux: { actions },
-} = getNativeChunk();
+} = getNativeChunk()
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -46,13 +46,13 @@ const styles = StyleSheet.create({
   socialButtonIcon: {
     marginRight: 0,
   },
-});
+})
 
 export class Login extends React.PureComponent {
   state = {
     username: '',
     password: '',
-  };
+  }
 
   onLogin = () => {
     this.props.authRequest(
@@ -63,8 +63,8 @@ export class Login extends React.PureComponent {
         noredirect: true,
       },
       'POST'
-    );
-  };
+    )
+  }
 
   onRegister = () => {
     this.props.authRequest(
@@ -75,20 +75,20 @@ export class Login extends React.PureComponent {
         noredirect: true,
       },
       'POST'
-    );
-  };
+    )
+  }
 
   updateUsername = (username) => {
     this.setState({
       username,
-    });
-  };
+    })
+  }
 
   updatePassword = (password) => {
     this.setState({
       password,
-    });
-  };
+    })
+  }
 
   render() {
     return (
@@ -123,11 +123,11 @@ export class Login extends React.PureComponent {
           </View>
         </Content>
       </Container>
-    );
+    )
   }
 }
 
 export const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(actions, dispatch);
+  bindActionCreators(actions, dispatch)
 
-export default requiredNoAuth(connect(null, mapDispatchToProps)(Login));
+export default requiredNoAuth(connect(null, mapDispatchToProps)(Login))

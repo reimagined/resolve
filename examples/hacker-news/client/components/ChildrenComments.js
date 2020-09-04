@@ -1,24 +1,24 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from 'react'
+import styled from 'styled-components'
 
-import Comment from './Comment';
-import ReplyLink from './ReplyLink';
+import Comment from './Comment'
+import ReplyLink from './ReplyLink'
 
 const ChildrenCommentsContainer = styled.div`
   margin-left: 2em;
   margin-top: 1em;
-`;
+`
 
 const ChildrenComments = ({ storyId, comments, loggedIn }) => {
   if (!comments || !comments.length) {
-    return null;
+    return null
   }
 
   return (
     <div>
       {comments.map((comment) => {
         if (comment == null) {
-          return null;
+          return null
         }
         return (
           <Comment
@@ -38,10 +38,10 @@ const ChildrenComments = ({ storyId, comments, loggedIn }) => {
               />
             </ChildrenCommentsContainer>
           </Comment>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}
 
-export default ChildrenComments;
+export default ChildrenComments

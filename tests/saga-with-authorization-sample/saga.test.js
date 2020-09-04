@@ -1,10 +1,10 @@
-import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault';
-import givenEvents from 'resolve-testing-tools';
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
+import givenEvents from 'resolve-testing-tools'
 
-import config from './config';
-import resetReadModel from '../reset-read-model';
+import config from './config'
+import resetReadModel from '../reset-read-model'
 
-jest.setTimeout(1000 * 60 * 5);
+jest.setTimeout(1000 * 60 * 5)
 
 describe('Saga', () => {
   const {
@@ -12,56 +12,55 @@ describe('Saga', () => {
     source: sourceModule,
     connectorName,
     schedulerName,
-  } = config.sagas.find(({ name }) => name === 'ProcessKiller');
+  } = config.sagas.find(({ name }) => name === 'ProcessKiller')
   const {
     module: connectorModule,
     options: connectorOptions,
-  } = config.readModelConnectors[connectorName];
+  } = config.readModelConnectors[connectorName]
 
   const createConnector = interopRequireDefault(require(connectorModule))
-    .default;
-  const source = interopRequireDefault(require(`./${sourceModule}`)).default;
+    .default
+  const source = interopRequireDefault(require(`./${sourceModule}`)).default
 
   const { commands: commandsModule } = config.aggregates.find(
     ({ name }) => name === 'Process'
-  );
+  )
 
-  const commands = interopRequireDefault(require(`./${commandsModule}`))
-    .default;
+  const commands = interopRequireDefault(require(`./${commandsModule}`)).default
 
-  let commandTimestamp = 0;
+  let commandTimestamp = 0
   const executeCommand = ({ aggregateId, type, jwt, ...command }) => {
     const event = {
       ...commands[type]({}, command, jwt),
       aggregateId,
       timestamp: commandTimestamp++,
-    };
-    return event;
-  };
+    }
+    return event
+  }
 
-  let sagaWithAdapter = null;
-  let adapter = null;
+  let sagaWithAdapter = null
+  let adapter = null
 
   beforeEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, schedulerName);
-    await resetReadModel(createConnector, connectorOptions, sagaName);
+    await resetReadModel(createConnector, connectorOptions, schedulerName)
+    await resetReadModel(createConnector, connectorOptions, sagaName)
 
-    adapter = createConnector(connectorOptions);
+    adapter = createConnector(connectorOptions)
     sagaWithAdapter = {
       handlers: source.handlers,
       sideEffects: source.sideEffects,
       adapter,
       name: sagaName,
-    };
-  });
+    }
+  })
 
   afterEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, schedulerName);
-    await resetReadModel(createConnector, connectorOptions, sagaName);
+    await resetReadModel(createConnector, connectorOptions, schedulerName)
+    await resetReadModel(createConnector, connectorOptions, sagaName)
 
-    adapter = null;
-    sagaWithAdapter = null;
-  });
+    adapter = null
+    sagaWithAdapter = null
+  })
 
   test('success registration', async () => {
     const result = await givenEvents([
@@ -85,8 +84,8 @@ describe('Saga', () => {
         aggregateName: 'Process',
         type: 'killAllProcesses',
       }),
-    ]).saga(sagaWithAdapter);
+    ]).saga(sagaWithAdapter)
 
-    expect(result).toMatchSnapshot();
-  });
-});
+    expect(result).toMatchSnapshot()
+  })
+})

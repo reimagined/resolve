@@ -1,21 +1,21 @@
 import {
   subscribeAdapterNotInitialized,
   subscribeAdapterAlreadyInitialized,
-} from './subscribe-adapter-constants';
+} from './subscribe-adapter-constants'
 
 export interface SubscribeAdapter {
-  init: () => Promise<any>;
-  close: () => Promise<any>;
-  isConnected: () => boolean;
+  init: () => Promise<any>
+  close: () => Promise<any>
+  isConnected: () => boolean
 }
 
 export interface CreateSubscribeAdapter {
   (options: {
-    url: string;
-    cursor: string;
-    onEvent: Function;
-  }): SubscribeAdapter;
-  adapterName: string;
+    url: string
+    cursor: string
+    onEvent: Function
+  }): SubscribeAdapter
+  adapterName: string
 }
 
 const createClientAdapter: CreateSubscribeAdapter = ({
@@ -23,34 +23,34 @@ const createClientAdapter: CreateSubscribeAdapter = ({
   cursor,
   onEvent,
 }) => {
-  let client: WebSocket | undefined;
-  let isInitialized: boolean;
-  let currentCursor: string | undefined;
+  let client: WebSocket | undefined
+  let isInitialized: boolean
+  let currentCursor: string | undefined
 
   return {
     async init(): Promise<void> {
       if (isInitialized) {
-        throw new Error(subscribeAdapterAlreadyInitialized);
+        throw new Error(subscribeAdapterAlreadyInitialized)
       }
 
       return await new Promise((resolve, reject) => {
-        client = new WebSocket(url);
+        client = new WebSocket(url)
 
         client.onopen = (): void => {
-          isInitialized = true;
-          resolve();
+          isInitialized = true
+          resolve()
 
           client?.send(
             JSON.stringify({
               type: 'pullEvents',
               cursor,
             })
-          );
-        };
+          )
+        }
 
         client.onmessage = (message): void => {
           try {
-            const data = JSON.parse(message.data);
+            const data = JSON.parse(message.data)
 
             switch (data.type) {
               case 'event': {
@@ -59,49 +59,49 @@ const createClientAdapter: CreateSubscribeAdapter = ({
                     type: 'pullEvents',
                     cursor: currentCursor,
                   })
-                );
-                break;
+                )
+                break
               }
               case 'pullEvents': {
                 data.payload.events.forEach((event: any) => {
-                  onEvent(event);
-                });
-                currentCursor = data.payload.cursor;
-                break;
+                  onEvent(event)
+                })
+                currentCursor = data.payload.cursor
+                break
               }
               default: {
                 // eslint-disable-next-line no-console
-                console.warn(`Unknown '${data.type}' socket message type`);
+                console.warn(`Unknown '${data.type}' socket message type`)
               }
             }
           } catch (error) {
             // eslint-disable-next-line no-console
-            console.error('WebSocket message error', error);
+            console.error('WebSocket message error', error)
           }
-        };
-      });
+        }
+      })
     },
 
     async close(): Promise<void> {
       if (!isInitialized || client == null) {
-        throw new Error(subscribeAdapterNotInitialized);
+        throw new Error(subscribeAdapterNotInitialized)
       }
-      isInitialized = false;
-      client.close();
+      isInitialized = false
+      client.close()
 
-      client = undefined;
+      client = undefined
     },
 
     isConnected(): boolean {
       if (!isInitialized || client == null) {
-        throw new Error(subscribeAdapterNotInitialized);
+        throw new Error(subscribeAdapterNotInitialized)
       }
 
-      return client.readyState === 1;
+      return client.readyState === 1
     },
-  };
-};
+  }
+}
 
-createClientAdapter.adapterName = 'ws';
+createClientAdapter.adapterName = 'ws'
 
-export default createClientAdapter;
+export default createClientAdapter

@@ -6,14 +6,14 @@ const resume = async (pool, readModelName, next) => {
     inlineLedgerForceStop,
     inlineLedgerExecuteStatement,
     PassthroughError,
-  } = pool;
+  } = pool
 
-  const databaseNameAsId = escapeId(schemaName);
-  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`);
+  const databaseNameAsId = escapeId(schemaName)
+  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
 
   while (true) {
     try {
-      await inlineLedgerForceStop(pool, readModelName);
+      await inlineLedgerForceStop(pool, readModelName)
       await inlineLedgerExecuteStatement(
         pool,
         `
@@ -27,16 +27,16 @@ const resume = async (pool, readModelName, next) => {
         WHERE "EventSubscriber" = ${escape(readModelName)}
         AND (SELECT Count("CTE".*) FROM "CTE") = 1
       `
-      );
-      break;
+      )
+      break
     } catch (err) {
       if (!(err instanceof PassthroughError)) {
-        throw err;
+        throw err
       }
     }
   }
 
-  await next();
-};
+  await next()
+}
 
-export default resume;
+export default resume

@@ -1,10 +1,10 @@
-import createCommand from 'resolve-command';
-import createQuery from 'resolve-query';
+import createCommand from 'resolve-command'
+import createQuery from 'resolve-query'
 
-import schedulerEventTypes from './scheduler-event-types';
-import createSchedulersAggregates from './create-schedulers-aggregates';
-import createSchedulerSagas from './create-scheduler-sagas';
-import wrapRegularSagas from './wrap-regular-sagas';
+import schedulerEventTypes from './scheduler-event-types'
+import createSchedulersAggregates from './create-schedulers-aggregates'
+import createSchedulerSagas from './create-scheduler-sagas'
+import wrapRegularSagas from './wrap-regular-sagas'
 
 const createSaga = ({
   invokeEventBusAsync,
@@ -20,13 +20,13 @@ const createSaga = ({
   getRemainingTimeInMillis,
   performAcknowledge,
 }) => {
-  const schedulerAggregatesNames = new Set(schedulers.map(({ name }) => name));
-  let eventProperties = {};
+  const schedulerAggregatesNames = new Set(schedulers.map(({ name }) => name))
+  let eventProperties = {}
   const executeScheduleCommand = createCommand({
     aggregates: createSchedulersAggregates(schedulers),
     onCommandExecuted,
     eventstoreAdapter,
-  });
+  })
 
   const executeCommandOrScheduler = async (...args) => {
     if (
@@ -39,17 +39,17 @@ const createSaga = ({
     ) {
       throw new Error(
         `Invalid saga command/scheduler args ${JSON.stringify(args)}`
-      );
+      )
     }
-    const options = { ...args[0] };
+    const options = { ...args[0] }
 
-    const aggregateName = options.aggregateName;
+    const aggregateName = options.aggregateName
     if (schedulerAggregatesNames.has(aggregateName)) {
-      return await executeScheduleCommand(options);
+      return await executeScheduleCommand(options)
     } else {
-      return await executeCommand(options);
+      return await executeCommand(options)
     }
-  };
+  }
 
   const executeDirectQuery = async (...args) => {
     if (
@@ -60,12 +60,12 @@ const createSaga = ({
         (Object(args[1]) === args[1] || args[1] == null)
       )
     ) {
-      throw new Error(`Invalid saga query args ${JSON.stringify(args)}`);
+      throw new Error(`Invalid saga query args ${JSON.stringify(args)}`)
     }
 
-    const options = { ...args[0], properties: args[1] };
-    return await executeQuery(options);
-  };
+    const options = { ...args[0], properties: args[1] }
+    return await executeQuery(options)
+  }
 
   const sagaProvider = Object.create(Object.prototype, {
     executeCommand: { get: () => executeCommandOrScheduler, enumerable: true },
@@ -76,10 +76,10 @@ const createSaga = ({
       enumerable: true,
     },
     uploader: { get: () => uploader, enumerable: true },
-  });
+  })
 
-  const regularSagas = wrapRegularSagas(sagas, sagaProvider);
-  const schedulerSagas = createSchedulerSagas(schedulers, sagaProvider);
+  const regularSagas = wrapRegularSagas(sagas, sagaProvider)
+  const schedulerSagas = createSchedulerSagas(schedulers, sagaProvider)
 
   const executeListener = createQuery({
     invokeEventBusAsync,
@@ -90,7 +90,7 @@ const createSaga = ({
     getRemainingTimeInMillis,
     performAcknowledge,
     eventstoreAdapter,
-  });
+  })
 
   const sendEvents = async ({
     modelName,
@@ -99,53 +99,53 @@ const createSaga = ({
     properties,
     batchId,
   }) => {
-    eventProperties = properties;
+    eventProperties = properties
     await executeListener.sendEvents({
       modelName,
       events,
       xaTransactionId,
       properties,
       batchId,
-    });
-  };
+    })
+  }
 
   const runScheduler = async (entry) => {
-    const schedulerPromises = [];
+    const schedulerPromises = []
     for (const { schedulerAdapter } of schedulerSagas) {
       if (typeof schedulerAdapter.executeEntries === 'function') {
-        schedulerPromises.push(schedulerAdapter.executeEntries(entry));
+        schedulerPromises.push(schedulerAdapter.executeEntries(entry))
       }
     }
 
-    return await Promise.all(schedulerPromises);
-  };
+    return await Promise.all(schedulerPromises)
+  }
 
   const dispose = async () =>
     await Promise.all([
       executeScheduleCommand.dispose(),
       executeListener.dispose(),
-    ]);
+    ])
 
   const executeSaga = new Proxy(executeListener, {
     get(_, key) {
       if (key === 'runScheduler') {
-        return runScheduler;
+        return runScheduler
       } else if (key === 'sendEvents') {
-        return sendEvents;
+        return sendEvents
       } else if (key === 'dispose') {
-        return dispose;
+        return dispose
       } else {
-        return executeListener[key].bind(executeListener);
+        return executeListener[key].bind(executeListener)
       }
     },
     set() {
-      throw new TypeError(`Resolve-saga API is immutable`);
+      throw new TypeError(`Resolve-saga API is immutable`)
     },
-  });
+  })
 
-  return executeSaga;
-};
+  return executeSaga
+}
 
-export { schedulerEventTypes };
+export { schedulerEventTypes }
 
-export default createSaga;
+export default createSaga

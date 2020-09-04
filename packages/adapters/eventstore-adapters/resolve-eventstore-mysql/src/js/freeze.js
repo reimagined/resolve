@@ -9,7 +9,7 @@ const freeze = async ({
     )
     COMMENT = "RESOLVE EVENT STORE ${escapeId(eventsTableName)} FREEZE MARKER" 
     `
-  );
-};
+  )
+}
 
-export default freeze;
+export default freeze

@@ -1,17 +1,17 @@
 const makeNestedPath = (nestedPath) => {
-  const jsonPathParts = [];
+  const jsonPathParts = []
   for (const part of nestedPath) {
     if (part == null || part.constructor !== String) {
-      throw new Error('Invalid JSON path');
+      throw new Error('Invalid JSON path')
     }
     if (!isNaN(+part)) {
-      jsonPathParts.push(String(+part));
+      jsonPathParts.push(String(+part))
     } else {
-      jsonPathParts.push(JSON.stringify(part));
+      jsonPathParts.push(JSON.stringify(part))
     }
   }
-  return `{${jsonPathParts.join(',')}}`;
-};
+  return `{${jsonPathParts.join(',')}}`
+}
 
 const connect = async (imports, pool, options) => {
   let {
@@ -19,16 +19,16 @@ const connect = async (imports, pool, options) => {
     tablePrefix,
     databaseName,
     ...connectionOptions
-  } = options;
+  } = options
 
   if (databaseName == null || databaseName.constructor !== String) {
-    throw new Error(`Wrong database name: ${databaseName}`);
+    throw new Error(`Wrong database name: ${databaseName}`)
   }
 
   if (tablePrefix != null && tablePrefix.constructor !== String) {
-    throw new Error(`Wrong table prefix: ${tablePrefix}`);
+    throw new Error(`Wrong table prefix: ${tablePrefix}`)
   } else if (tablePrefix == null) {
-    tablePrefix = '';
+    tablePrefix = ''
   }
 
   const connection = new imports.Postgres({
@@ -37,23 +37,23 @@ const connect = async (imports, pool, options) => {
     port: connectionOptions.port,
     host: connectionOptions.host,
     password: connectionOptions.password,
-  });
+  })
 
-  await connection.connect();
-  await connection.query('SELECT 0 AS "defunct"');
+  await connection.connect()
+  await connection.query('SELECT 0 AS "defunct"')
 
   const runQuery = async (sql) => {
-    const result = await connection.query(sql);
-    let rows = null;
+    const result = await connection.query(sql)
+    let rows = null
 
     if (result != null && Array.isArray(result.rows)) {
-      rows = JSON.parse(JSON.stringify(result.rows));
+      rows = JSON.parse(JSON.stringify(result.rows))
     }
 
-    return rows;
-  };
+    return rows
+  }
 
-  const eventCounters = new Map();
+  const eventCounters = new Map()
 
   Object.assign(pool, {
     performanceTracer,
@@ -67,7 +67,7 @@ const connect = async (imports, pool, options) => {
     runQuery,
     connection,
     ...imports,
-  });
-};
+  })
+}
 
-export default connect;
+export default connect

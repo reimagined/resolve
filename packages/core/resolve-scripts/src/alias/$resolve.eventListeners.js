@@ -38,4 +38,4 @@ export default () => `
   }
 
   export default eventListeners
-`;
+`

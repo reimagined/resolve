@@ -1,3 +1,3 @@
-const verifyCommand = async () => {};
+const verifyCommand = async () => {}
 
-export default verifyCommand;
+export default verifyCommand

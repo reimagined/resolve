@@ -11,26 +11,26 @@ const performListenerOperation = async (
     Array.isArray(parameters.events)
   ) {
     for (const event of parameters.events) {
-      await resolve.sendReactiveEvent(event);
+      await resolve.sendReactiveEvent(event)
     }
-    return;
+    return
   }
 
-  const listenerInfo = resolve.eventListeners.get(eventSubscriber);
+  const listenerInfo = resolve.eventListeners.get(eventSubscriber)
   if (listenerInfo == null) {
-    throw new Error(`Listener ${eventSubscriber} does not exist`);
+    throw new Error(`Listener ${eventSubscriber} does not exist`)
   }
   const method = listenerInfo.isSaga
     ? resolve.executeSaga[operationName]
-    : resolve.executeQuery[operationName];
+    : resolve.executeQuery[operationName]
 
   const result = await method({
     modelName: eventSubscriber,
     ...parameters,
-  });
+  })
 
-  return result;
-};
+  return result
+}
 
 const createEventListener = (resolve) => {
   const eventListener = new Proxy(
@@ -41,15 +41,15 @@ const createEventListener = (resolve) => {
           null,
           resolve,
           key[0].toLowerCase() + key.slice(1)
-        );
+        )
       },
       set() {
-        throw new Error(`Event listener API is immutable`);
+        throw new Error(`Event listener API is immutable`)
       },
     }
-  );
+  )
 
-  return eventListener;
-};
+  return eventListener
+}
 
-export default createEventListener;
+export default createEventListener

@@ -3,19 +3,19 @@ import {
   RESOURCE_CONSTRUCTOR_ONLY,
   RUNTIME_ENV_ANYWHERE,
   IMPORT_CONSTRUCTOR,
-} from '../constants';
-import importResource from '../import_resource';
+} from '../constants'
+import importResource from '../import_resource'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
       `${message.serverAliasInClientCodeError}$resolve.eventstoreAdapter`
-    );
+    )
   }
 
-  const imports = [`import '$resolve.guardOnlyServer'`];
-  const constants = [];
-  const exports = [];
+  const imports = [`import '$resolve.guardOnlyServer'`]
+  const constants = []
+  const exports = []
 
   importResource({
     resourceName: 'eventstoreAdapter',
@@ -25,9 +25,9 @@ export default ({ resolveConfig, isClient }) => {
     instanceMode: IMPORT_CONSTRUCTOR,
     imports,
     constants,
-  });
+  })
 
-  exports.push('export default eventstoreAdapter');
+  exports.push('export default eventstoreAdapter')
 
-  return [...imports, ...constants, ...exports].join('\r\n');
-};
+  return [...imports, ...constants, ...exports].join('\r\n')
+}

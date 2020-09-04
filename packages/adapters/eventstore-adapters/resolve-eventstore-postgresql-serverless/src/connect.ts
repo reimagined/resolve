@@ -1,16 +1,16 @@
-import getLog from './js/get-log';
-import { AdapterPool, AdapterSpecific } from './types';
-import beginTransaction from './js/begin-transaction';
-import commitTransaction from './js/commit-transaction';
-import rollbackTransaction from './js/rollback-transaction';
-import isTimeoutError from './js/is-timeout-error';
+import getLog from './js/get-log'
+import { AdapterPool, AdapterSpecific } from './types'
+import beginTransaction from './js/begin-transaction'
+import commitTransaction from './js/commit-transaction'
+import rollbackTransaction from './js/rollback-transaction'
+import isTimeoutError from './js/is-timeout-error'
 
 const connect = async (
   pool: AdapterPool,
   specific: AdapterSpecific
 ): Promise<any> => {
-  const log = getLog('connect');
-  log.debug('configuring RDS data service client');
+  const log = getLog('connect')
+  log.debug('configuring RDS data service client')
 
   const {
     RDSDataService,
@@ -19,7 +19,7 @@ const connect = async (
     fullJitter,
     executeStatement,
     coercer,
-  } = specific;
+  } = specific
 
   const {
     dbClusterOrInstanceArn,
@@ -29,9 +29,9 @@ const connect = async (
     snapshotsTableName = 'snapshots',
     secretsTableName = 'secrets',
     ...rdsConfig
-  } = pool.config ?? {};
+  } = pool.config ?? {}
 
-  const rdsDataService = new RDSDataService(rdsConfig);
+  const rdsDataService = new RDSDataService(rdsConfig)
 
   Object.assign(pool, {
     rdsDataService,
@@ -50,9 +50,9 @@ const connect = async (
     escapeId,
     escape,
     isTimeoutError,
-  });
+  })
 
-  log.debug('RDS data service client configured');
-};
+  log.debug('RDS data service client configured')
+}
 
-export default connect;
+export default connect

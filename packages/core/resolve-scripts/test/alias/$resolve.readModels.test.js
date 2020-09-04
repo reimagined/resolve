@@ -1,8 +1,8 @@
-import path from 'path';
-import declareRuntimeEnv from '../../src/declare_runtime_env';
+import path from 'path'
+import declareRuntimeEnv from '../../src/declare_runtime_env'
 
-import alias from '../../src/alias/$resolve.readModels';
-import normalizePaths from './normalize_paths';
+import alias from '../../src/alias/$resolve.readModels'
+import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
   const resolveConfig = {
@@ -21,7 +21,7 @@ describe('base config works correctly', () => {
         options: {},
       },
     },
-  };
+  }
 
   test('[client]', () => {
     expect(() =>
@@ -33,8 +33,8 @@ describe('base config works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toThrow();
-  });
+    ).toThrow()
+  })
 
   test('[server]', () => {
     expect(
@@ -46,9 +46,9 @@ describe('base config works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})
 
 test('should throw when read-model name is process.env', () => {
   expect(() =>
@@ -69,8 +69,8 @@ test('should throw when read-model name is process.env', () => {
         }) +
         '\r\n'
     )
-  ).toThrow();
-});
+  ).toThrow()
+})
 
 test('should throw when read-model connectorName is process.env', () => {
   expect(() =>
@@ -91,8 +91,8 @@ test('should throw when read-model connectorName is process.env', () => {
         }) +
         '\r\n'
     )
-  ).toThrow();
-});
+  ).toThrow()
+})
 
 describe('base(v2) config works correctly', () => {
   const resolveConfig = {
@@ -139,7 +139,7 @@ describe('base(v2) config works correctly', () => {
         options: {},
       },
     },
-  };
+  }
 
   test('[client]', () => {
     expect(() =>
@@ -151,8 +151,8 @@ describe('base(v2) config works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toThrow();
-  });
+    ).toThrow()
+  })
 
   test('[server]', () => {
     expect(
@@ -164,9 +164,9 @@ describe('base(v2) config works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})
 
 describe('config + process.env works correctly', () => {
   const resolveConfig = {
@@ -186,7 +186,7 @@ describe('config + process.env works correctly', () => {
         },
       },
     },
-  };
+  }
 
   test('[client]', () => {
     expect(() =>
@@ -198,8 +198,8 @@ describe('config + process.env works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toThrow();
-  });
+    ).toThrow()
+  })
 
   test('[server]', () => {
     expect(
@@ -211,6 +211,6 @@ describe('config + process.env works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})

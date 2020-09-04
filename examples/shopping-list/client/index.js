@@ -1,12 +1,12 @@
-import React from 'react';
-import { render } from 'react-dom';
-import { Router } from 'react-router';
-import { AppContainer, createStore, getOrigin } from 'resolve-redux';
-import { createBrowserHistory } from 'history';
+import React from 'react'
+import { render } from 'react-dom'
+import { Router } from 'react-router'
+import { AppContainer, createStore, getOrigin } from 'resolve-redux'
+import { createBrowserHistory } from 'history'
 
-import Routes from './components/Routes';
-import getRoutes from './get-routes';
-import getRedux from './get-redux';
+import Routes from './components/Routes'
+import getRoutes from './get-routes'
+import getRedux from './get-redux'
 
 const entryPoint = ({
   rootPath,
@@ -15,10 +15,10 @@ const entryPoint = ({
   subscriber,
   clientImports,
 }) => {
-  const origin = getOrigin(window.location);
-  const history = createBrowserHistory({ basename: rootPath });
-  const redux = getRedux(clientImports);
-  const routes = getRoutes(clientImports);
+  const origin = getOrigin(window.location)
+  const history = createBrowserHistory({ basename: rootPath })
+  const redux = getRedux(clientImports)
+  const routes = getRoutes(clientImports)
 
   const store = createStore({
     redux,
@@ -28,12 +28,12 @@ const entryPoint = ({
     origin,
     rootPath,
     isClient: true,
-  });
+  })
 
-  let appContainer = document.getElementById('app-container');
+  let appContainer = document.getElementById('app-container')
   if (!appContainer) {
-    appContainer = document.createElement('div');
-    document.body.appendChild(appContainer);
+    appContainer = document.createElement('div')
+    document.body.appendChild(appContainer)
   }
 
   render(
@@ -48,7 +48,7 @@ const entryPoint = ({
       </Router>
     </AppContainer>,
     appContainer
-  );
-};
+  )
+}
 
-export default entryPoint;
+export default entryPoint

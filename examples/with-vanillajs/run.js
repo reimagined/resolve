@@ -5,29 +5,29 @@ import {
   merge,
   stop,
   reset,
-} from 'resolve-scripts';
+} from 'resolve-scripts'
 
-import appConfig from './config.app';
-import cloudConfig from './config.cloud';
-import devConfig from './config.dev';
+import appConfig from './config.app'
+import cloudConfig from './config.cloud'
+import devConfig from './config.dev'
 
-const launchMode = process.argv[2];
+const launchMode = process.argv[2]
 
 void (async () => {
   try {
     switch (launchMode) {
       case 'dev': {
-        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig);
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
 
         await reset(resolveConfig, {
           dropEventStore: false,
           dropEventBus: true,
           dropReadModels: true,
           dropSagas: true,
-        });
+        })
 
-        await watch(resolveConfig);
-        break;
+        await watch(resolveConfig)
+        break
       }
 
       case 'cloud': {
@@ -35,18 +35,18 @@ void (async () => {
           defaultResolveConfig,
           appConfig,
           cloudConfig
-        );
+        )
 
-        await build(resolveConfig);
-        break;
+        await build(resolveConfig)
+        break
       }
 
       default: {
-        throw new Error('Unknown option');
+        throw new Error('Unknown option')
       }
     }
-    await stop();
+    await stop()
   } catch (error) {
-    await stop(error);
+    await stop(error)
   }
-})();
+})()

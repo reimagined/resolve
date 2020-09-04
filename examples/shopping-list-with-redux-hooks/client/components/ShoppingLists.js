@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
-import { Button, FormLabel, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { useReduxCommand, useReduxReadModel } from 'resolve-redux';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react'
+import { Button, FormLabel, Table } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
+import { useReduxCommand, useReduxReadModel } from 'resolve-redux'
+import { useSelector } from 'react-redux'
 import {
   SHOPPING_LIST_REMOVED,
   SHOPPING_LISTS_ACQUIRED,
-} from '../actions/optimistic-actions';
+} from '../actions/optimistic-actions'
 
 const useOptimisticLists = () => {
   const { request: getLists } = useReduxReadModel(
@@ -26,7 +26,7 @@ const useOptimisticLists = () => {
         }),
       },
     }
-  );
+  )
   const { execute: removeShoppingList } = useReduxCommand(
     ({ id }) => ({
       aggregateName: 'ShoppingList',
@@ -44,23 +44,23 @@ const useOptimisticLists = () => {
         }),
       },
     }
-  );
+  )
 
-  const lists = useSelector((state) => state.optimisticShoppingLists);
+  const lists = useSelector((state) => state.optimisticShoppingLists)
 
   return {
     getLists,
     lists,
     removeShoppingList,
-  };
-};
+  }
+}
 
 export default () => {
-  const { getLists, removeShoppingList, lists } = useOptimisticLists();
+  const { getLists, removeShoppingList, lists } = useOptimisticLists()
 
   useEffect(() => {
-    getLists();
-  }, []);
+    getLists()
+  }, [])
 
   return (
     <div>
@@ -84,7 +84,7 @@ export default () => {
                 <Button
                   variant="danger"
                   onClick={() => {
-                    removeShoppingList({ id });
+                    removeShoppingList({ id })
                   }}
                 >
                   <i className="far fa-trash-alt" />
@@ -95,5 +95,5 @@ export default () => {
         </tbody>
       </Table>
     </div>
-  );
-};
+  )
+}

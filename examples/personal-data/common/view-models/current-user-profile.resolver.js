@@ -1,14 +1,14 @@
-import jwt from 'jsonwebtoken';
-import jwtSecret from '../../auth/jwt-secret';
+import jwt from 'jsonwebtoken'
+import jwtSecret from '../../auth/jwt-secret'
 
 export default async (resolve, query, { jwt: token, viewModel }) => {
   try {
-    jwt.verify(token, jwtSecret);
+    jwt.verify(token, jwtSecret)
   } catch (error) {
-    throw new Error('Permission denied');
+    throw new Error('Permission denied')
   }
 
-  const { data, cursor } = await resolve.buildViewModel(viewModel.name, query);
+  const { data, cursor } = await resolve.buildViewModel(viewModel.name, query)
 
   return {
     data,
@@ -17,5 +17,5 @@ export default async (resolve, query, { jwt: token, viewModel }) => {
       eventTypes: viewModel.eventTypes,
       aggregateIds: query.aggregateIds,
     },
-  };
-};
+  }
+}

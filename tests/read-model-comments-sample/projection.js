@@ -1,34 +1,34 @@
-const treeId = 'tree-id';
+const treeId = 'tree-id'
 
 const projection = {
   Init: async (store) => {
     await store.defineTable('CommentsAsMap', {
       indexes: { treeId: 'string' },
       fields: ['comments'],
-    });
+    })
 
     await store.defineTable('CommentsAsList', {
       indexes: { treeId: 'string' },
       fields: ['comments', 'commentsCount'],
-    });
+    })
 
     await store.insert('CommentsAsMap', {
       treeId,
       comments: {},
-    });
+    })
 
     await store.insert('CommentsAsList', {
       treeId,
       comments: [],
       commentsCount: 0,
-    });
+    })
   },
 
   COMMENT_CREATED: async (store, event) => {
     const {
       aggregateId,
       payload: { parentId, content },
-    } = event;
+    } = event
 
     await store.update(
       'CommentsAsMap',
@@ -46,7 +46,7 @@ const projection = {
           },
         },
       }
-    );
+    )
 
     if (parentId != null) {
       await store.update(
@@ -62,7 +62,7 @@ const projection = {
             [`comments.${parentId}.childrenCount`]: 1,
           },
         }
-      );
+      )
     }
 
     const { commentsCount } = await store.findOne(
@@ -73,7 +73,7 @@ const projection = {
       {
         commentsCount: 1,
       }
-    );
+    )
 
     if (parentId != null) {
       const comments = (
@@ -86,11 +86,11 @@ const projection = {
             comments: 1,
           }
         )
-      ).comments;
+      ).comments
 
       const parentIndex = comments.findIndex(
         ({ aggregateId }) => aggregateId === parentId
-      );
+      )
 
       await store.update(
         'CommentsAsList',
@@ -105,7 +105,7 @@ const projection = {
             [`comments.${parentIndex}.childrenCount`]: 1,
           },
         }
-      );
+      )
     }
 
     await store.update(
@@ -127,8 +127,8 @@ const projection = {
           commentsCount: 1,
         },
       }
-    );
+    )
   },
-};
+}
 
-export default projection;
+export default projection

@@ -1,6 +1,6 @@
-import { ConcurrentError } from 'resolve-eventstore-base';
+import { ConcurrentError } from 'resolve-eventstore-base'
 
-import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants';
+import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants'
 
 const saveEvent = async (
   { databaseName, eventsTableName, executeStatement, escapeId, escape },
@@ -13,17 +13,17 @@ const saveEvent = async (
         `${+event.aggregateVersion},`,
         `${escape(event.type)},`,
         escape(JSON.stringify(event.payload != null ? event.payload : null)),
-      ].join('');
+      ].join('')
 
       // TODO: Improve calculation byteLength depend on codepage and wide-characters
       const byteLength =
-        Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE;
+        Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
 
-      const databaseNameAsString = escape(databaseName);
-      const databaseNameAsId = escapeId(databaseName);
-      const freezeTableNameAsString = escape(`${eventsTableName}-freeze`);
-      const threadsTableAsId = escapeId(`${eventsTableName}-threads`);
-      const eventsTableAsId = escapeId(eventsTableName);
+      const databaseNameAsString = escape(databaseName)
+      const databaseNameAsId = escapeId(databaseName)
+      const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
+      const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
+      const eventsTableAsId = escapeId(eventsTableName)
 
       // prettier-ignore
       await executeStatement(
@@ -83,20 +83,20 @@ const saveEvent = async (
         )`
       )
 
-      break;
+      break
     } catch (error) {
       const errorMessage =
-        error != null && error.message != null ? error.message : '';
+        error != null && error.message != null ? error.message : ''
 
       if (errorMessage.indexOf('subquery used as an expression') > -1) {
-        throw new Error('Event store is frozen');
+        throw new Error('Event store is frozen')
       } else if (/aggregateIdAndVersion/i.test(errorMessage)) {
-        throw new ConcurrentError(event.aggregateId);
+        throw new ConcurrentError(event.aggregateId)
       } else {
-        throw error;
+        throw error
       }
     }
   }
-};
+}
 
-export default saveEvent;
+export default saveEvent

@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts';
+import { declareRuntimeEnv } from 'resolve-scripts'
 
 const testFunctionalConfig = {
   target: 'local',
@@ -35,6 +35,6 @@ const testFunctionalConfig = {
       databaseFile: 'data/event-store-test-functional.db',
     },
   },
-};
+}
 
-export default testFunctionalConfig;
+export default testFunctionalConfig

@@ -1,38 +1,38 @@
-import extractErrorHttpCode from '../utils/extract-error-http-code';
-import getRootBasedUrl from '../utils/get-root-based-url';
-import extractRequestBody from '../utils/extract-request-body';
+import extractErrorHttpCode from '../utils/extract-error-http-code'
+import getRootBasedUrl from '../utils/get-root-based-url'
+import extractRequestBody from '../utils/extract-request-body'
 
 const queryHandler = async (req, res) => {
-  const segment = req.resolve.performanceTracer.getSegment();
-  const subSegment = segment.addNewSubsegment('query');
+  const segment = req.resolve.performanceTracer.getSegment()
+  const subSegment = segment.addNewSubsegment('query')
 
   try {
-    const baseQueryUrl = getRootBasedUrl(req.resolve.rootPath, '/api/query/');
-    const paramsPath = req.path.substring(baseQueryUrl.length);
-    const [modelName, modelOptions] = paramsPath.split('/');
+    const baseQueryUrl = getRootBasedUrl(req.resolve.rootPath, '/api/query/')
+    const paramsPath = req.path.substring(baseQueryUrl.length)
+    const [modelName, modelOptions] = paramsPath.split('/')
 
     if (modelName == null || modelOptions == null) {
       const error = new Error(
         'Invalid "modelName" and/or "modelOptions" parameters'
-      );
-      error.code = 400;
-      throw error;
+      )
+      error.code = 400
+      throw error
     }
 
-    const modelArgs = extractRequestBody(req);
+    const modelArgs = extractRequestBody(req)
 
     const result = await req.resolve.executeQuery.read({
       modelName,
       modelOptions,
       modelArgs,
       jwt: req.jwt,
-    });
+    })
 
-    subSegment.addAnnotation('modelName', modelName);
-    subSegment.addAnnotation('origin', 'resolve:query');
+    subSegment.addAnnotation('modelName', modelName)
+    subSegment.addAnnotation('origin', 'resolve:query')
 
-    res.status(200);
-    res.setHeader('Content-Type', 'application/json');
+    res.status(200)
+    res.setHeader('Content-Type', 'application/json')
 
     if (
       (result.meta?.aggregateIds != null || result.meta?.eventTypes != null) &&
@@ -48,12 +48,12 @@ const queryHandler = async (req, res) => {
           modelOptions == null
           ? modelOptions
           : [modelOptions]
-      );
+      )
 
       res.setHeader(
         'X-Resolve-View-Model-Subscription',
         JSON.stringify(subscribeOptions)
-      );
+      )
     }
 
     res.end(
@@ -62,16 +62,16 @@ const queryHandler = async (req, res) => {
         state: result,
         jwt: req.jwt,
       })
-    );
+    )
   } catch (error) {
-    const errorCode = extractErrorHttpCode(error);
-    res.status(errorCode);
-    res.setHeader('Content-Type', 'text/plain');
-    res.end(error.message);
-    subSegment.addError(error);
+    const errorCode = extractErrorHttpCode(error)
+    res.status(errorCode)
+    res.setHeader('Content-Type', 'text/plain')
+    res.end(error.message)
+    subSegment.addError(error)
   } finally {
-    subSegment.close();
+    subSegment.close()
   }
-};
+}
 
-export default queryHandler;
+export default queryHandler

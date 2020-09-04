@@ -2,7 +2,7 @@ import {
   USER_REGISTERED,
   USER_PROFILE_UPDATED,
   USER_PROFILE_DELETED,
-} from '../user-profile.events';
+} from '../user-profile.events'
 
 const projection = {
   Init: () => ({
@@ -33,6 +33,6 @@ const projection = {
     isRegistered: false,
     isDeleted: true,
   }),
-};
+}
 
-export default projection;
+export default projection

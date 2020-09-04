@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Button, Col, ControlLabel, FormControl, Row } from 'react-bootstrap';
-import { useCommand } from 'resolve-react-hooks';
-import uuid from 'uuid/v4';
+import React, { useState } from 'react'
+import { Button, Col, ControlLabel, FormControl, Row } from 'react-bootstrap'
+import { useCommand } from 'resolve-react-hooks'
+import uuid from 'uuid/v4'
 
 const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
-  const [shoppingListName, setShoppingListName] = useState('');
+  const [shoppingListName, setShoppingListName] = useState('')
 
   const createShoppingListCommand = useCommand(
     {
@@ -16,21 +16,21 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
       },
     },
     (err, result) => {
-      setShoppingListName('');
-      onCreateSuccess(err, result);
+      setShoppingListName('')
+      onCreateSuccess(err, result)
     }
-  );
+  )
 
   const updateShoppingListName = (event) => {
-    setShoppingListName(event.target.value);
-  };
+    setShoppingListName(event.target.value)
+  }
 
   const onShoppingListNamePressEnter = (event) => {
     if (event.charCode === 13) {
-      event.preventDefault();
-      createShoppingListCommand();
+      event.preventDefault()
+      createShoppingListCommand()
     }
-  };
+  }
 
   return (
     <div>
@@ -56,7 +56,7 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
         </Col>
       </Row>
     </div>
-  );
-};
+  )
+}
 
-export default ShoppingListCreator;
+export default ShoppingListCreator

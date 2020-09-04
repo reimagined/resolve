@@ -7,20 +7,20 @@ import {
   LazinessStrategy,
   PrivateOperationType,
   DeliveryStrategy,
-} from '../constants';
+} from '../constants'
 
 const resumeSubscriber = async (pool, payload) => {
   const {
     database: { escapeId, escapeStr, runQuery, runRawQuery },
     invokeOperation,
     generateGuid,
-  } = pool;
+  } = pool
 
-  const { eventSubscriber } = payload;
-  const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME);
-  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME);
+  const { eventSubscriber } = payload
+  const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME)
+  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
 
-  const insertionId = generateGuid('FORCEUPDATE');
+  const insertionId = generateGuid('FORCEUPDATE')
 
   await runRawQuery(`
       UPDATE ${subscribersTableNameAsId}
@@ -56,27 +56,27 @@ const resumeSubscriber = async (pool, payload) => {
 
       COMMIT;
       BEGIN IMMEDIATE;
-    `);
+    `)
 
   const result = await runQuery(`
       SELECT ${subscribersTableNameAsId}."subscriptionId"
       FROM ${subscribersTableNameAsId}
       WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)}
       AND "status" = ${escapeStr(SubscriptionStatus.DELIVER)}
-  `);
+  `)
   if (result == null || result.length !== 1) {
     throw new Error(
       `Notification for event subscriber ${eventSubscriber} cannot be pushed`
-    );
+    )
   }
-  const { subscriptionId } = result[0];
+  const { subscriptionId } = result[0]
   const input = {
     type: PrivateOperationType.PULL_NOTIFICATIONS,
     payload: {
       subscriptionId,
     },
-  };
-  await invokeOperation(pool, LazinessStrategy.EAGER, input);
-};
+  }
+  await invokeOperation(pool, LazinessStrategy.EAGER, input)
+}
 
-export default resumeSubscriber;
+export default resumeSubscriber

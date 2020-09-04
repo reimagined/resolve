@@ -9,7 +9,7 @@ import {
   NotificationStatus,
   SubscriptionStatus,
   BATCH_CONSUMING_TIME,
-} from '../constants';
+} from '../constants'
 const deliverBatchForSubscriber = async (pool, payload) => {
   const {
     database: { runRawQuery, runQuery, escapeStr, escapeId, decodeJsonPath },
@@ -18,13 +18,13 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     invokeOperation,
     serializeError,
     checkCursorEdge,
-  } = pool;
-  const { activeBatch } = payload;
-  const { batchId, subscriptionId, eventSubscriber } = activeBatch;
+  } = pool
+  const { activeBatch } = payload
+  const { batchId, subscriptionId, eventSubscriber } = activeBatch
 
-  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME);
-  const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME);
-  const batchesTableNameAsId = escapeId(BATCHES_TABLE_NAME);
+  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
+  const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME)
+  const batchesTableNameAsId = escapeId(BATCHES_TABLE_NAME)
 
   const result = await runQuery(`
     SELECT ${subscribersTableNameAsId}."eventTypes" AS "eventTypes",
@@ -47,9 +47,9 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     subscriptionId
   )}
     LIMIT 1
-  `);
+  `)
   if (result == null || result.length !== 1) {
-    throw new Error('Cannot retrieve subscriber information');
+    throw new Error('Cannot retrieve subscriber information')
   }
   const {
     eventTypes,
@@ -62,7 +62,7 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     isEventBasedRun,
     status,
     hasErrors,
-  } = await parseSubscription(result[0]);
+  } = await parseSubscription(result[0])
   if (status === SubscriptionStatus.ERROR || hasErrors) {
     const input = {
       type: PrivateOperationType.FINALIZE_BATCH,
@@ -70,19 +70,19 @@ const deliverBatchForSubscriber = async (pool, payload) => {
         activeBatch,
         result: null,
       },
-    };
-    await invokeOperation(pool, LazinessStrategy.EAGER, input);
-    return;
+    }
+    await invokeOperation(pool, LazinessStrategy.EAGER, input)
+    return
   }
   if (
     deliveryStrategy !== DeliveryStrategy.ACTIVE_NONE &&
     deliveryStrategy !== DeliveryStrategy.ACTIVE_REGULAR &&
     deliveryStrategy !== DeliveryStrategy.ACTIVE_XA
   ) {
-    throw new Error(`Wrong deliveryStrategy="${deliveryStrategy}"`);
+    throw new Error(`Wrong deliveryStrategy="${deliveryStrategy}"`)
   }
 
-  let [events, xaTransactionId] = [null, existingXaTransactionId];
+  let [events, xaTransactionId] = [null, existingXaTransactionId]
   if (isEventBasedRun) {
     try {
       void ({ events } = await invokeConsumer(pool, ConsumerMethod.LoadEvents, {
@@ -90,7 +90,7 @@ const deliverBatchForSubscriber = async (pool, payload) => {
         aggregateIds,
         limit: 500,
         cursor,
-      }));
+      }))
       if (events == null || events.length === 0) {
         const input = {
           type: PrivateOperationType.FINALIZE_BATCH,
@@ -98,9 +98,9 @@ const deliverBatchForSubscriber = async (pool, payload) => {
             activeBatch,
             result: null,
           },
-        };
-        await invokeOperation(pool, LazinessStrategy.EAGER, input);
-        return;
+        }
+        await invokeOperation(pool, LazinessStrategy.EAGER, input)
+        return
       }
       if (!checkCursorEdge(events, cursor)) {
         const input = {
@@ -115,9 +115,9 @@ const deliverBatchForSubscriber = async (pool, payload) => {
               ),
             },
           },
-        };
-        await invokeOperation(pool, LazinessStrategy.EAGER, input);
-        return;
+        }
+        await invokeOperation(pool, LazinessStrategy.EAGER, input)
+        return
       }
       if (deliveryStrategy === DeliveryStrategy.ACTIVE_XA) {
         if (xaTransactionId == null) {
@@ -128,10 +128,10 @@ const deliverBatchForSubscriber = async (pool, payload) => {
               eventSubscriber,
               batchId,
             }
-          );
+          )
         }
         if (xaTransactionId == null) {
-          throw new Error(`Failed to start XA session`);
+          throw new Error(`Failed to start XA session`)
         }
       }
     } catch (error) {
@@ -143,9 +143,9 @@ const deliverBatchForSubscriber = async (pool, payload) => {
             error: serializeError(error),
           },
         },
-      };
-      await invokeOperation(pool, LazinessStrategy.EAGER, input);
-      return;
+      }
+      await invokeOperation(pool, LazinessStrategy.EAGER, input)
+      return
     }
     if (runStatus === NotificationStatus.RECIEVED) {
       await runRawQuery(`
@@ -173,7 +173,7 @@ const deliverBatchForSubscriber = async (pool, payload) => {
         
         COMMIT;
         BEGIN IMMEDIATE;
-    `);
+    `)
     } else {
       await runRawQuery(`
         DELETE FROM ${batchesTableNameAsId} WHERE 
@@ -198,7 +198,7 @@ const deliverBatchForSubscriber = async (pool, payload) => {
         
         COMMIT;
         BEGIN IMMEDIATE;
-    `);
+    `)
     }
   } else {
     // TODO: improve Initial event timestamp for sagas
@@ -209,8 +209,8 @@ const deliverBatchForSubscriber = async (pool, payload) => {
         
         COMMIT;
         BEGIN IMMEDIATE;
-    `);
-    let initialEvent = null;
+    `)
+    let initialEvent = null
     try {
       const initialEvents = (
         await invokeConsumer(pool, ConsumerMethod.LoadEvents, {
@@ -219,9 +219,9 @@ const deliverBatchForSubscriber = async (pool, payload) => {
           limit: 1,
           cursor: null,
         })
-      ).events;
+      ).events
       if (initialEvents != null && initialEvents.length > 0) {
-        void ([initialEvent] = initialEvents);
+        void ([initialEvent] = initialEvents)
       }
     } catch (error) {
       const input = {
@@ -232,35 +232,35 @@ const deliverBatchForSubscriber = async (pool, payload) => {
             error: serializeError(error),
           },
         },
-      };
-      await invokeOperation(pool, LazinessStrategy.EAGER, input);
-      return;
+      }
+      await invokeOperation(pool, LazinessStrategy.EAGER, input)
+      return
     }
     events = [
       {
         timestamp: initialEvent != null ? initialEvent.timestamp : 0,
         type: 'Init',
       },
-    ];
+    ]
   }
   const input = {
     type: PrivateOperationType.REQUEST_TIMEOUT,
     payload: { batchId },
-  };
+  }
   await invokeOperation(
     pool,
     LazinessStrategy.LAZY,
     input,
     BATCH_CONSUMING_TIME
-  );
+  )
 
   const sendingProperties =
     properties != null
       ? Object.keys(properties).reduce((acc, key) => {
-          acc[decodeJsonPath(key)] = properties[key];
-          return acc;
+          acc[decodeJsonPath(key)] = properties[key]
+          return acc
         }, {})
-      : {};
+      : {}
 
   await invokeConsumer(
     pool,
@@ -273,7 +273,7 @@ const deliverBatchForSubscriber = async (pool, payload) => {
       batchId,
     },
     true
-  );
-};
+  )
+}
 
-export default deliverBatchForSubscriber;
+export default deliverBatchForSubscriber

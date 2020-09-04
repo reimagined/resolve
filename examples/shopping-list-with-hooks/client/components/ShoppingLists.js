@@ -1,8 +1,8 @@
-import React from 'react';
-import { ControlLabel, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { ControlLabel, Table } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
-import ShoppingListRemover from './ShoppingListRemover';
+import ShoppingListRemover from './ShoppingListRemover'
 
 const ShoppingLists = ({ lists, onRemoveSuccess }) => {
   return (
@@ -34,7 +34,7 @@ const ShoppingLists = ({ lists, onRemoveSuccess }) => {
         </tbody>
       </Table>
     </div>
-  );
-};
+  )
+}
 
-export default ShoppingLists;
+export default ShoppingLists

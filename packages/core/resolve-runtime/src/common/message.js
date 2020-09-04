@@ -5,4 +5,4 @@ export default {
   readModelFail: 'Read model query error: ',
   viewModelFail: 'View model query error: ',
   viewModelOnlyOnDemand: 'The aggregateIds field is required',
-};
+}

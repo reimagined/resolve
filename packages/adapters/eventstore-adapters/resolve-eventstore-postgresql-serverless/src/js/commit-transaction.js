@@ -5,7 +5,7 @@ const commitTransaction = async (pool, transactionId) => {
       secretArn: pool.awsSecretStoreArn,
       transactionId,
     })
-    .promise();
-};
+    .promise()
+}
 
-export default commitTransaction;
+export default commitTransaction

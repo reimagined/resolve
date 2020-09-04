@@ -1,7 +1,7 @@
-import React from 'react';
-import { Text, View, Image, StyleSheet } from 'react-native';
+import React from 'react'
+import { Text, View, Image, StyleSheet } from 'react-native'
 
-import ResolveLogo from '../assets/resolve-logo.png';
+import ResolveLogo from '../assets/resolve-logo.png'
 
 const styles = StyleSheet.create({
   container: {
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontSize: 27,
   },
-});
+})
 
 class Logo extends React.PureComponent {
   render() {
@@ -26,8 +26,8 @@ class Logo extends React.PureComponent {
         <Image style={styles.image} source={ResolveLogo} />
         <Text style={styles.text}>Shopping List</Text>
       </View>
-    );
+    )
   }
 }
 
-export default Logo;
+export default Logo

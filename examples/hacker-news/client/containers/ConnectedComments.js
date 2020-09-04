@@ -1,22 +1,22 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
-import uuid from 'uuid/v4';
-import { CommentsTreeRenderless } from 'resolve-module-comments';
+import React from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import uuid from 'uuid/v4'
+import { CommentsTreeRenderless } from 'resolve-module-comments'
 
-import ChildrenComments from '../components/ChildrenComments';
-import Comment from '../components/Comment';
+import ChildrenComments from '../components/ChildrenComments'
+import Comment from '../components/Comment'
 
 const Reply = styled.div`
   padding: 0.5em;
   margin-bottom: 1em;
-`;
+`
 
 class ConnectedComments extends React.PureComponent {
-  comment = React.createRef();
+  comment = React.createRef()
 
   onCreateComment = (createComment) => {
-    const { treeId, parentCommentId, me } = this.props;
+    const { treeId, parentCommentId, me } = this.props
 
     createComment(treeId, {
       commentId: uuid(),
@@ -28,18 +28,18 @@ class ConnectedComments extends React.PureComponent {
         createdByName: me.name,
         createdAt: Date.now(),
       },
-    });
+    })
 
-    this.comment.current.value = '';
-  };
+    this.comment.current.value = ''
+  }
 
   updateCommentText = (event) =>
     this.setState({
       commentText: event.target.value,
-    });
+    })
 
   render() {
-    const { treeId, parentCommentId, authorId, me } = this.props;
+    const { treeId, parentCommentId, authorId, me } = this.props
 
     return (
       <CommentsTreeRenderless
@@ -48,7 +48,7 @@ class ConnectedComments extends React.PureComponent {
         authorId={authorId}
       >
         {({ comments, createComment }) => {
-          const loggedIn = !!me.id;
+          const loggedIn = !!me.id
 
           const content = (
             <div>
@@ -70,7 +70,7 @@ class ConnectedComments extends React.PureComponent {
                 loggedIn={loggedIn}
               />
             </div>
-          );
+          )
 
           if (comments && comments.commentId) {
             return (
@@ -81,18 +81,18 @@ class ConnectedComments extends React.PureComponent {
               >
                 {content}
               </Comment>
-            );
+            )
           } else {
-            return <div>{content}</div>;
+            return <div>{content}</div>
           }
         }}
       </CommentsTreeRenderless>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state) => ({
   me: state.jwt,
-});
+})
 
-export default connect(mapStateToProps)(ConnectedComments);
+export default connect(mapStateToProps)(ConnectedComments)

@@ -16,15 +16,15 @@ const del = async (
     escapeId,
     escape,
     makeNestedPath
-  );
+  )
 
   const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : '';
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   await runQuery(
     `DELETE FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr};`
-  );
-};
+  )
+}
 
-export default del;
+export default del

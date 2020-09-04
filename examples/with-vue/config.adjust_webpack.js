@@ -1,6 +1,6 @@
-import VueLoaderPlugin from 'vue-loader/lib/plugin';
-import CopyPlugin from 'copy-webpack-plugin';
-import path from 'path';
+import VueLoaderPlugin from 'vue-loader/lib/plugin'
+import CopyPlugin from 'copy-webpack-plugin'
+import path from 'path'
 
 const adjustWebpackEntry = (webpackConfig) => {
   const {
@@ -8,40 +8,40 @@ const adjustWebpackEntry = (webpackConfig) => {
     mode,
     resolve,
     plugins,
-  } = webpackConfig;
+  } = webpackConfig
   rules.unshift({
     test: /\.css$/,
     use: ['vue-style-loader', 'css-loader'],
-  });
+  })
 
   rules.unshift({
     test: /\.vue$/,
     loader: 'vue-loader',
-  });
+  })
 
-  resolve.alias['vue$'] = mode === 'development' ? 'vue/dist/vue' : 'vue';
+  resolve.alias['vue$'] = mode === 'development' ? 'vue/dist/vue' : 'vue'
 
-  resolve.extensions = ['.js', '.vue'];
+  resolve.extensions = ['.js', '.vue']
 
-  plugins.push(new VueLoaderPlugin());
-};
+  plugins.push(new VueLoaderPlugin())
+}
 
 const adjustWebpackConfigs = (webpackConfigs) => {
   const clientEntry = webpackConfigs.find(
     ({ entry, target }) =>
       Object.keys(entry).find((entry) => entry.endsWith('client/index.js')) !=
         null && target === 'web'
-  );
+  )
   const ssrEntry = webpackConfigs.find(
     ({ entry, target }) =>
       Object.keys(entry).find((entry) => entry.endsWith('/ssr.js')) != null &&
       target === 'node'
-  );
+  )
 
-  adjustWebpackEntry(clientEntry);
-  adjustWebpackEntry(ssrEntry);
+  adjustWebpackEntry(clientEntry)
+  adjustWebpackEntry(ssrEntry)
 
-  const clientDistDir = path.join(clientEntry.output.path, 'client');
+  const clientDistDir = path.join(clientEntry.output.path, 'client')
   clientEntry.plugins.push(
     new CopyPlugin([
       {
@@ -53,7 +53,7 @@ const adjustWebpackConfigs = (webpackConfigs) => {
         to: path.join(clientDistDir, 'bootstrap.css'),
       },
     ])
-  );
-};
+  )
+}
 
-export default adjustWebpackConfigs;
+export default adjustWebpackConfigs

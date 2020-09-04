@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery } from 'resolve-react-hooks';
-import { Redirect } from 'react-router-dom';
-import ProfileWithViewModel from './ProfileWithViewModel';
-import Loading from './Loading';
+import React, { useState, useEffect } from 'react'
+import { useQuery } from 'resolve-react-hooks'
+import { Redirect } from 'react-router-dom'
+import ProfileWithViewModel from './ProfileWithViewModel'
+import Loading from './Loading'
 
 const Profile = () => {
-  const [userId, setUserId] = useState('unknown');
+  const [userId, setUserId] = useState('unknown')
 
   const getUserId = useQuery(
     {
@@ -15,31 +15,31 @@ const Profile = () => {
     },
     (err, result) => {
       if (err) {
-        setUserId(null);
-        return;
+        setUserId(null)
+        return
       }
-      setUserId(result.data.id);
+      setUserId(result.data.id)
     },
     [userId]
-  );
+  )
 
   useEffect(() => {
-    getUserId();
-  }, []);
+    getUserId()
+  }, [])
 
   if (userId === 'unknown') {
-    return <Loading />;
+    return <Loading />
   }
 
   if (userId === null) {
-    return <Redirect to="/" />;
+    return <Redirect to="/" />
   }
 
   return (
     <React.Fragment>
       <ProfileWithViewModel userId={userId} />
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default Profile;
+export default Profile

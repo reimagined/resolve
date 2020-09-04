@@ -1,4 +1,4 @@
-import { sendCommandRequest, SendCommandRequestAction } from './actions';
+import { sendCommandRequest, SendCommandRequestAction } from './actions'
 
 const sendAggregateAction = (
   aggregateName: string,
@@ -14,6 +14,6 @@ const sendAggregateAction = (
       payload,
     },
     false
-  );
+  )
 
-export { sendAggregateAction };
+export { sendAggregateAction }

@@ -1,6 +1,6 @@
-import App from './components/App';
-import ShoppingList from './components/ShoppingList';
-import MyLists from './components/MyLists';
+import App from './components/App'
+import ShoppingList from './components/ShoppingList'
+import MyLists from './components/MyLists'
 
 export default [
   {
@@ -17,4 +17,4 @@ export default [
       },
     ],
   },
-];
+]

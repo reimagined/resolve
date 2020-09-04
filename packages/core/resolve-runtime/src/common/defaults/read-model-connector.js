@@ -3,6 +3,6 @@ const readModelConnector = () => ({
   disconnect: null,
   drop: null,
   dispose: null,
-});
+})
 
-export default readModelConnector;
+export default readModelConnector

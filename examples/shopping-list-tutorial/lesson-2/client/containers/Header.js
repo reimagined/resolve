@@ -1,18 +1,18 @@
-import React from 'react';
-import { connectStaticBasedUrls } from 'resolve-redux';
-import { Navbar } from 'react-bootstrap';
-import { Helmet } from 'react-helmet';
+import React from 'react'
+import { connectStaticBasedUrls } from 'resolve-redux'
+import { Navbar } from 'react-bootstrap'
+import { Helmet } from 'react-helmet'
 
-import Image from './Image';
+import Image from './Image'
 
 const Header = ({ title, name, css, favicon }) => {
-  const stylesheetLinks = css.map((href) => ({ rel: 'stylesheet', href }));
-  const faviconLink = { rel: 'icon', type: 'image/png', href: favicon };
-  const links = [...stylesheetLinks, faviconLink];
+  const stylesheetLinks = css.map((href) => ({ rel: 'stylesheet', href }))
+  const faviconLink = { rel: 'icon', type: 'image/png', href: favicon }
+  const links = [...stylesheetLinks, faviconLink]
   const meta = {
     name: 'viewport',
     content: 'width=device-width, initial-scale=1',
-  };
+  }
 
   return (
     <div>
@@ -42,7 +42,7 @@ const Header = ({ title, name, css, favicon }) => {
         </Navbar.Collapse>
       </Navbar>
     </div>
-  );
-};
+  )
+}
 
-export default connectStaticBasedUrls(['css', 'favicon'])(Header);
+export default connectStaticBasedUrls(['css', 'favicon'])(Header)

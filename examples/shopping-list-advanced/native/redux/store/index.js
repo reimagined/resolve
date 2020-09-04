@@ -1,16 +1,16 @@
-import devToolsEnhancer from 'remote-redux-devtools';
-import { createMemoryHistory } from 'history';
-import { AsyncStorage } from 'react-native';
+import devToolsEnhancer from 'remote-redux-devtools'
+import { createMemoryHistory } from 'history'
+import { AsyncStorage } from 'react-native'
 
-import getNativeChunk from '../../native-chunk';
-import origin from '../../constants/origin';
+import getNativeChunk from '../../native-chunk'
+import origin from '../../constants/origin'
 
-import optimisticShoppingLists from '../reducers/optimistic-shopping-lists';
-import optimisticSharings from '../reducers/optimistic-sharings';
-import refresh from '../reducers/refresh';
+import optimisticShoppingLists from '../reducers/optimistic-shopping-lists'
+import optimisticSharings from '../reducers/optimistic-sharings'
+import refresh from '../reducers/refresh'
 
-import optimisticSharingsSaga from '../sagas/optimistic-sharings-saga';
-import optimisticShoppingListsSaga from '../sagas/optimistic-shopping-lists-saga';
+import optimisticSharingsSaga from '../sagas/optimistic-sharings-saga'
+import optimisticShoppingListsSaga from '../sagas/optimistic-shopping-lists-saga'
 
 const {
   resolveRedux: { createStore },
@@ -19,15 +19,15 @@ const {
   customConstants,
   subscriber,
   jwtCookie,
-} = getNativeChunk();
+} = getNativeChunk()
 
-const initialState = {};
+const initialState = {}
 
 const history = createMemoryHistory({
   basename: rootPath,
-});
+})
 
-const isClient = true;
+const isClient = true
 
 const redux = {
   reducers: {
@@ -44,19 +44,19 @@ const redux = {
       port: customConstants.remoteReduxDevTools.port,
     }),
   ],
-};
+}
 
 const jwtProvider = {
   async get() {
-    return (await AsyncStorage.getItem(jwtCookie.name)) || '';
+    return (await AsyncStorage.getItem(jwtCookie.name)) || ''
   },
   async set(jwt) {
     if (jwt == null) {
-      return await AsyncStorage.removeItem(jwtCookie.name);
+      return await AsyncStorage.removeItem(jwtCookie.name)
     }
-    return await AsyncStorage.setItem(jwtCookie.name, jwt);
+    return await AsyncStorage.setItem(jwtCookie.name, jwt)
   },
-};
+}
 
 const getStore = () =>
   createStore({
@@ -69,6 +69,6 @@ const getStore = () =>
     rootPath,
     jwtProvider,
     isClient,
-  });
+  })
 
-export default getStore;
+export default getStore

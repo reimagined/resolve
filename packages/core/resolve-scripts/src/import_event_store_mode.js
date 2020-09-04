@@ -1,13 +1,13 @@
-import merge from './merge';
-import generateCustomMode from './generate_custom_mode';
+import merge from './merge'
+import generateCustomMode from './generate_custom_mode'
 
 const getConfig = async (resolveConfig, options) => {
   if (options == null || options.constructor !== Object) {
-    throw new Error('Invalid import-event-store options');
+    throw new Error('Invalid import-event-store options')
   }
-  const { importFile } = options;
+  const { importFile } = options
   if (importFile == null || importFile.constructor !== String) {
-    throw new Error('Options field "importFile" must be string');
+    throw new Error('Options field "importFile" must be string')
   }
 
   const config = merge(resolveConfig, {
@@ -24,14 +24,11 @@ const getConfig = async (resolveConfig, options) => {
     eventBroker: {
       upstream: false,
     },
-  });
+  })
 
-  return config;
-};
+  return config
+}
 
-const importEventStoreMode = generateCustomMode(
-  getConfig,
-  'import-event-store'
-);
+const importEventStoreMode = generateCustomMode(getConfig, 'import-event-store')
 
-export default importEventStoreMode;
+export default importEventStoreMode

@@ -7,14 +7,14 @@ const reset = async (pool, readModelName) => {
     inlineLedgerForceStop,
     inlineLedgerExecuteStatement,
     PassthroughError,
-  } = pool;
+  } = pool
 
-  const databaseNameAsId = escapeId(schemaName);
-  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`);
+  const databaseNameAsId = escapeId(schemaName)
+  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
 
   while (true) {
     try {
-      await inlineLedgerForceStop(pool, readModelName);
+      await inlineLedgerForceStop(pool, readModelName)
       await inlineLedgerExecuteStatement(
         pool,
         `
@@ -32,17 +32,17 @@ const reset = async (pool, readModelName) => {
         WHERE "EventSubscriber" = ${escape(readModelName)}
         AND (SELECT Count("CTE".*) FROM "CTE") = 1
       `
-      );
+      )
 
-      break;
+      break
     } catch (err) {
       if (!(err instanceof PassthroughError)) {
-        throw err;
+        throw err
       }
     }
   }
 
-  await dropReadModel(pool, readModelName);
+  await dropReadModel(pool, readModelName)
 
   while (true) {
     try {
@@ -59,15 +59,15 @@ const reset = async (pool, readModelName) => {
         WHERE "EventSubscriber" = ${escape(readModelName)}
         AND (SELECT Count("CTE".*) FROM "CTE") = 1
       `
-      );
+      )
 
-      break;
+      break
     } catch (err) {
       if (!(err instanceof PassthroughError)) {
-        throw err;
+        throw err
       }
     }
   }
-};
+}
 
-export default reset;
+export default reset

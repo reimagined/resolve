@@ -1,4 +1,4 @@
-import injectDefaults from '../inject-defaults';
+import injectDefaults from '../inject-defaults'
 
 const createCommentsCommands = (
   {
@@ -14,7 +14,7 @@ const createCommentsCommands = (
     ) {
       throw new Error(
         'Comment creation should provide "commentId" field as string'
-      );
+      )
     }
 
     if (
@@ -23,7 +23,7 @@ const createCommentsCommands = (
     ) {
       throw new Error(
         'Comment creation should provide "authorId" field as string'
-      );
+      )
     }
 
     if (
@@ -32,16 +32,16 @@ const createCommentsCommands = (
     ) {
       throw new Error(
         'Comment creation should provide "parentCommentId" field as string'
-      );
+      )
     }
 
     if (command.payload.content == null) {
       throw new Error(
         'Comment creation should provide "content" field as not-null'
-      );
+      )
     }
 
-    await verifyCommand(state, command, jwt);
+    await verifyCommand(state, command, jwt)
 
     return {
       type: COMMENT_CREATED,
@@ -51,7 +51,7 @@ const createCommentsCommands = (
         parentCommentId: command.payload.parentCommentId || null,
         content: command.payload.content,
       },
-    };
+    }
   },
 
   [updateComment]: async (state, command, { jwt }) => {
@@ -61,7 +61,7 @@ const createCommentsCommands = (
     ) {
       throw new Error(
         'Comment update should provide "commentId" field as string'
-      );
+      )
     }
 
     if (
@@ -70,16 +70,16 @@ const createCommentsCommands = (
     ) {
       throw new Error(
         'Comment creation should provide "authorId" field as string'
-      );
+      )
     }
 
     if (command.payload.content == null) {
       throw new Error(
         'Comment update should provide "content" field as not-null'
-      );
+      )
     }
 
-    await verifyCommand(state, command, jwt);
+    await verifyCommand(state, command, jwt)
 
     return {
       type: COMMENT_UPDATED,
@@ -88,7 +88,7 @@ const createCommentsCommands = (
         commentId: command.payload.commentId,
         content: command.payload.content,
       },
-    };
+    }
   },
 
   [removeComment]: async (state, command, { jwt }) => {
@@ -98,7 +98,7 @@ const createCommentsCommands = (
     ) {
       throw new Error(
         'Comment remove should provide "commentId" field as string'
-      );
+      )
     }
 
     if (
@@ -107,10 +107,10 @@ const createCommentsCommands = (
     ) {
       throw new Error(
         'Comment creation should provide "authorId" field as string'
-      );
+      )
     }
 
-    await verifyCommand(state, command, jwt);
+    await verifyCommand(state, command, jwt)
 
     return {
       type: COMMENT_REMOVED,
@@ -118,8 +118,8 @@ const createCommentsCommands = (
         commentId: command.payload.commentId,
         authorId: command.payload.authorId,
       },
-    };
+    }
   },
-});
+})
 
-export default injectDefaults(createCommentsCommands);
+export default injectDefaults(createCommentsCommands)

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Container,
   Header,
@@ -9,20 +9,20 @@ import {
   Right,
   Body,
   Icon,
-} from 'native-base';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+} from 'native-base'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 
-import requiredAuth from '../decorators/required-auth';
-import ShoppingLists from '../components/ShoppingLists';
-import ShoppingListCreator from '../components/ShoppingListCreator';
-import * as refreshActions from '../redux/actions/refresh-actions';
-import * as aggregateActions from '../redux/actions/aggregate-actions';
+import requiredAuth from '../decorators/required-auth'
+import ShoppingLists from '../components/ShoppingLists'
+import ShoppingListCreator from '../components/ShoppingListCreator'
+import * as refreshActions from '../redux/actions/refresh-actions'
+import * as aggregateActions from '../redux/actions/aggregate-actions'
 
-import getNativeChunk from '../native-chunk';
+import getNativeChunk from '../native-chunk'
 const {
   resolveRedux: { connectReadModel },
-} = getNativeChunk();
+} = getNativeChunk()
 
 export class MyLists extends React.PureComponent {
   render() {
@@ -31,7 +31,7 @@ export class MyLists extends React.PureComponent {
       createShoppingList,
       removeShoppingList,
       navigation,
-    } = this.props;
+    } = this.props
 
     return (
       <Container>
@@ -62,7 +62,7 @@ export class MyLists extends React.PureComponent {
           createShoppingList={createShoppingList}
         />
       </Container>
-    );
+    )
   }
 }
 
@@ -72,11 +72,11 @@ export const mapStateToOptions = (state) => ({
   resolverArgs: {
     updatedAt: state.refresh.timestamp,
   },
-});
+})
 
 export const mapStateToProps = (state) => ({
   lists: state.optimisticShoppingLists,
-});
+})
 
 export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
@@ -85,10 +85,10 @@ export const mapDispatchToProps = (dispatch) =>
       ...refreshActions,
     },
     dispatch
-  );
+  )
 
 export default requiredAuth(
   connectReadModel(mapStateToOptions)(
     connect(mapStateToProps, mapDispatchToProps)(MyLists)
   )
-);
+)

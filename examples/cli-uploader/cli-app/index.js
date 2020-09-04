@@ -1,14 +1,14 @@
 /*eslint-disable no-console*/
 
-const path = require('path');
-const fs = require('fs');
-const request = require('request');
-const util = require('util');
-const mime = require('mime-types');
+const path = require('path')
+const fs = require('fs')
+const request = require('request')
+const util = require('util')
+const mime = require('mime-types')
 
-const directoryPath = path.join(__dirname, 'files');
-const readDir = util.promisify(fs.readdir);
-const readFile = util.promisify(fs.readFile);
+const directoryPath = path.join(__dirname, 'files')
+const readDir = util.promisify(fs.readdir)
+const readFile = util.promisify(fs.readFile)
 
 const sendCommand = async (
   pool,
@@ -31,17 +31,17 @@ const sendCommand = async (
       },
       (error, _, body) => {
         if (error) {
-          reject(error);
-          return;
+          reject(error)
+          return
         }
-        resolve(body);
+        resolve(body)
       }
-    );
-  });
-};
+    )
+  })
+}
 
 const getUploadUrl = async (pool) => {
-  const { login, projectId, jwt, applicationOrigin } = pool;
+  const { login, projectId, jwt, applicationOrigin } = pool
   return new Promise((resolve, reject) => {
     request.get(
       {
@@ -52,17 +52,17 @@ const getUploadUrl = async (pool) => {
       },
       (error, _, body) => {
         if (error) {
-          reject(error);
-          return;
+          reject(error)
+          return
         }
-        resolve(JSON.parse(body));
+        resolve(JSON.parse(body))
       }
-    );
-  });
-};
+    )
+  })
+}
 
 const getJwtToken = (pool) => {
-  const { login, password } = pool;
+  const { login, password } = pool
   return new Promise((resolve, reject) => {
     request.get(
       {
@@ -70,38 +70,38 @@ const getJwtToken = (pool) => {
       },
       (error, _, body) => {
         if (error) {
-          reject(error);
-          return;
+          reject(error)
+          return
         }
-        resolve(body);
+        resolve(body)
       }
-    );
-  });
-};
+    )
+  })
+}
 
 const uploadFile = async (pool, filePath) => {
-  const { projectId, login } = pool;
-  const { uploadUrl, uploadId } = await getUploadUrl(pool);
+  const { projectId, login } = pool
+  const { uploadUrl, uploadId } = await getUploadUrl(pool)
   const contentType =
-    mime.contentType(path.extname(filePath)) || 'text/plain; charset=utf-8';
+    mime.contentType(path.extname(filePath)) || 'text/plain; charset=utf-8'
 
   await sendCommand(pool, {
     type: 'fileNotLoaded',
     aggregateId: uploadId,
     aggregateName: 'File',
     payload: { userId: login, projectId },
-  });
-  console.log(`File: ${uploadId} - not loaded`);
+  })
+  console.log(`File: ${uploadId} - not loaded`)
 
-  const file = await readFile(filePath);
-  const fileSizeInBytes = file.length;
+  const file = await readFile(filePath)
+  const fileSizeInBytes = file.length
   try {
     await sendCommand(pool, {
       type: 'startLoadingFile',
       aggregateId: uploadId,
       aggregateName: 'File',
-    });
-    console.log(`File: ${uploadId} - loading start`);
+    })
+    console.log(`File: ${uploadId} - loading start`)
 
     await new Promise((resolve, reject) => {
       request.put(
@@ -114,27 +114,27 @@ const uploadFile = async (pool, filePath) => {
           body: file,
         },
         (error, _, body) => {
-          error ? reject(error) : body ? reject(body) : resolve();
+          error ? reject(error) : body ? reject(body) : resolve()
         }
-      );
-    });
+      )
+    })
   } catch (error) {
     await sendCommand(pool, {
       type: 'failureLoadingFile',
       aggregateId: uploadId,
       aggregateName: 'File',
-    });
-    console.log(`File: ${uploadId} - loading failure`);
-    console.log(`Error: ${error}`);
-    return;
+    })
+    console.log(`File: ${uploadId} - loading failure`)
+    console.log(`Error: ${error}`)
+    return
   }
   await sendCommand(pool, {
     type: 'successLoadingFile',
     aggregateId: uploadId,
     aggregateName: 'File',
-  });
-  console.log(`File: ${uploadId} - loading success`);
-};
+  })
+  console.log(`File: ${uploadId} - loading success`)
+}
 
 const main = async () => {
   if (
@@ -145,7 +145,7 @@ const main = async () => {
   ) {
     throw new Error(
       'Environment variables APPLICATION_ORIGIN or PROJECT_ID or LOGIN or PASSWORD not defined'
-    );
+    )
   }
 
   const pool = {
@@ -153,20 +153,20 @@ const main = async () => {
     projectId: process.env.PROJECT_ID,
     login: process.env.LOGIN,
     password: process.env.PASSWORD,
-  };
+  }
 
-  pool.jwt = JSON.parse(await getJwtToken(pool));
+  pool.jwt = JSON.parse(await getJwtToken(pool))
 
-  const files = await readDir(directoryPath);
+  const files = await readDir(directoryPath)
 
   for (let fileName of files) {
-    await uploadFile(pool, path.join(directoryPath, fileName));
+    await uploadFile(pool, path.join(directoryPath, fileName))
   }
-};
+}
 
 main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+  console.error(error)
+  process.exit(1)
+})
 
 /*eslint-enable no-console*/

@@ -1,8 +1,8 @@
-import path from 'path';
-import declareRuntimeEnv from '../../src/declare_runtime_env';
+import path from 'path'
+import declareRuntimeEnv from '../../src/declare_runtime_env'
 
-import alias from '../../src/alias/$resolve.eventstoreAdapter';
-import normalizePaths from './normalize_paths';
+import alias from '../../src/alias/$resolve.eventstoreAdapter'
+import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
   const resolveConfig = {
@@ -12,7 +12,7 @@ describe('base config works correctly', () => {
         url: 'http://test.test',
       },
     },
-  };
+  }
 
   test('[client]', () => {
     expect(() =>
@@ -24,8 +24,8 @@ describe('base config works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toThrow();
-  });
+    ).toThrow()
+  })
 
   test('[server]', () => {
     expect(
@@ -37,9 +37,9 @@ describe('base config works correctly', () => {
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})
 
 test('config with process.env works correctly', () => {
   const resolveConfig = {
@@ -49,7 +49,7 @@ test('config with process.env works correctly', () => {
         url: declareRuntimeEnv('STORAGE_OPTIONS_URL'),
       },
     },
-  };
+  }
 
   expect(
     normalizePaths(
@@ -60,5 +60,5 @@ test('config with process.env works correctly', () => {
         }) +
         '\r\n'
     )
-  ).toMatchSnapshot();
-});
+  ).toMatchSnapshot()
+})

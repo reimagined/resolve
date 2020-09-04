@@ -1,6 +1,6 @@
-process.env.TZ = 'Europe/Moscow';
+process.env.TZ = 'Europe/Moscow'
 
-const path = require('path');
+const path = require('path')
 
 module.exports = {
   rootDir: process.cwd(),
@@ -18,4 +18,4 @@ module.exports = {
     '^.+\\.tsx?$': 'ts-jest',
   },
   roots: ['<rootDir>/src', '<rootDir>/test'],
-};
+}

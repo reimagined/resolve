@@ -9,6 +9,6 @@ const appConfig = {
   readModels: [],
   viewModels: [],
   clientEntries: ['client/index.js'],
-};
+}
 
-export default appConfig;
+export default appConfig

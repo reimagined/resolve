@@ -1,6 +1,6 @@
-import reset from '../../src/local/reset-domain-handler';
+import reset from '../../src/local/reset-domain-handler'
 
-const acquireMiddleware = (options) => reset(options);
+const acquireMiddleware = (options) => reset(options)
 
 const getMockResolve = () => ({
   eventstoreAdapter: {},
@@ -8,11 +8,11 @@ const getMockResolve = () => ({
   readModels: [],
   schedulers: [],
   sagas: [],
-});
+})
 const getMockResponse = () => ({
   end: jest.fn(),
   status: jest.fn(),
-});
+})
 
 // https://github.com/reimagined/resolve/issues/1432
 test('bug-fix: permanent 500 error on read-models/sagas reset error if dropEventBus set to false', async () => {
@@ -21,13 +21,13 @@ test('bug-fix: permanent 500 error on read-models/sagas reset error if dropEvent
     dropEventBus: false,
     dropSagas: true,
     dropReadModels: true,
-  });
-  const res = getMockResponse();
+  })
+  const res = getMockResponse()
   const req = {
     resolve: getMockResolve(),
-  };
+  }
 
-  await handler(req, res);
+  await handler(req, res)
 
-  expect(res.end).toHaveBeenCalledWith('ok');
-});
+  expect(res.end).toHaveBeenCalledWith('ok')
+})

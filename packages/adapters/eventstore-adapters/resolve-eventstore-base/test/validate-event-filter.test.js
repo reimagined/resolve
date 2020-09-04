@@ -1,4 +1,4 @@
-import validateEventFilter from '../src/validate-event-filter';
+import validateEventFilter from '../src/validate-event-filter'
 
 describe('validate-event-filter should works correctly with', () => {
   test(`{ aggregateIds: '*' }`, () => {
@@ -7,8 +7,8 @@ describe('validate-event-filter should works correctly with', () => {
         aggregateIds: null,
         limit: 200,
       })
-    ).not.toThrow();
-  });
+    ).not.toThrow()
+  })
 
   test(`{ aggregateIds: ['id1', 'id2'] }`, () => {
     expect(() =>
@@ -16,6 +16,6 @@ describe('validate-event-filter should works correctly with', () => {
         aggregateIds: ['id1', 'id2'],
         limit: 200,
       })
-    ).not.toThrow();
-  });
-});
+    ).not.toThrow()
+  })
+})

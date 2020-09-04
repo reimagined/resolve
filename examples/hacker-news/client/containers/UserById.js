@@ -1,27 +1,27 @@
-import React from 'react';
-import { connectReadModel } from 'resolve-redux';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
+import React from 'react'
+import { connectReadModel } from 'resolve-redux'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
 
 const UserInfoRoot = styled.div`
   margin-bottom: 0.5em;
-`;
+`
 
 const Label = styled.div`
   display: inline-block;
   vertical-align: middle;
   width: 60px;
   padding: 5px 0;
-`;
+`
 
 const Content = styled.div`
   display: inline-block;
   vertical-align: middle;
-`;
+`
 
 export const UserById = ({ user }) => {
   if (!user) {
-    return null;
+    return null
   }
 
   return (
@@ -35,8 +35,8 @@ export const UserById = ({ user }) => {
         <Content>{new Date(+user.createdAt).toLocaleString('en-US')}</Content>
       </div>
     </UserInfoRoot>
-  );
-};
+  )
+}
 
 const mapStateToOptions = (
   state,
@@ -49,13 +49,13 @@ const mapStateToOptions = (
   readModelName: 'HackerNews',
   resolverName: 'user',
   resolverArgs: { id: userId },
-});
+})
 
 const mapStateToProps = (state, { data }) => ({
   user: data,
   me: state.jwt,
-});
+})
 
 export default connectReadModel(mapStateToOptions)(
   connect(mapStateToProps)(UserById)
-);
+)

@@ -19,10 +19,10 @@ const findOne = async (
     escapeId,
     escape,
     makeNestedPath
-  );
+  )
 
   const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : '';
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   const rows = await executeStatement(
     `SELECT * FROM ${escapeId(schemaName)}.${escapeId(
@@ -31,13 +31,13 @@ const findOne = async (
     ${inlineSearchExpr}
     OFFSET 0
     LIMIT 1;`
-  );
+  )
 
   if (Array.isArray(rows) && rows.length > 0) {
-    return convertResultRow(rows[0], fieldList);
+    return convertResultRow(rows[0], fieldList)
   }
 
-  return null;
-};
+  return null
+}
 
-export default findOne;
+export default findOne

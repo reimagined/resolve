@@ -4,4 +4,4 @@ export default [
     component: 'App',
     exact: true,
   },
-];
+]

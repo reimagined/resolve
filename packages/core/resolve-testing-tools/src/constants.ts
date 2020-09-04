@@ -10,4 +10,4 @@ export enum Phases {
   COMMAND_AS,
 }
 
-export const symbol = Symbol();
+export const symbol = Symbol()

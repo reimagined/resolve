@@ -1,5 +1,5 @@
 const commitTransaction = async ({ runRawQuery }) => {
-  await runRawQuery(`COMMIT;`);
-};
+  await runRawQuery(`COMMIT;`)
+}
 
-export default commitTransaction;
+export default commitTransaction

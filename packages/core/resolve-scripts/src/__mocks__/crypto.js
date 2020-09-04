@@ -3,10 +3,10 @@ const crypto = {
     return {
       update() {},
       digest(mode) {
-        return `${algorithm}:${prefix}:${mode}`;
+        return `${algorithm}:${prefix}:${mode}`
       },
-    };
+    }
   },
-};
+}
 
-export default crypto;
+export default crypto

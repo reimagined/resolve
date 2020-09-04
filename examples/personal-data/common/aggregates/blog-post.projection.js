@@ -1,4 +1,4 @@
-import { BLOG_POST_CREATED, BLOG_POST_DELETED } from '../blog-post.events';
+import { BLOG_POST_CREATED, BLOG_POST_DELETED } from '../blog-post.events'
 
 const projection = {
   Init: () => ({
@@ -12,6 +12,6 @@ const projection = {
     ...state,
     isExist: false,
   }),
-};
+}
 
-export default projection;
+export default projection

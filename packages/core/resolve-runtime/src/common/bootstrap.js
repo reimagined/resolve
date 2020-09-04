@@ -1,12 +1,12 @@
-import debugLevels from 'resolve-debug-levels';
+import debugLevels from 'resolve-debug-levels'
 
-import bootstrapOne from './bootstrap-one';
+import bootstrapOne from './bootstrap-one'
 
-const log = debugLevels('resolve:resolve-runtime:bootstrap');
+const log = debugLevels('resolve:resolve-runtime:bootstrap')
 
 const bootstrap = async (resolve, upstream) => {
-  log.debug('bootstrap started');
-  const promises = [];
+  log.debug('bootstrap started')
+  const promises = []
   for (const {
     name: eventSubscriber,
     eventTypes,
@@ -22,10 +22,10 @@ const bootstrap = async (resolve, upstream) => {
         credentials: resolve.eventSubscriberCredentials,
         upstream,
       })
-    );
+    )
   }
 
-  await Promise.all(promises);
+  await Promise.all(promises)
 
   await resolve.publisher.subscribe({
     eventSubscriber: 'websocket',
@@ -33,13 +33,13 @@ const bootstrap = async (resolve, upstream) => {
       credentials: resolve.eventSubscriberCredentials,
       deliveryStrategy: 'passthrough',
     },
-  });
+  })
 
-  await resolve.publisher.resume({ eventSubscriber: 'websocket' });
+  await resolve.publisher.resume({ eventSubscriber: 'websocket' })
 
-  log.debug('bootstrap successful');
+  log.debug('bootstrap successful')
 
-  return 'ok';
-};
+  return 'ok'
+}
 
-export default bootstrap;
+export default bootstrap

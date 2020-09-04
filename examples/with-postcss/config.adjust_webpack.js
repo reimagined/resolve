@@ -1,19 +1,19 @@
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import postcssImport from 'postcss-import';
-import autoprefixer from 'autoprefixer';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import postcssImport from 'postcss-import'
+import autoprefixer from 'autoprefixer'
 
 const adjustWebpackConfigs = (webpackConfigs) => {
   for (const webpackConfig of webpackConfigs) {
-    const entries = Object.keys(webpackConfig.entry);
-    const target = webpackConfig.target;
+    const entries = Object.keys(webpackConfig.entry)
+    const target = webpackConfig.target
     const isUIConfig =
       (entries.find((entry) => entry.endsWith('/ssr.js')) != null &&
         target === 'node') ||
       (entries.find((entry) => entry.endsWith('client/index.js')) != null &&
-        target === 'web');
+        target === 'web')
 
     if (!isUIConfig) {
-      continue;
+      continue
     }
 
     webpackConfig.module.rules.push({
@@ -39,16 +39,16 @@ const adjustWebpackConfigs = (webpackConfigs) => {
           },
         },
       ],
-    });
+    })
 
     const extractTextPlugin = new MiniCssExtractPlugin({
       filename: 'client/style.css',
-    });
+    })
 
     webpackConfig.plugins = Array.isArray(webpackConfig.plugins)
       ? webpackConfig.plugins.concat([extractTextPlugin])
-      : [extractTextPlugin];
+      : [extractTextPlugin]
   }
-};
+}
 
-export default adjustWebpackConfigs;
+export default adjustWebpackConfigs

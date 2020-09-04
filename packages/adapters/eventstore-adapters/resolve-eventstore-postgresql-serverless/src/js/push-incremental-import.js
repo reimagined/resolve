@@ -1,4 +1,4 @@
-import { RESERVED_EVENT_SIZE } from './constants';
+import { RESERVED_EVENT_SIZE } from './constants'
 
 const pushIncrementalImport = async (
   { executeStatement, databaseName, eventsTableName, escapeId, escape },
@@ -6,14 +6,14 @@ const pushIncrementalImport = async (
   importId
 ) => {
   try {
-    const databaseNameAsId = escapeId(databaseName);
-    const databaseNameAsStr = escape(databaseName);
+    const databaseNameAsId = escapeId(databaseName)
+    const databaseNameAsStr = escape(databaseName)
     const incrementalImportTableAsId = escapeId(
       `${eventsTableName}-incremental-import`
-    );
+    )
     const incrementalImportTableAsString = escape(
       `${eventsTableName}-incremental-import`
-    );
+    )
 
     await executeStatement(
       `WITH "CTE" AS (
@@ -46,28 +46,28 @@ const pushIncrementalImport = async (
             escape(
               JSON.stringify(event.payload != null ? event.payload : null)
             ),
-          ].join('');
+          ].join('')
 
           // TODO: Improve calculation byteLength depend on codepage and wide-characters
           const byteLength =
-            Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE;
+            Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
 
-          return `(${serializedEvent}, ${byteLength} + (SELECT "CTE"."Zero" FROM "CTE"))`;
+          return `(${serializedEvent}, ${byteLength} + (SELECT "CTE"."Zero" FROM "CTE"))`
         })
         .join(',')}
       `
-    );
+    )
   } catch (error) {
     if (
       error != null &&
       (error.message.indexOf('subquery used as an expression') > -1 ||
         /Table.*? does not exist$/i.test(error.message))
     ) {
-      throw new Error(`Incremental importId=${importId} does not exist`);
+      throw new Error(`Incremental importId=${importId} does not exist`)
     } else {
-      throw error;
+      throw error
     }
   }
-};
+}
 
-export default pushIncrementalImport;
+export default pushIncrementalImport

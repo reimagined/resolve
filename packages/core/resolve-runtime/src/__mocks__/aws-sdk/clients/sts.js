@@ -1,15 +1,15 @@
 // export const result = []
 
-const _STS = jest.fn().mockImplementation(() => STS);
-const STS = _STS.bind(null);
+const _STS = jest.fn().mockImplementation(() => STS)
+const STS = _STS.bind(null)
 
 STS.getCallerIdentity = jest.fn().mockReturnValue({
   promise: jest.fn().mockReturnValue({ Arn: 'RoleValidationArn' }),
-});
-STS.assumeRole = jest.fn();
-STS.invoke = jest.fn();
+})
+STS.assumeRole = jest.fn()
+STS.invoke = jest.fn()
 
-Object.setPrototypeOf(STS, _STS);
+Object.setPrototypeOf(STS, _STS)
 
 // const STS = jest.fn().mockImplementation(function(...args) {
 //   result.push(['STS constructor', ...args])
@@ -32,4 +32,4 @@ Object.setPrototypeOf(STS, _STS);
 //   }
 // })
 
-export default STS;
+export default STS

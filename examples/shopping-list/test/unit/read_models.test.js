@@ -1,49 +1,49 @@
-import givenEvents from 'resolve-testing-tools';
-import createReadModelAdapter from 'resolve-readmodel-lite';
+import givenEvents from 'resolve-testing-tools'
+import createReadModelAdapter from 'resolve-readmodel-lite'
 
-import projection from '../../common/read-models/shopping_lists.projection';
-import resolvers from '../../common/read-models/shopping_lists.resolvers';
+import projection from '../../common/read-models/shopping_lists.projection'
+import resolvers from '../../common/read-models/shopping_lists.resolvers'
 
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_REMOVED,
   SHOPPING_LIST_RENAMED,
-} from '../../common/event_types';
+} from '../../common/event_types'
 
 const resetReadModel = async (
   createConnector,
   connectorOptions,
   readModelName
 ) => {
-  const adapter = createConnector(connectorOptions);
+  const adapter = createConnector(connectorOptions)
   try {
-    const connection = await adapter.connect(readModelName);
-    await adapter.drop(connection, readModelName);
-    await adapter.disconnect(connection, readModelName);
+    const connection = await adapter.connect(readModelName)
+    await adapter.drop(connection, readModelName)
+    await adapter.disconnect(connection, readModelName)
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.warn(error);
+    console.warn(error)
   } finally {
-    await adapter.dispose();
+    await adapter.dispose()
   }
-};
+}
 
 describe('read-models', () => {
   describe('ShoppingLists', () => {
-    const aggregateId = '00000000-0000-0000-0000-000000000000';
+    const aggregateId = '00000000-0000-0000-0000-000000000000'
 
-    let adapter = null;
+    let adapter = null
 
     beforeEach(async () => {
       await resetReadModel(
         createReadModelAdapter,
         { databaseFile: ':memory:' },
         'ShoppingLists'
-      );
+      )
       adapter = createReadModelAdapter({
         databaseFile: ':memory:',
-      });
-    });
+      })
+    })
 
     test('resolver "all" should return an empty array', async () => {
       const shoppingLists = await givenEvents([])
@@ -53,10 +53,10 @@ describe('read-models', () => {
           resolvers,
           adapter,
         })
-        .all();
+        .all()
 
-      expect(shoppingLists).toEqual({ data: [] });
-    });
+      expect(shoppingLists).toEqual({ data: [] })
+    })
 
     // mdis-start read-model-test
     test('projection "SHOPPING_LIST_CREATED" should create a shopping list', async () => {
@@ -75,13 +75,13 @@ describe('read-models', () => {
           resolvers,
           adapter,
         })
-        .all();
+        .all()
 
       expect(shoppingLists.data[0]).toMatchObject({
         id: aggregateId,
         name: 'Products',
-      });
-    });
+      })
+    })
     // mdis-stop read-model-test
 
     test('projection "SHOPPING_LIST_RENAMED" should rename the shopping list', async () => {
@@ -107,13 +107,13 @@ describe('read-models', () => {
           resolvers,
           adapter,
         })
-        .all();
+        .all()
 
       expect(shoppingLists.data[0]).toMatchObject({
         id: aggregateId,
         name: 'Medicines',
-      });
-    });
+      })
+    })
 
     test('projection "SHOPPING_LIST_REMOVED" should remove the shopping list', async () => {
       const shoppingLists = await givenEvents([
@@ -135,9 +135,9 @@ describe('read-models', () => {
           resolvers,
           adapter,
         })
-        .all();
+        .all()
 
-      expect(shoppingLists.data.length).toEqual(0);
-    });
-  });
-});
+      expect(shoppingLists.data.length).toEqual(0)
+    })
+  })
+})

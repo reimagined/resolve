@@ -1,46 +1,46 @@
-import fs from 'fs';
-import path from 'path';
-import { promisify } from 'util';
-import { Readable, pipeline } from 'stream';
-import { MAINTENANCE_MODE_MANUAL } from 'resolve-eventstore-base';
-import createEventstoreAdapter from 'resolve-eventstore-lite';
+import fs from 'fs'
+import path from 'path'
+import { promisify } from 'util'
+import { Readable, pipeline } from 'stream'
+import { MAINTENANCE_MODE_MANUAL } from 'resolve-eventstore-base'
+import createEventstoreAdapter from 'resolve-eventstore-lite'
 
-import createStreamBuffer from './create-stream-buffer';
+import createStreamBuffer from './create-stream-buffer'
 
-jest.setTimeout(1000 * 60 * 5);
+jest.setTimeout(1000 * 60 * 5)
 
 describe('import-export', () => {
-  const eventStorePath = path.join(__dirname, 'es.txt');
+  const eventStorePath = path.join(__dirname, 'es.txt')
 
   afterAll(() => {
     if (fs.existsSync(eventStorePath)) {
-      fs.unlinkSync(eventStorePath);
+      fs.unlinkSync(eventStorePath)
     }
     if (fs.existsSync(`${eventStorePath}-journal`)) {
-      fs.unlinkSync(`${eventStorePath}-journal`);
+      fs.unlinkSync(`${eventStorePath}-journal`)
     }
-  });
+  })
 
   beforeAll(() => {
     if (fs.existsSync(eventStorePath)) {
-      fs.unlinkSync(eventStorePath);
+      fs.unlinkSync(eventStorePath)
     }
     if (fs.existsSync(`${eventStorePath}-journal`)) {
-      fs.unlinkSync(`${eventStorePath}-journal`);
+      fs.unlinkSync(`${eventStorePath}-journal`)
     }
-  });
+  })
 
   test('should works correctly with maintenanceMode = auto', async () => {
     const inputEventstoreAdapter = createEventstoreAdapter({
       databaseFile: ':memory:',
-    });
+    })
     const outputEventstoreAdapter = createEventstoreAdapter({
       databaseFile: ':memory:',
-    });
-    await inputEventstoreAdapter.init();
-    await outputEventstoreAdapter.init();
+    })
+    await inputEventstoreAdapter.init()
+    await outputEventstoreAdapter.init()
 
-    const inputCountEvents = 200;
+    const inputCountEvents = 200
 
     for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
       const event = {
@@ -49,31 +49,31 @@ describe('import-export', () => {
         type: 'EVENT',
         payload: { eventIndex },
         timestamp: eventIndex + 1,
-      };
-      await inputEventstoreAdapter.saveEvent(event);
+      }
+      await inputEventstoreAdapter.saveEvent(event)
     }
 
     await promisify(pipeline)(
       inputEventstoreAdapter.export(),
       outputEventstoreAdapter.import()
-    );
+    )
 
-    const { events } = await outputEventstoreAdapter.loadEvents({ limit: 300 });
+    const { events } = await outputEventstoreAdapter.loadEvents({ limit: 300 })
 
-    expect(events.length).toEqual(inputCountEvents);
-  });
+    expect(events.length).toEqual(inputCountEvents)
+  })
 
   test('should works correctly with maintenanceMode = manual', async () => {
     const eventEventstoreAdapter = createEventstoreAdapter({
       databaseFile: eventStorePath,
-    });
+    })
     const outputEventstoreAdapter = createEventstoreAdapter({
       databaseFile: ':memory:',
-    });
-    await eventEventstoreAdapter.init();
-    await outputEventstoreAdapter.init();
+    })
+    await eventEventstoreAdapter.init()
+    await outputEventstoreAdapter.init()
 
-    const inputCountEvents = 50;
+    const inputCountEvents = 50
 
     for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
       await eventEventstoreAdapter.saveEvent({
@@ -84,70 +84,70 @@ describe('import-export', () => {
           .map(() => Math.round(Math.random()))
           .join(''),
         timestamp: eventIndex + 1,
-      });
+      })
     }
 
-    await eventEventstoreAdapter.dispose();
+    await eventEventstoreAdapter.dispose()
 
-    const exportBuffers = [];
+    const exportBuffers = []
 
-    let cursor = null;
-    let steps = 0;
+    let cursor = null
+    let steps = 0
 
     while (true) {
-      steps++;
+      steps++
 
       const eventEventstoreAdapter = createEventstoreAdapter({
         databaseFile: eventStorePath,
-      });
+      })
 
       const exportStream = eventEventstoreAdapter.export({
         maintenanceMode: MAINTENANCE_MODE_MANUAL,
         bufferSize: 512,
         cursor,
-      });
+      })
 
-      const tempStream = createStreamBuffer();
+      const tempStream = createStreamBuffer()
 
-      await promisify(pipeline)(exportStream, tempStream);
+      await promisify(pipeline)(exportStream, tempStream)
 
-      await eventEventstoreAdapter.dispose();
+      await eventEventstoreAdapter.dispose()
 
-      exportBuffers.push(tempStream.getBuffer().toString());
+      exportBuffers.push(tempStream.getBuffer().toString())
 
       if (exportStream.isBufferOverflow) {
-        cursor = exportStream.cursor;
+        cursor = exportStream.cursor
       } else {
-        break;
+        break
       }
     }
 
-    const exportBuffer = Buffer.from(exportBuffers.join(''));
+    const exportBuffer = Buffer.from(exportBuffers.join(''))
 
-    const exportBufferStream = new Readable();
+    const exportBufferStream = new Readable()
     exportBufferStream._read = function () {
-      this.push(exportBuffer);
-      this.push(null);
-    };
+      this.push(exportBuffer)
+      this.push(null)
+    }
 
     await promisify(pipeline)(
       exportBufferStream,
       outputEventstoreAdapter.import()
-    );
+    )
 
-    const { events } = await outputEventstoreAdapter.loadEvents({ limit: 100 });
+    const { events } = await outputEventstoreAdapter.loadEvents({ limit: 100 })
 
-    expect(events.length).toEqual(inputCountEvents);
-    expect(steps).toBeGreaterThan(1);
-  });
+    expect(events.length).toEqual(inputCountEvents)
+    expect(steps).toBeGreaterThan(1)
+  })
 
   test('should works correctly when stopped by timeout ', async () => {
     const inputEventstoreAdapter = createEventstoreAdapter({
       databaseFile: ':memory:',
-    });
-    await inputEventstoreAdapter.init();
+    })
+    await inputEventstoreAdapter.init()
 
-    const inputCountEvents = 1000;
+    const inputCountEvents = 1000
 
     for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
       await inputEventstoreAdapter.saveEvent({
@@ -156,60 +156,60 @@ describe('import-export', () => {
         type: 'EVENT',
         payload: { eventIndex },
         timestamp: eventIndex + 1,
-      });
+      })
     }
 
-    let cursor = null;
-    let steps = 0;
+    let cursor = null
+    let steps = 0
 
-    let isJsonStreamTimedOutOnce = false;
+    let isJsonStreamTimedOutOnce = false
 
-    const exportBuffers = [];
+    const exportBuffers = []
     while (true) {
-      steps++;
+      steps++
 
-      const exportStream = inputEventstoreAdapter.export({ cursor });
-      const tempStream = createStreamBuffer();
+      const exportStream = inputEventstoreAdapter.export({ cursor })
+      const tempStream = createStreamBuffer()
       const pipelinePromise = promisify(pipeline)(
         exportStream,
         tempStream
-      ).then(() => false);
+      ).then(() => false)
 
       const timeoutPromise = new Promise((resolve) =>
         setTimeout(() => {
-          resolve(true);
+          resolve(true)
         }, 100)
-      );
+      )
 
       const isJsonStreamTimedOut = await Promise.race([
         timeoutPromise,
         pipelinePromise,
-      ]);
+      ])
       isJsonStreamTimedOutOnce =
-        isJsonStreamTimedOutOnce || isJsonStreamTimedOut;
+        isJsonStreamTimedOutOnce || isJsonStreamTimedOut
 
-      exportStream.destroy();
+      exportStream.destroy()
 
-      cursor = exportStream.cursor;
+      cursor = exportStream.cursor
 
-      const buffer = tempStream.getBuffer().toString('utf8');
+      const buffer = tempStream.getBuffer().toString('utf8')
 
       if (buffer === '') {
-        break;
+        break
       }
 
-      exportBuffers.push(buffer);
+      exportBuffers.push(buffer)
     }
 
     const outputEvents = exportBuffers
       .join('')
       .trim()
       .split('\n')
-      .map((eventAsString) => JSON.parse(eventAsString.trim()));
-    const outputCountEvents = outputEvents.length;
+      .map((eventAsString) => JSON.parse(eventAsString.trim()))
+    const outputCountEvents = outputEvents.length
 
-    expect(isJsonStreamTimedOutOnce).toEqual(true);
-    expect(inputCountEvents).toEqual(outputCountEvents);
-    expect(steps).toBeGreaterThan(1);
-  });
-});
+    expect(isJsonStreamTimedOutOnce).toEqual(true)
+    expect(inputCountEvents).toEqual(outputCountEvents)
+    expect(steps).toBeGreaterThan(1)
+  })
+})

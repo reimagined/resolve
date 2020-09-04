@@ -8,6 +8,6 @@ const shapeEvent = (event, additionalFields) =>
     aggregateVersion: +event.aggregateVersion,
     payload: event.payload,
     ...additionalFields,
-  });
+  })
 
-export default shapeEvent;
+export default shapeEvent

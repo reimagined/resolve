@@ -1,26 +1,26 @@
-import getClientGlobalEnvObject from '../client_global_object';
-import { checkRuntimeEnv } from '../declare_runtime_env';
-import { message } from '../constants';
+import getClientGlobalEnvObject from '../client_global_object'
+import { checkRuntimeEnv } from '../declare_runtime_env'
+import { message } from '../constants'
 
 export default ({ resolveConfig, isClient }) => {
   if (!isClient) {
-    throw new Error(`${message.clientAliasInServerCodeError}.clientAssemblies`);
+    throw new Error(`${message.clientAliasInServerCodeError}.clientAssemblies`)
   }
-  const exports = [];
+  const exports = []
 
   exports.push(
     `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
     `const clientGlobalObject = ${getClientGlobalEnvObject()}`,
     `const defaultRuntimeEnv = {}`
-  );
+  )
 
-  const clientEnvs = [];
+  const clientEnvs = []
   void JSON.stringify(resolveConfig, (key, value) => {
     if (checkRuntimeEnv(value)) {
-      clientEnvs.push(value);
+      clientEnvs.push(value)
     }
-    return value;
-  });
+    return value
+  })
 
   for (const clientEnv of clientEnvs) {
     if (process.env[String(clientEnv)] != null) {
@@ -31,7 +31,7 @@ export default ({ resolveConfig, isClient }) => {
           enumerable: true,
           value: ${JSON.stringify(process.env[String(clientEnv)])}
         }
-      )`);
+      )`)
     } else {
       exports.push(`Object.defineProperty(
         defaultRuntimeEnv,
@@ -40,7 +40,7 @@ export default ({ resolveConfig, isClient }) => {
           enumerable: true,
           value: ${JSON.stringify(String(clientEnv.defaultValue))}
         }
-      )`);
+      )`)
     }
   }
 
@@ -56,7 +56,7 @@ export default ({ resolveConfig, isClient }) => {
         \`)
       } catch(e) {}
     }
-  `);
+  `)
 
   exports.push(
     `const clientChunk = {`,
@@ -69,9 +69,9 @@ export default ({ resolveConfig, isClient }) => {
     `  subscriber: interopRequireDefault(require('resolve-client/lib/subscribe-adapter')).default,`,
     `  customConstants: interopRequireDefault(require('$resolve.customConstants')).default`,
     `}`
-  );
+  )
 
-  exports.push(`export default clientChunk`);
+  exports.push(`export default clientChunk`)
 
-  return exports.join('\r\n');
-};
+  return exports.join('\r\n')
+}

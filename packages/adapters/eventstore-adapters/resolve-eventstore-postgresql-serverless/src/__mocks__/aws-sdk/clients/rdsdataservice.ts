@@ -1,8 +1,8 @@
-const RDSDataService = jest.fn();
+const RDSDataService = jest.fn()
 
 const promised = (): Function =>
-  jest.fn().mockReturnValue({ promise: () => Promise.resolve() });
+  jest.fn().mockReturnValue({ promise: () => Promise.resolve() })
 
-RDSDataService.prototype.executeStatement = promised();
+RDSDataService.prototype.executeStatement = promised()
 
-export default RDSDataService;
+export default RDSDataService

@@ -1,22 +1,22 @@
-import 'source-map-support/register';
+import 'source-map-support/register'
 
-import debugLevels from 'resolve-debug-levels';
+import debugLevels from 'resolve-debug-levels'
 
-import initAwsClients from './init-aws-clients';
-import initBroker from './init-broker';
-import initPerformanceTracer from './init-performance-tracer';
-import lambdaWorker from './lambda-worker';
-import wrapTrie from '../common/wrap-trie';
-import initUploader from './init-uploader';
+import initAwsClients from './init-aws-clients'
+import initBroker from './init-broker'
+import initPerformanceTracer from './init-performance-tracer'
+import lambdaWorker from './lambda-worker'
+import wrapTrie from '../common/wrap-trie'
+import initUploader from './init-uploader'
 
-const log = debugLevels('resolve:resolve-runtime:cloud-entry');
+const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
 const index = async ({ assemblies, constants, domain }) => {
-  let subSegment = null;
+  let subSegment = null
 
-  log.debug(`starting lambda 'cold start'`);
+  log.debug(`starting lambda 'cold start'`)
   try {
-    log.debug('configuring reSolve framework');
+    log.debug('configuring reSolve framework')
     const resolve = {
       seedClientEnvs: assemblies.seedClientEnvs,
       serverImports: assemblies.serverImports,
@@ -25,44 +25,44 @@ const index = async ({ assemblies, constants, domain }) => {
       routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
       publisher: {},
       assemblies,
-    };
+    }
 
-    log.debug('preparing performance tracer');
-    await initPerformanceTracer(resolve);
+    log.debug('preparing performance tracer')
+    await initPerformanceTracer(resolve)
 
-    const segment = resolve.performanceTracer.getSegment();
-    subSegment = segment.addNewSubsegment('initResolve');
+    const segment = resolve.performanceTracer.getSegment()
+    subSegment = segment.addNewSubsegment('initResolve')
 
-    log.debug('preparing aws clients');
-    await initAwsClients(resolve);
+    log.debug('preparing aws clients')
+    await initAwsClients(resolve)
 
-    log.debug('preparing event broker');
-    await initBroker(resolve);
+    log.debug('preparing event broker')
+    await initBroker(resolve)
 
-    log.debug('preparing uploader');
-    await initUploader(resolve);
+    log.debug('preparing uploader')
+    await initUploader(resolve)
 
     resolve.sendReactiveEvent = async (event) => {
       const eventDescriptor = {
         topic: `${process.env.RESOLVE_DEPLOYMENT_ID}/${event.type}/${event.aggregateId}`,
         payload: JSON.stringify(event),
         qos: 1,
-      };
+      }
 
-      await resolve.mqtt.publish(eventDescriptor).promise();
-    };
+      await resolve.mqtt.publish(eventDescriptor).promise()
+    }
 
-    log.debug(`lambda 'cold start' succeeded`);
+    log.debug(`lambda 'cold start' succeeded`)
 
-    return lambdaWorker.bind(null, resolve);
+    return lambdaWorker.bind(null, resolve)
   } catch (error) {
-    log.error(`lambda 'cold start' failure`, error);
-    subSegment.addError(error);
+    log.error(`lambda 'cold start' failure`, error)
+    subSegment.addError(error)
   } finally {
     if (subSegment != null) {
-      subSegment.close();
+      subSegment.close()
     }
   }
-};
+}
 
-export default index;
+export default index

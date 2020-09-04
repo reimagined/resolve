@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Container,
   Header,
@@ -11,18 +11,18 @@ import {
   Icon,
   Label,
   Input,
-} from 'native-base';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { StyleSheet } from 'react-native';
+} from 'native-base'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { StyleSheet } from 'react-native'
 
-import requiredAuth from '../decorators/required-auth';
-import * as aggregateActions from '../redux/actions/aggregate-actions';
+import requiredAuth from '../decorators/required-auth'
+import * as aggregateActions from '../redux/actions/aggregate-actions'
 
-import getNativeChunk from '../native-chunk';
+import getNativeChunk from '../native-chunk'
 const {
   resolveRedux: { connectReadModel },
-} = getNativeChunk();
+} = getNativeChunk()
 
 const styles = StyleSheet.create({
   label: {
@@ -37,34 +37,34 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginBottom: 10,
   },
-});
+})
 
 export class Settings extends React.PureComponent {
-  state = {};
+  state = {}
 
   getText = () =>
-    this.state.text != null ? this.state.text : this.props.data.username;
+    this.state.text != null ? this.state.text : this.props.data.username
 
   updateText = (text) => {
     this.setState({
       text,
-    });
-  };
+    })
+  }
 
   updateUserName = () => {
     this.props.updateUserName(this.props.data.id, {
       username: this.getText(),
-    });
-  };
+    })
+  }
 
   render() {
-    const { isLoading, data } = this.props;
+    const { isLoading, data } = this.props
     if (isLoading || data == null) {
-      return null;
+      return null
     }
 
-    const { id } = data;
-    const text = this.getText();
+    const { id } = data
+    const text = this.getText()
 
     return (
       <Container>
@@ -92,7 +92,7 @@ export class Settings extends React.PureComponent {
           <Input style={styles.input} value={id} multiline disabled />
         </Content>
       </Container>
-    );
+    )
   }
 }
 
@@ -102,13 +102,13 @@ export const mapStateToOptions = (state) => ({
   resolverArgs: {
     id: state.jwt.id,
   },
-});
+})
 
 export const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(aggregateActions, dispatch);
+  bindActionCreators(aggregateActions, dispatch)
 
 export default requiredAuth(
   connectReadModel(mapStateToOptions)(
     connect(null, mapDispatchToProps)(Settings)
   )
-);
+)

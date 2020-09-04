@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts';
+import { declareRuntimeEnv } from 'resolve-scripts'
 
 const prodConfig = {
   target: 'local',
@@ -16,6 +16,6 @@ const prodConfig = {
   },
   staticDir: 'static',
   distDir: 'dist',
-};
+}
 
-export default prodConfig;
+export default prodConfig

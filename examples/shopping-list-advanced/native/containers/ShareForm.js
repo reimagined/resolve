@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Container,
   Header,
@@ -12,13 +12,13 @@ import {
   Label,
   Input,
   Text,
-} from 'native-base';
-import { connect } from 'react-redux';
-import { View, StyleSheet } from 'react-native';
+} from 'native-base'
+import { connect } from 'react-redux'
+import { View, StyleSheet } from 'react-native'
 
-import requiredAuth from '../decorators/required-auth';
+import requiredAuth from '../decorators/required-auth'
 
-import FindUsers from './FindUsers';
+import FindUsers from './FindUsers'
 
 const styles = StyleSheet.create({
   input: {
@@ -39,28 +39,28 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#575757',
   },
-});
+})
 
 export class ShareForm extends React.PureComponent {
   state = {
     query: '',
-  };
+  }
 
   updateQuery = (text) => {
     this.setState({
       query: text,
-    });
-  };
+    })
+  }
 
   redirectToShoppingList = () => {
     this.props.navigation.navigate('ShoppingList', {
       id: this.props.shoppingListId,
-    });
-  };
+    })
+  }
 
   render() {
-    const { shoppingListId, shoppingListName } = this.props;
-    const { query } = this.state;
+    const { shoppingListId, shoppingListName } = this.props
+    const { query } = this.state
 
     return (
       <Container>
@@ -96,7 +96,7 @@ export class ShareForm extends React.PureComponent {
           <FindUsers shoppingListId={shoppingListId} query={query} />
         </Content>
       </Container>
-    );
+    )
   }
 }
 
@@ -110,6 +110,6 @@ export const mapStateToProps = (
 ) => ({
   shoppingListId: id,
   shoppingListName: state.optimisticSharings.name,
-});
+})
 
-export default requiredAuth(connect(mapStateToProps)(ShareForm));
+export default requiredAuth(connect(mapStateToProps)(ShareForm))

@@ -1,6 +1,6 @@
-import { put } from 'redux-saga/effects';
+import { put } from 'redux-saga/effects'
 
-import { DisconnectViewModelAction, dropViewModelState } from './actions';
+import { DisconnectViewModelAction, dropViewModelState } from './actions'
 //import { CONNECT_VIEWMODEL } from '../internal/action-types'
 
 const disconnectViewModelSaga = function* (
@@ -8,11 +8,11 @@ const disconnectViewModelSaga = function* (
   action: DisconnectViewModelAction
 ): any {
   //const { sagaManager, sagaKey } = sagaArgs
-  const { query, selectorId } = action;
+  const { query, selectorId } = action
 
   //yield* sagaManager.stop(`${CONNECT_VIEWMODEL}${sagaKey}`)
 
-  yield put(dropViewModelState(query, selectorId));
-};
+  yield put(dropViewModelState(query, selectorId))
+}
 
-export default disconnectViewModelSaga;
+export default disconnectViewModelSaga

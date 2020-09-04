@@ -1,11 +1,11 @@
-import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connectReadModel } from 'resolve-redux';
-import { connect } from 'react-redux';
+import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connectReadModel } from 'resolve-redux'
+import { connect } from 'react-redux'
 
-import * as aggregateActions from '../actions/aggregate-actions';
-import Stories from '../components/Stories';
-import { ITEMS_PER_PAGE } from '../constants';
+import * as aggregateActions from '../actions/aggregate-actions'
+import Stories from '../components/Stories'
+import { ITEMS_PER_PAGE } from '../constants'
 
 const AskByPage = ({
   isLoading,
@@ -24,7 +24,7 @@ const AskByPage = ({
     upvoteStory={upvoteStory}
     unvoteStory={unvoteStory}
   />
-);
+)
 
 const mapStateToOptions = (
   state,
@@ -40,7 +40,7 @@ const mapStateToOptions = (
     offset: ITEMS_PER_PAGE + 1,
     first: (+page - 1) * ITEMS_PER_PAGE,
   },
-});
+})
 
 const mapStateToProps = (
   state,
@@ -56,11 +56,11 @@ const mapStateToProps = (
   page,
   stories: data,
   me: state.jwt,
-});
+})
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(aggregateActions, dispatch);
+  bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
   connect(mapStateToProps, mapDispatchToProps)(AskByPage)
-);
+)

@@ -5,7 +5,7 @@ const rollbackTransaction = async (pool, transactionId) => {
       secretArn: pool.awsSecretStoreArn,
       transactionId,
     })
-    .promise();
-};
+    .promise()
+}
 
-export default rollbackTransaction;
+export default rollbackTransaction

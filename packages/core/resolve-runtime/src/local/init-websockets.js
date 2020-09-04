@@ -1,52 +1,52 @@
-import debugLevels from 'resolve-debug-levels';
-import EventEmitter from 'events';
-import http from 'http';
-import WebSocket from 'ws';
-import uuid from 'uuid/v4';
-import qs from 'querystring';
-import jwt from 'jsonwebtoken';
+import debugLevels from 'resolve-debug-levels'
+import EventEmitter from 'events'
+import http from 'http'
+import WebSocket from 'ws'
+import uuid from 'uuid/v4'
+import qs from 'querystring'
+import jwt from 'jsonwebtoken'
 
-import createPubsubManager from './create-pubsub-manager';
-import getRootBasedUrl from '../common/utils/get-root-based-url';
-import getSubscribeAdapterOptions from './get-subscribe-adapter-options';
+import createPubsubManager from './create-pubsub-manager'
+import getRootBasedUrl from '../common/utils/get-root-based-url'
+import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 
-const log = debugLevels('resolve:resolve-runtime:local-subscribe-adapter');
+const log = debugLevels('resolve:resolve-runtime:local-subscribe-adapter')
 
-let eventstoreAdapter = null;
+let eventstoreAdapter = null
 
 const createWebSocketConnectionHandler = (resolve) => (ws, req) => {
-  const { pubsubManager } = resolve;
-  const queryString = req.url.split('?')[1];
-  const { token, deploymentId } = qs.parse(queryString);
-  const connectionId = uuid();
-  let eventTypes = null;
-  let aggregateIds = null;
+  const { pubsubManager } = resolve
+  const queryString = req.url.split('?')[1]
+  const { token, deploymentId } = qs.parse(queryString)
+  const connectionId = uuid()
+  let eventTypes = null
+  let aggregateIds = null
 
   try {
-    void ({ eventTypes, aggregateIds } = jwt.verify(token, deploymentId));
+    void ({ eventTypes, aggregateIds } = jwt.verify(token, deploymentId))
   } catch (error) {
-    throw new Error('Permission denied, invalid token');
+    throw new Error('Permission denied, invalid token')
   }
 
-  const publisher = (event) => ws.send(event);
+  const publisher = (event) => ws.send(event)
   pubsubManager.connect({
     client: publisher,
     connectionId,
     eventTypes,
     aggregateIds,
-  });
+  })
 
   const dispose = () => {
-    pubsubManager.disconnect({ connectionId });
-    ws.close();
-  };
+    pubsubManager.disconnect({ connectionId })
+    ws.close()
+  }
 
-  const handler = createWebSocketMessageHandler(resolve, ws, connectionId);
-  ws.on('message', handler);
+  const handler = createWebSocketMessageHandler(resolve, ws, connectionId)
+  ws.on('message', handler)
 
-  ws.on('close', dispose);
-  ws.on('error', dispose);
-};
+  ws.on('close', dispose)
+  ws.on('error', dispose)
+}
 
 const createWebSocketMessageHandler = (
   { pubsubManager },
@@ -56,9 +56,9 @@ const createWebSocketMessageHandler = (
   try {
     const { eventTypes, aggregateIds } = pubsubManager.getConnection({
       connectionId,
-    });
+    })
 
-    const parsedMessage = JSON.parse(message);
+    const parsedMessage = JSON.parse(message)
     switch (parsedMessage.type) {
       case 'pullEvents': {
         const { events, cursor } = await eventstoreAdapter.loadEvents({
@@ -67,19 +67,19 @@ const createWebSocketMessageHandler = (
           limit: 1000000,
           eventsSizeLimit: 124 * 1024,
           cursor: parsedMessage.cursor,
-        });
+        })
 
         ws.send(
           JSON.stringify({
             type: 'pullEvents',
             payload: { events, cursor },
           })
-        );
+        )
 
-        break;
+        break
       }
       default: {
-        throw new Error(`The '${parsedMessage.type}' message type is unknown`);
+        throw new Error(`The '${parsedMessage.type}' message type is unknown`)
       }
     }
   } catch (error) {
@@ -90,13 +90,13 @@ const createWebSocketMessageHandler = (
           ? `${error.message} ${error.stack}`
           : JSON.stringify(error)
       }`
-    );
+    )
   }
-};
+}
 
 const initInterceptingHttpServer = (resolve) => {
-  const { server: baseServer, websocketHttpServer } = resolve;
-  const websocketBaseUrl = getRootBasedUrl(resolve.rootPath, '/api/websocket');
+  const { server: baseServer, websocketHttpServer } = resolve
+  const websocketBaseUrl = getRootBasedUrl(resolve.rootPath, '/api/websocket')
   const interceptingEvents = [
     'close',
     'listening',
@@ -104,54 +104,54 @@ const initInterceptingHttpServer = (resolve) => {
     'upgrade',
     'error',
     'connection',
-  ];
+  ]
 
   const interceptingEventListener = (eventName, listeners, ...args) => {
     const requestUrl =
-      args[0] != null && args[0].url != null ? String(args[0].url) : '';
+      args[0] != null && args[0].url != null ? String(args[0].url) : ''
 
     if (requestUrl.startsWith(websocketBaseUrl)) {
-      websocketHttpServer.emit(eventName, ...args);
+      websocketHttpServer.emit(eventName, ...args)
     } else {
       for (const listener of listeners) {
-        listener.apply(baseServer, args);
+        listener.apply(baseServer, args)
       }
     }
-  };
+  }
 
   for (const eventName of interceptingEvents) {
-    const listeners = baseServer.listeners(eventName).slice(0);
-    baseServer.removeAllListeners(eventName);
-    const listener = interceptingEventListener.bind(null, eventName, listeners);
-    baseServer.on(eventName, listener);
+    const listeners = baseServer.listeners(eventName).slice(0)
+    baseServer.removeAllListeners(eventName)
+    const listener = interceptingEventListener.bind(null, eventName, listeners)
+    baseServer.on(eventName, listener)
   }
-};
+}
 
 const initWebSocketServer = async (resolve) => {
   try {
     const websocketServer = new WebSocket.Server({
       path: getRootBasedUrl(resolve.rootPath, '/api/websocket'),
       server: resolve.websocketHttpServer,
-    });
-    const connectionHandler = createWebSocketConnectionHandler(resolve);
-    websocketServer.on('connection', connectionHandler);
+    })
+    const connectionHandler = createWebSocketConnectionHandler(resolve)
+    websocketServer.on('connection', connectionHandler)
   } catch (error) {
-    log.warn('Cannot init WebSocket server: ', error);
+    log.warn('Cannot init WebSocket server: ', error)
   }
-};
+}
 
 const createSocketHttpServer = () => {
-  const socketServer = new EventEmitter();
-  Object.setPrototypeOf(socketServer, http.Server.prototype);
-  Object.defineProperty(socketServer, 'listen', { value: () => {} });
-  return socketServer;
-};
+  const socketServer = new EventEmitter()
+  Object.setPrototypeOf(socketServer, http.Server.prototype)
+  Object.defineProperty(socketServer, 'listen', { value: () => {} })
+  return socketServer
+}
 
 const initWebsockets = async (resolve) => {
-  const pubsubManager = createPubsubManager();
-  const websocketHttpServer = createSocketHttpServer();
+  const pubsubManager = createPubsubManager()
+  const websocketHttpServer = createSocketHttpServer()
 
-  eventstoreAdapter = await resolve.assemblies.eventstoreAdapter();
+  eventstoreAdapter = await resolve.assemblies.eventstoreAdapter()
 
   Object.defineProperties(resolve, {
     getSubscribeAdapterOptions: {
@@ -159,11 +159,11 @@ const initWebsockets = async (resolve) => {
     },
     pubsubManager: { value: pubsubManager },
     websocketHttpServer: { value: websocketHttpServer },
-  });
+  })
 
-  await initWebSocketServer(resolve);
+  await initWebSocketServer(resolve)
 
-  await initInterceptingHttpServer(resolve);
-};
+  await initInterceptingHttpServer(resolve)
+}
 
-export default initWebsockets;
+export default initWebsockets

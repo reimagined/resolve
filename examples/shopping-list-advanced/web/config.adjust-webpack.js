@@ -1,11 +1,11 @@
 const adjustWebpackConfigs = (webpackConfigs) => {
   for (const webpackConfig of webpackConfigs) {
-    const { entry, target } = webpackConfig;
+    const { entry, target } = webpackConfig
     if (
       Object.keys(entry).find((entry) => entry.endsWith('/ssr.js')) != null &&
       target === 'node'
     ) {
-      webpackConfig.externals = [];
+      webpackConfig.externals = []
     }
     if (
       Object.keys(entry).find((entry) => entry.endsWith('/native-chunk.js')) !=
@@ -18,20 +18,20 @@ const adjustWebpackConfigs = (webpackConfigs) => {
               request
             )
           ) {
-            callback();
+            callback()
           } else if (
             request[0] !== '/' &&
             request[0] !== '.' &&
             !request.startsWith('$resolve')
           ) {
-            callback(null, `commonjs ${request}`);
+            callback(null, `commonjs ${request}`)
           } else {
-            callback();
+            callback()
           }
         },
-      ];
+      ]
     }
   }
-};
+}
 
-module.exports = adjustWebpackConfigs;
+module.exports = adjustWebpackConfigs

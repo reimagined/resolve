@@ -1,4 +1,4 @@
-import injectDefaults from '../inject-defaults';
+import injectDefaults from '../inject-defaults'
 
 const createCommentsProjection = ({
   eventTypes: { COMMENT_CREATED, COMMENT_UPDATED, COMMENT_REMOVED },
@@ -20,7 +20,7 @@ const createCommentsProjection = ({
         'position', // string
         'content', // json
       ],
-    });
+    })
   },
 
   [COMMENT_CREATED]: async (store, event) => {
@@ -28,7 +28,7 @@ const createCommentsProjection = ({
       aggregateId: treeId,
       payload: { commentId, parentCommentId, authorId, content },
       timestamp,
-    } = event;
+    } = event
 
     if (
       (await store.count(commentsTableName, {
@@ -37,7 +37,7 @@ const createCommentsProjection = ({
       })) === 0
     ) {
       if (parentCommentId != null) {
-        return;
+        return
       }
 
       await store.insert(commentsTableName, {
@@ -50,7 +50,7 @@ const createCommentsProjection = ({
         nestedLevel: 0,
         timestamp,
         content: null,
-      });
+      })
     }
 
     await store.insert(commentsTableName, {
@@ -63,7 +63,7 @@ const createCommentsProjection = ({
       nestedLevel: 0,
       timestamp,
       content,
-    });
+    })
 
     const parentComments = await store.find(
       commentsTableName,
@@ -76,48 +76,48 @@ const createCommentsProjection = ({
       },
       { timestamp: 0, content: 0 },
       { nestedLevel: 1, timestamp: -1 }
-    );
+    )
 
-    const parentInnerComments = [];
+    const parentInnerComments = []
 
-    let newParentPosition = -1;
+    let newParentPosition = -1
     for (const parentComment of parentComments) {
       if (
         parentComment.commentId !== parentCommentId ||
         parentComment.nestedLevel === 0
       ) {
-        parentInnerComments.push(parentComment);
-        continue;
+        parentInnerComments.push(parentComment)
+        continue
       }
       if (parentComment.position == null) {
-        continue;
+        continue
       }
 
       const parentPosition = Number(
         parentComment.position.split(/\./).reverse()[0]
-      );
+      )
       if (parentPosition > newParentPosition) {
-        newParentPosition = parentPosition;
+        newParentPosition = parentPosition
       }
     }
 
-    newParentPosition++;
+    newParentPosition++
 
     for (const parentComment of parentInnerComments) {
       const position =
         parentComment.position != null
           ? `${parentComment.position}.${newParentPosition}`
-          : `${newParentPosition}`;
+          : `${newParentPosition}`
 
       const mainId =
         parentComment.commentId != null
           ? `${treeId}-${parentComment.commentId}.${position}`
-          : `${treeId}-root.${position}`;
+          : `${treeId}-root.${position}`
 
-      const nestedLevel = parentComment.nestedLevel + 1;
+      const nestedLevel = parentComment.nestedLevel + 1
 
       if (Number.isInteger(maxNestedLevel) && nestedLevel > maxNestedLevel) {
-        continue;
+        continue
       }
 
       await store.insert(commentsTableName, {
@@ -130,7 +130,7 @@ const createCommentsProjection = ({
         nestedLevel,
         timestamp,
         content,
-      });
+      })
     }
   },
 
@@ -138,7 +138,7 @@ const createCommentsProjection = ({
     const {
       aggregateId: treeId,
       payload: { commentId, content },
-    } = event;
+    } = event
 
     await store.update(
       commentsTableName,
@@ -149,14 +149,14 @@ const createCommentsProjection = ({
         ],
       },
       { $set: { content } }
-    );
+    )
   },
 
   [COMMENT_REMOVED]: async (store, event) => {
     const {
       aggregateId: treeId,
       payload: { commentId },
-    } = event;
+    } = event
 
     const childCommentsIds = (
       await store.find(
@@ -166,7 +166,7 @@ const createCommentsProjection = ({
       )
     )
       .map(({ childCommentId }) => childCommentId)
-      .concat(commentId);
+      .concat(commentId)
 
     await store.delete(commentsTableName, {
       $or: [
@@ -177,8 +177,8 @@ const createCommentsProjection = ({
           commentId: innerCommentId,
         })),
       ],
-    });
+    })
   },
-});
+})
 
-export default injectDefaults(createCommentsProjection);
+export default injectDefaults(createCommentsProjection)

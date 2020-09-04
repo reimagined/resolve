@@ -19,6 +19,6 @@ const appConfig = {
     },
   ],
   clientEntries: ['client/index.js'],
-};
+}
 
-export default appConfig;
+export default appConfig

@@ -1,15 +1,15 @@
-import { takeEvery, put } from 'redux-saga/effects';
-import getNativeChunk from '../../native-chunk';
+import { takeEvery, put } from 'redux-saga/effects'
+import getNativeChunk from '../../native-chunk'
 import {
   OPTIMISTIC_SHARINGS_SYNC,
   OPTIMISTIC_SHARINGS_SHOPPING_LIST_SHARE,
   OPTIMISTIC_SHARINGS_SHOPPING_LIST_UNSHARE,
-} from '../action-types';
+} from '../action-types'
 
 const {
   resolveRedux: { actionTypes },
-} = getNativeChunk();
-const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes;
+} = getNativeChunk()
+const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
 
 export default function* () {
   yield takeEvery(
@@ -21,9 +21,9 @@ export default function* () {
       yield put({
         type: OPTIMISTIC_SHARINGS_SYNC,
         payload: action.result,
-      });
+      })
     }
-  );
+  )
 
   yield takeEvery(
     (action) =>
@@ -36,9 +36,9 @@ export default function* () {
           id: action.payload.userId,
           username: action.payload.username,
         },
-      });
+      })
     }
-  );
+  )
 
   yield takeEvery(
     (action) =>
@@ -51,7 +51,7 @@ export default function* () {
           id: action.payload.userId,
           username: action.payload.username,
         },
-      });
+      })
     }
-  );
+  )
 }

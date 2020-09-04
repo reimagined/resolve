@@ -1,6 +1,6 @@
-import App from './components/App';
-import ShoppingList from './components/ShoppingList';
-import MyLists from './components/MyLists';
+import App from './components/App'
+import ShoppingList from './components/ShoppingList'
+import MyLists from './components/MyLists'
 
 const routes = [
   {
@@ -17,8 +17,8 @@ const routes = [
       },
     ],
   },
-];
+]
 
-const getRoutes = () => routes;
+const getRoutes = () => routes
 
-export default getRoutes;
+export default getRoutes

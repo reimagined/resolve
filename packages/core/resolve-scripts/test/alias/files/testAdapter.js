@@ -1,3 +1,3 @@
-const adapter = () => {};
+const adapter = () => {}
 
-export default adapter;
+export default adapter

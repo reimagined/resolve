@@ -1,6 +1,6 @@
-process.env.TZ = 'Europe/Moscow';
+process.env.TZ = 'Europe/Moscow'
 
-const path = require('path');
+const path = require('path')
 
 module.exports = {
   rootDir: process.cwd(),
@@ -12,4 +12,4 @@ module.exports = {
   },
   snapshotSerializers: ['enzyme-to-json/serializer'],
   testMatch: ['**/?(*.)+(spec|test).js?(x)'],
-};
+}

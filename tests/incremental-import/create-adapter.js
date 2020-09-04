@@ -1,11 +1,11 @@
 // eslint-disable-next-line
-import createEventStoreLiteAdapter from 'resolve-eventstore-lite';
+import createEventStoreLiteAdapter from 'resolve-eventstore-lite'
 // eslint-disable-next-line
-import createEventStorePostgreSQLAdapter from 'resolve-eventstore-postgresql';
+import createEventStorePostgreSQLAdapter from 'resolve-eventstore-postgresql'
 // eslint-disable-next-line
-import createEventStorePostgreSQLServerlessAdapter from 'resolve-eventstore-postgresql-serverless';
+import createEventStorePostgreSQLServerlessAdapter from 'resolve-eventstore-postgresql-serverless'
 // eslint-disable-next-line
-import createEventStoreMySQLAdapter from 'resolve-eventstore-mysql';
+import createEventStoreMySQLAdapter from 'resolve-eventstore-mysql'
 
 const createAdapter = () => {
   // return createEventStoreMySQLAdapter({
@@ -46,7 +46,7 @@ const createAdapter = () => {
   return createEventStoreLiteAdapter({
     databaseFile: ':memory:',
     secretsFile: ':memory:',
-  });
-};
+  })
+}
 
-export default createAdapter;
+export default createAdapter

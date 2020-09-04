@@ -1,19 +1,19 @@
-import { Command } from 'resolve-client';
+import { Command } from 'resolve-client'
 import {
   SEND_COMMAND_FAILURE,
   SEND_COMMAND_REQUEST,
   SEND_COMMAND_SUCCESS,
-} from '../internal/action-types';
+} from '../internal/action-types'
 
 export type CommandAction = {
-  type: string;
-  command: Command;
-};
+  type: string
+  command: Command
+}
 
 export type SendCommandRequestAction = {
-  type: typeof SEND_COMMAND_REQUEST;
-  usedByHook: boolean;
-} & CommandAction;
+  type: typeof SEND_COMMAND_REQUEST
+  usedByHook: boolean
+} & CommandAction
 export const sendCommandRequest = (
   command: Command,
   usedByHook: boolean
@@ -21,12 +21,12 @@ export const sendCommandRequest = (
   type: SEND_COMMAND_REQUEST,
   command,
   usedByHook,
-});
+})
 
 export type SendCommandSuccessAction = {
-  type: typeof SEND_COMMAND_SUCCESS;
-  result: any;
-} & CommandAction;
+  type: typeof SEND_COMMAND_SUCCESS
+  result: any
+} & CommandAction
 export const sendCommandSuccess = (
   command: Command,
   result: any
@@ -34,12 +34,12 @@ export const sendCommandSuccess = (
   type: SEND_COMMAND_SUCCESS,
   command,
   result,
-});
+})
 
 export type SendCommandFailureAction = {
-  type: typeof SEND_COMMAND_FAILURE;
-  error: any;
-} & CommandAction;
+  type: typeof SEND_COMMAND_FAILURE
+  error: any
+} & CommandAction
 export const sendCommandFailure = (
   command: Command,
   error: Error
@@ -47,4 +47,4 @@ export const sendCommandFailure = (
   type: SEND_COMMAND_FAILURE,
   command,
   error,
-});
+})

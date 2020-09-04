@@ -2,28 +2,28 @@ const injectEvent = async function (
   { eventsTableName, database, escapeId, escape },
   event
 ) {
-  const eventsTableNameAsId = escapeId(eventsTableName);
+  const eventsTableNameAsId = escapeId(eventsTableName)
   const serializedPayload =
     event.payload != null
       ? escape(JSON.stringify(event.payload))
-      : escape('null');
+      : escape('null')
 
-  const missingFields = [];
+  const missingFields = []
   if (event.threadId == null) {
-    missingFields.push(`"threadId"`);
+    missingFields.push(`"threadId"`)
   }
   if (event.threadCounter == null) {
-    missingFields.push(`"threadCounter"`);
+    missingFields.push(`"threadCounter"`)
   }
   if (event.timestamp == null) {
-    missingFields.push(`"timestamp"`);
+    missingFields.push(`"timestamp"`)
   }
   if (missingFields.length > 0) {
     throw new Error(
       `The field ${missingFields.join(', ')} is required in ${JSON.stringify(
         event
       )}`
-    );
+    )
   }
 
   // prettier-ignore
@@ -46,6 +46,6 @@ const injectEvent = async function (
       json(CAST(${serializedPayload} AS BLOB))
     )`
   )
-};
+}
 
-export default injectEvent;
+export default injectEvent

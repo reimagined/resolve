@@ -7,14 +7,14 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     inlineLedgerForceStop,
     inlineLedgerExecuteStatement,
     PassthroughError,
-  } = pool;
+  } = pool
 
-  const databaseNameAsId = escapeId(schemaName);
-  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`);
+  const databaseNameAsId = escapeId(schemaName)
+  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
 
   while (true) {
     try {
-      await inlineLedgerForceStop(pool, readModelName);
+      await inlineLedgerForceStop(pool, readModelName)
       await inlineLedgerExecuteStatement(
         pool,
         `
@@ -32,21 +32,21 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         WHERE "EventSubscriber" = ${escape(readModelName)}
         AND (SELECT Count("CTE".*) FROM "CTE") = 1
       `
-      );
+      )
 
-      break;
+      break
     } catch (err) {
       if (!(err instanceof PassthroughError)) {
-        throw err;
+        throw err
       }
     }
   }
 
-  await dropReadModel(pool, readModelName);
+  await dropReadModel(pool, readModelName)
 
   while (true) {
     try {
-      await inlineLedgerForceStop(pool, readModelName);
+      await inlineLedgerForceStop(pool, readModelName)
 
       await inlineLedgerExecuteStatement(
         pool,
@@ -84,14 +84,14 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
              : escape('null')
          }
       `
-      );
-      break;
+      )
+      break
     } catch (err) {
       if (!(err instanceof PassthroughError)) {
-        throw err;
+        throw err
       }
     }
   }
-};
+}
 
-export default resubscribe;
+export default resubscribe

@@ -1,11 +1,11 @@
-import declareRuntimeEnv from '../../src/declare_runtime_env';
+import declareRuntimeEnv from '../../src/declare_runtime_env'
 
-import alias from '../../src/alias/$resolve.staticPath';
-import normalizePaths from './normalize_paths';
+import alias from '../../src/alias/$resolve.staticPath'
+import normalizePaths from './normalize_paths'
 
 describe('$resolve.staticPath', () => {
   test('should support runtime envs', () => {
-    const resolveConfig = { staticPath: declareRuntimeEnv('STATIC_PATH') };
+    const resolveConfig = { staticPath: declareRuntimeEnv('STATIC_PATH') }
     {
       const result = normalizePaths(
         '\r\n' +
@@ -14,9 +14,9 @@ describe('$resolve.staticPath', () => {
             isClient: true,
           }) +
           '\r\n'
-      );
+      )
 
-      expect(result).toMatchSnapshot('[client - runtime]');
+      expect(result).toMatchSnapshot('[client - runtime]')
     }
 
     {
@@ -27,16 +27,16 @@ describe('$resolve.staticPath', () => {
             isClient: false,
           }) +
           '\r\n'
-      );
+      )
 
-      expect(result).toMatchSnapshot('[server - runtime]');
+      expect(result).toMatchSnapshot('[server - runtime]')
     }
-  });
+  })
 
   test('should support absolute paths', () => {
-    const staticPath = 'http://resolve.dev';
+    const staticPath = 'http://resolve.dev'
 
-    const resolveConfig = { staticPath };
+    const resolveConfig = { staticPath }
 
     {
       const result = normalizePaths(
@@ -46,11 +46,11 @@ describe('$resolve.staticPath', () => {
             isClient: true,
           }) +
           '\r\n'
-      );
+      )
 
-      expect(result).toMatchSnapshot('[client - compile-time]');
+      expect(result).toMatchSnapshot('[client - compile-time]')
 
-      expect(result).toContain(encodeURI(staticPath));
+      expect(result).toContain(encodeURI(staticPath))
     }
 
     {
@@ -61,18 +61,18 @@ describe('$resolve.staticPath', () => {
             isClient: false,
           }) +
           '\r\n'
-      );
+      )
 
-      expect(result).toMatchSnapshot('[server - compile-time]');
+      expect(result).toMatchSnapshot('[server - compile-time]')
 
-      expect(result).toContain(encodeURI(staticPath));
+      expect(result).toContain(encodeURI(staticPath))
     }
-  });
+  })
 
   test('should support part of URL', () => {
-    const staticPath = 'static';
+    const staticPath = 'static'
 
-    const resolveConfig = { staticPath };
+    const resolveConfig = { staticPath }
 
     {
       const result = normalizePaths(
@@ -82,11 +82,11 @@ describe('$resolve.staticPath', () => {
             isClient: true,
           }) +
           '\r\n'
-      );
+      )
 
-      expect(result).toMatchSnapshot('[client - compile-time]');
+      expect(result).toMatchSnapshot('[client - compile-time]')
 
-      expect(result).toContain(encodeURI(staticPath));
+      expect(result).toContain(encodeURI(staticPath))
     }
 
     {
@@ -97,18 +97,18 @@ describe('$resolve.staticPath', () => {
             isClient: false,
           }) +
           '\r\n'
-      );
+      )
 
-      expect(result).toMatchSnapshot('[server - compile-time]');
+      expect(result).toMatchSnapshot('[server - compile-time]')
 
-      expect(result).toContain(encodeURI(staticPath));
+      expect(result).toContain(encodeURI(staticPath))
     }
-  });
+  })
 
   test('should not support empty URL', () => {
-    const staticPath = '';
+    const staticPath = ''
 
-    const resolveConfig = { staticPath };
+    const resolveConfig = { staticPath }
 
     {
       expect(() =>
@@ -120,7 +120,7 @@ describe('$resolve.staticPath', () => {
             }) +
             '\r\n'
         )
-      ).toThrow();
+      ).toThrow()
     }
 
     {
@@ -132,16 +132,16 @@ describe('$resolve.staticPath', () => {
               isClient: false,
             }) +
             '\r\n'
-        );
+        )
 
-      expect(result).toThrow();
+      expect(result).toThrow()
     }
-  });
+  })
 
   test('should not support part of URL with leading slash', () => {
-    const staticPath = '/static';
+    const staticPath = '/static'
 
-    const resolveConfig = { staticPath };
+    const resolveConfig = { staticPath }
 
     {
       expect(() =>
@@ -153,7 +153,7 @@ describe('$resolve.staticPath', () => {
             }) +
             '\r\n'
         )
-      ).toThrow();
+      ).toThrow()
     }
 
     {
@@ -165,16 +165,16 @@ describe('$resolve.staticPath', () => {
               isClient: false,
             }) +
             '\r\n'
-        );
+        )
 
-      expect(result).toThrow();
+      expect(result).toThrow()
     }
-  });
+  })
 
   test('should not support part of URL with trailing slash', () => {
-    const staticPath = 'static/';
+    const staticPath = 'static/'
 
-    const resolveConfig = { staticPath };
+    const resolveConfig = { staticPath }
 
     {
       expect(() =>
@@ -186,7 +186,7 @@ describe('$resolve.staticPath', () => {
             }) +
             '\r\n'
         )
-      ).toThrow();
+      ).toThrow()
     }
 
     {
@@ -198,9 +198,9 @@ describe('$resolve.staticPath', () => {
               isClient: false,
             }) +
             '\r\n'
-        );
+        )
 
-      expect(result).toThrow();
+      expect(result).toThrow()
     }
-  });
-});
+  })
+})

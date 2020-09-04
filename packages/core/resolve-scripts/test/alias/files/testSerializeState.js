@@ -1,3 +1,3 @@
-const serializeState = (state) => JSON.stringify(state);
+const serializeState = (state) => JSON.stringify(state)
 
-export default serializeState;
+export default serializeState

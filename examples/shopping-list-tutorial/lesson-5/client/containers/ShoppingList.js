@@ -1,7 +1,7 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { connectViewModel } from 'resolve-redux';
-import { bindActionCreators } from 'redux';
+import React from 'react'
+import { connect } from 'react-redux'
+import { connectViewModel } from 'resolve-redux'
+import { bindActionCreators } from 'redux'
 
 import {
   ListGroup,
@@ -12,42 +12,42 @@ import {
   Col,
   FormControl,
   Button,
-} from 'react-bootstrap';
+} from 'react-bootstrap'
 
-import * as aggregateActions from '../actions/aggregate_actions';
+import * as aggregateActions from '../actions/aggregate_actions'
 
 export class ShoppingList extends React.PureComponent {
   state = {
     itemText: '',
-  };
+  }
 
   createShoppingItem = () => {
     this.props.createShoppingItem('shopping-list-1', {
       text: this.state.itemText,
       id: Date.now().toString(),
-    });
+    })
 
     this.setState({
       itemText: '',
-    });
-  };
+    })
+  }
 
   updateItemText = (event) => {
     this.setState({
       itemText: event.target.value,
-    });
-  };
+    })
+  }
 
   onItemTextPressEnter = (event) => {
     if (event.charCode === 13) {
-      event.preventDefault();
-      this.createShoppingItem();
+      event.preventDefault()
+      this.createShoppingItem()
     }
-  };
+  }
 
   render() {
-    const list = (this.props.data && this.props.data.list) || [];
-    const toggleShoppingItem = this.props.toggleShoppingItem;
+    const list = (this.props.data && this.props.data.list) || []
+    const toggleShoppingItem = this.props.toggleShoppingItem
 
     return (
       <div style={{ maxWidth: '500px', margin: 'auto' }}>
@@ -88,7 +88,7 @@ export class ShoppingList extends React.PureComponent {
           </Col>
         </Row>
       </div>
-    );
+    )
   }
 }
 
@@ -97,12 +97,12 @@ export const mapStateToOptions = (state, ownProps) => {
   return {
     viewModelName: 'shoppingList',
     aggregateIds: ['shopping-list-1'],
-  };
-};
+  }
+}
 
 export const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(aggregateActions, dispatch);
+  bindActionCreators(aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToOptions)(
   connect(null, mapDispatchToProps)(ShoppingList)
-);
+)

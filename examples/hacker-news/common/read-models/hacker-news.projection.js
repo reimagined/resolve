@@ -3,7 +3,7 @@ import {
   STORY_UNVOTED,
   STORY_UPVOTED,
   USER_CREATED,
-} from '../event-types';
+} from '../event-types'
 
 export default {
   Init: async (store) => {
@@ -19,20 +19,20 @@ export default {
         'createdBy',
         'createdByName',
       ],
-    });
+    })
 
     await store.defineTable('Users', {
       indexes: { id: 'string', name: 'string' },
       fields: ['createdAt'],
-    });
+    })
   },
 
   [STORY_CREATED]: async (
     store,
     { aggregateId, timestamp, payload: { title, link, userId, userName, text } }
   ) => {
-    const isAsk = link == null || link === '';
-    const type = isAsk ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story';
+    const isAsk = link == null || link === ''
+    const type = isAsk ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story'
 
     const story = {
       id: aggregateId,
@@ -45,9 +45,9 @@ export default {
       createdAt: timestamp,
       createdBy: userId,
       createdByName: userName,
-    };
+    }
 
-    await store.insert('Stories', story);
+    await store.insert('Stories', story)
   },
 
   [STORY_UPVOTED]: async (store, { aggregateId, payload: { userId } }) => {
@@ -55,12 +55,12 @@ export default {
       'Stories',
       { id: aggregateId },
       { votes: 1 }
-    );
+    )
     await store.update(
       'Stories',
       { id: aggregateId },
       { $set: { votes: story.votes.concat(userId) } }
-    );
+    )
   },
 
   [STORY_UNVOTED]: async (store, { aggregateId, payload: { userId } }) => {
@@ -68,12 +68,12 @@ export default {
       'Stories',
       { id: aggregateId },
       { votes: 1 }
-    );
+    )
     await store.update(
       'Stories',
       { id: aggregateId },
       { $set: { votes: story.votes.filter((vote) => vote !== userId) } }
-    );
+    )
   },
 
   [USER_CREATED]: async (
@@ -84,8 +84,8 @@ export default {
       id: aggregateId,
       name,
       createdAt: timestamp,
-    };
-    await store.insert('Users', user);
+    }
+    await store.insert('Users', user)
   },
 
   /* from module "resolve-module-comments" */
@@ -94,7 +94,7 @@ export default {
       'Stories',
       { id: aggregateId },
       { $inc: { commentCount: 1 } }
-    );
+    )
   },
 
   /* from module "resolve-module-comments" */
@@ -103,6 +103,6 @@ export default {
       'Stories',
       { id: aggregateId },
       { $inc: { commentCount: -1 } }
-    );
+    )
   },
-};
+}

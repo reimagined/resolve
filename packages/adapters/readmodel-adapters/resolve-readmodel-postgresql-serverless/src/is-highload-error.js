@@ -10,6 +10,6 @@ const isHighloadError = (error) =>
     error.code === 'RequestLimitExceeded' ||
     error.code === 'ThrottlingException' ||
     error.code === 'TooManyRequestsException' ||
-    error.code === 'NetworkingError');
+    error.code === 'NetworkingError')
 
-export default isHighloadError;
+export default isHighloadError

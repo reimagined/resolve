@@ -2,29 +2,29 @@ const injectEvent = async function (
   { events: { eventsTableName, connection }, escapeId, escape },
   event
 ) {
-  const eventsTableNameAsId = escapeId(eventsTableName);
-  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`);
+  const eventsTableNameAsId = escapeId(eventsTableName)
+  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
   const serializedPayload =
     event.payload != null
       ? escape(JSON.stringify(event.payload))
-      : escape('null');
+      : escape('null')
 
-  const missingFields = [];
+  const missingFields = []
   if (event.threadId == null) {
-    missingFields.push(`"threadId"`);
+    missingFields.push(`"threadId"`)
   }
   if (event.threadCounter == null) {
-    missingFields.push(`"threadCounter"`);
+    missingFields.push(`"threadCounter"`)
   }
   if (event.timestamp == null) {
-    missingFields.push(`"timestamp"`);
+    missingFields.push(`"timestamp"`)
   }
   if (missingFields.length > 0) {
     throw new Error(
       `The field ${missingFields.join(', ')} is required in ${JSON.stringify(
         event
       )}`
-    );
+    )
   }
 
   try {
@@ -58,11 +58,11 @@ const injectEvent = async function (
     )
   } catch (error) {
     try {
-      await connection.query(`ROLLBACK;`);
+      await connection.query(`ROLLBACK;`)
     } catch (e) {}
 
-    throw error;
+    throw error
   }
-};
+}
 
-export default injectEvent;
+export default injectEvent

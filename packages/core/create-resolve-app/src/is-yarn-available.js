@@ -1,10 +1,10 @@
 const isYarnAvailable = ({ execSync }) => () => {
   try {
-    execSync('yarn --version', { stdio: 'ignore' });
-    return true;
+    execSync('yarn --version', { stdio: 'ignore' })
+    return true
   } catch (e) {
-    return false;
+    return false
   }
-};
+}
 
-export default isYarnAvailable;
+export default isYarnAvailable

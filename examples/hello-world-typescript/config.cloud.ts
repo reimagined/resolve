@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts';
+import { declareRuntimeEnv } from 'resolve-scripts'
 
 const cloudConfig = {
   target: 'cloud',
@@ -42,6 +42,6 @@ const cloudConfig = {
       connectorName: 'default',
     },
   },
-};
+}
 
-export default cloudConfig;
+export default cloudConfig

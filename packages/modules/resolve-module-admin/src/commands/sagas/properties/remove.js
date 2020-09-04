@@ -1,17 +1,17 @@
-import fetch from 'isomorphic-fetch';
+import fetch from 'isomorphic-fetch'
 
 export const handler = async ({ url, saga, key }) => {
   const response = await fetch(
     `${url}/event-broker/delete-property?listenerId=${saga}&key=${key}`
-  );
-  const result = await response.text();
+  )
+  const result = await response.text()
   //eslint-disable-next-line no-console
-  console.log(result);
-};
+  console.log(result)
+}
 
-export const command = 'remove <saga> <key>';
-export const aliases = ['rm'];
-export const describe = 'remove a saga property';
+export const command = 'remove <saga> <key>'
+export const aliases = ['rm']
+export const describe = 'remove a saga property'
 export const builder = (yargs) =>
   yargs
     .positional('saga', {
@@ -21,4 +21,4 @@ export const builder = (yargs) =>
     .positional('key', {
       describe: 'property name',
       type: 'string',
-    });
+    })

@@ -1,7 +1,7 @@
 const validator = (_, jwt) => {
   if (!jwt) {
-    throw new Error();
+    throw new Error()
   }
-};
+}
 
-export default validator;
+export default validator

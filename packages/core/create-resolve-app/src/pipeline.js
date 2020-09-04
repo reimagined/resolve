@@ -13,7 +13,7 @@ const pipeline = (pool) => {
     install,
     printFinishOutput,
     sendAnalytics,
-  } = pool;
+  } = pool
 
   prepareOptions(pool)
     .then(startCreatingApplication(pool))
@@ -27,9 +27,9 @@ const pipeline = (pool) => {
     .then(sendAnalytics(pool))
     .catch((error) => {
       // eslint-disable-next-line no-console
-      console.error(chalk.red(error));
-      process.exit(1);
-    });
-};
+      console.error(chalk.red(error))
+      process.exit(1)
+    })
+}
 
-export default pipeline;
+export default pipeline

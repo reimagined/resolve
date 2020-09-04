@@ -1,4 +1,4 @@
-import { RESERVED_EVENT_SIZE } from './constants';
+import { RESERVED_EVENT_SIZE } from './constants'
 
 const injectEvent = async function (pool, event) {
   const {
@@ -7,38 +7,38 @@ const injectEvent = async function (pool, event) {
     executeStatement,
     escapeId,
     escape,
-  } = pool;
+  } = pool
 
   const serializedEvent = [
     `${escape(event.aggregateId)},`,
     `${+event.aggregateVersion},`,
     `${escape(event.type)},`,
     escape(JSON.stringify(event.payload != null ? event.payload : null)),
-  ].join('');
+  ].join('')
 
-  const byteLength = Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE;
+  const byteLength = Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
 
-  const databaseNameAsId = escapeId(databaseName);
-  const threadsTableAsId = escapeId(`${eventsTableName}-threads`);
-  const eventsTableAsId = escapeId(eventsTableName);
+  const databaseNameAsId = escapeId(databaseName)
+  const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
+  const eventsTableAsId = escapeId(eventsTableName)
 
   // prettier-ignore
   const missingFields = []
   if (event.threadId == null) {
-    missingFields.push(`"threadId"`);
+    missingFields.push(`"threadId"`)
   }
   if (event.threadCounter == null) {
-    missingFields.push(`"threadCounter"`);
+    missingFields.push(`"threadCounter"`)
   }
   if (event.timestamp == null) {
-    missingFields.push(`"timestamp"`);
+    missingFields.push(`"timestamp"`)
   }
   if (missingFields.length > 0) {
     throw new Error(
       `The field ${missingFields.join(', ')} is required in ${JSON.stringify(
         event
       )}`
-    );
+    )
   }
 
   // prettier-ignore
@@ -66,6 +66,6 @@ const injectEvent = async function (pool, event) {
       ${byteLength}
     )
   `)
-};
+}
 
-export default injectEvent;
+export default injectEvent

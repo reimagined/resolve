@@ -1,68 +1,68 @@
-import unfetch from 'unfetch';
-import qs from 'query-string';
-import { Context } from './context';
-import { getRootBasedUrl, isString } from './utils';
-import determineOrigin from './determine-origin';
-import { GenericError, HttpError } from './errors';
+import unfetch from 'unfetch'
+import qs from 'query-string'
+import { Context } from './context'
+import { getRootBasedUrl, isString } from './utils'
+import determineOrigin from './determine-origin'
+import { GenericError, HttpError } from './errors'
 
-export const VALIDATED_RESULT = Symbol('VALIDATED_RESULT');
+export const VALIDATED_RESULT = Symbol('VALIDATED_RESULT')
 export type NarrowedResponse = {
-  ok: boolean;
-  status: number;
+  ok: boolean
+  status: number
   headers: {
-    get: (name: string) => string | null;
-  };
-  json: () => Promise<any>;
-  text: () => Promise<string>;
-  [VALIDATED_RESULT]?: any;
-};
+    get: (name: string) => string | null
+  }
+  json: () => Promise<any>
+  text: () => Promise<string>
+  [VALIDATED_RESULT]?: any
+}
 type ResponseValidator = (
   response: NarrowedResponse,
   confirm: (result: any) => void
-) => Promise<void>;
+) => Promise<void>
 export type FetchFunction = (
   input: RequestInfo,
   init?: RequestInit
-) => Promise<Response & NarrowedResponse>;
+) => Promise<Response & NarrowedResponse>
 
-let cachedFetch: FetchFunction | null = null;
+let cachedFetch: FetchFunction | null = null
 
 const determineFetch = (context: Context): FetchFunction => {
   if (context.fetch) {
-    return context.fetch as FetchFunction;
+    return context.fetch as FetchFunction
   }
   if (!cachedFetch) {
-    cachedFetch = typeof fetch === 'function' ? fetch : unfetch;
+    cachedFetch = typeof fetch === 'function' ? fetch : unfetch
   }
-  return cachedFetch;
-};
+  return cachedFetch
+}
 
 export type RequestOptions = {
-  method?: 'GET' | 'POST';
+  method?: 'GET' | 'POST'
   retryOnError?: {
-    errors: number[] | number;
-    attempts: number;
-    period: number;
-  };
+    errors: number[] | number
+    attempts: number
+    period: number
+  }
   waitForResponse?: {
-    validator: ResponseValidator;
-    attempts: number;
-    period: number;
-  };
-  debug?: boolean;
-};
+    validator: ResponseValidator
+    attempts: number
+    period: number
+  }
+  debug?: boolean
+}
 
 const stringifyUrl = (url: string, params: any): string => {
   if (params) {
     if (isString(params)) {
-      return `${url}?${params}`;
+      return `${url}?${params}`
     }
     return `${url}?${qs.stringify(params, {
       arrayFormat: 'bracket',
-    })}`;
+    })}`
   }
-  return url;
-};
+  return url
+}
 
 const insistentRequest = async (
   fetch: FetchFunction,
@@ -74,40 +74,40 @@ const insistentRequest = async (
     response: 0,
   }
 ): Promise<NarrowedResponse> => {
-  let response;
+  let response
 
   try {
-    response = await fetch(input, init);
+    response = await fetch(input, init)
   } catch (error) {
-    throw new GenericError(error);
+    throw new GenericError(error)
   }
 
   if (response.ok) {
     if (options?.waitForResponse) {
-      let isValidated = false;
-      let validResult: any = null;
+      let isValidated = false
+      let validResult: any = null
 
       const confirmResult = (result: any): void => {
-        isValidated = true;
-        validResult = result;
-      };
+        isValidated = true
+        validResult = result
+      }
 
-      const validator = options.waitForResponse.validator;
+      const validator = options.waitForResponse.validator
 
       if (typeof validator === 'function') {
-        await validator(response, confirmResult);
+        await validator(response, confirmResult)
       }
 
       if (isValidated) {
-        response[VALIDATED_RESULT] = validResult;
-        return response;
+        response[VALIDATED_RESULT] = validResult
+        return response
       }
 
       const isMaxAttemptsReached =
-        attempts.response >= (options?.waitForResponse?.attempts ?? 0);
+        attempts.response >= (options?.waitForResponse?.attempts ?? 0)
 
       if (isMaxAttemptsReached) {
-        throw new GenericError(` ${attempts.response} retries`);
+        throw new GenericError(` ${attempts.response} retries`)
       }
 
       if (options?.debug) {
@@ -116,32 +116,32 @@ const insistentRequest = async (
           `Unexpected response. Attempting again #${attempts.response + 1}/${
             options?.waitForResponse?.attempts
           }.`
-        );
+        )
       }
 
-      const period = options?.waitForResponse?.period;
+      const period = options?.waitForResponse?.period
 
       if (typeof period === 'number' && period > 0) {
-        await new Promise((resolve) => setTimeout(resolve, period));
+        await new Promise((resolve) => setTimeout(resolve, period))
       }
 
       return insistentRequest(fetch, input, init, options, {
         ...attempts,
         response: attempts.response + 1,
-      });
+      })
     }
-    return response;
+    return response
   }
 
-  const expectedErrors = options?.retryOnError?.errors;
+  const expectedErrors = options?.retryOnError?.errors
 
   if (expectedErrors) {
     const isErrorExpected =
       typeof expectedErrors === 'number'
         ? expectedErrors === response.status
-        : expectedErrors.includes(response.status);
+        : expectedErrors.includes(response.status)
     const isMaxAttemptsReached =
-      attempts.error >= (options?.retryOnError?.attempts ?? 0);
+      attempts.error >= (options?.retryOnError?.attempts ?? 0)
 
     if (isErrorExpected && !isMaxAttemptsReached) {
       if (options?.debug) {
@@ -150,30 +150,30 @@ const insistentRequest = async (
           `Error code ${response.status} was expected. Attempting again #${
             attempts.error + 1
           }/${options?.retryOnError?.attempts}.`
-        );
+        )
       }
 
-      const period = options?.retryOnError?.period;
+      const period = options?.retryOnError?.period
 
       if (typeof period === 'number' && period > 0) {
-        await new Promise((resolve) => setTimeout(resolve, period));
+        await new Promise((resolve) => setTimeout(resolve, period))
       }
       return insistentRequest(fetch, input, init, options, {
         ...attempts,
         error: attempts.error + 1,
-      });
+      })
     }
   }
 
-  const error = new HttpError(response.status, await response.text());
+  const error = new HttpError(response.status, await response.text())
 
   if (options?.debug) {
     // eslint-disable-next-line no-console
-    console.error(error);
+    console.error(error)
   }
 
-  throw error;
-};
+  throw error
+}
 
 export const request = async (
   context: Context,
@@ -181,21 +181,21 @@ export const request = async (
   requestParams: any,
   options?: RequestOptions
 ): Promise<NarrowedResponse> => {
-  const { origin, rootPath, jwtProvider } = context;
-  const rootBasedUrl = getRootBasedUrl(rootPath, url, determineOrigin(origin));
+  const { origin, rootPath, jwtProvider } = context
+  const rootBasedUrl = getRootBasedUrl(rootPath, url, determineOrigin(origin))
 
-  const headers: { [key: string]: string } = {};
-  let requestUrl: string;
-  let init: RequestInit;
+  const headers: { [key: string]: string } = {}
+  let requestUrl: string
+  let init: RequestInit
 
   switch (options?.method ?? 'POST') {
     case 'GET':
       init = {
         method: 'GET',
         credentials: 'same-origin',
-      };
-      requestUrl = stringifyUrl(rootBasedUrl, requestParams);
-      break;
+      }
+      requestUrl = stringifyUrl(rootBasedUrl, requestParams)
+      break
     case 'POST':
       init = {
         method: 'POST',
@@ -204,31 +204,31 @@ export const request = async (
           typeof requestParams === 'string'
             ? requestParams
             : JSON.stringify(requestParams),
-      };
-      headers['Content-Type'] = 'application/json';
-      requestUrl = rootBasedUrl;
-      break;
+      }
+      headers['Content-Type'] = 'application/json'
+      requestUrl = rootBasedUrl
+      break
     default:
-      throw new GenericError(`unsupported request method`);
+      throw new GenericError(`unsupported request method`)
   }
 
-  const token = await jwtProvider?.get();
+  const token = await jwtProvider?.get()
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers['Authorization'] = `Bearer ${token}`
   }
 
-  init.headers = headers;
+  init.headers = headers
 
   const response = await insistentRequest(
     determineFetch(context),
     requestUrl,
     init,
     options
-  );
+  )
 
   if (jwtProvider && response.headers) {
-    await jwtProvider.set(response.headers.get('x-jwt') ?? '');
+    await jwtProvider.set(response.headers.get('x-jwt') ?? '')
   }
 
-  return response;
-};
+  return response
+}

@@ -2,12 +2,12 @@ import {
   sendCommandRequest,
   sendCommandFailure,
   sendCommandSuccess,
-} from '../../src/command/actions';
+} from '../../src/command/actions'
 import {
   SEND_COMMAND_FAILURE,
   SEND_COMMAND_REQUEST,
   SEND_COMMAND_SUCCESS,
-} from '../../src/internal/action-types';
+} from '../../src/internal/action-types'
 
 test('sendCommandRequest', () => {
   expect(
@@ -33,7 +33,7 @@ test('sendCommandRequest', () => {
       },
     },
     usedByHook: true,
-  });
+  })
 
   expect(
     sendCommandRequest(
@@ -58,8 +58,8 @@ test('sendCommandRequest', () => {
       },
     },
     usedByHook: false,
-  });
-});
+  })
+})
 
 test('sendCommandSuccess', () => {
   expect(
@@ -89,7 +89,7 @@ test('sendCommandSuccess', () => {
     result: {
       data: 'data',
     },
-  });
+  })
 
   expect(
     sendCommandSuccess(
@@ -118,8 +118,8 @@ test('sendCommandSuccess', () => {
     result: {
       data: 'diamond',
     },
-  });
-});
+  })
+})
 
 test('sendCommandFailure', () => {
   expect(
@@ -145,7 +145,7 @@ test('sendCommandFailure', () => {
       },
     },
     error: Error('error'),
-  });
+  })
 
   expect(
     sendCommandFailure(
@@ -170,5 +170,5 @@ test('sendCommandFailure', () => {
       },
     },
     error: Error('diamond'),
-  });
-});
+  })
+})

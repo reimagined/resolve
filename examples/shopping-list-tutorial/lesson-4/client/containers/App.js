@@ -1,7 +1,7 @@
-import React from 'react';
+import React from 'react'
 
-import Header from './Header.js';
-import ShoppingList from './ShoppingList';
+import Header from './Header.js'
+import ShoppingList from './ShoppingList'
 
 const App = () => (
   <div>
@@ -14,6 +14,6 @@ const App = () => (
     <h1 align="center">Shopping List</h1>
     <ShoppingList />
   </div>
-);
+)
 
-export default App;
+export default App

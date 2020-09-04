@@ -1,5 +1,5 @@
 const typescriptEslintRecommended = require('@typescript-eslint/eslint-plugin')
-  .configs.recommended;
+  .configs.recommended
 
 module.exports = {
   env: {
@@ -505,4 +505,4 @@ module.exports = {
       },
     ],
   },
-};
+}

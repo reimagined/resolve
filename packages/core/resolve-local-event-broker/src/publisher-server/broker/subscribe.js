@@ -3,33 +3,33 @@ import {
   DeliveryStrategy,
   QueueStrategy,
   SubscriptionStatus,
-} from '../constants';
+} from '../constants'
 
 async function subscribe(pool, payload) {
   const {
     database: { escapeStr, escapeId, runQuery, runRawQuery, encodeJsonPath },
     parseSubscription,
     generateGuid,
-  } = pool;
+  } = pool
 
-  const { eventSubscriber, subscriptionOptions } = payload;
-  const { deliveryStrategy, eventTypes, aggregateIds } = subscriptionOptions;
-  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME);
+  const { eventSubscriber, subscriptionOptions } = payload
+  const { deliveryStrategy, eventTypes, aggregateIds } = subscriptionOptions
+  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
 
-  const nextSubscriptionId = generateGuid(eventSubscriber);
+  const nextSubscriptionId = generateGuid(eventSubscriber)
   if (
     deliveryStrategy !== DeliveryStrategy.ACTIVE_NONE &&
     deliveryStrategy !== DeliveryStrategy.ACTIVE_REGULAR &&
     deliveryStrategy !== DeliveryStrategy.ACTIVE_XA &&
     deliveryStrategy !== DeliveryStrategy.PASSTHROUGH
   ) {
-    throw new Error(`Wrong deliveryStrategy="${deliveryStrategy}"`);
+    throw new Error(`Wrong deliveryStrategy="${deliveryStrategy}"`)
   }
   if (eventTypes != null && !Array.isArray(eventTypes)) {
-    throw new Error(`Wrong eventTypes="${eventTypes}"`);
+    throw new Error(`Wrong eventTypes="${eventTypes}"`)
   }
   if (aggregateIds != null && !Array.isArray(aggregateIds)) {
-    throw new Error(`Wrong aggregateIds="${aggregateIds}"`);
+    throw new Error(`Wrong aggregateIds="${aggregateIds}"`)
   }
 
   await runRawQuery(`
@@ -107,20 +107,20 @@ async function subscribe(pool, payload) {
 
       COMMIT;
       BEGIN IMMEDIATE;
-  `);
+  `)
 
   const result = await runQuery(`
     SELECT * FROM ${subscribersTableNameAsId}
     WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)};
-  `);
+  `)
 
   if (result == null || result.length !== 1) {
-    throw new Error('Subscription failed');
+    throw new Error('Subscription failed')
   }
 
-  const { subscriptionId } = parseSubscription(result[0]);
+  const { subscriptionId } = parseSubscription(result[0])
 
-  return subscriptionId;
+  return subscriptionId
 }
 
-export default subscribe;
+export default subscribe

@@ -1,69 +1,69 @@
-import isEqual from 'lodash.isequal';
-import { diffJson } from 'diff';
-import colors from 'colors';
-import { CommandResult } from 'resolve-core';
-import { Phases, symbol } from './constants';
+import isEqual from 'lodash.isequal'
+import { diffJson } from 'diff'
+import colors from 'colors'
+import { CommandResult } from 'resolve-core'
+import { Phases, symbol } from './constants'
 
 export type BDDAggregateAssertion = (
   resolve: Function,
   reject: Function,
   result: CommandResult | null,
   error: any
-) => void;
+) => void
 
 type BDDAggregateAssertionState = {
-  phase: Phases;
-  assertion: BDDAggregateAssertion;
-  isDefaultAssertion: boolean;
-};
+  phase: Phases
+  assertion: BDDAggregateAssertion
+  isDefaultAssertion: boolean
+}
 
 type BDDAggregateAssertionContext = {
-  [symbol]: BDDAggregateAssertionState;
-};
+  [symbol]: BDDAggregateAssertionState
+}
 
 const stringifyError = (error: any): string =>
-  error == null ? 'no error' : error.toString();
+  error == null ? 'no error' : error.toString()
 
 const stringifyDiff = (expected: any, result: any): string =>
   diffJson(expected, result, { undefinedReplacement: '<undefined>' })
     .map((change) => {
-      let color = colors.gray;
-      let prefix = '';
+      let color = colors.gray
+      let prefix = ''
 
       if (change.added) {
-        color = colors.green;
-        prefix = '+';
+        color = colors.green
+        prefix = '+'
       } else if (change.removed) {
-        color = colors.red;
-        prefix = '-';
+        color = colors.red
+        prefix = '-'
       }
 
-      return color(`${prefix}${change.value}`);
+      return color(`${prefix}${change.value}`)
     })
-    .join('');
+    .join('')
 
 const checkState = (state: BDDAggregateAssertionState): TypeError | null => {
   if (state.phase < Phases.COMMAND) {
-    return new TypeError('invalid phase');
+    return new TypeError('invalid phase')
   }
   if (!state.isDefaultAssertion) {
-    return new TypeError('assertion already assigned');
+    return new TypeError('assertion already assigned')
   }
-  return null;
-};
+  return null
+}
 
 export const shouldProduceEvent = (
   context: BDDAggregateAssertionContext,
   expectedEvent: CommandResult
 ) => {
-  const { [symbol]: state } = context;
-  const invalidStateError = checkState(state);
+  const { [symbol]: state } = context
+  const invalidStateError = checkState(state)
   if (invalidStateError) {
-    throw invalidStateError;
+    throw invalidStateError
   }
   state.assertion = (resolve, reject, result, error) => {
     if (error) {
-      reject(new Error(`expected an event, but received an error ${error}`));
+      reject(new Error(`expected an event, but received an error ${error}`))
     }
     if (!isEqual(result, expectedEvent)) {
       reject(
@@ -73,26 +73,26 @@ export const shouldProduceEvent = (
             result
           )}`
         )
-      );
+      )
     }
-    resolve(result);
-  };
-  state.isDefaultAssertion = false;
-  return context;
-};
+    resolve(result)
+  }
+  state.isDefaultAssertion = false
+  return context
+}
 
 export const shouldThrow = (
   context: BDDAggregateAssertionContext,
   expectedError: any
 ) => {
-  const { [symbol]: state } = context;
-  const invalidStateError = checkState(state);
+  const { [symbol]: state } = context
+  const invalidStateError = checkState(state)
   if (invalidStateError) {
-    throw invalidStateError;
+    throw invalidStateError
   }
   state.assertion = (resolve, reject, result, error) => {
     if (!error) {
-      reject(new Error(`expected an error, but received no error received`));
+      reject(new Error(`expected an error, but received no error received`))
     }
     if (!isEqual(error, expectedError)) {
       reject(
@@ -101,10 +101,10 @@ export const shouldThrow = (
             expectedError
           )}, but received ${stringifyError(error)}`
         )
-      );
+      )
     }
-    resolve(result);
-  };
-  state.isDefaultAssertion = false;
-  return context;
-};
+    resolve(result)
+  }
+  state.isDefaultAssertion = false
+  return context
+}

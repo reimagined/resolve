@@ -7,9 +7,9 @@ import {
   ConsumerMethod,
   LazinessStrategy,
   PrivateOperationType,
-} from '../constants';
+} from '../constants'
 
-const retryRollback = new Error('Retrying rollback marker');
+const retryRollback = new Error('Retrying rollback marker')
 async function requestTimeout(pool, payload) {
   const {
     database: { runQuery, runRawQuery, escapeStr, escapeId },
@@ -18,12 +18,12 @@ async function requestTimeout(pool, payload) {
     invokeOperation,
     getNextCursor,
     serializeError,
-  } = pool;
+  } = pool
 
-  const { batchId } = payload;
-  const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME);
-  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME);
-  const batchesTableNameAsId = escapeId(BATCHES_TABLE_NAME);
+  const { batchId } = payload
+  const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME)
+  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
+  const batchesTableNameAsId = escapeId(BATCHES_TABLE_NAME)
 
   const affectedNotifications = await runQuery(`
       SELECT ${subscribersTableNameAsId}."eventSubscriber" AS "eventSubscriber",
@@ -39,11 +39,11 @@ async function requestTimeout(pool, payload) {
       ${notificationsTableNameAsId}."subscriptionId"
       WHERE ${notificationsTableNameAsId}."batchId" = ${escapeStr(batchId)}
       LIMIT 1
-    `);
+    `)
   if (affectedNotifications == null || affectedNotifications.length === 0) {
-    return;
+    return
   }
-  const subscriptionDescription = parseSubscription(affectedNotifications[0]);
+  const subscriptionDescription = parseSubscription(affectedNotifications[0])
   if (
     subscriptionDescription.runStatus !== NotificationStatus.PROCESSING &&
     subscriptionDescription.runStatus !== NotificationStatus.TIMEOUT_ENTERING &&
@@ -53,7 +53,7 @@ async function requestTimeout(pool, payload) {
     subscriptionDescription.runStatus !==
       NotificationStatus.TIMEOUT_XA_ROLLBACKING
   ) {
-    return;
+    return
   }
 
   if (subscriptionDescription.runStatus === NotificationStatus.PROCESSING) {
@@ -67,7 +67,7 @@ async function requestTimeout(pool, payload) {
 
         COMMIT;
         BEGIN IMMEDIATE;
-      `);
+      `)
 
     const result = await runQuery(`
         SELECT ${notificationsTableNameAsId}."status" AS "runStatus"
@@ -77,12 +77,12 @@ async function requestTimeout(pool, payload) {
       NotificationStatus.TIMEOUT_ENTERING
     )}
         LIMIT 1
-      `);
+      `)
     if (result == null || result.length === 0) {
-      return;
+      return
     }
 
-    subscriptionDescription.runStatus = NotificationStatus.TIMEOUT_ENTERING;
+    subscriptionDescription.runStatus = NotificationStatus.TIMEOUT_ENTERING
   }
   const {
     eventSubscriber,
@@ -91,12 +91,12 @@ async function requestTimeout(pool, payload) {
     xaTransactionId,
     cursor,
     successEvent: prevSuccessEvent,
-  } = subscriptionDescription;
+  } = subscriptionDescription
   const activeBatch = {
     batchId: subscriptionDescription.batchId,
     subscriptionId: subscriptionDescription.subscriptionId,
     eventSubscriber: subscriptionDescription.eventSubscriber,
-  };
+  }
 
   if (
     (deliveryStrategy === DeliveryStrategy.ACTIVE_XA &&
@@ -111,22 +111,22 @@ async function requestTimeout(pool, payload) {
           error: serializeError(new Error(`Timeout with consuming batch`)),
         },
       },
-    };
-    await invokeOperation(pool, LazinessStrategy.EAGER, input);
-    return;
+    }
+    await invokeOperation(pool, LazinessStrategy.EAGER, input)
+    return
   }
 
   const result = {
     successEvent: null,
     error: null,
     cursor,
-  };
+  }
   try {
     if (
       runStatus === NotificationStatus.TIMEOUT_ENTERING ||
       runStatus.startsWith(NotificationStatus.TIMEOUT_XA_COMMITING)
     ) {
-      let appliedEventCount = null;
+      let appliedEventCount = null
       if (runStatus === NotificationStatus.TIMEOUT_ENTERING) {
         // eslint-disable-next-line no-bitwise
         appliedEventCount = ~~(await invokeConsumer(
@@ -138,7 +138,7 @@ async function requestTimeout(pool, payload) {
             batchId,
             countEvents: true,
           }
-        ));
+        ))
         await runRawQuery(`
           UPDATE ${notificationsTableNameAsId} SET
           "status" = ${escapeStr(
@@ -149,12 +149,12 @@ async function requestTimeout(pool, payload) {
 
           COMMIT;
           BEGIN IMMEDIATE;
-        `);
+        `)
       } else {
         // eslint-disable-next-line no-bitwise
         appliedEventCount = ~~runStatus.substring(
           NotificationStatus.TIMEOUT_XA_COMMITING.length
-        );
+        )
       }
       if (appliedEventCount > 0) {
         const applyingEvents = await runQuery(`
@@ -162,8 +162,8 @@ async function requestTimeout(pool, payload) {
           WHERE ${batchesTableNameAsId}."batchId" = ${escapeStr(batchId)}
           ORDER BY ${batchesTableNameAsId}."eventIndex" ASC
           LIMIT ${+appliedEventCount}
-        `);
-        result.successEvent = applyingEvents[appliedEventCount - 1];
+        `)
+        result.successEvent = applyingEvents[appliedEventCount - 1]
         const lastSuccessEventIdx =
           result.successEvent != null
             ? applyingEvents.findIndex(
@@ -171,11 +171,11 @@ async function requestTimeout(pool, payload) {
                   aggregateIdAndVersion ===
                   `${result.successEvent.aggregateId}:${result.successEvent.aggregateVersion}`
               ) + 1
-            : 0;
+            : 0
         result.cursor = await getNextCursor(
           cursor,
           applyingEvents.slice(0, lastSuccessEventIdx)
-        );
+        )
       }
 
       const isXaCommitOk = await invokeConsumer(
@@ -186,21 +186,21 @@ async function requestTimeout(pool, payload) {
           xaTransactionId,
           batchId,
         }
-      );
+      )
 
       if (!isXaCommitOk) {
-        result.successEvent = prevSuccessEvent;
+        result.successEvent = prevSuccessEvent
       }
     } else if (runStatus === NotificationStatus.TIMEOUT_XA_ROLLBACKING) {
-      throw retryRollback;
+      throw retryRollback
     } else {
       throw new Error(
         `Inconsistent XA-state ${subscriptionDescription.runStatus}`
-      );
+      )
     }
   } catch (error) {
-    let compositeError = new Error(error.message);
-    compositeError.stack = error.stack;
+    let compositeError = new Error(error.message)
+    compositeError.stack = error.stack
     if (
       runStatus === NotificationStatus.TIMEOUT_ENTERING ||
       runStatus.startsWith(NotificationStatus.TIMEOUT_XA_COMMITING)
@@ -212,7 +212,7 @@ async function requestTimeout(pool, payload) {
 
       COMMIT;
       BEGIN IMMEDIATE;
-    `);
+    `)
     }
     try {
       const isXaRollbackOk = await invokeConsumer(
@@ -223,19 +223,19 @@ async function requestTimeout(pool, payload) {
           xaTransactionId,
           batchId,
         }
-      );
+      )
 
       if (!isXaRollbackOk) {
         throw new Error(
           `Xa-transaction ${xaTransactionId} early marked to rollback, but was auto-committed`
-        );
+        )
       }
     } catch (rollbackError) {
-      compositeError.message = `${compositeError.message}\n${rollbackError.message}`;
-      compositeError.stack = `${compositeError.stack}\n${rollbackError.stack}`;
+      compositeError.message = `${compositeError.message}\n${rollbackError.message}`
+      compositeError.stack = `${compositeError.stack}\n${rollbackError.stack}`
     }
 
-    result.error = serializeError(compositeError);
+    result.error = serializeError(compositeError)
   }
 
   const input = {
@@ -244,9 +244,9 @@ async function requestTimeout(pool, payload) {
       activeBatch,
       result,
     },
-  };
+  }
 
-  await invokeOperation(pool, LazinessStrategy.EAGER, input);
+  await invokeOperation(pool, LazinessStrategy.EAGER, input)
 }
 
-export default requestTimeout;
+export default requestTimeout

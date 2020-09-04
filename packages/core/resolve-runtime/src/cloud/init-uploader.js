@@ -1,14 +1,14 @@
 const getSignedPut = async (adapter, dir) =>
-  await adapter.createPresignedPut(dir);
+  await adapter.createPresignedPut(dir)
 
 const getSignedPost = async (adapter, dir) =>
-  await adapter.createPresignedPost(dir);
+  await adapter.createPresignedPost(dir)
 
-const getCDNUrl = async ({ CDN }) => CDN;
+const getCDNUrl = async ({ CDN }) => CDN
 
 const initUploader = async (resolve) => {
   if (typeof resolve.assemblies.uploadAdapter === 'function') {
-    const adapter = resolve.assemblies.uploadAdapter();
+    const adapter = resolve.assemblies.uploadAdapter()
 
     Object.assign(resolve, {
       uploader: {
@@ -19,8 +19,8 @@ const initUploader = async (resolve) => {
         uploadPut: adapter.upload,
         uploadPost: adapter.uploadFormData,
       },
-    });
+    })
   }
-};
+}
 
-export default initUploader;
+export default initUploader

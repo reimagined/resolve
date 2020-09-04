@@ -1,5 +1,5 @@
-const blacklist = require('metro-config/src/defaults/blacklist');
-const path = require('path');
+const blacklist = require('metro-config/src/defaults/blacklist')
+const path = require('path')
 
 module.exports = {
   resolver: {
@@ -12,4 +12,4 @@ module.exports = {
       expo: path.resolve(__dirname, 'node_modules/expo'),
     },
   },
-};
+}

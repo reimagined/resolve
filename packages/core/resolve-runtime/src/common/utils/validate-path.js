@@ -1,8 +1,8 @@
-import Url from 'url';
+import Url from 'url'
 
 const validatePath = (url, { allowEmptyPath, allowAbsolutePath } = {}) => {
   if (url === '' && !allowEmptyPath) {
-    return false;
+    return false
   }
 
   try {
@@ -16,23 +16,23 @@ const validatePath = (url, { allowEmptyPath, allowAbsolutePath } = {}) => {
       hash,
       search,
       query,
-    } = Url.parse(url);
+    } = Url.parse(url)
 
     if (
       !allowAbsolutePath &&
       (protocol || slashes || host || port || hostname)
     ) {
-      return false;
+      return false
     }
 
     if (auth || hash || search || query || /^\//.test(url) || /\/$/.test(url)) {
-      return false;
+      return false
     }
 
-    return true;
+    return true
   } catch (error) {
-    return false;
+    return false
   }
-};
+}
 
-export default validatePath;
+export default validatePath
