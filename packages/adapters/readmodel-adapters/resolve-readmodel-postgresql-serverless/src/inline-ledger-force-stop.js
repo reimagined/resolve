@@ -24,6 +24,9 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
         break
       }
       const transactionId = rows[0].XaKey
+      if (transactionId == null) {
+        return
+      }
 
       try {
         await rdsDataService.rollbackTransaction({

@@ -1,6 +1,6 @@
 {
   "name": "hello-world",
-  "version": "0.25.1",
+  "version": "0.25.3",
   "description": "used as a template for new reSolve applications",
   "private": true,
   "scripts": {
@@ -23,12 +23,12 @@
     "redux": "4.0.5",
     "react-redux": "7.2.0",
     "redux-saga": "1.0.5",
-    "resolve-redux": "0.25.1",
-    "resolve-scripts": "0.25.1",
-    "resolve-eventstore-postgresql-serverless": "0.25.1",
-    "resolve-eventstore-lite": "0.25.1",
-    "resolve-readmodel-lite": "0.25.1",
-    "resolve-readmodel-postgresql-serverless": "0.25.1",
+    "resolve-redux": "0.25.3",
+    "resolve-scripts": "0.25.3",
+    "resolve-eventstore-postgresql-serverless": "0.25.3",
+    "resolve-eventstore-lite": "0.25.3",
+    "resolve-readmodel-lite": "0.25.3",
+    "resolve-readmodel-postgresql-serverless": "0.25.3",
     "redux-devtools-extension": "2.13.7"
   },
   "devDependencies": {
