@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from 'resolve-scripts';
 
 export default {
   target: 'cloud',
@@ -13,8 +13,8 @@ export default {
       eventsTableName: declareRuntimeEnv('RESOLVE_ES_EVENTS_TABLE'),
       secretsTableName: declareRuntimeEnv('RESOLVE_ES_SECRETS_TABLE'),
       region: declareRuntimeEnv('AWS_REGION'),
-      snapshotBucketSize: 100
-    }
+      snapshotBucketSize: 100,
+    },
   },
   readModelConnectors: {
     users: {
@@ -25,8 +25,8 @@ export default {
         ),
         awsSecretStoreArn: declareRuntimeEnv('RESOLVE_READMODEL_SECRET_ARN'),
         databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
-        region: declareRuntimeEnv('AWS_REGION')
-      }
+        region: declareRuntimeEnv('AWS_REGION'),
+      },
     },
     files: {
       module: 'resolve-readmodel-postgresql-serverless',
@@ -36,9 +36,9 @@ export default {
         ),
         awsSecretStoreArn: declareRuntimeEnv('RESOLVE_READMODEL_SECRET_ARN'),
         databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
-        region: declareRuntimeEnv('AWS_REGION')
-      }
-    }
+        region: declareRuntimeEnv('AWS_REGION'),
+      },
+    },
   },
   uploadAdapter: {
     module: 'resolve-upload-cloud',
@@ -48,7 +48,7 @@ export default {
       ),
       deploymentId: declareRuntimeEnv('RESOLVE_DEPLOYMENT_ID'),
       CDN: declareRuntimeEnv('RESOLVE_UPLOADER_URL'),
-      uploaderArn: declareRuntimeEnv('RESOLVE_UPLOADER_LAMBDA_ARN')
-    }
-  }
-}
+      uploaderArn: declareRuntimeEnv('RESOLVE_UPLOADER_LAMBDA_ARN'),
+    },
+  },
+};

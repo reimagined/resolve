@@ -1,47 +1,47 @@
-import { ResolveStore } from 'resolve-readmodel-base'
+import { ResolveStore } from 'resolve-readmodel-base';
 
 export default {
   Init: async (store: ResolveStore): Promise<void> => {
     await store.defineTable('History', {
       indexes: { id: 'string' },
-      fields: ['events']
-    })
+      fields: ['events'],
+    });
   },
   EventType: async (
     store: ResolveStore,
     {
       aggregateId,
       timestamp,
-      payload: { a, b }
+      payload: { a, b },
     }: {
-      aggregateId: string
-      timestamp: number
+      aggregateId: string;
+      timestamp: number;
       payload: {
-        a: string
-        b: number
-      }
+        a: string;
+        b: number;
+      };
     }
   ): Promise<void> => {
-    const key = `K${timestamp}`
+    const key = `K${timestamp}`;
     if ((await store.count('History', { id: aggregateId })) === 0) {
       await store.insert('History', {
         id: aggregateId,
         events: {
-          [key]: { a, b }
-        }
-      })
+          [key]: { a, b },
+        },
+      });
     } else {
       await store.update(
         'History',
         {
-          id: aggregateId
+          id: aggregateId,
         },
         {
           $set: {
-            [`events.${key}`]: { a, b }
-          }
+            [`events.${key}`]: { a, b },
+          },
         }
-      )
+      );
     }
-  }
-}
+  },
+};

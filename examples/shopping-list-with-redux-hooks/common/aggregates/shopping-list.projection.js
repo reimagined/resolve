@@ -1,10 +1,10 @@
-import { SHOPPING_LIST_CREATED, SHOPPING_LIST_REMOVED } from '../event-types'
+import { SHOPPING_LIST_CREATED, SHOPPING_LIST_REMOVED } from '../event-types';
 
 export default {
   Init: () => ({}),
   [SHOPPING_LIST_CREATED]: (state, { timestamp }) => ({
     ...state,
-    createdAt: timestamp
+    createdAt: timestamp,
   }),
-  [SHOPPING_LIST_REMOVED]: () => ({})
-}
+  [SHOPPING_LIST_REMOVED]: () => ({}),
+};

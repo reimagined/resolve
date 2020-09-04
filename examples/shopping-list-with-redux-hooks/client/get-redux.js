@@ -1,9 +1,9 @@
-import optimisticShoppingLists from './reducers/optimistic-shopping-lists'
-import devToolsEnhancer from './enhancers/redux-devtools'
+import optimisticShoppingLists from './reducers/optimistic-shopping-lists';
+import devToolsEnhancer from './enhancers/redux-devtools';
 
 const getRedux = () => ({
   reducers: { optimisticShoppingLists },
-  enhancers: [devToolsEnhancer]
-})
+  enhancers: [devToolsEnhancer],
+});
 
-export default getRedux
+export default getRedux;

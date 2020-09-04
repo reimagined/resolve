@@ -1,65 +1,65 @@
-import * as React from 'react'
-import { useQuery } from 'resolve-react-hooks'
-import { useEffect, useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import * as React from 'react';
+import { useQuery } from 'resolve-react-hooks';
+import { useEffect, useState } from 'react';
+import { Redirect } from 'react-router-dom';
 
-import Login from './Login'
-import Loading from './Loading'
+import Login from './Login';
+import Loading from './Loading';
 
 const ContentSelector = ({ user }) => {
   if (typeof user === 'string') {
-    return <Loading />
+    return <Loading />;
   }
 
   if (user === null) {
-    return <Login />
+    return <Login />;
   }
 
-  return <Redirect to={`/blog/${user.id}`} />
-}
+  return <Redirect to={`/blog/${user.id}`} />;
+};
 
 const Home = ({ location: { hash } = {} }) => {
-  const [user, setUser] = useState('unknown')
+  const [user, setUser] = useState('unknown');
   const getUser = useQuery(
     {
       name: 'user-profiles',
       resolver: 'profile',
-      args: {}
+      args: {},
     },
     {
       waitFor: {
-        validator: result => {
-          return result !== null
+        validator: (result) => {
+          return result !== null;
         },
         period: 1000,
-        attempts: 5
-      }
+        attempts: 5,
+      },
     },
     (err, result) => {
       if (err) {
-        setUser(null)
-        return
+        setUser(null);
+        return;
       }
       if (result.data !== null) {
-        setUser({ ...result.data.profile, id: result.data.id })
+        setUser({ ...result.data.profile, id: result.data.id });
       } else {
-        setUser(null)
+        setUser(null);
       }
     }
-  )
+  );
   useEffect(() => {
     if (hash === '#deleted') {
-      setUser(null)
+      setUser(null);
     } else {
-      getUser()
+      getUser();
     }
-  }, [])
+  }, []);
 
   return (
     <React.Fragment>
       <ContentSelector user={user} />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

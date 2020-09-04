@@ -1,4 +1,4 @@
-process.env.TZ = 'Europe/Moscow'
+process.env.TZ = 'Europe/Moscow';
 
 module.exports = {
   testEnvironment: 'node',
@@ -10,10 +10,10 @@ module.exports = {
     'config.app.js',
     'config.dev.js',
     'config.prod.js',
-    'config.test_functional.js'
+    'config.test_functional.js',
   ],
   unmockedModulePathPatterns: ['node_modules/react/', 'node_modules/enzyme/'],
   transform: {
-    '^.+\\.js$': 'babel-jest'
-  }
-}
+    '^.+\\.js$': 'babel-jest',
+  },
+};

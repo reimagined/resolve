@@ -1,6 +1,6 @@
-import { EOL } from 'os'
+import { EOL } from 'os';
 
-const isHighloadError = error =>
+const isHighloadError = (error) =>
   error != null &&
   (/Request timed out/i.test(error.message) ||
     /Remaining connection slots are reserved/i.test(error.message) ||
@@ -12,16 +12,16 @@ const isHighloadError = error =>
     error.code === 'RequestLimitExceeded' ||
     error.code === 'ThrottlingException' ||
     error.code === 'TooManyRequestsException' ||
-    error.code === 'NetworkingError')
+    error.code === 'NetworkingError');
 
 const executeStatement = async (pool, sql) => {
-  const errors = []
-  let rows = null
+  const errors = [];
+  let rows = null;
 
   try {
-    const { coercer } = pool
+    const { coercer } = pool;
 
-    let result = null
+    let result = null;
 
     while (true) {
       try {
@@ -32,41 +32,41 @@ const executeStatement = async (pool, sql) => {
             database: 'postgres',
             continueAfterTimeout: false,
             includeResultMetadata: true,
-            sql
+            sql,
           })
-          .promise()
-        break
+          .promise();
+        break;
       } catch (error) {
         if (!isHighloadError(error)) {
-          throw error
+          throw error;
         }
       }
     }
 
-    const { columnMetadata, records } = result
+    const { columnMetadata, records } = result;
 
     if (Array.isArray(records) && columnMetadata != null) {
-      rows = []
+      rows = [];
       for (const record of records) {
-        const row = {}
+        const row = {};
         for (let i = 0; i < columnMetadata.length; i++) {
-          row[columnMetadata[i].name] = coercer(record[i])
+          row[columnMetadata[i].name] = coercer(record[i]);
         }
-        rows.push(row)
+        rows.push(row);
       }
     }
   } catch (error) {
-    errors.push(error)
+    errors.push(error);
   }
 
   if (errors.length > 0) {
-    const error = new Error()
-    error.message = errors.map(({ message }) => message).join(EOL)
-    error.stack = errors.map(({ stack }) => stack).join(EOL)
-    throw error
+    const error = new Error();
+    error.message = errors.map(({ message }) => message).join(EOL);
+    error.stack = errors.map(({ stack }) => stack).join(EOL);
+    throw error;
   }
 
-  return rows
-}
+  return rows;
+};
 
-export default executeStatement
+export default executeStatement;

@@ -1,12 +1,12 @@
 const getSignedPut = async (adapter, dir) =>
-  await adapter.createPresignedPut(dir)
+  await adapter.createPresignedPut(dir);
 
 const getSignedPost = async (adapter, dir) =>
-  await adapter.createPresignedPost(dir)
+  await adapter.createPresignedPost(dir);
 
-const initUploader = async resolve => {
+const initUploader = async (resolve) => {
   if (typeof resolve.assemblies.uploadAdapter === 'function') {
-    const adapter = resolve.assemblies.uploadAdapter()
+    const adapter = resolve.assemblies.uploadAdapter();
 
     Object.assign(resolve, {
       uploader: {
@@ -17,10 +17,10 @@ const initUploader = async resolve => {
         createToken: adapter.createToken,
         directory: adapter.directory,
         bucket: adapter.bucket,
-        secretKey: adapter.secretKey
-      }
-    })
+        secretKey: adapter.secretKey,
+      },
+    });
   }
-}
+};
 
-export default initUploader
+export default initUploader;

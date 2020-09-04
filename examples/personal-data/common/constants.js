@@ -1,2 +1,2 @@
-export const authSecret = '*SECRET*'
-export const systemUserId = 'SYSTEM'
+export const authSecret = '*SECRET*';
+export const systemUserId = 'SYSTEM';

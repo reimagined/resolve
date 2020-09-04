@@ -1,17 +1,17 @@
-import { Selector } from 'testcafe'
+import { Selector } from 'testcafe';
 
-const host = process.env.HOST || 'localhost'
-const port = process.env.PORT || '3000'
-const MAIN_PAGE = `http://${host}:${port}`
+const host = process.env.HOST || 'localhost';
+const port = process.env.PORT || '3000';
+const MAIN_PAGE = `http://${host}:${port}`;
 
 // eslint-disable-next-line no-unused-expressions, no-undef
-fixture`Hello, world!`.beforeEach(async t => {
-  await t.setNativeDialogHandler(() => true)
-  await t.navigateTo(MAIN_PAGE)
-})
+fixture`Hello, world!`.beforeEach(async (t) => {
+  await t.setNativeDialogHandler(() => true);
+  await t.navigateTo(MAIN_PAGE);
+});
 
-test('home page', async t => {
+test('home page', async (t) => {
   await t
     .expect(await Selector('h1').withText('Hello, reSolve world!').exists)
-    .eql(true)
-})
+    .eql(true);
+});

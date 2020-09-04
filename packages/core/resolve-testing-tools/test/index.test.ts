@@ -1,13 +1,13 @@
-import givenEvents, { BDDAggregate } from '../src/index'
-import createReadModelConnector from 'resolve-readmodel-lite'
-import { SecretsManager, Event } from 'resolve-core'
+import givenEvents, { BDDAggregate } from '../src/index';
+import createReadModelConnector from 'resolve-readmodel-lite';
+import { SecretsManager, Event } from 'resolve-core';
 
 describe('read model', () => {
   test('basic flow', async () => {
     const result = await givenEvents([
       { aggregateId: 'id1', type: 'TEST1' },
       { aggregateId: 'id2', type: 'TEST2' },
-      { aggregateId: 'id3', type: 'TEST3' }
+      { aggregateId: 'id3', type: 'TEST3' },
     ])
       .readModel({
         name: 'readModelName',
@@ -15,34 +15,34 @@ describe('read model', () => {
           Init: async (store: any): Promise<any> => {
             await store.defineTable('items', {
               indexes: { id: 'string' },
-              fields: []
-            })
+              fields: [],
+            });
           },
           TEST1: async (store: any): Promise<any> => {
-            await store.insert('items', { id: 1 })
+            await store.insert('items', { id: 1 });
           },
           TEST2: async (store: any): Promise<any> => {
-            await store.insert('items', { id: 2 })
+            await store.insert('items', { id: 2 });
           },
           TEST3: async (store: any): Promise<any> => {
-            await store.insert('items', { id: 3 })
-          }
+            await store.insert('items', { id: 3 });
+          },
         },
         resolvers: {
           all: async (store: any, args: any, context: any): Promise<any> => {
             return {
               items: await store.find('items', {}, { id: 1 }, { id: 1 }),
               args,
-              context
-            }
-          }
+              context,
+            };
+          },
         },
         adapter: createReadModelConnector({
-          databaseFile: ':memory:'
-        })
+          databaseFile: ':memory:',
+        }),
       })
       .all({ a: 10, b: 20 })
-      .as('JWT_TOKEN')
+      .as('JWT_TOKEN');
 
     expect(result).toEqual({
       data: {
@@ -50,11 +50,11 @@ describe('read model', () => {
         args: { a: 10, b: 20 },
         context: {
           jwt: 'JWT_TOKEN',
-          secretsManager: expect.any(Object)
-        }
-      }
-    })
-  })
+          secretsManager: expect.any(Object),
+        },
+      },
+    });
+  });
 
   test('bug fix: default secrets manager', async () => {
     await givenEvents([])
@@ -67,25 +67,25 @@ describe('read model', () => {
             params: any,
             { secretsManager }: { secretsManager: SecretsManager }
           ): Promise<any> => {
-            await secretsManager.setSecret('id', 'secret')
-            await secretsManager.getSecret('id')
-            await secretsManager.deleteSecret('id')
-          }
+            await secretsManager.setSecret('id', 'secret');
+            await secretsManager.getSecret('id');
+            await secretsManager.deleteSecret('id');
+          },
         },
         adapter: createReadModelConnector({
-          databaseFile: ':memory:'
-        })
+          databaseFile: ':memory:',
+        }),
       })
       .all()
-      .as('jwt')
-  })
+      .as('jwt');
+  });
 
   test('custom secrets manager', async () => {
     const secretsManager = {
       getSecret: jest.fn(),
       setSecret: jest.fn(),
-      deleteSecret: jest.fn()
-    }
+      deleteSecret: jest.fn(),
+    };
 
     await givenEvents([])
       .setSecretsManager(secretsManager)
@@ -98,34 +98,34 @@ describe('read model', () => {
             params: any,
             { secretsManager }: { secretsManager: SecretsManager }
           ): Promise<void> => {
-            await secretsManager.setSecret('id', 'secret')
-            await secretsManager.getSecret('id')
-            await secretsManager.deleteSecret('id')
-          }
+            await secretsManager.setSecret('id', 'secret');
+            await secretsManager.getSecret('id');
+            await secretsManager.deleteSecret('id');
+          },
         },
         adapter: createReadModelConnector({
-          databaseFile: ':memory:'
-        })
+          databaseFile: ':memory:',
+        }),
       })
       .all()
-      .as('jwt')
+      .as('jwt');
 
-    expect(secretsManager.getSecret).toHaveBeenCalledWith('id')
-    expect(secretsManager.setSecret).toHaveBeenCalledWith('id', 'secret')
-    expect(secretsManager.deleteSecret).toHaveBeenCalledWith('id')
-  })
-})
+    expect(secretsManager.getSecret).toHaveBeenCalledWith('id');
+    expect(secretsManager.setSecret).toHaveBeenCalledWith('id', 'secret');
+    expect(secretsManager.deleteSecret).toHaveBeenCalledWith('id');
+  });
+});
 
 describe('aggregate', () => {
   type AggregateState = {
-    exist: boolean
-    id?: string
-  }
+    exist: boolean;
+    id?: string;
+  };
   const aggregate: BDDAggregate = {
     name: 'user',
     projection: {
       Init: (): AggregateState => ({
-        exist: false
+        exist: false,
       }),
       TEST_COMMAND_EXECUTED: (
         state: AggregateState,
@@ -133,33 +133,33 @@ describe('aggregate', () => {
       ): AggregateState => ({
         ...state,
         exist: true,
-        id: event.aggregateId
-      })
+        id: event.aggregateId,
+      }),
     },
     commands: {
       create: (state: AggregateState, command, context): any => {
         if (context.jwt !== 'valid-user') {
-          throw Error('unauthorized user')
+          throw Error('unauthorized user');
         }
         if (state.exist) {
-          throw Error('aggregate already exist')
+          throw Error('aggregate already exist');
         }
         return {
           type: 'TEST_COMMAND_EXECUTED',
-          payload: {}
-        }
+          payload: {},
+        };
       },
       failWithCustomId: (state: AggregateState, command): any => {
         if (state.exist) {
-          throw Error(`aggregate ${state.id} already exist`)
+          throw Error(`aggregate ${state.id} already exist`);
         }
-        throw Error(`aggregate ${command.aggregateId} failure`)
+        throw Error(`aggregate ${command.aggregateId} failure`);
       },
       noPayload: (): any => ({
-        type: 'EVENT_WITHOUT_PAYLOAD'
-      })
-    }
-  }
+        type: 'EVENT_WITHOUT_PAYLOAD',
+      }),
+    },
+  };
 
   describe('native Jest assertions', () => {
     test('expecting success command execution', async () => {
@@ -170,23 +170,23 @@ describe('aggregate', () => {
           .as('valid-user')
       ).resolves.toEqual({
         type: 'TEST_COMMAND_EXECUTED',
-        payload: {}
-      })
-    })
+        payload: {},
+      });
+    });
 
     test('expecting business logic break', async () => {
       await expect(
         givenEvents([
           {
             type: 'TEST_COMMAND_EXECUTED',
-            payload: {}
-          }
+            payload: {},
+          },
         ])
           .aggregate(aggregate)
           .command('create', {})
           .as('valid-user')
-      ).rejects.toThrow(`aggregate already exist`)
-    })
+      ).rejects.toThrow(`aggregate already exist`);
+    });
 
     test('unauthorized user', async () => {
       await expect(
@@ -194,8 +194,8 @@ describe('aggregate', () => {
           .aggregate(aggregate)
           .command('create', {})
           .as('invalid-user')
-      ).rejects.toThrow(`unauthorized user`)
-    })
+      ).rejects.toThrow(`unauthorized user`);
+    });
 
     test('custom aggregate id within command', async () => {
       await expect(
@@ -203,22 +203,22 @@ describe('aggregate', () => {
           .aggregate(aggregate, 'custom-id')
           .command('failWithCustomId', {})
           .as('valid-user')
-      ).rejects.toThrow('aggregate custom-id failure')
-    })
+      ).rejects.toThrow('aggregate custom-id failure');
+    });
 
     test('custom aggregate id within given events', async () => {
       await expect(
         givenEvents([
           {
             type: 'TEST_COMMAND_EXECUTED',
-            payload: {}
-          }
+            payload: {},
+          },
         ])
           .aggregate(aggregate, 'custom-id')
           .command('failWithCustomId', {})
           .as('valid-user')
-      ).rejects.toThrow(`aggregate custom-id already exist`)
-    })
+      ).rejects.toThrow(`aggregate custom-id already exist`);
+    });
 
     test('events without payload support', async () => {
       await expect(
@@ -227,10 +227,10 @@ describe('aggregate', () => {
           .command('noPayload')
           .as('valid-user')
       ).resolves.toEqual({
-        type: 'EVENT_WITHOUT_PAYLOAD'
-      })
-    })
-  })
+        type: 'EVENT_WITHOUT_PAYLOAD',
+      });
+    });
+  });
 
   describe('with BDD assertions', () => {
     test('expecting success command execution', () =>
@@ -240,46 +240,46 @@ describe('aggregate', () => {
         .as('valid-user')
         .shouldProduceEvent({
           type: 'TEST_COMMAND_EXECUTED',
-          payload: {}
-        }))
+          payload: {},
+        }));
 
     test('expecting business logic break', () =>
       givenEvents([
         {
           type: 'TEST_COMMAND_EXECUTED',
-          payload: {}
-        }
+          payload: {},
+        },
       ])
         .aggregate(aggregate)
         .command('create', {})
         .as('valid-user')
-        .shouldThrow(Error(`aggregate already exist`)))
+        .shouldThrow(Error(`aggregate already exist`)));
 
     test('unauthorized user', () =>
       givenEvents([])
         .aggregate(aggregate)
         .command('create', {})
         .as('invalid-user')
-        .shouldThrow(Error(`unauthorized user`)))
+        .shouldThrow(Error(`unauthorized user`)));
 
     test('custom aggregate id within command', () =>
       givenEvents([])
         .aggregate(aggregate, 'custom-id')
         .command('failWithCustomId', {})
         .as('valid-user')
-        .shouldThrow(Error(`aggregate custom-id failure`)))
+        .shouldThrow(Error(`aggregate custom-id failure`)));
 
     test('custom aggregate id within given events', () =>
       givenEvents([
         {
           type: 'TEST_COMMAND_EXECUTED',
-          payload: {}
-        }
+          payload: {},
+        },
       ])
         .aggregate(aggregate, 'custom-id')
         .command('failWithCustomId', {})
         .as('valid-user')
-        .shouldThrow(Error(`aggregate custom-id already exist`)))
+        .shouldThrow(Error(`aggregate custom-id already exist`)));
 
     test('events without payload support', () =>
       givenEvents([])
@@ -287,7 +287,7 @@ describe('aggregate', () => {
         .command('noPayload')
         .as('valid-user')
         .shouldProduceEvent({
-          type: 'EVENT_WITHOUT_PAYLOAD'
-        }))
-  })
-})
+          type: 'EVENT_WITHOUT_PAYLOAD',
+        }));
+  });
+});

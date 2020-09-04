@@ -1,16 +1,17 @@
-import { Strategy as LocalStrategyFactory } from 'passport-local'
+import { Strategy as LocalStrategyFactory } from 'passport-local';
 
-const createStrategy = options => ({
+const createStrategy = (options) => ({
   factory: LocalStrategyFactory,
   options: {
-    failureRedirect: error =>
+    failureRedirect: (error) =>
       `/error?text=${encodeURIComponent(error.message)}`,
-    errorRedirect: error => `/error?text=${encodeURIComponent(error.message)}`,
+    errorRedirect: (error) =>
+      `/error?text=${encodeURIComponent(error.message)}`,
     usernameField: 'username',
     passwordField: 'password',
     successRedirect: null,
-    ...options
-  }
-})
+    ...options,
+  },
+});
 
-export default createStrategy
+export default createStrategy;

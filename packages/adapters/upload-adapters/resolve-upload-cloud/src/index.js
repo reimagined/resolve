@@ -1,15 +1,15 @@
-import Lambda from 'aws-sdk/clients/lambda'
-import fs from 'fs'
-import path from 'path'
-import request from 'request'
-import crypto from 'crypto'
-import mime from 'mime-types'
+import Lambda from 'aws-sdk/clients/lambda';
+import fs from 'fs';
+import path from 'path';
+import request from 'request';
+import crypto from 'crypto';
+import mime from 'mime-types';
 
 const createPresignedPut = async (
   { uploaderArn, deploymentId, encryptedDeploymentId },
   dir
 ) => {
-  const lambda = new Lambda()
+  const lambda = new Lambda();
 
   const result = await lambda
     .invoke({
@@ -18,51 +18,53 @@ const createPresignedPut = async (
         type: 'put',
         deploymentId,
         encryptedDeploymentId,
-        dir
-      })
+        dir,
+      }),
     })
-    .promise()
+    .promise();
 
-  const { FunctionError, Payload: ResponsePayload } = result
+  const { FunctionError, Payload: ResponsePayload } = result;
 
   if (FunctionError != null) {
     const { errorMessage } =
       ResponsePayload == null
         ? { errorMessage: 'Unknown error' }
-        : JSON.parse(ResponsePayload.toString())
-    throw new Error(errorMessage)
+        : JSON.parse(ResponsePayload.toString());
+    throw new Error(errorMessage);
   }
 
-  return ResponsePayload != null ? JSON.parse(ResponsePayload.toString()) : null
-}
+  return ResponsePayload != null
+    ? JSON.parse(ResponsePayload.toString())
+    : null;
+};
 
 export const upload = (pool, uploadUrl, filePath) => {
-  const fileSizeInBytes = fs.statSync(filePath).size
-  const fileStream = fs.createReadStream(filePath)
+  const fileSizeInBytes = fs.statSync(filePath).size;
+  const fileStream = fs.createReadStream(filePath);
   const contentType =
-    mime.contentType(path.extname(filePath)) || 'text/plain; charset=utf-8'
+    mime.contentType(path.extname(filePath)) || 'text/plain; charset=utf-8';
   return new Promise((resolve, reject) =>
     request.put(
       {
         headers: {
           'Content-Length': fileSizeInBytes,
-          'Content-Type': contentType
+          'Content-Type': contentType,
         },
         uri: uploadUrl,
-        body: fileStream
+        body: fileStream,
       },
       (error, _, body) => {
-        error ? reject(error) : body ? reject(body) : resolve()
+        error ? reject(error) : body ? reject(body) : resolve();
       }
     )
-  )
-}
+  );
+};
 
 const createPresignedPost = async (
   { uploaderArn, deploymentId, encryptedDeploymentId },
   dir
 ) => {
-  const lambda = new Lambda()
+  const lambda = new Lambda();
 
   const { FunctionError, Payload: ResponsePayload } = await lambda
     .invoke({
@@ -71,28 +73,30 @@ const createPresignedPost = async (
         type: 'post',
         deploymentId,
         encryptedDeploymentId,
-        dir
-      })
+        dir,
+      }),
     })
-    .promise()
+    .promise();
 
   if (FunctionError != null) {
     const { errorMessage } =
       ResponsePayload == null
         ? { errorMessage: 'Unknown error' }
-        : JSON.parse(ResponsePayload.toString())
-    throw new Error(errorMessage)
+        : JSON.parse(ResponsePayload.toString());
+    throw new Error(errorMessage);
   }
 
-  return ResponsePayload != null ? JSON.parse(ResponsePayload.toString()) : null
-}
+  return ResponsePayload != null
+    ? JSON.parse(ResponsePayload.toString())
+    : null;
+};
 
 export const uploadFormData = (pool, form, filePath) => {
-  const fileStream = fs.createReadStream(filePath)
+  const fileStream = fs.createReadStream(filePath);
   const contentType =
-    mime.contentType(path.extname(filePath)) || 'text/plain; charset=utf-8'
-  form.fields.key = form.fields.Key
-  delete form.fields.Key
+    mime.contentType(path.extname(filePath)) || 'text/plain; charset=utf-8';
+  form.fields.key = form.fields.Key;
+  delete form.fields.Key;
   return new Promise((resolve, reject) =>
     request.post(
       {
@@ -100,15 +104,15 @@ export const uploadFormData = (pool, form, filePath) => {
         formData: {
           ...form.fields,
           'Content-Type': contentType,
-          file: fileStream
-        }
+          file: fileStream,
+        },
       },
-      error => {
-        error ? reject(error) : resolve()
+      (error) => {
+        error ? reject(error) : resolve();
       }
     )
-  )
-}
+  );
+};
 
 export const createToken = (
   { encryptedDeploymentId },
@@ -118,22 +122,22 @@ export const createToken = (
     JSON.stringify({
       encryptedDeploymentId,
       dir,
-      expireTime: Date.now() + expireTime * 1000
+      expireTime: Date.now() + expireTime * 1000,
     })
   )
     .toString('base64')
-    .replace(/=/g, '')
+    .replace(/=/g, '');
 
   const signature = crypto
     .createHmac('md5', encryptedDeploymentId)
     .update(payload)
-    .digest('hex')
+    .digest('hex');
 
-  return `${payload}*${signature}`
-}
+  return `${payload}*${signature}`;
+};
 
-const createUploadAdapter = config => {
-  const { deploymentId, CDN, encryptedDeploymentId } = config
+const createUploadAdapter = (config) => {
+  const { deploymentId, CDN, encryptedDeploymentId } = config;
 
   return Object.freeze({
     createPresignedPut: createPresignedPut.bind(null, config),
@@ -143,8 +147,8 @@ const createUploadAdapter = config => {
     createToken: createToken.bind(null, config),
     deploymentId,
     CDN,
-    encryptedDeploymentId
-  })
-}
+    encryptedDeploymentId,
+  });
+};
 
-export default createUploadAdapter
+export default createUploadAdapter;

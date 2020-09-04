@@ -1,5 +1,5 @@
-import getLog from './get-log'
-import wrapSideEffects from './wrap-side-effects'
+import getLog from './get-log';
+import wrapSideEffects from './wrap-side-effects';
 
 const sagaEventHandler = async (
   sagaProvider,
@@ -10,28 +10,30 @@ const sagaEventHandler = async (
   store,
   event
 ) => {
-  const log = getLog(`saga-event-handler`)
+  const log = getLog(`saga-event-handler`);
 
-  log.debug(`preparing saga event [${eventType}] handler`)
-  const eventProperties = sagaProvider.eventProperties
+  log.debug(`preparing saga event [${eventType}] handler`);
+  const eventProperties = sagaProvider.eventProperties;
   const isEnabled = !isNaN(
     +eventProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP
   )
     ? +eventProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP <= +event.timestamp
-    : true
+    : true;
 
   log.verbose(
     `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: ${+eventProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP}`
-  )
-  log.verbose(`isEnabled: ${isEnabled}`)
+  );
+  log.verbose(`isEnabled: ${isEnabled}`);
 
   const applicationSideEffects =
-    sideEffects != null && sideEffects.constructor === Object ? sideEffects : {}
+    sideEffects != null && sideEffects.constructor === Object
+      ? sideEffects
+      : {};
 
-  log.debug(`building event store secrets manager`)
-  const secretsManager = await sagaProvider.getSecretsManager()
+  log.debug(`building event store secrets manager`);
+  const secretsManager = await sagaProvider.getSecretsManager();
 
-  log.debug(`invoking saga event [${eventType}] handler`)
+  log.debug(`invoking saga event [${eventType}] handler`);
   await handlers[eventType](
     {
       sideEffects: {
@@ -43,16 +45,16 @@ const sagaEventHandler = async (
             executeQuery: sagaProvider.executeQuery,
             scheduleCommand,
             secretsManager,
-            uploader: sagaProvider.uploader
+            uploader: sagaProvider.uploader,
           },
           isEnabled
         ),
-        isEnabled
+        isEnabled,
       },
-      store
+      store,
     },
     event
-  )
-}
+  );
+};
 
-export default sagaEventHandler
+export default sagaEventHandler;

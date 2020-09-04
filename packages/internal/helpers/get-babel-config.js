@@ -1,13 +1,13 @@
-const { getResolvePackages } = require('./get-resolve-packages')
-const { getResolveExamples } = require('./get-resolve-examples')
+const { getResolvePackages } = require('./get-resolve-packages');
+const { getResolveExamples } = require('./get-resolve-examples');
 
 const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
-  const resolvePackages = getResolvePackages()
-  const resolveExamples = getResolveExamples()
+  const resolvePackages = getResolvePackages();
+  const resolveExamples = getResolveExamples();
 
-  process.env.__RESOLVE_PACKAGES__ = JSON.stringify(resolvePackages)
-  process.env.__RESOLVE_EXAMPLES__ = JSON.stringify(resolveExamples)
-  process.env.__RESOLVE_VERSION__ = require('../babel-compile/package').version
+  process.env.__RESOLVE_PACKAGES__ = JSON.stringify(resolvePackages);
+  process.env.__RESOLVE_EXAMPLES__ = JSON.stringify(resolveExamples);
+  process.env.__RESOLVE_VERSION__ = require('../babel-compile/package').version;
 
   let useESModules,
     regenerator,
@@ -16,48 +16,48 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
     targets,
     loose,
     presets,
-    forceAllTransforms = false
+    forceAllTransforms = false;
 
   switch (moduleType) {
     case 'cjs': {
-      modules = 'commonjs'
-      useESModules = false
-      break
+      modules = 'commonjs';
+      useESModules = false;
+      break;
     }
     case 'es': {
-      modules = false
-      useESModules = true
-      break
+      modules = false;
+      useESModules = true;
+      break;
     }
     case 'mjs': {
-      modules = false
-      useESModules = true
-      break
+      modules = false;
+      useESModules = true;
+      break;
     }
     default: {
-      throw new Error('"moduleType" must be one of ["cjs", "es", "mjs"]')
+      throw new Error('"moduleType" must be one of ["cjs", "es", "mjs"]');
     }
   }
 
   switch (moduleTarget) {
     case 'server': {
-      loose = false
-      regenerator = false
-      helpers = false
+      loose = false;
+      regenerator = false;
+      helpers = false;
       targets = {
-        node: '8.10'
-      }
-      break
+        node: '8.10',
+      };
+      break;
     }
     case 'client': {
-      loose = true
-      regenerator = true
-      helpers = true
-      forceAllTransforms = true
-      break
+      loose = true;
+      regenerator = true;
+      helpers = true;
+      forceAllTransforms = true;
+      break;
     }
     default: {
-      throw new Error('"moduleTarget" must be one of ["server", "client"]')
+      throw new Error('"moduleTarget" must be one of ["server", "client"]');
     }
   }
 
@@ -70,12 +70,12 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
             loose,
             targets,
             forceAllTransforms,
-            modules
-          }
+            modules,
+          },
         ],
-        '@babel/preset-react'
-      ]
-      break
+        '@babel/preset-react',
+      ];
+      break;
     }
     case 'ts': {
       presets = [
@@ -83,8 +83,8 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
           '@babel/preset-typescript',
           {
             isTSX: true,
-            allExtensions: true
-          }
+            allExtensions: true,
+          },
         ],
         [
           '@babel/preset-env',
@@ -92,17 +92,17 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
             loose,
             targets,
             forceAllTransforms,
-            modules
-          }
+            modules,
+          },
         ],
-        '@babel/preset-react'
-      ]
-      break
+        '@babel/preset-react',
+      ];
+      break;
     }
     default: {
       throw new Error(
         `"sourceType" must be one of ["js", "ts"]. sourceType = ${sourceType}`
-      )
+      );
     }
   }
 
@@ -117,8 +117,8 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
           corejs: false,
           helpers,
           regenerator,
-          useESModules
-        }
+          useESModules,
+        },
       ],
       [
         'transform-inline-environment-variables',
@@ -126,12 +126,12 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
           include: [
             '__RESOLVE_PACKAGES__',
             '__RESOLVE_EXAMPLES__',
-            '__RESOLVE_VERSION__'
-          ]
-        }
-      ]
-    ]
-  }
-}
+            '__RESOLVE_VERSION__',
+          ],
+        },
+      ],
+    ],
+  };
+};
 
-module.exports = { getBabelConfig }
+module.exports = { getBabelConfig };

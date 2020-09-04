@@ -16,10 +16,10 @@ const update = async (
     insert,
     searchToWhereExpression,
     updateToSetExpression,
-    makeNestedPath
-  } = pool
+    makeNestedPath,
+  } = pool;
 
-  const isUpsert = options != null ? !!options.upsert : false
+  const isUpsert = options != null ? !!options.upsert : false;
 
   if (isUpsert) {
     const foundDocumentsCount = await count(
@@ -27,12 +27,12 @@ const update = async (
       readModelName,
       tableName,
       searchExpression
-    )
+    );
 
     if (foundDocumentsCount === 0) {
-      const document = buildUpsertDocument(searchExpression, updateExpression)
-      await insert(pool, readModelName, tableName, document)
-      return
+      const document = buildUpsertDocument(searchExpression, updateExpression);
+      await insert(pool, readModelName, tableName, document);
+      return;
     }
   }
 
@@ -41,21 +41,21 @@ const update = async (
     escapeId,
     escape,
     makeNestedPath
-  )
+  );
   const updateExpr = updateToSetExpression(
     updateExpression,
     escapeId,
     escape,
     makeNestedPath
-  )
+  );
 
   const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : '';
 
   await runQuery(
     `UPDATE ${escapeId(`${tablePrefix}${tableName}`)}
     SET ${updateExpr} ${inlineSearchExpr};`
-  )
-}
+  );
+};
 
-export default update
+export default update;

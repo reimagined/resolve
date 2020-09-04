@@ -4,34 +4,34 @@ import {
   INT8_SQL_TYPE,
   JSON_SQL_TYPE,
   TEXT_SQL_TYPE,
-  AGGREGATE_ID_SQL_TYPE
-} from './constants'
-import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
-import getLog from './get-log'
+  AGGREGATE_ID_SQL_TYPE,
+} from './constants';
+import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base';
+import getLog from './get-log';
 
 const init = async ({
   databaseName,
   eventsTableName,
   snapshotsTableName,
   executeStatement,
-  escapeId
+  escapeId,
 }) => {
-  const log = getLog(`initEventStore`)
+  const log = getLog(`initEventStore`);
 
-  const databaseNameAsId = escapeId(databaseName)
-  const eventsTableNameAsId = escapeId(eventsTableName)
-  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
-  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
+  const databaseNameAsId = escapeId(databaseName);
+  const eventsTableNameAsId = escapeId(eventsTableName);
+  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`);
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName);
 
   const aggregateIdAndVersionIndexName = escapeId(
     `${eventsTableName}-aggregateIdAndVersion`
-  )
-  const aggregateIndexName = escapeId(`${eventsTableName}-aggregateId`)
+  );
+  const aggregateIndexName = escapeId(`${eventsTableName}-aggregateId`);
   const aggregateVersionIndexName = escapeId(
     `${eventsTableName}-aggregateVersion`
-  )
-  const typeIndexName = escapeId(`${eventsTableName}-type`)
-  const timestampIndexName = escapeId(`${eventsTableName}-timestamp`)
+  );
+  const typeIndexName = escapeId(`${eventsTableName}-type`);
+  const timestampIndexName = escapeId(`${eventsTableName}-timestamp`);
 
   try {
     await executeStatement(
@@ -86,21 +86,21 @@ const init = async ({
         .map((_, index) => `(${index}, 0)`)
         .join(',')}
       ;`
-    )
+    );
   } catch (error) {
     if (error) {
-      let errorToThrow = error
+      let errorToThrow = error;
       if (/Relation.*? already exists$/i.test(error.message)) {
         errorToThrow = new EventstoreResourceAlreadyExistError(
           `duplicate initialization of the postgresql-serverless event store with the same parameters not allowed`
-        )
+        );
       } else {
-        log.error(errorToThrow.message)
-        log.verbose(errorToThrow.stack)
+        log.error(errorToThrow.message);
+        log.verbose(errorToThrow.stack);
       }
-      throw errorToThrow
+      throw errorToThrow;
     }
   }
-}
+};
 
-export default init
+export default init;

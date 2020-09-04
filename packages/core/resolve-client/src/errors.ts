@@ -2,18 +2,18 @@ export class ApiError extends Error {}
 
 export class GenericError extends ApiError {
   constructor(message: string) {
-    super(message)
-    this.name = 'FetchError'
+    super(message);
+    this.name = 'FetchError';
   }
 }
 
 export class HttpError extends ApiError {
-  readonly code: number
+  readonly code: number;
 
   constructor(code: number, message: string) {
-    super(message)
-    this.code = code
-    this.name = 'HttpError'
+    super(message);
+    this.code = code;
+    this.name = 'HttpError';
   }
 }
 
@@ -28,5 +28,5 @@ export const temporaryErrorHttpCodes: number[] = [
   521, // Web Server Is Down
   522, // Connection Timed Out
   523, // Origin Is Unreachable
-  524 // A Timeout Occurred
-]
+  524, // A Timeout Occurred
+];

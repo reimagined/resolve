@@ -1,32 +1,32 @@
-import React from 'react'
+import React from 'react';
 
-import Form from '../containers/Form'
-import Image from '../containers/Image'
+import Form from '../containers/Form';
+import Image from '../containers/Image';
 
 class LogoutButton extends React.PureComponent {
   state = {
-    isFirstRender: true
-  }
+    isFirstRender: true,
+  };
 
   componentDidMount() {
     this.setState({
-      isFirstRender: false
-    })
+      isFirstRender: false,
+    });
   }
 
-  onLogoutClick = event => {
-    this.form.submit()
-    event.stopPropagation()
-    return false
-  }
+  onLogoutClick = (event) => {
+    this.form.submit();
+    event.stopPropagation();
+    return false;
+  };
 
-  formRef = element => {
-    this.form = element
-  }
+  formRef = (element) => {
+    this.form = element;
+  };
 
   render() {
     if (this.state.isFirstRender) {
-      return null
+      return null;
     }
 
     return (
@@ -41,8 +41,8 @@ class LogoutButton extends React.PureComponent {
           <Image className="example-icon" src="/logout.svg" /> Logout
         </a>
       </Form>
-    )
+    );
   }
 }
 
-export default LogoutButton
+export default LogoutButton;

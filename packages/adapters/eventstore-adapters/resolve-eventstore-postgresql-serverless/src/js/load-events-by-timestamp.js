@@ -1,6 +1,6 @@
-import { throwBadCursor } from 'resolve-eventstore-base'
+import { throwBadCursor } from 'resolve-eventstore-base';
 
-import { RESPONSE_SIZE_LIMIT } from './constants'
+import { RESPONSE_SIZE_LIMIT } from './constants';
 
 const loadEventsByTimestamp = async (
   {
@@ -10,38 +10,40 @@ const loadEventsByTimestamp = async (
     eventsTableName,
     databaseName,
     shapeEvent,
-    isTimeoutError
+    isTimeoutError,
   },
   { eventTypes, aggregateIds, startTime, finishTime, limit }
 ) => {
-  const injectString = value => `${escape(value)}`
-  const injectNumber = value => `${+value}`
-  const batchSize = limit != null ? Math.min(limit, 200) : 200
+  const injectString = (value) => `${escape(value)}`;
+  const injectNumber = (value) => `${+value}`;
+  const batchSize = limit != null ? Math.min(limit, 200) : 200;
 
-  const queryConditions = []
+  const queryConditions = [];
   if (eventTypes != null) {
-    queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`)
+    queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`);
   }
   if (aggregateIds != null) {
-    queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
+    queryConditions.push(
+      `"aggregateId" IN (${aggregateIds.map(injectString)})`
+    );
   }
   if (startTime != null) {
-    queryConditions.push(`"startTime" >= ${injectNumber(startTime)}`)
+    queryConditions.push(`"startTime" >= ${injectNumber(startTime)}`);
   }
   if (finishTime != null) {
-    queryConditions.push(`"finishTime" <= ${injectNumber(finishTime)}`)
+    queryConditions.push(`"finishTime" <= ${injectNumber(finishTime)}`);
   }
 
   const resultQueryCondition =
-    queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
+    queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : '';
 
-  const databaseNameAsId = escapeId(databaseName)
-  const eventsTableAsId = escapeId(eventsTableName)
-  let countEvents = 0
-  const events = []
+  const databaseNameAsId = escapeId(databaseName);
+  const eventsTableAsId = escapeId(eventsTableName);
+  let countEvents = 0;
+  const events = [];
 
   while (true) {
-    let rows = RESPONSE_SIZE_LIMIT
+    let rows = RESPONSE_SIZE_LIMIT;
     for (
       let dynamicBatchSize = batchSize;
       dynamicBatchSize >= 1;
@@ -73,42 +75,42 @@ const loadEventsByTimestamp = async (
 
         while (true) {
           try {
-            rows = await executeStatement(sqlQuery)
-            break
+            rows = await executeStatement(sqlQuery);
+            break;
           } catch (err) {
             if (isTimeoutError(err)) {
-              continue
+              continue;
             }
-            throw err
+            throw err;
           }
         }
-        break
+        break;
       } catch (error) {
         if (!/Database response exceeded size limit/.test(error.message)) {
-          throw error
+          throw error;
         }
       }
     }
     if (rows === RESPONSE_SIZE_LIMIT) {
-      throw new Error('Database response exceeded size limit')
+      throw new Error('Database response exceeded size limit');
     }
 
     for (const event of rows) {
-      countEvents++
-      events.push(shapeEvent(event))
+      countEvents++;
+      events.push(shapeEvent(event));
     }
 
     if (rows.length === 0 || countEvents >= limit) {
-      break
+      break;
     }
   }
 
   return {
     get cursor() {
-      return throwBadCursor()
+      return throwBadCursor();
     },
-    events
-  }
-}
+    events,
+  };
+};
 
-export default loadEventsByTimestamp
+export default loadEventsByTimestamp;

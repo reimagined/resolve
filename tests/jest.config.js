@@ -1,6 +1,6 @@
-process.env.TZ = 'Europe/Moscow'
+process.env.TZ = 'Europe/Moscow';
 
-const path = require('path')
+const path = require('path');
 
 module.exports = {
   rootDir: process.cwd(),
@@ -8,6 +8,6 @@ module.exports = {
   testMatch: ['**/test/**/*.test.[jt]s?(x)'],
   transform: {
     '^.+\\.js$': path.resolve(__dirname, '../jest.transform.js'),
-    '^.+\\.tsx?$': 'ts-jest'
-  }
-}
+    '^.+\\.tsx?$': 'ts-jest',
+  },
+};

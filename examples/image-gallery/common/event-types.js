@@ -1,1 +1,1 @@
-export const IMAGE_CREATED = 'ImageCreated'
+export const IMAGE_CREATED = 'ImageCreated';

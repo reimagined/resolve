@@ -1,9 +1,9 @@
-import getStaticBasedPath from '../utils/get-static-based-path'
+import getStaticBasedPath from '../utils/get-static-based-path';
 
 const markupHandler = async (req, res) => {
-  const { seedClientEnvs, staticPath, rootPath } = req.resolve
-  const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index.js')
-  await res.setHeader('Content-Type', 'text/html')
+  const { seedClientEnvs, staticPath, rootPath } = req.resolve;
+  const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index.js');
+  await res.setHeader('Content-Type', 'text/html');
   await res.end(`
     <!doctype html>
     <html>
@@ -23,7 +23,7 @@ const markupHandler = async (req, res) => {
         </script>
       </body>
     </html>
-  `)
-}
+  `);
+};
 
-export default markupHandler
+export default markupHandler;

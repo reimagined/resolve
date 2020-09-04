@@ -1,5 +1,5 @@
-import { connectStaticBasedUrls } from 'resolve-redux'
+import { connectStaticBasedUrls } from 'resolve-redux';
 
-const Image = connectStaticBasedUrls(['src'])('img')
+const Image = connectStaticBasedUrls(['src'])('img');
 
-export default Image
+export default Image;

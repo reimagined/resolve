@@ -1,55 +1,55 @@
-import { Readable } from 'stream'
+import { Readable } from 'stream';
 
 import {
   BATCH_SIZE,
   MAINTENANCE_MODE_AUTO,
-  MAINTENANCE_MODE_MANUAL
-} from './constants'
-import getNextCursor from './get-next-cursor'
+  MAINTENANCE_MODE_MANUAL,
+} from './constants';
+import getNextCursor from './get-next-cursor';
 
 async function startProcessEvents({ pool, maintenanceMode }) {
   if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
-    await pool.freeze()
+    await pool.freeze();
   }
 }
 
 async function endProcessEvents({ pool, maintenanceMode }) {
   if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
-    await pool.unfreeze()
+    await pool.unfreeze();
   }
 }
 
 async function* generator(context) {
-  const { pool, bufferSize } = context
+  const { pool, bufferSize } = context;
 
-  await pool.waitConnect()
+  await pool.waitConnect();
 
-  await startProcessEvents(context)
+  await startProcessEvents(context);
 
-  let eventsByteSize = 0
+  let eventsByteSize = 0;
   while (true) {
     const { events } = await pool.loadEventsByCursor({
       cursor: context.cursor,
-      limit: BATCH_SIZE
-    })
+      limit: BATCH_SIZE,
+    });
 
     for (const event of events) {
-      let chunk = Buffer.from(JSON.stringify(event) + '\n', 'utf8')
+      let chunk = Buffer.from(JSON.stringify(event) + '\n', 'utf8');
 
-      const byteLength = chunk.byteLength
+      const byteLength = chunk.byteLength;
       if (eventsByteSize + byteLength > bufferSize) {
-        context.isBufferOverflow = true
-        await endProcessEvents(context)
-        return
+        context.isBufferOverflow = true;
+        await endProcessEvents(context);
+        return;
       }
-      eventsByteSize += byteLength
+      eventsByteSize += byteLength;
 
-      yield chunk
-      context.cursor = getNextCursor(context.cursor, [event])
+      yield chunk;
+      context.cursor = getNextCursor(context.cursor, [event]);
     }
     if (events.length === 0) {
-      await endProcessEvents(context)
-      return
+      await endProcessEvents(context);
+      return;
     }
   }
 }
@@ -59,13 +59,13 @@ const exportStream = (
   {
     cursor = null,
     maintenanceMode = MAINTENANCE_MODE_AUTO,
-    bufferSize = Number.POSITIVE_INFINITY
+    bufferSize = Number.POSITIVE_INFINITY,
   } = {}
 ) => {
   if (
     ![MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL].includes(maintenanceMode)
   ) {
-    throw new Error(`Wrong maintenance mode ${maintenanceMode}`)
+    throw new Error(`Wrong maintenance mode ${maintenanceMode}`);
   }
 
   const context = {
@@ -73,22 +73,22 @@ const exportStream = (
     maintenanceMode,
     cursor,
     bufferSize,
-    isBufferOverflow: false
-  }
+    isBufferOverflow: false,
+  };
 
-  const stream = Readable.from(generator(context))
+  const stream = Readable.from(generator(context));
   Object.defineProperty(stream, 'cursor', {
     get() {
-      return context.cursor
-    }
-  })
+      return context.cursor;
+    },
+  });
   Object.defineProperty(stream, 'isBufferOverflow', {
     get() {
-      return context.isBufferOverflow
-    }
-  })
+      return context.isBufferOverflow;
+    },
+  });
 
-  return stream
-}
+  return stream;
+};
 
-export default exportStream
+export default exportStream;

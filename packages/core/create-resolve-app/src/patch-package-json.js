@@ -1,6 +1,6 @@
-import { localRegistry as server } from './constants'
+import { localRegistry as server } from './constants';
 
-const patchPackageJson = pool => async () => {
+const patchPackageJson = (pool) => async () => {
   const {
     console,
     chalk,
@@ -11,59 +11,59 @@ const patchPackageJson = pool => async () => {
     applicationPackageJsonPath,
     resolvePackages,
     safeName,
-    localRegistry
-  } = pool
-  console.log()
-  console.log(chalk.green('Patch package.json'))
+    localRegistry,
+  } = pool;
+  console.log();
+  console.log(chalk.green('Patch package.json'));
 
   const resolveVersion = require(path.join(__dirname, '..', 'package.json'))
-    .version
+    .version;
 
-  const applicationPackageJson = require(applicationPackageJsonPath)
+  const applicationPackageJson = require(applicationPackageJsonPath);
 
-  applicationPackageJson.name = applicationName
+  applicationPackageJson.name = applicationName;
 
   const namespaces = [
     'dependencies',
     'devDependencies',
     'peerDependencies',
-    'optionalDependencies'
-  ]
+    'optionalDependencies',
+  ];
 
   fs.writeFileSync(
     applicationPackageJsonPath,
     JSON.stringify(applicationPackageJson, null, 2)
-  )
+  );
 
   const localPackages = fs
     .readdirSync(applicationPath)
-    .filter(directory => {
+    .filter((directory) => {
       try {
-        require(path.join(applicationPath, directory, 'package.json'))
-        return true
+        require(path.join(applicationPath, directory, 'package.json'));
+        return true;
       } catch (e) {
-        return false
+        return false;
       }
     })
-    .map(directory => ({
+    .map((directory) => ({
       name: path.join(applicationPath, directory, 'package.json').name,
-      directory: path.join(applicationPath, directory)
-    }))
+      directory: path.join(applicationPath, directory),
+    }));
 
   localPackages.push({
     name: applicationName,
-    directory: applicationPath
-  })
+    directory: applicationPath,
+  });
 
   for (const { directory } of localPackages) {
     const listPackageNamesForPatching = [
       ...resolvePackages,
-      ...localPackages.map(({ name }) => name)
-    ]
+      ...localPackages.map(({ name }) => name),
+    ];
 
-    const packageJson = require(path.join(directory, 'package.json'))
+    const packageJson = require(path.join(directory, 'package.json'));
 
-    packageJson.version = resolveVersion
+    packageJson.version = resolveVersion;
 
     for (const namespace of namespaces) {
       if (packageJson[namespace]) {
@@ -73,7 +73,7 @@ const patchPackageJson = pool => async () => {
               ? `${server.protocol}://${server.host}:${server.port}/${safeName(
                   packageName
                 )}.tgz`
-              : resolveVersion
+              : resolveVersion;
           }
         }
       }
@@ -82,8 +82,8 @@ const patchPackageJson = pool => async () => {
     fs.writeFileSync(
       path.join(directory, 'package.json'),
       JSON.stringify(packageJson, null, 2)
-    )
+    );
   }
-}
+};
 
-export default patchPackageJson
+export default patchPackageJson;

@@ -1,12 +1,12 @@
-import React from 'react'
+import React from 'react';
 
-import Header from './Header'
+import Header from './Header';
 
 const App = ({
   children,
   match: {
-    params: { id }
-  }
+    params: { id },
+  },
 }) => (
   <div>
     <Header
@@ -17,6 +17,6 @@ const App = ({
     />
     {children}
   </div>
-)
+);
 
-export default App
+export default App;

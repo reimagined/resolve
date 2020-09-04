@@ -1,13 +1,13 @@
 import {
   USER_REGISTERED,
   USER_PROFILE_UPDATED,
-  USER_PROFILE_DELETED
-} from '../user-profile.events'
+  USER_PROFILE_DELETED,
+} from '../user-profile.events';
 
 const projection = {
   Init: () => ({
     isRegistered: false,
-    isDeleted: false
+    isDeleted: false,
   }),
   [USER_REGISTERED]: (
     state,
@@ -17,7 +17,7 @@ const projection = {
     isRegistered: true,
     firstName,
     lastName,
-    contacts
+    contacts,
   }),
   [USER_PROFILE_UPDATED]: (
     state,
@@ -26,13 +26,13 @@ const projection = {
     ...state,
     firstName,
     lastName,
-    contacts
+    contacts,
   }),
-  [USER_PROFILE_DELETED]: state => ({
+  [USER_PROFILE_DELETED]: (state) => ({
     ...state,
     isRegistered: false,
-    isDeleted: true
-  })
-}
+    isDeleted: true,
+  }),
+};
 
-export default projection
+export default projection;

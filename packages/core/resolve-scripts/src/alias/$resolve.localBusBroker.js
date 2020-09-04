@@ -1,14 +1,14 @@
-import { message } from '../constants'
+import { message } from '../constants';
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
       `${message.serverAliasInClientCodeError}$resolve.eventBroker`
-    )
+    );
   }
 
   if (resolveConfig.target !== 'local') {
-    throw new Error('Event broker can be build only in "local" mode')
+    throw new Error('Event broker can be build only in "local" mode');
   }
 
   return `
@@ -36,5 +36,5 @@ export default ({ resolveConfig, isClient }) => {
         process.exit(1)
       }
     })()
-  `
-}
+  `;
+};

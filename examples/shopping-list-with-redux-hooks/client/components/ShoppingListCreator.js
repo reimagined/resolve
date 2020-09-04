@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
-import { Button, Col, FormLabel, FormControl, Row } from 'react-bootstrap'
-import uuid from 'uuid/v4'
-import { useReduxReadModelSelector, useReduxCommand } from 'resolve-redux'
-import { SHOPPING_LIST_CREATED } from '../actions/optimistic-actions'
+import React, { useState } from 'react';
+import { Button, Col, FormLabel, FormControl, Row } from 'react-bootstrap';
+import uuid from 'uuid/v4';
+import { useReduxReadModelSelector, useReduxCommand } from 'resolve-redux';
+import { SHOPPING_LIST_CREATED } from '../actions/optimistic-actions';
 
 export default () => {
-  const [shoppingListName, setShoppingListName] = useState('')
+  const [shoppingListName, setShoppingListName] = useState('');
 
-  const lists = useReduxReadModelSelector('all-user-lists') || []
+  const lists = useReduxReadModelSelector('all-user-lists') || [];
   //const lists = useSelector(state => state.optimisticShoppingLists)
 
   const { execute: executeCreateListCommand } = useReduxCommand(
@@ -16,33 +16,33 @@ export default () => {
       aggregateId: uuid(),
       aggregateName: 'ShoppingList',
       payload: {
-        name: shoppingListName || `Shopping List ${lists.length + 1}`
-      }
+        name: shoppingListName || `Shopping List ${lists.length + 1}`,
+      },
     },
     {
       actions: {
-        success: command => ({
+        success: (command) => ({
           type: SHOPPING_LIST_CREATED,
           payload: {
             id: command.aggregateId,
-            name: command.payload.name
-          }
-        })
-      }
+            name: command.payload.name,
+          },
+        }),
+      },
     }
-  )
+  );
 
-  const updateShoppingListName = event => {
-    setShoppingListName(event.target.value)
-  }
+  const updateShoppingListName = (event) => {
+    setShoppingListName(event.target.value);
+  };
 
-  const onShoppingListNamePressEnter = event => {
+  const onShoppingListNamePressEnter = (event) => {
     if (event.charCode === 13) {
-      event.preventDefault()
-      executeCreateListCommand()
-      setShoppingListName('')
+      event.preventDefault();
+      executeCreateListCommand();
+      setShoppingListName('');
     }
-  }
+  };
 
   return (
     <div>
@@ -68,5 +68,5 @@ export default () => {
         </Col>
       </Row>
     </div>
-  )
-}
+  );
+};

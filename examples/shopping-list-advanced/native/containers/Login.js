@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   Container,
   Content,
@@ -9,50 +9,50 @@ import {
   Input,
   Item,
   Label,
-  View
-} from 'native-base'
-import { StyleSheet } from 'react-native'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+  View,
+} from 'native-base';
+import { StyleSheet } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import requiredNoAuth from '../decorators/required-no-auth'
-import { Logo } from '@shopping-list-advanced/ui'
+import requiredNoAuth from '../decorators/required-no-auth';
+import { Logo } from '@shopping-list-advanced/ui';
 
-import getNativeChunk from '../native-chunk'
+import getNativeChunk from '../native-chunk';
 const {
-  resolveRedux: { actions }
-} = getNativeChunk()
+  resolveRedux: { actions },
+} = getNativeChunk();
 
 const styles = StyleSheet.create({
   contentContainer: {
     justifyContent: 'center',
-    flex: 1
+    flex: 1,
   },
   form: {
-    marginBottom: 20
+    marginBottom: 20,
   },
   buttonContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   button: {
-    marginRight: 5
+    marginRight: 5,
   },
   socialTitle: {
-    marginTop: 30
+    marginTop: 30,
   },
   socialButton: {
-    marginTop: 10
+    marginTop: 10,
   },
   socialButtonIcon: {
-    marginRight: 0
-  }
-})
+    marginRight: 0,
+  },
+});
 
 export class Login extends React.PureComponent {
   state = {
     username: '',
-    password: ''
-  }
+    password: '',
+  };
 
   onLogin = () => {
     this.props.authRequest(
@@ -60,11 +60,11 @@ export class Login extends React.PureComponent {
       {
         username: this.state.username,
         password: this.state.password,
-        noredirect: true
+        noredirect: true,
       },
       'POST'
-    )
-  }
+    );
+  };
 
   onRegister = () => {
     this.props.authRequest(
@@ -72,23 +72,23 @@ export class Login extends React.PureComponent {
       {
         username: this.state.username,
         password: this.state.password,
-        noredirect: true
+        noredirect: true,
       },
       'POST'
-    )
-  }
+    );
+  };
 
-  updateUsername = username => {
+  updateUsername = (username) => {
     this.setState({
-      username
-    })
-  }
+      username,
+    });
+  };
 
-  updatePassword = password => {
+  updatePassword = (password) => {
     this.setState({
-      password
-    })
-  }
+      password,
+    });
+  };
 
   render() {
     return (
@@ -123,11 +123,11 @@ export class Login extends React.PureComponent {
           </View>
         </Content>
       </Container>
-    )
+    );
   }
 }
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(actions, dispatch)
+export const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(actions, dispatch);
 
-export default requiredNoAuth(connect(null, mapDispatchToProps)(Login))
+export default requiredNoAuth(connect(null, mapDispatchToProps)(Login));

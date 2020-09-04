@@ -1,18 +1,18 @@
-import jwt from 'jsonwebtoken'
-import jwtSecret from './jwt-secret'
+import jwt from 'jsonwebtoken';
+import jwtSecret from './jwt-secret';
 
 const routeLoginCallback = async ({ resolve }, nickname) => {
   const { data: user } = await resolve.executeQuery({
     modelName: 'user-profiles',
     resolverName: 'user',
-    resolverArgs: { name: nickname.trim() }
-  })
+    resolverArgs: { name: nickname.trim() },
+  });
 
   if (!user) {
-    throw new Error('Incorrect "nickname"')
+    throw new Error('Incorrect "nickname"');
   }
 
-  return jwt.sign(user, jwtSecret)
-}
+  return jwt.sign(user, jwtSecret);
+};
 
-export default routeLoginCallback
+export default routeLoginCallback;

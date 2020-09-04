@@ -1,50 +1,50 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators, Dispatch } from 'redux'
-import hoistNonReactStatic from 'hoist-non-react-statics'
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux';
+import hoistNonReactStatic from 'hoist-non-react-statics';
 
-import * as actions from './actions'
-import getHash from '../internal/get-hash'
-import connectResolveAdvanced from '../internal/connect-resolve-advanced'
-import { getEntry } from './view-model-reducer'
-import { ReduxState, ResultStatus } from '../types'
+import * as actions from './actions';
+import getHash from '../internal/get-hash';
+import connectResolveAdvanced from '../internal/connect-resolve-advanced';
+import { getEntry } from './view-model-reducer';
+import { ReduxState, ResultStatus } from '../types';
 
 type ViewModelConnectorOptions = {
-  viewModelName: string
-  aggregateIds: string[]
-  aggregateArgs: any
-}
+  viewModelName: string;
+  aggregateIds: string[];
+  aggregateArgs: any;
+};
 type ViewModelConnectorOptionsMapper = (
   state: ReduxState,
   ownProps: any
-) => ViewModelConnectorOptions
+) => ViewModelConnectorOptions;
 
 export const mapDispatchToConnectorProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       connectViewModel: actions.connectViewModel,
-      disconnectViewModel: actions.disconnectViewModel
+      disconnectViewModel: actions.disconnectViewModel,
     },
     dispatch
-  )
+  );
 
 export const mapStateToConnectorProps = (
   mapStateToOptions: ViewModelConnectorOptionsMapper,
   state: ReduxState,
   ownProps: any
 ): any => {
-  const connectorOptions = mapStateToOptions(state, ownProps)
+  const connectorOptions = mapStateToOptions(state, ownProps);
 
   const entry = getEntry(state.viewModels, {
     query: {
       name: connectorOptions.viewModelName,
       aggregateIds: connectorOptions.aggregateIds,
-      args: connectorOptions.aggregateArgs
-    }
-  })
-  const data = entry && entry.status === ResultStatus.Ready ? entry.data : null
+      args: connectorOptions.aggregateArgs,
+    },
+  });
+  const data = entry && entry.status === ResultStatus.Ready ? entry.data : null;
   const error =
-    entry && entry.status === ResultStatus.Failed ? entry.error : null
+    entry && entry.status === ResultStatus.Failed ? entry.error : null;
 
   return {
     ownProps,
@@ -52,9 +52,9 @@ export const mapStateToConnectorProps = (
     isLoading: entry && entry.status === ResultStatus.Requested,
     isFailure: entry && entry.status === ResultStatus.Failed,
     data,
-    error
-  }
-}
+    error,
+  };
+};
 
 const connectViewModel = (
   mapStateToOptions: ViewModelConnectorOptionsMapper
@@ -64,33 +64,33 @@ const connectViewModel = (
       const {
         viewModelName,
         aggregateIds,
-        aggregateArgs
-      } = this.props.connectorOptions
+        aggregateArgs,
+      } = this.props.connectorOptions;
 
       this.props.connectViewModel({
         name: viewModelName,
         aggregateIds: aggregateIds,
-        args: aggregateArgs
-      })
+        args: aggregateArgs,
+      });
     }
 
     componentWillUnmount() {
       const {
         viewModelName,
         aggregateIds,
-        aggregateArgs
-      } = this.props.connectorOptions
+        aggregateArgs,
+      } = this.props.connectorOptions;
 
       this.props.disconnectViewModel({
         name: viewModelName,
         aggregateIds: aggregateIds,
-        args: aggregateArgs
-      })
+        args: aggregateArgs,
+      });
     }
 
     componentDidUpdate(prevProps: any) {
-      const connectorOptions = this.props.connectorOptions
-      const prevConnectorOptions = prevProps.connectorOptions
+      const connectorOptions = this.props.connectorOptions;
+      const prevConnectorOptions = prevProps.connectorOptions;
       if (
         connectorOptions &&
         prevConnectorOptions &&
@@ -110,31 +110,31 @@ const connectViewModel = (
           prevConnectorOptions.viewModelName,
           prevConnectorOptions.aggregateIds,
           prevConnectorOptions.aggregateArgs
-        )
+        );
         this.props.connectViewModel(
           connectorOptions.viewModelName,
           connectorOptions.aggregateIds,
           connectorOptions.aggregateArgs
-        )
+        );
       }
     }
 
     render() {
-      const { ownProps, isLoading, data } = this.props
-      return <Component {...ownProps} isLoading={isLoading} data={data} />
+      const { ownProps, isLoading, data } = this.props;
+      return <Component {...ownProps} isLoading={isLoading} data={data} />;
     }
   }
 
   const ViewModelConnector = connect(
     mapStateToConnectorProps.bind(null, mapStateToOptions),
     mapDispatchToConnectorProps
-  )(ViewModelContainer) as any
+  )(ViewModelContainer) as any;
 
-  ViewModelConnector.mapStateToOptions = mapStateToOptions
+  ViewModelConnector.mapStateToOptions = mapStateToOptions;
 
-  hoistNonReactStatic(ViewModelConnector, ViewModelContainer)
+  hoistNonReactStatic(ViewModelConnector, ViewModelContainer);
 
-  return connectResolveAdvanced(ViewModelConnector)
-}
+  return connectResolveAdvanced(ViewModelConnector);
+};
 
-export default connectViewModel
+export default connectViewModel;

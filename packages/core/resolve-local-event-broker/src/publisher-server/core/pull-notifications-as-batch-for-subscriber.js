@@ -3,22 +3,22 @@ import {
   NOTIFICATIONS_TABLE_NAME,
   SUBSCRIBERS_TABLE_NAME,
   LazinessStrategy,
-  PrivateOperationType
-} from '../constants'
+  PrivateOperationType,
+} from '../constants';
 
 const pullNotificationsAsBatchForSubscriber = async (pool, payload) => {
   const {
     database: { escapeStr, escapeId, runQuery, runRawQuery },
     parseSubscription,
     invokeOperation,
-    generateGuid
-  } = pool
+    generateGuid,
+  } = pool;
 
-  const { subscriptionId } = payload
-  const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME)
-  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
+  const { subscriptionId } = payload;
+  const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME);
+  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME);
 
-  const batchId = generateGuid(subscriptionId)
+  const batchId = generateGuid(subscriptionId);
   await runRawQuery(`
       UPDATE ${notificationsTableNameAsId} SET
       "processStartTimestamp" = CAST(strftime('%s','now') || substr(strftime('%f','now'),4) AS ${LONG_INTEGER_SQL_TYPE}),
@@ -39,7 +39,7 @@ const pullNotificationsAsBatchForSubscriber = async (pool, payload) => {
 
       COMMIT;
       BEGIN IMMEDIATE;
-    `)
+    `);
 
   const affectedNotifications = await runQuery(`
       SELECT ${subscribersTableNameAsId}."subscriptionId" AS "subscriptionId",
@@ -51,23 +51,23 @@ const pullNotificationsAsBatchForSubscriber = async (pool, payload) => {
       AND  ${notificationsTableNameAsId}."batchId" = 
       ${escapeStr(batchId)}
       LIMIT 1
-    `)
+    `);
 
   if (affectedNotifications == null || affectedNotifications.length < 1) {
-    return
+    return;
   }
   const activeBatch = await parseSubscription({
     ...affectedNotifications[0],
-    batchId
-  })
+    batchId,
+  });
   const input = {
     type: PrivateOperationType.DELIVER_BATCH,
     payload: {
-      activeBatch
-    }
-  }
+      activeBatch,
+    },
+  };
 
-  await invokeOperation(pool, LazinessStrategy.EAGER, input)
-}
+  await invokeOperation(pool, LazinessStrategy.EAGER, input);
+};
 
-export default pullNotificationsAsBatchForSubscriber
+export default pullNotificationsAsBatchForSubscriber;

@@ -1,104 +1,109 @@
-import { Query, QueryOptions, QueryResult, QueryCallback } from 'resolve-client'
-import { useCallback } from 'react'
-import { HookExecutor, isCallback, isDependencies, isOptions } from './generic'
-import { useClient } from './use-client'
-import { firstOfType } from 'resolve-core'
+import {
+  Query,
+  QueryOptions,
+  QueryResult,
+  QueryCallback,
+} from 'resolve-client';
+import { useCallback } from 'react';
+import { HookExecutor, isCallback, isDependencies, isOptions } from './generic';
+import { useClient } from './use-client';
+import { firstOfType } from 'resolve-core';
 
-export type QueryBuilder<T> = (data: T) => Query
-export type QueryExecutor<T> = HookExecutor<T, QueryResult>
+export type QueryBuilder<T> = (data: T) => Query;
+export type QueryExecutor<T> = HookExecutor<T, QueryResult>;
 
-function useQuery(query: Query): QueryExecutor<void>
-function useQuery(query: Query, options: QueryOptions): QueryExecutor<void>
-function useQuery(query: Query, callback: QueryCallback): QueryExecutor<void>
-function useQuery(query: Query, dependencies: any[]): QueryExecutor<void>
+function useQuery(query: Query): QueryExecutor<void>;
+function useQuery(query: Query, options: QueryOptions): QueryExecutor<void>;
+function useQuery(query: Query, callback: QueryCallback): QueryExecutor<void>;
+function useQuery(query: Query, dependencies: any[]): QueryExecutor<void>;
 function useQuery(
   query: Query,
   callback: QueryCallback,
   dependencies: any[]
-): QueryExecutor<void>
+): QueryExecutor<void>;
 function useQuery(
   query: Query,
   options: QueryOptions,
   callback: QueryCallback
-): QueryExecutor<void>
+): QueryExecutor<void>;
 function useQuery(
   query: Query,
   options: QueryOptions,
   dependencies: any[]
-): QueryExecutor<void>
+): QueryExecutor<void>;
 function useQuery(
   query: Query,
   options: QueryOptions,
   callback: QueryCallback,
   dependencies: any[]
-): QueryExecutor<void>
-function useQuery<T>(builder: QueryBuilder<T>): QueryExecutor<T>
+): QueryExecutor<void>;
+function useQuery<T>(builder: QueryBuilder<T>): QueryExecutor<T>;
 function useQuery<T>(
   builder: QueryBuilder<T>,
   options: QueryOptions
-): QueryExecutor<T>
+): QueryExecutor<T>;
 function useQuery<T>(
   builder: QueryBuilder<T>,
   callback: QueryCallback
-): QueryExecutor<T>
+): QueryExecutor<T>;
 function useQuery<T>(
   builder: QueryBuilder<T>,
   dependencies: any[]
-): QueryExecutor<T>
+): QueryExecutor<T>;
 function useQuery<T>(
   builder: QueryBuilder<T>,
   callback: QueryCallback,
   dependencies: any[]
-): QueryExecutor<T>
+): QueryExecutor<T>;
 function useQuery<T>(
   builder: QueryBuilder<T>,
   options: QueryOptions,
   callback: QueryCallback
-): QueryExecutor<T>
+): QueryExecutor<T>;
 function useQuery<T>(
   builder: QueryBuilder<T>,
   options: QueryOptions,
   dependencies: any[]
-): QueryExecutor<T>
+): QueryExecutor<T>;
 function useQuery<T>(
   builder: QueryBuilder<T>,
   options: QueryOptions,
   callback: QueryCallback,
   dependencies: any[]
-): QueryExecutor<T>
+): QueryExecutor<T>;
 function useQuery<T>(
   query: Query | QueryBuilder<T>,
   options?: QueryOptions | QueryCallback | any[],
   callback?: QueryCallback | any[],
   dependencies?: any[]
 ): QueryExecutor<T> {
-  const client = useClient()
+  const client = useClient();
   const actualOptions: QueryOptions | undefined = firstOfType<QueryOptions>(
     isOptions,
     options
-  )
+  );
   const actualCallback: QueryCallback | undefined = firstOfType<QueryCallback>(
     isCallback,
     options,
     callback
-  )
+  );
   const actualDependencies: any[] =
     firstOfType<any[]>(isDependencies, options, callback, dependencies) ??
-    [query, actualOptions, actualCallback].filter(i => i)
+    [query, actualOptions, actualCallback].filter((i) => i);
 
   if (typeof query === 'function') {
     return useCallback(
       (data: T): Promise<QueryResult> | void =>
         client.query(query(data), actualOptions, actualCallback),
       [client, ...actualDependencies]
-    )
+    );
   }
 
   return useCallback(
     (): Promise<QueryResult> | void =>
       client.query(query, actualOptions, actualCallback),
     [client, ...actualDependencies]
-  )
+  );
 }
 
-export { useQuery }
+export { useQuery };

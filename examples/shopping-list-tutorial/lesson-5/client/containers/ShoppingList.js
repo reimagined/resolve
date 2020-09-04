@@ -1,7 +1,7 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { connectViewModel } from 'resolve-redux'
-import { bindActionCreators } from 'redux'
+import React from 'react';
+import { connect } from 'react-redux';
+import { connectViewModel } from 'resolve-redux';
+import { bindActionCreators } from 'redux';
 
 import {
   ListGroup,
@@ -11,54 +11,54 @@ import {
   Row,
   Col,
   FormControl,
-  Button
-} from 'react-bootstrap'
+  Button,
+} from 'react-bootstrap';
 
-import * as aggregateActions from '../actions/aggregate_actions'
+import * as aggregateActions from '../actions/aggregate_actions';
 
 export class ShoppingList extends React.PureComponent {
   state = {
-    itemText: ''
-  }
+    itemText: '',
+  };
 
   createShoppingItem = () => {
     this.props.createShoppingItem('shopping-list-1', {
       text: this.state.itemText,
-      id: Date.now().toString()
-    })
+      id: Date.now().toString(),
+    });
 
     this.setState({
-      itemText: ''
-    })
-  }
+      itemText: '',
+    });
+  };
 
-  updateItemText = event => {
+  updateItemText = (event) => {
     this.setState({
-      itemText: event.target.value
-    })
-  }
+      itemText: event.target.value,
+    });
+  };
 
-  onItemTextPressEnter = event => {
+  onItemTextPressEnter = (event) => {
     if (event.charCode === 13) {
-      event.preventDefault()
-      this.createShoppingItem()
+      event.preventDefault();
+      this.createShoppingItem();
     }
-  }
+  };
 
   render() {
-    const list = (this.props.data && this.props.data.list) || []
-    const toggleShoppingItem = this.props.toggleShoppingItem
+    const list = (this.props.data && this.props.data.list) || [];
+    const toggleShoppingItem = this.props.toggleShoppingItem;
 
     return (
       <div style={{ maxWidth: '500px', margin: 'auto' }}>
         <ListGroup>
-          {list.map(todo => (
+          {list.map((todo) => (
             <ListGroupItem key={todo.id}>
               <Checkbox
                 inline
                 checked={todo.checked}
                 onChange={toggleShoppingItem.bind(null, 'shopping-list-1', {
-                  id: todo.id
+                  id: todo.id,
                 })}
               >
                 {todo.text}
@@ -88,7 +88,7 @@ export class ShoppingList extends React.PureComponent {
           </Col>
         </Row>
       </div>
-    )
+    );
   }
 }
 
@@ -96,13 +96,13 @@ export class ShoppingList extends React.PureComponent {
 export const mapStateToOptions = (state, ownProps) => {
   return {
     viewModelName: 'shoppingList',
-    aggregateIds: ['shopping-list-1']
-  }
-}
+    aggregateIds: ['shopping-list-1'],
+  };
+};
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(aggregateActions, dispatch)
+export const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(aggregateActions, dispatch);
 
 export default connectViewModel(mapStateToOptions)(
   connect(null, mapDispatchToProps)(ShoppingList)
-)
+);

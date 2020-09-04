@@ -1,10 +1,10 @@
-import alias from '../../src/alias/$resolve.localBusBroker'
-import normalizePaths from './normalize_paths'
+import alias from '../../src/alias/$resolve.localBusBroker';
+import normalizePaths from './normalize_paths';
 
 describe('local config works correctly', () => {
   const resolveConfig = {
-    target: 'local'
-  }
+    target: 'local',
+  };
 
   test('[client]', () => {
     expect(() =>
@@ -12,12 +12,12 @@ describe('local config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   test('[server]', () => {
     expect(
@@ -25,18 +25,18 @@ describe('local config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot()
-  })
-})
+    ).toMatchSnapshot();
+  });
+});
 
 describe('cloud config works correctly', () => {
   const resolveConfig = {
-    target: 'cloud'
-  }
+    target: 'cloud',
+  };
 
   test('[client]', () => {
     expect(() =>
@@ -44,12 +44,12 @@ describe('cloud config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   test('[server]', () => {
     expect(() =>
@@ -57,10 +57,10 @@ describe('cloud config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
-    ).toThrow()
-  })
-})
+    ).toThrow();
+  });
+});

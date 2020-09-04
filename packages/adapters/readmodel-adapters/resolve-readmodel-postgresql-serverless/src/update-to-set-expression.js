@@ -1,10 +1,10 @@
-import debugLevels from 'resolve-debug-levels'
+import debugLevels from 'resolve-debug-levels';
 
 const log = debugLevels(
   'resolve:resolve-readmodel-postgresql-serverless:update-to-set-expression'
-)
+);
 
-const allowedOperatorNames = new Set(['$set', '$unset', '$inc'])
+const allowedOperatorNames = new Set(['$set', '$unset', '$inc']);
 
 const updateToSetExpression = (
   expression,
@@ -12,19 +12,19 @@ const updateToSetExpression = (
   escape,
   makeNestedPath
 ) => {
-  const updatingFieldsDescriptors = new Set()
-  const updatingFields = new Map()
+  const updatingFieldsDescriptors = new Set();
+  const updatingFields = new Map();
 
   for (let operatorName of Object.keys(expression)) {
     if (!allowedOperatorNames.has(operatorName)) {
-      log.warn(`Update operator "${operatorName}" is invalid`)
-      continue
+      log.warn(`Update operator "${operatorName}" is invalid`);
+      continue;
     }
     for (let fieldName of Object.keys(expression[operatorName])) {
-      const fieldValue = expression[operatorName][fieldName]
-      const [baseName, ...nestedPath] = fieldName.split('.')
-      let updatingFieldLevelMap = updatingFields
-      let updatingFieldDescriptor = null
+      const fieldValue = expression[operatorName][fieldName];
+      const [baseName, ...nestedPath] = fieldName.split('.');
+      let updatingFieldLevelMap = updatingFields;
+      let updatingFieldDescriptor = null;
 
       for (const partName of [baseName, ...nestedPath]) {
         if (!updatingFieldLevelMap.has(partName)) {
@@ -39,24 +39,24 @@ const updateToSetExpression = (
             children: new Map(),
             $set: null,
             $unset: null,
-            $inc: null
-          })
+            $inc: null,
+          });
         }
-        updatingFieldDescriptor = updatingFieldLevelMap.get(partName)
-        updatingFieldLevelMap = updatingFieldDescriptor.children
+        updatingFieldDescriptor = updatingFieldLevelMap.get(partName);
+        updatingFieldLevelMap = updatingFieldDescriptor.children;
 
-        updatingFieldsDescriptors.add(updatingFieldDescriptor)
+        updatingFieldsDescriptors.add(updatingFieldDescriptor);
       }
 
-      updatingFieldDescriptor[operatorName] = fieldValue
+      updatingFieldDescriptor[operatorName] = fieldValue;
     }
   }
 
   for (const descriptor of updatingFieldsDescriptors) {
-    const flagUnset = descriptor['$unset'] != null
-    const flagSet = descriptor['$set'] != null
-    const flagInc = descriptor['$inc'] != null
-    const flagChild = descriptor.children.size > 0
+    const flagUnset = descriptor['$unset'] != null;
+    const flagSet = descriptor['$set'] != null;
+    const flagInc = descriptor['$inc'] != null;
+    const flagChild = descriptor.children.size > 0;
 
     if (
       Number(flagUnset) +
@@ -65,84 +65,84 @@ const updateToSetExpression = (
         Number(flagChild) !==
       1
     ) {
-      log.warn(`Updating set for key "${descriptor.key}" came into conflict`)
-      log.warn(`Either key includes "$set", "$unset", "$inc" simultaneously`)
-      log.warn(`Either key has children update nodes`)
+      log.warn(`Updating set for key "${descriptor.key}" came into conflict`);
+      log.warn(`Either key includes "$set", "$unset", "$inc" simultaneously`);
+      log.warn(`Either key has children update nodes`);
     }
 
     switch (true) {
       case flagUnset:
-        descriptor.selectedOperation = '$unset'
-        descriptor['$set'] = null
+        descriptor.selectedOperation = '$unset';
+        descriptor['$set'] = null;
       // eslint-disable-next-line no-fallthrough
       case flagSet:
         descriptor.selectedOperation =
           descriptor.selectedOperation != null
             ? descriptor.selectedOperation
-            : '$set'
-        descriptor['$inc'] = null
+            : '$set';
+        descriptor['$inc'] = null;
       // eslint-disable-next-line no-fallthrough
       case flagInc:
         descriptor.selectedOperation =
           descriptor.selectedOperation != null
             ? descriptor.selectedOperation
-            : '$inc'
-        descriptor.children.clear()
+            : '$inc';
+        descriptor.children.clear();
       // eslint-disable-next-line no-fallthrough
       default:
-        break
+        break;
     }
   }
 
   for (const descriptor of updatingFieldsDescriptors) {
     if (descriptor.children.size !== 0) {
-      continue
+      continue;
     }
-    const baseDescriptor = updatingFields.get(descriptor.baseName)
+    const baseDescriptor = updatingFields.get(descriptor.baseName);
     const operation = {
       operationName: descriptor.selectedOperation,
-      fieldValue: descriptor[descriptor.selectedOperation]
-    }
+      fieldValue: descriptor[descriptor.selectedOperation],
+    };
     if (descriptor.nestedKey.length > 0) {
-      operation.nestedPath = descriptor.nestedKey
+      operation.nestedPath = descriptor.nestedKey;
     }
 
     if (baseDescriptor === descriptor) {
-      baseDescriptor.operations = operation
+      baseDescriptor.operations = operation;
     } else if (Array.isArray(baseDescriptor.operations)) {
-      baseDescriptor.operations.push(operation)
+      baseDescriptor.operations.push(operation);
     } else {
-      baseDescriptor.operations = [operation]
+      baseDescriptor.operations = [operation];
     }
   }
 
-  let inlineTableNameIdx = 0
-  const updateOperations = new Map()
+  let inlineTableNameIdx = 0;
+  const updateOperations = new Map();
   for (const [baseKey, baseDescriptor] of updatingFields) {
-    updateOperations.set(baseKey, baseDescriptor.operations)
+    updateOperations.set(baseKey, baseDescriptor.operations);
   }
 
-  const updateExprArray = []
-  updatingFieldsDescriptors.clear()
-  updatingFields.clear()
+  const updateExprArray = [];
+  updatingFieldsDescriptors.clear();
+  updatingFields.clear();
 
   for (const [baseName, operations] of updateOperations) {
-    const isBaseOperation = !Array.isArray(operations)
+    const isBaseOperation = !Array.isArray(operations);
 
     if (isBaseOperation && operations.operationName === '$unset') {
-      updateExprArray.push(`${escapeId(baseName)} = NULL `)
+      updateExprArray.push(`${escapeId(baseName)} = NULL `);
     } else if (isBaseOperation && operations.operationName === '$set') {
-      const fieldValue = operations.fieldValue
+      const fieldValue = operations.fieldValue;
       updateExprArray.push(
         `${escapeId(baseName)} = ${
           fieldValue != null
             ? `CAST(${escape(JSON.stringify(fieldValue))} AS JSONB)`
             : null
         } `
-      )
+      );
     } else if (isBaseOperation && operations.operationName === '$inc') {
-      const inlineTableName = escapeId(`inline-table-${inlineTableNameIdx++}`)
-      const fieldValue = operations.fieldValue
+      const inlineTableName = escapeId(`inline-table-${inlineTableNameIdx++}`);
+      const fieldValue = operations.fieldValue;
 
       updateExprArray.push(
         `${escapeId(baseName)} = CAST(( (SELECT CAST(CASE
@@ -167,12 +167,12 @@ const updateToSetExpression = (
         END AS JSONB) AS ${escapeId('pg_catalog')} FROM (
           SELECT ${escapeId(baseName)} AS ${escapeId('val')}
         ) ${inlineTableName}) ) AS JSONB)`
-      )
+      );
     } else if (!isBaseOperation) {
-      let updateExpr = escapeId(baseName)
+      let updateExpr = escapeId(baseName);
       for (const { operationName, nestedPath, fieldValue } of operations) {
         if (operationName === '$unset') {
-          updateExpr = `${updateExpr} #- '${makeNestedPath(nestedPath)}' `
+          updateExpr = `${updateExpr} #- '${makeNestedPath(nestedPath)}' `;
         } else if (operationName === '$set') {
           updateExpr = `jsonb_set(
             ${updateExpr},
@@ -182,11 +182,11 @@ const updateToSetExpression = (
                 ? `CAST(${escape(JSON.stringify(fieldValue))} AS JSONB)`
                 : null
             }
-            ) `
+            ) `;
         } else if (operationName === '$inc') {
           const inlineTableName = escapeId(
             `inline-table-${inlineTableNameIdx++}`
-          )
+          );
 
           updateExpr = `(SELECT jsonb_set(${inlineTableName}.${escapeId(
             'val'
@@ -218,15 +218,15 @@ const updateToSetExpression = (
           END AS JSONB)) AS ${escapeId('pg_catalog')} FROM (
             SELECT ${updateExpr} AS ${escapeId('val')}
           ) ${inlineTableName}
-          )`
+          )`;
         }
       }
 
-      updateExprArray.push(`${escapeId(baseName)} = ${updateExpr}`)
+      updateExprArray.push(`${escapeId(baseName)} = ${updateExpr}`);
     }
   }
 
-  return updateExprArray.join(', ')
-}
+  return updateExprArray.join(', ');
+};
 
-export default updateToSetExpression
+export default updateToSetExpression;

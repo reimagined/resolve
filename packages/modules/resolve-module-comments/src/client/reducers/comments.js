@@ -1,19 +1,19 @@
-import { internal } from 'resolve-redux'
+import { internal } from 'resolve-redux';
 
-import injectDefaults from '../../common/inject-defaults'
+import injectDefaults from '../../common/inject-defaults';
 
 const {
   CONNECT_READMODEL,
   DISCONNECT_READMODEL,
   QUERY_READMODEL_SUCCESS,
-  SEND_COMMAND_SUCCESS
-} = internal.actionTypes
+  SEND_COMMAND_SUCCESS,
+} = internal.actionTypes;
 
 const createCommentsReducer = ({
   aggregateName,
   readModelName,
   resolverNames: { commentsTree },
-  commandTypes: { createComment, updateComment, removeComment }
+  commandTypes: { createComment, updateComment, removeComment },
 }) => (state = {}, action) => {
   if (
     action.type === CONNECT_READMODEL &&
@@ -25,10 +25,10 @@ const createCommentsReducer = ({
       [action.query.args.treeId]: {
         ...state[action.query.args.treeId],
         [action.query.args.parentCommentId]: {
-          children: []
-        }
-      }
-    }
+          children: [],
+        },
+      },
+    };
   }
 
   if (
@@ -39,16 +39,16 @@ const createCommentsReducer = ({
     const nextState = {
       ...state,
       [action.query.args.treeId]: {
-        ...state[action.query.args.treeId]
-      }
-    }
+        ...state[action.query.args.treeId],
+      },
+    };
     delete nextState[action.query.args.treeId][
       action.query.args.parentCommentId
-    ]
+    ];
     if (Object.keys(nextState[action.query.args.treeId]).length === 0) {
-      delete nextState[action.query.args.treeId]
+      delete nextState[action.query.args.treeId];
     }
-    return nextState
+    return nextState;
   }
 
   if (
@@ -60,9 +60,9 @@ const createCommentsReducer = ({
       ...state,
       [action.query.args.treeId]: {
         ...state[action.query.args.treeId],
-        [action.query.args.parentCommentId]: action.result.data
-      }
-    }
+        [action.query.args.parentCommentId]: action.result.data,
+      },
+    };
   }
 
   if (
@@ -83,14 +83,14 @@ const createCommentsReducer = ({
               state[action.command.aggregateId][
                 action.command.payload.parentCommentId
               ] || {
-                children: []
+                children: [],
               }
             ).children,
-            action.command.payload
-          ]
-        }
-      }
-    }
+            action.command.payload,
+          ],
+        },
+      },
+    };
   }
 
   if (
@@ -108,17 +108,17 @@ const createCommentsReducer = ({
           ],
           children: state[action.command.aggregateId][
             action.command.payload.parentCommentId
-          ].children.map(child =>
+          ].children.map((child) =>
             child.commentId === action.command.payload.commentId
               ? {
                   ...child,
-                  ...action.command.payload
+                  ...action.command.payload,
                 }
               : child
-          )
-        }
-      }
-    }
+          ),
+        },
+      },
+    };
   }
 
   if (
@@ -137,14 +137,14 @@ const createCommentsReducer = ({
           children: state[action.command.aggregateId][
             action.command.payload.parentCommentId
           ].children.filter(
-            child => child.commentId !== action.command.payload.commentId
-          )
-        }
-      }
-    }
+            (child) => child.commentId !== action.command.payload.commentId
+          ),
+        },
+      },
+    };
   }
 
-  return state
-}
+  return state;
+};
 
-export default injectDefaults(createCommentsReducer)
+export default injectDefaults(createCommentsReducer);

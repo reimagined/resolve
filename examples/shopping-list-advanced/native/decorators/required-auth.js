@@ -1,38 +1,38 @@
-import React from 'react'
-import { connect } from 'react-redux'
+import React from 'react';
+import { connect } from 'react-redux';
 
-export const mapStateToProps = state => {
+export const mapStateToProps = (state) => {
   return {
-    jwt: state.jwt
-  }
-}
+    jwt: state.jwt,
+  };
+};
 
-const requiredAuth = Component => {
+const requiredAuth = (Component) => {
   class RequiredAuth extends React.PureComponent {
     componentDidMount() {
-      this.optionalRedirect()
+      this.optionalRedirect();
     }
 
     componentDidUpdate(prevProps) {
       if (prevProps.jwt !== this.props.jwt) {
-        this.optionalRedirect()
+        this.optionalRedirect();
       }
     }
 
     optionalRedirect = () => {
       if (!this.props.jwt.id) {
-        this.props.navigation.navigate('Login')
+        this.props.navigation.navigate('Login');
       }
-    }
+    };
 
     render() {
-      const { jwt, ...props } = this.props
+      const { jwt, ...props } = this.props;
 
-      return jwt.id ? <Component {...props} /> : null
+      return jwt.id ? <Component {...props} /> : null;
     }
   }
 
-  return connect(mapStateToProps)(RequiredAuth)
-}
+  return connect(mapStateToProps)(RequiredAuth);
+};
 
-export default requiredAuth
+export default requiredAuth;

@@ -1,51 +1,51 @@
-import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents from 'resolve-testing-tools'
-import fs from 'fs'
-import path from 'path'
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault';
+import givenEvents from 'resolve-testing-tools';
+import fs from 'fs';
+import path from 'path';
 
-import config from './config'
-import resetReadModel from '../reset-read-model'
+import config from './config';
+import resetReadModel from '../reset-read-model';
 
-jest.setTimeout(1000 * 60 * 5)
+jest.setTimeout(1000 * 60 * 5);
 
 describe('Read-model generic adapter API', () => {
   const {
     name,
     resolvers: resolversModule,
     projection: projectionModule,
-    connectorName
-  } = config.readModels.find(({ name }) => name === 'Counter')
+    connectorName,
+  } = config.readModels.find(({ name }) => name === 'Counter');
   const {
     module: connectorModule,
-    options: connectorOptions
-  } = config.readModelConnectors[connectorName]
+    options: connectorOptions,
+  } = config.readModelConnectors[connectorName];
 
   const createConnector = interopRequireDefault(require(`./${connectorModule}`))
-    .default
+    .default;
 
   connectorOptions.prefix = path.join(
     __dirname,
     connectorOptions.prefix,
     path.sep
-  )
+  );
 
   const projection = interopRequireDefault(require(`./${projectionModule}`))
-    .default
+    .default;
   const resolvers = interopRequireDefault(require(`./${resolversModule}`))
-    .default
+    .default;
 
-  let adapter = null
+  let adapter = null;
   beforeEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
-    adapter = createConnector(connectorOptions)
-  })
+    await resetReadModel(createConnector, connectorOptions, name);
+    adapter = createConnector(connectorOptions);
+  });
   afterEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
-    adapter = null
-  })
+    await resetReadModel(createConnector, connectorOptions, name);
+    adapter = null;
+  });
 
-  beforeAll(() => fs.mkdirSync(connectorOptions.prefix))
-  afterAll(() => fs.rmdirSync(connectorOptions.prefix))
+  beforeAll(() => fs.mkdirSync(connectorOptions.prefix));
+  afterAll(() => fs.rmdirSync(connectorOptions.prefix));
 
   it('Insert and non-parameterized resolver invocation', async () => {
     const result = await givenEvents([
@@ -53,29 +53,29 @@ describe('Read-model generic adapter API', () => {
         aggregateId: 'ID',
         type: 'INCREMENT',
         timestamp: 1,
-        payload: 100
+        payload: 100,
       },
       {
         aggregateId: 'ID',
         type: 'DECREMENT',
         timestamp: 2,
-        payload: 200
+        payload: 200,
       },
       {
         aggregateId: 'ID',
         type: 'INCREMENT',
         timestamp: 3,
-        payload: 300
-      }
+        payload: 300,
+      },
     ])
       .readModel({
         name,
         projection,
         resolvers,
-        adapter: adapter
+        adapter: adapter,
       })
-      .read({})
+      .read({});
 
-    expect(result.data).toEqual(200)
-  })
-})
+    expect(result.data).toEqual(200);
+  });
+});

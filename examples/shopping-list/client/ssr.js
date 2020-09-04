@@ -1,14 +1,14 @@
-import React from 'react'
-import ReactDOM from 'react-dom/server'
-import { createStore, AppContainer } from 'resolve-redux'
-import { Router } from 'react-router'
-import { Helmet } from 'react-helmet'
-import { createMemoryHistory } from 'history'
-import jsonwebtoken from 'jsonwebtoken'
+import React from 'react';
+import ReactDOM from 'react-dom/server';
+import { createStore, AppContainer } from 'resolve-redux';
+import { Router } from 'react-router';
+import { Helmet } from 'react-helmet';
+import { createMemoryHistory } from 'history';
+import jsonwebtoken from 'jsonwebtoken';
 
-import getRoutes from './get-routes'
-import getRedux from './get-redux'
-import Routes from '../client/components/Routes'
+import getRoutes from './get-routes';
+import getRedux from './get-redux';
+import Routes from '../client/components/Routes';
 
 const ssrHandler = async (
   { serverImports, constants, seedClientEnvs, viewModels, utils },
@@ -16,20 +16,20 @@ const ssrHandler = async (
   res
 ) => {
   try {
-    const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils
-    const { rootPath, staticPath, jwtCookie } = constants
-    const redux = getRedux(serverImports)
-    const routes = getRoutes(serverImports)
+    const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils;
+    const { rootPath, staticPath, jwtCookie } = constants;
+    const redux = getRedux(serverImports);
+    const routes = getRoutes(serverImports);
 
-    const baseQueryUrl = getRootBasedUrl(rootPath, '/')
-    const origin = ''
-    const url = req.path.substring(baseQueryUrl.length)
-    const history = createMemoryHistory()
-    history.push(url)
+    const baseQueryUrl = getRootBasedUrl(rootPath, '/');
+    const origin = '';
+    const url = req.path.substring(baseQueryUrl.length);
+    const history = createMemoryHistory();
+    history.push(url);
 
-    const jwt = {}
+    const jwt = {};
     try {
-      Object.assign(jwt, jsonwebtoken.decode(req.cookies[jwtCookie.name]))
+      Object.assign(jwt, jsonwebtoken.decode(req.cookies[jwtCookie.name]));
     } catch (e) {}
 
     const store = createStore({
@@ -40,10 +40,10 @@ const ssrHandler = async (
       history,
       origin,
       rootPath,
-      isClient: false
-    })
+      isClient: false,
+    });
 
-    const staticContext = {}
+    const staticContext = {};
     const markup = ReactDOM.renderToStaticMarkup(
       <AppContainer
         origin={origin}
@@ -55,16 +55,16 @@ const ssrHandler = async (
           <Routes routes={routes} />
         </Router>
       </AppContainer>
-    )
+    );
 
-    const initialState = store.getState()
-    const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index.js')
-    const faviconUrl = getStaticBasedPath(rootPath, staticPath, 'favicon.ico')
+    const initialState = store.getState();
+    const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index.js');
+    const faviconUrl = getStaticBasedPath(rootPath, staticPath, 'favicon.ico');
 
-    const helmet = Helmet.renderStatic()
+    const helmet = Helmet.renderStatic();
 
     for (const reducerName of Object.keys(redux.reducers)) {
-      delete initialState[reducerName]
+      delete initialState[reducerName];
     }
 
     const markupHtml =
@@ -86,17 +86,17 @@ const ssrHandler = async (
       `<div id="app-container">${markup}</div>` +
       `<script src="${bundleUrl}"></script>` +
       '</body>' +
-      '</html>'
+      '</html>';
 
-    await res.setHeader('Content-Type', 'text/html')
+    await res.setHeader('Content-Type', 'text/html');
 
-    await res.end(markupHtml)
+    await res.end(markupHtml);
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.warn('SSR error', error)
-    res.status(500)
-    res.end('SSR error')
+    console.warn('SSR error', error);
+    res.status(500);
+    res.end('SSR error');
   }
-}
+};
 
-export default ssrHandler
+export default ssrHandler;

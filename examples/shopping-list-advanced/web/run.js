@@ -8,25 +8,25 @@ const {
   stop,
   reset,
   importEventStore,
-  exportEventStore
-} = require('resolve-scripts')
-const createAuthModule = require('resolve-module-auth').default
-const resolveModuleAdmin = require('resolve-module-admin').default
-const getLocalIp = require('my-local-ip')
-const remotedev = require('remotedev-server')
-const opn = require('opn')
+  exportEventStore,
+} = require('resolve-scripts');
+const createAuthModule = require('resolve-module-auth').default;
+const resolveModuleAdmin = require('resolve-module-admin').default;
+const getLocalIp = require('my-local-ip');
+const remotedev = require('remotedev-server');
+const opn = require('opn');
 
-const adjustWebpackConfigs = require('./config.adjust-webpack')
-const devConfig = require('./config.dev')
-const prodConfig = require('./config.prod')
-const cloudConfig = require('./config.cloud')
-const testFunctionalConfig = require('./config.test-functional')
-const appConfig = require('./config.app')
+const adjustWebpackConfigs = require('./config.adjust-webpack');
+const devConfig = require('./config.dev');
+const prodConfig = require('./config.prod');
+const cloudConfig = require('./config.cloud');
+const testFunctionalConfig = require('./config.test-functional');
+const appConfig = require('./config.app');
 
-const launchMode = process.argv[2]
+const launchMode = process.argv[2];
 
 const merge = (...configs) => {
-  const config = rawMerge(...configs)
+  const config = rawMerge(...configs);
   return {
     ...config,
     customConstants: {
@@ -34,15 +34,15 @@ const merge = (...configs) => {
       backend: {
         protocol: process.env.SHOPPING_LIST_PROTOCOL || 'http',
         hostname: process.env.SHOPPING_LIST_HOSTNAME || getLocalIp(),
-        port: process.env.SHOPPING_LIST_PORT || config.port
+        port: process.env.SHOPPING_LIST_PORT || config.port,
       },
       remoteReduxDevTools: {
         hostname: process.env.SHOPPING_LIST_HOST || getLocalIp(),
-        port: process.env.SHOPPING_LIST_PROTOCOL || 19042
-      }
-    }
-  }
-}
+        port: process.env.SHOPPING_LIST_PROTOCOL || 19042,
+      },
+    },
+  };
+};
 
 void (async () => {
   try {
@@ -54,31 +54,31 @@ void (async () => {
           {
             path: 'auth/local/register',
             method: 'POST',
-            callback: 'common/auth/route-register-callback.js'
+            callback: 'common/auth/route-register-callback.js',
           },
           {
             path: 'auth/local/login',
             method: 'POST',
-            callback: 'common/auth/route-login-callback.js'
-          }
+            callback: 'common/auth/route-login-callback.js',
+          },
         ],
         logoutRoute: {
           path: 'auth/local/logout',
-          method: 'GET'
-        }
-      }
-    ])
+          method: 'GET',
+        },
+      },
+    ]);
 
     switch (launchMode) {
       case 'dev': {
-        const moduleAdmin = resolveModuleAdmin()
+        const moduleAdmin = resolveModuleAdmin();
         const resolveConfig = merge(
           defaultResolveConfig,
           appConfig,
           devConfig,
           authModule,
           moduleAdmin
-        )
+        );
 
         await reset(
           resolveConfig,
@@ -86,13 +86,13 @@ void (async () => {
             dropEventStore: false,
             dropEventBus: true,
             dropReadModels: true,
-            dropSagas: true
+            dropSagas: true,
           },
           adjustWebpackConfigs
-        )
+        );
 
-        await watch(resolveConfig, adjustWebpackConfigs)
-        break
+        await watch(resolveConfig, adjustWebpackConfigs);
+        break;
       }
       case 'dev:native': {
         const resolveConfig = merge(
@@ -100,17 +100,17 @@ void (async () => {
           appConfig,
           devConfig,
           authModule
-        )
+        );
 
         await remotedev({
           hostname: resolveConfig.customConstants.remoteReduxDevTools.hostname,
           port: resolveConfig.customConstants.remoteReduxDevTools.port,
-          wsEngine: 'ws'
-        })
+          wsEngine: 'ws',
+        });
 
         await opn(
           `http://${resolveConfig.customConstants.remoteReduxDevTools.hostname}:${resolveConfig.customConstants.remoteReduxDevTools.port}`
-        )
+        );
 
         await reset(
           resolveConfig,
@@ -118,13 +118,13 @@ void (async () => {
             dropEventStore: false,
             dropEventBus: true,
             dropReadModels: true,
-            dropSagas: true
+            dropSagas: true,
           },
           adjustWebpackConfigs
-        )
+        );
 
-        await watch(resolveConfig, adjustWebpackConfigs)
-        break
+        await watch(resolveConfig, adjustWebpackConfigs);
+        break;
       }
 
       case 'build': {
@@ -133,11 +133,11 @@ void (async () => {
           appConfig,
           prodConfig,
           authModule
-        )
+        );
 
-        await build(resolveConfig, adjustWebpackConfigs)
+        await build(resolveConfig, adjustWebpackConfigs);
 
-        break
+        break;
       }
 
       case 'cloud': {
@@ -146,11 +146,11 @@ void (async () => {
           appConfig,
           cloudConfig,
           authModule
-        )
+        );
 
-        await build(resolveConfig, adjustWebpackConfigs)
+        await build(resolveConfig, adjustWebpackConfigs);
 
-        break
+        break;
       }
 
       case 'start': {
@@ -159,11 +159,11 @@ void (async () => {
           appConfig,
           prodConfig,
           authModule
-        )
+        );
 
-        await start(resolveConfig)
+        await start(resolveConfig);
 
-        break
+        break;
       }
 
       case 'import-event-store': {
@@ -172,16 +172,16 @@ void (async () => {
           appConfig,
           testFunctionalConfig,
           authModule
-        )
+        );
 
-        const importFile = process.argv[3]
+        const importFile = process.argv[3];
 
         await importEventStore(
           resolveConfig,
           { importFile },
           adjustWebpackConfigs
-        )
-        break
+        );
+        break;
       }
 
       case 'export-event-store': {
@@ -190,27 +190,27 @@ void (async () => {
           appConfig,
           testFunctionalConfig,
           authModule
-        )
+        );
 
-        const exportFile = process.argv[3]
+        const exportFile = process.argv[3];
 
         await exportEventStore(
           resolveConfig,
           { exportFile },
           adjustWebpackConfigs
-        )
-        break
+        );
+        break;
       }
 
       case 'test:e2e': {
-        const moduleAdmin = resolveModuleAdmin()
+        const moduleAdmin = resolveModuleAdmin();
         const resolveConfig = merge(
           defaultResolveConfig,
           appConfig,
           testFunctionalConfig,
           moduleAdmin,
           authModule
-        )
+        );
 
         await reset(
           resolveConfig,
@@ -218,28 +218,28 @@ void (async () => {
             dropEventStore: true,
             dropEventBus: true,
             dropReadModels: true,
-            dropSagas: true
+            dropSagas: true,
           },
           adjustWebpackConfigs
-        )
+        );
 
         await runTestcafe({
           resolveConfig,
           adjustWebpackConfigs,
           functionalTestsDir: './test/functional',
           browser: process.argv[3],
-          customArgs: ['--stop-on-first-fail']
+          customArgs: ['--stop-on-first-fail'],
           // customArgs: ['-r', 'json:report.json']
-        })
-        break
+        });
+        break;
       }
 
       default: {
-        throw new Error('Unknown option')
+        throw new Error('Unknown option');
       }
     }
-    await stop()
+    await stop();
   } catch (error) {
-    await stop(error)
+    await stop(error);
   }
-})()
+})();

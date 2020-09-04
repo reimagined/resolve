@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 
-import Header from '../containers/Header'
+import Header from '../containers/Header';
 
 const App = ({ children }) => (
   <div>
@@ -12,6 +12,6 @@ const App = ({ children }) => (
     />
     {children}
   </div>
-)
+);
 
-export default App
+export default App;

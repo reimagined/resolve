@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from 'resolve-scripts';
 
 const devConfig = {
   target: 'local',
@@ -13,39 +13,39 @@ const devConfig = {
       module: 'resolve-readmodel-lite',
       options: {
         databaseFile: 'data/read-models.db',
-        secretsFile: 'data/secrets.db'
-      }
-    }
+        secretsFile: 'data/secrets.db',
+      },
+    },
   },
   eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
     options: {
       databaseFile: 'data/eventstore.db',
       secretsFile: 'data/secrets.db',
-      snapshotBucketSize: 100
-    }
+      snapshotBucketSize: 100,
+    },
   },
   jwtCookie: {
     name: 'jwt',
-    maxAge: 31536000000
+    maxAge: 31536000000,
   },
   uploadAdapter: {
     module: 'resolve-upload-local',
     options: {
       directory: 'data',
       bucket: 'files',
-      secretKey: 'key'
-    }
+      secretKey: 'key',
+    },
   },
   schedulers: {
     scheduler: {
       adapter: {
         module: 'resolve-scheduler-local',
-        options: {}
+        options: {},
       },
-      connectorName: 'default'
-    }
-  }
-}
+      connectorName: 'default',
+    },
+  },
+};
 
-export default devConfig
+export default devConfig;

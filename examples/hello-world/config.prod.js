@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from 'resolve-scripts';
 
 const prodConfig = {
   target: 'local',
@@ -12,9 +12,9 @@ const prodConfig = {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'data/read-models.db'
-      }
-    }
+        databaseFile: 'data/read-models.db',
+      },
+    },
     /*
       default: {
         module: 'resolve-readmodel-mysql',
@@ -33,8 +33,8 @@ const prodConfig = {
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
-      snapshotBucketSize: 100
-    }
+      snapshotBucketSize: 100,
+    },
   },
   /*
     {
@@ -50,8 +50,8 @@ const prodConfig = {
     }
   */ jwtCookie: {
     name: 'jwt',
-    maxAge: 31536000000
-  }
-}
+    maxAge: 31536000000,
+  },
+};
 
-export default prodConfig
+export default prodConfig;

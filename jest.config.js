@@ -1,6 +1,6 @@
-process.env.TZ = 'Europe/Moscow'
+process.env.TZ = 'Europe/Moscow';
 
-const path = require('path')
+const path = require('path');
 
 module.exports = {
   rootDir: process.cwd(),
@@ -10,12 +10,12 @@ module.exports = {
     '/node_modules/',
     '^.*/test/func/.*$',
     '^.*/test/functional/.*$',
-    '^.*/test/.*\\.func\\.test\\.[jt]sx?$'
+    '^.*/test/.*\\.func\\.test\\.[jt]sx?$',
   ],
   collectCoverageFrom: ['src/**/*.js'],
   transform: {
     '^.+\\.js$': path.resolve(__dirname, 'jest.transform.js'),
-    '^.+\\.tsx?$': 'ts-jest'
+    '^.+\\.tsx?$': 'ts-jest',
   },
-  roots: ['<rootDir>/src', '<rootDir>/test']
-}
+  roots: ['<rootDir>/src', '<rootDir>/test'],
+};

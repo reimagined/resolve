@@ -4,12 +4,12 @@ const updateToSetExpression = (
   escape,
   makeNestedPath
 ) => {
-  const updateExprArray = []
+  const updateExprArray = [];
 
   for (let operatorName of Object.keys(expression)) {
     for (let fieldName of Object.keys(expression[operatorName])) {
-      const fieldValue = expression[operatorName][fieldName]
-      const [baseName, ...nestedPath] = fieldName.split('.')
+      const fieldValue = expression[operatorName][fieldName];
+      const [baseName, ...nestedPath] = fieldName.split('.');
 
       switch (operatorName) {
         case '$unset': {
@@ -18,32 +18,32 @@ const updateToSetExpression = (
               `${escapeId(baseName)} = JSON_REMOVE(${escapeId(
                 baseName
               )}, '${makeNestedPath(nestedPath)}') `
-            )
+            );
           } else {
-            updateExprArray.push(`${escapeId(baseName)} = NULL `)
+            updateExprArray.push(`${escapeId(baseName)} = NULL `);
           }
-          break
+          break;
         }
 
         case '$set': {
           let updatingInlinedValue =
             fieldValue != null
               ? `CAST(${escape(JSON.stringify(fieldValue))} AS JSON)`
-              : null
+              : null;
 
           if (nestedPath.length > 0) {
             updateExprArray.push(
               `${escapeId(baseName)} = JSON_SET(${escapeId(
                 baseName
               )}, '${makeNestedPath(nestedPath)}', ${updatingInlinedValue}) `
-            )
+            );
           } else {
             updateExprArray.push(
               `${escapeId(baseName)} = ${updatingInlinedValue} `
-            )
+            );
           }
 
-          break
+          break;
         }
 
         case '$inc': {
@@ -52,16 +52,16 @@ const updateToSetExpression = (
               ? `JSON_EXTRACT(${escapeId(baseName)}, '${makeNestedPath(
                   nestedPath
                 )}')`
-              : escapeId(baseName)
+              : escapeId(baseName);
 
           const targetInlinedPrefix =
             nestedPath.length > 0
               ? `${escapeId(baseName)} = JSON_SET(${escapeId(
                   baseName
                 )}, '${makeNestedPath(nestedPath)}', `
-              : `${escapeId(baseName)} = `
+              : `${escapeId(baseName)} = `;
 
-          const targetInlinedPostfix = nestedPath.length > 0 ? ')' : ''
+          const targetInlinedPostfix = nestedPath.length > 0 ? ')' : '';
 
           let updatingInlinedValue = `CAST(CASE
             WHEN JSON_TYPE(${sourceInlinedValue}) = 'STRING' THEN JSON_QUOTE(CONCAT(
@@ -84,22 +84,22 @@ const updateToSetExpression = (
               SELECT 'Invalid JSON type for $inc operation' 
               FROM information_schema.tables
             )
-          END AS JSON)`
+          END AS JSON)`;
 
           updateExprArray.push(
             `${targetInlinedPrefix} ${updatingInlinedValue} ${targetInlinedPostfix}`
-          )
+          );
 
-          break
+          break;
         }
 
         default:
-          break
+          break;
       }
     }
   }
 
-  return updateExprArray.join(', ')
-}
+  return updateExprArray.join(', ');
+};
 
-export default updateToSetExpression
+export default updateToSetExpression;

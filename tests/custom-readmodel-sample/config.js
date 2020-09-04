@@ -1,9 +1,9 @@
-import { merge, defaultResolveConfig, validateConfig } from 'resolve-scripts'
+import { merge, defaultResolveConfig, validateConfig } from 'resolve-scripts';
 
 const localConfig = {
   mode: 'development',
-  target: 'local'
-}
+  target: 'local',
+};
 
 // mdis-start app-config
 const appConfig = {
@@ -12,10 +12,10 @@ const appConfig = {
       name: 'Counter',
       projection: 'projection.js',
       resolvers: 'resolvers.js',
-      connectorName: 'default'
-    }
-  ]
-}
+      connectorName: 'default',
+    },
+  ],
+};
 // mdis-stop app-config
 
 // mdis-start dev-config
@@ -23,23 +23,23 @@ const devConfig = {
   eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
     options: {
-      databaseFile: ':memory:'
-    }
+      databaseFile: ':memory:',
+    },
   },
 
   readModelConnectors: {
     default: {
       module: 'connector.js',
       options: {
-        prefix: 'read-model-database'
-      }
-    }
-  }
-}
+        prefix: 'read-model-database',
+      },
+    },
+  },
+};
 // mdis-stop dev-config
 
-const config = merge(defaultResolveConfig, localConfig, appConfig, devConfig)
+const config = merge(defaultResolveConfig, localConfig, appConfig, devConfig);
 
-validateConfig(config)
+validateConfig(config);
 
-export default config
+export default config;

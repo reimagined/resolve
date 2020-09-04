@@ -1,12 +1,12 @@
-import React from 'react'
-import styled, { css } from 'styled-components'
-import { NavLink } from 'react-router-dom'
+import React from 'react';
+import styled, { css } from 'styled-components';
+import { NavLink } from 'react-router-dom';
 
-import Splitter from './Splitter'
+import Splitter from './Splitter';
 
 export const PaginationRoot = styled.div`
   padding: 0.5em 0;
-`
+`;
 
 export const StyledLink = styled(NavLink)`
   display: inline;
@@ -17,7 +17,7 @@ export const StyledLink = styled(NavLink)`
     text-decoration: underline;
   }
 
-  ${props =>
+  ${(props) =>
     props.disabled
       ? css`
           pointer-events: none;
@@ -27,15 +27,15 @@ export const StyledLink = styled(NavLink)`
       : css`
           color: #000;
         `};
-`
+`;
 
 const Pagination = ({ page, hasNext, location }) => {
   if (page === 1 && !hasNext) {
-    return null
+    return null;
   }
 
-  const prevDisabled = page <= 1
-  const nextDisabled = !hasNext
+  const prevDisabled = page <= 1;
+  const nextDisabled = !hasNext;
 
   return (
     <PaginationRoot>
@@ -55,11 +55,11 @@ const Pagination = ({ page, hasNext, location }) => {
         More
       </StyledLink>
     </PaginationRoot>
-  )
-}
+  );
+};
 
 Pagination.defaultProps = {
-  page: 1
-}
+  page: 1,
+};
 
-export default Pagination
+export default Pagination;

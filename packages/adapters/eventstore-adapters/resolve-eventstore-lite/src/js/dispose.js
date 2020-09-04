@@ -1,5 +1,5 @@
 const dispose = async ({ database }) => {
-  await database.close()
-}
+  await database.close();
+};
 
-export default dispose
+export default dispose;

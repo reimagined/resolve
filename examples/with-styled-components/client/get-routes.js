@@ -1,5 +1,5 @@
-import App from './components/App'
-import StyledComponents from './components/StyledComponents'
+import App from './components/App';
+import StyledComponents from './components/StyledComponents';
 
 const routes = [
   {
@@ -9,12 +9,12 @@ const routes = [
       {
         path: '/',
         component: StyledComponents,
-        exact: true
-      }
-    ]
-  }
-]
+        exact: true,
+      },
+    ],
+  },
+];
 
-const getRoutes = () => routes
+const getRoutes = () => routes;
 
-export default getRoutes
+export default getRoutes;

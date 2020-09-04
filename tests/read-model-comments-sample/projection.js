@@ -1,39 +1,39 @@
-const treeId = 'tree-id'
+const treeId = 'tree-id';
 
 const projection = {
-  Init: async store => {
+  Init: async (store) => {
     await store.defineTable('CommentsAsMap', {
       indexes: { treeId: 'string' },
-      fields: ['comments']
-    })
+      fields: ['comments'],
+    });
 
     await store.defineTable('CommentsAsList', {
       indexes: { treeId: 'string' },
-      fields: ['comments', 'commentsCount']
-    })
+      fields: ['comments', 'commentsCount'],
+    });
 
     await store.insert('CommentsAsMap', {
       treeId,
-      comments: {}
-    })
+      comments: {},
+    });
 
     await store.insert('CommentsAsList', {
       treeId,
       comments: [],
-      commentsCount: 0
-    })
+      commentsCount: 0,
+    });
   },
 
   COMMENT_CREATED: async (store, event) => {
     const {
       aggregateId,
-      payload: { parentId, content }
-    } = event
+      payload: { parentId, content },
+    } = event;
 
     await store.update(
       'CommentsAsMap',
       {
-        treeId
+        treeId,
       },
       {
         $set: {
@@ -42,76 +42,76 @@ const projection = {
             parentId,
             content,
             children: {},
-            childrenCount: 0
-          }
-        }
+            childrenCount: 0,
+          },
+        },
       }
-    )
+    );
 
     if (parentId != null) {
       await store.update(
         'CommentsAsMap',
         {
-          treeId
+          treeId,
         },
         {
           $set: {
-            [`comments.${parentId}.children.${aggregateId}`]: true
+            [`comments.${parentId}.children.${aggregateId}`]: true,
           },
           $inc: {
-            [`comments.${parentId}.childrenCount`]: 1
-          }
+            [`comments.${parentId}.childrenCount`]: 1,
+          },
         }
-      )
+      );
     }
 
     const { commentsCount } = await store.findOne(
       'CommentsAsList',
       {
-        treeId
+        treeId,
       },
       {
-        commentsCount: 1
+        commentsCount: 1,
       }
-    )
+    );
 
     if (parentId != null) {
       const comments = (
         await store.findOne(
           'CommentsAsList',
           {
-            treeId
+            treeId,
           },
           {
-            comments: 1
+            comments: 1,
           }
         )
-      ).comments
+      ).comments;
 
       const parentIndex = comments.findIndex(
         ({ aggregateId }) => aggregateId === parentId
-      )
+      );
 
       await store.update(
         'CommentsAsList',
         {
-          treeId
+          treeId,
         },
         {
           $set: {
-            [`comments.${parentIndex}.children.${aggregateId}`]: true
+            [`comments.${parentIndex}.children.${aggregateId}`]: true,
           },
           $inc: {
-            [`comments.${parentIndex}.childrenCount`]: 1
-          }
+            [`comments.${parentIndex}.childrenCount`]: 1,
+          },
         }
-      )
+      );
     }
 
     await store.update(
       'CommentsAsList',
       {
-        treeId
+        treeId,
       },
       {
         $set: {
@@ -120,15 +120,15 @@ const projection = {
             parentId,
             content,
             children: {},
-            childrenCount: 0
-          }
+            childrenCount: 0,
+          },
         },
         $inc: {
-          commentsCount: 1
-        }
+          commentsCount: 1,
+        },
       }
-    )
-  }
-}
+    );
+  },
+};
 
-export default projection
+export default projection;

@@ -1,26 +1,26 @@
-import { ConcurrentError } from 'resolve-eventstore-base'
+import { ConcurrentError } from 'resolve-eventstore-base';
 
 import {
   ER_DUP_ENTRY,
   ER_LOCK_DEADLOCK,
-  ER_SUBQUERY_NO_1_ROW
-} from './constants'
+  ER_SUBQUERY_NO_1_ROW,
+} from './constants';
 
 const saveEvent = async (pool, event) => {
   const {
     events: { eventsTableName, connection, database },
     escapeId,
-    escape
-  } = pool
+    escape,
+  } = pool;
   try {
-    const eventsTableNameAsId = escapeId(eventsTableName)
-    const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
-    const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
-    const databaseNameAsString = escape(database)
+    const eventsTableNameAsId = escapeId(eventsTableName);
+    const freezeTableNameAsString = escape(`${eventsTableName}-freeze`);
+    const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`);
+    const databaseNameAsString = escape(database);
     const serializedPayload =
       event.payload != null
         ? escape(JSON.stringify(event.payload))
-        : escape('null')
+        : escape('null');
 
     // prettier-ignore
     await connection.query(
@@ -70,26 +70,26 @@ const saveEvent = async (pool, event) => {
       COMMIT;`
     )
   } catch (error) {
-    const errno = error != null && error.errno != null ? error.errno : 0
-    const message = error != null && error.message != null ? error.message : ''
+    const errno = error != null && error.errno != null ? error.errno : 0;
+    const message = error != null && error.message != null ? error.message : '';
 
     try {
-      await connection.query('ROLLBACK;')
+      await connection.query('ROLLBACK;');
     } catch (e) {}
 
     if (errno === ER_SUBQUERY_NO_1_ROW) {
-      throw new Error('Event store is frozen')
+      throw new Error('Event store is frozen');
     } else if (errno === ER_DUP_ENTRY && message.indexOf('aggregate') > -1) {
-      throw new ConcurrentError(event.aggregateId)
+      throw new ConcurrentError(event.aggregateId);
     } else if (
       (errno === ER_DUP_ENTRY && message.indexOf('PRIMARY') > -1) ||
       errno === ER_LOCK_DEADLOCK
     ) {
-      return await saveEvent(pool, event)
+      return await saveEvent(pool, event);
     } else {
-      throw error
+      throw error;
     }
   }
-}
+};
 
-export default saveEvent
+export default saveEvent;

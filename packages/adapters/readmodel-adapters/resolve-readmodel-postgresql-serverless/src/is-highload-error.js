@@ -1,4 +1,4 @@
-const isHighloadError = error =>
+const isHighloadError = (error) =>
   error != null &&
   (/Request timed out/i.test(error.message) ||
     /Remaining connection slots are reserved/i.test(error.message) ||
@@ -10,6 +10,6 @@ const isHighloadError = error =>
     error.code === 'RequestLimitExceeded' ||
     error.code === 'ThrottlingException' ||
     error.code === 'TooManyRequestsException' ||
-    error.code === 'NetworkingError')
+    error.code === 'NetworkingError');
 
-export default isHighloadError
+export default isHighloadError;

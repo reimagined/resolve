@@ -1,4 +1,4 @@
-const pipeline = pool => {
+const pipeline = (pool) => {
   const {
     chalk,
     console,
@@ -12,8 +12,8 @@ const pipeline = pool => {
     patchPackageJson,
     install,
     printFinishOutput,
-    sendAnalytics
-  } = pool
+    sendAnalytics,
+  } = pool;
 
   prepareOptions(pool)
     .then(startCreatingApplication(pool))
@@ -25,11 +25,11 @@ const pipeline = pool => {
     .then(install(pool))
     .then(printFinishOutput(pool))
     .then(sendAnalytics(pool))
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line no-console
-      console.error(chalk.red(error))
-      process.exit(1)
-    })
-}
+      console.error(chalk.red(error));
+      process.exit(1);
+    });
+};
 
-export default pipeline
+export default pipeline;

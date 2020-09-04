@@ -1,68 +1,74 @@
-import window from 'global/window'
-import createSubscribeAdapter from './subscribe-adapter'
-import { Context } from './context'
-import { rootCallback, addCallback, removeCallback } from './subscribe-callback'
+import window from 'global/window';
+import createSubscribeAdapter from './subscribe-adapter';
+import { Context } from './context';
+import {
+  rootCallback,
+  addCallback,
+  removeCallback,
+} from './subscribe-callback';
 
 interface SubscriptionKey {
-  aggregateId: string
-  eventType: string
+  aggregateId: string;
+  eventType: string;
 }
 
-type AggregateSelector = string[] | '*'
+type AggregateSelector = string[] | '*';
 
-const REFRESH_TIMEOUT = 5000
+const REFRESH_TIMEOUT = 5000;
 const setTimeoutSafe =
   window && typeof window.setTimeout === 'function'
     ? window.setTimeout
-    : setTimeout
+    : setTimeout;
 const clearTimeoutSafe = (timeout: number | NodeJS.Timeout): void => {
   if (typeof timeout === 'number') {
     if (typeof window.clearTimeout === 'function') {
-      window.clearTimeout(timeout)
+      window.clearTimeout(timeout);
     }
   } else {
-    clearTimeout(timeout)
+    clearTimeout(timeout);
   }
-}
+};
 const buildKey = (
   viewModelName: string,
   aggregateIds: AggregateSelector
 ): string => {
   const sortedAggregateIds = ([] as Array<string>)
     .concat(aggregateIds)
-    .sort((a, b) => a.localeCompare(b))
-  return [viewModelName].concat(sortedAggregateIds).join(':')
-}
+    .sort((a, b) => a.localeCompare(b));
+  return [viewModelName].concat(sortedAggregateIds).join(':');
+};
 
-let adaptersMap = new Map()
-let refreshTimeout: number | NodeJS.Timeout | null
+let adaptersMap = new Map();
+let refreshTimeout: number | NodeJS.Timeout | null;
 
 export const getSubscriptionKeys = (
   context: Context,
   viewModelName: string,
   aggregateIds: Array<string> | '*'
 ): Array<SubscriptionKey> => {
-  const { viewModels } = context
-  const viewModel = viewModels.find(({ name }) => name === viewModelName)
+  const { viewModels } = context;
+  const viewModel = viewModels.find(({ name }) => name === viewModelName);
   if (!viewModel) {
-    return []
+    return [];
   }
   const eventTypes = Object.keys(viewModel.projection).filter(
-    eventType => eventType !== 'Init'
-  )
+    (eventType) => eventType !== 'Init'
+  );
   return eventTypes.reduce((acc: Array<SubscriptionKey>, eventType) => {
     if (Array.isArray(aggregateIds)) {
-      acc.push(...aggregateIds.map(aggregateId => ({ aggregateId, eventType })))
+      acc.push(
+        ...aggregateIds.map((aggregateId) => ({ aggregateId, eventType }))
+      );
     } else if (aggregateIds === '*') {
-      acc.push({ aggregateId: '*', eventType })
+      acc.push({ aggregateId: '*', eventType });
     }
-    return acc
-  }, [])
-}
+    return acc;
+  }, []);
+};
 
 export interface SubscribeAdapterOptions {
-  appId: string
-  url: string
+  appId: string;
+  url: string;
 }
 
 const initSubscribeAdapter = async (
@@ -75,9 +81,9 @@ const initSubscribeAdapter = async (
   const subscribeAdapter = createSubscribeAdapter({
     url,
     cursor,
-    onEvent: rootCallback
-  })
-  await subscribeAdapter.init()
+    onEvent: rootCallback,
+  });
+  await subscribeAdapter.init();
 
   if (!refreshTimeout) {
     refreshTimeout = setTimeoutSafe(
@@ -92,11 +98,11 @@ const initSubscribeAdapter = async (
           false
         ),
       REFRESH_TIMEOUT
-    )
+    );
   }
 
-  return subscribeAdapter
-}
+  return subscribeAdapter;
+};
 
 export const refreshSubscribeAdapter = async (
   url: string,
@@ -106,9 +112,9 @@ export const refreshSubscribeAdapter = async (
   aggregateIds: AggregateSelector,
   subscribeAdapterRecreated?: boolean
 ): Promise<any> => {
-  let subscribeAdapter
+  let subscribeAdapter;
 
-  const key = buildKey(viewModelName, aggregateIds)
+  const key = buildKey(viewModelName, aggregateIds);
 
   try {
     if (!adaptersMap.has(key)) {
@@ -118,14 +124,14 @@ export const refreshSubscribeAdapter = async (
         context,
         viewModelName,
         aggregateIds
-      )
+      );
     } else {
-      subscribeAdapter = adaptersMap.get(key)
+      subscribeAdapter = adaptersMap.get(key);
     }
   } catch (error) {
-    adaptersMap.delete(key)
+    adaptersMap.delete(key);
     if (refreshTimeout) {
-      clearTimeoutSafe(refreshTimeout)
+      clearTimeoutSafe(refreshTimeout);
     }
     refreshTimeout = setTimeoutSafe(
       () =>
@@ -138,8 +144,8 @@ export const refreshSubscribeAdapter = async (
           true
         ),
       REFRESH_TIMEOUT
-    )
-    return Promise.resolve()
+    );
+    return Promise.resolve();
   }
 
   if (!subscribeAdapterRecreated) {
@@ -147,7 +153,7 @@ export const refreshSubscribeAdapter = async (
       if (subscribeAdapter.isConnected()) {
         // still connected
         if (refreshTimeout) {
-          clearTimeoutSafe(refreshTimeout)
+          clearTimeoutSafe(refreshTimeout);
         }
         refreshTimeout = setTimeoutSafe(
           () =>
@@ -160,8 +166,8 @@ export const refreshSubscribeAdapter = async (
               false
             ),
           REFRESH_TIMEOUT
-        )
-        return Promise.resolve()
+        );
+        return Promise.resolve();
       }
     } catch (error) {}
   }
@@ -170,24 +176,24 @@ export const refreshSubscribeAdapter = async (
 
   try {
     if (subscribeAdapter != null) {
-      adaptersMap.delete(key)
+      adaptersMap.delete(key);
       if (refreshTimeout) {
-        clearTimeoutSafe(refreshTimeout)
+        clearTimeoutSafe(refreshTimeout);
       }
-      refreshTimeout = null
+      refreshTimeout = null;
     }
   } catch (err) {}
 
-  return Promise.resolve()
-}
+  return Promise.resolve();
+};
 
 export const dropSubscribeAdapterPromise = (): void => {
-  adaptersMap = new Map()
+  adaptersMap = new Map();
   if (refreshTimeout) {
-    clearTimeoutSafe(refreshTimeout)
+    clearTimeoutSafe(refreshTimeout);
   }
-  refreshTimeout = null
-}
+  refreshTimeout = null;
+};
 
 const connect = async (
   context: Context,
@@ -202,12 +208,12 @@ const connect = async (
     context,
     viewModelName,
     aggregateIds
-  )
+  );
 
-  const key = buildKey(viewModelName, aggregateIds)
+  const key = buildKey(viewModelName, aggregateIds);
 
   if (adaptersMap.has(key)) {
-    return Promise.resolve()
+    return Promise.resolve();
   }
 
   const subscribeAdapter = await initSubscribeAdapter(
@@ -216,18 +222,18 @@ const connect = async (
     context,
     viewModelName,
     aggregateIds
-  )
+  );
 
   if (subscribeAdapter === null) {
-    return Promise.resolve()
+    return Promise.resolve();
   }
 
-  adaptersMap.set(key, subscribeAdapter)
+  adaptersMap.set(key, subscribeAdapter);
 
   for (const { eventType, aggregateId } of subscriptionKeys) {
-    addCallback(eventType, aggregateId, eventCallback, subscribeCallback)
+    addCallback(eventType, aggregateId, eventCallback, subscribeCallback);
   }
-}
+};
 
 const disconnect = async (
   context: Context,
@@ -239,16 +245,16 @@ const disconnect = async (
     context,
     viewModelName,
     aggregateIds
-  )
+  );
 
-  const key = buildKey(viewModelName, aggregateIds)
-  const subscribeAdapter = adaptersMap.get(key)
+  const key = buildKey(viewModelName, aggregateIds);
+  const subscribeAdapter = adaptersMap.get(key);
 
-  await subscribeAdapter.close()
+  await subscribeAdapter.close();
 
   for (const { eventType, aggregateId } of subscriptionKeys) {
-    removeCallback(eventType, aggregateId, callback)
+    removeCallback(eventType, aggregateId, callback);
   }
-}
+};
 
-export { connect, disconnect }
+export { connect, disconnect };

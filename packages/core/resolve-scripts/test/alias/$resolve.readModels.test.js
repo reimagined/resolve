@@ -1,8 +1,8 @@
-import path from 'path'
-import declareRuntimeEnv from '../../src/declare_runtime_env'
+import path from 'path';
+import declareRuntimeEnv from '../../src/declare_runtime_env';
 
-import alias from '../../src/alias/$resolve.readModels'
-import normalizePaths from './normalize_paths'
+import alias from '../../src/alias/$resolve.readModels';
+import normalizePaths from './normalize_paths';
 
 describe('base config works correctly', () => {
   const resolveConfig = {
@@ -11,17 +11,17 @@ describe('base config works correctly', () => {
         name: 'Todos',
         connectorName: 'Todos',
         projection: path.resolve(__dirname, 'files/testProjection.js'),
-        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
-      }
+        resolvers: path.resolve(__dirname, 'files/testResolvers.js'),
+      },
     ],
     sagas: [],
     readModelConnectors: {
       Todos: {
         module: 'resolve-readmodel-lite',
-        options: {}
-      }
-    }
-  }
+        options: {},
+      },
+    },
+  };
 
   test('[client]', () => {
     expect(() =>
@@ -29,12 +29,12 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   test('[server]', () => {
     expect(
@@ -42,13 +42,13 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot()
-  })
-})
+    ).toMatchSnapshot();
+  });
+});
 
 test('should throw when read-model name is process.env', () => {
   expect(() =>
@@ -61,16 +61,16 @@ test('should throw when read-model name is process.env', () => {
                 name: declareRuntimeEnv('Todos'),
                 connectorName: 'Todos',
                 projection: path.resolve(__dirname, 'files/testProjection.js'),
-                resolvers: path.resolve(__dirname, 'files/testResolvers.js')
-              }
-            ]
+                resolvers: path.resolve(__dirname, 'files/testResolvers.js'),
+              },
+            ],
           },
-          isClient: true
+          isClient: true,
         }) +
         '\r\n'
     )
-  ).toThrow()
-})
+  ).toThrow();
+});
 
 test('should throw when read-model connectorName is process.env', () => {
   expect(() =>
@@ -83,16 +83,16 @@ test('should throw when read-model connectorName is process.env', () => {
                 name: 'Todos',
                 connectorName: declareRuntimeEnv('Todos'),
                 projection: path.resolve(__dirname, 'files/testProjection.js'),
-                resolvers: path.resolve(__dirname, 'files/testResolvers.js')
-              }
-            ]
+                resolvers: path.resolve(__dirname, 'files/testResolvers.js'),
+              },
+            ],
           },
-          isClient: true
+          isClient: true,
         }) +
         '\r\n'
     )
-  ).toThrow()
-})
+  ).toThrow();
+});
 
 describe('base(v2) config works correctly', () => {
   const resolveConfig = {
@@ -101,7 +101,7 @@ describe('base(v2) config works correctly', () => {
         name: 'Todos',
         connectorName: 'Todos',
         projection: path.resolve(__dirname, 'files/testProjection.js'),
-        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
+        resolvers: path.resolve(__dirname, 'files/testResolvers.js'),
       },
       {
         name: 'Items',
@@ -113,8 +113,8 @@ describe('base(v2) config works correctly', () => {
             testCommandsAsModule: path.resolve(
               __dirname,
               'files/testCommandsAsModule.js'
-            )
-          }
+            ),
+          },
         },
         resolvers: {
           module: path.resolve(__dirname, 'files/testResolversAsModule.js'),
@@ -123,23 +123,23 @@ describe('base(v2) config works correctly', () => {
             testCommandsAsModule: path.resolve(
               __dirname,
               'files/testCommandsAsModule.js'
-            )
-          }
-        }
-      }
+            ),
+          },
+        },
+      },
     ],
     sagas: [],
     readModelConnectors: {
       Todos: {
         module: 'resolve-readmodel-lite',
-        options: {}
+        options: {},
       },
       Items: {
         module: 'resolve-readmodel-lite',
-        options: {}
-      }
-    }
-  }
+        options: {},
+      },
+    },
+  };
 
   test('[client]', () => {
     expect(() =>
@@ -147,12 +147,12 @@ describe('base(v2) config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   test('[server]', () => {
     expect(
@@ -160,13 +160,13 @@ describe('base(v2) config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot()
-  })
-})
+    ).toMatchSnapshot();
+  });
+});
 
 describe('config + process.env works correctly', () => {
   const resolveConfig = {
@@ -174,19 +174,19 @@ describe('config + process.env works correctly', () => {
       {
         name: 'Todos',
         projection: path.resolve(__dirname, 'files/testProjection.js'),
-        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
-      }
+        resolvers: path.resolve(__dirname, 'files/testResolvers.js'),
+      },
     ],
     sagas: [],
     readModelConnectors: {
       Todos: {
         module: declareRuntimeEnv('READ_MODEL_TODOS_ADAPTER'),
         options: {
-          size: declareRuntimeEnv('READ_MODEL_TODOS_OPTIONS_SIZE')
-        }
-      }
-    }
-  }
+          size: declareRuntimeEnv('READ_MODEL_TODOS_OPTIONS_SIZE'),
+        },
+      },
+    },
+  };
 
   test('[client]', () => {
     expect(() =>
@@ -194,12 +194,12 @@ describe('config + process.env works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   test('[server]', () => {
     expect(
@@ -207,10 +207,10 @@ describe('config + process.env works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot()
-  })
-})
+    ).toMatchSnapshot();
+  });
+});

@@ -1,23 +1,23 @@
-import deepmerge from 'deepmerge'
+import deepmerge from 'deepmerge';
 
 const merge = (...configs) =>
   deepmerge.all(configs, {
-    isMergeableObject: obj => {
+    isMergeableObject: (obj) => {
       if (
         obj != null &&
         obj.hasOwnProperty('module') &&
         obj.hasOwnProperty('options')
       ) {
-        return false
+        return false;
       }
       if (Array.isArray(obj)) {
-        return true
+        return true;
       }
       if (obj != null && obj.constructor === Object) {
-        return true
+        return true;
       }
-      return false
-    }
-  })
+      return false;
+    },
+  });
 
-export default merge
+export default merge;

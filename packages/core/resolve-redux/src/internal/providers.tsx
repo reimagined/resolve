@@ -1,7 +1,7 @@
-import React from 'react'
-import { Provider as ReduxProvider } from 'react-redux'
+import React from 'react';
+import { Provider as ReduxProvider } from 'react-redux';
 
-import { Provider as ResolveProvider } from './resolve-context'
+import { Provider as ResolveProvider } from './resolve-context';
 
 class Providers extends React.PureComponent<any> {
   render() {
@@ -10,11 +10,11 @@ class Providers extends React.PureComponent<any> {
       rootPath,
       staticPath,
       store,
-      children
+      children,
       //queryMethod
-    } = this.props
+    } = this.props;
 
-    const api = null //createApi({ origin, rootPath, store, queryMethod })
+    const api = null; //createApi({ origin, rootPath, store, queryMethod })
 
     return (
       <ResolveProvider
@@ -22,13 +22,13 @@ class Providers extends React.PureComponent<any> {
           api,
           origin,
           rootPath,
-          staticPath
+          staticPath,
         }}
       >
         <ReduxProvider store={store}>{children}</ReduxProvider>
       </ResolveProvider>
-    )
+    );
   }
 }
 
-export default Providers
+export default Providers;

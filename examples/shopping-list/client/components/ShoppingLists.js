@@ -1,10 +1,10 @@
-import React from 'react'
-import { Button, ControlLabel, Table } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Button, ControlLabel, Table } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 class ShoppingLists extends React.PureComponent {
   render() {
-    const { lists } = this.props
+    const { lists } = this.props;
 
     return (
       <div>
@@ -27,7 +27,7 @@ class ShoppingLists extends React.PureComponent {
                 <td className="example-table-action">
                   <Button
                     onClick={() => {
-                      this.props.removeShoppingList(id)
+                      this.props.removeShoppingList(id);
                     }}
                   >
                     <i className="far fa-trash-alt" />
@@ -38,8 +38,8 @@ class ShoppingLists extends React.PureComponent {
           </tbody>
         </Table>
       </div>
-    )
+    );
   }
 }
 
-export default ShoppingLists
+export default ShoppingLists;

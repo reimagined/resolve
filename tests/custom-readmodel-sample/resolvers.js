@@ -1,9 +1,9 @@
 // mdis-start
 const resolvers = {
-  read: async store => {
-    return await store.get()
-  }
-}
+  read: async (store) => {
+    return await store.get();
+  },
+};
 
-export default resolvers
+export default resolvers;
 // mdis-stop

@@ -8,17 +8,17 @@ const dropReadModel = async (
       `%-- RESOLVE READ-MODEL ${escapeId(`${readModelName}`)} OWNED TABLE%`
     )}
     AND name NOT LIKE ${escape('sqlite_%')}`
-  )
+  );
 
   for (const { name } of rows) {
-    await runQuery(`DROP TABLE ${escapeId(name)}`)
+    await runQuery(`DROP TABLE ${escapeId(name)}`);
   }
 
   if (memoryStore.drop != null) {
     try {
-      await memoryStore.drop()
+      await memoryStore.drop();
     } catch (e) {}
   }
-}
+};
 
-export default dropReadModel
+export default dropReadModel;

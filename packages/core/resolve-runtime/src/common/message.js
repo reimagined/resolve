@@ -4,5 +4,5 @@ export default {
   commandFail: 'Command error: ',
   readModelFail: 'Read model query error: ',
   viewModelFail: 'View model query error: ',
-  viewModelOnlyOnDemand: 'The aggregateIds field is required'
-}
+  viewModelOnlyOnDemand: 'The aggregateIds field is required',
+};

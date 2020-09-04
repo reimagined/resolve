@@ -1,14 +1,14 @@
 const getFormUpload = () => async (req, res) => {
-  const adapter = req.resolve.uploader
+  const adapter = req.resolve.uploader;
   try {
-    const { dir } = req.query
-    const signedPost = await adapter.getSignedPost(dir)
+    const { dir } = req.query;
+    const signedPost = await adapter.getSignedPost(dir);
 
-    await res.json(signedPost)
+    await res.json(signedPost);
   } catch (error) {
-    await res.status(405)
-    await res.end(error.toString())
+    await res.status(405);
+    await res.end(error.toString());
   }
-}
+};
 
-export default getFormUpload
+export default getFormUpload;

@@ -1,8 +1,8 @@
 import {
   USER_PROFILE_DELETED,
   USER_PROFILE_UPDATED,
-  USER_REGISTERED
-} from '../user-profile.events'
+  USER_REGISTERED,
+} from '../user-profile.events';
 
 export default {
   Init: () => null,
@@ -14,7 +14,7 @@ export default {
     nickname,
     firstName,
     lastName,
-    contacts
+    contacts,
   }),
   [USER_PROFILE_UPDATED]: (
     state,
@@ -23,11 +23,11 @@ export default {
     ...state,
     firstName,
     lastName,
-    contacts
+    contacts,
   }),
-  [USER_PROFILE_DELETED]: state => ({
+  [USER_PROFILE_DELETED]: (state) => ({
     ...state,
     firstName: 'deleted user',
-    lastName: 'deleted user'
-  })
-}
+    lastName: 'deleted user',
+  }),
+};

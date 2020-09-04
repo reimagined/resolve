@@ -1,11 +1,11 @@
 // mdis-start
 const projection = {
   // mdis-start defineTable
-  Init: async store => {
+  Init: async (store) => {
     await store.defineTable('Stories', {
       indexes: { id: 'string' },
-      fields: ['text', 'version', 'active']
-    })
+      fields: ['text', 'version', 'active'],
+    });
   },
   // mdis-stop defineTable
   // mdis-start insert
@@ -14,8 +14,8 @@ const projection = {
       id: event.aggregateId,
       text: event.payload,
       active: true,
-      version: 0
-    })
+      version: 0,
+    });
   },
   // mdis-stop insert
   // mdis-start update
@@ -23,40 +23,40 @@ const projection = {
     await store.update(
       'Stories',
       {
-        id: event.aggregateId
+        id: event.aggregateId,
       },
       {
         $set: {
-          text: event.payload
+          text: event.payload,
         },
         $inc: {
-          version: 1
-        }
+          version: 1,
+        },
       }
-    )
+    );
   },
   // mdis-stop update
   STORY_FLAGGED_FOR_DELETION: async (store, event) => {
     await store.update(
       'Stories',
       {
-        id: event.aggregateId
+        id: event.aggregateId,
       },
       {
         $unset: {
-          active: true
-        }
+          active: true,
+        },
       }
-    )
+    );
   },
   // mdis-start delete
   STORY_DELETED: async (store, event) => {
     await store.delete('Stories', {
       id: event.aggregateId,
-      active: { $ne: true }
-    })
-  }
-}
+      active: { $ne: true },
+    });
+  },
+};
 // mdis-stop delete
-export default projection
+export default projection;
 // mdis-stop

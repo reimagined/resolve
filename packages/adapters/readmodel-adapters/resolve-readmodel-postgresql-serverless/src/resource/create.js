@@ -1,13 +1,13 @@
 const create = async (pool, options) => {
-  const { connect, disconnect, escapeId } = pool
-  const admin = {}
+  const { connect, disconnect, escapeId } = pool;
+  const admin = {};
 
   await connect(admin, {
     awsSecretStoreArn: options.awsSecretStoreAdminArn,
     dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
     databaseName: options.databaseName,
-    region: options.region
-  })
+    region: options.region,
+  });
 
   await admin.executeStatement(
     [
@@ -60,11 +60,11 @@ const create = async (pool, options) => {
 
       `ALTER SCHEMA ${escapeId(options.databaseName)} OWNER TO ${escapeId(
         options.userLogin
-      )}`
+      )}`,
     ].join('; ')
-  )
+  );
 
-  await disconnect(admin)
-}
+  await disconnect(admin);
+};
 
-export default create
+export default create;

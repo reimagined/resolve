@@ -6,12 +6,12 @@ const sideEffect = async (
   ...args
 ) => {
   if (isEnabled) {
-    return await sideEffects[effectName](...args, eventProperties)
+    return await sideEffects[effectName](...args, eventProperties);
   } else {
     // Explicitly return undefined for disabled side-effects
-    return undefined
+    return undefined;
   }
-}
+};
 
 const wrapSideEffects = (eventProperties, sideEffects, isEnabled) => {
   return Object.keys(sideEffects).reduce((acc, effectName) => {
@@ -22,7 +22,7 @@ const wrapSideEffects = (eventProperties, sideEffects, isEnabled) => {
         sideEffects,
         effectName,
         isEnabled
-      )
+      );
     }
     if (
       typeof sideEffects[effectName] === 'object' &&
@@ -32,10 +32,10 @@ const wrapSideEffects = (eventProperties, sideEffects, isEnabled) => {
         eventProperties,
         sideEffects[effectName],
         isEnabled
-      )
+      );
     }
-    return acc
-  }, {})
-}
+    return acc;
+  }, {});
+};
 
-export default wrapSideEffects
+export default wrapSideEffects;

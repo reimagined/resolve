@@ -6,10 +6,10 @@ import {
   NotificationStatus,
   ConsumerMethod,
   PrivateOperationType,
-  LazinessStrategy
-} from '../constants'
+  LazinessStrategy,
+} from '../constants';
 
-const retryRollback = new Error('Retrying rollback marker')
+const retryRollback = new Error('Retrying rollback marker');
 
 const acknowledgeBatch = async (pool, payload) => {
   const {
@@ -18,14 +18,14 @@ const acknowledgeBatch = async (pool, payload) => {
     getNextCursor,
     invokeConsumer,
     invokeOperation,
-    serializeError
-  } = pool
+    serializeError,
+  } = pool;
 
-  const { batchId, result } = payload
+  const { batchId, result } = payload;
 
-  const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME)
-  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
-  const batchesTableNameAsId = escapeId(BATCHES_TABLE_NAME)
+  const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME);
+  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME);
+  const batchesTableNameAsId = escapeId(BATCHES_TABLE_NAME);
 
   const [applyingEvents, affectedNotifications] = await Promise.all([
     runQuery(`
@@ -47,12 +47,12 @@ const acknowledgeBatch = async (pool, payload) => {
       ${notificationsTableNameAsId}."subscriptionId"
       WHERE ${notificationsTableNameAsId}."batchId" = ${escapeStr(batchId)}
       LIMIT 1
-    `)
-  ])
+    `),
+  ]);
   if (affectedNotifications == null || affectedNotifications.length === 0) {
-    return
+    return;
   }
-  const subscriptionDescription = parseSubscription(affectedNotifications[0])
+  const subscriptionDescription = parseSubscription(affectedNotifications[0]);
   if (
     subscriptionDescription.runStatus !== NotificationStatus.PROCESSING &&
     subscriptionDescription.runStatus !==
@@ -62,7 +62,7 @@ const acknowledgeBatch = async (pool, payload) => {
     subscriptionDescription.runStatus !==
       NotificationStatus.ACKNOWLEDGE_XA_ROLLBACKING
   ) {
-    return
+    return;
   }
   if (subscriptionDescription.runStatus === NotificationStatus.PROCESSING) {
     await runRawQuery(`
@@ -75,7 +75,7 @@ const acknowledgeBatch = async (pool, payload) => {
       
       COMMIT;
       BEGIN IMMEDIATE;
-    `)
+    `);
 
     const result = await runQuery(`
       SELECT ${notificationsTableNameAsId}."status" AS "runStatus"
@@ -85,21 +85,21 @@ const acknowledgeBatch = async (pool, payload) => {
       NotificationStatus.ACKNOWLEDGE_ENTERING
     )}
       LIMIT 1
-    `)
+    `);
     if (result == null || result.length === 0) {
-      return
+      return;
     }
 
-    subscriptionDescription.runStatus = NotificationStatus.ACKNOWLEDGE_ENTERING
+    subscriptionDescription.runStatus = NotificationStatus.ACKNOWLEDGE_ENTERING;
   }
   const activeBatch = {
     eventSubscriber: subscriptionDescription.eventSubscriber,
     subscriptionId: subscriptionDescription.subscriptionId,
-    batchId
-  }
+    batchId,
+  };
   try {
-    let isXaCommitOk = true
-    const { successEvent, failedEvent, error } = result
+    let isXaCommitOk = true;
+    const { successEvent, failedEvent, error } = result;
     const lastSuccessEventIdx =
       successEvent != null
         ? applyingEvents.findIndex(
@@ -107,11 +107,11 @@ const acknowledgeBatch = async (pool, payload) => {
               aggregateIdAndVersion ===
               `${successEvent.aggregateId}:${successEvent.aggregateVersion}`
           ) + 1
-        : 0
+        : 0;
     const nextCursor = await getNextCursor(
       subscriptionDescription.cursor,
       applyingEvents.slice(0, lastSuccessEventIdx)
-    )
+    );
     if (
       subscriptionDescription.deliveryStrategy === DeliveryStrategy.ACTIVE_XA &&
       subscriptionDescription.xaTransactionId != null
@@ -133,7 +133,7 @@ const acknowledgeBatch = async (pool, payload) => {
             
             COMMIT;
             BEGIN IMMEDIATE;
-          `)
+          `);
         }
 
         isXaCommitOk = await invokeConsumer(
@@ -142,18 +142,18 @@ const acknowledgeBatch = async (pool, payload) => {
           {
             eventSubscriber: subscriptionDescription.eventSubscriber,
             xaTransactionId: subscriptionDescription.xaTransactionId,
-            batchId
+            batchId,
           }
-        )
+        );
       } else if (
         subscriptionDescription.runStatus ===
         NotificationStatus.ACKNOWLEDGE_XA_ROLLBACKING
       ) {
-        throw retryRollback
+        throw retryRollback;
       } else {
         throw new Error(
           `Inconsistent XA-state ${subscriptionDescription.runStatus}`
-        )
+        );
       }
     }
 
@@ -167,20 +167,20 @@ const acknowledgeBatch = async (pool, payload) => {
             ? successEvent
             : subscriptionDescription.successEvent,
           failedEvent,
-          error: serializeError(error)
-        }
-      }
-    }
+          error: serializeError(error),
+        },
+      },
+    };
 
-    await invokeOperation(pool, LazinessStrategy.EAGER, input)
+    await invokeOperation(pool, LazinessStrategy.EAGER, input);
   } catch (error) {
-    let compositeError = error
+    let compositeError = error;
     if (
       subscriptionDescription.deliveryStrategy === DeliveryStrategy.ACTIVE_XA &&
       subscriptionDescription.xaTransactionId != null
     ) {
-      compositeError = new Error(error.message)
-      compositeError.stack = error.stack
+      compositeError = new Error(error.message);
+      compositeError.stack = error.stack;
       if (
         subscriptionDescription.runStatus ===
           NotificationStatus.ACKNOWLEDGE_ENTERING ||
@@ -194,7 +194,7 @@ const acknowledgeBatch = async (pool, payload) => {
           
           COMMIT;
           BEGIN IMMEDIATE;
-        `)
+        `);
       }
 
       try {
@@ -204,18 +204,18 @@ const acknowledgeBatch = async (pool, payload) => {
           {
             eventSubscriber: subscriptionDescription.eventSubscriber,
             xaTransactionId: subscriptionDescription.xaTransactionId,
-            batchId
+            batchId,
           }
-        )
+        );
 
         if (!isXaRollbackOk) {
           throw new Error(
             `Xa-transaction ${subscriptionDescription.xaTransactionId} early marked to rollback, but was auto-committed`
-          )
+          );
         }
       } catch (rollbackError) {
-        compositeError.message = `${compositeError.message}\n${rollbackError.message}`
-        compositeError.stack = `${compositeError.stack}\n${rollbackError.stack}`
+        compositeError.message = `${compositeError.message}\n${rollbackError.message}`;
+        compositeError.stack = `${compositeError.stack}\n${rollbackError.stack}`;
       }
     }
 
@@ -224,13 +224,13 @@ const acknowledgeBatch = async (pool, payload) => {
       payload: {
         activeBatch,
         result: {
-          error: serializeError(compositeError)
-        }
-      }
-    }
+          error: serializeError(compositeError),
+        },
+      },
+    };
 
-    await invokeOperation(pool, LazinessStrategy.EAGER, input)
+    await invokeOperation(pool, LazinessStrategy.EAGER, input);
   }
-}
+};
 
-export default acknowledgeBatch
+export default acknowledgeBatch;

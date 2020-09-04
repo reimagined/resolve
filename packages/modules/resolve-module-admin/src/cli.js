@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-import yargs from 'yargs'
+import yargs from 'yargs';
 
 yargs
   .commandDir('commands')
   .option('api-url', {
     alias: 'url',
-    default: 'http://localhost:3000/api'
+    default: 'http://localhost:3000/api',
   })
   .recommendCommands()
   .strict()
@@ -16,12 +16,12 @@ yargs
   .fail((msg, err) => {
     if (msg) {
       //eslint-disable-next-line no-console
-      console.error(msg)
+      console.error(msg);
     }
     if (err) {
       //eslint-disable-next-line no-console
-      console.error(err.message)
+      console.error(err.message);
     }
-    process.exit(1)
+    process.exit(1);
   })
-  .parse()
+  .parse();

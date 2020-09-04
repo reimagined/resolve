@@ -1,9 +1,9 @@
-import React from 'react'
-import { Button, Table } from 'react-bootstrap'
+import React from 'react';
+import { Button, Table } from 'react-bootstrap';
 
 class UserList extends React.PureComponent {
   render() {
-    const { users, buttonText, buttonBaseStyle, onPressButton } = this.props
+    const { users, buttonText, buttonBaseStyle, onPressButton } = this.props;
 
     if (users.length === 0) {
       return (
@@ -12,7 +12,7 @@ class UserList extends React.PureComponent {
           <br />
           <br />
         </div>
-      )
+      );
     }
 
     return (
@@ -42,8 +42,8 @@ class UserList extends React.PureComponent {
           ))}
         </tbody>
       </Table>
-    )
+    );
   }
 }
 
-export default UserList
+export default UserList;

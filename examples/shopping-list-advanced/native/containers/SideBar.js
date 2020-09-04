@@ -1,29 +1,29 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { Text, Container, List, ListItem, Content, Icon } from 'native-base'
-import { StyleSheet, Platform } from 'react-native'
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Text, Container, List, ListItem, Content, Icon } from 'native-base';
+import { StyleSheet, Platform } from 'react-native';
 
-import { Logo } from '@shopping-list-advanced/ui'
+import { Logo } from '@shopping-list-advanced/ui';
 
-import getNativeChunk from '../native-chunk'
+import getNativeChunk from '../native-chunk';
 const {
-  resolveRedux: { actions }
-} = getNativeChunk()
+  resolveRedux: { actions },
+} = getNativeChunk();
 
 const styles = StyleSheet.create({
   content: {
     paddingTop: Platform.select({
       ios: 20,
-      android: 0
-    })
+      android: 0,
+    }),
   },
   icon: {
     width: 30,
     marginRight: 2,
-    textAlign: 'center'
-  }
-})
+    textAlign: 'center',
+  },
+});
 
 export class SideBar extends React.Component {
   routes = [
@@ -31,31 +31,31 @@ export class SideBar extends React.Component {
       name: 'My Lists',
       icon: <Icon style={styles.icon} name="list" type="FontAwesome" />,
       callback: () => {
-        this.props.navigation.navigate('My Lists')
-      }
+        this.props.navigation.navigate('My Lists');
+      },
     },
     {
       name: 'Settings',
       icon: <Icon style={styles.icon} name="user" type="FontAwesome" />,
       callback: () => {
-        this.props.navigation.navigate('Settings')
-      }
+        this.props.navigation.navigate('Settings');
+      },
     },
     {
       name: 'Logout',
       icon: <Icon style={styles.icon} name="sign-out" type="FontAwesome" />,
       callback: () => {
-        this.props.logout()
-        this.props.navigation.navigate('Login')
-      }
-    }
-  ]
+        this.props.logout();
+        this.props.navigation.navigate('Login');
+      },
+    },
+  ];
 
   render() {
-    const { jwt } = this.props
+    const { jwt } = this.props;
 
     if (!jwt.id) {
-      return null
+      return null;
     }
 
     return (
@@ -64,28 +64,28 @@ export class SideBar extends React.Component {
           <Logo />
           <List
             dataArray={this.routes}
-            renderRow={route => {
+            renderRow={(route) => {
               return (
                 <ListItem button onPress={route.callback}>
                   {route.icon}
                   <Text>{route.name}</Text>
                 </ListItem>
-              )
+              );
             }}
           />
         </Content>
       </Container>
-    )
+    );
   }
 }
 
-export const mapStateToProps = state => {
+export const mapStateToProps = (state) => {
   return {
-    jwt: state.jwt
-  }
-}
+    jwt: state.jwt,
+  };
+};
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(actions, dispatch)
+export const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(actions, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(SideBar)
+export default connect(mapStateToProps, mapDispatchToProps)(SideBar);

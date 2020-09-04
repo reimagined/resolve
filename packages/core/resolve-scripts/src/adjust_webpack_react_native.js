@@ -1,18 +1,18 @@
-import path from 'path'
-import nodeExternals from 'webpack-node-externals'
+import path from 'path';
+import nodeExternals from 'webpack-node-externals';
 
-import getModulesDirs from './get_modules_dirs'
+import getModulesDirs from './get_modules_dirs';
 
-const isString = val => val != null && val.constructor === String
+const isString = (val) => val != null && val.constructor === String;
 
 const adjustWebpackReactNative = ({ resolveConfig, reactNativeDir }) => (
   webpackConfigs,
   { alias }
 ) => {
-  const isClient = true
+  const isClient = true;
 
   if (!isString(reactNativeDir)) {
-    throw new Error('The `reactNativeDir` field must be String')
+    throw new Error('The `reactNativeDir` field must be String');
   }
 
   const webpackNativeConfig = {
@@ -24,7 +24,7 @@ const adjustWebpackReactNative = ({ resolveConfig, reactNativeDir }) => (
     context: path.resolve(process.cwd()),
     resolve: {
       alias,
-      modules: []
+      modules: [],
     },
     entry: '$resolve.chunkReactNative',
     output: {
@@ -32,7 +32,8 @@ const adjustWebpackReactNative = ({ resolveConfig, reactNativeDir }) => (
       libraryTarget: 'commonjs-module',
       filename: 'resolve/index.js',
       devtoolModuleFilenameTemplate: '[namespace][resource-path]',
-      devtoolFallbackModuleFilenameTemplate: '[namespace][resource-path]?[hash]'
+      devtoolFallbackModuleFilenameTemplate:
+        '[namespace][resource-path]?[hash]',
     },
     module: {
       rules: [
@@ -55,42 +56,42 @@ const adjustWebpackReactNative = ({ resolveConfig, reactNativeDir }) => (
                       corejs: false,
                       helpers: true,
                       regenerator: true,
-                      useESModules: false
-                    }
-                  ]
-                ]
-              }
+                      useESModules: false,
+                    },
+                  ],
+                ],
+              },
             },
             {
               loader: require.resolve('./val_query_loader'),
               options: {
                 resolveConfig,
-                isClient
-              }
-            }
-          ]
+                isClient,
+              },
+            },
+          ],
         },
         {
           test: /\.js$/,
           use: {
             loader: require.resolve('babel-loader'),
             options: {
-              cacheDirectory: true
-            }
+              cacheDirectory: true,
+            },
           },
           exclude: [
             /node_modules/,
             ...getModulesDirs({ isAbsolutePath: true }),
             path.resolve(__dirname, '../lib'),
-            path.resolve(__dirname, '../es')
-          ]
-        }
-      ]
+            path.resolve(__dirname, '../es'),
+          ],
+        },
+      ],
     },
-    externals: getModulesDirs().map(modulesDir =>
+    externals: getModulesDirs().map((modulesDir) =>
       nodeExternals({
         modulesDir,
-        importType: moduleName => `((() => {
+        importType: (moduleName) => `((() => {
         const path = require('path')
         const requireDirs = ['', 'resolve-runtime/node_modules/']
         let modulePath = null
@@ -105,12 +106,12 @@ const adjustWebpackReactNative = ({ resolveConfig, reactNativeDir }) => (
           throw new Error(\`Module "\${moduleName}" cannot be resolved\`)
         }
         return require(modulePath)
-      })())`
+      })())`,
       })
-    )
-  }
+    ),
+  };
 
-  webpackConfigs.push(webpackNativeConfig)
-}
+  webpackConfigs.push(webpackNativeConfig);
+};
 
-export default adjustWebpackReactNative
+export default adjustWebpackReactNative;

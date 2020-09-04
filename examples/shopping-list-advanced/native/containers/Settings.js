@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   Container,
   Header,
@@ -10,61 +10,61 @@ import {
   Body,
   Icon,
   Label,
-  Input
-} from 'native-base'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { StyleSheet } from 'react-native'
+  Input,
+} from 'native-base';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { StyleSheet } from 'react-native';
 
-import requiredAuth from '../decorators/required-auth'
-import * as aggregateActions from '../redux/actions/aggregate-actions'
+import requiredAuth from '../decorators/required-auth';
+import * as aggregateActions from '../redux/actions/aggregate-actions';
 
-import getNativeChunk from '../native-chunk'
+import getNativeChunk from '../native-chunk';
 const {
-  resolveRedux: { connectReadModel }
-} = getNativeChunk()
+  resolveRedux: { connectReadModel },
+} = getNativeChunk();
 
 const styles = StyleSheet.create({
   label: {
     paddingLeft: 5,
     fontSize: 16,
-    color: '#575757'
+    color: '#575757',
   },
   input: {
     flex: 1,
     borderBottomWidth: StyleSheet.hairlineWidth,
     color: '#000',
     backgroundColor: '#fff',
-    marginBottom: 10
-  }
-})
+    marginBottom: 10,
+  },
+});
 
 export class Settings extends React.PureComponent {
-  state = {}
+  state = {};
 
   getText = () =>
-    this.state.text != null ? this.state.text : this.props.data.username
+    this.state.text != null ? this.state.text : this.props.data.username;
 
-  updateText = text => {
+  updateText = (text) => {
     this.setState({
-      text
-    })
-  }
+      text,
+    });
+  };
 
   updateUserName = () => {
     this.props.updateUserName(this.props.data.id, {
-      username: this.getText()
-    })
-  }
+      username: this.getText(),
+    });
+  };
 
   render() {
-    const { isLoading, data } = this.props
+    const { isLoading, data } = this.props;
     if (isLoading || data == null) {
-      return null
+      return null;
     }
 
-    const { id } = data
-    const text = this.getText()
+    const { id } = data;
+    const text = this.getText();
 
     return (
       <Container>
@@ -92,23 +92,23 @@ export class Settings extends React.PureComponent {
           <Input style={styles.input} value={id} multiline disabled />
         </Content>
       </Container>
-    )
+    );
   }
 }
 
-export const mapStateToOptions = state => ({
+export const mapStateToOptions = (state) => ({
   readModelName: 'ShoppingLists',
   resolverName: 'user',
   resolverArgs: {
-    id: state.jwt.id
-  }
-})
+    id: state.jwt.id,
+  },
+});
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(aggregateActions, dispatch)
+export const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(aggregateActions, dispatch);
 
 export default requiredAuth(
   connectReadModel(mapStateToOptions)(
     connect(null, mapDispatchToProps)(Settings)
   )
-)
+);

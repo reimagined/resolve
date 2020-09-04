@@ -1,11 +1,11 @@
-import React from 'react'
-import { Checkbox } from 'react-bootstrap'
+import React from 'react';
+import { Checkbox } from 'react-bootstrap';
 
-import Image from '../containers/Image'
+import Image from '../containers/Image';
 
 class Todo extends React.PureComponent {
   render() {
-    const { checked, text, removeItem, toggleItem } = this.props
+    const { checked, text, removeItem, toggleItem } = this.props;
 
     return (
       <div className="shopping-item">
@@ -18,8 +18,8 @@ class Todo extends React.PureComponent {
           onClick={removeItem}
         />
       </div>
-    )
+    );
   }
 }
 
-export default Todo
+export default Todo;

@@ -1,3 +1,3 @@
-const v4 = () => 'guid'
+const v4 = () => 'guid';
 
-export default v4
+export default v4;

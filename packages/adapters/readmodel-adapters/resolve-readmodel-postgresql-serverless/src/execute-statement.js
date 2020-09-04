@@ -1,17 +1,17 @@
-import { OMIT_BATCH } from 'resolve-readmodel-base'
+import { OMIT_BATCH } from 'resolve-readmodel-base';
 
 const executeStatement = async (pool, sql) => {
   try {
     const transactionScope =
       pool.xaTransactionId != null
         ? {
-            transactionId: pool.xaTransactionId
+            transactionId: pool.xaTransactionId,
           }
         : pool.transactionId != null
         ? {
-            transactionId: pool.transactionId
+            transactionId: pool.transactionId,
           }
-        : {}
+        : {};
     const result = await pool.rdsDataService.executeStatement({
       ...transactionScope,
       resourceArn: pool.dbClusterOrInstanceArn,
@@ -19,25 +19,25 @@ const executeStatement = async (pool, sql) => {
       database: 'postgres',
       continueAfterTimeout: false,
       includeResultMetadata: true,
-      sql
-    })
+      sql,
+    });
 
-    const { columnMetadata, records } = result
+    const { columnMetadata, records } = result;
 
     if (!Array.isArray(records) || columnMetadata == null) {
-      return null
+      return null;
     }
 
-    const rows = []
+    const rows = [];
     for (const record of records) {
-      const row = {}
+      const row = {};
       for (let i = 0; i < columnMetadata.length; i++) {
-        row[columnMetadata[i].name] = pool.coercer(record[i])
+        row[columnMetadata[i].name] = pool.coercer(record[i]);
       }
-      rows.push(row)
+      rows.push(row);
     }
 
-    return rows
+    return rows;
   } catch (error) {
     if (
       error != null &&
@@ -46,10 +46,10 @@ const executeStatement = async (pool, sql) => {
         /deadlock detected/i.test(error.message) ||
         pool.isTimeoutError(error))
     ) {
-      throw OMIT_BATCH
+      throw OMIT_BATCH;
     }
-    throw error
+    throw error;
   }
-}
+};
 
-export default executeStatement
+export default executeStatement;

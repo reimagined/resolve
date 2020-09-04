@@ -2,7 +2,7 @@ import {
   analyticsUrlBase,
   resolveExamples,
   resolvePackages,
-  resolveVersion
-} from './constants'
+  resolveVersion,
+} from './constants';
 
-export { analyticsUrlBase, resolveExamples, resolvePackages, resolveVersion }
+export { analyticsUrlBase, resolveExamples, resolvePackages, resolveVersion };

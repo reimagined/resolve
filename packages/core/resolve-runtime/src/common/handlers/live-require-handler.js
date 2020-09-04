@@ -1,8 +1,8 @@
-import debugLevels from 'resolve-debug-levels'
+import debugLevels from 'resolve-debug-levels';
 
-import liveRequire from '../utils/live-require'
+import liveRequire from '../utils/live-require';
 
-const log = debugLevels('resolve:resolve-runtime:fail-handler')
+const log = debugLevels('resolve:resolve-runtime:fail-handler');
 
 const liveRequireHandler = (moduleOptions, imports) => async (req, res) => {
   try {
@@ -10,23 +10,23 @@ const liveRequireHandler = (moduleOptions, imports) => async (req, res) => {
       modulePath,
       moduleFactoryImport = false,
       ...options
-    } = moduleOptions
-    const resource = liveRequire(modulePath)
+    } = moduleOptions;
+    const resource = liveRequire(modulePath);
     if (typeof resource !== 'function') {
-      throw new Error(`Runtime-import function from "${modulePath}" failed`)
+      throw new Error(`Runtime-import function from "${modulePath}" failed`);
     }
 
-    const handler = moduleFactoryImport ? resource(options, imports) : resource
+    const handler = moduleFactoryImport ? resource(options, imports) : resource;
 
-    return await handler(req, res)
+    return await handler(req, res);
   } catch (error) {
-    const errorText = error != null ? error.message : 'Live handler error'
+    const errorText = error != null ? error.message : 'Live handler error';
 
-    await res.status(500)
-    await res.end(errorText)
+    await res.status(500);
+    await res.end(errorText);
 
-    log.warn(errorText)
+    log.warn(errorText);
   }
-}
+};
 
-export default liveRequireHandler
+export default liveRequireHandler;

@@ -2,26 +2,26 @@ const convertBinaryRow = (row, fieldList) => {
   if (fieldList != null && fieldList.constructor !== Object) {
     throw new Error(
       'Field list should be object with enumerated selected fields'
-    )
+    );
   }
 
-  Object.setPrototypeOf(row, Object.prototype)
+  Object.setPrototypeOf(row, Object.prototype);
   for (const key of Object.keys(row)) {
     if (key.endsWith('\u0004')) {
-      delete row[key]
+      delete row[key];
     }
   }
 
   if (fieldList == null) {
-    return row
+    return row;
   }
 
-  const fieldNames = Object.keys(fieldList)
+  const fieldNames = Object.keys(fieldList);
   if (fieldNames.length === 0) {
-    return row
+    return row;
   }
 
-  const inclusiveMode = fieldList[fieldNames[0]] === 1
+  const inclusiveMode = fieldList[fieldNames[0]] === 1;
   for (const key of Object.keys(row)) {
     if (
       !(
@@ -29,11 +29,11 @@ const convertBinaryRow = (row, fieldList) => {
         (!inclusiveMode && !fieldList.hasOwnProperty(key))
       )
     ) {
-      delete row[key]
+      delete row[key];
     }
   }
 
-  return row
-}
+  return row;
+};
 
-export default convertBinaryRow
+export default convertBinaryRow;

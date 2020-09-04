@@ -4,11 +4,11 @@ const commitIncrementalImport = async (
 ) => {
   const incrementalImportTableAsId = escapeId(
     `${eventsTableName}-incremental-import`
-  )
+  );
   const incrementalImportTableAsString = escape(
     `${eventsTableName}-incremental-import`
-  )
-  const eventsTableAsId = escapeId(eventsTableName)
+  );
+  const eventsTableAsId = escapeId(eventsTableName);
 
   try {
     await database.exec(`BEGIN IMMEDIATE;
@@ -113,10 +113,10 @@ const commitIncrementalImport = async (
       ORDER BY "sortedIdx";
            
       COMMIT;
-      `)
+      `);
   } catch (error) {
     try {
-      await database.exec(`ROLLBACK;`)
+      await database.exec(`ROLLBACK;`);
     } catch (e) {}
     if (
       error != null &&
@@ -125,13 +125,13 @@ const commitIncrementalImport = async (
     ) {
       throw new Error(
         `Either event batch has timestamps from the past nor incremental importId=${importId} does not exist`
-      )
+      );
     } else {
-      throw error
+      throw error;
     }
   } finally {
-    await database.exec(`DROP TABLE IF EXISTS ${incrementalImportTableAsId};`)
+    await database.exec(`DROP TABLE IF EXISTS ${incrementalImportTableAsId};`);
   }
-}
+};
 
-export default commitIncrementalImport
+export default commitIncrementalImport;

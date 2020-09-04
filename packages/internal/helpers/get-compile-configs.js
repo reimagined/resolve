@@ -1,40 +1,40 @@
-const path = require('path')
-const find = require('glob').sync
+const path = require('path');
+const find = require('glob').sync;
 
-const { getResolveDir } = require('./get-resolve-dir')
+const { getResolveDir } = require('./get-resolve-dir');
 
-const externalDependencies = ['resolve-cloud-common']
+const externalDependencies = ['resolve-cloud-common'];
 
-const isInternalDependency = name =>
-  name.startsWith('resolve-') && !externalDependencies.includes(name)
+const isInternalDependency = (name) =>
+  name.startsWith('resolve-') && !externalDependencies.includes(name);
 
-let _configs
+let _configs;
 const getCompileConfigs = () => {
   if (_configs) {
-    return _configs
+    return _configs;
   }
 
-  const configs = []
+  const configs = [];
 
   for (const filePath of find('./packages/**/package.json', {
     cwd: getResolveDir(),
     absolute: true,
-    ignore: ['**/node_modules/**', './node_modules/**']
+    ignore: ['**/node_modules/**', './node_modules/**'],
   })) {
     if (filePath.includes('node_modules')) {
-      continue
+      continue;
     }
     if (
       filePath.includes('packages\\internal') ||
       filePath.includes('packages/internal')
     ) {
-      continue
+      continue;
     }
     if (
       filePath.includes(`optional\\${'dependencies'}`) ||
       filePath.includes(`optional/${'dependencies'}`)
     ) {
-      continue
+      continue;
     }
 
     const {
@@ -42,11 +42,11 @@ const getCompileConfigs = () => {
       name,
       sourceType,
       babelCompile,
-      dependencies = {}
-    } = require(filePath)
+      dependencies = {},
+    } = require(filePath);
 
     if (!Array.isArray(babelCompile)) {
-      throw new Error(`[${name}] package.json "babelCompile" must be an array`)
+      throw new Error(`[${name}] package.json "babelCompile" must be an array`);
     }
 
     const config = {
@@ -61,53 +61,55 @@ const getCompileConfigs = () => {
             ? acc.concat(dependencyName)
             : acc,
         []
-      )
-    }
+      ),
+    };
 
     if (config.sourceType == null) {
-      config.sourceType = 'js'
+      config.sourceType = 'js';
     }
 
     if (config.sourceType.constructor !== String) {
-      throw new Error(`.sourceType must be a string`)
+      throw new Error(`.sourceType must be a string`);
     }
 
     for (let index = 0; index < babelCompile.length; index++) {
-      const babelConfig = babelCompile[index]
+      const babelConfig = babelCompile[index];
 
       if (babelConfig.moduleType.constructor !== String) {
-        throw new Error(`.babelCompile[${index}].moduleType must be a string`)
+        throw new Error(`.babelCompile[${index}].moduleType must be a string`);
       }
       if (babelConfig.moduleTarget.constructor !== String) {
-        throw new Error(`.babelCompile[${index}].moduleTarget must be a string`)
+        throw new Error(
+          `.babelCompile[${index}].moduleTarget must be a string`
+        );
       }
       if (babelConfig.inputDir.constructor !== String) {
-        throw new Error(`.babelCompile[${index}].inputDir must be a string`)
+        throw new Error(`.babelCompile[${index}].inputDir must be a string`);
       }
       if (babelConfig.outDir.constructor !== String) {
-        throw new Error(`.babelCompile[${index}].outDir must be a string`)
+        throw new Error(`.babelCompile[${index}].outDir must be a string`);
       }
 
-      babelConfig.inputDir = path.join(config.directory, babelConfig.inputDir)
-      babelConfig.outDir = path.join(config.directory, babelConfig.outDir)
+      babelConfig.inputDir = path.join(config.directory, babelConfig.inputDir);
+      babelConfig.outDir = path.join(config.directory, babelConfig.outDir);
       babelConfig.outFileExtension =
-        babelConfig.moduleType === 'mjs' ? '.mjs' : '.js'
+        babelConfig.moduleType === 'mjs' ? '.mjs' : '.js';
 
       babelConfig.extensions =
         config.sourceType === 'ts'
           ? ['.ts', '.tsx', '.js', '.jsx']
-          : ['.js', '.jsx']
+          : ['.js', '.jsx'];
 
-      babelConfig.deleteDirOnStart = false
-      babelConfig.filenames = [babelConfig.inputDir]
+      babelConfig.deleteDirOnStart = false;
+      babelConfig.filenames = [babelConfig.inputDir];
     }
 
-    configs.push(config)
+    configs.push(config);
   }
 
-  _configs = configs
+  _configs = configs;
 
-  return configs
-}
+  return configs;
+};
 
-module.exports = { getCompileConfigs }
+module.exports = { getCompileConfigs };

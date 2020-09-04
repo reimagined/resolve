@@ -1,6 +1,6 @@
-import { INT8_SQL_TYPE } from './constants'
+import { INT8_SQL_TYPE } from './constants';
 
-const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
+const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g;
 
 const loadEventsByCursor = async (
   {
@@ -10,46 +10,48 @@ const loadEventsByCursor = async (
     eventsTableName,
     databaseName,
     shapeEvent,
-    isTimeoutError
+    isTimeoutError,
   },
   {
     eventTypes,
     aggregateIds,
     cursor,
     limit,
-    eventsSizeLimit: inputEventsSizeLimit
+    eventsSizeLimit: inputEventsSizeLimit,
   }
 ) => {
   const eventsSizeLimit =
-    inputEventsSizeLimit != null ? inputEventsSizeLimit : 2000000000
+    inputEventsSizeLimit != null ? inputEventsSizeLimit : 2000000000;
 
-  const makeBigIntLiteral = numStr => `x'${numStr}'::${INT8_SQL_TYPE}`
-  const parseBigIntString = str =>
-    str.substring(2, str.length - (INT8_SQL_TYPE.length + 3))
+  const makeBigIntLiteral = (numStr) => `x'${numStr}'::${INT8_SQL_TYPE}`;
+  const parseBigIntString = (str) =>
+    str.substring(2, str.length - (INT8_SQL_TYPE.length + 3));
 
-  const injectBigInt = value =>
-    makeBigIntLiteral((+value).toString(16).padStart(12, '0'))
-  const injectString = value => `${escape(value)}`
-  const injectNumber = value => `${+value}`
+  const injectBigInt = (value) =>
+    makeBigIntLiteral((+value).toString(16).padStart(12, '0'));
+  const injectString = (value) => `${escape(value)}`;
+  const injectNumber = (value) => `${+value}`;
 
   const cursorBuffer =
-    cursor != null ? Buffer.from(cursor, 'base64') : Buffer.alloc(1536, 0)
-  const vectorConditions = []
+    cursor != null ? Buffer.from(cursor, 'base64') : Buffer.alloc(1536, 0);
+  const vectorConditions = [];
   for (let i = 0; i < cursorBuffer.length / 6; i++) {
     vectorConditions.push(
       makeBigIntLiteral(cursorBuffer.slice(i * 6, (i + 1) * 6).toString('hex'))
-    )
+    );
   }
 
-  const queryConditions = ['1=1']
+  const queryConditions = ['1=1'];
   if (eventTypes != null) {
-    queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`)
+    queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`);
   }
   if (aggregateIds != null) {
-    queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
+    queryConditions.push(
+      `"aggregateId" IN (${aggregateIds.map(injectString)})`
+    );
   }
 
-  const resultQueryCondition = queryConditions.join(' AND ')
+  const resultQueryCondition = queryConditions.join(' AND ');
   const resultVectorConditions = vectorConditions
     .map(
       (threadCounter, threadId) =>
@@ -57,7 +59,7 @@ const loadEventsByCursor = async (
           threadId
         )} AND "threadCounter">=${threadCounter}`
     )
-    .join(' OR ')
+    .join(' OR ');
   const resultTimestampConditions = vectorConditions
     .map(
       (threadCounter, threadId) =>
@@ -65,10 +67,10 @@ const loadEventsByCursor = async (
           threadId
         )} AND "threadCounter"=${threadCounter}`
     )
-    .join(' OR ')
+    .join(' OR ');
 
-  const databaseNameAsId = escapeId(databaseName)
-  const eventsTableAsId = escapeId(eventsTableName)
+  const databaseNameAsId = escapeId(databaseName);
+  const eventsTableAsId = escapeId(eventsTableName);
 
   // prettier-ignore
   const sqlQuery =
@@ -120,36 +122,36 @@ const loadEventsByCursor = async (
       "threadIdsPerLimitedBatchList"."value"
     ORDER BY "limitedBatchList"."batchIndex"`
 
-  let batchList = null
+  let batchList = null;
   while (true) {
     try {
-      batchList = await executeStatement(sqlQuery)
-      break
+      batchList = await executeStatement(sqlQuery);
+      break;
     } catch (err) {
       if (isTimeoutError(err)) {
-        continue
+        continue;
       }
-      throw err
+      throw err;
     }
   }
 
-  const requestCursors = []
-  const requestPromises = []
+  const requestCursors = [];
+  const requestPromises = [];
   for (const {
     batchIndex,
     threadId,
     threadCounterStart,
-    threadCounterEnd
+    threadCounterEnd,
   } of batchList) {
     if (requestCursors[batchIndex] == null) {
-      requestCursors[batchIndex] = []
+      requestCursors[batchIndex] = [];
     }
 
     requestCursors[batchIndex].push(
       `"threadId"= ${+threadId} AND "threadCounter" BETWEEN ${injectBigInt(
         threadCounterStart
       )} AND ${injectBigInt(threadCounterEnd)}`
-    )
+    );
   }
 
   for (let i = 0; i < requestCursors.length; i++) {
@@ -160,63 +162,63 @@ const loadEventsByCursor = async (
     ${requestCursors[i].join(' OR ')}
     ${queryConditions.length > 0 ? ')' : ''}
     ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC
-    `
+    `;
 
     requestPromises.push(
       (async () => {
         while (true) {
           try {
-            return await executeStatement(sqlQuery)
+            return await executeStatement(sqlQuery);
           } catch (err) {
             if (isTimeoutError(err)) {
-              continue
+              continue;
             }
-            throw err
+            throw err;
           }
         }
       })()
-    )
+    );
   }
 
-  const batchedEvents = await Promise.all(requestPromises)
-  const events = []
+  const batchedEvents = await Promise.all(requestPromises);
+  const events = [];
   for (const eventBatch of batchedEvents) {
     for (const event of eventBatch) {
-      events.push(event)
+      events.push(event);
     }
   }
 
-  const resultEvents = []
+  const resultEvents = [];
   for (const event of events) {
-    const threadId = +event.threadId
-    const threadCounter = +event.threadCounter
+    const threadId = +event.threadId;
+    const threadCounter = +event.threadCounter;
     const oldThreadCounter = parseInt(
       parseBigIntString(vectorConditions[threadId]),
       16
-    )
+    );
     vectorConditions[threadId] = injectBigInt(
       Math.max(threadCounter + 1, oldThreadCounter)
-    )
+    );
 
-    resultEvents.push(shapeEvent(event))
+    resultEvents.push(shapeEvent(event));
   }
 
-  const nextConditionsBuffer = Buffer.alloc(1536)
-  let byteIndex = 0
+  const nextConditionsBuffer = Buffer.alloc(1536);
+  let byteIndex = 0;
 
   for (const threadCounter of vectorConditions) {
     const threadCounterBytes = parseBigIntString(threadCounter).match(
       split2RegExp
-    )
+    );
     for (const byteHex of threadCounterBytes) {
-      nextConditionsBuffer[byteIndex++] = parseInt(byteHex, 16)
+      nextConditionsBuffer[byteIndex++] = parseInt(byteHex, 16);
     }
   }
 
   return {
     cursor: nextConditionsBuffer.toString('base64'),
-    events: resultEvents
-  }
-}
+    events: resultEvents,
+  };
+};
 
-export default loadEventsByCursor
+export default loadEventsByCursor;

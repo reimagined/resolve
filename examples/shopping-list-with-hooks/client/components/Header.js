@@ -1,27 +1,27 @@
-import React from 'react'
-import { Navbar } from 'react-bootstrap'
-import { Helmet } from 'react-helmet'
-import { Link } from 'react-router-dom'
-import { useStaticResolver } from 'resolve-react-hooks'
+import React from 'react';
+import { Navbar } from 'react-bootstrap';
+import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
+import { useStaticResolver } from 'resolve-react-hooks';
 
-import Image from './Image'
+import Image from './Image';
 
 const Header = ({ title, name, css, favicon }) => {
-  const resolveStatic = useStaticResolver()
-  const stylesheetLinks = css.map(href => ({
+  const resolveStatic = useStaticResolver();
+  const stylesheetLinks = css.map((href) => ({
     rel: 'stylesheet',
-    href: resolveStatic(href)
-  }))
+    href: resolveStatic(href),
+  }));
   const faviconLink = {
     rel: 'icon',
     type: 'image/png',
-    href: resolveStatic(favicon)
-  }
-  const links = [...stylesheetLinks, faviconLink]
+    href: resolveStatic(favicon),
+  };
+  const links = [...stylesheetLinks, faviconLink];
   const meta = {
     name: 'viewport',
-    content: 'width=device-width, initial-scale=1'
-  }
+    content: 'width=device-width, initial-scale=1',
+  };
 
   return (
     <div>
@@ -37,7 +37,7 @@ const Header = ({ title, name, css, favicon }) => {
         </Navbar.Header>
       </Navbar>
     </div>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

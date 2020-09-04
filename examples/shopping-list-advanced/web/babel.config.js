@@ -1,14 +1,14 @@
-module.exports = function(api) {
-  api.cache(true)
+module.exports = function (api) {
+  api.cache(true);
   return {
     presets: [
       [
         '@babel/preset-env',
         {
-          modules: 'commonjs'
-        }
+          modules: 'commonjs',
+        },
       ],
-      '@babel/preset-react'
+      '@babel/preset-react',
     ],
     plugins: [
       ['@babel/plugin-proposal-decorators', { legacy: true }],
@@ -21,9 +21,9 @@ module.exports = function(api) {
           corejs: false,
           helpers: true,
           regenerator: true,
-          useESModules: false
-        }
-      ]
-    ]
-  }
-}
+          useESModules: false,
+        },
+      ],
+    ],
+  };
+};

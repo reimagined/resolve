@@ -1,7 +1,7 @@
-import Vue from 'vue'
-import BootstrapVue from 'bootstrap-vue'
-import { createRenderer } from 'vue-server-renderer'
-import App from './App.vue'
+import Vue from 'vue';
+import BootstrapVue from 'bootstrap-vue';
+import { createRenderer } from 'vue-server-renderer';
+import App from './App.vue';
 
 const entryPoint = async (
   { constants: { rootPath, staticPath }, seedClientEnvs, utils },
@@ -9,27 +9,27 @@ const entryPoint = async (
   res
 ) => {
   try {
-    const { getStaticBasedPath } = utils
-    Vue.use(BootstrapVue)
-    const renderer = createRenderer()
-    const makeStaticPath = getStaticBasedPath.bind(null, rootPath, staticPath)
+    const { getStaticBasedPath } = utils;
+    Vue.use(BootstrapVue);
+    const renderer = createRenderer();
+    const makeStaticPath = getStaticBasedPath.bind(null, rootPath, staticPath);
 
-    const bundleUrl = makeStaticPath('index.js')
-    const bootstrapCssUrl = makeStaticPath('bootstrap.css')
-    const bootstrapVueCssUrl = makeStaticPath('bootstrap-vue.css')
+    const bundleUrl = makeStaticPath('index.js');
+    const bootstrapCssUrl = makeStaticPath('bootstrap.css');
+    const bootstrapVueCssUrl = makeStaticPath('bootstrap-vue.css');
 
     const app = new Vue({
       data: { rootPath, staticPath },
-      render: h => h(App)
-    })
+      render: (h) => h(App),
+    });
 
     const renderedHtml = await new Promise((resolve, reject) =>
       renderer.renderToString(app, (err, html) =>
         err == null ? resolve(html) : reject(err)
       )
-    )
+    );
 
-    await res.setHeader('Content-Type', 'text/html')
+    await res.setHeader('Content-Type', 'text/html');
 
     await res.end(`
       <!doctype html>
@@ -46,15 +46,15 @@ const entryPoint = async (
           <script src="${bundleUrl}"></script>
         </body>
       </html>
-    `)
+    `);
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.warn('Vue SSR error', error)
+    console.warn('Vue SSR error', error);
 
-    await res.status(500)
+    await res.status(500);
 
-    await res.end('Vue SSR error')
+    await res.end('Vue SSR error');
   }
-}
+};
 
-export default entryPoint
+export default entryPoint;

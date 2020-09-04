@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from 'resolve-scripts';
 
 const cloudConfig = {
   target: 'cloud',
@@ -13,8 +13,8 @@ const cloudConfig = {
       eventsTableName: declareRuntimeEnv('RESOLVE_ES_TABLE'),
       secretsTableName: declareRuntimeEnv('RESOLVE_ES_SECRETS_TABLE'),
       region: declareRuntimeEnv('AWS_REGION'),
-      snapshotBucketSize: 100
-    }
+      snapshotBucketSize: 100,
+    },
   },
   readModelConnectors: {
     default: {
@@ -29,19 +29,19 @@ const cloudConfig = {
         databaseName: declareRuntimeEnv(
           'RESOLVE_READMODEL_POSTGRESQL_DATABASE_NAME'
         ),
-        region: declareRuntimeEnv('AWS_REGION')
-      }
-    }
+        region: declareRuntimeEnv('AWS_REGION'),
+      },
+    },
   },
   schedulers: {
     scheduler: {
       adapter: {
         module: 'resolve-scheduler-cloud',
-        options: {}
+        options: {},
       },
-      connectorName: 'default'
-    }
-  }
-}
+      connectorName: 'default',
+    },
+  },
+};
 
-export default cloudConfig
+export default cloudConfig;

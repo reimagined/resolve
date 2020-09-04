@@ -1,5 +1,5 @@
-import { connectRootBasedUrls } from 'resolve-redux'
+import { connectRootBasedUrls } from 'resolve-redux';
 
-const NavLink = connectRootBasedUrls(['href'])('a')
+const NavLink = connectRootBasedUrls(['href'])('a');
 
-export default NavLink
+export default NavLink;

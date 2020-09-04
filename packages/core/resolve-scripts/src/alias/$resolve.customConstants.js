@@ -1,5 +1,5 @@
-import { message } from '../constants'
-import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
+import { message } from '../constants';
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env';
 
 export default ({ resolveConfig, isClient }) => {
   void JSON.stringify(resolveConfig.customConstants, (key, value) => {
@@ -12,13 +12,13 @@ export default ({ resolveConfig, isClient }) => {
       value.constructor !== Object &&
       !checkRuntimeEnv(value)
     ) {
-      throw new Error(`${message.incorrectJsonSchemaType}".${key}"`)
+      throw new Error(`${message.incorrectJsonSchemaType}".${key}"`);
     }
 
-    return value
-  })
+    return value;
+  });
 
-  const exports = []
+  const exports = [];
 
   exports.push(
     `const customConstants = ${injectRuntimeEnv(
@@ -27,7 +27,7 @@ export default ({ resolveConfig, isClient }) => {
     )}`,
     ``,
     `module.exports = customConstants`
-  )
+  );
 
-  return exports.join('\r\n')
-}
+  return exports.join('\r\n');
+};

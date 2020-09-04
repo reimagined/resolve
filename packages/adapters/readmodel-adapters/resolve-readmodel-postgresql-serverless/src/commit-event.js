@@ -1,28 +1,28 @@
-import debugLevels from 'resolve-debug-levels'
-import { OMIT_BATCH } from 'resolve-readmodel-base'
+import debugLevels from 'resolve-debug-levels';
+import { OMIT_BATCH } from 'resolve-readmodel-base';
 
 const log = debugLevels(
   'resolve:resolve-readmodel-postgresql-serverless:commit-event'
-)
+);
 
 const commitEvent = async (pool, readModelName, xaTransactionId) => {
   try {
-    pool.xaTransactionId = null
-    const savepointId = pool.generateGuid(readModelName, xaTransactionId)
+    pool.xaTransactionId = null;
+    const savepointId = pool.generateGuid(readModelName, xaTransactionId);
     const eventCountId = `resolve.${pool.generateGuid(
       readModelName,
       xaTransactionId,
       'eventCountId'
-    )}`
+    )}`;
     const insideEventId = `resolve.${pool.generateGuid(
       readModelName,
       xaTransactionId,
       'insideEventId'
-    )}`
-    const eventCount = pool.eventCounters.get(xaTransactionId)
+    )}`;
+    const eventCount = pool.eventCounters.get(xaTransactionId);
 
     if (eventCount == null) {
-      throw new Error(`Xa-Transaction ${xaTransactionId} commit event failed`)
+      throw new Error(`Xa-Transaction ${xaTransactionId} commit event failed`);
     }
 
     await pool.rdsDataService.executeStatement({
@@ -36,14 +36,14 @@ const commitEvent = async (pool, readModelName, xaTransactionId) => {
         SET LOCAL ${eventCountId} = ${eventCount + 1};
         SET LOCAL ${insideEventId} = 0;
         RELEASE SAVEPOINT ${savepointId};
-      `
-    })
+      `,
+    });
 
-    pool.eventCounters.set(xaTransactionId, eventCount + 1)
+    pool.eventCounters.set(xaTransactionId, eventCount + 1);
 
-    log.verbose('Commit event to postgresql database succeed')
+    log.verbose('Commit event to postgresql database succeed');
   } catch (error) {
-    log.verbose('Commit event to postgresql database failed', error)
+    log.verbose('Commit event to postgresql database failed', error);
 
     if (
       error != null &&
@@ -51,11 +51,11 @@ const commitEvent = async (pool, readModelName, xaTransactionId) => {
         /deadlock detected/i.test(error.message) ||
         pool.isTimeoutError(error))
     ) {
-      throw OMIT_BATCH
+      throw OMIT_BATCH;
     }
 
-    throw error
+    throw error;
   }
-}
+};
 
-export default commitEvent
+export default commitEvent;

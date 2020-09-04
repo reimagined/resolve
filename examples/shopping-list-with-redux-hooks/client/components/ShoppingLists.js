@@ -1,19 +1,19 @@
-import React, { useEffect } from 'react'
-import { Button, FormLabel, Table } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
-import { useReduxCommand, useReduxReadModel } from 'resolve-redux'
-import { useSelector } from 'react-redux'
+import React, { useEffect } from 'react';
+import { Button, FormLabel, Table } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { useReduxCommand, useReduxReadModel } from 'resolve-redux';
+import { useSelector } from 'react-redux';
 import {
   SHOPPING_LIST_REMOVED,
-  SHOPPING_LISTS_ACQUIRED
-} from '../actions/optimistic-actions'
+  SHOPPING_LISTS_ACQUIRED,
+} from '../actions/optimistic-actions';
 
 const useOptimisticLists = () => {
   const { request: getLists } = useReduxReadModel(
     {
       name: 'ShoppingLists',
       resolver: 'all',
-      args: {}
+      args: {},
     },
     [],
     {
@@ -21,46 +21,46 @@ const useOptimisticLists = () => {
         success: (_, result) => ({
           type: SHOPPING_LISTS_ACQUIRED,
           payload: {
-            lists: result.data
-          }
-        })
-      }
+            lists: result.data,
+          },
+        }),
+      },
     }
-  )
+  );
   const { execute: removeShoppingList } = useReduxCommand(
     ({ id }) => ({
       aggregateName: 'ShoppingList',
       type: 'removeShoppingList',
       aggregateId: id,
-      payload: {}
+      payload: {},
     }),
     {
       actions: {
-        success: command => ({
+        success: (command) => ({
           type: SHOPPING_LIST_REMOVED,
           payload: {
-            id: command.aggregateId
-          }
-        })
-      }
+            id: command.aggregateId,
+          },
+        }),
+      },
     }
-  )
+  );
 
-  const lists = useSelector(state => state.optimisticShoppingLists)
+  const lists = useSelector((state) => state.optimisticShoppingLists);
 
   return {
     getLists,
     lists,
-    removeShoppingList
-  }
-}
+    removeShoppingList,
+  };
+};
 
 export default () => {
-  const { getLists, removeShoppingList, lists } = useOptimisticLists()
+  const { getLists, removeShoppingList, lists } = useOptimisticLists();
 
   useEffect(() => {
-    getLists()
-  }, [])
+    getLists();
+  }, []);
 
   return (
     <div>
@@ -84,7 +84,7 @@ export default () => {
                 <Button
                   variant="danger"
                   onClick={() => {
-                    removeShoppingList({ id })
+                    removeShoppingList({ id });
                   }}
                 >
                   <i className="far fa-trash-alt" />
@@ -95,5 +95,5 @@ export default () => {
         </tbody>
       </Table>
     </div>
-  )
-}
+  );
+};

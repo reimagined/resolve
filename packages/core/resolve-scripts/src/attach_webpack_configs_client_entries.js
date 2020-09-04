@@ -1,7 +1,7 @@
-import EsmWebpackPlugin from '@purtuga/esm-webpack-plugin'
-import path from 'path'
+import EsmWebpackPlugin from '@purtuga/esm-webpack-plugin';
+import path from 'path';
 
-import getClientEntries from './get_client_entries'
+import getClientEntries from './get_client_entries';
 
 const attachWebpackConfigsClientEntries = (
   resolveConfig,
@@ -12,7 +12,7 @@ const attachWebpackConfigsClientEntries = (
   const { iifeEntries, commonjsEntries, esmEntries } = getClientEntries(
     resolveConfig,
     isClient
-  )
+  );
 
   if (iifeEntries.length > 0) {
     configs.push({
@@ -22,10 +22,10 @@ const attachWebpackConfigsClientEntries = (
         acc[outputFile] = `${path.resolve(
           __dirname,
           './alias/$resolve.clientEntry.js'
-        )}?inputFile=${inputFile}`
-        return acc
-      }, {})
-    })
+        )}?inputFile=${inputFile}`;
+        return acc;
+      }, {}),
+    });
   }
 
   if (commonjsEntries.length > 0) {
@@ -36,14 +36,14 @@ const attachWebpackConfigsClientEntries = (
         acc[outputFile] = `${path.resolve(
           __dirname,
           './alias/$resolve.clientEntry.js'
-        )}?inputFile=${inputFile}`
-        return acc
+        )}?inputFile=${inputFile}`;
+        return acc;
       }, {}),
       output: {
         ...baseConfig.output,
-        libraryTarget: 'commonjs-module'
-      }
-    })
+        libraryTarget: 'commonjs-module',
+      },
+    });
   }
 
   if (esmEntries.length > 0) {
@@ -54,17 +54,17 @@ const attachWebpackConfigsClientEntries = (
         acc[outputFile] = `${path.resolve(
           __dirname,
           './alias/$resolve.clientEntry.js'
-        )}?inputFile=${inputFile}`
-        return acc
+        )}?inputFile=${inputFile}`;
+        return acc;
       }, {}),
       output: {
         ...baseConfig.output,
         libraryTarget: 'var',
-        library: '__RESOLVE_ENTRY__'
+        library: '__RESOLVE_ENTRY__',
       },
-      plugins: [...baseConfig.plugins, new EsmWebpackPlugin()]
-    })
+      plugins: [...baseConfig.plugins, new EsmWebpackPlugin()],
+    });
   }
-}
+};
 
-export default attachWebpackConfigsClientEntries
+export default attachWebpackConfigsClientEntries;

@@ -1,28 +1,28 @@
 const wrapReadmodelConnector = (connector, options) => {
-  const wrappedConnector = Object.create(connector)
+  const wrappedConnector = Object.create(connector);
 
   if (typeof connector.connect !== 'function') {
     Object.defineProperty(wrappedConnector, 'connect', {
-      value: async () => options
-    })
+      value: async () => options,
+    });
   }
   if (typeof connector.disconnect !== 'function') {
     Object.defineProperty(wrappedConnector, 'disconnect', {
-      value: async () => {}
-    })
+      value: async () => {},
+    });
   }
   if (typeof connector.drop !== 'function') {
     Object.defineProperty(wrappedConnector, 'drop', {
-      value: async () => {}
-    })
+      value: async () => {},
+    });
   }
   if (typeof connector.dispose !== 'function') {
     Object.defineProperty(wrappedConnector, 'dispose', {
-      value: async () => {}
-    })
+      value: async () => {},
+    });
   }
 
-  return wrappedConnector
-}
+  return wrappedConnector;
+};
 
-export default wrapReadmodelConnector
+export default wrapReadmodelConnector;

@@ -1,12 +1,12 @@
-import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
-import invokeEventBus from './invoke-event-bus'
+import getSubscribeAdapterOptions from './get-subscribe-adapter-options';
+import invokeEventBus from './invoke-event-bus';
 
-const initBroker = resolve => {
+const initBroker = (resolve) => {
   Object.assign(resolve.publisher, {
     pause: async ({ eventSubscriber }) => {
       return await invokeEventBus(resolve.eventstoreCredentials, 'pause', {
-        eventSubscriber
-      })
+        eventSubscriber,
+      });
     },
     acknowledge: async ({ batchId, result }) => {
       return await invokeEventBus(
@@ -14,40 +14,40 @@ const initBroker = resolve => {
         'acknowledge',
         {
           batchId,
-          result
+          result,
         }
-      )
+      );
     },
     publish: async ({ event }) => {
       return await invokeEventBus(resolve.eventstoreCredentials, 'publish', {
-        event
-      })
+        event,
+      });
     },
     resume: async ({ eventSubscriber }) => {
       return await invokeEventBus(resolve.eventstoreCredentials, 'resume', {
-        eventSubscriber
-      })
+        eventSubscriber,
+      });
     },
     status: async ({ eventSubscriber }) => {
       return await invokeEventBus(resolve.eventstoreCredentials, 'status', {
-        eventSubscriber
-      })
+        eventSubscriber,
+      });
     },
     reset: async ({ eventSubscriber }) => {
       return await invokeEventBus(resolve.eventstoreCredentials, 'reset', {
-        eventSubscriber
-      })
+        eventSubscriber,
+      });
     },
     read: async ({ eventFilter }) => {
       return await invokeEventBus(resolve.eventstoreCredentials, 'read', {
-        eventFilter
-      })
+        eventFilter,
+      });
     },
     subscribe: async ({ eventSubscriber, subscriptionOptions }) => {
       return await invokeEventBus(resolve.eventstoreCredentials, 'subscribe', {
         eventSubscriber,
-        subscriptionOptions
-      })
+        subscriptionOptions,
+      });
     },
     resubscribe: async ({ eventSubscriber, subscriptionOptions }) => {
       return await invokeEventBus(
@@ -55,18 +55,18 @@ const initBroker = resolve => {
         'resubscribe',
         {
           eventSubscriber,
-          subscriptionOptions
+          subscriptionOptions,
         }
-      )
+      );
     },
     unsubscribe: async ({ eventSubscriber }) => {
       return await invokeEventBus(
         resolve.eventstoreCredentials,
         'unsubscribe',
         {
-          eventSubscriber
+          eventSubscriber,
         }
-      )
+      );
     },
     listProperties: async ({ eventSubscriber }) => {
       try {
@@ -74,9 +74,9 @@ const initBroker = resolve => {
           resolve.eventstoreCredentials,
           'listProperties',
           { eventSubscriber }
-        )
+        );
       } catch (err) {
-        return []
+        return [];
       }
     },
     getProperty: async ({ eventSubscriber, key }) => {
@@ -85,9 +85,9 @@ const initBroker = resolve => {
           resolve.eventstoreCredentials,
           'getProperty',
           { eventSubscriber, key }
-        )
+        );
       } catch (err) {
-        return null
+        return null;
       }
     },
     setProperty: async ({ eventSubscriber, key, value }) => {
@@ -96,9 +96,9 @@ const initBroker = resolve => {
           resolve.eventstoreCredentials,
           'setProperty',
           { eventSubscriber, key, value }
-        )
+        );
       } catch (err) {
-        return null
+        return null;
       }
     },
     deleteProperty: async ({ eventSubscriber, key }) => {
@@ -107,18 +107,18 @@ const initBroker = resolve => {
           resolve.eventstoreCredentials,
           'deleteProperty',
           { eventSubscriber, key }
-        )
+        );
       } catch (err) {
-        return null
+        return null;
       }
-    }
-  })
+    },
+  });
 
   Object.defineProperties(resolve, {
     getSubscribeAdapterOptions: {
-      value: getSubscribeAdapterOptions
-    }
-  })
-}
+      value: getSubscribeAdapterOptions,
+    },
+  });
+};
 
-export default initBroker
+export default initBroker;

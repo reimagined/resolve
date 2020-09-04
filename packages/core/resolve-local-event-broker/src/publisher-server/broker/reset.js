@@ -2,19 +2,19 @@ import {
   ConsumerMethod,
   SubscriptionStatus,
   DeliveryStrategy,
-  SUBSCRIBERS_TABLE_NAME
-} from '../constants'
+  SUBSCRIBERS_TABLE_NAME,
+} from '../constants';
 
 const reset = async (pool, payload) => {
   const {
     database: { runQuery, runRawQuery, escapeStr, escapeId, encodeJsonPath },
     parseSubscription,
     invokeConsumer,
-    generateGuid
-  } = pool
-  const { eventSubscriber } = payload
-  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
-  const nextSubscriptionId = generateGuid(eventSubscriber)
+    generateGuid,
+  } = pool;
+  const { eventSubscriber } = payload;
+  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME);
+  const nextSubscriptionId = generateGuid(eventSubscriber);
   const result = await runQuery(`
     SELECT ${subscribersTableNameAsId}."subscriptionId" AS "subscriptionId",
     ${subscribersTableNameAsId}."deliveryStrategy" AS "deliveryStrategy",
@@ -24,9 +24,9 @@ const reset = async (pool, payload) => {
     ${subscribersTableNameAsId}."properties" AS "properties"
     FROM ${subscribersTableNameAsId}
     WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)}
-  `)
+  `);
   if (result == null || result.length !== 1) {
-    throw new Error(`Event subscriber ${eventSubscriber} does not found`)
+    throw new Error(`Event subscriber ${eventSubscriber} does not found`);
   }
   const {
     subscriptionId,
@@ -34,8 +34,8 @@ const reset = async (pool, payload) => {
     queueStrategy,
     eventTypes,
     aggregateIds,
-    properties
-  } = parseSubscription(result[0])
+    properties,
+  } = parseSubscription(result[0]);
 
   await runRawQuery(`
     DELETE FROM ${subscribersTableNameAsId}
@@ -64,7 +64,7 @@ const reset = async (pool, payload) => {
         eventTypes != null
           ? `{ ${eventTypes
               .map(
-                eventType =>
+                (eventType) =>
                   `${JSON.stringify(encodeJsonPath(eventType))}: true`
               )
               .join(', ')} }`
@@ -74,7 +74,7 @@ const reset = async (pool, payload) => {
         aggregateIds != null
           ? `{ ${aggregateIds
               .map(
-                aggregateId =>
+                (aggregateId) =>
                   `${JSON.stringify(encodeJsonPath(aggregateId))}: true`
               )
               .join(', ')} }`
@@ -91,17 +91,17 @@ const reset = async (pool, payload) => {
   
     COMMIT;
     BEGIN IMMEDIATE;
-  `)
+  `);
 
   if (
     deliveryStrategy === DeliveryStrategy.ACTIVE_NONE ||
     deliveryStrategy === DeliveryStrategy.ACTIVE_REGULAR ||
     deliveryStrategy === DeliveryStrategy.ACTIVE_XA
   ) {
-    await invokeConsumer(pool, ConsumerMethod.Drop, { eventSubscriber })
+    await invokeConsumer(pool, ConsumerMethod.Drop, { eventSubscriber });
   }
 
-  return subscriptionId
-}
+  return subscriptionId;
+};
 
-export default reset
+export default reset;

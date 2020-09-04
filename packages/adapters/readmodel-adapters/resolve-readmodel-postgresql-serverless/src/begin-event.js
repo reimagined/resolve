@@ -1,19 +1,19 @@
-import debugLevels from 'resolve-debug-levels'
-import { OMIT_BATCH } from 'resolve-readmodel-base'
+import debugLevels from 'resolve-debug-levels';
+import { OMIT_BATCH } from 'resolve-readmodel-base';
 
 const log = debugLevels(
   'resolve:resolve-readmodel-postgresql-serverless:begin-event'
-)
+);
 
 const beginEvent = async (pool, readModelName, xaTransactionId) => {
   try {
-    pool.xaTransactionId = xaTransactionId
-    const savepointId = pool.generateGuid(readModelName, xaTransactionId)
+    pool.xaTransactionId = xaTransactionId;
+    const savepointId = pool.generateGuid(readModelName, xaTransactionId);
     const insideEventId = `resolve.${pool.generateGuid(
       readModelName,
       xaTransactionId,
       'insideEventId'
-    )}`
+    )}`;
 
     await pool.rdsDataService.executeStatement({
       resourceArn: pool.dbClusterOrInstanceArn,
@@ -25,18 +25,18 @@ const beginEvent = async (pool, readModelName, xaTransactionId) => {
       sql: `
         SAVEPOINT ${savepointId};
         SET LOCAL ${insideEventId} = 1;
-      `
-    })
+      `,
+    });
 
-    log.verbose('Begin event to postgresql database succeed')
+    log.verbose('Begin event to postgresql database succeed');
 
     if (!pool.eventCounters.has(xaTransactionId)) {
-      pool.eventCounters.set(xaTransactionId, 0)
+      pool.eventCounters.set(xaTransactionId, 0);
     }
 
-    pool.readModelName = readModelName
+    pool.readModelName = readModelName;
   } catch (error) {
-    log.verbose('Begin event to postgresql database failed', error)
+    log.verbose('Begin event to postgresql database failed', error);
 
     if (
       error != null &&
@@ -44,11 +44,11 @@ const beginEvent = async (pool, readModelName, xaTransactionId) => {
         /deadlock detected/i.test(error.message) ||
         pool.isTimeoutError(error))
     ) {
-      throw OMIT_BATCH
+      throw OMIT_BATCH;
     }
 
-    throw error
+    throw error;
   }
-}
+};
 
-export default beginEvent
+export default beginEvent;

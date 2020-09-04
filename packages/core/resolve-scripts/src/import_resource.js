@@ -1,9 +1,9 @@
-import crypto from 'crypto'
-import fs from 'fs'
+import crypto from 'crypto';
+import fs from 'fs';
 
-import { checkRuntimeEnv, injectRuntimeEnv } from './declare_runtime_env'
-import resolveFile from './resolve_file'
-import resolveFileOrModule from './resolve_file_or_module'
+import { checkRuntimeEnv, injectRuntimeEnv } from './declare_runtime_env';
+import resolveFile from './resolve_file';
+import resolveFileOrModule from './resolve_file_or_module';
 
 import {
   RUNTIME_ENV_ANYWHERE,
@@ -13,44 +13,44 @@ import {
   RESOURCE_INSTANCE_ONLY,
   RESOURCE_ANY,
   IMPORT_CONSTRUCTOR,
-  IMPORT_INSTANCE
-} from './constants'
+  IMPORT_INSTANCE,
+} from './constants';
 
 const createHashCompileTime = (prefix, content) => {
-  const hmac = crypto.createHmac('sha512', prefix)
-  hmac.update(content)
-  return hmac.digest('hex')
-}
+  const hmac = crypto.createHmac('sha512', prefix);
+  hmac.update(content);
+  return hmac.digest('hex');
+};
 
 const createHashRunTime = (prefix, contentExpression) => `((content) => {
   const hmac = __non_webpack_require__('crypto')
     .createHmac('sha512', ${JSON.stringify(prefix)})
   hmac.update(content)
   return hmac.digest('hex')
-})(${contentExpression})`
+})(${contentExpression})`;
 
-const importFileRuntime = contentExpression => `((moduleOrFile) => {
+const importFileRuntime = (contentExpression) => `((moduleOrFile) => {
   return interopRequireDefault(__non_webpack_require__(moduleOrFile)).default
-})(${contentExpression})`
+})(${contentExpression})`;
 
-const readImportedFileRuntime = contentExpression => `((moduleOrFile) => {
+const readImportedFileRuntime = (contentExpression) => `((moduleOrFile) => {
   const resolvedPath = __non_webpack_require__.resolve(moduleOrFile)
   return __non_webpack_require__('fs').readFileSync(resolvedPath).toString()
-})(${contentExpression})`
+})(${contentExpression})`;
 
-const ensureInteropRequireDefault = imports => {
+const ensureInteropRequireDefault = (imports) => {
   const interopImport = [
     'import interopRequireDefault from ',
-    `"@babel/runtime/helpers/interopRequireDefault"`
-  ].join('')
+    `"@babel/runtime/helpers/interopRequireDefault"`,
+  ].join('');
 
   if (imports.indexOf(interopImport) < 0) {
-    imports.unshift(interopImport)
+    imports.unshift(interopImport);
   }
-}
+};
 
-const ensureFunctionBindings = constants => {
-  const idempotentFunction = 'const idempotentFunction = value => value'
+const ensureFunctionBindings = (constants) => {
+  const idempotentFunction = 'const idempotentFunction = value => value';
   const constructorBindFunction = `const constructorBindFunction =
     (
       constructorFunction,
@@ -61,54 +61,54 @@ const ensureFunctionBindings = constants => {
     ) => constructorFunction(
       { ...compileTimeOptions, ...runTimeOptions },
       { ...compileTimeImports, ...runTimeImports }
-    )`
+    )`;
 
   if (constants.indexOf(idempotentFunction) < 0) {
-    constants.unshift(idempotentFunction)
+    constants.unshift(idempotentFunction);
   }
 
   if (constants.indexOf(constructorBindFunction) < 0) {
-    constants.unshift(constructorBindFunction)
+    constants.unshift(constructorBindFunction);
   }
-}
+};
 
-const isPrimitiveType = value =>
+const isPrimitiveType = (value) =>
   value == null ||
   value.constructor === Number ||
   value.constructor === String ||
   value.constructor === Boolean ||
   Array.isArray(value) ||
-  value.constructor === Object
+  value.constructor === Object;
 
-const throwInternalError = message => {
-  throw new Error(`Internal error: ${message}`)
-}
+const throwInternalError = (message) => {
+  throw new Error(`Internal error: ${message}`);
+};
 
-const validateRuntimeMode = runtimeMode => {
+const validateRuntimeMode = (runtimeMode) => {
   if (
     runtimeMode !== RUNTIME_ENV_ANYWHERE &&
     runtimeMode !== RUNTIME_ENV_OPTIONS_ONLY &&
     runtimeMode !== RUNTIME_ENV_NOWHERE
   ) {
-    throwInternalError(`wrong runtime mode ${runtimeMode}`)
+    throwInternalError(`wrong runtime mode ${runtimeMode}`);
   }
-}
+};
 
-const validateImportMode = importMode => {
+const validateImportMode = (importMode) => {
   if (
     importMode !== RESOURCE_CONSTRUCTOR_ONLY &&
     importMode !== RESOURCE_INSTANCE_ONLY &&
     importMode !== RESOURCE_ANY
   ) {
-    throwInternalError(`wrong import mode ${importMode}`)
+    throwInternalError(`wrong import mode ${importMode}`);
   }
-}
+};
 
-const validateInstanceMode = instanceMode => {
+const validateInstanceMode = (instanceMode) => {
   if (instanceMode !== IMPORT_CONSTRUCTOR && instanceMode !== IMPORT_INSTANCE) {
-    throwInternalError(`wrong instance mode ${instanceMode}`)
+    throwInternalError(`wrong instance mode ${instanceMode}`);
   }
-}
+};
 
 const importEmptyResource = ({
   imports,
@@ -116,46 +116,46 @@ const importEmptyResource = ({
   resourceName,
   importMode = RESOURCE_ANY,
   instanceMode = IMPORT_INSTANCE,
-  instanceFallback = null
+  instanceFallback = null,
 }) => {
   if (importMode === RESOURCE_CONSTRUCTOR_ONLY || instanceFallback == null) {
     throwInternalError(
       `resource ${resourceName} is not specified and have no fallback`
-    )
+    );
   }
 
-  const resourceFile = resolveFile(null, instanceFallback)
+  const resourceFile = resolveFile(null, instanceFallback);
   imports.push(
     `import ${resourceName}_instance from ${JSON.stringify(resourceFile)}`
-  )
+  );
 
   if (instanceMode === IMPORT_CONSTRUCTOR) {
     constants.push(
       `const ${resourceName} = idempotentFunction.bind(null, ${resourceName}_instance)`
-    )
+    );
   } else {
-    constants.push(`const ${resourceName} = ${resourceName}_instance`)
+    constants.push(`const ${resourceName} = ${resourceName}_instance`);
   }
-}
+};
 
 const validateInstanceResource = ({
   resourceName,
   resourceValue,
   importMode,
-  runtimeMode
+  runtimeMode,
 }) => {
   if (importMode === RESOURCE_CONSTRUCTOR_ONLY) {
     throwInternalError(
       `resource ${resourceName} must be constructor, not instance`
-    )
+    );
   }
 
   if (checkRuntimeEnv(resourceValue) && runtimeMode !== RUNTIME_ENV_ANYWHERE) {
     throwInternalError(
       `resource ${resourceName} cannot have runtime variable injections`
-    )
+    );
   }
-}
+};
 
 const importInstanceResource = ({
   imports,
@@ -166,20 +166,20 @@ const importInstanceResource = ({
   importMode = RESOURCE_ANY,
   instanceMode = IMPORT_INSTANCE,
   instanceFallback = null,
-  calculateHash = null
+  calculateHash = null,
 }) => {
   validateInstanceResource({
     resourceName,
     resourceValue,
     importMode,
-    runtimeMode
-  })
+    runtimeMode,
+  });
 
   if (!checkRuntimeEnv(resourceValue)) {
-    const resourceFile = resolveFile(resourceValue, instanceFallback)
+    const resourceFile = resolveFile(resourceValue, instanceFallback);
     imports.push(
       `import ${resourceName}_instance from ${JSON.stringify(resourceFile)}`
-    )
+    );
 
     if (calculateHash != null) {
       constants.push(
@@ -189,15 +189,15 @@ const importInstanceResource = ({
             fs.readFileSync(resourceFile).toString()
           )
         )}`
-      )
+      );
     }
   } else {
-    ensureInteropRequireDefault(imports)
+    ensureInteropRequireDefault(imports);
     constants.push(
       `const ${resourceName}_instance = ${importFileRuntime(
         injectRuntimeEnv(resourceValue)
       )}`
-    )
+    );
 
     if (calculateHash != null) {
       constants.push(
@@ -205,127 +205,127 @@ const importInstanceResource = ({
           calculateHash,
           readImportedFileRuntime(injectRuntimeEnv(resourceValue))
         )}`
-      )
+      );
     }
   }
 
   if (instanceMode === IMPORT_CONSTRUCTOR) {
     constants.push(
       `const ${resourceName} = idempotentFunction.bind(null, ${resourceName}_instance)`
-    )
+    );
   } else {
-    constants.push(`const ${resourceName} = ${resourceName}_instance`)
+    constants.push(`const ${resourceName} = ${resourceName}_instance`);
   }
-}
+};
 
 const validateConstructorResourceImports = ({
   resourceName,
   resourceValue,
-  runtimeMode
+  runtimeMode,
 }) => {
-  let imports = resourceValue.imports
+  let imports = resourceValue.imports;
   if (imports != null && imports.constructor !== Object) {
-    throwInternalError(`resource ${resourceName}.imports should be an object`)
+    throwInternalError(`resource ${resourceName}.imports should be an object`);
   }
 
-  imports = imports != null ? imports : {}
+  imports = imports != null ? imports : {};
 
   for (const importKey of Object.keys(imports)) {
-    const importValue = imports[importKey]
+    const importValue = imports[importKey];
 
     if (importValue == null || importValue.constructor !== String) {
       throwInternalError(
         `resource ${resourceName}.imports.${importKey} should be an string`
-      )
+      );
     }
 
     if (checkRuntimeEnv(importValue) && runtimeMode !== RUNTIME_ENV_ANYWHERE) {
       throwInternalError(
         `resource ${resourceName}.imports.${importKey} cannot have runtime variable injections`
-      )
+      );
     }
   }
-}
+};
 
 const validateConstructorResourceOptions = ({
   resourceName,
   resourceValue,
-  runtimeMode
+  runtimeMode,
 }) => {
-  let options = resourceValue.options
+  let options = resourceValue.options;
   if (options != null && options.constructor !== Object) {
-    throwInternalError(`resource ${resourceName}.options should be an object`)
+    throwInternalError(`resource ${resourceName}.options should be an object`);
   }
 
-  options = options != null ? options : {}
+  options = options != null ? options : {};
 
   void JSON.stringify(options, (key, value) => {
     if (!isPrimitiveType(value)) {
       throwInternalError(
         `resource ${resourceName}.options.[...].${key} should be primitive type`
-      )
+      );
     }
 
     if (checkRuntimeEnv(value) && runtimeMode === RUNTIME_ENV_NOWHERE) {
       throwInternalError(
         `resource ${resourceName}.options.[...].${key} cannot have runtime variable injections`
-      )
+      );
     }
 
-    return value
-  })
-}
+    return value;
+  });
+};
 
 const validateConstructorResource = ({
   resourceName,
   resourceValue,
   importMode,
-  runtimeMode
+  runtimeMode,
 }) => {
   if (importMode === RESOURCE_INSTANCE_ONLY) {
     throwInternalError(
       `resource ${resourceName} must be instance, not constructor`
-    )
+    );
   }
 
-  const module = resourceValue.module
+  const module = resourceValue.module;
   if (module == null || module.constructor !== String) {
-    throwInternalError(`resource ${resourceName}.module should be an string`)
+    throwInternalError(`resource ${resourceName}.module should be an string`);
   }
 
   if (checkRuntimeEnv(module) && runtimeMode !== RUNTIME_ENV_ANYWHERE) {
     throwInternalError(
       `resource ${resourceName}.module cannot have runtime variable injections`
-    )
+    );
   }
 
   validateConstructorResourceImports({
     resourceName,
     resourceValue,
-    runtimeMode
-  })
+    runtimeMode,
+  });
 
   validateConstructorResourceOptions({
     resourceName,
     resourceValue,
-    runtimeMode
-  })
-}
+    runtimeMode,
+  });
+};
 
 const importConstructorResourceModule = ({
   resourceName,
   resourceValue,
   imports,
   constants,
-  calculateHash
+  calculateHash,
 }) => {
-  const module = resourceValue.module
+  const module = resourceValue.module;
   if (!checkRuntimeEnv(module)) {
     imports.push(
       `import ${resourceName}_constructor from ${JSON.stringify(
         resolveFileOrModule(module)
       )}`
-    )
+    );
 
     if (calculateHash != null) {
       constants.push(
@@ -335,15 +335,15 @@ const importConstructorResourceModule = ({
             fs.readFileSync(resolveFileOrModule(module, true)).toString()
           )
         )}`
-      )
+      );
     }
   } else {
-    ensureInteropRequireDefault(imports)
+    ensureInteropRequireDefault(imports);
     constants.push(
       `const ${resourceName}_constructor = ${importFileRuntime(
         injectRuntimeEnv(module)
       )}`
-    )
+    );
 
     if (calculateHash != null) {
       constants.push(
@@ -351,32 +351,32 @@ const importConstructorResourceModule = ({
           calculateHash,
           readImportedFileRuntime(injectRuntimeEnv(module))
         )}`
-      )
+      );
     }
   }
-}
+};
 
 const importConstructorResourceImports = ({
   resourceName,
   resourceValue,
   imports,
   constants,
-  calculateHash
+  calculateHash,
 }) => {
   const resourceImports =
-    resourceValue.imports != null ? resourceValue.imports : {}
-  const inlinedImports = []
+    resourceValue.imports != null ? resourceValue.imports : {};
+  const inlinedImports = [];
 
   for (const importKey of Object.keys(resourceImports)) {
-    const importValue = resourceImports[importKey]
+    const importValue = resourceImports[importKey];
 
-    const inlineImportKey = `${resourceName}_import_${importKey}`
-    const resourceFile = resolveFile(importValue)
+    const inlineImportKey = `${resourceName}_import_${importKey}`;
+    const resourceFile = resolveFile(importValue);
 
     if (!checkRuntimeEnv(importValue)) {
       imports.push(
         `import ${inlineImportKey} from ${JSON.stringify(resourceFile)}`
-      )
+      );
 
       if (calculateHash != null) {
         constants.push(
@@ -388,15 +388,15 @@ const importConstructorResourceImports = ({
                 .toString()
             )
           )}`
-        )
+        );
       }
     } else {
-      ensureInteropRequireDefault(imports)
+      ensureInteropRequireDefault(imports);
       constants.push(
         `const ${inlineImportKey} = ${importFileRuntime(
           injectRuntimeEnv(importValue)
         )})`
-      )
+      );
 
       if (calculateHash != null) {
         constants.push(
@@ -404,11 +404,11 @@ const importConstructorResourceImports = ({
             calculateHash,
             readImportedFileRuntime(injectRuntimeEnv(importValue))
           )}`
-        )
+        );
       }
     }
 
-    inlinedImports.push({ importKey, inlineImportKey })
+    inlinedImports.push({ importKey, inlineImportKey });
   }
 
   constants.push(
@@ -418,7 +418,7 @@ const importConstructorResourceImports = ({
           `[${JSON.stringify(importKey)}]: ${inlineImportKey}`
       )
       .join(',')} }`
-  )
+  );
 
   if (calculateHash != null) {
     constants.push(
@@ -429,19 +429,21 @@ const importConstructorResourceImports = ({
           .join(',')}
         ])`
       )}`
-    )
+    );
   }
-}
+};
 
 const importConstructorResourceOptions = ({
   resourceName,
   resourceValue,
   constants,
-  calculateHash
+  calculateHash,
 }) => {
-  const options = resourceValue.options != null ? resourceValue.options : {}
+  const options = resourceValue.options != null ? resourceValue.options : {};
 
-  constants.push(`const ${resourceName}_options = ${injectRuntimeEnv(options)}`)
+  constants.push(
+    `const ${resourceName}_options = ${injectRuntimeEnv(options)}`
+  );
 
   if (calculateHash != null) {
     constants.push(
@@ -449,9 +451,9 @@ const importConstructorResourceOptions = ({
         calculateHash,
         `JSON.stringify(${resourceName}_options)`
       )}`
-    )
+    );
   }
-}
+};
 
 const importConstructorResource = ({
   imports,
@@ -461,40 +463,40 @@ const importConstructorResource = ({
   runtimeMode = RUNTIME_ENV_NOWHERE,
   importMode = RESOURCE_ANY,
   instanceMode = IMPORT_INSTANCE,
-  calculateHash = null
+  calculateHash = null,
 }) => {
   validateConstructorResource({
     resourceName,
     resourceValue,
     importMode,
-    runtimeMode
-  })
+    runtimeMode,
+  });
 
   importConstructorResourceModule({
     resourceName,
     resourceValue,
     imports,
     constants,
-    calculateHash
-  })
+    calculateHash,
+  });
 
   importConstructorResourceImports({
     resourceName,
     resourceValue,
     imports,
     constants,
-    calculateHash
-  })
+    calculateHash,
+  });
 
   importConstructorResourceOptions({
     resourceName,
     resourceValue,
     imports,
     constants,
-    calculateHash
-  })
+    calculateHash,
+  });
 
-  constants.push()
+  constants.push();
 
   if (instanceMode === IMPORT_CONSTRUCTOR) {
     constants.push(`const ${resourceName} = constructorBindFunction.bind(null,
@@ -503,12 +505,12 @@ const importConstructorResource = ({
       ${resourceName}_imports
     )
     Object.assign(${resourceName}, ${resourceName}_constructor)
-    `)
+    `);
   } else {
     constants.push(`const ${resourceName} = ${resourceName}_constructor(
       ${resourceName}_options,
       ${resourceName}_imports
-    )`)
+    )`);
   }
 
   if (calculateHash != null) {
@@ -521,28 +523,28 @@ const importConstructorResource = ({
           ${resourceName}_imports_hash
         ])`
       )}`
-    )
+    );
   }
-}
+};
 
-const importResource = options => {
-  const { runtimeMode, importMode, instanceMode, resourceValue } = options
-  validateRuntimeMode(runtimeMode)
-  validateImportMode(importMode)
-  validateInstanceMode(instanceMode)
-  ensureFunctionBindings(options.constants)
+const importResource = (options) => {
+  const { runtimeMode, importMode, instanceMode, resourceValue } = options;
+  validateRuntimeMode(runtimeMode);
+  validateImportMode(importMode);
+  validateInstanceMode(instanceMode);
+  ensureFunctionBindings(options.constants);
 
   if (resourceValue == null) {
-    return importEmptyResource(options)
+    return importEmptyResource(options);
   } else if (resourceValue.constructor === String) {
-    return importInstanceResource(options)
+    return importInstanceResource(options);
   } else if (resourceValue.constructor === Object) {
-    return importConstructorResource(options)
+    return importConstructorResource(options);
   } else {
     throwInternalError(
       `import resource ${resourceValue} is not supported due unknown type`
-    )
+    );
   }
-}
+};
 
-export default importResource
+export default importResource;

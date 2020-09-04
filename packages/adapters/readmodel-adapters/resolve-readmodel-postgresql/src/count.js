@@ -6,7 +6,7 @@ const count = async (
     tablePrefix,
     searchToWhereExpression,
     makeNestedPath,
-    schemaName
+    schemaName,
   },
   readModelName,
   tableName,
@@ -17,16 +17,16 @@ const count = async (
     escapeId,
     escape,
     makeNestedPath
-  )
+  );
 
   const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : '';
 
   const rows = await runQuery(
     `SELECT Count(*) AS ${escapeId('Count')}
     FROM ${escapeId(schemaName)}.${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr};`
-  )
+  );
 
   if (
     Array.isArray(rows) &&
@@ -34,10 +34,10 @@ const count = async (
     rows[0] != null &&
     Number.isInteger(+rows[0].Count)
   ) {
-    return +rows[0].Count
+    return +rows[0].Count;
   }
 
-  return 0
-}
+  return 0;
+};
 
-export default count
+export default count;

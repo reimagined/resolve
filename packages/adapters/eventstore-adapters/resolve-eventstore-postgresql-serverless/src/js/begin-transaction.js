@@ -1,15 +1,15 @@
-const beginTransaction = async pool => {
+const beginTransaction = async (pool) => {
   const result = await pool.rdsDataService
     .beginTransaction({
       resourceArn: pool.dbClusterOrInstanceArn,
       secretArn: pool.awsSecretStoreArn,
-      database: 'postgres'
+      database: 'postgres',
     })
-    .promise()
+    .promise();
 
-  const { transactionId } = result
+  const { transactionId } = result;
 
-  return transactionId
-}
+  return transactionId;
+};
 
-export default beginTransaction
+export default beginTransaction;

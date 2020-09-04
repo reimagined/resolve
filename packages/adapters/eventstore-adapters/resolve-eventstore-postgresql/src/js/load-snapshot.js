@@ -3,20 +3,20 @@ const loadSnapshot = async (
   snapshotKey
 ) => {
   if (snapshotKey == null || snapshotKey.constructor !== String) {
-    throw new Error('Snapshot key must be string')
+    throw new Error('Snapshot key must be string');
   }
 
-  const databaseNameAsId = escapeId(databaseName)
-  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
+  const databaseNameAsId = escapeId(databaseName);
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName);
 
   const rows = await executeStatement(
     `SELECT "snapshotContent" FROM ${databaseNameAsId}.${snapshotsTableNameAsId}
     WHERE "snapshotKey" = ${escape(snapshotKey)} 
     LIMIT 1`
-  )
-  const content = rows.length > 0 ? rows[0].snapshotContent : null
+  );
+  const content = rows.length > 0 ? rows[0].snapshotContent : null;
 
-  return content
-}
+  return content;
+};
 
-export default loadSnapshot
+export default loadSnapshot;

@@ -1,79 +1,79 @@
-import createEventTypes from '../src/scheduler-event-types'
-import createSagaExecutor from '../src/index'
+import createEventTypes from '../src/scheduler-event-types';
+import createSagaExecutor from '../src/index';
 
-let originalDateNow
+let originalDateNow;
 beforeAll(() => {
-  originalDateNow = Date.now.bind(Date)
-  Date.now = () => 100500
-})
+  originalDateNow = Date.now.bind(Date);
+  Date.now = () => 100500;
+});
 afterAll(() => {
-  Date.now = originalDateNow
-})
+  Date.now = originalDateNow;
+});
 
 test('resolve-saga', async () => {
-  const remainingTime = 15 * 60 * 1000
+  const remainingTime = 15 * 60 * 1000;
   const eventstoreAdapter = {
     loadEvents: jest.fn().mockReturnValue({ events: [], cursor: null }),
-    getSecretsManager: jest.fn()
-  }
+    getSecretsManager: jest.fn(),
+  };
 
   const readModelStore = {
     defineTable: jest.fn(),
     find: jest.fn(),
     insert: jest.fn(),
-    delete: jest.fn()
-  }
+    delete: jest.fn(),
+  };
 
   const readModelConnectors = {
     'default-connector': {
       connect: jest.fn().mockReturnValue(readModelStore),
       disconnect: jest.fn(),
-      drop: jest.fn()
-    }
-  }
+      drop: jest.fn(),
+    },
+  };
 
   const snapshotAdapter = {
     loadSnapshot: jest.fn(),
-    saveSnapshot: jest.fn()
-  }
+    saveSnapshot: jest.fn(),
+  };
 
   const schedulerAdapterInstance = {
     addEntries: jest.fn(),
-    clearEntries: jest.fn()
-  }
+    clearEntries: jest.fn(),
+  };
 
   const performAcknowledge = jest
     .fn()
-    .mockImplementation(async ({ event }) => event)
+    .mockImplementation(async ({ event }) => event);
 
-  const schedulerAdapter = jest.fn().mockReturnValue(schedulerAdapterInstance)
+  const schedulerAdapter = jest.fn().mockReturnValue(schedulerAdapterInstance);
 
-  const executeCommand = jest.fn()
-  const executeQuery = jest.fn()
+  const executeCommand = jest.fn();
+  const executeQuery = jest.fn();
 
   const eventHandler = jest.fn().mockImplementation(async ({ sideEffects }) => {
     await sideEffects.scheduleCommand(100500, {
       type: 'scheduledCommand',
       aggregateName: 'Test',
       aggregateId: 'scheduledId',
-      payload: 'scheduledCommand'
-    })
+      payload: 'scheduledCommand',
+    });
 
     await sideEffects.executeCommand({
       type: 'executedCommand',
       aggregateName: 'Test',
       aggregateId: 'executedId',
-      payload: 'executedCommand'
-    })
+      payload: 'executedCommand',
+    });
 
     await sideEffects.executeQuery({
       modelName: 'modelName',
       resolverName: 'resolverName',
       resolverArgs: {
-        arg: 'value'
-      }
-    })
-  })
+        arg: 'value',
+      },
+    });
+  });
 
   const sagas = [
     {
@@ -82,11 +82,11 @@ test('resolve-saga', async () => {
       schedulerName: 'default-scheduler',
       handlers: {
         EVENT_TYPE: eventHandler,
-        Init: jest.fn()
+        Init: jest.fn(),
       },
-      invariantHash: 'invariantHash'
-    }
-  ]
+      invariantHash: 'invariantHash',
+    },
+  ];
 
   const schedulers = [
     {
@@ -94,12 +94,12 @@ test('resolve-saga', async () => {
       connectorName: 'default-connector',
       adapter: schedulerAdapter,
       invariantHash: 'invariantHash',
-      encryption: () => ({})
-    }
-  ]
+      encryption: () => ({}),
+    },
+  ];
 
-  const onCommandExecuted = jest.fn().mockImplementation(async () => {})
-  const getRemainingTimeInMillis = () => 0x7fffffff
+  const onCommandExecuted = jest.fn().mockImplementation(async () => {});
+  const getRemainingTimeInMillis = () => 0x7fffffff;
 
   const sagaExecutor = createSagaExecutor({
     getRemainingTimeInMillis,
@@ -111,13 +111,13 @@ test('resolve-saga', async () => {
     sagas,
     schedulers,
     performAcknowledge,
-    onCommandExecuted
-  })
+    onCommandExecuted,
+  });
 
   const properties = {
     RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: 0,
-    'test-property': 'content'
-  }
+    'test-property': 'content',
+  };
 
   await sagaExecutor.sendEvents({
     modelName: 'test-saga',
@@ -128,16 +128,16 @@ test('resolve-saga', async () => {
         aggregateId: 'aggregateId',
         aggregateVersion: 1,
         timestamp: 100,
-        payload: { content: true }
-      }
+        payload: { content: true },
+      },
     ],
     getRemainingTimeInMillis: () => remainingTime,
-    properties
-  })
+    properties,
+  });
 
   const schedulerEvents = createEventTypes({
-    schedulerName: 'default-scheduler'
-  })
+    schedulerName: 'default-scheduler',
+  });
 
   await sagaExecutor.sendEvents({
     modelName: 'default-scheduler',
@@ -152,9 +152,9 @@ test('resolve-saga', async () => {
             aggregateName: 'Test',
             aggregateId: 'scheduledId',
             type: 'scheduledCommand',
-            payload: 'scheduledCommand'
-          }
-        }
+            payload: 'scheduledCommand',
+          },
+        },
       },
       {
         type: schedulerEvents.SCHEDULED_COMMAND_EXECUTED,
@@ -163,70 +163,70 @@ test('resolve-saga', async () => {
           aggregateName: 'Test',
           aggregateId: 'scheduledId',
           type: 'scheduledCommand',
-          payload: 'scheduledCommand'
-        }
+          payload: 'scheduledCommand',
+        },
       },
       {
-        type: schedulerEvents.SCHEDULED_COMMAND_SUCCEEDED
+        type: schedulerEvents.SCHEDULED_COMMAND_SUCCEEDED,
       },
       {
-        type: schedulerEvents.SCHEDULED_COMMAND_FAILED
-      }
+        type: schedulerEvents.SCHEDULED_COMMAND_FAILED,
+      },
     ],
     getRemainingTimeInMillis: () => remainingTime,
-    properties
-  })
+    properties,
+  });
 
-  await sagaExecutor.drop({ modelName: 'test-saga' })
+  await sagaExecutor.drop({ modelName: 'test-saga' });
 
-  await sagaExecutor.drop({ modelName: 'default-scheduler' })
+  await sagaExecutor.drop({ modelName: 'default-scheduler' });
 
-  await sagaExecutor.dispose()
+  await sagaExecutor.dispose();
 
-  expect(eventHandler.mock.calls).toMatchSnapshot('eventHandler')
+  expect(eventHandler.mock.calls).toMatchSnapshot('eventHandler');
 
-  expect(executeCommand.mock.calls).toMatchSnapshot('executeCommand')
-  expect(executeQuery.mock.calls).toMatchSnapshot('executeQuery')
+  expect(executeCommand.mock.calls).toMatchSnapshot('executeCommand');
+  expect(executeQuery.mock.calls).toMatchSnapshot('executeQuery');
 
   expect(readModelStore.defineTable.mock.calls).toMatchSnapshot(
     'readModelStore.defineTable'
-  )
-  expect(readModelStore.find.mock.calls).toMatchSnapshot('readModelStore.find')
+  );
+  expect(readModelStore.find.mock.calls).toMatchSnapshot('readModelStore.find');
   expect(readModelStore.insert.mock.calls).toMatchSnapshot(
     'readModelStore.insert'
-  )
+  );
   expect(readModelStore.delete.mock.calls).toMatchSnapshot(
     'readModelStore.delete'
-  )
+  );
 
   expect(eventstoreAdapter.loadEvents.mock.calls).toMatchSnapshot(
     'eventstoreAdapter.loadEvents'
-  )
-  expect(performAcknowledge.mock.calls).toMatchSnapshot('performAcknowledge')
+  );
+  expect(performAcknowledge.mock.calls).toMatchSnapshot('performAcknowledge');
 
   expect(
     readModelConnectors['default-connector'].connect.mock.calls
-  ).toMatchSnapshot(`readModelConnectors['default-connector'].connect`)
+  ).toMatchSnapshot(`readModelConnectors['default-connector'].connect`);
   expect(
     readModelConnectors['default-connector'].disconnect.mock.calls
-  ).toMatchSnapshot(`readModelConnectors['default-connector'].disconnect`)
+  ).toMatchSnapshot(`readModelConnectors['default-connector'].disconnect`);
   expect(
     readModelConnectors['default-connector'].drop.mock.calls
-  ).toMatchSnapshot(`readModelConnectors['default-connector'].drop`)
+  ).toMatchSnapshot(`readModelConnectors['default-connector'].drop`);
 
   expect(snapshotAdapter.loadSnapshot.mock.calls).toMatchSnapshot(
     'snapshotAdapter.loadSnapshot'
-  )
+  );
   expect(snapshotAdapter.saveSnapshot.mock.calls).toMatchSnapshot(
     'snapshotAdapter.saveSnapshot'
-  )
+  );
 
-  expect(schedulerAdapter.mock.calls).toMatchSnapshot('schedulerAdapter')
+  expect(schedulerAdapter.mock.calls).toMatchSnapshot('schedulerAdapter');
 
   expect(schedulerAdapterInstance.addEntries.mock.calls).toMatchSnapshot(
     'schedulerAdapterInstance.addEntries'
-  )
+  );
   expect(schedulerAdapterInstance.clearEntries.mock.calls).toMatchSnapshot(
     'schedulerAdapterInstance.clearEntries'
-  )
-})
+  );
+});

@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 
-import styles from './PostCSS.css'
+import styles from './PostCSS.css';
 
 const PostCSS = () => (
   <div className={styles.wrapper}>
@@ -8,6 +8,6 @@ const PostCSS = () => (
       Hello World, this is my first component with postcss-modules!
     </div>
   </div>
-)
+);
 
-export default PostCSS
+export default PostCSS;

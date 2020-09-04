@@ -1,3 +1,3 @@
-const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
+const escapeId = (str) => `"${String(str).replace(/(["])/gi, '$1$1')}"`;
 
-export default escapeId
+export default escapeId;

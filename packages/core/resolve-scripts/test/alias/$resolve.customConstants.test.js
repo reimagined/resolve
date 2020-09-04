@@ -1,5 +1,5 @@
-import declareRuntimeEnv from '../../src/declare_runtime_env'
-import alias from '../../src/alias/$resolve.customConstants'
+import declareRuntimeEnv from '../../src/declare_runtime_env';
+import alias from '../../src/alias/$resolve.customConstants';
 
 describe('base config works correctly', () => {
   const resolveConfig = {
@@ -10,114 +10,114 @@ describe('base config works correctly', () => {
       DDD: {
         a: 5,
         b: 10,
-        c: 20
-      }
-    }
-  }
+        c: 20,
+      },
+    },
+  };
 
   test('[client]', () => {
     expect(
       alias({
         resolveConfig,
-        isClient: true
+        isClient: true,
       }).code
-    ).toMatchSnapshot()
-  })
+    ).toMatchSnapshot();
+  });
 
   test('[server]', () => {
     expect(
       alias({
         resolveConfig,
-        isClient: false
+        isClient: false,
       }).code
-    ).toMatchSnapshot()
-  })
-})
+    ).toMatchSnapshot();
+  });
+});
 
 describe('config with process.env failure', () => {
   const resolveConfig = {
     customConstants: {
-      AAA: declareRuntimeEnv('AAA')
-    }
-  }
+      AAA: declareRuntimeEnv('AAA'),
+    },
+  };
 
   test('[client]', () => {
     expect(
       () =>
         alias({
           resolveConfig,
-          isClient: true
+          isClient: true,
         }).code
-    ).toMatchSnapshot()
-  })
+    ).toMatchSnapshot();
+  });
 
   test('[server]', () => {
     expect(
       () =>
         alias({
           resolveConfig,
-          isClient: false
+          isClient: false,
         }).code
-    ).toMatchSnapshot()
-  })
-})
+    ).toMatchSnapshot();
+  });
+});
 
 describe('config with deep process.env failure', () => {
   const resolveConfig = {
     customConstants: {
       obj: {
-        AAA: declareRuntimeEnv('AAA')
-      }
-    }
-  }
+        AAA: declareRuntimeEnv('AAA'),
+      },
+    },
+  };
 
   test('[client]', () => {
     expect(
       () =>
         alias({
           resolveConfig,
-          isClient: true
+          isClient: true,
         }).code
-    ).toMatchSnapshot()
-  })
+    ).toMatchSnapshot();
+  });
 
   test('[server]', () => {
     expect(
       () =>
         alias({
           resolveConfig,
-          isClient: false
+          isClient: false,
         }).code
-    ).toMatchSnapshot()
-  })
-})
+    ).toMatchSnapshot();
+  });
+});
 
 describe('config with non-json type failure', () => {
   const resolveConfig = {
     customConstants: {
       obj: {
-        func: () => {}
-      }
-    }
-  }
+        func: () => {},
+      },
+    },
+  };
 
   test('[client]', () => {
     expect(
       () =>
         alias({
           resolveConfig,
-          isClient: true
+          isClient: true,
         }).code
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   test('[server]', () => {
     expect(
       () =>
         alias({
           resolveConfig,
-          isClient: false
+          isClient: false,
         }).code
-    ).toThrow()
-  })
-})
+    ).toThrow();
+  });
+});

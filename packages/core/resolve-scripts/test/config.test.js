@@ -1,15 +1,15 @@
-import defaultResolveConfig from '../configs/default.resolve.config.json'
-import validateConfig from '../src/validate_config'
+import defaultResolveConfig from '../configs/default.resolve.config.json';
+import validateConfig from '../src/validate_config';
 
 const resolveConfigOrigin = {
   ...defaultResolveConfig,
   eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
-    options: {}
-  }
-}
+    options: {},
+  },
+};
 
-jest.setTimeout(30000)
+jest.setTimeout(30000);
 
 describe('validate schema', () => {
   it('empty', () => {
@@ -17,10 +17,10 @@ describe('validate schema', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local'
+        target: 'local',
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom eventstore adapter', () => {
     expect(
@@ -31,12 +31,12 @@ describe('validate schema', () => {
         eventstoreAdapter: {
           module: 'resolve-eventstore-mysql',
           options: {
-            eventsTableName: 'MyEvents'
-          }
-        }
+            eventsTableName: 'MyEvents',
+          },
+        },
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom bus adapter', () => {
     expect(
@@ -46,11 +46,11 @@ describe('validate schema', () => {
         target: 'local',
         eventstoreAdapter: {
           module: 'resolve-bus-rabbitmq',
-          options: {}
-        }
+          options: {},
+        },
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom root path', () => {
     expect(
@@ -58,10 +58,10 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        rootPath: 'my-app'
+        rootPath: 'my-app',
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom static path', () => {
     expect(
@@ -69,10 +69,10 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        staticPath: 'my-cdn'
+        staticPath: 'my-cdn',
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom aggregates dir', () => {
     expect(
@@ -80,10 +80,10 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        aggregates: []
+        aggregates: [],
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom view models dir', () => {
     expect(
@@ -91,10 +91,10 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        viewModels: []
+        viewModels: [],
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom read models dir', () => {
     expect(
@@ -102,10 +102,10 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        readModels: []
+        readModels: [],
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom static dir', () => {
     expect(
@@ -113,10 +113,10 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        staticDir: 'my-static-dir'
+        staticDir: 'my-static-dir',
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom jwt', () => {
     expect(
@@ -126,12 +126,12 @@ describe('validate schema', () => {
         target: 'local',
         jwtCookie: {
           name: 'authToken',
-          maxAge: 1000 * 60 * 60 * 24 * 365
-        }
+          maxAge: 1000 * 60 * 60 * 24 * 365,
+        },
       })
-    ).toBeTruthy()
-  })
-})
+    ).toBeTruthy();
+  });
+});
 
 describe('validate schema (fail)', () => {
   it('incorrect eventstore adapter', () => {
@@ -143,12 +143,12 @@ describe('validate schema (fail)', () => {
         eventstoreAdapter: {
           module: 123,
           options: {
-            collectionName: 'MyEvents'
-          }
-        }
+            collectionName: 'MyEvents',
+          },
+        },
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect bus adapter', () => {
     expect(() =>
@@ -158,11 +158,11 @@ describe('validate schema (fail)', () => {
         target: 'local',
         eventstoreAdapter: {
           module: 123,
-          options: {}
-        }
+          options: {},
+        },
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect subscribe adapter', () => {
     expect(() =>
@@ -172,11 +172,11 @@ describe('validate schema (fail)', () => {
         target: 'local',
         subscribeAdapter: {
           module: 123,
-          options: {}
-        }
+          options: {},
+        },
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect root path', () => {
     expect(() =>
@@ -184,10 +184,10 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        rootPath: 123
+        rootPath: 123,
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect static path', () => {
     expect(() =>
@@ -195,10 +195,10 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        staticPath: 123
+        staticPath: 123,
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect aggregates dir', () => {
     expect(() =>
@@ -206,10 +206,10 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        aggregates: 123
+        aggregates: 123,
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect view models dir', () => {
     expect(() =>
@@ -217,10 +217,10 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        viewModels: 123
+        viewModels: 123,
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect read models dir', () => {
     expect(() =>
@@ -228,10 +228,10 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        readModels: 123
+        readModels: 123,
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect static dir', () => {
     expect(() =>
@@ -239,10 +239,10 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        staticDir: 123
+        staticDir: 123,
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect auth', () => {
     expect(() =>
@@ -250,10 +250,10 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        auth: 123
+        auth: 123,
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect jwtCookie', () => {
     expect(() =>
@@ -265,10 +265,10 @@ describe('validate schema (fail)', () => {
           name: 123,
           secret: 'some-secret',
           options: {
-            maxAge: 1000 * 60 * 60 * 24 * 365
-          }
-        }
+            maxAge: 1000 * 60 * 60 * 24 * 365,
+          },
+        },
       })
-    ).toThrow()
-  })
-})
+    ).toThrow();
+  });
+});

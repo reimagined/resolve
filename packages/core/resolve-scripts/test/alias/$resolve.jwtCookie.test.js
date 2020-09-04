@@ -1,13 +1,13 @@
-import alias from '../../src/alias/$resolve.jwtCookie'
-import normalizePaths from './normalize_paths'
+import alias from '../../src/alias/$resolve.jwtCookie';
+import normalizePaths from './normalize_paths';
 
 describe('base config works correctly', () => {
   const resolveConfig = {
     jwtCookie: {
       name: 'test-jwt',
-      maxAge: 123
-    }
-  }
+      maxAge: 123,
+    },
+  };
 
   test('[client]', () => {
     expect(
@@ -15,12 +15,12 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot()
-  })
+    ).toMatchSnapshot();
+  });
 
   test('[server]', () => {
     expect(
@@ -28,10 +28,10 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot()
-  })
-})
+    ).toMatchSnapshot();
+  });
+});

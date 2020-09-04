@@ -1,63 +1,63 @@
-import React from 'react'
-import CommentCountUpdater from '../containers/CommentCountUpdater'
+import React from 'react';
+import CommentCountUpdater from '../containers/CommentCountUpdater';
 
-import * as defaults from '../../common/defaults'
+import * as defaults from '../../common/defaults';
 
 class CommentsNotificationRenderless extends React.PureComponent {
   static defaultProps = {
     checkInterval: 30 * 1000,
     children: ({ count }) => {
       // eslint-disable-next-line
-      console.log(`commentCount - prevCommentCount = ${count}`)
-      return null
+      console.log(`commentCount - prevCommentCount = ${count}`);
+      return null;
     },
     readModelName: defaults.readModelName,
-    resolverName: defaults.foreignCommentsCount
-  }
+    resolverName: defaults.foreignCommentsCount,
+  };
 
   state = {
     timestamp: Date.now(),
     commentCount: null,
-    prevCommentCount: null
-  }
+    prevCommentCount: null,
+  };
 
   componentDidMount() {
-    this.timer = setInterval(this.updateTimestamp, this.props.checkInterval)
+    this.timer = setInterval(this.updateTimestamp, this.props.checkInterval);
   }
 
   componentWillUnmount() {
-    clearInterval(this.timer)
+    clearInterval(this.timer);
   }
 
   updateTimestamp = () => {
     this.setState({
-      timestamp: Date.now()
-    })
-  }
+      timestamp: Date.now(),
+    });
+  };
 
-  updateCommentCount = commentCount => {
+  updateCommentCount = (commentCount) => {
     if (this.state.commentCount === commentCount) {
-      return
+      return;
     }
 
     const prevCommentCount =
-      this.state.commentCount === null ? commentCount : this.state.commentCount
+      this.state.commentCount === null ? commentCount : this.state.commentCount;
 
     this.setState({
       prevCommentCount,
-      commentCount
-    })
-  }
+      commentCount,
+    });
+  };
 
-  onClick = e => {
+  onClick = (e) => {
     this.setState({
       commentCount: null,
-      prevCommentCount: null
-    })
+      prevCommentCount: null,
+    });
     if (this.props.onClick) {
-      this.props.onClick(e)
+      this.props.onClick(e);
     }
-  }
+  };
 
   render() {
     const {
@@ -68,24 +68,24 @@ class CommentsNotificationRenderless extends React.PureComponent {
       authorId,
       children: Component,
       ...props
-    } = this.props
+    } = this.props;
 
-    const { commentCount, prevCommentCount, timestamp } = this.state
+    const { commentCount, prevCommentCount, timestamp } = this.state;
 
     if (readModelName == null || readModelName.constructor !== String) {
-      throw new Error('Props "readModelName" must be a string')
+      throw new Error('Props "readModelName" must be a string');
     }
     if (resolverName == null || resolverName.constructor !== String) {
-      throw new Error('Props "resolverName" must be a string')
+      throw new Error('Props "resolverName" must be a string');
     }
     if (treeId == null || treeId.constructor !== String) {
-      throw new Error('Props "treeId" must be a string')
+      throw new Error('Props "treeId" must be a string');
     }
     if (parentCommentId != null && parentCommentId.constructor !== String) {
-      throw new Error('Props "parentCommentId" must be a string')
+      throw new Error('Props "parentCommentId" must be a string');
     }
     if (authorId == null || authorId.constructor !== String) {
-      throw new Error('Props "authorId" must be a string')
+      throw new Error('Props "authorId" must be a string');
     }
 
     return (
@@ -106,8 +106,8 @@ class CommentsNotificationRenderless extends React.PureComponent {
           count={+commentCount - +prevCommentCount}
         />
       </React.Fragment>
-    )
+    );
   }
 }
 
-export default CommentsNotificationRenderless
+export default CommentsNotificationRenderless;

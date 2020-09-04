@@ -1,32 +1,32 @@
-const viewModels = []
-const readModels = []
-const aggregates = []
+const viewModels = [];
+const readModels = [];
+const aggregates = [];
 
-const rootPath = ''
-const staticPath = ''
+const rootPath = '';
+const staticPath = '';
 const customConstants = {
   backend: {
     protocol: 'http',
     hostname: '127.0.0.1',
-    port: 3000
+    port: 3000,
   },
   remoteReduxDevTools: {
     hostname: '127.0.0.1',
-    port: 19042
-  }
-}
-const port = '3000'
-const applicationName = 'react-native-shopping-list'
+    port: 19042,
+  },
+};
+const port = '3000';
+const applicationName = 'react-native-shopping-list';
 
 export const subscriber = {
   async init() {},
   async close() {},
   isConnected() {
-    return true
-  }
-}
+    return true;
+  },
+};
 
-const jwtCookie = { name: 'jwt' }
+const jwtCookie = { name: 'jwt' };
 
 const resolveRedux = {
   actions: {},
@@ -36,8 +36,8 @@ const resolveRedux = {
   Providers: {},
   createStore: () => {},
   sendAggregateAction: () => {},
-  getOrigin: () => {}
-}
+  getOrigin: () => {},
+};
 
 const nativeChunk = {
   viewModels,
@@ -50,9 +50,9 @@ const nativeChunk = {
   applicationName,
   subscriber,
   jwtCookie,
-  resolveRedux
-}
+  resolveRedux,
+};
 
-const getNativeChunk = () => nativeChunk
+const getNativeChunk = () => nativeChunk;
 
-export default getNativeChunk
+export default getNativeChunk;

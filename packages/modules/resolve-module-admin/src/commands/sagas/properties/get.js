@@ -1,23 +1,23 @@
-import fetch from 'isomorphic-fetch'
+import fetch from 'isomorphic-fetch';
 
 export const handler = async ({ url, saga, key }) => {
   const response = await fetch(
     `${url}/event-broker/get-property?listenerId=${saga}&key=${key}`
-  )
-  const result = await response.text()
+  );
+  const result = await response.text();
   //eslint-disable-next-line no-console
-  console.log(result)
-}
+  console.log(result);
+};
 
-export const command = 'get <saga> <key>'
-export const describe = 'get property'
-export const builder = yargs =>
+export const command = 'get <saga> <key>';
+export const describe = 'get property';
+export const builder = (yargs) =>
   yargs
     .positional('saga', {
       describe: "an existing saga's name",
-      type: 'string'
+      type: 'string',
     })
     .positional('key', {
       describe: 'property name',
-      type: 'string'
-    })
+      type: 'string',
+    });

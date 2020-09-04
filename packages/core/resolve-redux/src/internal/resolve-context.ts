@@ -1,10 +1,10 @@
-import React from 'react'
+import React from 'react';
 
 const { Provider, Consumer } = React.createContext({
   api: null,
   origin: '',
   rootPath: '',
-  staticPath: 'static'
-})
+  staticPath: 'static',
+});
 
-export { Provider, Consumer }
+export { Provider, Consumer };

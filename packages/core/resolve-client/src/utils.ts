@@ -1,12 +1,12 @@
-import { assertLeadingSlash } from './assertions'
+import { assertLeadingSlash } from './assertions';
 
-const regExpAbsoluteUrl = new RegExp('^(?:[a-z]+:)?//', 'i')
+const regExpAbsoluteUrl = new RegExp('^(?:[a-z]+:)?//', 'i');
 
 export const isString = (value: any): value is string =>
-  value != null && value.constructor === String
+  value != null && value.constructor === String;
 
 export const isAbsoluteUrl = (value: string): boolean =>
-  regExpAbsoluteUrl.test(value)
+  regExpAbsoluteUrl.test(value);
 
 export const getRootBasedUrl = (
   rootPath: string,
@@ -14,10 +14,10 @@ export const getRootBasedUrl = (
   origin?: string
 ): string => {
   if (isAbsoluteUrl(path)) {
-    return path
+    return path;
   }
 
-  assertLeadingSlash(path, 'Path')
+  assertLeadingSlash(path, 'Path');
 
-  return `${origin ?? ''}${rootPath ? `/${rootPath}` : ''}${path}`
-}
+  return `${origin ?? ''}${rootPath ? `/${rootPath}` : ''}${path}`;
+};

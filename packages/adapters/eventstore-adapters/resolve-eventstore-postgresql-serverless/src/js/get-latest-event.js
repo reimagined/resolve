@@ -6,34 +6,36 @@ const getLatestEvent = async (
     eventsTableName,
     databaseName,
     shapeEvent,
-    isTimeoutError
+    isTimeoutError,
   },
   { eventTypes, aggregateIds, startTime, finishTime }
 ) => {
-  const injectString = value => `${escape(value)}`
-  const injectNumber = value => `${+value}`
+  const injectString = (value) => `${escape(value)}`;
+  const injectNumber = (value) => `${+value}`;
 
-  const databaseNameAsId = escapeId(databaseName)
-  const eventsTableNameAsId = escapeId(eventsTableName)
+  const databaseNameAsId = escapeId(databaseName);
+  const eventsTableNameAsId = escapeId(eventsTableName);
 
-  const queryConditions = []
+  const queryConditions = [];
   if (eventTypes != null) {
-    queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`)
+    queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`);
   }
   if (aggregateIds != null) {
-    queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
+    queryConditions.push(
+      `"aggregateId" IN (${aggregateIds.map(injectString)})`
+    );
   }
   if (startTime != null) {
-    queryConditions.push(`"timestamp" > ${injectNumber(startTime)}`)
+    queryConditions.push(`"timestamp" > ${injectNumber(startTime)}`);
   }
   if (finishTime != null) {
-    queryConditions.push(`"timestamp" < ${injectNumber(finishTime)}`)
+    queryConditions.push(`"timestamp" < ${injectNumber(finishTime)}`);
   }
 
   const resultQueryCondition =
-    queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
+    queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : '';
 
-  let rows = null
+  let rows = null;
 
   while (true) {
     try {
@@ -43,21 +45,21 @@ const getLatestEvent = async (
         ORDER BY "timestamp" DESC
         OFFSET 0
         LIMIT 1`
-      )
-      break
+      );
+      break;
     } catch (err) {
       if (isTimeoutError(err)) {
-        continue
+        continue;
       }
-      throw err
+      throw err;
     }
   }
 
   if (rows.length === 0) {
-    return null
+    return null;
   }
 
-  return shapeEvent(rows[0])
-}
+  return shapeEvent(rows[0]);
+};
 
-export default getLatestEvent
+export default getLatestEvent;

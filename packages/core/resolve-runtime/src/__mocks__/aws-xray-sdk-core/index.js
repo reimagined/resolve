@@ -2,7 +2,7 @@ const AWSXray = {
   getSegment: () => AWSXray,
   addNewSubsegment: () => {},
   addAnnotation: () => {},
-  close: () => {}
-}
+  close: () => {},
+};
 
-export default AWSXray
+export default AWSXray;

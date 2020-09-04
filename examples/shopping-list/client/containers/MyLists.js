@@ -1,16 +1,16 @@
-import React from 'react'
+import React from 'react';
 
-import { bindActionCreators } from 'redux'
-import { connectReadModel } from 'resolve-redux'
-import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
+import { connectReadModel } from 'resolve-redux';
+import { connect } from 'react-redux';
 
-import ShoppingLists from '../components/ShoppingLists'
-import ShoppingListCreator from '../components/ShoppingListCreator'
-import * as aggregateActions from '../actions/aggregate_actions'
+import ShoppingLists from '../components/ShoppingLists';
+import ShoppingListCreator from '../components/ShoppingListCreator';
+import * as aggregateActions from '../actions/aggregate_actions';
 
 class MyLists extends React.PureComponent {
   render() {
-    const { lists, createShoppingList, removeShoppingList } = this.props
+    const { lists, createShoppingList, removeShoppingList } = this.props;
 
     return (
       <div className="example-wrapper">
@@ -20,23 +20,23 @@ class MyLists extends React.PureComponent {
           createShoppingList={createShoppingList}
         />
       </div>
-    )
+    );
   }
 }
 
 export const mapStateToOptions = () => ({
   readModelName: 'ShoppingLists',
   resolverName: 'all',
-  resolverArgs: {}
-})
+  resolverArgs: {},
+});
 
-export const mapStateToProps = state => ({
-  lists: state.optimisticShoppingLists || []
-})
+export const mapStateToProps = (state) => ({
+  lists: state.optimisticShoppingLists || [],
+});
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(aggregateActions, dispatch)
+export const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(aggregateActions, dispatch);
 
 export default connectReadModel(mapStateToOptions)(
   connect(mapStateToProps, mapDispatchToProps)(MyLists)
-)
+);

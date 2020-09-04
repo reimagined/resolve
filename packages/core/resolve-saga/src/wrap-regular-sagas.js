@@ -1,26 +1,26 @@
-import getLog from './get-log'
-import uuid from 'uuid/v4'
+import getLog from './get-log';
+import uuid from 'uuid/v4';
 
-import sagaEventHandler from './saga-event-handler'
+import sagaEventHandler from './saga-event-handler';
 
-const log = getLog('wrap-regular-sagas')
+const log = getLog('wrap-regular-sagas');
 
 const scheduleCommand = async (sagaProvider, schedulerName, date, command) => {
-  const aggregateName = schedulerName
-  const aggregateId = uuid()
+  const aggregateName = schedulerName;
+  const aggregateId = uuid();
   log.debug(
     `creating scheduled command aggregate ${aggregateName} with id ${aggregateId}`
-  )
+  );
   return sagaProvider.executeCommand({
     aggregateName,
     aggregateId,
     type: 'create',
-    payload: { date, command }
-  })
-}
+    payload: { date, command },
+  });
+};
 
 const wrapRegularSagas = (sagas, sagaProvider) => {
-  const sagaReadModels = []
+  const sagaReadModels = [];
 
   for (const {
     name,
@@ -28,15 +28,15 @@ const wrapRegularSagas = (sagas, sagaProvider) => {
     sideEffects,
     connectorName,
     schedulerName,
-    encryption
+    encryption,
   } of sagas) {
     const boundScheduleCommand = scheduleCommand.bind(
       null,
       sagaProvider,
       schedulerName
-    )
+    );
 
-    const eventTypes = Object.keys(handlers)
+    const eventTypes = Object.keys(handlers);
     const projection = eventTypes.reduce((acc, eventType) => {
       acc[eventType] = sagaEventHandler.bind(
         null,
@@ -45,22 +45,22 @@ const wrapRegularSagas = (sagas, sagaProvider) => {
         sideEffects,
         eventType,
         boundScheduleCommand
-      )
-      return acc
-    }, {})
+      );
+      return acc;
+    }, {});
 
     const sagaReadModel = {
       name,
       projection,
       resolvers: {},
       connectorName,
-      encryption
-    }
+      encryption,
+    };
 
-    sagaReadModels.push(sagaReadModel)
+    sagaReadModels.push(sagaReadModel);
   }
 
-  return sagaReadModels
-}
+  return sagaReadModels;
+};
 
-export default wrapRegularSagas
+export default wrapRegularSagas;

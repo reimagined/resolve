@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   Container,
   Header,
@@ -11,14 +11,14 @@ import {
   Icon,
   Label,
   Input,
-  Text
-} from 'native-base'
-import { connect } from 'react-redux'
-import { View, StyleSheet } from 'react-native'
+  Text,
+} from 'native-base';
+import { connect } from 'react-redux';
+import { View, StyleSheet } from 'react-native';
 
-import requiredAuth from '../decorators/required-auth'
+import requiredAuth from '../decorators/required-auth';
 
-import FindUsers from './FindUsers'
+import FindUsers from './FindUsers';
 
 const styles = StyleSheet.create({
   input: {
@@ -28,39 +28,39 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingLeft: 5,
     paddingRight: 5,
-    height: 50
+    height: 50,
   },
   inputText: {
     fontSize: 17,
-    lineHeight: 50
+    lineHeight: 50,
   },
   label: {
     paddingLeft: 10,
     fontSize: 16,
-    color: '#575757'
-  }
-})
+    color: '#575757',
+  },
+});
 
 export class ShareForm extends React.PureComponent {
   state = {
-    query: ''
-  }
+    query: '',
+  };
 
-  updateQuery = text => {
+  updateQuery = (text) => {
     this.setState({
-      query: text
-    })
-  }
+      query: text,
+    });
+  };
 
   redirectToShoppingList = () => {
     this.props.navigation.navigate('ShoppingList', {
-      id: this.props.shoppingListId
-    })
-  }
+      id: this.props.shoppingListId,
+    });
+  };
 
   render() {
-    const { shoppingListId, shoppingListName } = this.props
-    const { query } = this.state
+    const { shoppingListId, shoppingListName } = this.props;
+    const { query } = this.state;
 
     return (
       <Container>
@@ -96,7 +96,7 @@ export class ShareForm extends React.PureComponent {
           <FindUsers shoppingListId={shoppingListId} query={query} />
         </Content>
       </Container>
-    )
+    );
   }
 }
 
@@ -104,12 +104,12 @@ export const mapStateToProps = (
   state,
   {
     route: {
-      params: { id }
-    }
+      params: { id },
+    },
   }
 ) => ({
   shoppingListId: id,
-  shoppingListName: state.optimisticSharings.name
-})
+  shoppingListName: state.optimisticSharings.name,
+});
 
-export default requiredAuth(connect(mapStateToProps)(ShareForm))
+export default requiredAuth(connect(mapStateToProps)(ShareForm));

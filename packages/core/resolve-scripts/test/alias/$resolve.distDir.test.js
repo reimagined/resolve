@@ -1,6 +1,6 @@
-import alias from '../../src/alias/$resolve.distDir'
-import normalizePaths from './normalize_paths'
-import declareRuntimeEnv from '../../src/declare_runtime_env'
+import alias from '../../src/alias/$resolve.distDir';
+import normalizePaths from './normalize_paths';
+import declareRuntimeEnv from '../../src/declare_runtime_env';
 
 test('should fail when imported from client', () => {
   expect(() =>
@@ -8,14 +8,14 @@ test('should fail when imported from client', () => {
       '\r\n' +
         alias({
           resolveConfig: {
-            distDir: 'distDir'
+            distDir: 'distDir',
           },
-          isClient: true
+          isClient: true,
         }) +
         '\r\n'
     )
-  ).toThrow()
-})
+  ).toThrow();
+});
 
 test('should fail when runtime env provided', () => {
   expect(() =>
@@ -23,13 +23,13 @@ test('should fail when runtime env provided', () => {
       '\r\n' +
         alias({
           resolveConfig: {
-            distDir: declareRuntimeEnv('distDir')
-          }
+            distDir: declareRuntimeEnv('distDir'),
+          },
         }) +
         '\r\n'
     )
-  ).toThrow()
-})
+  ).toThrow();
+});
 
 test('should work correctly', () => {
   expect(
@@ -37,10 +37,10 @@ test('should work correctly', () => {
       '\r\n' +
         alias({
           resolveConfig: {
-            distDir: 'distDir'
-          }
+            distDir: 'distDir',
+          },
         }) +
         '\r\n'
     )
-  ).toMatchSnapshot()
-})
+  ).toMatchSnapshot();
+});

@@ -1,5 +1,5 @@
 const createAdapter = (implementation, options) => {
-  const { eventstoreAdapter, performanceTracer, preferInlineLedger } = options
+  const { eventstoreAdapter, performanceTracer, preferInlineLedger } = options;
 
   const {
     connect,
@@ -27,77 +27,77 @@ const createAdapter = (implementation, options) => {
     status,
     build,
     ...storeApi
-  } = implementation
+  } = implementation;
 
-  const baseAdapterPool = Object.create(null)
-  Object.assign(baseAdapterPool, { performanceTracer, eventstoreAdapter })
-  const adapterPoolMap = new Map()
+  const baseAdapterPool = Object.create(null);
+  Object.assign(baseAdapterPool, { performanceTracer, eventstoreAdapter });
+  const adapterPoolMap = new Map();
 
-  const doConnect = async readModelName => {
-    const segment = performanceTracer ? performanceTracer.getSegment() : null
-    const subSegment = segment ? segment.addNewSubsegment('connect') : null
+  const doConnect = async (readModelName) => {
+    const segment = performanceTracer ? performanceTracer.getSegment() : null;
+    const subSegment = segment ? segment.addNewSubsegment('connect') : null;
 
     if (subSegment != null) {
-      subSegment.addAnnotation('readModelName', readModelName)
-      subSegment.addAnnotation('origin', 'resolve:readmodel:connect')
+      subSegment.addAnnotation('readModelName', readModelName);
+      subSegment.addAnnotation('origin', 'resolve:readmodel:connect');
     }
 
-    const adapterPool = Object.create(baseAdapterPool)
+    const adapterPool = Object.create(baseAdapterPool);
     try {
-      await connect(adapterPool, options)
+      await connect(adapterPool, options);
 
       const store = Object.keys(storeApi).reduce((acc, key) => {
-        acc[key] = storeApi[key].bind(null, adapterPool, readModelName)
-        return acc
-      }, {})
-      store.performanceTracer = performanceTracer
+        acc[key] = storeApi[key].bind(null, adapterPool, readModelName);
+        return acc;
+      }, {});
+      store.performanceTracer = performanceTracer;
 
-      const resultStore = Object.freeze(Object.create(store))
+      const resultStore = Object.freeze(Object.create(store));
 
-      adapterPoolMap.set(resultStore, adapterPool)
+      adapterPoolMap.set(resultStore, adapterPool);
 
-      return resultStore
+      return resultStore;
     } catch (error) {
       if (subSegment != null) {
-        subSegment.addError(error)
+        subSegment.addError(error);
       }
-      throw error
+      throw error;
     } finally {
       if (subSegment != null) {
-        subSegment.close()
+        subSegment.close();
       }
     }
-  }
+  };
 
   const doDisconnect = async (store, readModelName) => {
-    const segment = performanceTracer ? performanceTracer.getSegment() : null
-    const subSegment = segment ? segment.addNewSubsegment('disconnect') : null
+    const segment = performanceTracer ? performanceTracer.getSegment() : null;
+    const subSegment = segment ? segment.addNewSubsegment('disconnect') : null;
 
     if (subSegment != null) {
-      subSegment.addAnnotation('readModelName', readModelName)
-      subSegment.addAnnotation('origin', 'resolve:readmodel:disconnect')
+      subSegment.addAnnotation('readModelName', readModelName);
+      subSegment.addAnnotation('origin', 'resolve:readmodel:disconnect');
     }
 
     try {
       for (const key of Object.keys(Object.getPrototypeOf(store))) {
-        delete Object.getPrototypeOf(store)[key]
+        delete Object.getPrototypeOf(store)[key];
       }
 
-      const adapterPool = adapterPoolMap.get(store)
-      await disconnect(adapterPool)
+      const adapterPool = adapterPoolMap.get(store);
+      await disconnect(adapterPool);
     } catch (error) {
       if (subSegment != null) {
-        subSegment.addError(error)
+        subSegment.addError(error);
       }
-      throw error
+      throw error;
     } finally {
       if (subSegment != null) {
-        subSegment.close()
+        subSegment.close();
       }
 
-      adapterPoolMap.delete(store)
+      adapterPoolMap.delete(store);
     }
-  }
+  };
 
   const doOperation = async (
     operationName,
@@ -106,39 +106,39 @@ const createAdapter = (implementation, options) => {
     readModelName,
     ...args
   ) => {
-    const segment = performanceTracer ? performanceTracer.getSegment() : null
-    const subSegment = segment ? segment.addNewSubsegment(operationName) : null
+    const segment = performanceTracer ? performanceTracer.getSegment() : null;
+    const subSegment = segment ? segment.addNewSubsegment(operationName) : null;
 
     if (subSegment != null) {
-      subSegment.addAnnotation('readModelName', readModelName)
-      subSegment.addAnnotation('origin', `resolve:readmodel:${operationName}`)
+      subSegment.addAnnotation('readModelName', readModelName);
+      subSegment.addAnnotation('origin', `resolve:readmodel:${operationName}`);
     }
 
-    const adapterPool = adapterPoolMap.get(store)
+    const adapterPool = adapterPoolMap.get(store);
 
     try {
-      return await operationFunc(adapterPool, readModelName, ...args)
+      return await operationFunc(adapterPool, readModelName, ...args);
     } catch (error) {
       if (subSegment != null) {
-        subSegment.addError(error)
+        subSegment.addError(error);
       }
-      throw error
+      throw error;
     } finally {
       if (subSegment != null) {
-        subSegment.close()
+        subSegment.close();
       }
     }
-  }
+  };
 
   const makeOperation = (operationName, operationFunc) => {
     if (typeof operationFunc === 'function') {
-      return doOperation.bind(null, operationName, operationFunc)
+      return doOperation.bind(null, operationName, operationFunc);
     } else {
-      return null
+      return null;
     }
-  }
+  };
 
-  const adapterOperations = {}
+  const adapterOperations = {};
   if (preferInlineLedger) {
     Object.assign(adapterOperations, {
       subscribe,
@@ -152,8 +152,8 @@ const createAdapter = (implementation, options) => {
       pause,
       reset,
       status,
-      build
-    })
+      build,
+    });
   } else {
     Object.assign(adapterOperations, {
       // TODO
@@ -167,50 +167,50 @@ const createAdapter = (implementation, options) => {
       rollbackXATransaction,
       beginEvent,
       commitEvent,
-      rollbackEvent
-    })
+      rollbackEvent,
+    });
   }
   for (const key of Object.keys(adapterOperations)) {
-    adapterOperations[key] = makeOperation(key, adapterOperations[key])
+    adapterOperations[key] = makeOperation(key, adapterOperations[key]);
   }
 
   const doDispose = async () => {
-    const segment = performanceTracer ? performanceTracer.getSegment() : null
-    const subSegment = segment ? segment.addNewSubsegment('dispose') : null
+    const segment = performanceTracer ? performanceTracer.getSegment() : null;
+    const subSegment = segment ? segment.addNewSubsegment('dispose') : null;
 
     if (subSegment != null) {
-      subSegment.addAnnotation('origin', 'resolve:readmodel:dispose')
+      subSegment.addAnnotation('origin', 'resolve:readmodel:dispose');
     }
 
     try {
       for (const [store, adapterPool] of adapterPoolMap.entries()) {
-        await disconnect(adapterPool)
+        await disconnect(adapterPool);
 
         for (const key of Object.keys(Object.getPrototypeOf(store))) {
-          delete Object.getPrototypeOf(store)[key]
+          delete Object.getPrototypeOf(store)[key];
         }
       }
     } catch (error) {
       if (subSegment != null) {
-        subSegment.addError(error)
+        subSegment.addError(error);
       }
-      throw error
+      throw error;
     } finally {
       if (subSegment != null) {
-        subSegment.close()
+        subSegment.close();
       }
     }
-  }
+  };
 
   return Object.freeze({
     connect: doConnect,
     disconnect: doDisconnect,
     dispose: doDispose,
-    ...adapterOperations
-  })
-}
+    ...adapterOperations,
+  });
+};
 
-export default createAdapter
+export default createAdapter;
 
-export const STOP_BATCH = Symbol('STOP_BATCH')
-export const OMIT_BATCH = Symbol('OMIT_BATCH')
+export const STOP_BATCH = Symbol('STOP_BATCH');
+export const OMIT_BATCH = Symbol('OMIT_BATCH');

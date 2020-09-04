@@ -1,13 +1,13 @@
-import domready from 'domready'
-import { getClient } from 'resolve-client'
-import initUI from './init_ui'
-import updateUI from './update_ui'
+import domready from 'domready';
+import { getClient } from 'resolve-client';
+import initUI from './init_ui';
+import updateUI from './update_ui';
 
-const main = async resolveContext => {
-  await new Promise(resolve => domready(resolve))
-  const { viewModels } = resolveContext
-  const chatViewModel = viewModels.find(({ name }) => name === 'chat')
-  const client = getClient(resolveContext)
+const main = async (resolveContext) => {
+  await new Promise((resolve) => domready(resolve));
+  const { viewModels } = resolveContext;
+  const chatViewModel = viewModels.find(({ name }) => name === 'chat');
+  const client = getClient(resolveContext);
 
   const sendMessage = (userName, message) =>
     client.command(
@@ -15,37 +15,37 @@ const main = async resolveContext => {
         aggregateName: 'Chat',
         type: 'postMessage',
         aggregateId: userName,
-        payload: message
+        payload: message,
       },
-      err => {
+      (err) => {
         if (err) {
           // eslint-disable-next-line no-console
-          console.warn(`Error while sending command: ${err}`)
+          console.warn(`Error while sending command: ${err}`);
         }
       }
-    )
+    );
 
   const { data } = await client.query({
     name: 'chat',
-    aggregateIds: '*'
-  })
+    aggregateIds: '*',
+  });
 
-  let chatViewModelState = data
+  let chatViewModelState = data;
 
-  initUI(data, sendMessage)
+  initUI(data, sendMessage);
 
-  const chatViewModelUpdater = event => {
-    const eventType = event != null && event.type != null ? event.type : null
-    const eventHandler = chatViewModel.projection[eventType]
+  const chatViewModelUpdater = (event) => {
+    const eventType = event != null && event.type != null ? event.type : null;
+    const eventHandler = chatViewModel.projection[eventType];
 
     if (typeof eventHandler === 'function') {
-      chatViewModelState = eventHandler(chatViewModelState, event)
+      chatViewModelState = eventHandler(chatViewModelState, event);
     }
 
-    setImmediate(updateUI.bind(null, chatViewModelState))
-  }
+    setImmediate(updateUI.bind(null, chatViewModelState));
+  };
 
-  await client.subscribeTo('chat', '*', chatViewModelUpdater)
-}
+  await client.subscribeTo('chat', '*', chatViewModelUpdater);
+};
 
-export default main
+export default main;

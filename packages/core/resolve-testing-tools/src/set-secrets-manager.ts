@@ -1,20 +1,20 @@
-import { symbol, Phases } from './constants'
+import { symbol, Phases } from './constants';
 
 const setSecretsManager = (
   {
-    promise
+    promise,
   }: {
-    promise: any
+    promise: any;
   },
   secretsManager: any
 ) => {
   if (promise[symbol].phase !== Phases.GIVEN_EVENTS) {
-    throw new TypeError()
+    throw new TypeError();
   }
 
-  promise[symbol].secretsManager = secretsManager
+  promise[symbol].secretsManager = secretsManager;
 
-  return promise
-}
+  return promise;
+};
 
-export default setSecretsManager
+export default setSecretsManager;

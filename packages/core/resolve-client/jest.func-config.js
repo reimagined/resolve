@@ -1,6 +1,6 @@
-process.env.TZ = 'Europe/Moscow'
+process.env.TZ = 'Europe/Moscow';
 
-const path = require('path')
+const path = require('path');
 
 module.exports = {
   rootDir: process.cwd(),
@@ -8,7 +8,7 @@ module.exports = {
   testMatch: ['**/test/**/*.func.test.[jt]s?(x)'],
   collectCoverageFrom: ['src/**/*.js'],
   transform: {
-    '^.+\\.tsx?$': 'ts-jest'
+    '^.+\\.tsx?$': 'ts-jest',
   },
-  roots: ['<rootDir>/src', '<rootDir>/test']
-}
+  roots: ['<rootDir>/src', '<rootDir>/test'],
+};

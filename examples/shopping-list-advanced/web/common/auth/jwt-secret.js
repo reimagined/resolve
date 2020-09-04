@@ -5,7 +5,7 @@ if (
   // eslint-disable-next-line no-console
   console.warn(
     'In production mode you must specify jwt secret key in JWT_SECRET environment variable'
-  )
+  );
 }
 
-export default process.env.JWT_SECRET || 'SECRETJWT'
+export default process.env.JWT_SECRET || 'SECRETJWT';

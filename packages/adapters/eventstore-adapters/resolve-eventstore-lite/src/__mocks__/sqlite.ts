@@ -1,10 +1,10 @@
-const promised = (result?: any): Function => jest.fn().mockReturnValue(result)
+const promised = (result?: any): Function => jest.fn().mockReturnValue(result);
 
 const sqlite = {
   open: promised({
-    exec: promised()
+    exec: promised(),
   }),
-  get: promised()
-}
+  get: promised(),
+};
 
-export default sqlite
+export default sqlite;

@@ -3,16 +3,16 @@ const appConfig = {
     {
       name: 'aggregate-name',
       commands: 'common/aggregates/aggregate-name.commands.ts',
-      projection: 'common/aggregates/aggregate-name.projection.ts'
-    }
+      projection: 'common/aggregates/aggregate-name.projection.ts',
+    },
   ],
   readModels: [
     {
       name: 'read-model-name',
       connectorName: 'default',
       projection: 'common/read-models/read-model-name.projection.ts',
-      resolvers: 'common/read-models/read-model-name.resolvers.ts'
-    }
+      resolvers: 'common/read-models/read-model-name.resolvers.ts',
+    },
   ],
   viewModels: [
     {
@@ -20,16 +20,16 @@ const appConfig = {
       projection: 'common/view-models/view-model-name.projection.ts',
       serializeState: 'common/view-models/view-model-name.serialize_state.ts',
       deserializeState:
-        'common/view-models/view-model-name.deserialize_state.ts'
-    }
+        'common/view-models/view-model-name.deserialize_state.ts',
+    },
   ],
   sagas: [
     {
       name: 'saga-name',
       source: 'common/sagas/saga-name.ts',
       connectorName: 'default',
-      schedulerName: 'scheduler'
-    }
+      schedulerName: 'scheduler',
+    },
   ],
   clientEntries: [
     [
@@ -37,10 +37,10 @@ const appConfig = {
       {
         outputFile: 'client/index.js',
         moduleType: 'iife',
-        target: 'web'
-      }
-    ]
-  ]
-}
+        target: 'web',
+      },
+    ],
+  ],
+};
 
-export default appConfig
+export default appConfig;

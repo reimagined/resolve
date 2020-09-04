@@ -3,21 +3,21 @@ import {
   USER_PROFILE_UPDATED,
   USER_REGISTERED,
   USER_PERSONAL_DATA_REQUESTED,
-  USER_PERSONAL_DATA_GATHERED
-} from '../user-profile.events'
+  USER_PERSONAL_DATA_GATHERED,
+} from '../user-profile.events';
 
 const readModel = {
-  Init: async store => {
+  Init: async (store) => {
     await store.defineTable('Users', {
       indexes: { id: 'string' },
-      fields: ['profile', 'archive']
-    })
+      fields: ['profile', 'archive'],
+    });
   },
   [USER_REGISTERED]: async (store, event) => {
     const {
       aggregateId,
-      payload: { nickname, firstName, lastName, contacts }
-    } = event
+      payload: { nickname, firstName, lastName, contacts },
+    } = event;
 
     await store.insert('Users', {
       id: aggregateId,
@@ -25,17 +25,17 @@ const readModel = {
         nickname,
         firstName: firstName,
         lastName: lastName,
-        contacts: contacts
-      }
-    })
+        contacts: contacts,
+      },
+    });
   },
   [USER_PROFILE_UPDATED]: async (store, event) => {
     const {
       aggregateId,
-      payload: { firstName, lastName, contacts }
-    } = event
+      payload: { firstName, lastName, contacts },
+    } = event;
 
-    const user = await store.findOne('Users', { id: aggregateId })
+    const user = await store.findOne('Users', { id: aggregateId });
 
     await store.update(
       'Users',
@@ -46,21 +46,21 @@ const readModel = {
             ...user.profile,
             firstName,
             lastName,
-            contacts
-          }
-        }
+            contacts,
+          },
+        },
       }
-    )
+    );
   },
   [USER_PROFILE_DELETED]: async (store, event) => {
-    const { aggregateId } = event
+    const { aggregateId } = event;
 
     await store.delete('Users', {
-      id: aggregateId
-    })
+      id: aggregateId,
+    });
   },
   [USER_PERSONAL_DATA_REQUESTED]: async (store, event) => {
-    const { aggregateId, timestamp } = event
+    const { aggregateId, timestamp } = event;
 
     await store.update(
       'Users',
@@ -71,18 +71,18 @@ const readModel = {
             id: null,
             token: null,
             timestamp,
-            error: null
-          }
-        }
+            error: null,
+          },
+        },
       }
-    )
+    );
   },
   [USER_PERSONAL_DATA_GATHERED]: async (store, event) => {
     const {
       aggregateId,
       timestamp,
-      payload: { uploadId, token, error }
-    } = event
+      payload: { uploadId, token, error },
+    } = event;
 
     await store.update(
       'Users',
@@ -93,12 +93,12 @@ const readModel = {
             id: uploadId,
             token,
             timestamp,
-            error
-          }
-        }
+            error,
+          },
+        },
       }
-    )
-  }
-}
+    );
+  },
+};
 
-export default readModel
+export default readModel;

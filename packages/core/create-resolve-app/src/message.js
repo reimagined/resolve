@@ -1,4 +1,4 @@
-const optionsInfo = examples => [
+const optionsInfo = (examples) => [
   `Options:`,
   ``,
   `  -e, --example    creates an example application base on application from resolve examples directory`,
@@ -9,8 +9,8 @@ const optionsInfo = examples => [
   `  -b, --branch     branch (optional, master is default)`,
   `  -c, --commit     commit`,
   `  -V, --version    outputs the version number`,
-  `  -h, --help       outputs usage information`
-]
+  `  -h, --help       outputs usage information`,
+];
 
 const message = {
   help: ({ chalk, EOL, resolveExamples }) =>
@@ -22,7 +22,7 @@ const message = {
       ...optionsInfo(resolveExamples),
       ``,
       `If you have any problems, you can create an issue:`,
-      `  ${chalk.cyan('https://github.com/reimagined/resolve/issues/new')}`
+      `  ${chalk.cyan('https://github.com/reimagined/resolve/issues/new')}`,
     ].join(EOL),
 
   emptyAppNameError: ({ chalk, EOL, resolveExamples }) =>
@@ -37,14 +37,14 @@ const message = {
       ``,
       ...optionsInfo(resolveExamples),
       ``,
-      `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`
+      `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
     ].join(EOL),
 
   startCreatingApp: ({ EOL, applicationName, exampleName, commit, branch }) =>
     [
       `Creating ${applicationName} in ./${applicationName} based on ${exampleName} example`,
       commit ? ` (commit SHA:${commit})` : ``,
-      branch ? ` (from ${branch} branch)` : ``
+      branch ? ` (from ${branch} branch)` : ``,
     ].join(EOL),
 
   unknownOptions: ({ EOL, chalk }, options) =>
@@ -53,8 +53,8 @@ const message = {
         options.join(' ')
       )}` +
         `` +
-        `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`
-    ].join(EOL)
-}
+        `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
+    ].join(EOL),
+};
 
-export default message
+export default message;

@@ -1,11 +1,11 @@
-import getLog from '../js/get-log'
-import { AdapterPool, CloudResourceOptions, CloudResourcePool } from '../types'
+import getLog from '../js/get-log';
+import { AdapterPool, CloudResourceOptions, CloudResourcePool } from '../types';
 
 const create = async (
   pool: CloudResourcePool,
   options: CloudResourceOptions
 ): Promise<any> => {
-  const log = getLog('resource:create')
+  const log = getLog('resource:create');
 
   const {
     executeStatement,
@@ -15,10 +15,10 @@ const create = async (
     escape,
     fullJitter,
     coercer,
-    dispose
-  } = pool
+    dispose,
+  } = pool;
 
-  log.debug(`configuring adapter with environment privileges`)
+  log.debug(`configuring adapter with environment privileges`);
   const adminPool: AdapterPool = {
     config: {
       region: options.region,
@@ -27,21 +27,21 @@ const create = async (
       databaseName: options.databaseName,
       eventsTableName: options.eventsTableName,
       secretsTableName: options.secretsTableName,
-      snapshotsTableName: options.snapshotsTableName
-    }
-  }
+      snapshotsTableName: options.snapshotsTableName,
+    },
+  };
 
-  log.debug(`connecting the adapter`)
+  log.debug(`connecting the adapter`);
   await connect(adminPool, {
     RDSDataService,
     escapeId,
     escape,
     fullJitter,
     executeStatement,
-    coercer
-  })
+    coercer,
+  });
 
-  log.debug(`building schema and granting privileges to user`)
+  log.debug(`building schema and granting privileges to user`);
   await executeStatement(
     adminPool,
     [
@@ -69,14 +69,14 @@ const create = async (
 
       `ALTER SCHEMA ${escapeId(options.databaseName)} OWNER TO ${escapeId(
         options.userLogin
-      )}`
+      )}`,
     ].join('; ')
-  )
+  );
 
-  log.debug(`disposing the adapter`)
-  await dispose(adminPool)
+  log.debug(`disposing the adapter`);
+  await dispose(adminPool);
 
-  log.debug(`resource created successfully`)
-}
+  log.debug(`resource created successfully`);
+};
 
-export default create
+export default create;

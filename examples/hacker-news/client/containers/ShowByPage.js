@@ -1,11 +1,11 @@
-import React from 'react'
-import { bindActionCreators } from 'redux'
-import { connectReadModel } from 'resolve-redux'
-import { connect } from 'react-redux'
+import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connectReadModel } from 'resolve-redux';
+import { connect } from 'react-redux';
 
-import * as aggregateActions from '../actions/aggregate-actions'
-import Stories from '../components/Stories'
-import { ITEMS_PER_PAGE } from '../constants'
+import * as aggregateActions from '../actions/aggregate-actions';
+import Stories from '../components/Stories';
+import { ITEMS_PER_PAGE } from '../constants';
 
 const ShowByPage = ({
   isLoading,
@@ -13,7 +13,7 @@ const ShowByPage = ({
   stories,
   me,
   upvoteStory,
-  unvoteStory
+  unvoteStory,
 }) => (
   <Stories
     isLoading={isLoading}
@@ -24,43 +24,43 @@ const ShowByPage = ({
     upvoteStory={upvoteStory}
     unvoteStory={unvoteStory}
   />
-)
+);
 
 export const mapStateToOptions = (
   state,
   {
     match: {
-      params: { page }
-    }
+      params: { page },
+    },
   }
 ) => ({
   readModelName: 'HackerNews',
   resolverName: 'showStories',
   resolverArgs: {
     offset: ITEMS_PER_PAGE + 1,
-    first: (+page - 1) * ITEMS_PER_PAGE
-  }
-})
+    first: (+page - 1) * ITEMS_PER_PAGE,
+  },
+});
 
 export const mapStateToProps = (
   state,
   {
     match: {
-      params: { page }
+      params: { page },
     },
     data,
-    isLoading
+    isLoading,
   }
 ) => ({
   isLoading,
   stories: data,
   page,
-  me: state.jwt
-})
+  me: state.jwt,
+});
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(aggregateActions, dispatch)
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(aggregateActions, dispatch);
 
 export default connectReadModel(mapStateToOptions)(
   connect(mapStateToProps, mapDispatchToProps)(ShowByPage)
-)
+);

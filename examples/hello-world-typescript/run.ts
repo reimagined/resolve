@@ -5,22 +5,22 @@ import {
   watch,
   runTestcafe,
   merge,
-  reset
-} from 'resolve-scripts'
+  reset,
+} from 'resolve-scripts';
 
-import appConfig from './config.app'
-import devConfig from './config.dev'
-import prodConfig from './config.prod'
-import cloudConfig from './config.cloud'
-import testFunctionalConfig from './config.test_functional'
-import adjustWebpackConfigs from './config.adjust_webpack'
+import appConfig from './config.app';
+import devConfig from './config.dev';
+import prodConfig from './config.prod';
+import cloudConfig from './config.cloud';
+import testFunctionalConfig from './config.test_functional';
+import adjustWebpackConfigs from './config.adjust_webpack';
 
-const launchMode = process.argv[2]
+const launchMode = process.argv[2];
 
 void (async (): Promise<void> => {
   switch (launchMode) {
     case 'dev': {
-      const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+      const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig);
 
       await reset(
         resolveConfig,
@@ -28,34 +28,34 @@ void (async (): Promise<void> => {
           dropEventStore: false,
           dropEventBus: true,
           dropReadModels: true,
-          dropSagas: true
+          dropSagas: true,
         },
         adjustWebpackConfigs
-      )
+      );
 
-      await watch(resolveConfig, adjustWebpackConfigs)
-      break
+      await watch(resolveConfig, adjustWebpackConfigs);
+      break;
     }
 
     case 'build': {
       await build(
         merge(defaultResolveConfig, appConfig, prodConfig),
         adjustWebpackConfigs
-      )
-      break
+      );
+      break;
     }
 
     case 'start': {
-      await start(merge(defaultResolveConfig, appConfig, prodConfig))
-      break
+      await start(merge(defaultResolveConfig, appConfig, prodConfig));
+      break;
     }
 
     case 'cloud': {
       await build(
         merge(defaultResolveConfig, appConfig, cloudConfig),
         adjustWebpackConfigs
-      )
-      break
+      );
+      break;
     }
 
     case 'test:e2e': {
@@ -63,7 +63,7 @@ void (async (): Promise<void> => {
         defaultResolveConfig,
         appConfig,
         testFunctionalConfig
-      )
+      );
 
       await reset(
         resolveConfig,
@@ -71,27 +71,27 @@ void (async (): Promise<void> => {
           dropEventStore: true,
           dropEventBus: true,
           dropReadModels: true,
-          dropSagas: true
+          dropSagas: true,
         },
         adjustWebpackConfigs
-      )
+      );
 
       await runTestcafe({
         resolveConfig,
         adjustWebpackConfigs,
         functionalTestsDir: 'test/functional',
         browser: process.argv[3],
-        customArgs: ['--stop-on-first-fail']
-      })
-      break
+        customArgs: ['--stop-on-first-fail'],
+      });
+      break;
     }
 
     default: {
-      throw new Error('Unknown option')
+      throw new Error('Unknown option');
     }
   }
-})().catch(error => {
+})().catch((error) => {
   // eslint-disable-next-line no-console
-  console.log(error)
-  process.exit(1)
-})
+  console.log(error);
+  process.exit(1);
+});

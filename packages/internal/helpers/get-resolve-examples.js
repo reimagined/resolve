@@ -1,52 +1,52 @@
-const find = require('glob').sync
+const find = require('glob').sync;
 
-const { getResolveDir } = require('./get-resolve-dir')
+const { getResolveDir } = require('./get-resolve-dir');
 
-let _resolveExamples
+let _resolveExamples;
 function getResolveExamples() {
   if (_resolveExamples) {
-    return _resolveExamples
+    return _resolveExamples;
   }
 
-  const resolveExamples = []
+  const resolveExamples = [];
 
   for (const filePath of find('./examples/*/package.json', {
     cwd: getResolveDir(),
     absolute: true,
-    ignore: ['**/node_modules/**', './node_modules/**']
+    ignore: ['**/node_modules/**', './node_modules/**'],
   })) {
     if (filePath.includes('node_modules')) {
-      continue
+      continue;
     }
     if (
       filePath.includes('packages\\internal') ||
       filePath.includes('packages/internal')
     ) {
-      continue
+      continue;
     }
     if (
       filePath.includes(`optional\\${'dependencies'}`) ||
       filePath.includes(`optional/${'dependencies'}`)
     ) {
-      continue
+      continue;
     }
 
-    const { name, description } = require(filePath)
+    const { name, description } = require(filePath);
 
     if (!description) {
-      throw new Error(`Example "${name}" .description must be a string`)
+      throw new Error(`Example "${name}" .description must be a string`);
     }
 
-    resolveExamples.push({ name, description })
+    resolveExamples.push({ name, description });
   }
 
   resolveExamples.sort((a, b) =>
     a.name > b.name ? 1 : a.name < b.name ? -1 : 0
-  )
+  );
 
-  _resolveExamples = resolveExamples
+  _resolveExamples = resolveExamples;
 
-  return resolveExamples
+  return resolveExamples;
 }
 
-module.exports = { getResolveExamples }
+module.exports = { getResolveExamples };

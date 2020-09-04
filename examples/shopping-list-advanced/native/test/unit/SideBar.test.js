@@ -1,16 +1,16 @@
-import React from 'react'
-import { SideBar } from '../../containers/SideBar'
+import React from 'react';
+import { SideBar } from '../../containers/SideBar';
 
-import { shallow } from 'enzyme'
+import { shallow } from 'enzyme';
 
 it('renders correctly', () => {
   const navigation = {
-    navigate: () => {}
-  }
+    navigate: () => {},
+  };
 
-  const jwt = { id: 'id' }
+  const jwt = { id: 'id' };
 
   expect(
     shallow(<SideBar navigation={navigation} jwt={jwt} />)
-  ).toMatchSnapshot()
-})
+  ).toMatchSnapshot();
+});

@@ -1,16 +1,16 @@
-import uuidV4 from 'uuid/v4'
+import uuidV4 from 'uuid/v4';
 
-const createUserModule = strategies => {
+const createUserModule = (strategies) => {
   if (!Array.isArray(strategies)) {
-    throw new Error(`Module Auth accepts strategies argument only as array`)
+    throw new Error(`Module Auth accepts strategies argument only as array`);
   }
 
-  const apiHandlers = []
+  const apiHandlers = [];
   for (const strategyDescriptor of strategies) {
-    const { createStrategy, options, routes, logoutRoute } = strategyDescriptor
-    const strategyHash = uuidV4()
+    const { createStrategy, options, routes, logoutRoute } = strategyDescriptor;
+    const strategyHash = uuidV4();
     if (options != null && options.constructor !== Object) {
-      throw new Error(`Vary options should be object if present`)
+      throw new Error(`Vary options should be object if present`);
     }
 
     for (const { method, path: routePath, callback } of routes) {
@@ -21,28 +21,28 @@ const createUserModule = strategies => {
           module: 'resolve-module-auth/lib/api_handler_constructor',
           options: {
             strategyHash,
-            options
+            options,
           },
           imports: {
             createStrategy,
-            callback
-          }
-        }
-      })
+            callback,
+          },
+        },
+      });
     }
 
     if (logoutRoute) {
       apiHandlers.push({
         method: logoutRoute.method,
         path: `/api/${logoutRoute.path}`,
-        handler: 'resolve-module-auth/lib/logout_api_handler'
-      })
+        handler: 'resolve-module-auth/lib/logout_api_handler',
+      });
     }
   }
 
   return {
-    apiHandlers
-  }
-}
+    apiHandlers,
+  };
+};
 
-export default createUserModule
+export default createUserModule;

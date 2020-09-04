@@ -2,7 +2,7 @@ const createAndInitPublisher = async (
   { imports, functions, broker, lifecycle },
   activeConfig
 ) => {
-  const { connectConsumer, ...config } = activeConfig
+  const { connectConsumer, ...config } = activeConfig;
 
   const pool = {
     ...imports,
@@ -10,12 +10,12 @@ const createAndInitPublisher = async (
     ...broker,
     ...lifecycle,
     database: await functions.connectDatabase(imports, {
-      databaseFile: config.databaseFile
+      databaseFile: config.databaseFile,
     }),
     consumer: await connectConsumer({
-      address: config.consumerAddress
-    })
-  }
+      address: config.consumerAddress,
+    }),
+  };
 
   const server = {
     subscribe: broker.subscribe.bind(null, pool),
@@ -34,15 +34,15 @@ const createAndInitPublisher = async (
     read: broker.read.bind(null, pool),
     init: lifecycle.createDatabase.bind(null, pool),
     drop: lifecycle.dropDatabase.bind(null, pool),
-    dispose: pool.database.dispose
-  }
+    dispose: pool.database.dispose,
+  };
 
   const api = await functions.createServer({
     hostObject: server,
-    address: config.publisherAddress
-  })
+    address: config.publisherAddress,
+  });
 
-  return api
-}
+  return api;
+};
 
-export default createAndInitPublisher
+export default createAndInitPublisher;

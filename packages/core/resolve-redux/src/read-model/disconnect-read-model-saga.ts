@@ -1,24 +1,24 @@
-import { put } from 'redux-saga/effects'
+import { put } from 'redux-saga/effects';
 
-import { DisconnectReadModelAction, dropReadModelResult } from './actions'
-import { CONNECT_READMODEL } from '../internal/action-types'
-import { RootSagaArgs } from '../types'
+import { DisconnectReadModelAction, dropReadModelResult } from './actions';
+import { CONNECT_READMODEL } from '../internal/action-types';
+import { RootSagaArgs } from '../types';
 
 type DisconnectReadModelSagaArgs = {
-  sagaManager: any
-  sagaKey: string
-} & RootSagaArgs
+  sagaManager: any;
+  sagaKey: string;
+} & RootSagaArgs;
 
-const disconnectReadModelSaga = function*(
+const disconnectReadModelSaga = function* (
   sagaArgs: DisconnectReadModelSagaArgs,
   action: DisconnectReadModelAction
 ): any {
-  const { sagaManager, sagaKey } = sagaArgs
-  const { query } = action
+  const { sagaManager, sagaKey } = sagaArgs;
+  const { query } = action;
 
-  yield* sagaManager.stop(`${CONNECT_READMODEL}${sagaKey}`)
+  yield* sagaManager.stop(`${CONNECT_READMODEL}${sagaKey}`);
 
-  yield put(dropReadModelResult(query))
-}
+  yield put(dropReadModelResult(query));
+};
 
-export default disconnectReadModelSaga
+export default disconnectReadModelSaga;

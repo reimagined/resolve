@@ -1,4 +1,4 @@
-import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
+import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base';
 
 import {
   LONG_STRING_SQL_TYPE,
@@ -6,30 +6,30 @@ import {
   INT8_SQL_TYPE,
   JSON_SQL_TYPE,
   TEXT_SQL_TYPE,
-  AGGREGATE_ID_SQL_TYPE
-} from './constants'
+  AGGREGATE_ID_SQL_TYPE,
+} from './constants';
 
 const init = async ({
   databaseName,
   eventsTableName,
   snapshotsTableName,
   executeStatement,
-  escapeId
+  escapeId,
 }) => {
-  const databaseNameAsId = escapeId(databaseName)
-  const eventsTableNameAsId = escapeId(eventsTableName)
-  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
-  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
+  const databaseNameAsId = escapeId(databaseName);
+  const eventsTableNameAsId = escapeId(eventsTableName);
+  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`);
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName);
 
   const aggregateIdAndVersionIndexName = escapeId(
     `${eventsTableName}-aggregateIdAndVersion`
-  )
-  const aggregateIndexName = escapeId(`${eventsTableName}-aggregateId`)
+  );
+  const aggregateIndexName = escapeId(`${eventsTableName}-aggregateId`);
   const aggregateVersionIndexName = escapeId(
     `${eventsTableName}-aggregateVersion`
-  )
-  const typeIndexName = escapeId(`${eventsTableName}-type`)
-  const timestampIndexName = escapeId(`${eventsTableName}-timestamp`)
+  );
+  const typeIndexName = escapeId(`${eventsTableName}-type`);
+  const timestampIndexName = escapeId(`${eventsTableName}-timestamp`);
 
   try {
     await executeStatement(
@@ -84,16 +84,16 @@ const init = async ({
         .map((_, index) => `(${index}, 0)`)
         .join(',')}
       ;`
-    )
+    );
   } catch (error) {
     if (error != null && /Relation.*? already exists$/i.test(error.message)) {
       throw new EventstoreResourceAlreadyExistError(
         `Double-initialize storage-postgresql adapter via "${databaseName}" failed`
-      )
+      );
     } else {
-      throw error
+      throw error;
     }
   }
-}
+};
 
-export default init
+export default init;

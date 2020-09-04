@@ -1,19 +1,21 @@
-import React from 'react'
+import React from 'react';
 
 class RefreshHelperRenderless extends React.PureComponent {
   static defaultProps = {
-    children: () => null
-  }
+    children: () => null,
+  };
 
-  state = {}
+  state = {};
 
-  refresh = () => this.setState({ refreshId: Date.now() + Math.random() })
+  refresh = () => this.setState({ refreshId: Date.now() + Math.random() });
 
   render() {
-    const Component = this.props.children
+    const Component = this.props.children;
 
-    return <Component refreshId={this.state.refreshId} refresh={this.refresh} />
+    return (
+      <Component refreshId={this.state.refreshId} refresh={this.refresh} />
+    );
   }
 }
 
-export default RefreshHelperRenderless
+export default RefreshHelperRenderless;

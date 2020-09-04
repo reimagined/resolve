@@ -1,19 +1,19 @@
 import {
   USER_LOGOUT,
   OPTIMISTIC_STORY_UNVOTED,
-  OPTIMISTIC_STORY_UPVOTED
-} from '../action-types'
+  OPTIMISTIC_STORY_UPVOTED,
+} from '../action-types';
 
 export const logout = () => ({
-  type: USER_LOGOUT
-})
+  type: USER_LOGOUT,
+});
 
-export const optimisticUpvoteStory = storyId => ({
+export const optimisticUpvoteStory = (storyId) => ({
   type: OPTIMISTIC_STORY_UPVOTED,
-  storyId
-})
+  storyId,
+});
 
-export const optimisticUnvoteStory = storyId => ({
+export const optimisticUnvoteStory = (storyId) => ({
   type: OPTIMISTIC_STORY_UNVOTED,
-  storyId
-})
+  storyId,
+});

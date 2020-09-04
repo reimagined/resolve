@@ -1,48 +1,48 @@
-import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import debugLevels from 'resolve-debug-levels'
-import path from 'path'
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault';
+import debugLevels from 'resolve-debug-levels';
+import path from 'path';
 
-import entryPointMarker from './entry-point-marker'
+import entryPointMarker from './entry-point-marker';
 
-const log = debugLevels('resolve:resolve-runtime:liveRequire')
+const log = debugLevels('resolve:resolve-runtime:liveRequire');
 
-const pureRequire = __non_webpack_require__ //eslint-disable-line no-undef
-const entryPointDirnamePlaceholder = Symbol('EntryPointDirnamePlaceholder')
-let entryPointDirname = entryPointDirnamePlaceholder
+const pureRequire = __non_webpack_require__; //eslint-disable-line no-undef
+const entryPointDirnamePlaceholder = Symbol('EntryPointDirnamePlaceholder');
+let entryPointDirname = entryPointDirnamePlaceholder;
 
-const liveRequire = filePath => {
+const liveRequire = (filePath) => {
   if (entryPointDirname === entryPointDirnamePlaceholder) {
     entryPointDirname = (
       Object.values(pureRequire.cache).find(
         ({ exports }) =>
           exports != null && exports.entryPointMarker === entryPointMarker
       ) || {}
-    ).filename
+    ).filename;
   }
 
-  let resource = null
-  const isRealFilePath = filePath[0] === '/' || filePath[0] === '.'
+  let resource = null;
+  const isRealFilePath = filePath[0] === '/' || filePath[0] === '.';
 
   if (isRealFilePath && entryPointDirname == null) {
-    log.error('Entry point working directory recognition failed')
-    return resource
+    log.error('Entry point working directory recognition failed');
+    return resource;
   }
 
   const fullPath = isRealFilePath
     ? path.resolve(path.dirname(entryPointDirname), filePath)
-    : filePath
+    : filePath;
 
   try {
-    resource = interopRequireDefault(pureRequire(fullPath)).default
+    resource = interopRequireDefault(pureRequire(fullPath)).default;
   } catch (error) {
-    log.error('Live require failed:', error)
+    log.error('Live require failed:', error);
   }
 
   try {
-    delete pureRequire.cache[pureRequire.resolve(filePath)]
+    delete pureRequire.cache[pureRequire.resolve(filePath)];
   } catch (e) {}
 
-  return resource
-}
+  return resource;
+};
 
-export default liveRequire
+export default liveRequire;

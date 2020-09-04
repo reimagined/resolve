@@ -1,17 +1,17 @@
 const buildUpsertDocument = (searchExpression, updateExpression) => {
   const isSearchDocument =
-    Object.keys(searchExpression).filter(key => key.indexOf('$') > -1)
-      .length === 0
+    Object.keys(searchExpression).filter((key) => key.indexOf('$') > -1)
+      .length === 0;
 
   const baseDocument = {
     ...(isSearchDocument ? searchExpression : {}),
-    ...(updateExpression['$set'] || {})
-  }
+    ...(updateExpression['$set'] || {}),
+  };
 
-  const resultDocument = {}
+  const resultDocument = {};
 
   for (const key of Object.keys(baseDocument)) {
-    const nestedKeys = key.split('.')
+    const nestedKeys = key.split('.');
     nestedKeys.reduce(
       (acc, val, idx) =>
         acc.hasOwnProperty(val)
@@ -22,10 +22,10 @@ const buildUpsertDocument = (searchExpression, updateExpression) => {
                 : {}
               : []),
       resultDocument
-    )
+    );
   }
 
-  return resultDocument
-}
+  return resultDocument;
+};
 
-export default buildUpsertDocument
+export default buildUpsertDocument;

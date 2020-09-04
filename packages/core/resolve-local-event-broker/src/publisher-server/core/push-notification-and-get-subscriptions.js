@@ -6,22 +6,22 @@ import {
   LazinessStrategy,
   PrivateOperationType,
   DeliveryStrategy,
-  ConsumerMethod
-} from '../constants'
-import { SubscriptionStatus } from '../constants'
+  ConsumerMethod,
+} from '../constants';
+import { SubscriptionStatus } from '../constants';
 
 const pushNotificationAndGetSubscriptions = async (pool, payload) => {
   const {
     database: { escapeId, escapeStr, runQuery, runRawQuery, encodeJsonPath },
     invokeOperation,
     invokeConsumer,
-    generateGuid
-  } = pool
+    generateGuid,
+  } = pool;
 
-  const { event } = payload
-  const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME)
-  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
-  const insertionId = generateGuid(event.aggregateId, event.aggregateVersion)
+  const { event } = payload;
+  const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME);
+  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME);
+  const insertionId = generateGuid(event.aggregateId, event.aggregateVersion);
 
   await runRawQuery(`
     INSERT OR IGNORE INTO ${notificationsTableNameAsId}(
@@ -80,25 +80,25 @@ const pushNotificationAndGetSubscriptions = async (pool, payload) => {
 
     COMMIT;
     BEGIN IMMEDIATE;
-  `)
+  `);
 
   const subscriptionIdsResult = await runQuery(`
     SELECT "subscriptionId" FROM ${notificationsTableNameAsId}
     WHERE "insertionId" = ${escapeStr(insertionId)}
-  `)
+  `);
 
-  const pullPromises = []
+  const pullPromises = [];
   for (const { subscriptionId } of subscriptionIdsResult) {
     const input = {
       type: PrivateOperationType.PULL_NOTIFICATIONS,
       payload: {
-        subscriptionId
-      }
-    }
+        subscriptionId,
+      },
+    };
 
-    pullPromises.push(invokeOperation(pool, LazinessStrategy.EAGER, input))
+    pullPromises.push(invokeOperation(pool, LazinessStrategy.EAGER, input));
   }
-  await Promise.all(pullPromises)
+  await Promise.all(pullPromises);
 
   const passthroughSubscriptions = await runQuery(`
     SELECT ${subscribersTableNameAsId}."eventSubscriber" AS "eventSubscriber"
@@ -126,20 +126,20 @@ const pushNotificationAndGetSubscriptions = async (pool, payload) => {
         ${subscribersTableNameAsId}."aggregateIds", '$'
       ) IS NULL
     )
-  `)
+  `);
 
-  const passthroughPromises = []
+  const passthroughPromises = [];
   for (const { eventSubscriber } of passthroughSubscriptions) {
     passthroughPromises.push(
       invokeConsumer(pool, ConsumerMethod.SendEvents, {
         eventSubscriber,
         events: [event],
-        batchId: null
+        batchId: null,
       })
-    )
+    );
   }
 
-  await Promise.all(passthroughPromises)
-}
+  await Promise.all(passthroughPromises);
+};
 
-export default pushNotificationAndGetSubscriptions
+export default pushNotificationAndGetSubscriptions;

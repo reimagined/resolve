@@ -1,3 +1,3 @@
-import { devToolsEnhancer } from 'redux-devtools-extension'
+import { devToolsEnhancer } from 'redux-devtools-extension';
 
-export default devToolsEnhancer({})
+export default devToolsEnhancer({});

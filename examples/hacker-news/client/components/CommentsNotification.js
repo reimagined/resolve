@@ -1,27 +1,27 @@
-import React from 'react'
-import styled from 'styled-components'
-import { CommentsNotificationRenderless } from 'resolve-module-comments'
+import React from 'react';
+import styled from 'styled-components';
+import { CommentsNotificationRenderless } from 'resolve-module-comments';
 
 const Container = styled.div`
   text-align: center;
   background-color: rgba(57, 73, 171, 0.75);
   margin-bottom: 10px;
   cursor: pointer;
-`
+`;
 
 const Notification = styled.div`
   display: inline-block;
   text-align: left;
   padding: 15px;
   color: #ffffff;
-`
+`;
 
 class CommentsNotification extends React.PureComponent {
   render() {
-    const { treeId, parentCommentId, authorId, ...props } = this.props
+    const { treeId, parentCommentId, authorId, ...props } = this.props;
 
     if (!treeId || !authorId) {
-      return null
+      return null;
     }
 
     return (
@@ -42,8 +42,8 @@ class CommentsNotification extends React.PureComponent {
           ) : null
         }
       </CommentsNotificationRenderless>
-    )
+    );
   }
 }
 
-export default CommentsNotification
+export default CommentsNotification;

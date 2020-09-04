@@ -1,4 +1,4 @@
-const getClientGlobalEnvObject = key => `((() => {
+const getClientGlobalEnvObject = (key) => `((() => {
     const globalObject = [() => window, () => global, () => self].reduce(
       (acc, recognizer) => {
         try {
@@ -22,6 +22,6 @@ const getClientGlobalEnvObject = key => `((() => {
     }
   
     return globalObject[key]
-  })())`
+  })())`;
 
-export default getClientGlobalEnvObject
+export default getClientGlobalEnvObject;

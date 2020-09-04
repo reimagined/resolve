@@ -1,6 +1,6 @@
 const freeze = async ({
   events: { connection, eventsTableName },
-  escapeId
+  escapeId,
 }) => {
   await connection.execute(
     `CREATE TABLE IF NOT EXISTS ${escapeId(`${eventsTableName}-freeze`)}(
@@ -9,7 +9,7 @@ const freeze = async ({
     )
     COMMENT = "RESOLVE EVENT STORE ${escapeId(eventsTableName)} FREEZE MARKER" 
     `
-  )
-}
+  );
+};
 
-export default freeze
+export default freeze;

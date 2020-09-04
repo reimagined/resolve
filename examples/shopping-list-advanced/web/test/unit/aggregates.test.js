@@ -1,7 +1,7 @@
-import JWT from 'jsonwebtoken'
+import JWT from 'jsonwebtoken';
 
-import shoppingListCommands from '../../common/aggregates/shopping-list.commands'
-import userCommands from '../../common/aggregates/user.commands'
+import shoppingListCommands from '../../common/aggregates/shopping-list.commands';
+import userCommands from '../../common/aggregates/user.commands';
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_RENAMED,
@@ -10,150 +10,150 @@ import {
   SHOPPING_ITEM_TOGGLED,
   SHOPPING_ITEM_REMOVED,
   USER_CREATED,
-  USER_NAME_UPDATED
-} from '../../common/event-types'
-import jwtSecret from '../../common/auth/jwt-secret'
+  USER_NAME_UPDATED,
+} from '../../common/event-types';
+import jwtSecret from '../../common/auth/jwt-secret';
 
 const jwt = JWT.sign(
   {
     username: 'root',
     id: '00000000-0000-0000-0000-000000000000',
-    role: 'root'
+    role: 'root',
   },
   jwtSecret
-)
+);
 
 describe('aggregates', () => {
   describe('ShoppingList', () => {
     it('command "createShoppingList" should create an event to create a list', () => {
-      const name = 'test'
+      const name = 'test';
 
-      const state = {}
-      const command = { payload: { name } }
+      const state = {};
+      const command = { payload: { name } };
 
       expect(
         shoppingListCommands.createShoppingList(state, command, {
-          jwt
+          jwt,
         })
       ).toMatchObject({
         type: SHOPPING_LIST_CREATED,
-        payload: { name }
-      })
-    })
+        payload: { name },
+      });
+    });
 
     it('command "renameShoppingList" should create an event to rename the list', () => {
-      const name = 'test'
+      const name = 'test';
 
-      const state = { createdAt: Date.now() }
-      const command = { payload: { name } }
+      const state = { createdAt: Date.now() };
+      const command = { payload: { name } };
 
       expect(
         shoppingListCommands.renameShoppingList(state, command, {
-          jwt
+          jwt,
         })
       ).toMatchObject({
         type: SHOPPING_LIST_RENAMED,
-        payload: { name }
-      })
-    })
+        payload: { name },
+      });
+    });
 
     it('command "removeShoppingList" should create an event to remove the list', () => {
-      const state = { createdAt: Date.now() }
-      const command = {}
+      const state = { createdAt: Date.now() };
+      const command = {};
 
       expect(
         shoppingListCommands.removeShoppingList(state, command, {
-          jwt
+          jwt,
         })
       ).toMatchObject({
         type: SHOPPING_LIST_REMOVED,
-        payload: {}
-      })
-    })
+        payload: {},
+      });
+    });
 
     it('command "createShoppingItem" should create an event to create a item', () => {
-      const state = { createdAt: Date.now() }
-      const command = { payload: { id: 'id', text: 'id' } }
+      const state = { createdAt: Date.now() };
+      const command = { payload: { id: 'id', text: 'id' } };
 
       expect(
         shoppingListCommands.createShoppingItem(state, command, {
-          jwt
+          jwt,
         })
       ).toMatchObject({
         type: SHOPPING_ITEM_CREATED,
-        payload: { id: 'id', text: 'id' }
-      })
-    })
+        payload: { id: 'id', text: 'id' },
+      });
+    });
 
     it('command "toggleShoppingItem" should create an event to toggle the item', () => {
-      const state = { createdAt: Date.now() }
-      const command = { payload: { id: 'id' } }
+      const state = { createdAt: Date.now() };
+      const command = { payload: { id: 'id' } };
 
       expect(
         shoppingListCommands.toggleShoppingItem(state, command, {
-          jwt
+          jwt,
         })
       ).toMatchObject({
         type: SHOPPING_ITEM_TOGGLED,
-        payload: { id: 'id' }
-      })
-    })
+        payload: { id: 'id' },
+      });
+    });
 
     it('command "removeShoppingItem" should create an event to remove the item', () => {
-      const state = { createdAt: Date.now() }
-      const command = { payload: { id: 'id' } }
+      const state = { createdAt: Date.now() };
+      const command = { payload: { id: 'id' } };
 
       expect(
         shoppingListCommands.removeShoppingItem(state, command, {
-          jwt
+          jwt,
         })
       ).toMatchObject({
         type: SHOPPING_ITEM_REMOVED,
-        payload: { id: 'id' }
-      })
-    })
-  })
+        payload: { id: 'id' },
+      });
+    });
+  });
 
   describe('User', () => {
     it('command "createUser" should create an event to create a user', () => {
-      const username = 'username'
-      const passwordHash = 'passwordHash'
-      const accessTokenHash = 'accessTokenHash'
+      const username = 'username';
+      const passwordHash = 'passwordHash';
+      const accessTokenHash = 'accessTokenHash';
 
-      const state = {}
+      const state = {};
       const command = {
         payload: {
           username,
           passwordHash,
-          accessTokenHash
-        }
-      }
+          accessTokenHash,
+        },
+      };
 
       expect(userCommands.createUser(state, command, { jwt })).toMatchObject({
         type: USER_CREATED,
         payload: {
           username,
           passwordHash,
-          accessTokenHash
-        }
-      })
-    })
+          accessTokenHash,
+        },
+      });
+    });
 
     it('command "updateUserName" should create an event to rename the user', () => {
-      const username = 'test'
+      const username = 'test';
 
       const state = {
         createdAt: Date.now(),
-        userId: '00000000-0000-0000-0000-000000000000'
-      }
-      const command = { payload: { username } }
+        userId: '00000000-0000-0000-0000-000000000000',
+      };
+      const command = { payload: { username } };
 
       expect(
         userCommands.updateUserName(state, command, { jwt })
       ).toMatchObject({
         type: USER_NAME_UPDATED,
-        payload: { username }
-      })
-    })
-  })
-})
+        payload: { username },
+      });
+    });
+  });
+});

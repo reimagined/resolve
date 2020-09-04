@@ -4,20 +4,20 @@ import {
   QUERY_READMODEL_FAILURE,
   DROP_READMODEL_STATE,
   CONNECT_READMODEL,
-  DISCONNECT_READMODEL
-} from '../internal/action-types'
-import { ReadModelQuery } from 'resolve-client'
+  DISCONNECT_READMODEL,
+} from '../internal/action-types';
+import { ReadModelQuery } from 'resolve-client';
 
 export type ReadModelAction = {
-  query: ReadModelQuery
-  selectorId?: string
-}
+  query: ReadModelQuery;
+  selectorId?: string;
+};
 
 export type QueryReadModelRequestAction = {
-  type: typeof QUERY_READMODEL_REQUEST
-  initialState: any
-  selectorId?: string
-} & ReadModelAction
+  type: typeof QUERY_READMODEL_REQUEST;
+  initialState: any;
+  selectorId?: string;
+} & ReadModelAction;
 export const queryReadModelRequest = (
   query: ReadModelQuery,
   initialState: any,
@@ -26,13 +26,13 @@ export const queryReadModelRequest = (
   type: QUERY_READMODEL_REQUEST,
   query,
   initialState,
-  selectorId
-})
+  selectorId,
+});
 
 export type QueryReadModelSuccessAction = {
-  type: typeof QUERY_READMODEL_SUCCESS
-  result: any
-} & ReadModelAction
+  type: typeof QUERY_READMODEL_SUCCESS;
+  result: any;
+} & ReadModelAction;
 export const queryReadModelSuccess = (
   query: ReadModelQuery,
   result: any,
@@ -41,12 +41,12 @@ export const queryReadModelSuccess = (
   type: QUERY_READMODEL_SUCCESS,
   query,
   result,
-  selectorId
-})
+  selectorId,
+});
 export type QueryReadModelFailureAction = {
-  type: typeof QUERY_READMODEL_FAILURE
-  error: Error
-} & ReadModelAction
+  type: typeof QUERY_READMODEL_FAILURE;
+  error: Error;
+} & ReadModelAction;
 export const queryReadModelFailure = (
   query: ReadModelQuery,
   error: Error,
@@ -55,40 +55,40 @@ export const queryReadModelFailure = (
   type: QUERY_READMODEL_FAILURE,
   query,
   error,
-  selectorId
-})
+  selectorId,
+});
 
 export type DropReadModelResultAction = {
-  type: typeof DROP_READMODEL_STATE
-} & ReadModelAction
+  type: typeof DROP_READMODEL_STATE;
+} & ReadModelAction;
 export const dropReadModelResult = (
   query: ReadModelQuery,
   selectorId?: string
 ): DropReadModelResultAction => ({
   type: DROP_READMODEL_STATE,
   query,
-  selectorId
-})
+  selectorId,
+});
 
 export type ConnectReadModelAction = {
-  type: typeof CONNECT_READMODEL
-  skipConnectionManager?: boolean
-} & ReadModelAction
+  type: typeof CONNECT_READMODEL;
+  skipConnectionManager?: boolean;
+} & ReadModelAction;
 export const connectReadModel = (
   query: ReadModelQuery,
   skipConnectionManager?: boolean
 ): ConnectReadModelAction => ({
   type: CONNECT_READMODEL,
   query,
-  skipConnectionManager
-})
+  skipConnectionManager,
+});
 
 export type DisconnectReadModelAction = {
-  type: typeof DISCONNECT_READMODEL
-} & ReadModelAction
+  type: typeof DISCONNECT_READMODEL;
+} & ReadModelAction;
 export const disconnectReadModel = (
   query: ReadModelQuery
 ): DisconnectReadModelAction => ({
   type: DISCONNECT_READMODEL,
-  query
-})
+  query,
+});

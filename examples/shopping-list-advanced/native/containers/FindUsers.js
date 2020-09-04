@@ -1,41 +1,41 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { View, StyleSheet } from 'react-native'
-import { Label } from 'native-base'
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { View, StyleSheet } from 'react-native';
+import { Label } from 'native-base';
 
-import * as aggregateActions from '../redux/actions/aggregate-actions'
-import UserList from '../components/UserList'
+import * as aggregateActions from '../redux/actions/aggregate-actions';
+import UserList from '../components/UserList';
 
-import getNativeChunk from '../native-chunk'
+import getNativeChunk from '../native-chunk';
 const {
-  resolveRedux: { connectReadModel }
-} = getNativeChunk()
+  resolveRedux: { connectReadModel },
+} = getNativeChunk();
 
 const styles = StyleSheet.create({
   label: {
     marginTop: 15,
     paddingLeft: 5,
     fontSize: 16,
-    color: '#575757'
-  }
-})
+    color: '#575757',
+  },
+});
 
 class FindUsers extends React.PureComponent {
   shareShoppingListForUser = (userId, username) => {
-    const shoppingListId = this.props.shoppingListId
+    const shoppingListId = this.props.shoppingListId;
 
-    this.props.shareShoppingListForUser(shoppingListId, { userId, username })
-  }
+    this.props.shareShoppingListForUser(shoppingListId, { userId, username });
+  };
 
   unshareShoppingListForUser = (userId, username) => {
-    const shoppingListId = this.props.shoppingListId
+    const shoppingListId = this.props.shoppingListId;
 
-    this.props.unshareShoppingListForUser(shoppingListId, { userId, username })
-  }
+    this.props.unshareShoppingListForUser(shoppingListId, { userId, username });
+  };
 
   render() {
-    const { users } = this.props
+    const { users } = this.props;
 
     return (
       <View>
@@ -53,7 +53,7 @@ class FindUsers extends React.PureComponent {
           onPressButton={this.unshareShoppingListForUser}
         />
       </View>
-    )
+    );
   }
 }
 
@@ -62,17 +62,17 @@ export const mapStateToOptions = (state, { query, shoppingListId }) => ({
   resolverName: 'sharings',
   resolverArgs: {
     query,
-    shoppingListId
-  }
-})
+    shoppingListId,
+  },
+});
 
-export const mapStateToProps = state => ({
-  users: state.optimisticSharings.users
-})
+export const mapStateToProps = (state) => ({
+  users: state.optimisticSharings.users,
+});
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(aggregateActions, dispatch)
+export const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(aggregateActions, dispatch);
 
 export default connectReadModel(mapStateToOptions)(
   connect(mapStateToProps, mapDispatchToProps)(FindUsers)
-)
+);

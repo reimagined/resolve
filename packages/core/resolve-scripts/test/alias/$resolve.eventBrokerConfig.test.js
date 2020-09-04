@@ -1,6 +1,6 @@
-import alias from '../../src/alias/$resolve.eventBrokerConfig'
-import declareRuntimeEnv from '../../src/declare_runtime_env'
-import normalizePaths from './normalize_paths'
+import alias from '../../src/alias/$resolve.eventBrokerConfig';
+import declareRuntimeEnv from '../../src/declare_runtime_env';
+import normalizePaths from './normalize_paths';
 
 test('should fail when imported from client', () => {
   expect(() =>
@@ -8,12 +8,12 @@ test('should fail when imported from client', () => {
       '\r\n' +
         alias({
           resolveConfig: {},
-          isClient: true
+          isClient: true,
         }) +
         '\r\n'
     )
-  ).toThrow()
-})
+  ).toThrow();
+});
 
 test('should fail if "launchBroker" is runtime injection', () => {
   expect(() =>
@@ -27,14 +27,14 @@ test('should fail if "launchBroker" is runtime injection', () => {
               consumerAddress: declareRuntimeEnv('consumerAddress'),
               databaseFile: 'databaseFile',
               batchSize: 100,
-              upstream: true
-            }
-          }
+              upstream: true,
+            },
+          },
         }) +
         '\r\n'
     )
-  ).toThrow()
-})
+  ).toThrow();
+});
 
 test('works correctly', () => {
   expect(
@@ -48,11 +48,11 @@ test('works correctly', () => {
               consumerAddress: declareRuntimeEnv('consumerAddress'),
               databaseFile: declareRuntimeEnv('databaseFile'),
               batchSize: 100,
-              upstream: true
-            }
-          }
+              upstream: true,
+            },
+          },
         }) +
         '\r\n'
     )
-  ).toMatchSnapshot()
-})
+  ).toMatchSnapshot();
+});

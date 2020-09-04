@@ -26,4 +26,4 @@ export default () => `
     }
 
     export default handler
-  `
+  `;

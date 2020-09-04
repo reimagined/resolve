@@ -6,10 +6,10 @@ const pushIncrementalImport = async (
   try {
     const incrementalImportTableAsId = escapeId(
       `${eventsTableName}-incremental-import`
-    )
+    );
     const incrementalImportTableAsString = escape(
       `${eventsTableName}-incremental-import`
-    )
+    );
 
     await database.exec(
       `BEGIN IMMEDIATE;
@@ -29,7 +29,7 @@ const pushIncrementalImport = async (
         "timestamp", "aggregateId", "type", "payload"
       ) VALUES ${events
         .map(
-          event => `(${+event.timestamp}, ${escape(
+          (event) => `(${+event.timestamp}, ${escape(
             event.aggregateId
           )}, ${escape(event.type)}, 
       ${
@@ -42,21 +42,21 @@ const pushIncrementalImport = async (
     
     COMMIT;
       `
-    )
+    );
   } catch (error) {
     try {
-      await database.exec(`ROLLBACK;`)
+      await database.exec(`ROLLBACK;`);
     } catch (e) {}
     if (
       error != null &&
       (error.message === 'SQLITE_ERROR: integer overflow' ||
         /^SQLITE_ERROR:.*? not exists$/.test(error.message))
     ) {
-      throw new Error(`Incremental importId=${importId} does not exist`)
+      throw new Error(`Incremental importId=${importId} does not exist`);
     } else {
-      throw error
+      throw error;
     }
   }
-}
+};
 
-export default pushIncrementalImport
+export default pushIncrementalImport;

@@ -1,45 +1,45 @@
 import {
   EventstoreResourceAlreadyExistError,
-  EventstoreResourceNotExistError
-} from 'resolve-eventstore-base'
+  EventstoreResourceNotExistError,
+} from 'resolve-eventstore-base';
 import {
   PublisherResourceAlreadyExistError,
-  PublisherResourceNotExistError
-} from 'resolve-local-event-broker'
+  PublisherResourceNotExistError,
+} from 'resolve-local-event-broker';
 
-import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
+import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types';
 
-const resetDomainHandler = options => async (req, res) => {
+const resetDomainHandler = (options) => async (req, res) => {
   const {
     eventstoreAdapter,
     eventBus,
     publisher,
     readModels,
     schedulers,
-    sagas
-  } = req.resolve
+    sagas,
+  } = req.resolve;
 
   try {
-    const { dropEventStore, dropEventBus, dropReadModels, dropSagas } = options
+    const { dropEventStore, dropEventBus, dropReadModels, dropSagas } = options;
 
     if (dropEventStore) {
       await invokeFilterErrorTypes(
         eventstoreAdapter.drop.bind(eventstoreAdapter),
         [EventstoreResourceNotExistError]
-      )
+      );
       await invokeFilterErrorTypes(
         eventstoreAdapter.init.bind(eventstoreAdapter),
         [EventstoreResourceAlreadyExistError]
-      )
+      );
     }
 
-    const dropReadModelsSagasErrors = []
+    const dropReadModelsSagasErrors = [];
     if (dropReadModels) {
       for (const { name } of readModels) {
         try {
-          await eventBus.reset({ eventSubscriber: name })
+          await eventBus.reset({ eventSubscriber: name });
         } catch (error) {
-          dropReadModelsSagasErrors.push(error)
+          dropReadModelsSagasErrors.push(error);
         }
       }
     }
@@ -47,9 +47,9 @@ const resetDomainHandler = options => async (req, res) => {
     if (dropSagas) {
       for (const { name } of [...sagas, ...schedulers]) {
         try {
-          await eventBus.reset({ eventSubscriber: name })
+          await eventBus.reset({ eventSubscriber: name });
         } catch (error) {
-          dropReadModelsSagasErrors.push(error)
+          dropReadModelsSagasErrors.push(error);
         }
       }
     }
@@ -57,33 +57,33 @@ const resetDomainHandler = options => async (req, res) => {
     if (dropEventBus) {
       // eslint-disable-next-line no-console
       console.warn(
-        dropReadModelsSagasErrors.map(error => error.message).join('\n')
-      )
+        dropReadModelsSagasErrors.map((error) => error.message).join('\n')
+      );
       await invokeFilterErrorTypes(publisher.drop.bind(publisher), [
-        PublisherResourceNotExistError
-      ])
+        PublisherResourceNotExistError,
+      ]);
       await invokeFilterErrorTypes(publisher.init.bind(publisher), [
-        PublisherResourceAlreadyExistError
-      ])
+        PublisherResourceAlreadyExistError,
+      ]);
     } else {
       if (dropReadModelsSagasErrors.length) {
         const compositeError = new Error(
-          dropReadModelsSagasErrors.map(error => error.message).join('\n')
-        )
+          dropReadModelsSagasErrors.map((error) => error.message).join('\n')
+        );
         compositeError.stack = dropReadModelsSagasErrors
-          .map(error => error.stack)
-          .join('\n')
-        throw compositeError
+          .map((error) => error.stack)
+          .join('\n');
+        throw compositeError;
       }
     }
 
-    res.end('ok')
+    res.end('ok');
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error(error)
-    res.status(500)
-    res.end(String(error))
+    console.error(error);
+    res.status(500);
+    res.end(String(error));
   }
-}
+};
 
-export default resetDomainHandler
+export default resetDomainHandler;

@@ -1,9 +1,9 @@
-import getLog from './get-log'
+import getLog from './get-log';
 
 const connectEventStore = async (pool, { MySQL }) => {
-  const log = getLog(`connectEventStore`)
+  const log = getLog(`connectEventStore`);
 
-  log.debug('connecting to events store database')
+  log.debug('connecting to events store database');
 
   const {
     eventsTableName = 'events',
@@ -12,40 +12,40 @@ const connectEventStore = async (pool, { MySQL }) => {
     snapshotBucketSize,
     database,
     ...connectionOptions
-  } = pool.config
+  } = pool.config;
 
-  log.verbose(`eventsTableName: ${eventsTableName}`)
-  log.verbose(`snapshotsTableName: ${snapshotsTableName}`)
-  log.verbose(`database: ${database}`)
+  log.verbose(`eventsTableName: ${eventsTableName}`);
+  log.verbose(`snapshotsTableName: ${snapshotsTableName}`);
+  log.verbose(`database: ${database}`);
 
-  log.debug(`establishing connection`)
+  log.debug(`establishing connection`);
 
-  void (secretsTableName, snapshotBucketSize)
+  void (secretsTableName, snapshotBucketSize);
 
   const connection = await MySQL.createConnection({
     ...connectionOptions,
     database,
-    multipleStatements: true
-  })
+    multipleStatements: true,
+  });
 
   const [[{ version }]] = await connection.query(
     `SELECT version() AS \`version\``
-  )
-  const major = +version.split('.')[0]
+  );
+  const major = +version.split('.')[0];
   if (isNaN(major) || major < 8) {
-    throw new Error(`Supported MySQL version 8+, but got ${version}`)
+    throw new Error(`Supported MySQL version 8+, but got ${version}`);
   }
 
-  log.debug(`connected successfully`)
+  log.debug(`connected successfully`);
 
   Object.assign(pool, {
     events: {
       connection,
       eventsTableName,
       snapshotsTableName,
-      database
-    }
-  })
-}
+      database,
+    },
+  });
+};
 
-export default connectEventStore
+export default connectEventStore;

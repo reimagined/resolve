@@ -1,7 +1,7 @@
-import { injectRuntimeEnv } from '../declare_runtime_env'
+import { injectRuntimeEnv } from '../declare_runtime_env';
 
 export default ({ resolveConfig, isClient }) => {
-  const exports = []
+  const exports = [];
 
   if (resolveConfig.hasOwnProperty('uploadAdapter')) {
     if (resolveConfig.uploadAdapter.module === 'resolve-upload-local') {
@@ -11,9 +11,9 @@ export default ({ resolveConfig, isClient }) => {
       }`,
         ``,
         `export default localS3Constants`
-      )
+      );
     } else {
-      const { CDN, deploymentId } = resolveConfig.uploadAdapter.options
+      const { CDN, deploymentId } = resolveConfig.uploadAdapter.options;
       exports.push(
         `const CDN = ${injectRuntimeEnv(CDN, isClient)}
         const deploymentId = ${injectRuntimeEnv(deploymentId, isClient)}
@@ -23,9 +23,9 @@ export default ({ resolveConfig, isClient }) => {
       }`,
         ``,
         `export default localS3Constants`
-      )
+      );
     }
   }
 
-  return exports.join('\r\n')
-}
+  return exports.join('\r\n');
+};

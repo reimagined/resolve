@@ -3,17 +3,17 @@ const resetReadModel = async (
   connectorOptions,
   readModelName
 ) => {
-  const adapter = createConnector(connectorOptions)
+  const adapter = createConnector(connectorOptions);
   try {
-    const connection = await adapter.connect(readModelName)
-    await adapter.drop(connection, readModelName)
-    await adapter.disconnect(connection, readModelName)
+    const connection = await adapter.connect(readModelName);
+    await adapter.drop(connection, readModelName);
+    await adapter.disconnect(connection, readModelName);
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.warn(error)
+    console.warn(error);
   } finally {
-    await adapter.dispose()
+    await adapter.dispose();
   }
-}
+};
 
-export default resetReadModel
+export default resetReadModel;

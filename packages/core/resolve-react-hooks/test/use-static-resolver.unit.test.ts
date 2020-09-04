@@ -1,76 +1,79 @@
-import { useCallback } from 'react'
-import { mocked } from 'ts-jest/utils'
-import { useClient } from '../src/use-client'
-import { StaticResolver, useStaticResolver } from '../src/use-static-resolver'
+import { useCallback } from 'react';
+import { mocked } from 'ts-jest/utils';
+import { useClient } from '../src/use-client';
+import { StaticResolver, useStaticResolver } from '../src/use-static-resolver';
 
-jest.mock('resolve-client')
+jest.mock('resolve-client');
 jest.mock('react', () => ({
-  useCallback: jest.fn(cb => cb)
-}))
+  useCallback: jest.fn((cb) => cb),
+}));
 jest.mock('../src/use-client', () => ({
-  useClient: jest.fn()
-}))
+  useClient: jest.fn(),
+}));
 
-const mockedUseClient = mocked(useClient)
-const mockedUseCallback = mocked(useCallback)
+const mockedUseClient = mocked(useClient);
+const mockedUseCallback = mocked(useCallback);
 
 const mockedClient = {
   command: jest.fn(),
   query: jest.fn(),
-  getStaticAssetUrl: jest.fn(asset => `static_${asset}`),
+  getStaticAssetUrl: jest.fn((asset) => `static_${asset}`),
   subscribe: jest.fn(),
-  unsubscribe: jest.fn()
-}
+  unsubscribe: jest.fn(),
+};
 
 const clearMocks = (): void => {
-  mockedUseClient.mockClear()
+  mockedUseClient.mockClear();
 
-  mockedUseCallback.mockClear()
+  mockedUseCallback.mockClear();
 
-  mockedClient.getStaticAssetUrl.mockClear()
-}
+  mockedClient.getStaticAssetUrl.mockClear();
+};
 
 beforeAll(() => {
-  mockedUseClient.mockReturnValue(mockedClient)
-})
+  mockedUseClient.mockReturnValue(mockedClient);
+});
 
 afterEach(() => {
-  clearMocks()
-})
+  clearMocks();
+});
 
 test('useClient hook called', () => {
-  useStaticResolver()
+  useStaticResolver();
 
-  expect(mockedUseClient).toHaveBeenCalled()
-})
+  expect(mockedUseClient).toHaveBeenCalled();
+});
 
 test('cached resolver returned', () => {
-  const resolver = useStaticResolver()
+  const resolver = useStaticResolver();
 
-  expect(resolver).toBeInstanceOf(Function)
-  expect(mockedUseCallback).toHaveBeenCalledWith(resolver, [mockedClient])
-})
+  expect(resolver).toBeInstanceOf(Function);
+  expect(mockedUseCallback).toHaveBeenCalledWith(resolver, [mockedClient]);
+});
 
 describe('resolver tests', () => {
-  let resolver: StaticResolver
+  let resolver: StaticResolver;
 
   beforeEach(() => {
-    resolver = useStaticResolver()
-  })
+    resolver = useStaticResolver();
+  });
 
   test('single asset as string', () => {
-    expect(resolver('asset')).toEqual('static_asset')
-    expect(mockedClient.getStaticAssetUrl).toHaveBeenCalledWith('asset')
-  })
+    expect(resolver('asset')).toEqual('static_asset');
+    expect(mockedClient.getStaticAssetUrl).toHaveBeenCalledWith('asset');
+  });
 
   test('single asset as array', () => {
-    expect(resolver(['asset'])).toEqual(['static_asset'])
-    expect(mockedClient.getStaticAssetUrl).toHaveBeenCalledWith('asset')
-  })
+    expect(resolver(['asset'])).toEqual(['static_asset']);
+    expect(mockedClient.getStaticAssetUrl).toHaveBeenCalledWith('asset');
+  });
 
   test('multiple assets as array', () => {
-    expect(resolver(['image', 'icon'])).toEqual(['static_image', 'static_icon'])
-    expect(mockedClient.getStaticAssetUrl).toHaveBeenCalledWith('image')
-    expect(mockedClient.getStaticAssetUrl).toHaveBeenCalledWith('icon')
-  })
-})
+    expect(resolver(['image', 'icon'])).toEqual([
+      'static_image',
+      'static_icon',
+    ]);
+    expect(mockedClient.getStaticAssetUrl).toHaveBeenCalledWith('image');
+    expect(mockedClient.getStaticAssetUrl).toHaveBeenCalledWith('icon');
+  });
+});

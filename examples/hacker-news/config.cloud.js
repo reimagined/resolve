@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from 'resolve-scripts';
 
 export default {
   target: 'cloud',
@@ -13,17 +13,17 @@ export default {
       eventsTableName: declareRuntimeEnv('RESOLVE_ES_EVENTS_TABLE'),
       secretsTableName: declareRuntimeEnv('RESOLVE_ES_SECRETS_TABLE'),
       region: declareRuntimeEnv('AWS_REGION'),
-      snapshotBucketSize: 100
-    }
+      snapshotBucketSize: 100,
+    },
   },
   schedulers: {
     scheduler: {
       adapter: {
         module: 'resolve-scheduler-cloud',
-        options: {}
+        options: {},
       },
-      connectorName: 'default'
-    }
+      connectorName: 'default',
+    },
   },
   readModelConnectors: {
     default: {
@@ -34,8 +34,8 @@ export default {
         ),
         awsSecretStoreArn: declareRuntimeEnv('RESOLVE_READMODEL_SECRET_ARN'),
         databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
-        region: declareRuntimeEnv('AWS_REGION')
-      }
+        region: declareRuntimeEnv('AWS_REGION'),
+      },
     },
     hackerNews: {
       module: 'resolve-readmodel-postgresql-serverless',
@@ -45,8 +45,8 @@ export default {
         ),
         awsSecretStoreArn: declareRuntimeEnv('RESOLVE_READMODEL_SECRET_ARN'),
         databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
-        region: declareRuntimeEnv('AWS_REGION')
-      }
+        region: declareRuntimeEnv('AWS_REGION'),
+      },
     },
     comments: {
       module: 'resolve-readmodel-postgresql-serverless',
@@ -56,8 +56,8 @@ export default {
         ),
         awsSecretStoreArn: declareRuntimeEnv('RESOLVE_READMODEL_SECRET_ARN'),
         databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
-        region: declareRuntimeEnv('AWS_REGION')
-      }
+        region: declareRuntimeEnv('AWS_REGION'),
+      },
     },
     elasticSearch: {
       module: 'common/read-models/elastic-search-connector.js',
@@ -69,7 +69,7 @@ export default {
           password: 'pass'
         }
         */
-      }
-    }
-  }
-}
+      },
+    },
+  },
+};

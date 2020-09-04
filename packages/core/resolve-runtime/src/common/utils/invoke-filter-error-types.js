@@ -4,28 +4,28 @@ const invokeFilterErrorTypes = async (
   ...args
 ) => {
   if (!Array.isArray(whiteListErrors) || typeof targetFunction !== 'function') {
-    throw new Error('InvokeFilterErrorTypes failed')
+    throw new Error('InvokeFilterErrorTypes failed');
   }
-  let result = null
+  let result = null;
   try {
-    result = await targetFunction(...args)
+    result = await targetFunction(...args);
   } catch (error) {
-    let isFatal = true
+    let isFatal = true;
     for (const ErrorConstructor of whiteListErrors) {
       if (error instanceof ErrorConstructor) {
-        isFatal = false
-        break
+        isFatal = false;
+        break;
       }
     }
 
     if (isFatal) {
-      throw error
+      throw error;
     } else {
-      result = error
+      result = error;
     }
   }
 
-  return result
-}
+  return result;
+};
 
-export default invokeFilterErrorTypes
+export default invokeFilterErrorTypes;

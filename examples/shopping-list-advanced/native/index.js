@@ -1,54 +1,54 @@
-import { AppLoading, registerRootComponent } from 'expo'
-import * as Font from 'expo-font'
-import React from 'react'
-import { ActionSheetProvider } from '@expo/react-native-action-sheet'
-import { Ionicons } from '@expo/vector-icons'
-import { createDrawerNavigator } from '@react-navigation/drawer'
-import { NavigationContainer } from '@react-navigation/native'
+import { AppLoading, registerRootComponent } from 'expo';
+import * as Font from 'expo-font';
+import React from 'react';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
+import { Ionicons } from '@expo/vector-icons';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
 
-import getNativeChunk from './native-chunk'
-import origin from './constants/origin'
-import getStore from './redux/store'
+import getNativeChunk from './native-chunk';
+import origin from './constants/origin';
+import getStore from './redux/store';
 
-import SideBar from './containers/SideBar'
-import MyLists from './containers/MyLists'
-import ShoppingList from './containers/ShoppingList'
-import Settings from './containers/Settings'
-import Login from './containers/Login'
-import ShareForm from './containers/ShareForm'
+import SideBar from './containers/SideBar';
+import MyLists from './containers/MyLists';
+import ShoppingList from './containers/ShoppingList';
+import Settings from './containers/Settings';
+import Login from './containers/Login';
+import ShareForm from './containers/ShareForm';
 
 const {
   rootPath,
   staticPath,
-  resolveRedux: { Providers }
-} = getNativeChunk()
+  resolveRedux: { Providers },
+} = getNativeChunk();
 
-const Drawer = createDrawerNavigator()
+const Drawer = createDrawerNavigator();
 
-const store = getStore()
+const store = getStore();
 
 class AppContainer extends React.PureComponent {
   state = {
-    isReady: false
-  }
+    isReady: false,
+  };
 
   async componentDidMount() {
     await Font.loadAsync({
       Roboto: require('native-base/Fonts/Roboto.ttf'),
       Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
-      ...Ionicons.font
-    })
+      ...Ionicons.font,
+    });
 
     this.setState({
-      isReady: true
-    })
+      isReady: true,
+    });
   }
 
-  getDrawerContent = props => <SideBar {...props} />
+  getDrawerContent = (props) => <SideBar {...props} />;
 
   render() {
     if (!this.state.isReady) {
-      return <AppLoading />
+      return <AppLoading />;
     }
 
     return (
@@ -80,8 +80,8 @@ class AppContainer extends React.PureComponent {
           </Providers>
         </ActionSheetProvider>
       </Providers>
-    )
+    );
   }
 }
 
-registerRootComponent(AppContainer)
+registerRootComponent(AppContainer);

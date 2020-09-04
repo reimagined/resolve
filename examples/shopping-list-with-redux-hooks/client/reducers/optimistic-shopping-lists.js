@@ -1,8 +1,8 @@
 import {
   SHOPPING_LISTS_ACQUIRED,
   SHOPPING_LIST_CREATED,
-  SHOPPING_LIST_REMOVED
-} from '../actions/optimistic-actions'
+  SHOPPING_LIST_REMOVED,
+} from '../actions/optimistic-actions';
 
 const optimisticShoppingLists = (state = [], action) => {
   switch (action.type) {
@@ -11,22 +11,22 @@ const optimisticShoppingLists = (state = [], action) => {
         ...state,
         {
           id: action.payload.id,
-          name: action.payload.name
-        }
-      ]
+          name: action.payload.name,
+        },
+      ];
     }
     case SHOPPING_LIST_REMOVED: {
-      return state.filter(item => {
-        return item.id !== action.payload.id
-      })
+      return state.filter((item) => {
+        return item.id !== action.payload.id;
+      });
     }
     case SHOPPING_LISTS_ACQUIRED: {
-      return action.payload.lists
+      return action.payload.lists;
     }
     default: {
-      return state
+      return state;
     }
   }
-}
+};
 
-export default optimisticShoppingLists
+export default optimisticShoppingLists;

@@ -1,16 +1,16 @@
-const result: any = []
+const result: any = [];
 const connection = {
   execute: jest.fn(),
   query: jest.fn(),
-  end: jest.fn()
-}
+  end: jest.fn(),
+};
 
-const promised = (result?: any): Function => jest.fn().mockReturnValue(result)
+const promised = (result?: any): Function => jest.fn().mockReturnValue(result);
 
 const MySQL = {
-  createConnection: promised(connection)
-}
+  createConnection: promised(connection),
+};
 
-export default MySQL
+export default MySQL;
 
-export { connection, result }
+export { connection, result };

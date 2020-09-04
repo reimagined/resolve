@@ -1,5 +1,5 @@
 const rollbackTransaction = async ({ runRawQuery }) => {
-  await runRawQuery(`ROLLBACK;`)
-}
+  await runRawQuery(`ROLLBACK;`);
+};
 
-export default rollbackTransaction
+export default rollbackTransaction;

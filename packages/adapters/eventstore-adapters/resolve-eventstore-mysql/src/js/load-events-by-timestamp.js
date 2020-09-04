@@ -1,33 +1,33 @@
-import { throwBadCursor } from 'resolve-eventstore-base'
+import { throwBadCursor } from 'resolve-eventstore-base';
 
 const loadEventsByTimestamp = async (
   { events: { connection, eventsTableName }, escapeId, escape, shapeEvent },
   { eventTypes, aggregateIds, startTime, finishTime, limit }
 ) => {
-  const injectString = value => `${escape(value)}`
-  const injectNumber = value => `${+value}`
+  const injectString = (value) => `${escape(value)}`;
+  const injectNumber = (value) => `${+value}`;
 
-  const queryConditions = []
-  const events = []
+  const queryConditions = [];
+  const events = [];
   if (eventTypes != null) {
-    queryConditions.push(`\`type\` IN (${eventTypes.map(injectString)})`)
+    queryConditions.push(`\`type\` IN (${eventTypes.map(injectString)})`);
   }
   if (aggregateIds != null) {
     queryConditions.push(
       `\`aggregateId\` IN (${aggregateIds.map(injectString)})`
-    )
+    );
   }
   if (startTime != null) {
-    queryConditions.push(`\`timestamp\` > ${injectNumber(startTime)}`)
+    queryConditions.push(`\`timestamp\` > ${injectNumber(startTime)}`);
   }
   if (finishTime != null) {
-    queryConditions.push(`\`timestamp\` < ${injectNumber(finishTime)}`)
+    queryConditions.push(`\`timestamp\` < ${injectNumber(finishTime)}`);
   }
 
   const resultQueryCondition =
-    queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
+    queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : '';
 
-  const eventsTableNameAsId = escapeId(eventsTableName)
+  const eventsTableNameAsId = escapeId(eventsTableName);
 
   const [rows] = await connection.query(
     `SELECT * FROM ${eventsTableNameAsId}
@@ -36,18 +36,18 @@ const loadEventsByTimestamp = async (
     \`threadCounter\` ASC,
     \`threadId\` ASC
     LIMIT 0, ${+limit}`
-  )
+  );
 
   for (const event of rows) {
-    events.push(shapeEvent(event))
+    events.push(shapeEvent(event));
   }
 
   return {
     get cursor() {
-      return throwBadCursor()
+      return throwBadCursor();
     },
-    events
-  }
-}
+    events,
+  };
+};
 
-export default loadEventsByTimestamp
+export default loadEventsByTimestamp;

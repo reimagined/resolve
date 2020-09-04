@@ -1,6 +1,6 @@
-process.env.TZ = 'Europe/Moscow'
+process.env.TZ = 'Europe/Moscow';
 
-const path = require('path')
+const path = require('path');
 
 module.exports = {
   rootDir: process.cwd(),
@@ -8,8 +8,8 @@ module.exports = {
   preset: 'jest-expo',
   setupFiles: ['raf/polyfill', '<rootDir>/jest-setup.js'],
   transform: {
-    '^.+\\.js$': path.resolve(__dirname, 'jest.transform.js')
+    '^.+\\.js$': path.resolve(__dirname, 'jest.transform.js'),
   },
   snapshotSerializers: ['enzyme-to-json/serializer'],
-  testMatch: ['**/?(*.)+(spec|test).js?(x)']
-}
+  testMatch: ['**/?(*.)+(spec|test).js?(x)'],
+};

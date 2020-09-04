@@ -2,29 +2,29 @@ import {
   message,
   RESOURCE_ANY,
   RUNTIME_ENV_NOWHERE,
-  IMPORT_INSTANCE
-} from '../constants'
-import { checkRuntimeEnv } from '../declare_runtime_env'
-import importResource from '../import_resource'
+  IMPORT_INSTANCE,
+} from '../constants';
+import { checkRuntimeEnv } from '../declare_runtime_env';
+import importResource from '../import_resource';
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
       `${message.serverAliasInClientCodeError}$resolve.aggregates`
-    )
+    );
   }
 
-  const imports = [`import '$resolve.guardOnlyServer'`]
-  const constants = []
-  const exports = [``, `const aggregates = []`, ``]
+  const imports = [`import '$resolve.guardOnlyServer'`];
+  const constants = [];
+  const exports = [``, `const aggregates = []`, ``];
 
   for (let index = 0; index < resolveConfig.aggregates.length; index++) {
-    const aggregate = resolveConfig.aggregates[index]
+    const aggregate = resolveConfig.aggregates[index];
 
     if (checkRuntimeEnv(aggregate.name)) {
-      throw new Error(`${message.clientEnvError}.aggregates[${index}].name`)
+      throw new Error(`${message.clientEnvError}.aggregates[${index}].name`);
     }
-    constants.push(`const name_${index} = ${JSON.stringify(aggregate.name)}`)
+    constants.push(`const name_${index} = ${JSON.stringify(aggregate.name)}`);
 
     importResource({
       resourceName: `commands_${index}`,
@@ -33,12 +33,12 @@ export default ({ resolveConfig, isClient }) => {
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
       imports,
-      constants
-    })
+      constants,
+    });
 
-    exports.push(`aggregates.push({`)
-    exports.push(`  name: name_${index}`)
-    exports.push(`, commands: commands_${index}`)
+    exports.push(`aggregates.push({`);
+    exports.push(`  name: name_${index}`);
+    exports.push(`, commands: commands_${index}`);
 
     importResource({
       resourceName: `serializeState_${index}`,
@@ -49,10 +49,10 @@ export default ({ resolveConfig, isClient }) => {
       instanceFallback:
         'resolve-runtime/lib/common/defaults/json-serialize-state.js',
       imports,
-      constants
-    })
+      constants,
+    });
 
-    exports.push(`, serializeState: serializeState_${index}`)
+    exports.push(`, serializeState: serializeState_${index}`);
 
     importResource({
       resourceName: `deserializeState_${index}`,
@@ -63,10 +63,10 @@ export default ({ resolveConfig, isClient }) => {
       instanceFallback:
         'resolve-runtime/lib/common/defaults/json-deserialize-state.js',
       imports,
-      constants
-    })
+      constants,
+    });
 
-    exports.push(`, deserializeState: deserializeState_${index}`)
+    exports.push(`, deserializeState: deserializeState_${index}`);
 
     if (aggregate.projection != null) {
       importResource({
@@ -77,11 +77,11 @@ export default ({ resolveConfig, isClient }) => {
         instanceMode: IMPORT_INSTANCE,
         calculateHash: 'resolve-aggregate-projection-hash',
         imports,
-        constants
-      })
+        constants,
+      });
 
-      exports.push(`, projection: projection_${index}`)
-      exports.push(`, invariantHash: projection_${index}_hash`)
+      exports.push(`, projection: projection_${index}`);
+      exports.push(`, invariantHash: projection_${index}_hash`);
     }
 
     importResource({
@@ -92,15 +92,15 @@ export default ({ resolveConfig, isClient }) => {
       instanceMode: IMPORT_INSTANCE,
       instanceFallback: 'resolve-runtime/lib/common/defaults/encryption.js',
       imports,
-      constants
-    })
+      constants,
+    });
 
-    exports.push(`, encryption: encryption_${index}`)
+    exports.push(`, encryption: encryption_${index}`);
 
-    exports.push(`})`, ``)
+    exports.push(`})`, ``);
   }
 
-  exports.push(`export default aggregates`)
+  exports.push(`export default aggregates`);
 
-  return [...imports, ...constants, ...exports].join('\r\n')
-}
+  return [...imports, ...constants, ...exports].join('\r\n');
+};

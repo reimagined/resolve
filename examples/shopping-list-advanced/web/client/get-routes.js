@@ -1,9 +1,9 @@
-import App from './containers/App'
-import ShoppingList from './containers/ShoppingList'
-import MyLists from './containers/MyLists'
-import ShareForm from './containers/ShareForm'
-import Settings from './containers/Settings'
-import Login from './containers/Login'
+import App from './containers/App';
+import ShoppingList from './containers/ShoppingList';
+import MyLists from './containers/MyLists';
+import ShareForm from './containers/ShareForm';
+import Settings from './containers/Settings';
+import Login from './containers/Login';
 
 const routes = [
   {
@@ -12,31 +12,31 @@ const routes = [
       {
         path: '/login',
         component: Login,
-        exact: true
+        exact: true,
       },
       {
         path: '/',
         component: MyLists,
-        exact: true
+        exact: true,
       },
       {
         path: '/settings',
         component: Settings,
-        exact: true
+        exact: true,
       },
       {
         path: '/share/:id',
         component: ShareForm,
-        exact: true
+        exact: true,
       },
       {
         path: '/:id',
-        component: ShoppingList
-      }
-    ]
-  }
-]
+        component: ShoppingList,
+      },
+    ],
+  },
+];
 
-const getRoutes = () => routes
+const getRoutes = () => routes;
 
-export default getRoutes
+export default getRoutes;

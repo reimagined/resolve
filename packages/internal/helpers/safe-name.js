@@ -1,3 +1,4 @@
-const safeName = name => `${name.replace(/@/, '').replace(/[/|\\]/g, '-')}.tgz`
+const safeName = (name) =>
+  `${name.replace(/@/, '').replace(/[/|\\]/g, '-')}.tgz`;
 
-module.exports = { safeName }
+module.exports = { safeName };

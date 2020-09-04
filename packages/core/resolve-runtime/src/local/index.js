@@ -1,19 +1,19 @@
-import 'source-map-support/register'
-import debugLevels from 'resolve-debug-levels'
+import 'source-map-support/register';
+import debugLevels from 'resolve-debug-levels';
 
-import initBroker from './init-broker'
-import initPerformanceTracer from './init-performance-tracer'
-import initExpress from './init-express'
-import initWebsockets from './init-websockets'
-import startExpress from './start-express'
-import emptyWorker from './empty-worker'
-import wrapTrie from '../common/wrap-trie'
-import initUploader from './init-uploader'
-import multiplexAsync from '../common/utils/multiplex-async'
-import initResolve from '../common/init-resolve'
-import disposeResolve from '../common/dispose-resolve'
+import initBroker from './init-broker';
+import initPerformanceTracer from './init-performance-tracer';
+import initExpress from './init-express';
+import initWebsockets from './init-websockets';
+import startExpress from './start-express';
+import emptyWorker from './empty-worker';
+import wrapTrie from '../common/wrap-trie';
+import initUploader from './init-uploader';
+import multiplexAsync from '../common/utils/multiplex-async';
+import initResolve from '../common/init-resolve';
+import disposeResolve from '../common/dispose-resolve';
 
-const log = debugLevels('resolve:resolve-runtime:local-entry')
+const log = debugLevels('resolve:resolve-runtime:local-entry');
 
 const localEntry = async ({ assemblies, constants, domain }) => {
   try {
@@ -24,54 +24,54 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       ...domain,
       ...constants,
       routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
-      assemblies
-    }
+      assemblies,
+    };
 
-    await initPerformanceTracer(resolve)
-    await initBroker(resolve)
-    await initExpress(resolve)
-    await initWebsockets(resolve)
-    await initUploader(resolve)
+    await initPerformanceTracer(resolve);
+    await initBroker(resolve);
+    await initExpress(resolve);
+    await initWebsockets(resolve);
+    await initUploader(resolve);
 
     resolve.invokeEventBusAsync = multiplexAsync.bind(
       null,
       async (eventSubscriber, method, parameters) => {
-        const currentResolve = Object.create(resolve)
+        const currentResolve = Object.create(resolve);
         try {
-          await initResolve(currentResolve)
-          const rawMethod = currentResolve.eventBus[method]
+          await initResolve(currentResolve);
+          const rawMethod = currentResolve.eventBus[method];
           if (typeof rawMethod !== 'function') {
-            throw new TypeError(method)
+            throw new TypeError(method);
           }
 
           const result = await rawMethod.call(currentResolve.eventBus, {
             eventSubscriber,
-            ...parameters
-          })
+            ...parameters,
+          });
 
-          return result
+          return result;
         } finally {
-          await disposeResolve(currentResolve)
+          await disposeResolve(currentResolve);
         }
       }
-    )
+    );
 
-    resolve.sendReactiveEvent = async event => {
+    resolve.sendReactiveEvent = async (event) => {
       await resolve.pubsubManager.dispatch({
         topicName: event.type,
         topicId: event.aggregateId,
-        event
-      })
-    }
+        event,
+      });
+    };
 
-    await startExpress(resolve)
+    await startExpress(resolve);
 
-    log.debug('Local entry point cold start success')
+    log.debug('Local entry point cold start success');
 
-    return emptyWorker
+    return emptyWorker;
   } catch (error) {
-    log.error('Local entry point cold start failure', error)
+    log.error('Local entry point cold start failure', error);
   }
-}
+};
 
-export default localEntry
+export default localEntry;

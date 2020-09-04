@@ -1,7 +1,7 @@
-import React from 'react'
-import { Input, Label } from 'reactstrap'
+import React from 'react';
+import { Input, Label } from 'reactstrap';
 
-import Form from '../containers/Form'
+import Form from '../containers/Form';
 
 const AuthForm = ({ title, action, buttonText }) => (
   <div style={{ maxWidth: '500px', padding: '10px' }}>
@@ -18,6 +18,6 @@ const AuthForm = ({ title, action, buttonText }) => (
     </Form>
     <br />
   </div>
-)
+);
 
-export default AuthForm
+export default AuthForm;

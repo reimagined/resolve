@@ -1,4 +1,4 @@
-import { STORY_CREATED, USER_CREATED } from '../event-types'
+import { STORY_CREATED, USER_CREATED } from '../event-types';
 
 export default {
   [STORY_CREATED]: async (es, { aggregateId, payload: { title, text } }) => {
@@ -9,9 +9,9 @@ export default {
         body: {
           type: 'story',
           aggregateId,
-          text: `${title} ${text}`
-        }
-      })
+          text: `${title} ${text}`,
+        },
+      });
     }
   },
 
@@ -23,9 +23,9 @@ export default {
         body: {
           aggregateId,
           type: 'user',
-          text: name
-        }
-      })
+          text: name,
+        },
+      });
     }
   },
   /* from module "resolve-module-comments" */
@@ -35,8 +35,8 @@ export default {
       aggregateId,
       payload: {
         commentId,
-        content: { text }
-      }
+        content: { text },
+      },
     }
   ) => {
     if (es) {
@@ -46,9 +46,9 @@ export default {
         body: {
           aggregateId,
           type: 'comment',
-          text
-        }
-      })
+          text,
+        },
+      });
     }
   },
 
@@ -56,8 +56,8 @@ export default {
     if (es) {
       await es.delete({
         index: 'primary',
-        id: commentId
-      })
+        id: commentId,
+      });
     }
-  }
-}
+  },
+};

@@ -1,16 +1,16 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { connectReadModel } from 'resolve-redux'
+import React from 'react';
+import { connect } from 'react-redux';
+import { connectReadModel } from 'resolve-redux';
 
 export class CommentCountUpdater extends React.PureComponent {
   componentDidUpdate(prevProps) {
     if (this.props.commentCount != null && prevProps.commentCount == null) {
-      this.props.updateCommentCount(this.props.commentCount)
+      this.props.updateCommentCount(this.props.commentCount);
     }
   }
 
   render() {
-    return null
+    return null;
   }
 }
 
@@ -24,14 +24,14 @@ export const mapStateToOptions = (
     authorId,
     treeId,
     parentCommentId,
-    timestamp
-  }
-})
+    timestamp,
+  },
+});
 
 export const mapStateToProps = (state, { data }) => ({
-  commentCount: data
-})
+  commentCount: data,
+});
 
 export default connectReadModel(mapStateToOptions)(
   connect(mapStateToProps)(CommentCountUpdater)
-)
+);

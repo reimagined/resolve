@@ -1,24 +1,24 @@
-const treeId = 'tree-id'
+const treeId = 'tree-id';
 
 const resolvers = {
-  getComments: async store => {
+  getComments: async (store) => {
     const { comments: commentsMap } = await store.findOne('CommentsAsMap', {
-      treeId
-    })
+      treeId,
+    });
 
     const {
       comments: commentsList,
-      commentsCount: commentsListLength
+      commentsCount: commentsListLength,
     } = await store.findOne('CommentsAsList', {
-      treeId
-    })
+      treeId,
+    });
 
     return {
       commentsMap,
       commentsListLength,
-      commentsList
-    }
-  }
-}
+      commentsList,
+    };
+  },
+};
 
-export default resolvers
+export default resolvers;

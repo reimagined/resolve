@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import {
   useCommand,
   useCommandBuilder,
-  useViewModel
-} from 'resolve-react-hooks'
-import { Redirect } from 'react-router-dom'
+  useViewModel,
+} from 'resolve-react-hooks';
+import { Redirect } from 'react-router-dom';
 
 import {
   Row,
@@ -14,89 +14,89 @@ import {
   InputGroup,
   FormControl,
   FormGroup,
-  ControlLabel
-} from 'react-bootstrap'
+  ControlLabel,
+} from 'react-bootstrap';
 
-import ShoppingListItem from './ShoppingListItem'
-import NotFound from './NotFound'
+import ShoppingListItem from './ShoppingListItem';
+import NotFound from './NotFound';
 
 const ShoppingList = ({
   match: {
-    params: { id: aggregateId }
-  }
+    params: { id: aggregateId },
+  },
 }) => {
   const [shoppingList, setShoppingList] = useState({
     name: '',
     id: null,
-    list: []
-  })
+    list: [],
+  });
   const { connect, dispose } = useViewModel(
     'shoppingList',
     [aggregateId],
     setShoppingList
-  )
-  const [itemText, setItemText] = useState('')
-  const clearItemText = () => setItemText('')
+  );
+  const [itemText, setItemText] = useState('');
+  const clearItemText = () => setItemText('');
 
   const createShoppingItem = useCommandBuilder(
-    text => ({
+    (text) => ({
       type: 'createShoppingItem',
       aggregateId,
       aggregateName: 'ShoppingList',
       payload: {
         text,
-        id: Date.now().toString()
-      }
+        id: Date.now().toString(),
+      },
     }),
     clearItemText
-  )
+  );
 
-  const updateShoppingListName = event => {
-    setShoppingList({ ...shoppingList, name: event.target.value })
-  }
+  const updateShoppingListName = (event) => {
+    setShoppingList({ ...shoppingList, name: event.target.value });
+  };
 
   const renameShoppingList = useCommand({
     type: 'renameShoppingList',
     aggregateId,
     aggregateName: 'ShoppingList',
-    payload: { name: shoppingList ? shoppingList.name : '' }
-  })
+    payload: { name: shoppingList ? shoppingList.name : '' },
+  });
 
   const removeShoppingList = useCommand({
     type: 'removeShoppingList',
     aggregateId,
-    aggregateName: 'ShoppingList'
-  })
+    aggregateName: 'ShoppingList',
+  });
 
-  const updateItemText = event => {
-    setItemText(event.target.value)
-  }
-  const onItemTextPressEnter = event => {
+  const updateItemText = (event) => {
+    setItemText(event.target.value);
+  };
+  const onItemTextPressEnter = (event) => {
     if (event.charCode === 13) {
-      event.preventDefault()
-      createShoppingItem(itemText)
+      event.preventDefault();
+      createShoppingItem(itemText);
     }
-  }
-  const onShoppingListNamePressEnter = event => {
+  };
+  const onShoppingListNamePressEnter = (event) => {
     if (event.charCode === 13) {
-      event.preventDefault()
-      renameShoppingList()
+      event.preventDefault();
+      renameShoppingList();
     }
-  }
+  };
 
   useEffect(() => {
-    connect()
+    connect();
     return () => {
-      dispose()
-    }
-  }, [])
+      dispose();
+    };
+  }, []);
 
   if (shoppingList == null) {
-    return <NotFound />
+    return <NotFound />;
   }
 
   if (shoppingList.removed) {
-    return <Redirect to="/" />
+    return <Redirect to="/" />;
   }
 
   return (
@@ -149,7 +149,7 @@ const ShoppingList = ({
         </Col>
       </Row>
     </div>
-  )
-}
+  );
+};
 
-export default ShoppingList
+export default ShoppingList;

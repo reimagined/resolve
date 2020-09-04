@@ -1,22 +1,22 @@
-import React from 'react'
-import { bindActionCreators } from 'redux'
-import { connectReadModel, sendAggregateAction } from 'resolve-redux'
-import { connect } from 'react-redux'
+import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connectReadModel, sendAggregateAction } from 'resolve-redux';
+import { connect } from 'react-redux';
 
-import * as defaults from '../../common/defaults'
+import * as defaults from '../../common/defaults';
 
 export class CommentsTreeRenderless extends React.PureComponent {
   static defaultProps = {
     children: ({ comments }) => {
       // eslint-disable-next-line
-      console.log('comments:', comments)
-      return null
-    }
-  }
+      console.log('comments:', comments);
+      return null;
+    },
+  };
 
   render() {
-    const { children: Component, comments, ...props } = this.props
-    return <Component {...props} comments={comments} />
+    const { children: Component, comments, ...props } = this.props;
+    return <Component {...props} comments={comments} />;
   }
 }
 
@@ -27,7 +27,7 @@ export const mapStateToOptions = (
     resolverName = defaults.commentsTree,
     treeId,
     parentCommentId,
-    authorId
+    authorId,
   }
 ) => ({
   readModelName,
@@ -35,9 +35,9 @@ export const mapStateToOptions = (
   resolverArgs: {
     authorId,
     treeId,
-    parentCommentId
-  }
-})
+    parentCommentId,
+  },
+});
 
 export const mapStateToProps = (
   state,
@@ -46,8 +46,8 @@ export const mapStateToProps = (
   comments: [reducerName, treeId, parentCommentId].reduce(
     (result, partName) => (result ? result[partName] : result),
     state
-  )
-})
+  ),
+});
 
 export const mapDispatchToProps = (
   dispatch,
@@ -55,7 +55,7 @@ export const mapDispatchToProps = (
     aggregateName = defaults.aggregateName,
     createComment = defaults.createComment,
     updateComment = defaults.updateComment,
-    removeComment = defaults.removeComment
+    removeComment = defaults.removeComment,
   }
 ) =>
   bindActionCreators(
@@ -74,11 +74,11 @@ export const mapDispatchToProps = (
         null,
         aggregateName,
         removeComment
-      )
+      ),
     },
     dispatch
-  )
+  );
 
 export default connectReadModel(mapStateToOptions)(
   connect(mapStateToProps, mapDispatchToProps)(CommentsTreeRenderless)
-)
+);

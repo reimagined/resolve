@@ -1,12 +1,12 @@
-import getLog from './js/get-log'
-import { AdapterPool, AdapterSpecific } from './types'
+import getLog from './js/get-log';
+import { AdapterPool, AdapterSpecific } from './types';
 
 const connect = async (
   pool: AdapterPool,
   specific: AdapterSpecific
 ): Promise<any> => {
-  const log = getLog('connect')
-  log.debug('configuring postgres client')
+  const log = getLog('connect');
+  log.debug('configuring postgres client');
 
   const {
     Postgres,
@@ -14,15 +14,15 @@ const connect = async (
     escape,
     fullJitter,
     executeStatement,
-    coercer
-  } = specific
+    coercer,
+  } = specific;
 
   const {
     databaseName,
     eventsTableName = 'events',
     snapshotsTableName = 'snapshots',
-    secretsTableName = 'secrets'
-  } = pool.config ?? {}
+    secretsTableName = 'secrets',
+  } = pool.config ?? {};
 
   Object.assign(pool, {
     databaseName,
@@ -34,13 +34,13 @@ const connect = async (
     coercer,
     executeStatement: executeStatement.bind(null, pool),
     escapeId,
-    escape
-  })
+    escape,
+  });
 
   if (pool.executeStatement != null) {
-    await pool.executeStatement('SELECT 0 AS "defunct"')
+    await pool.executeStatement('SELECT 0 AS "defunct"');
   }
-  log.debug('connection to postgres databases established')
-}
+  log.debug('connection to postgres databases established');
+};
 
-export default connect
+export default connect;

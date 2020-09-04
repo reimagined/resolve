@@ -3,6 +3,6 @@ export default {
   MESSAGE_POSTED: (state, { aggregateId: userName, payload: message }) =>
     state.concat({
       userName,
-      message
-    })
-}
+      message,
+    }),
+};

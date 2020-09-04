@@ -8,20 +8,20 @@ const coercer = ({
   ...rest
 }) => {
   if (intValue != null) {
-    return Number(intValue)
+    return Number(intValue);
   } else if (bigIntValue != null) {
-    return Number(bigIntValue)
+    return Number(bigIntValue);
   } else if (longValue != null) {
-    return Number(longValue)
+    return Number(longValue);
   } else if (stringValue != null) {
-    return String(stringValue)
+    return String(stringValue);
   } else if (booleanValue != null) {
-    return Boolean(booleanValue)
+    return Boolean(booleanValue);
   } else if (isNull === true) {
-    return null
+    return null;
   } else {
-    throw new Error(`Unknown type ${JSON.stringify(rest)}`)
+    throw new Error(`Unknown type ${JSON.stringify(rest)}`);
   }
-}
+};
 
-export default coercer
+export default coercer;

@@ -1,53 +1,53 @@
-import { takeEvery, put } from 'redux-saga/effects'
-import { internal } from 'resolve-redux'
+import { takeEvery, put } from 'redux-saga/effects';
+import { internal } from 'resolve-redux';
 
 import {
   OPTIMISTIC_CREATE_SHOPPING_LIST,
   OPTIMISTIC_REMOVE_SHOPPING_LIST,
-  OPTIMISTIC_SYNC
-} from '../actions/optimistic_actions'
+  OPTIMISTIC_SYNC,
+} from '../actions/optimistic_actions';
 
-const { SEND_COMMAND_SUCCESS, QUERY_READMODEL_SUCCESS } = internal.actionTypes
+const { SEND_COMMAND_SUCCESS, QUERY_READMODEL_SUCCESS } = internal.actionTypes;
 
-export default function*() {
+export default function* () {
   yield takeEvery(
-    action =>
+    (action) =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.command.type === 'createShoppingList',
-    function*(action) {
+    function* (action) {
       yield put({
         type: OPTIMISTIC_CREATE_SHOPPING_LIST,
         payload: {
           id: action.command.aggregateId,
-          name: action.command.payload.name
-        }
-      })
+          name: action.command.payload.name,
+        },
+      });
     }
-  )
+  );
 
   yield takeEvery(
-    action =>
+    (action) =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.command.type === 'removeShoppingList',
-    function*(action) {
+    function* (action) {
       yield put({
         type: OPTIMISTIC_REMOVE_SHOPPING_LIST,
         payload: {
-          id: action.command.aggregateId
-        }
-      })
+          id: action.command.aggregateId,
+        },
+      });
     }
-  )
+  );
 
   yield takeEvery(
-    action => action.type === QUERY_READMODEL_SUCCESS,
-    function*(action) {
+    (action) => action.type === QUERY_READMODEL_SUCCESS,
+    function* (action) {
       yield put({
         type: OPTIMISTIC_SYNC,
         payload: {
-          originalLists: action.result.data
-        }
-      })
+          originalLists: action.result.data,
+        },
+      });
     }
-  )
+  );
 }

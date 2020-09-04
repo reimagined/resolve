@@ -1,4 +1,4 @@
-import { ResourceAlreadyExistError } from './lifecycle-errors'
+import { ResourceAlreadyExistError } from './lifecycle-errors';
 import {
   BATCHES_TABLE_NAME,
   INTEGER_SQL_TYPE,
@@ -6,25 +6,25 @@ import {
   LONG_INTEGER_SQL_TYPE,
   NOTIFICATIONS_TABLE_NAME,
   STRING_SQL_TYPE,
-  SUBSCRIBERS_TABLE_NAME
-} from '../constants'
+  SUBSCRIBERS_TABLE_NAME,
+} from '../constants';
 
 async function createDatabase({ database: { runRawQuery, escapeId } }) {
-  const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME)
-  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
-  const batchesTableNameAsId = escapeId(BATCHES_TABLE_NAME)
+  const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME);
+  const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME);
+  const batchesTableNameAsId = escapeId(BATCHES_TABLE_NAME);
 
   const notificationsSubscriptionIdIndexNameAsId = escapeId(
     `${NOTIFICATIONS_TABLE_NAME}-subscriptionId`
-  )
+  );
   const notificationsBatchIdIndexNameAsId = escapeId(
     `${NOTIFICATIONS_TABLE_NAME}-batchId`
-  )
+  );
 
   const subscribersEventSubscriberIndexNameAsId = escapeId(
     `${SUBSCRIBERS_TABLE_NAME}-eventSubscriber`
-  )
-  const batchesBatchIdIndexNameAsId = escapeId(`${BATCHES_TABLE_NAME}-batchId`)
+  );
+  const batchesBatchIdIndexNameAsId = escapeId(`${BATCHES_TABLE_NAME}-batchId`);
 
   try {
     await runRawQuery(`
@@ -86,7 +86,7 @@ async function createDatabase({ database: { runRawQuery, escapeId } }) {
       
       COMMIT;
       BEGIN IMMEDIATE;
-    `)
+    `);
   } catch (error) {
     if (
       error != null &&
@@ -94,11 +94,11 @@ async function createDatabase({ database: { runRawQuery, escapeId } }) {
     ) {
       throw new ResourceAlreadyExistError(
         `Double-initialize event-bus database failed`
-      )
+      );
     } else {
-      throw error
+      throw error;
     }
   }
 }
 
-export default createDatabase
+export default createDatabase;

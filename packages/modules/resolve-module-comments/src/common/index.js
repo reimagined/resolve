@@ -1,7 +1,7 @@
-import createCommentsCommands from './aggregates/comments.commands'
-import createCommentsProjection from './read-models/comments.projection'
-import createCommentsResolvers from './read-models/comments.resolvers'
-import injectDefaults from './inject-defaults'
+import createCommentsCommands from './aggregates/comments.commands';
+import createCommentsProjection from './read-models/comments.projection';
+import createCommentsResolvers from './read-models/comments.resolvers';
+import injectDefaults from './inject-defaults';
 
 import {
   defaults,
@@ -9,8 +9,8 @@ import {
   CommentsTreeRenderless,
   CommentsPaginateRenderless,
   RefreshHelperRenderless,
-  createCommentsReducer
-} from '../client'
+  createCommentsReducer,
+} from '../client';
 
 export {
   defaults,
@@ -21,8 +21,8 @@ export {
   createCommentsReducer,
   createCommentsCommands,
   createCommentsProjection,
-  createCommentsResolvers
-}
+  createCommentsResolvers,
+};
 
 const makeConfig = (options, imports) => {
   const config = {
@@ -33,9 +33,9 @@ const makeConfig = (options, imports) => {
           module:
             'resolve-module-comments/lib/common/aggregates/comments.commands.js',
           options,
-          imports
-        }
-      }
+          imports,
+        },
+      },
     ],
     readModels: [
       {
@@ -45,32 +45,32 @@ const makeConfig = (options, imports) => {
           module:
             'resolve-module-comments/lib/common/read-models/comments.projection.js',
           options,
-          imports
+          imports,
         },
         resolvers: {
           module:
             'resolve-module-comments/lib/common/read-models/comments.resolvers.js',
           options,
-          imports
-        }
-      }
+          imports,
+        },
+      },
     ],
     clientImports: {
       [options.commentsInstanceName]: {
         module: 'resolve-runtime/lib/common/utils/interop-options.js',
-        options
-      }
+        options,
+      },
     },
     serverImports: {
       [options.commentsInstanceName]: {
         module: 'resolve-runtime/lib/common/utils/interop-options.js',
-        options
-      }
-    }
-  }
+        options,
+      },
+    },
+  };
 
-  return config
-}
+  return config;
+};
 
 export default ({
   aggregateName,
@@ -83,7 +83,7 @@ export default ({
   maxNestedLevel,
   verifyCommand,
   commentsInstanceName,
-  reducerName
+  reducerName,
 } = {}) => {
   const options = {
     aggregateName,
@@ -95,14 +95,14 @@ export default ({
     resolverNames,
     maxNestedLevel,
     commentsInstanceName,
-    reducerName
-  }
+    reducerName,
+  };
   const imports = {
     verifyCommand:
       verifyCommand == null
         ? 'resolve-module-comments/lib/common/aggregates/verify-command.js'
-        : verifyCommand
-  }
+        : verifyCommand,
+  };
 
-  return injectDefaults(makeConfig)(options, imports)
-}
+  return injectDefaults(makeConfig)(options, imports);
+};

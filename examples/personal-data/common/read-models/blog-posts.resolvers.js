@@ -3,12 +3,12 @@ const resolvers = {
     return store.find(
       'BlogPosts',
       {
-        author: authorId
+        author: authorId,
       },
       {},
       { timestamp: -1 }
-    )
-  }
-}
+    );
+  },
+};
 
-export default resolvers
+export default resolvers;

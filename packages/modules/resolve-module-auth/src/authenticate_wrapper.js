@@ -1,23 +1,23 @@
-import getRootBasedUrl from './get_root_based_url'
+import getRootBasedUrl from './get_root_based_url';
 
 const authenticateWrapper = {
-  success: function(jwt) {
-    const { name: cookieName, ...cookieOptions } = this.jwtCookie
+  success: function (jwt) {
+    const { name: cookieName, ...cookieOptions } = this.jwtCookie;
 
-    this.internalRes.cookie(cookieName, jwt, cookieOptions)
-    this.internalRes.setHeader('X-JWT', jwt)
+    this.internalRes.cookie(cookieName, jwt, cookieOptions);
+    this.internalRes.setHeader('X-JWT', jwt);
 
     this.internalRes.redirect(
       getRootBasedUrl(this.rootPath, this.successRedirect || '/')
-    )
+    );
 
-    this.resolveAuth()
+    this.resolveAuth();
   },
 
-  fail: function(error, status) {
-    const { name: cookieName } = this.jwtCookie
+  fail: function (error, status) {
+    const { name: cookieName } = this.jwtCookie;
 
-    this.internalRes.clearCookie(cookieName)
+    this.internalRes.clearCookie(cookieName);
 
     if (this.originalOptions.failureRedirect) {
       this.internalRes.redirect(
@@ -27,37 +27,39 @@ const authenticateWrapper = {
             ? this.originalOptions.failureRedirect(error, status)
             : this.originalOptions.failureRedirect
         )
-      )
+      );
     } else {
       this.internalRes.statusCode =
-        (error != null && error.status) || status || 401
+        (error != null && error.status) || status || 401;
       if (error != null && error.message) {
-        this.internalRes.error = String(error.message)
+        this.internalRes.error = String(error.message);
         if (error.stack) {
           // eslint-disable-next-line no-console
-          console.error(error.stack)
+          console.error(error.stack);
         }
       } else {
-        this.internalRes.error = String(error == null ? 'Unknown error' : error)
+        this.internalRes.error = String(
+          error == null ? 'Unknown error' : error
+        );
       }
     }
 
-    this.resolveAuth()
+    this.resolveAuth();
   },
 
-  redirect: function(url) {
-    this.internalRes.redirect(getRootBasedUrl(this.rootPath, url || '/'))
+  redirect: function (url) {
+    this.internalRes.redirect(getRootBasedUrl(this.rootPath, url || '/'));
 
-    this.resolveAuth()
+    this.resolveAuth();
   },
 
-  pass: function() {
-    this.internalRes.statusCode = 200
+  pass: function () {
+    this.internalRes.statusCode = 200;
 
-    this.resolveAuth()
+    this.resolveAuth();
   },
 
-  error: function(error, status) {
+  error: function (error, status) {
     if (this.originalOptions.failureRedirect) {
       this.internalRes.redirect(
         getRootBasedUrl(
@@ -66,14 +68,14 @@ const authenticateWrapper = {
             ? this.originalOptions.failureRedirect(error)
             : this.originalOptions.failureRedirect
         )
-      )
+      );
     } else {
-      this.internalRes.statusCode = error.status || status || 401
-      this.internalRes.error = (error && error.message) || ''
+      this.internalRes.statusCode = error.status || status || 401;
+      this.internalRes.error = (error && error.message) || '';
     }
 
-    this.resolveAuth()
-  }
-}
+    this.resolveAuth();
+  },
+};
 
-export default authenticateWrapper
+export default authenticateWrapper;

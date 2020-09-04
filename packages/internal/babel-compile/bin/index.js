@@ -1,28 +1,28 @@
 #!/usr/bin/env node
 
-const minimist = require('minimist')
-const chalk = require('chalk')
-const babel = require('@babel/cli/lib/babel/dir').default
-const { getBabelConfig, getCompileConfigs } = require('@internal/helpers')
-const { prepare } = require('./prepare')
+const minimist = require('minimist');
+const chalk = require('chalk');
+const babel = require('@babel/cli/lib/babel/dir').default;
+const { getBabelConfig, getCompileConfigs } = require('@internal/helpers');
+const { prepare } = require('./prepare');
 
-const configs = getCompileConfigs()
+const configs = getCompileConfigs();
 
-let isFailed = false
+let isFailed = false;
 
 async function compilePackage(config) {
   try {
-    await prepare(config)
+    await prepare(config);
   } catch (e) {
-    isFailed = true
+    isFailed = true;
 
     // eslint-disable-next-line no-console
-    console.log(`↑ [${chalk.red(config.name)}] preparing failed`)
+    console.log(`↑ [${chalk.red(config.name)}] preparing failed`);
     if (e != null && e !== '') {
       // eslint-disable-next-line no-console
-      console.error(e)
+      console.error(e);
     }
-    throw e
+    throw e;
   }
 
   for (const babelConfig of config.babelCompile) {
@@ -32,12 +32,12 @@ async function compilePackage(config) {
       relative: babelConfig.relative,
       filenames: babelConfig.filenames,
       outDir: babelConfig.outDir,
-      deleteDirOnStart: babelConfig.deleteDirOnStart
-    }
+      deleteDirOnStart: babelConfig.deleteDirOnStart,
+    };
 
     for (let key in cliOptions) {
       if (cliOptions[key] === undefined) {
-        delete cliOptions[key]
+        delete cliOptions[key];
       }
     }
 
@@ -46,12 +46,12 @@ async function compilePackage(config) {
         ...getBabelConfig({
           sourceType: config.sourceType,
           moduleType: babelConfig.moduleType,
-          moduleTarget: babelConfig.moduleTarget
+          moduleTarget: babelConfig.moduleTarget,
         }),
         sourceMaps: true,
-        babelrc: false
+        babelrc: false,
       },
-      cliOptions
+      cliOptions,
     })
       .then(() => {
         // eslint-disable-next-line no-console
@@ -59,55 +59,55 @@ async function compilePackage(config) {
           `↑ [${chalk.green(config.name)}] { moduleType: "${
             babelConfig.moduleType
           }", moduleType: "${babelConfig.moduleTarget}" }`
-        )
+        );
       })
-      .catch(error => {
+      .catch((error) => {
         // eslint-disable-next-line no-console
-        console.error(error)
-        process.exit(1)
-      })
+        console.error(error);
+        process.exit(1);
+      });
 
     if (process.env.RESOLVE_ALLOW_PARALLEL_BUILDS != null) {
-      await buildPromise
+      await buildPromise;
     }
   }
 }
 
 async function main({ name: packageName }) {
-  const map = new Map()
-  let pendingPromises = []
+  const map = new Map();
+  let pendingPromises = [];
 
-  const preparePendingBuild = build => {
-    build.status = 'building'
-    const promise = compilePackage(build.config)
-    build.promise = promise
-    promise.then(() => (build.status = 'succeeded'))
-    pendingPromises.push(promise)
-  }
+  const preparePendingBuild = (build) => {
+    build.status = 'building';
+    const promise = compilePackage(build.config);
+    build.promise = promise;
+    promise.then(() => (build.status = 'succeeded'));
+    pendingPromises.push(promise);
+  };
 
-  const whiteList = []
+  const whiteList = [];
   if (packageName != null) {
-    const config = configs.find(({ name }) => name === packageName)
+    const config = configs.find(({ name }) => name === packageName);
     if (config != null) {
-      whiteList.push(packageName, ...config.dependencies)
+      whiteList.push(packageName, ...config.dependencies);
     }
   }
 
   for (const config of configs) {
     if (whiteList.length > 0 && !whiteList.includes(config.name)) {
-      continue
+      continue;
     }
-    const build = { config, status: 'waiting' }
-    map.set(config.name, build)
+    const build = { config, status: 'waiting' };
+    map.set(config.name, build);
 
     if (config.dependencies.length > 0) {
-      continue
+      continue;
     }
 
-    preparePendingBuild(build)
+    preparePendingBuild(build);
 
     if (process.env.RESOLVE_ALLOW_PARALLEL_BUILDS != null) {
-      await build.promise
+      await build.promise;
     }
   }
 
@@ -115,31 +115,31 @@ async function main({ name: packageName }) {
     if (pendingPromises.length > 0) {
       await Promise.race([
         Promise.race(pendingPromises),
-        Promise.all(pendingPromises)
-      ])
+        Promise.all(pendingPromises),
+      ]);
     }
 
-    pendingPromises = []
+    pendingPromises = [];
 
     for (const [, build] of map.entries()) {
       if (build.status === 'building') {
-        pendingPromises.push(build.promise)
+        pendingPromises.push(build.promise);
       } else if (
         build.status === 'waiting' &&
         build.config.dependencies.every(
-          dependency => map.get(dependency).status === 'succeeded'
+          (dependency) => map.get(dependency).status === 'succeeded'
         )
       ) {
-        preparePendingBuild(build)
+        preparePendingBuild(build);
       }
 
       if (process.env.RESOLVE_ALLOW_PARALLEL_BUILDS != null) {
-        await build.promise
+        await build.promise;
       }
     }
 
     if (pendingPromises.length === 0) {
-      break
+      break;
     }
   }
 }
@@ -147,11 +147,11 @@ async function main({ name: packageName }) {
 main(minimist(process.argv.slice(2)))
   .then(() => {
     if (isFailed) {
-      process.exit(1)
+      process.exit(1);
     }
   })
-  .catch(error => {
+  .catch((error) => {
     // eslint-disable-next-line no-console
-    console.error(error)
-    process.exit(1)
-  })
+    console.error(error);
+    process.exit(1);
+  });

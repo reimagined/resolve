@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   Container,
   Header,
@@ -8,40 +8,40 @@ import {
   Left,
   Right,
   Body,
-  Icon
-} from 'native-base'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+  Icon,
+} from 'native-base';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-import requiredAuth from '../decorators/required-auth'
-import ShoppingItemCreator from '../components/ShoppingItemCreator'
-import ShoppingListPanel from '../components/ShoppingListPanel'
-import ShoppingListItems from '../components/ShoppingListItems'
-import NotFound from '../components/NotFound'
+import requiredAuth from '../decorators/required-auth';
+import ShoppingItemCreator from '../components/ShoppingItemCreator';
+import ShoppingListPanel from '../components/ShoppingListPanel';
+import ShoppingListItems from '../components/ShoppingListItems';
+import NotFound from '../components/NotFound';
 
-import * as aggregateActions from '../redux/actions/aggregate-actions'
+import * as aggregateActions from '../redux/actions/aggregate-actions';
 
-import getNativeChunk from '../native-chunk'
+import getNativeChunk from '../native-chunk';
 const {
-  resolveRedux: { connectViewModel }
-} = getNativeChunk()
+  resolveRedux: { connectViewModel },
+} = getNativeChunk();
 
 export class ShoppingList extends React.PureComponent {
   componentDidMount() {
-    this.optionalRedirect()
+    this.optionalRedirect();
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.data !== prevProps.data) {
-      this.optionalRedirect()
+      this.optionalRedirect();
     }
   }
 
   optionalRedirect = () => {
     if (this.props.data && this.props.data.removed) {
-      this.props.navigation.navigate('My Lists')
+      this.props.navigation.navigate('My Lists');
     }
-  }
+  };
 
   render() {
     const {
@@ -53,19 +53,19 @@ export class ShoppingList extends React.PureComponent {
       renameShoppingList,
       removeShoppingList,
       toggleShoppingItem,
-      removeShoppingItem
-    } = this.props
+      removeShoppingItem,
+    } = this.props;
 
     if (isLoading !== false) {
-      return null
+      return null;
     }
 
     if (data === null) {
-      return <NotFound />
+      return <NotFound />;
     }
 
     if (data.removed) {
-      return null
+      return null;
     }
 
     return (
@@ -101,33 +101,33 @@ export class ShoppingList extends React.PureComponent {
           createShoppingItem={createShoppingItem}
         />
       </Container>
-    )
+    );
   }
 }
 
 export const mapStateToOptions = (state, ownProps) => {
-  const aggregateId = ownProps.route.params.id
+  const aggregateId = ownProps.route.params.id;
 
   return {
     viewModelName: 'shoppingList',
-    aggregateIds: [aggregateId]
-  }
-}
+    aggregateIds: [aggregateId],
+  };
+};
 
 export const mapStateToProps = (state, ownProps) => {
-  const aggregateId = ownProps.route.params.id
+  const aggregateId = ownProps.route.params.id;
 
   return {
     jwt: state.jwt,
-    aggregateId
-  }
-}
+    aggregateId,
+  };
+};
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(aggregateActions, dispatch)
+export const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(aggregateActions, dispatch);
 
 export default requiredAuth(
   connectViewModel(mapStateToOptions)(
     connect(mapStateToProps, mapDispatchToProps)(ShoppingList)
   )
-)
+);

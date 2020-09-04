@@ -1,5 +1,5 @@
-import App from './components/App'
-import PostCSS from './components/PostCSS'
+import App from './components/App';
+import PostCSS from './components/PostCSS';
 
 const routes = [
   {
@@ -9,12 +9,12 @@ const routes = [
       {
         path: '/',
         component: PostCSS,
-        exact: true
-      }
-    ]
-  }
-]
+        exact: true,
+      },
+    ],
+  },
+];
 
-const getRoutes = () => routes
+const getRoutes = () => routes;
 
-export default getRoutes
+export default getRoutes;

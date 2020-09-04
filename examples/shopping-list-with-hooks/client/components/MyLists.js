@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 
-import { useQuery } from 'resolve-react-hooks'
-import ShoppingLists from './ShoppingLists'
-import ShoppingListCreator from './ShoppingListCreator'
+import { useQuery } from 'resolve-react-hooks';
+import ShoppingLists from './ShoppingLists';
+import ShoppingListCreator from './ShoppingListCreator';
 
 const MyLists = () => {
-  const [lists, setLists] = useState({})
+  const [lists, setLists] = useState({});
 
   const getLists = useQuery(
     { name: 'ShoppingLists', resolver: 'all', args: {} },
     (error, result) => {
-      setLists(result)
+      setLists(result);
     }
-  )
+  );
   useEffect(() => {
-    getLists()
-  }, [])
+    getLists();
+  }, []);
 
   return (
     <div className="example-wrapper">
@@ -25,24 +25,24 @@ const MyLists = () => {
         onRemoveSuccess={(err, result) => {
           setLists({
             ...lists,
-            data: lists.data.filter(list => list.id !== result.aggregateId)
-          })
+            data: lists.data.filter((list) => list.id !== result.aggregateId),
+          });
         }}
       />
       <ShoppingListCreator
         lists={lists ? lists.data || [] : []}
         onCreateSuccess={(err, result) => {
-          const nextLists = { ...lists }
+          const nextLists = { ...lists };
           nextLists.data.push({
             name: result.payload.name,
             createdAt: result.timestamp,
-            id: result.aggregateId
-          })
-          setLists(nextLists)
+            id: result.aggregateId,
+          });
+          setLists(nextLists);
         }}
       />
     </div>
-  )
-}
+  );
+};
 
-export default MyLists
+export default MyLists;

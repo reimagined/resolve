@@ -1,46 +1,46 @@
-import * as contentDisposition from 'content-disposition'
-import iconv from 'iconv-lite'
+import * as contentDisposition from 'content-disposition';
+import iconv from 'iconv-lite';
 
 const convertCodepage = (content, fromEncoding, toEncoding) =>
-  iconv.decode(iconv.encode(content, fromEncoding), toEncoding)
+  iconv.decode(iconv.encode(content, fromEncoding), toEncoding);
 
-const extractRequestBody = req => {
+const extractRequestBody = (req) => {
   if (req.body == null) {
-    return req.query
+    return req.query;
   }
   const [contentType, optionsEntry] =
     req.headers['content-type'] != null
       ? String(req.headers['content-type'])
           .split(';')
-          .map(value => value.trim().toLowerCase())
-      : []
+          .map((value) => value.trim().toLowerCase())
+      : [];
 
-  let bodyFields = {}
+  let bodyFields = {};
 
   switch (contentType) {
     case 'application/json': {
-      bodyFields = JSON.parse(req.body)
-      break
+      bodyFields = JSON.parse(req.body);
+      break;
     }
 
     case 'application/x-www-form-urlencoded': {
       bodyFields = req.body.split('&').reduce((acc, pair) => {
-        let [key, value] = pair.split('=').map(decodeURIComponent)
-        acc[key] = value
-        return acc
-      }, {})
-      break
+        let [key, value] = pair.split('=').map(decodeURIComponent);
+        acc[key] = value;
+        return acc;
+      }, {});
+      break;
     }
 
     case 'multipart/form-data': {
-      bodyFields = {}
-      let boundary = null
+      bodyFields = {};
+      let boundary = null;
 
       if (optionsEntry != null && optionsEntry.startsWith('boundary=')) {
-        boundary = optionsEntry.substring('boundary='.length)
+        boundary = optionsEntry.substring('boundary='.length);
       }
       if (boundary == null) {
-        throw new Error('Invalid boundary for multipart/form-data')
+        throw new Error('Invalid boundary for multipart/form-data');
       }
       const boundaryRegexp = new RegExp(
         `\r?\n--${String(boundary).replace(
@@ -49,25 +49,25 @@ const extractRequestBody = req => {
           '\\$&'
         )}(?:(?:\r?\n)|--)`,
         'ig'
-      )
+      );
 
-      const contentArray = `\n${req.body}\n`.split(boundaryRegexp).slice(1, -1)
+      const contentArray = `\n${req.body}\n`.split(boundaryRegexp).slice(1, -1);
       for (let index = 0; index < contentArray.length; index++) {
-        const separatorMatch = contentArray[index].match(/\r?\n\r?\n/)
+        const separatorMatch = contentArray[index].match(/\r?\n\r?\n/);
         if (separatorMatch == null) {
           throw new Error(
             'Invalid inline body separator for multipart/form-data'
-          )
+          );
         }
-        const separatorIndex = separatorMatch.index
-        const separatorLength = separatorMatch[0].length
+        const separatorIndex = separatorMatch.index;
+        const separatorLength = separatorMatch[0].length;
         const inlineHeadersString = contentArray[index].substring(
           0,
           separatorIndex
-        )
+        );
         const inlineBodyString = contentArray[index].substring(
           separatorIndex + separatorLength
-        )
+        );
 
         const inlineHeaders = inlineHeadersString
           .split(/\r?\n/g)
@@ -75,27 +75,27 @@ const extractRequestBody = req => {
             const [inlineHeaderName, ...inlineHeaderContent] = content.split(
               // eslint-disable-next-line no-useless-escape
               /\: /g
-            )
-            const inlineHeaderValue = inlineHeaderContent.join(': ')
-            acc[inlineHeaderName.toLowerCase()] = inlineHeaderValue
-            return acc
-          }, {})
+            );
+            const inlineHeaderValue = inlineHeaderContent.join(': ');
+            acc[inlineHeaderName.toLowerCase()] = inlineHeaderValue;
+            return acc;
+          }, {});
 
         const [inlineContentType, inlineCharset] = String(
           inlineHeaders['content-type']
         )
           .split(';')
-          .map(value => value.trim().toLowerCase())
+          .map((value) => value.trim().toLowerCase());
 
         const {
           type: dispositionType,
-          parameters: { name, filename }
-        } = contentDisposition.parse(inlineHeaders['content-disposition'])
+          parameters: { name, filename },
+        } = contentDisposition.parse(inlineHeaders['content-disposition']);
 
         if (dispositionType !== 'form-data') {
           throw new Error(
             'Invalid inline content disposition for multipart/form-data'
-          )
+          );
         }
 
         bodyFields[name] = {
@@ -105,17 +105,17 @@ const extractRequestBody = req => {
               ? convertCodepage(inlineBodyString, 'latin1', inlineCharset)
               : inlineBodyString,
           contentCharset: inlineCharset != null ? inlineCharset : 'latin1',
-          filename
-        }
+          filename,
+        };
       }
-      break
+      break;
     }
     default: {
-      throw new Error('Unsupported Content-Type in request body')
+      throw new Error('Unsupported Content-Type in request body');
     }
   }
 
-  return Object.assign(bodyFields, req.query)
-}
+  return Object.assign(bodyFields, req.query);
+};
 
-export default extractRequestBody
+export default extractRequestBody;

@@ -1,10 +1,10 @@
-import React from 'react'
-import { bindActionCreators } from 'redux'
-import { connectReadModel, sendAggregateAction } from 'resolve-redux'
-import { connect } from 'react-redux'
+import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connectReadModel, sendAggregateAction } from 'resolve-redux';
+import { connect } from 'react-redux';
 
-import * as defaults from '../../common/defaults'
-import { CommentsTreeRenderless } from './CommentsTreeRenderless'
+import * as defaults from '../../common/defaults';
+import { CommentsTreeRenderless } from './CommentsTreeRenderless';
 
 export class CommentsPaginateRenderless extends React.PureComponent {
   static defaultProps = {
@@ -13,14 +13,14 @@ export class CommentsPaginateRenderless extends React.PureComponent {
       console.log(
         `comments (pageNumber: ${pageNumber}, itemsOnPage: ${itemsOnPage}):`,
         comments
-      )
-      return null
-    }
-  }
+      );
+      return null;
+    },
+  };
 
   render() {
-    const { children: Component, comments, ...props } = this.props
-    return <Component {...props} comments={comments} />
+    const { children: Component, comments, ...props } = this.props;
+    return <Component {...props} comments={comments} />;
   }
 }
 
@@ -30,21 +30,21 @@ export const mapStateToOptions = (
     readModelName = defaults.readModelName,
     resolverName = defaults.allCommentsPaginate,
     itemsOnPage,
-    pageNumber
+    pageNumber,
   }
 ) => ({
   readModelName,
   resolverName,
   resolverArgs: {
     itemsOnPage,
-    pageNumber
-  }
-})
+    pageNumber,
+  },
+});
 
 const mapStateToProps = (state, { data }) => ({
   comments: data ? data.comments : undefined,
-  paginationDone: data ? data.paginationDone : undefined
-})
+  paginationDone: data ? data.paginationDone : undefined,
+});
 
 export const mapDispatchToProps = (
   dispatch,
@@ -52,7 +52,7 @@ export const mapDispatchToProps = (
     aggregateName = defaults.aggregateName,
     createComment = defaults.createComment,
     updateComment = defaults.updateComment,
-    removeComment = defaults.removeComment
+    removeComment = defaults.removeComment,
   }
 ) =>
   bindActionCreators(
@@ -71,11 +71,11 @@ export const mapDispatchToProps = (
         null,
         aggregateName,
         removeComment
-      )
+      ),
     },
     dispatch
-  )
+  );
 
 export default connectReadModel(mapStateToOptions)(
   connect(mapStateToProps, mapDispatchToProps)(CommentsTreeRenderless)
-)
+);

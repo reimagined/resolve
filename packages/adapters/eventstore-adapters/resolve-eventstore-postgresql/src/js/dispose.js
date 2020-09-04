@@ -1,3 +1,3 @@
-const dispose = async () => {}
+const dispose = async () => {};
 
-export default dispose
+export default dispose;

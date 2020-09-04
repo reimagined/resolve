@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   Form,
   Input,
@@ -10,20 +10,20 @@ import {
   CardImg,
   CardTitle,
   FormGroup,
-  CustomInput
-} from 'reactstrap'
-import FileUploadProgress from 'react-fileupload-progress'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { connectReadModel } from 'resolve-redux'
+  CustomInput,
+} from 'reactstrap';
+import FileUploadProgress from 'react-fileupload-progress';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { connectReadModel } from 'resolve-redux';
 import {
   getCDNBasedUrl,
   getFormUpload,
-  getToken
-} from 'resolve-module-uploader'
+  getToken,
+} from 'resolve-module-uploader';
 
-import UploaderContext from '../context'
-import * as aggregateActions from '../aggregate_actions'
+import UploaderContext from '../context';
+import * as aggregateActions from '../aggregate_actions';
 
 class App extends React.Component {
   state = {
@@ -34,32 +34,32 @@ class App extends React.Component {
     mimeType: '',
     nameFile: '',
     isHidden: true,
-    isLoaded: false
-  }
+    isLoaded: false,
+  };
 
   componentDidMount() {
-    getToken({ dir: 'logo' }).then(token =>
+    getToken({ dir: 'logo' }).then((token) =>
       this.setState({ staticToken: token })
-    )
+    );
   }
 
   handleGetUrl = () => {
-    getFormUpload({ dir: 'logo' }).then(result =>
+    getFormUpload({ dir: 'logo' }).then((result) =>
       this.setState({
         form: result.form,
         uploadId: result.uploadId,
-        isHidden: false
+        isHidden: false,
       })
-    )
+    );
 
-    getToken({ dir: 'logo' }).then(token => this.setState({ token }))
-  }
+    getToken({ dir: 'logo' }).then((token) => this.setState({ token }));
+  };
 
-  handleChange = event => this.setState({ nameFile: event.target.value })
+  handleChange = (event) => this.setState({ nameFile: event.target.value });
 
-  ref = React.createRef()
+  ref = React.createRef();
 
-  customFormRender = onSubmit => {
+  customFormRender = (onSubmit) => {
     return (
       <Form id="customForm">
         {this.state.form.fields != null
@@ -88,19 +88,19 @@ class App extends React.Component {
           outline
           color="success"
           onClick={(...args) => {
-            this.setState({ mimeType: this.ref.current.files[0].type })
-            onSubmit(...args)
+            this.setState({ mimeType: this.ref.current.files[0].type });
+            onSubmit(...args);
           }}
         >
           Upload
         </Button>
       </Form>
-    )
-  }
+    );
+  };
 
   formGetter = () => {
-    return new FormData(document.getElementById('customForm'))
-  }
+    return new FormData(document.getElementById('customForm'));
+  };
 
   render() {
     return (
@@ -128,12 +128,12 @@ class App extends React.Component {
                     const name =
                       this.state.nameFile === ''
                         ? 'Default name'
-                        : this.state.nameFile
+                        : this.state.nameFile;
                     this.props.createImage(this.state.uploadId, {
                       name,
-                      uploadId: this.state.uploadId
-                    })
-                    this.setState({ isLoaded: true })
+                      uploadId: this.state.uploadId,
+                    });
+                    this.setState({ isLoaded: true });
                   }}
                 />
 
@@ -144,7 +144,7 @@ class App extends React.Component {
                         CDNUrl,
                         dir: 'logo',
                         uploadId: this.state.uploadId,
-                        token: this.state.token
+                        token: this.state.token,
                       })}
                     >
                       {this.state.uploadId}
@@ -166,7 +166,7 @@ class App extends React.Component {
                           CDNUrl,
                           dir: 'logo',
                           uploadId: image.uploadId,
-                          token: this.state.staticToken
+                          token: this.state.staticToken,
                         })}
                       />
 
@@ -180,19 +180,19 @@ class App extends React.Component {
           </div>
         )}
       </UploaderContext.Consumer>
-    )
+    );
   }
 }
 
 export const mapStateToOptions = () => ({
   readModelName: 'Images',
   resolverName: 'allImages',
-  resolverArgs: {}
-})
+  resolverArgs: {},
+});
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(aggregateActions, dispatch)
+export const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(aggregateActions, dispatch);
 
 export default connectReadModel(mapStateToOptions)(
   connect(null, mapDispatchToProps)(App)
-)
+);

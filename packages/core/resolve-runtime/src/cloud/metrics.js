@@ -1,19 +1,19 @@
-import CloudWatch from 'aws-sdk/clients/cloudwatch'
+import CloudWatch from 'aws-sdk/clients/cloudwatch';
 
-const kindByEvent = event => {
-  const { part, path = '' } = event
+const kindByEvent = (event) => {
+  const { part, path = '' } = event;
   if (part === 'bootstrap') {
-    return 'bootstrapping'
+    return 'bootstrapping';
   } else if (path.includes('/api/query')) {
-    return 'query'
+    return 'query';
   } else if (path.includes('/api/commands')) {
-    return 'command'
+    return 'command';
   } else if (path.includes('/api/subscribe')) {
-    return 'subscribe'
+    return 'subscribe';
   } else {
-    return 'route'
+    return 'route';
   }
-}
+};
 
 const putMetrics = async (
   lambdaEvent,
@@ -25,22 +25,22 @@ const putMetrics = async (
     lambdaContext &&
     typeof lambdaContext.getRemainingTimeInMillis === 'function'
   ) {
-    const cloudWatch = new CloudWatch()
-    const coldStartDuration = 15 * 60 * 1000 - lambdaRemainingTimeStart
+    const cloudWatch = new CloudWatch();
+    const coldStartDuration = 15 * 60 * 1000 - lambdaRemainingTimeStart;
     const duration =
-      lambdaRemainingTimeStart - lambdaContext.getRemainingTimeInMillis()
-    const now = new Date()
-    const kind = kindByEvent(lambdaEvent)
+      lambdaRemainingTimeStart - lambdaContext.getRemainingTimeInMillis();
+    const now = new Date();
+    const kind = kindByEvent(lambdaEvent);
     const dimensions = [
       {
         Name: 'Deployment Id',
-        Value: process.env.RESOLVE_DEPLOYMENT_ID
+        Value: process.env.RESOLVE_DEPLOYMENT_ID,
       },
       {
         Name: 'Kind',
-        Value: kind
-      }
-    ]
+        Value: kind,
+      },
+    ];
 
     const params = {
       MetricData: [
@@ -49,11 +49,11 @@ const putMetrics = async (
           Dimensions: dimensions,
           Timestamp: now,
           Unit: 'Milliseconds',
-          Value: duration
-        }
+          Value: duration,
+        },
       ],
-      Namespace: 'RESOLVE_METRICS'
-    }
+      Namespace: 'RESOLVE_METRICS',
+    };
 
     if (coldStart) {
       params.MetricData.push({
@@ -61,24 +61,24 @@ const putMetrics = async (
         Dimensions: [
           {
             Name: 'Deployment Id',
-            Value: process.env.RESOLVE_DEPLOYMENT_ID
+            Value: process.env.RESOLVE_DEPLOYMENT_ID,
           },
           {
             Name: 'Kind',
-            Value: 'cold start'
-          }
+            Value: 'cold start',
+          },
         ],
         Timestamp: now,
         Unit: 'Milliseconds',
-        Value: coldStartDuration
-      })
+        Value: coldStartDuration,
+      });
     }
     // eslint-disable-next-line no-console
     console.info(
       ['[REQUEST INFO]', kind, lambdaEvent.path, duration].join('\n')
-    )
-    await cloudWatch.putMetricData(params).promise()
+    );
+    await cloudWatch.putMetricData(params).promise();
   }
-}
+};
 
-export default putMetrics
+export default putMetrics;

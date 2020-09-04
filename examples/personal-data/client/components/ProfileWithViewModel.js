@@ -1,56 +1,56 @@
-import React, { useState, useEffect } from 'react'
-import { useViewModel } from 'resolve-react-hooks'
-import { Redirect } from 'react-router-dom'
-import { getDecrypter } from '../../common/encryption-factory'
-import Login from './Login'
-import Loading from './Loading'
+import React, { useState, useEffect } from 'react';
+import { useViewModel } from 'resolve-react-hooks';
+import { Redirect } from 'react-router-dom';
+import { getDecrypter } from '../../common/encryption-factory';
+import Login from './Login';
+import Loading from './Loading';
 
 const ProfileWithViewModel = ({ userId }) => {
-  const [user, setUser] = useState('unknown')
+  const [user, setUser] = useState('unknown');
 
   const viewModelStateChanged = (user, initial) => {
     if (!initial) {
       fetch(`/api/personal-data-keys/${user.id}`)
-        .then(response => response.text())
-        .then(key => {
-          const decrypt = getDecrypter(key)
+        .then((response) => response.text())
+        .then((key) => {
+          const decrypt = getDecrypter(key);
 
           setUser({
             ...user,
             firstName: decrypt(user.firstName),
             lastName: decrypt(user.lastName),
-            contacts: decrypt(user.contacts)
-          })
-        })
+            contacts: decrypt(user.contacts),
+          });
+        });
     }
-  }
+  };
 
   const { connect, dispose } = useViewModel(
     'current-user-profile',
     [userId],
     viewModelStateChanged
-  )
+  );
 
   useEffect(() => {
-    connect()
+    connect();
     return () => {
-      dispose()
-    }
-  }, [])
+      dispose();
+    };
+  }, []);
 
   if (typeof user === 'string') {
-    return <Loading />
+    return <Loading />;
   }
 
   if (user == null) {
-    return <Redirect to="/" />
+    return <Redirect to="/" />;
   }
 
   return (
     <React.Fragment>
       <Login user={user} />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default ProfileWithViewModel
+export default ProfileWithViewModel;

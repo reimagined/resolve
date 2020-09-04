@@ -1,44 +1,44 @@
-import { Context } from './context'
-import { GenericError } from './errors'
-import { connect, disconnect } from './subscribe'
+import { Context } from './context';
+import { GenericError } from './errors';
+import { connect, disconnect } from './subscribe';
 import {
   RequestOptions,
   request,
   NarrowedResponse,
-  VALIDATED_RESULT
-} from './request'
-import { assertLeadingSlash, assertNonEmptyString } from './assertions'
-import { getRootBasedUrl, isAbsoluteUrl } from './utils'
-import determineOrigin from './determine-origin'
+  VALIDATED_RESULT,
+} from './request';
+import { assertLeadingSlash, assertNonEmptyString } from './assertions';
+import { getRootBasedUrl, isAbsoluteUrl } from './utils';
+import determineOrigin from './determine-origin';
 
 function determineCallback<T>(options: any, callback: any): T | null {
   if (typeof options === 'function') {
-    return options
+    return options;
   }
   if (typeof callback === 'function') {
-    return callback
+    return callback;
   }
-  return null
+  return null;
 }
 function isOptions<T>(arg: any): arg is T {
-  return arg && typeof arg !== 'function'
+  return arg && typeof arg !== 'function';
 }
-type PromiseOrVoid<T> = void | Promise<T>
+type PromiseOrVoid<T> = void | Promise<T>;
 
 export type Command = {
-  type: string
-  aggregateId: string
-  aggregateName: string
-  payload?: object
-  immediateConflict?: boolean
-}
-export type CommandResult = object
+  type: string;
+  aggregateId: string;
+  aggregateName: string;
+  payload?: object;
+  immediateConflict?: boolean;
+};
+export type CommandResult = object;
 export type CommandCallback = (
   error: Error | null,
   result: CommandResult | null,
   command: Command
-) => void
-export type CommandOptions = {}
+) => void;
+export type CommandOptions = {};
 
 export const command = (
   context: Context,
@@ -46,72 +46,79 @@ export const command = (
   options?: CommandOptions | CommandCallback,
   callback?: CommandCallback
 ): PromiseOrVoid<CommandResult> => {
-  const actualOptions = isOptions<CommandOptions>(options) ? options : undefined
-  const actualCallback = determineCallback<CommandCallback>(options, callback)
+  const actualOptions = isOptions<CommandOptions>(options)
+    ? options
+    : undefined;
+  const actualCallback = determineCallback<CommandCallback>(options, callback);
 
   const asyncExec = async (): Promise<CommandResult> => {
-    const response = await request(context, '/api/commands', cmd, actualOptions)
+    const response = await request(
+      context,
+      '/api/commands',
+      cmd,
+      actualOptions
+    );
 
     try {
-      return await response.json()
+      return await response.json();
     } catch (error) {
-      throw new GenericError(error)
+      throw new GenericError(error);
     }
-  }
+  };
 
   if (!actualCallback) {
-    return asyncExec()
+    return asyncExec();
   }
 
   asyncExec()
-    .then(result => {
-      actualCallback(null, result, cmd)
-      return result
+    .then((result) => {
+      actualCallback(null, result, cmd);
+      return result;
     })
-    .catch(error => {
-      actualCallback(error, null, cmd)
-      throw error
-    })
+    .catch((error) => {
+      actualCallback(error, null, cmd);
+      throw error;
+    });
 
-  return undefined
-}
+  return undefined;
+};
 
-type AggregateSelector = string[] | '*'
+type AggregateSelector = string[] | '*';
 export type ViewModelQuery = {
-  name: string
-  aggregateIds: AggregateSelector
-  args: any
-}
+  name: string;
+  aggregateIds: AggregateSelector;
+  args: any;
+};
 export type ReadModelQuery = {
-  name: string
-  resolver: string
-  args: object
-}
-export type Query = ViewModelQuery | ReadModelQuery
+  name: string;
+  resolver: string;
+  args: object;
+};
+export type Query = ViewModelQuery | ReadModelQuery;
 const isReadModelQuery = (arg: any): arg is ReadModelQuery =>
-  arg && arg.resolver
+  arg && arg.resolver;
 
 export type QueryResult = {
-  data: any
+  data: any;
   meta?: {
-    url?: string
-    cursor?: string
-    timestamp?: number
-  }
-}
+    url?: string;
+    cursor?: string;
+    timestamp?: number;
+  };
+};
 export type QueryOptions = {
-  method?: 'GET' | 'POST'
+  method?: 'GET' | 'POST';
   waitFor?: {
-    validator: (result: any) => boolean
-    period?: number
-    attempts?: number
-  }
-}
+    validator: (result: any) => boolean;
+    period?: number;
+    attempts?: number;
+  };
+};
 export type QueryCallback = (
   error: Error | null,
   result: QueryResult | null,
   query: Query
-) => void
+) => void;
 
 export const query = (
   context: Context,
@@ -120,134 +127,134 @@ export const query = (
   callback?: QueryCallback
 ): PromiseOrVoid<QueryResult> => {
   const requestOptions: RequestOptions = {
-    method: 'GET'
-  }
+    method: 'GET',
+  };
 
   if (isOptions<QueryOptions>(options)) {
     if (typeof options.waitFor?.validator === 'function') {
-      const { validator, period = 1000, attempts = 5 } = options.waitFor
+      const { validator, period = 1000, attempts = 5 } = options.waitFor;
 
       requestOptions.waitForResponse = {
         validator: async (response, confirm): Promise<void> => {
-          const result = await response.json()
+          const result = await response.json();
           if (validator(result)) {
-            confirm(result)
+            confirm(result);
           }
         },
         period,
-        attempts
-      }
+        attempts,
+      };
     }
-    requestOptions.method = options?.method ?? 'GET'
+    requestOptions.method = options?.method ?? 'GET';
   }
 
-  const actualCallback = determineCallback<QueryCallback>(options, callback)
+  const actualCallback = determineCallback<QueryCallback>(options, callback);
 
-  let queryRequest: Promise<NarrowedResponse>
+  let queryRequest: Promise<NarrowedResponse>;
 
   if (isReadModelQuery(qr)) {
-    const { name, resolver, args } = qr
+    const { name, resolver, args } = qr;
     queryRequest = request(
       context,
       `/api/query/${name}/${resolver}`,
       args,
       requestOptions
-    )
+    );
   } else {
-    const { name, aggregateIds, args } = qr
-    const ids = aggregateIds === '*' ? aggregateIds : aggregateIds.join(',')
+    const { name, aggregateIds, args } = qr;
+    const ids = aggregateIds === '*' ? aggregateIds : aggregateIds.join(',');
     queryRequest = request(
       context,
       `/api/query/${name}/${ids}`,
       {
         args,
-        origin: determineOrigin(context.origin)
+        origin: determineOrigin(context.origin),
       },
       requestOptions
-    )
+    );
   }
 
   const asyncExec = async (): Promise<QueryResult> => {
-    const response = await queryRequest
+    const response = await queryRequest;
 
-    const responseDate = response.headers.get('Date')
+    const responseDate = response.headers.get('Date');
 
-    let subscriptionsUrl = null
+    let subscriptionsUrl = null;
 
     if (!isReadModelQuery(qr)) {
       const responseSubscription =
         response.headers.get('X-Resolve-View-Model-Subscription') ??
-        '{ "url": "" }'
-      const { url } = JSON.parse(responseSubscription)
-      subscriptionsUrl = url
+        '{ "url": "" }';
+      const { url } = JSON.parse(responseSubscription);
+      subscriptionsUrl = url;
     }
 
     if (!responseDate) {
-      throw new GenericError(`"Date" header missed within response`)
+      throw new GenericError(`"Date" header missed within response`);
     }
 
     try {
       const result =
         VALIDATED_RESULT in response
           ? response[VALIDATED_RESULT]
-          : await response.json()
+          : await response.json();
 
       const meta = {
         ...result.meta,
-        timestamp: Number(responseDate)
-      }
+        timestamp: Number(responseDate),
+      };
 
       if (subscriptionsUrl != null) {
-        meta.url = subscriptionsUrl
+        meta.url = subscriptionsUrl;
       }
 
       return {
         ...result,
-        meta
-      }
+        meta,
+      };
     } catch (error) {
-      throw new GenericError(error)
+      throw new GenericError(error);
     }
-  }
+  };
 
   if (!actualCallback) {
-    return asyncExec()
+    return asyncExec();
   }
 
   asyncExec()
-    .then(result => {
-      actualCallback(null, result, qr)
-      return result
+    .then((result) => {
+      actualCallback(null, result, qr);
+      return result;
     })
-    .catch(error => {
-      actualCallback(error, null, qr)
-      throw error
-    })
+    .catch((error) => {
+      actualCallback(error, null, qr);
+      throw error;
+    });
 
-  return undefined
-}
+  return undefined;
+};
 
 export type Subscription = {
-  readonly viewModelName: string
-  readonly aggregateIds: AggregateSelector
-  readonly handler: SubscribeHandler
-}
+  readonly viewModelName: string;
+  readonly aggregateIds: AggregateSelector;
+  readonly handler: SubscribeHandler;
+};
 
-export type SubscribeResult = void
-export type SubscribeHandler = (event: any) => void
+export type SubscribeResult = void;
+export type SubscribeHandler = (event: any) => void;
 export type SubscribeCallback = (
   error: Error | null,
   result: Subscription | null
-) => void
+) => void;
 
 export type ResubscribeInfo = {
-  eventTopic: string
-  aggregateId: string
-}
+  eventTopic: string;
+  aggregateId: string;
+};
 export type ResubscribeCallback = (
   error: Error | null,
   result: ResubscribeInfo | null
-) => void
+) => void;
 
 export const subscribe = (
   context: Context,
@@ -268,75 +275,75 @@ export const subscribe = (
       handler,
       viewModelName,
       resubscribeCallback
-    )
+    );
 
     return {
       viewModelName,
       aggregateIds,
-      handler
-    }
-  }
+      handler,
+    };
+  };
 
   if (typeof subscribeCallback !== 'function') {
-    return subscribeAsync()
+    return subscribeAsync();
   }
 
   subscribeAsync()
     .then((result: Subscription) => subscribeCallback(null, result))
-    .catch(error => subscribeCallback(error, null))
+    .catch((error) => subscribeCallback(error, null));
 
-  return undefined
-}
+  return undefined;
+};
 
 export const unsubscribe = (
   context: Context,
   subscription: Subscription
 ): Promise<any> => {
-  const { viewModelName, aggregateIds, handler } = subscription
+  const { viewModelName, aggregateIds, handler } = subscription;
 
   const unsubscribeAsync = async (): Promise<any> => {
     if (typeof handler !== 'function') {
-      return
+      return;
     }
 
-    await disconnect(context, aggregateIds, viewModelName, handler)
-  }
+    await disconnect(context, aggregateIds, viewModelName, handler);
+  };
 
-  return unsubscribeAsync()
-}
+  return unsubscribeAsync();
+};
 
 const getStaticAssetUrl = (
   { rootPath, staticPath, origin }: Context,
   assetPath: string
 ): string => {
-  assertNonEmptyString(staticPath, 'staticPath')
-  assertNonEmptyString(assetPath, 'assetPath')
+  assertNonEmptyString(staticPath, 'staticPath');
+  assertNonEmptyString(assetPath, 'assetPath');
 
   if (isAbsoluteUrl(assetPath)) {
-    return assetPath
+    return assetPath;
   }
 
-  assertLeadingSlash(assetPath, 'assetPath')
+  assertLeadingSlash(assetPath, 'assetPath');
 
   if (isAbsoluteUrl(staticPath)) {
-    return `${staticPath}${assetPath}`
+    return `${staticPath}${assetPath}`;
   }
 
-  return getRootBasedUrl(rootPath, `/${staticPath}${assetPath}`, origin)
-}
+  return getRootBasedUrl(rootPath, `/${staticPath}${assetPath}`, origin);
+};
 
 export type Client = {
   command: (
     command: Command,
     options?: CommandOptions | CommandCallback,
     callback?: CommandCallback
-  ) => PromiseOrVoid<CommandResult>
+  ) => PromiseOrVoid<CommandResult>;
   query: (
     query: Query,
     options?: QueryOptions | QueryCallback,
     callback?: QueryCallback
-  ) => PromiseOrVoid<QueryResult>
-  getStaticAssetUrl: (assetPath: string) => string
+  ) => PromiseOrVoid<QueryResult>;
+  getStaticAssetUrl: (assetPath: string) => string;
   subscribe: (
     url: string,
     cursor: string,
@@ -345,9 +352,9 @@ export type Client = {
     handler: SubscribeHandler,
     subscribeCallback?: SubscribeCallback,
     resubscribeCallback?: ResubscribeCallback
-  ) => PromiseOrVoid<Subscription>
-  unsubscribe: (subscription: Subscription) => PromiseOrVoid<void>
-}
+  ) => PromiseOrVoid<Subscription>;
+  unsubscribe: (subscription: Subscription) => PromiseOrVoid<void>;
+};
 
 export const getClient = (context: Context): Client => ({
   command: (cmd, options?, callback?): PromiseOrVoid<CommandResult> =>
@@ -376,5 +383,5 @@ export const getClient = (context: Context): Client => ({
       resubscribeCallback
     ),
   unsubscribe: (subscription: Subscription): PromiseOrVoid<void> =>
-    unsubscribe(context, subscription)
-})
+    unsubscribe(context, subscription),
+});

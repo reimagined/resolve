@@ -7,11 +7,11 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
     escapeId,
     escape,
     rdsDataService,
-    inlineLedgerExecuteStatement
-  } = pool
+    inlineLedgerExecuteStatement,
+  } = pool;
 
-  const databaseNameAsId = escapeId(schemaName)
-  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
+  const databaseNameAsId = escapeId(schemaName);
+  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`);
   while (true) {
     try {
       const rows = await inlineLedgerExecuteStatement(
@@ -19,21 +19,21 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
         `SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escape(readModelName)}
         `
-      )
+      );
       if (rows.length < 1) {
-        break
+        break;
       }
-      const transactionId = rows[0].XaKey
+      const transactionId = rows[0].XaKey;
       if (transactionId == null) {
-        return
+        return;
       }
 
       try {
         await rdsDataService.rollbackTransaction({
           resourceArn: dbClusterOrInstanceArn,
           secretArn: awsSecretStoreArn,
-          transactionId
-        })
+          transactionId,
+        });
       } catch (err) {
         if (
           !(
@@ -42,19 +42,19 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
               /Invalid transaction ID/i.test(err.message))
           )
         ) {
-          throw err
+          throw err;
         }
       }
 
-      break
+      break;
     } catch (error) {
       if (error instanceof PassthroughError) {
-        continue
+        continue;
       }
 
-      throw error
+      throw error;
     }
   }
-}
+};
 
-export default inlineLedgerForceStop
+export default inlineLedgerForceStop;

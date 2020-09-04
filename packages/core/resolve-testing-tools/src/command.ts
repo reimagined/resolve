@@ -1,15 +1,15 @@
-import { symbol, Phases } from './constants'
-import { SerializableMap } from 'resolve-core'
+import { symbol, Phases } from './constants';
+import { SerializableMap } from 'resolve-core';
 
 type BDDCommandContext = {
   [symbol]: {
-    phase: Phases
+    phase: Phases;
     command: {
-      name: string
-      payload?: SerializableMap
-    }
-  }
-}
+      name: string;
+      payload?: SerializableMap;
+    };
+  };
+};
 
 export const command = (
   context: BDDCommandContext,
@@ -17,14 +17,14 @@ export const command = (
   payload?: SerializableMap
 ) => {
   if (context[symbol].phase !== Phases.AGGREGATE) {
-    throw new TypeError()
+    throw new TypeError();
   }
 
-  context[symbol].phase = Phases.COMMAND
+  context[symbol].phase = Phases.COMMAND;
   context[symbol].command = {
     name,
-    payload
-  }
+    payload,
+  };
 
-  return context
-}
+  return context;
+};

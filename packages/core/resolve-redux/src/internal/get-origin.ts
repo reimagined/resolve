@@ -5,6 +5,6 @@ const getOrigin = (location: any): string =>
           location.port ? `:${location.port}` : ''
         })`
       : location.origin
-    : null
+    : null;
 
-export default getOrigin
+export default getOrigin;

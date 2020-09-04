@@ -1,8 +1,8 @@
-import App from './components/App'
-import Home from './components/Home'
-import UserBlog from './components/UserBlog'
-import Users from './components/Users'
-import Profile from './components/Profile'
+import App from './components/App';
+import Home from './components/Home';
+import UserBlog from './components/UserBlog';
+import Users from './components/Users';
+import Profile from './components/Profile';
 
 export default [
   {
@@ -11,20 +11,20 @@ export default [
       {
         path: '/',
         component: Home,
-        exact: true
+        exact: true,
       },
       {
         path: '/users',
-        component: Users
+        component: Users,
       },
       {
         path: '/profile',
-        component: Profile
+        component: Profile,
       },
       {
         path: '/blog/:id',
-        component: UserBlog
-      }
-    ]
-  }
-]
+        component: UserBlog,
+      },
+    ],
+  },
+];

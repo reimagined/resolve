@@ -1,16 +1,16 @@
-import initResolve from '../common/init-resolve'
-import disposeResolve from '../common/dispose-resolve'
+import initResolve from '../common/init-resolve';
+import disposeResolve from '../common/dispose-resolve';
 
-const initBroker = async resolve => {
+const initBroker = async (resolve) => {
   const {
     assemblies: { connectPublisher, createAndInitConsumer, eventBrokerConfig },
-    eventListeners
-  } = resolve
+    eventListeners,
+  } = resolve;
 
   const publisher = await connectPublisher({
     address: eventBrokerConfig.publisherAddress,
-    eventListeners
-  })
+    eventListeners,
+  });
 
   // TODO: improve lifecycle
   const consumer = await createAndInitConsumer({
@@ -18,13 +18,13 @@ const initBroker = async resolve => {
     baseResolve: resolve,
     initResolve,
     disposeResolve,
-    publisher
-  })
+    publisher,
+  });
 
   Object.assign(resolve, {
     publisher,
-    consumer
-  })
-}
+    consumer,
+  });
+};
 
-export default initBroker
+export default initBroker;

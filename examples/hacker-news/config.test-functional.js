@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from 'resolve-scripts';
 
 const testFunctionalConfig = {
   target: 'local',
@@ -8,20 +8,20 @@ const testFunctionalConfig = {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'data/read-model-default-test-functional.db'
-      }
+        databaseFile: 'data/read-model-default-test-functional.db',
+      },
     },
     hackerNews: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'data/read-model-hackerNews-test-functional.db'
-      }
+        databaseFile: 'data/read-model-hackerNews-test-functional.db',
+      },
     },
     comments: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'data/read-model-comments-test-functional.db'
-      }
+        databaseFile: 'data/read-model-comments-test-functional.db',
+      },
     },
     elasticSearch: {
       module: 'common/read-models/elastic-search-connector.js',
@@ -29,31 +29,31 @@ const testFunctionalConfig = {
         /*
         host: 'localhost:9200'
         */
-      }
-    }
+      },
+    },
   },
   schedulers: {
     scheduler: {
       adapter: {
         module: 'resolve-scheduler-local',
-        options: {}
+        options: {},
       },
-      connectorName: 'default'
-    }
+      connectorName: 'default',
+    },
   },
   jwtCookie: {
     name: 'jwt',
-    maxAge: 31536000000
+    maxAge: 31536000000,
   },
   eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
     options: {
-      databaseFile: 'data/event-store-test-functional.db'
-    }
+      databaseFile: 'data/event-store-test-functional.db',
+    },
   },
   eventBroker: {
-    databaseFile: 'data/local-bus-broker-test-functional.db'
-  }
-}
+    databaseFile: 'data/local-bus-broker-test-functional.db',
+  },
+};
 
-export default testFunctionalConfig
+export default testFunctionalConfig;

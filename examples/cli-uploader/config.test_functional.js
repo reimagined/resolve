@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from 'resolve-scripts';
 
 const testFunctionalConfig = {
   target: 'local',
@@ -9,11 +9,11 @@ const testFunctionalConfig = {
   eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
     options: {
-      databaseFile: 'data/event-store-test-functional.db'
-    }
+      databaseFile: 'data/event-store-test-functional.db',
+    },
   },
   staticDir: 'static',
-  distDir: 'dist'
-}
+  distDir: 'dist',
+};
 
-export default testFunctionalConfig
+export default testFunctionalConfig;

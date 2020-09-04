@@ -5,12 +5,12 @@ const appConfig = {
         module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
         options: {
           modulePath: './ssr.js',
-          moduleFactoryImport: false
-        }
+          moduleFactoryImport: false,
+        },
       },
       path: '/:markup*',
-      method: 'GET'
-    }
+      method: 'GET',
+    },
   ],
   clientEntries: [
     'client/index.js',
@@ -19,10 +19,10 @@ const appConfig = {
       {
         outputFile: 'common/local-entry/ssr.js',
         moduleType: 'commonjs',
-        target: 'node'
-      }
-    ]
-  ]
-}
+        target: 'node',
+      },
+    ],
+  ],
+};
 
-export default appConfig
+export default appConfig;

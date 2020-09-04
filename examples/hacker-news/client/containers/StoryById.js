@@ -1,22 +1,22 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { RefreshHelperRenderless } from 'resolve-module-comments'
+import React from 'react';
+import { connect } from 'react-redux';
+import { RefreshHelperRenderless } from 'resolve-module-comments';
 
-import ConnectedStory from './ConnectedStory'
-import ConnectedComments from './ConnectedComments'
-import CommentsNotification from '../components/CommentsNotification'
+import ConnectedStory from './ConnectedStory';
+import ConnectedComments from './ConnectedComments';
+import CommentsNotification from '../components/CommentsNotification';
 
 export class StoryById extends React.PureComponent {
   render() {
     const {
       match: {
-        params: { storyId }
+        params: { storyId },
       },
-      authorId
-    } = this.props
+      authorId,
+    } = this.props;
 
     if (!storyId) {
-      return null
+      return null;
     }
 
     return (
@@ -37,12 +37,12 @@ export class StoryById extends React.PureComponent {
           </div>
         )}
       </RefreshHelperRenderless>
-    )
+    );
   }
 }
 
 export const mapStateToProps = ({ jwt }) => ({
-  authorId: jwt.id
-})
+  authorId: jwt.id,
+});
 
-export default connect(mapStateToProps)(StoryById)
+export default connect(mapStateToProps)(StoryById);

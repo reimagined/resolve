@@ -1,8 +1,8 @@
 class PassthroughError extends Error {
   constructor(lastTransactionId) {
-    super()
-    this.name = 'PassthroughError'
-    this.lastTransactionId = lastTransactionId
+    super();
+    this.name = 'PassthroughError';
+    this.lastTransactionId = lastTransactionId;
   }
 
   static isPassthroughError(error) {
@@ -11,8 +11,8 @@ class PassthroughError extends Error {
       (/Transaction .*? Is Not Found/i.test(error.message) ||
         /deadlock detected/i.test(error.message) ||
         /could not obtain lock/i.test(error.message))
-    )
+    );
   }
 }
 
-export default PassthroughError
+export default PassthroughError;

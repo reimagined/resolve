@@ -1,27 +1,27 @@
-import { internal } from 'resolve-redux'
+import { internal } from 'resolve-redux';
 
-import createCommentsReducer from '../../src/client/reducers/comments'
+import createCommentsReducer from '../../src/client/reducers/comments';
 import {
   aggregateName,
   readModelName,
   commentsTree,
   createComment,
   updateComment,
-  removeComment
-} from '../../src/common/defaults'
+  removeComment,
+} from '../../src/common/defaults';
 
 const {
   CONNECT_READMODEL,
   DISCONNECT_READMODEL,
   QUERY_READMODEL_SUCCESS,
-  SEND_COMMAND_SUCCESS
-} = internal.actionTypes
+  SEND_COMMAND_SUCCESS,
+} = internal.actionTypes;
 
 describe('reducer "comments"', () => {
-  const reducer = createCommentsReducer()
+  const reducer = createCommentsReducer();
 
   test('projection "CONNECT_READMODEL" should create initial state', () => {
-    const state = {}
+    const state = {};
     const action = {
       type: CONNECT_READMODEL,
       query: {
@@ -29,30 +29,30 @@ describe('reducer "comments"', () => {
         resolver: commentsTree,
         args: {
           treeId: 'treeId',
-          parentCommentId: 'parentCommentId'
-        }
-      }
-    }
+          parentCommentId: 'parentCommentId',
+        },
+      },
+    };
 
-    const nextState = reducer(state, action)
+    const nextState = reducer(state, action);
 
     expect(nextState).toEqual({
       treeId: {
         parentCommentId: {
-          children: []
-        }
-      }
-    })
-  })
+          children: [],
+        },
+      },
+    });
+  });
 
   test('projection "DISCONNECT_READMODEL" should drop state', () => {
     const state = {
       treeId: {
         parentCommentId: {
-          children: []
-        }
-      }
-    }
+          children: [],
+        },
+      },
+    };
     const action = {
       type: DISCONNECT_READMODEL,
       query: {
@@ -60,24 +60,24 @@ describe('reducer "comments"', () => {
         resolver: commentsTree,
         args: {
           treeId: 'treeId',
-          parentCommentId: 'parentCommentId'
-        }
-      }
-    }
+          parentCommentId: 'parentCommentId',
+        },
+      },
+    };
 
-    const nextState = reducer(state, action)
+    const nextState = reducer(state, action);
 
-    expect(nextState).toEqual({})
-  })
+    expect(nextState).toEqual({});
+  });
 
   test('projection "LOAD_READMODEL_STATE_SUCCESS" should update state', () => {
     const state = {
       treeId: {
         parentCommentId: {
-          children: []
-        }
-      }
-    }
+          children: [],
+        },
+      },
+    };
     const action = {
       type: QUERY_READMODEL_SUCCESS,
       query: {
@@ -85,37 +85,37 @@ describe('reducer "comments"', () => {
         resolver: commentsTree,
         args: {
           treeId: 'treeId',
-          parentCommentId: 'parentCommentId'
-        }
+          parentCommentId: 'parentCommentId',
+        },
       },
       result: {
         data: {
           commentId: 'parentCommentId',
-          children: [{ test: true }]
-        }
-      }
-    }
+          children: [{ test: true }],
+        },
+      },
+    };
 
-    const nextState = reducer(state, action)
+    const nextState = reducer(state, action);
 
     expect(nextState).toEqual({
       treeId: {
         parentCommentId: {
           commentId: 'parentCommentId',
-          children: [{ test: true }]
-        }
-      }
-    })
-  })
+          children: [{ test: true }],
+        },
+      },
+    });
+  });
 
   test('projection "SEND_COMMAND_SUCCESS, createComment" should create comment', () => {
     const state = {
       treeId: {
         parentCommentId: {
-          children: []
-        }
-      }
-    }
+          children: [],
+        },
+      },
+    };
     const action = {
       type: SEND_COMMAND_SUCCESS,
       command: {
@@ -125,12 +125,12 @@ describe('reducer "comments"', () => {
         payload: {
           commentId: 'commentId',
           content: {},
-          parentCommentId: 'parentCommentId'
-        }
-      }
-    }
+          parentCommentId: 'parentCommentId',
+        },
+      },
+    };
 
-    const nextState = reducer(state, action)
+    const nextState = reducer(state, action);
 
     expect(nextState).toEqual({
       treeId: {
@@ -139,13 +139,13 @@ describe('reducer "comments"', () => {
             {
               commentId: 'commentId',
               content: {},
-              parentCommentId: 'parentCommentId'
-            }
-          ]
-        }
-      }
-    })
-  })
+              parentCommentId: 'parentCommentId',
+            },
+          ],
+        },
+      },
+    });
+  });
 
   test('projection "SEND_COMMAND_SUCCESS, updateComment" should update comment', () => {
     const state = {
@@ -155,12 +155,12 @@ describe('reducer "comments"', () => {
             {
               commentId: 'commentId',
               content: {},
-              parentCommentId: 'parentCommentId'
-            }
-          ]
-        }
-      }
-    }
+              parentCommentId: 'parentCommentId',
+            },
+          ],
+        },
+      },
+    };
     const action = {
       type: SEND_COMMAND_SUCCESS,
       command: {
@@ -170,12 +170,12 @@ describe('reducer "comments"', () => {
         payload: {
           commentId: 'commentId',
           content: { test: true },
-          parentCommentId: 'parentCommentId'
-        }
-      }
-    }
+          parentCommentId: 'parentCommentId',
+        },
+      },
+    };
 
-    const nextState = reducer(state, action)
+    const nextState = reducer(state, action);
 
     expect(nextState).toEqual({
       treeId: {
@@ -184,13 +184,13 @@ describe('reducer "comments"', () => {
             {
               commentId: 'commentId',
               content: { test: true },
-              parentCommentId: 'parentCommentId'
-            }
-          ]
-        }
-      }
-    })
-  })
+              parentCommentId: 'parentCommentId',
+            },
+          ],
+        },
+      },
+    });
+  });
 
   test('projection "SEND_COMMAND_SUCCESS, removeComment" should remove comment', () => {
     const state = {
@@ -200,12 +200,12 @@ describe('reducer "comments"', () => {
             {
               commentId: 'commentId',
               content: {},
-              parentCommentId: 'parentCommentId'
-            }
-          ]
-        }
-      }
-    }
+              parentCommentId: 'parentCommentId',
+            },
+          ],
+        },
+      },
+    };
     const action = {
       type: SEND_COMMAND_SUCCESS,
       command: {
@@ -214,19 +214,19 @@ describe('reducer "comments"', () => {
         aggregateName,
         payload: {
           commentId: 'commentId',
-          parentCommentId: 'parentCommentId'
-        }
-      }
-    }
+          parentCommentId: 'parentCommentId',
+        },
+      },
+    };
 
-    const nextState = reducer(state, action)
+    const nextState = reducer(state, action);
 
     expect(nextState).toEqual({
       treeId: {
         parentCommentId: {
-          children: []
-        }
-      }
-    })
-  })
-})
+          children: [],
+        },
+      },
+    });
+  });
+});

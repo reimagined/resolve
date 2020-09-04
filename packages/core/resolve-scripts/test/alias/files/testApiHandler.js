@@ -1,3 +1,3 @@
 export default (req, res) => {
-  res.end('ok')
-}
+  res.end('ok');
+};

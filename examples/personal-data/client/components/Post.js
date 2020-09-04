@@ -1,48 +1,48 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState } from 'react';
 import {
   Card,
   CardBody,
   CardHeader,
   CardText,
   CardFooter,
-  Button
-} from 'reactstrap'
-import Markdown from 'react-markdown'
-import { useCommand } from 'resolve-react-hooks'
+  Button,
+} from 'reactstrap';
+import Markdown from 'react-markdown';
+import { useCommand } from 'resolve-react-hooks';
 
-import UserContext from '../userContext'
+import UserContext from '../userContext';
 
-const Image = props => <img {...props} className="img-fluid" alt="" />
+const Image = (props) => <img {...props} className="img-fluid" alt="" />;
 
 const Post = ({ post }) => {
-  const { title, content, author, id: postId } = post
-  const user = useContext(UserContext)
+  const { title, content, author, id: postId } = post;
+  const user = useContext(UserContext);
   const [state, setState] = useState({
     deleted: false,
-    deletionError: null
-  })
-  const { deleted } = state
+    deletionError: null,
+  });
+  const { deleted } = state;
 
   const deletePost = useCommand(
     {
       type: 'delete',
       aggregateId: postId,
       aggregateName: 'blog-post',
-      payload: {}
+      payload: {},
     },
-    error => {
+    (error) => {
       if (error) {
-        setState({ ...state, deletionError: error })
+        setState({ ...state, deletionError: error });
       } else {
         setState({
           ...state,
           deletionError: null,
-          deleted: true
-        })
+          deleted: true,
+        });
       }
     },
     [content]
-  )
+  );
 
   const postView = (
     <Card>
@@ -60,7 +60,7 @@ const Post = ({ post }) => {
         </CardFooter>
       )}
     </Card>
-  )
+  );
 
   return (
     <div className="mb-3">
@@ -76,7 +76,7 @@ const Post = ({ post }) => {
         postView
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Post
+export default Post;

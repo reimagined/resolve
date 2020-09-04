@@ -1,5 +1,5 @@
-const STRING_INDEX_TYPE = 'VARCHAR(190)'
-const NUMBER_INDEX_TYPE = 'BIGINT'
+const STRING_INDEX_TYPE = 'VARCHAR(190)';
+const NUMBER_INDEX_TYPE = 'BIGINT';
 
 const defineTable = async (
   { executeStatement, tablePrefix, escapeId, escape, schemaName },
@@ -14,9 +14,9 @@ const defineTable = async (
     tableDescription.indexes.constructor !== Object ||
     !Array.isArray(tableDescription.fields)
   ) {
-    throw new Error(`Wrong table description ${tableDescription}`)
+    throw new Error(`Wrong table description ${tableDescription}`);
   }
-  const { fields, indexes } = tableDescription
+  const { fields, indexes } = tableDescription;
 
   await executeStatement(
     `
@@ -25,7 +25,7 @@ const defineTable = async (
     )} (
       ${fields
         .concat(Object.keys(indexes))
-        .map(columnName => `${escapeId(columnName)} JSONB`)
+        .map((columnName) => `${escapeId(columnName)} JSONB`)
         .join(', ')}
     );
 
@@ -67,7 +67,7 @@ const defineTable = async (
     )}
     IS ${escape(`RESOLVE-${readModelName}`)};
   `
-  )
-}
+  );
+};
 
-export default defineTable
+export default defineTable;

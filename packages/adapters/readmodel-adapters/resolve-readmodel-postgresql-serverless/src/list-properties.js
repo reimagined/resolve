@@ -1,8 +1,8 @@
 const listProperties = async (pool, readModelName) => {
-  const { schemaName, escapeId, escape, inlineLedgerExecuteStatement } = pool
+  const { schemaName, escapeId, escape, inlineLedgerExecuteStatement } = pool;
 
-  const databaseNameAsId = escapeId(schemaName)
-  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
+  const databaseNameAsId = escapeId(schemaName);
+  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`);
 
   const rows = await inlineLedgerExecuteStatement(
     pool,
@@ -10,13 +10,13 @@ const listProperties = async (pool, readModelName) => {
      FROM  ${databaseNameAsId}.${ledgerTableNameAsId}
      WHERE "EventSubscriber" = ${escape(readModelName)}
     `
-  )
+  );
 
   if (rows.length === 1) {
-    return rows[0].Properties
+    return rows[0].Properties;
   } else {
-    return null
+    return null;
   }
-}
+};
 
-export default listProperties
+export default listProperties;

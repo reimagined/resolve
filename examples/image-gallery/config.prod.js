@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from 'resolve-scripts';
 
 const prodConfig = {
   target: 'local',
@@ -11,11 +11,11 @@ const prodConfig = {
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
-      snapshotBucketSize: 100
-    }
+      snapshotBucketSize: 100,
+    },
   },
   staticDir: 'static',
-  distDir: 'dist'
-}
+  distDir: 'dist',
+};
 
-export default prodConfig
+export default prodConfig;

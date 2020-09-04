@@ -1,20 +1,20 @@
-import { REFRESH } from '../action-types'
+import { REFRESH } from '../action-types';
 
 const initialState = {
-  timestamp: Date.now()
-}
+  timestamp: Date.now(),
+};
 
 const refresh = (state = initialState, action) => {
   switch (action.type) {
     case REFRESH: {
       return {
-        timestamp: action.payload.timestamp
-      }
+        timestamp: action.payload.timestamp,
+      };
     }
     default: {
-      return state
+      return state;
     }
   }
-}
+};
 
-export default refresh
+export default refresh;

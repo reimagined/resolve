@@ -1,8 +1,8 @@
-import { message } from '../constants'
+import { message } from '../constants';
 
 export default ({ isClient }) => {
   if (isClient) {
-    throw new Error(`${message.serverAliasInClientCodeError}.guardOnlyServer`)
+    throw new Error(`${message.serverAliasInClientCodeError}.guardOnlyServer`);
   }
 
   return `
@@ -49,5 +49,5 @@ export default ({ isClient }) => {
     }
 
     export default null
-  `
-}
+  `;
+};

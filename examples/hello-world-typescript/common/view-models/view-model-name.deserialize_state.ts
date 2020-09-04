@@ -1,1 +1,1 @@
-export default (state): object => JSON.parse(state)
+export default (state): object => JSON.parse(state);

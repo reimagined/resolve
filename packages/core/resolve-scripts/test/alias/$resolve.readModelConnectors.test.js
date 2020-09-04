@@ -1,6 +1,6 @@
-import path from 'path'
-import alias from '../../src/alias/$resolve.readModelConnectors'
-import normalizePaths from './normalize_paths'
+import path from 'path';
+import alias from '../../src/alias/$resolve.readModelConnectors';
+import normalizePaths from './normalize_paths';
 
 test('should fail when imported from client', () => {
   expect(() =>
@@ -8,73 +8,73 @@ test('should fail when imported from client', () => {
       '\r\n' +
         alias({
           resolveConfig: {},
-          isClient: true
+          isClient: true,
         }) +
         '\r\n'
     )
-  ).toThrow()
-})
+  ).toThrow();
+});
 
 test('base config works correctly with module and options', () => {
   const resolveConfig = {
     readModelConnectors: {
       default: {
         module: path.join(__dirname, 'files', 'testReadmodelConnector.js'),
-        options: {}
-      }
-    }
-  }
+        options: {},
+      },
+    },
+  };
 
   expect(
     normalizePaths(
       '\r\n' +
         alias({
           resolveConfig,
-          isClient: false
+          isClient: false,
         }) +
         '\r\n'
     )
-  ).toMatchSnapshot()
-})
+  ).toMatchSnapshot();
+});
 
 test('base config works correctly with options and default module', () => {
   const resolveConfig = {
     readModelConnectors: {
       default: {
-        options: {}
-      }
-    }
-  }
+        options: {},
+      },
+    },
+  };
 
   expect(
     normalizePaths(
       '\r\n' +
         alias({
           resolveConfig,
-          isClient: false
+          isClient: false,
         }) +
         '\r\n'
     )
-  ).toMatchSnapshot()
-})
+  ).toMatchSnapshot();
+});
 
 test('base config works correctly with default module and options', () => {
   const resolveConfig = {
     readModelConnectors: {
       default: {
-        module: path.join(__dirname, 'files', 'testReadmodelConnector.js')
-      }
-    }
-  }
+        module: path.join(__dirname, 'files', 'testReadmodelConnector.js'),
+      },
+    },
+  };
 
   expect(
     normalizePaths(
       '\r\n' +
         alias({
           resolveConfig,
-          isClient: false
+          isClient: false,
         }) +
         '\r\n'
     )
-  ).toMatchSnapshot()
-})
+  ).toMatchSnapshot();
+});

@@ -5,40 +5,40 @@ const appConfig = {
     {
       name: 'ShoppingList',
       commands: 'common/aggregates/shopping_list.commands.js',
-      projection: 'common/aggregates/shopping_list.projection.js'
-    }
+      projection: 'common/aggregates/shopping_list.projection.js',
+    },
   ],
   viewModels: [
     {
       name: 'shoppingList',
-      projection: 'common/view-models/shopping_list.projection.js'
-    }
+      projection: 'common/view-models/shopping_list.projection.js',
+    },
   ],
   readModels: [
     {
       name: 'ShoppingLists',
       projection: 'common/read-models/shopping_lists.projection.js',
       resolvers: 'common/read-models/shopping_lists.resolvers.js',
-      connectorName: 'default'
-    }
+      connectorName: 'default',
+    },
   ],
   apiHandlers: [
     {
       path: '/api/shopping-lists.json',
       handler: 'common/api-handlers/shopping_lists.js',
-      method: 'GET'
+      method: 'GET',
     },
     {
       handler: {
         module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
         options: {
           modulePath: './ssr.js',
-          moduleFactoryImport: false
-        }
+          moduleFactoryImport: false,
+        },
       },
       path: '/:markup*',
-      method: 'GET'
-    }
+      method: 'GET',
+    },
   ],
   clientEntries: [
     'client/index.js',
@@ -47,18 +47,18 @@ const appConfig = {
       {
         outputFile: 'common/local-entry/ssr.js',
         moduleType: 'commonjs',
-        target: 'node'
-      }
+        target: 'node',
+      },
     ],
     [
       'client/ssr.js',
       {
         outputFile: 'common/cloud-entry/ssr.js',
         moduleType: 'commonjs',
-        target: 'node'
-      }
-    ]
-  ]
-}
+        target: 'node',
+      },
+    ],
+  ],
+};
 
-export default appConfig
+export default appConfig;

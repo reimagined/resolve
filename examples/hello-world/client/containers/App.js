@@ -1,23 +1,23 @@
-import React from 'react'
-import { Navbar, Image } from 'react-bootstrap'
-import { Helmet } from 'react-helmet'
+import React from 'react';
+import { Navbar, Image } from 'react-bootstrap';
+import { Helmet } from 'react-helmet';
 
 const App = ({ staticPath }) => {
   const stylesheetLink = {
     rel: 'stylesheet',
     type: 'text/css',
-    href: `${staticPath}/bootstrap.min.css`
-  }
+    href: `${staticPath}/bootstrap.min.css`,
+  };
   const faviconLink = {
     rel: 'icon',
     type: 'image/png',
-    href: `${staticPath}/favicon.ico`
-  }
-  const links = [stylesheetLink, faviconLink]
+    href: `${staticPath}/favicon.ico`,
+  };
+  const links = [stylesheetLink, faviconLink];
   const meta = {
     name: 'viewport',
-    content: 'width=device-width, initial-scale=1'
-  }
+    content: 'width=device-width, initial-scale=1',
+  };
 
   return (
     <div>
@@ -51,7 +51,7 @@ const App = ({ staticPath }) => {
       </div>
       <h1 align="center">Hello, reSolve world!</h1>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

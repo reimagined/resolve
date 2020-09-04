@@ -3,9 +3,9 @@ const commitTransaction = async (pool, transactionId) => {
     .commitTransaction({
       resourceArn: pool.dbClusterOrInstanceArn,
       secretArn: pool.awsSecretStoreArn,
-      transactionId
+      transactionId,
     })
-    .promise()
-}
+    .promise();
+};
 
-export default commitTransaction
+export default commitTransaction;

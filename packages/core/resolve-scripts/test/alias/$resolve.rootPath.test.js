@@ -1,22 +1,22 @@
-import declareRuntimeEnv from '../../src/declare_runtime_env'
+import declareRuntimeEnv from '../../src/declare_runtime_env';
 
-import alias from '../../src/alias/$resolve.rootPath'
-import normalizePaths from './normalize_paths'
+import alias from '../../src/alias/$resolve.rootPath';
+import normalizePaths from './normalize_paths';
 
 describe('$resolve.rootPath', () => {
   test('should support runtime envs', () => {
-    const resolveConfig = { rootPath: declareRuntimeEnv('ROOT_PATH') }
+    const resolveConfig = { rootPath: declareRuntimeEnv('ROOT_PATH') };
     {
       const result = normalizePaths(
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
-      )
+      );
 
-      expect(result).toMatchSnapshot('[client - runtime]')
+      expect(result).toMatchSnapshot('[client - runtime]');
     }
 
     {
@@ -24,33 +24,33 @@ describe('$resolve.rootPath', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
-      )
+      );
 
-      expect(result).toMatchSnapshot('[server - runtime]')
+      expect(result).toMatchSnapshot('[server - runtime]');
     }
-  })
+  });
 
   test('should support part of URL', () => {
-    const rootPath = 'rootPath'
+    const rootPath = 'rootPath';
 
-    const resolveConfig = { rootPath }
+    const resolveConfig = { rootPath };
 
     {
       const result = normalizePaths(
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
-      )
+      );
 
-      expect(result).toMatchSnapshot('[client - compile-time]')
+      expect(result).toMatchSnapshot('[client - compile-time]');
 
-      expect(result).toContain(encodeURI(rootPath))
+      expect(result).toContain(encodeURI(rootPath));
     }
 
     {
@@ -58,35 +58,35 @@ describe('$resolve.rootPath', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
-      )
+      );
 
-      expect(result).toMatchSnapshot('[server - compile-time]')
+      expect(result).toMatchSnapshot('[server - compile-time]');
 
-      expect(result).toContain(encodeURI(rootPath))
+      expect(result).toContain(encodeURI(rootPath));
     }
-  })
+  });
 
   test('should support empty URL', () => {
-    const rootPath = ''
+    const rootPath = '';
 
-    const resolveConfig = { rootPath }
+    const resolveConfig = { rootPath };
 
     {
       const result = normalizePaths(
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
-      )
+      );
 
-      expect(result).toMatchSnapshot('[client - compile-time]')
+      expect(result).toMatchSnapshot('[client - compile-time]');
 
-      expect(result).toContain(encodeURI(rootPath))
+      expect(result).toContain(encodeURI(rootPath));
     }
 
     {
@@ -94,21 +94,21 @@ describe('$resolve.rootPath', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
-      )
+      );
 
-      expect(result).toMatchSnapshot('[server - compile-time]')
+      expect(result).toMatchSnapshot('[server - compile-time]');
 
-      expect(result).toContain(encodeURI(rootPath))
+      expect(result).toContain(encodeURI(rootPath));
     }
-  })
+  });
 
   test('should not support absolute URL', () => {
-    const rootPath = 'http://resolve.dev'
+    const rootPath = 'http://resolve.dev';
 
-    const resolveConfig = { rootPath }
+    const resolveConfig = { rootPath };
 
     {
       expect(() =>
@@ -116,11 +116,11 @@ describe('$resolve.rootPath', () => {
           '\r\n' +
             alias({
               resolveConfig,
-              isClient: true
+              isClient: true,
             }) +
             '\r\n'
         )
-      ).toThrow()
+      ).toThrow();
     }
 
     {
@@ -129,19 +129,19 @@ describe('$resolve.rootPath', () => {
           '\r\n' +
             alias({
               resolveConfig,
-              isClient: false
+              isClient: false,
             }) +
             '\r\n'
-        )
+        );
 
-      expect(result).toThrow()
+      expect(result).toThrow();
     }
-  })
+  });
 
   test('should not support part of URL with leading slash', () => {
-    const rootPath = '/rootPath'
+    const rootPath = '/rootPath';
 
-    const resolveConfig = { rootPath }
+    const resolveConfig = { rootPath };
 
     {
       expect(() =>
@@ -149,11 +149,11 @@ describe('$resolve.rootPath', () => {
           '\r\n' +
             alias({
               resolveConfig,
-              isClient: true
+              isClient: true,
             }) +
             '\r\n'
         )
-      ).toThrow()
+      ).toThrow();
     }
 
     {
@@ -162,19 +162,19 @@ describe('$resolve.rootPath', () => {
           '\r\n' +
             alias({
               resolveConfig,
-              isClient: false
+              isClient: false,
             }) +
             '\r\n'
-        )
+        );
 
-      expect(result).toThrow()
+      expect(result).toThrow();
     }
-  })
+  });
 
   test('should not support part of URL with trailing slash', () => {
-    const rootPath = 'rootPath/'
+    const rootPath = 'rootPath/';
 
-    const resolveConfig = { rootPath }
+    const resolveConfig = { rootPath };
 
     {
       expect(() =>
@@ -182,11 +182,11 @@ describe('$resolve.rootPath', () => {
           '\r\n' +
             alias({
               resolveConfig,
-              isClient: true
+              isClient: true,
             }) +
             '\r\n'
         )
-      ).toThrow()
+      ).toThrow();
     }
 
     {
@@ -195,12 +195,12 @@ describe('$resolve.rootPath', () => {
           '\r\n' +
             alias({
               resolveConfig,
-              isClient: false
+              isClient: false,
             }) +
             '\r\n'
-        )
+        );
 
-      expect(result).toThrow()
+      expect(result).toThrow();
     }
-  })
-})
+  });
+});

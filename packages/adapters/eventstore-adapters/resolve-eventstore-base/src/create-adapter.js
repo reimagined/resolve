@@ -1,5 +1,5 @@
-import getLog from './get-log'
-import getSecretsManagerFallback from './get-secrets-manager-fallback'
+import getLog from './get-log';
+import getSecretsManagerFallback from './get-secrets-manager-fallback';
 
 const createAdapter = (
   {
@@ -12,7 +12,7 @@ const createAdapter = (
     importStream,
     exportStream,
     incrementalImport,
-    getNextCursor
+    getNextCursor,
   },
   {
     connect,
@@ -40,23 +40,23 @@ const createAdapter = (
   },
   options
 ) => {
-  const log = getLog(`createAdapter`)
-  const config = { ...options }
-  const pool = { config, disposed: false, validateEventFilter }
+  const log = getLog(`createAdapter`);
+  const config = { ...options };
+  const pool = { config, disposed: false, validateEventFilter };
 
-  let bucketSize = 100
-  const { snapshotBucketSize } = config
+  let bucketSize = 100;
+  const { snapshotBucketSize } = config;
   if (Number.isSafeInteger(snapshotBucketSize) && snapshotBucketSize > 0) {
-    bucketSize = snapshotBucketSize
-    log.debug(`snapshot bucket size explicitly set to ${bucketSize}`)
+    bucketSize = snapshotBucketSize;
+    log.debug(`snapshot bucket size explicitly set to ${bucketSize}`);
   } else {
-    log.debug(`snapshot bucket size defaulted to ${bucketSize}`)
+    log.debug(`snapshot bucket size defaulted to ${bucketSize}`);
   }
 
-  let connectPromiseResolve
-  const connectPromise = new Promise(resolve => {
-    connectPromiseResolve = resolve.bind(null, null)
-  }).then(connect.bind(null, pool, adapterSpecificArguments))
+  let connectPromiseResolve;
+  const connectPromise = new Promise((resolve) => {
+    connectPromiseResolve = resolve.bind(null, null);
+  }).then(connect.bind(null, pool, adapterSpecificArguments));
 
   Object.assign(pool, {
     injectEvent: wrapMethod(pool, injectEvent),
@@ -70,8 +70,8 @@ const createAdapter = (
     connectPromiseResolve,
     shapeEvent,
     counters: new Map(),
-    bucketSize
-  })
+    bucketSize,
+  });
 
   const adapter = {
     loadEvents: wrapMethod(pool, wrapEventFilter(loadEvents)),
@@ -94,12 +94,12 @@ const createAdapter = (
     beginIncrementalImport: wrapMethod(pool, beginIncrementalImport),
     commitIncrementalImport: wrapMethod(pool, commitIncrementalImport),
     rollbackIncrementalImport: wrapMethod(pool, rollbackIncrementalImport),
-    incrementalImport: wrapMethod(pool, incrementalImport)
-  }
+    incrementalImport: wrapMethod(pool, incrementalImport),
+  };
 
-  Object.assign(pool, adapter)
+  Object.assign(pool, adapter);
 
-  return Object.freeze(adapter)
-}
+  return Object.freeze(adapter);
+};
 
-export default createAdapter
+export default createAdapter;

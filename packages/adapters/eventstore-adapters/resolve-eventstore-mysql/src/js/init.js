@@ -1,27 +1,27 @@
-import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
-import getLog from './get-log'
+import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base';
+import getLog from './get-log';
 import {
   longNumberSqlType,
   longStringSqlType,
   customObjectSqlType,
   mediumBlobSqlType,
   longBlobSqlType,
-  aggregateIdSqlType
-} from './constants'
+  aggregateIdSqlType,
+} from './constants';
 
 const initEventStore = async ({
   events: { eventsTableName, snapshotsTableName, connection, database },
-  escapeId
+  escapeId,
 }) => {
-  const log = getLog('initEventStore')
+  const log = getLog('initEventStore');
 
-  log.debug(`initializing events database tables`)
+  log.debug(`initializing events database tables`);
 
-  const eventsTableNameAsId = escapeId(eventsTableName)
-  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
-  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
+  const eventsTableNameAsId = escapeId(eventsTableName);
+  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`);
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName);
 
-  log.debug(`building a query`)
+  log.debug(`building a query`);
   const query = `CREATE TABLE ${eventsTableNameAsId}(
         \`threadId\` ${longNumberSqlType},
         \`threadCounter\` ${longNumberSqlType},
@@ -56,27 +56,27 @@ const initEventStore = async ({
       ) VALUES ${Array.from(new Array(256))
         .map((_, index) => `(${index}, 0)`)
         .join(',')}
-      ;`
+      ;`;
 
   try {
-    log.debug(`executing query`)
-    log.verbose(query)
-    await connection.query(query)
-    log.debug(`query executed successfully`)
+    log.debug(`executing query`);
+    log.verbose(query);
+    await connection.query(query);
+    log.debug(`query executed successfully`);
   } catch (error) {
     if (error) {
-      let errorToThrow = error
+      let errorToThrow = error;
       if (/Table.*? already exists$/i.test(error.message)) {
         errorToThrow = new EventstoreResourceAlreadyExistError(
           `duplicate initialization of the mysql adapter with same events database "${database}" and table "${eventsTableName}" not allowed`
-        )
+        );
       } else {
-        log.error(errorToThrow.message)
-        log.verbose(errorToThrow.stack)
+        log.error(errorToThrow.message);
+        log.verbose(errorToThrow.stack);
       }
-      throw errorToThrow
+      throw errorToThrow;
     }
   }
-}
+};
 
-export default initEventStore
+export default initEventStore;

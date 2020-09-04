@@ -1,27 +1,27 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { connectReadModel } from 'resolve-redux'
-import { ControlLabel } from 'react-bootstrap'
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { connectReadModel } from 'resolve-redux';
+import { ControlLabel } from 'react-bootstrap';
 
-import UserList from '../components/UserList'
-import * as aggregateActions from '../redux/aggregate-actions'
+import UserList from '../components/UserList';
+import * as aggregateActions from '../redux/aggregate-actions';
 
 class FindUsers extends React.PureComponent {
   shareShoppingListForUser = (userId, username) => {
-    const shoppingListId = this.props.shoppingListId
+    const shoppingListId = this.props.shoppingListId;
 
-    this.props.shareShoppingListForUser(shoppingListId, { userId, username })
-  }
+    this.props.shareShoppingListForUser(shoppingListId, { userId, username });
+  };
 
   unshareShoppingListForUser = (userId, username) => {
-    const shoppingListId = this.props.shoppingListId
+    const shoppingListId = this.props.shoppingListId;
 
-    this.props.unshareShoppingListForUser(shoppingListId, { userId, username })
-  }
+    this.props.unshareShoppingListForUser(shoppingListId, { userId, username });
+  };
 
   render() {
-    const { users } = this.props
+    const { users } = this.props;
 
     return (
       <div>
@@ -39,7 +39,7 @@ class FindUsers extends React.PureComponent {
           onPressButton={this.unshareShoppingListForUser}
         />
       </div>
-    )
+    );
   }
 }
 
@@ -48,17 +48,17 @@ export const mapStateToOptions = (state, { query, shoppingListId }) => ({
   resolverName: 'sharings',
   resolverArgs: {
     query,
-    shoppingListId
-  }
-})
+    shoppingListId,
+  },
+});
 
-export const mapStateToProps = state => ({
-  users: state.optimisticSharings.users
-})
+export const mapStateToProps = (state) => ({
+  users: state.optimisticSharings.users,
+});
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(aggregateActions, dispatch)
+export const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(aggregateActions, dispatch);
 
 export default connectReadModel(mapStateToOptions)(
   connect(mapStateToProps, mapDispatchToProps)(FindUsers)
-)
+);

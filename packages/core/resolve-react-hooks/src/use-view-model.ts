@@ -1,80 +1,65 @@
-import { useContext, useCallback, useMemo } from 'react'
-import { ResolveContext } from './context'
-import { Event, firstOfType, SerializableMap } from 'resolve-core'
-import { QueryOptions, SubscribeCallback, Subscription } from 'resolve-client'
-import { useClient } from './use-client'
-import { isCallback, isOptions, isSerializableMap } from './generic'
+import { useContext, useCallback, useMemo } from 'react';
+import { ResolveContext } from './context';
+import { Event, firstOfType, SerializableMap } from 'resolve-core';
+import { QueryOptions, SubscribeCallback, Subscription } from 'resolve-client';
+import { useClient } from './use-client';
+import { isCallback, isOptions, isSerializableMap } from './generic';
 
-type StateChangedCallback = (state: any, initial: boolean) => void
-type EventReceivedCallback = (event: Event) => void
-type PromiseOrVoid<T> = Promise<T> | void
+type StateChangedCallback = (state: any, initial: boolean) => void;
+type EventReceivedCallback = (event: Event) => void;
+type PromiseOrVoid<T> = Promise<T> | void;
 
 type Closure = {
-  initialState: any
-  state?: any
-  subscription?: Subscription
-  url?: string
-  cursor?: string
-}
+  initialState: any;
+  state?: any;
+  subscription?: Subscription;
+  url?: string;
+  cursor?: string;
+};
 
 type ViewModelConnection = {
-  connect: (done?: SubscribeCallback) => PromiseOrVoid<Subscription>
-  dispose: (done?: (error?: Error) => void) => PromiseOrVoid<void>
-  initialState: any
-}
+  connect: (done?: SubscribeCallback) => PromiseOrVoid<Subscription>;
+  dispose: (done?: (error?: Error) => void) => PromiseOrVoid<void>;
+  initialState: any;
+};
 
 function useViewModel(
   modelName: string,
   aggregateIds: string[] | '*',
   stateChangeCallback: StateChangedCallback
-): ViewModelConnection
+): ViewModelConnection;
 function useViewModel(
   modelName: string,
   aggregateIds: string[] | '*',
   args: SerializableMap,
   stateChangeCallback: StateChangedCallback
-): ViewModelConnection
+): ViewModelConnection;
 function useViewModel(
   modelName: string,
   aggregateIds: string[] | '*',
   args: SerializableMap,
   stateChangeCallback: StateChangedCallback,
   eventReceivedCallback: EventReceivedCallback
-): ViewModelConnection
+): ViewModelConnection;
 function useViewModel(
   modelName: string,
   aggregateIds: string[] | '*',
   stateChangeCallback: StateChangedCallback,
   eventReceivedCallback: EventReceivedCallback
-): ViewModelConnection
+): ViewModelConnection;
 function useViewModel(
   modelName: string,
   aggregateIds: string[] | '*',
   args: SerializableMap,
   stateChangeCallback: StateChangedCallback,
   queryOptions: QueryOptions
-): ViewModelConnection
+): ViewModelConnection;
 function useViewModel(
   modelName: string,
   aggregateIds: string[] | '*',
   stateChangeCallback: StateChangedCallback,
   queryOptions: QueryOptions
-): ViewModelConnection
-function useViewModel(
-  modelName: string,
-  aggregateIds: string[] | '*',
-  args: SerializableMap,
-  stateChangeCallback: StateChangedCallback,
-  eventReceivedCallback: EventReceivedCallback,
-  queryOptions: QueryOptions
-): ViewModelConnection
-function useViewModel(
-  modelName: string,
-  aggregateIds: string[] | '*',
-  stateChangeCallback: StateChangedCallback,
-  eventReceivedCallback: EventReceivedCallback,
-  queryOptions: QueryOptions
-): ViewModelConnection
+): ViewModelConnection;
 function useViewModel(
   modelName: string,
   aggregateIds: string[] | '*',
@@ -82,7 +67,22 @@ function useViewModel(
   stateChangeCallback: StateChangedCallback,
   eventReceivedCallback: EventReceivedCallback,
   queryOptions: QueryOptions
-): ViewModelConnection
+): ViewModelConnection;
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  stateChangeCallback: StateChangedCallback,
+  eventReceivedCallback: EventReceivedCallback,
+  queryOptions: QueryOptions
+): ViewModelConnection;
+function useViewModel(
+  modelName: string,
+  aggregateIds: string[] | '*',
+  args: SerializableMap,
+  stateChangeCallback: StateChangedCallback,
+  eventReceivedCallback: EventReceivedCallback,
+  queryOptions: QueryOptions
+): ViewModelConnection;
 function useViewModel(
   modelName: string,
   aggregateIds: string[] | '*',
@@ -94,149 +94,149 @@ function useViewModel(
   eventReceivedCallback?: QueryOptions | EventReceivedCallback,
   queryOptions?: QueryOptions
 ): ViewModelConnection {
-  const context = useContext(ResolveContext)
-  const client = useClient()
+  const context = useContext(ResolveContext);
+  const client = useClient();
 
-  const { viewModels } = context
-  const viewModel = viewModels.find(({ name }) => name === modelName)
+  const { viewModels } = context;
+  const viewModel = viewModels.find(({ name }) => name === modelName);
 
   if (!viewModel) {
-    throw Error(`View model ${modelName} not exist within context`)
+    throw Error(`View model ${modelName} not exist within context`);
   }
 
   const actualArgs: SerializableMap | undefined = isSerializableMap(args)
     ? args
-    : undefined
+    : undefined;
   const actualQueryOptions: QueryOptions | undefined = firstOfType<
     QueryOptions
-  >(isOptions, stateChangeCallback, eventReceivedCallback, queryOptions)
+  >(isOptions, stateChangeCallback, eventReceivedCallback, queryOptions);
   const actualStateChangeCallback:
     | StateChangedCallback
     | undefined = firstOfType<StateChangedCallback>(
     isCallback,
     args,
     stateChangeCallback
-  )
+  );
   let actualEventReceivedCallback:
     | EventReceivedCallback
     | undefined = firstOfType<EventReceivedCallback>(
     isCallback,
     stateChangeCallback,
     eventReceivedCallback
-  )
+  );
   actualEventReceivedCallback =
     actualEventReceivedCallback !== actualStateChangeCallback
       ? actualEventReceivedCallback
-      : undefined
+      : undefined;
 
   if (!actualStateChangeCallback) {
-    throw Error(`state change callback required`)
+    throw Error(`state change callback required`);
   }
 
   const closure = useMemo<Closure>(() => {
     const initialState = viewModel.projection.Init
       ? viewModel.projection.Init()
-      : null
+      : null;
     return {
-      initialState
-    }
-  }, [])
+      initialState,
+    };
+  }, []);
 
   const setState = useCallback((state: any, initial: boolean) => {
-    closure.state = state
-    actualStateChangeCallback(closure.state, initial)
-  }, [])
+    closure.state = state;
+    actualStateChangeCallback(closure.state, initial);
+  }, []);
 
   const queryState = useCallback(async () => {
     const result = await client.query(
       {
         name: modelName,
         aggregateIds,
-        args: actualArgs
+        args: actualArgs,
       },
       actualQueryOptions
-    )
+    );
     if (result) {
-      const { data, meta: { url, cursor } = {} } = result
-      setState(data, false)
-      closure.url = url
-      closure.cursor = cursor
+      const { data, meta: { url, cursor } = {} } = result;
+      setState(data, false);
+      closure.url = url;
+      closure.cursor = cursor;
     }
-  }, [])
+  }, []);
 
-  const applyEvent = useCallback(event => {
+  const applyEvent = useCallback((event) => {
     if (isCallback<EventReceivedCallback>(actualEventReceivedCallback)) {
-      actualEventReceivedCallback(event)
+      actualEventReceivedCallback(event);
     }
-    setState(viewModel.projection[event.type](closure.state, event), false)
-  }, [])
+    setState(viewModel.projection[event.type](closure.state, event), false);
+  }, []);
 
   const connect = useCallback((done?: SubscribeCallback): PromiseOrVoid<
     Subscription
   > => {
     const asyncConnect = async (): Promise<Subscription> => {
-      await queryState()
+      await queryState();
 
       const subscribe = client.subscribe(
         closure.url ?? '',
         closure.cursor ?? '',
         modelName,
         aggregateIds,
-        event => applyEvent(event),
+        (event) => applyEvent(event),
         undefined,
         () => queryState()
-      ) as Promise<Subscription>
+      ) as Promise<Subscription>;
 
-      const subscription = await subscribe
+      const subscription = await subscribe;
 
       if (subscription) {
-        closure.subscription = subscription
+        closure.subscription = subscription;
       }
 
-      return subscription
-    }
+      return subscription;
+    };
 
-    setState(closure.initialState, true)
+    setState(closure.initialState, true);
 
     if (typeof done !== 'function') {
-      return asyncConnect()
+      return asyncConnect();
     }
 
     asyncConnect()
-      .then(result => done(null, result))
-      .catch(error => done(error, null))
+      .then((result) => done(null, result))
+      .catch((error) => done(error, null));
 
-    return undefined
-  }, [])
+    return undefined;
+  }, []);
 
   const dispose = useCallback((done?: (error?: Error) => void): PromiseOrVoid<
     void
   > => {
     const asyncDispose = async (): Promise<void> => {
       if (closure.subscription) {
-        await client.unsubscribe(closure.subscription)
+        await client.unsubscribe(closure.subscription);
       }
-    }
+    };
 
     if (typeof done !== 'function') {
-      return asyncDispose()
+      return asyncDispose();
     }
 
     asyncDispose()
       .then(() => done())
-      .catch(error => done(error))
+      .catch((error) => done(error));
 
-    return undefined
-  }, [])
+    return undefined;
+  }, []);
 
   return useMemo(
     () => ({
       connect,
       dispose,
-      initialState: closure.initialState
+      initialState: closure.initialState,
     }),
     []
-  )
+  );
 }
 
-export { useViewModel }
+export { useViewModel };

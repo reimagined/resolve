@@ -1,14 +1,14 @@
-import React from 'react'
-import { renderRoutes } from 'react-router-config'
+import React from 'react';
+import { renderRoutes } from 'react-router-config';
 
-import Header from './Header'
+import Header from './Header';
 
 const App = ({
   route,
   children,
   match: {
-    params: { id }
-  }
+    params: { id },
+  },
 }) => (
   <div>
     <Header
@@ -21,6 +21,6 @@ const App = ({
     {renderRoutes(route.routes)}
     {children}
   </div>
-)
+);
 
-export default App
+export default App;

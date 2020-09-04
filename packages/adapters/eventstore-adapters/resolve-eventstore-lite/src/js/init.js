@@ -1,19 +1,19 @@
-import getLog from './get-log'
-import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
-import { AGGREGATE_ID_SQL_TYPE } from './constants'
+import getLog from './get-log';
+import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base';
+import { AGGREGATE_ID_SQL_TYPE } from './constants';
 
 const initEventStore = async ({
   database,
   eventsTableName,
   snapshotsTableName,
   escapeId,
-  config
+  config,
 }) => {
-  const log = getLog('initEventStore')
+  const log = getLog('initEventStore');
 
-  log.debug(`initializing events database tables`)
-  log.verbose(`database: ${database}`)
-  log.verbose(`eventsTableName: ${eventsTableName}`)
+  log.debug(`initializing events database tables`);
+  log.verbose(`database: ${database}`);
+  log.verbose(`eventsTableName: ${eventsTableName}`);
 
   try {
     await database.exec(
@@ -50,8 +50,8 @@ const initEventStore = async ({
         ${escapeId('timestamp')}
       )
       `
-    )
-    log.debug(`events database tables are initialized`)
+    );
+    log.debug(`events database tables are initialized`);
 
     await database.exec(
       `CREATE TABLE ${escapeId(snapshotsTableName)} (
@@ -59,22 +59,22 @@ const initEventStore = async ({
         ${escapeId('content')} TEXT,
         PRIMARY KEY(${escapeId('snapshotKey')})
         )`
-    )
-    log.debug(`snapshots database tables are initialized`)
+    );
+    log.debug(`snapshots database tables are initialized`);
   } catch (error) {
     if (error) {
-      let errorToThrow = error
+      let errorToThrow = error;
       if (/^SQLITE_ERROR:.*? already exists$/.test(error.message)) {
         errorToThrow = new EventstoreResourceAlreadyExistError(
           `duplicate initialization of the sqlite adapter with same file "${config.databaseFile}" not allowed`
-        )
+        );
       } else {
-        log.error(errorToThrow.message)
-        log.verbose(errorToThrow.stack)
+        log.error(errorToThrow.message);
+        log.verbose(errorToThrow.stack);
       }
-      throw errorToThrow
+      throw errorToThrow;
     }
   }
-}
+};
 
-export default initEventStore
+export default initEventStore;

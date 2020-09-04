@@ -1,7 +1,7 @@
-import * as defaults from './defaults'
-import defaultVerifyCommand from './aggregates/verify-command'
+import * as defaults from './defaults';
+import defaultVerifyCommand from './aggregates/verify-command';
 
-const injectDefaults = callback => (
+const injectDefaults = (callback) => (
   {
     aggregateName = defaults.aggregateName,
     readModelName = defaults.readModelName,
@@ -11,17 +11,17 @@ const injectDefaults = callback => (
     eventTypes: {
       COMMENT_CREATED = defaults.COMMENT_CREATED,
       COMMENT_UPDATED = defaults.COMMENT_UPDATED,
-      COMMENT_REMOVED = defaults.COMMENT_REMOVED
+      COMMENT_REMOVED = defaults.COMMENT_REMOVED,
     } = {},
     commandTypes: {
       createComment = defaults.createComment,
       updateComment = defaults.updateComment,
-      removeComment = defaults.removeComment
+      removeComment = defaults.removeComment,
     } = {},
     resolverNames: {
       commentsTree = defaults.commentsTree,
       foreignCommentsCount = defaults.foreignCommentsCount,
-      allCommentsPaginate = defaults.allCommentsPaginate
+      allCommentsPaginate = defaults.allCommentsPaginate,
     } = {},
     commentsInstanceName = defaults.commentsInstanceName,
     ...options
@@ -39,23 +39,23 @@ const injectDefaults = callback => (
       eventTypes: {
         COMMENT_CREATED,
         COMMENT_UPDATED,
-        COMMENT_REMOVED
+        COMMENT_REMOVED,
       },
       commandTypes: {
         createComment,
         updateComment,
-        removeComment
+        removeComment,
       },
       resolverNames: {
         commentsTree,
         foreignCommentsCount,
-        allCommentsPaginate
+        allCommentsPaginate,
       },
       commentsInstanceName,
-      ...options
+      ...options,
     },
     { verifyCommand },
     ...args
-  )
+  );
 
-export default injectDefaults
+export default injectDefaults;

@@ -1,21 +1,21 @@
-import fs from 'fs'
-import path from 'path'
+import fs from 'fs';
+import path from 'path';
 
 const getWebpackAlias = () => {
-  const alias = {}
+  const alias = {};
 
   for (const filename of fs.readdirSync(path.resolve(__dirname, 'alias'))) {
     if (path.extname(filename) !== '.js') {
-      continue
+      continue;
     }
     alias[path.basename(filename, '.js')] = path.resolve(
       __dirname,
       'alias',
       filename
-    )
+    );
   }
 
-  return alias
-}
+  return alias;
+};
 
-export default getWebpackAlias
+export default getWebpackAlias;

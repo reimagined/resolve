@@ -1,8 +1,8 @@
-import React from 'react'
-import { useCommand } from 'resolve-react-hooks'
-import { ListGroupItem, Checkbox } from 'react-bootstrap'
+import React from 'react';
+import { useCommand } from 'resolve-react-hooks';
+import { ListGroupItem, Checkbox } from 'react-bootstrap';
 
-import Image from './Image'
+import Image from './Image';
 
 const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
   const toggleItem = useCommand({
@@ -10,17 +10,17 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
     aggregateId: shoppingListId,
     aggregateName: 'ShoppingList',
     payload: {
-      id
-    }
-  })
+      id,
+    },
+  });
   const removeItem = useCommand({
     type: 'removeShoppingItem',
     aggregateId: shoppingListId,
     aggregateName: 'ShoppingList',
     payload: {
-      id
-    }
-  })
+      id,
+    },
+  });
   return (
     <ListGroupItem key={id}>
       <Checkbox inline checked={checked} onChange={toggleItem}>
@@ -32,7 +32,7 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
         onClick={removeItem}
       />
     </ListGroupItem>
-  )
-}
+  );
+};
 
-export default ShoppingListItem
+export default ShoppingListItem;

@@ -1,1 +1,1 @@
-export const Logo = () => null
+export const Logo = () => null;

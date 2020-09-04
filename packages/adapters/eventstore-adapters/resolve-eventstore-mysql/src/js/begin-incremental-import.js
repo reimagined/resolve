@@ -1,17 +1,17 @@
-import { ER_TABLE_EXISTS } from './constants'
+import { ER_TABLE_EXISTS } from './constants';
 
 const beginIncrementalImport = async ({
   events: { eventsTableName, connection },
   escapeId,
-  escape
+  escape,
 }) => {
   try {
     const incrementalImportTableAsId = escapeId(
       `${eventsTableName}-incremental-import`
-    )
+    );
     const importId = Buffer.from(`${Date.now()}${Math.random()}`)
       .toString('base64')
-      .replace(/\/|\+|=/gi, 'z')
+      .replace(/\/|\+|=/gi, 'z');
     await connection.query(
       `CREATE TABLE ${incrementalImportTableAsId}(
         ${escapeId('rowid')} VARCHAR(100) NOT NULL,
@@ -30,17 +30,17 @@ const beginIncrementalImport = async ({
       )}
       ENGINE = "InnoDB";
       `
-    )
+    );
 
-    return importId
+    return importId;
   } catch (error) {
-    const errno = error != null && error.errno != null ? error.errno : 0
+    const errno = error != null && error.errno != null ? error.errno : 0;
     if (errno === ER_TABLE_EXISTS) {
-      throw new Error(`Previous incremental import is not finished`)
+      throw new Error(`Previous incremental import is not finished`);
     } else {
-      throw error
+      throw error;
     }
   }
-}
+};
 
-export default beginIncrementalImport
+export default beginIncrementalImport;

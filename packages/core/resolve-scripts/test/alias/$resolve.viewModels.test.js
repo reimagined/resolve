@@ -1,17 +1,17 @@
-import path from 'path'
+import path from 'path';
 
-import alias from '../../src/alias/$resolve.viewModels'
-import normalizePaths from './normalize_paths'
+import alias from '../../src/alias/$resolve.viewModels';
+import normalizePaths from './normalize_paths';
 
 describe('base config works correctly', () => {
   const resolveConfig = {
     viewModels: [
       {
         name: 'Todos',
-        projection: path.resolve(__dirname, 'files/testProjection.js')
-      }
-    ]
-  }
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
+      },
+    ],
+  };
 
   test('[client]', () => {
     expect(
@@ -19,12 +19,12 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot()
-  })
+    ).toMatchSnapshot();
+  });
 
   test('[server]', () => {
     expect(
@@ -32,27 +32,27 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot()
-  })
-})
+    ).toMatchSnapshot();
+  });
+});
 
 describe('base(v2) config works correctly', () => {
   const resolveConfig = {
     viewModels: [
       {
         name: 'Todos',
-        projection: path.resolve(__dirname, 'files/testProjection.js')
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
       },
       {
         name: 'Items',
-        projection: path.resolve(__dirname, 'files/testProjection.js')
-      }
-    ]
-  }
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
+      },
+    ],
+  };
 
   test('[client]', () => {
     expect(
@@ -60,12 +60,12 @@ describe('base(v2) config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot()
-  })
+    ).toMatchSnapshot();
+  });
 
   test('[server]', () => {
     expect(
@@ -73,13 +73,13 @@ describe('base(v2) config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot()
-  })
-})
+    ).toMatchSnapshot();
+  });
+});
 
 describe('config with serializeState/deserializeState works correctly', () => {
   const resolveConfig = {
@@ -91,10 +91,10 @@ describe('config with serializeState/deserializeState works correctly', () => {
         deserializeState: path.resolve(
           __dirname,
           'files/testDeserializeState.js'
-        )
-      }
-    ]
-  }
+        ),
+      },
+    ],
+  };
 
   test('[client]', () => {
     expect(
@@ -102,12 +102,12 @@ describe('config with serializeState/deserializeState works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot()
-  })
+    ).toMatchSnapshot();
+  });
 
   test('[server]', () => {
     expect(
@@ -115,13 +115,13 @@ describe('config with serializeState/deserializeState works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot()
-  })
-})
+    ).toMatchSnapshot();
+  });
+});
 
 describe('config with validator works correctly', () => {
   const resolveConfig = {
@@ -129,10 +129,10 @@ describe('config with validator works correctly', () => {
       {
         name: 'Todos',
         projection: path.resolve(__dirname, 'files/testProjection.js'),
-        validator: path.resolve(__dirname, 'files/testValidator.js')
-      }
-    ]
-  }
+        validator: path.resolve(__dirname, 'files/testValidator.js'),
+      },
+    ],
+  };
 
   test('[client]', () => {
     expect(
@@ -140,12 +140,12 @@ describe('config with validator works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot()
-  })
+    ).toMatchSnapshot();
+  });
 
   test('[server]', () => {
     expect(
@@ -153,10 +153,10 @@ describe('config with validator works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
-    ).toMatchSnapshot()
-  })
-})
+    ).toMatchSnapshot();
+  });
+});

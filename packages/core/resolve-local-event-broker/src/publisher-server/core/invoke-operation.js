@@ -1,17 +1,17 @@
 import {
   PrivateOperationType,
   PublicOperationType,
-  LazinessStrategy
-} from '../constants'
+  LazinessStrategy,
+} from '../constants';
 
 const operationTypesMap = new Map([
   [
     PrivateOperationType.PUSH_NOTIFICATIONS,
-    'pushNotificationAndGetSubscriptions'
+    'pushNotificationAndGetSubscriptions',
   ],
   [
     PrivateOperationType.PULL_NOTIFICATIONS,
-    'pullNotificationsAsBatchForSubscriber'
+    'pullNotificationsAsBatchForSubscriber',
   ],
   [PrivateOperationType.RESUME_SUBSCRIBER, 'resumeSubscriber'],
   [PrivateOperationType.ACKNOWLEDGE_BATCH, 'acknowledgeBatch'],
@@ -27,21 +27,21 @@ const operationTypesMap = new Map([
   [PublicOperationType.RESUME, 'resume'],
   [PublicOperationType.PAUSE, 'pause'],
   [PublicOperationType.RESET, 'reset'],
-  [PublicOperationType.READ, 'read']
-])
+  [PublicOperationType.READ, 'read'],
+]);
 
 const invokeOperation = async (pool, laziness, { type, payload }, timeout) => {
-  const methodName = operationTypesMap.get(type)
+  const methodName = operationTypesMap.get(type);
   if (methodName == null) {
     throw new Error(
       `Invalid invoke operation type "${type}" with payload: ${JSON.stringify(
         payload
       )}`
-    )
+    );
   }
 
   if (laziness === LazinessStrategy.EAGER) {
-    pool.multiplexAsync(pool[methodName].bind(pool), pool, payload)
+    pool.multiplexAsync(pool[methodName].bind(pool), pool, payload);
   } else if (
     laziness === LazinessStrategy.LAZY &&
     !isNaN(+timeout) &&
@@ -55,14 +55,14 @@ const invokeOperation = async (pool, laziness, { type, payload }, timeout) => {
         payload
       ),
       +timeout
-    )
+    );
   } else {
     throw new Error(
       `Invalid invoke operation type "${type}" with payload: ${JSON.stringify(
         payload
       )}`
-    )
+    );
   }
-}
+};
 
-export default invokeOperation
+export default invokeOperation;

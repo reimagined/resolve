@@ -1,12 +1,12 @@
-const serializeError = error =>
+const serializeError = (error) =>
   error != null
     ? {
         name: error.name == null ? null : String(error.name),
         code: error.code == null ? null : String(error.code),
         message: String(error.message),
-        stack: String(error.stack)
+        stack: String(error.stack),
       }
-    : null
+    : null;
 
 const build = async (pool, readModelName, store, projection, next) => {
   const {
@@ -18,18 +18,18 @@ const build = async (pool, readModelName, store, projection, next) => {
     escapeId,
     escape,
     rdsDataService,
-    inlineLedgerExecuteStatement
-  } = pool
+    inlineLedgerExecuteStatement,
+  } = pool;
 
   try {
-    const databaseNameAsId = escapeId(schemaName)
-    const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
+    const databaseNameAsId = escapeId(schemaName);
+    const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`);
 
     const { transactionId } = await rdsDataService.beginTransaction({
       resourceArn: dbClusterOrInstanceArn,
       secretArn: awsSecretStoreArn,
-      database: 'postgres'
-    })
+      database: 'postgres',
+    });
 
     await inlineLedgerExecuteStatement(
       pool,
@@ -47,13 +47,13 @@ const build = async (pool, readModelName, store, projection, next) => {
        AND "IsPaused" = FALSE
        AND "Errors" IS NULL
       `
-    )
+    );
 
     await inlineLedgerExecuteStatement(
       pool,
       `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ`,
       transactionId
-    )
+    );
 
     const rows = await inlineLedgerExecuteStatement(
       pool,
@@ -65,33 +65,35 @@ const build = async (pool, readModelName, store, projection, next) => {
        FOR NO KEY UPDATE NOWAIT
       `,
       transactionId
-    )
+    );
 
-    let readModelLedger = rows.length === 1 ? rows[0] : null
+    let readModelLedger = rows.length === 1 ? rows[0] : null;
     if (readModelLedger == null || readModelLedger.Errors != null) {
-      throw new PassthroughError(transactionId)
+      throw new PassthroughError(transactionId);
     }
 
     const eventTypes =
       readModelLedger.EventTypes != null
         ? JSON.parse(readModelLedger.EventTypes)
-        : null
+        : null;
     if (!Array.isArray(eventTypes) && eventTypes != null) {
-      throw new TypeError('eventTypes')
+      throw new TypeError('eventTypes');
     }
 
     const cursor =
-      readModelLedger.Cursor != null ? JSON.parse(readModelLedger.Cursor) : null
+      readModelLedger.Cursor != null
+        ? JSON.parse(readModelLedger.Cursor)
+        : null;
 
     if (cursor != null && cursor.constructor !== String) {
-      throw new TypeError('cursor')
+      throw new TypeError('cursor');
     }
 
     if (cursor == null) {
-      const nextCursor = await eventstoreAdapter.getNextCursor(null, [])
+      const nextCursor = await eventstoreAdapter.getNextCursor(null, []);
       try {
         if (typeof projection.Init === 'function') {
-          await projection.Init(store)
+          await projection.Init(store);
         }
 
         await inlineLedgerExecuteStatement(
@@ -102,15 +104,15 @@ const build = async (pool, readModelName, store, projection, next) => {
            WHERE "EventSubscriber" = ${escape(readModelName)}
           `,
           transactionId
-        )
+        );
 
         await rdsDataService.commitTransaction({
           resourceArn: dbClusterOrInstanceArn,
           secretArn: awsSecretStoreArn,
-          transactionId
-        })
+          transactionId,
+        });
 
-        await next()
+        await next();
       } catch (error) {
         await inlineLedgerExecuteStatement(
           pool,
@@ -125,46 +127,46 @@ const build = async (pool, readModelName, store, projection, next) => {
            WHERE "EventSubscriber" = ${escape(readModelName)}
           `,
           transactionId
-        )
+        );
 
         await rdsDataService.commitTransaction({
           resourceArn: dbClusterOrInstanceArn,
           secretArn: awsSecretStoreArn,
-          transactionId
-        })
+          transactionId,
+        });
       }
 
-      return
+      return;
     }
 
-    pool.transactionId = transactionId
+    pool.transactionId = transactionId;
     const { events } = await eventstoreAdapter.loadEvents({
       eventTypes,
       eventsSizeLimit: 1024 * 1024,
       limit: 10,
-      cursor
-    })
+      cursor,
+    });
 
-    let lastSuccessEvent = null
-    let lastFailedEvent = null
-    let lastError = null
-    const appliedEvents = []
+    let lastSuccessEvent = null;
+    let lastFailedEvent = null;
+    let lastError = null;
+    const appliedEvents = [];
 
     for (const event of events) {
       try {
         if (typeof projection[event.type] === 'function') {
-          await projection[event.type](store, event)
-          lastSuccessEvent = event
+          await projection[event.type](store, event);
+          lastSuccessEvent = event;
         }
-        appliedEvents.push(event)
+        appliedEvents.push(event);
       } catch (error) {
-        lastFailedEvent = event
-        lastError = error
-        break
+        lastFailedEvent = event;
+        lastError = error;
+        break;
       }
     }
 
-    const nextCursor = eventstoreAdapter.getNextCursor(cursor, appliedEvents)
+    const nextCursor = eventstoreAdapter.getNextCursor(cursor, appliedEvents);
 
     if (lastError == null) {
       await inlineLedgerExecuteStatement(
@@ -179,7 +181,7 @@ const build = async (pool, readModelName, store, projection, next) => {
          WHERE "EventSubscriber" = ${escape(readModelName)}
         `,
         transactionId
-      )
+      );
     } else {
       await inlineLedgerExecuteStatement(
         pool,
@@ -198,23 +200,23 @@ const build = async (pool, readModelName, store, projection, next) => {
          WHERE "EventSubscriber" = ${escape(readModelName)}
         `,
         transactionId
-      )
+      );
     }
 
     await rdsDataService.commitTransaction({
       resourceArn: dbClusterOrInstanceArn,
       secretArn: awsSecretStoreArn,
-      transactionId
-    })
+      transactionId,
+    });
 
     if (lastError == null && appliedEvents.length > 0) {
-      await next()
+      await next();
     }
 
-    appliedEvents.length = 0
+    appliedEvents.length = 0;
   } catch (error) {
     if (!(error instanceof PassthroughError)) {
-      throw error
+      throw error;
     }
 
     if (error.lastTransactionId != null) {
@@ -222,8 +224,8 @@ const build = async (pool, readModelName, store, projection, next) => {
         await rdsDataService.rollbackTransaction({
           resourceArn: dbClusterOrInstanceArn,
           secretArn: awsSecretStoreArn,
-          transactionId: error.lastTransactionId
-        })
+          transactionId: error.lastTransactionId,
+        });
       } catch (err) {
         if (
           !(
@@ -232,11 +234,11 @@ const build = async (pool, readModelName, store, projection, next) => {
               /Invalid transaction ID/i.test(err.message))
           )
         ) {
-          throw err
+          throw err;
         }
       }
     }
   }
-}
+};
 
-export default build
+export default build;

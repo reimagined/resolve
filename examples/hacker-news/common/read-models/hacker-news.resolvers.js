@@ -1,13 +1,13 @@
 const getStories = async (type, store, { first, offset }) => {
-  const segment = store.performanceTracer.getSegment()
-  const subSegment = segment.addNewSubsegment('resolver')
+  const segment = store.performanceTracer.getSegment();
+  const subSegment = segment.addNewSubsegment('resolver');
 
-  subSegment.addAnnotation('type', type)
-  subSegment.addAnnotation('origin', 'hacker-news:getStories')
+  subSegment.addAnnotation('type', type);
+  subSegment.addAnnotation('origin', 'hacker-news:getStories');
 
   try {
-    const search = type && type.constructor === String ? { type } : {}
-    const skip = first || 0
+    const search = type && type.constructor === String ? { type } : {};
+    const skip = first || 0;
     const stories = await store.find(
       'Stories',
       search,
@@ -15,38 +15,38 @@ const getStories = async (type, store, { first, offset }) => {
       { createdAt: -1 },
       skip,
       offset
-    )
+    );
 
-    return Array.isArray(stories) ? stories : []
+    return Array.isArray(stories) ? stories : [];
   } catch (error) {
     if (subSegment != null) {
-      subSegment.addError(error)
+      subSegment.addError(error);
     }
-    throw error
+    throw error;
   } finally {
     if (subSegment != null) {
-      subSegment.close()
+      subSegment.close();
     }
   }
-}
+};
 
 const getStory = async (store, { id }) => {
-  const story = await store.findOne('Stories', { id })
+  const story = await store.findOne('Stories', { id });
 
   if (!story) {
-    return null
+    return null;
   }
 
   const type = !story.link
     ? 'ask'
     : /^(Show HN)/.test(story.title)
     ? 'show'
-    : 'story'
+    : 'story';
 
-  Object.assign(story, { type })
+  Object.assign(story, { type });
 
-  return story
-}
+  return story;
+};
 
 const getUser = async (store, { id, name }) => {
   const user =
@@ -54,10 +54,10 @@ const getUser = async (store, { id, name }) => {
       ? await store.findOne('Users', { name })
       : id != null
       ? await store.findOne('Users', { id })
-      : null
+      : null;
 
-  return user
-}
+  return user;
+};
 
 export default {
   story: getStory,
@@ -68,5 +68,5 @@ export default {
 
   showStories: getStories.bind(null, 'show'),
 
-  user: getUser
-}
+  user: getUser,
+};

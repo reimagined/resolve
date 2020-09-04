@@ -1,5 +1,5 @@
-import debugLevels from 'resolve-debug-levels'
+import debugLevels from 'resolve-debug-levels';
 
-const getLog = name => debugLevels(`resolve:cloud:scheduler:${name}`)
+const getLog = (name) => debugLevels(`resolve:cloud:scheduler:${name}`);
 
-export default getLog
+export default getLog;

@@ -1,11 +1,11 @@
-import { USER_CREATED } from '../event-types'
+import { USER_CREATED } from '../event-types';
 
 export default {
-  Init: async store => {
+  Init: async (store) => {
     await store.defineTable('Users', {
       indexes: { id: 'string' },
-      fields: ['login', 'passwordHash']
-    })
+      fields: ['login', 'passwordHash'],
+    });
   },
 
   [USER_CREATED]: async (
@@ -15,9 +15,9 @@ export default {
     const user = {
       id: aggregateId,
       login,
-      passwordHash
-    }
+      passwordHash,
+    };
 
-    await store.insert('Users', user)
-  }
-}
+    await store.insert('Users', user);
+  },
+};
