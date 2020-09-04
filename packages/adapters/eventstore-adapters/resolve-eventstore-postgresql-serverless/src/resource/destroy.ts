@@ -16,7 +16,7 @@ const destroy = async (
     escape,
     fullJitter,
     coercer,
-    dispose
+    dispose,
   } = pool
 
   log.debug(`configuring adapter with environment privileges`)
@@ -28,8 +28,8 @@ const destroy = async (
       databaseName: options.databaseName,
       eventsTableName: options.eventsTableName,
       secretsTableName: options.secretsTableName,
-      snapshotsTableName: options.snapshotsTableName
-    }
+      snapshotsTableName: options.snapshotsTableName,
+    },
   }
 
   log.debug(`connecting the adapter`)
@@ -39,7 +39,7 @@ const destroy = async (
     escape,
     fullJitter,
     executeStatement,
-    coercer
+    coercer,
   })
 
   let alterSchemaError = null

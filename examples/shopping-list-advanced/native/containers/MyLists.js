@@ -8,7 +8,7 @@ import {
   Left,
   Right,
   Body,
-  Icon
+  Icon,
 } from 'native-base'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -21,7 +21,7 @@ import * as aggregateActions from '../redux/actions/aggregate-actions'
 
 import getNativeChunk from '../native-chunk'
 const {
-  resolveRedux: { connectReadModel }
+  resolveRedux: { connectReadModel },
 } = getNativeChunk()
 
 export class MyLists extends React.PureComponent {
@@ -30,7 +30,7 @@ export class MyLists extends React.PureComponent {
       lists,
       createShoppingList,
       removeShoppingList,
-      navigation
+      navigation,
     } = this.props
 
     return (
@@ -66,23 +66,23 @@ export class MyLists extends React.PureComponent {
   }
 }
 
-export const mapStateToOptions = state => ({
+export const mapStateToOptions = (state) => ({
   readModelName: 'ShoppingLists',
   resolverName: 'all',
   resolverArgs: {
-    updatedAt: state.refresh.timestamp
-  }
+    updatedAt: state.refresh.timestamp,
+  },
 })
 
-export const mapStateToProps = state => ({
-  lists: state.optimisticShoppingLists
+export const mapStateToProps = (state) => ({
+  lists: state.optimisticShoppingLists,
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       ...aggregateActions,
-      ...refreshActions
+      ...refreshActions,
     },
     dispatch
   )

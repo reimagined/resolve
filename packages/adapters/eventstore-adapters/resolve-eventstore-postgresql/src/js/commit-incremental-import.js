@@ -152,7 +152,7 @@ const commitIncrementalImport = async (
         threadId: !isNaN(+threadId) ? +threadId : Symbol('BAD_THREAD_ID'),
         threadCounter: !isNaN(+threadCounter)
           ? +threadCounter
-          : Symbol('BAD_THREAD_COUNTER')
+          : Symbol('BAD_THREAD_COUNTER'),
       }))
 
       const predictedThreadIdCounters = (
@@ -164,7 +164,7 @@ const commitIncrementalImport = async (
         threadId: !isNaN(+threadId) ? +threadId : Symbol('BAD_THREAD_ID'),
         threadCounter: !isNaN(+threadCounter)
           ? +threadCounter
-          : Symbol('BAD_THREAD_COUNTER')
+          : Symbol('BAD_THREAD_COUNTER'),
       }))
 
       const validationMapReal = new Map()

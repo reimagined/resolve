@@ -57,7 +57,15 @@ import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
 import _destroyResource from './resource/destroy'
 
-const store = { defineTable, find, findOne, count, insert, update, delete: del }
+const store = {
+  defineTable,
+  find,
+  findOne,
+  count,
+  insert,
+  update,
+  delete: del,
+}
 
 const internalMethods = {
   escapeId,
@@ -73,7 +81,7 @@ const internalMethods = {
   inlineLedgerExecuteStatement,
   inlineLedgerForceStop,
   isTimeoutError,
-  isHighloadError
+  isHighloadError,
 }
 
 const externalMethods = {
@@ -98,7 +106,7 @@ const externalMethods = {
   pause,
   reset,
   status,
-  build
+  build,
 }
 
 const connect = _connect.bind(null, {
@@ -106,14 +114,14 @@ const connect = _connect.bind(null, {
   crypto,
   ...internalMethods,
   ...externalMethods,
-  ...store
+  ...store,
 })
 
 const createAdapter = _createAdapter.bind(null, {
   ...store,
   ...externalMethods,
   connect,
-  disconnect
+  disconnect,
 })
 
 export default createAdapter
@@ -122,7 +130,7 @@ const pool = {
   connect,
   disconnect,
   escapeId,
-  escape
+  escape,
 }
 
 const createResource = _createResource.bind(null, pool)
@@ -132,11 +140,11 @@ const destroyResource = _destroyResource.bind(null, pool)
 Object.assign(pool, {
   createResource,
   disposeResource,
-  destroyResource
+  destroyResource,
 })
 
 export {
   createResource as create,
   disposeResource as dispose,
-  destroyResource as destroy
+  destroyResource as destroy,
 }

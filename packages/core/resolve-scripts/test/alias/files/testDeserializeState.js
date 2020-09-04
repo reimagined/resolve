@@ -1,3 +1,3 @@
-const deserializeState = state => JSON.parse(state)
+const deserializeState = (state) => JSON.parse(state)
 
 export default deserializeState

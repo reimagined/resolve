@@ -6,14 +6,14 @@ import {
   LONG_INTEGER_SQL_TYPE,
   LazinessStrategy,
   PrivateOperationType,
-  DeliveryStrategy
+  DeliveryStrategy,
 } from '../constants'
 
 const resumeSubscriber = async (pool, payload) => {
   const {
     database: { escapeId, escapeStr, runQuery, runRawQuery },
     invokeOperation,
-    generateGuid
+    generateGuid,
   } = pool
 
   const { eventSubscriber } = payload
@@ -73,8 +73,8 @@ const resumeSubscriber = async (pool, payload) => {
   const input = {
     type: PrivateOperationType.PULL_NOTIFICATIONS,
     payload: {
-      subscriptionId
-    }
+      subscriptionId,
+    },
   }
   await invokeOperation(pool, LazinessStrategy.EAGER, input)
 }

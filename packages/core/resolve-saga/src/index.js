@@ -18,14 +18,14 @@ const createSaga = ({
   uploader,
   eventstoreAdapter,
   getRemainingTimeInMillis,
-  performAcknowledge
+  performAcknowledge,
 }) => {
   const schedulerAggregatesNames = new Set(schedulers.map(({ name }) => name))
   let eventProperties = {}
   const executeScheduleCommand = createCommand({
     aggregates: createSchedulersAggregates(schedulers),
     onCommandExecuted,
-    eventstoreAdapter
+    eventstoreAdapter,
   })
 
   const executeCommandOrScheduler = async (...args) => {
@@ -73,9 +73,9 @@ const createSaga = ({
     eventProperties: { get: () => eventProperties, enumerable: true },
     getSecretsManager: {
       get: () => eventstoreAdapter.getSecretsManager,
-      enumerable: true
+      enumerable: true,
     },
-    uploader: { get: () => uploader, enumerable: true }
+    uploader: { get: () => uploader, enumerable: true },
   })
 
   const regularSagas = wrapRegularSagas(sagas, sagaProvider)
@@ -89,7 +89,7 @@ const createSaga = ({
     performanceTracer,
     getRemainingTimeInMillis,
     performAcknowledge,
-    eventstoreAdapter
+    eventstoreAdapter,
   })
 
   const sendEvents = async ({
@@ -97,7 +97,7 @@ const createSaga = ({
     events,
     xaTransactionId,
     properties,
-    batchId
+    batchId,
   }) => {
     eventProperties = properties
     await executeListener.sendEvents({
@@ -105,11 +105,11 @@ const createSaga = ({
       events,
       xaTransactionId,
       properties,
-      batchId
+      batchId,
     })
   }
 
-  const runScheduler = async entry => {
+  const runScheduler = async (entry) => {
     const schedulerPromises = []
     for (const { schedulerAdapter } of schedulerSagas) {
       if (typeof schedulerAdapter.executeEntries === 'function') {
@@ -123,7 +123,7 @@ const createSaga = ({
   const dispose = async () =>
     await Promise.all([
       executeScheduleCommand.dispose(),
-      executeListener.dispose()
+      executeListener.dispose(),
     ])
 
   const executeSaga = new Proxy(executeListener, {
@@ -140,7 +140,7 @@ const createSaga = ({
     },
     set() {
       throw new TypeError(`Resolve-saga API is immutable`)
-    }
+    },
   })
 
   return executeSaga

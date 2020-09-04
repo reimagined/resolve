@@ -9,12 +9,12 @@ export default [
       {
         path: '/',
         component: MyLists,
-        exact: true
+        exact: true,
       },
       {
         path: '/:id',
-        component: ShoppingList
-      }
-    ]
-  }
+        component: ShoppingList,
+      },
+    ],
+  },
 ]

@@ -3,7 +3,7 @@ import getLog from 'resolve-debug-levels'
 
 const log = getLog('resolve:create-resolve-app:download-resolve-repo')
 
-const downloadResolveRepo = pool => async () => {
+const downloadResolveRepo = (pool) => async () => {
   const {
     fs,
     chalk,
@@ -13,7 +13,7 @@ const downloadResolveRepo = pool => async () => {
     applicationPath,
     resolveDownloadZipUrl,
     resolveCloneZipPath,
-    path
+    path,
   } = pool
   try {
     await new Promise((resolve, reject) => {
@@ -30,7 +30,7 @@ const downloadResolveRepo = pool => async () => {
       let error = null
       let downloadedBytes = 0
 
-      resolveCloneZip.on('finish', function() {
+      resolveCloneZip.on('finish', function () {
         if (error) {
           log.debug('Clone failed')
           reject(error)
@@ -40,7 +40,7 @@ const downloadResolveRepo = pool => async () => {
         }
       })
 
-      https.get(resolveDownloadZipUrl, response => {
+      https.get(resolveDownloadZipUrl, (response) => {
         let bar = null
         const showProgressBar = (total, increment) => {
           if (isNaN(+total)) {
@@ -51,7 +51,7 @@ const downloadResolveRepo = pool => async () => {
               `${chalk.green('Load example')} [:bar] :current/:total`,
               {
                 width: 20,
-                total: +total
+                total: +total,
               }
             )
 
@@ -60,7 +60,7 @@ const downloadResolveRepo = pool => async () => {
           bar.tick(increment)
         }
 
-        response.on('data', data => {
+        response.on('data', (data) => {
           const currentBytes = Buffer.byteLength(data)
           const total = response.headers['content-length']
           downloadedBytes += currentBytes
@@ -101,7 +101,7 @@ const downloadResolveRepo = pool => async () => {
 
           resolveCloneZip.end()
         })
-        response.on('error', err => {
+        response.on('error', (err) => {
           error = err
           resolveCloneZip.end()
         })

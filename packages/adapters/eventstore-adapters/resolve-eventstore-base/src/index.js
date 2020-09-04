@@ -10,7 +10,7 @@ import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
 import ConcurrentError from './concurrent-error'
 import {
   ResourceAlreadyExistError,
-  ResourceNotExistError
+  ResourceNotExistError,
 } from './resource-errors'
 import loadEvents from './load-events'
 import getNextCursor from './get-next-cursor'
@@ -28,7 +28,7 @@ const wrappedCreateAdapter = createAdapter.bind(null, {
   validateEventFilter,
   loadEvents,
   incrementalImport,
-  getNextCursor
+  getNextCursor,
 })
 
 export default wrappedCreateAdapter
@@ -41,5 +41,5 @@ export {
   MAINTENANCE_MODE_MANUAL,
   throwBadCursor,
   getNextCursor,
-  snapshotTrigger
+  snapshotTrigger,
 }

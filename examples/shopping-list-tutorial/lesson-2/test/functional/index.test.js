@@ -7,12 +7,12 @@ const port = process.env.PORT || '3000'
 const MAIN_PAGE = `http://${host}:${port}`
 
 // eslint-disable-next-line no-unused-expressions, no-undef
-fixture`Shopping List`.beforeEach(async t => {
+fixture`Shopping List`.beforeEach(async (t) => {
   await t.setNativeDialogHandler(() => true)
   await t.navigateTo(MAIN_PAGE)
 })
 
-test('home page', async t => {
+test('home page', async (t) => {
   await t
     .expect(await Selector('h1').withText('Shopping List').exists)
     .eql(true)
@@ -24,16 +24,16 @@ test('createShoppingList', async () => {
     aggregateId: 'shopping-list-1',
     type: 'createShoppingList',
     payload: {
-      name: 'List 1'
-    }
+      name: 'List 1',
+    },
   }
 
   const response = await fetch(`${MAIN_PAGE}/api/commands`, {
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     method: 'POST',
-    body: JSON.stringify(command)
+    body: JSON.stringify(command),
   })
 
   const event = await response.json()
@@ -42,7 +42,7 @@ test('createShoppingList', async () => {
     type: 'SHOPPING_LIST_CREATED',
     payload: { name: 'List 1' },
     aggregateId: 'shopping-list-1',
-    aggregateVersion: 1
+    aggregateVersion: 1,
   })
 })
 
@@ -53,16 +53,16 @@ test('createShoppingItem', async () => {
     type: 'createShoppingItem',
     payload: {
       id: '1',
-      text: 'Milk'
-    }
+      text: 'Milk',
+    },
   }
 
   const response = await fetch(`${MAIN_PAGE}/api/commands`, {
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     method: 'POST',
-    body: JSON.stringify(command)
+    body: JSON.stringify(command),
   })
 
   const event = await response.json()
@@ -71,7 +71,7 @@ test('createShoppingItem', async () => {
     type: 'SHOPPING_ITEM_CREATED',
     payload: { id: '1', text: 'Milk' },
     aggregateId: 'shopping-list-1',
-    aggregateVersion: 2
+    aggregateVersion: 2,
   })
 })
 
@@ -84,15 +84,15 @@ test('createShoppingItems', async () => {
         type: 'createShoppingItem',
         payload: {
           id: '2',
-          text: 'Eggs'
-        }
+          text: 'Eggs',
+        },
       },
       event: {
         type: 'SHOPPING_ITEM_CREATED',
         payload: { id: '2', text: 'Eggs' },
         aggregateId: 'shopping-list-1',
-        aggregateVersion: 3
-      }
+        aggregateVersion: 3,
+      },
     },
     {
       command: {
@@ -101,15 +101,15 @@ test('createShoppingItems', async () => {
         type: 'createShoppingItem',
         payload: {
           id: '3',
-          text: 'Canned beans'
-        }
+          text: 'Canned beans',
+        },
       },
       event: {
         type: 'SHOPPING_ITEM_CREATED',
         payload: { id: '3', text: 'Canned beans' },
         aggregateId: 'shopping-list-1',
-        aggregateVersion: 4
-      }
+        aggregateVersion: 4,
+      },
     },
     {
       command: {
@@ -118,25 +118,25 @@ test('createShoppingItems', async () => {
         type: 'createShoppingItem',
         payload: {
           id: '4',
-          text: 'Paper towels'
-        }
+          text: 'Paper towels',
+        },
       },
       event: {
         type: 'SHOPPING_ITEM_CREATED',
         payload: { id: '4', text: 'Paper towels' },
         aggregateId: 'shopping-list-1',
-        aggregateVersion: 5
-      }
-    }
+        aggregateVersion: 5,
+      },
+    },
   ]
 
   for (const match of matches) {
     const response = await fetch(`${MAIN_PAGE}/api/commands`, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       method: 'POST',
-      body: JSON.stringify(match.command)
+      body: JSON.stringify(match.command),
     })
 
     const event = await response.json()
@@ -152,9 +152,9 @@ test('validation should works correctly', async () => {
         aggregateName: 'ShoppingList',
         aggregateId: 'shopping-list-2',
         type: 'createShoppingList',
-        payload: {}
+        payload: {},
       },
-      error: 'name is required'
+      error: 'name is required',
     },
     {
       command: {
@@ -162,10 +162,10 @@ test('validation should works correctly', async () => {
         aggregateId: 'shopping-list-1',
         type: 'createShoppingList',
         payload: {
-          name: 'List 1'
-        }
+          name: 'List 1',
+        },
       },
-      error: 'shopping list already exists'
+      error: 'shopping list already exists',
     },
     {
       command: {
@@ -174,20 +174,20 @@ test('validation should works correctly', async () => {
         type: 'createShoppingItem',
         payload: {
           id: '5',
-          text: 'Bread'
-        }
+          text: 'Bread',
+        },
       },
-      error: 'shopping list does not exist'
-    }
+      error: 'shopping list does not exist',
+    },
   ]
 
   for (const match of matches) {
     const response = await fetch(`${MAIN_PAGE}/api/commands`, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       method: 'POST',
-      body: JSON.stringify(match.command)
+      body: JSON.stringify(match.command),
     })
 
     const event = await response.text()

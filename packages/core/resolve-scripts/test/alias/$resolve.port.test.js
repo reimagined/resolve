@@ -5,7 +5,7 @@ import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
   const resolveConfig = {
-    port: 1234
+    port: 1234,
   }
 
   test('[client]', () => {
@@ -14,7 +14,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -27,7 +27,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -37,7 +37,7 @@ describe('base config works correctly', () => {
 
 describe('config with process.env works correctly', () => {
   const resolveConfig = {
-    port: declareRuntimeEnv('PORT')
+    port: declareRuntimeEnv('PORT'),
   }
 
   test('[client]', () => {
@@ -46,7 +46,7 @@ describe('config with process.env works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -59,7 +59,7 @@ describe('config with process.env works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )

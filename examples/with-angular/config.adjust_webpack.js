@@ -3,17 +3,17 @@ import FilterWarningsPlugin from 'webpack-filter-warnings-plugin'
 import { getModulesDirs } from 'resolve-scripts'
 import path from 'path'
 
-const adjustClientEntry = webpackConfig => {
+const adjustClientEntry = (webpackConfig) => {
   const {
     module: { rules },
     resolve,
-    plugins
+    plugins,
   } = webpackConfig
 
   rules.push({
     test: /\.ts$/,
     loaders: '@ngtools/webpack',
-    exclude: [/node_modules/, ...getModulesDirs({ isAbsolutePath: true })]
+    exclude: [/node_modules/, ...getModulesDirs({ isAbsolutePath: true })],
   })
 
   resolve.extensions = ['.ts', '.js']
@@ -29,7 +29,7 @@ const adjustClientEntry = webpackConfig => {
       ),
       sourceMap: true,
       tsConfigPath: path.join(__dirname, 'tsconfig.json'),
-      skipCodeGeneration: true
+      skipCodeGeneration: true,
     })
   )
 
@@ -39,15 +39,15 @@ const adjustClientEntry = webpackConfig => {
   // native cli command "npx ng build --aot" performs such operation.
   plugins.push(
     new FilterWarningsPlugin({
-      exclude: /System.import/
+      exclude: /System.import/,
     })
   )
 }
 
-const adjustWebpackConfigs = webpackConfigs => {
+const adjustWebpackConfigs = (webpackConfigs) => {
   const clientEntry = webpackConfigs.find(
     ({ entry, target }) =>
-      Object.keys(entry).find(entry => entry.endsWith('client/index.js')) !=
+      Object.keys(entry).find((entry) => entry.endsWith('client/index.js')) !=
         null && target === 'web'
   )
 

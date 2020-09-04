@@ -27,16 +27,16 @@ const mapStateToOptions = ({ optimistic: { refreshId } }, { id }) => ({
   resolverName: 'story',
   resolverArgs: {
     refreshId,
-    id
-  }
+    id,
+  },
 })
 
 const mapStateToProps = (state, { data }) => ({
   story: data,
-  me: state.jwt
+  me: state.jwt,
 })
 
-const mapDispatchToProps = dispatch =>
+const mapDispatchToProps = (dispatch) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(

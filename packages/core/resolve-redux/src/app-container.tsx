@@ -9,7 +9,7 @@ class AppContainer extends React.PureComponent<any> {
       staticPath,
       store,
       children,
-      queryMethod
+      queryMethod,
     } = this.props
 
     return (

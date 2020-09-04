@@ -24,7 +24,7 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       ...domain,
       ...constants,
       routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
-      assemblies
+      assemblies,
     }
 
     await initPerformanceTracer(resolve)
@@ -46,7 +46,7 @@ const localEntry = async ({ assemblies, constants, domain }) => {
 
           const result = await rawMethod.call(currentResolve.eventBus, {
             eventSubscriber,
-            ...parameters
+            ...parameters,
           })
 
           return result
@@ -56,11 +56,11 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       }
     )
 
-    resolve.sendReactiveEvent = async event => {
+    resolve.sendReactiveEvent = async (event) => {
       await resolve.pubsubManager.dispatch({
         topicName: event.type,
         topicId: event.aggregateId,
-        event
+        event,
       })
     }
 

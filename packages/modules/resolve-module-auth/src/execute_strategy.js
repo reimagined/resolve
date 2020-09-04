@@ -3,7 +3,7 @@ import createResponse from './create_response'
 
 const authStrategies = new Map()
 
-const callbackInvoker = async function(...args) {
+const callbackInvoker = async function (...args) {
   const strategyArgs = args.slice(0, args.length - 1)
   const done = args[args.length - 1]
 
@@ -53,7 +53,7 @@ const executeStrategy = async (
     originalOptions,
     internalRes,
     jwtCookie,
-    rootPath
+    rootPath,
   })
 
   strategy.authDonePromise = new Promise((resolve, reject) => {

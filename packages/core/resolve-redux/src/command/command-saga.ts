@@ -9,7 +9,7 @@ const isSendCommandAction = (
   action: Action
 ): action is SendCommandRequestAction => action.type === SEND_COMMAND_REQUEST
 
-const commandSaga = function*(sagaArgs: ChildSagaArgs): any {
+const commandSaga = function* (sagaArgs: ChildSagaArgs): any {
   yield takeEvery(
     (action: Action) => {
       if (isSendCommandAction(action)) {

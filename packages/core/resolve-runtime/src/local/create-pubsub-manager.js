@@ -7,7 +7,7 @@ const createPubsubManager = () => {
         map.set(connectionId, {
           client,
           eventTypes,
-          aggregateIds
+          aggregateIds,
         })
       }
     },
@@ -41,7 +41,7 @@ const createPubsubManager = () => {
       }
 
       await Promise.all(promises)
-    }
+    },
   }
 
   return pubsubManager

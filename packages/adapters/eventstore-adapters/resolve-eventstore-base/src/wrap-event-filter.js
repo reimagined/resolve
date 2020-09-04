@@ -1,4 +1,4 @@
-const wrapEventFilter = loadEvents => async (pool, filter) => {
+const wrapEventFilter = (loadEvents) => async (pool, filter) => {
   pool.validateEventFilter(filter)
   if (filter.cursor != null) {
     try {

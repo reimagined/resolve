@@ -1,4 +1,4 @@
-const makeNestedPath = nestedPath => {
+const makeNestedPath = (nestedPath) => {
   const jsonPathParts = []
   for (const part of nestedPath) {
     if (part == null || part.constructor !== String) {
@@ -20,7 +20,7 @@ const wrapHighload = async (isHighloadError, obj, method, params) => {
     } catch (error) {
       if (isHighloadError(error)) {
         const jitterDelay = Math.floor(250 + Math.random() * 750)
-        await new Promise(resolve => setTimeout(resolve, jitterDelay))
+        await new Promise((resolve) => setTimeout(resolve, jitterDelay))
       } else {
         throw error
       }
@@ -73,10 +73,10 @@ const connect = async (imports, pool, options) => {
       imports.isHighloadError,
       rawRdsDataService,
       'rollbackTransaction'
-    )
+    ),
   }
 
-  const hash512 = str => {
+  const hash512 = (str) => {
     const hmac = imports.crypto.createHmac('sha512', awsSecretStoreArn)
     hmac.update(str)
     return hmac.digest('hex')
@@ -99,7 +99,7 @@ const connect = async (imports, pool, options) => {
     eventCounters,
     ...imports,
     executeStatement,
-    hash512
+    hash512,
   })
 }
 

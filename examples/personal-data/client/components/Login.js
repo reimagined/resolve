@@ -10,7 +10,7 @@ import {
   FormText,
   Button,
   Alert,
-  Label
+  Label,
 } from 'reactstrap'
 
 const RegistrationForm = ({ user }) => {
@@ -21,17 +21,17 @@ const RegistrationForm = ({ user }) => {
     phoneNumber: user && user.contacts ? user.contacts.phoneNumber : '',
     address: user && user.contacts ? user.contacts.address : '',
     error: null,
-    done: null
+    done: null,
   })
 
   const [agree, setAgree] = useState(false)
 
-  const handleChange = prop => event => {
+  const handleChange = (prop) => (event) => {
     setValues({
       ...values,
       error: false,
       done: false,
-      [prop]: event.target.value
+      [prop]: event.target.value,
     })
   }
 
@@ -40,9 +40,9 @@ const RegistrationForm = ({ user }) => {
       type: 'update',
       aggregateId: user ? user.id : null,
       aggregateName: 'user-profile',
-      payload: values
+      payload: values,
     },
-    error => {
+    (error) => {
       if (error) {
         setValues({ ...values, error, done: false })
       } else {

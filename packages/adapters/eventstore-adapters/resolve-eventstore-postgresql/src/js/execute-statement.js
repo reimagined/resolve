@@ -13,7 +13,7 @@ const executeStatement = async (pool, sql) => {
     connectionTimeoutMillis: 45000,
     idle_in_transaction_session_timeout: 45000,
     query_timeout: 45000,
-    statement_timeout: 45000
+    statement_timeout: 45000,
   })
 
   try {

@@ -9,7 +9,7 @@ import UserList from '../components/UserList'
 
 import getNativeChunk from '../native-chunk'
 const {
-  resolveRedux: { connectReadModel }
+  resolveRedux: { connectReadModel },
 } = getNativeChunk()
 
 const styles = StyleSheet.create({
@@ -17,8 +17,8 @@ const styles = StyleSheet.create({
     marginTop: 15,
     paddingLeft: 5,
     fontSize: 16,
-    color: '#575757'
-  }
+    color: '#575757',
+  },
 })
 
 class FindUsers extends React.PureComponent {
@@ -62,15 +62,15 @@ export const mapStateToOptions = (state, { query, shoppingListId }) => ({
   resolverName: 'sharings',
   resolverArgs: {
     query,
-    shoppingListId
-  }
+    shoppingListId,
+  },
 })
 
-export const mapStateToProps = state => ({
-  users: state.optimisticSharings.users
+export const mapStateToProps = (state) => ({
+  users: state.optimisticSharings.users,
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(

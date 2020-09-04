@@ -2,7 +2,7 @@ import {
   Command,
   CommandResult,
   CommandOptions,
-  CommandCallback
+  CommandCallback,
 } from 'resolve-client'
 import { useCallback } from 'react'
 import { HookExecutor, isCallback, isDependencies, isOptions } from './generic'
@@ -97,7 +97,7 @@ function useCommand<T>(
   >(isCallback, options, callback)
   const actualDependencies: any[] =
     firstOfType<any[]>(isDependencies, options, callback, dependencies) ??
-    [command, actualOptions, actualCallback].filter(i => i)
+    [command, actualOptions, actualCallback].filter((i) => i)
 
   if (typeof command === 'function') {
     return useCallback(

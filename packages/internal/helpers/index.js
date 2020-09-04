@@ -15,5 +15,5 @@ module.exports = {
   getResolveExamples,
   getResolvePackages,
   patchPackageJson,
-  safeName
+  safeName,
 }

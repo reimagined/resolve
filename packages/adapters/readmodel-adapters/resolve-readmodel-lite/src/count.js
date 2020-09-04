@@ -5,7 +5,7 @@ const count = async (
     escape,
     tablePrefix,
     searchToWhereExpression,
-    makeNestedPath
+    makeNestedPath,
   },
   readModelName,
   tableName,

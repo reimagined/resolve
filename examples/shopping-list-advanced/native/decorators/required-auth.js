@@ -1,13 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-export const mapStateToProps = state => {
+export const mapStateToProps = (state) => {
   return {
-    jwt: state.jwt
+    jwt: state.jwt,
   }
 }
 
-const requiredAuth = Component => {
+const requiredAuth = (Component) => {
   class RequiredAuth extends React.PureComponent {
     componentDidMount() {
       this.optionalRedirect()

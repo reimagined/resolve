@@ -21,7 +21,7 @@ switch (operation) {
     validateWorkspace()
 
     packageJson.workspaces.packages = packageJson.workspaces.packages
-      .filter(name => name !== workspace)
+      .filter((name) => name !== workspace)
       .concat(workspace)
 
     break
@@ -31,7 +31,7 @@ switch (operation) {
     validateWorkspace()
 
     packageJson.workspaces.packages = packageJson.workspaces.packages.filter(
-      name => name !== workspace
+      (name) => name !== workspace
     )
     break
   }

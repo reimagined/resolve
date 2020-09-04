@@ -11,8 +11,8 @@ export const handler = async ({ url, readModel }) => {
 
 export const command = 'reset <readModel>'
 export const describe = "reset a read model's state (full rebuild)"
-export const builder = yargs =>
+export const builder = (yargs) =>
   yargs.positional('readModel', {
     describe: 'an existing read-model`s name',
-    type: 'string'
+    type: 'string',
   })

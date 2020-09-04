@@ -12,13 +12,13 @@ const end = (...args) => result.push(['end', ...args])
 
 const connection = {
   query,
-  end
+  end,
 }
 
 const createConnection = () => connection
 
 const MySQL = {
-  createConnection
+  createConnection,
 }
 
 export default MySQL

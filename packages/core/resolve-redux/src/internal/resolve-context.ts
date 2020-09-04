@@ -4,7 +4,7 @@ const { Provider, Consumer } = React.createContext({
   api: null,
   origin: '',
   rootPath: '',
-  staticPath: 'static'
+  staticPath: 'static',
 })
 
 export { Provider, Consumer }

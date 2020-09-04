@@ -5,10 +5,10 @@ import { useQueryBuilder } from '../src/use-query-builder'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({
-  useCallback: jest.fn(cb => cb)
+  useCallback: jest.fn((cb) => cb),
 }))
 jest.mock('../src/use-query', () => ({
-  useQuery: jest.fn()
+  useQuery: jest.fn(),
 }))
 
 const mockedUseQuery = mocked(useQuery)

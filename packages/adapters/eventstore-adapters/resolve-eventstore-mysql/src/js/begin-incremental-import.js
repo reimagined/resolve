@@ -3,7 +3,7 @@ import { ER_TABLE_EXISTS } from './constants'
 const beginIncrementalImport = async ({
   events: { eventsTableName, connection },
   escapeId,
-  escape
+  escape,
 }) => {
   try {
     const incrementalImportTableAsId = escapeId(

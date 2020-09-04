@@ -5,7 +5,7 @@ const parseReadOptions = (options: any): [any, any] => {
     resolverName: 1 << 2,
     resolverArgs: 1 << 3,
     aggregateIds: 1 << 4,
-    aggregateArgs: 1 << 5
+    aggregateArgs: 1 << 5,
   }
 
   const optionsMap = []

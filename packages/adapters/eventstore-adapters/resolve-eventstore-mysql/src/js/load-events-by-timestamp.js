@@ -4,8 +4,8 @@ const loadEventsByTimestamp = async (
   { events: { connection, eventsTableName }, escapeId, escape, shapeEvent },
   { eventTypes, aggregateIds, startTime, finishTime, limit }
 ) => {
-  const injectString = value => `${escape(value)}`
-  const injectNumber = value => `${+value}`
+  const injectString = (value) => `${escape(value)}`
+  const injectNumber = (value) => `${+value}`
 
   const queryConditions = []
   const events = []
@@ -46,7 +46,7 @@ const loadEventsByTimestamp = async (
     get cursor() {
       return throwBadCursor()
     },
-    events
+    events,
   }
 }
 

@@ -10,7 +10,7 @@ import UserContext from '../userContext'
 const NewPost = ({ successHandlerProp }) => {
   const [values, setValues] = useState({
     error: null,
-    collapsed: true
+    collapsed: true,
   })
 
   const { collapsed, error } = values
@@ -19,11 +19,11 @@ const NewPost = ({ successHandlerProp }) => {
     setValues({ ...values, collapsed: !collapsed })
   }
 
-  const errorHandler = error => {
+  const errorHandler = (error) => {
     setValues({ ...values, collapsed: false, error })
   }
 
-  const successHandler = result => {
+  const successHandler = (result) => {
     setValues({ collapsed: true, error: null })
     successHandlerProp(result)
   }
@@ -56,19 +56,19 @@ const FeedByAuthor = ({ authorId, user }) => {
   }, [])
 
   const successCallback = useCallback(
-    result => {
-      const nextPosts = posts.map(p => p)
+    (result) => {
+      const nextPosts = posts.map((p) => p)
       const {
         aggregateId,
         timestamp,
-        payload: { authorId, title, content }
+        payload: { authorId, title, content },
       } = result
       nextPosts.unshift({
         author: authorId,
         title,
         content,
         id: aggregateId,
-        timestamp
+        timestamp,
       })
       setPosts(nextPosts)
     },

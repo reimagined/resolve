@@ -14,14 +14,14 @@ const connect = async (
     escape,
     fullJitter,
     executeStatement,
-    coercer
+    coercer,
   } = specific
 
   const {
     databaseName,
     eventsTableName = 'events',
     snapshotsTableName = 'snapshots',
-    secretsTableName = 'secrets'
+    secretsTableName = 'secrets',
   } = pool.config ?? {}
 
   Object.assign(pool, {
@@ -34,7 +34,7 @@ const connect = async (
     coercer,
     executeStatement: executeStatement.bind(null, pool),
     escapeId,
-    escape
+    escape,
   })
 
   if (pool.executeStatement != null) {

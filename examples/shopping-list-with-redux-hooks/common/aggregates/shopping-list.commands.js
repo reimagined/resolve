@@ -4,7 +4,7 @@ import {
   SHOPPING_LIST_REMOVED,
   SHOPPING_ITEM_CREATED,
   SHOPPING_ITEM_TOGGLED,
-  SHOPPING_ITEM_REMOVED
+  SHOPPING_ITEM_REMOVED,
 } from '../event-types'
 
 export default {
@@ -18,7 +18,7 @@ export default {
 
     return {
       type: SHOPPING_LIST_CREATED,
-      payload: { name }
+      payload: { name },
     }
   },
   renameShoppingList: (state, { payload: { name } }) => {
@@ -32,16 +32,16 @@ export default {
 
     return {
       type: SHOPPING_LIST_RENAMED,
-      payload: { name }
+      payload: { name },
     }
   },
-  removeShoppingList: state => {
+  removeShoppingList: (state) => {
     if (!state.createdAt) {
       throw new Error('Shopping List does not exist')
     }
 
     return {
-      type: SHOPPING_LIST_REMOVED
+      type: SHOPPING_LIST_REMOVED,
     }
   },
   createShoppingItem: (state, { payload: { id, text } }) => {
@@ -58,7 +58,7 @@ export default {
 
     return {
       type: SHOPPING_ITEM_CREATED,
-      payload: { id, text }
+      payload: { id, text },
     }
   },
   toggleShoppingItem: (state, { payload: { id } }) => {
@@ -72,7 +72,7 @@ export default {
 
     return {
       type: SHOPPING_ITEM_TOGGLED,
-      payload: { id }
+      payload: { id },
     }
   },
   removeShoppingItem: (state, { payload: { id } }) => {
@@ -86,7 +86,7 @@ export default {
 
     return {
       type: SHOPPING_ITEM_REMOVED,
-      payload: { id }
+      payload: { id },
     }
-  }
+  },
 }

@@ -13,7 +13,7 @@ describe('view-models', () => {
       expect(projection[SHOPPING_LIST_CREATED](state, event)).toEqual({
         id: aggregateId,
         name,
-        list: []
+        list: [],
       })
     })
   })

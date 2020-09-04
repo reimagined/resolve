@@ -54,7 +54,7 @@ const createAdapter = _createAdapter.bind(null, {
   fullJitter,
   executeStatement,
   injectEvent,
-  coercer
+  coercer,
 })
 
 export default createAdapter

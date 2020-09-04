@@ -1,17 +1,17 @@
 // mdis-start
 import fs from 'fs'
 
-const safeUnlinkSync = filename => {
+const safeUnlinkSync = (filename) => {
   if (fs.existsSync(filename)) {
     fs.unlinkSync(filename)
   }
 }
 
-export default options => {
+export default (options) => {
   const prefix = String(options.prefix)
   const readModels = new Set()
   // mdis-start connect
-  const connect = async readModelName => {
+  const connect = async (readModelName) => {
     fs.writeFileSync(`${prefix}${readModelName}.lock`, true, { flag: 'wx' })
     readModels.add(readModelName)
     const store = {
@@ -20,7 +20,7 @@ export default options => {
       },
       set(value) {
         fs.writeFileSync(`${prefix}${readModelName}`, JSON.stringify(value))
-      }
+      },
     }
     return store
   }
@@ -49,7 +49,7 @@ export default options => {
     connect,
     disconnect,
     drop,
-    dispose
+    dispose,
   }
 }
 // mdis-stop

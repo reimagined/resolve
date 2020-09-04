@@ -8,7 +8,7 @@ test('should fail when imported from client', () => {
       '\r\n' +
         alias({
           resolveConfig: {},
-          isClient: true
+          isClient: true,
         }) +
         '\r\n'
     )
@@ -27,9 +27,9 @@ test('should fail if "launchBroker" is runtime injection', () => {
               consumerAddress: declareRuntimeEnv('consumerAddress'),
               databaseFile: 'databaseFile',
               batchSize: 100,
-              upstream: true
-            }
-          }
+              upstream: true,
+            },
+          },
         }) +
         '\r\n'
     )
@@ -48,9 +48,9 @@ test('works correctly', () => {
               consumerAddress: declareRuntimeEnv('consumerAddress'),
               databaseFile: declareRuntimeEnv('databaseFile'),
               batchSize: 100,
-              upstream: true
-            }
-          }
+              upstream: true,
+            },
+          },
         }) +
         '\r\n'
     )

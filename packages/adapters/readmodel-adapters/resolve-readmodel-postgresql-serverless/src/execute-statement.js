@@ -5,11 +5,11 @@ const executeStatement = async (pool, sql) => {
     const transactionScope =
       pool.xaTransactionId != null
         ? {
-            transactionId: pool.xaTransactionId
+            transactionId: pool.xaTransactionId,
           }
         : pool.transactionId != null
         ? {
-            transactionId: pool.transactionId
+            transactionId: pool.transactionId,
           }
         : {}
     const result = await pool.rdsDataService.executeStatement({
@@ -19,7 +19,7 @@ const executeStatement = async (pool, sql) => {
       database: 'postgres',
       continueAfterTimeout: false,
       includeResultMetadata: true,
-      sql
+      sql,
     })
 
     const { columnMetadata, records } = result

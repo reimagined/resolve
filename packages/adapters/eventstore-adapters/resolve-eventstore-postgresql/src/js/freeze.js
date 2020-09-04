@@ -2,7 +2,7 @@ const freeze = async ({
   executeStatement,
   databaseName,
   eventsTableName,
-  escapeId
+  escapeId,
 }) => {
   const databaseNameAsId = escapeId(databaseName)
   const freezeTableNameAsId = escapeId(`${eventsTableName}-freeze`)

@@ -5,7 +5,7 @@ import hoistNonReactStatic from 'hoist-non-react-statics'
 
 import {
   connectReadModel as connectReadModelAction,
-  disconnectReadModel as disconnectReadModelAction
+  disconnectReadModel as disconnectReadModelAction,
 } from './actions'
 import getHash from '../internal/get-hash'
 import connectResolveAdvanced from '../internal/connect-resolve-advanced'
@@ -30,13 +30,13 @@ const connectReadModel = (
       const {
         readModelName,
         resolverName,
-        resolverArgs
+        resolverArgs,
       } = this.props.connectorOptions
 
       this.props.connectReadModel({
         name: readModelName,
         resolver: resolverName,
-        args: resolverArgs
+        args: resolverArgs,
       })
     }
 
@@ -44,13 +44,13 @@ const connectReadModel = (
       const {
         readModelName,
         resolverName,
-        resolverArgs
+        resolverArgs,
       } = this.props.connectorOptions
 
       this.props.disconnectReadModel({
         name: readModelName,
         resolver: resolverName,
-        args: resolverArgs
+        args: resolverArgs,
       })
     }
 
@@ -74,12 +74,12 @@ const connectReadModel = (
         this.props.disconnectReadModel({
           name: prevConnectorOptions.readModelName,
           resolver: prevConnectorOptions.resolverName,
-          args: prevConnectorOptions.resolverArgs
+          args: prevConnectorOptions.resolverArgs,
         })
         this.props.connectReadModel({
           name: prevConnectorOptions.readModelName,
           resolver: prevConnectorOptions.resolverName,
-          args: prevConnectorOptions.resolverArgs
+          args: prevConnectorOptions.resolverArgs,
         })
       }
     }
@@ -97,8 +97,8 @@ const connectReadModel = (
       query: {
         name: connectorOptions.readModelName,
         resolver: connectorOptions.resolverName,
-        args: connectorOptions.resolverArgs
-      }
+        args: connectorOptions.resolverArgs,
+      },
     })
     const data =
       entry && entry.status === ResultStatus.Ready ? entry.data : null
@@ -111,7 +111,7 @@ const connectReadModel = (
       isLoading: entry && entry.status === ResultStatus.Requested,
       isFailure: entry && entry.status === ResultStatus.Failed,
       data,
-      error
+      error,
     }
   }
 
@@ -119,7 +119,7 @@ const connectReadModel = (
     bindActionCreators(
       {
         connectReadModel: connectReadModelAction,
-        disconnectReadModel: disconnectReadModelAction
+        disconnectReadModel: disconnectReadModelAction,
       },
       dispatch
     )

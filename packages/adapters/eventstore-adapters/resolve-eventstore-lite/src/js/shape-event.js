@@ -7,7 +7,7 @@ const shapeEvent = (event, additionalFields) =>
     aggregateId: event.aggregateId,
     aggregateVersion: +event.aggregateVersion,
     payload: JSON.parse(event.payload),
-    ...additionalFields
+    ...additionalFields,
   })
 
 export default shapeEvent

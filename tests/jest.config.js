@@ -8,6 +8,6 @@ module.exports = {
   testMatch: ['**/test/**/*.test.[jt]s?(x)'],
   transform: {
     '^.+\\.js$': path.resolve(__dirname, '../jest.transform.js'),
-    '^.+\\.tsx?$': 'ts-jest'
-  }
+    '^.+\\.tsx?$': 'ts-jest',
+  },
 }

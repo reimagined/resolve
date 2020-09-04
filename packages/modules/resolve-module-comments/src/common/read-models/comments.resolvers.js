@@ -3,7 +3,7 @@ import injectDefaults from '../inject-defaults'
 const createCommentsProjection = ({
   commentsTableName,
   resolverNames: { commentsTree, foreignCommentsCount, allCommentsPaginate },
-  maxNestedLevel
+  maxNestedLevel,
 }) => ({
   [commentsTree]: async (store, args) => {
     const { treeId, parentCommentId, maxLevel } = args
@@ -31,26 +31,26 @@ const createCommentsProjection = ({
       searchLevel = [
         {
           $or: Array.from({ length: maxLevelInt }).map((_, idx) => ({
-            nestedLevel: idx
-          }))
-        }
+            nestedLevel: idx,
+          })),
+        },
       ]
     }
 
     const searchExpression = {
-      $and: [{ commentId: parentId, treeId }, ...searchLevel]
+      $and: [{ commentId: parentId, treeId }, ...searchLevel],
     }
 
     const fieldFilterExpression = {
       childCommentId: 1,
       position: 1,
       content: 1,
-      timestamp: 1
+      timestamp: 1,
     }
 
     const sortExpression = {
       nestedLevel: 1,
-      timestamp: 1
+      timestamp: 1,
     }
 
     const linearizedComments = await store.find(
@@ -81,7 +81,7 @@ const createCommentsProjection = ({
         commentId: comment.childCommentId,
         content: comment.content,
         timestamp: comment.timestamp,
-        children: []
+        children: [],
       }
     }
 
@@ -120,9 +120,9 @@ const createCommentsProjection = ({
       searchLevel = [
         {
           $or: Array.from({ length: maxLevelInt }).map((_, idx) => ({
-            nestedLevel: idx
-          }))
-        }
+            nestedLevel: idx,
+          })),
+        },
       ]
     }
 
@@ -131,10 +131,10 @@ const createCommentsProjection = ({
         {
           commentId: parentId,
           treeId,
-          authorId: { $ne: authorId }
+          authorId: { $ne: authorId },
         },
-        ...searchLevel
-      ]
+        ...searchLevel,
+      ],
     }
 
     const count = await store.count(commentsTableName, searchExpression)
@@ -160,18 +160,18 @@ const createCommentsProjection = ({
 
     const searchExpression = {
       commentId: null,
-      nestedLevel: { $ne: 0 }
+      nestedLevel: { $ne: 0 },
     }
 
     const fieldFilterExpression = {
       treeId: 1,
       childCommentId: 1,
       content: 1,
-      timestamp: 1
+      timestamp: 1,
     }
 
     const sortExpression = {
-      timestamp: -1
+      timestamp: -1,
     }
 
     const linearizedComments = await store.find(
@@ -191,11 +191,11 @@ const createCommentsProjection = ({
     return {
       comments: linearizedComments.map(({ childCommentId, ...rest }) => ({
         commentId: childCommentId,
-        ...rest
+        ...rest,
       })),
-      paginationDone
+      paginationDone,
     }
-  }
+  },
 })
 
 export default injectDefaults(createCommentsProjection)

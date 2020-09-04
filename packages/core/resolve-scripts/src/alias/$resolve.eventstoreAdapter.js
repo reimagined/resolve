@@ -2,7 +2,7 @@ import {
   message,
   RESOURCE_CONSTRUCTOR_ONLY,
   RUNTIME_ENV_ANYWHERE,
-  IMPORT_CONSTRUCTOR
+  IMPORT_CONSTRUCTOR,
 } from '../constants'
 import importResource from '../import_resource'
 
@@ -24,7 +24,7 @@ export default ({ resolveConfig, isClient }) => {
     importMode: RESOURCE_CONSTRUCTOR_ONLY,
     instanceMode: IMPORT_CONSTRUCTOR,
     imports,
-    constants
+    constants,
   })
 
   exports.push('export default eventstoreAdapter')

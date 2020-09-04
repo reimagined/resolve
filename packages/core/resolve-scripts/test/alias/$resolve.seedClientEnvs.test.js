@@ -8,7 +8,7 @@ test('should fail when imported from client', () => {
       '\r\n' +
         alias({
           resolveConfig: {},
-          isClient: true
+          isClient: true,
         }) +
         '\r\n'
     )
@@ -23,8 +23,8 @@ test('works correctly', () => {
           resolveConfig: {
             customConstants: declareRuntimeEnv('customConstants'),
             staticPath: declareRuntimeEnv('staticPath'),
-            rootPath: declareRuntimeEnv('rootPath')
-          }
+            rootPath: declareRuntimeEnv('rootPath'),
+          },
         }) +
         '\r\n'
     )

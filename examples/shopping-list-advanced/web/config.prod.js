@@ -9,20 +9,20 @@ const prodConfig = {
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
-      snapshotBucketSize: 100
-    }
+      snapshotBucketSize: 100,
+    },
   },
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'data/read-models.db'
-      }
-    }
+        databaseFile: 'data/read-models.db',
+      },
+    },
   },
   eventBroker: {
-    databaseFile: 'data/local-bus-broker.db'
-  }
+    databaseFile: 'data/local-bus-broker.db',
+  },
 }
 
 module.exports = prodConfig

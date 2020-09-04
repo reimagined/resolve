@@ -13,7 +13,7 @@ function getResolvePackages() {
   for (const filePath of find('./packages/**/package.json', {
     cwd: getResolveDir(),
     absolute: true,
-    ignore: ['**/node_modules/**', './node_modules/**']
+    ignore: ['**/node_modules/**', './node_modules/**'],
   })) {
     if (filePath.includes('node_modules')) {
       continue

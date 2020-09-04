@@ -24,5 +24,5 @@ export default {
     validate.keyIsNotInObject(state, 'rejected', 'Already rejected')
 
     return { type: USER_REJECTED, payload: { reason } }
-  }
+  },
 }

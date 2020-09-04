@@ -5,7 +5,7 @@ import {
   SHOPPING_LIST_REMOVED,
   SHOPPING_ITEM_CREATED,
   SHOPPING_ITEM_TOGGLED,
-  SHOPPING_ITEM_REMOVED
+  SHOPPING_ITEM_REMOVED,
 } from '../../common/event-types'
 
 describe('view-models', () => {
@@ -20,7 +20,7 @@ describe('view-models', () => {
       expect(projection[SHOPPING_LIST_CREATED](state, event)).toEqual({
         id: aggregateId,
         name,
-        list: []
+        list: [],
       })
     })
 
@@ -31,14 +31,14 @@ describe('view-models', () => {
       const state = {
         id: aggregateId,
         name,
-        list: []
+        list: [],
       }
       const event = { payload: { name: 'renamed' } }
 
       expect(projection[SHOPPING_LIST_RENAMED](state, event)).toEqual({
         id: aggregateId,
         name: 'renamed',
-        list: []
+        list: [],
       })
     })
 
@@ -49,12 +49,12 @@ describe('view-models', () => {
       const state = {
         id: aggregateId,
         name,
-        list: []
+        list: [],
       }
       const event = {}
 
       expect(projection[SHOPPING_LIST_REMOVED](state, event)).toEqual({
-        removed: true
+        removed: true,
       })
     })
 
@@ -65,7 +65,7 @@ describe('view-models', () => {
       const state = {
         id: aggregateId,
         name,
-        list: []
+        list: [],
       }
       const event = { payload: { id: 'id', text: 'text' } }
 
@@ -76,9 +76,9 @@ describe('view-models', () => {
           {
             id: 'id',
             text: 'text',
-            checked: false
-          }
-        ]
+            checked: false,
+          },
+        ],
       })
     })
 
@@ -93,9 +93,9 @@ describe('view-models', () => {
           {
             id: 'id',
             text: 'text',
-            checked: false
-          }
-        ]
+            checked: false,
+          },
+        ],
       }
       const event = { payload: { id: 'id', text: 'text' } }
 
@@ -106,9 +106,9 @@ describe('view-models', () => {
           {
             id: 'id',
             text: 'text',
-            checked: true
-          }
-        ]
+            checked: true,
+          },
+        ],
       })
     })
 
@@ -123,16 +123,16 @@ describe('view-models', () => {
           {
             id: 'id',
             text: 'text',
-            checked: true
-          }
-        ]
+            checked: true,
+          },
+        ],
       }
       const event = { payload: { id: 'id' } }
 
       expect(projection[SHOPPING_ITEM_REMOVED](state, event)).toEqual({
         id: aggregateId,
         name,
-        list: []
+        list: [],
       })
     })
   })

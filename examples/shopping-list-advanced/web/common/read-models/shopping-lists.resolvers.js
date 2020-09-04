@@ -7,7 +7,7 @@ export default {
     const { id: userId } = jwt.verify(token, jwtSecret)
 
     const shoppingList = await store.findOne('ShoppingLists', {
-      id: shoppingListId
+      id: shoppingListId,
     })
 
     if (!shoppingList) {
@@ -34,8 +34,8 @@ export default {
       name: shoppingList.name,
       users: {
         sharings: users.filter(({ id }) => sharings.includes(id)),
-        other: users.filter(({ id }) => !sharings.includes(id))
-      }
+        other: users.filter(({ id }) => !sharings.includes(id)),
+      },
     }
   },
 
@@ -66,7 +66,7 @@ export default {
     const sharings = await store.find('Sharings', { userId })
     for (const { shoppingListId } of sharings) {
       const shoppingList = await store.findOne('ShoppingLists', {
-        id: shoppingListId
+        id: shoppingListId,
       })
       if (shoppingList) {
         shoppingLists.push(shoppingList)
@@ -74,5 +74,5 @@ export default {
     }
 
     return shoppingLists
-  }
+  },
 }

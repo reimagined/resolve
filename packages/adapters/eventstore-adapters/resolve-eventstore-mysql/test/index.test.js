@@ -1,6 +1,6 @@
 import {
   result as mockResult,
-  connection as mockConnection
+  connection as mockConnection,
 } from 'mysql2/promise'
 import createEventstoreAdapter from '../src/index'
 
@@ -15,7 +15,7 @@ describe.skip('resolve-eventstore-mysql', () => {
       user: 'user',
       password: 'password',
       database: 'database',
-      eventsTableName: 'eventsTableName'
+      eventsTableName: 'eventsTableName',
     })
   })
 
@@ -32,7 +32,7 @@ describe.skip('resolve-eventstore-mysql', () => {
       type: 'eventType',
       aggregateId: 'aggregateId',
       aggregateVersion: 1,
-      timestamp: 1
+      timestamp: 1,
     })
 
     expect(mockConnection.query.mock.calls).toMatchSnapshot()
@@ -46,7 +46,7 @@ describe.skip('resolve-eventstore-mysql', () => {
       aggregateId: 'aggregateId',
       aggregateVersion: 1,
       timestamp: 1,
-      payload: { index: 1 }
+      payload: { index: 1 },
     })
 
     expect(mockConnection.query.mock.calls).toMatchSnapshot()
@@ -60,7 +60,7 @@ describe.skip('resolve-eventstore-mysql', () => {
       { limit: 1 },
       { eventTypes: ['eventType'] },
       { aggregateIds: ['aggregateId'] },
-      { startTime: 1, finishTime: 3 }
+      { startTime: 1, finishTime: 3 },
     ]
 
     for (const loadFilter of loadFilters) {
@@ -79,7 +79,7 @@ describe.skip('resolve-eventstore-mysql', () => {
       {},
       { eventTypes: ['eventType'] },
       { aggregateIds: ['aggregateId'] },
-      { startTime: 1, finishTime: 3 }
+      { startTime: 1, finishTime: 3 },
     ]
 
     for (const loadFilter of loadFilters) {
@@ -98,12 +98,12 @@ describe.skip('resolve-eventstore-mysql', () => {
 
     const eventStream = eventstoreAdapter.export()
 
-    eventStream.on('data', event => {
+    eventStream.on('data', (event) => {
       expect(JSON.parse(event)).toHaveProperty('payload')
       expect(JSON.parse(event)).toHaveProperty('aggregateVersion')
     })
 
-    await new Promise(done => eventStream.on('end', done))
+    await new Promise((done) => eventStream.on('end', done))
 
     expect(mockConnection.query.mock.calls).toMatchSnapshot()
 

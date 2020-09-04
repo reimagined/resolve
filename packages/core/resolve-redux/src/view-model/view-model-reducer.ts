@@ -5,18 +5,18 @@ import getByPath from 'lodash.get'
 
 import {
   DROP_VIEWMODEL_STATE,
-  VIEWMODEL_STATE_UPDATE
+  VIEWMODEL_STATE_UPDATE,
 } from '../internal/action-types'
 import {
   ViewModelResultEntry,
   ViewModelResultMapByName,
   ResultStatus,
-  ReduxState
+  ReduxState,
 } from '../types'
 import {
   DropViewModelStateAction,
   ViewModelAction,
-  ViewModelStateUpdateAction
+  ViewModelStateUpdateAction,
 } from './actions'
 import { ViewModelQuery } from 'resolve-client'
 
@@ -35,7 +35,7 @@ export const getEntryPath = (
     return `@@resolve/namedSelectors.${getHash(selector)}`
   }
   const {
-    query: { name, aggregateIds, args }
+    query: { name, aggregateIds, args },
   } = selector
   return `${getHash(name)}.${getHash(aggregateIds)}.${getHash(args, 'no-args')}`
 }
@@ -56,12 +56,12 @@ export const create = (): any => {
   ): ViewModelResultMapByName =>
     setEntry(
       {
-        ...state
+        ...state,
       },
       getEntryPath(getSelector(action)),
       {
         status: action.initial ? ResultStatus.Requested : ResultStatus.Ready,
-        data: action.state
+        data: action.state,
       }
     )
 
@@ -70,7 +70,7 @@ export const create = (): any => {
     action: DropViewModelStateAction
   ): ViewModelResultMapByName => {
     const newState = {
-      ...state
+      ...state,
     }
     unsetEntry(newState, getEntryPath(getSelector(action)))
     return newState

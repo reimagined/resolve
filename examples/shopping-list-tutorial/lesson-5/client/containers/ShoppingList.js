@@ -11,34 +11,34 @@ import {
   Row,
   Col,
   FormControl,
-  Button
+  Button,
 } from 'react-bootstrap'
 
 import * as aggregateActions from '../actions/aggregate_actions'
 
 export class ShoppingList extends React.PureComponent {
   state = {
-    itemText: ''
+    itemText: '',
   }
 
   createShoppingItem = () => {
     this.props.createShoppingItem('shopping-list-1', {
       text: this.state.itemText,
-      id: Date.now().toString()
+      id: Date.now().toString(),
     })
 
     this.setState({
-      itemText: ''
+      itemText: '',
     })
   }
 
-  updateItemText = event => {
+  updateItemText = (event) => {
     this.setState({
-      itemText: event.target.value
+      itemText: event.target.value,
     })
   }
 
-  onItemTextPressEnter = event => {
+  onItemTextPressEnter = (event) => {
     if (event.charCode === 13) {
       event.preventDefault()
       this.createShoppingItem()
@@ -52,13 +52,13 @@ export class ShoppingList extends React.PureComponent {
     return (
       <div style={{ maxWidth: '500px', margin: 'auto' }}>
         <ListGroup>
-          {list.map(todo => (
+          {list.map((todo) => (
             <ListGroupItem key={todo.id}>
               <Checkbox
                 inline
                 checked={todo.checked}
                 onChange={toggleShoppingItem.bind(null, 'shopping-list-1', {
-                  id: todo.id
+                  id: todo.id,
                 })}
               >
                 {todo.text}
@@ -96,11 +96,11 @@ export class ShoppingList extends React.PureComponent {
 export const mapStateToOptions = (state, ownProps) => {
   return {
     viewModelName: 'shoppingList',
-    aggregateIds: ['shopping-list-1']
+    aggregateIds: ['shopping-list-1'],
   }
 }
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToOptions)(

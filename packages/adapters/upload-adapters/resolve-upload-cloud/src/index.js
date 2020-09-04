@@ -18,8 +18,8 @@ const createPresignedPut = async (
         type: 'put',
         deploymentId,
         encryptedDeploymentId,
-        dir
-      })
+        dir,
+      }),
     })
     .promise()
 
@@ -46,10 +46,10 @@ export const upload = (pool, uploadUrl, filePath) => {
       {
         headers: {
           'Content-Length': fileSizeInBytes,
-          'Content-Type': contentType
+          'Content-Type': contentType,
         },
         uri: uploadUrl,
-        body: fileStream
+        body: fileStream,
       },
       (error, _, body) => {
         error ? reject(error) : body ? reject(body) : resolve()
@@ -71,8 +71,8 @@ const createPresignedPost = async (
         type: 'post',
         deploymentId,
         encryptedDeploymentId,
-        dir
-      })
+        dir,
+      }),
     })
     .promise()
 
@@ -100,10 +100,10 @@ export const uploadFormData = (pool, form, filePath) => {
         formData: {
           ...form.fields,
           'Content-Type': contentType,
-          file: fileStream
-        }
+          file: fileStream,
+        },
       },
-      error => {
+      (error) => {
         error ? reject(error) : resolve()
       }
     )
@@ -118,7 +118,7 @@ export const createToken = (
     JSON.stringify({
       encryptedDeploymentId,
       dir,
-      expireTime: Date.now() + expireTime * 1000
+      expireTime: Date.now() + expireTime * 1000,
     })
   )
     .toString('base64')
@@ -132,7 +132,7 @@ export const createToken = (
   return `${payload}*${signature}`
 }
 
-const createUploadAdapter = config => {
+const createUploadAdapter = (config) => {
   const { deploymentId, CDN, encryptedDeploymentId } = config
 
   return Object.freeze({
@@ -143,7 +143,7 @@ const createUploadAdapter = config => {
     createToken: createToken.bind(null, config),
     deploymentId,
     CDN,
-    encryptedDeploymentId
+    encryptedDeploymentId,
   })
 }
 

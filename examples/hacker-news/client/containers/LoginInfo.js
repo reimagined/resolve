@@ -46,14 +46,14 @@ const LoginInfo = ({ me }) => (
   </PageAuth>
 )
 
-export const mapStateToProps = state => ({
-  me: state.jwt
+export const mapStateToProps = (state) => ({
+  me: state.jwt,
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      logout: optimisticActions.logout
+      logout: optimisticActions.logout,
     },
     dispatch
   )

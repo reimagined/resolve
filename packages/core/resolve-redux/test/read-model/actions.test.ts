@@ -1,12 +1,12 @@
 import {
   queryReadModelFailure,
   queryReadModelRequest,
-  queryReadModelSuccess
+  queryReadModelSuccess,
 } from '../../src/read-model/actions'
 import {
   QUERY_READMODEL_FAILURE,
   QUERY_READMODEL_REQUEST,
-  QUERY_READMODEL_SUCCESS
+  QUERY_READMODEL_SUCCESS,
 } from '../../src/internal/action-types'
 
 test('queryReadModelRequest', () => {
@@ -16,8 +16,8 @@ test('queryReadModelRequest', () => {
         name: 'users',
         resolver: 'all',
         args: {
-          a: 'a'
-        }
+          a: 'a',
+        },
       },
       { initial: 'state' }
     )
@@ -27,13 +27,13 @@ test('queryReadModelRequest', () => {
       name: 'users',
       resolver: 'all',
       args: {
-        a: 'a'
-      }
+        a: 'a',
+      },
     },
     initialState: {
-      initial: 'state'
+      initial: 'state',
     },
-    selectorId: undefined
+    selectorId: undefined,
   })
   expect(
     queryReadModelRequest(
@@ -41,8 +41,8 @@ test('queryReadModelRequest', () => {
         name: 'bots',
         resolver: 'first',
         args: {
-          b: 'b'
-        }
+          b: 'b',
+        },
       },
       { initial: 'diamond' },
       'selector-id'
@@ -53,13 +53,13 @@ test('queryReadModelRequest', () => {
       name: 'bots',
       resolver: 'first',
       args: {
-        b: 'b'
-      }
+        b: 'b',
+      },
     },
     initialState: {
-      initial: 'diamond'
+      initial: 'diamond',
     },
-    selectorId: 'selector-id'
+    selectorId: 'selector-id',
   })
 })
 
@@ -70,8 +70,8 @@ test('queryReadModelSuccess', () => {
         name: 'users',
         resolver: 'all',
         args: {
-          a: 'a'
-        }
+          a: 'a',
+        },
       },
       { data: 'data' }
     )
@@ -81,13 +81,13 @@ test('queryReadModelSuccess', () => {
       name: 'users',
       resolver: 'all',
       args: {
-        a: 'a'
-      }
+        a: 'a',
+      },
     },
     result: {
-      data: 'data'
+      data: 'data',
     },
-    selectorId: undefined
+    selectorId: undefined,
   })
   expect(
     queryReadModelSuccess(
@@ -95,8 +95,8 @@ test('queryReadModelSuccess', () => {
         name: 'bots',
         resolver: 'first',
         args: {
-          b: 'b'
-        }
+          b: 'b',
+        },
       },
       { data: 'diamond' },
       'selector-id'
@@ -107,13 +107,13 @@ test('queryReadModelSuccess', () => {
       name: 'bots',
       resolver: 'first',
       args: {
-        b: 'b'
-      }
+        b: 'b',
+      },
     },
     result: {
-      data: 'diamond'
+      data: 'diamond',
     },
-    selectorId: 'selector-id'
+    selectorId: 'selector-id',
   })
 })
 
@@ -124,8 +124,8 @@ test('queryReadModelFailure', () => {
         name: 'users',
         resolver: 'all',
         args: {
-          a: 'a'
-        }
+          a: 'a',
+        },
       },
       Error('error')
     )
@@ -135,11 +135,11 @@ test('queryReadModelFailure', () => {
       name: 'users',
       resolver: 'all',
       args: {
-        a: 'a'
-      }
+        a: 'a',
+      },
     },
     error: Error('error'),
-    selectorId: undefined
+    selectorId: undefined,
   })
   expect(
     queryReadModelFailure(
@@ -147,8 +147,8 @@ test('queryReadModelFailure', () => {
         name: 'bots',
         resolver: 'first',
         args: {
-          b: 'b'
-        }
+          b: 'b',
+        },
       },
       Error('diamond'),
       'selector-id'
@@ -159,10 +159,10 @@ test('queryReadModelFailure', () => {
       name: 'bots',
       resolver: 'first',
       args: {
-        b: 'b'
-      }
+        b: 'b',
+      },
     },
     error: Error('diamond'),
-    selectorId: 'selector-id'
+    selectorId: 'selector-id',
   })
 })

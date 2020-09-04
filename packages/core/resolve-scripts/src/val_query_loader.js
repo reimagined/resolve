@@ -2,7 +2,7 @@ import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import loaderUtils from 'loader-utils'
 import path from 'path'
 
-const valQueryLoader = function(content) {
+const valQueryLoader = function (content) {
   const relPath = path.relative.bind(path, process.cwd())
   const valQueryOptions = loaderUtils.getOptions(this)
   const resourceQuery =

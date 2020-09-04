@@ -10,7 +10,7 @@ export class ShoppingList extends React.PureComponent {
 
     return (
       <ListGroup style={{ maxWidth: '500px', margin: 'auto' }}>
-        {list.map(todo => (
+        {list.map((todo) => (
           <ListGroupItem key={todo.id}>
             <Checkbox inline>{todo.text}</Checkbox>
           </ListGroupItem>
@@ -24,7 +24,7 @@ export class ShoppingList extends React.PureComponent {
 export const mapStateToOptions = (state, ownProps) => {
   return {
     viewModelName: 'shoppingList',
-    aggregateIds: ['shopping-list-1']
+    aggregateIds: ['shopping-list-1'],
   }
 }
 

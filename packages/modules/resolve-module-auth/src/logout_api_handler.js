@@ -7,7 +7,7 @@ const logoutApiHandler = async (req, res) => {
 
     res.cookie(jwtCookie.name, '', {
       expires: new Date(0),
-      path: `/${rootPath}`
+      path: `/${rootPath}`,
     })
     res.setHeader('Authorization', '')
     res.setHeader('X-JWT', '')

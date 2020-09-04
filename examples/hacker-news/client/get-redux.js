@@ -13,10 +13,10 @@ const getRedux = ({ 'comments-hn': getCommentsOptions }, history) => {
   const redux = {
     reducers: {
       [commentsReducerName]: createCommentsReducer(commentsOptions),
-      optimistic: optimisticReducer
+      optimistic: optimisticReducer,
     },
     sagas: [optimisticVotingSaga, storyCreateSaga.bind(null, history)],
-    enhancers: [devTools]
+    enhancers: [devTools],
   }
 
   return redux

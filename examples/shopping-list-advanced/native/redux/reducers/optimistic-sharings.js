@@ -1,7 +1,7 @@
 import {
   OPTIMISTIC_SHARINGS_SYNC,
   OPTIMISTIC_SHARINGS_SHOPPING_LIST_SHARE,
-  OPTIMISTIC_SHARINGS_SHOPPING_LIST_UNSHARE
+  OPTIMISTIC_SHARINGS_SHOPPING_LIST_UNSHARE,
 } from '../action-types'
 
 const initialState = {
@@ -9,8 +9,8 @@ const initialState = {
   name: '',
   users: {
     sharings: [],
-    other: []
-  }
+    other: [],
+  },
 }
 
 const optimisticSharings = (state = initialState, action) => {
@@ -26,11 +26,11 @@ const optimisticSharings = (state = initialState, action) => {
             ...state.users.sharings,
             {
               id: action.payload.id,
-              username: action.payload.username
-            }
+              username: action.payload.username,
+            },
           ],
-          other: state.users.other.filter(({ id }) => id !== action.payload.id)
-        }
+          other: state.users.other.filter(({ id }) => id !== action.payload.id),
+        },
       }
     }
     case OPTIMISTIC_SHARINGS_SHOPPING_LIST_UNSHARE: {
@@ -44,10 +44,10 @@ const optimisticSharings = (state = initialState, action) => {
             ...state.users.other,
             {
               id: action.payload.id,
-              username: action.payload.username
-            }
-          ]
-        }
+              username: action.payload.username,
+            },
+          ],
+        },
       }
     }
     default: {

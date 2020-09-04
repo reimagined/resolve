@@ -19,7 +19,7 @@ const initUI = (messages, sendMessage) => {
   newMessage.setAttribute('placeholder', 'Message')
   container.appendChild(newMessage)
 
-  newMessage.onkeypress = e => {
+  newMessage.onkeypress = (e) => {
     if (e.charCode !== 13) return
     sendMessage(userName.value, newMessage.value)
     newMessage.value = ''

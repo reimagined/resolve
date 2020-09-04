@@ -1,6 +1,6 @@
 const result = []
 
-const Client = jest.fn(function() {
+const Client = jest.fn(function () {
   this.connect = jest.fn(async (...args) => {
     result.push(['connect', ...args])
   })

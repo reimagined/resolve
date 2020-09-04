@@ -25,7 +25,7 @@ const init = async (pool: AdapterPool): Promise<any> => {
   log.debug('initializing databases')
   const result = await Promise.all([
     initEventStore(pool),
-    initSecretsStore(pool)
+    initSecretsStore(pool),
   ])
   log.debug('databases are initialized')
   return result

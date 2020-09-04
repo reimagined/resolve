@@ -10,7 +10,7 @@ const event = {
   aggregateId: 'aggregateId',
   aggregateVersion: 1,
   type: 'TEST',
-  payload: { key: 'value' }
+  payload: { key: 'value' },
 }
 
 test('method "saveEvent" should save an event', async () => {
@@ -22,7 +22,7 @@ test('method "saveEvent" should save an event', async () => {
     executeStatement,
     isTimeoutError,
     escapeId,
-    escape
+    escape,
   }
 
   await saveEvent(pool, event)
@@ -41,7 +41,7 @@ test('method "saveEvent" should throw an exception "ConcurrentError"', async () 
     executeStatement,
     isTimeoutError,
     escapeId,
-    escape
+    escape,
   }
 
   try {
@@ -63,7 +63,7 @@ test('method "saveEvent" should throw an exception "Event store is frozen"', asy
     executeStatement,
     isTimeoutError,
     escapeId,
-    escape
+    escape,
   }
 
   try {
@@ -77,7 +77,7 @@ test('method "saveEvent" should throw an exception "Event store is frozen"', asy
 test('method "saveEvent" should save an event after StatementTimeoutException', async () => {
   let insertCounter = 0
   let selectCounter = 0
-  const executeStatement = jest.fn().mockImplementation(async sql => {
+  const executeStatement = jest.fn().mockImplementation(async (sql) => {
     if (/INSERT/i.test(sql)) {
       if (insertCounter++ < 3) {
         throw new Error('StatementTimeoutException')
@@ -91,8 +91,8 @@ test('method "saveEvent" should save an event after StatementTimeoutException', 
           aggregateId: event.aggregateId,
           aggregateVersion: event.aggregateVersion,
           type: event.type,
-          payload: JSON.stringify(event.payload)
-        }
+          payload: JSON.stringify(event.payload),
+        },
       ]
     } else {
       throw new Error(sql)
@@ -105,7 +105,7 @@ test('method "saveEvent" should save an event after StatementTimeoutException', 
     executeStatement,
     isTimeoutError,
     escapeId,
-    escape
+    escape,
   }
 
   await saveEvent(pool, event)
@@ -116,7 +116,7 @@ test('method "saveEvent" should save an event after StatementTimeoutException', 
 test('method "saveEvent" should throw an exception "ConcurrentError" after StatementTimeoutException', async () => {
   let insertCounter = 0
   let selectCounter = 0
-  const executeStatement = jest.fn().mockImplementation(async sql => {
+  const executeStatement = jest.fn().mockImplementation(async (sql) => {
     if (/INSERT/i.test(sql)) {
       if (insertCounter++ < 3) {
         throw new Error('StatementTimeoutException')
@@ -130,8 +130,8 @@ test('method "saveEvent" should throw an exception "ConcurrentError" after State
           aggregateId: event.aggregateId,
           aggregateVersion: event.aggregateVersion,
           type: 'ANOTHER_TYPE',
-          payload: 'another-payload'
-        }
+          payload: 'another-payload',
+        },
       ]
     } else {
       throw new Error(sql)
@@ -144,7 +144,7 @@ test('method "saveEvent" should throw an exception "ConcurrentError" after State
     executeStatement,
     isTimeoutError,
     escapeId,
-    escape
+    escape,
   }
 
   try {
@@ -157,7 +157,7 @@ test('method "saveEvent" should throw an exception "ConcurrentError" after State
 
 test('method "saveEvent" should throw an exception "Event store is frozen" after StatementTimeoutException', async () => {
   let insertCounter = 0
-  const executeStatement = jest.fn().mockImplementation(async sql => {
+  const executeStatement = jest.fn().mockImplementation(async (sql) => {
     if (/INSERT/i.test(sql)) {
       if (insertCounter++ < 3) {
         throw new Error('StatementTimeoutException')
@@ -176,7 +176,7 @@ test('method "saveEvent" should throw an exception "Event store is frozen" after
     executeStatement,
     isTimeoutError,
     escapeId,
-    escape
+    escape,
   }
 
   try {

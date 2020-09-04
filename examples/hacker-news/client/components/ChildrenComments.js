@@ -16,7 +16,7 @@ const ChildrenComments = ({ storyId, comments, loggedIn }) => {
 
   return (
     <div>
-      {comments.map(comment => {
+      {comments.map((comment) => {
         if (comment == null) {
           return null
         }

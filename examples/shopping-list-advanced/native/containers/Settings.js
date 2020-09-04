@@ -10,7 +10,7 @@ import {
   Body,
   Icon,
   Label,
-  Input
+  Input,
 } from 'native-base'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -21,22 +21,22 @@ import * as aggregateActions from '../redux/actions/aggregate-actions'
 
 import getNativeChunk from '../native-chunk'
 const {
-  resolveRedux: { connectReadModel }
+  resolveRedux: { connectReadModel },
 } = getNativeChunk()
 
 const styles = StyleSheet.create({
   label: {
     paddingLeft: 5,
     fontSize: 16,
-    color: '#575757'
+    color: '#575757',
   },
   input: {
     flex: 1,
     borderBottomWidth: StyleSheet.hairlineWidth,
     color: '#000',
     backgroundColor: '#fff',
-    marginBottom: 10
-  }
+    marginBottom: 10,
+  },
 })
 
 export class Settings extends React.PureComponent {
@@ -45,15 +45,15 @@ export class Settings extends React.PureComponent {
   getText = () =>
     this.state.text != null ? this.state.text : this.props.data.username
 
-  updateText = text => {
+  updateText = (text) => {
     this.setState({
-      text
+      text,
     })
   }
 
   updateUserName = () => {
     this.props.updateUserName(this.props.data.id, {
-      username: this.getText()
+      username: this.getText(),
     })
   }
 
@@ -96,15 +96,15 @@ export class Settings extends React.PureComponent {
   }
 }
 
-export const mapStateToOptions = state => ({
+export const mapStateToOptions = (state) => ({
   readModelName: 'ShoppingLists',
   resolverName: 'user',
   resolverArgs: {
-    id: state.jwt.id
-  }
+    id: state.jwt.id,
+  },
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default requiredAuth(

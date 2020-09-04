@@ -2,7 +2,7 @@ import { ResourceNotExistError } from './lifecycle-errors'
 import {
   BATCHES_TABLE_NAME,
   NOTIFICATIONS_TABLE_NAME,
-  SUBSCRIBERS_TABLE_NAME
+  SUBSCRIBERS_TABLE_NAME,
 } from '../constants'
 
 async function dropDatabase({ database: { runRawQuery, escapeId } }) {

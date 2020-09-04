@@ -1,6 +1,6 @@
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
 
-const kindByEvent = event => {
+const kindByEvent = (event) => {
   const { part, path = '' } = event
   if (part === 'bootstrap') {
     return 'bootstrapping'
@@ -34,12 +34,12 @@ const putMetrics = async (
     const dimensions = [
       {
         Name: 'Deployment Id',
-        Value: process.env.RESOLVE_DEPLOYMENT_ID
+        Value: process.env.RESOLVE_DEPLOYMENT_ID,
       },
       {
         Name: 'Kind',
-        Value: kind
-      }
+        Value: kind,
+      },
     ]
 
     const params = {
@@ -49,10 +49,10 @@ const putMetrics = async (
           Dimensions: dimensions,
           Timestamp: now,
           Unit: 'Milliseconds',
-          Value: duration
-        }
+          Value: duration,
+        },
       ],
-      Namespace: 'RESOLVE_METRICS'
+      Namespace: 'RESOLVE_METRICS',
     }
 
     if (coldStart) {
@@ -61,16 +61,16 @@ const putMetrics = async (
         Dimensions: [
           {
             Name: 'Deployment Id',
-            Value: process.env.RESOLVE_DEPLOYMENT_ID
+            Value: process.env.RESOLVE_DEPLOYMENT_ID,
           },
           {
             Name: 'Kind',
-            Value: 'cold start'
-          }
+            Value: 'cold start',
+          },
         ],
         Timestamp: now,
         Unit: 'Milliseconds',
-        Value: coldStartDuration
+        Value: coldStartDuration,
       })
     }
     // eslint-disable-next-line no-console

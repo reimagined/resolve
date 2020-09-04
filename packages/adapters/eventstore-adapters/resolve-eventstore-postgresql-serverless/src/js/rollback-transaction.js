@@ -3,7 +3,7 @@ const rollbackTransaction = async (pool, transactionId) => {
     .rollbackTransaction({
       resourceArn: pool.dbClusterOrInstanceArn,
       secretArn: pool.awsSecretStoreArn,
-      transactionId
+      transactionId,
     })
     .promise()
 }

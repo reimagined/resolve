@@ -15,7 +15,7 @@ const scheduleCommand = async (sagaProvider, schedulerName, date, command) => {
     aggregateName,
     aggregateId,
     type: 'create',
-    payload: { date, command }
+    payload: { date, command },
   })
 }
 
@@ -28,7 +28,7 @@ const wrapRegularSagas = (sagas, sagaProvider) => {
     sideEffects,
     connectorName,
     schedulerName,
-    encryption
+    encryption,
   } of sagas) {
     const boundScheduleCommand = scheduleCommand.bind(
       null,
@@ -54,7 +54,7 @@ const wrapRegularSagas = (sagas, sagaProvider) => {
       projection,
       resolvers: {},
       connectorName,
-      encryption
+      encryption,
     }
 
     sagaReadModels.push(sagaReadModel)

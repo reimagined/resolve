@@ -7,7 +7,7 @@ const saveSnapshot = async (pool, snapshotKey, content) =>
     const {
       events: { snapshotsTableName, connection },
       escapeId,
-      escape
+      escape,
     } = pool
 
     const snapshotsTableNameAsId = escapeId(snapshotsTableName)

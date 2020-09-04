@@ -1,7 +1,7 @@
 import React from 'react'
 
 const UploaderContext = React.createContext({
-  CDNUrl: undefined
+  CDNUrl: undefined,
 })
 
 export default UploaderContext

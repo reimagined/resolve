@@ -35,7 +35,7 @@ const uploaderHandler = async (req, res) => {
         fs.writeFileSync(
           `${dirName}/${uploadId}.metadata`,
           JSON.stringify({
-            'Content-Type': body.file.contentType
+            'Content-Type': body.file.contentType,
           }),
           { flag: 'w+', encoding: 'utf8' }
         )
@@ -47,7 +47,7 @@ const uploaderHandler = async (req, res) => {
           `${dirName}/${uploadId}.metadata`,
           JSON.stringify({
             'Content-Type':
-              fileType(data) != null ? fileType(data).mime : 'text/plain'
+              fileType(data) != null ? fileType(data).mime : 'text/plain',
           }),
           { flag: 'w+', encoding: 'utf8' }
         )

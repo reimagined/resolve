@@ -4,7 +4,7 @@ import {
   ConnectReadModelAction,
   queryReadModelFailure,
   queryReadModelRequest,
-  queryReadModelSuccess
+  queryReadModelSuccess,
 } from './actions'
 import { DISCONNECT_READMODEL } from '../internal/action-types'
 
@@ -15,7 +15,7 @@ type ConnectReadModelSagaArgs = {
   sagaKey: string
 } & RootSagaArgs
 
-const connectReadModelSaga = function*(
+const connectReadModelSaga = function* (
   sagaArgs: ConnectReadModelSagaArgs,
   action: ConnectReadModelAction
 ): any {

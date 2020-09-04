@@ -24,7 +24,7 @@ const getSubscribeAdapterOptions = async (
 
   return {
     appId: resolve.applicationName,
-    url: subscribeUrl
+    url: subscribeUrl,
   }
 }
 

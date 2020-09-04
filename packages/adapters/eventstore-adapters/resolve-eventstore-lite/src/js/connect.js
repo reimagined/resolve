@@ -1,6 +1,6 @@
 import getLog from './get-log'
 
-const coerceEmptyString = obj =>
+const coerceEmptyString = (obj) =>
   (obj != null && obj.constructor !== String) || obj == null ? 'default' : obj
 
 const connectEventStore = async (pool, { sqlite, tmp, os, fs }) => {
@@ -45,13 +45,13 @@ const connectEventStore = async (pool, { sqlite, tmp, os, fs }) => {
 
       pool.memoryStore = {
         name: tmpName,
-        drop: removeCallback
+        drop: removeCallback,
       }
     } else {
       const temporaryFile = tmp.fileSync()
       pool.memoryStore = {
         name: temporaryFile.name,
-        drop: temporaryFile.removeCallback.bind(temporaryFile)
+        drop: temporaryFile.removeCallback.bind(temporaryFile),
       }
     }
 
@@ -87,7 +87,7 @@ const connectEventStore = async (pool, { sqlite, tmp, os, fs }) => {
     database,
     eventsTableName,
     snapshotsTableName,
-    initOptions
+    initOptions,
   })
 
   log.debug(`events store database connected successfully`)

@@ -3,22 +3,22 @@ const wrapReadmodelConnector = (connector, options) => {
 
   if (typeof connector.connect !== 'function') {
     Object.defineProperty(wrappedConnector, 'connect', {
-      value: async () => options
+      value: async () => options,
     })
   }
   if (typeof connector.disconnect !== 'function') {
     Object.defineProperty(wrappedConnector, 'disconnect', {
-      value: async () => {}
+      value: async () => {},
     })
   }
   if (typeof connector.drop !== 'function') {
     Object.defineProperty(wrappedConnector, 'drop', {
-      value: async () => {}
+      value: async () => {},
     })
   }
   if (typeof connector.dispose !== 'function') {
     Object.defineProperty(wrappedConnector, 'dispose', {
-      value: async () => {}
+      value: async () => {},
     })
   }
 
