@@ -53,33 +53,44 @@ const createWebSocketMessageHandler = (
   ws,
   connectionId
 ) => async message => {
-  const { eventTypes, aggregateIds } = pubsubManager.getConnection({
-    connectionId
-  })
+  try {
+    const { eventTypes, aggregateIds } = pubsubManager.getConnection({
+      connectionId
+    })
 
-  const parsedMessage = JSON.parse(message)
-  switch (parsedMessage.type) {
-    case 'pullEvents': {
-      const { events, cursor } = await eventstoreAdapter.loadEvents({
-        eventTypes,
-        aggregateIds,
-        limit: 1000000,
-        eventsSizeLimit: 124 * 1024,
-        cursor: parsedMessage.cursor
-      })
-
-      ws.send(
-        JSON.stringify({
-          type: 'pullEvents',
-          payload: { events, cursor }
+    const parsedMessage = JSON.parse(message)
+    switch (parsedMessage.type) {
+      case 'pullEvents': {
+        const { events, cursor } = await eventstoreAdapter.loadEvents({
+          eventTypes,
+          aggregateIds,
+          limit: 1000000,
+          eventsSizeLimit: 124 * 1024,
+          cursor: parsedMessage.cursor
         })
-      )
 
-      break
+        ws.send(
+          JSON.stringify({
+            type: 'pullEvents',
+            payload: { events, cursor }
+          })
+        )
+
+        break
+      }
+      default: {
+        throw new Error(`The '${parsedMessage.type}' message type is unknown`)
+      }
     }
-    default: {
-      throw new Error(`The '${parsedMessage.type}' message type is unknown`)
-    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `Error while handling message from websocket: ${
+        error != null && error.message != null
+          ? `${error.message} ${error.stack}`
+          : JSON.stringify(error)
+      }`
+    )
   }
 }
 
