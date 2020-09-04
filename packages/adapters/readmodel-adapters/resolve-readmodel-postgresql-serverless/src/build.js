@@ -18,12 +18,34 @@ const build = async (pool, readModelName, store, projection, next) => {
     escapeId,
     escape,
     rdsDataService,
-    inlineLedgerExecuteStatement
+    inlineLedgerExecuteStatement,
+    generateGuid
   } = pool
 
   try {
     const databaseNameAsId = escapeId(schemaName)
     const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
+    const trxTableNameAsId = escapeId(`__${schemaName}__TRX__`)
+
+    const xaKey = generateGuid(`${Date.now()}${Math.random()}${process.pid}`)
+
+    await inlineLedgerExecuteStatement(
+      pool,
+      `WITH "CTE" AS (
+         SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+         WHERE "EventSubscriber" = ${escape(readModelName)}
+         AND "IsPaused" = FALSE
+         AND "Errors" IS NULL
+         FOR NO KEY UPDATE NOWAIT
+       )
+       UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
+       SET "XaKey" = ${escape(xaKey)}
+       WHERE "EventSubscriber" = ${escape(readModelName)}
+       AND (SELECT Count("CTE".*) FROM "CTE") = 1
+       AND "IsPaused" = FALSE
+       AND "Errors" IS NULL
+      `
+    )
 
     const { transactionId } = await rdsDataService.beginTransaction({
       resourceArn: dbClusterOrInstanceArn,
@@ -33,25 +55,36 @@ const build = async (pool, readModelName, store, projection, next) => {
 
     await inlineLedgerExecuteStatement(
       pool,
-      `WITH "CTE" AS (
-         SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-         WHERE "EventSubscriber" = ${escape(readModelName)}
-         AND "IsPaused" = FALSE
-         AND "Errors" IS NULL
-         FOR NO KEY UPDATE NOWAIT
-       )
-       UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
-       SET "XaKey" = ${escape(transactionId)}
-       WHERE "EventSubscriber" = ${escape(readModelName)}
-       AND (SELECT Count("CTE".*) FROM "CTE") = 1
-       AND "IsPaused" = FALSE
-       AND "Errors" IS NULL
+      `WITH "cte" AS (
+        DELETE FROM ${databaseNameAsId}.${trxTableNameAsId}
+        WHERE "Timestamp" < CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) - 86400000
+        RETURNING *
+      ) INSERT INTO ${databaseNameAsId}.${trxTableNameAsId}(
+        "Timestamp", "XaKey", "XaValue"
+      ) VALUES (
+        CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) + 
+        CAST(COALESCE((SELECT LEAST(Count("cte".*), 0) FROM "cte"), 0) AS BIGINT), 
+        ${escape(xaKey)},
+        ${escape(transactionId)}
+      )
       `
+    )
+
+    const rootSavePointId = generateGuid(transactionId, 'ROOT')
+
+    await inlineLedgerExecuteStatement(
+      pool,
+      `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+       SAVEPOINT ${rootSavePointId}
+      `,
+      transactionId
     )
 
     await inlineLedgerExecuteStatement(
       pool,
-      `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ`,
+      `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+       SAVEPOINT ${rootSavePointId}
+      `,
       transactionId
     )
 
@@ -59,7 +92,7 @@ const build = async (pool, readModelName, store, projection, next) => {
       pool,
       `SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
        WHERE "EventSubscriber" = ${escape(readModelName)}
-       AND "XaKey" = ${escape(transactionId)}
+       AND "XaKey" = ${escape(xaKey)}
        AND "IsPaused" = FALSE
        AND "Errors" IS NULL
        FOR NO KEY UPDATE NOWAIT
@@ -150,18 +183,58 @@ const build = async (pool, readModelName, store, projection, next) => {
     let lastError = null
     const appliedEvents = []
 
-    for (const event of events) {
-      try {
-        if (typeof projection[event.type] === 'function') {
-          await projection[event.type](store, event)
-          lastSuccessEvent = event
+    try {
+      for (const event of events) {
+        const savePointId = generateGuid(
+          transactionId,
+          `${appliedEvents.length}`
+        )
+        try {
+          if (typeof projection[event.type] === 'function') {
+            await inlineLedgerExecuteStatement(
+              pool,
+              `SAVEPOINT ${savePointId}`,
+              transactionId
+            )
+            await projection[event.type](store, event)
+            await inlineLedgerExecuteStatement(
+              pool,
+              `RELEASE SAVEPOINT ${savePointId}`,
+              transactionId
+            )
+            lastSuccessEvent = event
+          }
+          appliedEvents.push(event)
+        } catch (error) {
+          await inlineLedgerExecuteStatement(
+            pool,
+            `ROLLBACK TO SAVEPOINT ${savePointId};
+             RELEASE SAVEPOINT ${savePointId}
+          `,
+            transactionId
+          )
+
+          lastFailedEvent = event
+          lastError = error
+          break
         }
-        appliedEvents.push(event)
-      } catch (error) {
-        lastFailedEvent = event
-        lastError = error
-        break
       }
+    } catch (originalError) {
+      appliedEvents.length = 0
+      const composedError = new Error(
+        `Fatal inline ledger building error: ${originalError.message}`
+      )
+      composedError.stack = `${composedError.stack}${originalError.stack}`
+      lastError = composedError
+      lastSuccessEvent = null
+      lastFailedEvent = null
+      await inlineLedgerExecuteStatement(
+        pool,
+        `ROLLBACK TO SAVEPOINT ${rootSavePointId};
+         RELEASE SAVEPOINT ${rootSavePointId}
+      `,
+        transactionId
+      )
     }
 
     const nextCursor = eventstoreAdapter.getNextCursor(cursor, appliedEvents)
@@ -192,6 +265,11 @@ const build = async (pool, readModelName, store, projection, next) => {
          ${
            lastFailedEvent != null
              ? `"FailedEvent" = ${escape(JSON.stringify(lastFailedEvent))},`
+             : ''
+         }
+         ${
+           lastSuccessEvent != null
+             ? `"FailedEvent" = ${escape(JSON.stringify(lastSuccessEvent))},`
              : ''
          }
          "Cursor" = ${escape(JSON.stringify(nextCursor))}

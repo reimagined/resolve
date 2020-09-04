@@ -428,6 +428,7 @@ module.exports = {
           'todos',
           'topstories',
           'Transactional',
+          'trx',
           'tsc',
           'trie',
           'truthy',
