@@ -19,7 +19,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         pool,
         `
         WITH "CTE" AS (
-         SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+         SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escape(readModelName)}
          FOR UPDATE NOWAIT
         )

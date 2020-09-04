@@ -38,6 +38,15 @@ const create = async (pool, options) => {
         PRIMARY KEY("EventSubscriber")
       )`,
 
+      `CREATE TABLE ${escapeId(options.databaseName)}.${escapeId(
+        `__${options.databaseName}__TRX__`
+      )}(
+        "XaKey" VARCHAR(190) NOT NULL,
+        "XaValue" VARCHAR(190) NOT NULL,
+        "Timestamp" BIGINT,
+        PRIMARY KEY("XaKey")
+      )`,
+
       `GRANT USAGE ON SCHEMA ${escapeId(options.databaseName)} TO ${escapeId(
         options.userLogin
       )}`,
