@@ -19,7 +19,7 @@ const build = async (pool, readModelName, store, projection, next) => {
     escape,
     rdsDataService,
     inlineLedgerExecuteStatement,
-    generateGuid
+    generateGuid,
   } = pool
 
   try {
@@ -50,7 +50,7 @@ const build = async (pool, readModelName, store, projection, next) => {
     const { transactionId } = await rdsDataService.beginTransaction({
       resourceArn: dbClusterOrInstanceArn,
       secretArn: awsSecretStoreArn,
-      database: 'postgres'
+      database: 'postgres',
     })
 
     await inlineLedgerExecuteStatement(
