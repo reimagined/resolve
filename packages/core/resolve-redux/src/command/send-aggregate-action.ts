@@ -11,7 +11,7 @@ const sendAggregateAction = (
       type: commandType,
       aggregateName,
       aggregateId,
-      payload
+      payload,
     },
     false
   )

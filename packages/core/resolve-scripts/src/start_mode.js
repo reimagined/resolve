@@ -5,7 +5,7 @@ import { processRegister } from './process_manager'
 
 const log = getLog('start')
 
-export default resolveConfig =>
+export default (resolveConfig) =>
   new Promise(async (resolve, reject) => {
     log.debug('Starting "start" mode')
     const serverPath = path.resolve(
@@ -22,8 +22,8 @@ export default resolveConfig =>
       stdio: 'inherit',
       env: {
         ...process.env,
-        RESOLVE_LAUNCH_ID: resolveLaunchId
-      }
+        RESOLVE_LAUNCH_ID: resolveLaunchId,
+      },
     })
 
     server.on('crash', reject)
@@ -47,8 +47,8 @@ export default resolveConfig =>
         stdio: 'inherit',
         env: {
           ...process.env,
-          RESOLVE_LAUNCH_ID: resolveLaunchId
-        }
+          RESOLVE_LAUNCH_ID: resolveLaunchId,
+        },
       })
 
       broker.on('crash', reject)

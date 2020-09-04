@@ -11,34 +11,34 @@ import {
   Row,
   Col,
   FormControl,
-  Button
+  Button,
 } from 'react-bootstrap'
 
 import * as aggregateActions from '../actions/aggregate_actions'
 
 export class ShoppingList extends React.PureComponent {
   state = {
-    itemText: ''
+    itemText: '',
   }
 
   createShoppingItem = () => {
     this.props.createShoppingItem(this.props.aggregateId, {
       text: this.state.itemText,
-      id: Date.now().toString()
+      id: Date.now().toString(),
     })
 
     this.setState({
-      itemText: ''
+      itemText: '',
     })
   }
 
-  updateItemText = event => {
+  updateItemText = (event) => {
     this.setState({
-      itemText: event.target.value
+      itemText: event.target.value,
     })
   }
 
-  onItemTextPressEnter = event => {
+  onItemTextPressEnter = (event) => {
     if (event.charCode === 13) {
       event.preventDefault()
       this.createShoppingItem()
@@ -58,13 +58,13 @@ export class ShoppingList extends React.PureComponent {
       <div style={{ maxWidth: '500px', margin: 'auto' }}>
         <ControlLabel>{data.name}</ControlLabel>
         <ListGroup>
-          {list.map(todo => (
+          {list.map((todo) => (
             <ListGroupItem key={todo.id}>
               <Checkbox
                 inline
                 checked={todo.checked}
                 onChange={toggleShoppingItem.bind(null, aggregateId, {
-                  id: todo.id
+                  id: todo.id,
                 })}
               >
                 {todo.text}
@@ -103,7 +103,7 @@ export const mapStateToOptions = (state, ownProps) => {
 
   return {
     viewModelName: 'shoppingList',
-    aggregateIds: [aggregateId]
+    aggregateIds: [aggregateId],
   }
 }
 
@@ -111,11 +111,11 @@ export const mapStateToProps = (state, ownProps) => {
   const aggregateId = ownProps.match.params.id
 
   return {
-    aggregateId
+    aggregateId,
   }
 }
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToOptions)(

@@ -10,16 +10,16 @@ describe('base config works correctly', () => {
       DDD: {
         a: 5,
         b: 10,
-        c: 20
-      }
-    }
+        c: 20,
+      },
+    },
   }
 
   test('[client]', () => {
     expect(
       alias({
         resolveConfig,
-        isClient: true
+        isClient: true,
       }).code
     ).toMatchSnapshot()
   })
@@ -28,7 +28,7 @@ describe('base config works correctly', () => {
     expect(
       alias({
         resolveConfig,
-        isClient: false
+        isClient: false,
       }).code
     ).toMatchSnapshot()
   })
@@ -37,8 +37,8 @@ describe('base config works correctly', () => {
 describe('config with process.env failure', () => {
   const resolveConfig = {
     customConstants: {
-      AAA: declareRuntimeEnv('AAA')
-    }
+      AAA: declareRuntimeEnv('AAA'),
+    },
   }
 
   test('[client]', () => {
@@ -46,7 +46,7 @@ describe('config with process.env failure', () => {
       () =>
         alias({
           resolveConfig,
-          isClient: true
+          isClient: true,
         }).code
     ).toMatchSnapshot()
   })
@@ -56,7 +56,7 @@ describe('config with process.env failure', () => {
       () =>
         alias({
           resolveConfig,
-          isClient: false
+          isClient: false,
         }).code
     ).toMatchSnapshot()
   })
@@ -66,9 +66,9 @@ describe('config with deep process.env failure', () => {
   const resolveConfig = {
     customConstants: {
       obj: {
-        AAA: declareRuntimeEnv('AAA')
-      }
-    }
+        AAA: declareRuntimeEnv('AAA'),
+      },
+    },
   }
 
   test('[client]', () => {
@@ -76,7 +76,7 @@ describe('config with deep process.env failure', () => {
       () =>
         alias({
           resolveConfig,
-          isClient: true
+          isClient: true,
         }).code
     ).toMatchSnapshot()
   })
@@ -86,7 +86,7 @@ describe('config with deep process.env failure', () => {
       () =>
         alias({
           resolveConfig,
-          isClient: false
+          isClient: false,
         }).code
     ).toMatchSnapshot()
   })
@@ -96,9 +96,9 @@ describe('config with non-json type failure', () => {
   const resolveConfig = {
     customConstants: {
       obj: {
-        func: () => {}
-      }
-    }
+        func: () => {},
+      },
+    },
   }
 
   test('[client]', () => {
@@ -106,7 +106,7 @@ describe('config with non-json type failure', () => {
       () =>
         alias({
           resolveConfig,
-          isClient: true
+          isClient: true,
         }).code
     ).toThrow()
   })
@@ -116,7 +116,7 @@ describe('config with non-json type failure', () => {
       () =>
         alias({
           resolveConfig,
-          isClient: false
+          isClient: false,
         }).code
     ).toThrow()
   })

@@ -1,19 +1,19 @@
 import { RESERVED_EVENT_SIZE } from './constants'
 
-const injectEvent = async function(pool, event) {
+const injectEvent = async function (pool, event) {
   const {
     databaseName,
     eventsTableName,
     executeStatement,
     escapeId,
-    escape
+    escape,
   } = pool
 
   const serializedEvent = [
     `${escape(event.aggregateId)},`,
     `${+event.aggregateVersion},`,
     `${escape(event.type)},`,
-    escape(JSON.stringify(event.payload != null ? event.payload : null))
+    escape(JSON.stringify(event.payload != null ? event.payload : null)),
   ].join('')
 
   const byteLength = Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE

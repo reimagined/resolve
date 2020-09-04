@@ -5,52 +5,52 @@ import uuid from 'uuid/v4'
 
 const styles = StyleSheet.create({
   footer: {
-    height: 85
+    height: 85,
   },
   container: {
     width: '100%',
     paddingTop: 5,
     paddingLeft: 15,
-    paddingRight: 15
+    paddingRight: 15,
   },
   subContainer: {
     flexDirection: 'row',
-    flex: 1
+    flex: 1,
   },
   label: {
     paddingLeft: 5,
     fontSize: 16,
     color: Platform.select({
       android: '#fff',
-      ios: '#000'
-    })
+      ios: '#000',
+    }),
   },
   input: {
     flex: 1,
     borderBottomWidth: StyleSheet.hairlineWidth,
     color: '#000',
-    backgroundColor: '#fff'
-  }
+    backgroundColor: '#fff',
+  },
 })
 
 class ShoppingItemCreator extends React.PureComponent {
   state = {
-    text: ''
+    text: '',
   }
 
-  updateText = text => {
+  updateText = (text) => {
     this.setState({
-      text
+      text,
     })
   }
 
   createShoppingItem = () => {
     this.props.createShoppingItem(this.props.aggregateId, {
       id: uuid(),
-      text: this.state.text
+      text: this.state.text,
     })
     this.setState({
-      text: ''
+      text: '',
     })
   }
 

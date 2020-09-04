@@ -13,7 +13,7 @@ const AskByPage = ({
   stories,
   me,
   upvoteStory,
-  unvoteStory
+  unvoteStory,
 }) => (
   <Stories
     isLoading={isLoading}
@@ -30,35 +30,35 @@ const mapStateToOptions = (
   state,
   {
     match: {
-      params: { page }
-    }
+      params: { page },
+    },
   }
 ) => ({
   readModelName: 'HackerNews',
   resolverName: 'askStories',
   resolverArgs: {
     offset: ITEMS_PER_PAGE + 1,
-    first: (+page - 1) * ITEMS_PER_PAGE
-  }
+    first: (+page - 1) * ITEMS_PER_PAGE,
+  },
 })
 
 const mapStateToProps = (
   state,
   {
     match: {
-      params: { page }
+      params: { page },
     },
     isLoading,
-    data
+    data,
   }
 ) => ({
   isLoading,
   page,
   stories: data,
-  me: state.jwt
+  me: state.jwt,
 })
 
-const mapDispatchToProps = dispatch =>
+const mapDispatchToProps = (dispatch) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(

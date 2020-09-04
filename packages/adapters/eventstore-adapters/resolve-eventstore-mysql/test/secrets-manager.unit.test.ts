@@ -9,7 +9,7 @@ let pool: AdapterPool
 const connection = {
   execute: jest.fn(),
   query: jest.fn().mockResolvedValue([[{ secret: 'secret-value' }]]),
-  end: jest.fn()
+  end: jest.fn(),
 }
 
 beforeEach(() => {
@@ -19,22 +19,22 @@ beforeEach(() => {
       eventsTableName: 'table-name',
       snapshotsTableName: 'snapshots-table-name',
       secretsDatabase: 'secrets-database',
-      secretsTableName: 'secrets-table-name'
+      secretsTableName: 'secrets-table-name',
     },
     events: {
       connection,
       eventsTableName: 'table-name',
       snapshotsTableName: 'snapshots-table-name',
-      database: 'database'
+      database: 'database',
     },
     secrets: {
       connection,
       tableName: 'secrets-database',
-      database: 'secrets-table-name'
+      database: 'secrets-table-name',
     },
     escape: jest.fn((v: any) => `"${v}-escaped"`),
     escapeId: jest.fn((v: any) => `"${v}-escaped-id"`),
-    MySQL
+    MySQL,
   }
   connection.query.mockClear()
   connection.execute.mockClear()
@@ -45,7 +45,7 @@ test('secrets manager is created', async () => {
   expect(manager).toStrictEqual({
     getSecret: expect.any(Function),
     setSecret: expect.any(Function),
-    deleteSecret: expect.any(Function)
+    deleteSecret: expect.any(Function),
   })
 })
 
@@ -90,7 +90,7 @@ describe('set secret', () => {
     expect(connection.query.mock.calls).toMatchSnapshot('setting secret')
   })
 
-  test('error on setting secret', async done => {
+  test('error on setting secret', async (done) => {
     const manager = getSecretsManager(pool)
     const { setSecret } = manager
 

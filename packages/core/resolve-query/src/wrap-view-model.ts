@@ -2,7 +2,7 @@ import getLog from './get-log'
 import {
   WrapViewModelOptions,
   ViewModelPool,
-  BuildViewModelQuery
+  BuildViewModelQuery,
 } from './types'
 import parseReadOptions from './parse-read-options'
 
@@ -84,7 +84,7 @@ const buildViewModel = async (
 
       handlerLog.debug(`building view-model encryption`)
       const encryption = await pool.viewModel.encryption(event, {
-        secretsManager
+        secretsManager,
       })
 
       handlerLog.debug(`applying event to projection`)
@@ -94,7 +94,7 @@ const buildViewModel = async (
         aggregateArgs,
         {
           jwt,
-          ...encryption
+          ...encryption,
         }
       )
       cursor = await pool.eventstoreAdapter.getNextCursor(cursor, [event])
@@ -107,7 +107,7 @@ const buildViewModel = async (
         JSON.stringify({
           aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
           state: await pool.viewModel.serializeState(state),
-          cursor
+          cursor,
         })
       )
     } catch (error) {
@@ -124,14 +124,14 @@ const buildViewModel = async (
   }
 
   const eventTypes = Object.keys(pool.viewModel.projection).filter(
-    type => type !== 'Init'
+    (type) => type !== 'Init'
   )
 
   const { events } = await pool.eventstoreAdapter.loadEvents({
     aggregateIds,
     eventTypes,
     cursor,
-    limit: Number.MAX_SAFE_INTEGER
+    limit: Number.MAX_SAFE_INTEGER,
   })
 
   log.debug(`fetched ${events.length} events for the view model, applying`)
@@ -143,7 +143,7 @@ const buildViewModel = async (
   return {
     data: state,
     eventCount,
-    cursor
+    cursor,
   }
 }
 
@@ -189,7 +189,7 @@ const read = async (
     }
 
     const eventTypes = Object.keys(pool.viewModel.projection).filter(
-      type => type !== 'Init'
+      (type) => type !== 'Init'
     )
 
     const resolverViewModelBuilder = async (
@@ -244,15 +244,15 @@ const read = async (
 
     return await pool.viewModel.resolver(
       {
-        buildViewModel: resolverViewModelBuilder
+        buildViewModel: resolverViewModelBuilder,
       },
       { aggregateIds },
       {
         jwt,
         viewModel: {
           ...pool.viewModel,
-          eventTypes
-        }
+          eventTypes,
+        },
       }
     )
   } catch (error) {
@@ -309,7 +309,7 @@ const dispose = async (pool: ViewModelPool): Promise<any> => {
 const wrapViewModel = ({
   viewModel,
   eventstoreAdapter,
-  performanceTracer
+  performanceTracer,
 }: WrapViewModelOptions) => {
   const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
   const pool: ViewModelPool = {
@@ -317,7 +317,7 @@ const wrapViewModel = ({
     eventstoreAdapter,
     isDisposed: false,
     performanceTracer,
-    getSecretsManager
+    getSecretsManager,
   }
 
   return Object.freeze({
@@ -325,7 +325,7 @@ const wrapViewModel = ({
     sendEvents: sendEvents.bind(null, pool),
     serializeState: serializeState.bind(null, pool),
     drop: drop.bind(null, pool),
-    dispose: dispose.bind(null, pool)
+    dispose: dispose.bind(null, pool),
   })
 }
 

@@ -1,4 +1,4 @@
-const isTimeoutError = error =>
+const isTimeoutError = (error) =>
   error != null &&
   (/canceling statement due to user request/i.test(error.message) ||
     /canceling statement due to user request/i.test(error.stack) ||

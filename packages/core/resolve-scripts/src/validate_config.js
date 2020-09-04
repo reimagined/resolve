@@ -14,13 +14,13 @@ const allowedMethods = [
   'DELETE',
   'PATCH',
   'OPTIONS',
-  'ALL'
+  'ALL',
 ]
 
-export const validateReadModelConnectors = resolveConfig => {
+export const validateReadModelConnectors = (resolveConfig) => {
   for (const { connectorName } of [
     ...resolveConfig.readModels,
-    ...resolveConfig.sagas
+    ...resolveConfig.sagas,
   ]) {
     if (resolveConfig.readModelConnectors[connectorName] == null) {
       throw new Error(
@@ -32,7 +32,7 @@ export const validateReadModelConnectors = resolveConfig => {
   for (const name of Object.keys(resolveConfig.readModelConnectors)) {
     const findResult = [
       ...resolveConfig.readModels,
-      ...resolveConfig.sagas
+      ...resolveConfig.sagas,
     ].find(({ connectorName }) => connectorName === name)
     if (!findResult) {
       throw new Error(
@@ -42,7 +42,7 @@ export const validateReadModelConnectors = resolveConfig => {
   }
 }
 
-export const validateApiHandlers = resolveConfig => {
+export const validateApiHandlers = (resolveConfig) => {
   if (!resolveConfig.hasOwnProperty('apiHandlers')) {
     return
   }
@@ -73,14 +73,14 @@ export const validateApiHandlers = resolveConfig => {
     if (allowedMethods.indexOf(apiHandler.method) < 0) {
       throw new Error(
         [
-          `Incorrect options.apiHandlers[${idx}].method = "${apiHandler.path}"``API handler method should be one from following list ${allowedMethods}`
+          `Incorrect options.apiHandlers[${idx}].method = "${apiHandler.path}"``API handler method should be one from following list ${allowedMethods}`,
         ].join('\n')
       )
     }
   }
 }
 
-const validateUniqueNames = resolveConfig => {
+const validateUniqueNames = (resolveConfig) => {
   const uniqueNames = new Set()
   const tag = (key, section) => {
     // eslint-disable-next-line no-new-wrappers
@@ -96,15 +96,15 @@ const validateUniqueNames = resolveConfig => {
     ...resolveConfig.sagas.map(({ name }) => tag(name, 'sagas')),
     ...Object.keys(resolveConfig.schedulers).map(({ name }) =>
       tag(name, 'schedulers')
-    )
+    ),
   ]
 
   for (const taggedName of sourceNames) {
     const name = String(taggedName)
     if (uniqueNames.has(name)) {
       const sections = sourceNames
-        .filter(taggedName => String(taggedName) === name)
-        .map(taggedName => taggedName.section)
+        .filter((taggedName) => String(taggedName) === name)
+        .map((taggedName) => taggedName.section)
 
       throw new Error(`Duplicate name ${name} between sections: ${sections}`)
     }
@@ -113,15 +113,15 @@ const validateUniqueNames = resolveConfig => {
   }
 }
 
-const validateClientEntries = config => {
+const validateClientEntries = (config) => {
   for (const [idx, clientEntry] of config.clientEntries.entries()) {
     const [inputFile, options] = !Array.isArray(clientEntry)
       ? [
           clientEntry,
           {
             moduleType: 'iife',
-            target: 'web'
-          }
+            target: 'web',
+          },
         ]
       : clientEntry
     const { outputFile, moduleType, target } = options
@@ -158,7 +158,7 @@ const validateClientEntries = config => {
   }
 }
 
-const validateConfig = config => {
+const validateConfig = (config) => {
   const linearizedConfig = JSON.parse(JSON.stringify(config))
   const valid = ajv.validate(schemaResolveConfig, linearizedConfig)
 

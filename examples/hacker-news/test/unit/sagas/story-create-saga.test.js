@@ -18,8 +18,8 @@ test('Create story saga - register takeAll sagas', () => {
     successCommandFilter({
       type: SEND_COMMAND_SUCCESS,
       command: {
-        type: 'createStory'
-      }
+        type: 'createStory',
+      },
     })
   ).toEqual(true)
 
@@ -27,8 +27,8 @@ test('Create story saga - register takeAll sagas', () => {
     successCommandFilter({
       type: SEND_COMMAND_FAILURE,
       command: {
-        type: 'createStory'
-      }
+        type: 'createStory',
+      },
     })
   ).toEqual(false)
 
@@ -40,8 +40,8 @@ test('Create story saga - register takeAll sagas', () => {
     failureCommandFilter({
       type: SEND_COMMAND_FAILURE,
       command: {
-        type: 'createStory'
-      }
+        type: 'createStory',
+      },
     })
   ).toEqual(true)
 
@@ -49,8 +49,8 @@ test('Create story saga - register takeAll sagas', () => {
     failureCommandFilter({
       type: SEND_COMMAND_SUCCESS,
       command: {
-        type: 'createStory'
-      }
+        type: 'createStory',
+      },
     })
   ).toEqual(false)
 
@@ -61,7 +61,7 @@ test('Create story saga - register takeAll sagas', () => {
 test('Create story saga - success story create and success fetch', () => {
   const readModelStatePromise = Promise.resolve('API_CALL')
   const client = {
-    query: jest.fn().mockResolvedValue(readModelStatePromise)
+    query: jest.fn().mockResolvedValue(readModelStatePromise),
   }
   const history = []
   const storyCreateSaga = storyCreateSagaFactory(history, { client })
@@ -70,8 +70,8 @@ test('Create story saga - success story create and success fetch', () => {
 
   const successCommandSaga = successCommandSagaFactory({
     command: {
-      aggregateId: 'aggregateId'
-    }
+      aggregateId: 'aggregateId',
+    },
   })
 
   step = successCommandSaga.next()
@@ -80,7 +80,7 @@ test('Create story saga - success story create and success fetch', () => {
   expect(client.query).toBeCalledWith({
     name: 'HackerNews',
     args: { id: 'aggregateId' },
-    resolver: 'story'
+    resolver: 'story',
   })
   expect(client.query).toBeCalledTimes(1)
 
@@ -94,7 +94,7 @@ test('Create story saga - success story create and success fetch', () => {
   expect(client.query).toBeCalledWith({
     name: 'HackerNews',
     args: { id: 'aggregateId' },
-    resolver: 'story'
+    resolver: 'story',
   })
   expect(client.query).toBeCalledTimes(2)
 
@@ -109,7 +109,7 @@ test('Create story saga - success story create and success fetch', () => {
 test('Create story saga - success story create and failed fetch', () => {
   const readModelStatePromise = Promise.resolve('API_CALL')
   const client = {
-    query: jest.fn().mockReturnValue(readModelStatePromise)
+    query: jest.fn().mockReturnValue(readModelStatePromise),
   }
   const history = []
   const storyCreateSaga = storyCreateSagaFactory(history, { client })
@@ -118,8 +118,8 @@ test('Create story saga - success story create and failed fetch', () => {
 
   const successCommandSaga = successCommandSagaFactory({
     command: {
-      aggregateId: 'aggregateId'
-    }
+      aggregateId: 'aggregateId',
+    },
   })
 
   step = successCommandSaga.next()
@@ -128,7 +128,7 @@ test('Create story saga - success story create and failed fetch', () => {
   expect(client.query).toBeCalledWith({
     name: 'HackerNews',
     args: { id: 'aggregateId' },
-    resolver: 'story'
+    resolver: 'story',
   })
 
   step = successCommandSaga.throw('Reject read model fetch')
@@ -144,7 +144,7 @@ test('Create story saga - story creating failed', () => {
   const failureCommandSagaFactory = step.value.payload.args[1]
 
   const failureCommandSaga = failureCommandSagaFactory({
-    aggregateId: 'aggregateId'
+    aggregateId: 'aggregateId',
   })
 
   step = failureCommandSaga.next()

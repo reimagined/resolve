@@ -4,5 +4,5 @@ export default {
   },
   items() {
     return [3, 4, 5]
-  }
+  },
 }

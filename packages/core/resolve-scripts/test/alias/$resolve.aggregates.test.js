@@ -20,10 +20,10 @@ describe('base config works correctly', () => {
     aggregates: [
       {
         name: 'Todo',
-        commands: path.resolve(__dirname, 'files/testCommands.js')
-      }
+        commands: path.resolve(__dirname, 'files/testCommands.js'),
+      },
     ],
-    schedulers: {}
+    schedulers: {},
   }
 
   test('[client]', () => {
@@ -32,7 +32,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -45,7 +45,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -58,10 +58,10 @@ test('when aggregate name is process.env', () => {
     aggregates: [
       {
         name: declareRuntimeEnv('name'),
-        commands: path.resolve(__dirname, 'files/testCommands.js')
-      }
+        commands: path.resolve(__dirname, 'files/testCommands.js'),
+      },
     ],
-    schedulers: {}
+    schedulers: {},
   }
 
   expect(() =>
@@ -69,7 +69,7 @@ test('when aggregate name is process.env', () => {
       '\r\n' +
         alias({
           resolveConfig,
-          isClient: false
+          isClient: false,
         }) +
         '\r\n'
     )
@@ -81,14 +81,14 @@ describe('base(v2) config works correctly', () => {
     aggregates: [
       {
         name: 'Todo',
-        commands: path.resolve(__dirname, 'files/testCommands.js')
+        commands: path.resolve(__dirname, 'files/testCommands.js'),
       },
       {
         name: 'Item',
-        commands: path.resolve(__dirname, 'files/testCommands.js')
-      }
+        commands: path.resolve(__dirname, 'files/testCommands.js'),
+      },
     ],
-    schedulers: {}
+    schedulers: {},
   }
 
   test('[client]', () => {
@@ -97,7 +97,7 @@ describe('base(v2) config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -110,7 +110,7 @@ describe('base(v2) config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -124,10 +124,10 @@ describe('config with projection works correctly', () => {
       {
         name: 'Todo',
         commands: path.resolve(__dirname, 'files/testCommands.js'),
-        projection: path.resolve(__dirname, 'files/testProjection.js')
-      }
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
+      },
     ],
-    schedulers: {}
+    schedulers: {},
   }
 
   test('[client]', () => {
@@ -136,7 +136,7 @@ describe('config with projection works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -149,7 +149,7 @@ describe('config with projection works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -169,12 +169,12 @@ describe('config with commands as module works correctly', () => {
             testCommandsAsModule: path.resolve(
               __dirname,
               'files/testCommandsAsModule.js'
-            )
-          }
-        }
-      }
+            ),
+          },
+        },
+      },
     ],
-    schedulers: {}
+    schedulers: {},
   }
 
   test('[client]', () => {
@@ -183,7 +183,7 @@ describe('config with commands as module works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -196,7 +196,7 @@ describe('config with commands as module works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -209,18 +209,18 @@ describe('config with schedulers works correctly', () => {
     aggregates: [
       {
         name: 'Todo',
-        commands: path.resolve(__dirname, 'files/testCommands.js')
-      }
+        commands: path.resolve(__dirname, 'files/testCommands.js'),
+      },
     ],
     schedulers: {
       scheduler: {
         adapter: {
           module: 'resolve-scheduler-local',
-          options: {}
+          options: {},
         },
-        connectorName: 'default'
-      }
-    }
+        connectorName: 'default',
+      },
+    },
   }
 
   test('[client]', () => {
@@ -229,7 +229,7 @@ describe('config with schedulers works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -242,7 +242,7 @@ describe('config with schedulers works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )

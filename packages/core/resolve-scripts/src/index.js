@@ -35,5 +35,5 @@ export {
   stop,
   reset,
   importEventStore,
-  exportEventStore
+  exportEventStore,
 }

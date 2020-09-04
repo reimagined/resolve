@@ -3,14 +3,14 @@ import { ConcurrentError } from 'resolve-eventstore-base'
 import {
   ER_DUP_ENTRY,
   ER_LOCK_DEADLOCK,
-  ER_SUBQUERY_NO_1_ROW
+  ER_SUBQUERY_NO_1_ROW,
 } from './constants'
 
 const saveEvent = async (pool, event) => {
   const {
     events: { eventsTableName, connection, database },
     escapeId,
-    escape
+    escape,
   } = pool
   try {
     const eventsTableNameAsId = escapeId(eventsTableName)

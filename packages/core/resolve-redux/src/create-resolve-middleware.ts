@@ -17,7 +17,7 @@ type MiddlewareContext = {
   queryMethod: string
 }
 
-const emptySaga = function*() {
+const emptySaga = function* () {
   /* empty */
 }
 
@@ -29,13 +29,13 @@ const wrapSagaMiddleware = (sagaMiddleware: any): any => {
     sagaMiddleware.run(context.isClient ? rootSaga : emptySaga, {
       ...context,
       queryIdMap,
-      client
+      client,
     })
   }
 
   const middleware = (...args: any[]): any => sagaMiddleware(...args)
   Object.defineProperty(middleware, 'run', {
-    get: () => run
+    get: () => run,
   })
   return middleware
 }

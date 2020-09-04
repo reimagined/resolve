@@ -10,7 +10,7 @@ test('wrapMethod should wrap API methods to await connection', async () => {
     connectPromiseResolve: sinon.stub(),
     connectPromise: Promise.resolve(),
     initialPromiseResolve: sinon.stub(),
-    initialPromise: Promise.resolve()
+    initialPromise: Promise.resolve(),
   }
 
   const wrappedApiMethod = wrapMethod(pool, apiMethod)

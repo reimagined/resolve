@@ -21,18 +21,18 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     mode: 'internal',
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
     lambdaEventType: 'EventBus',
-    lambdaEventName: 'resolveSource'
+    lambdaEventName: 'resolveSource',
   }
 
   resolveBase.eventstoreCredentials = {
     mode: 'internal',
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
     lambdaEventType: 'EventStore',
-    lambdaEventName: 'resolveSource'
+    lambdaEventName: 'resolveSource',
   }
 
   resolveBase.subscriptionsCredentials = {
-    applicationLambdaArn: lambdaContext.invokedFunctionArn
+    applicationLambdaArn: lambdaContext.invokedFunctionArn,
   }
 
   resolveBase.invokeEventBusAsync = async (
@@ -49,9 +49,9 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
         method,
         payload: {
           eventSubscriber,
-          ...parameters
-        }
-      }
+          ...parameters,
+        },
+      },
     })
   }
 

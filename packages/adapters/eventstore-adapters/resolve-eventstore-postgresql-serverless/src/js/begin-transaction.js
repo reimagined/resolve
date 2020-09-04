@@ -1,9 +1,9 @@
-const beginTransaction = async pool => {
+const beginTransaction = async (pool) => {
   const result = await pool.rdsDataService
     .beginTransaction({
       resourceArn: pool.dbClusterOrInstanceArn,
       secretArn: pool.awsSecretStoreArn,
-      database: 'postgres'
+      database: 'postgres',
     })
     .promise()
 

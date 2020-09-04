@@ -14,7 +14,7 @@ const mDropEventStore = mocked(dropEventStore)
 const connection = {
   execute: jest.fn(),
   query: jest.fn(),
-  end: jest.fn()
+  end: jest.fn(),
 }
 
 let pool: AdapterPool
@@ -26,22 +26,22 @@ beforeEach(() => {
       eventsTableName: 'table-name',
       snapshotsTableName: 'snapshots-table-name',
       secretsDatabase: 'secrets-database',
-      secretsTableName: 'secrets-table-name'
+      secretsTableName: 'secrets-table-name',
     },
     events: {
       connection: MySQL.connection,
       eventsTableName: '',
       snapshotsTableName: '',
-      database: ''
+      database: '',
     },
     secrets: {
       connection,
       tableName: 'secrets-database',
-      database: 'secrets-table-name'
+      database: 'secrets-table-name',
     },
     escape: jest.fn((v: any) => `"${v}-escaped"`),
     escapeId: jest.fn((v: any) => `"${v}-escaped-id"`),
-    MySQL
+    MySQL,
   }
 })
 

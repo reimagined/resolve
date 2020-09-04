@@ -10,16 +10,16 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
     aggregateId: shoppingListId,
     aggregateName: 'ShoppingList',
     payload: {
-      id
-    }
+      id,
+    },
   })
   const { execute: removeItem } = useReduxCommand({
     type: 'removeShoppingItem',
     aggregateId: shoppingListId,
     aggregateName: 'ShoppingList',
     payload: {
-      id
-    }
+      id,
+    },
   })
   return (
     <ListGroupItem key={id}>

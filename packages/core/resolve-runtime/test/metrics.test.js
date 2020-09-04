@@ -2,7 +2,7 @@ import putMetrics from '../src/cloud/metrics'
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
 
 const lambdaContext = {
-  getRemainingTimeInMillis: jest.fn().mockReturnValue(1000)
+  getRemainingTimeInMillis: jest.fn().mockReturnValue(1000),
 }
 /* eslint-disable no-console */
 const consoleInfoOldHandler = console.info
@@ -36,20 +36,20 @@ describe('put metrics', () => {
           Dimensions: [
             {
               Name: 'Deployment Id',
-              Value: 'deployment-id'
+              Value: 'deployment-id',
             },
             {
               Name: 'Kind',
-              Value: 'route'
-            }
+              Value: 'route',
+            },
           ],
           MetricName: 'duration',
           Timestamp: expect.any(Date),
           Unit: 'Milliseconds',
-          Value: 2000
-        }
+          Value: 2000,
+        },
       ],
-      Namespace: 'RESOLVE_METRICS'
+      Namespace: 'RESOLVE_METRICS',
     })
     expect(console.info).toBeCalledWith(
       ['[REQUEST INFO]', 'route', '', 2000].join('\n')
@@ -71,27 +71,27 @@ describe('put metrics', () => {
           Dimensions: [
             {
               Name: 'Deployment Id',
-              Value: 'deployment-id'
+              Value: 'deployment-id',
             },
             {
               Name: 'Kind',
-              Value: 'query'
-            }
+              Value: 'query',
+            },
           ],
           MetricName: 'duration',
           Timestamp: expect.any(Date),
           Unit: 'Milliseconds',
-          Value: 2000
-        }
+          Value: 2000,
+        },
       ],
-      Namespace: 'RESOLVE_METRICS'
+      Namespace: 'RESOLVE_METRICS',
     })
     expect(console.info).toBeCalledWith(
       [
         '[REQUEST INFO]',
         'query',
         '/deployment-id.resolve.sh/api/query/any',
-        2000
+        2000,
       ].join('\n')
     )
   })
@@ -111,27 +111,27 @@ describe('put metrics', () => {
           Dimensions: [
             {
               Name: 'Deployment Id',
-              Value: 'deployment-id'
+              Value: 'deployment-id',
             },
             {
               Name: 'Kind',
-              Value: 'command'
-            }
+              Value: 'command',
+            },
           ],
           MetricName: 'duration',
           Timestamp: expect.any(Date),
           Unit: 'Milliseconds',
-          Value: 2000
-        }
+          Value: 2000,
+        },
       ],
-      Namespace: 'RESOLVE_METRICS'
+      Namespace: 'RESOLVE_METRICS',
     })
     expect(console.info).toBeCalledWith(
       [
         '[REQUEST INFO]',
         'command',
         '/deployment-id.resolve.sh/api/commands/any',
-        2000
+        2000,
       ].join('\n')
     )
   })
@@ -151,27 +151,27 @@ describe('put metrics', () => {
           Dimensions: [
             {
               Name: 'Deployment Id',
-              Value: 'deployment-id'
+              Value: 'deployment-id',
             },
             {
               Name: 'Kind',
-              Value: 'route'
-            }
+              Value: 'route',
+            },
           ],
           MetricName: 'duration',
           Timestamp: expect.any(Date),
           Unit: 'Milliseconds',
-          Value: 2000
-        }
+          Value: 2000,
+        },
       ],
-      Namespace: 'RESOLVE_METRICS'
+      Namespace: 'RESOLVE_METRICS',
     })
     expect(console.info).toBeCalledWith(
       [
         '[REQUEST INFO]',
         'route',
         '/deployment-id.resolve.sh/any-route',
-        2000
+        2000,
       ].join('\n')
     )
   })
@@ -191,27 +191,27 @@ describe('put metrics', () => {
           Dimensions: [
             {
               Name: 'Deployment Id',
-              Value: 'deployment-id'
+              Value: 'deployment-id',
             },
             {
               Name: 'Kind',
-              Value: 'subscribe'
-            }
+              Value: 'subscribe',
+            },
           ],
           MetricName: 'duration',
           Timestamp: expect.any(Date),
           Unit: 'Milliseconds',
-          Value: 2000
-        }
+          Value: 2000,
+        },
       ],
-      Namespace: 'RESOLVE_METRICS'
+      Namespace: 'RESOLVE_METRICS',
     })
     expect(console.info).toBeCalledWith(
       [
         '[REQUEST INFO]',
         'subscribe',
         '/deployment-id.resolve.sh/api/subscribe',
-        2000
+        2000,
       ].join('\n')
     )
   })
@@ -231,36 +231,36 @@ describe('put metrics', () => {
           Dimensions: [
             {
               Name: 'Deployment Id',
-              Value: 'deployment-id'
+              Value: 'deployment-id',
             },
             {
               Name: 'Kind',
-              Value: 'route'
-            }
+              Value: 'route',
+            },
           ],
           MetricName: 'duration',
           Timestamp: expect.any(Date),
           Unit: 'Milliseconds',
-          Value: 2000
+          Value: 2000,
         },
         {
           Dimensions: [
             {
               Name: 'Deployment Id',
-              Value: 'deployment-id'
+              Value: 'deployment-id',
             },
             {
               Name: 'Kind',
-              Value: 'cold start'
-            }
+              Value: 'cold start',
+            },
           ],
           MetricName: 'duration',
           Timestamp: expect.any(Date),
           Unit: 'Milliseconds',
-          Value: 897000
-        }
+          Value: 897000,
+        },
       ],
-      Namespace: 'RESOLVE_METRICS'
+      Namespace: 'RESOLVE_METRICS',
     })
   })
 })

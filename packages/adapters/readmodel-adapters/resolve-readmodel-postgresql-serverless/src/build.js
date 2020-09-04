@@ -1,10 +1,10 @@
-const serializeError = error =>
+const serializeError = (error) =>
   error != null
     ? {
         name: error.name == null ? null : String(error.name),
         code: error.code == null ? null : String(error.code),
         message: String(error.message),
-        stack: String(error.stack)
+        stack: String(error.stack),
       }
     : null
 
@@ -18,7 +18,7 @@ const build = async (pool, readModelName, store, projection, next) => {
     escapeId,
     escape,
     rdsDataService,
-    inlineLedgerExecuteStatement
+    inlineLedgerExecuteStatement,
   } = pool
 
   try {
@@ -28,7 +28,7 @@ const build = async (pool, readModelName, store, projection, next) => {
     const { transactionId } = await rdsDataService.beginTransaction({
       resourceArn: dbClusterOrInstanceArn,
       secretArn: awsSecretStoreArn,
-      database: 'postgres'
+      database: 'postgres',
     })
 
     await inlineLedgerExecuteStatement(
@@ -107,7 +107,7 @@ const build = async (pool, readModelName, store, projection, next) => {
         await rdsDataService.commitTransaction({
           resourceArn: dbClusterOrInstanceArn,
           secretArn: awsSecretStoreArn,
-          transactionId
+          transactionId,
         })
 
         await next()
@@ -130,7 +130,7 @@ const build = async (pool, readModelName, store, projection, next) => {
         await rdsDataService.commitTransaction({
           resourceArn: dbClusterOrInstanceArn,
           secretArn: awsSecretStoreArn,
-          transactionId
+          transactionId,
         })
       }
 
@@ -142,7 +142,7 @@ const build = async (pool, readModelName, store, projection, next) => {
       eventTypes,
       eventsSizeLimit: 1024 * 1024,
       limit: 10,
-      cursor
+      cursor,
     })
 
     let lastSuccessEvent = null
@@ -204,7 +204,7 @@ const build = async (pool, readModelName, store, projection, next) => {
     await rdsDataService.commitTransaction({
       resourceArn: dbClusterOrInstanceArn,
       secretArn: awsSecretStoreArn,
-      transactionId
+      transactionId,
     })
 
     if (lastError == null && appliedEvents.length > 0) {
@@ -222,7 +222,7 @@ const build = async (pool, readModelName, store, projection, next) => {
         await rdsDataService.rollbackTransaction({
           resourceArn: dbClusterOrInstanceArn,
           secretArn: awsSecretStoreArn,
-          transactionId: error.lastTransactionId
+          transactionId: error.lastTransactionId,
         })
       } catch (err) {
         if (

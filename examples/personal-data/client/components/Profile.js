@@ -11,7 +11,7 @@ const Profile = () => {
     {
       name: 'user-profiles',
       resolver: 'profile',
-      args: {}
+      args: {},
     },
     (err, result) => {
       if (err) {

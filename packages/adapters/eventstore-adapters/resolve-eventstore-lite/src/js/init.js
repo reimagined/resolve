@@ -7,7 +7,7 @@ const initEventStore = async ({
   eventsTableName,
   snapshotsTableName,
   escapeId,
-  config
+  config,
 }) => {
   const log = getLog('initEventStore')
 

@@ -7,18 +7,18 @@ describe('resolve-readmodel-base', () => {
     readModels = new Map()
     dropSet = new Set()
 
-    const connect = jest.fn().mockImplementation(async pool => {
+    const connect = jest.fn().mockImplementation(async (pool) => {
       Object.defineProperty(pool, 'readModels', {
         get: () => readModels,
-        configurable: true
+        configurable: true,
       })
       Object.defineProperty(pool, 'dropSet', {
         get: () => dropSet,
-        configurable: true
+        configurable: true,
       })
     })
 
-    const disconnect = jest.fn().mockImplementation(async pool => {
+    const disconnect = jest.fn().mockImplementation(async (pool) => {
       if (pool != null) {
         delete pool.readModels
         delete pool.dropSet
@@ -44,7 +44,7 @@ describe('resolve-readmodel-base', () => {
           pool.readModels.set(readModelName, new Map())
         }
         pool.readModels.get(readModelName).set(key, value)
-      }
+      },
     }
 
     connector = createReadModelConnector(
@@ -52,7 +52,7 @@ describe('resolve-readmodel-base', () => {
         connect,
         disconnect,
         dropReadModel,
-        ...storeApi
+        ...storeApi,
       },
       {}
     )

@@ -6,15 +6,15 @@ import { CommandBuilder, useCommand } from 'resolve-react-hooks'
 import { sendCommandRequest } from '../../src/command/actions'
 import {
   useReduxCommand,
-  CommandReduxHookOptions
+  CommandReduxHookOptions,
 } from '../../src/command/use-redux-command'
 import { CommandCallback } from 'resolve-client'
 
 jest.mock('react-redux', () => ({
-  useDispatch: jest.fn()
+  useDispatch: jest.fn(),
 }))
 jest.mock('resolve-react-hooks', () => ({
-  useCommand: jest.fn()
+  useCommand: jest.fn(),
 }))
 
 const mUseDispatch = mocked(useDispatch)
@@ -42,8 +42,8 @@ describe('command as plain object overload', () => {
     aggregateId: 'aggregate-id',
     aggregateName: 'aggregate-name',
     payload: {
-      a: 'a'
-    }
+      a: 'a',
+    },
   })
 
   const renderCommandHook = (
@@ -52,8 +52,8 @@ describe('command as plain object overload', () => {
   ) => {
     const {
       result: {
-        current: { execute }
-      }
+        current: { execute },
+      },
     } = renderHook(() =>
       options ? useReduxCommand(command, options) : useReduxCommand(command)
     )
@@ -71,7 +71,7 @@ describe('command as plain object overload', () => {
           type: 'type',
           aggregateId: 'aggregate-id',
           aggregateName: 'aggregate-name',
-          payload: { a: 'a' }
+          payload: { a: 'a' },
         },
         true
       )
@@ -99,8 +99,8 @@ describe('command as plain object overload', () => {
   test('custom command options are passed to base hook', () => {
     renderCommandHook(makeCommand(), {
       commandOptions: {
-        option: 'a'
-      }
+        option: 'a',
+      },
     })
 
     expect(mUseCommand).toHaveBeenCalledWith(
@@ -115,10 +115,10 @@ describe('command as plain object overload', () => {
     const command = makeCommand()
     const execute = renderCommandHook(command, {
       actions: {
-        request: command => ({ type: 'request', command }),
+        request: (command) => ({ type: 'request', command }),
         success: (command, result) => ({ type: 'success', command, result }),
-        failure: (command, error) => ({ type: 'failure', command, error })
-      }
+        failure: (command, error) => ({ type: 'failure', command, error }),
+      },
     })
 
     act(() => execute())
@@ -132,7 +132,7 @@ describe('command as plain object overload', () => {
     expect(mDispatch).toHaveBeenCalledWith({
       type: 'success',
       command,
-      result: { a: 'a' }
+      result: { a: 'a' },
     })
 
     mDispatch.mockClear()
@@ -140,7 +140,7 @@ describe('command as plain object overload', () => {
     expect(mDispatch).toHaveBeenCalledWith({
       type: 'failure',
       command,
-      error: Error('error')
+      error: Error('error'),
     })
   })
 })
@@ -150,7 +150,7 @@ describe('command as builder function overload', () => {
     type: 'type',
     aggregateId: 'aggregate-id',
     aggregateName: 'aggregate-name',
-    payload: data
+    payload: data,
   })
 
   function renderCommandHook<T>(
@@ -159,8 +159,8 @@ describe('command as builder function overload', () => {
   ) {
     const {
       result: {
-        current: { execute }
-      }
+        current: { execute },
+      },
     } = renderHook(() =>
       options ? useReduxCommand(builder, options) : useReduxCommand(builder)
     )
@@ -178,7 +178,7 @@ describe('command as builder function overload', () => {
           type: 'type',
           aggregateId: 'aggregate-id',
           aggregateName: 'aggregate-name',
-          payload: { a: 'a' }
+          payload: { a: 'a' },
         },
         true
       )
@@ -206,8 +206,8 @@ describe('command as builder function overload', () => {
   test('custom command options are passed to base hook', () => {
     renderCommandHook(builder, {
       commandOptions: {
-        option: 'a'
-      }
+        option: 'a',
+      },
     })
 
     expect(mUseCommand).toHaveBeenCalledWith(
@@ -221,10 +221,10 @@ describe('command as builder function overload', () => {
   test('custom redux actions', async () => {
     const execute = renderCommandHook(builder, {
       actions: {
-        request: command => ({ type: 'request', command }),
+        request: (command) => ({ type: 'request', command }),
         success: (command, result) => ({ type: 'success', command, result }),
-        failure: (command, error) => ({ type: 'failure', command, error })
-      }
+        failure: (command, error) => ({ type: 'failure', command, error }),
+      },
     })
 
     const command = builder({ a: 'a' })
@@ -240,7 +240,7 @@ describe('command as builder function overload', () => {
     expect(mDispatch).toHaveBeenCalledWith({
       type: 'success',
       command,
-      result: { a: 'a' }
+      result: { a: 'a' },
     })
 
     mDispatch.mockClear()
@@ -248,7 +248,7 @@ describe('command as builder function overload', () => {
     expect(mDispatch).toHaveBeenCalledWith({
       type: 'failure',
       command,
-      error: Error('error')
+      error: Error('error'),
     })
   })
 })

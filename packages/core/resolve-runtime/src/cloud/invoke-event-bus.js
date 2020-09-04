@@ -5,11 +5,11 @@ const invokeEventBus = async (eventstoreCredentials, type, options) => {
   const principial = {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    sessionToken: process.env.AWS_SESSION_TOKEN
+    sessionToken: process.env.AWS_SESSION_TOKEN,
   }
 
   const {
-    Arn: validationRoleArn
+    Arn: validationRoleArn,
   } = await new STS().getCallerIdentity().promise()
 
   const scopeName = process.env.RESOLVE_DEPLOYMENT_ID
@@ -24,9 +24,9 @@ const invokeEventBus = async (eventstoreCredentials, type, options) => {
         validationRoleArn,
         scopeName,
         eventstoreCredentials,
-        ...options
-      }
-    }
+        ...options,
+      },
+    },
   })
 }
 

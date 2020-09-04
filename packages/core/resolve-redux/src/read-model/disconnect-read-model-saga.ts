@@ -9,7 +9,7 @@ type DisconnectReadModelSagaArgs = {
   sagaKey: string
 } & RootSagaArgs
 
-const disconnectReadModelSaga = function*(
+const disconnectReadModelSaga = function* (
   sagaArgs: DisconnectReadModelSagaArgs,
   action: DisconnectReadModelAction
 ): any {

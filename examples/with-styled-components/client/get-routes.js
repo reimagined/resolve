@@ -9,10 +9,10 @@ const routes = [
       {
         path: '/',
         component: StyledComponents,
-        exact: true
-      }
-    ]
-  }
+        exact: true,
+      },
+    ],
+  },
 ]
 
 const getRoutes = () => routes

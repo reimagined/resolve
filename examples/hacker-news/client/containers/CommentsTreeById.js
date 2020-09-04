@@ -9,9 +9,9 @@ export class CommentsTreeById extends React.PureComponent {
   render() {
     const {
       match: {
-        params: { storyId, commentId }
+        params: { storyId, commentId },
       },
-      authorId
+      authorId,
     } = this.props
 
     return (
@@ -38,7 +38,7 @@ export class CommentsTreeById extends React.PureComponent {
 }
 
 export const mapStateToProps = ({ jwt }) => ({
-  authorId: jwt.id
+  authorId: jwt.id,
 })
 
 export default connect(mapStateToProps)(CommentsTreeById)

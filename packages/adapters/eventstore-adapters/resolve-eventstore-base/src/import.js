@@ -6,7 +6,7 @@ import {
   PARTIAL_EVENT_FLAG,
   MAINTENANCE_MODE_AUTO,
   MAINTENANCE_MODE_MANUAL,
-  BATCH_SIZE
+  BATCH_SIZE,
 } from './constants'
 
 function EventStream({ pool, maintenanceMode, byteOffset }) {
@@ -34,9 +34,9 @@ function EventStream({ pool, maintenanceMode, byteOffset }) {
 EventStream.prototype = Object.create(stream.Writable.prototype)
 EventStream.prototype.constructor = stream.Writable
 
-EventStream.prototype._write = async function(chunk, encoding, callback) {
+EventStream.prototype._write = async function (chunk, encoding, callback) {
   if (this.bypassMode) {
-    await new Promise(resolve => setImmediate(resolve))
+    await new Promise((resolve) => setImmediate(resolve))
     callback()
     return
   }
@@ -155,9 +155,9 @@ EventStream.prototype._write = async function(chunk, encoding, callback) {
   }
 }
 
-EventStream.prototype._final = async function(callback) {
+EventStream.prototype._final = async function (callback) {
   if (this.bypassMode) {
-    await new Promise(resolve => setImmediate(resolve))
+    await new Promise((resolve) => setImmediate(resolve))
     this.buffer = null
     callback()
     return
@@ -247,7 +247,7 @@ const importStream = (
       return new EventStream({
         pool,
         maintenanceMode,
-        byteOffset
+        byteOffset,
       })
     default:
       throw new Error(`Wrong maintenance mode ${maintenanceMode}`)

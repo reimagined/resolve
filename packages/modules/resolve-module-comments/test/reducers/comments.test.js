@@ -7,14 +7,14 @@ import {
   commentsTree,
   createComment,
   updateComment,
-  removeComment
+  removeComment,
 } from '../../src/common/defaults'
 
 const {
   CONNECT_READMODEL,
   DISCONNECT_READMODEL,
   QUERY_READMODEL_SUCCESS,
-  SEND_COMMAND_SUCCESS
+  SEND_COMMAND_SUCCESS,
 } = internal.actionTypes
 
 describe('reducer "comments"', () => {
@@ -29,9 +29,9 @@ describe('reducer "comments"', () => {
         resolver: commentsTree,
         args: {
           treeId: 'treeId',
-          parentCommentId: 'parentCommentId'
-        }
-      }
+          parentCommentId: 'parentCommentId',
+        },
+      },
     }
 
     const nextState = reducer(state, action)
@@ -39,9 +39,9 @@ describe('reducer "comments"', () => {
     expect(nextState).toEqual({
       treeId: {
         parentCommentId: {
-          children: []
-        }
-      }
+          children: [],
+        },
+      },
     })
   })
 
@@ -49,9 +49,9 @@ describe('reducer "comments"', () => {
     const state = {
       treeId: {
         parentCommentId: {
-          children: []
-        }
-      }
+          children: [],
+        },
+      },
     }
     const action = {
       type: DISCONNECT_READMODEL,
@@ -60,9 +60,9 @@ describe('reducer "comments"', () => {
         resolver: commentsTree,
         args: {
           treeId: 'treeId',
-          parentCommentId: 'parentCommentId'
-        }
-      }
+          parentCommentId: 'parentCommentId',
+        },
+      },
     }
 
     const nextState = reducer(state, action)
@@ -74,9 +74,9 @@ describe('reducer "comments"', () => {
     const state = {
       treeId: {
         parentCommentId: {
-          children: []
-        }
-      }
+          children: [],
+        },
+      },
     }
     const action = {
       type: QUERY_READMODEL_SUCCESS,
@@ -85,15 +85,15 @@ describe('reducer "comments"', () => {
         resolver: commentsTree,
         args: {
           treeId: 'treeId',
-          parentCommentId: 'parentCommentId'
-        }
+          parentCommentId: 'parentCommentId',
+        },
       },
       result: {
         data: {
           commentId: 'parentCommentId',
-          children: [{ test: true }]
-        }
-      }
+          children: [{ test: true }],
+        },
+      },
     }
 
     const nextState = reducer(state, action)
@@ -102,9 +102,9 @@ describe('reducer "comments"', () => {
       treeId: {
         parentCommentId: {
           commentId: 'parentCommentId',
-          children: [{ test: true }]
-        }
-      }
+          children: [{ test: true }],
+        },
+      },
     })
   })
 
@@ -112,9 +112,9 @@ describe('reducer "comments"', () => {
     const state = {
       treeId: {
         parentCommentId: {
-          children: []
-        }
-      }
+          children: [],
+        },
+      },
     }
     const action = {
       type: SEND_COMMAND_SUCCESS,
@@ -125,9 +125,9 @@ describe('reducer "comments"', () => {
         payload: {
           commentId: 'commentId',
           content: {},
-          parentCommentId: 'parentCommentId'
-        }
-      }
+          parentCommentId: 'parentCommentId',
+        },
+      },
     }
 
     const nextState = reducer(state, action)
@@ -139,11 +139,11 @@ describe('reducer "comments"', () => {
             {
               commentId: 'commentId',
               content: {},
-              parentCommentId: 'parentCommentId'
-            }
-          ]
-        }
-      }
+              parentCommentId: 'parentCommentId',
+            },
+          ],
+        },
+      },
     })
   })
 
@@ -155,11 +155,11 @@ describe('reducer "comments"', () => {
             {
               commentId: 'commentId',
               content: {},
-              parentCommentId: 'parentCommentId'
-            }
-          ]
-        }
-      }
+              parentCommentId: 'parentCommentId',
+            },
+          ],
+        },
+      },
     }
     const action = {
       type: SEND_COMMAND_SUCCESS,
@@ -170,9 +170,9 @@ describe('reducer "comments"', () => {
         payload: {
           commentId: 'commentId',
           content: { test: true },
-          parentCommentId: 'parentCommentId'
-        }
-      }
+          parentCommentId: 'parentCommentId',
+        },
+      },
     }
 
     const nextState = reducer(state, action)
@@ -184,11 +184,11 @@ describe('reducer "comments"', () => {
             {
               commentId: 'commentId',
               content: { test: true },
-              parentCommentId: 'parentCommentId'
-            }
-          ]
-        }
-      }
+              parentCommentId: 'parentCommentId',
+            },
+          ],
+        },
+      },
     })
   })
 
@@ -200,11 +200,11 @@ describe('reducer "comments"', () => {
             {
               commentId: 'commentId',
               content: {},
-              parentCommentId: 'parentCommentId'
-            }
-          ]
-        }
-      }
+              parentCommentId: 'parentCommentId',
+            },
+          ],
+        },
+      },
     }
     const action = {
       type: SEND_COMMAND_SUCCESS,
@@ -214,9 +214,9 @@ describe('reducer "comments"', () => {
         aggregateName,
         payload: {
           commentId: 'commentId',
-          parentCommentId: 'parentCommentId'
-        }
-      }
+          parentCommentId: 'parentCommentId',
+        },
+      },
     }
 
     const nextState = reducer(state, action)
@@ -224,9 +224,9 @@ describe('reducer "comments"', () => {
     expect(nextState).toEqual({
       treeId: {
         parentCommentId: {
-          children: []
-        }
-      }
+          children: [],
+        },
+      },
     })
   })
 })

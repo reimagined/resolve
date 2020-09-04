@@ -5,7 +5,7 @@ test('resolve-debug-levels should work with provided DEBUG and DEBUG_LEVELS envs
   const debugProvider = jest.fn().mockReturnValue(debugPrinter)
   const envProvider = {
     DEBUG: 'namespace',
-    DEBUG_LEVEL: 'warn'
+    DEBUG_LEVEL: 'warn',
   }
   const namespace = 'namespace'
   const logger = debugLevels(
@@ -35,7 +35,7 @@ test('resolve-debug-levels should set DEBUG_LEVELS="warn" if DEBUG_LEVELS env is
   const debugPrinter = jest.fn()
   const debugProvider = jest.fn().mockReturnValue(debugPrinter)
   const envProvider = {
-    DEBUG: 'namespace'
+    DEBUG: 'namespace',
   }
   const namespace = 'namespace'
   const logger = debugLevels(
@@ -66,11 +66,11 @@ test('resolve-debug-levels should set DEBUG="resolve:" if DEBUG env is not set',
   const debugPrinter = jest.fn()
   const debugProvider = jest.fn().mockReturnValue(debugPrinter)
   Object.defineProperty(debugProvider, 'enable', {
-    value: debugNamespaceEnabler
+    value: debugNamespaceEnabler,
   })
 
   const envProvider = {
-    DEBUG_LEVEL: 'warn'
+    DEBUG_LEVEL: 'warn',
   }
   const namespace = 'resolve:test-namespace'
   const logger = debugLevels(

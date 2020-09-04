@@ -4,7 +4,7 @@ import iconv from 'iconv-lite'
 const convertCodepage = (content, fromEncoding, toEncoding) =>
   iconv.decode(iconv.encode(content, fromEncoding), toEncoding)
 
-const extractRequestBody = req => {
+const extractRequestBody = (req) => {
   if (req.body == null) {
     return req.query
   }
@@ -12,7 +12,7 @@ const extractRequestBody = req => {
     req.headers['content-type'] != null
       ? String(req.headers['content-type'])
           .split(';')
-          .map(value => value.trim().toLowerCase())
+          .map((value) => value.trim().toLowerCase())
       : []
 
   let bodyFields = {}
@@ -85,11 +85,11 @@ const extractRequestBody = req => {
           inlineHeaders['content-type']
         )
           .split(';')
-          .map(value => value.trim().toLowerCase())
+          .map((value) => value.trim().toLowerCase())
 
         const {
           type: dispositionType,
-          parameters: { name, filename }
+          parameters: { name, filename },
         } = contentDisposition.parse(inlineHeaders['content-disposition'])
 
         if (dispositionType !== 'form-data') {
@@ -105,7 +105,7 @@ const extractRequestBody = req => {
               ? convertCodepage(inlineBodyString, 'latin1', inlineCharset)
               : inlineBodyString,
           contentCharset: inlineCharset != null ? inlineCharset : 'latin1',
-          filename
+          filename,
         }
       }
       break

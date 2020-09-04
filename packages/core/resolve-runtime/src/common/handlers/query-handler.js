@@ -25,7 +25,7 @@ const queryHandler = async (req, res) => {
       modelName,
       modelOptions,
       modelArgs,
-      jwt: req.jwt
+      jwt: req.jwt,
     })
 
     subSegment.addAnnotation('modelName', modelName)
@@ -60,7 +60,7 @@ const queryHandler = async (req, res) => {
       await req.resolve.executeQuery.serializeState({
         modelName,
         state: result,
-        jwt: req.jwt
+        jwt: req.jwt,
       })
     )
   } catch (error) {

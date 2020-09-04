@@ -7,8 +7,8 @@ const acknowledge = async (pool, payload) => {
     type: PrivateOperationType.ACKNOWLEDGE_BATCH,
     payload: {
       batchId,
-      result
-    }
+      result,
+    },
   }
   await invokeOperation(pool, LazinessStrategy.EAGER, input)
 }

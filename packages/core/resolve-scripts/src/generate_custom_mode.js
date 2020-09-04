@@ -30,7 +30,7 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
       const webpackConfigs = await getWebpackConfigs({
         resolveConfig: config,
         nodeModulesByAssembly,
-        adjustWebpackConfigs
+        adjustWebpackConfigs,
       })
 
       const peerDependencies = getPeerDependencies()
@@ -78,15 +78,15 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
         stdio: 'inherit',
         env: {
           ...process.env,
-          RESOLVE_LAUNCH_ID: resolveLaunchId
-        }
+          RESOLVE_LAUNCH_ID: resolveLaunchId,
+        },
       })
 
       server.on('crash', reject)
       server.start()
       log.debug(`Server process pid: ${server.pid}`)
 
-      let broker = { stop: callback => callback() }
+      let broker = { stop: (callback) => callback() }
       if (config.eventBroker.launchBroker) {
         const brokerPath = path.resolve(
           process.cwd(),
@@ -100,8 +100,8 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
           stdio: 'inherit',
           env: {
             ...process.env,
-            RESOLVE_LAUNCH_ID: resolveLaunchId
-          }
+            RESOLVE_LAUNCH_ID: resolveLaunchId,
+          },
         })
 
         broker.on('crash', reject)
@@ -133,12 +133,12 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
                 `Error while communication with reSolve HTTP server at port ${port}`,
                 `Maybe multiple instances of reSolve applications trying to run with similar port`,
                 `${response.status}: ${response.statusText}`,
-                `${result}`
+                `${result}`,
               ].join('\n')
             }
             break
           } catch (e) {}
-          await new Promise(resolve => setTimeout(resolve, 500))
+          await new Promise((resolve) => setTimeout(resolve, 500))
         }
       }
 
@@ -151,8 +151,8 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
       }
 
       await Promise.all([
-        new Promise(resolve => server.stop(resolve)),
-        new Promise(resolve => broker.stop(resolve))
+        new Promise((resolve) => server.stop(resolve)),
+        new Promise((resolve) => broker.stop(resolve)),
       ])
 
       log.debug('Server was stopped')

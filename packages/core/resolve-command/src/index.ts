@@ -6,7 +6,7 @@ import {
   CommandHandler,
   CommandResult,
   Event,
-  SecretsManager
+  SecretsManager,
 } from 'resolve-core'
 import getLog from './get-log'
 
@@ -78,7 +78,7 @@ const generateCommandError = (message: string): Error => {
   Object.defineProperties(error, {
     name: { value: 'CommandError', enumerable: true },
     message: { value: error.message, enumerable: true },
-    stack: { value: error.stack, enumerable: true }
+    stack: { value: error.stack, enumerable: true },
   })
   return error
 }
@@ -191,7 +191,7 @@ const takeSnapshot = async (
         state: aggregateInfo.serializeState(aggregateInfo.aggregateState),
         version: aggregateInfo.aggregateVersion,
         minimalTimestamp: aggregateInfo.minimalTimestamp,
-        cursor: aggregateInfo.cursor
+        cursor: aggregateInfo.cursor,
       })
     )
 
@@ -218,13 +218,13 @@ const getAggregateState = async (
     aggregateName,
     performanceTracer,
     isDisposed,
-    eventstoreAdapter
+    eventstoreAdapter,
   } = pool
   const {
     projection,
     serializeState,
     deserializeState,
-    invariantHash = null
+    invariantHash = null,
   } = meta
   const log = getLog(`getAggregateState:${aggregateName}:${aggregateId}`)
 
@@ -258,7 +258,7 @@ const getAggregateState = async (
       projection,
       serializeState,
       deserializeState,
-      snapshotKey
+      snapshotKey,
     }
 
     try {
@@ -319,7 +319,7 @@ const getAggregateState = async (
           aggregateState: deserializeState(snapshot.state),
           aggregateVersion: snapshot.version,
           minimalTimestamp: snapshot.minimalTimestamp,
-          cursor: snapshot.cursor
+          cursor: snapshot.cursor,
         })
       }
     } catch (err) {
@@ -349,7 +349,7 @@ const getAggregateState = async (
         const { events } = await eventstoreAdapter.loadEvents({
           aggregateIds: [aggregateId],
           cursor: aggregateInfo.cursor,
-          limit: Number.MAX_SAFE_INTEGER
+          limit: Number.MAX_SAFE_INTEGER,
         })
 
         log.debug(
@@ -453,7 +453,7 @@ const executeCommand = async (
     const {
       aggregateState,
       aggregateVersion,
-      minimalTimestamp
+      minimalTimestamp,
     } = await getAggregateState(pool, aggregate, aggregateId)
 
     if (!aggregate.commands.hasOwnProperty(type)) {
@@ -495,20 +495,20 @@ const executeCommand = async (
       typeof aggregate.encryption === 'function'
         ? await aggregate.encryption(aggregateId, {
             jwt,
-            secretsManager
+            secretsManager,
           })
         : null
 
     const { encrypt = null, decrypt = null } = encryption || {
       encrypt: null,
-      decrypt: null
+      decrypt: null,
     }
 
     const event = await commandHandler(aggregateState, command, {
       jwt,
       aggregateVersion,
       encrypt,
-      decrypt
+      decrypt,
     })
 
     if (!checkOptionShape(event.type, [String])) {
@@ -531,7 +531,7 @@ const executeCommand = async (
       aggregateId,
       aggregateVersion: aggregateVersion + 1,
       timestamp: Math.max(minimalTimestamp + 1, Date.now()),
-      type: event.type
+      type: event.type,
     }
 
     if (Object.prototype.hasOwnProperty.call(event, 'payload')) {
@@ -599,19 +599,19 @@ const createCommand: CommandExecutorBuilder = ({
   onCommandExecuted,
   aggregates,
   performanceTracer,
-  eventstoreAdapter
+  eventstoreAdapter,
 }): CommandExecutor => {
   const pool = {
     onCommandExecuted,
     aggregates,
     isDisposed: false,
     performanceTracer,
-    eventstoreAdapter
+    eventstoreAdapter,
   }
 
   const api = {
     executeCommand: executeCommand.bind(null, pool as any),
-    dispose: dispose.bind(null, pool as any)
+    dispose: dispose.bind(null, pool as any),
   }
 
   const commandExecutor = executeCommand.bind(null, pool as any)

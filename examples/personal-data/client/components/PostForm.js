@@ -10,7 +10,7 @@ import ImageUploader from './ImageUpload'
 const PostForm = ({ successHandler, errorHandler }) => {
   const [values, setValues] = useState({
     title: '',
-    content: ''
+    content: '',
   })
   const { title, content } = values
   const user = useContext(UserContext)
@@ -23,8 +23,8 @@ const PostForm = ({ successHandler, errorHandler }) => {
       payload: {
         authorId: user.id,
         content,
-        title
-      }
+        title,
+      },
     },
     (error, result) => {
       if (error) {
@@ -33,7 +33,7 @@ const PostForm = ({ successHandler, errorHandler }) => {
         setValues({
           ...values,
           title: '',
-          content: ''
+          content: '',
         })
         successHandler(result)
       }
@@ -41,11 +41,11 @@ const PostForm = ({ successHandler, errorHandler }) => {
     [content]
   )
 
-  const handleChange = prop => event => {
+  const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value })
   }
   const textareaRef = React.createRef()
-  const onUploaded = value => {
+  const onUploaded = (value) => {
     const textarea = textareaRef.current
     let nextContent = textarea.value
     if (textarea.selectionStart || textarea.selectionStart === '0') {

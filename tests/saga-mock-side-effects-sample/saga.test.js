@@ -1,6 +1,6 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import givenEvents, {
-  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP
+  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP,
 } from 'resolve-testing-tools'
 
 import config from './config'
@@ -13,11 +13,11 @@ describe('Saga', () => {
     name: sagaName,
     source: sourceModule,
     connectorName,
-    schedulerName
+    schedulerName,
   } = config.sagas.find(({ name }) => name === 'UpdaterSaga')
   const {
     module: connectorModule,
-    options: connectorOptions
+    options: connectorOptions,
   } = config.readModelConnectors[connectorName]
 
   const createConnector = interopRequireDefault(require(connectorModule))
@@ -42,7 +42,7 @@ describe('Saga', () => {
         handlers: source.handlers,
         sideEffects: source.sideEffects,
         adapter,
-        name: sagaName
+        name: sagaName,
       }
     })
 
@@ -64,8 +64,8 @@ describe('Saga', () => {
         {
           aggregateId: 'counterId',
           type: 'UPDATE',
-          payload: {}
-        }
+          payload: {},
+        },
       ]).saga(sagaWithAdapter)
 
       expect(result.commands[0][0].type).toEqual('increment')
@@ -78,8 +78,8 @@ describe('Saga', () => {
         {
           aggregateId: 'counterId',
           type: 'UPDATE',
-          payload: {}
-        }
+          payload: {},
+        },
       ]).saga(sagaWithAdapter)
 
       expect(result.commands[0][0].type).toEqual('decrement')
@@ -95,7 +95,7 @@ describe('Saga', () => {
         handlers: source.handlers,
         sideEffects: source.sideEffects,
         adapter,
-        name: sagaName
+        name: sagaName,
       }
     })
 
@@ -111,19 +111,19 @@ describe('Saga', () => {
         {
           aggregateId: 'counterId',
           type: 'UPDATE',
-          payload: {}
-        }
+          payload: {},
+        },
       ])
         .saga(sagaWithAdapter)
         .properties({
-          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE
+          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE,
         })
 
       expect(result).toEqual({
         commands: [],
         scheduleCommands: [],
         sideEffects: [],
-        queries: []
+        queries: [],
       })
     })
   })

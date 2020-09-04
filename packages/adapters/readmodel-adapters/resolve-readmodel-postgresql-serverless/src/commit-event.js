@@ -36,7 +36,7 @@ const commitEvent = async (pool, readModelName, xaTransactionId) => {
         SET LOCAL ${eventCountId} = ${eventCount + 1};
         SET LOCAL ${insideEventId} = 0;
         RELEASE SAVEPOINT ${savepointId};
-      `
+      `,
     })
 
     pool.eventCounters.set(xaTransactionId, eventCount + 1)

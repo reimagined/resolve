@@ -4,7 +4,7 @@ import { promisify } from 'util'
 
 import { pipeline } from 'stream'
 
-const exportEventStoreHandler = options => async (req, res) => {
+const exportEventStoreHandler = (options) => async (req, res) => {
   const { eventstoreAdapter } = req.resolve
 
   try {

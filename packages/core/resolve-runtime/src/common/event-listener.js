@@ -26,13 +26,13 @@ const performListenerOperation = async (
 
   const result = await method({
     modelName: eventSubscriber,
-    ...parameters
+    ...parameters,
   })
 
   return result
 }
 
-const createEventListener = resolve => {
+const createEventListener = (resolve) => {
   const eventListener = new Proxy(
     {},
     {
@@ -45,7 +45,7 @@ const createEventListener = resolve => {
       },
       set() {
         throw new Error(`Event listener API is immutable`)
-      }
+      },
     }
   )
 

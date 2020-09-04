@@ -15,8 +15,8 @@ const decryptProfile = async (secretsManager, user) => {
         ...user.profile,
         firstName: 'unknown',
         lastName: 'unknown',
-        contacts: {}
-      }
+        contacts: {},
+      },
     }
   }
   const { decrypt } = encryption
@@ -27,8 +27,8 @@ const decryptProfile = async (secretsManager, user) => {
       ...profile,
       firstName: decrypt(profile.firstName),
       lastName: decrypt(profile.lastName),
-      contacts: decrypt(profile.contacts)
-    }
+      contacts: decrypt(profile.contacts),
+    },
   }
 }
 
@@ -64,7 +64,7 @@ const resolvers = {
   all: async (store, params, { secretsManager }) => {
     const users = await store.find('Users', {})
     return await Promise.all(
-      users.map(async user => {
+      users.map(async (user) => {
         return decryptProfile(secretsManager, user)
       })
     )
@@ -72,10 +72,10 @@ const resolvers = {
   exists: async (store, params) => {
     const { nickname } = params
     const user = await store.findOne('Users', {
-      'profile.nickname': nickname
+      'profile.nickname': nickname,
     })
     return !!user
-  }
+  },
 }
 
 export default resolvers

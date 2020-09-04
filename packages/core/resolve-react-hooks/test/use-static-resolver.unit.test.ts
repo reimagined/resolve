@@ -5,10 +5,10 @@ import { StaticResolver, useStaticResolver } from '../src/use-static-resolver'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({
-  useCallback: jest.fn(cb => cb)
+  useCallback: jest.fn((cb) => cb),
 }))
 jest.mock('../src/use-client', () => ({
-  useClient: jest.fn()
+  useClient: jest.fn(),
 }))
 
 const mockedUseClient = mocked(useClient)
@@ -17,9 +17,9 @@ const mockedUseCallback = mocked(useCallback)
 const mockedClient = {
   command: jest.fn(),
   query: jest.fn(),
-  getStaticAssetUrl: jest.fn(asset => `static_${asset}`),
+  getStaticAssetUrl: jest.fn((asset) => `static_${asset}`),
   subscribe: jest.fn(),
-  unsubscribe: jest.fn()
+  unsubscribe: jest.fn(),
 }
 
 const clearMocks = (): void => {

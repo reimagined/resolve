@@ -6,5 +6,5 @@ const getImages = async (store, { first, offset }) => {
 }
 
 export default {
-  allImages: getImages
+  allImages: getImages,
 }

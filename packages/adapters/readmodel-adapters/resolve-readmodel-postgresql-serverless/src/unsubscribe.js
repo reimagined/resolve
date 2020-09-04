@@ -6,7 +6,7 @@ const unsubscribe = async (pool, readModelName) => {
     dropReadModel,
     inlineLedgerForceStop,
     inlineLedgerExecuteStatement,
-    PassthroughError
+    PassthroughError,
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)

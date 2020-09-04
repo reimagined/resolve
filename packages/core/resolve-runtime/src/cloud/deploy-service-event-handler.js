@@ -5,10 +5,11 @@ import shutdown from '../common/shutdown'
 
 const log = debugLevels('resolve:resolve-runtime:deploy-service-event-handler')
 
-const getReadModelNames = resolve => resolve.readModels.map(({ name }) => name)
-const getSagaNames = resolve => [
+const getReadModelNames = (resolve) =>
+  resolve.readModels.map(({ name }) => name)
+const getSagaNames = (resolve) => [
   ...resolve.schedulers.map(({ name }) => name),
-  ...resolve.sagas.map(({ name }) => name)
+  ...resolve.sagas.map(({ name }) => name),
 ]
 
 const handleResolveReadModelEvent = async (
@@ -41,7 +42,7 @@ const handleResolveReadModelEvent = async (
     case 'listProperties': {
       log.debug('operation "listProperties" started')
       const result = await resolve.eventBus.listProperties({
-        eventSubscriber: listenerId
+        eventSubscriber: listenerId,
       })
       log.debug('operation "listProperties" completed')
       log.verbose(JSON.stringify(result, null, 2))
@@ -51,7 +52,7 @@ const handleResolveReadModelEvent = async (
       log.debug('operation "getProperty" started')
       const result = await resolve.eventBus.getProperty({
         eventSubscriber: listenerId,
-        key
+        key,
       })
       log.debug('operation "getProperty" completed')
       log.verbose(JSON.stringify(result, null, 2))
@@ -62,7 +63,7 @@ const handleResolveReadModelEvent = async (
       await resolve.eventBus.setProperty({
         eventSubscriber: listenerId,
         key,
-        value
+        value,
       })
       log.debug('operation "setProperty" completed')
       return 'ok'
@@ -71,7 +72,7 @@ const handleResolveReadModelEvent = async (
       log.debug('operation "deleteProperty" started')
       await resolve.eventBus.deleteProperty({
         eventSubscriber: listenerId,
-        key
+        key,
       })
       log.debug('operation "deleteProperty" completed')
       return 'ok'
@@ -82,13 +83,13 @@ const handleResolveReadModelEvent = async (
       log.verbose(`listenerIds = ${JSON.stringify(listenerIds, null, 2)}`)
       log.debug('operation "list" started')
       const result = await Promise.all(
-        listenerIds.map(async listenerId => {
+        listenerIds.map(async (listenerId) => {
           const status = await resolve.eventBus.status({
-            eventSubscriber: listenerId
+            eventSubscriber: listenerId,
           })
           return {
             ...status,
-            name: listenerId
+            name: listenerId,
           }
         })
       )

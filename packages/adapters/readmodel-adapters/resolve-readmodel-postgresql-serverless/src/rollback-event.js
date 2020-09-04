@@ -20,7 +20,7 @@ const rollbackEvent = async (pool, readModelName, xaTransactionId) => {
       sql: `
         ROLLBACK TO SAVEPOINT ${savepointId};
         RELEASE SAVEPOINT ${savepointId};
-      `
+      `,
     })
 
     log.verbose('Rollback event to postgresql database succeed')

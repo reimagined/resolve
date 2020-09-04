@@ -2,7 +2,7 @@ import { call, put } from 'redux-saga/effects'
 import { ConnectViewModelAction, viewModelStateUpdate } from './actions'
 import {
   CONNECT_VIEWMODEL,
-  DISCONNECT_VIEWMODEL
+  DISCONNECT_VIEWMODEL,
 } from '../internal/action-types'
 import { RootSagaArgs } from '../types'
 import eventListenerSaga from './event-listener-saga'
@@ -13,7 +13,7 @@ type ConnectViewSagaArgs = {
   sagaKey: string
 } & RootSagaArgs
 
-const connectViewModelSaga = function*(
+const connectViewModelSaga = function* (
   sagaArgs: ConnectViewSagaArgs,
   action: ConnectViewModelAction
 ) {
@@ -33,7 +33,7 @@ const connectViewModelSaga = function*(
 
   const {
     data,
-    meta: { url, cursor }
+    meta: { url, cursor },
   } = yield call([client, client.query], query)
 
   yield put(viewModelStateUpdate(query, data, false))
@@ -49,7 +49,7 @@ const connectViewModelSaga = function*(
       cursor,
       query,
       viewModel,
-      state
+      state,
     }
   )
 }

@@ -28,7 +28,7 @@ const internal = {
   Provider,
   Consumer,
   Providers,
-  deserializeInitialState
+  deserializeInitialState,
 }
 
 export {
@@ -49,5 +49,5 @@ export {
   // deprecated, encapsulation breach
   getOrigin,
   deserializeInitialState,
-  connectResolveAdvanced
+  connectResolveAdvanced,
 }

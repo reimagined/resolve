@@ -7,12 +7,12 @@ import Login from '../components/Login'
 
 class App extends React.Component {
   state = {
-    loadingState: {}
+    loadingState: {},
   }
   linkOpener = null
 
   componentDidMount() {
-    this.linkOpener = url => window.open(url)
+    this.linkOpener = (url) => window.open(url)
   }
   componentWillUnmount() {
     this.linkOpener = null
@@ -20,12 +20,12 @@ class App extends React.Component {
 
   getFileUrl = async (uploadId, index) => {
     this.setState({
-      loadingState: { ...this.state.loadingState, [index]: true }
+      loadingState: { ...this.state.loadingState, [index]: true },
     })
     try {
       const url = await fetch(
         `/api/uploader/getFileUrl?uploadId=${uploadId}`
-      ).then(response => response.text())
+      ).then((response) => response.text())
 
       this.linkOpener(`${this.props.CDNUrl}${url}`)
     } catch (error) {
@@ -34,7 +34,7 @@ class App extends React.Component {
     }
 
     this.setState({
-      loadingState: { ...this.state.loadingState, [index]: false }
+      loadingState: { ...this.state.loadingState, [index]: false },
     })
   }
 
@@ -47,8 +47,9 @@ class App extends React.Component {
           ? 'No loaded files'
           : this.props.files.map((file, index) => {
               const { id, userId, projectId, status } = file
-              const data = `${index +
-                1}. File: ${id} { Loading-status: ${status}, User: ${userId}, Project: ${projectId} }`
+              const data = `${
+                index + 1
+              }. File: ${id} { Loading-status: ${status}, User: ${userId}, Project: ${projectId} }`
 
               if (this.props.jwt.login === userId && status === 'success') {
                 return (
@@ -75,12 +76,12 @@ class App extends React.Component {
 export const mapStateToOptions = () => ({
   readModelName: 'Files',
   resolverName: 'allFiles',
-  resolverArgs: {}
+  resolverArgs: {},
 })
 
 const mapStateToProps = (state, { data }) => ({
   files: data,
-  jwt: state.jwt
+  jwt: state.jwt,
 })
 
 export default connectReadModel(mapStateToOptions)(

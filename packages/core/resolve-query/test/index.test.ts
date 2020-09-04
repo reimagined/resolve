@@ -47,10 +47,10 @@ for (const { describeName, prepare } of [
       const addNewSubsegment = jest.fn().mockReturnValue({
         addAnnotation,
         addError,
-        close
+        close,
       })
       const getSegment = jest.fn().mockReturnValue({
-        addNewSubsegment
+        addNewSubsegment,
       })
 
       performanceTracer = {
@@ -58,16 +58,16 @@ for (const { describeName, prepare } of [
         addNewSubsegment,
         addAnnotation,
         addError,
-        close
+        close,
       }
-    }
+    },
   },
   {
     describeName: 'without performanceTracer',
     prepare: () => {
       performanceTracer = null
-    }
-  }
+    },
+  },
 ]) {
   let events: Array<any> | null = null
   let eventstoreAdapter: any | null = null
@@ -94,17 +94,17 @@ for (const { describeName, prepare } of [
       eventstoreAdapter = {
         loadEvents: async ({ cursor: prevCursor }: { cursor: string }) => ({
           events,
-          cursor: `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`
+          cursor: `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`,
         }),
         getNextCursor: (prevCursor: string) =>
           `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`,
         getSecretsManager: async () => null,
-        loadSnapshot: jest.fn().mockImplementation(async key => {
+        loadSnapshot: jest.fn().mockImplementation(async (key) => {
           return (snapshots as SnapshotMap).get(key)
         }),
         saveSnapshot: jest.fn().mockImplementation(async (key, value) => {
           void (snapshots as SnapshotMap).set(key, value)
-        })
+        }),
       }
 
       viewModels = []
@@ -135,21 +135,21 @@ for (const { describeName, prepare } of [
             projection: {
               Init: (): State => {
                 return {
-                  value: 0
+                  value: 0,
                 }
               },
               ADD: (state: State, event: AddEvent): State => {
                 return {
                   ...state,
-                  value: state.value + event.payload.value
+                  value: state.value + event.payload.value,
                 }
               },
               SUB: (state: State, event: SubEvent): State => {
                 return {
                   ...state,
-                  value: state.value - event.payload.value
+                  value: state.value - event.payload.value,
                 }
-              }
+              },
             },
             serializeState: async (state: State): Promise<string> => {
               return JSON.stringify(state, null, 2)
@@ -179,11 +179,11 @@ for (const { describeName, prepare } of [
                 meta: {
                   aggregateIds: query.aggregateIds,
                   eventTypes: viewModel.eventTypes,
-                  cursor
-                }
+                  cursor,
+                },
               }
-            }
-          }
+            },
+          },
         ]
       })
 
@@ -199,7 +199,7 @@ for (const { describeName, prepare } of [
             performanceTracer,
             eventstoreAdapter,
             getRemainingTimeInMillis,
-            performAcknowledge
+            performAcknowledge,
           })
         })
 
@@ -219,8 +219,8 @@ for (const { describeName, prepare } of [
               timestamp: 1,
               type: 'ADD',
               payload: {
-                value: 10
-              }
+                value: 10,
+              },
             },
             {
               aggregateId: 'id1',
@@ -228,8 +228,8 @@ for (const { describeName, prepare } of [
               timestamp: 2,
               type: 'ADD',
               payload: {
-                value: 5
-              }
+                value: 5,
+              },
             },
             {
               aggregateId: 'id1',
@@ -237,26 +237,26 @@ for (const { describeName, prepare } of [
               timestamp: 3,
               type: 'SUB',
               payload: {
-                value: 8
-              }
-            }
+                value: 8,
+              },
+            },
           ]
 
           const stateId1 = await query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id1',
-            aggregateArgs: {}
+            aggregateArgs: {},
           })
 
           expect(stateId1).toEqual({
             data: {
-              value: 7
+              value: 7,
             },
             meta: {
               cursor: 'CURSOR-CURSOR-CURSOR',
               aggregateIds: ['id1'],
-              eventTypes: ['ADD', 'SUB']
-            }
+              eventTypes: ['ADD', 'SUB'],
+            },
           })
 
           expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
@@ -267,7 +267,7 @@ for (const { describeName, prepare } of [
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 1]],
               state: JSON.stringify({ value: 10 }, null, 2),
-              cursor: 'CURSOR'
+              cursor: 'CURSOR',
             })
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
@@ -275,7 +275,7 @@ for (const { describeName, prepare } of [
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 2]],
               state: JSON.stringify({ value: 15 }, null, 2),
-              cursor: 'CURSOR-CURSOR'
+              cursor: 'CURSOR-CURSOR',
             })
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
@@ -283,7 +283,7 @@ for (const { describeName, prepare } of [
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 3]],
               state: JSON.stringify({ value: 7 }, null, 2),
-              cursor: 'CURSOR-CURSOR-CURSOR'
+              cursor: 'CURSOR-CURSOR-CURSOR',
             })
           )
 
@@ -294,8 +294,8 @@ for (const { describeName, prepare } of [
               aggregateVersion: 1,
               timestamp: 4,
               payload: {
-                value: 5
-              }
+                value: 5,
+              },
             },
             {
               aggregateId: 'id2',
@@ -303,8 +303,8 @@ for (const { describeName, prepare } of [
               timestamp: 5,
               type: 'ADD',
               payload: {
-                value: 2
-              }
+                value: 2,
+              },
             },
             {
               aggregateId: 'id2',
@@ -312,25 +312,25 @@ for (const { describeName, prepare } of [
               timestamp: 6,
               type: 'SUB',
               payload: {
-                value: 3
-              }
-            }
+                value: 3,
+              },
+            },
           ]
           const stateId2 = await query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id2',
-            aggregateArgs: {}
+            aggregateArgs: {},
           })
 
           expect(stateId2).toEqual({
             data: {
-              value: 4
+              value: 4,
             },
             meta: {
               cursor: 'CURSOR-CURSOR-CURSOR',
               aggregateIds: ['id2'],
-              eventTypes: ['ADD', 'SUB']
-            }
+              eventTypes: ['ADD', 'SUB'],
+            },
           })
 
           expect(eventstoreAdapter.loadSnapshot).toBeCalledWith(
@@ -341,7 +341,7 @@ for (const { describeName, prepare } of [
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 1]],
               state: JSON.stringify({ value: 5 }, null, 2),
-              cursor: 'CURSOR'
+              cursor: 'CURSOR',
             })
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
@@ -349,7 +349,7 @@ for (const { describeName, prepare } of [
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 2]],
               state: JSON.stringify({ value: 7 }, null, 2),
-              cursor: 'CURSOR-CURSOR'
+              cursor: 'CURSOR-CURSOR',
             })
           )
           expect(eventstoreAdapter.saveSnapshot).toBeCalledWith(
@@ -357,7 +357,7 @@ for (const { describeName, prepare } of [
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 3]],
               state: JSON.stringify({ value: 4 }, null, 2),
-              cursor: 'CURSOR-CURSOR-CURSOR'
+              cursor: 'CURSOR-CURSOR-CURSOR',
             })
           )
 
@@ -366,7 +366,7 @@ for (const { describeName, prepare } of [
           const stateId2Second = await query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id2',
-            aggregateArgs: {}
+            aggregateArgs: {},
           })
 
           expect(stateId2Second).toEqual(stateId2)
@@ -378,8 +378,8 @@ for (const { describeName, prepare } of [
               timestamp: 1,
               type: 'ADD',
               payload: {
-                value: 10
-              }
+                value: 10,
+              },
             },
             {
               aggregateId: 'id1',
@@ -387,8 +387,8 @@ for (const { describeName, prepare } of [
               timestamp: 2,
               type: 'ADD',
               payload: {
-                value: 5
-              }
+                value: 5,
+              },
             },
             {
               aggregateId: 'id1',
@@ -396,8 +396,8 @@ for (const { describeName, prepare } of [
               timestamp: 3,
               type: 'SUB',
               payload: {
-                value: 8
-              }
+                value: 8,
+              },
             },
             {
               aggregateId: 'id2',
@@ -405,8 +405,8 @@ for (const { describeName, prepare } of [
               aggregateVersion: 1,
               timestamp: 4,
               payload: {
-                value: 5
-              }
+                value: 5,
+              },
             },
             {
               aggregateId: 'id2',
@@ -414,8 +414,8 @@ for (const { describeName, prepare } of [
               timestamp: 5,
               type: 'ADD',
               payload: {
-                value: 2
-              }
+                value: 2,
+              },
             },
             {
               aggregateId: 'id2',
@@ -423,43 +423,43 @@ for (const { describeName, prepare } of [
               timestamp: 6,
               type: 'SUB',
               payload: {
-                value: 3
-              }
-            }
+                value: 3,
+              },
+            },
           ]
 
           const stateWildcard = await query.read({
             modelName: 'viewModelName',
             aggregateIds: '*',
-            aggregateArgs: {}
+            aggregateArgs: {},
           })
 
           expect(stateWildcard).toEqual({
             data: {
-              value: 11
+              value: 11,
             },
             meta: {
               cursor: 'CURSOR-CURSOR-CURSOR-CURSOR-CURSOR-CURSOR',
               aggregateIds: null,
-              eventTypes: ['ADD', 'SUB']
-            }
+              eventTypes: ['ADD', 'SUB'],
+            },
           })
 
           const stateId1AndId2 = await query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id1,id2',
-            aggregateArgs: {}
+            aggregateArgs: {},
           })
 
           expect(stateId1AndId2).toEqual({
             data: {
-              value: 11
+              value: 11,
             },
             meta: {
               cursor: 'CURSOR-CURSOR-CURSOR-CURSOR-CURSOR-CURSOR',
               aggregateIds: ['id1', 'id2'],
-              eventTypes: ['ADD', 'SUB']
-            }
+              eventTypes: ['ADD', 'SUB'],
+            },
           })
 
           if (performanceTracer != null) {
@@ -487,13 +487,13 @@ for (const { describeName, prepare } of [
           const state1Promise = query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id1',
-            aggregateArgs: {}
+            aggregateArgs: {},
           })
 
           const state2Promise = query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id1',
-            aggregateArgs: {}
+            aggregateArgs: {},
           })
 
           expect(state1Promise).toEqual(state2Promise)
@@ -527,7 +527,7 @@ for (const { describeName, prepare } of [
             await query.read({
               modelName: 'viewModelName',
               aggregateIds: Symbol('BAD_VALUE'),
-              aggregateArgs: {}
+              aggregateArgs: {},
             })
 
             return Promise.reject(new Error('Test failed'))
@@ -561,7 +561,7 @@ for (const { describeName, prepare } of [
             await query.read({
               modelName: 'notFound',
               aggregateIds: 'id1',
-              aggregateArgs: {}
+              aggregateArgs: {},
             })
 
             return Promise.reject(new Error('Test failed'))
@@ -596,7 +596,7 @@ for (const { describeName, prepare } of [
             await query.read({
               modelName: 'viewModelName',
               aggregateIds: 'id1',
-              aggregateArgs: {}
+              aggregateArgs: {},
             })
 
             return Promise.reject(new Error('Test failed'))
@@ -628,13 +628,13 @@ for (const { describeName, prepare } of [
 
           const result = await query.serializeState({
             modelName: 'viewModelName',
-            state: { value: 7 }
+            state: { value: 7 },
           })
 
           expect(result).toEqual(
             JSON.stringify(
               {
-                value: 7
+                value: 7,
               },
               null,
               2
@@ -831,7 +831,7 @@ for (const { describeName, prepare } of [
             performanceTracer,
             eventstoreAdapter,
             getRemainingTimeInMillis,
-            performAcknowledge
+            performAcknowledge,
           })
         })
 
@@ -851,8 +851,8 @@ for (const { describeName, prepare } of [
               timestamp: 1,
               type: 'ADD',
               payload: {
-                value: 10
-              }
+                value: 10,
+              },
             },
             {
               aggregateId: 'id1',
@@ -860,8 +860,8 @@ for (const { describeName, prepare } of [
               timestamp: 2,
               type: 'ADD',
               payload: {
-                value: 5
-              }
+                value: 5,
+              },
             },
             {
               aggregateId: 'id1',
@@ -869,15 +869,15 @@ for (const { describeName, prepare } of [
               timestamp: 3,
               type: 'SUB',
               payload: {
-                value: 8
-              }
-            }
+                value: 8,
+              },
+            },
           ]
 
           const stateId1 = await query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id1',
-            aggregateArgs: {}
+            aggregateArgs: {},
           })
 
           expect(stateId1).toEqual({
@@ -885,8 +885,8 @@ for (const { describeName, prepare } of [
             meta: {
               cursor: 'CURSOR-CURSOR-CURSOR',
               aggregateIds: ['id1'],
-              eventTypes: ['ADD', 'SUB']
-            }
+              eventTypes: ['ADD', 'SUB'],
+            },
           })
 
           events = [
@@ -896,8 +896,8 @@ for (const { describeName, prepare } of [
               aggregateVersion: 1,
               timestamp: 4,
               payload: {
-                value: 5
-              }
+                value: 5,
+              },
             },
             {
               aggregateId: 'id2',
@@ -905,8 +905,8 @@ for (const { describeName, prepare } of [
               timestamp: 5,
               type: 'ADD',
               payload: {
-                value: 2
-              }
+                value: 2,
+              },
             },
             {
               aggregateId: 'id2',
@@ -914,15 +914,15 @@ for (const { describeName, prepare } of [
               timestamp: 6,
               type: 'SUB',
               payload: {
-                value: 3
-              }
-            }
+                value: 3,
+              },
+            },
           ]
 
           const stateId2 = await query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id2',
-            aggregateArgs: {}
+            aggregateArgs: {},
           })
 
           expect(stateId2).toEqual({
@@ -930,8 +930,8 @@ for (const { describeName, prepare } of [
             meta: {
               cursor: 'CURSOR-CURSOR-CURSOR',
               aggregateIds: ['id2'],
-              eventTypes: ['ADD', 'SUB']
-            }
+              eventTypes: ['ADD', 'SUB'],
+            },
           })
 
           if (performanceTracer != null) {
@@ -963,8 +963,8 @@ for (const { describeName, prepare } of [
               timestamp: 1,
               type: 'ADD',
               payload: {
-                value: 10
-              }
+                value: 10,
+              },
             },
             {
               aggregateId: 'id1',
@@ -972,8 +972,8 @@ for (const { describeName, prepare } of [
               timestamp: 2,
               type: 'ADD',
               payload: {
-                value: 5
-              }
+                value: 5,
+              },
             },
             {
               aggregateId: 'id1',
@@ -981,21 +981,21 @@ for (const { describeName, prepare } of [
               timestamp: 3,
               type: 'SUB',
               payload: {
-                value: 8
-              }
-            }
+                value: 8,
+              },
+            },
           ]
 
           const state1Promise = query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id1',
-            aggregateArgs: {}
+            aggregateArgs: {},
           })
 
           const state2Promise = query.read({
             modelName: 'viewModelName',
             aggregateIds: 'id1',
-            aggregateArgs: {}
+            aggregateArgs: {},
           })
 
           expect(state1Promise).toEqual(state2Promise)
@@ -1030,7 +1030,7 @@ for (const { describeName, prepare } of [
             await query.read({
               modelName: 'viewModelName',
               aggregateIds: 'id1',
-              aggregateArgs: {}
+              aggregateArgs: {},
             })
 
             return Promise.reject(new Error('Test failed'))
@@ -1064,7 +1064,7 @@ for (const { describeName, prepare } of [
             await query.read({
               modelName: 'viewModelName',
               aggregateIds: Symbol('BAD_VALUE'),
-              aggregateArgs: {}
+              aggregateArgs: {},
             })
 
             return Promise.reject(new Error('Test failed'))
@@ -1096,13 +1096,13 @@ for (const { describeName, prepare } of [
 
           const result = await query.serializeState({
             modelName: 'viewModelName',
-            state: { value: 7 }
+            state: { value: 7 },
           })
 
           expect(result).toEqual(
             JSON.stringify(
               {
-                value: 7
+                value: 7,
               },
               null,
               2
@@ -1296,15 +1296,15 @@ for (const { describeName, prepare } of [
               SUB: async (store: Store, event: SubEvent) => {
                 const value = await store.get('value')
                 await store.set('value', value - event.payload.value)
-              }
+              },
             },
             resolvers: {
               getValue: async (store: Store) => {
                 return await store.get('value')
-              }
+              },
             },
             connectorName: 'default',
-            invariantHash: 'readModelName-invariantHash'
+            invariantHash: 'readModelName-invariantHash',
           },
           {
             name: 'readOnlyReadModelName',
@@ -1312,10 +1312,10 @@ for (const { describeName, prepare } of [
             resolvers: {
               readFromDatabase: async () => {
                 return 42
-              }
+              },
             },
             connectorName: 'default',
-            invariantHash: 'readOnlyReadModelName-invariantHash'
+            invariantHash: 'readOnlyReadModelName-invariantHash',
           },
           {
             name: 'brokenReadModelName',
@@ -1324,28 +1324,28 @@ for (const { describeName, prepare } of [
                 const error = new Error('BROKEN')
                 Object.assign(error, { store, event })
                 throw error
-              }
+              },
             },
             resolvers: {},
             connectorName: 'empty',
-            invariantHash: 'brokenReadModelName-invariantHash'
+            invariantHash: 'brokenReadModelName-invariantHash',
           },
           {
             name: 'remoteReadModelName',
             projection: {
               SET: async (store: Store, event: any) => {
-                await new Promise(resolve => setImmediate(resolve))
+                await new Promise((resolve) => setImmediate(resolve))
                 remoteReadModelStore[event.payload.key] = event.payload.value
-              }
+              },
             },
             resolvers: {
               getValue: async (store: Store) => {
                 return await store.get('value')
-              }
+              },
             },
             connectorName: 'empty',
-            invariantHash: 'remoteReadModelName-invariantHash'
-          }
+            invariantHash: 'remoteReadModelName-invariantHash',
+          },
         ]
 
         readModelConnectors = {
@@ -1353,7 +1353,7 @@ for (const { describeName, prepare } of [
             const readModels = new Map()
             const connect = jest
               .fn()
-              .mockImplementation(async readModelName => {
+              .mockImplementation(async (readModelName) => {
                 if (!readModels.has(readModelName)) {
                   readModels.set(readModelName, new Map())
                 }
@@ -1363,7 +1363,7 @@ for (const { describeName, prepare } of [
                   },
                   set(key: string, value: any): void {
                     readModels.get(readModelName).set(key, value)
-                  }
+                  },
                 }
               })
             const disconnect = jest.fn()
@@ -1380,15 +1380,15 @@ for (const { describeName, prepare } of [
               connect,
               disconnect,
               drop,
-              dispose
+              dispose,
             }
           })(),
           empty: {
             connect: jest.fn(),
             disconnect: jest.fn(),
             drop: jest.fn(),
-            dispose: jest.fn()
-          }
+            dispose: jest.fn(),
+          },
         }
 
         query = createQuery({
@@ -1399,7 +1399,7 @@ for (const { describeName, prepare } of [
           performanceTracer,
           eventstoreAdapter,
           getRemainingTimeInMillis,
-          performAcknowledge
+          performAcknowledge,
         })
       })
 
@@ -1415,7 +1415,7 @@ for (const { describeName, prepare } of [
         const value = await query.read({
           modelName: 'readOnlyReadModelName',
           resolverName: 'readFromDatabase',
-          resolverArgs: {}
+          resolverArgs: {},
         })
 
         expect(value).toEqual({ data: 42 })
@@ -1446,7 +1446,7 @@ for (const { describeName, prepare } of [
           await query.read({
             modelName: 'notFound',
             resolverName: 'notFound',
-            resolverArgs: {}
+            resolverArgs: {},
           })
 
           return Promise.reject(new Error('Test failed'))
@@ -1480,7 +1480,7 @@ for (const { describeName, prepare } of [
           await query.read({
             modelName: 'readModelName',
             resolverName: 'notFound',
-            resolverArgs: {}
+            resolverArgs: {},
           })
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
@@ -1514,7 +1514,7 @@ for (const { describeName, prepare } of [
           await query.read({
             modelName: 'readOnlyReadModelName',
             resolverName: 'readFromDatabase',
-            resolverArgs: {}
+            resolverArgs: {},
           })
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
@@ -1545,7 +1545,7 @@ for (const { describeName, prepare } of [
 
         events = [
           {
-            type: 'Init'
+            type: 'Init',
           },
           {
             aggregateId: 'id1',
@@ -1553,8 +1553,8 @@ for (const { describeName, prepare } of [
             timestamp: 1,
             type: 'ADD',
             payload: {
-              value: 10
-            }
+              value: 10,
+            },
           },
           {
             aggregateId: 'id1',
@@ -1562,8 +1562,8 @@ for (const { describeName, prepare } of [
             timestamp: 2,
             type: 'ADD',
             payload: {
-              value: 5
-            }
+              value: 5,
+            },
           },
           {
             aggregateId: 'id1',
@@ -1571,16 +1571,16 @@ for (const { describeName, prepare } of [
             timestamp: 3,
             type: 'SUB',
             payload: {
-              value: 8
-            }
+              value: 8,
+            },
           },
           {
             aggregateId: 'id1',
             aggregateVersion: 4,
             timestamp: 4,
             type: 'OTHER_EVENT',
-            payload: {}
-          }
+            payload: {},
+          },
         ]
 
         await query.sendEvents({
@@ -1588,7 +1588,7 @@ for (const { describeName, prepare } of [
           events,
           xaTransactionId: 'xaTransactionId',
           properties: {},
-          batchId: 'batchId'
+          batchId: 'batchId',
         })
 
         expect(performAcknowledge.mock.calls[0][0].result).toMatchObject({
@@ -1599,11 +1599,11 @@ for (const { describeName, prepare } of [
             timestamp: 3,
             type: 'SUB',
             payload: {
-              value: 8
-            }
+              value: 8,
+            },
           },
           failedEvent: null,
-          eventSubscriber: 'readModelName'
+          eventSubscriber: 'readModelName',
         })
 
         if (performanceTracer != null) {
@@ -1634,8 +1634,8 @@ for (const { describeName, prepare } of [
             aggregateVersion: 1,
             timestamp: 1,
             type: 'BROKEN',
-            payload: {}
-          }
+            payload: {},
+          },
         ]
 
         await query.sendEvents({
@@ -1643,11 +1643,11 @@ for (const { describeName, prepare } of [
           events,
           xaTransactionId: 'xaTransactionId',
           properties: {},
-          batchId: 'batchId'
+          batchId: 'batchId',
         })
 
         expect(performAcknowledge.mock.calls[0][0].result.error).toMatchObject({
-          message: 'BROKEN'
+          message: 'BROKEN',
         })
 
         if (performanceTracer != null) {
@@ -1677,7 +1677,7 @@ for (const { describeName, prepare } of [
           events,
           xaTransactionId: 'xaTransactionId',
           properties: {},
-          batchId: 'batchId'
+          batchId: 'batchId',
         })
 
         expect(performAcknowledge.mock.calls[0][0].result.error).not.toBeNull()
@@ -1709,7 +1709,7 @@ for (const { describeName, prepare } of [
           events: (null as unknown) as any[],
           xaTransactionId: 'xaTransactionId',
           properties: {},
-          batchId: 'batchId'
+          batchId: 'batchId',
         })
 
         expect(performAcknowledge.mock.calls[0][0].result.error).not.toBeNull()
@@ -1744,8 +1744,8 @@ for (const { describeName, prepare } of [
             type: 'SET',
             payload: {
               key: 1,
-              value: 2
-            }
+              value: 2,
+            },
           },
           {
             aggregateId: 'id',
@@ -1754,14 +1754,14 @@ for (const { describeName, prepare } of [
             type: 'SET',
             payload: {
               key: 3,
-              value: 4
-            }
-          }
+              value: 4,
+            },
+          },
         ]
 
         const result = query.sendEvents({
           modelName: 'remoteReadModelName',
-          events
+          events,
         })
 
         await query.dispose()
@@ -1794,8 +1794,8 @@ for (const { describeName, prepare } of [
 
         events = [
           {
-            type: 'Init'
-          }
+            type: 'Init',
+          },
         ]
 
         await query.dispose()
@@ -1828,7 +1828,7 @@ for (const { describeName, prepare } of [
 
         const value = await query.serializeState({
           modelName: 'readOnlyReadModelName',
-          state: 42
+          state: 42,
         })
 
         expect(value).toEqual(JSON.stringify(42, null, 2))
@@ -1954,15 +1954,15 @@ for (const { describeName, prepare } of [
                   projection: {},
                   resolvers: {},
                   connectorName: 'default',
-                  invariantHash: 'readModelName-invariantHash'
-                }
+                  invariantHash: 'readModelName-invariantHash',
+                },
               ],
               viewModels,
               eventstoreAdapter,
               performanceTracer,
               invokeEventBusAsync,
               getRemainingTimeInMillis,
-              performAcknowledge
+              performAcknowledge,
             }))
         ).toThrow(Error)
       })
@@ -1976,8 +1976,8 @@ for (const { describeName, prepare } of [
                   connect: jest.fn(),
                   disconnect: jest.fn(),
                   drop: jest.fn(),
-                  dispose: jest.fn()
-                }
+                  dispose: jest.fn(),
+                },
               },
               readModels: [
                 {
@@ -1985,22 +1985,22 @@ for (const { describeName, prepare } of [
                   projection: {},
                   resolvers: {},
                   connectorName: 'empty',
-                  invariantHash: 'readModelName-invariantHash'
+                  invariantHash: 'readModelName-invariantHash',
                 },
                 {
                   name: 'readModelName',
                   projection: {},
                   resolvers: {},
                   connectorName: 'empty',
-                  invariantHash: 'readModelName-invariantHash'
-                }
+                  invariantHash: 'readModelName-invariantHash',
+                },
               ],
               viewModels,
               eventstoreAdapter,
               performanceTracer,
               invokeEventBusAsync,
               getRemainingTimeInMillis,
-              performAcknowledge
+              performAcknowledge,
             }))
         ).toThrow('Duplicate name for read model: "readModelName"')
 
@@ -2031,19 +2031,19 @@ for (const { describeName, prepare } of [
                 {
                   name: 'viewModelName',
                   projection: {},
-                  invariantHash: 'viewModelName-invariantHash'
+                  invariantHash: 'viewModelName-invariantHash',
                 },
                 {
                   name: 'viewModelName',
                   projection: {},
-                  invariantHash: 'viewModelName-invariantHash'
-                }
+                  invariantHash: 'viewModelName-invariantHash',
+                },
               ],
               eventstoreAdapter,
               performanceTracer,
               invokeEventBusAsync,
               getRemainingTimeInMillis,
-              performAcknowledge
+              performAcknowledge,
             }))
         ).toThrow('Duplicate name for view model: "viewModelName"')
 
@@ -2072,21 +2072,21 @@ for (const { describeName, prepare } of [
             {
               name: 'viewModelName',
               projection: {},
-              invariantHash: 'viewModelName-invariantHash'
-            }
+              invariantHash: 'viewModelName-invariantHash',
+            },
           ],
           eventstoreAdapter,
           performanceTracer,
           invokeEventBusAsync,
           getRemainingTimeInMillis,
-          performAcknowledge
+          performAcknowledge,
         })
 
         await expect(
           query.read({
             modelName: 'viewModelName',
             wrongArg1: '1',
-            wrongArg2: '2'
+            wrongArg2: '2',
           } as any)
         ).rejects.toBeTruthy()
 

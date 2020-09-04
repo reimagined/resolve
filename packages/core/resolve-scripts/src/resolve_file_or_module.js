@@ -15,8 +15,8 @@ const resolveFileOrModule = (query, rewritePath = false) => {
       paths: [
         path.resolve(process.cwd(), 'node_modules'),
         path.resolve(__dirname, '../node_modules'),
-        ...getMonorepoNodeModules()
-      ]
+        ...getMonorepoNodeModules(),
+      ],
     })
 
     if (rewritePath) {

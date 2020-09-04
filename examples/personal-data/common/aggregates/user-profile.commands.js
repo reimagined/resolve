@@ -3,7 +3,7 @@ import {
   USER_PROFILE_UPDATED,
   USER_PROFILE_DELETED,
   USER_PERSONAL_DATA_REQUESTED,
-  USER_PERSONAL_DATA_GATHERED
+  USER_PERSONAL_DATA_GATHERED,
 } from '../user-profile.events'
 import { systemUserId } from '../constants'
 
@@ -22,7 +22,7 @@ const aggregate = {
     }
 
     const {
-      payload: { nickname, firstName, lastName, phoneNumber, address }
+      payload: { nickname, firstName, lastName, phoneNumber, address },
     } = command
 
     if (!firstName || !lastName || !phoneNumber) {
@@ -39,27 +39,27 @@ const aggregate = {
         lastName: encrypt(lastName),
         contacts: encrypt({
           phoneNumber,
-          address
-        })
-      }
+          address,
+        }),
+      },
     }
   },
   update: (state, command, context) => {
     const { encrypt, jwt } = context
     const {
       aggregateId,
-      payload: { firstName, lastName, phoneNumber, address }
+      payload: { firstName, lastName, phoneNumber, address },
     } = command
     const {
       firstName: currentFirstName,
       lastName: currentLastName,
-      contacts: currentContacts
+      contacts: currentContacts,
     } = state
     const updatedFirstName = encrypt(firstName)
     const updatedLastName = encrypt(lastName)
     const updatedContacts = encrypt({
       phoneNumber,
-      address
+      address,
     })
 
     const user = decode(jwt)
@@ -82,8 +82,8 @@ const aggregate = {
         payload: {
           firstName: updatedFirstName,
           lastName: updatedLastName,
-          contacts: updatedContacts
-        }
+          contacts: updatedContacts,
+        },
       }
     }
 
@@ -101,7 +101,7 @@ const aggregate = {
     }
 
     return {
-      type: USER_PROFILE_DELETED
+      type: USER_PROFILE_DELETED,
     }
   },
   gatherPersonalData: (state, { aggregateId }, { jwt }) => {
@@ -119,7 +119,7 @@ const aggregate = {
     }
 
     return {
-      type: USER_PERSONAL_DATA_REQUESTED
+      type: USER_PERSONAL_DATA_REQUESTED,
     }
   },
   completePersonalDataGathering: (state, command, { jwt }) => {
@@ -143,10 +143,10 @@ const aggregate = {
       payload: {
         uploadId,
         token,
-        error
-      }
+        error,
+      },
     }
-  }
+  },
 }
 
 export default aggregate

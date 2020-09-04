@@ -6,7 +6,7 @@ import { renderRoutes } from 'react-router-config'
 
 import routes from './routes'
 
-const entryPoint = context => {
+const entryPoint = (context) => {
   const appContainer = document.createElement('div')
   document.body.appendChild(appContainer)
   render(

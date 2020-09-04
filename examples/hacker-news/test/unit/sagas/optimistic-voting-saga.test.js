@@ -2,7 +2,7 @@ import { internal } from 'resolve-redux'
 import optimisticVotingSagaFactory from '../../../client/sagas/optimistic-voting-saga'
 import {
   optimisticUnvoteStory,
-  optimisticUpvoteStory
+  optimisticUpvoteStory,
 } from '../../../client/actions/optimistic-actions'
 
 const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = internal.actionTypes
@@ -19,8 +19,8 @@ test('Optimistic voting saga - register takeAll sagas', () => {
     upvoteActionFilter({
       type: SEND_COMMAND_SUCCESS,
       command: {
-        type: 'upvoteStory'
-      }
+        type: 'upvoteStory',
+      },
     })
   ).toEqual(true)
 
@@ -28,8 +28,8 @@ test('Optimistic voting saga - register takeAll sagas', () => {
     upvoteActionFilter({
       type: SEND_COMMAND_FAILURE,
       command: {
-        type: 'upvoteStory'
-      }
+        type: 'upvoteStory',
+      },
     })
   ).toEqual(false)
 
@@ -41,8 +41,8 @@ test('Optimistic voting saga - register takeAll sagas', () => {
     unvoteActionFilter({
       type: SEND_COMMAND_SUCCESS,
       command: {
-        type: 'unvoteStory'
-      }
+        type: 'unvoteStory',
+      },
     })
   ).toEqual(true)
 
@@ -50,8 +50,8 @@ test('Optimistic voting saga - register takeAll sagas', () => {
     unvoteActionFilter({
       type: SEND_COMMAND_FAILURE,
       command: {
-        type: 'unvoteStory'
-      }
+        type: 'unvoteStory',
+      },
     })
   ).toEqual(false)
 
@@ -64,7 +64,7 @@ test('Optimistic voting saga - upvote success', () => {
   let step = optimisticVotingSaga.next()
   const upvoteSagaFactory = step.value.payload.args[1]
   const upvoteSaga = upvoteSagaFactory({
-    command: { aggregateId: 'aggregateId' }
+    command: { aggregateId: 'aggregateId' },
   })
 
   step = upvoteSaga.next()
@@ -84,7 +84,7 @@ test('Optimistic voting saga - unvote success', () => {
   const unvoteSagaFactory = step.value.payload.args[1]
 
   const unvoteSaga = unvoteSagaFactory({
-    command: { aggregateId: 'aggregateId' }
+    command: { aggregateId: 'aggregateId' },
   })
 
   step = unvoteSaga.next()

@@ -20,7 +20,7 @@ import ShareForm from './containers/ShareForm'
 const {
   rootPath,
   staticPath,
-  resolveRedux: { Providers }
+  resolveRedux: { Providers },
 } = getNativeChunk()
 
 const Drawer = createDrawerNavigator()
@@ -29,22 +29,22 @@ const store = getStore()
 
 class AppContainer extends React.PureComponent {
   state = {
-    isReady: false
+    isReady: false,
   }
 
   async componentDidMount() {
     await Font.loadAsync({
       Roboto: require('native-base/Fonts/Roboto.ttf'),
       Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
-      ...Ionicons.font
+      ...Ionicons.font,
     })
 
     this.setState({
-      isReady: true
+      isReady: true,
     })
   }
 
-  getDrawerContent = props => <SideBar {...props} />
+  getDrawerContent = (props) => <SideBar {...props} />
 
   render() {
     if (!this.state.isReady) {

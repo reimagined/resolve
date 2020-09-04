@@ -9,7 +9,7 @@ const getSubscribeAdapterOptions = async (
   const {
     RESOLVE_DEPLOYMENT_ID,
     RESOLVE_WS_URL,
-    RESOLVE_ENCRYPTED_DEPLOYMENT_ID
+    RESOLVE_ENCRYPTED_DEPLOYMENT_ID,
   } = process.env
 
   const token = jwt.sign(
@@ -21,7 +21,7 @@ const getSubscribeAdapterOptions = async (
 
   return {
     appId: RESOLVE_DEPLOYMENT_ID,
-    url: subscribeUrl
+    url: subscribeUrl,
   }
 }
 

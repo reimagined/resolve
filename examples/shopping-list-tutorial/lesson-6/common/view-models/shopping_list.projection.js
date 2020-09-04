@@ -1,7 +1,7 @@
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_ITEM_CREATED,
-  SHOPPING_ITEM_TOGGLED
+  SHOPPING_ITEM_TOGGLED,
 } from '../eventTypes'
 
 export default {
@@ -9,7 +9,7 @@ export default {
   [SHOPPING_LIST_CREATED]: (state, { aggregateId, payload: { name } }) => ({
     id: aggregateId,
     name,
-    list: []
+    list: [],
   }),
   [SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
     ...state,
@@ -18,19 +18,19 @@ export default {
       {
         id,
         text,
-        checked: false
-      }
-    ]
+        checked: false,
+      },
+    ],
   }),
   [SHOPPING_ITEM_TOGGLED]: (state, { payload: { id } }) => ({
     ...state,
-    list: state.list.map(item =>
+    list: state.list.map((item) =>
       item.id === id
         ? {
             ...item,
-            checked: !item.checked
+            checked: !item.checked,
           }
         : item
-    )
-  })
+    ),
+  }),
 }

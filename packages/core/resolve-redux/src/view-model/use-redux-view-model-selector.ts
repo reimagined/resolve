@@ -9,7 +9,7 @@ function useReduxViewModelSelector(query: ViewModelQuery | string): any {
   }
   return useSelector((state: ReduxState) =>
     getEntry(state.viewModels, {
-      query
+      query,
     })
   )
 }

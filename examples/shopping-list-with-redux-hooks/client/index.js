@@ -10,14 +10,14 @@ import getRoutes from './get-routes'
 import getRedux from './get-redux'
 import * as Redux from 'react-redux'
 
-const entryPoint = context => {
+const entryPoint = (context) => {
   const history = createBrowserHistory({ basename: context.rootPath })
   const routes = getRoutes()
 
   const store = createStore({
     ...context,
     redux: getRedux(),
-    isClient: true
+    isClient: true,
   })
 
   let appContainer = document.getElementById('app-container')

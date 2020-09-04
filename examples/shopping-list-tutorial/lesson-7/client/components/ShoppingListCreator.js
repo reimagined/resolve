@@ -4,16 +4,16 @@ import uuid from 'uuid/v4'
 
 class ShoppingListCreator extends React.PureComponent {
   state = {
-    shoppingListName: ''
+    shoppingListName: '',
   }
 
-  updateShoppingListName = event => {
+  updateShoppingListName = (event) => {
     this.setState({
-      shoppingListName: event.target.value
+      shoppingListName: event.target.value,
     })
   }
 
-  onShoppingListNamePressEnter = event => {
+  onShoppingListNamePressEnter = (event) => {
     if (event.charCode === 13) {
       event.preventDefault()
       this.createList()
@@ -24,10 +24,10 @@ class ShoppingListCreator extends React.PureComponent {
     this.props.createShoppingList(uuid(), {
       name:
         this.state.shoppingListName ||
-        `Shopping List ${this.props.lists.length + 1}`
+        `Shopping List ${this.props.lists.length + 1}`,
     })
     this.setState({
-      shoppingListName: ''
+      shoppingListName: '',
     })
   }
 

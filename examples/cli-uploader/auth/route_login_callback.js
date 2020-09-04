@@ -7,7 +7,7 @@ const routeLoginCallback = async ({ resolve }, login, password) => {
   const { data: user } = await resolve.executeQuery({
     modelName: 'Users',
     resolverName: 'user',
-    resolverArgs: { login: login.trim() }
+    resolverArgs: { login: login.trim() },
   })
 
   if (user.login !== login || user.passwordHash !== passwordHash) {

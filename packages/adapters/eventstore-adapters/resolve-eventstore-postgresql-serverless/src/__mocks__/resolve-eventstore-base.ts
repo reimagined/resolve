@@ -1,7 +1,7 @@
 export {
   EventstoreResourceAlreadyExistError,
   EventstoreResourceNotExistError,
-  ConcurrentError
+  ConcurrentError,
 } from 'resolve-eventstore-base'
 
 export default jest.fn()

@@ -8,7 +8,7 @@ const {
   stop,
   reset,
   importEventStore,
-  exportEventStore
+  exportEventStore,
 } = require('resolve-scripts')
 const createAuthModule = require('resolve-module-auth').default
 const resolveModuleAdmin = require('resolve-module-admin').default
@@ -34,13 +34,13 @@ const merge = (...configs) => {
       backend: {
         protocol: process.env.SHOPPING_LIST_PROTOCOL || 'http',
         hostname: process.env.SHOPPING_LIST_HOSTNAME || getLocalIp(),
-        port: process.env.SHOPPING_LIST_PORT || config.port
+        port: process.env.SHOPPING_LIST_PORT || config.port,
       },
       remoteReduxDevTools: {
         hostname: process.env.SHOPPING_LIST_HOST || getLocalIp(),
-        port: process.env.SHOPPING_LIST_PROTOCOL || 19042
-      }
-    }
+        port: process.env.SHOPPING_LIST_PROTOCOL || 19042,
+      },
+    },
   }
 }
 
@@ -54,19 +54,19 @@ void (async () => {
           {
             path: 'auth/local/register',
             method: 'POST',
-            callback: 'common/auth/route-register-callback.js'
+            callback: 'common/auth/route-register-callback.js',
           },
           {
             path: 'auth/local/login',
             method: 'POST',
-            callback: 'common/auth/route-login-callback.js'
-          }
+            callback: 'common/auth/route-login-callback.js',
+          },
         ],
         logoutRoute: {
           path: 'auth/local/logout',
-          method: 'GET'
-        }
-      }
+          method: 'GET',
+        },
+      },
     ])
 
     switch (launchMode) {
@@ -86,7 +86,7 @@ void (async () => {
             dropEventStore: false,
             dropEventBus: true,
             dropReadModels: true,
-            dropSagas: true
+            dropSagas: true,
           },
           adjustWebpackConfigs
         )
@@ -105,7 +105,7 @@ void (async () => {
         await remotedev({
           hostname: resolveConfig.customConstants.remoteReduxDevTools.hostname,
           port: resolveConfig.customConstants.remoteReduxDevTools.port,
-          wsEngine: 'ws'
+          wsEngine: 'ws',
         })
 
         await opn(
@@ -118,7 +118,7 @@ void (async () => {
             dropEventStore: false,
             dropEventBus: true,
             dropReadModels: true,
-            dropSagas: true
+            dropSagas: true,
           },
           adjustWebpackConfigs
         )
@@ -218,7 +218,7 @@ void (async () => {
             dropEventStore: true,
             dropEventBus: true,
             dropReadModels: true,
-            dropSagas: true
+            dropSagas: true,
           },
           adjustWebpackConfigs
         )
@@ -228,7 +228,7 @@ void (async () => {
           adjustWebpackConfigs,
           functionalTestsDir: './test/functional',
           browser: process.argv[3],
-          customArgs: ['--stop-on-first-fail']
+          customArgs: ['--stop-on-first-fail'],
           // customArgs: ['-r', 'json:report.json']
         })
         break

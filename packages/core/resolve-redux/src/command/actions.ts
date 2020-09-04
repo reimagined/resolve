@@ -2,7 +2,7 @@ import { Command } from 'resolve-client'
 import {
   SEND_COMMAND_FAILURE,
   SEND_COMMAND_REQUEST,
-  SEND_COMMAND_SUCCESS
+  SEND_COMMAND_SUCCESS,
 } from '../internal/action-types'
 
 export type CommandAction = {
@@ -20,7 +20,7 @@ export const sendCommandRequest = (
 ): SendCommandRequestAction => ({
   type: SEND_COMMAND_REQUEST,
   command,
-  usedByHook
+  usedByHook,
 })
 
 export type SendCommandSuccessAction = {
@@ -33,7 +33,7 @@ export const sendCommandSuccess = (
 ): SendCommandSuccessAction => ({
   type: SEND_COMMAND_SUCCESS,
   command,
-  result
+  result,
 })
 
 export type SendCommandFailureAction = {
@@ -46,5 +46,5 @@ export const sendCommandFailure = (
 ): SendCommandFailureAction => ({
   type: SEND_COMMAND_FAILURE,
   command,
-  error
+  error,
 })

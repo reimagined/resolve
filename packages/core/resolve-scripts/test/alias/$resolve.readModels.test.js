@@ -11,16 +11,16 @@ describe('base config works correctly', () => {
         name: 'Todos',
         connectorName: 'Todos',
         projection: path.resolve(__dirname, 'files/testProjection.js'),
-        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
-      }
+        resolvers: path.resolve(__dirname, 'files/testResolvers.js'),
+      },
     ],
     sagas: [],
     readModelConnectors: {
       Todos: {
         module: 'resolve-readmodel-lite',
-        options: {}
-      }
-    }
+        options: {},
+      },
+    },
   }
 
   test('[client]', () => {
@@ -29,7 +29,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -42,7 +42,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -61,11 +61,11 @@ test('should throw when read-model name is process.env', () => {
                 name: declareRuntimeEnv('Todos'),
                 connectorName: 'Todos',
                 projection: path.resolve(__dirname, 'files/testProjection.js'),
-                resolvers: path.resolve(__dirname, 'files/testResolvers.js')
-              }
-            ]
+                resolvers: path.resolve(__dirname, 'files/testResolvers.js'),
+              },
+            ],
           },
-          isClient: true
+          isClient: true,
         }) +
         '\r\n'
     )
@@ -83,11 +83,11 @@ test('should throw when read-model connectorName is process.env', () => {
                 name: 'Todos',
                 connectorName: declareRuntimeEnv('Todos'),
                 projection: path.resolve(__dirname, 'files/testProjection.js'),
-                resolvers: path.resolve(__dirname, 'files/testResolvers.js')
-              }
-            ]
+                resolvers: path.resolve(__dirname, 'files/testResolvers.js'),
+              },
+            ],
           },
-          isClient: true
+          isClient: true,
         }) +
         '\r\n'
     )
@@ -101,7 +101,7 @@ describe('base(v2) config works correctly', () => {
         name: 'Todos',
         connectorName: 'Todos',
         projection: path.resolve(__dirname, 'files/testProjection.js'),
-        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
+        resolvers: path.resolve(__dirname, 'files/testResolvers.js'),
       },
       {
         name: 'Items',
@@ -113,8 +113,8 @@ describe('base(v2) config works correctly', () => {
             testCommandsAsModule: path.resolve(
               __dirname,
               'files/testCommandsAsModule.js'
-            )
-          }
+            ),
+          },
         },
         resolvers: {
           module: path.resolve(__dirname, 'files/testResolversAsModule.js'),
@@ -123,22 +123,22 @@ describe('base(v2) config works correctly', () => {
             testCommandsAsModule: path.resolve(
               __dirname,
               'files/testCommandsAsModule.js'
-            )
-          }
-        }
-      }
+            ),
+          },
+        },
+      },
     ],
     sagas: [],
     readModelConnectors: {
       Todos: {
         module: 'resolve-readmodel-lite',
-        options: {}
+        options: {},
       },
       Items: {
         module: 'resolve-readmodel-lite',
-        options: {}
-      }
-    }
+        options: {},
+      },
+    },
   }
 
   test('[client]', () => {
@@ -147,7 +147,7 @@ describe('base(v2) config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -160,7 +160,7 @@ describe('base(v2) config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -174,18 +174,18 @@ describe('config + process.env works correctly', () => {
       {
         name: 'Todos',
         projection: path.resolve(__dirname, 'files/testProjection.js'),
-        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
-      }
+        resolvers: path.resolve(__dirname, 'files/testResolvers.js'),
+      },
     ],
     sagas: [],
     readModelConnectors: {
       Todos: {
         module: declareRuntimeEnv('READ_MODEL_TODOS_ADAPTER'),
         options: {
-          size: declareRuntimeEnv('READ_MODEL_TODOS_OPTIONS_SIZE')
-        }
-      }
-    }
+          size: declareRuntimeEnv('READ_MODEL_TODOS_OPTIONS_SIZE'),
+        },
+      },
+    },
   }
 
   test('[client]', () => {
@@ -194,7 +194,7 @@ describe('config + process.env works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -207,7 +207,7 @@ describe('config + process.env works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )

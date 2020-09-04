@@ -1,7 +1,7 @@
 import {
   TRANSFORM_JSON_MAPPED_ARRAY_SYMBOL,
   TRANSFORM_JSON_REGULAR_SYMBOL,
-  TRANSFORM_NONE_SYMBOL
+  TRANSFORM_NONE_SYMBOL,
 } from '../constants'
 
 function parseSubscription(subscriptionDescription, allowedKeys) {
@@ -25,7 +25,7 @@ function parseSubscription(subscriptionDescription, allowedKeys) {
     hasErrors: TRANSFORM_NONE_SYMBOL,
     maxParallel: TRANSFORM_NONE_SYMBOL,
     scopeName: TRANSFORM_NONE_SYMBOL,
-    properties: TRANSFORM_JSON_REGULAR_SYMBOL
+    properties: TRANSFORM_JSON_REGULAR_SYMBOL,
   }
   for (const key of Object.keys(subscriptionOptions)) {
     if (Array.isArray(allowedKeys) && allowedKeys.indexOf(key) < 0) {
@@ -42,7 +42,7 @@ function parseSubscription(subscriptionDescription, allowedKeys) {
       ) {
         value =
           value != null
-            ? Object.keys(value).map(jsonPath =>
+            ? Object.keys(value).map((jsonPath) =>
                 jsonPath
                   .replace(/\u001aSLASH/g, '\\')
                   .replace(/\u001aDOT/g, '.')

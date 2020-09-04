@@ -7,7 +7,7 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
     escapeId,
     escape,
     rdsDataService,
-    inlineLedgerExecuteStatement
+    inlineLedgerExecuteStatement,
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
@@ -32,7 +32,7 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
         await rdsDataService.rollbackTransaction({
           resourceArn: dbClusterOrInstanceArn,
           secretArn: awsSecretStoreArn,
-          transactionId
+          transactionId,
         })
       } catch (err) {
         if (

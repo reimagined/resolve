@@ -10,15 +10,15 @@ jest.mock('../../src/determine-origin', () =>
   jest.fn((origin): string => origin)
 )
 jest.mock('../../src/utils', () => ({
-  getRootBasedUrl: jest.fn(() => 'http://root-based.url')
+  getRootBasedUrl: jest.fn(() => 'http://root-based.url'),
 }))
 const mFetch = jest.fn(() => ({
   ok: true,
   status: 200,
   headers: {
-    get: (): void => undefined
+    get: (): void => undefined,
   },
-  text: (): Promise<string> => Promise.resolve('response')
+  text: (): Promise<string> => Promise.resolve('response'),
 }))
 const mDetermineOrigin = mocked(determineOrigin)
 const mGetRootBasedUrl = mocked(getRootBasedUrl)
@@ -27,7 +27,7 @@ const createMockContext = (): Context => ({
   staticPath: 'static-path',
   rootPath: 'root-path',
   jwtProvider: undefined,
-  viewModels: []
+  viewModels: [],
 })
 
 beforeAll(() => {
@@ -52,7 +52,7 @@ afterEach(() => {
 
 test('root based url constructed with valid parameters', async () => {
   await request(mockContext, '/request', {
-    param: 'param'
+    param: 'param',
   })
 
   expect(mDetermineOrigin).toHaveBeenCalledWith('mock-origin')
@@ -65,21 +65,21 @@ test('root based url constructed with valid parameters', async () => {
 
 test('global fetch called', async () => {
   await request(mockContext, '/request', {
-    param: 'param'
+    param: 'param',
   })
 
   expect(mFetch).toHaveBeenCalledWith('http://root-based.url', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'same-origin',
-    body: JSON.stringify({ param: 'param' })
+    body: JSON.stringify({ param: 'param' }),
   })
 })
 
 test('custom fetch called', async () => {
   mockContext.fetch = jest.fn(() => ({ ok: true }))
   await request(mockContext, '/request', {
-    param: 'param'
+    param: 'param',
   })
   expect(mFetch).not.toHaveBeenCalled()
   expect(mockContext.fetch).toHaveBeenCalled()
@@ -93,12 +93,12 @@ test('http error thrown with response text', async () => {
     ...fetchResult,
     ok: false,
     status: 500,
-    text: () => Promise.resolve('error-text')
+    text: () => Promise.resolve('error-text'),
   })
 
   await expect(
     request(mockContext, '/request', {
-      param: 'param'
+      param: 'param',
     })
   ).rejects.toEqual(new HttpError(500, 'error-text'))
 })
@@ -106,18 +106,18 @@ test('http error thrown with response text', async () => {
 test('jwt set to authorization header', async () => {
   const jwtProvider = {
     get: jest.fn(() => Promise.resolve('j-w-t')),
-    set: jest.fn()
+    set: jest.fn(),
   }
 
   await request({ ...mockContext, jwtProvider }, '/request', {
-    param: 'param'
+    param: 'param',
   })
 
   expect(jwtProvider.get).toHaveBeenCalled()
   expect(mFetch).toHaveBeenCalledWith(
     expect.anything(),
     expect.objectContaining({
-      headers: expect.objectContaining({ Authorization: 'Bearer j-w-t' })
+      headers: expect.objectContaining({ Authorization: 'Bearer j-w-t' }),
     })
   )
 })
@@ -125,7 +125,7 @@ test('jwt set to authorization header', async () => {
 test('jwt updated via provider with response header', async () => {
   const jwtProvider = {
     get: jest.fn(() => Promise.resolve('j-w-t')),
-    set: jest.fn()
+    set: jest.fn(),
   }
   const getHeader = jest.fn(() => 'response-jwt')
   const fetchResult = mFetch()
@@ -134,12 +134,12 @@ test('jwt updated via provider with response header', async () => {
   mFetch.mockReturnValueOnce({
     ...fetchResult,
     headers: {
-      get: getHeader
-    }
+      get: getHeader,
+    },
   })
 
   await request({ ...mockContext, jwtProvider }, '/request', {
-    param: 'param'
+    param: 'param',
   })
 
   expect(jwtProvider.set).toHaveBeenCalledWith('response-jwt')
@@ -153,22 +153,22 @@ test('retry on error', async () => {
   mFetch.mockReturnValueOnce({
     ...fetchResult,
     ok: false,
-    status: 401
+    status: 401,
   })
 
   const response = await request(
     mockContext,
     '/request',
     {
-      param: 'param'
+      param: 'param',
     },
     {
       retryOnError: {
         errors: 401,
         attempts: 1,
-        period: 1
+        period: 1,
       },
-      debug: false
+      debug: false,
     }
   )
 
@@ -176,7 +176,7 @@ test('retry on error', async () => {
   expect(response).toEqual(
     expect.objectContaining({
       ok: true,
-      status: 200
+      status: 200,
     })
   )
 })
@@ -188,27 +188,27 @@ test('retry on various errors', async () => {
   mFetch.mockReturnValueOnce({
     ...fetchResult,
     ok: false,
-    status: 401
+    status: 401,
   })
   mFetch.mockReturnValueOnce({
     ...fetchResult,
     ok: false,
-    status: 500
+    status: 500,
   })
 
   const response = await request(
     mockContext,
     '/request',
     {
-      param: 'param'
+      param: 'param',
     },
     {
       retryOnError: {
         errors: [401, 500],
         attempts: 2,
-        period: 1
+        period: 1,
       },
-      debug: false
+      debug: false,
     }
   )
 
@@ -216,7 +216,7 @@ test('retry on various errors', async () => {
   expect(response).toEqual(
     expect.objectContaining({
       ok: true,
-      status: 200
+      status: 200,
     })
   )
 })
@@ -228,12 +228,12 @@ test('fail on unexpected errors', async () => {
   mFetch.mockReturnValueOnce({
     ...fetchResult,
     ok: false,
-    status: 500
+    status: 500,
   })
   mFetch.mockReturnValueOnce({
     ...fetchResult,
     ok: false,
-    status: 401
+    status: 401,
   })
 
   await expect(
@@ -241,20 +241,20 @@ test('fail on unexpected errors', async () => {
       mockContext,
       '/request',
       {
-        param: 'param'
+        param: 'param',
       },
       {
         retryOnError: {
           errors: 500,
           attempts: 1,
-          period: 1
+          period: 1,
         },
-        debug: false
+        debug: false,
       }
     )
   ).rejects.toEqual(
     expect.objectContaining({
-      code: 401
+      code: 401,
     })
   )
 
@@ -267,18 +267,18 @@ test('wait for valid response', async () => {
 
   mFetch.mockReturnValueOnce({
     ...fetchResult,
-    text: () => Promise.resolve('invalid')
+    text: () => Promise.resolve('invalid'),
   })
   mFetch.mockReturnValueOnce({
     ...fetchResult,
-    text: () => Promise.resolve('valid')
+    text: () => Promise.resolve('valid'),
   })
 
   const response = await request(
     mockContext,
     '/request',
     {
-      param: 'param'
+      param: 'param',
     },
     {
       waitForResponse: {
@@ -289,8 +289,8 @@ test('wait for valid response', async () => {
           if (text === 'valid') {
             c(text)
           }
-        }
-      }
+        },
+      },
     }
   )
 
@@ -304,15 +304,15 @@ test('response waiting failed: max attempts reached', async () => {
 
   mFetch.mockReturnValueOnce({
     ...fetchResult,
-    text: () => Promise.resolve('invalid')
+    text: () => Promise.resolve('invalid'),
   })
   mFetch.mockReturnValueOnce({
     ...fetchResult,
-    text: () => Promise.resolve('invalid')
+    text: () => Promise.resolve('invalid'),
   })
   mFetch.mockReturnValueOnce({
     ...fetchResult,
-    text: () => Promise.resolve('valid')
+    text: () => Promise.resolve('valid'),
   })
 
   await expect(
@@ -320,7 +320,7 @@ test('response waiting failed: max attempts reached', async () => {
       mockContext,
       '/request',
       {
-        param: 'param'
+        param: 'param',
       },
       {
         waitForResponse: {
@@ -331,8 +331,8 @@ test('response waiting failed: max attempts reached', async () => {
             if (text === 'valid') {
               c(text)
             }
-          }
-        }
+          },
+        },
       }
     )
   ).rejects.toBeInstanceOf(GenericError)

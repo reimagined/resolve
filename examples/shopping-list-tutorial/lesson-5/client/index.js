@@ -17,7 +17,7 @@ const entryPoint = ({ rootPath, staticPath, viewModels, subscriber }) => {
     history,
     origin,
     rootPath,
-    isClient: true
+    isClient: true,
   })
 
   const appContainer = document.createElement('div')

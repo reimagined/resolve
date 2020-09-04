@@ -2,7 +2,7 @@ import { SUBSCRIBERS_TABLE_NAME } from '../constants'
 
 async function unsubscribe(pool, payload) {
   const {
-    database: { escapeStr, escapeId, runRawQuery }
+    database: { escapeStr, escapeId, runRawQuery },
   } = pool
 
   const { eventSubscriber } = payload

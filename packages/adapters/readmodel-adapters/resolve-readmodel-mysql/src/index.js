@@ -20,7 +20,15 @@ import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
 import update from './update'
 
-const store = { defineTable, find, findOne, count, insert, update, delete: del }
+const store = {
+  defineTable,
+  find,
+  findOne,
+  count,
+  insert,
+  update,
+  delete: del,
+}
 
 export default createAdapter.bind(null, {
   ...store,
@@ -32,11 +40,11 @@ export default createAdapter.bind(null, {
     convertBinaryRow,
     searchToWhereExpression,
     updateToSetExpression,
-    ...store
+    ...store,
   }),
   beginTransaction,
   commitTransaction,
   rollbackTransaction,
   dropReadModel,
-  disconnect
+  disconnect,
 })

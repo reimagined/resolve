@@ -10,7 +10,7 @@ const STOP_ERROR_CODE = 'No error'
 const STOP_ERROR_CAUSE = 'Scheduler stopped by user'
 const EXECUTION_LIST_PAGE_SIZE = 100
 
-export const start = async entry => {
+export const start = async (entry) => {
   const log = getLog(`step-functions-start`)
   try {
     log.verbose(`entry: ${JSON.stringify(entry)}`)
@@ -23,9 +23,9 @@ export const start = async entry => {
           date: new Date(entry.date).toISOString(),
           event: {
             resolveSource: 'Scheduler',
-            entry
-          }
-        })
+            entry,
+          },
+        }),
       })
       .promise()
     log.debug('new execution started successfully')
@@ -45,7 +45,7 @@ export const stopAll = async () => {
           {
             stateMachineArn: stateMachineArn(),
             maxResults: EXECUTION_LIST_PAGE_SIZE,
-            statusFilter: 'RUNNING'
+            statusFilter: 'RUNNING',
           },
           token
         )
@@ -58,7 +58,7 @@ export const stopAll = async () => {
           .stopExecution({
             executionArn,
             cause: STOP_ERROR_CAUSE,
-            error: STOP_ERROR_CODE
+            error: STOP_ERROR_CODE,
           })
           .promise()
       )

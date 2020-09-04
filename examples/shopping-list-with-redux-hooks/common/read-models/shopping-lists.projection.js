@@ -1,16 +1,16 @@
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_REMOVED,
-  SHOPPING_LIST_RENAMED
+  SHOPPING_LIST_RENAMED,
 } from '../event-types'
 
 export default {
-  Init: async store => {
+  Init: async (store) => {
     await store.defineTable('ShoppingLists', {
       indexes: {
-        id: 'string'
+        id: 'string',
       },
-      fields: ['createdAt', 'name']
+      fields: ['createdAt', 'name'],
     })
   },
 
@@ -21,7 +21,7 @@ export default {
     const shoppingList = {
       id: aggregateId,
       name,
-      createdAt: timestamp
+      createdAt: timestamp,
     }
 
     await store.insert('ShoppingLists', shoppingList)
@@ -36,5 +36,5 @@ export default {
     { aggregateId, payload: { name } }
   ) => {
     await store.update('ShoppingLists', { id: aggregateId }, { $set: { name } })
-  }
+  },
 }

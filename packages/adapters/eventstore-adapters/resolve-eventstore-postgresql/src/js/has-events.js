@@ -4,7 +4,7 @@ const hasEvents = async (pool, events) => {
     escapeId,
     escape,
     eventsTableName,
-    databaseName
+    databaseName,
   } = pool
   if (!Array.isArray(events) || events.length === 0) {
     return []

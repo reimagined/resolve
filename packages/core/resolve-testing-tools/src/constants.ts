@@ -7,7 +7,7 @@ export enum Phases {
   PROPERTIES,
   AGGREGATE,
   COMMAND,
-  COMMAND_AS
+  COMMAND_AS,
 }
 
 export const symbol = Symbol()

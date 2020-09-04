@@ -6,10 +6,10 @@ import { useClient } from '../src/use-client'
 jest.mock('resolve-client')
 jest.mock('react', () => ({
   useContext: jest.fn(() => 'mocked-context'),
-  useMemo: jest.fn(cb => cb())
+  useMemo: jest.fn((cb) => cb()),
 }))
 jest.mock('../src/context', () => ({
-  ResolveContext: 'mocked-context-selector'
+  ResolveContext: 'mocked-context-selector',
 }))
 
 const mockedGetClient = mocked(getClient)
@@ -45,6 +45,6 @@ test('use cached client for context', () => {
   useClient()
 
   expect(mockedUseMemo).toHaveBeenCalledWith(expect.any(Function), [
-    'mocked-context'
+    'mocked-context',
   ])
 })

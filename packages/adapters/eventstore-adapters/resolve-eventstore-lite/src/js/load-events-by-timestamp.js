@@ -24,7 +24,7 @@ const loadEventsByTimestamp = async (pool, filter) => {
     get cursor() {
       return throwBadCursor()
     },
-    events
+    events,
   }
 }
 

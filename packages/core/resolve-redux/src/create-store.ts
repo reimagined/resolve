@@ -2,7 +2,7 @@ import {
   createStore as reduxCreateStore,
   applyMiddleware,
   combineReducers,
-  compose
+  compose,
 } from 'redux'
 import uuid from 'uuid/v4'
 
@@ -18,7 +18,7 @@ const createStore = ({
     reducers = {},
     middlewares = [],
     enhancers = [],
-    sagas: customSagas = []
+    sagas: customSagas = [],
   } = {},
   viewModels = [],
   jwtProvider = undefined,
@@ -28,7 +28,7 @@ const createStore = ({
   initialState = undefined,
   serializedState,
   isClient,
-  queryMethod
+  queryMethod,
 }: ReduxStoreContext): any => {
   const sessionId = uuid()
 
@@ -52,7 +52,7 @@ const createStore = ({
     ...reducers,
     viewModels: createViewModelReducer(),
     readModels: createReadModelReducer(),
-    jwt: createJwtReducer() // does it really actual?
+    jwt: createJwtReducer(), // does it really actual?
   })
 
   const appliedMiddlewares = applyMiddleware(resolveMiddleware, ...middlewares)
@@ -75,7 +75,7 @@ const createStore = ({
     jwtProvider,
     isClient,
     customSagas,
-    queryMethod
+    queryMethod,
   })
 
   return store

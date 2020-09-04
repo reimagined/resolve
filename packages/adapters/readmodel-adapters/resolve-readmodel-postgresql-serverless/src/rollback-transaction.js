@@ -4,13 +4,13 @@ const log = debugLevels(
   'resolve:resolve-readmodel-postgresql-serverless:rollback-transaction'
 )
 
-const rollbackTransaction = async pool => {
+const rollbackTransaction = async (pool) => {
   try {
     log.verbose('Rollback transaction to postgresql database started')
     await pool.rdsDataService.rollbackTransaction({
       resourceArn: pool.dbClusterOrInstanceArn,
       secretArn: pool.awsSecretStoreArn,
-      transactionId: pool.transactionId
+      transactionId: pool.transactionId,
     })
 
     log.verbose('Rollback transaction to postgresql database succeed')

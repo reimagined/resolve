@@ -5,7 +5,7 @@ const validOptions = [
   'dropEventStore',
   'dropReadModels',
   'dropEventBus',
-  'dropSagas'
+  'dropSagas',
 ]
 
 const getConfig = async (resolveConfig, options) => {
@@ -29,13 +29,13 @@ const getConfig = async (resolveConfig, options) => {
         path: '/api/reset-domain',
         handler: {
           module: 'resolve-runtime/lib/local/reset-domain-handler.js',
-          options
-        }
-      }
+          options,
+        },
+      },
     ],
     eventBroker: {
-      upstream: false
-    }
+      upstream: false,
+    },
   })
 
   return config

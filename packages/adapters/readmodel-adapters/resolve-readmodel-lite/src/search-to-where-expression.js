@@ -4,7 +4,7 @@ const compareOperatorsMap = new Map([
     (a, b) => `
     (((${a} = ${b}) and (not (${a} is null)) and (not (${b} is null))) or      
     ((${a} is null) and (${b} is null)))
-  `
+  `,
   ],
   [
     '$ne',
@@ -12,34 +12,34 @@ const compareOperatorsMap = new Map([
     (((${a} <> ${b}) and (not (${a} is null)) and (not (${b} is null))) or      
     ((${a} is null) and (not (${b} is null)) ) or                           
     ((${b} is null) and (not (${a} is null)) ))
-  `
+  `,
   ],
   [
     '$lte',
     (a, b) => `
     (((${a} <= ${b}) and (not (${a} is null)) and (not (${b} is null))) or
     ((${a} is null) and (${b} is null)))
-  `
+  `,
   ],
   [
     '$gte',
     (a, b) => `
     (((${a} >= ${b}) and (not (${a} is null)) and (not (${b} is null))) or
     ((${a} is null) and (${b} is null)))
-  `
+  `,
   ],
   [
     '$lt',
     (a, b) => `
     (((${a} < ${b}) and (not (${a} is null)) and (not (${b} is null))))
-  `
+  `,
   ],
   [
     '$gt',
     (a, b) => `
     (((${a} > ${b}) and (not (${a} is null)) and (not (${b} is null))))
-  `
-  ]
+  `,
+  ],
 ])
 
 const searchToWhereExpression = (
@@ -102,7 +102,7 @@ const searchToWhereExpression = (
       const joiner = operatorName === '$and' ? ' AND ' : ' OR '
       if (localSearchExprArray.length > 1) {
         searchExprArray.push(
-          localSearchExprArray.map(val => `(${val})`).join(joiner)
+          localSearchExprArray.map((val) => `(${val})`).join(joiner)
         )
       } else {
         searchExprArray.push(localSearchExprArray[0])

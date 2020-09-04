@@ -32,7 +32,7 @@ const transformEvents = (
       aggregateVersion,
       timestamp: timestamp++,
       threadId,
-      threadCounter
+      threadCounter,
     }
 
     result.push(event)
