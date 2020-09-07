@@ -94,7 +94,7 @@ const createClientAdapter: CreateSubscribeAdapter = ({
 
     isConnected(): boolean {
       if (!isInitialized || client == null) {
-        throw new Error(subscribeAdapterNotInitialized)
+        return false
       }
 
       return client.readyState === 1

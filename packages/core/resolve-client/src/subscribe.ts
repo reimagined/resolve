@@ -208,7 +208,7 @@ const connect = async (
 
   const key = buildKey(viewModelName, aggregateIds)
 
-  if (adaptersMap.has(key)) {
+  if (adaptersMap.has(key) && adaptersMap.get(key).isConnected()) {
     return Promise.resolve()
   }
 
