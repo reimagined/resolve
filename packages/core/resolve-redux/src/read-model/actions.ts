@@ -4,7 +4,7 @@ import {
   QUERY_READMODEL_FAILURE,
   DROP_READMODEL_STATE,
   CONNECT_READMODEL,
-  DISCONNECT_READMODEL
+  DISCONNECT_READMODEL,
 } from '../internal/action-types'
 import { ReadModelQuery } from 'resolve-client'
 
@@ -26,7 +26,7 @@ export const queryReadModelRequest = (
   type: QUERY_READMODEL_REQUEST,
   query,
   initialState,
-  selectorId
+  selectorId,
 })
 
 export type QueryReadModelSuccessAction = {
@@ -41,7 +41,7 @@ export const queryReadModelSuccess = (
   type: QUERY_READMODEL_SUCCESS,
   query,
   result,
-  selectorId
+  selectorId,
 })
 export type QueryReadModelFailureAction = {
   type: typeof QUERY_READMODEL_FAILURE
@@ -55,7 +55,7 @@ export const queryReadModelFailure = (
   type: QUERY_READMODEL_FAILURE,
   query,
   error,
-  selectorId
+  selectorId,
 })
 
 export type DropReadModelResultAction = {
@@ -67,7 +67,7 @@ export const dropReadModelResult = (
 ): DropReadModelResultAction => ({
   type: DROP_READMODEL_STATE,
   query,
-  selectorId
+  selectorId,
 })
 
 export type ConnectReadModelAction = {
@@ -80,7 +80,7 @@ export const connectReadModel = (
 ): ConnectReadModelAction => ({
   type: CONNECT_READMODEL,
   query,
-  skipConnectionManager
+  skipConnectionManager,
 })
 
 export type DisconnectReadModelAction = {
@@ -90,5 +90,5 @@ export const disconnectReadModel = (
   query: ReadModelQuery
 ): DisconnectReadModelAction => ({
   type: DISCONNECT_READMODEL,
-  query
+  query,
 })

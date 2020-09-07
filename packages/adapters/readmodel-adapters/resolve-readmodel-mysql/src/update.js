@@ -16,7 +16,7 @@ const update = async (
     insert,
     searchToWhereExpression,
     updateToSetExpression,
-    makeNestedPath
+    makeNestedPath,
   } = pool
 
   const isUpsert = options != null ? !!options.upsert : false

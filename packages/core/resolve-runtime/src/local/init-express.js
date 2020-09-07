@@ -9,13 +9,13 @@ import getRootBasedUrl from '../common/utils/get-root-based-url'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 
-const initExpress = async resolve => {
+const initExpress = async (resolve) => {
   const app = express()
   const server = new Server(app)
 
   Object.defineProperties(resolve, {
     app: { value: app },
-    server: { value: server }
+    server: { value: server },
   })
 
   resolve.app.use(

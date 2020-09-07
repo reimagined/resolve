@@ -1,12 +1,12 @@
 import {
   sendCommandRequest,
   sendCommandFailure,
-  sendCommandSuccess
+  sendCommandSuccess,
 } from '../../src/command/actions'
 import {
   SEND_COMMAND_FAILURE,
   SEND_COMMAND_REQUEST,
-  SEND_COMMAND_SUCCESS
+  SEND_COMMAND_SUCCESS,
 } from '../../src/internal/action-types'
 
 test('sendCommandRequest', () => {
@@ -17,8 +17,8 @@ test('sendCommandRequest', () => {
         aggregateName: 'aggregate',
         aggregateId: 'aggregate-id',
         payload: {
-          a: 'a'
-        }
+          a: 'a',
+        },
       },
       true
     )
@@ -29,10 +29,10 @@ test('sendCommandRequest', () => {
       aggregateName: 'aggregate',
       aggregateId: 'aggregate-id',
       payload: {
-        a: 'a'
-      }
+        a: 'a',
+      },
     },
-    usedByHook: true
+    usedByHook: true,
   })
 
   expect(
@@ -42,8 +42,8 @@ test('sendCommandRequest', () => {
         aggregateName: 'user',
         aggregateId: 'user-id',
         payload: {
-          b: 'b'
-        }
+          b: 'b',
+        },
       },
       false
     )
@@ -54,10 +54,10 @@ test('sendCommandRequest', () => {
       aggregateName: 'user',
       aggregateId: 'user-id',
       payload: {
-        b: 'b'
-      }
+        b: 'b',
+      },
     },
-    usedByHook: false
+    usedByHook: false,
   })
 })
 
@@ -69,11 +69,11 @@ test('sendCommandSuccess', () => {
         aggregateName: 'user',
         aggregateId: 'user-id',
         payload: {
-          b: 'b'
-        }
+          b: 'b',
+        },
       },
       {
-        data: 'data'
+        data: 'data',
       }
     )
   ).toEqual({
@@ -83,12 +83,12 @@ test('sendCommandSuccess', () => {
       aggregateName: 'user',
       aggregateId: 'user-id',
       payload: {
-        b: 'b'
-      }
+        b: 'b',
+      },
     },
     result: {
-      data: 'data'
-    }
+      data: 'data',
+    },
   })
 
   expect(
@@ -98,11 +98,11 @@ test('sendCommandSuccess', () => {
         aggregateName: 'aggregate',
         aggregateId: 'aggregate-id',
         payload: {
-          a: 'a'
-        }
+          a: 'a',
+        },
       },
       {
-        data: 'diamond'
+        data: 'diamond',
       }
     )
   ).toEqual({
@@ -112,12 +112,12 @@ test('sendCommandSuccess', () => {
       aggregateName: 'aggregate',
       aggregateId: 'aggregate-id',
       payload: {
-        a: 'a'
-      }
+        a: 'a',
+      },
     },
     result: {
-      data: 'diamond'
-    }
+      data: 'diamond',
+    },
   })
 })
 
@@ -129,8 +129,8 @@ test('sendCommandFailure', () => {
         aggregateName: 'user',
         aggregateId: 'user-id',
         payload: {
-          b: 'b'
-        }
+          b: 'b',
+        },
       },
       Error('error')
     )
@@ -141,10 +141,10 @@ test('sendCommandFailure', () => {
       aggregateName: 'user',
       aggregateId: 'user-id',
       payload: {
-        b: 'b'
-      }
+        b: 'b',
+      },
     },
-    error: Error('error')
+    error: Error('error'),
   })
 
   expect(
@@ -154,8 +154,8 @@ test('sendCommandFailure', () => {
         aggregateName: 'aggregate',
         aggregateId: 'aggregate-id',
         payload: {
-          a: 'a'
-        }
+          a: 'a',
+        },
       },
       Error('diamond')
     )
@@ -166,9 +166,9 @@ test('sendCommandFailure', () => {
       aggregateName: 'aggregate',
       aggregateId: 'aggregate-id',
       payload: {
-        a: 'a'
-      }
+        a: 'a',
+      },
     },
-    error: Error('diamond')
+    error: Error('diamond'),
   })
 })

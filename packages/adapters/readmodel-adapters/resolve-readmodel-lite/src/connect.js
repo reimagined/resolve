@@ -1,13 +1,13 @@
-const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
-const escape = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
-const coerceEmptyString = obj =>
+const escapeId = (str) => `"${String(str).replace(/(["])/gi, '$1$1')}"`
+const escape = (str) => `'${String(str).replace(/(['])/gi, '$1$1')}'`
+const coerceEmptyString = (obj) =>
   (obj != null && obj.constructor !== String) || obj == null ? 'default' : obj
 const emptyTransformer = Function('') // eslint-disable-line no-new-func
 const SQLITE_BUSY = 'SQLITE_BUSY'
 
 const randRange = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min
-const fullJitter = retries => randRange(0, Math.min(100, 2 * 2 ** retries))
+const fullJitter = (retries) => randRange(0, Math.min(100, 2 * 2 ** retries))
 
 const runCommonQuery = async (pool, isRegular, querySQL) => {
   const executor = isRegular
@@ -22,7 +22,7 @@ const runCommonQuery = async (pool, isRegular, querySQL) => {
       break
     } catch (error) {
       if (error != null && error.code === SQLITE_BUSY) {
-        await new Promise(resolve => setTimeout(resolve, fullJitter(retry)))
+        await new Promise((resolve) => setTimeout(resolve, fullJitter(retry)))
       } else {
         throw error
       }
@@ -32,7 +32,7 @@ const runCommonQuery = async (pool, isRegular, querySQL) => {
   return transformer(result)
 }
 
-const makeNestedPath = nestedPath => {
+const makeNestedPath = (nestedPath) => {
   let result = '$'
   for (const part of nestedPath) {
     if (part == null || part.constructor !== String) {
@@ -72,7 +72,7 @@ const connect = async (imports, pool, options) => {
     makeNestedPath,
     escapeId,
     escape,
-    ...imports
+    ...imports,
   })
 
   const { SQLite, fs, os, tmp } = imports
@@ -98,13 +98,13 @@ const connect = async (imports, pool, options) => {
 
       Object.assign(pool.memoryStore, {
         name: tmpName,
-        drop: removeCallback
+        drop: removeCallback,
       })
     } else if (Object.keys(pool.memoryStore).length === 0) {
       const temporaryFile = tmp.fileSync()
       Object.assign(pool.memoryStore, {
         name: temporaryFile.name,
-        drop: temporaryFile.removeCallback.bind(temporaryFile)
+        drop: temporaryFile.removeCallback.bind(temporaryFile),
       })
     }
 
@@ -119,7 +119,7 @@ const connect = async (imports, pool, options) => {
       break
     } catch (error) {
       if (error != null && error.code === SQLITE_BUSY) {
-        await new Promise(resolve => setTimeout(resolve, fullJitter(retry)))
+        await new Promise((resolve) => setTimeout(resolve, fullJitter(retry)))
       } else {
         throw error
       }

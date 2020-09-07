@@ -16,7 +16,7 @@ const beginTransaction = async (pool, readModelName) => {
     const { transactionId } = await pool.rdsDataService.beginTransaction({
       resourceArn: pool.dbClusterOrInstanceArn,
       secretArn: pool.awsSecretStoreArn,
-      database: 'postgres'
+      database: 'postgres',
     })
 
     if (transactionId == null) {

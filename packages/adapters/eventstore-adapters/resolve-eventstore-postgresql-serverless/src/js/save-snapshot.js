@@ -14,7 +14,7 @@ const saveSnapshot = async (pool, snapshotKey, content) =>
       escape,
       beginTransaction,
       commitTransaction,
-      rollbackTransaction
+      rollbackTransaction,
     } = pool
 
     const databaseNameAsId = escapeId(databaseName)

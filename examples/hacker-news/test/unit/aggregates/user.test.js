@@ -10,8 +10,8 @@ describe('aggregates', () => {
       const state = {}
       const command = {
         payload: {
-          name
-        }
+          name,
+        },
       }
 
       const event = commands.createUser(state, command)
@@ -23,12 +23,12 @@ describe('aggregates', () => {
       const name = 'SomeName'
 
       const state = {
-        createdAt: Date.now()
+        createdAt: Date.now(),
       }
       const command = {
         payload: {
-          name
-        }
+          name,
+        },
       }
 
       expect(() => commands.createUser(state, command)).toThrowError(
@@ -42,8 +42,8 @@ describe('aggregates', () => {
       const state = {}
       const command = {
         payload: {
-          name
-        }
+          name,
+        },
       }
 
       expect(() => commands.createUser(state, command)).toThrowError(
@@ -56,12 +56,12 @@ describe('aggregates', () => {
 
       const state = projection.Init()
       const event = {
-        timestamp: createdAt
+        timestamp: createdAt,
       }
       const nextState = {
         createdAt,
         confirmed: false,
-        rejected: false
+        rejected: false,
       }
 
       expect(projection[USER_CREATED](state, event)).toEqual(nextState)

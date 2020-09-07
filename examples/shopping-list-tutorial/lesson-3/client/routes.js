@@ -4,6 +4,6 @@ export default [
   {
     path: '/',
     component: App,
-    exact: true
-  }
+    exact: true,
+  },
 ]

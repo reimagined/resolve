@@ -6,7 +6,7 @@ const reset = async (pool, readModelName) => {
     dropReadModel,
     inlineLedgerForceStop,
     inlineLedgerExecuteStatement,
-    PassthroughError
+    PassthroughError,
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
@@ -19,7 +19,7 @@ const reset = async (pool, readModelName) => {
         pool,
         `
         WITH "CTE" AS (
-         SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+         SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escape(readModelName)}
          FOR NO KEY UPDATE NOWAIT
        )
@@ -50,7 +50,7 @@ const reset = async (pool, readModelName) => {
         pool,
         `
         WITH "CTE" AS (
-         SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+         SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escape(readModelName)}
          FOR NO KEY UPDATE NOWAIT
        )

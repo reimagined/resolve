@@ -5,7 +5,7 @@ import {
   watch,
   runTestcafe,
   merge,
-  reset
+  reset,
 } from 'resolve-scripts'
 
 import resolveModuleAuth from 'resolve-module-auth'
@@ -24,7 +24,7 @@ void (async () => {
   const moduleUploader = resolveModuleUploader({
     publicDirs: ['images', 'archives'],
     expireTime: 604800,
-    jwtSecret: 'SECRETJWT'
+    jwtSecret: 'SECRETJWT',
   })
 
   const moduleAuth = resolveModuleAuth([
@@ -33,21 +33,21 @@ void (async () => {
       createStrategy: 'auth/create-strategy.js',
       logoutRoute: {
         path: 'logout',
-        method: 'POST'
+        method: 'POST',
       },
       routes: [
         {
           path: 'register',
           method: 'POST',
-          callback: 'auth/route-register-callback.js'
+          callback: 'auth/route-register-callback.js',
         },
         {
           path: 'login',
           method: 'POST',
-          callback: 'auth/route-login-callback.js'
-        }
-      ]
-    }
+          callback: 'auth/route-login-callback.js',
+        },
+      ],
+    },
   ])
 
   const baseConfig = merge(
@@ -65,7 +65,7 @@ void (async () => {
         dropEventStore: false,
         dropEventBus: true,
         dropReadModels: true,
-        dropSagas: true
+        dropSagas: true,
       })
 
       await watch(resolveConfig)
@@ -99,14 +99,14 @@ void (async () => {
         dropEventStore: true,
         dropEventBus: true,
         dropReadModels: true,
-        dropSagas: true
+        dropSagas: true,
       })
 
       await runTestcafe({
         resolveConfig,
         functionalTestsDir: 'test/functional',
         browser: process.argv[3],
-        customArgs: ['--skip-js-errors', '--stop-on-first-fail']
+        customArgs: ['--skip-js-errors', '--stop-on-first-fail'],
       })
       break
     }
@@ -115,7 +115,7 @@ void (async () => {
       throw new Error('Unknown option')
     }
   }
-})().catch(error => {
+})().catch((error) => {
   // eslint-disable-next-line no-console
   console.log(error)
   process.exit(1)

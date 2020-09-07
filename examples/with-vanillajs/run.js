@@ -4,7 +4,7 @@ import {
   watch,
   merge,
   stop,
-  reset
+  reset,
 } from 'resolve-scripts'
 
 import appConfig from './config.app'
@@ -23,7 +23,7 @@ void (async () => {
           dropEventStore: false,
           dropEventBus: true,
           dropReadModels: true,
-          dropSagas: true
+          dropSagas: true,
         })
 
         await watch(resolveConfig)

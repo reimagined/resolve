@@ -20,14 +20,14 @@ const sendCommand = async (
         uri: `${pool.applicationOrigin}/api/commands`,
         headers: {
           authorization: `Bearer ${pool.jwt}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           aggregateName,
           aggregateId,
           type,
-          payload
-        })
+          payload,
+        }),
       },
       (error, _, body) => {
         if (error) {
@@ -40,15 +40,15 @@ const sendCommand = async (
   })
 }
 
-const getUploadUrl = async pool => {
+const getUploadUrl = async (pool) => {
   const { login, projectId, jwt, applicationOrigin } = pool
   return new Promise((resolve, reject) => {
     request.get(
       {
         uri: `${applicationOrigin}/api/uploader/getUploadUrl?dir=${login}/${projectId}`,
         headers: {
-          authorization: `Bearer ${jwt}`
-        }
+          authorization: `Bearer ${jwt}`,
+        },
       },
       (error, _, body) => {
         if (error) {
@@ -61,12 +61,12 @@ const getUploadUrl = async pool => {
   })
 }
 
-const getJwtToken = pool => {
+const getJwtToken = (pool) => {
   const { login, password } = pool
   return new Promise((resolve, reject) => {
     request.get(
       {
-        uri: `${pool.applicationOrigin}/api/query/Users/getJwtToken?login=${login}&password=${password}`
+        uri: `${pool.applicationOrigin}/api/query/Users/getJwtToken?login=${login}&password=${password}`,
       },
       (error, _, body) => {
         if (error) {
@@ -89,7 +89,7 @@ const uploadFile = async (pool, filePath) => {
     type: 'fileNotLoaded',
     aggregateId: uploadId,
     aggregateName: 'File',
-    payload: { userId: login, projectId }
+    payload: { userId: login, projectId },
   })
   console.log(`File: ${uploadId} - not loaded`)
 
@@ -99,7 +99,7 @@ const uploadFile = async (pool, filePath) => {
     await sendCommand(pool, {
       type: 'startLoadingFile',
       aggregateId: uploadId,
-      aggregateName: 'File'
+      aggregateName: 'File',
     })
     console.log(`File: ${uploadId} - loading start`)
 
@@ -109,9 +109,9 @@ const uploadFile = async (pool, filePath) => {
           uri: uploadUrl,
           headers: {
             'Content-Length': fileSizeInBytes,
-            'Content-Type': contentType
+            'Content-Type': contentType,
           },
-          body: file
+          body: file,
         },
         (error, _, body) => {
           error ? reject(error) : body ? reject(body) : resolve()
@@ -122,7 +122,7 @@ const uploadFile = async (pool, filePath) => {
     await sendCommand(pool, {
       type: 'failureLoadingFile',
       aggregateId: uploadId,
-      aggregateName: 'File'
+      aggregateName: 'File',
     })
     console.log(`File: ${uploadId} - loading failure`)
     console.log(`Error: ${error}`)
@@ -131,7 +131,7 @@ const uploadFile = async (pool, filePath) => {
   await sendCommand(pool, {
     type: 'successLoadingFile',
     aggregateId: uploadId,
-    aggregateName: 'File'
+    aggregateName: 'File',
   })
   console.log(`File: ${uploadId} - loading success`)
 }
@@ -152,7 +152,7 @@ const main = async () => {
     applicationOrigin: process.env.APPLICATION_ORIGIN,
     projectId: process.env.PROJECT_ID,
     login: process.env.LOGIN,
-    password: process.env.PASSWORD
+    password: process.env.PASSWORD,
   }
 
   pool.jwt = JSON.parse(await getJwtToken(pool))
@@ -164,7 +164,7 @@ const main = async () => {
   }
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error(error)
   process.exit(1)
 })

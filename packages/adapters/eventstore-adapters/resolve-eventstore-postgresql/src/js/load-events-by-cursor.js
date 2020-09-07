@@ -9,12 +9,12 @@ const loadEventsByCursor = async (
     escape,
     eventsTableName,
     databaseName,
-    shapeEvent
+    shapeEvent,
   },
   { eventTypes, aggregateIds, cursor, limit }
 ) => {
-  const injectString = value => `${escape(value)}`
-  const injectNumber = value => `${+value}`
+  const injectString = (value) => `${escape(value)}`
+  const injectNumber = (value) => `${+value}`
 
   const cursorBuffer =
     cursor != null ? Buffer.from(cursor, 'base64') : Buffer.alloc(1536, 0)
@@ -55,7 +55,7 @@ const loadEventsByCursor = async (
     `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}`,
     `${resultQueryCondition}`,
     `ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC`,
-    `LIMIT ${+limit}`
+    `LIMIT ${+limit}`,
   ].join('\n')
 
   const rows = await executeStatement(sqlQuery)
@@ -96,7 +96,7 @@ const loadEventsByCursor = async (
 
   return {
     cursor: nextConditionsBuffer.toString('base64'),
-    events
+    events,
   }
 }
 

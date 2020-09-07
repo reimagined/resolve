@@ -6,7 +6,7 @@ const findOne = async (
     tablePrefix,
     searchToWhereExpression,
     makeNestedPath,
-    convertBinaryRow
+    convertBinaryRow,
   },
   readModelName,
   tableName,

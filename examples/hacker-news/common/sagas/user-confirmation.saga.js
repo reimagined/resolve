@@ -5,7 +5,7 @@ export default {
     Init: async ({ store }) => {
       await store.defineTable('SagaUsers', {
         indexes: { id: 'string', name: 'string' },
-        fields: ['registrationDate']
+        fields: ['registrationDate'],
       })
     },
     [USER_CREATED]: async (
@@ -20,8 +20,8 @@ export default {
           aggregateName: 'User',
           aggregateId,
           payload: {
-            reason: 'user with same name already registered and confirmed'
-          }
+            reason: 'user with same name already registered and confirmed',
+          },
         })
       } else {
         await sideEffects.sendEmail(
@@ -35,8 +35,8 @@ export default {
           aggregateName: 'User',
           aggregateId,
           payload: {
-            reason: 'user registration was not confirmed within allowed period'
-          }
+            reason: 'user registration was not confirmed within allowed period',
+          },
         })
       }
     },
@@ -47,14 +47,14 @@ export default {
       await store.insert('SagaUsers', {
         id: aggregateId,
         name,
-        registrationDate: timestamp
+        registrationDate: timestamp,
       })
-    }
+    },
   },
   sideEffects: {
     sendEmail: (email, subject, body) => {
       // eslint-disable-next-line no-console
       console.log(`<${email}> ${subject}: ${body}`)
-    }
-  }
+    },
+  },
 }

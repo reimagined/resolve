@@ -8,7 +8,7 @@ const ROOT_JWT_TOKEN = JWT.sign(
   {
     username: 'root',
     id: '00000000-0000-0000-0000-000000000000',
-    role: 'root'
+    role: 'root',
   },
   jwtSecret
 )
@@ -27,8 +27,8 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
     modelName: 'ShoppingLists',
     resolverName: 'user',
     resolverArgs: {
-      username
-    }
+      username,
+    },
   })
 
   if (existingUser) {
@@ -40,7 +40,7 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
   const jwt = JWT.sign(
     {
       username: username.trim(),
-      id: userId
+      id: userId,
     },
     jwtSecret
   )
@@ -51,9 +51,9 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
     aggregateName: 'User',
     payload: {
       username,
-      passwordHash
+      passwordHash,
     },
-    jwt: ROOT_JWT_TOKEN
+    jwt: ROOT_JWT_TOKEN,
   })
 
   await resolve.executeCommand({
@@ -61,9 +61,9 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
     aggregateId: userId,
     aggregateName: 'ShoppingList',
     payload: {
-      name: 'Shopping List'
+      name: 'Shopping List',
     },
-    jwt
+    jwt,
   })
 
   return jwt

@@ -12,29 +12,29 @@ const routes = [
       {
         path: '/login',
         component: Login,
-        exact: true
+        exact: true,
       },
       {
         path: '/',
         component: MyLists,
-        exact: true
+        exact: true,
       },
       {
         path: '/settings',
         component: Settings,
-        exact: true
+        exact: true,
       },
       {
         path: '/share/:id',
         component: ShareForm,
-        exact: true
+        exact: true,
       },
       {
         path: '/:id',
-        component: ShoppingList
-      }
-    ]
-  }
+        component: ShoppingList,
+      },
+    ],
+  },
 ]
 
 const getRoutes = () => routes

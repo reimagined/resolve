@@ -16,7 +16,7 @@ const execute = async (
     aggregateName: schedulerAggregateName,
     aggregateId: taskId,
     type: 'execute',
-    payload: { date, command }
+    payload: { date, command },
   })
 
 const createSchedulerSagas = (schedulers, sagaProvider) => {
@@ -25,7 +25,7 @@ const createSchedulerSagas = (schedulers, sagaProvider) => {
   for (const {
     name,
     connectorName,
-    adapter: createSideEffectsAdapter
+    adapter: createSideEffectsAdapter,
   } of schedulers) {
     const schedulerAggregateName = name
     const commandsTableName = name
@@ -33,15 +33,15 @@ const createSchedulerSagas = (schedulers, sagaProvider) => {
     const handlers = createSchedulerSagaHandlers({
       schedulerAggregateName,
       commandsTableName,
-      eventTypes: createSchedulerEventTypes({ schedulerName: name })
+      eventTypes: createSchedulerEventTypes({ schedulerName: name }),
     })
 
     const sideEffects = createSideEffectsAdapter({
       execute: execute.bind(null, sagaProvider, schedulerAggregateName),
-      errorHandler: async e => {
+      errorHandler: async (e) => {
         log.error(`scheduler adapter failure: ${e.stack}`)
         throw e
-      }
+      },
     })
 
     const eventTypes = Object.keys(handlers)
@@ -67,7 +67,7 @@ const createSchedulerSagas = (schedulers, sagaProvider) => {
       resolvers: {},
       connectorName,
       schedulerAdapter: sideEffects,
-      encryption: () => Promise.resolve({})
+      encryption: () => Promise.resolve({}),
     }
 
     sagaReadModels.push(sagaReadModel)

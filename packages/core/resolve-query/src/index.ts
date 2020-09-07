@@ -3,7 +3,7 @@ import wrapReadModel, {
   FULL_REGULAR_CONNECTOR,
   EMPTY_CONNECTOR,
   INLINE_LEDGER_CONNECTOR,
-  detectConnectorFeatures
+  detectConnectorFeatures,
 } from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
 
@@ -86,7 +86,7 @@ const createQuery = (params: CreateQueryOptions): any => {
     },
     set() {
       throw new TypeError(`Resolve-query API is immutable`)
-    }
+    },
   } as any)
 
   return api
@@ -97,6 +97,6 @@ export {
   FULL_REGULAR_CONNECTOR,
   EMPTY_CONNECTOR,
   INLINE_LEDGER_CONNECTOR,
-  detectConnectorFeatures
+  detectConnectorFeatures,
 }
 export default createQuery

@@ -38,12 +38,14 @@ const pushIncrementalImport = async (
       INSERT INTO ${databaseNameAsId}.${incrementalImportTableAsId}(
         "timestamp", "aggregateId", "type", "payload", "eventSize"
       ) VALUES ${events
-        .map(event => {
+        .map((event) => {
           const serializedEvent = [
             `${+event.timestamp},`,
             `${escape(event.aggregateId)},`,
             `${escape(event.type)},`,
-            escape(JSON.stringify(event.payload != null ? event.payload : null))
+            escape(
+              JSON.stringify(event.payload != null ? event.payload : null)
+            ),
           ].join('')
 
           // TODO: Improve calculation byteLength depend on codepage and wide-characters

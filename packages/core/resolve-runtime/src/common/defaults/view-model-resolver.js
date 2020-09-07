@@ -6,7 +6,7 @@ export default async (resolve, query, { viewModel }) => {
     meta: {
       cursor,
       eventTypes: viewModel.eventTypes,
-      aggregateIds: query.aggregateIds
-    }
+      aggregateIds: query.aggregateIds,
+    },
   }
 }

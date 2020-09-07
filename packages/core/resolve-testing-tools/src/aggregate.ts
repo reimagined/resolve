@@ -1,7 +1,7 @@
 import {
   Aggregate,
   AggregateEncryptionFactory,
-  AggregateProjection
+  AggregateProjection,
 } from 'resolve-core'
 import { symbol, Phases } from './constants'
 import { BDDAggregateAssertion } from './aggregate-assertions'
@@ -37,7 +37,7 @@ export const aggregate = (
     name: aggregate.name,
     commands: aggregate.commands || {},
     projection: aggregate.projection || {},
-    encryption: aggregate.encryption
+    encryption: aggregate.encryption,
   }
   context[symbol].aggregateId = aggregateId || 'test-aggregate-id'
   context[symbol].assertion = (resolve, reject, result, error) => {

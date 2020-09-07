@@ -75,6 +75,6 @@ test('generic createAdapter invoked', () => {
     getSecretsManager,
     MySQL,
     escapeId,
-    escape
+    escape,
   })
 })

@@ -15,10 +15,10 @@ const clientTransformBabelOptions = {
         corejs: false,
         helpers: true,
         regenerator: true,
-        useESModules: false
-      }
-    ]
-  ]
+        useESModules: false,
+      },
+    ],
+  ],
 }
 
 const baseConfig = {
@@ -29,7 +29,7 @@ const baseConfig = {
     path: 'distDir',
     filename: '[name]',
     devtoolModuleFilenameTemplate: '[namespace][resource-path]',
-    devtoolFallbackModuleFilenameTemplate: '[namespace][resource-path]?[hash]'
+    devtoolFallbackModuleFilenameTemplate: '[namespace][resource-path]?[hash]',
   },
   resolve: { modules: getModulesDirs() },
   module: {
@@ -38,24 +38,24 @@ const baseConfig = {
         test: /\.js$/,
         use: {
           loader: require.resolve('babel-loader'),
-          options: { cacheDirectory: true }
+          options: { cacheDirectory: true },
         },
         exclude: [
           /node_modules/,
           ...getModulesDirs({ isAbsolutePath: true }),
           path.resolve(__dirname, '../lib'),
-          path.resolve(__dirname, '../es')
-        ]
+          path.resolve(__dirname, '../es'),
+        ],
       },
       {
         test: /resolve-runtime[\\/](?!node_modules).*?\.js$/,
         use: {
           loader: require.resolve('babel-loader'),
-          options: clientTransformBabelOptions
-        }
-      }
-    ]
-  }
+          options: clientTransformBabelOptions,
+        },
+      },
+    ],
+  },
 }
 
 const getWebpackConfigs = ({ mode, distDir }) => [
@@ -63,15 +63,15 @@ const getWebpackConfigs = ({ mode, distDir }) => [
     ...baseConfig,
     name: 'Index',
     entry: {
-      'client/index.js': path.resolve(__dirname, './client/index.js')
+      'client/index.js': path.resolve(__dirname, './client/index.js'),
     },
     mode,
     target: 'web',
     output: {
       ...baseConfig.output,
-      path: path.join(__dirname, distDir)
-    }
-  }
+      path: path.join(__dirname, distDir),
+    },
+  },
 ]
 
 export default getWebpackConfigs

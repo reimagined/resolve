@@ -8,7 +8,7 @@ const Splitter = styled.div`
   border-left: 1px solid #666;
   height: 0.83em;
 
-  ${props =>
+  ${(props) =>
     props.color &&
     css`
       border-left-color: ${props.color};

@@ -1,7 +1,7 @@
 import getRootBasedUrl from './get_root_based_url'
 
 const authenticateWrapper = {
-  success: function(jwt) {
+  success: function (jwt) {
     const { name: cookieName, ...cookieOptions } = this.jwtCookie
 
     this.internalRes.cookie(cookieName, jwt, cookieOptions)
@@ -14,7 +14,7 @@ const authenticateWrapper = {
     this.resolveAuth()
   },
 
-  fail: function(error, status) {
+  fail: function (error, status) {
     const { name: cookieName } = this.jwtCookie
 
     this.internalRes.clearCookie(cookieName)
@@ -45,19 +45,19 @@ const authenticateWrapper = {
     this.resolveAuth()
   },
 
-  redirect: function(url) {
+  redirect: function (url) {
     this.internalRes.redirect(getRootBasedUrl(this.rootPath, url || '/'))
 
     this.resolveAuth()
   },
 
-  pass: function() {
+  pass: function () {
     this.internalRes.statusCode = 200
 
     this.resolveAuth()
   },
 
-  error: function(error, status) {
+  error: function (error, status) {
     if (this.originalOptions.failureRedirect) {
       this.internalRes.redirect(
         getRootBasedUrl(
@@ -73,7 +73,7 @@ const authenticateWrapper = {
     }
 
     this.resolveAuth()
-  }
+  },
 }
 
 export default authenticateWrapper

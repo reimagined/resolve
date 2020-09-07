@@ -5,7 +5,7 @@ import {
   SubscriptionStatus,
   LazinessStrategy,
   ConsumerMethod,
-  QueueStrategy
+  QueueStrategy,
 } from '../src/publisher-server/constants'
 
 // broker
@@ -41,8 +41,8 @@ jest.mock('../src/publisher-server/core/get-next-cursor', () =>
   jest.fn(() => 'nextCursor')
 )
 
-const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
-const escapeStr = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
+const escapeId = (str) => `"${String(str).replace(/(["])/gi, '$1$1')}"`
+const escapeStr = (str) => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
 const clearMocks = () => {
   invokeConsumer.mockClear()
@@ -69,11 +69,11 @@ describe('Broker operation', () => {
 
   test('acknowledge', async () => {
     const pool = {
-      invokeOperation
+      invokeOperation,
     }
     const payload = {
       batchId: 'batchId',
-      result: {}
+      result: {},
     }
 
     await acknowledge(pool, payload)
@@ -81,8 +81,8 @@ describe('Broker operation', () => {
     expect(invokeOperation).toHaveBeenCalledWith(pool, LazinessStrategy.EAGER, {
       type: PrivateOperationType.ACKNOWLEDGE_BATCH,
       payload: {
-        ...payload
-      }
+        ...payload,
+      },
     })
   })
 
@@ -92,17 +92,17 @@ describe('Broker operation', () => {
         runQuery: jest.fn(() => [
           {
             status: SubscriptionStatus.DELIVER,
-            subscriptionId: 'subscriptionId'
-          }
+            subscriptionId: 'subscriptionId',
+          },
         ]),
         runRawQuery: jest.fn(),
         escapeId,
-        escapeStr
+        escapeStr,
       },
-      parseSubscription
+      parseSubscription,
     }
     const payload = {
-      eventSubscriber: 'eventSubscriber'
+      eventSubscriber: 'eventSubscriber',
     }
 
     const result = await pause(pool, payload)
@@ -115,12 +115,12 @@ describe('Broker operation', () => {
   test('publish', async () => {
     const pool = {
       invokeOperation,
-      invokeConsumer
+      invokeConsumer,
     }
     const payload = {
       event: {
-        type: 'busEvent'
-      }
+        type: 'busEvent',
+      },
     }
 
     await publish(pool, payload)
@@ -129,32 +129,32 @@ describe('Broker operation', () => {
       pool,
       ConsumerMethod.SaveEvent,
       {
-        event: payload.event
+        event: payload.event,
       }
     )
     expect(invokeOperation).toHaveBeenCalledWith(pool, LazinessStrategy.EAGER, {
       type: PrivateOperationType.PUSH_NOTIFICATIONS,
-      payload
+      payload,
     })
   })
 
   test('read', async () => {
     const pool = {
-      invokeConsumer
+      invokeConsumer,
     }
     const payload = {
       eventFilter: {
-        limit: 1
-      }
+        limit: 1,
+      },
     }
 
     const invokeResult = {
       cursor: 'cursor',
       events: [
         {
-          type: 'busEvent'
-        }
-      ]
+          type: 'busEvent',
+        },
+      ],
     }
     invokeConsumer.mockImplementation(async () => invokeResult)
 
@@ -174,7 +174,7 @@ describe('Broker operation', () => {
       deliveryStrategy: DeliveryStrategy.ACTIVE_XA,
       queueStrategy: QueueStrategy.NONE,
       eventTypes: JSON.stringify({ eventTypes: true }),
-      aggregateIds: JSON.stringify({ aggregateIds: true })
+      aggregateIds: JSON.stringify({ aggregateIds: true }),
     }
     const pool = {
       database: {
@@ -182,14 +182,14 @@ describe('Broker operation', () => {
         runRawQuery: jest.fn(),
         escapeStr,
         escapeId,
-        encodeJsonPath: jest.fn(str => str)
+        encodeJsonPath: jest.fn((str) => str),
       },
       parseSubscription,
       invokeConsumer,
-      generateGuid
+      generateGuid,
     }
     const payload = {
-      eventSubscriber: 'eventSubscriber'
+      eventSubscriber: 'eventSubscriber',
     }
 
     const result = await reset(pool, payload)
@@ -198,7 +198,7 @@ describe('Broker operation', () => {
     expect(pool.database.runQuery).toMatchSnapshot()
     expect(pool.database.runRawQuery).toMatchSnapshot()
     expect(invokeConsumer).toHaveBeenCalledWith(pool, ConsumerMethod.Drop, {
-      eventSubscriber: payload.eventSubscriber
+      eventSubscriber: payload.eventSubscriber,
     })
   })
 
@@ -209,16 +209,16 @@ describe('Broker operation', () => {
         runRawQuery: jest.fn(),
         escapeStr,
         escapeId,
-        encodeJsonPath: jest.fn(str => str)
+        encodeJsonPath: jest.fn((str) => str),
       },
       parseSubscription,
-      generateGuid
+      generateGuid,
     }
     const payload = {
       eventSubscriber: 'eventSubscriber',
       subscriptionOptions: {
-        deliveryStrategy: DeliveryStrategy.ACTIVE_XA
-      }
+        deliveryStrategy: DeliveryStrategy.ACTIVE_XA,
+      },
     }
 
     const result = await resubscribe(pool, payload)
@@ -234,17 +234,17 @@ describe('Broker operation', () => {
         runQuery: jest.fn(() => [
           {
             status: SubscriptionStatus.DELIVER,
-            subscriptionId: 'subscriptionId'
-          }
+            subscriptionId: 'subscriptionId',
+          },
         ]),
         escapeStr,
-        escapeId
+        escapeId,
       },
       parseSubscription,
-      invokeOperation
+      invokeOperation,
     }
     const payload = {
-      eventSubscriber: 'eventSubscriber'
+      eventSubscriber: 'eventSubscriber',
     }
 
     const result = await resume(pool, payload)
@@ -253,7 +253,7 @@ describe('Broker operation', () => {
     expect(pool.database.runQuery).toMatchSnapshot()
     expect(invokeOperation).toHaveBeenCalledWith(pool, LazinessStrategy.EAGER, {
       type: PrivateOperationType.RESUME_SUBSCRIBER,
-      payload
+      payload,
     })
   })
 
@@ -267,22 +267,22 @@ describe('Broker operation', () => {
       status: 'status',
       maxParallel: 1,
       successEvent: JSON.stringify({
-        type: 'busEvent'
+        type: 'busEvent',
       }),
       failedEvent: null,
       errors: null,
-      cursor: JSON.stringify({ cursor: 'cursor' })
+      cursor: JSON.stringify({ cursor: 'cursor' }),
     }
     const pool = {
       database: {
         runQuery: jest.fn(() => [resultRunQuery]),
         escapeStr,
-        escapeId
+        escapeId,
       },
-      parseSubscription
+      parseSubscription,
     }
     const payload = {
-      eventSubscriber: 'eventSubscriber'
+      eventSubscriber: 'eventSubscriber',
     }
 
     const result = await status(pool, payload)
@@ -290,9 +290,9 @@ describe('Broker operation', () => {
     expect(result).toEqual({
       ...resultRunQuery,
       successEvent: {
-        type: 'busEvent'
+        type: 'busEvent',
       },
-      cursor: { cursor: 'cursor' }
+      cursor: { cursor: 'cursor' },
     })
     expect(pool.database.runQuery).toMatchSnapshot()
   })
@@ -302,22 +302,22 @@ describe('Broker operation', () => {
       database: {
         runQuery: jest.fn(() => [
           {
-            subscriptionId: 'subscriptionId'
-          }
+            subscriptionId: 'subscriptionId',
+          },
         ]),
         runRawQuery: jest.fn(),
         escapeStr,
         escapeId,
-        encodeJsonPath: jest.fn(str => str)
+        encodeJsonPath: jest.fn((str) => str),
       },
       parseSubscription,
-      generateGuid
+      generateGuid,
     }
     const payload = {
       eventSubscriber: 'eventSubscriber',
       subscriptionOptions: {
-        deliveryStrategy: DeliveryStrategy.ACTIVE_XA
-      }
+        deliveryStrategy: DeliveryStrategy.ACTIVE_XA,
+      },
     }
 
     const result = await subscribe(pool, payload)
@@ -332,11 +332,11 @@ describe('Broker operation', () => {
       database: {
         runRawQuery: jest.fn(),
         escapeStr,
-        escapeId
-      }
+        escapeId,
+      },
     }
     const payload = {
-      eventSubscriber: 'eventSubscriber'
+      eventSubscriber: 'eventSubscriber',
     }
 
     await unsubscribe(pool, payload)
@@ -367,24 +367,24 @@ describe('Core operation', () => {
       database: {
         runQuery: jest.fn(() => [
           {
-            subscriptionId: 'subscriptionId'
-          }
+            subscriptionId: 'subscriptionId',
+          },
         ]),
         runRawQuery: jest.fn(),
         escapeStr,
         escapeId,
-        encodeJsonPath: jest.fn(str => str)
+        encodeJsonPath: jest.fn((str) => str),
       },
       invokeOperation,
       invokeConsumer,
-      generateGuid
+      generateGuid,
     }
     const payload = {
       event: {
         type: 'busEvent',
         aggregateId: 'aggregateId',
-        aggregateVersion: 'aggregateVersion'
-      }
+        aggregateVersion: 'aggregateVersion',
+      },
     }
 
     await pushNotificationAndGetSubscriptions(pool, payload)
@@ -392,8 +392,8 @@ describe('Core operation', () => {
     expect(invokeOperation).toHaveBeenCalledWith(pool, LazinessStrategy.EAGER, {
       type: PrivateOperationType.PULL_NOTIFICATIONS,
       payload: {
-        subscriptionId: 'subscriptionId'
-      }
+        subscriptionId: 'subscriptionId',
+      },
     })
     expect(pool.database.runQuery).toMatchSnapshot()
     expect(pool.database.runRawQuery).toMatchSnapshot()
@@ -403,18 +403,18 @@ describe('Core operation', () => {
     const activeBatch = {
       subscriptionId: 'subscriptionId',
       batchId: 'batchId',
-      eventSubscriber: 'eventSubscriber'
+      eventSubscriber: 'eventSubscriber',
     }
     const pool = {
       database: {
         runQuery: jest.fn(() => [activeBatch]),
         runRawQuery: jest.fn(),
         escapeStr,
-        escapeId
+        escapeId,
       },
       parseSubscription,
       invokeOperation,
-      generateGuid
+      generateGuid,
     }
     const payload = { subscriptionId: 'subscriptionId' }
 
@@ -425,9 +425,9 @@ describe('Core operation', () => {
       payload: {
         activeBatch: {
           ...activeBatch,
-          batchId: expect.any(String)
-        }
-      }
+          batchId: expect.any(String),
+        },
+      },
     })
     expect(pool.database.runQuery).toMatchSnapshot()
     expect(pool.database.runRawQuery).toMatchSnapshot()
@@ -437,36 +437,36 @@ describe('Core operation', () => {
     const result = {
       successEvent: {
         aggregateId: 'aggregateId',
-        aggregateVersion: 'aggregateVersion'
+        aggregateVersion: 'aggregateVersion',
       },
       failedEvent: null,
-      error: null
+      error: null,
     }
     const pool = {
       database: {
         runQuery: jest.fn(),
         runRawQuery: jest.fn(),
         escapeStr,
-        escapeId
+        escapeId,
       },
       parseSubscription,
       getNextCursor: jest.fn(() => 'nextCursor'),
       invokeConsumer,
       invokeOperation,
-      serializeError
+      serializeError,
     }
     const payload = { batchId: 'batchId', result }
 
     const activeBatch = {
       subscriptionId: 'subscriptionId',
       batchId: 'batchId',
-      eventSubscriber: 'eventSubscriber'
+      eventSubscriber: 'eventSubscriber',
     }
 
     pool.database.runQuery.mockResolvedValueOnce([
       {
-        aggregateIdAndVersion: 'aggregateId:aggregateVersion'
-      }
+        aggregateIdAndVersion: 'aggregateId:aggregateVersion',
+      },
     ])
 
     pool.database.runQuery.mockResolvedValueOnce([
@@ -475,8 +475,8 @@ describe('Core operation', () => {
         deliveryStrategy: DeliveryStrategy.ACTIVE_XA,
         cursor: JSON.stringify({ cursor: 'cursor' }),
         xaTransactionId: JSON.stringify({ xaTransactionId: 'xaTransactionId' }),
-        runStatus: NotificationStatus.PROCESSING
-      }
+        runStatus: NotificationStatus.PROCESSING,
+      },
     ])
 
     pool.database.runQuery.mockResolvedValueOnce([{}])
@@ -489,9 +489,9 @@ describe('Core operation', () => {
         activeBatch,
         result: {
           ...result,
-          cursor: 'nextCursor'
-        }
-      }
+          cursor: 'nextCursor',
+        },
+      },
     })
     expect(pool.database.runQuery).toMatchSnapshot()
     expect(pool.database.runRawQuery).toMatchSnapshot()
@@ -503,13 +503,13 @@ describe('Core operation', () => {
         runQuery: jest.fn(() => [{ subscriptionId: 'subscriptionId' }]),
         runRawQuery: jest.fn(),
         escapeStr,
-        escapeId
+        escapeId,
       },
       invokeOperation,
-      generateGuid
+      generateGuid,
     }
     const payload = {
-      eventSubscriber: 'eventSubscriber'
+      eventSubscriber: 'eventSubscriber',
     }
 
     await resumeSubscriber(pool, payload)
@@ -517,8 +517,8 @@ describe('Core operation', () => {
     expect(invokeOperation).toHaveBeenCalledWith(pool, LazinessStrategy.EAGER, {
       type: PrivateOperationType.PULL_NOTIFICATIONS,
       payload: {
-        subscriptionId: 'subscriptionId'
-      }
+        subscriptionId: 'subscriptionId',
+      },
     })
     expect(pool.database.runQuery).toMatchSnapshot()
     expect(pool.database.runRawQuery).toMatchSnapshot()
@@ -528,28 +528,28 @@ describe('Core operation', () => {
     const result = {
       successEvent: {
         aggregateId: 'aggregateId',
-        aggregateVersion: 'aggregateVersion'
+        aggregateVersion: 'aggregateVersion',
       },
       failedEvent: null,
-      error: null
+      error: null,
     }
     const activeBatch = {
       subscriptionId: 'subscriptionId',
       batchId: 'batchId',
-      eventSubscriber: 'eventSubscriber'
+      eventSubscriber: 'eventSubscriber',
     }
     const pool = {
       database: {
         runQuery: jest.fn(() => [{ subscriptionId: 'subscriptionId' }]),
         runRawQuery: jest.fn(),
         escapeStr,
-        escapeId
+        escapeId,
       },
-      invokeOperation
+      invokeOperation,
     }
     const payload = {
       activeBatch,
-      result
+      result,
     }
 
     await finalizeAndReportBatch(pool, payload)
@@ -557,8 +557,8 @@ describe('Core operation', () => {
     expect(invokeOperation).toHaveBeenCalledWith(pool, LazinessStrategy.EAGER, {
       type: PrivateOperationType.RESUME_SUBSCRIBER,
       payload: {
-        eventSubscriber: 'eventSubscriber'
-      }
+        eventSubscriber: 'eventSubscriber',
+      },
     })
     expect(pool.database.runQuery).toMatchSnapshot()
     expect(pool.database.runRawQuery).toMatchSnapshot()
@@ -570,22 +570,22 @@ describe('Core operation', () => {
         runQuery: jest.fn(),
         runRawQuery: jest.fn(),
         escapeStr,
-        escapeId
+        escapeId,
       },
       parseSubscription,
       invokeConsumer,
       invokeOperation,
       getNextCursor: jest.fn(() => 'nextCursor'),
-      serializeError
+      serializeError,
     }
     const payload = {
-      batchId: 'batchId'
+      batchId: 'batchId',
     }
 
     const activeBatch = {
       subscriptionId: 'subscriptionId',
       batchId: 'batchId',
-      eventSubscriber: 'eventSubscriber'
+      eventSubscriber: 'eventSubscriber',
     }
 
     pool.database.runQuery.mockResolvedValueOnce([
@@ -594,8 +594,8 @@ describe('Core operation', () => {
         deliveryStrategy: DeliveryStrategy.ACTIVE_XA,
         cursor: JSON.stringify({ cursor: 'cursor' }),
         xaTransactionId: JSON.stringify({ xaTransactionId: 'xaTransactionId' }),
-        runStatus: NotificationStatus.PROCESSING
-      }
+        runStatus: NotificationStatus.PROCESSING,
+      },
     ])
 
     pool.database.runQuery.mockResolvedValueOnce([{}])
@@ -603,7 +603,7 @@ describe('Core operation', () => {
     invokeConsumer.mockResolvedValueOnce('1')
 
     const event = {
-      aggregateIdAndVersion: 'aggregateId:aggregateVersion'
+      aggregateIdAndVersion: 'aggregateId:aggregateVersion',
     }
 
     pool.database.runQuery.mockResolvedValueOnce([event])
@@ -617,9 +617,9 @@ describe('Core operation', () => {
         result: {
           error: null,
           successEvent: event,
-          cursor: 'nextCursor'
-        }
-      }
+          cursor: 'nextCursor',
+        },
+      },
     })
     expect(pool.database.runQuery).toMatchSnapshot()
     expect(pool.database.runRawQuery).toMatchSnapshot()

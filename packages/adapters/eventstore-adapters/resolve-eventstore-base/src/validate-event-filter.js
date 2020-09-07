@@ -1,6 +1,6 @@
 const hasType = (type, obj) => obj != null && obj.constructor === type
 
-const validateEventFilter = filter => {
+const validateEventFilter = (filter) => {
   if (!hasType(Object, filter)) {
     throw new Error('Event filter should be an object')
   }
@@ -10,7 +10,7 @@ const validateEventFilter = filter => {
   const numericFields = ['startTime', 'finishTime', 'limit', 'eventsSizeLimit']
   const conflictFields = [
     ['startTime', 'cursor'],
-    ['finishTime', 'cursor']
+    ['finishTime', 'cursor'],
   ]
   const requiredFields = ['limit']
 

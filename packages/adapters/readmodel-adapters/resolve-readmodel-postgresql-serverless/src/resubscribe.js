@@ -6,7 +6,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     dropReadModel,
     inlineLedgerForceStop,
     inlineLedgerExecuteStatement,
-    PassthroughError
+    PassthroughError,
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
@@ -19,7 +19,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         pool,
         `
         WITH "CTE" AS (
-         SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+         SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escape(readModelName)}
          FOR NO KEY UPDATE NOWAIT
        )
@@ -52,7 +52,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         pool,
         `
         WITH "CTE" AS (
-         SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+         SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escape(readModelName)}
          FOR UPDATE NOWAIT
         )

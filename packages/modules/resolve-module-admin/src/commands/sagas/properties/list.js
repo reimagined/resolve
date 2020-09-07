@@ -15,7 +15,7 @@ export const handler = async ({ url, saga }) => {
   console.log(
     columnify(result, {
       minWidth: 20,
-      columns: ['name', 'value']
+      columns: ['name', 'value'],
     })
   )
 }
@@ -23,8 +23,8 @@ export const handler = async ({ url, saga }) => {
 export const command = 'list <saga>'
 export const aliases = ['ls']
 export const describe = "display a list of an application's sagas"
-export const builder = yargs =>
+export const builder = (yargs) =>
   yargs.positional('saga', {
     describe: "an existing saga's name",
-    type: 'string'
+    type: 'string',
   })

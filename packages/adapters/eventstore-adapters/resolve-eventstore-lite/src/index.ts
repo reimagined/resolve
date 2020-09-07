@@ -50,7 +50,7 @@ const wrappedCreateAdapter = createAdapter.bind(null, {
   sqlite,
   tmp,
   os,
-  fs
+  fs,
 })
 
 export default wrappedCreateAdapter

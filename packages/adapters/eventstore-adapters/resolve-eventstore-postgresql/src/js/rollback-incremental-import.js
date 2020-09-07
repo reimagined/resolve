@@ -2,7 +2,7 @@ const rollbackIncrementalImport = async ({
   executeStatement,
   databaseName,
   eventsTableName,
-  escapeId
+  escapeId,
 }) => {
   const databaseNameAsId = escapeId(databaseName)
   const incrementalImportTableAsId = escapeId(

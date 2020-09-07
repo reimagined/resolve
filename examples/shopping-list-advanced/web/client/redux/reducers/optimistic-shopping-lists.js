@@ -1,7 +1,7 @@
 import {
   OPTIMISTIC_SHOPPING_LIST_SYNC,
   OPTIMISTIC_SHOPPING_LIST_CREATE,
-  OPTIMISTIC_SHOPPING_LIST_REMOVE
+  OPTIMISTIC_SHOPPING_LIST_REMOVE,
 } from '../action-types'
 
 const optimisticShoppingLists = (state = [], action) => {
@@ -14,8 +14,8 @@ const optimisticShoppingLists = (state = [], action) => {
         ...state,
         {
           id: action.payload.id,
-          name: action.payload.name
-        }
+          name: action.payload.name,
+        },
       ]
     }
     case OPTIMISTIC_SHOPPING_LIST_REMOVE: {

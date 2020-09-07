@@ -138,7 +138,7 @@ function useViewModel(
       ? viewModel.projection.Init()
       : null
     return {
-      initialState
+      initialState,
     }
   }, [])
 
@@ -152,7 +152,7 @@ function useViewModel(
       {
         name: modelName,
         aggregateIds,
-        args: actualArgs
+        args: actualArgs,
       },
       actualQueryOptions
     )
@@ -164,7 +164,7 @@ function useViewModel(
     }
   }, [])
 
-  const applyEvent = useCallback(event => {
+  const applyEvent = useCallback((event) => {
     if (isCallback<EventReceivedCallback>(actualEventReceivedCallback)) {
       actualEventReceivedCallback(event)
     }
@@ -182,7 +182,7 @@ function useViewModel(
         closure.cursor ?? '',
         modelName,
         aggregateIds,
-        event => applyEvent(event),
+        (event) => applyEvent(event),
         undefined,
         () => queryState()
       ) as Promise<Subscription>
@@ -203,8 +203,8 @@ function useViewModel(
     }
 
     asyncConnect()
-      .then(result => done(null, result))
-      .catch(error => done(error, null))
+      .then((result) => done(null, result))
+      .catch((error) => done(error, null))
 
     return undefined
   }, [])
@@ -224,7 +224,7 @@ function useViewModel(
 
     asyncDispose()
       .then(() => done())
-      .catch(error => done(error))
+      .catch((error) => done(error))
 
     return undefined
   }, [])
@@ -233,7 +233,7 @@ function useViewModel(
     () => ({
       connect,
       dispose,
-      initialState: closure.initialState
+      initialState: closure.initialState,
     }),
     []
   )

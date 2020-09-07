@@ -49,7 +49,7 @@ const debugLevels = (
     debug: allowedLevels.indexOf('debug') > -1 ? originalLogger : emptyFunction,
     info: allowedLevels.indexOf('info') > -1 ? originalLogger : emptyFunction,
     verbose:
-      allowedLevels.indexOf('verbose') > -1 ? originalLogger : emptyFunction
+      allowedLevels.indexOf('verbose') > -1 ? originalLogger : emptyFunction,
   })
 }
 

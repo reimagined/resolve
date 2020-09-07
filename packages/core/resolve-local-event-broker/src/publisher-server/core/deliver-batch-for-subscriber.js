@@ -8,7 +8,7 @@ import {
   PrivateOperationType,
   NotificationStatus,
   SubscriptionStatus,
-  BATCH_CONSUMING_TIME
+  BATCH_CONSUMING_TIME,
 } from '../constants'
 const deliverBatchForSubscriber = async (pool, payload) => {
   const {
@@ -17,7 +17,7 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     invokeConsumer,
     invokeOperation,
     serializeError,
-    checkCursorEdge
+    checkCursorEdge,
   } = pool
   const { activeBatch } = payload
   const { batchId, subscriptionId, eventSubscriber } = activeBatch
@@ -61,15 +61,15 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     properties,
     isEventBasedRun,
     status,
-    hasErrors
+    hasErrors,
   } = await parseSubscription(result[0])
   if (status === SubscriptionStatus.ERROR || hasErrors) {
     const input = {
       type: PrivateOperationType.FINALIZE_BATCH,
       payload: {
         activeBatch,
-        result: null
-      }
+        result: null,
+      },
     }
     await invokeOperation(pool, LazinessStrategy.EAGER, input)
     return
@@ -89,15 +89,15 @@ const deliverBatchForSubscriber = async (pool, payload) => {
         eventTypes,
         aggregateIds,
         limit: 500,
-        cursor
+        cursor,
       }))
       if (events == null || events.length === 0) {
         const input = {
           type: PrivateOperationType.FINALIZE_BATCH,
           payload: {
             activeBatch,
-            result: null
-          }
+            result: null,
+          },
         }
         await invokeOperation(pool, LazinessStrategy.EAGER, input)
         return
@@ -112,9 +112,9 @@ const deliverBatchForSubscriber = async (pool, payload) => {
                 new Error(
                   `Events batch ${batchId} has conflicted with its cursor`
                 )
-              )
-            }
-          }
+              ),
+            },
+          },
         }
         await invokeOperation(pool, LazinessStrategy.EAGER, input)
         return
@@ -126,7 +126,7 @@ const deliverBatchForSubscriber = async (pool, payload) => {
             ConsumerMethod.BeginXATransaction,
             {
               eventSubscriber,
-              batchId
+              batchId,
             }
           )
         }
@@ -140,9 +140,9 @@ const deliverBatchForSubscriber = async (pool, payload) => {
         payload: {
           activeBatch,
           result: {
-            error: serializeError(error)
-          }
-        }
+            error: serializeError(error),
+          },
+        },
       }
       await invokeOperation(pool, LazinessStrategy.EAGER, input)
       return
@@ -217,7 +217,7 @@ const deliverBatchForSubscriber = async (pool, payload) => {
           eventTypes,
           aggregateIds,
           limit: 1,
-          cursor: null
+          cursor: null,
         })
       ).events
       if (initialEvents != null && initialEvents.length > 0) {
@@ -229,9 +229,9 @@ const deliverBatchForSubscriber = async (pool, payload) => {
         payload: {
           activeBatch,
           result: {
-            error: serializeError(error)
-          }
-        }
+            error: serializeError(error),
+          },
+        },
       }
       await invokeOperation(pool, LazinessStrategy.EAGER, input)
       return
@@ -239,13 +239,13 @@ const deliverBatchForSubscriber = async (pool, payload) => {
     events = [
       {
         timestamp: initialEvent != null ? initialEvent.timestamp : 0,
-        type: 'Init'
-      }
+        type: 'Init',
+      },
     ]
   }
   const input = {
     type: PrivateOperationType.REQUEST_TIMEOUT,
-    payload: { batchId }
+    payload: { batchId },
   }
   await invokeOperation(
     pool,
@@ -270,7 +270,7 @@ const deliverBatchForSubscriber = async (pool, payload) => {
       eventSubscriber,
       properties: sendingProperties,
       events,
-      batchId
+      batchId,
     },
     true
   )

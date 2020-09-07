@@ -12,7 +12,7 @@ const allActions = {
   ...internalActions,
   ...commandActions,
   ...readModelActions,
-  ...viewModelActions
+  ...viewModelActions,
 }
 
 const connectResolveAdvanced = (Component: any): any => {

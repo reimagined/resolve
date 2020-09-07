@@ -33,7 +33,7 @@ const createAdapter = (implementation, options) => {
   Object.assign(baseAdapterPool, { performanceTracer, eventstoreAdapter })
   const adapterPoolMap = new Map()
 
-  const doConnect = async readModelName => {
+  const doConnect = async (readModelName) => {
     const segment = performanceTracer ? performanceTracer.getSegment() : null
     const subSegment = segment ? segment.addNewSubsegment('connect') : null
 
@@ -152,7 +152,7 @@ const createAdapter = (implementation, options) => {
       pause,
       reset,
       status,
-      build
+      build,
     })
   } else {
     Object.assign(adapterOperations, {
@@ -167,7 +167,7 @@ const createAdapter = (implementation, options) => {
       rollbackXATransaction,
       beginEvent,
       commitEvent,
-      rollbackEvent
+      rollbackEvent,
     })
   }
   for (const key of Object.keys(adapterOperations)) {
@@ -206,7 +206,7 @@ const createAdapter = (implementation, options) => {
     connect: doConnect,
     disconnect: doDisconnect,
     dispose: doDispose,
-    ...adapterOperations
+    ...adapterOperations,
   })
 }
 

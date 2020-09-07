@@ -1,6 +1,6 @@
 const rollbackIncrementalImport = async ({
   events: { eventsTableName, connection },
-  escapeId
+  escapeId,
 }) => {
   const incrementalImportTableAsId = escapeId(
     `${eventsTableName}-incremental-import`

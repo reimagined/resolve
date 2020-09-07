@@ -8,7 +8,7 @@ export interface ReadModelParams {
 
 const readModel = (
   {
-    promise
+    promise,
   }: {
     promise: any
   },

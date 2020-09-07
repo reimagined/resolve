@@ -1,4 +1,4 @@
-const makeNestedPath = nestedPath => {
+const makeNestedPath = (nestedPath) => {
   const jsonPathParts = []
   for (const part of nestedPath) {
     if (part == null || part.constructor !== String) {
@@ -36,13 +36,13 @@ const connect = async (imports, pool, options) => {
     database: connectionOptions.database,
     port: connectionOptions.port,
     host: connectionOptions.host,
-    password: connectionOptions.password
+    password: connectionOptions.password,
   })
 
   await connection.connect()
   await connection.query('SELECT 0 AS "defunct"')
 
-  const runQuery = async sql => {
+  const runQuery = async (sql) => {
     const result = await connection.query(sql)
     let rows = null
 
@@ -66,7 +66,7 @@ const connect = async (imports, pool, options) => {
     eventCounters,
     runQuery,
     connection,
-    ...imports
+    ...imports,
   })
 }
 

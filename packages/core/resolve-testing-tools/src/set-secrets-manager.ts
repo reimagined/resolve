@@ -2,7 +2,7 @@ import { symbol, Phases } from './constants'
 
 const setSecretsManager = (
   {
-    promise
+    promise,
   }: {
     promise: any
   },

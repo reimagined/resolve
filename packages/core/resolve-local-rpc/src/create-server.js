@@ -7,7 +7,7 @@ export async function mainHandler(hostObject, request, response) {
     await new Promise((resolve, reject) => {
       let chunks = []
       request
-        .on('data', chunk => {
+        .on('data', (chunk) => {
           chunks.push(chunk)
         })
         .on('end', () => {
@@ -15,7 +15,7 @@ export async function mainHandler(hostObject, request, response) {
           chunks = null
           resolve()
         })
-        .on('error', error => {
+        .on('error', (error) => {
           reject(error)
         })
     })
@@ -56,7 +56,7 @@ export async function mainHandler(hostObject, request, response) {
           name: error.name,
           code: error.code,
           message: error.message,
-          stack: error.stack
+          stack: error.stack,
         },
         null,
         2
@@ -87,7 +87,7 @@ const createServer = async ({ address, hostObject }) => {
 
   return () => {
     const serverClosePromise = new Promise((resolve, reject) => {
-      server.close(error => (error == null ? resolve() : reject(error)))
+      server.close((error) => (error == null ? resolve() : reject(error)))
     })
 
     let hostObjectDisposePromise = Promise.resolve()

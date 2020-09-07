@@ -11,11 +11,11 @@ describe('Read-model sample', () => {
     name,
     resolvers: resolversModule,
     projection: projectionModule,
-    connectorName
+    connectorName,
   } = config.readModels.find(({ name }) => name === 'Stories')
   const {
     module: connectorModule,
-    options: connectorOptions
+    options: connectorOptions,
   } = config.readModelConnectors[connectorName]
 
   const createConnector = interopRequireDefault(require(connectorModule))
@@ -40,80 +40,80 @@ describe('Read-model sample', () => {
     {
       aggregateId: 'story-id-1',
       type: 'STORY_CREATED',
-      payload: 'Text 1.0'
+      payload: 'Text 1.0',
     },
     {
       aggregateId: 'story-id-2',
       type: 'STORY_CREATED',
-      payload: 'Text 2.0'
+      payload: 'Text 2.0',
     },
     {
       aggregateId: 'story-id-3',
       type: 'STORY_CREATED',
-      payload: 'Text 3.0'
+      payload: 'Text 3.0',
     },
     {
       aggregateId: 'story-id-4',
       type: 'STORY_CREATED',
-      payload: 'Text 4.0'
+      payload: 'Text 4.0',
     },
     {
       aggregateId: 'story-id-5',
       type: 'STORY_CREATED',
-      payload: 'Text 5.0'
+      payload: 'Text 5.0',
     },
     {
       aggregateId: 'story-id-1',
       type: 'STORY_UPDATED',
-      payload: 'Text 1.1'
+      payload: 'Text 1.1',
     },
     {
       aggregateId: 'story-id-2',
       type: 'STORY_UPDATED',
-      payload: 'Text 2.1'
+      payload: 'Text 2.1',
     },
     {
       aggregateId: 'story-id-2',
       type: 'STORY_UPDATED',
-      payload: 'Text 2.2'
+      payload: 'Text 2.2',
     },
     {
       aggregateId: 'story-id-3',
       type: 'STORY_UPDATED',
-      payload: 'Text 3.1'
+      payload: 'Text 3.1',
     },
     {
       aggregateId: 'story-id-3',
       type: 'STORY_UPDATED',
-      payload: 'Text 3.2'
+      payload: 'Text 3.2',
     },
     {
       aggregateId: 'story-id-3',
       type: 'STORY_UPDATED',
-      payload: 'Text 3.3'
+      payload: 'Text 3.3',
     },
     {
       aggregateId: 'story-id-5',
       type: 'STORY_UPDATED',
-      payload: 'Text 5.1'
+      payload: 'Text 5.1',
     },
     {
       aggregateId: 'story-id-5',
       type: 'STORY_UPDATED',
-      payload: 'Text 5.2'
+      payload: 'Text 5.2',
     },
     {
       aggregateId: 'story-id-2',
-      type: 'STORY_FLAGGED_FOR_DELETION'
+      type: 'STORY_FLAGGED_FOR_DELETION',
     },
     {
       aggregateId: 'story-id-3',
-      type: 'STORY_FLAGGED_FOR_DELETION'
+      type: 'STORY_FLAGGED_FOR_DELETION',
     },
     {
       aggregateId: 'story-id-3',
-      type: 'STORY_DELETED'
-    }
+      type: 'STORY_DELETED',
+    },
   ]
 
   test(`resolve "getStoryById" ({ id: 'story-id-1' })`, async () => {
@@ -123,7 +123,7 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .getStoryById({ id: 'story-id-1' })
     ).toMatchSnapshot(`getStoryById({ id: 'story-id-1' })`)
@@ -136,7 +136,7 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .getStoryById({ id: 'story-id-2' })
     ).toMatchSnapshot(`getStoryById({ id: 'story-id-2' })`)
@@ -149,7 +149,7 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .getStoryById({ id: 'story-id-3' })
     ).toMatchSnapshot(`getStoryById({ id: 'story-id-3' })`)
@@ -162,7 +162,7 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .getStoryById({ id: 'story-id-4' })
     ).toMatchSnapshot(`getStoryById({ id: 'story-id-4' })`)
@@ -175,7 +175,7 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .getStoryById({ id: 'story-id-5' })
     ).toMatchSnapshot(`getStoryById({ id: 'story-id-5' })`)
@@ -188,7 +188,7 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .getCountStories()
     ).toMatchSnapshot(`getCountStories()`)
@@ -201,7 +201,7 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .getStoriesByIds({
           ids: [
@@ -209,8 +209,8 @@ describe('Read-model sample', () => {
             'story-id-2',
             'story-id-3',
             'story-id-4',
-            'story-id-5'
-          ]
+            'story-id-5',
+          ],
         })
     ).toMatchSnapshot(
       `.getStoriesByIds({ ids: ['story-id-1', 'story-id-2', 'story-id-3', 'story-id-4', 'story-id-5'] })`
@@ -224,7 +224,7 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .getStoriesByPage({ skip: 0, limit: 2, ascending: true })
     ).toMatchSnapshot(
@@ -239,7 +239,7 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .getStoriesByPage({ skip: 2, limit: 2, ascending: true })
     ).toMatchSnapshot(
@@ -254,7 +254,7 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .getStoriesByPage({ skip: 0, limit: 2, ascending: false })
     ).toMatchSnapshot(
@@ -269,7 +269,7 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .getStoriesByPage({ skip: 2, limit: 2, ascending: false })
     ).toMatchSnapshot(
@@ -284,12 +284,12 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .getStoriesWithRangedVersion({
           minVersion: 1,
           maxVersion: 3,
-          openRange: false
+          openRange: false,
         })
     ).toMatchSnapshot(
       `.getStoriesWithRangedVersion({ minVersion: 1, maxVersion: 3, openRange: false })`
@@ -303,12 +303,12 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .getStoriesWithRangedVersion({
           minVersion: 1,
           maxVersion: 3,
-          openRange: true
+          openRange: true,
         })
     ).toMatchSnapshot(
       `.getStoriesWithRangedVersion({ minVersion: 1, maxVersion: 3, openRange: true })`
@@ -322,7 +322,7 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .getStoryVersionById({ id: 'story-id-1' })
     ).toMatchSnapshot(`.getStoryVersionById({ id: 'story-id-1' })`)

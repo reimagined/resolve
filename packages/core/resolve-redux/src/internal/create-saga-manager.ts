@@ -26,7 +26,7 @@ const createSagaManager = (): any => {
       if (typeof callback === 'function') {
         callback()
       }
-    }
+    },
   }
 }
 

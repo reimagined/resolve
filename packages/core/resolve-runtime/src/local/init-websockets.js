@@ -14,7 +14,7 @@ const log = debugLevels('resolve:resolve-runtime:local-subscribe-adapter')
 
 let eventstoreAdapter = null
 
-const createWebSocketConnectionHandler = resolve => (ws, req) => {
+const createWebSocketConnectionHandler = (resolve) => (ws, req) => {
   const { pubsubManager } = resolve
   const queryString = req.url.split('?')[1]
   const { token, deploymentId } = qs.parse(queryString)
@@ -28,12 +28,12 @@ const createWebSocketConnectionHandler = resolve => (ws, req) => {
     throw new Error('Permission denied, invalid token')
   }
 
-  const publisher = event => ws.send(event)
+  const publisher = (event) => ws.send(event)
   pubsubManager.connect({
     client: publisher,
     connectionId,
     eventTypes,
-    aggregateIds
+    aggregateIds,
   })
 
   const dispose = () => {
@@ -52,10 +52,10 @@ const createWebSocketMessageHandler = (
   { pubsubManager },
   ws,
   connectionId
-) => async message => {
+) => async (message) => {
   try {
     const { eventTypes, aggregateIds } = pubsubManager.getConnection({
-      connectionId
+      connectionId,
     })
 
     const parsedMessage = JSON.parse(message)
@@ -66,13 +66,13 @@ const createWebSocketMessageHandler = (
           aggregateIds,
           limit: 1000000,
           eventsSizeLimit: 124 * 1024,
-          cursor: parsedMessage.cursor
+          cursor: parsedMessage.cursor,
         })
 
         ws.send(
           JSON.stringify({
             type: 'pullEvents',
-            payload: { events, cursor }
+            payload: { events, cursor },
           })
         )
 
@@ -94,7 +94,7 @@ const createWebSocketMessageHandler = (
   }
 }
 
-const initInterceptingHttpServer = resolve => {
+const initInterceptingHttpServer = (resolve) => {
   const { server: baseServer, websocketHttpServer } = resolve
   const websocketBaseUrl = getRootBasedUrl(resolve.rootPath, '/api/websocket')
   const interceptingEvents = [
@@ -103,7 +103,7 @@ const initInterceptingHttpServer = resolve => {
     'request',
     'upgrade',
     'error',
-    'connection'
+    'connection',
   ]
 
   const interceptingEventListener = (eventName, listeners, ...args) => {
@@ -127,11 +127,11 @@ const initInterceptingHttpServer = resolve => {
   }
 }
 
-const initWebSocketServer = async resolve => {
+const initWebSocketServer = async (resolve) => {
   try {
     const websocketServer = new WebSocket.Server({
       path: getRootBasedUrl(resolve.rootPath, '/api/websocket'),
-      server: resolve.websocketHttpServer
+      server: resolve.websocketHttpServer,
     })
     const connectionHandler = createWebSocketConnectionHandler(resolve)
     websocketServer.on('connection', connectionHandler)
@@ -147,7 +147,7 @@ const createSocketHttpServer = () => {
   return socketServer
 }
 
-const initWebsockets = async resolve => {
+const initWebsockets = async (resolve) => {
   const pubsubManager = createPubsubManager()
   const websocketHttpServer = createSocketHttpServer()
 
@@ -155,10 +155,10 @@ const initWebsockets = async resolve => {
 
   Object.defineProperties(resolve, {
     getSubscribeAdapterOptions: {
-      value: getSubscribeAdapterOptions
+      value: getSubscribeAdapterOptions,
     },
     pubsubManager: { value: pubsubManager },
-    websocketHttpServer: { value: websocketHttpServer }
+    websocketHttpServer: { value: websocketHttpServer },
   })
 
   await initWebSocketServer(resolve)

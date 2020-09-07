@@ -2,7 +2,7 @@ import {
   analyticsUrlBase,
   resolveExamples,
   resolvePackages,
-  resolveVersion
+  resolveVersion,
 } from './constants'
 
 export { analyticsUrlBase, resolveExamples, resolvePackages, resolveVersion }

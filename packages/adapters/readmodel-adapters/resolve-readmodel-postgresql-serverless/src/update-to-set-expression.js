@@ -39,7 +39,7 @@ const updateToSetExpression = (
             children: new Map(),
             $set: null,
             $unset: null,
-            $inc: null
+            $inc: null,
           })
         }
         updatingFieldDescriptor = updatingFieldLevelMap.get(partName)
@@ -101,7 +101,7 @@ const updateToSetExpression = (
     const baseDescriptor = updatingFields.get(descriptor.baseName)
     const operation = {
       operationName: descriptor.selectedOperation,
-      fieldValue: descriptor[descriptor.selectedOperation]
+      fieldValue: descriptor[descriptor.selectedOperation],
     }
     if (descriptor.nestedKey.length > 0) {
       operation.nestedPath = descriptor.nestedKey

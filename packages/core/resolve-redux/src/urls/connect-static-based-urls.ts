@@ -6,7 +6,7 @@ const connectStaticBasedUrls = createContextBasedConnector(
     {
       origin,
       rootPath,
-      staticPath
+      staticPath,
     }: {
       origin: string
       rootPath: string

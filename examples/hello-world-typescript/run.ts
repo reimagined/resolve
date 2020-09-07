@@ -5,7 +5,7 @@ import {
   watch,
   runTestcafe,
   merge,
-  reset
+  reset,
 } from 'resolve-scripts'
 
 import appConfig from './config.app'
@@ -28,7 +28,7 @@ void (async (): Promise<void> => {
           dropEventStore: false,
           dropEventBus: true,
           dropReadModels: true,
-          dropSagas: true
+          dropSagas: true,
         },
         adjustWebpackConfigs
       )
@@ -71,7 +71,7 @@ void (async (): Promise<void> => {
           dropEventStore: true,
           dropEventBus: true,
           dropReadModels: true,
-          dropSagas: true
+          dropSagas: true,
         },
         adjustWebpackConfigs
       )
@@ -81,7 +81,7 @@ void (async (): Promise<void> => {
         adjustWebpackConfigs,
         functionalTestsDir: 'test/functional',
         browser: process.argv[3],
-        customArgs: ['--stop-on-first-fail']
+        customArgs: ['--stop-on-first-fail'],
       })
       break
     }
@@ -90,7 +90,7 @@ void (async (): Promise<void> => {
       throw new Error('Unknown option')
     }
   }
-})().catch(error => {
+})().catch((error) => {
   // eslint-disable-next-line no-console
   console.log(error)
   process.exit(1)

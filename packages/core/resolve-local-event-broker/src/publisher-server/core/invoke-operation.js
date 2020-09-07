@@ -1,17 +1,17 @@
 import {
   PrivateOperationType,
   PublicOperationType,
-  LazinessStrategy
+  LazinessStrategy,
 } from '../constants'
 
 const operationTypesMap = new Map([
   [
     PrivateOperationType.PUSH_NOTIFICATIONS,
-    'pushNotificationAndGetSubscriptions'
+    'pushNotificationAndGetSubscriptions',
   ],
   [
     PrivateOperationType.PULL_NOTIFICATIONS,
-    'pullNotificationsAsBatchForSubscriber'
+    'pullNotificationsAsBatchForSubscriber',
   ],
   [PrivateOperationType.RESUME_SUBSCRIBER, 'resumeSubscriber'],
   [PrivateOperationType.ACKNOWLEDGE_BATCH, 'acknowledgeBatch'],
@@ -27,7 +27,7 @@ const operationTypesMap = new Map([
   [PublicOperationType.RESUME, 'resume'],
   [PublicOperationType.PAUSE, 'pause'],
   [PublicOperationType.RESET, 'reset'],
-  [PublicOperationType.READ, 'read']
+  [PublicOperationType.READ, 'read'],
 ])
 
 const invokeOperation = async (pool, laziness, { type, payload }, timeout) => {

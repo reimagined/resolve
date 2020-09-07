@@ -22,10 +22,10 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
           corejs: false,
           helpers: true,
           regenerator: true,
-          useESModules: false
-        }
-      ]
-    ]
+          useESModules: false,
+        },
+      ],
+    ],
   }
 
   const baseClientConfig = {
@@ -40,11 +40,12 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
       path: distDir,
       filename: '[name]',
       devtoolModuleFilenameTemplate: '[namespace][resource-path]',
-      devtoolFallbackModuleFilenameTemplate: '[namespace][resource-path]?[hash]'
+      devtoolFallbackModuleFilenameTemplate:
+        '[namespace][resource-path]?[hash]',
     },
     resolve: {
       modules: getModulesDirs(),
-      alias
+      alias,
     },
     module: {
       rules: [
@@ -53,42 +54,42 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
           use: [
             {
               loader: require.resolve('babel-loader'),
-              options: clientTransformBabelOptions
+              options: clientTransformBabelOptions,
             },
             {
               loader: require.resolve('./val_query_loader'),
               options: {
                 resolveConfig,
-                isClient
-              }
-            }
-          ]
+                isClient,
+              },
+            },
+          ],
         },
         {
           test: /\.js$/,
           use: {
             loader: require.resolve('babel-loader'),
             options: {
-              cacheDirectory: true
-            }
+              cacheDirectory: true,
+            },
           },
           exclude: [
             /node_modules/,
             ...getModulesDirs({ isAbsolutePath: true }),
             path.resolve(__dirname, '../lib'),
-            path.resolve(__dirname, '../es')
-          ]
+            path.resolve(__dirname, '../es'),
+          ],
         },
         {
           test: /resolve-runtime[\\/](?!node_modules).*?\.js$/,
           use: {
             loader: require.resolve('babel-loader'),
-            options: clientTransformBabelOptions
-          }
-        }
-      ]
+            options: clientTransformBabelOptions,
+          },
+        },
+      ],
     },
-    plugins: []
+    plugins: [],
   }
 
   const clientConfigs = [
@@ -107,15 +108,15 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
         'common/shared/view-models.js': path.resolve(
           __dirname,
           './alias/$resolve.viewModels.js'
-        )
+        ),
       },
       output: {
         ...baseClientConfig.output,
         libraryTarget: 'var',
-        library: '__RESOLVE_ENTRY__'
+        library: '__RESOLVE_ENTRY__',
       },
-      plugins: [...baseClientConfig.plugins, new EsmWebpackPlugin()]
-    }
+      plugins: [...baseClientConfig.plugins, new EsmWebpackPlugin()],
+    },
   ]
 
   attachWebpackConfigsClientEntries(

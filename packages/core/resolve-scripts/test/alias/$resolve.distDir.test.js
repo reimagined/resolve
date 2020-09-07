@@ -8,9 +8,9 @@ test('should fail when imported from client', () => {
       '\r\n' +
         alias({
           resolveConfig: {
-            distDir: 'distDir'
+            distDir: 'distDir',
           },
-          isClient: true
+          isClient: true,
         }) +
         '\r\n'
     )
@@ -23,8 +23,8 @@ test('should fail when runtime env provided', () => {
       '\r\n' +
         alias({
           resolveConfig: {
-            distDir: declareRuntimeEnv('distDir')
-          }
+            distDir: declareRuntimeEnv('distDir'),
+          },
         }) +
         '\r\n'
     )
@@ -37,8 +37,8 @@ test('should work correctly', () => {
       '\r\n' +
         alias({
           resolveConfig: {
-            distDir: 'distDir'
-          }
+            distDir: 'distDir',
+          },
         }) +
         '\r\n'
     )

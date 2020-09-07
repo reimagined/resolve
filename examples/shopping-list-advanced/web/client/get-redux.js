@@ -7,9 +7,9 @@ import optimisticSharingsReducer from './redux/reducers/optimistic-sharings'
 const getRedux = () => ({
   reducers: {
     optimisticSharings: optimisticSharingsReducer,
-    optimisticShoppingLists: optimisticShoppingListsReducer
+    optimisticShoppingLists: optimisticShoppingListsReducer,
   },
-  sagas: [optimisticSharingsSaga, optimisticShoppingListsSaga]
+  sagas: [optimisticSharingsSaga, optimisticShoppingListsSaga],
 })
 
 export default getRedux

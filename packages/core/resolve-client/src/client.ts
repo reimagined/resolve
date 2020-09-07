@@ -5,7 +5,7 @@ import {
   RequestOptions,
   request,
   NarrowedResponse,
-  VALIDATED_RESULT
+  VALIDATED_RESULT,
 } from './request'
 import { assertLeadingSlash, assertNonEmptyString } from './assertions'
 import { getRootBasedUrl, isAbsoluteUrl } from './utils'
@@ -64,11 +64,11 @@ export const command = (
   }
 
   asyncExec()
-    .then(result => {
+    .then((result) => {
       actualCallback(null, result, cmd)
       return result
     })
-    .catch(error => {
+    .catch((error) => {
       actualCallback(error, null, cmd)
       throw error
     })
@@ -120,7 +120,7 @@ export const query = (
   callback?: QueryCallback
 ): PromiseOrVoid<QueryResult> => {
   const requestOptions: RequestOptions = {
-    method: 'GET'
+    method: 'GET',
   }
 
   if (isOptions<QueryOptions>(options)) {
@@ -135,7 +135,7 @@ export const query = (
           }
         },
         period,
-        attempts
+        attempts,
       }
     }
     requestOptions.method = options?.method ?? 'GET'
@@ -161,7 +161,7 @@ export const query = (
       `/api/query/${name}/${ids}`,
       {
         args,
-        origin: determineOrigin(context.origin)
+        origin: determineOrigin(context.origin),
       },
       requestOptions
     )
@@ -194,7 +194,7 @@ export const query = (
 
       const meta = {
         ...result.meta,
-        timestamp: Number(responseDate)
+        timestamp: Number(responseDate),
       }
 
       if (subscriptionsUrl != null) {
@@ -203,7 +203,7 @@ export const query = (
 
       return {
         ...result,
-        meta
+        meta,
       }
     } catch (error) {
       throw new GenericError(error)
@@ -215,11 +215,11 @@ export const query = (
   }
 
   asyncExec()
-    .then(result => {
+    .then((result) => {
       actualCallback(null, result, qr)
       return result
     })
-    .catch(error => {
+    .catch((error) => {
       actualCallback(error, null, qr)
       throw error
     })
@@ -273,7 +273,7 @@ export const subscribe = (
     return {
       viewModelName,
       aggregateIds,
-      handler
+      handler,
     }
   }
 
@@ -283,7 +283,7 @@ export const subscribe = (
 
   subscribeAsync()
     .then((result: Subscription) => subscribeCallback(null, result))
-    .catch(error => subscribeCallback(error, null))
+    .catch((error) => subscribeCallback(error, null))
 
   return undefined
 }
@@ -376,5 +376,5 @@ export const getClient = (context: Context): Client => ({
       resubscribeCallback
     ),
   unsubscribe: (subscription: Subscription): PromiseOrVoid<void> =>
-    unsubscribe(context, subscription)
+    unsubscribe(context, subscription),
 })

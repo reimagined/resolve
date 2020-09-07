@@ -24,7 +24,7 @@ const attachWebpackConfigsClientEntries = (
           './alias/$resolve.clientEntry.js'
         )}?inputFile=${inputFile}`
         return acc
-      }, {})
+      }, {}),
     })
   }
 
@@ -41,8 +41,8 @@ const attachWebpackConfigsClientEntries = (
       }, {}),
       output: {
         ...baseConfig.output,
-        libraryTarget: 'commonjs-module'
-      }
+        libraryTarget: 'commonjs-module',
+      },
     })
   }
 
@@ -60,9 +60,9 @@ const attachWebpackConfigsClientEntries = (
       output: {
         ...baseConfig.output,
         libraryTarget: 'var',
-        library: '__RESOLVE_ENTRY__'
+        library: '__RESOLVE_ENTRY__',
       },
-      plugins: [...baseConfig.plugins, new EsmWebpackPlugin()]
+      plugins: [...baseConfig.plugins, new EsmWebpackPlugin()],
     })
   }
 }

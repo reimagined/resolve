@@ -24,16 +24,16 @@ const Home = ({ location: { hash } = {} }) => {
     {
       name: 'user-profiles',
       resolver: 'profile',
-      args: {}
+      args: {},
     },
     {
       waitFor: {
-        validator: result => {
+        validator: (result) => {
           return result !== null
         },
         period: 1000,
-        attempts: 5
-      }
+        attempts: 5,
+      },
     },
     (err, result) => {
       if (err) {

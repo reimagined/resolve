@@ -5,8 +5,8 @@ const deserializeInitialState = (
   const initialState = {
     ...serializedInitialState,
     viewModels: {
-      ...serializedInitialState.viewModels
-    }
+      ...serializedInitialState.viewModels,
+    },
   }
 
   for (

@@ -38,18 +38,18 @@ describe('subscribe', () => {
     mockCreateSubscribeAdapter.mockReturnValue({
       init: mockInit,
       close: mockClose,
-      isConnected: mockIsConnected
+      isConnected: mockIsConnected,
     })
 
     mFetch = jest.fn(() => ({
       ok: true,
       status: 200,
       headers: {
-        get: (): void => undefined
+        get: (): void => undefined,
       },
       json: (): Promise<object> =>
         Promise.resolve({ appId: 'application-id', url: 'subscribe-url' }),
-      text: (): Promise<string> => Promise.resolve('response')
+      text: (): Promise<string> => Promise.resolve('response'),
     }))
     ;(global as any).fetch = mFetch
   })
@@ -63,7 +63,7 @@ describe('subscribe', () => {
       origin: 'http://origin-url',
       rootPath: '',
       staticPath: '',
-      viewModels: []
+      viewModels: [],
     }
   })
 
@@ -85,7 +85,7 @@ describe('subscribe', () => {
     expect(mockCreateSubscribeAdapter).toBeCalledWith({
       onEvent: rootCallback,
       url: 'subscribe-url',
-      cursor: 'cursor'
+      cursor: 'cursor',
     })
     expect(mockInit).toBeCalledTimes(1)
   })
@@ -119,7 +119,7 @@ describe('subscribe', () => {
     expect(mockCreateSubscribeAdapter).toBeCalledWith({
       onEvent: rootCallback,
       url: 'subscribe-url',
-      cursor: 'cursor'
+      cursor: 'cursor',
     })
     expect(mockInit).toBeCalledTimes(3)
   })
@@ -194,11 +194,11 @@ describe('re-subscribe', () => {
       ok: true,
       status: 200,
       headers: {
-        get: (): void => undefined
+        get: (): void => undefined,
       },
       json: (): Promise<object> =>
         Promise.resolve({ appId: 'application-id', url: 'subscribe-url' }),
-      text: (): Promise<string> => Promise.resolve('response')
+      text: (): Promise<string> => Promise.resolve('response'),
     }))
     ;(global as any).fetch = mFetch
   })
@@ -224,7 +224,7 @@ describe('re-subscribe', () => {
       origin: 'http://origin-url',
       rootPath: '',
       staticPath: '',
-      viewModels: []
+      viewModels: [],
     }
   })
 

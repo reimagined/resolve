@@ -1,7 +1,7 @@
 import path from 'path'
 import escapeRegExp from 'lodash.escaperegexp'
 
-const normalizePaths = source => {
+const normalizePaths = (source) => {
   const normalize = path.sep === '/' ? path.normalize : path.win32.normalize
 
   let monorepoPath = normalize(

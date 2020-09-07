@@ -6,10 +6,10 @@ import { useQuery } from '../src/use-query'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({
-  useCallback: jest.fn(cb => cb)
+  useCallback: jest.fn((cb) => cb),
 }))
 jest.mock('../src/use-client', () => ({
-  useClient: jest.fn()
+  useClient: jest.fn(),
 }))
 
 const mockedUseClient = mocked(useClient)
@@ -22,28 +22,28 @@ const mockedClient = {
       data: 'query-result',
       timestamp: 1,
       url: 'url',
-      cursor: 'cursor'
+      cursor: 'cursor',
     })
   ),
   getStaticAssetUrl: jest.fn(),
   subscribe: jest.fn(),
-  unsubscribe: jest.fn()
+  unsubscribe: jest.fn(),
 }
 const basicQuery = (): Query => ({
   name: 'model',
   resolver: 'resolver',
-  args: {}
+  args: {},
 })
 const customOptions = (): QueryOptions => ({
-  method: 'GET'
+  method: 'GET',
 })
 const buildQuery = jest.fn(
   (user: string): Query => ({
     name: 'model',
     resolver: 'resolver',
     args: {
-      user
-    }
+      user,
+    },
   })
 )
 
@@ -79,7 +79,7 @@ describe('async mode', () => {
     expect(mockedClient.query).toHaveBeenCalledWith(query, undefined, undefined)
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
-      query
+      query,
     ])
   })
 
@@ -91,7 +91,7 @@ describe('async mode', () => {
     expect(mockedClient.query).toHaveBeenCalledWith(query, undefined, undefined)
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
-      'dependency'
+      'dependency',
     ])
   })
 
@@ -105,7 +105,7 @@ describe('async mode', () => {
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
       query,
-      options
+      options,
     ])
   })
 
@@ -118,7 +118,7 @@ describe('async mode', () => {
     expect(mockedClient.query).toHaveBeenCalledWith(query, options, undefined)
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
-      'dependency'
+      'dependency',
     ])
   })
 })
@@ -139,7 +139,7 @@ describe('callback mode', () => {
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
       query,
-      callback
+      callback,
     ])
   })
 
@@ -151,7 +151,7 @@ describe('callback mode', () => {
     expect(mockedClient.query).toHaveBeenCalledWith(query, undefined, callback)
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
-      'dependency'
+      'dependency',
     ])
   })
 
@@ -166,7 +166,7 @@ describe('callback mode', () => {
       mockedClient,
       query,
       options,
-      callback
+      callback,
     ])
   })
 
@@ -179,7 +179,7 @@ describe('callback mode', () => {
     expect(mockedClient.query).toHaveBeenCalledWith(query, options, callback)
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
-      'dependency'
+      'dependency',
     ])
   })
 })
@@ -196,7 +196,7 @@ describe('builder: async mode', () => {
     )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
-      buildQuery
+      buildQuery,
     ])
   })
 
@@ -211,7 +211,7 @@ describe('builder: async mode', () => {
     )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
-      'dependency'
+      'dependency',
     ])
   })
 
@@ -229,7 +229,7 @@ describe('builder: async mode', () => {
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
       buildQuery,
-      options
+      options,
     ])
   })
 
@@ -246,7 +246,7 @@ describe('builder: async mode', () => {
     )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
-      'dependency'
+      'dependency',
     ])
   })
 })
@@ -270,7 +270,7 @@ describe('builder: callback mode', () => {
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
       buildQuery,
-      callback
+      callback,
     ])
   })
 
@@ -285,7 +285,7 @@ describe('builder: callback mode', () => {
     )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
-      'dependency'
+      'dependency',
     ])
   })
 
@@ -304,7 +304,7 @@ describe('builder: callback mode', () => {
       mockedClient,
       buildQuery,
       options,
-      callback
+      callback,
     ])
   })
 
@@ -321,7 +321,7 @@ describe('builder: callback mode', () => {
     )
     expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
       mockedClient,
-      'dependency'
+      'dependency',
     ])
   })
 })

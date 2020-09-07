@@ -2,7 +2,7 @@ import React from 'react'
 
 import AuthForm from './AuthForm'
 
-const Login = props => {
+const Login = (props) => {
   return (
     <div>
       <AuthForm

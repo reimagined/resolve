@@ -40,7 +40,7 @@ class Button extends React.Component {
 }
 
 Button.defaultProps = {
-  target: '_self'
+  target: '_self',
 }
 
 const SplashContainer = ({ children }) => (
@@ -61,7 +61,7 @@ const ProjectTitle = () => (
   </h1>
 )
 
-const PromoSection = props => (
+const PromoSection = (props) => (
   <div className="section promoSection">
     <div className="promoRow">
       <div className="pluginRowBlock">{props.children}</div>
@@ -93,7 +93,7 @@ class HomeSplash extends React.Component {
   }
 }
 
-const Block = props => (
+const Block = (props) => (
   <Container
     padding={['bottom', 'top']}
     id={props.id}
@@ -103,7 +103,7 @@ const Block = props => (
   </Container>
 )
 
-const Features = props => (
+const Features = (props) => (
   <Block layout="threeColumn" {...props}>
     {[
       {
@@ -111,27 +111,27 @@ const Features = props => (
   Your application is ready in seconds.`,
         image: imgUrl('everything-you-need-in-one-place.png'),
         imageAlign: 'top',
-        title: 'Everything you need in one place.'
+        title: 'Everything you need in one place.',
       },
       {
         content: `With CQRS and Event Sourcing, your application is easier to develop, adapt, maintain and scale. 
   Functional JavaScript code is easier to test and reason about.`,
         image: imgUrl('full-stack-scalable-modern-app.png'),
         imageAlign: 'top',
-        title: 'Full stack scalable modern app'
+        title: 'Full stack scalable modern app',
       },
       {
         content: `With Event Sourcing your application stores everything and removes nothing. 
 You don't have to anticipate what data you will need later.`,
         image: imgUrl('don-t-lose-your-data.png'),
         imageAlign: 'top',
-        title: "Don't lose your data"
-      }
+        title: "Don't lose your data",
+      },
     ]}
   </Block>
 )
 
-const GetStarted = props => (
+const GetStarted = (props) => (
   <Block layout="twoColumn" background="light" {...props}>
     {[
       {
@@ -141,13 +141,13 @@ To create a project called \`my-app\`, run this command:
 \`\`\`sh
 yarn create resolve-app my-app
 \`\`\`
-`
+`,
       },
       {
         image:
           'https://raw.githubusercontent.com/reimagined/resolve/3571365c58b025cf628046a96bab23eca93367fe/website/static/img/create-resolve-app.svg?sanitize=true',
-        imageAlign: 'bottom'
-      }
+        imageAlign: 'bottom',
+      },
     ]}
   </Block>
 )
@@ -172,8 +172,8 @@ const LearnHow = () => (
         content: 'Talk about learning how to use this',
         image: imgUrl('docusaurus.svg'),
         imageAlign: 'right',
-        title: 'Learn How'
-      }
+        title: 'Learn How',
+      },
     ]}
   </Block>
 )
@@ -185,8 +185,8 @@ const TryOut = () => (
         content: 'Talk about trying this out',
         image: imgUrl('docusaurus.svg'),
         imageAlign: 'left',
-        title: 'Try it Out'
-      }
+        title: 'Try it Out',
+      },
     ]}
   </Block>
 )
@@ -198,20 +198,20 @@ const Description = () => (
         content: 'This is another description of how this project is useful',
         image: imgUrl('docusaurus.svg'),
         imageAlign: 'right',
-        title: 'Description'
-      }
+        title: 'Description',
+      },
     ]}
   </Block>
 )
 
-const Showcase = props => {
+const Showcase = (props) => {
   if ((siteConfig.users || []).length === 0) {
     return null
   }
 
   const showcase = siteConfig.users
-    .filter(user => user.pinned)
-    .map(user => (
+    .filter((user) => user.pinned)
+    .map((user) => (
       <a href={user.infoLink} key={user.infoLink}>
         <img src={user.image} alt={user.caption} title={user.caption} />
       </a>

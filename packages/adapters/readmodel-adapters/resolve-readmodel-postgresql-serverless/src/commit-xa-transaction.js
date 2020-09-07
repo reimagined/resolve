@@ -17,7 +17,7 @@ const commitXATransaction = async (
           resourceArn: pool.dbClusterOrInstanceArn,
           secretArn: pool.awsSecretStoreArn,
           transactionId: xaTransactionId,
-          sql: `SELECT 0`
+          sql: `SELECT 0`,
         })
         break
       } catch (err) {
@@ -48,7 +48,7 @@ const commitXATransaction = async (
             resourceArn: pool.dbClusterOrInstanceArn,
             secretArn: pool.awsSecretStoreArn,
             transactionId: xaTransactionId,
-            sql: `SELECT current_setting(${pool.escape(insideEventId)})`
+            sql: `SELECT current_setting(${pool.escape(insideEventId)})`,
           })
 
           const isInsideEvent = +pool.coercer(result.records[0][0])
@@ -60,7 +60,7 @@ const commitXATransaction = async (
               sql: `
                 ROLLBACK TO SAVEPOINT ${savepointId};
                 RELEASE SAVEPOINT ${savepointId};
-              `
+              `,
             })
           }
 
@@ -79,7 +79,7 @@ const commitXATransaction = async (
             resourceArn: pool.dbClusterOrInstanceArn,
             secretArn: pool.awsSecretStoreArn,
             transactionId: xaTransactionId,
-            sql: `SELECT current_setting(${pool.escape(eventCountId)})`
+            sql: `SELECT current_setting(${pool.escape(eventCountId)})`,
           })
           break
         } catch (err) {
@@ -100,7 +100,7 @@ const commitXATransaction = async (
         await pool.rdsDataService.commitTransaction({
           resourceArn: pool.dbClusterOrInstanceArn,
           secretArn: pool.awsSecretStoreArn,
-          transactionId: xaTransactionId
+          transactionId: xaTransactionId,
         })
         break
       } catch (err) {
@@ -138,7 +138,7 @@ const commitXATransaction = async (
               WHERE "xa_key" = ${pool.escape(
                 pool.hash512(`${xaTransactionId}${readModelName}`)
               )}
-            `
+            `,
           })
 
           log.verbose('Commit XA-transaction to postgresql database succeed')

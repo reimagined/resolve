@@ -2,7 +2,7 @@ import createAndInitConsumer from '../src/consumer-server'
 import { createServer } from 'resolve-local-rpc'
 
 jest.mock('resolve-local-rpc', () => ({
-  createServer: jest.fn()
+  createServer: jest.fn(),
 }))
 
 test('should create and init consumer', async () => {
@@ -10,18 +10,18 @@ test('should create and init consumer', async () => {
   const disposeResolve = jest.fn().mockImplementation(async () => {})
   const baseResolve = {
     eventListener: {
-      SendEvents: jest.fn().mockImplementation(async () => 'SendEvents')
+      SendEvents: jest.fn().mockImplementation(async () => 'SendEvents'),
     },
     eventStore: {
-      LoadEvents: jest.fn().mockImplementation(async () => 'LoadEvents')
-    }
+      LoadEvents: jest.fn().mockImplementation(async () => 'LoadEvents'),
+    },
   }
 
   await createAndInitConsumer({
     address: 'address',
     baseResolve,
     initResolve,
-    disposeResolve
+    disposeResolve,
   })
 
   expect(createServer.mock.calls.length).toEqual(1)

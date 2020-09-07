@@ -14,7 +14,7 @@ const writePackageJsonsForAssemblies = (
 
   for (const [
     packageJsonPath,
-    nodeModules
+    nodeModules,
   ] of nodeModulesByAssembly.entries()) {
     const absolutePackageJsonPath = path.resolve(
       process.cwd(),
@@ -28,7 +28,7 @@ const writePackageJsonsForAssemblies = (
 
     const resultNodeModules = new Set([
       ...Array.from(nodeModules),
-      ...Array.from(peerDependencies)
+      ...Array.from(peerDependencies),
     ])
 
     const assemblyPackageJson = {
@@ -47,7 +47,7 @@ const writePackageJsonsForAssemblies = (
         }
 
         return acc
-      }, {})
+      }, {}),
     }
 
     fs.writeFileSync(

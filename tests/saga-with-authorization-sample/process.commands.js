@@ -5,13 +5,13 @@ import jwtSecret from './jwt-secret'
 export default {
   createProcess: () => {
     return {
-      type: 'PROCESS_CREATED'
+      type: 'PROCESS_CREATED',
     }
   },
 
   killAllProcesses: () => {
     return {
-      type: 'ALL_PROCESS_KILLED'
+      type: 'ALL_PROCESS_KILLED',
     }
   },
 
@@ -23,7 +23,7 @@ export default {
     }
 
     return {
-      type: 'PROCESS_KILLED'
+      type: 'PROCESS_KILLED',
     }
-  }
+  },
 }

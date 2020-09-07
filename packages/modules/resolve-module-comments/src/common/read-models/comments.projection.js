@@ -3,9 +3,9 @@ import injectDefaults from '../inject-defaults'
 const createCommentsProjection = ({
   eventTypes: { COMMENT_CREATED, COMMENT_UPDATED, COMMENT_REMOVED },
   commentsTableName,
-  maxNestedLevel
+  maxNestedLevel,
 }) => ({
-  Init: async store => {
+  Init: async (store) => {
     await store.defineTable(commentsTableName, {
       indexes: {
         mainId: 'string',
@@ -14,12 +14,12 @@ const createCommentsProjection = ({
         commentId: 'string',
         childCommentId: 'string',
         timestamp: 'number',
-        nestedLevel: 'number'
+        nestedLevel: 'number',
       },
       fields: [
         'position', // string
-        'content' // json
-      ]
+        'content', // json
+      ],
     })
   },
 
@@ -27,13 +27,13 @@ const createCommentsProjection = ({
     const {
       aggregateId: treeId,
       payload: { commentId, parentCommentId, authorId, content },
-      timestamp
+      timestamp,
     } = event
 
     if (
       (await store.count(commentsTableName, {
         commentId: parentCommentId,
-        treeId
+        treeId,
       })) === 0
     ) {
       if (parentCommentId != null) {
@@ -49,7 +49,7 @@ const createCommentsProjection = ({
         childCommentId: null,
         nestedLevel: 0,
         timestamp,
-        content: null
+        content: null,
       })
     }
 
@@ -62,7 +62,7 @@ const createCommentsProjection = ({
       childCommentId: null,
       nestedLevel: 0,
       timestamp,
-      content
+      content,
     })
 
     const parentComments = await store.find(
@@ -71,8 +71,8 @@ const createCommentsProjection = ({
         $or: [
           { treeId, commentId: parentCommentId, nestedLevel: 0 },
           { treeId, commentId: parentCommentId, nestedLevel: 1 },
-          { treeId, childCommentId: parentCommentId, nestedLevel: { $ne: 0 } }
-        ]
+          { treeId, childCommentId: parentCommentId, nestedLevel: { $ne: 0 } },
+        ],
       },
       { timestamp: 0, content: 0 },
       { nestedLevel: 1, timestamp: -1 }
@@ -129,7 +129,7 @@ const createCommentsProjection = ({
         childCommentId: commentId,
         nestedLevel,
         timestamp,
-        content
+        content,
       })
     }
   },
@@ -137,7 +137,7 @@ const createCommentsProjection = ({
   [COMMENT_UPDATED]: async (store, event) => {
     const {
       aggregateId: treeId,
-      payload: { commentId, content }
+      payload: { commentId, content },
     } = event
 
     await store.update(
@@ -145,8 +145,8 @@ const createCommentsProjection = ({
       {
         $or: [
           { treeId, commentId, nestedLevel: 0 },
-          { treeId, childCommentId: commentId }
-        ]
+          { treeId, childCommentId: commentId },
+        ],
       },
       { $set: { content } }
     )
@@ -155,7 +155,7 @@ const createCommentsProjection = ({
   [COMMENT_REMOVED]: async (store, event) => {
     const {
       aggregateId: treeId,
-      payload: { commentId }
+      payload: { commentId },
     } = event
 
     const childCommentsIds = (
@@ -170,15 +170,15 @@ const createCommentsProjection = ({
 
     await store.delete(commentsTableName, {
       $or: [
-        ...childCommentsIds.map(innerCommentId => ({
-          childCommentId: innerCommentId
+        ...childCommentsIds.map((innerCommentId) => ({
+          childCommentId: innerCommentId,
         })),
-        ...childCommentsIds.map(innerCommentId => ({
-          commentId: innerCommentId
-        }))
-      ]
+        ...childCommentsIds.map((innerCommentId) => ({
+          commentId: innerCommentId,
+        })),
+      ],
     })
-  }
+  },
 })
 
 export default injectDefaults(createCommentsProjection)

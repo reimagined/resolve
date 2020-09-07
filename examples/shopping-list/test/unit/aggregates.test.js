@@ -5,7 +5,7 @@ import {
   SHOPPING_LIST_REMOVED,
   SHOPPING_ITEM_CREATED,
   SHOPPING_ITEM_TOGGLED,
-  SHOPPING_ITEM_REMOVED
+  SHOPPING_ITEM_REMOVED,
 } from '../../common/event_types'
 
 describe('aggregates', () => {
@@ -18,7 +18,7 @@ describe('aggregates', () => {
 
       expect(commands.createShoppingList(state, command)).toEqual({
         type: SHOPPING_LIST_CREATED,
-        payload: { name }
+        payload: { name },
       })
     })
 
@@ -30,7 +30,7 @@ describe('aggregates', () => {
 
       expect(commands.renameShoppingList(state, command)).toEqual({
         type: SHOPPING_LIST_RENAMED,
-        payload: { name }
+        payload: { name },
       })
     })
 
@@ -39,7 +39,7 @@ describe('aggregates', () => {
       const command = {}
 
       expect(commands.removeShoppingList(state, command)).toEqual({
-        type: SHOPPING_LIST_REMOVED
+        type: SHOPPING_LIST_REMOVED,
       })
     })
 
@@ -49,7 +49,7 @@ describe('aggregates', () => {
 
       expect(commands.createShoppingItem(state, command)).toEqual({
         type: SHOPPING_ITEM_CREATED,
-        payload: { id: 'id', text: 'id' }
+        payload: { id: 'id', text: 'id' },
       })
     })
 
@@ -59,7 +59,7 @@ describe('aggregates', () => {
 
       expect(commands.toggleShoppingItem(state, command)).toEqual({
         type: SHOPPING_ITEM_TOGGLED,
-        payload: { id: 'id' }
+        payload: { id: 'id' },
       })
     })
 
@@ -69,7 +69,7 @@ describe('aggregates', () => {
 
       expect(commands.removeShoppingItem(state, command)).toEqual({
         type: SHOPPING_ITEM_REMOVED,
-        payload: { id: 'id' }
+        payload: { id: 'id' },
       })
     })
   })

@@ -39,7 +39,7 @@ const StyledUserLink = styled(NavLink)`
 
 class Comment extends React.PureComponent {
   state = {
-    expanded: true
+    expanded: true,
   }
 
   expand = () => this.setState({ expanded: !this.state.expanded })
@@ -53,7 +53,7 @@ class Comment extends React.PureComponent {
       createdByName,
       createdAt,
       parentId,
-      children
+      children,
     } = this.props
 
     if (!id) {
@@ -87,7 +87,7 @@ class Comment extends React.PureComponent {
         {this.state.expanded ? (
           <div
             dangerouslySetInnerHTML={{
-              __html: sanitizer.sanitize(text)
+              __html: sanitizer.sanitize(text),
             }}
           />
         ) : null}

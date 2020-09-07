@@ -24,12 +24,12 @@ export const mapStateToOptions = (
     authorId,
     treeId,
     parentCommentId,
-    timestamp
-  }
+    timestamp,
+  },
 })
 
 export const mapStateToProps = (state, { data }) => ({
-  commentCount: data
+  commentCount: data,
 })
 
 export default connectReadModel(mapStateToOptions)(

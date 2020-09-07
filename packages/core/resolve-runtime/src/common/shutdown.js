@@ -12,7 +12,7 @@ const shutdown = async (resolve, upstream) => {
       shutdownOne({
         eventBus: resolve.eventBus,
         eventSubscriber,
-        upstream
+        upstream,
       })
     )
   }

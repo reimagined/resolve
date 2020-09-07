@@ -5,7 +5,7 @@ import {
   COMMENT_REMOVED,
   createComment,
   updateComment,
-  removeComment
+  removeComment,
 } from '../../src/common/defaults'
 
 describe('aggregate "comments"', () => {
@@ -13,7 +13,7 @@ describe('aggregate "comments"', () => {
   let context
   beforeEach(() => {
     context = {
-      jwt: 'JWT'
+      jwt: 'JWT',
     }
   })
 
@@ -24,8 +24,8 @@ describe('aggregate "comments"', () => {
         authorId: 'authorId',
         commentId: 'commentId',
         parentCommentId: 'parentCommentId',
-        content: 'content'
-      }
+        content: 'content',
+      },
     }
 
     const event = await commands[createComment](state, command, context)
@@ -36,8 +36,8 @@ describe('aggregate "comments"', () => {
         authorId: command.payload.authorId,
         commentId: command.payload.commentId,
         parentCommentId: command.payload.parentCommentId || null,
-        content: command.payload.content
-      }
+        content: command.payload.content,
+      },
     })
   })
 
@@ -47,8 +47,8 @@ describe('aggregate "comments"', () => {
       payload: {
         authorId: 'authorId',
         commentId: 'commentId',
-        content: 'content'
-      }
+        content: 'content',
+      },
     }
 
     const event = await commands[updateComment](state, command, context)
@@ -58,8 +58,8 @@ describe('aggregate "comments"', () => {
       payload: {
         authorId: command.payload.authorId,
         commentId: command.payload.commentId,
-        content: command.payload.content
-      }
+        content: command.payload.content,
+      },
     })
   })
 
@@ -68,8 +68,8 @@ describe('aggregate "comments"', () => {
     const command = {
       payload: {
         authorId: 'authorId',
-        commentId: 'commentId'
-      }
+        commentId: 'commentId',
+      },
     }
 
     const event = await commands[removeComment](state, command, context)
@@ -78,8 +78,8 @@ describe('aggregate "comments"', () => {
       type: COMMENT_REMOVED,
       payload: {
         commentId: command.payload.commentId,
-        authorId: command.payload.authorId
-      }
+        authorId: command.payload.authorId,
+      },
     })
   })
 })

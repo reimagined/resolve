@@ -5,7 +5,7 @@ import { shallow } from 'enzyme'
 
 it('renders correctly', () => {
   const navigation = {
-    navigate: () => {}
+    navigate: () => {},
   }
 
   const jwt = { id: 'id' }

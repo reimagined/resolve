@@ -55,7 +55,7 @@ const emptyFunction = Promise.resolve.bind(Promise)
 const emptyWrapper = {
   onBeforeEvent: emptyFunction,
   onSuccessEvent: emptyFunction,
-  onFailEvent: emptyFunction
+  onFailEvent: emptyFunction,
 }
 
 const detectWrappers = (connector: any, bypass?: boolean): any => {
@@ -73,13 +73,13 @@ const detectWrappers = (connector: any, bypass?: boolean): any => {
     return {
       onBeforeEvent: connector.beginEvent.bind(connector),
       onSuccessEvent: connector.commitEvent.bind(connector),
-      onFailEvent: connector.rollbackEvent.bind(connector)
+      onFailEvent: connector.rollbackEvent.bind(connector),
     }
   } else if (featureDetection === FULL_REGULAR_CONNECTOR) {
     return {
       onBeforeEvent: connector.beginTransaction.bind(connector),
       onSuccessEvent: connector.commitTransaction.bind(connector),
-      onFailEvent: connector.rollbackTransaction.bind(connector)
+      onFailEvent: connector.rollbackTransaction.bind(connector),
     }
   } else if (
     featureDetection === INLINE_LEDGER_CONNECTOR ||
@@ -102,7 +102,7 @@ const serializeError = (
         name: error.name == null ? null : String(error.name),
         code: error.code == null ? null : String(error.code),
         message: String(error.message),
-        stack: String(error.stack)
+        stack: String(error.stack),
       }
     : null
 
@@ -112,7 +112,7 @@ const sendEvents = async (
     batchId,
     xaTransactionId,
     properties,
-    events
+    events,
   }: {
     events: Array<any>
     xaTransactionId: any
@@ -268,12 +268,12 @@ const sendEvents = async (
     eventSubscriber: readModelName,
     successEvent: lastSuccessEvent,
     failedEvent: lastFailedEvent,
-    error: serializeError(lastError)
+    error: serializeError(lastError),
   }
 
   await performAcknowledge({
     result,
-    batchId
+    batchId,
   })
 }
 
@@ -335,9 +335,9 @@ const read = async (
                   typeof getSecretsManager === 'function'
                     ? await getSecretsManager()
                     : null,
-                jwt
+                jwt,
               }
-            )
+            ),
           }
         } catch (error) {
           if (subSegment != null) {
@@ -435,7 +435,7 @@ const build = doOperation.bind(
     readModelName,
     connection,
     pool.readModel.projection,
-    next.bind(null, pool, readModelName)
+    next.bind(null, pool, readModelName),
   ]
 )
 
@@ -488,7 +488,7 @@ const subscribe = doOperation.bind(
     connection,
     readModelName,
     parameters.subscriptionOptions.eventTypes,
-    parameters.subscriptionOptions.aggregateIds
+    parameters.subscriptionOptions.aggregateIds,
   ]
 )
 
@@ -509,7 +509,7 @@ const resubscribe = doOperation.bind(
     connection,
     readModelName,
     parameters.subscriptionOptions.eventTypes,
-    parameters.subscriptionOptions.aggregateIds
+    parameters.subscriptionOptions.aggregateIds,
   ]
 )
 
@@ -605,7 +605,7 @@ const wrapReadModel = ({
   invokeEventBusAsync,
   performanceTracer,
   getRemainingTimeInMillis,
-  performAcknowledge
+  performAcknowledge,
 }: WrapReadModelOptions) => {
   const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
@@ -628,7 +628,7 @@ const wrapReadModel = ({
     performanceTracer,
     getSecretsManager,
     getRemainingTimeInMillis,
-    performAcknowledge
+    performAcknowledge,
   }
 
   const api = {
@@ -636,7 +636,7 @@ const wrapReadModel = ({
     sendEvents: sendEvents.bind(null, pool),
     serializeState: serializeState.bind(null, pool),
     drop: drop.bind(null, pool),
-    dispose: dispose.bind(null, pool)
+    dispose: dispose.bind(null, pool),
   }
 
   log.debug(`detecting connector features`)
@@ -652,7 +652,7 @@ const wrapReadModel = ({
     Object.assign(api, {
       beginXATransaction: beginXATransaction.bind(null, pool),
       commitXATransaction: commitXATransaction.bind(null, pool),
-      rollbackXATransaction: rollbackXATransaction.bind(null, pool)
+      rollbackXATransaction: rollbackXATransaction.bind(null, pool),
     })
   } else if (detectedFeatures === INLINE_LEDGER_CONNECTOR) {
     Object.assign(api, {
@@ -667,7 +667,7 @@ const wrapReadModel = ({
       pause: pause.bind(null, pool),
       reset: reset.bind(null, pool),
       status: status.bind(null, pool),
-      build: build.bind(null, pool)
+      build: build.bind(null, pool),
     })
   }
 

@@ -20,7 +20,7 @@ beforeEach(() => {
     secretsTableName: 'secrets-table-name',
     databaseName: 'database',
     executeStatement: jest.fn(),
-    escapeId: jest.fn(v => `escaped-${v}`)
+    escapeId: jest.fn((v) => `escaped-${v}`),
   }
 })
 
@@ -36,7 +36,7 @@ test('event store dropped', async () => {
     eventsTableName: 'events-table-name',
     snapshotsTableName: 'snapshots-table-name',
     executeStatement: pool.executeStatement,
-    escapeId: pool.escapeId
+    escapeId: pool.escapeId,
   })
 })
 
@@ -44,7 +44,7 @@ test('error: secretsTableName is missing within pool', async () => {
   await expect(
     drop({
       ...pool,
-      secretsTableName: undefined
+      secretsTableName: undefined,
     })
   ).rejects.toBeInstanceOf(Error)
 })
@@ -53,7 +53,7 @@ test('error: escapeId is missing within pool', async () => {
   await expect(
     drop({
       ...pool,
-      escapeId: undefined
+      escapeId: undefined,
     })
   ).rejects.toBeInstanceOf(Error)
 })
@@ -62,7 +62,7 @@ test('error: databaseName is missing within pool', async () => {
   await expect(
     drop({
       ...pool,
-      databaseName: undefined
+      databaseName: undefined,
     })
   ).rejects.toBeInstanceOf(Error)
 })
@@ -71,7 +71,7 @@ test('error: executeStatement is missing within pool', async () => {
   await expect(
     drop({
       ...pool,
-      executeStatement: undefined
+      executeStatement: undefined,
     })
   ).rejects.toBeInstanceOf(Error)
 })

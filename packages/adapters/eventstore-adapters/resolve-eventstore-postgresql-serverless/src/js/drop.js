@@ -7,7 +7,7 @@ const drop = async ({
   eventsTableName,
   snapshotsTableName,
   executeStatement,
-  escapeId
+  escapeId,
 }) => {
   const log = getLog(`dropEventStore`)
 
@@ -40,7 +40,7 @@ const drop = async ({
 
     `DROP TABLE ${databaseNameAsId}.${snapshotsTableNameAsId}`,
 
-    `DROP TABLE IF EXISTS ${databaseNameAsId}.${freezeTableNameAsId}`
+    `DROP TABLE IF EXISTS ${databaseNameAsId}.${freezeTableNameAsId}`,
   ]
   const errors = []
 
@@ -63,7 +63,7 @@ const drop = async ({
   }
 
   if (errors.length > 0) {
-    throw new Error(errors.map(error => error.stack).join(EOL))
+    throw new Error(errors.map((error) => error.stack).join(EOL))
   }
 }
 

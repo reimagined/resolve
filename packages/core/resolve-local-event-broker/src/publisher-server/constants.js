@@ -17,13 +17,13 @@ export const TRANSFORM_NONE_SYMBOL = Symbol('TRANSFORM_NONE')
 
 export const SQLITE_BUSY = 'SQLITE_BUSY'
 
-export const LazinessStrategy = (function(LazinessStrategy) {
+export const LazinessStrategy = (function (LazinessStrategy) {
   LazinessStrategy['EAGER'] = 'eager'
   LazinessStrategy['LAZY'] = 'lazy'
   return Object.freeze(LazinessStrategy)
 })({})
 
-export const DeliveryStrategy = (function(DeliveryStrategy) {
+export const DeliveryStrategy = (function (DeliveryStrategy) {
   DeliveryStrategy['ACTIVE_NONE'] = 'active-none-transaction'
   DeliveryStrategy['ACTIVE_REGULAR'] = 'active-regular-transaction'
   DeliveryStrategy['ACTIVE_XA'] = 'active-xa-transaction'
@@ -31,7 +31,7 @@ export const DeliveryStrategy = (function(DeliveryStrategy) {
   return Object.freeze(DeliveryStrategy)
 })({})
 
-export const QueueStrategy = (function(QueueStrategy) {
+export const QueueStrategy = (function (QueueStrategy) {
   QueueStrategy['GLOBAL'] = 'global'
   QueueStrategy['EVENT_TYPES'] = 'event-types'
   QueueStrategy['AGGREGATE_IDS'] = 'aggregate-ids'
@@ -39,14 +39,14 @@ export const QueueStrategy = (function(QueueStrategy) {
   return Object.freeze(QueueStrategy)
 })({})
 
-export const SubscriptionStatus = (function(SubscriptionStatus) {
+export const SubscriptionStatus = (function (SubscriptionStatus) {
   SubscriptionStatus['DELIVER'] = 'deliver'
   SubscriptionStatus['SKIP'] = 'skip'
   SubscriptionStatus['ERROR'] = 'error'
   return Object.freeze(SubscriptionStatus)
 })({})
 
-export const NotificationStatus = (function(NotificationStatus) {
+export const NotificationStatus = (function (NotificationStatus) {
   NotificationStatus['RECIEVED'] = 'received-notification'
   NotificationStatus['PROCESSING'] = 'processing-notification'
   NotificationStatus['ACKNOWLEDGE_ENTERING'] =
@@ -65,7 +65,7 @@ export const NotificationStatus = (function(NotificationStatus) {
 
 export const SERIALIZED_ERROR_SYMBOL = Symbol('SERIALIZED_ERROR')
 
-export const PublicOperationType = (function(PublicOperationType) {
+export const PublicOperationType = (function (PublicOperationType) {
   PublicOperationType['PUBLISH'] = 'publish'
   PublicOperationType['SUBSCRIBE'] = 'subscribe'
   PublicOperationType['RESUBSCRIBE'] = 'resubscribe'
@@ -79,7 +79,7 @@ export const PublicOperationType = (function(PublicOperationType) {
   return Object.freeze(PublicOperationType)
 })({})
 
-export const PrivateOperationType = (function(PrivateOperationType) {
+export const PrivateOperationType = (function (PrivateOperationType) {
   PrivateOperationType['PUSH_NOTIFICATIONS'] = 'push-notifications'
   PrivateOperationType['PULL_NOTIFICATIONS'] = 'pull-notifications'
   PrivateOperationType['RESUME_SUBSCRIBER'] = 'resume-subscriber'
@@ -90,7 +90,7 @@ export const PrivateOperationType = (function(PrivateOperationType) {
   return Object.freeze(PrivateOperationType)
 })({})
 
-export const ConsumerMethod = (function(ConsumerMethod) {
+export const ConsumerMethod = (function (ConsumerMethod) {
   ConsumerMethod['SaveEvent'] = 'SaveEvent'
   ConsumerMethod['LoadEvents'] = 'LoadEvents'
   ConsumerMethod['SendEvents'] = 'SendEvents'

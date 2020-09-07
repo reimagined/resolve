@@ -4,7 +4,7 @@ import { URL } from 'url'
 
 export const DEFAULT_HOOK = Symbol('DEFAULT_HOOK')
 
-const defaultPreExecHook = async args => args
+const defaultPreExecHook = async (args) => args
 const defaultPostExecHook = async (args, result) => result
 
 function request(address, preExecHooks, postExecHooks, method, ...args) {
@@ -49,13 +49,13 @@ function request(address, preExecHooks, postExecHooks, method, ...args) {
           method: 'POST',
           headers: {
             'Content-Length': Buffer.byteLength(inputDataEncoded),
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         },
-        res => {
+        (res) => {
           const buffers = []
           res.on('error', reject)
-          res.on('data', buffer => buffers.push(buffer))
+          res.on('data', (buffer) => buffers.push(buffer))
           res.on('end', async () => {
             let result = null
             try {
@@ -135,7 +135,7 @@ const createClient = async ({ address, preExecHooks, postExecHooks }) => {
             method
           )
         }
-      }
+      },
     }
   )
 

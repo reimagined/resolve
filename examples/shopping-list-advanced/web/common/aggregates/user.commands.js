@@ -17,8 +17,8 @@ export default {
       payload: {
         username: command.payload.username,
         passwordHash: command.payload.passwordHash,
-        accessTokenHash: command.payload.accessTokenHash
-      }
+        accessTokenHash: command.payload.accessTokenHash,
+      },
     }
   },
   updateUserName: (state, command, { jwt: token }) => {
@@ -31,8 +31,8 @@ export default {
     return {
       type: USER_NAME_UPDATED,
       payload: {
-        username: command.payload.username
-      }
+        username: command.payload.username,
+      },
     }
-  }
+  },
 }

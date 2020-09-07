@@ -5,13 +5,13 @@ import { AdapterPool } from './types'
 import {
   aggregateIdSqlType,
   longNumberSqlType,
-  longStringSqlType
+  longStringSqlType,
 } from './js/constants'
 
 const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
   const {
     secrets: { database, tableName, connection },
-    escapeId
+    escapeId,
   } = pool
   const log = getLog('initSecretsStore')
 
@@ -58,7 +58,7 @@ const init = async (pool: AdapterPool): Promise<any> => {
   log.debug('initializing databases')
   const result = await Promise.all([
     initEventStore(pool),
-    initSecretsStore(pool)
+    initSecretsStore(pool),
   ])
   log.debug('databases are initialized')
   return result

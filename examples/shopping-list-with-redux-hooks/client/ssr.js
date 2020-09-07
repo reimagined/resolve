@@ -40,14 +40,14 @@ const ssrHandler = async (
       history,
       origin,
       rootPath,
-      staticPath: '/'
+      staticPath: '/',
     }
 
     const store = createStore({
       ...context,
       redux,
       initialState: { jwt },
-      isClient: false
+      isClient: false,
     })
 
     const staticContext = {}

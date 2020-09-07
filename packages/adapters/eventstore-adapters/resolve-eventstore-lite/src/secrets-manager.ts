@@ -101,7 +101,7 @@ const getSecretsManager = (pool: AdapterPool): SecretsManager => {
   const manager = Object.freeze({
     getSecret: getSecret.bind(null, pool),
     setSecret: setSecret.bind(null, pool),
-    deleteSecret: deleteSecret.bind(null, pool)
+    deleteSecret: deleteSecret.bind(null, pool),
   })
   log.debug('secrets manager built')
   return manager

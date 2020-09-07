@@ -17,7 +17,7 @@ const update = async (
     searchToWhereExpression,
     updateToSetExpression,
     makeNestedPath,
-    schemaName
+    schemaName,
   } = pool
 
   const isUpsert = options != null ? !!options.upsert : false

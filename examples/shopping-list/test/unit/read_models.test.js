@@ -7,7 +7,7 @@ import resolvers from '../../common/read-models/shopping_lists.resolvers'
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_REMOVED,
-  SHOPPING_LIST_RENAMED
+  SHOPPING_LIST_RENAMED,
 } from '../../common/event_types'
 
 const resetReadModel = async (
@@ -41,7 +41,7 @@ describe('read-models', () => {
         'ShoppingLists'
       )
       adapter = createReadModelAdapter({
-        databaseFile: ':memory:'
+        databaseFile: ':memory:',
       })
     })
 
@@ -51,7 +51,7 @@ describe('read-models', () => {
           name: 'ShoppingLists',
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .all()
 
@@ -65,21 +65,21 @@ describe('read-models', () => {
           aggregateId,
           type: SHOPPING_LIST_CREATED,
           payload: {
-            name: 'Products'
-          }
-        }
+            name: 'Products',
+          },
+        },
       ])
         .readModel({
           name: 'ShoppingLists',
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .all()
 
       expect(shoppingLists.data[0]).toMatchObject({
         id: aggregateId,
-        name: 'Products'
+        name: 'Products',
       })
     })
     // mdis-stop read-model-test
@@ -90,28 +90,28 @@ describe('read-models', () => {
           aggregateId: aggregateId,
           type: SHOPPING_LIST_CREATED,
           payload: {
-            name: 'Products'
-          }
+            name: 'Products',
+          },
         },
         {
           aggregateId: aggregateId,
           type: SHOPPING_LIST_RENAMED,
           payload: {
-            name: 'Medicines'
-          }
-        }
+            name: 'Medicines',
+          },
+        },
       ])
         .readModel({
           name: 'ShoppingLists',
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .all()
 
       expect(shoppingLists.data[0]).toMatchObject({
         id: aggregateId,
-        name: 'Medicines'
+        name: 'Medicines',
       })
     })
 
@@ -121,19 +121,19 @@ describe('read-models', () => {
           aggregateId: aggregateId,
           type: SHOPPING_LIST_CREATED,
           payload: {
-            name: 'Products'
-          }
+            name: 'Products',
+          },
         },
         {
           aggregateId: aggregateId,
-          type: SHOPPING_LIST_REMOVED
-        }
+          type: SHOPPING_LIST_REMOVED,
+        },
       ])
         .readModel({
           name: 'ShoppingLists',
           projection,
           resolvers,
-          adapter
+          adapter,
         })
         .all()
 

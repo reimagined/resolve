@@ -2,10 +2,10 @@ import {
   analyticsUrlBase,
   resolveVersion,
   resolvePackages,
-  resolveExamples
+  resolveExamples,
 } from './constants'
 
-const prepareOptions = async pool => {
+const prepareOptions = async (pool) => {
   const {
     path,
     console,
@@ -14,7 +14,7 @@ const prepareOptions = async pool => {
     isYarnAvailable,
     safeName,
     message,
-    https
+    https,
   } = pool
 
   const cliArgs = commandLineArgs(
@@ -24,19 +24,19 @@ const prepareOptions = async pool => {
       { name: 'commit', alias: 'c', type: String },
       { name: 'version', alias: 'V', type: Boolean },
       { name: 'help', alias: 'h', type: Boolean },
-      { name: 'local-registry', type: Boolean }
+      { name: 'local-registry', type: Boolean },
     ],
     { partial: true }
   )
 
   const unknownCliArgs =
-    cliArgs._unknown && cliArgs._unknown.filter(x => x.startsWith('-'))
+    cliArgs._unknown && cliArgs._unknown.filter((x) => x.startsWith('-'))
 
   Object.assign(pool, {
     analyticsUrlBase,
     resolveVersion,
     resolvePackages,
-    resolveExamples
+    resolveExamples,
   })
 
   if (unknownCliArgs && unknownCliArgs.length > 0) {
@@ -100,15 +100,15 @@ const prepareOptions = async pool => {
       resolveDownloadZipUrl,
       resolveCloneZipPath,
       useYarn,
-      localRegistry
+      localRegistry,
     })
 
     const masterBranchVersionJsonUrl =
       'https://raw.githubusercontent.com/reimagined/resolve/master/packages/core/create-resolve-app/package.json'
-    const masterBranchVersion = await new Promise(resolve => {
+    const masterBranchVersion = await new Promise((resolve) => {
       let responseString = ''
-      https.get(masterBranchVersionJsonUrl, response => {
-        response.on('data', data => (responseString += data.toString()))
+      https.get(masterBranchVersionJsonUrl, (response) => {
+        response.on('data', (data) => (responseString += data.toString()))
         response.on('end', () =>
           Promise.resolve()
             .then(() => JSON.parse(responseString).version)

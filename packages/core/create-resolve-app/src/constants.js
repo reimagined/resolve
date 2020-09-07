@@ -5,5 +5,5 @@ export const resolveExamples = JSON.parse(process.env.__RESOLVE_EXAMPLES__)
 export const localRegistry = {
   protocol: 'http',
   host: '0.0.0.0',
-  port: 10080
+  port: 10080,
 }

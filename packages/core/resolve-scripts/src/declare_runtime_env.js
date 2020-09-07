@@ -25,7 +25,7 @@ const declareRuntimeEnv = (envName, defaultValue) => {
   return envContainer
 }
 
-export const checkRuntimeEnv = value =>
+export const checkRuntimeEnv = (value) =>
   !(value == null || value.type !== runtimeEnvSymbol)
 
 export const injectRuntimeEnv = (json, isClient = false) => {
@@ -43,7 +43,7 @@ export const injectRuntimeEnv = (json, isClient = false) => {
       if (checkRuntimeEnv(value)) {
         return `${runtimeDigestBegin}${JSON.stringify({
           envName: String(value),
-          defaultValue: value.defaultValue
+          defaultValue: value.defaultValue,
         })}${runtimeDigestEnd}`
       }
 
