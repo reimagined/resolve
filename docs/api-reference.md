@@ -819,20 +819,7 @@ const main = async resolveContext => {
 export default main
 ```
 
-The resolveContext object has the following members:
-
-| Member           | Description |
-| ---------------- | ----------- |
-| clientImports    |             |
-| localS3Constants |             |
-| viewModels       |             |
-| rootPath         |             |
-| staticPath       |             |
-| jwtCookie        |             |
-| applicationName  |             |
-| subscribeAdapter |             |
-| customConstants  |             |
-| utils            |             |
+The `resolveContext` object contains data used internally by reSolve client libraries to communicate with the backend.
 
 ### resolve-redux Library
 
