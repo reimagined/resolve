@@ -23,13 +23,13 @@ const main = async resolveContext => {
 export default main
 ```
 
-to register the entry point, assign the path to the file that contains the entry point definition to the `clientEntries` configuration option:
+to register the entry point, assign the path to the file that contains the entry point definition to the `clientEntries` [configuration option](application-configuration.md#cliententries):
 
 ```js
 clientEntries: ['client/index.js']
 ```
 
-Initialize a client library with the `resolveContext` and use it to commubicate with the backend.
+Initialize the client library of your choice with the `resolveContext` and use it to commubicate with the backend.
 
 ### Entry Point With SSR Support
 
