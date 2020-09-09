@@ -3,6 +3,7 @@ import createCommentsReducer from 'resolve-module-comments/lib/client/reducers/c
 import optimisticReducer from './reducers/optimistic'
 import optimisticVotingSaga from './sagas/optimistic-voting-saga'
 import storyCreateSaga from './sagas/story-create-saga'
+import devTools from './enhancers/redux-devtools'
 
 const getRedux = ({ 'comments-hn': getCommentsOptions }, history) => {
   const {
@@ -12,9 +13,10 @@ const getRedux = ({ 'comments-hn': getCommentsOptions }, history) => {
   const redux = {
     reducers: {
       [commentsReducerName]: createCommentsReducer(commentsOptions),
-      optimistic: optimisticReducer
+      optimistic: optimisticReducer,
     },
-    sagas: [optimisticVotingSaga, storyCreateSaga.bind(null, history)]
+    sagas: [optimisticVotingSaga, storyCreateSaga.bind(null, history)],
+    enhancers: [devTools],
   }
 
   return redux

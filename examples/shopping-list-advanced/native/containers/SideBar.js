@@ -8,21 +8,21 @@ import { Logo } from '@shopping-list-advanced/ui'
 
 import getNativeChunk from '../native-chunk'
 const {
-  resolveRedux: { actions }
+  resolveRedux: { actions },
 } = getNativeChunk()
 
 const styles = StyleSheet.create({
   content: {
     paddingTop: Platform.select({
       ios: 20,
-      android: 0
-    })
+      android: 0,
+    }),
   },
   icon: {
     width: 30,
     marginRight: 2,
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 })
 
 export class SideBar extends React.Component {
@@ -32,14 +32,14 @@ export class SideBar extends React.Component {
       icon: <Icon style={styles.icon} name="list" type="FontAwesome" />,
       callback: () => {
         this.props.navigation.navigate('My Lists')
-      }
+      },
     },
     {
       name: 'Settings',
       icon: <Icon style={styles.icon} name="user" type="FontAwesome" />,
       callback: () => {
         this.props.navigation.navigate('Settings')
-      }
+      },
     },
     {
       name: 'Logout',
@@ -47,8 +47,8 @@ export class SideBar extends React.Component {
       callback: () => {
         this.props.logout()
         this.props.navigation.navigate('Login')
-      }
-    }
+      },
+    },
   ]
 
   render() {
@@ -64,7 +64,7 @@ export class SideBar extends React.Component {
           <Logo />
           <List
             dataArray={this.routes}
-            renderRow={route => {
+            renderRow={(route) => {
               return (
                 <ListItem button onPress={route.callback}>
                   {route.icon}
@@ -79,13 +79,13 @@ export class SideBar extends React.Component {
   }
 }
 
-export const mapStateToProps = state => {
+export const mapStateToProps = (state) => {
   return {
-    jwt: state.jwt
+    jwt: state.jwt,
   }
 }
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(actions, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SideBar)

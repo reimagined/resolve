@@ -16,7 +16,7 @@ const validate = {
       log.warn('Value is not empty string', value)
       throw new Error(`${name} must be a non-empty string`)
     }
-  }
+  },
 }
 
 const getStaticBasedPath = (rootPath, staticPath, filename) => {

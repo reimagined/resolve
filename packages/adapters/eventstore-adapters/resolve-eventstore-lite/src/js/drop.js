@@ -7,7 +7,7 @@ const dropEventStore = async ({
   snapshotsTableName,
   escapeId,
   memoryStore,
-  config
+  config,
 }) => {
   const log = getLog('dropEventStore')
   try {

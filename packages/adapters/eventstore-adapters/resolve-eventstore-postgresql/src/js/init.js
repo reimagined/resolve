@@ -6,7 +6,7 @@ import {
   INT8_SQL_TYPE,
   JSON_SQL_TYPE,
   TEXT_SQL_TYPE,
-  AGGREGATE_ID_SQL_TYPE
+  AGGREGATE_ID_SQL_TYPE,
 } from './constants'
 
 const init = async ({
@@ -14,7 +14,7 @@ const init = async ({
   eventsTableName,
   snapshotsTableName,
   executeStatement,
-  escapeId
+  escapeId,
 }) => {
   const databaseNameAsId = escapeId(databaseName)
   const eventsTableNameAsId = escapeId(eventsTableName)

@@ -11,11 +11,11 @@ const getPeerDependencies = () => {
     [
       path.resolve(process.cwd(), 'node_modules'),
       path.resolve(__dirname, '../node_modules'),
-      ...getMonorepoNodeModules()
+      ...getMonorepoNodeModules(),
     ]
-      .map(dir => find(`${dir}/**/package.json`))
+      .map((dir) => find(`${dir}/**/package.json`))
       .reduce((acc, foundPackages) => {
-        foundPackages.forEach(packageJsonPath => acc.add(packageJsonPath))
+        foundPackages.forEach((packageJsonPath) => acc.add(packageJsonPath))
         return acc
       }, new Set())
   )

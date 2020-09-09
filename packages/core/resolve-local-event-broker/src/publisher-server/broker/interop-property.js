@@ -8,9 +8,9 @@ const interopProperty = async (pool, method, payload) => {
       escapeId,
       escapeStr,
       encodeJsonPath,
-      decodeJsonPath
+      decodeJsonPath,
     },
-    parseSubscription
+    parseSubscription,
   } = pool
   const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
   const { eventSubscriber, key, value } = payload

@@ -1,22 +1,18 @@
 import { symbol, Phases } from './constants'
+export interface ReadModelParams {
+  name: string
+  projection: any
+  resolvers: any
+  adapter: any
+}
 
 const readModel = (
   {
-    promise
+    promise,
   }: {
     promise: any
   },
-  {
-    name,
-    projection,
-    resolvers,
-    adapter
-  }: {
-    name: string
-    projection: any
-    resolvers: any
-    adapter: any
-  }
+  { name, projection, resolvers, adapter }: ReadModelParams
 ): any => {
   if (promise[symbol].phase !== Phases.GIVEN_EVENTS) {
     throw new TypeError()

@@ -5,7 +5,7 @@ import { EOL } from 'os'
 import {
   USER_CREATED,
   STORY_CREATED,
-  STORY_UPVOTED
+  STORY_UPVOTED,
 } from '../common/event-types'
 import api from './api'
 
@@ -13,7 +13,7 @@ const aggregateVersionsMap = new Map()
 let eventTimestamp = Date.now()
 const users = {}
 
-const saveOneEvent = async event =>
+const saveOneEvent = async (event) =>
   await api.invokeImportApi({
     ...event,
     aggregateVersion: aggregateVersionsMap
@@ -24,23 +24,23 @@ const saveOneEvent = async event =>
           : 1
       )
       .get(event.aggregateId),
-    timestamp: eventTimestamp++
+    timestamp: eventTimestamp++,
   })
 
-const generateUserEvents = async name => {
+const generateUserEvents = async (name) => {
   const aggregateId = uuid.v4()
 
   await saveOneEvent({
     type: USER_CREATED,
     aggregateId,
-    payload: { name }
+    payload: { name },
   })
 
   users[name] = aggregateId
   return aggregateId
 }
 
-const getUserId = async userName => {
+const getUserId = async (userName) => {
   const user = users[userName]
 
   if (user) {
@@ -68,9 +68,9 @@ const generateCommentEvents = async (comment, aggregateId, parentId) => {
         text: comment.text || '',
         userId,
         userName,
-        parentId: parentId
-      }
-    }
+        parentId: parentId,
+      },
+    },
   })
 
   return commentId
@@ -91,11 +91,18 @@ async function generateComments(ids, aggregateId, parentId, options) {
     }
 
     promises.push(
-      generateCommentEvents(comment, aggregateId, parentId).then(commentId => {
-        if (Array.isArray(comment.kids)) {
-          return generateComments(comment.kids, aggregateId, commentId, options)
+      generateCommentEvents(comment, aggregateId, parentId).then(
+        (commentId) => {
+          if (Array.isArray(comment.kids)) {
+            return generateComments(
+              comment.kids,
+              aggregateId,
+              commentId,
+              options
+            )
+          }
         }
-      })
+      )
     )
   }
   return await Promise.all(promises)
@@ -110,13 +117,13 @@ const generatePointEvents = async (aggregateId, pointCount) => {
       type: STORY_UPVOTED,
       aggregateId,
       payload: {
-        userId: users[keys[i]]
-      }
+        userId: users[keys[i]],
+      },
     })
   }
 }
 
-const generateStoryEvents = async story => {
+const generateStoryEvents = async (story) => {
   if (!story || !story.by) {
     return
   }
@@ -132,8 +139,8 @@ const generateStoryEvents = async story => {
       text: story.text || '',
       userId: await getUserId(userName),
       userName,
-      link: story.url || ''
-    }
+      link: story.url || '',
+    },
   })
 
   if (story.score) {
@@ -142,19 +149,19 @@ const generateStoryEvents = async story => {
 
   if (story.kids) {
     await generateComments(story.kids, aggregateId, null, {
-      count: Math.floor(Math.random() * 100)
+      count: Math.floor(Math.random() * 100),
     })
   }
 
   return aggregateId
 }
 
-const getUniqueStoryIds = async categories => {
+const getUniqueStoryIds = async (categories) => {
   const result = new Set()
 
   for (const ids of categories) {
     if (Array.isArray(ids)) {
-      ids.forEach(id => result.add(id))
+      ids.forEach((id) => result.add(id))
     }
   }
 
@@ -163,7 +170,7 @@ const getUniqueStoryIds = async categories => {
 
 const fetchStoryIds = async () => {
   const categories = await Promise.all(
-    ['topstories', 'newstories', 'showstories', 'askstories'].map(category =>
+    ['topstories', 'newstories', 'showstories', 'askstories'].map((category) =>
       api.fetchStoryIds(category)
     )
   )

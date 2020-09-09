@@ -12,7 +12,7 @@ const createAdapter = ({ execute, errorHandler }) => {
               timeouts.delete(timeout)
               await execute(entry.taskId, entry.date, entry.command)
             })
-            .catch(async error => {
+            .catch(async (error) => {
               if (typeof errorHandler === 'function') {
                 await errorHandler(error)
               } else {
@@ -30,7 +30,7 @@ const createAdapter = ({ execute, errorHandler }) => {
       }
 
       timeouts.clear()
-    }
+    },
   }
 }
 

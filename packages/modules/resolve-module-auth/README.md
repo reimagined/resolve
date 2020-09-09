@@ -90,7 +90,7 @@ import bcrypt from 'bcrypt'
 // Route handler accepts req as first argument, and second and following arguments is strategy result
 // Local strategy returns two arguments - username and password. It's strictly strategy-dependent
 const routeRegisterCallback = async ({ resolve }, username, password) => {
-  const existingUser = await resolve.executeQuery({ // Request read model to check user is exists
+  const { data: existingUser } = await resolve.executeQuery({ // Request read model to check user is exists
     modelName: 'read-model-name',
     resolverName: 'resolver-name',
     resolverArgs: { name: username.trim())  }

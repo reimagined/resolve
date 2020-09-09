@@ -1,11 +1,11 @@
-import { actionTypes } from 'resolve-redux'
+import { internal } from 'resolve-redux'
 import optimisticVotingSagaFactory from '../../../client/sagas/optimistic-voting-saga'
 import {
   optimisticUnvoteStory,
-  optimisticUpvoteStory
+  optimisticUpvoteStory,
 } from '../../../client/actions/optimistic-actions'
 
-const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = actionTypes
+const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = internal.actionTypes
 
 test('Optimistic voting saga - register takeAll sagas', () => {
   const optimisticVotingSaga = optimisticVotingSagaFactory()
@@ -18,14 +18,18 @@ test('Optimistic voting saga - register takeAll sagas', () => {
   expect(
     upvoteActionFilter({
       type: SEND_COMMAND_SUCCESS,
-      commandType: 'upvoteStory'
+      command: {
+        type: 'upvoteStory',
+      },
     })
   ).toEqual(true)
 
   expect(
     upvoteActionFilter({
       type: SEND_COMMAND_FAILURE,
-      commandType: 'upvoteStory'
+      command: {
+        type: 'upvoteStory',
+      },
     })
   ).toEqual(false)
 
@@ -36,14 +40,18 @@ test('Optimistic voting saga - register takeAll sagas', () => {
   expect(
     unvoteActionFilter({
       type: SEND_COMMAND_SUCCESS,
-      commandType: 'unvoteStory'
+      command: {
+        type: 'unvoteStory',
+      },
     })
   ).toEqual(true)
 
   expect(
     unvoteActionFilter({
       type: SEND_COMMAND_FAILURE,
-      commandType: 'unvoteStory'
+      command: {
+        type: 'unvoteStory',
+      },
     })
   ).toEqual(false)
 
@@ -55,7 +63,9 @@ test('Optimistic voting saga - upvote success', () => {
   const optimisticVotingSaga = optimisticVotingSagaFactory()
   let step = optimisticVotingSaga.next()
   const upvoteSagaFactory = step.value.payload.args[1]
-  const upvoteSaga = upvoteSagaFactory({ aggregateId: 'aggregateId' })
+  const upvoteSaga = upvoteSagaFactory({
+    command: { aggregateId: 'aggregateId' },
+  })
 
   step = upvoteSaga.next()
   expect(step.done).toEqual(false)
@@ -73,7 +83,9 @@ test('Optimistic voting saga - unvote success', () => {
   step = optimisticVotingSaga.next()
   const unvoteSagaFactory = step.value.payload.args[1]
 
-  const unvoteSaga = unvoteSagaFactory({ aggregateId: 'aggregateId' })
+  const unvoteSaga = unvoteSagaFactory({
+    command: { aggregateId: 'aggregateId' },
+  })
 
   step = unvoteSaga.next()
   expect(step.done).toEqual(false)

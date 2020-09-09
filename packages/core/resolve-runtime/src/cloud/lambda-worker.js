@@ -1,9 +1,8 @@
 import debugLevels from 'resolve-debug-levels'
+import { invokeFunction } from 'resolve-cloud-common/lambda'
 
 import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
-import handleEventBusEvent from './event-bus-event-handler'
-import handleEventStoreEvent from './event-store-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
 import putMetrics from './metrics'
 import initResolve from '../common/init-resolve'
@@ -22,14 +21,38 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     mode: 'internal',
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
     lambdaEventType: 'EventBus',
-    lambdaEventName: 'resolveSource'
+    lambdaEventName: 'resolveSource',
   }
 
   resolveBase.eventstoreCredentials = {
     mode: 'internal',
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
     lambdaEventType: 'EventStore',
-    lambdaEventName: 'resolveSource'
+    lambdaEventName: 'resolveSource',
+  }
+
+  resolveBase.subscriptionsCredentials = {
+    applicationLambdaArn: lambdaContext.invokedFunctionArn,
+  }
+
+  resolveBase.invokeEventBusAsync = async (
+    eventSubscriber,
+    method,
+    parameters
+  ) => {
+    await invokeFunction({
+      FunctionName: lambdaContext.invokedFunctionArn,
+      InvocationType: 'Event',
+      Region: process.env.AWS_REGION,
+      Payload: {
+        resolveSource: 'EventBusDirect',
+        method,
+        payload: {
+          eventSubscriber,
+          ...parameters,
+        },
+      },
+    })
   }
 
   const resolve = Object.create(resolveBase)
@@ -55,18 +78,26 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
+    } else if (lambdaEvent.resolveSource === 'EventBusDirect') {
+      log.debug('identified event source: event-bus-direct')
+      const { method, payload } = lambdaEvent
+      const executorResult = await resolve.eventBus[method](payload)
+
+      log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
+
+      return executorResult
     } else if (lambdaEvent.resolveSource === 'EventBus') {
       log.debug('identified event source: event-bus')
-
-      const executorResult = await handleEventBusEvent(lambdaEvent, resolve)
+      const { method, payload } = lambdaEvent
+      const executorResult = await resolve.eventListener[method](payload)
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
     } else if (lambdaEvent.resolveSource === 'EventStore') {
       log.debug('identified event source: event-store')
-
-      const executorResult = await handleEventStoreEvent(lambdaEvent, resolve)
+      const { method, payload } = lambdaEvent
+      const executorResult = await resolve.eventStore[method](payload)
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 

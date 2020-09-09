@@ -1,7 +1,8 @@
 import {
   ConsumerMethod,
   SubscriptionStatus,
-  SUBSCRIBERS_TABLE_NAME
+  DeliveryStrategy,
+  SUBSCRIBERS_TABLE_NAME,
 } from '../constants'
 
 const reset = async (pool, payload) => {
@@ -9,7 +10,7 @@ const reset = async (pool, payload) => {
     database: { runQuery, runRawQuery, escapeStr, escapeId, encodeJsonPath },
     parseSubscription,
     invokeConsumer,
-    generateGuid
+    generateGuid,
   } = pool
   const { eventSubscriber } = payload
   const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
@@ -33,7 +34,7 @@ const reset = async (pool, payload) => {
     queueStrategy,
     eventTypes,
     aggregateIds,
-    properties
+    properties,
   } = parseSubscription(result[0])
 
   await runRawQuery(`
@@ -63,7 +64,7 @@ const reset = async (pool, payload) => {
         eventTypes != null
           ? `{ ${eventTypes
               .map(
-                eventType =>
+                (eventType) =>
                   `${JSON.stringify(encodeJsonPath(eventType))}: true`
               )
               .join(', ')} }`
@@ -73,7 +74,7 @@ const reset = async (pool, payload) => {
         aggregateIds != null
           ? `{ ${aggregateIds
               .map(
-                aggregateId =>
+                (aggregateId) =>
                   `${JSON.stringify(encodeJsonPath(aggregateId))}: true`
               )
               .join(', ')} }`
@@ -92,7 +93,13 @@ const reset = async (pool, payload) => {
     BEGIN IMMEDIATE;
   `)
 
-  await invokeConsumer(pool, ConsumerMethod.Drop, { eventSubscriber })
+  if (
+    deliveryStrategy === DeliveryStrategy.ACTIVE_NONE ||
+    deliveryStrategy === DeliveryStrategy.ACTIVE_REGULAR ||
+    deliveryStrategy === DeliveryStrategy.ACTIVE_XA
+  ) {
+    await invokeConsumer(pool, ConsumerMethod.Drop, { eventSubscriber })
+  }
 
   return subscriptionId
 }

@@ -14,37 +14,37 @@ test('resolve-saga', async () => {
   const remainingTime = 15 * 60 * 1000
   const eventstoreAdapter = {
     loadEvents: jest.fn().mockReturnValue({ events: [], cursor: null }),
-    getSecretsManager: jest.fn()
+    getSecretsManager: jest.fn(),
   }
 
   const readModelStore = {
     defineTable: jest.fn(),
     find: jest.fn(),
     insert: jest.fn(),
-    delete: jest.fn()
+    delete: jest.fn(),
   }
 
   const readModelConnectors = {
     'default-connector': {
       connect: jest.fn().mockReturnValue(readModelStore),
       disconnect: jest.fn(),
-      drop: jest.fn()
-    }
+      drop: jest.fn(),
+    },
   }
 
   const snapshotAdapter = {
     loadSnapshot: jest.fn(),
-    saveSnapshot: jest.fn()
+    saveSnapshot: jest.fn(),
   }
 
   const schedulerAdapterInstance = {
     addEntries: jest.fn(),
-    clearEntries: jest.fn()
+    clearEntries: jest.fn(),
   }
 
-  const publisher = {
-    publish: jest.fn().mockImplementation(async ({ event }) => event)
-  }
+  const performAcknowledge = jest
+    .fn()
+    .mockImplementation(async ({ event }) => event)
 
   const schedulerAdapter = jest.fn().mockReturnValue(schedulerAdapterInstance)
 
@@ -56,22 +56,22 @@ test('resolve-saga', async () => {
       type: 'scheduledCommand',
       aggregateName: 'Test',
       aggregateId: 'scheduledId',
-      payload: 'scheduledCommand'
+      payload: 'scheduledCommand',
     })
 
     await sideEffects.executeCommand({
       type: 'executedCommand',
       aggregateName: 'Test',
       aggregateId: 'executedId',
-      payload: 'executedCommand'
+      payload: 'executedCommand',
     })
 
     await sideEffects.executeQuery({
       modelName: 'modelName',
       resolverName: 'resolverName',
       resolverArgs: {
-        arg: 'value'
-      }
+        arg: 'value',
+      },
     })
   })
 
@@ -82,10 +82,10 @@ test('resolve-saga', async () => {
       schedulerName: 'default-scheduler',
       handlers: {
         EVENT_TYPE: eventHandler,
-        Init: jest.fn()
+        Init: jest.fn(),
       },
-      invariantHash: 'invariantHash'
-    }
+      invariantHash: 'invariantHash',
+    },
   ]
 
   const schedulers = [
@@ -94,11 +94,15 @@ test('resolve-saga', async () => {
       connectorName: 'default-connector',
       adapter: schedulerAdapter,
       invariantHash: 'invariantHash',
-      encryption: () => ({})
-    }
+      encryption: () => ({}),
+    },
   ]
 
+  const onCommandExecuted = jest.fn().mockImplementation(async () => {})
+  const getRemainingTimeInMillis = () => 0x7fffffff
+
   const sagaExecutor = createSagaExecutor({
+    getRemainingTimeInMillis,
     eventstoreAdapter,
     readModelConnectors,
     snapshotAdapter,
@@ -106,15 +110,16 @@ test('resolve-saga', async () => {
     executeQuery,
     sagas,
     schedulers,
-    publisher
+    performAcknowledge,
+    onCommandExecuted,
   })
 
   const properties = {
     RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: 0,
-    'test-property': 'content'
+    'test-property': 'content',
   }
 
-  await sagaExecutor.updateByEvents({
+  await sagaExecutor.sendEvents({
     modelName: 'test-saga',
     events: [
       { type: 'Init' },
@@ -123,18 +128,18 @@ test('resolve-saga', async () => {
         aggregateId: 'aggregateId',
         aggregateVersion: 1,
         timestamp: 100,
-        payload: { content: true }
-      }
+        payload: { content: true },
+      },
     ],
     getRemainingTimeInMillis: () => remainingTime,
-    properties
+    properties,
   })
 
   const schedulerEvents = createEventTypes({
-    schedulerName: 'default-scheduler'
+    schedulerName: 'default-scheduler',
   })
 
-  await sagaExecutor.updateByEvents({
+  await sagaExecutor.sendEvents({
     modelName: 'default-scheduler',
     events: [
       { type: 'Init' },
@@ -147,9 +152,9 @@ test('resolve-saga', async () => {
             aggregateName: 'Test',
             aggregateId: 'scheduledId',
             type: 'scheduledCommand',
-            payload: 'scheduledCommand'
-          }
-        }
+            payload: 'scheduledCommand',
+          },
+        },
       },
       {
         type: schedulerEvents.SCHEDULED_COMMAND_EXECUTED,
@@ -158,23 +163,23 @@ test('resolve-saga', async () => {
           aggregateName: 'Test',
           aggregateId: 'scheduledId',
           type: 'scheduledCommand',
-          payload: 'scheduledCommand'
-        }
+          payload: 'scheduledCommand',
+        },
       },
       {
-        type: schedulerEvents.SCHEDULED_COMMAND_SUCCEEDED
+        type: schedulerEvents.SCHEDULED_COMMAND_SUCCEEDED,
       },
       {
-        type: schedulerEvents.SCHEDULED_COMMAND_FAILED
-      }
+        type: schedulerEvents.SCHEDULED_COMMAND_FAILED,
+      },
     ],
     getRemainingTimeInMillis: () => remainingTime,
-    properties
+    properties,
   })
 
-  await sagaExecutor.drop('test-saga')
+  await sagaExecutor.drop({ modelName: 'test-saga' })
 
-  await sagaExecutor.drop('default-scheduler')
+  await sagaExecutor.drop({ modelName: 'default-scheduler' })
 
   await sagaExecutor.dispose()
 
@@ -197,7 +202,7 @@ test('resolve-saga', async () => {
   expect(eventstoreAdapter.loadEvents.mock.calls).toMatchSnapshot(
     'eventstoreAdapter.loadEvents'
   )
-  expect(publisher.publish.mock.calls).toMatchSnapshot('publisher.publish')
+  expect(performAcknowledge.mock.calls).toMatchSnapshot('performAcknowledge')
 
   expect(
     readModelConnectors['default-connector'].connect.mock.calls

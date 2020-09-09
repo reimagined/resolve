@@ -87,6 +87,6 @@ test('generic createAdapter invoked', () => {
     beginIncrementalImport,
     commitIncrementalImport,
     rollbackIncrementalImport,
-    pushIncrementalImport
+    pushIncrementalImport,
   })
 })

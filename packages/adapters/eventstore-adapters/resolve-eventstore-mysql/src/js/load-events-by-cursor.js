@@ -4,8 +4,8 @@ const loadEventsByCursor = async (
   { events: { connection, eventsTableName }, escapeId, escape, shapeEvent },
   { eventTypes, aggregateIds, cursor, limit }
 ) => {
-  const injectString = value => `${escape(value)}`
-  const injectNumber = value => `${+value}`
+  const injectString = (value) => `${escape(value)}`
+  const injectNumber = (value) => `${+value}`
 
   const cursorBuffer =
     cursor != null ? Buffer.from(cursor, 'base64') : Buffer.alloc(1536, 0)
@@ -81,7 +81,7 @@ const loadEventsByCursor = async (
 
   return {
     cursor: nextConditionsBuffer.toString('base64'),
-    events
+    events,
   }
 }
 

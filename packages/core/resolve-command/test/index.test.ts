@@ -2,7 +2,7 @@ import createCommandExecutor from '../src'
 import { CommandError } from '../src'
 
 let eventstoreAdapter: any
-let publisher: any
+let onCommandExecuted: any
 let events: any
 let DateNow: any
 let performanceTracer: any
@@ -20,7 +20,7 @@ const makeAggregateMeta = (params: any) => ({
       : 'empty-invariantHash',
   serializeState: params.serializeState || JSON.stringify,
   deserializeState: params.deserializeState || JSON.parse,
-  projection: params.projection || {}
+  projection: params.projection || {},
 })
 
 beforeEach(() => {
@@ -40,9 +40,9 @@ beforeEach(() => {
               )}`
                 .substr(prevCursor.length)
                 .split(',')
-                .filter(e => e != null && e.length > 0)
-                .map(e => JSON.parse(Buffer.from(e, 'base64').toString()))
-            : events
+                .filter((e) => e != null && e.length > 0)
+                .map((e) => JSON.parse(Buffer.from(e, 'base64').toString()))
+            : events,
       }
     }),
     getNextCursor: jest.fn().mockImplementation((prevCursor, events) => {
@@ -54,17 +54,15 @@ beforeEach(() => {
     saveSnapshot: jest.fn().mockImplementation((key, value) => {
       return snapshots.set(key, value)
     }),
-    loadSnapshot: jest.fn().mockImplementation(key => {
+    loadSnapshot: jest.fn().mockImplementation((key) => {
       return snapshots.get(key)
-    })
+    }),
   }
 
-  publisher = {
-    publish: jest.fn().mockImplementation(async ({ event }) => {
-      events.push(event)
-      return event
-    })
-  }
+  onCommandExecuted = jest.fn().mockImplementation(async (event) => {
+    events.push(event)
+    return event
+  })
 
   DateNow = Date.now
   const timestamp = Date.now()
@@ -76,10 +74,10 @@ beforeEach(() => {
   const addNewSubsegment = jest.fn().mockReturnValue({
     addAnnotation,
     addError,
-    close
+    close,
   })
   const getSegment = jest.fn().mockReturnValue({
-    addNewSubsegment
+    addNewSubsegment,
   })
 
   performanceTracer = {
@@ -87,7 +85,7 @@ beforeEach(() => {
     addNewSubsegment,
     addAnnotation,
     addError,
-    close
+    close,
   }
 })
 
@@ -96,7 +94,7 @@ afterEach(() => {
   events = null
   global.Date.now = DateNow
   performanceTracer = null
-  publisher = null
+  onCommandExecuted = null
   snapshots = null
 })
 
@@ -110,22 +108,22 @@ describe('executeCommand', () => {
           emptyCommand: () => {
             return {
               type: 'EmptyEvent',
-              payload: {}
+              payload: {},
             }
-          }
-        }
+          },
+        },
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       const event = await executeCommand({
         aggregateName: 'empty',
         aggregateId: 'aggregateId',
-        type: 'emptyCommand'
+        type: 'emptyCommand',
       })
 
       expect(event.aggregateVersion).toEqual(1)
@@ -140,43 +138,43 @@ describe('executeCommand', () => {
               throw new Error('Entity already created')
             }
             return {
-              type: 'CREATED'
+              type: 'CREATED',
             }
-          }
+          },
         },
         projection: {
           Init: () => {
             return {
-              created: false
+              created: false,
             }
           },
           CREATED: (state: any) => {
             return {
               ...state,
-              created: true
+              created: true,
             }
-          }
+          },
         },
-        invariantHash: 'Entity-invariantHash'
+        invariantHash: 'Entity-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       await executeCommand({
         aggregateName: 'Entity',
         aggregateId: 'aggregateId',
-        type: 'create'
+        type: 'create',
       })
 
       try {
         await executeCommand({
           aggregateName: 'Entity',
           aggregateId: 'aggregateId',
-          type: 'create'
+          type: 'create',
         })
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
@@ -203,18 +201,18 @@ describe('executeCommand', () => {
             return {
               type: 'USER_CREATED',
               payload: {
-                id: command.payload.id
-              }
+                id: command.payload.id,
+              },
             }
-          }
+          },
         },
-        invariantHash: 'User-invariantHash'
+        invariantHash: 'User-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       const event = await executeCommand({
@@ -222,9 +220,9 @@ describe('executeCommand', () => {
         aggregateId: 'aggregateId',
         type: 'createUser',
         payload: {
-          id: 'userId'
+          id: 'userId',
         },
-        jwt: JWT_TOKEN
+        jwt: JWT_TOKEN,
       })
 
       expect(event).toEqual({
@@ -232,9 +230,9 @@ describe('executeCommand', () => {
         aggregateVersion: 1,
         type: 'USER_CREATED',
         payload: {
-          id: 'userId'
+          id: 'userId',
         },
-        timestamp: Date.now()
+        timestamp: Date.now(),
       })
 
       try {
@@ -243,9 +241,9 @@ describe('executeCommand', () => {
           aggregateId: 'aggregateId',
           type: 'createUser',
           payload: {
-            id: 'userId'
+            id: 'userId',
           },
-          jwt: 'INCORRECT_JWT_TOKEN'
+          jwt: 'INCORRECT_JWT_TOKEN',
         })
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
@@ -263,26 +261,26 @@ describe('executeCommand', () => {
               type: 'SET',
               payload: {
                 key: command.payload.key,
-                value: command.payload.value
-              }
+                value: command.payload.value,
+              },
             }
-          }
+          },
         },
         projection: {
           SET: (state: any, event: any) => {
             return {
               ...state,
-              [event.payload.key]: [event.payload.value]
+              [event.payload.key]: [event.payload.value],
             }
-          }
+          },
         },
-        invariantHash: 'Map-invariantHash'
+        invariantHash: 'Map-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       await executeCommand({
@@ -291,8 +289,8 @@ describe('executeCommand', () => {
         type: 'set',
         payload: {
           key: 'key1',
-          value: 'value1'
-        }
+          value: 'value1',
+        },
       })
 
       expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(0)
@@ -305,8 +303,8 @@ describe('executeCommand', () => {
         type: 'set',
         payload: {
           key: 'key2',
-          value: 'value2'
-        }
+          value: 'value2',
+        },
       })
 
       expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(1)
@@ -319,8 +317,8 @@ describe('executeCommand', () => {
         type: 'set',
         payload: {
           key: 'key3',
-          value: 'value3'
-        }
+          value: 'value3',
+        },
       })
 
       expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(2)
@@ -337,26 +335,26 @@ describe('executeCommand', () => {
               type: 'SET',
               payload: {
                 key: command.payload.key,
-                value: command.payload.value
-              }
+                value: command.payload.value,
+              },
             }
-          }
+          },
         },
         projection: {
           SET: (state: any, event: any) => {
             return {
               ...state,
-              [event.payload.key]: [event.payload.value]
+              [event.payload.key]: [event.payload.value],
             }
-          }
+          },
         },
-        invariantHash: undefined
+        invariantHash: undefined,
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       try {
@@ -366,8 +364,8 @@ describe('executeCommand', () => {
           type: 'set',
           payload: {
             key: 'key1',
-            value: 'value1'
-          }
+            value: 'value1',
+          },
         })
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
@@ -387,26 +385,26 @@ describe('executeCommand', () => {
               type: 'SET',
               payload: {
                 key: command.payload.key,
-                value: command.payload.value
-              }
+                value: command.payload.value,
+              },
             }
-          }
+          },
         },
         projection: {
           SET: (state: any, event: any) => {
             return {
               ...state,
-              [event.payload.key]: [event.payload.value]
+              [event.payload.key]: [event.payload.value],
             }
-          }
+          },
         },
-        invariantHash: 42
+        invariantHash: 42,
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       try {
@@ -416,8 +414,8 @@ describe('executeCommand', () => {
           type: 'set',
           payload: {
             key: 'key1',
-            value: 'value1'
-          }
+            value: 'value1',
+          },
         })
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
@@ -437,8 +435,8 @@ describe('executeCommand', () => {
           timestamp: 2,
           payload: {
             key: 'key',
-            value: 'value'
-          }
+            value: 'value',
+          },
         },
         {
           aggregateId: 'aggregateId',
@@ -447,9 +445,9 @@ describe('executeCommand', () => {
           timestamp: 1,
           payload: {
             key: 'key',
-            value: 'value'
-          }
-        }
+            value: 'value',
+          },
+        },
       ]
 
       const aggregate = makeAggregateMeta({
@@ -460,26 +458,26 @@ describe('executeCommand', () => {
               type: 'SET',
               payload: {
                 key: command.payload.key,
-                value: command.payload.value
-              }
+                value: command.payload.value,
+              },
             }
-          }
+          },
         },
         projection: {
           SET: (state: any, event: any) => {
             return {
               ...state,
-              [event.payload.key]: [event.payload.value]
+              [event.payload.key]: [event.payload.value],
             }
-          }
+          },
         },
-        invariantHash: 'Map-invariantHash'
+        invariantHash: 'Map-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       try {
@@ -489,8 +487,8 @@ describe('executeCommand', () => {
           type: 'set',
           payload: {
             key: 'key',
-            value: 'value'
-          }
+            value: 'value',
+          },
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -509,24 +507,24 @@ describe('executeCommand', () => {
           emptyCommand: () => {
             return {
               type: 'EmptyEvent',
-              payload: {}
+              payload: {},
             }
-          }
+          },
         },
-        invariantHash: 'empty-invariantHash'
+        invariantHash: 'empty-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       try {
         await executeCommand({
           aggregateName: 'empty',
           aggregateId: 'aggregateId',
-          type: 'unknownCommand'
+          type: 'unknownCommand',
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -542,24 +540,24 @@ describe('executeCommand', () => {
           emptyCommand: () => {
             return {
               type: 'EmptyEvent',
-              payload: {}
+              payload: {},
             }
-          }
+          },
         },
-        invariantHash: 'empty-invariantHash'
+        invariantHash: 'empty-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       try {
         await executeCommand({
           aggregateName: 'empty',
           aggregateId: 42 as any,
-          type: 'unknownCommand'
+          type: 'unknownCommand',
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -578,24 +576,24 @@ describe('executeCommand', () => {
           emptyCommand: () => {
             return {
               type: 'EmptyEvent',
-              payload: {}
+              payload: {},
             }
-          }
+          },
         },
-        invariantHash: 'empty-invariantHash'
+        invariantHash: 'empty-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       try {
         await executeCommand({
           aggregateName: 42 as any,
           aggregateId: 'aggregateId',
-          type: 'emptyCommand'
+          type: 'emptyCommand',
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -614,24 +612,24 @@ describe('executeCommand', () => {
           emptyCommand: () => {
             return {
               type: 'EmptyEvent',
-              payload: {}
+              payload: {},
             }
-          }
+          },
         },
-        invariantHash: 'empty-invariantHash'
+        invariantHash: 'empty-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       try {
         await executeCommand({
           aggregateName: 'empty',
           aggregateId: 'aggregateId',
-          type: 42 as any
+          type: 42 as any,
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -644,15 +642,15 @@ describe('executeCommand', () => {
     test('should throw error when an aggregate does not exist', async () => {
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: []
+        onCommandExecuted,
+        aggregates: [],
       })
 
       try {
         await executeCommand({
           aggregateName: 'empty',
           aggregateId: 'aggregateId',
-          type: 'emptyCommand'
+          type: 'emptyCommand',
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -673,24 +671,24 @@ describe('executeCommand', () => {
 
               aggregateId: 'aggregateId',
               aggregateVersion: 'aggregateVersion',
-              timestamp: 'timestamp'
+              timestamp: 'timestamp',
             }
-          }
+          },
         },
-        invariantHash: 'empty-invariantHash'
+        invariantHash: 'empty-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       try {
         await executeCommand({
           aggregateName: 'empty',
           aggregateId: 'aggregateId',
-          type: 'emptyCommand'
+          type: 'emptyCommand',
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -708,24 +706,24 @@ describe('executeCommand', () => {
         commands: {
           emptyCommand: () => {
             return {
-              payload: {}
+              payload: {},
             }
-          }
+          },
         },
-        invariantHash: 'empty-invariantHash'
+        invariantHash: 'empty-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       try {
         await executeCommand({
           aggregateName: 'empty',
           aggregateId: 'aggregateId',
-          type: 'emptyCommand'
+          type: 'emptyCommand',
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -741,28 +739,28 @@ describe('executeCommand', () => {
         commands: {
           emptyCommand: () => {
             return {
-              type: 'EVENT'
+              type: 'EVENT',
             }
-          }
+          },
         },
-        invariantHash: 'empty-invariantHash'
+        invariantHash: 'empty-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       await expect(
         executeCommand({
           aggregateName: 'empty',
           aggregateId: 'aggregateId',
-          type: 'emptyCommand'
+          type: 'emptyCommand',
         })
       ).resolves.toEqual(
         expect.not.objectContaining({
-          payload: undefined
+          payload: undefined,
         })
       )
     })
@@ -776,24 +774,24 @@ describe('executeCommand', () => {
           emptyCommand: () => {
             return {
               type: 'EmptyEvent',
-              payload: {}
+              payload: {},
             }
-          }
+          },
         },
-        invariantHash: 'empty-invariantHash'
+        invariantHash: 'empty-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       const event = await executeCommand({
         aggregateName: 'empty',
         aggregateId: 'aggregateId',
-        type: 'emptyCommand'
+        type: 'emptyCommand',
       })
 
       expect(event.aggregateVersion).toEqual(1)
@@ -820,44 +818,44 @@ describe('executeCommand', () => {
               throw new Error('Entity already created')
             }
             return {
-              type: 'CREATED'
+              type: 'CREATED',
             }
-          }
+          },
         },
         projection: {
           Init: () => {
             return {
-              created: false
+              created: false,
             }
           },
           CREATED: (state: any) => {
             return {
               ...state,
-              created: true
+              created: true,
             }
-          }
+          },
         },
-        invariantHash: 'Entity-invariantHash'
+        invariantHash: 'Entity-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       await executeCommand({
         aggregateName: 'Entity',
         aggregateId: 'aggregateId',
-        type: 'create'
+        type: 'create',
       })
 
       try {
         await executeCommand({
           aggregateName: 'Entity',
           aggregateId: 'aggregateId',
-          type: 'create'
+          type: 'create',
         })
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
@@ -896,19 +894,19 @@ describe('executeCommand', () => {
             return {
               type: 'USER_CREATED',
               payload: {
-                id: command.payload.id
-              }
+                id: command.payload.id,
+              },
             }
-          }
+          },
         },
-        invariantHash: 'User-invariantHash'
+        invariantHash: 'User-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       const event = await executeCommand({
@@ -916,9 +914,9 @@ describe('executeCommand', () => {
         aggregateId: 'aggregateId',
         type: 'createUser',
         payload: {
-          id: 'userId'
+          id: 'userId',
         },
-        jwt: JWT_TOKEN
+        jwt: JWT_TOKEN,
       })
 
       expect(event).toEqual({
@@ -926,9 +924,9 @@ describe('executeCommand', () => {
         aggregateVersion: 1,
         type: 'USER_CREATED',
         payload: {
-          id: 'userId'
+          id: 'userId',
         },
-        timestamp: Date.now()
+        timestamp: Date.now(),
       })
 
       try {
@@ -937,9 +935,9 @@ describe('executeCommand', () => {
           aggregateId: 'aggregateId',
           type: 'createUser',
           payload: {
-            id: 'userId'
+            id: 'userId',
           },
-          jwt: 'INCORRECT_JWT_TOKEN'
+          jwt: 'INCORRECT_JWT_TOKEN',
         })
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
@@ -970,27 +968,27 @@ describe('executeCommand', () => {
               type: 'SET',
               payload: {
                 key: command.payload.key,
-                value: command.payload.value
-              }
+                value: command.payload.value,
+              },
             }
-          }
+          },
         },
         projection: {
           SET: (state: any, event: any) => {
             return {
               ...state,
-              [event.payload.key]: [event.payload.value]
+              [event.payload.key]: [event.payload.value],
             }
-          }
+          },
         },
-        invariantHash: 'Map-invariantHash'
+        invariantHash: 'Map-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       await executeCommand({
@@ -999,8 +997,8 @@ describe('executeCommand', () => {
         type: 'set',
         payload: {
           key: 'key1',
-          value: 'value1'
-        }
+          value: 'value1',
+        },
       })
 
       expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(0)
@@ -1013,8 +1011,8 @@ describe('executeCommand', () => {
         type: 'set',
         payload: {
           key: 'key2',
-          value: 'value2'
-        }
+          value: 'value2',
+        },
       })
 
       expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(1)
@@ -1027,8 +1025,8 @@ describe('executeCommand', () => {
         type: 'set',
         payload: {
           key: 'key3',
-          value: 'value3'
-        }
+          value: 'value3',
+        },
       })
 
       expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(2)
@@ -1058,27 +1056,27 @@ describe('executeCommand', () => {
               type: 'SET',
               payload: {
                 key: command.payload.key,
-                value: command.payload.value
-              }
+                value: command.payload.value,
+              },
             }
-          }
+          },
         },
         projection: {
           SET: (state: any, event: any) => {
             return {
               ...state,
-              [event.payload.key]: [event.payload.value]
+              [event.payload.key]: [event.payload.value],
             }
-          }
+          },
         },
-        invariantHash: undefined
+        invariantHash: undefined,
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       try {
@@ -1088,8 +1086,8 @@ describe('executeCommand', () => {
           type: 'set',
           payload: {
             key: 'key1',
-            value: 'value1'
-          }
+            value: 'value1',
+          },
         })
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
@@ -1121,27 +1119,27 @@ describe('executeCommand', () => {
               type: 'SET',
               payload: {
                 key: command.payload.key,
-                value: command.payload.value
-              }
+                value: command.payload.value,
+              },
             }
-          }
+          },
         },
         projection: {
           SET: (state: any, event: any) => {
             return {
               ...state,
-              [event.payload.key]: [event.payload.value]
+              [event.payload.key]: [event.payload.value],
             }
-          }
+          },
         },
-        invariantHash: 42
+        invariantHash: 42,
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       try {
@@ -1151,8 +1149,8 @@ describe('executeCommand', () => {
           type: 'set',
           payload: {
             key: 'key1',
-            value: 'value1'
-          }
+            value: 'value1',
+          },
         })
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
@@ -1184,8 +1182,8 @@ describe('executeCommand', () => {
           timestamp: 2,
           payload: {
             key: 'key',
-            value: 'value'
-          }
+            value: 'value',
+          },
         },
         {
           aggregateId: 'aggregateId',
@@ -1194,9 +1192,9 @@ describe('executeCommand', () => {
           timestamp: 1,
           payload: {
             key: 'key',
-            value: 'value'
-          }
-        }
+            value: 'value',
+          },
+        },
       ]
 
       const aggregate = makeAggregateMeta({
@@ -1207,27 +1205,27 @@ describe('executeCommand', () => {
               type: 'SET',
               payload: {
                 key: command.payload.key,
-                value: command.payload.value
-              }
+                value: command.payload.value,
+              },
             }
-          }
+          },
         },
         projection: {
           SET: (state: any, event: any) => {
             return {
               ...state,
-              [event.payload.key]: [event.payload.value]
+              [event.payload.key]: [event.payload.value],
             }
-          }
+          },
         },
-        invariantHash: 'Map-invariantHash'
+        invariantHash: 'Map-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       try {
@@ -1237,8 +1235,8 @@ describe('executeCommand', () => {
           type: 'set',
           payload: {
             key: 'key',
-            value: 'value'
-          }
+            value: 'value',
+          },
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -1269,25 +1267,25 @@ describe('executeCommand', () => {
           emptyCommand: () => {
             return {
               type: 'EmptyEvent',
-              payload: {}
+              payload: {},
             }
-          }
+          },
         },
-        invariantHash: 'empty-invariantHash'
+        invariantHash: 'empty-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       try {
         await executeCommand({
           aggregateName: 'empty',
           aggregateId: 'aggregateId',
-          type: 'unknownCommand'
+          type: 'unknownCommand',
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -1315,25 +1313,25 @@ describe('executeCommand', () => {
           emptyCommand: () => {
             return {
               type: 'EmptyEvent',
-              payload: {}
+              payload: {},
             }
-          }
+          },
         },
-        invariantHash: 'empty-invariantHash'
+        invariantHash: 'empty-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       try {
         await executeCommand({
           aggregateName: 'empty',
           aggregateId: 42 as any,
-          type: 'unknownCommand'
+          type: 'unknownCommand',
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -1364,25 +1362,25 @@ describe('executeCommand', () => {
           emptyCommand: () => {
             return {
               type: 'EmptyEvent',
-              payload: {}
+              payload: {},
             }
-          }
+          },
         },
-        invariantHash: 'empty-invariantHash'
+        invariantHash: 'empty-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       try {
         await executeCommand({
           aggregateName: 42 as any,
           aggregateId: 'aggregateId',
-          type: 'emptyCommand'
+          type: 'emptyCommand',
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -1413,25 +1411,25 @@ describe('executeCommand', () => {
           emptyCommand: () => {
             return {
               type: 'EmptyEvent',
-              payload: {}
+              payload: {},
             }
-          }
+          },
         },
-        invariantHash: 'empty-invariantHash'
+        invariantHash: 'empty-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       try {
         await executeCommand({
           aggregateName: 'empty',
           aggregateId: 'aggregateId',
-          type: 42 as any
+          type: 42 as any,
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -1456,16 +1454,16 @@ describe('executeCommand', () => {
     test('should throw error when an aggregate does not exist', async () => {
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [],
-        performanceTracer
+        performanceTracer,
       })
 
       try {
         await executeCommand({
           aggregateName: 'empty',
           aggregateId: 'aggregateId',
-          type: 'emptyCommand'
+          type: 'emptyCommand',
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -1498,25 +1496,25 @@ describe('executeCommand', () => {
 
               aggregateId: 'aggregateId',
               aggregateVersion: 'aggregateVersion',
-              timestamp: 'timestamp'
+              timestamp: 'timestamp',
             }
-          }
+          },
         },
-        invariantHash: 'empty-invariantHash'
+        invariantHash: 'empty-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       try {
         await executeCommand({
           aggregateName: 'empty',
           aggregateId: 'aggregateId',
-          type: 'emptyCommand'
+          type: 'emptyCommand',
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -1546,25 +1544,25 @@ describe('executeCommand', () => {
         commands: {
           emptyCommand: () => {
             return {
-              payload: {}
+              payload: {},
             }
-          }
+          },
         },
-        invariantHash: 'empty-invariantHash'
+        invariantHash: 'empty-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       try {
         await executeCommand({
           aggregateName: 'empty',
           aggregateId: 'aggregateId',
-          type: 'emptyCommand'
+          type: 'emptyCommand',
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -1592,29 +1590,29 @@ describe('executeCommand', () => {
         commands: {
           emptyCommand: () => {
             return {
-              type: 'EVENT'
+              type: 'EVENT',
             }
-          }
+          },
         },
-        invariantHash: 'empty-invariantHash'
+        invariantHash: 'empty-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       await expect(
         executeCommand({
           aggregateName: 'empty',
           aggregateId: 'aggregateId',
-          type: 'emptyCommand'
+          type: 'emptyCommand',
         })
       ).resolves.toEqual(
         expect.not.objectContaining({
-          payload: undefined
+          payload: undefined,
         })
       )
     })
@@ -1626,8 +1624,8 @@ describe('dispose', () => {
     test('should dispose the command executor', async () => {
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: []
+        onCommandExecuted,
+        aggregates: [],
       })
 
       await executeCommand.dispose()
@@ -1651,26 +1649,26 @@ describe('dispose', () => {
               type: 'SET',
               payload: {
                 key: command.payload.key,
-                value: command.payload.value
-              }
+                value: command.payload.value,
+              },
             }
-          }
+          },
         },
         projection: {
           SET: (state: any, event: any) => {
             return {
               ...state,
-              [event.payload.key]: [event.payload.value]
+              [event.payload.key]: [event.payload.value],
             }
-          }
+          },
         },
-        invariantHash: 'Map-invariantHash'
+        invariantHash: 'Map-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       await executeCommand({
@@ -1679,8 +1677,8 @@ describe('dispose', () => {
         type: 'set',
         payload: {
           key: 'key1',
-          value: 'value1'
-        }
+          value: 'value1',
+        },
       })
 
       expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(0)
@@ -1696,8 +1694,8 @@ describe('dispose', () => {
           type: 'set',
           payload: {
             key: 'key2',
-            value: 'value2'
-          }
+            value: 'value2',
+          },
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -1716,26 +1714,26 @@ describe('dispose', () => {
               type: 'SET',
               payload: {
                 key: command.payload.key,
-                value: command.payload.value
-              }
+                value: command.payload.value,
+              },
             }
-          }
+          },
         },
         projection: {
           SET: (state: any, event: any) => {
             return {
               ...state,
-              [event.payload.key]: [event.payload.value]
+              [event.payload.key]: [event.payload.value],
             }
-          }
+          },
         },
-        invariantHash: 'Map-invariantHash'
+        invariantHash: 'Map-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
-        aggregates: [aggregate]
+        onCommandExecuted,
+        aggregates: [aggregate],
       })
 
       await executeCommand({
@@ -1744,8 +1742,8 @@ describe('dispose', () => {
         type: 'set',
         payload: {
           key: 'key1',
-          value: 'value1'
-        }
+          value: 'value1',
+        },
       })
 
       expect(events.length).toEqual(1)
@@ -1759,8 +1757,8 @@ describe('dispose', () => {
           type: 'set',
           payload: {
             key: 'key2',
-            value: 'value2'
-          }
+            value: 'value2',
+          },
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -1775,9 +1773,9 @@ describe('dispose', () => {
     test('should dispose the command executor', async () => {
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [],
-        performanceTracer
+        performanceTracer,
       })
 
       await executeCommand.dispose()
@@ -1813,27 +1811,27 @@ describe('dispose', () => {
               type: 'SET',
               payload: {
                 key: command.payload.key,
-                value: command.payload.value
-              }
+                value: command.payload.value,
+              },
             }
-          }
+          },
         },
         projection: {
           SET: (state: any, event: any) => {
             return {
               ...state,
-              [event.payload.key]: [event.payload.value]
+              [event.payload.key]: [event.payload.value],
             }
-          }
+          },
         },
-        invariantHash: 'Map-invariantHash'
+        invariantHash: 'Map-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       await executeCommand({
@@ -1842,8 +1840,8 @@ describe('dispose', () => {
         type: 'set',
         payload: {
           key: 'key1',
-          value: 'value1'
-        }
+          value: 'value1',
+        },
       })
 
       expect(eventstoreAdapter.saveSnapshot.mock.calls.length).toEqual(0)
@@ -1859,8 +1857,8 @@ describe('dispose', () => {
           type: 'set',
           payload: {
             key: 'key2',
-            value: 'value2'
-          }
+            value: 'value2',
+          },
         })
 
         return Promise.reject(new Error('Test failed'))
@@ -1891,27 +1889,27 @@ describe('dispose', () => {
               type: 'SET',
               payload: {
                 key: command.payload.key,
-                value: command.payload.value
-              }
+                value: command.payload.value,
+              },
             }
-          }
+          },
         },
         projection: {
           SET: (state: any, event: any) => {
             return {
               ...state,
-              [event.payload.key]: [event.payload.value]
+              [event.payload.key]: [event.payload.value],
             }
-          }
+          },
         },
-        invariantHash: 'Map-invariantHash'
+        invariantHash: 'Map-invariantHash',
       })
 
       const executeCommand = createCommandExecutor({
         eventstoreAdapter,
-        publisher,
+        onCommandExecuted,
         aggregates: [aggregate],
-        performanceTracer
+        performanceTracer,
       })
 
       await executeCommand({
@@ -1920,8 +1918,8 @@ describe('dispose', () => {
         type: 'set',
         payload: {
           key: 'key1',
-          value: 'value1'
-        }
+          value: 'value1',
+        },
       })
 
       expect(events.length).toEqual(1)
@@ -1935,8 +1933,8 @@ describe('dispose', () => {
           type: 'set',
           payload: {
             key: 'key2',
-            value: 'value2'
-          }
+            value: 'value2',
+          },
         })
 
         return Promise.reject(new Error('Test failed'))

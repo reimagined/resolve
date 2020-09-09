@@ -5,6 +5,6 @@ export default {
   [USER_CREATED]: (state, { aggregateId, timestamp }) => ({
     ...state,
     createdAt: timestamp,
-    userId: aggregateId
-  })
+    userId: aggregateId,
+  }),
 }

@@ -29,7 +29,7 @@ export class Submit extends React.PureComponent {
     title: '',
     link: '',
     text: '',
-    disabled: false
+    disabled: false,
   }
 
   handleChange = (event, name) => this.setState({ [name]: event.target.value })
@@ -42,7 +42,7 @@ export class Submit extends React.PureComponent {
     return this.props.createStory(uuid.v4(), {
       title,
       text,
-      link
+      link,
     })
   }
 
@@ -58,7 +58,7 @@ export class Submit extends React.PureComponent {
           <FormInput
             type="text"
             value={this.state.title}
-            onChange={e => this.handleChange(e, 'title')}
+            onChange={(e) => this.handleChange(e, 'title')}
             disabled={this.state.disabled}
           />
         </div>
@@ -67,7 +67,7 @@ export class Submit extends React.PureComponent {
           <FormInput
             type="text"
             value={this.state.link}
-            onChange={e => this.handleChange(e, 'link')}
+            onChange={(e) => this.handleChange(e, 'link')}
             disabled={this.state.disabled}
           />
         </div>
@@ -77,7 +77,7 @@ export class Submit extends React.PureComponent {
             name="text"
             rows="4"
             value={this.state.text}
-            onChange={e => this.handleChange(e, 'text')}
+            onChange={(e) => this.handleChange(e, 'text')}
             disabled={this.state.disabled}
           />
         </div>
@@ -98,11 +98,11 @@ export class Submit extends React.PureComponent {
   }
 }
 
-export const mapStateToProps = state => ({
-  me: state.jwt
+export const mapStateToProps = (state) => ({
+  me: state.jwt,
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectResolveAdvanced(

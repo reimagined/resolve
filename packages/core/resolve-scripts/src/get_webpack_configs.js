@@ -5,20 +5,20 @@ import getWebpackAlias from './get_webpack_alias'
 const getWebpackConfigs = async ({
   resolveConfig,
   nodeModulesByAssembly,
-  adjustWebpackConfigs
+  adjustWebpackConfigs,
 }) => {
   const alias = getWebpackAlias()
 
   const webpackClientConfigs = getWebpackClientConfigs({
     resolveConfig,
     alias,
-    nodeModulesByAssembly
+    nodeModulesByAssembly,
   })
 
   const webpackCommonConfigs = getWebpackCommonConfigs({
     resolveConfig,
     alias,
-    nodeModulesByAssembly
+    nodeModulesByAssembly,
   })
 
   const configs = [...webpackClientConfigs, ...webpackCommonConfigs]
@@ -26,7 +26,7 @@ const getWebpackConfigs = async ({
   if (typeof adjustWebpackConfigs === 'function') {
     await adjustWebpackConfigs(configs, {
       alias,
-      nodeModulesByAssembly
+      nodeModulesByAssembly,
     })
   }
 

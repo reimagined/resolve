@@ -1,8 +1,10 @@
 const createAdapter = (implementation, options) => {
-  const { performanceTracer } = options
+  const { eventstoreAdapter, performanceTracer, preferInlineLedger } = options
 
   const {
     connect,
+    disconnect,
+    dropReadModel,
     beginTransaction,
     commitTransaction,
     rollbackTransaction,
@@ -12,16 +14,26 @@ const createAdapter = (implementation, options) => {
     beginEvent,
     commitEvent,
     rollbackEvent,
-    disconnect,
-    dropReadModel,
+    subscribe,
+    unsubscribe,
+    resubscribe,
+    deleteProperty,
+    getProperty,
+    listProperties,
+    setProperty,
+    resume,
+    pause,
+    reset,
+    status,
+    build,
     ...storeApi
   } = implementation
 
   const baseAdapterPool = Object.create(null)
-  Object.assign(baseAdapterPool, { performanceTracer })
+  Object.assign(baseAdapterPool, { performanceTracer, eventstoreAdapter })
   const adapterPoolMap = new Map()
 
-  const doConnect = async readModelName => {
+  const doConnect = async (readModelName) => {
     const segment = performanceTracer ? performanceTracer.getSegment() : null
     const subSegment = segment ? segment.addNewSubsegment('connect') : null
 
@@ -92,7 +104,7 @@ const createAdapter = (implementation, options) => {
     operationFunc,
     store,
     readModelName,
-    parameters
+    ...args
   ) => {
     const segment = performanceTracer ? performanceTracer.getSegment() : null
     const subSegment = segment ? segment.addNewSubsegment(operationName) : null
@@ -105,7 +117,7 @@ const createAdapter = (implementation, options) => {
     const adapterPool = adapterPoolMap.get(store)
 
     try {
-      return await operationFunc(adapterPool, readModelName, parameters)
+      return await operationFunc(adapterPool, readModelName, ...args)
     } catch (error) {
       if (subSegment != null) {
         subSegment.addError(error)
@@ -126,40 +138,41 @@ const createAdapter = (implementation, options) => {
     }
   }
 
-  const doDrop = makeOperation('dropReadModel', dropReadModel)
-
-  const doBeginTransaction = makeOperation('beginTransaction', beginTransaction)
-
-  const doCommitTransaction = makeOperation(
-    'commitTransaction',
-    commitTransaction
-  )
-
-  const doRollbackTransaction = makeOperation(
-    'rollbackTransaction',
-    rollbackTransaction
-  )
-
-  const doBeginXATransaction = makeOperation(
-    'beginXATransaction',
-    beginXATransaction
-  )
-
-  const doCommitXATransaction = makeOperation(
-    'commitXATransaction',
-    commitXATransaction
-  )
-
-  const doRollbackXATransaction = makeOperation(
-    'rollbackXATransaction',
-    rollbackXATransaction
-  )
-
-  const doBeginEvent = makeOperation('beginEvent', beginEvent)
-
-  const doCommitEvent = makeOperation('commitEvent', commitEvent)
-
-  const doRollbackEvent = makeOperation('rollbackEvent', rollbackEvent)
+  const adapterOperations = {}
+  if (preferInlineLedger) {
+    Object.assign(adapterOperations, {
+      subscribe,
+      unsubscribe,
+      resubscribe,
+      deleteProperty,
+      getProperty,
+      listProperties,
+      setProperty,
+      resume,
+      pause,
+      reset,
+      status,
+      build,
+    })
+  } else {
+    Object.assign(adapterOperations, {
+      // TODO
+      drop: dropReadModel,
+      dropReadModel,
+      beginTransaction,
+      commitTransaction,
+      rollbackTransaction,
+      beginXATransaction,
+      commitXATransaction,
+      rollbackXATransaction,
+      beginEvent,
+      commitEvent,
+      rollbackEvent,
+    })
+  }
+  for (const key of Object.keys(adapterOperations)) {
+    adapterOperations[key] = makeOperation(key, adapterOperations[key])
+  }
 
   const doDispose = async () => {
     const segment = performanceTracer ? performanceTracer.getSegment() : null
@@ -191,18 +204,9 @@ const createAdapter = (implementation, options) => {
 
   return Object.freeze({
     connect: doConnect,
-    beginTransaction: doBeginTransaction,
-    commitTransaction: doCommitTransaction,
-    rollbackTransaction: doRollbackTransaction,
-    beginXATransaction: doBeginXATransaction,
-    commitXATransaction: doCommitXATransaction,
-    rollbackXATransaction: doRollbackXATransaction,
-    beginEvent: doBeginEvent,
-    commitEvent: doCommitEvent,
-    rollbackEvent: doRollbackEvent,
     disconnect: doDisconnect,
-    drop: doDrop,
-    dispose: doDispose
+    dispose: doDispose,
+    ...adapterOperations,
   })
 }
 

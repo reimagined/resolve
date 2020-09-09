@@ -37,12 +37,12 @@ import destroyResource from '../src/resource/destroy'
 import createAdapter, {
   create as exportedCreate,
   destroy as exportedDestroy,
-  dispose as exportedDispose
+  dispose as exportedDispose,
 } from '../src/index'
 import {
   CloudResource,
   CloudResourceOptions,
-  CloudResourcePool
+  CloudResourcePool,
 } from '../src/types'
 
 jest.mock('../src/js/load-events-by-cursor', () => jest.fn())
@@ -107,7 +107,7 @@ test('generic createAdapter invoked', () => {
     beginIncrementalImport,
     commitIncrementalImport,
     rollbackIncrementalImport,
-    pushIncrementalImport
+    pushIncrementalImport,
   })
 })
 
@@ -126,7 +126,7 @@ describe('as cloud resource', () => {
       fullJitter,
       coercer,
       dispose,
-      shapeEvent
+      shapeEvent,
     }
     options = {
       awsSecretStoreAdminArn: 'admin-arn',
@@ -137,13 +137,13 @@ describe('as cloud resource', () => {
       secretsTableName: 'secrets-table',
       eventsTableName: 'table',
       userLogin: 'user',
-      snapshotsTableName: 'snapshots-table'
+      snapshotsTableName: 'snapshots-table',
     }
     completePool = {
       ...cloudPool,
       createResource: exportedCreate,
       disposeResource: exportedDispose,
-      destroyResource: exportedDestroy
+      destroyResource: exportedDestroy,
     }
   })
 

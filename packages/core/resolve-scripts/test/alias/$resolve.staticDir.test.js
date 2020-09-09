@@ -11,7 +11,7 @@ describe('$resolve.staticDir', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -25,7 +25,7 @@ describe('$resolve.staticDir', () => {
           '\r\n' +
             alias({
               resolveConfig,
-              isClient: true
+              isClient: true,
             }) +
             '\r\n'
         )
@@ -41,7 +41,7 @@ describe('$resolve.staticDir', () => {
           '\r\n' +
             alias({
               resolveConfig,
-              isClient: false
+              isClient: false,
             }) +
             '\r\n'
         )
@@ -54,7 +54,7 @@ describe('$resolve.staticDir', () => {
           '\r\n' +
             alias({
               resolveConfig,
-              isClient: true
+              isClient: true,
             }) +
             '\r\n'
         )

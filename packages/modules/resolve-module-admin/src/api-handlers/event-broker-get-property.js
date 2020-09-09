@@ -1,8 +1,8 @@
 const getProperty = async (req, res) => {
   const { listenerId, key } = req.query
-  const value = await req.resolve.publisher.getProperty({
+  const value = await req.resolve.eventBus.getProperty({
     eventSubscriber: listenerId,
-    key
+    key,
   })
   res.end(`ListenerId = "${listenerId}", Key = "${key}", Value = "${value}"`)
 }

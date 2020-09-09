@@ -8,7 +8,7 @@ import {
   Left,
   Right,
   Body,
-  Icon
+  Icon,
 } from 'native-base'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -23,7 +23,7 @@ import * as aggregateActions from '../redux/actions/aggregate-actions'
 
 import getNativeChunk from '../native-chunk'
 const {
-  resolveRedux: { connectViewModel }
+  resolveRedux: { connectViewModel },
 } = getNativeChunk()
 
 export class ShoppingList extends React.PureComponent {
@@ -53,7 +53,7 @@ export class ShoppingList extends React.PureComponent {
       renameShoppingList,
       removeShoppingList,
       toggleShoppingItem,
-      removeShoppingItem
+      removeShoppingItem,
     } = this.props
 
     if (isLoading !== false) {
@@ -110,7 +110,7 @@ export const mapStateToOptions = (state, ownProps) => {
 
   return {
     viewModelName: 'shoppingList',
-    aggregateIds: [aggregateId]
+    aggregateIds: [aggregateId],
   }
 }
 
@@ -119,11 +119,11 @@ export const mapStateToProps = (state, ownProps) => {
 
   return {
     jwt: state.jwt,
-    aggregateId
+    aggregateId,
   }
 }
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default requiredAuth(

@@ -1,4 +1,4 @@
-const disconnect = async pool => {
+const disconnect = async (pool) => {
   await pool.connection.close()
 }
 

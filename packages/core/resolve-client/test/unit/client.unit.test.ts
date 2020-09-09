@@ -7,7 +7,7 @@ import { Context } from '../../src/context'
 import { NarrowedResponse, request, VALIDATED_RESULT } from '../../src/request'
 
 jest.mock('../../src/request', () => ({
-  request: jest.fn()
+  request: jest.fn(),
 }))
 jest.mock('../../src/subscribe', () => ({}))
 
@@ -15,14 +15,14 @@ const createMockResponse = (overrides: object = {}): NarrowedResponse => ({
   ok: true,
   status: 200,
   headers: {
-    get: (header: string): string | null => `${header}-value`
+    get: (header: string): string | null => `${header}-value`,
   },
   json: (): Promise<object> =>
     Promise.resolve({
-      data: 'response-data'
+      data: { data: 'response-data' },
     }),
   text: (): Promise<string> => Promise.resolve('response-text'),
-  ...overrides
+  ...overrides,
 })
 
 const createMockContext = (staticPath = 'static-path'): Context => ({
@@ -30,8 +30,7 @@ const createMockContext = (staticPath = 'static-path'): Context => ({
   staticPath,
   rootPath: 'root-path',
   jwtProvider: undefined,
-  subscribeAdapter: undefined,
-  viewModels: []
+  viewModels: [],
 })
 
 const mRequest = mocked(request)
@@ -61,15 +60,15 @@ describe('command', () => {
     getJson = jest.fn(
       (): Promise<object> =>
         Promise.resolve({
-          result: 'command-result'
+          result: 'command-result',
         })
     )
     mRequest.mockResolvedValue(
       createMockResponse({
         headers: {
-          get: getHeader
+          get: getHeader,
         },
-        json: getJson
+        json: getJson,
       })
     )
   })
@@ -80,8 +79,8 @@ describe('command', () => {
       aggregateId: 'user-id',
       type: 'create',
       payload: {
-        name: 'user-name'
-      }
+        name: 'user-name',
+      },
     })
 
     expect(mRequest).toHaveBeenCalledWith(
@@ -92,8 +91,8 @@ describe('command', () => {
         aggregateId: 'user-id',
         type: 'create',
         payload: {
-          name: 'user-name'
-        }
+          name: 'user-name',
+        },
       },
       undefined
     )
@@ -106,11 +105,11 @@ describe('command', () => {
         aggregateId: 'user-id',
         type: 'create',
         payload: {
-          name: 'user-name'
-        }
+          name: 'user-name',
+        },
       },
       {
-        option: 'option'
+        option: 'option',
       }
     )
 
@@ -122,11 +121,11 @@ describe('command', () => {
         aggregateId: 'user-id',
         type: 'create',
         payload: {
-          name: 'user-name'
-        }
+          name: 'user-name',
+        },
       },
       {
-        option: 'option'
+        option: 'option',
       }
     )
   })
@@ -137,25 +136,25 @@ describe('command', () => {
       aggregateId: 'user-id',
       type: 'create',
       payload: {
-        name: 'user-name'
-      }
+        name: 'user-name',
+      },
     })
 
     expect(getJson).toHaveBeenCalled()
     expect(result).toEqual({
-      result: 'command-result'
+      result: 'command-result',
     })
   })
 
-  test('callback instead of options', done => {
+  test('callback instead of options', (done) => {
     client.command(
       {
         aggregateName: 'user',
         aggregateId: 'user-id',
         type: 'create',
         payload: {
-          name: 'user-name'
-        }
+          name: 'user-name',
+        },
       },
       (error, result) => {
         if (error) {
@@ -163,7 +162,7 @@ describe('command', () => {
         }
 
         expect(result).toEqual({
-          result: 'command-result'
+          result: 'command-result',
         })
 
         done()
@@ -181,15 +180,18 @@ describe('query', () => {
     getJson = jest.fn(
       (): Promise<object> =>
         Promise.resolve({
-          result: 'query-result'
+          data: {
+            result: 'query-result',
+          },
+          meta: {},
         })
     )
     mRequest.mockResolvedValue(
       createMockResponse({
         headers: {
-          get: getHeader
+          get: getHeader,
         },
-        json: getJson
+        json: getJson,
       })
     )
   })
@@ -199,18 +201,18 @@ describe('query', () => {
       name: 'query-name',
       resolver: 'query-resolver',
       args: {
-        name: 'value'
-      }
+        name: 'value',
+      },
     })
 
     expect(mRequest).toHaveBeenCalledWith(
       mockContext,
       '/api/query/query-name/query-resolver',
       {
-        name: 'value'
+        name: 'value',
       },
       {
-        method: 'GET'
+        method: 'GET',
       }
     )
   })
@@ -220,28 +222,30 @@ describe('query', () => {
       name: 'query-name',
       resolver: 'query-resolver',
       args: {
-        name: 'value'
-      }
+        name: 'value',
+      },
     })
 
     expect(getHeader).toHaveBeenCalledWith('Date')
     expect(getJson).toHaveBeenCalled()
     expect(result).toEqual({
-      timestamp: 12345,
       data: {
-        result: 'query-result'
-      }
+        result: 'query-result',
+      },
+      meta: {
+        timestamp: 12345,
+      },
     })
   })
 
-  test('callback instead of options', done => {
+  test('callback instead of options', (done) => {
     client.query(
       {
         name: 'query-name',
         resolver: 'query-resolver',
         args: {
-          name: 'value'
-        }
+          name: 'value',
+        },
       },
       (error, result) => {
         if (error) {
@@ -249,10 +253,12 @@ describe('query', () => {
         }
 
         expect(result).toEqual({
-          timestamp: 12345,
           data: {
-            result: 'query-result'
-          }
+            result: 'query-result',
+          },
+          meta: {
+            timestamp: 12345,
+          },
         })
 
         done()
@@ -266,32 +272,32 @@ describe('query', () => {
         name: 'query-name',
         resolver: 'query-resolver',
         args: {
-          name: 'value'
-        }
+          name: 'value',
+        },
       },
       {
         waitFor: {
           validator: isEqual.bind(null, {
-            result: 'valid-result'
+            result: 'valid-result',
           }),
           attempts: 1,
-          period: 1
-        }
+          period: 1,
+        },
       }
     )
     expect(mRequest).toHaveBeenCalledWith(
       mockContext,
       '/api/query/query-name/query-resolver',
       {
-        name: 'value'
+        name: 'value',
       },
       {
         method: 'GET',
         waitForResponse: {
           validator: expect.any(Function),
           period: 1,
-          attempts: 1
-        }
+          attempts: 1,
+        },
       }
     )
 
@@ -307,8 +313,8 @@ describe('query', () => {
       createMockResponse({
         json: (): Promise<any> =>
           Promise.resolve({
-            result: 'invalid-result'
-          })
+            result: 'invalid-result',
+          }),
       }),
       confirm
     )
@@ -318,13 +324,13 @@ describe('query', () => {
       createMockResponse({
         json: (): Promise<any> =>
           Promise.resolve({
-            result: 'valid-result'
-          })
+            result: 'valid-result',
+          }),
       }),
       confirm
     )
     expect(validResult).toEqual({
-      result: 'valid-result'
+      result: 'valid-result',
     })
   })
 
@@ -332,12 +338,14 @@ describe('query', () => {
     mRequest.mockResolvedValue(
       createMockResponse({
         headers: {
-          get: getHeader
+          get: getHeader,
         },
         json: getJson,
         [VALIDATED_RESULT]: {
-          result: 'validated-result'
-        }
+          data: {
+            result: 'validated-result',
+          },
+        },
       })
     )
     const result = await client.query(
@@ -345,25 +353,25 @@ describe('query', () => {
         name: 'query-name',
         resolver: 'query-resolver',
         args: {
-          name: 'value'
-        }
+          name: 'value',
+        },
       },
       {
         waitFor: {
           validator: isEqual.bind(null, {
-            result: 'query-result'
+            result: 'query-result',
           }),
           attempts: 1,
-          period: 1
-        }
+          period: 1,
+        },
       }
     )
     expect(getJson).toBeCalledTimes(0)
     expect(result).toEqual(
       expect.objectContaining({
         data: {
-          result: 'validated-result'
-        }
+          result: 'validated-result',
+        },
       })
     )
   })
@@ -374,21 +382,21 @@ describe('query', () => {
         name: 'query-name',
         resolver: 'query-resolver',
         args: {
-          name: 'value'
-        }
+          name: 'value',
+        },
       },
       {
-        method: 'POST'
+        method: 'POST',
       }
     )
     expect(mRequest).toHaveBeenCalledWith(
       mockContext,
       '/api/query/query-name/query-resolver',
       {
-        name: 'value'
+        name: 'value',
       },
       {
-        method: 'POST'
+        method: 'POST',
       }
     )
   })
@@ -399,8 +407,8 @@ describe('query', () => {
         name: 'query-name',
         resolver: 'query-resolver',
         args: {
-          name: 'value'
-        }
+          name: 'value',
+        },
       },
       {}
     )
@@ -408,10 +416,10 @@ describe('query', () => {
       mockContext,
       '/api/query/query-name/query-resolver',
       {
-        name: 'value'
+        name: 'value',
       },
       {
-        method: 'GET'
+        method: 'GET',
       }
     )
   })

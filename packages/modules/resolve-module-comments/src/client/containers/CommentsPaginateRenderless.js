@@ -15,7 +15,7 @@ export class CommentsPaginateRenderless extends React.PureComponent {
         comments
       )
       return null
-    }
+    },
   }
 
   render() {
@@ -30,20 +30,20 @@ export const mapStateToOptions = (
     readModelName = defaults.readModelName,
     resolverName = defaults.allCommentsPaginate,
     itemsOnPage,
-    pageNumber
+    pageNumber,
   }
 ) => ({
   readModelName,
   resolverName,
   resolverArgs: {
     itemsOnPage,
-    pageNumber
-  }
+    pageNumber,
+  },
 })
 
 const mapStateToProps = (state, { data }) => ({
   comments: data ? data.comments : undefined,
-  paginationDone: data ? data.paginationDone : undefined
+  paginationDone: data ? data.paginationDone : undefined,
 })
 
 export const mapDispatchToProps = (
@@ -52,7 +52,7 @@ export const mapDispatchToProps = (
     aggregateName = defaults.aggregateName,
     createComment = defaults.createComment,
     updateComment = defaults.updateComment,
-    removeComment = defaults.removeComment
+    removeComment = defaults.removeComment,
   }
 ) =>
   bindActionCreators(
@@ -71,7 +71,7 @@ export const mapDispatchToProps = (
         null,
         aggregateName,
         removeComment
-      )
+      ),
     },
     dispatch
   )

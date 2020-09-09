@@ -5,13 +5,13 @@ import readModels from '$resolve.readModels'
 import aggregates from '$resolve.aggregates'
 import subscribeAdapter from '$resolve.subscribeAdapter'
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   document.body.innerHTML = JSON.stringify({
     rootPath,
     staticPath,
     viewModels,
     readModels,
     aggregates,
-    subscribeAdapter
+    subscribeAdapter,
   })
 })

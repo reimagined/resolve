@@ -1,4 +1,4 @@
-const getFiles = async store => {
+const getFiles = async (store) => {
   const files = await store.find('Files', {})
   return Array.isArray(files) ? files : []
 }
@@ -15,5 +15,5 @@ const getFile = async (store, { uploadId }) => {
 
 export default {
   allFiles: getFiles,
-  file: getFile
+  file: getFile,
 }

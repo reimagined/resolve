@@ -8,5 +8,5 @@ export default () => ({
     const test1 = path.readFile.name
     const test2 = localDependency
     return { type: 'REMOVE', payload: event.payload, test1, test2 }
-  }
+  },
 })

@@ -1,22 +1,19 @@
 import { symbol, Phases } from './constants'
 
+export type SagaParams = {
+  name: string
+  handlers: any
+  sideEffects: any
+  adapter: any
+}
+
 const saga = (
   {
-    promise
+    promise,
   }: {
     promise: any
   },
-  {
-    handlers,
-    sideEffects,
-    adapter,
-    name = 'TEST-SAGA-READ-MODEL'
-  }: {
-    name: string
-    handlers: any
-    sideEffects: any
-    adapter: any
-  }
+  { handlers, sideEffects, adapter, name = 'TEST-SAGA-READ-MODEL' }: SagaParams
 ) => {
   if (promise[symbol].phase !== Phases.GIVEN_EVENTS) {
     throw new TypeError()

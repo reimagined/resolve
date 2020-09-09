@@ -10,7 +10,7 @@ export default {
 
     return {
       type: IMAGE_CREATED,
-      payload: { name, uploadId }
+      payload: { name, uploadId },
     }
-  }
+  },
 }

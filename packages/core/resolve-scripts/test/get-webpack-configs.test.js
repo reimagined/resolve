@@ -16,16 +16,16 @@ const resolveConfig = {
   eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
     options: {
-      databaseFile: 'data/event-store.db'
-    }
+      databaseFile: 'data/event-store.db',
+    },
   },
   subscribeAdapter: {
     module: 'resolve-subscribe-socket.io',
-    options: {}
+    options: {},
   },
   snapshotAdapter: {
     module: 'resolve-snapshot-lite',
-    options: {}
+    options: {},
   },
   readModelConnectors: {},
   schedulers: {},
@@ -35,16 +35,16 @@ const resolveConfig = {
     consumerAddress: 'http://127.0.0.1:3501',
     databaseFile: 'data/local-bus-broker.db',
     batchSize: 100,
-    upstream: true
+    upstream: true,
   },
   jwtCookie: {
     name: 'jwt',
-    maxAge: 31536000000
+    maxAge: 31536000000,
   },
   customConstants: {},
   clientImports: {},
   serverImports: {},
-  clientEntries: []
+  clientEntries: [],
 }
 
 test('should throw on wrong target', async () => {
@@ -52,9 +52,9 @@ test('should throw on wrong target', async () => {
     await getWebpackConfigs({
       resolveConfig: {
         ...resolveConfig,
-        target: 'wrong'
+        target: 'wrong',
       },
-      nodeModulesByAssembly: new Map()
+      nodeModulesByAssembly: new Map(),
     })
 
     return Promise.reject('Test failed')
@@ -69,9 +69,9 @@ test('should make webpack configs for local mode', async () => {
   const webpackConfigs = await getWebpackConfigs({
     resolveConfig: {
       ...resolveConfig,
-      target: 'local'
+      target: 'local',
     },
-    nodeModulesByAssembly
+    nodeModulesByAssembly,
   })
 
   expect(
@@ -89,9 +89,9 @@ test('should make webpack configs for cloud mode', async () => {
   const webpackConfigs = await getWebpackConfigs({
     resolveConfig: {
       ...resolveConfig,
-      target: 'cloud'
+      target: 'cloud',
     },
-    nodeModulesByAssembly
+    nodeModulesByAssembly,
   })
 
   expect(
@@ -109,9 +109,9 @@ test('should make external package.json resolver', async () => {
   const webpackConfigs = await getWebpackConfigs({
     resolveConfig: {
       ...resolveConfig,
-      target: 'local'
+      target: 'local',
     },
-    nodeModulesByAssembly
+    nodeModulesByAssembly,
   })
 
   const externalResolver = webpackConfigs[1].externals[0]

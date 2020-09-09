@@ -6,17 +6,17 @@ const App = ({ staticPath }) => {
   const stylesheetLink = {
     rel: 'stylesheet',
     type: 'text/css',
-    href: `${staticPath}/bootstrap.min.css`
+    href: `${staticPath}/bootstrap.min.css`,
   }
   const faviconLink = {
     rel: 'icon',
     type: 'image/png',
-    href: `${staticPath}/favicon.ico`
+    href: `${staticPath}/favicon.ico`,
   }
   const links = [stylesheetLink, faviconLink]
   const meta = {
     name: 'viewport',
-    content: 'width=device-width, initial-scale=1'
+    content: 'width=device-width, initial-scale=1',
   }
 
   return (

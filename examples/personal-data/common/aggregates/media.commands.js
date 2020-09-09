@@ -1,7 +1,7 @@
 import {
   MEDIA_UPLOAD_COMPLETED,
   MEDIA_UPLOAD_FAILED,
-  MEDIA_UPLOAD_STARTED
+  MEDIA_UPLOAD_STARTED,
 } from '../media.events'
 
 const aggregate = {
@@ -19,8 +19,8 @@ const aggregate = {
       payload: {
         mediaId,
         owner,
-        ownerId
-      }
+        ownerId,
+      },
     }
   },
   finishUpload: (state, command) => {
@@ -36,14 +36,14 @@ const aggregate = {
       return {
         type: MEDIA_UPLOAD_FAILED,
         payload: {
-          error
-        }
+          error,
+        },
       }
     }
     return {
-      type: MEDIA_UPLOAD_COMPLETED
+      type: MEDIA_UPLOAD_COMPLETED,
     }
-  }
+  },
 }
 
 export default aggregate

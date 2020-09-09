@@ -6,7 +6,7 @@ test('serializing error', async () => {
       const error = new Error('Concurrent error')
       error.code = 409
       throw error
-    }
+    },
   }
 
   const request = {
@@ -18,7 +18,7 @@ test('serializing error', async () => {
         callback()
       }
       return request
-    }
+    },
   }
   const response = { end: jest.fn() }
 
@@ -27,6 +27,6 @@ test('serializing error', async () => {
   expect(JSON.parse(response.end.mock.calls[0])).toMatchObject({
     name: 'Error',
     code: 409,
-    message: 'Concurrent error'
+    message: 'Concurrent error',
   })
 })

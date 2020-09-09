@@ -1,4 +1,4 @@
-const isHighloadError = error =>
+const isHighloadError = (error) =>
   error != null &&
   (/Request timed out/i.test(error.message) ||
     /Remaining connection slots are reserved/i.test(error.message) ||

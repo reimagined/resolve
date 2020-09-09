@@ -21,11 +21,11 @@ const aggregate = {
       payload: {
         authorId,
         content,
-        title
-      }
+        title,
+      },
     }
   },
-  delete: state => {
+  delete: (state) => {
     const { isExist } = state
 
     if (!isExist) {
@@ -33,9 +33,9 @@ const aggregate = {
     }
 
     return {
-      type: BLOG_POST_DELETED
+      type: BLOG_POST_DELETED,
     }
-  }
+  },
 }
 
 export default aggregate

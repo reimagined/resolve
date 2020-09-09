@@ -48,15 +48,15 @@ export const mapStateToOptions = (state, { query, shoppingListId }) => ({
   resolverName: 'sharings',
   resolverArgs: {
     query,
-    shoppingListId
-  }
+    shoppingListId,
+  },
 })
 
-export const mapStateToProps = state => ({
-  users: state.optimisticSharings.users
+export const mapStateToProps = (state) => ({
+  users: state.optimisticSharings.users,
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(

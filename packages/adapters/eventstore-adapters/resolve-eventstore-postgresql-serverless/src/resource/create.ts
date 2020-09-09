@@ -15,7 +15,7 @@ const create = async (
     escape,
     fullJitter,
     coercer,
-    dispose
+    dispose,
   } = pool
 
   log.debug(`configuring adapter with environment privileges`)
@@ -27,8 +27,8 @@ const create = async (
       databaseName: options.databaseName,
       eventsTableName: options.eventsTableName,
       secretsTableName: options.secretsTableName,
-      snapshotsTableName: options.snapshotsTableName
-    }
+      snapshotsTableName: options.snapshotsTableName,
+    },
   }
 
   log.debug(`connecting the adapter`)
@@ -38,7 +38,7 @@ const create = async (
     escape,
     fullJitter,
     executeStatement,
-    coercer
+    coercer,
   })
 
   log.debug(`building schema and granting privileges to user`)
@@ -69,7 +69,7 @@ const create = async (
 
       `ALTER SCHEMA ${escapeId(options.databaseName)} OWNER TO ${escapeId(
         options.userLogin
-      )}`
+      )}`,
     ].join('; ')
   )
 

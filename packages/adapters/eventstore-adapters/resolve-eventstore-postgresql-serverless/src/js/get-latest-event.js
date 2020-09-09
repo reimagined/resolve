@@ -6,12 +6,12 @@ const getLatestEvent = async (
     eventsTableName,
     databaseName,
     shapeEvent,
-    isTimeoutError
+    isTimeoutError,
   },
   { eventTypes, aggregateIds, startTime, finishTime }
 ) => {
-  const injectString = value => `${escape(value)}`
-  const injectNumber = value => `${+value}`
+  const injectString = (value) => `${escape(value)}`
+  const injectNumber = (value) => `${+value}`
 
   const databaseNameAsId = escapeId(databaseName)
   const eventsTableNameAsId = escapeId(eventsTableName)

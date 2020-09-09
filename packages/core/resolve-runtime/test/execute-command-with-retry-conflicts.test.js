@@ -4,7 +4,7 @@ import { executeCommandWithRetryConflicts } from '../src/common/handlers/command
 
 test('Execute command should retry 10 times and fail with a ConcurrentError', async () => {
   const event = {
-    type: 'TEST'
+    type: 'TEST',
   }
   const executeCommand = jest.fn()
   for (let retries = 0; retries <= 100; retries++) {
@@ -21,7 +21,7 @@ test('Execute command should retry 10 times and fail with a ConcurrentError', as
     await executeCommandWithRetryConflicts({
       executeCommand,
       commandArgs,
-      jwt
+      jwt,
     })
     return Promise.reject('Test failed')
   } catch (error) {
@@ -31,7 +31,7 @@ test('Execute command should retry 10 times and fail with a ConcurrentError', as
 
 test('Execute command should retry 5 times and returns an event', async () => {
   const event = {
-    type: 'TEST'
+    type: 'TEST',
   }
   const executeCommand = jest.fn()
   for (let retries = 0; retries <= 5; retries++) {
@@ -47,14 +47,14 @@ test('Execute command should retry 5 times and returns an event', async () => {
   const result = await executeCommandWithRetryConflicts({
     executeCommand,
     commandArgs,
-    jwt
+    jwt,
   })
   expect(result).toEqual(event)
 })
 
 test('Execute command should retry 5 times and fails on immediate conflict', async () => {
   const event = {
-    type: 'TEST'
+    type: 'TEST',
   }
   const executeCommand = jest.fn()
   for (let retries = 0; retries <= 5; retries++) {
@@ -65,7 +65,7 @@ test('Execute command should retry 5 times and fails on immediate conflict', asy
   executeCommand.mockImplementationOnce(async () => event)
 
   const commandArgs = {
-    immediateConflict: true
+    immediateConflict: true,
   }
   const jwt = 'JWT_TOKEN'
 
@@ -73,7 +73,7 @@ test('Execute command should retry 5 times and fails on immediate conflict', asy
     await executeCommandWithRetryConflicts({
       executeCommand,
       commandArgs,
-      jwt
+      jwt,
     })
     return Promise.reject('Test failed')
   } catch (error) {
@@ -95,7 +95,7 @@ test('Execute command should bypass a command error', async () => {
     await executeCommandWithRetryConflicts({
       executeCommand,
       commandArgs,
-      jwt
+      jwt,
     })
     return Promise.reject('Test failed')
   } catch (error) {
@@ -117,7 +117,7 @@ test('Execute command should bypass a custom error', async () => {
     await executeCommandWithRetryConflicts({
       executeCommand,
       commandArgs,
-      jwt
+      jwt,
     })
     return Promise.reject('Test failed')
   } catch (error) {

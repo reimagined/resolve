@@ -9,8 +9,8 @@ export const handler = async ({ url, saga }) => {
 
 export const command = 'resume <saga>'
 export const describe = 'resume saga updates'
-export const builder = yargs =>
+export const builder = (yargs) =>
   yargs.positional('saga', {
     describe: 'an existing saga`s name',
-    type: 'string'
+    type: 'string',
   })

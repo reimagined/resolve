@@ -32,7 +32,7 @@ type BDDExecuteCommandContext = {
 const makeDummyEventStoreAdapter = ({
   secretsManager,
   events,
-  aggregateId
+  aggregateId,
 }: BDDExecuteCommandState) => ({
   getNextCursor: () => Promise.resolve(null),
   saveSnapshot: () => Promise.resolve(),
@@ -40,18 +40,15 @@ const makeDummyEventStoreAdapter = ({
   loadSnapshot: () => Promise.resolve(null),
   loadEvents: () =>
     Promise.resolve({
-      events: transformEvents(events, 'aggregate', { aggregateId })
-    })
+      events: transformEvents(events, 'aggregate', { aggregateId }),
+    }),
 })
 
 const makeDummyPublisher = () => {
   const savedEvents: Event[] = []
 
-  return {
-    savedEvents,
-    publish: async ({ event }: { event: Event }) => {
-      savedEvents.push(event)
-    }
+  return async (event: Event) => {
+    savedEvents.push(event)
   }
 }
 
@@ -60,7 +57,7 @@ export const executeCommand = async (
 ): Promise<void> => {
   const {
     createCommand,
-    promise: { [symbol]: state }
+    promise: { [symbol]: state },
   } = context
 
   if (state.phase < Phases.COMMAND) {
@@ -70,11 +67,11 @@ export const executeCommand = async (
   const { assertion, resolve, reject } = state
   let executor: CommandExecutor | null = null
   try {
-    const publisher = makeDummyPublisher()
+    const onCommandExecuted = makeDummyPublisher()
 
     executor = createCommand({
       eventstoreAdapter: makeDummyEventStoreAdapter(state),
-      publisher,
+      onCommandExecuted,
       performanceTracer: null,
       aggregates: [
         {
@@ -84,9 +81,9 @@ export const executeCommand = async (
           encryption: state.aggregate.encryption || null,
           deserializeState: JSON.parse,
           serializeState: JSON.stringify,
-          invariantHash: 'invariant-hash'
-        }
-      ]
+          invariantHash: 'invariant-hash',
+        },
+      ],
     })
 
     const result = await executor({
@@ -94,14 +91,14 @@ export const executeCommand = async (
       aggregateName: state.aggregate.name,
       type: state.command.name,
       payload: state.command.payload || {},
-      jwt: state.jwt
+      jwt: state.jwt,
     })
 
     const event: {
       type: string
       payload?: SerializableMap
     } = {
-      type: result.type
+      type: result.type,
     }
 
     if (Object.prototype.hasOwnProperty.call(result, 'payload')) {

@@ -3,7 +3,7 @@ import { Phases, symbol } from './constants'
 export const executeReadModel = async ({
   promise,
   createQuery,
-  transformEvents
+  transformEvents,
 }: {
   promise: any
   createQuery: Function
@@ -22,23 +22,24 @@ export const executeReadModel = async ({
           name: promise[symbol].name,
           projection: promise[symbol].projection,
           resolvers: promise[symbol].resolvers,
-          connectorName: 'ADAPTER_NAME'
-        }
+          connectorName: 'ADAPTER_NAME',
+        },
       ],
       readModelConnectors: {
-        ADAPTER_NAME: promise[symbol].adapter
+        ADAPTER_NAME: promise[symbol].adapter,
       },
+      getRemainingTimeInMillis: () => 0x7fffffff,
       snapshotAdapter: null,
       eventstoreAdapter: {
-        getSecretsManager: (): any => promise[symbol].secretsManager
-      }
+        getSecretsManager: (): any => promise[symbol].secretsManager,
+      },
     })
 
     let updateResult = null
     try {
-      updateResult = await queryExecutor.updateByEvents({
+      updateResult = await queryExecutor.sendEvents({
         modelName: promise[symbol].name,
-        events: transformEvents(promise[symbol].events)
+        events: transformEvents(promise[symbol].events),
       })
     } catch (error) {
       updateResult = error
@@ -52,7 +53,7 @@ export const executeReadModel = async ({
       modelName: promise[symbol].name,
       resolverName: promise[symbol].resolverName,
       resolverArgs: promise[symbol].resolverArgs,
-      jwt: promise[symbol].jwt
+      jwt: promise[symbol].jwt,
     })
 
     promise[symbol].resolve(result)

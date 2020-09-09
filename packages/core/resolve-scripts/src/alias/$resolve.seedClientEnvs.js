@@ -13,9 +13,9 @@ export default ({ resolveConfig, isClient }) => {
     Object.defineProperty(resolveConfig, CLIENT_ENV_KEY, {
       value: {
         showInformationWarn: true,
-        exposedEnvs: new Set()
+        exposedEnvs: new Set(),
       },
-      enumerable: false
+      enumerable: false,
     })
   }
 
@@ -25,7 +25,7 @@ export default ({ resolveConfig, isClient }) => {
     resolveConfig.customConstants,
     resolveConfig.staticPath,
     resolveConfig.rootPath,
-    resolveConfig.jwtCookie
+    resolveConfig.jwtCookie,
   ]
 
   if (resolveConfig.uploadAdapter != null) {
@@ -59,7 +59,7 @@ export default ({ resolveConfig, isClient }) => {
 
   const exports = [
     `import '$resolve.guardOnlyServer'`,
-    `const seedClientEnvs = {}`
+    `const seedClientEnvs = {}`,
   ]
 
   for (const clientEnv of clientEnvs) {

@@ -7,7 +7,7 @@ describe('read model', () => {
     const result = await givenEvents([
       { aggregateId: 'id1', type: 'TEST1' },
       { aggregateId: 'id2', type: 'TEST2' },
-      { aggregateId: 'id3', type: 'TEST3' }
+      { aggregateId: 'id3', type: 'TEST3' },
     ])
       .readModel({
         name: 'readModelName',
@@ -15,7 +15,7 @@ describe('read model', () => {
           Init: async (store: any): Promise<any> => {
             await store.defineTable('items', {
               indexes: { id: 'string' },
-              fields: []
+              fields: [],
             })
           },
           TEST1: async (store: any): Promise<any> => {
@@ -26,31 +26,33 @@ describe('read model', () => {
           },
           TEST3: async (store: any): Promise<any> => {
             await store.insert('items', { id: 3 })
-          }
+          },
         },
         resolvers: {
           all: async (store: any, args: any, context: any): Promise<any> => {
             return {
               items: await store.find('items', {}, { id: 1 }, { id: 1 }),
               args,
-              context
+              context,
             }
-          }
+          },
         },
         adapter: createReadModelConnector({
-          databaseFile: ':memory:'
-        })
+          databaseFile: ':memory:',
+        }),
       })
       .all({ a: 10, b: 20 })
       .as('JWT_TOKEN')
 
     expect(result).toEqual({
-      items: [{ id: 1 }, { id: 2 }, { id: 3 }],
-      args: { a: 10, b: 20 },
-      context: {
-        jwt: 'JWT_TOKEN',
-        secretsManager: expect.any(Object)
-      }
+      data: {
+        items: [{ id: 1 }, { id: 2 }, { id: 3 }],
+        args: { a: 10, b: 20 },
+        context: {
+          jwt: 'JWT_TOKEN',
+          secretsManager: expect.any(Object),
+        },
+      },
     })
   })
 
@@ -68,11 +70,11 @@ describe('read model', () => {
             await secretsManager.setSecret('id', 'secret')
             await secretsManager.getSecret('id')
             await secretsManager.deleteSecret('id')
-          }
+          },
         },
         adapter: createReadModelConnector({
-          databaseFile: ':memory:'
-        })
+          databaseFile: ':memory:',
+        }),
       })
       .all()
       .as('jwt')
@@ -82,7 +84,7 @@ describe('read model', () => {
     const secretsManager = {
       getSecret: jest.fn(),
       setSecret: jest.fn(),
-      deleteSecret: jest.fn()
+      deleteSecret: jest.fn(),
     }
 
     await givenEvents([])
@@ -99,11 +101,11 @@ describe('read model', () => {
             await secretsManager.setSecret('id', 'secret')
             await secretsManager.getSecret('id')
             await secretsManager.deleteSecret('id')
-          }
+          },
         },
         adapter: createReadModelConnector({
-          databaseFile: ':memory:'
-        })
+          databaseFile: ':memory:',
+        }),
       })
       .all()
       .as('jwt')
@@ -123,7 +125,7 @@ describe('aggregate', () => {
     name: 'user',
     projection: {
       Init: (): AggregateState => ({
-        exist: false
+        exist: false,
       }),
       TEST_COMMAND_EXECUTED: (
         state: AggregateState,
@@ -131,8 +133,8 @@ describe('aggregate', () => {
       ): AggregateState => ({
         ...state,
         exist: true,
-        id: event.aggregateId
-      })
+        id: event.aggregateId,
+      }),
     },
     commands: {
       create: (state: AggregateState, command, context): any => {
@@ -144,7 +146,7 @@ describe('aggregate', () => {
         }
         return {
           type: 'TEST_COMMAND_EXECUTED',
-          payload: {}
+          payload: {},
         }
       },
       failWithCustomId: (state: AggregateState, command): any => {
@@ -154,9 +156,9 @@ describe('aggregate', () => {
         throw Error(`aggregate ${command.aggregateId} failure`)
       },
       noPayload: (): any => ({
-        type: 'EVENT_WITHOUT_PAYLOAD'
-      })
-    }
+        type: 'EVENT_WITHOUT_PAYLOAD',
+      }),
+    },
   }
 
   describe('native Jest assertions', () => {
@@ -168,7 +170,7 @@ describe('aggregate', () => {
           .as('valid-user')
       ).resolves.toEqual({
         type: 'TEST_COMMAND_EXECUTED',
-        payload: {}
+        payload: {},
       })
     })
 
@@ -177,8 +179,8 @@ describe('aggregate', () => {
         givenEvents([
           {
             type: 'TEST_COMMAND_EXECUTED',
-            payload: {}
-          }
+            payload: {},
+          },
         ])
           .aggregate(aggregate)
           .command('create', {})
@@ -209,8 +211,8 @@ describe('aggregate', () => {
         givenEvents([
           {
             type: 'TEST_COMMAND_EXECUTED',
-            payload: {}
-          }
+            payload: {},
+          },
         ])
           .aggregate(aggregate, 'custom-id')
           .command('failWithCustomId', {})
@@ -225,7 +227,7 @@ describe('aggregate', () => {
           .command('noPayload')
           .as('valid-user')
       ).resolves.toEqual({
-        type: 'EVENT_WITHOUT_PAYLOAD'
+        type: 'EVENT_WITHOUT_PAYLOAD',
       })
     })
   })
@@ -238,15 +240,15 @@ describe('aggregate', () => {
         .as('valid-user')
         .shouldProduceEvent({
           type: 'TEST_COMMAND_EXECUTED',
-          payload: {}
+          payload: {},
         }))
 
     test('expecting business logic break', () =>
       givenEvents([
         {
           type: 'TEST_COMMAND_EXECUTED',
-          payload: {}
-        }
+          payload: {},
+        },
       ])
         .aggregate(aggregate)
         .command('create', {})
@@ -271,8 +273,8 @@ describe('aggregate', () => {
       givenEvents([
         {
           type: 'TEST_COMMAND_EXECUTED',
-          payload: {}
-        }
+          payload: {},
+        },
       ])
         .aggregate(aggregate, 'custom-id')
         .command('failWithCustomId', {})
@@ -285,7 +287,7 @@ describe('aggregate', () => {
         .command('noPayload')
         .as('valid-user')
         .shouldProduceEvent({
-          type: 'EVENT_WITHOUT_PAYLOAD'
+          type: 'EVENT_WITHOUT_PAYLOAD',
         }))
   })
 })

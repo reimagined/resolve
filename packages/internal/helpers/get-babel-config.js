@@ -45,7 +45,7 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
       regenerator = false
       helpers = false
       targets = {
-        node: '8.10'
+        node: '8.10',
       }
       break
     }
@@ -70,10 +70,10 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
             loose,
             targets,
             forceAllTransforms,
-            modules
-          }
+            modules,
+          },
         ],
-        '@babel/preset-react'
+        '@babel/preset-react',
       ]
       break
     }
@@ -83,8 +83,8 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
           '@babel/preset-typescript',
           {
             isTSX: true,
-            allExtensions: true
-          }
+            allExtensions: true,
+          },
         ],
         [
           '@babel/preset-env',
@@ -92,10 +92,10 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
             loose,
             targets,
             forceAllTransforms,
-            modules
-          }
+            modules,
+          },
         ],
-        '@babel/preset-react'
+        '@babel/preset-react',
       ]
       break
     }
@@ -117,8 +117,8 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
           corejs: false,
           helpers,
           regenerator,
-          useESModules
-        }
+          useESModules,
+        },
       ],
       [
         'transform-inline-environment-variables',
@@ -126,11 +126,11 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
           include: [
             '__RESOLVE_PACKAGES__',
             '__RESOLVE_EXAMPLES__',
-            '__RESOLVE_VERSION__'
-          ]
-        }
-      ]
-    ]
+            '__RESOLVE_VERSION__',
+          ],
+        },
+      ],
+    ],
   }
 }
 

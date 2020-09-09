@@ -1,12 +1,13 @@
 {
   "name": "resolve-core",
-  "version": "0.24.23",
+  "version": "0.25.5",
   "description": "reSolve core.",
   "engines": {
     "node": ">=10.9"
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",
+  "types": "./types/index.d.ts",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -30,16 +31,11 @@
   "devDependencies": {
     "jest": "26.0.1"
   },
+  "sourceType": "ts",
   "babelCompile": [
     {
-      "moduleType": "es",
-      "moduleTarget": "server",
-      "inputDir": "./src",
-      "outDir": "./es"
-    },
-    {
       "moduleType": "cjs",
-      "moduleTarget": "server",
+      "moduleTarget": "client",
       "inputDir": "./src",
       "outDir": "./lib"
     }

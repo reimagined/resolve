@@ -2,11 +2,11 @@ import {
   STORY_CREATED,
   STORY_UNVOTED,
   STORY_UPVOTED,
-  USER_CREATED
+  USER_CREATED,
 } from '../event-types'
 
 export default {
-  Init: async store => {
+  Init: async (store) => {
     await store.defineTable('Stories', {
       indexes: { id: 'string', type: 'string' },
       fields: [
@@ -17,13 +17,13 @@ export default {
         'votes',
         'createdAt',
         'createdBy',
-        'createdByName'
-      ]
+        'createdByName',
+      ],
     })
 
     await store.defineTable('Users', {
       indexes: { id: 'string', name: 'string' },
-      fields: ['createdAt']
+      fields: ['createdAt'],
     })
   },
 
@@ -44,7 +44,7 @@ export default {
       votes: [],
       createdAt: timestamp,
       createdBy: userId,
-      createdByName: userName
+      createdByName: userName,
     }
 
     await store.insert('Stories', story)
@@ -72,7 +72,7 @@ export default {
     await store.update(
       'Stories',
       { id: aggregateId },
-      { $set: { votes: story.votes.filter(vote => vote !== userId) } }
+      { $set: { votes: story.votes.filter((vote) => vote !== userId) } }
     )
   },
 
@@ -83,7 +83,7 @@ export default {
     const user = {
       id: aggregateId,
       name,
-      createdAt: timestamp
+      createdAt: timestamp,
     }
     await store.insert('Users', user)
   },
@@ -104,5 +104,5 @@ export default {
       { id: aggregateId },
       { $inc: { commentCount: -1 } }
     )
-  }
+  },
 }

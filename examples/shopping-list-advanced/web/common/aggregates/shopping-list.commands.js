@@ -10,7 +10,7 @@ import {
   SHOPPING_ITEM_TOGGLED,
   SHOPPING_ITEM_REMOVED,
   SHOPPING_LIST_SHARED,
-  SHOPPING_LIST_UNSHARED
+  SHOPPING_LIST_UNSHARED,
 } from '../event-types'
 
 export default {
@@ -22,7 +22,7 @@ export default {
 
     return {
       type: SHOPPING_LIST_CREATED,
-      payload: { name, userId }
+      payload: { name, userId },
     }
   },
   renameShoppingList: (state, { payload: { name } }, { jwt: token }) => {
@@ -33,7 +33,7 @@ export default {
 
     return {
       type: SHOPPING_LIST_RENAMED,
-      payload: { name, userId }
+      payload: { name, userId },
     }
   },
   removeShoppingList: (state, command, { jwt: token }) => {
@@ -43,7 +43,7 @@ export default {
 
     return {
       type: SHOPPING_LIST_REMOVED,
-      payload: { userId }
+      payload: { userId },
     }
   },
   createShoppingItem: (state, { payload: { id, text } }, { jwt: token }) => {
@@ -55,7 +55,7 @@ export default {
 
     return {
       type: SHOPPING_ITEM_CREATED,
-      payload: { id, text, userId }
+      payload: { id, text, userId },
     }
   },
   toggleShoppingItem: (state, { payload: { id } }, { jwt: token }) => {
@@ -66,7 +66,7 @@ export default {
 
     return {
       type: SHOPPING_ITEM_TOGGLED,
-      payload: { id, userId }
+      payload: { id, userId },
     }
   },
   removeShoppingItem: (state, { payload: { id } }, { jwt: token }) => {
@@ -77,7 +77,7 @@ export default {
 
     return {
       type: SHOPPING_ITEM_REMOVED,
-      payload: { id, userId }
+      payload: { id, userId },
     }
   },
   shareShoppingListForUser: (
@@ -97,7 +97,7 @@ export default {
 
     return {
       type: SHOPPING_LIST_SHARED,
-      payload: { userId }
+      payload: { userId },
     }
   },
   unshareShoppingListForUser: (
@@ -117,7 +117,7 @@ export default {
 
     return {
       type: SHOPPING_LIST_UNSHARED,
-      payload: { userId }
+      payload: { userId },
     }
-  }
+  },
 }

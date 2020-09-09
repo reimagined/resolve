@@ -11,11 +11,11 @@ describe('Read-model generic adapter API', () => {
     name,
     resolvers: resolversModule,
     projection: projectionModule,
-    connectorName
+    connectorName,
   } = config.readModels.find(({ name }) => name === 'Advanced')
   const {
     module: connectorModule,
-    options: connectorOptions
+    options: connectorOptions,
   } = config.readModelConnectors[connectorName]
 
   const createConnector = interopRequireDefault(require(connectorModule))
@@ -42,14 +42,14 @@ describe('Read-model generic adapter API', () => {
         aggregateId: 'ID',
         type: 'INSERT_TEST',
         timestamp: 100,
-        payload: 'test'
-      }
+        payload: 'test',
+      },
     ])
       .readModel({
         name,
         projection,
         resolvers,
-        adapter
+        adapter,
       })
       .NON_PARAMETERIZED_RESOLVER_TEST({})
 
@@ -62,20 +62,20 @@ describe('Read-model generic adapter API', () => {
         aggregateId: 'ID',
         type: 'INSERT_TEST',
         timestamp: 100,
-        payload: 'test'
+        payload: 'test',
       },
       {
         aggregateId: 'ID',
         type: 'UPDATE_TEST',
         timestamp: 101,
-        payload: 'test'
-      }
+        payload: 'test',
+      },
     ])
       .readModel({
         name,
         projection,
         resolvers,
-        adapter
+        adapter,
       })
       .NON_PARAMETERIZED_RESOLVER_TEST({})
 
@@ -88,20 +88,20 @@ describe('Read-model generic adapter API', () => {
         aggregateId: 'ID',
         type: 'INSERT_TEST',
         timestamp: 100,
-        payload: 'test'
+        payload: 'test',
       },
       {
         aggregateId: 'ID',
         type: 'UPSERT_TEST',
         timestamp: 101,
-        payload: 'test'
-      }
+        payload: 'test',
+      },
     ])
       .readModel({
         name,
         projection,
         resolvers,
-        adapter
+        adapter,
       })
       .NON_PARAMETERIZED_RESOLVER_TEST({})
 
@@ -114,20 +114,20 @@ describe('Read-model generic adapter API', () => {
         aggregateId: 'ID',
         type: 'INSERT_TEST',
         timestamp: 100,
-        payload: 'test'
+        payload: 'test',
       },
       {
         aggregateId: 'ID',
         type: 'DELETE_TEST',
         timestamp: 101,
-        payload: 'test'
-      }
+        payload: 'test',
+      },
     ])
       .readModel({
         name,
         projection,
         resolvers,
-        adapter
+        adapter,
       })
       .NON_PARAMETERIZED_RESOLVER_TEST({})
 
@@ -140,27 +140,27 @@ describe('Read-model generic adapter API', () => {
         aggregateId: 'ID',
         type: 'INSERT_TEST',
         timestamp: 100,
-        payload: 'test'
+        payload: 'test',
       },
       {
         aggregateId: 'ID',
         type: 'UPDATE_TEST',
         timestamp: 101,
-        payload: 'test'
-      }
+        payload: 'test',
+      },
     ])
       .readModel({
         name,
         projection,
         resolvers,
-        adapter
+        adapter,
       })
 
       .PARAMETRIZED_RESOLVER_TEST({
         firstFieldCondition: 10,
         secondFieldCondition: 2,
         pageNumber: 2,
-        pageLength: 5
+        pageLength: 5,
       })
 
     expect(result).toMatchSnapshot()

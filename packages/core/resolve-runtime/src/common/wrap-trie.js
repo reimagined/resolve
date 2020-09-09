@@ -2,7 +2,6 @@ import Trie from 'route-trie'
 
 import commandHandler from './handlers/command-handler'
 import queryHandler from './handlers/query-handler'
-import subscribeHandler from './handlers/subscribe-handler'
 import markupHandler from './handlers/markup-handler'
 import uploaderHandler from './handlers/uploader-handler'
 
@@ -12,7 +11,7 @@ const wrapTrie = (apiHandlers, rootPath) => {
   const trie = new Trie({
     ignoreCase: true,
     fixedPathRedirect: true,
-    trailingSlashRedirect: true
+    trailingSlashRedirect: true,
   })
 
   trie
@@ -34,19 +33,6 @@ const wrapTrie = (apiHandlers, rootPath) => {
   trie
     .define(getRootBasedUrl(rootPath, '/api/commands'))
     .handle('POST', commandHandler)
-
-  trie
-    .define(getRootBasedUrl(rootPath, '/api/subscribe/:wildcard*'))
-    .handle('GET', subscribeHandler)
-  trie
-    .define(getRootBasedUrl(rootPath, '/api/subscribe/:wildcard*'))
-    .handle('POST', subscribeHandler)
-  trie
-    .define(getRootBasedUrl(rootPath, '/api/subscribe'))
-    .handle('GET', subscribeHandler)
-  trie
-    .define(getRootBasedUrl(rootPath, '/api/subscribe'))
-    .handle('POST', subscribeHandler)
 
   trie
     .define(getRootBasedUrl(rootPath, '/uploader'))

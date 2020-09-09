@@ -12,8 +12,8 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
       aggregateId: uuid(),
       aggregateName: 'ShoppingList',
       payload: {
-        name: shoppingListName || `Shopping List ${lists.length + 1}`
-      }
+        name: shoppingListName || `Shopping List ${lists.length + 1}`,
+      },
     },
     (err, result) => {
       setShoppingListName('')
@@ -21,11 +21,11 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
     }
   )
 
-  const updateShoppingListName = event => {
+  const updateShoppingListName = (event) => {
     setShoppingListName(event.target.value)
   }
 
-  const onShoppingListNamePressEnter = event => {
+  const onShoppingListNamePressEnter = (event) => {
     if (event.charCode === 13) {
       event.preventDefault()
       createShoppingListCommand()

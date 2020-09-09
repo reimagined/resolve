@@ -2,7 +2,7 @@ import deepmerge from 'deepmerge'
 
 const merge = (...configs) =>
   deepmerge.all(configs, {
-    isMergeableObject: obj => {
+    isMergeableObject: (obj) => {
       if (
         obj != null &&
         obj.hasOwnProperty('module') &&
@@ -17,7 +17,7 @@ const merge = (...configs) =>
         return true
       }
       return false
-    }
+    },
   })
 
 export default merge

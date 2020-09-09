@@ -8,10 +8,10 @@ describe('base config works correctly', () => {
     sagas: [
       {
         name: 'Saga',
-        source: path.resolve(__dirname, 'files/testSagaCronHandlers.js')
-      }
+        source: path.resolve(__dirname, 'files/testSagaCronHandlers.js'),
+      },
     ],
-    schedulers: {}
+    schedulers: {},
   }
 
   test('[client]', () => {
@@ -20,7 +20,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -33,7 +33,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -47,18 +47,18 @@ describe('config with schedulers works correctly', () => {
     sagas: [
       {
         name: 'Saga',
-        source: path.resolve(__dirname, 'files/testSagaCronHandlers.js')
-      }
+        source: path.resolve(__dirname, 'files/testSagaCronHandlers.js'),
+      },
     ],
     schedulers: {
       scheduler: {
         adapter: {
           module: 'resolve-scheduler-local',
-          options: {}
+          options: {},
         },
-        connectorName: 'default'
-      }
-    }
+        connectorName: 'default',
+      },
+    },
   }
 
   test('[client]', () => {
@@ -67,7 +67,7 @@ describe('config with schedulers works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -80,7 +80,7 @@ describe('config with schedulers works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )

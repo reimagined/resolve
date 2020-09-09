@@ -2,14 +2,14 @@ import {
   LazinessStrategy,
   SUBSCRIBERS_TABLE_NAME,
   SubscriptionStatus,
-  PrivateOperationType
+  PrivateOperationType,
 } from '../constants'
 
 const resume = async (pool, payload) => {
   const {
     database: { runQuery, escapeId, escapeStr },
     invokeOperation,
-    parseSubscription
+    parseSubscription,
   } = pool
   const { eventSubscriber } = payload
   const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
@@ -17,8 +17,8 @@ const resume = async (pool, payload) => {
   const input = {
     type: PrivateOperationType.RESUME_SUBSCRIBER,
     payload: {
-      eventSubscriber
-    }
+      eventSubscriber,
+    },
   }
   await invokeOperation(pool, LazinessStrategy.EAGER, input)
 
@@ -42,8 +42,9 @@ const resume = async (pool, payload) => {
         `Event subscriber ${eventSubscriber} cannot be resumed after ${attempt} attempts - event bus is too busy`
       )
     } else {
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
     }
   }
 }
+
 export default resume

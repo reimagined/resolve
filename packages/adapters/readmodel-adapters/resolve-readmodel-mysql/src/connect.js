@@ -10,14 +10,14 @@ const runQuery = async (pool, querySQL) => {
   return rows
 }
 
-const setupConnection = async pool => {
+const setupConnection = async (pool) => {
   if (pool.isDisconnected) {
     pool.connectionPromise = null
     return
   }
   pool.connectionPromise = pool.MySQL.createConnection({
     ...pool.connectionOptions,
-    multipleStatements: true
+    multipleStatements: true,
   })
   const connection = await pool.connectionPromise
 
@@ -29,7 +29,7 @@ const setupConnection = async pool => {
     throw new Error(`Supported MySQL version 8+, but got ${version}`)
   }
 
-  connection.onerror = async err => {
+  connection.onerror = async (err) => {
     if (err.code === 'PROTOCOL_CONNECTION_LOST') {
       return await setupConnection(pool)
     }
@@ -40,7 +40,7 @@ const setupConnection = async pool => {
   }
 }
 
-const makeNestedPath = nestedPath => {
+const makeNestedPath = (nestedPath) => {
   let result = '$'
   for (const part of nestedPath) {
     if (part == null || part.constructor !== String) {
@@ -73,7 +73,7 @@ const connect = async (imports, pool, options) => {
     performanceTracer,
     tablePrefix,
     makeNestedPath,
-    ...imports
+    ...imports,
   })
 
   await setupConnection(pool)

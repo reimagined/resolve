@@ -17,14 +17,14 @@ const {
   viewModels,
   rootPath,
   customConstants,
-  subscribeAdapter,
-  jwtCookie
+  subscriber,
+  jwtCookie,
 } = getNativeChunk()
 
 const initialState = {}
 
 const history = createMemoryHistory({
-  basename: rootPath
+  basename: rootPath,
 })
 
 const isClient = true
@@ -33,7 +33,7 @@ const redux = {
   reducers: {
     optimisticShoppingLists,
     optimisticSharings,
-    refresh
+    refresh,
   },
   middlewares: [],
   sagas: [optimisticSharingsSaga, optimisticShoppingListsSaga],
@@ -41,9 +41,9 @@ const redux = {
     devToolsEnhancer({
       realtime: true,
       hostname: customConstants.remoteReduxDevTools.hostname,
-      port: customConstants.remoteReduxDevTools.port
-    })
-  ]
+      port: customConstants.remoteReduxDevTools.port,
+    }),
+  ],
 }
 
 const jwtProvider = {
@@ -55,20 +55,20 @@ const jwtProvider = {
       return await AsyncStorage.removeItem(jwtCookie.name)
     }
     return await AsyncStorage.setItem(jwtCookie.name, jwt)
-  }
+  },
 }
 
 const getStore = () =>
   createStore({
     redux,
     viewModels,
-    subscribeAdapter,
+    subscriber,
     initialState,
     history,
     origin,
     rootPath,
     jwtProvider,
-    isClient
+    isClient,
   })
 
 export default getStore

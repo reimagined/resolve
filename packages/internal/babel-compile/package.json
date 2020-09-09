@@ -1,14 +1,15 @@
 {
   "name": "@internal/babel-compile",
   "private": true,
-  "version": "0.24.23",
+  "version": "0.25.5",
   "bin": "./bin/index.js",
   "dependencies": {
     "@babel/cli": "7.8.4",
-    "@internal/helpers": "0.24.23",
+    "@internal/helpers": "0.25.5",
     "glob": "7.1.6",
     "typescript": "3.9.3",
-    "chalk": "4.0.0"
+    "chalk": "4.0.0",
+    "minimist": "1.2.5"
   },
   "scripts": {
     "start": "node ./bin/index.js",

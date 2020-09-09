@@ -20,24 +20,24 @@ test('renders correctly', () => {
             {
               id: '1',
               text: 'Milk',
-              checked: false
+              checked: false,
             },
             {
               id: '2',
               text: 'Eggs',
-              checked: false
+              checked: false,
             },
             {
               id: '3',
               text: 'Canned beans',
-              checked: false
+              checked: false,
             },
             {
               id: '4',
               text: 'Paper towels',
-              checked: false
-            }
-          ]
+              checked: false,
+            },
+          ],
         }}
       />
     )

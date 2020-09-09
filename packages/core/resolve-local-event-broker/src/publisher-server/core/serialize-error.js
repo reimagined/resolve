@@ -1,4 +1,4 @@
-const serializeError = error => {
+const serializeError = (error) => {
   if (error == null) {
     return null
   }
@@ -15,7 +15,7 @@ const serializeError = error => {
       name: error.name,
       code: error.code,
       message: error.message,
-      stack: error.stack
+      stack: error.stack,
     }
   }
 }

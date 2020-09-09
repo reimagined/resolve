@@ -32,11 +32,11 @@ const ssrHandler = async (
     const store = createStore({
       initialState: { jwt },
       viewModels,
-      subscribeAdapter: {},
+      subscriber: {},
       history,
       origin,
       rootPath,
-      isClient: false
+      isClient: false,
     })
 
     const markup = ReactDOM.renderToStaticMarkup(

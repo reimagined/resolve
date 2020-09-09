@@ -7,11 +7,11 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   subContainer: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   button: {
     borderWidth: 0,
@@ -21,21 +21,21 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 5
+    marginBottom: 5,
   },
   icon: {
     margin: 0,
     padding: 0,
     fontSize: 24,
-    color: '#000'
+    color: '#000',
   },
   text: {
     width: 0,
     flexGrow: 1,
     flex: 1,
     paddingTop: 20,
-    paddingBottom: 20
-  }
+    paddingBottom: 20,
+  },
 })
 
 const options = ['Edit', 'Share', 'Remove', 'Cancel']
@@ -56,17 +56,17 @@ class ShoppingLists extends React.PureComponent {
     }
   }
 
-  onMenuPress = id => {
+  onMenuPress = (id) => {
     this.props.showActionSheetWithOptions(
       {
-        options
+        options,
       },
       this.onMenuItemSelect.bind(this, id),
       3
     )
   }
 
-  onPress = id => {
+  onPress = (id) => {
     this.props.navigate('ShoppingList', { id })
   }
 

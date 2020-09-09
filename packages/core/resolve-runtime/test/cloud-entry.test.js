@@ -15,11 +15,11 @@ describe('Cloud entry', () => {
     'Accept-Language': 'en-US; q=0.7, en; q=0.3',
     'Cache-Control': 'no-cache',
     Host: 'aws-gateway-test-host',
-    'User-Agent': 'jest/mock'
+    'User-Agent': 'jest/mock',
   }
 
   const customConstants = {
-    customConstantName: 'customConstantValue'
+    customConstantName: 'customConstantValue',
   }
   const staticPath = 'static-path'
   const rootPath = 'root-path'
@@ -35,7 +35,7 @@ describe('Cloud entry', () => {
     process.env = {
       RESOLVE_DEPLOYMENT_ID: 'RESOLVE_DEPLOYMENT_ID',
       RESOLVE_WS_ENDPOINT: 'RESOLVE_WS_ENDPOINT',
-      RESOLVE_IOT_ROLE_ARN: 'RESOLVE_IOT_ROLE_ARN'
+      RESOLVE_IOT_ROLE_ARN: 'RESOLVE_IOT_ROLE_ARN',
     }
 
     eventstoreAdapter = {
@@ -46,38 +46,38 @@ describe('Cloud entry', () => {
       saveEvent: jest.fn(),
       dispose: jest.fn(),
       import: jest.fn(),
-      export: jest.fn()
+      export: jest.fn(),
     }
 
     snapshotAdapter = {
       loadSnapshot: jest.fn(),
       saveSnapshot: jest.fn(),
-      dispose: jest.fn()
+      dispose: jest.fn(),
     }
 
     assemblies = {
       seedClientEnvs: {
         customConstants,
         staticPath,
-        rootPath
+        rootPath,
       },
       eventstoreAdapter: jest.fn().mockImplementation(() => eventstoreAdapter),
       snapshotAdapter: jest.fn().mockImplementation(() => snapshotAdapter),
       readModelConnectors: {
         // default: jest.fn().mockReturnValue(defaultReadModelConnector)
-      }
+      },
     }
 
     constants = {
       applicationName: 'application-name',
       distDir: 'dist-dir',
       jwtCookie: {
-        cookieOptionName: 'cookie-option-value'
+        cookieOptionName: 'cookie-option-value',
       },
       port: 3000,
       rootPath,
       staticDir: 'static-dir',
-      staticPath
+      staticPath,
     }
 
     domain = {
@@ -93,20 +93,20 @@ describe('Cloud entry', () => {
       ],
       viewModels: [],
       sagas: [],
-      schedulers: []
+      schedulers: [],
     }
 
     redux = {
       reducers: {},
       middlewares: [],
       sagas: [],
-      enhancers: []
+      enhancers: [],
     }
 
     routes = []
 
     lambdaContext = {
-      getRemainingTimeInMillis: () => 0x7fffffff
+      getRemainingTimeInMillis: () => 0x7fffffff,
     }
 
     getCloudEntryWorker = async () => {
@@ -115,7 +115,7 @@ describe('Cloud entry', () => {
         constants,
         domain,
         redux,
-        routes
+        routes,
       })
     }
   })
@@ -146,7 +146,7 @@ describe('Cloud entry', () => {
         httpMethod: 'GET',
         headers: { ...defaultRequestHttpHeaders },
         multiValueQueryStringParameters: {},
-        body: null
+        body: null,
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
@@ -156,7 +156,7 @@ describe('Cloud entry', () => {
       expect(result).toEqual({
         statusCode: 405,
         headers: {},
-        body: 'Access error: GET "/" is not addressable by current executor'
+        body: 'Access error: GET "/" is not addressable by current executor',
       })
     })
 
@@ -168,15 +168,15 @@ describe('Cloud entry', () => {
         resolvers: {
           'resolver-name': jest.fn().mockImplementation(async (store, args) => {
             return args
-          })
-        }
+          }),
+        },
       }
 
       const readModelConnector = {
         connect: jest.fn(),
         disconnect: jest.fn(),
         drop: jest.fn(),
-        dispose: jest.fn()
+        dispose: jest.fn(),
       }
 
       domain.readModels.push(readModel)
@@ -187,9 +187,9 @@ describe('Cloud entry', () => {
         httpMethod: 'GET',
         headers: { ...defaultRequestHttpHeaders },
         multiValueQueryStringParameters: {
-          key: 'value'
+          key: 'value',
         },
-        body: null
+        body: null,
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
@@ -199,7 +199,9 @@ describe('Cloud entry', () => {
       expect(result.statusCode).toEqual(200)
       expect(result.headers).toEqual({ 'Content-Type': 'application/json' })
       expect(JSON.parse(result.body)).toEqual({
-        key: 'value'
+        data: {
+          key: 'value',
+        },
       })
 
       expect(readModelConnector.connect.mock.calls[0][0]).toEqual(
@@ -221,15 +223,15 @@ describe('Cloud entry', () => {
         resolvers: {
           'resolver-name': jest.fn().mockImplementation(async (store, args) => {
             return args
-          })
-        }
+          }),
+        },
       }
 
       const readModelConnector = {
         connect: jest.fn(),
         disconnect: jest.fn(),
         drop: jest.fn(),
-        dispose: jest.fn()
+        dispose: jest.fn(),
       }
 
       domain.readModels.push(readModel)
@@ -240,9 +242,9 @@ describe('Cloud entry', () => {
         httpMethod: 'GET',
         headers: { ...defaultRequestHttpHeaders },
         multiValueQueryStringParameters: {
-          key: 'value'
+          key: 'value',
         },
-        body: null
+        body: null,
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
@@ -268,7 +270,7 @@ describe('Cloud entry', () => {
         httpMethod: 'GET',
         headers: { ...defaultRequestHttpHeaders },
         multiValueQueryStringParameters: { key: 'value' },
-        body: null
+        body: null,
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
@@ -288,7 +290,7 @@ describe('Cloud entry', () => {
         httpMethod: 'GET',
         headers: { ...defaultRequestHttpHeaders },
         multiValueQueryStringParameters: {},
-        body: null
+        body: null,
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
@@ -312,22 +314,22 @@ describe('Cloud entry', () => {
               type: 'SET',
               payload: {
                 key: command.payload.key,
-                value: command.payload.value
-              }
+                value: command.payload.value,
+              },
             }
-          }
+          },
         },
         projection: {
           SET: (state, event) => {
             return {
               ...state,
-              [event.payload.key]: [event.payload.value]
+              [event.payload.key]: [event.payload.value],
             }
-          }
+          },
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState),
-        invariantHash: 'aggregate-invariantHash'
+        serializeState: (state) => JSON.stringify(state),
+        deserializeState: (serializedState) => JSON.parse(serializedState),
+        invariantHash: 'aggregate-invariantHash',
       }
 
       domain.aggregates.push(aggregate)
@@ -337,7 +339,7 @@ describe('Cloud entry', () => {
         httpMethod: 'POST',
         headers: {
           ...defaultRequestHttpHeaders,
-          'Content-Type': 'application/json; charset=utf-8'
+          'Content-Type': 'application/json; charset=utf-8',
         },
         multiValueQueryStringParameters: {},
         body: JSON.stringify({
@@ -346,9 +348,9 @@ describe('Cloud entry', () => {
           type: 'set',
           payload: {
             key: 'key1',
-            value: 'value1'
-          }
-        })
+            value: 'value1',
+          },
+        }),
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
@@ -364,8 +366,8 @@ describe('Cloud entry', () => {
         type: 'SET',
         payload: {
           key: 'key1',
-          value: 'value1'
-        }
+          value: 'value1',
+        },
       })
     })
 
@@ -376,11 +378,11 @@ describe('Cloud entry', () => {
         commands: {
           set: () => {
             throw new ConcurrentError()
-          }
+          },
         },
-        serializeState: state => JSON.stringify(state),
-        deserializeState: serializedState => JSON.parse(serializedState),
-        invariantHash: 'aggregate-invariantHash'
+        serializeState: (state) => JSON.stringify(state),
+        deserializeState: (serializedState) => JSON.parse(serializedState),
+        invariantHash: 'aggregate-invariantHash',
       }
 
       domain.aggregates.push(aggregate)
@@ -390,7 +392,7 @@ describe('Cloud entry', () => {
         httpMethod: 'POST',
         headers: {
           ...defaultRequestHttpHeaders,
-          'Content-Type': 'application/json; charset=utf-8'
+          'Content-Type': 'application/json; charset=utf-8',
         },
         multiValueQueryStringParameters: '',
         body: JSON.stringify({
@@ -399,9 +401,9 @@ describe('Cloud entry', () => {
           type: 'set',
           payload: {
             key: 'key1',
-            value: 'value1'
-          }
-        })
+            value: 'value1',
+          },
+        }),
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
@@ -426,8 +428,8 @@ describe('Cloud entry', () => {
             return {
               // BAD EVENT
             }
-          }
-        }
+          },
+        },
       }
 
       domain.aggregates.push(aggregate)
@@ -437,14 +439,14 @@ describe('Cloud entry', () => {
         httpMethod: 'POST',
         headers: {
           ...defaultRequestHttpHeaders,
-          'Content-Type': 'application/json; charset=utf-8'
+          'Content-Type': 'application/json; charset=utf-8',
         },
         multiValueQueryStringParameters: {},
         body: JSON.stringify({
           aggregateName: 'BadAggregate',
           aggregateId: 'aggregateId',
-          type: 'fail'
-        })
+          type: 'fail',
+        }),
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
@@ -469,8 +471,8 @@ describe('Cloud entry', () => {
             const error = new Error('I’m a teapot')
             error.code = 418
             throw error
-          }
-        }
+          },
+        },
       }
 
       domain.aggregates.push(aggregate)
@@ -480,14 +482,14 @@ describe('Cloud entry', () => {
         httpMethod: 'POST',
         headers: {
           ...defaultRequestHttpHeaders,
-          'Content-Type': 'application/json; charset=utf-8'
+          'Content-Type': 'application/json; charset=utf-8',
         },
         multiValueQueryStringParameters: {},
         body: JSON.stringify({
           aggregateName: 'BadAggregate',
           aggregateId: 'aggregateId',
-          type: 'fail'
-        })
+          type: 'fail',
+        }),
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
@@ -499,90 +501,6 @@ describe('Cloud entry', () => {
       expect(result.body).toEqual('Command error: I’m a teapot')
     })
 
-    test('should get subscribe options via GET /"rootPath"/api/subscribe/', async () => {
-      STS.assumeRole.mockReturnValue({
-        promise: jest.fn().mockReturnValue({
-          Credentials: {
-            AccessKeyId: 'AccessKeyId',
-            SecretAccessKey: 'SecretAccessKey',
-            SessionToken: 'SessionToken'
-          }
-        })
-      })
-
-      const apiGatewayEvent = {
-        path: '/root-path/api/subscribe',
-        httpMethod: 'GET',
-        headers: { ...defaultRequestHttpHeaders },
-        multiValueQueryStringParameters: {
-          origin: 'origin',
-          adapterName: 'adapterName'
-        },
-        body: null
-      }
-
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
-
-      expect(result.statusCode).toEqual(200)
-      expect(result.headers).toEqual({ 'Content-Type': 'application/json' })
-      expect(JSON.parse(result.body).appId).toEqual(
-        process.env.RESOLVE_DEPLOYMENT_ID
-      )
-      expect(JSON.parse(result.body).url).toMatch(
-        `wss://${process.env.RESOLVE_WS_ENDPOINT}/mqtt`
-      )
-
-      expect(STS.assumeRole).toBeCalledWith({
-        RoleArn: process.env.RESOLVE_IOT_ROLE_ARN,
-        RoleSessionName: `role-session-${process.env.RESOLVE_DEPLOYMENT_ID}`,
-        DurationSeconds: 3600
-      })
-    })
-
-    test('should get subscribe options via POST /"rootPath"/api/subscribe/', async () => {
-      STS.assumeRole.mockReturnValue({
-        promise: jest.fn().mockReturnValue({
-          Credentials: {
-            AccessKeyId: 'AccessKeyId',
-            SecretAccessKey: 'SecretAccessKey',
-            SessionToken: 'SessionToken'
-          }
-        })
-      })
-
-      const apiGatewayEvent = {
-        path: '/root-path/api/subscribe',
-        httpMethod: 'POST',
-        headers: {
-          ...defaultRequestHttpHeaders,
-          'Content-Type': 'application/json; charset=utf-8'
-        },
-        multiValueQueryStringParameters: '',
-        body: JSON.stringify({})
-      }
-
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
-
-      expect(result.statusCode).toEqual(200)
-      expect(result.headers).toEqual({ 'Content-Type': 'application/json' })
-      expect(JSON.parse(result.body).appId).toEqual(
-        process.env.RESOLVE_DEPLOYMENT_ID
-      )
-      expect(JSON.parse(result.body).url).toMatch(
-        `wss://${process.env.RESOLVE_WS_ENDPOINT}/mqtt`
-      )
-
-      expect(STS.assumeRole).toBeCalledWith({
-        RoleArn: process.env.RESOLVE_IOT_ROLE_ARN,
-        RoleSessionName: `role-session-${process.env.RESOLVE_DEPLOYMENT_ID}`,
-        DurationSeconds: 3600
-      })
-    })
-
     test('should get subscribe options via POST /"rootPath"/api/my-api-handler-1/', async () => {
       domain.apiHandlers.push(
         {
@@ -591,7 +509,7 @@ describe('Cloud entry', () => {
           handler: async (req, res) => {
             res.setHeader('Content-type', 'application/octet-stream')
             res.end('Custom octet stream')
-          }
+          },
         },
         {
           method: 'POST',
@@ -599,7 +517,7 @@ describe('Cloud entry', () => {
           handler: async (req, res) => {
             res.setHeader('Content-type', 'text/plain')
             res.end('ok')
-          }
+          },
         }
       )
 
@@ -608,10 +526,10 @@ describe('Cloud entry', () => {
         httpMethod: 'POST',
         headers: {
           ...defaultRequestHttpHeaders,
-          'Content-Type': 'application/json; charset=utf-8'
+          'Content-Type': 'application/json; charset=utf-8',
         },
         multiValueQueryStringParameters: '',
-        body: null
+        body: null,
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
@@ -629,17 +547,17 @@ describe('Cloud entry', () => {
         path: '/',
         handler: async (req, res) => {
           res.end('Custom markup handler')
-        }
+        },
       })
 
       const apiGatewayEvent = {
         path: '/root-path',
         httpMethod: 'POST',
         headers: {
-          ...defaultRequestHttpHeaders
+          ...defaultRequestHttpHeaders,
         },
         multiValueQueryStringParameters: '',
-        body: null
+        body: null,
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
@@ -657,7 +575,7 @@ describe('Cloud entry', () => {
         path: '/',
         handler: async (req, res) => {
           res.end('Custom markup handler')
-        }
+        },
       })
 
       const apiGatewayEvent = {
@@ -665,10 +583,10 @@ describe('Cloud entry', () => {
         httpMethod: 'POST',
         headers: {
           ...defaultRequestHttpHeaders,
-          authorization: 'Bearer JWT'
+          authorization: 'Bearer JWT',
         },
         multiValueQueryStringParameters: '',
-        body: null
+        body: null,
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
@@ -678,7 +596,7 @@ describe('Cloud entry', () => {
       expect(result.statusCode).toEqual(302)
       expect(result.headers).toEqual({
         Authorization: 'Bearer JWT',
-        Location: '/root-path/'
+        Location: '/root-path/',
       })
       expect(result.body).toEqual('')
     })

@@ -12,9 +12,9 @@ const prodConfig = {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'data/read-models.db'
-      }
-    }
+        databaseFile: 'data/read-models.db',
+      },
+    },
     /*
       default: {
         module: 'resolve-readmodel-mysql',
@@ -33,8 +33,8 @@ const prodConfig = {
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
-      snapshotBucketSize: 100
-    }
+      snapshotBucketSize: 100,
+    },
   },
   /*
     {
@@ -50,19 +50,10 @@ const prodConfig = {
         secretsTableName: 'customSecretsTableName'
       }
     }
-  */ subscribeAdapter: {
-    module: 'resolve-subscribe-socket.io',
-    options: {}
-  },
-  /*
-    {
-      module: 'resolve-subscribe-mqtt',
-      options: {}
-    }
   */ jwtCookie: {
     name: 'jwt',
-    maxAge: 31536000000
-  }
+    maxAge: 31536000000,
+  },
 }
 
 export default prodConfig

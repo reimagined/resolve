@@ -16,7 +16,7 @@ const beginXATransaction = async (pool, readModelName) => {
           await pool.rdsDataService.beginTransaction({
             resourceArn: pool.dbClusterOrInstanceArn,
             secretArn: pool.awsSecretStoreArn,
-            database: 'postgres'
+            database: 'postgres',
           })
         ).transactionId
 
@@ -45,7 +45,7 @@ const beginXATransaction = async (pool, readModelName) => {
             ${pool.escape(pool.hash512(`${xaTransactionId}${readModelName}`))},
             CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT)
           )
-        `
+        `,
         })
 
         break
@@ -55,7 +55,7 @@ const beginXATransaction = async (pool, readModelName) => {
             await pool.rdsDataService.rollbackTransaction({
               resourceArn: pool.dbClusterOrInstanceArn,
               secretArn: pool.awsSecretStoreArn,
-              transactionId: xaTransactionId
+              transactionId: xaTransactionId,
             })
           } catch (e) {}
         }
@@ -92,7 +92,7 @@ const beginXATransaction = async (pool, readModelName) => {
             SET LOCAL ${eventCountId} = 0;
             SET LOCAL ${insideEventId} = 0;
             RELEASE SAVEPOINT ${savepointId};
-          `
+          `,
         })
         break
       } catch (err) {

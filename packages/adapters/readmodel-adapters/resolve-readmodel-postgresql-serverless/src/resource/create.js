@@ -6,7 +6,7 @@ const create = async (pool, options) => {
     awsSecretStoreArn: options.awsSecretStoreAdminArn,
     dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
     databaseName: options.databaseName,
-    region: options.region
+    region: options.region,
   })
 
   await admin.executeStatement(
@@ -19,6 +19,32 @@ const create = async (pool, options) => {
         "xa_key" VARCHAR(190),
         "timestamp" BIGINT,
         PRIMARY KEY("xa_key")
+      )`,
+
+      `CREATE TABLE ${escapeId(options.databaseName)}.${escapeId(
+        `__${options.databaseName}__LEDGER__`
+      )}(
+        "EventSubscriber" VARCHAR(190) NOT NULL,
+        "IsPaused" BOOLEAN NOT NULL,
+        "EventTypes" JSONB NOT NULL,
+        "AggregateIds" JSONB NOT NULL,
+        "XaKey" VARCHAR(190) NULL,
+        "Cursor" JSONB NULL,
+        "SuccessEvent" JSONB NULL,
+        "FailedEvent" JSONB NULL,
+        "Errors" JSONB NULL,
+        "Properties" JSONB DEFAULT '{}'::JSONB,
+        "Schema" JSONB NULL,
+        PRIMARY KEY("EventSubscriber")
+      )`,
+
+      `CREATE TABLE ${escapeId(options.databaseName)}.${escapeId(
+        `__${options.databaseName}__TRX__`
+      )}(
+        "XaKey" VARCHAR(190) NOT NULL,
+        "XaValue" VARCHAR(190) NOT NULL,
+        "Timestamp" BIGINT,
+        PRIMARY KEY("XaKey")
       )`,
 
       `GRANT USAGE ON SCHEMA ${escapeId(options.databaseName)} TO ${escapeId(
@@ -43,7 +69,7 @@ const create = async (pool, options) => {
 
       `ALTER SCHEMA ${escapeId(options.databaseName)} OWNER TO ${escapeId(
         options.userLogin
-      )}`
+      )}`,
     ].join('; ')
   )
 

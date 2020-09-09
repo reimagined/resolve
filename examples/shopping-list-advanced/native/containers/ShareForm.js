@@ -11,7 +11,7 @@ import {
   Icon,
   Label,
   Input,
-  Text
+  Text,
 } from 'native-base'
 import { connect } from 'react-redux'
 import { View, StyleSheet } from 'react-native'
@@ -28,33 +28,33 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingLeft: 5,
     paddingRight: 5,
-    height: 50
+    height: 50,
   },
   inputText: {
     fontSize: 17,
-    lineHeight: 50
+    lineHeight: 50,
   },
   label: {
     paddingLeft: 10,
     fontSize: 16,
-    color: '#575757'
-  }
+    color: '#575757',
+  },
 })
 
 export class ShareForm extends React.PureComponent {
   state = {
-    query: ''
+    query: '',
   }
 
-  updateQuery = text => {
+  updateQuery = (text) => {
     this.setState({
-      query: text
+      query: text,
     })
   }
 
   redirectToShoppingList = () => {
     this.props.navigation.navigate('ShoppingList', {
-      id: this.props.shoppingListId
+      id: this.props.shoppingListId,
     })
   }
 
@@ -104,12 +104,12 @@ export const mapStateToProps = (
   state,
   {
     route: {
-      params: { id }
-    }
+      params: { id },
+    },
   }
 ) => ({
   shoppingListId: id,
-  shoppingListName: state.optimisticSharings.name
+  shoppingListName: state.optimisticSharings.name,
 })
 
 export default requiredAuth(connect(mapStateToProps)(ShareForm))

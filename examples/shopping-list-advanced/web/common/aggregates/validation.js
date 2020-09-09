@@ -47,5 +47,5 @@ export default {
     if (object[key]) {
       throw new Error(errorMessage)
     }
-  }
+  },
 }

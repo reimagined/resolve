@@ -4,10 +4,10 @@ import uuid from 'uuid/v4'
 import md5 from 'md5'
 
 const routeRegisterCallback = async ({ resolve }, login, password) => {
-  const existingUser = await resolve.executeQuery({
+  const { data: existingUser } = await resolve.executeQuery({
     modelName: 'Users',
     resolverName: 'user',
-    resolverArgs: { login: login.trim() }
+    resolverArgs: { login: login.trim() },
   })
 
   if (existingUser) {
@@ -16,7 +16,7 @@ const routeRegisterCallback = async ({ resolve }, login, password) => {
 
   const user = {
     login: login.trim(),
-    passwordHash: md5(password)
+    passwordHash: md5(password),
   }
 
   const token = jwt.sign(user, jwtSecret)
@@ -26,7 +26,7 @@ const routeRegisterCallback = async ({ resolve }, login, password) => {
     aggregateId: uuid(),
     aggregateName: 'User',
     payload: user,
-    jwt
+    jwt,
   })
 
   return token

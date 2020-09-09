@@ -58,7 +58,7 @@ const stringifyUrl = (url: string, params: any): string => {
       return `${url}?${params}`
     }
     return `${url}?${qs.stringify(params, {
-      arrayFormat: 'bracket'
+      arrayFormat: 'bracket',
     })}`
   }
   return url
@@ -71,7 +71,7 @@ const insistentRequest = async (
   options?: RequestOptions,
   attempts = {
     error: 0,
-    response: 0
+    response: 0,
   }
 ): Promise<NarrowedResponse> => {
   let response
@@ -122,12 +122,12 @@ const insistentRequest = async (
       const period = options?.waitForResponse?.period
 
       if (typeof period === 'number' && period > 0) {
-        await new Promise(resolve => setTimeout(resolve, period))
+        await new Promise((resolve) => setTimeout(resolve, period))
       }
 
       return insistentRequest(fetch, input, init, options, {
         ...attempts,
-        response: attempts.response + 1
+        response: attempts.response + 1,
       })
     }
     return response
@@ -147,22 +147,20 @@ const insistentRequest = async (
       if (options?.debug) {
         // eslint-disable-next-line no-console
         console.warn(
-          `Error code ${
-            response.status
-          } was expected. Attempting again #${attempts.error + 1}/${
-            options?.retryOnError?.attempts
-          }.`
+          `Error code ${response.status} was expected. Attempting again #${
+            attempts.error + 1
+          }/${options?.retryOnError?.attempts}.`
         )
       }
 
       const period = options?.retryOnError?.period
 
       if (typeof period === 'number' && period > 0) {
-        await new Promise(resolve => setTimeout(resolve, period))
+        await new Promise((resolve) => setTimeout(resolve, period))
       }
       return insistentRequest(fetch, input, init, options, {
         ...attempts,
-        error: attempts.error + 1
+        error: attempts.error + 1,
       })
     }
   }
@@ -194,7 +192,7 @@ export const request = async (
     case 'GET':
       init = {
         method: 'GET',
-        credentials: 'same-origin'
+        credentials: 'same-origin',
       }
       requestUrl = stringifyUrl(rootBasedUrl, requestParams)
       break
@@ -205,7 +203,7 @@ export const request = async (
         body:
           typeof requestParams === 'string'
             ? requestParams
-            : JSON.stringify(requestParams)
+            : JSON.stringify(requestParams),
       }
       headers['Content-Type'] = 'application/json'
       requestUrl = rootBasedUrl

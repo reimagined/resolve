@@ -14,27 +14,27 @@ const firebaseIP = new Promise((resolve, reject) => {
 })
 
 const wait = (time, result) =>
-  new Promise(resolve => setTimeout(() => resolve(result), time))
+  new Promise((resolve) => setTimeout(() => resolve(result), time))
 
-const fetchSingle = url =>
+const fetchSingle = (url) =>
   firebaseIP
-    .then(ip =>
+    .then((ip) =>
       fetch(`https://${ip}/v0/${url}`, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
-          Host: 'hacker-news.firebaseio.com'
-        }
+          Host: 'hacker-news.firebaseio.com',
+        },
       })
     )
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
         throw new Error(response.text())
       }
       return response.json()
     })
 
-const fetchWithRetry = url => {
+const fetchWithRetry = (url) => {
   return Promise.race([
     new Promise(async (resolve, reject) => {
       let error
@@ -48,11 +48,11 @@ const fetchWithRetry = url => {
       }
       reject(error)
     }),
-    wait(timeout)
+    wait(timeout),
   ])
 }
 
-const invokeImportApi = async body => {
+const invokeImportApi = async (body) => {
   let loop = true
   return Promise.race([
     new Promise(async (resolve, reject) => {
@@ -69,7 +69,7 @@ const invokeImportApi = async body => {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               credentials: 'same-origin',
-              body: JSON.stringify(body)
+              body: JSON.stringify(body),
             }
           )
           resolve(await response.text())
@@ -85,20 +85,20 @@ const invokeImportApi = async body => {
     }),
     wait(timeout).then(() => {
       loop = false
-    })
+    }),
   ])
 }
 
-const fetchStoryIds = path => fetchWithRetry(`${path}.json`)
+const fetchStoryIds = (path) => fetchWithRetry(`${path}.json`)
 
-const fetchItem = id => fetchWithRetry(`item/${id}.json`)
+const fetchItem = (id) => fetchWithRetry(`item/${id}.json`)
 
-const fetchItems = ids => {
+const fetchItems = (ids) => {
   return Promise.all(ids.map(fetchItem))
 }
 
 export default {
   fetchStoryIds,
   fetchItems,
-  invokeImportApi
+  invokeImportApi,
 }

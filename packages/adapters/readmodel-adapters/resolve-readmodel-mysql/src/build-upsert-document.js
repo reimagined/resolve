@@ -1,11 +1,11 @@
 const buildUpsertDocument = (searchExpression, updateExpression) => {
   const isSearchDocument =
-    Object.keys(searchExpression).filter(key => key.indexOf('$') > -1)
+    Object.keys(searchExpression).filter((key) => key.indexOf('$') > -1)
       .length === 0
 
   const baseDocument = {
     ...(isSearchDocument ? searchExpression : {}),
-    ...(updateExpression['$set'] || {})
+    ...(updateExpression['$set'] || {}),
   }
 
   const resultDocument = {}

@@ -8,10 +8,10 @@ const routeLoginCallback = async ({ resolve }, username) => {
 
   while (true) {
     try {
-      const user = await resolve.executeQuery({
+      const { data: user } = await resolve.executeQuery({
         modelName: 'HackerNews',
         resolverName: 'user',
-        resolverArgs: { name: username.trim() }
+        resolverArgs: { name: username.trim() },
       })
 
       if (!user) {

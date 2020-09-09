@@ -9,7 +9,7 @@ const createPresignedPut = async (pool, dir) => {
 
   return {
     uploadUrl,
-    uploadId
+    uploadId,
   }
 }
 
@@ -20,10 +20,10 @@ export const upload = (uploadUrl, filePath) => {
     request.put(
       {
         headers: {
-          'Content-Length': fileSizeInBytes
+          'Content-Length': fileSizeInBytes,
         },
         uri: uploadUrl,
-        body: fileStream
+        body: fileStream,
       },
       (error, _, body) => {
         error ? reject(error) : body ? reject(body) : resolve()
@@ -36,12 +36,12 @@ const createPresignedPost = async (pool, dir) => {
   const uploadId = uuid()
   const form = {
     url: `http://localhost:3000/uploader?dir=${dir}&uploadId=${uploadId}`,
-    fields: {}
+    fields: {},
   }
 
   return {
     form,
-    uploadId
+    uploadId,
   }
 }
 
@@ -53,10 +53,10 @@ export const uploadFormData = (form, filePath) => {
       {
         url: form.url,
         formData: {
-          file: fileStream
-        }
+          file: fileStream,
+        },
       },
-      error => {
+      (error) => {
         error ? reject(error) : resolve()
       }
     )
@@ -67,7 +67,7 @@ const createToken = ({ secretKey }, { dir, expireTime = 3600 }) => {
   const payload = Buffer.from(
     JSON.stringify({
       dir,
-      expireTime: Date.now() + expireTime * 1000
+      expireTime: Date.now() + expireTime * 1000,
     })
   )
     .toString('base64')
@@ -81,7 +81,7 @@ const createToken = ({ secretKey }, { dir, expireTime = 3600 }) => {
   return `${payload}*${signature}`
 }
 
-const createUploadAdapter = pool => {
+const createUploadAdapter = (pool) => {
   const { directory, bucket, secretKey } = pool
   return Object.freeze({
     createPresignedPut: createPresignedPut.bind(null, pool),
@@ -91,7 +91,7 @@ const createUploadAdapter = pool => {
     uploadFormData: uploadFormData,
     directory,
     bucket,
-    secretKey
+    secretKey,
   })
 }
 

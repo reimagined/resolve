@@ -48,5 +48,5 @@ export default createAdapter.bind(null, {
   pushIncrementalImport,
   MySQL,
   escapeId,
-  escape
+  escape,
 })

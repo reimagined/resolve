@@ -19,7 +19,7 @@ const defineTable = async (
     -- RESOLVE READ-MODEL ${escapeId(`${readModelName}`)} OWNED TABLE
       ${tableDescription.fields
         .concat(Object.keys(tableDescription.indexes))
-        .map(columnName => `${escapeId(columnName)} JSON`)
+        .map((columnName) => `${escapeId(columnName)} JSON`)
         .join(',\n')}
     )`
   )
@@ -34,7 +34,7 @@ const defineTable = async (
       )
     }
 
-    const baseIndexName = postfix =>
+    const baseIndexName = (postfix) =>
       escapeId(`${tablePrefix}${tableName}-${indexName}-${postfix}`)
 
     const indexCategory = +idx === 0 ? 'UNIQUE' : ''

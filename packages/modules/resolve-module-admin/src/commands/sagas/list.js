@@ -20,13 +20,13 @@ export const handler = async ({ url }) => {
             lastEvent.type
           }`
         : 'N\\A',
-      'last error': lastError ? `${lastError.message}` : 'N\\A'
+      'last error': lastError ? `${lastError.message}` : 'N\\A',
     })
   }
   // eslint-disable-next-line no-console
   console.log(
     columnify(columns, {
-      minWidth: 20
+      minWidth: 20,
     })
   )
 }

@@ -6,7 +6,7 @@ import {
   runTestcafe,
   merge,
   stop,
-  reset
+  reset,
 } from 'resolve-scripts'
 
 import appConfig from './config.app'
@@ -26,7 +26,7 @@ void (async () => {
           dropEventStore: false,
           dropEventBus: true,
           dropReadModels: true,
-          dropSagas: true
+          dropSagas: true,
         })
 
         await watch(resolveConfig)
@@ -54,14 +54,14 @@ void (async () => {
           dropEventStore: true,
           dropEventBus: true,
           dropReadModels: true,
-          dropSagas: true
+          dropSagas: true,
         })
 
         await runTestcafe({
           resolveConfig,
           functionalTestsDir: 'test/functional',
           browser: process.argv[3],
-          customArgs: ['--stop-on-first-fail']
+          customArgs: ['--stop-on-first-fail'],
         })
         break
       }

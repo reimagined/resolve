@@ -1,28 +1,28 @@
 import { takeEvery, put } from 'redux-saga/effects'
 import {
   optimisticUnvoteStory,
-  optimisticUpvoteStory
+  optimisticUpvoteStory,
 } from '../actions/optimistic-actions'
-import { actionTypes } from 'resolve-redux'
+import { internal } from 'resolve-redux'
 
-const { SEND_COMMAND_SUCCESS } = actionTypes
+const { SEND_COMMAND_SUCCESS } = internal.actionTypes
 
-export default function*() {
+export default function* () {
   yield takeEvery(
-    action =>
+    (action) =>
       action.type === SEND_COMMAND_SUCCESS &&
-      action.commandType === 'upvoteStory',
-    function*(action) {
-      yield put(optimisticUpvoteStory(action.aggregateId))
+      action.command.type === 'upvoteStory',
+    function* (action) {
+      yield put(optimisticUpvoteStory(action.command.aggregateId))
     }
   )
 
   yield takeEvery(
-    action =>
+    (action) =>
       action.type === SEND_COMMAND_SUCCESS &&
-      action.commandType === 'unvoteStory',
-    function*(action) {
-      yield put(optimisticUnvoteStory(action.aggregateId))
+      action.command.type === 'unvoteStory',
+    function* (action) {
+      yield put(optimisticUnvoteStory(action.command.aggregateId))
     }
   )
 }

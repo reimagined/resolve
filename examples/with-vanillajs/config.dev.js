@@ -13,13 +13,9 @@ const devConfig = {
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
-      snapshotBucketSize: 100
-    }
+      snapshotBucketSize: 100,
+    },
   },
-  subscribeAdapter: {
-    module: 'resolve-subscribe-socket.io',
-    options: {}
-  }
 }
 
 export default devConfig

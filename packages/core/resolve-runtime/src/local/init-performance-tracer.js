@@ -13,20 +13,20 @@ const createEmptySegment = () => {
     delta_time: null,
     annotations: null,
     error: null,
-    subsegments: []
+    subsegments: [],
   }
 
   Object.defineProperty(segment, 'toJSON', {
     value: () => '',
     writable: true,
     enumerable: true,
-    configurable: true
+    configurable: true,
   })
 
   return segment
 }
 
-const initPerformanceTracer = resolve => {
+const initPerformanceTracer = (resolve) => {
   let segment = createEmptySegment()
   let traceId = process.env.RESOLVE_LOCAL_TRACE_ID
   segment.trace_id = traceId
@@ -41,7 +41,7 @@ const initPerformanceTracer = resolve => {
         }
 
         return {
-          addNewSubsegment: subsegmentName => {
+          addNewSubsegment: (subsegmentName) => {
             const subsegment = createEmptySegment()
             segment.subsegments.push(subsegment)
 
@@ -61,7 +61,7 @@ const initPerformanceTracer = resolve => {
               addAnnotation: (annotationName, data) => {
                 subsegment.annotations[annotationName] = data
               },
-              addError: error => {
+              addError: (error) => {
                 subsegment.errors.push(
                   `${error.code ? `${error.code}: ` : ''}${error.message || ''}`
                 )
@@ -88,12 +88,12 @@ const initPerformanceTracer = resolve => {
                   log.verbose(JSON.stringify(subsegment, null, 2))
                 }
                 segment = prevSegment
-              }
+              },
             }
-          }
+          },
         }
-      }
-    }
+      },
+    },
   })
 }
 

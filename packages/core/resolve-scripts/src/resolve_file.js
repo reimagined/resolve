@@ -17,8 +17,8 @@ const resolveFile = (query, fallbackQuery) => {
       paths: [
         path.resolve(process.cwd(), 'node_modules'),
         path.resolve(__dirname, '../node_modules'),
-        ...getMonorepoNodeModules()
-      ]
+        ...getMonorepoNodeModules(),
+      ],
     })
 
     return query

@@ -5,10 +5,10 @@ const appConfig = {
       {
         outputFile: 'client/index.js',
         moduleType: 'iife',
-        target: 'web'
-      }
-    ]
-  ]
+        target: 'web',
+      },
+    ],
+  ],
 }
 
 export default appConfig

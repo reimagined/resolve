@@ -15,7 +15,7 @@ const Reply = styled.div`
 class ConnectedComments extends React.PureComponent {
   comment = React.createRef()
 
-  onCreateComment = createComment => {
+  onCreateComment = (createComment) => {
     const { treeId, parentCommentId, me } = this.props
 
     createComment(treeId, {
@@ -26,16 +26,16 @@ class ConnectedComments extends React.PureComponent {
         text: this.comment.current.value,
         createdBy: me.id,
         createdByName: me.name,
-        createdAt: Date.now()
-      }
+        createdAt: Date.now(),
+      },
     })
 
     this.comment.current.value = ''
   }
 
-  updateCommentText = event =>
+  updateCommentText = (event) =>
     this.setState({
-      commentText: event.target.value
+      commentText: event.target.value,
     })
 
   render() {
@@ -91,8 +91,8 @@ class ConnectedComments extends React.PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
-  me: state.jwt
+const mapStateToProps = (state) => ({
+  me: state.jwt,
 })
 
 export default connect(mapStateToProps)(ConnectedComments)

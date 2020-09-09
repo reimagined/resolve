@@ -7,13 +7,13 @@ import requiredNoAuth from '../decorators/required-no-auth'
 
 class Login extends React.PureComponent {
   state = {
-    action: '/'
+    action: '/',
   }
 
   onLoginClick = () => {
     this.setState(
       {
-        action: '/api/auth/local/login'
+        action: '/api/auth/local/login',
       },
       () => {
         this.form.submit()
@@ -24,7 +24,7 @@ class Login extends React.PureComponent {
   onRegisterClick = () => {
     this.setState(
       {
-        action: '/api/auth/local/register'
+        action: '/api/auth/local/register',
       },
       () => {
         this.form.submit()
@@ -32,7 +32,7 @@ class Login extends React.PureComponent {
     )
   }
 
-  formRef = element => {
+  formRef = (element) => {
     this.form = element
   }
 

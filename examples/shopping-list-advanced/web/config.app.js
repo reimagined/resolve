@@ -5,35 +5,31 @@ const appConfig = {
     {
       name: 'ShoppingList',
       commands: 'common/aggregates/shopping-list.commands.js',
-      projection: 'common/aggregates/shopping-list.projection.js'
+      projection: 'common/aggregates/shopping-list.projection.js',
     },
     {
       name: 'User',
       commands: 'common/aggregates/user.commands.js',
-      projection: 'common/aggregates/user.projection.js'
-    }
+      projection: 'common/aggregates/user.projection.js',
+    },
   ],
   viewModels: [
     {
       name: 'shoppingList',
-      projection: 'common/view-models/shopping-list.projection.js'
-    }
+      projection: 'common/view-models/shopping-list.projection.js',
+    },
   ],
   readModels: [
     {
       name: 'ShoppingLists',
       projection: 'common/read-models/shopping-lists.projection.js',
       resolvers: 'common/read-models/shopping-lists.resolvers.js',
-      connectorName: 'default'
-    }
+      connectorName: 'default',
+    },
   ],
   jwtCookie: {
     name: 'shopping-list-jwt',
-    maxAge: 31536000000
-  },
-  subscribeAdapter: {
-    module: 'resolve-subscribe-socket.io',
-    options: {}
+    maxAge: 31536000000,
   },
   apiHandlers: [
     {
@@ -41,12 +37,12 @@ const appConfig = {
         module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
         options: {
           modulePath: './ssr.js',
-          moduleFactoryImport: false
-        }
+          moduleFactoryImport: false,
+        },
       },
       path: '/:markup*',
-      method: 'GET'
-    }
+      method: 'GET',
+    },
   ],
   clientEntries: [
     'client/index.js',
@@ -55,18 +51,18 @@ const appConfig = {
       {
         outputFile: 'common/local-entry/ssr.js',
         moduleType: 'commonjs',
-        target: 'node'
-      }
+        target: 'node',
+      },
     ],
     [
       'client/native-chunk.js',
       {
         outputFile: '../../native/native-chunk.js',
         moduleType: 'esm',
-        target: 'web'
-      }
-    ]
-  ]
+        target: 'web',
+      },
+    ],
+  ],
 }
 
 module.exports = appConfig

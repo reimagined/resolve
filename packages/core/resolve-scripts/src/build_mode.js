@@ -21,7 +21,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
   const webpackConfigs = await getWebpackConfigs({
     resolveConfig,
     nodeModulesByAssembly,
-    adjustWebpackConfigs
+    adjustWebpackConfigs,
   })
 
   const peerDependencies = getPeerDependencies()

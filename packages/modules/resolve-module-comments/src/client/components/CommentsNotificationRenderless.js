@@ -12,13 +12,13 @@ class CommentsNotificationRenderless extends React.PureComponent {
       return null
     },
     readModelName: defaults.readModelName,
-    resolverName: defaults.foreignCommentsCount
+    resolverName: defaults.foreignCommentsCount,
   }
 
   state = {
     timestamp: Date.now(),
     commentCount: null,
-    prevCommentCount: null
+    prevCommentCount: null,
   }
 
   componentDidMount() {
@@ -31,11 +31,11 @@ class CommentsNotificationRenderless extends React.PureComponent {
 
   updateTimestamp = () => {
     this.setState({
-      timestamp: Date.now()
+      timestamp: Date.now(),
     })
   }
 
-  updateCommentCount = commentCount => {
+  updateCommentCount = (commentCount) => {
     if (this.state.commentCount === commentCount) {
       return
     }
@@ -45,14 +45,14 @@ class CommentsNotificationRenderless extends React.PureComponent {
 
     this.setState({
       prevCommentCount,
-      commentCount
+      commentCount,
     })
   }
 
-  onClick = e => {
+  onClick = (e) => {
     this.setState({
       commentCount: null,
-      prevCommentCount: null
+      prevCommentCount: null,
     })
     if (this.props.onClick) {
       this.props.onClick(e)
