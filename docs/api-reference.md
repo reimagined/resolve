@@ -821,6 +821,8 @@ export default main
 
 The `resolveContext` object contains data used internally by reSolve client libraries to communicate with the backend.
 
+See the [Client Application Entry Point](frontend.md#client-application-entry-point) section of the [Frontend](frontend.md) article for more information.
+
 ### resolve-redux Library
 
 The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library provides the following HOCs:
