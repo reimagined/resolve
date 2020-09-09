@@ -14,21 +14,24 @@ This document describes approaches that you can use to implement a frontend for 
 
 ### Basic Entry Point
 
-A client script should export a function that is the script's entry point. This function takes reSolve context as the parameter.
+A client script should export a function that is the script's entry point. This function takes the reSolve context as the parameter.
 
 ```js
+const main = async resolveContext => {
+...
+}
+export default main
 ```
 
-Register the entry point in the `clientEntries` configuration section:
+to register the entry point, assign the path to the file that contains the entry point definition to the `clientEntries` configuration option:
 
 ```js
+clientEntries: ['client/index.js']
 ```
 
-Use the API available through the reSolve context object to communicate with the backend. For the detailed description of this API, see the [API Reference](api-reference.md).
+Initialize a client library with the `resolveContext` and use it to commubicate with the backend.
 
 ### Entry Point With SSR Support
-
-## [TODO] Plain JS
 
 ## HTTP API
 
