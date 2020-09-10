@@ -11,21 +11,27 @@ export const handler = async ({ url }) => {
     return
   }
   const columns = []
-  for (const { eventSubscriber, status, successEvent, failedEvent, errors } of result) {
+  for (const {
+    eventSubscriber,
+    status,
+    successEvent,
+    failedEvent,
+    errors,
+  } of result) {
     columns.push({
       name: eventSubscriber,
       status,
       'success event': successEvent
         ? `${dateFormat(new Date(successEvent.timestamp), 'm/d/yy HH:MM:ss')} ${
-          successEvent.type
+            successEvent.type
           }`
         : 'N\\A',
       'failed event': failedEvent
         ? `${dateFormat(new Date(failedEvent.timestamp), 'm/d/yy HH:MM:ss')} ${
-          failedEvent.type
-        }`
+            failedEvent.type
+          }`
         : 'N\\A',
-      'last error': errors ? errors[errors.length - 1].message : 'N\\A'
+      'last error': errors ? errors[errors.length - 1].message : 'N\\A',
     })
   }
   // eslint-disable-next-line no-console
