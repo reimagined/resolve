@@ -3,8 +3,8 @@
 exports[`resolve-module-admin read-models list 1`] = `
 Array [
   Array [
-    "NAME                 STATUS               LAST EVENT            LAST ERROR          
-read-model           status               3/18/05 04:58:31 type N\\\\A                 ",
+    "NAME                 STATUS               SUCCESS EVENT        FAILED EVENT         LAST ERROR          
+                     status               N\\\\A                  N\\\\A                  N\\\\A                 ",
   ],
 ]
 `;
@@ -36,8 +36,8 @@ Array [
 exports[`resolve-module-admin sagas list 1`] = `
 Array [
   Array [
-    "NAME                 STATUS               LAST EVENT            LAST ERROR          
-saga                 status               3/18/05 04:58:31 type N\\\\A                 ",
+    "NAME                 STATUS               SUCCESS EVENT        FAILED EVENT         LAST ERROR          
+                     status               N\\\\A                  N\\\\A                  N\\\\A                 ",
   ],
 ]
 `;
