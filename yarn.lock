@@ -16092,6 +16092,37 @@ resolve-cloud@*:
     semver "^6.3.0"
     yargs "^14.0.0"
 
+resolve-cloud@0.16.0:
+  version "0.16.0"
+  resolved "http://npm.resolve-dev.ml:10080/resolve-cloud/-/resolve-cloud-0.16.0.tgz#6f489a36d13d0a25cfb96d5a392bbd811ebf0e5f"
+  integrity sha512-elg27ekb/ozsuxEFsfwpqKngGKcyOvqIVH9+NV7m4PscE/bb0nVXIOSTbE99tQ3zFcpwqXRpWO7vaweVI/7yqA==
+  dependencies:
+    amazon-cognito-identity-js "^3.0.15"
+    archiver "^3.0.0"
+    axios "^0.19.0"
+    chalk "^2.4.1"
+    columnify "^1.5.4"
+    consola "^2.10.1"
+    dateformat "^3.0.3"
+    dotenv "^8.0.0"
+    form-data "^2.3.2"
+    fs-extra "^8.0.1"
+    inquirer "^7.0.0"
+    latest-version "^5.1.0"
+    lodash.get "^4.4.2"
+    lodash.isempty "^4.4.0"
+    lodash.omit "^4.5.0"
+    lodash.set "^4.3.2"
+    lodash.unset "^4.5.2"
+    nanoid "^2.0.3"
+    node-fetch "^2.2.0"
+    parse-domain "^2.3.2"
+    qrcode-terminal "^0.12.0"
+    rc "^1.2.8"
+    readable-stream "^3.0.2"
+    semver "^6.3.0"
+    yargs "^14.0.0"
+
 resolve-cwd@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-1.0.0.tgz#4eaeea41ed040d1702457df64a42b2b07d246f9f"

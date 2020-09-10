@@ -1,0 +1,45 @@
+{
+  "name": "functional-test-app",
+  "version": "0.25.5",
+  "description": "used to perform various functional test",
+  "private": true,
+  "scripts": {
+    "build": "babel-node ./run.js build",
+    "cloud": "babel-node ./run.js cloud",
+    "dev": "babel-node ./run.js dev"
+  },
+  "dependencies": {
+    "@babel/node": "7.8.7",
+    "@babel/polyfill": "7.8.7",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-bootstrap": "0.32.1",
+    "react-helmet": "6.0.0",
+    "redux": "4.0.5",
+    "react-redux": "7.2.0",
+    "redux-saga": "1.0.5",
+    "resolve-redux": "0.25.5",
+    "resolve-scripts": "0.25.5",
+    "resolve-eventstore-postgresql-serverless": "0.25.5",
+    "resolve-eventstore-lite": "0.25.5",
+    "resolve-readmodel-lite": "0.25.5",
+    "resolve-readmodel-postgresql-serverless": "0.25.5",
+    "redux-devtools-extension": "2.13.7"
+  },
+  "devDependencies": {
+    "aws-sdk": "2.631.0",
+    "aws-xray-sdk-core": "2.5.0",
+    "@babel/core": "7.9.6",
+    "@babel/plugin-proposal-class-properties": "7.8.3",
+    "@babel/plugin-proposal-export-default-from": "7.8.3",
+    "@babel/plugin-proposal-export-namespace-from": "7.8.3",
+    "@babel/plugin-transform-runtime": "7.9.6",
+    "@babel/preset-env": "7.9.6",
+    "@babel/preset-react": "7.9.4",
+    "babel-jest": "26.0.1",
+    "jest": "26.0.1",
+    "react-test-renderer": "16.13.1",
+    "testcafe": "1.8.5",
+    "resolve-cloud": "0.16.0"
+  }
+}
