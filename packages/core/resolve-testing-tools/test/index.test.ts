@@ -243,6 +243,19 @@ describe('aggregate', () => {
           payload: {},
         }))
 
+    test('bug: promise not resolved in node version 12', async () => {
+      await expect(
+        givenEvents([])
+          .aggregate(aggregate)
+          .command('create', {})
+          .as('valid-user')
+          .shouldProduceEvent({
+            type: 'ANOTHER_EVENT',
+            payload: {},
+          })
+      ).rejects.toThrow(expect.anything())
+    })
+
     test('expecting business logic break', () =>
       givenEvents([
         {
