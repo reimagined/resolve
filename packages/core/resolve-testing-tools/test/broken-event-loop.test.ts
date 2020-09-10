@@ -61,7 +61,6 @@ test('async call during building', async () => {
 })
 
 test('async call before building', async () => {
-  jest.setTimeout(3000000)
   const adapter = await getReadModelConnector()
   const result = await givenEvents(inputEvents)
     .readModel({

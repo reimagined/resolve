@@ -63,7 +63,6 @@ const getDelayedPromise = (continuation: Function): any => {
       }
     }
     promiseReject = (result: any): any => {
-      //console.log(`rejecting this: ${result}`)
       if (complexPromise[internalPromise].state == null) {
         complexPromise[internalPromise].state = false
         complexPromise[internalPromise].result = result
