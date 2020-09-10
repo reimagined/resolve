@@ -62,6 +62,6 @@ await sideEffects.executeCommand({
 **Q**: How to implement a frontend?<br/>
 **A**: There are three main approaches to frontend development in reSolve:
 
-- Use the HOCs from the [redux-resolve](frontend.md#resolve-redux-library) library to connect a React components to a reSolve backend.
+- Use one of the available client libraries. Refer to the [Frontend](frontend.md) article for more information.
 - Use the [HTTP API](curl.md) exposed by a reSolve application.
 - Write your own wrappers for the reSolve HTTP API.
