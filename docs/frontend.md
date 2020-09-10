@@ -109,7 +109,69 @@ const entryPoint = context => {
 }
 ```
 
-### Entry Point With SSR Support
+### SSR Handlers
+
+To use Server Side Rendering (SSR) in your application, you need to implement one or several handlers that pre-rander the client application's markup on the server.
+
+An SSR handler is an asynchronous function that recieves the `resolveContext` along with a request and response objects. As the result of its exection, an SSR handler should send a response that contains the rendered markup:
+
+```js
+const ssrHandler = async (
+  resolveContext,
+  req,
+  res
+) => {
+  ...
+  const markupHtml = ...
+  await res.end(markupHtml)
+}
+```
+
+To enable server side rendering, specify an array of server side rendering scripts that target different environments in the `clientEntries` configuration section:
+
+```js
+clientEntries: [
+  'client/index.js',
+  [
+    'client/ssr.js',
+    {
+      outputFile: 'common/local-entry/ssr.js',
+      moduleType: 'commonjs',
+      target: 'node'
+    }
+  ],
+  [
+    'client/ssr.js',
+    {
+      outputFile: 'common/cloud-entry/ssr.js',
+      moduleType: 'commonjs',
+      target: 'node'
+    }
+  ]
+]
+```
+
+To serve SSR markup to the client, you need to register the **live-require-handler.js** API handler in the **apiHandlers** configuration section:
+
+##### config.app.js:
+
+```js
+...
+apiHandlers: [
+  {
+    handler: {
+      module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+      options: {
+        modulePath: './ssr.js',
+        moduleFactoryImport: false
+      }
+    },
+    path: '/:markup*',
+    method: 'GET'
+  }
+],
+...
+```
 
 ## HTTP API
 
