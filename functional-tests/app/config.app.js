@@ -1,29 +1,27 @@
 const appConfig = {
   aggregates: [
     {
-      name: 'aggregate-name',
-      commands: 'common/aggregates/aggregate-name.commands.js',
-      projection: 'common/aggregates/aggregate-name.projection.js',
-    },
+      name: 'user',
+      commands: 'common/aggregates/user.commands.js',
+      projection: 'common/aggregates/user.projection.js'
+    }
   ],
   readModels: [
     {
-      name: 'read-model-name',
-      projection: 'common/read-models/read-model-name.projection.js',
-      resolvers: 'common/read-models/read-model-name.resolvers.js',
-      connectorName: 'default',
-    },
+      name: 'users',
+      projection: 'common/read-models/users.projection.js',
+      resolvers: 'common/read-models/users.resolvers.js',
+      connectorName: 'default'
+    }
   ],
   viewModels: [
     {
-      name: 'view-model-name',
-      projection: 'common/view-models/view-model-name.projection.js',
-      serializeState: 'common/view-models/view-model-name.serialize_state.js',
-      deserializeState:
-        'common/view-models/view-model-name.deserialize_state.js',
-    },
+      name: 'user',
+      projection: 'common/view-models/user.projection.js',
+      resolver: 'common/view-models/user.resolver.js'
+    }
   ],
-  clientEntries: ['client/index.js'],
+  clientEntries: ['client/index.js']
 }
 
 export default appConfig
