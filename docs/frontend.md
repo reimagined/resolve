@@ -29,7 +29,85 @@ to register the entry point, assign the path to the file that contains the entry
 clientEntries: ['client/index.js']
 ```
 
-Initialize the client library of your choice with the `resolveContext` and use it to commubicate with the backend.
+Initialize the client library of your choice with the `resolveContext` object and use it to communicate with the backend:
+
+##### resolve-client
+
+```js
+import { getClient } from 'resolve-client'
+const main = async resolveContext => {
+  await new Promise(resolve => domready(resolve))
+  const client = getClient(resolveContext)
+  const { data } = await client.query({
+    name: 'chat',
+    aggregateIds: '*'
+  })
+  ...
+}
+```
+
+##### resolve-redux
+
+```js
+import { AppContainer, createStore, getOrigin } from 'resolve-redux'
+
+const entryPoint = ({
+  clientImports,
+  rootPath,
+  staticPath,
+  viewModels,
+  subscriber
+}) => {
+  const origin = getOrigin(window.location)
+  const history = createBrowserHistory({ basename: rootPath })
+  const routes = getRoutes(clientImports)
+  const redux = getRedux(clientImports, history)
+
+  const store = createStore({
+    serializedState: window.__INITIAL_STATE__,
+    redux,
+    viewModels,
+    subscriber,
+    history,
+    origin,
+    rootPath,
+    staticPath,
+    isClient: true
+  })
+
+  render(
+    <AppContainer
+      origin={origin}
+      rootPath={rootPath}
+      staticPath={staticPath}
+      store={store}
+      history={history}
+    >
+      <Router history={history}>
+        <Routes routes={routes} />
+      </Router>
+    </AppContainer>,
+    document.getElementById('app-container')
+  )
+}
+```
+
+##### resolve-react-hooks
+
+```js
+import { ResolveContext } from 'resolve-react-hooks'
+...
+const entryPoint = context => {
+  const appContainer = document.createElement('div')
+  document.body.appendChild(appContainer)
+  render(
+    <ResolveContext.Provider value={context}>
+      <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
+    </ResolveContext.Provider>,
+    appContainer
+  )
+}
+```
 
 ### Entry Point With SSR Support
 
