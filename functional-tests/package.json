@@ -15,7 +15,8 @@
     "jest": "26.4.2",
     "ts-node": "9.0.0",
     "resolve-client": "0.25.5",
-    "nanoid": "3.1.12"
+    "nanoid": "3.1.12",
+    "lodash": "4.17.20"
   },
   "devDependencies": {
     "@types/fs-extra": "9.0.1",
