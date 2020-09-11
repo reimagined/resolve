@@ -23,26 +23,17 @@ const prepare = async () => {
 }
 
 /*
-const buildLocal = async () =>
-  new Promise((resolve, reject) => {
-    childProcess.spawn(
-      'yarn dev',
+const buildLocal = () => childProcess.spawn(
+      'yarn', ['build'],
       {
         cwd: resolveDir(buildDir)
-      },
-      (error, stdout) => {
-        if (error) {
-          reject(error)
-        }
-        resolve(stdout)
       }
-    )
   })
-
 */
 
 const runJest = async (options: { config: string }): Promise<any> => {
   const { config } = options
+  console.log(`executing jest...`)
   return childProcess.execSync(
     [
       `jest`,
@@ -82,7 +73,7 @@ const runTestCafe = async (options: {
   }
 }
 
-const spawnLocal = async () => {
+const spawnLocal = async (): Promise<any> => {
   const sp = childProcess.spawn('yarn', ['dev'], {
     cwd: resolveDir('app')
   })
@@ -118,14 +109,14 @@ const spawnLocal = async () => {
       }
       break
     } catch (e) {}
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await new Promise(resolve => setTimeout(resolve, 3000))
   }
   return new Promise((resolve, reject) => {
     if (error) {
       sp.kill()
       reject(error)
     } else {
-      resolve()
+      resolve(sp)
     }
   })
 }
@@ -133,16 +124,19 @@ const spawnLocal = async () => {
 void (async () => {
   switch (command) {
     case 'local-api': {
-      //await spawnLocal()
-      await runJest({
-        config: resolveDir('jest.config-api.js')
-      })
+      const sp = await spawnLocal()
+      try {
+        await runJest({
+          config: resolveDir('jest.config-api.js')
+        })
+      } finally {
+        sp.kill()
+      }
       break
     }
 
     case 'local-testcafe': {
       await spawnLocal()
-
       break
     }
 

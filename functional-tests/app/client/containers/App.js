@@ -20,8 +20,9 @@ const App = ({ staticPath }) => {
 
   return (
     <div>
-      <Helmet title="reSolve Hello World" link={links} meta={[meta]} />
-      <h1 align="center">Hello, reSolve world!</h1>
+      <Helmet title="Functional Tests App" link={links} meta={[meta]} />
+      <h2 align="center">Basic tests</h2>
+      <h2 align="center">View model tests</h2>
     </div>
   )
 }
