@@ -180,18 +180,22 @@ Searches for data items based on the specified expression.
 
 ```js
 const getStories = async (type, store, { first, offset }) => {
-  await store.waitEventCausalConsistency()
-  const search = type && type.constructor === String ? { type } : {}
-  const skip = first || 0
-  const stories = await store.find(
-    'Stories',
-    search,
-    null,
-    { createdAt: -1 },
-    skip,
-    skip + offset
-  )
-  return Array.isArray(stories) ? stories : []
+  try {
+    const search = type && type.constructor === String ? { type } : {}
+    const skip = first || 0
+    const stories = await store.find(
+      'Stories',
+      search,
+      null,
+      { createdAt: -1 },
+      skip,
+      offset
+    )
+    return Array.isArray(stories) ? stories : []
+  } catch (error) {
+    ...
+    throw error
+  }
 }
 ```
 
