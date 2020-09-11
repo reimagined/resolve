@@ -130,7 +130,8 @@ void (async () => {
           config: resolveDir('jest.config-api.js')
         })
       } finally {
-        sp.kill()
+        console.log('killing the app')
+        sp.kill('SIGINT')
       }
       break
     }
