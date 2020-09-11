@@ -77,13 +77,15 @@ test('async call before building', async () => {
 
 test('bug: promise never completes on hard error', async () => {
   const adapter = await getReadModelConnector()
-  await givenEvents(inputEvents)
-    .readModel({
-      name: 'readModelName',
-      projection: readModelBrokenProjection,
-      resolvers: readModelResolvers,
-      adapter,
-    })
-    .all({ a: 10, b: 20 })
-    .as('JWT_TOKEN')
+  try {
+    await givenEvents(inputEvents)
+      .readModel({
+        name: 'readModelName',
+        projection: readModelBrokenProjection,
+        resolvers: readModelResolvers,
+        adapter,
+      })
+      .all({ a: 10, b: 20 })
+      .as('JWT_TOKEN')
+  } catch {}
 })
