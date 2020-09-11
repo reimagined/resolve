@@ -16,9 +16,16 @@ const appConfig = {
   ],
   viewModels: [
     {
-      name: 'user',
+      name: 'user-profile',
       projection: 'common/view-models/user.projection.js',
       resolver: 'common/view-models/user.resolver.js'
+    }
+  ],
+  apiHandlers: [
+    {
+      handler: 'resolve-runtime/lib/local/query-is-ready-handler.js',
+      path: '/api/query-is-ready',
+      method: 'GET'
     }
   ],
   clientEntries: ['client/index.js']

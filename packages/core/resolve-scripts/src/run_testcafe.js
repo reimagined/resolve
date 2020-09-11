@@ -31,15 +31,15 @@ const getConfig = async (resolveConfig, options) => {
       {
         handler: 'resolve-runtime/lib/local/query-is-ready-handler.js',
         path: '/api/query-is-ready',
-        method: 'GET',
-      },
-    ],
+        method: 'GET'
+      }
+    ]
   })
 
   return config
 }
 
-const runAfterLaunch = async (options) => {
+const runAfterLaunch = async options => {
   let { functionalTestsDir, browser, customArgs, timeout } = options
   browser = browser != null ? browser : Object.keys(await getInstallations())[0]
   timeout = timeout != null ? timeout : 20000
@@ -55,7 +55,7 @@ const runAfterLaunch = async (options) => {
         `--assertion-timeout ${timeout}`,
         `--page-load-timeout ${timeout}`,
         browser === 'remote' ? ' --qr-code' : '',
-        ...customArgs,
+        ...customArgs
       ].join(' '),
       { stdio: 'inherit' }
     )
@@ -71,7 +71,7 @@ const runTestcafeMode = async ({
   functionalTestsDir,
   browser,
   customArgs,
-  timeout,
+  timeout
 }) =>
   generateCustomMode(getConfig, 'query-is-ready', runAfterLaunch)(
     resolveConfig,
@@ -79,7 +79,7 @@ const runTestcafeMode = async ({
       functionalTestsDir,
       browser,
       customArgs,
-      timeout,
+      timeout
     },
     adjustWebpackConfigs
   )

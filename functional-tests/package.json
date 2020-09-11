@@ -1,0 +1,14 @@
+{
+  "name": "functional-tests",
+  "version": "1.0.0",
+  "scripts": {
+    "local-api": "babel-node run.js local-api"
+  },
+  "dependencies": {
+    "isomorphic-fetch": "2.2.1",
+    "fs-extra": "9.0.1",
+    "@babel/core": "7.11.6",
+    "@babel/node": "7.10.5",
+    "@babel/preset-env": "7.11.5"
+  }
+}
