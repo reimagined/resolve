@@ -42,6 +42,19 @@ describe('method "wrapAuthRequest"', () => {
     })
   })
 
+  test('#1530 fix: spaces are not properly URL decoded', () => {
+    const rawReq = {
+      body: 'a=user+name++data+%2B+ok',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    }
+
+    const req = wrapAuthRequest(rawReq)
+
+    expect(req.body).toEqual({
+      a: 'user name  data + ok',
+    })
+  })
+
   test('should parse the body as "application/json"', () => {
     const rawReq = {
       body: JSON.stringify({ a: 5, b: 10 }),
