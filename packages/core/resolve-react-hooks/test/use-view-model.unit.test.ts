@@ -37,7 +37,7 @@ jest.mock('../src/context', () => ({
 
 const mockedClient = {
   command: jest.fn(),
-  query: jest.fn(() =>
+  query: jest.fn<any, any>(() =>
     Promise.resolve({
       data: {
         queried: 'result',
@@ -385,5 +385,36 @@ describe('call', () => {
     )
 
     expect(initialState).toEqual({ initializedOnClient: true })
+  })
+
+  test('#1524 issue: malformed cursor during connect if no events applied to a view model', async () => {
+    mockedClient.query.mockResolvedValueOnce({
+      data: {
+        queried: 'result',
+      },
+      meta: {
+        timestamp: 1,
+        url: 'url',
+        cursor: null,
+      },
+    })
+
+    const { connect } = useViewModel(
+      'view-model-name',
+      ['aggregate-id'],
+      mockStateChange
+    )
+
+    await connect()
+
+    expect(mockedClient.subscribe).toHaveBeenCalledWith(
+      expect.any(String),
+      null,
+      expect.any(String),
+      expect.any(Array),
+      expect.any(Function),
+      undefined,
+      expect.any(Function)
+    )
   })
 })
