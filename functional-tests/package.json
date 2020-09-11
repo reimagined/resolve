@@ -2,13 +2,24 @@
   "name": "functional-tests",
   "version": "1.0.0",
   "scripts": {
-    "local-api": "babel-node run.js local-api"
+    "local-api": "ts-node --files=true scripts/run.ts local-api"
   },
   "dependencies": {
+    "testcafe": "15.1.317922",
+    "testcafe-browser-tools": "2.0.13",
     "isomorphic-fetch": "2.2.1",
     "fs-extra": "9.0.1",
     "@babel/core": "7.11.6",
     "@babel/node": "7.10.5",
-    "@babel/preset-env": "7.11.5"
+    "@babel/preset-env": "7.11.5",
+    "jest": "26.4.2",
+    "ts-node": "9.0.0",
+    "resolve-client": "0.25.5",
+    "nanoid": "3.1.12"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "9.0.1",
+    "@types/isomorphic-fetch": "0.0.35",
+    "@types/nanoid": "2.1.0"
   }
 }
