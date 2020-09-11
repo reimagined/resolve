@@ -14,6 +14,12 @@ export const executeReadModel = async ({
   }
 
   let queryExecutor = null
+  let performAcknowledge = null
+  const acknowledgePromise: Promise<any> = new Promise(
+    (resolve) =>
+      (performAcknowledge = async (result: any) => await resolve(result))
+  )
+
   try {
     queryExecutor = createQuery({
       viewModels: [],
@@ -33,20 +39,21 @@ export const executeReadModel = async ({
       eventstoreAdapter: {
         getSecretsManager: (): any => promise[symbol].secretsManager,
       },
+      performAcknowledge,
     })
 
-    let updateResult = null
-    try {
-      updateResult = await queryExecutor.sendEvents({
-        modelName: promise[symbol].name,
-        events: transformEvents(promise[symbol].events),
-      })
-    } catch (error) {
-      updateResult = error
-    }
+    await queryExecutor.sendEvents({
+      modelName: promise[symbol].name,
+      events: transformEvents(promise[symbol].events),
+    })
 
-    if (updateResult != null && updateResult.lastError != null) {
-      throw updateResult.lastError
+    const {
+      result: { error: projectionError },
+    } = await acknowledgePromise
+    if (projectionError != null) {
+      const error = new Error(projectionError.message)
+      error.stack = projectionError.stack
+      throw error
     }
 
     const result = await queryExecutor.read({
