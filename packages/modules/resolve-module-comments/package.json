@@ -1,6 +1,6 @@
 {
   "name": "resolve-module-comments",
-  "version": "0.25.5",
+  "version": "0.25.6",
   "description": "A reSolve module that allows an application's users to post comments.",
   "engines": {
     "node": ">=10.9"
@@ -31,7 +31,7 @@
     "react": "16.13.1",
     "redux": "4.0.5",
     "react-redux": "7.2.0",
-    "resolve-redux": "0.25.5",
+    "resolve-redux": "0.25.6",
     "jest": "26.0.1",
     "sinon": "7.2.2"
   },
