@@ -27,7 +27,7 @@ fixture`Story`.beforeEach(async (t /*: TestController */) => {
   await t.setNativeDialogHandler(() => true)
   await t.navigateTo(`${ROOT_URL}/login`)
   await login(t)
-}).skip
+})
 
 test('create', async (t /*: TestController */) => {
   await t.navigateTo(`${ROOT_URL}/submit`)
