@@ -29,9 +29,9 @@ to register the entry point, assign the path to the file that contains the entry
 clientEntries: ['client/index.js']
 ```
 
-Initialize the client library of your choice with the `resolveContext` object and use it to communicate with the backend:
+Use the `resolveContext` object to initialize a client library. The code samples below demonstrate how to configure the entry point for different client libraries.
 
-##### resolve-client
+##### resolve-client:
 
 ```js
 import { getClient } from 'resolve-client'
@@ -46,7 +46,7 @@ const main = async resolveContext => {
 }
 ```
 
-##### resolve-redux
+##### resolve-redux:
 
 ```js
 import { AppContainer, createStore, getOrigin } from 'resolve-redux'
@@ -92,7 +92,7 @@ const entryPoint = ({
 }
 ```
 
-##### resolve-react-hooks
+##### resolve-react-hooks:
 
 ```js
 import { ResolveContext } from 'resolve-react-hooks'
@@ -111,9 +111,9 @@ const entryPoint = context => {
 
 ### SSR Handlers
 
-To use Server Side Rendering (SSR) in your application, you need to implement one or several handlers that pre-rander the client application's markup on the server.
+To use Server Side Rendering (SSR) in your application, you need to implement one or several handlers that pre-render the client application's markup on the server.
 
-An SSR handler is an asynchronous function that recieves the `resolveContext` along with a request and response objects. As the result of its exection, an SSR handler should send a response that contains the rendered markup:
+An SSR handler is an asynchronous function that receives the `resolveContext` along with a request and response objects. As the result of its execution, an SSR handler should send a response that contains the rendered markup:
 
 ```js
 const ssrHandler = async (
@@ -122,7 +122,11 @@ const ssrHandler = async (
   res
 ) => {
   ...
-  const markupHtml = ...
+  const markupHtml = 
+    `<!doctype html>` 
+      `<html ${helmet.htmlAttributes.toString()}>` +
+      ...
+      '</html>'
   await res.end(markupHtml)
 }
 ```
@@ -150,6 +154,8 @@ clientEntries: [
   ]
 ]
 ```
+
+For more information on these settings, refer to the [Application Configuration](application-configuration.md#cliententries) article.
 
 To serve SSR markup to the client, you need to register the **live-require-handler.js** API handler in the **apiHandlers** configuration section:
 
