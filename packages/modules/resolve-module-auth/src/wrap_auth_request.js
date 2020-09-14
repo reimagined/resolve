@@ -23,7 +23,10 @@ const wrapAuthRequest = (req) => {
   switch (bodyContentType) {
     case 'application/x-www-form-urlencoded': {
       bodyContent = req.body.split('&').reduce((acc, part) => {
-        let [key, ...value] = part.split('=').map(decodeURIComponent)
+        let [key, ...value] = part
+          .split('=')
+          .map((i) => i.replace(/\+/g, ' '))
+          .map(decodeURIComponent)
         value = value.join('=')
 
         if (bodyCharset !== 'utf-8') {
