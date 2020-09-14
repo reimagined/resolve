@@ -19,7 +19,11 @@ const downloadResolveRepo = (pool) => async () => {
     await new Promise((resolve, reject) => {
       try {
         if (fs.readdirSync(applicationPath).length !== 0) {
-          reject(new Error('Failed to create resolve application. Target directory is not empty.'))
+          reject(
+            new Error(
+              'Failed to create resolve application. Target directory is not empty.'
+            )
+          )
         }
       } catch (e) {}
 
@@ -110,7 +114,10 @@ const downloadResolveRepo = (pool) => async () => {
       })
     })
   } catch (error) {
-    if (error.message != null && /Target directory is not empty/.test(error.message)) {
+    if (
+      error.message != null &&
+      /Target directory is not empty/.test(error.message)
+    ) {
       throw error
     }
     console.log(
