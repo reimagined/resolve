@@ -100,3 +100,10 @@ jobs:
           yarn test:e2e safari
           cd ..
           rm -rf personal-data
+# shopping-list-with-redux-hooks
+          rm -rf shopping-list-with-redux-hooks || true
+          node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e shopping-list-with-redux-hooks
+          cd shopping-list-with-redux-hooks
+          yarn test:e2e safari
+          cd ..
+          rm -rf shopping-list-with-redux-hooks
