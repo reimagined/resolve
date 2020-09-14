@@ -130,8 +130,7 @@ const prepareOptions = async (pool) => {
     ) {
       const text = chalk.red(`You are using create-resolve-app version ${resolveVersion}, but actual one is ${masterBranchVersion}
         Most likely you have package globally installed in npm or yarn, which is highly discouraged
-        Run "npm uninstall -g create-resolve-app" or "yarn global remove create-resolve-app" in console`
-      )
+        Run "npm uninstall -g create-resolve-app" or "yarn global remove create-resolve-app" in console`)
 
       console.warn(
         boxen(text, {
@@ -139,7 +138,7 @@ const prepareOptions = async (pool) => {
           align: 'center',
           float: 'center',
           margin: 1,
-          padding: 1
+          padding: 1,
         })
       )
     }
