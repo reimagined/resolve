@@ -63,9 +63,9 @@ describe('resolve-module-admin', () => {
     test('list', async () => {
       fetch().json.mockReturnValue([
         {
-          listenerId: 'read-model',
+          eventSubscriber: 'read-model',
           status: 'status',
-          lastEvent: {
+          successEvent: {
             timestamp: 1111111111111,
             aggregateId: 'aggregateId',
             aggregateVersion: 1,
@@ -74,7 +74,8 @@ describe('resolve-module-admin', () => {
               index: 1,
             },
           },
-          lastError: null,
+          failedEvent: null,
+          errors: null,
         },
       ])
       await readModelListHandler({
@@ -119,9 +120,9 @@ describe('resolve-module-admin', () => {
     test('list', async () => {
       fetch().json.mockReturnValue([
         {
-          listenerId: 'saga',
+          eventSubscriber: 'saga',
           status: 'status',
-          lastEvent: {
+          successEvent: {
             timestamp: 1111111111111,
             aggregateId: 'aggregateId',
             aggregateVersion: 1,
@@ -130,7 +131,8 @@ describe('resolve-module-admin', () => {
               index: 1,
             },
           },
-          lastError: null,
+          failedEvent: null,
+          errors: null,
         },
       ])
       await sagaListHandler({

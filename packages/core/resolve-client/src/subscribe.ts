@@ -69,7 +69,7 @@ export interface SubscribeAdapterOptions {
 
 const initSubscribeAdapter = async (
   url: string,
-  cursor: string,
+  cursor: string | null,
   context: Context,
   viewModelName: string,
   aggregateIds: AggregateSelector
@@ -102,7 +102,7 @@ const initSubscribeAdapter = async (
 
 export const refreshSubscribeAdapter = async (
   url: string,
-  cursor: string,
+  cursor: string | null,
   context: Context,
   viewModelName: string,
   aggregateIds: AggregateSelector,
@@ -194,7 +194,7 @@ export const dropSubscribeAdapterPromise = (): void => {
 const connect = async (
   context: Context,
   url: string,
-  cursor: string,
+  cursor: string | null,
   aggregateIds: AggregateSelector,
   eventCallback: Function,
   viewModelName: string,
