@@ -18,7 +18,13 @@ const downloadResolveRepo = (pool) => async () => {
   try {
     await new Promise((resolve, reject) => {
       try {
-        fs.removeSync(applicationPath)
+        if (fs.readdirSync(applicationPath).length !== 0) {
+          reject(
+            new Error(
+              'Failed to create resolve application. Target directory is not empty.'
+            )
+          )
+        }
       } catch (e) {}
 
       try {
@@ -107,7 +113,13 @@ const downloadResolveRepo = (pool) => async () => {
         })
       })
     })
-  } catch (_) {
+  } catch (error) {
+    if (
+      error.message != null &&
+      /Target directory is not empty/.test(error.message)
+    ) {
+      throw error
+    }
     console.log(
       chalk.red('Referent commit does not exists in resolve repository.')
     )
