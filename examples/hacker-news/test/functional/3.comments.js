@@ -15,10 +15,7 @@ const waitSelector = async (t, eventSubscriber, selector) => {
       throw new Error(`Test failed. Read-model status "${readModel.status}"`)
     }
 
-    let loop = 0
-
     try {
-      loop++
       await t.expect((await selector).exists).eql(true)
       break
     } catch (e) {}
@@ -77,19 +74,7 @@ test('#1541: broken comments pagination', async (t /*: TestController */) => {
 
   await t.navigateTo(`${ROOT_URL}/comments`)
 
-  await waitSelector(
-    t,
-    'Comments',
-    Selector('div').withText('pushed-comment#30')
-  )
-
-  const moreSelector = Selector('a').withText('More')
-  await waitSelector(t, 'Comments', moreSelector)
-  await t.click(moreSelector)
-
-  await waitSelector(
-    t,
-    'Comments',
-    Selector('div').withText('pushed-comment#0')
-  )
+  await t.expect(Selector('div').withText('pushed-comment#30').exists).eql(true)
+  await t.click(Selector('a').withText('More'))
+  await t.expect(Selector('div').withText('pushed-comment#0').exists).eql(true)
 })
