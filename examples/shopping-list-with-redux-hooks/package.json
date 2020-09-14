@@ -29,6 +29,7 @@
     "react-router-dom": "5.1.2",
     "redux": "4.0.5",
     "redux-devtools-extension": "2.13.7",
+    "redux-saga": "1.1.3",
     "resolve-readmodel-lite": "0.25.6",
     "resolve-readmodel-postgresql-serverless": "0.25.6",
     "resolve-react-hooks": "0.25.6",

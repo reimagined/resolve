@@ -16,7 +16,7 @@ const printFinishOutput = (pool) => async () => {
   console.log('    Starts the test runner.')
 
   console.log()
-  console.log(chalk.cyan(`  ${displayCommand(false)} test:functional`))
+  console.log(chalk.cyan(`  ${displayCommand(false)} test:e2e`))
   console.log('    Starts the functionality test runner.')
 
   console.log()
