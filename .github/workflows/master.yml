@@ -55,12 +55,9 @@ jobs:
       - name: Tutorial E2E test
         run: yarn tutorial-test:e2e safari
 
-      - name: CRA > prepare
-        run: |
-          cd ..
-
       - name: CRA > hacker-news
         run: |
+          cd ..
           rm -rf hacker-news || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e hacker-news hacker-news
           cd hacker-news
@@ -70,6 +67,7 @@ jobs:
 
       - name: CRA > hello-world
         run: |
+          cd ..
           rm -rf hello-world || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e hello-world hello-world
           cd hello-world
@@ -79,6 +77,7 @@ jobs:
 
       - name: CRA > shopping-list
         run: |
+          cd ..
           rm -rf shopping-list || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e shopping-list shopping-list
           cd shopping-list
@@ -88,6 +87,7 @@ jobs:
 
       - name: CRA > with-postcss
         run: |
+          cd ..
           rm -rf with-postcss || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e with-postcss with-postcss
           cd with-postcss
@@ -97,6 +97,7 @@ jobs:
 
       - name: CRA > with-styled-components
         run: |
+          cd ..
           rm -rf with-styled-components || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e with-styled-components with-styled-components
           cd with-styled-components
@@ -106,6 +107,7 @@ jobs:
 
       - name: CRA > personal-data
         run: |
+          cd ..
           rm -rf personal-data || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e personal-data personal-data
           cd personal-data
@@ -115,6 +117,7 @@ jobs:
 
       - name: CRA > shopping-list-with-redux-hooks
         run: |
+          cd ..
           rm -rf shopping-list-with-redux-hooks || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e shopping-list-with-redux-hooks
           cd shopping-list-with-redux-hooks
