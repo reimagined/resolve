@@ -1,6 +1,6 @@
 {
   "name": "shopping-list-with-hooks",
-  "version": "0.25.5",
+  "version": "0.25.7",
   "description": "shows how to work with read-models and view-models",
   "private": true,
   "scripts": {
@@ -26,13 +26,13 @@
     "react-router": "5.1.2",
     "react-router-config": "5.1.1",
     "react-router-dom": "5.1.2",
-    "resolve-module-admin": "0.25.5",
-    "resolve-react-hooks": "0.25.5",
-    "resolve-readmodel-lite": "0.25.5",
-    "resolve-readmodel-postgresql-serverless": "0.25.5",
-    "resolve-scripts": "0.25.5",
-    "resolve-eventstore-lite": "0.25.5",
-    "resolve-eventstore-postgresql-serverless": "0.25.5",
+    "resolve-module-admin": "0.25.7",
+    "resolve-react-hooks": "0.25.7",
+    "resolve-readmodel-lite": "0.25.7",
+    "resolve-readmodel-postgresql-serverless": "0.25.7",
+    "resolve-scripts": "0.25.7",
+    "resolve-eventstore-lite": "0.25.7",
+    "resolve-eventstore-postgresql-serverless": "0.25.7",
     "uuid": "3.3.2"
   },
   "devDependencies": {
@@ -50,7 +50,7 @@
     "jest": "26.0.1",
     "react-test-renderer": "16.13.1",
     "resolve-cloud": "*",
-    "resolve-testing-tools": "0.25.5",
+    "resolve-testing-tools": "0.25.7",
     "testcafe": "1.8.5"
   }
 }

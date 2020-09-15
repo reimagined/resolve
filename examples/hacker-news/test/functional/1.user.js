@@ -1,7 +1,7 @@
 import { Selector } from 'testcafe'
+import fetch from 'isomorphic-fetch'
 
 import { ROOT_URL, login } from './utils'
-import fetch from 'isomorphic-fetch'
 
 const waitSelector = async (t, eventSubscriber, selector) => {
   while (true) {
@@ -37,9 +37,7 @@ test('create', async (t /*: TestController */) => {
   await waitSelector(t, 'HackerNews', Selector('a').withText('123'))
 
   await t.expect(await Selector('a').withText('123').exists).eql(true)
-
   await t.expect(await Selector('a').withText('logout').exists).eql(true)
-
   await t.expect(await Selector('a').withText('login').exists).eql(false)
 })
 

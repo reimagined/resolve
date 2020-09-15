@@ -77,9 +77,9 @@ const connectReadModel = (
           args: prevConnectorOptions.resolverArgs,
         })
         this.props.connectReadModel({
-          name: prevConnectorOptions.readModelName,
-          resolver: prevConnectorOptions.resolverName,
-          args: prevConnectorOptions.resolverArgs,
+          name: connectorOptions.readModelName,
+          resolver: connectorOptions.resolverName,
+          args: connectorOptions.resolverArgs,
         })
       }
     }

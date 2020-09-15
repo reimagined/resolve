@@ -1,6 +1,6 @@
 {
   "name": "resolve-module-admin",
-  "version": "0.25.5",
+  "version": "0.25.7",
   "description": "A reSolve module that adds admin commands to an application.",
   "engines": {
     "node": ">=10.9"

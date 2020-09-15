@@ -56,6 +56,64 @@ describe('read model', () => {
     })
   })
 
+  test('throwing resolver', async () => {
+    try {
+      await givenEvents([])
+        .readModel({
+          name: 'readModelName',
+          projection: {
+            Init: async (store: any): Promise<any> => {
+              void 0
+            },
+          },
+          resolvers: {
+            all: async (store: any, args: any, context: any): Promise<any> => {
+              throw new Error(`Error from resolver`)
+            },
+          },
+          adapter: createReadModelConnector({
+            databaseFile: ':memory:',
+          }),
+        })
+        .all({})
+        .as('JWT_TOKEN')
+
+      return Promise.reject('Test failed')
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toEqual('Error from resolver')
+    }
+  })
+
+  test('throwing projection', async () => {
+    try {
+      await givenEvents([])
+        .readModel({
+          name: 'readModelName',
+          projection: {
+            Init: async (store: any): Promise<any> => {
+              throw new Error('Error from projection')
+            },
+          },
+          resolvers: {
+            all: async (store: any, args: any, context: any): Promise<any> => {
+              return 'OK'
+            },
+          },
+          adapter: createReadModelConnector({
+            databaseFile: ':memory:',
+          }),
+        })
+        .all({})
+        .as('JWT_TOKEN')
+
+      return Promise.reject('Test failed')
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toEqual('Error from projection')
+    }
+  })
+
   test('bug fix: default secrets manager', async () => {
     await givenEvents([])
       .readModel({
