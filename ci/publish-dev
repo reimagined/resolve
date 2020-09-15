@@ -24,7 +24,7 @@ fi
 
 echo "Checking package access..."
 
-if [ "$(${SCRIPTS}/package-json-tools private)" = "true" ]; then
+if [ "$(${SCRIPTS}/package-json-tools.js private)" = "true" ]; then
     echo "The package has private access. Aborting..."
     exit 0
 fi
@@ -32,7 +32,7 @@ fi
 echo "Checking published packages with same version..."
 
 set +e
-PACKAGE=$(${SCRIPTS}/package-json-tools name)
+PACKAGE=$(${SCRIPTS}/package-json-tools.js name)
 NPM_VIEW=$(npm view --registry=http://${NPM_REGISTRY} ${PACKAGE}@${VERSION} 2>/dev/null)
 
 if [ ! -z "${NPM_VIEW}" ]; then
@@ -42,6 +42,6 @@ fi
 set -e
 
 echo "Preparing build ${VERSION}"
-${SCRIPTS}/package-json-tools patch ${VERSION}
+${SCRIPTS}/package-json-tools.js patch ${VERSION}
 echo "Publishing..."
 npm publish --access=public --tag=${TAG} --registry=http://${NPM_REGISTRY} --unsafe-perm
