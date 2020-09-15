@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+set -e
+
+SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+NPM_REGISTRY=$1
+VERSION=$2
+TAG=$3
+
+if [ -z ${VERSION} ]; then
+    echo "NPM registry not specified"
+    exit 1
+fi
+
+if [ -z ${VERSION} ]; then
+    echo "Package version not specified"
+    exit 1
+fi
+
+if [ -z ${TAG} ]; then
+    echo "Package publish tag should be specified"
+    exit 1
+fi
+
+echo "Checking package access..."
+
+if [ "$(${SCRIPTS}/package-json-tools private)" = "true" ]; then
+    echo "The package has private access. Aborting..."
+    exit 0
+fi
+
+echo "Checking published packages with same version..."
+
+set +e
+PACKAGE=$(${SCRIPTS}/package-json-tools name)
+NPM_VIEW=$(npm view --registry=http://${NPM_REGISTRY} ${PACKAGE}@${VERSION} 2>/dev/null)
+
+if [ ! -z "${NPM_VIEW}" ]; then
+    echo "Package with the same version already published. Aborting..."
+    exit 0
+fi
+set -e
+
+echo "Preparing build ${VERSION}"
+${SCRIPTS}/package-json-tools patch ${VERSION}
+echo "Publishing..."
+npm publish --access=public --tag=${TAG} --registry=http://${NPM_REGISTRY} --unsafe-perm

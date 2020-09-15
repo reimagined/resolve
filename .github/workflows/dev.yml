@@ -2,48 +2,69 @@ name: Dev CI/CD
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ dev, feature/cloud-test-app ]
   pull_request:
     branches: [ dev ]
 
 jobs:
+#  smoke-test:
+#    runs-on: ubuntu-latest
+#
+#    if: github.event_name == 'push' || (github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')))
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - uses: actions/setup-node@v2-beta
+#        with:
+#          node-version: '10'
+#
+#      - name: Install
+#        run: yarn install --frozen-lockfile
+#
+#      - name: Prettier
+#        run: yarn prettier:check
+#
+#      - name: ESLint
+#        run: yarn lint
+#
+#      - name: Unit test
+#        run: yarn test
+#
+#      - name: Integration test
+#        run: yarn test:integration
+
+#  e2e-macOS-test:
+#    runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
+#
+#    if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/'))
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Install
+#        run: yarn install --frozen-lockfile
+#
+#      - name: E2E test
+#        run: yarn test:e2e
+
   smoke-test:
     runs-on: ubuntu-latest
-    
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')))
+
+    if: github.event_name == 'push'
+
+    env:
+      NPM_REGISTRY: ${{ secrets.PRIVATE_NPM_REGISTRY }}
+      NPM_TOKEN: ${{ secrets.PRIVATE_NPM_TOKEN }}
 
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2-beta
-        with:
-          node-version: '10'
-        
-      - name: Install
-        run: yarn install --frozen-lockfile
+      - name: Install & Build
+        run: yarn install --frozed-lockfile
 
-      - name: Prettier
-        run: yarn prettier:check
-
-      - name: ESLint
-        run: yarn lint
-
-      - name: Unit test
-        run: yarn test
-
-      - name: Integration test
-        run: yarn test:integration
-        
-  e2e-macOS-test:
-    runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
-    
-    if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/'))
-
-    steps:
-      - uses: actions/checkout@v2
-      
-      - name: Install
-        run: yarn install --frozen-lockfile
-      
-      - name: E2E test
-        run: yarn test:e2e
+      - name: Publish to private registry
+        run: |
+          VERSION=$(./ci/package-json-tools nightly ${{ github.sha }})
+          ./ci/scripts/npm-patch-rc
+          npx oao all "./ci/scripts/package-json-tools patch-dependencies '(?!resolve-cloud-common$)(resolve-.*$)' $VERSION && /scripts/npm_publish $VERSION nightly"

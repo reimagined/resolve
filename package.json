@@ -57,7 +57,8 @@
       "tests",
       "website",
       "functional-tests",
-      "functional-tests/app"
+      "functional-tests/app",
+      "ci"
     ]
   },
   "scripts": {
