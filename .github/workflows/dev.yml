@@ -48,7 +48,7 @@ jobs:
 #      - name: E2E test
 #        run: yarn test:e2e
 
-  smoke-test:
+  publish-dev:
     runs-on: ubuntu-latest
 
     if: github.event_name == 'push'
@@ -65,6 +65,6 @@ jobs:
 
       - name: Publish to private registry
         run: |
-          VERSION=$(./ci/package-json-tools nightly ${{ github.sha }})
+          VERSION=$(./ci/package-json-tools.js nightly ${{ github.sha }})
           ./ci/scripts/npm-patch-rc
-          npx oao all "./ci/scripts/package-json-tools patch-dependencies '(?!resolve-cloud-common$)(resolve-.*$)' $VERSION && /scripts/npm_publish $VERSION nightly"
+          npx oao all "./ci/scripts/package-json-tools.js patch-dependencies '(?!resolve-cloud-common$)(resolve-.*$)' $VERSION && /scripts/publish-dev $VERSION nightly"

@@ -4,9 +4,8 @@ set -e
 
 SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-NPM_REGISTRY=$1
-VERSION=$2
-TAG=$3
+VERSION=$1
+TAG=$2
 
 if [ -z ${VERSION} ]; then
     echo "NPM registry not specified"
