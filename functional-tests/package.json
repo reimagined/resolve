@@ -1,6 +1,7 @@
 {
   "name": "functional-tests",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
     "local-api": "ts-node --files=true scripts/run.ts local-api"
   },

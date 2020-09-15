@@ -1,5 +1,5 @@
 {
-  "name": "functional-test-app",
+  "name": "app",
   "version": "0.25.5",
   "description": "used to perform various functional test",
   "private": true,
