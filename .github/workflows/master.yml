@@ -60,6 +60,7 @@ jobs:
           cd ..
 
       - name: CRA > hacker-news
+        run: |
           rm -rf hacker-news || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e hacker-news hacker-news
           cd hacker-news
