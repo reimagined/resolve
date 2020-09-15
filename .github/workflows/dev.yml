@@ -65,6 +65,7 @@ jobs:
 
       - name: Publish to private registry
         run: |
-          VERSION=$(./ci/package-json-tools.js nightly ${{ github.sha }})
+          SCRIPTS=$(pwd)/ci
+          VERSION=$(${SCRIPTS}/package-json-tools.js nightly ${{ github.sha }})
           ./ci/npm-patch-rc
-          npx oao all "./ci/scripts/package-json-tools.js patch-dependencies '(?!resolve-cloud-common$)(resolve-.*$)' $VERSION && /scripts/publish-dev $VERSION nightly"
+          npx oao all "${SCRIPTS}/package-json-tools.js patch-dependencies '(?!resolve-cloud-common$)(resolve-.*$)' ${VERSION} && ${SCRIPTS}/publish-dev ${VERSION} nightly"
