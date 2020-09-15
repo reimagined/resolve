@@ -7,37 +7,37 @@ on:
     branches: [ master ]
 
 jobs:
-  smoke-test:
-    runs-on: ubuntu-latest
-
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.head_ref == 'dev')
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-node@v2-beta
-        with:
-          node-version: '10'
-
-      - name: Install
-        run: yarn install --frozen-lockfile
-
-      - name: Prettier
-        run: yarn prettier:check
-
-      - name: ESLint
-        run: yarn lint
-
-      - name: Unit test
-        run: yarn test
-
-      - name: Integration test
-        run: yarn test:integration
+#  smoke-test:
+#    runs-on: ubuntu-latest
+#
+#    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.head_ref == 'dev')
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - uses: actions/setup-node@v2-beta
+#        with:
+#          node-version: '10'
+#
+#      - name: Install
+#        run: yarn install --frozen-lockfile
+#
+#      - name: Prettier
+#        run: yarn prettier:check
+#
+#      - name: ESLint
+#        run: yarn lint
+#
+#      - name: Unit test
+#        run: yarn test
+#
+#      - name: Integration test
+#        run: yarn test:integration
 
   e2e-macOS-test:
     runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
 
-    if: github.event_name == 'pull_request' && github.head_ref == 'dev'
+#    if: github.event_name == 'pull_request' && github.head_ref == 'dev'
 
     steps:
       - uses: actions/checkout@v2
