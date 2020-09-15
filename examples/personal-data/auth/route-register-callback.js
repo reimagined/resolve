@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import jwtSecret from './jwt-secret'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 
 const routeRegisterCallback = async (params) => {
   const {
@@ -33,8 +33,7 @@ const routeRegisterCallback = async (params) => {
     payload: user,
   })
 
-  const token = jwt.sign({ nickname, userId: user.id }, jwtSecret)
-  return token
+  return jwt.sign({ nickname, userId: user.id }, jwtSecret)
 }
 
 export default routeRegisterCallback

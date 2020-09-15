@@ -252,7 +252,7 @@ export type ResubscribeCallback = (
 export const subscribe = (
   context: Context,
   url: string,
-  cursor: string,
+  cursor: string | null,
   viewModelName: string,
   aggregateIds: AggregateSelector,
   handler: SubscribeHandler,
@@ -339,7 +339,7 @@ export type Client = {
   getStaticAssetUrl: (assetPath: string) => string
   subscribe: (
     url: string,
-    cursor: string,
+    cursor: string | null,
     viewModelName: string,
     aggregateIds: AggregateSelector,
     handler: SubscribeHandler,

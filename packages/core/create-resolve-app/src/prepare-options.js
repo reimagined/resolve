@@ -1,3 +1,6 @@
+import chalk from 'chalk'
+import boxen from 'boxen'
+
 import {
   analyticsUrlBase,
   resolveVersion,
@@ -125,14 +128,18 @@ const prepareOptions = async (pool) => {
       branch == null &&
       commit == null
     ) {
+      const text = chalk.red(`You are using create-resolve-app version ${resolveVersion}, but actual one is ${masterBranchVersion}
+        Most likely you have package globally installed in npm or yarn, which is highly discouraged
+        Run "npm uninstall -g create-resolve-app" or "yarn global remove create-resolve-app" in console`)
+
       console.warn(
-        `You are using create-resolve-app version ${resolveVersion}, but actual one is ${masterBranchVersion}`
-      )
-      console.warn(
-        `Most likely you have package globally installed in npm or yarn, which is highly discouraged`
-      )
-      console.warn(
-        `Run "npm uninstall -g create-resolve-app" or "yarn global remove create-resolve-app" in console`
+        boxen(text, {
+          borderColor: 'red',
+          align: 'center',
+          float: 'center',
+          margin: 1,
+          padding: 1,
+        })
       )
     }
   }

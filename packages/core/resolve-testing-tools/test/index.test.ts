@@ -37,7 +37,7 @@ describe('read model', () => {
             }
           },
         },
-        adapter: createReadModelConnector({
+        adapter: await createReadModelConnector({
           databaseFile: ':memory:',
         }),
       })
@@ -54,6 +54,64 @@ describe('read model', () => {
         },
       },
     })
+  })
+
+  test('throwing resolver', async () => {
+    try {
+      await givenEvents([])
+        .readModel({
+          name: 'readModelName',
+          projection: {
+            Init: async (store: any): Promise<any> => {
+              void 0
+            },
+          },
+          resolvers: {
+            all: async (store: any, args: any, context: any): Promise<any> => {
+              throw new Error(`Error from resolver`)
+            },
+          },
+          adapter: createReadModelConnector({
+            databaseFile: ':memory:',
+          }),
+        })
+        .all({})
+        .as('JWT_TOKEN')
+
+      return Promise.reject('Test failed')
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toEqual('Error from resolver')
+    }
+  })
+
+  test('throwing projection', async () => {
+    try {
+      await givenEvents([])
+        .readModel({
+          name: 'readModelName',
+          projection: {
+            Init: async (store: any): Promise<any> => {
+              throw new Error('Error from projection')
+            },
+          },
+          resolvers: {
+            all: async (store: any, args: any, context: any): Promise<any> => {
+              return 'OK'
+            },
+          },
+          adapter: createReadModelConnector({
+            databaseFile: ':memory:',
+          }),
+        })
+        .all({})
+        .as('JWT_TOKEN')
+
+      return Promise.reject('Test failed')
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toEqual('Error from projection')
+    }
   })
 
   test('bug fix: default secrets manager', async () => {
@@ -242,6 +300,20 @@ describe('aggregate', () => {
           type: 'TEST_COMMAND_EXECUTED',
           payload: {},
         }))
+
+    test('bug: promise not resolved in node version 12', async () => {
+      jest.setTimeout(3000000)
+      try {
+        await givenEvents([])
+          .aggregate(aggregate)
+          .command('create', {})
+          .as('valid-user')
+          .shouldProduceEvent({
+            type: 'ANOTHER_EVENT',
+            payload: {},
+          })
+      } catch {}
+    })
 
     test('expecting business logic break', () =>
       givenEvents([

@@ -12,7 +12,7 @@ export interface SubscribeAdapter {
 export interface CreateSubscribeAdapter {
   (options: {
     url: string
-    cursor: string
+    cursor: string | null
     onEvent: Function
   }): SubscribeAdapter
   adapterName: string

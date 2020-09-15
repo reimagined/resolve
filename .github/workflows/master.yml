@@ -9,7 +9,7 @@ on:
 jobs:
   smoke-test:
     runs-on: ubuntu-latest
-    
+
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.head_ref == 'dev')
 
     steps:
@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: '10'
-        
+
       - name: Install
         run: yarn install --frozen-lockfile
 
@@ -33,17 +33,17 @@ jobs:
 
       - name: Integration test
         run: yarn test:integration
-        
+
   e2e-macOS-test:
     runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
-    
+
     if: github.event_name == 'pull_request' && github.head_ref == 'dev'
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Yarn Cache Clean
-        run: yarn cache clean 
+        run: yarn cache clean
 
       - name: Install
         run: |
@@ -58,33 +58,52 @@ jobs:
       - name: CRA test
         run: |
           cd ..
+# hacker-news
           rm -rf hacker-news || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e hacker-news hacker-news
           cd hacker-news
           yarn test:e2e safari
           cd ..
           rm -rf hacker-news
+# hello-world
           rm -rf hello-world || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e hello-world hello-world
           cd hello-world
           yarn test:e2e safari
           cd ..
           rm -rf hello-world
+# shopping-list
           rm -rf shopping-list || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e shopping-list shopping-list
           cd shopping-list
           yarn test:e2e safari
           cd ..
           rm -rf shopping-list
+# with-postcss
           rm -rf with-postcss || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e with-postcss with-postcss
           cd with-postcss
           yarn test:e2e safari
           cd ..
           rm -rf with-postcss
+# with-styled-components
           rm -rf with-styled-components || true
           node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e with-styled-components with-styled-components
           cd with-styled-components
           yarn test:e2e safari
           cd ..
           rm -rf with-styled-components
+# personal-data
+          rm -rf personal-data || true
+          node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e personal-data personal-data
+          cd personal-data
+          yarn test:e2e safari
+          cd ..
+          rm -rf personal-data
+# shopping-list-with-redux-hooks
+          rm -rf shopping-list-with-redux-hooks || true
+          node resolve/packages/core/create-resolve-app/bin/index.js --local-registry -c ${{ github.sha }} -e shopping-list-with-redux-hooks
+          cd shopping-list-with-redux-hooks
+          yarn test:e2e safari
+          cd ..
+          rm -rf shopping-list-with-redux-hooks
