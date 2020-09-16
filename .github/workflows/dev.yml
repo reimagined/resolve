@@ -48,24 +48,48 @@ jobs:
 #      - name: E2E test
 #        run: yarn test:e2e
 
-  publish-dev:
+#  publish-dev:
+#    runs-on: ubuntu-latest
+#
+#    if: github.event_name == 'push'
+#
+#    env:
+#      NPM_REGISTRY: ${{ secrets.PRIVATE_NPM_REGISTRY }}
+#      NPM_TOKEN: ${{ secrets.PRIVATE_NPM_TOKEN }}
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Install & Build
+#        run: yarn install --frozen-lockfile
+#
+#      - name: Publish to private registry
+#        run: |
+#          SCRIPTS=$(pwd)/ci
+#          VERSION=$(${SCRIPTS}/package-json-tools.js nightly ${{ github.sha }})
+#          ./ci/npm-patch-rc
+#          npx oao all "${SCRIPTS}/package-json-tools.js patch-dependencies '(?!resolve-cloud-common$)(resolve-.*$)' ${VERSION} && ${SCRIPTS}/publish-dev ${VERSION} nightly"
+  cloud-test:
     runs-on: ubuntu-latest
 
     if: github.event_name == 'push'
 
-    env:
-      NPM_REGISTRY: ${{ secrets.PRIVATE_NPM_REGISTRY }}
-      NPM_TOKEN: ${{ secrets.PRIVATE_NPM_TOKEN }}
-
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install & Build
-        run: yarn install --frozed-lockfile
+      - name: Publish temp packages
+          run: |
 
-      - name: Publish to private registry
+
+      - name: Clone test application
         run: |
-          SCRIPTS=$(pwd)/ci
-          VERSION=$(${SCRIPTS}/package-json-tools.js nightly ${{ github.sha }})
-          ./ci/npm-patch-rc
-          npx oao all "${SCRIPTS}/package-json-tools.js patch-dependencies '(?!resolve-cloud-common$)(resolve-.*$)' ${VERSION} && ${SCRIPTS}/publish-dev ${VERSION} nightly"
+          test_app_dir=$(mktemp -d -t test-app-XXXXXXXXX)
+          echo "::set-env name=test_app_dir::${test_app_dir}"
+          cp -rf ./functional-tests/app ${test_app_dir}
+
+      - name: Check
+        run: |
+          ls ${test_app_dir}
+
+#      - uses:  ./.github/actions/deploy
+
