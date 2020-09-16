@@ -12,12 +12,21 @@ const status = async (pool, readModelName) => {
   )
 
   if (rows.length === 1) {
-    return {
+    const result = {
       successEvent: JSON.parse(rows[0].SuccessEvent),
       failedEvent: JSON.parse(rows[0].FailedEvent),
       errors: JSON.parse(rows[0].Errors),
       cursor: JSON.parse(rows[0].Cursor),
+      status: 'deliver',
     }
+
+    if (result.errors != null) {
+      result.status = 'error'
+    } else if (rows[0].IsPaused) {
+      result.status = 'skip'
+    }
+
+    return result
   } else {
     return null
   }
