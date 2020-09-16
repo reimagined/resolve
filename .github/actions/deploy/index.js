@@ -23,13 +23,20 @@ const makeResolveRC = (appDir, apiUrl, user, token) => {
   }))
 }
 
-const execResolveCloud = (appDir, args, stdio = 'pipe') => execSync(`yarn resolve-cloud ${args}`, {
+const execResolveCloud = (appDir, args, stdio = 'pipe') => execSync(`yarn --silent resolve-cloud ${args}`, {
   cwd: appDir,
   stdio
 })
 
 const toTable = tableOutput => {
-  const rows = tableOutput.split(os.EOL).map(row => row.split(' ').map(val => val.trim()).filter(val => val))
+  const rows = tableOutput
+    .split(os.EOL)
+    .filter(row => row.trim() !== '')
+    .map(row => row
+      .split(' ')
+      .map(val => val.trim())
+      .filter(val => val)
+    )
   const definitions = rows.shift().map(name => name.toLowerCase())
   return rows.map(row => definitions.reduce((entry, name, index) => {
     entry[name] = row[index]
@@ -37,7 +44,14 @@ const toTable = tableOutput => {
   }, {}))
 }
 const toObject = tableOutput => {
-  const rows = tableOutput.split(os.EOL).map(row => row.split(' ').map(val => val.trim()).filter(val => val))
+  const rows = tableOutput
+    .split(os.EOL)
+    .filter(row => row.trim() !== '')
+    .map(row => row
+      .split(' ')
+      .map(val => val.trim())
+      .filter(val => val)
+    )
   return rows.reduce((result, row) => {
     result[row[0]] = row[1]
     return result
@@ -47,6 +61,8 @@ const toObject = tableOutput => {
 
 const describeApp = (appName, resolveCloud) => {
   console.debug(`retrieving deployment list`)
+  console.log(toTable(resolveCloud('ls').toString()))
+
   const deployment = toTable(resolveCloud('ls').toString()).find(entry => entry.name === appName)
   if (!deployment) {
     console.error(`deployment with name (${appName}) not found with resolve-cloud ls`)
