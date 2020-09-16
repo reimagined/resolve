@@ -88,14 +88,14 @@ jobs:
           echo "::set-env name=test_app_dir::${test_app_dir}"
           cp -rf ./functional-tests/app/* ${test_app_dir}
           echo "installing packages and building the repository"
-          yarn &
+          yarn
           echo "installing test app packages"
           cd ${test_app_dir}
-          yarn &
-          wait
+          yarn
 
       - name: Check
         run: |
+          ls
           ls ${test_app_dir}
 
 #      - uses:  ./.github/actions/deploy
