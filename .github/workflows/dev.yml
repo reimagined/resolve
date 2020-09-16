@@ -89,6 +89,7 @@ jobs:
           cp -rf ./functional-tests/app/* ${test_app_dir}
           echo "installing test app packages"
           cd ${test_app_dir}
+          rm -rf node_modules
           yarn
 
       - id: deploy
