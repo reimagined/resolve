@@ -5,7 +5,8 @@ const deploymentId = core.getState('deployment_id')
 const appDir = core.getState('app_dir')
 
 try {
-  execSync(`yarn resolve-cloud remove ${deploymentId}`, {
+  console.debug(`removing cloud application ${deploymentId}`)
+  execSync(`yarn --silent resolve-cloud remove ${deploymentId} --no-wait`, {
     cwd: appDir,
     stdio: 'inherit',
   })
