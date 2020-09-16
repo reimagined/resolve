@@ -23,6 +23,11 @@ const makeResolveRC = (appDir, apiUrl, user, token) => {
   }))
 }
 
+const execResolveCloud = (appDir, args) => execSync(`yarn resolve-cloud ${args}`, {
+  cwd: appDir,
+  stdio: 'inherit'
+})
+
 const toTable = tableOutput => {
   const rows = tableOutput.split(os.EOL).map(row => row.split(' ').map(val => val.trim()).filter(val => val))
   const definitions = rows.shift().map(name => name.toLowerCase())
@@ -40,16 +45,16 @@ const toObject = tableOutput => {
 }
 
 
-const describeApp = (appName) => {
+const describeApp = (appName, resolveCloud) => {
   console.debug(`retrieving deployment list`)
-  const deployment = toTable(execSync('yarn resolve-cloud ls').toString()).find(entry => entry.name === appName)
+  const deployment = toTable(resolveCloud('ls').toString()).find(entry => entry.name === appName)
   if (!deployment) {
     console.error(`deployment with name (${appName}) not found with resolve-cloud ls`)
     return null
   }
 
   console.debug(`deployment list arrived, retrieving description`)
-  const description = toObject(execSync(`yarn resolve-cloud describe ${deployment.id}`).toString())
+  const description = toObject(resolveCloud(`describe ${deployment.id}`).toString())
   if (!description) {
     console.error(`deployment ${deployment.id} not found with resolve-cloud describe`)
     return null
@@ -72,6 +77,8 @@ try {
     ? inputAppDir
     : path.join(process.cwd(), inputAppDir)
 
+  const resolveCloud = args => execResolveCloud(appDir, args)
+
   const inputAppName = core.getInput('app_name')
   const generateName = isTrue(core.getInput('generate_app_name'))
 
@@ -92,14 +99,11 @@ try {
 
   console.debug(`deploying application to the cloud`)
 
-  execSync(`yarn resolve-cloud deploy ${targetAppName ? `--name ${targetAppName}` : ''} ${customArgs}`, {
-    cwd: appDir,
-    stdio: 'inherit'
-  })
+  resolveCloud(`deploy ${targetAppName ? `--name ${targetAppName}` : ''} ${customArgs}`)
 
   console.debug(`retrieving deployed application metadata`)
 
-  const { deploymentId, appName, appRuntime, appUrl } = describeApp(targetAppName)
+  const { deploymentId, appName, appRuntime, appUrl } = describeApp(targetAppName, resolveCloud)
 
   core.setOutput('deployment_id', deploymentId)
   core.setOutput('app_name', appName)
