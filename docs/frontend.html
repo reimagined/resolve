@@ -1,6 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Frontend · reSolve</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;h2&gt;&lt;a class=&quot;anchor&quot; aria-hidden=&quot;true&quot; id=&quot;react-redux-support&quot;&gt;&lt;/a&gt;&lt;a href=&quot;#react-redux-support&quot; aria-hidden=&quot;true&quot; class=&quot;hash-link&quot;&gt;&lt;svg class=&quot;hash-link-icon&quot; aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;React/Redux Support&lt;/h2&gt;
-"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Frontend · reSolve"/><meta property="og:type" content="website"/><meta property="og:url" content="https://reimagined.github.io/resolve/"/><meta property="og:description" content="&lt;h2&gt;&lt;a class=&quot;anchor&quot; aria-hidden=&quot;true&quot; id=&quot;react-redux-support&quot;&gt;&lt;/a&gt;&lt;a href=&quot;#react-redux-support&quot; aria-hidden=&quot;true&quot; class=&quot;hash-link&quot;&gt;&lt;svg class=&quot;hash-link-icon&quot; aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;React/Redux Support&lt;/h2&gt;
-"/><meta property="og:image" content="https://reimagined.github.io/resolve/img/reSolve400x400-fill.png"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/resolve/undefined"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css"/><script>
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Frontend · reSolve</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="This document describes approaches that you can use to implement a frontend for a reSolve application. The following approaches are available:"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Frontend · reSolve"/><meta property="og:type" content="website"/><meta property="og:url" content="https://reimagined.github.io/resolve/"/><meta property="og:description" content="This document describes approaches that you can use to implement a frontend for a reSolve application. The following approaches are available:"/><meta property="og:image" content="https://reimagined.github.io/resolve/img/reSolve400x400-fill.png"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/resolve/undefined"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css"/><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -8,7 +6,7 @@
 
               ga('create', 'UA-118635726-3', 'auto');
               ga('send', 'pageview');
-            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/resolve/js/scrollSpy.js"></script><link rel="stylesheet" href="/resolve/css/main.css"/><script src="/resolve/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/resolve/"><img class="logo" src="/resolve/img/resolve.svg" alt="reSolve"/><h2 class="headerTitleWithLogo">reSolve</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="https://medium.com/resolvejs" target="_self">Blog</a></li><li class="siteNavGroupActive"><a href="/resolve/docs/" target="_self">Docs</a></li><li class="siteNavGroupActive"><a href="/resolve/docs/tutorial" target="_self">Tutorial</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/reimagined/resolve" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Basics</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Docs Index</h3><ul class=""><li class="navListItem"><a class="navItem" href="/resolve/docs/">reSolve Documentation</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/introduction">Introduction</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/tutorial">Step-by-Step Tutorial</a></li><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Basics</h4><ul><li class="navListItem"><a class="navItem" href="/resolve/docs/app-structure">reSolve App Structure</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/write-side">Write Side</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/read-side">Read Side</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/resolve/docs/frontend">Frontend</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/curl">Standard HTTP API</a></li></ul></div><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Guides</h4><ul><li class="navListItem"><a class="navItem" href="/resolve/docs/advanced-techniques">Advanced Techniques</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/api-handlers">API Handlers</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/sagas">Sagas</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/authentication-and-authorization">Authentication and Authorization</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/preparing-to-production">Preparing to Production</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/api-reference">API Reference</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/contributing">Contributing</a></li></ul></div></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">FAQ</h3><ul class=""><li class="navListItem"><a class="navItem" href="/resolve/docs/faq">FAQ</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Troubleshooting</h3><ul class=""><li class="navListItem"><a class="navItem" href="/resolve/docs/troubleshooting">Troubleshooting</a></li></ul></div></div></section></div><script>
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/resolve/js/scrollSpy.js"></script><link rel="stylesheet" href="/resolve/css/main.css"/><script src="/resolve/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/resolve/"><img class="logo" src="/resolve/img/resolve.svg" alt="reSolve"/><h2 class="headerTitleWithLogo">reSolve</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="https://medium.com/resolvejs" target="_self">Blog</a></li><li class="siteNavGroupActive"><a href="/resolve/docs/" target="_self">Docs</a></li><li class="siteNavGroupActive"><a href="/resolve/docs/tutorial" target="_self">Tutorial</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/reimagined/resolve" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Basics</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Docs Index</h3><ul class=""><li class="navListItem"><a class="navItem" href="/resolve/docs/">reSolve Documentation</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/introduction">Introduction</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/tutorial">Step-by-Step Tutorial</a></li><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Basics</h4><ul><li class="navListItem"><a class="navItem" href="/resolve/docs/app-structure">reSolve App Structure</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/write-side">Write Side</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/read-side">Read Side</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/resolve/docs/frontend">Frontend</a></li></ul></div><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Guides</h4><ul><li class="navListItem"><a class="navItem" href="/resolve/docs/advanced-techniques">Advanced Techniques</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/api-handlers">API Handlers</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/sagas">Sagas</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/authentication-and-authorization">Authentication and Authorization</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/preparing-to-production">Preparing to Production</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/debugging">Debugging</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/test-readmodels">Test Read Models</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/api-reference">API Reference</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/application-configuration">Application Configuration</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/contributing">Contributing</a></li></ul></div><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">reSolve Cloud Platform</h4><ul><li class="navListItem"><a class="navItem" href="/resolve/docs/cloud-overview">Overview</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/cloud-get-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/cloud-app-management">Application Management</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/cloud-cli">reSolve Cloud CLI</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/cloud-web-gui">Web Admin GUI</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/cloud-troubleshooting">Troubleshooting</a></li></ul></div></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">FAQ</h3><ul class=""><li class="navListItem"><a class="navItem" href="/resolve/docs/faq">FAQ</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Troubleshooting</h3><ul class=""><li class="navListItem"><a class="navItem" href="/resolve/docs/troubleshooting">Troubleshooting</a></li></ul></div></div></section></div><script>
             var coll = document.getElementsByClassName('collapsible');
             var checkActiveCategory = true;
             for (var i = 0; i < coll.length; i++) {
@@ -64,263 +62,196 @@
                 };
               }
             });
-        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Frontend</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="react-redux-support"></a><a href="#react-redux-support" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>React/Redux Support</h2>
-<h3><a class="anchor" aria-hidden="true" id="resolve-redux-library"></a><a href="#resolve-redux-library" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>resolve-redux library</h3>
-<p>The reSolve framework includes the client <strong>resolve-redux</strong> library used to connect a client React + Redux app to a reSolve-powered backend.</p>
-<p>The <strong>redux</strong> configuration section specifies the following settings related to the frontend:</p>
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Frontend</h1></header><article><div><span><p>This document describes approaches that you can use to implement a frontend for a reSolve application. The following approaches are available:</p>
 <ul>
-<li><strong>store</strong> - Specifies the file containing the Redux store definition.</li>
-<li><strong>reducers</strong> - Specifies the file containing the Redux reducer definition.</li>
-<li><strong>middlewares</strong> - Specifies the file containing the Redux middleware definitions.</li>
+<li><a href="#http-api">HTTP API</a> - An HTTP API exposed by a reSolve server</li>
+<li><a href="#resolve-client-library">resolve-client library</a> - A higher-level JavaScript library used to communicate with a reSolve server</li>
+<li><a href="#resolve-redux-library">resolve-redux library</a> - A library used to connect a React + Redux component to reSolve</li>
+<li><a href="#resolve-react-hooks-library">resolve-react-hooks library</a> - A hook-based library used to connect React components to reSolve</li>
 </ul>
-<p>Based on these settings, reSolve generates client code to facilitate client-server communication:</p>
-<ul>
-<li>Redux actions are generated for all reSolve aggregate commands.</li>
-<li>Auxiliary reducers and middleware are generated to handle these actions and send the corresponding commands to the reSolve backend.</li>
-</ul>
-<p>Use the following resolve-redux library's higher order components (HOCs) to connect components to the backend:</p>
-<ul>
-<li><strong>connectReadModel</strong> - Connects a component to a Read Model.</li>
-<li><strong>connectViewModel</strong> - Connects a component to a View Model.</li>
-</ul>
-<p>A connected component receives additional props. These props provide access to the Read Model data and Redux action creators mapped to reSolve commands.</p>
-<h3><a class="anchor" aria-hidden="true" id="obtain-view-model-data"></a><a href="#obtain-view-model-data" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Obtain View Model Data</h3>
-<p>The code sample below demonstrates how to obtain data from a reSolve backend in the most basic use-case scenario:</p>
-<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { connectViewModel } <span class="hljs-keyword">from</span> <span class="hljs-string">'resolve-redux'</span>
-
-<span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>
-...
-const TodoList = <span class="hljs-function">(<span class="hljs-params">{ data }</span>) =&gt;</span> (
-  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span>
-    {data.map(i =&gt; ( // Access View Model data via the data prop
-      <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>{i}<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
-    ))}
-  <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span></span>
-
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapStateToOptions = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-  <span class="hljs-keyword">return</span> {
-    <span class="hljs-attr">viewModelName</span>: <span class="hljs-string">'TodoList'</span>,
-    <span class="hljs-attr">aggregateIds</span>: [<span class="hljs-string">"root-id"</span>]
-  }
-}
-
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> connectViewModel(mapStateToOptions)(TodoList)
-
-</code></pre>
-<p>In this code, the <strong>connectViewModel</strong> HOC is used to connect a React component to an existing View Model. The <strong>mapStateToOptions</strong> function specifies the connection options. The following options are required:</p>
-<ul>
-<li><strong>viewModelName</strong> - the name of a View Model to bind to</li>
-<li><strong>aggregateIds</strong> - an array of aggregate IDs for which to obtain data</li>
-</ul>
-<p>A component connected to a View Model can access the View Model data through the <strong>data</strong> prop.</p>
-<h3><a class="anchor" aria-hidden="true" id="connect-to-redux"></a><a href="#connect-to-redux" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Connect to Redux</h3>
-<p>You can chain the <strong>connectReadModel</strong> or <strong>connectViewModel</strong> function call with the Redux <strong>connect</strong> function call to synchronize the client Rudux state with Read Model or View Model data.</p>
-<!-- prettier-ignore-start -->
-<pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapStateToOptions = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> ({
-  <span class="hljs-attr">readModelName</span>: <span class="hljs-string">'ShoppingLists'</span>,
-  <span class="hljs-attr">resolverName</span>: <span class="hljs-string">'all'</span>,
-  <span class="hljs-attr">resolverArgs</span>: {}
-})
-
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapStateToProps = <span class="hljs-function"><span class="hljs-params">state</span> =&gt;</span> ({
-  <span class="hljs-attr">lists</span>: state.optimisticShoppingLists || []
-})
-
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapDispatchToProps = <span class="hljs-function">(<span class="hljs-params">dispatch, { aggregateActions }</span>) =&gt;</span>
-  bindActionCreators(aggregateActions, dispatch)
-
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MyLists)
-)
-</code></pre>
-<!-- prettier-ignore-end -->
-<h4><a class="anchor" aria-hidden="true" id="fix-urls"></a><a href="#fix-urls" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Fix URLs</h4>
-<p>Use the following HOCs to automatically fix URLs passed to a component as props. The resulting URLs take the backend structure into account.</p>
-<ul>
-<li><strong>connectRootBasedUrls</strong> - Fixes server routs:
-<pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> connectRootBasedUrls([<span class="hljs-string">'href'</span>])(Link)
-</code></pre></li>
-</ul>
-<ul>
-<li><strong>connectStaticBasedUrls</strong> - Fixes static files paths:
-<pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> connectStaticBasedUrls([<span class="hljs-string">'css'</span>, <span class="hljs-string">'favicon'</span>])(Header)
-</code></pre></li>
-</ul>
-<h2><a class="anchor" aria-hidden="true" id="sending-commands-as-redux-actions"></a><a href="#sending-commands-as-redux-actions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Sending Commands as Redux Actions</h2>
-<p>A component connected to a Read Model receives an object containing available command names. You can use the <strong>redux.bindActionCreators</strong> function to automatically wrap all these commands into <strong>dispatch</strong> function calls. This allows for a compact implementation of the <strong>mapDispatchToProps</strong> function:</p>
-<!-- prettier-ignore-start -->
-<pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapDispatchToProps = <span class="hljs-function">(<span class="hljs-params">dispatch, { aggregateActions }</span>) =&gt;</span>
-  bindActionCreators(aggregateActions, dispatch)
-</code></pre>
-<!-- prettier-ignore-end -->
-<p>After this, you can dispatch aggregate commands using the corresponding props:</p>
-<!-- prettier-ignore-start -->
-<pre><code class="hljs css language-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyLists</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">PureComponent</span> </span>{
-  render() {
-    <span class="hljs-keyword">const</span> { lists, createShoppingList, removeShoppingList } = <span class="hljs-keyword">this</span>.props
-
-    <span class="hljs-keyword">return</span> (
-      &lt;div className="example-wrapper"&gt;
-        &lt;ShoppingLists lists={lists} removeShoppingList={removeShoppingList} /&gt;
-        &lt;ShoppingListCreator
-          lists={lists}
-          createShoppingList={createShoppingList}
-        /&gt;
-      &lt;/div&gt;
-    )
-  }
-}
-</code></pre>
-<!-- prettier-ignore-end -->
-<h2><a class="anchor" aria-hidden="true" id="reactive-view-models-event-subscription"></a><a href="#reactive-view-models-event-subscription" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Reactive View Models, Event Subscription</h2>
-<p>A View Model is a special kind of a Read Model. Its projection is declared in a universal format so it can also serve as the reducer code on the client side. Events are automatically sent to the client through a WebSocket connection. Because of these properties, View Models are reactive. This means that a component connected to a View Model using the <strong>connectViewModel</strong> method automatically reflects the Read Model changes on the server side, without the need to implement any additional logic.</p>
-<!-- prettier-ignore-start -->
-<pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapStateToOptions = <span class="hljs-function">(<span class="hljs-params">state, ownProps</span>) =&gt;</span> {
-  <span class="hljs-keyword">const</span> aggregateId = ownProps.match.params.id
-
-  <span class="hljs-keyword">return</span> {
-    <span class="hljs-attr">viewModelName</span>: <span class="hljs-string">'shoppingList'</span>,
-    <span class="hljs-attr">aggregateIds</span>: [aggregateId]
-  }
-}
-
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapStateToProps = <span class="hljs-function">(<span class="hljs-params">state, ownProps</span>) =&gt;</span> {
-  <span class="hljs-keyword">const</span> aggregateId = ownProps.match.params.id
-
-  <span class="hljs-keyword">return</span> {
-    aggregateId
-  }
-}
-
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapDispatchToProps = <span class="hljs-function">(<span class="hljs-params">dispatch, { aggregateActions }</span>) =&gt;</span>
-  bindActionCreators(
-    {
-      ...aggregateActions,
-      <span class="hljs-attr">replaceUrl</span>: routerActions.replace
-    },
-    dispatch
-  )
-
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> connectViewModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ShoppingList)
-)
-</code></pre>
-<!-- prettier-ignore-end -->
-<h2><a class="anchor" aria-hidden="true" id="optimistic-commands"></a><a href="#optimistic-commands" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Optimistic Commands</h2>
-<p>You can add <strong>optimistic UI updating</strong> functionality to enhance a component's responsiveness if this component is connected to a reSolve ReadModel. With this approach, a component applies model changes on the client side before synchronizing them with the server via an aggregate command.</p>
-<p>Use the following steps to implement optimistic UI updating:</p>
+<h2><a class="anchor" aria-hidden="true" id="http-api"></a><a href="#http-api" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>HTTP API</h2>
+<p>A reSolve exposes HTTP API that you can use to send aggregate commands and query Read Models. The following endpoints are available.</p>
+<table>
+<thead>
+<tr><th>Purpose</th><th>Endpoint</th></tr>
+</thead>
+<tbody>
+<tr><td>Send a command</td><td><code>http://{host}:{port}/api/commands</code></td></tr>
+<tr><td>Query a Read Model</td><td><code>http://{host}:{port}/api/query/{readModel}/{resolver}</code></td></tr>
+<tr><td>Query a View Model</td><td><code>http://{host}:{port}/api/query/{viewModel}/{aggregateIds}</code></td></tr>
+</tbody>
+</table>
+<h4><a class="anchor" aria-hidden="true" id="example"></a><a href="#example" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h4>
+<blockquote>
+<p>To test the provided console inputs on your machine, download and run the <a href="https://github.com/reimagined/resolve/tree/master/examples/shopping-list">Shopping List</a> example project.</p>
+</blockquote>
 <ol>
-<li>Create Redux actions that perform updates:</li>
+<li>Create a new shopping list named &quot;List 1&quot;:</li>
 </ol>
-<!-- prettier-ignore-start -->
-<pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> OPTIMISTIC_CREATE_SHOPPING_LIST = <span class="hljs-string">'OPTIMISTIC_CREATE_SHOPPING_LIST'</span>
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> OPTIMISTIC_REMOVE_SHOPPING_LIST = <span class="hljs-string">'OPTIMISTIC_REMOVE_SHOPPING_LIST'</span>
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> OPTIMISTIC_SYNC = <span class="hljs-string">'OPTIMISTIC_SYNC'</span>
+<pre><code class="hljs css language-sh">$ curl -i http://localhost:3000/api/commands/ \
+--header <span class="hljs-string">"Content-Type: application/json"</span> \
+--data <span class="hljs-string">'
+{
+    "aggregateName": "ShoppingList",
+    "aggregateId": "12345-new-shopping-list",
+    "type": "createShoppingList",
+    "payload": {
+        "name": "List 1"
+    }
+}
+'</span>
+
+
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 2
+ETag: W/<span class="hljs-string">"2-nOO9QiTIwXgNtWtBJezz8kv3SLc"</span>
+Date: Tue, 02 Oct 2018 11:47:53 GMT
+Connection: keep-alive
+
+OK
 </code></pre>
-<!-- prettier-ignore-end -->
 <ol start="2">
-<li>Implement an optimistic reducer function that responds to these commands to update the corresponding slice of the Redux state:</li>
+<li>Query a View Model to see the shopping list:</li>
 </ol>
-<!-- prettier-ignore-start -->
-<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { LOCATION_CHANGE } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-redux'</span>
-<span class="hljs-keyword">import</span> {
-  OPTIMISTIC_CREATE_SHOPPING_LIST,
-  OPTIMISTIC_REMOVE_SHOPPING_LIST,
-  OPTIMISTIC_SYNC
-} <span class="hljs-keyword">from</span> <span class="hljs-string">'../actions/optimistic_actions'</span>
+<pre><code class="hljs css language-sh">$ curl -i -g -X GET <span class="hljs-string">"http://localhost:3000/api/query/ShoppingList/12345-new-shopping-list"</span>
 
-<span class="hljs-keyword">const</span> optimistic_shopping_lists = <span class="hljs-function">(<span class="hljs-params">state = [], action</span>) =&gt;</span> {
-  <span class="hljs-keyword">switch</span> (action.type) {
-    <span class="hljs-keyword">case</span> LOCATION_CHANGE: {
-      <span class="hljs-keyword">return</span> []
-    }
-    <span class="hljs-keyword">case</span> OPTIMISTIC_CREATE_SHOPPING_LIST: {
-      <span class="hljs-keyword">return</span> [
-        ...state,
-        {
-          <span class="hljs-attr">id</span>: action.payload.id,
-          <span class="hljs-attr">name</span>: action.payload.name
-        }
-      ]
-    }
-    <span class="hljs-keyword">case</span> OPTIMISTIC_REMOVE_SHOPPING_LIST: {
-      <span class="hljs-keyword">return</span> state.filter(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> {
-        <span class="hljs-keyword">return</span> item.id !== action.payload.id
-      })
-    }
-    <span class="hljs-keyword">case</span> OPTIMISTIC_SYNC: {
-      <span class="hljs-keyword">return</span> action.payload.originalLists
-    }
-    <span class="hljs-keyword">default</span>: {
-      <span class="hljs-keyword">return</span> state
-    }
-  }
-}
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 58
+ETag: W/<span class="hljs-string">"3a-jyqRShDvCZnc9uCOPi31BlQFznA"</span>
+Date: Tue, 02 Oct 2018 12:11:43 GMT
+Connection: keep-alive
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> optimistic_shopping_lists
+{<span class="hljs-string">"id"</span>:<span class="hljs-string">"12345-new-shopping-list"</span>,<span class="hljs-string">"name"</span>:<span class="hljs-string">"List 1"</span>,<span class="hljs-string">"list"</span>:[]}
 </code></pre>
-<!-- prettier-ignore-end -->
 <ol start="3">
-<li>Implement an optimistic middleware to intercept actions used to communicate with a Read Model and update the Redux state accordingly:</li>
+<li>Add an item to the shopping list:</li>
 </ol>
-<!-- prettier-ignore-start -->
-<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { actionTypes } <span class="hljs-keyword">from</span> <span class="hljs-string">'resolve-redux'</span>
-
-<span class="hljs-keyword">import</span> {
-  OPTIMISTIC_CREATE_SHOPPING_LIST,
-  OPTIMISTIC_REMOVE_SHOPPING_LIST,
-  OPTIMISTIC_SYNC
-} <span class="hljs-keyword">from</span> <span class="hljs-string">'../actions/optimistic_actions'</span>
-
-<span class="hljs-keyword">const</span> { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
-
-<span class="hljs-keyword">const</span> optimistic_shopping_lists_middleware = <span class="hljs-function"><span class="hljs-params">store</span> =&gt;</span> <span class="hljs-function"><span class="hljs-params">next</span> =&gt;</span> <span class="hljs-function"><span class="hljs-params">action</span> =&gt;</span> {
-  <span class="hljs-keyword">if</span> (
-    action.type === SEND_COMMAND_SUCCESS &amp;&amp;
-    action.commandType === <span class="hljs-string">'createShoppingList'</span>
-  ) {
-    store.dispatch({
-      <span class="hljs-attr">type</span>: OPTIMISTIC_CREATE_SHOPPING_LIST,
-      <span class="hljs-attr">payload</span>: {
-        <span class="hljs-attr">id</span>: action.aggregateId,
-        <span class="hljs-attr">name</span>: action.payload.name
-      }
-    })
-  }
-  <span class="hljs-keyword">if</span> (
-    action.type === SEND_COMMAND_SUCCESS &amp;&amp;
-    action.commandType === <span class="hljs-string">'removeShoppingList'</span>
-  ) {
-    store.dispatch({
-      <span class="hljs-attr">type</span>: OPTIMISTIC_REMOVE_SHOPPING_LIST,
-      <span class="hljs-attr">payload</span>: {
-        <span class="hljs-attr">id</span>: action.aggregateId
-      }
-    })
-  }
-  <span class="hljs-keyword">if</span> (action.type === LOAD_READMODEL_STATE_SUCCESS) {
-    store.dispatch({
-      <span class="hljs-attr">type</span>: OPTIMISTIC_SYNC,
-      <span class="hljs-attr">payload</span>: {
-        <span class="hljs-attr">originalLists</span>: action.result
-      }
-    })
-  }
-
-  next(action)
+<pre><code class="hljs css language-sh">$ curl -i http://localhost:3000/api/commands/ \
+--header <span class="hljs-string">"Content-Type: application/json"</span> \
+--data <span class="hljs-string">'
+{
+    "aggregateName": "ShoppingList",
+    "aggregateId": "12345-new-shopping-list",
+    "type": "createShoppingItem",
+    "payload": {
+        "id": "1",
+        "text": "Beer"
+    }
 }
+'</span>
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> optimistic_shopping_lists_middleware
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 2
+ETag: W/<span class="hljs-string">"2-nOO9QiTIwXgNtWtBJezz8kv3SLc"</span>
+Date: Tue, 02 Oct 2018 12:13:39 GMT
+Connection: keep-alive
+
+OK
 </code></pre>
+<ol start="4">
+<li>Add another item:</li>
+</ol>
+<pre><code class="hljs css language-sh">$ curl -i http://localhost:3000/api/commands/ \
+--header <span class="hljs-string">"Content-Type: application/json"</span> \
+--data <span class="hljs-string">'
+{
+    "aggregateName": "ShoppingList",
+    "aggregateId": "12345-new-shopping-list",
+    "type": "createShoppingItem",
+    "payload": {
+        "id": "2",
+        "text": "Chips"
+    }
+}
+'</span>
+</code></pre>
+<ol start="5">
+<li>You can now query the view model again and see the items you have added:</li>
+</ol>
+<pre><code class="hljs css language-sh">$ curl --g -X GET <span class="hljs-string">"http://localhost:3000/api/query/ShoppingList/12345-new-shopping-list"</span> <span class="hljs-string">'
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 140
+ETag: W/"8c-rWsIpzFOfkV3y9g6x9FlenTaG/A"
+Date: Tue, 02 Oct 2018 12:17:57 GMT
+Connection: keep-alive
+
+{"id":"12345-new-shopping-list","name":"List 1","list":[{"id":"1","text":"Beer","checked":false},{"id":"2","text":"Chips","checked":false}]}
+</span></code></pre>
+<p>Below, you can see the newly created list and its items on the Shopping List application's page.</p>
+<p><img src="/resolve/docs/assets/curl/list1-items.png" alt="List1-items"></p>
+<p>For more information on the HTTP API, refer to the following help topic: <a href="/resolve/docs/api-reference#http-api">API Reference</a>.</p>
+<p>You can extend a reSolve server's API with API Handlers. Refer to the following help topic for more information: <a href="/resolve/docs/api-handlers">API Handlers</a>.</p>
+<h2><a class="anchor" aria-hidden="true" id="resolve-client-library"></a><a href="#resolve-client-library" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>resolve-client library</h2>
+<p>The <strong>resolve-client</strong> library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's <code>getClient</code> function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:</p>
+<table>
+<thead>
+<tr><th>Function</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="/resolve/docs/api-reference#command">command</a></td><td>Sends an aggregate command to the backend.</td></tr>
+<tr><td><a href="/resolve/docs/api-reference#query">query</a></td><td>Queries a Read Model.</td></tr>
+<tr><td><a href="/resolve/docs/api-reference#getstaticasseturl">getStaticAssetUrl</a></td><td>Gets a static file's full URL.</td></tr>
+<tr><td><a href="/resolve/docs/api-reference#subscribe">subscribe</a></td><td>Subscribes to View Model updates.</td></tr>
+<tr><td><a href="/resolve/docs/api-reference#unsubscribe">unsubscribe</a></td><td>Unsubscribes from View Model updates.</td></tr>
+</tbody>
+</table>
+<h4><a class="anchor" aria-hidden="true" id="example-1"></a><a href="#example-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h4>
+<p>The <a href="https://github.com/reimagined/resolve/tree/master/examples/with-vanillajs">with-vanilajs</a> example application demonstrates how to use the <strong>resolve-client</strong> library to implement a frontend for a reSolve application in pure JavaScript.</p>
+<h2><a class="anchor" aria-hidden="true" id="resolve-redux-library"></a><a href="#resolve-redux-library" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>resolve-redux library</h2>
+<p>The reSolve framework includes the client <strong>resolve-redux</strong> library used to connect a client React + Redux app to a reSolve-powered backend.</p>
+<p>Use the following resolve-redux library's hooks and Higher-Order Components (HOCs) to connect react components to the backend.</p>
+<h5><a class="anchor" aria-hidden="true" id="react-hooks"></a><a href="#react-hooks" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>React Hooks:</h5>
+<table>
+<thead>
+<tr><th>Function Name</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="/resolve/docs/api-reference#usereduxcommand">useReduxCommand</a></td><td>Creates a hook to execute a command.</td></tr>
+<tr><td><a href="/resolve/docs/api-reference#usereduxreadmodel">useReduxReadModel</a></td><td>Creates a hook to query a Read Model.</td></tr>
+<tr><td><a href="/resolve/docs/api-reference#usereduxreadmodelselector">useReduxReadModelSelector</a></td><td>Creates a hook to access a Read Model query result.</td></tr>
+<tr><td><a href="/resolve/docs/api-reference#usereduxviewmodel">useReduxViewModel</a></td><td>Creates a hook to receive a View Model's state updates and reactive events.</td></tr>
+<tr><td><a href="/resolve/docs/api-reference#usereduxviewmodelselector">useReduxViewModelSelector</a></td><td>Creates a hook to access a View Model's current state on the client.</td></tr>
+</tbody>
+</table>
+<h5><a class="anchor" aria-hidden="true" id="higher-order-components"></a><a href="#higher-order-components" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Higher-Order Components:</h5>
+<table>
+<thead>
+<tr><th>Function Name</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="/resolve/docs/api-reference#connectviewmodel">connectViewModel</a></td><td>Connects a React component to a reSolve View Model.</td></tr>
+<tr><td><a href="/resolve/docs/api-reference#connectreadmodel">connectReadModel</a></td><td>Connects a React component to a reSolve Read Model.</td></tr>
+<tr><td><a href="/resolve/docs/api-reference#connectrootbasedurls">connectRootBasedUrls</a></td><td>Fixes URLs passed to the specified props so that they use the correct root folder path.</td></tr>
+<tr><td><a href="/resolve/docs/api-reference#connectstaticbasedurls">connectStaticBasedUrls</a></td><td>Fixes URLs passed to the specified props so that they use the correct static resource folder path.</td></tr>
+</tbody>
+</table>
+<h4><a class="anchor" aria-hidden="true" id="example-2"></a><a href="#example-2" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h4>
+<p>The <a href="https://github.com/reimagined/resolve/tree/master/examples/shopping-list">shopping-list</a> example application demonstrates how to use the <strong>resolve-client</strong> library to implement a react-redux frontend for a reSolve application.</p>
 <!-- prettier-ignore-end -->
-<p>For the full code, refer to the <a href="https://github.com/reimagined/resolve/tree/master/examples/shopping-list">Shopping List</a> example project.</p>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/resolve/docs/read-side"><span class="arrow-prev">← </span><span>Read Side</span></a><a class="docs-next button" href="/resolve/docs/curl"><span>Standard HTTP API</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#react-redux-support">React/Redux Support</a><ul class="toc-headings"><li><a href="#resolve-redux-library">resolve-redux library</a></li><li><a href="#obtain-view-model-data">Obtain View Model Data</a></li><li><a href="#connect-to-redux">Connect to Redux</a></li></ul></li><li><a href="#sending-commands-as-redux-actions">Sending Commands as Redux Actions</a></li><li><a href="#reactive-view-models-event-subscription">Reactive View Models, Event Subscription</a></li><li><a href="#optimistic-commands">Optimistic Commands</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/resolve/" class="nav-home"><img src="/resolve/img/resolve.svg" alt="reSolve" width="66" height="58"/></a><div><h5>Docs</h5><a href="/resolve/docs/">Documentation Index</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/resolvejs" target="_blank" rel="noreferrer noopener">Stack Overflow</a><a href="https://twitter.com/resolvejs" target="_blank" rel="noreferrer noopener">Twitter</a><a href="https://www.facebook.com/resolvejs/" target="_blank" rel="noreferrer noopener">Facebook</a></div><div><h5>More</h5><a href="https://github.com/reimagined/resolve">GitHub</a><a class="github-button" href="https://github.com/reimagined/resolve" data-icon="octicon-star" data-count-href="/reimagined/resolve/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2019 Developer Express, Inc</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+<h2><a class="anchor" aria-hidden="true" id="resolve-react-hooks-library"></a><a href="#resolve-react-hooks-library" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>resolve-react-hooks library</h2>
+<p>The <strong>resolve-react-hooks</strong> library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.</p>
+<table>
+<thead>
+<tr><th>Hook</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="/resolve/docs/api-reference#usecommand">useCommand</a></td><td>Initializes a command that can be passed to the backend</td></tr>
+<tr><td><a href="/resolve/docs/api-reference#usecommandbuilder">useCommandBuilder</a></td><td>Allows to generate commands based on input parameters</td></tr>
+<tr><td><a href="/resolve/docs/api-reference#useviewmodel">useViewModel</a></td><td>Establishes a WebSocket connection to a reSolve View Model</td></tr>
+<tr><td><a href="/resolve/docs/api-reference#usequery">useQuery</a></td><td>Allows a component to send queries to a reSolve Read Model or View Model</td></tr>
+</tbody>
+</table>
+<h4><a class="anchor" aria-hidden="true" id="example-3"></a><a href="#example-3" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h4>
+<p>The <a href="https://github.com/reimagined/resolve/tree/master/examples/shopping-list-with-hooks">shopping-list-with-hooks</a> example application demonstrates how to use the <strong>resolve-react-hooks</strong> library to communicate with a reSolve backend.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/resolve/docs/read-side"><span class="arrow-prev">← </span><span>Read Side</span></a><a class="docs-next button" href="/resolve/docs/advanced-techniques"><span>Advanced Techniques</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#http-api">HTTP API</a></li><li><a href="#resolve-client-library">resolve-client library</a></li><li><a href="#resolve-redux-library">resolve-redux library</a></li><li><a href="#resolve-react-hooks-library">resolve-react-hooks library</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/resolve/" class="nav-home"><img src="/resolve/img/resolve.svg" alt="reSolve" width="66" height="58"/></a><div><h5>Docs</h5><a href="/resolve/docs/">Documentation Index</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/resolvejs" target="_blank" rel="noreferrer noopener">Stack Overflow</a><a href="https://twitter.com/resolvejs" target="_blank" rel="noreferrer noopener">Twitter</a><a href="https://www.facebook.com/resolvejs/" target="_blank" rel="noreferrer noopener">Facebook</a></div><div><h5>More</h5><a href="https://github.com/reimagined/resolve">GitHub</a><a class="github-button" href="https://github.com/reimagined/resolve" data-icon="octicon-star" data-count-href="/reimagined/resolve/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2020 Developer Express, Inc</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;

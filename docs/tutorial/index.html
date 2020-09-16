@@ -1,6 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Step-by-Step Tutorial · reSolve</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;p&gt;This document provides a step-by-step tutorial for the reSolve framework.&lt;/p&gt;
-"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Step-by-Step Tutorial · reSolve"/><meta property="og:type" content="website"/><meta property="og:url" content="https://reimagined.github.io/resolve/"/><meta property="og:description" content="&lt;p&gt;This document provides a step-by-step tutorial for the reSolve framework.&lt;/p&gt;
-"/><meta property="og:image" content="https://reimagined.github.io/resolve/img/reSolve400x400-fill.png"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/resolve/undefined"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css"/><script>
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Step-by-Step Tutorial · reSolve</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="This document provides a step-by-step tutorial for the reSolve framework."/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Step-by-Step Tutorial · reSolve"/><meta property="og:type" content="website"/><meta property="og:url" content="https://reimagined.github.io/resolve/"/><meta property="og:description" content="This document provides a step-by-step tutorial for the reSolve framework."/><meta property="og:image" content="https://reimagined.github.io/resolve/img/reSolve400x400-fill.png"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/resolve/undefined"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css"/><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -8,7 +6,7 @@
 
               ga('create', 'UA-118635726-3', 'auto');
               ga('send', 'pageview');
-            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/resolve/js/scrollSpy.js"></script><link rel="stylesheet" href="/resolve/css/main.css"/><script src="/resolve/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/resolve/"><img class="logo" src="/resolve/img/resolve.svg" alt="reSolve"/><h2 class="headerTitleWithLogo">reSolve</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="https://medium.com/resolvejs" target="_self">Blog</a></li><li class="siteNavGroupActive"><a href="/resolve/docs/" target="_self">Docs</a></li><li class="siteNavGroupActive siteNavItemActive"><a href="/resolve/docs/tutorial" target="_self">Tutorial</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/reimagined/resolve" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Docs Index</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Docs Index</h3><ul class=""><li class="navListItem"><a class="navItem" href="/resolve/docs/">reSolve Documentation</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/introduction">Introduction</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/resolve/docs/tutorial">Step-by-Step Tutorial</a></li><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Basics</h4><ul><li class="navListItem"><a class="navItem" href="/resolve/docs/app-structure">reSolve App Structure</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/write-side">Write Side</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/read-side">Read Side</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/frontend">Frontend</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/curl">Standard HTTP API</a></li></ul></div><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Guides</h4><ul><li class="navListItem"><a class="navItem" href="/resolve/docs/advanced-techniques">Advanced Techniques</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/api-handlers">API Handlers</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/sagas">Sagas</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/authentication-and-authorization">Authentication and Authorization</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/preparing-to-production">Preparing to Production</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/api-reference">API Reference</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/contributing">Contributing</a></li></ul></div></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">FAQ</h3><ul class=""><li class="navListItem"><a class="navItem" href="/resolve/docs/faq">FAQ</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Troubleshooting</h3><ul class=""><li class="navListItem"><a class="navItem" href="/resolve/docs/troubleshooting">Troubleshooting</a></li></ul></div></div></section></div><script>
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/resolve/js/scrollSpy.js"></script><link rel="stylesheet" href="/resolve/css/main.css"/><script src="/resolve/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/resolve/"><img class="logo" src="/resolve/img/resolve.svg" alt="reSolve"/><h2 class="headerTitleWithLogo">reSolve</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="https://medium.com/resolvejs" target="_self">Blog</a></li><li class="siteNavGroupActive"><a href="/resolve/docs/" target="_self">Docs</a></li><li class="siteNavGroupActive siteNavItemActive"><a href="/resolve/docs/tutorial" target="_self">Tutorial</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/reimagined/resolve" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Docs Index</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Docs Index</h3><ul class=""><li class="navListItem"><a class="navItem" href="/resolve/docs/">reSolve Documentation</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/introduction">Introduction</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/resolve/docs/tutorial">Step-by-Step Tutorial</a></li><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Basics</h4><ul><li class="navListItem"><a class="navItem" href="/resolve/docs/app-structure">reSolve App Structure</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/write-side">Write Side</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/read-side">Read Side</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/frontend">Frontend</a></li></ul></div><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Guides</h4><ul><li class="navListItem"><a class="navItem" href="/resolve/docs/advanced-techniques">Advanced Techniques</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/api-handlers">API Handlers</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/sagas">Sagas</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/authentication-and-authorization">Authentication and Authorization</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/preparing-to-production">Preparing to Production</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/debugging">Debugging</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/test-readmodels">Test Read Models</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/api-reference">API Reference</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/application-configuration">Application Configuration</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/contributing">Contributing</a></li></ul></div><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">reSolve Cloud Platform</h4><ul><li class="navListItem"><a class="navItem" href="/resolve/docs/cloud-overview">Overview</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/cloud-get-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/cloud-app-management">Application Management</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/cloud-cli">reSolve Cloud CLI</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/cloud-web-gui">Web Admin GUI</a></li><li class="navListItem"><a class="navItem" href="/resolve/docs/cloud-troubleshooting">Troubleshooting</a></li></ul></div></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">FAQ</h3><ul class=""><li class="navListItem"><a class="navItem" href="/resolve/docs/faq">FAQ</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Troubleshooting</h3><ul class=""><li class="navListItem"><a class="navItem" href="/resolve/docs/troubleshooting">Troubleshooting</a></li></ul></div></div></section></div><script>
             var coll = document.getElementsByClassName('collapsible');
             var checkActiveCategory = true;
             for (var i = 0; i < coll.length; i++) {
@@ -64,7 +62,7 @@
                 };
               }
             });
-        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Step-by-Step Tutorial</h1></header><article><div><span><p>This document provides a step-by-step tutorial for the reSolve framework.
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Step-by-Step Tutorial</h1></header><article><div><span><p>This document provides a step-by-step tutorial for the reSolve framework.
 Throughout this tutorial, you will create a single application. You will modify your application as you learn new concepts, so with every consequent lesson the application will become more and more sophisticated.</p>
 <p>This tutorial will give you an understanding of the reSolve framework and its fundamental concepts. It is recommended that your familiarize yourself with event sourcing and CQRS before you start this tutorial, however it is not strictly required.</p>
 <h2><a class="anchor" aria-hidden="true" id="table-of-contents"></a><a href="#table-of-contents" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table of Contents</h2>
@@ -78,7 +76,7 @@ Throughout this tutorial, you will create a single application. You will modify 
 <li><a href="#lesson-7-functionality-enhancements">Lesson 7 - Functionality Enhancements</a></li>
 </ul>
 <hr>
-<h2><a class="anchor" aria-hidden="true" id="lesson-1-create-a-new-resolve-application"></a><a href="#lesson-1-create-a-new-resolve-application" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 1</strong> - Create a New reSolve Application</h2>
+<h2><a class="anchor" aria-hidden="true" id="lesson-1---create-a-new-resolve-application"></a><a href="#lesson-1---create-a-new-resolve-application" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 1</strong> - Create a New reSolve Application</h2>
 <p>Use the create-resolve-app tool to create a new reSolve app:</p>
 <h5><a class="anchor" aria-hidden="true" id="npm"></a><a href="#npm" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>npm:</h5>
 <pre><code class="hljs css language-sh">$ npm i -g create-resolve-app
@@ -95,7 +93,7 @@ $ create-resolve-app shopping-list
 $ yarn run dev
 </code></pre>
 <hr>
-<h2><a class="anchor" aria-hidden="true" id="lesson-2-write-side-add-a-list-item"></a><a href="#lesson-2-write-side-add-a-list-item" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 2</strong> - Write side - Add a List Item</h2>
+<h2><a class="anchor" aria-hidden="true" id="lesson-2---write-side---add-a-list-item"></a><a href="#lesson-2---write-side---add-a-list-item" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 2</strong> - Write side - Add a List Item</h2>
 <p><a href="https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-2">[Get the Code for This Lesson]</a></p>
 <p>This lesson describes how to implement a basic write side for a reSolve application. An application's <a href="/resolve/docs/app-structure#write-and-read-sides">write side</a> handles commands, performs input validation, and emits <strong>events</strong> based on valid commands. The framework then saves the emitted events to the <strong>event store</strong>.</p>
 <p>In the CQRS and Event Sourcing paradigms, Domain Objects grouped into aggregates handle commands. ReSolve implements aggregates as static objects that contain sets of functions. These functions can be of one of the following types:</p>
@@ -360,7 +358,7 @@ Content-Length: 43
 Command error: the shopping list does not exist
 </code></pre>
 <hr>
-<h2><a class="anchor" aria-hidden="true" id="lesson-3-read-side-create-a-view-model-to-query-list-items"></a><a href="#lesson-3-read-side-create-a-view-model-to-query-list-items" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 3</strong> - Read side - Create a View Model to Query List Items</h2>
+<h2><a class="anchor" aria-hidden="true" id="lesson-3---read-side---create-a-view-model-to-query-list-items"></a><a href="#lesson-3---read-side---create-a-view-model-to-query-list-items" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 3</strong> - Read side - Create a View Model to Query List Items</h2>
 <p><a href="https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-3">[Get the Code for This Lesson]</a></p>
 <p>Currently, your shopping list application has a write side that allows you to create shopping lists and items in these lists. To obtain this data from the application, you need to implement the application's <strong><a href="/resolve/docs/app-structure#write-and-read-sides">read side</a></strong>.</p>
 <h3><a class="anchor" aria-hidden="true" id="add-a-view-model"></a><a href="#add-a-view-model" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Add a View Model</h3>
@@ -454,11 +452,11 @@ Connection: keep-alive
 </tbody>
 </table>
 <hr>
-<h2><a class="anchor" aria-hidden="true" id="lesson-4-frontend-display-view-model-data-in-the-browser"></a><a href="#lesson-4-frontend-display-view-model-data-in-the-browser" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 4</strong> - Frontend - Display View Model Data in the Browser</h2>
+<h2><a class="anchor" aria-hidden="true" id="lesson-4---frontend---display-view-model-data-in-the-browser"></a><a href="#lesson-4---frontend---display-view-model-data-in-the-browser" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 4</strong> - Frontend - Display View Model Data in the Browser</h2>
 <p><a href="https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-4">[Get the Code for This Lesson]</a></p>
 <p>This lesson provides information on how to display a View Model's data in the client browser. It uses the reSolve framework's <strong>resolve-redux</strong> library to implement a frontend based on React and Redux.</p>
 <blockquote>
-<p>You can use the <a href="/resolve/docs/curl">standard HTTP API</a> to communicate with a reSolve backend and use any client technology to implement the frontend.</p>
+<p>You can use the standard HTTP API to communicate with a reSolve backend and use any client technology to implement the frontend.</p>
 </blockquote>
 <h3><a class="anchor" aria-hidden="true" id="implement-a-react-frontend"></a><a href="#implement-a-react-frontend" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Implement a React Frontend</h3>
 <p>The frontend's source files are located in the <strong>client</strong> folder. Create a <strong>ShoppingList.js</strong> file in the <strong>client/containers</strong> folder. In this file, implement a React component that renders a list of values obtained from the <strong><a href="/resolve/docs/frontend#obtain-view-model-data">data</a></strong> prop:</p>
@@ -536,7 +534,7 @@ Connection: keep-alive
 <p>Run your application to view the result:</p>
 <p><img src="/resolve/docs/assets/tutorial/lesson4_result.png" alt="result"></p>
 <hr>
-<h2><a class="anchor" aria-hidden="true" id="lesson-5-frontend-enable-data-editing"></a><a href="#lesson-5-frontend-enable-data-editing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 5</strong> - Frontend - Enable Data Editing</h2>
+<h2><a class="anchor" aria-hidden="true" id="lesson-5---frontend---enable-data-editing"></a><a href="#lesson-5---frontend---enable-data-editing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 5</strong> - Frontend - Enable Data Editing</h2>
 <p><a href="https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-5">[Get the Code for This Lesson]</a></p>
 <p>This lesson describes how to implement a visual interface that allows you to edit shopping list items.</p>
 <h3><a class="anchor" aria-hidden="true" id="modify-backend-functionality"></a><a href="#modify-backend-functionality" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Modify Backend Functionality</h3>
@@ -589,10 +587,13 @@ Connection: keep-alive
 <p>A component connected to a reSolve View Model receives an array of aggregate actions (Redux actions that send commands to a reSolve aggregate). Use the following code to generate action creators for these actions:</p>
 <p><strong>client/containers/ShoppingList.js:</strong></p>
 <!-- prettier-ignore-start -->
-<pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapDispatchToProps = <span class="hljs-function">(<span class="hljs-params">dispatch, { aggregateActions }</span>) =&gt;</span>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { sendAggregateAction } <span class="hljs-keyword">from</span> <span class="hljs-string">'resolve-redux'</span>
+<span class="hljs-keyword">import</span> { bindActionCreators } <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapDispatchToProps = <span class="hljs-function">(<span class="hljs-params">dispatch, { aggregateActions }</span>) =&gt;</span>
   bindActionCreators(
     {
-      ...aggregateActions
+      <span class="hljs-attr">createStory</span>: sendAggregateAction.bind(<span class="hljs-literal">null</span>, <span class="hljs-string">'Story'</span>, <span class="hljs-string">'createStory'</span>)
     },
     dispatch
   )
@@ -600,7 +601,7 @@ Connection: keep-alive
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> connectViewModel(mapStateToOptions)(
   connect(
     <span class="hljs-literal">null</span>,
-    mapDispatchToProps
+    mapDispatchToProps 
   )(ShoppingList)
 )
 </code></pre>
@@ -682,7 +683,7 @@ onItemTextPressEnter = <span class="hljs-function"><span class="hljs-params">eve
 <p>After these steps, your application's UI should look as shown below.</p>
 <p><img src="/resolve/docs/assets/tutorial/lesson5_result.png" alt="result"></p>
 <hr>
-<h2><a class="anchor" aria-hidden="true" id="lesson-6-frontend-support-multiple-shopping-lists"></a><a href="#lesson-6-frontend-support-multiple-shopping-lists" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 6</strong> - Frontend - Support Multiple Shopping Lists</h2>
+<h2><a class="anchor" aria-hidden="true" id="lesson-6---frontend---support-multiple-shopping-lists"></a><a href="#lesson-6---frontend---support-multiple-shopping-lists" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 6</strong> - Frontend - Support Multiple Shopping Lists</h2>
 <p><a href="https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-6">[Get the Code for This Lesson]</a></p>
 <p>Currently, your Shopping List application's UI only allows users to view and edit one shopping list (<strong>shopping-list-1</strong>). This lesson describes how to create multiple shopping lists and navigate between these lists from the client UI.</p>
 <h3><a class="anchor" aria-hidden="true" id="implement-a-shopping-lists-read-model"></a><a href="#implement-a-shopping-lists-read-model" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Implement a Shopping Lists Read Model</h3>
@@ -772,13 +773,13 @@ onItemTextPressEnter = <span class="hljs-function"><span class="hljs-params">eve
   render() {
     <span class="hljs-keyword">const</span> { lists, createShoppingList } = <span class="hljs-keyword">this</span>.props
     <span class="hljs-keyword">return</span> (
-      &lt;div style={{ maxWidth: '500px', margin: 'auto' }}&gt;
-        &lt;ShoppingLists lists={lists} /&gt;
-        &lt;ShoppingListCreator
-          lists={lists}
-          createShoppingList={createShoppingList}
-        /&gt;
-      &lt;/div&gt;
+      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">maxWidth:</span> '<span class="hljs-attr">500px</span>', <span class="hljs-attr">margin:</span> '<span class="hljs-attr">auto</span>' }}&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">ShoppingLists</span> <span class="hljs-attr">lists</span>=<span class="hljs-string">{lists}</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">ShoppingListCreator</span>
+          <span class="hljs-attr">lists</span>=<span class="hljs-string">{lists}</span>
+          <span class="hljs-attr">createShoppingList</span>=<span class="hljs-string">{createShoppingList}</span>
+        /&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
     )
   }
 }
@@ -789,7 +790,10 @@ onItemTextPressEnter = <span class="hljs-function"><span class="hljs-params">eve
 </blockquote>
 <p>Connect the MyLists container component to the ShoppingLists Read Model as shown below.</p>
 <p><strong>client/containers/MyLists.js:</strong></p>
-<pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapStateToOptions = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> ({
+<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { sendAggregateAction } <span class="hljs-keyword">from</span> <span class="hljs-string">'resolve-redux'</span>
+<span class="hljs-keyword">import</span> { bindActionCreators } <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapStateToOptions = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> ({
   <span class="hljs-attr">readModelName</span>: <span class="hljs-string">'ShoppingLists'</span>,
   <span class="hljs-attr">resolverName</span>: <span class="hljs-string">'all'</span>,
   <span class="hljs-attr">resolverArgs</span>: {}
@@ -799,14 +803,16 @@ onItemTextPressEnter = <span class="hljs-function"><span class="hljs-params">eve
   <span class="hljs-attr">lists</span>: ownProps.data
 })
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapDispatchToProps = <span class="hljs-function">(<span class="hljs-params">dispatch, { aggregateActions }</span>) =&gt;</span>
-  bindActionCreators(aggregateActions, dispatch)
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mapDispatchToProps = <span class="hljs-function"><span class="hljs-params">dispatch</span> =&gt;</span>
+  bindActionCreators(
+    {
+      <span class="hljs-attr">createStory</span>: sendAggregateAction.bind(<span class="hljs-literal">null</span>, <span class="hljs-string">'Story'</span>, <span class="hljs-string">'createStory'</span>)
+    },
+    dispatch
+  )
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MyLists)
+  connect(mapStateToProps, mapDispatchToProps)(MyLists)
 )
 </code></pre>
 <p>Configure the React router to enable navigation between the application pages.</p>
@@ -856,11 +862,11 @@ onItemTextPressEnter = <span class="hljs-function"><span class="hljs-params">eve
       <span class="hljs-attr">css</span>=<span class="hljs-string">{[</span>'/<span class="hljs-attr">bootstrap.min.css</span>']}
     /&gt;</span>
     {children}
-  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
 )
 
-export default App
-</span></code></pre>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> App
+</code></pre>
 <!-- prettier-ignore-end -->
 <p>Additionally, modify the <strong>ShoppingList</strong> component so it obtains the selected shopping list's aggregate ID from the <strong>:id</strong> route parameter.</p>
 <p><strong>client/containers/ShoppingList.js:</strong></p>
@@ -918,7 +924,7 @@ export default App
     <span class="hljs-keyword">case</span> OPTIMISTIC_SYNC: {
       <span class="hljs-keyword">return</span> action.payload.originalLists
     }
-    <span class="hljs-keyword">default</span>: {
+    <span class="hljs-attr">default</span>: {
       <span class="hljs-keyword">return</span> state
     }
   }
@@ -978,7 +984,7 @@ export default App
 </code></pre>
 <p>Run your application and create a new shopping list to view the result.</p>
 <hr>
-<h2><a class="anchor" aria-hidden="true" id="lesson-7-functionality-enhancements"></a><a href="#lesson-7-functionality-enhancements" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 7</strong> - Functionality Enhancements</h2>
+<h2><a class="anchor" aria-hidden="true" id="lesson-7---functionality-enhancements"></a><a href="#lesson-7---functionality-enhancements" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Lesson 7</strong> - Functionality Enhancements</h2>
 <p><a href="https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-7">[Get the Code for This Lesson]</a></p>
 <p>The lesson describes how to expand the Shopping List application's functionality:</p>
 <ul>
@@ -1149,17 +1155,17 @@ updateShoppingListName = <span class="hljs-function"><span class="hljs-params">e
 <h4><a class="anchor" aria-hidden="true" id="link-stylesheets"></a><a href="#link-stylesheets" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Link Stylesheets:</h4>
 <p>Use the React Helmet component to link stylesheets to your application.</p>
 <p><strong>client/containers/Header.js:</strong></p>
-<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> {Helmet} <span class="hljs-keyword">from</span> <span class="hljs-string">"react-helmet"</span>
+<pre><code class="hljs css language-js">import {Helmet} from "react-helmet"
 ...
 
 &lt;Helmet&gt;
-  {css.map(<span class="hljs-function">(<span class="hljs-params">href, index</span>) =&gt;</span> (
-    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"stylesheet"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">{href}</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{index}</span> /&gt;</span>
+  {css.map((href, index) =&gt; (
+    &lt;link rel="stylesheet" href={href} key={index} /&gt;
   ))}
   ...
-<span class="hljs-tag">&lt;/<span class="hljs-name">Helmet</span>&gt;</span></span>
+&lt;/Helmet&gt;
 ...
-export <span class="hljs-keyword">default</span> connectStaticBasedUrls([<span class="hljs-string">'css'</span>, <span class="hljs-string">'favicon'</span>])(Header)
+export default connectStaticBasedUrls(['css', 'favicon'])(Header)
 </code></pre>
 <p><strong>client/containers/App.js:</strong></p>
 <pre><code class="hljs css language-js">&lt;Header
@@ -1201,12 +1207,12 @@ export <span class="hljs-keyword">const</span> OPTIMISTIC_REMOVE_SHOPPING_LIST =
 
 <span class="hljs-keyword">const</span> { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span>* (<span class="hljs-params"></span>) </span>{
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">yield</span> takeEvery(
     <span class="hljs-function"><span class="hljs-params">action</span> =&gt;</span>
       action.type === SEND_COMMAND_SUCCESS &amp;&amp;
       action.commandType === <span class="hljs-string">'createShoppingList'</span>,
-    <span class="hljs-function"><span class="hljs-keyword">function</span>* (<span class="hljs-params">action</span>) </span>{
+    <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params">action</span>) </span>{
       <span class="hljs-keyword">yield</span> put({
         <span class="hljs-attr">type</span>: OPTIMISTIC_CREATE_SHOPPING_LIST,
         <span class="hljs-attr">payload</span>: {
@@ -1221,7 +1227,7 @@ export <span class="hljs-keyword">const</span> OPTIMISTIC_REMOVE_SHOPPING_LIST =
     <span class="hljs-function"><span class="hljs-params">action</span> =&gt;</span>
       action.type === SEND_COMMAND_SUCCESS &amp;&amp;
       action.commandType === <span class="hljs-string">'removeShoppingList'</span>,
-    <span class="hljs-function"><span class="hljs-keyword">function</span>* (<span class="hljs-params">action</span>) </span>{
+    <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params">action</span>) </span>{
       <span class="hljs-keyword">yield</span> put({
         <span class="hljs-attr">type</span>: OPTIMISTIC_REMOVE_SHOPPING_LIST,
         <span class="hljs-attr">payload</span>: {
@@ -1232,9 +1238,8 @@ export <span class="hljs-keyword">const</span> OPTIMISTIC_REMOVE_SHOPPING_LIST =
   )
 
   <span class="hljs-keyword">yield</span> takeEvery(
-    <span class="hljs-function"><span class="hljs-params">action</span> =&gt;</span>
-      action.type === LOAD_READMODEL_STATE_SUCCESS,
-    <span class="hljs-function"><span class="hljs-keyword">function</span>* (<span class="hljs-params">action</span>) </span>{
+    <span class="hljs-function"><span class="hljs-params">action</span> =&gt;</span> action.type === LOAD_READMODEL_STATE_SUCCESS,
+    <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params">action</span>) </span>{
       <span class="hljs-keyword">yield</span> put({
         <span class="hljs-attr">type</span>: OPTIMISTIC_SYNC,
         <span class="hljs-attr">payload</span>: {
@@ -1245,7 +1250,7 @@ export <span class="hljs-keyword">const</span> OPTIMISTIC_REMOVE_SHOPPING_LIST =
   )
 }
 </code></pre>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/resolve/docs/introduction"><span class="arrow-prev">← </span><span>Introduction</span></a><a class="docs-next button" href="/resolve/docs/app-structure"><span class="function-name-prevnext">reSolve App Structure</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#table-of-contents">Table of Contents</a></li><li><a href="#lesson-1-create-a-new-resolve-application"><strong>Lesson 1</strong> - Create a New reSolve Application</a></li><li><a href="#lesson-2-write-side-add-a-list-item"><strong>Lesson 2</strong> - Write side - Add a List Item</a><ul class="toc-headings"><li><a href="#creating-an-aggregate">Creating an Aggregate</a></li><li><a href="#sending-commands-to-an-aggregate">Sending Commands to an Aggregate</a></li><li><a href="#performing-validation">Performing Validation</a></li></ul></li><li><a href="#lesson-3-read-side-create-a-view-model-to-query-list-items"><strong>Lesson 3</strong> - Read side - Create a View Model to Query List Items</a><ul class="toc-headings"><li><a href="#add-a-view-model">Add a View Model</a></li><li><a href="#query-a-view-model-via-http-api">Query a View Model via HTTP API</a></li></ul></li><li><a href="#lesson-4-frontend-display-view-model-data-in-the-browser"><strong>Lesson 4</strong> - Frontend - Display View Model Data in the Browser</a><ul class="toc-headings"><li><a href="#implement-a-react-frontend">Implement a React Frontend</a></li></ul></li><li><a href="#lesson-5-frontend-enable-data-editing"><strong>Lesson 5</strong> - Frontend - Enable Data Editing</a><ul class="toc-headings"><li><a href="#modify-backend-functionality">Modify Backend Functionality</a></li><li><a href="#access-aggregate-commands-on-frontend">Access Aggregate Commands on Frontend</a></li><li><a href="#implement-data-editing-ui">Implement Data Editing UI</a></li></ul></li><li><a href="#lesson-6-frontend-support-multiple-shopping-lists"><strong>Lesson 6</strong> - Frontend - Support Multiple Shopping Lists</a><ul class="toc-headings"><li><a href="#implement-a-shopping-lists-read-model">Implement a Shopping Lists Read Model</a></li><li><a href="#query-a-read-model-through-http-api">Query a Read Model Through HTTP API</a></li><li><a href="#implement-client-ui">Implement Client UI</a></li><li><a href="#support-optimistic-ui-updates">Support Optimistic UI Updates</a></li></ul></li><li><a href="#lesson-7-functionality-enhancements"><strong>Lesson 7</strong> - Functionality Enhancements</a><ul class="toc-headings"><li><a href="#modify-the-backend">Modify the Backend</a></li><li><a href="#modify-the-frontend">Modify the Frontend</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/resolve/" class="nav-home"><img src="/resolve/img/resolve.svg" alt="reSolve" width="66" height="58"/></a><div><h5>Docs</h5><a href="/resolve/docs/">Documentation Index</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/resolvejs" target="_blank" rel="noreferrer noopener">Stack Overflow</a><a href="https://twitter.com/resolvejs" target="_blank" rel="noreferrer noopener">Twitter</a><a href="https://www.facebook.com/resolvejs/" target="_blank" rel="noreferrer noopener">Facebook</a></div><div><h5>More</h5><a href="https://github.com/reimagined/resolve">GitHub</a><a class="github-button" href="https://github.com/reimagined/resolve" data-icon="octicon-star" data-count-href="/reimagined/resolve/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2019 Developer Express, Inc</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/resolve/docs/introduction"><span class="arrow-prev">← </span><span>Introduction</span></a><a class="docs-next button" href="/resolve/docs/app-structure"><span class="function-name-prevnext">reSolve App Structure</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#table-of-contents">Table of Contents</a></li><li><a href="#lesson-1---create-a-new-resolve-application"><strong>Lesson 1</strong> - Create a New reSolve Application</a></li><li><a href="#lesson-2---write-side---add-a-list-item"><strong>Lesson 2</strong> - Write side - Add a List Item</a><ul class="toc-headings"><li><a href="#creating-an-aggregate">Creating an Aggregate</a></li><li><a href="#sending-commands-to-an-aggregate">Sending Commands to an Aggregate</a></li><li><a href="#performing-validation">Performing Validation</a></li></ul></li><li><a href="#lesson-3---read-side---create-a-view-model-to-query-list-items"><strong>Lesson 3</strong> - Read side - Create a View Model to Query List Items</a><ul class="toc-headings"><li><a href="#add-a-view-model">Add a View Model</a></li><li><a href="#query-a-view-model-via-http-api">Query a View Model via HTTP API</a></li></ul></li><li><a href="#lesson-4---frontend---display-view-model-data-in-the-browser"><strong>Lesson 4</strong> - Frontend - Display View Model Data in the Browser</a><ul class="toc-headings"><li><a href="#implement-a-react-frontend">Implement a React Frontend</a></li></ul></li><li><a href="#lesson-5---frontend---enable-data-editing"><strong>Lesson 5</strong> - Frontend - Enable Data Editing</a><ul class="toc-headings"><li><a href="#modify-backend-functionality">Modify Backend Functionality</a></li><li><a href="#access-aggregate-commands-on-frontend">Access Aggregate Commands on Frontend</a></li><li><a href="#implement-data-editing-ui">Implement Data Editing UI</a></li></ul></li><li><a href="#lesson-6---frontend---support-multiple-shopping-lists"><strong>Lesson 6</strong> - Frontend - Support Multiple Shopping Lists</a><ul class="toc-headings"><li><a href="#implement-a-shopping-lists-read-model">Implement a Shopping Lists Read Model</a></li><li><a href="#query-a-read-model-through-http-api">Query a Read Model Through HTTP API</a></li><li><a href="#implement-client-ui">Implement Client UI</a></li><li><a href="#support-optimistic-ui-updates">Support Optimistic UI Updates</a></li></ul></li><li><a href="#lesson-7---functionality-enhancements"><strong>Lesson 7</strong> - Functionality Enhancements</a><ul class="toc-headings"><li><a href="#modify-the-backend">Modify the Backend</a></li><li><a href="#modify-the-frontend">Modify the Frontend</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/resolve/" class="nav-home"><img src="/resolve/img/resolve.svg" alt="reSolve" width="66" height="58"/></a><div><h5>Docs</h5><a href="/resolve/docs/">Documentation Index</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/resolvejs" target="_blank" rel="noreferrer noopener">Stack Overflow</a><a href="https://twitter.com/resolvejs" target="_blank" rel="noreferrer noopener">Twitter</a><a href="https://www.facebook.com/resolvejs/" target="_blank" rel="noreferrer noopener">Facebook</a></div><div><h5>More</h5><a href="https://github.com/reimagined/resolve">GitHub</a><a class="github-button" href="https://github.com/reimagined/resolve" data-icon="octicon-star" data-count-href="/reimagined/resolve/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2020 Developer Express, Inc</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;
