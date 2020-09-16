@@ -79,24 +79,32 @@ jobs:
 
       - name: Publish temp packages
         run: |
-          echo "publishing current repo"
-
+          echo "installing packages and building the repository"
+          yarn
 
       - name: Prepare test application
         run: |
           test_app_dir=$(mktemp -d -t test-app-XXXXXXXXX)
           echo "::set-env name=test_app_dir::${test_app_dir}"
           cp -rf ./functional-tests/app/* ${test_app_dir}
-          echo "installing packages and building the repository"
-          yarn
           echo "installing test app packages"
           cd ${test_app_dir}
           yarn
 
+      - id: deploy
+        name: Deploy test app to the cloud
+        uses: ./.github/actions/deploy
+        with:
+          app_directory: {{ env.test_app_dir }}
+          generate_app_name: true
+          resolve_api_url: https://api.resolve.sh
+          resolve_user: {{ secrets.RESOLVE_CLOUD_USER }}
+          resolve_token: {{ secrets.RESOLVE_CLOUD_TOKEN }}
+
       - name: Check
         run: |
-          ls
-          ls ${test_app_dir}
-
-#      - uses:  ./.github/actions/deploy
+          echo {{ steps.deploy.outputs.deployment_id }}
+          echo {{ steps.deploy.outputs.app_name }}
+          echo {{ steps.deploy.outputs.app_url }}
+          echo {{ steps.deploy.outputs.app_runtime }}
 
