@@ -77,7 +77,7 @@ try {
     ? inputAppDir
     : path.join(process.cwd(), inputAppDir)
 
-  const resolveCloud = args => execResolveCloud(appDir, args)
+  const resolveCloud = (args, stdio) => execResolveCloud(appDir, args, stdio)
 
   const inputAppName = core.getInput('app_name')
   const generateName = isTrue(core.getInput('generate_app_name'))
