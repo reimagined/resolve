@@ -1,0 +1,11 @@
+name: resolve-cloud deploy
+description: deploying an applicaiton to reSolve cloud
+inputs:
+  APP_DIRECTORY:
+    description: target application directory
+    required: true
+
+runs:
+  using: 'node12'
+  main: 'index.js'
+  post: 'cleanup.js'
