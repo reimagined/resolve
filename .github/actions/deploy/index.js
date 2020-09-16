@@ -60,9 +60,6 @@ const toObject = tableOutput => {
 
 
 const describeApp = (appName, resolveCloud) => {
-  console.debug(`retrieving deployment list`)
-  console.log(toTable(resolveCloud('ls').toString()))
-
   const deployment = toTable(resolveCloud('ls').toString()).find(entry => entry.name === appName)
   if (!deployment) {
     console.error(`deployment with name (${appName}) not found with resolve-cloud ls`)
