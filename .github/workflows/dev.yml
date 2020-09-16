@@ -78,7 +78,8 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Publish temp packages
-          run: |
+        run: |
+          echo "publishing current repo"
 
 
       - name: Clone test application
