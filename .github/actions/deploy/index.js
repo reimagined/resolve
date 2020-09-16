@@ -42,14 +42,14 @@ const toObject = tableOutput => {
 
 const describeApp = (appName) => {
   console.debug(`retrieving deployment list`)
-  const deployment = toTable(execSync('resolve-cloud ls').toString()).find(entry => entry.name === appName)
+  const deployment = toTable(execSync('yarn resolve-cloud ls').toString()).find(entry => entry.name === appName)
   if (!deployment) {
     console.error(`deployment with name (${appName}) not found with resolve-cloud ls`)
     return null
   }
 
   console.debug(`deployment list arrived, retrieving description`)
-  const description = toObject(execSync(`resolve-cloud describe ${deployment.id}`).toString())
+  const description = toObject(execSync(`yarn resolve-cloud describe ${deployment.id}`).toString())
   if (!description) {
     console.error(`deployment ${deployment.id} not found with resolve-cloud describe`)
     return null
@@ -92,7 +92,7 @@ try {
 
   console.debug(`deploying application to the cloud`)
 
-  execSync(`resolve-cloud deploy ${targetAppName ? `--name ${targetAppName}` : ''} ${customArgs}`, {
+  execSync(`yarn resolve-cloud deploy ${targetAppName ? `--name ${targetAppName}` : ''} ${customArgs}`, {
     cwd: appDir
   })
 
