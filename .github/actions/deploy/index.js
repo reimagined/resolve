@@ -23,9 +23,9 @@ const makeResolveRC = (appDir, apiUrl, user, token) => {
   }))
 }
 
-const execResolveCloud = (appDir, args) => execSync(`yarn resolve-cloud ${args}`, {
+const execResolveCloud = (appDir, args, stdio = 'pipe') => execSync(`yarn resolve-cloud ${args}`, {
   cwd: appDir,
-  stdio: 'inherit'
+  stdio
 })
 
 const toTable = tableOutput => {
@@ -99,7 +99,7 @@ try {
 
   console.debug(`deploying application to the cloud`)
 
-  resolveCloud(`deploy ${targetAppName ? `--name ${targetAppName}` : ''} ${customArgs}`)
+  resolveCloud(`deploy ${targetAppName ? `--name ${targetAppName}` : ''} ${customArgs}`, 'inherit')
 
   console.debug(`retrieving deployed application metadata`)
 
