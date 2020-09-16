@@ -93,7 +93,8 @@ try {
   console.debug(`deploying application to the cloud`)
 
   execSync(`yarn resolve-cloud deploy ${targetAppName ? `--name ${targetAppName}` : ''} ${customArgs}`, {
-    cwd: appDir
+    cwd: appDir,
+    stdio: 'inherit'
   })
 
   console.debug(`retrieving deployed application metadata`)

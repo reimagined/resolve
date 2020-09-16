@@ -101,6 +101,7 @@ jobs:
           resolve_api_url: https://api.resolve.sh
           resolve_user: ${{ secrets.RESOLVE_CLOUD_USER }}
           resolve_token: ${{ secrets.RESOLVE_CLOUD_TOKEN }}
+          deploy_args: --verbosity=debug
 
       - name: Check
         run: |
