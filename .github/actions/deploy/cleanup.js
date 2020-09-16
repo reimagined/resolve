@@ -1,16 +1,12 @@
 const core = require('@actions/core')
 const { execSync } = require('child_process')
 
-const deploymentId = core.getState('deploymentId')
-const cwd = core.getState('cwd')
-const RESOLVE_API_URL = core.getState('RESOLVE_API_URL')
+const deploymentId = core.getState('deploy-action-deployment-id')
+const appDir = core.getState('deploy-action-app-dir')
 
 try {
-  execSync(`yarn resolve-cloud remove ${deploymentId}`, {
-    cwd,
-    env: {
-      RESOLVE_API_URL,
-    },
+  execSync(`resolve-cloud remove ${deploymentId}`, {
+    cwd: appDir,
     stdio: 'inherit',
   })
 } catch (error) {
