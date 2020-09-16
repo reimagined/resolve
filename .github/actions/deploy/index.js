@@ -105,8 +105,8 @@ try {
   core.setOutput('app_runtime', appRuntime)
   core.setOutput('app_url', appUrl)
 
-  core.saveState(`deploy-action-deployment-id`, deploymentId)
-  core.saveState(`deploy-action-app-dir`, appDir)
+  core.saveState(`deployment_id`, deploymentId)
+  core.saveState(`app_dir`, appDir)
 } catch (error) {
   core.setFailed(error)
 }

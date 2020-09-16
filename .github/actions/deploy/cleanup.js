@@ -1,8 +1,8 @@
 const core = require('@actions/core')
 const { execSync } = require('child_process')
 
-const deploymentId = core.getState('deploy-action-deployment-id')
-const appDir = core.getState('deploy-action-app-dir')
+const deploymentId = core.getState('deployment_id')
+const appDir = core.getState('app_dir')
 
 try {
   execSync(`resolve-cloud remove ${deploymentId}`, {
