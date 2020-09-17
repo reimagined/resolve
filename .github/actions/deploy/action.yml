@@ -31,6 +31,10 @@ inputs:
   npm_registry:
     description: private NPM registry
     required: false
+  local_mode:
+    description: action running on developer machine
+    required: false
+    default: 'false'
 
 outputs:
   deployment_id:

@@ -8,6 +8,11 @@ const isTrue = str => str && (str.toLowerCase() === 'true' || str.toLowerCase() 
 const randomize = str => `${str}-${Math.floor(Math.random() * 1000000)}`
 const readPackageJSON = appDir => JSON.parse(fs.readFileSync(path.resolve(appDir, 'package.json')).toString('utf-8'))
 const writePackageJSON = (appDir, content) => fs.writeFileSync(path.resolve(appDir, 'package.json'), JSON.stringify(content, null, 2))
+const ensureHttp = str => {
+  if (str)
+    return str.startsWith('http') ? str : `http://${str}`
+  return str
+}
 
 const makeResolveRC = (appDir, apiUrl, user, token) => {
   if (!apiUrl || !user || !token) {
@@ -68,15 +73,15 @@ const patchDependencies = (mask, version, readPackage, writePackage) => {
   console.log('Complete')
 }
 
-const writeNpmRc = registry => {
+const writeNpmRc = (appDir, registry) => {
   if (!registry) {
     throw Error(`wrong NPM registry settings`)
   }
 
-  const npmRc = path.resolve(os.homedir(), '.npmrc')
+  const npmRc = path.resolve(appDir, '.npmrc')
 
   console.debug(`writing ${npmRc}`)
-  fs.writeFileSync(npmRc, `registry=http://${registry}\n`)
+  fs.writeFileSync(npmRc, `registry=${registry}\n`)
 }
 
 const execResolveCloud = (appDir, args, stdio = 'pipe') => execSync(`yarn --silent resolve-cloud ${args}`, {
@@ -152,17 +157,22 @@ try {
 
   const resolveVersion = core.getInput('resolve_version')
   if (resolveVersion) {
-    patchDependencies('(?!resolve-cloud-common$)(resolve-.*$)', resolveVersion)
+    patchDependencies(
+      '(?!resolve-cloud-common$)(?!resolve-cloud$)(resolve-.*$)',
+      resolveVersion,
+      readAppPackage,
+      writeAppPackage
+    )
   }
 
-  const npmRegistry = core.getInput('npm_registry')
+  const npmRegistry = ensureHttp(core.getInput('npm_registry'))
   if (npmRegistry) {
-    writeNpmRc(npmRegistry)
+    writeNpmRc(appDir, npmRegistry)
   }
 
-  console.log('installing packages')
+  console.log(`installing packages within ${appDir}`)
 
-  execSync('yarn', {
+  execSync('yarn install --frozen-lockfile', {
     cwd: appDir,
     stdio: 'inherit'
   })
@@ -181,13 +191,21 @@ try {
   console.debug(`target application path: ${appDir}`)
   console.debug(`target application name: ${targetAppName}`)
 
-  makeResolveRC(appDir, core.getInput('resolve_api_url'), core.getInput('resolve_user'), core.getInput('resolve_token'))
+  const localMode = isTrue(core.getInput('local_mode'))
+
+  if (!localMode) {
+    makeResolveRC(appDir, core.getInput('resolve_api_url'), core.getInput('resolve_user'), core.getInput('resolve_token'))
+  }
 
   const customArgs = core.getInput('deploy_args')
 
   console.debug(`deploying application to the cloud`)
 
-  resolveCloud(`deploy ${targetAppName ? `--name ${targetAppName}` : ''} ${customArgs}`, 'inherit')
+  let baseArgs = ''
+  baseArgs += targetAppName ? ` --name ${targetAppName}` : ''
+  baseArgs += npmRegistry ? ` --npm-registry ${npmRegistry}` : ''
+
+  resolveCloud(`deploy ${baseArgs} ${customArgs}`, 'inherit')
 
   console.debug(`retrieving deployed application metadata`)
 

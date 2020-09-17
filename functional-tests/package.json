@@ -19,11 +19,13 @@
     "nanoid": "3.1.12",
     "lodash": "4.17.20",
     "commander": "6.1.0",
-    "consola": "2.15.0"
+    "consola": "2.15.0",
+    "semver": "7.3.2"
   },
   "devDependencies": {
     "@types/fs-extra": "9.0.1",
     "@types/isomorphic-fetch": "0.0.35",
-    "@types/nanoid": "2.1.0"
+    "@types/nanoid": "2.1.0",
+    "@types/semver": "7.3.4"
   }
 }
