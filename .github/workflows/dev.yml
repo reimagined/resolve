@@ -83,7 +83,7 @@ jobs:
           yarn
 
       - name: Publish to private repository
-        using: ./.github/actions/publish
+        uses: ./.github/actions/publish
         with:
           npm_registry: ${{ secrets.PRIVATE_NPM_REGISTRY }}
           npm_token: ${{ secrets.PRIVATE_NPM_TOKEN }}
