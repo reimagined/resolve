@@ -1,5 +1,6 @@
 const core = require('@actions/core')
 const { execSync } = require('child_process')
+const path = require('path')
 
 const isTrue =
     str => str && ['yes', 'true', '1'].includes(str.toLowerCase())
