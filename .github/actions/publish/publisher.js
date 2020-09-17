@@ -33,7 +33,7 @@ if (view !== '') {
 
 console.debug(`bumping to version ${version}`)
 packageJson.version = version
-fs.writeFileSync('./package.json', packageJson)
+fs.writeFileSync('./package.json', JSON.stringify(packageJson, null, 2))
 
 console.debug(`publishing with tag ${tag}`)
 
