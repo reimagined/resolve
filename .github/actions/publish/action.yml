@@ -7,8 +7,11 @@ inputs:
   npm_token:
     description: NPM registry authentication token
     required: true
+  release_type:
+    description: release type specifier (specify 'release' to use version as is)
+    required: true
   version:
-    description: override packages version
+    description: packages version (specify 'current' to use version from package.json)
     required: true
   tag:
     description: packages tag

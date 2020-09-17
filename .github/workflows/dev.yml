@@ -77,36 +77,38 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Publish temp packages
+      - name: Install & Build
         run: |
           echo "installing packages and building the repository"
           yarn
 
-      - name: Prepare test application
-        run: |
-          test_app_dir=$(mktemp -d -t test-app-XXXXXXXXX)
-          echo "::set-env name=test_app_dir::${test_app_dir}"
-          cp -rf ./functional-tests/app/. ${test_app_dir}
-          echo "installing test app packages"
-          cd ${test_app_dir}
-          rm -rf node_modules
-          yarn
-
-      - id: deploy
-        name: Deploy test app to the cloud
-        uses: ./.github/actions/deploy
+      - name: Publish to private repository
+        using: ./.github/actions/publish
         with:
-          app_directory: ${{ env.test_app_dir }}
-          generate_app_name: true
-          resolve_api_url: https://api.resolve.sh
-          resolve_user: ${{ secrets.RESOLVE_CLOUD_USER }}
-          resolve_token: ${{ secrets.RESOLVE_CLOUD_TOKEN }}
-          deploy_args: --verbosity=debug
+          npm_registry: ${{ secrets.PRIVATE_NPM_REGISTRY }}
+          npm_token: ${{ secrets.PRIVATE_NPM_TOKEN }}
+          version: ${{ github.sha }}
+          release_type: cloud-test
+          tag: cloud-test
+          unpublish: true
 
-      - name: Check
-        run: |
-          echo ${{ steps.deploy.outputs.deployment_id }}
-          echo ${{ steps.deploy.outputs.app_name }}
-          echo ${{ steps.deploy.outputs.app_url }}
-          echo ${{ steps.deploy.outputs.app_runtime }}
-
+#      - name: Prepare test application
+#        run: |
+#          test_app_dir=$(mktemp -d -t test-app-XXXXXXXXX)
+#          echo "::set-env name=test_app_dir::${test_app_dir}"
+#          cp -rf ./functional-tests/app/. ${test_app_dir}
+#          echo "installing test app packages"
+#          cd ${test_app_dir}
+#          rm -rf node_modules
+#          yarn
+#
+#      - id: deploy
+#        name: Deploy test app to the cloud
+#        uses: ./.github/actions/deploy
+#        with:
+#          app_directory: ${{ env.test_app_dir }}
+#          generate_app_name: true
+#          resolve_api_url: https://api.resolve.sh
+#          resolve_user: ${{ secrets.RESOLVE_CLOUD_USER }}
+#          resolve_token: ${{ secrets.RESOLVE_CLOUD_TOKEN }}
+#          deploy_args: --verbosity=debug
