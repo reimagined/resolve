@@ -44,6 +44,9 @@ try {
 
   console.log('publishing the monorepo')
 
+  core.saveState('release_version', releaseVersion)
+  core.saveState('release_tag', tag)
+
   execSync(`npx oao all "node ${publisher} ${releaseVersion} ${tag}"`, {
     stdio: 'inherit'
   })

@@ -36,3 +36,11 @@ packageJson.version = version
 fs.writeFileSync('./package.json', packageJson)
 
 console.debug(`publishing with tag ${tag}`)
+
+try {
+  execSync(`npm publish --access=public --tag=${tag} --unsafe-perm`, {
+    stdio: 'inherit'
+  })
+} catch (e) {
+  console.warn(e)
+}
