@@ -15,8 +15,8 @@ const registerUser = async (userId: string) =>
     aggregateName: 'user',
     aggregateId: userId,
     payload: {
-      name: 'John Doe'
-    }
+      name: 'John Doe',
+    },
   })
 
 const waitForUserProfile = async (userId: string, data: object) =>
@@ -25,15 +25,15 @@ const waitForUserProfile = async (userId: string, data: object) =>
       name: 'users',
       resolver: 'profile',
       args: {
-        userId
-      }
+        userId,
+      },
     },
     {
       waitFor: {
         validator: (result: any) => isEqual(result.data, data),
         attempts: 5,
-        period: 300
-      }
+        period: 300,
+      },
     }
   )
 
@@ -48,6 +48,6 @@ test('execute read-model query and check the result', async () => {
   await registerUser(userId)
   await waitForUserProfile(userId, {
     userId,
-    profile: { name: 'John Doe' }
+    profile: { name: 'John Doe' },
   })
 })
