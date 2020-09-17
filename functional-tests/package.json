@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "local-api": "ts-node --files=true scripts/run.ts local-api"
+    "deploy": "ts-node --files=true scripts/run.ts deploy"
   },
   "dependencies": {
     "testcafe": "15.1.317922",
@@ -17,7 +17,9 @@
     "ts-node": "9.0.0",
     "resolve-client": "0.25.7",
     "nanoid": "3.1.12",
-    "lodash": "4.17.20"
+    "lodash": "4.17.20",
+    "commander": "6.1.0",
+    "consola": "2.15.0"
   },
   "devDependencies": {
     "@types/fs-extra": "9.0.1",

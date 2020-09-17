@@ -4,9 +4,9 @@ const os = require('os')
 const fs = require('fs')
 const path = require('path')
 
-const isTrue = str => str && (str.toLowerCase() === 'true' || str.toLowerCase() === 'yes' || str.toLowerCase() === '1')
-
-const readPackageJSON = () => JSON.parse(fs.readFileSync('./package.json').toString('utf-8'))
+const readPackageJSON = () => JSON.parse(
+  fs.readFileSync('./package.json').toString('utf-8')
+)
 
 const getVersion = (seedOrVersion, releaseType) => {
   seedOrVersion = seedOrVersion || (new Date().toISOString()).replace(/[:.]/gi, '-')

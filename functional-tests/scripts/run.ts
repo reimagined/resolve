@@ -1,163 +1,54 @@
+/* eslint-disable spellcheck/spell-checker */
+import fs from 'fs'
 import fsEx from 'fs-extra'
-import childProcess from 'child_process'
 import path from 'path'
-import fetch from 'isomorphic-fetch'
-import { getInstallations } from 'testcafe-browser-tools'
+import os from 'os'
+import { program } from 'commander'
+import log from 'consola'
 
-const buildDir = 'dist'
-const readyUrl = 'query-is-ready'
-
-const command = process.argv[2]
-
-const cloudDevHost =
-  process.env.RESOLVE_CLOUD_DEV_HOST || 'https://api.resolve-dev.ml/v0'
-const cloudProdHost =
-  process.env.RESOLVE_CLOUD_PROD_HOST || 'https://api.resolve.sh/v0'
+const verbosityLevels: { [key: string]: number } = {
+  silent: -1,
+  normal: 3,
+  debug: 4,
+  trace: 5,
+}
 
 const resolveDir = (dir: string): string => path.resolve(process.cwd(), dir)
 
-const prepare = async () => {
-  await fsEx.emptyDir(resolveDir(buildDir))
-  await fsEx.copy(resolveDir('app'), resolveDir(buildDir))
-  await fsEx.remove(resolveDir(`${buildDir}/node_modules`))
+const prepareCloudBundle = async () => {
+  const appDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-app-'))
+  log.info(`preparing cloud app bundle in ${appDir}`)
+
+  await fsEx.emptyDir(appDir)
+  await fsEx.copy(resolveDir('app'), appDir)
+  await fsEx.remove(path.resolve(appDir, 'node_modules'))
+
+  return appDir
 }
 
-/*
-const buildLocal = () => childProcess.spawn(
-      'yarn', ['build'],
-      {
-        cwd: resolveDir(buildDir)
-      }
-  })
-*/
+const deploy = async ({ url, publish }: { url: string, publish: boolean }) => {
+  log.info(`#1: deploying test application to ${url}`)
+  const appDir = await prepareCloudBundle()
 
-const runJest = async (options: { config: string }): Promise<any> => {
-  const { config } = options
-  console.log(`executing jest...`)
-  return childProcess.execSync(
-    [
-      `jest`,
-      `--config ${config}`
-    ].join(' '),
-    { stdio: 'inherit' }
+  if (publish) {
+    log.info(`publishing current repo to `)
+  }
+}
+
+program.option('--verbosity <string>', 'verbosity level', 'debug')
+
+program
+  .command('deploy')
+  .option(
+    '-p, --publish <boolean>',
+    'publish current packages to private repository',
+    false
   )
-}
+  .option('-u, --url <string>', 'cloud endpoint url', 'https://api.resolve.sh')
+  .action(deploy)
 
-const runTestCafe = async (options: {
-  testsDir: string
-  browser: string
-  customArgs: string[],
-  timeout: number
-}): Promise<any> => {
-  let { testsDir, browser, customArgs, timeout } = options
-  browser = browser != null ? browser : Object.keys(await getInstallations())[0]
-  timeout = timeout != null ? timeout : 20000
-  customArgs = customArgs != null ? customArgs : []
+program.on('option:verbosity', () => {
+  log.level = verbosityLevels[program.verbosity] || 3
+})
 
-  try {
-    return childProcess.execSync(
-      [
-        `testcafe ${browser}`,
-        `${testsDir}`,
-        `--app-init-delay ${timeout}`,
-        `--selector-timeout ${timeout}`,
-        `--assertion-timeout ${timeout}`,
-        `--page-load-timeout ${timeout}`,
-        browser === 'remote' ? ' --qr-code' : '',
-        ...customArgs
-      ].join(' '),
-      { stdio: 'inherit' }
-    )
-  } catch (e) {
-    throw ''
-  }
-}
-
-const spawnLocal = async (): Promise<any> => {
-  const sp = childProcess.spawn('yarn', ['dev'], {
-    cwd: resolveDir('app')
-  })
-  sp.stdout.on('data', data => {
-    // eslint-disable-next-line no-console
-    console.log(data.toString())
-  })
-
-  sp.stderr.on('data', data => {
-    // eslint-disable-next-line no-console
-    console.error(data.toString())
-  })
-
-  sp.on('close', code => {
-    // eslint-disable-next-line no-console
-    console.log(`child process exited with code ${code}`)
-  })
-
-  let error: any = null
-  const url = `http://0.0.0.0:3000/api/${readyUrl}`
-  while (true) {
-    try {
-      const response = await fetch(url)
-
-      const result = await response.text()
-      if (result !== 'ok') {
-        error = [
-          `${response.status}: ${response.statusText}`,
-          `${result}`
-        ].join('\n')
-        // eslint-disable-next-line no-console
-        console.log(error)
-      }
-      break
-    } catch (e) {}
-    await new Promise(resolve => setTimeout(resolve, 3000))
-  }
-  return new Promise((resolve, reject) => {
-    if (error) {
-      sp.kill()
-      reject(error)
-    } else {
-      resolve(sp)
-    }
-  })
-}
-
-void (async () => {
-  switch (command) {
-    case 'local-api': {
-      const sp = await spawnLocal()
-      try {
-        await runJest({
-          config: resolveDir('jest.config-api.js')
-        })
-      } finally {
-        console.log('killing the app')
-        sp.kill('SIGINT')
-      }
-      break
-    }
-
-    case 'local-testcafe': {
-      await spawnLocal()
-      break
-    }
-
-    case 'local-all': {
-      //await buildLocal()
-      break
-    }
-
-    case 'cloud-api': {
-      await prepare()
-      break
-    }
-
-    case 'cloud-testcafe': {
-      await prepare()
-      break
-    }
-
-    default: {
-      throw new Error('Unknown target runtime')
-    }
-  }
-})()
+program.parse(process.argv)

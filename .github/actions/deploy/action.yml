@@ -25,6 +25,12 @@ inputs:
   resolve_token:
     description: reSolve cloud service refresh token
     required: true
+  resolve_version:
+    description: reSolve framework version override
+    required: false
+  npm_registry:
+    description: private NPM registry
+    required: false
 
 outputs:
   deployment_id:

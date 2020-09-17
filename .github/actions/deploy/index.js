@@ -6,6 +6,8 @@ const path = require('path')
 
 const isTrue = str => str && (str.toLowerCase() === 'true' || str.toLowerCase() === 'yes' || str.toLowerCase() === '1')
 const randomize = str => `${str}-${Math.floor(Math.random() * 1000000)}`
+const readPackageJSON = appDir => JSON.parse(fs.readFileSync(path.resolve(appDir, 'package.json')).toString('utf-8'))
+const writePackageJSON = (appDir, content) => fs.writeFileSync(path.resolve(appDir, 'package.json'), JSON.stringify(content, null, 2))
 
 const makeResolveRC = (appDir, apiUrl, user, token) => {
   if (!apiUrl || !user || !token) {
@@ -21,6 +23,60 @@ const makeResolveRC = (appDir, apiUrl, user, token) => {
       refresh_token: token
     }
   }))
+}
+
+const patchDependencies = (mask, version, readPackage, writePackage) => {
+  if (!mask) {
+    throw Error('no package mask specified')
+  }
+
+  if (!version) {
+    throw Error('no new version specified')
+  }
+
+  const regExp = new RegExp('^' + mask)
+  const packageJSON = readPackage()
+
+  if (!packageJSON) {
+    console.log(`No package.json file`);
+    return;
+  }
+
+  const sections = [
+    'dependencies',
+    'devDependencies',
+    'peerDependencies',
+    'optionalDependencies'
+  ]
+
+  sections.forEach(section => {
+    if (!packageJSON[section]) {
+      console.log(`No ${section} in package.json`)
+      return;
+    }
+
+    Object.keys(packageJSON[section]).forEach(function(lib) {
+      if (regExp.test(lib)) {
+        console.log(`${section}.${lib} (${packageJSON[section][lib]} -> ${version})`)
+        packageJSON[section][lib] = version
+      }
+    });
+  })
+
+  console.log('Patching package.json')
+  writePackage(packageJSON)
+  console.log('Complete')
+}
+
+const writeNpmRc = registry => {
+  if (!registry) {
+    throw Error(`wrong NPM registry settings`)
+  }
+
+  const npmRc = path.resolve(os.homedir(), '.npmrc')
+
+  console.debug(`writing ${npmRc}`)
+  fs.writeFileSync(npmRc, `registry=http://${registry}\n`)
 }
 
 const execResolveCloud = (appDir, args, stdio = 'pipe') => execSync(`yarn --silent resolve-cloud ${args}`, {
@@ -90,14 +146,33 @@ try {
     ? inputAppDir
     : path.join(process.cwd(), inputAppDir)
 
+  const readAppPackage = () => readPackageJSON(appDir)
+  const writeAppPackage = content => writePackageJSON(appDir, content)
   const resolveCloud = (args, stdio) => execResolveCloud(appDir, args, stdio)
+
+  const resolveVersion = core.getInput('resolve_version')
+  if (resolveVersion) {
+    patchDependencies('(?!resolve-cloud-common$)(resolve-.*$)', resolveVersion)
+  }
+
+  const npmRegistry = core.getInput('npm_registry')
+  if (npmRegistry) {
+    writeNpmRc(npmRegistry)
+  }
+
+  console.log('installing packages')
+
+  execSync('yarn', {
+    cwd: appDir,
+    stdio: 'inherit'
+  })
 
   const inputAppName = core.getInput('app_name')
   const generateName = isTrue(core.getInput('generate_app_name'))
 
   let targetAppName = ''
   if (generateName) {
-    const source = inputAppName !== '' ? inputAppName : JSON.parse(fs.readFileSync(path.resolve(appDir, 'package.json')).toString('utf-8')).name
+    const source = inputAppName !== '' ? inputAppName : readAppPackage().name
     targetAppName = randomize(source)
   } else if (inputAppName !== '') {
     targetAppName = inputAppName
