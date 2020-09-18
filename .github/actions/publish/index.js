@@ -4,15 +4,17 @@ const os = require('os')
 const fs = require('fs')
 const path = require('path')
 
-const readPackageJSON = () => JSON.parse(
-  fs.readFileSync('./package.json').toString('utf-8')
-)
+const readPackageJSON = () =>
+  JSON.parse(fs.readFileSync('./package.json').toString('utf-8'))
 
 const getVersion = (seedOrVersion, releaseType) => {
-  seedOrVersion = seedOrVersion || (new Date().toISOString()).replace(/[:.]/gi, '-')
+  seedOrVersion =
+    seedOrVersion || new Date().toISOString().replace(/[:.]/gi, '-')
   releaseType = releaseType || 'canary'
   if (releaseType === 'release') {
-    return seedOrVersion === 'current' ? readPackageJSON().version : seedOrVersion
+    return seedOrVersion === 'current'
+      ? readPackageJSON().version
+      : seedOrVersion
   }
   return `${readPackageJSON().version}-${releaseType}.${seedOrVersion}`
 }
@@ -25,10 +27,11 @@ const writeNpmRc = (registry, token) => {
   const npmRc = path.resolve(os.homedir(), '.npmrc')
 
   console.debug(`writing ${npmRc}`)
-  fs.writeFileSync(npmRc,
+  fs.writeFileSync(
+    npmRc,
     `//${registry}/:_authToken=${token}\n` +
-    `//${registry}/:always-auth=true\n` +
-    `registry=http://${registry}\n`
+      `//${registry}/:always-auth=true\n` +
+      `registry=http://${registry}\n`
   )
 }
 
@@ -40,7 +43,10 @@ try {
   const tag = core.getInput('tag')
 
   const releaseVersion = getVersion(version, releaseType)
-  const publisher = path.resolve(process.cwd(), '.github/actions/publish/publisher')
+  const publisher = path.resolve(
+    process.cwd(),
+    '.github/actions/publish/publisher'
+  )
 
   console.log('publishing the monorepo')
 
@@ -48,7 +54,7 @@ try {
   core.saveState('release_tag', tag)
 
   execSync(`npx oao all "node ${publisher} ${releaseVersion} ${tag}"`, {
-    stdio: 'inherit'
+    stdio: 'inherit',
   })
 
   console.log('done')

@@ -12,12 +12,11 @@ if (!tag) {
   throw Error(`tag not specified`)
 }
 
-const packageJson = JSON.parse(fs.readFileSync('./package.json').toString('utf-8'))
+const packageJson = JSON.parse(
+  fs.readFileSync('./package.json').toString('utf-8')
+)
 
-const {
-  name,
-  private: restricted
-} = packageJson
+const { name, private: restricted } = packageJson
 
 if (restricted) {
   console.warn(`skipping publishing of private package ${name}`)
@@ -39,7 +38,7 @@ console.debug(`publishing with tag ${tag}`)
 
 try {
   execSync(`npm publish --access=public --tag=${tag} --unsafe-perm`, {
-    stdio: 'inherit'
+    stdio: 'inherit',
   })
 } catch (e) {
   console.warn(e)
