@@ -7,7 +7,7 @@
     "cleanup": "ts-node --files=true scripts/run.ts clean",
     "run-test": "ts-node --files=true scripts/run.ts test",
     "test": "echo skipping",
-    "test:integration": "skipping"
+    "test:integration": "echo skipping"
   },
   "dependencies": {
     "testcafe": "1.9.1",
