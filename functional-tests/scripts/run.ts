@@ -16,6 +16,8 @@ const verbosityLevels: { [key: string]: number } = {
   trace: 5,
 }
 
+log.level = verbosityLevels.debug
+
 enum TestBundle {
   api = 'api',
   testcafe = 'testcafe',
@@ -70,6 +72,20 @@ const prepareCloudBundle = async () => {
 
   return appDir
 }
+
+type ActionOutputs = { [key: string]: string }
+
+const extractActionOutput = (source: string): ActionOutputs =>
+  source
+    .split(os.EOL)
+    .map((row) => row.trim())
+    .filter((row) => row.startsWith('::set-output'))
+    .map((row) => row.split(' ')[1].trim())
+    .reduce((result, pair) => {
+      const [name, value] = pair.split('::')
+      result[name.replace('name=', '')] = value
+      return result
+    }, {} as any)
 
 const deploy = async ({
   framework,
@@ -126,17 +142,27 @@ const deploy = async ({
     }
   }
 
-  log.info(`executing deploy action`)
+  log.info(`executing deploy action (long running)`)
   const deployAction = resolveDir('../.github/actions/deploy')
 
   try {
-    execSync(`node ${deployAction}/index.js`, {
-      stdio: 'inherit',
+    const output = execSync(`node ${deployAction}/index.js`, {
+      stdio: 'pipe',
       env: {
         ...process.env,
         ...env,
       },
-    })
+    }).toString()
+
+    log.debug(`deploy action output:`)
+    log.debug(output)
+    log.debug(`processing action output`)
+    const outputs = extractActionOutput(output)
+    log.debug(output)
+    const outputFile = resolveDir('.deployment.json')
+    log.debug(`writing outputs to ${outputFile}`)
+    fs.writeFileSync(outputFile, JSON.stringify(outputs, null, 2))
+    log.info(`done`)
   } catch (e) {
     log.error(e)
     process.exit(1)
@@ -162,7 +188,7 @@ const runTests = async (bundle: TestBundle) => {
   }
 }
 
-program.option('--verbosity <string>', 'verbosity level', 'debug')
+program.option('--verbosity <string>', 'verbosity level')
 
 program
   .command('deploy')
