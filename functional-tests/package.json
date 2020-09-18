@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "deploy": "ts-node --files=true scripts/run.ts deploy",
+    "cleanup": "ts-node --files=true scripts/run.ts clean",
     "test": "ts-node --files=true scripts/run.ts test"
   },
   "dependencies": {
