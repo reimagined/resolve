@@ -214,11 +214,9 @@ const clean = async ({ deployment }: { deployment: string }) => {
 type TestBundleOptions = {
   url?: string
   deployment?: string
-  testcafeOptions?: {
-    browser?: string
-    args?: string[]
-    timeout?: number
-  }
+  'testcafe-browser'?: string
+  'testcafe-args'?: string[]
+  'testcafe-timeout'?: number
 }
 
 const getTargetUrl = (options: TestBundleOptions): string => {
@@ -282,14 +280,14 @@ const runTestcafeTests = async (options: TestBundleOptions) => {
     log.debug(`executing testcafe runner`)
 
     const browser =
-      options.testcafeOptions?.browser ??
+      options['testcafe-browser'] ??
       Object.keys(await getInstallations())[0]
     log.debug(`browser set to: ${browser}`)
 
-    const timeout = options.testcafeOptions?.timeout ?? 2000
+    const timeout = options['testcafe-timeout'] ?? 2000
     log.debug(`timeout set to: ${timeout}`)
 
-    const args = options.testcafeOptions?.args ?? []
+    const args = options['testcafe-args'] ?? []
     log.debug(`args set to: ${args}`)
 
     log.debug(`executing Testcafe runner`)
