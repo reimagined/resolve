@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "deploy": "ts-node --files=true scripts/run.ts deploy"
+    "deploy": "ts-node --files=true scripts/run.ts deploy",
+    "test": "ts-node --files=true scripts/run.ts test"
   },
   "dependencies": {
     "testcafe": "15.1.317922",
