@@ -6,7 +6,8 @@
   "scripts": {
     "build": "babel-node ./run.js build",
     "cloud": "babel-node ./run.js cloud",
-    "dev": "babel-node ./run.js dev"
+    "dev": "babel-node ./run.js dev",
+    "test": "echo skipping"
   },
   "dependencies": {
     "@babel/node": "7.8.7",
