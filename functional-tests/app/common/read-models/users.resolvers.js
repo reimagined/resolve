@@ -6,9 +6,9 @@ export default {
       const { profile } = entry
       return {
         userId,
-        profile
+        profile,
       }
     }
     return null
-  }
+  },
 }

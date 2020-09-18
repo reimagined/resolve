@@ -8,8 +8,8 @@ export default {
     return {
       type: USER_REGISTERED,
       payload: {
-        name: command.payload.name
-      }
+        name: command.payload.name,
+      },
     }
-  }
+  },
 }

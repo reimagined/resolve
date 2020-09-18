@@ -9,7 +9,7 @@ module.exports = {
   testPathIgnorePatterns: ['/node_modules/'],
   transform: {
     '^.+\\.js$': path.resolve(__dirname, 'jest.transform.js'),
-    '^.+\\.tsx?$': 'ts-jest'
+    '^.+\\.tsx?$': 'ts-jest',
   },
-  roots: ['<rootDir>/api']
+  roots: ['<rootDir>/api'],
 }
