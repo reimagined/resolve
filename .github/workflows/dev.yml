@@ -50,7 +50,7 @@ jobs:
         run: yarn test:e2e
 
   publish-dev:
-    needs: [smoke-test, e2e-macOS-test]
+    needs: [smoke-test]
     runs-on: ubuntu-latest
     continue-on-error: true
 
@@ -79,8 +79,6 @@ jobs:
     needs: [smoke-test, e2e-macOS-test]
     runs-on: ubuntu-latest
     continue-on-error: true
-
-    if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/'))
 
     steps:
       - uses: actions/checkout@v2
