@@ -92,21 +92,31 @@ jobs:
           tag: cloud-test
           unpublish: true
 
-#      - name: Prepare test application
-#        run: |
-#          test_app_dir=$(mktemp -d -t test-app-XXXXXXXXX)
-#          echo "::set-env name=test_app_dir::${test_app_dir}"
-#          cp -rf ./functional-tests/app/. ${test_app_dir}
-#          cd ${test_app_dir}
-#          rm -rf node_modules
-#
-#      - id: deploy
-#        name: Deploy test app to the cloud
-#        uses: ./.github/actions/deploy
-#        with:
-#          app_directory: ${{ env.test_app_dir }}
-#          generate_app_name: true
-#          resolve_api_url: https://api.resolve.sh
-#          resolve_user: ${{ secrets.RESOLVE_CLOUD_USER }}
-#          resolve_token: ${{ secrets.RESOLVE_CLOUD_TOKEN }}
-#          deploy_args: --verbosity=debug
+      - name: Prepare test application
+        run: |
+          test_app_dir=$(mktemp -d -t test-app-XXXXXXXXX)
+          echo "::set-env name=test_app_dir::${test_app_dir}"
+          cp -rf ./functional-tests/app/. ${test_app_dir}
+          cd ${test_app_dir}
+          rm -rf node_modules
+
+      - id: deploy
+        name: Deploy test app to the cloud
+        uses: ./.github/actions/deploy
+        with:
+          app_directory: ${{ env.test_app_dir }}
+          generate_app_name: true
+          resolve_api_url: https://api.resolve.sh
+          resolve_user: ${{ secrets.RESOLVE_CLOUD_USER }}
+          resolve_token: ${{ secrets.RESOLVE_CLOUD_TOKEN }}
+          deploy_args: --verbosity=debug
+
+      - name: API tests
+        run: |
+          cd functional-tests
+          yarn test api --url={{ steps.deploy.outputs.app_url }}
+
+      - name: Testcafe tests
+        run: |
+        cd functional-tests
+        yarn test testcafe --url={{ steps.deploy.outputs.app_url }}
