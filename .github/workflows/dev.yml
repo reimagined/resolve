@@ -120,8 +120,3 @@ jobs:
         run: |
           cd functional-tests
           yarn test testcafe --url=${{ steps.deploy.outputs.app_url }} --testcafe-browser=chrome --ci-mode
-      - uses: DevExpress/testcafe-action@latest
-        env:
-          RESOLVE_TESTCAFE_TESTS_TARGET_URL: ${{ steps.deploy.outputs.app_url }}
-        with:
-          args: "chrome functional-tests/testcafe"
