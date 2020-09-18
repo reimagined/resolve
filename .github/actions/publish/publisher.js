@@ -37,7 +37,7 @@ fs.writeFileSync('./package.json', JSON.stringify(packageJson, null, 2))
 console.debug(`publishing with tag ${tag}`)
 
 try {
-  execSync(`npm publish --access=public --tag=${tag} --unsafe-perm`, {
+  execSync(`npm publish --access=public --tag=${tag} --unsafe-perm --silent`, {
     stdio: 'inherit',
   })
 } catch (e) {
