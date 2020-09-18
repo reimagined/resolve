@@ -214,9 +214,10 @@ const clean = async ({ deployment }: { deployment: string }) => {
 type TestBundleOptions = {
   url?: string
   deployment?: string
-  'testcafe-browser'?: string
-  'testcafe-args'?: string
-  'testcafe-timeout'?: number
+  testcafeBrowser?: string
+  testcafeArgs?: string
+  testcafeTimeout?: number
+  ciMode: boolean
 }
 
 const getTargetUrl = (options: TestBundleOptions): string => {
@@ -246,7 +247,7 @@ const getTargetUrl = (options: TestBundleOptions): string => {
   }
 
   log.warn(`cannot determine target URL, fallback to localhost`)
-  return 'http://loclhost:3000'
+  return 'http://0.0.0.0:3000'
 }
 
 const runApiTests = async (options: TestBundleOptions) => {
@@ -280,20 +281,23 @@ const runTestcafeTests = async (options: TestBundleOptions) => {
     log.debug(`executing testcafe runner`)
 
     const browser =
-      options['testcafe-browser'] ??
-      Object.keys(await getInstallations())[0]
+      options.testcafeBrowser ?? Object.keys(await getInstallations())[0]
     log.debug(`browser set to: ${browser}`)
 
-    const timeout = options['testcafe-timeout'] ?? 2000
+    const timeout = options.testcafeTimeout ?? 2000
     log.debug(`timeout set to: ${timeout}`)
 
-    const args = options['testcafe-args'] ?? []
+    const args = options.testcafeArgs ?? []
     log.debug(`args set to: ${args}`)
+
+    const xvfbCmd = options.ciMode
+      ? `xvfb-run --server-args="-screen 0 1280x720x24" `
+      : ''
 
     log.debug(`executing Testcafe runner`)
     execSync(
       [
-        `npx testcafe ${browser}`,
+        `${xvfbCmd}node node_modules/testcafe/bin/testcafe ${browser}`,
         `${resolveDir('testcafe')}`,
         `--app-init-delay ${timeout}`,
         `--selector-timeout ${timeout}`,
@@ -349,6 +353,7 @@ program
 
 program
   .command('test <bundle>')
+  .option('--ci-mode', 'run within CI system')
   .option('-u, --url <string>', 'application endpoint')
   .option(
     '-d, --deployment <string>',

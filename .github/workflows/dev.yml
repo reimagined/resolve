@@ -70,7 +70,7 @@ jobs:
 #          ./ci/npm-patch-rc
 #          npx oao all "${SCRIPTS}/package-json-tools.js patch-dependencies '(?!resolve-cloud-common$)(resolve-.*$)' ${VERSION} && ${SCRIPTS}/publish-dev ${VERSION} nightly"
   cloud-test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     if: github.event_name == 'push'
 
@@ -119,7 +119,7 @@ jobs:
       - name: Testcafe tests
         run: |
           cd functional-tests
-          yarn test testcafe --url=${{ steps.deploy.outputs.app_url }} --testcafe-browser=chrome
+          yarn test testcafe --url=${{ steps.deploy.outputs.app_url }} --testcafe-browser=chrome --ci-mode
       - uses: DevExpress/testcafe-action@latest
         env:
           RESOLVE_TESTCAFE_TESTS_TARGET_URL: ${{ steps.deploy.outputs.app_url }}
