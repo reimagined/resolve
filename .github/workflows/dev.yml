@@ -117,7 +117,10 @@ jobs:
           yarn test api --url=${{ steps.deploy.outputs.app_url }}
 
       - name: Testcafe tests
-        uses: DevExpress/testcafe-action@latest
+        run: |
+          cd functional-tests
+          yarn test testcafe --url=${{ steps.deploy.outputs.app_url }} --testcafe-browser=chrome
+      - uses: DevExpress/testcafe-action@latest
         env:
           RESOLVE_TESTCAFE_TESTS_TARGET_URL: ${{ steps.deploy.outputs.app_url }}
         with:
