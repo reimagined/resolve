@@ -118,5 +118,5 @@ jobs:
 
       - name: Testcafe tests
         run: |
-        cd functional-tests
-        yarn test testcafe --url=${{ steps.deploy.outputs.app_url }}
+          cd functional-tests
+          yarn test testcafe --url=${{ steps.deploy.outputs.app_url }}
