@@ -114,9 +114,9 @@ jobs:
       - name: API tests
         run: |
           cd functional-tests
-          yarn test api --url={{ steps.deploy.outputs.app_url }}
+          yarn test api --url=${{ steps.deploy.outputs.app_url }}
 
       - name: Testcafe tests
         run: |
         cd functional-tests
-        yarn test testcafe --url={{ steps.deploy.outputs.app_url }}
+        yarn test testcafe --url=${{ steps.deploy.outputs.app_url }}
