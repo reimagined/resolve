@@ -35,7 +35,7 @@ jobs:
         run: yarn test:integration
 
   e2e-macOS-test:
-    needs: ['smoke-test']
+    needs: [smoke-test]
     runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
 
     if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/'))
@@ -50,7 +50,7 @@ jobs:
         run: yarn test:e2e
 
   publish-dev:
-    needs: ['smoke-test', 'e2e-macOS-test']
+    needs: [smoke-test, e2e-macOS-test]
     runs-on: ubuntu-latest
     continue-on-error: true
 
@@ -76,7 +76,7 @@ jobs:
           tag: nigtly
 
   cloud-test:
-    needs: ['smoke-test', 'e2e-macOS-test']
+    needs: [smoke-test, e2e-macOS-test]
     runs-on: ubuntu-latest
     continue-on-error: true
 
