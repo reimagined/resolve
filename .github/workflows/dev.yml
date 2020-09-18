@@ -117,7 +117,7 @@ jobs:
           yarn test api --url=${{ steps.deploy.outputs.app_url }}
 
       - name: Testcafe tests
-      - uses: DevExpress/testcafe-action@latest
+        uses: DevExpress/testcafe-action@latest
         env:
           RESOLVE_TESTCAFE_TESTS_TARGET_URL: ${{ steps.deploy.outputs.app_url }}
         with:
