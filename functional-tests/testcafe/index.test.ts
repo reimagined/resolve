@@ -1,15 +1,13 @@
 import { Selector } from 'testcafe'
 
-const host = process.env.HOST || 'localhost'
-const port = process.env.PORT || '3000'
-const MAIN_PAGE = `http://${host}:${port}`
+const targetUrl =
+  process.env.RESOLVE_TESTCAFE_TESTS_TARGET_URL || 'http://0.0.0.0:3000'
 
-// eslint-disable-next-line no-unused-expressions, no-undef
-fixture`Hello, world!`.beforeEach(async t => {
+fixture`Functional tests app`.beforeEach(async (t) => {
   await t.setNativeDialogHandler(() => true)
-  await t.navigateTo(MAIN_PAGE)
+  await t.navigateTo(targetUrl)
 })
 
-test('home page', async t => {
+test('home page', async (t) => {
   await t.expect(await Selector('h2').withText('Basic tests').exists).eql(true)
 })

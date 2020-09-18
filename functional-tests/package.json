@@ -8,8 +8,8 @@
     "test": "ts-node --files=true scripts/run.ts test"
   },
   "dependencies": {
-    "testcafe": "15.1.317922",
-    "testcafe-browser-tools": "2.0.13",
+    "testcafe": "1.8.8",
+    "testcafe-browser-tools": "^2.0.10",
     "isomorphic-fetch": "2.2.1",
     "fs-extra": "9.0.1",
     "@babel/core": "7.11.6",

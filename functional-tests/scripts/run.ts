@@ -8,6 +8,7 @@ import { program } from 'commander'
 import log from 'consola'
 import semver from 'semver'
 import { includes, findKey, startsWith, isEmpty } from 'lodash'
+import { getInstallations } from 'testcafe-browser-tools'
 
 const verbosityLevels: { [key: string]: number } = {
   silent: -1,
@@ -213,6 +214,11 @@ const clean = async ({ deployment }: { deployment: string }) => {
 type TestBundleOptions = {
   url?: string
   deployment?: string
+  testcafeOptions?: {
+    browser?: string
+    args?: string[]
+    timeout?: number
+  }
 }
 
 const getTargetUrl = (options: TestBundleOptions): string => {
@@ -267,12 +273,48 @@ const runApiTests = async (options: TestBundleOptions) => {
 }
 
 const runTestcafeTests = async (options: TestBundleOptions) => {
-  log.debug(`running WWW tier tests`)
+  try {
+    log.debug(`running WWW tier tests`)
 
-  const url = getTargetUrl(options)
+    const url = getTargetUrl(options)
 
-  log.debug(`target url ${url}`)
-  log.debug(`executing testcafe runner`)
+    log.debug(`target url ${url}`)
+    log.debug(`executing testcafe runner`)
+
+    const browser =
+      options.testcafeOptions?.browser ??
+      Object.keys(await getInstallations())[0]
+    log.debug(`browser set to: ${browser}`)
+
+    const timeout = options.testcafeOptions?.timeout ?? 2000
+    log.debug(`timeout set to: ${timeout}`)
+
+    const args = options.testcafeOptions?.args ?? []
+    log.debug(`args set to: ${args}`)
+
+    log.debug(`executing Testcafe runner`)
+    execSync(
+      [
+        `npx testcafe ${browser}`,
+        `${resolveDir('testcafe')}`,
+        `--app-init-delay ${timeout}`,
+        `--selector-timeout ${timeout}`,
+        `--assertion-timeout ${timeout}`,
+        `--page-load-timeout ${timeout}`,
+        ...args,
+      ].join(' '),
+      {
+        stdio: 'inherit',
+        env: {
+          ...process.env,
+          RESOLVE_TESTCAFE_TESTS_TARGET_URL: url,
+        },
+      }
+    )
+  } catch (e) {
+    log.error(e)
+    process.exit(1)
+  }
 }
 
 const runTests = async (bundle: TestBundle, options: TestBundleOptions) => {
