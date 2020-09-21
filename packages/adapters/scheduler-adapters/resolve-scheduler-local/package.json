@@ -1,6 +1,6 @@
 {
   "name": "resolve-scheduler-local",
-  "version": "0.25.7",
+  "version": "0.25.8",
   "description": "This package is an adapter for api handler to AWS Lambda.",
   "engines": {
     "node": ">=10.9"
