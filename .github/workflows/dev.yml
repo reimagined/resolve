@@ -20,7 +20,9 @@ jobs:
           node-version: '10'
 
       - name: Install
-        run: yarn install --frozen-lockfile
+        run: |
+          yarn validate-lock-file
+          yarn install --frozen-lockfile
 
       - name: Prettier
         run: yarn prettier:check
