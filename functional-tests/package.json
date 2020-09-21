@@ -17,7 +17,7 @@
     "@babel/core": "7.11.6",
     "@babel/node": "7.10.5",
     "@babel/preset-env": "7.11.5",
-    "@internal/helpers": "0.25.7",
+    "@internal/helpers": "0.25.8",
     "babel-jest": "26.0.1",
     "jest": "26.4.2",
     "ts-node": "9.0.0",
