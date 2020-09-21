@@ -447,7 +447,7 @@
 
 "@babel/node@7.10.5":
   version "7.10.5"
-  resolved "http://npm.resolve-dev.ml:10080/@babel%2fnode/-/node-7.10.5.tgz#30866322aa2c0251a9bdd73d07a9167bd1f4ed64"
+  resolved "https://registry.yarnpkg.com/@babel%2fnode/-/node-7.10.5.tgz#30866322aa2c0251a9bdd73d07a9167bd1f4ed64"
   integrity sha512-suosS7zZ2roj+fYVCnDuVezUbRc0sdoyF0Gj/1FzWxD4ebbGiBGtL5qyqHH4NO34B5m4vWWYWgyNhSsrqS8vwA==
   dependencies:
     "@babel/register" "^7.10.5"
@@ -2233,7 +2233,7 @@
 
 "@types/fs-extra@9.0.1":
   version "9.0.1"
-  resolved "http://npm.resolve-dev.ml:10080/@types%2ffs-extra/-/fs-extra-9.0.1.tgz#91c8fc4c51f6d5dbe44c2ca9ab09310bd00c7918"
+  resolved "https://registry.yarnpkg.com/@types%2ffs-extra/-/fs-extra-9.0.1.tgz#91c8fc4c51f6d5dbe44c2ca9ab09310bd00c7918"
   integrity sha512-B42Sxuaz09MhC3DDeW5kubRcQ5by4iuVQ0cRRWM2lggLzAa/KVom0Aft/208NgMvNQQZ86s5rVcqDdn/SH0/mg==
   dependencies:
     "@types/node" "*"
@@ -2268,7 +2268,7 @@
 
 "@types/isomorphic-fetch@0.0.35":
   version "0.0.35"
-  resolved "http://npm.resolve-dev.ml:10080/@types%2fisomorphic-fetch/-/isomorphic-fetch-0.0.35.tgz#c1c0d402daac324582b6186b91f8905340ea3361"
+  resolved "https://registry.yarnpkg.com/@types%2fisomorphic-fetch/-/isomorphic-fetch-0.0.35.tgz#c1c0d402daac324582b6186b91f8905340ea3361"
   integrity sha512-DaZNUvLDCAnCTjgwxgiL1eQdxIKEpNLOlTNtAgnZc50bG2copGhRrFN9/PxPBuJe+tZVLCbQ7ls0xveXVRPkvw==
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
@@ -2379,7 +2379,7 @@
 
 "@types/nanoid@2.1.0":
   version "2.1.0"
-  resolved "http://npm.resolve-dev.ml:10080/@types%2fnanoid/-/nanoid-2.1.0.tgz#41edfda78986e9127d0dc14de982de766f994020"
+  resolved "https://registry.yarnpkg.com/@types%2fnanoid/-/nanoid-2.1.0.tgz#41edfda78986e9127d0dc14de982de766f994020"
   integrity sha512-xdkn/oRTA0GSNPLIKZgHWqDTWZsVrieKomxJBOQUK9YDD+zfSgmwD5t4WJYra5S7XyhTw7tfvwznW+pFexaepQ==
   dependencies:
     "@types/node" "*"
@@ -2521,14 +2521,14 @@
 
 "@types/redux-mock-store@1.0.2":
   version "1.0.2"
-  resolved "http://npm.resolve-dev.ml:10080/@types%2fredux-mock-store/-/redux-mock-store-1.0.2.tgz#c27d5deadfb29d8514bdb0fc2cadae6feea1922d"
+  resolved "https://registry.yarnpkg.com/@types%2fredux-mock-store/-/redux-mock-store-1.0.2.tgz#c27d5deadfb29d8514bdb0fc2cadae6feea1922d"
   integrity sha512-6LBtAQBN34i7SI5X+Qs4zpTEZO1tTDZ6sZ9fzFjYwTl3nLQXaBtwYdoV44CzNnyKu438xJ1lSIYyw0YMvunESw==
   dependencies:
     redux "^4.0.5"
 
 "@types/semver@7.3.4":
   version "7.3.4"
-  resolved "http://npm.resolve-dev.ml:10080/@types%2fsemver/-/semver-7.3.4.tgz#43d7168fec6fa0988bb1a513a697b29296721afb"
+  resolved "https://registry.yarnpkg.com/@types%2fsemver/-/semver-7.3.4.tgz#43d7168fec6fa0988bb1a513a697b29296721afb"
   integrity sha512-+nVsLKlcUCeMzD2ufHEYuJ9a2ovstb6Dp52A5VsoKxDXgvE051XgHI/33I1EymwkRGQkwnA0LkhnUzituGs4EQ==
 
 "@types/serve-static@*":
@@ -3149,7 +3149,7 @@ angular2-template-loader@0.6.2:
 
 ansi-align@^3.0.0:
   version "3.0.0"
-  resolved "http://npm.resolve-dev.ml:10080/ansi-align/-/ansi-align-3.0.0.tgz#b536b371cf687caaef236c18d3e21fe3797467cb"
+  resolved "https://registry.yarnpkg.com/ansi-align/-/ansi-align-3.0.0.tgz#b536b371cf687caaef236c18d3e21fe3797467cb"
   integrity sha512-ZpClVKqXN3RGBmKibdfWzqCY4lnjEuoNzU5T0oEFpfd/z5qJHVarukridD4juLO2FXMiwUQxr9WqQtaYa8XRYw==
   dependencies:
     string-width "^3.0.0"
@@ -3329,7 +3329,7 @@ are-we-there-yet@~1.1.2:
 
 arg@^4.1.0:
   version "4.1.3"
-  resolved "http://npm.resolve-dev.ml:10080/arg/-/arg-4.1.3.tgz#269fc7ad5b8e42cb63c896d5666017261c144089"
+  resolved "https://registry.yarnpkg.com/arg/-/arg-4.1.3.tgz#269fc7ad5b8e42cb63c896d5666017261c144089"
   integrity sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==
 
 argparse@^1.0.10, argparse@^1.0.7:
@@ -3594,7 +3594,7 @@ asynckit@^0.4.0:
 
 at-least-node@^1.0.0:
   version "1.0.0"
-  resolved "http://npm.resolve-dev.ml:10080/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
+  resolved "https://registry.yarnpkg.com/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
   integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
 
 atob@^2.1.2:
@@ -4863,7 +4863,7 @@ bowser@^2.8.1:
 
 boxen@^4.2.0:
   version "4.2.0"
-  resolved "http://npm.resolve-dev.ml:10080/boxen/-/boxen-4.2.0.tgz#e411b62357d6d6d36587c8ac3d5d974daa070e64"
+  resolved "https://registry.yarnpkg.com/boxen/-/boxen-4.2.0.tgz#e411b62357d6d6d36587c8ac3d5d974daa070e64"
   integrity sha512-eB4uT9RGzg2odpER62bBwSLvUeGC+WbRjjyyFhGsKnc8wp/m0+hQsMUvUe3H2V0D5vw0nBdO1hCJoZo5mKeuIQ==
   dependencies:
     ansi-align "^3.0.0"
@@ -5602,7 +5602,7 @@ clean-stack@^2.0.0:
 
 cli-boxes@^2.2.0:
   version "2.2.1"
-  resolved "http://npm.resolve-dev.ml:10080/cli-boxes/-/cli-boxes-2.2.1.tgz#ddd5035d25094fce220e9cab40a45840a440318f"
+  resolved "https://registry.yarnpkg.com/cli-boxes/-/cli-boxes-2.2.1.tgz#ddd5035d25094fce220e9cab40a45840a440318f"
   integrity sha512-y4coMcylgSCdVinjiDBuR8PCC2bLjyGTwEmPb9NHR/QaNU6EUOXcTY/s6VjGMD6ENSEaeQYHCY0GNGS5jfMwPw==
 
 cli-cursor@^2.1.0:
@@ -5840,7 +5840,7 @@ commander@2.19.0:
 
 commander@6.1.0:
   version "6.1.0"
-  resolved "http://npm.resolve-dev.ml:10080/commander/-/commander-6.1.0.tgz#f8d722b78103141006b66f4c7ba1e97315ba75bc"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-6.1.0.tgz#f8d722b78103141006b66f4c7ba1e97315ba75bc"
   integrity sha512-wl7PNrYWd2y5mp1OK/LhTlv8Ff4kQJQRXXAvF+uU/TPNiVJUxZLRYGj/B0y/lPGAVcSbJqH2Za/cvHmrPMC8mA==
 
 commander@^2.11.0, commander@^2.19.0, commander@^2.20.0, commander@^2.8.1:
@@ -8813,7 +8813,7 @@ fs-constants@^1.0.0:
 
 fs-extra@9.0.1:
   version "9.0.1"
-  resolved "http://npm.resolve-dev.ml:10080/fs-extra/-/fs-extra-9.0.1.tgz#910da0062437ba4c39fedd863f1675ccfefcb9fc"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-9.0.1.tgz#910da0062437ba4c39fedd863f1675ccfefcb9fc"
   integrity sha512-h2iAoN838FqAFJY2/qVpzFXy+EBxfVE220PalAqQLDVsFOHLJrZvut5puAbCdNv6WJk+B8ihI+k0c7JK5erwqQ==
   dependencies:
     at-least-node "^1.0.0"
@@ -11530,7 +11530,7 @@ jest@26.0.1:
 
 jest@26.4.2:
   version "26.4.2"
-  resolved "http://npm.resolve-dev.ml:10080/jest/-/jest-26.4.2.tgz#7e8bfb348ec33f5459adeaffc1a25d5752d9d312"
+  resolved "https://registry.yarnpkg.com/jest/-/jest-26.4.2.tgz#7e8bfb348ec33f5459adeaffc1a25d5752d9d312"
   integrity sha512-LLCjPrUh98Ik8CzW8LLVnSCfLaiY+wbK53U7VxnFSX7Q+kWC4noVeDvGWIFw0Amfq1lq2VfGm7YHWSLBV62MJw==
   dependencies:
     "@jest/core" "^26.4.2"
@@ -11751,7 +11751,7 @@ jsonfile@^4.0.0:
 
 jsonfile@^6.0.1:
   version "6.0.1"
-  resolved "http://npm.resolve-dev.ml:10080/jsonfile/-/jsonfile-6.0.1.tgz#98966cba214378c8c84b82e085907b40bf614179"
+  resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-6.0.1.tgz#98966cba214378c8c84b82e085907b40bf614179"
   integrity sha512-jR2b5v7d2vIOust+w3wtFKZIfpC2pnRmFAhAC/BuweZFQR8qZzxH1OyrQ10HmdVYiXWkYUqPVsz91cG7EL2FBg==
   dependencies:
     universalify "^1.0.0"
@@ -15804,7 +15804,7 @@ redux-devtools-extension@2.13.7:
 
 redux-mock-store@1.5.4:
   version "1.5.4"
-  resolved "http://npm.resolve-dev.ml:10080/redux-mock-store/-/redux-mock-store-1.5.4.tgz#90d02495fd918ddbaa96b83aef626287c9ab5872"
+  resolved "https://registry.yarnpkg.com/redux-mock-store/-/redux-mock-store-1.5.4.tgz#90d02495fd918ddbaa96b83aef626287c9ab5872"
   integrity sha512-xmcA0O/tjCLXhh9Fuiq6pMrJCwFRaouA8436zcikdIpYWWCjU76CRk+i2bHx8EeiSiMGnB85/lZdU3wIJVXHTA==
   dependencies:
     lodash.isplainobject "^4.0.6"
@@ -16215,7 +16215,7 @@ resolve-cloud@*:
 
 resolve-cloud@0.16.1:
   version "0.16.1"
-  resolved "http://npm.resolve-dev.ml:10080/resolve-cloud/-/resolve-cloud-0.16.1.tgz#d2d8594679b4d35156d6e800f269963582a96b15"
+  resolved "https://registry.yarnpkg.com/resolve-cloud/-/resolve-cloud-0.16.1.tgz#d2d8594679b4d35156d6e800f269963582a96b15"
   integrity sha512-7WdFpMEcKeImEKEimQx1EUBlRqu/mDlEu3Cx+jA2GwvI36bi5gofmHHmhzrGmBMHveTVgBFX1Uu2PDWq13vrbQ==
   dependencies:
     amazon-cognito-identity-js "^3.0.15"
@@ -17780,7 +17780,7 @@ tempfile@^2.0.0:
 
 term-size@^2.1.0:
   version "2.2.0"
-  resolved "http://npm.resolve-dev.ml:10080/term-size/-/term-size-2.2.0.tgz#1f16adedfe9bdc18800e1776821734086fcc6753"
+  resolved "https://registry.yarnpkg.com/term-size/-/term-size-2.2.0.tgz#1f16adedfe9bdc18800e1776821734086fcc6753"
   integrity sha512-a6sumDlzyHVJWb8+YofY4TW112G6p2FCPEAFk+59gIYHv3XHRhm9ltVQ9kli4hNWeQBwSpe8cRN25x0ROunMOw==
 
 terminal-kit@^0.26.1:
@@ -17928,7 +17928,7 @@ testcafe-hammerhead@16.2.9:
 
 testcafe-hammerhead@17.1.13:
   version "17.1.13"
-  resolved "http://npm.resolve-dev.ml:10080/testcafe-hammerhead/-/testcafe-hammerhead-17.1.13.tgz#e2ab9589e48aa145fa886c2303891e9e997d33fa"
+  resolved "https://registry.yarnpkg.com/testcafe-hammerhead/-/testcafe-hammerhead-17.1.13.tgz#e2ab9589e48aa145fa886c2303891e9e997d33fa"
   integrity sha512-swNsC4gbs1vhKM9F9zmCcStA8oMg2FUTJZYUE30xL5ZdHae87x2tfg9T58jUcZK3CX0S9B2NCU1AJbwCsS0uqw==
   dependencies:
     acorn-hammerhead "^0.3.0"
@@ -18135,7 +18135,7 @@ testcafe@1.8.5:
 
 testcafe@1.9.1:
   version "1.9.1"
-  resolved "http://npm.resolve-dev.ml:10080/testcafe/-/testcafe-1.9.1.tgz#2e3183d69561bf90da611408436c5b34b22f799c"
+  resolved "https://registry.yarnpkg.com/testcafe/-/testcafe-1.9.1.tgz#2e3183d69561bf90da611408436c5b34b22f799c"
   integrity sha512-18yGuCJvcdaGFhS3l4NhDwRnvJ24/mwXVfM+gqZm6vxNdw2NCujzXh36/BNr0qP2MhAEN56Y96G8XKkzn+5zYg==
   dependencies:
     "@types/node" "^10.12.19"
@@ -18667,7 +18667,7 @@ ts-jest@26.1.4:
 
 ts-node@9.0.0:
   version "9.0.0"
-  resolved "http://npm.resolve-dev.ml:10080/ts-node/-/ts-node-9.0.0.tgz#e7699d2a110cc8c0d3b831715e417688683460b3"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-9.0.0.tgz#e7699d2a110cc8c0d3b831715e417688683460b3"
   integrity sha512-/TqB4SnererCDR/vb4S/QvSZvzQMJN8daAslg7MeaiHvD8rDZsSfXmNeNumyZZzMned72Xoq/isQljYSt8Ynfg==
   dependencies:
     arg "^4.1.0"
@@ -18996,7 +18996,7 @@ universalify@^0.1.0:
 
 universalify@^1.0.0:
   version "1.0.0"
-  resolved "http://npm.resolve-dev.ml:10080/universalify/-/universalify-1.0.0.tgz#b61a1da173e8435b2fe3c67d29b9adf8594bd16d"
+  resolved "https://registry.yarnpkg.com/universalify/-/universalify-1.0.0.tgz#b61a1da173e8435b2fe3c67d29b9adf8594bd16d"
   integrity sha512-rb6X1W158d7pRQBg5gkR8uPaSfiids68LTJQYOtEUhoJUWBdaQHsuT/EUduxXYxcrt4r5PJ4fuHW1MHT6p0qug==
 
 unpipe@1.0.0, unpipe@~1.0.0:
@@ -19670,7 +19670,7 @@ wide-align@^1.1.0:
 
 widest-line@^3.1.0:
   version "3.1.0"
-  resolved "http://npm.resolve-dev.ml:10080/widest-line/-/widest-line-3.1.0.tgz#8292333bbf66cb45ff0de1603b136b7ae1496eca"
+  resolved "https://registry.yarnpkg.com/widest-line/-/widest-line-3.1.0.tgz#8292333bbf66cb45ff0de1603b136b7ae1496eca"
   integrity sha512-NsmoXalsWVDMGupxZ5R08ka9flZjjiLvHVAWYOKtiKM8ujtZWr9cRffak+uSE48+Ob8ObalXpwyeUiyDD6QFgg==
   dependencies:
     string-width "^4.0.0"
@@ -20045,7 +20045,7 @@ yeast@0.1.2:
 
 yn@3.1.1:
   version "3.1.1"
-  resolved "http://npm.resolve-dev.ml:10080/yn/-/yn-3.1.1.tgz#1e87401a09d767c1d5eab26a6e4c185182d2eb50"
+  resolved "https://registry.yarnpkg.com/yn/-/yn-3.1.1.tgz#1e87401a09d767c1d5eab26a6e4c185182d2eb50"
   integrity sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
 
 zip-stream@^2.1.2:
