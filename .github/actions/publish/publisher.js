@@ -1,5 +1,6 @@
 const { execSync } = require('child_process')
 const fs = require('fs')
+const { patchDependencies } = require('./tools')
 
 const version = process.argv[2]
 const tag = process.argv[3]
@@ -31,6 +32,8 @@ if (view !== '') {
 
 console.debug(`bumping to version ${version}`)
 packageJson.version = version
+console.debug(`patching framework dependencies`)
+patchDependencies('(?!resolve-cloud-common$)(?!resolve-cloud$)(resolve-.*$)', version, packageJson )
 fs.writeFileSync('./package.json', JSON.stringify(packageJson, null, 2))
 
 console.debug(`publishing with tag ${tag}`)
