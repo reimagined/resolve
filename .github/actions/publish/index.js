@@ -34,7 +34,7 @@ const writeNpmRc = (registry, token, file) => {
 }
 
 try {
-  const npmRc = path.resolve('./', '.npmrc')
+  const npmRc = path.resolve(os.homedir(), '.npmrc')
 
   writeNpmRc(core.getInput('npm_registry'), core.getInput('npm_token'), npmRc)
 
