@@ -170,9 +170,12 @@ const sendEvents = async (
         if (event != null) {
           if (typeof projection[event.type] === 'function') {
             log.debug(`building read-model encryption`)
-            const encryption = await pool.readModel.encryption(event, {
-              secretsManager,
-            })
+            const encryption =
+              typeof pool.readModel.encryption === 'function'
+                ? await pool.readModel.encryption(event, {
+                    secretsManager,
+                  })
+                : null
 
             log.debug(`executing handler`)
             const executor = projection[event.type]

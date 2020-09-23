@@ -1,6 +1,11 @@
 import createQuery from 'resolve-query'
 import createCommand from 'resolve-command'
-import { SerializableMap, CommandResult } from 'resolve-core'
+import {
+  SerializableMap,
+  CommandResult,
+  ReadModelEncryptionFactory,
+  AggregateEncryptionFactory,
+} from 'resolve-core'
 import as from './as'
 import givenEvents from './given-events'
 import { execute } from './execute'
