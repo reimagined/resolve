@@ -36,46 +36,46 @@ jobs:
       - name: Integration test
         run: yarn test:integration
 
-   e2e-macOS-test:
-     needs: [smoke-test]
-     runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
+    e2e-macOS-test:
+      needs: [smoke-test]
+      runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
 
-     if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/'))
+      if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/'))
 
-     steps:
-       - uses: actions/checkout@v2
+      steps:
+        - uses: actions/checkout@v2
 
-       - name: Install
-         run: yarn install --frozen-lockfile
+        - name: Install
+          run: yarn install --frozen-lockfile
 
-       - name: E2E test
-         run: yarn test:e2e
+        - name: E2E test
+          run: yarn test:e2e
 
-   publish-dev:
-     needs: [smoke-test]
-     runs-on: ubuntu-latest
-     continue-on-error: true
+    publish-dev:
+      needs: [smoke-test]
+      runs-on: ubuntu-latest
+      continue-on-error: true
 
-     if: github.event_name == 'push'
+      if: github.event_name == 'push'
 
-     env:
-       NPM_REGISTRY: ${{ secrets.PRIVATE_NPM_REGISTRY }}
-       NPM_TOKEN: ${{ secrets.PRIVATE_NPM_TOKEN }}
+      env:
+        NPM_REGISTRY: ${{ secrets.PRIVATE_NPM_REGISTRY }}
+        NPM_TOKEN: ${{ secrets.PRIVATE_NPM_TOKEN }}
 
-     steps:
-       - uses: actions/checkout@v2
+      steps:
+        - uses: actions/checkout@v2
 
-       - name: Install & Build
-         run: yarn install --frozen-lockfile
+        - name: Install & Build
+          run: yarn install --frozen-lockfile
 
-       - name: Publish to private repository
-         uses: ./.github/actions/publish
-         with:
-           npm_registry: ${{ secrets.PRIVATE_NPM_REGISTRY }}
-           npm_token: ${{ secrets.PRIVATE_NPM_TOKEN }}
-           version: ${{ github.sha }}
-           release_type: nightly
-           tag: nigtly
+        - name: Publish to private repository
+          uses: ./.github/actions/publish
+          with:
+            npm_registry: ${{ secrets.PRIVATE_NPM_REGISTRY }}
+            npm_token: ${{ secrets.PRIVATE_NPM_TOKEN }}
+            version: ${{ github.sha }}
+            release_type: nightly
+            tag: nigtly
 
   cloud-test:
     needs: [smoke-test, e2e-macOS-test]
