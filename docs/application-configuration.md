@@ -299,14 +299,13 @@ readModelConnectors: {
 
 Specifies an array of the application's Sagas. A Saga configuration object within this array contains the following fields:
 
-| Field         | Description                                                                |
-| ------------- | -------------------------------------------------------------------------- |
-| source        | A path to a file that defines the Saga's handlers and side effects.        |
-| handlers      | A path to a file that defines the Saga's handlers.                         |
-| sideEffects   | A path to a file that defines the Saga's side effects.                     |
-| connectorName | Defines a Read Model storage used to store the saga's persistent data.     |
-| schedulerName | Specifies the scheduler that should be used to schedule command execution. |
-| encryption    | A path to a file that defines data encryption and decryption logic.        |
+| Field         | Description                                                                                 |
+| ------------- | ------------------------------------------------------------------------------------------- |
+| source        | A path to a file that defines the Saga's handlers or both handlers and side effects.        |
+| sideEffects   | A path to a file that defines the Saga's side effects.                                      |
+| connectorName | Defines a Read Model storage used to store the saga's persistent data.                      |
+| schedulerName | Specifies the scheduler that should be used to schedule command execution.                  |
+| encryption    | A path to a file that defines data encryption and decryption logic.                         |
 
 ##### Example:
 
