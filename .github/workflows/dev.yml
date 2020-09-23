@@ -114,6 +114,7 @@ jobs:
         uses: ./.github/actions/deploy
         with:
           resolve_version: ${{ steps.publish.outputs.release_version }}
+          npm_registry: http://npm.resolve-dev.ml:10080
           app_directory: ${{ env.test_app_dir }}
           generate_app_name: true
           resolve_api_url: https://api.resolve.sh
