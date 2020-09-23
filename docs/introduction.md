@@ -50,7 +50,7 @@ Write side is optimized for writing, read side - for reading.
 
 ## Examples
 
-The reSolved repository contains example projects. You can use them to study various use-case scenarios or as templates for new reSolve applications. The example projects are available in the repository's **[examples](https://github.com/reimagined/resolve/tree/master/examples)** folder.
+The reSolve repository contains example projects. You can use them to study various use-case scenarios or as templates for new reSolve applications. The example projects are available in the repository's **[examples](https://github.com/reimagined/resolve/tree/master/examples)** folder.
 
 The following example projects are available:
 
