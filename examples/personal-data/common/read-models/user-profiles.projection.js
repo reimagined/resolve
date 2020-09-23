@@ -19,8 +19,6 @@ const readModel = {
       payload: { nickname, firstName, lastName, contacts },
     } = event
 
-    console.log('user registered')
-
     if (typeof decrypt === 'function') {
       await store.insert('Users', {
         id: aggregateId,
