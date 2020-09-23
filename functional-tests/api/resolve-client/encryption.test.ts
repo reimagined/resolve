@@ -30,8 +30,10 @@ const waitForPersonalData = async (userId: string) =>
     },
     {
       waitFor: {
-        validator: (result: QueryResult) =>
-          result && result.data && result.data.id === userId,
+        validator: (result: QueryResult) => {
+          console.log(result)
+          return result && result.data && result.data.id === userId
+        },
         attempts: 5,
         period: 300,
       },

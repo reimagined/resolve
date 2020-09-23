@@ -1,2 +1,4 @@
 dist
 .deployment.json
+.publishing.json
+.npmrc

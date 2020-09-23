@@ -12,9 +12,8 @@ if (!tag) {
   throw Error(`tag not specified`)
 }
 
-const packageJson = JSON.parse(
-  fs.readFileSync('./package.json').toString('utf-8')
-)
+const originalFile = fs.readFileSync('./package.json').toString('utf-8')
+const packageJson = JSON.parse(originalFile)
 
 const { name, private: restricted } = packageJson
 
@@ -42,4 +41,6 @@ try {
   })
 } catch (e) {
   console.warn(e)
+} finally {
+  fs.writeFileSync('./package.json', originalFile)
 }
