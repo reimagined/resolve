@@ -204,7 +204,7 @@ try {
 
   console.log(`installing packages within ${appDir}`)
 
-  execSync('yarn install --frozen-lockfile --verbose', {
+  execSync('yarn install --frozen-lockfile', {
     cwd: appDir,
     stdio: 'inherit',
   })
