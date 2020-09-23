@@ -94,9 +94,11 @@ const writeNpmRc = (appDir, registry) => {
   }
 
   const npmRc = path.resolve(appDir, '.npmrc')
+  const yarnRc = path.resolve(appDir, '.yarnrc')
 
   console.debug(`writing ${npmRc}`)
   fs.writeFileSync(npmRc, `registry=${registry}\n`)
+  fs.writeFileSync(yarnRc, `registry "${registry}\n"`)
 }
 
 const execResolveCloud = (appDir, args, stdio = 'pipe') =>
