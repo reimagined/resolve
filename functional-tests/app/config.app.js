@@ -4,6 +4,7 @@ const appConfig = {
       name: 'user',
       commands: 'common/aggregates/user.commands.js',
       projection: 'common/aggregates/user.projection.js',
+      encryption: 'common/aggregates/encryption.js',
     },
   ],
   readModels: [
@@ -12,6 +13,13 @@ const appConfig = {
       projection: 'common/read-models/users.projection.js',
       resolvers: 'common/read-models/users.resolvers.js',
       connectorName: 'default',
+    },
+    {
+      name: 'personal-data',
+      projection: 'common/read-models/personal-data.projection.js',
+      resolvers: 'common/read-models/personal-data.resolvers.js',
+      connectorName: 'default',
+      encryption: 'common/read-models/encryption.js',
     },
   ],
   viewModels: [

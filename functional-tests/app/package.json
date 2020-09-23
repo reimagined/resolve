@@ -30,7 +30,9 @@
     "resolve-readmodel-lite": "0.25.8",
     "resolve-readmodel-postgresql-serverless": "0.25.8",
     "resolve-module-admin": "0.25.8",
-    "uuid": "8.3.0"
+    "uuid": "8.3.0",
+    "crypto-js": "4.0.0",
+    "generate-password": "1.5.1"
   },
   "devDependencies": {
     "aws-sdk": "2.631.0",
