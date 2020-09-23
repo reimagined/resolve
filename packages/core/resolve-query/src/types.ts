@@ -34,6 +34,7 @@ export type ReadModelMeta = {
   resolvers: { [key: string]: any }
   projection: { [key: string]: Function }
   connectorName: string
+  encryption: Function
 }
 
 export type ReadModelPool = {
