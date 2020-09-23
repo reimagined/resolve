@@ -55,7 +55,9 @@
       "examples/shopping-list-tutorial/*",
       "packages/modules/*",
       "tests",
-      "website"
+      "website",
+      "functional-tests",
+      "functional-tests/app"
     ]
   },
   "scripts": {

@@ -1,7 +1,6 @@
 import { GivenEventsContext } from '.'
 import { Phases, symbol } from './constants'
 import { shouldProduceEvent, shouldThrow } from './aggregate-assertions'
-
 const internalPromise = Symbol()
 
 const getDelayedPromise = (
