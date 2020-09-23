@@ -90,7 +90,8 @@ jobs:
           echo "installing packages and building the repository"
           yarn
 
-      - name: Publish to private repository
+      - id: publish
+        name: Publish to private repository
         uses: ./.github/actions/publish
         with:
           npm_registry: ${{ secrets.PRIVATE_NPM_REGISTRY }}
@@ -112,6 +113,7 @@ jobs:
         name: Deploy test app to the cloud
         uses: ./.github/actions/deploy
         with:
+          resolve_version: ${{ steps.publish.outputs.release_version }}
           app_directory: ${{ env.test_app_dir }}
           generate_app_name: true
           resolve_api_url: https://api.resolve.sh

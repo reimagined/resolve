@@ -57,6 +57,9 @@ try {
     stdio: 'inherit',
   })
 
+  core.setOutput('release_version', releaseVersion)
+  core.setOutput('release_tag', tag)
+
   console.log('done')
 } catch (error) {
   core.setFailed(error)
