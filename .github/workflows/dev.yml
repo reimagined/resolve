@@ -75,7 +75,7 @@ jobs:
           npm_token: ${{ secrets.PRIVATE_NPM_TOKEN }}
           version: ${{ github.sha }}
           release_type: nightly
-          tag: nigtly
+          tag: nightly
 
   cloud-test:
     needs: [smoke-test, e2e-macOS-test]
