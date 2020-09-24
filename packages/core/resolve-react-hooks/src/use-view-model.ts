@@ -14,7 +14,7 @@ type Closure = {
   state?: any
   subscription?: Subscription
   url?: string
-  cursor?: string
+  cursor: string | null
 }
 
 type ViewModelConnection = {
@@ -139,6 +139,7 @@ function useViewModel(
       : null
     return {
       initialState,
+      cursor: null,
     }
   }, [])
 
@@ -160,7 +161,7 @@ function useViewModel(
       const { data, meta: { url, cursor } = {} } = result
       setState(data, false)
       closure.url = url
-      closure.cursor = cursor
+      closure.cursor = cursor ?? null
     }
   }, [])
 
@@ -179,7 +180,7 @@ function useViewModel(
 
       const subscribe = client.subscribe(
         closure.url ?? '',
-        closure.cursor ?? '',
+        closure.cursor,
         modelName,
         aggregateIds,
         (event) => applyEvent(event),

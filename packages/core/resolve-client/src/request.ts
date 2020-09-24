@@ -1,4 +1,4 @@
-import unfetch from 'unfetch'
+import isomorphicFetch from 'isomorphic-fetch'
 import qs from 'query-string'
 import { Context } from './context'
 import { getRootBasedUrl, isString } from './utils'
@@ -32,7 +32,7 @@ const determineFetch = (context: Context): FetchFunction => {
     return context.fetch as FetchFunction
   }
   if (!cachedFetch) {
-    cachedFetch = typeof fetch === 'function' ? fetch : unfetch
+    cachedFetch = typeof fetch === 'function' ? fetch : isomorphicFetch
   }
   return cachedFetch
 }

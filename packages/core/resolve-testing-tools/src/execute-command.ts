@@ -105,9 +105,9 @@ export const executeCommand = async (
       event['payload'] = result['payload']
     }
 
-    assertion(resolve, reject, event, null)
+    return assertion(resolve, reject, event, null)
   } catch (error) {
-    assertion(resolve, reject, null, error)
+    return assertion(resolve, reject, null, error)
   } finally {
     if (executor) {
       await executor.dispose()

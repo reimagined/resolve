@@ -268,6 +268,7 @@ module.exports = {
           'msg',
           'mysql',
           'mjs',
+          'nanoid',
           'namespace',
           'namespaces',
           'nav',
