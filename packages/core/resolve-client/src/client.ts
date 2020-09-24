@@ -138,8 +138,12 @@ export const query = (
       requestOptions.waitForResponse = {
         validator: async (response, confirm): Promise<void> => {
           const result = await response.json()
-          if (validator(result)) {
-            confirm(result)
+          const parsedResult =
+            result != null && result.data
+              ? { ...result, data: deserializer(result.data) }
+              : result
+          if (validator(parsedResult)) {
+            confirm(parsedResult)
           }
         },
         period,

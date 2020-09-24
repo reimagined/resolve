@@ -276,7 +276,7 @@ describe('query', () => {
     )
   })
 
-  test('awaiting for result: response validator', async () => {
+  test('awaiting for result: response validator with read-model deserializer', async () => {
     await client.query(
       {
         name: 'query-name',
@@ -288,7 +288,10 @@ describe('query', () => {
       {
         waitFor: {
           validator: isEqual.bind(null, {
-            result: 'valid-result',
+            data: {
+              isValid: true,
+            },
+            meta: {},
           }),
           attempts: 1,
           period: 1,
@@ -323,7 +326,8 @@ describe('query', () => {
       createMockResponse({
         json: (): Promise<any> =>
           Promise.resolve({
-            result: 'invalid-result',
+            data: JSON.stringify({ isValid: false }),
+            meta: {},
           }),
       }),
       confirm
@@ -334,13 +338,17 @@ describe('query', () => {
       createMockResponse({
         json: (): Promise<any> =>
           Promise.resolve({
-            result: 'valid-result',
+            data: JSON.stringify({ isValid: true }),
+            meta: {},
           }),
       }),
       confirm
     )
     expect(validResult).toEqual({
-      result: 'valid-result',
+      data: {
+        isValid: true,
+      },
+      meta: {},
     })
   })
 
