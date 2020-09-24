@@ -28,6 +28,12 @@ const appConfig = {
       projection: 'common/view-models/user.projection.js',
       resolver: 'common/view-models/user.resolver.js',
     },
+    {
+      name: 'custom-serializer',
+      projection: 'common/view-models/custom-serializer.projection.js',
+      serializeState: 'common/view-models/custom-serializer.serialize.js',
+      deserializeState: 'common/view-models/custom-serializer.deserialize.js',
+    },
   ],
   apiHandlers: [
     {
