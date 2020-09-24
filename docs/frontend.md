@@ -23,7 +23,7 @@ const main = async resolveContext => {
 export default main
 ```
 
-to register the entry point, assign the path to the file that contains the entry point definition to the `clientEntries` [configuration option](application-configuration.md#cliententries):
+To register the entry point, assign the path to the file that contains the entry point definition to the `clientEntries` [configuration option](application-configuration.md#cliententries):
 
 ```js
 clientEntries: ['client/index.js']
