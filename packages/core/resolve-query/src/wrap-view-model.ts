@@ -106,7 +106,7 @@ const buildViewModel = async (
         snapshotKey,
         JSON.stringify({
           aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
-          state: await pool.viewModel.serializeState(state),
+          state: await pool.viewModel.serializeState(state, jwt),
           cursor,
         })
       )
@@ -269,8 +269,7 @@ const read = async (
 
 const serializeState = async (
   pool: ViewModelPool,
-  { state }: any,
-  jwt: string
+  { state, jwt }: any
 ): Promise<any> => {
   return pool.viewModel.serializeState(state, jwt)
 }

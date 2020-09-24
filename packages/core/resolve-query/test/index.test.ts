@@ -163,14 +163,12 @@ for (const { describeName, prepare } of [
                 }
               },
             },
-            serializeState: async (state: State): Promise<string> => {
+            serializeState: jest.fn((state: State) => {
               return JSON.stringify(state, null, 2)
-            },
-            deserializeState: async (
-              serializedState: string
-            ): Promise<State> => {
+            }),
+            deserializeState: jest.fn((serializedState: string) => {
               return JSON.parse(serializedState)
-            },
+            }),
             invariantHash: 'viewModelName-invariantHash',
             encryption: () => ({}),
             resolver: async (
@@ -489,6 +487,37 @@ for (const { describeName, prepare } of [
             )
             expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
+        })
+
+        test('"read" should call view model\'s serialization routine with valid parameters', async () => {
+          if (query == null) {
+            throw new Error('Query is null')
+          }
+
+          events = [
+            {
+              aggregateId: 'id1',
+              aggregateVersion: 1,
+              timestamp: 1,
+              type: 'ADD',
+              payload: {
+                value: 10,
+              },
+            },
+          ]
+
+          await query.read({
+            modelName: 'viewModelName',
+            aggregateIds: 'id1',
+            aggregateArgs: {},
+            jwt: 'query-jwt',
+          })
+
+          const { serializeState } = viewModels[0]
+          expect(serializeState).toHaveBeenCalledWith(
+            { value: 10 },
+            'query-jwt'
+          )
         })
 
         test('"read" should reuse working build process', async () => {
