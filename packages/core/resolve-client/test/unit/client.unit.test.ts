@@ -5,32 +5,44 @@ import { mocked } from 'ts-jest/utils'
 import { Client, getClient } from '../../src/client'
 import { Context } from '../../src/context'
 import { NarrowedResponse, request, VALIDATED_RESULT } from '../../src/request'
+import { ViewModel } from '../../src/view-model-types'
 
 jest.mock('../../src/request', () => ({
   request: jest.fn(),
 }))
 jest.mock('../../src/subscribe', () => ({}))
 
+const responseHeaders: { [key: string]: string } = {
+  Date: '12345',
+  'X-Resolve-View-Model-Subscription': JSON.stringify({ url: 'subscribe-url' }),
+}
+
 const createMockResponse = (overrides: object = {}): NarrowedResponse => ({
   ok: true,
   status: 200,
   headers: {
-    get: (header: string): string | null => `${header}-value`,
+    get: jest.fn(
+      (header: string): string | null =>
+        responseHeaders[header] || `${header}-value`
+    ),
   },
   json: (): Promise<object> =>
     Promise.resolve({
-      data: { data: 'response-data' },
+      data: JSON.stringify({ data: 'response-data' }),
     }),
   text: (): Promise<string> => Promise.resolve('response-text'),
   ...overrides,
 })
 
-const createMockContext = (staticPath = 'static-path'): Context => ({
+const createMockContext = (
+  staticPath = 'static-path',
+  viewModels: Array<ViewModel> = []
+): Context => ({
   origin: 'mock-origin',
   staticPath,
   rootPath: 'root-path',
   jwtProvider: undefined,
-  viewModels: [],
+  viewModels,
 })
 
 const mRequest = mocked(request)
@@ -172,28 +184,26 @@ describe('command', () => {
 })
 
 describe('query', () => {
-  let getHeader: () => string
-  let getJson: () => Promise<object>
+  let getJson: jest.Mock
+  let getHeader: jest.Mock
 
   beforeEach(() => {
-    getHeader = jest.fn((): string => '12345')
     getJson = jest.fn(
       (): Promise<object> =>
         Promise.resolve({
-          data: {
+          data: JSON.stringify({
             result: 'query-result',
-          },
+          }),
           meta: {},
         })
     )
-    mRequest.mockResolvedValue(
-      createMockResponse({
-        headers: {
-          get: getHeader,
-        },
-        json: getJson,
-      })
-    )
+    const response = createMockResponse({
+      json: getJson,
+    })
+
+    getHeader = response.headers.get as jest.Mock
+
+    mRequest.mockResolvedValue(response)
   })
 
   test('valid request made', async () => {
@@ -342,9 +352,10 @@ describe('query', () => {
         },
         json: getJson,
         [VALIDATED_RESULT]: {
-          data: {
+          data: JSON.stringify({
             result: 'validated-result',
-          },
+          }),
+          meta: {},
         },
       })
     )
@@ -422,6 +433,38 @@ describe('query', () => {
         method: 'GET',
       }
     )
+  })
+
+  test('use view model state deserializer', async () => {
+    client = getClient(
+      createMockContext('static-path', [
+        {
+          name: 'custom-serializer',
+          projection: {
+            Init: () => null,
+          },
+          deserializeState: (data: string) => JSON.parse(data.slice(3)),
+        },
+      ])
+    )
+
+    getJson.mockResolvedValueOnce({ data: `>>>${JSON.stringify({ a: 'a' })}` })
+
+    const result = await client.query({
+      name: 'custom-serializer',
+      aggregateIds: ['id'],
+      args: {},
+    })
+
+    expect(result).toEqual({
+      data: {
+        a: 'a',
+      },
+      meta: {
+        timestamp: 12345,
+        url: 'subscribe-url',
+      },
+    })
   })
 })
 

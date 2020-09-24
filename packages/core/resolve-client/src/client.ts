@@ -123,6 +123,14 @@ export const query = (
     method: 'GET',
   }
 
+  let deserializer: (data: string) => any = JSON.parse
+  if (!isReadModelQuery(qr)) {
+    const viewModel = context.viewModels.find((model) => model.name === qr.name)
+    if (viewModel) {
+      deserializer = viewModel.deserializeState
+    }
+  }
+
   if (isOptions<QueryOptions>(options)) {
     if (typeof options.waitFor?.validator === 'function') {
       const { validator, period = 1000, attempts = 5 } = options.waitFor
@@ -171,6 +179,9 @@ export const query = (
     const response = await queryRequest
 
     const responseDate = response.headers.get('Date')
+    if (!responseDate) {
+      throw new GenericError(`"Date" header missed within response`)
+    }
 
     let subscriptionsUrl = null
 
@@ -182,16 +193,13 @@ export const query = (
       subscriptionsUrl = url
     }
 
-    if (!responseDate) {
-      throw new GenericError(`"Date" header missed within response`)
-    }
-
     try {
       const result =
         VALIDATED_RESULT in response
           ? response[VALIDATED_RESULT]
           : await response.json()
 
+      const data = deserializer(result.data)
       const meta = {
         ...result.meta,
         timestamp: Number(responseDate),
@@ -203,6 +211,7 @@ export const query = (
 
       return {
         ...result,
+        data,
         meta,
       }
     } catch (error) {

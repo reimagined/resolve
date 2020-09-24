@@ -6,5 +6,5 @@ export type ViewModel = {
     Init: ViewModelInitialize
     [key: string]: ViewModelReducer
   }
-  deserializeState: (state: string) => object
+  deserializeState: (state: string) => any
 }
