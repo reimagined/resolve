@@ -57,18 +57,11 @@ const queryHandler = async (req, res) => {
     }
 
     res.end(
-      await JSON.stringify(
-        {
-          modelName,
-          state: {
-            ...result,
-            data: req.resolve.executeQuery.serializeState(result.data),
-          },
-          jwt: req.jwt,
-        },
-        null,
-        2
-      )
+      await req.resolve.executeQuery.serializeState({
+        modelName,
+        state: result,
+        jwt: req.jwt,
+      })
     )
   } catch (error) {
     const errorCode = extractErrorHttpCode(error)

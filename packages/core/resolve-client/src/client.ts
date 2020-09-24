@@ -198,12 +198,14 @@ export const query = (
     }
 
     try {
-      const result =
-        VALIDATED_RESULT in response
-          ? response[VALIDATED_RESULT]
-          : await response.json()
+      let result
+      if (VALIDATED_RESULT in response) {
+        result = response[VALIDATED_RESULT]
+      } else {
+        result = await response.json()
+        result.data = deserializer(result.data)
+      }
 
-      const data = deserializer(result.data)
       const meta = {
         ...result.meta,
         timestamp: Number(responseDate),
@@ -215,7 +217,6 @@ export const query = (
 
       return {
         ...result,
-        data,
         meta,
       }
     } catch (error) {

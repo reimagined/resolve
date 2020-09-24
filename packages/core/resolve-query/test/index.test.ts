@@ -164,10 +164,10 @@ for (const { describeName, prepare } of [
               },
             },
             serializeState: jest.fn((state: State) => {
-              return JSON.stringify(state, null, 2)
+              return `>>>${JSON.stringify(state, null, 2)}`
             }),
             deserializeState: jest.fn((serializedState: string) => {
-              return JSON.parse(serializedState)
+              return JSON.parse(serializedState.slice(3))
             }),
             invariantHash: 'viewModelName-invariantHash',
             encryption: () => ({}),
@@ -276,7 +276,7 @@ for (const { describeName, prepare } of [
             'VM;viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 1]],
-              state: JSON.stringify({ value: 10 }, null, 2),
+              state: `>>>${JSON.stringify({ value: 10 }, null, 2)}`,
               cursor: 'CURSOR',
             })
           )
@@ -284,7 +284,7 @@ for (const { describeName, prepare } of [
             'VM;viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 2]],
-              state: JSON.stringify({ value: 15 }, null, 2),
+              state: `>>>${JSON.stringify({ value: 15 }, null, 2)}`,
               cursor: 'CURSOR-CURSOR',
             })
           )
@@ -292,7 +292,7 @@ for (const { describeName, prepare } of [
             'VM;viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 3]],
-              state: JSON.stringify({ value: 7 }, null, 2),
+              state: `>>>${JSON.stringify({ value: 7 }, null, 2)}`,
               cursor: 'CURSOR-CURSOR-CURSOR',
             })
           )
@@ -350,7 +350,7 @@ for (const { describeName, prepare } of [
             'VM;viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 1]],
-              state: JSON.stringify({ value: 5 }, null, 2),
+              state: `>>>${JSON.stringify({ value: 5 }, null, 2)}`,
               cursor: 'CURSOR',
             })
           )
@@ -358,7 +358,7 @@ for (const { describeName, prepare } of [
             'VM;viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 2]],
-              state: JSON.stringify({ value: 7 }, null, 2),
+              state: `>>>${JSON.stringify({ value: 7 }, null, 2)}`,
               cursor: 'CURSOR-CURSOR',
             })
           )
@@ -366,7 +366,7 @@ for (const { describeName, prepare } of [
             'VM;viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 3]],
-              state: JSON.stringify({ value: 4 }, null, 2),
+              state: `>>>${JSON.stringify({ value: 4 }, null, 2)}`,
               cursor: 'CURSOR-CURSOR-CURSOR',
             })
           )
@@ -669,13 +669,17 @@ for (const { describeName, prepare } of [
 
           const result = await query.serializeState({
             modelName: 'viewModelName',
-            state: { value: 7 },
+            state: {
+              data: { value: 7 },
+              meta: { timestamp: 3 },
+            },
           })
 
           expect(result).toEqual(
             JSON.stringify(
               {
-                value: 7,
+                data: `>>>${JSON.stringify({ value: 7 }, null, 2)}`,
+                meta: { timestamp: 3 },
               },
               null,
               2
@@ -1137,13 +1141,17 @@ for (const { describeName, prepare } of [
 
           const result = await query.serializeState({
             modelName: 'viewModelName',
-            state: { value: 7 },
+            state: {
+              data: { value: 7 },
+              meta: { timestamp: 12345 },
+            },
           })
 
           expect(result).toEqual(
             JSON.stringify(
               {
-                value: 7,
+                data: `>>>${JSON.stringify({ value: 7 }, null, 2)}`,
+                meta: { timestamp: 12345 },
               },
               null,
               2
@@ -1946,10 +1954,22 @@ for (const { describeName, prepare } of [
 
         const value = await query.serializeState({
           modelName: 'readOnlyReadModelName',
-          state: 42,
+          state: {
+            data: 42,
+            meta: { timestamp: 1234 },
+          },
         })
 
-        expect(value).toEqual(JSON.stringify(42, null, 2))
+        expect(value).toEqual(
+          JSON.stringify(
+            {
+              data: JSON.stringify(42, null, 2),
+              meta: { timestamp: 1234 },
+            },
+            null,
+            2
+          )
+        )
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(

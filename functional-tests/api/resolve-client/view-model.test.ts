@@ -28,6 +28,6 @@ test('custom view model state serialization ', async () => {
   })) as QueryResult
   expect(result.data).toEqual({
     id: userId,
-    nickname: 'John Doe',
+    name: 'John Doe',
   })
 })

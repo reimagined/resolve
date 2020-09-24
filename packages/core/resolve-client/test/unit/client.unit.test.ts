@@ -326,7 +326,7 @@ describe('query', () => {
       createMockResponse({
         json: (): Promise<any> =>
           Promise.resolve({
-            data: JSON.stringify({ isValid: false }),
+            data: JSON.stringify({ isValid: false }, null, 2),
             meta: {},
           }),
       }),
@@ -360,9 +360,9 @@ describe('query', () => {
         },
         json: getJson,
         [VALIDATED_RESULT]: {
-          data: JSON.stringify({
+          data: {
             result: 'validated-result',
-          }),
+          },
           meta: {},
         },
       })

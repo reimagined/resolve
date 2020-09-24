@@ -271,7 +271,14 @@ const serializeState = async (
   pool: ViewModelPool,
   { state, jwt }: any
 ): Promise<any> => {
-  return pool.viewModel.serializeState(state, jwt)
+  return JSON.stringify(
+    {
+      ...state,
+      data: pool.viewModel.serializeState(state.data, jwt),
+    },
+    null,
+    2
+  )
 }
 
 const sendEvents = async (pool: ViewModelPool): Promise<any> => {

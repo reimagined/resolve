@@ -389,7 +389,14 @@ const serializeState = async (
   pool: ReadModelPool,
   { state }: any
 ): Promise<string> => {
-  return JSON.stringify(state, null, 2)
+  return JSON.stringify(
+    {
+      ...state,
+      data: JSON.stringify(state.data, null, 2),
+    },
+    null,
+    2
+  )
 }
 
 const doOperation = async (
