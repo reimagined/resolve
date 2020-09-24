@@ -30,6 +30,7 @@ const appConfig = {
       connectorName: 'default',
       projection: 'common/read-models/user-profiles.projection.js',
       resolvers: 'common/read-models/user-profiles.resolvers.js',
+      encryption: 'common/read-models/encryption.js',
     },
     {
       name: 'medias',

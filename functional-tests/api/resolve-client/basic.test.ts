@@ -32,7 +32,7 @@ const waitForUserProfile = async (userId: string, data: object) =>
       waitFor: {
         validator: (result: any) => isEqual(result.data, data),
         attempts: 5,
-        period: 300,
+        period: 3000,
       },
     }
   )

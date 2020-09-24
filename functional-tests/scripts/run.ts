@@ -88,13 +88,70 @@ const extractActionOutput = (source: string): ActionOutputs =>
       return result
     }, {} as any)
 
+const publishToPrivateRegistry = async (token: string) => {
+  if (!token) {
+    throw Error('npm registry token must be specified')
+  }
+
+  const env: { [key: string]: string } = {
+    INPUT_TAG: 'local-dev',
+    INPUT_RELEASE_TYPE: 'local-dev',
+    INPUT_NPM_REGISTRY: 'npm.resolve-dev.ml:10080',
+    INPUT_NPM_TOKEN: token,
+  }
+
+  log.info(`executing publish action (long running)`)
+  const publishAction = resolveDir('../.github/actions/publish')
+
+  const output = execSync(`node ${publishAction}/index.js`, {
+    stdio: 'pipe',
+    cwd: resolveDir('../'),
+    env: {
+      ...process.env,
+      ...env,
+    },
+  }).toString()
+
+  log.debug(`publish action output:`)
+  log.debug(output)
+  log.debug(`processing action output`)
+  const outputs = extractActionOutput(output)
+  const outputFile = resolveDir('.publishing.json')
+  log.debug(`writing outputs to ${outputFile}`)
+  fs.writeFileSync(
+    outputFile,
+    JSON.stringify(
+      {
+        ...env,
+        ...outputs,
+        npmToken: token,
+      },
+      null,
+      2
+    )
+  )
+  return outputs
+}
+
 const deploy = async ({
   framework,
   stage,
+  publish,
+  npmToken,
 }: {
   framework: string
   stage: string
+  publish: boolean
+  npmToken: string
 }) => {
+  let publishedVersion: string | null = null
+  if (publish) {
+    log.info(`publishing current repo to registry`)
+    const outputs = await publishToPrivateRegistry(npmToken)
+    publishedVersion = outputs['release_version']
+    log.info(`published version ${publishedVersion}`)
+  }
+
   log.info(`preparing cloud app bundle`)
   const appDir = await prepareCloudBundle()
 
@@ -113,7 +170,10 @@ const deploy = async ({
     env['INPUT_RESOLVE_API_URL'] = stage
   }
 
-  if (framework === 'dev') {
+  if (publishedVersion) {
+    env['INPUT_NPM_REGISTRY'] = 'npm.resolve-dev.ml:10080/'
+    env['INPUT_RESOLVE_VERSION'] = publishedVersion
+  } else if (framework === 'dev') {
     env['INPUT_NPM_REGISTRY'] = 'npm.resolve-dev.ml:10080/'
     env['INPUT_RESOLVE_VERSION'] = getNpmTagVersion(
       appDir,
@@ -127,7 +187,7 @@ const deploy = async ({
     } else {
       env['INPUT_RESOLVE_VERSION'] = getNpmTagVersion(
         appDir,
-        'nightly',
+        framework,
         'http://npm.resolve-dev.ml:10080'
       )
     }
@@ -159,7 +219,6 @@ const deploy = async ({
     log.debug(output)
     log.debug(`processing action output`)
     const outputs = extractActionOutput(output)
-    log.debug(output)
     const outputFile = resolveDir('.deployment.json')
     log.debug(`writing outputs to ${outputFile}`)
     fs.writeFileSync(
@@ -340,6 +399,8 @@ program
     'release'
   )
   .option('--stage <string>', 'dev | prod | <custom>')
+  .option('--publish', 'publish current repo to private registry', false)
+  .option('--npm-token <string>', 'NPM token to publish with')
   .action(deploy)
 
 program

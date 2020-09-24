@@ -1,4 +1,5 @@
 import createQuery from '../src/index'
+import { SecretsManager } from 'resolve-core'
 
 type State = {
   value: number
@@ -79,6 +80,7 @@ for (const { describeName, prepare } of [
   let readModels: any | null = null
   let readModelConnectors: any | null = null
   let query: ResolveQuery | null = null
+  let secretsManager: SecretsManager | null = null
 
   // eslint-disable-next-line no-loop-func
   describe(describeName, () => {
@@ -90,6 +92,16 @@ for (const { describeName, prepare } of [
       invokeEventBusAsync = jest.fn()
       getRemainingTimeInMillis = jest.fn()
       performAcknowledge = jest.fn()
+      const secretsMap = new Map()
+      secretsManager = {
+        getSecret: async (key: any) => secretsMap.get(key),
+        setSecret: async (key: any, value: any) => {
+          secretsMap.set(key, value)
+        },
+        deleteSecret: async (key: any) => {
+          secretsMap.delete(key)
+        },
+      }
 
       eventstoreAdapter = {
         loadEvents: async ({ cursor: prevCursor }: { cursor: string }) => ({
@@ -98,7 +110,7 @@ for (const { describeName, prepare } of [
         }),
         getNextCursor: (prevCursor: string) =>
           `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`,
-        getSecretsManager: async () => null,
+        getSecretsManager: jest.fn(() => secretsManager),
         loadSnapshot: jest.fn().mockImplementation(async (key) => {
           return (snapshots as SnapshotMap).get(key)
         }),
@@ -1279,9 +1291,18 @@ for (const { describeName, prepare } of [
 
     describe('read models', () => {
       query = null
+      let decrypt: jest.Mock | null = null
+      let encrypt: jest.Mock | null = null
+      let encryption: jest.Mock | null = null
       const remoteReadModelStore: { [key: string]: any } = {}
 
       beforeEach(() => {
+        decrypt = jest.fn((v: string) => `plain_${v}`)
+        encrypt = jest.fn((v: string) => `encrypted_${v}`)
+        encryption = jest.fn(() => ({
+          encrypt,
+          decrypt,
+        }))
         readModels = [
           {
             name: 'readModelName',
@@ -1305,6 +1326,7 @@ for (const { describeName, prepare } of [
             },
             connectorName: 'default',
             invariantHash: 'readModelName-invariantHash',
+            encryption,
           },
           {
             name: 'readOnlyReadModelName',
@@ -1316,6 +1338,7 @@ for (const { describeName, prepare } of [
             },
             connectorName: 'default',
             invariantHash: 'readOnlyReadModelName-invariantHash',
+            encryption,
           },
           {
             name: 'brokenReadModelName',
@@ -1329,6 +1352,7 @@ for (const { describeName, prepare } of [
             resolvers: {},
             connectorName: 'empty',
             invariantHash: 'brokenReadModelName-invariantHash',
+            encryption,
           },
           {
             name: 'remoteReadModelName',
@@ -1345,6 +1369,31 @@ for (const { describeName, prepare } of [
             },
             connectorName: 'empty',
             invariantHash: 'remoteReadModelName-invariantHash',
+            encryption,
+          },
+          {
+            name: 'encryptedReadModel',
+            projection: {
+              PUSH: async (
+                store: Store,
+                event: any,
+                { decrypt, encrypt }: any
+              ) => {
+                await new Promise((resolve) => setImmediate(resolve))
+                await store.set('id', {
+                  plain: decrypt(event.payload.value),
+                  encrypted: encrypt(event.payload.value),
+                })
+              },
+            },
+            resolvers: {
+              getValue: async (store: Store) => {
+                return await store.get('id')
+              },
+            },
+            connectorName: 'default',
+            invariantHash: 'encryptedReadModelName-invariantHash',
+            encryption,
           },
         ]
 
@@ -1536,6 +1585,46 @@ for (const { describeName, prepare } of [
           )
           expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
+      })
+
+      test('"sendEvents" with encryption', async () => {
+        events = [
+          {
+            type: 'Init',
+          },
+          {
+            aggregateId: 'id1',
+            aggregateVersion: 1,
+            timestamp: 1,
+            type: 'PUSH',
+            payload: {
+              value: 'data',
+            },
+          },
+        ]
+
+        await query.sendEvents({
+          modelName: 'encryptedReadModel',
+          events,
+          xaTransactionId: 'xaTransactionId',
+          properties: {},
+          batchId: 'batchId',
+        })
+
+        expect(encryption).toHaveBeenCalledWith(events[1], { secretsManager })
+        expect(encrypt).toHaveBeenCalledWith('data')
+        expect(decrypt).toHaveBeenCalledWith('data')
+
+        const {
+          data: { plain, encrypted },
+        } = await query.read({
+          modelName: 'encryptedReadModel',
+          resolverName: 'getValue',
+          resolverArgs: {},
+        })
+
+        expect(plain).toEqual('plain_data')
+        expect(encrypted).toEqual('encrypted_data')
       })
 
       test('"sendEvents" should apply events to the read model, "read" should return the resolver result', async () => {

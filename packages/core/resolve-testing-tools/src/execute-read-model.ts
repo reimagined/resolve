@@ -29,6 +29,7 @@ export const executeReadModel = async ({
           projection: promise[symbol].projection,
           resolvers: promise[symbol].resolvers,
           connectorName: 'ADAPTER_NAME',
+          encryption: promise[symbol].encryption,
         },
       ],
       readModelConnectors: {

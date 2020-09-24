@@ -94,9 +94,14 @@ const writeNpmRc = (appDir, registry) => {
   }
 
   const npmRc = path.resolve(appDir, '.npmrc')
+  const yarnRc = path.resolve(appDir, '.yarnrc')
 
-  console.debug(`writing ${npmRc}`)
-  fs.writeFileSync(npmRc, `registry=${registry}\n`)
+  let content = `registry=${registry}\n`
+  console.debug(`writing ${npmRc} with ${content}`)
+  fs.writeFileSync(npmRc, content)
+  content = `registry "${registry}"\n`
+  console.debug(`writing ${yarnRc} with ${content}`)
+  fs.writeFileSync(yarnRc, content)
 }
 
 const execResolveCloud = (appDir, args, stdio = 'pipe') =>
@@ -237,22 +242,25 @@ try {
   baseArgs += targetAppName ? ` --name ${targetAppName}` : ''
   baseArgs += npmRegistry ? ` --npm-registry ${npmRegistry}` : ''
 
-  resolveCloud(`deploy ${baseArgs} ${customArgs}`, 'inherit')
+  try {
+    resolveCloud(`deploy ${baseArgs} ${customArgs}`, 'inherit')
+    console.debug('the application deployed successfully')
+  } finally {
+    console.debug(`retrieving deployed application metadata`)
 
-  console.debug(`retrieving deployed application metadata`)
+    const { deploymentId, appName, appRuntime, appUrl } = describeApp(
+      targetAppName,
+      resolveCloud
+    )
 
-  const { deploymentId, appName, appRuntime, appUrl } = describeApp(
-    targetAppName,
-    resolveCloud
-  )
+    core.setOutput('deployment_id', deploymentId)
+    core.setOutput('app_name', appName)
+    core.setOutput('app_runtime', appRuntime)
+    core.setOutput('app_url', appUrl)
 
-  core.setOutput('deployment_id', deploymentId)
-  core.setOutput('app_name', appName)
-  core.setOutput('app_runtime', appRuntime)
-  core.setOutput('app_url', appUrl)
-
-  core.saveState(`deployment_id`, deploymentId)
-  core.saveState(`app_dir`, appDir)
+    core.saveState(`deployment_id`, deploymentId)
+    core.saveState(`app_dir`, appDir)
+  }
 } catch (error) {
   core.setFailed(error)
 }
