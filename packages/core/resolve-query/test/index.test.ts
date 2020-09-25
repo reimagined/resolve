@@ -1,5 +1,5 @@
 import createQuery from '../src/index'
-import { SecretsManager } from 'resolve-core'
+import { IS_BUILT_IN, SecretsManager } from 'resolve-core'
 
 type State = {
   value: number
@@ -141,6 +141,12 @@ for (const { describeName, prepare } of [
 
     describe('view models', () => {
       beforeEach(() => {
+        const builtInSerializer = JSON.stringify as any
+        const builtInDeserializer = JSON.parse as any
+
+        builtInSerializer[IS_BUILT_IN] = true
+        builtInDeserializer[IS_BUILT_IN] = true
+
         viewModels = [
           {
             name: 'viewModelName',
@@ -169,6 +175,38 @@ for (const { describeName, prepare } of [
             deserializeState: jest.fn((serializedState: string) => {
               return JSON.parse(serializedState.slice(3))
             }),
+            invariantHash: 'viewModelName-invariantHash',
+            encryption: () => ({}),
+            resolver: async (
+              resolve: any,
+              query: ResolverQuery,
+              { viewModel }: any
+            ): Promise<{
+              data: any
+              meta: any
+            }> => {
+              const { data, cursor } = await resolve.buildViewModel(
+                viewModel.name,
+                query
+              )
+
+              return {
+                data,
+                meta: {
+                  aggregateIds: query.aggregateIds,
+                  eventTypes: viewModel.eventTypes,
+                  cursor,
+                },
+              }
+            },
+          },
+          {
+            name: 'viewModelWithBuiltInSerializer',
+            projection: {
+              Init: () => null,
+            },
+            serializeState: builtInSerializer,
+            deserializeState: builtInDeserializer,
             invariantHash: 'viewModelName-invariantHash',
             encryption: () => ({}),
             resolver: async (
@@ -662,7 +700,7 @@ for (const { describeName, prepare } of [
           }
         })
 
-        test('"serializeState" should return serialized state', async () => {
+        test('"serializeState" should return JSON by with built-in serializer', async () => {
           if (query == null) {
             throw new Error('Some of test tools are not initialized')
           }
@@ -701,6 +739,31 @@ for (const { describeName, prepare } of [
             )
             expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
+        })
+
+        test('"serializeState" should return JSON with serialized data', async () => {
+          if (query == null) {
+            throw new Error('Some of test tools are not initialized')
+          }
+
+          const result = await query.serializeState({
+            modelName: 'viewModelWithBuiltInSerializer',
+            state: {
+              data: { value: 7 },
+              meta: { timestamp: 3 },
+            },
+          })
+
+          expect(result).toEqual(
+            JSON.stringify(
+              {
+                data: { value: 7 },
+                meta: { timestamp: 3 },
+              },
+              null,
+              2
+            )
+          )
         })
 
         test('"sendEvents" should raise error on view models', async () => {
@@ -1134,7 +1197,7 @@ for (const { describeName, prepare } of [
           }
         })
 
-        test('"serializeState" should return serialized state', async () => {
+        test('"serializeState" should return JSON by with built-in serializer', async () => {
           if (query == null) {
             throw new Error('Some of test tools are not initialized')
           }
@@ -1173,6 +1236,31 @@ for (const { describeName, prepare } of [
             )
             expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
+        })
+
+        test('"serializeState" should return JSON with serialized data', async () => {
+          if (query == null) {
+            throw new Error('Some of test tools are not initialized')
+          }
+
+          const result = await query.serializeState({
+            modelName: 'viewModelWithBuiltInSerializer',
+            state: {
+              data: { value: 7 },
+              meta: { timestamp: 12345 },
+            },
+          })
+
+          expect(result).toEqual(
+            JSON.stringify(
+              {
+                data: { value: 7 },
+                meta: { timestamp: 12345 },
+              },
+              null,
+              2
+            )
+          )
         })
 
         test('"sendEvents" should raise error on view models', async () => {
@@ -1963,7 +2051,7 @@ for (const { describeName, prepare } of [
         expect(value).toEqual(
           JSON.stringify(
             {
-              data: JSON.stringify(42, null, 2),
+              data: 42,
               meta: { timestamp: 1234 },
             },
             null,

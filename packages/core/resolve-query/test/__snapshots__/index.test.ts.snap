@@ -912,6 +912,16 @@ exports[`with performanceTracer view models with snapshots "sendEvents" should r
 
 exports[`with performanceTracer view models with snapshots "sendEvents" should raise error when query is disposed: getSegment 1`] = `Array []`;
 
+exports[`with performanceTracer view models with snapshots "serializeState" should return JSON by with built-in serializer: addAnnotation 1`] = `Array []`;
+
+exports[`with performanceTracer view models with snapshots "serializeState" should return JSON by with built-in serializer: addError 1`] = `Array []`;
+
+exports[`with performanceTracer view models with snapshots "serializeState" should return JSON by with built-in serializer: addNewSubsegment 1`] = `Array []`;
+
+exports[`with performanceTracer view models with snapshots "serializeState" should return JSON by with built-in serializer: close 1`] = `Array []`;
+
+exports[`with performanceTracer view models with snapshots "serializeState" should return JSON by with built-in serializer: getSegment 1`] = `Array []`;
+
 exports[`with performanceTracer view models with snapshots "serializeState" should return serialized state: addAnnotation 1`] = `Array []`;
 
 exports[`with performanceTracer view models with snapshots "serializeState" should return serialized state: addError 1`] = `Array []`;
@@ -1371,6 +1381,16 @@ exports[`with performanceTracer view models without snapshots "sendEvents" shoul
 exports[`with performanceTracer view models without snapshots "sendEvents" should raise error when disposed: close 1`] = `Array []`;
 
 exports[`with performanceTracer view models without snapshots "sendEvents" should raise error when disposed: getSegment 1`] = `Array []`;
+
+exports[`with performanceTracer view models without snapshots "serializeState" should return JSON by with built-in serializer: addAnnotation 1`] = `Array []`;
+
+exports[`with performanceTracer view models without snapshots "serializeState" should return JSON by with built-in serializer: addError 1`] = `Array []`;
+
+exports[`with performanceTracer view models without snapshots "serializeState" should return JSON by with built-in serializer: addNewSubsegment 1`] = `Array []`;
+
+exports[`with performanceTracer view models without snapshots "serializeState" should return JSON by with built-in serializer: close 1`] = `Array []`;
+
+exports[`with performanceTracer view models without snapshots "serializeState" should return JSON by with built-in serializer: getSegment 1`] = `Array []`;
 
 exports[`with performanceTracer view models without snapshots "serializeState" should return serialized state: addAnnotation 1`] = `Array []`;
 
