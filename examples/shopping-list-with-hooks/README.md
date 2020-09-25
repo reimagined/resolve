@@ -7,7 +7,7 @@ This example demonstrates how to use the [resolve-react-hooks](https://reimagine
 ##### Installation:
 
 ```sh
-npx create-resolve-app resolve-shopping-list -e shopping-list
+npx create-resolve-app shopping-list-with-hooks -e shopping-list-with-hooks
 ```
 
 ## What's next?
