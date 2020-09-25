@@ -922,16 +922,6 @@ exports[`with performanceTracer view models with snapshots "serializeState" shou
 
 exports[`with performanceTracer view models with snapshots "serializeState" should return JSON by with built-in serializer: getSegment 1`] = `Array []`;
 
-exports[`with performanceTracer view models with snapshots "serializeState" should return serialized state: addAnnotation 1`] = `Array []`;
-
-exports[`with performanceTracer view models with snapshots "serializeState" should return serialized state: addError 1`] = `Array []`;
-
-exports[`with performanceTracer view models with snapshots "serializeState" should return serialized state: addNewSubsegment 1`] = `Array []`;
-
-exports[`with performanceTracer view models with snapshots "serializeState" should return serialized state: close 1`] = `Array []`;
-
-exports[`with performanceTracer view models with snapshots "serializeState" should return serialized state: getSegment 1`] = `Array []`;
-
 exports[`with performanceTracer view models without snapshots "dispose" should dispose only one time: addAnnotation 1`] = `Array []`;
 
 exports[`with performanceTracer view models without snapshots "dispose" should dispose only one time: addError 1`] = `Array []`;
@@ -1391,13 +1381,3 @@ exports[`with performanceTracer view models without snapshots "serializeState" s
 exports[`with performanceTracer view models without snapshots "serializeState" should return JSON by with built-in serializer: close 1`] = `Array []`;
 
 exports[`with performanceTracer view models without snapshots "serializeState" should return JSON by with built-in serializer: getSegment 1`] = `Array []`;
-
-exports[`with performanceTracer view models without snapshots "serializeState" should return serialized state: addAnnotation 1`] = `Array []`;
-
-exports[`with performanceTracer view models without snapshots "serializeState" should return serialized state: addError 1`] = `Array []`;
-
-exports[`with performanceTracer view models without snapshots "serializeState" should return serialized state: addNewSubsegment 1`] = `Array []`;
-
-exports[`with performanceTracer view models without snapshots "serializeState" should return serialized state: close 1`] = `Array []`;
-
-exports[`with performanceTracer view models without snapshots "serializeState" should return serialized state: getSegment 1`] = `Array []`;
