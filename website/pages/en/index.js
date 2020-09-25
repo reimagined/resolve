@@ -107,25 +107,22 @@ const Features = (props) => (
   <Block layout="threeColumn" {...props}>
     {[
       {
-        content: `You don't need to configure build and dev tools, libraries and frameworks. 
-  Your application is ready in seconds.`,
+        content: `With reSolve, you don't need to configure build and dev tools, libraries, or frameworks. Your application will be ready-to-go in seconds.`,
         image: imgUrl('everything-you-need-in-one-place.png'),
         imageAlign: 'top',
         title: 'Everything you need in one place.',
       },
       {
-        content: `With CQRS and Event Sourcing, your application is easier to develop, adapt, maintain and scale. 
-  Functional JavaScript code is easier to test and reason about.`,
+        content: `With CQRS, Event Sourcing and reSolve, your application will be easier to develop, adapt, maintain and scale. Functional JavaScript code will also be easier to test.`,
         image: imgUrl('full-stack-scalable-modern-app.png'),
         imageAlign: 'top',
         title: 'Full stack scalable modern app',
       },
       {
-        content: `With Event Sourcing your application stores everything and removes nothing. 
-You don't have to anticipate what data you will need later.`,
+        content: `With Event Sourcing your application will store everything and will remove nothing. You will not have to anticipate future data requirements and needs.`,
         image: imgUrl('don-t-lose-your-data.png'),
         imageAlign: 'top',
-        title: "Don't lose your data",
+        title: "Never lose your data",
       },
     ]}
   </Block>
@@ -136,8 +133,7 @@ const GetStarted = (props) => (
     {[
       {
         title: 'Get started in seconds',
-        content: `reSolve lets you **focus on code, not build tools**.
-To create a project called \`my-app\`, run this command:
+        content: `reSolve allows you to focus on code, not build tools. To create a project, you simply called my-app and run the following command:
 \`\`\`sh
 yarn create resolve-app my-app
 \`\`\`
