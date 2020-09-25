@@ -5,7 +5,8 @@ import { mocked } from 'ts-jest/utils'
 import { Client, getClient } from '../../src/client'
 import { Context } from '../../src/context'
 import { NarrowedResponse, request, VALIDATED_RESULT } from '../../src/request'
-import { ViewModel } from '../../src/view-model-types'
+import { ViewModel, ViewModelDeserializer } from '../../src/view-model-types'
+import { IS_BUILT_IN } from 'resolve-core'
 
 jest.mock('../../src/request', () => ({
   request: jest.fn(),
@@ -191,9 +192,9 @@ describe('query', () => {
     getJson = jest.fn(
       (): Promise<object> =>
         Promise.resolve({
-          data: JSON.stringify({
+          data: {
             result: 'query-result',
-          }),
+          },
           meta: {},
         })
     )
@@ -326,7 +327,7 @@ describe('query', () => {
       createMockResponse({
         json: (): Promise<any> =>
           Promise.resolve({
-            data: JSON.stringify({ isValid: false }, null, 2),
+            data: { isValid: false },
             meta: {},
           }),
       }),
@@ -338,7 +339,7 @@ describe('query', () => {
       createMockResponse({
         json: (): Promise<any> =>
           Promise.resolve({
-            data: JSON.stringify({ isValid: true }),
+            data: { isValid: true },
             meta: {},
           }),
       }),
@@ -472,6 +473,197 @@ describe('query', () => {
         timestamp: 12345,
         url: 'subscribe-url',
       },
+    })
+  })
+
+  test('ignore view model built-in state deserializer', async () => {
+    const buildInDeserializer: ViewModelDeserializer = (data: string) =>
+      JSON.parse(data.slice(3))
+    buildInDeserializer[IS_BUILT_IN] = true
+
+    client = getClient(
+      createMockContext('static-path', [
+        {
+          name: 'built-in-serializer',
+          projection: {
+            Init: () => null,
+          },
+          deserializeState: buildInDeserializer,
+        },
+      ])
+    )
+
+    getJson.mockResolvedValueOnce({ data: { a: 'a' } })
+
+    const result = await client.query({
+      name: 'built-in-serializer',
+      aggregateIds: ['id'],
+      args: {},
+    })
+
+    expect(result).toEqual({
+      data: {
+        a: 'a',
+      },
+      meta: {
+        timestamp: 12345,
+        url: 'subscribe-url',
+      },
+    })
+  })
+
+  test('awaiting for result: response validator with view-model built-in deserializer', async () => {
+    const builtInDeserializer: ViewModelDeserializer = (data: string) =>
+      JSON.parse(data.slice(3))
+    builtInDeserializer[IS_BUILT_IN] = true
+
+    client = getClient(
+      createMockContext('static-path', [
+        {
+          name: 'built-in-serializer',
+          projection: {
+            Init: () => null,
+          },
+          deserializeState: builtInDeserializer,
+        },
+      ])
+    )
+
+    await client.query(
+      {
+        name: 'built-in-serializer',
+        aggregateIds: ['1'],
+        args: {
+          name: 'value',
+        },
+      },
+      {
+        waitFor: {
+          validator: isEqual.bind(null, {
+            data: {
+              isValid: true,
+            },
+            meta: {},
+          }),
+          attempts: 1,
+          period: 1,
+        },
+      }
+    )
+
+    const validator = mRequest.mock.calls[0][3]?.waitForResponse
+      ?.validator as Function
+
+    let validResult: string | null = null
+    const confirm = (result: string): void => {
+      validResult = result
+    }
+
+    await validator(
+      createMockResponse({
+        json: (): Promise<any> =>
+          Promise.resolve({
+            data: { isValid: false },
+            meta: {},
+          }),
+      }),
+      confirm
+    )
+    expect(validResult).toBeNull()
+
+    await validator(
+      createMockResponse({
+        json: (): Promise<any> =>
+          Promise.resolve({
+            data: { isValid: true },
+            meta: {},
+          }),
+      }),
+      confirm
+    )
+    expect(validResult).toEqual({
+      data: {
+        isValid: true,
+      },
+      meta: {},
+    })
+  })
+
+  test('awaiting for result: response validator with custom view-model deserializer', async () => {
+    const builtInDeserializer: ViewModelDeserializer = (data: string) =>
+      JSON.parse(data)
+
+    client = getClient(
+      createMockContext('static-path', [
+        {
+          name: 'built-in-serializer',
+          projection: {
+            Init: () => null,
+          },
+          deserializeState: builtInDeserializer,
+        },
+      ])
+    )
+
+    getJson.mockResolvedValueOnce({ data: JSON.stringify({ isValid: false }) })
+
+    await client.query(
+      {
+        name: 'built-in-serializer',
+        aggregateIds: ['1'],
+        args: {
+          name: 'value',
+        },
+      },
+      {
+        waitFor: {
+          validator: isEqual.bind(null, {
+            data: {
+              isValid: true,
+            },
+            meta: {},
+          }),
+          attempts: 1,
+          period: 1,
+        },
+      }
+    )
+
+    const validator = mRequest.mock.calls[0][3]?.waitForResponse
+      ?.validator as Function
+
+    let validResult: string | null = null
+    const confirm = (result: string): void => {
+      validResult = result
+    }
+
+    await validator(
+      createMockResponse({
+        json: (): Promise<any> =>
+          Promise.resolve({
+            data: JSON.stringify({ isValid: false }),
+            meta: {},
+          }),
+      }),
+      confirm
+    )
+    expect(validResult).toBeNull()
+
+    await validator(
+      createMockResponse({
+        json: (): Promise<any> =>
+          Promise.resolve({
+            data: JSON.stringify({ isValid: true }),
+            meta: {},
+          }),
+      }),
+      confirm
+    )
+    expect(validResult).toEqual({
+      data: {
+        isValid: true,
+      },
+      meta: {},
     })
   })
 })

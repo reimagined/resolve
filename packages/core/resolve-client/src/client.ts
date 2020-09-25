@@ -1,3 +1,4 @@
+import { IS_BUILT_IN } from 'resolve-core'
 import { Context } from './context'
 import { GenericError } from './errors'
 import { connect, disconnect } from './subscribe'
@@ -10,6 +11,7 @@ import {
 import { assertLeadingSlash, assertNonEmptyString } from './assertions'
 import { getRootBasedUrl, isAbsoluteUrl } from './utils'
 import determineOrigin from './determine-origin'
+import { ViewModelDeserializer } from './view-model-types'
 
 function determineCallback<T>(options: any, callback: any): T | null {
   if (typeof options === 'function') {
@@ -123,11 +125,11 @@ export const query = (
     method: 'GET',
   }
 
-  let deserializer: (data: string) => any = JSON.parse
+  let viewModelDeserializer: ViewModelDeserializer | null = null
   if (!isReadModelQuery(qr)) {
     const viewModel = context.viewModels.find((model) => model.name === qr.name)
-    if (viewModel) {
-      deserializer = viewModel.deserializeState
+    if (viewModel && !viewModel.deserializeState[IS_BUILT_IN]) {
+      viewModelDeserializer = viewModel.deserializeState
     }
   }
 
@@ -138,12 +140,13 @@ export const query = (
       requestOptions.waitForResponse = {
         validator: async (response, confirm): Promise<void> => {
           const result = await response.json()
-          const parsedResult =
-            result != null && result.data
-              ? { ...result, data: deserializer(result.data) }
-              : result
-          if (validator(parsedResult)) {
-            confirm(parsedResult)
+
+          if (viewModelDeserializer != null && result != null && result.data) {
+            result.data = viewModelDeserializer(result.data)
+          }
+
+          if (validator(result)) {
+            confirm(result)
           }
         },
         period,
@@ -203,11 +206,13 @@ export const query = (
         result = response[VALIDATED_RESULT]
       } else {
         result = await response.json()
-        result.data = deserializer(result.data)
+        if (viewModelDeserializer != null && result != null && result.data) {
+          result.data = viewModelDeserializer(result.data)
+        }
       }
 
       const meta = {
-        ...result.meta,
+        ...result?.meta,
         timestamp: Number(responseDate),
       }
 
