@@ -1,6 +1,6 @@
 # Shopping List Example
 
-![shopping-list](https://user-images.githubusercontent.com/19663260/44575926-f3613580-a795-11e8-825f-670c36b843dd.png)
+![shopping-list-react-hooks](https://user-images.githubusercontent.com/37070809/94238710-69a66800-ff19-11ea-94e3-08775f03781b.png)
 
 This example demonstrates how to work with [read-models](https://reimagined.github.io/resolve/docs/read-side#read-models) and [view-models](https://reimagined.github.io/resolve/docs/read-side#view-model-specifics).
 
