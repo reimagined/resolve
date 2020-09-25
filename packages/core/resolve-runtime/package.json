@@ -38,6 +38,7 @@
     "iconv-lite": "^0.5.1",
     "mqtt-connection": "^4.0.0",
     "proper-lockfile": "^3.2.0",
+    "resolve-core": "0.25.8",
     "resolve-command": "0.25.8",
     "resolve-cloud-common": "0.0.37",
     "resolve-local-event-broker": "0.25.8",
