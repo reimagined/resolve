@@ -1,6 +1,6 @@
 {
   "name": "resolve-local-rpc",
-  "version": "0.25.9",
+  "version": "0.25.10",
   "description": "The reSolve framework's rpc client/server on a local machine.",
   "engines": {
     "node": ">=10.9"

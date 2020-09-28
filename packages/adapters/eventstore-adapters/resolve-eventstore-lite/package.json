@@ -1,6 +1,6 @@
 {
   "name": "resolve-eventstore-lite",
-  "version": "0.25.9",
+  "version": "0.25.10",
   "description": "An adapter reSolve uses to store events in a file or memory.",
   "engines": {
     "node": ">=10.9"
@@ -26,9 +26,9 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/eventstore-adapters/resolve-eventstore-lite#readme",
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "resolve-core": "0.25.9",
-    "resolve-debug-levels": "0.25.9",
-    "resolve-eventstore-base": "0.25.9",
+    "resolve-core": "0.25.10",
+    "resolve-debug-levels": "0.25.10",
+    "resolve-eventstore-base": "0.25.10",
     "sqlite": "^3.0.2",
     "tmp": "^0.1.0"
   },
