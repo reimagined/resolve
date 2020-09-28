@@ -4,6 +4,7 @@ import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
 import getLog from './get-log'
 import { WrapReadModelOptions, SerializedError, ReadModelPool } from './types'
 import parseReadOptions from './parse-read-options'
+import { SecretsManager } from 'resolve-core'
 
 const RESERVED_TIME = 30 * 1000
 
@@ -12,12 +13,21 @@ const wrapConnection = async (
   callback: Function
 ): Promise<any> => {
   const readModelName = pool.readModel.name
+  const log = getLog(`wrapConnection:${readModelName}`)
+  log.debug(`establishing connection`)
   const connection = await pool.connector.connect(readModelName)
   pool.connections.add(connection)
 
+  log.debug(`retrieving event store secrets manager`)
+  const secretsManager =
+    typeof pool.getSecretsManager === 'function'
+      ? await pool.getSecretsManager()
+      : null
+
   try {
-    return await callback(connection)
+    return await callback(connection, secretsManager)
   } finally {
+    log.debug(`disconnecting`)
     await pool.connector.disconnect(connection, readModelName)
     pool.connections.delete(connection)
   }
@@ -142,7 +152,11 @@ const sendEvents = async (
       )
     }
 
-    const handler = async (connection: any, event: any): Promise<void> => {
+    const handler = async (
+      connection: any,
+      event: any,
+      secretsManager: SecretsManager
+    ): Promise<void> => {
       const log = getLog(
         `readModel:${readModelName}:[${event != null ? event.type : 'null'}]`
       )
@@ -155,9 +169,17 @@ const sendEvents = async (
         }
         if (event != null) {
           if (typeof projection[event.type] === 'function') {
+            log.debug(`building read-model encryption`)
+            const encryption =
+              typeof pool.readModel.encryption === 'function'
+                ? await pool.readModel.encryption(event, {
+                    secretsManager,
+                  })
+                : null
+
             log.debug(`executing handler`)
             const executor = projection[event.type]
-            await executor(connection, event)
+            await executor(connection, event, { ...encryption })
             log.debug(`handler executed successfully`)
             lastSuccessEvent = event
           } else if (event.type === 'Init') {
@@ -175,7 +197,7 @@ const sendEvents = async (
 
     await wrapConnection(
       pool,
-      async (connection: any): Promise<any> => {
+      async (connection: any, secretsManager: SecretsManager): Promise<any> => {
         const log = getLog(`readModel:wrapConnection`)
         log.debug(
           `applying ${events.length} events to read-model "${readModelName}" started`
@@ -206,7 +228,7 @@ const sendEvents = async (
             await onBeforeEvent(connection, readModelName, xaTransactionId)
 
             try {
-              await handler(connection, event)
+              await handler(connection, event, secretsManager)
               await onSuccessEvent(connection, readModelName, xaTransactionId)
             } catch (innerError) {
               if (innerError === STOP_BATCH) {
@@ -607,8 +629,8 @@ const wrapReadModel = ({
   getRemainingTimeInMillis,
   performAcknowledge,
 }: WrapReadModelOptions) => {
-  const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
+  const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
 
   log.debug(`wrapping read-model`)
   const connector = readModelConnectors[readModel.connectorName]

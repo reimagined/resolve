@@ -31,7 +31,8 @@
     "global": "^4.4.0",
     "node-fetch": "^2.6.0",
     "query-string": "^5.1.1",
-    "unfetch": "^4.1.0"
+    "isomorphic-fetch": "2.2.1",
+    "resolve-core": "0.25.8"
   },
   "devDependencies": {
     "express": "^4.17.1",

@@ -85,6 +85,7 @@ test('resolve-saga', async () => {
         Init: jest.fn(),
       },
       invariantHash: 'invariantHash',
+      encryption: jest.fn(() => ({})),
     },
   ]
 
