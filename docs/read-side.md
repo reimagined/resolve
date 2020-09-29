@@ -97,7 +97,7 @@ const appConfig = {
 }
 ```
 
-In the configuration object, specify the View Model's name and the path to the file containing projection definition. You can alpso specify the View Model snapshot storage adapter. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions. Specify the **resolver** option to add a [View Model resolver](#view-model-resolver) to the View Model.
+In the configuration object, specify the View Model's name and the path to the file containing projection definition. You can also specify the View Model snapshot storage adapter. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions. Specify the **resolver** option to add a [View Model resolver](#view-model-resolver) to the View Model.
 
 ### Custom Read Models
 
