@@ -3,7 +3,7 @@ import {
   NOTIFICATIONS_TABLE_NAME,
   SUBSCRIBERS_TABLE_NAME,
   LazinessStrategy,
-  PrivateOperationType
+  PrivateOperationType,
 } from '../constants'
 
 const pullNotificationsAsBatchForSubscriber = async (pool, payload) => {
@@ -11,7 +11,7 @@ const pullNotificationsAsBatchForSubscriber = async (pool, payload) => {
     database: { escapeStr, escapeId, runQuery, runRawQuery },
     parseSubscription,
     invokeOperation,
-    generateGuid
+    generateGuid,
   } = pool
 
   const { subscriptionId } = payload
@@ -58,13 +58,13 @@ const pullNotificationsAsBatchForSubscriber = async (pool, payload) => {
   }
   const activeBatch = await parseSubscription({
     ...affectedNotifications[0],
-    batchId
+    batchId,
   })
   const input = {
     type: PrivateOperationType.DELIVER_BATCH,
     payload: {
-      activeBatch
-    }
+      activeBatch,
+    },
   }
 
   await invokeOperation(pool, LazinessStrategy.EAGER, input)

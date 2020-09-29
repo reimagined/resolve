@@ -5,7 +5,7 @@ import reduxDevToolsEnhancer from './enhancers/redux-devtools'
 const getRedux = () => ({
   reducers: { optimisticShoppingLists: optimisticShoppingListsReducer },
   sagas: [optimisticShoppingListsSaga],
-  enhancers: [reduxDevToolsEnhancer]
+  enhancers: [reduxDevToolsEnhancer],
 })
 
 export default getRedux

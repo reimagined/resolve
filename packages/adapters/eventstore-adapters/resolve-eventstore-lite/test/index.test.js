@@ -16,7 +16,7 @@ describe.skip('resolve-eventstore-lite', () => {
     eventstoreAdapter = createEventstoreAdapter({
       databaseFile: ':memory:',
       eventsTableName: 'eventsTableName',
-      snapshotsTableName: 'snapshotsTableName'
+      snapshotsTableName: 'snapshotsTableName',
     })
     await eventstoreAdapter.init()
   })
@@ -30,15 +30,15 @@ describe.skip('resolve-eventstore-lite', () => {
       type: 'AAA',
       aggregateId: 'id1',
       aggregateVersion: 1,
-      timestamp: TIMESTAMP_1
+      timestamp: TIMESTAMP_1,
     })
 
     let events = []
     await eventstoreAdapter.loadEvents(
       {
-        limit: 1
+        limit: 1,
       },
-      event => {
+      (event) => {
         events.push(event)
       }
     )
@@ -47,7 +47,7 @@ describe.skip('resolve-eventstore-lite', () => {
       type: 'AAA',
       aggregateId: 'id1',
       aggregateVersion: 1,
-      payload: null
+      payload: null,
     })
   })
 
@@ -57,11 +57,11 @@ describe.skip('resolve-eventstore-lite', () => {
       aggregateId: 'id1',
       aggregateVersion: 1,
       timestamp: TIMESTAMP_1,
-      payload: { index: 1 }
+      payload: { index: 1 },
     })
 
     let events = []
-    await eventstoreAdapter.loadEvents({}, event => {
+    await eventstoreAdapter.loadEvents({}, (event) => {
       events.push(event)
     })
 
@@ -69,7 +69,7 @@ describe.skip('resolve-eventstore-lite', () => {
       type: 'AAA',
       aggregateId: 'id1',
       aggregateVersion: 1,
-      payload: { index: 1 }
+      payload: { index: 1 },
     })
   })
 
@@ -79,7 +79,7 @@ describe.skip('resolve-eventstore-lite', () => {
       aggregateId: 'id1',
       aggregateVersion: 1,
       timestamp: TIMESTAMP_1,
-      payload: { index: 1 }
+      payload: { index: 1 },
     })
 
     try {
@@ -88,7 +88,7 @@ describe.skip('resolve-eventstore-lite', () => {
         aggregateId: 'id1',
         aggregateVersion: 1,
         timestamp: TIMESTAMP_1,
-        payload: { index: 1 }
+        payload: { index: 1 },
       })
       return Promise.reject(new Error('Test failed'))
     } catch (error) {
@@ -113,46 +113,46 @@ describe.skip('resolve-eventstore-lite', () => {
       aggregateId: 'id1',
       aggregateVersion: 1,
       timestamp: TIMESTAMP_1,
-      payload: { index: 1 }
+      payload: { index: 1 },
     })
     await eventstoreAdapter.saveEvent({
       type: 'CCC',
       aggregateId: 'id3',
       aggregateVersion: 1,
       timestamp: TIMESTAMP_2,
-      payload: { index: 2 }
+      payload: { index: 2 },
     })
     await eventstoreAdapter.saveEvent({
       type: 'BBB',
       aggregateId: 'id2',
       aggregateVersion: 1,
       timestamp: TIMESTAMP_3,
-      payload: { index: 3 }
+      payload: { index: 3 },
     })
     await eventstoreAdapter.saveEvent({
       type: 'AAA',
       aggregateId: 'id2',
       aggregateVersion: 2,
       timestamp: TIMESTAMP_4,
-      payload: { index: 4 }
+      payload: { index: 4 },
     })
     await eventstoreAdapter.saveEvent({
       type: 'BBB',
       aggregateId: 'id1',
       aggregateVersion: 2,
       timestamp: TIMESTAMP_5,
-      payload: { index: 5 }
+      payload: { index: 5 },
     })
     await eventstoreAdapter.saveEvent({
       type: 'CCC',
       aggregateId: 'id3',
       aggregateVersion: 2,
       timestamp: TIMESTAMP_6,
-      payload: { index: 6 }
+      payload: { index: 6 },
     })
 
     let events = []
-    await eventstoreAdapter.loadEvents({}, event => {
+    await eventstoreAdapter.loadEvents({}, (event) => {
       events.push(event)
     })
 
@@ -162,47 +162,47 @@ describe.skip('resolve-eventstore-lite', () => {
         aggregateId: 'id1',
         aggregateVersion: 1,
         timestamp: TIMESTAMP_1,
-        payload: { index: 1 }
+        payload: { index: 1 },
       },
       {
         type: 'CCC',
         aggregateId: 'id3',
         aggregateVersion: 1,
         timestamp: TIMESTAMP_2,
-        payload: { index: 2 }
+        payload: { index: 2 },
       },
       {
         type: 'BBB',
         aggregateId: 'id2',
         aggregateVersion: 1,
         timestamp: TIMESTAMP_3,
-        payload: { index: 3 }
+        payload: { index: 3 },
       },
       {
         type: 'AAA',
         aggregateId: 'id2',
         aggregateVersion: 2,
         timestamp: TIMESTAMP_4,
-        payload: { index: 4 }
+        payload: { index: 4 },
       },
       {
         type: 'BBB',
         aggregateId: 'id1',
         aggregateVersion: 2,
         timestamp: TIMESTAMP_5,
-        payload: { index: 5 }
+        payload: { index: 5 },
       },
       {
         type: 'CCC',
         aggregateId: 'id3',
         aggregateVersion: 2,
         timestamp: TIMESTAMP_6,
-        payload: { index: 6 }
-      }
+        payload: { index: 6 },
+      },
     ])
 
     events = []
-    await eventstoreAdapter.loadEvents({ eventTypes: ['AAA'] }, event => {
+    await eventstoreAdapter.loadEvents({ eventTypes: ['AAA'] }, (event) => {
       events.push(event)
     })
 
@@ -211,19 +211,19 @@ describe.skip('resolve-eventstore-lite', () => {
         type: 'AAA',
         aggregateId: 'id1',
         aggregateVersion: 1,
-        payload: { index: 1 }
+        payload: { index: 1 },
       },
       {
         type: 'AAA',
         aggregateId: 'id2',
         aggregateVersion: 2,
         timestamp: TIMESTAMP_4,
-        payload: { index: 4 }
-      }
+        payload: { index: 4 },
+      },
     ])
 
     events = []
-    await eventstoreAdapter.loadEvents({ aggregateIds: ['id1'] }, event => {
+    await eventstoreAdapter.loadEvents({ aggregateIds: ['id1'] }, (event) => {
       events.push(event)
     })
 
@@ -233,24 +233,24 @@ describe.skip('resolve-eventstore-lite', () => {
         aggregateId: 'id1',
         aggregateVersion: 1,
         timestamp: TIMESTAMP_1,
-        payload: { index: 1 }
+        payload: { index: 1 },
       },
       {
         type: 'BBB',
         aggregateId: 'id1',
         aggregateVersion: 2,
         timestamp: TIMESTAMP_5,
-        payload: { index: 5 }
-      }
+        payload: { index: 5 },
+      },
     ])
 
     events = []
     await eventstoreAdapter.loadEvents(
       {
         startTime: TIMESTAMP_2 - 1,
-        finishTime: TIMESTAMP_5 + 1
+        finishTime: TIMESTAMP_5 + 1,
       },
-      event => {
+      (event) => {
         events.push(event)
       }
     )
@@ -261,29 +261,29 @@ describe.skip('resolve-eventstore-lite', () => {
         aggregateId: 'id3',
         aggregateVersion: 1,
         timestamp: TIMESTAMP_2,
-        payload: { index: 2 }
+        payload: { index: 2 },
       },
       {
         type: 'BBB',
         aggregateId: 'id2',
         aggregateVersion: 1,
         timestamp: TIMESTAMP_3,
-        payload: { index: 3 }
+        payload: { index: 3 },
       },
       {
         type: 'AAA',
         aggregateId: 'id2',
         aggregateVersion: 2,
         timestamp: TIMESTAMP_4,
-        payload: { index: 4 }
+        payload: { index: 4 },
       },
       {
         type: 'BBB',
         aggregateId: 'id1',
         aggregateVersion: 2,
         timestamp: TIMESTAMP_5,
-        payload: { index: 5 }
-      }
+        payload: { index: 5 },
+      },
     ])
   })
 
@@ -293,11 +293,11 @@ describe.skip('resolve-eventstore-lite', () => {
       aggregateId: 'id1',
       aggregateVersion: 1,
       timestamp: TIMESTAMP_1,
-      payload: { index: 1 }
+      payload: { index: 1 },
     })
 
     let events = []
-    await eventstoreAdapter.loadEvents({}, event => {
+    await eventstoreAdapter.loadEvents({}, (event) => {
       events.push(event)
     })
 
@@ -319,14 +319,14 @@ describe.skip('resolve-eventstore-lite', () => {
       aggregateId: 'id1',
       aggregateVersion: 1,
       timestamp: TIMESTAMP_1,
-      payload: { index: 1 }
+      payload: { index: 1 },
     })
 
     expect(await eventstoreAdapter.getLatestEvent({})).toMatchObject({
       type: 'AAA',
       aggregateId: 'id1',
       aggregateVersion: 1,
-      payload: { index: 1 }
+      payload: { index: 1 },
     })
 
     await eventstoreAdapter.saveEvent({
@@ -334,14 +334,14 @@ describe.skip('resolve-eventstore-lite', () => {
       aggregateId: 'id1',
       aggregateVersion: 2,
       timestamp: TIMESTAMP_2,
-      payload: { index: 2 }
+      payload: { index: 2 },
     })
 
     expect(await eventstoreAdapter.getLatestEvent({})).toMatchObject({
       type: 'BBB',
       aggregateId: 'id1',
       aggregateVersion: 2,
-      payload: { index: 2 }
+      payload: { index: 2 },
     })
   })
 })

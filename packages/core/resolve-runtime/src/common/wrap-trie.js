@@ -11,7 +11,7 @@ const wrapTrie = (apiHandlers, rootPath) => {
   const trie = new Trie({
     ignoreCase: true,
     fixedPathRedirect: true,
-    trailingSlashRedirect: true
+    trailingSlashRedirect: true,
   })
 
   trie

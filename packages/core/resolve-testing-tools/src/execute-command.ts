@@ -32,7 +32,7 @@ type BDDExecuteCommandContext = {
 const makeDummyEventStoreAdapter = ({
   secretsManager,
   events,
-  aggregateId
+  aggregateId,
 }: BDDExecuteCommandState) => ({
   getNextCursor: () => Promise.resolve(null),
   saveSnapshot: () => Promise.resolve(),
@@ -40,8 +40,8 @@ const makeDummyEventStoreAdapter = ({
   loadSnapshot: () => Promise.resolve(null),
   loadEvents: () =>
     Promise.resolve({
-      events: transformEvents(events, 'aggregate', { aggregateId })
-    })
+      events: transformEvents(events, 'aggregate', { aggregateId }),
+    }),
 })
 
 const makeDummyPublisher = () => {
@@ -57,7 +57,7 @@ export const executeCommand = async (
 ): Promise<void> => {
   const {
     createCommand,
-    promise: { [symbol]: state }
+    promise: { [symbol]: state },
   } = context
 
   if (state.phase < Phases.COMMAND) {
@@ -81,9 +81,9 @@ export const executeCommand = async (
           encryption: state.aggregate.encryption || null,
           deserializeState: JSON.parse,
           serializeState: JSON.stringify,
-          invariantHash: 'invariant-hash'
-        }
-      ]
+          invariantHash: 'invariant-hash',
+        },
+      ],
     })
 
     const result = await executor({
@@ -91,23 +91,23 @@ export const executeCommand = async (
       aggregateName: state.aggregate.name,
       type: state.command.name,
       payload: state.command.payload || {},
-      jwt: state.jwt
+      jwt: state.jwt,
     })
 
     const event: {
       type: string
       payload?: SerializableMap
     } = {
-      type: result.type
+      type: result.type,
     }
 
     if (Object.prototype.hasOwnProperty.call(result, 'payload')) {
       event['payload'] = result['payload']
     }
 
-    assertion(resolve, reject, event, null)
+    return assertion(resolve, reject, event, null)
   } catch (error) {
-    assertion(resolve, reject, null, error)
+    return assertion(resolve, reject, null, error)
   } finally {
     if (executor) {
       await executor.dispose()

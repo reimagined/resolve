@@ -2,7 +2,7 @@ export const httpCodeInternalServerError = 500
 export const httpMinimumCode = 100
 export const httpMaximumCode = 599
 
-const extractErrorHttpCode = error => {
+const extractErrorHttpCode = (error) => {
   if (!error instanceof Error || !error.hasOwnProperty('code')) {
     return httpCodeInternalServerError
   }

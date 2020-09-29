@@ -22,7 +22,7 @@ beforeEach(() => {
       secretsFile: 'secret-file',
       secretsTableName: 'secrets-table',
       eventsTableName: 'events-table-name',
-      snapshotsTableName: 'snapshots-table-name'
+      snapshotsTableName: 'snapshots-table-name',
     },
     secretsDatabase: '',
     secretsTableName: '',
@@ -31,13 +31,13 @@ beforeEach(() => {
     snapshotsTableName: '',
     escape: jest.fn(),
     escapeId: jest.fn(),
-    memoryStore: 'memory'
+    memoryStore: 'memory',
   }
   specific = {
     sqlite,
     tmp: jest.fn(),
     os: jest.fn(),
-    fs: jest.fn()
+    fs: jest.fn(),
   }
 })
 
@@ -46,13 +46,13 @@ test("config assigned to adapter's pool", async () => {
 
   expect(pool).toEqual(
     expect.objectContaining({
-      secretsTableName: 'secrets-table'
+      secretsTableName: 'secrets-table',
     })
   )
 
   expect(pool.secretsDatabase).toEqual(
     expect.objectContaining({
-      exec: expect.any(Function)
+      exec: expect.any(Function),
     })
   )
 })

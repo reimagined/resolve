@@ -45,7 +45,7 @@ const createAdapter = () => {
 
   return createEventStoreLiteAdapter({
     databaseFile: ':memory:',
-    secretsFile: ':memory:'
+    secretsFile: ':memory:',
   })
 }
 

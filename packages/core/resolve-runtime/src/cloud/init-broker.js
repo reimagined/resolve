@@ -1,11 +1,11 @@
 import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 import invokeEventBus from './invoke-event-bus'
 
-const initBroker = resolve => {
+const initBroker = (resolve) => {
   Object.assign(resolve.publisher, {
     pause: async ({ eventSubscriber }) => {
       return await invokeEventBus(resolve.eventstoreCredentials, 'pause', {
-        eventSubscriber
+        eventSubscriber,
       })
     },
     acknowledge: async ({ batchId, result }) => {
@@ -14,39 +14,39 @@ const initBroker = resolve => {
         'acknowledge',
         {
           batchId,
-          result
+          result,
         }
       )
     },
     publish: async ({ event }) => {
       return await invokeEventBus(resolve.eventstoreCredentials, 'publish', {
-        event
+        event,
       })
     },
     resume: async ({ eventSubscriber }) => {
       return await invokeEventBus(resolve.eventstoreCredentials, 'resume', {
-        eventSubscriber
+        eventSubscriber,
       })
     },
     status: async ({ eventSubscriber }) => {
       return await invokeEventBus(resolve.eventstoreCredentials, 'status', {
-        eventSubscriber
+        eventSubscriber,
       })
     },
     reset: async ({ eventSubscriber }) => {
       return await invokeEventBus(resolve.eventstoreCredentials, 'reset', {
-        eventSubscriber
+        eventSubscriber,
       })
     },
     read: async ({ eventFilter }) => {
       return await invokeEventBus(resolve.eventstoreCredentials, 'read', {
-        eventFilter
+        eventFilter,
       })
     },
     subscribe: async ({ eventSubscriber, subscriptionOptions }) => {
       return await invokeEventBus(resolve.eventstoreCredentials, 'subscribe', {
         eventSubscriber,
-        subscriptionOptions
+        subscriptionOptions,
       })
     },
     resubscribe: async ({ eventSubscriber, subscriptionOptions }) => {
@@ -55,7 +55,7 @@ const initBroker = resolve => {
         'resubscribe',
         {
           eventSubscriber,
-          subscriptionOptions
+          subscriptionOptions,
         }
       )
     },
@@ -64,7 +64,7 @@ const initBroker = resolve => {
         resolve.eventstoreCredentials,
         'unsubscribe',
         {
-          eventSubscriber
+          eventSubscriber,
         }
       )
     },
@@ -111,13 +111,13 @@ const initBroker = resolve => {
       } catch (err) {
         return null
       }
-    }
+    },
   })
 
   Object.defineProperties(resolve, {
     getSubscribeAdapterOptions: {
-      value: getSubscribeAdapterOptions
-    }
+      value: getSubscribeAdapterOptions,
+    },
   })
 }
 

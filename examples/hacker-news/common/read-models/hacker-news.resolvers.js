@@ -68,5 +68,5 @@ export default {
 
   showStories: getStories.bind(null, 'show'),
 
-  user: getUser
+  user: getUser,
 }

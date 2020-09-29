@@ -8,7 +8,7 @@ test('should fail when imported from client', () => {
       '\r\n' +
         alias({
           resolveConfig: {},
-          isClient: true
+          isClient: true,
         }) +
         '\r\n'
     )
@@ -20,9 +20,9 @@ test('base config works correctly with module and options', () => {
     readModelConnectors: {
       default: {
         module: path.join(__dirname, 'files', 'testReadmodelConnector.js'),
-        options: {}
-      }
-    }
+        options: {},
+      },
+    },
   }
 
   expect(
@@ -30,7 +30,7 @@ test('base config works correctly with module and options', () => {
       '\r\n' +
         alias({
           resolveConfig,
-          isClient: false
+          isClient: false,
         }) +
         '\r\n'
     )
@@ -41,9 +41,9 @@ test('base config works correctly with options and default module', () => {
   const resolveConfig = {
     readModelConnectors: {
       default: {
-        options: {}
-      }
-    }
+        options: {},
+      },
+    },
   }
 
   expect(
@@ -51,7 +51,7 @@ test('base config works correctly with options and default module', () => {
       '\r\n' +
         alias({
           resolveConfig,
-          isClient: false
+          isClient: false,
         }) +
         '\r\n'
     )
@@ -62,9 +62,9 @@ test('base config works correctly with default module and options', () => {
   const resolveConfig = {
     readModelConnectors: {
       default: {
-        module: path.join(__dirname, 'files', 'testReadmodelConnector.js')
-      }
-    }
+        module: path.join(__dirname, 'files', 'testReadmodelConnector.js'),
+      },
+    },
   }
 
   expect(
@@ -72,7 +72,7 @@ test('base config works correctly with default module and options', () => {
       '\r\n' +
         alias({
           resolveConfig,
-          isClient: false
+          isClient: false,
         }) +
         '\r\n'
     )

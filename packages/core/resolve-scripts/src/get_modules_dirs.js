@@ -11,7 +11,7 @@ const getModulesDirs = ({ isAbsolutePath = false } = {}) => {
   const resolveRuntimeNodeModules = path.join(
     path.dirname(
       require.resolve('resolve-runtime/package.json', {
-        paths: [currentDirNodeModules, ...monorepoNodeModules]
+        paths: [currentDirNodeModules, ...monorepoNodeModules],
       })
     ),
     'node_modules'
@@ -30,7 +30,7 @@ const getModulesDirs = ({ isAbsolutePath = false } = {}) => {
   if (isAbsolutePath) {
     return absoluteDirs
   } else {
-    const relativeDirs = absoluteDirs.map(absoluteDir =>
+    const relativeDirs = absoluteDirs.map((absoluteDir) =>
       path.relative(currentDir, absoluteDir)
     )
 

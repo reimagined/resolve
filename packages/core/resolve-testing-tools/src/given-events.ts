@@ -1,79 +1,65 @@
 import { GivenEventsContext } from '.'
 import { Phases, symbol } from './constants'
 import { shouldProduceEvent, shouldThrow } from './aggregate-assertions'
-
 const internalPromise = Symbol()
 
-type ComplexPromise = {
-  then: Function
-  catch: Function
-  [internalPromise]: {
-    thenFunctions: Array<Function>
-    catchFunctions: Array<Function>
-    state: any
-    result: any
+const getDelayedPromise = (
+  continuation: Function
+): {
+  promiseResolve: Function
+  promiseReject: Function
+  promise: any
+} => {
+  const promise: any = {
+    [internalPromise]: {
+      thenFunctions: [],
+      catchFunctions: [],
+      state: null,
+      result: null,
+    },
+    then: (nextSuccess: Function, nextFailure?: Function): any => {
+      if (promise[internalPromise].state == null) {
+        promise[internalPromise].thenFunctions.push(nextSuccess)
+      } else if (promise[internalPromise].state === true) {
+        nextSuccess(promise[internalPromise].result)
+      }
+      if (nextFailure != null) {
+        if (promise[internalPromise].state == null) {
+          promise[internalPromise].catchFunctions.push(nextFailure)
+        } else if (promise[internalPromise].state === false) {
+          nextFailure(promise[internalPromise].result)
+        }
+      }
+    },
+    catch: (nextFailure: Function): any => {
+      if (promise[internalPromise].state == null) {
+        promise[internalPromise].catchFunctions.push(nextFailure)
+      } else if (promise[internalPromise].state === false) {
+        nextFailure(promise[internalPromise].result)
+      }
+    },
   }
-}
 
-const getDelayedPromise = (continuation: Function): any => {
-  let fastEventLoop = false
-  try {
-    fastEventLoop = +process.version.substring(1).split('.')[0] >= 12
-  } catch (e) {}
+  const promiseResolve: any = (result: any): any => {
+    if (promise[internalPromise].state == null) {
+      promise[internalPromise].state = true
+      promise[internalPromise].result = result
+      for (const next of promise[internalPromise].thenFunctions) {
+        next(result)
+      }
+      promise[internalPromise].thenFunctions.length = 0
+    }
+  }
 
-  let promise: Promise<any> | ComplexPromise
-  let promiseResolve: Function | null = null
-  let promiseReject: Function | null = null
-
-  if (!fastEventLoop) {
-    promise = new Promise((resolve, reject) => {
-      promiseResolve = resolve
-      promiseReject = reject
-    })
-  } else {
-    const complexPromise: ComplexPromise = {
-      [internalPromise]: {
-        thenFunctions: [],
-        catchFunctions: [],
-        state: null,
-        result: null
-      },
-      then: (next: Function): any => {
-        if (complexPromise[internalPromise].state == null) {
-          complexPromise[internalPromise].thenFunctions.push(next)
-        } else if (complexPromise[internalPromise].state === true) {
-          next(complexPromise[internalPromise].result)
-        }
-      },
-      catch: (next: Function): any => {
-        if (complexPromise[internalPromise].state == null) {
-          complexPromise[internalPromise].catchFunctions.push(next)
-        } else if (complexPromise[internalPromise].state === false) {
-          next(complexPromise[internalPromise].result)
-        }
+  const promiseReject: any = (result: any): any => {
+    if (promise[internalPromise].state == null) {
+      promise[internalPromise].state = false
+      promise[internalPromise].result = result
+      for (const next of promise[internalPromise].catchFunctions) {
+        next(result)
       }
+      promise[internalPromise].catchFunctions.length = 0
     }
-    promiseResolve = (result: any): any => {
-      if (complexPromise[internalPromise].state == null) {
-        complexPromise[internalPromise].state = true
-        complexPromise[internalPromise].result = result
-        for (const next of complexPromise[internalPromise].thenFunctions) {
-          next(result)
-        }
-        complexPromise[internalPromise].thenFunctions.length = 0
-      }
-    }
-    promiseReject = (result: any): any => {
-      if (complexPromise[internalPromise].state == null) {
-        complexPromise[internalPromise].state = false
-        complexPromise[internalPromise].result = result
-        for (const next of complexPromise[internalPromise].catchFunctions) {
-          next(result)
-        }
-        complexPromise[internalPromise].catchFunctions.length = 0
-      }
-    }
-    promise = complexPromise
   }
 
   const promiseThen = promise.then.bind(promise)
@@ -82,7 +68,11 @@ const getDelayedPromise = (continuation: Function): any => {
   promise.then = continuation.bind(null, promiseThen)
   promise.catch = continuation.bind(null, promiseCatch)
 
-  return { promiseResolve, promiseReject, promise }
+  return {
+    promiseResolve,
+    promiseReject,
+    promise,
+  }
 }
 
 const getInitPromise = (internalPool: any): Promise<any> =>
@@ -109,7 +99,7 @@ const givenEvents = (
     setSecretsManager,
     getDefaultSecretsManager,
     aggregate,
-    command
+    command,
   } = dependencies
 
   const internalPool = Object.create(null)
@@ -128,7 +118,7 @@ const givenEvents = (
   promise[symbol].secretsManager = getDefaultSecretsManager()
 
   promise[symbol].properties = {
-    RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: 0
+    RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: 0,
   }
 
   promise.readModel = readModel.bind(null, pool)

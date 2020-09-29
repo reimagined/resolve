@@ -8,7 +8,7 @@ const waitSelector = async (t, eventSubscriber, selector) => {
     const res = await fetch(`${ROOT_URL}/api/event-broker/read-models-list`)
 
     const readModel = (await res.json()).find(
-      readModel => readModel.eventSubscriber === eventSubscriber
+      (readModel) => readModel.eventSubscriber === eventSubscriber
     )
 
     if (readModel.status !== 'deliver') {
@@ -69,25 +69,11 @@ test('add comment', async (t /*: TestController */) => {
 test('add reply', async (t /*: TestController */) => {
   await t.navigateTo(`${ROOT_URL}/newest`)
 
-  await t.click(
-    await Selector('a')
-      .withText('Ask HN: my ask')
-      .nth(-1)
-  )
+  await t.click(await Selector('a').withText('Ask HN: my ask').nth(-1))
 
-  await waitSelector(
-    t,
-    'Comments',
-    Selector('a')
-      .withText('reply')
-      .nth(-1)
-  )
+  await waitSelector(t, 'Comments', Selector('a').withText('reply').nth(-1))
 
-  await t.click(
-    await Selector('a')
-      .withText('reply')
-      .nth(-1)
-  )
+  await t.click(await Selector('a').withText('reply').nth(-1))
 
   await waitSelector(t, 'Comments', Selector('textarea').nth(-1))
 

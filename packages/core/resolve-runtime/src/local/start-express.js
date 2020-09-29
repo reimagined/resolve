@@ -7,13 +7,13 @@ import { PublisherResourceAlreadyExistError } from 'resolve-local-event-broker'
 import shutdown from '../common/shutdown'
 
 const host = '0.0.0.0'
-const startExpress = async resolve => {
+const startExpress = async (resolve) => {
   const {
     port,
     server,
     assemblies: {
-      eventBrokerConfig: { upstream }
-    }
+      eventBrokerConfig: { upstream },
+    },
   } = resolve
 
   const currentResolve = Object.create(resolve)
@@ -26,7 +26,7 @@ const startExpress = async resolve => {
       [EventstoreResourceAlreadyExistError]
     )
     await invokeFilterErrorTypes(publisher.init.bind(publisher), [
-      PublisherResourceAlreadyExistError
+      PublisherResourceAlreadyExistError,
     ])
 
     await bootstrap(currentResolve, upstream)
@@ -38,7 +38,7 @@ const startExpress = async resolve => {
         const {
           successEvent,
           failedEvent,
-          errors
+          errors,
         } = await currentResolve.eventBus.status({ eventSubscriber })
         if (
           successEvent != null ||
@@ -49,14 +49,14 @@ const startExpress = async resolve => {
         }
       }
 
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
     }
   } finally {
     await disposeResolve(currentResolve)
   }
 
   await new Promise((resolve, reject) =>
-    server.listen(port, host, async error => {
+    server.listen(port, host, async (error) => {
       if (error) {
         return reject(error)
       }
@@ -77,7 +77,7 @@ const startExpress = async resolve => {
     }
   })
 
-  server.on('error', err => {
+  server.on('error', (err) => {
     throw err
   })
 }

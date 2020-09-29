@@ -16,7 +16,7 @@ const update = async (
     makeNestedPath,
     buildUpsertDocument,
     insert,
-    count
+    count,
   } = pool
   const isUpsert = options != null ? !!options.upsert : false
 

@@ -10,7 +10,7 @@ import {
   SHOPPING_ITEM_TOGGLED,
   SHOPPING_ITEM_REMOVED,
   USER_CREATED,
-  USER_NAME_UPDATED
+  USER_NAME_UPDATED,
 } from '../../common/event-types'
 import jwtSecret from '../../common/auth/jwt-secret'
 
@@ -18,7 +18,7 @@ const jwt = JWT.sign(
   {
     username: 'root',
     id: '00000000-0000-0000-0000-000000000000',
-    role: 'root'
+    role: 'root',
   },
   jwtSecret
 )
@@ -33,11 +33,11 @@ describe('aggregates', () => {
 
       expect(
         shoppingListCommands.createShoppingList(state, command, {
-          jwt
+          jwt,
         })
       ).toMatchObject({
         type: SHOPPING_LIST_CREATED,
-        payload: { name }
+        payload: { name },
       })
     })
 
@@ -49,11 +49,11 @@ describe('aggregates', () => {
 
       expect(
         shoppingListCommands.renameShoppingList(state, command, {
-          jwt
+          jwt,
         })
       ).toMatchObject({
         type: SHOPPING_LIST_RENAMED,
-        payload: { name }
+        payload: { name },
       })
     })
 
@@ -63,11 +63,11 @@ describe('aggregates', () => {
 
       expect(
         shoppingListCommands.removeShoppingList(state, command, {
-          jwt
+          jwt,
         })
       ).toMatchObject({
         type: SHOPPING_LIST_REMOVED,
-        payload: {}
+        payload: {},
       })
     })
 
@@ -77,11 +77,11 @@ describe('aggregates', () => {
 
       expect(
         shoppingListCommands.createShoppingItem(state, command, {
-          jwt
+          jwt,
         })
       ).toMatchObject({
         type: SHOPPING_ITEM_CREATED,
-        payload: { id: 'id', text: 'id' }
+        payload: { id: 'id', text: 'id' },
       })
     })
 
@@ -91,11 +91,11 @@ describe('aggregates', () => {
 
       expect(
         shoppingListCommands.toggleShoppingItem(state, command, {
-          jwt
+          jwt,
         })
       ).toMatchObject({
         type: SHOPPING_ITEM_TOGGLED,
-        payload: { id: 'id' }
+        payload: { id: 'id' },
       })
     })
 
@@ -105,11 +105,11 @@ describe('aggregates', () => {
 
       expect(
         shoppingListCommands.removeShoppingItem(state, command, {
-          jwt
+          jwt,
         })
       ).toMatchObject({
         type: SHOPPING_ITEM_REMOVED,
-        payload: { id: 'id' }
+        payload: { id: 'id' },
       })
     })
   })
@@ -125,8 +125,8 @@ describe('aggregates', () => {
         payload: {
           username,
           passwordHash,
-          accessTokenHash
-        }
+          accessTokenHash,
+        },
       }
 
       expect(userCommands.createUser(state, command, { jwt })).toMatchObject({
@@ -134,8 +134,8 @@ describe('aggregates', () => {
         payload: {
           username,
           passwordHash,
-          accessTokenHash
-        }
+          accessTokenHash,
+        },
       })
     })
 
@@ -144,7 +144,7 @@ describe('aggregates', () => {
 
       const state = {
         createdAt: Date.now(),
-        userId: '00000000-0000-0000-0000-000000000000'
+        userId: '00000000-0000-0000-0000-000000000000',
       }
       const command = { payload: { username } }
 
@@ -152,7 +152,7 @@ describe('aggregates', () => {
         userCommands.updateUserName(state, command, { jwt })
       ).toMatchObject({
         type: USER_NAME_UPDATED,
-        payload: { username }
+        payload: { username },
       })
     })
   })

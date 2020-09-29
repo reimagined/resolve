@@ -26,7 +26,7 @@ const stringifyError = (error: any): string =>
 
 const stringifyDiff = (expected: any, result: any): string =>
   diffJson(expected, result, { undefinedReplacement: '<undefined>' })
-    .map(change => {
+    .map((change) => {
       let color = colors.gray
       let prefix = ''
 
@@ -63,10 +63,12 @@ export const shouldProduceEvent = (
   }
   state.assertion = (resolve, reject, result, error) => {
     if (error) {
-      reject(new Error(`expected an event, but received an error ${error}`))
+      return reject(
+        new Error(`expected an event, but received an error ${error}`)
+      )
     }
     if (!isEqual(result, expectedEvent)) {
-      reject(
+      return reject(
         new Error(
           `shouldProduceEvent assertion failed:\n ${stringifyDiff(
             expectedEvent,
@@ -75,7 +77,7 @@ export const shouldProduceEvent = (
         )
       )
     }
-    resolve(result)
+    return resolve(result)
   }
   state.isDefaultAssertion = false
   return context
@@ -92,10 +94,12 @@ export const shouldThrow = (
   }
   state.assertion = (resolve, reject, result, error) => {
     if (!error) {
-      reject(new Error(`expected an error, but received no error received`))
+      return reject(
+        new Error(`expected an error, but received no error received`)
+      )
     }
     if (!isEqual(error, expectedError)) {
-      reject(
+      return reject(
         new Error(
           `expected error ${stringifyError(
             expectedError
@@ -103,7 +107,7 @@ export const shouldThrow = (
         )
       )
     }
-    resolve(result)
+    return resolve(result)
   }
   state.isDefaultAssertion = false
   return context

@@ -11,5 +11,5 @@ export {
   CommentsTreeRenderless,
   CommentsPaginateRenderless,
   RefreshHelperRenderless,
-  createCommentsReducer
+  createCommentsReducer,
 }

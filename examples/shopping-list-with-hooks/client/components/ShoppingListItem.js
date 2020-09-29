@@ -10,16 +10,16 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
     aggregateId: shoppingListId,
     aggregateName: 'ShoppingList',
     payload: {
-      id
-    }
+      id,
+    },
   })
   const removeItem = useCommand({
     type: 'removeShoppingItem',
     aggregateId: shoppingListId,
     aggregateName: 'ShoppingList',
     payload: {
-      id
-    }
+      id,
+    },
   })
   return (
     <ListGroupItem key={id}>

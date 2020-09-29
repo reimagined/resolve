@@ -10,7 +10,7 @@ const bootstrap = async (resolve, upstream) => {
   for (const {
     name: eventSubscriber,
     eventTypes,
-    connectorName
+    connectorName,
   } of resolve.eventListeners.values()) {
     promises.push(
       bootstrapOne({
@@ -20,7 +20,7 @@ const bootstrap = async (resolve, upstream) => {
         eventTypes,
         connectorName,
         credentials: resolve.eventSubscriberCredentials,
-        upstream
+        upstream,
       })
     )
   }
@@ -31,8 +31,8 @@ const bootstrap = async (resolve, upstream) => {
     eventSubscriber: 'websocket',
     subscriptionOptions: {
       credentials: resolve.eventSubscriberCredentials,
-      deliveryStrategy: 'passthrough'
-    }
+      deliveryStrategy: 'passthrough',
+    },
   })
 
   await resolve.publisher.resume({ eventSubscriber: 'websocket' })

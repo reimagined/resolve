@@ -238,7 +238,7 @@ If a saga is split between two files, register it as follows:
 sagas: [
   {
     name: 'UserConfirmation',
-    handlers: 'common/sagas/user-confirmation.handlers.js',
+    source: 'common/sagas/user-confirmation.handlers.js',
     sideEffects: 'common/sagas/user-confirmation.side-effects.js',
     connectorName: 'default',
     schedulerName: 'scheduler'

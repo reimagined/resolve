@@ -3,7 +3,7 @@ import { SUBSCRIBERS_TABLE_NAME } from '../constants'
 const status = async (pool, payload) => {
   const {
     database: { runQuery, escapeId, escapeStr },
-    parseSubscription
+    parseSubscription,
   } = pool
 
   const { eventSubscriber } = payload

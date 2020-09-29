@@ -11,7 +11,7 @@ const useStaticResolver = (): StaticResolver => {
       if (typeof assetPath === 'string') {
         return client.getStaticAssetUrl(assetPath)
       } else {
-        return assetPath.map(path => client.getStaticAssetUrl(path))
+        return assetPath.map((path) => client.getStaticAssetUrl(path))
       }
     },
     [client]

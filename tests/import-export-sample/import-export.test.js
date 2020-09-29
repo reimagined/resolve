@@ -32,10 +32,10 @@ describe('import-export', () => {
 
   test('should works correctly with maintenanceMode = auto', async () => {
     const inputEventstoreAdapter = createEventstoreAdapter({
-      databaseFile: ':memory:'
+      databaseFile: ':memory:',
     })
     const outputEventstoreAdapter = createEventstoreAdapter({
-      databaseFile: ':memory:'
+      databaseFile: ':memory:',
     })
     await inputEventstoreAdapter.init()
     await outputEventstoreAdapter.init()
@@ -48,7 +48,7 @@ describe('import-export', () => {
         aggregateVersion: eventIndex + 1,
         type: 'EVENT',
         payload: { eventIndex },
-        timestamp: eventIndex + 1
+        timestamp: eventIndex + 1,
       }
       await inputEventstoreAdapter.saveEvent(event)
     }
@@ -65,10 +65,10 @@ describe('import-export', () => {
 
   test('should works correctly with maintenanceMode = manual', async () => {
     const eventEventstoreAdapter = createEventstoreAdapter({
-      databaseFile: eventStorePath
+      databaseFile: eventStorePath,
     })
     const outputEventstoreAdapter = createEventstoreAdapter({
-      databaseFile: ':memory:'
+      databaseFile: ':memory:',
     })
     await eventEventstoreAdapter.init()
     await outputEventstoreAdapter.init()
@@ -83,7 +83,7 @@ describe('import-export', () => {
         payload: Array.from({ length: 64 })
           .map(() => Math.round(Math.random()))
           .join(''),
-        timestamp: eventIndex + 1
+        timestamp: eventIndex + 1,
       })
     }
 
@@ -98,13 +98,13 @@ describe('import-export', () => {
       steps++
 
       const eventEventstoreAdapter = createEventstoreAdapter({
-        databaseFile: eventStorePath
+        databaseFile: eventStorePath,
       })
 
       const exportStream = eventEventstoreAdapter.export({
         maintenanceMode: MAINTENANCE_MODE_MANUAL,
         bufferSize: 512,
-        cursor
+        cursor,
       })
 
       const tempStream = createStreamBuffer()
@@ -125,7 +125,7 @@ describe('import-export', () => {
     const exportBuffer = Buffer.from(exportBuffers.join(''))
 
     const exportBufferStream = new Readable()
-    exportBufferStream._read = function() {
+    exportBufferStream._read = function () {
       this.push(exportBuffer)
       this.push(null)
     }
@@ -143,7 +143,7 @@ describe('import-export', () => {
 
   test('should works correctly when stopped by timeout ', async () => {
     const inputEventstoreAdapter = createEventstoreAdapter({
-      databaseFile: ':memory:'
+      databaseFile: ':memory:',
     })
     await inputEventstoreAdapter.init()
 
@@ -155,7 +155,7 @@ describe('import-export', () => {
         aggregateVersion: eventIndex + 1,
         type: 'EVENT',
         payload: { eventIndex },
-        timestamp: eventIndex + 1
+        timestamp: eventIndex + 1,
       })
     }
 
@@ -175,7 +175,7 @@ describe('import-export', () => {
         tempStream
       ).then(() => false)
 
-      const timeoutPromise = new Promise(resolve =>
+      const timeoutPromise = new Promise((resolve) =>
         setTimeout(() => {
           resolve(true)
         }, 100)
@@ -183,7 +183,7 @@ describe('import-export', () => {
 
       const isJsonStreamTimedOut = await Promise.race([
         timeoutPromise,
-        pipelinePromise
+        pipelinePromise,
       ])
       isJsonStreamTimedOutOnce =
         isJsonStreamTimedOutOnce || isJsonStreamTimedOut
@@ -205,7 +205,7 @@ describe('import-export', () => {
       .join('')
       .trim()
       .split('\n')
-      .map(eventAsString => JSON.parse(eventAsString.trim()))
+      .map((eventAsString) => JSON.parse(eventAsString.trim()))
     const outputCountEvents = outputEvents.length
 
     expect(isJsonStreamTimedOutOnce).toEqual(true)

@@ -8,20 +8,20 @@ import {
   QUERY_READMODEL_REQUEST,
   QUERY_READMODEL_SUCCESS,
   QUERY_READMODEL_FAILURE,
-  DROP_READMODEL_STATE
+  DROP_READMODEL_STATE,
 } from '../internal/action-types'
 import {
   ReadModelAction,
   DropReadModelResultAction,
   QueryReadModelFailureAction,
   QueryReadModelRequestAction,
-  QueryReadModelSuccessAction
+  QueryReadModelSuccessAction,
 } from './actions'
 import {
   ReadModelResultEntry,
   ReadModelResultMapByName,
   ResultStatus,
-  ReduxState
+  ReduxState,
 } from '../types'
 
 export type ReadModelResultEntrySelector = {
@@ -39,7 +39,7 @@ export const getEntryPath = (
     return `@@resolve/namedSelectors.${getHash(selector)}`
   }
   const {
-    query: { name, resolver, args }
+    query: { name, resolver, args },
   } = selector
   return `${getHash(name)}.${getHash(resolver)}.${getHash(args)}`
 }
@@ -60,12 +60,12 @@ export const create = (): any => {
   ): ReduxState =>
     setEntry(
       {
-        ...state
+        ...state,
       },
       getEntryPath(getSelector(action)),
       {
         status: ResultStatus.Requested,
-        data: action.initialState
+        data: action.initialState,
       }
     )
 
@@ -75,12 +75,12 @@ export const create = (): any => {
   ): ReduxState =>
     setEntry(
       {
-        ...state
+        ...state,
       },
       getEntryPath(getSelector(action)),
       {
         status: ResultStatus.Ready,
-        data: action.result.data
+        data: action.result.data,
       }
     )
 
@@ -90,13 +90,13 @@ export const create = (): any => {
   ): ReduxState =>
     setEntry(
       {
-        ...state
+        ...state,
       },
       getEntryPath(getSelector(action)),
       {
         status: ResultStatus.Failed,
         data: null,
-        error: action.error?.message ?? 'unknown error'
+        error: action.error?.message ?? 'unknown error',
       }
     )
 
@@ -105,7 +105,7 @@ export const create = (): any => {
     action: DropReadModelResultAction
   ): ReduxState => {
     const newState = {
-      ...state
+      ...state,
     }
     unsetEntry(newState, getEntryPath(getSelector(action)))
     return newState

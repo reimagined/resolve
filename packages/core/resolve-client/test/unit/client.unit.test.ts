@@ -5,32 +5,45 @@ import { mocked } from 'ts-jest/utils'
 import { Client, getClient } from '../../src/client'
 import { Context } from '../../src/context'
 import { NarrowedResponse, request, VALIDATED_RESULT } from '../../src/request'
+import { ViewModel, ViewModelDeserializer } from '../../src/view-model-types'
+import { IS_BUILT_IN } from 'resolve-core'
 
 jest.mock('../../src/request', () => ({
-  request: jest.fn()
+  request: jest.fn(),
 }))
 jest.mock('../../src/subscribe', () => ({}))
+
+const responseHeaders: { [key: string]: string } = {
+  Date: '12345',
+  'X-Resolve-View-Model-Subscription': JSON.stringify({ url: 'subscribe-url' }),
+}
 
 const createMockResponse = (overrides: object = {}): NarrowedResponse => ({
   ok: true,
   status: 200,
   headers: {
-    get: (header: string): string | null => `${header}-value`
+    get: jest.fn(
+      (header: string): string | null =>
+        responseHeaders[header] || `${header}-value`
+    ),
   },
   json: (): Promise<object> =>
     Promise.resolve({
-      data: { data: 'response-data' }
+      data: JSON.stringify({ data: 'response-data' }),
     }),
   text: (): Promise<string> => Promise.resolve('response-text'),
-  ...overrides
+  ...overrides,
 })
 
-const createMockContext = (staticPath = 'static-path'): Context => ({
+const createMockContext = (
+  staticPath = 'static-path',
+  viewModels: Array<ViewModel> = []
+): Context => ({
   origin: 'mock-origin',
   staticPath,
   rootPath: 'root-path',
   jwtProvider: undefined,
-  viewModels: []
+  viewModels,
 })
 
 const mRequest = mocked(request)
@@ -60,15 +73,15 @@ describe('command', () => {
     getJson = jest.fn(
       (): Promise<object> =>
         Promise.resolve({
-          result: 'command-result'
+          result: 'command-result',
         })
     )
     mRequest.mockResolvedValue(
       createMockResponse({
         headers: {
-          get: getHeader
+          get: getHeader,
         },
-        json: getJson
+        json: getJson,
       })
     )
   })
@@ -79,8 +92,8 @@ describe('command', () => {
       aggregateId: 'user-id',
       type: 'create',
       payload: {
-        name: 'user-name'
-      }
+        name: 'user-name',
+      },
     })
 
     expect(mRequest).toHaveBeenCalledWith(
@@ -91,8 +104,8 @@ describe('command', () => {
         aggregateId: 'user-id',
         type: 'create',
         payload: {
-          name: 'user-name'
-        }
+          name: 'user-name',
+        },
       },
       undefined
     )
@@ -105,11 +118,11 @@ describe('command', () => {
         aggregateId: 'user-id',
         type: 'create',
         payload: {
-          name: 'user-name'
-        }
+          name: 'user-name',
+        },
       },
       {
-        option: 'option'
+        option: 'option',
       }
     )
 
@@ -121,11 +134,11 @@ describe('command', () => {
         aggregateId: 'user-id',
         type: 'create',
         payload: {
-          name: 'user-name'
-        }
+          name: 'user-name',
+        },
       },
       {
-        option: 'option'
+        option: 'option',
       }
     )
   })
@@ -136,25 +149,25 @@ describe('command', () => {
       aggregateId: 'user-id',
       type: 'create',
       payload: {
-        name: 'user-name'
-      }
+        name: 'user-name',
+      },
     })
 
     expect(getJson).toHaveBeenCalled()
     expect(result).toEqual({
-      result: 'command-result'
+      result: 'command-result',
     })
   })
 
-  test('callback instead of options', done => {
+  test('callback instead of options', (done) => {
     client.command(
       {
         aggregateName: 'user',
         aggregateId: 'user-id',
         type: 'create',
         payload: {
-          name: 'user-name'
-        }
+          name: 'user-name',
+        },
       },
       (error, result) => {
         if (error) {
@@ -162,7 +175,7 @@ describe('command', () => {
         }
 
         expect(result).toEqual({
-          result: 'command-result'
+          result: 'command-result',
         })
 
         done()
@@ -172,28 +185,26 @@ describe('command', () => {
 })
 
 describe('query', () => {
-  let getHeader: () => string
-  let getJson: () => Promise<object>
+  let getJson: jest.Mock
+  let getHeader: jest.Mock
 
   beforeEach(() => {
-    getHeader = jest.fn((): string => '12345')
     getJson = jest.fn(
       (): Promise<object> =>
         Promise.resolve({
           data: {
-            result: 'query-result'
+            result: 'query-result',
           },
-          meta: {}
+          meta: {},
         })
     )
-    mRequest.mockResolvedValue(
-      createMockResponse({
-        headers: {
-          get: getHeader
-        },
-        json: getJson
-      })
-    )
+    const response = createMockResponse({
+      json: getJson,
+    })
+
+    getHeader = response.headers.get as jest.Mock
+
+    mRequest.mockResolvedValue(response)
   })
 
   test('valid request made', async () => {
@@ -201,18 +212,18 @@ describe('query', () => {
       name: 'query-name',
       resolver: 'query-resolver',
       args: {
-        name: 'value'
-      }
+        name: 'value',
+      },
     })
 
     expect(mRequest).toHaveBeenCalledWith(
       mockContext,
       '/api/query/query-name/query-resolver',
       {
-        name: 'value'
+        name: 'value',
       },
       {
-        method: 'GET'
+        method: 'GET',
       }
     )
   })
@@ -222,30 +233,30 @@ describe('query', () => {
       name: 'query-name',
       resolver: 'query-resolver',
       args: {
-        name: 'value'
-      }
+        name: 'value',
+      },
     })
 
     expect(getHeader).toHaveBeenCalledWith('Date')
     expect(getJson).toHaveBeenCalled()
     expect(result).toEqual({
       data: {
-        result: 'query-result'
+        result: 'query-result',
       },
       meta: {
-        timestamp: 12345
-      }
+        timestamp: 12345,
+      },
     })
   })
 
-  test('callback instead of options', done => {
+  test('callback instead of options', (done) => {
     client.query(
       {
         name: 'query-name',
         resolver: 'query-resolver',
         args: {
-          name: 'value'
-        }
+          name: 'value',
+        },
       },
       (error, result) => {
         if (error) {
@@ -254,11 +265,11 @@ describe('query', () => {
 
         expect(result).toEqual({
           data: {
-            result: 'query-result'
+            result: 'query-result',
           },
           meta: {
-            timestamp: 12345
-          }
+            timestamp: 12345,
+          },
         })
 
         done()
@@ -266,38 +277,41 @@ describe('query', () => {
     )
   })
 
-  test('awaiting for result: response validator', async () => {
+  test('awaiting for result: response validator with read-model deserializer', async () => {
     await client.query(
       {
         name: 'query-name',
         resolver: 'query-resolver',
         args: {
-          name: 'value'
-        }
+          name: 'value',
+        },
       },
       {
         waitFor: {
           validator: isEqual.bind(null, {
-            result: 'valid-result'
+            data: {
+              isValid: true,
+            },
+            meta: {},
           }),
           attempts: 1,
-          period: 1
-        }
+          period: 1,
+        },
       }
     )
     expect(mRequest).toHaveBeenCalledWith(
       mockContext,
       '/api/query/query-name/query-resolver',
       {
-        name: 'value'
+        name: 'value',
       },
       {
         method: 'GET',
         waitForResponse: {
           validator: expect.any(Function),
           period: 1,
-          attempts: 1
-        }
+          attempts: 1,
+        },
       }
     )
 
@@ -313,8 +327,9 @@ describe('query', () => {
       createMockResponse({
         json: (): Promise<any> =>
           Promise.resolve({
-            result: 'invalid-result'
-          })
+            data: { isValid: false },
+            meta: {},
+          }),
       }),
       confirm
     )
@@ -324,13 +339,17 @@ describe('query', () => {
       createMockResponse({
         json: (): Promise<any> =>
           Promise.resolve({
-            result: 'valid-result'
-          })
+            data: { isValid: true },
+            meta: {},
+          }),
       }),
       confirm
     )
     expect(validResult).toEqual({
-      result: 'valid-result'
+      data: {
+        isValid: true,
+      },
+      meta: {},
     })
   })
 
@@ -338,14 +357,15 @@ describe('query', () => {
     mRequest.mockResolvedValue(
       createMockResponse({
         headers: {
-          get: getHeader
+          get: getHeader,
         },
         json: getJson,
         [VALIDATED_RESULT]: {
           data: {
-            result: 'validated-result'
-          }
-        }
+            result: 'validated-result',
+          },
+          meta: {},
+        },
       })
     )
     const result = await client.query(
@@ -353,25 +373,25 @@ describe('query', () => {
         name: 'query-name',
         resolver: 'query-resolver',
         args: {
-          name: 'value'
-        }
+          name: 'value',
+        },
       },
       {
         waitFor: {
           validator: isEqual.bind(null, {
-            result: 'query-result'
+            result: 'query-result',
           }),
           attempts: 1,
-          period: 1
-        }
+          period: 1,
+        },
       }
     )
     expect(getJson).toBeCalledTimes(0)
     expect(result).toEqual(
       expect.objectContaining({
         data: {
-          result: 'validated-result'
-        }
+          result: 'validated-result',
+        },
       })
     )
   })
@@ -382,21 +402,21 @@ describe('query', () => {
         name: 'query-name',
         resolver: 'query-resolver',
         args: {
-          name: 'value'
-        }
+          name: 'value',
+        },
       },
       {
-        method: 'POST'
+        method: 'POST',
       }
     )
     expect(mRequest).toHaveBeenCalledWith(
       mockContext,
       '/api/query/query-name/query-resolver',
       {
-        name: 'value'
+        name: 'value',
       },
       {
-        method: 'POST'
+        method: 'POST',
       }
     )
   })
@@ -407,8 +427,8 @@ describe('query', () => {
         name: 'query-name',
         resolver: 'query-resolver',
         args: {
-          name: 'value'
-        }
+          name: 'value',
+        },
       },
       {}
     )
@@ -416,12 +436,235 @@ describe('query', () => {
       mockContext,
       '/api/query/query-name/query-resolver',
       {
-        name: 'value'
+        name: 'value',
       },
       {
-        method: 'GET'
+        method: 'GET',
       }
     )
+  })
+
+  test('use view model state deserializer', async () => {
+    client = getClient(
+      createMockContext('static-path', [
+        {
+          name: 'custom-serializer',
+          projection: {
+            Init: () => null,
+          },
+          deserializeState: (data: string) => JSON.parse(data.slice(3)),
+        },
+      ])
+    )
+
+    getJson.mockResolvedValueOnce({ data: `>>>${JSON.stringify({ a: 'a' })}` })
+
+    const result = await client.query({
+      name: 'custom-serializer',
+      aggregateIds: ['id'],
+      args: {},
+    })
+
+    expect(result).toEqual({
+      data: {
+        a: 'a',
+      },
+      meta: {
+        timestamp: 12345,
+        url: 'subscribe-url',
+      },
+    })
+  })
+
+  test('ignore view model built-in state deserializer', async () => {
+    const buildInDeserializer: ViewModelDeserializer = (data: string) =>
+      JSON.parse(data.slice(3))
+    buildInDeserializer[IS_BUILT_IN] = true
+
+    client = getClient(
+      createMockContext('static-path', [
+        {
+          name: 'built-in-serializer',
+          projection: {
+            Init: () => null,
+          },
+          deserializeState: buildInDeserializer,
+        },
+      ])
+    )
+
+    getJson.mockResolvedValueOnce({ data: { a: 'a' } })
+
+    const result = await client.query({
+      name: 'built-in-serializer',
+      aggregateIds: ['id'],
+      args: {},
+    })
+
+    expect(result).toEqual({
+      data: {
+        a: 'a',
+      },
+      meta: {
+        timestamp: 12345,
+        url: 'subscribe-url',
+      },
+    })
+  })
+
+  test('awaiting for result: response validator with view-model built-in deserializer', async () => {
+    const builtInDeserializer: ViewModelDeserializer = (data: string) =>
+      JSON.parse(data.slice(3))
+    builtInDeserializer[IS_BUILT_IN] = true
+
+    client = getClient(
+      createMockContext('static-path', [
+        {
+          name: 'built-in-serializer',
+          projection: {
+            Init: () => null,
+          },
+          deserializeState: builtInDeserializer,
+        },
+      ])
+    )
+
+    await client.query(
+      {
+        name: 'built-in-serializer',
+        aggregateIds: ['1'],
+        args: {
+          name: 'value',
+        },
+      },
+      {
+        waitFor: {
+          validator: isEqual.bind(null, {
+            data: {
+              isValid: true,
+            },
+            meta: {},
+          }),
+          attempts: 1,
+          period: 1,
+        },
+      }
+    )
+
+    const validator = mRequest.mock.calls[0][3]?.waitForResponse
+      ?.validator as Function
+
+    let validResult: string | null = null
+    const confirm = (result: string): void => {
+      validResult = result
+    }
+
+    await validator(
+      createMockResponse({
+        json: (): Promise<any> =>
+          Promise.resolve({
+            data: { isValid: false },
+            meta: {},
+          }),
+      }),
+      confirm
+    )
+    expect(validResult).toBeNull()
+
+    await validator(
+      createMockResponse({
+        json: (): Promise<any> =>
+          Promise.resolve({
+            data: { isValid: true },
+            meta: {},
+          }),
+      }),
+      confirm
+    )
+    expect(validResult).toEqual({
+      data: {
+        isValid: true,
+      },
+      meta: {},
+    })
+  })
+
+  test('awaiting for result: response validator with custom view-model deserializer', async () => {
+    const builtInDeserializer: ViewModelDeserializer = (data: string) =>
+      JSON.parse(data)
+
+    client = getClient(
+      createMockContext('static-path', [
+        {
+          name: 'built-in-serializer',
+          projection: {
+            Init: () => null,
+          },
+          deserializeState: builtInDeserializer,
+        },
+      ])
+    )
+
+    getJson.mockResolvedValueOnce({ data: JSON.stringify({ isValid: false }) })
+
+    await client.query(
+      {
+        name: 'built-in-serializer',
+        aggregateIds: ['1'],
+        args: {
+          name: 'value',
+        },
+      },
+      {
+        waitFor: {
+          validator: isEqual.bind(null, {
+            data: {
+              isValid: true,
+            },
+            meta: {},
+          }),
+          attempts: 1,
+          period: 1,
+        },
+      }
+    )
+
+    const validator = mRequest.mock.calls[0][3]?.waitForResponse
+      ?.validator as Function
+
+    let validResult: string | null = null
+    const confirm = (result: string): void => {
+      validResult = result
+    }
+
+    await validator(
+      createMockResponse({
+        json: (): Promise<any> =>
+          Promise.resolve({
+            data: JSON.stringify({ isValid: false }),
+            meta: {},
+          }),
+      }),
+      confirm
+    )
+    expect(validResult).toBeNull()
+
+    await validator(
+      createMockResponse({
+        json: (): Promise<any> =>
+          Promise.resolve({
+            data: JSON.stringify({ isValid: true }),
+            meta: {},
+          }),
+      }),
+      confirm
+    )
+    expect(validResult).toEqual({
+      data: {
+        isValid: true,
+      },
+      meta: {},
+    })
   })
 })
 

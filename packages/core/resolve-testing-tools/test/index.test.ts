@@ -7,7 +7,7 @@ describe('read model', () => {
     const result = await givenEvents([
       { aggregateId: 'id1', type: 'TEST1' },
       { aggregateId: 'id2', type: 'TEST2' },
-      { aggregateId: 'id3', type: 'TEST3' }
+      { aggregateId: 'id3', type: 'TEST3' },
     ])
       .readModel({
         name: 'readModelName',
@@ -15,7 +15,7 @@ describe('read model', () => {
           Init: async (store: any): Promise<any> => {
             await store.defineTable('items', {
               indexes: { id: 'string' },
-              fields: []
+              fields: [],
             })
           },
           TEST1: async (store: any): Promise<any> => {
@@ -26,20 +26,20 @@ describe('read model', () => {
           },
           TEST3: async (store: any): Promise<any> => {
             await store.insert('items', { id: 3 })
-          }
+          },
         },
         resolvers: {
           all: async (store: any, args: any, context: any): Promise<any> => {
             return {
               items: await store.find('items', {}, { id: 1 }, { id: 1 }),
               args,
-              context
+              context,
             }
-          }
+          },
         },
-        adapter: createReadModelConnector({
-          databaseFile: ':memory:'
-        })
+        adapter: await createReadModelConnector({
+          databaseFile: ':memory:',
+        }),
       })
       .all({ a: 10, b: 20 })
       .as('JWT_TOKEN')
@@ -50,10 +50,112 @@ describe('read model', () => {
         args: { a: 10, b: 20 },
         context: {
           jwt: 'JWT_TOKEN',
-          secretsManager: expect.any(Object)
-        }
-      }
+          secretsManager: expect.any(Object),
+        },
+      },
     })
+  })
+
+  test('using encryption', async () => {
+    const decryptMock = jest.fn((val: any) => `plain_${val}`)
+    const result = await givenEvents([
+      { aggregateId: 'id1', type: 'PUSH', payload: { data: 'data' } },
+    ])
+      .readModel({
+        name: 'readModelName',
+        projection: {
+          Init: async (store: any): Promise<any> => {
+            await store.defineTable('items_2', {
+              indexes: { id: 'string' },
+              fields: ['data'],
+            })
+          },
+          PUSH: async (
+            store: any,
+            { payload: { data } }: any,
+            { decrypt }: any
+          ): Promise<any> => {
+            await store.insert('items_2', { id: 1, data: decrypt(data) })
+          },
+        },
+        resolvers: {
+          all: async (store: any, args: any, context: any): Promise<any> => {
+            return await store.find('items_2', { id: 1 })
+          },
+        },
+        adapter: await createReadModelConnector({
+          databaseFile: ':memory:',
+        }),
+        encryption: async () => ({
+          decrypt: decryptMock,
+          encrypt: jest.fn(),
+        }),
+      })
+      .all({})
+      .as('JWT_TOKEN')
+
+    expect(result.data[0]).toEqual({
+      id: 1,
+      data: `plain_data`,
+    })
+  })
+
+  test('throwing resolver', async () => {
+    try {
+      await givenEvents([])
+        .readModel({
+          name: 'readModelName',
+          projection: {
+            Init: async (store: any): Promise<any> => {
+              void 0
+            },
+          },
+          resolvers: {
+            all: async (store: any, args: any, context: any): Promise<any> => {
+              throw new Error(`Error from resolver`)
+            },
+          },
+          adapter: createReadModelConnector({
+            databaseFile: ':memory:',
+          }),
+        })
+        .all({})
+        .as('JWT_TOKEN')
+
+      return Promise.reject('Test failed')
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toEqual('Error from resolver')
+    }
+  })
+
+  test('throwing projection', async () => {
+    try {
+      await givenEvents([])
+        .readModel({
+          name: 'readModelName',
+          projection: {
+            Init: async (store: any): Promise<any> => {
+              throw new Error('Error from projection')
+            },
+          },
+          resolvers: {
+            all: async (store: any, args: any, context: any): Promise<any> => {
+              return 'OK'
+            },
+          },
+          adapter: createReadModelConnector({
+            databaseFile: ':memory:',
+          }),
+        })
+        .all({})
+        .as('JWT_TOKEN')
+
+      return Promise.reject('Test failed')
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toEqual('Error from projection')
+    }
   })
 
   test('bug fix: default secrets manager', async () => {
@@ -70,11 +172,11 @@ describe('read model', () => {
             await secretsManager.setSecret('id', 'secret')
             await secretsManager.getSecret('id')
             await secretsManager.deleteSecret('id')
-          }
+          },
         },
         adapter: createReadModelConnector({
-          databaseFile: ':memory:'
-        })
+          databaseFile: ':memory:',
+        }),
       })
       .all()
       .as('jwt')
@@ -84,7 +186,7 @@ describe('read model', () => {
     const secretsManager = {
       getSecret: jest.fn(),
       setSecret: jest.fn(),
-      deleteSecret: jest.fn()
+      deleteSecret: jest.fn(),
     }
 
     await givenEvents([])
@@ -101,11 +203,11 @@ describe('read model', () => {
             await secretsManager.setSecret('id', 'secret')
             await secretsManager.getSecret('id')
             await secretsManager.deleteSecret('id')
-          }
+          },
         },
         adapter: createReadModelConnector({
-          databaseFile: ':memory:'
-        })
+          databaseFile: ':memory:',
+        }),
       })
       .all()
       .as('jwt')
@@ -125,7 +227,7 @@ describe('aggregate', () => {
     name: 'user',
     projection: {
       Init: (): AggregateState => ({
-        exist: false
+        exist: false,
       }),
       TEST_COMMAND_EXECUTED: (
         state: AggregateState,
@@ -133,8 +235,8 @@ describe('aggregate', () => {
       ): AggregateState => ({
         ...state,
         exist: true,
-        id: event.aggregateId
-      })
+        id: event.aggregateId,
+      }),
     },
     commands: {
       create: (state: AggregateState, command, context): any => {
@@ -146,7 +248,7 @@ describe('aggregate', () => {
         }
         return {
           type: 'TEST_COMMAND_EXECUTED',
-          payload: {}
+          payload: {},
         }
       },
       failWithCustomId: (state: AggregateState, command): any => {
@@ -156,9 +258,9 @@ describe('aggregate', () => {
         throw Error(`aggregate ${command.aggregateId} failure`)
       },
       noPayload: (): any => ({
-        type: 'EVENT_WITHOUT_PAYLOAD'
-      })
-    }
+        type: 'EVENT_WITHOUT_PAYLOAD',
+      }),
+    },
   }
 
   describe('native Jest assertions', () => {
@@ -170,7 +272,7 @@ describe('aggregate', () => {
           .as('valid-user')
       ).resolves.toEqual({
         type: 'TEST_COMMAND_EXECUTED',
-        payload: {}
+        payload: {},
       })
     })
 
@@ -179,8 +281,8 @@ describe('aggregate', () => {
         givenEvents([
           {
             type: 'TEST_COMMAND_EXECUTED',
-            payload: {}
-          }
+            payload: {},
+          },
         ])
           .aggregate(aggregate)
           .command('create', {})
@@ -211,8 +313,8 @@ describe('aggregate', () => {
         givenEvents([
           {
             type: 'TEST_COMMAND_EXECUTED',
-            payload: {}
-          }
+            payload: {},
+          },
         ])
           .aggregate(aggregate, 'custom-id')
           .command('failWithCustomId', {})
@@ -227,7 +329,7 @@ describe('aggregate', () => {
           .command('noPayload')
           .as('valid-user')
       ).resolves.toEqual({
-        type: 'EVENT_WITHOUT_PAYLOAD'
+        type: 'EVENT_WITHOUT_PAYLOAD',
       })
     })
   })
@@ -240,15 +342,29 @@ describe('aggregate', () => {
         .as('valid-user')
         .shouldProduceEvent({
           type: 'TEST_COMMAND_EXECUTED',
-          payload: {}
+          payload: {},
         }))
+
+    test('bug: promise not resolved in node version 12', async () => {
+      jest.setTimeout(3000000)
+      try {
+        await givenEvents([])
+          .aggregate(aggregate)
+          .command('create', {})
+          .as('valid-user')
+          .shouldProduceEvent({
+            type: 'ANOTHER_EVENT',
+            payload: {},
+          })
+      } catch {}
+    })
 
     test('expecting business logic break', () =>
       givenEvents([
         {
           type: 'TEST_COMMAND_EXECUTED',
-          payload: {}
-        }
+          payload: {},
+        },
       ])
         .aggregate(aggregate)
         .command('create', {})
@@ -273,8 +389,8 @@ describe('aggregate', () => {
       givenEvents([
         {
           type: 'TEST_COMMAND_EXECUTED',
-          payload: {}
-        }
+          payload: {},
+        },
       ])
         .aggregate(aggregate, 'custom-id')
         .command('failWithCustomId', {})
@@ -287,7 +403,7 @@ describe('aggregate', () => {
         .command('noPayload')
         .as('valid-user')
         .shouldProduceEvent({
-          type: 'EVENT_WITHOUT_PAYLOAD'
+          type: 'EVENT_WITHOUT_PAYLOAD',
         }))
   })
 })

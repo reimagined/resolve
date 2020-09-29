@@ -1,4 +1,4 @@
-const checkApplicationName = pool => async () => {
+const checkApplicationName = (pool) => async () => {
   const { EOL, chalk, validateProjectName, applicationName } = pool
   const result = validateProjectName(applicationName)
   if (!result.validForNewPackages) {
@@ -9,7 +9,7 @@ const checkApplicationName = pool => async () => {
     message += []
       .concat(result.errors || [])
       .concat(result.warnings || [])
-      .map(e => `  *  ${e}`)
+      .map((e) => `  *  ${e}`)
       .join(EOL)
 
     throw message

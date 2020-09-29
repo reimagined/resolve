@@ -2,7 +2,7 @@ import { merge, defaultResolveConfig, validateConfig } from 'resolve-scripts'
 
 const localConfig = {
   mode: 'development',
-  target: 'local'
+  target: 'local',
 }
 
 // mdis-start app-config
@@ -12,9 +12,9 @@ const appConfig = {
       name: 'Advanced',
       projection: 'projection.js',
       resolvers: 'resolvers.js',
-      connectorName: 'default'
-    }
-  ]
+      connectorName: 'default',
+    },
+  ],
 }
 // mdis-stop app-config
 
@@ -23,17 +23,17 @@ const devConfig = {
   eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
     options: {
-      databaseFile: ':memory:'
-    }
+      databaseFile: ':memory:',
+    },
   },
 
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: ':memory:'
-      }
-    }
+        databaseFile: ':memory:',
+      },
+    },
     /*
     default: {
       module: 'resolve-readmodel-mysql',
@@ -46,7 +46,7 @@ const devConfig = {
       }
     }
     */
-  }
+  },
 }
 // mdis-stop dev-config
 

@@ -4,19 +4,19 @@ import address from 'address'
 import getRootBasedUrl from './get_root_based_url'
 
 const prepareUrls = (protocol, host, port, rootPath) => {
-  const formatUrl = hostname =>
+  const formatUrl = (hostname) =>
     url.format({
       protocol,
       hostname,
       port,
-      pathname: getRootBasedUrl(rootPath, '/')
+      pathname: getRootBasedUrl(rootPath, '/'),
     })
-  const prettyPrintUrl = hostname =>
+  const prettyPrintUrl = (hostname) =>
     url.format({
       protocol,
       hostname,
       port: chalk.bold(port),
-      pathname: getRootBasedUrl(rootPath, '/')
+      pathname: getRootBasedUrl(rootPath, '/'),
     })
 
   const isUnspecifiedHost = host === '0.0.0.0' || host === '::'
@@ -53,7 +53,7 @@ const prepareUrls = (protocol, host, port, rootPath) => {
     lanUrlForConfig,
     lanUrlForTerminal,
     localUrlForTerminal,
-    localUrlForBrowser
+    localUrlForBrowser,
   }
 }
 

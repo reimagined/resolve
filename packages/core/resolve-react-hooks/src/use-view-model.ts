@@ -14,7 +14,7 @@ type Closure = {
   state?: any
   subscription?: Subscription
   url?: string
-  cursor?: string
+  cursor: string | null
 }
 
 type ViewModelConnection = {
@@ -138,7 +138,8 @@ function useViewModel(
       ? viewModel.projection.Init()
       : null
     return {
-      initialState
+      initialState,
+      cursor: null,
     }
   }, [])
 
@@ -152,7 +153,7 @@ function useViewModel(
       {
         name: modelName,
         aggregateIds,
-        args: actualArgs
+        args: actualArgs,
       },
       actualQueryOptions
     )
@@ -160,11 +161,11 @@ function useViewModel(
       const { data, meta: { url, cursor } = {} } = result
       setState(data, false)
       closure.url = url
-      closure.cursor = cursor
+      closure.cursor = cursor ?? null
     }
   }, [])
 
-  const applyEvent = useCallback(event => {
+  const applyEvent = useCallback((event) => {
     if (isCallback<EventReceivedCallback>(actualEventReceivedCallback)) {
       actualEventReceivedCallback(event)
     }
@@ -179,10 +180,10 @@ function useViewModel(
 
       const subscribe = client.subscribe(
         closure.url ?? '',
-        closure.cursor ?? '',
+        closure.cursor,
         modelName,
         aggregateIds,
-        event => applyEvent(event),
+        (event) => applyEvent(event),
         undefined,
         () => queryState()
       ) as Promise<Subscription>
@@ -203,8 +204,8 @@ function useViewModel(
     }
 
     asyncConnect()
-      .then(result => done(null, result))
-      .catch(error => done(error, null))
+      .then((result) => done(null, result))
+      .catch((error) => done(error, null))
 
     return undefined
   }, [])
@@ -224,7 +225,7 @@ function useViewModel(
 
     asyncDispose()
       .then(() => done())
-      .catch(error => done(error))
+      .catch((error) => done(error))
 
     return undefined
   }, [])
@@ -233,7 +234,7 @@ function useViewModel(
     () => ({
       connect,
       dispose,
-      initialState: closure.initialState
+      initialState: closure.initialState,
     }),
     []
   )

@@ -40,7 +40,7 @@ const ssrHandler = async (
       history,
       origin,
       rootPath,
-      isClient: false
+      isClient: false,
     })
 
     const staticContext = {}

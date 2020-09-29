@@ -33,7 +33,7 @@ export default givenEvents.bind(null, {
   getDefaultSecretsManager,
   setSecretsManager,
   aggregate,
-  command
+  command,
 }) as (events: any[]) => GivenEventsContext
 
 export const RESOLVE_SIDE_EFFECTS_START_TIMESTAMP =

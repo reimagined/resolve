@@ -1,8 +1,8 @@
 import { createClient } from 'resolve-local-rpc'
 
-const connectConsumer = async config => {
+const connectConsumer = async (config) => {
   return await createClient({
-    address: config.address
+    address: config.address,
   })
 }
 

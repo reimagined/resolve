@@ -4,14 +4,14 @@ import getHash from '../internal/get-hash'
 import createSagaManager from '../internal/create-saga-manager'
 import {
   CONNECT_READMODEL,
-  DISCONNECT_READMODEL
+  DISCONNECT_READMODEL,
 } from '../internal/action-types'
 import connectReadModelSaga from './connect-read-model-saga'
 import disconnectReadModelSaga from './disconnect-read-model-saga'
 import { ChildSagaArgs } from '../types'
 import { ConnectReadModelAction, DisconnectReadModelAction } from './actions'
 
-const readModelsSaga = function*(sagaArgs: ChildSagaArgs): any {
+const readModelsSaga = function* (sagaArgs: ChildSagaArgs): any {
   const sagaManager = createSagaManager()
 
   while (true) {
@@ -19,7 +19,7 @@ const readModelsSaga = function*(sagaArgs: ChildSagaArgs): any {
       | ConnectReadModelAction
       | DisconnectReadModelAction = yield take([
       CONNECT_READMODEL,
-      DISCONNECT_READMODEL
+      DISCONNECT_READMODEL,
     ])
 
     switch (action.type) {
@@ -32,7 +32,7 @@ const readModelsSaga = function*(sagaArgs: ChildSagaArgs): any {
           {
             ...sagaArgs,
             sagaManager,
-            sagaKey
+            sagaKey,
           },
           action
         )
@@ -47,7 +47,7 @@ const readModelsSaga = function*(sagaArgs: ChildSagaArgs): any {
           {
             ...sagaArgs,
             sagaManager,
-            sagaKey
+            sagaKey,
           },
           action
         )

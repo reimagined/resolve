@@ -8,7 +8,7 @@ const dropSecretsStore = async (pool: AdapterPool): Promise<any> => {
   log.debug(`dropping secrets store database tables`)
   const {
     secrets: { tableName, connection },
-    escapeId
+    escapeId,
   } = pool
   log.verbose(`secretsTableName: ${tableName}`)
 

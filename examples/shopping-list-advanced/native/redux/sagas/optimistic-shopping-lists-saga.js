@@ -3,54 +3,54 @@ import getNativeChunk from '../../native-chunk'
 import {
   OPTIMISTIC_SHOPPING_LIST_SYNC,
   OPTIMISTIC_SHOPPING_LIST_CREATE,
-  OPTIMISTIC_SHOPPING_LIST_REMOVE
+  OPTIMISTIC_SHOPPING_LIST_REMOVE,
 } from '../action-types'
 
 const {
-  resolveRedux: { actionTypes }
+  resolveRedux: { actionTypes },
 } = getNativeChunk()
 const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
 
-export default function*() {
+export default function* () {
   yield takeEvery(
-    action =>
+    (action) =>
       action.type === LOAD_READMODEL_STATE_SUCCESS &&
       action.readModelName === 'ShoppingLists' &&
       action.resolverName === 'all',
-    function*(action) {
+    function* (action) {
       yield put({
         type: OPTIMISTIC_SHOPPING_LIST_SYNC,
-        payload: action.result
+        payload: action.result,
       })
     }
   )
 
   yield takeEvery(
-    action =>
+    (action) =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.commandType === 'createShoppingList',
-    function*(action) {
+    function* (action) {
       yield put({
         type: OPTIMISTIC_SHOPPING_LIST_CREATE,
         payload: {
           id: action.aggregateId,
-          name: action.payload.name
-        }
+          name: action.payload.name,
+        },
       })
     }
   )
 
   yield takeEvery(
-    action =>
+    (action) =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.commandType === 'removeShoppingList',
-    function*(action) {
+    function* (action) {
       yield put({
         type: OPTIMISTIC_SHOPPING_LIST_REMOVE,
         payload: {
           id: action.aggregateId,
-          name: action.payload.name
-        }
+          name: action.payload.name,
+        },
       })
     }
   )

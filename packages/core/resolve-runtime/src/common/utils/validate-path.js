@@ -15,7 +15,7 @@ const validatePath = (url, { allowEmptyPath, allowAbsolutePath } = {}) => {
       hostname,
       hash,
       search,
-      query
+      query,
     } = Url.parse(url)
 
     if (

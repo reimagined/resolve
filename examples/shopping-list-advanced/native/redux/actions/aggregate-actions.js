@@ -1,6 +1,6 @@
 import getNativeChunk from '../../native-chunk'
 const {
-  resolveRedux: { sendAggregateAction }
+  resolveRedux: { sendAggregateAction },
 } = getNativeChunk()
 
 export const createShoppingList = sendAggregateAction.bind(

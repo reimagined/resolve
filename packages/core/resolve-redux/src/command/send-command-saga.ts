@@ -3,10 +3,10 @@ import { ChildSagaArgs } from '../types'
 import {
   sendCommandFailure,
   sendCommandSuccess,
-  SendCommandRequestAction
+  SendCommandRequestAction,
 } from './actions'
 
-const sendCommandSaga = function*(
+const sendCommandSaga = function* (
   args: ChildSagaArgs,
   action: SendCommandRequestAction
 ): any {

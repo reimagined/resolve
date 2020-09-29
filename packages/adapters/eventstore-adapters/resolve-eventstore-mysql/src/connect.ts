@@ -33,7 +33,7 @@ const connectSecretsStore = async (
   const connection = await MySQL.createConnection({
     ...connectionOptions,
     database: secretsDatabase || database,
-    multipleStatements: true
+    multipleStatements: true,
   })
 
   log.debug(`connected successfully`)
@@ -42,8 +42,8 @@ const connectSecretsStore = async (
     secrets: {
       connection,
       tableName: secretsTableName,
-      database: actualDatabase
-    }
+      database: actualDatabase,
+    },
   })
 }
 
@@ -58,12 +58,12 @@ const connect = async (
 
   Object.assign(pool, {
     escapeId,
-    escape
+    escape,
   })
 
   await Promise.all([
     connectEventStore(pool, specific),
-    connectSecretsStore(pool, specific)
+    connectSecretsStore(pool, specific),
   ])
   log.debug('mysql databases are connected')
 }

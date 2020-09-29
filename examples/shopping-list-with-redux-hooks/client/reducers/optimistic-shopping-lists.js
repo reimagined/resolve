@@ -1,7 +1,7 @@
 import {
   SHOPPING_LISTS_ACQUIRED,
   SHOPPING_LIST_CREATED,
-  SHOPPING_LIST_REMOVED
+  SHOPPING_LIST_REMOVED,
 } from '../actions/optimistic-actions'
 
 const optimisticShoppingLists = (state = [], action) => {
@@ -11,12 +11,12 @@ const optimisticShoppingLists = (state = [], action) => {
         ...state,
         {
           id: action.payload.id,
-          name: action.payload.name
-        }
+          name: action.payload.name,
+        },
       ]
     }
     case SHOPPING_LIST_REMOVED: {
-      return state.filter(item => {
+      return state.filter((item) => {
         return item.id !== action.payload.id
       })
     }

@@ -15,7 +15,7 @@ const mRDSDataService = mocked(RDSDataService)
 
 beforeEach(() => {
   rdsRelatedConfig = {
-    rdsRelatedOption: 'rds-option'
+    rdsRelatedOption: 'rds-option',
   }
   pool = {
     config: {
@@ -24,8 +24,8 @@ beforeEach(() => {
       eventsTableName: 'table',
       databaseName: 'database',
       secretsTableName: 'secrets-table',
-      ...rdsRelatedConfig
-    }
+      ...rdsRelatedConfig,
+    },
   }
   specific = {
     coercer: jest.fn(),
@@ -33,7 +33,7 @@ beforeEach(() => {
     escapeId: jest.fn(),
     executeStatement: jest.fn(),
     fullJitter: jest.fn(),
-    RDSDataService
+    RDSDataService,
   }
 })
 
@@ -52,7 +52,7 @@ test("cloud config assigned to adapter's pool", async () => {
       awsSecretStoreArn: 'secret-store-arn',
       eventsTableName: 'table',
       databaseName: 'database',
-      secretsTableName: 'secrets-table'
+      secretsTableName: 'secrets-table',
     })
   )
   expect(pool).toEqual(
@@ -60,7 +60,7 @@ test("cloud config assigned to adapter's pool", async () => {
       fullJitter: specific.fullJitter,
       coercer: specific.coercer,
       escape: specific.escape,
-      escapeId: specific.escapeId
+      escapeId: specific.escapeId,
     })
   )
   expect(pool.rdsDataService).toBeInstanceOf(RDSDataService)
@@ -79,7 +79,7 @@ test("utilities were assigned to adapter's pool", async () => {
       fullJitter: specific.fullJitter,
       coercer: specific.coercer,
       escape: specific.escape,
-      escapeId: specific.escapeId
+      escapeId: specific.escapeId,
     })
   )
 })

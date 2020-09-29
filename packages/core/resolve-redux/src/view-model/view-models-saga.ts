@@ -4,13 +4,13 @@ import getHash from '../internal/get-hash'
 import createSagaManager from '../internal/create-saga-manager'
 import {
   CONNECT_VIEWMODEL,
-  DISCONNECT_VIEWMODEL
+  DISCONNECT_VIEWMODEL,
 } from '../internal/action-types'
 import connectViewModelSaga from './connect-view-model-saga'
 import disconnectViewModelSaga from './disconnect-view-model-saga'
 import { ConnectViewModelAction, DisconnectViewModelAction } from './actions'
 
-const viewModelsSaga = function*(sagaArgs: any): any {
+const viewModelsSaga = function* (sagaArgs: any): any {
   const sagaManager = createSagaManager()
 
   while (true) {
@@ -18,7 +18,7 @@ const viewModelsSaga = function*(sagaArgs: any): any {
       | ConnectViewModelAction
       | DisconnectViewModelAction = yield take([
       CONNECT_VIEWMODEL,
-      DISCONNECT_VIEWMODEL
+      DISCONNECT_VIEWMODEL,
     ])
 
     switch (action.type) {
@@ -31,7 +31,7 @@ const viewModelsSaga = function*(sagaArgs: any): any {
           {
             ...sagaArgs,
             sagaManager,
-            sagaKey
+            sagaKey,
           },
           action
         )
@@ -46,7 +46,7 @@ const viewModelsSaga = function*(sagaArgs: any): any {
           {
             ...sagaArgs,
             sagaManager,
-            sagaKey
+            sagaKey,
           },
           action
         )

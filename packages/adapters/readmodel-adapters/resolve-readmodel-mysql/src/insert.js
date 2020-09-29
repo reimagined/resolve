@@ -8,10 +8,10 @@ const insert = async (
     `INSERT INTO ${escapeId(`${tablePrefix}${tableName}`)}(${Object.keys(
       document
     )
-      .map(key => escapeId(key))
+      .map((key) => escapeId(key))
       .join(', ')})
       VALUES(${Object.keys(document)
-        .map(key => `CAST(${escape(JSON.stringify(document[key]))} AS JSON)`)
+        .map((key) => `CAST(${escape(JSON.stringify(document[key]))} AS JSON)`)
         .join(', ')});
     `
   )

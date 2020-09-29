@@ -10,7 +10,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  Dropdown
+  Dropdown,
 } from 'reactstrap'
 import { getCDNBasedUrl } from 'resolve-module-uploader'
 import { useStaticResolver, useQuery, useCommand } from 'resolve-react-hooks'
@@ -18,11 +18,11 @@ import { useStaticResolver, useQuery, useCommand } from 'resolve-react-hooks'
 import Loading from './Loading'
 import UploaderContext from '../context'
 
-const UserInfo = props => {
+const UserInfo = (props) => {
   const [state, setState] = useState({
     deleted: null,
     gatheringStarted: null,
-    open: false
+    open: false,
   })
   const { deleted, gatheringStarted, open } = state
   const { user } = props
@@ -37,9 +37,9 @@ const UserInfo = props => {
       type: 'delete',
       aggregateId: typeof user === 'object' && user !== null ? user.id : null,
       aggregateName: 'user-profile',
-      payload: {}
+      payload: {},
     },
-    error => {
+    (error) => {
       if (error == null) {
         setState({ ...state, deleted: true })
       }
@@ -50,7 +50,7 @@ const UserInfo = props => {
   const deleteKeys = useCallback(() => {
     if (user && user.id) {
       fetch(`/api/personal-data-keys/${user.id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       }).then(() => {
         setState({ ...state, deleted: true })
       })
@@ -62,9 +62,9 @@ const UserInfo = props => {
       type: 'gatherPersonalData',
       aggregateId: typeof user === 'object' && user !== null ? user.id : null,
       aggregateName: 'user-profile',
-      payload: {}
+      payload: {},
     },
-    error => {
+    (error) => {
       if (error == null) {
         setState({ ...state, gatheringStarted: true, open: true })
       }
@@ -102,7 +102,7 @@ const UserInfo = props => {
           CDNUrl,
           dir: 'archives',
           uploadId,
-          token
+          token,
         })}
       >
         Download
@@ -151,7 +151,7 @@ const Header = () => {
     {
       name: 'user-profiles',
       resolver: 'profile',
-      args: {}
+      args: {},
     },
     (err, result) => {
       if (err) {
@@ -162,7 +162,7 @@ const Header = () => {
         setUser({
           ...result.data.profile,
           id: result.data.id,
-          archive: result.data.archive
+          archive: result.data.archive,
         })
       } else {
         setUser(null)

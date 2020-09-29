@@ -3,7 +3,7 @@ import { put } from 'redux-saga/effects'
 import { DisconnectViewModelAction, dropViewModelState } from './actions'
 //import { CONNECT_VIEWMODEL } from '../internal/action-types'
 
-const disconnectViewModelSaga = function*(
+const disconnectViewModelSaga = function* (
   sagaArgs: any,
   action: DisconnectViewModelAction
 ): any {

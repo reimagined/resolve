@@ -5,7 +5,7 @@ import createAndInitPublisher from './publisher-server'
 
 import {
   ResourceAlreadyExistError as PublisherResourceAlreadyExistError,
-  ResourceNotExistError as PublisherResourceNotExistError
+  ResourceNotExistError as PublisherResourceNotExistError,
 } from './publisher-server/lifecycle/lifecycle-errors'
 
 export {
@@ -14,5 +14,5 @@ export {
   createAndInitPublisher,
   connectPublisher,
   createAndInitConsumer,
-  connectConsumer
+  connectConsumer,
 }

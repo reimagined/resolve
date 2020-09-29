@@ -21,7 +21,7 @@ beforeEach(() => {
       secretsFile: 'secret-file',
       secretsTableName: 'secrets-table',
       eventsTableName: 'table-name',
-      snapshotsTableName: 'snapshots-table-name'
+      snapshotsTableName: 'snapshots-table-name',
     },
     secretsDatabase: { exec: mExec },
     secretsTableName: 'secrets-table',
@@ -30,7 +30,7 @@ beforeEach(() => {
     snapshotsTableName: '',
     escape: jest.fn(),
     escapeId: jest.fn((v: any) => `"${v}-escaped"`),
-    memoryStore: 'memory'
+    memoryStore: 'memory',
   }
 })
 

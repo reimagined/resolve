@@ -1,6 +1,6 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import givenEvents, {
-  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP
+  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP,
 } from 'resolve-testing-tools'
 
 import config from './config'
@@ -13,11 +13,11 @@ describe('Saga', () => {
     name: sagaName,
     source: sourceModule,
     connectorName,
-    schedulerName
+    schedulerName,
   } = config.sagas.find(({ name }) => name === 'UserConfirmation')
   const {
     module: connectorModule,
-    options: connectorOptions
+    options: connectorOptions,
   } = config.readModelConnectors[connectorName]
 
   const createConnector = interopRequireDefault(require(connectorModule))
@@ -36,7 +36,7 @@ describe('Saga', () => {
         handlers: source.handlers,
         sideEffects: source.sideEffects,
         adapter,
-        name: sagaName
+        name: sagaName,
       }
     })
 
@@ -52,14 +52,14 @@ describe('Saga', () => {
         {
           aggregateId: 'userId',
           type: 'USER_CREATED',
-          payload: { mail: 'user@example.com' }
+          payload: { mail: 'user@example.com' },
         },
         {
           aggregateId: 'userId',
           type: 'USER_CONFIRM_REQUESTED',
-          payload: { mail: 'user@example.com' }
+          payload: { mail: 'user@example.com' },
         },
-        { aggregateId: 'userId', type: 'USER_CONFIRMED', payload: {} }
+        { aggregateId: 'userId', type: 'USER_CONFIRMED', payload: {} },
       ]).saga(sagaWithAdapter)
 
       expect(result).toMatchSnapshot()
@@ -70,14 +70,14 @@ describe('Saga', () => {
         {
           aggregateId: 'userId',
           type: 'USER_CREATED',
-          payload: { mail: 'user@example.com' }
+          payload: { mail: 'user@example.com' },
         },
         {
           aggregateId: 'userId',
           type: 'USER_CONFIRM_REQUESTED',
-          payload: { mail: 'user@example.com' }
+          payload: { mail: 'user@example.com' },
         },
-        { aggregateId: 'userId', type: 'USER_FORGOTTEN', payload: {} }
+        { aggregateId: 'userId', type: 'USER_FORGOTTEN', payload: {} },
       ]).saga(sagaWithAdapter)
 
       expect(result).toMatchSnapshot()
@@ -93,7 +93,7 @@ describe('Saga', () => {
         handlers: source.handlers,
         sideEffects: source.sideEffects,
         adapter,
-        name: sagaName
+        name: sagaName,
       }
     })
 
@@ -109,18 +109,18 @@ describe('Saga', () => {
         {
           aggregateId: 'userId',
           type: 'USER_CREATED',
-          payload: { mail: 'user@example.com' }
+          payload: { mail: 'user@example.com' },
         },
         {
           aggregateId: 'userId',
           type: 'USER_CONFIRM_REQUESTED',
-          payload: { mail: 'user@example.com' }
+          payload: { mail: 'user@example.com' },
         },
-        { aggregateId: 'userId', type: 'USER_CONFIRMED', payload: {} }
+        { aggregateId: 'userId', type: 'USER_CONFIRMED', payload: {} },
       ])
         .saga(sagaWithAdapter)
         .properties({
-          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE
+          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE,
         })
 
       expect(result).toMatchSnapshot()
@@ -131,18 +131,18 @@ describe('Saga', () => {
         {
           aggregateId: 'userId',
           type: 'USER_CREATED',
-          payload: { mail: 'user@example.com' }
+          payload: { mail: 'user@example.com' },
         },
         {
           aggregateId: 'userId',
           type: 'USER_CONFIRM_REQUESTED',
-          payload: { mail: 'user@example.com' }
+          payload: { mail: 'user@example.com' },
         },
-        { aggregateId: 'userId', type: 'USER_FORGOTTEN', payload: {} }
+        { aggregateId: 'userId', type: 'USER_FORGOTTEN', payload: {} },
       ])
         .saga(sagaWithAdapter)
         .properties({
-          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE
+          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE,
         })
 
       expect(result).toMatchSnapshot()

@@ -48,11 +48,13 @@ export const getSubscriptionKeys = (
     return []
   }
   const eventTypes = Object.keys(viewModel.projection).filter(
-    eventType => eventType !== 'Init'
+    (eventType) => eventType !== 'Init'
   )
   return eventTypes.reduce((acc: Array<SubscriptionKey>, eventType) => {
     if (Array.isArray(aggregateIds)) {
-      acc.push(...aggregateIds.map(aggregateId => ({ aggregateId, eventType })))
+      acc.push(
+        ...aggregateIds.map((aggregateId) => ({ aggregateId, eventType }))
+      )
     } else if (aggregateIds === '*') {
       acc.push({ aggregateId: '*', eventType })
     }
@@ -67,7 +69,7 @@ export interface SubscribeAdapterOptions {
 
 const initSubscribeAdapter = async (
   url: string,
-  cursor: string,
+  cursor: string | null,
   context: Context,
   viewModelName: string,
   aggregateIds: AggregateSelector
@@ -75,7 +77,7 @@ const initSubscribeAdapter = async (
   const subscribeAdapter = createSubscribeAdapter({
     url,
     cursor,
-    onEvent: rootCallback
+    onEvent: rootCallback,
   })
   await subscribeAdapter.init()
 
@@ -100,7 +102,7 @@ const initSubscribeAdapter = async (
 
 export const refreshSubscribeAdapter = async (
   url: string,
-  cursor: string,
+  cursor: string | null,
   context: Context,
   viewModelName: string,
   aggregateIds: AggregateSelector,
@@ -192,7 +194,7 @@ export const dropSubscribeAdapterPromise = (): void => {
 const connect = async (
   context: Context,
   url: string,
-  cursor: string,
+  cursor: string | null,
   aggregateIds: AggregateSelector,
   eventCallback: Function,
   viewModelName: string,
@@ -206,7 +208,7 @@ const connect = async (
 
   const key = buildKey(viewModelName, aggregateIds)
 
-  if (adaptersMap.has(key)) {
+  if (adaptersMap.has(key) && adaptersMap.get(key).isConnected()) {
     return Promise.resolve()
   }
 

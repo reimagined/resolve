@@ -2,7 +2,7 @@ import {
   message,
   RESOURCE_ANY,
   RUNTIME_ENV_ANYWHERE,
-  IMPORT_INSTANCE
+  IMPORT_INSTANCE,
 } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
@@ -40,7 +40,7 @@ export default ({ resolveConfig, isClient }) => {
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
       imports,
-      constants
+      constants,
     })
 
     exports.push(`apiHandlers.push({`, `  path: path_${index}`)

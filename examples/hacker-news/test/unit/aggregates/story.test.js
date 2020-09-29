@@ -7,7 +7,7 @@ import projection from '../../../common/aggregates/story.projection'
 import {
   STORY_CREATED,
   STORY_UPVOTED,
-  STORY_UNVOTED
+  STORY_UNVOTED,
 } from '../../../common/event-types'
 
 let sandbox
@@ -35,15 +35,15 @@ describe('aggregates', () => {
           title,
           text,
           link,
-          userId
-        }
+          userId,
+        },
       }
 
       const event = commands.createStory(state, command, token)
 
       expect(event).toEqual({
         type: STORY_CREATED,
-        payload: { title, text, link, userId }
+        payload: { title, text, link, userId },
       })
     })
 
@@ -54,15 +54,15 @@ describe('aggregates', () => {
 
       const state = {
         createdAt: Date.now(),
-        createdBy: userId
+        createdBy: userId,
       }
       const command = {
         payload: {
           title,
           text,
           link,
-          userId
-        }
+          userId,
+        },
       }
 
       expect(() => commands.createStory(state, command, token)).toThrowError(
@@ -81,8 +81,8 @@ describe('aggregates', () => {
           title,
           text,
           link,
-          userId
-        }
+          userId,
+        },
       }
 
       expect(() => commands.createStory(state, command, token)).toThrowError(
@@ -106,8 +106,8 @@ describe('aggregates', () => {
           title,
           text,
           link,
-          userId
-        }
+          userId,
+        },
       }
 
       expect(() => commands.createStory(state, command, token)).toThrow(
@@ -119,12 +119,12 @@ describe('aggregates', () => {
       const state = {
         createdAt: Date.now(),
         createdBy: userId,
-        voted: []
+        voted: [],
       }
       const command = {
         payload: {
-          userId
-        }
+          userId,
+        },
       }
 
       const event = commands.upvoteStory(state, command, token)
@@ -136,12 +136,12 @@ describe('aggregates', () => {
       const state = {
         createdAt: Date.now(),
         createdBy: userId,
-        voted: [userId]
+        voted: [userId],
       }
       const command = {
         payload: {
-          userId
-        }
+          userId,
+        },
       }
 
       expect(() => commands.upvoteStory(state, command, token)).toThrowError(
@@ -153,8 +153,8 @@ describe('aggregates', () => {
       const state = {}
       const command = {
         payload: {
-          userId
-        }
+          userId,
+        },
       }
 
       expect(() => commands.upvoteStory(state, command, token)).toThrowError(
@@ -171,12 +171,12 @@ describe('aggregates', () => {
       const state = {
         createdAt: Date.now(),
         createdBy: userId,
-        voted: []
+        voted: [],
       }
       const command = {
         payload: {
-          userId
-        }
+          userId,
+        },
       }
 
       expect(() => commands.upvoteStory(state, command, token)).toThrowError(
@@ -188,12 +188,12 @@ describe('aggregates', () => {
       const state = {
         createdAt: Date.now(),
         createdBy: userId,
-        voted: [userId]
+        voted: [userId],
       }
       const command = {
         payload: {
-          userId
-        }
+          userId,
+        },
       }
 
       const event = commands.unvoteStory(state, command, token)
@@ -205,12 +205,12 @@ describe('aggregates', () => {
       const state = {
         createdAt: Date.now(),
         createdBy: userId,
-        voted: []
+        voted: [],
       }
       const command = {
         payload: {
-          userId
-        }
+          userId,
+        },
       }
 
       expect(() => commands.unvoteStory(state, command, token)).toThrowError(
@@ -222,8 +222,8 @@ describe('aggregates', () => {
       const state = {}
       const command = {
         payload: {
-          userId
-        }
+          userId,
+        },
       }
 
       expect(() => commands.unvoteStory(state, command, token)).toThrowError(
@@ -240,12 +240,12 @@ describe('aggregates', () => {
       const state = {
         createdAt: Date.now(),
         createdBy: userId,
-        voted: [userId]
+        voted: [userId],
       }
       const command = {
         payload: {
-          userId
-        }
+          userId,
+        },
       }
 
       expect(() => commands.unvoteStory(state, command, token)).toThrowError(
@@ -260,13 +260,13 @@ describe('aggregates', () => {
       const event = {
         timestamp: createdAt,
         payload: {
-          userId
-        }
+          userId,
+        },
       }
       const nextState = {
         createdAt,
         createdBy: userId,
-        voted: []
+        voted: [],
       }
 
       expect(projection[STORY_CREATED](state, event)).toEqual(nextState)
@@ -278,17 +278,17 @@ describe('aggregates', () => {
       const state = {
         createdAt,
         createdBy: userId,
-        voted: []
+        voted: [],
       }
       const event = {
         payload: {
-          userId
-        }
+          userId,
+        },
       }
       const nextState = {
         createdAt,
         createdBy: userId,
-        voted: [userId]
+        voted: [userId],
       }
 
       expect(projection[STORY_UPVOTED](state, event)).toEqual(nextState)
@@ -300,17 +300,17 @@ describe('aggregates', () => {
       const state = {
         createdAt,
         createdBy: userId,
-        voted: [userId]
+        voted: [userId],
       }
       const event = {
         payload: {
-          userId
-        }
+          userId,
+        },
       }
       const nextState = {
         createdAt,
         createdBy: userId,
-        voted: []
+        voted: [],
       }
 
       expect(projection[STORY_UNVOTED](state, event)).toEqual(nextState)

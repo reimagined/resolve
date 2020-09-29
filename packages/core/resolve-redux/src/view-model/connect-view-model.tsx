@@ -23,7 +23,7 @@ export const mapDispatchToConnectorProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       connectViewModel: actions.connectViewModel,
-      disconnectViewModel: actions.disconnectViewModel
+      disconnectViewModel: actions.disconnectViewModel,
     },
     dispatch
   )
@@ -39,8 +39,8 @@ export const mapStateToConnectorProps = (
     query: {
       name: connectorOptions.viewModelName,
       aggregateIds: connectorOptions.aggregateIds,
-      args: connectorOptions.aggregateArgs
-    }
+      args: connectorOptions.aggregateArgs,
+    },
   })
   const data = entry && entry.status === ResultStatus.Ready ? entry.data : null
   const error =
@@ -52,7 +52,7 @@ export const mapStateToConnectorProps = (
     isLoading: entry && entry.status === ResultStatus.Requested,
     isFailure: entry && entry.status === ResultStatus.Failed,
     data,
-    error
+    error,
   }
 }
 
@@ -64,13 +64,13 @@ const connectViewModel = (
       const {
         viewModelName,
         aggregateIds,
-        aggregateArgs
+        aggregateArgs,
       } = this.props.connectorOptions
 
       this.props.connectViewModel({
         name: viewModelName,
         aggregateIds: aggregateIds,
-        args: aggregateArgs
+        args: aggregateArgs,
       })
     }
 
@@ -78,13 +78,13 @@ const connectViewModel = (
       const {
         viewModelName,
         aggregateIds,
-        aggregateArgs
+        aggregateArgs,
       } = this.props.connectorOptions
 
       this.props.disconnectViewModel({
         name: viewModelName,
         aggregateIds: aggregateIds,
-        args: aggregateArgs
+        args: aggregateArgs,
       })
     }
 

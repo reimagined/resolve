@@ -6,7 +6,7 @@ import {
   CONNECT_VIEWMODEL,
   DISCONNECT_VIEWMODEL,
   VIEWMODEL_STATE_UPDATE,
-  VIEWMODEL_EVENT_RECEIVED
+  VIEWMODEL_EVENT_RECEIVED,
 } from '../internal/action-types'
 import { ViewModelQuery } from 'resolve-client'
 import { ViewModelReactiveEvent } from '../types'
@@ -25,7 +25,7 @@ export const queryViewModelRequest = (
 ): QueryViewModelRequestAction => ({
   type: QUERY_VIEWMODEL_REQUEST,
   query,
-  selectorId
+  selectorId,
 })
 
 export type QueryViewModelSuccessAction = {
@@ -40,7 +40,7 @@ export const queryViewModelSuccess = (
   type: QUERY_VIEWMODEL_SUCCESS,
   query,
   result,
-  selectorId
+  selectorId,
 })
 
 export type QueryViewModelFailureAction = {
@@ -55,7 +55,7 @@ export const queryViewModelFailure = (
   type: QUERY_VIEWMODEL_FAILURE,
   query,
   error,
-  selectorId
+  selectorId,
 })
 
 export type ViewModelStateUpdateAction = {
@@ -73,7 +73,7 @@ export const viewModelStateUpdate = (
   query,
   state,
   initial,
-  selectorId
+  selectorId,
 })
 
 export type ViewModelEventReceivedAction = {
@@ -88,7 +88,7 @@ export const viewModelEventReceived = (
   type: VIEWMODEL_EVENT_RECEIVED,
   query,
   event,
-  selectorId
+  selectorId,
 })
 
 export type DropViewModelStateAction = {
@@ -100,7 +100,7 @@ export const dropViewModelState = (
 ): DropViewModelStateAction => ({
   type: DROP_VIEWMODEL_STATE,
   query,
-  selectorId
+  selectorId,
 })
 
 export type ConnectViewModelAction = {
@@ -112,7 +112,7 @@ export const connectViewModel = (
 ): ConnectViewModelAction => ({
   type: CONNECT_VIEWMODEL,
   query,
-  selectorId
+  selectorId,
 })
 
 export type DisconnectViewModelAction = {
@@ -124,5 +124,5 @@ export const disconnectViewModel = (
 ): DisconnectViewModelAction => ({
   type: DISCONNECT_VIEWMODEL,
   query,
-  selectorId
+  selectorId,
 })

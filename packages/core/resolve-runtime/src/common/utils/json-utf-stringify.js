@@ -59,11 +59,11 @@ const unicodeEscapeRegex = new RegExp(
   'g'
 )
 
-const unicodeSymbolEscaper = function(match) {
+const unicodeSymbolEscaper = function (match) {
   return `\\u${(+match.codePointAt(0)).toString(16).padStart(4, '0')}`
 }
 
-const jsonUtfStringify = function(inputObject) {
+const jsonUtfStringify = function (inputObject) {
   return JSON.stringify(inputObject).replace(
     unicodeEscapeRegex,
     unicodeSymbolEscaper

@@ -4,6 +4,7 @@ import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
 import getLog from './get-log'
 import { WrapReadModelOptions, SerializedError, ReadModelPool } from './types'
 import parseReadOptions from './parse-read-options'
+import { SecretsManager } from 'resolve-core'
 
 const RESERVED_TIME = 30 * 1000
 
@@ -12,12 +13,21 @@ const wrapConnection = async (
   callback: Function
 ): Promise<any> => {
   const readModelName = pool.readModel.name
+  const log = getLog(`wrapConnection:${readModelName}`)
+  log.debug(`establishing connection`)
   const connection = await pool.connector.connect(readModelName)
   pool.connections.add(connection)
 
+  log.debug(`retrieving event store secrets manager`)
+  const secretsManager =
+    typeof pool.getSecretsManager === 'function'
+      ? await pool.getSecretsManager()
+      : null
+
   try {
-    return await callback(connection)
+    return await callback(connection, secretsManager)
   } finally {
+    log.debug(`disconnecting`)
     await pool.connector.disconnect(connection, readModelName)
     pool.connections.delete(connection)
   }
@@ -55,7 +65,7 @@ const emptyFunction = Promise.resolve.bind(Promise)
 const emptyWrapper = {
   onBeforeEvent: emptyFunction,
   onSuccessEvent: emptyFunction,
-  onFailEvent: emptyFunction
+  onFailEvent: emptyFunction,
 }
 
 const detectWrappers = (connector: any, bypass?: boolean): any => {
@@ -73,13 +83,13 @@ const detectWrappers = (connector: any, bypass?: boolean): any => {
     return {
       onBeforeEvent: connector.beginEvent.bind(connector),
       onSuccessEvent: connector.commitEvent.bind(connector),
-      onFailEvent: connector.rollbackEvent.bind(connector)
+      onFailEvent: connector.rollbackEvent.bind(connector),
     }
   } else if (featureDetection === FULL_REGULAR_CONNECTOR) {
     return {
       onBeforeEvent: connector.beginTransaction.bind(connector),
       onSuccessEvent: connector.commitTransaction.bind(connector),
-      onFailEvent: connector.rollbackTransaction.bind(connector)
+      onFailEvent: connector.rollbackTransaction.bind(connector),
     }
   } else if (
     featureDetection === INLINE_LEDGER_CONNECTOR ||
@@ -102,7 +112,7 @@ const serializeError = (
         name: error.name == null ? null : String(error.name),
         code: error.code == null ? null : String(error.code),
         message: String(error.message),
-        stack: String(error.stack)
+        stack: String(error.stack),
       }
     : null
 
@@ -112,7 +122,7 @@ const sendEvents = async (
     batchId,
     xaTransactionId,
     properties,
-    events
+    events,
   }: {
     events: Array<any>
     xaTransactionId: any
@@ -142,7 +152,11 @@ const sendEvents = async (
       )
     }
 
-    const handler = async (connection: any, event: any): Promise<void> => {
+    const handler = async (
+      connection: any,
+      event: any,
+      secretsManager: SecretsManager
+    ): Promise<void> => {
       const log = getLog(
         `readModel:${readModelName}:[${event != null ? event.type : 'null'}]`
       )
@@ -155,9 +169,17 @@ const sendEvents = async (
         }
         if (event != null) {
           if (typeof projection[event.type] === 'function') {
+            log.debug(`building read-model encryption`)
+            const encryption =
+              typeof pool.readModel.encryption === 'function'
+                ? await pool.readModel.encryption(event, {
+                    secretsManager,
+                  })
+                : null
+
             log.debug(`executing handler`)
             const executor = projection[event.type]
-            await executor(connection, event)
+            await executor(connection, event, { ...encryption })
             log.debug(`handler executed successfully`)
             lastSuccessEvent = event
           } else if (event.type === 'Init') {
@@ -175,7 +197,7 @@ const sendEvents = async (
 
     await wrapConnection(
       pool,
-      async (connection: any): Promise<any> => {
+      async (connection: any, secretsManager: SecretsManager): Promise<any> => {
         const log = getLog(`readModel:wrapConnection`)
         log.debug(
           `applying ${events.length} events to read-model "${readModelName}" started`
@@ -206,7 +228,7 @@ const sendEvents = async (
             await onBeforeEvent(connection, readModelName, xaTransactionId)
 
             try {
-              await handler(connection, event)
+              await handler(connection, event, secretsManager)
               await onSuccessEvent(connection, readModelName, xaTransactionId)
             } catch (innerError) {
               if (innerError === STOP_BATCH) {
@@ -268,12 +290,12 @@ const sendEvents = async (
     eventSubscriber: readModelName,
     successEvent: lastSuccessEvent,
     failedEvent: lastFailedEvent,
-    error: serializeError(lastError)
+    error: serializeError(lastError),
   }
 
   await performAcknowledge({
     result,
-    batchId
+    batchId,
   })
 }
 
@@ -335,9 +357,9 @@ const read = async (
                   typeof getSecretsManager === 'function'
                     ? await getSecretsManager()
                     : null,
-                jwt
+                jwt,
               }
-            )
+            ),
           }
         } catch (error) {
           if (subSegment != null) {
@@ -435,7 +457,7 @@ const build = doOperation.bind(
     readModelName,
     connection,
     pool.readModel.projection,
-    next.bind(null, pool, readModelName)
+    next.bind(null, pool, readModelName),
   ]
 )
 
@@ -488,7 +510,7 @@ const subscribe = doOperation.bind(
     connection,
     readModelName,
     parameters.subscriptionOptions.eventTypes,
-    parameters.subscriptionOptions.aggregateIds
+    parameters.subscriptionOptions.aggregateIds,
   ]
 )
 
@@ -509,7 +531,7 @@ const resubscribe = doOperation.bind(
     connection,
     readModelName,
     parameters.subscriptionOptions.eventTypes,
-    parameters.subscriptionOptions.aggregateIds
+    parameters.subscriptionOptions.aggregateIds,
   ]
 )
 
@@ -605,10 +627,10 @@ const wrapReadModel = ({
   invokeEventBusAsync,
   performanceTracer,
   getRemainingTimeInMillis,
-  performAcknowledge
+  performAcknowledge,
 }: WrapReadModelOptions) => {
-  const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
+  const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
 
   log.debug(`wrapping read-model`)
   const connector = readModelConnectors[readModel.connectorName]
@@ -628,7 +650,7 @@ const wrapReadModel = ({
     performanceTracer,
     getSecretsManager,
     getRemainingTimeInMillis,
-    performAcknowledge
+    performAcknowledge,
   }
 
   const api = {
@@ -636,7 +658,7 @@ const wrapReadModel = ({
     sendEvents: sendEvents.bind(null, pool),
     serializeState: serializeState.bind(null, pool),
     drop: drop.bind(null, pool),
-    dispose: dispose.bind(null, pool)
+    dispose: dispose.bind(null, pool),
   }
 
   log.debug(`detecting connector features`)
@@ -652,7 +674,7 @@ const wrapReadModel = ({
     Object.assign(api, {
       beginXATransaction: beginXATransaction.bind(null, pool),
       commitXATransaction: commitXATransaction.bind(null, pool),
-      rollbackXATransaction: rollbackXATransaction.bind(null, pool)
+      rollbackXATransaction: rollbackXATransaction.bind(null, pool),
     })
   } else if (detectedFeatures === INLINE_LEDGER_CONNECTOR) {
     Object.assign(api, {
@@ -667,7 +689,7 @@ const wrapReadModel = ({
       pause: pause.bind(null, pool),
       reset: reset.bind(null, pool),
       status: status.bind(null, pool),
-      build: build.bind(null, pool)
+      build: build.bind(null, pool),
     })
   }
 

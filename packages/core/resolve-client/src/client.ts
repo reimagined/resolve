@@ -1,3 +1,4 @@
+import { IS_BUILT_IN } from 'resolve-core'
 import { Context } from './context'
 import { GenericError } from './errors'
 import { connect, disconnect } from './subscribe'
@@ -5,11 +6,12 @@ import {
   RequestOptions,
   request,
   NarrowedResponse,
-  VALIDATED_RESULT
+  VALIDATED_RESULT,
 } from './request'
 import { assertLeadingSlash, assertNonEmptyString } from './assertions'
 import { getRootBasedUrl, isAbsoluteUrl } from './utils'
 import determineOrigin from './determine-origin'
+import { ViewModelDeserializer } from './view-model-types'
 
 function determineCallback<T>(options: any, callback: any): T | null {
   if (typeof options === 'function') {
@@ -64,11 +66,11 @@ export const command = (
   }
 
   asyncExec()
-    .then(result => {
+    .then((result) => {
       actualCallback(null, result, cmd)
       return result
     })
-    .catch(error => {
+    .catch((error) => {
       actualCallback(error, null, cmd)
       throw error
     })
@@ -120,7 +122,15 @@ export const query = (
   callback?: QueryCallback
 ): PromiseOrVoid<QueryResult> => {
   const requestOptions: RequestOptions = {
-    method: 'GET'
+    method: 'GET',
+  }
+
+  let viewModelDeserializer: ViewModelDeserializer | null = null
+  if (!isReadModelQuery(qr)) {
+    const viewModel = context.viewModels.find((model) => model.name === qr.name)
+    if (viewModel && !viewModel.deserializeState[IS_BUILT_IN]) {
+      viewModelDeserializer = viewModel.deserializeState
+    }
   }
 
   if (isOptions<QueryOptions>(options)) {
@@ -130,12 +140,17 @@ export const query = (
       requestOptions.waitForResponse = {
         validator: async (response, confirm): Promise<void> => {
           const result = await response.json()
+
+          if (viewModelDeserializer != null && result != null && result.data) {
+            result.data = viewModelDeserializer(result.data)
+          }
+
           if (validator(result)) {
             confirm(result)
           }
         },
         period,
-        attempts
+        attempts,
       }
     }
     requestOptions.method = options?.method ?? 'GET'
@@ -161,7 +176,7 @@ export const query = (
       `/api/query/${name}/${ids}`,
       {
         args,
-        origin: determineOrigin(context.origin)
+        origin: determineOrigin(context.origin),
       },
       requestOptions
     )
@@ -171,6 +186,9 @@ export const query = (
     const response = await queryRequest
 
     const responseDate = response.headers.get('Date')
+    if (!responseDate) {
+      throw new GenericError(`"Date" header missed within response`)
+    }
 
     let subscriptionsUrl = null
 
@@ -182,19 +200,20 @@ export const query = (
       subscriptionsUrl = url
     }
 
-    if (!responseDate) {
-      throw new GenericError(`"Date" header missed within response`)
-    }
-
     try {
-      const result =
-        VALIDATED_RESULT in response
-          ? response[VALIDATED_RESULT]
-          : await response.json()
+      let result
+      if (VALIDATED_RESULT in response) {
+        result = response[VALIDATED_RESULT]
+      } else {
+        result = await response.json()
+        if (viewModelDeserializer != null && result != null && result.data) {
+          result.data = viewModelDeserializer(result.data)
+        }
+      }
 
       const meta = {
-        ...result.meta,
-        timestamp: Number(responseDate)
+        ...result?.meta,
+        timestamp: Number(responseDate),
       }
 
       if (subscriptionsUrl != null) {
@@ -203,7 +222,7 @@ export const query = (
 
       return {
         ...result,
-        meta
+        meta,
       }
     } catch (error) {
       throw new GenericError(error)
@@ -215,11 +234,11 @@ export const query = (
   }
 
   asyncExec()
-    .then(result => {
+    .then((result) => {
       actualCallback(null, result, qr)
       return result
     })
-    .catch(error => {
+    .catch((error) => {
       actualCallback(error, null, qr)
       throw error
     })
@@ -252,7 +271,7 @@ export type ResubscribeCallback = (
 export const subscribe = (
   context: Context,
   url: string,
-  cursor: string,
+  cursor: string | null,
   viewModelName: string,
   aggregateIds: AggregateSelector,
   handler: SubscribeHandler,
@@ -273,7 +292,7 @@ export const subscribe = (
     return {
       viewModelName,
       aggregateIds,
-      handler
+      handler,
     }
   }
 
@@ -283,7 +302,7 @@ export const subscribe = (
 
   subscribeAsync()
     .then((result: Subscription) => subscribeCallback(null, result))
-    .catch(error => subscribeCallback(error, null))
+    .catch((error) => subscribeCallback(error, null))
 
   return undefined
 }
@@ -339,7 +358,7 @@ export type Client = {
   getStaticAssetUrl: (assetPath: string) => string
   subscribe: (
     url: string,
-    cursor: string,
+    cursor: string | null,
     viewModelName: string,
     aggregateIds: AggregateSelector,
     handler: SubscribeHandler,
@@ -376,5 +395,5 @@ export const getClient = (context: Context): Client => ({
       resubscribeCallback
     ),
   unsubscribe: (subscription: Subscription): PromiseOrVoid<void> =>
-    unsubscribe(context, subscription)
+    unsubscribe(context, subscription),
 })

@@ -7,7 +7,7 @@ const routeLoginCallback = async ({ resolve }, username, password) => {
   const { data: user } = await resolve.executeQuery({
     modelName: 'ShoppingLists',
     resolverName: 'user',
-    resolverArgs: { username }
+    resolverArgs: { username },
   })
 
   const hmac = crypto.createHmac('sha512', jwtSecret)

@@ -1,6 +1,6 @@
 const freeze = async ({
   events: { connection, eventsTableName },
-  escapeId
+  escapeId,
 }) => {
   await connection.execute(
     `CREATE TABLE IF NOT EXISTS ${escapeId(`${eventsTableName}-freeze`)}(

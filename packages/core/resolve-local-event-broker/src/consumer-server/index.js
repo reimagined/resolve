@@ -17,7 +17,7 @@ const getProvider = (host, key) => {
   }
 }
 
-const createAndInitConsumer = async config => {
+const createAndInitConsumer = async (config) => {
   const { baseResolve, initResolve, disposeResolve, address } = config
 
   const consumerMethod = async (key, ...args) => {
@@ -40,13 +40,13 @@ const createAndInitConsumer = async config => {
       },
       set() {
         throw new Error(`Consumer API is immutable`)
-      }
+      },
     }
   )
 
   return await createServer({
     hostObject: consumer,
-    address
+    address,
   })
 }
 

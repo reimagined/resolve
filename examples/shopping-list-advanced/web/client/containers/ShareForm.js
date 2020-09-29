@@ -8,12 +8,12 @@ import requiredAuth from '../decorators/required-auth'
 
 class ShareForm extends React.PureComponent {
   state = {
-    query: ''
+    query: '',
   }
 
-  updateQuery = event => {
+  updateQuery = (event) => {
     this.setState({
-      query: event.target.value
+      query: event.target.value,
     })
   }
 
@@ -50,12 +50,12 @@ export const mapStateToProps = (
   state,
   {
     match: {
-      params: { id }
-    }
+      params: { id },
+    },
   }
 ) => ({
   shoppingListId: id,
-  shoppingListName: state.optimisticSharings.name
+  shoppingListName: state.optimisticSharings.name,
 })
 
 export default requiredAuth(connect(mapStateToProps)(ShareForm))

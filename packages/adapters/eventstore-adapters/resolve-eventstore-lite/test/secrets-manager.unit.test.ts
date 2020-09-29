@@ -13,7 +13,7 @@ beforeEach(() => {
       secretsFile: 'secret-file',
       secretsTableName: 'secrets-table',
       eventsTableName: 'table-name',
-      snapshotsTableName: 'snapshots-table-name'
+      snapshotsTableName: 'snapshots-table-name',
     },
     secretsDatabase: { exec: mExec, get: mGet },
     secretsTableName: 'secrets-table',
@@ -22,7 +22,7 @@ beforeEach(() => {
     snapshotsTableName: '',
     escape: jest.fn((v: any) => `"${v}-escaped"`),
     escapeId: jest.fn((v: any) => `"${v}-escaped-id"`),
-    memoryStore: 'memory'
+    memoryStore: 'memory',
   }
 })
 
@@ -36,7 +36,7 @@ test('secrets manager is created', async () => {
   expect(manager).toStrictEqual({
     getSecret: expect.any(Function),
     setSecret: expect.any(Function),
-    deleteSecret: expect.any(Function)
+    deleteSecret: expect.any(Function),
   })
 })
 
@@ -79,7 +79,7 @@ describe('set secret', () => {
     expect(mExec.mock.calls).toMatchSnapshot('setting secret')
   })
 
-  test('error on setting secret', async done => {
+  test('error on setting secret', async (done) => {
     const manager = getSecretsManager(pool)
     const { setSecret } = manager
 

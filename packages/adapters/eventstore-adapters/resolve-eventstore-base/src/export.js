@@ -3,7 +3,7 @@ import { Readable } from 'stream'
 import {
   BATCH_SIZE,
   MAINTENANCE_MODE_AUTO,
-  MAINTENANCE_MODE_MANUAL
+  MAINTENANCE_MODE_MANUAL,
 } from './constants'
 import getNextCursor from './get-next-cursor'
 
@@ -30,7 +30,7 @@ async function* generator(context) {
   while (true) {
     const { events } = await pool.loadEventsByCursor({
       cursor: context.cursor,
-      limit: BATCH_SIZE
+      limit: BATCH_SIZE,
     })
 
     for (const event of events) {
@@ -59,7 +59,7 @@ const exportStream = (
   {
     cursor = null,
     maintenanceMode = MAINTENANCE_MODE_AUTO,
-    bufferSize = Number.POSITIVE_INFINITY
+    bufferSize = Number.POSITIVE_INFINITY,
   } = {}
 ) => {
   if (
@@ -73,19 +73,19 @@ const exportStream = (
     maintenanceMode,
     cursor,
     bufferSize,
-    isBufferOverflow: false
+    isBufferOverflow: false,
   }
 
   const stream = Readable.from(generator(context))
   Object.defineProperty(stream, 'cursor', {
     get() {
       return context.cursor
-    }
+    },
   })
   Object.defineProperty(stream, 'isBufferOverflow', {
     get() {
       return context.isBufferOverflow
-    }
+    },
   })
 
   return stream

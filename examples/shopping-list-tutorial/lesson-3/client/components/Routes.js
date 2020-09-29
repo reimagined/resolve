@@ -10,7 +10,7 @@ const Routes = ({ path, component: Component, routes, exact, redirectTo }) => {
     <Route
       path={path}
       exact={exact}
-      render={props => {
+      render={(props) => {
         const content = (
           <Switch>
             {routes.map((route, index) => (

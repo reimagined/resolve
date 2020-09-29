@@ -2,7 +2,7 @@ import loaderUtils from 'loader-utils'
 import {
   RUNTIME_ENV_NOWHERE,
   RESOURCE_INSTANCE_ONLY,
-  IMPORT_INSTANCE
+  IMPORT_INSTANCE,
 } from '../constants'
 import importResource from '../import_resource'
 
@@ -15,7 +15,7 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
 
   const inputFile = loaderUtils.parseQuery(resourceQuery).inputFile
   const clientEntry = resolveConfig.clientEntries.find(
-    entry =>
+    (entry) =>
       `${inputFile}` === (Array.isArray(entry) ? `${entry[0]}` : `${entry}`)
   )
 
@@ -30,11 +30,11 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
   const imports = [
     `import getRootBasedUrl from 'resolve-runtime/lib/common/utils/get-root-based-url'`,
     `import getStaticBasedPath from 'resolve-runtime/lib/common/utils/get-static-based-path'`,
-    `import jsonUtfStringify from 'resolve-runtime/lib/common/utils/json-utf-stringify'`
+    `import jsonUtfStringify from 'resolve-runtime/lib/common/utils/json-utf-stringify'`,
   ]
 
   const constants = [
-    `const utils = { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify }`
+    `const utils = { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify }`,
   ]
 
   const exports = []
@@ -82,7 +82,7 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
     importMode: RESOURCE_INSTANCE_ONLY,
     instanceMode: IMPORT_INSTANCE,
     imports,
-    constants
+    constants,
   })
 
   if (moduleType === 'iife') {

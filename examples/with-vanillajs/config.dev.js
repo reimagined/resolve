@@ -13,9 +13,9 @@ const devConfig = {
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
-      snapshotBucketSize: 100
-    }
-  }
+      snapshotBucketSize: 100,
+    },
+  },
 }
 
 export default devConfig

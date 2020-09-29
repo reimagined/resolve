@@ -60,7 +60,7 @@ const init = async (pool: AdapterPool): Promise<any> => {
     eventsTableName,
     snapshotsTableName,
     executeStatement,
-    escapeId
+    escapeId,
   } = pool
 
   const createInitEventStorePromise = (): Promise<any> =>
@@ -69,12 +69,12 @@ const init = async (pool: AdapterPool): Promise<any> => {
       eventsTableName,
       snapshotsTableName,
       executeStatement,
-      escapeId
+      escapeId,
     })
 
   const result = await Promise.all([
     createInitEventStorePromise(),
-    initSecretsStore(pool)
+    initSecretsStore(pool),
   ])
 
   log.debug('databases are initialized')

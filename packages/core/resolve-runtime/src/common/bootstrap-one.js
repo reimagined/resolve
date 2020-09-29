@@ -3,7 +3,7 @@ import {
   EMPTY_CONNECTOR,
   FULL_REGULAR_CONNECTOR,
   FULL_XA_CONNECTOR,
-  INLINE_LEDGER_CONNECTOR
+  INLINE_LEDGER_CONNECTOR,
 } from 'resolve-query'
 
 const bootstrapOne = async ({
@@ -13,7 +13,7 @@ const bootstrapOne = async ({
   eventTypes,
   connectorName,
   credentials,
-  upstream
+  upstream,
 }) => {
   const connectorFeatures = detectConnectorFeatures(
     readModelConnectors[connectorName]
@@ -53,15 +53,15 @@ const bootstrapOne = async ({
       subscriptionOptions: {
         ...(credentials != null ? { credentials } : {}),
         deliveryStrategy,
-        eventTypes
-      }
+        eventTypes,
+      },
     })
 
     if (upstream) {
       await eventBus.setProperty({
         eventSubscriber,
         key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
-        value: `${Date.now()}`
+        value: `${Date.now()}`,
       })
 
       await eventBus.resume({ eventSubscriber })

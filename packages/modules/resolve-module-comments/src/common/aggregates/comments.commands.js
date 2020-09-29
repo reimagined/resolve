@@ -3,7 +3,7 @@ import injectDefaults from '../inject-defaults'
 const createCommentsCommands = (
   {
     commandTypes: { createComment, updateComment, removeComment },
-    eventTypes: { COMMENT_CREATED, COMMENT_UPDATED, COMMENT_REMOVED }
+    eventTypes: { COMMENT_CREATED, COMMENT_UPDATED, COMMENT_REMOVED },
   },
   { verifyCommand }
 ) => ({
@@ -49,8 +49,8 @@ const createCommentsCommands = (
         authorId: command.payload.authorId,
         commentId: command.payload.commentId,
         parentCommentId: command.payload.parentCommentId || null,
-        content: command.payload.content
-      }
+        content: command.payload.content,
+      },
     }
   },
 
@@ -86,8 +86,8 @@ const createCommentsCommands = (
       payload: {
         authorId: command.payload.authorId,
         commentId: command.payload.commentId,
-        content: command.payload.content
-      }
+        content: command.payload.content,
+      },
     }
   },
 
@@ -116,10 +116,10 @@ const createCommentsCommands = (
       type: COMMENT_REMOVED,
       payload: {
         commentId: command.payload.commentId,
-        authorId: command.payload.authorId
-      }
+        authorId: command.payload.authorId,
+      },
     }
-  }
+  },
 })
 
 export default injectDefaults(createCommentsCommands)

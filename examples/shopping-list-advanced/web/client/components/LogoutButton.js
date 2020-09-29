@@ -5,22 +5,22 @@ import Image from '../containers/Image'
 
 class LogoutButton extends React.PureComponent {
   state = {
-    isFirstRender: true
+    isFirstRender: true,
   }
 
   componentDidMount() {
     this.setState({
-      isFirstRender: false
+      isFirstRender: false,
     })
   }
 
-  onLogoutClick = event => {
+  onLogoutClick = (event) => {
     this.form.submit()
     event.stopPropagation()
     return false
   }
 
-  formRef = element => {
+  formRef = (element) => {
     this.form = element
   }
 

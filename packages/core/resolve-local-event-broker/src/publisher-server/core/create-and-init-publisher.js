@@ -10,11 +10,11 @@ const createAndInitPublisher = async (
     ...broker,
     ...lifecycle,
     database: await functions.connectDatabase(imports, {
-      databaseFile: config.databaseFile
+      databaseFile: config.databaseFile,
     }),
     consumer: await connectConsumer({
-      address: config.consumerAddress
-    })
+      address: config.consumerAddress,
+    }),
   }
 
   const server = {
@@ -34,12 +34,12 @@ const createAndInitPublisher = async (
     read: broker.read.bind(null, pool),
     init: lifecycle.createDatabase.bind(null, pool),
     drop: lifecycle.dropDatabase.bind(null, pool),
-    dispose: pool.database.dispose
+    dispose: pool.database.dispose,
   }
 
   const api = await functions.createServer({
     hostObject: server,
-    address: config.publisherAddress
+    address: config.publisherAddress,
   })
 
   return api

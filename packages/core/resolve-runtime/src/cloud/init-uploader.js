@@ -6,7 +6,7 @@ const getSignedPost = async (adapter, dir) =>
 
 const getCDNUrl = async ({ CDN }) => CDN
 
-const initUploader = async resolve => {
+const initUploader = async (resolve) => {
   if (typeof resolve.assemblies.uploadAdapter === 'function') {
     const adapter = resolve.assemblies.uploadAdapter()
 
@@ -17,8 +17,8 @@ const initUploader = async resolve => {
         getCDNUrl: getCDNUrl.bind(null, adapter),
         createToken: adapter.createToken,
         uploadPut: adapter.upload,
-        uploadPost: adapter.uploadFormData
-      }
+        uploadPost: adapter.uploadFormData,
+      },
     })
   }
 }

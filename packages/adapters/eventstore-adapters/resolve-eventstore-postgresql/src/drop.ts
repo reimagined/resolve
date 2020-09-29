@@ -28,7 +28,7 @@ const dropSecretsStore = async (pool: AdapterPool): Promise<any> => {
 
   const statements = [
     `DROP TABLE ${databaseNameAsId}.${secretsTableNameAsId}`,
-    `DROP INDEX IF EXISTS ${databaseNameAsId}.${globalIndexName}`
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${globalIndexName}`,
   ]
 
   const errors = []
@@ -51,7 +51,7 @@ const dropSecretsStore = async (pool: AdapterPool): Promise<any> => {
   }
 
   if (errors.length > 0) {
-    throw new Error(errors.map(error => error.stack).join(EOL))
+    throw new Error(errors.map((error) => error.stack).join(EOL))
   }
 
   log.debug(`secrets store database tables and indices are dropped`)
@@ -65,7 +65,7 @@ const drop = async (pool: AdapterPool): Promise<any> => {
     eventsTableName,
     snapshotsTableName,
     executeStatement,
-    escapeId
+    escapeId,
   } = pool
 
   const createDropEventStorePromise = (): Promise<any> =>
@@ -74,7 +74,7 @@ const drop = async (pool: AdapterPool): Promise<any> => {
       eventsTableName,
       snapshotsTableName,
       executeStatement,
-      escapeId
+      escapeId,
     })
 
   log.debug(`dropping the event store`)

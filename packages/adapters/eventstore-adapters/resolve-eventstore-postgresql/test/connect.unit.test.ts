@@ -22,8 +22,8 @@ beforeEach(() => {
       databaseName: 'database-name',
       eventsTableName: 'events-table-name',
       snapshotsTableName: 'snapshots-table-name',
-      secretsTableName: 'secrets-table-name'
-    }
+      secretsTableName: 'secrets-table-name',
+    },
   }
   specific = {
     Postgres,
@@ -31,7 +31,7 @@ beforeEach(() => {
     escape: jest.fn(),
     escapeId: jest.fn(),
     executeStatement: jest.fn(),
-    fullJitter: jest.fn()
+    fullJitter: jest.fn(),
   }
   mPostgres.mockClear()
 })
@@ -49,7 +49,7 @@ test('credentials passed to postgres client', async () => {
       keepAlive: false,
       password: 'password',
       port: 'port',
-      user: 'user'
+      user: 'user',
     })
   )
 })
@@ -62,7 +62,7 @@ test("utilities were assigned to adapter's pool", async () => {
       fullJitter: specific.fullJitter,
       coercer: specific.coercer,
       escape: specific.escape,
-      escapeId: specific.escapeId
+      escapeId: specific.escapeId,
     })
   )
 })

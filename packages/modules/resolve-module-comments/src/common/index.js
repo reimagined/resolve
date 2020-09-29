@@ -9,7 +9,7 @@ import {
   CommentsTreeRenderless,
   CommentsPaginateRenderless,
   RefreshHelperRenderless,
-  createCommentsReducer
+  createCommentsReducer,
 } from '../client'
 
 export {
@@ -21,7 +21,7 @@ export {
   createCommentsReducer,
   createCommentsCommands,
   createCommentsProjection,
-  createCommentsResolvers
+  createCommentsResolvers,
 }
 
 const makeConfig = (options, imports) => {
@@ -33,9 +33,9 @@ const makeConfig = (options, imports) => {
           module:
             'resolve-module-comments/lib/common/aggregates/comments.commands.js',
           options,
-          imports
-        }
-      }
+          imports,
+        },
+      },
     ],
     readModels: [
       {
@@ -45,28 +45,28 @@ const makeConfig = (options, imports) => {
           module:
             'resolve-module-comments/lib/common/read-models/comments.projection.js',
           options,
-          imports
+          imports,
         },
         resolvers: {
           module:
             'resolve-module-comments/lib/common/read-models/comments.resolvers.js',
           options,
-          imports
-        }
-      }
+          imports,
+        },
+      },
     ],
     clientImports: {
       [options.commentsInstanceName]: {
         module: 'resolve-runtime/lib/common/utils/interop-options.js',
-        options
-      }
+        options,
+      },
     },
     serverImports: {
       [options.commentsInstanceName]: {
         module: 'resolve-runtime/lib/common/utils/interop-options.js',
-        options
-      }
-    }
+        options,
+      },
+    },
   }
 
   return config
@@ -83,7 +83,7 @@ export default ({
   maxNestedLevel,
   verifyCommand,
   commentsInstanceName,
-  reducerName
+  reducerName,
 } = {}) => {
   const options = {
     aggregateName,
@@ -95,13 +95,13 @@ export default ({
     resolverNames,
     maxNestedLevel,
     commentsInstanceName,
-    reducerName
+    reducerName,
   }
   const imports = {
     verifyCommand:
       verifyCommand == null
         ? 'resolve-module-comments/lib/common/aggregates/verify-command.js'
-        : verifyCommand
+        : verifyCommand,
   }
 
   return injectDefaults(makeConfig)(options, imports)

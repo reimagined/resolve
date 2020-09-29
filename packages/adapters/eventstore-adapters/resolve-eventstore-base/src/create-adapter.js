@@ -12,7 +12,7 @@ const createAdapter = (
     importStream,
     exportStream,
     incrementalImport,
-    getNextCursor
+    getNextCursor,
   },
   {
     connect,
@@ -54,7 +54,7 @@ const createAdapter = (
   }
 
   let connectPromiseResolve
-  const connectPromise = new Promise(resolve => {
+  const connectPromise = new Promise((resolve) => {
     connectPromiseResolve = resolve.bind(null, null)
   }).then(connect.bind(null, pool, adapterSpecificArguments))
 
@@ -70,7 +70,7 @@ const createAdapter = (
     connectPromiseResolve,
     shapeEvent,
     counters: new Map(),
-    bucketSize
+    bucketSize,
   })
 
   const adapter = {
@@ -94,7 +94,7 @@ const createAdapter = (
     beginIncrementalImport: wrapMethod(pool, beginIncrementalImport),
     commitIncrementalImport: wrapMethod(pool, commitIncrementalImport),
     rollbackIncrementalImport: wrapMethod(pool, rollbackIncrementalImport),
-    incrementalImport: wrapMethod(pool, incrementalImport)
+    incrementalImport: wrapMethod(pool, incrementalImport),
   }
 
   Object.assign(pool, adapter)

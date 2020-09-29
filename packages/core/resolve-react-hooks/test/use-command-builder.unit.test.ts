@@ -5,10 +5,10 @@ import { CommandCallback, CommandOptions } from 'resolve-client'
 
 jest.mock('resolve-client')
 jest.mock('react', () => ({
-  useCallback: jest.fn(cb => cb)
+  useCallback: jest.fn((cb) => cb),
 }))
 jest.mock('../src/use-command', () => ({
-  useCommand: jest.fn()
+  useCommand: jest.fn(),
 }))
 
 const mockedUseCommand = mocked(useCommand)
@@ -18,7 +18,7 @@ const mockedClient = {
   query: jest.fn(),
   getStaticAssetUrl: jest.fn(),
   subscribe: jest.fn(),
-  unsubscribe: jest.fn()
+  unsubscribe: jest.fn(),
 }
 
 const clearMocks = (): void => {

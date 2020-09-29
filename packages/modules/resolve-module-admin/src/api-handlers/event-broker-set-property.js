@@ -3,7 +3,7 @@ const setProperty = async (req, res) => {
   await req.resolve.eventBus.setProperty({
     eventSubscriber: listenerId,
     key: String(key),
-    value: String(value)
+    value: String(value),
   })
   res.end(`ListenerId = "${listenerId}", Key = "${key}", Value = "${value}"`)
 }

@@ -8,7 +8,7 @@ test('wrap load events should bypass on correct filter arguments', async () => {
     eventTypes: ['EVENT_TYPE'],
     aggregateIds: ['AGGREGATE_ID'],
     startTime: 100,
-    finishTime: 200
+    finishTime: 200,
   }
 
   const loadEvents = wrapEventFilter(rawLoadEvents)

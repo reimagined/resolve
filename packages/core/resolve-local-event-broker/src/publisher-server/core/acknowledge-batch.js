@@ -6,7 +6,7 @@ import {
   NotificationStatus,
   ConsumerMethod,
   PrivateOperationType,
-  LazinessStrategy
+  LazinessStrategy,
 } from '../constants'
 
 const retryRollback = new Error('Retrying rollback marker')
@@ -18,7 +18,7 @@ const acknowledgeBatch = async (pool, payload) => {
     getNextCursor,
     invokeConsumer,
     invokeOperation,
-    serializeError
+    serializeError,
   } = pool
 
   const { batchId, result } = payload
@@ -47,7 +47,7 @@ const acknowledgeBatch = async (pool, payload) => {
       ${notificationsTableNameAsId}."subscriptionId"
       WHERE ${notificationsTableNameAsId}."batchId" = ${escapeStr(batchId)}
       LIMIT 1
-    `)
+    `),
   ])
   if (affectedNotifications == null || affectedNotifications.length === 0) {
     return
@@ -95,7 +95,7 @@ const acknowledgeBatch = async (pool, payload) => {
   const activeBatch = {
     eventSubscriber: subscriptionDescription.eventSubscriber,
     subscriptionId: subscriptionDescription.subscriptionId,
-    batchId
+    batchId,
   }
   try {
     let isXaCommitOk = true
@@ -142,7 +142,7 @@ const acknowledgeBatch = async (pool, payload) => {
           {
             eventSubscriber: subscriptionDescription.eventSubscriber,
             xaTransactionId: subscriptionDescription.xaTransactionId,
-            batchId
+            batchId,
           }
         )
       } else if (
@@ -167,9 +167,9 @@ const acknowledgeBatch = async (pool, payload) => {
             ? successEvent
             : subscriptionDescription.successEvent,
           failedEvent,
-          error: serializeError(error)
-        }
-      }
+          error: serializeError(error),
+        },
+      },
     }
 
     await invokeOperation(pool, LazinessStrategy.EAGER, input)
@@ -204,7 +204,7 @@ const acknowledgeBatch = async (pool, payload) => {
           {
             eventSubscriber: subscriptionDescription.eventSubscriber,
             xaTransactionId: subscriptionDescription.xaTransactionId,
-            batchId
+            batchId,
           }
         )
 
@@ -224,9 +224,9 @@ const acknowledgeBatch = async (pool, payload) => {
       payload: {
         activeBatch,
         result: {
-          error: serializeError(compositeError)
-        }
-      }
+          error: serializeError(compositeError),
+        },
+      },
     }
 
     await invokeOperation(pool, LazinessStrategy.EAGER, input)

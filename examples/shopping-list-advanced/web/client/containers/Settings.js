@@ -13,19 +13,19 @@ class Settings extends React.PureComponent {
   getText = () =>
     this.state.text != null ? this.state.text : this.props.data.username
 
-  updateInputText = event => {
+  updateInputText = (event) => {
     this.setState({
-      text: event.target.value
+      text: event.target.value,
     })
   }
 
   updateUserName = () => {
     this.props.updateUserName(this.props.data.id, {
-      username: this.getText()
+      username: this.getText(),
     })
   }
 
-  onInputTextPressEnter = event => {
+  onInputTextPressEnter = (event) => {
     if (event.charCode === 13) {
       event.preventDefault()
       this.updateUserName()
@@ -59,15 +59,15 @@ class Settings extends React.PureComponent {
   }
 }
 
-export const mapStateToOptions = state => ({
+export const mapStateToOptions = (state) => ({
   readModelName: 'ShoppingLists',
   resolverName: 'user',
   resolverArgs: {
-    id: state.jwt.id
-  }
+    id: state.jwt.id,
+  },
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default requiredAuth(

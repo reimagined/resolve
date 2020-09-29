@@ -6,17 +6,17 @@ import ResolveLogo from '../assets/resolve-logo.png'
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   image: {
     width: 35,
-    height: 35
+    height: 35,
   },
   text: {
     marginBottom: 30,
     marginLeft: 5,
-    fontSize: 27
-  }
+    fontSize: 27,
+  },
 })
 
 class Logo extends React.PureComponent {

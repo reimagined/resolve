@@ -5,8 +5,8 @@ describe('base config works correctly', () => {
   const resolveConfig = {
     jwtCookie: {
       name: 'test-jwt',
-      maxAge: 123
-    }
+      maxAge: 123,
+    },
   }
 
   test('[client]', () => {
@@ -15,7 +15,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -28,7 +28,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )

@@ -9,7 +9,7 @@ async function entryPoint({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   rootPath,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  staticPath
+  staticPath,
 }: {
   rootPath: string
   staticPath: string

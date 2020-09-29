@@ -10,12 +10,12 @@ const loadEventsByTimestamp = async (
     eventsTableName,
     databaseName,
     shapeEvent,
-    isTimeoutError
+    isTimeoutError,
   },
   { eventTypes, aggregateIds, startTime, finishTime, limit }
 ) => {
-  const injectString = value => `${escape(value)}`
-  const injectNumber = value => `${+value}`
+  const injectString = (value) => `${escape(value)}`
+  const injectNumber = (value) => `${+value}`
   const batchSize = limit != null ? Math.min(limit, 200) : 200
 
   const queryConditions = []
@@ -107,7 +107,7 @@ const loadEventsByTimestamp = async (
     get cursor() {
       return throwBadCursor()
     },
-    events
+    events,
   }
 }
 

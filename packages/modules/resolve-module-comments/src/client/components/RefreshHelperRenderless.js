@@ -2,7 +2,7 @@ import React from 'react'
 
 class RefreshHelperRenderless extends React.PureComponent {
   static defaultProps = {
-    children: () => null
+    children: () => null,
   }
 
   state = {}

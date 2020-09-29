@@ -6,7 +6,7 @@ export default {
     if (!name) throw new Error('name is required')
     return {
       type: SHOPPING_LIST_CREATED,
-      payload: { name }
+      payload: { name },
     }
   },
   createShoppingItem: (state, { payload: { id, text } }) => {
@@ -17,7 +17,7 @@ export default {
     }
     return {
       type: SHOPPING_ITEM_CREATED,
-      payload: { id, text }
+      payload: { id, text },
     }
-  }
+  },
 }

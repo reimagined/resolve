@@ -2,7 +2,7 @@ import getLog from '../js/get-log'
 import {
   CloudResource,
   CloudResourceOptions,
-  CloudResourcePool
+  CloudResourcePool,
 } from '../types'
 
 const dispose = async (

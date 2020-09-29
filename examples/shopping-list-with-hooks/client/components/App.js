@@ -7,8 +7,8 @@ const App = ({
   route,
   children,
   match: {
-    params: { id }
-  }
+    params: { id },
+  },
 }) => (
   <div>
     <Header

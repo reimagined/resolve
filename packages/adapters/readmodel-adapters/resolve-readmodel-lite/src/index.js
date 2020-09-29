@@ -23,7 +23,15 @@ import updateToSetExpression from './update-to-set-expression'
 import update from './update'
 
 const memoryStore = {}
-const store = { defineTable, find, findOne, count, insert, update, delete: del }
+const store = {
+  defineTable,
+  find,
+  findOne,
+  count,
+  insert,
+  update,
+  delete: del,
+}
 
 export default createAdapter.bind(null, {
   ...store,
@@ -37,11 +45,11 @@ export default createAdapter.bind(null, {
     SQLite,
     tmp,
     os,
-    fs
+    fs,
   }),
   beginTransaction,
   commitTransaction,
   rollbackTransaction,
   dropReadModel,
-  disconnect
+  disconnect,
 })

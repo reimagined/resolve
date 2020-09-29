@@ -35,7 +35,7 @@ class TimeAgo extends React.PureComponent {
 
   updateTimestamp = () => {
     this.setState({
-      timestamp: Date.now()
+      timestamp: Date.now(),
     })
   }
 

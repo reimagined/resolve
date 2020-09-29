@@ -5,11 +5,11 @@ import { connectActionSheet } from '@expo/react-native-action-sheet'
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20
+    padding: 20,
   },
   subContainer: {
     flexDirection: 'row',
-    flex: 1
+    flex: 1,
   },
   icon: {
     margin: 0,
@@ -17,27 +17,27 @@ const styles = StyleSheet.create({
     fontSize: 24,
     width: 50,
     color: '#000',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   input: {
     flex: 1,
-    borderBottomWidth: StyleSheet.hairlineWidth
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   label: {
     paddingLeft: 5,
     fontSize: 16,
-    color: '#575757'
-  }
+    color: '#575757',
+  },
 })
 
 const options = ['Share', 'Remove', 'Cancel']
 
 class ShoppingListPanel extends React.PureComponent {
   state = {
-    name: this.props.name
+    name: this.props.name,
   }
 
-  onMenuItemSelect = index => {
+  onMenuItemSelect = (index) => {
     switch (options[index]) {
       case 'Share':
         this.props.navigate('ShareForm', { id: this.props.aggregateId })
@@ -52,22 +52,22 @@ class ShoppingListPanel extends React.PureComponent {
   onMenuPress = () => {
     this.props.showActionSheetWithOptions(
       {
-        options
+        options,
       },
       this.onMenuItemSelect,
       2
     )
   }
 
-  updateName = name => {
+  updateName = (name) => {
     this.setState({
-      name
+      name,
     })
   }
 
   renameShoppingList = () => {
     this.props.renameShoppingList(this.props.aggregateId, {
-      name: this.state.name
+      name: this.state.name,
     })
   }
 

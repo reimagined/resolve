@@ -4,7 +4,7 @@ import {
   INT8_SQL_TYPE,
   JSON_SQL_TYPE,
   TEXT_SQL_TYPE,
-  AGGREGATE_ID_SQL_TYPE
+  AGGREGATE_ID_SQL_TYPE,
 } from './constants'
 import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 import getLog from './get-log'
@@ -14,7 +14,7 @@ const init = async ({
   eventsTableName,
   snapshotsTableName,
   executeStatement,
-  escapeId
+  escapeId,
 }) => {
   const log = getLog(`initEventStore`)
 

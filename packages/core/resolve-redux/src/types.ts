@@ -5,7 +5,7 @@ export enum ResultStatus {
   Initial = 'initial',
   Requested = 'requested',
   Ready = 'ready',
-  Failed = 'failed'
+  Failed = 'failed',
 }
 
 type QueryResultEntry = {

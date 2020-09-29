@@ -1,18 +1,20 @@
 import { symbol, Phases } from './constants'
+import { ReadModelEncryptionFactory } from 'resolve-core'
 export interface ReadModelParams {
   name: string
   projection: any
   resolvers: any
   adapter: any
+  encryption?: ReadModelEncryptionFactory
 }
 
 const readModel = (
   {
-    promise
+    promise,
   }: {
     promise: any
   },
-  { name, projection, resolvers, adapter }: ReadModelParams
+  { name, projection, resolvers, adapter, encryption }: ReadModelParams
 ): any => {
   if (promise[symbol].phase !== Phases.GIVEN_EVENTS) {
     throw new TypeError()
@@ -21,6 +23,7 @@ const readModel = (
   promise[symbol].projection = projection != null ? projection : {}
   promise[symbol].resolvers = resolvers != null ? resolvers : {}
   promise[symbol].adapter = adapter
+  promise[symbol].encryption = encryption
 
   for (const resolverName of Object.keys(promise[symbol].resolvers)) {
     promise[resolverName] = (resolverArgs: any) => {

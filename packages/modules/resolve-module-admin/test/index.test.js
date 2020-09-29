@@ -19,7 +19,7 @@ describe('resolve-module-admin', () => {
   beforeEach(() => {
     originalConsole = global.console
     global.console = {
-      log: jest.fn()
+      log: jest.fn(),
     }
   })
 
@@ -34,7 +34,7 @@ describe('resolve-module-admin', () => {
       fetch().text.mockReturnValue('ListenerId = "readModel" paused')
       await readModelPauseHandler({
         url: 'url',
-        readModel: 'readModel'
+        readModel: 'readModel',
       })
 
       expect(console.log.mock.calls).toMatchSnapshot()
@@ -44,7 +44,7 @@ describe('resolve-module-admin', () => {
       fetch().text.mockReturnValue('ListenerId = "readModel" reset')
       await readModelResetHandler({
         url: 'url',
-        readModel: 'readModel'
+        readModel: 'readModel',
       })
 
       expect(console.log.mock.calls).toMatchSnapshot()
@@ -54,7 +54,7 @@ describe('resolve-module-admin', () => {
       fetch().text.mockReturnValue('ListenerId = "readModel" running')
       await readModelResumeHandler({
         url: 'url',
-        readModel: 'readModel'
+        readModel: 'readModel',
       })
 
       expect(console.log.mock.calls).toMatchSnapshot()
@@ -63,22 +63,23 @@ describe('resolve-module-admin', () => {
     test('list', async () => {
       fetch().json.mockReturnValue([
         {
-          listenerId: 'read-model',
+          eventSubscriber: 'read-model',
           status: 'status',
-          lastEvent: {
+          successEvent: {
             timestamp: 1111111111111,
             aggregateId: 'aggregateId',
             aggregateVersion: 1,
             type: 'type',
             payload: {
-              index: 1
-            }
+              index: 1,
+            },
           },
-          lastError: null
-        }
+          failedEvent: null,
+          errors: null,
+        },
       ])
       await readModelListHandler({
-        url: 'url'
+        url: 'url',
       })
 
       expect(console.log.mock.calls).toMatchSnapshot()
@@ -90,7 +91,7 @@ describe('resolve-module-admin', () => {
       fetch().text.mockReturnValue('ListenerId = "saga" paused')
       await sagaPauseHandler({
         url: 'url',
-        saga: 'saga'
+        saga: 'saga',
       })
 
       expect(console.log.mock.calls).toMatchSnapshot()
@@ -100,7 +101,7 @@ describe('resolve-module-admin', () => {
       fetch().text.mockReturnValue('ListenerId = "saga" reset')
       await sagaResetHandler({
         url: 'url',
-        saga: 'saga'
+        saga: 'saga',
       })
 
       expect(console.log.mock.calls).toMatchSnapshot()
@@ -110,7 +111,7 @@ describe('resolve-module-admin', () => {
       fetch().text.mockReturnValue('ListenerId = "saga" running')
       await sagaResumeHandler({
         url: 'url',
-        saga: 'saga'
+        saga: 'saga',
       })
 
       expect(console.log.mock.calls).toMatchSnapshot()
@@ -119,22 +120,23 @@ describe('resolve-module-admin', () => {
     test('list', async () => {
       fetch().json.mockReturnValue([
         {
-          listenerId: 'saga',
+          eventSubscriber: 'saga',
           status: 'status',
-          lastEvent: {
+          successEvent: {
             timestamp: 1111111111111,
             aggregateId: 'aggregateId',
             aggregateVersion: 1,
             type: 'type',
             payload: {
-              index: 1
-            }
+              index: 1,
+            },
           },
-          lastError: null
-        }
+          failedEvent: null,
+          errors: null,
+        },
       ])
       await sagaListHandler({
-        url: 'url'
+        url: 'url',
       })
 
       expect(console.log.mock.calls).toMatchSnapshot()
@@ -148,7 +150,7 @@ describe('resolve-module-admin', () => {
         await propsGetHandler({
           url: 'url',
           saga: 'saga',
-          key: 'key'
+          key: 'key',
         })
 
         expect(console.log.mock.calls).toMatchSnapshot()
@@ -162,7 +164,7 @@ describe('resolve-module-admin', () => {
           url: 'url',
           saga: 'saga',
           key: 'key',
-          value: 'value'
+          value: 'value',
         })
 
         expect(console.log.mock.calls).toMatchSnapshot()
@@ -173,7 +175,7 @@ describe('resolve-module-admin', () => {
         await propsRemoveHandler({
           url: 'url',
           saga: 'saga',
-          key: 'key'
+          key: 'key',
         })
 
         expect(console.log.mock.calls).toMatchSnapshot()
@@ -183,12 +185,12 @@ describe('resolve-module-admin', () => {
         fetch().json.mockReturnValue([
           {
             name: 'key',
-            value: 'value'
-          }
+            value: 'value',
+          },
         ])
         await propsListHandler({
           url: 'url',
-          saga: 'saga'
+          saga: 'saga',
         })
 
         expect(console.log.mock.calls).toMatchSnapshot()

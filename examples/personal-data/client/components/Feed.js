@@ -14,7 +14,7 @@ const Feed = ({ posts }) => {
               title: p.title,
               content: p.content,
               author: p.author,
-              id: p.id
+              id: p.id,
             }}
           />
         ))

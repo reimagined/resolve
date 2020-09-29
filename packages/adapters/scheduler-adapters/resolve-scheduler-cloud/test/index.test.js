@@ -3,18 +3,18 @@ import create from '../src/index'
 
 jest.mock('../src/step-function', () => ({
   start: jest.fn(),
-  stopAll: jest.fn()
+  stopAll: jest.fn(),
 }))
 
 const context = {
   execute: jest.fn(),
-  errorHandler: jest.fn()
+  errorHandler: jest.fn(),
 }
 
-let createEntry = salt => ({
+let createEntry = (salt) => ({
   date: Date.now(),
   taskId: `taskId_${salt}`,
-  command: { salt }
+  command: { salt },
 })
 
 let adapter
@@ -30,7 +30,7 @@ afterEach(() => {
   stepFunction.stopAll.mockClear()
 })
 
-describe('addEntries', function() {
+describe('addEntries', function () {
   test('execute state machine on entry', async () => {
     const entry = createEntry('a')
     await adapter.addEntries([entry])

@@ -61,7 +61,7 @@ const createAdapter: any = _createAdapter.bind(null, {
   beginIncrementalImport,
   commitIncrementalImport,
   rollbackIncrementalImport,
-  pushIncrementalImport
+  pushIncrementalImport,
 })
 
 export default createAdapter
@@ -75,7 +75,7 @@ const cloudPool: CloudResourcePool = {
   fullJitter,
   coercer,
   dispose,
-  shapeEvent
+  shapeEvent,
 }
 
 const createResource = _createResource.bind(null, cloudPool)
@@ -88,11 +88,11 @@ const destroyResource = _destroyResource.bind(null, cloudPool)
 Object.assign(cloudPool, {
   createResource,
   disposeResource,
-  destroyResource
+  destroyResource,
 })
 
 export {
   createResource as create,
   disposeResource as dispose,
-  destroyResource as destroy
+  destroyResource as destroy,
 }

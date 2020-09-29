@@ -1,6 +1,6 @@
 import getRootLog from './get-log'
 
-const getLog = handler => getRootLog(`scheduler-saga-handlers:${handler}`)
+const getLog = (handler) => getRootLog(`scheduler-saga-handlers:${handler}`)
 
 export default ({
   schedulerAggregateName,
@@ -9,13 +9,13 @@ export default ({
     SCHEDULED_COMMAND_CREATED,
     SCHEDULED_COMMAND_EXECUTED,
     SCHEDULED_COMMAND_SUCCEEDED,
-    SCHEDULED_COMMAND_FAILED
-  }
+    SCHEDULED_COMMAND_FAILED,
+  },
 }) => ({
   Init: async ({ store }) => {
     await store.defineTable(commandsTableName, {
       indexes: { taskId: 'string', date: 'number' },
-      fields: ['command']
+      fields: ['command'],
     })
   },
   Bootstrap: async ({ store, sideEffects }) => {
@@ -32,7 +32,7 @@ export default ({
     const entry = {
       taskId: aggregateId,
       date: Number(date),
-      command
+      command,
     }
 
     log.debug(`adding entry ${aggregateId} to the store`)
@@ -64,7 +64,7 @@ export default ({
           aggregateId,
           aggregateName: schedulerAggregateName,
           type: 'success',
-          payload: {}
+          payload: {},
         })
         log.debug(`completed successfully`)
       } catch (error) {
@@ -79,8 +79,8 @@ export default ({
           aggregateName: schedulerAggregateName,
           type: 'failure',
           payload: {
-            reason: error.stack
-          }
+            reason: error.stack,
+          },
         })
       } catch (error) {
         log.debug(`cannot complete scheduled task: ${error.message}`)
@@ -98,5 +98,5 @@ export default ({
     log.debug(`removing entry ${aggregateId} from the store`)
     await store.delete(commandsTableName, { taskId: aggregateId })
     log.debug(`completed successfully`)
-  }
+  },
 })

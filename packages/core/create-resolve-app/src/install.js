@@ -2,7 +2,7 @@ import getLog from 'resolve-debug-levels'
 
 const log = getLog('resolve:create-resolve-app:install')
 
-const install = pool => async () => {
+const install = (pool) => async () => {
   const { chalk, console, execSync, applicationPath, useYarn } = pool
   console.log()
   console.log(chalk.green('Install dependencies'))
@@ -12,14 +12,14 @@ const install = pool => async () => {
   try {
     execSync(command, {
       stdio: 'inherit',
-      cwd: applicationPath
+      cwd: applicationPath,
     })
     log.debug('Install succeeded')
   } catch (err) {
     for (let retry = 0; retry < 10; retry++) {
       try {
         execSync(command, {
-          cwd: applicationPath
+          cwd: applicationPath,
         })
         return
       } catch (error) {

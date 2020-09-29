@@ -5,7 +5,7 @@ const sendAuthResponse = async (authResponse, res, rootPath, noredirect) => {
   for (const key of Object.keys(authResponse.cookies)) {
     res.cookie(key, authResponse.cookies[key].value, {
       ...authResponse.cookies[key].options,
-      path: `/${rootPath}`
+      path: `/${rootPath}`,
     })
   }
 

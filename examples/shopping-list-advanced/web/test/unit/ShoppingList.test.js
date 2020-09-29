@@ -9,14 +9,14 @@ test('renders correctly', () => {
       {
         id: '1',
         checked: true,
-        text: '1'
+        text: '1',
       },
       {
         id: '2',
         checked: false,
-        text: '2'
-      }
-    ]
+        text: '2',
+      },
+    ],
   }
   const jwt = { id: 'id' }
   const aggregateId = 'aggregateId'

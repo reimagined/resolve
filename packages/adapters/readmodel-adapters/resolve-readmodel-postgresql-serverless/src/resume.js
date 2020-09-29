@@ -5,7 +5,7 @@ const resume = async (pool, readModelName, next) => {
     escape,
     inlineLedgerForceStop,
     inlineLedgerExecuteStatement,
-    PassthroughError
+    PassthroughError,
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
@@ -18,7 +18,7 @@ const resume = async (pool, readModelName, next) => {
         pool,
         `
         WITH "CTE" AS (
-         SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+         SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escape(readModelName)}
          FOR NO KEY UPDATE NOWAIT
        )

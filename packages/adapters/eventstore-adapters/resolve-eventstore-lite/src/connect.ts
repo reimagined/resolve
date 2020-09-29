@@ -19,7 +19,7 @@ const connectSecretsStore = async (
 
   const {
     escape,
-    config: { secretsTableName = 'default', secretsFile = 'secrets.db' }
+    config: { secretsTableName = 'default', secretsFile = 'secrets.db' },
   } = pool
 
   log.verbose(`secretsTableName: ${secretsTableName}`)
@@ -37,7 +37,7 @@ const connectSecretsStore = async (
 
       Object.assign(pool, {
         secretsDatabase,
-        secretsTableName
+        secretsTableName,
       })
 
       log.debug('secrets store database connected successfully')
@@ -45,7 +45,7 @@ const connectSecretsStore = async (
     } catch (error) {
       if (error && error.code === SQLITE_BUSY) {
         log.warn(`received SQLITE_BUSY error code, retrying`)
-        await new Promise(resolve => setTimeout(resolve, fullJitter(retry)))
+        await new Promise((resolve) => setTimeout(resolve, fullJitter(retry)))
       } else {
         log.error(error.message)
         log.verbose(error.stack)
@@ -69,12 +69,12 @@ const connect = async (
 
   Object.assign(pool, {
     escapeId,
-    escape
+    escape,
   })
 
   await Promise.all([
     connectEventStore(pool, specific),
-    connectSecretsStore(pool, specific)
+    connectSecretsStore(pool, specific),
   ])
   log.debug('connection to sqlite databases established')
 }

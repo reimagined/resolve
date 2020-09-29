@@ -8,7 +8,7 @@ const find = async (
     tablePrefix,
     searchToWhereExpression,
     makeNestedPath,
-    convertBinaryRow
+    convertBinaryRow,
   },
   readModelName,
   tableName,
@@ -22,7 +22,7 @@ const find = async (
     sort && Object.keys(sort).length > 0
       ? 'ORDER BY ' +
         Object.keys(sort)
-          .map(fieldName => {
+          .map((fieldName) => {
             const [baseName, ...nestedPath] = fieldName.split('.')
             const provisionedName =
               nestedPath.length === 0

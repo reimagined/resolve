@@ -11,8 +11,8 @@ class CommentsByPage extends React.PureComponent {
   render() {
     const {
       match: {
-        params: { page }
-      }
+        params: { page },
+      },
     } = this.props
 
     return page && !Number.isInteger(Number(page)) ? (
@@ -25,7 +25,7 @@ class CommentsByPage extends React.PureComponent {
         {({ comments, paginationDone }) => (
           <div>
             {comments &&
-              comments.map(comment => (
+              comments.map((comment) => (
                 <Comment
                   key={comment.commentId}
                   id={comment.commentId}

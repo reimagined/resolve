@@ -5,7 +5,7 @@ const path = require('path')
 const http = require('http')
 const {
   getResolvePackages,
-  getLocalRegistryConfig
+  getLocalRegistryConfig,
 } = require('@internal/helpers')
 
 const localRegistry = getLocalRegistryConfig()
@@ -27,7 +27,7 @@ http
     ) {
       res.writeHead(404, {
         'Content-Type': 'text/plain',
-        'Content-Length': 0
+        'Content-Length': 0,
       })
       res.end()
       return
@@ -37,13 +37,13 @@ http
 
     res.writeHead(200, {
       'Content-Type': 'application/tar+gzip',
-      'Content-Length': stat.size
+      'Content-Length': stat.size,
     })
 
     const readStream = fs.createReadStream(filePath)
     readStream.pipe(res)
   })
-  .listen(localRegistry.port, localRegistry.host, error => {
+  .listen(localRegistry.port, localRegistry.host, (error) => {
     if (error) {
       // eslint-disable-next-line no-console
       console.error(error)

@@ -25,7 +25,7 @@ const beginEvent = async (pool, readModelName, xaTransactionId) => {
       sql: `
         SAVEPOINT ${savepointId};
         SET LOCAL ${insideEventId} = 1;
-      `
+      `,
     })
 
     log.verbose('Begin event to postgresql database succeed')

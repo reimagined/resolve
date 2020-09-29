@@ -1,12 +1,12 @@
 import { SHOPPING_LIST_CREATED } from '../eventTypes'
 
 export default {
-  Init: async store => {
+  Init: async (store) => {
     await store.defineTable('ShoppingLists', {
       indexes: {
-        id: 'string'
+        id: 'string',
       },
-      fields: ['createdAt', 'name']
+      fields: ['createdAt', 'name'],
     })
   },
 
@@ -17,9 +17,9 @@ export default {
     const shoppingList = {
       id: aggregateId,
       name,
-      createdAt: timestamp
+      createdAt: timestamp,
     }
 
     await store.insert('ShoppingLists', shoppingList)
-  }
+  },
 }

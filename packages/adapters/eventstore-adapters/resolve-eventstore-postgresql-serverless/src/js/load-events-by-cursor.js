@@ -10,27 +10,27 @@ const loadEventsByCursor = async (
     eventsTableName,
     databaseName,
     shapeEvent,
-    isTimeoutError
+    isTimeoutError,
   },
   {
     eventTypes,
     aggregateIds,
     cursor,
     limit,
-    eventsSizeLimit: inputEventsSizeLimit
+    eventsSizeLimit: inputEventsSizeLimit,
   }
 ) => {
   const eventsSizeLimit =
     inputEventsSizeLimit != null ? inputEventsSizeLimit : 2000000000
 
-  const makeBigIntLiteral = numStr => `x'${numStr}'::${INT8_SQL_TYPE}`
-  const parseBigIntString = str =>
+  const makeBigIntLiteral = (numStr) => `x'${numStr}'::${INT8_SQL_TYPE}`
+  const parseBigIntString = (str) =>
     str.substring(2, str.length - (INT8_SQL_TYPE.length + 3))
 
-  const injectBigInt = value =>
+  const injectBigInt = (value) =>
     makeBigIntLiteral((+value).toString(16).padStart(12, '0'))
-  const injectString = value => `${escape(value)}`
-  const injectNumber = value => `${+value}`
+  const injectString = (value) => `${escape(value)}`
+  const injectNumber = (value) => `${+value}`
 
   const cursorBuffer =
     cursor != null ? Buffer.from(cursor, 'base64') : Buffer.alloc(1536, 0)
@@ -139,7 +139,7 @@ const loadEventsByCursor = async (
     batchIndex,
     threadId,
     threadCounterStart,
-    threadCounterEnd
+    threadCounterEnd,
   } of batchList) {
     if (requestCursors[batchIndex] == null) {
       requestCursors[batchIndex] = []
@@ -215,7 +215,7 @@ const loadEventsByCursor = async (
 
   return {
     cursor: nextConditionsBuffer.toString('base64'),
-    events: resultEvents
+    events: resultEvents,
   }
 }
 

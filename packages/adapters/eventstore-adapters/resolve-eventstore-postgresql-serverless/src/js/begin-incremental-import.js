@@ -3,7 +3,7 @@ import {
   LONG_NUMBER_SQL_TYPE,
   INT8_SQL_TYPE,
   JSON_SQL_TYPE,
-  BIG_SERIAL
+  BIG_SERIAL,
 } from './constants'
 
 const beginIncrementalImport = async ({
@@ -11,7 +11,7 @@ const beginIncrementalImport = async ({
   databaseName,
   eventsTableName,
   escapeId,
-  escape
+  escape,
 }) => {
   try {
     const databaseNameAsId = escapeId(databaseName)

@@ -4,5 +4,5 @@ export default () => ({
   },
   decrypt: () => {
     throw Error(`encryption disabled, please check your configuration`)
-  }
+  },
 })

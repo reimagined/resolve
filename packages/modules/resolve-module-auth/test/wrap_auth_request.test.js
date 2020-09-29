@@ -4,7 +4,7 @@ describe('method "wrapAuthRequest"', () => {
   test('should not parse the body { body: null }', () => {
     const req = {
       body: null,
-      headers: {}
+      headers: {},
     }
 
     wrapAuthRequest(req)
@@ -31,35 +31,48 @@ describe('method "wrapAuthRequest"', () => {
   test('should parse the body as "application/x-www-form-urlencoded"', () => {
     const rawReq = {
       body: 'a=5&b=10',
-      headers: { 'content-type': 'application/x-www-form-urlencoded' }
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
     }
 
     const req = wrapAuthRequest(rawReq)
 
     expect(req.body).toEqual({
       a: '5',
-      b: '10'
+      b: '10',
+    })
+  })
+
+  test('#1530 fix: spaces are not properly URL decoded', () => {
+    const rawReq = {
+      body: 'a=user+name++data+%2B+ok',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    }
+
+    const req = wrapAuthRequest(rawReq)
+
+    expect(req.body).toEqual({
+      a: 'user name  data + ok',
     })
   })
 
   test('should parse the body as "application/json"', () => {
     const rawReq = {
       body: JSON.stringify({ a: 5, b: 10 }),
-      headers: { 'content-type': 'application/json' }
+      headers: { 'content-type': 'application/json' },
     }
 
     const req = wrapAuthRequest(rawReq)
 
     expect(req.body).toEqual({
       a: 5,
-      b: 10
+      b: 10,
     })
   })
 
   test('should throw error', () => {
     const rawReq = {
       body: '0101010101010',
-      headers: { 'content-type': 'unknown' }
+      headers: { 'content-type': 'unknown' },
     }
 
     try {

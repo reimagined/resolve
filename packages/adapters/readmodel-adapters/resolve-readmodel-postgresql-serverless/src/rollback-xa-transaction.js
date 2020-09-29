@@ -16,7 +16,7 @@ const rollbackXATransaction = async (
         await pool.rdsDataService.rollbackTransaction({
           resourceArn: pool.dbClusterOrInstanceArn,
           secretArn: pool.awsSecretStoreArn,
-          transactionId: xaTransactionId
+          transactionId: xaTransactionId,
         })
         break
       } catch (err) {
@@ -54,7 +54,7 @@ const rollbackXATransaction = async (
               WHERE "xa_key" = ${pool.escape(
                 pool.hash512(`${xaTransactionId}${readModelName}`)
               )}
-            `
+            `,
           })
 
           log.verbose('Rollback XA-transaction to postgresql database succeed')
