@@ -91,13 +91,13 @@ const appConfig = {
           databaseFile: 'snapshot.db',
         }
       },
-      validator: 'common/view-models/story-details.validator.js'
+      resolver: 'common/view-models/story-details.validator.js'
     }
   ]
 }
 ```
 
-In the configuration object, specify the View Model's name and the path to the file containing projection definition. You can also specify the View Model snapshot storage adapter. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions. Specify the **validator** option to add a [subscription validator](#view-model-subscription-validator) to the View Model.
+In the configuration object, specify the View Model's name and the path to the file containing projection definition. You can alpso specify the View Model snapshot storage adapter. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions. Specify the **resolver** option to add a [View Model resolver](#view-model-resolver) to the View Model.
 
 ### Custom Read Models
 
