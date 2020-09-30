@@ -6,6 +6,10 @@ const appConfig = {
       projection: 'common/aggregates/user.projection.js',
       encryption: 'common/aggregates/encryption.js',
     },
+    {
+      name: 'Counter',
+      commands: 'common/aggregates/counter.commands.js',
+    },
   ],
   readModels: [
     {
@@ -33,6 +37,10 @@ const appConfig = {
       projection: 'common/view-models/custom-serializer.projection.js',
       serializeState: 'common/view-models/custom-serializer.serialize.js',
       deserializeState: 'common/view-models/custom-serializer.deserialize.js',
+    },
+    {
+      name: 'counter',
+      projection: 'common/view-models/counter.projection.js',
     },
   ],
   apiHandlers: [
