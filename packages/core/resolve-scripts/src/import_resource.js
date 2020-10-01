@@ -1,7 +1,10 @@
 import crypto from 'crypto'
 import fs from 'fs'
 
-import { checkRuntimeEnv, injectRuntimeEnv } from './declare_runtime_env'
+import {
+  checkRuntimeEnv,
+  injectRuntimeEnv as injectRuntimeEnvImpl,
+} from './declare_runtime_env'
 import resolveFile from './resolve_file'
 import resolveFileOrModule from './resolve_file_or_module'
 
@@ -15,6 +18,11 @@ import {
   IMPORT_CONSTRUCTOR,
   IMPORT_INSTANCE,
 } from './constants'
+
+const injectRuntimeEnv = (envKey, options) =>
+  options != null
+    ? injectRuntimeEnvImpl(envKey, options)
+    : injectRuntimeEnvImpl(envKey)
 
 const createHashCompileTime = (prefix, content) => {
   const hmac = crypto.createHmac('sha512', prefix)
@@ -167,6 +175,7 @@ const importInstanceResource = ({
   instanceMode = IMPORT_INSTANCE,
   instanceFallback = null,
   calculateHash = null,
+  injectRuntimeOptions = null,
 }) => {
   validateInstanceResource({
     resourceName,
@@ -195,7 +204,7 @@ const importInstanceResource = ({
     ensureInteropRequireDefault(imports)
     constants.push(
       `const ${resourceName}_instance = ${importFileRuntime(
-        injectRuntimeEnv(resourceValue)
+        injectRuntimeEnv(resourceValue, injectRuntimeOptions)
       )}`
     )
 
@@ -203,7 +212,9 @@ const importInstanceResource = ({
       constants.push(
         `const ${resourceName}_hash = ${createHashRunTime(
           calculateHash,
-          readImportedFileRuntime(injectRuntimeEnv(resourceValue))
+          readImportedFileRuntime(
+            injectRuntimeEnv(resourceValue, injectRuntimeOptions)
+          )
         )}`
       )
     }
@@ -318,6 +329,7 @@ const importConstructorResourceModule = ({
   imports,
   constants,
   calculateHash,
+  injectRuntimeOptions,
 }) => {
   const module = resourceValue.module
   if (!checkRuntimeEnv(module)) {
@@ -341,7 +353,7 @@ const importConstructorResourceModule = ({
     ensureInteropRequireDefault(imports)
     constants.push(
       `const ${resourceName}_constructor = ${importFileRuntime(
-        injectRuntimeEnv(module)
+        injectRuntimeEnv(module, injectRuntimeOptions)
       )}`
     )
 
@@ -349,7 +361,9 @@ const importConstructorResourceModule = ({
       constants.push(
         `const ${resourceName}_constructor_hash = ${createHashRunTime(
           calculateHash,
-          readImportedFileRuntime(injectRuntimeEnv(module))
+          readImportedFileRuntime(
+            injectRuntimeEnv(module, injectRuntimeOptions)
+          )
         )}`
       )
     }
@@ -362,6 +376,7 @@ const importConstructorResourceImports = ({
   imports,
   constants,
   calculateHash,
+  injectRuntimeOptions,
 }) => {
   const resourceImports =
     resourceValue.imports != null ? resourceValue.imports : {}
@@ -394,7 +409,7 @@ const importConstructorResourceImports = ({
       ensureInteropRequireDefault(imports)
       constants.push(
         `const ${inlineImportKey} = ${importFileRuntime(
-          injectRuntimeEnv(importValue)
+          injectRuntimeEnv(importValue, injectRuntimeOptions)
         )})`
       )
 
@@ -402,7 +417,9 @@ const importConstructorResourceImports = ({
         constants.push(
           `const ${inlineImportKey}_hash = ${createHashRunTime(
             calculateHash,
-            readImportedFileRuntime(injectRuntimeEnv(importValue))
+            readImportedFileRuntime(
+              injectRuntimeEnv(importValue, injectRuntimeOptions)
+            )
           )}`
         )
       }
@@ -438,10 +455,16 @@ const importConstructorResourceOptions = ({
   resourceValue,
   constants,
   calculateHash,
+  injectRuntimeOptions,
 }) => {
   const options = resourceValue.options != null ? resourceValue.options : {}
 
-  constants.push(`const ${resourceName}_options = ${injectRuntimeEnv(options)}`)
+  constants.push(
+    `const ${resourceName}_options = ${injectRuntimeEnv(
+      options,
+      injectRuntimeOptions
+    )}`
+  )
 
   if (calculateHash != null) {
     constants.push(
@@ -462,6 +485,7 @@ const importConstructorResource = ({
   importMode = RESOURCE_ANY,
   instanceMode = IMPORT_INSTANCE,
   calculateHash = null,
+  injectRuntimeOptions,
 }) => {
   validateConstructorResource({
     resourceName,
@@ -476,6 +500,7 @@ const importConstructorResource = ({
     imports,
     constants,
     calculateHash,
+    injectRuntimeOptions,
   })
 
   importConstructorResourceImports({
@@ -484,6 +509,7 @@ const importConstructorResource = ({
     imports,
     constants,
     calculateHash,
+    injectRuntimeOptions,
   })
 
   importConstructorResourceOptions({
@@ -492,6 +518,7 @@ const importConstructorResource = ({
     imports,
     constants,
     calculateHash,
+    injectRuntimeOptions,
   })
 
   constants.push()

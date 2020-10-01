@@ -1,6 +1,7 @@
 import {
   message,
   RUNTIME_ENV_NOWHERE,
+  RUNTIME_ENV_OPTIONS_ONLY,
   RESOURCE_ANY,
   IMPORT_INSTANCE,
 } from '../constants'
@@ -40,7 +41,7 @@ export default ({ resolveConfig, isClient }) => {
     importResource({
       resourceName: `resolvers_${index}`,
       resourceValue: readModel.resolvers,
-      runtimeMode: RUNTIME_ENV_NOWHERE,
+      runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
       imports,
@@ -54,7 +55,7 @@ export default ({ resolveConfig, isClient }) => {
     importResource({
       resourceName: `projection_${index}`,
       resourceValue: readModel.projection,
-      runtimeMode: RUNTIME_ENV_NOWHERE,
+      runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
       calculateHash: 'resolve-read-model-projection-hash',

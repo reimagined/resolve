@@ -2,6 +2,7 @@ import {
   message,
   RESOURCE_ANY,
   RUNTIME_ENV_NOWHERE,
+  RUNTIME_ENV_OPTIONS_ONLY,
   IMPORT_INSTANCE,
 } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
@@ -29,7 +30,7 @@ export default ({ resolveConfig, isClient }) => {
     importResource({
       resourceName: `commands_${index}`,
       resourceValue: aggregate.commands,
-      runtimeMode: RUNTIME_ENV_NOWHERE,
+      runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
       imports,
@@ -43,7 +44,7 @@ export default ({ resolveConfig, isClient }) => {
     importResource({
       resourceName: `serializeState_${index}`,
       resourceValue: aggregate.serializeState,
-      runtimeMode: RUNTIME_ENV_NOWHERE,
+      runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
       instanceFallback:
@@ -57,7 +58,7 @@ export default ({ resolveConfig, isClient }) => {
     importResource({
       resourceName: `deserializeState_${index}`,
       resourceValue: aggregate.deserializeState,
-      runtimeMode: RUNTIME_ENV_NOWHERE,
+      runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
       instanceFallback:
@@ -72,7 +73,7 @@ export default ({ resolveConfig, isClient }) => {
       importResource({
         resourceName: `projection_${index}`,
         resourceValue: aggregate.projection,
-        runtimeMode: RUNTIME_ENV_NOWHERE,
+        runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
         calculateHash: 'resolve-aggregate-projection-hash',

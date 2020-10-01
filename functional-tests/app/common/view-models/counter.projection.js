@@ -1,17 +1,14 @@
-import { COUNTER_INCREASED, COUNTER_DECREASED } from '../event-types'
+import getEventTypes from '../event-types'
 
-export default {
-  Init: () => 0,
-  [COUNTER_INCREASED]: (state, { payload }) => {
-    if (+state !== +payload) {
-      throw new Error(`Expected ${state} but get ${payload} counter value`)
-    }
-    return state + 1
-  },
-  [COUNTER_DECREASED]: (state, { payload }) => {
-    if (+state !== +payload) {
-      throw new Error(`Expected ${state} but get ${payload} counter value`)
-    }
-    return state - 1
-  },
+export default (options) => {
+  const { COUNTER_INCREASED, COUNTER_DECREASED } = getEventTypes(options)
+  return {
+    Init: () => 0,
+    [COUNTER_INCREASED]: (state) => {
+      return state + 1
+    },
+    [COUNTER_DECREASED]: (state) => {
+      return state - 1
+    },
+  }
 }
