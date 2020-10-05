@@ -218,7 +218,11 @@ const commitIncrementalImport = async (
       throw new Error('Bad argument for "validateAfterCommit"')
     }
   } catch (error) {
-    if (error != null && /Table.*? does not exist$/i.test(error.message)) {
+    if (
+      error != null &&
+      (/Table.*? does not exist$/i.test(error.message) ||
+        /subquery used as an expression/i.test(error.message))
+    ) {
       throw new Error(
         `Either event batch has timestamps from the past nor incremental importId=${importId} does not exist`
       )
