@@ -206,6 +206,7 @@ module.exports = {
           'html',
           'http',
           'https',
+          'hoc',
           'ico',
           'iconv',
           'ident',

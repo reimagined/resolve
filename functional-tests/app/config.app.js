@@ -41,8 +41,53 @@ const appConfig = {
       path: '/api/query-is-ready',
       method: 'GET',
     },
+    {
+      handler: {
+        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+        options: {
+          modulePath: './hoc/ssr.js',
+          moduleFactoryImport: false,
+        },
+      },
+      path: '/hoc',
+      method: 'GET',
+    },
   ],
-  clientEntries: ['client/index.js'],
+  clientEntries: [
+    'client/index.js',
+    [
+      'client-hoc/index.js',
+      {
+        outputFile: 'common/local-entry/hoc/index.js',
+        moduleType: 'commonjs',
+        target: 'web',
+      },
+    ],
+    [
+      'client-hoc/index.js',
+      {
+        outputFile: 'common/cloud-entry/hoc/index.js',
+        moduleType: 'commonjs',
+        target: 'web',
+      },
+    ],
+    [
+      'client-hoc/ssr.js',
+      {
+        outputFile: 'common/local-entry/hoc/ssr.js',
+        moduleType: 'commonjs',
+        target: 'node',
+      },
+    ],
+    [
+      'client-hoc/ssr.js',
+      {
+        outputFile: 'common/cloud-entry/hoc/ssr.js',
+        moduleType: 'commonjs',
+        target: 'node',
+      },
+    ],
+  ],
 }
 
 export default appConfig
