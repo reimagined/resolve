@@ -96,6 +96,7 @@ module.exports = {
           'bson',
           'btn',
           'buf',
+          'cancelled',
           'cacheable',
           'calc',
           'cax',
