@@ -1,8 +1,11 @@
 import getStaticBasedPath from 'resolve-runtime/lib/common/utils/get-static-based-path'
 
 const markupHandler = async (resolveContext, req, res) => {
-  const { seedClientEnvs, rootPath } = resolveContext
-  const bundleUrl = getStaticBasedPath(rootPath, './hoc', 'index.js')
+  const {
+    seedClientEnvs,
+    constants: { rootPath, staticPath },
+  } = resolveContext
+  const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index-hoc.js')
   await res.setHeader('Content-Type', 'text/html')
   await res.end(`
     <!doctype html>

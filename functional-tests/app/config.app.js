@@ -45,7 +45,7 @@ const appConfig = {
       handler: {
         module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
         options: {
-          modulePath: './hoc/ssr.js',
+          modulePath: './ssr-hoc.js',
           moduleFactoryImport: false,
         },
       },
@@ -55,34 +55,19 @@ const appConfig = {
   ],
   clientEntries: [
     'client/index.js',
+    'client/index-hoc.js',
     [
-      'client-hoc/index.js',
+      'client/ssr-hoc.js',
       {
-        outputFile: 'common/local-entry/hoc/index.js',
-        moduleType: 'commonjs',
-        target: 'web',
-      },
-    ],
-    [
-      'client-hoc/index.js',
-      {
-        outputFile: 'common/cloud-entry/hoc/index.js',
-        moduleType: 'commonjs',
-        target: 'web',
-      },
-    ],
-    [
-      'client-hoc/ssr.js',
-      {
-        outputFile: 'common/local-entry/hoc/ssr.js',
+        outputFile: 'common/local-entry/ssr-hoc.js',
         moduleType: 'commonjs',
         target: 'node',
       },
     ],
     [
-      'client-hoc/ssr.js',
+      'client/ssr-hoc.js',
       {
-        outputFile: 'common/cloud-entry/hoc/ssr.js',
+        outputFile: 'common/cloud-entry/ssr-hoc.js',
         moduleType: 'commonjs',
         target: 'node',
       },
