@@ -28,10 +28,12 @@ export class UsersLikes extends React.PureComponent {
   }
 }
 
-export const mapStateToOptions = () => {
+export const mapStateToOptions = (state, ownProps) => {
+  const aggregateId = ownProps.match.params.id
+
   return {
     viewModelName: 'cumulative-likes',
-    aggregateIds: [],
+    aggregateIds: [aggregateId],
     aggregateArgs: {},
   }
 }

@@ -12,7 +12,7 @@ export default [
         exact: true,
       },
       {
-        path: '/hoc/users-likes',
+        path: '/hoc/users-likes/:id',
         component: UsersLikes,
       },
     ],

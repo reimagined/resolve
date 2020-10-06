@@ -2,7 +2,7 @@ import { USER_REGISTERED, USER_LIKED } from '../event-types'
 
 export default {
   register: (state, command, { encrypt }) => {
-    if (state.isExists) {
+    if (state.isExist) {
       throw Error(`the user already exists`)
     }
     return {
@@ -14,7 +14,7 @@ export default {
     }
   },
   like: (state) => {
-    if (!state.isExists) {
+    if (!state.isExist) {
       throw Error(`the user not exist`)
     }
     return {

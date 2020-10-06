@@ -1,13 +1,15 @@
 import { USER_LIKED, USER_REGISTERED } from '../event-types'
 
 export default {
-  Init: () => {},
-  [USER_REGISTERED]: (state, { aggregateId }) => ({
-    ...state,
-    [aggregateId]: 0,
+  Init: () => ({
+    likes: -999,
   }),
-  [USER_LIKED]: (state, { aggregateId }) => ({
+  [USER_REGISTERED]: (state) => ({
     ...state,
-    [aggregateId]: state[aggregateId] + 1,
+    likes: 0,
+  }),
+  [USER_LIKED]: (state) => ({
+    ...state,
+    likes: state.likes + 1,
   }),
 }
