@@ -1,8 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { connectViewModel } from 'resolve-redux'
-import { ListGroup, ListGroupItem, Button } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { ListGroup, ListGroupItem } from 'react-bootstrap'
 
 class UserLikes extends React.PureComponent {
   render() {
@@ -14,7 +13,6 @@ class UserLikes extends React.PureComponent {
 
     return (
       <div className="example-wrapper">
-        <Link to="/users">users</Link>
         <ListGroup className="example-list">
           {Object.keys(data).map((userId) => (
             <ListGroupItem key={userId}>
@@ -40,31 +38,21 @@ const mapStateToOptions = (state, ownProps) => {
 const mapStateToProps = () => ({})
 const mapDispatchToProps = () => ({})
 
-const ConnectedLikes = connectViewModel(mapStateToOptions)(
+const ConnectedLikesA = connectViewModel(mapStateToOptions)(
+  connect(mapStateToProps, mapDispatchToProps)(UserLikes)
+)
+const ConnectedLikesB = connectViewModel(mapStateToOptions)(
   connect(mapStateToProps, mapDispatchToProps)(UserLikes)
 )
 
 class Wrapper extends React.PureComponent {
-  state = {
-    mounted: true,
-  }
-
-  mount = () => {
-    this.setState({ mounted: true })
-  }
-
-  unmount = () => {
-    this.setState({ mounted: false })
-  }
-
   render() {
     const userId = this.props.match.params.id
 
     return (
       <div className="example-wrapper">
-        <Button onClick={this.unmount}>unmount</Button>
-        <Button onClick={this.mount}>mount</Button>
-        {this.state.mounted ? <ConnectedLikes userId={userId} /> : null}
+        <ConnectedLikesA userId={userId} />
+        <ConnectedLikesB userId={userId} />
       </div>
     )
   }
