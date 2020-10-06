@@ -1,6 +1,7 @@
 import App from './containers/App'
 import Index from './containers/Index'
-import UsersLikes from './containers/UsersLikes'
+import UsersLikes from './containers/UserLikes'
+import Users from './containers/Users'
 
 export default [
   {
@@ -9,6 +10,11 @@ export default [
       {
         path: '/hoc',
         component: Index,
+        exact: true,
+      },
+      {
+        path: '/hoc/users',
+        component: Users,
         exact: true,
       },
       {
