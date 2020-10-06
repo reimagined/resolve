@@ -34,6 +34,10 @@ const appConfig = {
       serializeState: 'common/view-models/custom-serializer.serialize.js',
       deserializeState: 'common/view-models/custom-serializer.deserialize.js',
     },
+    {
+      name: 'cumulative-likes',
+      projection: 'common/view-models/cumulative-likes.projection.js',
+    },
   ],
   apiHandlers: [
     {

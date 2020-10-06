@@ -20,7 +20,7 @@ const entryPoint = ({ staticPath, viewModels, subscriber, clientImports }) => {
     subscriber,
     history,
     origin,
-    rootPath,
+    rootPath: '',
     isClient: true,
   })
 
