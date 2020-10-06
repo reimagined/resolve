@@ -35,20 +35,6 @@ const commitIncrementalImport = async (
           AND "CLS"."relkind" = 'r')
         ) = 1
       ),
-      "ValidateTimestamps" AS (
-        SELECT 0 AS "Zero" WHERE (
-          (SELECT 1 AS "IncrementalImportFailed")
-        UNION ALL
-          (SELECT 1 AS "IncrementalImportFailed"
-          FROM ${databaseNameAsId}.${eventsTableAsId}
-          WHERE ${databaseNameAsId}.${eventsTableAsId}."timestamp" > (
-            SELECT MIN(${databaseNameAsId}.${incrementalImportTableAsId}."timestamp") +
-            (SELECT "ValidateImportId"."Zero" FROM "ValidateImportId")
-            FROM ${databaseNameAsId}.${incrementalImportTableAsId}
-          )
-          LIMIT 2)    
-        ) = 1
-      ),
       "OriginalUniqueEvents" AS (
         SELECT * FROM ${databaseNameAsId}.${incrementalImportTableAsId} WHERE "rowid" NOT IN (
           SELECT "MaybeEqualEvents"."rowid" FROM (
@@ -59,13 +45,27 @@ const commitIncrementalImport = async (
             "A"."type" = "B"."type"
           ) "MaybeEqualEvents"
           WHERE "MaybeEqualEvents"."payloadA" = "MaybeEqualEvents"."payloadB"
-          AND (SELECT "ValidateTimestamps"."Zero" FROM "ValidateTimestamps") = 0
+          AND (SELECT "ValidateImportId"."Zero" FROM "ValidateImportId") = 0
         )
+      ),
+      "ValidateTimestamps" AS (
+        SELECT 0 AS "Zero" WHERE (
+          (SELECT 1 AS "IncrementalImportFailed")
+        UNION ALL
+          (SELECT 1 AS "IncrementalImportFailed"
+          FROM ${databaseNameAsId}.${eventsTableAsId}
+          WHERE ${databaseNameAsId}.${eventsTableAsId}."timestamp" > (
+            SELECT MIN("OriginalUniqueEvents"."timestamp")
+            FROM "OriginalUniqueEvents"
+          )
+          LIMIT 2)    
+        ) = 1
       ),
       "EnumeratedUniqueEvents" AS (
         SELECT ROW_NUMBER() OVER (ORDER BY "OriginalUniqueEvents"."timestamp", "OriginalUniqueEvents"."rowid") - 1 AS "sortedIdx",
         "OriginalUniqueEvents"."rowid" as "rowid"
         FROM "OriginalUniqueEvents"
+        WHERE (SELECT "ValidateTimestamps"."Zero" FROM "ValidateTimestamps") = 0
         ORDER BY "OriginalUniqueEvents"."timestamp"
       ),
       "ThreadTails" AS (
