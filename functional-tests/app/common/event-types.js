@@ -1,1 +1,2 @@
 export const USER_REGISTERED = 'USER_REGISTERED'
+export const USER_LIKED = 'USER_LIKED'

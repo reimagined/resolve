@@ -49,6 +49,17 @@ const appConfig = {
           moduleFactoryImport: false,
         },
       },
+      path: '/hoc/:markup*',
+      method: 'GET',
+    },
+    {
+      handler: {
+        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+        options: {
+          modulePath: './ssr-hoc.js',
+          moduleFactoryImport: false,
+        },
+      },
       path: '/hoc',
       method: 'GET',
     },
