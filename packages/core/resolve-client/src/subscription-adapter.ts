@@ -1,13 +1,13 @@
 import {
   subscriptionAdapterAlreadyInitialized,
   subscriptionAdapterClosed,
-  subscriptionAdapterNotInitialized
+  subscriptionAdapterNotInitialized,
 } from './subscribe-adapter-constants'
 import { SubscriptionAdapterStatus } from './types'
 
 export interface SubscriptionAdapter {
   init: () => void
-  close: () => Promise<any>
+  close: () => void
   status: () => SubscriptionAdapterStatus
 }
 
@@ -31,7 +31,10 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
 
   return {
     init(): void {
-      if (status === SubscriptionAdapterStatus.Ready) {
+      if (
+        status === SubscriptionAdapterStatus.Connecting ||
+        status === SubscriptionAdapterStatus.Connected
+      ) {
         throw new Error(subscriptionAdapterAlreadyInitialized)
       }
       if (status === SubscriptionAdapterStatus.Closed) {
@@ -39,9 +42,10 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
       }
 
       client = new WebSocket(url)
+      status = SubscriptionAdapterStatus.Connecting
 
       client.onopen = (): void => {
-        status = SubscriptionAdapterStatus.Connecting
+        status = SubscriptionAdapterStatus.Connected
 
         client?.send(
           JSON.stringify({
@@ -84,8 +88,11 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
       }
     },
 
-    async close(): Promise<void> {
-      if (status !== SubscriptionAdapterStatus.Connecting) {
+    close(): void {
+      if (
+        status !== SubscriptionAdapterStatus.Connecting &&
+        status !== SubscriptionAdapterStatus.Connected
+      ) {
         throw new Error(subscriptionAdapterNotInitialized)
       }
       status = SubscriptionAdapterStatus.Closed
@@ -97,7 +104,7 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
 
     status(): SubscriptionAdapterStatus {
       if (
-        status === SubscriptionAdapterStatus.Connecting &&
+        status === SubscriptionAdapterStatus.Connected &&
         client != null &&
         client.readyState === 1
       ) {

@@ -18,6 +18,7 @@ export type ViewModel = {
 export enum SubscriptionAdapterStatus {
   Initializing = 'initializing',
   Connecting = 'connecting',
+  Connected = 'connected',
   Ready = 'ready',
   Closed = 'closed',
 }
