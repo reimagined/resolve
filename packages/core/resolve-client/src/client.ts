@@ -278,7 +278,6 @@ export const subscribe = (
   subscribeCallback?: SubscribeCallback,
   resubscribeCallback?: ResubscribeCallback
 ): PromiseOrVoid<Subscription> => {
-
   const subscribeAsync = async (): Promise<Subscription> => {
     await connect(
       context,
