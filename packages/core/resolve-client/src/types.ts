@@ -14,3 +14,10 @@ export type ViewModel = {
   }
   deserializeState: ViewModelDeserializer
 }
+
+export enum SubscriptionAdapterStatus {
+  Initializing = 'initializing',
+  Connecting = 'connecting',
+  Ready = 'ready',
+  Closed = 'closed',
+}

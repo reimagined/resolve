@@ -1,15 +1,9 @@
 import {
-  subscriptionAdapterNotInitialized,
   subscriptionAdapterAlreadyInitialized,
   subscriptionAdapterClosed,
+  subscriptionAdapterNotInitialized
 } from './subscribe-adapter-constants'
-
-export enum SubscriptionAdapterStatus {
-  Initializing = 'initializing',
-  Connecting = 'connecting',
-  Ready = 'ready',
-  Closed = 'closed',
-}
+import { SubscriptionAdapterStatus } from './types'
 
 export interface SubscriptionAdapter {
   init: () => void

@@ -1,10 +1,10 @@
 import window from 'global/window'
 import createSubscriptionAdapter, {
   SubscriptionAdapter,
-  SubscriptionAdapterStatus,
 } from './subscription-adapter'
 import { Context } from './context'
 import { addCallback, removeCallback, rootCallback } from './subscribe-callback'
+import { SubscriptionAdapterStatus } from './types'
 
 interface SubscriptionKey {
   aggregateId: string
