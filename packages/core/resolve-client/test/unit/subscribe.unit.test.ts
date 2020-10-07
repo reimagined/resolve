@@ -7,7 +7,7 @@ import { SubscriptionAdapterStatus } from '../../src/types'
 import * as subscribe from '../../src/subscribe'
 import { rootCallback } from '../../src/subscribe-callback'
 import { Context } from '../../src/context'
-import createClientAdapter from '../../src/subscription-adapter'
+import createClientAdapter from '../../src/subscribe-adapter'
 /* eslint-enable */
 
 const { connect, disconnect, dropSubscribeAdapterPromise } = subscribe

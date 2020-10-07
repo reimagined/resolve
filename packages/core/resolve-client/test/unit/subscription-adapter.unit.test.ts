@@ -1,6 +1,6 @@
 import adapterFactory, {
   SubscriptionAdapter,
-} from '../../src/subscription-adapter'
+} from '../../src/subscribe-adapter'
 import {
   subscriptionAdapterAlreadyInitialized,
   subscriptionAdapterClosed,

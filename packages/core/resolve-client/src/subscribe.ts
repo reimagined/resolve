@@ -1,7 +1,7 @@
 import window from 'global/window'
 import createSubscriptionAdapter, {
   SubscriptionAdapter,
-} from './subscription-adapter'
+} from './subscribe-adapter'
 import { Context } from './context'
 import { addCallback, removeCallback, rootCallback } from './subscribe-callback'
 import { SubscriptionAdapterStatus } from './types'
