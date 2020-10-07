@@ -6,7 +6,7 @@ import { mocked } from 'ts-jest'
 import * as subscribe from '../../src/subscribe'
 import { rootCallback } from '../../src/subscribe-callback'
 import { Context } from '../../src/context'
-import createClientAdapter from '../../src/subscribe-adapter'
+import createClientAdapter from '../../src/subscription-adapter'
 /* eslint-enable */
 
 const { connect, disconnect, dropSubscribeAdapterPromise } = subscribe
@@ -210,7 +210,7 @@ describe('re-subscribe', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks()
-    refreshSpy = jest.spyOn(subscribe, 'refreshSubscribeAdapter')
+    refreshSpy = jest.spyOn(subscribe, 'refreshSubscriptionAdapter')
     /* mockCreateSubscribeAdapter = jest.fn().mockReturnValue({
       init: mockInit,
       isConnected: mockIsConnected,
