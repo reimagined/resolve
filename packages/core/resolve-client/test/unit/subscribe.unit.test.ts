@@ -21,7 +21,7 @@ const mockClose = jest.fn()
 
 const mockCreateSubscribeAdapter = mocked(createClientAdapter)
 
-jest.mock('../../src/subscription-adapter', () => jest.fn())
+jest.mock('../../src/subscribe-adapter', () => jest.fn())
 
 mockCreateSubscribeAdapter.adapterName = 'adapter-name'
 
