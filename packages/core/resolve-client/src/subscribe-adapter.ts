@@ -33,7 +33,7 @@ const createClientAdapter: CreateSubscribeAdapter = ({
         throw new Error(subscribeAdapterAlreadyInitialized)
       }
 
-      return await new Promise((resolve, reject) => {
+      return await new Promise((resolve) => {
         client = new WebSocket(url)
 
         client.onopen = (): void => {

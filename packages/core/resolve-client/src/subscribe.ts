@@ -1,5 +1,5 @@
 import window from 'global/window'
-import createSubscribeAdapter from './subscribe-adapter'
+import createSubscribeAdapter, { SubscribeAdapter } from './subscribe-adapter'
 import { Context } from './context'
 import { rootCallback, addCallback, removeCallback } from './subscribe-callback'
 
@@ -34,7 +34,7 @@ const buildKey = (
   return [viewModelName].concat(sortedAggregateIds).join(':')
 }
 
-let adaptersMap = new Map()
+let adaptersMap = new Map<string, SubscribeAdapter>()
 let refreshTimeout: number | NodeJS.Timeout | null
 
 export const getSubscriptionKeys = (
@@ -208,7 +208,9 @@ const connect = async (
 
   const key = buildKey(viewModelName, aggregateIds)
 
-  if (adaptersMap.has(key) && adaptersMap.get(key).isConnected()) {
+  const cachedAdapter = adaptersMap.get(key)
+
+  if (cachedAdapter != null && cachedAdapter.isConnected()) {
     return Promise.resolve()
   }
 
@@ -246,7 +248,9 @@ const disconnect = async (
   const key = buildKey(viewModelName, aggregateIds)
   const subscribeAdapter = adaptersMap.get(key)
 
-  await subscribeAdapter.close()
+  if (subscribeAdapter) {
+    await subscribeAdapter.close()
+  }
 
   for (const { eventType, aggregateId } of subscriptionKeys) {
     removeCallback(eventType, aggregateId, callback)
