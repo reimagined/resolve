@@ -3,7 +3,7 @@ import { getTargetURL } from '../utils/utils'
 
 const targetUrl = getTargetURL()
 
-fixture`Functional tests app`.skip.beforeEach(async (t) => {
+fixture`Functional tests app`.beforeEach(async (t) => {
   await t.setNativeDialogHandler(() => true)
   await t.navigateTo(targetUrl)
 })
