@@ -5,7 +5,7 @@ import { Button } from 'react-bootstrap'
 
 class Users extends React.PureComponent {
   render() {
-    const { isLoading, users } = this.props
+    const { users } = this.props
 
     if (!users) {
       return null
