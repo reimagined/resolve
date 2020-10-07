@@ -1,6 +1,6 @@
 import App from './containers/App'
 import Index from './containers/Index'
-import UsersLikes from './containers/UserLikes'
+import OneViewModelMountedTwice from './containers/OneViewModelMountedTwice'
 import Users from './containers/Users'
 
 export default [
@@ -18,8 +18,8 @@ export default [
         exact: true,
       },
       {
-        path: '/hoc/users-likes/:id',
-        component: UsersLikes,
+        path: '/hoc/twice-view-model-mount/:id',
+        component: OneViewModelMountedTwice,
       },
     ],
   },

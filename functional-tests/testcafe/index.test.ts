@@ -1,9 +1,9 @@
 import { Selector } from 'testcafe'
+import { getTargetURL } from '../utils/utils'
 
-const targetUrl =
-  process.env.RESOLVE_TESTCAFE_TESTS_TARGET_URL || 'http://0.0.0.0:3000'
+const targetUrl = getTargetURL()
 
-fixture`Functional tests app`.beforeEach(async (t) => {
+fixture`Functional tests app`.skip.beforeEach(async (t) => {
   await t.setNativeDialogHandler(() => true)
   await t.navigateTo(targetUrl)
 })
