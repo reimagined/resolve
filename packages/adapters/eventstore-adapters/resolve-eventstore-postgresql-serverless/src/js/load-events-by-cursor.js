@@ -153,11 +153,16 @@ const loadEventsByCursor = async (
   }
 
   for (let i = 0; i < requestCursors.length; i++) {
+    const batchCursor = requestCursors[i]
+    if (batchCursor == null || batchCursor.length === 0) {
+      continue
+    }
+
     const sqlQuery = `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}
     WHERE ${
       queryConditions.length > 0 ? `${queryConditions.join(' AND ')} AND (` : ''
     }
-    ${requestCursors[i].join(' OR ')}
+    ${batchCursor.join(' OR ')}
     ${queryConditions.length > 0 ? ')' : ''}
     ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC
     `
