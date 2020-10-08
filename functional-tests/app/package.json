@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "0.25.10",
+  "version": "0.25.12",
   "description": "used to perform various functional test",
   "private": true,
   "scripts": {
@@ -23,13 +23,13 @@
     "redux-devtools-extension": "2.13.7",
     "jsonwebtoken": "8.5.1",
     "passport-local": "1.0.0",
-    "resolve-redux": "0.25.10",
-    "resolve-scripts": "0.25.10",
-    "resolve-eventstore-postgresql-serverless": "0.25.10",
-    "resolve-eventstore-lite": "0.25.10",
-    "resolve-readmodel-lite": "0.25.10",
-    "resolve-readmodel-postgresql-serverless": "0.25.10",
-    "resolve-module-admin": "0.25.10",
+    "resolve-redux": "0.25.12",
+    "resolve-scripts": "0.25.12",
+    "resolve-eventstore-postgresql-serverless": "0.25.12",
+    "resolve-eventstore-lite": "0.25.12",
+    "resolve-readmodel-lite": "0.25.12",
+    "resolve-readmodel-postgresql-serverless": "0.25.12",
+    "resolve-module-admin": "0.25.12",
     "uuid": "8.3.0",
     "crypto-js": "4.0.0",
     "generate-password": "1.5.1"
