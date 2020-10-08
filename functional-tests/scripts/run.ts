@@ -321,7 +321,7 @@ const runApiTests = async (options: TestBundleOptions) => {
       stdio: 'inherit',
       env: {
         ...process.env,
-        RESOLVE_API_TESTS_TARGET_URL: url,
+        RESOLVE_TESTS_TARGET_URL: url,
       },
     })
   } catch (e) {
@@ -368,7 +368,7 @@ const runTestcafeTests = async (options: TestBundleOptions) => {
         stdio: 'inherit',
         env: {
           ...process.env,
-          RESOLVE_TESTCAFE_TESTS_TARGET_URL: url,
+          RESOLVE_TESTS_TARGET_URL: url,
         },
       }
     )
