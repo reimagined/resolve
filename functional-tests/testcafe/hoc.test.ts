@@ -25,11 +25,19 @@ test('same view model mounted multiple times within page', async (t) => {
   await registerUser(userId)
 
   await t.navigateTo(`${root}/twice-view-model-mount/${userId}`)
-  await t.expect(await Selector('h3').withText('likes#1:0').exists).eql(true)
-  await t.expect(await Selector('h3').withText('likes#2:0').exists).eql(true)
+  await t
+    .expect(Selector('h3').withText('likes#1:0').visible)
+    .ok({ timeout: 10000 })
+  await t
+    .expect(Selector('h3').withText('likes#2:0').visible)
+    .ok({ timeout: 10000 })
 
   await t.click(Selector('button').withText('like'))
 
-  await t.expect(await Selector('h3').withText('likes#1:1').exists).eql(true)
-  await t.expect(await Selector('h3').withText('likes#2:1').exists).eql(true)
+  await t
+    .expect(Selector('h3').withText('likes#1:1').visible)
+    .ok({ timeout: 10000 })
+  await t
+    .expect(Selector('h3').withText('likes#2:1').visible)
+    .ok({ timeout: 10000 })
 })
