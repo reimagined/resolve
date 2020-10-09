@@ -68,6 +68,6 @@
     "testcafe": "1.8.5",
     "testcafe-react-selectors": "^4.0.0",
     "resolve-module-admin": "0.25.12",
-    "isomorphic-fetch": "2.2.1"
+    "isomorphic-fetch": "3.0.0"
   }
 }

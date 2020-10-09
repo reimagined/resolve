@@ -12,7 +12,7 @@
   "dependencies": {
     "testcafe": "1.9.1",
     "testcafe-browser-tools": "^2.0.10",
-    "isomorphic-fetch": "2.2.1",
+    "isomorphic-fetch": "3.0.0",
     "fs-extra": "9.0.1",
     "@babel/core": "7.11.6",
     "@babel/node": "7.10.5",
