@@ -1,17 +1,19 @@
-export default {
-  all: async (store) => {
-    return await store.find('Users', {})
-  },
-  profile: async (store, { userId }) => {
-    const entry = await store.findOne('Users', { id: userId })
+export default () => {
+  return {
+    all: async (store) => {
+      return await store.find('Users', {})
+    },
+    profile: async (store, { userId }) => {
+      const entry = await store.findOne('Users', { id: userId })
 
-    if (entry != null) {
-      const { profile } = entry
-      return {
-        userId,
-        profile,
+      if (entry != null) {
+        const { profile } = entry
+        return {
+          userId,
+          profile,
+        }
       }
-    }
-    return null
-  },
+      return null
+    },
+  }
 }
