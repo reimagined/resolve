@@ -77,6 +77,13 @@ const appConfig = {
         module: 'common/view-models/counter.projection.js',
         options: { VERSION: EVENTS_VERSION },
       },
+      {
+        name: 'cumulative-likes',
+        projection: {
+          module: 'common/view-models/cumulative-likes.projection.js',
+          options: { VERSION: EVENTS_VERSION }
+        },
+      }
     },
   ],
   clientImports: {
@@ -91,8 +98,49 @@ const appConfig = {
       path: '/api/query-is-ready',
       method: 'GET',
     },
+    {
+      handler: {
+        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+        options: {
+          modulePath: './ssr-hoc.js',
+          moduleFactoryImport: false,
+        },
+      },
+      path: '/hoc/:markup*',
+      method: 'GET',
+    },
+    {
+      handler: {
+        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+        options: {
+          modulePath: './ssr-hoc.js',
+          moduleFactoryImport: false,
+        },
+      },
+      path: '/hoc',
+      method: 'GET',
+    },
   ],
-  clientEntries: ['client/index.js'],
+  clientEntries: [
+    'client/index.js',
+    'client/index-hoc.js',
+    [
+      'client/ssr-hoc.js',
+      {
+        outputFile: 'common/local-entry/ssr-hoc.js',
+        moduleType: 'commonjs',
+        target: 'node',
+      },
+    ],
+    [
+      'client/ssr-hoc.js',
+      {
+        outputFile: 'common/cloud-entry/ssr-hoc.js',
+        moduleType: 'commonjs',
+        target: 'node',
+      },
+    ],
+  ],
 }
 
 export default appConfig

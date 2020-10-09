@@ -1,10 +1,10 @@
 import getEventTypes from '../event-types'
 
 export default (options) => {
-  const { USER_REGISTERED } = getEventTypes(options)
+  const { USER_REGISTERED, USER_LIKED } = getEventTypes(options)
   return {
     register: (state, command, { encrypt }) => {
-      if (state.isExists) {
+      if (state.isExist) {
         throw Error(`the user already exists`)
       }
       return {
@@ -13,6 +13,15 @@ export default (options) => {
           name: command.payload.name,
           creditCard: encrypt(command.payload.creditCard),
         },
+      }
+    },
+    like: (state) => {
+      if (!state.isExist) {
+        throw Error(`the user not exist`)
+      }
+      return {
+        type: USER_LIKED,
+        payload: {},
       }
     },
   }

@@ -1,6 +1,6 @@
 {
   "name": "resolve-client",
-  "version": "0.25.10",
+  "version": "0.25.12",
   "description": "Basic reSolve client.",
   "engines": {
     "node": ">=10.9"
@@ -32,7 +32,7 @@
     "node-fetch": "^2.6.0",
     "query-string": "^5.1.1",
     "isomorphic-fetch": "2.2.1",
-    "resolve-core": "0.25.10"
+    "resolve-core": "0.25.12"
   },
   "devDependencies": {
     "express": "^4.17.1",

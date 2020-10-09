@@ -1,5 +1,8 @@
 export default () => {
   return {
+    all: async (store) => {
+      return await store.find('Users', {})
+    },
     profile: async (store, { userId }) => {
       const entry = await store.findOne('Users', { id: userId })
 
