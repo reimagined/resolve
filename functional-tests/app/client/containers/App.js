@@ -1,7 +1,9 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
-const App = ({ staticPath }) => {
+import Counter from './Counter'
+
+const App = ({ staticPath, version }) => {
   const stylesheetLink = {
     rel: 'stylesheet',
     type: 'text/css',
@@ -21,8 +23,12 @@ const App = ({ staticPath }) => {
   return (
     <div>
       <Helmet title="Functional Tests App" link={links} meta={[meta]} />
+      <h6 align="left">
+        {version != null && version.length > 0 ? `Version ${version}` : ``}
+      </h6>
       <h2 align="center">Basic tests</h2>
       <h2 align="center">View model tests</h2>
+      <Counter version={version} />
     </div>
   )
 }
