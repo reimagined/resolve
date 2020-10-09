@@ -77,13 +77,13 @@ const appConfig = {
         module: 'common/view-models/counter.projection.js',
         options: { VERSION: EVENTS_VERSION },
       },
-      {
-        name: 'cumulative-likes',
-        projection: {
-          module: 'common/view-models/cumulative-likes.projection.js',
-          options: { VERSION: EVENTS_VERSION }
-        },
-      }
+    },
+    {
+      name: 'cumulative-likes',
+      projection: {
+        module: 'common/view-models/cumulative-likes.projection.js',
+        options: { VERSION: EVENTS_VERSION },
+      },
     },
   ],
   clientImports: {
