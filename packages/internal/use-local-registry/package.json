@@ -7,7 +7,7 @@
   "dependencies": {
     "@internal/helpers": "0.25.12",
     "@internal/local-registry": "0.25.12",
-    "minimist": "1.2.0"
+    "minimist": "1.2.3"
   },
   "scripts": {
     "deploy": "node ./bin/index.js",
