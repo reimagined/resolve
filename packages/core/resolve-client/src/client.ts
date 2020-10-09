@@ -11,7 +11,7 @@ import {
 import { assertLeadingSlash, assertNonEmptyString } from './assertions'
 import { getRootBasedUrl, isAbsoluteUrl } from './utils'
 import determineOrigin from './determine-origin'
-import { ViewModelDeserializer } from './view-model-types'
+import { ViewModelDeserializer } from './types'
 
 function determineCallback<T>(options: any, callback: any): T | null {
   if (typeof options === 'function') {

@@ -1,103 +1,116 @@
 import {
-  subscribeAdapterNotInitialized,
-  subscribeAdapterAlreadyInitialized,
+  subscriptionAdapterAlreadyInitialized,
+  subscriptionAdapterClosed,
+  subscriptionAdapterNotInitialized,
 } from './subscribe-adapter-constants'
+import { SubscriptionAdapterStatus } from './types'
 
-export interface SubscribeAdapter {
-  init: () => Promise<any>
-  close: () => Promise<any>
-  isConnected: () => boolean
+export interface SubscriptionAdapter {
+  init: () => void
+  close: () => void
+  status: () => SubscriptionAdapterStatus
 }
 
-export interface CreateSubscribeAdapter {
+export interface SubscriptionAdapterFactory {
   (options: {
     url: string
     cursor: string | null
     onEvent: Function
-  }): SubscribeAdapter
+  }): SubscriptionAdapter
   adapterName: string
 }
 
-const createClientAdapter: CreateSubscribeAdapter = ({
+const createClientAdapter: SubscriptionAdapterFactory = ({
   url,
   cursor,
   onEvent,
 }) => {
   let client: WebSocket | undefined
-  let isInitialized: boolean
+  let status: SubscriptionAdapterStatus = SubscriptionAdapterStatus.Initializing
   let currentCursor: string | undefined
 
   return {
-    async init(): Promise<void> {
-      if (isInitialized) {
-        throw new Error(subscribeAdapterAlreadyInitialized)
+    init(): void {
+      if (
+        status === SubscriptionAdapterStatus.Connecting ||
+        status === SubscriptionAdapterStatus.Connected
+      ) {
+        throw new Error(subscriptionAdapterAlreadyInitialized)
+      }
+      if (status === SubscriptionAdapterStatus.Closed) {
+        throw new Error(subscriptionAdapterClosed)
       }
 
-      return await new Promise((resolve, reject) => {
-        client = new WebSocket(url)
+      client = new WebSocket(url)
+      status = SubscriptionAdapterStatus.Connecting
 
-        client.onopen = (): void => {
-          isInitialized = true
-          resolve()
+      client.onopen = (): void => {
+        status = SubscriptionAdapterStatus.Connected
 
-          client?.send(
-            JSON.stringify({
-              type: 'pullEvents',
-              cursor,
-            })
-          )
-        }
+        client?.send(
+          JSON.stringify({
+            type: 'pullEvents',
+            cursor,
+          })
+        )
+      }
 
-        client.onmessage = (message): void => {
-          try {
-            const data = JSON.parse(message.data)
+      client.onmessage = (message): void => {
+        try {
+          const data = JSON.parse(message.data)
 
-            switch (data.type) {
-              case 'event': {
-                client?.send(
-                  JSON.stringify({
-                    type: 'pullEvents',
-                    cursor: currentCursor,
-                  })
-                )
-                break
-              }
-              case 'pullEvents': {
-                data.payload.events.forEach((event: any) => {
-                  onEvent(event)
+          switch (data.type) {
+            case 'event': {
+              client?.send(
+                JSON.stringify({
+                  type: 'pullEvents',
+                  cursor: currentCursor,
                 })
-                currentCursor = data.payload.cursor
-                break
-              }
-              default: {
-                // eslint-disable-next-line no-console
-                console.warn(`Unknown '${data.type}' socket message type`)
-              }
+              )
+              break
             }
-          } catch (error) {
-            // eslint-disable-next-line no-console
-            console.error('WebSocket message error', error)
+            case 'pullEvents': {
+              data.payload.events.forEach((event: any) => {
+                onEvent(event)
+              })
+              currentCursor = data.payload.cursor
+              break
+            }
+            default: {
+              // eslint-disable-next-line no-console
+              console.warn(`Unknown '${data.type}' socket message type`)
+            }
           }
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error('WebSocket message error', error)
         }
-      })
+      }
     },
 
-    async close(): Promise<void> {
-      if (!isInitialized || client == null) {
-        throw new Error(subscribeAdapterNotInitialized)
+    close(): void {
+      if (
+        status !== SubscriptionAdapterStatus.Connecting &&
+        status !== SubscriptionAdapterStatus.Connected
+      ) {
+        throw new Error(subscriptionAdapterNotInitialized)
       }
-      isInitialized = false
-      client.close()
-
+      status = SubscriptionAdapterStatus.Closed
+      if (client != null) {
+        client.close()
+      }
       client = undefined
     },
 
-    isConnected(): boolean {
-      if (!isInitialized || client == null) {
-        return false
+    status(): SubscriptionAdapterStatus {
+      if (
+        status === SubscriptionAdapterStatus.Connected &&
+        client != null &&
+        client.readyState === 1
+      ) {
+        return SubscriptionAdapterStatus.Ready
       }
-
-      return client.readyState === 1
+      return status
     },
   }
 }

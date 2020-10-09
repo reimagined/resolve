@@ -1,8 +1,8 @@
-import { USER_REGISTERED } from '../event-types'
+import { USER_REGISTERED, USER_LIKED } from '../event-types'
 
 export default {
   register: (state, command, { encrypt }) => {
-    if (state.isExists) {
+    if (state.isExist) {
       throw Error(`the user already exists`)
     }
     return {
@@ -11,6 +11,15 @@ export default {
         name: command.payload.name,
         creditCard: encrypt(command.payload.creditCard),
       },
+    }
+  },
+  like: (state) => {
+    if (!state.isExist) {
+      throw Error(`the user not exist`)
+    }
+    return {
+      type: USER_LIKED,
+      payload: {},
     }
   },
 }
