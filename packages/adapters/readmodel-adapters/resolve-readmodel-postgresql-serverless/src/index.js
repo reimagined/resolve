@@ -43,6 +43,8 @@ import reset from './reset'
 import pause from './pause'
 import resume from './resume'
 import status from './status'
+import buildSlow from './build-slow'
+import buildFast from './build-fast'
 import build from './build'
 
 import beginXATransaction from './begin-xa-transaction'
@@ -106,6 +108,8 @@ const externalMethods = {
   pause,
   reset,
   status,
+  buildSlow,
+  buildFast,
   build,
 }
 
