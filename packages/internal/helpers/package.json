@@ -6,7 +6,7 @@
   "main": "./index.js",
   "dependencies": {
     "glob": "7.1.6",
-    "minimist": "1.2.0",
+    "minimist": "1.2.3",
     "semver": "5.6.0"
   },
   "scripts": {
