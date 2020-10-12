@@ -12,6 +12,7 @@ const RESERVED_TIME = 30 * 1000
 
 const buildFastInit = async (pool, readModelName, store, projection, next) => {
   const {
+    PassthroughError,
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
     rdsDataService,
@@ -45,7 +46,10 @@ const buildFastInit = async (pool, readModelName, store, projection, next) => {
       CAST(COALESCE((SELECT LEAST(Count("cte".*), 0) FROM "cte"), 0) AS BIGINT), 
       ${escape(xaKey)},
       ${escape(transactionId)}
-    )
+    ) ON CONFLICT ("XaKey") DO UPDATE SET
+    "Timestamp" = CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) + 
+    CAST(COALESCE((SELECT LEAST(Count("cte".*), 0) FROM "cte"), 0) AS BIGINT),
+    "XaValue" = ${escape(transactionId)}
     `
   )
 
@@ -53,14 +57,17 @@ const buildFastInit = async (pool, readModelName, store, projection, next) => {
     pool,
     `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
      SAVEPOINT ${rootSavePointId};
-     SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-     WHERE "EventSubscriber" = ${escape(readModelName)}
-     AND "XaKey" = ${escape(xaKey)}
-     AND "IsPaused" = FALSE
-     AND "Errors" IS NULL
-     FOR NO KEY UPDATE NOWAIT;
+     SELECT 1/(
+      SELECT Count("XaKey") FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+      WHERE "EventSubscriber" = ${escape(readModelName)}
+      AND "XaKey" = ${escape(xaKey)}
+      AND "IsPaused" = FALSE
+      AND "Errors" IS NULL
+      FOR NO KEY UPDATE NOWAIT
+    ) AS "NonZero";
     `,
-    transactionId
+    transactionId,
+    true
   )
 
   await Promise.all([saveTrxIdPromise, acquireTrxPromise])
@@ -89,6 +96,10 @@ const buildFastInit = async (pool, readModelName, store, projection, next) => {
 
     await next()
   } catch (error) {
+    if (error instanceof PassthroughError) {
+      throw error
+    }
+
     await inlineLedgerExecuteStatement(
       pool,
       `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
@@ -178,7 +189,10 @@ const buildFastEvents = async (
       CAST(COALESCE((SELECT LEAST(Count("cte".*), 0) FROM "cte"), 0) AS BIGINT), 
       ${escape(xaKey)},
       ${escape(transactionId)}
-    )
+    ) ON CONFLICT ("XaKey") DO UPDATE SET
+    "Timestamp" = CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) + 
+    CAST(COALESCE((SELECT LEAST(Count("cte".*), 0) FROM "cte"), 0) AS BIGINT),
+    "XaValue" = ${escape(transactionId)}
     `
   )
 
@@ -186,14 +200,17 @@ const buildFastEvents = async (
     pool,
     `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
      SAVEPOINT ${rootSavePointId};
-     SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-     WHERE "EventSubscriber" = ${escape(readModelName)}
-     AND "XaKey" = ${escape(xaKey)}
-     AND "IsPaused" = FALSE
-     AND "Errors" IS NULL
-     FOR NO KEY UPDATE NOWAIT;
+     SELECT 1/(
+       SELECT Count("XaKey") FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+       WHERE "EventSubscriber" = ${escape(readModelName)}
+       AND "XaKey" = ${escape(xaKey)}
+       AND "IsPaused" = FALSE
+       AND "Errors" IS NULL
+       FOR NO KEY UPDATE NOWAIT
+     ) AS "NonZero";
     `,
-    transactionId
+    transactionId,
+    true
   )
 
   let [events] = await Promise.all([
@@ -256,10 +273,15 @@ const buildFastEvents = async (
             break
           }
         } catch (error) {
+          if (error instanceof PassthroughError) {
+            throw error
+          }
+
           nextCursor = eventstoreAdapter.getNextCursor(
             cursor,
             events.slice(0, appliedEventsCount)
           )
+
           await inlineLedgerExecuteStatement(
             pool,
             `ROLLBACK TO SAVEPOINT ${savePointId};
@@ -274,6 +296,10 @@ const buildFastEvents = async (
         }
       }
     } catch (originalError) {
+      if (originalError instanceof PassthroughError) {
+        throw originalError
+      }
+
       nextCursor = cursor
       appliedEventsCount = 0
       const composedError = new Error(
@@ -364,22 +390,28 @@ const buildFastEvents = async (
           CAST(COALESCE((SELECT LEAST(Count("cte".*), 0) FROM "cte"), 0) AS BIGINT), 
           ${escape(xaKey)},
           ${escape(transactionId)}
-        )
+        ) ON CONFLICT ("XaKey") DO UPDATE SET
+        "Timestamp" = CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) + 
+        CAST(COALESCE((SELECT LEAST(Count("cte".*), 0) FROM "cte"), 0) AS BIGINT),
+        "XaValue" = ${escape(transactionId)}
         `
       )
 
       acquireTrxPromise = inlineLedgerExecuteStatement(
         pool,
         `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
-          SAVEPOINT ${rootSavePointId};
-          SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+        SAVEPOINT ${rootSavePointId};
+        SELECT 1/(
+          SELECT Count("XaKey") FROM ${databaseNameAsId}.${ledgerTableNameAsId}
           WHERE "EventSubscriber" = ${escape(readModelName)}
           AND "XaKey" = ${escape(xaKey)}
           AND "IsPaused" = FALSE
           AND "Errors" IS NULL
-          FOR NO KEY UPDATE NOWAIT;
+          FOR NO KEY UPDATE NOWAIT
+        ) AS "NonZero";
         `,
-        transactionId
+        transactionId,
+        true
       )
 
       void ([events] = await Promise.all([
@@ -397,7 +429,14 @@ const buildFastEvents = async (
   }
 }
 
-const buildFast = async (basePool, readModelName, store, projection, next) => {
+const buildFast = async (
+  basePool,
+  readModelName,
+  store,
+  projection,
+  next,
+  getRemainingTimeInMillis
+) => {
   const {
     PassthroughError,
     dbClusterOrInstanceArn,
@@ -459,6 +498,7 @@ const buildFast = async (basePool, readModelName, store, projection, next) => {
     }
 
     Object.assign(pool, {
+      getRemainingTimeInMillis,
       databaseNameAsId,
       ledgerTableNameAsId,
       trxTableNameAsId,
