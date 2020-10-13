@@ -82,23 +82,33 @@ function useQuery<T>(
     options,
     callback
   )
-  const actualDependencies: any[] =
-    firstOfType<any[]>(isDependencies, options, callback, dependencies) ??
-    [query, actualOptions, actualCallback].filter((i) => i)
+  const actualDependencies = firstOfType<any[]>(
+    isDependencies,
+    options,
+    callback,
+    dependencies
+  )
 
   if (typeof query === 'function') {
+    if (isDependencies(actualDependencies)) {
+      return useCallback(
+        (data: T): Promise<QueryResult> | void =>
+          client.query(query(data), actualOptions, actualCallback),
+        [client, ...actualDependencies]
+      )
+    }
+    return (data: T): Promise<QueryResult> | void =>
+      client.query(query(data), actualOptions, actualCallback)
+  }
+
+  if (isDependencies(actualDependencies)) {
     return useCallback(
-      (data: T): Promise<QueryResult> | void =>
-        client.query(query(data), actualOptions, actualCallback),
+      (): Promise<QueryResult> | void =>
+        client.query(query, actualOptions, actualCallback),
       [client, ...actualDependencies]
     )
   }
-
-  return useCallback(
-    (): Promise<QueryResult> | void =>
-      client.query(query, actualOptions, actualCallback),
-    [client, ...actualDependencies]
-  )
+  return () => client.query(query, actualOptions, actualCallback)
 }
 
 export { useQuery }
