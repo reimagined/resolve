@@ -261,7 +261,7 @@ const buildSlow = async (pool, readModelName, store, projection, next) => {
          }
          ${
            lastSuccessEvent != null
-             ? `"FailedEvent" = ${escape(JSON.stringify(lastSuccessEvent))},`
+             ? `"SuccessEvent" = ${escape(JSON.stringify(lastSuccessEvent))},`
              : ''
          }
          "Cursor" = ${escape(JSON.stringify(nextCursor))}

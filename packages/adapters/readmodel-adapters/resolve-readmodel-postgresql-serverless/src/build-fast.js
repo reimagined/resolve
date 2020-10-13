@@ -237,8 +237,8 @@ const buildFastEvents = async (
     eventsPromise = eventstoreAdapter
       .loadEvents({
         eventTypes,
-        eventsSizeLimit: 6553600,
-        limit: 100,
+        eventsSizeLimit: 65536000,
+        limit: 1000,
         cursor: nextCursor,
       })
       .then((result) => (result != null ? result.events : null))
@@ -348,7 +348,7 @@ const buildFastEvents = async (
          }
          ${
            lastSuccessEvent != null
-             ? `"FailedEvent" = ${escape(JSON.stringify(lastSuccessEvent))},`
+             ? `"SuccessEvent" = ${escape(JSON.stringify(lastSuccessEvent))},`
              : ''
          }
          "Cursor" = ${escape(JSON.stringify(nextCursor))}
