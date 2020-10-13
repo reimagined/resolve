@@ -344,6 +344,7 @@ module.exports = {
           'readmodel',
           'readpolicy',
           'resetter',
+          'rerender',
           'realtime',
           'redux',
           'rdsdataservice',
