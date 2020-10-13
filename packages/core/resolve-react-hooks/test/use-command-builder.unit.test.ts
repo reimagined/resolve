@@ -1,12 +1,10 @@
+import { renderHook } from '@testing-library/react-hooks'
 import { mocked } from 'ts-jest/utils'
 import { useCommand } from '../src/use-command'
 import { useCommandBuilder } from '../src/use-command-builder'
 import { CommandCallback, CommandOptions } from 'resolve-client'
 
 jest.mock('resolve-client')
-jest.mock('react', () => ({
-  useCallback: jest.fn((cb) => cb),
-}))
 jest.mock('../src/use-command', () => ({
   useCommand: jest.fn(),
 }))
@@ -37,11 +35,13 @@ describe('common', () => {
     const commandCallback: CommandCallback = jest.fn()
     const dependencies: any[] = []
 
-    useCommandBuilder(
-      commandBuilder,
-      commandOptions,
-      commandCallback,
-      dependencies
+    renderHook(() =>
+      useCommandBuilder(
+        commandBuilder,
+        commandOptions,
+        commandCallback,
+        dependencies
+      )
     )
 
     expect(mockedUseCommand).toHaveBeenCalledWith(
