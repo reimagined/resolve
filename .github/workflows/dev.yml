@@ -130,4 +130,4 @@ jobs:
       - name: Testcafe tests
         run: |
           cd functional-tests
-          yarn run-test testcafe --url=${{ steps.deploy.outputs.app_url }} --testcafe-browser=chrome --ci-mode
+          yarn run-test testcafe --url=${{ steps.deploy.outputs.app_url }} --testcafe-browser=chrome --ci-mode --testcafe-timeout=10000
