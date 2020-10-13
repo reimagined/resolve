@@ -95,21 +95,31 @@ function useCommand<T>(
   const actualCallback: CommandCallback | undefined = firstOfType<
     CommandCallback
   >(isCallback, options, callback)
-  const actualDependencies: any[] =
-    firstOfType<any[]>(isDependencies, options, callback, dependencies) ??
-    [command, actualOptions, actualCallback].filter((i) => i)
+  const actualDependencies = firstOfType<any[]>(
+    isDependencies,
+    options,
+    callback,
+    dependencies
+  )
 
   if (typeof command === 'function') {
-    return useCallback(
-      (data: T): Promise<CommandResult> | void => {
-        return client.command(command(data), actualOptions, actualCallback)
-      },
-      [client, ...actualDependencies]
-    )
+    if (isDependencies(actualDependencies)) {
+      return useCallback(
+        (data: T): Promise<CommandResult> | void => {
+          return client.command(command(data), actualOptions, actualCallback)
+        },
+        [client, ...actualDependencies]
+      )
+    }
+    return (data: T): Promise<CommandResult> | void =>
+      client.command(command(data), actualOptions, actualCallback)
   }
-  return useCallback((): Promise<CommandResult> | void => {
-    return client.command(command, actualOptions, actualCallback)
-  }, [client, ...actualDependencies])
+  if (isDependencies(actualDependencies)) {
+    return useCallback((): Promise<CommandResult> | void => {
+      return client.command(command, actualOptions, actualCallback)
+    }, [client, ...actualDependencies])
+  }
+  return () => client.command(command, actualOptions, actualCallback)
 }
 
 export { useCommand }
