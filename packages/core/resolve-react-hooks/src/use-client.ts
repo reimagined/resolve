@@ -4,8 +4,8 @@ import { ResolveContext } from './context'
 
 const useClient = (): Client => {
   const context = useContext(ResolveContext)
-  if (!context) {
-    throw Error('You cannot use reSolve hooks outside Resolve context')
+  if (context == null) {
+    throw Error('ResolveContext.Provider value is required to use hooks')
   }
   return useMemo(() => getClient(context), [context])
 }
