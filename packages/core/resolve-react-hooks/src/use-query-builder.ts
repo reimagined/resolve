@@ -10,7 +10,7 @@ function useQueryBuilder<T, R extends Query>(
 ): QueryExecutor<T>
 function useQueryBuilder<T, R extends Query>(
   builder: QueryBuilder<T, R>,
-  callback: QueryCallback
+  callback: QueryCallback<R>
 ): QueryExecutor<T>
 function useQueryBuilder<T, R extends Query>(
   builder: QueryBuilder<T, R>,
@@ -18,13 +18,13 @@ function useQueryBuilder<T, R extends Query>(
 ): QueryExecutor<T>
 function useQueryBuilder<T, R extends Query>(
   builder: QueryBuilder<T, R>,
-  callback: QueryCallback,
+  callback: QueryCallback<R>,
   dependencies: any[]
 ): QueryExecutor<T>
 function useQueryBuilder<T, R extends Query>(
   builder: QueryBuilder<T, R>,
   options: QueryOptions,
-  callback: QueryCallback
+  callback: QueryCallback<R>
 ): QueryExecutor<T>
 function useQueryBuilder<T, R extends Query>(
   builder: QueryBuilder<T, R>,
@@ -34,14 +34,14 @@ function useQueryBuilder<T, R extends Query>(
 function useQueryBuilder<T, R extends Query>(
   builder: QueryBuilder<T, R>,
   options: QueryOptions,
-  callback: QueryCallback,
+  callback: QueryCallback<R>,
   dependencies: any[]
 ): QueryExecutor<T>
 
 function useQueryBuilder<T, R extends Query>(
   builder: QueryBuilder<T, R>,
-  options?: QueryOptions | QueryCallback | any[],
-  callback?: QueryCallback | any[],
+  options?: QueryOptions | QueryCallback<R> | any[],
+  callback?: QueryCallback<R> | any[],
   dependencies?: any[]
 ): QueryExecutor<T> {
   return useQuery(builder, options as any, callback as any, dependencies as any)

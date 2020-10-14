@@ -25,7 +25,7 @@ describe('common', () => {
   test('useQuery hook called', () => {
     const queryBuilder = jest.fn()
     const queryOptions: QueryOptions = {}
-    const queryCallback: QueryCallback = jest.fn()
+    const queryCallback: QueryCallback<any> = jest.fn()
     const dependencies: any[] = []
 
     useQueryBuilder(queryBuilder, queryOptions, queryCallback, dependencies)

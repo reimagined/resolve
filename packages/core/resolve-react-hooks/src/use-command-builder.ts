@@ -6,25 +6,25 @@ function useCommandBuilder<T, R extends Command>(
 ): CommandExecutor<T>
 function useCommandBuilder<T, R extends Command>(
   builder: CommandBuilder<T, R>,
+  callback: CommandCallback<R>
+): CommandExecutor<T>
+function useCommandBuilder<T, R extends Command>(
+  builder: CommandBuilder<T, R>,
   options: CommandOptions
 ): CommandExecutor<T>
 function useCommandBuilder<T, R extends Command>(
   builder: CommandBuilder<T, R>,
-  callback: CommandCallback
-): CommandExecutor<T>
-function useCommandBuilder<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
   dependencies: any[]
 ): CommandExecutor<T>
 function useCommandBuilder<T, R extends Command>(
   builder: CommandBuilder<T, R>,
-  callback: CommandCallback,
+  callback: CommandCallback<R>,
   dependencies: any[]
 ): CommandExecutor<T>
 function useCommandBuilder<T, R extends Command>(
   builder: CommandBuilder<T, R>,
   options: CommandOptions,
-  callback: CommandCallback
+  callback: CommandCallback<R>
 ): CommandExecutor<T>
 function useCommandBuilder<T, R extends Command>(
   builder: CommandBuilder<T, R>,
@@ -34,13 +34,13 @@ function useCommandBuilder<T, R extends Command>(
 function useCommandBuilder<T, R extends Command>(
   builder: CommandBuilder<T, R>,
   options: CommandOptions,
-  callback: CommandCallback,
+  callback: CommandCallback<R>,
   dependencies: any[]
 ): CommandExecutor<T>
 function useCommandBuilder<T, R extends Command>(
   builder: CommandBuilder<T, R>,
-  options?: CommandOptions | CommandCallback | any[],
-  callback?: CommandCallback | any[],
+  options?: CommandOptions | CommandCallback<R> | any[],
+  callback?: CommandCallback<R> | any[],
   dependencies?: any[]
 ): CommandExecutor<T> {
   return useCommand(

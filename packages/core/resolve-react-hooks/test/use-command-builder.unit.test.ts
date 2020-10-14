@@ -32,7 +32,7 @@ describe('common', () => {
   test('useCommand hook called', () => {
     const commandBuilder = jest.fn()
     const commandOptions: CommandOptions = {}
-    const commandCallback: CommandCallback = jest.fn()
+    const commandCallback: CommandCallback<any> = jest.fn()
     const dependencies: any[] = []
 
     renderHook(() =>
