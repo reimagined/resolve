@@ -2,39 +2,36 @@ import { Command } from 'resolve-core'
 import { mocked } from 'ts-jest/utils'
 import { useDispatch } from 'react-redux'
 import { renderHook, act } from '@testing-library/react-hooks'
-import { CommandBuilder, useCommand } from 'resolve-react-hooks'
+import { useCommandBuilder } from 'resolve-react-hooks'
 import { sendCommandRequest } from '../../src/command/actions'
-import {
-  useReduxCommand,
-  CommandReduxHookOptions,
-} from '../../src/command/use-redux-command'
+import { useReduxCommand } from '../../src/command/use-redux-command'
 import { CommandCallback } from 'resolve-client'
 
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }))
 jest.mock('resolve-react-hooks', () => ({
-  useCommand: jest.fn(),
+  useCommandBuilder: jest.fn(),
 }))
 
 const mUseDispatch = mocked(useDispatch)
-const mUseCommand = mocked(useCommand)
+const mUseCommandBuilder = mocked(useCommandBuilder)
 const mDispatch = jest.fn()
 const mUseCommandHookExecutor = jest.fn()
 
 beforeAll(() => {
   mUseDispatch.mockReturnValue(mDispatch)
-  mUseCommand.mockReturnValue(mUseCommandHookExecutor)
+  mUseCommandBuilder.mockReturnValue(mUseCommandHookExecutor)
 })
 
 afterEach(() => {
   mDispatch.mockClear()
-  mUseCommand.mockClear()
+  mUseCommandBuilder.mockClear()
   mUseCommandHookExecutor.mockClear()
 })
 
-const extractUseCommandCallback = (): CommandCallback =>
-  mUseCommand.mock.calls[0][2]
+const extractUseCommandCallback = (): CommandCallback<Command> =>
+  mUseCommandBuilder.mock.calls[0][2]
 
 describe('command as plain object overload', () => {
   const makeCommand = (): Command => ({
@@ -46,22 +43,12 @@ describe('command as plain object overload', () => {
     },
   })
 
-  const renderCommandHook = (
-    command: Command,
-    options?: CommandReduxHookOptions
-  ) => {
+  test('command request action dispatched', () => {
     const {
       result: {
         current: { execute },
       },
-    } = renderHook(() =>
-      options ? useReduxCommand(command, options) : useReduxCommand(command)
-    )
-    return execute
-  }
-
-  test('command request action dispatched', () => {
-    const execute = renderCommandHook(makeCommand())
+    } = renderHook(() => useReduxCommand(makeCommand()))
 
     act(() => execute())
 
@@ -78,48 +65,88 @@ describe('command as plain object overload', () => {
     )
   })
 
-  test('useCommand base hook called with generic command builder', () => {
+  test('useCommandBuilder base hook called with generic command builder', () => {
     const command = makeCommand()
-    const execute = renderCommandHook(command)
+    renderHook(() => useReduxCommand(command))
 
-    act(() => execute())
-
-    expect(mUseCommand).toHaveBeenCalledTimes(1)
-    expect(mUseCommand).toHaveBeenCalledWith(
+    expect(mUseCommandBuilder).toHaveBeenCalledTimes(1)
+    expect(mUseCommandBuilder).toHaveBeenCalledWith(
       expect.any(Function),
       {},
-      expect.any(Function),
-      expect.any(Array)
+      expect.any(Function)
     )
 
-    const genericBuilder = mUseCommand.mock.calls[0][0]
+    const genericBuilder = mUseCommandBuilder.mock.calls[0][0]
     expect(genericBuilder(command)).toEqual(command)
   })
 
-  test('custom command options are passed to base hook', () => {
-    renderCommandHook(makeCommand(), {
-      commandOptions: {
-        option: 'a',
-      },
-    })
+  test('useCommandBuilder base hook called with custom dependencies', () => {
+    const dependency = 'dependency'
 
-    expect(mUseCommand).toHaveBeenCalledWith(
+    renderHook(() => useReduxCommand(makeCommand(), [dependency]))
+
+    expect(mUseCommandBuilder).toHaveBeenCalledTimes(1)
+    expect(mUseCommandBuilder).toHaveBeenCalledWith(
+      expect.any(Function),
+      {},
+      expect.any(Function),
+      [dependency]
+    )
+  })
+
+  test('custom command options are passed to base hook', () => {
+    renderHook(() =>
+      useReduxCommand(makeCommand(), {
+        commandOptions: {
+          option: 'a',
+        },
+      })
+    )
+
+    expect(mUseCommandBuilder).toHaveBeenCalledWith(
+      expect.anything(),
+      { option: 'a' },
+      expect.anything()
+    )
+  })
+
+  test('custom command options with dependencies', () => {
+    const dependency = 'dependency'
+    renderHook(() =>
+      useReduxCommand(
+        makeCommand(),
+        {
+          commandOptions: {
+            option: 'a',
+          },
+        },
+        [dependency]
+      )
+    )
+
+    expect(mUseCommandBuilder).toHaveBeenCalledWith(
       expect.anything(),
       { option: 'a' },
       expect.anything(),
-      expect.anything()
+      [dependency]
     )
   })
 
   test('custom redux actions', async () => {
     const command = makeCommand()
-    const execute = renderCommandHook(command, {
-      actions: {
-        request: (command) => ({ type: 'request', command }),
-        success: (command, result) => ({ type: 'success', command, result }),
-        failure: (command, error) => ({ type: 'failure', command, error }),
+    const {
+      result: {
+        current: { execute },
       },
-    })
+    } = renderHook(() =>
+      useReduxCommand(command, {
+        actions: {
+          request: (command) => ({ type: 'request', command }),
+          success: (command, result) => ({ type: 'success', command, result }),
+          failure: (command, error) => ({ type: 'failure', command, error }),
+        },
+      })
+    )
 
     act(() => execute())
 
@@ -142,6 +169,92 @@ describe('command as plain object overload', () => {
       command,
       error: Error('error'),
     })
+  })
+
+  test('cached hook data if underlying executor not changed', () => {
+    const dependency = 'dependency'
+    const hook = renderHook(() => useReduxCommand(makeCommand(), [dependency]))
+
+    const data = hook.result.current
+
+    hook.rerender()
+    expect(hook.result.current).toBe(data)
+  })
+
+  test('new hook if underlying executor has been changed', () => {
+    const hook = renderHook(() => useReduxCommand(makeCommand()))
+
+    const data = hook.result.current
+
+    mUseCommandBuilder.mockReturnValueOnce(jest.fn())
+    hook.rerender()
+
+    expect(hook.result.current).not.toBe(data)
+  })
+
+  test('new hook if redux dispatch has been changed', () => {
+    const hook = renderHook(() => useReduxCommand(makeCommand()))
+
+    const data = hook.result.current
+
+    mUseDispatch.mockReturnValueOnce(jest.fn())
+    hook.rerender()
+
+    expect(hook.result.current).not.toBe(data)
+  })
+
+  test('cached hook data if underlying executor not changed (with options)', () => {
+    const dependency = 'dependency'
+    const hook = renderHook(() =>
+      useReduxCommand(
+        makeCommand(),
+        {
+          commandOptions: {
+            option: 'a',
+          },
+        },
+        [dependency]
+      )
+    )
+
+    const data = hook.result.current
+
+    hook.rerender()
+    expect(hook.result.current).toBe(data)
+  })
+
+  test('new hook if underlying executor has been changed (with options)', () => {
+    const hook = renderHook(() =>
+      useReduxCommand(makeCommand(), {
+        commandOptions: {
+          option: 'a',
+        },
+      })
+    )
+
+    const data = hook.result.current
+
+    mUseCommandBuilder.mockReturnValueOnce(jest.fn())
+    hook.rerender()
+
+    expect(hook.result.current).not.toBe(data)
+  })
+
+  test('new hook if redux dispatch has been changed (with options)', () => {
+    const hook = renderHook(() =>
+      useReduxCommand(makeCommand(), {
+        commandOptions: {
+          option: 'a',
+        },
+      })
+    )
+
+    const data = hook.result.current
+
+    mUseDispatch.mockReturnValueOnce(jest.fn())
+    hook.rerender()
+
+    expect(hook.result.current).not.toBe(data)
   })
 })
 
@@ -153,22 +266,12 @@ describe('command as builder function overload', () => {
     payload: data,
   })
 
-  function renderCommandHook<T>(
-    builder: CommandBuilder<T>,
-    options?: CommandReduxHookOptions
-  ) {
+  test('command request action dispatched', () => {
     const {
       result: {
         current: { execute },
       },
-    } = renderHook(() =>
-      options ? useReduxCommand(builder, options) : useReduxCommand(builder)
-    )
-    return execute
-  }
-
-  test('command request action dispatched', () => {
-    const execute = renderCommandHook(builder)
+    } = renderHook(() => useReduxCommand(builder))
 
     act(() => execute({ a: 'a' }))
 
@@ -185,47 +288,86 @@ describe('command as builder function overload', () => {
     )
   })
 
-  test('useCommand base hook called with default options', () => {
-    const command = builder({ a: 'a' })
-    const execute = renderCommandHook(builder)
+  test('useCommandBuilder base hook called with generic command builder', () => {
+    renderHook(() => useReduxCommand(builder))
 
-    act(() => execute({ a: 'a' }))
+    expect(mUseCommandBuilder).toHaveBeenCalledTimes(1)
+    expect(mUseCommandBuilder).toHaveBeenCalledWith(
+      expect.any(Function),
+      {},
+      expect.any(Function)
+    )
 
-    expect(mUseCommand).toHaveBeenCalledTimes(1)
-    expect(mUseCommand).toHaveBeenCalledWith(
+    const genericBuilder = mUseCommandBuilder.mock.calls[0][0]
+    expect(genericBuilder({ a: 'a' })).toEqual({ a: 'a' })
+  })
+
+  test('useCommandBuilder base hook called with custom dependencies', () => {
+    const dependency = 'dependency'
+
+    renderHook(() => useReduxCommand(builder, [dependency]))
+
+    expect(mUseCommandBuilder).toHaveBeenCalledTimes(1)
+    expect(mUseCommandBuilder).toHaveBeenCalledWith(
       expect.any(Function),
       {},
       expect.any(Function),
-      expect.any(Array)
+      [dependency]
     )
-
-    const genericBuilder = mUseCommand.mock.calls[0][0]
-    expect(genericBuilder(command)).toEqual(command)
   })
 
   test('custom command options are passed to base hook', () => {
-    renderCommandHook(builder, {
-      commandOptions: {
-        option: 'a',
-      },
-    })
+    renderHook(() =>
+      useReduxCommand(builder, {
+        commandOptions: {
+          option: 'a',
+        },
+      })
+    )
 
-    expect(mUseCommand).toHaveBeenCalledWith(
+    expect(mUseCommandBuilder).toHaveBeenCalledWith(
       expect.anything(),
       { option: 'a' },
-      expect.anything(),
       expect.anything()
     )
   })
 
+  test('custom command options with dependencies', () => {
+    const dependency = 'dependency'
+    renderHook(() =>
+      useReduxCommand(
+        builder,
+        {
+          commandOptions: {
+            option: 'a',
+          },
+        },
+        [dependency]
+      )
+    )
+
+    expect(mUseCommandBuilder).toHaveBeenCalledWith(
+      expect.anything(),
+      { option: 'a' },
+      expect.anything(),
+      [dependency]
+    )
+  })
+
   test('custom redux actions', async () => {
-    const execute = renderCommandHook(builder, {
-      actions: {
-        request: (command) => ({ type: 'request', command }),
-        success: (command, result) => ({ type: 'success', command, result }),
-        failure: (command, error) => ({ type: 'failure', command, error }),
+    const {
+      result: {
+        current: { execute },
       },
-    })
+    } = renderHook(() =>
+      useReduxCommand(builder, {
+        actions: {
+          request: (command) => ({ type: 'request', command }),
+          success: (command, result) => ({ type: 'success', command, result }),
+          failure: (command, error) => ({ type: 'failure', command, error }),
+        },
+      })
+    )
 
     const command = builder({ a: 'a' })
 
@@ -250,5 +392,91 @@ describe('command as builder function overload', () => {
       command,
       error: Error('error'),
     })
+  })
+
+  test('cached hook data if underlying executor not changed', () => {
+    const dependency = 'dependency'
+    const hook = renderHook(() => useReduxCommand(builder, [dependency]))
+
+    const data = hook.result.current
+
+    hook.rerender()
+    expect(hook.result.current).toBe(data)
+  })
+
+  test('new hook if underlying executor has been changed', () => {
+    const hook = renderHook(() => useReduxCommand(builder))
+
+    const data = hook.result.current
+
+    mUseCommandBuilder.mockReturnValueOnce(jest.fn())
+    hook.rerender()
+
+    expect(hook.result.current).not.toBe(data)
+  })
+
+  test('new hook if redux dispatch has been changed', () => {
+    const hook = renderHook(() => useReduxCommand(builder))
+
+    const data = hook.result.current
+
+    mUseDispatch.mockReturnValueOnce(jest.fn())
+    hook.rerender()
+
+    expect(hook.result.current).not.toBe(data)
+  })
+
+  test('cached hook data if underlying executor not changed (with options)', () => {
+    const dependency = 'dependency'
+    const hook = renderHook(() =>
+      useReduxCommand(
+        builder,
+        {
+          commandOptions: {
+            option: 'a',
+          },
+        },
+        [dependency]
+      )
+    )
+
+    const data = hook.result.current
+
+    hook.rerender()
+    expect(hook.result.current).toBe(data)
+  })
+
+  test('new hook if underlying executor has been changed (with options)', () => {
+    const hook = renderHook(() =>
+      useReduxCommand(builder, {
+        commandOptions: {
+          option: 'a',
+        },
+      })
+    )
+
+    const data = hook.result.current
+
+    mUseCommandBuilder.mockReturnValueOnce(jest.fn())
+    hook.rerender()
+
+    expect(hook.result.current).not.toBe(data)
+  })
+
+  test('new hook if redux dispatch has been changed (with options)', () => {
+    const hook = renderHook(() =>
+      useReduxCommand(builder, {
+        commandOptions: {
+          option: 'a',
+        },
+      })
+    )
+
+    const data = hook.result.current
+
+    mUseDispatch.mockReturnValueOnce(jest.fn())
+    hook.rerender()
+
+    expect(hook.result.current).not.toBe(data)
   })
 })
