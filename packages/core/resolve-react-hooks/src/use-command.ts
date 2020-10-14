@@ -9,7 +9,7 @@ import { HookExecutor, isCallback, isDependencies, isOptions } from './generic'
 import { useClient } from './use-client'
 import { firstOfType } from 'resolve-core'
 
-export type CommandBuilder<T> = (data: T) => Command
+export type CommandBuilder<T, R extends Command> = (data: T) => R
 export type CommandExecutor<T> = HookExecutor<T, CommandResult>
 
 function useCommand(command: Command): CommandExecutor<void>
@@ -46,42 +46,44 @@ function useCommand(
   callback: CommandCallback,
   dependencies: any[]
 ): CommandExecutor<void>
-function useCommand<T>(builder: CommandBuilder<T>): CommandExecutor<T>
-function useCommand<T>(
-  builder: CommandBuilder<T>,
+function useCommand<T, R extends Command>(
+  builder: CommandBuilder<T, R>
+): CommandExecutor<T>
+function useCommand<T, R extends Command>(
+  builder: CommandBuilder<T, R>,
   options: CommandOptions
 ): CommandExecutor<T>
-function useCommand<T>(
-  builder: CommandBuilder<T>,
+function useCommand<T, R extends Command>(
+  builder: CommandBuilder<T, R>,
   callback: CommandCallback
 ): CommandExecutor<T>
-function useCommand<T>(
-  builder: CommandBuilder<T>,
+function useCommand<T, R extends Command>(
+  builder: CommandBuilder<T, R>,
   dependencies: any[]
 ): CommandExecutor<T>
-function useCommand<T>(
-  builder: CommandBuilder<T>,
+function useCommand<T, R extends Command>(
+  builder: CommandBuilder<T, R>,
   callback: CommandCallback,
   dependencies: any[]
 ): CommandExecutor<T>
-function useCommand<T>(
-  builder: CommandBuilder<T>,
+function useCommand<T, R extends Command>(
+  builder: CommandBuilder<T, R>,
   options: CommandOptions,
   callback: CommandCallback
 ): CommandExecutor<T>
-function useCommand<T>(
-  builder: CommandBuilder<T>,
+function useCommand<T, R extends Command>(
+  builder: CommandBuilder<T, R>,
   options: CommandOptions,
   dependencies: any[]
 ): CommandExecutor<T>
-function useCommand<T>(
-  builder: CommandBuilder<T>,
+function useCommand<T, R extends Command>(
+  builder: CommandBuilder<T, R>,
   options: CommandOptions,
   callback: CommandCallback,
   dependencies: any[]
 ): CommandExecutor<T>
-function useCommand<T>(
-  command: Command | CommandBuilder<T>,
+function useCommand<T, R extends Command>(
+  command: Command | CommandBuilder<T, R>,
   options?: CommandOptions | CommandCallback | any[],
   callback?: CommandCallback | any[],
   dependencies?: any[]
