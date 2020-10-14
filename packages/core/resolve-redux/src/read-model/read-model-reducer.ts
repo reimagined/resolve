@@ -24,6 +24,7 @@ import {
   ReduxState,
 } from '../types'
 
+export const badSelectorDrain = '@@resolve/bad-selector-drain.read-models'
 export type ReadModelResultEntrySelector = {
   query: ReadModelQuery
 }

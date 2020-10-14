@@ -172,8 +172,7 @@ describe('command as plain object overload', () => {
   })
 
   test('cached hook data if underlying executor not changed', () => {
-    const dependency = 'dependency'
-    const hook = renderHook(() => useReduxCommand(makeCommand(), [dependency]))
+    const hook = renderHook(() => useReduxCommand(makeCommand()))
 
     const data = hook.result.current
 
@@ -204,17 +203,12 @@ describe('command as plain object overload', () => {
   })
 
   test('cached hook data if underlying executor not changed (with options)', () => {
-    const dependency = 'dependency'
     const hook = renderHook(() =>
-      useReduxCommand(
-        makeCommand(),
-        {
-          commandOptions: {
-            option: 'a',
-          },
+      useReduxCommand(makeCommand(), {
+        commandOptions: {
+          option: 'a',
         },
-        [dependency]
-      )
+      })
     )
 
     const data = hook.result.current

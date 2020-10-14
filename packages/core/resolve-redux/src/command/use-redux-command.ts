@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { AnyAction } from 'redux'
 import { useDispatch } from 'react-redux'
 import { firstOfType } from 'resolve-core'
 import {
@@ -17,29 +18,28 @@ import {
   sendCommandSuccess,
   SendCommandSuccessAction,
 } from './actions'
-import { AnyAction } from 'redux'
 
 type HookData<TArgs extends any[]> = {
-  execute: (...data: TArgs) => void
+  execute: (...args: TArgs) => void
 }
-type CommandReduxActionsCreators = {
-  request?: (command: Command) => SendCommandRequestAction | AnyAction
+type CommandReduxActionsCreators<TCmd extends Command> = {
+  request?: (command: TCmd) => SendCommandRequestAction | AnyAction
   success?: (
-    command: Command,
+    command: TCmd,
     result: CommandResult
   ) => SendCommandSuccessAction | AnyAction
   failure?: (
-    command: Command,
+    command: TCmd,
     error: Error
   ) => SendCommandFailureAction | AnyAction
 }
 
 export type CommandReduxHookOptions<TCmd extends Command> = {
-  actions?: CommandReduxActionsCreators
+  actions?: CommandReduxActionsCreators<TCmd>
   commandOptions?: CommandOptions
 }
 
-const internalActions: CommandReduxActionsCreators = {
+const internalActions: CommandReduxActionsCreators<Command> = {
   request: (command: Command) => sendCommandRequest(command, true),
   success: sendCommandSuccess,
   failure: sendCommandFailure,
@@ -47,6 +47,12 @@ const internalActions: CommandReduxActionsCreators = {
 
 const defaultCommandOptions: CommandOptions = {}
 const defaultHookOptions: CommandReduxHookOptions<Command> = {}
+
+function isBuilder<TArgs extends any[], TQuery extends Command>(
+  query: TQuery | CommandBuilder<TArgs, TQuery>
+): query is CommandBuilder<TArgs, TQuery> {
+  return typeof query === 'function'
+}
 
 function useReduxCommand<TCmd extends Command>(command: TCmd): HookData<void[]>
 function useReduxCommand<TCmd extends Command>(
@@ -129,15 +135,16 @@ function useReduxCommand<TArgs extends any[], TCmd extends Command>(
 
   return useMemo(
     () => ({
-      execute: (...data: TArgs): void => {
-        const dispatchRequest = (command: Command): void => {
+      execute: (...args: TArgs): void => {
+        const dispatchRequest = (command: TCmd): void => {
           if (typeof request === 'function') {
             dispatch(request(command))
           }
         }
 
-        const plainCommand: TCmd =
-          typeof command === 'function' ? command(...data) : command
+        const plainCommand: TCmd = isBuilder(command)
+          ? command(...args)
+          : command
 
         dispatchRequest(plainCommand)
         executor(plainCommand)
