@@ -9,93 +9,93 @@ import { HookExecutor, isCallback, isDependencies, isOptions } from './generic'
 import { useClient } from './use-client'
 import { firstOfType } from 'resolve-core'
 
-export type CommandBuilder<T, R extends Command> = (data: T) => R
+export type CommandBuilder<TArgs, TCmd extends Command> = (data: TArgs) => TCmd
 export type CommandExecutor<T> = HookExecutor<T, CommandResult>
 
-function useCommand(command: Command): CommandExecutor<void>
-function useCommand(
-  command: Command,
+function useCommand<TCmd extends Command>(command: TCmd): CommandExecutor<void>
+function useCommand<TCmd extends Command>(
+  command: TCmd,
   options: CommandOptions
 ): CommandExecutor<void>
-function useCommand(
-  command: Command,
-  callback: CommandCallback
+function useCommand<TCmd extends Command>(
+  command: TCmd,
+  callback: CommandCallback<TCmd>
 ): CommandExecutor<void>
-function useCommand(
-  command: Command,
+function useCommand<TCmd extends Command>(
+  command: TCmd,
   dependencies: any[]
 ): CommandExecutor<void>
-function useCommand(
-  command: Command,
-  callback: CommandCallback,
+function useCommand<TCmd extends Command>(
+  command: TCmd,
+  callback: CommandCallback<TCmd>,
   dependencies: any[]
 ): CommandExecutor<void>
-function useCommand(
-  command: Command,
+function useCommand<TCmd extends Command>(
+  command: TCmd,
   options: CommandOptions,
-  callback: CommandCallback
+  callback: CommandCallback<TCmd>
 ): CommandExecutor<void>
-function useCommand(
-  command: Command,
+function useCommand<TCmd extends Command>(
+  command: TCmd,
   options: CommandOptions,
   dependencies: any[]
 ): CommandExecutor<void>
-function useCommand(
-  command: Command,
+function useCommand<TCmd extends Command>(
+  command: TCmd,
   options: CommandOptions,
-  callback: CommandCallback,
+  callback: CommandCallback<TCmd>,
   dependencies: any[]
 ): CommandExecutor<void>
-function useCommand<T, R extends Command>(
-  builder: CommandBuilder<T, R>
-): CommandExecutor<T>
-function useCommand<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
+function useCommand<TArgs, TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>
+): CommandExecutor<TCmd>
+function useCommand<TArgs, TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
   options: CommandOptions
-): CommandExecutor<T>
-function useCommand<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
-  callback: CommandCallback
-): CommandExecutor<T>
-function useCommand<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
+): CommandExecutor<TCmd>
+function useCommand<TArgs, TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
+  callback: CommandCallback<TCmd>
+): CommandExecutor<TArgs>
+function useCommand<TArgs, TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
   dependencies: any[]
-): CommandExecutor<T>
-function useCommand<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
-  callback: CommandCallback,
+): CommandExecutor<TArgs>
+function useCommand<TArgs, TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
+  callback: CommandCallback<TCmd>,
   dependencies: any[]
-): CommandExecutor<T>
-function useCommand<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
+): CommandExecutor<TArgs>
+function useCommand<TArgs, TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
   options: CommandOptions,
-  callback: CommandCallback
-): CommandExecutor<T>
-function useCommand<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
+  callback: CommandCallback<TCmd>
+): CommandExecutor<TArgs>
+function useCommand<TArgs, TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
   options: CommandOptions,
   dependencies: any[]
-): CommandExecutor<T>
-function useCommand<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
+): CommandExecutor<TArgs>
+function useCommand<TArgs, TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
   options: CommandOptions,
-  callback: CommandCallback,
+  callback: CommandCallback<TCmd>,
   dependencies: any[]
-): CommandExecutor<T>
-function useCommand<T, R extends Command>(
-  command: Command | CommandBuilder<T, R>,
-  options?: CommandOptions | CommandCallback | any[],
-  callback?: CommandCallback | any[],
+): CommandExecutor<TArgs>
+function useCommand<TArgs, TCmd extends Command>(
+  command: Command | CommandBuilder<TArgs, TCmd>,
+  options?: CommandOptions | CommandCallback<TCmd> | any[],
+  callback?: CommandCallback<TCmd> | any[],
   dependencies?: any[]
-): CommandExecutor<T> {
+): CommandExecutor<TArgs> {
   const client = useClient()
 
   const actualOptions: CommandOptions | undefined = firstOfType<CommandOptions>(
     isOptions,
     options
   )
-  const actualCallback: CommandCallback | undefined = firstOfType<
-    CommandCallback
+  const actualCallback: CommandCallback<Command> | undefined = firstOfType<
+    CommandCallback<Command>
   >(isCallback, options, callback)
   const actualDependencies = firstOfType<any[]>(
     isDependencies,
@@ -107,13 +107,13 @@ function useCommand<T, R extends Command>(
   if (typeof command === 'function') {
     if (isDependencies(actualDependencies)) {
       return useCallback(
-        (data: T): Promise<CommandResult> | void => {
+        (data: TArgs): Promise<CommandResult> | void => {
           return client.command(command(data), actualOptions, actualCallback)
         },
         [client, ...actualDependencies]
       )
     }
-    return (data: T): Promise<CommandResult> | void =>
+    return (data: TArgs): Promise<CommandResult> | void =>
       client.command(command(data), actualOptions, actualCallback)
   }
   if (isDependencies(actualDependencies)) {
