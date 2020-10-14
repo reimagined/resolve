@@ -4,7 +4,7 @@ import { HookExecutor, isCallback, isDependencies, isOptions } from './generic'
 import { useClient } from './use-client'
 import { firstOfType } from 'resolve-core'
 
-export type QueryBuilder<T> = (data: T) => Query
+export type QueryBuilder<T, R extends Query> = (data: T) => R
 export type QueryExecutor<T> = HookExecutor<T, QueryResult>
 
 function useQuery(query: Query): QueryExecutor<void>
@@ -32,42 +32,44 @@ function useQuery(
   callback: QueryCallback,
   dependencies: any[]
 ): QueryExecutor<void>
-function useQuery<T>(builder: QueryBuilder<T>): QueryExecutor<T>
-function useQuery<T>(
-  builder: QueryBuilder<T>,
+function useQuery<T, R extends Query>(
+  builder: QueryBuilder<T, R>
+): QueryExecutor<T>
+function useQuery<T, R extends Query>(
+  builder: QueryBuilder<T, R>,
   options: QueryOptions
 ): QueryExecutor<T>
-function useQuery<T>(
-  builder: QueryBuilder<T>,
+function useQuery<T, R extends Query>(
+  builder: QueryBuilder<T, R>,
   callback: QueryCallback
 ): QueryExecutor<T>
-function useQuery<T>(
-  builder: QueryBuilder<T>,
+function useQuery<T, R extends Query>(
+  builder: QueryBuilder<T, R>,
   dependencies: any[]
 ): QueryExecutor<T>
-function useQuery<T>(
-  builder: QueryBuilder<T>,
+function useQuery<T, R extends Query>(
+  builder: QueryBuilder<T, R>,
   callback: QueryCallback,
   dependencies: any[]
 ): QueryExecutor<T>
-function useQuery<T>(
-  builder: QueryBuilder<T>,
+function useQuery<T, R extends Query>(
+  builder: QueryBuilder<T, R>,
   options: QueryOptions,
   callback: QueryCallback
 ): QueryExecutor<T>
-function useQuery<T>(
-  builder: QueryBuilder<T>,
+function useQuery<T, R extends Query>(
+  builder: QueryBuilder<T, R>,
   options: QueryOptions,
   dependencies: any[]
 ): QueryExecutor<T>
-function useQuery<T>(
-  builder: QueryBuilder<T>,
+function useQuery<T, R extends Query>(
+  builder: QueryBuilder<T, R>,
   options: QueryOptions,
   callback: QueryCallback,
   dependencies: any[]
 ): QueryExecutor<T>
-function useQuery<T>(
-  query: Query | QueryBuilder<T>,
+function useQuery<T, R extends Query>(
+  query: Query | QueryBuilder<T, R>,
   options?: QueryOptions | QueryCallback | any[],
   callback?: QueryCallback | any[],
   dependencies?: any[]
