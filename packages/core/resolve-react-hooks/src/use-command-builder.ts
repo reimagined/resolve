@@ -1,5 +1,4 @@
-import { Command } from 'resolve-core'
-import { CommandCallback, CommandOptions } from 'resolve-client'
+import { CommandCallback, CommandOptions, Command } from 'resolve-client'
 import { CommandBuilder, CommandExecutor, useCommand } from './use-command'
 
 function useCommandBuilder<T, R extends Command>(
