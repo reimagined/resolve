@@ -6,7 +6,7 @@ import { CommandCallback, CommandOptions } from 'resolve-client'
 
 jest.mock('resolve-client')
 jest.mock('../src/use-command', () => ({
-  useCommand: jest.fn(),
+  useCommand: jest.fn(() => jest.fn()),
 }))
 
 const mockedUseCommand = mocked(useCommand)
@@ -50,5 +50,17 @@ describe('common', () => {
       commandCallback,
       dependencies
     )
+  })
+
+  test('variadic builder generic arguments (compile time)', () => {
+    const executor = useCommandBuilder(
+      (userId: string, commandName: string) => ({
+        aggregateId: userId,
+        aggregateName: 'user',
+        type: commandName,
+      })
+    )
+
+    executor('user-id', 'command-name')
   })
 })

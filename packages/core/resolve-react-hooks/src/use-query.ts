@@ -4,86 +4,98 @@ import { HookExecutor, isCallback, isDependencies, isOptions } from './generic'
 import { useClient } from './use-client'
 import { firstOfType } from 'resolve-core'
 
-export type QueryBuilder<T, R extends Query> = (data: T) => R
-export type QueryExecutor<T> = HookExecutor<T, QueryResult>
+export type QueryBuilder<TArgs extends any[], TQuery extends Query> = (
+  ...data: TArgs
+) => TQuery
+export type QueryExecutor<TArgs extends any[]> = HookExecutor<
+  TArgs,
+  QueryResult
+>
 
-function useQuery(query: Query): QueryExecutor<void>
-function useQuery(query: Query, options: QueryOptions): QueryExecutor<void>
-function useQuery(query: Query, callback: QueryCallback): QueryExecutor<void>
-function useQuery(query: Query, dependencies: any[]): QueryExecutor<void>
-function useQuery(
-  query: Query,
-  callback: QueryCallback,
-  dependencies: any[]
-): QueryExecutor<void>
-function useQuery(
-  query: Query,
-  options: QueryOptions,
-  callback: QueryCallback
-): QueryExecutor<void>
-function useQuery(
-  query: Query,
-  options: QueryOptions,
-  dependencies: any[]
-): QueryExecutor<void>
-function useQuery(
-  query: Query,
-  options: QueryOptions,
-  callback: QueryCallback,
-  dependencies: any[]
-): QueryExecutor<void>
-function useQuery<T, R extends Query>(
-  builder: QueryBuilder<T, R>
-): QueryExecutor<T>
-function useQuery<T, R extends Query>(
-  builder: QueryBuilder<T, R>,
+function useQuery<TQuery extends Query>(query: Query): QueryExecutor<void[]>
+function useQuery<TQuery extends Query>(
+  query: TQuery,
   options: QueryOptions
-): QueryExecutor<T>
-function useQuery<T, R extends Query>(
-  builder: QueryBuilder<T, R>,
-  callback: QueryCallback
-): QueryExecutor<T>
-function useQuery<T, R extends Query>(
-  builder: QueryBuilder<T, R>,
+): QueryExecutor<void[]>
+function useQuery<TQuery extends Query>(
+  query: TQuery,
+  callback: QueryCallback<TQuery>
+): QueryExecutor<void[]>
+function useQuery<TQuery extends Query>(
+  query: TQuery,
   dependencies: any[]
-): QueryExecutor<T>
-function useQuery<T, R extends Query>(
-  builder: QueryBuilder<T, R>,
-  callback: QueryCallback,
+): QueryExecutor<void[]>
+function useQuery<TQuery extends Query>(
+  query: Query,
+  callback: QueryCallback<TQuery>,
   dependencies: any[]
-): QueryExecutor<T>
-function useQuery<T, R extends Query>(
-  builder: QueryBuilder<T, R>,
+): QueryExecutor<void[]>
+function useQuery<TQuery extends Query>(
+  query: TQuery,
   options: QueryOptions,
-  callback: QueryCallback
-): QueryExecutor<T>
-function useQuery<T, R extends Query>(
-  builder: QueryBuilder<T, R>,
+  callback: QueryCallback<TQuery>
+): QueryExecutor<void[]>
+function useQuery<TQuery extends Query>(
+  query: Query,
   options: QueryOptions,
   dependencies: any[]
-): QueryExecutor<T>
-function useQuery<T, R extends Query>(
-  builder: QueryBuilder<T, R>,
+): QueryExecutor<void[]>
+function useQuery<TQuery extends Query>(
+  query: Query,
   options: QueryOptions,
-  callback: QueryCallback,
+  callback: QueryCallback<TQuery>,
   dependencies: any[]
-): QueryExecutor<T>
-function useQuery<T, R extends Query>(
-  query: Query | QueryBuilder<T, R>,
-  options?: QueryOptions | QueryCallback | any[],
-  callback?: QueryCallback | any[],
+): QueryExecutor<void[]>
+function useQuery<TArgs extends any[], TQuery extends Query>(
+  builder: QueryBuilder<TArgs, TQuery>
+): QueryExecutor<TArgs>
+function useQuery<TArgs extends any[], TQuery extends Query>(
+  builder: QueryBuilder<TArgs, TQuery>,
+  options: QueryOptions
+): QueryExecutor<TArgs>
+function useQuery<TArgs extends any[], TQuery extends Query>(
+  builder: QueryBuilder<TArgs, TQuery>,
+  callback: QueryCallback<TQuery>
+): QueryExecutor<TArgs>
+function useQuery<TArgs extends any[], TQuery extends Query>(
+  builder: QueryBuilder<TArgs, TQuery>,
+  dependencies: any[]
+): QueryExecutor<TArgs>
+function useQuery<TArgs extends any[], TQuery extends Query>(
+  builder: QueryBuilder<TArgs, TQuery>,
+  callback: QueryCallback<TQuery>,
+  dependencies: any[]
+): QueryExecutor<TArgs>
+function useQuery<TArgs extends any[], TQuery extends Query>(
+  builder: QueryBuilder<TArgs, TQuery>,
+  options: QueryOptions,
+  callback: QueryCallback<TQuery>
+): QueryExecutor<TArgs>
+function useQuery<TArgs extends any[], TQuery extends Query>(
+  builder: QueryBuilder<TArgs, TQuery>,
+  options: QueryOptions,
+  dependencies: any[]
+): QueryExecutor<TArgs>
+function useQuery<TArgs extends any[], TQuery extends Query>(
+  builder: QueryBuilder<TArgs, TQuery>,
+  options: QueryOptions,
+  callback: QueryCallback<TQuery>,
+  dependencies: any[]
+): QueryExecutor<TArgs>
+function useQuery<TArgs extends any[], TQuery extends Query>(
+  query: Query | QueryBuilder<TArgs, TQuery>,
+  options?: QueryOptions | QueryCallback<TQuery> | any[],
+  callback?: QueryCallback<TQuery> | any[],
   dependencies?: any[]
-): QueryExecutor<T> {
+): QueryExecutor<TArgs> {
   const client = useClient()
   const actualOptions: QueryOptions | undefined = firstOfType<QueryOptions>(
     isOptions,
     options
   )
-  const actualCallback: QueryCallback | undefined = firstOfType<QueryCallback>(
-    isCallback,
-    options,
-    callback
-  )
+  const actualCallback: QueryCallback<Query> | undefined = firstOfType<
+    QueryCallback<Query>
+  >(isCallback, options, callback)
   const actualDependencies = firstOfType<any[]>(
     isDependencies,
     options,
@@ -94,13 +106,13 @@ function useQuery<T, R extends Query>(
   if (typeof query === 'function') {
     if (isDependencies(actualDependencies)) {
       return useCallback(
-        (data: T): Promise<QueryResult> | void =>
-          client.query(query(data), actualOptions, actualCallback),
+        (...data: TArgs): Promise<QueryResult> | void =>
+          client.query(query(...data), actualOptions, actualCallback),
         [client, ...actualDependencies]
       )
     }
-    return (data: T): Promise<QueryResult> | void =>
-      client.query(query(data), actualOptions, actualCallback)
+    return (...data: TArgs): Promise<QueryResult> | void =>
+      client.query(query(...data), actualOptions, actualCallback)
   }
 
   if (isDependencies(actualDependencies)) {

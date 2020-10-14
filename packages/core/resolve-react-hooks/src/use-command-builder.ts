@@ -1,48 +1,48 @@
 import { CommandCallback, CommandOptions, Command } from 'resolve-client'
 import { CommandBuilder, CommandExecutor, useCommand } from './use-command'
 
-function useCommandBuilder<T, R extends Command>(
-  builder: CommandBuilder<T, R>
-): CommandExecutor<T>
-function useCommandBuilder<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
-  callback: CommandCallback<R>
-): CommandExecutor<T>
-function useCommandBuilder<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
+function useCommandBuilder<TArgs extends any[], TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>
+): CommandExecutor<TArgs>
+function useCommandBuilder<TArgs extends any[], TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
+  callback: CommandCallback<TCmd>
+): CommandExecutor<TArgs>
+function useCommandBuilder<TArgs extends any[], TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
   options: CommandOptions
-): CommandExecutor<T>
-function useCommandBuilder<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
+): CommandExecutor<TArgs>
+function useCommandBuilder<TArgs extends any[], TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
   dependencies: any[]
-): CommandExecutor<T>
-function useCommandBuilder<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
-  callback: CommandCallback<R>,
+): CommandExecutor<TArgs>
+function useCommandBuilder<TArgs extends any[], TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
+  callback: CommandCallback<TCmd>,
   dependencies: any[]
-): CommandExecutor<T>
-function useCommandBuilder<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
+): CommandExecutor<TArgs>
+function useCommandBuilder<TArgs extends any[], TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
   options: CommandOptions,
-  callback: CommandCallback<R>
-): CommandExecutor<T>
-function useCommandBuilder<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
+  callback: CommandCallback<TCmd>
+): CommandExecutor<TArgs>
+function useCommandBuilder<TArgs extends any[], TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
   options: CommandOptions,
   dependencies: any[]
-): CommandExecutor<T>
-function useCommandBuilder<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
+): CommandExecutor<TArgs>
+function useCommandBuilder<TArgs extends any[], TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
   options: CommandOptions,
-  callback: CommandCallback<R>,
+  callback: CommandCallback<TCmd>,
   dependencies: any[]
-): CommandExecutor<T>
-function useCommandBuilder<T, R extends Command>(
-  builder: CommandBuilder<T, R>,
+): CommandExecutor<TArgs>
+function useCommandBuilder<TArgs extends any[], R extends Command>(
+  builder: CommandBuilder<TArgs, R>,
   options?: CommandOptions | CommandCallback<R> | any[],
   callback?: CommandCallback<R> | any[],
   dependencies?: any[]
-): CommandExecutor<T> {
+): CommandExecutor<TArgs> {
   return useCommand(
     builder,
     options as any,

@@ -477,6 +477,7 @@ module.exports = {
           'util',
           'utils',
           'uuid',
+          'variadic',
           'validator',
           'verdana',
           'viewmodel',

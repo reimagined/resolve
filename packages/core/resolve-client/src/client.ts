@@ -159,7 +159,10 @@ export const query = (
     requestOptions.method = options?.method ?? 'GET'
   }
 
-  const actualCallback = determineCallback<QueryCallback<Query>>(options, callback)
+  const actualCallback = determineCallback<QueryCallback<Query>>(
+    options,
+    callback
+  )
 
   let queryRequest: Promise<NarrowedResponse>
 
