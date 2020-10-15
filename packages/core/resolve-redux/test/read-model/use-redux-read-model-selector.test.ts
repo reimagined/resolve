@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux'
 import { mocked } from 'ts-jest/utils'
 import { getEntry } from '../../src/read-model/read-model-reducer'
-import { ResultStatus } from '../../src'
 import { useReduxReadModelSelector } from '../../src/read-model/use-redux-read-model-selector'
 
 jest.mock('react-redux', () => ({
