@@ -1,19 +1,15 @@
-import { useCallback } from 'react'
+import { renderHook } from '@testing-library/react-hooks'
 import { mocked } from 'ts-jest/utils'
 import { Query, QueryCallback, QueryOptions } from 'resolve-client'
 import { useClient } from '../src/use-client'
 import { useQuery } from '../src/use-query'
 
 jest.mock('resolve-client')
-jest.mock('react', () => ({
-  useCallback: jest.fn((cb) => cb),
-}))
 jest.mock('../src/use-client', () => ({
   useClient: jest.fn(),
 }))
 
 const mockedUseClient = mocked(useClient)
-const mockedUseCallback = mocked(useCallback)
 
 const mockedClient = {
   command: jest.fn(),
@@ -49,7 +45,6 @@ const buildQuery = jest.fn(
 
 const clearMocks = (): void => {
   mockedUseClient.mockClear()
-  mockedUseCallback.mockClear()
   mockedClient.query.mockClear()
   buildQuery.mockClear()
 }
@@ -64,8 +59,7 @@ afterEach(() => {
 
 describe('common', () => {
   test('useClient hook called', () => {
-    useQuery(basicQuery())
-
+    renderHook(() => useQuery(basicQuery()))
     expect(useClient).toHaveBeenCalled()
   })
 })
@@ -74,57 +68,134 @@ describe('async mode', () => {
   test('just a query', async () => {
     const query = basicQuery()
 
-    await useQuery(query)()
+    const {
+      result: { current: execute },
+    } = renderHook(() => useQuery(query))
+
+    await execute()
 
     expect(mockedClient.query).toHaveBeenCalledWith(query, undefined, undefined)
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      query,
-    ])
   })
 
-  test('query and dependencies', async () => {
+  test('cached query executor with custom dependencies', async () => {
     const query = basicQuery()
+    const dependency = 'dependency'
 
-    await useQuery(query, ['dependency'])()
+    const hookData = renderHook(
+      (props) => useQuery(query, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
 
-    expect(mockedClient.query).toHaveBeenCalledWith(query, undefined, undefined)
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+    expect(hookData.result.current).toBe(executeA)
+  })
+
+  test('new query executor on underlying client change', async () => {
+    const query = basicQuery()
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useQuery(query, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    mockedUseClient.mockReturnValueOnce({
+      ...mockedClient,
+    })
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
+  })
+
+  test('new query executor on dependencies change', async () => {
+    const query = basicQuery()
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useQuery(query, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: ['changed'],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
   })
 
   test('query and options', async () => {
     const query = basicQuery()
     const options = customOptions()
 
-    await useQuery(query, options)()
+    const {
+      result: { current: execute },
+    } = renderHook(() => useQuery(query, options))
+
+    await execute()
 
     expect(mockedClient.query).toHaveBeenCalledWith(query, options, undefined)
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      query,
-      options,
-    ])
   })
 
-  test('query, options and dependencies', async () => {
+  test('cached query executor with custom dependencies (with options)', async () => {
     const query = basicQuery()
-    const options = customOptions()
+    const dependency = 'dependency'
 
-    await useQuery(query, options, ['dependency'])()
+    const hookData = renderHook(
+      (props) => useQuery(query, customOptions(), props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
 
-    expect(mockedClient.query).toHaveBeenCalledWith(query, options, undefined)
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+    expect(hookData.result.current).toBe(executeA)
+  })
+
+  test('new query executor on dependencies change (with options)', async () => {
+    const query = basicQuery()
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useQuery(query, customOptions(), props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: ['changed'],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
   })
 })
 
 describe('callback mode', () => {
-  let callback: QueryCallback
+  let callback: QueryCallback<Query>
 
   beforeEach(() => {
     callback = jest.fn()
@@ -133,195 +204,378 @@ describe('callback mode', () => {
   test('just a query', () => {
     const query = basicQuery()
 
-    useQuery(query, callback)()
+    const {
+      result: { current: execute },
+    } = renderHook(() => useQuery(query, callback))
+
+    execute()
 
     expect(mockedClient.query).toHaveBeenCalledWith(query, undefined, callback)
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      query,
-      callback,
-    ])
   })
 
-  test('query, callback and dependencies', () => {
+  test('cached query executor with custom dependencies', () => {
     const query = basicQuery()
+    const dependency = 'dependency'
 
-    useQuery(query, callback, ['dependency'])()
+    const hookData = renderHook(
+      (props) => useQuery(query, callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
 
-    expect(mockedClient.query).toHaveBeenCalledWith(query, undefined, callback)
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+    expect(hookData.result.current).toBe(executeA)
+  })
+
+  test('new query executor on underlying client change', async () => {
+    const query = basicQuery()
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useQuery(query, callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    mockedUseClient.mockReturnValueOnce({
+      ...mockedClient,
+    })
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
+  })
+
+  test('new query executor on dependencies change', async () => {
+    const query = basicQuery()
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useQuery(query, callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: ['changed'],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
   })
 
   test('query, options and callback', () => {
     const query = basicQuery()
     const options = customOptions()
 
-    useQuery(query, options, callback)()
+    const {
+      result: { current: execute },
+    } = renderHook(() => useQuery(query, options, callback))
+
+    execute()
 
     expect(mockedClient.query).toHaveBeenCalledWith(query, options, callback)
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      query,
-      options,
-      callback,
-    ])
   })
 
-  test('query, options, callback and dependencies', () => {
+  test('cached query executor with custom dependencies (with options)', async () => {
     const query = basicQuery()
-    const options = customOptions()
+    const dependency = 'dependency'
 
-    useQuery(query, options, callback, ['dependency'])()
+    const hookData = renderHook(
+      (props) => useQuery(query, customOptions(), callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
 
-    expect(mockedClient.query).toHaveBeenCalledWith(query, options, callback)
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+    expect(hookData.result.current).toBe(executeA)
+  })
+
+  test('new query executor on dependencies change (with options)', async () => {
+    const query = basicQuery()
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useQuery(query, customOptions(), callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: ['changed'],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
   })
 })
 
 describe('builder: async mode', () => {
   test('just a builder', async () => {
-    await useQuery(buildQuery)('john')
+    const {
+      result: { current: execute },
+    } = renderHook(() => useQuery(buildQuery))
 
-    expect(buildQuery).toHaveBeenCalledWith('john')
+    await execute('builder-input')
+
+    expect(buildQuery).toHaveBeenCalledWith('builder-input')
     expect(mockedClient.query).toHaveBeenCalledWith(
-      buildQuery('john'),
+      buildQuery('builder-input'),
       undefined,
       undefined
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      buildQuery,
-    ])
   })
 
-  test('builder with dependencies', async () => {
-    await useQuery(buildQuery, ['dependency'])('john')
+  test('new query executor on re-render without dependencies', () => {
+    const hookData = renderHook(() => useQuery(buildQuery))
+    const executeA = hookData.result.current
 
-    expect(buildQuery).toHaveBeenCalledWith('john')
-    expect(mockedClient.query).toHaveBeenCalledWith(
-      buildQuery('john'),
-      undefined,
-      undefined
+    hookData.rerender()
+    expect(hookData.result.current).not.toBe(executeA)
+  })
+
+  test('cached query executor with custom dependencies', () => {
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useQuery(buildQuery, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).toBe(executeA)
+  })
+
+  test('new query executor with custom dependencies but changed underlying client', () => {
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useQuery(buildQuery, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    mockedUseClient.mockReturnValueOnce({
+      ...mockedClient,
+    })
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
   })
 
   test('builder and options', async () => {
     const options = customOptions()
 
-    await useQuery(buildQuery, options)('john')
+    const {
+      result: { current: execute },
+    } = renderHook(() => useQuery(buildQuery, options))
 
-    expect(buildQuery).toHaveBeenCalledWith('john')
+    await execute('builder-input')
+
+    expect(buildQuery).toHaveBeenCalledWith('builder-input')
     expect(mockedClient.query).toHaveBeenCalledWith(
-      buildQuery('john'),
+      buildQuery('builder-input'),
       options,
       undefined
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      buildQuery,
-      options,
-    ])
   })
 
-  test('builder, options and dependencies', async () => {
-    const options = customOptions()
+  test('cached command executor with custom dependencies (with options)', () => {
+    const dependency = 'dependency'
 
-    await useQuery(buildQuery, options, ['dependency'])('john')
-
-    expect(buildQuery).toHaveBeenCalledWith('john')
-    expect(mockedClient.query).toHaveBeenCalledWith(
-      buildQuery('john'),
-      options,
-      undefined
+    const hookData = renderHook(
+      (props) => useQuery(buildQuery, customOptions(), props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).toBe(executeA)
+  })
+
+  test('new command executor on dependencies change (with options)', async () => {
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useQuery(buildQuery, customOptions(), props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: ['changed'],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
   })
 })
 
 describe('builder: callback mode', () => {
-  let callback: QueryCallback
+  let callback: QueryCallback<Query>
 
   beforeEach(() => {
     callback = jest.fn()
   })
 
   test('just a builder', () => {
-    useQuery(buildQuery, callback)('john')
+    const {
+      result: { current: execute },
+    } = renderHook(() => useQuery(buildQuery, callback))
 
-    expect(buildQuery).toHaveBeenCalledWith('john')
+    execute('builder-input')
+
+    expect(buildQuery).toHaveBeenCalledWith('builder-input')
     expect(mockedClient.query).toHaveBeenCalledWith(
-      buildQuery('john'),
+      buildQuery('builder-input'),
       undefined,
       callback
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      buildQuery,
-      callback,
-    ])
   })
 
-  test('builder, callback and dependencies', () => {
-    useQuery(buildQuery, callback, ['dependency'])('john')
+  test('new query executor on re-render without dependencies', () => {
+    const hookData = renderHook(() => useQuery(buildQuery, callback))
+    const executeA = hookData.result.current
 
-    expect(buildQuery).toHaveBeenCalledWith('john')
-    expect(mockedClient.query).toHaveBeenCalledWith(
-      buildQuery('john'),
-      undefined,
-      callback
+    hookData.rerender()
+    expect(hookData.result.current).not.toBe(executeA)
+  })
+
+  test('cached query executor with custom dependencies', () => {
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useQuery(buildQuery, callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).toBe(executeA)
   })
 
-  test('builder, options and callback', () => {
+  test('new query executor with custom dependencies but changed underlying client', () => {
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useQuery(buildQuery, callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    mockedUseClient.mockReturnValueOnce({
+      ...mockedClient,
+    })
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
+  })
+
+  test('builder and options', () => {
     const options = customOptions()
 
-    useQuery(buildQuery, options, callback)('john')
+    const {
+      result: { current: execute },
+    } = renderHook(() => useQuery(buildQuery, options, callback))
 
-    expect(buildQuery).toHaveBeenCalledWith('john')
+    execute('builder-input')
+
+    expect(buildQuery).toHaveBeenCalledWith('builder-input')
     expect(mockedClient.query).toHaveBeenCalledWith(
-      buildQuery('john'),
+      buildQuery('builder-input'),
       options,
       callback
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      buildQuery,
-      options,
-      callback,
-    ])
   })
 
-  test('builder, options, callback and dependencies', () => {
-    const options = customOptions()
+  test('cached command executor with custom dependencies (with options)', () => {
+    const dependency = 'dependency'
 
-    useQuery(buildQuery, options, callback, ['dependency'])('john')
-
-    expect(buildQuery).toHaveBeenCalledWith('john')
-    expect(mockedClient.query).toHaveBeenCalledWith(
-      buildQuery('john'),
-      options,
-      callback
+    const hookData = renderHook(
+      (props) =>
+        useQuery(buildQuery, customOptions(), callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).toBe(executeA)
+  })
+
+  test('new command executor on dependencies change (with options)', () => {
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) =>
+        useQuery(buildQuery, customOptions(), callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: ['changed'],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
   })
 })

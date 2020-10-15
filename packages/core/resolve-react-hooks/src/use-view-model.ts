@@ -1,5 +1,5 @@
 import { useContext, useCallback, useMemo } from 'react'
-import { ResolveContext } from './context'
+import { assertContext, ResolveContext } from './context'
 import { Event, firstOfType, SerializableMap } from 'resolve-core'
 import { QueryOptions, SubscribeCallback, Subscription } from 'resolve-client'
 import { useClient } from './use-client'
@@ -95,6 +95,7 @@ function useViewModel(
   queryOptions?: QueryOptions
 ): ViewModelConnection {
   const context = useContext(ResolveContext)
+  assertContext(context)
   const client = useClient()
 
   const { viewModels } = context

@@ -8,7 +8,7 @@ jest.mock('react', () => ({
   useCallback: jest.fn((cb) => cb),
 }))
 jest.mock('../src/use-query', () => ({
-  useQuery: jest.fn(),
+  useQuery: jest.fn(() => jest.fn()),
 }))
 
 const mockedUseQuery = mocked(useQuery)
@@ -25,7 +25,7 @@ describe('common', () => {
   test('useQuery hook called', () => {
     const queryBuilder = jest.fn()
     const queryOptions: QueryOptions = {}
-    const queryCallback: QueryCallback = jest.fn()
+    const queryCallback: QueryCallback<any> = jest.fn()
     const dependencies: any[] = []
 
     useQueryBuilder(queryBuilder, queryOptions, queryCallback, dependencies)
@@ -36,5 +36,17 @@ describe('common', () => {
       queryCallback,
       dependencies
     )
+  })
+
+  test('variadic builder generic arguments (compile time)', () => {
+    const executor = useQueryBuilder((userId: string, resolver: string) => ({
+      args: {
+        userId,
+      },
+      name: 'user',
+      resolver,
+    }))
+
+    executor('user-id', 'command-name')
   })
 })
