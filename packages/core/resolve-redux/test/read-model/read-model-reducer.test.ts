@@ -12,6 +12,19 @@ import {
 } from '../../src/read-model/read-model-reducer'
 import { ResultStatus } from '../../src'
 
+describe('default', () => {
+  test('return initial state', () => {
+    const dynamic = reducer as Function
+    expect(dynamic(undefined, { type: 'INIT' })).toEqual({})
+  })
+
+  test('bypass current state on unknown action', () => {
+    const dynamic = reducer as Function
+    const state = { viewModels: { model: {} } }
+    expect(dynamic(state, { type: 'INIT' })).toBe(state)
+  })
+})
+
 describe('request action', () => {
   test(`initial state`, () => {
     const state = reducer(undefined, {

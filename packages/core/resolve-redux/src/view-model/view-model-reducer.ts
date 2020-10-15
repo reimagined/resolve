@@ -63,17 +63,23 @@ export const getEntry = (
 
 const initialState: ViewModelReducerState = {}
 
-export const reducer = (state = initialState, action: ViewModelActions) => {
+export const reducer = (
+  state = initialState,
+  action: ViewModelActions
+): ViewModelReducerState => {
   switch (action.type) {
     case VIEWMODEL_STATE_UPDATE:
       return setEntry(cloneDeep(state), getEntryPath(getSelector(action)), {
         status: action.initial ? ResultStatus.Requested : ResultStatus.Ready,
         data: action.state,
       })
-    case DROP_VIEWMODEL_STATE: {
+
+    case DROP_VIEWMODEL_STATE:
       const newState = cloneDeep(state)
       unsetEntry(newState, getEntryPath(getSelector(action)))
       return newState
-    }
+
+    default:
+      return state
   }
 }

@@ -97,10 +97,12 @@ export const reducer = (
         error: action.error?.message ?? 'unknown error',
       })
 
-    case DROP_READMODEL_STATE: {
+    case DROP_READMODEL_STATE:
       const newState = cloneDeep(state)
       unsetEntry(newState, getEntryPath(getSelector(action)))
       return newState
-    }
+
+    default:
+      return state
   }
 }

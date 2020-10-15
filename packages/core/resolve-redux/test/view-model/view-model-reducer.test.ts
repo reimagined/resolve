@@ -11,6 +11,19 @@ import {
   ViewModelReducerState,
 } from '../../src/view-model/view-model-reducer'
 
+describe('default', () => {
+  test('return initial state', () => {
+    const dynamic = reducer as Function
+    expect(dynamic(undefined, { type: 'INIT' })).toEqual({})
+  })
+
+  test('bypass current state on unknown action', () => {
+    const dynamic = reducer as Function
+    const state = { viewModels: { model: {} } }
+    expect(dynamic(state, { type: 'INIT' })).toBe(state)
+  })
+})
+
 describe('state update action', () => {
   test('emulate "requested" state on initial view model state for built-in selector', () => {
     const idsKey = getHash(['id1'])
