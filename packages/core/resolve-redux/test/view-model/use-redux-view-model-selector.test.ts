@@ -1,13 +1,12 @@
 import { useSelector } from 'react-redux'
 import { mocked } from 'ts-jest/utils'
-import { getEntry } from '../../src/read-model/read-model-reducer'
-import { ResultStatus } from '../../src'
-import { useReduxReadModelSelector } from '../../src/read-model/use-redux-read-model-selector'
+import { getEntry } from '../../src/view-model/view-model-reducer'
+import { useReduxViewModelSelector } from '../../src/view-model/use-redux-view-model-selector'
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn((f) => f),
 }))
-jest.mock('../../src/read-model/read-model-reducer', () => ({
+jest.mock('../../src/view-model/view-model-reducer', () => ({
   getEntry: jest.fn(() => 'state-entry'),
 }))
 
@@ -21,34 +20,34 @@ afterEach(() => {
 
 test('by query plain object', () => {
   const state = {
-    readModels: {},
+    viewModels: {},
   }
 
   const query = {
-    name: 'read-model',
-    resolver: 'resolver',
+    name: 'modelName',
+    aggregateIds: ['id1'],
     args: {
       a: 'a',
     },
   }
 
-  const selector = useReduxReadModelSelector(query)
+  const selector = useReduxViewModelSelector(query)
   expect(mUseSelector).toHaveBeenCalledWith(expect.any(Function))
 
   selector(state)
 
-  expect(mGetEntry).toHaveBeenCalledWith(state.readModels, { query })
+  expect(mGetEntry).toHaveBeenCalledWith(state.viewModels, { query })
 })
 
 test('by named selector', () => {
   const state = {
-    readModels: {},
+    viewModels: {},
   }
 
-  const selector = useReduxReadModelSelector('selector-id')
+  const selector = useReduxViewModelSelector('selector-id')
   expect(mUseSelector).toHaveBeenCalledWith(expect.any(Function))
 
   selector(state)
 
-  expect(mGetEntry).toHaveBeenCalledWith(state.readModels, 'selector-id')
+  expect(mGetEntry).toHaveBeenCalledWith(state.viewModels, 'selector-id')
 })
