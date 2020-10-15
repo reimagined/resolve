@@ -8,7 +8,7 @@ import uuid from 'uuid/v4'
 
 import { create as createJwtReducer } from './internal/jwt-reducer'
 import { create as createViewModelReducer } from './view-model/view-model-reducer'
-import { create as createReadModelReducer } from './read-model/read-model-reducer'
+import { reducer as readModelReducer } from './read-model/read-model-reducer'
 import createResolveMiddleware from './create-resolve-middleware'
 import { ReduxStoreContext } from './types'
 import deserializeInitialState from './internal/deserialize-initial-state'
@@ -51,7 +51,7 @@ const createStore = ({
   const combinedReducers = combineReducers({
     ...reducers,
     viewModels: createViewModelReducer(),
-    readModels: createReadModelReducer(),
+    readModels: readModelReducer,
     jwt: createJwtReducer(), // does it really actual?
   })
 
