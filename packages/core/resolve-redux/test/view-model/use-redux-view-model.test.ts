@@ -333,31 +333,41 @@ test('selector should call reducer selector with initial state return by underly
   const query = makeQuery()
   const state = {
     viewModels: {
-      modelName: { }
-    }
+      modelName: {},
+    },
   }
   const hook = renderHook(() => useReduxViewModel(query)).result.current
 
   expect(hook.selector(state)).toEqual('mocked-entry-data')
-  expect(mGetEntry).toHaveBeenCalledWith(state.viewModels, { query }, {
-    status: ResultStatus.Initial,
-    data: {
-      initial: 'state'
+  expect(mGetEntry).toHaveBeenCalledWith(
+    state.viewModels,
+    { query },
+    {
+      status: ResultStatus.Initial,
+      data: {
+        initial: 'state',
+      },
     }
-  })
+  )
 })
 
 test('selector should call reducer selector with custom selector id', () => {
   const query = makeQuery()
   const state = {
     viewModels: {
-      modelName: { }
-    }
+      modelName: {},
+    },
   }
-  const hook = renderHook(() => useReduxViewModel(query, {
-    selectorId: 'selector-id'
-  })).result.current
+  const hook = renderHook(() =>
+    useReduxViewModel(query, {
+      selectorId: 'selector-id',
+    })
+  ).result.current
 
   expect(hook.selector(state)).toEqual('mocked-entry-data')
-  expect(mGetEntry).toHaveBeenCalledWith(state.viewModels, 'selector-id', expect.anything())
+  expect(mGetEntry).toHaveBeenCalledWith(
+    state.viewModels,
+    'selector-id',
+    expect.anything()
+  )
 })
