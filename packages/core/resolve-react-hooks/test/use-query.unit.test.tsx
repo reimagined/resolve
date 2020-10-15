@@ -195,7 +195,7 @@ describe('async mode', () => {
 })
 
 describe('callback mode', () => {
-  let callback: QueryCallback
+  let callback: QueryCallback<Query>
 
   beforeEach(() => {
     callback = jest.fn()
@@ -452,7 +452,7 @@ describe('builder: async mode', () => {
 })
 
 describe('builder: callback mode', () => {
-  let callback: QueryCallback
+  let callback: QueryCallback<Query>
 
   beforeEach(() => {
     callback = jest.fn()

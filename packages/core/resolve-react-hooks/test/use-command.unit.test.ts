@@ -199,7 +199,7 @@ describe('async mode', () => {
 })
 
 describe('callback mode', () => {
-  let callback: CommandCallback
+  let callback: CommandCallback<Command>
 
   beforeEach(() => {
     callback = jest.fn()
@@ -468,7 +468,7 @@ describe('builder: async mode', () => {
 })
 
 describe('builder: callback mode', () => {
-  let callback: CommandCallback
+  let callback: CommandCallback<Command>
 
   beforeEach(() => {
     callback = jest.fn()
