@@ -2,6 +2,7 @@ import getHash from '../internal/get-hash'
 import setEntry from 'lodash.set'
 import unsetEntry from 'lodash.unset'
 import getByPath from 'lodash.get'
+import cloneDeep from 'lodash.clonedeep'
 
 import {
   DROP_VIEWMODEL_STATE,
@@ -11,7 +12,6 @@ import {
   ViewModelResultEntry,
   ViewModelResultMapByName,
   ResultStatus,
-  ReduxState,
 } from '../types'
 import {
   DropViewModelStateAction,
@@ -20,8 +20,20 @@ import {
 } from './actions'
 import { ViewModelQuery } from 'resolve-client'
 
-export type ViewModelResultSelector = {
+type ViewModelActions = DropViewModelStateAction | ViewModelStateUpdateAction
+
+export const namedSelectors = 'namedSelectors'
+export const builtInSelectors = 'builtInSelectors'
+
+type ViewModelResultSelector = {
   query: ViewModelQuery
+}
+
+export type ViewModelReducerState = {
+  [namedSelectors]?: {
+    [key: string]: ViewModelResultEntry
+  }
+  [builtInSelectors]?: ViewModelResultMapByName
 }
 
 const getSelector = (
@@ -32,12 +44,14 @@ export const getEntryPath = (
   selector: ViewModelResultSelector | string
 ): string => {
   if (typeof selector === 'string') {
-    return `@@resolve/namedSelectors.${getHash(selector)}`
+    return `${namedSelectors}.${getHash(selector)}`
   }
   const {
     query: { name, aggregateIds, args },
   } = selector
-  return `${getHash(name)}.${getHash(aggregateIds)}.${getHash(args, 'no-args')}`
+  return `${builtInSelectors}.${getHash(name)}.${getHash(
+    aggregateIds
+  )}.${getHash(args, 'no-args')}`
 }
 
 export const getEntry = (
@@ -47,40 +61,19 @@ export const getEntry = (
 ): ViewModelResultEntry =>
   getByPath(state, getEntryPath(selector), placeholder) as ViewModelResultEntry
 
-export const create = (): any => {
-  const handlers: { [key: string]: any } = {}
+const initialState: ViewModelReducerState = {}
 
-  handlers[VIEWMODEL_STATE_UPDATE] = (
-    state: ViewModelResultMapByName,
-    action: ViewModelStateUpdateAction
-  ): ViewModelResultMapByName =>
-    setEntry(
-      {
-        ...state,
-      },
-      getEntryPath(getSelector(action)),
-      {
+export const reducer = (state = initialState, action: ViewModelActions) => {
+  switch (action.type) {
+    case VIEWMODEL_STATE_UPDATE:
+      return setEntry(cloneDeep(state), getEntryPath(getSelector(action)), {
         status: action.initial ? ResultStatus.Requested : ResultStatus.Ready,
         data: action.state,
-      }
-    )
-
-  handlers[DROP_VIEWMODEL_STATE] = (
-    state: ViewModelResultMapByName,
-    action: DropViewModelStateAction
-  ): ViewModelResultMapByName => {
-    const newState = {
-      ...state,
+      })
+    case DROP_VIEWMODEL_STATE: {
+      const newState = cloneDeep(state)
+      unsetEntry(newState, getEntryPath(getSelector(action)))
+      return newState
     }
-    unsetEntry(newState, getEntryPath(getSelector(action)))
-    return newState
-  }
-
-  return (state: ReduxState = {}, action: any): ReduxState => {
-    const eventHandler = handlers[action.type]
-    if (eventHandler) {
-      return eventHandler(state, action)
-    }
-    return state
   }
 }

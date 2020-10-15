@@ -436,7 +436,7 @@ describe('drop action', () => {
     ).toBeUndefined()
   })
 
-  test(`update state for specific selector`, () => {
+  test(`drop state for specific selector`, () => {
     const state = reducer(
       {
         [namedSelectors]: {
