@@ -35,7 +35,6 @@ const connect = async (imports, pool, options) => {
     databaseName,
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
-    fastLedgerMode,
     ...connectionOptions
   } = options
 
@@ -47,16 +46,6 @@ const connect = async (imports, pool, options) => {
     throw new Error(`Wrong table prefix: ${tablePrefix}`)
   } else if (tablePrefix == null) {
     tablePrefix = ''
-  }
-
-  if (
-    fastLedgerMode == null ||
-    fastLedgerMode === false ||
-    fastLedgerMode === true
-  ) {
-    fastLedgerMode = !!fastLedgerMode
-  } else {
-    throw new Error(`Invalid fastLedgerMode ${fastLedgerMode}`)
   }
 
   const rawRdsDataService = new imports.RDSDataService(connectionOptions)
@@ -103,7 +92,6 @@ const connect = async (imports, pool, options) => {
     awsSecretStoreArn,
     performanceTracer,
     schemaName: databaseName,
-    fastLedgerMode,
     tablePrefix,
     makeNestedPath,
     transactionId: null,
