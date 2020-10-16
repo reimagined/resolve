@@ -62,8 +62,8 @@ const createWebSocketMessageHandler = (
     switch (parsedMessage.type) {
       case 'pullEvents': {
         const { events, cursor } = await eventstoreAdapter.loadEvents({
-          eventTypes,
-          aggregateIds,
+          eventTypes: eventTypes === '*' ? null : eventTypes,
+          aggregateIds: aggregateIds === '*' ? null : aggregateIds,
           limit: 1000000,
           eventsSizeLimit: 124 * 1024,
           cursor: parsedMessage.cursor,

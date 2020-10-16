@@ -1,6 +1,6 @@
 {
   "name": "resolve-module-auth",
-  "version": "0.25.12",
+  "version": "0.25.13",
   "description": "A reSolve module that adds authentication to an application.",
   "engines": {
     "node": ">=10.9"
@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "iconv-lite": "0.4.24",
-    "isomorphic-fetch": "2.2.1",
+    "isomorphic-fetch": "3.0.0",
     "uuid": "3.3.2"
   },
   "devDependencies": {

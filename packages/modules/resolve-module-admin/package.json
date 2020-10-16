@@ -1,6 +1,6 @@
 {
   "name": "resolve-module-admin",
-  "version": "0.25.12",
+  "version": "0.25.13",
   "description": "A reSolve module that adds admin commands to an application.",
   "engines": {
     "node": ">=10.9"
@@ -28,7 +28,7 @@
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "yargs": "^14.0.0",
-    "isomorphic-fetch": "^2.2.1",
+    "isomorphic-fetch": "3.0.0",
     "columnify": "^1.5.4",
     "dateformat": "^3.0.3"
   },

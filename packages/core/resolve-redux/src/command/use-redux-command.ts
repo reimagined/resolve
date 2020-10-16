@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+import { AnyAction } from 'redux'
 import { useDispatch } from 'react-redux'
 import { firstOfType } from 'resolve-core'
 import {
@@ -6,7 +8,7 @@ import {
   CommandOptions,
   CommandCallback,
 } from 'resolve-client'
-import { useCommand, CommandBuilder } from 'resolve-react-hooks'
+import { useCommandBuilder, CommandBuilder } from 'resolve-react-hooks'
 import { isDependencies, isOptions } from '../helpers'
 import {
   sendCommandFailure,
@@ -16,79 +18,92 @@ import {
   sendCommandSuccess,
   SendCommandSuccessAction,
 } from './actions'
-import { AnyAction } from 'redux'
 
-type HookData<T> = {
-  execute: (data: T) => void
+type HookData<TArgs extends any[]> = {
+  execute: (...args: TArgs) => void
 }
-type CommandReduxActionsCreators = {
-  request?: (command: Command) => SendCommandRequestAction | AnyAction
+type CommandReduxActionsCreators<TCmd extends Command> = {
+  request?: (command: TCmd) => SendCommandRequestAction | AnyAction
   success?: (
-    command: Command,
+    command: TCmd,
     result: CommandResult
   ) => SendCommandSuccessAction | AnyAction
   failure?: (
-    command: Command,
+    command: TCmd,
     error: Error
   ) => SendCommandFailureAction | AnyAction
 }
 
-export type CommandReduxHookOptions = {
-  actions?: CommandReduxActionsCreators
+export type CommandReduxHookOptions<TCmd extends Command> = {
+  actions?: CommandReduxActionsCreators<TCmd>
   commandOptions?: CommandOptions
 }
 
-const internalActions: CommandReduxActionsCreators = {
+const internalActions: CommandReduxActionsCreators<Command> = {
   request: (command: Command) => sendCommandRequest(command, true),
   success: sendCommandSuccess,
   failure: sendCommandFailure,
 }
 
 const defaultCommandOptions: CommandOptions = {}
+const defaultHookOptions: CommandReduxHookOptions<Command> = {}
 
-function useReduxCommand(command: Command): HookData<void>
-function useReduxCommand(
-  command: Command,
-  options: CommandReduxHookOptions
-): HookData<void>
-function useReduxCommand(command: Command, dependencies: any[]): HookData<void>
-function useReduxCommand(
-  command: Command,
-  options: CommandOptions,
+function isBuilder<TArgs extends any[], TQuery extends Command>(
+  query: TQuery | CommandBuilder<TArgs, TQuery>
+): query is CommandBuilder<TArgs, TQuery> {
+  return typeof query === 'function'
+}
+
+function useReduxCommand<TCmd extends Command>(command: TCmd): HookData<void[]>
+function useReduxCommand<TCmd extends Command>(
+  command: TCmd,
+  options: CommandReduxHookOptions<TCmd>
+): HookData<void[]>
+function useReduxCommand<TCmd extends Command>(
+  command: TCmd,
   dependencies: any[]
-): HookData<void>
-function useReduxCommand<T>(builder: CommandBuilder<T>): HookData<T>
-function useReduxCommand<T>(
-  builder: CommandBuilder<T>,
-  options: CommandOptions
-): HookData<T>
-function useReduxCommand<T>(
-  builder: CommandBuilder<T>,
+): HookData<void[]>
+function useReduxCommand<TCmd extends Command>(
+  command: TCmd,
+  options: CommandReduxHookOptions<TCmd>,
   dependencies: any[]
-): HookData<T>
-function useReduxCommand<T>(
-  builder: CommandBuilder<T>,
-  options: CommandOptions,
+): HookData<void[]>
+function useReduxCommand<TArgs extends any[], TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>
+): HookData<TArgs>
+function useReduxCommand<TArgs extends any[], TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
+  options: CommandReduxHookOptions<TCmd>
+): HookData<TArgs>
+function useReduxCommand<TArgs extends any[], TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
   dependencies: any[]
-): HookData<T>
-function useReduxCommand<T>(
-  command: Command | CommandBuilder<T>,
-  options?: CommandReduxHookOptions | any[],
+): HookData<TArgs>
+function useReduxCommand<TArgs extends any[], TCmd extends Command>(
+  builder: CommandBuilder<TArgs, TCmd>,
+  options: CommandReduxHookOptions<TCmd>,
+  dependencies: any[]
+): HookData<TArgs>
+function useReduxCommand<TArgs extends any[], TCmd extends Command>(
+  command: TCmd | CommandBuilder<TArgs, TCmd>,
+  options?: CommandReduxHookOptions<TCmd> | any[],
   dependencies?: any[]
-): HookData<T> {
-  const actualOptions = isOptions<CommandReduxHookOptions>(options)
+): HookData<TArgs> {
+  const actualOptions = isOptions<CommandReduxHookOptions<TCmd>>(options)
     ? options
-    : {}
+    : defaultHookOptions
 
   const actualActionCreators = actualOptions.actions || internalActions
 
-  const actualDependencies: any[] =
-    firstOfType<any[]>(isDependencies, options, dependencies, dependencies) ??
-    [command, actualOptions, actualActionCreators].filter((i) => i)
+  const actualDependencies = firstOfType<any[]>(
+    isDependencies,
+    options,
+    dependencies
+  )
 
   const { request, success, failure } = actualActionCreators
 
-  const callback: CommandCallback = (error, result, executedCommand) => {
+  const callback: CommandCallback<TCmd> = (error, result, executedCommand) => {
     if (error || result == null) {
       if (typeof failure === 'function') {
         if (error) {
@@ -105,28 +120,38 @@ function useReduxCommand<T>(
   }
 
   const dispatch = useDispatch()
-  const executor = useCommand(
-    (command: Command) => command,
-    actualOptions.commandOptions || defaultCommandOptions,
-    callback,
-    actualDependencies
-  )
+  const executor = actualDependencies
+    ? useCommandBuilder(
+        (command: TCmd) => command,
+        actualOptions.commandOptions || defaultCommandOptions,
+        callback,
+        actualDependencies
+      )
+    : useCommandBuilder(
+        (command: TCmd) => command,
+        actualOptions.commandOptions || defaultCommandOptions,
+        callback
+      )
 
-  return {
-    execute: (data: T): void => {
-      const dispatchRequest = (command: Command): void => {
-        if (typeof request === 'function') {
-          dispatch(request(command))
+  return useMemo(
+    () => ({
+      execute: (...args: TArgs): void => {
+        const dispatchRequest = (command: TCmd): void => {
+          if (typeof request === 'function') {
+            dispatch(request(command))
+          }
         }
-      }
 
-      const plainCommand: Command =
-        typeof command === 'function' ? command(data) : command
+        const plainCommand: TCmd = isBuilder(command)
+          ? command(...args)
+          : command
 
-      dispatchRequest(plainCommand)
-      executor(plainCommand)
-    },
-  }
+        dispatchRequest(plainCommand)
+        executor(plainCommand)
+      },
+    }),
+    [executor, dispatch]
+  )
 }
 
 export { useReduxCommand }

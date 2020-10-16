@@ -1,18 +1,14 @@
-import { useCallback } from 'react'
+import { renderHook } from '@testing-library/react-hooks'
 import { mocked } from 'ts-jest/utils'
 import { useClient } from '../src/use-client'
 import { StaticResolver, useStaticResolver } from '../src/use-static-resolver'
 
 jest.mock('resolve-client')
-jest.mock('react', () => ({
-  useCallback: jest.fn((cb) => cb),
-}))
 jest.mock('../src/use-client', () => ({
   useClient: jest.fn(),
 }))
 
 const mockedUseClient = mocked(useClient)
-const mockedUseCallback = mocked(useCallback)
 
 const mockedClient = {
   command: jest.fn(),
@@ -24,9 +20,6 @@ const mockedClient = {
 
 const clearMocks = (): void => {
   mockedUseClient.mockClear()
-
-  mockedUseCallback.mockClear()
-
   mockedClient.getStaticAssetUrl.mockClear()
 }
 
@@ -39,23 +32,33 @@ afterEach(() => {
 })
 
 test('useClient hook called', () => {
-  useStaticResolver()
+  renderHook(() => useStaticResolver())
 
   expect(mockedUseClient).toHaveBeenCalled()
 })
 
-test('cached resolver returned', () => {
-  const resolver = useStaticResolver()
+test('cached resolver', () => {
+  const hookData = renderHook(() => useStaticResolver())
+  const resolverA = hookData.result.current
+  hookData.rerender()
+  expect(hookData.result.current).toBe(resolverA)
+})
 
-  expect(resolver).toBeInstanceOf(Function)
-  expect(mockedUseCallback).toHaveBeenCalledWith(resolver, [mockedClient])
+test('new resolver on underlying client change', () => {
+  const hookData = renderHook(() => useStaticResolver())
+  const resolverA = hookData.result.current
+  mockedUseClient.mockReturnValueOnce({
+    ...mockedClient,
+  })
+  hookData.rerender()
+  expect(hookData.result.current).not.toBe(resolverA)
 })
 
 describe('resolver tests', () => {
   let resolver: StaticResolver
 
   beforeEach(() => {
-    resolver = useStaticResolver()
+    resolver = renderHook(() => useStaticResolver()).result.current
   })
 
   test('single asset as string', () => {
