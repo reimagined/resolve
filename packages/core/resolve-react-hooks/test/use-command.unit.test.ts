@@ -1,19 +1,15 @@
-import { useCallback } from 'react'
+import { renderHook } from '@testing-library/react-hooks'
 import { mocked } from 'ts-jest/utils'
 import { Command, CommandCallback } from 'resolve-client'
 import { useClient } from '../src/use-client'
 import { useCommand } from '../src/use-command'
 
 jest.mock('resolve-client')
-jest.mock('react', () => ({
-  useCallback: jest.fn((cb) => cb),
-}))
 jest.mock('../src/use-client', () => ({
   useClient: jest.fn(),
 }))
 
 const mockedUseClient = mocked(useClient)
-const mockedUseCallback = mocked(useCallback)
 
 const mockedClient = {
   command: jest.fn(() => Promise.resolve({ result: 'command-result' })),
@@ -44,7 +40,6 @@ const buildCommand = jest.fn(
 
 const clearMocks = (): void => {
   mockedUseClient.mockClear()
-  mockedUseCallback.mockClear()
   mockedClient.command.mockClear()
   buildCommand.mockClear()
 }
@@ -59,7 +54,7 @@ afterEach(() => {
 
 describe('common', () => {
   test('useClient hook called', () => {
-    useCommand(basicCommand())
+    renderHook(() => useCommand(basicCommand()))
 
     expect(mockedUseClient).toHaveBeenCalled()
   })
@@ -69,72 +64,142 @@ describe('async mode', () => {
   test('just a command', async () => {
     const command = basicCommand()
 
-    await useCommand(command)()
+    const {
+      result: { current: execute },
+    } = renderHook(() => useCommand(command))
+
+    await execute()
 
     expect(mockedClient.command).toHaveBeenCalledWith(
       command,
       undefined,
       undefined
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      command,
-    ])
   })
 
-  test('command and dependencies', async () => {
+  test('cached command executor with custom dependencies', async () => {
     const command = basicCommand()
+    const dependency = 'dependency'
 
-    await useCommand(command, ['dependency'])()
-
-    expect(mockedClient.command).toHaveBeenCalledWith(
-      command,
-      undefined,
-      undefined
+    const hookData = renderHook(
+      (props) => useCommand(command, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).toBe(executeA)
+  })
+
+  test('new command executor on underlying client change', async () => {
+    const command = basicCommand()
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useCommand(command, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    mockedUseClient.mockReturnValueOnce({
+      ...mockedClient,
+    })
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
+  })
+
+  test('new command executor on dependencies change', async () => {
+    const command = basicCommand()
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useCommand(command, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: ['changed'],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
   })
 
   test('command and options', async () => {
     const command = basicCommand()
     const options = { option: 'option' }
 
-    await useCommand(command, options)()
+    const {
+      result: { current: execute },
+    } = renderHook(() => useCommand(command, options))
+
+    await execute()
 
     expect(mockedClient.command).toHaveBeenCalledWith(
       command,
       options,
       undefined
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      command,
-      options,
-    ])
   })
 
-  test('command, options and dependencies', async () => {
+  test('cached command executor with custom dependencies (with options)', async () => {
     const command = basicCommand()
+    const dependency = 'dependency'
 
-    await useCommand(command, { option: 'option' }, ['dependency'])()
-
-    expect(mockedClient.command).toHaveBeenCalledWith(
-      command,
-      { option: 'option' },
-      undefined
+    const hookData = renderHook(
+      (props) => useCommand(command, { option: 'option' }, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).toBe(executeA)
+  })
+
+  test('new command executor on dependencies change (with options)', async () => {
+    const command = basicCommand()
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useCommand(command, { option: 'option' }, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: ['changed'],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
   })
 })
 
 describe('callback mode', () => {
-  let callback: CommandCallback
+  let callback: CommandCallback<Command>
 
   beforeEach(() => {
     callback = jest.fn()
@@ -143,210 +208,400 @@ describe('callback mode', () => {
   test('just a command', () => {
     const command = basicCommand()
 
-    useCommand(command, callback)()
+    const {
+      result: { current: execute },
+    } = renderHook(() => useCommand(command, callback))
+
+    execute()
 
     expect(mockedClient.command).toHaveBeenCalledWith(
       command,
       undefined,
       callback
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      command,
-      callback,
-    ])
   })
 
-  test('command, callback and dependencies', () => {
+  test('cached command executor with custom dependencies', async () => {
     const command = basicCommand()
+    const dependency = 'dependency'
 
-    useCommand(command, callback, ['dependency'])()
-
-    expect(mockedClient.command).toHaveBeenCalledWith(
-      command,
-      undefined,
-      callback
+    const hookData = renderHook(
+      (props) => useCommand(command, callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).toBe(executeA)
+  })
+
+  test('new command executor on underlying client change', async () => {
+    const command = basicCommand()
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useCommand(command, callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    mockedUseClient.mockReturnValueOnce({
+      ...mockedClient,
+    })
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
+  })
+
+  test('new command executor on dependencies change', async () => {
+    const command = basicCommand()
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useCommand(command, callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: ['changed'],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
   })
 
   test('command, options and callback', () => {
     const command = basicCommand()
     const options = { option: 'option' }
 
-    useCommand(command, options, callback)()
+    const {
+      result: { current: execute },
+    } = renderHook(() => useCommand(command, options, callback))
+
+    execute()
 
     expect(mockedClient.command).toHaveBeenCalledWith(
-      command,
-      { option: 'option' },
-      callback
-    )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
       command,
       options,
-      callback,
-    ])
-  })
-
-  test('command, options, callback and dependencies', () => {
-    const command = basicCommand()
-
-    useCommand(command, { option: 'option' }, callback, ['dependency'])()
-
-    expect(mockedClient.command).toHaveBeenCalledWith(
-      command,
-      { option: 'option' },
       callback
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+  })
+
+  test('cached command executor with custom dependencies (with options)', async () => {
+    const command = basicCommand()
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) =>
+        useCommand(command, { option: 'option' }, callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).toBe(executeA)
+  })
+
+  test('new command executor on dependencies change (with options)', async () => {
+    const command = basicCommand()
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) =>
+        useCommand(command, { option: 'option' }, callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: ['changed'],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
   })
 })
 
 describe('builder: async mode', () => {
   test('just a builder', async () => {
-    await useCommand(buildCommand)('builder-input')
-    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+    const {
+      result: { current: execute },
+    } = renderHook(() => useCommand(buildCommand))
 
+    await execute('builder-input')
+
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
     expect(mockedClient.command).toHaveBeenCalledWith(
       buildCommand('builder-input'),
       undefined,
       undefined
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      buildCommand,
-    ])
   })
 
-  test('builder and dependencies', async () => {
-    await useCommand(buildCommand, ['dependency'])('builder-input')
-    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+  test('new command executor on re-render without dependencies', async () => {
+    const hookData = renderHook(() => useCommand(buildCommand))
+    const executeA = hookData.result.current
 
-    expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand('builder-input'),
-      undefined,
-      undefined
+    hookData.rerender()
+    expect(hookData.result.current).not.toBe(executeA)
+  })
+
+  test('cached command executor with custom dependencies', async () => {
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useCommand(buildCommand, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).toBe(executeA)
+  })
+
+  test('new command executor with custom dependencies but changed underlying client', async () => {
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useCommand(buildCommand, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    mockedUseClient.mockReturnValueOnce({
+      ...mockedClient,
+    })
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
   })
 
   test('builder and options', async () => {
     const options = { option: 'option' }
 
-    await useCommand(buildCommand, options)('builder-input')
-    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+    const {
+      result: { current: execute },
+    } = renderHook(() => useCommand(buildCommand, options))
 
+    await execute('builder-input')
+
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
     expect(mockedClient.command).toHaveBeenCalledWith(
       buildCommand('builder-input'),
       options,
       undefined
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      buildCommand,
-      options,
-    ])
   })
 
-  test('builder, options and dependencies', async () => {
-    await useCommand(buildCommand, { option: 'option' }, ['dependency'])(
-      'builder-input'
-    )
-    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+  test('cached command executor with custom dependencies (with options)', async () => {
+    const dependency = 'dependency'
 
-    expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand('builder-input'),
-      { option: 'option' },
-      undefined
+    const hookData = renderHook(
+      (props) =>
+        useCommand(buildCommand, { option: 'option' }, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).toBe(executeA)
+  })
+
+  test('new command executor on dependencies change (with options)', async () => {
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) =>
+        useCommand(buildCommand, { option: 'option' }, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: ['changed'],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
   })
 })
 
 describe('builder: callback mode', () => {
-  let callback: CommandCallback
+  let callback: CommandCallback<Command>
 
   beforeEach(() => {
     callback = jest.fn()
   })
 
   test('just a builder', () => {
-    useCommand(buildCommand, callback)('builder-input')
-    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+    const {
+      result: { current: execute },
+    } = renderHook(() => useCommand(buildCommand, callback))
 
+    execute('builder-input')
+
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
     expect(mockedClient.command).toHaveBeenCalledWith(
       buildCommand('builder-input'),
       undefined,
       callback
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      buildCommand,
-      callback,
-    ])
   })
 
-  test('builder, callback and dependencies', () => {
-    useCommand(buildCommand, callback, ['dependency'])('builder-input')
-    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+  test('new command executor on re-render without dependencies', () => {
+    const hookData = renderHook(() => useCommand(buildCommand, callback))
+    const executeA = hookData.result.current
 
-    expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand('builder-input'),
-      undefined,
-      callback
+    hookData.rerender()
+    expect(hookData.result.current).not.toBe(executeA)
+  })
+
+  test('cached command executor with custom dependencies', () => {
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useCommand(buildCommand, callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).toBe(executeA)
   })
 
-  test('builder, options and callback', () => {
+  test('new command executor with custom dependencies but changed underlying client', () => {
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) => useCommand(buildCommand, callback, props.dependencies),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    mockedUseClient.mockReturnValueOnce({
+      ...mockedClient,
+    })
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
+  })
+
+  test('builder and options', () => {
     const options = { option: 'option' }
 
-    useCommand(buildCommand, options, callback)('builder-input')
-    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+    const {
+      result: { current: execute },
+    } = renderHook(() => useCommand(buildCommand, options, callback))
 
+    execute('builder-input')
+
+    expect(buildCommand).toHaveBeenCalledWith('builder-input')
     expect(mockedClient.command).toHaveBeenCalledWith(
       buildCommand('builder-input'),
-      { option: 'option' },
+      options,
       callback
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      buildCommand,
-      options,
-      callback,
-    ])
   })
 
-  test('builder, options, callback and dependencies', () => {
-    useCommand(buildCommand, { option: 'option' }, callback, ['dependency'])(
-      'builder-input'
-    )
-    expect(buildCommand).toHaveBeenCalledWith('builder-input')
+  test('cached command executor with custom dependencies (with options)', () => {
+    const dependency = 'dependency'
 
-    expect(mockedClient.command).toHaveBeenCalledWith(
-      buildCommand('builder-input'),
-      { option: 'option' },
-      callback
+    const hookData = renderHook(
+      (props) =>
+        useCommand(
+          buildCommand,
+          { option: 'option' },
+          callback,
+          props.dependencies
+        ),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
     )
-    expect(mockedUseCallback).toHaveBeenCalledWith(expect.any(Function), [
-      mockedClient,
-      'dependency',
-    ])
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: [dependency],
+    })
+
+    expect(hookData.result.current).toBe(executeA)
+  })
+
+  test('new command executor on dependencies change (with options)', () => {
+    const dependency = 'dependency'
+
+    const hookData = renderHook(
+      (props) =>
+        useCommand(
+          buildCommand,
+          { option: 'option' },
+          callback,
+          props.dependencies
+        ),
+      {
+        initialProps: {
+          dependencies: [dependency],
+        },
+      }
+    )
+    const executeA = hookData.result.current
+    hookData.rerender({
+      dependencies: ['changed'],
+    })
+
+    expect(hookData.result.current).not.toBe(executeA)
   })
 })

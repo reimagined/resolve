@@ -35,21 +35,24 @@ export type Command = {
   immediateConflict?: boolean
 }
 export type CommandResult = object
-export type CommandCallback = (
+export type CommandCallback<T extends Command> = (
   error: Error | null,
   result: CommandResult | null,
-  command: Command
+  command: T
 ) => void
 export type CommandOptions = {}
 
 export const command = (
   context: Context,
   cmd: Command,
-  options?: CommandOptions | CommandCallback,
-  callback?: CommandCallback
+  options?: CommandOptions | CommandCallback<Command>,
+  callback?: CommandCallback<Command>
 ): PromiseOrVoid<CommandResult> => {
   const actualOptions = isOptions<CommandOptions>(options) ? options : undefined
-  const actualCallback = determineCallback<CommandCallback>(options, callback)
+  const actualCallback = determineCallback<CommandCallback<Command>>(
+    options,
+    callback
+  )
 
   const asyncExec = async (): Promise<CommandResult> => {
     const response = await request(context, '/api/commands', cmd, actualOptions)
@@ -109,17 +112,17 @@ export type QueryOptions = {
     attempts?: number
   }
 }
-export type QueryCallback = (
+export type QueryCallback<T extends Query> = (
   error: Error | null,
   result: QueryResult | null,
-  query: Query
+  query: T
 ) => void
 
 export const query = (
   context: Context,
   qr: Query,
-  options?: QueryOptions | QueryCallback,
-  callback?: QueryCallback
+  options?: QueryOptions | QueryCallback<Query>,
+  callback?: QueryCallback<Query>
 ): PromiseOrVoid<QueryResult> => {
   const requestOptions: RequestOptions = {
     method: 'GET',
@@ -156,7 +159,10 @@ export const query = (
     requestOptions.method = options?.method ?? 'GET'
   }
 
-  const actualCallback = determineCallback<QueryCallback>(options, callback)
+  const actualCallback = determineCallback<QueryCallback<Query>>(
+    options,
+    callback
+  )
 
   let queryRequest: Promise<NarrowedResponse>
 
@@ -347,13 +353,13 @@ const getStaticAssetUrl = (
 export type Client = {
   command: (
     command: Command,
-    options?: CommandOptions | CommandCallback,
-    callback?: CommandCallback
+    options?: CommandOptions | CommandCallback<Command>,
+    callback?: CommandCallback<Command>
   ) => PromiseOrVoid<CommandResult>
   query: (
     query: Query,
-    options?: QueryOptions | QueryCallback,
-    callback?: QueryCallback
+    options?: QueryOptions | QueryCallback<Query>,
+    callback?: QueryCallback<Query>
   ) => PromiseOrVoid<QueryResult>
   getStaticAssetUrl: (assetPath: string) => string
   subscribe: (
