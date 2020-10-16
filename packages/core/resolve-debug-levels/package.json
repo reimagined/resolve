@@ -1,12 +1,13 @@
 {
   "name": "resolve-debug-levels",
-  "version": "0.24.16",
+  "version": "0.25.13",
   "description": "Provides the debug-level API for reSolve packages.",
   "engines": {
     "node": ">=10.9"
   },
   "main": "./lib/index.js",
   "module": "./es/index.js",
+  "types": "./types/index.d.ts",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -37,12 +38,6 @@
   },
   "sourceType": "ts",
   "babelCompile": [
-    {
-      "moduleType": "es",
-      "moduleTarget": "client",
-      "inputDir": "./src",
-      "outDir": "./es"
-    },
     {
       "moduleType": "cjs",
       "moduleTarget": "client",

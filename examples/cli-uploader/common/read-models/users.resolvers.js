@@ -8,7 +8,7 @@ const getJwtToken = async (store, { login, password }) => {
   const [user] =
     (await store.find('Users', {
       login,
-      passwordHash
+      passwordHash,
     })) || []
 
   if (user == null) {
@@ -28,5 +28,5 @@ const getUser = async (store, { login }) => {
 
 export default {
   getJwtToken,
-  user: getUser
+  user: getUser,
 }

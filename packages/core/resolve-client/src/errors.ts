@@ -28,5 +28,5 @@ export const temporaryErrorHttpCodes: number[] = [
   521, // Web Server Is Down
   522, // Connection Timed Out
   523, // Origin Is Unreachable
-  524 // A Timeout Occurred
+  524, // A Timeout Occurred
 ]

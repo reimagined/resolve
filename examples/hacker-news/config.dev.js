@@ -9,27 +9,27 @@ const devConfig = {
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
-      snapshotBucketSize: 100
-    }
+      snapshotBucketSize: 100,
+    },
   },
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'data/read-model-default.db'
-      }
+        databaseFile: 'data/read-model-default.db',
+      },
     },
     hackerNews: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'data/read-model-hackerNews.db'
-      }
+        databaseFile: 'data/read-model-hackerNews.db',
+      },
     },
     comments: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'data/read-model-comments.db'
-      }
+        databaseFile: 'data/read-model-comments.db',
+      },
     },
     elasticSearch: {
       module: 'common/read-models/elastic-search-connector.js',
@@ -41,25 +41,25 @@ const devConfig = {
           password: 'pass'
         }
         */
-      }
-    }
+      },
+    },
   },
   schedulers: {
     scheduler: {
       adapter: {
         module: 'resolve-scheduler-local',
-        options: {}
+        options: {},
       },
-      connectorName: 'default'
-    }
+      connectorName: 'default',
+    },
   },
   jwtCookie: {
     name: 'jwt',
-    maxAge: 31536000000
+    maxAge: 31536000000,
   },
   eventBroker: {
-    databaseFile: 'data/local-bus-broker.db'
-  }
+    databaseFile: 'data/local-bus-broker.db',
+  },
 }
 
 export default devConfig

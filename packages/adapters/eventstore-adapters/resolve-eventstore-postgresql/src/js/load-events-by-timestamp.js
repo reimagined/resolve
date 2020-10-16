@@ -7,12 +7,12 @@ const loadEventsByTimestamp = async (
     escape,
     eventsTableName,
     databaseName,
-    shapeEvent
+    shapeEvent,
   },
   { eventTypes, aggregateIds, startTime, finishTime, limit }
 ) => {
-  const injectString = value => `${escape(value)}`
-  const injectNumber = value => `${+value}`
+  const injectString = (value) => `${escape(value)}`
+  const injectNumber = (value) => `${+value}`
 
   const queryConditions = []
   const events = []
@@ -39,7 +39,7 @@ const loadEventsByTimestamp = async (
     `SELECT * FROM ${databaseNameAsId}.${eventsTableNameAsId}`,
     `${resultQueryCondition}`,
     `ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC`,
-    `LIMIT ${+limit}`
+    `LIMIT ${+limit}`,
   ].join('\n')
 
   const rows = await executeStatement(sqlQuery)
@@ -52,7 +52,7 @@ const loadEventsByTimestamp = async (
     get cursor() {
       return throwBadCursor()
     },
-    events
+    events,
   }
 }
 

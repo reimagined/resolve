@@ -8,6 +8,6 @@ export default (): any => {
       return Promise.resolve()
     },
     deleteSecret: async (id: string): Promise<boolean> =>
-      Promise.resolve(secrets.delete(id))
+      Promise.resolve(secrets.delete(id)),
   }
 }

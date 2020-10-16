@@ -8,7 +8,7 @@ import {
   stop,
   reset,
   importEventStore,
-  exportEventStore
+  exportEventStore,
 } from 'resolve-scripts'
 
 import appConfig from './config.app'
@@ -31,21 +31,21 @@ void (async () => {
         createStrategy: 'auth/create_strategy.js',
         logoutRoute: {
           path: 'logout',
-          method: 'POST'
+          method: 'POST',
         },
         routes: [
           {
             path: 'register',
             method: 'POST',
-            callback: 'auth/route_register_callback.js'
+            callback: 'auth/route_register_callback.js',
           },
           {
             path: 'login',
             method: 'POST',
-            callback: 'auth/route_login_callback.js'
-          }
-        ]
-      }
+            callback: 'auth/route_login_callback.js',
+          },
+        ],
+      },
     ])
 
     const baseConfig = merge(
@@ -63,7 +63,7 @@ void (async () => {
           dropEventStore: false,
           dropEventBus: true,
           dropReadModels: true,
-          dropSagas: true
+          dropSagas: true,
         })
 
         await watch(resolveConfig)
@@ -93,7 +93,7 @@ void (async () => {
           dropEventStore: false,
           dropEventBus: true,
           dropReadModels: true,
-          dropSagas: true
+          dropSagas: true,
         })
 
         break
@@ -124,14 +124,14 @@ void (async () => {
           dropEventStore: true,
           dropEventBus: true,
           dropReadModels: true,
-          dropSagas: true
+          dropSagas: true,
         })
 
         await runTestcafe({
           resolveConfig,
           functionalTestsDir: 'test/functional',
           browser: process.argv[3],
-          customArgs: ['--stop-on-first-fail']
+          customArgs: ['--stop-on-first-fail'],
         })
         break
       }

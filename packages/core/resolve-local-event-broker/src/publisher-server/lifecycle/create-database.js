@@ -6,7 +6,7 @@ import {
   LONG_INTEGER_SQL_TYPE,
   NOTIFICATIONS_TABLE_NAME,
   STRING_SQL_TYPE,
-  SUBSCRIBERS_TABLE_NAME
+  SUBSCRIBERS_TABLE_NAME,
 } from '../constants'
 
 async function createDatabase({ database: { runRawQuery, escapeId } }) {

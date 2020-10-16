@@ -6,13 +6,9 @@ import {
   CommandHandler,
   CommandResult,
   Event,
-  SecretsManager
+  SecretsManager,
 } from 'resolve-core'
 import getLog from './get-log'
-
-type EventPublisher = {
-  publish: ({ event }: { event: Event }) => Promise<void>
-}
 
 type EventstoreAdapter = {
   getNextCursor: Function
@@ -39,7 +35,7 @@ type AggregateMeta = {
 }
 
 type CommandPool = {
-  publisher: EventPublisher
+  onCommandExecuted: (event: any) => Promise<void>
   performanceTracer: any
   aggregateName: string
   isDisposed: boolean
@@ -65,7 +61,7 @@ export type CommandExecutor = {
 }
 
 export type CommandExecutorBuilder = (context: {
-  publisher: EventPublisher
+  onCommandExecuted: (event: any) => Promise<void>
   aggregates: AggregateMeta[]
   performanceTracer?: any
   eventstoreAdapter: EventstoreAdapter
@@ -82,7 +78,7 @@ const generateCommandError = (message: string): Error => {
   Object.defineProperties(error, {
     name: { value: 'CommandError', enumerable: true },
     message: { value: error.message, enumerable: true },
-    stack: { value: error.stack, enumerable: true }
+    stack: { value: error.stack, enumerable: true },
   })
   return error
 }
@@ -195,7 +191,7 @@ const takeSnapshot = async (
         state: aggregateInfo.serializeState(aggregateInfo.aggregateState),
         version: aggregateInfo.aggregateVersion,
         minimalTimestamp: aggregateInfo.minimalTimestamp,
-        cursor: aggregateInfo.cursor
+        cursor: aggregateInfo.cursor,
       })
     )
 
@@ -222,13 +218,13 @@ const getAggregateState = async (
     aggregateName,
     performanceTracer,
     isDisposed,
-    eventstoreAdapter
+    eventstoreAdapter,
   } = pool
   const {
     projection,
     serializeState,
     deserializeState,
-    invariantHash = null
+    invariantHash = null,
   } = meta
   const log = getLog(`getAggregateState:${aggregateName}:${aggregateId}`)
 
@@ -262,7 +258,7 @@ const getAggregateState = async (
       projection,
       serializeState,
       deserializeState,
-      snapshotKey
+      snapshotKey,
     }
 
     try {
@@ -272,7 +268,7 @@ const getAggregateState = async (
 
       // TODO: Restore
       // if (projection == null) {
-      //   const lastEvent = await pool.publisher.getLatestEvent({
+      //   const lastEvent = await pool.eventstoreAdapter.getLatestEvent({
       //     aggregateIds: [aggregateId]
       //   })
       //   if (lastEvent != null) {
@@ -323,7 +319,7 @@ const getAggregateState = async (
           aggregateState: deserializeState(snapshot.state),
           aggregateVersion: snapshot.version,
           minimalTimestamp: snapshot.minimalTimestamp,
-          cursor: snapshot.cursor
+          cursor: snapshot.cursor,
         })
       }
     } catch (err) {
@@ -353,7 +349,7 @@ const getAggregateState = async (
         const { events } = await eventstoreAdapter.loadEvents({
           aggregateIds: [aggregateId],
           cursor: aggregateInfo.cursor,
-          limit: Number.MAX_SAFE_INTEGER
+          limit: Number.MAX_SAFE_INTEGER,
         })
 
         log.debug(
@@ -400,7 +396,7 @@ const isString = (val: any): val is string =>
   val != null && val.constructor === String
 
 const saveEvent = async (
-  publisher: EventPublisher,
+  onCommandExecuted: (event: any) => Promise<void>,
   event: Event
 ): Promise<any> => {
   if (!isString(event.type)) {
@@ -418,14 +414,18 @@ const saveEvent = async (
 
   event.aggregateId = String(event.aggregateId)
 
-  return publisher.publish({ event })
+  await onCommandExecuted(event)
+
+  return event
 }
 
 const executeCommand = async (
   pool: CommandPool,
   command: Command
 ): Promise<CommandResult> => {
-  const { jwt } = command
+  const { jwt: actualJwt, jwtToken: deprecatedJwt } = command
+
+  const jwt = actualJwt || deprecatedJwt
 
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
@@ -453,7 +453,7 @@ const executeCommand = async (
     const {
       aggregateState,
       aggregateVersion,
-      minimalTimestamp
+      minimalTimestamp,
     } = await getAggregateState(pool, aggregate, aggregateId)
 
     if (!aggregate.commands.hasOwnProperty(type)) {
@@ -495,20 +495,20 @@ const executeCommand = async (
       typeof aggregate.encryption === 'function'
         ? await aggregate.encryption(aggregateId, {
             jwt,
-            secretsManager
+            secretsManager,
           })
         : null
 
     const { encrypt = null, decrypt = null } = encryption || {
       encrypt: null,
-      decrypt: null
+      decrypt: null,
     }
 
     const event = await commandHandler(aggregateState, command, {
       jwt,
       aggregateVersion,
       encrypt,
-      decrypt
+      decrypt,
     })
 
     if (!checkOptionShape(event.type, [String])) {
@@ -527,12 +527,15 @@ const executeCommand = async (
       )
     }
 
-    const processedEvent = {
+    const processedEvent: Event = {
       aggregateId,
       aggregateVersion: aggregateVersion + 1,
       timestamp: Math.max(minimalTimestamp + 1, Date.now()),
       type: event.type,
-      payload: event.payload as any
+    }
+
+    if (Object.prototype.hasOwnProperty.call(event, 'payload')) {
+      processedEvent.payload = event.payload
     }
 
     await (async (): Promise<void> => {
@@ -542,7 +545,7 @@ const executeCommand = async (
       const subSegment = segment ? segment.addNewSubsegment('saveEvent') : null
 
       try {
-        return await saveEvent(pool.publisher, processedEvent)
+        return await saveEvent(pool.onCommandExecuted, processedEvent)
       } catch (error) {
         if (subSegment != null) {
           subSegment.addError(error)
@@ -593,22 +596,22 @@ const dispose = async (pool: CommandPool): Promise<void> => {
 }
 
 const createCommand: CommandExecutorBuilder = ({
-  publisher,
+  onCommandExecuted,
   aggregates,
   performanceTracer,
-  eventstoreAdapter
+  eventstoreAdapter,
 }): CommandExecutor => {
   const pool = {
-    publisher,
+    onCommandExecuted,
     aggregates,
     isDisposed: false,
     performanceTracer,
-    eventstoreAdapter
+    eventstoreAdapter,
   }
 
   const api = {
     executeCommand: executeCommand.bind(null, pool as any),
-    dispose: dispose.bind(null, pool as any)
+    dispose: dispose.bind(null, pool as any),
   }
 
   const commandExecutor = executeCommand.bind(null, pool as any)

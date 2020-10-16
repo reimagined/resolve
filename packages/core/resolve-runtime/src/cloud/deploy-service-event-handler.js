@@ -1,13 +1,15 @@
 import debugLevels from 'resolve-debug-levels'
 
-import bootstrap from './bootstrap'
+import bootstrap from '../common/bootstrap'
+import shutdown from '../common/shutdown'
 
 const log = debugLevels('resolve:resolve-runtime:deploy-service-event-handler')
 
-const getReadModelNames = resolve => resolve.readModels.map(({ name }) => name)
-const getSagaNames = resolve => [
+const getReadModelNames = (resolve) =>
+  resolve.readModels.map(({ name }) => name)
+const getSagaNames = (resolve) => [
   ...resolve.schedulers.map(({ name }) => name),
-  ...resolve.sagas.map(({ name }) => name)
+  ...resolve.sagas.map(({ name }) => name),
 ]
 
 const handleResolveReadModelEvent = async (
@@ -20,27 +22,27 @@ const handleResolveReadModelEvent = async (
     case 'reset': {
       log.debug('operation "reset" started')
       log.debug('resetting event broker')
-      await resolve.publisher.reset({ eventSubscriber: listenerId })
-      await resolve.publisher.resume({ eventSubscriber: listenerId })
+      await resolve.eventBus.reset({ eventSubscriber: listenerId })
+      await resolve.eventBus.resume({ eventSubscriber: listenerId })
       log.debug('operation "reset" completed')
       return 'ok'
     }
     case 'pause': {
       log.debug('operation "pause" started')
-      await resolve.publisher.pause({ eventSubscriber: listenerId })
+      await resolve.eventBus.pause({ eventSubscriber: listenerId })
       log.debug('operation "pause" completed')
       return 'ok'
     }
     case 'resume': {
       log.debug('operation "resume" started')
-      await resolve.publisher.resume({ eventSubscriber: listenerId })
+      await resolve.eventBus.resume({ eventSubscriber: listenerId })
       log.debug('operation "resume" completed')
       return 'ok'
     }
     case 'listProperties': {
       log.debug('operation "listProperties" started')
-      const result = await resolve.publisher.listProperties({
-        eventSubscriber: listenerId
+      const result = await resolve.eventBus.listProperties({
+        eventSubscriber: listenerId,
       })
       log.debug('operation "listProperties" completed')
       log.verbose(JSON.stringify(result, null, 2))
@@ -48,9 +50,9 @@ const handleResolveReadModelEvent = async (
     }
     case 'getProperty': {
       log.debug('operation "getProperty" started')
-      const result = await resolve.publisher.getProperty({
+      const result = await resolve.eventBus.getProperty({
         eventSubscriber: listenerId,
-        key
+        key,
       })
       log.debug('operation "getProperty" completed')
       log.verbose(JSON.stringify(result, null, 2))
@@ -58,19 +60,19 @@ const handleResolveReadModelEvent = async (
     }
     case 'setProperty': {
       log.debug('operation "setProperty" started')
-      await resolve.publisher.setProperty({
+      await resolve.eventBus.setProperty({
         eventSubscriber: listenerId,
         key,
-        value
+        value,
       })
       log.debug('operation "setProperty" completed')
       return 'ok'
     }
     case 'deleteProperty': {
       log.debug('operation "deleteProperty" started')
-      await resolve.publisher.deleteProperty({
+      await resolve.eventBus.deleteProperty({
         eventSubscriber: listenerId,
-        key
+        key,
       })
       log.debug('operation "deleteProperty" completed')
       return 'ok'
@@ -81,13 +83,13 @@ const handleResolveReadModelEvent = async (
       log.verbose(`listenerIds = ${JSON.stringify(listenerIds, null, 2)}`)
       log.debug('operation "list" started')
       const result = await Promise.all(
-        listenerIds.map(async listenerId => {
-          const status = await resolve.publisher.status({
-            eventSubscriber: listenerId
+        listenerIds.map(async (listenerId) => {
+          const status = await resolve.eventBus.status({
+            eventSubscriber: listenerId,
           })
           return {
             ...status,
-            name: listenerId
+            name: listenerId,
           }
         })
       )
@@ -115,7 +117,17 @@ const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
   switch (lambdaEvent.part) {
     case 'bootstrap': {
       try {
-        return await bootstrap(resolve)
+        return await bootstrap(resolve, true)
+      } catch (error) {
+        subSegment.addError(error)
+        throw error
+      } finally {
+        subSegment.close()
+      }
+    }
+    case 'shutdown': {
+      try {
+        return await shutdown(resolve, true)
       } catch (error) {
         subSegment.addError(error)
         throw error

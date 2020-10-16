@@ -17,7 +17,7 @@ export const StyledLink = styled(NavLink)`
     text-decoration: underline;
   }
 
-  ${props =>
+  ${(props) =>
     props.disabled
       ? css`
           pointer-events: none;
@@ -59,7 +59,7 @@ const Pagination = ({ page, hasNext, location }) => {
 }
 
 Pagination.defaultProps = {
-  page: 1
+  page: 1,
 }
 
 export default Pagination

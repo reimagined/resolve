@@ -12,7 +12,7 @@ const normalizeKey = (key, mode) => {
       return key
         .toLowerCase()
         .split(/-/g)
-        .map(part => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+        .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
         .join('-')
     case 'dash-case':
       return `${key.charAt(0).toUpperCase()}${key.slice(1).toLowerCase()}`
@@ -23,7 +23,7 @@ const normalizeKey = (key, mode) => {
   }
 }
 
-const wrapHeadersCaseInsensitive = headersMap =>
+const wrapHeadersCaseInsensitive = (headersMap) =>
   Object.create(
     Object.prototype,
     Object.keys(headersMap).reduce((acc, key) => {
@@ -31,7 +31,7 @@ const wrapHeadersCaseInsensitive = headersMap =>
       const [upperDashKey, dashKey, lowerKey] = [
         normalizeKey(key, 'upper-dash-case'),
         normalizeKey(key, 'dash-case'),
-        normalizeKey(key, 'lower-case')
+        normalizeKey(key, 'lower-case'),
       ]
 
       acc[upperDashKey] = { value, enumerable: true }
@@ -50,7 +50,7 @@ const createRequest = async (lambdaEvent, customParameters) => {
     httpMethod,
     headers: { 'x-proxy-headers': proxyHeadersString, ...originalHeaders },
     multiValueQueryStringParameters,
-    body
+    body,
   } = lambdaEvent
 
   if (proxyHeadersString != null) {
@@ -104,7 +104,7 @@ const createRequest = async (lambdaEvent, customParameters) => {
     headers,
     cookies,
     body,
-    ...customParameters
+    ...customParameters,
   }
 
   for (const name of Object.keys(reqProperties)) {
@@ -113,7 +113,7 @@ const createRequest = async (lambdaEvent, customParameters) => {
       get: () => reqProperties[name],
       set: () => {
         throw new Error(`Request parameters can't be modified`)
-      }
+      },
     })
   }
 
@@ -126,7 +126,7 @@ const createResponse = () => {
     headers: {},
     cookies: [],
     body: '',
-    closed: false
+    closed: false,
   }
 
   const validateResponseOpened = () => {
@@ -156,7 +156,7 @@ const createResponse = () => {
   const defineResponseMethod = (name, value) =>
     Object.defineProperty(res, name, {
       enumerable: true,
-      value
+      value,
     })
 
   defineResponseMethod('cookie', (name, value, options) => {
@@ -171,14 +171,14 @@ const createResponse = () => {
     validateResponseOpened()
     const serializedCookie = cookie.serialize(name, '', {
       ...options,
-      expires: COOKIE_CLEAR_DATE
+      expires: COOKIE_CLEAR_DATE,
     })
 
     internalRes.cookies.push(serializedCookie)
     return res
   })
 
-  defineResponseMethod('status', code => {
+  defineResponseMethod('status', (code) => {
     validateResponseOpened()
     validateOptionShape('Status code', code, [Number])
     internalRes.status = code
@@ -196,7 +196,7 @@ const createResponse = () => {
     return res
   })
 
-  defineResponseMethod('getHeader', searchKey => {
+  defineResponseMethod('getHeader', (searchKey) => {
     validateOptionShape('Header name', searchKey, [String])
     const normalizedKey = normalizeKey(searchKey, 'upper-dash-case')
     return internalRes.headers[normalizedKey]
@@ -220,7 +220,7 @@ const createResponse = () => {
     return res
   })
 
-  defineResponseMethod('json', content => {
+  defineResponseMethod('json', (content) => {
     validateResponseOpened()
     internalRes.headers[normalizeKey('Content-Type', 'upper-dash-case')] =
       'application/json'
@@ -294,7 +294,7 @@ const wrapApiHandler = (handler, getCustomParameters) => async (
 
     result = {
       statusCode: 500,
-      body: ''
+      body: '',
     }
   }
 

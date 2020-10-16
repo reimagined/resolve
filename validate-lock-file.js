@@ -5,7 +5,7 @@ const lockfile = require('@yarnpkg/lockfile')
 
 const errorsSymbol = Symbol('errors')
 
-const packageRegistryShouldBeGlobal = entry => {
+const packageRegistryShouldBeGlobal = (entry) => {
   const { resolved, [errorsSymbol]: errors } = entry
   const link = url.parse(resolved)
   if (link.host !== 'registry.yarnpkg.com') {
@@ -16,14 +16,14 @@ const packageRegistryShouldBeGlobal = entry => {
   return entry
 }
 
-const mapYarnLockEntries = cb => {
+const mapYarnLockEntries = (cb) => {
   const contents = fs.readFileSync(path.resolve('yarn.lock'), 'utf-8')
   const yarnLock = lockfile.parse(contents)
-  return Object.keys(yarnLock.object).map(key =>
+  return Object.keys(yarnLock.object).map((key) =>
     cb({
       ...yarnLock.object[key],
       name: key,
-      [errorsSymbol]: []
+      [errorsSymbol]: [],
     })
   )
 }
@@ -31,14 +31,16 @@ const mapYarnLockEntries = cb => {
 try {
   const errors = mapYarnLockEntries(packageRegistryShouldBeGlobal).reduce(
     (output, entry) => {
-      entry[errorsSymbol].map(error => output.push(`[${entry.name}]: ${error}`))
+      entry[errorsSymbol].map((error) =>
+        output.push(`[${entry.name}]: ${error}`)
+      )
       return output
     },
     []
   )
   if (errors.length) {
     // eslint-disable-next-line
-    errors.map(error => console.error(error))
+    errors.map((error) => console.error(error))
     process.exit(1)
   }
 } catch (error) {

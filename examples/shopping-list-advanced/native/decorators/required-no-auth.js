@@ -2,13 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { View } from 'react-native'
 
-export const mapStateToProps = state => {
+export const mapStateToProps = (state) => {
   return {
-    jwt: state.jwt
+    jwt: state.jwt,
   }
 }
 
-const requiredNoAuth = Component => {
+const requiredNoAuth = (Component) => {
   class RequiredNoAuth extends React.PureComponent {
     componentDidMount() {
       this.optionalRedirect()

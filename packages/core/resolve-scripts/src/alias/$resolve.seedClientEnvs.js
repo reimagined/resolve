@@ -13,9 +13,9 @@ export default ({ resolveConfig, isClient }) => {
     Object.defineProperty(resolveConfig, CLIENT_ENV_KEY, {
       value: {
         showInformationWarn: true,
-        exposedEnvs: new Set()
+        exposedEnvs: new Set(),
       },
-      enumerable: false
+      enumerable: false,
     })
   }
 
@@ -25,7 +25,16 @@ export default ({ resolveConfig, isClient }) => {
     resolveConfig.customConstants,
     resolveConfig.staticPath,
     resolveConfig.rootPath,
-    resolveConfig.jwtCookie
+    resolveConfig.jwtCookie,
+    ...(Array.isArray(resolveConfig.viewModels)
+      ? resolveConfig.viewModels.map((viewModel) => viewModel.projection)
+      : []),
+    ...(resolveConfig.clientImports != null &&
+    Object(resolveConfig.clientImports) === resolveConfig.clientImports
+      ? Object.keys(resolveConfig.clientImports).map(
+          (key) => resolveConfig.clientImports[key]
+        )
+      : []),
   ]
 
   if (resolveConfig.uploadAdapter != null) {
@@ -41,6 +50,16 @@ export default ({ resolveConfig, isClient }) => {
     }
     return value
   })
+
+  const seededEnvKeys = new Set()
+  for (let index = clientEnvs.length - 1; index >= 0; index--) {
+    const key = `${clientEnvs[index]}`
+    if (seededEnvKeys.has(key)) {
+      clientEnvs.splice(index, 1)
+    } else {
+      seededEnvKeys.add(key)
+    }
+  }
 
   /* eslint-disable no-console */
   if (clientEnvs.length > 0) {
@@ -59,7 +78,7 @@ export default ({ resolveConfig, isClient }) => {
 
   const exports = [
     `import '$resolve.guardOnlyServer'`,
-    `const seedClientEnvs = {}`
+    `const seedClientEnvs = {}`,
   ]
 
   for (const clientEnv of clientEnvs) {

@@ -1,6 +1,7 @@
 import getLog from './js/get-log'
 import initEventStore from './js/init'
 import { AdapterPool } from './types'
+import { AGGREGATE_ID_SQL_TYPE } from './js/constants'
 
 const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
   const { secretsDatabase, secretsTableName, escapeId } = pool
@@ -12,7 +13,7 @@ const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
     secretsTableName
   )} (
         ${escapeId('idx')} BIG INT NOT NULL,
-        ${escapeId('id')} uuid NOT NULL,
+        ${escapeId('id')} ${AGGREGATE_ID_SQL_TYPE} NOT NULL,
         ${escapeId('secret')} text,
         PRIMARY KEY(${escapeId('id')}, ${escapeId('idx')})
       )`)
@@ -24,7 +25,7 @@ const init = async (pool: AdapterPool): Promise<any> => {
   log.debug('initializing databases')
   const result = await Promise.all([
     initEventStore(pool),
-    initSecretsStore(pool)
+    initSecretsStore(pool),
   ])
   log.debug('databases are initialized')
   return result

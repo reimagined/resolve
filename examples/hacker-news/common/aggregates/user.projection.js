@@ -6,14 +6,14 @@ export default {
     ...state,
     createdAt: timestamp,
     confirmed: false,
-    rejected: false
+    rejected: false,
   }),
-  [USER_CONFIRMED]: state => ({
+  [USER_CONFIRMED]: (state) => ({
     ...state,
-    confirmed: true
+    confirmed: true,
   }),
-  [USER_REJECTED]: state => ({
+  [USER_REJECTED]: (state) => ({
     ...state,
-    rejected: true
-  })
+    rejected: true,
+  }),
 }

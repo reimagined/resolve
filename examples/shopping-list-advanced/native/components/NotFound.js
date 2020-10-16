@@ -5,8 +5,8 @@ import { Text, H1, H2 } from 'native-base'
 const styles = StyleSheet.create({
   container: {
     marginTop: 10,
-    marginBottom: 20
-  }
+    marginBottom: 20,
+  },
 })
 
 class NotFound extends React.PureComponent {

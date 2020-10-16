@@ -1,6 +1,6 @@
 import { EOL } from 'os'
 
-const isHighloadError = error =>
+const isHighloadError = (error) =>
   error != null &&
   (/Request timed out/i.test(error.message) ||
     /Remaining connection slots are reserved/i.test(error.message) ||
@@ -32,7 +32,7 @@ const executeStatement = async (pool, sql) => {
             database: 'postgres',
             continueAfterTimeout: false,
             includeResultMetadata: true,
-            sql
+            sql,
           })
           .promise()
         break

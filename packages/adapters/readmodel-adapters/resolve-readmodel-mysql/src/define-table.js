@@ -22,7 +22,7 @@ const defineTable = async (
     `CREATE TABLE ${escapeId(`${tablePrefix}${tableName}`)} (` +
       [
         ...tableDescription.fields.map(
-          columnName => `${escapeId(columnName)} JSON`
+          (columnName) => `${escapeId(columnName)} JSON`
         ),
         ...Object.keys(tableDescription.indexes).map((indexName, idx) => {
           let declaration = `${escapeId(indexName)} JSON, ${escapeId(
@@ -51,11 +51,11 @@ const defineTable = async (
           return declaration
         }),
         ...Object.keys(tableDescription.indexes).map(
-          indexName =>
+          (indexName) =>
             `INDEX ${escapeId(`${indexName}\u0004\u0004`)} (${escapeId(
               `${indexName}\u0004`
             )})`
-        )
+        ),
       ].join(',\n') +
       `)
       COMMENT = "RESOLVE-${readModelName}"

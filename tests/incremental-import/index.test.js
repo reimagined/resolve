@@ -143,7 +143,7 @@ test('incremental import should work correctly', async () => {
       aggregateId: `aggregateId${eventIndex % 10}`,
       type: `EVENT${eventIndex % 3}`,
       payload: { eventIndex },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     })
   }
 
@@ -171,7 +171,7 @@ test('inject-events should work correctly', async () => {
       aggregateVersion: Math.floor(eventIndex / 10) + 1,
       type: `EVENT${eventIndex % 3}`,
       payload: { eventIndex },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     })
   }
 
@@ -189,7 +189,7 @@ test('inject-events should work correctly', async () => {
   )
 
   // const t1 = Date.now()
-  await new Promise(resolve => setImmediate(resolve))
+  await new Promise((resolve) => setImmediate(resolve))
 
   // // eslint-disable-next-line no-console
   // console.log(
@@ -202,7 +202,7 @@ test('inject-events should work correctly', async () => {
   expect(tempInitialEvents.length).toEqual(initialEvents.length)
   expect(tempInitialEvents).toEqual(initialEvents)
 
-  await new Promise(resolve => setTimeout(resolve, 1000))
+  await new Promise((resolve) => setTimeout(resolve, 1000))
 
   const incrementalImportTimestamp = Date.now()
   let incrementalImportEvents = []
@@ -222,7 +222,7 @@ test('inject-events should work correctly', async () => {
       aggregateId: `aggregateId${eventIndex % 10}`,
       type: `EVENT${eventIndex % 3}`,
       timestamp: incrementalImportTimestamp + eventIndex,
-      payload: { eventIndex }
+      payload: { eventIndex },
     })
 
     if (eventIndex % 256 === 0) {
@@ -255,7 +255,7 @@ test('inject-events should work correctly', async () => {
   await Promise.all(incrementalImportPromises)
 
   // const t3 = Date.now()
-  await new Promise(resolve => setImmediate(resolve))
+  await new Promise((resolve) => setImmediate(resolve))
 
   // // eslint-disable-next-line no-console
   // console.log(
@@ -266,7 +266,7 @@ test('inject-events should work correctly', async () => {
   await adapter.commitIncrementalImport(importId, true)
 
   // const t4 = Date.now()
-  await new Promise(resolve => setImmediate(resolve))
+  await new Promise((resolve) => setImmediate(resolve))
 
   // // eslint-disable-next-line no-console
   // console.log(
@@ -280,4 +280,65 @@ test('inject-events should work correctly', async () => {
   expect(resultEvents.length).toEqual(countAllEvents)
 
   validateEvents(resultEvents)
+})
+
+test('inject-events should work correctly with retries', async () => {
+  const countInitialEvents = 250 + Math.floor(750 * Math.random())
+
+  const initialEvents = []
+  const incrementalImportEvents = []
+
+  for (let eventIndex = 0; eventIndex < countInitialEvents; eventIndex++) {
+    if (eventIndex < countInitialEvents * 0.66) {
+      initialEvents.push({
+        threadId: eventIndex % 256,
+        threadCounter: Math.floor(eventIndex / 256),
+        aggregateId: `aggregateId${eventIndex % 10}`,
+        aggregateVersion: Math.floor(eventIndex / 10) + 1,
+        type: `EVENT${eventIndex % 3}`,
+        payload: { eventIndex },
+        timestamp: Date.now(),
+      })
+    }
+    if (eventIndex > countInitialEvents * 0.33) {
+      incrementalImportEvents.push({
+        threadId: eventIndex % 256,
+        threadCounter: Math.floor(eventIndex / 256),
+        aggregateId: `aggregateId${eventIndex % 10}`,
+        aggregateVersion: Math.floor(eventIndex / 10) + 1,
+        type: `EVENT${eventIndex % 3}`,
+        payload: { eventIndex },
+        timestamp: Date.now(),
+      })
+    }
+  }
+
+  await pipeline(
+    Readable.from(
+      (async function* eventStream() {
+        for (const event of initialEvents) {
+          yield Buffer.from(`${JSON.stringify(event)}\n`)
+        }
+      })()
+    ),
+    adapter.import()
+  )
+
+  await new Promise((resolve) => setImmediate(resolve))
+
+  const tempInitialEvents = (
+    await adapter.loadEvents({ limit: countInitialEvents + 1 })
+  ).events
+  expect(tempInitialEvents.length).toEqual(initialEvents.length)
+  expect(tempInitialEvents).toEqual(initialEvents)
+
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  const importId = await adapter.beginIncrementalImport()
+
+  await adapter.pushIncrementalImport(incrementalImportEvents, importId)
+
+  await new Promise((resolve) => setImmediate(resolve))
+
+  await adapter.commitIncrementalImport(importId, true)
 })

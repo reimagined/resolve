@@ -2,7 +2,7 @@ import {
   message,
   RESOURCE_ANY,
   RUNTIME_ENV_ANYWHERE,
-  IMPORT_CONSTRUCTOR
+  IMPORT_CONSTRUCTOR,
 } from '../constants'
 import importResource from '../import_resource'
 
@@ -31,7 +31,7 @@ export default ({ resolveConfig, isClient }) => {
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_CONSTRUCTOR,
       imports,
-      constants
+      constants,
     })
 
     exports.push(`imports[${JSON.stringify(importKey)}] =  import_${index}`)

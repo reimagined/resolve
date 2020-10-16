@@ -5,12 +5,13 @@ import {
   longStringSqlType,
   customObjectSqlType,
   mediumBlobSqlType,
-  longBlobSqlType
+  longBlobSqlType,
+  aggregateIdSqlType,
 } from './constants'
 
 const initEventStore = async ({
   events: { eventsTableName, snapshotsTableName, connection, database },
-  escapeId
+  escapeId,
 }) => {
   const log = getLog('initEventStore')
 
@@ -25,7 +26,7 @@ const initEventStore = async ({
         \`threadId\` ${longNumberSqlType},
         \`threadCounter\` ${longNumberSqlType},
         \`timestamp\` ${longNumberSqlType},
-        \`aggregateId\` ${longStringSqlType},
+        \`aggregateId\` ${aggregateIdSqlType},
         \`aggregateVersion\` ${longNumberSqlType},
         \`type\` ${longStringSqlType},
         \`payload\` ${customObjectSqlType},

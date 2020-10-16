@@ -1,138 +1,146 @@
-import { actionTypes } from 'resolve-redux'
+import { internal } from 'resolve-redux'
 
 import injectDefaults from '../../common/inject-defaults'
 
 const {
   CONNECT_READMODEL,
   DISCONNECT_READMODEL,
-  LOAD_READMODEL_STATE_SUCCESS,
-  SEND_COMMAND_SUCCESS
-} = actionTypes
+  QUERY_READMODEL_SUCCESS,
+  SEND_COMMAND_SUCCESS,
+} = internal.actionTypes
 
 const createCommentsReducer = ({
   aggregateName,
   readModelName,
   resolverNames: { commentsTree },
-  commandTypes: { createComment, updateComment, removeComment }
+  commandTypes: { createComment, updateComment, removeComment },
 }) => (state = {}, action) => {
   if (
     action.type === CONNECT_READMODEL &&
-    action.readModelName === readModelName &&
-    action.resolverName === commentsTree
+    action.query.name === readModelName &&
+    action.query.resolver === commentsTree
   ) {
     return {
       ...state,
-      [action.resolverArgs.treeId]: {
-        ...state[action.resolverArgs.treeId],
-        [action.resolverArgs.parentCommentId]: {
-          children: []
-        }
-      }
+      [action.query.args.treeId]: {
+        ...state[action.query.args.treeId],
+        [action.query.args.parentCommentId]: {
+          children: [],
+        },
+      },
     }
   }
 
   if (
     action.type === DISCONNECT_READMODEL &&
-    action.readModelName === readModelName &&
-    action.resolverName === commentsTree
+    action.query.name === readModelName &&
+    action.query.resolver === commentsTree
   ) {
     const nextState = {
       ...state,
-      [action.resolverArgs.treeId]: {
-        ...state[action.resolverArgs.treeId]
-      }
+      [action.query.args.treeId]: {
+        ...state[action.query.args.treeId],
+      },
     }
-    delete nextState[action.resolverArgs.treeId][
-      action.resolverArgs.parentCommentId
+    delete nextState[action.query.args.treeId][
+      action.query.args.parentCommentId
     ]
-    if (Object.keys(nextState[action.resolverArgs.treeId]).length === 0) {
-      delete nextState[action.resolverArgs.treeId]
+    if (Object.keys(nextState[action.query.args.treeId]).length === 0) {
+      delete nextState[action.query.args.treeId]
     }
     return nextState
   }
 
   if (
-    action.type === LOAD_READMODEL_STATE_SUCCESS &&
-    action.readModelName === readModelName &&
-    action.resolverName === commentsTree
+    action.type === QUERY_READMODEL_SUCCESS &&
+    action.query.name === readModelName &&
+    action.query.resolver === commentsTree
   ) {
     return {
       ...state,
-      [action.resolverArgs.treeId]: {
-        ...state[action.resolverArgs.treeId],
-        [action.resolverArgs.parentCommentId]: action.result
-      }
+      [action.query.args.treeId]: {
+        ...state[action.query.args.treeId],
+        [action.query.args.parentCommentId]: action.result.data,
+      },
     }
   }
 
   if (
     action.type === SEND_COMMAND_SUCCESS &&
-    action.aggregateName === aggregateName &&
-    action.commandType === createComment
+    action.command.aggregateName === aggregateName &&
+    action.command.type === createComment
   ) {
     return {
       ...state,
-      [action.aggregateId]: {
-        ...state[action.aggregateId],
-        [action.payload.parentCommentId]: {
-          ...state[action.aggregateId][action.payload.parentCommentId],
+      [action.command.aggregateId]: {
+        ...state[action.command.aggregateId],
+        [action.command.payload.parentCommentId]: {
+          ...state[action.command.aggregateId][
+            action.command.payload.parentCommentId
+          ],
           children: [
             ...(
-              state[action.aggregateId][action.payload.parentCommentId] || {
-                children: []
+              state[action.command.aggregateId][
+                action.command.payload.parentCommentId
+              ] || {
+                children: [],
               }
             ).children,
-            action.payload
-          ]
-        }
-      }
+            action.command.payload,
+          ],
+        },
+      },
     }
   }
 
   if (
     action.type === SEND_COMMAND_SUCCESS &&
-    action.aggregateName === aggregateName &&
-    action.commandType === updateComment
+    action.command.aggregateName === aggregateName &&
+    action.command.type === updateComment
   ) {
     return {
       ...state,
-      [action.aggregateId]: {
-        ...state[action.aggregateId],
-        [action.payload.parentCommentId]: {
-          ...state[action.aggregateId][action.payload.parentCommentId],
-          children: state[action.aggregateId][
-            action.payload.parentCommentId
-          ].children.map(child =>
-            child.commentId === action.payload.commentId
+      [action.command.aggregateId]: {
+        ...state[action.command.aggregateId],
+        [action.command.payload.parentCommentId]: {
+          ...state[action.command.aggregateId][
+            action.command.payload.parentCommentId
+          ],
+          children: state[action.command.aggregateId][
+            action.command.payload.parentCommentId
+          ].children.map((child) =>
+            child.commentId === action.command.payload.commentId
               ? {
                   ...child,
-                  ...action.payload
+                  ...action.command.payload,
                 }
               : child
-          )
-        }
-      }
+          ),
+        },
+      },
     }
   }
 
   if (
     action.type === SEND_COMMAND_SUCCESS &&
-    action.aggregateName === aggregateName &&
-    action.commandType === removeComment
+    action.command.aggregateName === aggregateName &&
+    action.command.type === removeComment
   ) {
     return {
       ...state,
-      [action.aggregateId]: {
-        ...state[action.aggregateId],
-        [action.payload.parentCommentId]: {
-          ...state[action.aggregateId][action.payload.parentCommentId],
-          children: state[action.aggregateId][
-            action.payload.parentCommentId
+      [action.command.aggregateId]: {
+        ...state[action.command.aggregateId],
+        [action.command.payload.parentCommentId]: {
+          ...state[action.command.aggregateId][
+            action.command.payload.parentCommentId
+          ],
+          children: state[action.command.aggregateId][
+            action.command.payload.parentCommentId
           ].children.filter(
-            child => child.commentId !== action.payload.commentId
-          )
-        }
-      }
+            (child) => child.commentId !== action.command.payload.commentId
+          ),
+        },
+      },
     }
   }
 

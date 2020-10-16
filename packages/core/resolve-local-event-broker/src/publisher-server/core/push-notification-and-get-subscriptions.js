@@ -6,7 +6,7 @@ import {
   LazinessStrategy,
   PrivateOperationType,
   DeliveryStrategy,
-  ConsumerMethod
+  ConsumerMethod,
 } from '../constants'
 import { SubscriptionStatus } from '../constants'
 
@@ -15,7 +15,7 @@ const pushNotificationAndGetSubscriptions = async (pool, payload) => {
     database: { escapeId, escapeStr, runQuery, runRawQuery, encodeJsonPath },
     invokeOperation,
     invokeConsumer,
-    generateGuid
+    generateGuid,
   } = pool
 
   const { event } = payload
@@ -92,8 +92,8 @@ const pushNotificationAndGetSubscriptions = async (pool, payload) => {
     const input = {
       type: PrivateOperationType.PULL_NOTIFICATIONS,
       payload: {
-        subscriptionId
-      }
+        subscriptionId,
+      },
     }
 
     pullPromises.push(invokeOperation(pool, LazinessStrategy.EAGER, input))
@@ -134,7 +134,7 @@ const pushNotificationAndGetSubscriptions = async (pool, payload) => {
       invokeConsumer(pool, ConsumerMethod.SendEvents, {
         eventSubscriber,
         events: [event],
-        batchId: null
+        batchId: null,
       })
     )
   }

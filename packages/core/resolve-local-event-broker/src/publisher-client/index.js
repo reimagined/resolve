@@ -1,7 +1,7 @@
 import { createClient } from 'resolve-local-rpc'
 
-const connectPublisher = async config => {
-  const eventListenerHook = async args => {
+const connectPublisher = async (config) => {
+  const eventListenerHook = async (args) => {
     const [{ eventSubscriber }] = args
     if (
       !config.eventListeners.has(eventSubscriber) &&
@@ -17,8 +17,8 @@ const connectPublisher = async config => {
     preExecHooks: {
       status: eventListenerHook,
       resume: eventListenerHook,
-      pause: eventListenerHook
-    }
+      pause: eventListenerHook,
+    },
   })
 
   return client

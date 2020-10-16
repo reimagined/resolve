@@ -6,11 +6,11 @@ const createResponse = () => {
     cookie: (name, value, options) => {
       response.cookies[name] = { name, value, options }
     },
-    clearCookie: name => {
+    clearCookie: (name) => {
       response.cookies[name] = {
         name,
         value: 'deleted',
-        options: { expires: new Date(0) }
+        options: { expires: new Date(0) },
       }
     },
     redirect: (...args) => {
@@ -27,7 +27,7 @@ const createResponse = () => {
     },
     setHeader: (name, value) => {
       response.headers[name] = value
-    }
+    },
   }
   return response
 }

@@ -1,18 +1,18 @@
-const adjustWebpackConfigs = webpackConfigs => {
+const adjustWebpackConfigs = (webpackConfigs) => {
   for (const webpackConfig of webpackConfigs) {
     const { entry, target } = webpackConfig
     if (
-      Object.keys(entry).find(entry => entry.endsWith('/ssr.js')) != null &&
+      Object.keys(entry).find((entry) => entry.endsWith('/ssr.js')) != null &&
       target === 'node'
     ) {
       webpackConfig.externals = []
     }
     if (
-      Object.keys(entry).find(entry => entry.endsWith('/native-chunk.js')) !=
+      Object.keys(entry).find((entry) => entry.endsWith('/native-chunk.js')) !=
       null
     ) {
       webpackConfig.externals = [
-        function(context, request, callback) {
+        function (context, request, callback) {
           if (
             /(resolve-runtime|resolve-debug-levels|resolve-redux|resolve-subscribe-socket\.io)/.test(
               request
@@ -28,7 +28,7 @@ const adjustWebpackConfigs = webpackConfigs => {
           } else {
             callback()
           }
-        }
+        },
       ]
     }
   }

@@ -38,11 +38,11 @@ const ssrHandler = async (
       initialState: { jwt },
       redux,
       viewModels,
-      subscribeAdapter: {},
+      subscriber: {},
       history,
       origin,
       rootPath,
-      isClient: false
+      isClient: false,
     })
 
     const staticContext = {}

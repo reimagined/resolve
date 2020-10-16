@@ -4,7 +4,7 @@ const log = debugLevels(
   'resolve:resolve-readmodel-postgresql:commit-transaction'
 )
 
-const commitTransaction = async pool => {
+const commitTransaction = async (pool) => {
   try {
     log.verbose('Commit transaction to postgresql database started')
 

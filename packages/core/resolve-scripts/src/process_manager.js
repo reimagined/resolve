@@ -3,7 +3,7 @@ import respawn from 'respawn'
 const errors = []
 const processes = []
 
-export const processFail = error => {
+export const processFail = (error) => {
   errors.push(error)
 }
 
@@ -15,14 +15,14 @@ export const processRegister = (command, opts) => {
   return process
 }
 
-export const processStopAll = error => {
+export const processStopAll = (error) => {
   if (error != null) {
     errors.push(error)
   }
   const promises = []
   for (const process of processes) {
     promises.push(
-      new Promise(resolve => {
+      new Promise((resolve) => {
         if (process.stop) {
           process.stop(resolve)
         } else {

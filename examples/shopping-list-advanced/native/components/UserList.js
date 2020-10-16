@@ -6,17 +6,17 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%'
+    width: '100%',
   },
   text: {
     width: 0,
     flexGrow: 1,
-    flex: 1
+    flex: 1,
   },
   notFound: {
     marginTop: 10,
-    marginBottom: 20
-  }
+    marginBottom: 20,
+  },
 })
 
 class UserList extends React.PureComponent {

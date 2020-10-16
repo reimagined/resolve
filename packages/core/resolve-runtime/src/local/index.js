@@ -9,6 +9,9 @@ import startExpress from './start-express'
 import emptyWorker from './empty-worker'
 import wrapTrie from '../common/wrap-trie'
 import initUploader from './init-uploader'
+import multiplexAsync from '../common/utils/multiplex-async'
+import initResolve from '../common/init-resolve'
+import disposeResolve from '../common/dispose-resolve'
 
 const log = debugLevels('resolve:resolve-runtime:local-entry')
 
@@ -21,7 +24,7 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       ...domain,
       ...constants,
       routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
-      assemblies
+      assemblies,
     }
 
     await initPerformanceTracer(resolve)
@@ -29,6 +32,38 @@ const localEntry = async ({ assemblies, constants, domain }) => {
     await initExpress(resolve)
     await initWebsockets(resolve)
     await initUploader(resolve)
+
+    resolve.invokeEventBusAsync = multiplexAsync.bind(
+      null,
+      async (eventSubscriber, method, parameters) => {
+        const currentResolve = Object.create(resolve)
+        try {
+          await initResolve(currentResolve)
+          const rawMethod = currentResolve.eventBus[method]
+          if (typeof rawMethod !== 'function') {
+            throw new TypeError(method)
+          }
+
+          const result = await rawMethod.call(currentResolve.eventBus, {
+            eventSubscriber,
+            ...parameters,
+          })
+
+          return result
+        } finally {
+          await disposeResolve(currentResolve)
+        }
+      }
+    )
+
+    resolve.sendReactiveEvent = async (event) => {
+      await resolve.pubsubManager.dispatch({
+        topicName: event.type,
+        topicId: event.aggregateId,
+        event,
+      })
+    }
+
     await startExpress(resolve)
 
     log.debug('Local entry point cold start success')

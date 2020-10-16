@@ -7,6 +7,6 @@ module.exports = {
   testEnvironment: 'node',
   setupFiles: ['raf/polyfill', '<rootDir>/jest-setup.js'],
   transform: {
-    '^.+\\.js$': path.resolve(__dirname, 'jest.transform.js')
-  }
+    '^.+\\.js$': path.resolve(__dirname, 'jest.transform.js'),
+  },
 }

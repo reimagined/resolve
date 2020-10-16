@@ -7,7 +7,7 @@ const findOne = async (
     searchToWhereExpression,
     makeNestedPath,
     convertResultRow,
-    schemaName
+    schemaName,
   },
   readModelName,
   tableName,

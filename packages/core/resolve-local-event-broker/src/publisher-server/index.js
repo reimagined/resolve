@@ -46,7 +46,7 @@ export default createAndInitPublisher.bind(null, {
     SQLite,
     fs,
     os,
-    tmp
+    tmp,
   },
   functions: {
     acknowledgeBatch,
@@ -67,11 +67,11 @@ export default createAndInitPublisher.bind(null, {
 
     createServer,
     connectDatabase,
-    multiplexAsync
+    multiplexAsync,
   },
   lifecycle: {
     createDatabase,
-    dropDatabase
+    dropDatabase,
   },
   broker: {
     subscribe,
@@ -84,6 +84,6 @@ export default createAndInitPublisher.bind(null, {
     pause,
     reset,
     interopProperty,
-    read
-  }
+    read,
+  },
 })

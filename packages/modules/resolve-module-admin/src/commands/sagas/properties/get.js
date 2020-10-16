@@ -11,13 +11,13 @@ export const handler = async ({ url, saga, key }) => {
 
 export const command = 'get <saga> <key>'
 export const describe = 'get property'
-export const builder = yargs =>
+export const builder = (yargs) =>
   yargs
     .positional('saga', {
       describe: "an existing saga's name",
-      type: 'string'
+      type: 'string',
     })
     .positional('key', {
       describe: 'property name',
-      type: 'string'
+      type: 'string',
     })

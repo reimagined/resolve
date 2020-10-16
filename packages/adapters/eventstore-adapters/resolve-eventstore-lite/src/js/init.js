@@ -1,12 +1,13 @@
 import getLog from './get-log'
 import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
+import { AGGREGATE_ID_SQL_TYPE } from './constants'
 
 const initEventStore = async ({
   database,
   eventsTableName,
   snapshotsTableName,
   escapeId,
-  config
+  config,
 }) => {
   const log = getLog('initEventStore')
 
@@ -20,7 +21,7 @@ const initEventStore = async ({
         ${escapeId('threadId')} BIGINT NOT NULL,
         ${escapeId('threadCounter')} BIGINT NOT NULL,
         ${escapeId('timestamp')} BIGINT NOT NULL,
-        ${escapeId('aggregateId')} VARCHAR(700) NOT NULL,
+        ${escapeId('aggregateId')} ${AGGREGATE_ID_SQL_TYPE} NOT NULL,
         ${escapeId('aggregateVersion')} BIGINT NOT NULL,
         ${escapeId('type')} VARCHAR(700) NOT NULL,
         ${escapeId('payload')} JSON NULL,

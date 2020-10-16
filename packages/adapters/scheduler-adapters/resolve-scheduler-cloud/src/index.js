@@ -1,7 +1,7 @@
 import { start } from './step-function'
 import getLog from './get-log'
 
-const isEmpty = obj =>
+const isEmpty = (obj) =>
   Object.keys(obj).reduce(
     (empty, key) => empty && !obj.hasOwnProperty(key),
     true
@@ -29,7 +29,7 @@ const createAdapter = ({ execute, errorHandler = async () => {} }) => {
       try {
         log.debug(`starting step function executions`)
         await Promise.all(
-          entries.map(entry =>
+          entries.map((entry) =>
             validateEntry(entry)
               ? start(entry)
               : errorHandler(Error(`invalid entry ${JSON.stringify(entry)}`))
@@ -65,7 +65,7 @@ const createAdapter = ({ execute, errorHandler = async () => {} }) => {
         log.error(e.message)
         await errorHandler(e)
       }
-    }
+    },
   }
 }
 

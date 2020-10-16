@@ -1,6 +1,6 @@
 import uuidV4 from 'uuid/v4'
 
-const createUserModule = strategies => {
+const createUserModule = (strategies) => {
   if (!Array.isArray(strategies)) {
     throw new Error(`Module Auth accepts strategies argument only as array`)
   }
@@ -21,13 +21,13 @@ const createUserModule = strategies => {
           module: 'resolve-module-auth/lib/api_handler_constructor',
           options: {
             strategyHash,
-            options
+            options,
           },
           imports: {
             createStrategy,
-            callback
-          }
-        }
+            callback,
+          },
+        },
       })
     }
 
@@ -35,13 +35,13 @@ const createUserModule = strategies => {
       apiHandlers.push({
         method: logoutRoute.method,
         path: `/api/${logoutRoute.path}`,
-        handler: 'resolve-module-auth/lib/logout_api_handler'
+        handler: 'resolve-module-auth/lib/logout_api_handler',
       })
     }
   }
 
   return {
-    apiHandlers
+    apiHandlers,
   }
 }
 

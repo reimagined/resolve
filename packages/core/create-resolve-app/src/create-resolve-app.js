@@ -47,5 +47,5 @@ pipeline({
   sendAnalytics,
   message,
   isYarnAvailable,
-  safeName
+  safeName,
 })

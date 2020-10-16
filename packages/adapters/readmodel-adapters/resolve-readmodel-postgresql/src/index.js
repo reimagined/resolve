@@ -21,7 +21,15 @@ import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
 import update from './update'
 
-const store = { defineTable, find, findOne, count, insert, update, delete: del }
+const store = {
+  defineTable,
+  find,
+  findOne,
+  count,
+  insert,
+  update,
+  delete: del,
+}
 
 const connect = _connect.bind(null, {
   Postgres,
@@ -31,7 +39,7 @@ const connect = _connect.bind(null, {
   convertResultRow,
   searchToWhereExpression,
   updateToSetExpression,
-  ...store
+  ...store,
 })
 
 const createAdapter = _createAdapter.bind(null, {
@@ -41,7 +49,7 @@ const createAdapter = _createAdapter.bind(null, {
   commitTransaction,
   rollbackTransaction,
   dropReadModel,
-  disconnect
+  disconnect,
 })
 
 export default createAdapter

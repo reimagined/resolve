@@ -7,17 +7,17 @@ import { createBrowserHistory } from 'history'
 import routes from './routes'
 import Routes from './components/Routes'
 
-const entryPoint = ({ rootPath, staticPath, viewModels, subscribeAdapter }) => {
+const entryPoint = ({ rootPath, staticPath, viewModels, subscriber }) => {
   const origin = getOrigin(window.location)
   const history = createBrowserHistory({ basename: rootPath })
 
   const store = createStore({
     viewModels,
-    subscribeAdapter,
+    subscriber,
     history,
     origin,
     rootPath,
-    isClient: true
+    isClient: true,
   })
 
   const appContainer = document.createElement('div')

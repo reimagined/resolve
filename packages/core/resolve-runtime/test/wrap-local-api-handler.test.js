@@ -4,7 +4,7 @@ import sinon from 'sinon'
 
 import wrapApiHandler from '../src/local/wrap-api-handler'
 
-const stringifyAndNormalizePaths = value => {
+const stringifyAndNormalizePaths = (value) => {
   const source = (() => {
     switch (typeof value) {
       case 'function':
@@ -27,13 +27,13 @@ const stringifyAndNormalizePaths = value => {
     .replace(/at <anonymous>/gi, '<STACK_FRAME>')
 }
 
-const extractInvocationInfo = sinonStub => {
+const extractInvocationInfo = (sinonStub) => {
   const result = { callCount: sinonStub.callCount, callsInfo: [] }
   for (let idx = 0; idx < sinonStub.callCount; idx++) {
     const { args, returnValue } = sinonStub.getCall(idx)
     result.callsInfo[idx] = {
-      args: args.map(arg => stringifyAndNormalizePaths(arg)),
-      returnValue: stringifyAndNormalizePaths(returnValue)
+      args: args.map((arg) => stringifyAndNormalizePaths(arg)),
+      returnValue: stringifyAndNormalizePaths(returnValue),
     }
   }
   return result
@@ -43,7 +43,7 @@ describe('API handler wrapper for express.js', () => {
   let expressReq, expressRes, httpBodyPromise, resolveHttpBody, getCustomParams
 
   beforeEach(() => {
-    httpBodyPromise = new Promise(resolve => (resolveHttpBody = resolve))
+    httpBodyPromise = new Promise((resolve) => (resolveHttpBody = resolve))
     getCustomParams = sinon.stub().callsFake(() => ({ param: 'value' }))
 
     expressReq = Object.create(null, {
@@ -51,7 +51,7 @@ describe('API handler wrapper for express.js', () => {
         value: sinon.stub().callsFake((event, callback) => {
           if (event === 'data') {
             httpBodyPromise.then(
-              bodyChunks =>
+              (bodyChunks) =>
                 Array.isArray(bodyChunks) ? bodyChunks.map(callback) : null,
               () => null
             )
@@ -61,38 +61,38 @@ describe('API handler wrapper for express.js', () => {
             httpBodyPromise.catch(callback)
           }
         }),
-        enumerable: true
+        enumerable: true,
       },
       method: {
         value: 'HTTP-VERB',
-        enumerable: true
+        enumerable: true,
       },
       query: {
         value: {
           'query-name-1': 'query-value-1',
-          'query-name-2': 'query-value-2'
+          'query-name-2': 'query-value-2',
         },
-        enumerable: true
+        enumerable: true,
       },
       path: {
         value: 'PATH_INFO',
-        enumerable: true
+        enumerable: true,
       },
       headers: {
         value: {
           'header-name-1': 'header-value-1',
           'header-name-2': 'header-value-2',
           cookie: 'cookie-content',
-          host: 'host-content'
+          host: 'host-content',
         },
-        enumerable: true
-      }
+        enumerable: true,
+      },
     })
 
     expressRes = {
       status: sinon.stub().callsFake(() => expressRes),
       set: sinon.stub().callsFake(() => expressRes),
-      end: sinon.stub().callsFake(() => expressRes)
+      end: sinon.stub().callsFake(() => expressRes),
     }
   })
 
@@ -115,7 +115,7 @@ describe('API handler wrapper for express.js', () => {
     res.json({
       ...req,
       existingHeader,
-      missingHeader
+      missingHeader,
     })
   }
 
@@ -131,7 +131,7 @@ describe('API handler wrapper for express.js', () => {
       JSON.stringify({
         ...req,
         existingHeader,
-        missingHeader
+        missingHeader,
       })
     )
   }
@@ -148,7 +148,7 @@ describe('API handler wrapper for express.js', () => {
     const result = JSON.stringify({
       ...req,
       existingHeader,
-      missingHeader
+      missingHeader,
     })
 
     res.end(result, 'utf8')
@@ -166,7 +166,7 @@ describe('API handler wrapper for express.js', () => {
     const result = JSON.stringify({
       ...req,
       existingHeader,
-      missingHeader
+      missingHeader,
     })
 
     res.file(result, 'synthetic-filename.txt', 'utf8')
@@ -213,7 +213,7 @@ describe('API handler wrapper for express.js', () => {
     const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
     resolveHttpBody([
       Buffer.from('Body partition one'),
-      Buffer.from('Body partition two')
+      Buffer.from('Body partition two'),
     ])
     await wrappedHandler(expressReq, expressRes)
 

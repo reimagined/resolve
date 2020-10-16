@@ -2,14 +2,14 @@ import {
   SUBSCRIBERS_TABLE_NAME,
   DeliveryStrategy,
   QueueStrategy,
-  SubscriptionStatus
+  SubscriptionStatus,
 } from '../constants'
 
 async function subscribe(pool, payload) {
   const {
     database: { escapeStr, escapeId, runQuery, runRawQuery, encodeJsonPath },
     parseSubscription,
-    generateGuid
+    generateGuid,
   } = pool
 
   const { eventSubscriber, subscriptionOptions } = payload
@@ -21,7 +21,6 @@ async function subscribe(pool, payload) {
     deliveryStrategy !== DeliveryStrategy.ACTIVE_NONE &&
     deliveryStrategy !== DeliveryStrategy.ACTIVE_REGULAR &&
     deliveryStrategy !== DeliveryStrategy.ACTIVE_XA &&
-    deliveryStrategy !== DeliveryStrategy.PASSIVE &&
     deliveryStrategy !== DeliveryStrategy.PASSTHROUGH
   ) {
     throw new Error(`Wrong deliveryStrategy="${deliveryStrategy}"`)
@@ -40,7 +39,7 @@ async function subscribe(pool, payload) {
         eventTypes != null
           ? `{ ${eventTypes
               .map(
-                eventType =>
+                (eventType) =>
                   `${JSON.stringify(encodeJsonPath(eventType))}: true`
               )
               .join(', ')} }`
@@ -50,7 +49,7 @@ async function subscribe(pool, payload) {
         aggregateIds != null
           ? `{ ${aggregateIds
               .map(
-                aggregateId =>
+                (aggregateId) =>
                   `${JSON.stringify(encodeJsonPath(aggregateId))}: true`
               )
               .join(', ')} }`
@@ -82,7 +81,7 @@ async function subscribe(pool, payload) {
           eventTypes != null
             ? `{ ${eventTypes
                 .map(
-                  eventType =>
+                  (eventType) =>
                     `${JSON.stringify(encodeJsonPath(eventType))}: true`
                 )
                 .join(', ')} }`
@@ -92,7 +91,7 @@ async function subscribe(pool, payload) {
           aggregateIds != null
             ? `{ ${aggregateIds
                 .map(
-                  aggregateId =>
+                  (aggregateId) =>
                     `${JSON.stringify(encodeJsonPath(aggregateId))}: true`
                 )
                 .join(', ')} }`

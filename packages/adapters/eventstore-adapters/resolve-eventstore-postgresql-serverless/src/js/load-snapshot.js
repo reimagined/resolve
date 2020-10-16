@@ -7,7 +7,7 @@ const loadSnapshot = async (pool, snapshotKey) => {
     executeStatement,
     escapeId,
     escape,
-    isTimeoutError
+    isTimeoutError,
   } = pool
   if (snapshotKey == null || snapshotKey.constructor !== String) {
     throw new Error('Snapshot key must be string')

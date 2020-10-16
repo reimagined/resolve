@@ -3,7 +3,7 @@ import iconv from 'iconv-lite'
 const convertCodepage = (content, fromEncoding, toEncoding) =>
   iconv.decode(iconv.encode(content, fromEncoding), toEncoding)
 
-const wrapAuthRequest = req => {
+const wrapAuthRequest = (req) => {
   if (req.body == null || req.headers['content-type'] == null) {
     return req
   }
@@ -11,9 +11,10 @@ const wrapAuthRequest = req => {
   const [bodyContentType, ...bodyOptions] = req.headers['content-type']
     .toLowerCase()
     .split(';')
-    .map(value => value.trim())
+    .map((value) => value.trim())
   const bodyCharset = (
-    bodyOptions.find(option => option.startsWith('charset=')) || 'charset=utf-8'
+    bodyOptions.find((option) => option.startsWith('charset=')) ||
+    'charset=utf-8'
   ).substring(8)
 
   let bodyContent = null
@@ -22,7 +23,10 @@ const wrapAuthRequest = req => {
   switch (bodyContentType) {
     case 'application/x-www-form-urlencoded': {
       bodyContent = req.body.split('&').reduce((acc, part) => {
-        let [key, ...value] = part.split('=').map(decodeURIComponent)
+        let [key, ...value] = part
+          .split('=')
+          .map((i) => i.replace(/\+/g, ' '))
+          .map(decodeURIComponent)
         value = value.join('=')
 
         if (bodyCharset !== 'utf-8') {
@@ -56,8 +60,8 @@ const wrapAuthRequest = req => {
   return Object.create(req, {
     body: {
       value: bodyContent,
-      enumerable: true
-    }
+      enumerable: true,
+    },
   })
 }
 

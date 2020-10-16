@@ -23,12 +23,12 @@ describe('resolve-scheduler-local', () => {
   })
 
   test('"addEntries" should add scheduler entries', async () => {
-    global.setTimeout.mockImplementation(handler => {
+    global.setTimeout.mockImplementation((handler) => {
       handler()
     })
 
     await schedulerAdapter.addEntries([
-      { taskId: 'taskId', date: 42, command: 'command' }
+      { taskId: 'taskId', date: 42, command: 'command' },
     ])
 
     expect(execute).toBeCalledWith('taskId', 42, 'command')
@@ -36,7 +36,7 @@ describe('resolve-scheduler-local', () => {
 
   test('"addEntries" should throw error when "execute" failed', async () => {
     const error = new Error()
-    global.setTimeout.mockImplementation(handler => {
+    global.setTimeout.mockImplementation((handler) => {
       handler()
     })
     execute.mockImplementation(() => {
@@ -44,10 +44,10 @@ describe('resolve-scheduler-local', () => {
     })
 
     await schedulerAdapter.addEntries([
-      { taskId: 'taskId', date: 1, command: 'command' }
+      { taskId: 'taskId', date: 1, command: 'command' },
     ])
 
-    await new Promise(resolve => setImmediate(resolve))
+    await new Promise((resolve) => setImmediate(resolve))
 
     expect(errorHandler).toHaveBeenCalledWith(error)
   })
@@ -60,11 +60,11 @@ describe('resolve-scheduler-local', () => {
 
     await schedulerAdapter.addEntries([
       { taskId: 'taskId-1', date: 1, command: 'command-1' },
-      { taskId: 'taskId-2', date: 2, command: 'command-2' }
+      { taskId: 'taskId-2', date: 2, command: 'command-2' },
     ])
 
     await schedulerAdapter.addEntries([
-      { taskId: 'taskId-3', date: 3, command: 'command-3' }
+      { taskId: 'taskId-3', date: 3, command: 'command-3' },
     ])
 
     await schedulerAdapter.clearEntries()

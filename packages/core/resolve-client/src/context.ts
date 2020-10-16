@@ -1,6 +1,5 @@
 import { JSONWebTokenProvider } from './jwt-provider'
-import { ViewModel } from './view-model-types'
-import { CreateSubscribeAdapter } from './empty-subscribe-adapter'
+import { ViewModel } from './types'
 
 export type Context = {
   origin?: string
@@ -8,6 +7,5 @@ export type Context = {
   staticPath: string
   jwtProvider?: JSONWebTokenProvider
   viewModels: Array<ViewModel>
-  subscribeAdapter?: CreateSubscribeAdapter
   fetch?: Function
 }

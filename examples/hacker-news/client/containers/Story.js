@@ -65,7 +65,7 @@ export const UpvoteArrow = styled.div`
   border-color: transparent;
   margin-right: 5px;
 
-  ${props =>
+  ${(props) =>
     !props.hidden &&
     css`
       border-bottom-color: #9a9a9a;
@@ -83,9 +83,9 @@ const Username = styled(NavLink)`
   }
 `
 
-const isExternalLink = link => link[0] !== '/'
+const isExternalLink = (link) => link[0] !== '/'
 
-export const getHostname = link => {
+export const getHostname = (link) => {
   return url.parse(link).hostname
 }
 
@@ -111,7 +111,7 @@ export const Title = ({ title, link, upvoteStory, voted, loggedIn }) => {
   )
 }
 
-export const StoryInfo = props => {
+export const StoryInfo = (props) => {
   const {
     id,
     createdBy,
@@ -121,7 +121,7 @@ export const StoryInfo = props => {
     commentCount,
     voted,
     loggedIn,
-    unvoteStory
+    unvoteStory,
   } = props
   const unvoteIsVisible = voted && loggedIn
 
@@ -134,7 +134,7 @@ export const StoryInfo = props => {
             <Username key="username" to={`/user/${createdBy}`}>
               {createdByName}
             </Username>,
-            ' '
+            ' ',
           ]
         : null}
       <TimeAgo createdAt={createdAt} />
@@ -172,7 +172,7 @@ export class Story extends React.PureComponent {
         story.votes.indexOf(userId) !== -1)
 
     const votes = story.votes
-      .filter(id => id !== userId)
+      .filter((id) => id !== userId)
       .concat(voted ? [userId] : [])
 
     const commentCount = story.commentCount
@@ -204,7 +204,7 @@ export class Story extends React.PureComponent {
         {story.text && showText ? (
           <StoryText
             dangerouslySetInnerHTML={{
-              __html: sanitizer.sanitize(story.text)
+              __html: sanitizer.sanitize(story.text),
             }}
           />
         ) : null}

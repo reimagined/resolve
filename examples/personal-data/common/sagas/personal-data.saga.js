@@ -3,7 +3,7 @@ import fs from 'fs'
 
 import {
   USER_PERSONAL_DATA_REQUESTED,
-  USER_PROFILE_DELETED
+  USER_PROFILE_DELETED,
 } from '../user-profile.events'
 import { systemToken } from '../jwt'
 
@@ -14,25 +14,25 @@ const saga = {
       const { aggregateId: userId } = event
       const { sideEffects } = context
 
-      const profile = await sideEffects.executeQuery({
+      const { data: profile } = await sideEffects.executeQuery({
         modelName: 'user-profiles',
         resolverName: 'profile',
         resolverArgs: { userId },
-        jwt: systemToken()
+        jwt: systemToken(),
       })
 
-      const posts = await sideEffects.executeQuery({
+      const { data: posts } = await sideEffects.executeQuery({
         modelName: 'blog-posts',
         resolverName: 'feedByAuthor',
         resolverArgs: { authorId: userId },
-        jwt: systemToken()
+        jwt: systemToken(),
       })
 
-      const media = await sideEffects.executeQuery({
+      const { data: media } = await sideEffects.executeQuery({
         modelName: 'medias',
         resolverName: 'byOwner',
         resolverArgs: { ownerId: userId },
-        jwt: systemToken()
+        jwt: systemToken(),
       })
 
       const archive = { id: uuid(), profile, posts, media }
@@ -46,12 +46,12 @@ const saga = {
         aggregateName: 'user-profile',
         aggregateId: userId,
         payload: result,
-        jwt: systemToken()
+        jwt: systemToken(),
       })
     },
     [USER_PROFILE_DELETED]: async ({ sideEffects }, event) => {
       await sideEffects.secretsManager.deleteSecret(event.aggregateId)
-    }
+    },
   },
   sideEffects: {
     createArchive: async (adapter, archive) => {
@@ -66,11 +66,11 @@ const saga = {
         const { uploadUrl, uploadId } = await adapter.getSignedPut('archives')
         await adapter.uploadPut(uploadUrl, archiveFilePath)
         const token = await adapter.createToken({
-          dir: 'archives'
+          dir: 'archives',
         })
         result = {
           token,
-          uploadId
+          uploadId,
         }
         fs.unlinkSync(archiveFilePath)
       } catch (error) {
@@ -78,8 +78,8 @@ const saga = {
       } finally {
         return result
       }
-    }
-  }
+    },
+  },
 }
 
 export default saga

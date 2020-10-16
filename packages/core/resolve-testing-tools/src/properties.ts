@@ -2,7 +2,7 @@ import { symbol, Phases } from './constants'
 
 const properties = (
   {
-    promise
+    promise,
   }: {
     promise: any
   },
@@ -14,7 +14,7 @@ const properties = (
 
   promise[symbol].properties = {
     ...promise[symbol].properties,
-    ...sagaProperties
+    ...sagaProperties,
   }
 
   promise[symbol].phase = Phases.PROPERTIES

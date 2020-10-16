@@ -1,6 +1,6 @@
 {
   "name": "with-styled-components",
-  "version": "0.24.16",
+  "version": "0.25.13",
   "description": "shows how to work with Styled Components",
   "private": true,
   "scripts": {
@@ -17,8 +17,8 @@
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
     "history": "4.10.1",
-    "react": "16.13.0",
-    "react-dom": "16.13.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
     "react-bootstrap": "0.32.1",
     "react-helmet": "6.0.0",
     "react-router": "5.1.2",
@@ -26,14 +26,12 @@
     "react-redux": "7.2.0",
     "redux-saga": "1.0.5",
     "redux": "4.0.5",
-    "resolve-redux": "0.24.16",
-    "resolve-scripts": "0.24.16",
-    "resolve-eventstore-postgresql-serverless": "0.24.16",
-    "resolve-eventstore-lite": "0.24.16",
-    "resolve-readmodel-lite": "0.24.16",
-    "resolve-readmodel-postgresql-serverless": "0.24.16",
-    "resolve-subscribe-mqtt": "0.24.16",
-    "resolve-subscribe-socket.io": "0.24.16",
+    "resolve-redux": "0.25.13",
+    "resolve-scripts": "0.25.13",
+    "resolve-eventstore-postgresql-serverless": "0.25.13",
+    "resolve-eventstore-lite": "0.25.13",
+    "resolve-readmodel-lite": "0.25.13",
+    "resolve-readmodel-postgresql-serverless": "0.25.13",
     "styled-components": "4.1.1",
     "redux-devtools-extension": "2.13.7"
   },
@@ -49,7 +47,7 @@
     "@babel/preset-react": "7.9.4",
     "babel-jest": "26.0.1",
     "jest": "26.0.1",
-    "react-test-renderer": "16.13.0",
+    "react-test-renderer": "16.13.1",
     "testcafe": "1.8.5",
     "resolve-cloud": "*"
   }

@@ -1,11 +1,10 @@
 import debugLevels from 'resolve-debug-levels'
 import EventEmitter from 'events'
 import http from 'http'
-import MqttConnection from 'mqtt-connection'
-import createSocketServer from 'socket.io'
-import getWebSocketStream from 'websocket-stream'
-import { Server as WebSocketServer } from 'ws'
+import WebSocket from 'ws'
 import uuid from 'uuid/v4'
+import qs from 'querystring'
+import jwt from 'jsonwebtoken'
 
 import createPubsubManager from './create-pubsub-manager'
 import getRootBasedUrl from '../common/utils/get-root-based-url'
@@ -13,149 +12,106 @@ import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 
 const log = debugLevels('resolve:resolve-runtime:local-subscribe-adapter')
 
-const getMqttTopic = (appId, { topicName, topicId }) => {
-  return `${appId}/${topicName === '*' ? '+' : topicName}/${
-    topicId === '*' ? '+' : topicId
-  }`
-}
+let eventstoreAdapter = null
 
-const createServerMqttHandler = (pubsubManager, appId, qos) => ws => {
-  const stream = getWebSocketStream(ws)
-  const client = new MqttConnection(stream)
-  let messageId = 1
+const createWebSocketConnectionHandler = (resolve) => (ws, req) => {
+  const { pubsubManager } = resolve
+  const queryString = req.url.split('?')[1]
+  const { token, deploymentId } = qs.parse(queryString)
+  const connectionId = uuid()
+  let eventTypes = null
+  let aggregateIds = null
 
-  const publisher = (topicName, topicId, event) =>
-    new Promise((resolve, reject) => {
-      client.publish(
-        {
-          topic: getMqttTopic(appId, { topicName, topicId }),
-          payload: JSON.stringify(event),
-          messageId: messageId++,
-          qos
-        },
-        error => (error ? reject(error) : resolve())
-      )
-    })
+  try {
+    void ({ eventTypes, aggregateIds } = jwt.verify(token, deploymentId))
+  } catch (error) {
+    throw new Error('Permission denied, invalid token')
+  }
 
-  client.on('connect', () => {
-    client.connack({ returnCode: 0 })
-  })
-  client.on('pingreq', () => client.pingresp())
-
-  client.on('subscribe', packet => {
-    try {
-      for (const subscription of packet.subscriptions) {
-        const [, topicName, topicId] = (
-          subscription.topic || subscription
-        ).split('/')
-        pubsubManager.subscribe({ client: publisher, topicName, topicId })
-      }
-      client.suback({ granted: [packet.qos], messageId: packet.messageId })
-    } catch (error) {
-      log.warn('MQTT subscription failed', packet, error)
-    }
-  })
-
-  client.on('unsubscribe', packet => {
-    try {
-      for (const unsubscription of packet.unsubscriptions) {
-        const [, topicName, topicId] = (
-          unsubscription.topic || unsubscription
-        ).split('/')
-        pubsubManager.unsubscribe({ client: publisher, topicName, topicId })
-      }
-      client.unsuback({ granted: [packet.qos], messageId: packet.messageId })
-    } catch (error) {
-      log.warn('MQTT unsubscription failed', packet, error)
-    }
+  const publisher = (event) => ws.send(event)
+  pubsubManager.connect({
+    client: publisher,
+    connectionId,
+    eventTypes,
+    aggregateIds,
   })
 
   const dispose = () => {
-    pubsubManager.unsubscribeClient(publisher)
-    client.destroy()
+    pubsubManager.disconnect({ connectionId })
+    ws.close()
   }
 
-  client.on('close', dispose)
-  client.on('error', dispose)
-  client.on('disconnect', dispose)
+  const handler = createWebSocketMessageHandler(resolve, ws, connectionId)
+  ws.on('message', handler)
+
+  ws.on('close', dispose)
+  ws.on('error', dispose)
 }
 
-const sanitizeWildcardTopic = topic => (topic === '*' ? '+' : topic)
-
-const createServerSocketIOHandler = pubsubManager => socket => {
-  const publisher = (topicName, topicId, event) =>
-    new Promise(resolve => {
-      socket.emit(
-        'message',
-        JSON.stringify({
-          topicName,
-          topicId,
-          payload: event
-        }),
-        resolve
-      )
+const createWebSocketMessageHandler = (
+  { pubsubManager },
+  ws,
+  connectionId
+) => async (message) => {
+  try {
+    const { eventTypes, aggregateIds } = pubsubManager.getConnection({
+      connectionId,
     })
 
-  socket.on('subscribe', packet => {
-    const subscriptions = JSON.parse(packet)
-    for (const { topicName, topicId } of subscriptions) {
-      pubsubManager.subscribe({
-        client: publisher,
-        topicName: sanitizeWildcardTopic(topicName),
-        topicId: sanitizeWildcardTopic(topicId)
-      })
-    }
-  })
+    const parsedMessage = JSON.parse(message)
+    switch (parsedMessage.type) {
+      case 'pullEvents': {
+        const { events, cursor } = await eventstoreAdapter.loadEvents({
+          eventTypes: eventTypes === '*' ? null : eventTypes,
+          aggregateIds: aggregateIds === '*' ? null : aggregateIds,
+          limit: 1000000,
+          eventsSizeLimit: 124 * 1024,
+          cursor: parsedMessage.cursor,
+        })
 
-  socket.on('unsubscribe', packet => {
-    const unsubscriptions = JSON.parse(packet)
-    for (const { topicName, topicId } of unsubscriptions) {
-      pubsubManager.unsubscribe({
-        client: publisher,
-        topicName: sanitizeWildcardTopic(topicName),
-        topicId: sanitizeWildcardTopic(topicId)
-      })
-    }
-  })
+        ws.send(
+          JSON.stringify({
+            type: 'pullEvents',
+            payload: { events, cursor },
+          })
+        )
 
-  const dispose = () => {
-    pubsubManager.unsubscribeClient(publisher)
+        break
+      }
+      default: {
+        throw new Error(`The '${parsedMessage.type}' message type is unknown`)
+      }
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `Error while handling message from websocket: ${
+        error != null && error.message != null
+          ? `${error.message} ${error.stack}`
+          : JSON.stringify(error)
+      }`
+    )
   }
-
-  socket.on('error', dispose)
-  socket.on('disconnect', dispose)
 }
 
-const initInterceptingHttpServer = resolve => {
-  const {
-    server: baseServer,
-    socketIOHttpServer,
-    mqttHttpServer,
-    hmrHttpServer
-  } = resolve
-
-  const socketIoBaseUrl = getRootBasedUrl(resolve.rootPath, '/api/socket-io/')
-  const mqttBaseUrl = getRootBasedUrl(resolve.rootPath, '/api/mqtt')
-  const hmrBaseUrl = getRootBasedUrl(resolve.rootPath, '/api/hmr/')
-
+const initInterceptingHttpServer = (resolve) => {
+  const { server: baseServer, websocketHttpServer } = resolve
+  const websocketBaseUrl = getRootBasedUrl(resolve.rootPath, '/api/websocket')
   const interceptingEvents = [
     'close',
     'listening',
     'request',
     'upgrade',
-    'error'
+    'error',
+    'connection',
   ]
 
   const interceptingEventListener = (eventName, listeners, ...args) => {
     const requestUrl =
       args[0] != null && args[0].url != null ? String(args[0].url) : ''
 
-    if (requestUrl.startsWith(socketIoBaseUrl)) {
-      socketIOHttpServer.emit(eventName, ...args)
-    } else if (requestUrl.startsWith(mqttBaseUrl)) {
-      mqttHttpServer.emit(eventName, ...args)
-    } else if (requestUrl.startsWith(hmrBaseUrl)) {
-      hmrHttpServer.emit(eventName, ...args)
+    if (requestUrl.startsWith(websocketBaseUrl)) {
+      websocketHttpServer.emit(eventName, ...args)
     } else {
       for (const listener of listeners) {
         listener.apply(baseServer, args)
@@ -171,48 +127,17 @@ const initInterceptingHttpServer = resolve => {
   }
 }
 
-const initSocketIOServer = async resolve => {
+const initWebSocketServer = async (resolve) => {
   try {
-    const handler = createServerSocketIOHandler(resolve.pubsubManager)
-    const socketIOServer = createSocketServer(resolve.socketIOHttpServer, {
-      path: getRootBasedUrl(resolve.rootPath, '/api/socket-io/'),
-      serveClient: false,
-      transports: ['polling', 'websocket']
+    const websocketServer = new WebSocket.Server({
+      path: getRootBasedUrl(resolve.rootPath, '/api/websocket'),
+      server: resolve.websocketHttpServer,
     })
-    socketIOServer.on('connection', handler)
+    const connectionHandler = createWebSocketConnectionHandler(resolve)
+    websocketServer.on('connection', connectionHandler)
   } catch (error) {
-    log.warn('Cannot init Socket.IO server socket: ', error)
+    log.warn('Cannot init WebSocket server: ', error)
   }
-}
-
-const initMqttServer = async resolve => {
-  const appId = resolve.applicationName
-  const qos = 1
-  try {
-    const socketMqttServer = new WebSocketServer({
-      path: getRootBasedUrl(resolve.rootPath, '/api/mqtt'),
-      server: resolve.mqttHttpServer
-    })
-    const handler = createServerMqttHandler(resolve.pubsubManager, appId, qos)
-    socketMqttServer.on('connection', handler)
-  } catch (error) {
-    log.warn('Cannot init MQTT server socket: ', error)
-  }
-}
-
-const initHMRServer = async resolve => {
-  const HMR_ID = uuid()
-
-  const HMRSocketHandler = socket => {
-    socket.emit('hotModuleReload', HMR_ID)
-  }
-
-  const HMRSocketServer = createSocketServer(resolve.hmrHttpServer, {
-    path: getRootBasedUrl(resolve.rootPath, '/api/hmr/'),
-    serveClient: false
-  })
-
-  HMRSocketServer.on('connection', HMRSocketHandler)
 }
 
 const createSocketHttpServer = () => {
@@ -222,25 +147,21 @@ const createSocketHttpServer = () => {
   return socketServer
 }
 
-const initWebsockets = async resolve => {
+const initWebsockets = async (resolve) => {
   const pubsubManager = createPubsubManager()
-  const socketIOHttpServer = createSocketHttpServer()
-  const mqttHttpServer = createSocketHttpServer()
-  const hmrHttpServer = createSocketHttpServer()
+  const websocketHttpServer = createSocketHttpServer()
+
+  eventstoreAdapter = await resolve.assemblies.eventstoreAdapter()
 
   Object.defineProperties(resolve, {
     getSubscribeAdapterOptions: {
-      value: getSubscribeAdapterOptions.bind(null, resolve)
+      value: getSubscribeAdapterOptions,
     },
     pubsubManager: { value: pubsubManager },
-    socketIOHttpServer: { value: socketIOHttpServer },
-    mqttHttpServer: { value: mqttHttpServer },
-    hmrHttpServer: { value: hmrHttpServer }
+    websocketHttpServer: { value: websocketHttpServer },
   })
 
-  await initSocketIOServer(resolve)
-  await initMqttServer(resolve)
-  await initHMRServer(resolve)
+  await initWebSocketServer(resolve)
 
   await initInterceptingHttpServer(resolve)
 }

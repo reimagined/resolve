@@ -8,9 +8,9 @@ describe('base config works correctly', () => {
     viewModels: [
       {
         name: 'Todos',
-        projection: path.resolve(__dirname, 'files/testProjection.js')
-      }
-    ]
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
+      },
+    ],
   }
 
   test('[client]', () => {
@@ -19,7 +19,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -32,7 +32,7 @@ describe('base config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -45,13 +45,13 @@ describe('base(v2) config works correctly', () => {
     viewModels: [
       {
         name: 'Todos',
-        projection: path.resolve(__dirname, 'files/testProjection.js')
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
       },
       {
         name: 'Items',
-        projection: path.resolve(__dirname, 'files/testProjection.js')
-      }
-    ]
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
+      },
+    ],
   }
 
   test('[client]', () => {
@@ -60,7 +60,7 @@ describe('base(v2) config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -73,7 +73,7 @@ describe('base(v2) config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -91,9 +91,9 @@ describe('config with serializeState/deserializeState works correctly', () => {
         deserializeState: path.resolve(
           __dirname,
           'files/testDeserializeState.js'
-        )
-      }
-    ]
+        ),
+      },
+    ],
   }
 
   test('[client]', () => {
@@ -102,7 +102,7 @@ describe('config with serializeState/deserializeState works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -115,7 +115,7 @@ describe('config with serializeState/deserializeState works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -129,9 +129,9 @@ describe('config with validator works correctly', () => {
       {
         name: 'Todos',
         projection: path.resolve(__dirname, 'files/testProjection.js'),
-        validator: path.resolve(__dirname, 'files/testValidator.js')
-      }
-    ]
+        validator: path.resolve(__dirname, 'files/testValidator.js'),
+      },
+    ],
   }
 
   test('[client]', () => {
@@ -140,7 +140,7 @@ describe('config with validator works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -153,7 +153,7 @@ describe('config with validator works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )

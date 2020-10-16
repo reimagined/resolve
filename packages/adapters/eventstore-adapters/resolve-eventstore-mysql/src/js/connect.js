@@ -25,7 +25,7 @@ const connectEventStore = async (pool, { MySQL }) => {
   const connection = await MySQL.createConnection({
     ...connectionOptions,
     database,
-    multipleStatements: true
+    multipleStatements: true,
   })
 
   const [[{ version }]] = await connection.query(
@@ -43,8 +43,8 @@ const connectEventStore = async (pool, { MySQL }) => {
       connection,
       eventsTableName,
       snapshotsTableName,
-      database
-    }
+      database,
+    },
   })
 }
 

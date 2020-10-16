@@ -10,7 +10,7 @@ const saveSnapshot = async (pool, snapshotKey, content) =>
       snapshotsTableName,
       escape,
       escapeId,
-      executeStatement
+      executeStatement,
     } = pool
 
     const databaseNameAsId = escapeId(databaseName)

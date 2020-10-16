@@ -7,7 +7,7 @@ const ShoppingListRemover = ({ shoppingListId, onRemoveSuccess }) => {
     {
       type: 'removeShoppingList',
       aggregateId: shoppingListId,
-      aggregateName: 'ShoppingList'
+      aggregateName: 'ShoppingList',
     },
     onRemoveSuccess
   )

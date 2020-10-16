@@ -1,6 +1,6 @@
 const importKeySymbol = Symbol('@@resolve/import_key')
 
-export const declareImportKey = importKey => {
+export const declareImportKey = (importKey) => {
   if (importKey == null || importKey.constructor !== String) {
     throw new Error('Import key should be an string')
   }
@@ -12,5 +12,5 @@ export const declareImportKey = importKey => {
   return importKeyContainer
 }
 
-export const checkImportKey = value =>
+export const checkImportKey = (value) =>
   !(value == null || value.type !== importKeySymbol)

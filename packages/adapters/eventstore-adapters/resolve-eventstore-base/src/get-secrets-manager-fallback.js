@@ -10,5 +10,5 @@ export default () => ({
   deleteSecret: () =>
     Promise.reject(
       'configured event store adapter does not support secrets management'
-    )
+    ),
 })

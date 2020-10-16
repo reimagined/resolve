@@ -3,16 +3,19 @@ const multiplexAsync = (targetFunction, ...args) => {
     throw new Error(`Entity ${targetFunction} is not a function`)
   }
 
-  void Promise.resolve()
-    .then(targetFunction.bind(null, ...args))
-    .catch(error => {
+  ;(async () => {
+    try {
+      await Promise.resolve()
+      await targetFunction(...args)
+    } catch (error) {
       // eslint-disable-next-line no-console
       console.warn(
-        `Async multiplexed function ${targetFunction.name} failed with error: ${error}`
+        `Async multiplexed function ${targetFunction.name} failed with error: ${error.message}\n${error.stack}`
       )
-    })
+    }
+  })()
 
-  return Promise.resolve(void null)
+  return Promise.resolve()
 }
 
 export default multiplexAsync

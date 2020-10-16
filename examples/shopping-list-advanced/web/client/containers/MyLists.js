@@ -28,14 +28,14 @@ class MyLists extends React.PureComponent {
 export const mapStateToOptions = () => ({
   readModelName: 'ShoppingLists',
   resolverName: 'all',
-  resolverArgs: {}
+  resolverArgs: {},
 })
 
-export const mapStateToProps = state => ({
-  lists: state.optimisticShoppingLists
+export const mapStateToProps = (state) => ({
+  lists: state.optimisticShoppingLists,
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default requiredAuth(

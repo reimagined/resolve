@@ -15,3 +15,5 @@ export const DEFAULT_TABLE_NAME = '__ResolveSnapshots__'
 export const PARTIAL_EVENT_FLAG = Symbol()
 export const DATA_API_ERROR_FLAG = Symbol()
 export const RESPONSE_SIZE_LIMIT = Symbol()
+
+export const AGGREGATE_ID_SQL_TYPE = LONG_STRING_SQL_TYPE

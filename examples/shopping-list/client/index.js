@@ -12,8 +12,8 @@ const entryPoint = ({
   rootPath,
   staticPath,
   viewModels,
-  subscribeAdapter,
-  clientImports
+  subscriber,
+  clientImports,
 }) => {
   const origin = getOrigin(window.location)
   const history = createBrowserHistory({ basename: rootPath })
@@ -23,12 +23,18 @@ const entryPoint = ({
   const store = createStore({
     redux,
     viewModels,
-    subscribeAdapter,
+    subscriber,
     history,
     origin,
     rootPath,
-    isClient: true
+    isClient: true,
   })
+
+  let appContainer = document.getElementById('app-container')
+  if (!appContainer) {
+    appContainer = document.createElement('div')
+    document.body.appendChild(appContainer)
+  }
 
   render(
     <AppContainer
@@ -41,7 +47,7 @@ const entryPoint = ({
         <Routes routes={routes} />
       </Router>
     </AppContainer>,
-    document.getElementById('app-container')
+    appContainer
   )
 }
 

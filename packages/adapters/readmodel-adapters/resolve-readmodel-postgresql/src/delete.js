@@ -6,7 +6,7 @@ const del = async (
     escape,
     searchToWhereExpression,
     makeNestedPath,
-    schemaName
+    schemaName,
   },
   readModelName,
   tableName,

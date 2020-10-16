@@ -10,7 +10,7 @@ export default ({ resolveConfig, isClient }) => {
 
   const exports = [
     `import '$resolve.guardOnlyServer'`,
-    `const eventBrokerConfig = {}`
+    `const eventBrokerConfig = {}`,
   ]
   for (const key of Object.keys(resolveConfig.eventBroker)) {
     const value = resolveConfig.eventBroker[key]

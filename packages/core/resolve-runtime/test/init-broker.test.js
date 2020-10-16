@@ -8,8 +8,8 @@ describe('event-publisher', () => {
       name: 'listenerId',
       connectorName: 'default',
       projection: {},
-      resolvers: {}
-    }
+      resolvers: {},
+    },
   ]
   const eventListeners = new Map([
     [
@@ -17,9 +17,9 @@ describe('event-publisher', () => {
       {
         name: 'listenerId',
         eventTypes: [],
-        invariantHash: 'invariantHash'
-      }
-    ]
+        invariantHash: 'invariantHash',
+      },
+    ],
   ])
 
   beforeEach(async () => {
@@ -28,7 +28,7 @@ describe('event-publisher', () => {
     await initBroker({
       eventListeners,
       publisher,
-      readModels
+      readModels,
     })
   })
 
@@ -49,9 +49,9 @@ describe('event-publisher', () => {
       payload: {
         principial: {},
         eventSubscriber: 'listenerId',
-        validationRoleArn: 'RoleValidationArn'
+        validationRoleArn: 'RoleValidationArn',
       },
-      type: 'pause'
+      type: 'pause',
     })
 
     expect(result).toEqual('ok')
@@ -66,9 +66,9 @@ describe('event-publisher', () => {
       payload: {
         principial: {},
         eventSubscriber: 'listenerId',
-        validationRoleArn: 'RoleValidationArn'
+        validationRoleArn: 'RoleValidationArn',
       },
-      type: 'resume'
+      type: 'resume',
     })
 
     expect(result).toEqual('ok')
@@ -78,7 +78,7 @@ describe('event-publisher', () => {
     setLambdaResult({
       lastEvent: null,
       lastError: null,
-      status: 'running'
+      status: 'running',
     })
 
     const result = await publisher.status({ eventSubscriber: 'listenerId' })
@@ -87,15 +87,15 @@ describe('event-publisher', () => {
       payload: {
         principial: {},
         eventSubscriber: 'listenerId',
-        validationRoleArn: 'RoleValidationArn'
+        validationRoleArn: 'RoleValidationArn',
       },
-      type: 'status'
+      type: 'status',
     })
 
     expect(result).toEqual({
       lastEvent: null,
       lastError: null,
-      status: 'running'
+      status: 'running',
     })
   })
 
@@ -108,9 +108,9 @@ describe('event-publisher', () => {
       payload: {
         principial: {},
         eventSubscriber: 'listenerId',
-        validationRoleArn: 'RoleValidationArn'
+        validationRoleArn: 'RoleValidationArn',
       },
-      type: 'reset'
+      type: 'reset',
     })
 
     expect(result).toEqual('ok')
@@ -119,25 +119,25 @@ describe('event-publisher', () => {
   test('"listProperties" should return list properties by listenerId', async () => {
     setLambdaResult({
       key1: 'value1',
-      key2: 'value2'
+      key2: 'value2',
     })
 
     const result = await publisher.listProperties({
-      eventSubscriber: 'listenerId'
+      eventSubscriber: 'listenerId',
     })
 
     expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
       payload: {
         principial: {},
         eventSubscriber: 'listenerId',
-        validationRoleArn: 'RoleValidationArn'
+        validationRoleArn: 'RoleValidationArn',
       },
-      type: 'listProperties'
+      type: 'listProperties',
     })
 
     expect(result).toEqual({
       key1: 'value1',
-      key2: 'value2'
+      key2: 'value2',
     })
   })
 
@@ -146,7 +146,7 @@ describe('event-publisher', () => {
 
     const result = await publisher.getProperty({
       eventSubscriber: 'listenerId',
-      key: 'key1'
+      key: 'key1',
     })
 
     expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
@@ -154,9 +154,9 @@ describe('event-publisher', () => {
         principial: {},
         eventSubscriber: 'listenerId',
         validationRoleArn: 'RoleValidationArn',
-        key: 'key1'
+        key: 'key1',
       },
-      type: 'getProperty'
+      type: 'getProperty',
     })
 
     expect(result).toEqual('value1')
@@ -168,7 +168,7 @@ describe('event-publisher', () => {
     const result = await publisher.setProperty({
       eventSubscriber: 'listenerId',
       key: 'key1',
-      value: 'value1'
+      value: 'value1',
     })
 
     expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
@@ -177,9 +177,9 @@ describe('event-publisher', () => {
         eventSubscriber: 'listenerId',
         validationRoleArn: 'RoleValidationArn',
         key: 'key1',
-        value: 'value1'
+        value: 'value1',
       },
-      type: 'setProperty'
+      type: 'setProperty',
     })
 
     expect(result).toEqual('ok')
@@ -190,7 +190,7 @@ describe('event-publisher', () => {
 
     const result = await publisher.deleteProperty({
       eventSubscriber: 'listenerId',
-      key: 'key1'
+      key: 'key1',
     })
 
     expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
@@ -198,9 +198,9 @@ describe('event-publisher', () => {
         principial: {},
         eventSubscriber: 'listenerId',
         validationRoleArn: 'RoleValidationArn',
-        key: 'key1'
+        key: 'key1',
       },
-      type: 'deleteProperty'
+      type: 'deleteProperty',
     })
 
     expect(result).toEqual('ok')

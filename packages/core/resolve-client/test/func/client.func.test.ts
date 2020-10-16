@@ -12,7 +12,9 @@ beforeAll(() => {
     res.setHeader('Date', '12345')
     res.send(
       JSON.stringify({
-        status: 'valid'
+        data: {
+          status: 'valid',
+        },
       })
     )
   })
@@ -32,7 +34,7 @@ beforeEach(() => {
     rootPath: '',
     staticPath: '/static',
     viewModels: [],
-    fetch
+    fetch,
   })
 })
 
@@ -41,20 +43,22 @@ test('bug: waitFor headers are undefined on success validation', async () => {
     {
       name: 'read-model',
       resolver: 'resolver',
-      args: {}
+      args: {},
     },
     {
       waitFor: {
-        validator: (result: any): boolean => result.status === 'valid',
+        validator: (result: any): boolean => result.data.status === 'valid',
         attempts: 1,
-        period: 1
-      }
+        period: 1,
+      },
     }
   )
   expect(result).toEqual({
-    timestamp: 12345,
+    meta: {
+      timestamp: 12345,
+    },
     data: {
-      status: 'valid'
-    }
+      status: 'valid',
+    },
   })
 })

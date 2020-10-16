@@ -4,10 +4,10 @@ import md5 from 'md5'
 
 const routeLoginCallback = async ({ resolve }, login, password) => {
   const passwordHash = md5(password)
-  const user = await resolve.executeQuery({
+  const { data: user } = await resolve.executeQuery({
     modelName: 'Users',
     resolverName: 'user',
-    resolverArgs: { login: login.trim() }
+    resolverArgs: { login: login.trim() },
   })
 
   if (user.login !== login || user.passwordHash !== passwordHash) {

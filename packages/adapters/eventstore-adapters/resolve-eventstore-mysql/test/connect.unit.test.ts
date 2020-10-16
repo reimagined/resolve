@@ -18,7 +18,7 @@ const mCreateConnection = mocked(MySQL.createConnection)
 
 beforeEach(() => {
   mysqlRelatedConfig = {
-    mysqlRelatedOption: 'mysql-option'
+    mysqlRelatedOption: 'mysql-option',
   }
   pool = {
     config: {
@@ -27,27 +27,27 @@ beforeEach(() => {
       snapshotsTableName: 'snapshots-table-name',
       secretsDatabase: 'secrets-database',
       secretsTableName: 'secrets-table-name',
-      ...mysqlRelatedConfig
+      ...mysqlRelatedConfig,
     },
     events: {
       connection: MySQL.connection,
       eventsTableName: '',
       snapshotsTableName: '',
-      database: ''
+      database: '',
     },
     secrets: {
       connection: MySQL.connection,
       tableName: '',
-      database: ''
+      database: '',
     },
     escape: jest.fn(),
     escapeId: jest.fn(),
-    MySQL
+    MySQL,
   }
   specific = {
     MySQL,
     escape,
-    escapeId
+    escapeId,
   }
   mCreateConnection.mockClear()
 })
@@ -58,7 +58,7 @@ test('MySQL client configured', async () => {
   expect(mCreateConnection).toHaveBeenCalledWith({
     ...mysqlRelatedConfig,
     database: 'secrets-database',
-    multipleStatements: true
+    multipleStatements: true,
   })
 })
 
@@ -69,15 +69,15 @@ test('MySQL client configured (no secrets database in config)', async () => {
       database: 'database',
       eventsTableName: 'table-name',
       secretsTableName: 'secrets-table-name',
-      ...mysqlRelatedConfig
-    }
+      ...mysqlRelatedConfig,
+    },
   }
 
   await connect(pool, specific)
   expect(mCreateConnection).toHaveBeenCalledWith({
     ...mysqlRelatedConfig,
     database: 'database',
-    multipleStatements: true
+    multipleStatements: true,
   })
 })
 
@@ -93,7 +93,7 @@ test("MySQL config assigned to adapter's pool", async () => {
   specific = {
     ...specific,
     escape: mEscape,
-    escapeId: mEscapeId
+    escapeId: mEscapeId,
   }
   await connect(pool, specific)
 
@@ -101,14 +101,14 @@ test("MySQL config assigned to adapter's pool", async () => {
     expect.objectContaining({
       connection: expect.any(Object),
       tableName: 'secrets-table-name',
-      database: 'secrets-database'
+      database: 'secrets-database',
     })
   )
 
   expect(pool).toEqual(
     expect.objectContaining({
       escape: mEscape,
-      escapeId: mEscapeId
+      escapeId: mEscapeId,
     })
   )
 })

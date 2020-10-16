@@ -3,18 +3,18 @@ import { SQLITE_BUSY, INTERLOCK_SYMBOL } from './constants'
 const randRange = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min
 
-const fullJitter = retries => randRange(0, Math.min(100, 2 * 2 ** retries))
+const fullJitter = (retries) => randRange(0, Math.min(100, 2 * 2 ** retries))
 
-const coerceEmptyString = obj =>
+const coerceEmptyString = (obj) =>
   (obj != null && obj.constructor !== String) || obj == null ? 'default' : obj
 
-const interlockPromise = async pool => {
+const interlockPromise = async (pool) => {
   let unlock = null
   while (Promise.resolve(pool[INTERLOCK_SYMBOL]) === pool[INTERLOCK_SYMBOL]) {
     await pool[INTERLOCK_SYMBOL]
   }
 
-  pool[INTERLOCK_SYMBOL] = new Promise(resolve => {
+  pool[INTERLOCK_SYMBOL] = new Promise((resolve) => {
     unlock = () => {
       delete pool[INTERLOCK_SYMBOL]
       resolve()
@@ -24,18 +24,18 @@ const interlockPromise = async pool => {
   return unlock
 }
 
-const escapeId = str => `"${String(str).replace(/(["])/gi, '$1$1')}"`
+const escapeId = (str) => `"${String(str).replace(/(["])/gi, '$1$1')}"`
 
-const escapeStr = str => `'${String(str).replace(/(['])/gi, '$1$1')}'`
+const escapeStr = (str) => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
-const encodeJsonPath = jsonPath =>
+const encodeJsonPath = (jsonPath) =>
   jsonPath
     .replace(/\u001a/g, '\u001aSUB')
     .replace(/"/g, '\u001aQUOTE')
     .replace(/\./g, '\u001aDOT')
     .replace(/\\/g, '\u001aSLASH')
 
-const decodeJsonPath = jsonPath =>
+const decodeJsonPath = (jsonPath) =>
   jsonPath
     .replace(/\u001aSLASH/g, '\\')
     .replace(/\u001aDOT/g, '.')
@@ -59,7 +59,7 @@ const runCommonQuery = async (pool, isRegular, querySQL) => {
         break
       } catch (error) {
         if (error != null && error.code === SQLITE_BUSY) {
-          await new Promise(resolve => setTimeout(resolve, fullJitter(retry)))
+          await new Promise((resolve) => setTimeout(resolve, fullJitter(retry)))
         } else {
           throw error
         }
@@ -72,7 +72,7 @@ const runCommonQuery = async (pool, isRegular, querySQL) => {
   }
 }
 
-const disconnect = async pool => {
+const disconnect = async (pool) => {
   if (pool.isDisposed) {
     throw new Error('Event broker SQLite connection already closed')
   }
@@ -90,7 +90,7 @@ const connectDatabase = async (imports, options) => {
   const pool = {
     ...imports,
     connectionOptions,
-    databaseFile
+    databaseFile,
   }
 
   const database = {
@@ -100,7 +100,7 @@ const connectDatabase = async (imports, options) => {
     encodeJsonPath,
     decodeJsonPath,
     escapeId,
-    escapeStr
+    escapeStr,
   }
 
   let connector = null
@@ -124,7 +124,7 @@ const connectDatabase = async (imports, options) => {
 
       pool.memoryStore = {
         name: tmpName,
-        drop: removeCallback
+        drop: removeCallback,
       }
     } else if (
       pool.memoryStore == null ||
@@ -133,7 +133,7 @@ const connectDatabase = async (imports, options) => {
       const temporaryFile = tmp.fileSync()
       pool.memoryStore = {
         name: temporaryFile.name,
-        drop: temporaryFile.removeCallback.bind(temporaryFile)
+        drop: temporaryFile.removeCallback.bind(temporaryFile),
       }
     }
 
@@ -148,7 +148,7 @@ const connectDatabase = async (imports, options) => {
       break
     } catch (error) {
       if (error != null && error.code === SQLITE_BUSY) {
-        await new Promise(resolve => setTimeout(resolve, fullJitter(retry)))
+        await new Promise((resolve) => setTimeout(resolve, fullJitter(retry)))
       } else {
         throw error
       }

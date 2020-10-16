@@ -6,7 +6,7 @@ type BDDCommandContext = {
     phase: Phases
     command: {
       name: string
-      payload: SerializableMap
+      payload?: SerializableMap
     }
   }
 }
@@ -15,7 +15,7 @@ export const command = (
   context: BDDCommandContext,
   name: string,
   payload?: SerializableMap
-): any => {
+) => {
   if (context[symbol].phase !== Phases.AGGREGATE) {
     throw new TypeError()
   }
@@ -23,7 +23,7 @@ export const command = (
   context[symbol].phase = Phases.COMMAND
   context[symbol].command = {
     name,
-    payload: payload || {}
+    payload,
   }
 
   return context

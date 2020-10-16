@@ -42,18 +42,18 @@ const mapStateToOptions = (
   state,
   {
     match: {
-      params: { userId }
-    }
+      params: { userId },
+    },
   }
 ) => ({
   readModelName: 'HackerNews',
   resolverName: 'user',
-  resolverArgs: { id: userId }
+  resolverArgs: { id: userId },
 })
 
 const mapStateToProps = (state, { data }) => ({
   user: data,
-  me: state.jwt
+  me: state.jwt,
 })
 
 export default connectReadModel(mapStateToOptions)(

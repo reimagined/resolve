@@ -5,7 +5,7 @@ test('method "wrapSaveEvent" should return wrapped saveEvent with isFrozen valid
   const isFrozen = jest.fn().mockReturnValue(false)
 
   const pool = {
-    isFrozen
+    isFrozen,
   }
   const event = { type: 'EVENT' }
 
@@ -22,7 +22,7 @@ test('method "wrapSaveEvent" should return wrapped saveEvent and call should thr
   const isFrozen = jest.fn().mockReturnValue(true)
 
   const pool = {
-    isFrozen
+    isFrozen,
   }
   const event = { type: 'EVENT' }
 

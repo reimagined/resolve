@@ -1,8 +1,9 @@
 import {
   message,
   RUNTIME_ENV_NOWHERE,
+  RUNTIME_ENV_OPTIONS_ONLY,
   RESOURCE_ANY,
-  IMPORT_INSTANCE
+  IMPORT_INSTANCE,
 } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
@@ -40,11 +41,11 @@ export default ({ resolveConfig, isClient }) => {
     importResource({
       resourceName: `resolvers_${index}`,
       resourceValue: readModel.resolvers,
-      runtimeMode: RUNTIME_ENV_NOWHERE,
+      runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
       imports,
-      constants
+      constants,
     })
 
     exports.push(`readModels.push({`, `  name: name_${index}`)
@@ -54,15 +55,27 @@ export default ({ resolveConfig, isClient }) => {
     importResource({
       resourceName: `projection_${index}`,
       resourceValue: readModel.projection,
-      runtimeMode: RUNTIME_ENV_NOWHERE,
+      runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
       calculateHash: 'resolve-read-model-projection-hash',
       imports,
-      constants
+      constants,
     })
     exports.push(`, projection: projection_${index}`)
     exports.push(`, invariantHash: projection_${index}_hash`)
+
+    importResource({
+      resourceName: `encryption_${index}`,
+      resourceValue: readModel.encryption,
+      runtimeMode: RUNTIME_ENV_NOWHERE,
+      importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
+      instanceFallback: 'resolve-runtime/lib/common/defaults/encryption.js',
+      imports,
+      constants,
+    })
+    exports.push(`, encryption: encryption_${index}`)
 
     exports.push(`})`, ``)
   }

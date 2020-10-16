@@ -3,7 +3,7 @@ import normalizePaths from './normalize_paths'
 
 describe('local config works correctly', () => {
   const resolveConfig = {
-    target: 'local'
+    target: 'local',
   }
 
   test('[client]', () => {
@@ -12,7 +12,7 @@ describe('local config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -25,7 +25,7 @@ describe('local config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )
@@ -35,7 +35,7 @@ describe('local config works correctly', () => {
 
 describe('cloud config works correctly', () => {
   const resolveConfig = {
-    target: 'cloud'
+    target: 'cloud',
   }
 
   test('[client]', () => {
@@ -44,7 +44,7 @@ describe('cloud config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: true
+            isClient: true,
           }) +
           '\r\n'
       )
@@ -57,7 +57,7 @@ describe('cloud config works correctly', () => {
         '\r\n' +
           alias({
             resolveConfig,
-            isClient: false
+            isClient: false,
           }) +
           '\r\n'
       )

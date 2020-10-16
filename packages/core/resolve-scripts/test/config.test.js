@@ -5,8 +5,8 @@ const resolveConfigOrigin = {
   ...defaultResolveConfig,
   eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
-    options: {}
-  }
+    options: {},
+  },
 }
 
 jest.setTimeout(30000)
@@ -17,7 +17,7 @@ describe('validate schema', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local'
+        target: 'local',
       })
     ).toBeTruthy()
   })
@@ -31,9 +31,9 @@ describe('validate schema', () => {
         eventstoreAdapter: {
           module: 'resolve-eventstore-mysql',
           options: {
-            eventsTableName: 'MyEvents'
-          }
-        }
+            eventsTableName: 'MyEvents',
+          },
+        },
       })
     ).toBeTruthy()
   })
@@ -46,22 +46,8 @@ describe('validate schema', () => {
         target: 'local',
         eventstoreAdapter: {
           module: 'resolve-bus-rabbitmq',
-          options: {}
-        }
-      })
-    ).toBeTruthy()
-  })
-
-  it('custom subscribe adapter', () => {
-    expect(
-      validateConfig({
-        ...resolveConfigOrigin,
-        mode: 'development',
-        target: 'local',
-        subscribeAdapter: {
-          module: 'resolve-subscribe-mqtt',
-          options: {}
-        }
+          options: {},
+        },
       })
     ).toBeTruthy()
   })
@@ -72,7 +58,7 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        rootPath: 'my-app'
+        rootPath: 'my-app',
       })
     ).toBeTruthy()
   })
@@ -83,7 +69,7 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        staticPath: 'my-cdn'
+        staticPath: 'my-cdn',
       })
     ).toBeTruthy()
   })
@@ -94,7 +80,7 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        aggregates: []
+        aggregates: [],
       })
     ).toBeTruthy()
   })
@@ -105,7 +91,7 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        viewModels: []
+        viewModels: [],
       })
     ).toBeTruthy()
   })
@@ -116,7 +102,7 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        readModels: []
+        readModels: [],
       })
     ).toBeTruthy()
   })
@@ -127,7 +113,7 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        staticDir: 'my-static-dir'
+        staticDir: 'my-static-dir',
       })
     ).toBeTruthy()
   })
@@ -140,8 +126,8 @@ describe('validate schema', () => {
         target: 'local',
         jwtCookie: {
           name: 'authToken',
-          maxAge: 1000 * 60 * 60 * 24 * 365
-        }
+          maxAge: 1000 * 60 * 60 * 24 * 365,
+        },
       })
     ).toBeTruthy()
   })
@@ -157,9 +143,9 @@ describe('validate schema (fail)', () => {
         eventstoreAdapter: {
           module: 123,
           options: {
-            collectionName: 'MyEvents'
-          }
-        }
+            collectionName: 'MyEvents',
+          },
+        },
       })
     ).toThrow()
   })
@@ -172,8 +158,8 @@ describe('validate schema (fail)', () => {
         target: 'local',
         eventstoreAdapter: {
           module: 123,
-          options: {}
-        }
+          options: {},
+        },
       })
     ).toThrow()
   })
@@ -186,8 +172,8 @@ describe('validate schema (fail)', () => {
         target: 'local',
         subscribeAdapter: {
           module: 123,
-          options: {}
-        }
+          options: {},
+        },
       })
     ).toThrow()
   })
@@ -198,7 +184,7 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        rootPath: 123
+        rootPath: 123,
       })
     ).toThrow()
   })
@@ -209,7 +195,7 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        staticPath: 123
+        staticPath: 123,
       })
     ).toThrow()
   })
@@ -220,7 +206,7 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        aggregates: 123
+        aggregates: 123,
       })
     ).toThrow()
   })
@@ -231,7 +217,7 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        viewModels: 123
+        viewModels: 123,
       })
     ).toThrow()
   })
@@ -242,7 +228,7 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        readModels: 123
+        readModels: 123,
       })
     ).toThrow()
   })
@@ -253,7 +239,7 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        staticDir: 123
+        staticDir: 123,
       })
     ).toThrow()
   })
@@ -264,7 +250,7 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         mode: 'development',
         target: 'local',
-        auth: 123
+        auth: 123,
       })
     ).toThrow()
   })
@@ -279,9 +265,9 @@ describe('validate schema (fail)', () => {
           name: 123,
           secret: 'some-secret',
           options: {
-            maxAge: 1000 * 60 * 60 * 24 * 365
-          }
-        }
+            maxAge: 1000 * 60 * 60 * 24 * 365,
+          },
+        },
       })
     ).toThrow()
   })

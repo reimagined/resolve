@@ -2,13 +2,13 @@ import debugLevels from 'resolve-debug-levels'
 
 const log = debugLevels('resolve:resolve-runtime:dispose-resolve')
 
-const disposeResolve = async resolve => {
+const disposeResolve = async (resolve) => {
   try {
     const disposePromises = [
       resolve.executeCommand.dispose(),
       resolve.executeQuery.dispose(),
       resolve.executeSaga.dispose(),
-      resolve.eventstoreAdapter.dispose()
+      resolve.eventstoreAdapter.dispose(),
     ]
 
     for (const name of Object.keys(resolve.readModelConnectors)) {

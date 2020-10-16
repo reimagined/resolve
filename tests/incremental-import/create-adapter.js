@@ -1,3 +1,5 @@
+import fs from 'fs'
+import path from 'path'
 // eslint-disable-next-line
 import createEventStoreLiteAdapter from 'resolve-eventstore-lite'
 // eslint-disable-next-line
@@ -43,10 +45,36 @@ const createAdapter = () => {
   //   port: 5432
   // })
 
-  return createEventStoreLiteAdapter({
-    databaseFile: ':memory:',
-    secretsFile: ':memory:'
-  })
+  const tempName = Math.floor(Math.random() * 1000000)
+  const databaseFile = path.join(__dirname, `${tempName}.events.txt`)
+  const secretsFile = path.join(__dirname, `${tempName}.secrets.txt`)
+
+  const adapter = Object.create(
+    createEventStoreLiteAdapter({
+      databaseFile,
+      secretsFile,
+    }),
+    {
+      drop: {
+        value: () => {
+          try {
+            fs.unlinkSync(databaseFile)
+          } catch (error) {}
+          try {
+            fs.unlinkSync(`${databaseFile}-journal`)
+          } catch (error) {}
+          try {
+            fs.unlinkSync(secretsFile)
+          } catch (error) {}
+          try {
+            fs.unlinkSync(`${secretsFile}-journal`)
+          } catch (error) {}
+        },
+      },
+    }
+  )
+
+  return adapter
 }
 
 export default createAdapter

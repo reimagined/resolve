@@ -4,9 +4,9 @@ const crypto = {
       update() {},
       digest(mode) {
         return `${algorithm}:${prefix}:${mode}`
-      }
+      },
     }
-  }
+  },
 }
 
 export default crypto

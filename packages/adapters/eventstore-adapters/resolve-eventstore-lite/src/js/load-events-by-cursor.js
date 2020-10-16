@@ -3,8 +3,8 @@ const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 const loadEventsByCursor = async (pool, filter) => {
   const { database, escapeId, escape, eventsTableName, shapeEvent } = pool
   const { eventTypes, aggregateIds, cursor, limit } = filter
-  const injectString = value => `${escape(value)}`
-  const injectNumber = value => `${+value}`
+  const injectString = (value) => `${escape(value)}`
+  const injectNumber = (value) => `${+value}`
 
   const cursorBuffer =
     cursor != null ? Buffer.from(cursor, 'base64') : Buffer.alloc(1536, 0)
@@ -82,7 +82,7 @@ const loadEventsByCursor = async (pool, filter) => {
 
   return {
     cursor: nextConditionsBuffer.toString('base64'),
-    events
+    events,
   }
 }
 

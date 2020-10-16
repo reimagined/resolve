@@ -71,17 +71,17 @@ describe('createCustomAdapter', () => {
       drop,
       dispose,
       import: importStream,
-      export: exportStream
+      export: exportStream,
     })
 
     const customAdapter = createCustomAdapter({
       a: 'a',
-      b: 'b'
+      b: 'b',
     })
 
     await customAdapter.loadEvents({
       aggregateIds: ['id1'],
-      limit: 200
+      limit: 200,
     })
   })
 })

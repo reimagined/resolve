@@ -4,7 +4,7 @@ import sinon from 'sinon'
 
 import wrapApiHandler from '../src/cloud/wrap-api-handler'
 
-const stringifyAndNormalizePaths = value => {
+const stringifyAndNormalizePaths = (value) => {
   const source = (() => {
     switch (typeof value) {
       case 'function':
@@ -27,13 +27,13 @@ const stringifyAndNormalizePaths = value => {
     .replace(/at <anonymous>/gi, '<STACK_FRAME>')
 }
 
-const extractInvocationInfo = sinonStub => {
+const extractInvocationInfo = (sinonStub) => {
   const result = { callCount: sinonStub.callCount, callsInfo: [] }
   for (let idx = 0; idx < sinonStub.callCount; idx++) {
     const { args, returnValue } = sinonStub.getCall(idx)
     result.callsInfo[idx] = {
-      args: args.map(arg => stringifyAndNormalizePaths(arg)),
-      returnValue: stringifyAndNormalizePaths(returnValue)
+      args: args.map((arg) => stringifyAndNormalizePaths(arg)),
+      returnValue: stringifyAndNormalizePaths(returnValue),
     }
   }
   return result
@@ -51,29 +51,29 @@ describe('API handler wrapper for AWS Lambda', () => {
           'header-name-1': 'header-value-1',
           'header-name-2': 'header-value-2',
           cookie: 'cookie-content',
-          host: 'host-content'
+          host: 'host-content',
         },
-        enumerable: true
+        enumerable: true,
       },
       path: {
         value: 'PATH_INFO',
-        enumerable: true
+        enumerable: true,
       },
       body: {
         value: 'BODY_CONTENT',
-        enumerable: true
+        enumerable: true,
       },
       multiValueQueryStringParameters: {
         value: {
           'query-name-1': 'query-value-1',
-          'query-name-2': 'query-value-2'
+          'query-name-2': 'query-value-2',
         },
-        enumerable: true
+        enumerable: true,
       },
       httpMethod: {
         value: 'GET',
-        enumerable: true
-      }
+        enumerable: true,
+      },
     })
     lambdaContext = null
     lambdaCallback = sinon.stub()
@@ -97,7 +97,7 @@ describe('API handler wrapper for AWS Lambda', () => {
     res.json({
       ...req,
       existingHeader,
-      missingHeader
+      missingHeader,
     })
   }
 
@@ -113,7 +113,7 @@ describe('API handler wrapper for AWS Lambda', () => {
       JSON.stringify({
         ...req,
         existingHeader,
-        missingHeader
+        missingHeader,
       })
     )
   }
@@ -130,7 +130,7 @@ describe('API handler wrapper for AWS Lambda', () => {
     const result = JSON.stringify({
       ...req,
       existingHeader,
-      missingHeader
+      missingHeader,
     })
 
     res.end(result, 'utf8')
@@ -148,7 +148,7 @@ describe('API handler wrapper for AWS Lambda', () => {
     const result = JSON.stringify({
       ...req,
       existingHeader,
-      missingHeader
+      missingHeader,
     })
 
     res.file(result, 'synthetic-filename.txt', 'utf8')
@@ -276,8 +276,8 @@ describe('API handler wrapper for AWS Lambda', () => {
         c: ['[1,2]'],
         d: ['1,2'],
         'e[]': ['1,2'],
-        'f[]': ['1']
-      }
+        'f[]': ['1'],
+      },
     }
     const { body } = await wrappedHandler(customEvent, lambdaContext)
     const query = JSON.parse(body).query
@@ -288,7 +288,7 @@ describe('API handler wrapper for AWS Lambda', () => {
       c: '[1,2]',
       d: '1,2',
       e: ['1,2'],
-      f: ['1']
+      f: ['1'],
     })
   })
 })

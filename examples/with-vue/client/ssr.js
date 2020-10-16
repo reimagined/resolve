@@ -20,7 +20,7 @@ const entryPoint = async (
 
     const app = new Vue({
       data: { rootPath, staticPath },
-      render: h => h(App)
+      render: (h) => h(App),
     })
 
     const renderedHtml = await new Promise((resolve, reject) =>

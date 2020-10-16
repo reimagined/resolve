@@ -30,6 +30,17 @@ const commitIncrementalImport = async (
            `RESOLVE INCREMENTAL-IMPORT ${escape(importId)} OWNED TABLE`
          )}
        ) = 0;
+
+      DELETE FROM ${incrementalImportTableAsId} WHERE \`rowid\` IN (
+        SELECT \`MaybeEqualEvents\`.\`rowIdX\` FROM (
+          SELECT \`A\`.\`payload\` AS \`payloadA\`, \`B\`.\`payload\` AS \`payloadB\`, \`A\`.\`rowid\` AS \`rowIdX\`
+          FROM ${incrementalImportTableAsId} \`A\` LEFT JOIN ${eventsTableAsId} \`B\` ON
+          \`A\`.\`timestamp\` = \`B\`.\`timestamp\` AND
+          \`A\`.\`aggregateId\` = \`B\`.\`aggregateId\` AND
+          \`A\`.\`type\` = \`B\`.\`type\`
+        ) \`MaybeEqualEvents\`
+        WHERE \`MaybeEqualEvents\`.\`payloadA\` = \`MaybeEqualEvents\`.\`payloadB\`
+      );
        
       SELECT 1 FROM \`information_schema\`.\`tables\`
       WHERE (
@@ -42,19 +53,7 @@ const commitIncrementalImport = async (
            FROM ${incrementalImportTableAsId}
          )
        ) = 0;
-     
-      
-      DELETE FROM ${incrementalImportTableAsId} WHERE \`rowid\` IN (
-        SELECT \`MaybeEqualEvents\`.\`rowIdX\` FROM (
-          SELECT \`A\`.\`payload\` AS \`payloadA\`, \`B\`.\`payload\` AS \`payloadB\`, \`A\`.\`rowid\` AS \`rowIdX\`
-          FROM ${incrementalImportTableAsId} \`A\` LEFT JOIN ${eventsTableAsId} \`B\` ON
-          \`A\`.\`timestamp\` = \`B\`.\`timestamp\` AND
-          \`A\`.\`aggregateId\` = \`B\`.\`aggregateId\` AND
-          \`A\`.\`type\` = \`B\`.\`type\`
-        ) \`MaybeEqualEvents\`
-        WHERE \`MaybeEqualEvents\`.\`payloadA\` = \`MaybeEqualEvents\`.\`payloadB\`
-      );
-      
+           
       WITH \`UpdateSortedIndexes\` AS (
         SELECT ROW_NUMBER() OVER (ORDER BY \`timestamp\`, \`rowid\`) - 1 AS \`sortedIdx\`,
         \`rowid\` as \`rowIdX\`
@@ -144,7 +143,7 @@ const commitIncrementalImport = async (
         threadId: !isNaN(+threadId) ? +threadId : Symbol('BAD_THREAD_ID'),
         threadCounter: !isNaN(+threadCounter)
           ? +threadCounter
-          : Symbol('BAD_THREAD_COUNTER')
+          : Symbol('BAD_THREAD_COUNTER'),
       }))
 
       const predictedThreadIdCounters = (
@@ -155,7 +154,7 @@ const commitIncrementalImport = async (
         threadId: !isNaN(+threadId) ? +threadId : Symbol('BAD_THREAD_ID'),
         threadCounter: !isNaN(+threadCounter)
           ? +threadCounter
-          : Symbol('BAD_THREAD_COUNTER')
+          : Symbol('BAD_THREAD_COUNTER'),
       }))
 
       const validationMapReal = new Map()

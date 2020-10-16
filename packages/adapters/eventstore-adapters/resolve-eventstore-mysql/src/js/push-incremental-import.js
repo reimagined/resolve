@@ -34,7 +34,7 @@ const pushIncrementalImport = async (
         \`rowid\`, \`timestamp\`, \`aggregateId\`, \`type\`, \`payload\`
       ) VALUES ${events
         .map(
-          event => `(${escape(
+          (event) => `(${escape(
             `${Date.now()}${Math.random()}`
           )}, ${+event.timestamp}, ${escape(event.aggregateId)}, ${escape(
             event.type

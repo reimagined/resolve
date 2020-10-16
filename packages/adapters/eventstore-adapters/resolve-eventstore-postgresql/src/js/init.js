@@ -5,7 +5,8 @@ import {
   LONG_NUMBER_SQL_TYPE,
   INT8_SQL_TYPE,
   JSON_SQL_TYPE,
-  TEXT_SQL_TYPE
+  TEXT_SQL_TYPE,
+  AGGREGATE_ID_SQL_TYPE,
 } from './constants'
 
 const init = async ({
@@ -13,7 +14,7 @@ const init = async ({
   eventsTableName,
   snapshotsTableName,
   executeStatement,
-  escapeId
+  escapeId,
 }) => {
   const databaseNameAsId = escapeId(databaseName)
   const eventsTableNameAsId = escapeId(eventsTableName)
@@ -36,7 +37,7 @@ const init = async ({
         "threadId" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
         "threadCounter" ${INT8_SQL_TYPE} NOT NULL,
         "timestamp" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
-        "aggregateId" ${LONG_STRING_SQL_TYPE} NOT NULL,
+        "aggregateId" ${AGGREGATE_ID_SQL_TYPE} NOT NULL,
         "aggregateVersion" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
         "type" ${LONG_STRING_SQL_TYPE} NOT NULL,
         "payload" ${JSON_SQL_TYPE},

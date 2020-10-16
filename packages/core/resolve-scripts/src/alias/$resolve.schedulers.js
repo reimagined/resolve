@@ -2,7 +2,7 @@ import {
   message,
   RESOURCE_ANY,
   RUNTIME_ENV_ANYWHERE,
-  IMPORT_CONSTRUCTOR
+  IMPORT_CONSTRUCTOR,
 } from '../constants'
 import importResource from '../import_resource'
 import { checkRuntimeEnv } from '../declare_runtime_env'
@@ -46,7 +46,7 @@ export default ({ resolveConfig, isClient }) => {
       instanceMode: IMPORT_CONSTRUCTOR,
       calculateHash: 'resolve-scheduler-adapter-hash',
       imports,
-      constants
+      constants,
     })
 
     exports.push(`schedulers.push({`, `  name: name_${index}`)

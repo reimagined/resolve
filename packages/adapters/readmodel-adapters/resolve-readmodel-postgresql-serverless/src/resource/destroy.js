@@ -8,7 +8,7 @@ const destroy = async (pool, options) => {
     awsSecretStoreArn: options.awsSecretStoreAdminArn,
     dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
     databaseName: options.databaseName,
-    region: options.region
+    region: options.region,
   })
 
   let alterSchemaError = null

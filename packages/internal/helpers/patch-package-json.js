@@ -5,7 +5,7 @@ const { getResolvePackages } = require('./get-resolve-packages')
 const { getLocalRegistryConfig } = require('./get-local-registry-config')
 const { safeName } = require('./safe-name')
 
-const patchPackageJson = directory => {
+const patchPackageJson = (directory) => {
   const resolvePackages = getResolvePackages()
   const localRegistry = getLocalRegistryConfig()
 
@@ -20,7 +20,7 @@ const patchPackageJson = directory => {
     'dependencies',
     'devDependencies',
     'peerDependencies',
-    'optionalDependencies'
+    'optionalDependencies',
   ]) {
     if (!packageJson[namespace]) {
       continue

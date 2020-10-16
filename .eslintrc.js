@@ -6,15 +6,15 @@ module.exports = {
     node: true,
     jest: true,
     es6: true,
-    browser: true
+    browser: true,
   },
   extends: ['react-app', 'plugin:prettier/recommended'],
   parserOptions: {
     sourceType: 'module',
     ecmaVersion: 2020,
     ecmaFeature: {
-      jsx: true
-    }
+      jsx: true,
+    },
   },
   plugins: ['react', 'jsx-a11y', 'import', 'spellcheck'],
   overrides: [
@@ -26,9 +26,9 @@ module.exports = {
       rules: Object.assign({}, typescriptEslintRecommended.rules, {
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/member-delimiter-style': 'off',
-        '@typescript-eslint/explicit-function-return-type': 'off'
-      })
-    }
+        '@typescript-eslint/explicit-function-return-type': 'off',
+      }),
+    },
   ],
   rules: {
     'react-hooks/exhaustive-deps': 'off',
@@ -36,7 +36,7 @@ module.exports = {
     'func-names': 'off',
     'no-underscore-dangle': 'off',
     'import/no-unresolved': 'off',
-    'comma-dangle': ['error', 'never'],
+    'comma-dangle': 'off',
     'no-plusplus': 'off',
     'jsx-a11y/href-no-hash': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
@@ -96,6 +96,7 @@ module.exports = {
           'bson',
           'btn',
           'buf',
+          'cancelled',
           'cacheable',
           'calc',
           'cax',
@@ -206,6 +207,7 @@ module.exports = {
           'html',
           'http',
           'https',
+          'hoc',
           'ico',
           'iconv',
           'ident',
@@ -264,9 +266,11 @@ module.exports = {
           'mqtt',
           'multer',
           'multipart',
+          'mutex',
           'msg',
           'mysql',
           'mjs',
+          'nanoid',
           'namespace',
           'namespaces',
           'nav',
@@ -290,6 +294,10 @@ module.exports = {
           'objoid',
           'objs',
           'octicon',
+          'onopen',
+          'onerror',
+          'onmessage',
+          'onclose',
           'oid',
           'oper',
           'opn',
@@ -336,6 +344,7 @@ module.exports = {
           'readmodel',
           'readpolicy',
           'resetter',
+          'rerender',
           'realtime',
           'redux',
           'rdsdataservice',
@@ -423,6 +432,7 @@ module.exports = {
           'todos',
           'topstories',
           'Transactional',
+          'trx',
           'tsc',
           'trie',
           'truthy',
@@ -467,6 +477,7 @@ module.exports = {
           'util',
           'utils',
           'uuid',
+          'variadic',
           'validator',
           'verdana',
           'viewmodel',
@@ -494,10 +505,10 @@ module.exports = {
           'zeromq',
           'zmq',
           'zlib',
-          'compat'
+          'compat',
         ],
-        minLength: 3
-      }
-    ]
-  }
+        minLength: 3,
+      },
+    ],
+  },
 }

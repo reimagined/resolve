@@ -1,12 +1,12 @@
 {
   "name": "@internal/helpers",
   "private": true,
-  "version": "0.24.16",
+  "version": "0.25.13",
   "bin": "./bin/index.js",
   "main": "./index.js",
   "dependencies": {
     "glob": "7.1.6",
-    "minimist": "1.2.0",
+    "minimist": "1.2.3",
     "semver": "5.6.0"
   },
   "scripts": {

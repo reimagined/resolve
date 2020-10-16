@@ -6,7 +6,7 @@ import {
   NotificationStatus,
   ConsumerMethod,
   LazinessStrategy,
-  PrivateOperationType
+  PrivateOperationType,
 } from '../constants'
 
 const retryRollback = new Error('Retrying rollback marker')
@@ -17,7 +17,7 @@ async function requestTimeout(pool, payload) {
     invokeConsumer,
     invokeOperation,
     getNextCursor,
-    serializeError
+    serializeError,
   } = pool
 
   const { batchId } = payload
@@ -90,16 +90,14 @@ async function requestTimeout(pool, payload) {
     runStatus,
     xaTransactionId,
     cursor,
-    successEvent: prevSuccessEvent
+    successEvent: prevSuccessEvent,
   } = subscriptionDescription
   const activeBatch = {
     batchId: subscriptionDescription.batchId,
     subscriptionId: subscriptionDescription.subscriptionId,
-    eventSubscriber: subscriptionDescription.eventSubscriber
+    eventSubscriber: subscriptionDescription.eventSubscriber,
   }
-  if (deliveryStrategy === DeliveryStrategy.PASSIVE) {
-    throw new Error(`Request timeout should not be activated for passive mode`)
-  }
+
   if (
     (deliveryStrategy === DeliveryStrategy.ACTIVE_XA &&
       xaTransactionId == null) ||
@@ -110,17 +108,18 @@ async function requestTimeout(pool, payload) {
       payload: {
         activeBatch,
         result: {
-          error: serializeError(new Error(`Timeout with consuming batch`))
-        }
-      }
+          error: serializeError(new Error(`Timeout with consuming batch`)),
+        },
+      },
     }
     await invokeOperation(pool, LazinessStrategy.EAGER, input)
     return
   }
+
   const result = {
     successEvent: null,
     error: null,
-    cursor
+    cursor,
   }
   try {
     if (
@@ -137,7 +136,7 @@ async function requestTimeout(pool, payload) {
             eventSubscriber,
             xaTransactionId,
             batchId,
-            countEvents: true
+            countEvents: true,
           }
         ))
         await runRawQuery(`
@@ -185,7 +184,7 @@ async function requestTimeout(pool, payload) {
         {
           eventSubscriber,
           xaTransactionId,
-          batchId
+          batchId,
         }
       )
 
@@ -222,7 +221,7 @@ async function requestTimeout(pool, payload) {
         {
           eventSubscriber,
           xaTransactionId,
-          batchId
+          batchId,
         }
       )
 
@@ -243,8 +242,8 @@ async function requestTimeout(pool, payload) {
     type: PrivateOperationType.FINALIZE_BATCH,
     payload: {
       activeBatch,
-      result
-    }
+      result,
+    },
   }
 
   await invokeOperation(pool, LazinessStrategy.EAGER, input)

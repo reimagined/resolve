@@ -29,7 +29,7 @@ const pushIncrementalImport = async (
         "timestamp", "aggregateId", "type", "payload"
       ) VALUES ${events
         .map(
-          event => `(${+event.timestamp}, ${escape(
+          (event) => `(${+event.timestamp}, ${escape(
             event.aggregateId
           )}, ${escape(event.type)}, 
       ${

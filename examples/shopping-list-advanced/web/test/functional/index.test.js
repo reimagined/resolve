@@ -5,9 +5,9 @@ const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || '3000'
 const MAIN_PAGE = `http://${host}:${port}`
 
-const getRootBasedUrl = url => MAIN_PAGE + url
+const getRootBasedUrl = (url) => MAIN_PAGE + url
 
-const registerFirstUser = async t => {
+const registerFirstUser = async (t) => {
   await t.navigateTo(getRootBasedUrl('/login'))
   await t.typeText(await Selector('input[name="username"]'), 'User 1')
   await t.typeText(await Selector('input[name="password"]'), 'User Password 1')
@@ -17,7 +17,7 @@ const registerFirstUser = async t => {
   await t.eval(() => location.reload(true))
 }
 
-const loginFirstUser = async t => {
+const loginFirstUser = async (t) => {
   await t.navigateTo(getRootBasedUrl('/login'))
   await t.typeText(await Selector('input[name="username"]'), 'User 1')
   await t.typeText(await Selector('input[name="password"]'), 'User Password 1')
@@ -29,7 +29,7 @@ const waitSelector = async (t, eventSubscriber, selector) => {
     const res = await fetch(`${MAIN_PAGE}/api/event-broker/read-models-list`)
 
     const readModel = (await res.json()).find(
-      readModel => readModel.eventSubscriber === eventSubscriber
+      (readModel) => readModel.eventSubscriber === eventSubscriber
     )
 
     if (readModel.status !== 'deliver') {
@@ -57,13 +57,13 @@ const refreshAndWait = async (t, selector, expectedValue) => {
 // eslint-disable-next-line no-unused-expressions, no-undef
 fixture`Shopping Lists`
 
-test('should list be empty', async t => {
+test('should list be empty', async (t) => {
   await registerFirstUser(t)
 
   await refreshAndWait(t, () => Selector('.shopping-list').count, 1)
 })
 
-test('create first shopping list', async t => {
+test('create first shopping list', async (t) => {
   await loginFirstUser(t)
 
   await waitSelector(t, 'ShoppingLists', Selector('.example-form-control'))
@@ -77,7 +77,7 @@ test('create first shopping list', async t => {
   await refreshAndWait(t, () => Selector('.shopping-list').count, 2)
 })
 
-test('create second shopping list', async t => {
+test('create second shopping list', async (t) => {
   await loginFirstUser(t)
 
   await waitSelector(t, 'ShoppingLists', Selector('.example-form-control'))
@@ -91,7 +91,7 @@ test('create second shopping list', async t => {
   await refreshAndWait(t, () => Selector('.shopping-list').count, 3)
 })
 
-test('create items in first shopping list', async t => {
+test('create items in first shopping list', async (t) => {
   await loginFirstUser(t)
 
   await waitSelector(
@@ -118,7 +118,7 @@ test('create items in first shopping list', async t => {
   await t.expect(Selector('label').withText('Item 3').exists).eql(true)
 })
 
-test('toggle items in first shopping list', async t => {
+test('toggle items in first shopping list', async (t) => {
   await loginFirstUser(t)
 
   await waitSelector(
@@ -146,7 +146,7 @@ test('toggle items in first shopping list', async t => {
     .eql(true)
 })
 
-test('remove items in first shopping list', async t => {
+test('remove items in first shopping list', async (t) => {
   await loginFirstUser(t)
 
   await waitSelector(

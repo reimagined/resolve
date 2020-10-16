@@ -1,4 +1,6 @@
 import isEqual from 'lodash.isequal'
+import { diffJson } from 'diff'
+import colors from 'colors'
 import { CommandResult } from 'resolve-core'
 import { Phases, symbol } from './constants'
 
@@ -19,6 +21,27 @@ type BDDAggregateAssertionContext = {
   [symbol]: BDDAggregateAssertionState
 }
 
+const stringifyError = (error: any): string =>
+  error == null ? 'no error' : error.toString()
+
+const stringifyDiff = (expected: any, result: any): string =>
+  diffJson(expected, result, { undefinedReplacement: '<undefined>' })
+    .map((change) => {
+      let color = colors.gray
+      let prefix = ''
+
+      if (change.added) {
+        color = colors.green
+        prefix = '+'
+      } else if (change.removed) {
+        color = colors.red
+        prefix = '-'
+      }
+
+      return color(`${prefix}${change.value}`)
+    })
+    .join('')
+
 const checkState = (state: BDDAggregateAssertionState): TypeError | null => {
   if (state.phase < Phases.COMMAND) {
     return new TypeError('invalid phase')
@@ -30,57 +53,62 @@ const checkState = (state: BDDAggregateAssertionState): TypeError | null => {
 }
 
 export const shouldProduceEvent = (
-  { [symbol]: state }: BDDAggregateAssertionContext,
+  context: BDDAggregateAssertionContext,
   expectedEvent: CommandResult
 ) => {
+  const { [symbol]: state } = context
   const invalidStateError = checkState(state)
   if (invalidStateError) {
     throw invalidStateError
   }
   state.assertion = (resolve, reject, result, error) => {
     if (error) {
-      reject(new Error(`expected an event, but received an error ${error}`))
+      return reject(
+        new Error(`expected an event, but received an error ${error}`)
+      )
     }
     if (!isEqual(result, expectedEvent)) {
-      reject(
+      return reject(
         new Error(
-          `expected event ${JSON.stringify(
+          `shouldProduceEvent assertion failed:\n ${stringifyDiff(
             expectedEvent,
-            null,
-            2
-          )}, but received ${JSON.stringify(result, null, 2)}`
+            result
+          )}`
         )
       )
     }
-    resolve(result)
+    return resolve(result)
   }
   state.isDefaultAssertion = false
+  return context
 }
 
 export const shouldThrow = (
-  { [symbol]: state }: BDDAggregateAssertionContext,
+  context: BDDAggregateAssertionContext,
   expectedError: any
 ) => {
+  const { [symbol]: state } = context
   const invalidStateError = checkState(state)
   if (invalidStateError) {
     throw invalidStateError
   }
   state.assertion = (resolve, reject, result, error) => {
     if (!error) {
-      reject(new Error(`expected an error, but received no error received`))
+      return reject(
+        new Error(`expected an error, but received no error received`)
+      )
     }
     if (!isEqual(error, expectedError)) {
-      reject(
+      return reject(
         new Error(
-          `expected error ${JSON.stringify(
-            expectedError,
-            null,
-            2
-          )}, but received ${JSON.stringify(error, null, 2)}`
+          `expected error ${stringifyError(
+            expectedError
+          )}, but received ${stringifyError(error)}`
         )
       )
     }
-    resolve(result)
+    return resolve(result)
   }
   state.isDefaultAssertion = false
+  return context
 }
