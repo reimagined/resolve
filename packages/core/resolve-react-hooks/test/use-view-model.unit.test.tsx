@@ -1,10 +1,18 @@
-import { useContext, useCallback, useMemo } from 'react'
+import React from 'react'
+import { Context } from 'resolve-client'
+import { renderHook } from '@testing-library/react-hooks'
 import { mocked } from 'ts-jest/utils'
+import { ResolveContext } from '../src/context'
 import { useClient } from '../src/use-client'
 import { useViewModel } from '../src/use-view-model'
 
+jest.mock('resolve-client')
 const projectionInitHandler = jest.fn(() => ({ initializedOnClient: true }))
-const mockedContext = {
+
+const mockContext: Context = {
+  origin: 'mock-origin',
+  rootPath: 'mock-root-path',
+  staticPath: 'mock-static-path',
   viewModels: [
     {
       name: 'view-model-name',
@@ -19,23 +27,15 @@ const mockedContext = {
     },
     {
       name: 'another-view-model-name',
-      projection: {},
+      projection: {
+        Init: () => null,
+      },
       deserializeState: (): object => ({}),
     },
   ],
 }
 
-jest.mock('resolve-client')
-jest.mock('react', () => ({
-  useContext: jest.fn(() => mockedContext),
-  useCallback: jest.fn((cb) => cb),
-  useMemo: jest.fn((evaluate) => evaluate()),
-}))
-jest.mock('../src/context', () => ({
-  ResolveContext: 'mocked-context-selector',
-}))
-
-const mockedClient = {
+const mockClient = {
   command: jest.fn(),
   query: jest.fn<any, any>(() =>
     Promise.resolve({
@@ -55,28 +55,19 @@ const mockedClient = {
 }
 
 jest.mock('../src/use-client', () => ({
-  useClient: jest.fn(() => mockedClient),
+  useClient: jest.fn(() => mockClient),
 }))
 
-const mockedUseContext = mocked(useContext)
-const mockedUseCallback = mocked(useCallback)
-const mockedUseMemo = mocked(useMemo)
-
 const mockedUseClient = mocked(useClient)
-
 const mockStateChange = jest.fn()
 const mockEventReceived = jest.fn()
 
 const clearMocks = (): void => {
   mockedUseClient.mockClear()
 
-  mockedUseContext.mockClear()
-  mockedUseCallback.mockClear()
-  mockedUseMemo.mockClear()
-
-  mockedClient.query.mockClear()
-  mockedClient.subscribe.mockClear()
-  mockedClient.unsubscribe.mockClear()
+  mockClient.query.mockClear()
+  mockClient.subscribe.mockClear()
+  mockClient.unsubscribe.mockClear()
 
   mockStateChange.mockClear()
   mockEventReceived.mockClear()
@@ -84,8 +75,24 @@ const clearMocks = (): void => {
   projectionInitHandler.mockClear()
 }
 
+function renderWrapped<R>(
+  cb: (props: { context: Context | null }) => R,
+  context: Context | null = mockContext
+) {
+  return renderHook<{ context: Context | null }, R>(cb, {
+    wrapper: (props) => (
+      <ResolveContext.Provider value={props.context}>
+        {props.children}
+      </ResolveContext.Provider>
+    ),
+    initialProps: {
+      context,
+    },
+  })
+}
+
 beforeAll(() => {
-  mockedUseClient.mockReturnValue(mockedClient)
+  mockedUseClient.mockReturnValue(mockClient)
 })
 
 afterEach(() => {
@@ -94,59 +101,65 @@ afterEach(() => {
 
 describe('common', () => {
   test('client requested for specified context', () => {
-    useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
+    renderWrapped(() =>
+      useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
+    )
 
-    expect(mockedUseContext).toHaveBeenCalledWith('mocked-context-selector')
-    expect(useClient).toHaveBeenCalledTimes(1)
+    expect(mockedUseClient).toHaveBeenCalledTimes(1)
   })
 
   test('returns functions', () => {
-    const { connect, dispose } = useViewModel(
-      'view-model-name',
-      ['aggregate-id'],
-      mockStateChange
-    )
+    const { connect, dispose } = renderWrapped(() =>
+      useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
+    ).result.current
 
     expect(connect).toBeInstanceOf(Function)
     expect(dispose).toBeInstanceOf(Function)
   })
 
   test('fail if no context found', () => {
-    mockedUseContext.mockReturnValueOnce(null)
-
-    expect(() =>
-      useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
-    ).toThrow()
+    expect(
+      renderWrapped(
+        () =>
+          useViewModel('view-model-name', ['aggregate-id'], mockStateChange),
+        null
+      ).result.error
+    ).toBeInstanceOf(Error)
   })
 
   test('fail if no state changed callback set', () => {
     const dynamic = useViewModel as Function
 
-    expect(() => dynamic('view-model-name', ['aggregate-id'])).toThrow(
-      'state change callback required'
-    )
-    expect(() => dynamic('view-model-name', ['aggregate-id'], {})).toThrow(
-      'state change callback required'
-    )
+    expect(
+      renderWrapped(() => dynamic('view-model-name', ['aggregate-id'])).result
+        .error
+    ).toEqual(Error('state change callback required'))
+
+    expect(
+      renderWrapped(() => dynamic('view-model-name', ['aggregate-id'], {}))
+        .result.error
+    ).toEqual(Error('state change callback required'))
   })
 })
 
 describe('call', () => {
   const emulateIncomingEvent = async (event: any) => {
-    const subscriptionEventHandler = mockedClient.subscribe.mock.calls[0][4]
+    const subscriptionEventHandler = mockClient.subscribe.mock.calls[0][4]
     await subscriptionEventHandler(event)
   }
 
   test('connect as promise', async () => {
-    const { connect } = useViewModel(
-      'view-model-name',
-      ['aggregate-id'],
-      mockStateChange
+    const {
+      result: {
+        current: { connect },
+      },
+    } = renderWrapped(() =>
+      useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
     )
 
     await connect()
 
-    expect(mockedClient.query).toBeCalledWith(
+    expect(mockClient.query).toBeCalledWith(
       {
         aggregateIds: ['aggregate-id'],
         args: undefined,
@@ -155,7 +168,7 @@ describe('call', () => {
       undefined
     )
 
-    expect(mockedClient.subscribe).toBeCalledWith(
+    expect(mockClient.subscribe).toBeCalledWith(
       'url',
       'cursor',
       'view-model-name',
@@ -168,20 +181,21 @@ describe('call', () => {
 
   test('connect as promise with query options', async () => {
     const validator = (): boolean => true
-    const { connect } = useViewModel(
-      'view-model-name',
-      ['aggregate-id'],
-      mockStateChange,
-      {
+    const {
+      result: {
+        current: { connect },
+      },
+    } = renderWrapped(() =>
+      useViewModel('view-model-name', ['aggregate-id'], mockStateChange, {
         method: 'POST',
         waitFor: {
           validator,
         },
-      }
+      })
     )
 
     await connect()
-    expect(mockedClient.query).toBeCalledWith(
+    expect(mockClient.query).toBeCalledWith(
       {
         aggregateIds: ['aggregate-id'],
         args: undefined,
@@ -194,7 +208,7 @@ describe('call', () => {
         },
       }
     )
-    expect(mockedClient.subscribe).toBeCalledWith(
+    expect(mockClient.subscribe).toBeCalledWith(
       'url',
       'cursor',
       'view-model-name',
@@ -206,24 +220,28 @@ describe('call', () => {
   })
 
   test('dispose as promise', async () => {
-    const { connect, dispose } = useViewModel(
-      'view-model-name',
-      ['aggregate-id'],
-      mockStateChange
+    const {
+      result: {
+        current: { connect, dispose },
+      },
+    } = renderWrapped(() =>
+      useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
     )
     await connect()
     await dispose()
 
-    expect(mockedClient.unsubscribe).toBeCalledWith({
+    expect(mockClient.unsubscribe).toBeCalledWith({
       key: 'subscription-data',
     })
   })
 
   test('connect with callback', (done) => {
-    const { connect } = useViewModel(
-      'view-model-name',
-      ['aggregate-id'],
-      mockStateChange
+    const {
+      result: {
+        current: { connect },
+      },
+    } = renderWrapped(() =>
+      useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
     )
 
     const callback = jest.fn(done)
@@ -232,10 +250,12 @@ describe('call', () => {
   })
 
   test('dispose with callback', async () => {
-    const { connect, dispose } = useViewModel(
-      'view-model-name',
-      ['aggregate-id'],
-      mockStateChange
+    const {
+      result: {
+        current: { connect, dispose },
+      },
+    } = renderWrapped(() =>
+      useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
     )
     const callback = jest.fn(() => {
       /* no op */
@@ -249,16 +269,20 @@ describe('call', () => {
   })
 
   test('projection Init handler invoked during initialization', () => {
-    useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
+    renderWrapped(() =>
+      useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
+    )
 
     expect(projectionInitHandler).toHaveBeenCalled()
   })
 
   test('state changed callback invoked on connect with initial state', async () => {
-    const { connect } = useViewModel(
-      'view-model-name',
-      ['aggregate-id'],
-      mockStateChange
+    const {
+      result: {
+        current: { connect },
+      },
+    } = renderWrapped(() =>
+      useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
     )
 
     await connect()
@@ -272,10 +296,12 @@ describe('call', () => {
   })
 
   test('state changed callback invoked with initial, and then queried state on connect', async () => {
-    const { connect } = useViewModel(
-      'view-model-name',
-      ['aggregate-id'],
-      mockStateChange
+    const {
+      result: {
+        current: { connect },
+      },
+    } = renderWrapped(() =>
+      useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
     )
 
     await connect()
@@ -298,10 +324,12 @@ describe('call', () => {
     const event = {
       type: 'EVENT_TYPE',
     }
-    const { connect } = useViewModel(
-      'view-model-name',
-      ['aggregate-id'],
-      mockStateChange
+    const {
+      result: {
+        current: { connect },
+      },
+    } = renderWrapped(() =>
+      useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
     )
 
     await connect()
@@ -321,11 +349,17 @@ describe('call', () => {
     const event = {
       type: 'EVENT_TYPE',
     }
-    const { connect } = useViewModel(
-      'view-model-name',
-      ['aggregate-id'],
-      mockStateChange,
-      mockEventReceived
+    const {
+      result: {
+        current: { connect },
+      },
+    } = renderWrapped(() =>
+      useViewModel(
+        'view-model-name',
+        ['aggregate-id'],
+        mockStateChange,
+        mockEventReceived
+      )
     )
 
     await connect()
@@ -336,38 +370,50 @@ describe('call', () => {
   })
 
   test('state re-requested on resubscribe callback', async () => {
-    const { connect } = useViewModel(
-      'view-model-name',
-      ['aggregate-id'],
-      mockStateChange,
-      mockEventReceived
+    const {
+      result: {
+        current: { connect },
+      },
+    } = renderWrapped(() =>
+      useViewModel(
+        'view-model-name',
+        ['aggregate-id'],
+        mockStateChange,
+        mockEventReceived
+      )
     )
 
     await connect()
 
-    const reconnectCallback = mockedClient.subscribe.mock.calls[0][6]
+    const reconnectCallback = mockClient.subscribe.mock.calls[0][6]
 
     clearMocks()
 
     await reconnectCallback()
 
-    expect(mockedClient.query).toHaveBeenCalled()
+    expect(mockClient.query).toHaveBeenCalled()
     expect(mockStateChange).toHaveBeenCalled()
   })
 
   test('pass view model arguments to client', async () => {
-    const { connect } = useViewModel(
-      'view-model-name',
-      ['aggregate-id'],
-      {
-        a: 'a',
+    const {
+      result: {
+        current: { connect },
       },
-      mockStateChange
+    } = renderWrapped(() =>
+      useViewModel(
+        'view-model-name',
+        ['aggregate-id'],
+        {
+          a: 'a',
+        },
+        mockStateChange
+      )
     )
 
     await connect()
 
-    expect(mockedClient.query).toBeCalledWith(
+    expect(mockClient.query).toBeCalledWith(
       expect.objectContaining({
         aggregateIds: ['aggregate-id'],
         args: { a: 'a' },
@@ -378,17 +424,19 @@ describe('call', () => {
   })
 
   test('initial state returned', () => {
-    const { initialState } = useViewModel(
-      'view-model-name',
-      ['aggregate-id'],
-      mockStateChange
+    const {
+      result: {
+        current: { initialState },
+      },
+    } = renderWrapped(() =>
+      useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
     )
 
     expect(initialState).toEqual({ initializedOnClient: true })
   })
 
   test('#1524 issue: malformed cursor during connect if no events applied to a view model', async () => {
-    mockedClient.query.mockResolvedValueOnce({
+    mockClient.query.mockResolvedValueOnce({
       data: {
         queried: 'result',
       },
@@ -399,15 +447,17 @@ describe('call', () => {
       },
     })
 
-    const { connect } = useViewModel(
-      'view-model-name',
-      ['aggregate-id'],
-      mockStateChange
+    const {
+      result: {
+        current: { connect },
+      },
+    } = renderWrapped(() =>
+      useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
     )
 
     await connect()
 
-    expect(mockedClient.subscribe).toHaveBeenCalledWith(
+    expect(mockClient.subscribe).toHaveBeenCalledWith(
       expect.any(String),
       null,
       expect.any(String),

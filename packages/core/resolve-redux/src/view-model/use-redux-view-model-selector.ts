@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 
 function useReduxViewModelSelector(query: ViewModelQuery | string): any {
   if (typeof query === 'string') {
-    return useSelector((state: ReduxState) => getEntry(state.readModels, query))
+    return useSelector((state: ReduxState) => getEntry(state.viewModels, query))
   }
   return useSelector((state: ReduxState) =>
     getEntry(state.viewModels, {
