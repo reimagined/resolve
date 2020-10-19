@@ -1,5 +1,6 @@
-import App from './containers/App'
-import Index from './containers/Index'
+import App from './components/App'
+import Index from './components'
+import NamedSelectors from './components/NamedSelectors'
 
 export default [
   {
@@ -8,6 +9,11 @@ export default [
       {
         path: '/redux-hooks',
         component: Index,
+        exact: true,
+      },
+      {
+        path: '/redux-hooks/named-selectors',
+        component: NamedSelectors,
         exact: true,
       },
     ],
