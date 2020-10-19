@@ -47,9 +47,7 @@ describe('event-publisher', () => {
 
     expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
       payload: {
-        principial: {},
         eventSubscriber: 'listenerId',
-        validationRoleArn: 'RoleValidationArn',
       },
       type: 'pause',
     })
@@ -64,9 +62,7 @@ describe('event-publisher', () => {
 
     expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
       payload: {
-        principial: {},
         eventSubscriber: 'listenerId',
-        validationRoleArn: 'RoleValidationArn',
       },
       type: 'resume',
     })
@@ -85,9 +81,7 @@ describe('event-publisher', () => {
 
     expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
       payload: {
-        principial: {},
         eventSubscriber: 'listenerId',
-        validationRoleArn: 'RoleValidationArn',
       },
       type: 'status',
     })
@@ -106,9 +100,7 @@ describe('event-publisher', () => {
 
     expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
       payload: {
-        principial: {},
         eventSubscriber: 'listenerId',
-        validationRoleArn: 'RoleValidationArn',
       },
       type: 'reset',
     })
@@ -128,9 +120,7 @@ describe('event-publisher', () => {
 
     expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
       payload: {
-        principial: {},
         eventSubscriber: 'listenerId',
-        validationRoleArn: 'RoleValidationArn',
       },
       type: 'listProperties',
     })
@@ -151,9 +141,7 @@ describe('event-publisher', () => {
 
     expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
       payload: {
-        principial: {},
         eventSubscriber: 'listenerId',
-        validationRoleArn: 'RoleValidationArn',
         key: 'key1',
       },
       type: 'getProperty',
@@ -173,9 +161,7 @@ describe('event-publisher', () => {
 
     expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
       payload: {
-        principial: {},
         eventSubscriber: 'listenerId',
-        validationRoleArn: 'RoleValidationArn',
         key: 'key1',
         value: 'value1',
       },
@@ -195,9 +181,7 @@ describe('event-publisher', () => {
 
     expect(JSON.parse(lambdaInvoke.mock.calls[0][0].Payload)).toEqual({
       payload: {
-        principial: {},
         eventSubscriber: 'listenerId',
-        validationRoleArn: 'RoleValidationArn',
         key: 'key1',
       },
       type: 'deleteProperty',
