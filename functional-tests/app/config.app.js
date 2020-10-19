@@ -120,6 +120,28 @@ const appConfig = {
       path: '/hoc',
       method: 'GET',
     },
+    {
+      handler: {
+        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+        options: {
+          modulePath: './ssr-redux-hooks.js',
+          moduleFactoryImport: false,
+        },
+      },
+      path: '/redux-hooks/:markup*',
+      method: 'GET',
+    },
+    {
+      handler: {
+        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+        options: {
+          modulePath: './ssr-redux-hooks.js',
+          moduleFactoryImport: false,
+        },
+      },
+      path: '/redux-hooks',
+      method: 'GET',
+    },
   ],
   clientEntries: [
     'client/index.js',
@@ -136,6 +158,23 @@ const appConfig = {
       'client/ssr-hoc.js',
       {
         outputFile: 'common/cloud-entry/ssr-hoc.js',
+        moduleType: 'commonjs',
+        target: 'node',
+      },
+    ],
+    'client/index-redux-hooks.js',
+    [
+      'client/ssr-redux-hooks.js',
+      {
+        outputFile: 'common/local-entry/ssr-redux-hooks.js',
+        moduleType: 'commonjs',
+        target: 'node',
+      },
+    ],
+    [
+      'client/ssr-hoc.js',
+      {
+        outputFile: 'common/cloud-entry/ssr-redux-hooks.js',
         moduleType: 'commonjs',
         target: 'node',
       },

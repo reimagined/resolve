@@ -26,8 +26,6 @@ const App = ({ staticPath, version }) => {
       <h6 align="left">
         {version != null && version.length > 0 ? `Version ${version}` : ``}
       </h6>
-      <h2 align="center">Basic tests</h2>
-      <h2 align="center">View model tests</h2>
       <Counter version={version} />
     </div>
   )

@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 
-import App from './containers/App'
+import App from './primary/containers/App'
 import { ResolveContext } from 'resolve-react-hooks'
 
 const entryPoint = (resolveContext) => {
