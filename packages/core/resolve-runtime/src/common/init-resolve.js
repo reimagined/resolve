@@ -6,6 +6,8 @@ import crypto from 'crypto'
 import createOnCommandExecuted from './on-command-executed'
 import createEventListener from './event-listener'
 import createEventBus from './event-bus'
+import createEventStore from './event-store'
+import createEventBusConsumer from './event-bus-consumer'
 
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
@@ -82,29 +84,9 @@ const initResolve = async (resolve) => {
   })
 
   const eventBus = createEventBus(resolve)
-
   const eventListener = createEventListener(resolve)
-
-  const eventStore = new Proxy(
-    {},
-    {
-      get(_, key) {
-        if (key === 'SaveEvent') {
-          return async ({ event }) => await eventstoreAdapter.saveEvent(event)
-        } else if (key === 'LoadEvents') {
-          return async ({ scopeName, ...filter }) =>
-            await (scopeName, eventstoreAdapter.loadEvents(filter))
-        } else {
-          return eventstoreAdapter[key[0].toLowerCase() + key.slice(1)].bind(
-            eventstoreAdapter
-          )
-        }
-      },
-      set() {
-        throw new Error(`Event store API is immutable`)
-      },
-    }
-  )
+  const eventStore = createEventStore(resolve)
+  const eventBusConsumer = createEventBusConsumer(resolve)
 
   Object.assign(resolve, {
     executeCommand,
@@ -116,6 +98,7 @@ const initResolve = async (resolve) => {
     readModelConnectors: { value: readModelConnectors },
     eventstoreAdapter: { value: eventstoreAdapter },
     eventListener: { value: eventListener },
+    eventBusConsumer: { value: eventBusConsumer },
     eventBus: { value: eventBus },
     eventStore: { value: eventStore },
   })

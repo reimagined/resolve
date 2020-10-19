@@ -4,113 +4,91 @@ import invokeEventBus from './invoke-event-bus'
 const initBroker = (resolve) => {
   Object.assign(resolve.publisher, {
     pause: async ({ eventSubscriber }) => {
-      return await invokeEventBus(resolve.eventstoreCredentials, 'pause', {
+      return await invokeEventBus('pause', {
         eventSubscriber,
       })
     },
     acknowledge: async ({ batchId, result }) => {
-      return await invokeEventBus(
-        resolve.eventstoreCredentials,
-        'acknowledge',
-        {
-          batchId,
-          result,
-        }
-      )
-    },
-    publish: async ({ event }) => {
-      return await invokeEventBus(resolve.eventstoreCredentials, 'publish', {
-        event,
+      return await invokeEventBus('acknowledge', {
+        batchId,
+        result,
       })
     },
     resume: async ({ eventSubscriber }) => {
-      return await invokeEventBus(resolve.eventstoreCredentials, 'resume', {
+      return await invokeEventBus('resume', {
         eventSubscriber,
       })
     },
     status: async ({ eventSubscriber }) => {
-      return await invokeEventBus(resolve.eventstoreCredentials, 'status', {
+      return await invokeEventBus('status', {
         eventSubscriber,
       })
     },
     reset: async ({ eventSubscriber }) => {
-      return await invokeEventBus(resolve.eventstoreCredentials, 'reset', {
+      return await invokeEventBus('reset', {
         eventSubscriber,
       })
     },
-    read: async ({ eventFilter }) => {
-      return await invokeEventBus(resolve.eventstoreCredentials, 'read', {
-        eventFilter,
-      })
-    },
     subscribe: async ({ eventSubscriber, subscriptionOptions }) => {
-      return await invokeEventBus(resolve.eventstoreCredentials, 'subscribe', {
+      return await invokeEventBus('subscribe', {
         eventSubscriber,
         subscriptionOptions,
       })
     },
     resubscribe: async ({ eventSubscriber, subscriptionOptions }) => {
-      return await invokeEventBus(
-        resolve.eventstoreCredentials,
-        'resubscribe',
-        {
-          eventSubscriber,
-          subscriptionOptions,
-        }
-      )
+      return await invokeEventBus('resubscribe', {
+        eventSubscriber,
+        subscriptionOptions,
+      })
     },
     unsubscribe: async ({ eventSubscriber }) => {
-      return await invokeEventBus(
-        resolve.eventstoreCredentials,
-        'unsubscribe',
-        {
-          eventSubscriber,
-        }
-      )
+      return await invokeEventBus('unsubscribe', {
+        eventSubscriber,
+      })
     },
     listProperties: async ({ eventSubscriber }) => {
       try {
-        return await invokeEventBus(
-          resolve.eventstoreCredentials,
-          'listProperties',
-          { eventSubscriber }
-        )
+        return await invokeEventBus('listProperties', { eventSubscriber })
       } catch (err) {
         return []
       }
     },
     getProperty: async ({ eventSubscriber, key }) => {
       try {
-        return await invokeEventBus(
-          resolve.eventstoreCredentials,
-          'getProperty',
-          { eventSubscriber, key }
-        )
+        return await invokeEventBus('getProperty', { eventSubscriber, key })
       } catch (err) {
         return null
       }
     },
     setProperty: async ({ eventSubscriber, key, value }) => {
       try {
-        return await invokeEventBus(
-          resolve.eventstoreCredentials,
-          'setProperty',
-          { eventSubscriber, key, value }
-        )
+        return await invokeEventBus('setProperty', {
+          eventSubscriber,
+          key,
+          value,
+        })
       } catch (err) {
         return null
       }
     },
     deleteProperty: async ({ eventSubscriber, key }) => {
       try {
-        return await invokeEventBus(
-          resolve.eventstoreCredentials,
-          'deleteProperty',
-          { eventSubscriber, key }
-        )
+        return await invokeEventBus('deleteProperty', { eventSubscriber, key })
       } catch (err) {
         return null
       }
+    },
+    publish: async ({ event }) => {
+      return await invokeEventBus('publish', {
+        credentials: resolve.eventSubscriberCredentials,
+        event,
+      })
+    },
+    read: async ({ eventFilter }) => {
+      return await invokeEventBus('read', {
+        credentials: resolve.eventSubscriberCredentials,
+        eventFilter,
+      })
     },
   })
 

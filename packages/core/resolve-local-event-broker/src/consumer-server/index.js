@@ -1,22 +1,5 @@
 import { createServer } from 'resolve-local-rpc'
 
-const getProvider = (host, key) => {
-  switch (key) {
-    case 'BeginXATransaction':
-    case 'CommitXATransaction':
-    case 'RollbackXATransaction':
-    case 'Drop':
-    case 'SendEvents':
-      return host.eventListener
-    case 'LoadEvents':
-    case 'SaveEvent':
-      return host.eventStore
-    default: {
-      throw new Error(`Invalid key ${key}`)
-    }
-  }
-}
-
 const createAndInitConsumer = async (config) => {
   const { baseResolve, initResolve, disposeResolve, address } = config
 
@@ -24,8 +7,7 @@ const createAndInitConsumer = async (config) => {
     const currentResolve = Object.create(baseResolve)
     try {
       await initResolve(currentResolve)
-      const provider = getProvider(currentResolve, key)
-      const result = await provider[key](...args)
+      const result = await currentResolve.eventBusConsumer[key](...args)
       return result
     } finally {
       await disposeResolve(currentResolve)

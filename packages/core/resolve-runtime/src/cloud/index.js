@@ -1,5 +1,5 @@
 import 'source-map-support/register'
-
+import { invokeFunction } from 'resolve-cloud-common/lambda'
 import debugLevels from 'resolve-debug-levels'
 
 import initAwsClients from './init-aws-clients'
@@ -42,6 +42,26 @@ const index = async ({ assemblies, constants, domain }) => {
     log.debug('preparing uploader')
     await initUploader(resolve)
 
+    resolve.invokeEventBusAsync = async (
+      eventSubscriber,
+      method,
+      parameters
+    ) => {
+      await invokeFunction({
+        FunctionName: resolve.invokedFunctionArn,
+        InvocationType: 'Event',
+        Region: process.env.AWS_REGION,
+        Payload: {
+          resolveSource: 'EventBusDirect',
+          method,
+          payload: {
+            eventSubscriber,
+            ...parameters,
+          },
+        },
+      })
+    }
+
     resolve.sendReactiveEvent = async (event) => {
       const eventDescriptor = {
         topic: `${process.env.RESOLVE_DEPLOYMENT_ID}/${event.type}/${event.aggregateId}`,
@@ -50,6 +70,21 @@ const index = async ({ assemblies, constants, domain }) => {
       }
 
       await resolve.mqtt.publish(eventDescriptor).promise()
+    }
+
+    resolve.eventSubscriberCredentials = {
+      get applicationLambdaArn() {
+        return resolve.invokedFunctionArn
+      },
+      lambdaEventName: 'resolveSource',
+      lambdaEventType: 'EventBus',
+      mode: 'internal',
+    }
+
+    resolve.subscriptionsCredentials = {
+      get applicationLambdaArn() {
+        return resolve.invokedFunctionArn
+      },
     }
 
     log.debug(`lambda 'cold start' succeeded`)
