@@ -1,6 +1,6 @@
 {
   "name": "shopping-list",
-  "version": "0.25.13",
+  "version": "0.25.14",
   "description": "shows how to work with read-models and view-models",
   "private": true,
   "scripts": {
@@ -30,13 +30,13 @@
     "react-router-dom": "5.1.2",
     "redux": "4.0.5",
     "redux-devtools-extension": "2.13.7",
-    "resolve-readmodel-lite": "0.25.13",
-    "resolve-readmodel-postgresql-serverless": "0.25.13",
-    "resolve-redux": "0.25.13",
-    "resolve-scripts": "0.25.13",
-    "resolve-eventstore-postgresql-serverless": "0.25.13",
-    "resolve-eventstore-lite": "0.25.13",
-    "resolve-module-admin": "0.25.13",
+    "resolve-readmodel-lite": "0.25.14",
+    "resolve-readmodel-postgresql-serverless": "0.25.14",
+    "resolve-redux": "0.25.14",
+    "resolve-scripts": "0.25.14",
+    "resolve-eventstore-postgresql-serverless": "0.25.14",
+    "resolve-eventstore-lite": "0.25.14",
+    "resolve-module-admin": "0.25.14",
     "uuid": "3.3.2"
   },
   "devDependencies": {
@@ -53,7 +53,7 @@
     "enzyme": "3.6.0",
     "jest": "26.0.1",
     "react-test-renderer": "16.13.1",
-    "resolve-testing-tools": "0.25.13",
+    "resolve-testing-tools": "0.25.14",
     "testcafe": "1.8.5",
     "resolve-cloud": "*",
     "isomorphic-fetch": "2.2.1"
