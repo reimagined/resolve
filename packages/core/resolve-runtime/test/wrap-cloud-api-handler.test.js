@@ -1,73 +1,31 @@
-import escapeRegExp from 'lodash.escaperegexp'
-import path from 'path'
-import sinon from 'sinon'
-
 import wrapApiHandler from '../src/cloud/wrap-api-handler'
 
-const stringifyAndNormalizePaths = (value) => {
-  const source = (() => {
-    switch (typeof value) {
-      case 'function':
-        return '[FUNCTION IMPLEMENTATION]'
-      case 'undefined':
-        return 'undefined'
-      default:
-        return JSON.stringify(value)
-    }
-  })()
-
-  const monorepoDir = path.resolve(__dirname, '../../../../')
-  const relativeSource = source.replace(
-    new RegExp(escapeRegExp(monorepoDir), 'gi'),
-    '<MONOREPO_DIR>'
-  )
-
-  return relativeSource
-    .replace(/at [^(]+? \([^)]+?\)/gi, '<STACK_FRAME>')
-    .replace(/at <anonymous>/gi, '<STACK_FRAME>')
-}
-
-const extractInvocationInfo = (sinonStub) => {
-  const result = { callCount: sinonStub.callCount, callsInfo: [] }
-  for (let idx = 0; idx < sinonStub.callCount; idx++) {
-    const { args, returnValue } = sinonStub.getCall(idx)
-    result.callsInfo[idx] = {
-      args: args.map((arg) => stringifyAndNormalizePaths(arg)),
-      returnValue: stringifyAndNormalizePaths(returnValue),
-    }
-  }
-  return result
-}
-
 describe('API handler wrapper for AWS Lambda', () => {
-  let lambdaEvent, lambdaContext, lambdaCallback, getCustomParams
+  let lambdaEvent, lambdaContext, getCustomParams
 
   beforeEach(() => {
-    getCustomParams = sinon.stub().callsFake(() => ({ param: 'value' }))
+    getCustomParams = () => ({ param: 'value' })
 
     lambdaEvent = Object.create(null, {
       headers: {
-        value: {
-          'header-name-1': 'header-value-1',
-          'header-name-2': 'header-value-2',
-          cookie: 'cookie-content',
-          host: 'host-content',
-        },
+        value: [
+          { key: 'header-name-1', value: 'header-value-1' },
+          { key: 'header-name-2', value: 'header-value-2' },
+          { key: 'cookie', value: 'cookie-content' },
+          { key: 'host', value: 'host-content' },
+        ],
         enumerable: true,
       },
-      path: {
-        value: 'PATH_INFO',
+      uri: {
+        value: 'uri/uri/uri',
         enumerable: true,
       },
       body: {
-        value: 'BODY_CONTENT',
+        value: Buffer.from('BODY_CONTENT', 'utf8').toString('base64'),
         enumerable: true,
       },
-      multiValueQueryStringParameters: {
-        value: {
-          'query-name-1': 'query-value-1',
-          'query-name-2': 'query-value-2',
-        },
+      querystring: {
+        value: 'a=b&c=d&e=f',
         enumerable: true,
       },
       httpMethod: {
@@ -75,15 +33,16 @@ describe('API handler wrapper for AWS Lambda', () => {
         enumerable: true,
       },
     })
-    lambdaContext = null
-    lambdaCallback = sinon.stub()
+
+    lambdaContext = {
+      runtime: 10,
+    }
   })
 
   afterEach(() => {
     getCustomParams = null
     lambdaEvent = null
     lambdaContext = null
-    lambdaCallback = null
   })
 
   const apiJsonHandler = async (req, res) => {
@@ -156,10 +115,6 @@ describe('API handler wrapper for AWS Lambda', () => {
 
   const apiRedirectHandler = async (req, res) => {
     res.redirect('REDIRECT-PATH', 307)
-    res.redirect('REDIRECT-PATH')
-    res.status(307)
-    res.text('Result text')
-    res.status(307)
   }
 
   const apiThrowHandler = async () => {
@@ -179,115 +134,342 @@ describe('API handler wrapper for AWS Lambda', () => {
     res.json(req)
   }
 
-  it('should work with primitive JSON handler with GET client request', async () => {
+  test('should work with primitive JSON handler with GET client request', async () => {
     const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
-
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    const result = await wrappedHandler(lambdaEvent, lambdaContext)
+    expect(result).toEqual({
+      body: Buffer.from(
+        JSON.stringify({
+          context: {
+            runtime: 10,
+          },
+          method: 'GET',
+          path: 'uri/uri/uri',
+          query: { a: 'b', c: 'd', e: 'f' },
+          headers: {
+            'header-name-1': 'header-value-1',
+            'header-name-2': 'header-value-2',
+            host: 'host-content',
+          },
+          cookies: {},
+          body: 'BODY_CONTENT',
+          param: 'value',
+          existingHeader: 'Two-Header-Value',
+          missingHeader: null,
+        }),
+        'utf8'
+      ).toString('base64'),
+      headers: [
+        {
+          key: 'One-Header-Name',
+          value: 'One-Header-Value',
+        },
+        {
+          key: 'Two-Header-Name',
+          value: 'Two-Header-Value',
+        },
+        {
+          key: 'Content-Type',
+          value: 'application/json',
+        },
+        {
+          key: 'Set-cookie',
+          value: 'One-Cookie-Name=One-Cookie-Value',
+        },
+        {
+          key: 'set-cookie',
+          value: 'Two-Cookie-Name=Two-Cookie-Value',
+        },
+        {
+          key: 'SEt-cookie',
+          value: 'Two-Cookie-Name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+        },
+      ],
+      httpStatus: 200,
+      httpStatusText: 'OK',
+    })
   })
 
-  it('should work with primitive JSON handler with POST client request', async () => {
+  test('should work with primitive JSON handler with POST client request', async () => {
     const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
-
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    const result = await wrappedHandler(lambdaEvent, lambdaContext)
+    expect(result).toEqual({
+      body: Buffer.from(
+        JSON.stringify({
+          context: { runtime: 10 },
+          method: 'GET',
+          path: 'uri/uri/uri',
+          query: { a: 'b', c: 'd', e: 'f' },
+          headers: {
+            'header-name-1': 'header-value-1',
+            'header-name-2': 'header-value-2',
+            host: 'host-content',
+          },
+          cookies: {},
+          body: 'BODY_CONTENT',
+          param: 'value',
+          existingHeader: 'Two-Header-Value',
+          missingHeader: null,
+        }),
+        'utf8'
+      ).toString('base64'),
+      headers: [
+        {
+          key: 'One-Header-Name',
+          value: 'One-Header-Value',
+        },
+        {
+          key: 'Two-Header-Name',
+          value: 'Two-Header-Value',
+        },
+        {
+          key: 'Content-Type',
+          value: 'application/json',
+        },
+        {
+          key: 'Set-cookie',
+          value: 'One-Cookie-Name=One-Cookie-Value',
+        },
+        {
+          key: 'set-cookie',
+          value: 'Two-Cookie-Name=Two-Cookie-Value',
+        },
+        {
+          key: 'SEt-cookie',
+          value: 'Two-Cookie-Name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+        },
+      ],
+      httpStatus: 200,
+      httpStatusText: 'OK',
+    })
   })
 
-  it('should work with text handler with any client request', async () => {
+  test('should work with text handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiTextHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
-
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    const result = await wrappedHandler(lambdaEvent, lambdaContext)
+    expect(result).toEqual({
+      body: Buffer.from(
+        JSON.stringify({
+          context: { runtime: 10 },
+          method: 'GET',
+          path: 'uri/uri/uri',
+          query: { a: 'b', c: 'd', e: 'f' },
+          headers: {
+            'header-name-1': 'header-value-1',
+            'header-name-2': 'header-value-2',
+            host: 'host-content',
+          },
+          cookies: {},
+          body: 'BODY_CONTENT',
+          param: 'value',
+          existingHeader: 'Two-Header-Value',
+          missingHeader: null,
+        }),
+        'utf8'
+      ).toString('base64'),
+      headers: [
+        {
+          key: 'One-Header-Name',
+          value: 'One-Header-Value',
+        },
+        {
+          key: 'Two-Header-Name',
+          value: 'Two-Header-Value',
+        },
+        {
+          key: 'Set-cookie',
+          value: 'One-Cookie-Name=One-Cookie-Value',
+        },
+        {
+          key: 'set-cookie',
+          value: 'Two-Cookie-Name=Two-Cookie-Value',
+        },
+        {
+          key: 'SEt-cookie',
+          value: 'Two-Cookie-Name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+        },
+      ],
+      httpStatus: 200,
+      httpStatusText: 'OK',
+    })
   })
 
-  it('should work with custom handler with any client request', async () => {
+  test('should work with custom handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiCustomHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
-
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    const result = await wrappedHandler(lambdaEvent, lambdaContext)
+    expect(result).toEqual({
+      body: Buffer.from(
+        JSON.stringify({
+          context: { runtime: 10 },
+          method: 'GET',
+          path: 'uri/uri/uri',
+          query: { a: 'b', c: 'd', e: 'f' },
+          headers: {
+            'header-name-1': 'header-value-1',
+            'header-name-2': 'header-value-2',
+            host: 'host-content',
+          },
+          cookies: {},
+          body: 'BODY_CONTENT',
+          param: 'value',
+          existingHeader: 'Two-Header-Value',
+          missingHeader: null,
+        }),
+        'utf8'
+      ).toString('base64'),
+      headers: [
+        {
+          key: 'One-Header-Name',
+          value: 'One-Header-Value',
+        },
+        {
+          key: 'Two-Header-Name',
+          value: 'Two-Header-Value',
+        },
+        {
+          key: 'Set-cookie',
+          value: 'One-Cookie-Name=One-Cookie-Value',
+        },
+        {
+          key: 'set-cookie',
+          value: 'Two-Cookie-Name=Two-Cookie-Value',
+        },
+        {
+          key: 'SEt-cookie',
+          value: 'Two-Cookie-Name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+        },
+      ],
+      httpStatus: 200,
+      httpStatusText: 'OK',
+    })
   })
 
-  it('should work with file handler with any client request', async () => {
+  test('should work with file handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiFileHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
-
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    const result = await wrappedHandler(lambdaEvent, lambdaContext)
+    expect(result).toEqual({
+      body: Buffer.from(
+        JSON.stringify({
+          context: { runtime: 10 },
+          method: 'GET',
+          path: 'uri/uri/uri',
+          query: { a: 'b', c: 'd', e: 'f' },
+          headers: {
+            'header-name-1': 'header-value-1',
+            'header-name-2': 'header-value-2',
+            host: 'host-content',
+          },
+          cookies: {},
+          body: 'BODY_CONTENT',
+          param: 'value',
+          existingHeader: 'Two-Header-Value',
+          missingHeader: null,
+        }),
+        'utf8'
+      ).toString('base64'),
+      headers: [
+        {
+          key: 'One-Header-Name',
+          value: 'One-Header-Value',
+        },
+        {
+          key: 'Two-Header-Name',
+          value: 'Two-Header-Value',
+        },
+        {
+          key: 'Content-Disposition',
+          value: 'attachment; filename="synthetic-filename.txt"',
+        },
+        {
+          key: 'Set-cookie',
+          value: 'One-Cookie-Name=One-Cookie-Value',
+        },
+        {
+          key: 'set-cookie',
+          value: 'Two-Cookie-Name=Two-Cookie-Value',
+        },
+        {
+          key: 'SEt-cookie',
+          value: 'Two-Cookie-Name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+        },
+      ],
+      httpStatus: 200,
+      httpStatusText: 'OK',
+    })
   })
 
-  it('should work with redirect handler with any client request', async () => {
+  test('should work with redirect handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiRedirectHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
-
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    const result = await wrappedHandler(lambdaEvent, lambdaContext)
+    expect(result).toEqual({
+      body: '',
+      headers: [
+        {
+          key: 'Location',
+          value: 'REDIRECT-PATH',
+        },
+      ],
+      httpStatus: 307,
+      httpStatusText: 'Temporary Redirect',
+    })
   })
 
-  it('should work with error throwing handler', async () => {
+  test('should work with error throwing handler', async () => {
     const wrappedHandler = wrapApiHandler(apiThrowHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
-
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    const result = await wrappedHandler(lambdaEvent, lambdaContext)
+    expect(result).toEqual({
+      body: '',
+      headers: [],
+      httpStatus: 500,
+      httpStatusText: 'Internal Server Error',
+    })
   })
 
-  it('should work with empty end', async () => {
+  test('should work with empty end', async () => {
     const wrappedHandler = wrapApiHandler(apiEmptyEndHandler, getCustomParams)
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
-
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    const result = await wrappedHandler(lambdaEvent, lambdaContext)
+    expect(result).toEqual({
+      body: '',
+      headers: [],
+      httpStatus: 200,
+      httpStatusText: 'OK',
+    })
   })
 
-  it('should work with empty end using chaining', async () => {
+  test('should work with empty end using chaining', async () => {
     const wrappedHandler = wrapApiHandler(
       apiEmptyEndChainingHandler,
       getCustomParams
     )
-    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
-
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    const result = await wrappedHandler(lambdaEvent, lambdaContext)
+    expect(result).toEqual({
+      body: '',
+      headers: [],
+      httpStatus: 200,
+      httpStatusText: 'OK',
+    })
   })
 
-  it('should correctly parsing query with array params', async () => {
+  test('should correctly parsing query with array params', async () => {
     const wrappedHandler = wrapApiHandler(
       apiReturnRequestHandler,
       getCustomParams
     )
     const customEvent = {
       ...lambdaEvent,
-      multiValueQueryStringParameters: {
-        'a[]': ['1', '2'],
-        b: ['1', '2'],
-        c: ['[1,2]'],
-        d: ['1,2'],
-        'e[]': ['1,2'],
-        'f[]': ['1'],
-      },
+      querystring: 'a[]=1&a[]=2&b=1&b=2&c=[1,2]&d=1,2&e[]=[1,2]&f[]=1',
     }
-    const { body } = await wrappedHandler(customEvent, lambdaContext)
-    const query = JSON.parse(body).query
+    const result = await wrappedHandler(customEvent, lambdaContext)
+    const query = JSON.parse(
+      Buffer.from(result.body, 'base64').toString('utf8')
+    ).query
 
     expect(query).toEqual({
       a: ['1', '2'],
-      b: ['1', '2'],
+      b: '2',
       c: '[1,2]',
       d: '1,2',
-      e: ['1,2'],
+      e: ['[1,2]'],
       f: ['1'],
     })
   })
