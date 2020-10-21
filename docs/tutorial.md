@@ -391,15 +391,15 @@ Command error: the shopping list does not exist
 
 ---
 
-## **Lesson 3** - Read side - Create a View Model to Query List Items
+## **Lesson 3** - Read side - Create a Read Model to Query Shopping Lists
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-3)
 
 Currently, your shopping list application has a write side that allows you to create shopping lists and items in these lists. To obtain this data from the application, you need to implement the application's **[read side](resolve-app-structure.md#write-and-read-sides)**.
 
-### Add a View Model
+### Add a Read Model
 
-Add a **ShoppingList** **[View Model](read-side.md#view-model-specifics)** to your application. To do this, create a **shopping_list.projection.js** file in the **view-models** folder and add the following code to this file:
+Add a **ShoppingLists** **[Read Model](read-side.md#view-model-specifics)** to your application. To do this, create a **shopping_list.projection.js** file in the **view-models** folder and add the following code to this file:
 
 **common/view-models/shopping_list.projection.js:**
 
@@ -432,7 +432,7 @@ export default {
 
 <!-- prettier-ignore-end -->
 
-This code defines a View Model **[projection](read-side.md#updating-a-read-model-via-projection-functions)**. A View Model projection runs when the View Model receives a data query. It runs for all events with the specified aggregate IDs and builds a state based on data from these event. The resulting state is then sent back as the query response.
+This code defines a Read Model **[projection](read-side.md#updating-a-read-model-via-projection-functions)**. A View Model projection runs when the View Model receives a data query. It runs for all events with the specified aggregate IDs and builds a state based on data from these event. The resulting state is then sent back as the query response.
 
 Register the View Model in the application's configuration file as shown below.
 
