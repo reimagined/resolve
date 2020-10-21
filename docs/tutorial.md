@@ -235,9 +235,9 @@ Your application's write side currently does not perform any input validation. T
 
 - The command handlers do not check whether all required fields are provided in a command's payload.
 - It is possible to create more then one shopping list with the same aggregate ID.
-- You can create items in a in a nonexistent shopping list.
+- You can create items in a nonexistent shopping list.
 
-You can overcome the first issue by adding simple checks to each command handler:
+To overcome the first issue, add checks at the beginning of each command handler:
 
 **common/aggregates/shopping_list.commands.js:**
 
@@ -253,7 +253,7 @@ createShoppingItem: (state, { payload: { id, text } }) => {
 }
 ```
 
-To overcome the second and third issues, you can use the **aggregate state**. This state is assembled on the fly by an aggregate **projection** from previously created events. To add a projection to the ShoppingList aggregate, create a **shopping_list.projection.js** file in the **common/aggregates** folder and add the following code there:
+To overcome the second and third issues, you need to have an **aggregate state** object that keeps track of what shopping lists were already created. Such object can be assembled on the fly by an aggregate **projection** from previously created events. To add a projection to the ShoppingList aggregate, create a **shopping_list.projection.js** file in the **common/aggregates** folder and add the following code there:
 
 **common/aggregates/shopping_list.projection.js:**
 
@@ -295,7 +295,7 @@ Register the create projection in the application's configuration file:
 
 The projection object specifies an **Init** function and a set of **projection functions**.
 
-- The Init function initializes the aggregate state. In the example code, it creates a new empty object.
+- The **Init** function initializes the aggregate state. In the example code, it creates a new empty object.
 - Projection functions build the aggregate state based on the aggregate's events. Each such function is associated with a particular event type. The function receives the previous state and an event, and returns a new state based on the input.
 
 In the example code, the SHOPPING_LIST_CREATED projection function adds the SHOPPING_LIST_CREATED event's timestamp to the state. This information can be used on the write side to find out whether and when a shopping list was created for the current aggregate instance (an instance that the current aggregate ID identifies).
