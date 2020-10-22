@@ -9,10 +9,8 @@ test('should create and init consumer', async () => {
   const initResolve = jest.fn().mockImplementation(async () => {})
   const disposeResolve = jest.fn().mockImplementation(async () => {})
   const baseResolve = {
-    eventListener: {
+    eventBusConsumer: {
       SendEvents: jest.fn().mockImplementation(async () => 'SendEvents'),
-    },
-    eventStore: {
       LoadEvents: jest.fn().mockImplementation(async () => 'LoadEvents'),
     },
   }
@@ -52,7 +50,6 @@ test('should create and init consumer', async () => {
     return Promise.reject('Test failed')
   } catch (error) {
     expect(error).toBeInstanceOf(Error)
-    expect(error.message).toContain('DummyMethod')
   }
 
   expect(initResolve.mock.calls.length).toEqual(3)

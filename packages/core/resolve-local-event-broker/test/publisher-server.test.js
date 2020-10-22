@@ -263,7 +263,6 @@ describe('Broker operation', () => {
       batchId: 'batchId',
       eventSubscriber: 'eventSubscriber',
       deliveryStrategy: 'deliveryStrategy',
-      scopeName: 'scopeName',
       status: 'status',
       maxParallel: 1,
       successEvent: JSON.stringify({

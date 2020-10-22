@@ -255,7 +255,6 @@ exports[`Broker operation status 1`] = `
           "eventSubscriber": "eventSubscriber",
           "failedEvent": null,
           "maxParallel": 1,
-          "scopeName": "scopeName",
           "status": "status",
           "subscriptionId": "subscriptionId",
           "successEvent": "{\\"type\\":\\"busEvent\\"}",
