@@ -1,6 +1,6 @@
 import debugLevels from 'resolve-debug-levels'
 
-import handleApiGatewayEvent from './api-gateway-handler'
+import handleCloudFrontEvent from './cloud-front-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
 import putMetrics from './metrics'
@@ -66,13 +66,13 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
 
       return executorResult
     } else if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
-      log.debug('identified event source: API gateway')
+      log.debug('identified event source: CloudFront')
       log.verbose(
         JSON.stringify(lambdaEvent.httpMethod, null, 2),
         JSON.stringify(lambdaEvent.headers, null, 2)
       )
 
-      const executorResult = await handleApiGatewayEvent(
+      const executorResult = await handleCloudFrontEvent(
         lambdaEvent,
         lambdaContext,
         resolve

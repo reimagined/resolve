@@ -14,7 +14,7 @@ describe('Cloud entry', () => {
     { key: 'Accept-Encoding', value: 'gzip, deflate' },
     { key: 'Accept-Language', value: 'en-US; q=0.7, en; q=0.3' },
     { key: 'Cache-Control', value: 'no-cache' },
-    { key: 'Host', value: 'aws-gateway-test-host' },
+    { key: 'Host', value: 'aws-cloud-front-test-host' },
     { key: 'User-Agent', value: 'jest/mock' },
   ]
 
@@ -139,9 +139,9 @@ describe('Cloud entry', () => {
     STS.assumeRole.mockReset()
   })
 
-  describe('API gateway event', () => {
+  describe('CloudFront event', () => {
     test('should handle URL-addresses outside "rootPath"', async () => {
-      const apiGatewayEvent = {
+      const cloudFrontEvent = {
         uri: '/',
         httpMethod: 'GET',
         headers: [...defaultRequestHttpHeaders],
@@ -151,7 +151,7 @@ describe('Cloud entry', () => {
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await cloudEntryWorker(cloudFrontEvent, lambdaContext)
 
       expect(result).toEqual({
         body: Buffer.from(
@@ -186,7 +186,7 @@ describe('Cloud entry', () => {
       domain.readModels.push(readModel)
       assemblies.readModelConnectors['default'] = () => readModelConnector
 
-      const apiGatewayEvent = {
+      const cloudFrontEvent = {
         uri: '/root-path/api/query/read-model-name/resolver-name',
         httpMethod: 'GET',
         headers: [...defaultRequestHttpHeaders],
@@ -196,7 +196,7 @@ describe('Cloud entry', () => {
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await cloudEntryWorker(cloudFrontEvent, lambdaContext)
 
       expect(result).toEqual({
         body: Buffer.from(
@@ -255,7 +255,7 @@ describe('Cloud entry', () => {
       domain.readModels.push(readModel)
       assemblies.readModelConnectors['default'] = () => readModelConnector
 
-      const apiGatewayEvent = {
+      const cloudFrontEvent = {
         uri: '/root-path/api/query/read-model-name/non-existing-resolver-name',
         httpMethod: 'GET',
         headers: [...defaultRequestHttpHeaders],
@@ -265,7 +265,7 @@ describe('Cloud entry', () => {
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await cloudEntryWorker(cloudFrontEvent, lambdaContext)
 
       expect(result).toEqual({
         body: Buffer.from(
@@ -289,7 +289,7 @@ describe('Cloud entry', () => {
     })
 
     test('should invoke non-existing read-model via GET /"rootPath"/api/query/"readModelName"/"resolverName"?"resolverArgs"', async () => {
-      const apiGatewayEvent = {
+      const cloudFrontEvent = {
         uri:
           '/root-path/api/query/non-existing-read-model-name/non-existing-resolver-name',
         httpMethod: 'GET',
@@ -300,7 +300,7 @@ describe('Cloud entry', () => {
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await cloudEntryWorker(cloudFrontEvent, lambdaContext)
 
       expect(result).toEqual({
         body: Buffer.from(
@@ -319,7 +319,7 @@ describe('Cloud entry', () => {
     })
 
     test('should fail on invoking read-model without "resolverName" via GET /"rootPath"/api/query/"readModelName"', async () => {
-      const apiGatewayEvent = {
+      const cloudFrontEvent = {
         uri: '/root-path/api/query/read-model-name',
         httpMethod: 'GET',
         headers: [...defaultRequestHttpHeaders],
@@ -329,7 +329,7 @@ describe('Cloud entry', () => {
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await cloudEntryWorker(cloudFrontEvent, lambdaContext)
 
       expect(result).toEqual({
         body: Buffer.from(
@@ -377,7 +377,7 @@ describe('Cloud entry', () => {
 
       domain.aggregates.push(aggregate)
 
-      const apiGatewayEvent = {
+      const cloudFrontEvent = {
         uri: '/root-path/api/commands',
         httpMethod: 'POST',
         headers: [
@@ -404,7 +404,7 @@ describe('Cloud entry', () => {
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await cloudEntryWorker(cloudFrontEvent, lambdaContext)
 
       expect(result).toEqual({
         body: Buffer.from(
@@ -451,7 +451,7 @@ describe('Cloud entry', () => {
 
       domain.aggregates.push(aggregate)
 
-      const apiGatewayEvent = {
+      const cloudFrontEvent = {
         uri: '/root-path/api/commands',
         httpMethod: 'POST',
         headers: [
@@ -478,7 +478,7 @@ describe('Cloud entry', () => {
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await cloudEntryWorker(cloudFrontEvent, lambdaContext)
 
       expect(result).toEqual({
         body: Buffer.from(
@@ -515,7 +515,7 @@ describe('Cloud entry', () => {
 
       domain.aggregates.push(aggregate)
 
-      const apiGatewayEvent = {
+      const cloudFrontEvent = {
         uri: '/root-path/api/commands',
         httpMethod: 'POST',
         headers: [
@@ -538,7 +538,7 @@ describe('Cloud entry', () => {
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await cloudEntryWorker(cloudFrontEvent, lambdaContext)
 
       expect(result).toEqual({
         body: Buffer.from(
@@ -575,7 +575,7 @@ describe('Cloud entry', () => {
 
       domain.aggregates.push(aggregate)
 
-      const apiGatewayEvent = {
+      const cloudFrontEvent = {
         uri: '/root-path/api/commands',
         httpMethod: 'POST',
         headers: [
@@ -598,7 +598,7 @@ describe('Cloud entry', () => {
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await cloudEntryWorker(cloudFrontEvent, lambdaContext)
 
       expect(result).toEqual({
         body: Buffer.from('Command error: I’m a teapot', 'utf8').toString(
@@ -635,7 +635,7 @@ describe('Cloud entry', () => {
         }
       )
 
-      const apiGatewayEvent = {
+      const cloudFrontEvent = {
         uri: '/root-path/api/my-api-handler-2',
         httpMethod: 'POST',
         headers: [
@@ -651,7 +651,7 @@ describe('Cloud entry', () => {
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await cloudEntryWorker(cloudFrontEvent, lambdaContext)
 
       expect(result).toEqual({
         body: Buffer.from('ok', 'utf8').toString('base64'),
@@ -675,7 +675,7 @@ describe('Cloud entry', () => {
         },
       })
 
-      const apiGatewayEvent = {
+      const cloudFrontEvent = {
         uri: '/root-path',
         httpMethod: 'POST',
         headers: [...defaultRequestHttpHeaders],
@@ -685,7 +685,7 @@ describe('Cloud entry', () => {
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await cloudEntryWorker(cloudFrontEvent, lambdaContext)
 
       expect(result).toEqual({
         body: '',
@@ -709,7 +709,7 @@ describe('Cloud entry', () => {
         },
       })
 
-      const apiGatewayEvent = {
+      const cloudFrontEvent = {
         uri: '/root-path',
         httpMethod: 'POST',
         headers: [
@@ -725,7 +725,7 @@ describe('Cloud entry', () => {
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await cloudEntryWorker(cloudFrontEvent, lambdaContext)
 
       expect(result).toEqual({
         body: '',

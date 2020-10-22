@@ -3,7 +3,7 @@ import mainHandler from '../common/handlers/main-handler'
 
 const getCustomParameters = async (resolve) => ({ resolve })
 
-const apiGatewayHandler = async (lambdaEvent, lambdaContext, resolve) => {
+const cloudFrontHandler = async (lambdaEvent, lambdaContext, resolve) => {
   const executor = wrapApiHandler(
     mainHandler,
     getCustomParameters.bind(null, resolve)
@@ -22,4 +22,4 @@ const apiGatewayHandler = async (lambdaEvent, lambdaContext, resolve) => {
   }
 }
 
-export default apiGatewayHandler
+export default cloudFrontHandler
