@@ -9,14 +9,14 @@ describe('Cloud entry', () => {
   let originalMathRandom, originalDateNow, originalProcessEnv
   let eventstoreAdapter, snapshotAdapter
 
-  const defaultRequestHttpHeaders = {
-    Accept: '*/*',
-    'Accept-Encoding': 'gzip, deflate',
-    'Accept-Language': 'en-US; q=0.7, en; q=0.3',
-    'Cache-Control': 'no-cache',
-    Host: 'aws-gateway-test-host',
-    'User-Agent': 'jest/mock',
-  }
+  const defaultRequestHttpHeaders = [
+    { key: 'Accept', value: '*/*' },
+    { key: 'Accept-Encoding', value: 'gzip, deflate' },
+    { key: 'Accept-Language', value: 'en-US; q=0.7, en; q=0.3' },
+    { key: 'Cache-Control', value: 'no-cache' },
+    { key: 'Host', value: 'aws-gateway-test-host' },
+    { key: 'User-Agent', value: 'jest/mock' },
+  ]
 
   const customConstants = {
     customConstantName: 'customConstantValue',
@@ -142,10 +142,10 @@ describe('Cloud entry', () => {
   describe('API gateway event', () => {
     test('should handle URL-addresses outside "rootPath"', async () => {
       const apiGatewayEvent = {
-        path: '/',
+        uri: '/',
         httpMethod: 'GET',
-        headers: { ...defaultRequestHttpHeaders },
-        multiValueQueryStringParameters: {},
+        headers: [...defaultRequestHttpHeaders],
+        querystring: 'a=b&c=d',
         body: null,
       }
 
@@ -154,9 +154,13 @@ describe('Cloud entry', () => {
       const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
       expect(result).toEqual({
-        statusCode: 405,
-        headers: {},
-        body: 'Access error: GET "/" is not addressable by current executor',
+        body: Buffer.from(
+          'Access error: GET "/" is not addressable by current executor',
+          'utf8'
+        ).toString('base64'),
+        headers: [],
+        httpStatus: 405,
+        httpStatusText: 'Method Not Allowed',
       })
     })
 
@@ -183,12 +187,10 @@ describe('Cloud entry', () => {
       assemblies.readModelConnectors['default'] = () => readModelConnector
 
       const apiGatewayEvent = {
-        path: '/root-path/api/query/read-model-name/resolver-name',
+        uri: '/root-path/api/query/read-model-name/resolver-name',
         httpMethod: 'GET',
-        headers: { ...defaultRequestHttpHeaders },
-        multiValueQueryStringParameters: {
-          key: 'value',
-        },
+        headers: [...defaultRequestHttpHeaders],
+        querystring: 'a=b&c=d',
         body: null,
       }
 
@@ -196,12 +198,28 @@ describe('Cloud entry', () => {
 
       const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(200)
-      expect(result.headers).toEqual({ 'Content-Type': 'application/json' })
-      expect(JSON.parse(result.body)).toEqual({
-        data: {
-          key: 'value',
-        },
+      expect(result).toEqual({
+        body: Buffer.from(
+          JSON.stringify(
+            {
+              data: {
+                a: 'b',
+                c: 'd',
+              },
+            },
+            null,
+            2
+          ),
+          'utf8'
+        ).toString('base64'),
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/json',
+          },
+        ],
+        httpStatus: 200,
+        httpStatusText: 'OK',
       })
 
       expect(readModelConnector.connect.mock.calls[0][0]).toEqual(
@@ -238,12 +256,10 @@ describe('Cloud entry', () => {
       assemblies.readModelConnectors['default'] = () => readModelConnector
 
       const apiGatewayEvent = {
-        path: '/root-path/api/query/read-model-name/non-existing-resolver-name',
+        uri: '/root-path/api/query/read-model-name/non-existing-resolver-name',
         httpMethod: 'GET',
-        headers: { ...defaultRequestHttpHeaders },
-        multiValueQueryStringParameters: {
-          key: 'value',
-        },
+        headers: [...defaultRequestHttpHeaders],
+        querystring: 'key=value',
         body: null,
       }
 
@@ -251,11 +267,20 @@ describe('Cloud entry', () => {
 
       const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(422)
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
-      expect(result.body).toEqual(
-        'Resolver "non-existing-resolver-name" does not exist'
-      )
+      expect(result).toEqual({
+        body: Buffer.from(
+          'Resolver "non-existing-resolver-name" does not exist',
+          'utf8'
+        ).toString('base64'),
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/plain',
+          },
+        ],
+        httpStatus: 422,
+        httpStatusText: 'Unprocessable Entity',
+      })
 
       expect(readModelConnector.connect.mock.calls.length).toEqual(0)
       expect(readModelConnector.disconnect.mock.calls.length).toEqual(0)
@@ -265,11 +290,11 @@ describe('Cloud entry', () => {
 
     test('should invoke non-existing read-model via GET /"rootPath"/api/query/"readModelName"/"resolverName"?"resolverArgs"', async () => {
       const apiGatewayEvent = {
-        path:
+        uri:
           '/root-path/api/query/non-existing-read-model-name/non-existing-resolver-name',
         httpMethod: 'GET',
-        headers: { ...defaultRequestHttpHeaders },
-        multiValueQueryStringParameters: { key: 'value' },
+        headers: [...defaultRequestHttpHeaders],
+        querystring: 'key=value',
         body: null,
       }
 
@@ -277,19 +302,28 @@ describe('Cloud entry', () => {
 
       const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(422)
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
-      expect(result.body).toEqual(
-        'Read/view model "non-existing-read-model-name" does not exist'
-      )
+      expect(result).toEqual({
+        body: Buffer.from(
+          'Read/view model "non-existing-read-model-name" does not exist',
+          'utf8'
+        ).toString('base64'),
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/plain',
+          },
+        ],
+        httpStatus: 422,
+        httpStatusText: 'Unprocessable Entity',
+      })
     })
 
     test('should fail on invoking read-model without "resolverName" via GET /"rootPath"/api/query/"readModelName"', async () => {
       const apiGatewayEvent = {
-        path: '/root-path/api/query/read-model-name',
+        uri: '/root-path/api/query/read-model-name',
         httpMethod: 'GET',
-        headers: { ...defaultRequestHttpHeaders },
-        multiValueQueryStringParameters: {},
+        headers: [...defaultRequestHttpHeaders],
+        querystring: 'key=value',
         body: null,
       }
 
@@ -297,11 +331,20 @@ describe('Cloud entry', () => {
 
       const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(400)
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
-      expect(result.body).toEqual(
-        'Invalid "modelName" and/or "modelOptions" parameters'
-      )
+      expect(result).toEqual({
+        body: Buffer.from(
+          'Invalid "modelName" and/or "modelOptions" parameters',
+          'utf8'
+        ).toString('base64'),
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/plain',
+          },
+        ],
+        httpStatus: 400,
+        httpStatusText: 'Bad Request',
+      })
     })
 
     test('should invoke command via POST /"rootPath"/api/commands/', async () => {
@@ -335,39 +378,60 @@ describe('Cloud entry', () => {
       domain.aggregates.push(aggregate)
 
       const apiGatewayEvent = {
-        path: '/root-path/api/commands',
+        uri: '/root-path/api/commands',
         httpMethod: 'POST',
-        headers: {
+        headers: [
           ...defaultRequestHttpHeaders,
-          'Content-Type': 'application/json; charset=utf-8',
-        },
-        multiValueQueryStringParameters: {},
-        body: JSON.stringify({
-          aggregateName: 'Map',
-          aggregateId: 'aggregateId',
-          type: 'set',
-          payload: {
-            key: 'key1',
-            value: 'value1',
+          {
+            key: 'Content-Type',
+            value: 'application/json; charset=utf-8',
           },
-        }),
+        ],
+        querystring: 'key=value',
+        body: Buffer.from(
+          JSON.stringify({
+            aggregateName: 'Map',
+            aggregateId: 'aggregateId',
+            type: 'set',
+            payload: {
+              key: 'key1',
+              value: 'value1',
+            },
+          }),
+          'utf8'
+        ).toString('base64'),
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
       const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(200)
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
-      expect(JSON.parse(result.body)).toEqual({
-        aggregateId: 'aggregateId',
-        aggregateVersion: 1,
-        timestamp: 1,
-        type: 'SET',
-        payload: {
-          key: 'key1',
-          value: 'value1',
-        },
+      expect(result).toEqual({
+        body: Buffer.from(
+          JSON.stringify(
+            {
+              aggregateId: 'aggregateId',
+              aggregateVersion: 1,
+              timestamp: 1,
+              type: 'SET',
+              payload: {
+                key: 'key1',
+                value: 'value1',
+              },
+            },
+            null,
+            2
+          ),
+          'utf8'
+        ).toString('base64'),
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/plain',
+          },
+        ],
+        httpStatus: 200,
+        httpStatusText: 'OK',
       })
     })
 
@@ -377,7 +441,7 @@ describe('Cloud entry', () => {
         name: 'Map',
         commands: {
           set: () => {
-            throw new ConcurrentError()
+            throw new ConcurrentError('aggregateId')
           },
         },
         serializeState: (state) => JSON.stringify(state),
@@ -388,31 +452,48 @@ describe('Cloud entry', () => {
       domain.aggregates.push(aggregate)
 
       const apiGatewayEvent = {
-        path: '/root-path/api/commands',
+        uri: '/root-path/api/commands',
         httpMethod: 'POST',
-        headers: {
+        headers: [
           ...defaultRequestHttpHeaders,
-          'Content-Type': 'application/json; charset=utf-8',
-        },
-        multiValueQueryStringParameters: '',
-        body: JSON.stringify({
-          aggregateName: 'Map',
-          aggregateId: 'aggregateId',
-          type: 'set',
-          payload: {
-            key: 'key1',
-            value: 'value1',
+          {
+            key: 'Content-Type',
+            value: 'application/json; charset=utf-8',
           },
-        }),
+        ],
+        querystring: 'key=value',
+        body: Buffer.from(
+          JSON.stringify({
+            aggregateName: 'Map',
+            aggregateId: 'aggregateId',
+            type: 'set',
+            payload: {
+              key: 'key1',
+              value: 'value1',
+            },
+          }),
+          'utf8'
+        ).toString('base64'),
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
       const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(409)
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
-      expect(result.body).toContain('is not actual at the moment')
+      expect(result).toEqual({
+        body: Buffer.from(
+          "Command error: Can not save the event because aggregate 'aggregateId' is not actual at the moment. Please retry later.",
+          'utf8'
+        ).toString('base64'),
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/plain',
+          },
+        ],
+        httpStatus: 409,
+        httpStatusText: 'Conflict',
+      })
     })
 
     test('should fail command via POST /"rootPath"/api/commands/ with CommandError', async () => {
@@ -435,27 +516,44 @@ describe('Cloud entry', () => {
       domain.aggregates.push(aggregate)
 
       const apiGatewayEvent = {
-        path: '/root-path/api/commands',
+        uri: '/root-path/api/commands',
         httpMethod: 'POST',
-        headers: {
+        headers: [
           ...defaultRequestHttpHeaders,
-          'Content-Type': 'application/json; charset=utf-8',
-        },
-        multiValueQueryStringParameters: {},
-        body: JSON.stringify({
-          aggregateName: 'BadAggregate',
-          aggregateId: 'aggregateId',
-          type: 'fail',
-        }),
+          {
+            key: 'Content-Type',
+            value: 'application/json; charset=utf-8',
+          },
+        ],
+        querystring: 'key=value',
+        body: Buffer.from(
+          JSON.stringify({
+            aggregateName: 'BadAggregate',
+            aggregateId: 'aggregateId',
+            type: 'fail',
+          }),
+          'utf8'
+        ).toString('base64'),
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
       const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(400)
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
-      expect(result.body).toEqual('Command error: Event "type" is required')
+      expect(result).toEqual({
+        body: Buffer.from(
+          'Command error: Event "type" is required',
+          'utf8'
+        ).toString('base64'),
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/plain',
+          },
+        ],
+        httpStatus: 400,
+        httpStatusText: 'Bad Request',
+      })
     })
 
     test('should fail command via POST /"rootPath"/api/commands/ with CustomerError', async () => {
@@ -478,27 +576,43 @@ describe('Cloud entry', () => {
       domain.aggregates.push(aggregate)
 
       const apiGatewayEvent = {
-        path: '/root-path/api/commands',
+        uri: '/root-path/api/commands',
         httpMethod: 'POST',
-        headers: {
+        headers: [
           ...defaultRequestHttpHeaders,
-          'Content-Type': 'application/json; charset=utf-8',
-        },
-        multiValueQueryStringParameters: {},
-        body: JSON.stringify({
-          aggregateName: 'BadAggregate',
-          aggregateId: 'aggregateId',
-          type: 'fail',
-        }),
+          {
+            key: 'Content-Type',
+            value: 'application/json; charset=utf-8',
+          },
+        ],
+        querystring: 'key=value',
+        body: Buffer.from(
+          JSON.stringify({
+            aggregateName: 'BadAggregate',
+            aggregateId: 'aggregateId',
+            type: 'fail',
+          }),
+          'utf8'
+        ).toString('base64'),
       }
 
       const cloudEntryWorker = await getCloudEntryWorker()
 
       const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(418)
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
-      expect(result.body).toEqual('Command error: I’m a teapot')
+      expect(result).toEqual({
+        body: Buffer.from('Command error: I’m a teapot', 'utf8').toString(
+          'base64'
+        ),
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/plain',
+          },
+        ],
+        httpStatus: 418,
+        httpStatusText: "I'm a teapot",
+      })
     })
 
     test('should get subscribe options via POST /"rootPath"/api/my-api-handler-1/', async () => {
@@ -522,13 +636,16 @@ describe('Cloud entry', () => {
       )
 
       const apiGatewayEvent = {
-        path: '/root-path/api/my-api-handler-2',
+        uri: '/root-path/api/my-api-handler-2',
         httpMethod: 'POST',
-        headers: {
+        headers: [
           ...defaultRequestHttpHeaders,
-          'Content-Type': 'application/json; charset=utf-8',
-        },
-        multiValueQueryStringParameters: '',
+          {
+            key: 'Content-Type',
+            value: 'application/json; charset=utf-8',
+          },
+        ],
+        querystring: 'key=value',
         body: null,
       }
 
@@ -536,9 +653,17 @@ describe('Cloud entry', () => {
 
       const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(200)
-      expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
-      expect(result.body).toEqual('ok')
+      expect(result).toEqual({
+        body: Buffer.from('ok', 'utf8').toString('base64'),
+        headers: [
+          {
+            key: 'Content-type',
+            value: 'text/plain',
+          },
+        ],
+        httpStatus: 200,
+        httpStatusText: 'OK',
+      })
     })
 
     test('should redirect from /"rootPath" to /"rootPath"/', async () => {
@@ -551,12 +676,10 @@ describe('Cloud entry', () => {
       })
 
       const apiGatewayEvent = {
-        path: '/root-path',
+        uri: '/root-path',
         httpMethod: 'POST',
-        headers: {
-          ...defaultRequestHttpHeaders,
-        },
-        multiValueQueryStringParameters: '',
+        headers: [...defaultRequestHttpHeaders],
+        querystring: 'key=value',
         body: null,
       }
 
@@ -564,9 +687,17 @@ describe('Cloud entry', () => {
 
       const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(302)
-      expect(result.headers).toEqual({ Location: '/root-path/' })
-      expect(result.body).toEqual('')
+      expect(result).toEqual({
+        body: '',
+        headers: [
+          {
+            key: 'Location',
+            value: '/root-path/',
+          },
+        ],
+        httpStatus: 302,
+        httpStatusText: 'Moved Temporarily',
+      })
     })
 
     test('should set header Bearer when jwt provided', async () => {
@@ -579,13 +710,16 @@ describe('Cloud entry', () => {
       })
 
       const apiGatewayEvent = {
-        path: '/root-path',
+        uri: '/root-path',
         httpMethod: 'POST',
-        headers: {
+        headers: [
           ...defaultRequestHttpHeaders,
-          authorization: 'Bearer JWT',
-        },
-        multiValueQueryStringParameters: '',
+          {
+            key: 'authorization',
+            value: 'Bearer JWT',
+          },
+        ],
+        querystring: 'key=value',
         body: null,
       }
 
@@ -593,12 +727,21 @@ describe('Cloud entry', () => {
 
       const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(302)
-      expect(result.headers).toEqual({
-        Authorization: 'Bearer JWT',
-        Location: '/root-path/',
+      expect(result).toEqual({
+        body: '',
+        headers: [
+          {
+            key: 'Authorization',
+            value: 'Bearer JWT',
+          },
+          {
+            key: 'Location',
+            value: '/root-path/',
+          },
+        ],
+        httpStatus: 302,
+        httpStatusText: 'Moved Temporarily',
       })
-      expect(result.body).toEqual('')
     })
   })
 })

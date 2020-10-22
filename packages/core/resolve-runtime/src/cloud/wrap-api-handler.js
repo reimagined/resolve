@@ -31,7 +31,7 @@ const createRequest = async (lambdaEvent, context, customParameters) => {
     query,
     headers,
     cookies,
-    body: Buffer.from(body, 'base64').toString(),
+    body: body != null ? Buffer.from(body, 'base64').toString() : null,
     ...customParameters,
   }
   Object.freeze(req)

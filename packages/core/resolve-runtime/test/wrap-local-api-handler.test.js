@@ -361,7 +361,10 @@ describe('API handler wrapper for express.js', () => {
     await wrappedHandler(expressReq, expressRes)
 
     expect(expressRes.status).toBeCalledWith(307)
-    expect(expressRes.set).toBeCalledWith({"Location": "REDIRECT-PATH", "Set-Cookie": []})
+    expect(expressRes.set).toBeCalledWith({
+      Location: 'REDIRECT-PATH',
+      'Set-Cookie': [],
+    })
     expect(expressRes.end).toBeCalledWith('')
   })
 
@@ -381,7 +384,7 @@ describe('API handler wrapper for express.js', () => {
     await wrappedHandler(expressReq, expressRes)
 
     expect(expressRes.status).toBeCalledWith(200)
-    expect(expressRes.set).toBeCalledWith({"Set-Cookie": []})
+    expect(expressRes.set).toBeCalledWith({ 'Set-Cookie': [] })
     expect(expressRes.end).toBeCalledWith(Buffer.from(''))
   })
 
@@ -394,7 +397,7 @@ describe('API handler wrapper for express.js', () => {
     await wrappedHandler(expressReq, expressRes)
 
     expect(expressRes.status).toBeCalledWith(200)
-    expect(expressRes.set).toBeCalledWith({"Set-Cookie": []})
+    expect(expressRes.set).toBeCalledWith({ 'Set-Cookie': [] })
     expect(expressRes.end).toBeCalledWith(Buffer.from(''))
   })
 })
