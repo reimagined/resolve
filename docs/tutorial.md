@@ -399,59 +399,103 @@ Currently, your shopping list application has a write side that allows you to cr
 
 ### Add a Read Model
 
-Add a **ShoppingLists** **[Read Model](read-side.md#view-model-specifics)** to your application. To do this, create a **shopping_list.projection.js** file in the **view-models** folder and add the following code to this file:
+Add a **ShoppingLists** **[Read Model](read-side.md#read-models)** to your application. To do this, create a **shopping_list.projection.js** file in the **read-models** folder and add the following code to this file:
 
-**common/view-models/shopping_list.projection.js:**
+**common/read-models/shopping_lists.projection.js:**
 
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-3/common/view-models/shopping_list.projection.js /^/ /\n$/)
 ```js
-import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from "../eventTypes";
+import { SHOPPING_LIST_CREATED } from '../eventTypes'
 
 export default {
-  Init: () => null,
-  [SHOPPING_LIST_CREATED]: (state, { aggregateId, payload: { name } }) => ({
-    id: aggregateId,
-    name,
-    list: []
-  }),
-  [SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
-    ...state,
-    list: [
-      ...state.list,
-      {
-        id,
-        text,
-        checked: false
-      }
-    ]
-  })
-};
+  Init: async store => {
+    await store.defineTable('ShoppingLists', {
+      indexes: {
+        id: 'string'
+      },
+      fields: ['createdAt', 'name']
+    })
+  },
+
+  [SHOPPING_LIST_CREATED]: async (
+    store,
+    { aggregateId, timestamp, payload: { name } }
+  ) => {
+    const shoppingList = {
+      id: aggregateId,
+      name,
+      createdAt: timestamp
+    }
+
+    await store.insert('ShoppingLists', shoppingList)
+  }
+}
 ```
 
-<!-- prettier-ignore-end -->
+This code defines a Read Model **[projection](read-side.md#updating-a-read-model-via-projection-functions)**. A projection function builds a state from incoming events and saves it to a persistent store. The type of the store that is used is defined by a Read Model connector:
 
-This code defines a Read Model **[projection](read-side.md#updating-a-read-model-via-projection-functions)**. A View Model projection runs when the View Model receives a data query. It runs for all events with the specified aggregate IDs and builds a state based on data from these event. The resulting state is then sent back as the query response.
+**config.dev.js:**
 
-Register the View Model in the application's configuration file as shown below.
+```js
+// This files defines setting used only in the development environment
+const devConfig = {
+  readModelConnectors: {
+    // This is the 'default' Read Model connector.
+    // It connects a Read Model to a SQLite data
+    default: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'data/read-models.db'
+      }
+    }
+    // You can reconfigure the connector to use other database types:
+    /*
+      default: {
+        module: 'resolve-readmodel-mysql',
+        options: {
+          host: 'localhost',
+          port: 3306,
+          user: 'customUser',
+          password: 'customPassword',
+          database: 'customDatabaseName'
+        }
+      }
+    */
+  }
+}
+```
 
-**config.app.js:**
+You also need to implement a query resolver to answer data queries based on the data from the store.
+
+**common/read-models/shopping_lists.resolvers.js:**
+
+```js
+export default {
+  // The 'all' resolver returns all entries from the 'ShoppingLists' table.
+  all: async store => {
+    return await store.find('ShoppingLists', {}, null, { createdAt: 1 })
+  }
+}
+```
+
+Register the created Read Model in the application configuration file:
+
+**config.app.js**
 
 ```js
 ...
-viewModels: [
+readModels: [
   {
-    name: 'shoppingList',
-    projection: 'common/view-models/shopping_list.projection.js'
+    name: 'ShoppingLists',
+    projection: 'common/read-models/shopping_lists.projection.js',
+    resolvers: 'common/read-models/shopping_lists.resolvers.js',
+    connectorName: 'default'
   }
 ],
-...
 ```
 
 ### Query a View Model via HTTP API
 
-You can now test the read side's functionality. Send an HTTP request to query the ShoppingList View Model:
+You can use the reSolve framework's HTTP API to test the ShoppingLists Read Model's functionality:
 
 ```sh
 $  curl -i -g -X GET "http://localhost:3000/api/query/shoppingList/shopping-list-1"
@@ -490,19 +534,6 @@ Connection: keep-alive
   ]
 }
 ```
-
-The request URL has the following structure:
-
-```
-http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
-```
-
-##### URL Parameters
-
-| Name         | Description                                                                                               |
-| ------------ | --------------------------------------------------------------------------------------------------------- |
-| viewModel    | The View Model name as defined in **config.app.js**                                                       |
-| aggregateIds | A comma-separated list of Aggregate IDs to include into the View Model. Use `*` to include all Aggregates |
 
 ---
 
