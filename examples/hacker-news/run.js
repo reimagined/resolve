@@ -92,7 +92,7 @@ void (async () => {
       case 'reset': {
         const resolveConfig = merge(baseConfig, devConfig)
         await reset(resolveConfig, {
-          dropEventStore: true,
+          dropEventStore: false,
           dropEventBus: true,
           dropReadModels: true,
           dropSagas: true,
