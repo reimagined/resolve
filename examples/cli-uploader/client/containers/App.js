@@ -42,14 +42,13 @@ class App extends React.Component {
     return this.props.jwt == null ? (
       <Login />
     ) : (
-      <div>
-        {this.props.files == null || this.props.files.length === 0
-          ? 'No loaded files'
-          : this.props.files.map((file, index) => {
+        <div>
+          {this.props.files == null || this.props.files.length === 0
+            ? 'No uploaded files'
+            : this.props.files.map((file, index) => {
               const { id, userId, projectId, status } = file
-              const data = `${
-                index + 1
-              }. File: ${id} { Loading-status: ${status}, User: ${userId}, Project: ${projectId} }`
+              const data = `${index + 1
+                }. File: ${id} { Loading-status: ${status}, User: ${userId}, Project: ${projectId} }`
 
               if (this.props.jwt.login === userId && status === 'success') {
                 return (
@@ -68,8 +67,8 @@ class App extends React.Component {
 
               return <div key={index}>{data}</div>
             })}
-      </div>
-    )
+        </div>
+      )
   }
 }
 

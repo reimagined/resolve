@@ -1,12 +1,11 @@
-# Hello World TypeScript Example
+# Personal Data Example
 
-![hello-world-typescript](https://user-images.githubusercontent.com/19663260/41165078-617d223c-6b45-11e8-8f9f-ffdc02e068ae.png)
+![personal-data](https://user-images.githubusercontent.com/37070809/94244380-77f88200-ff21-11ea-8102-829567b64fbb.png)
 
-This is an empty app used as a template for new **reSolve** applications with TypeScript support.  
-You can create it using the example-creation syntax:
+This example demonstrates how to store encrypted personal data in compliance with General Data Protection Regulation (GDPR).
 
 ```sh
-npx create-resolve-app resolve-hello-world-typescript -e hello-world-typescript
+npx create-resolve-app personal-data -e personal-data
 ```
 
 ## What's next?
