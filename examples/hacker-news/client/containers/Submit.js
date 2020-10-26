@@ -1,7 +1,6 @@
 import React from 'react'
 import uuid from 'uuid'
 import { connect } from 'react-redux'
-import { connectResolveAdvanced } from 'resolve-redux'
 import { Redirect } from 'react-router'
 import { bindActionCreators } from 'redux'
 import styled from 'styled-components'
@@ -105,6 +104,4 @@ export const mapStateToProps = (state) => ({
 export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(aggregateActions, dispatch)
 
-export default connectResolveAdvanced(
-  connect(mapStateToProps, mapDispatchToProps)(Submit)
-)
+export default connect(mapStateToProps, mapDispatchToProps)(Submit)
