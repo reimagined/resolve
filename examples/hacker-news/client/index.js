@@ -1,8 +1,9 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Router } from 'react-router'
+import { Provider } from 'react-redux'
 import { createBrowserHistory } from 'history'
-import { AppContainer, createStore, getOrigin } from 'resolve-redux'
+import { createStore, getOrigin } from 'resolve-redux'
 
 import getRoutes from './get-routes'
 import getRedux from './get-redux'
@@ -34,17 +35,11 @@ const entryPoint = ({
   })
 
   render(
-    <AppContainer
-      origin={origin}
-      rootPath={rootPath}
-      staticPath={staticPath}
-      store={store}
-      history={history}
-    >
+    <Provider store={store}>
       <Router history={history}>
         <Routes routes={routes} />
       </Router>
-    </AppContainer>,
+    </Provider>,
     document.getElementById('app-container')
   )
 }
