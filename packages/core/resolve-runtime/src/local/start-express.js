@@ -4,7 +4,6 @@ import bootstrap from '../common/bootstrap'
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 import { PublisherResourceAlreadyExistError } from 'resolve-local-event-broker'
-import shutdown from '../common/shutdown'
 
 const host = '0.0.0.0'
 const startExpress = async (resolve) => {
@@ -66,16 +65,6 @@ const startExpress = async (resolve) => {
       return resolve()
     })
   )
-
-  server.on('exit', async () => {
-    try {
-      const currentResolve = Object.create(resolve)
-      await initResolve(currentResolve)
-      await shutdown(currentResolve, upstream)
-    } finally {
-      await disposeResolve(currentResolve)
-    }
-  })
 
   server.on('error', (err) => {
     throw err
