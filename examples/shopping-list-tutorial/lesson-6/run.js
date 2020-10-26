@@ -7,13 +7,15 @@ import {
   merge,
   stop,
   reset,
+  importEventStore,
+  exportEventStore,
 } from 'resolve-scripts'
 
 import appConfig from './config.app'
+import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
-import resolveModuleAdmin from 'resolve-module-admin'
 
 const launchMode = process.argv[2]
 
@@ -35,7 +37,13 @@ void (async () => {
       }
 
       case 'build': {
-        await build(merge(defaultResolveConfig, appConfig, prodConfig))
+        const resolveConfig = merge(defaultResolveConfig, appConfig, prodConfig)
+        await build(resolveConfig)
+        break
+      }
+
+      case 'cloud': {
+        await build(merge(defaultResolveConfig, appConfig, cloudConfig))
         break
       }
 
@@ -44,13 +52,41 @@ void (async () => {
         break
       }
 
+      case 'reset': {
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+        await reset(resolveConfig, {
+          dropEventStore: false,
+          dropEventBus: true,
+          dropReadModels: true,
+          dropSagas: true,
+        })
+
+        break
+      }
+
+      case 'import-event-store': {
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+
+        const importFile = process.argv[3]
+
+        await importEventStore(resolveConfig, { importFile })
+        break
+      }
+
+      case 'export-event-store': {
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+
+        const exportFile = process.argv[3]
+
+        await exportEventStore(resolveConfig, { exportFile })
+        break
+      }
+
       case 'test:e2e': {
-        const moduleAdmin = resolveModuleAdmin()
         const resolveConfig = merge(
           defaultResolveConfig,
           appConfig,
-          testFunctionalConfig,
-          moduleAdmin
+          testFunctionalConfig
         )
 
         await reset(resolveConfig, {

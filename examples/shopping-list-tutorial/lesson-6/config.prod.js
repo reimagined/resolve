@@ -8,6 +8,26 @@ const prodConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
+  readModelConnectors: {
+    default: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'data/read-models.db',
+      },
+    },
+    /*
+      default: {
+        module: 'resolve-readmodel-mysql',
+        options: {
+          host: 'localhost',
+          port: 3306,
+          user: 'customUser',
+          password: 'customPassword',
+          database: 'customDatabaseName'
+        }
+      }
+    */
+  },
   eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
     options: {
@@ -16,20 +36,21 @@ const prodConfig = {
       snapshotBucketSize: 100,
     },
   },
-  jwtCookie: {
+  /*
+    {
+      module: 'resolve-eventstore-mysql',
+      options: {
+        host: 'localhost',
+        port: 3306,
+        user: 'customUser',
+        password: 'customPassword',
+        database: 'customDatabaseName',
+        eventsTableName: 'customTableName'
+      }
+    }
+  */ jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000,
-  },
-  readModelConnectors: {
-    default: {
-      module: 'resolve-readmodel-lite',
-      options: {
-        databaseFile: 'data/read-models.db',
-      },
-    },
-  },
-  eventBroker: {
-    databaseFile: 'data/local-bus-broker.db',
   },
 }
 

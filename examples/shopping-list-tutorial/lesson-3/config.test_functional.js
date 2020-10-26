@@ -8,6 +8,14 @@ const testFunctionalConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
+  readModelConnectors: {
+    default: {
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'data/read-models-test-functional.db',
+      },
+    },
+  },
   eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
     options: {
@@ -17,9 +25,6 @@ const testFunctionalConfig = {
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000,
-  },
-  eventBroker: {
-    databaseFile: 'data/local-bus-broker-test-functional.db',
   },
 }
 

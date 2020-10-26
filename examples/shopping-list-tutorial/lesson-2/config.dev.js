@@ -8,6 +8,26 @@ const devConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
+  readModelConnectors: {
+    // default: {
+    //   module: 'resolve-readmodel-lite',
+    //   options: {
+    //     databaseFile: 'data/read-models.db',
+    //   },
+    // },
+    /*
+      default: {
+        module: 'resolve-readmodel-mysql',
+        options: {
+          host: 'localhost',
+          port: 3306,
+          user: 'customUser',
+          password: 'customPassword',
+          database: 'customDatabaseName'
+        }
+      }
+    */
+  },
   eventstoreAdapter: {
     module: 'resolve-eventstore-lite',
     options: {
@@ -16,12 +36,23 @@ const devConfig = {
       snapshotBucketSize: 100,
     },
   },
-  jwtCookie: {
+  /*
+    {
+      module: 'resolve-eventstore-mysql',
+      options: {
+        host: 'localhost',
+        port: 3306,
+        user: 'customUser',
+        password: 'customPassword',
+        database: 'customDatabaseName',
+        eventsTableName: 'customTableName',
+        secretsDatabase: 'customSecretsDatabaseName',
+        secretsTableName: 'customSecretsTableName'
+      }
+    }
+  */ jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000,
-  },
-  eventBroker: {
-    databaseFile: 'data/local-bus-broker.db',
   },
 }
 
