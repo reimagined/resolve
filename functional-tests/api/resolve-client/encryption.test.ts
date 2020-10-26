@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid'
 import { Client, QueryResult } from 'resolve-client'
-import { getClient } from './get-client'
+import { getClient } from '../../utils/utils'
 
 let client: Client
 
