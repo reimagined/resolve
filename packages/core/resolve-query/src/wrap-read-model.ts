@@ -111,7 +111,7 @@ const detectBatchWrappers = (connector: any): any => {
   ) {
     return {
       onBeforeBatch: emptyFunction,
-      onSucessBatch: emptyFunction,
+      onSuccessBatch: emptyFunction,
       onFailBatch: emptyFunction,
     }
   } else if (featureDetection === FULL_REGULAR_CONNECTOR) {
@@ -232,12 +232,16 @@ const sendEvents = async (
           `applying ${events.length} events to read-model "${readModelName}" started`
         )
 
-        if(events.length === 1 && events[0] != null && events[0].type === 'Init') {
+        if (
+          events.length === 1 &&
+          events[0] != null &&
+          events[0].type === 'Init'
+        ) {
           try {
             log.verbose(
               `Applying "Init" event to read-model "${readModelName}" started`
             )
-        
+
             try {
               await handler(connection, events[0], secretsManager)
             } catch (innerError) {
@@ -265,37 +269,52 @@ const sendEvents = async (
             )
             throw summaryError
           }
-        } else if(events.length > 0 && events.findIndex(event => event.type === 'Init') < 1) {
-          const { onBeforeBatch, onSuccessBatch, onFailBatch } = detectBatchWrappers(pool.connector)
+        } else if (
+          events.length > 0 &&
+          events.findIndex((event) => event.type === 'Init') < 0
+        ) {
+          const {
+            onBeforeBatch,
+            onSuccessBatch,
+            onFailBatch,
+          } = detectBatchWrappers(pool.connector)
 
           await onBeforeBatch(connection, readModelName, xaTransactionId)
           for (const event of events) {
             const remainingTime = getRemainingTimeInMillis() - RESERVED_TIME
-            const { onBeforeEvent, onSuccessEvent, onFailEvent } = detectEventWrappers(pool.connector)
-  
+            const {
+              onBeforeEvent,
+              onSuccessEvent,
+              onFailEvent,
+            } = detectEventWrappers(pool.connector)
+
             log.debug(
               `remaining read-model "${readModelName}" feeding time is ${remainingTime} ms`
             )
-  
+
             if (remainingTime < 0) {
               log.debug(
                 `stop applying events to read-model "${readModelName}" because of timeout`
               )
               break
             }
-  
+
             try {
               log.verbose(
                 `Applying "${event.type}" event to read-model "${readModelName}" started`
               )
               await onBeforeEvent(connection, readModelName, xaTransactionId)
-  
+
               try {
                 await handler(connection, event, secretsManager)
                 await onSuccessEvent(connection, readModelName, xaTransactionId)
               } catch (innerError) {
                 if (innerError === STOP_BATCH) {
-                  await onSuccessEvent(connection, readModelName, xaTransactionId)
+                  await onSuccessEvent(
+                    connection,
+                    readModelName,
+                    xaTransactionId
+                  )
                   break
                 } else {
                   throw innerError
@@ -319,11 +338,11 @@ const sendEvents = async (
               } catch (error) {
                 rollbackError = error
               }
-  
+
               const summaryError = new Error()
               summaryError.message = readModelError.message
               summaryError.stack = readModelError.stack
-  
+
               if (rollbackError != null) {
                 summaryError.message = `${summaryError.message}${EOL}${rollbackError.message}`
                 summaryError.stack = `${summaryError.stack}${EOL}${rollbackError.stack}`
@@ -331,8 +350,8 @@ const sendEvents = async (
 
               rollbackError = null
               try {
-                await onFailBatch(connection, readModelName, xaTransactionId)              
-              } catch(error) {
+                await onFailBatch(connection, readModelName, xaTransactionId)
+              } catch (error) {
                 rollbackError = error
               }
 
@@ -340,7 +359,7 @@ const sendEvents = async (
                 summaryError.message = `${summaryError.message}${EOL}${rollbackError.message}`
                 summaryError.stack = `${summaryError.stack}${EOL}${rollbackError.stack}`
               }
-  
+
               log.verbose(
                 `Throwing error for feeding read-model "${readModelName}"`,
                 summaryError
@@ -350,9 +369,10 @@ const sendEvents = async (
           }
 
           await onSuccessBatch(connection, readModelName, xaTransactionId)
-
         } else {
-          throw new Error(`Init-based and event-based batches should be segregated`)
+          throw new Error(
+            `Init-based and event-based batches should be segregated`
+          )
         }
       }
     )
