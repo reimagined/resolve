@@ -1,7 +1,7 @@
 import { SerializableMap } from 'resolve-core'
 
-export type HookExecutor<TData, TResult> = (
-  data: TData
+export type HookExecutor<TData extends any[], TResult> = (
+  ...data: TData
 ) => Promise<TResult> | void
 
 export function isCallback<T>(x: any): x is T {

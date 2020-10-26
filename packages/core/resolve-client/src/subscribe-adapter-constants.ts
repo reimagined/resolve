@@ -1,4 +1,5 @@
-export const subscribeAdapterNotInitialized =
-  'Subscribe adapter not initialized'
-export const subscribeAdapterAlreadyInitialized =
-  'Subscribe adapter already initialized'
+export const subscriptionAdapterNotInitialized =
+  'Subscription adapter not initialized'
+export const subscriptionAdapterAlreadyInitialized =
+  'Subscription adapter already initialized'
+export const subscriptionAdapterClosed = 'Subscription adapter closed'

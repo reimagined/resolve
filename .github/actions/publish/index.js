@@ -19,16 +19,14 @@ const getVersion = (seedOrVersion, releaseType) => {
   return `${readPackageJSON().version}-${releaseType}.${seedOrVersion}`
 }
 
-const writeNpmRc = (registry, token) => {
+const writeNpmRc = (registry, token, file) => {
   if (!registry || !token) {
     throw Error(`wrong NPM registry settings`)
   }
 
-  const npmRc = path.resolve(os.homedir(), '.npmrc')
-
-  console.debug(`writing ${npmRc}`)
+  console.debug(`writing ${file}`)
   fs.writeFileSync(
-    npmRc,
+    file,
     `//${registry}/:_authToken=${token}\n` +
       `//${registry}/:always-auth=true\n` +
       `registry=http://${registry}\n`
@@ -36,7 +34,11 @@ const writeNpmRc = (registry, token) => {
 }
 
 try {
-  writeNpmRc(core.getInput('npm_registry'), core.getInput('npm_token'))
+  const npmRc = path.resolve(os.homedir(), '.npmrc')
+
+  writeNpmRc(core.getInput('npm_registry'), core.getInput('npm_token'), npmRc)
+
+  core.saveState('npm_rc_file', npmRc)
 
   const version = core.getInput('version')
   const releaseType = core.getInput('release_type')
@@ -56,6 +58,9 @@ try {
   execSync(`npx oao all "node ${publisher} ${releaseVersion} ${tag}"`, {
     stdio: 'inherit',
   })
+
+  core.setOutput('release_version', releaseVersion)
+  core.setOutput('release_tag', tag)
 
   console.log('done')
 } catch (error) {

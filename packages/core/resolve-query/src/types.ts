@@ -1,3 +1,5 @@
+import { IS_BUILT_IN } from 'resolve-core'
+
 export type CreateQueryOptions = {
   invokeEventBusAsync: Function
   readModelConnectors: any
@@ -22,6 +24,16 @@ export type EventStoreAdapter = {
   getNextCursor: Function
 }
 
+export interface Serializer {
+  (state: any, jwt: string): string
+  [IS_BUILT_IN]?: boolean
+}
+
+export interface Deserializer {
+  (data: string): any
+  [IS_BUILT_IN]?: boolean
+}
+
 export type SerializedError = {
   name: string | null
   code: string | null
@@ -34,6 +46,7 @@ export type ReadModelMeta = {
   resolvers: { [key: string]: any }
   projection: { [key: string]: Function }
   connectorName: string
+  encryption: Function
 }
 
 export type ReadModelPool = {
@@ -52,8 +65,8 @@ export type ReadModelPool = {
 export type ViewModelMeta = {
   name: string
   invariantHash: string
-  deserializeState: Function
-  serializeState: Function
+  deserializeState: Deserializer
+  serializeState: Serializer
   projection: { [key: string]: Function }
   resolver: Function
   encryption: Function

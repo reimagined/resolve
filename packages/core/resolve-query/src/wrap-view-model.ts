@@ -5,6 +5,7 @@ import {
   BuildViewModelQuery,
 } from './types'
 import parseReadOptions from './parse-read-options'
+import { IS_BUILT_IN } from 'resolve-core'
 
 type AggregateIds = string | string[]
 
@@ -106,7 +107,7 @@ const buildViewModel = async (
         snapshotKey,
         JSON.stringify({
           aggregatesVersionsMap: Array.from(aggregatesVersionsMap),
-          state: await pool.viewModel.serializeState(state),
+          state: await pool.viewModel.serializeState(state, jwt),
           cursor,
         })
       )
@@ -269,10 +270,20 @@ const read = async (
 
 const serializeState = async (
   pool: ViewModelPool,
-  { state }: any,
-  jwt: string
+  { state, jwt }: any
 ): Promise<any> => {
-  return pool.viewModel.serializeState(state, jwt)
+  const serializer = pool.viewModel.serializeState
+  if (serializer[IS_BUILT_IN]) {
+    return JSON.stringify(state, null, 2)
+  }
+  return JSON.stringify(
+    {
+      ...state,
+      data: serializer(state.data, jwt),
+    },
+    null,
+    2
+  )
 }
 
 const sendEvents = async (pool: ViewModelPool): Promise<any> => {

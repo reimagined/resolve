@@ -56,6 +56,50 @@ describe('read model', () => {
     })
   })
 
+  test('using encryption', async () => {
+    const decryptMock = jest.fn((val: any) => `plain_${val}`)
+    const result = await givenEvents([
+      { aggregateId: 'id1', type: 'PUSH', payload: { data: 'data' } },
+    ])
+      .readModel({
+        name: 'readModelName',
+        projection: {
+          Init: async (store: any): Promise<any> => {
+            await store.defineTable('items_2', {
+              indexes: { id: 'string' },
+              fields: ['data'],
+            })
+          },
+          PUSH: async (
+            store: any,
+            { payload: { data } }: any,
+            { decrypt }: any
+          ): Promise<any> => {
+            await store.insert('items_2', { id: 1, data: decrypt(data) })
+          },
+        },
+        resolvers: {
+          all: async (store: any, args: any, context: any): Promise<any> => {
+            return await store.find('items_2', { id: 1 })
+          },
+        },
+        adapter: await createReadModelConnector({
+          databaseFile: ':memory:',
+        }),
+        encryption: async () => ({
+          decrypt: decryptMock,
+          encrypt: jest.fn(),
+        }),
+      })
+      .all({})
+      .as('JWT_TOKEN')
+
+    expect(result.data[0]).toEqual({
+      id: 1,
+      data: `plain_data`,
+    })
+  })
+
   test('throwing resolver', async () => {
     try {
       await givenEvents([])

@@ -24,17 +24,6 @@ const commitIncrementalImport = async (
         )}
       ) "CTE1";
       
-      SELECT ABS("CTE2"."IncrementalImportFailed") FROM (
-        SELECT 0 AS "IncrementalImportFailed"
-      UNION ALL
-        SELECT -9223372036854775808 AS "IncrementalImportFailed"
-        FROM ${eventsTableAsId}
-        WHERE ${eventsTableAsId}."timestamp" > (
-          SELECT MIN(${incrementalImportTableAsId}."timestamp") FROM ${incrementalImportTableAsId}
-        )
-        LIMIT 2
-      ) "CTE2";
-      
       DELETE FROM ${incrementalImportTableAsId} WHERE "rowid" IN (
         SELECT "MaybeEqualEvents"."rowIdX" FROM (
           SELECT "A"."payload" AS "payloadA", "B"."payload" AS "payloadB", "A"."rowid" AS "rowIdX"
@@ -45,6 +34,17 @@ const commitIncrementalImport = async (
         ) "MaybeEqualEvents"
         WHERE "MaybeEqualEvents"."payloadA" = "MaybeEqualEvents"."payloadB"
       );
+      
+      SELECT ABS("CTE2"."IncrementalImportFailed") FROM (
+      SELECT 0 AS "IncrementalImportFailed"
+      UNION ALL
+        SELECT -9223372036854775808 AS "IncrementalImportFailed"
+        FROM ${eventsTableAsId}
+        WHERE ${eventsTableAsId}."timestamp" > (
+          SELECT MIN(${incrementalImportTableAsId}."timestamp") FROM ${incrementalImportTableAsId}
+        )
+        LIMIT 2
+      ) "CTE2";
       
       WITH "CTE3" AS (
         SELECT ROW_NUMBER() OVER (ORDER BY "timestamp", "rowid") - 1 AS "sortedIdx",

@@ -96,10 +96,15 @@ export type AggregateEncryptionFactory = (
 
 // Read model
 
+type ReadModelHandlerContext = {
+  encrypt: Encrypter | null
+  decrypt: Decrypter | null
+}
 type ReadModelInitHandler<TStore> = (store: TStore) => Promise<void>
 type ReadModelEventHandler<TStore> = (
   store: TStore,
-  event: Event
+  event: Event,
+  context: ReadModelHandlerContext
 ) => Promise<void>
 export type ReadModel<TStore> = {
   [key: string]: ReadModelEventHandler<TStore>
@@ -118,6 +123,13 @@ type ReadModelResolver<TStore> = (
 export type ReadModelResolvers<TStore> = {
   [key: string]: ReadModelResolver<TStore>
 }
+export type ReadModelEncryptionContext = {
+  secretsManager: SecretsManager
+}
+export type ReadModelEncryptionFactory = (
+  event: Event,
+  context: ReadModelEncryptionContext
+) => Promise<Encryption | null>
 
 // Saga
 

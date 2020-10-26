@@ -1,3 +1,4 @@
+import { IS_BUILT_IN } from 'resolve-core'
 import { Context } from './context'
 import { GenericError } from './errors'
 import { connect, disconnect } from './subscribe'
@@ -10,6 +11,7 @@ import {
 import { assertLeadingSlash, assertNonEmptyString } from './assertions'
 import { getRootBasedUrl, isAbsoluteUrl } from './utils'
 import determineOrigin from './determine-origin'
+import { ViewModelDeserializer } from './types'
 
 function determineCallback<T>(options: any, callback: any): T | null {
   if (typeof options === 'function') {
@@ -33,21 +35,24 @@ export type Command = {
   immediateConflict?: boolean
 }
 export type CommandResult = object
-export type CommandCallback = (
+export type CommandCallback<T extends Command> = (
   error: Error | null,
   result: CommandResult | null,
-  command: Command
+  command: T
 ) => void
 export type CommandOptions = {}
 
 export const command = (
   context: Context,
   cmd: Command,
-  options?: CommandOptions | CommandCallback,
-  callback?: CommandCallback
+  options?: CommandOptions | CommandCallback<Command>,
+  callback?: CommandCallback<Command>
 ): PromiseOrVoid<CommandResult> => {
   const actualOptions = isOptions<CommandOptions>(options) ? options : undefined
-  const actualCallback = determineCallback<CommandCallback>(options, callback)
+  const actualCallback = determineCallback<CommandCallback<Command>>(
+    options,
+    callback
+  )
 
   const asyncExec = async (): Promise<CommandResult> => {
     const response = await request(context, '/api/commands', cmd, actualOptions)
@@ -107,20 +112,28 @@ export type QueryOptions = {
     attempts?: number
   }
 }
-export type QueryCallback = (
+export type QueryCallback<T extends Query> = (
   error: Error | null,
   result: QueryResult | null,
-  query: Query
+  query: T
 ) => void
 
 export const query = (
   context: Context,
   qr: Query,
-  options?: QueryOptions | QueryCallback,
-  callback?: QueryCallback
+  options?: QueryOptions | QueryCallback<Query>,
+  callback?: QueryCallback<Query>
 ): PromiseOrVoid<QueryResult> => {
   const requestOptions: RequestOptions = {
     method: 'GET',
+  }
+
+  let viewModelDeserializer: ViewModelDeserializer | null = null
+  if (!isReadModelQuery(qr)) {
+    const viewModel = context.viewModels.find((model) => model.name === qr.name)
+    if (viewModel && !viewModel.deserializeState[IS_BUILT_IN]) {
+      viewModelDeserializer = viewModel.deserializeState
+    }
   }
 
   if (isOptions<QueryOptions>(options)) {
@@ -130,6 +143,11 @@ export const query = (
       requestOptions.waitForResponse = {
         validator: async (response, confirm): Promise<void> => {
           const result = await response.json()
+
+          if (viewModelDeserializer != null && result != null && result.data) {
+            result.data = viewModelDeserializer(result.data)
+          }
+
           if (validator(result)) {
             confirm(result)
           }
@@ -141,7 +159,10 @@ export const query = (
     requestOptions.method = options?.method ?? 'GET'
   }
 
-  const actualCallback = determineCallback<QueryCallback>(options, callback)
+  const actualCallback = determineCallback<QueryCallback<Query>>(
+    options,
+    callback
+  )
 
   let queryRequest: Promise<NarrowedResponse>
 
@@ -171,6 +192,9 @@ export const query = (
     const response = await queryRequest
 
     const responseDate = response.headers.get('Date')
+    if (!responseDate) {
+      throw new GenericError(`"Date" header missed within response`)
+    }
 
     let subscriptionsUrl = null
 
@@ -182,18 +206,19 @@ export const query = (
       subscriptionsUrl = url
     }
 
-    if (!responseDate) {
-      throw new GenericError(`"Date" header missed within response`)
-    }
-
     try {
-      const result =
-        VALIDATED_RESULT in response
-          ? response[VALIDATED_RESULT]
-          : await response.json()
+      let result
+      if (VALIDATED_RESULT in response) {
+        result = response[VALIDATED_RESULT]
+      } else {
+        result = await response.json()
+        if (viewModelDeserializer != null && result != null && result.data) {
+          result.data = viewModelDeserializer(result.data)
+        }
+      }
 
       const meta = {
-        ...result.meta,
+        ...result?.meta,
         timestamp: Number(responseDate),
       }
 
@@ -328,13 +353,13 @@ const getStaticAssetUrl = (
 export type Client = {
   command: (
     command: Command,
-    options?: CommandOptions | CommandCallback,
-    callback?: CommandCallback
+    options?: CommandOptions | CommandCallback<Command>,
+    callback?: CommandCallback<Command>
   ) => PromiseOrVoid<CommandResult>
   query: (
     query: Query,
-    options?: QueryOptions | QueryCallback,
-    callback?: QueryCallback
+    options?: QueryOptions | QueryCallback<Query>,
+    callback?: QueryCallback<Query>
   ) => PromiseOrVoid<QueryResult>
   getStaticAssetUrl: (assetPath: string) => string
   subscribe: (
