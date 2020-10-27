@@ -559,6 +559,7 @@ const build = doOperation.bind(
     connection,
     pool.readModel.projection,
     next.bind(null, pool, readModelName),
+    pool.getRemainingTimeInMillis,
   ]
 )
 
