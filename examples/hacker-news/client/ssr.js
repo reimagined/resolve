@@ -1,7 +1,6 @@
 import React from 'react'
-import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom/server'
-import { createResolveStore } from 'resolve-redux'
+import { createResolveStore, ResolveReduxProvider } from 'resolve-redux'
 import { Router } from 'react-router'
 import { Helmet } from 'react-helmet'
 import { StyleSheetManager, ServerStyleSheet } from 'styled-components'
@@ -14,7 +13,13 @@ import Routes from './components/Routes'
 
 const ssrHandler = async (serverContext, req, res) => {
   try {
-    const { serverImports, constants, seedClientEnvs, utils } = serverContext
+    const {
+      serverImports,
+      constants,
+      seedClientEnvs,
+      utils,
+      viewModels,
+    } = serverContext
     const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils
     const { rootPath, staticPath, jwtCookie } = constants
 
@@ -31,11 +36,14 @@ const ssrHandler = async (serverContext, req, res) => {
       Object.assign(jwt, jsonwebtoken.decode(req.cookies[jwtCookie.name]))
     } catch (e) {}
 
+    const resolveContext = {
+      ...constants,
+      viewModels,
+      origin: '',
+    }
+
     const store = createResolveStore(
-      {
-        ...serverContext,
-        origin: '',
-      },
+      resolveContext,
       {
         initialState: { jwt },
         redux,
@@ -47,11 +55,11 @@ const ssrHandler = async (serverContext, req, res) => {
     const sheet = new ServerStyleSheet()
     const markup = ReactDOM.renderToStaticMarkup(
       <StyleSheetManager sheet={sheet.instance}>
-        <Provider store={store}>
+        <ResolveReduxProvider context={resolveContext} store={store}>
           <Router history={history} staticContext={staticContext}>
             <Routes routes={routes} />
           </Router>
-        </Provider>
+        </ResolveReduxProvider>
       </StyleSheetManager>
     )
 

@@ -2,8 +2,8 @@ import AppContainer from './app-container'
 import createStore from './create-store'
 import { createResolveStore } from './create-resolve-store'
 
-import connectStaticBasedUrls from './urls/connect-static-based-urls'
-import connectRootBasedUrls from './urls/connect-root-based-urls'
+import { connectStaticBasedUrls } from './urls/connect-static-based-urls'
+import { connectRootBasedUrls } from './urls/connect-root-based-urls'
 import connectReadModel from './read-model/connect-read-model'
 import connectViewModel from './view-model/connect-view-model'
 

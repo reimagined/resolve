@@ -1,9 +1,8 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Router } from 'react-router'
-import { Provider } from 'react-redux'
 import { createBrowserHistory } from 'history'
-import { createResolveStore } from 'resolve-redux'
+import { createResolveStore, ResolveReduxProvider } from 'resolve-redux'
 
 import getRoutes from './get-routes'
 import getRedux from './get-redux'
@@ -21,11 +20,11 @@ const entryPoint = (clientContext) => {
   })
 
   render(
-    <Provider store={store}>
+    <ResolveReduxProvider context={clientContext} store={store}>
       <Router history={history}>
         <Routes routes={routes} />
       </Router>
-    </Provider>,
+    </ResolveReduxProvider>,
     document.getElementById('app-container')
   )
 }
