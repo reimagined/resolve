@@ -1,5 +1,6 @@
 import AppContainer from './app-container'
 import createStore from './create-store'
+import { createResolveStore } from './create-resolve-store'
 
 import connectStaticBasedUrls from './urls/connect-static-based-urls'
 import connectRootBasedUrls from './urls/connect-root-based-urls'
@@ -34,6 +35,7 @@ const internal = {
 export {
   AppContainer,
   createStore,
+  createResolveStore,
   sendAggregateAction,
   connectViewModel,
   connectReadModel,

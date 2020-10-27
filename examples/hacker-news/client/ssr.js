@@ -1,6 +1,7 @@
 import React from 'react'
+import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom/server'
-import { createStore, AppContainer } from 'resolve-redux'
+import { createResolveStore } from 'resolve-redux'
 import { Router } from 'react-router'
 import { Helmet } from 'react-helmet'
 import { StyleSheetManager, ServerStyleSheet } from 'styled-components'
@@ -11,54 +12,46 @@ import getRoutes from './get-routes'
 import getRedux from './get-redux'
 import Routes from './components/Routes'
 
-const ssrHandler = async (
-  { serverImports, constants, seedClientEnvs, viewModels, utils },
-  req,
-  res
-) => {
+const ssrHandler = async (serverContext, req, res) => {
   try {
+    const { serverImports, constants, seedClientEnvs, utils } = serverContext
     const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils
     const { rootPath, staticPath, jwtCookie } = constants
 
     const history = createMemoryHistory()
     const baseQueryUrl = getRootBasedUrl(rootPath, '/')
-    const origin = ''
     const url = req.path.substring(baseQueryUrl.length)
     history.push(url)
 
     const redux = getRedux(serverImports, history)
-    const routes = getRoutes(serverImports)
+    const routes = getRoutes()
 
     const jwt = {}
     try {
       Object.assign(jwt, jsonwebtoken.decode(req.cookies[jwtCookie.name]))
     } catch (e) {}
 
-    const store = createStore({
-      initialState: { jwt },
-      redux,
-      viewModels,
-      subscriber: {},
-      history,
-      origin,
-      rootPath,
-      isClient: false,
-    })
+    const store = createResolveStore(
+      {
+        ...serverContext,
+        origin: '',
+      },
+      {
+        initialState: { jwt },
+        redux,
+      },
+      false
+    )
 
     const staticContext = {}
     const sheet = new ServerStyleSheet()
     const markup = ReactDOM.renderToStaticMarkup(
       <StyleSheetManager sheet={sheet.instance}>
-        <AppContainer
-          origin={origin}
-          rootPath={rootPath}
-          staticPath={staticPath}
-          store={store}
-        >
+        <Provider store={store}>
           <Router history={history} staticContext={staticContext}>
             <Routes routes={routes} />
           </Router>
-        </AppContainer>
+        </Provider>
       </StyleSheetManager>
     )
 
@@ -69,10 +62,6 @@ const ssrHandler = async (
     const faviconUrl = getStaticBasedPath(rootPath, staticPath, 'favicon.ico')
 
     const helmet = Helmet.renderStatic()
-
-    for (const reducerName of Object.keys(redux.reducers)) {
-      delete initialState[reducerName]
-    }
 
     const markupHtml =
       `<!doctype html>` +

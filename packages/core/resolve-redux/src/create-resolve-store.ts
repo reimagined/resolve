@@ -18,11 +18,11 @@ import createResolveMiddleware from './create-resolve-middleware'
 import deserializeInitialState from './internal/deserialize-initial-state'
 
 type ResolveRedux = {
-  reducers: {
+  reducers?: {
     [key: string]: Reducer
   }
-  middlewares: Middleware[]
-  enhancers: StoreEnhancer<any, any>[]
+  middlewares?: Middleware[]
+  enhancers?: StoreEnhancer<any, any>[]
 }
 
 type ResolveStoreParameters = {
@@ -42,7 +42,7 @@ const createResolveStore = (
   const {
     initialState,
     serializedState,
-    redux: { reducers, middlewares, enhancers },
+    redux: { reducers = [], middlewares = [], enhancers = [] },
     customSagas = [],
   } = params
 

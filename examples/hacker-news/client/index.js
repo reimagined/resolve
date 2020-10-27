@@ -3,35 +3,21 @@ import { render } from 'react-dom'
 import { Router } from 'react-router'
 import { Provider } from 'react-redux'
 import { createBrowserHistory } from 'history'
-import { createStore, getOrigin } from 'resolve-redux'
+import { createResolveStore } from 'resolve-redux'
 
 import getRoutes from './get-routes'
 import getRedux from './get-redux'
 
 import Routes from './components/Routes'
 
-const entryPoint = ({
-  clientImports,
-  rootPath,
-  staticPath,
-  viewModels,
-  subscriber,
-}) => {
-  const origin = getOrigin(window.location)
-  const history = createBrowserHistory({ basename: rootPath })
-  const routes = getRoutes(clientImports)
-  const redux = getRedux(clientImports, history)
+const entryPoint = (clientContext) => {
+  const history = createBrowserHistory({ basename: clientContext.rootPath })
+  const routes = getRoutes()
+  const redux = getRedux(clientContext.clientImports, history)
 
-  const store = createStore({
+  const store = createResolveStore(clientContext, {
     serializedState: window.__INITIAL_STATE__,
     redux,
-    viewModels,
-    subscriber,
-    history,
-    origin,
-    rootPath,
-    staticPath,
-    isClient: true,
   })
 
   render(
