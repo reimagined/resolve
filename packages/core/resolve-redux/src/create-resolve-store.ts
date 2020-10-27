@@ -23,13 +23,13 @@ type ResolveRedux = {
   }
   middlewares?: Middleware[]
   enhancers?: StoreEnhancer<any, any>[]
+  sagas?: Saga[]
 }
 
 type ResolveStoreParameters = {
   redux: ResolveRedux
   initialState?: any
   serializedState?: string
-  customSagas?: Saga[]
 }
 
 const createResolveStore = (
@@ -42,8 +42,7 @@ const createResolveStore = (
   const {
     initialState,
     serializedState,
-    redux: { reducers = [], middlewares = [], enhancers = [] },
-    customSagas = [],
+    redux: { reducers = [], middlewares = [], enhancers = [], sagas = [] },
   } = params
 
   if (serializedState != null && initialState != null) {
@@ -82,7 +81,7 @@ const createResolveStore = (
   resolveMiddleware.run(isClient, {
     store,
     resolveContext,
-    customSagas,
+    customSagas: sagas,
     sessionId,
   })
 
