@@ -1,6 +1,6 @@
 {
   "name": "resolve-upload-local",
-  "version": "0.25.15",
+  "version": "0.25.16",
   "description": "",
   "engines": {
     "node": ">=10.9"
