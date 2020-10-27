@@ -1,39 +1,54 @@
 import {
-  createStore as reduxCreateStore,
+  createStore,
   applyMiddleware,
   combineReducers,
   compose,
+  Reducer,
+  Middleware,
+  StoreEnhancer,
+  Store,
 } from 'redux'
+import { Saga } from 'redux-saga'
 import uuid from 'uuid/v4'
+import { Context } from 'resolve-client'
 
-import { create as createJwtReducer } from './internal/jwt-reducer'
 import { reducer as viewModelReducer } from './view-model/view-model-reducer'
 import { reducer as readModelReducer } from './read-model/read-model-reducer'
 import createResolveMiddleware from './create-resolve-middleware'
-import { ReduxStoreContext } from './types'
 import deserializeInitialState from './internal/deserialize-initial-state'
 
-const createStore = ({
-  redux: {
-    reducers = {},
-    middlewares = [],
-    enhancers = [],
-    sagas: customSagas = [],
-  } = {},
-  viewModels = [],
-  jwtProvider = undefined,
-  origin,
-  rootPath,
-  staticPath,
-  initialState = undefined,
-  serializedState,
-  isClient,
-}: ReduxStoreContext): any => {
+type ResolveRedux = {
+  reducers: {
+    [key: string]: Reducer
+  }
+  middlewares: Middleware[]
+  enhancers: StoreEnhancer<any, any>[]
+}
+
+type ResolveStoreParameters = {
+  redux: ResolveRedux
+  initialState?: any
+  serializedState?: string
+  customSagas?: Saga[]
+}
+
+const createResolveStore = (
+  resolveContext: Context,
+  params: ResolveStoreParameters,
+  isClient = true
+): Store => {
   const sessionId = uuid()
+  const { viewModels } = resolveContext
+  const {
+    initialState,
+    serializedState,
+    redux: { reducers, middlewares, enhancers },
+    customSagas = [],
+  } = params
 
   if (serializedState != null && initialState != null) {
     throw Error(
-      `ambiguous initial state: both initialState and serializedState set`
+      `ambiguous initial state: both initialState and serializedState are set`
     )
   }
 
@@ -45,20 +60,20 @@ const createStore = ({
     actualInitialState = initialState
   }
 
-  const resolveMiddleware = createResolveMiddleware()
-
   const combinedReducers = combineReducers({
     ...reducers,
     viewModels: viewModelReducer,
     readModels: readModelReducer,
-    jwt: createJwtReducer(), // does it really actual?
   })
 
+  const resolveMiddleware = createResolveMiddleware()
   const appliedMiddlewares = applyMiddleware(resolveMiddleware, ...middlewares)
+  const composedEnhancers: StoreEnhancer<any, any> = compose(
+    appliedMiddlewares,
+    ...enhancers
+  )
 
-  const composedEnhancers = compose(appliedMiddlewares, ...enhancers)
-
-  const store = reduxCreateStore(
+  const store = createStore(
     combinedReducers,
     actualInitialState,
     composedEnhancers
@@ -66,13 +81,7 @@ const createStore = ({
 
   resolveMiddleware.run(isClient, {
     store,
-    resolveContext: {
-      viewModels,
-      rootPath,
-      staticPath,
-      origin,
-      jwtProvider,
-    },
+    resolveContext,
     customSagas,
     sessionId,
   })
@@ -80,4 +89,4 @@ const createStore = ({
   return store
 }
 
-export default createStore
+export { createResolveStore }
