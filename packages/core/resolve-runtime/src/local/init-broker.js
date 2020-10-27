@@ -1,5 +1,6 @@
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
+import multiplexAsync from '../common/utils/multiplex-async'
 
 const initBroker = async (resolve) => {
   const {
@@ -21,7 +22,31 @@ const initBroker = async (resolve) => {
     publisher,
   })
 
+  const invokeEventBusAsync = multiplexAsync.bind(
+    null,
+    async (eventSubscriber, method, parameters) => {
+      const currentResolve = Object.create(resolve)
+      try {
+        await initResolve(currentResolve)
+        const rawMethod = currentResolve.eventBus[method]
+        if (typeof rawMethod !== 'function') {
+          throw new TypeError(method)
+        }
+
+        const result = await rawMethod.call(currentResolve.eventBus, {
+          eventSubscriber,
+          ...parameters,
+        })
+
+        return result
+      } finally {
+        await disposeResolve(currentResolve)
+      }
+    }
+  )
+
   Object.assign(resolve, {
+    invokeEventBusAsync,
     publisher,
     consumer,
   })

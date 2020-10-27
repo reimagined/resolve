@@ -2,7 +2,7 @@
 
 ![image-gallery](https://user-images.githubusercontent.com/36447502/70238582-94e97c00-177a-11ea-8983-b24a39735761.png)
 
-This example demonstrates how to work with image-gallery.
+This example demonstrates how to implement an image gallery and handle image uploads on the server.
 
 ```sh
 npx create-resolve-app resolve-image-gallery -e image-gallery

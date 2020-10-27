@@ -70,7 +70,7 @@ void (async () => {
     ])
 
     switch (launchMode) {
-      case 'dev': {
+      case 'reset': {
         const moduleAdmin = resolveModuleAdmin()
         const resolveConfig = merge(
           defaultResolveConfig,
@@ -79,7 +79,6 @@ void (async () => {
           authModule,
           moduleAdmin
         )
-
         await reset(
           resolveConfig,
           {
@@ -89,6 +88,17 @@ void (async () => {
             dropSagas: true,
           },
           adjustWebpackConfigs
+        )
+        break
+      }
+      case 'dev': {
+        const moduleAdmin = resolveModuleAdmin()
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          devConfig,
+          authModule,
+          moduleAdmin
         )
 
         await watch(resolveConfig, adjustWebpackConfigs)
@@ -110,17 +120,6 @@ void (async () => {
 
         await opn(
           `http://${resolveConfig.customConstants.remoteReduxDevTools.hostname}:${resolveConfig.customConstants.remoteReduxDevTools.port}`
-        )
-
-        await reset(
-          resolveConfig,
-          {
-            dropEventStore: false,
-            dropEventBus: true,
-            dropReadModels: true,
-            dropSagas: true,
-          },
-          adjustWebpackConfigs
         )
 
         await watch(resolveConfig, adjustWebpackConfigs)
