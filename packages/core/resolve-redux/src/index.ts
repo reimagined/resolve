@@ -22,6 +22,7 @@ import deserializeInitialState from './internal/deserialize-initial-state'
 import connectResolveAdvanced from './internal/connect-resolve-advanced'
 
 import { ResultStatus } from './types'
+import { ResolveReduxProvider } from './resolve-redux-provider'
 
 const internal = {
   actionTypes,
@@ -33,8 +34,7 @@ const internal = {
 }
 
 export {
-  AppContainer,
-  createStore,
+  ResolveReduxProvider,
   createResolveStore,
   sendAggregateAction,
   connectViewModel,
@@ -49,6 +49,8 @@ export {
   ResultStatus,
   internal,
   // deprecated, encapsulation breach
+  AppContainer,
+  createStore,
   getOrigin,
   deserializeInitialState,
   connectResolveAdvanced,

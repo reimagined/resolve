@@ -29,6 +29,11 @@ const createStore = ({
   serializedState,
   isClient,
 }: ReduxStoreContext): any => {
+  // eslint-disable-next-line no-console
+  console.warn(
+    'createStore function is deprecated and will be removed in future versions, migrate to createResolveStore'
+  )
+
   const sessionId = uuid()
 
   if (serializedState != null && initialState != null) {
