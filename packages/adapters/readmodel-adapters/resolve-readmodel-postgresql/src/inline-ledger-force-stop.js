@@ -9,7 +9,9 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
-  const ledgerTableNameAsId = escapeId(`${tablePrefix}__${schemaName}__LEDGER__`)
+  const ledgerTableNameAsId = escapeId(
+    `${tablePrefix}__${schemaName}__LEDGER__`
+  )
   const trxTableNameAsId = escapeId(`${tablePrefix}__${schemaName}__TRX__`)
 
   while (true) {

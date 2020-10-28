@@ -1,16 +1,19 @@
 const timersMap = new WeakMap()
 
-const fullfillMethod = (timer, value, onFullfill) => {
+const fulfillMethod = (timer, value, onFulfill) => {
   timersMap.delete(timer)
-  onFullfill(value)
+  onFulfill(value)
 }
 
-const promiseMethod = (duration, timer, value, onFullfill) => {
-  timersMap.set(timer, setTimeout(fullfillMethod.bind(null, timer, value, onFullfill), duration))
+const promiseMethod = (duration, timer, value, onFulfill) => {
+  timersMap.set(
+    timer,
+    setTimeout(fulfillMethod.bind(null, timer, value, onFulfill), duration)
+  )
 }
 
 const stopMethod = (timer) => {
-  if(timersMap.has(timer)) {
+  if (timersMap.has(timer)) {
     clearTimeout(timersMap.get(timer))
     timersMap.delete(timer)
   }
@@ -18,7 +21,9 @@ const stopMethod = (timer) => {
 
 const makeTimer = (duration, value) => {
   const timer = {}
-  timer.timerPromise = new Promise(promiseMethod.bind(null, duration, timer, value))
+  timer.timerPromise = new Promise(
+    promiseMethod.bind(null, duration, timer, value)
+  )
   timer.timerStop = stopMethod.bind(null, timer)
   return Object.freeze(timer)
 }

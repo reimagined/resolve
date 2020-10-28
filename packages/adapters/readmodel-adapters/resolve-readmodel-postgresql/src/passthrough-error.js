@@ -4,12 +4,33 @@ class PassthroughError extends Error {
     this.name = 'PassthroughError'
   }
 
-  static isPassthroughError(error) {
+  // https://www.postgresql.org/docs/10/errcodes-appendix.html
+  static get DIVISION_BY_ZERO() {
+    return '22012'
+  }
+  static get CARDINALITY_VIOLATION() {
+    return '21000'
+  }
+  static get IN_FAILED_SQL_TRANSACTION() {
+    return '25P02'
+  }
+  static get LOCK_NOT_AVAILABLE() {
+    return '55P03'
+  }
+  static get DEADLOCK_DETECTED() {
+    return '40P01'
+  }
+
+  static isPassthroughError(error, includeRuntimeErrors = false) {
     return (
       error != null &&
-      (/Transaction .*? Is Not Found/i.test(error.message) ||
-        /deadlock detected/i.test(error.message) ||
-        /could not obtain lock/i.test(error.message))
+      error.code != null &&
+      (`${error.code}` === PassthroughError.IN_FAILED_SQL_TRANSACTION ||
+        `${error.code}` === PassthroughError.LOCK_NOT_AVAILABLE ||
+        `${error.code}` === PassthroughError.DEADLOCK_DETECTED ||
+        (!!includeRuntimeErrors &&
+          (`${error.code}` === PassthroughError.CARDINALITY_VIOLATION ||
+            `${error.code}` === PassthroughError.DIVISION_BY_ZERO)))
     )
   }
 }

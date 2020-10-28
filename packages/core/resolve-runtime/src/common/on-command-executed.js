@@ -15,21 +15,21 @@ const connectorCapabilities = {
   INLINE_LEDGER_CONNECTOR,
 }
 
-const notifyInlineLedgers = async (resolve, inlineLedgerEventListeners, event) => {
+const notifyInlineLedgers = async (resolve, inlineLedgerEventListeners) => {
   const maxDuration = Math.max(resolve.getRemainingTimeInMillis() - 15000, 0)
   const { timerPromise, timerStop } = makeTimer(maxDuration)
-  const listenerPromises = inlineLedgerEventListeners.map(
-    eventListener => resolve.invokeEventBusAsync(eventListener, 'build')
+  const listenerPromises = inlineLedgerEventListeners.map((eventListener) =>
+    resolve.invokeEventBusAsync(eventListener, 'build')
   )
   const inlineLedgerPromise = Promise.all(listenerPromises).then(timerStop)
-  
+
   await Promise.race([timerPromise, inlineLedgerPromise])
 }
 
-const publisherSaveEvent = (resolve, event) => {
+const publisherSaveEvent = async (resolve, event) => {
   await resolve.publisher.publish({ event })
 }
-const localSaveEvent = (resolve, event) => {
+const localSaveEvent = async (resolve, event) => {
   await resolve.eventStore.saveEvent({ event })
 }
 
@@ -60,14 +60,15 @@ const createOnCommandExecuted = (resolve) => {
   }
 
   // TODO improve websocket reactivity
-  const publishEvent = hasBrokerEventListeners || inlineLedgerEventListeners.length === 0
-    ? publisherSaveEvent.bind(null, resolve)
-    : localSaveEvent.bind(null, resolve)
+  const publishEvent =
+    hasBrokerEventListeners || inlineLedgerEventListeners.length === 0
+      ? publisherSaveEvent.bind(null, resolve)
+      : localSaveEvent.bind(null, resolve)
 
-  const notifyEvent = inlineLedgerEventListeners.length > 0
-    ? notifyInlineLedgers.bind(null, resolve, inlineLedgerEventListeners)
-    : emptyFunction
-
+  const notifyEvent =
+    inlineLedgerEventListeners.length > 0
+      ? notifyInlineLedgers.bind(null, resolve, inlineLedgerEventListeners)
+      : emptyFunction
 
   return onCommandExecuted.bind(null, publishEvent, notifyEvent)
 }

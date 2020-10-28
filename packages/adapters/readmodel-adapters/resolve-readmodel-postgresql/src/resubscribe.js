@@ -3,6 +3,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     PassthroughError,
     inlineLedgerRunQuery,
     inlineLedgerForceStop,
+    dropReadModel,
     schemaName,
     tablePrefix,
     escapeId,
@@ -10,7 +11,9 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
-  const ledgerTableNameAsId = escapeId(`${tablePrefix}__${schemaName}__LEDGER__`)
+  const ledgerTableNameAsId = escapeId(
+    `${tablePrefix}__${schemaName}__LEDGER__`
+  )
 
   try {
     await inlineLedgerRunQuery(`
@@ -36,7 +39,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         PRIMARY KEY("XaKey")
       );
     `)
-  } catch(e) {}
+  } catch (e) {}
 
   while (true) {
     try {
@@ -55,8 +58,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         "IsPaused" = TRUE
         WHERE "EventSubscriber" = ${escape(readModelName)}
         AND (SELECT Count("CTE".*) FROM "CTE") = 1
-      `
-      )
+      `)
 
       break
     } catch (err) {
@@ -105,8 +107,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
              ? escape(JSON.stringify(aggregateIds))
              : escape('null')
          }
-      `
-      )
+      `)
       break
     } catch (err) {
       if (!(err instanceof PassthroughError)) {

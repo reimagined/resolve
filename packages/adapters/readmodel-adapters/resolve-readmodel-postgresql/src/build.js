@@ -28,14 +28,15 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
     `BEGIN TRANSACTION;
      SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
      SAVEPOINT ${rootSavePointId};
-     SELECT 1/(
-      SELECT Count("XaKey") FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-      WHERE "EventSubscriber" = ${escape(readModelName)}
-      AND "XaKey" = ${escape(xaKey)}
-      AND "IsPaused" = FALSE
-      AND "Errors" IS NULL
-      FOR NO KEY UPDATE NOWAIT
-    ) AS "NonZero";
+     WITH "CTE" AS (
+      SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+        WHERE "EventSubscriber" = ${escape(readModelName)}
+        AND "XaKey" = ${escape(xaKey)}
+        AND "IsPaused" = FALSE
+        AND "Errors" IS NULL
+        FOR NO KEY UPDATE NOWAIT
+    )
+      SELECT 1/Count("CTE"."XaKey") AS "NonZero" FROM "CTE";
     `,
     true
   )
@@ -55,7 +56,6 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
        COMMIT;
       `
     )
-
 
     await next()
   } catch (error) {
@@ -116,19 +116,20 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
     `BEGIN TRANSACTION;
      SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
      SAVEPOINT ${rootSavePointId};
-     SELECT 1/(
-       SELECT Count("XaKey") FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-       WHERE "EventSubscriber" = ${escape(readModelName)}
-       AND "XaKey" = ${escape(xaKey)}
-       AND "IsPaused" = FALSE
-       AND "Errors" IS NULL
-       FOR NO KEY UPDATE NOWAIT
-     ) AS "NonZero";
+     WITH "CTE" AS (
+      SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+        WHERE "EventSubscriber" = ${escape(readModelName)}
+        AND "XaKey" = ${escape(xaKey)}
+        AND "IsPaused" = FALSE
+        AND "Errors" IS NULL
+        FOR NO KEY UPDATE NOWAIT
+    )
+      SELECT 1/Count("CTE"."XaKey") AS "NonZero" FROM "CTE";
     `,
     true
   )
 
-  let events = await eventsPromise,
+  let events = await eventsPromise
 
   while (true) {
     if (events.length === 0) {
@@ -262,14 +263,15 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
         `BEGIN TRANSACTION;
         SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
         SAVEPOINT ${rootSavePointId};
-        SELECT 1/(
-          SELECT Count("XaKey") FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-          WHERE "EventSubscriber" = ${escape(readModelName)}
-          AND "XaKey" = ${escape(xaKey)}
-          AND "IsPaused" = FALSE
-          AND "Errors" IS NULL
-          FOR NO KEY UPDATE NOWAIT
-        ) AS "NonZero";
+        WITH "CTE" AS (
+          SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+            WHERE "EventSubscriber" = ${escape(readModelName)}
+            AND "XaKey" = ${escape(xaKey)}
+            AND "IsPaused" = FALSE
+            AND "Errors" IS NULL
+            FOR NO KEY UPDATE NOWAIT
+        )
+          SELECT 1/Count("CTE"."XaKey") AS "NonZero" FROM "CTE";
         `,
         true
       )
@@ -301,12 +303,14 @@ const build = async (
     escapeId,
     escape,
     generateGuid,
-  } = pool
+  } = basePool
   const pool = Object.create(basePool)
 
   try {
     const databaseNameAsId = escapeId(schemaName)
-    const ledgerTableNameAsId = escapeId(`${tablePrefix}__${schemaName}__LEDGER__`)
+    const ledgerTableNameAsId = escapeId(
+      `${tablePrefix}__${schemaName}__LEDGER__`
+    )
     const trxTableNameAsId = escapeId(`${tablePrefix}__${schemaName}__TRX__`)
 
     const xaKey = generateGuid(`${Date.now()}${Math.random()}${process.pid}`)

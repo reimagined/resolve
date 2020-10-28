@@ -10,7 +10,9 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
-  const ledgerTableNameAsId = escapeId(`${tablePrefix}__${schemaName}__LEDGER__`)
+  const ledgerTableNameAsId = escapeId(
+    `${tablePrefix}__${schemaName}__LEDGER__`
+  )
 
   try {
     await inlineLedgerRunQuery(`
@@ -36,7 +38,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         PRIMARY KEY("XaKey")
       );
     `)
-  } catch(e) {}
+  } catch (e) {}
 
   while (true) {
     try {

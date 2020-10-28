@@ -53,14 +53,22 @@ const connect = async (imports, pool, options) => {
     return rows
   }
 
-  const inlineLedgerRunQuery = async (sql, passthroughRuntimeErrors = false) => {
+  const inlineLedgerRunQuery = async (
+    sql,
+    passthroughRuntimeErrors = false
+  ) => {
     let result = null
     try {
       result = await connection.query(sql)
-    } catch(error) {
-      if (imports.PassthroughError.isPassthroughError(error, !!passthroughRuntimeErrors)) {
-        throw new imports.PassthroughError(transactionId)
-      } else {  
+    } catch (error) {
+      if (
+        imports.PassthroughError.isPassthroughError(
+          error,
+          !!passthroughRuntimeErrors
+        )
+      ) {
+        throw new imports.PassthroughError()
+      } else {
         throw error
       }
     }

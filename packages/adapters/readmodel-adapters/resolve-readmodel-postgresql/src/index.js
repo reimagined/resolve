@@ -22,11 +22,8 @@ import updateToSetExpression from './update-to-set-expression'
 import update from './update'
 
 import PassthroughError from './passthrough-error'
-import inlineLedgerExecuteStatement from './inline-ledger-execute-statement'
 import inlineLedgerForceStop from './inline-ledger-force-stop'
 import generateGuid from './generate-guid'
-import isHighloadError from './is-highload-error'
-import isTimeoutError from './is-timeout-error'
 
 import subscribe from './subscribe'
 import resubscribe from './resubscribe'
@@ -59,7 +56,7 @@ const internalMethods = {
   searchToWhereExpression,
   updateToSetExpression,
   PassthroughError,
-  inlineLedgerForceStop ,
+  inlineLedgerForceStop,
   generateGuid,
 }
 
