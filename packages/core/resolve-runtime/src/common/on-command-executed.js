@@ -6,6 +6,8 @@ import {
   INLINE_LEDGER_CONNECTOR,
 } from 'resolve-query'
 
+import makeTimer from './utils/make-timer'
+
 const connectorCapabilities = {
   FULL_REGULAR_CONNECTOR,
   FULL_XA_CONNECTOR,
@@ -13,43 +15,61 @@ const connectorCapabilities = {
   INLINE_LEDGER_CONNECTOR,
 }
 
-const notifyInlineLedgers = async (resolve) => {
+const notifyInlineLedgers = async (resolve, inlineLedgerEventListeners, event) => {
   const maxDuration = Math.max(resolve.getRemainingTimeInMillis() - 15000, 0)
-  let timerId = null
-  const timerPromise = new Promise((resolve) => {
-    timerId = setTimeout(resolve, maxDuration)
-  })
-  const inlineLedgerPromise = (async () => {
-    const promises = []
-    for (const {
-      name: eventListener,
-      connectorName,
-    } of resolve.eventListeners.values()) {
-      const connector = resolve.readModelConnectors[connectorName]
-      if (
-        detectConnectorFeatures(connector) ===
-        connectorCapabilities.INLINE_LEDGER_CONNECTOR
-      ) {
-        promises.push(resolve.invokeEventBusAsync(eventListener, 'build'))
-      }
-    }
-    await Promise.all(promises)
-
-    if (timerId != null) {
-      clearTimeout(timerId)
-    }
-  })()
-
+  const { timerPromise, timerStop } = makeTimer(maxDuration)
+  const listenerPromises = inlineLedgerEventListeners.map(
+    eventListener => resolve.invokeEventBusAsync(eventListener, 'build')
+  )
+  const inlineLedgerPromise = Promise.all(listenerPromises).then(timerStop)
+  
   await Promise.race([timerPromise, inlineLedgerPromise])
 }
 
-const onCommandExecuted = async (resolve, event) => {
+const publisherSaveEvent = (resolve, event) => {
   await resolve.publisher.publish({ event })
-  await notifyInlineLedgers(resolve)
+}
+const localSaveEvent = (resolve, event) => {
+  await resolve.eventStore.saveEvent({ event })
+}
+
+const emptyFunction = Function('') // eslint-disable-line no-new-func
+
+const onCommandExecuted = async (publishEvent, notifyEvent, event) => {
+  await publishEvent(event)
+  await notifyEvent(event)
 }
 
 const createOnCommandExecuted = (resolve) => {
-  return onCommandExecuted.bind(null, resolve)
+  const inlineLedgerEventListeners = []
+  let hasBrokerEventListeners = resolve.viewModels.length > 0
+
+  for (const {
+    name: eventListener,
+    connectorName,
+  } of resolve.eventListeners.values()) {
+    const connector = resolve.readModelConnectors[connectorName]
+    if (
+      detectConnectorFeatures(connector) ===
+      connectorCapabilities.INLINE_LEDGER_CONNECTOR
+    ) {
+      inlineLedgerEventListeners.push(eventListener)
+    } else {
+      hasBrokerEventListeners = true
+    }
+  }
+
+  // TODO improve websocket reactivity
+  const publishEvent = hasBrokerEventListeners || inlineLedgerEventListeners.length === 0
+    ? publisherSaveEvent.bind(null, resolve)
+    : localSaveEvent.bind(null, resolve)
+
+  const notifyEvent = inlineLedgerEventListeners.length > 0
+    ? notifyInlineLedgers.bind(null, resolve, inlineLedgerEventListeners)
+    : emptyFunction
+
+
+  return onCommandExecuted.bind(null, publishEvent, notifyEvent)
 }
 
 export default createOnCommandExecuted
