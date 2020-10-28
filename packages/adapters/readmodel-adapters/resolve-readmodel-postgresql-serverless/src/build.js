@@ -57,14 +57,15 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
     pool,
     `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
      SAVEPOINT ${rootSavePointId};
-     SELECT 1/(
-      SELECT Count("XaKey") FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-      WHERE "EventSubscriber" = ${escape(readModelName)}
-      AND "XaKey" = ${escape(xaKey)}
-      AND "IsPaused" = FALSE
-      AND "Errors" IS NULL
-      FOR NO KEY UPDATE NOWAIT
-    ) AS "NonZero";
+	 WITH "CTE" AS (
+	   SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+       WHERE "EventSubscriber" = ${escape(readModelName)}
+       AND "XaKey" = ${escape(xaKey)}
+       AND "IsPaused" = FALSE
+       AND "Errors" IS NULL
+       FOR NO KEY UPDATE NOWAIT
+	 )
+     SELECT 1/Count("CTE"."XaKey") AS "NonZero" FROM "CTE";
     `,
     transactionId,
     true
@@ -194,14 +195,15 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
     pool,
     `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
      SAVEPOINT ${rootSavePointId};
-     SELECT 1/(
-       SELECT Count("XaKey") FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+	 WITH "CTE" AS (
+	   SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
        WHERE "EventSubscriber" = ${escape(readModelName)}
        AND "XaKey" = ${escape(xaKey)}
        AND "IsPaused" = FALSE
        AND "Errors" IS NULL
        FOR NO KEY UPDATE NOWAIT
-     ) AS "NonZero";
+	 )
+     SELECT 1/Count("CTE"."XaKey") AS "NonZero" FROM "CTE";
     `,
     transactionId,
     true
@@ -395,14 +397,15 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
         pool,
         `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
         SAVEPOINT ${rootSavePointId};
-        SELECT 1/(
-          SELECT Count("XaKey") FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+	    WITH "CTE" AS (
+	      SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
           WHERE "EventSubscriber" = ${escape(readModelName)}
           AND "XaKey" = ${escape(xaKey)}
           AND "IsPaused" = FALSE
           AND "Errors" IS NULL
           FOR NO KEY UPDATE NOWAIT
-        ) AS "NonZero";
+	    )
+        SELECT 1/Count("CTE"."XaKey") AS "NonZero" FROM "CTE";
         `,
         transactionId,
         true
