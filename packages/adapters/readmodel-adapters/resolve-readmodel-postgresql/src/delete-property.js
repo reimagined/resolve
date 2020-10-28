@@ -13,7 +13,6 @@ const deleteProperty = async (pool, readModelName, key) => {
   )
 
   await inlineLedgerRunQuery(
-    pool,
     `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
      SET "Properties" = "Properties" - ${escape(key)} 
      WHERE "EventSubscriber" = ${escape(readModelName)}

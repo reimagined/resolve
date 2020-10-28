@@ -1,9 +1,8 @@
-const unsubscribe = async (pool, readModelName) => {
+const resume = async (pool, readModelName, next) => {
   const {
     PassthroughError,
     inlineLedgerRunQuery,
     inlineLedgerForceStop,
-    dropReadModel,
     schemaName,
     tablePrefix,
     escapeId,
@@ -25,16 +24,11 @@ const unsubscribe = async (pool, readModelName) => {
          FOR NO KEY UPDATE NOWAIT
        )
         UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
-        SET "Cursor" = NULL,
-        "SuccessEvent" = NULL,
-        "FailedEvent" = NULL,
-        "Errors" = NULL,
-        "IsPaused" = TRUE
+        SET "IsPaused" = FALSE
         WHERE "EventSubscriber" = ${escape(readModelName)}
         AND (SELECT Count("CTE".*) FROM "CTE") = 1
       `
       )
-
       break
     } catch (err) {
       if (!(err instanceof PassthroughError)) {
@@ -43,30 +37,7 @@ const unsubscribe = async (pool, readModelName) => {
     }
   }
 
-  await dropReadModel(pool, readModelName)
-
-  while (true) {
-    try {
-      await inlineLedgerForceStop(pool, readModelName)
-
-      await inlineLedgerRunQuery(
-        `WITH "CTE" AS (
-         SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-         WHERE "EventSubscriber" = ${escape(readModelName)}
-         FOR UPDATE NOWAIT
-        )
-         DELETE FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-         WHERE "EventSubscriber" = ${escape(readModelName)}
-         AND (SELECT Count("CTE".*) FROM "CTE") = 1
-      `
-      )
-      break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
-      }
-    }
-  }
+  await next()
 }
 
-export default unsubscribe
+export default resume

@@ -1,11 +1,18 @@
 const getProperty = async (pool, readModelName, key) => {
-  const { schemaName, escapeId, escape, inlineLedgerExecuteStatement } = pool
+  const {
+    inlineLedgerRunQuery,
+    schemaName,
+    tablePrefix,
+    escapeId,
+    escape,
+  } = pool
 
   const databaseNameAsId = escapeId(schemaName)
-  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
+  const ledgerTableNameAsId = escapeId(
+    `${tablePrefix}__${schemaName}__LEDGER__`
+  )
 
-  const rows = await inlineLedgerExecuteStatement(
-    pool,
+  const rows = await inlineLedgerRunQuery(
     `SELECT "Properties" -> ${escape(key)} AS "Value"
      FROM  ${databaseNameAsId}.${ledgerTableNameAsId}
      WHERE "EventSubscriber" = ${escape(readModelName)}

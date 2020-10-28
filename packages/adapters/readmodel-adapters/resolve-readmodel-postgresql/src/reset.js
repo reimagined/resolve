@@ -1,24 +1,25 @@
 const reset = async (pool, readModelName) => {
   const {
+    PassthroughError,
+    inlineLedgerRunQuery,
+    inlineLedgerForceStop,
+    dropReadModel,
     schemaName,
+    tablePrefix,
     escapeId,
     escape,
-    dropReadModel,
-    inlineLedgerForceStop,
-    inlineLedgerExecuteStatement,
-    PassthroughError,
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
-  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
+  const ledgerTableNameAsId = escapeId(
+    `${tablePrefix}__${schemaName}__LEDGER__`
+  )
 
   while (true) {
     try {
       await inlineLedgerForceStop(pool, readModelName)
-      await inlineLedgerExecuteStatement(
-        pool,
-        `
-        WITH "CTE" AS (
+      await inlineLedgerRunQuery(
+        `WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escape(readModelName)}
          FOR NO KEY UPDATE NOWAIT
@@ -46,10 +47,8 @@ const reset = async (pool, readModelName) => {
 
   while (true) {
     try {
-      await inlineLedgerExecuteStatement(
-        pool,
-        `
-        WITH "CTE" AS (
+      await inlineLedgerRunQuery(
+        `WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escape(readModelName)}
          FOR NO KEY UPDATE NOWAIT
