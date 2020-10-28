@@ -9,7 +9,7 @@ const getRootBasedUrl = (origin: any, rootPath: any, path: any) => {
 
   leadingSlash(path, 'Path')
 
-  return `${origin}${rootPath ? `/${rootPath}` : ''}${path}`
+  return `${origin ? origin : ''}${rootPath ? `/${rootPath}` : ''}${path}`
 }
 
 export default getRootBasedUrl
