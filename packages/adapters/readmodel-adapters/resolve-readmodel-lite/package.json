@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-lite",
-  "version": "0.25.16",
+  "version": "0.25.17",
   "description": "An adapter the resolve-query uses to store the read model state in memory",
   "engines": {
     "node": ">=10.9"
@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "sqlite": "^3.0.2",
-    "resolve-readmodel-base": "0.25.16",
+    "resolve-readmodel-base": "0.25.17",
     "uuid": "^3.3.2",
     "tmp": "^0.1.0"
   },
