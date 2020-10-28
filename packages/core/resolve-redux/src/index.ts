@@ -15,8 +15,6 @@ import { useReduxViewModel } from './view-model/use-redux-view-model'
 import { useReduxViewModelSelector } from './view-model/use-redux-view-model-selector'
 
 import getOrigin from './internal/get-origin'
-import { Provider, Consumer } from './internal/resolve-context'
-import Providers from './internal/providers'
 import * as actionTypes from './internal/action-types'
 import deserializeInitialState from './internal/deserialize-initial-state'
 import connectResolveAdvanced from './internal/connect-resolve-advanced'
@@ -27,9 +25,6 @@ import { ResolveReduxProvider } from './resolve-redux-provider'
 const internal = {
   actionTypes,
   getOrigin,
-  Provider,
-  Consumer,
-  Providers,
   deserializeInitialState,
 }
 

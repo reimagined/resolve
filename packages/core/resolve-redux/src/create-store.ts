@@ -6,7 +6,6 @@ import {
 } from 'redux'
 import uuid from 'uuid/v4'
 
-import { create as createJwtReducer } from './internal/jwt-reducer'
 import { reducer as viewModelReducer } from './view-model/view-model-reducer'
 import { reducer as readModelReducer } from './read-model/read-model-reducer'
 import createResolveMiddleware from './create-resolve-middleware'
@@ -56,7 +55,6 @@ const createStore = ({
     ...reducers,
     viewModels: viewModelReducer,
     readModels: readModelReducer,
-    jwt: createJwtReducer(), // does it really actual?
   })
 
   const appliedMiddlewares = applyMiddleware(resolveMiddleware, ...middlewares)
