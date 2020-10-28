@@ -20,8 +20,15 @@ const wrapSagaMiddleware = (sagaMiddleware: any): any => {
     const client = getClient(context.resolveContext)
     const queryIdMap = new Map()
 
-    sagaMiddleware.run(isClient ? rootSaga : emptySaga, {
+    const backCompatibleArgs = {
       ...context,
+      ...context.resolveContext,
+    }
+
+    delete backCompatibleArgs.resolveContext
+
+    sagaMiddleware.run(isClient ? rootSaga : emptySaga, {
+      ...backCompatibleArgs,
       queryIdMap,
       client,
     })

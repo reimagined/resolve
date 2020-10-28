@@ -55,6 +55,7 @@ const createStore = ({
     ...reducers,
     viewModels: viewModelReducer,
     readModels: readModelReducer,
+    jwt: (jwt = {}) => jwt,
   })
 
   const appliedMiddlewares = applyMiddleware(resolveMiddleware, ...middlewares)
