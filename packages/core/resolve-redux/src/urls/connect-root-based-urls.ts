@@ -1,23 +1,6 @@
-import getRootBasedUrl from './get-root-based-url'
+import { useOriginResolver } from 'resolve-react-hooks'
 import createContextBasedConnector from './create-context-based-connector'
-import { useCallback, useContext } from 'react'
-import { assertContext, ResolveContext } from 'resolve-react-hooks'
 
-// TODO: push down to resolve-react-hooks and clean up this mess
-const useRootResolver = () => {
-  const context = useContext(ResolveContext)
-  assertContext(context)
+const connectStaticBasedUrls = createContextBasedConnector(useOriginResolver)
 
-  const { origin, rootPath } = context
-
-  return useCallback(
-    (assetPath: string | string[]): string | string[] => {
-      return getRootBasedUrl(origin, rootPath, assetPath)
-    },
-    [context]
-  )
-}
-
-const connectRootBasedUrls = createContextBasedConnector(useRootResolver)
-
-export { connectRootBasedUrls }
+export { connectStaticBasedUrls }
