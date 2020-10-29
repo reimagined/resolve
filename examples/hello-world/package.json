@@ -21,6 +21,7 @@
     "react-bootstrap": "1.4.0",
     "react-helmet": "6.1.0",
     "redux-devtools-extension": "2.13.7",
+    "resolve-react-hooks": "0.25.14",
     "resolve-scripts": "0.25.14",
     "resolve-eventstore-lite": "0.25.14",
     "resolve-readmodel-lite": "0.25.14",

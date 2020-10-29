@@ -1,17 +1,20 @@
 import React from 'react'
-import { Navbar, Image, Nav } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
+import { Navbar, Image, Nav } from 'react-bootstrap'
+import { useStaticResolver } from 'resolve-react-hooks'
 
-const App = ({ staticPath }) => {
+const App = () => {
+  const staticResolver = useStaticResolver()
+
   const stylesheetLink = {
     rel: 'stylesheet',
     type: 'text/css',
-    href: `${staticPath}/bootstrap.min.css`,
+    href: staticResolver('/bootstrap.min.css'),
   }
   const faviconLink = {
     rel: 'icon',
     type: 'image/png',
-    href: `${staticPath}/favicon.ico`,
+    href: staticResolver('/favicon.ico'),
   }
   const links = [stylesheetLink, faviconLink]
   const meta = {
@@ -25,7 +28,7 @@ const App = ({ staticPath }) => {
       <Navbar>
         <Navbar.Brand href="#home">
           <Image
-            src={`${staticPath}/resolve-logo.png`}
+            src={staticResolver('/resolve-logo.png')}
             className="d-inline-block align-top"
           />{' '}
           Hello World Example
@@ -34,19 +37,19 @@ const App = ({ staticPath }) => {
         <Nav className="ml-auto">
           <Navbar.Text className="navbar-right">
             <Nav.Link href="https://facebook.com/resolvejs/">
-              <Image src={`${staticPath}/fb-logo.png`} />
+              <Image src={staticResolver('/fb-logo.png')} />
             </Nav.Link>
           </Navbar.Text>
 
           <Navbar.Text className="navbar-right">
             <Nav.Link href="https://twitter.com/resolvejs">
-              <Image src={`${staticPath}/twitter-logo.png`} />
+              <Image src={staticResolver('/twitter-logo.png')} />
             </Nav.Link>
           </Navbar.Text>
 
           <Navbar.Text className="navbar-right">
             <Nav.Link href="https://github.com/reimagined/resolve">
-              <Image src={`${staticPath}/github-logo.png`} />
+              <Image src={staticResolver('/github-logo.png')} />
             </Nav.Link>
           </Navbar.Text>
         </Nav>
