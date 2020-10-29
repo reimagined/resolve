@@ -6,7 +6,7 @@
     "build": "babel-node ./run.js build",
     "dev": "babel-node ./run.js dev",
     "start": "babel-node ./run.js start",
-    "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
+    "test": "jest --testMatch=**/test/unit/*.test.js --verbose --passWithNoTests",
     "test:e2e": "babel-node ./run.js test:e2e",
     "import-event-store": "babel-node ./run.js import-event-store",
     "export-event-store": "babel-node ./run.js export-event-store"

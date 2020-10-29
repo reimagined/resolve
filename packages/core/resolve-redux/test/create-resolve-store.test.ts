@@ -80,7 +80,7 @@ test('combined reducers are passed to store factory', () => {
   expect(mCreateStore).toHaveBeenCalledWith(
     'combined-reducers',
     undefined,
-    undefined
+    'composed-enhancers'
   )
 })
 
