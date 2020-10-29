@@ -1,5 +1,5 @@
 import React from 'react'
-import { Navbar, Image } from 'react-bootstrap'
+import { Navbar, Image, Nav } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
 
 const App = ({ staticPath }) => {
@@ -21,34 +21,36 @@ const App = ({ staticPath }) => {
 
   return (
     <div>
-      <div>
-        <Helmet title="reSolve Hello World" link={links} meta={[meta]} />
-        <Navbar>
-          <Navbar.Text>
-            <Image src={`${staticPath}/resolve-logo.png`} /> Hello World Example
+      <Helmet title="reSolve Hello World" link={links} meta={[meta]} />
+      <Navbar>
+        <Navbar.Brand href="#home">
+          <Image
+            src={`${staticPath}/resolve-logo.png`}
+            className="d-inline-block align-top"
+          />{' '}
+          Hello World Example
+        </Navbar.Brand>
+
+        <Nav className="ml-auto">
+          <Navbar.Text className="navbar-right">
+            <Nav.Link href="https://facebook.com/resolvejs/">
+              <Image src={`${staticPath}/fb-logo.png`} />
+            </Nav.Link>
           </Navbar.Text>
 
-          <Navbar.Collapse>
-            <Navbar.Text pullRight>
-              <Navbar.Link href="https://facebook.com/resolvejs/">
-                <Image src={`${staticPath}/fb-logo.png`} />
-              </Navbar.Link>
-            </Navbar.Text>
+          <Navbar.Text className="navbar-right">
+            <Nav.Link href="https://twitter.com/resolvejs">
+              <Image src={`${staticPath}/twitter-logo.png`} />
+            </Nav.Link>
+          </Navbar.Text>
 
-            <Navbar.Text pullRight>
-              <Navbar.Link href="https://twitter.com/resolvejs">
-                <Image src={`${staticPath}/twitter-logo.png`} />
-              </Navbar.Link>
-            </Navbar.Text>
-
-            <Navbar.Text pullRight>
-              <Navbar.Link href="https://github.com/reimagined/resolve">
-                <Image src={`${staticPath}/github-logo.png`} />
-              </Navbar.Link>
-            </Navbar.Text>
-          </Navbar.Collapse>
-        </Navbar>
-      </div>
+          <Navbar.Text className="navbar-right">
+            <Nav.Link href="https://github.com/reimagined/resolve">
+              <Image src={`${staticPath}/github-logo.png`} />
+            </Nav.Link>
+          </Navbar.Text>
+        </Nav>
+      </Navbar>
       <h1 align="center">Hello, reSolve world!</h1>
     </div>
   )
