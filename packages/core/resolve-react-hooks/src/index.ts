@@ -11,4 +11,5 @@ export * from './use-client'
 export * from './context'
 export * from './use-command-builder'
 export * from './use-query-builder'
+export * from './use-origin-resolver'
 
