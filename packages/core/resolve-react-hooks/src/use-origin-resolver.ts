@@ -4,15 +4,15 @@ import { useClient } from './use-client'
 
 export type OriginResolver = Resolver
 
-const useOriginResolver = (): OriginResolver => {
+function useOriginResolver(): OriginResolver {
   const client = useClient()
 
   return useCallback(
-    (assetPath: string | string[]): string | string[] => {
-      if (typeof assetPath === 'string') {
-        return client.getOriginPath(assetPath)
+    (relativePath: string): string => {
+      if (relativePath != null) {
+        return client.getOriginPath(relativePath)
       } else {
-        return assetPath.map((path) => client.getOriginPath(path))
+        throw Error(`unsupported or empty relative path: ${relativePath}`)
       }
     },
     [client]

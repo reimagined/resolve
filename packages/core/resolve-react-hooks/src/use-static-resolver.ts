@@ -4,15 +4,15 @@ import { useClient } from './use-client'
 
 export type StaticResolver = Resolver
 
-const useStaticResolver = (): StaticResolver => {
+function useStaticResolver(): StaticResolver {
   const client = useClient()
 
   return useCallback(
-    (assetPath: string | string[]): string | string[] => {
-      if (typeof assetPath === 'string') {
+    (assetPath: string): string => {
+      if (assetPath != null) {
         return client.getStaticAssetUrl(assetPath)
       } else {
-        return assetPath.map((path) => client.getStaticAssetUrl(path))
+        throw Error(`unsupported or empty asset path: ${assetPath}`)
       }
     },
     [client]

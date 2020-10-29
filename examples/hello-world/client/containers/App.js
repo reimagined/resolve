@@ -54,7 +54,7 @@ const App = () => {
           </Navbar.Text>
         </Nav>
       </Navbar>
-      <h1 align="center">Hello, reSolve world!</h1>
+      <h1 className="text-center">Hello, reSolve world!</h1>
     </div>
   )
 }

@@ -56,28 +56,10 @@ test('new resolver on underlying client change', () => {
 })
 
 describe('resolver tests', () => {
-  let resolver: OriginResolver
-
-  beforeEach(() => {
-    resolver = renderHook(() => useOriginResolver()).result.current
-  })
-
   test('single asset as string', () => {
+    const resolver = renderHook(() => useOriginResolver()).result.current
+
     expect(resolver('command')).toEqual('origin_command')
     expect(mockedClient.getOriginPath).toHaveBeenCalledWith('command')
-  })
-
-  test('single asset as array', () => {
-    expect(resolver(['command'])).toEqual(['origin_command'])
-    expect(mockedClient.getOriginPath).toHaveBeenCalledWith('command')
-  })
-
-  test('multiple assets as array', () => {
-    expect(resolver(['command', 'query'])).toEqual([
-      'origin_command',
-      'origin_query',
-    ])
-    expect(mockedClient.getOriginPath).toHaveBeenCalledWith('command')
-    expect(mockedClient.getOriginPath).toHaveBeenCalledWith('query')
   })
 })

@@ -56,25 +56,10 @@ test('new resolver on underlying client change', () => {
 })
 
 describe('resolver tests', () => {
-  let resolver: StaticResolver
-
-  beforeEach(() => {
-    resolver = renderHook(() => useStaticResolver()).result.current
-  })
-
   test('single asset as string', () => {
+    const resolver = renderHook(() => useStaticResolver()).result.current
+
     expect(resolver('asset')).toEqual('static_asset')
     expect(mockedClient.getStaticAssetUrl).toHaveBeenCalledWith('asset')
-  })
-
-  test('single asset as array', () => {
-    expect(resolver(['asset'])).toEqual(['static_asset'])
-    expect(mockedClient.getStaticAssetUrl).toHaveBeenCalledWith('asset')
-  })
-
-  test('multiple assets as array', () => {
-    expect(resolver(['image', 'icon'])).toEqual(['static_image', 'static_icon'])
-    expect(mockedClient.getStaticAssetUrl).toHaveBeenCalledWith('image')
-    expect(mockedClient.getStaticAssetUrl).toHaveBeenCalledWith('icon')
   })
 })
