@@ -1,13 +1,11 @@
 import React from 'react'
 import { Store } from 'redux'
 import { Provider as ReduxProvider } from 'react-redux'
-import { Context } from 'resolve-client'
-import { ResolveContext } from 'resolve-react-hooks'
+import { ResolveProvider, ResolveProviderProps } from 'resolve-react-hooks'
 
 type ResolveReduxProviderProps = {
-  context: Context
   store: Store
-}
+} & ResolveProviderProps
 
 const ResolveReduxProvider: React.FunctionComponent<ResolveReduxProviderProps> = ({
   children,
@@ -15,9 +13,9 @@ const ResolveReduxProvider: React.FunctionComponent<ResolveReduxProviderProps> =
   store,
 }) => {
   return (
-    <ResolveContext.Provider value={context}>
+    <ResolveProvider context={context}>
       <ReduxProvider store={store}>{children}</ReduxProvider>
-    </ResolveContext.Provider>
+    </ResolveProvider>
   )
 }
 
