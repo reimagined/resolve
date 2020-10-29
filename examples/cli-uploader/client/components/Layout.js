@@ -5,7 +5,7 @@ import { Navbar, NavbarBrand, Nav, NavItem, NavLink, Button } from 'reactstrap'
 
 import Form from '../containers/Form'
 
-export default ({ children, staticPath, jwt }) => {
+export default ({ children, jwt }) => {
   const staticResolver = useStaticResolver()
 
   return (
@@ -13,13 +13,13 @@ export default ({ children, staticPath, jwt }) => {
       <Helmet>
         <title>reSolve cli uploader</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href={`${staticPath}/bootstrap.min.css`} />
-        <link rel="icon" href={`${staticPath}/favicon.ico`} />
+        <link rel="stylesheet" href={staticResolver(`/bootstrap.min.css`)} />
+        <link rel="icon" href={staticResolver(`/favicon.ico`)} />
       </Helmet>
 
       <Navbar color="light" light expand="md">
         <NavbarBrand className="mr-auto" href="/">
-          <img src={`${staticPath}/resolve-logo.png`} alt="resolve-logo" />
+          <img src={staticResolver(`/resolve-logo.png`)} alt="resolve-logo" />
           Cli uploader
         </NavbarBrand>
 
@@ -36,7 +36,10 @@ export default ({ children, staticPath, jwt }) => {
           </NavItem>
           <NavItem>
             <NavLink href="https://twitter.com/resolvejs">
-              <img src={staticResolver(`/twitter-logo.png`)} alt="twitter-logo" />
+              <img
+                src={staticResolver(`/twitter-logo.png`)}
+                alt="twitter-logo"
+              />
             </NavLink>
           </NavItem>
           <NavItem>
