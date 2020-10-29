@@ -16,6 +16,13 @@ const testFunctionalConfig = {
       },
     },
   },
+  eventstoreAdapter: {
+    module: 'resolve-eventstore-lite',
+    options: {
+      databaseFile: 'data/event-store-test-functional.db',
+      secretsFile: 'data/secrets-test-functional.db',
+    },
+  },
   schedulers: {
     scheduler: {
       adapter: {
@@ -28,12 +35,6 @@ const testFunctionalConfig = {
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000,
-  },
-  eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
-    options: {
-      databaseFile: 'data/event-store-test-functional.db',
-    },
   },
 }
 

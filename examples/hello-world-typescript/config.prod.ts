@@ -36,6 +36,15 @@ const prodConfig = {
       snapshotBucketSize: 100,
     },
   },
+  schedulers: {
+    scheduler: {
+      adapter: {
+        module: 'resolve-scheduler-local',
+        options: {},
+      },
+      connectorName: 'default',
+    },
+  },
   /*
     {
       module: 'resolve-eventstore-mysql',
@@ -53,7 +62,7 @@ const prodConfig = {
   */ jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000,
-  },
+  }
 }
 
 export default prodConfig
