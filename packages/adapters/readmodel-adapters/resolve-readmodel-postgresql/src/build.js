@@ -276,7 +276,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
         true
       )
 
-      events = eventsPromise
+      events = await eventsPromise
     } else {
       if (isBuildSuccess) {
         await next()
@@ -332,7 +332,7 @@ const build = async (
         ) VALUES (
           CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT), 
           ${escape(xaKey)},
-          CAST(pg_backend_pid() AS TEXT[])
+          CAST(pg_backend_pid() AS VARCHAR(190))
         )
         RETURNING *
       )
@@ -354,16 +354,14 @@ const build = async (
     }
 
     const eventTypes =
-      readModelLedger.EventTypes != null
-        ? JSON.parse(readModelLedger.EventTypes)
-        : null
+      readModelLedger.EventTypes != null ? readModelLedger.EventTypes : null
 
     if (!Array.isArray(eventTypes) && eventTypes != null) {
       throw new TypeError('eventTypes')
     }
 
     const cursor =
-      readModelLedger.Cursor != null ? JSON.parse(readModelLedger.Cursor) : null
+      readModelLedger.Cursor != null ? readModelLedger.Cursor : null
 
     if (cursor != null && cursor.constructor !== String) {
       throw new TypeError('cursor')

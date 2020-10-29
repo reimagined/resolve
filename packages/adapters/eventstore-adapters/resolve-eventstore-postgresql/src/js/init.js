@@ -86,7 +86,7 @@ const init = async ({
       ;`
     )
   } catch (error) {
-    if (error != null && /Relation.*? already exists$/i.test(error.message)) {
+    if (error != null && `${error.code}` === '42P07') {
       throw new EventstoreResourceAlreadyExistError(
         `Double-initialize storage-postgresql adapter via "${databaseName}" failed`
       )

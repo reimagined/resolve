@@ -13,6 +13,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
   const ledgerTableNameAsId = escapeId(
     `${tablePrefix}__${schemaName}__LEDGER__`
   )
+  const trxTableNameAsId = escapeId(`${tablePrefix}__${schemaName}__TRX__`)
 
   try {
     await inlineLedgerRunQuery(`
@@ -31,7 +32,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         PRIMARY KEY("EventSubscriber")
       );
       
-      CREATE TABLE IF NOT EXISTS ${databaseNameAsId}.${ledgerTableNameAsId}(
+      CREATE TABLE IF NOT EXISTS ${databaseNameAsId}.${trxTableNameAsId}(
         "XaKey" VARCHAR(190) NOT NULL,
         "XaValue" VARCHAR(190) NOT NULL,
         "Timestamp" BIGINT,

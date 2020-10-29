@@ -22,7 +22,7 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
           WHERE "Timestamp" < CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) - 86400000
           RETURNING *
         )
-        SELECT CASE WHEN "B"."XaValue" IS NOT NULL THEN pg_terminate_backend(CAST("B"."XaValue" AS BIGINT))
+        SELECT CASE WHEN "B"."XaValue" IS NOT NULL THEN pg_terminate_backend(CAST("B"."XaValue" AS INT))
         ELSE NULL END FROM ${databaseNameAsId}.${ledgerTableNameAsId} "A"
         LEFT JOIN ${databaseNameAsId}.${trxTableNameAsId} "B"
         ON "A"."XaKey" = "B"."XaKey"

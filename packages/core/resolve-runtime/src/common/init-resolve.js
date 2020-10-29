@@ -41,6 +41,11 @@ const initResolve = async (resolve) => {
     resolve.getRemainingTimeInMillis = () => endTime - Date.now()
   }
 
+  Object.defineProperties(resolve, {
+    readModelConnectors: { value: readModelConnectors },
+    eventstoreAdapter: { value: eventstoreAdapter },
+  })
+
   const getRemainingTimeInMillis = resolve.getRemainingTimeInMillis
   const onCommandExecuted = createOnCommandExecuted(resolve)
 
@@ -113,8 +118,6 @@ const initResolve = async (resolve) => {
   })
 
   Object.defineProperties(resolve, {
-    readModelConnectors: { value: readModelConnectors },
-    eventstoreAdapter: { value: eventstoreAdapter },
     eventListener: { value: eventListener },
     eventBus: { value: eventBus },
     eventStore: { value: eventStore },

@@ -88,7 +88,7 @@ const connect = _connect.bind(null, {
 
 const createAdapter = _createAdapter.bind(null, {
   ...store,
-  externalMethods,
+  ...externalMethods,
   connect,
   disconnect,
 })
