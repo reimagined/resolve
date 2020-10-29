@@ -4,6 +4,8 @@ export type HookExecutor<TData extends any[], TResult> = (
   ...data: TData
 ) => Promise<TResult> | void
 
+export type Resolver = (source: string | string[]) => string | string[]
+
 export function isCallback<T>(x: any): x is T {
   return x && typeof x === 'function'
 }

@@ -22,6 +22,7 @@ const mockedClient = {
     })
   ),
   getStaticAssetUrl: jest.fn(),
+  getOriginPath: jest.fn(),
   subscribe: jest.fn(),
   unsubscribe: jest.fn(),
 }
