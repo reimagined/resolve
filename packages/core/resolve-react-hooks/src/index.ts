@@ -12,4 +12,5 @@ export * from './context'
 export * from './use-command-builder'
 export * from './use-query-builder'
 export * from './use-origin-resolver'
+export * from './resolve-provider'
 
