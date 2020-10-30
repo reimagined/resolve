@@ -1,9 +1,9 @@
-const beginTransaction = async ({ runRawQuery }) => {
+const beginTransaction = async ({ runQuery }) => {
   try {
-    await runRawQuery(`ROLLBACK;`)
+    await runQuery(`ROLLBACK;`)
   } catch (error) {}
 
-  await runRawQuery(`START TRANSACTION;`)
+  await runQuery(`START TRANSACTION;`)
 }
 
 export default beginTransaction

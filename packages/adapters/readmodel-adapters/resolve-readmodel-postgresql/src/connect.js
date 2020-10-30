@@ -81,8 +81,6 @@ const connect = async (imports, pool, options) => {
     return rows
   }
 
-  const eventCounters = new Map()
-
   Object.assign(pool, {
     performanceTracer,
     connectionOptions,
@@ -91,7 +89,6 @@ const connect = async (imports, pool, options) => {
     makeNestedPath,
     transactionId: null,
     readModelName: null,
-    eventCounters,
     inlineLedgerRunQuery,
     runQuery,
     connection,
