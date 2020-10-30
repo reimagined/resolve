@@ -141,13 +141,14 @@ You can extend a reSolve server's API with API Handlers. Refer to the following 
 
 The **resolve-client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
 
-| Function                                                | Description                                |
-| ------------------------------------------------------- | ------------------------------------------ |
-| [command](api-reference.md#command)                     | Sends an aggregate command to the backend. |
-| [query](api-reference.md#query)                         | Queries a Read Model.                      |
-| [getStaticAssetUrl](api-reference.md#getstaticasseturl) | Gets a static file's full URL.             |
-| [subscribe](api-reference.md#subscribe)                 | Subscribes to View Model updates.          |
-| [unsubscribe](api-reference.md#unsubscribe)             | Unsubscribes from View Model updates.      |
+| Function                                                | Description                                                                 |
+| ------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [command](api-reference.md#command)                     | Sends an aggregate command to the backend.                                  |
+| [query](api-reference.md#query)                         | Queries a Read Model.                                                       |
+| [getStaticAssetUrl](api-reference.md#getstaticasseturl) | Gets a static file's full URL.                                              |
+| [getOriginPath](api-reference.md#getoriginpath)         | Returns an absolute URL within the application for the given relative path. |
+| [subscribe](api-reference.md#subscribe)                 | Subscribes to View Model updates.                                           |
+| [unsubscribe](api-reference.md#unsubscribe)             | Unsubscribes from View Model updates.                                       |
 
 #### Example
 
@@ -194,6 +195,7 @@ The **resolve-react-hooks** library provides React hooks that you can use to con
 | [useCommandBuilder](api-reference.md#usecommandbuilder) | Allows to generate commands based on input parameters                    |
 | [useViewModel](api-reference.md#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model               |
 | [useQuery](api-reference.md#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model |
+| [useOriginResolver](api-reference.md#useoriginresolver) | Resolves a relative path to an absolute URL within the application.      |
 
 #### Example
 
