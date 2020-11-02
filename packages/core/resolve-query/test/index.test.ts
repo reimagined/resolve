@@ -1730,7 +1730,15 @@ for (const { describeName, prepare } of [
 
         await query.sendEvents({
           modelName: 'encryptedReadModel',
-          events,
+          events: events.slice(0, 1),
+          xaTransactionId: 'xaTransactionId',
+          properties: {},
+          batchId: 'batchId',
+        })
+
+        await query.sendEvents({
+          modelName: 'encryptedReadModel',
+          events: events.slice(1),
           xaTransactionId: 'xaTransactionId',
           properties: {},
           batchId: 'batchId',
@@ -1799,13 +1807,21 @@ for (const { describeName, prepare } of [
 
         await query.sendEvents({
           modelName: 'readModelName',
-          events,
+          events: events.slice(0, 1),
           xaTransactionId: 'xaTransactionId',
           properties: {},
           batchId: 'batchId',
         })
 
-        expect(performAcknowledge.mock.calls[0][0].result).toMatchObject({
+        await query.sendEvents({
+          modelName: 'readModelName',
+          events: events.slice(1),
+          xaTransactionId: 'xaTransactionId',
+          properties: {},
+          batchId: 'batchId',
+        })
+
+        expect(performAcknowledge.mock.calls[1][0].result).toMatchObject({
           error: null,
           successEvent: {
             aggregateId: 'id1',

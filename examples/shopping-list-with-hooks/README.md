@@ -1,11 +1,13 @@
-# Shopping List Example
+# Shopping List With React Hooks Example
 
 ![shopping-list](https://user-images.githubusercontent.com/19663260/44575926-f3613580-a795-11e8-825f-670c36b843dd.png)
 
-This example demonstrates how to work with [read-models](https://reimagined.github.io/resolve/docs/read-side#read-models) and [view-models](https://reimagined.github.io/resolve/docs/read-side#view-model-specifics).
+This example demonstrates how to use the [resolve-react-hooks](https://reimagined.github.io/resolve/docs/frontend#resolve-react-hooks-library) client library to communicate with a reSolve backend.
+
+##### Installation:
 
 ```sh
-npx create-resolve-app resolve-shopping-list -e shopping-list
+npx create-resolve-app shopping-list-with-hooks -e shopping-list-with-hooks
 ```
 
 ## What's next?

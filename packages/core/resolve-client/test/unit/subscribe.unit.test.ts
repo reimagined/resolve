@@ -3,6 +3,7 @@ jest.useFakeTimers()
 /* eslint-disable import/first */
 import { mocked } from 'ts-jest'
 
+import { SubscriptionAdapterStatus } from '../../src/types'
 import * as subscribe from '../../src/subscribe'
 import { rootCallback } from '../../src/subscribe-callback'
 import { Context } from '../../src/context'
@@ -15,7 +16,7 @@ let mFetch: any
 
 const mockInit = jest.fn()
 const mockCallback = jest.fn()
-const mockIsConnected = jest.fn().mockReturnValue(true)
+const mockStatus = jest.fn().mockReturnValue(SubscriptionAdapterStatus.Ready)
 const mockClose = jest.fn()
 
 const mockCreateSubscribeAdapter = mocked(createClientAdapter)
@@ -38,7 +39,7 @@ describe('subscribe', () => {
     mockCreateSubscribeAdapter.mockReturnValue({
       init: mockInit,
       close: mockClose,
-      isConnected: mockIsConnected,
+      status: mockStatus,
     })
 
     mFetch = jest.fn(() => ({
@@ -210,7 +211,7 @@ describe('re-subscribe', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks()
-    refreshSpy = jest.spyOn(subscribe, 'refreshSubscribeAdapter')
+    refreshSpy = jest.spyOn(subscribe, 'refreshSubscriptionAdapter')
     /* mockCreateSubscribeAdapter = jest.fn().mockReturnValue({
       init: mockInit,
       isConnected: mockIsConnected,
@@ -298,7 +299,7 @@ describe('re-subscribe', () => {
     expect(setTimeout).toHaveBeenCalledTimes(1)
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 5000)
 
-    mockIsConnected.mockReturnValueOnce(false)
+    mockStatus.mockReturnValueOnce(SubscriptionAdapterStatus.Closed)
 
     await disconnect(context, ['aggregate-id-1'], 'view-model', mockCallback)
 

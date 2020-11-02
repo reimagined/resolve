@@ -1,9 +1,12 @@
-import { USER_REGISTERED } from '../event-types'
+import getEventTypes from '../event-types'
 
-export default {
-  Init: () => null,
-  [USER_REGISTERED]: (state, { aggregateId, payload: { name } }) => ({
-    id: aggregateId,
-    name,
-  }),
+export default (options) => {
+  const { USER_REGISTERED } = getEventTypes(options)
+  return {
+    Init: () => null,
+    [USER_REGISTERED]: (state, { aggregateId, payload: { name } }) => ({
+      id: aggregateId,
+      name,
+    }),
+  }
 }

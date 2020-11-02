@@ -1,9 +1,8 @@
-import { call, take } from 'redux-saga/effects'
+import { call, take, cancelled } from 'redux-saga/effects'
 
 import { RootSagaArgs } from '../types'
 import { ViewModelQuery } from 'resolve-client'
-import { DisconnectViewModelAction, viewModelStateUpdate } from './actions'
-import { DISCONNECT_VIEWMODEL } from '../internal/action-types'
+import { viewModelStateUpdate } from './actions'
 
 type EventListenerSagaArgs = {
   viewModels: any
@@ -40,11 +39,11 @@ const eventListenerSaga = function* (
     }
   )
 
-  while (true) {
-    const action: DisconnectViewModelAction = yield take(DISCONNECT_VIEWMODEL)
-    if (action.query === query) {
+  try {
+    yield take(() => false)
+  } finally {
+    if (yield cancelled()) {
       yield call([client, client.unsubscribe], subscription)
-      break
     }
   }
 }

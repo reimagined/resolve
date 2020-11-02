@@ -153,6 +153,19 @@ Array [
         "eventSubscriber": "test-saga",
         "failedEvent": null,
         "successEvent": Object {
+          "type": "Init",
+        },
+      },
+    },
+  ],
+  Array [
+    Object {
+      "batchId": undefined,
+      "result": Object {
+        "error": null,
+        "eventSubscriber": "test-saga",
+        "failedEvent": null,
+        "successEvent": Object {
           "aggregateId": "aggregateId",
           "aggregateVersion": 1,
           "payload": Object {
@@ -160,6 +173,19 @@ Array [
           },
           "timestamp": 100,
           "type": "EVENT_TYPE",
+        },
+      },
+    },
+  ],
+  Array [
+    Object {
+      "batchId": undefined,
+      "result": Object {
+        "error": null,
+        "eventSubscriber": "default-scheduler",
+        "failedEvent": null,
+        "successEvent": Object {
+          "type": "Init",
         },
       },
     },
@@ -184,6 +210,12 @@ exports[`resolve-saga: readModelConnectors['default-connector'].connect 1`] = `
 Array [
   Array [
     "test-saga",
+  ],
+  Array [
+    "test-saga",
+  ],
+  Array [
+    "default-scheduler",
   ],
   Array [
     "default-scheduler",
@@ -275,6 +307,160 @@ Array [
       },
     },
     "test-saga",
+  ],
+  Array [
+    Object {
+      "defineTable": [MockFunction] {
+        "calls": Array [
+          Array [
+            "default-scheduler",
+            Object {
+              "fields": Array [
+                "command",
+              ],
+              "indexes": Object {
+                "date": "number",
+                "taskId": "string",
+              },
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+      "delete": [MockFunction] {
+        "calls": Array [
+          Array [
+            "default-scheduler",
+            Object {
+              "taskId": undefined,
+            },
+          ],
+          Array [
+            "default-scheduler",
+            Object {
+              "taskId": undefined,
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+      "find": [MockFunction],
+      "insert": [MockFunction] {
+        "calls": Array [
+          Array [
+            "default-scheduler",
+            Object {
+              "command": Object {
+                "aggregateId": "scheduledId",
+                "aggregateName": "Test",
+                "payload": "scheduledCommand",
+                "type": "scheduledCommand",
+              },
+              "date": 100500,
+              "taskId": "guid",
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+    },
+    "test-saga",
+  ],
+  Array [
+    Object {
+      "defineTable": [MockFunction] {
+        "calls": Array [
+          Array [
+            "default-scheduler",
+            Object {
+              "fields": Array [
+                "command",
+              ],
+              "indexes": Object {
+                "date": "number",
+                "taskId": "string",
+              },
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+      "delete": [MockFunction] {
+        "calls": Array [
+          Array [
+            "default-scheduler",
+            Object {
+              "taskId": undefined,
+            },
+          ],
+          Array [
+            "default-scheduler",
+            Object {
+              "taskId": undefined,
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+      "find": [MockFunction],
+      "insert": [MockFunction] {
+        "calls": Array [
+          Array [
+            "default-scheduler",
+            Object {
+              "command": Object {
+                "aggregateId": "scheduledId",
+                "aggregateName": "Test",
+                "payload": "scheduledCommand",
+                "type": "scheduledCommand",
+              },
+              "date": 100500,
+              "taskId": "guid",
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+    },
+    "default-scheduler",
   ],
   Array [
     Object {

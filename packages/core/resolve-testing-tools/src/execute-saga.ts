@@ -36,7 +36,7 @@ export const executeSaga = async ({
 
     const store = await adapter.connect(name)
 
-    for (const event of transformEvents(events)) {
+    for (const event of [{ type: 'Init' }, ...transformEvents(events)]) {
       const handler = handlers[event.type]
 
       if (handler === undefined) {

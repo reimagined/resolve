@@ -1,11 +1,22 @@
 import { nanoid } from 'nanoid'
 import { Client, QueryResult } from 'resolve-client'
-import { getClient } from './get-client'
+import { getClient } from '../../utils/utils'
+import deserializeState from '../../app/common/view-models/custom-serializer.deserialize'
 
 let client: Client
 
 beforeEach(() => {
-  client = getClient()
+  client = getClient({
+    viewModels: [
+      {
+        name: 'custom-serializer',
+        deserializeState,
+        projection: {
+          Init: () => null,
+        },
+      },
+    ],
+  })
 })
 
 const registerUser = async (userId: string) =>
