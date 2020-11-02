@@ -7,13 +7,10 @@ import {
   Row,
   Col,
   ListGroup,
-  ListGroupItem,
-  Checkbox,
+  FormCheck,
   Button,
   InputGroup,
-  FormControl,
-  FormGroup,
-  ControlLabel,
+  Form,
 } from 'react-bootstrap'
 
 import Image from './Image'
@@ -97,15 +94,17 @@ export class ShoppingList extends React.PureComponent {
 
     return (
       <div className="example-wrapper">
-        <ControlLabel>Shopping list name</ControlLabel>
-        <FormGroup bsSize="large">
-          <InputGroup>
-            <InputGroup.Button>
-              <Button bsSize="large" onClick={this.removeShoppingList}>
-                <i className="far fa-trash-alt" />
-              </Button>
-            </InputGroup.Button>
-            <FormControl
+        <Form.Label>Shopping list name</Form.Label>
+        <Form.Group>
+          <InputGroup size="lg">
+            <Button
+              size="lg"
+              variant="danger"
+              onClick={this.removeShoppingList}
+            >
+              <i className="far fa-trash-alt" />
+            </Button>
+            <Form.Control
               type="text"
               value={
                 this.state.shoppingListName == null
@@ -117,19 +116,19 @@ export class ShoppingList extends React.PureComponent {
               onBlur={this.renameShoppingList}
             />
           </InputGroup>
-        </FormGroup>
+        </Form.Group>
         <ListGroup className="example-list">
           {list.map((todo) => (
-            <ListGroupItem key={todo.id}>
-              <Checkbox
+            <ListGroup.Item key={todo.id}>
+              <Form.Check
                 inline
+                type="checkbox"
+                label={todo.text}
                 checked={todo.checked}
                 onChange={toggleShoppingItem.bind(null, aggregateId, {
                   id: todo.id,
                 })}
-              >
-                {todo.text}
-              </Checkbox>
+              />
               <Image
                 className="example-close-button"
                 src="/close-button.png"
@@ -137,13 +136,13 @@ export class ShoppingList extends React.PureComponent {
                   id: todo.id,
                 })}
               />
-            </ListGroupItem>
+            </ListGroup.Item>
           ))}
         </ListGroup>
-        <ControlLabel>Item name</ControlLabel>
+        <Form.Label>Item name</Form.Label>
         <Row>
           <Col md={8}>
-            <FormControl
+            <Form.Control
               className="example-form-control"
               type="text"
               value={this.state.itemText}
@@ -154,7 +153,7 @@ export class ShoppingList extends React.PureComponent {
           <Col md={4}>
             <Button
               className="example-button"
-              bsStyle="success"
+              variant="success"
               onClick={this.createShoppingItem}
             >
               Add Item

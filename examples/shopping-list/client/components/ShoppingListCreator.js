@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Col, ControlLabel, FormControl, Row } from 'react-bootstrap'
+import { Button, Col, FormLabel, FormControl, Row } from 'react-bootstrap'
 import uuid from 'uuid/v4'
 
 class ShoppingListCreator extends React.PureComponent {
@@ -34,7 +34,7 @@ class ShoppingListCreator extends React.PureComponent {
   render() {
     return (
       <div>
-        <ControlLabel>Shopping list name</ControlLabel>
+        <FormLabel>Shopping list name</FormLabel>
         <Row>
           <Col md={8}>
             <FormControl
@@ -48,7 +48,7 @@ class ShoppingListCreator extends React.PureComponent {
           <Col md={4}>
             <Button
               className="example-button"
-              bsStyle="success"
+              variant="success"
               onClick={this.createList}
             >
               Add Shopping List
