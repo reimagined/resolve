@@ -1,75 +1,75 @@
 import React from 'react'
 import ReactDOM from 'react-dom/server'
-import { createStore } from 'resolve-redux'
+import { createResolveStore, ResolveReduxProvider } from 'resolve-redux'
 import { Router } from 'react-router'
 import { Helmet } from 'react-helmet'
+import { StyleSheetManager, ServerStyleSheet } from 'styled-components'
 import { createMemoryHistory } from 'history'
 import jsonwebtoken from 'jsonwebtoken'
-import * as Redux from 'react-redux'
-import { ResolveContext } from 'resolve-react-hooks'
 
 import getRoutes from './get-routes'
 import getRedux from './get-redux'
-import Routes from '../client/components/Routes'
+import Routes from './components/Routes'
 
-const ssrHandler = async (
-  { serverImports, constants, seedClientEnvs, viewModels, utils },
-  req,
-  res
-) => {
+const ssrHandler = async (serverContext, req, res) => {
   try {
+    const {
+      serverImports,
+      constants,
+      seedClientEnvs,
+      utils,
+      viewModels,
+    } = serverContext
     const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils
     const { rootPath, staticPath, jwtCookie } = constants
-    const redux = getRedux(serverImports)
-    const routes = getRoutes(serverImports)
 
-    const baseQueryUrl = getRootBasedUrl(rootPath, '/')
-    const origin = ''
-    const url = req.path.substring(baseQueryUrl.length)
     const history = createMemoryHistory()
+    const baseQueryUrl = getRootBasedUrl(rootPath, '/')
+    const url = req.path.substring(baseQueryUrl.length)
     history.push(url)
+
+    const redux = getRedux(serverImports, history)
+    const routes = getRoutes()
 
     const jwt = {}
     try {
       Object.assign(jwt, jsonwebtoken.decode(req.cookies[jwtCookie.name]))
     } catch (e) {}
 
-    const context = {
+    const resolveContext = {
+      ...constants,
       viewModels,
-      subscribeAdapter: {},
-      history,
-      origin,
-      rootPath,
-      staticPath: '/',
+      origin: '',
     }
 
-    const store = createStore({
-      ...context,
-      redux,
-      initialState: { jwt },
-      isClient: false,
-    })
+    const store = createResolveStore(
+      resolveContext,
+      {
+        initialState: { jwt },
+        redux,
+      },
+      false
+    )
 
     const staticContext = {}
+    const sheet = new ServerStyleSheet()
     const markup = ReactDOM.renderToStaticMarkup(
-      <Redux.Provider store={store}>
-        <ResolveContext.Provider value={context}>
+      <StyleSheetManager sheet={sheet.instance}>
+        <ResolveReduxProvider context={resolveContext} store={store}>
           <Router history={history} staticContext={staticContext}>
             <Routes routes={routes} />
           </Router>
-        </ResolveContext.Provider>
-      </Redux.Provider>
+        </ResolveReduxProvider>
+      </StyleSheetManager>
     )
+
+    const styleTags = sheet.getStyleTags()
 
     const initialState = store.getState()
     const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index.js')
     const faviconUrl = getStaticBasedPath(rootPath, staticPath, 'favicon.ico')
 
     const helmet = Helmet.renderStatic()
-
-    for (const reducerName of Object.keys(redux.reducers)) {
-      delete initialState[reducerName]
-    }
 
     const markupHtml =
       `<!doctype html>` +
@@ -80,6 +80,7 @@ const ssrHandler = async (
       `${helmet.meta.toString()}` +
       `${helmet.link.toString()}` +
       `${helmet.style.toString()}` +
+      styleTags +
       '<script>' +
       `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)};` +
       `window.__RESOLVE_RUNTIME_ENV__=${jsonUtfStringify(seedClientEnvs)};` +
