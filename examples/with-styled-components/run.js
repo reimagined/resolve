@@ -14,7 +14,7 @@ import {
 import appConfig from './config.app'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
-import testFunctionalConfig from './config.test_functional'
+import testFunctionalConfig from './config.test-functional'
 import cloudConfig from './config.cloud'
 
 const launchMode = process.argv[2]
