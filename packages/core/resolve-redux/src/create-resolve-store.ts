@@ -27,14 +27,14 @@ type ResolveRedux = {
 }
 
 type ResolveStoreParameters = {
-  redux: ResolveRedux
+  redux?: ResolveRedux
   initialState?: any
   serializedState?: string
 }
 
 const createResolveStore = (
   resolveContext: Context,
-  params: ResolveStoreParameters,
+  params: ResolveStoreParameters = {},
   isClient = true
 ): Store => {
   const sessionId = uuid()
@@ -42,7 +42,7 @@ const createResolveStore = (
   const {
     initialState,
     serializedState,
-    redux: { reducers = [], middlewares = [], enhancers = [], sagas = [] },
+    redux: { reducers = [], middlewares = [], enhancers = [], sagas = [] } = {},
   } = params
 
   if (serializedState != null && initialState != null) {

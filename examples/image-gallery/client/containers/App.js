@@ -1,198 +1,196 @@
-import React from 'react'
-import {
-  Form,
-  Input,
-  Label,
-  Button,
-  CardColumns,
-  Card,
-  CardBody,
-  CardImg,
-  CardTitle,
-  FormGroup,
-  CustomInput,
-} from 'reactstrap'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import { Button, CardColumns, CardImg, Card, Form } from 'react-bootstrap'
 import FileUploadProgress from 'react-fileupload-progress'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { connectReadModel } from 'resolve-redux'
+import { useQuery, useCommand } from 'resolve-react-hooks'
 import {
   getCDNBasedUrl,
   getFormUpload,
   getToken,
 } from 'resolve-module-uploader'
 
-import UploaderContext from '../context'
-import * as aggregateActions from '../aggregate_actions'
-
-class App extends React.Component {
-  state = {
-    form: {},
+const App = ({ CDNUrl }) => {
+  const [form, setForm] = useState({
+    data: {
+      url: 'http://localhost',
+    },
     uploadId: '',
-    token: '',
-    staticToken: '',
-    mimeType: '',
-    nameFile: '',
     isHidden: true,
-    isLoaded: false,
-  }
+  })
+  const [staticToken, setStaticToken] = useState('')
+  const [token, setToken] = useState('')
+  const [fileName, setFileName] = useState('')
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [images, setImages] = useState([])
+  const [mimeType, setMimeType] = useState('')
 
-  componentDidMount() {
-    getToken({ dir: 'logo' }).then((token) =>
-      this.setState({ staticToken: token })
-    )
-  }
-
-  handleGetUrl = () => {
+  const handleFileNameChange = useCallback(
+    (event) => {
+      console.log(event.target.value)
+      setFileName(event.target.value)
+    },
+    [setFileName]
+  )
+  const handleGetUrl = useCallback(() => {
     getFormUpload({ dir: 'logo' }).then((result) =>
-      this.setState({
-        form: result.form,
+      setForm({
+        data: result.form,
         uploadId: result.uploadId,
         isHidden: false,
       })
     )
+    getToken({ dir: 'logo' }).then(setToken)
+  }, [setForm])
+  const formGetter = useCallback(
+    () => new FormData(document.getElementById('customForm')),
+    []
+  )
 
-    getToken({ dir: 'logo' }).then((token) => this.setState({ token }))
-  }
+  const getImages = useQuery(
+    {
+      name: 'Images',
+      resolver: 'allImages',
+      args: {},
+    },
+    (error, result) => {
+      if (error == null) {
+        setImages(result.data)
+      }
+    },
+    [setImages]
+  )
 
-  handleChange = (event) => this.setState({ nameFile: event.target.value })
+  const createImage = useCommand((uploadId, payload) => ({
+    aggregateName: 'Image',
+    type: 'createImage',
+    aggregateId: uploadId,
+    payload,
+  }))
 
-  ref = React.createRef()
+  const fileRef = useRef()
 
-  customFormRender = (onSubmit) => {
-    return (
-      <Form id="customForm">
-        {this.state.form.fields != null
-          ? Object.keys(this.state.form.fields).map((key, index) => (
-              <Input
-                key={index}
-                name={key}
-                value={this.state.form.fields[key]}
-                type="hidden"
-              />
-            ))
-          : ''}
-        <Input type="hidden" name="Content-Type" value={this.state.mimeType} />
-        <FormGroup>
-          <Label>File input</Label>
-          <CustomInput type="file" name="file" id="input" innerRef={this.ref} />
-        </FormGroup>
-        <Input
-          type="text"
-          value={this.state.nameFile}
-          placeholder="File name"
-          onChange={this.handleChange}
-        />
-        <br />
+  useEffect(() => {
+    getToken({ dir: 'logo' }).then(setStaticToken)
+    getImages()
+  }, [])
+
+  const formRenderer = useCallback(
+    (onSubmit) => {
+      return (
+        <Form id="customForm">
+          {form.fields != null
+            ? Object.keys(form.fields).map((key, index) => (
+                <Form.Control
+                  as="input"
+                  key={index}
+                  name={key}
+                  value={form.fields[key]}
+                  type="hidden"
+                />
+              ))
+            : ''}
+          <Form.Control
+            as="input"
+            type="hidden"
+            name="Content-Type"
+            value={mimeType}
+          />
+          <Form.Group>
+            <Form.Label>File input</Form.Label>
+            <Form.File name="file" id="input" ref={fileRef} />
+          </Form.Group>
+          <Form.Control
+            as="input"
+            placeholder="File name"
+            onChange={handleFileNameChange}
+          />
+          <br />
+          <Button
+            outline="true"
+            color="success"
+            onClick={(...args) => {
+              setMimeType(fileRef.current.files[0].type)
+              onSubmit(...args)
+            }}
+          >
+            Upload
+          </Button>
+        </Form>
+      )
+    },
+    [form, setMimeType, fileRef, handleFileNameChange]
+  )
+
+  return (
+    <div>
+      <div style={{ padding: '10px' }}>
         <Button
-          outline
-          color="success"
-          onClick={(...args) => {
-            this.setState({ mimeType: this.ref.current.files[0].type })
-            onSubmit(...args)
-          }}
+          outline="true"
+          color="primary"
+          style={{ marginBottom: '10px' }}
+          onClick={handleGetUrl}
         >
-          Upload
+          Upload file
         </Button>
-      </Form>
-    )
-  }
 
-  formGetter = () => {
-    return new FormData(document.getElementById('customForm'))
-  }
+        <div hidden={form.isHidden}>
+          <FileUploadProgress
+            key="file"
+            url={form.data.url}
+            method="post"
+            formRenderer={formRenderer}
+            formGetter={formGetter}
+            onLoad={() => {
+              const name = fileName === '' ? 'Default name' : fileName
+              createImage(form.uploadId, {
+                name,
+                uploadId: form.uploadId,
+              })
+              setIsLoaded(true)
+            }}
+          />
 
-  render() {
-    return (
-      <UploaderContext.Consumer>
-        {({ CDNUrl }) => (
-          <div>
-            <div style={{ padding: '10px' }}>
-              <Button
-                outline
-                color="primary"
-                style={{ marginBottom: '10px' }}
-                onClick={this.handleGetUrl}
+          <h2>
+            {isLoaded ? (
+              <a
+                href={getCDNBasedUrl({
+                  CDNUrl,
+                  dir: 'logo',
+                  uploadId: form.uploadId,
+                  token,
+                })}
               >
-                Upload file
-              </Button>
+                {form.uploadId}
+              </a>
+            ) : (
+              ''
+            )}
+          </h2>
+        </div>
+      </div>
 
-              <div hidden={this.state.isHidden}>
-                <FileUploadProgress
-                  key="file"
-                  url={this.state.form.url}
-                  method="post"
-                  formRenderer={this.customFormRender}
-                  formGetter={this.formGetter}
-                  onLoad={() => {
-                    const name =
-                      this.state.nameFile === ''
-                        ? 'Default name'
-                        : this.state.nameFile
-                    this.props.createImage(this.state.uploadId, {
-                      name,
-                      uploadId: this.state.uploadId,
-                    })
-                    this.setState({ isLoaded: true })
-                  }}
+      <CardColumns>
+        {images != null
+          ? images.map((image, index) => (
+              <Card key={index}>
+                <CardImg
+                  width="300px"
+                  src={getCDNBasedUrl({
+                    CDNUrl,
+                    dir: 'logo',
+                    uploadId: image.uploadId,
+                    token: staticToken,
+                  })}
                 />
 
-                <h2>
-                  {this.state.isLoaded ? (
-                    <a
-                      href={getCDNBasedUrl({
-                        CDNUrl,
-                        dir: 'logo',
-                        uploadId: this.state.uploadId,
-                        token: this.state.token,
-                      })}
-                    >
-                      {this.state.uploadId}
-                    </a>
-                  ) : (
-                    ''
-                  )}
-                </h2>
-              </div>
-            </div>
-
-            <CardColumns>
-              {this.props.data != null
-                ? this.props.data.map((image, index) => (
-                    <Card key={index}>
-                      <CardImg
-                        width="300px"
-                        src={getCDNBasedUrl({
-                          CDNUrl,
-                          dir: 'logo',
-                          uploadId: image.uploadId,
-                          token: this.state.staticToken,
-                        })}
-                      />
-
-                      <CardBody>
-                        <CardTitle>{`${index + 1}: ${image.name}`}</CardTitle>
-                      </CardBody>
-                    </Card>
-                  ))
-                : ''}
-            </CardColumns>
-          </div>
-        )}
-      </UploaderContext.Consumer>
-    )
-  }
+                <Card.Body>
+                  <Card.Title>{`${index + 1}: ${image.name}`}</Card.Title>
+                </Card.Body>
+              </Card>
+            ))
+          : ''}
+      </CardColumns>
+    </div>
+  )
 }
 
-export const mapStateToOptions = () => ({
-  readModelName: 'Images',
-  resolverName: 'allImages',
-  resolverArgs: {},
-})
-
-export const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(aggregateActions, dispatch)
-
-export default connectReadModel(mapStateToOptions)(
-  connect(null, mapDispatchToProps)(App)
-)
+export { App }

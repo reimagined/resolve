@@ -56,11 +56,7 @@ afterEach(() => {
 })
 
 test('store returned', () => {
-  expect(
-    createResolveStore(createMockContext(), {
-      redux: {},
-    })
-  ).toEqual({ store: 'store' })
+  expect(createResolveStore(createMockContext())).toEqual({ store: 'store' })
 })
 
 test('combined reducers are passed to store factory', () => {
