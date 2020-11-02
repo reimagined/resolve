@@ -27,7 +27,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/readmodel-adapters/resolve-readmodel-base#readme",
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "uuid": "^3.3.2"
+    "uuid": "8.3.1"
   },
   "devDependencies": {
     "jest": "26.0.1",

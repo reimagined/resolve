@@ -4,7 +4,7 @@ import {
   combineReducers,
   compose,
 } from 'redux'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 
 import { reducer as viewModelReducer } from './view-model/view-model-reducer'
 import { reducer as readModelReducer } from './read-model/read-model-reducer'

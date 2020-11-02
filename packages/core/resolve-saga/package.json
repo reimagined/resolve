@@ -29,7 +29,7 @@
     "resolve-command": "0.25.17",
     "resolve-debug-levels": "0.25.17",
     "resolve-query": "0.25.17",
-    "uuid": "^3.3.3"
+    "uuid": "8.3.1"
   },
   "devDependencies": {
     "jest": "26.0.1"

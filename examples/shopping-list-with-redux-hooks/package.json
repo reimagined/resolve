@@ -20,7 +20,7 @@
     "isomorphic-fetch": "3.0.0",
     "history": "4.10.1",
     "jsonwebtoken": "8.5.1",
-    "uuid": "3.3.2",
+    "uuid": "8.3.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-bootstrap": "1.4.0",

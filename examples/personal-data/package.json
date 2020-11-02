@@ -40,7 +40,7 @@
     "resolve-eventstore-postgresql-serverless": "0.25.17",
     "resolve-upload-cloud": "0.25.17",
     "resolve-upload-local": "0.25.17",
-    "uuid": "^7.0.3"
+    "uuid": "8.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",

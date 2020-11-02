@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import jwtSecret from './jwt_secret'
-import uuid from 'uuid'
+import { v4 as uuid } from 'uuid'
 
 const routeRegisterCallback = async ({ resolve }, username) => {
   const { data: existingUser } = await resolve.executeQuery({

@@ -36,7 +36,7 @@
     "resolve-readmodel-lite": "0.25.17",
     "resolve-readmodel-postgresql-serverless": "0.25.17",
     "resolve-module-admin": "0.25.17",
-    "uuid": "8.3.0",
+    "uuid": "8.3.1",
     "crypto-js": "4.0.0",
     "generate-password": "1.5.1"
   },

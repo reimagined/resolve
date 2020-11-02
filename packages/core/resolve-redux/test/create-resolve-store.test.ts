@@ -1,5 +1,5 @@
 import { mocked } from 'ts-jest/utils'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { Context } from 'resolve-client'
 import deserializeInitialState from '../src/internal/deserialize-initial-state'
@@ -8,7 +8,9 @@ import { reducer as viewModelReducer } from '../src/view-model/view-model-reduce
 import { reducer as readModelReducer } from '../src/read-model/read-model-reducer'
 import { createResolveStore } from '../src/create-resolve-store'
 
-jest.mock('uuid/v4', () => jest.fn(() => 'generated-uuid'))
+jest.mock('uuid', () => ({
+  v4: jest.fn(() => 'generated-uuid'),
+}))
 jest.mock('redux', () => ({
   createStore: jest.fn(() => ({ store: 'store' })),
   combineReducers: jest.fn(() => 'combined-reducers'),

@@ -28,7 +28,7 @@
     "@babel/runtime": "7.9.6",
     "sqlite": "^3.0.2",
     "resolve-readmodel-base": "0.25.17",
-    "uuid": "^3.3.2",
+    "uuid": "8.3.1",
     "tmp": "^0.1.0"
   },
   "devDependencies": {

@@ -42,7 +42,7 @@
     "resolve-module-auth": "0.25.17",
     "js-cookie": "2.2.1",
     "passport-local": "1.0.0",
-    "uuid": "3.3.3"
+    "uuid": "8.3.1"
   },
   "devDependencies": {
     "aws-sdk": "2.631.0",

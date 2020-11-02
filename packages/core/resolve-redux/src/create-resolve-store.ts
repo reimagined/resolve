@@ -9,7 +9,7 @@ import {
   Store,
 } from 'redux'
 import { Saga } from 'redux-saga'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 import { Context } from 'resolve-client'
 
 import { reducer as viewModelReducer } from './view-model/view-model-reducer'

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Col, FormLabel, FormControl, Row } from 'react-bootstrap'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 
 class ShoppingListCreator extends React.PureComponent {
   state = {

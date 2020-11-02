@@ -1,5 +1,5 @@
 import { COMMENT_CREATED } from 'resolve-module-comments/lib/common/defaults'
-import uuid from 'uuid'
+import { v4 as uuid } from 'uuid'
 import { EOL } from 'os'
 
 import {
