@@ -7,13 +7,12 @@ import {
   Row,
   Col,
   ListGroup,
-  FormCheck,
   Button,
   InputGroup,
   Form,
 } from 'react-bootstrap'
 
-import Image from './Image'
+import { StaticImage } from './StaticImage'
 import NotFound from '../components/NotFound'
 import * as aggregateActions from '../actions/aggregate_actions'
 
@@ -129,7 +128,7 @@ export class ShoppingList extends React.PureComponent {
                   id: todo.id,
                 })}
               />
-              <Image
+              <StaticImage
                 className="example-close-button"
                 src="/close-button.png"
                 onClick={removeShoppingItem.bind(null, aggregateId, {

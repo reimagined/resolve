@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
-import Image from './Image'
+import { StaticImage } from './StaticImage'
 
 const Header = ({ title, name, css, favicon }) => {
   const stylesheetLinks = css.map((href) => ({ rel: 'stylesheet', href }))
@@ -21,7 +21,7 @@ const Header = ({ title, name, css, favicon }) => {
       <Helmet title={title} link={links} meta={[meta]} />
       <Navbar collapseOnSelect>
         <Navbar.Brand as={Link} to="/">
-          <Image className="example-icon" src="/resolve-logo.png" /> {name}
+          <StaticImage className="example-icon" src="/resolve-logo.png" /> {name}
         </Navbar.Brand>
         <Navbar.Toggle />
       </Navbar>
