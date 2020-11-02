@@ -2,7 +2,7 @@ import React from 'react'
 import { useReduxCommand } from 'resolve-redux'
 import { ListGroupItem, Form } from 'react-bootstrap'
 
-import Image from './Image'
+import { StaticImage } from './StaticImage'
 
 const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
   const { execute: toggleItem } = useReduxCommand({
@@ -30,7 +30,7 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
         checked={checked}
         onChange={toggleItem}
       />
-      <Image
+      <StaticImage
         className="example-close-button"
         src="/close-button.png"
         onClick={removeItem}
