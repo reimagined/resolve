@@ -14,7 +14,7 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
     try {
       await inlineLedgerRunQuery(
         `DELETE FROM ${trxTableNameAsId} WHERE \`Timestamp\` < 
-        CAST(ROUND(UNIX_TIMESTAMP(SYSDATE(4)) * 1000) AS BIGINT) - 86400000
+        CAST(ROUND(UNIX_TIMESTAMP(SYSDATE(4)) * 1000) AS UNSIGNED INTEGER) - 86400000
         `
       )
 
@@ -27,10 +27,11 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
       )
 
       if (rows != null && rows.length > 0 && rows[0] != null) {
-        const pid = +rows[0].XaValue
-        if (Number.isInteger(pid)) {
+        const xaValue = +rows[0].XaValue
+        const pid = !isNaN(xaValue) ? +rows[0].XaValue : 0
+        try {
           await inlineLedgerRunQuery(`KILL ${+pid}`)
-        }
+        } catch (e) {}
       }
 
       break

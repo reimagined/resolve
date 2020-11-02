@@ -23,7 +23,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         \`SuccessEvent\` JSON NULL,
         \`FailedEvent\` JSON NULL,
         \`Errors\` JSON NULL,
-        \`Properties\` JSON DEFAULT CAST(\`{}\` AS JSON),
+        \`Properties\` JSON NOT NULL,
         \`Schema\` JSON NULL,
         PRIMARY KEY(\`EventSubscriber\`)
       );
@@ -42,13 +42,14 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
       await inlineLedgerForceStop(pool, readModelName)
 
       await inlineLedgerRunQuery(
-        `WITH \`CTE\` AS (
+        `START TRANSACTION;
+
          SELECT * FROM ${ledgerTableNameAsId}
          WHERE \`EventSubscriber\` = ${escape(readModelName)}
-         FOR UPDATE NOWAIT
-        )
+         FOR UPDATE NOWAIT;
+
          INSERT INTO ${ledgerTableNameAsId}(
-          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`
+          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`, \`Properties\`
          ) VALUES (
            ${escape(readModelName)},
            ${
@@ -61,7 +62,8 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
                ? escape(JSON.stringify(aggregateIds))
                : escape('null')
            },
-           COALESCE(NULLIF((SELECT Count(\`CTE\`.*) < 2 FROM \`CTE\`), TRUE), FALSE)
+           0,
+           CAST("{}" AS JSON)
          )
          ON DUPLICATE KEY UPDATE
          \`EventTypes\` = ${
@@ -73,7 +75,9 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
            aggregateIds != null
              ? escape(JSON.stringify(aggregateIds))
              : escape('null')
-         }
+         };
+
+         COMMIT;
       `
       )
       break

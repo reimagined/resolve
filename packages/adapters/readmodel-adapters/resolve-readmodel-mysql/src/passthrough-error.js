@@ -29,12 +29,16 @@ class PassthroughError extends Error {
   static get ER_LOCK_NOWAIT() {
     return 3572
   }
+  static get ER_CON_COUNT_ERROR() {
+    return 1040
+  }
 
   static isPassthroughError(error, includeRuntimeErrors = false) {
     return (
       error != null &&
       error.errno != null &&
-      (error.errno === PassthroughError.ER_LOCK_DEADLOCK ||
+      (error.errno === PassthroughError.ER_CON_COUNT_ERROR ||
+        error.errno === PassthroughError.ER_LOCK_DEADLOCK ||
         error.errno === PassthroughError.ER_LOCK_NOWAIT ||
         error.errno ===
           PassthroughError.ER_CANT_EXECUTE_IN_READ_ONLY_TRANSACTION ||

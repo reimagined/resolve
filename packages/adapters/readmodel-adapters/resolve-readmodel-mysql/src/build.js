@@ -24,8 +24,8 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
   const rootSavePointId = generateGuid(xaKey, 'ROOT')
 
   await inlineLedgerRunQuery(
-    `START TRANSACTION;
-     SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+    `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+     START TRANSACTION;
      SAVEPOINT ${rootSavePointId};
      WITH \`CTE\` AS (
       SELECT \`XaKey\` FROM ${ledgerTableNameAsId}
@@ -33,7 +33,7 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
         AND \`XaKey\` = ${escape(xaKey)}
         AND \`IsPaused\` = FALSE
         AND \`Errors\` IS NULL
-        FOR NO KEY UPDATE NOWAIT
+        FOR UPDATE NOWAIT
     )
       SELECT 1/Count(\`CTE\`.\`XaKey\`) AS \`NonZero\` FROM \`CTE\`;
     `,
@@ -111,8 +111,8 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
   let rootSavePointId = generateGuid(xaKey, 'ROOT')
 
   await inlineLedgerRunQuery(
-    `START TRANSACTION;
-     SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+    `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+     START TRANSACTION;
      SAVEPOINT ${rootSavePointId};
      WITH \`CTE\` AS (
       SELECT \`XaKey\` FROM ${ledgerTableNameAsId}
@@ -120,7 +120,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
         AND \`XaKey\` = ${escape(xaKey)}
         AND \`IsPaused\` = FALSE
         AND \`Errors\` IS NULL
-        FOR NO KEY UPDATE NOWAIT
+        FOR UPDATE NOWAIT
     )
       SELECT 1/Count(\`CTE\`.\`XaKey\`) AS \`NonZero\` FROM \`CTE\`;
     `,
@@ -258,8 +258,8 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
       rootSavePointId = generateGuid(xaKey, 'ROOT')
 
       await inlineLedgerRunQuery(
-        `START TRANSACTION;
-        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+        `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+         START TRANSACTION;
         SAVEPOINT ${rootSavePointId};
         WITH \`CTE\` AS (
           SELECT \`XaKey\` FROM ${ledgerTableNameAsId}
@@ -267,7 +267,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
             AND \`XaKey\` = ${escape(xaKey)}
             AND \`IsPaused\` = FALSE
             AND \`Errors\` IS NULL
-            FOR NO KEY UPDATE NOWAIT
+            FOR UPDATE NOWAIT
         )
           SELECT 1/Count(\`CTE\`.\`XaKey\`) AS \`NonZero\` FROM \`CTE\`;
         `,
@@ -310,19 +310,21 @@ const build = async (
     const xaKey = generateGuid(`${Date.now()}${Math.random()}${process.pid}`)
 
     await inlineLedgerRunQuery(
-      `DELETE FROM ${trxTableNameAsId} WHERE \`Timestamp\` < 
-      CAST(ROUND(UNIX_TIMESTAMP(SYSDATE(4)) * 1000) AS BIGINT) - 86400000;
+      `START TRANSACTION;
+      
+      DELETE FROM ${trxTableNameAsId} WHERE \`Timestamp\` < 
+      CAST(ROUND(UNIX_TIMESTAMP(SYSDATE(4)) * 1000) AS UNSIGNED INTEGER) - 86400000;
 
       SELECT * FROM ${ledgerTableNameAsId}
       WHERE \`EventSubscriber\` = ${escape(readModelName)}
       AND \`IsPaused\` = FALSE
       AND \`Errors\` IS NULL
-      FOR NO KEY UPDATE NOWAIT;
+      FOR UPDATE NOWAIT;
 
       INSERT INTO ${trxTableNameAsId}(\`Timestamp\`, \`XaKey\`, \`XaValue\`) VALUES (
-        CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT), 
+        CAST(ROUND(UNIX_TIMESTAMP(SYSDATE(4)) * 1000) AS UNSIGNED INTEGER), 
         ${escape(xaKey)},
-        CAST(CONNECTION_ID() AS VARCHAR(190))
+        CAST(CONNECTION_ID() AS CHAR)
       );
 
       UPDATE ${ledgerTableNameAsId}
@@ -330,6 +332,8 @@ const build = async (
       WHERE \`EventSubscriber\` = ${escape(readModelName)}
       AND \`IsPaused\` = FALSE
       AND \`Errors\` IS NULL;
+
+      COMMIT;
       `
     )
 

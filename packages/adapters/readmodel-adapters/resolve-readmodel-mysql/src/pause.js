@@ -15,15 +15,17 @@ const pause = async (pool, readModelName) => {
       await inlineLedgerForceStop(pool, readModelName)
 
       await inlineLedgerRunQuery(
-        `WITH \`CTE\` AS (
+        `BEGIN TRANSACTION;
+        
          SELECT * FROM ${ledgerTableNameAsId}
          WHERE \`EventSubscriber\` = ${escape(readModelName)}
-         FOR NO KEY UPDATE NOWAIT
-       )
-        UPDATE ${ledgerTableNameAsId}
-        SET \`IsPaused\` = TRUE
-        WHERE \`EventSubscriber\` = ${escape(readModelName)}
-        AND (SELECT Count(\`CTE\`.*) FROM \`CTE\`) = 1
+         FOR UPDATE NOWAIT;
+
+         UPDATE ${ledgerTableNameAsId}
+         SET \`IsPaused\` = TRUE
+         WHERE \`EventSubscriber\` = ${escape(readModelName)};
+
+         COMMIT;
       `
       )
 

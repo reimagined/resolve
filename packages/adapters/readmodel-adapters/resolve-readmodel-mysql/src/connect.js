@@ -48,7 +48,14 @@ const makeNestedPath = (nestedPath) => {
 }
 
 const connect = async (imports, pool, options) => {
-  let { tablePrefix, performanceTracer, ...connectionOptions } = options
+  let {
+    tablePrefix,
+    performanceTracer,
+    preferInlineLedger,
+    eventstoreAdapter,
+    ...connectionOptions
+  } = options
+  void (preferInlineLedger, eventstoreAdapter)
 
   if (
     tablePrefix == null ||

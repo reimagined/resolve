@@ -15,19 +15,21 @@ const reset = async (pool, readModelName) => {
     try {
       await inlineLedgerForceStop(pool, readModelName)
       await inlineLedgerRunQuery(
-        `WITH \`CTE\` AS (
+        `START TRANSACTION;
+        
          SELECT * FROM ${ledgerTableNameAsId}
          WHERE \`EventSubscriber\` = ${escape(readModelName)}
-         FOR NO KEY UPDATE NOWAIT
-       )
+         FOR UPDATE NOWAIT;
+
         UPDATE ${ledgerTableNameAsId}
         SET \`Cursor\` = NULL,
         \`SuccessEvent\` = NULL,
         \`FailedEvent\` = NULL,
         \`Errors\` = NULL,
         \`IsPaused\` = TRUE
-        WHERE \`EventSubscriber\` = ${escape(readModelName)}
-        AND (SELECT Count(\`CTE\`.*) FROM \`CTE\`) = 1
+        WHERE \`EventSubscriber\` = ${escape(readModelName)};
+
+        COMMIT;
       `
       )
 
@@ -44,15 +46,17 @@ const reset = async (pool, readModelName) => {
   while (true) {
     try {
       await inlineLedgerRunQuery(
-        `WITH \`CTE\` AS (
+        `START TRANSACTION;
+        
          SELECT * FROM ${ledgerTableNameAsId}
          WHERE \`EventSubscriber\` = ${escape(readModelName)}
-         FOR NO KEY UPDATE NOWAIT
-       )
-        UPDATE ${ledgerTableNameAsId}
-        SET \`IsPaused\` = FALSE
-        WHERE \`EventSubscriber\` = ${escape(readModelName)}
-        AND (SELECT Count(\`CTE\`.*) FROM \`CTE\`) = 1
+         FOR UPDATE NOWAIT;
+
+         UPDATE ${ledgerTableNameAsId}
+         SET \`IsPaused\` = FALSE
+         WHERE \`EventSubscriber\` = ${escape(readModelName)};
+
+         COMMIT;
       `
       )
 

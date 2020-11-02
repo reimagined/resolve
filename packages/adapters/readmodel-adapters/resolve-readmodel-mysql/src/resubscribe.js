@@ -24,7 +24,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         \`SuccessEvent\` JSON NULL,
         \`FailedEvent\` JSON NULL,
         \`Errors\` JSON NULL,
-        \`Properties\` JSON DEFAULT CAST(\`{}\` AS JSON),
+        \`Properties\` JSON NOT NULL,
         \`Schema\` JSON NULL,
         PRIMARY KEY(\`EventSubscriber\`)
       );
@@ -42,19 +42,21 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     try {
       await inlineLedgerForceStop(pool, readModelName)
       await inlineLedgerRunQuery(`
-        WITH \`CTE\` AS (
-         SELECT * FROM ${ledgerTableNameAsId}
-         WHERE \`EventSubscriber\` = ${escape(readModelName)}
-         FOR NO KEY UPDATE NOWAIT
-       )
+        START TRANSACTION;
+
+        SELECT * FROM ${ledgerTableNameAsId}
+        WHERE \`EventSubscriber\` = ${escape(readModelName)}
+        FOR UPDATE NOWAIT;
+
         UPDATE ${ledgerTableNameAsId}
         SET \`Cursor\` = NULL,
         \`SuccessEvent\` = NULL,
         \`FailedEvent\` = NULL,
         \`Errors\` = NULL,
         \`IsPaused\` = TRUE
-        WHERE \`EventSubscriber\` = ${escape(readModelName)}
-        AND (SELECT Count(\`CTE\`.*) FROM \`CTE\`) = 1
+        WHERE \`EventSubscriber\` = ${escape(readModelName)};
+
+        COMMIT;
       `)
 
       break
@@ -72,14 +74,15 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
       await inlineLedgerForceStop(pool, readModelName)
 
       await inlineLedgerRunQuery(`
-        WITH \`CTE\` AS (
-         SELECT * FROM ${ledgerTableNameAsId}
-         WHERE \`EventSubscriber\` = ${escape(readModelName)}
-         FOR UPDATE NOWAIT
-        )
-         INSERT INTO ${ledgerTableNameAsId}(
-          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`
-         ) VALUES (
+        START TRANSACTION;
+
+        SELECT * FROM ${ledgerTableNameAsId}
+        WHERE \`EventSubscriber\` = ${escape(readModelName)}
+        FOR UPDATE NOWAIT;
+
+        INSERT INTO ${ledgerTableNameAsId}(
+          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`, \`Properties\`
+        ) VALUES (
            ${escape(readModelName)},
            ${
              eventTypes != null
@@ -91,19 +94,22 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
                ? escape(JSON.stringify(aggregateIds))
                : escape('null')
            },
-           COALESCE(NULLIF((SELECT Count(\`CTE\`.*) < 2 FROM \`CTE\`), TRUE), FALSE)
-         )
-         ON DUPLICATE KEY UPDATE
-         \`EventTypes\` = ${
-           eventTypes != null
-             ? escape(JSON.stringify(eventTypes))
-             : escape('null')
-         },
-         \`AggregateIds\` = ${
-           aggregateIds != null
-             ? escape(JSON.stringify(aggregateIds))
-             : escape('null')
-         }
+           COALESCE(NULLIF((SELECT Count(\`CTE\`.*) < 2 FROM \`CTE\`), TRUE), FALSE),
+           CAST("{}" AS JSON)
+        )
+        ON DUPLICATE KEY UPDATE
+        \`EventTypes\` = ${
+          eventTypes != null
+            ? escape(JSON.stringify(eventTypes))
+            : escape('null')
+        },
+        \`AggregateIds\` = ${
+          aggregateIds != null
+            ? escape(JSON.stringify(aggregateIds))
+            : escape('null')
+        };
+
+        COMMIT;
       `)
       break
     } catch (err) {
