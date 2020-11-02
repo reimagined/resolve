@@ -23,6 +23,7 @@ const initUI = (messages, sendMessage) => {
     if (e.charCode !== 13) return
     sendMessage(userName.value, newMessage.value)
     newMessage.value = ''
+    userName.value = ''
 
     e.preventDefault()
     e.stopPropagation()
