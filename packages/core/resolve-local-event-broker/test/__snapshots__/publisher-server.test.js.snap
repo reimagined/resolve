@@ -802,10 +802,14 @@ exports[`Core operation resume subscriber 1`] = `
   "calls": Array [
     Array [
       "
-      SELECT \\"subscribers\\".\\"subscriptionId\\"
+      SELECT \\"subscribers\\".\\"subscriptionId\\",
+      \\"subscribers\\".\\"status\\"
       FROM \\"subscribers\\"
       WHERE \\"eventSubscriber\\" = 'eventSubscriber'
-      AND \\"status\\" = 'deliver'
+      AND (
+        \\"status\\" = 'deliver' OR
+        \\"status\\" = 'skip'
+      )
   ",
     ],
   ],
@@ -814,6 +818,7 @@ exports[`Core operation resume subscriber 1`] = `
       "type": "return",
       "value": Array [
         Object {
+          "status": "deliver",
           "subscriptionId": "subscriptionId",
         },
       ],

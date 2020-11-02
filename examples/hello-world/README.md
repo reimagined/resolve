@@ -8,7 +8,7 @@ This is an empty app used as a template for new **reSolve** applications. The `c
 npx create-resolve-app my-app
 ```
 
-You can also create it using the example-creation syntax:
+You can also specify the example name explicitly:
 
 ```sh
 npx create-resolve-app resolve-hello-world-example -e hello-world

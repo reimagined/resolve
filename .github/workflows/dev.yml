@@ -75,7 +75,7 @@ jobs:
           npm_token: ${{ secrets.PRIVATE_NPM_TOKEN }}
           version: ${{ github.sha }}
           release_type: nightly
-          tag: nigtly
+          tag: nightly
 
   cloud-test:
     needs: [smoke-test, e2e-macOS-test]
@@ -90,7 +90,8 @@ jobs:
           echo "installing packages and building the repository"
           yarn
 
-      - name: Publish to private repository
+      - id: publish
+        name: Publish to private repository
         uses: ./.github/actions/publish
         with:
           npm_registry: ${{ secrets.PRIVATE_NPM_REGISTRY }}
@@ -112,6 +113,8 @@ jobs:
         name: Deploy test app to the cloud
         uses: ./.github/actions/deploy
         with:
+          resolve_version: ${{ steps.publish.outputs.release_version }}
+          npm_registry: http://npm.resolve-dev.ml:10080
           app_directory: ${{ env.test_app_dir }}
           generate_app_name: true
           resolve_api_url: https://api.resolve.sh
@@ -127,4 +130,4 @@ jobs:
       - name: Testcafe tests
         run: |
           cd functional-tests
-          yarn run-test testcafe --url=${{ steps.deploy.outputs.app_url }} --testcafe-browser=chrome --ci-mode
+          yarn run-test testcafe --url=${{ steps.deploy.outputs.app_url }} --testcafe-browser=chrome --ci-mode --testcafe-timeout=10000

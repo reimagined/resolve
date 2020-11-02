@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux'
 import { mocked } from 'ts-jest/utils'
 import { getEntry } from '../../src/read-model/read-model-reducer'
-import { ResultStatus } from '../../src'
 import { useReduxReadModelSelector } from '../../src/read-model/use-redux-read-model-selector'
 
 jest.mock('react-redux', () => ({
@@ -21,11 +20,7 @@ afterEach(() => {
 
 test('by query plain object', () => {
   const state = {
-    readModels: {
-      name: {
-        resolver: { args: { status: ResultStatus.Ready, data: 'data' } },
-      },
-    },
+    readModels: {},
   }
 
   const query = {
@@ -46,11 +41,7 @@ test('by query plain object', () => {
 
 test('by named selector', () => {
   const state = {
-    readModels: {
-      name: {
-        resolver: { args: { status: ResultStatus.Ready, data: 'data' } },
-      },
-    },
+    readModels: {},
   }
 
   const selector = useReduxReadModelSelector('selector-id')

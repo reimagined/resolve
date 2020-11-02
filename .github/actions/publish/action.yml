@@ -22,14 +22,10 @@ inputs:
     default: 'false'
 
 outputs:
-  version:
-    description: deployed application id
-  app_name:
-    description: deployed application name
-  app_url:
-    description: deployed application url
-  app_runtime:
-    description: deployed applicaiton runtime version
+  release-version:
+    description: published packages version
+  release-tag:
+    description: published packages tag
 
 runs:
   using: 'node12'

@@ -1,4 +1,5 @@
 import createQuery from '../src/index'
+import { IS_BUILT_IN, SecretsManager } from 'resolve-core'
 
 type State = {
   value: number
@@ -79,6 +80,7 @@ for (const { describeName, prepare } of [
   let readModels: any | null = null
   let readModelConnectors: any | null = null
   let query: ResolveQuery | null = null
+  let secretsManager: SecretsManager | null = null
 
   // eslint-disable-next-line no-loop-func
   describe(describeName, () => {
@@ -90,6 +92,16 @@ for (const { describeName, prepare } of [
       invokeEventBusAsync = jest.fn()
       getRemainingTimeInMillis = jest.fn()
       performAcknowledge = jest.fn()
+      const secretsMap = new Map()
+      secretsManager = {
+        getSecret: async (key: any) => secretsMap.get(key),
+        setSecret: async (key: any, value: any) => {
+          secretsMap.set(key, value)
+        },
+        deleteSecret: async (key: any) => {
+          secretsMap.delete(key)
+        },
+      }
 
       eventstoreAdapter = {
         loadEvents: async ({ cursor: prevCursor }: { cursor: string }) => ({
@@ -98,7 +110,7 @@ for (const { describeName, prepare } of [
         }),
         getNextCursor: (prevCursor: string) =>
           `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`,
-        getSecretsManager: async () => null,
+        getSecretsManager: jest.fn(() => secretsManager),
         loadSnapshot: jest.fn().mockImplementation(async (key) => {
           return (snapshots as SnapshotMap).get(key)
         }),
@@ -129,6 +141,12 @@ for (const { describeName, prepare } of [
 
     describe('view models', () => {
       beforeEach(() => {
+        const builtInSerializer = JSON.stringify as any
+        const builtInDeserializer = JSON.parse as any
+
+        builtInSerializer[IS_BUILT_IN] = true
+        builtInDeserializer[IS_BUILT_IN] = true
+
         viewModels = [
           {
             name: 'viewModelName',
@@ -151,14 +169,44 @@ for (const { describeName, prepare } of [
                 }
               },
             },
-            serializeState: async (state: State): Promise<string> => {
-              return JSON.stringify(state, null, 2)
+            serializeState: jest.fn((state: State) => {
+              return `>>>${JSON.stringify(state, null, 2)}`
+            }),
+            deserializeState: jest.fn((serializedState: string) => {
+              return JSON.parse(serializedState.slice(3))
+            }),
+            invariantHash: 'viewModelName-invariantHash',
+            encryption: () => ({}),
+            resolver: async (
+              resolve: any,
+              query: ResolverQuery,
+              { viewModel }: any
+            ): Promise<{
+              data: any
+              meta: any
+            }> => {
+              const { data, cursor } = await resolve.buildViewModel(
+                viewModel.name,
+                query
+              )
+
+              return {
+                data,
+                meta: {
+                  aggregateIds: query.aggregateIds,
+                  eventTypes: viewModel.eventTypes,
+                  cursor,
+                },
+              }
             },
-            deserializeState: async (
-              serializedState: string
-            ): Promise<State> => {
-              return JSON.parse(serializedState)
+          },
+          {
+            name: 'viewModelWithBuiltInSerializer',
+            projection: {
+              Init: () => null,
             },
+            serializeState: builtInSerializer,
+            deserializeState: builtInDeserializer,
             invariantHash: 'viewModelName-invariantHash',
             encryption: () => ({}),
             resolver: async (
@@ -266,7 +314,7 @@ for (const { describeName, prepare } of [
             'VM;viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 1]],
-              state: JSON.stringify({ value: 10 }, null, 2),
+              state: `>>>${JSON.stringify({ value: 10 }, null, 2)}`,
               cursor: 'CURSOR',
             })
           )
@@ -274,7 +322,7 @@ for (const { describeName, prepare } of [
             'VM;viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 2]],
-              state: JSON.stringify({ value: 15 }, null, 2),
+              state: `>>>${JSON.stringify({ value: 15 }, null, 2)}`,
               cursor: 'CURSOR-CURSOR',
             })
           )
@@ -282,7 +330,7 @@ for (const { describeName, prepare } of [
             'VM;viewModelName-invariantHash;id1',
             JSON.stringify({
               aggregatesVersionsMap: [['id1', 3]],
-              state: JSON.stringify({ value: 7 }, null, 2),
+              state: `>>>${JSON.stringify({ value: 7 }, null, 2)}`,
               cursor: 'CURSOR-CURSOR-CURSOR',
             })
           )
@@ -340,7 +388,7 @@ for (const { describeName, prepare } of [
             'VM;viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 1]],
-              state: JSON.stringify({ value: 5 }, null, 2),
+              state: `>>>${JSON.stringify({ value: 5 }, null, 2)}`,
               cursor: 'CURSOR',
             })
           )
@@ -348,7 +396,7 @@ for (const { describeName, prepare } of [
             'VM;viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 2]],
-              state: JSON.stringify({ value: 7 }, null, 2),
+              state: `>>>${JSON.stringify({ value: 7 }, null, 2)}`,
               cursor: 'CURSOR-CURSOR',
             })
           )
@@ -356,7 +404,7 @@ for (const { describeName, prepare } of [
             'VM;viewModelName-invariantHash;id2',
             JSON.stringify({
               aggregatesVersionsMap: [['id2', 3]],
-              state: JSON.stringify({ value: 4 }, null, 2),
+              state: `>>>${JSON.stringify({ value: 4 }, null, 2)}`,
               cursor: 'CURSOR-CURSOR-CURSOR',
             })
           )
@@ -477,6 +525,37 @@ for (const { describeName, prepare } of [
             )
             expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
+        })
+
+        test('"read" should call view model\'s serialization routine with valid parameters', async () => {
+          if (query == null) {
+            throw new Error('Query is null')
+          }
+
+          events = [
+            {
+              aggregateId: 'id1',
+              aggregateVersion: 1,
+              timestamp: 1,
+              type: 'ADD',
+              payload: {
+                value: 10,
+              },
+            },
+          ]
+
+          await query.read({
+            modelName: 'viewModelName',
+            aggregateIds: 'id1',
+            aggregateArgs: {},
+            jwt: 'query-jwt',
+          })
+
+          const { serializeState } = viewModels[0]
+          expect(serializeState).toHaveBeenCalledWith(
+            { value: 10 },
+            'query-jwt'
+          )
         })
 
         test('"read" should reuse working build process', async () => {
@@ -621,20 +700,24 @@ for (const { describeName, prepare } of [
           }
         })
 
-        test('"serializeState" should return serialized state', async () => {
+        test('"serializeState" should return JSON by with built-in serializer', async () => {
           if (query == null) {
             throw new Error('Some of test tools are not initialized')
           }
 
           const result = await query.serializeState({
             modelName: 'viewModelName',
-            state: { value: 7 },
+            state: {
+              data: { value: 7 },
+              meta: { timestamp: 3 },
+            },
           })
 
           expect(result).toEqual(
             JSON.stringify(
               {
-                value: 7,
+                data: `>>>${JSON.stringify({ value: 7 }, null, 2)}`,
+                meta: { timestamp: 3 },
               },
               null,
               2
@@ -656,6 +739,31 @@ for (const { describeName, prepare } of [
             )
             expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
+        })
+
+        test('"serializeState" should return JSON with serialized data', async () => {
+          if (query == null) {
+            throw new Error('Some of test tools are not initialized')
+          }
+
+          const result = await query.serializeState({
+            modelName: 'viewModelWithBuiltInSerializer',
+            state: {
+              data: { value: 7 },
+              meta: { timestamp: 3 },
+            },
+          })
+
+          expect(result).toEqual(
+            JSON.stringify(
+              {
+                data: { value: 7 },
+                meta: { timestamp: 3 },
+              },
+              null,
+              2
+            )
+          )
         })
 
         test('"sendEvents" should raise error on view models', async () => {
@@ -1089,20 +1197,24 @@ for (const { describeName, prepare } of [
           }
         })
 
-        test('"serializeState" should return serialized state', async () => {
+        test('"serializeState" should return JSON by with built-in serializer', async () => {
           if (query == null) {
             throw new Error('Some of test tools are not initialized')
           }
 
           const result = await query.serializeState({
             modelName: 'viewModelName',
-            state: { value: 7 },
+            state: {
+              data: { value: 7 },
+              meta: { timestamp: 12345 },
+            },
           })
 
           expect(result).toEqual(
             JSON.stringify(
               {
-                value: 7,
+                data: `>>>${JSON.stringify({ value: 7 }, null, 2)}`,
+                meta: { timestamp: 12345 },
               },
               null,
               2
@@ -1124,6 +1236,31 @@ for (const { describeName, prepare } of [
             )
             expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
           }
+        })
+
+        test('"serializeState" should return JSON with serialized data', async () => {
+          if (query == null) {
+            throw new Error('Some of test tools are not initialized')
+          }
+
+          const result = await query.serializeState({
+            modelName: 'viewModelWithBuiltInSerializer',
+            state: {
+              data: { value: 7 },
+              meta: { timestamp: 12345 },
+            },
+          })
+
+          expect(result).toEqual(
+            JSON.stringify(
+              {
+                data: { value: 7 },
+                meta: { timestamp: 12345 },
+              },
+              null,
+              2
+            )
+          )
         })
 
         test('"sendEvents" should raise error on view models', async () => {
@@ -1279,9 +1416,18 @@ for (const { describeName, prepare } of [
 
     describe('read models', () => {
       query = null
+      let decrypt: jest.Mock | null = null
+      let encrypt: jest.Mock | null = null
+      let encryption: jest.Mock | null = null
       const remoteReadModelStore: { [key: string]: any } = {}
 
       beforeEach(() => {
+        decrypt = jest.fn((v: string) => `plain_${v}`)
+        encrypt = jest.fn((v: string) => `encrypted_${v}`)
+        encryption = jest.fn(() => ({
+          encrypt,
+          decrypt,
+        }))
         readModels = [
           {
             name: 'readModelName',
@@ -1305,6 +1451,7 @@ for (const { describeName, prepare } of [
             },
             connectorName: 'default',
             invariantHash: 'readModelName-invariantHash',
+            encryption,
           },
           {
             name: 'readOnlyReadModelName',
@@ -1316,6 +1463,7 @@ for (const { describeName, prepare } of [
             },
             connectorName: 'default',
             invariantHash: 'readOnlyReadModelName-invariantHash',
+            encryption,
           },
           {
             name: 'brokenReadModelName',
@@ -1329,6 +1477,7 @@ for (const { describeName, prepare } of [
             resolvers: {},
             connectorName: 'empty',
             invariantHash: 'brokenReadModelName-invariantHash',
+            encryption,
           },
           {
             name: 'remoteReadModelName',
@@ -1345,6 +1494,31 @@ for (const { describeName, prepare } of [
             },
             connectorName: 'empty',
             invariantHash: 'remoteReadModelName-invariantHash',
+            encryption,
+          },
+          {
+            name: 'encryptedReadModel',
+            projection: {
+              PUSH: async (
+                store: Store,
+                event: any,
+                { decrypt, encrypt }: any
+              ) => {
+                await new Promise((resolve) => setImmediate(resolve))
+                await store.set('id', {
+                  plain: decrypt(event.payload.value),
+                  encrypted: encrypt(event.payload.value),
+                })
+              },
+            },
+            resolvers: {
+              getValue: async (store: Store) => {
+                return await store.get('id')
+              },
+            },
+            connectorName: 'default',
+            invariantHash: 'encryptedReadModelName-invariantHash',
+            encryption,
           },
         ]
 
@@ -1538,6 +1712,54 @@ for (const { describeName, prepare } of [
         }
       })
 
+      test('"sendEvents" with encryption', async () => {
+        events = [
+          {
+            type: 'Init',
+          },
+          {
+            aggregateId: 'id1',
+            aggregateVersion: 1,
+            timestamp: 1,
+            type: 'PUSH',
+            payload: {
+              value: 'data',
+            },
+          },
+        ]
+
+        await query.sendEvents({
+          modelName: 'encryptedReadModel',
+          events: events.slice(0, 1),
+          xaTransactionId: 'xaTransactionId',
+          properties: {},
+          batchId: 'batchId',
+        })
+
+        await query.sendEvents({
+          modelName: 'encryptedReadModel',
+          events: events.slice(1),
+          xaTransactionId: 'xaTransactionId',
+          properties: {},
+          batchId: 'batchId',
+        })
+
+        expect(encryption).toHaveBeenCalledWith(events[1], { secretsManager })
+        expect(encrypt).toHaveBeenCalledWith('data')
+        expect(decrypt).toHaveBeenCalledWith('data')
+
+        const {
+          data: { plain, encrypted },
+        } = await query.read({
+          modelName: 'encryptedReadModel',
+          resolverName: 'getValue',
+          resolverArgs: {},
+        })
+
+        expect(plain).toEqual('plain_data')
+        expect(encrypted).toEqual('encrypted_data')
+      })
+
       test('"sendEvents" should apply events to the read model, "read" should return the resolver result', async () => {
         if (query == null) {
           throw new Error('Some of test tools are not initialized')
@@ -1585,13 +1807,21 @@ for (const { describeName, prepare } of [
 
         await query.sendEvents({
           modelName: 'readModelName',
-          events,
+          events: events.slice(0, 1),
           xaTransactionId: 'xaTransactionId',
           properties: {},
           batchId: 'batchId',
         })
 
-        expect(performAcknowledge.mock.calls[0][0].result).toMatchObject({
+        await query.sendEvents({
+          modelName: 'readModelName',
+          events: events.slice(1),
+          xaTransactionId: 'xaTransactionId',
+          properties: {},
+          batchId: 'batchId',
+        })
+
+        expect(performAcknowledge.mock.calls[1][0].result).toMatchObject({
           error: null,
           successEvent: {
             aggregateId: 'id1',
@@ -1828,10 +2058,22 @@ for (const { describeName, prepare } of [
 
         const value = await query.serializeState({
           modelName: 'readOnlyReadModelName',
-          state: 42,
+          state: {
+            data: 42,
+            meta: { timestamp: 1234 },
+          },
         })
 
-        expect(value).toEqual(JSON.stringify(42, null, 2))
+        expect(value).toEqual(
+          JSON.stringify(
+            {
+              data: 42,
+              meta: { timestamp: 1234 },
+            },
+            null,
+            2
+          )
+        )
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(

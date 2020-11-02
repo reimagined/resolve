@@ -176,6 +176,12 @@
         },
         "connectorName": {
           "type": "string"
+        },
+        "encryption": {
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
         }
       },
       "required": ["name", "projection", "resolvers", "connectorName"],
