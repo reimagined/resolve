@@ -1,7 +1,7 @@
 import domready from 'domready'
 import { getClient } from 'resolve-client'
-import initUI from './init_ui'
-import updateUI from './update_ui'
+import initUI from './init-ui'
+import updateUI from './update-ui'
 
 const main = async (resolveContext) => {
   await new Promise((resolve) => domready(resolve))
