@@ -15,7 +15,7 @@ const routeRegisterCallback = async ({ resolve }, username) => {
 
   const user = {
     name: username.trim(),
-    id: uuid.v4(),
+    id: uuid(),
   }
 
   await resolve.executeCommand({

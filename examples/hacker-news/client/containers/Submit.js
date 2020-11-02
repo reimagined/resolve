@@ -38,7 +38,7 @@ export class Submit extends React.PureComponent {
 
     this.setState({ disabled: !this.state.disabled })
 
-    return this.props.createStory(uuid.v4(), {
+    return this.props.createStory(uuid(), {
       title,
       text,
       link,
