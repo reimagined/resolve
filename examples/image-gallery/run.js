@@ -35,14 +35,6 @@ void (async () => {
           devConfig,
           moduleUploader
         )
-
-        await reset(resolveConfig, {
-          dropEventStore: false,
-          dropEventBus: true,
-          dropReadModels: true,
-          dropSagas: true,
-        })
-
         await watch(resolveConfig)
         break
       }

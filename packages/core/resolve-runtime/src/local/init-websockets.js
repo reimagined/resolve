@@ -153,12 +153,21 @@ const initWebsockets = async (resolve) => {
 
   eventstoreAdapter = await resolve.assemblies.eventstoreAdapter()
 
+  const sendReactiveEvent = async (event) => {
+    await resolve.pubsubManager.dispatch({
+      topicName: event.type,
+      topicId: event.aggregateId,
+      event,
+    })
+  }
+
   Object.defineProperties(resolve, {
     getSubscribeAdapterOptions: {
       value: getSubscribeAdapterOptions,
     },
     pubsubManager: { value: pubsubManager },
     websocketHttpServer: { value: websocketHttpServer },
+    sendReactiveEvent: { value: sendReactiveEvent },
   })
 
   await initWebSocketServer(resolve)

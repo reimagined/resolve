@@ -1,6 +1,6 @@
 {
   "name": "personal-data",
-  "version": "0.25.14",
+  "version": "0.25.17",
   "description": "personal user data within events (GDPR compliance)",
   "private": true,
   "scripts": {
@@ -28,18 +28,18 @@
     "react-markdown": "^4.3.1",
     "react-router-config": "5.1.1",
     "react-router-dom": "5.1.2",
-    "resolve-scripts": "0.25.14",
-    "resolve-module-auth": "0.25.14",
-    "resolve-module-uploader": "0.25.14",
-    "resolve-react-hooks": "0.25.14",
-    "resolve-readmodel-lite": "0.25.14",
-    "resolve-readmodel-postgresql-serverless": "0.25.14",
-    "resolve-scheduler-cloud": "0.25.14",
-    "resolve-scheduler-local": "0.25.14",
-    "resolve-eventstore-lite": "0.25.14",
-    "resolve-eventstore-postgresql-serverless": "0.25.14",
-    "resolve-upload-cloud": "0.25.14",
-    "resolve-upload-local": "0.25.14",
+    "resolve-scripts": "0.25.17",
+    "resolve-module-auth": "0.25.17",
+    "resolve-module-uploader": "0.25.17",
+    "resolve-react-hooks": "0.25.17",
+    "resolve-readmodel-lite": "0.25.17",
+    "resolve-readmodel-postgresql-serverless": "0.25.17",
+    "resolve-scheduler-cloud": "0.25.17",
+    "resolve-scheduler-local": "0.25.17",
+    "resolve-eventstore-lite": "0.25.17",
+    "resolve-eventstore-postgresql-serverless": "0.25.17",
+    "resolve-upload-cloud": "0.25.17",
+    "resolve-upload-local": "0.25.17",
     "uuid": "^7.0.3"
   },
   "devDependencies": {
@@ -58,7 +58,7 @@
     "resolve-cloud": "*",
     "testcafe": "1.8.5",
     "testcafe-react-selectors": "^4.0.0",
-    "resolve-module-admin": "0.25.14",
+    "resolve-module-admin": "0.25.17",
     "isomorphic-fetch": "3.0.0"
   }
 }

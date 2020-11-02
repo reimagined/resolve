@@ -500,7 +500,9 @@ describe('Core operation', () => {
   test('resume subscriber', async () => {
     const pool = {
       database: {
-        runQuery: jest.fn(() => [{ subscriptionId: 'subscriptionId' }]),
+        runQuery: jest.fn(() => [
+          { subscriptionId: 'subscriptionId', status: 'deliver' },
+        ]),
         runRawQuery: jest.fn(),
         escapeStr,
         escapeId,
@@ -558,6 +560,7 @@ describe('Core operation', () => {
       type: PrivateOperationType.RESUME_SUBSCRIBER,
       payload: {
         eventSubscriber: 'eventSubscriber',
+        conditionalResume: true,
       },
     })
     expect(pool.database.runQuery).toMatchSnapshot()

@@ -22,7 +22,12 @@ void (async () => {
     switch (launchMode) {
       case 'dev': {
         const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+        await watch(resolveConfig, adjustWebpackConfigs)
+        break
+      }
 
+      case 'reset': {
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
         await reset(
           resolveConfig,
           {
@@ -33,8 +38,6 @@ void (async () => {
           },
           adjustWebpackConfigs
         )
-
-        await watch(resolveConfig, adjustWebpackConfigs)
         break
       }
 

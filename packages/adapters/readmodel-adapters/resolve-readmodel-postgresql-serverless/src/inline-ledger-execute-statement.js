@@ -1,4 +1,9 @@
-const inlineLedgerExecuteStatement = async (pool, sql, transactionId) => {
+const inlineLedgerExecuteStatement = async (
+  pool,
+  sql,
+  transactionId,
+  passthroughRuntimeErrors = false
+) => {
   const {
     PassthroughError,
     rdsDataService,
@@ -34,7 +39,9 @@ const inlineLedgerExecuteStatement = async (pool, sql, transactionId) => {
 
     return rows
   } catch (error) {
-    if (PassthroughError.isPassthroughError(error)) {
+    if (
+      PassthroughError.isPassthroughError(error, !!passthroughRuntimeErrors)
+    ) {
       throw new PassthroughError(transactionId)
     }
 
