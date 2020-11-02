@@ -15499,6 +15499,17 @@ react@16.13.1, react@^16.8.4:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
 
+reactstrap@8.7.0:
+  version "8.7.0"
+  resolved "http://npm.resolve-dev.ml:10080/reactstrap/-/reactstrap-8.7.0.tgz#6e9c3e7f6ed0c0e48f75722b904ace51cd1aaf48"
+  integrity sha512-1QqAH8u76AUyukUXVa9Mu9VbScCavOJPr2+h9lGBA4pDjbBPWr1Fc6gfmSbeiquXSIFkyc+Aay/LB9+K3hWPtg==
+  dependencies:
+    "@babel/runtime" "^7.2.0"
+    classnames "^2.2.3"
+    prop-types "^15.5.8"
+    react-popper "^1.3.6"
+    react-transition-group "^2.3.1"
+
 reactstrap@^8.1.1:
   version "8.6.0"
   resolved "https://registry.yarnpkg.com/reactstrap/-/reactstrap-8.6.0.tgz#baee0d12990c9fef3c82199fb05e84d9f0af1a26"
@@ -15683,11 +15694,6 @@ redux-devtools-extension@2.13.7:
   version "2.13.7"
   resolved "https://registry.yarnpkg.com/redux-devtools-extension/-/redux-devtools-extension-2.13.7.tgz#14bd7a1a7c8bee7f397beb1116fd16fc9633b752"
   integrity sha512-F2GlWMWxCTJGRjJ+GSZcGDcVAj6Pbf77FKb4C9S8eni5Eah6UBGNwxNj8K1MTtmItdZH1Wx+EvIifHN2KKcQrw==
-
-redux-devtools-extension@^2.13.8:
-  version "2.13.8"
-  resolved "https://registry.yarnpkg.com/redux-devtools-extension/-/redux-devtools-extension-2.13.8.tgz#37b982688626e5e4993ff87220c9bbb7cd2d96e1"
-  integrity sha512-8qlpooP2QqPtZHQZRhx3x3OP5skEV1py/zUdMY28WNAocbafxdG2tRD1MWE7sp8obGMNYuLWanhhQ7EQvT1FBg==
 
 redux-mock-store@1.5.4:
   version "1.5.4"
