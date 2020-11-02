@@ -12,7 +12,7 @@ This example demonstrates how to use [React Native](https://github.com/react-com
 
 Get the example:
 
-!!! Warning: use this example only with `yarn` !!!
+> **Warning:** use this example only with `yarn`
 
 ```sh
 yarn create resolve-app -e shopping-list-advanced shopping-list-advanced
@@ -20,23 +20,23 @@ yarn create resolve-app -e shopping-list-advanced shopping-list-advanced
 
 Run the example:
 
-1. First Terminal
+1. **Terminal 1:**
 
    ```sh
    yarn dev:native
    ```
 
    Runs your web app in development mode.
-
-2. Second Terminal
+     
+   **Terminal 2:**
 
    ```sh
    yarn start:native
    ```
 
-   Runs your native app in development mode with an interactive prompt. To run it without a prompt, use the `--no-interactive` flag.
+   Runs your native app in development mode with an interactive prompt. To disable the prompt, use the `--no-interactive` flag.
 
-3. Install the [Expo](https://expo.io) app to your iOS or Android phone, and use the QR code from the terminal to open your app. You can find the QR scanner on the **Projects** tab in **Expo**.
+2. Install the [Expo](https://expo.io) app to your iOS or Android phone, and use the QR code from the terminal to open your app. You can find the QR scanner on the **Projects** tab in **Expo**.
 
 ### Project Structure Overview
 
@@ -110,4 +110,4 @@ Run the example:
     📄 package.json
     📄 README.md
 ```
-!!! Warning: deploy this example from only `web` directory !!!
+> **Warning:** deploy this example only from the `web` directory 

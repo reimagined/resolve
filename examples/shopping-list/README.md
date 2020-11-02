@@ -4,6 +4,8 @@
 
 This example demonstrates how to work with [read-models](https://reimagined.github.io/resolve/docs/read-side#read-models) and [view-models](https://reimagined.github.io/resolve/docs/read-side#view-model-specifics).
 
+##### Installation:
+
 ```sh
 npx create-resolve-app resolve-shopping-list -e shopping-list
 ```
