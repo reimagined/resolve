@@ -3,6 +3,8 @@ import { getClient } from 'resolve-client'
 import initUI from './init-ui'
 import updateUI from './update-ui'
 
+const chatRoom = 'chat-room'
+
 const main = async (resolveContext) => {
   await new Promise((resolve) => domready(resolve))
   const { viewModels } = resolveContext
@@ -14,8 +16,11 @@ const main = async (resolveContext) => {
       {
         aggregateName: 'Chat',
         type: 'postMessage',
-        aggregateId: userName,
-        payload: message,
+        aggregateId: chatRoom,
+        payload: {
+          userName,
+          message,
+        },
       },
       (err) => {
         if (err) {
@@ -25,9 +30,12 @@ const main = async (resolveContext) => {
       }
     )
 
-  const { data } = await client.query({
+  const {
+    data,
+    meta: { url, cursor },
+  } = await client.query({
     name: 'chat',
-    aggregateIds: '*',
+    aggregateIds: [chatRoom],
   })
 
   let chatViewModelState = data
@@ -45,7 +53,7 @@ const main = async (resolveContext) => {
     setImmediate(updateUI.bind(null, chatViewModelState))
   }
 
-  await client.subscribeTo('chat', '*', chatViewModelUpdater)
+  await client.subscribe(url, cursor, 'chat', [chatRoom], chatViewModelUpdater)
 }
 
 export default main
