@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 import { useStaticResolver } from 'resolve-react-hooks'
 
-import Image from './Image'
+import { StaticImage } from './StaticImage'
 
 const Header = ({ title, name, css, favicon }) => {
   const resolveStatic = useStaticResolver()
@@ -28,7 +28,7 @@ const Header = ({ title, name, css, favicon }) => {
       <Helmet title={title} link={links} meta={[meta]} />
       <Navbar collapseOnSelect>
         <Navbar.Brand as={Link} to="/">
-          <Image className="example-icon" src="/resolve-logo.png" /> {name}
+          <StaticImage className="example-icon" src="/resolve-logo.png" /> {name}
         </Navbar.Brand>
         <Navbar.Toggle />
       </Navbar>
