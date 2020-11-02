@@ -24,10 +24,7 @@ const App = ({ CDNUrl }) => {
   const [mimeType, setMimeType] = useState('')
 
   const handleFileNameChange = useCallback(
-    (event) => {
-      console.log(event.target.value)
-      setFileName(event.target.value)
-    },
+    (event) => setFileName(event.target.value),
     [setFileName]
   )
   const handleGetUrl = useCallback(() => {
