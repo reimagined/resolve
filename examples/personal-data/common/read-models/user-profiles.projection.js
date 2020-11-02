@@ -13,23 +13,35 @@ const readModel = {
       fields: ['profile', 'archive'],
     })
   },
-  [USER_REGISTERED]: async (store, event) => {
+  [USER_REGISTERED]: async (store, event, { decrypt }) => {
     const {
       aggregateId,
       payload: { nickname, firstName, lastName, contacts },
     } = event
 
-    await store.insert('Users', {
-      id: aggregateId,
-      profile: {
-        nickname,
-        firstName: firstName,
-        lastName: lastName,
-        contacts: contacts,
-      },
-    })
+    if (typeof decrypt === 'function') {
+      await store.insert('Users', {
+        id: aggregateId,
+        profile: {
+          nickname,
+          firstName: decrypt(firstName),
+          lastName: decrypt(lastName),
+          contacts: decrypt(contacts),
+        },
+      })
+    } else {
+      await store.insert('Users', {
+        id: aggregateId,
+        profile: {
+          nickname,
+          firstName: '<encrypted>',
+          lastName: '<encrypted>',
+          contacts: {},
+        },
+      })
+    }
   },
-  [USER_PROFILE_UPDATED]: async (store, event) => {
+  [USER_PROFILE_UPDATED]: async (store, event, { decrypt }) => {
     const {
       aggregateId,
       payload: { firstName, lastName, contacts },
@@ -37,20 +49,37 @@ const readModel = {
 
     const user = await store.findOne('Users', { id: aggregateId })
 
-    await store.update(
-      'Users',
-      { id: aggregateId },
-      {
-        $set: {
-          profile: {
-            ...user.profile,
-            firstName,
-            lastName,
-            contacts,
+    if (typeof decrypt === 'function') {
+      await store.update(
+        'Users',
+        { id: aggregateId },
+        {
+          $set: {
+            profile: {
+              ...user.profile,
+              firstName: decrypt(firstName),
+              lastName: decrypt(lastName),
+              contacts: decrypt(contacts),
+            },
           },
-        },
-      }
-    )
+        }
+      )
+    } else {
+      await store.update(
+        'Users',
+        { id: aggregateId },
+        {
+          $set: {
+            profile: {
+              ...user.profile,
+              firstName: '<encrypted>',
+              lastName: '<encrypted>',
+              contacts: {},
+            },
+          },
+        }
+      )
+    }
   },
   [USER_PROFILE_DELETED]: async (store, event) => {
     const { aggregateId } = event

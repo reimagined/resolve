@@ -1,6 +1,6 @@
 {
   "name": "personal-data",
-  "version": "0.25.8",
+  "version": "0.25.17",
   "description": "personal user data within events (GDPR compliance)",
   "private": true,
   "scripts": {
@@ -32,23 +32,23 @@
     "redux": "4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-saga": "1.0.5",
-    "resolve-command": "0.25.8",
-    "resolve-core": "0.25.8",
-    "resolve-module-auth": "0.25.8",
-    "resolve-module-uploader": "0.25.8",
-    "resolve-query": "0.25.8",
-    "resolve-react-hooks": "0.25.8",
-    "resolve-readmodel-base": "0.25.8",
-    "resolve-readmodel-lite": "0.25.8",
-    "resolve-readmodel-postgresql-serverless": "0.25.8",
-    "resolve-scheduler-cloud": "0.25.8",
-    "resolve-scheduler-local": "0.25.8",
-    "resolve-scripts": "0.25.8",
-    "resolve-eventstore-lite": "0.25.8",
-    "resolve-eventstore-postgresql": "0.25.8",
-    "resolve-eventstore-postgresql-serverless": "0.25.8",
-    "resolve-upload-cloud": "0.25.8",
-    "resolve-upload-local": "0.25.8",
+    "resolve-command": "0.25.17",
+    "resolve-core": "0.25.17",
+    "resolve-module-auth": "0.25.17",
+    "resolve-module-uploader": "0.25.17",
+    "resolve-query": "0.25.17",
+    "resolve-react-hooks": "0.25.17",
+    "resolve-readmodel-base": "0.25.17",
+    "resolve-readmodel-lite": "0.25.17",
+    "resolve-readmodel-postgresql-serverless": "0.25.17",
+    "resolve-scheduler-cloud": "0.25.17",
+    "resolve-scheduler-local": "0.25.17",
+    "resolve-scripts": "0.25.17",
+    "resolve-eventstore-lite": "0.25.17",
+    "resolve-eventstore-postgresql": "0.25.17",
+    "resolve-eventstore-postgresql-serverless": "0.25.17",
+    "resolve-upload-cloud": "0.25.17",
+    "resolve-upload-local": "0.25.17",
     "uuid": "^7.0.3"
   },
   "devDependencies": {
@@ -67,7 +67,7 @@
     "resolve-cloud": "*",
     "testcafe": "1.8.5",
     "testcafe-react-selectors": "^4.0.0",
-    "resolve-module-admin": "0.25.8",
-    "isomorphic-fetch": "2.2.1"
+    "resolve-module-admin": "0.25.17",
+    "isomorphic-fetch": "3.0.0"
   }
 }

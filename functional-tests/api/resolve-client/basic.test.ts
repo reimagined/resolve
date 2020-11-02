@@ -1,7 +1,7 @@
 import { isEqual } from 'lodash'
 import { nanoid } from 'nanoid'
 import { Client } from 'resolve-client'
-import { getClient } from './get-client'
+import { getClient } from '../../utils/utils'
 
 let client: Client
 
@@ -19,23 +19,34 @@ const registerUser = async (userId: string) =>
     },
   })
 
-const waitForUserProfile = async (userId: string, data: object) =>
-  client.query(
-    {
-      name: 'users',
-      resolver: 'profile',
-      args: {
-        userId,
+const waitForUserProfile = async (userId: string, data: object) => {
+  let lastResult = null
+  try {
+    return await client.query(
+      {
+        name: 'users',
+        resolver: 'profile',
+        args: {
+          userId,
+        },
       },
-    },
-    {
-      waitFor: {
-        validator: (result: any) => isEqual(result.data, data),
-        attempts: 5,
-        period: 300,
-      },
-    }
-  )
+      {
+        waitFor: {
+          validator: (result: any) => {
+            lastResult = result
+            return isEqual(result.data, data)
+          },
+          attempts: 5,
+          period: 3000,
+        },
+      }
+    )
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(lastResult)
+    throw e
+  }
+}
 
 test('execute register command and check the result', async () => {
   const userId = nanoid()

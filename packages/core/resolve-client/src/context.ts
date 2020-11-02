@@ -1,5 +1,5 @@
 import { JSONWebTokenProvider } from './jwt-provider'
-import { ViewModel } from './view-model-types'
+import { ViewModel } from './types'
 
 export type Context = {
   origin?: string

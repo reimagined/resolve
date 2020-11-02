@@ -6,11 +6,13 @@ import {
   merge,
   stop,
   reset,
+  runTestcafe,
 } from 'resolve-scripts'
 
 import appConfig from './config.app'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
+import testFunctionalConfig from './config.test_functional'
 import adjustWebpackConfigs from './config.adjust_webpack'
 
 const launchMode = process.argv[2]
@@ -20,7 +22,12 @@ void (async () => {
     switch (launchMode) {
       case 'dev': {
         const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+        await watch(resolveConfig, adjustWebpackConfigs)
+        break
+      }
 
+      case 'reset': {
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
         await reset(
           resolveConfig,
           {
@@ -31,8 +38,6 @@ void (async () => {
           },
           adjustWebpackConfigs
         )
-
-        await watch(resolveConfig, adjustWebpackConfigs)
         break
       }
 
@@ -46,6 +51,34 @@ void (async () => {
 
       case 'start': {
         await start(merge(defaultResolveConfig, appConfig, prodConfig))
+        break
+      }
+
+      case 'test:e2e': {
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          testFunctionalConfig
+        )
+
+        await reset(
+          resolveConfig,
+          {
+            dropEventStore: true,
+            dropEventBus: true,
+            dropReadModels: true,
+            dropSagas: true,
+          },
+          adjustWebpackConfigs
+        )
+
+        await runTestcafe({
+          resolveConfig,
+          adjustWebpackConfigs,
+          functionalTestsDir: 'test/functional',
+          browser: process.argv[3],
+          customArgs: ['--stop-on-first-fail'],
+        })
         break
       }
 

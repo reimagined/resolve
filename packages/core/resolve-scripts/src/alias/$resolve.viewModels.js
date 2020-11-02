@@ -24,10 +24,11 @@ export default ({ resolveConfig, isClient }) => {
     importResource({
       resourceName: `projection_${index}`,
       resourceValue: viewModel.projection,
-      runtimeMode: RUNTIME_ENV_NOWHERE,
+      runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
       calculateHash: !isClient ? 'resolve-view-model-projection-hash' : null,
+      injectRuntimeOptions: isClient ? true : null,
       imports,
       constants,
     })
@@ -35,11 +36,12 @@ export default ({ resolveConfig, isClient }) => {
     importResource({
       resourceName: `deserializeState_${index}`,
       resourceValue: viewModel.deserializeState,
-      runtimeMode: RUNTIME_ENV_NOWHERE,
+      runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
       instanceFallback:
         'resolve-runtime/lib/common/defaults/json-deserialize-state.js',
+      injectRuntimeOptions: isClient ? true : null,
       imports,
       constants,
     })

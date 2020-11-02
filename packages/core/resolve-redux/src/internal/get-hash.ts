@@ -18,6 +18,10 @@ const getHash = (value: any, placeholder?: string) => {
     return value
   }
 
+  if (value.constructor === Array) {
+    return value.join(';')
+  }
+
   if (weakMap.has(value)) {
     return weakMap.get(value)
   }

@@ -237,7 +237,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
     },
     \\"plugins\\": [
       {
-        \\"_options\\": {}
+        \\"_options\\": {
+          \\"moduleExternals\\": false
+        }
       }
     ]
   },
@@ -662,7 +664,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
     ],
     \\"plugins\\": [
       {
-        \\"_options\\": {}
+        \\"_options\\": {
+          \\"moduleExternals\\": false
+        }
       }
     ],
     \\"name\\": \\"Shared server ESM chunks\\",
@@ -912,7 +916,9 @@ exports[`should make webpack configs for local mode 1`] = `
     },
     \\"plugins\\": [
       {
-        \\"_options\\": {}
+        \\"_options\\": {
+          \\"moduleExternals\\": false
+        }
       }
     ]
   },
@@ -1338,7 +1344,9 @@ exports[`should make webpack configs for local mode 1`] = `
     ],
     \\"plugins\\": [
       {
-        \\"_options\\": {}
+        \\"_options\\": {
+          \\"moduleExternals\\": false
+        }
       }
     ],
     \\"name\\": \\"Shared server ESM chunks\\",
