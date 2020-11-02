@@ -94,9 +94,9 @@ test('secrets stream index dropped', async () => {
 
 test('resource not exist error detection', async () => {
   if (pool.executeStatement) {
-    mocked(pool.executeStatement).mockRejectedValueOnce(
-      Error('Table.some-table does not exist')
-    )
+    const error: Error = new Error('Table.some-table does not exist')
+    void ((error as any).code = '42P01')
+    mocked(pool.executeStatement).mockRejectedValueOnce(error)
   }
 
   await expect(drop(pool)).rejects.toBeInstanceOf(
