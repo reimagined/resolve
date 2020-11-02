@@ -24,9 +24,10 @@ const ssrHandler = async (serverContext, req, res) => {
       origin: '',
     }
 
+    const staticContext = {}
     const markup = ReactDOM.renderToStaticMarkup(
       <ResolveProvider context={resolveContext}>
-        <Router history={history}>
+        <Router history={history} staticContext={staticContext}>
           <Routes routes={getRoutes()} />
         </Router>
       </ResolveProvider>
