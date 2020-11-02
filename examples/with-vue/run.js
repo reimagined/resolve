@@ -11,7 +11,7 @@ import {
 import appConfig from './config.app'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
-import adjustWebpackConfigs from './config.adjust_webpack'
+import adjustWebpackConfigs from './config.adjust-webpack'
 
 const launchMode = process.argv[2]
 

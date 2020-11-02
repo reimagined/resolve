@@ -20,6 +20,7 @@
     "bootstrap": "4.3.1",
     "copy-webpack-plugin": "5.1.2",
     "css-loader": "3.2.0",
+    "resolve-client": "0.25.14",
     "resolve-scripts": "0.25.14",
     "resolve-eventstore-postgresql-serverless": "0.25.14",
     "resolve-eventstore-lite": "0.25.14",
@@ -27,9 +28,9 @@
     "resolve-readmodel-postgresql-serverless": "0.25.14",
     "vue-loader": "15.7.1",
     "vue-highlighter": "2.5.3",
-    "vue-template-compiler": "2.6.10",
+    "vue-template-compiler": "2.6.12",
     "vue-server-renderer": "2.6.12",
-    "vue": "2.6.10"
+    "vue": "2.6.12"
   },
   "devDependencies": {
     "aws-sdk": "2.631.0",
