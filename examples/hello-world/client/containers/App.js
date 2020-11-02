@@ -4,17 +4,17 @@ import { Navbar, Image, Nav } from 'react-bootstrap'
 import { useStaticResolver } from 'resolve-react-hooks'
 
 const App = () => {
-  const staticResolver = useStaticResolver()
+  const resolveStatic = useStaticResolver()
 
   const stylesheetLink = {
     rel: 'stylesheet',
     type: 'text/css',
-    href: staticResolver('/bootstrap.min.css'),
+    href: resolveStatic('/bootstrap.min.css'),
   }
   const faviconLink = {
     rel: 'icon',
     type: 'image/png',
-    href: staticResolver('/favicon.ico'),
+    href: resolveStatic('/favicon.ico'),
   }
   const links = [stylesheetLink, faviconLink]
   const meta = {
@@ -28,7 +28,7 @@ const App = () => {
       <Navbar>
         <Navbar.Brand href="#home">
           <Image
-            src={staticResolver('/resolve-logo.png')}
+            src={resolveStatic('/resolve-logo.png')}
             className="d-inline-block align-top"
           />{' '}
           Hello World Example
@@ -37,19 +37,19 @@ const App = () => {
         <Nav className="ml-auto">
           <Navbar.Text className="navbar-right">
             <Nav.Link href="https://facebook.com/resolvejs/">
-              <Image src={staticResolver('/fb-logo.png')} />
+              <Image src={resolveStatic('/fb-logo.png')} />
             </Nav.Link>
           </Navbar.Text>
 
           <Navbar.Text className="navbar-right">
             <Nav.Link href="https://twitter.com/resolvejs">
-              <Image src={staticResolver('/twitter-logo.png')} />
+              <Image src={resolveStatic('/twitter-logo.png')} />
             </Nav.Link>
           </Navbar.Text>
 
           <Navbar.Text className="navbar-right">
             <Nav.Link href="https://github.com/reimagined/resolve">
-              <Image src={staticResolver('/github-logo.png')} />
+              <Image src={resolveStatic('/github-logo.png')} />
             </Nav.Link>
           </Navbar.Text>
         </Nav>
