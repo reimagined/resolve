@@ -32,15 +32,24 @@ void (async () => {
           devConfig,
           moduleAdmin
         )
+        await watch(resolveConfig)
+        break
+      }
 
+      case 'reset': {
+        const moduleAdmin = resolveModuleAdmin()
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          devConfig,
+          moduleAdmin
+        )
         await reset(resolveConfig, {
           dropEventStore: false,
           dropEventBus: true,
           dropReadModels: true,
           dropSagas: true,
         })
-
-        await watch(resolveConfig)
         break
       }
 

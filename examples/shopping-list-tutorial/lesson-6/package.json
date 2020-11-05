@@ -1,7 +1,6 @@
 {
-  "name": "lesson-2",
-  "version": "0.25.10",
-  "description": "used as a template for new reSolve applications",
+  "name": "@shopping-list-tutorial/lesson-6",
+  "version": "0.25.17",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
@@ -26,13 +25,9 @@
     "redux": "4.0.5",
     "redux-devtools-extension": "2.13.7",
     "redux-saga": "1.0.5",
-    "resolve-eventstore-lite": "0.25.10",
-    "resolve-eventstore-postgresql-serverless": "0.25.10",
-    "resolve-readmodel-lite": "0.25.10",
-    "resolve-readmodel-postgresql-serverless": "0.25.10",
-    "resolve-redux": "0.25.10",
-    "resolve-scripts": "0.25.10",
-    "uuid": "^8.3.1"
+    "resolve-redux": "0.25.17",
+    "resolve-scripts": "0.25.17",
+    "uuid": "3.3.2"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",
@@ -48,6 +43,7 @@
     "jest": "26.0.1",
     "react-test-renderer": "16.13.1",
     "resolve-cloud": "*",
+    "resolve-module-admin": "0.25.17",
     "testcafe": "1.8.5"
   }
 }
