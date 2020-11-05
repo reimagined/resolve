@@ -19,22 +19,10 @@
           "authentication-and-authorization",
           "preparing-to-production",
           "debugging",
-          "test-readmodels",
+          "testing",
           "api-reference",
           "application-configuration",
           "contributing"
-        ]
-      },
-      {
-        "type": "subcategory",
-        "label": "reSolve Cloud Platform",
-        "ids": [
-          "cloud-overview",
-          "cloud-get-started",
-          "cloud-app-management",
-          "cloud-cli",
-          "cloud-web-gui",
-          "cloud-troubleshooting"
         ]
       }
     ],
