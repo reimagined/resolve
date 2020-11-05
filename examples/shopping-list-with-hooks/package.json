@@ -27,13 +27,13 @@
     "react-router-config": "5.1.1",
     "react-router-dom": "5.1.2",
     "uuid": "8.3.1",
-    "resolve-module-admin": "0.25.17",
-    "resolve-react-hooks": "0.25.17",
-    "resolve-readmodel-lite": "0.25.17",
-    "resolve-readmodel-postgresql-serverless": "0.25.17",
-    "resolve-scripts": "0.25.17",
-    "resolve-eventstore-lite": "0.25.17",
-    "resolve-eventstore-postgresql-serverless": "0.25.17"
+    "resolve-module-admin": "0.25.18",
+    "resolve-react-hooks": "0.25.18",
+    "resolve-readmodel-lite": "0.25.18",
+    "resolve-readmodel-postgresql-serverless": "0.25.18",
+    "resolve-scripts": "0.25.18",
+    "resolve-eventstore-lite": "0.25.18",
+    "resolve-eventstore-postgresql-serverless": "0.25.18"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",

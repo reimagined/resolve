@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "mysql2": "^2.1.0",
-    "resolve-readmodel-base": "0.25.17",
+    "resolve-readmodel-base": "0.25.18",
     "uuid": "8.3.1"
   },
   "devDependencies": {
