@@ -1,6 +1,6 @@
 {
   "name": "personal-data",
-  "version": "0.25.17",
+  "version": "0.25.18",
   "description": "personal user data within events (GDPR compliance)",
   "private": true,
   "scripts": {
@@ -58,7 +58,7 @@
     "resolve-cloud": "*",
     "testcafe": "1.8.5",
     "testcafe-react-selectors": "^4.0.0",
-    "resolve-module-admin": "0.25.17",
+    "resolve-module-admin": "0.25.18",
     "isomorphic-fetch": "3.0.0"
   }
 }

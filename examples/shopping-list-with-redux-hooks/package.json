@@ -1,6 +1,6 @@
 {
   "name": "shopping-list-with-redux-hooks",
-  "version": "0.25.17",
+  "version": "0.25.18",
   "description": "shows how to work with read-models and view-models using redux hooks",
   "private": true,
   "scripts": {
@@ -54,7 +54,7 @@
     "enzyme": "3.6.0",
     "jest": "26.0.1",
     "react-test-renderer": "16.13.1",
-    "resolve-testing-tools": "0.25.17",
+    "resolve-testing-tools": "0.25.18",
     "testcafe": "1.8.5",
     "resolve-cloud": "*"
   }

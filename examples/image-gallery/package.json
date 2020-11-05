@@ -1,6 +1,6 @@
 {
   "name": "image-gallery",
-  "version": "0.25.17",
+  "version": "0.25.18",
   "description": "used as a template for new reSolve applications",
   "private": true,
   "scripts": {

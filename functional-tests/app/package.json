@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "0.25.17",
+  "version": "0.25.18",
   "description": "used to perform various functional test",
   "private": true,
   "scripts": {

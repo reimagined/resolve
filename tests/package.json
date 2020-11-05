@@ -1,6 +1,6 @@
 {
   "name": "tests",
-  "version": "0.25.17",
+  "version": "0.25.18",
   "description": "API tests for resolve",
   "private": true,
   "scripts": {
