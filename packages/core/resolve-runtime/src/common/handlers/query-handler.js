@@ -38,19 +38,20 @@ const queryHandler = async (req, res) => {
       (result.meta?.aggregateIds != null || result.meta?.eventTypes != null) &&
       modelArgs.origin != null
     ) {
-      const { aggregateIds } = result.meta || {};
+      const { aggregateIds } = result.meta || {}
 
-      const subscriptionAggregateIds = Array.isArray(aggregateIds)
-        || aggregateIds === '*'
-        || aggregateIds == null
-        ? aggregateIds
-        : [aggregateIds];
+      const subscriptionAggregateIds =
+        Array.isArray(aggregateIds) ||
+        aggregateIds === '*' ||
+        aggregateIds == null
+          ? aggregateIds
+          : [aggregateIds]
 
       const subscribeOptions = await req.resolve.getSubscribeAdapterOptions(
         req.resolve,
         modelArgs.origin,
         result.meta.eventTypes,
-        subscriptionAggregateIds,
+        subscriptionAggregateIds
       )
 
       res.setHeader(
