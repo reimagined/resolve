@@ -493,55 +493,39 @@ readModels: [
 ],
 ```
 
-### Query a View Model via HTTP API
+### Query a Read Model
 
-You can use the reSolve framework's HTTP API to test the ShoppingLists Read Model's functionality:
+You can use the standard HTTP API to test the ShoppingLists Read Model's functionality:
 
 ```sh
-$  curl -i -g -X GET "http://localhost:3000/api/query/shoppingList/shopping-list-1"
-HTTP/1.1 200 OK
-X-Powered-By: Express
-Content-Type: text/html; charset=utf-8
-Content-Length: 50
-ETag: W/"32-QoPdRfMTxfncCZnYSqRYIDifC/w"
-Date: Fri, 16 Nov 2018 12:10:58 GMT
-Connection: keep-alive
+$ curl -X POST \
+-H "Content-Type: application/json" \
+-d "{}" \
+"http://localhost:3000/api/query/ShoppingLists/all"
 
-{
-  "id": "shopping-list-1",
-  "name": "List 1",
-  "list": [
-    {
-      "id": "1",
-      "text": "Milk",
-      "checked": false
-    },
-    {
-      "id": "2",
-      "text": "Eggs",
-      "checked": false
-    },
-    {
-      "id": "3",
-      "text": "Canned beans",
-      "checked": false
-    },
-    {
-      "id": "4",
-      "text": "Paper towels",
-      "checked": false
-    }
-  ]
-}
+% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   186  100   184  100     2    844      9 --:--:-- --:--:-- --:--:--   906[
+  {
+    "id": "shopping-list-1",
+    "name": "List 1",
+    "createdAt": 1543325125945
+  },
+  {
+    "id": "shopping-list-2",
+    "name": "List 2",
+    "createdAt": 1543325129138
+  }
+]
 ```
 
 ---
 
-## **Lesson 4** - Frontend - Display View Model Data in the Browser
+## **Lesson 4** - Frontend - Display Read Model Data in the Browser
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-4)
 
-This lesson provides information on how to display a View Model's data in the client browser. It uses the reSolve framework's **resolve-redux** library to implement a frontend based on React and Redux.
+This lesson provides information on how to display a Model's data in the client browser. It uses the reSolve framework's **resolve-redux** library to implement a frontend based on React and Redux.
 
 > You can use the standard HTTP API to communicate with a reSolve backend and use any client technology to implement the frontend.
 
