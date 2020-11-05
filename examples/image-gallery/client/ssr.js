@@ -9,12 +9,7 @@ import Layout from './components/Layout'
 
 const ssrHandler = async (serverContext, req, res) => {
   try {
-    const {
-      constants,
-      seedClientEnvs,
-      viewModels,
-      utils,
-    } = serverContext
+    const { constants, seedClientEnvs, viewModels, utils } = serverContext
     const { getStaticBasedPath, jsonUtfStringify } = utils
     const { rootPath, staticPath, jwtCookie } = constants
 

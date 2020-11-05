@@ -28,7 +28,8 @@ const Header = ({ title, name, css, favicon }) => {
       <Helmet title={title} link={links} meta={[meta]} />
       <Navbar collapseOnSelect>
         <Navbar.Brand as={Link} to="/">
-          <StaticImage className="example-icon" src="/resolve-logo.png" /> {name}
+          <StaticImage className="example-icon" src="/resolve-logo.png" />{' '}
+          {name}
         </Navbar.Brand>
         <Navbar.Toggle />
       </Navbar>

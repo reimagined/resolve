@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks'
 import { mocked } from 'ts-jest/utils'
 import { useClient } from '../src/use-client'
-import { StaticResolver, useStaticResolver } from '../src/use-static-resolver'
+import { useStaticResolver } from '../src/use-static-resolver'
 
 jest.mock('resolve-client')
 jest.mock('../src/use-client', () => ({

@@ -3,14 +3,7 @@ import { connect } from 'react-redux'
 import { connectViewModel } from 'resolve-redux'
 import { Redirect } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
-import {
-  Row,
-  Col,
-  ListGroup,
-  Button,
-  InputGroup,
-  Form,
-} from 'react-bootstrap'
+import { Row, Col, ListGroup, Button, InputGroup, Form } from 'react-bootstrap'
 
 import { StaticImage } from './StaticImage'
 import NotFound from '../components/NotFound'

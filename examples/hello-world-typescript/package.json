@@ -22,6 +22,7 @@
     "react-helmet": "6.1.0",
     "resolve-react-hooks": "0.25.17",
     "resolve-scripts": "0.25.17",
+    "resolve-readmodel-base": "0.25.17",
     "resolve-eventstore-lite": "0.25.17",
     "resolve-readmodel-lite": "0.25.17",
     "resolve-eventstore-postgresql-serverless": "0.25.17",

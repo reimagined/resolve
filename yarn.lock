@@ -15194,7 +15194,7 @@ react-bootstrap@0.32.4:
 
 react-bootstrap@1.4.0:
   version "1.4.0"
-  resolved "http://npm.resolve-dev.ml:10080/react-bootstrap/-/react-bootstrap-1.4.0.tgz#806a8b48b065cedfb28c6c5c7b0c0e3c3b53445d"
+  resolved "https://registry.yarnpkg.com/react-bootstrap/-/react-bootstrap-1.4.0.tgz#806a8b48b065cedfb28c6c5c7b0c0e3c3b53445d"
   integrity sha512-0BMzgeUAxH126v7VYDzIXbHxQVHSnniPVKpz9fblumdQpWaiElMnnzk+u8h8DoELX0nCXwPlcUzgXqmpncdc2Q==
   dependencies:
     "@babel/runtime" "^7.4.2"
@@ -15477,7 +15477,7 @@ react@16.13.1, react@^16.8.4:
 
 reactstrap@8.7.0:
   version "8.7.0"
-  resolved "http://npm.resolve-dev.ml:10080/reactstrap/-/reactstrap-8.7.0.tgz#6e9c3e7f6ed0c0e48f75722b904ace51cd1aaf48"
+  resolved "https://registry.yarnpkg.com/reactstrap/-/reactstrap-8.7.0.tgz#6e9c3e7f6ed0c0e48f75722b904ace51cd1aaf48"
   integrity sha512-1QqAH8u76AUyukUXVa9Mu9VbScCavOJPr2+h9lGBA4pDjbBPWr1Fc6gfmSbeiquXSIFkyc+Aay/LB9+K3hWPtg==
   dependencies:
     "@babel/runtime" "^7.2.0"
@@ -18951,7 +18951,7 @@ uuid@3.3.2:
 
 uuid@8.3.1:
   version "8.3.1"
-  resolved "http://npm.resolve-dev.ml:10080/uuid/-/uuid-8.3.1.tgz#2ba2e6ca000da60fce5a196954ab241131e05a31"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.1.tgz#2ba2e6ca000da60fce5a196954ab241131e05a31"
   integrity sha512-FOmRr+FmWEIG8uhZv6C2bTgEVXsHk08kE7mPlrBbEe+c3r9pjceVPgupIfNIhc4yx55H69OXANrUaSuu9eInKg==
 
 uuid@^3.0.1, uuid@^3.1.0, uuid@^3.3.2:
@@ -19157,7 +19157,7 @@ vue-style-loader@^4.1.0:
 
 vue-template-compiler@2.6.12:
   version "2.6.12"
-  resolved "http://npm.resolve-dev.ml:10080/vue-template-compiler/-/vue-template-compiler-2.6.12.tgz#947ed7196744c8a5285ebe1233fe960437fcc57e"
+  resolved "https://registry.yarnpkg.com/vue-template-compiler/-/vue-template-compiler-2.6.12.tgz#947ed7196744c8a5285ebe1233fe960437fcc57e"
   integrity sha512-OzzZ52zS41YUbkCBfdXShQTe69j1gQDZ9HIX8miuC9C3rBCk9wIRjLiZZLrmX9V+Ftq/YEyv1JaVr5Y/hNtByg==
   dependencies:
     de-indent "^1.0.2"
@@ -19170,7 +19170,7 @@ vue-template-es2015-compiler@^1.9.0:
 
 vue@2.6.12:
   version "2.6.12"
-  resolved "http://npm.resolve-dev.ml:10080/vue/-/vue-2.6.12.tgz#f5ebd4fa6bd2869403e29a896aed4904456c9123"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.12.tgz#f5ebd4fa6bd2869403e29a896aed4904456c9123"
   integrity sha512-uhmLFETqPPNyuLLbsKz6ioJ4q7AZHzD8ZVFNATNyICSZouqP2Sz0rotWQC8UNBF6VGSCs5abnKJoStA6JbCbfg==
 
 w3c-hr-time@^1.0.1, w3c-hr-time@^1.0.2:
