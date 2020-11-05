@@ -525,40 +525,80 @@ $ curl -X POST \
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-4)
 
-This lesson provides information on how to display a Model's data in the client browser. It uses the reSolve framework's **resolve-redux** library to implement a frontend based on React and Redux.
+This lesson provides information on how to display a Read Model's data in the client browser. It uses the reSolve framework's **resolve-react-hooks** library to implement a frontend based on React with hooks.
 
-> You can use the standard HTTP API to communicate with a reSolve backend and use any client technology to implement the frontend.
+> Refer to the [Frontend](frontend.md) article for information on other tools that you can use to implement a frontend.
 
 ### Implement a React Frontend
 
-The frontend's source files are located in the **client** folder. Create a **ShoppingList.js** file in the **client/containers** folder. In this file, implement a React component that renders a list of values obtained from the **[data](frontend.md#obtain-view-model-data)** prop:
+> NOTE: The example code uses **react-bootstrap** to keep the markup simple. This library requires you to link the Bootstrap stylesheet file. The example project's **client/components/Header.js** file demonstrates how to link static resources to your client application.
 
-**client/containers/ShoppingList.js:**
+The frontend's source files are located in the **client** folder. Create a **ShoppingLists.js** file in the **client/components** folder. In this file, implement a React component that renders a list of shopping list names:
 
-<!-- prettier-ignore-start -->
+```jsx
+import React from 'react'
+import { ControlLabel, Table } from 'react-bootstrap'
 
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js /\/\// /^\}/)
-```js
-// The example code uses components from the react-bootstrap library to reduce the markup.
-import { ListGroup, ListGroupItem, Checkbox } from 'react-bootstrap'
-
-export class ShoppingList extends React.PureComponent {
-  render() {
-    const list = this.props.data.list
-    return (
-      <ListGroup style={{ maxWidth: '500px', margin: 'auto' }}>
-        {list.map(todo => (
-          <ListGroupItem key={todo.id}>
-            <Checkbox inline>{todo.text}</Checkbox>
-          </ListGroupItem>
-        ))}
-      </ListGroup>
-    )
-  }
+const ShoppingLists = ({ lists }) => {
+  return (
+    <div>
+      <ControlLabel>My shopping lists</ControlLabel>
+      <Table responsive>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Shopping List</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lists.map(({ id, name }, index) => (
+            <tr key={id}>
+              <td>{index + 1}</td>
+              <td>{name}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </div>
+  )
 }
+
+export default ShoppingLists
 ```
 
-<!-- prettier-ignore-end -->
+Add a new component named **MyLists** this component should obtain shopping list data from reSolve and use the **ShoppingLists** component to display this data. To obtain the data, use the **resolve-react-hooks** library's `useQuery` hook:
+
+```js
+import React, { useState, useEffect } from 'react'
+
+import { useQuery } from 'resolve-react-hooks'
+import ShoppingLists from './ShoppingLists'
+
+const MyLists = () => {
+  const [lists, setLists] = useState({})
+
+  // The 'useQuery' hook is used to querry the 'ShoppingLists' Read Model's 'all' resolver.
+  // The obtained data is stored in the component's state.
+  const getLists = useQuery(
+    { name: 'ShoppingLists', resolver: 'all', args: {} },
+    (error, result) => {
+      // Obtain the data on the component mount.
+      setLists(result)
+    }
+  )
+  useEffect(() => {
+    getLists()
+  }, [])
+
+  return (
+    <div className="example-wrapper">
+      <ShoppingLists lists={lists ? lists.data || [] : []} />
+    </div>
+  )
+}
+
+export default MyLists
+```
 
 Use the **resolve-redux** library's **connectViewModel** HOC to bind your component to the **ShoppingList** View Model that you implemented in the previous lesson.
 
