@@ -45,6 +45,11 @@ export const executeReadModel = async ({
 
     await queryExecutor.sendEvents({
       modelName: promise[symbol].name,
+      events: [{ type: 'Init' }],
+    })
+
+    await queryExecutor.sendEvents({
+      modelName: promise[symbol].name,
       events: transformEvents(promise[symbol].events),
     })
 

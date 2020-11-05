@@ -9,7 +9,7 @@ const transformEvents = (
   const aggregateVersionsMap = new Map()
   const threadCountersMap = new Map()
 
-  const result = target === 'read-model' ? [{ type: 'Init' }] : []
+  const result = []
 
   for (const rawEvent of events) {
     const aggregateId =
