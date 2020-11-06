@@ -529,7 +529,7 @@ This lesson provides information on how to display a Read Model's data in the cl
 
 > Refer to the [Frontend](frontend.md) article for information on other tools that you can use to implement a frontend.
 
-### Implement a React Frontend
+### Implement the Client Application
 
 > NOTE: The example code uses **react-bootstrap** to keep the markup simple. This library requires you to link the Bootstrap stylesheet file. The example project's **client/components/Header.js** file demonstrates how to link static resources to your client application.
 
@@ -600,68 +600,91 @@ const MyLists = () => {
 export default MyLists
 ```
 
-Use the **resolve-redux** library's **connectViewModel** HOC to bind your component to the **ShoppingList** View Model that you implemented in the previous lesson.
+Add the client application's root component that defines the HEAD section and renders routes:
 
-**client/containers/ShoppingList.js:**
+```jsx
+import React from 'react'
+import { renderRoutes } from 'react-router-config'
+import Header from './Header'
 
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js /export const mapStateToOptions/ /export default connectViewModel\(mapStateToOptions\)\(ShoppingList\)/)
-```js
-export const mapStateToOptions = (state, ownProps) => {
-  return {
-    viewModelName: 'shoppingList',
-    aggregateIds: ['shopping-list-1']
-  }
-}
-
-export default connectViewModel(mapStateToOptions)(ShoppingList)
-```
-
-<!-- prettier-ignore-end -->
-
-This HOC binds the original component to a reSolve View Model based on options that the **mapStateToOptions** function specifies. This HOC provides the **data** prop in your component's implementation. This prop provides access to the View Model's response object.
-
-```js
-{
-  "id": "shopping-list-1",
-  "name": "List 1",
-  "list": [
-    {
-      "id": "1",
-      "text": "Milk",
-      "checked": false
-    },
-    {
-      "id": "2",
-      "text": "Eggs",
-      "checked": false
-    },
-    {
-      "id": "3",
-      "text": "Canned beans",
-      "checked": false
-    },
-    {
-      "id": "4",
-      "text": "Paper towels",
-      "checked": false
-    }
-  ]
-}
-```
-
-Insert the implemented **ShoppingList** component into the application's root component:
-
-**client/containers/App.js:**
-
-```js
-const App = () => (
+const App = ({ route, children }) => (
   <div>
-    ...
-    <ShoppingList />
+    {/*Define the HEAD section and register static resources.
+       See the 'client/components/Header' file for implementation details.
+    */}
+    <Header
+      title="ReSolve Shopping List Example"
+      name="Shopping List"
+      css={['/bootstrap.min.css']}
+    />
+    {renderRoutes(route.routes)}
+    {children}
   </div>
 )
+
+export default App
+```
+
+The routes are defined as follows:
+
+```jsx
+import App from './components/App'
+import MyLists from './components/MyLists'
+
+export default [
+  {
+    component: App,
+    routes: [
+      {
+        path: '/',
+        component: MyLists,
+        exact: true
+      }
+    ]
+  }
+]
+```
+
+### Configure the Entry Point
+
+A client entry point is a function that takes a `context` object as a parameter. You can pass this object to the resolve-react-hooks library to connect it your reSolve backend. You can implement the entry point as shown below:
+
+```jsx
+import React from 'react'
+import { render } from 'react-dom'
+import { ResolveContext } from 'resolve-react-hooks'
+import { BrowserRouter } from 'react-router-dom'
+import { renderRoutes } from 'react-router-config'
+
+import routes from './routes'
+
+// The 'conext' object contains data required by the 'resolve-react-hooks'
+// library to communicate with the reSolve backend.
+const entryPoint = context => {
+  const appContainer = document.createElement('div')
+  document.body.appendChild(appContainer)
+  render(
+    <ResolveContext.Provider value={context}>
+      <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
+    </ResolveContext.Provider>,
+    appContainer
+  )
+}
+
+export default entryPoint
+```
+
+### Register the Entry Point
+
+Register the client entry point in the application's configuration file as shown below:
+
+```js
+const appConfig = {
+  ...
+  clientEntries: ['client/index.js'],
+}
+
+export default appConfig
 ```
 
 Run your application to view the result:
