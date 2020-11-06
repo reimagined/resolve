@@ -1,12 +1,18 @@
-import * as React from 'react'
+import React from 'react'
 import { render } from 'react-dom'
+import { ResolveProvider } from 'resolve-react-hooks'
 
 import App from './containers/App'
 
-const entryPoint = ({ staticPath }): any => {
+const entryPoint = (clientContext) => {
   const appContainer = document.createElement('div')
   document.body.appendChild(appContainer)
-  render(<App staticPath={staticPath} />, appContainer)
+  render(
+    <ResolveProvider context={clientContext}>
+      <App />
+    </ResolveProvider>,
+    appContainer
+  )
 }
 
 export default entryPoint

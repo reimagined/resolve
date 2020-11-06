@@ -1,8 +1,8 @@
 import React from 'react'
 import { useCommand } from 'resolve-react-hooks'
-import { ListGroupItem, Checkbox } from 'react-bootstrap'
+import { ListGroupItem, Form } from 'react-bootstrap'
 
-import Image from './Image'
+import { StaticImage } from './StaticImage'
 
 const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
   const toggleItem = useCommand({
@@ -23,10 +23,14 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
   })
   return (
     <ListGroupItem key={id}>
-      <Checkbox inline checked={checked} onChange={toggleItem}>
-        {text}
-      </Checkbox>
-      <Image
+      <Form.Check
+        inline
+        type="checkbox"
+        label={text}
+        checked={checked}
+        onChange={toggleItem}
+      />
+      <StaticImage
         className="example-close-button"
         src="/close-button.png"
         onClick={removeItem}

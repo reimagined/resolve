@@ -2,7 +2,7 @@ import debugLevels from 'resolve-debug-levels'
 import EventEmitter from 'events'
 import http from 'http'
 import WebSocket from 'ws'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 import qs from 'querystring'
 import jwt from 'jsonwebtoken'
 

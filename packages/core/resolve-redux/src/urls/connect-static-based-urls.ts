@@ -1,19 +1,6 @@
-import getStaticBasedUrl from './get-static-based-url'
+import { useStaticResolver } from 'resolve-react-hooks'
 import createContextBasedConnector from './create-context-based-connector'
 
-const connectStaticBasedUrls = createContextBasedConnector(
-  (
-    {
-      origin,
-      rootPath,
-      staticPath,
-    }: {
-      origin: string
-      rootPath: string
-      staticPath: string
-    },
-    path: string
-  ) => getStaticBasedUrl(origin, rootPath, staticPath, path)
-)
+const connectStaticBasedUrls = createContextBasedConnector(useStaticResolver)
 
-export default connectStaticBasedUrls
+export { connectStaticBasedUrls }

@@ -1466,13 +1466,14 @@ const main = async resolveContext => {
 
 The `getClient` function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
 
-| Function Name                           | Description                                |
-| --------------------------------------- | ------------------------------------------ |
-| [command](#command)                     | Sends an aggregate command to the backend. |
-| [query](#query)                         | Queries a Read Model.                      |
-| [getStaticAssetUrl](#getstaticasseturl) | Gets a static file's full URL.             |
-| [subscribe](#subscribe)                 | Subscribes to View Model updates.          |
-| [unsubscribe](#unsubscribe)             | Unsubscribes from View Model updates.      |
+| Function Name                           | Description                                                                 |
+| --------------------------------------- | --------------------------------------------------------------------------- |
+| [command](#command)                     | Sends an aggregate command to the backend.                                  |
+| [query](#query)                         | Queries a Read Model.                                                       |
+| [getStaticAssetUrl](#getstaticasseturl) | Gets a static file's full URL.                                              |
+| [getOriginPath](#getoriginpath)         | Returns an absolute URL within the application for the given relative path. |
+| [subscribe](#subscribe)                 | Subscribes to View Model updates.                                           |
+| [unsubscribe](#unsubscribe)             | Unsubscribes from View Model updates.                                       |
 
 #### command
 
@@ -1519,6 +1520,16 @@ Gets a static file's full URL.
 var imagePath = client.getStaticAssetUrl('/account/image.jpg')
 ```
 
+#### getOriginPath
+
+Returns an absolute URL within the application for the given relative path.
+
+##### Example
+
+```js
+var commandsApiPath = client.getOriginPath('/api/commands')
+```
+
 #### subscribe
 
 Subscribes to View Model updates. Returns a promise that resolves to a **subscription** object.
@@ -1560,6 +1571,7 @@ The **resolve-react-hooks** library provides React hooks that you can use to con
 | [useCommandBuilder](#usecommandbuilder) | Allows a component to generate commands based on input parameters.        |
 | [useViewModel](#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model.               |
 | [useQuery](#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model. |
+| [useOriginResolver](#useoriginresolver) | Resolves a relative path to an absolute URL within the application.       |
 
 #### useCommand
 
@@ -1706,4 +1718,15 @@ const MyLists = () => {
 
   ...
 }
+```
+
+#### useOriginResolver
+
+Resolves a relative path to an absolute URL within the application.
+
+##### Example
+
+```js
+var resolver = useOriginResolver()
+var commandApiPath = resolver('/api/commands')
 ```
