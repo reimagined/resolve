@@ -693,11 +693,15 @@ Run your application to view the result:
 
 ---
 
-## **Lesson 5** - Frontend - Enable Data Editing
+## **Lesson 5** - Read Side - Create a View Model to Query Shopping List Items
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-5)
 
-This lesson describes how to implement a visual interface that allows you to edit shopping list items.
+This lesson describes how you can use a View Model to obtain shopping list items and display them in a reactive list in the client browser.
+
+A View Model is a reactive View Model that is built on the fly for one or several aggregate IDs. A View Model uses WebSocket to synchronize its state with the client in real time.
+
+The downside is that a View Model does not have persistent state and should be built on every query, so it is better suited for small data samples.
 
 ### Modify Backend Functionality
 
