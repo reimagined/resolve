@@ -703,7 +703,56 @@ A View Model is a reactive View Model that is built on the fly for one or severa
 
 The downside is that a View Model does not have persistent state and should be built on every query, so it is better suited for small data samples.
 
-### Modify Backend Functionality
+### Create a Shopping List View Model
+
+Add a **shopping_list.projection.js** file in the **common/view-models** directory. Add the following code to this file:
+
+```js
+import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from '../eventTypes'
+
+// A View Model's projection is defined in a format that is isomorphic with a Redux reducer format.
+export default {
+  // The 'Init' function initializes the View Model's response object.
+  Init: () => ({
+    id: 'id',
+    name: 'unnamed',
+    list: []
+  }),
+  // Below is a projection function. It runs on every event of the specified type, whose aggregate Id matches one of the Ids specified in the query.
+  [SHOPPING_LIST_CREATED]: (state, { aggregateId, payload: { name } }) => ({
+    // A projection takes the response object and returns its updated version based on the event data.
+    id: aggregateId,
+    name,
+    list: []
+  }),
+  [SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
+    ...state,
+    list: [
+      ...state.list,
+      {
+        id,
+        text,
+        checked: false
+      }
+    ]
+  })
+}
+```
+
+Register the View Model in the application configuration file:
+
+```js
+const appConfig = {
+  ...
+  viewModels: [
+    {
+      name: 'shoppingList',
+      projection: 'common/view-models/shopping_list.projection.js'
+    }
+  ]
+}
+export default appConfig
+```
 
 Apply the following modifications to the server code to allow a user to check and uncheck items:
 
