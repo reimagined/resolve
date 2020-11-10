@@ -1,4 +1,4 @@
-import createAdapter from 'resolve-readmodel-base'
+import _createAdapter from 'resolve-readmodel-base'
 import SQLite from 'sqlite'
 import tmp from 'tmp'
 import os from 'os'
@@ -7,7 +7,7 @@ import fs from 'fs'
 import beginTransaction from './begin-transaction'
 import buildUpsertDocument from './build-upsert-document'
 import commitTransaction from './commit-transaction'
-import connect from './connect'
+import _connect from './connect'
 import convertBinaryRow from './convert-binary-row'
 import count from './count'
 import defineTable from './define-table'
@@ -22,6 +22,20 @@ import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
 import update from './update'
 
+import PassthroughError from './passthrough-error'
+import subscribe from './subscribe'
+import resubscribe from './resubscribe'
+import unsubscribe from './unsubscribe'
+import deleteProperty from './delete-property'
+import getProperty from './get-property'
+import listProperties from './list-properties'
+import setProperty from './set-property'
+import reset from './reset'
+import pause from './pause'
+import resume from './resume'
+import status from './status'
+import build from './build'
+
 const memoryStore = {}
 const store = {
   defineTable,
@@ -33,23 +47,49 @@ const store = {
   delete: del,
 }
 
-export default createAdapter.bind(null, {
-  ...store,
-  connect: connect.bind(null, {
-    buildUpsertDocument,
-    convertBinaryRow,
-    searchToWhereExpression,
-    updateToSetExpression,
-    memoryStore,
-    ...store,
-    SQLite,
-    tmp,
-    os,
-    fs,
-  }),
+const internalMethods = {
+  buildUpsertDocument,
+  convertBinaryRow,
+  searchToWhereExpression,
+  updateToSetExpression,
+  PassthroughError,
+}
+
+const externalMethods = {
   beginTransaction,
   commitTransaction,
   rollbackTransaction,
   dropReadModel,
+  subscribe,
+  resubscribe,
+  unsubscribe,
+  deleteProperty,
+  getProperty,
+  listProperties,
+  setProperty,
+  resume,
+  pause,
+  reset,
+  status,
+  build,
+}
+
+const connect = _connect.bind(null, {
+  SQLite,
+  tmp,
+  os,
+  fs,
+  memoryStore,
+  ...internalMethods,
+  ...externalMethods,
+  ...store,
+})
+
+const createAdapter = _createAdapter.bind(null, {
+  ...store,
+  ...externalMethods,
+  connect,
   disconnect,
 })
+
+export default createAdapter

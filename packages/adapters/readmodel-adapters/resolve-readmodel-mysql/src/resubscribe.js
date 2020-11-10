@@ -94,7 +94,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
                ? escape(JSON.stringify(aggregateIds))
                : escape('null')
            },
-           COALESCE(NULLIF((SELECT Count(\`CTE\`.*) < 2 FROM \`CTE\`), TRUE), FALSE),
+           0,
            CAST("{}" AS JSON)
         )
         ON DUPLICATE KEY UPDATE
