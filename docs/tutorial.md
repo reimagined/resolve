@@ -754,6 +754,92 @@ const appConfig = {
 export default appConfig
 ```
 
+### Display View Model Data on the Client
+
+Add the following react components to your client application to display shopping list items:
+
+##### client/components/ShoppingListItem.js:
+
+```jsx
+import React from 'react'
+import { ListGroupItem, Checkbox } from 'react-bootstrap'
+
+// The layout of a single item.
+const ShoppingListItem = ({ item: { id, text } }) => {
+  return (
+    <ListGroupItem key={id}>
+      <Checkbox inline>{text}</Checkbox>
+    </ListGroupItem>
+  )
+}
+
+export default ShoppingListItem
+```
+
+##### client/components/ShoppingList.js:
+
+```jsx
+import React, { useState, useEffect } from 'react'
+import { useViewModel } from 'resolve-react-hooks'
+
+import {
+  ListGroup,
+  FormControl,
+  FormGroup,
+  ControlLabel
+} from 'react-bootstrap'
+
+import ShoppingListItem from './ShoppingListItem'
+
+// The shopping list populated with items obtrained from the ShoppingList View Model.
+const ShoppingList = ({
+  match: {
+    params: { id: aggregateId }
+  }
+}) => {
+  const [shoppingList, setShoppingList] = useState({
+    name: '',
+    id: null,
+    list: []
+  })
+  // The UseViewModel hook connects the component to a View Model
+  // and reactively updates the component's state when the View Model's
+  // data is updated.
+  const { connect, dispose } = useViewModel(
+    'shoppingList', // The View Model's name.
+    [aggregateId], // The aggregate ID for which to query data.
+    setShoppingList // A callback to call when new data is recieved.
+  )
+
+  useEffect(() => {
+    connect()
+    return () => {
+      dispose()
+    }
+  }, [])
+
+  return (
+    <div>
+      <ControlLabel>Shopping list name</ControlLabel>
+      <FormGroup bsSize="large">
+        <FormControl type="text" value={shoppingList.name} readOnly />
+      </FormGroup>
+      <ListGroup>
+        {shoppingList.list.map((item, idx) => (
+          <ShoppingListItem key={idx} item={item} />
+        ))}
+      </ListGroup>
+    </div>
+  )
+}
+
+export default ShoppingList
+```
+
+### [TODO] API Reference:
+
+- [useViewModel]()
+
 Apply the following modifications to the server code to allow a user to check and uncheck items:
 
 1. Add a new event type that indicates that an item's checkbox was toggled.
