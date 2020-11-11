@@ -1,6 +1,6 @@
 {
   "name": "resolve-core",
-  "version": "0.25.17",
+  "version": "0.25.18",
   "description": "reSolve core.",
   "engines": {
     "node": ">=10.9"

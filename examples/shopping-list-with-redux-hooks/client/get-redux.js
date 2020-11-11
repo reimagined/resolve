@@ -2,7 +2,7 @@ import optimisticShoppingLists from './reducers/optimistic-shopping-lists'
 import devToolsEnhancer from './enhancers/redux-devtools'
 
 const getRedux = () => ({
-  reducers: { optimisticShoppingLists },
+  reducers: { optimisticShoppingLists, jwt: (jwt = {}) => jwt },
   enhancers: [devToolsEnhancer],
 })
 

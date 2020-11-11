@@ -1,12 +1,12 @@
 {
   "name": "@shopping-list-tutorial/lesson-7",
-  "version": "0.25.17",
+  "version": "0.25.18",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
     "dev": "babel-node ./run.js dev",
     "start": "babel-node ./run.js start",
-    "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
+    "test": "jest --testMatch=**/test/unit/*.test.js --verbose --passWithNoTests",
     "test:e2e": "babel-node ./run.js test:e2e",
     "import-event-store": "babel-node ./run.js import-event-store",
     "export-event-store": "babel-node ./run.js export-event-store"
@@ -24,9 +24,9 @@
     "react-router-dom": "5.1.2",
     "redux": "4.0.5",
     "redux-saga": "1.0.5",
-    "resolve-redux": "0.25.17",
-    "resolve-scripts": "0.25.17",
-    "uuid": "3.3.2"
+    "resolve-redux": "0.25.18",
+    "resolve-scripts": "0.25.18",
+    "uuid": "8.3.1"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",
@@ -44,7 +44,7 @@
     "jest": "26.0.1",
     "react-test-renderer": "16.13.1",
     "resolve-cloud": "*",
-    "resolve-module-admin": "0.25.17",
+    "resolve-module-admin": "0.25.18",
     "testcafe": "1.8.5"
   }
 }

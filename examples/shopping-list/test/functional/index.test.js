@@ -103,18 +103,19 @@ test('toggle items in first shopping list', async (t) => {
 
   await waitSelector(t, 'ShoppingLists', Selector('label').withText('Item 1'))
 
-  await t.click(Selector('label').withText('Item 1'))
-  await t.click(Selector('label').withText('Item 2'))
-  await t.click(Selector('label').withText('Item 3'))
+  await t.click(Selector('label').withText('Item 1').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 1').sibling(-1).checked)
+    .eql(true)
 
+  await t.click(Selector('label').withText('Item 2').sibling(-1))
   await t
-    .expect(Selector('label > input[type=checkbox]').nth(0).checked)
+    .expect(Selector('label').withText('Item 2').sibling(-1).checked)
     .eql(true)
+
+  await t.click(Selector('label').withText('Item 3').sibling(-1))
   await t
-    .expect(Selector('label > input[type=checkbox]').nth(1).checked)
-    .eql(true)
-  await t
-    .expect(Selector('label > input[type=checkbox]').nth(2).checked)
+    .expect(Selector('label').withText('Item 3').sibling(-1).checked)
     .eql(true)
 })
 
@@ -154,18 +155,19 @@ test('toggle items in second shopping list', async (t) => {
 
   await waitSelector(t, 'ShoppingLists', Selector('label').withText('Item 1'))
 
-  await t.click(Selector('label').withText('Item 1'))
-  await t.click(Selector('label').withText('Item 2'))
-  await t.click(Selector('label').withText('Item 3'))
+  await t.click(Selector('label').withText('Item 1').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 1').sibling(-1).checked)
+    .eql(true)
 
+  await t.click(Selector('label').withText('Item 2').sibling(-1))
   await t
-    .expect(Selector('label > input[type=checkbox]').nth(0).checked)
+    .expect(Selector('label').withText('Item 2').sibling(-1).checked)
     .eql(true)
+
+  await t.click(Selector('label').withText('Item 3').sibling(-1))
   await t
-    .expect(Selector('label > input[type=checkbox]').nth(1).checked)
-    .eql(true)
-  await t
-    .expect(Selector('label > input[type=checkbox]').nth(2).checked)
+    .expect(Selector('label').withText('Item 3').sibling(-1).checked)
     .eql(true)
 })
 
@@ -182,8 +184,8 @@ test('remove items in second shopping list', async (t) => {
 })
 
 test('remove shopping lists', async (t) => {
-  await t.click(Selector('.btn.btn-default'))
-  await t.click(Selector('.btn.btn-default'))
+  await t.click(Selector('.btn.btn-danger'))
+  await t.click(Selector('.btn.btn-danger'))
 
   await refreshAndWait(t, () => Selector('td > a').count, 0)
 })

@@ -1,6 +1,10 @@
 import createEventTypes from '../src/scheduler-event-types'
 import createSagaExecutor from '../src/index'
 
+jest.mock('uuid', () => ({
+  v4: jest.fn(() => 'guid'),
+}))
+
 let originalDateNow
 beforeAll(() => {
   originalDateNow = Date.now.bind(Date)

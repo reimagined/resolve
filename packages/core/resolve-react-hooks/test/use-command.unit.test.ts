@@ -15,6 +15,7 @@ const mockedClient = {
   command: jest.fn(() => Promise.resolve({ result: 'command-result' })),
   query: jest.fn(),
   getStaticAssetUrl: jest.fn(),
+  getOriginPath: jest.fn(),
   subscribe: jest.fn(),
   unsubscribe: jest.fn(),
 }

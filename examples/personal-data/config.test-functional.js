@@ -33,6 +33,7 @@ const testFunctionalConfig = {
     module: 'resolve-eventstore-lite',
     options: {
       databaseFile: 'data/event-store-test-functional.db',
+      secretsFile: 'data/secrets-test-functional.db',
     },
   },
   uploadAdapter: {

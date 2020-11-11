@@ -713,3 +713,35 @@ describe('getStaticAssetUrl', () => {
     expect(() => client.getStaticAssetUrl('account/static.jpg')).toThrow()
   })
 })
+
+describe('getOriginPath', () => {
+  /* eslint-disable no-console */
+  const consoleError = console.error
+  beforeAll(() => {
+    console.error = jest.fn()
+  })
+  afterAll(() => {
+    console.error = consoleError.bind(console)
+  })
+  /* eslint-enable no-console */
+
+  test('path is absolute url', () => {
+    expect(
+      client.getOriginPath('https://static.host.com/api/commands')
+    ).toEqual('https://static.host.com/api/commands')
+  })
+
+  test('root based url', () => {
+    expect(client.getOriginPath('/api/commands')).toEqual(
+      'mock-origin/root-path/api/commands'
+    )
+  })
+
+  test('path should have leading slash', () => {
+    expect(() => client.getOriginPath('api/commands')).toThrow()
+  })
+
+  test('empty path', () => {
+    expect(() => client.getOriginPath('')).toThrow()
+  })
+})

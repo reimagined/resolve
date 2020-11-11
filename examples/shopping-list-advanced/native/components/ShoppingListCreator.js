@@ -1,7 +1,7 @@
 import React from 'react'
 import { Platform, KeyboardAvoidingView, StyleSheet, View } from 'react-native'
 import { Footer, Input, Label } from 'native-base'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 
 const styles = StyleSheet.create({
   footer: {

@@ -1,5 +1,5 @@
 import { COMMENT_CREATED } from 'resolve-module-comments/lib/common/defaults'
-import uuid from 'uuid'
+import { v4 as uuid } from 'uuid'
 import { EOL } from 'os'
 
 import {
@@ -28,7 +28,7 @@ const saveOneEvent = async (event) =>
   })
 
 const generateUserEvents = async (name) => {
-  const aggregateId = uuid.v4()
+  const aggregateId = uuid()
 
   await saveOneEvent({
     type: USER_CREATED,
@@ -55,7 +55,7 @@ const getUserId = async (userName) => {
 const generateCommentEvents = async (comment, aggregateId, parentId) => {
   const userName = comment.by
   const userId = await getUserId(userName)
-  const commentId = uuid.v4()
+  const commentId = uuid()
 
   await saveOneEvent({
     type: COMMENT_CREATED,
@@ -129,7 +129,7 @@ const generateStoryEvents = async (story) => {
   }
 
   const userName = story.by || 'anonymous'
-  const aggregateId = uuid.v4()
+  const aggregateId = uuid()
 
   await saveOneEvent({
     type: STORY_CREATED,
