@@ -658,7 +658,7 @@ import { renderRoutes } from 'react-router-config'
 
 import routes from './routes'
 
-// The 'conext' object contains data required by the 'resolve-react-hooks'
+// The 'conext' object contains data required by the 'resolve-react-hooks'.
 // library to communicate with the reSolve backend.
 const entryPoint = context => {
   const appContainer = document.createElement('div')
