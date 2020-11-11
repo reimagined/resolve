@@ -756,7 +756,7 @@ export default appConfig
 
 ### Display View Model Data on the Client
 
-Add the following react components to your client application to display shopping list items:
+Add the following React components to your client application to display shopping list items:
 
 ##### client/components/ShoppingListItem.js:
 
