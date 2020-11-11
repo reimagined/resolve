@@ -5,7 +5,11 @@ const markupHandler = async (resolveContext, req, res) => {
     seedClientEnvs,
     constants: { rootPath, staticPath },
   } = resolveContext
-  const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index-redux-hooks.js')
+  const bundleUrl = getStaticBasedPath(
+    rootPath,
+    staticPath,
+    'index-redux-hooks.js'
+  )
   await res.setHeader('Content-Type', 'text/html')
   await res.end(`
     <!doctype html>
