@@ -17,6 +17,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         "IsPaused" TINYINT NOT NULL,
         "EventTypes" JSON NOT NULL,
         "AggregateIds" JSON NOT NULL,
+        "XaKey" VARCHAR(190) NULL,
         "Cursor" JSON NULL,
         "SuccessEvent" JSON NULL,
         "FailedEvent" JSON NULL,
@@ -36,7 +37,8 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         `BEGIN IMMEDIATE;
 
          INSERT OR REPLACE INTO ${ledgerTableNameAsId}(
-          "EventSubscriber", "EventTypes", "AggregateIds", "IsPaused", "Properties"
+          "EventSubscriber", "EventTypes", "AggregateIds", "IsPaused", "Properties",
+          "XaKey", "Cursor", "SuccessEvent", "FailedEvent", "Errors"
          ) VALUES (
            ${escape(readModelName)},
            ${
@@ -58,7 +60,17 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
             (SELECT "Properties" FROM ${ledgerTableNameAsId}
             WHERE "EventSubscriber" = ${escape(readModelName)}),
             JSON('{}')
-          )
+          ),
+          (SELECT "XaKey" FROM ${ledgerTableNameAsId}
+          WHERE "EventSubscriber" = ${escape(readModelName)}),
+          (SELECT "Cursor" FROM ${ledgerTableNameAsId}
+          WHERE "EventSubscriber" = ${escape(readModelName)}),
+          (SELECT "SuccessEvent" FROM ${ledgerTableNameAsId}
+          WHERE "EventSubscriber" = ${escape(readModelName)}),
+          (SELECT "FailedEvent" FROM ${ledgerTableNameAsId}
+          WHERE "EventSubscriber" = ${escape(readModelName)}),
+          (SELECT "Errors" FROM ${ledgerTableNameAsId}
+          WHERE "EventSubscriber" = ${escape(readModelName)})
          );
 
          COMMIT;

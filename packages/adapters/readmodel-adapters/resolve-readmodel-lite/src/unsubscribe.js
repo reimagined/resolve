@@ -18,6 +18,7 @@ const unsubscribe = async (pool, readModelName) => {
         "IsPaused" TINYINT NOT NULL,
         "EventTypes" JSON NOT NULL,
         "AggregateIds" JSON NOT NULL,
+        "XaKey" VARCHAR(190) NULL,
         "Cursor" JSON NULL,
         "SuccessEvent" JSON NULL,
         "FailedEvent" JSON NULL,
