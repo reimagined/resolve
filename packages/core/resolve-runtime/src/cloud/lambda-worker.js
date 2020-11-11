@@ -10,6 +10,10 @@ import disposeResolve from '../common/dispose-resolve'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
+const GRACEFUL_WORKER_SHUTDOWN_TIME = 30 * 1000
+const getVacantTimeInMillis = (lambdaContext) =>
+  lambdaContext.getRemainingTimeInMillis() - GRACEFUL_WORKER_SHUTDOWN_TIME
+
 let coldStart = true
 
 const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
@@ -56,9 +60,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   }
 
   const resolve = Object.create(resolveBase)
-  resolve.getRemainingTimeInMillis = lambdaContext.getRemainingTimeInMillis.bind(
-    lambdaContext
-  )
+  resolve.getVacantTimeInMillis = getVacantTimeInMillis.bind(lambdaContext)
 
   const lambdaRemainingTimeStart = lambdaContext.getRemainingTimeInMillis()
 

@@ -13,7 +13,8 @@ const commonRunQuery = async (
   pool,
   isInlineLedger,
   sqlQuery,
-  multiLine = false
+  multiLine = false,
+  passthroughRuntimeErrors = false
 ) => {
   const executor = !multiLine
     ? pool.connection.all.bind(pool.connection)
@@ -26,7 +27,10 @@ const commonRunQuery = async (
       result = await executor(sqlQuery)
       break
     } catch (error) {
-      const isPassthroughError = pool.PassthroughError.isPassthroughError(error)
+      const isPassthroughError = pool.PassthroughError.isPassthroughError(
+        error,
+        !!passthroughRuntimeErrors
+      )
       const isSqliteBusy = error != null && error.code === SQLITE_BUSY
       if (!isInlineLedger && isSqliteBusy) {
         await new Promise((resolve) => setTimeout(resolve, fullJitter(retry)))

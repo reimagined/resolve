@@ -1,5 +1,11 @@
 const status = async (pool, readModelName) => {
-  const { PassthroughError, inlineLedgerRunQuery, tablePrefix, escapeId, escape } = pool
+  const {
+    PassthroughError,
+    inlineLedgerRunQuery,
+    tablePrefix,
+    escapeId,
+    escape,
+  } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
 

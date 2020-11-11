@@ -23,6 +23,8 @@ import updateToSetExpression from './update-to-set-expression'
 import update from './update'
 
 import PassthroughError from './passthrough-error'
+import generateGuid from './generate-guid'
+
 import subscribe from './subscribe'
 import resubscribe from './resubscribe'
 import unsubscribe from './unsubscribe'
@@ -53,6 +55,7 @@ const internalMethods = {
   searchToWhereExpression,
   updateToSetExpression,
   PassthroughError,
+  generateGuid,
 }
 
 const externalMethods = {

@@ -8,7 +8,7 @@ const serializeError = (error) =>
       }
     : null
 
-const RESERVED_TIME = 30 * 1000
+const MAX_SEIZE_TIME = 3 * 1000 // 3 seconds
 
 const buildInit = async (pool, readModelName, store, projection, next) => {
   const {
@@ -17,17 +17,33 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
     eventstoreAdapter,
     escape,
     ledgerTableNameAsId,
+    xaKey,
   } = pool
-
-  await inlineLedgerRunQuery(
-    `BEGIN IMMEDIATE;
-     SAVEPOINT ROOT;
-    `,
-    true
-  )
 
   const nextCursor = await eventstoreAdapter.getNextCursor(null, [])
   try {
+    await inlineLedgerRunQuery(
+      `BEGIN IMMEDIATE;
+       SAVEPOINT ROOT;
+
+       SELECT ABS("CTE"."XaKeyIsSeized") FROM (
+        SELECT 0 AS "XaKeyIsSeized"
+       UNION ALL
+        SELECT -9223372036854775808 AS "XaKeyIsSeized"
+        FROM "sqlite_master"
+        WHERE (
+          SELECT Count(*) FROM ${ledgerTableNameAsId}
+          WHERE "EventSubscriber" = ${escape(readModelName)}
+          AND "XaKey" = ${escape(xaKey)}
+          AND "IsPaused" = 0
+          AND "Errors" IS NULL
+        ) = 0
+      ) CTE;
+      `,
+      true,
+      true
+    )
+
     if (typeof projection.Init === 'function') {
       await projection.Init(store)
     }
@@ -70,19 +86,19 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
 const buildEvents = async (pool, readModelName, store, projection, next) => {
   const {
     PassthroughError,
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     inlineLedgerRunQuery,
     eventstoreAdapter,
     escape,
     ledgerTableNameAsId,
     eventTypes,
-    cursor: inputCursor,
+    cursor,
+    xaKey,
   } = pool
 
   let lastSuccessEvent = null
   let lastFailedEvent = null
   let lastError = null
-  let cursor = inputCursor
 
   const events = await eventstoreAdapter
     .loadEvents({
@@ -93,135 +109,148 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
     })
     .then((result) => (result != null ? result.events : null))
 
+  if (events.length === 0) {
+    throw new PassthroughError()
+  }
+  const seizeTimestamp = Date.now()
+
   await inlineLedgerRunQuery(
     `BEGIN IMMEDIATE;
      SAVEPOINT ROOT;
+
+     SELECT ABS("CTE"."XaKeyIsSeized") FROM (
+      SELECT 0 AS "XaKeyIsSeized"
+     UNION ALL
+      SELECT -9223372036854775808 AS "XaKeyIsSeized"
+      FROM "sqlite_master"
+      WHERE (
+        SELECT Count(*) FROM ${ledgerTableNameAsId}
+        WHERE "EventSubscriber" = ${escape(readModelName)}
+        AND "XaKey" = ${escape(xaKey)}
+        AND "IsPaused" = 0
+        AND "Errors" IS NULL
+      ) = 0
+    ) CTE;
     `,
+    true,
     true
   )
 
-  while (true) {
-    if (events.length === 0) {
-      throw new PassthroughError()
-    }
-    let nextCursor = eventstoreAdapter.getNextCursor(cursor, events)
-    let appliedEventsCount = 0
-    try {
-      for (const event of events) {
-        try {
-          if (typeof projection[event.type] === 'function') {
-            await inlineLedgerRunQuery(`SAVEPOINT E${appliedEventsCount}`, true)
-            await projection[event.type](store, event)
-            await inlineLedgerRunQuery(
-              `RELEASE SAVEPOINT E${appliedEventsCount}`,
-              true
-            )
-            lastSuccessEvent = event
-          }
-          appliedEventsCount++
+  let nextCursor = eventstoreAdapter.getNextCursor(cursor, events)
+  let appliedEventsCount = 0
+  try {
+    for (const event of events) {
+      try {
+        if (typeof projection[event.type] === 'function') {
+          await inlineLedgerRunQuery(`SAVEPOINT E${appliedEventsCount}`, true)
+          await projection[event.type](store, event)
+          await inlineLedgerRunQuery(
+            `RELEASE SAVEPOINT E${appliedEventsCount}`,
+            true
+          )
+          lastSuccessEvent = event
+        }
+        appliedEventsCount++
 
-          if (getRemainingTimeInMillis() < RESERVED_TIME) {
-            nextCursor = eventstoreAdapter.getNextCursor(
-              cursor,
-              events.slice(0, appliedEventsCount)
-            )
-            break
-          }
-        } catch (error) {
-          if (error instanceof PassthroughError) {
-            throw error
-          }
-
+        if (
+          Date.now() - seizeTimestamp > MAX_SEIZE_TIME ||
+          getVacantTimeInMillis() < 0
+        ) {
           nextCursor = eventstoreAdapter.getNextCursor(
             cursor,
             events.slice(0, appliedEventsCount)
           )
-
-          await inlineLedgerRunQuery(
-            `ROLLBACK TO SAVEPOINT E${appliedEventsCount};
-             RELEASE SAVEPOINT E${appliedEventsCount}
-          `,
-            true
-          )
-
-          lastFailedEvent = event
-          lastError = error
           break
         }
-      }
-    } catch (originalError) {
-      if (originalError instanceof PassthroughError) {
-        throw originalError
-      }
+      } catch (error) {
+        if (error instanceof PassthroughError) {
+          throw error
+        }
 
-      nextCursor = cursor
-      appliedEventsCount = 0
-      const composedError = new Error(
-        `Fatal inline ledger building error: ${originalError.message}`
-      )
-      composedError.stack = `${composedError.stack}${originalError.stack}`
-      lastError = composedError
-      lastSuccessEvent = null
-      lastFailedEvent = null
-      await inlineLedgerRunQuery(
-        `ROLLBACK TO SAVEPOINT ROOT;
-         RELEASE SAVEPOINT ROOT
+        nextCursor = eventstoreAdapter.getNextCursor(
+          cursor,
+          events.slice(0, appliedEventsCount)
+        )
+
+        await inlineLedgerRunQuery(
+          `ROLLBACK TO SAVEPOINT E${appliedEventsCount};
+            RELEASE SAVEPOINT E${appliedEventsCount}
+        `,
+          true
+        )
+
+        lastFailedEvent = event
+        lastError = error
+        break
+      }
+    }
+  } catch (originalError) {
+    if (originalError instanceof PassthroughError) {
+      throw originalError
+    }
+
+    nextCursor = cursor
+    appliedEventsCount = 0
+    const composedError = new Error(
+      `Fatal inline ledger building error: ${originalError.message}`
+    )
+    composedError.stack = `${composedError.stack}${originalError.stack}`
+    lastError = composedError
+    lastSuccessEvent = null
+    lastFailedEvent = null
+    await inlineLedgerRunQuery(
+      `ROLLBACK TO SAVEPOINT ROOT;
+        RELEASE SAVEPOINT ROOT
+    `,
+      true
+    )
+  }
+
+  if (lastError == null) {
+    await inlineLedgerRunQuery(
+      `UPDATE ${ledgerTableNameAsId} SET 
+        ${
+          lastSuccessEvent != null
+            ? `"SuccessEvent" = ${escape(JSON.stringify(lastSuccessEvent))},`
+            : ''
+        } 
+        "Cursor" = ${escape(JSON.stringify(nextCursor))}
+        WHERE "EventSubscriber" = ${escape(readModelName)};
+
+        COMMIT;
       `,
-        true
-      )
-    }
+      true
+    )
+  } else {
+    await inlineLedgerRunQuery(
+      `UPDATE ${ledgerTableNameAsId}
+        SET "Errors" = JSON_insert(
+          COALESCE("Errors", JSON('[]')),
+          '$[' || JSON_ARRAY_LENGTH(COALESCE("Errors", JSON('[]'))) || ']',
+          JSON(${escape(JSON.stringify(serializeError(lastError)))})
+        ),
+        ${
+          lastFailedEvent != null
+            ? `"FailedEvent" = ${escape(JSON.stringify(lastFailedEvent))},`
+            : ''
+        }
+        ${
+          lastSuccessEvent != null
+            ? `"SuccessEvent" = ${escape(JSON.stringify(lastSuccessEvent))},`
+            : ''
+        }
+        "Cursor" = ${escape(JSON.stringify(nextCursor))}
+        WHERE "EventSubscriber" = ${escape(readModelName)};
 
-    if (lastError == null) {
-      await inlineLedgerRunQuery(
-        `UPDATE ${ledgerTableNameAsId} SET 
-         ${
-           lastSuccessEvent != null
-             ? `"SuccessEvent" = ${escape(JSON.stringify(lastSuccessEvent))},`
-             : ''
-         } 
-         "Cursor" = ${escape(JSON.stringify(nextCursor))}
-         WHERE "EventSubscriber" = ${escape(readModelName)};
+        COMMIT;
+      `,
+      true
+    )
+  }
 
-         COMMIT;
-        `,
-        true
-      )
-    } else {
-      await inlineLedgerRunQuery(
-        `UPDATE ${ledgerTableNameAsId}
-         SET "Errors" = JSON_insert(
-           COALESCE("Errors", JSON('[]')),
-           '$[' || JSON_ARRAY_LENGTH(COALESCE("Errors", JSON('[]'))) || ']',
-           JSON(${escape(JSON.stringify(serializeError(lastError)))})
-         ),
-         ${
-           lastFailedEvent != null
-             ? `"FailedEvent" = ${escape(JSON.stringify(lastFailedEvent))},`
-             : ''
-         }
-         ${
-           lastSuccessEvent != null
-             ? `"SuccessEvent" = ${escape(JSON.stringify(lastSuccessEvent))},`
-             : ''
-         }
-         "Cursor" = ${escape(JSON.stringify(nextCursor))}
-         WHERE "EventSubscriber" = ${escape(readModelName)};
-
-         COMMIT;
-        `,
-        true
-      )
-    }
-
-    const isBuildSuccess = lastError == null && appliedEventsCount > 0
-    cursor = nextCursor
-
-    if (isBuildSuccess) {
-      await new Promise((resolve) => setTimeout(resolve, 200))
-      await next()
-    }
-
-    throw new PassthroughError()
+  const isBuildSuccess = lastError == null && appliedEventsCount > 0
+  if (isBuildSuccess) {
+    await next()
   }
 }
 
@@ -231,11 +260,12 @@ const build = async (
   store,
   projection,
   next,
-  getRemainingTimeInMillis
+  getVacantTimeInMillis
 ) => {
   const {
     PassthroughError,
     inlineLedgerRunQuery,
+    generateGuid,
     tablePrefix,
     escapeId,
     escape,
@@ -244,6 +274,18 @@ const build = async (
 
   try {
     const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
+    const xaKey = generateGuid(`${Date.now()}${Math.random()}${process.pid}`)
+
+    await inlineLedgerRunQuery(
+      `BEGIN IMMEDIATE;
+       UPDATE ${ledgerTableNameAsId}
+       SET "XaKey" = ${escape(xaKey)}
+       WHERE "EventSubscriber" = ${escape(readModelName)}
+       AND "IsPaused" = FALSE
+       AND "Errors" IS NULL;
+      `,
+      true
+    )
 
     const rows = await inlineLedgerRunQuery(
       `SELECT * FROM ${ledgerTableNameAsId}
@@ -252,6 +294,8 @@ const build = async (
       AND "Errors" IS NULL
       `
     )
+
+    await inlineLedgerRunQuery(`COMMIT; `, true)
 
     const readModelLedger =
       rows.length === 1
@@ -297,11 +341,12 @@ const build = async (
     }
 
     Object.assign(pool, {
-      getRemainingTimeInMillis,
+      getVacantTimeInMillis,
       ledgerTableNameAsId,
       readModelLedger,
       eventTypes,
       cursor,
+      xaKey,
     })
 
     const buildMethod = cursor == null ? buildInit : buildEvents

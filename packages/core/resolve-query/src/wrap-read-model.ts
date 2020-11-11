@@ -6,8 +6,6 @@ import { WrapReadModelOptions, SerializedError, ReadModelPool } from './types'
 import parseReadOptions from './parse-read-options'
 import { SecretsManager } from 'resolve-core'
 
-const RESERVED_TIME = 30 * 1000
-
 const wrapConnection = async (
   pool: ReadModelPool,
   callback: Function
@@ -159,7 +157,7 @@ const sendEvents = async (
     batchId: any
   }
 ): Promise<any> => {
-  const { performAcknowledge, getRemainingTimeInMillis } = pool
+  const { performAcknowledge, getVacantTimeInMillis } = pool
   const readModelName = pool.readModel.name
   let result = null
 
@@ -281,7 +279,7 @@ const sendEvents = async (
 
           await onBeforeBatch(connection, readModelName, xaTransactionId)
           for (const event of events) {
-            const remainingTime = getRemainingTimeInMillis() - RESERVED_TIME
+            const remainingTime = getVacantTimeInMillis()
             const {
               onBeforeEvent,
               onSuccessEvent,
@@ -559,7 +557,7 @@ const build = doOperation.bind(
     connection,
     pool.readModel.projection,
     next.bind(null, pool, readModelName),
-    pool.getRemainingTimeInMillis,
+    pool.getVacantTimeInMillis,
   ]
 )
 
@@ -728,7 +726,7 @@ const wrapReadModel = ({
   eventstoreAdapter,
   invokeEventBusAsync,
   performanceTracer,
-  getRemainingTimeInMillis,
+  getVacantTimeInMillis,
   performAcknowledge,
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
@@ -751,7 +749,7 @@ const wrapReadModel = ({
     isDisposed: false,
     performanceTracer,
     getSecretsManager,
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     performAcknowledge,
   }
 

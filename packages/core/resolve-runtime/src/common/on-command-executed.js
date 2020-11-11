@@ -17,7 +17,7 @@ const connectorCapabilities = {
 }
 
 const notifyInlineLedgers = async (resolve) => {
-  const maxDuration = Math.max(resolve.getRemainingTimeInMillis() - 15000, 0)
+  const maxDuration = Math.max(resolve.getVacantTimeInMillis() - 15000, 0)
 
   let timerId = null
 

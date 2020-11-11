@@ -36,9 +36,9 @@ const initResolve = async (resolve) => {
     })
   }
 
-  if (!resolve.hasOwnProperty('getRemainingTimeInMillis')) {
+  if (!resolve.hasOwnProperty('getVacantTimeInMillis')) {
     const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
-    resolve.getRemainingTimeInMillis = () => endTime - Date.now()
+    resolve.getVacantTimeInMillis = () => endTime - Date.now()
   }
 
   Object.defineProperties(resolve, {
@@ -46,7 +46,7 @@ const initResolve = async (resolve) => {
     eventstoreAdapter: { value: eventstoreAdapter },
   })
 
-  const getRemainingTimeInMillis = resolve.getRemainingTimeInMillis
+  const getVacantTimeInMillis = resolve.getVacantTimeInMillis
   const onCommandExecuted = createOnCommandExecuted(resolve)
 
   const performAcknowledge = resolve.publisher.acknowledge.bind(
@@ -67,7 +67,7 @@ const initResolve = async (resolve) => {
     readModels,
     viewModels,
     performanceTracer,
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     performAcknowledge,
   })
 
@@ -81,7 +81,7 @@ const initResolve = async (resolve) => {
     schedulers,
     sagas,
     performanceTracer,
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     performAcknowledge,
     uploader,
   })

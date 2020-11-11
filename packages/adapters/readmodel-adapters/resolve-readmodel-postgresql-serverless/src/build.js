@@ -8,8 +8,6 @@ const serializeError = (error) =>
       }
     : null
 
-const RESERVED_TIME = 30 * 1000
-
 const buildInit = async (pool, readModelName, store, projection, next) => {
   const {
     PassthroughError,
@@ -127,7 +125,7 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
 const buildEvents = async (pool, readModelName, store, projection, next) => {
   const {
     PassthroughError,
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
     rdsDataService,
@@ -260,7 +258,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
           }
           appliedEventsCount++
 
-          if (getRemainingTimeInMillis() < RESERVED_TIME) {
+          if (getVacantTimeInMillis() < 0) {
             nextCursor = eventstoreAdapter.getNextCursor(
               cursor,
               events.slice(0, appliedEventsCount)
@@ -363,7 +361,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
     const isBuildSuccess = lastError == null && appliedEventsCount > 0
     cursor = nextCursor
 
-    if (getRemainingTimeInMillis() < RESERVED_TIME) {
+    if (getVacantTimeInMillis() < 0) {
       localContinue = false
     }
 
@@ -432,7 +430,7 @@ const build = async (
   store,
   projection,
   next,
-  getRemainingTimeInMillis
+  getVacantTimeInMillis
 ) => {
   const {
     PassthroughError,
@@ -495,7 +493,7 @@ const build = async (
     }
 
     Object.assign(pool, {
-      getRemainingTimeInMillis,
+      getVacantTimeInMillis,
       databaseNameAsId,
       ledgerTableNameAsId,
       trxTableNameAsId,

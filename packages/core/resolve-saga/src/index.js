@@ -17,7 +17,7 @@ const createSaga = ({
   performanceTracer,
   uploader,
   eventstoreAdapter,
-  getRemainingTimeInMillis,
+  getVacantTimeInMillis,
   performAcknowledge,
 }) => {
   const schedulerAggregatesNames = new Set(schedulers.map(({ name }) => name))
@@ -87,7 +87,7 @@ const createSaga = ({
     readModels: [...regularSagas, ...schedulerSagas],
     viewModels: [],
     performanceTracer,
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     performAcknowledge,
     eventstoreAdapter,
   })

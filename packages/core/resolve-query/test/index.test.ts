@@ -35,7 +35,7 @@ type ResolverQuery = {
 let performanceTracer: any | null = null
 
 let invokeEventBusAsync: any = null
-let getRemainingTimeInMillis: any = null
+let getVacantTimeInMillis: any = null
 let performAcknowledge: any = null
 
 for (const { describeName, prepare } of [
@@ -90,7 +90,7 @@ for (const { describeName, prepare } of [
       snapshots = new Map()
 
       invokeEventBusAsync = jest.fn()
-      getRemainingTimeInMillis = jest.fn()
+      getVacantTimeInMillis = jest.fn()
       performAcknowledge = jest.fn()
       const secretsMap = new Map()
       secretsManager = {
@@ -135,7 +135,7 @@ for (const { describeName, prepare } of [
       readModels = null
       readModelConnectors = null
       invokeEventBusAsync = null
-      getRemainingTimeInMillis = null
+      getVacantTimeInMillis = null
       performAcknowledge = null
     })
 
@@ -246,7 +246,7 @@ for (const { describeName, prepare } of [
             viewModels,
             performanceTracer,
             eventstoreAdapter,
-            getRemainingTimeInMillis,
+            getVacantTimeInMillis,
             performAcknowledge,
           })
         })
@@ -938,7 +938,7 @@ for (const { describeName, prepare } of [
             viewModels,
             performanceTracer,
             eventstoreAdapter,
-            getRemainingTimeInMillis,
+            getVacantTimeInMillis,
             performAcknowledge,
           })
         })
@@ -1572,7 +1572,7 @@ for (const { describeName, prepare } of [
           viewModels,
           performanceTracer,
           eventstoreAdapter,
-          getRemainingTimeInMillis,
+          getVacantTimeInMillis,
           performAcknowledge,
         })
       })
@@ -2203,7 +2203,7 @@ for (const { describeName, prepare } of [
               eventstoreAdapter,
               performanceTracer,
               invokeEventBusAsync,
-              getRemainingTimeInMillis,
+              getVacantTimeInMillis,
               performAcknowledge,
             }))
         ).toThrow(Error)
@@ -2241,7 +2241,7 @@ for (const { describeName, prepare } of [
               eventstoreAdapter,
               performanceTracer,
               invokeEventBusAsync,
-              getRemainingTimeInMillis,
+              getVacantTimeInMillis,
               performAcknowledge,
             }))
         ).toThrow('Duplicate name for read model: "readModelName"')
@@ -2284,7 +2284,7 @@ for (const { describeName, prepare } of [
               eventstoreAdapter,
               performanceTracer,
               invokeEventBusAsync,
-              getRemainingTimeInMillis,
+              getVacantTimeInMillis,
               performAcknowledge,
             }))
         ).toThrow('Duplicate name for view model: "viewModelName"')
@@ -2320,7 +2320,7 @@ for (const { describeName, prepare } of [
           eventstoreAdapter,
           performanceTracer,
           invokeEventBusAsync,
-          getRemainingTimeInMillis,
+          getVacantTimeInMillis,
           performAcknowledge,
         })
 
