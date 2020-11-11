@@ -106,6 +106,7 @@ const finalizeAndReportBatch = async (pool, payload) => {
       type: PrivateOperationType.RESUME_SUBSCRIBER,
       payload: {
         eventSubscriber,
+        conditionalResume: true,
       },
     }
     await invokeOperation(pool, LazinessStrategy.EAGER, input)

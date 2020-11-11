@@ -1,6 +1,10 @@
 import createEventTypes from '../src/scheduler-event-types'
 import createSagaExecutor from '../src/index'
 
+jest.mock('uuid', () => ({
+  v4: jest.fn(() => 'guid'),
+}))
+
 let originalDateNow
 beforeAll(() => {
   originalDateNow = Date.now.bind(Date)
@@ -122,8 +126,14 @@ test('resolve-saga', async () => {
 
   await sagaExecutor.sendEvents({
     modelName: 'test-saga',
+    events: [{ type: 'Init' }],
+    getRemainingTimeInMillis: () => remainingTime,
+    properties,
+  })
+
+  await sagaExecutor.sendEvents({
+    modelName: 'test-saga',
     events: [
-      { type: 'Init' },
       {
         type: 'EVENT_TYPE',
         aggregateId: 'aggregateId',
@@ -142,8 +152,14 @@ test('resolve-saga', async () => {
 
   await sagaExecutor.sendEvents({
     modelName: 'default-scheduler',
+    events: [{ type: 'Init' }],
+    getRemainingTimeInMillis: () => remainingTime,
+    properties,
+  })
+
+  await sagaExecutor.sendEvents({
+    modelName: 'default-scheduler',
     events: [
-      { type: 'Init' },
       {
         type: schedulerEvents.SCHEDULED_COMMAND_CREATED,
         aggregateId: 'guid',

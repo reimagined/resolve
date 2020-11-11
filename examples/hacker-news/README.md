@@ -2,7 +2,7 @@
 
 ![hn](https://user-images.githubusercontent.com/19663260/41345723-23bce79a-6f0d-11e8-891a-ceb39c86db62.png)
 
-This example demonstrates [HackerNews](https://news.ycombinator.com/) application clone with CQRS and EventSourcing. To install:
+This example is a clone of the [Hacker News](https://news.ycombinator.com/) application implemented with CQRS and EventSourcing. To install:
 
 ```bash
 npx create-resolve-app hacker-news-example -e hacker-news
@@ -15,7 +15,7 @@ npm run dev
 ```
 
 Starts the app in development mode.
-Provides hot reloading, source mapping and other development capabilities.
+This mode supports hot reloading, source mapping and other development capabilities.
 
 ```bash
 npm run build
@@ -24,7 +24,7 @@ npm start
 
 Starts the application in production mode.
 
-After you run the application you can view it at [http://localhost:3000/](http://localhost:3000/).
+After you run the application, you can view it at [http://localhost:3000/](http://localhost:3000/).
 
 ## Data Import
 
@@ -32,7 +32,7 @@ After you run the application you can view it at [http://localhost:3000/](http:/
 npm run import
 ```
 
-Imports data (up to 500 stories with comments) from [HackerNews](https://news.ycombinator.com/).
+Imports data (up to 500 stories with comments) from [Hacker News](https://news.ycombinator.com/).
 Press `Control-C` to stop importing or wait until it is finished.
 
 ## What's next?

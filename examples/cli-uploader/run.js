@@ -15,7 +15,7 @@ import appConfig from './config.app'
 import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
-import testFunctionalConfig from './config.test_functional'
+import testFunctionalConfig from './config.test-functional'
 import resolveModuleUploader from 'resolve-module-uploader'
 import jwtSecret from './common/jwt_secret'
 import resolveModuleAuth from 'resolve-module-auth'
@@ -58,14 +58,6 @@ void (async () => {
     switch (launchMode) {
       case 'dev': {
         const resolveConfig = merge(baseConfig, devConfig)
-
-        await reset(resolveConfig, {
-          dropEventStore: false,
-          dropEventBus: true,
-          dropReadModels: true,
-          dropSagas: true,
-        })
-
         await watch(resolveConfig)
         break
       }

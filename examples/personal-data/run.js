@@ -60,15 +60,18 @@ void (async () => {
   switch (launchMode) {
     case 'dev': {
       const resolveConfig = merge(baseConfig, devConfig)
+      await watch(resolveConfig)
+      break
+    }
 
+    case 'reset': {
+      const resolveConfig = merge(baseConfig, devConfig)
       await reset(resolveConfig, {
         dropEventStore: false,
         dropEventBus: true,
         dropReadModels: true,
         dropSagas: true,
       })
-
-      await watch(resolveConfig)
       break
     }
 

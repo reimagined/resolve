@@ -1,17 +1,6 @@
-import getRootBasedUrl from './get-root-based-url'
+import { useOriginResolver } from 'resolve-react-hooks'
 import createContextBasedConnector from './create-context-based-connector'
 
-const connectRootBasedUrls = createContextBasedConnector(
-  (
-    {
-      origin,
-      rootPath,
-    }: {
-      origin: string
-      rootPath: string
-    },
-    path: string
-  ) => getRootBasedUrl(origin, rootPath, path)
-)
+const connectRootBasedUrls = createContextBasedConnector(useOriginResolver)
 
-export default connectRootBasedUrls
+export { connectRootBasedUrls }

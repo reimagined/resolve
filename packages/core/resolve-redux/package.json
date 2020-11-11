@@ -1,6 +1,6 @@
 {
   "name": "resolve-redux",
-  "version": "0.25.13",
+  "version": "0.25.18",
   "description": "Provides tools that you can use to connect a React/Redux frontend to reSolve.",
   "engines": {
     "node": ">=10.9"
@@ -37,11 +37,11 @@
     "lodash.unset": "4.5.2",
     "lodash.clonedeep": "4.5.0",
     "query-string": "^5.1.1",
-    "resolve-client": "0.25.13",
-    "resolve-core": "0.25.13",
-    "resolve-react-hooks": "0.25.13",
+    "resolve-client": "0.25.18",
+    "resolve-core": "0.25.18",
+    "resolve-react-hooks": "0.25.18",
     "unfetch": "^4.0.1",
-    "uuid": "^3.3.2"
+    "uuid": "8.3.1"
   },
   "devDependencies": {
     "@types/json-stable-stringify": "^1.0.32",

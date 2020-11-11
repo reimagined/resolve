@@ -12,8 +12,8 @@ import {
 import appConfig from './config.app'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
-import testFunctionalConfig from './config.test_functional'
-import adjustWebpackConfigs from './config.adjust_webpack'
+import testFunctionalConfig from './config.test-functional'
+import adjustWebpackConfigs from './config.adjust-webpack'
 
 const launchMode = process.argv[2]
 
@@ -22,7 +22,12 @@ void (async () => {
     switch (launchMode) {
       case 'dev': {
         const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+        await watch(resolveConfig, adjustWebpackConfigs)
+        break
+      }
 
+      case 'reset': {
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
         await reset(
           resolveConfig,
           {
@@ -33,8 +38,6 @@ void (async () => {
           },
           adjustWebpackConfigs
         )
-
-        await watch(resolveConfig, adjustWebpackConfigs)
         break
       }
 

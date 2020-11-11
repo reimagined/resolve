@@ -2,6 +2,7 @@ import {
   defaultResolveConfig,
   build,
   watch,
+  runTestcafe,
   merge,
   stop,
   reset,
@@ -10,6 +11,7 @@ import {
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
+import testFunctionalConfig from './config.test-functional'
 
 const launchMode = process.argv[2]
 
@@ -18,15 +20,18 @@ void (async () => {
     switch (launchMode) {
       case 'dev': {
         const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+        await watch(resolveConfig)
+        break
+      }
 
+      case 'reset': {
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
         await reset(resolveConfig, {
           dropEventStore: false,
           dropEventBus: true,
           dropReadModels: true,
           dropSagas: true,
         })
-
-        await watch(resolveConfig)
         break
       }
 
@@ -38,6 +43,29 @@ void (async () => {
         )
 
         await build(resolveConfig)
+        break
+      }
+
+      case 'test:e2e': {
+        const resolveConfig = merge(
+          defaultResolveConfig,
+          appConfig,
+          testFunctionalConfig
+        )
+
+        await reset(resolveConfig, {
+          dropEventStore: true,
+          dropEventBus: true,
+          dropReadModels: true,
+          dropSagas: true,
+        })
+
+        await runTestcafe({
+          resolveConfig,
+          functionalTestsDir: 'test/functional',
+          browser: process.argv[3],
+          customArgs: ['--stop-on-first-fail'],
+        })
         break
       }
 

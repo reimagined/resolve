@@ -1,42 +1,36 @@
 import React from 'react'
 import ReactDOM from 'react-dom/server'
 import { createMemoryHistory } from 'history'
-import { createStore, AppContainer } from 'resolve-redux'
+import { ResolveProvider } from 'resolve-react-hooks'
 import { Helmet } from 'react-helmet'
 
-import getRoutes from './get-routes'
+import { getRoutes } from './get-routes'
 import Routes from '../client/components/Routes'
 import { Router } from 'react-router'
 
-const ssrHandler = async (
-  { seedClientEnvs, constants: { rootPath, staticPath }, utils, serverImports },
-  req,
-  res
-) => {
+const ssrHandler = async (serverContext, req, res) => {
   try {
+    const { seedClientEnvs, constants, viewModels, utils } = serverContext
+    const { rootPath, staticPath } = constants
     const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils
     const baseQueryUrl = getRootBasedUrl(rootPath, '/')
     const url = req.path.substring(baseQueryUrl.length)
     const history = createMemoryHistory()
     history.push(url)
-    const origin = ''
 
-    const routes = getRoutes(serverImports)
-
-    const store = createStore({ history, origin, rootPath, isClient: false })
+    const resolveContext = {
+      ...constants,
+      viewModels,
+      origin: '',
+    }
 
     const staticContext = {}
     const markup = ReactDOM.renderToStaticMarkup(
-      <AppContainer
-        origin={origin}
-        rootPath={rootPath}
-        staticPath={staticPath}
-        store={store}
-      >
+      <ResolveProvider context={resolveContext}>
         <Router history={history} staticContext={staticContext}>
-          <Routes routes={routes} />
+          <Routes routes={getRoutes()} />
         </Router>
-      </AppContainer>
+      </ResolveProvider>
     )
 
     const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index.js')
@@ -64,7 +58,6 @@ const ssrHandler = async (
       '</html>'
 
     await res.setHeader('Content-Type', 'text/html')
-
     await res.end(markupHtml)
   } catch (error) {
     // eslint-disable-next-line no-console
