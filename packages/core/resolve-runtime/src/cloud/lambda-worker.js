@@ -1,10 +1,11 @@
 import debugLevels from 'resolve-debug-levels'
 import { invokeFunction } from 'resolve-cloud-common/lambda'
+import CloudWatch from 'aws-sdk/clients/cloudwatch'
 
 import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
-import putMetrics from './metrics'
+import putMetrics, { putErrorMetrics } from './metrics'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 
@@ -53,6 +54,10 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
         },
       },
     })
+  }
+
+  resolveBase.onApplyError = async (error) => {
+    await putErrorMetrics(error)
   }
 
   const resolve = Object.create(resolveBase)
@@ -133,6 +138,30 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     }
   } catch (error) {
     log.error('top-level event handler execution error!')
+
+    const cw = new CloudWatch()
+
+    await cw.putMetricData({
+      Namespace: 'RESOLVE_METRICS_SPIKE',
+      MetricData: [
+        {
+          MetricName: 'Errors',
+          Timestamp: new Date(),
+          Unit: 'Count',
+          Value: 1,
+          Dimensions: [
+            {
+              Name: 'DeploymentId',
+              Value: process.env.RESOLVE_DEPLOYMENT_ID,
+            },
+            {
+                Name: 'Error',
+                Value: e.stack.replace(/\n/gm, '\\n'),
+            }
+          ]
+        },
+      ],
+    }).promise()
 
     if (error instanceof Error) {
       log.error('error', error.message)

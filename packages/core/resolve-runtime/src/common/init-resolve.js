@@ -25,6 +25,7 @@ const initResolve = async (resolve) => {
     sagas,
     viewModels,
     uploader,
+    onApplyError,
   } = resolve
   const eventstoreAdapter = createEventstoreAdapter()
 
@@ -64,6 +65,7 @@ const initResolve = async (resolve) => {
     performanceTracer,
     getRemainingTimeInMillis,
     performAcknowledge,
+    onApplyError,
   })
 
   const executeSaga = createSagaExecutor({

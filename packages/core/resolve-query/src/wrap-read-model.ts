@@ -1,10 +1,11 @@
 import { EOL } from 'os'
 // TODO: core cannot reference "top-level" packages, move these to resolve-core
 import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
+import { SecretsManager } from 'resolve-core'
+
 import getLog from './get-log'
 import { WrapReadModelOptions, SerializedError, ReadModelPool } from './types'
 import parseReadOptions from './parse-read-options'
-import { SecretsManager } from 'resolve-core'
 
 const RESERVED_TIME = 30 * 1000
 
@@ -219,6 +220,13 @@ const sendEvents = async (
         log.error(error.message)
         log.verbose(error.stack)
         lastFailedEvent = event
+
+        try {
+          await pool.onApplyError(error, event)
+        } catch (e) {
+          log.verbose('onApplyError call error')
+          log.verbose(e.stack)
+        }
 
         throw error
       }
@@ -730,6 +738,7 @@ const wrapReadModel = ({
   performanceTracer,
   getRemainingTimeInMillis,
   performAcknowledge,
+  onApplyError = async () => void 0
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
   const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
@@ -753,6 +762,7 @@ const wrapReadModel = ({
     getSecretsManager,
     getRemainingTimeInMillis,
     performAcknowledge,
+    onApplyError
   }
 
   const api = {

@@ -81,4 +81,50 @@ const putMetrics = async (
   }
 }
 
+export const putErrorMetrics = async (error) => {
+  const cw = new CloudWatch()
+
+  const deploymentId = process.env.RESOLVE_DEPLOYMENT_ID
+
+  if (deploymentId == null) {
+    return
+  }
+
+  try {
+    // const errorMessage =
+    //   error.stack != null ? error.stack.replace(/\n/gm, '\\n') : error.message
+
+    console.log('put error metrics')
+
+    await cw
+      .putMetricData({
+        Namespace: 'RESOLVE_METRICS',
+        MetricData: [
+          {
+            MetricName: 'Errors',
+            Timestamp: new Date(),
+            Unit: 'Count',
+            Value: 1,
+            Dimensions: [
+              {
+                Name: 'DeploymentId',
+                Value: deploymentId
+              },
+              {
+                Name: 'Error',
+                Value: error.message
+              }
+            ]
+          }
+        ]
+      })
+      .promise()
+
+    console.log('put error metrics succeeded')
+  } catch (e) {
+    console.log('put error metrics failed')
+    console.warn(e)
+  }
+}
+
 export default putMetrics
