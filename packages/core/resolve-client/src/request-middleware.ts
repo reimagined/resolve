@@ -1,4 +1,6 @@
-import { FetchFunction, NarrowedResponse } from './request'
+import { FetchFunction } from './request'
+import { createParseResponseMiddleware } from './middleware/parse-response'
+import { HttpError } from './errors'
 export type RequestMiddlewareResult = {
   headers: {
     get: (name: string) => string | null
@@ -19,9 +21,7 @@ export type RequestMiddleware<TArgument> = (
   params: RequestMiddlewareParameters
 ) => Promise<any>
 export type RequestMiddlewareOptions = {
-  response?:
-    | Array<RequestMiddleware<NarrowedResponse>>
-    | RequestMiddleware<NarrowedResponse>
+  response?: Array<RequestMiddleware<Response>> | RequestMiddleware<Response>
   error?: Array<RequestMiddleware<Error>> | RequestMiddleware<Error>
 }
 
@@ -43,10 +43,10 @@ export const requestWithMiddleware = async (
     info: RequestInfo
   },
   middleware: RequestMiddlewareOptions
-): Promise<RequestMiddlewareResult> => {
-  const responseMiddleware = new Array<
-    RequestMiddleware<NarrowedResponse>
-  >().concat(middleware.response ?? [])
+): Promise<RequestMiddlewareResult | Error> => {
+  const responseMiddleware = new Array<RequestMiddleware<Response>>().concat(
+    middleware.response ?? [createParseResponseMiddleware()]
+  )
   const errorMiddleware = new Array<RequestMiddleware<Error>>().concat(
     middleware.error ?? []
   )
@@ -105,21 +105,31 @@ export const requestWithMiddleware = async (
 
   const { info, init } = params
   const execFetch = async (): Promise<any> => {
-    const processRun = async (runState: MiddlewareRunState): Promise<any> => {
+    const processRun = async (
+      runState: MiddlewareRunState,
+      execErrorMiddleware: boolean
+    ): Promise<any> => {
       switch (runState.status) {
         case MiddlewareRunStatus.Finished:
           return runState.result
+
         case MiddlewareRunStatus.Repeating:
           return await execFetch()
+
         case MiddlewareRunStatus.Error:
           if (runState.error) {
-            return await processRun(
-              await execMiddleware(runState.error, errorMiddleware)
-            )
+            if (execErrorMiddleware) {
+              return await processRun(
+                await execMiddleware(runState.error, errorMiddleware),
+                false
+              )
+            }
+            throw runState.error
           }
           throw Error(
             `Middleware run status is "${runState.status}, but no error was set.`
           )
+
         case MiddlewareRunStatus.Running:
         default:
           throw Error(
@@ -128,13 +138,30 @@ export const requestWithMiddleware = async (
       }
     }
 
-    let response: NarrowedResponse | null = null
+    let response: Response | null = null
     try {
       response = await fetch(info, init)
     } catch (error) {
-      return await processRun(await execMiddleware(error, errorMiddleware))
+      return await processRun(
+        await execMiddleware(error, errorMiddleware),
+        false
+      )
     }
-    return await processRun(await execMiddleware(response, responseMiddleware))
+
+    if (!response.ok) {
+      return await processRun(
+        await execMiddleware(
+          new HttpError(response.status, await response.json()),
+          errorMiddleware
+        ),
+        false
+      )
+    }
+
+    return await processRun(
+      await execMiddleware(response, responseMiddleware),
+      true
+    )
   }
   return await execFetch()
 }

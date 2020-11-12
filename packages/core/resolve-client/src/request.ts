@@ -234,6 +234,9 @@ export const request = async (
       },
       options.middleware
     )
+    if (middlewareResponse instanceof Error) {
+      throw middlewareResponse
+    }
     response = {
       headers: middlewareResponse.headers,
       [VALIDATED_RESULT]: middlewareResponse.result,

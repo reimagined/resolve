@@ -2,12 +2,12 @@ import {
   RequestMiddlewareParameters,
   RequestMiddleware,
 } from '../request-middleware'
-import { NarrowedResponse } from '../request'
 import { GenericError } from '../errors'
 
 export type ResponseValidator = (
-  response: NarrowedResponse,
-  confirm: (result: any) => void
+  response: Response,
+  confirm: (result: any) => void,
+  deserializer?: (state: string) => any
 ) => Promise<void>
 export type WaitForResponseMiddlewareOptions = {
   validator: ResponseValidator
@@ -18,24 +18,11 @@ export type WaitForResponseMiddlewareOptions = {
 
 const waitForResponse = async (
   options: WaitForResponseMiddlewareOptions,
-  response: NarrowedResponse,
+  response: Response,
   params: RequestMiddlewareParameters
 ) => {
-  const {
-    waitForState: { currentAttempts } = { currentAttempts: 0 },
-  } = params.state
-
-  const result = await response.json()
-
-  const { deserializer } = params
-
-  if (
-    typeof deserializer === 'function' &&
-    result != null &&
-    result.data != null
-  ) {
-    result.data = deserializer(result.data)
-  }
+  const { waitForState: { currentAttempts } = { currentAttempts: 0 } } =
+    params.state ?? {}
 
   let isValidated = false
   let validResult: any = null
@@ -48,7 +35,7 @@ const waitForResponse = async (
   const validator = options.validator
 
   if (typeof validator === 'function') {
-    await validator(response, confirmResult)
+    await validator(response, confirmResult, params.deserializer)
   }
 
   if (isValidated) {
@@ -61,8 +48,7 @@ const waitForResponse = async (
 
     if (isMaxAttemptsReached) {
       throw new GenericError(
-        `No valid result received after ${currentAttempts} retries.` +
-          (options.debug ? ` Last result ${JSON.stringify(result)}` : '')
+        `No valid result received after ${currentAttempts} retries.`
       )
     }
 

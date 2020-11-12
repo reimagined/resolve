@@ -11,7 +11,7 @@ export type RetryOnErrorMiddlewareOptions = {
   debug?: boolean
 }
 
-const retryOnErrorMiddleware = async (
+const retryOnError = async (
   options: RetryOnErrorMiddlewareOptions,
   error: Error | HttpError,
   params: RequestMiddlewareParameters
@@ -19,9 +19,8 @@ const retryOnErrorMiddleware = async (
   const expectedErrors = new Array<number>().concat(options.errors)
 
   if (expectedErrors.length && error instanceof HttpError) {
-    const {
-      retryOnErrorState: { currentAttempts } = { currentAttempts: 0 },
-    } = params.state
+    const { retryOnErrorState: { currentAttempts } = { currentAttempts: 0 } } =
+      params.state ?? {}
 
     const isErrorExpected = expectedErrors.includes(error.code)
     const isMaxAttemptsReached = currentAttempts >= options.attempts ?? 0
@@ -43,8 +42,9 @@ const retryOnErrorMiddleware = async (
       }
 
       params.repeat()
+    } else {
+      params.end(error)
     }
-    params.end(error)
 
     return {
       ...params.state,
@@ -57,4 +57,4 @@ const retryOnErrorMiddleware = async (
 
 export const createRetryOnErrorMiddleware = (
   options: RetryOnErrorMiddlewareOptions
-): RequestMiddleware<any> => retryOnErrorMiddleware.bind(null, options)
+): RequestMiddleware<any> => retryOnError.bind(null, options)
