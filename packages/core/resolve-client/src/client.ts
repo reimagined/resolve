@@ -191,6 +191,10 @@ export const query = (
   const asyncExec = async (): Promise<QueryResult> => {
     const response = await queryRequest
 
+
+
+
+
     const responseDate = response.headers.get('Date')
     if (!responseDate) {
       throw new GenericError(`"Date" header missed within response`)
@@ -207,6 +211,8 @@ export const query = (
     }
 
     try {
+
+
       let result
       if (VALIDATED_RESULT in response) {
         result = response[VALIDATED_RESULT]
@@ -230,6 +236,9 @@ export const query = (
         ...result,
         meta,
       }
+
+
+
     } catch (error) {
       throw new GenericError(error)
     }

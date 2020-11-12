@@ -4,6 +4,7 @@ import { Context } from './context'
 import { getRootBasedUrl, isString } from './utils'
 import determineOrigin from './determine-origin'
 import { GenericError, HttpError } from './errors'
+import { RequestMiddlewareOptions } from './request-middleware'
 
 export const VALIDATED_RESULT = Symbol('VALIDATED_RESULT')
 export type NarrowedResponse = {
@@ -50,6 +51,7 @@ export type RequestOptions = {
     period: number
   }
   debug?: boolean
+  middleware?: RequestMiddlewareOptions
 }
 
 const stringifyUrl = (url: string, params: any): string => {
@@ -66,7 +68,7 @@ const stringifyUrl = (url: string, params: any): string => {
 
 const insistentRequest = async (
   fetch: FetchFunction,
-  input: RequestInfo,
+  info: RequestInfo,
   init: RequestInit,
   options?: RequestOptions,
   attempts = {
@@ -77,7 +79,7 @@ const insistentRequest = async (
   let response
 
   try {
-    response = await fetch(input, init)
+    response = await fetch(info, init)
   } catch (error) {
     throw new GenericError(error)
   }
@@ -125,7 +127,7 @@ const insistentRequest = async (
         await new Promise((resolve) => setTimeout(resolve, period))
       }
 
-      return insistentRequest(fetch, input, init, options, {
+      return insistentRequest(fetch, info, init, options, {
         ...attempts,
         response: attempts.response + 1,
       })
@@ -158,7 +160,7 @@ const insistentRequest = async (
       if (typeof period === 'number' && period > 0) {
         await new Promise((resolve) => setTimeout(resolve, period))
       }
-      return insistentRequest(fetch, input, init, options, {
+      return insistentRequest(fetch, info, init, options, {
         ...attempts,
         error: attempts.error + 1,
       })
