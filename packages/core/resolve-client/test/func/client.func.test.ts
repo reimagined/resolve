@@ -5,6 +5,7 @@ import {
   Client,
   createWaitForResponseMiddleware,
   createRetryOnErrorMiddleware,
+  GenericError,
 } from '../../src/index'
 
 let app: any
@@ -15,6 +16,7 @@ beforeAll(() => {
   serverState = {
     waitForResultAttempts: 0,
     retryOnErrorAttempts: 0,
+    mixedAttempts: 0,
   }
 
   app = express()
@@ -37,7 +39,7 @@ beforeAll(() => {
       res.send(
         JSON.stringify({
           data: {
-            valid: false,
+            valid: true,
           },
         })
       )
@@ -45,7 +47,7 @@ beforeAll(() => {
       res.send(
         JSON.stringify({
           data: {
-            valid: true,
+            valid: false,
           },
         })
       )
@@ -54,6 +56,80 @@ beforeAll(() => {
 
   app.get('/api/query/read-model/retry-on-error', (req: any, res: any) => {
     serverState.retryOnErrorAttempts++
+    res.setHeader('Date', '12345')
+    if (serverState.retryOnErrorAttempts > 3) {
+      res.send(
+        JSON.stringify({
+          data: {
+            valid: true,
+          },
+        })
+      )
+    } else {
+      res.status(500 + serverState.retryOnErrorAttempts)
+      res.send(
+        JSON.stringify({
+          message: 'error',
+        })
+      )
+    }
+  })
+
+  app.get('/api/query/read-model/mixed-middleware', (req: any, res: any) => {
+    serverState.mixedAttempts++
+    const { mixedAttempts } = serverState
+    res.setHeader('Date', '12345')
+
+    switch (mixedAttempts) {
+      case 1:
+        res.send(
+          JSON.stringify({
+            data: {
+              valid: false,
+            },
+          })
+        )
+        break
+
+      case 2:
+        res.status(501)
+        res.send(
+          JSON.stringify({
+            message: 'error',
+          })
+        )
+        break
+
+      case 3:
+        res.send(
+          JSON.stringify({
+            data: {
+              valid: false,
+            },
+          })
+        )
+        break
+
+      case 4:
+        res.status(502)
+        res.send(
+          JSON.stringify({
+            message: 'error',
+          })
+        )
+        break
+
+      default:
+        res.send(
+          JSON.stringify({
+            data: {
+              valid: true,
+            },
+          })
+        )
+        break
+    }
+
     res.setHeader('Date', '12345')
     if (serverState.retryOnErrorAttempts > 3) {
       res.send(
@@ -118,6 +194,7 @@ test('bug: waitFor headers are undefined on success validation', async () => {
 })
 
 test('middleware: wait for response', async () => {
+  serverState.waitForResultAttempts = 0
   const result = await client.query(
     {
       name: 'read-model',
@@ -150,6 +227,36 @@ test('middleware: wait for response', async () => {
       valid: true,
     },
   })
+})
+
+test('middleware: wait for response should fail if attempts limit reached', async () => {
+  serverState.waitForResultAttempts = 0
+  await expect(
+    client.query(
+      {
+        name: 'read-model',
+        resolver: 'wait-for-result',
+        args: {},
+      },
+      {
+        middleware: {
+          response: createWaitForResponseMiddleware({
+            debug: true,
+            attempts: 2,
+            period: 1,
+            validator: async (response, confirm) => {
+              if (response.ok) {
+                const result = await response.json()
+                if (result.data.valid) {
+                  confirm(result)
+                }
+              }
+            },
+          }),
+        },
+      }
+    )
+  ).rejects.toBeInstanceOf(GenericError)
 })
 
 test('middleware: retry on error', async () => {
@@ -206,4 +313,45 @@ test('middleware: retry on error should fail on unexpected error', async () => {
       code: 503,
     })
   )
+})
+
+test('middleware: mixed response & error middleware', async () => {
+  const result = await client.query(
+    {
+      name: 'read-model',
+      resolver: 'mixed-middleware',
+      args: {},
+    },
+    {
+      middleware: {
+        error: createRetryOnErrorMiddleware({
+          debug: true,
+          attempts: 2,
+          period: 1,
+          errors: [501, 502],
+        }),
+        response: createWaitForResponseMiddleware({
+          debug: true,
+          attempts: 2,
+          period: 1,
+          validator: async (response, confirm) => {
+            if (response.ok) {
+              const result = await response.json()
+              if (result.data.valid) {
+                confirm(result)
+              }
+            }
+          },
+        }),
+      },
+    }
+  )
+  expect(result).toEqual({
+    meta: {
+      timestamp: 12345,
+    },
+    data: {
+      valid: true,
+    },
+  })
 })
