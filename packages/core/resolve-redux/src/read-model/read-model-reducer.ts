@@ -50,7 +50,7 @@ const getSelector = (
   action: ReadModelAction
 ): ReadModelResultEntrySelector | string => action.selectorId || action
 
-export const getEntryPath = (
+const getEntryPath = (
   selector: ReadModelResultEntrySelector | string
 ): string => {
   if (typeof selector === 'string') {

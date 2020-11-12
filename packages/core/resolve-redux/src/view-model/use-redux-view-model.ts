@@ -95,8 +95,6 @@ export function useReduxViewModel(
     actualOptions.queryOptions || defaultQueryOptions
   )
 
-  console.log(initialState)
-
   return useMemo(
     () => ({
       connect,
