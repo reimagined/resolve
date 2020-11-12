@@ -1,6 +1,7 @@
 import { FetchFunction } from './request'
 import { createParseResponseMiddleware } from './middleware/parse-response'
 import { HttpError } from './errors'
+import { JSONWebTokenProvider } from './jwt-provider'
 export type RequestMiddlewareResult = {
   headers: {
     get: (name: string) => string | null
@@ -15,6 +16,7 @@ export type RequestMiddlewareParameters = {
   end: (result: RequestMiddlewareResult | Error) => void
   state: any
   deserializer?: (state: string) => any
+  jwtProvider?: JSONWebTokenProvider
 }
 export type RequestMiddleware<TArgument> = (
   argument: TArgument,
@@ -36,11 +38,14 @@ type MiddlewareRunState = {
   result: any
   error?: Error
 }
+
 export const requestWithMiddleware = async (
   params: {
     fetch: FetchFunction
     init: RequestInit
     info: RequestInfo
+    deserializer?: (state: string) => any
+    jwtProvider?: JSONWebTokenProvider
   },
   middleware: RequestMiddlewareOptions
 ): Promise<RequestMiddlewareResult | Error> => {
@@ -51,10 +56,11 @@ export const requestWithMiddleware = async (
     middleware.error ?? []
   )
 
+  const { info, init, deserializer, jwtProvider } = params
   let userState: any = null
 
   async function execMiddleware<TArgument>(
-    response: TArgument,
+    argument: TArgument,
     middlewareChain: Array<RequestMiddleware<TArgument>>
   ): Promise<MiddlewareRunState> {
     const runState: MiddlewareRunState = {
@@ -76,13 +82,15 @@ export const requestWithMiddleware = async (
 
     for (const middleware of middlewareChain) {
       try {
-        userState = await middleware(response, {
+        userState = await middleware(argument, {
           fetch,
           init,
           info,
           end,
           repeat,
           state: userState,
+          deserializer,
+          jwtProvider,
         })
       } catch (error) {
         runState.status = MiddlewareRunStatus.Error
@@ -97,13 +105,12 @@ export const requestWithMiddleware = async (
 
     if (runState.status === MiddlewareRunStatus.Running) {
       runState.status = MiddlewareRunStatus.Finished
-      runState.result = response
+      runState.result = argument
     }
 
     return runState
   }
 
-  const { info, init } = params
   const execFetch = async (): Promise<any> => {
     const processRun = async (
       runState: MiddlewareRunState,
@@ -138,6 +145,12 @@ export const requestWithMiddleware = async (
       }
     }
 
+    const headers = init.headers as Record<string, string>
+    const token = await jwtProvider?.get()
+    if (token && init?.headers != null) {
+      headers['Authorization'] = `Bearer ${token}`
+    }
+
     let response: Response | null = null
     try {
       response = await fetch(info, init)
@@ -158,10 +171,17 @@ export const requestWithMiddleware = async (
       )
     }
 
-    return await processRun(
+    const result = await processRun(
       await execMiddleware(response, responseMiddleware),
       true
     )
+
+    if (jwtProvider && response.headers) {
+      await jwtProvider.set(response.headers.get('x-jwt') ?? '')
+    }
+
+    return result
   }
+
   return await execFetch()
 }

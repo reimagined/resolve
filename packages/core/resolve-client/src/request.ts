@@ -215,22 +215,18 @@ export const request = async (
       throw new GenericError(`unsupported request method`)
   }
 
-  const token = await jwtProvider?.get()
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`
-  }
-
-  init.headers = headers
-
   let response: NarrowedResponse
 
   // middleware feature switch
   if (options?.middleware != null) {
+    init.headers = headers
+
     const middlewareResponse = await requestWithMiddleware(
       {
         fetch: determineFetch(context),
         info: requestUrl,
         init,
+        jwtProvider,
       },
       options.middleware
     )
@@ -244,16 +240,23 @@ export const request = async (
       text: () => Promise.resolve(middlewareResponse.result),
     }
   } else {
+    const token = await jwtProvider?.get()
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`
+    }
+
+    init.headers = headers
+
     response = await insistentRequest(
       determineFetch(context),
       requestUrl,
       init,
       options
     )
-  }
 
-  if (jwtProvider && response.headers) {
-    await jwtProvider.set(response.headers.get('x-jwt') ?? '')
+    if (jwtProvider && response.headers) {
+      await jwtProvider.set(response.headers.get('x-jwt') ?? '')
+    }
   }
 
   return response

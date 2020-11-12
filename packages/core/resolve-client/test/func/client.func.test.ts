@@ -7,6 +7,7 @@ import {
   createRetryOnErrorMiddleware,
   GenericError,
 } from '../../src/index'
+import { createRefreshTokenMiddleware } from './refresh-token-middleware'
 
 let app: any
 let server: any
@@ -17,6 +18,7 @@ beforeAll(() => {
     waitForResultAttempts: 0,
     retryOnErrorAttempts: 0,
     mixedAttempts: 0,
+    tokenRequests: 0,
   }
 
   app = express()
@@ -149,6 +151,36 @@ beforeAll(() => {
     }
   })
 
+  app.get('/api/query/read-model/refresh-token', (req: any, res: any) => {
+    const auth = req.header('Authorization')
+    res.setHeader('Date', '12345')
+    if (auth !== 'Bearer valid-token') {
+      res.status(401)
+      res.send(
+        JSON.stringify({
+          message: 'unauthorized access',
+        })
+      )
+    } else {
+      res.send(
+        JSON.stringify({
+          data: {
+            authorized: true,
+          },
+        })
+      )
+    }
+  })
+
+  app.get('/get-token', (req: any, res: any) => {
+    serverState.tokenRequests++
+    res.send(
+      JSON.stringify({
+        token: 'valid-token',
+      })
+    )
+  })
+
   server = app.listen('3300')
 })
 
@@ -157,15 +189,27 @@ afterAll(() => {
 })
 
 let client: Client
+let jwtProviderRef: any
 
 beforeEach(() => {
+  jwtProviderRef = {}
   client = getClient({
     origin: 'http://localhost:3300',
     rootPath: '',
     staticPath: '/static',
     viewModels: [],
     fetch,
+    jwtProvider: {
+      get: async () => Promise.resolve(jwtProviderRef.token),
+      set: async (token) => {
+        jwtProviderRef.token = token
+      },
+    },
   })
+  serverState.tokenRequests = 0
+  serverState.waitForResultAttempts = 0
+  serverState.retryOnErrorAttempts = 0
+  serverState.mixedAttempts = 0
 })
 
 test('bug: waitFor headers are undefined on success validation', async () => {
@@ -194,7 +238,6 @@ test('bug: waitFor headers are undefined on success validation', async () => {
 })
 
 test('middleware: wait for response', async () => {
-  serverState.waitForResultAttempts = 0
   const result = await client.query(
     {
       name: 'read-model',
@@ -230,7 +273,6 @@ test('middleware: wait for response', async () => {
 })
 
 test('middleware: wait for response should fail if attempts limit reached', async () => {
-  serverState.waitForResultAttempts = 0
   await expect(
     client.query(
       {
@@ -260,7 +302,6 @@ test('middleware: wait for response should fail if attempts limit reached', asyn
 })
 
 test('middleware: retry on error', async () => {
-  serverState.retryOnErrorAttempts = 0
   const result = await client.query(
     {
       name: 'read-model',
@@ -289,7 +330,6 @@ test('middleware: retry on error', async () => {
 })
 
 test('middleware: retry on error should fail on unexpected error', async () => {
-  serverState.retryOnErrorAttempts = 0
   await expect(
     client.query(
       {
@@ -354,4 +394,37 @@ test('middleware: mixed response & error middleware', async () => {
       valid: true,
     },
   })
+})
+
+test('middleware: refresh token example middleware test', async () => {
+  jest.setTimeout(100000)
+  const exclusiveState = {}
+
+  const query = async (salt: string) =>
+    client.query(
+      {
+        name: 'read-model',
+        resolver: 'refresh-token',
+        args: {
+          salt,
+        },
+      },
+      {
+        middleware: {
+          error: createRefreshTokenMiddleware(exclusiveState),
+        },
+      }
+    )
+
+  const result = await Promise.all([query('first'), query('second'), query('third')])
+  const responseSample = {
+    meta: {
+      timestamp: 12345,
+    },
+    data: {
+      authorized: true,
+    },
+  }
+  expect(result).toEqual([responseSample, responseSample, responseSample])
+  expect(serverState.tokenRequests).toEqual(1)
 })
