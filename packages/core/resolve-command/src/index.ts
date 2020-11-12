@@ -36,6 +36,7 @@ type AggregateMeta = {
 
 type CommandPool = {
   onCommandExecuted: (event: any) => Promise<void>
+  onError: (error: Error, part: string) => Promise<void>
   performanceTracer: any
   aggregateName: string
   isDisposed: boolean
@@ -62,6 +63,7 @@ export type CommandExecutor = {
 
 export type CommandExecutorBuilder = (context: {
   onCommandExecuted: (event: any) => Promise<void>
+  onError?: (error: Error, part: string) => Promise<void>
   aggregates: AggregateMeta[]
   performanceTracer?: any
   eventstoreAdapter: EventstoreAdapter
@@ -446,7 +448,13 @@ const executeCommand = async (
     pool.aggregateName = aggregateName
 
     if (aggregate == null) {
-      throw generateCommandError(`Aggregate "${aggregateName}" does not exist`)
+      const error = generateCommandError(
+        `Aggregate "${aggregateName}" does not exist`
+      )
+      try {
+        await pool.onError(error, 'command')
+      } catch (e) {}
+      throw error
     }
 
     const { aggregateId, type } = command
@@ -457,7 +465,15 @@ const executeCommand = async (
     } = await getAggregateState(pool, aggregate, aggregateId)
 
     if (!aggregate.commands.hasOwnProperty(type)) {
-      throw generateCommandError(`Command type "${type}" does not exist`)
+      const error = generateCommandError(
+        `Command type "${type}" does not exist`
+      )
+
+      try {
+        await pool.onError(error, 'command')
+      } catch (e) {}
+
+      throw error
     }
 
     const commandHandler: CommandHandler = async (
@@ -481,6 +497,9 @@ const executeCommand = async (
         if (subSegment != null) {
           subSegment.addError(error)
         }
+        try {
+          await pool.onError(error, 'command')
+        } catch (e) {}
         throw error
       } finally {
         if (subSegment != null) {
@@ -512,7 +531,11 @@ const executeCommand = async (
     })
 
     if (!checkOptionShape(event.type, [String])) {
-      throw generateCommandError('Event "type" is required')
+      const error = generateCommandError('Event "type" is required')
+      try {
+        await pool.onError(error, 'command')
+      } catch (e) {}
+      throw error
     }
 
     const runtimeEvent = event as any
@@ -522,9 +545,15 @@ const executeCommand = async (
       runtimeEvent.aggregateVersion != null ||
       runtimeEvent.timestamp != null
     ) {
-      throw generateCommandError(
+      const error = generateCommandError(
         'Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields'
       )
+
+      try {
+        await pool.onError(error, 'command')
+      } catch (e) {}
+
+      throw error
     }
 
     const processedEvent: Event = {
@@ -550,6 +579,9 @@ const executeCommand = async (
         if (subSegment != null) {
           subSegment.addError(error)
         }
+        try {
+          await pool.onError(error, 'command')
+        } catch (e) {}
         throw error
       } finally {
         if (subSegment != null) {
@@ -563,6 +595,9 @@ const executeCommand = async (
     if (subSegment != null) {
       subSegment.addError(error)
     }
+    try {
+      await pool.onError(error, 'command')
+    } catch (e) {}
     throw error
   } finally {
     if (subSegment != null) {
@@ -600,6 +635,7 @@ const createCommand: CommandExecutorBuilder = ({
   aggregates,
   performanceTracer,
   eventstoreAdapter,
+  onError,
 }): CommandExecutor => {
   const pool = {
     onCommandExecuted,
@@ -607,6 +643,7 @@ const createCommand: CommandExecutorBuilder = ({
     isDisposed: false,
     performanceTracer,
     eventstoreAdapter,
+    onError,
   }
 
   const api = {

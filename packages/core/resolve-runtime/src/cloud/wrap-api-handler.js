@@ -289,6 +289,10 @@ const wrapApiHandler = (handler, getCustomParameters) => async (
         ? `${error.stack}`
         : `Unknown error ${error}`
 
+    // try {
+    //   await pool.onError(error, 'api-handler')
+    // } catch (e) {}
+
     // eslint-disable-next-line no-console
     console.error(outError)
 

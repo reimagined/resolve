@@ -1,4 +1,7 @@
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
+import debugLevels from 'resolve-debug-levels'
+
+const MAX_METRICS_DIMENSION_VALUE_LENGTH = 256
 
 const kindByEvent = (event) => {
   const { part, path = '' } = event
@@ -15,7 +18,7 @@ const kindByEvent = (event) => {
   }
 }
 
-const putMetrics = async (
+export const putDurationMetrics = async (
   lambdaEvent,
   lambdaContext,
   coldStart,
@@ -81,20 +84,25 @@ const putMetrics = async (
   }
 }
 
-export const putErrorMetrics = async (error) => {
+export const putErrorMetrics = async (error, part) => {
   const cw = new CloudWatch()
+  const log = debugLevels('resolve:resolve-runtime:cloud-entry:putErrorMetrics')
 
   const deploymentId = process.env.RESOLVE_DEPLOYMENT_ID
 
   if (deploymentId == null) {
+    log.warn('Deployment ID not found')
     return
   }
 
   try {
-    // const errorMessage =
-    //   error.stack != null ? error.stack.replace(/\n/gm, '\\n') : error.message
+    const now = new Date()
+    let errorMessage = error.message
 
-    console.log('put error metrics')
+    if (errorMessage.length > MAX_METRICS_DIMENSION_VALUE_LENGTH) {
+      const messageEnd = '...'
+      errorMessage = `${errorMessage.slice(0, MAX_METRICS_DIMENSION_VALUE_LENGTH - messageEnd.length)}${messageEnd}`
+    }
 
     await cw
       .putMetricData({
@@ -102,7 +110,7 @@ export const putErrorMetrics = async (error) => {
         MetricData: [
           {
             MetricName: 'Errors',
-            Timestamp: new Date(),
+            Timestamp: now,
             Unit: 'Count',
             Value: 1,
             Dimensions: [
@@ -111,19 +119,51 @@ export const putErrorMetrics = async (error) => {
                 Value: deploymentId
               },
               {
+                Name: 'Part',
+                Value: part,
+              },
+              {
                 Name: 'Error',
-                Value: error.message
+                Value: errorMessage
               }
             ]
-          }
+          },
+          {
+            MetricName: 'Errors',
+            Timestamp: now,
+            Unit: 'Count',
+            Value: 1,
+            Dimensions: [
+              {
+                Name: 'DeploymentId',
+                Value: deploymentId,
+              },
+              {
+                Name: 'Part',
+                Value: part,
+              }
+            ],
+          },
+          {
+            MetricName: 'Errors',
+            Timestamp: now,
+            Unit: 'Count',
+            Value: 1,
+            Dimensions: [
+              {
+                Name: 'DeploymentId',
+                Value: deploymentId,
+              }
+            ],
+          },
         ]
       })
       .promise()
 
-    console.log('put error metrics succeeded')
+    log.verbose('Put metrics succeeded')
   } catch (e) {
-    console.log('put error metrics failed')
-    console.warn(e)
+    log.verbose('Put metrics failed')
+    log.warn(e)
   }
 }
 

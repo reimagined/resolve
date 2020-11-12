@@ -222,9 +222,9 @@ const sendEvents = async (
         lastFailedEvent = event
 
         try {
-          await pool.onApplyError(error, event)
+          await pool.onError(error, 'read-model-projection')
         } catch (e) {
-          log.verbose('onApplyError call error')
+          log.verbose('onError function call failed')
           log.verbose(e.stack)
         }
 
@@ -439,6 +439,11 @@ const read = async (
         `Resolver "${resolverName}" does not exist`
       ) as any
       error.code = 422
+
+      try {
+        await pool.onError(error, 'read-model-resolver')
+      } catch (e) {}
+
       throw error
     }
 
@@ -474,6 +479,10 @@ const read = async (
           if (subSegment != null) {
             subSegment.addError(error)
           }
+          try {
+            await pool.onError(error, 'read-model-resolver')
+          } catch (e) {}
+
           throw error
         } finally {
           if (subSegment != null) {
@@ -486,6 +495,11 @@ const read = async (
     if (subSegment != null) {
       subSegment.addError(error)
     }
+
+    try {
+      await pool.onError(error, 'read-model-resolver')
+    } catch (e) {}
+
     throw error
   } finally {
     if (subSegment != null) {
@@ -738,7 +752,7 @@ const wrapReadModel = ({
   performanceTracer,
   getRemainingTimeInMillis,
   performAcknowledge,
-  onApplyError = async () => void 0
+  onError = async () => void 0
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
   const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
@@ -762,7 +776,7 @@ const wrapReadModel = ({
     getSecretsManager,
     getRemainingTimeInMillis,
     performAcknowledge,
-    onApplyError
+    onError
   }
 
   const api = {
