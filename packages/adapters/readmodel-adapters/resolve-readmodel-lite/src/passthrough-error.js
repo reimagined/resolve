@@ -1,6 +1,7 @@
 class PassthroughError extends Error {
-  constructor() {
+  constructor(isRuntimeError) {
     super()
+    this.isRuntimeError = !!isRuntimeError
     this.name = 'PassthroughError'
   }
 

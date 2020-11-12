@@ -22,27 +22,44 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
 
   const nextCursor = await eventstoreAdapter.getNextCursor(null, [])
   try {
-    await inlineLedgerRunQuery(
-      `BEGIN IMMEDIATE;
-       SAVEPOINT ROOT;
+    while (true) {
+      try {
+        await inlineLedgerRunQuery(
+          `BEGIN IMMEDIATE;
+          SAVEPOINT ROOT;
 
-       SELECT ABS("CTE"."XaKeyIsSeized") FROM (
-        SELECT 0 AS "XaKeyIsSeized"
-       UNION ALL
-        SELECT -9223372036854775808 AS "XaKeyIsSeized"
-        FROM "sqlite_master"
-        WHERE (
-          SELECT Count(*) FROM ${ledgerTableNameAsId}
-          WHERE "EventSubscriber" = ${escape(readModelName)}
-          AND "XaKey" = ${escape(xaKey)}
-          AND "IsPaused" = 0
-          AND "Errors" IS NULL
-        ) = 0
-      ) CTE;
-      `,
-      true,
-      true
-    )
+          SELECT ABS("CTE"."XaKeyIsSeized") FROM (
+            SELECT 0 AS "XaKeyIsSeized"
+          UNION ALL
+            SELECT -9223372036854775808 AS "XaKeyIsSeized"
+            FROM "sqlite_master"
+            WHERE (
+              SELECT Count(*) FROM ${ledgerTableNameAsId}
+              WHERE "EventSubscriber" = ${escape(readModelName)}
+              AND "XaKey" = ${escape(xaKey)}
+              AND "IsPaused" = 0
+              AND "Errors" IS NULL
+            ) = 0
+          ) CTE;
+          `,
+          true,
+          true
+        )
+        break
+      } catch (error) {
+        if (!(error instanceof PassthroughError) || error.isRuntimeError) {
+          throw error
+        }
+
+        try {
+          await inlineLedgerRunQuery(`ROLLBACK`, true)
+        } catch (err) {
+          if (!(err instanceof PassthroughError)) {
+            throw err
+          }
+        }
+      }
+    }
 
     if (typeof projection.Init === 'function') {
       await projection.Init(store)
@@ -114,27 +131,44 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
   }
   const seizeTimestamp = Date.now()
 
-  await inlineLedgerRunQuery(
-    `BEGIN IMMEDIATE;
-     SAVEPOINT ROOT;
+  while (true) {
+    try {
+      await inlineLedgerRunQuery(
+        `BEGIN IMMEDIATE;
+        SAVEPOINT ROOT;
 
-     SELECT ABS("CTE"."XaKeyIsSeized") FROM (
-      SELECT 0 AS "XaKeyIsSeized"
-     UNION ALL
-      SELECT -9223372036854775808 AS "XaKeyIsSeized"
-      FROM "sqlite_master"
-      WHERE (
-        SELECT Count(*) FROM ${ledgerTableNameAsId}
-        WHERE "EventSubscriber" = ${escape(readModelName)}
-        AND "XaKey" = ${escape(xaKey)}
-        AND "IsPaused" = 0
-        AND "Errors" IS NULL
-      ) = 0
-    ) CTE;
-    `,
-    true,
-    true
-  )
+        SELECT ABS("CTE"."XaKeyIsSeized") FROM (
+          SELECT 0 AS "XaKeyIsSeized"
+        UNION ALL
+          SELECT -9223372036854775808 AS "XaKeyIsSeized"
+          FROM "sqlite_master"
+          WHERE (
+            SELECT Count(*) FROM ${ledgerTableNameAsId}
+            WHERE "EventSubscriber" = ${escape(readModelName)}
+            AND "XaKey" = ${escape(xaKey)}
+            AND "IsPaused" = 0
+            AND "Errors" IS NULL
+          ) = 0
+        ) CTE;
+        `,
+        true,
+        true
+      )
+      break
+    } catch (error) {
+      if (!(error instanceof PassthroughError) || error.isRuntimeError) {
+        throw error
+      }
+
+      try {
+        await inlineLedgerRunQuery(`ROLLBACK`, true)
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
+      }
+    }
+  }
 
   let nextCursor = eventstoreAdapter.getNextCursor(cursor, events)
   let appliedEventsCount = 0
@@ -276,16 +310,36 @@ const build = async (
     const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
     const xaKey = generateGuid(`${Date.now()}${Math.random()}${process.pid}`)
 
-    await inlineLedgerRunQuery(
-      `BEGIN IMMEDIATE;
-       UPDATE ${ledgerTableNameAsId}
-       SET "XaKey" = ${escape(xaKey)}
-       WHERE "EventSubscriber" = ${escape(readModelName)}
-       AND "IsPaused" = FALSE
-       AND "Errors" IS NULL;
-      `,
-      true
-    )
+    while (true) {
+      let isReadSuccess = false
+      try {
+        await inlineLedgerRunQuery(
+          `SELECT 0 AS "Defunct" FROM ${ledgerTableNameAsId}
+          WHERE "EventSubscriber" = ${escape(readModelName)}
+          `
+        )
+        isReadSuccess = true
+
+        await inlineLedgerRunQuery(
+          `BEGIN IMMEDIATE;
+           UPDATE ${ledgerTableNameAsId}
+           SET "XaKey" = ${escape(xaKey)}
+           WHERE "EventSubscriber" = ${escape(readModelName)}
+           AND "IsPaused" = FALSE
+           AND "Errors" IS NULL;
+          `,
+          true
+        )
+        break
+      } catch (error) {
+        if (!(error instanceof PassthroughError)) {
+          throw error
+        }
+        if (!isReadSuccess) {
+          break
+        }
+      }
+    }
 
     const rows = await inlineLedgerRunQuery(
       `SELECT * FROM ${ledgerTableNameAsId}
