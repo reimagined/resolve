@@ -12,7 +12,7 @@ const pause = async (pool, readModelName) => {
   while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN IMMEDIATE;
+        `BEGIN EXCLUSIVE;
         
          UPDATE ${ledgerTableNameAsId}
          SET "IsPaused" = 1

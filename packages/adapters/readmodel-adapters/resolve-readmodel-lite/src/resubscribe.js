@@ -36,7 +36,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     try {
       await inlineLedgerRunQuery(
         `
-        BEGIN IMMEDIATE;
+        BEGIN EXCLUSIVE;
 
         UPDATE ${ledgerTableNameAsId}
         SET "Cursor" = NULL,
@@ -65,7 +65,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     try {
       await inlineLedgerRunQuery(
         `
-        BEGIN IMMEDIATE;
+        BEGIN EXCLUSIVE;
 
         INSERT OR REPLACE INTO ${ledgerTableNameAsId}(
           "EventSubscriber", "EventTypes", "AggregateIds", "IsPaused", "Properties",

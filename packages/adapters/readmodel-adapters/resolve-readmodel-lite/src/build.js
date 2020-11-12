@@ -25,7 +25,7 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
     while (true) {
       try {
         await inlineLedgerRunQuery(
-          `BEGIN IMMEDIATE;
+          `BEGIN EXCLUSIVE;
           SAVEPOINT ROOT;
 
           SELECT ABS("CTE"."XaKeyIsSeized") FROM (
@@ -134,7 +134,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
   while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN IMMEDIATE;
+        `BEGIN EXCLUSIVE;
         SAVEPOINT ROOT;
 
         SELECT ABS("CTE"."XaKeyIsSeized") FROM (
@@ -321,7 +321,7 @@ const build = async (
         isReadSuccess = true
 
         await inlineLedgerRunQuery(
-          `BEGIN IMMEDIATE;
+          `BEGIN EXCLUSIVE;
            UPDATE ${ledgerTableNameAsId}
            SET "XaKey" = ${escape(xaKey)}
            WHERE "EventSubscriber" = ${escape(readModelName)}
@@ -336,7 +336,7 @@ const build = async (
           throw error
         }
         if (!isReadSuccess) {
-          break
+          throw new PassthroughError()
         }
       }
     }

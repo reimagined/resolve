@@ -13,7 +13,7 @@ const reset = async (pool, readModelName) => {
   while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN IMMEDIATE;
+        `BEGIN EXCLUSIVE;
 
         UPDATE ${ledgerTableNameAsId}
         SET "Cursor" = NULL,
@@ -41,7 +41,7 @@ const reset = async (pool, readModelName) => {
   while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN IMMEDIATE;
+        `BEGIN EXCLUSIVE;
         
          UPDATE ${ledgerTableNameAsId}
          SET "IsPaused" = 0

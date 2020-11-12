@@ -12,7 +12,7 @@ const resume = async (pool, readModelName, next) => {
   while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN IMMEDIATE;
+        `BEGIN EXCLUSIVE;
         
          UPDATE ${ledgerTableNameAsId}
          SET "IsPaused" = 0

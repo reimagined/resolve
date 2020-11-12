@@ -34,7 +34,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
   while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN IMMEDIATE;
+        `BEGIN EXCLUSIVE;
 
          INSERT OR REPLACE INTO ${ledgerTableNameAsId}(
           "EventSubscriber", "EventTypes", "AggregateIds", "IsPaused", "Properties",

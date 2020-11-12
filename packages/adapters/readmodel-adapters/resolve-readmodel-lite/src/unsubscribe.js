@@ -35,7 +35,7 @@ const unsubscribe = async (pool, readModelName) => {
   while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN IMMEDIATE;
+        `BEGIN EXCLUSIVE;
 
         UPDATE ${ledgerTableNameAsId}
         SET "Cursor" = NULL,
@@ -63,7 +63,7 @@ const unsubscribe = async (pool, readModelName) => {
   while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN IMMEDIATE;
+        `BEGIN EXCLUSIVE;
 
          DELETE FROM ${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escape(readModelName)};
