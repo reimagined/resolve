@@ -52,7 +52,10 @@ const waitForResponse = async (
   }
 
   if (isValidated) {
-    params.end(validResult)
+    params.end({
+      headers: response.headers,
+      result: validResult,
+    })
   } else {
     const isMaxAttemptsReached = currentAttempts >= (options.attempts ?? 0)
 

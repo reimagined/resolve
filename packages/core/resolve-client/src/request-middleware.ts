@@ -1,11 +1,16 @@
 import { FetchFunction, NarrowedResponse } from './request'
-
+export type RequestMiddlewareResult = {
+  headers: {
+    get: (name: string) => string | null
+  }
+  result: any
+}
 export type RequestMiddlewareParameters = {
   fetch: FetchFunction
   info: RequestInfo
   init: RequestInit
   repeat: () => void
-  end: (result: any) => void
+  end: (result: RequestMiddlewareResult | Error) => void
   state: any
   deserializer?: (state: string) => any
 }
@@ -38,7 +43,7 @@ export const requestWithMiddleware = async (
     info: RequestInfo
   },
   middleware: RequestMiddlewareOptions
-): Promise<NarrowedResponse> => {
+): Promise<RequestMiddlewareResult> => {
   const responseMiddleware = new Array<
     RequestMiddleware<NarrowedResponse>
   >().concat(middleware.response ?? [])

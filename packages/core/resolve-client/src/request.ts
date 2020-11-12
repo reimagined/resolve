@@ -4,12 +4,13 @@ import { Context } from './context'
 import { getRootBasedUrl, isString } from './utils'
 import determineOrigin from './determine-origin'
 import { GenericError, HttpError } from './errors'
-import { RequestMiddlewareOptions } from './request-middleware'
+import {
+  RequestMiddlewareOptions,
+  requestWithMiddleware,
+} from './request-middleware'
 
 export const VALIDATED_RESULT = Symbol('VALIDATED_RESULT')
 export type NarrowedResponse = {
-  ok: boolean
-  status: number
   headers: {
     get: (name: string) => string | null
   }
@@ -221,12 +222,32 @@ export const request = async (
 
   init.headers = headers
 
-  const response = await insistentRequest(
-    determineFetch(context),
-    requestUrl,
-    init,
-    options
-  )
+  let response: NarrowedResponse
+
+  // middleware feature switch
+  if (options?.middleware != null) {
+    const middlewareResponse = await requestWithMiddleware(
+      {
+        fetch: determineFetch(context),
+        info: requestUrl,
+        init,
+      },
+      options.middleware
+    )
+    response = {
+      headers: middlewareResponse.headers,
+      [VALIDATED_RESULT]: middlewareResponse.result,
+      json: () => Promise.resolve(middlewareResponse.result),
+      text: () => Promise.resolve(middlewareResponse.result),
+    }
+  } else {
+    response = await insistentRequest(
+      determineFetch(context),
+      requestUrl,
+      init,
+      options
+    )
+  }
 
   if (jwtProvider && response.headers) {
     await jwtProvider.set(response.headers.get('x-jwt') ?? '')

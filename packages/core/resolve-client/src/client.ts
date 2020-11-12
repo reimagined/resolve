@@ -12,6 +12,7 @@ import { assertLeadingSlash, assertNonEmptyString } from './assertions'
 import { getRootBasedUrl, isAbsoluteUrl } from './utils'
 import determineOrigin from './determine-origin'
 import { ViewModelDeserializer } from './types'
+import { RequestMiddlewareOptions } from './request-middleware'
 
 function determineCallback<T>(options: any, callback: any): T | null {
   if (typeof options === 'function') {
@@ -40,8 +41,9 @@ export type CommandCallback<T extends Command> = (
   result: CommandResult | null,
   command: T
 ) => void
-export type CommandOptions = {}
-
+export type CommandOptions = {
+  middleware?: RequestMiddlewareOptions
+}
 export const command = (
   context: Context,
   cmd: Command,
@@ -111,6 +113,7 @@ export type QueryOptions = {
     period?: number
     attempts?: number
   }
+  middleware?: RequestMiddlewareOptions
 }
 export type QueryCallback<T extends Query> = (
   error: Error | null,
@@ -157,6 +160,7 @@ export const query = (
       }
     }
     requestOptions.method = options?.method ?? 'GET'
+    requestOptions.middleware = options?.middleware
   }
 
   const actualCallback = determineCallback<QueryCallback<Query>>(
@@ -191,10 +195,6 @@ export const query = (
   const asyncExec = async (): Promise<QueryResult> => {
     const response = await queryRequest
 
-
-
-
-
     const responseDate = response.headers.get('Date')
     if (!responseDate) {
       throw new GenericError(`"Date" header missed within response`)
@@ -211,8 +211,6 @@ export const query = (
     }
 
     try {
-
-
       let result
       if (VALIDATED_RESULT in response) {
         result = response[VALIDATED_RESULT]
@@ -236,9 +234,6 @@ export const query = (
         ...result,
         meta,
       }
-
-
-
     } catch (error) {
       throw new GenericError(error)
     }
