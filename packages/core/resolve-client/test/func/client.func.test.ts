@@ -416,7 +416,11 @@ test('middleware: refresh token example middleware test', async () => {
       }
     )
 
-  const result = await Promise.all([query('first'), query('second'), query('third')])
+  const result = await Promise.all([
+    query('first'),
+    query('second'),
+    query('third'),
+  ])
   const responseSample = {
     meta: {
       timestamp: 12345,
