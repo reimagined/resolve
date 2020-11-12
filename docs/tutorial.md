@@ -754,6 +754,48 @@ const appConfig = {
 export default appConfig
 ```
 
+### Query A View Model
+
+You can use the reSolve HTTP API to query a View Model:
+
+```bash
+$  curl -i -g -X GET "http://localhost:3000/api/query/shoppingList/shopping-list-1"
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 50
+ETag: W/"32-QoPdRfMTxfncCZnYSqRYIDifC/w"
+Date: Fri, 16 Nov 2018 12:10:58 GMT
+Connection: keep-alive
+
+{
+  "id": "shopping-list-1",
+  "name": "List 1",
+  "list": [
+    {
+      "id": "1",
+      "text": "Milk",
+      "checked": false
+    },
+    {
+      "id": "2",
+      "text": "Eggs",
+      "checked": false
+    },
+    {
+      "id": "3",
+      "text": "Canned beans",
+      "checked": false
+    },
+    {
+      "id": "4",
+      "text": "Paper towels",
+      "checked": false
+    }
+  ]
+}
+```
+
 ### Display View Model Data on the Client
 
 Add the following React components to your client application to display shopping list items:
