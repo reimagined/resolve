@@ -1049,3 +1049,332 @@ export default {
 ```
 
 ### Modify the Frontend
+
+Add a React component to create new shopping lists:
+
+##### client/components/ShoppingListCreator.js
+
+```jsx
+import React, { useState } from 'react'
+import { Button, Col, ControlLabel, FormControl, Row } from 'react-bootstrap'
+import { useCommand } from 'resolve-react-hooks'
+import uuid from 'uuid/v4'
+
+const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
+  const [shoppingListName, setShoppingListName] = useState('')
+
+  // The useCommandHook allows you send commands to reSolve.
+  const createShoppingListCommand = useCommand(
+    {
+      type: 'createShoppingList',
+      aggregateId: uuid(),
+      aggregateName: 'ShoppingList',
+      payload: {
+        name: shoppingListName || `Shopping List ${lists.length + 1}`
+      }
+    },
+    (err, result) => {
+      setShoppingListName('')
+      onCreateSuccess(err, result)
+    }
+  )
+
+  const updateShoppingListName = event => {
+    setShoppingListName(event.target.value)
+  }
+
+  const onShoppingListNamePressEnter = event => {
+    if (event.charCode === 13) {
+      event.preventDefault()
+      createShoppingListCommand()
+    }
+  }
+
+  return (
+    <div>
+      <ControlLabel>Shopping list name</ControlLabel>
+      <Row>
+        <Col md={8}>
+          <FormControl
+            type="text"
+            value={shoppingListName}
+            onChange={updateShoppingListName}
+            onKeyPress={onShoppingListNamePressEnter}
+          />
+        </Col>
+        <Col md={4}>
+          <Button bsStyle="success" onClick={createShoppingListCommand}>
+            Add Shopping List
+          </Button>
+        </Col>
+      </Row>
+    </div>
+  )
+}
+
+export default ShoppingListCreator
+```
+
+You can render this component within MyLists as shown below:
+
+##### client/components/MyLists.js
+
+```jsx
+const MyLists = () => {
+  ...
+  return (
+    <div className="example-wrapper">
+      ...
+      <ShoppingListCreator
+        lists={lists ? lists.data || [] : []}
+        onCreateSuccess={(err, result) => {
+          const nextLists = { ...lists }
+          nextLists.data.push({
+            name: result.payload.name,
+            createdAt: result.timestamp,
+            id: result.aggregateId,
+          })
+          setLists(nextLists)
+        }}
+      />
+    </div>
+  )
+}
+```
+
+The following component removes a shopping list:
+
+##### client/components/ShoppingListRemover.js
+
+```jsx
+import React from 'react'
+import { Button } from 'react-bootstrap'
+import { useCommand } from 'resolve-react-hooks'
+
+const ShoppingListRemover = ({ shoppingListId, onRemoveSuccess }) => {
+  // A command to remove the list
+  const removeShoppingListCommand = useCommand(
+    {
+      type: 'removeShoppingList',
+      aggregateId: shoppingListId,
+      aggregateName: 'ShoppingList'
+    },
+    onRemoveSuccess
+  )
+
+  return <Button onClick={removeShoppingListCommand}>Delete</Button>
+}
+
+export default ShoppingListRemover
+```
+
+Add this component each item in the ShoppingLists component's layout:
+
+##### client/components/ShoppingLists.js
+
+```jsx
+const ShoppingLists = ({ lists, onRemoveSuccess }) => {
+  return (
+    <div>
+        ...
+        <tbody>
+          {lists.map(({ id, name }, index) => (
+            <tr key={id}>
+              <td>{index + 1}</td>
+              <td>
+                <Link to={`/${id}`}>{name}</Link>
+              </td>
+              <td>
+                <ShoppingListRemover
+                  shoppingListId={id}
+                  onRemoveSuccess={onRemoveSuccess}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </div>
+  )
+}
+
+export default ShoppingLists
+```
+
+Also add an `onRemoveSuccess` handler to MyLists:
+
+##### client/components/MyLists.js
+
+```jsx
+const MyLists = () => {
+  ...
+  return (
+    <div className="example-wrapper">
+      <ShoppingLists
+        lists={lists ? lists.data || [] : []}
+        onRemoveSuccess={(err, result) => {
+          setLists({
+          ...lists,
+          data: lists.data.filter((list) => list.id !== result.aggregateId),
+         })
+      }}
+      />
+      ...
+    </div>
+  )
+}
+```
+
+The code below demonstrates how to implement data editing for the ShoppingList component:
+
+##### client/components/ShoppingList.js
+
+```jsx
+import React, { useState, useEffect } from 'react'
+import { useCommandBuilder, useViewModel } from 'resolve-react-hooks'
+
+import {
+  Row,
+  Col,
+  ListGroup,
+  Button,
+  InputGroup,
+  FormControl,
+  FormGroup,
+  ControlLabel
+} from 'react-bootstrap'
+
+import ShoppingListItem from './ShoppingListItem'
+
+const ShoppingList = ({
+  match: {
+    params: { id: aggregateId }
+  }
+}) => {
+  const [shoppingList, setShoppingList] = useState({
+    name: '',
+    id: null,
+    list: []
+  })
+  const { connect, dispose } = useViewModel(
+    'shoppingList',
+    [aggregateId],
+    setShoppingList
+  )
+  const [itemText, setItemText] = useState('')
+  const clearItemText = () => setItemText('')
+
+  // The useCommandBuilder hook creates a function that generates commands based on a parameter
+  const createShoppingItem = useCommandBuilder(
+    text => ({
+      type: 'createShoppingItem',
+      aggregateId,
+      aggregateName: 'ShoppingList',
+      payload: {
+        text,
+        id: Date.now().toString()
+      }
+    }),
+    clearItemText
+  )
+
+  const updateItemText = event => {
+    setItemText(event.target.value)
+  }
+  const onItemTextPressEnter = event => {
+    if (event.charCode === 13) {
+      event.preventDefault()
+      createShoppingItem(itemText)
+    }
+  }
+
+  useEffect(() => {
+    connect()
+    return () => {
+      dispose()
+    }
+  }, [])
+
+  return (
+    <div>
+      <ControlLabel>Shopping list name</ControlLabel>
+      <FormGroup bsSize="large">
+        <FormControl type="text" value={shoppingList.name} readOnly />
+      </FormGroup>
+      <ListGroup>
+        {shoppingList.list.map((item, idx) => (
+          <ShoppingListItem
+            shoppingListId={aggregateId}
+            key={idx}
+            item={item}
+          />
+        ))}
+      </ListGroup>
+      <ControlLabel>Item name</ControlLabel>
+      <Row>
+        <Col md={8}>
+          <FormControl
+            type="text"
+            value={itemText}
+            onChange={updateItemText}
+            onKeyPress={onItemTextPressEnter}
+          />
+        </Col>
+        <Col md={4}>
+          <Button
+            bsStyle="success"
+            onClick={() => createShoppingItem(itemText)}
+          >
+            Add Item
+          </Button>
+        </Col>
+      </Row>
+    </div>
+  )
+}
+
+export default ShoppingList
+```
+
+Modify the ShoppingListItem component to support item checking and deletion.
+
+##### client/components/ShoppingListItem.js
+
+```jsx
+import React from 'react'
+import { ListGroupItem, Checkbox, Button, Clearfix } from 'react-bootstrap'
+import { useCommand } from 'resolve-react-hooks'
+
+const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
+  const toggleItem = useCommand({
+    type: 'toggleShoppingItem',
+    aggregateId: shoppingListId,
+    aggregateName: 'ShoppingList',
+    payload: {
+      id
+    }
+  })
+  const removeItem = useCommand({
+    type: 'removeShoppingItem',
+    aggregateId: shoppingListId,
+    aggregateName: 'ShoppingList',
+    payload: {
+      id
+    }
+  })
+  return (
+    <ListGroupItem key={id}>
+      <Clearfix>
+        <Checkbox inline checked={checked} onChange={toggleItem}>
+          {text}
+        </Checkbox>
+        <Button onClick={removeItem} className="pull-right">
+          Delete
+        </Button>
+      </Clearfix>
+    </ListGroupItem>
+  )
+}
+
+export default ShoppingListItem
+```
