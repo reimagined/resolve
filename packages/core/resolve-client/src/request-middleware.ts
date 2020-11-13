@@ -49,9 +49,9 @@ export const requestWithMiddleware = async (
   },
   middleware: RequestMiddlewareOptions
 ): Promise<RequestMiddlewareResult | Error> => {
-  const responseMiddleware = new Array<RequestMiddleware<Response>>().concat(
-    middleware.response ?? [createParseResponseMiddleware()]
-  )
+  const responseMiddleware = new Array<RequestMiddleware<Response>>()
+    .concat(middleware.response ?? [])
+    .concat(createParseResponseMiddleware())
   const errorMiddleware = new Array<RequestMiddleware<Error>>().concat(
     middleware.error ?? []
   )
