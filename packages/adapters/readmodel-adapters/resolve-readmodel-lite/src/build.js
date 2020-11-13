@@ -8,7 +8,7 @@ const serializeError = (error) =>
       }
     : null
 
-const MAX_SEIZE_TIME = 3 * 1000 // 3 seconds
+const MAX_SEIZE_TIME = 1500 // 1.5 seconds
 
 const buildInit = async (pool, readModelName, store, projection, next) => {
   const {
