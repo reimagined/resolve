@@ -1,10 +1,7 @@
 import React from 'react'
 import { ControlLabel, Table } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
 
-import ShoppingListRemover from './ShoppingListRemover'
-
-const ShoppingLists = ({ lists, onRemoveSuccess }) => {
+const ShoppingLists = ({ lists }) => {
   return (
     <div>
       <ControlLabel>My shopping lists</ControlLabel>
@@ -13,7 +10,6 @@ const ShoppingLists = ({ lists, onRemoveSuccess }) => {
           <tr>
             <th>#</th>
             <th>Shopping List</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -21,13 +17,7 @@ const ShoppingLists = ({ lists, onRemoveSuccess }) => {
             <tr key={id}>
               <td>{index + 1}</td>
               <td>
-                <Link to={`/${id}`}>{name}</Link>
-              </td>
-              <td>
-                <ShoppingListRemover
-                  shoppingListId={id}
-                  onRemoveSuccess={onRemoveSuccess}
-                />
+                {name}
               </td>
             </tr>
           ))}

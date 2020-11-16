@@ -7,18 +7,10 @@ const appConfig = {
     },
   ],
   readModels: [
-    {
-      name: 'ShoppingLists',
-      projection: 'common/read-models/shopping_lists.projection.js',
-      resolvers: 'common/read-models/shopping_lists.resolvers.js',
-      connectorName: 'default'
-    }
+
   ],
   viewModels: [
-    {
-      name: 'shoppingList',
-      projection: 'common/view-models/shopping_list.projection.js',
-    },
+
   ],
   clientEntries: ['client/index.js'],
 }

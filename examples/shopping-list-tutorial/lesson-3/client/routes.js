@@ -1,6 +1,5 @@
 import App from './components/App'
 import MyLists from './components/MyLists'
-import ShoppingList from './components/ShoppingList'
 
 export default [
     {
@@ -11,10 +10,6 @@ export default [
                 component: MyLists,
                 exact: true,
             },
-            {
-                path: '/:id',
-                component: ShoppingList,
-              },
         ],
     },
 ]

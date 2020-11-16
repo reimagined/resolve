@@ -1,5 +1,6 @@
 import React from 'react'
 import { ControlLabel, Table } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
 const ShoppingLists = ({ lists }) => {
   return (
@@ -17,7 +18,7 @@ const ShoppingLists = ({ lists }) => {
             <tr key={id}>
               <td>{index + 1}</td>
               <td>
-                {name}
+                <Link to={`/${id}`}>{name}</Link>
               </td>
             </tr>
           ))}
