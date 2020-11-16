@@ -19,13 +19,21 @@ const createSaga = ({
   eventstoreAdapter,
   getRemainingTimeInMillis,
   performAcknowledge,
+  onError = async () => void 0,
 }) => {
+  const onSagaError = async (error) => {
+    try {
+      await onError(error, 'saga')
+    } catch (e) {}
+  }
+
   const schedulerAggregatesNames = new Set(schedulers.map(({ name }) => name))
   let eventProperties = {}
   const executeScheduleCommand = createCommand({
     aggregates: createSchedulersAggregates(schedulers),
     onCommandExecuted,
     eventstoreAdapter,
+    onError: onSagaError,
   })
 
   const executeCommandOrScheduler = async (...args) => {
@@ -90,6 +98,7 @@ const createSaga = ({
     getRemainingTimeInMillis,
     performAcknowledge,
     eventstoreAdapter,
+    onError: onSagaError,
   })
 
   const sendEvents = async ({

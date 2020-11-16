@@ -9,6 +9,12 @@ const apiGatewayHandler = async (lambdaEvent, lambdaContext, resolve) => {
     getCustomParameters.bind(null, resolve)
   )
 
+  const onError = async (error) => {
+    try {
+      await resolve.onError(error, 'api-handler')
+    } catch (e) {}
+  }
+
   const segment = resolve.performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('apiHandler')
 
@@ -16,6 +22,7 @@ const apiGatewayHandler = async (lambdaEvent, lambdaContext, resolve) => {
     return await executor(lambdaEvent, lambdaContext)
   } catch (error) {
     subSegment.addError(error)
+    await onError(error)
     throw error
   } finally {
     subSegment.close()

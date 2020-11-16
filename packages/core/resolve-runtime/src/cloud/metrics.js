@@ -101,7 +101,10 @@ export const putErrorMetrics = async (error, part) => {
 
     if (errorMessage.length > MAX_METRICS_DIMENSION_VALUE_LENGTH) {
       const messageEnd = '...'
-      errorMessage = `${errorMessage.slice(0, MAX_METRICS_DIMENSION_VALUE_LENGTH - messageEnd.length)}${messageEnd}`
+      errorMessage = `${errorMessage.slice(
+        0,
+        MAX_METRICS_DIMENSION_VALUE_LENGTH - messageEnd.length
+      )}${messageEnd}`
     }
 
     await cw
@@ -116,7 +119,7 @@ export const putErrorMetrics = async (error, part) => {
             Dimensions: [
               {
                 Name: 'DeploymentId',
-                Value: deploymentId
+                Value: deploymentId,
               },
               {
                 Name: 'Part',
@@ -124,9 +127,9 @@ export const putErrorMetrics = async (error, part) => {
               },
               {
                 Name: 'Error',
-                Value: errorMessage
-              }
-            ]
+                Value: errorMessage,
+              },
+            ],
           },
           {
             MetricName: 'Errors',
@@ -141,7 +144,7 @@ export const putErrorMetrics = async (error, part) => {
               {
                 Name: 'Part',
                 Value: part,
-              }
+              },
             ],
           },
           {
@@ -153,10 +156,10 @@ export const putErrorMetrics = async (error, part) => {
               {
                 Name: 'DeploymentId',
                 Value: deploymentId,
-              }
+              },
             ],
           },
-        ]
+        ],
       })
       .promise()
 
@@ -166,5 +169,3 @@ export const putErrorMetrics = async (error, part) => {
     log.warn(e)
   }
 }
-
-export default putMetrics

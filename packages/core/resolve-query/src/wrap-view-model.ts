@@ -344,7 +344,7 @@ const wrapViewModel = ({
     isDisposed: false,
     performanceTracer,
     getSecretsManager,
-    onError
+    onError,
   }
 
   return Object.freeze({

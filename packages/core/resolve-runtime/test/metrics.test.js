@@ -28,7 +28,12 @@ describe('put duration metrics', () => {
   afterEach(() => {})
 
   test('bootstrap metric', async () => {
-    await putDurationMetrics({ part: 'bootstrapping' }, lambdaContext, false, 3000)
+    await putDurationMetrics(
+      { part: 'bootstrapping' },
+      lambdaContext,
+      false,
+      3000
+    )
     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
     expect(lambdaContext.getRemainingTimeInMillis).toBeCalledTimes(1)
     expect(CloudWatch.putMetricData).toBeCalledWith({

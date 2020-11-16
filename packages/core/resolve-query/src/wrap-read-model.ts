@@ -752,7 +752,7 @@ const wrapReadModel = ({
   performanceTracer,
   getRemainingTimeInMillis,
   performAcknowledge,
-  onError = async () => void 0
+  onError = async () => void 0,
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
   const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
@@ -776,7 +776,7 @@ const wrapReadModel = ({
     getSecretsManager,
     getRemainingTimeInMillis,
     performAcknowledge,
-    onError
+    onError,
   }
 
   const api = {

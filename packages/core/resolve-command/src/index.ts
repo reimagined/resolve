@@ -451,9 +451,7 @@ const executeCommand = async (
       const error = generateCommandError(
         `Aggregate "${aggregateName}" does not exist`
       )
-      try {
-        await pool.onError(error, 'command')
-      } catch (e) {}
+      await pool.onError(error, 'command')
       throw error
     }
 
@@ -469,10 +467,7 @@ const executeCommand = async (
         `Command type "${type}" does not exist`
       )
 
-      try {
-        await pool.onError(error, 'command')
-      } catch (e) {}
-
+      await pool.onError(error, 'command')
       throw error
     }
 
@@ -497,9 +492,7 @@ const executeCommand = async (
         if (subSegment != null) {
           subSegment.addError(error)
         }
-        try {
-          await pool.onError(error, 'command')
-        } catch (e) {}
+        await pool.onError(error, 'command')
         throw error
       } finally {
         if (subSegment != null) {
@@ -532,9 +525,7 @@ const executeCommand = async (
 
     if (!checkOptionShape(event.type, [String])) {
       const error = generateCommandError('Event "type" is required')
-      try {
-        await pool.onError(error, 'command')
-      } catch (e) {}
+      await pool.onError(error, 'command')
       throw error
     }
 
@@ -549,10 +540,7 @@ const executeCommand = async (
         'Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields'
       )
 
-      try {
-        await pool.onError(error, 'command')
-      } catch (e) {}
-
+      await pool.onError(error, 'command')
       throw error
     }
 
@@ -579,9 +567,7 @@ const executeCommand = async (
         if (subSegment != null) {
           subSegment.addError(error)
         }
-        try {
-          await pool.onError(error, 'command')
-        } catch (e) {}
+        await pool.onError(error, 'command')
         throw error
       } finally {
         if (subSegment != null) {
@@ -595,9 +581,7 @@ const executeCommand = async (
     if (subSegment != null) {
       subSegment.addError(error)
     }
-    try {
-      await pool.onError(error, 'command')
-    } catch (e) {}
+    await pool.onError(error, 'command')
     throw error
   } finally {
     if (subSegment != null) {
@@ -622,6 +606,7 @@ const dispose = async (pool: CommandPool): Promise<void> => {
     if (subSegment != null) {
       subSegment.addError(error)
     }
+    error.onError(error, 'command')
     throw error
   } finally {
     if (subSegment != null) {
@@ -635,7 +620,7 @@ const createCommand: CommandExecutorBuilder = ({
   aggregates,
   performanceTracer,
   eventstoreAdapter,
-  onError,
+  onError = async () => void 0,
 }): CommandExecutor => {
   const pool = {
     onCommandExecuted,
@@ -643,7 +628,11 @@ const createCommand: CommandExecutorBuilder = ({
     isDisposed: false,
     performanceTracer,
     eventstoreAdapter,
-    onError,
+    onError: async (error: Error, part: string) => {
+      try {
+        await onError(error, part)
+      } catch (e) {}
+    },
   }
 
   const api = {
