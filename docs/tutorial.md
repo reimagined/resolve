@@ -4,9 +4,9 @@ title: Step-by-Step Tutorial
 ---
 
 This document provides a step-by-step tutorial for the reSolve framework.
-Throughout this tutorial, you will create a single application. You will modify your application as you learn new concepts, so with every consequent lesson the application will become more and more sophisticated.
+Throughout this tutorial, you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
 
-This tutorial will give you an understanding of the reSolve framework and its fundamental concepts. It is recommended that your familiarize yourself with event sourcing and CQRS before you start this tutorial, however it is not strictly required.
+We recommend that your familiarize yourself with basics of event sourcing and CQRS before you start this tutorial. You can find a curated list of resources in the [FAQ](faq.md).
 
 ## Table of Contents
 
@@ -16,7 +16,6 @@ This tutorial will give you an understanding of the reSolve framework and its fu
 - [Lesson 4 - Frontend - Display View Model Data in the Browser](#lesson-4-frontend-display-view-model-data-in-the-browser)
 - [Lesson 5 - Frontend - Enable Data Editing](#lesson-5-frontend-enable-data-editing)
 - [Lesson 6 - Frontend - Support Multiple Shopping Lists](#lesson-6-frontend-support-multiple-shopping-lists)
-- [Lesson 7 - Functionality Enhancements](#lesson-7-functionality-enhancements)
 
 ---
 
@@ -1150,7 +1149,7 @@ const MyLists = () => {
 }
 ```
 
-The following component removes a shopping list:
+The following component implements a **Delete** button for a shopping list:
 
 ##### client/components/ShoppingListRemover.js
 
