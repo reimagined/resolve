@@ -256,7 +256,7 @@ const createResponse = () => {
   return Object.freeze(res)
 }
 
-const wrapApiHandler = (handler, getCustomParameters) => async (
+const wrapApiHandler = (handler, getCustomParameters, onError) => async (
   lambdaEvent,
   lambdaContext,
   lambdaCallback
@@ -289,9 +289,7 @@ const wrapApiHandler = (handler, getCustomParameters) => async (
         ? `${error.stack}`
         : `Unknown error ${error}`
 
-    // try {
-    //   await pool.onError(error, 'api-handler')
-    // } catch (e) {}
+    await onError(error)
 
     // eslint-disable-next-line no-console
     console.error(outError)
