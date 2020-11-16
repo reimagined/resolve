@@ -52,7 +52,7 @@
     "socket.io-client": "^2.2.0",
     "testcafe": "^1.8.3",
     "testcafe-browser-tools": "^2.0.10",
-    "uuid": "^3.3.2",
+    "uuid": "8.3.1",
     "webpack": "^4.42.0",
     "webpack-node-externals": "^1.7.2",
     "resolve-debug-levels": "0.25.18"

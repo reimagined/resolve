@@ -1,8 +1,9 @@
 import AppContainer from './app-container'
 import createStore from './create-store'
+import { createResolveStore } from './create-resolve-store'
 
-import connectStaticBasedUrls from './urls/connect-static-based-urls'
-import connectRootBasedUrls from './urls/connect-root-based-urls'
+import { connectStaticBasedUrls } from './urls/connect-static-based-urls'
+import { connectRootBasedUrls } from './urls/connect-root-based-urls'
 import connectReadModel from './read-model/connect-read-model'
 import connectViewModel from './view-model/connect-view-model'
 
@@ -14,26 +15,22 @@ import { useReduxViewModel } from './view-model/use-redux-view-model'
 import { useReduxViewModelSelector } from './view-model/use-redux-view-model-selector'
 
 import getOrigin from './internal/get-origin'
-import { Provider, Consumer } from './internal/resolve-context'
-import Providers from './internal/providers'
 import * as actionTypes from './internal/action-types'
 import deserializeInitialState from './internal/deserialize-initial-state'
 import connectResolveAdvanced from './internal/connect-resolve-advanced'
 
 import { ResultStatus } from './types'
+import { ResolveReduxProvider } from './resolve-redux-provider'
 
 const internal = {
   actionTypes,
   getOrigin,
-  Provider,
-  Consumer,
-  Providers,
   deserializeInitialState,
 }
 
 export {
-  AppContainer,
-  createStore,
+  ResolveReduxProvider,
+  createResolveStore,
   sendAggregateAction,
   connectViewModel,
   connectReadModel,
@@ -47,6 +44,8 @@ export {
   ResultStatus,
   internal,
   // deprecated, encapsulation breach
+  AppContainer,
+  createStore,
   getOrigin,
   deserializeInitialState,
   connectResolveAdvanced,

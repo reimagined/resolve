@@ -9,7 +9,7 @@
     "build": "echo || exit 0",
     "start": "echo || exit 0",
     "test": "echo || exit 0",
-    "test:e2e": "echo || exit 0",
+    "test:e2e": "babel-node ./run.js test:e2e",
     "import-event-store": "echo || exit 0",
     "export-event-store": "echo || exit 0"
   },

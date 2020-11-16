@@ -9,7 +9,7 @@
     "dev": "babel-node ./run.js dev",
     "start": "babel-node ./run.js start",
     "test": "echo || exit 0",
-    "test:e2e": "echo || exit 0",
+    "test:e2e": "babel-node ./run.js test:e2e",
     "import-event-store": "echo || exit 0",
     "export-event-store": "echo || exit 0"
   },
@@ -20,6 +20,7 @@
     "bootstrap": "4.3.1",
     "copy-webpack-plugin": "5.1.2",
     "css-loader": "3.2.0",
+    "resolve-client": "0.25.18",
     "resolve-scripts": "0.25.18",
     "resolve-eventstore-postgresql-serverless": "0.25.18",
     "resolve-eventstore-lite": "0.25.18",
@@ -27,9 +28,9 @@
     "resolve-readmodel-postgresql-serverless": "0.25.18",
     "vue-loader": "15.7.1",
     "vue-highlighter": "2.5.3",
-    "vue-template-compiler": "2.6.10",
+    "vue-template-compiler": "2.6.12",
     "vue-server-renderer": "2.6.12",
-    "vue": "2.6.10"
+    "vue": "2.6.12"
   },
   "devDependencies": {
     "aws-sdk": "2.631.0",

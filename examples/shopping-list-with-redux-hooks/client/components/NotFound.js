@@ -12,7 +12,7 @@ class NotFound extends React.PureComponent {
         <br />
         <br />
         <Link to="/">
-          <Button bsStyle="primary">Take Me Home</Button>
+          <Button variant="primary">Take Me Home</Button>
         </Link>
       </div>
     )
