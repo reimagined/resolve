@@ -1957,3 +1957,103 @@ describe('dispose', () => {
     })
   })
 })
+
+describe('onError', () => {
+  test('calls onError when command error is thrown', async () => {
+    const aggregate = makeAggregateMeta({
+      encryption: () => Promise.resolve({}),
+      name: 'empty',
+      commands: {
+        emptyCommand: () => {
+          throw new Error('Empty command failed')
+        },
+      },
+    })
+
+    const onError = jest.fn()
+
+    const executeCommand = createCommandExecutor({
+      eventstoreAdapter,
+      onCommandExecuted,
+      aggregates: [aggregate],
+      onError,
+    })
+
+    try {
+      await executeCommand({
+        aggregateName: 'empty',
+        aggregateId: 'aggregateId',
+        type: 'emptyCommand',
+      })
+
+      throw new Error('Test must be failed')
+    } catch (e) {
+      expect(onError).toBeCalledWith(e, 'command')
+    }
+  })
+
+  test('does not affect command workflow if onError is failed', async () => {
+    const aggregate = makeAggregateMeta({
+      encryption: () => Promise.resolve({}),
+      name: 'empty',
+      commands: {
+        emptyCommand: () => {
+          throw new Error('Empty command failed')
+        },
+      },
+    })
+
+    const onError = () => {
+      throw new Error('onError failed')
+    }
+
+    const executeCommand = createCommandExecutor({
+      eventstoreAdapter,
+      onCommandExecuted,
+      aggregates: [aggregate],
+      onError,
+    })
+
+    try {
+      await executeCommand({
+        aggregateName: 'empty',
+        aggregateId: 'aggregateId',
+        type: 'emptyCommand',
+      })
+
+      throw new Error('Test must be failed')
+    } catch (e) {
+      expect(e.message).toContain('Empty command failed')
+    }
+  })
+
+  test('does not affect command workflow if onError is absent', async () => {
+    const aggregate = makeAggregateMeta({
+      encryption: () => Promise.resolve({}),
+      name: 'empty',
+      commands: {
+        emptyCommand: () => {
+          throw new Error('Empty command failed')
+        },
+      },
+    })
+
+    const executeCommand = createCommandExecutor({
+      eventstoreAdapter,
+      onCommandExecuted,
+      aggregates: [aggregate],
+    })
+
+    try {
+      await executeCommand({
+        aggregateName: 'empty',
+        aggregateId: 'aggregateId',
+        type: 'emptyCommand',
+      })
+
+      throw new Error('Test must be failed')
+    } catch (e) {
+      expect(e.message).toContain('Empty command failed')
+    }
+  })
+})
