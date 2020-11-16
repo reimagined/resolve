@@ -1,5 +1,5 @@
 import React from 'react'
-import { ControlLabel, Table } from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import ShoppingListRemover from './ShoppingListRemover'
@@ -7,7 +7,6 @@ import ShoppingListRemover from './ShoppingListRemover'
 const ShoppingLists = ({ lists, onRemoveSuccess }) => {
   return (
     <div>
-      <ControlLabel>My shopping lists</ControlLabel>
       <Table responsive>
         <thead>
           <tr>

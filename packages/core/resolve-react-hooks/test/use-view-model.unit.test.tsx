@@ -50,6 +50,7 @@ const mockClient = {
     })
   ),
   getStaticAssetUrl: jest.fn(),
+  getOriginPath: jest.fn(),
   subscribe: jest.fn().mockResolvedValue({ key: 'subscription-data' }),
   unsubscribe: jest.fn(),
 }

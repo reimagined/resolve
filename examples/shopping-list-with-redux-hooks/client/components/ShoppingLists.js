@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Button, FormLabel, Table } from 'react-bootstrap'
+import { Button, Form, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { useReduxCommand, useReduxReadModel } from 'resolve-redux'
 import { useSelector } from 'react-redux'
@@ -64,7 +64,7 @@ export default () => {
 
   return (
     <div>
-      <FormLabel>My shopping lists</FormLabel>
+      <Form.Label>My shopping lists</Form.Label>
       <Table responsive>
         <thead>
           <tr>

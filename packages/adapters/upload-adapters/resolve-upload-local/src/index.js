@@ -1,6 +1,6 @@
 import fs from 'fs'
 import request from 'request'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 import crypto from 'crypto'
 
 const createPresignedPut = async (pool, dir) => {
