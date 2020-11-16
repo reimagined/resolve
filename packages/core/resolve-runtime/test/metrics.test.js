@@ -1,13 +1,14 @@
-import putMetrics from '../src/cloud/metrics'
+/* eslint-disable no-console */
+import { putDurationMetrics } from '../src/cloud/metrics'
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
 
 const lambdaContext = {
   getVacantTimeInMillis: jest.fn().mockReturnValue(1000),
 }
-/* eslint-disable no-console */
+
 const consoleInfoOldHandler = console.info
 
-describe('put metrics', () => {
+describe('put duration metrics', () => {
   beforeAll(async () => {
     console.info = jest.fn()
     process.env.RESOLVE_DEPLOYMENT_ID = 'deployment-id'
@@ -27,7 +28,12 @@ describe('put metrics', () => {
   afterEach(() => {})
 
   test('bootstrap metric', async () => {
-    await putMetrics({ part: 'bootstrapping' }, lambdaContext, false, 3000)
+    await putDurationMetrics(
+      { part: 'bootstrapping' },
+      lambdaContext,
+      false,
+      3000
+    )
     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
     expect(lambdaContext.getVacantTimeInMillis).toBeCalledTimes(1)
     expect(CloudWatch.putMetricData).toBeCalledWith({
@@ -57,7 +63,7 @@ describe('put metrics', () => {
   })
 
   test('query metric', async () => {
-    await putMetrics(
+    await putDurationMetrics(
       { path: '/deployment-id.resolve.sh/api/query/any' },
       lambdaContext,
       false,
@@ -97,7 +103,7 @@ describe('put metrics', () => {
   })
 
   test('command metric', async () => {
-    await putMetrics(
+    await putDurationMetrics(
       { path: '/deployment-id.resolve.sh/api/commands/any' },
       lambdaContext,
       false,
@@ -137,7 +143,7 @@ describe('put metrics', () => {
   })
 
   test('route metric', async () => {
-    await putMetrics(
+    await putDurationMetrics(
       { path: '/deployment-id.resolve.sh/any-route' },
       lambdaContext,
       false,
@@ -177,7 +183,7 @@ describe('put metrics', () => {
   })
 
   test('subscribe metric', async () => {
-    await putMetrics(
+    await putDurationMetrics(
       { path: '/deployment-id.resolve.sh/api/subscribe' },
       lambdaContext,
       false,
@@ -217,7 +223,7 @@ describe('put metrics', () => {
   })
 
   test('cold start metric', async () => {
-    await putMetrics(
+    await putDurationMetrics(
       { path: '/deployment-id.resolve.sh/any-route' },
       lambdaContext,
       true,
@@ -264,4 +270,3 @@ describe('put metrics', () => {
     })
   })
 })
-/* eslint-enable no-console */

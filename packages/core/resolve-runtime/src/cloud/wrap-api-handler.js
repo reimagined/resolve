@@ -256,11 +256,11 @@ const createResponse = () => {
   return Object.freeze(res)
 }
 
-const wrapApiHandler = (handler, getCustomParameters) => async (
-  lambdaEvent,
-  lambdaContext,
-  lambdaCallback
-) => {
+const wrapApiHandler = (
+  handler,
+  getCustomParameters,
+  onError = async () => void 0
+) => async (lambdaEvent, lambdaContext, lambdaCallback) => {
   let result
   try {
     const customParameters =
@@ -288,6 +288,8 @@ const wrapApiHandler = (handler, getCustomParameters) => async (
       error != null && error.stack != null
         ? `${error.stack}`
         : `Unknown error ${error}`
+
+    await onError(error)
 
     // eslint-disable-next-line no-console
     console.error(outError)

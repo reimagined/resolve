@@ -1,10 +1,11 @@
 import { EOL } from 'os'
 // TODO: core cannot reference "top-level" packages, move these to resolve-core
 import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
+import { SecretsManager } from 'resolve-core'
+
 import getLog from './get-log'
 import { WrapReadModelOptions, SerializedError, ReadModelPool } from './types'
 import parseReadOptions from './parse-read-options'
-import { SecretsManager } from 'resolve-core'
 
 const wrapConnection = async (
   pool: ReadModelPool,
@@ -218,6 +219,13 @@ const sendEvents = async (
         log.verbose(error.stack)
         lastFailedEvent = event
 
+        try {
+          await pool.onError(error, 'read-model-projection')
+        } catch (e) {
+          log.verbose('onError function call failed')
+          log.verbose(e.stack)
+        }
+
         throw error
       }
     }
@@ -429,6 +437,11 @@ const read = async (
         `Resolver "${resolverName}" does not exist`
       ) as any
       error.code = 422
+
+      try {
+        await pool.onError(error, 'read-model-resolver')
+      } catch (e) {}
+
       throw error
     }
 
@@ -464,6 +477,10 @@ const read = async (
           if (subSegment != null) {
             subSegment.addError(error)
           }
+          try {
+            await pool.onError(error, 'read-model-resolver')
+          } catch (e) {}
+
           throw error
         } finally {
           if (subSegment != null) {
@@ -476,6 +493,11 @@ const read = async (
     if (subSegment != null) {
       subSegment.addError(error)
     }
+
+    try {
+      await pool.onError(error, 'read-model-resolver')
+    } catch (e) {}
+
     throw error
   } finally {
     if (subSegment != null) {
@@ -728,6 +750,7 @@ const wrapReadModel = ({
   performanceTracer,
   getVacantTimeInMillis,
   performAcknowledge,
+  onError = async () => void 0,
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
   const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
@@ -751,6 +774,7 @@ const wrapReadModel = ({
     getSecretsManager,
     getVacantTimeInMillis,
     performAcknowledge,
+    onError,
   }
 
   const api = {
