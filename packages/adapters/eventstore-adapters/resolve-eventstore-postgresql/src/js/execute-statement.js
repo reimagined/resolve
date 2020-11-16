@@ -35,6 +35,14 @@ const executeStatement = async (pool, sql) => {
     const error = new Error()
     error.message = errors.map(({ message }) => message).join(EOL)
     error.stack = errors.map(({ stack }) => stack).join(EOL)
+
+    const errorCodes = new Set(
+      errors.map(({ code }) => code).filter((code) => code != null)
+    )
+    if (errorCodes.size === 1) {
+      error.code = [...errorCodes][0]
+    }
+
     throw error
   }
 

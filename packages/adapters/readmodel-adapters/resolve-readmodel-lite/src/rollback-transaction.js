@@ -1,5 +1,5 @@
-const rollbackTransaction = async ({ runRawQuery }) => {
-  await runRawQuery(`ROLLBACK;`)
+const rollbackTransaction = async ({ runQuery }) => {
+  await runQuery(`ROLLBACK;`)
 }
 
 export default rollbackTransaction

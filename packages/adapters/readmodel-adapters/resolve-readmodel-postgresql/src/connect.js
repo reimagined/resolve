@@ -53,7 +53,33 @@ const connect = async (imports, pool, options) => {
     return rows
   }
 
-  const eventCounters = new Map()
+  const inlineLedgerRunQuery = async (
+    sql,
+    passthroughRuntimeErrors = false
+  ) => {
+    let result = null
+    try {
+      result = await connection.query(sql)
+    } catch (error) {
+      if (
+        imports.PassthroughError.isPassthroughError(
+          error,
+          !!passthroughRuntimeErrors
+        )
+      ) {
+        throw new imports.PassthroughError()
+      } else {
+        throw error
+      }
+    }
+    let rows = null
+
+    if (result != null && Array.isArray(result.rows)) {
+      rows = JSON.parse(JSON.stringify(result.rows))
+    }
+
+    return rows
+  }
 
   Object.assign(pool, {
     performanceTracer,
@@ -63,7 +89,7 @@ const connect = async (imports, pool, options) => {
     makeNestedPath,
     transactionId: null,
     readModelName: null,
-    eventCounters,
+    inlineLedgerRunQuery,
     runQuery,
     connection,
     ...imports,

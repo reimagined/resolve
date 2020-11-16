@@ -1,43 +1,34 @@
-const runRawQuery = async (pool, querySQL) => {
-  const connection = await pool.connectionPromise
-
-  const result = await connection.query(querySQL)
-  return result
-}
-
 const runQuery = async (pool, querySQL) => {
-  const [rows] = await runRawQuery(pool, querySQL)
+  const [rows] = await pool.connection.query(querySQL)
   return rows
 }
 
-const setupConnection = async (pool) => {
-  if (pool.isDisconnected) {
-    pool.connectionPromise = null
-    return
-  }
-  pool.connectionPromise = pool.MySQL.createConnection({
-    ...pool.connectionOptions,
-    multipleStatements: true,
-  })
-  const connection = await pool.connectionPromise
-
-  const [[{ version }]] = await connection.query(
-    `SELECT version() AS \`version\``
-  )
-  const major = +version.split('.')[0]
-  if (isNaN(major) || major < 8) {
-    throw new Error(`Supported MySQL version 8+, but got ${version}`)
-  }
-
-  connection.onerror = async (err) => {
-    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-      return await setupConnection(pool)
+const inlineLedgerRunQuery = async (
+  pool,
+  querySQL,
+  passthroughRuntimeErrors = false
+) => {
+  let rows = null
+  try {
+    void ([rows] = await pool.connection.query(querySQL))
+  } catch (error) {
+    if (
+      pool.PassthroughError.isPassthroughError(
+        error,
+        !!passthroughRuntimeErrors
+      )
+    ) {
+      throw new pool.PassthroughError()
+    } else {
+      throw error
     }
-
-    pool.lastMysqlError = err
-    // eslint-disable-next-line no-console
-    console.warn('SQL error: ', err)
   }
+
+  if (rows != null && Array.isArray(rows)) {
+    rows = JSON.parse(JSON.stringify(rows))
+  }
+
+  return rows
 }
 
 const makeNestedPath = (nestedPath) => {
@@ -57,7 +48,14 @@ const makeNestedPath = (nestedPath) => {
 }
 
 const connect = async (imports, pool, options) => {
-  let { tablePrefix, performanceTracer, ...connectionOptions } = options
+  let {
+    tablePrefix,
+    performanceTracer,
+    preferInlineLedger,
+    eventstoreAdapter,
+    ...connectionOptions
+  } = options
+  void (preferInlineLedger, eventstoreAdapter)
 
   if (
     tablePrefix == null ||
@@ -66,17 +64,28 @@ const connect = async (imports, pool, options) => {
     tablePrefix = ''
   }
 
+  const connection = await imports.MySQL.createConnection({
+    ...connectionOptions,
+    multipleStatements: true,
+  })
+
+  const [[{ version }]] = await connection.query(
+    `SELECT version() AS \`version\``
+  )
+  const major = +version.split('.')[0]
+  if (isNaN(major) || major < 8) {
+    throw new Error(`Supported MySQL version 8+, but got ${version}`)
+  }
+
   Object.assign(pool, {
-    runRawQuery: runRawQuery.bind(null, pool),
+    inlineLedgerRunQuery: inlineLedgerRunQuery.bind(null, pool),
     runQuery: runQuery.bind(null, pool),
-    connectionOptions,
     performanceTracer,
     tablePrefix,
     makeNestedPath,
+    connection,
     ...imports,
   })
-
-  await setupConnection(pool)
 }
 
 export default connect
