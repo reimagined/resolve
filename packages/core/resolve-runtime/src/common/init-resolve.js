@@ -36,7 +36,7 @@ const initResolve = async (resolve) => {
     })
   }
 
-  if (!resolve.hasOwnProperty('getVacantTimeInMillis')) {
+  if (resolve.getVacantTimeInMillis == null) {
     const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
     resolve.getVacantTimeInMillis = () => endTime - Date.now()
   }

@@ -60,7 +60,10 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   }
 
   const resolve = Object.create(resolveBase)
-  resolve.getVacantTimeInMillis = getVacantTimeInMillis.bind(lambdaContext)
+  resolve.getVacantTimeInMillis = getVacantTimeInMillis.bind(
+    null,
+    lambdaContext
+  )
 
   const lambdaRemainingTimeStart = lambdaContext.getRemainingTimeInMillis()
 
