@@ -21,7 +21,7 @@ We recommend that your familiarize yourself with basics of event sourcing and CQ
 
 ## **Preparation** - Create a New reSolve Application
 
-Use the create-resolve-app tool to create a new reSolve app:
+Use the **create-resolve-app** tool to create a new reSolve application:
 
 ##### npm:
 
@@ -76,7 +76,7 @@ Next, define an aggregate that handles commands and produces the defined events 
 ```js
 import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from '../eventTypes'
 
-// This file exports an object that contains two command handlers
+// This file exports an object that contains two command handlers.
 export default {
   // A command handler receives the aggregate state and a command payload.
   // A payload can contain arbitrary data related to the command.
@@ -102,12 +102,12 @@ A command handler returns an **event** object. This object should contain the fo
 - **type** - specifies the event's type;
 - **payload** - specifies data associated with the event.
 
-The reSolve framework saves events that command handlers return to a persistent **[event store](write-side.md#event-store)**. Your application is already configured to use a SQLite event store. We suggest that you keep this configuration throughout the tutorial. For information on how to use other storage types see the following documentation topics:
+The reSolve framework saves produced events to a persistent **[event store](write-side.md#event-store)**. A newly created application is configured to use a SQLite event store. We suggest that you keep this configuration throughout the tutorial. For information on how to use other storage types see the following documentation topics:
 
 - [Adapters](https://github.com/reimagined/resolve/blob/master/docs/advanced-techniques.md#adapters)
 - [Configuring Adapters](https://github.com/reimagined/resolve/blob/master/docs/preparing-to-production.md#configuring-adapters)
 
-Your shopping list aggregate is now ready. The last step is to register it in the application's configuration file. To do this, open the **config.app.js** file and specify the following settings in the **aggregates** configuration section:
+The last step is to register the implemented aggregate in the application's configuration file. To do this, open the **config.app.js** file and specify the following settings in the **aggregates** configuration section:
 
 **config.app.js:**
 
@@ -115,7 +115,9 @@ Your shopping list aggregate is now ready. The last step is to register it in th
 ...
 aggregates: [
   {
+    // The aggregate name
     name: 'ShoppingList',
+    // A path to the file that defines the aggregate's command handlers
     commands: 'common/aggregates/shopping_list.commands.js',
   }
 ],
@@ -124,7 +126,7 @@ aggregates: [
 
 ### Sending Commands to an Aggregate
 
-Now that your application can handle commands, you can use the reSolve framework's HTTP API to send such commands to create a shopping list and populate it with items.
+Now that your application can handle commands, you can use the reSolve framework's HTTP API to send such commands to create shopping lists and populate them with items.
 
 A request body should have the `application/json` content type and contain a JSON representation of the command:
 
@@ -215,7 +217,7 @@ Content-Length: 182
 }
 ```
 
-You can now check the event store database to see the newly created events. To do this, use the [Command Line Shell For SQLite](https://sqlite.org/cli.html) or any compatible database management tool:
+You can now check the event store database to see the newly created events. To do this, use the [Command Line Shell For SQLite](https://sqlite.org/cli.html) database management tool compatible with SQLite:
 
 <!-- prettier-ignore-start -->
 
@@ -252,7 +254,7 @@ createShoppingItem: (state, { payload: { id, text } }) => {
 }
 ```
 
-To overcome the second and third issues, you need to have an **aggregate state** object that keeps track of what shopping lists were already created. Such object can be assembled on the fly by an aggregate **projection** from previously created events. To add a projection to the ShoppingList aggregate, create a **shopping_list.projection.js** file in the **common/aggregates** folder and add the following code there:
+To overcome the second and third issues, you need to have an **aggregate state** object that keeps track of what shopping lists were already created. Such object can be assembled on the fly by an aggregate **projection** from previously created events with the same aggregate ID. To add a projection to the ShoppingList aggregate, create a **shopping_list.projection.js** file in the **common/aggregates** folder and add the following code there:
 
 **common/aggregates/shopping_list.projection.js:**
 
@@ -263,10 +265,14 @@ To overcome the second and third issues, you need to have an **aggregate state**
 import { SHOPPING_LIST_CREATED } from "../eventTypes";
 
 export default {
+  // The Init function initializes a state object
   Init: () => ({}),
+  // A projection function updates the state based on events.
+  // Each such function is assotiated with a single event type.
+  // It recieves the state and an event and returns the updated state.
   [SHOPPING_LIST_CREATED]: (state, { timestamp }) => ({
     ...state,
-    createdAt: timestamp
+    createdAt: timestamp  // Add an event's timestamp to the state.
   })
 };
 ```
@@ -285,6 +291,7 @@ Register the create projection in the application's configuration file:
     {
       name: "ShoppingList",
       commands: "common/aggregates/shopping_list.commands.js",
+      // A path to the file that defines the projection
       projection: "common/aggregates/shopping_list.projection.js"
     }
   ],
@@ -292,12 +299,7 @@ Register the create projection in the application's configuration file:
 
 <!-- prettier-ignore-end -->
 
-The projection object specifies an **Init** function and a set of **projection functions**.
-
-- The **Init** function initializes the aggregate state. In the example code, it creates a new empty object.
-- Projection functions build the aggregate state based on the aggregate's events. Each such function is associated with a particular event type. The function receives the previous state and an event, and returns a new state based on the input.
-
-In the example code, the SHOPPING_LIST_CREATED projection function adds the SHOPPING_LIST_CREATED event's timestamp to the state. This information can be used on the write side to find out whether and when a shopping list was created for the current aggregate instance (an instance that the current aggregate ID identifies).
+The state assembled by a projection the write side to find out whether and when a shopping list was created for the current aggregate instance (an instance that the current aggregate ID identifies).
 
 **common/aggregates/shopping_list.commands.js:**
 
@@ -314,7 +316,7 @@ In the example code, the SHOPPING_LIST_CREATED projection function adds the SHOP
   }
 ```
 
-You can send commands to your aggregate to check whether the validation works as intended:
+You can send faulty commands to your aggregate to check whether the validation works as intended:
 
 ```sh
 # Trying to create a shopping list without specifying the name
@@ -398,14 +400,20 @@ Currently, your shopping list application has a write side that allows you to cr
 
 ### Add a Read Model
 
-Add a **ShoppingLists** **[Read Model](read-side.md#read-models)** to your application. To do this, create a **shopping_list.projection.js** file in the **read-models** folder and add the following code to this file:
+Add a **ShoppingLists** **[Read Model](read-side.md#read-models)** to your application. A Read Model receives events and populates a persistent store based on event data. It uses the collected data to answer data queries.
+
+Follow the steps below to implement a **ShoppingLists** Read Model.
+
+First, define a Read Model **[projection](read-side.md#updating-a-read-model-via-projection-functions)**. Create a **shopping_list.projection.js** file in the **read-models** folder and add the following code to this file:
 
 **common/read-models/shopping_lists.projection.js:**
 
 ```js
+// A Read Model projection describes logick used to collect data from incoming events.
 import { SHOPPING_LIST_CREATED } from '../eventTypes'
 
 export default {
+  // The 'Init' function initializes the store (defines tables and their fields).
   Init: async store => {
     await store.defineTable('ShoppingLists', {
       indexes: {
@@ -414,32 +422,39 @@ export default {
       fields: ['createdAt', 'name']
     })
   },
-
+  // A projection function runs once for every event of the specified type.
   [SHOPPING_LIST_CREATED]: async (
     store,
     { aggregateId, timestamp, payload: { name } }
   ) => {
+    // Build a data item based on the event data.
     const shoppingList = {
       id: aggregateId,
       name,
       createdAt: timestamp
     }
-
+    // Save the data item to the store's table 'ShoppingLists' table.
     await store.insert('ShoppingLists', shoppingList)
   }
 }
 ```
 
-This code defines a Read Model **[projection](read-side.md#updating-a-read-model-via-projection-functions)**. A projection function builds a state from incoming events and saves it to a persistent store. The type of the store that is used is defined by a Read Model connector:
+##### Used API:
+
+- [store](api-reference.md#read-model-store-interface)
+- [store.defineTable](api-reference.md#definetable)
+- [store.insert](api-reference.md#insert)
+
+The type of the physical store used to save data is defined by a Read Model connector:
 
 **config.dev.js:**
 
 ```js
-// This files defines setting used only in the development environment
+// The 'config.dev.js' file defines setting used only in the development environment.
 const devConfig = {
   readModelConnectors: {
     // This is the 'default' Read Model connector.
-    // It connects a Read Model to a SQLite data
+    // It connects a Read Model to a SQLite data.
     default: {
       module: 'resolve-readmodel-lite',
       options: {
@@ -463,6 +478,10 @@ const devConfig = {
 }
 ```
 
+##### Used configuration options:
+
+- [readModelConnectors](application-configuration.md#readmodelconnectors)
+
 You also need to implement a query resolver to answer data queries based on the data from the store.
 
 **common/read-models/shopping_lists.resolvers.js:**
@@ -476,6 +495,10 @@ export default {
 }
 ```
 
+##### Used API:
+
+- [store.find](api-reference.md#find)
+
 Register the created Read Model in the application configuration file:
 
 **config.app.js**
@@ -484,9 +507,13 @@ Register the created Read Model in the application configuration file:
 ...
 readModels: [
   {
+    // The Read Model's name
     name: 'ShoppingLists',
+    // A path to the file that defines the Read Model projection
     projection: 'common/read-models/shopping_lists.projection.js',
+    // A path to the file that defines the resolvers
     resolvers: 'common/read-models/shopping_lists.resolvers.js',
+    // The name of the connector used to store the state
     connectorName: 'default'
   }
 ],
@@ -494,7 +521,7 @@ readModels: [
 
 ### Query a Read Model
 
-You can use the standard HTTP API to test the ShoppingLists Read Model's functionality:
+You can use the HTTP API query the ShoppingLists Read Model:
 
 ```sh
 $ curl -X POST \
