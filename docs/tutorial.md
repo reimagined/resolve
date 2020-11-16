@@ -566,7 +566,7 @@ const ShoppingLists = ({ lists }) => {
 export default ShoppingLists
 ```
 
-Add a new component named **MyLists** this component should obtain shopping list data from reSolve and use the **ShoppingLists** component to display this data. To obtain the data, use the **resolve-react-hooks** library's `useQuery` hook:
+Add a new component named **MyLists** this component obtains shopping list data from reSolve and use the **ShoppingLists** component to display this data. To obtain the data, use the **resolve-react-hooks** library's `useQuery` hook:
 
 ```js
 import React, { useState, useEffect } from 'react'
@@ -599,6 +599,10 @@ const MyLists = () => {
 
 export default MyLists
 ```
+
+##### Used API:
+
+- [useQuery](api-reference.md#usequery)
 
 Add the client application's root component that defines the HEAD section and renders routes:
 
@@ -878,9 +882,9 @@ const ShoppingList = ({
 export default ShoppingList
 ```
 
-### [TODO] API Reference:
+##### Used API:
 
-- [useViewModel]()
+- [useViewModel](api-reference.md#useviewmodel)
 
 ### Implement Navigation
 
@@ -1115,6 +1119,10 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
 export default ShoppingListCreator
 ```
 
+##### Used API:
+
+- [useCommand](api-reference.md#usecommand)
+
 You can render this component within MyLists as shown below:
 
 ##### client/components/MyLists.js
@@ -1167,6 +1175,10 @@ const ShoppingListRemover = ({ shoppingListId, onRemoveSuccess }) => {
 
 export default ShoppingListRemover
 ```
+
+##### Used API:
+
+- [useCommand](api-reference.md#usecommand)
 
 Add this component each item in the ShoppingLists component's layout:
 
@@ -1336,6 +1348,11 @@ const ShoppingList = ({
 export default ShoppingList
 ```
 
+##### Used API:
+
+- [useCommandBuilder](api-reference.md#usecommandbuilder)
+- [useViewModel](api-reference.md#useviewmodel)
+
 Modify the ShoppingListItem component to support item checking and deletion.
 
 ##### client/components/ShoppingListItem.js
@@ -1378,3 +1395,9 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
 
 export default ShoppingListItem
 ```
+
+##### Used API:
+
+- [useCommand](api-reference.md#usecommand)
+
+Run the application to view the result.
