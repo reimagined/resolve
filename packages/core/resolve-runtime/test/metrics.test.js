@@ -3,7 +3,7 @@ import { putDurationMetrics } from '../src/cloud/metrics'
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
 
 const lambdaContext = {
-  getRemainingTimeInMillis: jest.fn().mockReturnValue(1000),
+  getVacantTimeInMillis: jest.fn().mockReturnValue(1000),
 }
 
 const consoleInfoOldHandler = console.info
@@ -22,7 +22,7 @@ describe('put duration metrics', () => {
   beforeEach(async () => {
     console.info.mockClear()
     CloudWatch.putMetricData.mockClear()
-    lambdaContext.getRemainingTimeInMillis.mockClear()
+    lambdaContext.getVacantTimeInMillis.mockClear()
   })
 
   afterEach(() => {})
@@ -35,7 +35,7 @@ describe('put duration metrics', () => {
       3000
     )
     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
-    expect(lambdaContext.getRemainingTimeInMillis).toBeCalledTimes(1)
+    expect(lambdaContext.getVacantTimeInMillis).toBeCalledTimes(1)
     expect(CloudWatch.putMetricData).toBeCalledWith({
       MetricData: [
         {
@@ -69,7 +69,7 @@ describe('put duration metrics', () => {
       false,
       3000
     )
-    expect(lambdaContext.getRemainingTimeInMillis).toBeCalledTimes(1)
+    expect(lambdaContext.getVacantTimeInMillis).toBeCalledTimes(1)
     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
     expect(CloudWatch.putMetricData).toBeCalledWith({
       MetricData: [
@@ -109,7 +109,7 @@ describe('put duration metrics', () => {
       false,
       3000
     )
-    expect(lambdaContext.getRemainingTimeInMillis).toBeCalledTimes(1)
+    expect(lambdaContext.getVacantTimeInMillis).toBeCalledTimes(1)
     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
     expect(CloudWatch.putMetricData).toBeCalledWith({
       MetricData: [
@@ -149,7 +149,7 @@ describe('put duration metrics', () => {
       false,
       3000
     )
-    expect(lambdaContext.getRemainingTimeInMillis).toBeCalledTimes(1)
+    expect(lambdaContext.getVacantTimeInMillis).toBeCalledTimes(1)
     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
     expect(CloudWatch.putMetricData).toBeCalledWith({
       MetricData: [
@@ -189,7 +189,7 @@ describe('put duration metrics', () => {
       false,
       3000
     )
-    expect(lambdaContext.getRemainingTimeInMillis).toBeCalledTimes(1)
+    expect(lambdaContext.getVacantTimeInMillis).toBeCalledTimes(1)
     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
     expect(CloudWatch.putMetricData).toBeCalledWith({
       MetricData: [
@@ -229,7 +229,7 @@ describe('put duration metrics', () => {
       true,
       3000
     )
-    expect(lambdaContext.getRemainingTimeInMillis).toBeCalledTimes(1)
+    expect(lambdaContext.getVacantTimeInMillis).toBeCalledTimes(1)
     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
     expect(CloudWatch.putMetricData).toBeCalledWith({
       MetricData: [

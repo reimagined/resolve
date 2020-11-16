@@ -17,7 +17,7 @@ const createSaga = ({
   performanceTracer,
   uploader,
   eventstoreAdapter,
-  getRemainingTimeInMillis,
+  getVacantTimeInMillis,
   performAcknowledge,
   onError = async () => void 0,
 }) => {
@@ -95,7 +95,7 @@ const createSaga = ({
     readModels: [...regularSagas, ...schedulerSagas],
     viewModels: [],
     performanceTracer,
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     performAcknowledge,
     eventstoreAdapter,
     onError: onSagaError,

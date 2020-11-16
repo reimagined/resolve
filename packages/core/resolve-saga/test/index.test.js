@@ -104,10 +104,10 @@ test('resolve-saga', async () => {
   ]
 
   const onCommandExecuted = jest.fn().mockImplementation(async () => {})
-  const getRemainingTimeInMillis = () => 0x7fffffff
+  const getVacantTimeInMillis = () => 0x7fffffff
 
   const sagaExecutor = createSagaExecutor({
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     eventstoreAdapter,
     readModelConnectors,
     snapshotAdapter,
@@ -127,7 +127,7 @@ test('resolve-saga', async () => {
   await sagaExecutor.sendEvents({
     modelName: 'test-saga',
     events: [{ type: 'Init' }],
-    getRemainingTimeInMillis: () => remainingTime,
+    getVacantTimeInMillis: () => remainingTime,
     properties,
   })
 
@@ -142,7 +142,7 @@ test('resolve-saga', async () => {
         payload: { content: true },
       },
     ],
-    getRemainingTimeInMillis: () => remainingTime,
+    getVacantTimeInMillis: () => remainingTime,
     properties,
   })
 
@@ -153,7 +153,7 @@ test('resolve-saga', async () => {
   await sagaExecutor.sendEvents({
     modelName: 'default-scheduler',
     events: [{ type: 'Init' }],
-    getRemainingTimeInMillis: () => remainingTime,
+    getVacantTimeInMillis: () => remainingTime,
     properties,
   })
 
@@ -190,7 +190,7 @@ test('resolve-saga', async () => {
         type: schedulerEvents.SCHEDULED_COMMAND_FAILED,
       },
     ],
-    getRemainingTimeInMillis: () => remainingTime,
+    getVacantTimeInMillis: () => remainingTime,
     properties,
   })
 
