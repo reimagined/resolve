@@ -10,16 +10,16 @@ We recommend that your familiarize yourself with basics of event sourcing and CQ
 
 ## Table of Contents
 
-- [Lesson 1 - Create a New reSolve Application](#lesson-1-create-a-new-resolve-application)
-- [Lesson 2 - Write side - Add a List Item](#lesson-2-write-side-add-a-list-item)
-- [Lesson 3 - Read side - Create a View Model to Query List Items](#lesson-3-read-side-create-a-view-model-to-query-list-items)
-- [Lesson 4 - Frontend - Display View Model Data in the Browser](#lesson-4-frontend-display-view-model-data-in-the-browser)
-- [Lesson 5 - Frontend - Enable Data Editing](#lesson-5-frontend-enable-data-editing)
-- [Lesson 6 - Frontend - Support Multiple Shopping Lists](#lesson-6-frontend-support-multiple-shopping-lists)
+- [Preparation - Create a New reSolve Application](#preparation---create-a-new-resolve-application)
+- [Lesson 1 - Write side - Add Shopping Lists](#lesson-1---write-side---add-shopping-lists)
+- [Lesson 2 - Read side - Create a Read Model to Query Shopping Lists](#lesson-2---read-side---create-a-read-model-to-query-shopping-lists)
+- [Lesson 3 - Frontend - Display Read Model Data in the Browser](#lesson-3---frontend---display-read-model-data-in-the-browser)
+- [Lesson 4 - Read Side - Create a View Model to Query Shopping List Items](#lesson-4---read-side---create-a-view-model-to-query-shopping-list-items)
+- [Lesson 5 - Enable Editing](#lesson-5---enable-editing)
 
 ---
 
-## **Lesson 1** - Create a New reSolve Application
+## **Preparation** - Create a New reSolve Application
 
 Use the create-resolve-app tool to create a new reSolve app:
 
@@ -51,9 +51,9 @@ $ yarn run dev
 
 ---
 
-## **Lesson 2** - Write side - Add a List Item
+## **Lesson 1** - Write side - Add Shopping Lists
 
-[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-2)
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-1)
 
 This lesson describes how to implement a basic write side for a reSolve application. An application's [write side](resolve-app-structure.md#write-and-read-sides) handles commands, performs input validation, and emits **events** based on valid commands. The framework then saves the emitted events to the **event store**.
 
@@ -390,9 +390,9 @@ Command error: the shopping list does not exist
 
 ---
 
-## **Lesson 3** - Read side - Create a Read Model to Query Shopping Lists
+## **Lesson 2** - Read side - Create a Read Model to Query Shopping Lists
 
-[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-3)
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-2)
 
 Currently, your shopping list application has a write side that allows you to create shopping lists and items in these lists. To obtain this data from the application, you need to implement the application's **[read side](resolve-app-structure.md#write-and-read-sides)**.
 
@@ -520,9 +520,9 @@ $ curl -X POST \
 
 ---
 
-## **Lesson 4** - Frontend - Display Read Model Data in the Browser
+## **Lesson 3** - Frontend - Display Read Model Data in the Browser
 
-[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-4)
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-3)
 
 This lesson provides information on how to display a Read Model's data in the client browser. It uses the reSolve framework's **resolve-react-hooks** library to implement a frontend based on React with hooks.
 
@@ -696,9 +696,9 @@ Run your application to view the result:
 
 ---
 
-## **Lesson 5** - Read Side - Create a View Model to Query Shopping List Items
+## **Lesson 4** - Read Side - Create a View Model to Query Shopping List Items
 
-[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-5)
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-4)
 
 This lesson describes how you can use a View Model to obtain shopping list items and display them in a reactive list in the client browser.
 
@@ -916,9 +916,9 @@ Run the application to see the result.
 
 ---
 
-## **Lesson 6** - Enable Editing
+## **Lesson 5** - Enable Editing
 
-[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-6)
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-5)
 
 ### Modify the Backend
 
