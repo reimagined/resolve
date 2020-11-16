@@ -369,10 +369,10 @@ describe('executeCommand', () => {
         })
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual(
           `Field "invariantHash" is required and must be a string when using aggregate snapshots`
         )
+        expect(error).toBeInstanceOf(CommandError)
       }
     })
 
@@ -419,10 +419,10 @@ describe('executeCommand', () => {
         })
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual(
           `Field "invariantHash" is required and must be a string when using aggregate snapshots`
         )
+        expect(error).toBeInstanceOf(CommandError)
       }
     })
 
@@ -493,10 +493,10 @@ describe('executeCommand', () => {
 
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual(
           `Incorrect order of events by aggregateId = "aggregateId"`
         )
+        expect(error).toBeInstanceOf(CommandError)
       }
     })
 
@@ -562,10 +562,10 @@ describe('executeCommand', () => {
 
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual(
           'The "aggregateId" argument must be a string'
         )
+        expect(error).toBeInstanceOf(CommandError)
       }
     })
 
@@ -634,8 +634,8 @@ describe('executeCommand', () => {
 
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual('The "type" argument must be a string')
+        expect(error).toBeInstanceOf(CommandError)
       }
     })
 
@@ -655,8 +655,8 @@ describe('executeCommand', () => {
 
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual('Aggregate "empty" does not exist')
+        expect(error).toBeInstanceOf(CommandError)
       }
     })
 
@@ -693,10 +693,10 @@ describe('executeCommand', () => {
 
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual(
           'Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields'
         )
+        expect(error).toBeInstanceOf(CommandError)
       }
     })
 
@@ -1091,10 +1091,10 @@ describe('executeCommand', () => {
         })
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual(
           `Field "invariantHash" is required and must be a string when using aggregate snapshots`
         )
+        expect(error).toBeInstanceOf(CommandError)
       }
 
       expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -1241,10 +1241,10 @@ describe('executeCommand', () => {
 
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual(
           `Incorrect order of events by aggregateId = "aggregateId"`
         )
+        expect(error).toBeInstanceOf(CommandError)
       }
 
       expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -1434,8 +1434,8 @@ describe('executeCommand', () => {
 
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual('The "type" argument must be a string')
+        expect(error).toBeInstanceOf(CommandError)
       }
 
       expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -1519,10 +1519,10 @@ describe('executeCommand', () => {
 
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual(
           'Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields'
         )
+        expect(error).toBeInstanceOf(CommandError)
       }
 
       expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -1567,8 +1567,8 @@ describe('executeCommand', () => {
 
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual('Event "type" is required')
+        expect(error).toBeInstanceOf(CommandError)
       }
 
       expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -1635,8 +1635,8 @@ describe('dispose', () => {
 
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual('Command handler is disposed')
+        expect(error).toBeInstanceOf(CommandError)
       }
     })
 
@@ -1700,8 +1700,8 @@ describe('dispose', () => {
 
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual('Command handler is disposed')
+        expect(error).toBeInstanceOf(CommandError)
       }
     })
 
@@ -1763,8 +1763,8 @@ describe('dispose', () => {
 
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual('Command handler is disposed')
+        expect(error).toBeInstanceOf(CommandError)
       }
     })
   })
@@ -1785,8 +1785,8 @@ describe('dispose', () => {
 
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual('Command handler is disposed')
+        expect(error).toBeInstanceOf(CommandError)
       }
 
       expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -1863,8 +1863,8 @@ describe('dispose', () => {
 
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual('Command handler is disposed')
+        expect(error).toBeInstanceOf(CommandError)
       }
 
       expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -1939,8 +1939,8 @@ describe('dispose', () => {
 
         return Promise.reject(new Error('Test failed'))
       } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
         expect(error.message).toEqual('Command handler is disposed')
+        expect(error).toBeInstanceOf(CommandError)
       }
 
       expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(

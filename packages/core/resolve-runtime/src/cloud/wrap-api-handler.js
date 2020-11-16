@@ -256,11 +256,11 @@ const createResponse = () => {
   return Object.freeze(res)
 }
 
-const wrapApiHandler = (handler, getCustomParameters, onError) => async (
-  lambdaEvent,
-  lambdaContext,
-  lambdaCallback
-) => {
+const wrapApiHandler = (
+  handler,
+  getCustomParameters,
+  onError = async () => void 0
+) => async (lambdaEvent, lambdaContext, lambdaCallback) => {
   let result
   try {
     const customParameters =

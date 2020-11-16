@@ -606,7 +606,7 @@ const dispose = async (pool: CommandPool): Promise<void> => {
     if (subSegment != null) {
       subSegment.addError(error)
     }
-    error.onError(error, 'command')
+    await pool.onError(error, 'command')
     throw error
   } finally {
     if (subSegment != null) {
