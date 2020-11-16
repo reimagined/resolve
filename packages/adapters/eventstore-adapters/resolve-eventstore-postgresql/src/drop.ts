@@ -40,7 +40,7 @@ const dropSecretsStore = async (pool: AdapterPool): Promise<any> => {
       if (error != null) {
         log.error(error.message)
         log.verbose(error.stack)
-        if (/Table.*? does not exist$/i.test(error.message)) {
+        if (`${error.code}` === '42P01') {
           throw new EventstoreResourceNotExistError(
             `duplicate event store resource drop detected`
           )

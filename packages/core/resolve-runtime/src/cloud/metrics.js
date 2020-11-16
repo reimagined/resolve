@@ -23,12 +23,12 @@ const putMetrics = async (
 ) => {
   if (
     lambdaContext &&
-    typeof lambdaContext.getRemainingTimeInMillis === 'function'
+    typeof lambdaContext.getVacantTimeInMillis === 'function'
   ) {
     const cloudWatch = new CloudWatch()
     const coldStartDuration = 15 * 60 * 1000 - lambdaRemainingTimeStart
     const duration =
-      lambdaRemainingTimeStart - lambdaContext.getRemainingTimeInMillis()
+      lambdaRemainingTimeStart - lambdaContext.getVacantTimeInMillis()
     const now = new Date()
     const kind = kindByEvent(lambdaEvent)
     const dimensions = [

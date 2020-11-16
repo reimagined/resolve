@@ -37,7 +37,7 @@ const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
   } catch (error) {
     if (error) {
       let errorToThrow = error
-      if (/Relation.*? already exists$/i.test(error.message)) {
+      if (`${error.code}` === '42P07') {
         errorToThrow = new EventstoreResourceAlreadyExistError(
           `duplicate initialization of the postgresql-serverless secrets store with the same parameters not allowed`
         )

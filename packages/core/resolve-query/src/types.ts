@@ -7,7 +7,7 @@ export type CreateQueryOptions = {
   viewModels: any[]
   performanceTracer: any
   eventstoreAdapter: any
-  getRemainingTimeInMillis: any
+  getVacantTimeInMillis: any
   performAcknowledge: any
 }
 
@@ -59,7 +59,7 @@ export type ReadModelPool = {
   readModel: ReadModelMeta
   invokeEventBusAsync: Function
   performAcknowledge: Function
-  getRemainingTimeInMillis: Function
+  getVacantTimeInMillis: Function
 }
 
 export type ViewModelMeta = {

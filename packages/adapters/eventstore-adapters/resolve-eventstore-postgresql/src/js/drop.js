@@ -1,4 +1,5 @@
 import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
+import { EOL } from 'os'
 
 const drop = async ({
   databaseName,
@@ -11,6 +12,7 @@ const drop = async ({
   const eventsTableNameAsId = escapeId(eventsTableName)
   const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
   const freezeTableNameAsId = escapeId(`${eventsTableName}-freeze`)
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
 
   const aggregateIdAndVersionIndexName = escapeId(
     `${eventsTableName}-aggregateIdAndVersion`
@@ -35,7 +37,7 @@ const drop = async ({
 
     `DROP TABLE IF EXISTS ${databaseNameAsId}.${freezeTableNameAsId}`,
 
-    `DROP TABLE ${databaseNameAsId}.${snapshotsTableName}`,
+    `DROP TABLE ${databaseNameAsId}.${snapshotsTableNameAsId}`,
   ]
   const errors = []
 
@@ -43,7 +45,7 @@ const drop = async ({
     try {
       await executeStatement(statement)
     } catch (error) {
-      if (error != null && /Table.*? does not exist$/i.test(error.message)) {
+      if (error != null && `${error.code}` === '42P01') {
         throw new EventstoreResourceNotExistError(
           `Double-free eventstore-postgresql adapter via "${databaseName}" failed`
         )
@@ -54,7 +56,18 @@ const drop = async ({
   }
 
   if (errors.length > 0) {
-    throw new Error(errors.map((error) => error.stack).join('\n'))
+    const error = new Error()
+    error.message = errors.map(({ message }) => message).join(EOL)
+    error.stack = errors.map(({ stack }) => stack).join(EOL)
+
+    const errorCodes = new Set(
+      errors.map(({ code }) => code).filter((code) => code != null)
+    )
+    if (errorCodes.size === 1) {
+      error.code = [...errorCodes][0]
+    }
+
+    throw error
   }
 }
 
