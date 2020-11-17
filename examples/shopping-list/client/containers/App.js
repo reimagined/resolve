@@ -11,7 +11,7 @@ const App = ({
   <div>
     <Header
       title="ReSolve Shopping List Example"
-      name="Shopping List"
+      name="Shopping Lists Example"
       favicon="/favicon.ico"
       css={['/bootstrap.min.css', '/fontawesome.min.css', '/style.css']}
       shoppingListId={id}

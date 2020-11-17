@@ -16,7 +16,7 @@ const resumeSubscriber = async (pool, payload) => {
     generateGuid,
   } = pool
 
-  const { eventSubscriber } = payload
+  const { eventSubscriber, conditionalResume } = payload
   const notificationsTableNameAsId = escapeId(NOTIFICATIONS_TABLE_NAME)
   const subscribersTableNameAsId = escapeId(SUBSCRIBERS_TABLE_NAME)
 
@@ -26,7 +26,11 @@ const resumeSubscriber = async (pool, payload) => {
       UPDATE ${subscribersTableNameAsId}
       SET "status" = ${escapeStr(SubscriptionStatus.DELIVER)}
       WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)}
-      AND "status" <> ${escapeStr(SubscriptionStatus.ERROR)};
+      AND ${
+        conditionalResume
+          ? `"status" = ${escapeStr(SubscriptionStatus.DELIVER)}`
+          : `"status" <> ${escapeStr(SubscriptionStatus.ERROR)}`
+      };
 
       INSERT INTO ${notificationsTableNameAsId}(
         "insertionId",
@@ -59,24 +63,32 @@ const resumeSubscriber = async (pool, payload) => {
     `)
 
   const result = await runQuery(`
-      SELECT ${subscribersTableNameAsId}."subscriptionId"
+      SELECT ${subscribersTableNameAsId}."subscriptionId",
+      ${subscribersTableNameAsId}."status"
       FROM ${subscribersTableNameAsId}
       WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)}
-      AND "status" = ${escapeStr(SubscriptionStatus.DELIVER)}
+      AND (
+        "status" = ${escapeStr(SubscriptionStatus.DELIVER)} OR
+        "status" = ${escapeStr(SubscriptionStatus.SKIP)}
+      )
   `)
   if (result == null || result.length !== 1) {
     throw new Error(
       `Notification for event subscriber ${eventSubscriber} cannot be pushed`
     )
   }
-  const { subscriptionId } = result[0]
-  const input = {
-    type: PrivateOperationType.PULL_NOTIFICATIONS,
-    payload: {
-      subscriptionId,
-    },
+  const { subscriptionId, status } = result[0]
+
+  if (status === SubscriptionStatus.DELIVER) {
+    const input = {
+      type: PrivateOperationType.PULL_NOTIFICATIONS,
+      payload: {
+        subscriptionId,
+      },
+    }
+
+    await invokeOperation(pool, LazinessStrategy.EAGER, input)
   }
-  await invokeOperation(pool, LazinessStrategy.EAGER, input)
 }
 
 export default resumeSubscriber

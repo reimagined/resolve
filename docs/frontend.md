@@ -10,6 +10,175 @@ This document describes approaches that you can use to implement a frontend for 
 - [resolve-redux library](#resolve-redux-library) - A library used to connect a React + Redux component to reSolve
 - [resolve-react-hooks library](#resolve-react-hooks-library) - A hook-based library used to connect React components to reSolve
 
+## Client Application Entry Point
+
+### Basic Entry Point
+
+A client script should export a function that is the script's entry point. This function takes the reSolve context as the parameter.
+
+```js
+const main = async resolveContext => {
+...
+}
+export default main
+```
+
+To register the entry point, assign the path to the file that contains the entry point definition to the `clientEntries` [configuration option](application-configuration.md#cliententries):
+
+```js
+clientEntries: ['client/index.js']
+```
+
+Use the `resolveContext` object to initialize a client library. The code samples below demonstrate how to configure the entry point for different client libraries.
+
+##### resolve-client:
+
+```js
+import { getClient } from 'resolve-client'
+const main = async resolveContext => {
+  await new Promise(resolve => domready(resolve))
+  const client = getClient(resolveContext)
+  const { data } = await client.query({
+    name: 'chat',
+    aggregateIds: '*'
+  })
+  ...
+}
+```
+
+##### resolve-redux:
+
+```js
+import { AppContainer, createStore, getOrigin } from 'resolve-redux'
+
+const entryPoint = ({
+  clientImports,
+  rootPath,
+  staticPath,
+  viewModels,
+  subscriber
+}) => {
+  const origin = getOrigin(window.location)
+  const history = createBrowserHistory({ basename: rootPath })
+  const routes = getRoutes(clientImports)
+  const redux = getRedux(clientImports, history)
+
+  const store = createStore({
+    serializedState: window.__INITIAL_STATE__,
+    redux,
+    viewModels,
+    subscriber,
+    history,
+    origin,
+    rootPath,
+    staticPath,
+    isClient: true
+  })
+
+  render(
+    <AppContainer
+      origin={origin}
+      rootPath={rootPath}
+      staticPath={staticPath}
+      store={store}
+      history={history}
+    >
+      <Router history={history}>
+        <Routes routes={routes} />
+      </Router>
+    </AppContainer>,
+    document.getElementById('app-container')
+  )
+}
+```
+
+##### resolve-react-hooks:
+
+```js
+import { ResolveContext } from 'resolve-react-hooks'
+...
+const entryPoint = context => {
+  const appContainer = document.createElement('div')
+  document.body.appendChild(appContainer)
+  render(
+    <ResolveContext.Provider value={context}>
+      <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
+    </ResolveContext.Provider>,
+    appContainer
+  )
+}
+```
+
+### SSR Handlers
+
+To use Server Side Rendering (SSR) in your application, you need to implement one or several handlers that pre-render the client application's markup on the server.
+
+An SSR handler is an asynchronous function that receives the `resolveContext` along with a request and response objects. As the result of its execution, an SSR handler should send a response that contains the rendered markup:
+
+```js
+const ssrHandler = async (
+  resolveContext,
+  req,
+  res
+) => {
+  ...
+  const markupHtml = 
+    `<!doctype html>` 
+      `<html ${helmet.htmlAttributes.toString()}>` +
+      ...
+      '</html>'
+  await res.end(markupHtml)
+}
+```
+
+To enable server side rendering, specify an array of server side rendering scripts that target different environments in the `clientEntries` configuration section:
+
+```js
+clientEntries: [
+  'client/index.js',
+  [
+    'client/ssr.js',
+    {
+      outputFile: 'common/local-entry/ssr.js',
+      moduleType: 'commonjs',
+      target: 'node'
+    }
+  ],
+  [
+    'client/ssr.js',
+    {
+      outputFile: 'common/cloud-entry/ssr.js',
+      moduleType: 'commonjs',
+      target: 'node'
+    }
+  ]
+]
+```
+
+For more information on these settings, refer to the [Application Configuration](application-configuration.md#cliententries) article.
+
+To serve SSR markup to the client, you need to register the **live-require-handler.js** API handler in the **apiHandlers** configuration section:
+
+##### config.app.js:
+
+```js
+...
+apiHandlers: [
+  {
+    handler: {
+      module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+      options: {
+        modulePath: './ssr.js',
+        moduleFactoryImport: false
+      }
+    },
+    path: '/:markup*',
+    method: 'GET'
+  }
+],
+...
+```
+
 ## HTTP API
 
 A reSolve exposes HTTP API that you can use to send aggregate commands and query Read Models. The following endpoints are available.
@@ -141,13 +310,14 @@ You can extend a reSolve server's API with API Handlers. Refer to the following 
 
 The **resolve-client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
 
-| Function                                                | Description                                |
-| ------------------------------------------------------- | ------------------------------------------ |
-| [command](api-reference.md#command)                     | Sends an aggregate command to the backend. |
-| [query](api-reference.md#query)                         | Queries a Read Model.                      |
-| [getStaticAssetUrl](api-reference.md#getstaticasseturl) | Gets a static file's full URL.             |
-| [subscribe](api-reference.md#subscribe)                 | Subscribes to View Model updates.          |
-| [unsubscribe](api-reference.md#unsubscribe)             | Unsubscribes from View Model updates.      |
+| Function                                                | Description                                                                 |
+| ------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [command](api-reference.md#command)                     | Sends an aggregate command to the backend.                                  |
+| [query](api-reference.md#query)                         | Queries a Read Model.                                                       |
+| [getStaticAssetUrl](api-reference.md#getstaticasseturl) | Gets a static file's full URL.                                              |
+| [getOriginPath](api-reference.md#getoriginpath)         | Returns an absolute URL within the application for the given relative path. |
+| [subscribe](api-reference.md#subscribe)                 | Subscribes to View Model updates.                                           |
+| [unsubscribe](api-reference.md#unsubscribe)             | Unsubscribes from View Model updates.                                       |
 
 #### Example
 
@@ -194,6 +364,7 @@ The **resolve-react-hooks** library provides React hooks that you can use to con
 | [useCommandBuilder](api-reference.md#usecommandbuilder) | Allows to generate commands based on input parameters                    |
 | [useViewModel](api-reference.md#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model               |
 | [useQuery](api-reference.md#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model |
+| [useOriginResolver](api-reference.md#useoriginresolver) | Resolves a relative path to an absolute URL within the application.      |
 
 #### Example
 

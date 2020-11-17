@@ -1,12 +1,11 @@
 import { EOL } from 'os'
 // TODO: core cannot reference "top-level" packages, move these to resolve-core
 import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
+import { SecretsManager } from 'resolve-core'
+
 import getLog from './get-log'
 import { WrapReadModelOptions, SerializedError, ReadModelPool } from './types'
 import parseReadOptions from './parse-read-options'
-import { SecretsManager } from 'resolve-core'
-
-const RESERVED_TIME = 30 * 1000
 
 const wrapConnection = async (
   pool: ReadModelPool,
@@ -62,18 +61,20 @@ export const EMPTY_CONNECTOR = 0
 export const INLINE_LEDGER_CONNECTOR = 2096640
 
 const emptyFunction = Promise.resolve.bind(Promise)
-const emptyWrapper = {
+const emptyEventWrapper = {
   onBeforeEvent: emptyFunction,
   onSuccessEvent: emptyFunction,
   onFailEvent: emptyFunction,
 }
 
-const detectWrappers = (connector: any, bypass?: boolean): any => {
-  const log = getLog('detectWrappers')
-  if (bypass) {
-    return emptyWrapper
-  }
+const emptyBatchWrapper = {
+  onBeforeBatch: emptyFunction,
+  onSuccessBatch: emptyFunction,
+  onFailBatch: emptyFunction,
+}
 
+const detectEventWrappers = (connector: any): any => {
+  const log = getLog('detectEventWrappers')
   const featureDetection = detectConnectorFeatures(connector)
 
   if (
@@ -85,22 +86,49 @@ const detectWrappers = (connector: any, bypass?: boolean): any => {
       onSuccessEvent: connector.commitEvent.bind(connector),
       onFailEvent: connector.rollbackEvent.bind(connector),
     }
+  } else if (
+    featureDetection === FULL_REGULAR_CONNECTOR ||
+    featureDetection === INLINE_LEDGER_CONNECTOR ||
+    featureDetection === EMPTY_CONNECTOR
+  ) {
+    return emptyEventWrapper
+  } else {
+    log.warn('Connector provided invalid event batch lifecycle functions set')
+    log.warn(`Lifecycle detection constant is ${featureDetection}`)
+    log.warn(`No-transactional lifecycle set will be used instead`)
+    return emptyEventWrapper
+  }
+}
+
+const detectBatchWrappers = (connector: any): any => {
+  const log = getLog('detectEventWrappers')
+  const featureDetection = detectConnectorFeatures(connector)
+
+  if (
+    featureDetection === FULL_XA_CONNECTOR ||
+    featureDetection === FULL_REGULAR_CONNECTOR + FULL_XA_CONNECTOR
+  ) {
+    return {
+      onBeforeBatch: emptyFunction,
+      onSuccessBatch: emptyFunction,
+      onFailBatch: emptyFunction,
+    }
   } else if (featureDetection === FULL_REGULAR_CONNECTOR) {
     return {
-      onBeforeEvent: connector.beginTransaction.bind(connector),
-      onSuccessEvent: connector.commitTransaction.bind(connector),
-      onFailEvent: connector.rollbackTransaction.bind(connector),
+      onBeforeBatch: connector.beginTransaction.bind(connector),
+      onSuccessBatch: connector.commitTransaction.bind(connector),
+      onFailBatch: connector.rollbackTransaction.bind(connector),
     }
   } else if (
     featureDetection === INLINE_LEDGER_CONNECTOR ||
     featureDetection === EMPTY_CONNECTOR
   ) {
-    return emptyWrapper
+    return emptyBatchWrapper
   } else {
     log.warn('Connector provided invalid event batch lifecycle functions set')
     log.warn(`Lifecycle detection constant is ${featureDetection}`)
     log.warn(`No-transactional lifecycle set will be used instead`)
-    return emptyWrapper
+    return emptyBatchWrapper
   }
 }
 
@@ -130,7 +158,7 @@ const sendEvents = async (
     batchId: any
   }
 ): Promise<any> => {
-  const { performAcknowledge, getRemainingTimeInMillis } = pool
+  const { performAcknowledge, getVacantTimeInMillis } = pool
   const readModelName = pool.readModel.name
   let result = null
 
@@ -191,6 +219,13 @@ const sendEvents = async (
         log.verbose(error.stack)
         lastFailedEvent = event
 
+        try {
+          await pool.onError(error, 'read-model-projection')
+        } catch (e) {
+          log.verbose('onError function call failed')
+          log.verbose(e.stack)
+        }
+
         throw error
       }
     }
@@ -203,75 +238,147 @@ const sendEvents = async (
           `applying ${events.length} events to read-model "${readModelName}" started`
         )
 
-        for (const event of events) {
-          const remainingTime = getRemainingTimeInMillis() - RESERVED_TIME
-          const { onBeforeEvent, onSuccessEvent, onFailEvent } = detectWrappers(
-            pool.connector,
-            event.type === 'Init'
-          )
-
-          log.debug(
-            `remaining read-model "${readModelName}" feeding time is ${remainingTime} ms`
-          )
-
-          if (remainingTime < 0) {
-            log.debug(
-              `stop applying events to read-model "${readModelName}" because of timeout`
-            )
-            break
-          }
-
+        if (
+          events.length === 1 &&
+          events[0] != null &&
+          events[0].type === 'Init'
+        ) {
           try {
             log.verbose(
-              `Applying "${event.type}" event to read-model "${readModelName}" started`
+              `Applying "Init" event to read-model "${readModelName}" started`
             )
-            await onBeforeEvent(connection, readModelName, xaTransactionId)
 
             try {
-              await handler(connection, event, secretsManager)
-              await onSuccessEvent(connection, readModelName, xaTransactionId)
+              await handler(connection, events[0], secretsManager)
             } catch (innerError) {
-              if (innerError === STOP_BATCH) {
-                await onSuccessEvent(connection, readModelName, xaTransactionId)
-                break
-              } else {
+              if (innerError !== STOP_BATCH) {
                 throw innerError
               }
             }
             log.debug(
-              `applying "${event.type}" event to read-model "${readModelName}" succeed`
+              `applying "Init" event to read-model "${readModelName}" succeed`
             )
           } catch (readModelError) {
             if (readModelError === OMIT_BATCH) {
               throw OMIT_BATCH
             }
             log.error(
-              `applying "${event.type}" event to read-model "${readModelName}" failed`
+              `applying "Init" event to read-model "${readModelName}" failed`
             )
             log.error(readModelError.message)
             log.verbose(readModelError.stack)
-            let rollbackError = null
-            try {
-              await onFailEvent(connection, readModelName, xaTransactionId)
-            } catch (error) {
-              rollbackError = error
-            }
 
-            const summaryError = new Error()
-            summaryError.message = readModelError.message
-            summaryError.stack = readModelError.stack
-
-            if (rollbackError != null) {
-              summaryError.message = `${summaryError.message}${EOL}${rollbackError.message}`
-              summaryError.stack = `${summaryError.stack}${EOL}${rollbackError.stack}`
-            }
-
+            const summaryError = readModelError
             log.verbose(
-              `Throwing error for feeding read-model "${readModelName}"`,
+              `Throwing error for "Init" applying to read-model "${readModelName}"`,
               summaryError
             )
             throw summaryError
           }
+        } else if (
+          events.length > 0 &&
+          events.findIndex((event) => event.type === 'Init') < 0
+        ) {
+          const {
+            onBeforeBatch,
+            onSuccessBatch,
+            onFailBatch,
+          } = detectBatchWrappers(pool.connector)
+
+          await onBeforeBatch(connection, readModelName, xaTransactionId)
+          for (const event of events) {
+            const remainingTime = getVacantTimeInMillis()
+            const {
+              onBeforeEvent,
+              onSuccessEvent,
+              onFailEvent,
+            } = detectEventWrappers(pool.connector)
+
+            log.debug(
+              `remaining read-model "${readModelName}" feeding time is ${remainingTime} ms`
+            )
+
+            if (remainingTime < 0) {
+              log.debug(
+                `stop applying events to read-model "${readModelName}" because of timeout`
+              )
+              break
+            }
+
+            try {
+              log.verbose(
+                `Applying "${event.type}" event to read-model "${readModelName}" started`
+              )
+              await onBeforeEvent(connection, readModelName, xaTransactionId)
+
+              try {
+                await handler(connection, event, secretsManager)
+                await onSuccessEvent(connection, readModelName, xaTransactionId)
+              } catch (innerError) {
+                if (innerError === STOP_BATCH) {
+                  await onSuccessEvent(
+                    connection,
+                    readModelName,
+                    xaTransactionId
+                  )
+                  break
+                } else {
+                  throw innerError
+                }
+              }
+              log.debug(
+                `applying "${event.type}" event to read-model "${readModelName}" succeed`
+              )
+            } catch (readModelError) {
+              if (readModelError === OMIT_BATCH) {
+                throw OMIT_BATCH
+              }
+              log.error(
+                `applying "${event.type}" event to read-model "${readModelName}" failed`
+              )
+              log.error(readModelError.message)
+              log.verbose(readModelError.stack)
+              let rollbackError = null
+              try {
+                await onFailEvent(connection, readModelName, xaTransactionId)
+              } catch (error) {
+                rollbackError = error
+              }
+
+              const summaryError = new Error()
+              summaryError.message = readModelError.message
+              summaryError.stack = readModelError.stack
+
+              if (rollbackError != null) {
+                summaryError.message = `${summaryError.message}${EOL}${rollbackError.message}`
+                summaryError.stack = `${summaryError.stack}${EOL}${rollbackError.stack}`
+              }
+
+              rollbackError = null
+              try {
+                await onFailBatch(connection, readModelName, xaTransactionId)
+              } catch (error) {
+                rollbackError = error
+              }
+
+              if (rollbackError != null) {
+                summaryError.message = `${summaryError.message}${EOL}${rollbackError.message}`
+                summaryError.stack = `${summaryError.stack}${EOL}${rollbackError.stack}`
+              }
+
+              log.verbose(
+                `Throwing error for feeding read-model "${readModelName}"`,
+                summaryError
+              )
+              throw summaryError
+            }
+          }
+
+          await onSuccessBatch(connection, readModelName, xaTransactionId)
+        } else {
+          throw new Error(
+            `Init-based and event-based batches should be segregated`
+          )
         }
       }
     )
@@ -330,6 +437,11 @@ const read = async (
         `Resolver "${resolverName}" does not exist`
       ) as any
       error.code = 422
+
+      try {
+        await pool.onError(error, 'read-model-resolver')
+      } catch (e) {}
+
       throw error
     }
 
@@ -365,6 +477,10 @@ const read = async (
           if (subSegment != null) {
             subSegment.addError(error)
           }
+          try {
+            await pool.onError(error, 'read-model-resolver')
+          } catch (e) {}
+
           throw error
         } finally {
           if (subSegment != null) {
@@ -377,6 +493,11 @@ const read = async (
     if (subSegment != null) {
       subSegment.addError(error)
     }
+
+    try {
+      await pool.onError(error, 'read-model-resolver')
+    } catch (e) {}
+
     throw error
   } finally {
     if (subSegment != null) {
@@ -444,6 +565,23 @@ const next = async (
   await pool.invokeEventBusAsync(eventListener, 'build')
 }
 
+const provideLedger = async (
+  pool: any,
+  readModelName: string,
+  inlineLedger: any
+) => {
+  try {
+    if (typeof pool.readModel.setProperties === 'function') {
+      await pool.readModel.provideLedger(inlineLedger)
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `Provide inline ledger for event listener ${readModelName} failed: ${error}`
+    )
+  }
+}
+
 const build = doOperation.bind(
   null,
   'build',
@@ -458,6 +596,8 @@ const build = doOperation.bind(
     connection,
     pool.readModel.projection,
     next.bind(null, pool, readModelName),
+    pool.getVacantTimeInMillis,
+    provideLedger.bind(null, pool, readModelName),
   ]
 )
 
@@ -626,8 +766,9 @@ const wrapReadModel = ({
   eventstoreAdapter,
   invokeEventBusAsync,
   performanceTracer,
-  getRemainingTimeInMillis,
+  getVacantTimeInMillis,
   performAcknowledge,
+  onError = async () => void 0,
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
   const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
@@ -649,8 +790,9 @@ const wrapReadModel = ({
     isDisposed: false,
     performanceTracer,
     getSecretsManager,
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     performAcknowledge,
+    onError,
   }
 
   const api = {

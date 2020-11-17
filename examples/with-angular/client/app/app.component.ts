@@ -5,5 +5,5 @@ import { Component } from '@angular/core'
   template: ` <h1>{{ title }}</h1> `,
 })
 export class AppComponent {
-  title = 'Resolve Angular-8 Example'
+  title = 'ReSolve Angular Example'
 }

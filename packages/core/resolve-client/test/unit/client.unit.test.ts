@@ -5,7 +5,7 @@ import { mocked } from 'ts-jest/utils'
 import { Client, getClient } from '../../src/client'
 import { Context } from '../../src/context'
 import { NarrowedResponse, request, VALIDATED_RESULT } from '../../src/request'
-import { ViewModel, ViewModelDeserializer } from '../../src/view-model-types'
+import { ViewModel, ViewModelDeserializer } from '../../src/types'
 import { IS_BUILT_IN } from 'resolve-core'
 
 jest.mock('../../src/request', () => ({
@@ -711,5 +711,37 @@ describe('getStaticAssetUrl', () => {
     client = getClient(createMockContext(''))
 
     expect(() => client.getStaticAssetUrl('account/static.jpg')).toThrow()
+  })
+})
+
+describe('getOriginPath', () => {
+  /* eslint-disable no-console */
+  const consoleError = console.error
+  beforeAll(() => {
+    console.error = jest.fn()
+  })
+  afterAll(() => {
+    console.error = consoleError.bind(console)
+  })
+  /* eslint-enable no-console */
+
+  test('path is absolute url', () => {
+    expect(
+      client.getOriginPath('https://static.host.com/api/commands')
+    ).toEqual('https://static.host.com/api/commands')
+  })
+
+  test('root based url', () => {
+    expect(client.getOriginPath('/api/commands')).toEqual(
+      'mock-origin/root-path/api/commands'
+    )
+  })
+
+  test('path should have leading slash', () => {
+    expect(() => client.getOriginPath('api/commands')).toThrow()
+  })
+
+  test('empty path', () => {
+    expect(() => client.getOriginPath('')).toThrow()
   })
 })

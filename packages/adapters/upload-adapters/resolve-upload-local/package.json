@@ -1,6 +1,6 @@
 {
   "name": "resolve-upload-local",
-  "version": "0.25.10",
+  "version": "0.25.18",
   "description": "",
   "engines": {
     "node": ">=10.9"
@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "request": "^2.88.0",
-    "uuid": "^3.3.3",
+    "uuid": "8.3.1",
     "crypto": "^1.0.1"
   },
   "devDependencies": {

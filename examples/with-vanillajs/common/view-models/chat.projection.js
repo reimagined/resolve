@@ -1,6 +1,6 @@
 export default {
   Init: () => [],
-  MESSAGE_POSTED: (state, { aggregateId: userName, payload: message }) =>
+  MESSAGE_POSTED: (state, { payload: { userName, message } }) =>
     state.concat({
       userName,
       message,

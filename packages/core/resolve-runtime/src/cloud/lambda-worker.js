@@ -4,11 +4,15 @@ import { invokeFunction } from 'resolve-cloud-common/lambda'
 import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
-import putMetrics from './metrics'
+import { putDurationMetrics, putErrorMetrics } from './metrics'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
+
+const GRACEFUL_WORKER_SHUTDOWN_TIME = 30 * 1000
+const getVacantTimeInMillis = (lambdaContext) =>
+  lambdaContext.getRemainingTimeInMillis() - GRACEFUL_WORKER_SHUTDOWN_TIME
 
 let coldStart = true
 
@@ -55,8 +59,13 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     })
   }
 
+  resolveBase.onError = async (error, part) => {
+    await putErrorMetrics(error, part)
+  }
+
   const resolve = Object.create(resolveBase)
-  resolve.getRemainingTimeInMillis = lambdaContext.getRemainingTimeInMillis.bind(
+  resolve.getVacantTimeInMillis = getVacantTimeInMillis.bind(
+    null,
     lambdaContext
   )
 
@@ -134,6 +143,8 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   } catch (error) {
     log.error('top-level event handler execution error!')
 
+    await putErrorMetrics(error, 'lambda-worker')
+
     if (error instanceof Error) {
       log.error('error', error.message)
       log.error('error', error.stack)
@@ -145,7 +156,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   } finally {
     await disposeResolve(resolve)
     if (process.env.RESOLVE_PERFORMANCE_MONITORING) {
-      await putMetrics(
+      await putDurationMetrics(
         lambdaEvent,
         lambdaContext,
         coldStart,

@@ -1,12 +1,12 @@
 {
   "name": "@shopping-list-tutorial/lesson-5",
-  "version": "0.25.10",
+  "version": "0.25.18",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
     "dev": "babel-node ./run.js dev",
     "start": "babel-node ./run.js start",
-    "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
+    "test": "jest --testMatch=**/test/unit/*.test.js --verbose --passWithNoTests",
     "test:e2e": "babel-node ./run.js test:e2e",
     "import-event-store": "babel-node ./run.js import-event-store",
     "export-event-store": "babel-node ./run.js export-event-store"
@@ -24,8 +24,8 @@
     "redux": "4.0.5",
     "react-redux": "7.2.0",
     "redux-saga": "1.0.5",
-    "resolve-redux": "0.25.10",
-    "resolve-scripts": "0.25.10"
+    "resolve-redux": "0.25.18",
+    "resolve-scripts": "0.25.18"
   },
   "devDependencies": {
     "aws-sdk": "2.631.0",

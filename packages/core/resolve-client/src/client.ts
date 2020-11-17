@@ -11,7 +11,7 @@ import {
 import { assertLeadingSlash, assertNonEmptyString } from './assertions'
 import { getRootBasedUrl, isAbsoluteUrl } from './utils'
 import determineOrigin from './determine-origin'
-import { ViewModelDeserializer } from './view-model-types'
+import { ViewModelDeserializer } from './types'
 
 function determineCallback<T>(options: any, callback: any): T | null {
   if (typeof options === 'function') {
@@ -35,21 +35,24 @@ export type Command = {
   immediateConflict?: boolean
 }
 export type CommandResult = object
-export type CommandCallback = (
+export type CommandCallback<T extends Command> = (
   error: Error | null,
   result: CommandResult | null,
-  command: Command
+  command: T
 ) => void
 export type CommandOptions = {}
 
 export const command = (
   context: Context,
   cmd: Command,
-  options?: CommandOptions | CommandCallback,
-  callback?: CommandCallback
+  options?: CommandOptions | CommandCallback<Command>,
+  callback?: CommandCallback<Command>
 ): PromiseOrVoid<CommandResult> => {
   const actualOptions = isOptions<CommandOptions>(options) ? options : undefined
-  const actualCallback = determineCallback<CommandCallback>(options, callback)
+  const actualCallback = determineCallback<CommandCallback<Command>>(
+    options,
+    callback
+  )
 
   const asyncExec = async (): Promise<CommandResult> => {
     const response = await request(context, '/api/commands', cmd, actualOptions)
@@ -109,17 +112,17 @@ export type QueryOptions = {
     attempts?: number
   }
 }
-export type QueryCallback = (
+export type QueryCallback<T extends Query> = (
   error: Error | null,
   result: QueryResult | null,
-  query: Query
+  query: T
 ) => void
 
 export const query = (
   context: Context,
   qr: Query,
-  options?: QueryOptions | QueryCallback,
-  callback?: QueryCallback
+  options?: QueryOptions | QueryCallback<Query>,
+  callback?: QueryCallback<Query>
 ): PromiseOrVoid<QueryResult> => {
   const requestOptions: RequestOptions = {
     method: 'GET',
@@ -156,7 +159,10 @@ export const query = (
     requestOptions.method = options?.method ?? 'GET'
   }
 
-  const actualCallback = determineCallback<QueryCallback>(options, callback)
+  const actualCallback = determineCallback<QueryCallback<Query>>(
+    options,
+    callback
+  )
 
   let queryRequest: Promise<NarrowedResponse>
 
@@ -344,18 +350,31 @@ const getStaticAssetUrl = (
   return getRootBasedUrl(rootPath, `/${staticPath}${assetPath}`, origin)
 }
 
+const getOriginPath = ({ rootPath, origin }: Context, path: string): string => {
+  assertNonEmptyString(path, 'path')
+
+  if (isAbsoluteUrl(path)) {
+    return path
+  }
+
+  assertLeadingSlash(path, 'path')
+
+  return getRootBasedUrl(rootPath, path, origin)
+}
+
 export type Client = {
   command: (
     command: Command,
-    options?: CommandOptions | CommandCallback,
-    callback?: CommandCallback
+    options?: CommandOptions | CommandCallback<Command>,
+    callback?: CommandCallback<Command>
   ) => PromiseOrVoid<CommandResult>
   query: (
     query: Query,
-    options?: QueryOptions | QueryCallback,
-    callback?: QueryCallback
+    options?: QueryOptions | QueryCallback<Query>,
+    callback?: QueryCallback<Query>
   ) => PromiseOrVoid<QueryResult>
   getStaticAssetUrl: (assetPath: string) => string
+  getOriginPath: (path: string) => string
   subscribe: (
     url: string,
     cursor: string | null,
@@ -375,6 +394,7 @@ export const getClient = (context: Context): Client => ({
     query(context, qr, options, callback),
   getStaticAssetUrl: (assetPath: string): string =>
     getStaticAssetUrl(context, assetPath),
+  getOriginPath: (path: string): string => getOriginPath(context, path),
   subscribe: (
     url,
     cursor,

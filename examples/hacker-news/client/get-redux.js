@@ -1,4 +1,4 @@
-import createCommentsReducer from 'resolve-module-comments/lib/client/reducers/comments'
+import { createCommentsReducer } from 'resolve-module-comments'
 
 import optimisticReducer from './reducers/optimistic'
 import optimisticVotingSaga from './sagas/optimistic-voting-saga'
@@ -14,6 +14,7 @@ const getRedux = ({ 'comments-hn': getCommentsOptions }, history) => {
     reducers: {
       [commentsReducerName]: createCommentsReducer(commentsOptions),
       optimistic: optimisticReducer,
+      jwt: (jwt = {}) => jwt,
     },
     sagas: [optimisticVotingSaga, storyCreateSaga.bind(null, history)],
     enhancers: [devTools],

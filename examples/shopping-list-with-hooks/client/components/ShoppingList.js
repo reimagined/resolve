@@ -6,16 +6,7 @@ import {
 } from 'resolve-react-hooks'
 import { Redirect } from 'react-router-dom'
 
-import {
-  Row,
-  Col,
-  ListGroup,
-  Button,
-  InputGroup,
-  FormControl,
-  FormGroup,
-  ControlLabel,
-} from 'react-bootstrap'
+import { Row, Col, ListGroup, Button, InputGroup, Form } from 'react-bootstrap'
 
 import ShoppingListItem from './ShoppingListItem'
 import NotFound from './NotFound'
@@ -101,15 +92,13 @@ const ShoppingList = ({
 
   return (
     <div className="example-wrapper">
-      <ControlLabel>Shopping list name</ControlLabel>
-      <FormGroup bsSize="large">
-        <InputGroup>
-          <InputGroup.Button>
-            <Button bsSize="large" onClick={removeShoppingList}>
-              <i className="far fa-trash-alt" />
-            </Button>
-          </InputGroup.Button>
-          <FormControl
+      <Form.Label>Shopping list name</Form.Label>
+      <Form.Group>
+        <InputGroup size="lg">
+          <Button size="lg" variant="danger" onClick={removeShoppingList}>
+            <i className="far fa-trash-alt" />
+          </Button>
+          <Form.Control
             type="text"
             value={shoppingList.name}
             onChange={updateShoppingListName}
@@ -117,7 +106,7 @@ const ShoppingList = ({
             onBlur={renameShoppingList}
           />
         </InputGroup>
-      </FormGroup>
+      </Form.Group>
       <ListGroup className="example-list">
         {shoppingList.list.map((item, idx) => (
           <ShoppingListItem
@@ -127,10 +116,10 @@ const ShoppingList = ({
           />
         ))}
       </ListGroup>
-      <ControlLabel>Item name</ControlLabel>
+      <Form.Label>Item name</Form.Label>
       <Row>
         <Col md={8}>
-          <FormControl
+          <Form.Control
             className="example-form-control"
             type="text"
             value={itemText}
@@ -141,7 +130,7 @@ const ShoppingList = ({
         <Col md={4}>
           <Button
             className="example-button"
-            bsStyle="success"
+            variant="success"
             onClick={() => createShoppingItem(itemText)}
           >
             Add Item

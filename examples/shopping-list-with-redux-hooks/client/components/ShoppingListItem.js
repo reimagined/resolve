@@ -1,8 +1,8 @@
 import React from 'react'
 import { useReduxCommand } from 'resolve-redux'
-import { ListGroupItem, FormCheck } from 'react-bootstrap'
+import { ListGroupItem, Form } from 'react-bootstrap'
 
-import Image from './Image'
+import { StaticImage } from './StaticImage'
 
 const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
   const { execute: toggleItem } = useReduxCommand({
@@ -23,8 +23,14 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
   })
   return (
     <ListGroupItem key={id}>
-      <FormCheck inline checked={checked} onChange={toggleItem} label={text} />
-      <Image
+      <Form.Check
+        inline
+        type="checkbox"
+        label={text}
+        checked={checked}
+        onChange={toggleItem}
+      />
+      <StaticImage
         className="example-close-button"
         src="/close-button.png"
         onClick={removeItem}

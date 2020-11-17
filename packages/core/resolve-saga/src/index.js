@@ -17,15 +17,23 @@ const createSaga = ({
   performanceTracer,
   uploader,
   eventstoreAdapter,
-  getRemainingTimeInMillis,
+  getVacantTimeInMillis,
   performAcknowledge,
+  onError = async () => void 0,
 }) => {
+  const onSagaError = async (error) => {
+    try {
+      await onError(error, 'saga')
+    } catch (e) {}
+  }
+
   const schedulerAggregatesNames = new Set(schedulers.map(({ name }) => name))
   let eventProperties = {}
   const executeScheduleCommand = createCommand({
     aggregates: createSchedulersAggregates(schedulers),
     onCommandExecuted,
     eventstoreAdapter,
+    onError: onSagaError,
   })
 
   const executeCommandOrScheduler = async (...args) => {
@@ -81,15 +89,25 @@ const createSaga = ({
   const regularSagas = wrapRegularSagas(sagas, sagaProvider)
   const schedulerSagas = createSchedulerSagas(schedulers, sagaProvider)
 
+  const sagasAsReadModels = [...regularSagas, ...schedulerSagas].map(
+    (saga) => ({
+      provideLedger: async (inlineLedger) => {
+        eventProperties = inlineLedger.Properties
+      },
+      ...saga,
+    })
+  )
+
   const executeListener = createQuery({
     invokeEventBusAsync,
     readModelConnectors,
-    readModels: [...regularSagas, ...schedulerSagas],
+    readModels: sagasAsReadModels,
     viewModels: [],
     performanceTracer,
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     performAcknowledge,
     eventstoreAdapter,
+    onError: onSagaError,
   })
 
   const sendEvents = async ({
