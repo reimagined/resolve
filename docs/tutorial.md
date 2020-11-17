@@ -749,14 +749,16 @@ export default {
     list: []
   }),
   // Below is a projection function. It runs on every event of the specified type, whose aggregate Id matches one of the Ids specified in the query.
+  // A View Model projection takes the response object and returns its updated version based on the event data.
   [SHOPPING_LIST_CREATED]: (state, { aggregateId, payload: { name } }) => ({
-    // A projection takes the response object and returns its updated version based on the event data.
+    // Assign the actual aggregate ID and name to the response.
     id: aggregateId,
     name,
     list: []
   }),
   [SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
     ...state,
+    // Add a shopping list item to a list within the response object.
     list: [
       ...state.list,
       {
@@ -884,6 +886,7 @@ const ShoppingList = ({
   )
 
   useEffect(() => {
+    // Connect to a View Model on component mount and disconnect on unmount.
     connect()
     return () => {
       dispose()
@@ -959,9 +962,9 @@ Define events related to data editing in the **common/eventTypes.js** file.
 
 ```js
 ...
-export const SHOPPING_LIST_REMOVED = 'SHOPPING_LIST_REMOVED'
-export const SHOPPING_ITEM_TOGGLED = 'SHOPPING_ITEM_TOGGLED'
-export const SHOPPING_ITEM_REMOVED = 'SHOPPING_ITEM_REMOVED'
+export const SHOPPING_LIST_REMOVED = 'SHOPPING_LIST_REMOVED' // Indicates that a shopping list was removed.
+export const SHOPPING_ITEM_TOGGLED = 'SHOPPING_ITEM_TOGGLED' // Indicates that a list item was toggled.
+export const SHOPPING_ITEM_REMOVED = 'SHOPPING_ITEM_REMOVED' // Indicates that an item was removed.
 ```
 
 #### Modify the shopping_list Aggregate
