@@ -294,7 +294,8 @@ const build = async (
   store,
   projection,
   next,
-  getVacantTimeInMillis
+  getVacantTimeInMillis,
+  provideLedger
 ) => {
   const {
     PassthroughError,
@@ -393,6 +394,8 @@ const build = async (
     if (cursor != null && cursor.constructor !== String) {
       throw new TypeError('cursor')
     }
+
+    await provideLedger(readModelLedger)
 
     Object.assign(pool, {
       getVacantTimeInMillis,

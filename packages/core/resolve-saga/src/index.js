@@ -81,10 +81,19 @@ const createSaga = ({
   const regularSagas = wrapRegularSagas(sagas, sagaProvider)
   const schedulerSagas = createSchedulerSagas(schedulers, sagaProvider)
 
+  const sagasAsReadModels = [...regularSagas, ...schedulerSagas].map(
+    (saga) => ({
+      provideLedger: async (inlineLedger) => {
+        eventProperties = inlineLedger.Properties
+      },
+      ...saga,
+    })
+  )
+
   const executeListener = createQuery({
     invokeEventBusAsync,
     readModelConnectors,
-    readModels: [...regularSagas, ...schedulerSagas],
+    readModels: sagasAsReadModels,
     viewModels: [],
     performanceTracer,
     getVacantTimeInMillis,
