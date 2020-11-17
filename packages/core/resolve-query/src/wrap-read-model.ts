@@ -565,6 +565,23 @@ const next = async (
   await pool.invokeEventBusAsync(eventListener, 'build')
 }
 
+const provideLedger = async (
+  pool: any,
+  readModelName: string,
+  inlineLedger: any
+) => {
+  try {
+    if (typeof pool.readModel.setProperties === 'function') {
+      await pool.readModel.provideLedger(inlineLedger)
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `Provide inline ledger for event listener ${readModelName} failed: ${error}`
+    )
+  }
+}
+
 const build = doOperation.bind(
   null,
   'build',
@@ -580,6 +597,7 @@ const build = doOperation.bind(
     pool.readModel.projection,
     next.bind(null, pool, readModelName),
     pool.getVacantTimeInMillis,
+    provideLedger.bind(null, pool, readModelName),
   ]
 )
 
