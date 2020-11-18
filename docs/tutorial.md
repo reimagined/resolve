@@ -727,11 +727,11 @@ Run your application to view the result:
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-4)
 
-This lesson describes how you can use a View Model to obtain shopping list items and display them in a reactive list in the client browser.
+This lesson describes how you can use a View Model to obtain shopping list items and display them as a list within the client browser.
 
-A View Model is a reactive View Model that is built on the fly for one or several aggregate IDs. A View Model uses WebSocket to synchronize its state with the client in real time.
+A View Model is a reactive Read Model that is built on the fly for one or several aggregate IDs. A client can maintain a WebSocket connection with a resolve server to receive View Model data updates in real time.
 
-The downside is that a View Model does not have persistent state and should be built on every query, so it is better suited for small data samples.
+The downside is that View Models do not have persistent state and should be rebuilt on every query, so they better suited for small data samples.
 
 ### Create a Shopping List View Model
 
