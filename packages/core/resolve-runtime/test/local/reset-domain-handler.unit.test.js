@@ -7,6 +7,9 @@ const getMockResolve = () => ({
   publisher: {},
   readModels: [],
   sagas: [],
+  eventBus: {
+    reset: () => {}
+  }
 })
 const getMockResponse = () => ({
   end: jest.fn(),
