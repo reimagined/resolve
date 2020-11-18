@@ -118,15 +118,6 @@ const createSaga = ({
     })
   )
 
-  const sagasAsReadModels = [...regularSagas, ...schedulerSagas].map(
-    (saga) => ({
-      provideLedger: async (inlineLedger) => {
-        eventProperties = inlineLedger.Properties
-      },
-      ...saga,
-    })
-  )
-
   const executeListener = createQuery({
     invokeEventBusAsync,
     readModelConnectors,
