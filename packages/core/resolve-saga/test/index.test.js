@@ -1,4 +1,7 @@
-import createSagaExecutor, { schedulerEventTypes } from '../src/index'
+import createSagaExecutor, {
+  schedulerName,
+  schedulerEventTypes,
+} from '../src/index'
 
 jest.mock('uuid', () => ({
   v4: jest.fn(() => 'guid'),
@@ -40,7 +43,7 @@ test('resolve-saga', async () => {
     saveSnapshot: jest.fn(),
   }
 
-  const schedulerAdapterInstance = {
+  const scheduler = {
     addEntries: jest.fn(),
     clearEntries: jest.fn(),
   }
@@ -48,8 +51,6 @@ test('resolve-saga', async () => {
   const performAcknowledge = jest
     .fn()
     .mockImplementation(async ({ event }) => event)
-
-  const schedulerAdapter = jest.fn().mockReturnValue(schedulerAdapterInstance)
 
   const executeCommand = jest.fn()
   const executeQuery = jest.fn()
@@ -104,6 +105,7 @@ test('resolve-saga', async () => {
     sagas,
     performAcknowledge,
     onCommandExecuted,
+    scheduler,
   })
 
   const properties = {
@@ -133,15 +135,16 @@ test('resolve-saga', async () => {
     properties,
   })
 
+  const schedulerModelName = `${schedulerName}default-connector`
   await sagaExecutor.sendEvents({
-    modelName: 'default-scheduler',
+    modelName: schedulerModelName,
     events: [{ type: 'Init' }],
     getVacantTimeInMillis: () => remainingTime,
     properties,
   })
 
   await sagaExecutor.sendEvents({
-    modelName: 'default-scheduler',
+    modelName: schedulerModelName,
     events: [
       {
         type: schedulerEventTypes.SCHEDULED_COMMAND_CREATED,
@@ -179,7 +182,7 @@ test('resolve-saga', async () => {
 
   await sagaExecutor.drop({ modelName: 'test-saga' })
 
-  await sagaExecutor.drop({ modelName: 'default-scheduler' })
+  await sagaExecutor.drop({ modelName: schedulerModelName })
 
   await sagaExecutor.dispose()
 
@@ -221,12 +224,10 @@ test('resolve-saga', async () => {
     'snapshotAdapter.saveSnapshot'
   )
 
-  expect(schedulerAdapter.mock.calls).toMatchSnapshot('schedulerAdapter')
-
-  expect(schedulerAdapterInstance.addEntries.mock.calls).toMatchSnapshot(
-    'schedulerAdapterInstance.addEntries'
+  expect(scheduler.addEntries.mock.calls).toMatchSnapshot(
+    'scheduler.addEntries'
   )
-  expect(schedulerAdapterInstance.clearEntries.mock.calls).toMatchSnapshot(
-    'schedulerAdapterInstance.clearEntries'
+  expect(scheduler.clearEntries.mock.calls).toMatchSnapshot(
+    'scheduler.clearEntries'
   )
 })
