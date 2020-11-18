@@ -52,7 +52,7 @@
       "packages/adapters/upload-adapters/*",
       "packages/adapters/encryption-adapters/*",
       "examples/*",
-      "examples/shopping-list-advanced",
+      "examples/shopping-list-advanced/*",
       "examples/shopping-list-tutorial/*",
       "packages/modules/*",
       "tests",
