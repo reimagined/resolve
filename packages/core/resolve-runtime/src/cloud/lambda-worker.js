@@ -5,6 +5,7 @@ import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
 import putMetrics from './metrics'
+import initScheduler from './init-scheduler'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 
@@ -64,6 +65,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     null,
     lambdaContext
   )
+  await initScheduler(resolve)
 
   const lambdaRemainingTimeStart = lambdaContext.getRemainingTimeInMillis()
 

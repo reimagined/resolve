@@ -33,15 +33,6 @@ const cloudConfig = {
       },
     },
   },
-  schedulers: {
-    scheduler: {
-      adapter: {
-        module: 'resolve-scheduler-cloud',
-        options: {},
-      },
-      connectorName: 'default',
-    },
-  },
 }
 
 export default cloudConfig

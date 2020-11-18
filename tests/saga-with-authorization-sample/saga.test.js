@@ -1,5 +1,5 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents from 'resolve-testing-tools'
+import givenEvents, { schedulerName } from 'resolve-testing-tools'
 
 import config from './config'
 import resetReadModel from '../reset-read-model'
@@ -11,7 +11,6 @@ describe('Saga', () => {
     name: sagaName,
     source: sourceModule,
     connectorName,
-    schedulerName,
   } = config.sagas.find(({ name }) => name === 'ProcessKiller')
   const {
     module: connectorModule,

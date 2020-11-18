@@ -50,7 +50,6 @@ const appConfig = {
       name: 'personal-data',
       source: 'common/sagas/personal-data.saga.js',
       connectorName: 'default',
-      schedulerName: 'scheduler',
     },
   ],
   apiHandlers: [

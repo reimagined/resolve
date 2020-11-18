@@ -39,6 +39,8 @@ export default givenEvents.bind(null, {
 export const RESOLVE_SIDE_EFFECTS_START_TIMESTAMP =
   'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP'
 
+export const schedulerName = '_SCHEDULER_'
+
 export interface GivenEventsContext {
   all: any
   createQuery: any

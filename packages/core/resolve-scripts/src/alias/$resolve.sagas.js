@@ -28,18 +28,6 @@ export default ({ resolveConfig, isClient }) => {
     constants.push(
       `const connectorName_${index} = ${JSON.stringify(saga.connectorName)}`
     )
-    constants.push(
-      `const schedulerName_${index} = ${JSON.stringify(saga.schedulerName)}`
-    )
-
-    if (
-      saga.schedulerName != null &&
-      resolveConfig.schedulers[saga.schedulerName] == null
-    ) {
-      throw new Error(
-        `${message.configNotContainSectionError}.schedulers[${saga.schedulerName}]`
-      )
-    }
 
     importResource({
       resourceName: `source_${index}_original`,
@@ -95,7 +83,6 @@ export default ({ resolveConfig, isClient }) => {
 
     exports.push(`sagas.push({`, `  name: name_${index}`)
     exports.push(`, connectorName: connectorName_${index}`)
-    exports.push(`, schedulerName: schedulerName_${index}`)
     exports.push(`, handlers: handlers_${index}`)
     exports.push(`, sideEffects: sideEffects_${index}`)
     exports.push(`, invariantHash: invariantHash_${index}`)

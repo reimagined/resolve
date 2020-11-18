@@ -6,7 +6,6 @@ const getMockResolve = () => ({
   eventstoreAdapter: {},
   publisher: {},
   readModels: [],
-  schedulers: [],
   sagas: [],
 })
 const getMockResponse = () => ({

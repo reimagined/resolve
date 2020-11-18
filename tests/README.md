@@ -534,8 +534,7 @@ const appConfig = {
     {
       name: 'UserConfirmation',
       source: 'saga.js',
-      connectorName: 'default',
-      schedulerName: 'scheduler'
+      connectorName: 'default'
     }
   ]
 }
@@ -655,8 +654,7 @@ const appConfig = {
     {
       name: 'ProcessKiller',
       source: 'saga.js',
-      connectorName: 'default',
-      schedulerName: 'scheduler'
+      connectorName: 'default'
     }
   ]
 }
@@ -918,8 +916,7 @@ describe('Saga', () => {
   const {
     name: sagaName,
     source: sourceModule,
-    connectorName,
-    schedulerName
+    connectorName
   } = config.sagas.find(({ name }) => name === 'UpdaterSaga')
   const {
     module: connectorModule,

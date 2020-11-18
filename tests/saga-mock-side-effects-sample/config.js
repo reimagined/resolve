@@ -12,7 +12,6 @@ const appConfig = {
       name: 'UpdaterSaga',
       source: 'saga.js',
       connectorName: 'default',
-      schedulerName: 'scheduler',
     },
   ],
 }

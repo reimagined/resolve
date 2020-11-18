@@ -1,4 +1,5 @@
 import debugLevels from 'resolve-debug-levels'
+import { schedulerName } from 'resolve-saga'
 
 import bootstrap from '../common/bootstrap'
 import shutdown from '../common/shutdown'
@@ -7,9 +8,10 @@ const log = debugLevels('resolve:resolve-runtime:deploy-service-event-handler')
 
 const getReadModelNames = (resolve) =>
   resolve.readModels.map(({ name }) => name)
+
 const getSagaNames = (resolve) => [
-  ...resolve.schedulers.map(({ name }) => name),
   ...resolve.sagas.map(({ name }) => name),
+  schedulerName,
 ]
 
 const handleResolveReadModelEvent = async (

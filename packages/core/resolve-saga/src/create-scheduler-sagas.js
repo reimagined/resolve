@@ -1,47 +1,124 @@
 import getLog from './get-log'
-import createSchedulerEventTypes from './scheduler-event-types'
-import createSchedulerSagaHandlers from './scheduler-saga-handlers'
 import sagaEventHandler from './saga-event-handler'
 
 const log = getLog('wrap-scheduler-sagas')
 
-const execute = async (
-  sagaProvider,
+const createSchedulerSagaHandlers = ({
   schedulerAggregateName,
-  taskId,
-  date,
-  command
-) =>
-  await sagaProvider.executeCommand({
-    aggregateName: schedulerAggregateName,
-    aggregateId: taskId,
-    type: 'execute',
-    payload: { date, command },
-  })
-
-const createSchedulerSagas = (schedulers, sagaProvider) => {
-  const sagaReadModels = []
-
-  for (const {
-    name,
-    connectorName,
-    adapter: createSideEffectsAdapter,
-  } of schedulers) {
-    const schedulerAggregateName = name
-    const commandsTableName = name
-
-    const handlers = createSchedulerSagaHandlers({
-      schedulerAggregateName,
-      commandsTableName,
-      eventTypes: createSchedulerEventTypes({ schedulerName: name }),
+  commandsTableName,
+  eventTypes: {
+    SCHEDULED_COMMAND_CREATED,
+    SCHEDULED_COMMAND_EXECUTED,
+    SCHEDULED_COMMAND_SUCCEEDED,
+    SCHEDULED_COMMAND_FAILED,
+  },
+}) => ({
+  Init: async ({ store }) => {
+    await store.defineTable(commandsTableName, {
+      indexes: { taskId: 'string', date: 'number' },
+      fields: ['command'],
     })
+  },
+  Bootstrap: async ({ store, sideEffects }) => {
+    await sideEffects.clearEntries()
+    // BUGFIX: add ALL entries here
+    await sideEffects.addEntries(store.find({ date: { $lte: Date.now() } }))
+  },
+  [SCHEDULED_COMMAND_CREATED]: async (
+    { store, sideEffects },
+    { aggregateId, payload: { date, command } }
+  ) => {
+    const log = getLog('scheduled-command-created')
 
-    const sideEffects = createSideEffectsAdapter({
-      execute: execute.bind(null, sagaProvider, schedulerAggregateName),
-      errorHandler: async (e) => {
-        log.error(`scheduler adapter failure: ${e.stack}`)
-        throw e
-      },
+    const entry = {
+      taskId: aggregateId,
+      date: Number(date),
+      command,
+    }
+
+    log.debug(`adding entry ${aggregateId} to the store`)
+    log.verbose(`entry: ${JSON.stringify(entry)}`)
+
+    await store.insert(commandsTableName, entry)
+
+    log.debug(`entry successfully added to the store`)
+    log.debug(`calling adapter's addEntries with the entry`)
+
+    await sideEffects.addEntries([entry])
+
+    log.debug(`completed successfully`)
+  },
+  [SCHEDULED_COMMAND_EXECUTED]: async (
+    { sideEffects: { executeCommand } },
+    { aggregateId, payload: { command } }
+  ) => {
+    const log = getLog('scheduled-command-executed')
+    try {
+      log.debug(`executing the command`)
+      log.verbose(`command: ${JSON.stringify(command)}`)
+
+      await executeCommand(command)
+
+      log.debug(`executing "success" scheduler command`)
+      try {
+        await executeCommand({
+          aggregateId,
+          aggregateName: schedulerAggregateName,
+          type: 'success',
+          payload: {},
+        })
+        log.debug(`completed successfully`)
+      } catch (error) {
+        log.debug(`cannot complete scheduled task: ${error.message}`)
+      }
+    } catch (error) {
+      log.error(`error: ${error.message}`)
+      log.debug(`executing "failure" scheduler command`)
+      try {
+        await executeCommand({
+          aggregateId,
+          aggregateName: schedulerAggregateName,
+          type: 'failure',
+          payload: {
+            reason: error.stack,
+          },
+        })
+      } catch (error) {
+        log.debug(`cannot complete scheduled task: ${error.message}`)
+      }
+    }
+  },
+  [SCHEDULED_COMMAND_SUCCEEDED]: async ({ store }, { aggregateId }) => {
+    const log = getLog('scheduled-command-succeeded')
+    log.debug(`removing entry ${aggregateId} from the store`)
+    await store.delete(commandsTableName, { taskId: aggregateId })
+    log.debug(`completed successfully`)
+  },
+  [SCHEDULED_COMMAND_FAILED]: async ({ store }, { aggregateId }) => {
+    const log = getLog('scheduled-command-failed')
+    log.debug(`removing entry ${aggregateId} from the store`)
+    await store.delete(commandsTableName, { taskId: aggregateId })
+    log.debug(`completed successfully`)
+  },
+})
+
+const createSchedulerSagas = ({
+  sagas,
+  schedulerName,
+  schedulerEventTypes,
+  sagaProvider,
+  scheduler,
+}) => {
+  const sagaReadModels = []
+  const uniqueConnectors = Array.from(
+    new Set(sagas.map(({ connectorName }) => connectorName))
+  )
+
+  for (const connectorName of uniqueConnectors) {
+    const handlers = createSchedulerSagaHandlers({
+      schedulerAggregateName: schedulerName,
+      commandsTableName: schedulerName,
+      eventTypes: schedulerEventTypes,
     })
 
     const eventTypes = Object.keys(handlers)
@@ -53,7 +130,7 @@ const createSchedulerSagas = (schedulers, sagaProvider) => {
         null,
         sagaProvider,
         handlers,
-        sideEffects,
+        scheduler,
         eventType,
         Function() // eslint-disable-line no-new-func
       )
@@ -62,11 +139,10 @@ const createSchedulerSagas = (schedulers, sagaProvider) => {
     }, {})
 
     const sagaReadModel = {
-      name,
+      name: `${schedulerName}${connectorName}`,
       projection,
       resolvers: {},
       connectorName,
-      schedulerAdapter: sideEffects,
       encryption: () => Promise.resolve({}),
     }
 

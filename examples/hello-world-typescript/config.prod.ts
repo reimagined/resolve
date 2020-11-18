@@ -36,15 +36,6 @@ const prodConfig = {
       snapshotBucketSize: 100,
     },
   },
-  schedulers: {
-    scheduler: {
-      adapter: {
-        module: 'resolve-scheduler-local',
-        options: {},
-      },
-      connectorName: 'default',
-    },
-  },
   /*
     {
       module: 'resolve-eventstore-mysql',

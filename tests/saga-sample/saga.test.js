@@ -1,6 +1,7 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import givenEvents, {
   RESOLVE_SIDE_EFFECTS_START_TIMESTAMP,
+  schedulerName,
 } from 'resolve-testing-tools'
 
 import config from './config'
@@ -13,7 +14,6 @@ describe('Saga', () => {
     name: sagaName,
     source: sourceModule,
     connectorName,
-    schedulerName,
   } = config.sagas.find(({ name }) => name === 'UserConfirmation')
   const {
     module: connectorModule,

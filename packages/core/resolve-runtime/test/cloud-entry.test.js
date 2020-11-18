@@ -93,7 +93,6 @@ describe('Cloud entry', () => {
       ],
       viewModels: [],
       sagas: [],
-      schedulers: [],
     }
 
     redux = {

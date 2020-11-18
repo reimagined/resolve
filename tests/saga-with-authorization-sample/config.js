@@ -18,7 +18,6 @@ const appConfig = {
       name: 'ProcessKiller',
       source: 'saga.js',
       connectorName: 'default',
-      schedulerName: 'scheduler',
     },
   ],
 }

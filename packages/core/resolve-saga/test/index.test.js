@@ -1,5 +1,4 @@
-import createEventTypes from '../src/scheduler-event-types'
-import createSagaExecutor from '../src/index'
+import createSagaExecutor, { schedulerEventTypes } from '../src/index'
 
 jest.mock('uuid', () => ({
   v4: jest.fn(() => 'guid'),
@@ -83,23 +82,12 @@ test('resolve-saga', async () => {
     {
       name: 'test-saga',
       connectorName: 'default-connector',
-      schedulerName: 'default-scheduler',
       handlers: {
         EVENT_TYPE: eventHandler,
         Init: jest.fn(),
       },
       invariantHash: 'invariantHash',
       encryption: jest.fn(() => ({})),
-    },
-  ]
-
-  const schedulers = [
-    {
-      name: 'default-scheduler',
-      connectorName: 'default-connector',
-      adapter: schedulerAdapter,
-      invariantHash: 'invariantHash',
-      encryption: () => ({}),
     },
   ]
 
@@ -114,7 +102,6 @@ test('resolve-saga', async () => {
     executeCommand,
     executeQuery,
     sagas,
-    schedulers,
     performAcknowledge,
     onCommandExecuted,
   })
@@ -146,10 +133,6 @@ test('resolve-saga', async () => {
     properties,
   })
 
-  const schedulerEvents = createEventTypes({
-    schedulerName: 'default-scheduler',
-  })
-
   await sagaExecutor.sendEvents({
     modelName: 'default-scheduler',
     events: [{ type: 'Init' }],
@@ -161,7 +144,7 @@ test('resolve-saga', async () => {
     modelName: 'default-scheduler',
     events: [
       {
-        type: schedulerEvents.SCHEDULED_COMMAND_CREATED,
+        type: schedulerEventTypes.SCHEDULED_COMMAND_CREATED,
         aggregateId: 'guid',
         payload: {
           date: 100500,
@@ -174,7 +157,7 @@ test('resolve-saga', async () => {
         },
       },
       {
-        type: schedulerEvents.SCHEDULED_COMMAND_EXECUTED,
+        type: schedulerEventTypes.SCHEDULED_COMMAND_EXECUTED,
         aggregateId: 'guid',
         payload: {
           aggregateName: 'Test',
@@ -184,10 +167,10 @@ test('resolve-saga', async () => {
         },
       },
       {
-        type: schedulerEvents.SCHEDULED_COMMAND_SUCCEEDED,
+        type: schedulerEventTypes.SCHEDULED_COMMAND_SUCCEEDED,
       },
       {
-        type: schedulerEvents.SCHEDULED_COMMAND_FAILED,
+        type: schedulerEventTypes.SCHEDULED_COMMAND_FAILED,
       },
     ],
     getVacantTimeInMillis: () => remainingTime,
