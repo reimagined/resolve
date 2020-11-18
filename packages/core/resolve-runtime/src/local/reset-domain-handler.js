@@ -6,7 +6,7 @@ import {
   PublisherResourceAlreadyExistError,
   PublisherResourceNotExistError,
 } from 'resolve-local-event-broker'
-import { schedulerName } from 'resolve-saga'
+import { getSchedulersNamesBySagas } from 'resolve-saga'
 
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 
@@ -45,7 +45,12 @@ const resetDomainHandler = (options) => async (req, res) => {
     }
 
     if (dropSagas) {
-      for (const { name } of [...sagas, { name: schedulerName }]) {
+      for (const { name } of [
+        ...getSchedulersNamesBySagas(sagas).map((schedulerName) => ({
+          name: `${schedulerName}`,
+        })),
+        ...sagas,
+      ]) {
         try {
           await eventBus.reset({ eventSubscriber: name })
         } catch (error) {

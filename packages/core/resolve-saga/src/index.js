@@ -14,6 +14,24 @@ const schedulerEventTypes = {
 }
 const schedulerInvariantHash = 'scheduler-invariant-hash'
 
+const getSchedulersNamesBySagas = (sagas) => {
+  if (!Array.isArray(sagas)) {
+    throw new Error(`Sagas ${sagas} is not array`)
+  }
+  const uniqueSagaConnectorsNames = Array.from(
+    new Set(sagas.map((saga) => saga.connectorName))
+  )
+  const schedulersNames = []
+  for (const connectorName of uniqueSagaConnectorsNames) {
+    // eslint-disable-next-line no-new-wrappers
+    const currentSchedulerName = new String(`${schedulerName}${connectorName}`)
+    currentSchedulerName.connectorName = connectorName
+    schedulersNames.push(currentSchedulerName)
+  }
+
+  return schedulersNames
+}
+
 const createSaga = ({
   onError = async () => void 0,
   invokeEventBusAsync,
@@ -102,6 +120,7 @@ const createSaga = ({
 
   const regularSagas = wrapRegularSagas({ sagas, schedulerName, sagaProvider })
   const schedulerSagas = createSchedulerSagas({
+    getSchedulersNamesBySagas,
     sagas,
     schedulerName,
     schedulerEventTypes,
@@ -171,6 +190,6 @@ const createSaga = ({
   return executeSaga
 }
 
-export { schedulerName, schedulerEventTypes }
+export { schedulerName, schedulerEventTypes, getSchedulersNamesBySagas }
 
 export default createSaga

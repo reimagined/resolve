@@ -103,6 +103,7 @@ const createSchedulerSagaHandlers = ({
 })
 
 const createSchedulerSagas = ({
+  getSchedulersNamesBySagas,
   sagas,
   schedulerName,
   schedulerEventTypes,
@@ -110,11 +111,8 @@ const createSchedulerSagas = ({
   scheduler,
 }) => {
   const sagaReadModels = []
-  const uniqueConnectors = Array.from(
-    new Set(sagas.map(({ connectorName }) => connectorName))
-  )
 
-  for (const connectorName of uniqueConnectors) {
+  for (const currentSchedulerName of getSchedulersNamesBySagas(sagas)) {
     const handlers = createSchedulerSagaHandlers({
       schedulerAggregateName: schedulerName,
       commandsTableName: schedulerName,
@@ -139,10 +137,10 @@ const createSchedulerSagas = ({
     }, {})
 
     const sagaReadModel = {
-      name: `${schedulerName}${connectorName}`,
+      name: `${currentSchedulerName}`,
       projection,
       resolvers: {},
-      connectorName,
+      connectorName: currentSchedulerName.connectorName,
       encryption: () => Promise.resolve({}),
     }
 

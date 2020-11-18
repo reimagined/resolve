@@ -1,5 +1,5 @@
 import debugLevels from 'resolve-debug-levels'
-import { schedulerName } from 'resolve-saga'
+import { getSchedulersNamesBySagas } from 'resolve-saga'
 
 import bootstrap from '../common/bootstrap'
 import shutdown from '../common/shutdown'
@@ -10,8 +10,10 @@ const getReadModelNames = (resolve) =>
   resolve.readModels.map(({ name }) => name)
 
 const getSagaNames = (resolve) => [
+  ...getSchedulersNamesBySagas(resolve.sagas).map(
+    (schedulerName) => `${schedulerName}`
+  ),
   ...resolve.sagas.map(({ name }) => name),
-  schedulerName,
 ]
 
 const handleResolveReadModelEvent = async (
