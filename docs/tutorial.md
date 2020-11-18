@@ -944,15 +944,21 @@ const ShoppingLists = ({ lists }) => {
 
 Run the application to see the result.
 
+[TODO] Test Reactive Updates
+
 ---
 
 ## **Lesson 5** - Enable Editing
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-5)
 
+This lesson describes how to implement missing data editing functionality on the reSolve backend and enable data editing on the frontend.
+
 ### Modify the Backend
 
-To add data editing functionality to the Shopping List application's reSolve backend, add data editing events, modify the shopping_list aggregate to produce these events as well as read and view models to update their data based on these events.
+Currently your reSolve application can create shopping lists and their items. The application also requires the capability to toggle shopping list items as well as remove and items and entire lists.
+
+To implement the missing functionality, you need to add data editing events, modify the ShoppingList aggregate to produce these events, and update read and view models so they take these events into account.
 
 #### Add Data Editing Events
 
@@ -967,9 +973,9 @@ export const SHOPPING_ITEM_TOGGLED = 'SHOPPING_ITEM_TOGGLED' // Indicates that a
 export const SHOPPING_ITEM_REMOVED = 'SHOPPING_ITEM_REMOVED' // Indicates that an item was removed.
 ```
 
-#### Modify the shopping_list Aggregate
+#### Modify the ShoppingList Aggregate
 
-Add the following command handlers to the shopping_list aggregate to produce the data editing events:
+Add the following command handlers to the ShoppingList aggregate to validate the commands and produce the corresponding events:
 
 ##### common/aggregates/shopping_lists.commands.js
 
@@ -1023,9 +1029,9 @@ import {
   }
 ```
 
-#### Modify the shopping_lists Read Model
+#### Modify the ShoppingLists Read Model
 
-Define a projection function for the SHOPPING_LIST_REMOVED event in the shopping_lists Read Model's projection:
+Define a projection function for the 'SHOPPING_LIST_REMOVED' event in the ShoppingLists Read Model's projection:
 
 ##### common/read-models/shopping_lists.projection.js
 
@@ -1046,7 +1052,7 @@ import {
 
 #### Modify the shopping_list View Model
 
-In the shopping_list View Model projection, add the following projection functions:
+In the ShoppingList View Model projection, add the following projection functions:
 
 ##### common/view-models/shopping_list.projection.js
 
@@ -1083,7 +1089,7 @@ export default {
 
 ### Modify the Frontend
 
-Add a React component to create new shopping lists:
+Add a React component that creates shopping lists. The component renders a text input for a shopping list's name and an 'Add Shopping List' button.
 
 ##### client/components/ShoppingListCreator.js
 
@@ -1108,6 +1114,7 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
     },
     (err, result) => {
       setShoppingListName('')
+      // A callback user to pass info about a newly created shopping list to the parren component.
       onCreateSuccess(err, result)
     }
   )
@@ -1152,7 +1159,7 @@ export default ShoppingListCreator
 
 - [useCommand](api-reference.md#usecommand)
 
-You can render this component within MyLists as shown below:
+You can render this component within 'MyLists' as shown below:
 
 ##### client/components/MyLists.js
 
@@ -1164,7 +1171,7 @@ const MyLists = () => {
       ...
       <ShoppingListCreator
         lists={lists ? lists.data || [] : []}
-        onCreateSuccess={(err, result) => {
+        onCreateSuccess={(err, result) => { // Use a callback to handle the creation of new lists
           const nextLists = { ...lists }
           nextLists.data.push({
             name: result.payload.name,
