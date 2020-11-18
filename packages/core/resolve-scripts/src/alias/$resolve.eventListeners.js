@@ -25,14 +25,18 @@ export default () => `
       isSaga: true
     })
   }
-  
-  eventListeners.set(schedulerName, {
-    name: schedulerName,
-    eventTypes: Object.values(schedulerEventTypes),
-    invariantHash: schedulerInvariantHash,
-    connectorName,
-    isSaga: true
-  })
+
+  const uniqueSagaConnectorsNames = Array.from(new Set(sagas.map(saga => saga.connectorName)))
+  for(const connectorName of uniqueSagaConnectorsNames) {
+    const name = '' + schedulerName + connectorName
+    eventListeners.set(name, {
+      name,
+      eventTypes: Object.values(schedulerEventTypes),
+      invariantHash: schedulerInvariantHash,
+      connectorName,
+      isSaga: true
+    })
+  }
 
   export default eventListeners
 `
