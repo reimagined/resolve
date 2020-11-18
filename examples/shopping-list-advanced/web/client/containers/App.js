@@ -15,7 +15,6 @@ const App = ({
       css={['/bootstrap.min.css', '/fontawesome.min.css', '/style.css']}
       shoppingListId={id}
     />
-    {children}
   </div>
 )
 

@@ -19,13 +19,18 @@ const entryPoint = (clientContext) => {
     redux,
   })
 
+  const appContainer = document.createElement('div')
+  document.body.appendChild(appContainer)
+
+
   render(
     <ResolveReduxProvider context={clientContext} store={store}>
       <Router history={history}>
         <Routes routes={routes} />
       </Router>
     </ResolveReduxProvider>,
-    document.getElementById('app-container')
+    //document.getElementById('app-container')
+    appContainer
   )
 }
 

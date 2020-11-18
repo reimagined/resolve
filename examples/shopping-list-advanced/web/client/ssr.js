@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/server'
 import { createResolveStore, ResolveReduxProvider } from 'resolve-redux'
 import { Router } from 'react-router'
 import { Helmet } from 'react-helmet'
+import { StyleSheetManager, ServerStyleSheet } from 'styled-components'
 import { createMemoryHistory } from 'history'
 import jsonwebtoken from 'jsonwebtoken'
 
@@ -51,13 +52,18 @@ const ssrHandler = async (serverContext, req, res) => {
     )
 
     const staticContext = {}
+    const sheet = new ServerStyleSheet()
     const markup = ReactDOM.renderToStaticMarkup(
-      <ResolveReduxProvider context={resolveContext} store={store}>
-        <Router history={history} staticContext={staticContext}>
-          <Routes routes={routes} />
-        </Router>
-      </ResolveReduxProvider>
+      <StyleSheetManager sheet={sheet.instance}>
+        <ResolveReduxProvider context={resolveContext} store={store}>
+          <Router history={history} staticContext={staticContext}>
+            <Routes routes={routes} />
+          </Router>
+        </ResolveReduxProvider>
+      </StyleSheetManager>
     )
+
+    const styleTags = sheet.getStyleTags()
 
     const initialState = store.getState()
     const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index.js')
@@ -74,6 +80,7 @@ const ssrHandler = async (serverContext, req, res) => {
       `${helmet.meta.toString()}` +
       `${helmet.link.toString()}` +
       `${helmet.style.toString()}` +
+      styleTags +
       '<script>' +
       `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)};` +
       `window.__RESOLVE_RUNTIME_ENV__=${jsonUtfStringify(seedClientEnvs)};` +

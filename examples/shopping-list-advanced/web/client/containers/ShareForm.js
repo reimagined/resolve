@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
+import { FormGroup, FormLabel, FormControl } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import FindUsers from './FindUsers'
@@ -23,7 +23,7 @@ class ShareForm extends React.PureComponent {
 
     return (
       <div className="example-wrapper">
-        <ControlLabel>Shopping list name:</ControlLabel>
+        <FormLabel>Shopping list name:</FormLabel>
         <Link to={`/${shoppingListId}`}>
           <FormGroup bsSize="large">
             <FormControl
@@ -33,7 +33,7 @@ class ShareForm extends React.PureComponent {
             />
           </FormGroup>
         </Link>
-        <ControlLabel>Find users:</ControlLabel>
+        <FormLabel>Find users:</FormLabel>
         <FormControl
           className="example-form-control"
           type="text"

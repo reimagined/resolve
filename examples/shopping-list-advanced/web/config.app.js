@@ -31,38 +31,7 @@ const appConfig = {
     name: 'shopping-list-jwt',
     maxAge: 31536000000,
   },
-  apiHandlers: [
-    {
-      handler: {
-        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
-        options: {
-          modulePath: './ssr.js',
-          moduleFactoryImport: false,
-        },
-      },
-      path: '/:markup*',
-      method: 'GET',
-    },
-  ],
-  clientEntries: [
-    'client/index.js',
-    [
-      'client/ssr.js',
-      {
-        outputFile: 'common/local-entry/ssr.js',
-        moduleType: 'commonjs',
-        target: 'node',
-      },
-    ],
-    [
-      'client/native-chunk.js',
-      {
-        outputFile: '../../native/native-chunk.js',
-        moduleType: 'esm',
-        target: 'web',
-      },
-    ],
-  ],
+  clientEntries: ['client/index.js'],
 }
 
 module.exports = appConfig

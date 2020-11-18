@@ -8,6 +8,7 @@ const getRedux = () => ({
   reducers: {
     optimisticSharings: optimisticSharingsReducer,
     optimisticShoppingLists: optimisticShoppingListsReducer,
+    jwt: (jwt = {}) => jwt,
   },
   sagas: [optimisticSharingsSaga, optimisticShoppingListsSaga],
 })

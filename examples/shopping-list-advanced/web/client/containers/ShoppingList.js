@@ -8,12 +8,12 @@ import {
   Col,
   ListGroup,
   ListGroupItem,
-  Checkbox,
+  FormCheck,
+  FormLabel,
   Button,
   InputGroup,
   FormControl,
   FormGroup,
-  ControlLabel,
 } from 'react-bootstrap'
 
 import Image from './Image'
@@ -101,7 +101,7 @@ export class ShoppingList extends React.PureComponent {
 
     return (
       <div className="example-wrapper">
-        <ControlLabel>Shopping list name:</ControlLabel>
+        <FormLabel>Shopping list name:</FormLabel>
         <FormGroup bsSize="large">
           <InputGroup>
             <InputGroup.Button>
@@ -130,7 +130,7 @@ export class ShoppingList extends React.PureComponent {
         <ListGroup className="example-list">
           {list.map((todo) => (
             <ListGroupItem key={todo.id}>
-              <Checkbox
+              <FormCheck
                 inline
                 checked={todo.checked}
                 onChange={toggleShoppingItem.bind(null, aggregateId, {
@@ -138,7 +138,7 @@ export class ShoppingList extends React.PureComponent {
                 })}
               >
                 {todo.text}
-              </Checkbox>
+              </FormCheck>
               <Image
                 className="example-close-button"
                 src="/close-button.png"
@@ -149,7 +149,7 @@ export class ShoppingList extends React.PureComponent {
             </ListGroupItem>
           ))}
         </ListGroup>
-        <ControlLabel>Item name:</ControlLabel>
+        <FormLabel>Item name:</FormLabel>
         <Row>
           <Col md={8}>
             <FormControl

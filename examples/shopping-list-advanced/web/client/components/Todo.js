@@ -1,5 +1,5 @@
 import React from 'react'
-import { Checkbox } from 'react-bootstrap'
+import { FormCheck } from 'react-bootstrap'
 
 import Image from '../containers/Image'
 
@@ -9,9 +9,9 @@ class Todo extends React.PureComponent {
 
     return (
       <div className="shopping-item">
-        <Checkbox inline checked={checked} onChange={toggleItem}>
+        <FormCheck inline checked={checked} onChange={toggleItem}>
           {text}
-        </Checkbox>
+        </FormCheck>
         <Image
           className="example-close-button"
           src="/close-button.png"

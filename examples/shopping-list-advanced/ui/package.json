@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "react-bootstrap": "0.32.4"
+    "react-bootstrap": "1.4.0"
   },
   "devDependencies": {
     "react": "16.13.1",
@@ -20,10 +20,10 @@
     "redux": "4.0.5",
     "jest": "26.0.1",
     "jest-expo": "39.0.0",
-    "expo": "39.0.2",
+    "expo": "39.0.4",
     "enzyme": "3.11.0",
-    "enzyme-adapter-react-16": "1.15.2",
-    "enzyme-to-json": "3.4.4",
+    "enzyme-adapter-react-16": "1.15.5",
+    "enzyme-to-json": "3.6.1",
     "expo-react-native-adapter": "3.0.1",
     "babel-jest": "26.0.1",
     "babel-preset-expo": "8.3.0",
@@ -38,8 +38,8 @@
     "@babel/preset-react": "7.9.4"
   },
   "peerDependencies": {
-    "react": "*",
-    "react-dom": "*",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0",
     "react-native": "*"
   },
   "workspaces": {

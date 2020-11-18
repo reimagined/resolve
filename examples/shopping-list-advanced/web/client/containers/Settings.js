@@ -2,7 +2,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectReadModel } from 'resolve-redux'
-import { ControlLabel, FormControl } from 'react-bootstrap'
+import { FormLabel, FormControl } from 'react-bootstrap'
 
 import requiredAuth from '../decorators/required-auth'
 import * as aggregateActions from '../redux/aggregate-actions'
@@ -43,7 +43,7 @@ class Settings extends React.PureComponent {
 
     return (
       <div className="example-wrapper">
-        <ControlLabel>Username:</ControlLabel>
+        <FormLabel>Username:</FormLabel>
         <FormControl
           type="text"
           value={text}
@@ -52,7 +52,7 @@ class Settings extends React.PureComponent {
           onBlur={this.updateUserName}
         />
         <br />
-        <ControlLabel>User Id:</ControlLabel>
+        <FormLabel>User Id:</FormLabel>
         <FormControl type="text" value={id} readOnly />
       </div>
     )

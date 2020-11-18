@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap'
+import { FormGroup, FormControl, FormLabel, Button } from 'react-bootstrap'
 
 import Form from './Form'
 import requiredNoAuth from '../decorators/required-no-auth'
@@ -42,11 +42,11 @@ class Login extends React.PureComponent {
         <h2>Login Form</h2>
         <Form method="POST" action={this.state.action} innerRef={this.formRef}>
           <FormGroup>
-            <ControlLabel>username:</ControlLabel>
+            <FormLabel>username:</FormLabel>
             <FormControl name="username" type="text" />
           </FormGroup>
           <FormGroup>
-            <ControlLabel>password:</ControlLabel>
+            <FormLabel>password:</FormLabel>
             <FormControl name="password" type="password" />
           </FormGroup>
           <FormGroup>

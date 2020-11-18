@@ -1,13 +1,13 @@
 import React from 'react'
-import { Navbar, Nav, NavItem as RawNavItem } from 'react-bootstrap'
+import { Navbar, Nav } from 'react-bootstrap'
 import { connectStaticBasedUrls, connectRootBasedUrls } from 'resolve-redux'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
-import { Logo } from '@shopping-list-advanced/ui'
+//import { Logo } from '@shopping-list-advanced/ui'
 
-import Image from './Image'
+//import Image from './Image'
 
-const NavItem = connectRootBasedUrls(['href'])(RawNavItem)
+//const NavItem = connectRootBasedUrls(['href'])(Navbar.Text)
 
 const Header = ({ title, css, favicon, jwt }) => {
   const stylesheetLinks = css.map((href) => ({ rel: 'stylesheet', href }))
@@ -21,29 +21,7 @@ const Header = ({ title, css, favicon, jwt }) => {
   return (
     <div>
       <Helmet title={title} link={links} meta={[meta]} />
-      <Navbar collapseOnSelect>
-        <Logo />
-        {jwt.id ? (
-          <Navbar.Collapse>
-            <Nav>
-              <NavItem eventKey={1} href="/">
-                My Lists
-              </NavItem>
-            </Nav>
-            <Nav pullRight>
-              <NavItem eventKey={2} href="/settings">
-                Settings
-              </NavItem>
-              <NavItem
-                eventKey={3}
-                href="/api/auth/local/logout?username=logout&&password=logout"
-              >
-                <Image className="example-icon" src="/logout.svg" /> Logout
-              </NavItem>
-            </Nav>
-          </Navbar.Collapse>
-        ) : null}
-      </Navbar>
+      <Navbar/>
     </div>
   )
 }

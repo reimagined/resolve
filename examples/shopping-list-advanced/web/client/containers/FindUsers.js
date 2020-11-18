@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { connectReadModel } from 'resolve-redux'
-import { ControlLabel } from 'react-bootstrap'
+import { FormLabel } from 'react-bootstrap'
 
 import UserList from '../components/UserList'
 import * as aggregateActions from '../redux/aggregate-actions'
@@ -31,7 +31,7 @@ class FindUsers extends React.PureComponent {
           users={users.other}
           onPressButton={this.shareShoppingListForUser}
         />
-        <ControlLabel>Already shared for users:</ControlLabel>
+        <FormLabel>Already shared for users:</FormLabel>
         <UserList
           buttonText="Unshare"
           buttonBaseStyle="success"
