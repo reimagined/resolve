@@ -116,6 +116,11 @@ const buildViewModel = async (
         subSegment.addError(error)
       }
       log.error(error.message)
+
+      try {
+        await pool.onError(error, 'view-model')
+      } catch (e) {}
+
       throw error
     } finally {
       if (subSegment != null) {
@@ -235,6 +240,10 @@ const read = async (
           buildSubSegment.addError(error)
         }
 
+        try {
+          await pool.onError(error, 'view-model')
+        } catch (e) {}
+
         throw error
       } finally {
         if (buildSubSegment != null) {
@@ -260,6 +269,11 @@ const read = async (
     if (subSegment != null) {
       subSegment.addError(error)
     }
+
+    try {
+      await pool.onError(error, 'view-model')
+    } catch (e) {}
+
     throw error
   } finally {
     if (subSegment != null) {
@@ -321,6 +335,7 @@ const wrapViewModel = ({
   viewModel,
   eventstoreAdapter,
   performanceTracer,
+  onError = async () => void 0,
 }: WrapViewModelOptions) => {
   const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
   const pool: ViewModelPool = {
@@ -329,6 +344,7 @@ const wrapViewModel = ({
     isDisposed: false,
     performanceTracer,
     getSecretsManager,
+    onError,
   }
 
   return Object.freeze({
