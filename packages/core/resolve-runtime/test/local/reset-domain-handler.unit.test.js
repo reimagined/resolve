@@ -8,8 +8,8 @@ const getMockResolve = () => ({
   readModels: [],
   sagas: [],
   eventBus: {
-    reset: () => {}
-  }
+    reset: () => {},
+  },
 })
 const getMockResponse = () => ({
   end: jest.fn(),
