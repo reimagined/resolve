@@ -15,6 +15,7 @@ const schedulerEventTypes = {
 const schedulerInvariantHash = 'scheduler-invariant-hash'
 
 const createSaga = ({
+  onError = async () => void 0,
   invokeEventBusAsync,
   onCommandExecuted,
   readModelConnectors,
@@ -28,6 +29,12 @@ const createSaga = ({
   performAcknowledge,
   scheduler,
 }) => {
+  const onSagaError = async (error) => {
+    try {
+      await onError(error, 'saga')
+    } catch (e) {}
+  }
+
   let eventProperties = {}
 
   const executeScheduleCommand = createCommand({
@@ -40,6 +47,7 @@ const createSaga = ({
     ],
     onCommandExecuted,
     eventstoreAdapter,
+    onError: onSagaError,
   })
 
   const executeCommandOrScheduler = async (...args) => {
@@ -110,6 +118,15 @@ const createSaga = ({
     })
   )
 
+  const sagasAsReadModels = [...regularSagas, ...schedulerSagas].map(
+    (saga) => ({
+      provideLedger: async (inlineLedger) => {
+        eventProperties = inlineLedger.Properties
+      },
+      ...saga,
+    })
+  )
+
   const executeListener = createQuery({
     invokeEventBusAsync,
     readModelConnectors,
@@ -119,6 +136,7 @@ const createSaga = ({
     getVacantTimeInMillis,
     performAcknowledge,
     eventstoreAdapter,
+    onError: onSagaError,
   })
 
   const sendEvents = async ({

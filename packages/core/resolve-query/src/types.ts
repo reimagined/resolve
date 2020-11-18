@@ -9,6 +9,7 @@ export type CreateQueryOptions = {
   eventstoreAdapter: any
   getVacantTimeInMillis: any
   performAcknowledge: any
+  onError?: (error: Error, part: string) => Promise<void>
 }
 
 type WrapModelOptions = Omit<
@@ -60,6 +61,7 @@ export type ReadModelPool = {
   invokeEventBusAsync: Function
   performAcknowledge: Function
   getVacantTimeInMillis: Function
+  onError: (error: Error, part: string) => Promise<void>
 }
 
 export type ViewModelMeta = {
@@ -78,6 +80,7 @@ export type ViewModelPool = {
   getSecretsManager: Function
   performanceTracer: any
   isDisposed: boolean
+  onError: (error: Error, part: string) => Promise<void>
 }
 
 export type BuildViewModelQuery = {
