@@ -24,15 +24,20 @@ export default {
   unblockRetryOnErrorMiddleware: () => {
     return {
       type: TEST_SCENARIO_RETRY_ON_ERROR_UNBLOCKED,
-      payload: {},
+      payload: {
+        scenarioName: 'retry-on-error-read-model',
+      },
     }
   },
-  executeRequestMiddleware: (state) => {
+  executeRetryOnErrorMiddlewareReadModel: (state) => {
     assertNotExecuted(state)
     return {
       type: TEST_SCENARIO_EXECUTED,
       payload: {
-        scenarioName: 'request-middleware',
+        scenarioName: 'retry-on-error-read-model',
+        state: {
+          blocked: true,
+        },
       },
     }
   },

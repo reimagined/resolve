@@ -1,14 +1,15 @@
-export default {
-  profile: async (store, { userId }) => {
-    const entry = await store.findOne('Users', { id: userId })
+import { HttpError } from 'resolve-client'
 
-    if (entry != null) {
-      const { profile } = entry
-      return {
-        userId,
-        profile,
-      }
+export default {
+  retryOnErrorScenario: async (store, { scenarioId }) => {
+    const entry = await store.findOne('ExecutedScenarios', {
+      id: scenarioId,
+      name: 'retry-on-error-read-model',
+    })
+
+    if (entry == null || entry.state == null || entry.state.blocked) {
+      throw HttpError(500, 'Test scenario test error to ignore on client')
     }
-    return null
+    return entry.state
   },
 }

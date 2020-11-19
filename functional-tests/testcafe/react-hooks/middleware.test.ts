@@ -11,12 +11,16 @@ fixture`React Hooks: client middleware`.beforeEach(async (t) => {
 })
 
 test('retry on error middleware and bad command', async (t) => {
-  await t.click(Selector('button').withText('Execute retry on error scenario'))
+  const button = Selector('button').withText('Retry on error: useCommand')
+
+  await t.click(button)
   await t
-    .expect(
-      Selector('button')
-        .withText('Execute retry on error scenario')
-        .sibling('div').innerText
-    )
+    .expect(button.sibling('div').innerText)
     .eql('TEST_SCENARIO_RETRY_ON_ERROR_COMPLETED')
+})
+test('retry on error middleware and bad read model', async (t) => {
+  const button = Selector('button').withText('Retry on error: useQuery')
+
+  await t.click(button)
+  await t.expect(button.sibling('div').innerText).eql('test ok')
 })

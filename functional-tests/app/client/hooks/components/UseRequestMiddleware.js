@@ -1,17 +1,15 @@
 import React, { useState, useCallback } from 'react'
 import { createRetryOnErrorMiddleware } from 'resolve-client'
-import { useCommand } from 'resolve-react-hooks'
+import { useCommand, useQuery } from 'resolve-react-hooks'
 
-const UseRequestMiddleware = ({
-  match: {
-    params: { id: scenarioId },
-  },
-}) => {
+const useRetryOnCommandErrorScenario = (runId) => {
+  const scenarioId = `${runId}-retry-on-command-error`
+
   const [blockedCommandResult, setBlockedCommandResult] = useState('')
 
   const executeBlockedRetryOnErrorCommand = useCommand(
     {
-      aggregateId: `${scenarioId}-retry-on-command-error`,
+      aggregateId: scenarioId,
       aggregateName: 'test-scenario',
       type: 'blockedRetryOnErrorMiddleware',
       payload: {},
@@ -36,9 +34,9 @@ const UseRequestMiddleware = ({
     },
     [scenarioId]
   )
-  const executeUnblockRetryOnErrorCommand = useCommand(
+  const unblock = useCommand(
     {
-      aggregateId: `${scenarioId}-retry-on-command-error`,
+      aggregateId: scenarioId,
       aggregateName: 'test-scenario',
       type: 'unblockRetryOnErrorMiddleware',
       payload: {},
@@ -47,20 +45,113 @@ const UseRequestMiddleware = ({
   )
   const executeRetryOnErrorClientScenario = useCallback(() => {
     executeBlockedRetryOnErrorCommand()
-    setTimeout(() => executeUnblockRetryOnErrorCommand(), 800)
-  }, [executeBlockedRetryOnErrorCommand, executeUnblockRetryOnErrorCommand])
+    setTimeout(() => unblock(), 800)
+  }, [executeBlockedRetryOnErrorCommand, unblock])
+
+  return {
+    executeRetryOnErrorCommand: executeRetryOnErrorClientScenario,
+    blockedCommandResult,
+  }
+}
+
+const useRetryOnQueryErrorScenario = (runId) => {
+  const scenarioId = `${runId}-retry-on-read-model-error`
+
+  const [readModelOk, setReadModelOk] = useState(false)
+
+  const requestBlockedReadModel = useQuery(
+    {
+      name: 'test-scenarios',
+      resolver: 'retryOnErrorScenario',
+      args: { scenarioId },
+    },
+    {
+      middleware: {
+        error: createRetryOnErrorMiddleware({
+          attempts: 3,
+          errors: [500],
+          debug: true,
+          period: 500,
+        }),
+      },
+    },
+    (error, result) => {
+      if (error) {
+        throw error
+      }
+      setReadModelOk(!result.data.blocked)
+    },
+    [scenarioId]
+  )
+
+  const executeScenario = useCommand(
+    {
+      aggregateId: scenarioId,
+      aggregateName: 'test-scenario',
+      type: 'executeRetryOnErrorMiddlewareReadModel',
+      payload: {},
+    },
+    [scenarioId]
+  )
+
+  const unblock = useCommand(
+    {
+      aggregateId: scenarioId,
+      aggregateName: 'test-scenario',
+      type: 'unblockRetryOnErrorMiddleware',
+      payload: {},
+    },
+    [scenarioId]
+  )
+
+  const executeRetryOnErrorReadModel = useCallback(() => {
+    executeScenario()
+    requestBlockedReadModel()
+    setTimeout(() => unblock(), 600)
+  }, [requestBlockedReadModel, unblock])
+
+  return {
+    executeRetryOnErrorReadModel,
+    readModelOk,
+  }
+}
+
+const UseRequestMiddleware = ({
+  match: {
+    params: { id: runId },
+  },
+}) => {
+  const {
+    executeRetryOnErrorCommand,
+    blockedCommandResult,
+  } = useRetryOnCommandErrorScenario(runId)
+  const {
+    executeRetryOnErrorReadModel,
+    readModelOk,
+  } = useRetryOnQueryErrorScenario(runId)
 
   return (
     <div>
-      <h4>{`Test scenario id: ${scenarioId}`}</h4>
+      <h4>{`Test run id: ${runId}`}</h4>
       <div>
         <button
           style={{ display: 'inline-block' }}
-          onClick={executeRetryOnErrorClientScenario}
+          onClick={executeRetryOnErrorCommand}
         >
-          Execute retry on error scenario
+          Retry on error: useCommand
         </button>
         <div style={{ display: 'inline-block' }}>{blockedCommandResult}</div>
+      </div>
+      <div>
+        <button
+          style={{ display: 'inline-block' }}
+          onClick={executeRetryOnErrorReadModel}
+        >
+          Retry on error: useQuery
+        </button>
+        <div style={{ display: 'inline-block' }}>
+          {readModelOk ? 'test ok' : 'testing'}
+        </div>
       </div>
     </div>
   )
