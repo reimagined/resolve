@@ -14,7 +14,7 @@ type ViewModelConnectorOptions = {
   aggregateIds: string[]
   aggregateArgs: any
 }
-type ViewModelConnectorOptionsMapper = (
+export type ViewModelConnectorOptionsMapper = (
   state: ReduxState,
   ownProps: any
 ) => ViewModelConnectorOptions
