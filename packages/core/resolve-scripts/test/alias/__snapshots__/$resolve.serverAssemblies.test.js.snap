@@ -15,7 +15,6 @@ exports[`works correctly 1`] = `
   import readModels from '$resolve.readModels'
   import viewModels from '$resolve.viewModels'
   import sagas from '$resolve.sagas'
-  import schedulers from '$resolve.schedulers'
   import uploadAdapter from '$resolve.uploadAdapter'
 
   export default {
@@ -33,7 +32,6 @@ exports[`works correctly 1`] = `
       aggregates,
       readModels,
       viewModels,
-      schedulers,
       sagas
     }
   }

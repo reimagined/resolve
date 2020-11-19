@@ -304,7 +304,6 @@ Specifies an array of the application's Sagas. A Saga configuration object withi
 | source        | A path to a file that defines the Saga's handlers or both handlers and side effects.        |
 | sideEffects   | A path to a file that defines the Saga's side effects.                                      |
 | connectorName | Defines a Read Model storage used to store the saga's persistent data.                      |
-| schedulerName | Specifies the scheduler that should be used to schedule command execution.                  |
 | encryption    | A path to a file that defines data encryption and decryption logic.                         |
 
 ##### Example:
@@ -318,8 +317,7 @@ const appConfig = {
     {
       name: 'UserConfirmation',
       source: 'saga.js',
-      connectorName: 'default',
-      schedulerName: 'scheduler'
+      connectorName: 'default'
     }
   ]
 }

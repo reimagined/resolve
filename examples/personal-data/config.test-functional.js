@@ -16,15 +16,6 @@ const testFunctionalConfig = {
       },
     },
   },
-  schedulers: {
-    scheduler: {
-      adapter: {
-        module: 'resolve-scheduler-local',
-        options: {},
-      },
-      connectorName: 'default',
-    },
-  },
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000,

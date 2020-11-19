@@ -58,7 +58,6 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
     imports.push(`import readModels from '$resolve.readModels'`)
     imports.push(`import viewModels from '$resolve.viewModels'`)
     imports.push(`import sagas from '$resolve.sagas'`)
-    imports.push(`import schedulers from '$resolve.schedulers'`)
     imports.push(`import localS3Constants from '$resolve.localS3Constants'`)
     constants.push(`const entryArgs = {
       serverImports,
@@ -69,7 +68,6 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
       readModels,
       viewModels,
       sagas,
-      schedulers,
       localS3Constants,
       utils
     }`)

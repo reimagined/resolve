@@ -9,6 +9,7 @@ import startExpress from './start-express'
 import emptyWorker from './empty-worker'
 import wrapTrie from '../common/wrap-trie'
 import initUploader from './init-uploader'
+import initScheduler from './init-scheduler'
 
 const log = debugLevels('resolve:resolve-runtime:local-entry')
 
@@ -29,6 +30,7 @@ const localEntry = async ({ assemblies, constants, domain }) => {
     await initExpress(resolve)
     await initWebsockets(resolve)
     await initUploader(resolve)
+    await initScheduler(resolve)
     await startExpress(resolve)
 
     log.debug('Local entry point cold start success')

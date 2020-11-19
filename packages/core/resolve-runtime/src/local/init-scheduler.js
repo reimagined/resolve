@@ -1,8 +1,17 @@
-const createAdapter = ({ execute, errorHandler }) => {
+import { schedulerName } from 'resolve-saga'
+
+import initResolve from '../common/init-resolve'
+import disposeResolve from '../common/dispose-resolve'
+
+const errorHandler = async (error) => {
+  throw error
+}
+
+const initScheduler = (resolve) => {
   const timeouts = new Set()
   let flowPromise = Promise.resolve()
 
-  return {
+  resolve.scheduler = {
     async addEntries(array) {
       for (const entry of array) {
         // eslint-disable-next-line no-loop-func
@@ -10,7 +19,18 @@ const createAdapter = ({ execute, errorHandler }) => {
           flowPromise = flowPromise
             .then(async () => {
               timeouts.delete(timeout)
-              await execute(entry.taskId, entry.date, entry.command)
+              const currentResolve = Object.create(resolve)
+              try {
+                await initResolve(currentResolve)
+                await currentResolve.executeCommand({
+                  aggregateName: schedulerName,
+                  aggregateId: entry.taskId,
+                  type: 'execute',
+                  payload: { date: entry.date, command: entry.command },
+                })
+              } finally {
+                await disposeResolve(currentResolve)
+              }
             })
             .catch(async (error) => {
               if (typeof errorHandler === 'function') {
@@ -34,4 +54,4 @@ const createAdapter = ({ execute, errorHandler }) => {
   }
 }
 
-export default createAdapter
+export default initScheduler

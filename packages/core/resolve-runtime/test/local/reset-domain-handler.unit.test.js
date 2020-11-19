@@ -6,8 +6,10 @@ const getMockResolve = () => ({
   eventstoreAdapter: {},
   publisher: {},
   readModels: [],
-  schedulers: [],
   sagas: [],
+  eventBus: {
+    reset: () => {},
+  },
 })
 const getMockResponse = () => ({
   end: jest.fn(),

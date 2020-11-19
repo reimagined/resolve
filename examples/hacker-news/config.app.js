@@ -30,7 +30,6 @@ const appConfig = {
       name: 'UserConfirmation',
       source: 'common/sagas/user-confirmation.saga.js',
       connectorName: 'default',
-      schedulerName: 'scheduler',
     },
   ],
   apiHandlers: [

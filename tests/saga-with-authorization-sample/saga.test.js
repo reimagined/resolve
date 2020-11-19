@@ -1,5 +1,5 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents from 'resolve-testing-tools'
+import givenEvents, { getSchedulersNamesBySagas } from 'resolve-testing-tools'
 
 import config from './config'
 import resetReadModel from '../reset-read-model'
@@ -7,12 +7,9 @@ import resetReadModel from '../reset-read-model'
 jest.setTimeout(1000 * 60 * 5)
 
 describe('Saga', () => {
-  const {
-    name: sagaName,
-    source: sourceModule,
-    connectorName,
-    schedulerName,
-  } = config.sagas.find(({ name }) => name === 'ProcessKiller')
+  const currentSaga = config.sagas.find(({ name }) => name === 'ProcessKiller')
+  const { name: sagaName, source: sourceModule, connectorName } = currentSaga
+  const schedulerName = getSchedulersNamesBySagas([currentSaga])[0]
   const {
     module: connectorModule,
     options: connectorOptions,

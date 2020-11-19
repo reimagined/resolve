@@ -21,10 +21,10 @@ const initResolve = async (resolve) => {
     invokeEventBusAsync,
     aggregates,
     readModels,
-    schedulers,
     sagas,
     viewModels,
     uploader,
+    scheduler,
     onError,
   } = resolve
   const eventstoreAdapter = createEventstoreAdapter()
@@ -81,12 +81,12 @@ const initResolve = async (resolve) => {
     onCommandExecuted,
     eventstoreAdapter,
     readModelConnectors,
-    schedulers,
     sagas,
     performanceTracer,
     getVacantTimeInMillis,
     performAcknowledge,
     uploader,
+    scheduler,
     onError,
   })
 

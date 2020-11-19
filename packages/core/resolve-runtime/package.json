@@ -44,8 +44,6 @@
     "resolve-local-event-broker": "0.25.18",
     "resolve-query": "0.25.18",
     "resolve-saga": "0.25.18",
-    "resolve-scheduler-cloud": "0.25.18",
-    "resolve-scheduler-local": "0.25.18",
     "resolve-eventstore-base": "0.25.18",
     "resolve-eventstore-lite": "0.25.18",
     "resolve-readmodel-base": "0.25.18",
