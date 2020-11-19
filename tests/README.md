@@ -552,16 +552,6 @@ const devConfig = {
       databaseFile: ':memory:'
     }
   },
-
-  schedulers: {
-    scheduler: {
-      adapter: {
-        module: 'resolve-scheduler-local',
-        options: {}
-      },
-      connectorName: 'default'
-    }
-  },
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-lite',
@@ -670,16 +660,6 @@ const devConfig = {
     module: 'resolve-eventstore-lite',
     options: {
       databaseFile: ':memory:'
-    }
-  },
-
-  schedulers: {
-    scheduler: {
-      adapter: {
-        module: 'resolve-scheduler-local',
-        options: {}
-      },
-      connectorName: 'default'
     }
   },
   readModelConnectors: {
