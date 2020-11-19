@@ -1,7 +1,4 @@
-import {
-  ClientMiddleware,
-  ClientMiddlewareParameters,
-} from '../middleware'
+import { ClientMiddleware, ClientMiddlewareParameters } from '../middleware'
 import { HttpError } from '../errors'
 
 export type RetryOnErrorMiddlewareOptions = {
