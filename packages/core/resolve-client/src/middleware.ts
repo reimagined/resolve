@@ -48,13 +48,13 @@ export const requestWithMiddleware = async (
     deserializer?: (state: string) => any
     jwtProvider?: JSONWebTokenProvider
   },
-  middleware: ClientMiddlewareOptions
+  middleware?: ClientMiddlewareOptions
 ): Promise<ClientMiddlewareResult | Error> => {
   const responseMiddleware = new Array<ClientMiddleware<Response>>()
-    .concat(middleware.response ?? [])
+    .concat(middleware?.response ?? [])
     .concat(createParseResponseMiddleware())
   const errorMiddleware = new Array<ClientMiddleware<Error>>().concat(
-    middleware.error ?? []
+    middleware?.error ?? []
   )
 
   const { info, init, deserializer, jwtProvider } = params

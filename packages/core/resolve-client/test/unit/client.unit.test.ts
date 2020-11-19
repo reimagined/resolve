@@ -19,8 +19,6 @@ const responseHeaders: { [key: string]: string } = {
 }
 
 const createMockResponse = (overrides: object = {}): NarrowedResponse => ({
-  ok: true,
-  status: 200,
   headers: {
     get: jest.fn(
       (header: string): string | null =>
@@ -122,7 +120,7 @@ describe('command', () => {
         },
       },
       {
-        option: 'option',
+        middleware: {},
       }
     )
 
@@ -138,7 +136,7 @@ describe('command', () => {
         },
       },
       {
-        option: 'option',
+        middleware: {},
       }
     )
   })

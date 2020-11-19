@@ -4,10 +4,7 @@ import { Context } from './context'
 import { getRootBasedUrl, isString } from './utils'
 import determineOrigin from './determine-origin'
 import { GenericError, HttpError } from './errors'
-import {
-  ClientMiddlewareOptions,
-  requestWithMiddleware,
-} from './middleware'
+import { ClientMiddlewareOptions, requestWithMiddleware } from './middleware'
 
 export const VALIDATED_RESULT = Symbol('VALIDATED_RESULT')
 export type NarrowedResponse = {
@@ -217,8 +214,10 @@ export const request = async (
 
   let response: NarrowedResponse
 
-  // middleware feature switch
-  if (options?.middleware != null) {
+  const middlewareFeatureToggle =
+    options?.retryOnError == null && options?.waitForResponse == null
+
+  if (middlewareFeatureToggle) {
     init.headers = headers
 
     const middlewareResponse = await requestWithMiddleware(
@@ -228,7 +227,7 @@ export const request = async (
         init,
         jwtProvider,
       },
-      options.middleware
+      options?.middleware
     )
     if (middlewareResponse instanceof Error) {
       throw middlewareResponse
@@ -240,6 +239,11 @@ export const request = async (
       text: () => Promise.resolve(middlewareResponse.result),
     }
   } else {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `Using request options waitForResponse or retryOnError is deprecated. Please, migrate to client middleware.`
+    )
+
     const token = await jwtProvider?.get()
     if (token) {
       headers['Authorization'] = `Bearer ${token}`
