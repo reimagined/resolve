@@ -41,4 +41,16 @@ export default {
       },
     }
   },
+  executeRetryOnErrorMiddlewareViewModel: (state) => {
+    assertNotExecuted(state)
+    return {
+      type: TEST_SCENARIO_EXECUTED,
+      payload: {
+        scenarioName: 'retry-on-error-view-model',
+        state: {
+          blocked: true,
+        },
+      },
+    }
+  },
 }

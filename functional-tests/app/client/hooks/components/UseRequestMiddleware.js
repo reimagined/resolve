@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import { createRetryOnErrorMiddleware } from 'resolve-client'
-import { useCommand, useQuery } from 'resolve-react-hooks'
+import { useCommand, useQuery, useViewModel } from 'resolve-react-hooks'
 
 const useRetryOnCommandErrorScenario = (runId) => {
   const scenarioId = `${runId}-retry-on-command-error`
@@ -108,11 +108,68 @@ const useRetryOnQueryErrorScenario = (runId) => {
     executeScenario()
     requestBlockedReadModel()
     setTimeout(() => unblock(), 600)
-  }, [requestBlockedReadModel, unblock])
+  }, [requestBlockedReadModel, unblock, executeScenario])
 
   return {
     executeRetryOnErrorReadModel,
     readModelOk,
+  }
+}
+
+const useRetryOnViewModelErrorScenario = (runId) => {
+  const scenarioId = `${runId}-retry-on-view-model-error`
+
+  const [viewModelOk, setViewModelOk] = useState(false)
+
+  const { connect, dispose } = useViewModel(
+    'test-scenario-view-model',
+    [scenarioId],
+    {},
+    (state) => {
+      setViewModelOk(!state.blocked)
+    },
+    {
+      middleware: {
+        error: createRetryOnErrorMiddleware({
+          attempts: 3,
+          errors: [500],
+          debug: true,
+          period: 500,
+        }),
+      },
+    }
+  )
+
+  const executeScenario = useCommand(
+    {
+      aggregateId: scenarioId,
+      aggregateName: 'test-scenario',
+      type: 'executeRetryOnErrorMiddlewareViewModel',
+      payload: {},
+    },
+    [scenarioId]
+  )
+
+  const unblock = useCommand(
+    {
+      aggregateId: scenarioId,
+      aggregateName: 'test-scenario',
+      type: 'unblockRetryOnErrorMiddleware',
+      payload: {},
+    },
+    [scenarioId]
+  )
+
+  const executeRetryOnErrorViewModel = useCallback(() => {
+    executeScenario()
+    connect()
+    setTimeout(() => unblock(), 600)
+    setTimeout(() => dispose(), 1500)
+  }, [connect, dispose, unblock, executeScenario])
+
+  return {
+    viewModelOk,
+    executeRetryOnErrorViewModel,
   }
 }
 
@@ -129,6 +186,10 @@ const UseRequestMiddleware = ({
     executeRetryOnErrorReadModel,
     readModelOk,
   } = useRetryOnQueryErrorScenario(runId)
+  const {
+    executeRetryOnErrorViewModel,
+    viewModelOk,
+  } = useRetryOnViewModelErrorScenario(runId)
 
   return (
     <div>
@@ -151,6 +212,17 @@ const UseRequestMiddleware = ({
         </button>
         <div style={{ display: 'inline-block' }}>
           {readModelOk ? 'test ok' : 'testing'}
+        </div>
+      </div>
+      <div>
+        <button
+          style={{ display: 'inline-block' }}
+          onClick={executeRetryOnErrorViewModel}
+        >
+          Retry on error: useViewModel
+        </button>
+        <div style={{ display: 'inline-block' }}>
+          {viewModelOk ? 'test ok' : 'testing'}
         </div>
       </div>
     </div>

@@ -58,6 +58,11 @@ const appConfig = {
       name: 'cumulative-likes',
       projection: 'common/view-models/cumulative-likes.projection.js',
     },
+    {
+      name: 'test-scenario-view-model',
+      projection: 'common/view-models/test-scenario.projection.js',
+      resolver: 'common/view-models/test-scenario.resolver.js',
+    },
   ],
   clientImports: {
     version: 'resolve-runtime/lib/common/utils/interop-options.js',

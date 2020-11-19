@@ -24,3 +24,9 @@ test('retry on error middleware and bad read model', async (t) => {
   await t.click(button)
   await t.expect(button.sibling('div').innerText).eql('test ok')
 })
+test('retry on error middleware and bad view model', async (t) => {
+  const button = Selector('button').withText('Retry on error: useViewModel')
+
+  await t.click(button)
+  await t.expect(button.sibling('div').innerText).eql('test ok')
+})
