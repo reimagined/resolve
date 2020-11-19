@@ -1,7 +1,9 @@
+import { nanoid } from 'nanoid'
 import { Selector } from 'testcafe'
 import { getTargetURL } from '../../utils/utils'
 
-const targetUrl = `${getTargetURL()}/counter`
+const counterId = nanoid()
+const targetUrl = `${getTargetURL()}/counter/${counterId}`
 
 fixture`React Hooks: view model counter`.beforeEach(async (t) => {
   await t.setNativeDialogHandler(() => true)
@@ -9,27 +11,17 @@ fixture`React Hooks: view model counter`.beforeEach(async (t) => {
 })
 
 test('increase counter', async (t) => {
-  const prevResult = await Selector('#counter').innerText
-
   await t.click(Selector('button').withText('+'))
-
-  await t
-    .expect(Selector('#counter').innerText)
-    .eql((+prevResult + 1).toString())
+  await t.expect(Selector('#counter').innerText).eql('1')
 })
 
 test('decrease counter', async (t) => {
-  const prevResult = await Selector('#counter').innerText
-
   await t.click(Selector('button').withText('-'))
-
-  await t
-    .expect(Selector('#counter').innerText)
-    .eql((+prevResult - 1).toString())
+  await t.expect(Selector('#counter').innerText).eql('0')
 })
 
 test('multiple test counter', async (t) => {
-  const prevResult = await Selector('#counter').innerText
+  await t.expect(Selector('#counter').innerText).eql('0')
 
   await t.click(Selector('button').withText('+'))
   await t.click(Selector('button').withText('+'))
@@ -45,5 +37,5 @@ test('multiple test counter', async (t) => {
   await t.click(Selector('button').withText('-'))
   await t.click(Selector('button').withText('-'))
 
-  await t.expect(Selector('#counter').innerText).eql(prevResult)
+  await t.expect(Selector('#counter').innerText).eql('0')
 })

@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { useViewModel, useCommand } from 'resolve-react-hooks'
 
-const aggregateId = 'counter-aggregate-id'
+const Counter = ({
+  match: {
+    params: { id: aggregateId },
+  },
+}) => {
+  if (!aggregateId) {
+    throw Error(`use counter/counter-id path to run tests`)
+  }
 
-const Counter = () => {
   const [counter, setCounter] = useState(0)
 
   const { connect, dispose } = useViewModel(
@@ -35,6 +41,7 @@ const Counter = () => {
 
   return (
     <div>
+      <h4>{`Counter aggregate id: ${aggregateId}`}</h4>
       <button onClick={increaseCounter}>+</button>
       <div id="counter">{counter}</div>
       <button onClick={decreaseCounter}>-</button>

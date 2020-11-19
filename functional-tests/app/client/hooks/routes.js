@@ -7,9 +7,8 @@ export default [
     component: App,
     routes: [
       {
-        path: '/counter',
-        component: Counter,
-        exact: true,
+        path: '/counter/:id',
+        component: Counter
       },
       {
         path: '/request-middleware',
