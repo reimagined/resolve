@@ -160,13 +160,37 @@ describe('middleware mode', () => {
       middlewareOptions()
     )
 
+    expect(response.ok).toBeTruthy()
     expect(response.headers).toEqual(mockResult.headers)
     expect(response[VALIDATED_RESULT]).toEqual(mockResult.result)
     await expect(response.json()).resolves.toEqual(mockResult.result)
     await expect(response.text()).resolves.toEqual(mockResult.result)
   })
 
-  test('middleware toggle if no options provided (default)', async () => {
+  test('compatible response if error occurred', async () => {
+    const mockResult = {
+      headers: {
+        header: 'value',
+        get: () => 'value',
+      },
+      result: Error('error'),
+    }
+
+    mRequestWithMiddleware.mockResolvedValueOnce(mockResult)
+
+    const response = await request(
+      mockContext,
+      '/request',
+      {
+        param: 'param',
+      },
+      middlewareOptions()
+    )
+
+    expect(response.ok).not.toBeTruthy()
+  })
+
+  test('middleware mode toggle if no options provided (default)', async () => {
     await request(mockContext, '/request', {
       param: 'param',
     })
@@ -278,9 +302,14 @@ describe('deprecated mode (options)', () => {
       },
     })
 
-    await request({ ...mockContext, jwtProvider }, '/request', {
-      param: 'param',
-    })
+    await request(
+      { ...mockContext, jwtProvider },
+      '/request',
+      {
+        param: 'param',
+      },
+      deprecatedOptions()
+    )
 
     expect(jwtProvider.set).toHaveBeenCalledWith('response-jwt')
     expect(getHeader).toHaveBeenCalledWith('x-jwt')

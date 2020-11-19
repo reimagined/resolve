@@ -57,7 +57,7 @@ export const requestWithMiddleware = async (
     middleware?.error ?? []
   )
 
-  const { info, init, deserializer, jwtProvider } = params
+  const { info, init, deserializer, jwtProvider, fetch } = params
   let userState: any = null
 
   async function execMiddleware<TArgument>(
@@ -172,16 +172,16 @@ export const requestWithMiddleware = async (
       )
     }
 
-    const result = await processRun(
+    const middlewareResponse = await processRun(
       await execMiddleware(response, responseMiddleware),
       true
     )
 
-    if (jwtProvider && response.headers) {
+    if (jwtProvider && middlewareResponse.headers) {
       await jwtProvider.set(response.headers.get('x-jwt') ?? '')
     }
 
-    return result
+    return middlewareResponse
   }
 
   return await execFetch()

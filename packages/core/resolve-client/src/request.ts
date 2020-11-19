@@ -8,6 +8,7 @@ import { ClientMiddlewareOptions, requestWithMiddleware } from './middleware'
 
 export const VALIDATED_RESULT = Symbol('VALIDATED_RESULT')
 export type NarrowedResponse = {
+  ok: boolean
   headers: {
     get: (name: string) => string | null
   }
@@ -234,6 +235,7 @@ export const request = async (
       throw middlewareResponse
     }
     response = {
+      ok: !(middlewareResponse.result instanceof Error),
       headers: middlewareResponse.headers,
       [VALIDATED_RESULT]: middlewareResponse.result,
       json: () => Promise.resolve(middlewareResponse.result),
