@@ -215,7 +215,8 @@ export const request = async (
   let response: NarrowedResponse
 
   const middlewareFeatureToggle =
-    options?.retryOnError == null && options?.waitForResponse == null
+    (options?.retryOnError == null && options?.waitForResponse == null) ||
+    options?.middleware != null
 
   if (middlewareFeatureToggle) {
     init.headers = headers
