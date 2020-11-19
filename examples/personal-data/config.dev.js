@@ -29,13 +29,10 @@ const devConfig = {
     name: 'jwt',
     maxAge: 31536000000,
   },
-  uploadAdapter: {
-    module: 'resolve-upload-local',
-    options: {
-      directory: 'data',
-      bucket: 'files',
-      secretKey: 'key',
-    },
+  uploader: {
+    directory: 'data',
+    bucket: 'files',
+    secretKey: 'key',
   },
 }
 

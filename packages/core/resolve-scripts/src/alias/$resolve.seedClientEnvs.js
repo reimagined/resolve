@@ -35,14 +35,11 @@ export default ({ resolveConfig, isClient }) => {
           (key) => resolveConfig.clientImports[key]
         )
       : []),
+    ...(resolveConfig.uploader != null &&
+    Object(resolveConfig.uploader) === resolveConfig.uploader
+      ? [resolveConfig.uploader.CDN, resolveConfig.uploader.deploymentId]
+      : []),
   ]
-
-  if (resolveConfig.uploadAdapter != null) {
-    configEnvs.push(
-      resolveConfig.uploadAdapter.options.CDN,
-      resolveConfig.uploadAdapter.options.deploymentId
-    )
-  }
 
   void JSON.stringify(configEnvs, (key, value) => {
     if (checkRuntimeEnv(value)) {

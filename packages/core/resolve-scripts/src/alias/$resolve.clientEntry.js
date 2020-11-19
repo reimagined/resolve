@@ -42,10 +42,10 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
   if (isClient) {
     imports.push(`import clientImports from '$resolve.clientImports'`)
     imports.push(`import clientChunk from '$resolve.clientChunk'`)
-    imports.push(`import localS3Constants from '$resolve.localS3Constants'`)
+    imports.push(`import uploader from '$resolve.uploader'`)
     constants.push(`const entryArgs = {
       clientImports,
-      localS3Constants,
+      uploader,
       ...clientChunk,
       utils
     }`)
@@ -58,7 +58,7 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
     imports.push(`import readModels from '$resolve.readModels'`)
     imports.push(`import viewModels from '$resolve.viewModels'`)
     imports.push(`import sagas from '$resolve.sagas'`)
-    imports.push(`import localS3Constants from '$resolve.localS3Constants'`)
+    imports.push(`import uploader from '$resolve.uploader'`)
     constants.push(`const entryArgs = {
       serverImports,
       seedClientEnvs,
@@ -68,7 +68,7 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
       readModels,
       viewModels,
       sagas,
-      localS3Constants,
+      uploader,
       utils
     }`)
   }

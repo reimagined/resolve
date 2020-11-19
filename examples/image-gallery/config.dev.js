@@ -24,13 +24,10 @@ const devConfig = {
       },
     },
   },
-  uploadAdapter: {
-    module: 'resolve-upload-local',
-    options: {
-      directory: 'data',
-      bucket: 'files',
-      secretKey: 'key',
-    },
+  uploader: {
+    directory: 'data',
+    bucket: 'files',
+    secretKey: 'key',
   },
   jwtCookie: {
     name: 'jwt',

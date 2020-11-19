@@ -16156,6 +16156,25 @@ resolve-pathname@^3.0.0:
   resolved "https://registry.yarnpkg.com/resolve-pathname/-/resolve-pathname-3.0.0.tgz#99d02224d3cf263689becbb393bc560313025dcd"
   integrity sha512-C7rARubxI8bXFNB/hqcp/4iUeIXJhJZvFPFPiSPRnhU5UPxzMFIl+2E6yY6c4k9giDJAhtV+enfA+G89N6Csng==
 
+resolve-upload-cloud@0.25.18:
+  version "0.25.18"
+  resolved "https://registry.yarnpkg.com/resolve-upload-cloud/-/resolve-upload-cloud-0.25.18.tgz#57ebc55f1518812e95d7978944d5021802ce4c4b"
+  integrity sha512-xiHhCWQZfpb/VykV4BvVqxtSnZhzuOjdOOswaGdqHFF7mvUqc1zioghvaC6HIb/rKxE8SlOpgBw4jPrygM4ZhA==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    mime-types "^2.1.26"
+    request "^2.88.0"
+
+resolve-upload-local@0.25.18:
+  version "0.25.18"
+  resolved "https://registry.yarnpkg.com/resolve-upload-local/-/resolve-upload-local-0.25.18.tgz#4df67caeba094f151d0c32df809d00fe57dd6854"
+  integrity sha512-jaV9VHc+xmW3ql0Wi6SRURUumIYMMOTUBbjWgFBKvSj/Y8j+OuReEB6TlHXwAslnSXi7pi1EpCZdCNnM7mc2UA==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    crypto "^1.0.1"
+    request "^2.88.0"
+    uuid "^3.3.3"
+
 resolve-url@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
@@ -18949,7 +18968,7 @@ uuid@8.3.1:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.1.tgz#2ba2e6ca000da60fce5a196954ab241131e05a31"
   integrity sha512-FOmRr+FmWEIG8uhZv6C2bTgEVXsHk08kE7mPlrBbEe+c3r9pjceVPgupIfNIhc4yx55H69OXANrUaSuu9eInKg==
 
-uuid@^3.0.1, uuid@^3.1.0, uuid@^3.3.2:
+uuid@^3.0.1, uuid@^3.1.0, uuid@^3.3.2, uuid@^3.3.3:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==

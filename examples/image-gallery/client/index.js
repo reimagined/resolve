@@ -9,7 +9,7 @@ const entryPoint = (clientContext) => {
   render(
     <ResolveProvider context={clientContext}>
       <Layout>
-        <App {...clientContext.localS3Constants} />
+        <App {...clientContext.uploader} />
       </Layout>
     </ResolveProvider>,
     document.getElementById('app-container')

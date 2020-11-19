@@ -30,13 +30,10 @@ const devConfig = {
       },
     },
   },
-  uploadAdapter: {
-    module: 'resolve-upload-local',
-    options: {
-      directory: 'data',
-      bucket: 'users',
-      secretKey: 'key',
-    },
+  uploader: {
+    directory: 'data',
+    bucket: 'users',
+    secretKey: 'key',
   },
 }
 

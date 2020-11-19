@@ -12,7 +12,7 @@ const entryPoint = (clientContext) => {
   document.body.appendChild(appContainer)
   render(
     <ResolveProvider context={clientContext}>
-      <UploaderContext.Provider value={clientContext.localS3Constants}>
+      <UploaderContext.Provider value={clientContext.uploader}>
         <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
       </UploaderContext.Provider>
     </ResolveProvider>,

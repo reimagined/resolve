@@ -26,7 +26,7 @@ const entryPoint = (clientContext) => {
   render(
     <ResolveReduxProvider store={store} context={clientContext}>
       <Layout jwt={jwtObject}>
-        <App store={store} CDNUrl={clientContext.localS3Constants.CDNUrl} />
+        <App store={store} CDNUrl={clientContext.uploader.CDNUrl} />
       </Layout>
     </ResolveReduxProvider>,
     appContainer
