@@ -4,6 +4,7 @@ import { invokeFunction } from 'resolve-cloud-common/lambda'
 import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
+import initScheduler from './init-scheduler'
 import { putDurationMetrics, putErrorMetrics } from './metrics'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
@@ -68,6 +69,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     null,
     lambdaContext
   )
+  await initScheduler(resolve)
 
   const lambdaRemainingTimeStart = lambdaContext.getRemainingTimeInMillis()
 

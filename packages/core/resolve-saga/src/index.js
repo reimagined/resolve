@@ -1,17 +1,43 @@
 import createCommand from 'resolve-command'
 import createQuery from 'resolve-query'
 
-import schedulerEventTypes from './scheduler-event-types'
-import createSchedulersAggregates from './create-schedulers-aggregates'
+import createSchedulerAggregate from './create-scheduler-aggregate'
 import createSchedulerSagas from './create-scheduler-sagas'
 import wrapRegularSagas from './wrap-regular-sagas'
 
+const schedulerName = '_SCHEDULER_'
+const schedulerEventTypes = {
+  SCHEDULED_COMMAND_CREATED: `_RESOLVE_SYS_SCHEDULED_COMMAND_CREATED_`,
+  SCHEDULED_COMMAND_EXECUTED: `_RESOLVE_SYS_SCHEDULED_COMMAND_EXECUTED_`,
+  SCHEDULED_COMMAND_SUCCEEDED: `_RESOLVE_SYS_SCHEDULED_COMMAND_SUCCEEDED_`,
+  SCHEDULED_COMMAND_FAILED: `_RESOLVE_SYS_SCHEDULED_COMMAND_FAILED_`,
+}
+const schedulerInvariantHash = 'scheduler-invariant-hash'
+
+const getSchedulersNamesBySagas = (sagas) => {
+  if (!Array.isArray(sagas)) {
+    throw new Error(`Sagas ${sagas} is not array`)
+  }
+  const uniqueSagaConnectorsNames = Array.from(
+    new Set(sagas.map((saga) => saga.connectorName))
+  )
+  const schedulersNames = []
+  for (const connectorName of uniqueSagaConnectorsNames) {
+    // eslint-disable-next-line no-new-wrappers
+    const currentSchedulerName = new String(`${schedulerName}${connectorName}`)
+    currentSchedulerName.connectorName = connectorName
+    schedulersNames.push(currentSchedulerName)
+  }
+
+  return schedulersNames
+}
+
 const createSaga = ({
+  onError = async () => void 0,
   invokeEventBusAsync,
   onCommandExecuted,
   readModelConnectors,
   sagas,
-  schedulers,
   executeCommand,
   executeQuery,
   performanceTracer,
@@ -19,7 +45,7 @@ const createSaga = ({
   eventstoreAdapter,
   getVacantTimeInMillis,
   performAcknowledge,
-  onError = async () => void 0,
+  scheduler,
 }) => {
   const onSagaError = async (error) => {
     try {
@@ -27,10 +53,16 @@ const createSaga = ({
     } catch (e) {}
   }
 
-  const schedulerAggregatesNames = new Set(schedulers.map(({ name }) => name))
   let eventProperties = {}
+
   const executeScheduleCommand = createCommand({
-    aggregates: createSchedulersAggregates(schedulers),
+    aggregates: [
+      createSchedulerAggregate({
+        schedulerName,
+        schedulerEventTypes,
+        schedulerInvariantHash,
+      }),
+    ],
     onCommandExecuted,
     eventstoreAdapter,
     onError: onSagaError,
@@ -52,7 +84,7 @@ const createSaga = ({
     const options = { ...args[0] }
 
     const aggregateName = options.aggregateName
-    if (schedulerAggregatesNames.has(aggregateName)) {
+    if (aggregateName === schedulerName) {
       return await executeScheduleCommand(options)
     } else {
       return await executeCommand(options)
@@ -86,8 +118,15 @@ const createSaga = ({
     uploader: { get: () => uploader, enumerable: true },
   })
 
-  const regularSagas = wrapRegularSagas(sagas, sagaProvider)
-  const schedulerSagas = createSchedulerSagas(schedulers, sagaProvider)
+  const regularSagas = wrapRegularSagas({ sagas, schedulerName, sagaProvider })
+  const schedulerSagas = createSchedulerSagas({
+    getSchedulersNamesBySagas,
+    sagas,
+    schedulerName,
+    schedulerEventTypes,
+    sagaProvider,
+    scheduler,
+  })
 
   const sagasAsReadModels = [...regularSagas, ...schedulerSagas].map(
     (saga) => ({
@@ -127,17 +166,6 @@ const createSaga = ({
     })
   }
 
-  const runScheduler = async (entry) => {
-    const schedulerPromises = []
-    for (const { schedulerAdapter } of schedulerSagas) {
-      if (typeof schedulerAdapter.executeEntries === 'function') {
-        schedulerPromises.push(schedulerAdapter.executeEntries(entry))
-      }
-    }
-
-    return await Promise.all(schedulerPromises)
-  }
-
   const dispose = async () =>
     await Promise.all([
       executeScheduleCommand.dispose(),
@@ -146,9 +174,7 @@ const createSaga = ({
 
   const executeSaga = new Proxy(executeListener, {
     get(_, key) {
-      if (key === 'runScheduler') {
-        return runScheduler
-      } else if (key === 'sendEvents') {
+      if (key === 'sendEvents') {
         return sendEvents
       } else if (key === 'dispose') {
         return dispose
@@ -164,6 +190,6 @@ const createSaga = ({
   return executeSaga
 }
 
-export { schedulerEventTypes }
+export { schedulerName, schedulerEventTypes, getSchedulersNamesBySagas }
 
 export default createSaga
