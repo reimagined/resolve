@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 
 import {
-  RequestMiddleware,
-  RequestMiddlewareParameters,
+  ClientMiddleware,
+  ClientMiddlewareParameters,
   HttpError,
 } from '../../src/index'
 
@@ -13,7 +13,7 @@ type ExclusiveState = {
 const refreshTokenMiddleware = async (
   exclusiveState: ExclusiveState,
   error: Error,
-  params: RequestMiddlewareParameters
+  params: ClientMiddlewareParameters
 ) => {
   const refresh = async (): Promise<void> => {
     const tokenResponse = await params.fetch(
@@ -46,4 +46,4 @@ const refreshTokenMiddleware = async (
 
 export const createRefreshTokenMiddleware = (
   exclusiveState: ExclusiveState
-): RequestMiddleware<Error> => refreshTokenMiddleware.bind(null, exclusiveState)
+): ClientMiddleware<Error> => refreshTokenMiddleware.bind(null, exclusiveState)

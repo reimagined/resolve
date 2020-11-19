@@ -12,7 +12,7 @@ import { assertLeadingSlash, assertNonEmptyString } from './assertions'
 import { getRootBasedUrl, isAbsoluteUrl } from './utils'
 import determineOrigin from './determine-origin'
 import { ViewModelDeserializer } from './types'
-import { RequestMiddlewareOptions } from './request-middleware'
+import { ClientMiddlewareOptions } from './middleware'
 
 function determineCallback<T>(options: any, callback: any): T | null {
   if (typeof options === 'function') {
@@ -42,7 +42,7 @@ export type CommandCallback<T extends Command> = (
   command: T
 ) => void
 export type CommandOptions = {
-  middleware?: RequestMiddlewareOptions
+  middleware?: ClientMiddlewareOptions
 }
 export const command = (
   context: Context,
@@ -113,7 +113,7 @@ export type QueryOptions = {
     period?: number
     attempts?: number
   }
-  middleware?: RequestMiddlewareOptions
+  middleware?: ClientMiddlewareOptions
 }
 export type QueryCallback<T extends Query> = (
   error: Error | null,

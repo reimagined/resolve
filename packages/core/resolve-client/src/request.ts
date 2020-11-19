@@ -5,9 +5,9 @@ import { getRootBasedUrl, isString } from './utils'
 import determineOrigin from './determine-origin'
 import { GenericError, HttpError } from './errors'
 import {
-  RequestMiddlewareOptions,
+  ClientMiddlewareOptions,
   requestWithMiddleware,
-} from './request-middleware'
+} from './middleware'
 
 export const VALIDATED_RESULT = Symbol('VALIDATED_RESULT')
 export type NarrowedResponse = {
@@ -52,7 +52,7 @@ export type RequestOptions = {
     period: number
   }
   debug?: boolean
-  middleware?: RequestMiddlewareOptions
+  middleware?: ClientMiddlewareOptions
 }
 
 const stringifyUrl = (url: string, params: any): string => {

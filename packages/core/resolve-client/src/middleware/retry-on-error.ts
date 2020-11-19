@@ -1,7 +1,7 @@
 import {
-  RequestMiddleware,
-  RequestMiddlewareParameters,
-} from '../request-middleware'
+  ClientMiddleware,
+  ClientMiddlewareParameters,
+} from '../middleware'
 import { HttpError } from '../errors'
 
 export type RetryOnErrorMiddlewareOptions = {
@@ -14,7 +14,7 @@ export type RetryOnErrorMiddlewareOptions = {
 const retryOnError = async (
   options: RetryOnErrorMiddlewareOptions,
   error: Error | HttpError,
-  params: RequestMiddlewareParameters
+  params: ClientMiddlewareParameters
 ): Promise<any> => {
   const expectedErrors = new Array<number>().concat(options.errors)
 
@@ -57,4 +57,4 @@ const retryOnError = async (
 
 export const createRetryOnErrorMiddleware = (
   options: RetryOnErrorMiddlewareOptions
-): RequestMiddleware<any> => retryOnError.bind(null, options)
+): ClientMiddleware<any> => retryOnError.bind(null, options)

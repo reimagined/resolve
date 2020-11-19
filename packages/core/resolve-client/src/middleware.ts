@@ -2,39 +2,39 @@ import { FetchFunction } from './request'
 import { createParseResponseMiddleware } from './middleware/parse-response'
 import { HttpError } from './errors'
 import { JSONWebTokenProvider } from './jwt-provider'
-export type RequestMiddlewareResult = {
+export type ClientMiddlewareResult = {
   headers: {
     get: (name: string) => string | null
   }
   result: any
 }
-export type RequestMiddlewareParameters = {
+export type ClientMiddlewareParameters = {
   fetch: FetchFunction
   info: RequestInfo
   init: RequestInit
   repeat: () => void
-  end: (result: RequestMiddlewareResult | Error) => void
+  end: (result: ClientMiddlewareResult | Error) => void
   state: any
   deserializer?: (state: string) => any
   jwtProvider?: JSONWebTokenProvider
 }
-export type RequestMiddleware<TArgument> = (
+export type ClientMiddleware<TArgument> = (
   argument: TArgument,
-  params: RequestMiddlewareParameters
+  params: ClientMiddlewareParameters
 ) => Promise<any>
-export type RequestMiddlewareOptions = {
-  response?: Array<RequestMiddleware<Response>> | RequestMiddleware<Response>
-  error?: Array<RequestMiddleware<Error>> | RequestMiddleware<Error>
+export type ClientMiddlewareOptions = {
+  response?: Array<ClientMiddleware<Response>> | ClientMiddleware<Response>
+  error?: Array<ClientMiddleware<Error>> | ClientMiddleware<Error>
 }
 
-enum MiddlewareRunStatus {
+enum ClientMiddlewareRunStatus {
   Running = 'running',
   Finished = 'finished',
   Repeating = 'repeating',
   Error = 'error',
 }
-type MiddlewareRunState = {
-  status: MiddlewareRunStatus
+type ClientMiddlewareRunState = {
+  status: ClientMiddlewareRunStatus
   result: any
   error?: Error
 }
@@ -47,12 +47,12 @@ export const requestWithMiddleware = async (
     deserializer?: (state: string) => any
     jwtProvider?: JSONWebTokenProvider
   },
-  middleware: RequestMiddlewareOptions
-): Promise<RequestMiddlewareResult | Error> => {
-  const responseMiddleware = new Array<RequestMiddleware<Response>>()
+  middleware: ClientMiddlewareOptions
+): Promise<ClientMiddlewareResult | Error> => {
+  const responseMiddleware = new Array<ClientMiddleware<Response>>()
     .concat(middleware.response ?? [])
     .concat(createParseResponseMiddleware())
-  const errorMiddleware = new Array<RequestMiddleware<Error>>().concat(
+  const errorMiddleware = new Array<ClientMiddleware<Error>>().concat(
     middleware.error ?? []
   )
 
@@ -61,23 +61,23 @@ export const requestWithMiddleware = async (
 
   async function execMiddleware<TArgument>(
     argument: TArgument,
-    middlewareChain: Array<RequestMiddleware<TArgument>>
-  ): Promise<MiddlewareRunState> {
-    const runState: MiddlewareRunState = {
-      status: MiddlewareRunStatus.Running,
+    middlewareChain: Array<ClientMiddleware<TArgument>>
+  ): Promise<ClientMiddlewareRunState> {
+    const runState: ClientMiddlewareRunState = {
+      status: ClientMiddlewareRunStatus.Running,
       result: null,
     }
     const end = (result: any) => {
       if (result instanceof Error) {
-        runState.status = MiddlewareRunStatus.Error
+        runState.status = ClientMiddlewareRunStatus.Error
         runState.error = result
       } else {
-        runState.status = MiddlewareRunStatus.Finished
+        runState.status = ClientMiddlewareRunStatus.Finished
         runState.result = result
       }
     }
     const repeat = () => {
-      runState.status = MiddlewareRunStatus.Repeating
+      runState.status = ClientMiddlewareRunStatus.Repeating
     }
 
     for (const middleware of middlewareChain) {
@@ -93,18 +93,18 @@ export const requestWithMiddleware = async (
           jwtProvider,
         })
       } catch (error) {
-        runState.status = MiddlewareRunStatus.Error
+        runState.status = ClientMiddlewareRunStatus.Error
         runState.error = error
         break
       }
 
-      if (runState.status !== MiddlewareRunStatus.Running) {
+      if (runState.status !== ClientMiddlewareRunStatus.Running) {
         break
       }
     }
 
-    if (runState.status === MiddlewareRunStatus.Running) {
-      runState.status = MiddlewareRunStatus.Finished
+    if (runState.status === ClientMiddlewareRunStatus.Running) {
+      runState.status = ClientMiddlewareRunStatus.Finished
       runState.result = argument
     }
 
@@ -113,17 +113,17 @@ export const requestWithMiddleware = async (
 
   const execFetch = async (): Promise<any> => {
     const processRun = async (
-      runState: MiddlewareRunState,
+      runState: ClientMiddlewareRunState,
       execErrorMiddleware: boolean
     ): Promise<any> => {
       switch (runState.status) {
-        case MiddlewareRunStatus.Finished:
+        case ClientMiddlewareRunStatus.Finished:
           return runState.result
 
-        case MiddlewareRunStatus.Repeating:
+        case ClientMiddlewareRunStatus.Repeating:
           return await execFetch()
 
-        case MiddlewareRunStatus.Error:
+        case ClientMiddlewareRunStatus.Error:
           if (runState.error) {
             if (execErrorMiddleware) {
               return await processRun(
@@ -137,7 +137,7 @@ export const requestWithMiddleware = async (
             `Middleware run status is "${runState.status}, but no error was set.`
           )
 
-        case MiddlewareRunStatus.Running:
+        case ClientMiddlewareRunStatus.Running:
         default:
           throw Error(
             `Unpredictable middleware run status "${runState.status}". Check your middleware functions.`

@@ -1,7 +1,4 @@
-import {
-  RequestMiddlewareParameters,
-  RequestMiddleware,
-} from '../request-middleware'
+import { ClientMiddlewareParameters, ClientMiddleware } from '../middleware'
 import { GenericError } from '../errors'
 
 export type ResponseValidator = (
@@ -19,7 +16,7 @@ export type WaitForResponseMiddlewareOptions = {
 const waitForResponse = async (
   options: WaitForResponseMiddlewareOptions,
   response: Response,
-  params: RequestMiddlewareParameters
+  params: ClientMiddlewareParameters
 ) => {
   const { waitForState: { currentAttempts } = { currentAttempts: 0 } } =
     params.state ?? {}
@@ -80,4 +77,4 @@ const waitForResponse = async (
 
 export const createWaitForResponseMiddleware = (
   options: WaitForResponseMiddlewareOptions
-): RequestMiddleware<any> => waitForResponse.bind(null, options)
+): ClientMiddleware<any> => waitForResponse.bind(null, options)

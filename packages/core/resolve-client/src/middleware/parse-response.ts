@@ -1,11 +1,8 @@
-import {
-  RequestMiddlewareParameters,
-  RequestMiddleware,
-} from '../request-middleware'
+import { ClientMiddlewareParameters, ClientMiddleware } from '../middleware'
 
 const parseResponse = async (
   response: Response,
-  params: RequestMiddlewareParameters
+  params: ClientMiddlewareParameters
 ) => {
   const result = await response.json()
   const { deserializer } = params
@@ -22,5 +19,5 @@ const parseResponse = async (
   })
 }
 
-export const createParseResponseMiddleware = (): RequestMiddleware<Response> =>
+export const createParseResponseMiddleware = (): ClientMiddleware<Response> =>
   parseResponse.bind(null)
