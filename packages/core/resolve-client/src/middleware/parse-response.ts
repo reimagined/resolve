@@ -1,10 +1,16 @@
 import { ClientMiddlewareParameters, ClientMiddleware } from '../middleware'
+import { readJSONOrText } from '../utils'
 
 const parseResponse = async (
   response: Response,
   params: ClientMiddlewareParameters
 ) => {
-  const result = await response.json()
+  const result = await readJSONOrText<{ data: any }>(response)
+
+  if (typeof result === 'string') {
+    return result
+  }
+
   const { deserializer } = params
   if (
     typeof deserializer === 'function' &&

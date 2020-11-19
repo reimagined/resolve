@@ -1,24 +1,67 @@
-import React from 'react'
-import { useViewModel, useCommand } from 'resolve-react-hooks'
+import React, { useState, useCallback } from 'react'
+import { createRetryOnErrorMiddleware } from 'resolve-client'
+import { useCommand } from 'resolve-react-hooks'
 
 const UseRequestMiddleware = ({
   match: {
     params: { id: scenarioId },
   },
 }) => {
-  const beginScenario = useCommand({
-    aggregateId: scenarioId,
-    aggregateName: 'test-scenario',
-    type: 'beginRequestMiddleware',
-    payload: {},
-  })
+  const [blockedCommandResult, setBlockedCommandResult] = useState('')
+
+  const executeBlockedRetryOnErrorCommand = useCommand(
+    {
+      aggregateId: `${scenarioId}-retry-on-command-error`,
+      aggregateName: 'test-scenario',
+      type: 'blockedRetryOnErrorMiddleware',
+      payload: {},
+    },
+    {
+      middleware: {
+        error: [
+          createRetryOnErrorMiddleware({
+            attempts: 3,
+            errors: [500],
+            debug: true,
+            period: 500,
+          }),
+        ],
+      },
+    },
+    (error, result) => {
+      if (error) {
+        setBlockedCommandResult(error.message)
+      }
+      setBlockedCommandResult(result.type)
+    },
+    [scenarioId]
+  )
+  const executeUnblockRetryOnErrorCommand = useCommand(
+    {
+      aggregateId: `${scenarioId}-retry-on-command-error`,
+      aggregateName: 'test-scenario',
+      type: 'unblockRetryOnErrorMiddleware',
+      payload: {},
+    },
+    [scenarioId]
+  )
+  const executeRetryOnErrorClientScenario = useCallback(() => {
+    executeBlockedRetryOnErrorCommand()
+    setTimeout(() => executeUnblockRetryOnErrorCommand(), 800)
+  }, [executeBlockedRetryOnErrorCommand, executeUnblockRetryOnErrorCommand])
 
   return (
     <div>
       <h4>{`Test scenario id: ${scenarioId}`}</h4>
-      <button onClick={increaseCounter}>+</button>
-      <div id="counter">{counter}</div>
-      <button onClick={decreaseCounter}>-</button>
+      <div>
+        <button
+          style={{ display: 'inline-block' }}
+          onClick={executeRetryOnErrorClientScenario}
+        >
+          Execute retry on error scenario
+        </button>
+        <div style={{ display: 'inline-block' }}>{blockedCommandResult}</div>
+      </div>
     </div>
   )
 }

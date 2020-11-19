@@ -2,6 +2,8 @@ import { FetchFunction } from './request'
 import { createParseResponseMiddleware } from './middleware/parse-response'
 import { HttpError } from './errors'
 import { JSONWebTokenProvider } from './jwt-provider'
+import { readJSONOrText } from './utils'
+
 export type ClientMiddlewareResult = {
   headers: {
     get: (name: string) => string | null
@@ -63,6 +65,7 @@ export const requestWithMiddleware = async (
     argument: TArgument,
     middlewareChain: Array<ClientMiddleware<TArgument>>
   ): Promise<ClientMiddlewareRunState> {
+    console.log(`executing middleware chain ${middlewareChain.length}`)
     const runState: ClientMiddlewareRunState = {
       status: ClientMiddlewareRunStatus.Running,
       result: null,
@@ -164,21 +167,27 @@ export const requestWithMiddleware = async (
     if (!response.ok) {
       return await processRun(
         await execMiddleware(
-          new HttpError(response.status, await response.json()),
+          new HttpError(response.status, await response.text()),
           errorMiddleware
         ),
         false
       )
     }
 
+    console.log(`response ok, calling normal middleware`)
+
     const result = await processRun(
       await execMiddleware(response, responseMiddleware),
       true
     )
 
+    console.log(`updating jwt`)
+
     if (jwtProvider && response.headers) {
       await jwtProvider.set(response.headers.get('x-jwt') ?? '')
     }
+
+    console.log(`returning result`)
 
     return result
   }

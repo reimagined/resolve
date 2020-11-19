@@ -8,10 +8,10 @@ export default [
     routes: [
       {
         path: '/counter/:id',
-        component: Counter
+        component: Counter,
       },
       {
-        path: '/request-middleware',
+        path: '/client-middleware/:id',
         component: UseRequestMiddleware,
         exact: true,
       },
