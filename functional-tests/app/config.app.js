@@ -22,6 +22,17 @@ const appConfig = {
         options: { VERSION: EVENTS_VERSION },
       },
     },
+    {
+      name: 'test-scenario',
+      commands: {
+        module: 'common/aggregates/test-scenario.commands.js',
+        options: { VERSION: EVENTS_VERSION },
+      },
+      projection: {
+        module: 'common/aggregates/test-scenario.projection.js',
+        options: { VERSION: EVENTS_VERSION },
+      },
+    },
   ],
   readModels: [
     {
@@ -44,6 +55,19 @@ const appConfig = {
       },
       resolvers: {
         module: 'common/read-models/personal-data.resolvers.js',
+        options: { VERSION: EVENTS_VERSION },
+      },
+      connectorName: 'default',
+      encryption: 'common/read-models/encryption.js',
+    },
+    {
+      name: 'test-scenarios',
+      projection: {
+        module: 'common/read-models/test-scenarios.projection.js',
+        options: { VERSION: EVENTS_VERSION },
+      },
+      resolvers: {
+        module: 'common/read-models/test-scenarios.resolvers.js',
         options: { VERSION: EVENTS_VERSION },
       },
       connectorName: 'default',
