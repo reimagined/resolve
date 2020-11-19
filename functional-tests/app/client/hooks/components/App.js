@@ -1,18 +1,19 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import { useStaticResolver } from 'resolve-react-hooks'
 
-import Counter from './Counter'
+const App = ({ version, children }) => {
+  const resolveStatic = useStaticResolver()
 
-const App = ({ staticPath, version }) => {
   const stylesheetLink = {
     rel: 'stylesheet',
     type: 'text/css',
-    href: `${staticPath}/bootstrap.min.css`,
+    href: resolveStatic(`/bootstrap.min.css`),
   }
   const faviconLink = {
     rel: 'icon',
     type: 'image/png',
-    href: `${staticPath}/favicon.ico`,
+    href: resolveStatic(`/favicon.ico`),
   }
   const links = [stylesheetLink, faviconLink]
   const meta = {
@@ -22,13 +23,13 @@ const App = ({ staticPath, version }) => {
 
   return (
     <div>
-      <Helmet title="Functional Tests App" link={links} meta={[meta]} />
+      <Helmet title="React Hooks Tests" link={links} meta={[meta]} />
       <h6 align="left">
         {version != null && version.length > 0 ? `Version ${version}` : ``}
       </h6>
-      <Counter version={version} />
+      {children}
     </div>
   )
 }
 
-export default App
+export { App }
