@@ -1,75 +1,39 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
-const EVENTS_VERSION = declareRuntimeEnv('EVENTS_VERSION', '')
-
 const appConfig = {
   aggregates: [
     {
       name: 'user',
-      commands: {
-        module: 'common/aggregates/user.commands.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
-      projection: {
-        module: 'common/aggregates/user.projection.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
+      commands: 'common/aggregates/user.commands.js',
+      projection: 'common/aggregates/user.projection.js',
       encryption: 'common/aggregates/encryption.js',
     },
     {
       name: 'Counter',
-      commands: {
-        module: 'common/aggregates/counter.commands.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
+      commands: 'common/aggregates/counter.commands.js',
     },
     {
       name: 'test-scenario',
-      commands: {
-        module: 'common/aggregates/test-scenario.commands.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
-      projection: {
-        module: 'common/aggregates/test-scenario.projection.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
+      commands: 'common/aggregates/test-scenario.commands.js',
+      projection: 'common/aggregates/test-scenario.projection.js',
     },
   ],
   readModels: [
     {
       name: 'users',
-      projection: {
-        module: 'common/read-models/users.projection.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
-      resolvers: {
-        module: 'common/read-models/users.resolvers.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
+      projection: 'common/read-models/users.projection.js',
+      resolvers: 'common/read-models/users.resolvers.js',
       connectorName: 'default',
     },
     {
       name: 'personal-data',
-      projection: {
-        module: 'common/read-models/personal-data.projection.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
-      resolvers: {
-        module: 'common/read-models/personal-data.resolvers.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
+      projection: 'common/read-models/personal-data.projection.js',
+      resolvers: 'common/read-models/personal-data.resolvers.js',
       connectorName: 'default',
       encryption: 'common/read-models/encryption.js',
     },
     {
       name: 'test-scenarios',
-      projection: {
-        module: 'common/read-models/test-scenarios.projection.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
-      resolvers: {
-        module: 'common/read-models/test-scenarios.resolvers.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
+      projection: 'common/read-models/test-scenarios.projection.js',
+      resolvers: 'common/read-models/test-scenarios.resolvers.js',
       connectorName: 'default',
       encryption: 'common/read-models/encryption.js',
     },
@@ -77,44 +41,26 @@ const appConfig = {
   viewModels: [
     {
       name: 'user-profile',
-      projection: {
-        module: 'common/view-models/user.projection.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
-      resolver: {
-        module: 'common/view-models/user.resolver.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
+      projection: 'common/view-models/user.projection.js',
+      resolver: 'common/view-models/user.resolver.js',
     },
     {
       name: 'custom-serializer',
-      projection: {
-        module: 'common/view-models/custom-serializer.projection.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
+      projection: 'common/view-models/custom-serializer.projection.js',
       serializeState: 'common/view-models/custom-serializer.serialize.js',
       deserializeState: 'common/view-models/custom-serializer.deserialize.js',
     },
     {
       name: 'counter',
-      projection: {
-        module: 'common/view-models/counter.projection.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
+      projection: 'common/view-models/counter.projection.js',
     },
     {
       name: 'cumulative-likes',
-      projection: {
-        module: 'common/view-models/cumulative-likes.projection.js',
-        options: { VERSION: EVENTS_VERSION },
-      },
+      projection: 'common/view-models/cumulative-likes.projection.js',
     },
   ],
   clientImports: {
-    version: {
-      module: 'resolve-runtime/lib/common/utils/interop-options.js',
-      options: { VERSION: EVENTS_VERSION },
-    },
+    version: 'resolve-runtime/lib/common/utils/interop-options.js',
   },
   apiHandlers: [
     {
