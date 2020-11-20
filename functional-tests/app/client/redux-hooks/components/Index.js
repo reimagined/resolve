@@ -6,4 +6,4 @@ class Index extends React.PureComponent {
   }
 }
 
-export default Index
+export { Index }

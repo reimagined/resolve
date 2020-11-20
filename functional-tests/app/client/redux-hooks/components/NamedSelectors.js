@@ -6,7 +6,7 @@ import {
   useReduxViewModelSelector,
 } from 'resolve-redux'
 
-export default () => {
+const NamedSelectors = () => {
   const userId = uuid()
 
   const { connect, dispose } = useReduxViewModel(
@@ -53,3 +53,5 @@ export default () => {
     </div>
   )
 }
+
+export { NamedSelectors }
