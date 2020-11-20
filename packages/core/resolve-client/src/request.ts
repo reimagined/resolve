@@ -180,7 +180,8 @@ export const request = async (
   context: Context,
   url: string,
   requestParams: any,
-  options?: RequestOptions
+  options?: RequestOptions,
+  deserializer?: (state: string) => any
 ): Promise<NarrowedResponse> => {
   const { origin, rootPath, jwtProvider } = context
   const rootBasedUrl = getRootBasedUrl(rootPath, url, determineOrigin(origin))
@@ -228,6 +229,7 @@ export const request = async (
         info: requestUrl,
         init,
         jwtProvider,
+        deserializer
       },
       options?.middleware
     )

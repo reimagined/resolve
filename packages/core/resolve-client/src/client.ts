@@ -131,7 +131,7 @@ export const query = (
     method: 'GET',
   }
 
-  let viewModelDeserializer: ViewModelDeserializer | null = null
+  let viewModelDeserializer: ViewModelDeserializer | undefined
   if (!isReadModelQuery(qr)) {
     const viewModel = context.viewModels.find((model) => model.name === qr.name)
     if (viewModel && !viewModel.deserializeState[IS_BUILT_IN]) {
@@ -176,7 +176,8 @@ export const query = (
       context,
       `/api/query/${name}/${resolver}`,
       args,
-      requestOptions
+      requestOptions,
+      viewModelDeserializer
     )
   } else {
     const { name, aggregateIds, args } = qr
@@ -188,7 +189,8 @@ export const query = (
         args,
         origin: determineOrigin(context.origin),
       },
-      requestOptions
+      requestOptions,
+      viewModelDeserializer
     )
   }
 
