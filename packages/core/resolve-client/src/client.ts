@@ -71,11 +71,9 @@ export const command = (
   asyncExec()
     .then((result) => {
       actualCallback(null, result, cmd)
-      return result
     })
     .catch((error) => {
       actualCallback(error, null, cmd)
-      throw error
     })
 
   return undefined
