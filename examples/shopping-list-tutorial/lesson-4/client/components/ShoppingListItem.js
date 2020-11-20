@@ -1,12 +1,12 @@
 import React from 'react'
-import { ListGroupItem, Checkbox } from 'react-bootstrap'
+import { ListGroupItem, FormCheck } from 'react-bootstrap'
 
 const ShoppingListItem = ({ item: { id, text } }) => {
   return (
     <ListGroupItem key={id}>
-      <Checkbox inline>
+      <FormCheck inline>
         {text}
-      </Checkbox>
+      </FormCheck>
     </ListGroupItem>
   )
 }

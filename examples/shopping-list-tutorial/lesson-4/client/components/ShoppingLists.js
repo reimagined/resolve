@@ -1,11 +1,11 @@
 import React from 'react'
-import { ControlLabel, Table } from 'react-bootstrap'
+import { FormLabel, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 const ShoppingLists = ({ lists }) => {
   return (
     <div>
-      <ControlLabel>My shopping lists</ControlLabel>
+      <FormLabel>My shopping lists</FormLabel>
       <Table responsive>
         <thead>
           <tr>

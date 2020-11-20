@@ -1,5 +1,5 @@
 {
-  "name": "@shopping-list-tutorial/lesson-4",
+  "name": "@shopping-list-tutorial/lesson-3",
   "version": "0.25.17",
   "private": true,
   "scripts": {
@@ -15,18 +15,23 @@
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
+    "history": "4.10.1",
+    "isomorphic-fetch": "3.0.0",
     "react": "16.13.1",
-    "react-bootstrap": "0.32.1",
+    "react-bootstrap": "1.4.0",
     "react-dom": "16.13.1",
-    "react-helmet": "^6.1.0",
-    "react-redux": "7.2.0",
-    "react-router-config": "^5.1.1",
-    "react-router-dom": "^5.2.0",
-    "redux": "4.0.5",
-    "redux-devtools-extension": "2.13.7",
-    "redux-saga": "1.0.5",
-    "resolve-redux": "0.25.17",
-    "resolve-scripts": "0.25.17"
+    "react-helmet": "6.0.0",
+    "react-router": "5.1.2",
+    "react-router-config": "5.1.1",
+    "react-router-dom": "5.1.2",
+    "uuid": "8.3.1",
+    "resolve-module-admin": "0.25.18",
+    "resolve-react-hooks": "0.25.18",
+    "resolve-readmodel-lite": "0.25.18",
+    "resolve-readmodel-postgresql-serverless": "0.25.18",
+    "resolve-scripts": "0.25.18",
+    "resolve-eventstore-lite": "0.25.18",
+    "resolve-eventstore-postgresql-serverless": "0.25.18"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",
@@ -42,6 +47,7 @@
     "jest": "26.0.1",
     "react-test-renderer": "16.13.1",
     "resolve-cloud": "*",
+    "resolve-testing-tools": "0.25.18",
     "testcafe": "1.8.5"
   }
 }

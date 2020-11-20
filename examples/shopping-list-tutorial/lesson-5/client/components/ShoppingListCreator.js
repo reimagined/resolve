@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Col, ControlLabel, FormControl, Row } from 'react-bootstrap'
+import { Button, Col, FormLabel, FormControl, Row } from 'react-bootstrap'
 import { useCommand } from 'resolve-react-hooks'
 import uuid from 'uuid/v4'
 
@@ -34,7 +34,7 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
 
   return (
     <div>
-      <ControlLabel>Shopping list name</ControlLabel>
+      <FormLabel>Shopping list name</FormLabel>
       <Row>
         <Col md={8}>
           <FormControl
