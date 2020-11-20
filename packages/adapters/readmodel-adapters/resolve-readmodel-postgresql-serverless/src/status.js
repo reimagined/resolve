@@ -13,10 +13,16 @@ const status = async (pool, readModelName) => {
 
   if (rows.length === 1) {
     const result = {
-      successEvent: JSON.parse(rows[0].SuccessEvent),
-      failedEvent: JSON.parse(rows[0].FailedEvent),
-      errors: JSON.parse(rows[0].Errors),
-      cursor: JSON.parse(rows[0].Cursor),
+      eventSubscriber: readModelName,
+      properties:
+        rows[0].Properties != null ? JSON.parse(rows[0].Properties) : null,
+      deliveryStrategy: 'inline-ledger',
+      successEvent:
+        rows[0].SuccessEvent != null ? JSON.parse(rows[0].SuccessEvent) : null,
+      failedEvent:
+        rows[0].FailedEvent != null ? JSON.parse(rows[0].FailedEvent) : null,
+      errors: rows[0].Errors != null ? JSON.parse(rows[0].Errors) : null,
+      cursor: rows[0].Cursor != null ? JSON.parse(rows[0].Cursor) : null,
       status: 'deliver',
     }
 

@@ -19,6 +19,10 @@ const status = async (pool, readModelName) => {
 
       if (rows.length === 1) {
         const result = {
+          eventSubscriber: readModelName,
+          properties:
+            rows[0].Properties != null ? JSON.parse(rows[0].Properties) : null,
+          deliveryStrategy: 'inline-ledger',
           successEvent:
             rows[0].SuccessEvent != null
               ? JSON.parse(rows[0].SuccessEvent)
