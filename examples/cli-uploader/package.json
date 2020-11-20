@@ -32,8 +32,6 @@
     "resolve-eventstore-lite": "0.25.18",
     "resolve-readmodel-lite": "0.25.18",
     "resolve-readmodel-postgresql-serverless": "0.25.18",
-    "resolve-upload-local": "0.25.18",
-    "resolve-upload-cloud": "0.25.18",
     "redux-devtools-extension": "2.13.7",
     "resolve-module-uploader": "0.25.18",
     "request": "2.88.0",
