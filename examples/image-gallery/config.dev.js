@@ -24,10 +24,12 @@ const devConfig = {
       },
     },
   },
-  uploader: {
-    directory: 'data',
-    bucket: 'files',
-    secretKey: 'key',
+  uploadAdapter: {
+    options: {
+      directory: 'data',
+      bucket: 'files',
+      secretKey: 'key',
+    },
   },
   jwtCookie: {
     name: 'jwt',

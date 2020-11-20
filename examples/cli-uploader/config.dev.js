@@ -30,10 +30,12 @@ const devConfig = {
       },
     },
   },
-  uploader: {
-    directory: 'data',
-    bucket: 'users',
-    secretKey: 'key',
+  uploadAdapter: {
+    options: {
+      directory: 'data',
+      bucket: 'users',
+      secretKey: 'key',
+    },
   },
 }
 

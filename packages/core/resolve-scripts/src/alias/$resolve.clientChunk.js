@@ -68,6 +68,7 @@ export default ({ resolveConfig, isClient }) => {
     `  applicationName: interopRequireDefault(require('$resolve.applicationName')).default,`,
     `  subscriber: interopRequireDefault(require('resolve-client/lib/subscribe-adapter')).default,`,
     `  customConstants: interopRequireDefault(require('$resolve.customConstants')).default`,
+    `  cdnUrl: interopRequireDefault(require('$resolve.cdnUrl')).default`,
     `}`
   )
 

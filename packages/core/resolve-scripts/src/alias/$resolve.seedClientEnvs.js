@@ -1,5 +1,8 @@
 import { message } from '../constants'
-import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
+import declareRuntimeEnv, {
+  checkRuntimeEnv,
+  injectRuntimeEnv,
+} from '../declare_runtime_env'
 
 const CLIENT_ENV_KEY = '__CLIENT_ENV__'
 
@@ -19,7 +22,7 @@ export default ({ resolveConfig, isClient }) => {
     })
   }
 
-  const clientEnvs = []
+  const clientEnvs = [declareRuntimeEnv('RESOLVE_UPLOADER_CDN_URL')]
 
   const configEnvs = [
     resolveConfig.customConstants,
@@ -34,10 +37,6 @@ export default ({ resolveConfig, isClient }) => {
       ? Object.keys(resolveConfig.clientImports).map(
           (key) => resolveConfig.clientImports[key]
         )
-      : []),
-    ...(resolveConfig.uploader != null &&
-    Object(resolveConfig.uploader) === resolveConfig.uploader
-      ? [resolveConfig.uploader.CDN, resolveConfig.uploader.deploymentId]
       : []),
   ]
 

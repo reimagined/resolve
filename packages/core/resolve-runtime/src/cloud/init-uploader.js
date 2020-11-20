@@ -157,7 +157,10 @@ const getCDNUrl = async ({ CDN }) => CDN
 
 const initUploader = async (resolve) => {
   if (resolve.assemblies.uploader != null) {
-    const uploader = createUploader(resolve.assemblies.uploader)
+    // TODO: provide support for custom uploader adapter
+    const createUploadAdapter = resolve.assemblies.uploadAdapter
+    const uploader = createUploader(createUploadAdapter())
+    process.env.RESOLVE_UPLOADER_CDN_URL = `https://${uploader.CDN}/${uploader.deploymentId}`
 
     Object.assign(resolve, {
       uploader: {

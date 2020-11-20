@@ -27,10 +27,12 @@ const testFunctionalConfig = {
       secretsFile: 'data/secrets-test-functional.db',
     },
   },
-  uploader: {
-    directory: 'data',
-    bucket: 'files',
-    secretKey: 'key',
+  uploadAdapter: {
+    options: {
+      directory: 'data',
+      bucket: 'files',
+      secretKey: 'key',
+    },
   },
 }
 

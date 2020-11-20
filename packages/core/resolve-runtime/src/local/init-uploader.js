@@ -102,8 +102,11 @@ const getSignedPost = async (adapter, dir) =>
   await adapter.createPresignedPost(dir)
 
 const initUploader = async (resolve) => {
-  if (resolve.assemblies.uploader != null) {
-    const uploader = createUploader(resolve.assemblies.uploader)
+  if (resolve.assemblies.uploadAdapter != null) {
+    // TODO: provide support for custom uploader adapter
+    const createUploadAdapter = resolve.assemblies.uploadAdapter
+    const uploader = createUploader(createUploadAdapter())
+    process.env.RESOLVE_UPLOADER_CDN_URL = 'http://localhost:3000/uploader'
 
     Object.assign(resolve, {
       uploader: {

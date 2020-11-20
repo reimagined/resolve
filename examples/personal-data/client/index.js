@@ -12,7 +12,7 @@ const entryPoint = (clientContext) => {
   document.body.appendChild(appContainer)
   render(
     <ResolveProvider context={clientContext}>
-      <UploaderContext.Provider value={clientContext.uploader}>
+      <UploaderContext.Provider value={{ CDNUrl: clientContext.cdnUrl }}>
         <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
       </UploaderContext.Provider>
     </ResolveProvider>,

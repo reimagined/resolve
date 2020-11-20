@@ -280,10 +280,6 @@
       "type": "object",
       "additionalProperties": true
     },
-    "uploader": {
-      "type": "object",
-      "additionalProperties": true
-    },
     "clientFullEntryProperties": {
       "type": "object",
       "properties": {
@@ -405,8 +401,12 @@
         "customConstants": {
           "$ref": "#/definitions/customConstants"
         },
-        "uploader": {
-          "$ref": "#/definitions/uploader"
+        "uploadAdapter": {
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" },
+            { "$ref": "#/definitions/resourceBypass" }
+          ]
         }
       },
       "required": [

@@ -11,7 +11,7 @@ export default () => `
   import readModels from '$resolve.readModels'
   import viewModels from '$resolve.viewModels'
   import sagas from '$resolve.sagas'
-  import uploader from '$resolve.uploader'
+  import uploadAdapter from '$resolve.uploadAdapter'
 
   export default {
     assemblies: {
@@ -19,7 +19,7 @@ export default () => `
       eventstoreAdapter,
       readModelConnectors,
       serverImports,
-      uploader
+      uploadAdapter
     },
     constants,
     domain: {
