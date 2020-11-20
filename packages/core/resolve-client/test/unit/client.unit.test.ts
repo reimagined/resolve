@@ -204,10 +204,10 @@ describe('command', () => {
       }
     )
 
-    setTimeout(() => {
+    setImmediate(() => {
       expect(callbackError).toEqual(Error('error'))
       done()
-    }, 10)
+    })
   })
 })
 
