@@ -229,7 +229,7 @@ export const request = async (
         info: requestUrl,
         init,
         jwtProvider,
-        deserializer
+        deserializer,
       },
       options?.middleware
     )
