@@ -19,6 +19,7 @@ const responseHeaders: { [key: string]: string } = {
 }
 
 const createMockResponse = (overrides: object = {}): NarrowedResponse => ({
+  ok: true,
   headers: {
     get: jest.fn(
       (header: string): string | null =>
