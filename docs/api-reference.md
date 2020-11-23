@@ -1870,3 +1870,9 @@ const myMiddleware = async (
 // Export the factory function.
 export const createMyMiddleware = options => waitForResponse.bind(null, options)
 ```
+
+The `params` object exposes the following API:
+
+| Field Name | Description |
+| ---------- | ----------- |
+|            |             |
