@@ -1,10 +1,13 @@
-import { injectRuntimeEnv } from '../declare_runtime_env'
+import declareRuntimeEnv, { injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   const exports = []
   if (resolveConfig.hasOwnProperty('uploadAdapter')) {
     exports.push(
-      `const cdnUrl = ${injectRuntimeEnv('RESOLVE_UPLOADER_CDN_URL', isClient)}`
+      `const cdnUrl = ${injectRuntimeEnv(
+        declareRuntimeEnv('RESOLVE_UPLOADER_CDN_URL'),
+        isClient
+      )}`
     )
   } else {
     exports.push(`const cdnUrl = null`)
