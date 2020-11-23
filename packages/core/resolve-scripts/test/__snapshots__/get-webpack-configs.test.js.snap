@@ -40,6 +40,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.applicationName.js\\",
+        \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientChunk.js\\",
         \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientEntry.js\\",
@@ -65,7 +66,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.serverImports\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.serverImports.js\\",
         \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-        \\"$resolve.uploader\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploader.js\\",
+        \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
       }
     },
@@ -76,6 +77,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.applicationName.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientChunk.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientEntry.js\\",
@@ -101,7 +103,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.serverImports.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploader.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
           ],
           \\"use\\": [
@@ -258,6 +260,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.applicationName.js\\",
+        \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientChunk.js\\",
         \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientEntry.js\\",
@@ -283,7 +286,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.serverImports\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.serverImports.js\\",
         \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-        \\"$resolve.uploader\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploader.js\\",
+        \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
       }
     },
@@ -301,6 +304,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.applicationName.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientChunk.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientEntry.js\\",
@@ -326,7 +330,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.serverImports.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploader.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
           ],
           \\"use\\": [
@@ -466,6 +470,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.applicationName.js\\",
+        \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientChunk.js\\",
         \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientEntry.js\\",
@@ -491,7 +496,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.serverImports\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.serverImports.js\\",
         \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-        \\"$resolve.uploader\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploader.js\\",
+        \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
       }
     },
@@ -510,6 +515,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.applicationName.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientChunk.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientEntry.js\\",
@@ -535,7 +541,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.serverImports.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploader.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
           ],
           \\"use\\": [
@@ -707,6 +713,7 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.applicationName.js\\",
+        \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientChunk.js\\",
         \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientEntry.js\\",
@@ -732,7 +739,7 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.serverImports\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.serverImports.js\\",
         \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-        \\"$resolve.uploader\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploader.js\\",
+        \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
       }
     },
@@ -743,6 +750,7 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.applicationName.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientChunk.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientEntry.js\\",
@@ -768,7 +776,7 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.serverImports.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploader.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
           ],
           \\"use\\": [
@@ -925,6 +933,7 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.applicationName.js\\",
+        \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientChunk.js\\",
         \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientEntry.js\\",
@@ -950,7 +959,7 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.serverImports\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.serverImports.js\\",
         \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-        \\"$resolve.uploader\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploader.js\\",
+        \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
       }
     },
@@ -968,6 +977,7 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.applicationName.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientChunk.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientEntry.js\\",
@@ -993,7 +1003,7 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.serverImports.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploader.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
           ],
           \\"use\\": [
@@ -1134,6 +1144,7 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.applicationName.js\\",
+        \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientChunk.js\\",
         \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientEntry.js\\",
@@ -1159,7 +1170,7 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.serverImports\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.serverImports.js\\",
         \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-        \\"$resolve.uploader\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploader.js\\",
+        \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
       }
     },
@@ -1178,6 +1189,7 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.applicationName.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientChunk.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.clientEntry.js\\",
@@ -1203,7 +1215,7 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.serverImports.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticDir.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.staticPath.js\\",
-            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploader.js\\",
+            \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.uploadAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/core/resolve-scripts/src/alias/$resolve.viewModels.js\\"
           ],
           \\"use\\": [
