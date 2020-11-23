@@ -92,7 +92,6 @@ const connect = async (imports, pool, options) => {
 
   const { SQLite, fs, os, tmp } = imports
 
-  let connector = null
   if (databaseFile === ':memory:') {
     if (process.env.RESOLVE_LAUNCH_ID != null) {
       const tmpName = `${os.tmpdir()}/read-model-${+process.env
@@ -123,14 +122,14 @@ const connect = async (imports, pool, options) => {
       })
     }
 
-    connector = SQLite.open.bind(SQLite, pool.memoryStore.name)
+    pool.connectionUri = pool.memoryStore.name
   } else {
-    connector = SQLite.open.bind(SQLite, databaseFile)
+    pool.connectionUri = databaseFile
   }
 
   for (let retry = 0; ; retry++) {
     try {
-      pool.connection = await connector()
+      pool.connection = await SQLite.open(pool.connectionUri)
       break
     } catch (error) {
       if (error != null && error.code === SQLITE_BUSY) {

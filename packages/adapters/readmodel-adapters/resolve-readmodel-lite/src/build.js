@@ -301,11 +301,21 @@ const build = async (
     PassthroughError,
     inlineLedgerRunQuery,
     generateGuid,
+    attendedReadModels,
+    connectionUri,
     tablePrefix,
     escapeId,
     escape,
   } = basePool
   const pool = Object.create(basePool)
+
+  const eagerSeizeMode =
+    (!attendedReadModels.has(connectionUri)
+      ? attendedReadModels.set(connectionUri, new Set())
+      : attendedReadModels
+    )
+      .get(connectionUri)
+      .add(readModelName).size > 1
 
   try {
     const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
@@ -336,7 +346,7 @@ const build = async (
         if (!(error instanceof PassthroughError)) {
           throw error
         }
-        if (!isReadSuccess) {
+        if (!isReadSuccess && !eagerSeizeMode) {
           throw new PassthroughError()
         }
       }
