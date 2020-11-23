@@ -1741,13 +1741,88 @@ If multiple middlewares are used, they are chained together in the order that th
 
 This section lists request middlewares that are shipped with the resolve-client package. The following middlewares are available:
 
-| Name            | Description                                                |
-| --------------- | ---------------------------------------------------------- |
-| parseResponse   | Deserializes the response body if it contains valid JSON.  |
-| retryOnError    | Retries the request if the server responds with an error.  |
-| waitForResponse | Validates the response and reties if the validation fails. |
+| Name                | Description                                                 |
+| ------------------- | ----------------------------------------------------------- |
+| [parseResponse]()   | Deserializes the response data if it contains valid JSON.   |
+| [retryOnError]()    | Retries the request if the server responds with an error.   |
+| [waitForResponse]() | Validates the response and retries if the validation fails. |
 
-The `middleware` request option specify middleware to run on server response and on error.
+##### parseResponse
+
+Deserializes the response data if it contains valid JSON. If the data is not JSON, the original string is kept. Initialized by the `createParseResponseMiddleware` factory function.
+
+This middleware takes no options. You can add it to a request as shown below:
+
+```js
+const { data } = await client.query({
+  name: 'articles',
+  resolver: 'all'
+}, {
+  middleware: {
+    response: {
+      createParseResponseMiddleware()
+    }
+  }
+})
+```
+
+##### retryOnError
+
+Retries the request if the server responds with an error. Initialized by the `createRetryOnErrorMiddleware` factory function.
+
+The `retryOnError` middleware takes the following options:
+
+| Option Name | Description                                                          |
+| ----------- | -------------------------------------------------------------------- |
+| attempts    | The number of retries on error.                                      |
+| errors      | An array of error codes that are allowed to trigger a retry.         |
+| debug       | If set to `true`, the middleware logs errors to the browser console. |
+| period      | A time period to wait between retries specified in milliseconds.     |
+
+You can add the `retryOnError` middleware to a request as shown below:
+
+```js
+client.command(
+  {
+    aggregateName: 'Chat',
+    type: 'postMessage',
+    aggregateId: userName,
+    payload: message
+  },
+  {
+    middleware: {
+      error: [
+        createRetryOnErrorMiddleware({
+          attempts: 3,
+          errors: [500],
+          debug: true,
+          period: 500
+        })
+      ]
+    }
+  },
+  err => {
+    if (err) {
+      console.warn(`Error while sending command: ${err}`)
+    }
+  }
+)
+```
+
+##### waitForResponse
+
+Validates the response and retries if the validation fails. Initialized by the `createWaitForResponseMiddleware` factory function.
+
+| Option Name | Description                                                          |
+| ----------- | -------------------------------------------------------------------- |
+| attempts    | The number of retries on error.                                      |
+| debug       | If set to `true`, the middleware logs errors to the browser console. |
+| period      | A time period to wait between retries specified in milliseconds.     |
+| validator   |                                                                      |
+
+---
+
+The `middleware` request option specifies middleware to run on server response and on error.
 
 ```js
 middleware: {
@@ -1761,3 +1836,5 @@ middleware: {
   ],
 },
 ```
+
+#### Implement Custom Middleware
