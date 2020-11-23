@@ -4,7 +4,10 @@ import { useDispatch } from 'react-redux'
 import { renderHook, act } from '@testing-library/react-hooks'
 import { useCommandBuilder } from 'resolve-react-hooks'
 import { sendCommandRequest } from '../../src/command/actions'
-import { useReduxCommand } from '../../src/command/use-redux-command'
+import {
+  CommandReduxHookOptions,
+  useReduxCommand,
+} from '../../src/command/use-redux-command'
 import { CommandCallback } from 'resolve-client'
 
 jest.mock('react-redux', () => ({
@@ -40,6 +43,11 @@ describe('command as plain object overload', () => {
     aggregateName: 'aggregate-name',
     payload: {
       a: 'a',
+    },
+  })
+  const makeOptions = (): CommandReduxHookOptions<Command> => ({
+    commandOptions: {
+      middleware: {},
     },
   })
 
@@ -95,17 +103,11 @@ describe('command as plain object overload', () => {
   })
 
   test('custom command options are passed to base hook', () => {
-    renderHook(() =>
-      useReduxCommand(makeCommand(), {
-        commandOptions: {
-          option: 'a',
-        },
-      })
-    )
+    renderHook(() => useReduxCommand(makeCommand(), makeOptions()))
 
     expect(mUseCommandBuilder).toHaveBeenCalledWith(
       expect.anything(),
-      { option: 'a' },
+      makeOptions().commandOptions,
       expect.anything()
     )
   })
@@ -113,20 +115,12 @@ describe('command as plain object overload', () => {
   test('custom command options with dependencies', () => {
     const dependency = 'dependency'
     renderHook(() =>
-      useReduxCommand(
-        makeCommand(),
-        {
-          commandOptions: {
-            option: 'a',
-          },
-        },
-        [dependency]
-      )
+      useReduxCommand(makeCommand(), makeOptions(), [dependency])
     )
 
     expect(mUseCommandBuilder).toHaveBeenCalledWith(
       expect.anything(),
-      { option: 'a' },
+      makeOptions().commandOptions,
       expect.anything(),
       [dependency]
     )
@@ -203,13 +197,7 @@ describe('command as plain object overload', () => {
   })
 
   test('cached hook data if underlying executor not changed (with options)', () => {
-    const hook = renderHook(() =>
-      useReduxCommand(makeCommand(), {
-        commandOptions: {
-          option: 'a',
-        },
-      })
-    )
+    const hook = renderHook(() => useReduxCommand(makeCommand(), makeOptions()))
 
     const data = hook.result.current
 
@@ -218,13 +206,7 @@ describe('command as plain object overload', () => {
   })
 
   test('new hook if underlying executor has been changed (with options)', () => {
-    const hook = renderHook(() =>
-      useReduxCommand(makeCommand(), {
-        commandOptions: {
-          option: 'a',
-        },
-      })
-    )
+    const hook = renderHook(() => useReduxCommand(makeCommand(), makeOptions()))
 
     const data = hook.result.current
 
@@ -235,13 +217,7 @@ describe('command as plain object overload', () => {
   })
 
   test('new hook if redux dispatch has been changed (with options)', () => {
-    const hook = renderHook(() =>
-      useReduxCommand(makeCommand(), {
-        commandOptions: {
-          option: 'a',
-        },
-      })
-    )
+    const hook = renderHook(() => useReduxCommand(makeCommand(), makeOptions()))
 
     const data = hook.result.current
 
@@ -258,6 +234,11 @@ describe('command as builder function overload', () => {
     aggregateId: 'aggregate-id',
     aggregateName: 'aggregate-name',
     payload: data,
+  })
+  const makeOptions = (): CommandReduxHookOptions<Command> => ({
+    commandOptions: {
+      middleware: {},
+    },
   })
 
   test('command request action dispatched', () => {
@@ -311,38 +292,22 @@ describe('command as builder function overload', () => {
   })
 
   test('custom command options are passed to base hook', () => {
-    renderHook(() =>
-      useReduxCommand(builder, {
-        commandOptions: {
-          option: 'a',
-        },
-      })
-    )
+    renderHook(() => useReduxCommand(builder, makeOptions()))
 
     expect(mUseCommandBuilder).toHaveBeenCalledWith(
       expect.anything(),
-      { option: 'a' },
+      makeOptions().commandOptions,
       expect.anything()
     )
   })
 
   test('custom command options with dependencies', () => {
     const dependency = 'dependency'
-    renderHook(() =>
-      useReduxCommand(
-        builder,
-        {
-          commandOptions: {
-            option: 'a',
-          },
-        },
-        [dependency]
-      )
-    )
+    renderHook(() => useReduxCommand(builder, makeOptions(), [dependency]))
 
     expect(mUseCommandBuilder).toHaveBeenCalledWith(
       expect.anything(),
-      { option: 'a' },
+      makeOptions().commandOptions,
       expect.anything(),
       [dependency]
     )
@@ -423,15 +388,7 @@ describe('command as builder function overload', () => {
   test('cached hook data if underlying executor not changed (with options)', () => {
     const dependency = 'dependency'
     const hook = renderHook(() =>
-      useReduxCommand(
-        builder,
-        {
-          commandOptions: {
-            option: 'a',
-          },
-        },
-        [dependency]
-      )
+      useReduxCommand(builder, makeOptions(), [dependency])
     )
 
     const data = hook.result.current
@@ -441,13 +398,7 @@ describe('command as builder function overload', () => {
   })
 
   test('new hook if underlying executor has been changed (with options)', () => {
-    const hook = renderHook(() =>
-      useReduxCommand(builder, {
-        commandOptions: {
-          option: 'a',
-        },
-      })
-    )
+    const hook = renderHook(() => useReduxCommand(builder, makeOptions()))
 
     const data = hook.result.current
 
@@ -458,13 +409,7 @@ describe('command as builder function overload', () => {
   })
 
   test('new hook if redux dispatch has been changed (with options)', () => {
-    const hook = renderHook(() =>
-      useReduxCommand(builder, {
-        commandOptions: {
-          option: 'a',
-        },
-      })
-    )
+    const hook = renderHook(() => useReduxCommand(builder, makeOptions()))
 
     const data = hook.result.current
 

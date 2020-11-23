@@ -1,3 +1,7 @@
 export * from './context'
 export * from './errors'
 export * from './client'
+export * from './middleware'
+export * from './middleware/retry-on-error'
+export * from './middleware/wait-for-response'
+export * from './middleware/parse-response'
