@@ -20,7 +20,6 @@ const responseHeaders: { [key: string]: string } = {
 
 const createMockResponse = (overrides: object = {}): NarrowedResponse => ({
   ok: true,
-  status: 200,
   headers: {
     get: jest.fn(
       (header: string): string | null =>
@@ -122,7 +121,7 @@ describe('command', () => {
         },
       },
       {
-        option: 'option',
+        middleware: {},
       }
     )
 
@@ -138,7 +137,7 @@ describe('command', () => {
         },
       },
       {
-        option: 'option',
+        middleware: {},
       }
     )
   })
@@ -224,7 +223,8 @@ describe('query', () => {
       },
       {
         method: 'GET',
-      }
+      },
+      undefined
     )
   })
 
@@ -312,7 +312,8 @@ describe('query', () => {
           period: 1,
           attempts: 1,
         },
-      }
+      },
+      undefined
     )
 
     const validator = mRequest.mock.calls[0][3]?.waitForResponse
@@ -417,7 +418,8 @@ describe('query', () => {
       },
       {
         method: 'POST',
-      }
+      },
+      undefined
     )
   })
 
@@ -440,11 +442,13 @@ describe('query', () => {
       },
       {
         method: 'GET',
-      }
+      },
+      undefined
     )
   })
 
   test('use view model state deserializer', async () => {
+    const deserializer = (data: string) => JSON.parse(data.slice(3))
     client = getClient(
       createMockContext('static-path', [
         {
@@ -452,7 +456,7 @@ describe('query', () => {
           projection: {
             Init: () => null,
           },
-          deserializeState: (data: string) => JSON.parse(data.slice(3)),
+          deserializeState: deserializer,
         },
       ])
     )
@@ -464,6 +468,14 @@ describe('query', () => {
       aggregateIds: ['id'],
       args: {},
     })
+
+    expect(mRequest).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.anything(),
+      expect.anything(),
+      expect.anything(),
+      deserializer
+    )
 
     expect(result).toEqual({
       data: {
