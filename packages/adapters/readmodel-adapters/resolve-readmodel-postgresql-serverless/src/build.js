@@ -8,8 +8,6 @@ const serializeError = (error) =>
       }
     : null
 
-const RESERVED_TIME = 30 * 1000
-
 const buildInit = async (pool, readModelName, store, projection, next) => {
   const {
     PassthroughError,
@@ -127,7 +125,7 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
 const buildEvents = async (pool, readModelName, store, projection, next) => {
   const {
     PassthroughError,
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
     rdsDataService,
@@ -260,7 +258,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
           }
           appliedEventsCount++
 
-          if (getRemainingTimeInMillis() < RESERVED_TIME) {
+          if (getVacantTimeInMillis() < 0) {
             nextCursor = eventstoreAdapter.getNextCursor(
               cursor,
               events.slice(0, appliedEventsCount)
@@ -363,7 +361,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
     const isBuildSuccess = lastError == null && appliedEventsCount > 0
     cursor = nextCursor
 
-    if (getRemainingTimeInMillis() < RESERVED_TIME) {
+    if (getVacantTimeInMillis() < 0) {
       localContinue = false
     }
 
@@ -432,7 +430,8 @@ const build = async (
   store,
   projection,
   next,
-  getRemainingTimeInMillis
+  getVacantTimeInMillis,
+  provideLedger
 ) => {
   const {
     PassthroughError,
@@ -473,29 +472,53 @@ const build = async (
       `
     )
 
-    let readModelLedger = rows.length === 1 ? rows[0] : null
+    const readModelLedger =
+      rows.length === 1
+        ? {
+            EventTypes:
+              rows[0].EventTypes != null
+                ? JSON.parse(rows[0].EventTypes)
+                : null,
+            AggregateIds:
+              rows[0].AggregateIds != null
+                ? JSON.parse(rows[0].AggregateIds)
+                : null,
+            Cursor: rows[0].Cursor != null ? JSON.parse(rows[0].Cursor) : null,
+            SuccessEvent:
+              rows[0].SuccessEvent != null
+                ? JSON.parse(rows[0].SuccessEvent)
+                : null,
+            FailedEvent:
+              rows[0].FailedEvent != null
+                ? JSON.parse(rows[0].FailedEvent)
+                : null,
+            Errors: rows[0].Errors != null ? JSON.parse(rows[0].Errors) : null,
+            Properties:
+              rows[0].Properties != null
+                ? JSON.parse(rows[0].Properties)
+                : null,
+            Schema: rows[0].Schema != null ? JSON.parse(rows[0].Schema) : null,
+          }
+        : null
+
     if (readModelLedger == null || readModelLedger.Errors != null) {
-      throw new PassthroughError(null)
+      throw new PassthroughError()
     }
 
-    const eventTypes =
-      readModelLedger.EventTypes != null
-        ? JSON.parse(readModelLedger.EventTypes)
-        : null
+    const { EventTypes: eventTypes, Cursor: cursor } = readModelLedger
 
     if (!Array.isArray(eventTypes) && eventTypes != null) {
       throw new TypeError('eventTypes')
     }
 
-    const cursor =
-      readModelLedger.Cursor != null ? JSON.parse(readModelLedger.Cursor) : null
-
     if (cursor != null && cursor.constructor !== String) {
       throw new TypeError('cursor')
     }
 
+    await provideLedger(readModelLedger)
+
     Object.assign(pool, {
-      getRemainingTimeInMillis,
+      getVacantTimeInMillis,
       databaseNameAsId,
       ledgerTableNameAsId,
       trxTableNameAsId,

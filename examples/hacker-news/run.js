@@ -173,7 +173,6 @@ void (async () => {
           ],
         })
         importConfig.readModelConnectors = {}
-        importConfig.schedulers = {}
 
         await build(importConfig)
 

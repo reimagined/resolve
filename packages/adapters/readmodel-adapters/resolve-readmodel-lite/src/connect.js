@@ -9,20 +9,35 @@ const randRange = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min
 const fullJitter = (retries) => randRange(0, Math.min(100, 2 * 2 ** retries))
 
-const runCommonQuery = async (pool, isRegular, querySQL) => {
-  const executor = isRegular
+const commonRunQuery = async (
+  pool,
+  isInlineLedger,
+  sqlQuery,
+  multiLine = false,
+  passthroughRuntimeErrors = false
+) => {
+  const PassthroughError = pool.PassthroughError
+  const executor = !multiLine
     ? pool.connection.all.bind(pool.connection)
     : pool.connection.exec.bind(pool.connection)
-  const transformer = isRegular ? Array.from.bind(Array) : emptyTransformer
+  const transformer = !multiLine ? Array.from.bind(Array) : emptyTransformer
   let result = null
 
   for (let retry = 0; ; retry++) {
     try {
-      result = await executor(querySQL)
+      result = await executor(sqlQuery)
       break
     } catch (error) {
-      if (error != null && error.code === SQLITE_BUSY) {
+      const isPassthroughError = PassthroughError.isPassthroughError(
+        error,
+        !!passthroughRuntimeErrors
+      )
+      const isSqliteBusy = error != null && error.code === SQLITE_BUSY
+      if (!isInlineLedger && isSqliteBusy) {
         await new Promise((resolve) => setTimeout(resolve, fullJitter(retry)))
+      } else if (isInlineLedger && isPassthroughError) {
+        const isRuntime = !PassthroughError.isPassthroughError(error, false)
+        throw new PassthroughError(isRuntime)
       } else {
         throw error
       }
@@ -63,8 +78,8 @@ const connect = async (imports, pool, options) => {
   databaseFile = coerceEmptyString(databaseFile)
 
   Object.assign(pool, {
-    runRawQuery: runCommonQuery.bind(null, pool, false),
-    runQuery: runCommonQuery.bind(null, pool, true),
+    inlineLedgerRunQuery: commonRunQuery.bind(null, pool, true),
+    runQuery: commonRunQuery.bind(null, pool, false),
     connectionOptions,
     performanceTracer,
     tablePrefix,
@@ -126,14 +141,14 @@ const connect = async (imports, pool, options) => {
     }
   }
 
-  await pool.runRawQuery(`PRAGMA busy_timeout=0`)
-  await pool.runRawQuery(`PRAGMA encoding=${escape('UTF-8')}`)
-  await pool.runRawQuery(`PRAGMA synchronous=EXTRA`)
+  await pool.runQuery(`PRAGMA busy_timeout=0`)
+  await pool.runQuery(`PRAGMA encoding=${escape('UTF-8')}`)
+  await pool.runQuery(`PRAGMA synchronous=EXTRA`)
 
   if (databaseFile === ':memory:') {
-    await pool.runRawQuery(`PRAGMA journal_mode=MEMORY`)
+    await pool.runQuery(`PRAGMA journal_mode=MEMORY`)
   } else {
-    await pool.runRawQuery(`PRAGMA journal_mode=DELETE`)
+    await pool.runQuery(`PRAGMA journal_mode=DELETE`)
   }
 }
 

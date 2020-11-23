@@ -11,7 +11,6 @@ export default () => `
   import readModels from '$resolve.readModels'
   import viewModels from '$resolve.viewModels'
   import sagas from '$resolve.sagas'
-  import schedulers from '$resolve.schedulers'
   import uploadAdapter from '$resolve.uploadAdapter'
 
   export default {
@@ -29,7 +28,6 @@ export default () => `
       aggregates,
       readModels,
       viewModels,
-      schedulers,
       sagas
     }
   }

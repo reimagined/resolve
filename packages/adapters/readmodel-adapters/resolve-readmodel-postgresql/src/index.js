@@ -21,6 +21,23 @@ import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
 import update from './update'
 
+import PassthroughError from './passthrough-error'
+import inlineLedgerForceStop from './inline-ledger-force-stop'
+import generateGuid from './generate-guid'
+
+import subscribe from './subscribe'
+import resubscribe from './resubscribe'
+import unsubscribe from './unsubscribe'
+import deleteProperty from './delete-property'
+import getProperty from './get-property'
+import listProperties from './list-properties'
+import setProperty from './set-property'
+import reset from './reset'
+import pause from './pause'
+import resume from './resume'
+import status from './status'
+import build from './build'
+
 const store = {
   defineTable,
   find,
@@ -31,24 +48,48 @@ const store = {
   delete: del,
 }
 
-const connect = _connect.bind(null, {
-  Postgres,
+const internalMethods = {
   escapeId,
   escape,
   buildUpsertDocument,
   convertResultRow,
   searchToWhereExpression,
   updateToSetExpression,
+  PassthroughError,
+  inlineLedgerForceStop,
+  generateGuid,
+}
+
+const externalMethods = {
+  beginTransaction,
+  commitTransaction,
+  rollbackTransaction,
+  dropReadModel,
+  subscribe,
+  resubscribe,
+  unsubscribe,
+  deleteProperty,
+  getProperty,
+  listProperties,
+  setProperty,
+  resume,
+  pause,
+  reset,
+  status,
+  build,
+}
+
+const connect = _connect.bind(null, {
+  Postgres,
+  ...internalMethods,
+  ...externalMethods,
   ...store,
 })
 
 const createAdapter = _createAdapter.bind(null, {
   ...store,
+  ...externalMethods,
   connect,
-  beginTransaction,
-  commitTransaction,
-  rollbackTransaction,
-  dropReadModel,
   disconnect,
 })
 

@@ -534,8 +534,7 @@ const appConfig = {
     {
       name: 'UserConfirmation',
       source: 'saga.js',
-      connectorName: 'default',
-      schedulerName: 'scheduler'
+      connectorName: 'default'
     }
   ]
 }
@@ -551,16 +550,6 @@ const devConfig = {
     module: 'resolve-eventstore-lite',
     options: {
       databaseFile: ':memory:'
-    }
-  },
-
-  schedulers: {
-    scheduler: {
-      adapter: {
-        module: 'resolve-scheduler-local',
-        options: {}
-      },
-      connectorName: 'default'
     }
   },
   readModelConnectors: {
@@ -655,8 +644,7 @@ const appConfig = {
     {
       name: 'ProcessKiller',
       source: 'saga.js',
-      connectorName: 'default',
-      schedulerName: 'scheduler'
+      connectorName: 'default'
     }
   ]
 }
@@ -672,16 +660,6 @@ const devConfig = {
     module: 'resolve-eventstore-lite',
     options: {
       databaseFile: ':memory:'
-    }
-  },
-
-  schedulers: {
-    scheduler: {
-      adapter: {
-        module: 'resolve-scheduler-local',
-        options: {}
-      },
-      connectorName: 'default'
     }
   },
   readModelConnectors: {
@@ -918,8 +896,7 @@ describe('Saga', () => {
   const {
     name: sagaName,
     source: sourceModule,
-    connectorName,
-    schedulerName
+    connectorName
   } = config.sagas.find(({ name }) => name === 'UpdaterSaga')
   const {
     module: connectorModule,
