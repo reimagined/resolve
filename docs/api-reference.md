@@ -1862,7 +1862,7 @@ You can define a custom middleware as follows:
 const myMiddleware = async (
   options, // Options passed to the factory function.
   response, // The second argument is either a response or error.
-  params // Parameters passed to the middleware by the client.
+  params // Contains API that you can use in your middleware implementation.
 ) => {
   // Put your middleware logic here
 }
@@ -1873,6 +1873,13 @@ export const createMyMiddleware = options => waitForResponse.bind(null, options)
 
 The `params` object exposes the following API:
 
-| Field Name | Description |
-| ---------- | ----------- |
-|            |             |
+| Field Name   | Description                                                                      |
+| ------------ | -------------------------------------------------------------------------------- |
+| fetch        | A JavaScript fetch function that you can use to perform arbitrary HTTP requests. |
+| info         | An object that describes the current request.                                    |
+| init         | An object that is the fetch function's `init` parameter.                         |
+| repeat       | A function that you can call to repeat the current request.                      |
+| end          | Call this function to commit the middleware execution result or error.           |
+| state        | A state object passed between middlewares.                                       |
+| deserializer | Given a string returns a deserealized object.                                    |
+| jwtProvider  | Used to get and set the JSON Web Token.                                          |
