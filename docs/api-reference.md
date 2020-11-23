@@ -1730,3 +1730,34 @@ Resolves a relative path to an absolute URL within the application.
 var resolver = useOriginResolver()
 var commandApiPath = resolver('/api/commands')
 ```
+
+### Request Middleware
+
+The resolve-client and resolve-react-hooks libraries allow you to use request middleware to extend the client's functionality. A middleware implements intermediate logic that can tweak the response object or handle errors before they are passed to the callback function.
+
+If multiple middlewares are used, they are chained together in the order that they are specified in the request options object.
+
+#### Available Middlewares
+
+This section lists request middlewares that are shipped with the resolve-client package. The following middlewares are available:
+
+| Name            | Description |
+| --------------- | ----------- |
+| parseResponse   |             |
+| retryOnError    |             |
+| waitForResponse |             |
+
+The `middleware` request option specify middleware to run on server response and on error.
+
+```js
+middleware: {
+  response: [
+    middlware_creation_function(options)
+    ...
+  ]
+  error: [
+    middlware_creation_function(options)
+    ...
+  ],
+},
+```
