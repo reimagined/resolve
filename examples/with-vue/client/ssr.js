@@ -1,25 +1,26 @@
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
+import { getClient } from 'resolve-client'
 import { createRenderer } from 'vue-server-renderer'
 import App from './App.vue'
 
-const entryPoint = async (
-  { constants: { rootPath, staticPath }, seedClientEnvs, utils },
-  req,
-  res
-) => {
+const entryPoint = async (serverContext, req, res) => {
   try {
-    const { getStaticBasedPath } = utils
+    const { constants, seedClientEnvs, viewModels } = serverContext
+    const client = getClient({
+      ...constants,
+      viewModels,
+      origin: '',
+    })
+
     Vue.use(BootstrapVue)
     const renderer = createRenderer()
-    const makeStaticPath = getStaticBasedPath.bind(null, rootPath, staticPath)
-
-    const bundleUrl = makeStaticPath('index.js')
-    const bootstrapCssUrl = makeStaticPath('bootstrap.css')
-    const bootstrapVueCssUrl = makeStaticPath('bootstrap-vue.css')
+    const bundleUrl = client.getStaticAssetUrl('/index.js')
+    const bootstrapCssUrl = client.getStaticAssetUrl('/bootstrap.css')
+    const bootstrapVueCssUrl = client.getStaticAssetUrl('/bootstrap-vue.css')
 
     const app = new Vue({
-      data: { rootPath, staticPath },
+      data: { client },
       render: (h) => h(App),
     })
 
@@ -50,9 +51,7 @@ const entryPoint = async (
   } catch (error) {
     // eslint-disable-next-line no-console
     console.warn('Vue SSR error', error)
-
     await res.status(500)
-
     await res.end('Vue SSR error')
   }
 }

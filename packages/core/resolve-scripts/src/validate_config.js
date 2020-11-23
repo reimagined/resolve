@@ -94,9 +94,6 @@ const validateUniqueNames = (resolveConfig) => {
     ...resolveConfig.readModels.map(({ name }) => tag(name, 'readModels')),
     ...resolveConfig.viewModels.map(({ name }) => tag(name, 'viewModels')),
     ...resolveConfig.sagas.map(({ name }) => tag(name, 'sagas')),
-    ...Object.keys(resolveConfig.schedulers).map(({ name }) =>
-      tag(name, 'schedulers')
-    ),
   ]
 
   for (const taggedName of sourceNames) {

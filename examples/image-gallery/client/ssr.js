@@ -1,60 +1,37 @@
 import React from 'react'
 import ReactDOM from 'react-dom/server'
-import { createStore, AppContainer } from 'resolve-redux'
 import { Helmet } from 'react-helmet'
-import { createMemoryHistory } from 'history'
 import jsonwebtoken from 'jsonwebtoken'
+import { ResolveProvider } from 'resolve-react-hooks'
 
-import UploaderContext from './context'
-import App from './containers/App'
+import { App } from './containers/App'
 import Layout from './components/Layout'
 
-const ssrHandler = async (
-  { localS3Constants, constants, seedClientEnvs, viewModels, utils },
-  req,
-  res
-) => {
+const ssrHandler = async (serverContext, req, res) => {
   try {
-    const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils
+    const { constants, seedClientEnvs, viewModels, utils } = serverContext
+    const { getStaticBasedPath, jsonUtfStringify } = utils
     const { rootPath, staticPath, jwtCookie } = constants
-
-    const baseQueryUrl = getRootBasedUrl(rootPath, '/')
-    const origin = ''
-    const url = req.path.substring(baseQueryUrl.length)
-    const history = createMemoryHistory()
-    history.push(url)
 
     const jwt = {}
     try {
       Object.assign(jwt, jsonwebtoken.decode(req.cookies[jwtCookie.name]))
     } catch (e) {}
 
-    const store = createStore({
-      initialState: { jwt },
+    const resolveContext = {
+      ...constants,
       viewModels,
-      subscriber: {},
-      history,
-      origin,
-      rootPath,
-      isClient: false,
-    })
+      origin: '',
+    }
 
     const markup = ReactDOM.renderToStaticMarkup(
-      <AppContainer
-        origin={origin}
-        rootPath={rootPath}
-        staticPath={staticPath}
-        store={store}
-      >
-        <Layout staticPath={staticPath}>
-          <UploaderContext.Provider value={localS3Constants}>
-            <App store={store} />
-          </UploaderContext.Provider>
+      <ResolveProvider context={resolveContext}>
+        <Layout>
+          <App {...serverContext.localS3Constants} />
         </Layout>
-      </AppContainer>
+      </ResolveProvider>
     )
 
-    const initialState = store.getState()
     const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index.js')
     const faviconUrl = getStaticBasedPath(rootPath, staticPath, 'favicon.ico')
 
@@ -70,7 +47,6 @@ const ssrHandler = async (
       `${helmet.link.toString()}` +
       `${helmet.style.toString()}` +
       '<script>' +
-      `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)};` +
       `window.__RESOLVE_RUNTIME_ENV__=${jsonUtfStringify(seedClientEnvs)};` +
       '</script>' +
       `${helmet.script.toString()}` +

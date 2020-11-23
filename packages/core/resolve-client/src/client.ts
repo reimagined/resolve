@@ -348,6 +348,18 @@ const getStaticAssetUrl = (
   return getRootBasedUrl(rootPath, `/${staticPath}${assetPath}`, origin)
 }
 
+const getOriginPath = ({ rootPath, origin }: Context, path: string): string => {
+  assertNonEmptyString(path, 'path')
+
+  if (isAbsoluteUrl(path)) {
+    return path
+  }
+
+  assertLeadingSlash(path, 'path')
+
+  return getRootBasedUrl(rootPath, path, origin)
+}
+
 export type Client = {
   command: (
     command: Command,
@@ -360,6 +372,7 @@ export type Client = {
     callback?: QueryCallback<Query>
   ) => PromiseOrVoid<QueryResult>
   getStaticAssetUrl: (assetPath: string) => string
+  getOriginPath: (path: string) => string
   subscribe: (
     url: string,
     cursor: string | null,
@@ -379,6 +392,7 @@ export const getClient = (context: Context): Client => ({
     query(context, qr, options, callback),
   getStaticAssetUrl: (assetPath: string): string =>
     getStaticAssetUrl(context, assetPath),
+  getOriginPath: (path: string): string => getOriginPath(context, path),
   subscribe: (
     url,
     cursor,

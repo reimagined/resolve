@@ -226,8 +226,7 @@ sagas: [
   {
     name: 'UserConfirmation',
     source: 'common/sagas/user-confirmation.saga.js',
-    connectorName: 'default',
-    schedulerName: 'scheduler'
+    connectorName: 'default'
   }
 ]
 ```
@@ -240,29 +239,9 @@ sagas: [
     name: 'UserConfirmation',
     source: 'common/sagas/user-confirmation.handlers.js',
     sideEffects: 'common/sagas/user-confirmation.side-effects.js',
-    connectorName: 'default',
-    schedulerName: 'scheduler'
+    connectorName: 'default'
   }
 ]
 ```
 
 The `connectorName` option defines a Read Model storage used to store the saga's persistent data.
-
-The `schedulerName` option specifies the scheduler that should be used to schedule command execution. Define a scheduler in the `schedulers` configuration section:
-
-<!-- prettier-ignore-start -->
-
-[mdis]:# (../tests/saga-sample/config.js#schedulers-config)
-```js
-schedulers: {
-  scheduler: {
-    adapter: {
-      module: 'resolve-scheduler-local',
-      options: {}
-    },
-    connectorName: 'default'
-  }
-},
-```
-
-<!-- prettier-ignore-end -->

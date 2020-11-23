@@ -37,15 +37,6 @@ const devConfig = {
       secretKey: 'key',
     },
   },
-  schedulers: {
-    scheduler: {
-      adapter: {
-        module: 'resolve-scheduler-local',
-        options: {},
-      },
-      connectorName: 'default',
-    },
-  },
 }
 
 export default devConfig

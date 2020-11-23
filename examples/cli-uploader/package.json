@@ -25,6 +25,7 @@
     "react-redux": "7.2.0",
     "redux-saga": "1.0.5",
     "redux": "4.0.5",
+    "resolve-react-hooks": "0.25.18",
     "resolve-redux": "0.25.18",
     "resolve-scripts": "0.25.18",
     "resolve-eventstore-postgresql-serverless": "0.25.18",
@@ -41,7 +42,7 @@
     "resolve-module-auth": "0.25.18",
     "js-cookie": "2.2.1",
     "passport-local": "1.0.0",
-    "uuid": "3.3.3"
+    "uuid": "8.3.1"
   },
   "devDependencies": {
     "aws-sdk": "2.631.0",

@@ -21,10 +21,11 @@ const initResolve = async (resolve) => {
     invokeEventBusAsync,
     aggregates,
     readModels,
-    schedulers,
     sagas,
     viewModels,
     uploader,
+    scheduler,
+    onError,
   } = resolve
   const eventstoreAdapter = createEventstoreAdapter()
 
@@ -36,12 +37,17 @@ const initResolve = async (resolve) => {
     })
   }
 
-  if (!resolve.hasOwnProperty('getRemainingTimeInMillis')) {
+  if (resolve.getVacantTimeInMillis == null) {
     const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
-    resolve.getRemainingTimeInMillis = () => endTime - Date.now()
+    resolve.getVacantTimeInMillis = () => endTime - Date.now()
   }
 
-  const getRemainingTimeInMillis = resolve.getRemainingTimeInMillis
+  Object.defineProperties(resolve, {
+    readModelConnectors: { value: readModelConnectors },
+    eventstoreAdapter: { value: eventstoreAdapter },
+  })
+
+  const getVacantTimeInMillis = resolve.getVacantTimeInMillis
   const onCommandExecuted = createOnCommandExecuted(resolve)
 
   const performAcknowledge = resolve.publisher.acknowledge.bind(
@@ -53,6 +59,7 @@ const initResolve = async (resolve) => {
     eventstoreAdapter,
     performanceTracer,
     onCommandExecuted,
+    onError,
   })
 
   const executeQuery = createQueryExecutor({
@@ -62,8 +69,9 @@ const initResolve = async (resolve) => {
     readModels,
     viewModels,
     performanceTracer,
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     performAcknowledge,
+    onError,
   })
 
   const executeSaga = createSagaExecutor({
@@ -73,12 +81,13 @@ const initResolve = async (resolve) => {
     onCommandExecuted,
     eventstoreAdapter,
     readModelConnectors,
-    schedulers,
     sagas,
     performanceTracer,
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     performAcknowledge,
     uploader,
+    scheduler,
+    onError,
   })
 
   const eventBus = createEventBus(resolve)
@@ -113,8 +122,6 @@ const initResolve = async (resolve) => {
   })
 
   Object.defineProperties(resolve, {
-    readModelConnectors: { value: readModelConnectors },
-    eventstoreAdapter: { value: eventstoreAdapter },
     eventListener: { value: eventListener },
     eventBus: { value: eventBus },
     eventStore: { value: eventStore },

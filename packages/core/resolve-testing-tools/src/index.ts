@@ -39,6 +39,28 @@ export default givenEvents.bind(null, {
 export const RESOLVE_SIDE_EFFECTS_START_TIMESTAMP =
   'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP'
 
+export const schedulerName = '_SCHEDULER_'
+
+export const getSchedulersNamesBySagas = (sagas: any): any => {
+  if (!Array.isArray(sagas)) {
+    throw new Error(`Sagas ${sagas} is not array`)
+  }
+  const uniqueSagaConnectorsNames: any = Array.from(
+    new Set(sagas.map((saga) => saga.connectorName))
+  )
+  const schedulersNames = []
+  for (const connectorName of uniqueSagaConnectorsNames) {
+    // eslint-disable-next-line no-new-wrappers
+    const currentSchedulerName: any = new String(
+      `${schedulerName}${connectorName}`
+    )
+    currentSchedulerName.connectorName = connectorName
+    schedulersNames.push(currentSchedulerName)
+  }
+
+  return schedulersNames
+}
+
 export interface GivenEventsContext {
   all: any
   createQuery: any
