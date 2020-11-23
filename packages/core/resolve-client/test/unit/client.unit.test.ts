@@ -189,7 +189,7 @@ describe('command', () => {
 
     let callbackError: any = null
 
-    await new Promise(resolve =>
+    await new Promise((resolve) =>
       client.command(
         {
           aggregateName: 'user',
