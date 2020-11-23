@@ -4,52 +4,33 @@ import {
   useReduxViewModel,
   useReduxCommand,
   useReduxViewModelSelector,
+  useReduxReadModel,
+  useReduxReadModelSelector,
 } from 'resolve-redux'
 
 export default () => {
-  const userId = uuid()
-
-  const { connect, dispose } = useReduxViewModel(
+  const { request } = useReduxReadModel(
     {
-      name: 'cumulative-likes',
-      aggregateIds: [userId],
+      name: 'users',
+      resolver: 'all',
       args: {},
     },
+    [],
     {
       selectorId: 'cumulative-likes-named-selector',
-    }
+    },
   )
 
-  const { execute: register } = useReduxCommand({
-    type: 'register',
-    aggregateName: 'user',
-    aggregateId: userId,
-    payload: {
-      name: 'John Smith',
-    },
-  })
-
-  const { execute: like } = useReduxCommand({
-    type: 'like',
-    aggregateName: 'user',
-    aggregateId: userId,
-    payload: {},
-  })
-
   const {
-    data: { likes },
-  } = useReduxViewModelSelector('cumulative-likes-named-selector')
-
-  useEffect(() => {
-    connect()
-    return dispose
-  })
+    data: users,
+  } = useReduxReadModelSelector('cumulative-likes-named-selector')
 
   return (
     <div>
-      <button onClick={register}>Register</button>
-      <button onClick={like}>Like</button>
-      <div id="likeCounter">{likes}</div>
+      <button onClick={request}>Get users</button>
+      <div>
+        {users.map(user => (<div>user.name</div>))}
+      </div>
     </div>
   )
 }
