@@ -1741,11 +1741,11 @@ If multiple middlewares are used, they are chained together in the order that th
 
 This section lists request middlewares that are shipped with the resolve-client package. The following middlewares are available:
 
-| Name            | Description |
-| --------------- | ----------- |
-| parseResponse   |             |
-| retryOnError    |             |
-| waitForResponse |             |
+| Name            | Description                                                |
+| --------------- | ---------------------------------------------------------- |
+| parseResponse   | Deserializes the response body if it contains valid JSON.  |
+| retryOnError    | Retries the request if the server responds with an error.  |
+| waitForResponse | Validates the response and reties if the validation fails. |
 
 The `middleware` request option specify middleware to run on server response and on error.
 
