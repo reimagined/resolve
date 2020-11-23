@@ -183,31 +183,32 @@ describe('command', () => {
     )
   })
 
-  test('bug fix: #1629', (done) => {
-    mRequest.mockRejectedValueOnce(Error('error'))
+  test('bug fix: #1629', async () => {
+    const error = new Error('Request error')
+    mRequest.mockRejectedValueOnce(error)
 
     let callbackError: any = null
 
-    client.command(
-      {
-        aggregateName: 'user',
-        aggregateId: 'user-id',
-        type: 'create',
-        payload: {
-          name: 'user-name',
+    await new Promise(resolve =>
+      client.command(
+        {
+          aggregateName: 'user',
+          aggregateId: 'user-id',
+          type: 'create',
+          payload: {
+            name: 'user-name',
+          },
         },
-      },
-      (error) => {
-        if (error) {
-          callbackError = error
+        (error) => {
+          if (error != null) {
+            callbackError = error
+          }
+          resolve()
         }
-      }
+      )
     )
 
-    setImmediate(() => {
-      expect(callbackError).toEqual(Error('error'))
-      done()
-    })
+    expect(callbackError).toBe(error)
   })
 })
 
