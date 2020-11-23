@@ -11,7 +11,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
 
   try {
     await inlineLedgerRunQuery(
-      `
+      `BEGIN EXCLUSIVE;
       CREATE TABLE IF NOT EXISTS ${ledgerTableNameAsId}(
         "EventSubscriber" VARCHAR(190) NOT NULL,
         "IsPaused" TINYINT NOT NULL,
@@ -26,10 +26,15 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         "Schema" JSON NULL,
         PRIMARY KEY("EventSubscriber")
       );
+      COMMIT;
     `,
       true
     )
-  } catch (e) {}
+  } catch (err) {
+    try {
+      await inlineLedgerRunQuery(`ROLLBACK;`, true)
+    } catch (e) {}
+  }
 
   while (true) {
     try {
