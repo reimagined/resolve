@@ -1818,23 +1818,16 @@ Validates the response and retries if the validation fails. Initialized by the `
 | attempts    | The number of retries on error.                                      |
 | debug       | If set to `true`, the middleware logs errors to the browser console. |
 | period      | A time period to wait between retries specified in milliseconds.     |
-| validator   |                                                                      |
+| validator   | A function that validates the response.                              |
+
+You can add the `retryOnError` middleware to a request as shown below:
+
+```js
+TODO
+```
 
 ---
 
 The `middleware` request option specifies middleware to run on server response and on error.
-
-```js
-middleware: {
-  response: [
-    middlware_creation_function(options)
-    ...
-  ]
-  error: [
-    middlware_creation_function(options)
-    ...
-  ],
-},
-```
 
 #### Implement Custom Middleware
