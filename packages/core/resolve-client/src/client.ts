@@ -12,6 +12,7 @@ import { assertLeadingSlash, assertNonEmptyString } from './assertions'
 import { getRootBasedUrl, isAbsoluteUrl } from './utils'
 import determineOrigin from './determine-origin'
 import { ViewModelDeserializer } from './types'
+import { ClientMiddlewareOptions } from './middleware'
 
 function determineCallback<T>(options: any, callback: any): T | null {
   if (typeof options === 'function') {
@@ -40,8 +41,9 @@ export type CommandCallback<T extends Command> = (
   result: CommandResult | null,
   command: T
 ) => void
-export type CommandOptions = {}
-
+export type CommandOptions = {
+  middleware?: ClientMiddlewareOptions
+}
 export const command = (
   context: Context,
   cmd: Command,
@@ -71,11 +73,9 @@ export const command = (
   asyncExec()
     .then((result) => {
       actualCallback(null, result, cmd)
-      return result
     })
     .catch((error) => {
       actualCallback(error, null, cmd)
-      throw error
     })
 
   return undefined
@@ -111,6 +111,7 @@ export type QueryOptions = {
     period?: number
     attempts?: number
   }
+  middleware?: ClientMiddlewareOptions
 }
 export type QueryCallback<T extends Query> = (
   error: Error | null,
@@ -128,7 +129,7 @@ export const query = (
     method: 'GET',
   }
 
-  let viewModelDeserializer: ViewModelDeserializer | null = null
+  let viewModelDeserializer: ViewModelDeserializer | undefined
   if (!isReadModelQuery(qr)) {
     const viewModel = context.viewModels.find((model) => model.name === qr.name)
     if (viewModel && !viewModel.deserializeState[IS_BUILT_IN]) {
@@ -157,6 +158,7 @@ export const query = (
       }
     }
     requestOptions.method = options?.method ?? 'GET'
+    requestOptions.middleware = options?.middleware
   }
 
   const actualCallback = determineCallback<QueryCallback<Query>>(
@@ -172,7 +174,8 @@ export const query = (
       context,
       `/api/query/${name}/${resolver}`,
       args,
-      requestOptions
+      requestOptions,
+      viewModelDeserializer
     )
   } else {
     const { name, aggregateIds, args } = qr
@@ -184,7 +187,8 @@ export const query = (
         args,
         origin: determineOrigin(context.origin),
       },
-      requestOptions
+      requestOptions,
+      viewModelDeserializer
     )
   }
 

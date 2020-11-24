@@ -1,14 +1,11 @@
-import getEventTypes from '../event-types'
+import { COUNTER_INCREASED, COUNTER_DECREASED } from '../event-types'
 
-export default (options) => {
-  const { COUNTER_INCREASED, COUNTER_DECREASED } = getEventTypes(options)
-  return {
-    Init: () => 0,
-    [COUNTER_INCREASED]: (state) => {
-      return state + 1
-    },
-    [COUNTER_DECREASED]: (state) => {
-      return state - 1
-    },
-  }
+export default {
+  Init: () => 0,
+  [COUNTER_INCREASED]: (state) => {
+    return state + 1
+  },
+  [COUNTER_DECREASED]: (state) => {
+    return state - 1
+  },
 }

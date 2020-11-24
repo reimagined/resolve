@@ -4,33 +4,54 @@ import {
   useReduxViewModel,
   useReduxCommand,
   useReduxViewModelSelector,
-  useReduxReadModel,
-  useReduxReadModelSelector,
 } from 'resolve-redux'
 
-export default () => {
-  const { request } = useReduxReadModel(
+const NamedSelectors = () => {
+  const userId = uuid()
+
+  const { connect, dispose } = useReduxViewModel(
     {
-      name: 'users',
-      resolver: 'all',
+      name: 'cumulative-likes',
+      aggregateIds: [userId],
       args: {},
     },
-    [],
     {
       selectorId: 'cumulative-likes-named-selector',
-    },
+    }
   )
 
+  const { execute: register } = useReduxCommand({
+    type: 'register',
+    aggregateName: 'user',
+    aggregateId: userId,
+    payload: {
+      name: 'John Smith',
+    },
+  })
+
+  const { execute: like } = useReduxCommand({
+    type: 'like',
+    aggregateName: 'user',
+    aggregateId: userId,
+    payload: {},
+  })
+
   const {
-    data: users,
-  } = useReduxReadModelSelector('cumulative-likes-named-selector')
+    data: { likes },
+  } = useReduxViewModelSelector('cumulative-likes-named-selector')
+
+  useEffect(() => {
+    connect()
+    return dispose
+  })
 
   return (
     <div>
-      <button onClick={request}>Get users</button>
-      <div>
-        {users.map(user => (<div>user.name</div>))}
-      </div>
+      <button onClick={register}>Register</button>
+      <button onClick={like}>Like</button>
+      <div id="likeCounter">{likes}</div>
     </div>
   )
 }
+
+export { NamedSelectors }

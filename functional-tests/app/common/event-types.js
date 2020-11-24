@@ -1,26 +1,9 @@
-const defaultEventTypes = {
-  USER_REGISTERED: 'USER_REGISTERED',
-  USER_LIKED: 'USER_LIKED',
-
-  COUNTER_INCREASED: 'COUNTER_INCREASED',
-  COUNTER_DECREASED: 'COUNTER_DECREASED',
-}
-
-const getEventTypes = (options) => {
-  let version = ''
-  try {
-    const maybeVersion = options.VERSION
-    if (maybeVersion.constructor === String) {
-      version = maybeVersion
-    }
-  } catch (e) {}
-
-  const result = {}
-  for (const key of Object.keys(defaultEventTypes)) {
-    result[key] = `${defaultEventTypes[key]}${version}`
-  }
-
-  return result
-}
-
-export default getEventTypes
+export const USER_REGISTERED = 'USER_REGISTERED'
+export const USER_LIKED = 'USER_LIKED'
+export const COUNTER_INCREASED = 'COUNTER_INCREASED'
+export const COUNTER_DECREASED = 'COUNTER_DECREASED'
+export const TEST_SCENARIO_EXECUTED = 'TEST_SCENARIO_EXECUTED'
+export const TEST_SCENARIO_RETRY_ON_ERROR_UNBLOCKED =
+  'TEST_SCENARIO_RETRY_ON_ERROR_UNBLOCKED'
+export const TEST_SCENARIO_RETRY_ON_ERROR_COMPLETED =
+  'TEST_SCENARIO_RETRY_ON_ERROR_COMPLETED'

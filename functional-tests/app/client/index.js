@@ -1,10 +1,15 @@
 import React from 'react'
 import { render } from 'react-dom'
+import { ResolveProvider } from 'resolve-react-hooks'
+import { Router } from 'react-router'
+import { createBrowserHistory } from 'history'
+import Routes from './hooks/components/Routes'
+import routes from './hooks/routes'
 
-import App from './primary/containers/App'
-import { ResolveContext } from 'resolve-react-hooks'
 
 const entryPoint = (resolveContext) => {
+  const history = createBrowserHistory({ basename: resolveContext.rootPath })
+
   const appContainer = document.createElement('div')
   document.body.appendChild(appContainer)
 
@@ -17,9 +22,11 @@ const entryPoint = (resolveContext) => {
   } catch (e) {}
 
   render(
-    <ResolveContext.Provider value={resolveContext}>
-      <App staticPath={resolveContext.staticPath} version={version} />
-    </ResolveContext.Provider>,
+    <ResolveProvider context={resolveContext}>
+      <Router history={history}>
+        <Routes routes={routes} version={version} />
+      </Router>
+    </ResolveProvider>,
     appContainer
   )
 }

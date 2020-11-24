@@ -13,4 +13,4 @@ const App = ({ children }) => (
   </div>
 )
 
-export default App
+export { App }
