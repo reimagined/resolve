@@ -3,12 +3,13 @@ const deleteProperty = async (pool, readModelName, key) => {
     PassthroughError,
     inlineLedgerRunQuery,
     tablePrefix,
+    fullJitter,
     escapeId,
     escape,
   } = pool
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
 
-  while (true) {
+  for (let retry = 0; ; retry++) {
     try {
       await inlineLedgerRunQuery(
         `UPDATE ${ledgerTableNameAsId}
@@ -26,6 +27,8 @@ const deleteProperty = async (pool, readModelName, key) => {
       if (!(error instanceof PassthroughError)) {
         throw error
       }
+
+      await fullJitter(retry)
     }
   }
 }

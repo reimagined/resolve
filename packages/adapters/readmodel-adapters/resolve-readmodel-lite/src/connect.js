@@ -7,7 +7,10 @@ const SQLITE_BUSY = 'SQLITE_BUSY'
 
 const randRange = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min
-const fullJitter = (retries) => randRange(0, Math.min(100, 2 * 2 ** retries))
+const fullJitter = (min, retries) =>
+  new Promise((resolve) =>
+    setTimeout(resolve, randRange(0, Math.min(min, 2 * 2 ** retries)))
+  )
 
 const commonRunQuery = async (
   pool,
@@ -34,7 +37,7 @@ const commonRunQuery = async (
       )
       const isSqliteBusy = error != null && error.code === SQLITE_BUSY
       if (!isInlineLedger && isSqliteBusy) {
-        await new Promise((resolve) => setTimeout(resolve, fullJitter(retry)))
+        await fullJitter(100, retry)
       } else if (isInlineLedger && isPassthroughError) {
         const isRuntime = !PassthroughError.isPassthroughError(error, false)
         throw new PassthroughError(isRuntime)
@@ -71,6 +74,7 @@ const connect = async (imports, pool, options) => {
   let {
     tablePrefix,
     databaseFile,
+    preferEventBusLedger,
     performanceTracer,
     ...connectionOptions
   } = options
@@ -80,6 +84,7 @@ const connect = async (imports, pool, options) => {
   Object.assign(pool, {
     inlineLedgerRunQuery: commonRunQuery.bind(null, pool, true),
     runQuery: commonRunQuery.bind(null, pool, false),
+    fullJitter: fullJitter.bind(null, 500),
     connectionOptions,
     performanceTracer,
     tablePrefix,
@@ -133,21 +138,21 @@ const connect = async (imports, pool, options) => {
       break
     } catch (error) {
       if (error != null && error.code === SQLITE_BUSY) {
-        await new Promise((resolve) => setTimeout(resolve, fullJitter(retry)))
+        await fullJitter(100, retry)
       } else {
         throw error
       }
     }
   }
 
-  await pool.runQuery(`PRAGMA busy_timeout=0`)
-  await pool.runQuery(`PRAGMA encoding=${escape('UTF-8')}`)
-  await pool.runQuery(`PRAGMA synchronous=EXTRA`)
+  await pool.runQuery(`PRAGMA busy_timeout=0`, true)
+  await pool.runQuery(`PRAGMA encoding=${escape('UTF-8')}`, true)
+  await pool.runQuery(`PRAGMA synchronous=EXTRA`, true)
 
   if (databaseFile === ':memory:') {
-    await pool.runQuery(`PRAGMA journal_mode=MEMORY`)
+    await pool.runQuery(`PRAGMA journal_mode=MEMORY`, true)
   } else {
-    await pool.runQuery(`PRAGMA journal_mode=DELETE`)
+    await pool.runQuery(`PRAGMA journal_mode=DELETE`, true)
   }
 }
 

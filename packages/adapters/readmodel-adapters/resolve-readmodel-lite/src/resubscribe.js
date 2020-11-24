@@ -4,6 +4,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     inlineLedgerRunQuery,
     dropReadModel,
     tablePrefix,
+    fullJitter,
     escapeId,
     escape,
   } = pool
@@ -37,7 +38,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     } catch (e) {}
   }
 
-  while (true) {
+  for (let retry = 0; ; retry++) {
     try {
       await inlineLedgerRunQuery(
         `
@@ -57,16 +58,26 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
       )
 
       break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+    } catch (error) {
+      if (!(error instanceof PassthroughError)) {
+        throw error
       }
+
+      try {
+        await inlineLedgerRunQuery(`ROLLBACK`, true)
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
+      }
+
+      await fullJitter(retry)
     }
   }
 
   await dropReadModel(pool, readModelName)
 
-  while (true) {
+  for (let retry = 0; ; retry++) {
     try {
       await inlineLedgerRunQuery(
         `
@@ -114,10 +125,20 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         true
       )
       break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+    } catch (error) {
+      if (!(error instanceof PassthroughError)) {
+        throw error
       }
+
+      try {
+        await inlineLedgerRunQuery(`ROLLBACK`, true)
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
+      }
+
+      await fullJitter(retry)
     }
   }
 }

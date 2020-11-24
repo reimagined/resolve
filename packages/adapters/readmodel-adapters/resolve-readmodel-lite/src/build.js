@@ -15,6 +15,7 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
     PassthroughError,
     inlineLedgerRunQuery,
     eventstoreAdapter,
+    fullJitter,
     escape,
     ledgerTableNameAsId,
     xaKey,
@@ -22,7 +23,7 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
 
   const nextCursor = await eventstoreAdapter.getNextCursor(null, [])
   try {
-    while (true) {
+    for (let retry = 0; ; retry++) {
       try {
         await inlineLedgerRunQuery(
           `BEGIN EXCLUSIVE;
@@ -58,6 +59,8 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
             throw err
           }
         }
+
+        await fullJitter(retry)
       }
     }
 
@@ -107,6 +110,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
     getEncryption,
     inlineLedgerRunQuery,
     eventstoreAdapter,
+    fullJitter,
     escape,
     ledgerTableNameAsId,
     eventTypes,
@@ -132,7 +136,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
   }
   const seizeTimestamp = Date.now()
 
-  while (true) {
+  for (let retry = 0; ; retry++) {
     try {
       await inlineLedgerRunQuery(
         `BEGIN EXCLUSIVE;
@@ -168,6 +172,8 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
           throw err
         }
       }
+
+      await fullJitter(retry)
     }
   }
 
@@ -305,6 +311,7 @@ const build = async (
     generateGuid,
     attendedReadModels,
     connectionUri,
+    fullJitter,
     tablePrefix,
     escapeId,
     escape,
@@ -323,7 +330,7 @@ const build = async (
     const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
     const xaKey = generateGuid(`${Date.now()}${Math.random()}${process.pid}`)
 
-    while (true) {
+    for (let retry = 0; ; retry++) {
       let isReadSuccess = false
       try {
         await inlineLedgerRunQuery(
@@ -348,9 +355,20 @@ const build = async (
         if (!(error instanceof PassthroughError)) {
           throw error
         }
+
         if (!isReadSuccess && !eagerSeizeMode) {
           throw new PassthroughError()
         }
+
+        try {
+          await inlineLedgerRunQuery(`ROLLBACK`, true)
+        } catch (err) {
+          if (!(err instanceof PassthroughError)) {
+            throw err
+          }
+        }
+
+        await fullJitter(retry)
       }
     }
 
@@ -415,6 +433,7 @@ const build = async (
       ledgerTableNameAsId,
       readModelLedger,
       eventTypes,
+      fullJitter,
       cursor,
       xaKey,
     })

@@ -3,12 +3,13 @@ const setProperty = async (pool, readModelName, key, value) => {
     PassthroughError,
     inlineLedgerRunQuery,
     tablePrefix,
+    fullJitter,
     escapeId,
     escape,
   } = pool
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
 
-  while (true) {
+  for (let retry = 0; ; retry++) {
     try {
       await inlineLedgerRunQuery(
         `UPDATE ${ledgerTableNameAsId}
@@ -28,6 +29,8 @@ const setProperty = async (pool, readModelName, key, value) => {
       if (!(error instanceof PassthroughError)) {
         throw error
       }
+
+      await fullJitter(retry)
     }
   }
 }

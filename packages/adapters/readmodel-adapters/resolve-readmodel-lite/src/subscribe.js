@@ -3,6 +3,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     PassthroughError,
     inlineLedgerRunQuery,
     tablePrefix,
+    fullJitter,
     escapeId,
     escape,
   } = pool
@@ -36,7 +37,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     } catch (e) {}
   }
 
-  while (true) {
+  for (let retry = 0; ; retry++) {
     try {
       await inlineLedgerRunQuery(
         `BEGIN EXCLUSIVE;
@@ -83,10 +84,20 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         true
       )
       break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+    } catch (error) {
+      if (!(error instanceof PassthroughError)) {
+        throw error
       }
+
+      try {
+        await inlineLedgerRunQuery(`ROLLBACK`, true)
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
+      }
+
+      await fullJitter(retry)
     }
   }
 }

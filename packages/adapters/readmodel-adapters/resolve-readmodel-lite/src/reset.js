@@ -4,13 +4,14 @@ const reset = async (pool, readModelName) => {
     inlineLedgerRunQuery,
     dropReadModel,
     tablePrefix,
+    fullJitter,
     escapeId,
     escape,
   } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
 
-  while (true) {
+  for (let retry = 0; ; retry++) {
     try {
       await inlineLedgerRunQuery(
         `BEGIN EXCLUSIVE;
@@ -29,16 +30,26 @@ const reset = async (pool, readModelName) => {
       )
 
       break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+    } catch (error) {
+      if (!(error instanceof PassthroughError)) {
+        throw error
       }
+
+      try {
+        await inlineLedgerRunQuery(`ROLLBACK`, true)
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
+      }
+
+      await fullJitter(retry)
     }
   }
 
   await dropReadModel(pool, readModelName)
 
-  while (true) {
+  for (let retry = 0; ; retry++) {
     try {
       await inlineLedgerRunQuery(
         `BEGIN EXCLUSIVE;
@@ -53,10 +64,20 @@ const reset = async (pool, readModelName) => {
       )
 
       break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+    } catch (error) {
+      if (!(error instanceof PassthroughError)) {
+        throw error
       }
+
+      try {
+        await inlineLedgerRunQuery(`ROLLBACK`, true)
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
+      }
+
+      await fullJitter(retry)
     }
   }
 }

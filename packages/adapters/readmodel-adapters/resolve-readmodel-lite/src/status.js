@@ -3,13 +3,14 @@ const status = async (pool, readModelName) => {
     PassthroughError,
     inlineLedgerRunQuery,
     tablePrefix,
+    fullJitter,
     escapeId,
     escape,
   } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
 
-  while (true) {
+  for (let retry = 0; ; retry++) {
     try {
       const rows = await inlineLedgerRunQuery(
         `SELECT * FROM ${ledgerTableNameAsId}
@@ -50,6 +51,8 @@ const status = async (pool, readModelName) => {
       if (!(err instanceof PassthroughError)) {
         throw err
       }
+
+      await fullJitter(retry)
     }
   }
 }

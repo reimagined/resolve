@@ -3,13 +3,14 @@ const getProperty = async (pool, readModelName, key) => {
     PassthroughError,
     inlineLedgerRunQuery,
     tablePrefix,
+    fullJitter,
     escapeId,
     escape,
   } = pool
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
   let rows = []
 
-  while (true) {
+  for (let retry = 0; ; retry++) {
     try {
       rows = await inlineLedgerRunQuery(
         `SELECT json_extract("Properties", ${escape(
@@ -27,6 +28,8 @@ const getProperty = async (pool, readModelName, key) => {
       if (!(error instanceof PassthroughError)) {
         throw error
       }
+
+      await fullJitter(retry)
     }
   }
 
