@@ -10,7 +10,6 @@
   "sagas": [],
   "apiHandlers": [],
   "readModelConnectors": {},
-  "schedulers": {},
   "eventBroker": {
     "launchBroker": true,
     "publisherAddress": "http://127.0.0.1:3500",

@@ -1,7 +1,7 @@
 jest.useFakeTimers()
 
 /* eslint-disable import/first */
-import { mocked } from 'ts-jest'
+import { mocked } from 'ts-jest/utils'
 
 import { SubscriptionAdapterStatus } from '../../src/types'
 import * as subscribe from '../../src/subscribe'

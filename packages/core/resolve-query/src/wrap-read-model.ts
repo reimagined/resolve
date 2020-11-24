@@ -1,12 +1,11 @@
 import { EOL } from 'os'
 // TODO: core cannot reference "top-level" packages, move these to resolve-core
 import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
+import { SecretsManager } from 'resolve-core'
+
 import getLog from './get-log'
 import { WrapReadModelOptions, SerializedError, ReadModelPool } from './types'
 import parseReadOptions from './parse-read-options'
-import { SecretsManager } from 'resolve-core'
-
-const RESERVED_TIME = 30 * 1000
 
 const wrapConnection = async (
   pool: ReadModelPool,
@@ -159,7 +158,7 @@ const sendEvents = async (
     batchId: any
   }
 ): Promise<any> => {
-  const { performAcknowledge, getRemainingTimeInMillis } = pool
+  const { performAcknowledge, getVacantTimeInMillis } = pool
   const readModelName = pool.readModel.name
   let result = null
 
@@ -219,6 +218,13 @@ const sendEvents = async (
         log.error(error.message)
         log.verbose(error.stack)
         lastFailedEvent = event
+
+        try {
+          await pool.onError(error, 'read-model-projection')
+        } catch (e) {
+          log.verbose('onError function call failed')
+          log.verbose(e.stack)
+        }
 
         throw error
       }
@@ -281,7 +287,7 @@ const sendEvents = async (
 
           await onBeforeBatch(connection, readModelName, xaTransactionId)
           for (const event of events) {
-            const remainingTime = getRemainingTimeInMillis() - RESERVED_TIME
+            const remainingTime = getVacantTimeInMillis()
             const {
               onBeforeEvent,
               onSuccessEvent,
@@ -431,6 +437,11 @@ const read = async (
         `Resolver "${resolverName}" does not exist`
       ) as any
       error.code = 422
+
+      try {
+        await pool.onError(error, 'read-model-resolver')
+      } catch (e) {}
+
       throw error
     }
 
@@ -466,6 +477,10 @@ const read = async (
           if (subSegment != null) {
             subSegment.addError(error)
           }
+          try {
+            await pool.onError(error, 'read-model-resolver')
+          } catch (e) {}
+
           throw error
         } finally {
           if (subSegment != null) {
@@ -478,6 +493,11 @@ const read = async (
     if (subSegment != null) {
       subSegment.addError(error)
     }
+
+    try {
+      await pool.onError(error, 'read-model-resolver')
+    } catch (e) {}
+
     throw error
   } finally {
     if (subSegment != null) {
@@ -545,6 +565,23 @@ const next = async (
   await pool.invokeEventBusAsync(eventListener, 'build')
 }
 
+const provideLedger = async (
+  pool: any,
+  readModelName: string,
+  inlineLedger: any
+) => {
+  try {
+    if (typeof pool.readModel.setProperties === 'function') {
+      await pool.readModel.provideLedger(inlineLedger)
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `Provide inline ledger for event listener ${readModelName} failed: ${error}`
+    )
+  }
+}
+
 const build = doOperation.bind(
   null,
   'build',
@@ -559,7 +596,8 @@ const build = doOperation.bind(
     connection,
     pool.readModel.projection,
     next.bind(null, pool, readModelName),
-    pool.getRemainingTimeInMillis,
+    pool.getVacantTimeInMillis,
+    provideLedger.bind(null, pool, readModelName),
   ]
 )
 
@@ -728,8 +766,9 @@ const wrapReadModel = ({
   eventstoreAdapter,
   invokeEventBusAsync,
   performanceTracer,
-  getRemainingTimeInMillis,
+  getVacantTimeInMillis,
   performAcknowledge,
+  onError = async () => void 0,
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
   const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
@@ -751,8 +790,9 @@ const wrapReadModel = ({
     isDisposed: false,
     performanceTracer,
     getSecretsManager,
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     performAcknowledge,
+    onError,
   }
 
   const api = {

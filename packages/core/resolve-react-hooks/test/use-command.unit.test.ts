@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks'
 import { mocked } from 'ts-jest/utils'
-import { Command, CommandCallback } from 'resolve-client'
+import { Command, CommandCallback, CommandOptions } from 'resolve-client'
 import { useClient } from '../src/use-client'
 import { useCommand } from '../src/use-command'
 
@@ -26,6 +26,9 @@ const basicCommand = (): Command => ({
   payload: {
     name: 'username',
   },
+})
+const basicOptions = (): CommandOptions => ({
+  middleware: {},
 })
 
 const buildCommand = jest.fn(
@@ -143,7 +146,7 @@ describe('async mode', () => {
 
   test('command and options', async () => {
     const command = basicCommand()
-    const options = { option: 'option' }
+    const options = { middleware: {} }
 
     const {
       result: { current: execute },
@@ -163,7 +166,7 @@ describe('async mode', () => {
     const dependency = 'dependency'
 
     const hookData = renderHook(
-      (props) => useCommand(command, { option: 'option' }, props.dependencies),
+      (props) => useCommand(command, basicOptions(), props.dependencies),
       {
         initialProps: {
           dependencies: [dependency],
@@ -183,7 +186,7 @@ describe('async mode', () => {
     const dependency = 'dependency'
 
     const hookData = renderHook(
-      (props) => useCommand(command, { option: 'option' }, props.dependencies),
+      (props) => useCommand(command, basicOptions(), props.dependencies),
       {
         initialProps: {
           dependencies: [dependency],
@@ -287,7 +290,7 @@ describe('callback mode', () => {
 
   test('command, options and callback', () => {
     const command = basicCommand()
-    const options = { option: 'option' }
+    const options = basicOptions()
 
     const {
       result: { current: execute },
@@ -308,7 +311,7 @@ describe('callback mode', () => {
 
     const hookData = renderHook(
       (props) =>
-        useCommand(command, { option: 'option' }, callback, props.dependencies),
+        useCommand(command, basicOptions(), callback, props.dependencies),
       {
         initialProps: {
           dependencies: [dependency],
@@ -329,7 +332,7 @@ describe('callback mode', () => {
 
     const hookData = renderHook(
       (props) =>
-        useCommand(command, { option: 'option' }, callback, props.dependencies),
+        useCommand(command, basicOptions(), callback, props.dependencies),
       {
         initialProps: {
           dependencies: [dependency],
@@ -411,7 +414,7 @@ describe('builder: async mode', () => {
   })
 
   test('builder and options', async () => {
-    const options = { option: 'option' }
+    const options = basicOptions()
 
     const {
       result: { current: execute },
@@ -431,8 +434,7 @@ describe('builder: async mode', () => {
     const dependency = 'dependency'
 
     const hookData = renderHook(
-      (props) =>
-        useCommand(buildCommand, { option: 'option' }, props.dependencies),
+      (props) => useCommand(buildCommand, basicOptions(), props.dependencies),
       {
         initialProps: {
           dependencies: [dependency],
@@ -451,8 +453,7 @@ describe('builder: async mode', () => {
     const dependency = 'dependency'
 
     const hookData = renderHook(
-      (props) =>
-        useCommand(buildCommand, { option: 'option' }, props.dependencies),
+      (props) => useCommand(buildCommand, basicOptions(), props.dependencies),
       {
         initialProps: {
           dependencies: [dependency],
@@ -540,7 +541,7 @@ describe('builder: callback mode', () => {
   })
 
   test('builder and options', () => {
-    const options = { option: 'option' }
+    const options = basicOptions()
 
     const {
       result: { current: execute },
@@ -561,12 +562,7 @@ describe('builder: callback mode', () => {
 
     const hookData = renderHook(
       (props) =>
-        useCommand(
-          buildCommand,
-          { option: 'option' },
-          callback,
-          props.dependencies
-        ),
+        useCommand(buildCommand, basicOptions(), callback, props.dependencies),
       {
         initialProps: {
           dependencies: [dependency],
@@ -586,12 +582,7 @@ describe('builder: callback mode', () => {
 
     const hookData = renderHook(
       (props) =>
-        useCommand(
-          buildCommand,
-          { option: 'option' },
-          callback,
-          props.dependencies
-        ),
+        useCommand(buildCommand, basicOptions(), callback, props.dependencies),
       {
         initialProps: {
           dependencies: [dependency],

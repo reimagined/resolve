@@ -23,15 +23,6 @@ const testFunctionalConfig = {
       secretsFile: 'data/secrets-test-functional.db',
     },
   },
-  schedulers: {
-    scheduler: {
-      adapter: {
-        module: 'resolve-scheduler-local',
-        options: {},
-      },
-      connectorName: 'default',
-    },
-  },
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000,
