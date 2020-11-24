@@ -1928,7 +1928,7 @@ The `middleware` request option specifies middleware to run on server response a
 
 #### Implement Custom Middleware
 
-You can define a custom middleware as follows:
+You can define custom middleware as follows:
 
 ```js
 const myMiddleware = async (
