@@ -7,9 +7,9 @@ const SQLITE_BUSY = 'SQLITE_BUSY'
 
 const randRange = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min
-const fullJitter = (min, retries) =>
+const fullJitter = (retries) =>
   new Promise((resolve) =>
-    setTimeout(resolve, randRange(0, Math.min(min, 2 * 2 ** retries)))
+    setTimeout(resolve, randRange(0, Math.min(500, 2 * 2 ** retries)))
   )
 
 const commonRunQuery = async (
@@ -37,7 +37,7 @@ const commonRunQuery = async (
       )
       const isSqliteBusy = error != null && error.code === SQLITE_BUSY
       if (!isInlineLedger && isSqliteBusy) {
-        await fullJitter(100, retry)
+        await fullJitter(retry)
       } else if (isInlineLedger && isPassthroughError) {
         const isRuntime = !PassthroughError.isPassthroughError(error, false)
         throw new PassthroughError(isRuntime)
@@ -84,7 +84,7 @@ const connect = async (imports, pool, options) => {
   Object.assign(pool, {
     inlineLedgerRunQuery: commonRunQuery.bind(null, pool, true),
     runQuery: commonRunQuery.bind(null, pool, false),
-    fullJitter: fullJitter.bind(null, 500),
+    fullJitter,
     connectionOptions,
     performanceTracer,
     tablePrefix,
@@ -138,21 +138,53 @@ const connect = async (imports, pool, options) => {
       break
     } catch (error) {
       if (error != null && error.code === SQLITE_BUSY) {
-        await fullJitter(100, retry)
+        await fullJitter(retry)
       } else {
         throw error
       }
     }
   }
 
-  await pool.runQuery(`PRAGMA busy_timeout=0`, true)
-  await pool.runQuery(`PRAGMA encoding=${escape('UTF-8')}`, true)
-  await pool.runQuery(`PRAGMA synchronous=EXTRA`, true)
+  await pool.connection.configure('busyTimeout', 0)
 
-  if (databaseFile === ':memory:') {
-    await pool.runQuery(`PRAGMA journal_mode=MEMORY`, true)
+  const configureSql = `
+    PRAGMA busy_timeout=0;
+    PRAGMA encoding=${escape('UTF-8')};
+    PRAGMA synchronous=EXTRA;
+    ${
+      databaseFile === ':memory:'
+        ? `PRAGMA journal_mode=MEMORY`
+        : `PRAGMA journal_mode=DELETE`
+    };
+  `
+
+  if (!preferEventBusLedger) {
+    for (let retry = 0; ; retry++) {
+      try {
+        await pool.inlineLedgerRunQuery(`
+          BEGIN EXCLUSIVE;
+          ${configureSql}
+          COMMIT;
+        `, true)
+        break
+      } catch (error) {
+        if (!(error instanceof pool.PassthroughError)) {
+          throw error
+        }
+
+        try {
+          await pool.inlineLedgerRunQuery(`ROLLBACK`, true)
+        } catch (err) {
+          if (!(err instanceof pool.PassthroughError)) {
+            throw err
+          }
+        }
+
+        await fullJitter(retry)
+      }
+    }
   } else {
-    await pool.runQuery(`PRAGMA journal_mode=DELETE`, true)
+    await pool.runQuery(configureSql, true)
   }
 }
 
