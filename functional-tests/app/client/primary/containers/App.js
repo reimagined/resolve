@@ -27,11 +27,7 @@ const App = ({ version, children }) => {
       <h6 align="left">
         {version != null && version.length > 0 ? `Version ${version}` : ``}
       </h6>
-<<<<<<< HEAD:functional-tests/app/client/primary/containers/App.js
-      <Counter version={version} />
-=======
       {children}
->>>>>>> dev:functional-tests/app/client/hooks/components/App.js
     </div>
   )
 }
