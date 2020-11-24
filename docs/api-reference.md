@@ -1733,9 +1733,70 @@ var commandApiPath = resolver('/api/commands')
 
 ### Request Middleware
 
-The resolve-client and resolve-react-hooks libraries allow you to use request middleware to extend the client's functionality. A middleware implements intermediate logic that can tweak the response object or handle errors before they are passed to the callback function.
+The [resolve-client](#resolve-client-library) and [resolve-react-hooks](#resolve-react-hooks-library) libraries allow you to use request middleware to extend the client's functionality. A middleware implements intermediate logic that can tweak the response object or handle errors before they are passed to the callback function.
 
-If multiple middlewares are used, they are chained together in the order that they are specified in the request options object.
+Middleware is specified within the `middleware` option for command, query or a corresponding hook in the resolve-react-hooks library.
+
+#### resolve-client:
+
+```js
+client.query({
+  name: "MyReadModel",
+  resolver: "all"
+}, {
+  middleware: {
+    response: [
+      // An array of middleware that runs on server response
+      createMyResponseMiddleware({
+        // Middleware options
+      }),
+      ...
+    },
+    error: {
+      // An array of middleware that runs on server error
+      createMyErrorMiddleware({
+        // Middleware options
+      }),
+      ...
+    ]
+  },
+  (error, result) => {
+    ...
+  }
+})
+```
+
+#### resolve-react-hooks:
+
+```js
+const myQuery = useQuery(
+  {
+    name: 'MyReadModel',
+    resolver: 'all'
+  },
+  {
+  middleware: {
+    response: [
+      // An array of middleware that runs on server response
+      createMyResponseMiddleware({
+        // Middleware options
+      }),
+      ...
+    },
+    error: {
+      // An array of middleware that runs on server error
+      createMyErrorMiddleware({
+        // Middleware options
+      }),
+      ...
+    ]
+  },
+  (error, result) => {
+    ...
+  }
+```
+
+If multiple middlewares are used, they are chained together in the order that they are specified in the options object.
 
 #### Available Middlewares
 
@@ -1754,16 +1815,20 @@ Deserializes the response data if it contains valid JSON. If the data is not JSO
 This middleware takes no options. You can add it to a request as shown below:
 
 ```js
-const { data } = await client.query({
-  name: 'articles',
-  resolver: 'all'
-}, {
-  middleware: {
-    response: {
-      createParseResponseMiddleware()
+import { createParseResponseMiddleware } from 'resolve-client'
+...
+
+const { data } = await client.query(
+  {
+    name: 'articles',
+    resolver: 'all'
+  },
+  {
+    middleware: {
+      response: [createParseResponseMiddleware()]
     }
   }
-})
+)
 ```
 
 ##### retryOnError
@@ -1782,6 +1847,9 @@ The `retryOnError` middleware takes the following options:
 You can add the `retryOnError` middleware to a request as shown below:
 
 ```js
+import { createRetryOnErrorMiddleware } from 'resolve-client'
+...
+
 client.command(
   {
     aggregateName: 'Chat',
@@ -1823,16 +1891,21 @@ Validates the response and retries if the validation fails. This can be useful w
 You can add the `retryOnError` middleware to a request as shown below:
 
 ```js
-const { data } = await client.query({
-  name: 'users',
-  resolver: 'userById',
-  args: {
-    id: userId
-  }
-}, {
-  middleware: {
-    response: {
-      createWaitForResponseMiddleware({
+import { createWaitForResponseMiddleware } from 'resolve-client'
+...
+
+const { data } = await client.query(
+  {
+    name: 'users',
+    resolver: 'userById',
+    args: {
+      id: userId
+    }
+  },
+  {
+    middleware: {
+      response: [
+        createWaitForResponseMiddleware({
           attempts: 3,
           debug: true,
           period: 1,
@@ -1843,14 +1916,13 @@ const { data } = await client.query({
                 confirm(result)
               }
             }
-          },
-      })
+          }
+        })
+      ]
     }
   }
-})
+)
 ```
-
----
 
 The `middleware` request option specifies middleware to run on server response and on error.
 
