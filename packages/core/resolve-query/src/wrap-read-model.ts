@@ -582,6 +582,19 @@ const provideLedger = async (
   }
 }
 
+const getEncryption = async (pool: any, event: any) => {
+  return {
+    ...(typeof pool.readModel.encryption === 'function'
+      ? await pool.readModel.encryption(event, {
+          secretsManager:
+            typeof pool.getSecretsManager === 'function'
+              ? await pool.getSecretsManager()
+              : null,
+        })
+      : null),
+  }
+}
+
 const build = doOperation.bind(
   null,
   'build',
@@ -598,6 +611,7 @@ const build = doOperation.bind(
     next.bind(null, pool, readModelName),
     pool.getVacantTimeInMillis,
     provideLedger.bind(null, pool, readModelName),
+    getEncryption.bind(null, pool),
   ]
 )
 
