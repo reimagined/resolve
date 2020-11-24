@@ -466,6 +466,7 @@ module.exports = {
           'upvote',
           'upvoted',
           'uploader',
+          'unhandled',
           'uri',
           'url',
           'urlencoded',

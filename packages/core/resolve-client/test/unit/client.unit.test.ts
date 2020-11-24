@@ -181,6 +181,34 @@ describe('command', () => {
       }
     )
   })
+
+  test('bug fix: #1629', async () => {
+    const error = new Error('Request error')
+    mRequest.mockRejectedValueOnce(error)
+
+    let callbackError: any = null
+
+    await new Promise((resolve) =>
+      client.command(
+        {
+          aggregateName: 'user',
+          aggregateId: 'user-id',
+          type: 'create',
+          payload: {
+            name: 'user-name',
+          },
+        },
+        (error) => {
+          if (error != null) {
+            callbackError = error
+          }
+          resolve()
+        }
+      )
+    )
+
+    expect(callbackError).toBe(error)
+  })
 })
 
 describe('query', () => {
