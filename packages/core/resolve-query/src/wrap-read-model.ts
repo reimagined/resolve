@@ -582,16 +582,18 @@ const provideLedger = async (
   }
 }
 
-const getEncryption = async (pool: any, event: any) => {
-  return {
-    ...(typeof pool.readModel.encryption === 'function'
-      ? await pool.readModel.encryption(event, {
-          secretsManager:
-            typeof pool.getSecretsManager === 'function'
-              ? await pool.getSecretsManager()
-              : null,
-        })
-      : null),
+const getEncryption = async (pool: any) => {
+  const secretsManager =
+    typeof pool.getSecretsManager === 'function'
+      ? await pool.getSecretsManager()
+      : null
+  return async (event: any) => {
+    const encryption =
+      typeof pool.readModel.encryption === 'function'
+        ? await pool.readModel.encryption(event, { secretsManager })
+        : null
+
+    return { ...encryption }
   }
 }
 

@@ -12,25 +12,15 @@ const listProperties = async (pool, readModelName) => {
 
   for (let retry = 0; ; retry++) {
     try {
-      await inlineLedgerRunQuery(`BEGIN EXCLUSIVE;`, true)
       rows = await inlineLedgerRunQuery(
         `SELECT "Properties" FROM  ${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escape(readModelName)}
         `
       )
-      await inlineLedgerRunQuery(`COMMIT;`, true)
       break
     } catch (error) {
       if (!(error instanceof PassthroughError)) {
         throw error
-      }
-
-      try {
-        await inlineLedgerRunQuery(`ROLLBACK`, true)
-      } catch (err) {
-        if (!(err instanceof PassthroughError)) {
-          throw err
-        }
       }
 
       await fullJitter(retry)

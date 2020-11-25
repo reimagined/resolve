@@ -161,23 +161,11 @@ const connect = async (imports, pool, options) => {
   if (!preferEventBusLedger) {
     for (let retry = 0; ; retry++) {
       try {
-        await pool.inlineLedgerRunQuery(`
-          BEGIN EXCLUSIVE;
-          ${configureSql}
-          COMMIT;
-        `, true)
+        await pool.inlineLedgerRunQuery(configureSql, true)
         break
       } catch (error) {
         if (!(error instanceof pool.PassthroughError)) {
           throw error
-        }
-
-        try {
-          await pool.inlineLedgerRunQuery(`ROLLBACK`, true)
-        } catch (err) {
-          if (!(err instanceof pool.PassthroughError)) {
-            throw err
-          }
         }
 
         await fullJitter(retry)

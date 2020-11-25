@@ -135,6 +135,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
     throw new PassthroughError()
   }
   const seizeTimestamp = Date.now()
+  const executeEncryption = await getEncryption()
 
   for (let retry = 0; ; retry++) {
     try {
@@ -184,7 +185,11 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
       try {
         if (typeof projection[event.type] === 'function') {
           await inlineLedgerRunQuery(`SAVEPOINT E${appliedEventsCount}`, true)
-          await projection[event.type](store, event, await getEncryption(event))
+          await projection[event.type](
+            store,
+            event,
+            await executeEncryption(event)
+          )
           await inlineLedgerRunQuery(
             `RELEASE SAVEPOINT E${appliedEventsCount}`,
             true

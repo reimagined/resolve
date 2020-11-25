@@ -12,7 +12,6 @@ const getProperty = async (pool, readModelName, key) => {
 
   for (let retry = 0; ; retry++) {
     try {
-      await inlineLedgerRunQuery(`BEGIN EXCLUSIVE;`, true)
       rows = await inlineLedgerRunQuery(
         `SELECT json_extract("Properties", ${escape(
           `$.${key
@@ -24,19 +23,10 @@ const getProperty = async (pool, readModelName, key) => {
          WHERE "EventSubscriber" = ${escape(readModelName)}
         `
       )
-      await inlineLedgerRunQuery(`COMMIT;`, true)
       break
     } catch (error) {
       if (!(error instanceof PassthroughError)) {
         throw error
-      }
-
-      try {
-        await inlineLedgerRunQuery(`ROLLBACK`, true)
-      } catch (err) {
-        if (!(err instanceof PassthroughError)) {
-          throw err
-        }
       }
 
       await fullJitter(retry)
