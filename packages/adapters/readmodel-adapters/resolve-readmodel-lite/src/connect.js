@@ -159,7 +159,7 @@ const connect = async (imports, pool, options) => {
   `
 
   if (!preferEventBusLedger) {
-    for (let retry = 0; ; retry++) {
+    while (true) {
       try {
         await pool.inlineLedgerRunQuery(configureSql, true)
         break
@@ -168,7 +168,7 @@ const connect = async (imports, pool, options) => {
           throw error
         }
 
-        await fullJitter(retry)
+        await fullJitter(0)
       }
     }
   } else {

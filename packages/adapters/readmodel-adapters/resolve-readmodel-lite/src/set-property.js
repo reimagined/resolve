@@ -9,10 +9,10 @@ const setProperty = async (pool, readModelName, key, value) => {
   } = pool
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
 
-  for (let retry = 0; ; retry++) {
+  while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN EXCLUSIVE;
+        `BEGIN IMMEDIATE;
         
         UPDATE ${ledgerTableNameAsId}
          SET "Properties" = json_patch("Properties", JSON(${escape(
@@ -43,7 +43,7 @@ const setProperty = async (pool, readModelName, key, value) => {
         }
       }
 
-      await fullJitter(retry)
+      await fullJitter(0)
     }
   }
 }

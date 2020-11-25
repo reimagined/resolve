@@ -38,7 +38,6 @@ import resume from './resume'
 import status from './status'
 import build from './build'
 
-const attendedReadModels = new Map()
 const memoryStore = {}
 const store = {
   defineTable,
@@ -83,7 +82,6 @@ const connect = _connect.bind(null, {
   tmp,
   os,
   fs,
-  attendedReadModels,
   memoryStore,
   ...internalMethods,
   ...externalMethods,

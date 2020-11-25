@@ -13,7 +13,7 @@ const unsubscribe = async (pool, readModelName) => {
 
   try {
     await inlineLedgerRunQuery(
-      `BEGIN EXCLUSIVE;
+      `BEGIN IMMEDIATE;
       CREATE TABLE IF NOT EXISTS ${ledgerTableNameAsId}(
         "EventSubscriber" VARCHAR(190) NOT NULL,
         "IsPaused" TINYINT NOT NULL,
@@ -38,10 +38,10 @@ const unsubscribe = async (pool, readModelName) => {
     } catch (e) {}
   }
 
-  for (let retry = 0; ; retry++) {
+  while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN EXCLUSIVE;
+        `BEGIN IMMEDIATE;
 
         UPDATE ${ledgerTableNameAsId}
         SET "Cursor" = NULL,
@@ -70,16 +70,16 @@ const unsubscribe = async (pool, readModelName) => {
         }
       }
 
-      await fullJitter(retry)
+      await fullJitter(0)
     }
   }
 
   await dropReadModel(pool, readModelName)
 
-  for (let retry = 0; ; retry++) {
+  while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN EXCLUSIVE;
+        `BEGIN IMMEDIATE;
 
          DELETE FROM ${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escape(readModelName)};
@@ -102,7 +102,7 @@ const unsubscribe = async (pool, readModelName) => {
         }
       }
 
-      await fullJitter(retry)
+      await fullJitter(0)
     }
   }
 }

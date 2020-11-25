@@ -22,11 +22,10 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
   } = pool
 
   const nextCursor = await eventstoreAdapter.getNextCursor(null, [])
-  try {
-    for (let retry = 0; ; retry++) {
-      try {
-        await inlineLedgerRunQuery(
-          `BEGIN EXCLUSIVE;
+  for (let retry = 0; ; retry++) {
+    try {
+      await inlineLedgerRunQuery(
+        `BEGIN IMMEDIATE;
           SAVEPOINT ROOT;
 
           SELECT ABS("CTE"."XaKeyIsSeized") FROM (
@@ -43,63 +42,76 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
             ) = 0
           ) CTE;
           `,
-          true,
-          true
-        )
-        break
-      } catch (error) {
-        if (!(error instanceof PassthroughError) || error.isRuntimeError) {
-          throw error
-        }
-
-        try {
-          await inlineLedgerRunQuery(`ROLLBACK`, true)
-        } catch (err) {
-          if (!(err instanceof PassthroughError)) {
-            throw err
-          }
-        }
-
-        await fullJitter(retry)
+        true,
+        true
+      )
+      break
+    } catch (error) {
+      if (!(error instanceof PassthroughError) || error.isRuntimeError) {
+        throw error
       }
-    }
 
+      try {
+        await inlineLedgerRunQuery(`ROLLBACK`, true)
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
+      }
+
+      await fullJitter(retry)
+    }
+  }
+
+  let lastError = null
+  try {
     if (typeof projection.Init === 'function') {
       await projection.Init(store)
     }
-
-    await inlineLedgerRunQuery(
-      `UPDATE ${ledgerTableNameAsId}
-       SET "SuccessEvent" = ${escape(JSON.stringify({ type: 'Init' }))},
-       "Cursor" = ${escape(JSON.stringify(nextCursor))}
-       WHERE "EventSubscriber" = ${escape(readModelName)};
-
-       COMMIT;
-      `,
-      true
-    )
-
-    await next()
   } catch (error) {
-    if (error instanceof PassthroughError) {
-      throw error
-    }
+    lastError = error
+  }
 
+  if (lastError == null) {
     await inlineLedgerRunQuery(
       `UPDATE ${ledgerTableNameAsId}
-       SET "Errors" = JSON_insert(
-         COALESCE("Errors", JSON('[]')),
-         '$[' || JSON_ARRAY_LENGTH(COALESCE("Errors", JSON('[]'))) || ']',
-         JSON(${escape(JSON.stringify(serializeError(error)))})
-       ),
-       "FailedEvent" = ${escape(JSON.stringify({ type: 'Init' }))},
-       "Cursor" = ${escape(JSON.stringify(nextCursor))}
-       WHERE "EventSubscriber" = ${escape(readModelName)};
-
-       COMMIT;
-      `,
+        SET "SuccessEvent" = ${escape(JSON.stringify({ type: 'Init' }))},
+        "Cursor" = ${escape(JSON.stringify(nextCursor))}
+        WHERE "EventSubscriber" = ${escape(readModelName)};
+        `,
       true
     )
+  } else {
+    await inlineLedgerRunQuery(
+      `UPDATE ${ledgerTableNameAsId}
+        SET "Errors" = JSON_insert(
+          COALESCE("Errors", JSON('[]')),
+          '$[' || JSON_ARRAY_LENGTH(COALESCE("Errors", JSON('[]'))) || ']',
+          JSON(${escape(JSON.stringify(serializeError(lastError)))})
+        ),
+        "FailedEvent" = ${escape(JSON.stringify({ type: 'Init' }))},
+        "Cursor" = ${escape(JSON.stringify(nextCursor))}
+        WHERE "EventSubscriber" = ${escape(readModelName)};
+        `,
+      true
+    )
+  }
+
+  while (true) {
+    try {
+      await inlineLedgerRunQuery(`COMMIT;`, true)
+      break
+    } catch (error) {
+      if (!(error instanceof PassthroughError)) {
+        throw error
+      }
+
+      await fullJitter(0)
+    }
+  }
+
+  if (lastError == null) {
+    await next()
   }
 }
 
@@ -140,7 +152,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
   for (let retry = 0; ; retry++) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN EXCLUSIVE;
+        `BEGIN IMMEDIATE;
         SAVEPOINT ROOT;
 
         SELECT ABS("CTE"."XaKeyIsSeized") FROM (
@@ -262,8 +274,6 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
         } 
         "Cursor" = ${escape(JSON.stringify(nextCursor))}
         WHERE "EventSubscriber" = ${escape(readModelName)};
-
-        COMMIT;
       `,
       true
     )
@@ -287,11 +297,22 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
         }
         "Cursor" = ${escape(JSON.stringify(nextCursor))}
         WHERE "EventSubscriber" = ${escape(readModelName)};
-
-        COMMIT;
       `,
       true
     )
+  }
+
+  while (true) {
+    try {
+      await inlineLedgerRunQuery(`COMMIT;`, true)
+      break
+    } catch (error) {
+      if (!(error instanceof PassthroughError)) {
+        throw error
+      }
+
+      await fullJitter(0)
+    }
   }
 
   const isBuildSuccess = lastError == null && appliedEventsCount > 0
@@ -314,8 +335,6 @@ const build = async (
     PassthroughError,
     inlineLedgerRunQuery,
     generateGuid,
-    attendedReadModels,
-    connectionUri,
     fullJitter,
     tablePrefix,
     escapeId,
@@ -323,30 +342,14 @@ const build = async (
   } = basePool
   const pool = Object.create(basePool)
 
-  const eagerSeizeMode =
-    (!attendedReadModels.has(connectionUri)
-      ? attendedReadModels.set(connectionUri, new Set())
-      : attendedReadModels
-    )
-      .get(connectionUri)
-      .add(readModelName).size > 1
-
   try {
     const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
     const xaKey = generateGuid(`${Date.now()}${Math.random()}${process.pid}`)
 
     for (let retry = 0; ; retry++) {
-      let isReadSuccess = false
       try {
         await inlineLedgerRunQuery(
-          `SELECT 0 AS "Defunct" FROM ${ledgerTableNameAsId}
-          WHERE "EventSubscriber" = ${escape(readModelName)}
-          `
-        )
-        isReadSuccess = true
-
-        await inlineLedgerRunQuery(
-          `BEGIN EXCLUSIVE;
+          `BEGIN IMMEDIATE;
            UPDATE ${ledgerTableNameAsId}
            SET "XaKey" = ${escape(xaKey)}
            WHERE "EventSubscriber" = ${escape(readModelName)}
@@ -359,10 +362,6 @@ const build = async (
       } catch (error) {
         if (!(error instanceof PassthroughError)) {
           throw error
-        }
-
-        if (!isReadSuccess && !eagerSeizeMode) {
-          throw new PassthroughError()
         }
 
         try {
@@ -385,7 +384,18 @@ const build = async (
       `
     )
 
-    await inlineLedgerRunQuery(`COMMIT; `, true)
+    while(true) {
+      try {
+        await inlineLedgerRunQuery(`COMMIT; `, true)
+        break
+      } catch(error) {
+        if (!(error instanceof PassthroughError)) {
+          throw error
+        }
+
+        await fullJitter(0)
+      }
+    }
 
     const readModelLedger =
       rows.length === 1

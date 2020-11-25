@@ -12,7 +12,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
 
   try {
     await inlineLedgerRunQuery(
-      `BEGIN EXCLUSIVE;
+      `BEGIN IMMEDIATE;
       CREATE TABLE IF NOT EXISTS ${ledgerTableNameAsId}(
         "EventSubscriber" VARCHAR(190) NOT NULL,
         "IsPaused" TINYINT NOT NULL,
@@ -37,10 +37,10 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     } catch (e) {}
   }
 
-  for (let retry = 0; ; retry++) {
+  while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN EXCLUSIVE;
+        `BEGIN IMMEDIATE;
 
          INSERT OR REPLACE INTO ${ledgerTableNameAsId}(
           "EventSubscriber", "EventTypes", "AggregateIds", "IsPaused", "Properties",
@@ -97,7 +97,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         }
       }
 
-      await fullJitter(retry)
+      await fullJitter(0)
     }
   }
 }

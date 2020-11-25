@@ -10,10 +10,10 @@ const resume = async (pool, readModelName, next) => {
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
 
-  for (let retry = 0; ; retry++) {
+  while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN EXCLUSIVE;
+        `BEGIN IMMEDIATE;
         
          UPDATE ${ledgerTableNameAsId}
          SET "IsPaused" = 0
@@ -37,7 +37,7 @@ const resume = async (pool, readModelName, next) => {
         }
       }
 
-      await fullJitter(retry)
+      await fullJitter(0)
     }
   }
 

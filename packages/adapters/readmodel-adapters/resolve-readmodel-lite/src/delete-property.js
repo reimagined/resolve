@@ -9,10 +9,10 @@ const deleteProperty = async (pool, readModelName, key) => {
   } = pool
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
 
-  for (let retry = 0; ; retry++) {
+  while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN EXCLUSIVE;
+        `BEGIN IMMEDIATE;
 
         UPDATE ${ledgerTableNameAsId}
          SET "Properties" = JSON_REMOVE("Properties", ${escape(
@@ -41,7 +41,7 @@ const deleteProperty = async (pool, readModelName, key) => {
         }
       }
 
-      await fullJitter(retry)
+      await fullJitter(0)
     }
   }
 }

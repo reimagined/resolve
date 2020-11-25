@@ -11,10 +11,10 @@ const reset = async (pool, readModelName) => {
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
 
-  for (let retry = 0; ; retry++) {
+  while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN EXCLUSIVE;
+        `BEGIN IMMEDIATE;
 
         UPDATE ${ledgerTableNameAsId}
         SET "Cursor" = NULL,
@@ -43,16 +43,16 @@ const reset = async (pool, readModelName) => {
         }
       }
 
-      await fullJitter(retry)
+      await fullJitter(0)
     }
   }
 
   await dropReadModel(pool, readModelName)
 
-  for (let retry = 0; ; retry++) {
+  while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN EXCLUSIVE;
+        `BEGIN IMMEDIATE;
         
          UPDATE ${ledgerTableNameAsId}
          SET "IsPaused" = 0
@@ -77,7 +77,7 @@ const reset = async (pool, readModelName) => {
         }
       }
 
-      await fullJitter(retry)
+      await fullJitter(0)
     }
   }
 }
