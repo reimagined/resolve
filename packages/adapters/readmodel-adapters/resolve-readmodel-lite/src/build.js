@@ -384,11 +384,11 @@ const build = async (
       `
     )
 
-    while(true) {
+    while (true) {
       try {
         await inlineLedgerRunQuery(`COMMIT; `, true)
         break
-      } catch(error) {
+      } catch (error) {
         if (!(error instanceof PassthroughError)) {
           throw error
         }
