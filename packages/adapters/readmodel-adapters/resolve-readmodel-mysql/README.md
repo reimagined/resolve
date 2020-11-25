@@ -7,6 +7,7 @@ The adapter provides a query API for projection and resolvers. This API is simil
 ## Available Parameters
 
 * `...connectionSettings` - see [Connection Settings](https://www.npmjs.com/package/mysql2#first-query) for more information.
+* `preferEventBusLedger` - store ledger in event bus instead read-model database itself.
 
 Adapter interface is provided by **resolve-readmodel-base** package.
 

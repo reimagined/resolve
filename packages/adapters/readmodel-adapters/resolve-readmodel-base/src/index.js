@@ -1,5 +1,5 @@
 const createAdapter = (implementation, options) => {
-  const { eventstoreAdapter, performanceTracer, preferInlineLedger } = options
+  const { eventstoreAdapter, performanceTracer, preferEventBusLedger } = options
 
   const {
     connect,
@@ -139,7 +139,7 @@ const createAdapter = (implementation, options) => {
   }
 
   const adapterOperations = {}
-  if (preferInlineLedger) {
+  if (!preferEventBusLedger) {
     Object.assign(adapterOperations, {
       subscribe,
       unsubscribe,

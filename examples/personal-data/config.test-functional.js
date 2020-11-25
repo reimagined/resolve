@@ -28,7 +28,6 @@ const testFunctionalConfig = {
     },
   },
   uploadAdapter: {
-    module: 'resolve-upload-local',
     options: {
       directory: 'data',
       bucket: 'files',

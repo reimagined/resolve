@@ -51,11 +51,11 @@ const connect = async (imports, pool, options) => {
   let {
     tablePrefix,
     performanceTracer,
-    preferInlineLedger,
+    preferEventBusLedger,
     eventstoreAdapter,
     ...connectionOptions
   } = options
-  void (preferInlineLedger, eventstoreAdapter)
+  void (preferEventBusLedger, eventstoreAdapter)
 
   if (
     tablePrefix == null ||
