@@ -21,10 +21,27 @@ Aggregate state is explicitly passed to all of these functions as an argument.
 
 ## Aggregate ID
 
-Each aggregate should have a unique ID that is immutable during the aggregate's lifetime. An Aggregate ID should stay unique in the given event store, however we also recommend to keep it
-globally unique. We recommend that you use [UUID v4](https://github.com/kelektiv/node-uuid#version-4) or [cuid](https://github.com/ericelliott/cuid) to generate aggregate IDs for scalable apps.
+Each aggregate instance should have a unique immutable ID. You should generate an aggregate ID on the client and send it to reSolve with a command that creates a new aggregate:
 
-Note that you have to generate a new Aggregate ID and send it with a command that creates a new aggregate.
+```js
+import { useCommand } from 'resolve-react-hooks'
+...
+const createShoppingListCommand = useCommand(
+  {
+    type: 'createShoppingList',
+    aggregateId: uuid(),
+    aggregateName: 'ShoppingList',
+    payload: {
+      name: shoppingListName
+    },
+  },
+  (err, result) => {
+    ...
+  }
+)
+```
+
+An Aggregate ID should stay unique in the given event store across all aggregates. We also recommend to keep it globally unique. You can use [UUID v4](https://github.com/kelektiv/node-uuid#version-4) or [cuid](https://github.com/ericelliott/cuid) to generate aggregate IDs for scalable applications.
 
 ## Configuring Aggregates
 
@@ -54,7 +71,7 @@ You can emit aggregate commands in the following cases:
 
 ### Sending Commands From the Client
 
-The reSolve framework exposes an [HTTP API](api-reference.md#commands-http-api) that you can use to to send commands from the client side. Your application's frontend can use this API directly or through the **Redux** binding mechanism from the **[resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux)** library.
+The reSolve framework exposes an [HTTP API](api-reference.md#commands-http-api) that you can use to to send commands from the client side. Your application's frontend can use this API directly or through one of the available [client libraries](frontend.md).
 
 You can send a command from the client side as a POST request to the following URL:
 
