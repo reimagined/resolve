@@ -4,6 +4,7 @@ const reset = async (pool, readModelName) => {
     inlineLedgerRunQuery,
     dropReadModel,
     tablePrefix,
+    fullJitter,
     escapeId,
     escape,
   } = pool
@@ -13,7 +14,7 @@ const reset = async (pool, readModelName) => {
   while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN EXCLUSIVE;
+        `BEGIN IMMEDIATE;
 
         UPDATE ${ledgerTableNameAsId}
         SET "Cursor" = NULL,
@@ -29,10 +30,20 @@ const reset = async (pool, readModelName) => {
       )
 
       break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+    } catch (error) {
+      if (!(error instanceof PassthroughError)) {
+        throw error
       }
+
+      try {
+        await inlineLedgerRunQuery(`ROLLBACK`, true)
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
+      }
+
+      await fullJitter(0)
     }
   }
 
@@ -41,7 +52,7 @@ const reset = async (pool, readModelName) => {
   while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN EXCLUSIVE;
+        `BEGIN IMMEDIATE;
         
          UPDATE ${ledgerTableNameAsId}
          SET "IsPaused" = 0
@@ -53,10 +64,20 @@ const reset = async (pool, readModelName) => {
       )
 
       break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+    } catch (error) {
+      if (!(error instanceof PassthroughError)) {
+        throw error
       }
+
+      try {
+        await inlineLedgerRunQuery(`ROLLBACK`, true)
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
+      }
+
+      await fullJitter(0)
     }
   }
 }

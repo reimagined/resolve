@@ -9,7 +9,7 @@ const entryPoint = (clientContext) => {
   render(
     <ResolveProvider context={clientContext}>
       <Layout>
-        <App {...clientContext.localS3Constants} />
+        <App CDNUrl={clientContext.cdnUrl} />
       </Layout>
     </ResolveProvider>,
     document.getElementById('app-container')

@@ -1,24 +1,28 @@
 const status = async (pool, readModelName) => {
   const {
     PassthroughError,
+    fullJitter,
     inlineLedgerRunQuery,
     tablePrefix,
     escapeId,
     escape,
   } = pool
-
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
 
-  while (true) {
+  for (let retry = 0; ; retry++) {
     try {
       const rows = await inlineLedgerRunQuery(
         `SELECT * FROM ${ledgerTableNameAsId}
-     WHERE "EventSubscriber" = ${escape(readModelName)}
-    `
+         WHERE "EventSubscriber" = ${escape(readModelName)}
+        `
       )
 
       if (rows.length === 1) {
         const result = {
+          eventSubscriber: readModelName,
+          properties:
+            rows[0].Properties != null ? JSON.parse(rows[0].Properties) : null,
+          deliveryStrategy: 'inline-ledger',
           successEvent:
             rows[0].SuccessEvent != null
               ? JSON.parse(rows[0].SuccessEvent)
@@ -42,10 +46,12 @@ const status = async (pool, readModelName) => {
       } else {
         return null
       }
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+    } catch (error) {
+      if (!(error instanceof PassthroughError)) {
+        throw error
       }
+
+      await fullJitter(retry)
     }
   }
 }
