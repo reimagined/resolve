@@ -7,11 +7,13 @@ class Likes extends React.PureComponent {
   render() {
     const { isLoading, data, salt } = this.props
 
+    const id = `likes${salt}`
+
     if (isLoading !== false) {
       return <h3>{`loading${salt}`}</h3>
     }
 
-    return <h3>{`likes${salt}:${data.likes}`}</h3>
+    return <h3 id={id}>{data.likes}</h3>
   }
 }
 
@@ -58,9 +60,9 @@ class Wrapper extends React.Component {
         <Button onClick={this.register}>Register</Button>
         <Button onClick={this.like}>Like</Button>
         <Button onClick={this.unmount}>Unmount</Button>
-        <ConnectedLikesA userId={userId} salt="#1" />
+        <ConnectedLikesA userId={userId} salt="-1" />
         {this.state.mounted ? (
-          <ConnectedLikesB userId={userId} salt="#2" />
+          <ConnectedLikesB userId={userId} salt="-2" />
         ) : null}
       </div>
     )
