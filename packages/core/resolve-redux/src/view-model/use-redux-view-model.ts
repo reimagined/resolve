@@ -10,7 +10,7 @@ import { ReduxState, ResultStatus, ViewModelReactiveEvent } from '../types'
 import { isOptions } from '../helpers'
 import { useDispatch } from 'react-redux'
 import { useViewModel } from 'resolve-react-hooks'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { getEntry } from './view-model-reducer'
 
 type HookData = {
@@ -95,6 +95,14 @@ export function useReduxViewModel(
     actualOptions.queryOptions || defaultQueryOptions
   )
 
+  const initialStateDispatched = useRef(false)
+  if (!initialStateDispatched.current) {
+    if (typeof stateUpdate === 'function') {
+      dispatch(stateUpdate(query, initialState, true, selectorId))
+    }
+    initialStateDispatched.current = true
+  }
+
   return useMemo(
     () => ({
       connect,
@@ -104,10 +112,6 @@ export function useReduxViewModel(
           state.viewModels,
           selectorId || {
             query,
-          },
-          {
-            status: ResultStatus.Initial,
-            data: initialState,
           }
         ),
     }),

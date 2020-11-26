@@ -2,8 +2,10 @@ import React, { useEffect, useMemo } from 'react'
 import { v4 as uuid } from 'uuid'
 import {
   useReduxViewModel,
+  useReduxReadModel,
   useReduxCommand,
   useReduxViewModelSelector,
+  useReduxReadModelSelector,
 } from 'resolve-redux'
 
 const NamedSelectors = () => {
@@ -18,6 +20,21 @@ const NamedSelectors = () => {
     },
     { selectorId }
   )
+
+  const { request } = useReduxReadModel({
+    name: 'users',
+    resolver: 'profile',
+    args: {
+      userId
+    }
+  }, {
+    userId,
+    profile: {
+      name: 'unknown user'
+    }
+  }, {
+    selectorId: 'user-selector'
+  })
 
   useEffect(() => {
     connect()
@@ -40,19 +57,24 @@ const NamedSelectors = () => {
     payload: {},
   })
 
-  const selectorResult = useReduxViewModelSelector(selectorId)
-  if (selectorResult == null) {
-    return null
-  }
   const {
     data: { likes },
-  } = selectorResult
+  } = useReduxViewModelSelector(selectorId)
+
+  const {
+    data: {
+      profile: userPrfile
+    }
+  } = useReduxReadModelSelector('user-selector')
+
 
   return (
     <div>
       <button onClick={register}>Register</button>
       <button onClick={like}>Like</button>
+      <button onClick={request}>Profile</button>
       <div id="likeCounter">{likes}</div>
+      <div id="userName">{userPrfile.name}</div>
     </div>
   )
 }

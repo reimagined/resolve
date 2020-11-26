@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { AnyAction } from 'redux'
 import { useDispatch } from 'react-redux'
 import { firstOfType } from 'resolve-core'
@@ -10,6 +10,7 @@ import {
 } from 'resolve-client'
 import { useQueryBuilder, QueryBuilder } from 'resolve-react-hooks'
 import {
+  initReadModel,
   queryReadModelFailure,
   QueryReadModelFailureAction,
   queryReadModelRequest,
@@ -160,16 +161,26 @@ function useReduxReadModel<TArgs extends any[], TQuery extends ReadModelQuery>(
   const dispatch = useDispatch()
   const executor = actualDependencies
     ? useQueryBuilder(
-        (query: TQuery) => query,
-        actualOptions.queryOptions || defaultQueryOptions,
-        callback,
-        actualDependencies
-      )
+      (query: TQuery) => query,
+      actualOptions.queryOptions || defaultQueryOptions,
+      callback,
+      actualDependencies
+    )
     : useQueryBuilder(
-        (query: TQuery) => query,
-        actualOptions.queryOptions || defaultQueryOptions,
-        callback
-      )
+      (query: TQuery) => query,
+      actualOptions.queryOptions || defaultQueryOptions,
+      callback
+    )
+
+  const initialStateDispatched = useRef(false)
+  if (!initialStateDispatched.current) {
+    if (selectorId) {
+      dispatch(initReadModel(initialState, undefined, selectorId))
+    } else if (!isBuilder(query)) {
+      dispatch(initReadModel(initialState, query, undefined))
+    }
+    initialStateDispatched.current = true
+  }
 
   return useMemo(
     () => ({
@@ -189,15 +200,11 @@ function useReduxReadModel<TArgs extends any[], TQuery extends ReadModelQuery>(
         getEntry(
           state.readModels,
           selectorId ||
-            (!isBuilder(query)
-              ? {
-                  query,
-                }
-              : badSelectorDrain),
-          {
-            status: ResultStatus.Initial,
-            data: initialState,
-          }
+          (!isBuilder(query)
+            ? {
+              query,
+            }
+            : badSelectorDrain)
         ),
     }),
     [executor, dispatch]
