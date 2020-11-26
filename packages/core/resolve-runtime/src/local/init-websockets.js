@@ -2,7 +2,7 @@ import debugLevels from 'resolve-debug-levels'
 import EventEmitter from 'events'
 import http from 'http'
 import WebSocket from 'ws'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 import qs from 'querystring'
 import jwt from 'jsonwebtoken'
 
@@ -62,8 +62,8 @@ const createWebSocketMessageHandler = (
     switch (parsedMessage.type) {
       case 'pullEvents': {
         const { events, cursor } = await eventstoreAdapter.loadEvents({
-          eventTypes: eventTypes === '*' ? null : eventTypes,
-          aggregateIds: aggregateIds === '*' ? null : aggregateIds,
+          eventTypes,
+          aggregateIds,
           limit: 1000000,
           eventsSizeLimit: 124 * 1024,
           cursor: parsedMessage.cursor,

@@ -18,7 +18,6 @@ const appConfig = {
       name: 'ProcessKiller',
       source: 'saga.js',
       connectorName: 'default',
-      schedulerName: 'scheduler',
     },
   ],
 }
@@ -32,23 +31,12 @@ const devConfig = {
       databaseFile: ':memory:',
     },
   },
-
-  // mdis-start schedulers-config
-  schedulers: {
-    scheduler: {
-      adapter: {
-        module: 'resolve-scheduler-local',
-        options: {},
-      },
-      connectorName: 'default',
-    },
-  },
-  // mdis-stop schedulers-config
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
         databaseFile: ':memory:',
+        preferEventBusLedger: true,
       },
     },
     /*

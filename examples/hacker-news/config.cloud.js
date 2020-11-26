@@ -16,15 +16,6 @@ export default {
       snapshotBucketSize: 100,
     },
   },
-  schedulers: {
-    scheduler: {
-      adapter: {
-        module: 'resolve-scheduler-cloud',
-        options: {},
-      },
-      connectorName: 'default',
-    },
-  },
   readModelConnectors: {
     default: {
       module: 'resolve-readmodel-postgresql-serverless',

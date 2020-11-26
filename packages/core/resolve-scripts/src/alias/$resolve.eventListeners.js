@@ -1,9 +1,8 @@
 export default () => `
   import '$resolve.guardOnlyServer'
-  import { schedulerEventTypes } from 'resolve-saga'
+  import { schedulerEventTypes, schedulerInvariantHash, getSchedulersNamesBySagas } from 'resolve-saga'
   import readModels from '$resolve.readModels'
   import sagas from '$resolve.sagas'
-  import schedulers from '$resolve.schedulers'
 
   const eventListeners = new Map()
 
@@ -26,13 +25,13 @@ export default () => `
       isSaga: true
     })
   }
-  
-  for (const { name, invariantHash, connectorName } of schedulers) {
-    eventListeners.set(name, {
-      name,
-      eventTypes: Object.values(schedulerEventTypes({ schedulerName: name })),
-      invariantHash,
-      connectorName,
+
+  for(const schedulerName of getSchedulersNamesBySagas(sagas)) {
+    eventListeners.set(\`\${schedulerName}\`, {
+      name: \`\${schedulerName}\`,
+      eventTypes: Object.values(schedulerEventTypes),
+      invariantHash: schedulerInvariantHash,
+      connectorName: schedulerName.connectorName,
       isSaga: true
     })
   }

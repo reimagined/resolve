@@ -29,17 +29,7 @@ const cloudConfig = {
       },
     },
   },
-  schedulers: {
-    scheduler: {
-      adapter: {
-        module: 'resolve-scheduler-cloud',
-        options: {},
-      },
-      connectorName: 'default',
-    },
-  },
   uploadAdapter: {
-    module: 'resolve-upload-cloud',
     options: {
       encryptedDeploymentId: declareRuntimeEnv(
         'RESOLVE_ENCRYPTED_DEPLOYMENT_ID'

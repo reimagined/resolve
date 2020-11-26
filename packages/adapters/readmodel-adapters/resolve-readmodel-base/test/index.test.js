@@ -54,7 +54,9 @@ describe('resolve-readmodel-base', () => {
         dropReadModel,
         ...storeApi,
       },
-      {}
+      {
+        preferEventBusLedger: true,
+      }
     )
   })
 

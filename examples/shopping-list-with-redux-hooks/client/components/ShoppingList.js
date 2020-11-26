@@ -1,21 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { ResultStatus, useReduxCommand, useReduxViewModel } from 'resolve-redux'
 import { Redirect } from 'react-router-dom'
-
-import {
-  Row,
-  Col,
-  ListGroup,
-  Button,
-  InputGroup,
-  FormControl,
-  FormGroup,
-  FormLabel,
-} from 'react-bootstrap'
+import { Row, Col, ListGroup, Button, InputGroup, Form } from 'react-bootstrap'
 
 import ShoppingListItem from './ShoppingListItem'
 import NotFound from '../components/NotFound'
-import { useSelector } from 'react-redux'
 
 const ShoppingList = ({
   match: {
@@ -108,13 +98,13 @@ const ShoppingList = ({
 
   return (
     <div className="example-wrapper">
-      <FormLabel>Shopping list name</FormLabel>
-      <FormGroup bssize="large">
-        <InputGroup>
-          <Button bssize="large" variant="danger" onClick={removeShoppingList}>
+      <Form.Label>Shopping list name</Form.Label>
+      <Form.Group>
+        <InputGroup size="lg">
+          <Button size="lg" variant="danger" onClick={removeShoppingList}>
             <i className="far fa-trash-alt" />
           </Button>
-          <FormControl
+          <Form.Control
             type="text"
             value={
               shoppingListName == null ? shoppingList.name : shoppingListName
@@ -124,7 +114,7 @@ const ShoppingList = ({
             onBlur={renameShoppingList}
           />
         </InputGroup>
-      </FormGroup>
+      </Form.Group>
       <ListGroup className="example-list">
         {shoppingList.list.map((item, idx) => (
           <ShoppingListItem
@@ -134,10 +124,10 @@ const ShoppingList = ({
           />
         ))}
       </ListGroup>
-      <FormLabel>Item name</FormLabel>
+      <Form.Label>Item name</Form.Label>
       <Row>
         <Col md={8}>
-          <FormControl
+          <Form.Control
             className="example-form-control"
             type="text"
             value={itemText}

@@ -17,7 +17,7 @@ type ReadModelConnectorOptions = {
   resolverName: string
   resolverArgs: any
 }
-type ReadModelConnectorOptionsMapper = (
+export type ReadModelConnectorOptionsMapper = (
   state: ReduxState,
   ownProps: any
 ) => ReadModelConnectorOptions

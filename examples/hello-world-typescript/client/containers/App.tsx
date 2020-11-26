@@ -1,42 +1,62 @@
-import * as React from 'react'
+import React from 'react'
 import { Helmet } from 'react-helmet'
-import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap'
+import { Navbar, Image, Nav } from 'react-bootstrap'
+import { useStaticResolver } from 'resolve-react-hooks'
 
-const App = ({ staticPath }): any => (
-  <div>
-    <Helmet>
-      <title>reSolve Hello World TypeScript</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <link rel="stylesheet" href={`${staticPath}/bootstrap.min.css`} />
-      <link rel="icon" href={`${staticPath}/favicon.ico`} />
-    </Helmet>
+const App = () => {
+  const staticResolver = useStaticResolver()
 
-    <Navbar color="light" light expand="md">
-      <NavbarBrand className="mr-auto" href="/">
-        <img src={`${staticPath}/resolve-logo.png`} alt="resolve-logo" />
-        Hello World TypeScript
-      </NavbarBrand>
+  const stylesheetLink = {
+    rel: 'stylesheet',
+    type: 'text/css',
+    href: staticResolver('/bootstrap.min.css'),
+  }
+  const faviconLink = {
+    rel: 'icon',
+    type: 'image/png',
+    href: staticResolver('/favicon.ico'),
+  }
+  const links = [stylesheetLink, faviconLink]
+  const meta = {
+    name: 'viewport',
+    content: 'width=device-width, initial-scale=1',
+  }
 
-      <Nav navbar>
-        <NavItem>
-          <NavLink href="https://facebook.com/resolvejs/">
-            <img src={`${staticPath}/fb-logo.png`} alt="fb-logo" />
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink href="https://twitter.com/resolvejs">
-            <img src={`${staticPath}/twitter-logo.png`} alt="twitter-logo" />
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink href="https://github.com/reimagined/resolve">
-            <img src={`${staticPath}/github-logo.png`} alt="github-logo" />
-          </NavLink>
-        </NavItem>
-      </Nav>
-    </Navbar>
-    <h1 style={{ textAlign: 'center' }}>Hello, reSolve world!</h1>
-  </div>
-)
+  return (
+    <div>
+      <Helmet title="reSolve Hello World" link={links} meta={[meta]} />
+      <Navbar>
+        <Navbar.Brand href="#home">
+          <Image
+            src={staticResolver('/resolve-logo.png')}
+            className="d-inline-block align-top"
+          />{' '}
+          Hello World Example
+        </Navbar.Brand>
+
+        <Nav className="ml-auto">
+          <Navbar.Text className="navbar-right">
+            <Nav.Link href="https://facebook.com/resolvejs/">
+              <Image src={staticResolver('/fb-logo.png')} />
+            </Nav.Link>
+          </Navbar.Text>
+
+          <Navbar.Text className="navbar-right">
+            <Nav.Link href="https://twitter.com/resolvejs">
+              <Image src={staticResolver('/twitter-logo.png')} />
+            </Nav.Link>
+          </Navbar.Text>
+
+          <Navbar.Text className="navbar-right">
+            <Nav.Link href="https://github.com/reimagined/resolve">
+              <Image src={staticResolver('/github-logo.png')} />
+            </Nav.Link>
+          </Navbar.Text>
+        </Nav>
+      </Navbar>
+      <h1 className="text-center">Hello, reSolve world!</h1>
+    </div>
+  )
+}
 
 export default App

@@ -6,10 +6,10 @@ const handleSchedulerEvent = async ({ entry }, resolve) => {
   log.debug(`dispatching lambda event to all available schedulers`)
   if (
     resolve != null &&
-    resolve.executeSaga != null &&
-    typeof resolve.executeSaga.runScheduler === 'function'
+    resolve.scheduler != null &&
+    typeof resolve.scheduler.executeEntries === 'function'
   ) {
-    return resolve.executeSaga.runScheduler(entry)
+    return resolve.scheduler.executeEntries(entry)
   }
 
   log.warn(`no resolve.executeSaga.runScheduler property defined`)

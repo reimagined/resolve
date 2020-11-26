@@ -4,9 +4,8 @@ import {
   combineReducers,
   compose,
 } from 'redux'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 
-import { create as createJwtReducer } from './internal/jwt-reducer'
 import { reducer as viewModelReducer } from './view-model/view-model-reducer'
 import { reducer as readModelReducer } from './read-model/read-model-reducer'
 import createResolveMiddleware from './create-resolve-middleware'
@@ -28,8 +27,12 @@ const createStore = ({
   initialState = undefined,
   serializedState,
   isClient,
-  queryMethod,
 }: ReduxStoreContext): any => {
+  // eslint-disable-next-line no-console
+  console.warn(
+    'createStore function is deprecated and will be removed in future versions, migrate to createResolveStore'
+  )
+
   const sessionId = uuid()
 
   if (serializedState != null && initialState != null) {
@@ -52,7 +55,7 @@ const createStore = ({
     ...reducers,
     viewModels: viewModelReducer,
     readModels: readModelReducer,
-    jwt: createJwtReducer(), // does it really actual?
+    jwt: (jwt = {}) => jwt,
   })
 
   const appliedMiddlewares = applyMiddleware(resolveMiddleware, ...middlewares)
@@ -65,17 +68,17 @@ const createStore = ({
     composedEnhancers
   ) as any
 
-  resolveMiddleware.run({
+  resolveMiddleware.run(isClient, {
     store,
-    viewModels,
-    origin,
-    rootPath,
-    staticPath,
-    sessionId,
-    jwtProvider,
-    isClient,
+    resolveContext: {
+      viewModels,
+      rootPath,
+      staticPath,
+      origin,
+      jwtProvider,
+    },
     customSagas,
-    queryMethod,
+    sessionId,
   })
 
   return store

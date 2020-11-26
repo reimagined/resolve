@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import jwtSecret from '../common/jwt_secret'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 import md5 from 'md5'
 
 const routeRegisterCallback = async ({ resolve }, login, password) => {

@@ -1,19 +1,15 @@
-import getEventTypes from '../event-types'
+import { USER_REGISTERED, USER_LIKED } from '../event-types'
 
-export default (options) => {
-  const { USER_REGISTERED, USER_LIKED } = getEventTypes(options)
-
-  return {
-    Init: () => ({
-      likes: -999,
-    }),
-    [USER_REGISTERED]: (state) => ({
-      ...state,
-      likes: 0,
-    }),
-    [USER_LIKED]: (state) => ({
-      ...state,
-      likes: state.likes + 1,
-    }),
-  }
+export default {
+  Init: () => ({
+    likes: -999,
+  }),
+  [USER_REGISTERED]: (state) => ({
+    ...state,
+    likes: 0,
+  }),
+  [USER_LIKED]: (state) => ({
+    ...state,
+    likes: state.likes + 1,
+  }),
 }

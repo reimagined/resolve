@@ -10,6 +10,7 @@ describe('resolve-readmodel-postgresql-serverless', () => {
       awsSecretStoreArn: 'awsSecretStoreArn',
       databaseName: 'databaseName',
       tablePrefix: 'tablePrefix',
+      preferEventBusLedger: true,
     })
   })
 

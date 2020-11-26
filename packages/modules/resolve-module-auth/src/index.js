@@ -1,4 +1,4 @@
-import uuidV4 from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 
 const createUserModule = (strategies) => {
   if (!Array.isArray(strategies)) {
@@ -8,7 +8,7 @@ const createUserModule = (strategies) => {
   const apiHandlers = []
   for (const strategyDescriptor of strategies) {
     const { createStrategy, options, routes, logoutRoute } = strategyDescriptor
-    const strategyHash = uuidV4()
+    const strategyHash = uuid()
     if (options != null && options.constructor !== Object) {
       throw new Error(`Vary options should be object if present`)
     }

@@ -20,7 +20,6 @@ const responseHeaders: { [key: string]: string } = {
 
 const createMockResponse = (overrides: object = {}): NarrowedResponse => ({
   ok: true,
-  status: 200,
   headers: {
     get: jest.fn(
       (header: string): string | null =>
@@ -122,7 +121,7 @@ describe('command', () => {
         },
       },
       {
-        option: 'option',
+        middleware: {},
       }
     )
 
@@ -138,7 +137,7 @@ describe('command', () => {
         },
       },
       {
-        option: 'option',
+        middleware: {},
       }
     )
   })
@@ -182,6 +181,34 @@ describe('command', () => {
       }
     )
   })
+
+  test('bug fix: #1629', async () => {
+    const error = new Error('Request error')
+    mRequest.mockRejectedValueOnce(error)
+
+    let callbackError: any = null
+
+    await new Promise((resolve) =>
+      client.command(
+        {
+          aggregateName: 'user',
+          aggregateId: 'user-id',
+          type: 'create',
+          payload: {
+            name: 'user-name',
+          },
+        },
+        (error) => {
+          if (error != null) {
+            callbackError = error
+          }
+          resolve()
+        }
+      )
+    )
+
+    expect(callbackError).toBe(error)
+  })
 })
 
 describe('query', () => {
@@ -224,7 +251,8 @@ describe('query', () => {
       },
       {
         method: 'GET',
-      }
+      },
+      undefined
     )
   })
 
@@ -312,7 +340,8 @@ describe('query', () => {
           period: 1,
           attempts: 1,
         },
-      }
+      },
+      undefined
     )
 
     const validator = mRequest.mock.calls[0][3]?.waitForResponse
@@ -417,7 +446,8 @@ describe('query', () => {
       },
       {
         method: 'POST',
-      }
+      },
+      undefined
     )
   })
 
@@ -440,11 +470,13 @@ describe('query', () => {
       },
       {
         method: 'GET',
-      }
+      },
+      undefined
     )
   })
 
   test('use view model state deserializer', async () => {
+    const deserializer = (data: string) => JSON.parse(data.slice(3))
     client = getClient(
       createMockContext('static-path', [
         {
@@ -452,7 +484,7 @@ describe('query', () => {
           projection: {
             Init: () => null,
           },
-          deserializeState: (data: string) => JSON.parse(data.slice(3)),
+          deserializeState: deserializer,
         },
       ])
     )
@@ -464,6 +496,14 @@ describe('query', () => {
       aggregateIds: ['id'],
       args: {},
     })
+
+    expect(mRequest).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.anything(),
+      expect.anything(),
+      expect.anything(),
+      deserializer
+    )
 
     expect(result).toEqual({
       data: {
@@ -711,5 +751,37 @@ describe('getStaticAssetUrl', () => {
     client = getClient(createMockContext(''))
 
     expect(() => client.getStaticAssetUrl('account/static.jpg')).toThrow()
+  })
+})
+
+describe('getOriginPath', () => {
+  /* eslint-disable no-console */
+  const consoleError = console.error
+  beforeAll(() => {
+    console.error = jest.fn()
+  })
+  afterAll(() => {
+    console.error = consoleError.bind(console)
+  })
+  /* eslint-enable no-console */
+
+  test('path is absolute url', () => {
+    expect(
+      client.getOriginPath('https://static.host.com/api/commands')
+    ).toEqual('https://static.host.com/api/commands')
+  })
+
+  test('root based url', () => {
+    expect(client.getOriginPath('/api/commands')).toEqual(
+      'mock-origin/root-path/api/commands'
+    )
+  })
+
+  test('path should have leading slash', () => {
+    expect(() => client.getOriginPath('api/commands')).toThrow()
+  })
+
+  test('empty path', () => {
+    expect(() => client.getOriginPath('')).toThrow()
   })
 })

@@ -1,4 +1,5 @@
 import debugLevels from 'resolve-debug-levels'
+import { getSchedulersNamesBySagas } from 'resolve-saga'
 
 import bootstrap from '../common/bootstrap'
 import shutdown from '../common/shutdown'
@@ -7,8 +8,11 @@ const log = debugLevels('resolve:resolve-runtime:deploy-service-event-handler')
 
 const getReadModelNames = (resolve) =>
   resolve.readModels.map(({ name }) => name)
+
 const getSagaNames = (resolve) => [
-  ...resolve.schedulers.map(({ name }) => name),
+  ...getSchedulersNamesBySagas(resolve.sagas).map(
+    (schedulerName) => `${schedulerName}`
+  ),
   ...resolve.sagas.map(({ name }) => name),
 ]
 
