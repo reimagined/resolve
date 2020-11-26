@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { v4 as uuid } from 'uuid'
 import {
   useReduxViewModel,
@@ -7,7 +7,8 @@ import {
 } from 'resolve-redux'
 
 const NamedSelectors = () => {
-  const userId = uuid()
+  const userId = useMemo(uuid, [uuid])
+  const selectorId = 'cumulative-likes-named-selector'
 
   const { connect, dispose } = useReduxViewModel(
     {
@@ -15,10 +16,13 @@ const NamedSelectors = () => {
       aggregateIds: [userId],
       args: {},
     },
-    {
-      selectorId: 'cumulative-likes-named-selector',
-    }
+    { selectorId }
   )
+
+  useEffect(() => {
+    connect()
+    return dispose
+  }, [])
 
   const { execute: register } = useReduxCommand({
     type: 'register',
@@ -36,14 +40,13 @@ const NamedSelectors = () => {
     payload: {},
   })
 
+  const selectorResult = useReduxViewModelSelector(selectorId)
+  if (selectorResult == null) {
+    return null
+  }
   const {
     data: { likes },
-  } = useReduxViewModelSelector('cumulative-likes-named-selector')
-
-  useEffect(() => {
-    connect()
-    return dispose
-  })
+  } = selectorResult
 
   return (
     <div>

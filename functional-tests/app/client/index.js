@@ -6,7 +6,6 @@ import { createBrowserHistory } from 'history'
 import Routes from './hooks/components/Routes'
 import routes from './hooks/routes'
 
-
 const entryPoint = (resolveContext) => {
   const history = createBrowserHistory({ basename: resolveContext.rootPath })
 
