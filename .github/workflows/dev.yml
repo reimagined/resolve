@@ -87,6 +87,7 @@ jobs:
       - name: Install CLI
         run: |
           yarn global add resolve-cloud
+          echo $(yarn global bin) >> $GITHUB_PATH
 
       - name: Install & Build
         run: |
