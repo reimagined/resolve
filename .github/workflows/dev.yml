@@ -52,7 +52,7 @@ jobs:
 #        run: yarn test:e2e
 
   publish-dev:
-    needs: [smoke-test]
+#    needs: [smoke-test]
     runs-on: ubuntu-latest
     continue-on-error: true
 
@@ -78,7 +78,7 @@ jobs:
           tag: nightly
 
   cloud-test:
-    needs: [smoke-test, e2e-macOS-test]
+#    needs: [smoke-test, e2e-macOS-test]
     runs-on: ubuntu-latest
     continue-on-error: true
 
