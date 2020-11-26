@@ -190,6 +190,12 @@ If your need to re-run side effects after you reset a saga's state, use the [res
 npx resolve-module-admin sagas properties set "UserConfirmation" "RESOLVE_SIDE_EFFECTS_START_TIMESTAMP" $(date +%s%3N -d "yesterday")
 ```
 
+You can also specify a new timestamp as an option for the `sagas reset` command:
+
+```bash
+npx resolve-module-admin sagas reset UserConfirmation --side-effects-start-timestamp 0000-00-0000:00:00.000
+```
+
 ### Send Aggregate Commands
 
 Use the `executeCommand` side effect function to send aggregate commands as shown below:
