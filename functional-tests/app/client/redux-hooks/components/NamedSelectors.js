@@ -8,8 +8,9 @@ import {
   useReduxReadModelSelector,
 } from 'resolve-redux'
 
-const NamedSelectors = () => {
-  const userId = useMemo(uuid, [uuid])
+const NamedSelectors = ({ match: {
+  params: { userId },
+} }) => {
   const selectorId = 'cumulative-likes-named-selector'
 
   const { connect, dispose } = useReduxViewModel(
