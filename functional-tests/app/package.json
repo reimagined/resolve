@@ -54,7 +54,6 @@
     "babel-jest": "26.0.1",
     "jest": "26.0.1",
     "react-test-renderer": "16.13.1",
-    "testcafe": "1.8.5",
-    "resolve-cloud": "0.16.4"
+    "testcafe": "1.8.5"
   }
 }
