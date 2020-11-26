@@ -104,11 +104,19 @@ const writeNpmRc = (appDir, registry) => {
   fs.writeFileSync(yarnRc, content)
 }
 
-const execResolveCloud = (appDir, args, stdio = 'pipe') =>
-  execSync(`yarn --silent resolve-cloud ${args}`, {
-    cwd: appDir,
-    stdio,
-  })
+const execResolveCloud = (appDir, args, stdio = 'pipe') => {
+  try {
+    return execSync(`yarn --silent resolve-cloud ${args}`, {
+      cwd: appDir,
+      stdio,
+    })
+  } catch {
+    return execSync(`resolve-cloud ${args}`, {
+      cwd: appDir,
+      stdio,
+    })
+  }
+}
 
 const toTable = (tableOutput) => {
   const rows = tableOutput
