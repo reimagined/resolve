@@ -63,7 +63,8 @@ describe('query as plain object overload', () => {
       },
     } = renderHook(() => useReduxReadModel(query, initialState))
 
-    expect(mDispatch).not.toHaveBeenCalled()
+    expect(mDispatch).toHaveBeenCalledTimes(1)
+    mDispatch.mockClear()
 
     act(() => request())
 
@@ -311,11 +312,7 @@ describe('query as plain object overload', () => {
     expect(selector(state)).toEqual('state-entry')
     expect(mGetEntry).toHaveBeenCalledWith(
       state.readModels,
-      { query },
-      {
-        status: ResultStatus.Initial,
-        data: { initial: 'state' },
-      }
+      { query }
     )
   })
 
@@ -342,10 +339,7 @@ describe('query as plain object overload', () => {
     }
 
     expect(selector(state)).toEqual('state-entry')
-    expect(mGetEntry).toHaveBeenCalledWith(state.readModels, 'selector-id', {
-      status: ResultStatus.Initial,
-      data: { initial: 'state' },
-    })
+    expect(mGetEntry).toHaveBeenCalledWith(state.readModels, 'selector-id')
   })
 })
 
@@ -411,7 +405,8 @@ describe('query as builder function overload', () => {
     } = renderHook(() =>
       useReduxReadModel(builder, { initial: 'state' }, validOptions)
     )
-    expect(mDispatch).not.toHaveBeenCalled()
+    expect(mDispatch).toHaveBeenCalledTimes(1)
+    mDispatch.mockClear()
 
     act(() => request('test'))
 
@@ -610,9 +605,6 @@ describe('query as builder function overload', () => {
     }
 
     expect(selector(state)).toEqual('state-entry')
-    expect(mGetEntry).toHaveBeenCalledWith(state.readModels, 'selector-id', {
-      status: ResultStatus.Initial,
-      data: { initial: 'state' },
-    })
+    expect(mGetEntry).toHaveBeenCalledWith(state.readModels, 'selector-id')
   })
 })

@@ -96,7 +96,8 @@ test('internal actions are dispatched', () => {
   const query = makeQuery()
   renderHook(() => useReduxViewModel(query))
 
-  expect(mDispatch).not.toHaveBeenCalled()
+  expect(mDispatch).toHaveBeenCalledTimes(1)
+  mDispatch.mockClear()
 
   const stateChangedCallback = extractStateChangedCallback()
 
@@ -144,7 +145,8 @@ test('internal actions are dispatched (custom selector id)', () => {
     })
   )
 
-  expect(mDispatch).not.toHaveBeenCalled()
+  expect(mDispatch).toHaveBeenCalledTimes(1)
+  mDispatch.mockClear()
 
   const stateChangedCallback = extractStateChangedCallback()
 
@@ -202,7 +204,8 @@ test('custom redux actions', () => {
     })
   )
 
-  expect(mDispatch).not.toHaveBeenCalled()
+  expect(mDispatch).toHaveBeenCalledTimes(1)
+  mDispatch.mockClear()
 
   const stateChangedCallback = extractStateChangedCallback()
 
@@ -277,7 +280,8 @@ test('custom redux actions with custom selector id', () => {
     })
   )
 
-  expect(mDispatch).not.toHaveBeenCalled()
+  expect(mDispatch).toHaveBeenCalledTimes(1)
+  mDispatch.mockClear()
 
   const stateChangedCallback = extractStateChangedCallback()
 
@@ -341,13 +345,7 @@ test('selector should call reducer selector with initial state return by underly
   expect(hook.selector(state)).toEqual('mocked-entry-data')
   expect(mGetEntry).toHaveBeenCalledWith(
     state.viewModels,
-    { query },
-    {
-      status: ResultStatus.Initial,
-      data: {
-        initial: 'state',
-      },
-    }
+    { query }    
   )
 })
 
@@ -367,7 +365,42 @@ test('selector should call reducer selector with custom selector id', () => {
   expect(hook.selector(state)).toEqual('mocked-entry-data')
   expect(mGetEntry).toHaveBeenCalledWith(
     state.viewModels,
-    'selector-id',
-    expect.anything()
+    'selector-id'    
+  )
+})
+
+//////////////////////////////////////////////////////
+test('selector should call reducer selector with custom initial state', () => {
+  const query = makeQuery()
+  const state = {
+    viewModels: {
+      modelName: {},
+    },
+  }
+  const hook = renderHook(() =>
+    mUseViewModelHook
+  ).result.current
+
+  expect(hook.selector(state)).toEqual('mocked-entry-data')
+  expect(mGetEntry).toHaveBeenCalledWith(
+    state.viewModels,
+    'selector-id'    
+  )
+})
+
+test('useViewModel base hook called with custom query options', () => {
+  renderHook(() =>
+    useReduxViewModel(makeQuery(), { queryOptions: { method: 'POST' } })
+  )
+
+  expect(mUseViewModel).toHaveBeenCalledWith(
+    expect.anything(),
+    expect.anything(),
+    expect.anything(),
+    expect.anything(),
+    expect.anything(),
+    {
+      method: 'POST',
+    }
   )
 })
