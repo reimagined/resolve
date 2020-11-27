@@ -345,7 +345,7 @@ test('selector should call reducer selector with initial state return by underly
   expect(hook.selector(state)).toEqual('mocked-entry-data')
   expect(mGetEntry).toHaveBeenCalledWith(
     state.viewModels,
-    { query }    
+    { query }
   )
 })
 
@@ -365,42 +365,34 @@ test('selector should call reducer selector with custom selector id', () => {
   expect(hook.selector(state)).toEqual('mocked-entry-data')
   expect(mGetEntry).toHaveBeenCalledWith(
     state.viewModels,
-    'selector-id'    
+    'selector-id'
   )
 })
 
-//////////////////////////////////////////////////////
-test('selector should call reducer selector with custom initial state', () => {
+test('the hook should dispatch initial state action on creation', () => {
   const query = makeQuery()
-  const state = {
-    viewModels: {
-      modelName: {},
-    },
-  }
+  const selectorId = 'selector-id'
+
+  const render = renderHook(() =>
+    useReduxViewModel(query, { selectorId })
+  )
+
+  expect(mDispatch).toHaveBeenCalledTimes(1)
+  expect(mDispatch).toHaveBeenCalledWith(viewModelStateUpdate(query, { initial: 'state' }, true, selectorId))
+  mDispatch.mockClear()
+
+  render.rerender()
+
+  expect(mDispatch).toHaveBeenCalledTimes(0)
+})
+
+test('the hook should not dispatch any action if no stateUpdate action created defined', () => {
+  const query = makeQuery()
+  const selectorId = 'selector-id'
+
   const hook = renderHook(() =>
-    mUseViewModelHook
+    useReduxViewModel(query, { selectorId, actions: { stateUpdate: undefined } },)
   ).result.current
 
-  expect(hook.selector(state)).toEqual('mocked-entry-data')
-  expect(mGetEntry).toHaveBeenCalledWith(
-    state.viewModels,
-    'selector-id'    
-  )
-})
-
-test('useViewModel base hook called with custom query options', () => {
-  renderHook(() =>
-    useReduxViewModel(makeQuery(), { queryOptions: { method: 'POST' } })
-  )
-
-  expect(mUseViewModel).toHaveBeenCalledWith(
-    expect.anything(),
-    expect.anything(),
-    expect.anything(),
-    expect.anything(),
-    expect.anything(),
-    {
-      method: 'POST',
-    }
-  )
+  expect(mDispatch).toHaveBeenCalledTimes(0)
 })
