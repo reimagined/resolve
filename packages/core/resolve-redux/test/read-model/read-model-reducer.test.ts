@@ -1,5 +1,6 @@
 import {
   DROP_READMODEL_STATE,
+  INIT_READMODEL,
   QUERY_READMODEL_FAILURE,
   QUERY_READMODEL_REQUEST,
   QUERY_READMODEL_SUCCESS,
@@ -39,7 +40,7 @@ describe('request action', () => {
 
     expect(
       state[builtInSelectors]?.queryName.queryResolver[
-        JSON.stringify({ a: 'a' })
+      JSON.stringify({ a: 'a' })
       ]
     ).toEqual({
       status: ResultStatus.Requested,
@@ -103,7 +104,7 @@ describe('request action', () => {
       initialState[builtInSelectors]?.queryName
     )
     expect(
-      state[builtInSelectors]?.queryName.queryResolver.queryResolver
+      state[builtInSelectors]?.queryName.queryResolver
     ).not.toBe(initialState[builtInSelectors]?.queryName.queryResolver)
     expect(state[builtInSelectors]?.queryName.queryResolver[argsKey]).not.toBe(
       initialState[builtInSelectors]?.queryName.queryResolver[argsKey]
@@ -249,7 +250,7 @@ describe('success action', () => {
       sourceState[builtInSelectors]?.queryName
     )
     expect(
-      state[builtInSelectors]?.queryName.queryResolver.queryResolver
+      state[builtInSelectors]?.queryName.queryResolver
     ).not.toBe(sourceState[builtInSelectors]?.queryName.queryResolver)
     expect(state[builtInSelectors]?.queryName.queryResolver[argsKey]).not.toBe(
       sourceState[builtInSelectors]?.queryName.queryResolver[argsKey]
@@ -277,6 +278,108 @@ describe('success action', () => {
         data: {
           user: 'name',
         },
+      },
+      selectorId: 'customSelector',
+    })
+
+    expect(state).not.toBe(sourceState)
+    expect(state[namedSelectors]?.customSelector).not.toBe(
+      sourceState[namedSelectors]?.customSelector
+    )
+  })
+})
+
+describe('init action', () => {
+  test(`update state for built-in selector`, () => {
+    const argsKey = JSON.stringify({ a: 'a' })
+    const state = reducer(
+      {},
+      {
+        type: INIT_READMODEL,
+        query: {
+          name: 'queryName',
+          resolver: 'queryResolver',
+          args: { a: 'a' },
+        },
+        initialState: {
+          user: 'name',
+        },
+      }
+    )
+
+    expect(state[builtInSelectors]?.queryName.queryResolver[argsKey]).toEqual({
+      status: ResultStatus.Initial,
+      data: {
+        user: 'name',
+      },
+    })
+  })
+
+  test(`update state for specific selector`, () => {
+    const state = reducer(
+      {},
+      {
+        type: INIT_READMODEL,
+        query: {
+          name: 'queryName',
+          resolver: 'queryResolver',
+          args: { a: 'a' },
+        },
+        initialState: {
+          user: 'name',
+        },
+        selectorId: 'customSelector',
+      }
+    )
+
+    expect(state[namedSelectors]?.customSelector).toEqual({
+      status: ResultStatus.Initial,
+      data: {
+        user: 'name',
+      },
+    })
+  })
+
+  test(`built-in selector state immutability `, () => {
+    const argsKey = JSON.stringify({ a: 'a' })
+    const sourceState: ReadModelReducerState = {}
+
+    const state = reducer(sourceState, {
+      type: INIT_READMODEL,
+      query: {
+        name: 'queryName',
+        resolver: 'queryResolver',
+        args: { a: 'a' },
+      },
+      initialState: {
+        user: 'name',
+      },
+    })
+
+    expect(state).not.toBe(sourceState)
+    expect(state[builtInSelectors]?.queryName).not.toBe(
+      sourceState[builtInSelectors]?.queryName
+    )
+    expect(
+      state[builtInSelectors]?.queryName.queryResolver
+    ).not.toBe(sourceState[builtInSelectors]?.queryName.queryResolver)
+    expect(state[builtInSelectors]?.queryName.queryResolver[argsKey]).not.toBe(
+      sourceState[builtInSelectors]?.queryName.queryResolver[argsKey]
+    )
+  })
+
+  test(`specific selector state immutability`, () => {
+    const sourceState: ReadModelReducerState = {}
+
+    const state = reducer(sourceState, {
+      type: INIT_READMODEL,
+      query: {
+        name: 'queryName',
+        resolver: 'queryResolver',
+        args: { a: 'a' },
+      },
+      initialState: {
+        user: 'name',
       },
       selectorId: 'customSelector',
     })
