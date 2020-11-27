@@ -311,10 +311,7 @@ describe('query as plain object overload', () => {
     }
 
     expect(selector(state)).toEqual('state-entry')
-    expect(mGetEntry).toHaveBeenCalledWith(
-      state.readModels,
-      { query }
-    )
+    expect(mGetEntry).toHaveBeenCalledWith(state.readModels, { query })
   })
 
   test('redux state selector: selectorId used', () => {
@@ -346,12 +343,12 @@ describe('query as plain object overload', () => {
   test('the hook should dispatch initial state action on creation', async () => {
     const query = makeQuery()
 
-    const hook = renderHook(() =>
-      useReduxReadModel(query, initialState)
-    )
+    const hook = renderHook(() => useReduxReadModel(query, initialState))
 
     expect(mDispatch).toHaveBeenCalledTimes(1)
-    expect(mDispatch).toHaveBeenCalledWith(initReadModel(initialState, query, undefined))
+    expect(mDispatch).toHaveBeenCalledWith(
+      initReadModel(initialState, query, undefined)
+    )
     mDispatch.mockClear()
 
     hook.rerender()
@@ -366,7 +363,9 @@ describe('query as plain object overload', () => {
     )
 
     expect(mDispatch).toHaveBeenCalledTimes(1)
-    expect(mDispatch).toHaveBeenCalledWith(initReadModel(initialState, undefined, 'selector-id'))
+    expect(mDispatch).toHaveBeenCalledWith(
+      initReadModel(initialState, undefined, 'selector-id')
+    )
     mDispatch.mockClear()
 
     hook.rerender()
@@ -640,9 +639,7 @@ describe('query as builder function overload', () => {
     expect(mGetEntry).toHaveBeenCalledWith(state.readModels, 'selector-id')
   })
   test('the hook should not dispatch anything if no selector id set', async () => {
-    const hook = renderHook(() =>
-      useReduxReadModel(builder, initialState)
-    )
+    renderHook(() => useReduxReadModel(builder, initialState))
 
     expect(mDispatch).toHaveBeenCalledTimes(0)
   })
@@ -653,7 +650,9 @@ describe('query as builder function overload', () => {
     )
 
     expect(mDispatch).toHaveBeenCalledTimes(1)
-    expect(mDispatch).toHaveBeenCalledWith(initReadModel(initialState, undefined, 'selector-id'))
+    expect(mDispatch).toHaveBeenCalledWith(
+      initReadModel(initialState, undefined, 'selector-id')
+    )
     mDispatch.mockClear()
 
     hook.rerender()
@@ -661,4 +660,3 @@ describe('query as builder function overload', () => {
     expect(mDispatch).toHaveBeenCalledTimes(0)
   })
 })
-

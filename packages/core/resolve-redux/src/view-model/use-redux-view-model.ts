@@ -6,7 +6,7 @@ import {
   viewModelStateUpdate,
   ViewModelStateUpdateAction,
 } from './actions'
-import { ReduxState, ResultStatus, ViewModelReactiveEvent } from '../types'
+import { ReduxState, ViewModelReactiveEvent } from '../types'
 import { isOptions } from '../helpers'
 import { useDispatch } from 'react-redux'
 import { useViewModel } from 'resolve-react-hooks'

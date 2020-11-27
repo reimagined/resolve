@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
-import { v4 as uuid } from 'uuid'
+import React, { useEffect } from 'react'
 import {
   useReduxViewModel,
   useReduxReadModel,
@@ -8,9 +7,11 @@ import {
   useReduxReadModelSelector,
 } from 'resolve-redux'
 
-const NamedSelectors = ({ match: {
-  params: { userId },
-} }) => {
+const NamedSelectors = ({
+  match: {
+    params: { userId },
+  },
+}) => {
   const selectorId = 'cumulative-likes-named-selector'
 
   const { connect, dispose } = useReduxViewModel(
@@ -22,20 +23,24 @@ const NamedSelectors = ({ match: {
     { selectorId }
   )
 
-  const { request } = useReduxReadModel({
-    name: 'users',
-    resolver: 'profile',
-    args: {
-      userId
+  const { request } = useReduxReadModel(
+    {
+      name: 'users',
+      resolver: 'profile',
+      args: {
+        userId,
+      },
+    },
+    {
+      userId,
+      profile: {
+        name: 'unknown user',
+      },
+    },
+    {
+      selectorId: 'user-selector',
     }
-  }, {
-    userId,
-    profile: {
-      name: 'unknown user'
-    }
-  }, {
-    selectorId: 'user-selector'
-  })
+  )
 
   useEffect(() => {
     connect()
@@ -63,11 +68,8 @@ const NamedSelectors = ({ match: {
   } = useReduxViewModelSelector(selectorId)
 
   const {
-    data: {
-      profile: userPrfile
-    }
+    data: { profile: userProfile },
   } = useReduxReadModelSelector('user-selector')
-
 
   return (
     <div>
@@ -75,7 +77,7 @@ const NamedSelectors = ({ match: {
       <button onClick={like}>Like</button>
       <button onClick={request}>Profile</button>
       <div id="likeCounter">{likes}</div>
-      <div id="userName">{userPrfile.name}</div>
+      <div id="userName">{userProfile.name}</div>
     </div>
   )
 }

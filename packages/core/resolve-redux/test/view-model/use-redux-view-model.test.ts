@@ -7,7 +7,6 @@ import {
   viewModelEventReceived,
   viewModelStateUpdate,
 } from '../../src/view-model/actions'
-import { ResultStatus } from '../../src/types'
 import { getEntry } from '../../src/view-model/view-model-reducer'
 import { useReduxViewModel } from '../../src/view-model/use-redux-view-model'
 
@@ -343,10 +342,7 @@ test('selector should call reducer selector with initial state return by underly
   const hook = renderHook(() => useReduxViewModel(query)).result.current
 
   expect(hook.selector(state)).toEqual('mocked-entry-data')
-  expect(mGetEntry).toHaveBeenCalledWith(
-    state.viewModels,
-    { query }
-  )
+  expect(mGetEntry).toHaveBeenCalledWith(state.viewModels, { query })
 })
 
 test('selector should call reducer selector with custom selector id', () => {
@@ -363,22 +359,19 @@ test('selector should call reducer selector with custom selector id', () => {
   ).result.current
 
   expect(hook.selector(state)).toEqual('mocked-entry-data')
-  expect(mGetEntry).toHaveBeenCalledWith(
-    state.viewModels,
-    'selector-id'
-  )
+  expect(mGetEntry).toHaveBeenCalledWith(state.viewModels, 'selector-id')
 })
 
 test('the hook should dispatch initial state action on creation', () => {
   const query = makeQuery()
   const selectorId = 'selector-id'
 
-  const render = renderHook(() =>
-    useReduxViewModel(query, { selectorId })
-  )
+  const render = renderHook(() => useReduxViewModel(query, { selectorId }))
 
   expect(mDispatch).toHaveBeenCalledTimes(1)
-  expect(mDispatch).toHaveBeenCalledWith(viewModelStateUpdate(query, { initial: 'state' }, true, selectorId))
+  expect(mDispatch).toHaveBeenCalledWith(
+    viewModelStateUpdate(query, { initial: 'state' }, true, selectorId)
+  )
   mDispatch.mockClear()
 
   render.rerender()
@@ -390,9 +383,12 @@ test('the hook should not dispatch any action if no stateUpdate action created d
   const query = makeQuery()
   const selectorId = 'selector-id'
 
-  const hook = renderHook(() =>
-    useReduxViewModel(query, { selectorId, actions: { stateUpdate: undefined } },)
-  ).result.current
+  renderHook(() =>
+    useReduxViewModel(query, {
+      selectorId,
+      actions: { stateUpdate: undefined },
+    })
+  )
 
   expect(mDispatch).toHaveBeenCalledTimes(0)
 })

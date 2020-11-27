@@ -7,7 +7,7 @@ import {
   DISCONNECT_READMODEL,
   INIT_READMODEL,
 } from '../internal/action-types'
-import { query, ReadModelQuery } from 'resolve-client'
+import { ReadModelQuery } from 'resolve-client'
 
 export type ReadModelAction = {
   query: ReadModelQuery
@@ -106,5 +106,5 @@ export const initReadModel = (
   type: INIT_READMODEL,
   query,
   selectorId,
-  initialState
+  initialState,
 })

@@ -19,7 +19,7 @@ import {
   QueryReadModelSuccessAction,
 } from './actions'
 import { isDependencies, isOptions } from '../helpers'
-import { ReduxState, ResultStatus } from '../types'
+import { ReduxState } from '../types'
 import { badSelectorDrain, getEntry } from './read-model-reducer'
 
 type HookData<TArgs extends any[]> = {
@@ -161,16 +161,16 @@ function useReduxReadModel<TArgs extends any[], TQuery extends ReadModelQuery>(
   const dispatch = useDispatch()
   const executor = actualDependencies
     ? useQueryBuilder(
-      (query: TQuery) => query,
-      actualOptions.queryOptions || defaultQueryOptions,
-      callback,
-      actualDependencies
-    )
+        (query: TQuery) => query,
+        actualOptions.queryOptions || defaultQueryOptions,
+        callback,
+        actualDependencies
+      )
     : useQueryBuilder(
-      (query: TQuery) => query,
-      actualOptions.queryOptions || defaultQueryOptions,
-      callback
-    )
+        (query: TQuery) => query,
+        actualOptions.queryOptions || defaultQueryOptions,
+        callback
+      )
 
   const initialStateDispatched = useRef(false)
   if (!initialStateDispatched.current) {
@@ -200,11 +200,11 @@ function useReduxReadModel<TArgs extends any[], TQuery extends ReadModelQuery>(
         getEntry(
           state.readModels,
           selectorId ||
-          (!isBuilder(query)
-            ? {
-              query,
-            }
-            : badSelectorDrain)
+            (!isBuilder(query)
+              ? {
+                  query,
+                }
+              : badSelectorDrain)
         ),
     }),
     [executor, dispatch]

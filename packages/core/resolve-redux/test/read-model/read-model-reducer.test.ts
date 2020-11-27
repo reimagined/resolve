@@ -40,7 +40,7 @@ describe('request action', () => {
 
     expect(
       state[builtInSelectors]?.queryName.queryResolver[
-      JSON.stringify({ a: 'a' })
+        JSON.stringify({ a: 'a' })
       ]
     ).toEqual({
       status: ResultStatus.Requested,
@@ -103,9 +103,9 @@ describe('request action', () => {
     expect(state[builtInSelectors]?.queryName).not.toBe(
       initialState[builtInSelectors]?.queryName
     )
-    expect(
-      state[builtInSelectors]?.queryName.queryResolver
-    ).not.toBe(initialState[builtInSelectors]?.queryName.queryResolver)
+    expect(state[builtInSelectors]?.queryName.queryResolver).not.toBe(
+      initialState[builtInSelectors]?.queryName.queryResolver
+    )
     expect(state[builtInSelectors]?.queryName.queryResolver[argsKey]).not.toBe(
       initialState[builtInSelectors]?.queryName.queryResolver[argsKey]
     )
@@ -249,9 +249,9 @@ describe('success action', () => {
     expect(state[builtInSelectors]?.queryName).not.toBe(
       sourceState[builtInSelectors]?.queryName
     )
-    expect(
-      state[builtInSelectors]?.queryName.queryResolver
-    ).not.toBe(sourceState[builtInSelectors]?.queryName.queryResolver)
+    expect(state[builtInSelectors]?.queryName.queryResolver).not.toBe(
+      sourceState[builtInSelectors]?.queryName.queryResolver
+    )
     expect(state[builtInSelectors]?.queryName.queryResolver[argsKey]).not.toBe(
       sourceState[builtInSelectors]?.queryName.queryResolver[argsKey]
     )
@@ -360,9 +360,9 @@ describe('init action', () => {
     expect(state[builtInSelectors]?.queryName).not.toBe(
       sourceState[builtInSelectors]?.queryName
     )
-    expect(
-      state[builtInSelectors]?.queryName.queryResolver
-    ).not.toBe(sourceState[builtInSelectors]?.queryName.queryResolver)
+    expect(state[builtInSelectors]?.queryName.queryResolver).not.toBe(
+      sourceState[builtInSelectors]?.queryName.queryResolver
+    )
     expect(state[builtInSelectors]?.queryName.queryResolver[argsKey]).not.toBe(
       sourceState[builtInSelectors]?.queryName.queryResolver[argsKey]
     )
