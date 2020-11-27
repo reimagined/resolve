@@ -30,7 +30,6 @@ const devConfig = {
     maxAge: 31536000000,
   },
   uploadAdapter: {
-    module: 'resolve-upload-local',
     options: {
       directory: 'data',
       bucket: 'files',

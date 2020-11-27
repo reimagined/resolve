@@ -10,6 +10,7 @@ The adapter provides a query API for projection and resolvers. This API is simil
 * `awsSecretStoreArn` - The name or ARN of the secret that enables access to the DB cluster.
 * `databaseName` - The name of the PostgreSQL [schema](https://www.postgresql.org/docs/10/ddl-schemas.html).
 * `tablePrefix` - optional table prefix for read-models server by current adapter instance.
+* `preferEventBusLedger` - store ledger in event bus instead read-model database itself.
 * `...connectionSettings` - see [RDS Data Service API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/RDSDataService.html) for more information.
 
 Adapter interface is provided by **resolve-readmodel-base** package.

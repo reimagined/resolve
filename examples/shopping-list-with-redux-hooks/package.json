@@ -1,6 +1,6 @@
 {
   "name": "shopping-list-with-redux-hooks",
-  "version": "0.25.18",
+  "version": "0.26.0",
   "description": "shows how to work with read-models and view-models using redux hooks",
   "private": true,
   "scripts": {
@@ -31,14 +31,14 @@
     "redux": "4.0.5",
     "redux-devtools-extension": "2.13.7",
     "redux-saga": "1.1.3",
-    "resolve-readmodel-lite": "0.25.18",
-    "resolve-readmodel-postgresql-serverless": "0.25.18",
-    "resolve-react-hooks": "0.25.18",
-    "resolve-redux": "0.25.18",
-    "resolve-scripts": "0.25.18",
-    "resolve-eventstore-postgresql-serverless": "0.25.18",
-    "resolve-eventstore-lite": "0.25.18",
-    "resolve-module-admin": "0.25.18"
+    "resolve-readmodel-lite": "0.26.0",
+    "resolve-readmodel-postgresql-serverless": "0.26.0",
+    "resolve-react-hooks": "0.26.0",
+    "resolve-redux": "0.26.0",
+    "resolve-scripts": "0.26.0",
+    "resolve-eventstore-postgresql-serverless": "0.26.0",
+    "resolve-eventstore-lite": "0.26.0",
+    "resolve-module-admin": "0.26.0"
   },
   "devDependencies": {
     "aws-sdk": "2.631.0",
@@ -54,7 +54,7 @@
     "enzyme": "3.6.0",
     "jest": "26.0.1",
     "react-test-renderer": "16.13.1",
-    "resolve-testing-tools": "0.25.18",
+    "resolve-testing-tools": "0.26.0",
     "testcafe": "1.8.5",
     "resolve-cloud": "*"
   }
