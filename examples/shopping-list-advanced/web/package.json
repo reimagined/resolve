@@ -60,7 +60,6 @@
     "opn": "5.4.0",
     "remotedev-server": "0.2.7",
     "redux-devtools-extension": "2.13.7",
-    "resolve-cloud": "*",
     "resolve-module-admin": "0.26.0",
     "webpack-node-externals": "1.7.2",
     "isomorphic-fetch": "2.2.1"

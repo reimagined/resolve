@@ -1,5 +1,9 @@
 import { nanoid } from 'nanoid'
-import { Client, QueryResult } from 'resolve-client'
+import {
+  Client,
+  createRetryOnErrorMiddleware,
+  QueryResult,
+} from 'resolve-client'
 import { getClient } from '../../utils/utils'
 
 let client: Client
@@ -29,11 +33,13 @@ const waitForPersonalData = async (userId: string) =>
       },
     },
     {
-      waitFor: {
-        validator: (result: QueryResult) =>
-          result && result.data && result.data.id === userId,
-        attempts: 5,
-        period: 3000,
+      middleware: {
+        error: createRetryOnErrorMiddleware({
+          errors: [404, 500],
+          debug: true,
+          attempts: 5,
+          period: 3000,
+        }),
       },
     }
   )

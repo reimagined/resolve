@@ -106,14 +106,21 @@ const writeNpmRc = (appDir, registry) => {
 
 const execResolveCloud = (appDir, args, stdio = 'pipe') => {
   try {
-    return execSync(`yarn --silent resolve-cloud ${args}`, {
-      cwd: appDir,
-      stdio,
-    })
-  } catch {
     return execSync(`resolve-cloud ${args}`, {
       cwd: appDir,
       stdio,
+      env: {
+        ...process.env
+      },
+    })
+  } catch (err) {
+    console.log(`global resolve-cloud package exec error ${error.message}`)
+    return execSync(`yarn --silent resolve-cloud ${args}`, {
+      cwd: appDir,
+      stdio,
+      env: {
+        ...process.env
+      },
     })
   }
 }

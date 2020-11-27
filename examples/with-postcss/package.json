@@ -51,7 +51,6 @@
     "react-test-renderer": "16.13.1",
     "style-loader": "0.21.0",
     "testcafe": "1.8.5",
-    "webpack": "4.42.0",
-    "resolve-cloud": "*"
+    "webpack": "4.42.0"
   }
 }
