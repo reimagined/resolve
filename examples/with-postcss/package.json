@@ -1,6 +1,6 @@
 {
   "name": "with-postcss",
-  "version": "0.25.18",
+  "version": "0.26.0",
   "description": "shows how to work with postCSS",
   "private": true,
   "scripts": {
@@ -23,12 +23,12 @@
     "react-helmet": "6.0.0",
     "react-router": "5.1.2",
     "react-router-dom": "5.1.2",
-    "resolve-scripts": "0.25.18",
-    "resolve-react-hooks": "0.25.18",
-    "resolve-eventstore-postgresql-serverless": "0.25.18",
-    "resolve-eventstore-lite": "0.25.18",
-    "resolve-readmodel-lite": "0.25.18",
-    "resolve-readmodel-postgresql-serverless": "0.25.18"
+    "resolve-scripts": "0.26.0",
+    "resolve-react-hooks": "0.26.0",
+    "resolve-eventstore-postgresql-serverless": "0.26.0",
+    "resolve-eventstore-lite": "0.26.0",
+    "resolve-readmodel-lite": "0.26.0",
+    "resolve-readmodel-postgresql-serverless": "0.26.0"
   },
   "devDependencies": {
     "aws-sdk": "2.631.0",

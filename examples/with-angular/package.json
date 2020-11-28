@@ -1,6 +1,6 @@
 {
   "name": "with-angular",
-  "version": "0.25.18",
+  "version": "0.26.0",
   "description": "Example shows how to work with Angular-8 framework",
   "private": true,
   "scripts": {
@@ -34,11 +34,11 @@
     "typescript": "3.9.3",
     "webpack-filter-warnings-plugin": "1.2.1",
     "zone.js": "0.10.2",
-    "resolve-scripts": "0.25.18",
-    "resolve-eventstore-postgresql-serverless": "0.25.18",
-    "resolve-eventstore-lite": "0.25.18",
-    "resolve-readmodel-lite": "0.25.18",
-    "resolve-readmodel-postgresql-serverless": "0.25.18"
+    "resolve-scripts": "0.26.0",
+    "resolve-eventstore-postgresql-serverless": "0.26.0",
+    "resolve-eventstore-lite": "0.26.0",
+    "resolve-readmodel-lite": "0.26.0",
+    "resolve-readmodel-postgresql-serverless": "0.26.0"
   },
   "devDependencies": {
     "aws-sdk": "2.631.0",
