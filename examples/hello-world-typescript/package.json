@@ -1,6 +1,6 @@
 {
   "name": "hello-world-typescript",
-  "version": "0.26.0",
+  "version": "0.26.1",
   "description": "used as a template for new reSolve applications",
   "private": true,
   "scripts": {
@@ -20,13 +20,13 @@
     "react-dom": "16.13.1",
     "react-bootstrap": "1.4.0",
     "react-helmet": "6.1.0",
-    "resolve-react-hooks": "0.26.0",
-    "resolve-scripts": "0.26.0",
-    "resolve-readmodel-base": "0.26.0",
-    "resolve-eventstore-lite": "0.26.0",
-    "resolve-readmodel-lite": "0.26.0",
-    "resolve-eventstore-postgresql-serverless": "0.26.0",
-    "resolve-readmodel-postgresql-serverless": "0.26.0"
+    "resolve-react-hooks": "0.26.1",
+    "resolve-scripts": "0.26.1",
+    "resolve-readmodel-base": "0.26.1",
+    "resolve-eventstore-lite": "0.26.1",
+    "resolve-readmodel-lite": "0.26.1",
+    "resolve-eventstore-postgresql-serverless": "0.26.1",
+    "resolve-readmodel-postgresql-serverless": "0.26.1"
   },
   "devDependencies": {
     "@types/node": "^12.7.4",
