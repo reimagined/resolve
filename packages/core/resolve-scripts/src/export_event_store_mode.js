@@ -25,6 +25,12 @@ const getConfig = async (resolveConfig, options) => {
       upstream: false,
     },
   })
+  Object.assign(config, {
+    readModelConnectors: {},
+    readModels: [],
+    viewModels: [],
+    sagas: [],
+  })
 
   return config
 }
