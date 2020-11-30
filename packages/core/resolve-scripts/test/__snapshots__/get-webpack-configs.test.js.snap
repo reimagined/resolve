@@ -236,7 +236,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
     \\"plugins\\": [
       {
         \\"_options\\": {
-          \\"moduleExternals\\": false
+          \\"moduleExternals\\": false,
+          \\"esModuleExternals\\": true
         }
       }
     ]
@@ -659,7 +660,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
     \\"plugins\\": [
       {
         \\"_options\\": {
-          \\"moduleExternals\\": false
+          \\"moduleExternals\\": false,
+          \\"esModuleExternals\\": true
         }
       }
     ],
@@ -909,7 +911,8 @@ exports[`should make webpack configs for local mode 1`] = `
     \\"plugins\\": [
       {
         \\"_options\\": {
-          \\"moduleExternals\\": false
+          \\"moduleExternals\\": false,
+          \\"esModuleExternals\\": true
         }
       }
     ]
@@ -1333,7 +1336,8 @@ exports[`should make webpack configs for local mode 1`] = `
     \\"plugins\\": [
       {
         \\"_options\\": {
-          \\"moduleExternals\\": false
+          \\"moduleExternals\\": false,
+          \\"esModuleExternals\\": true
         }
       }
     ],
