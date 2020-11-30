@@ -5,7 +5,16 @@ title: API Reference
 
 ## Read Model Connector Interface
 
-The table below lists functions a custom Read Model's connector should implement.
+This section describes interfaces that you can implement to create a valid Read Model connector. The following connector types are available:
+
+- Inline ledger - The connector itself implements the ledger API.
+- XA eventbus ledger - The connector implements the two-phase transaction logic.
+- Transactional eventbus ledger - The connector implements simple transaction.
+- Non-transactional eventbus ledger - The connector does not use transactions.
+
+Depending on the type that you want to implement, your connector implementations should expose different sets of API functions. The subsections below describe these APIs in greater detail.
+
+---
 
 | Function Name             | Description                                      |
 | ------------------------- | ------------------------------------------------ |
@@ -489,8 +498,8 @@ await eventStoreAdapter.saveEvent({
   type: 'USER_CREATED',
   timestamp: Date.now(),
   payload: {
-    name: 'user-name'
-  }
+    name: 'user-name',
+  },
 })
 ```
 
@@ -1276,8 +1285,8 @@ const { execute: toggleItem } = useReduxCommand({
   aggregateId: shoppingListId,
   aggregateName: 'ShoppingList',
   payload: {
-    id: 'shopping-list-id'
-  }
+    id: 'shopping-list-id',
+  },
 })
 ```
 
@@ -1293,8 +1302,8 @@ const { request: getLists, selector: allLists } = useReduxReadModel(
     name: 'ShoppingLists',
     resolver: 'all',
     args: {
-      filter: 'none'
-    }
+      filter: 'none',
+    },
   },
   []
 )
@@ -1312,12 +1321,12 @@ const { request: getLists, selector: allLists } = useReduxReadModel(
     name: 'ShoppingLists',
     resolver: 'all',
     args: {
-      filter: 'none'
-    }
+      filter: 'none',
+    },
   },
   [],
   {
-    selectorId: 'all-user-lists'
+    selectorId: 'all-user-lists',
   }
 )
 
@@ -1331,7 +1340,7 @@ Creates a hook to receive a View Model's state updates and reactive events.
 ```js
 const { connect, dispose, selector: thisList } = useReduxViewModel({
   name: 'shoppingList',
-  aggregateIds: ['my-list']
+  aggregateIds: ['my-list'],
 })
 
 const { data, status } = useSelector(thisList)
@@ -1352,10 +1361,10 @@ Creates a hook to access a view model's local state. This hook queries the View 
 const { connect, dispose, selector: thisList } = useReduxViewModel(
   {
     name: 'shoppingList',
-    aggregateIds: ['my-list']
+    aggregateIds: ['my-list'],
   },
   {
-    selectorId: 'this-list'
+    selectorId: 'this-list',
   }
 )
 
@@ -1374,7 +1383,7 @@ export const mapStateToOptions = (state, ownProps) => {
 
   return {
     viewModelName: 'ShoppingList',
-    aggregateIds: [aggregateId]
+    aggregateIds: [aggregateId],
   }
 }
 
@@ -1382,14 +1391,14 @@ export const mapStateToProps = (state, ownProps) => {
   const aggregateId = ownProps.match.params.id
 
   return {
-    aggregateId
+    aggregateId,
   }
 }
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      replaceUrl: routerActions.replace
+      replaceUrl: routerActions.replace,
     },
     dispatch
   )
@@ -1412,17 +1421,17 @@ import { bindActionCreators } from 'redux'
 export const mapStateToOptions = () => ({
   readModelName: 'ShoppingLists',
   resolverName: 'all',
-  resolverArgs: {}
+  resolverArgs: {},
 })
 
 export const mapStateToProps = (state, ownProps) => ({
-  lists: ownProps.data
+  lists: ownProps.data,
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
+      createStory: sendAggregateAction.bind(null, 'Story', 'createStory'),
     },
     dispatch
   )
@@ -1487,9 +1496,9 @@ client.command(
     aggregateName: 'Chat',
     type: 'postMessage',
     aggregateId: userName,
-    payload: message
+    payload: message,
   },
-  err => {
+  (err) => {
     if (err) {
       console.warn(`Error while sending command: ${err}`)
     }
@@ -1506,7 +1515,7 @@ Queries a Read Model.
 ```js
 const { data } = await client.query({
   name: 'chat',
-  aggregateIds: '*'
+  aggregateIds: '*',
 })
 ```
 
@@ -1537,7 +1546,7 @@ Subscribes to View Model updates. Returns a promise that resolves to a **subscri
 ##### Example
 
 ```js
-const chatViewModelUpdater = event => {
+const chatViewModelUpdater = (event) => {
   const eventType = event != null && event.type != null ? event.type : null
   const eventHandler = chatViewModel.projection[eventType]
 
