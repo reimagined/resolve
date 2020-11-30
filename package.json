@@ -79,6 +79,7 @@
     "validate-lock-file": "node validate-lock-file.js"
   },
   "dependencies": {
+    "@types/jest": "^26.0.15",
     "@yarnpkg/lockfile": "^1.1.0"
   }
 }
