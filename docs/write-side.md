@@ -41,7 +41,7 @@ const createShoppingListCommand = useCommand(
 )
 ```
 
-An Aggregate ID should stay unique in the given event store across all aggregates. We also recommend to keep it globally unique. You can use [UUID v4](https://github.com/kelektiv/node-uuid#version-4) or [cuid](https://github.com/ericelliott/cuid) to generate aggregate IDs for scalable applications.
+An Aggregate ID should stay unique across all aggregates in the given event store. You can use [UUID v4](https://github.com/kelektiv/node-uuid#version-4) or [cuid](https://github.com/ericelliott/cuid) to generate aggregate IDs for scalable applications.
 
 ## Configuring Aggregates
 
@@ -131,7 +131,7 @@ await resolve.executeCommand({
   type: userWithSameEmail ? 'rejectUserCreation' : 'confirmUserCreation',
   aggregateName: 'user',
   payload: { createdUser },
-  aggregateId
+  aggregateId,
 })
 ```
 
@@ -151,9 +151,9 @@ export default {
     // The resulting event object
     return {
       type: 'StoryCreated',
-      payload: { title, text, link, userId, userName }
+      payload: { title, text, link, userId, userName },
     }
-  }
+  },
   // ...
 }
 ```
