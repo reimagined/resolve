@@ -8,6 +8,7 @@ describe('resolve-readmodel-postgresql-serverless', () => {
     adapter = createReadModelAdapter({
       databaseName: 'databaseName',
       tablePrefix: 'tablePrefix',
+      preferEventBusLedger: true,
     })
   })
 

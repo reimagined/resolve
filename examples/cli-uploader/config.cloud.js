@@ -41,7 +41,6 @@ export default {
     },
   },
   uploadAdapter: {
-    module: 'resolve-upload-cloud',
     options: {
       encryptedDeploymentId: declareRuntimeEnv(
         'RESOLVE_ENCRYPTED_DEPLOYMENT_ID'

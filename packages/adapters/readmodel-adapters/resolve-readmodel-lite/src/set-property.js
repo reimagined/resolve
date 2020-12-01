@@ -3,6 +3,7 @@ const setProperty = async (pool, readModelName, key, value) => {
     PassthroughError,
     inlineLedgerRunQuery,
     tablePrefix,
+    fullJitter,
     escapeId,
     escape,
   } = pool
@@ -11,7 +12,9 @@ const setProperty = async (pool, readModelName, key, value) => {
   while (true) {
     try {
       await inlineLedgerRunQuery(
-        `UPDATE ${ledgerTableNameAsId}
+        `BEGIN IMMEDIATE;
+        
+        UPDATE ${ledgerTableNameAsId}
          SET "Properties" = json_patch("Properties", JSON(${escape(
            JSON.stringify({
              [key
@@ -20,14 +23,27 @@ const setProperty = async (pool, readModelName, key, value) => {
                .replace(/\./g, '\u001a2')]: value,
            })
          )}))
-         WHERE "EventSubscriber" = ${escape(readModelName)}
-        `
+         WHERE "EventSubscriber" = ${escape(readModelName)};
+
+         COMMIT;
+        `,
+        true
       )
       break
     } catch (error) {
       if (!(error instanceof PassthroughError)) {
         throw error
       }
+
+      try {
+        await inlineLedgerRunQuery(`ROLLBACK`, true)
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
+      }
+
+      await fullJitter(0)
     }
   }
 }

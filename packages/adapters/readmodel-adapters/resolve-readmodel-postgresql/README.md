@@ -12,6 +12,7 @@ The adapter provides a query API for projection and resolvers. This API is simil
 * `database` - a name of a database.
 * `host` - a host of a database server.
 * `port` - a port of a database server.
+* `preferEventBusLedger` - store ledger in event bus instead read-model database itself.
 
 Adapter interface is provided by **resolve-readmodel-base** package.
 
