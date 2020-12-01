@@ -1,7 +1,7 @@
 import { buildEvents } from '../src/build'
 
 describe('buildEvents', () => {
-  test('should call projection with', async () => {
+  test('should call projection with secret manager', async () => {
     const readModelName = 'readModelName'
     const inputCursor = null
     const eventTypes = ['ITEM_CREATED']
