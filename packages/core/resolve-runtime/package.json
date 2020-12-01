@@ -60,7 +60,8 @@
     "cors": "^2.8.5",
     "file-type": "^12.4.0",
     "mime-types": "2.1.25",
-    "raw-body": "2.3.3"
+    "raw-body": "2.3.3",
+    "query-string": "6.13.7"
   },
   "peerDependencies": {
     "aws-sdk": "*",
