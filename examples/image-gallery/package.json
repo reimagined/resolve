@@ -1,6 +1,6 @@
 {
   "name": "image-gallery",
-  "version": "0.26.1",
+  "version": "0.26.2",
   "description": "used as a template for new reSolve applications",
   "private": true,
   "scripts": {
@@ -23,13 +23,13 @@
     "react-fileupload-progress": "0.5.0",
     "jsonwebtoken": "^8.3.0",
     "webpack": "4.41.2",
-    "resolve-react-hooks": "0.26.1",
-    "resolve-scripts": "0.26.1",
-    "resolve-eventstore-lite": "0.26.1",
-    "resolve-readmodel-lite": "0.26.1",
-    "resolve-eventstore-postgresql-serverless": "0.26.1",
-    "resolve-readmodel-postgresql-serverless": "0.26.1",
-    "resolve-module-uploader": "0.26.1"
+    "resolve-react-hooks": "0.26.2",
+    "resolve-scripts": "0.26.2",
+    "resolve-eventstore-lite": "0.26.2",
+    "resolve-readmodel-lite": "0.26.2",
+    "resolve-eventstore-postgresql-serverless": "0.26.2",
+    "resolve-readmodel-postgresql-serverless": "0.26.2",
+    "resolve-module-uploader": "0.26.2"
   },
   "devDependencies": {
     "aws-sdk": "2.631.0",

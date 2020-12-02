@@ -1,6 +1,6 @@
 {
   "name": "hello-world",
-  "version": "0.26.1",
+  "version": "0.26.2",
   "description": "used as a template for new reSolve applications",
   "private": true,
   "scripts": {
@@ -20,12 +20,12 @@
     "react-dom": "16.13.1",
     "react-bootstrap": "1.4.0",
     "react-helmet": "6.1.0",
-    "resolve-react-hooks": "0.26.1",
-    "resolve-scripts": "0.26.1",
-    "resolve-eventstore-lite": "0.26.1",
-    "resolve-readmodel-lite": "0.26.1",
-    "resolve-eventstore-postgresql-serverless": "0.26.1",
-    "resolve-readmodel-postgresql-serverless": "0.26.1"
+    "resolve-react-hooks": "0.26.2",
+    "resolve-scripts": "0.26.2",
+    "resolve-eventstore-lite": "0.26.2",
+    "resolve-readmodel-lite": "0.26.2",
+    "resolve-eventstore-postgresql-serverless": "0.26.2",
+    "resolve-readmodel-postgresql-serverless": "0.26.2"
   },
   "devDependencies": {
     "aws-sdk": "2.631.0",
