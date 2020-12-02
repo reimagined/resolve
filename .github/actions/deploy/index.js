@@ -110,7 +110,7 @@ const execResolveCloud = (appDir, args, stdio = 'pipe') => {
       cwd: appDir,
       stdio,
       env: {
-        ...process.env
+        ...process.env,
       },
     })
   } catch (err) {
@@ -119,7 +119,7 @@ const execResolveCloud = (appDir, args, stdio = 'pipe') => {
       cwd: appDir,
       stdio,
       env: {
-        ...process.env
+        ...process.env,
       },
     })
   }
