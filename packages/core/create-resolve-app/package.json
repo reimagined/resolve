@@ -1,6 +1,6 @@
 {
   "name": "create-resolve-app",
-  "version": "0.26.0",
+  "version": "0.26.2",
   "description": "A tool that generates boilerplate web applications based on the reSolve framework",
   "engines": {
     "node": ">=10.9"
@@ -35,7 +35,7 @@
     "fs-extra": "^7.0.1",
     "validate-npm-package-name": "^3.0.0",
     "source-map-support": "^0.5.9",
-    "resolve-debug-levels": "0.26.0",
+    "resolve-debug-levels": "0.26.2",
     "progress": "2.0.3",
     "boxen": "^4.2.0"
   },

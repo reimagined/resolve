@@ -110,6 +110,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
     .then((result) => (result != null ? result.events : null))
 
   let rootSavePointId = generateGuid(xaKey, 'ROOT')
+  const executeEncryption = await getEncryption()
 
   await inlineLedgerRunQuery(
     `BEGIN TRANSACTION;
@@ -155,7 +156,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
             await projection[event.type](
               store,
               event,
-              await getEncryption(event)
+              await executeEncryption(event)
             )
             await inlineLedgerRunQuery(`RELEASE SAVEPOINT ${savePointId}`)
             lastSuccessEvent = event
