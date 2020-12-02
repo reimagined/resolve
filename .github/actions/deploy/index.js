@@ -104,26 +104,15 @@ const writeNpmRc = (appDir, registry) => {
   fs.writeFileSync(yarnRc, content)
 }
 
-const execResolveCloud = (appDir, args, stdio = 'pipe') => {
-  try {
-    return execSync(`resolve-cloud ${args}`, {
+const execResolveCloud = (appDir, args, stdio = 'pipe') =>
+  execSync(`yarn --silent resolve-cloud ${args}`, {
       cwd: appDir,
       stdio,
       env: {
         ...process.env,
       },
     })
-  } catch (err) {
-    console.log(`global resolve-cloud package exec error ${error.message}`)
-    return execSync(`yarn --silent resolve-cloud ${args}`, {
-      cwd: appDir,
-      stdio,
-      env: {
-        ...process.env,
-      },
-    })
-  }
-}
+
 
 const toTable = (tableOutput) => {
   const rows = tableOutput
