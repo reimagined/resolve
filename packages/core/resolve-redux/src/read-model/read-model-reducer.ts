@@ -10,6 +10,7 @@ import {
   QUERY_READMODEL_SUCCESS,
   QUERY_READMODEL_FAILURE,
   DROP_READMODEL_STATE,
+  INIT_READMODEL,
 } from '../internal/action-types'
 import {
   ReadModelAction,
@@ -17,6 +18,7 @@ import {
   QueryReadModelFailureAction,
   QueryReadModelRequestAction,
   QueryReadModelSuccessAction,
+  InitReadModelAction,
 } from './actions'
 import {
   ReadModelResultEntry,
@@ -29,6 +31,7 @@ type ReadModelActions =
   | QueryReadModelFailureAction
   | QueryReadModelRequestAction
   | QueryReadModelSuccessAction
+  | InitReadModelAction
 
 export const namedSelectors = 'namedSelectors'
 export const badSelectorDrain = 'badSelectorDrain'
@@ -95,6 +98,12 @@ export const reducer = (
         status: ResultStatus.Failed,
         data: null,
         error: action.error?.message ?? 'unknown error',
+      })
+
+    case INIT_READMODEL:
+      return setEntry(cloneDeep(state), getEntryPath(getSelector(action)), {
+        status: ResultStatus.Initial,
+        data: action.initialState,
       })
 
     case DROP_READMODEL_STATE:
