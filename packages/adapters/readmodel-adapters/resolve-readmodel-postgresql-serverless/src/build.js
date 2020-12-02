@@ -122,7 +122,13 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
   }
 }
 
-const buildEvents = async (pool, readModelName, store, projection, next) => {
+export const buildEvents = async (
+  pool,
+  readModelName,
+  store,
+  projection,
+  next
+) => {
   const {
     PassthroughError,
     getVacantTimeInMillis,
@@ -213,6 +219,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
     saveTrxIdPromise,
     acquireTrxPromise,
   ])
+  const executeEncryption = await getEncryption()
 
   while (true) {
     if (events.length === 0) {
@@ -252,7 +259,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
             await projection[event.type](
               store,
               event,
-              await getEncryption(event)
+              await executeEncryption(event)
             )
             await inlineLedgerExecuteStatement(
               pool,
