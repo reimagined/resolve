@@ -106,13 +106,12 @@ const writeNpmRc = (appDir, registry) => {
 
 const execResolveCloud = (appDir, args, stdio = 'pipe') =>
   execSync(`yarn --silent resolve-cloud ${args}`, {
-      cwd: appDir,
-      stdio,
-      env: {
-        ...process.env,
-      },
-    })
-
+    cwd: appDir,
+    stdio,
+    env: {
+      ...process.env,
+    },
+  })
 
 const toTable = (tableOutput) => {
   const rows = tableOutput
