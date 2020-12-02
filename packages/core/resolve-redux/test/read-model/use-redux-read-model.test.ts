@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import { renderHook, act } from '@testing-library/react-hooks'
 import { useQueryBuilder } from 'resolve-react-hooks'
 import {
+  initReadModel,
   queryReadModelFailure,
   queryReadModelRequest,
   queryReadModelSuccess,
@@ -63,7 +64,8 @@ describe('query as plain object overload', () => {
       },
     } = renderHook(() => useReduxReadModel(query, initialState))
 
-    expect(mDispatch).not.toHaveBeenCalled()
+    expect(mDispatch).toHaveBeenCalledTimes(1)
+    mDispatch.mockClear()
 
     act(() => request())
 
@@ -309,14 +311,7 @@ describe('query as plain object overload', () => {
     }
 
     expect(selector(state)).toEqual('state-entry')
-    expect(mGetEntry).toHaveBeenCalledWith(
-      state.readModels,
-      { query },
-      {
-        status: ResultStatus.Initial,
-        data: { initial: 'state' },
-      }
-    )
+    expect(mGetEntry).toHaveBeenCalledWith(state.readModels, { query })
   })
 
   test('redux state selector: selectorId used', () => {
@@ -342,10 +337,40 @@ describe('query as plain object overload', () => {
     }
 
     expect(selector(state)).toEqual('state-entry')
-    expect(mGetEntry).toHaveBeenCalledWith(state.readModels, 'selector-id', {
-      status: ResultStatus.Initial,
-      data: { initial: 'state' },
-    })
+    expect(mGetEntry).toHaveBeenCalledWith(state.readModels, 'selector-id')
+  })
+
+  test('the hook should dispatch initial state action on creation', async () => {
+    const query = makeQuery()
+
+    const hook = renderHook(() => useReduxReadModel(query, initialState))
+
+    expect(mDispatch).toHaveBeenCalledTimes(1)
+    expect(mDispatch).toHaveBeenCalledWith(
+      initReadModel(initialState, query, undefined)
+    )
+    mDispatch.mockClear()
+
+    hook.rerender()
+
+    expect(mDispatch).toHaveBeenCalledTimes(0)
+  })
+  test('the hook should dispatch initial state action on creation with selector id', async () => {
+    const query = makeQuery()
+
+    const hook = renderHook(() =>
+      useReduxReadModel(query, initialState, { selectorId: 'selector-id' })
+    )
+
+    expect(mDispatch).toHaveBeenCalledTimes(1)
+    expect(mDispatch).toHaveBeenCalledWith(
+      initReadModel(initialState, undefined, 'selector-id')
+    )
+    mDispatch.mockClear()
+
+    hook.rerender()
+
+    expect(mDispatch).toHaveBeenCalledTimes(0)
   })
 })
 
@@ -411,7 +436,8 @@ describe('query as builder function overload', () => {
     } = renderHook(() =>
       useReduxReadModel(builder, { initial: 'state' }, validOptions)
     )
-    expect(mDispatch).not.toHaveBeenCalled()
+    expect(mDispatch).toHaveBeenCalledTimes(1)
+    mDispatch.mockClear()
 
     act(() => request('test'))
 
@@ -610,9 +636,27 @@ describe('query as builder function overload', () => {
     }
 
     expect(selector(state)).toEqual('state-entry')
-    expect(mGetEntry).toHaveBeenCalledWith(state.readModels, 'selector-id', {
-      status: ResultStatus.Initial,
-      data: { initial: 'state' },
-    })
+    expect(mGetEntry).toHaveBeenCalledWith(state.readModels, 'selector-id')
+  })
+  test('the hook should not dispatch anything if no selector id set', async () => {
+    renderHook(() => useReduxReadModel(builder, initialState))
+
+    expect(mDispatch).toHaveBeenCalledTimes(0)
+  })
+
+  test('the hook should dispatch initial state action on creation with selector id', async () => {
+    const hook = renderHook(() =>
+      useReduxReadModel(builder, initialState, { selectorId: 'selector-id' })
+    )
+
+    expect(mDispatch).toHaveBeenCalledTimes(1)
+    expect(mDispatch).toHaveBeenCalledWith(
+      initReadModel(initialState, undefined, 'selector-id')
+    )
+    mDispatch.mockClear()
+
+    hook.rerender()
+
+    expect(mDispatch).toHaveBeenCalledTimes(0)
   })
 })
