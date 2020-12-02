@@ -42,6 +42,7 @@
     "react-test-renderer": "16.13.1",
     "testcafe": "1.8.5",
     "isomorphic-fetch": "2.2.1",
-    "chai": "4.2.0"
+    "chai": "4.2.0",
+    "resolve-cloud": "*"
   }
 }
