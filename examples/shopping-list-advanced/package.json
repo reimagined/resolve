@@ -1,20 +1,20 @@
 {
   "name": "shopping-list-advanced",
-  "description": "shows how to work with React-Native",
   "version": "0.26.2",
   "private": true,
-  "scripts": {
-    "dev": "cd web && node ./run.js dev",
-    "dev:native": "cd web && node ./run.js dev:native",
-    "start:native": "cd native && npm start",
-    "test": "cd scripts && node ./test.js",
-    "test:e2e": "cd web && node ./run.js test:e2e"
-  },
+  "description": "shows how to work with React-Native",
   "workspaces": {
     "packages": [
       "native",
       "web",
       "ui"
     ]
+  },
+  "scripts": {
+    "dev": "cd web && node ./run.js dev",
+    "dev:native": "cd web && node ./run.js dev:native",
+    "start:native": "cd native && npm start",
+    "test": "cd scripts && node ./test.js",
+    "test:e2e": "cd web && node ./run.js test:e2e"
   }
 }

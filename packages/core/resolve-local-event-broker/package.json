@@ -2,40 +2,40 @@
   "name": "resolve-local-event-broker",
   "version": "0.26.2",
   "description": "The reSolve framework's event broker for applications on a local machine.",
-  "engines": {
-    "node": ">=10.9"
-  },
-  "repository": "https://github.com/reimagined/resolve.git",
-  "author": "reimagined team",
-  "license": "MIT",
-  "main": "./lib/index.js",
-  "module": "./es/index.js",
   "keywords": [
     "cqrs",
     "eventsourcing",
     "es",
     "ddd"
   ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-local-event-broker#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
   "scripts": {
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
-  "bugs": {
-    "url": "https://github.com/reimagined/resolve/issues"
-  },
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-local-event-broker#readme",
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "sqlite": "^3.0.2",
-    "tmp": "^0.1.0",
     "resolve-debug-levels": "0.26.2",
-    "resolve-local-rpc": "0.26.2",
     "resolve-eventstore-base": "0.26.2",
-    "resolve-readmodel-base": "0.26.2"
+    "resolve-local-rpc": "0.26.2",
+    "resolve-readmodel-base": "0.26.2",
+    "sqlite": "^3.0.2",
+    "tmp": "^0.1.0"
   },
   "devDependencies": {
-    "sinon": "7.2.2",
-    "jest": "26.0.1"
+    "jest": "26.0.1",
+    "sinon": "7.2.2"
+  },
+  "engines": {
+    "node": ">=10.9"
   },
   "babelCompile": [
     {
