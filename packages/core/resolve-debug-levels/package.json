@@ -2,22 +2,6 @@
   "name": "resolve-debug-levels",
   "version": "0.26.2",
   "description": "Provides the debug-level API for reSolve packages.",
-  "engines": {
-    "node": ">=10.9"
-  },
-  "main": "./lib/index.js",
-  "module": "./es/index.js",
-  "types": "./types/index.d.ts",
-  "bugs": {
-    "url": "https://github.com/reimagined/resolve/issues"
-  },
-  "scripts": {
-    "test": "jest --config=../../../jest.config.js --verbose",
-    "testw": "jest --config=../../../jest.config.js --watchAll"
-  },
-  "repository": "https://github.com/reimagined/resolve.git",
-  "author": "reimagined team",
-  "license": "MIT",
   "keywords": [
     "cqrs",
     "eventsourcing",
@@ -25,6 +9,19 @@
     "ddd"
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-debug-levels#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "test": "jest --config=../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../jest.config.js --watchAll"
+  },
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "debug": "4.1.1"
@@ -36,7 +33,9 @@
     "sinon": "7.2.2",
     "uuid": "8.3.1"
   },
-  "sourceType": "ts",
+  "engines": {
+    "node": ">=10.9"
+  },
   "babelCompile": [
     {
       "moduleType": "cjs",
@@ -44,5 +43,6 @@
       "inputDir": "./src",
       "outDir": "./lib"
     }
-  ]
+  ],
+  "sourceType": "ts"
 }
